@@ -1,0 +1,20 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+# author:owefsad
+# datetime:2020/10/29 17:56
+# software: PyCharm
+# project: webapi
+
+REPORT_HEART_BEAT = 0x01
+REPORT_SCA = 0x11
+REPORT_VULN_NORNAL = 0x21
+REPORT_VULN_DYNAMIC = 0x22
+REPORT_VULN_OVER_POWER = 0x23
+REPORT_VULN_SAAS_POOL = 0x24
+
+REPORT_AUTH_ADD = 0x31
+REPORT_AUTH_UPDATE = 0x32
+REPORT_ERROR_LOG = 0x51
+
+STRATEGY_ENABLE = 'enable'
+STRATEGY_DISABLE = 'disable'

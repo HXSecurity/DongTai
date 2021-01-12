@@ -1,0 +1,4 @@
+Django==3.0.3
+djangorestframework==3.11.0
+M2Crypto==0.35.2
+mysqlclient==1.4.6
