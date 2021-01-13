@@ -12,6 +12,7 @@ from apiserver.views.agent_register import AgentRegisterEndPoint
 from apiserver.views.engine_auto_deploy import AutoDeployEndPoint
 from apiserver.views.engine_download import EngineDownloadEndPoint
 from apiserver.views.engine_status import EngineUpdateEndPoint
+from apiserver.views.hook_profile_init import HookProfileInitEndPoint
 from apiserver.views.hook_profiles import HookProfilesEndPoint
 from apiserver.views.properties import PropertiesEndPoint
 from apiserver.views.report_upload import ReportUploadEndPoint
@@ -27,4 +28,5 @@ urlpatterns = [
     path('engine/status', EngineUpdateEndPoint.as_view()),
     path('profiles', HookProfilesEndPoint.as_view()),
     path('properties', PropertiesEndPoint.as_view()),
+    # path('profile/init', HookProfileInitEndPoint.as_view()),
 ]
