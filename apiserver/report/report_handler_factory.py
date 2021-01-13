@@ -13,6 +13,12 @@ class ReportHandler:
     # 注册handler到当前命名空间，后续进行异步处理数据
     @staticmethod
     def handler(reports):
+        """
+        处理上传的报告，如果报告的类型不存在，则忽略本次上传；
+        检查用户与agent的权限
+        :param reports:
+        :return:
+        """
         report_type = reports.get('type')
         if report_type is None:
             print(reports)

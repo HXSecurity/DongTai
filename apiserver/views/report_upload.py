@@ -12,8 +12,8 @@ from apiserver.report.handler.report_handler_factory import ReportHandlerFactory
 
 
 class ReportUploadView(OpenApiEndPoint):
-    name = "iast_report_upload_api"
-    description = "IAST-接收检测引擎上传的报告"
+    name = "api-v1-report-upload"
+    description = "agent上传报告"
 
     def post(self, request):
         try:

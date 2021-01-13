@@ -7,13 +7,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from user.models.department import Department
-
 
 class User(AbstractUser):
     phone = models.CharField(max_length=100)
-    upgrade_url = models.CharField(max_length=255, null=True)
-    department = models.ForeignKey(Department, models.DO_NOTHING, blank=True, null=True)
 
     class Meta(AbstractUser.Meta):
         db_table = 'auth_user'

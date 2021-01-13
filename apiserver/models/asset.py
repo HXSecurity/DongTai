@@ -9,7 +9,6 @@ from django.db import models
 
 from apiserver.models.agent import IastAgent
 from apiserver.models.vul_level import IastVulLevel
-from user.models import User
 
 
 class IastAsset(models.Model):
@@ -17,7 +16,6 @@ class IastAsset(models.Model):
     package_path = models.CharField(max_length=255, blank=True, null=True)
     signature_algorithm = models.CharField(max_length=255, blank=True, null=True)
     signature_value = models.CharField(max_length=255, blank=True, null=True)
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
     dt = models.IntegerField(blank=True, null=True)
     version = models.CharField(max_length=255, blank=True, null=True)
     level = models.ForeignKey(IastVulLevel, models.DO_NOTHING, blank=True, null=True)
@@ -28,4 +26,4 @@ class IastAsset(models.Model):
     class Meta:
         managed = False
         db_table = 'iast_asset'
-        unique_together = (('signature_value', 'user'),)
+        unique_together = (('signature_value'),)

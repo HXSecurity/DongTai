@@ -8,7 +8,6 @@ import datetime
 import json
 import time
 
-from apiserver.models.application import IastApplicationModel
 from apiserver.models.iast_overpower_user import IastOverpowerUserAuth
 from apiserver.models.iast_vul_overpower import IastVulOverpower
 from apiserver.models.vulnerablity import IastVulnerabilityModel
@@ -52,35 +51,7 @@ class OverPowerHandler(IReportHandler):
         self.sql = self.detail.get('sql')
         self.language = self.detail.get('language')
 
-    def get_app_id(self):
-        # 维护应用信息
-        iast_apps = IastApplicationModel.objects.filter(
-            user_id=self.user_id,
-            name=self.app_name,
-            path=self.app_path,
-            server_id=self.server_id
-        )
-        if len(iast_apps) > 0:
-            for iast_app in iast_apps:
-                iast_app.status = 'online'
-                iast_app.vul_count = iast_app.vul_count + 1
-                iast_app.dt = int(time.time())
-                iast_app.save()
-        else:
-            iast_app = IastApplicationModel(
-                user_id=self.user_id,
-                name=self.app_name,
-                path=self.app_path,
-                status='online',
-                server_id=self.server_id,
-                vul_count=1,
-                dt=int(time.time())
-            )
-            iast_app.save()
-        self.app_id = iast_app.id
-
     def save(self):
-        self.get_app_id()
         # 检查trace_id是否存于数据库中
         vul_model = IastVulOverpower.objects.filter(
             app_name=self.app_name,

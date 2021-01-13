@@ -20,7 +20,6 @@ class IastServerModel(models.Model):
     language = models.CharField(max_length=20, blank=True, null=True)
     path = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(max_length=255, blank=True, null=True)
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
     container = models.CharField(max_length=255, blank=True, null=True)
     container_path = models.CharField(max_length=255, blank=True, null=True)
     command = models.CharField(max_length=255, blank=True, null=True)

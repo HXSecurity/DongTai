@@ -34,8 +34,8 @@ class ScaHandler(IReportHandler):
                 self.package_algorithm]) is False:
             logger.warn(f"数据不完整，数据：{json.dumps(self.report)}")
         else:
-            self.agent = IastAgent.objects.get(token=self.agent_name, user=self.user_id)
-            if self.agent:
+            agent = IastAgent.objects.get(token=self.agent_name, user=self.user_id)
+            if agent:
                 # 查询当前版本并保存，跟进signature查询maven_db库，查出aql与当前版本
                 smd = ScaMavenDb.objects.filter(sha_1=self.package_signature).values("version", "aql").first()
                 _version = self.package_path.split('/')[-1].replace('.jar', '').split('-')[-1]
@@ -77,7 +77,7 @@ class ScaHandler(IReportHandler):
                         signature_value=self.package_signature,
                         signature_algorithm=self.package_algorithm,
                         dt=time.time(),
-                        agent=self.agent,
+                        agent=agent,
                         language=self.language
                     ).save()
                 except Exception as e:

@@ -22,7 +22,6 @@ class IastVulOverpower(models.Model):
     x_trace_id = models.CharField(max_length=255, blank=True, null=True)
     cookie = models.CharField(max_length=2000, blank=True, null=True)
     sql = models.CharField(max_length=2000, blank=True, null=True)
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
     created_time = models.DateTimeField(blank=True, null=True)
     updated_time = models.DateTimeField(blank=True, null=True)
 

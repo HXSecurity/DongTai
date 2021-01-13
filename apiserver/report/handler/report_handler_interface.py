@@ -44,6 +44,8 @@ class IReportHandler:
     def handle(self, report, user):
         self.report = report
         self.detail = self.report.get('detail')
+        self.agent_token = self.detail.get('agent_name')
         self.user_id = user
+        # todo 检查当前用户是否有操作该agent的权限
         self.parse()
         self.save()

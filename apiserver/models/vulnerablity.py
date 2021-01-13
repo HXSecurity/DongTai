@@ -6,7 +6,6 @@ from user.models import User
 
 
 class IastVulnerabilityModel(models.Model):
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
     type = models.CharField(max_length=255, blank=True, null=True)
     level = models.ForeignKey(IastVulLevel, models.DO_NOTHING, blank=True, null=True)
     url = models.CharField(max_length=2000, blank=True, null=True)
