@@ -11,7 +11,7 @@ from apiserver.decrypter import parse_data
 from apiserver.report.handler.report_handler_factory import ReportHandlerFactory
 
 
-class ReportUploadView(OpenApiEndPoint):
+class ReportUploadEndPoint(OpenApiEndPoint):
     name = "api-v1-report-upload"
     description = "agent上传报告"
 

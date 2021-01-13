@@ -14,7 +14,7 @@ from apiserver.decrypter import parse_data
 from apiserver.models.agent import IastAgent
 
 
-class AgentRegister(OpenApiEndPoint):
+class AgentRegisterEndPoint(OpenApiEndPoint):
     """
     引擎注册接口
     """
