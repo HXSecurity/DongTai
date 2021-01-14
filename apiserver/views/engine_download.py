@@ -28,15 +28,21 @@ class EngineDownloadEndPoint(OpenApiEndPoint):
         :return:
         """
         package_name = request.query_params.get('package_name')
-        if package_name in ['iast-core', 'iast-inject']:
-            logger.debug(f'即将下载{package_name}文件')
-            filename = f"iast/upload/iast-package/{package_name}.jar"
-            try:
-                response = FileResponse(open(filename, "rb"))
-                response['content_type'] = 'application/octet-stream'
-                response['Content-Disposition'] = f"attachment; filename={package_name}.jar"
-                return response
-            except:
-                return JsonResponse(R.failure(msg="file not exit."), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        jdk = request.query_params.get('jdk.version')
+        if package_name not in ('iast-core', 'iast-inject') or jdk not in ('1', '2'):
+            return JsonResponse({
+                "status": -1,
+                "msg": "bad gay."
+            })
+        logger.debug(f'即将下载{package_name}文件')
+        if package_name in ('iast-core',) and jdk is '2':
+            filename = f"iast/upload/iast-package/jdk-high/{package_name}.jar"
         else:
+            filename = f"iast/upload/iast-package/{package_name}.jar"
+        try:
+            response = FileResponse(open(filename, "rb"))
+            response['content_type'] = 'application/octet-stream'
+            response['Content-Disposition'] = f"attachment; filename={package_name}.jar"
+            return response
+        except:
             return JsonResponse(R.failure(msg="file not exit."), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
