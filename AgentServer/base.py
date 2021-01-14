@@ -46,3 +46,21 @@ class EndPoint(APIView):
 
         self.response = self.finalize_response(request, response, *args, **kwargs)
         return self.response
+
+
+class R:
+    @staticmethod
+    def success(data=None, msg="success"):
+        return {
+            "status": 201,
+            "msg": msg,
+            "data": data
+        }
+
+    @staticmethod
+    def failure(data=None, msg="failure"):
+        return {
+            "status": 202,
+            "msg": msg,
+            "data": data
+        }

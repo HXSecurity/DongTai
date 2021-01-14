@@ -1191,9 +1191,4 @@ class HookProfileInitEndPoint(OpenApiEndPoint):
                 strategy.created_by = 1
                 strategy.save()
                 IastHookStrategyTypeRelation(strategy=strategy, type=strategy_type).save()
-            # strategy, status = IastHookStrategyType.objects.get_or_create(**_strategy)
-            # strategy.create_time = int(time.time())
-            # strategy.update_time = int(time.time())
-            # strategy.created_by = 1
-            # strategy.save()
         return JsonResponse({})

@@ -135,7 +135,7 @@
 #         self.param_name = self.detail.get('param_name')
 #         self.container = self.detail.get('container')
 #         self.container_path = self.detail.get('container_path')
-#
+
 #
 # class NormalVulnHandler(BaseVulnHandler):
 #     def save(self):

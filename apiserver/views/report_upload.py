@@ -6,6 +6,7 @@
 # project: lingzhi-agent-server
 from django.http import JsonResponse
 
+from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint
 from apiserver.decrypter import parse_data
 from apiserver.report.handler.report_handler_factory import ReportHandlerFactory
@@ -22,12 +23,6 @@ class ReportUploadEndPoint(OpenApiEndPoint):
             handler = ReportHandlerFactory.get_handler(report_type)
             handler.handle(report, request.user)
 
-            return JsonResponse({
-                "status": 201,
-                "msg": "report upload success."
-            })
+            return JsonResponse(R.success(msg="report upload success."))
         except Exception as e:
-            return JsonResponse({
-                "status": 202,
-                "msg": f"report upload failed, reason: {e}"
-            })
+            return JsonResponse(R.failure(msg=f"report upload failed, reason: {e}"))

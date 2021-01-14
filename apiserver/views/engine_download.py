@@ -11,6 +11,7 @@ from django.http import FileResponse, JsonResponse
 from rest_framework import status
 from rest_framework.request import Request
 
+from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint
 
 logger = logging.getLogger("django")
@@ -36,13 +37,6 @@ class EngineDownloadEndPoint(OpenApiEndPoint):
                 response['Content-Disposition'] = f"attachment; filename={package_name}.jar"
                 return response
             except:
-                # 通知网站管理人员
-                return JsonResponse({
-                    "status": '202',
-                    "msg": "file not exit."
-                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return JsonResponse(R.failure(msg="file not exit."), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
-            return JsonResponse({
-                "status": '202',
-                "msg": "file not exit."
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return JsonResponse(R.failure(msg="file not exit."), status=status.HTTP_500_INTERNAL_SERVER_ERROR)

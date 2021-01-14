@@ -10,6 +10,7 @@ import logging
 from django.http import JsonResponse
 from rest_framework.request import Request
 
+from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint
 from apiserver.models.hook_strategy_type import IastHookStrategyType
 from apiserver.models.hook_strategy_type_relation import IastHookStrategyTypeRelation
@@ -62,17 +63,9 @@ class HookProfilesEndPoint(OpenApiEndPoint):
         :param request:
         :return:
         """
-        # todo:
-        #   1 根据用户查找租户
-        #   2 根据租户，查找策略类型
-        #   - 考虑是否需要用户级策略
-        #   3 根据策略类型，加载对应的策略
+        # todo 考虑是否需要用户级策略
         user = request.user
         talent = self.get_talent(user)
         profiles = self.get_profiles(talent)
 
-        return JsonResponse({
-            "status": 201,
-            "msg": "策略获取成功",
-            "data": profiles
-        })
+        return JsonResponse(R.success(data=profiles))

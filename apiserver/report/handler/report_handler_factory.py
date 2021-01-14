@@ -22,17 +22,14 @@ class ReportHandlerFactory:
             return ErrorLogHandler()
         elif report_type == const.REPORT_SCA:
             return ScaHandler()
+        elif report_type == const.REPORT_VULN_SAAS_POOL:
+            return SaasMethodPoolHandler()
+        # 越权漏洞相关接口
         elif report_type == const.REPORT_AUTH_ADD:
             return AuthAddHandler()
         elif report_type == const.REPORT_AUTH_UPDATE:
             return AuthUpdateHandler()
-        # elif report_type == const.REPORT_VULN_NORNAL:
-        #     return NormalVulnHandler()
-        # elif report_type == const.REPORT_VULN_DYNAMIC:
-        #     return DynamicVulnHandler()
         elif report_type == const.REPORT_VULN_OVER_POWER:
             return OverPowerHandler()
-        elif report_type == const.REPORT_VULN_SAAS_POOL:
-            return SaasMethodPoolHandler()
         else:
             print(report_type, type(report_type))

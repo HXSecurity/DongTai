@@ -9,6 +9,7 @@ import logging
 from django.http import JsonResponse
 from rest_framework.request import Request
 
+from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint
 
 logger = logging.getLogger("django")
@@ -24,15 +25,9 @@ class EngineUpdateEndPoint(OpenApiEndPoint):
         :param request:
         :return:
         """
-        response_dict = {
-            "status": '202',
-            "msg": "更新状态修改失败"
-        }
         status = request.query_params.get('status', None)
         if status:
             if '1' == status:
-                # 标记更新状态为已完成
-                response_dict['status'] = "201"
-                response_dict['msg'] = "更新状态修改成功"
+                return JsonResponse(R.success(msg="更新状态修改成功"))
 
-        return JsonResponse(response_dict)
+        return JsonResponse(R.failure("更新状态修改失败"))

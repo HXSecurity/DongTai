@@ -10,7 +10,11 @@ import logging
 from django.http import JsonResponse
 from rest_framework.request import Request
 
+from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint
+from apiserver.models.agent import IastAgent
+from apiserver.models.agent_properties import IastAgentProperties
+from apiserver.serializers.agent_properties import AgentPropertiesSerialize
 
 logger = logging.getLogger("django")
 
@@ -19,18 +23,26 @@ class PropertiesEndPoint(OpenApiEndPoint):
     """
     当前用户详情
     """
-    name = "download_agent_propreties"
-    description = "iast agent-下载IAST 配置"
+    name = "api-v1-properties"
+    description = "获取属性配置"
 
     def get(self, request: Request):
         """
         IAST下载 agent接口
         :param request:
-        :return:
-        """
-        result = {
-            "status": '202',
-            "msg": "不存在自定义属性",
-            "data": []
+        :return:{
+            "status": 201,
+            "data":{
+                "hook_type": 0,
+                "dump_class": 0
+            },
+            "msg": "success"
         }
-        return JsonResponse(json.dumps(result))
+        """
+        agent_token = request.query_params.get('agentName', None)
+        agent = IastAgent.objects.filter(token=agent_token).first()
+        if agent:
+            queryset = IastAgentProperties.objects.filter(agent=agent).first()
+            if queryset:
+                return JsonResponse(R.success(AgentPropertiesSerialize(queryset).data))
+        return JsonResponse(R.failure(data=None))

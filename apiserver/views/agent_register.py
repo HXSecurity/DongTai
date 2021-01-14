@@ -9,6 +9,7 @@ import time
 from django.http import JsonResponse
 from rest_framework.request import Request
 
+from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint
 from apiserver.decrypter import parse_data
 from apiserver.models.agent import IastAgent
@@ -44,10 +45,10 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             token = param.get('name', '')
             version = param.get('version', '')
             if not token or not version:
-                return JsonResponse({"status": 202, "msg": "参数错误"})
+                return JsonResponse(R.failure(msg="参数错误"))
             have_token = IastAgent.objects.filter(token=token).exists()
             if have_token:
-                return JsonResponse({"status": 202, "msg": "agent已注册"})
+                return JsonResponse(R.failure(msg="agent已注册"))
             IastAgent.objects.create(
                 token=token,
                 version=version,
@@ -58,7 +59,6 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 control=0,
                 is_control=0
             )
-
-            return JsonResponse({"status": 201})
+            return JsonResponse(R.success())
         except Exception as e:
-            return JsonResponse({"status": 202, "msg": "参数错误"})
+            return JsonResponse(R.failure(msg="参数错误"))
