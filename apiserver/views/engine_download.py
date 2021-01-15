@@ -36,9 +36,9 @@ class EngineDownloadEndPoint(OpenApiEndPoint):
             })
         logger.debug(f'即将下载{package_name}文件')
         if package_name in ('iast-core',) and jdk is '2':
-            filename = f"iast/upload/iast-package/jdk-high/{package_name}.jar"
+            filename = f"iast-package/jdk-high/{package_name}.jar"
         else:
-            filename = f"iast/upload/iast-package/{package_name}.jar"
+            filename = f"iast-package/{package_name}.jar"
         try:
             response = FileResponse(open(filename, "rb"))
             response['content_type'] = 'application/octet-stream'

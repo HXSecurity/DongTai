@@ -24,7 +24,6 @@ class ErrorLogHandler(IReportHandler):
         self.agent = IastAgent.objects.get(token=self.agent_name, user=self.user_id)
 
         IastErrorlog(
-            user=self.user_id,
             errorlog=self.log,
             agent=self.agent,
             state='reported',

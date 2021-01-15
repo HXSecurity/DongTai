@@ -24,7 +24,7 @@ class IastAgentMethodPool(models.Model):
     context_path = models.CharField(max_length=255, blank=True, null=True)
     language = models.CharField(max_length=20, blank=True, null=True)
     method_pool = models.TextField(blank=True, null=True)  # This field type is a guess.
-    pool_sign = models.CharField(unique=True, max_length=32, blank=True, null=True)  # This field type is a guess.
+    pool_sign = models.CharField(unique=True, max_length=40, blank=True, null=True)  # This field type is a guess.
     clent_ip = models.CharField(max_length=255, blank=True, null=True)
     create_time = models.IntegerField(blank=True, null=True)
     update_time = models.IntegerField(blank=True, null=True)
