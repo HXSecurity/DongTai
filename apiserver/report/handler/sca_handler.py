@@ -38,7 +38,7 @@ class ScaHandler(IReportHandler):
             if agent:
                 # 查询当前版本并保存，跟进signature查询maven_db库，查出aql与当前版本
                 smd = ScaMavenDb.objects.filter(sha_1=self.package_signature).values("version", "aql").first()
-                _version = self.package_path.split('/')[-1].replace('.jar', '').split('-')[-1]
+                _version = self.package_name.split('/')[-1].replace('.jar', '').split('-')[-1]
                 version = smd.get('version', _version) if smd else _version
                 package_name = smd.get('aql', self.package_name) if smd else self.package_name
                 # 查询漏洞数量并保存：根据aql查询漏洞数量，根据漏洞查询危害等级跟进signature查询maven_db库，查出aql与当前版本，根据aql查询漏洞数量
@@ -68,7 +68,6 @@ class ScaHandler(IReportHandler):
 
                 try:
                     IastAsset(
-                        user=self.user_id,
                         package_path=self.package_path,
                         version=version,
                         vul_count=vul_count,

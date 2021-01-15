@@ -33,7 +33,6 @@ class HeartBeatHandler(IReportHandler):
         self.agent.is_running = 1
         self.agent.save()
         heartbeat = IastHeartbeat(
-            user=self.user_id,
             hostname=self.hostname,
             network=self.network,
             memory=self.memory,

@@ -54,7 +54,6 @@ class AuthAddHandler(IReportHandler):
                 auth_sql=self.auth_sql,
                 jdbc_class=self.jdbc_class,
                 auth_value=self.auth_value,
-                user_id=self.user_id
             )
             if len(auth_model):
                 print('权限已存在，忽略')

@@ -82,7 +82,6 @@ class OverPowerHandler(IReportHandler):
                 # 通过cookie查询原始的用户
                 # 检查是否已存在漏洞，如果存在，则忽略，如果不存在则上报漏洞
                 vuls = IastVulnerabilityModel.objects.filter(
-                    user_id=self.user_id,
                     vul_url=self.http_url,
                     vul_type='越权漏洞',
                     vul_req_method=self.http_method,
@@ -94,7 +93,6 @@ class OverPowerHandler(IReportHandler):
                     vuls[0].save()
                 else:
                     IastVulnerabilityModel(
-                        user_id=self.user_id,
                         type='越权漏洞',
                         vul_level='中危',
                         url=self.http_url,

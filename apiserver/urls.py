@@ -28,6 +28,8 @@ urlpatterns = [
     # todo 增加
     path('engine/download', EngineDownloadEndPoint.as_view()),
     path('engine/status', EngineUpdateEndPoint.as_view()),
+    path('engine/update', EngineUpdateEndPoint.as_view()),
+    path('engine/update/<int:status>', EngineUpdateEndPoint.as_view()),
     path('profiles', HookProfilesEndPoint.as_view()),
     path('properties', PropertiesEndPoint.as_view()),
     # path('profile/init', HookProfileInitEndPoint.as_view()),

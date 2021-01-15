@@ -4,7 +4,7 @@
 # datetime:2021/1/5 下午12:36
 # software: PyCharm
 # project: lingzhi-webapi
-import time
+import time, json
 from hashlib import sha1
 
 from apiserver.models.agent import IastAgent
@@ -25,7 +25,7 @@ class SaasMethodPoolHandler(IReportHandler):
         self.http_url = self.detail.get('http_url')
         self.http_query_string = self.detail.get('http_query_string')
         self.http_req_data = self.detail.get('http_req_data')
-        self.http_header = self.detail.get('http_header')
+        self.http_req_header = self.detail.get('http_req_header')
         self.http_method = self.detail.get('http_method')
         self.http_scheme = self.detail.get('http_scheme')
         self.http_secure = self.detail.get('http_secure')
@@ -68,7 +68,7 @@ class SaasMethodPoolHandler(IReportHandler):
                     http_method=self.http_method,
                     http_scheme=self.http_scheme,
                     http_protocol=self.http_protocol,
-                    req_header=self.http_header,
+                    req_header=self.http_req_header,
                     req_params=self.http_query_string,
                     req_data=self.http_req_data,  # fixme 增加客户端获取响应体
                     res_header=self.http_res_header,
@@ -80,7 +80,7 @@ class SaasMethodPoolHandler(IReportHandler):
                     clent_ip=self.client_ip,
                     create_time=timestamp,
                     update_time=timestamp
-                )
+                ).save()
 
     def calc_hash(self):
         sign_raw = ''
