@@ -13,24 +13,20 @@ from apiserver.views.agent_register import AgentRegisterEndPoint
 from apiserver.views.engine_auto_deploy import AutoDeployEndPoint
 from apiserver.views.engine_download import EngineDownloadEndPoint
 from apiserver.views.engine_status import EngineUpdateEndPoint
-from apiserver.views.hook_profile_init import HookProfileInitEndPoint
 from apiserver.views.hook_profiles import HookProfilesEndPoint
 from apiserver.views.properties import PropertiesEndPoint
 from apiserver.views.report_upload import ReportUploadEndPoint
 
 urlpatterns = [
-    path('report/upload', ReportUploadEndPoint.as_view()),
-    # fixme 后续api接口地址统一调整为agent/register
     path('agent/download', AgentDownload.as_view()),
-    path('agent/register', AgentRegisterEndPoint.as_view()),
-    # todo 增加hook策略下载接口
     path('deploy/auto', AutoDeployEndPoint.as_view()),
-    # todo 增加
+
     path('engine/download', EngineDownloadEndPoint.as_view()),
-    path('engine/status', EngineUpdateEndPoint.as_view()),
+    path('agent/register', AgentRegisterEndPoint.as_view()),
     path('engine/update', EngineUpdateEndPoint.as_view()),
     path('engine/update/<int:status>', EngineUpdateEndPoint.as_view()),
     path('profiles', HookProfilesEndPoint.as_view()),
     path('properties', PropertiesEndPoint.as_view()),
-    # path('profile/init', HookProfileInitEndPoint.as_view()),
+    path('report/upload', ReportUploadEndPoint.as_view()),
+    # todo 增加重放请求获取接口，用于后续逻辑漏洞/漏洞验证等功能，暂时先不实现
 ]
