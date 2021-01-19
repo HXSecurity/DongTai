@@ -15,8 +15,6 @@ from apiserver.base.openapi import OpenApiEndPoint
 from apiserver.models.hook_strategy_type import IastHookStrategyType
 from apiserver.models.hook_strategy_type_relation import IastHookStrategyTypeRelation
 from apiserver.models.hook_talent_strategy import IastHookTalentStrategy
-from user.models.department_talent import AuthDepartmentTalent
-from user.models.user_department import AuthUserDepartment
 
 logger = logging.getLogger("django")
 
@@ -24,12 +22,6 @@ logger = logging.getLogger("django")
 class HookProfilesEndPoint(OpenApiEndPoint):
     name = "api-v1-profiles"
     description = "获取HOOK策略"
-
-    @staticmethod
-    def get_talent(user):
-        user_department = AuthUserDepartment.objects.filter(user=user).first()
-        department_talent = AuthDepartmentTalent.objects.filter(department=user_department.department).first()
-        return department_talent.talent if department_talent else None
 
     @staticmethod
     def get_profiles(talent):
@@ -65,7 +57,7 @@ class HookProfilesEndPoint(OpenApiEndPoint):
         """
         # todo 考虑是否需要用户级策略
         user = request.user
-        talent = self.get_talent(user)
+        talent = user.get_talent()
         profiles = self.get_profiles(talent)
 
         return JsonResponse(R.success(data=profiles))
