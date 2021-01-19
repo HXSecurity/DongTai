@@ -62,4 +62,4 @@ class AgentDownload(OpenApiEndPoint):
     def replace_jar_config():
         # 执行jar -uvf iast/upload/iast-package/iast-agent.jar /tmp/iast.properties更新jar包的文件
         import os
-        os.system('cd /tmp;jar -uvf /opt/iast/webapi/iast/upload/iast-package/iast-agent.jar iast.properties')
+        os.system('cd /tmp;jar -uvf /opt/iast/apiserver/iast-package/iast-agent.jar iast.properties')
