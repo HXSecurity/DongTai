@@ -20,7 +20,7 @@ steps:
         - failure
         - success
   # 构建prod镜像
-  - name: build-iast-saas-apiserver-test
+  - name: build-iast-agent-api-test
     image: plugins/docker
     settings:
       username:
@@ -42,23 +42,23 @@ steps:
       branch:
         - saas.master
 
-#  # 部署prod环境
-#  - name: deliver-test
-#    image: sinlead/drone-kubectl
-#    settings:
-#      debug: true
-#      kubernetes_server:
-#        from_secret: huoqi_ask_prod_server
-#      kubernetes_cert:
-#        from_secret: huoqi_ask_prod_cert
-#      kubernetes_token:
-#        from_secret: huoqi_ask_prod_token
-#    commands:
-#      - find deploy/deploy-lingzhi-api-prod.yml -type f -exec sed -i 's/VERSION/0.1.${DRONE_BUILD_NUMBER}/g' {} \;
-#      - ls deploy/deploy-lingzhi-api-prod.yml | xargs -I {} kubectl apply -f {}
-#    when:
-#      branch:
-#        - master
+  # 部署iast-agent-api
+  - name: deliver-iast-agent-api
+    image: sinlead/drone-kubectl
+    settings:
+      debug: true
+      kubernetes_server:
+        from_secret: iast_eks_prod_server
+      kubernetes_cert:
+        from_secret: iast_eks_prod_cert
+      kubernetes_token:
+        from_secret: iast_eks_prod_token
+    commands:
+      - find deploy/deploy-eks-iast-saas-prod.yml -type f -exec sed -i 's/VERSION/0.1.${DRONE_BUILD_NUMBER}/g' {} \;
+      - ls deploy/deploy-eks-iast-saas-prod.yml | xargs -I {} kubectl apply -f {}
+    when:
+      branch:
+        - saas.master
 
   # 结束通知
   - name: notify-end
