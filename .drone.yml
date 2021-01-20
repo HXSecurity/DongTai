@@ -42,7 +42,7 @@ steps:
       branch:
         - saas.master
 
-  # 部署
+  # 部署iast-agent-api
   - name: deliver-iast-agent-api
     image: sinlead/drone-kubectl
     settings:
