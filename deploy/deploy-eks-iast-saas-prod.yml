@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iast-agent-api
+  namespace: iast-test
+  annotations:
+    kubesphere.io/description: lingzhi前端
+  labels:
+    app: iast-agent-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iast-agent-api
+  template:
+    metadata:
+      labels:
+        app: iast-agent-api
+    spec:
+      containers:
+        - name: iast-agent-api-container
+          image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-apiserver:VERSION
+          imagePullPolicy: IfNotPresent
+
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+      imagePullSecrets:
+        - name: aliyun-registry-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iast-agent-api-svc
+  namespace: iast-test
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    app: iast-agent-api
+  type: ClusterIP
