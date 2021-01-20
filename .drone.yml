@@ -27,14 +27,14 @@ steps:
         from_secret: aliyun_dockerhub_username
       password:
         from_secret: aliyun_dockerhub_password
-      repo: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-apiserver
+      repo: registry-vpc.cn-beijing.aliyuncs.com/secnium/iast-saas-apiserver
       registry:
         from_secret: aliyun_dockerhub_registry
       mirror:
         from_secret: aliyun_mirror
       use_cache: true
       cache_from:
-        - registry.cn-beijing.aliyuncs.com/secnium/iast-saas-apiserver:latest
+        - registry-vpc.cn-beijing.aliyuncs.com/secnium/iast-saas-apiserver:latest
       tags:
         - latest
         - 0.1.${DRONE_BUILD_NUMBER}

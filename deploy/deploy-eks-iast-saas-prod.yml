@@ -4,7 +4,7 @@ metadata:
   name: iast-agent-api
   namespace: iast-test
   annotations:
-    kubesphere.io/description: lingzhi前端
+    kubesphere.io/description: iast-agent-api
   labels:
     app: iast-agent-api
 spec:
