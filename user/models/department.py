@@ -30,7 +30,7 @@ class PermissionsMixin(models.Model):
         abstract = True
 
 
-class Department(models.Model):
+class Department(PermissionsMixin):
     name = models.CharField(
         _('name'),
         unique=True,
