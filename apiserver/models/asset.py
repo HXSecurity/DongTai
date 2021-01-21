@@ -26,4 +26,4 @@ class IastAsset(models.Model):
     class Meta:
         managed = False
         db_table = 'iast_asset'
-        unique_together = (('signature_value'),)
+        unique_together = (('agent', 'signature_value'),)
