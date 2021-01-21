@@ -21,7 +21,22 @@ spec:
         - name: iast-agent-api-container
           image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-apiserver:VERSION
           imagePullPolicy: IfNotPresent
-
+          env:
+            - name: DATABASES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: lingzhi-api-conf
+                  key: DATABASES_HOST
+            - name: DATABASES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: lingzhi-api-conf
+                  key: DATABASES_USER
+            - name: DATABASES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: lingzhi-api-conf
+                  key: DATABASES_PASSWORD
           resources:
             limits:
               cpu: "500m"
