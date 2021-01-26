@@ -1,0 +1,13 @@
+*.DS_Store
+/venv
+*/__pycache__/*
+*/migrations/*
+*.sqlite3
+*.pyc
+.idea/
+scaapi/cron/logs/sca.log
+iast/upload/reports/*
+db/*
+
+#Dockerfile
+doc

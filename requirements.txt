@@ -1,0 +1,3 @@
+Django==3.0.3
+djangorestframework==3.11.0
+mysqlclient==1.4.6
