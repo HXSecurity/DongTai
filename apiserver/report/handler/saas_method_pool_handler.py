@@ -14,13 +14,6 @@ from apiserver.report.handler.report_handler_interface import IReportHandler
 
 class SaasMethodPoolHandler(IReportHandler):
     def parse(self):
-        self.server_name = self.detail.get('server_name')
-        self.server_port = self.detail.get('server_port')
-        self.server_env = self.detail.get('server_env')
-        self.hostname = self.detail.get('hostname')
-        self.agent_version = self.detail.get('agent_version')
-        self.app_name = self.detail.get('app_name')
-        self.app_path = self.detail.get('app_path')
         self.http_uri = self.detail.get('http_uri')
         self.http_url = self.detail.get('http_url')
         self.http_query_string = self.detail.get('http_query_string')
@@ -34,15 +27,12 @@ class SaasMethodPoolHandler(IReportHandler):
         self.http_res_body = self.detail.get('http_res_body')
         self.context_path = self.detail.get('context_path')
         self.vuln_type = self.detail.get('vuln_type')
-        self.app_caller = self.detail.get('app_caller')
-        self.language = self.detail.get('language')
+        self.language = self.detail.get('language', 'Java')
         self.agent_name = self.detail.get('agent_name')
         self.taint_value = self.detail.get('taint_value')
         self.taint_position = self.detail.get('taint_position')
         self.client_ip = self.detail.get('http_client_ip')
         self.param_name = self.detail.get('param_name')
-        self.container = self.detail.get('container')
-        self.container_path = self.detail.get('container_path')
         self.method_pool = self.report.get('detail', {}).get('pool', None)
         if self.method_pool:
             self.method_pool = sorted(self.method_pool, key=lambda e: e.__getitem__('invokeId'), reverse=True)
