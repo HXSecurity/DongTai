@@ -25,8 +25,8 @@ class IastServerModel(models.Model):
     command = models.CharField(max_length=255, blank=True, null=True)
     env = models.CharField(max_length=255, blank=True, null=True)
     runtime = models.CharField(max_length=255, blank=True, null=True)
-    first_time = models.IntegerField(blank=True, null=True)
-    latest_time = models.IntegerField(blank=True, null=True)
+    create_time = models.IntegerField(blank=True, null=True)
+    update_time = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
