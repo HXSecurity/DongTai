@@ -23,7 +23,7 @@ class PermissionsMixin(models.Model):
             'granted to each of their talent.'
         ),
         related_name="departments",
-        related_query_name="talent",
+        related_query_name="department",
     )
 
     class Meta:

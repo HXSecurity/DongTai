@@ -127,3 +127,5 @@ STATIC_URL = '/static/'
 # 配置RSA加解密需要的公钥、私钥路径
 PRIVATE_KEY = os.path.join(BASE_DIR, 'config', 'rsa_keys/private_key.pem')
 PUBLIC_KEY = os.path.join(BASE_DIR, 'config', 'rsa_keys/public_key.pem')
+
+BASE_ENGINE_URL = os.environ.get("ENGINE_URL", 'http://127.0.0.1:8002') + '/api/engine/run?method_pool_id={id}'

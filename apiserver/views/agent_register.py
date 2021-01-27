@@ -45,10 +45,10 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             token = param.get('name', '')
             version = param.get('version', '')
             if not token or not version:
-                return JsonResponse(R.failure(msg="参数错误"))
+                return R.failure(msg="参数错误")
             have_token = IastAgent.objects.filter(token=token).exists()
             if have_token:
-                return JsonResponse(R.failure(msg="agent已注册"))
+                return R.failure(msg="agent已注册")
             IastAgent.objects.create(
                 token=token,
                 version=version,
@@ -59,6 +59,6 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 control=0,
                 is_control=0
             )
-            return JsonResponse(R.success())
+            return R.success()
         except Exception as e:
-            return JsonResponse(R.failure(msg="参数错误"))
+            return R.failure(msg="参数错误")
