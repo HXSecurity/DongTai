@@ -129,3 +129,21 @@ PRIVATE_KEY = os.path.join(BASE_DIR, 'config', 'rsa_keys/private_key.pem')
 PUBLIC_KEY = os.path.join(BASE_DIR, 'config', 'rsa_keys/public_key.pem')
 
 BASE_ENGINE_URL = os.environ.get("ENGINE_URL", 'http://127.0.0.1:8002') + '/api/engine/run?method_pool_id={id}'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'DEBUG',
+        },
+    }
+}

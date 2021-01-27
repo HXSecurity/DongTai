@@ -3,3 +3,4 @@ djangorestframework==3.11.0
 M2Crypto==0.35.2
 mysqlclient==1.4.6
 uwsgi==2.0.19.1
+request==2.25.1
