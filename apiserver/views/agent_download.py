@@ -6,7 +6,7 @@
 # project: lingzhi-agent-server
 import uuid
 
-from django.http import FileResponse, JsonResponse
+from django.http import FileResponse
 from rest_framework.authtoken.models import Token
 
 from AgentServer.base import R
