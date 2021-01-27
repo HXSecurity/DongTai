@@ -29,7 +29,7 @@ class EngineUpdateEndPoint(OpenApiEndPoint):
         agent_name = request.query_params.get('agent_name')
         agent = IastAgent.objects.filter(user=request.user, token=agent_name).first()
         if not agent:
-            return JsonResponse(R.failure("agent不存在或无权限访问"))
+            return R.failure("agent不存在或无权限访问")
 
         if status:
             if agent.is_control == 1:
@@ -37,14 +37,14 @@ class EngineUpdateEndPoint(OpenApiEndPoint):
                 agent.is_control = 0
                 agent.latest_time = int(time.time())
                 agent.save()
-                return JsonResponse(R.success(msg="安装完成"))
+                return R.success(msg="安装完成")
             else:
-                return JsonResponse(R.failure(msg="引擎正在被安装或卸载，请稍后再试"))
+                return R.failure(msg="引擎正在被安装或卸载，请稍后再试")
         else:
             if agent.control == 1 and agent.is_control == 0:
                 agent.is_control = 1
                 agent.latest_time = int(time.time())
                 agent.save()
-                return JsonResponse(R.success(data=agent.control))
+                return R.success(data=agent.control)
             else:
-                return JsonResponse(R.failure(msg="不需要更新或正在更新中"))
+                return R.failure(msg="不需要更新或正在更新中")

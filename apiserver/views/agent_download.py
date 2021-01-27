@@ -43,9 +43,9 @@ class AgentDownload(OpenApiEndPoint):
                 response['Content-Disposition'] = "attachment; filename=agent.jar"
                 return response
             else:
-                return JsonResponse(R.failure(msg="agent file not exit."))
+                return R.failure(msg="agent file not exit.")
         except:
-            return JsonResponse(R.failure(msg="agent file not exit."))
+            return R.failure(msg="agent file not exit.")
 
     @staticmethod
     def create_config_file(base_url, jdk_level, agent_token, auth_token):
