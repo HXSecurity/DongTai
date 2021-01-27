@@ -8,7 +8,7 @@
 scaapi/cron/logs/sca.log
 iast/upload/reports/*
 db/*
-
+conf/config.ini
 #Dockerfile
 doc
 doc/example.json

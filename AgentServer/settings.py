@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from configparser import ConfigParser
+
+config = ConfigParser()
+config.read('conf/config.ini')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -89,11 +93,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {'charset': 'utf8mb4'},
-        'USER': os.environ.get("DATABASES_USER", 'root'),
-        'NAME': os.environ.get("DATABASES_NAME", 'iast_webapi'),
-        'PASSWORD': os.environ.get("DATABASES_PASSWORD", 'lingzhi-iast'),
-        'HOST': os.environ.get("DATABASES_HOST", '127.0.0.1'),
-        'PORT': '3306',
+        'USER': config.get("mysql", 'user'),
+        'NAME': config.get("mysql", 'name'),
+        'PASSWORD': config.get("mysql", 'password'),
+        'HOST': config.get("mysql", 'host'),
+        'PORT': config.get("mysql", 'port'),
     }
 }
 
@@ -128,7 +132,8 @@ STATIC_URL = '/static/'
 PRIVATE_KEY = os.path.join(BASE_DIR, 'config', 'rsa_keys/private_key.pem')
 PUBLIC_KEY = os.path.join(BASE_DIR, 'config', 'rsa_keys/public_key.pem')
 
-BASE_ENGINE_URL = os.environ.get("ENGINE_URL", 'http://127.0.0.1:8002') + '/api/engine/run?method_pool_id={id}'
+BASE_ENGINE_URL = config.get("engine", 'url')
+# os.environ.get("ENGINE_URL", 'http://127.0.0.1:8002') + '/api/engine/run?method_pool_id={id}'
 
 LOGGING = {
     'version': 1,
