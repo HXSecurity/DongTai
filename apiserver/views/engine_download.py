@@ -7,7 +7,7 @@
 
 import logging
 
-from django.http import FileResponse, JsonResponse
+from django.http import FileResponse
 from rest_framework import status
 from rest_framework.request import Request
 
@@ -30,7 +30,7 @@ class EngineDownloadEndPoint(OpenApiEndPoint):
         package_name = request.query_params.get('package_name')
         jdk = request.query_params.get('jdk.version')
         if package_name not in ('iast-core', 'iast-inject') or jdk not in ('1', '2'):
-            return JsonResponse({
+            return R.failure({
                 "status": -1,
                 "msg": "bad gay."
             })
