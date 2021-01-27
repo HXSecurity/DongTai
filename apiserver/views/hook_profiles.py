@@ -11,8 +11,8 @@ from django.http import JsonResponse
 from rest_framework.request import Request
 
 from AgentServer.base import R
+from AgentServer import const
 from apiserver.base.openapi import OpenApiEndPoint
-from apiserver.models.hook_strategy import HookStrategy
 from apiserver.models.hook_talent_strategy import IastHookTalentStrategy
 from apiserver.models.hook_type import HookType
 
@@ -24,12 +24,11 @@ class HookProfilesEndPoint(OpenApiEndPoint):
     description = "获取HOOK策略"
 
     @staticmethod
-    def get_profiles(talent):
+    def get_profiles(talent, user=None):
         profiles = list()
         talent_strategy = IastHookTalentStrategy.objects.filter(talent=talent).first()
         strategy_types = json.loads(talent_strategy.values)
-        # fixme enable使用常量替代
-        enable_hook_types = HookType.objects.filter(id__in=strategy_types, enable=1)
+        enable_hook_types = HookType.objects.filter(id__in=strategy_types, enable=const.HOOK_TYPE_ENABLE)
         for enable_hook_type in enable_hook_types:
             strategy_details = list()
             profiles.append({
@@ -38,7 +37,7 @@ class HookProfilesEndPoint(OpenApiEndPoint):
                 'value': enable_hook_type.value,
                 'details': strategy_details
             })
-            strategies = enable_hook_type.strategies.all()
+            strategies = enable_hook_type.strategies.filter(created_by__in=[1, user.id] if user else [1])
             for strategy in strategies:
                 strategy_details.append({
                     "source": strategy.source,
@@ -55,9 +54,8 @@ class HookProfilesEndPoint(OpenApiEndPoint):
         :param request:
         :return:
         """
-        # todo 考虑是否需要用户级策略
         user = request.user
         talent = user.get_talent()
-        profiles = self.get_profiles(talent)
+        profiles = self.get_profiles(talent, user)
 
         return JsonResponse(R.success(data=profiles))
