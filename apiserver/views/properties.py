@@ -44,5 +44,5 @@ class PropertiesEndPoint(OpenApiEndPoint):
         if agent:
             queryset = IastAgentProperties.objects.filter(agent=agent).first()
             if queryset:
-                return JsonResponse(R.success(AgentPropertiesSerialize(queryset).data))
-        return JsonResponse(R.failure(data=None))
+                return R.success(AgentPropertiesSerialize(queryset).data)
+        return R.failure(data=None)

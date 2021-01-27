@@ -60,7 +60,7 @@ class HookProfilesEndPoint(OpenApiEndPoint):
         talent = user.get_talent()
         profiles = self.get_profiles(talent, user)
 
-        return JsonResponse(R.success(data=profiles))
+        return R.success(data=profiles)
 
 
 if __name__ == '__main__':
