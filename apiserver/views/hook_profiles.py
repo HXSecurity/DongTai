@@ -12,9 +12,9 @@ from rest_framework.request import Request
 
 from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint
-from apiserver.models.hook_strategy_type import IastHookStrategyType
-from apiserver.models.hook_strategy_type_relation import IastHookStrategyTypeRelation
+from apiserver.models.hook_strategy import HookStrategy
 from apiserver.models.hook_talent_strategy import IastHookTalentStrategy
+from apiserver.models.hook_type import HookType
 
 logger = logging.getLogger("django")
 
@@ -29,23 +29,23 @@ class HookProfilesEndPoint(OpenApiEndPoint):
         talent_strategy = IastHookTalentStrategy.objects.filter(talent=talent).first()
         strategy_types = json.loads(talent_strategy.values)
         # fixme enable使用常量替代
-        enable_strategy_types = IastHookStrategyType.objects.filter(id__in=strategy_types, enable=1)
-        for enable_strategy_type in enable_strategy_types:
+        enable_hook_types = HookType.objects.filter(id__in=strategy_types, enable=1)
+        for enable_hook_type in enable_hook_types:
             strategy_details = list()
             profiles.append({
-                'type': enable_strategy_type.type,
-                'enable': enable_strategy_type.enable,
-                'value': enable_strategy_type.value,
+                'type': enable_hook_type.type,
+                'enable': enable_hook_type.enable,
+                'value': enable_hook_type.value,
                 'details': strategy_details
             })
-            strategy_type_relations = IastHookStrategyTypeRelation.objects.filter(type=enable_strategy_type)
-            for strategy_type_relation in strategy_type_relations:
+            strategies = enable_hook_type.strategies.all()
+            for strategy in strategies:
                 strategy_details.append({
-                    "source": strategy_type_relation.strategy.source,
-                    "track": strategy_type_relation.strategy.track,
-                    "target": strategy_type_relation.strategy.target,
-                    "value": strategy_type_relation.strategy.value,
-                    "inherit": strategy_type_relation.strategy.inherit
+                    "source": strategy.source,
+                    "track": strategy.track,
+                    "target": strategy.target,
+                    "value": strategy.value,
+                    "inherit": strategy.inherit
                 })
         return profiles
 
