@@ -6,7 +6,9 @@
 # project: lingzhi-webapi
 import time, json
 from hashlib import sha1
+import requests
 
+from AgentServer.settings import BASE_ENGINE_URL
 from apiserver.models.agent import IastAgent
 from apiserver.models.agent_method_pool import IastAgentMethodPool
 from apiserver.report.handler.report_handler_interface import IReportHandler
@@ -51,7 +53,7 @@ class SaasMethodPoolHandler(IReportHandler):
             else:
                 # 获取agent
                 timestamp = int(time.time())
-                IastAgentMethodPool(
+                method_pool = IastAgentMethodPool(
                     agent=agent,
                     url=self.http_url,
                     uri=self.http_uri,
@@ -60,7 +62,7 @@ class SaasMethodPoolHandler(IReportHandler):
                     http_protocol=self.http_protocol,
                     req_header=self.http_req_header,
                     req_params=self.http_query_string,
-                    req_data=self.http_req_data,  # fixme 增加客户端获取响应体
+                    req_data=self.http_req_data,
                     res_header=self.http_res_header,
                     res_body=self.http_res_body,
                     context_path=self.context_path,
@@ -70,7 +72,13 @@ class SaasMethodPoolHandler(IReportHandler):
                     clent_ip=self.client_ip,
                     create_time=timestamp,
                     update_time=timestamp
-                ).save()
+                )
+                method_pool.save()
+            self.send_to_engine(method_pool.id)
+
+    @staticmethod
+    def send_to_engine(method_pool_id):
+        requests.get(url=BASE_ENGINE_URL.format(id=method_pool_id))
 
     def calc_hash(self):
         sign_raw = ''
@@ -85,40 +93,6 @@ class SaasMethodPoolHandler(IReportHandler):
         h.update(raw.encode('utf-8'))
         return h.hexdigest()
 
-    def demo_print(self, class_name, method_name):
-        # todo 搜索时，实时计算
-        hit_sink = False
-        stack = list()
-        pool_value = -1
-        for method in sorted_pool:
-            if method.get('className') == class_name and method.get('methodName') == method_name:
-                print('发现sink点')
-                hit_sink = True
-                stack.append(method)
-                pool_value = method.get('sourceHash')[0]
-                continue
-            if hit_sink:
-                is_source = method.get('source')
-                target_hash = method.get('targetHash')
-
-                if is_source:
-                    for hash in target_hash:
-                        if hash == pool_value:
-                            stack.append(method)
-                            print('发现source点')
-                            # break
-                else:
-                    for hash in target_hash:
-                        if hash == pool_value:
-                            stack.append(method)
-                            pool_value = method.get('sourceHash')[0]
-                            break
-
-        tree = stack[::-1]
-        for method in tree:
-            print(
-                f"{method.get('className')}.{method.get('methodName')}() 污点：{method.get('sourceHash')}->{method.get('targetHash')}")
-
 
 if __name__ == '__main__':
     import json
@@ -129,9 +103,7 @@ if __name__ == '__main__':
 
     sorted_pool = sorted(pool, key=lambda e: e.__getitem__('invokeId'), reverse=True)
 
-    # todo 搜索时，实时计算
     class_name = 'java.sql.Statement'
     method_name = 'executeQuery'
     handler = SaasMethodPoolHandler()
     handler.method_pool = sorted_pool
-    handler.demo_print(class_name, method_name)

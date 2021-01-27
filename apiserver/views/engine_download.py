@@ -45,4 +45,4 @@ class EngineDownloadEndPoint(OpenApiEndPoint):
             response['Content-Disposition'] = f"attachment; filename={package_name}.jar"
             return response
         except:
-            return JsonResponse(R.failure(msg="file not exit."), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return R.failure(msg="file not exit.", status=status.HTTP_500_INTERNAL_SERVER_ERROR)

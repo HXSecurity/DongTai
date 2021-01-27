@@ -7,7 +7,7 @@
 from django.db import models
 
 
-class IastHookStrategyType(models.Model):
+class HookType(models.Model):
     type = models.IntegerField(blank=True, null=True)
     name = models.CharField(max_length=255, blank=True, null=True)
     value = models.CharField(max_length=255, blank=True, null=True)
@@ -18,4 +18,4 @@ class IastHookStrategyType(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'iast_hook_strategy_type'
+        db_table = 'iast_hook_type'
