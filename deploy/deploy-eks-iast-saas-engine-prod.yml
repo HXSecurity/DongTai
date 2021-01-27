@@ -21,7 +21,10 @@ spec:
         - name: iast-engine-container
           image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine:VERSION
           imagePullPolicy: IfNotPresent
-
+          volumeMounts:
+            - name: config.ini
+              mountPath: /opt/iast/engine/conf/config.ini
+              subPath: config.ini
           resources:
             limits:
               cpu: "500m"
@@ -29,6 +32,10 @@ spec:
             requests:
               cpu: "500m"
               memory: 1000Mi
+      volumes:
+        - name: config.ini
+          configMap:
+            name: iast-test-config.ini
       imagePullSecrets:
         - name: aliyun-registry-secret
 ---

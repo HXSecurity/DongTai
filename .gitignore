@@ -12,3 +12,4 @@ db/*
 #Dockerfile
 doc
 *.log
+conf/config.ini
