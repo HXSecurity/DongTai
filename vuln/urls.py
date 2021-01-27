@@ -9,5 +9,5 @@ from django.urls import path
 from vuln.views.strategy_run import StrategyRunEndPoint
 
 urlpatterns = [
-    path('strategy/run', StrategyRunEndPoint.as_view()),
+    path('run', StrategyRunEndPoint.as_view()),
 ]

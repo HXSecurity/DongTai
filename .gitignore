@@ -11,3 +11,4 @@ db/*
 
 #Dockerfile
 doc
+*.log

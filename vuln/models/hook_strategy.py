@@ -5,26 +5,29 @@
 # software: PyCharm
 # project: lingzhi-agent-server
 from django.db import models
+from django.utils.translation import gettext_lazy as _
+
+from vuln.models.hook_type import HookType
 
 
-# class PermissionsMixin(models.Model):
-#     hook_strategy_type = models.ManyToManyField(
-#         TypeRelation,
-#         verbose_name=_('department'),
-#         blank=True,
-#         help_text=_(
-#             'The department this user belongs to. A user will get all permissions '
-#             'granted to each of their department.'
-#         ),
-#         related_name="hook_strategies",
-#         related_query_name="HookStrategy",
-#     )
-#
-#     class Meta:
-#         abstract = True
+class PermissionsMixin(models.Model):
+    type = models.ManyToManyField(
+        HookType,
+        verbose_name=_('type'),
+        blank=True,
+        help_text=_(
+            'The department this user belongs to. A user will get all permissions '
+            'granted to each of their department.'
+        ),
+        related_name="strategies",
+        related_query_name="strategy",
+    )
+
+    class Meta:
+        abstract = True
 
 
-class HookStrategy(models.Model):
+class HookStrategy(PermissionsMixin):
     value = models.CharField(max_length=255, blank=True, null=True)
     source = models.CharField(max_length=255, blank=True, null=True)
     target = models.CharField(max_length=255, blank=True, null=True)

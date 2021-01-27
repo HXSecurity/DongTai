@@ -4,13 +4,9 @@
 # datetime:2020/11/30 下午3:13
 # software: PyCharm
 # project: lingzhi-webapi
-import time
 
-from django.http import JsonResponse
-
-from cron.test import demo_print
+from core.tasks import search_vul_from_strategy, search_vul_from_method_pool
 from lingzhi_engine.base import R, EndPoint
-from vuln.models.agent import IastAgent
 
 
 class StrategyRunEndPoint(EndPoint):
@@ -24,7 +20,7 @@ class StrategyRunEndPoint(EndPoint):
 
     def get(self, request):
         """
-        IAST下载 agent接口s
+        IAST下载 agent接口
         :param request:
         :return:
         服务器作为agent的唯一值绑定
@@ -34,32 +30,14 @@ class StrategyRunEndPoint(EndPoint):
         # 生成agent的唯一token
         # 注册
         try:
-            demo_print()
-            self.user = request.user
-            # todo ：
-            #  1 分布式锁
-            #  2.检查当前用户是否具有安装agent的权限
-            #  3.减去一个license
-            #  4.启动注册
-            #  5.出现异常时，提供回滚功能，恢复license
-            token = ''
-            version = ''
+            method_pool_id = request.query_params.get('method_pool_id')
+            if method_pool_id:
+                search_vul_from_method_pool.delay(method_pool_id)
 
-            if not token or not version:
-                return JsonResponse(R.failure(msg="参数错误"))
-            have_token = IastAgent.objects.filter(token=token).exists()
-            if have_token:
-                return JsonResponse(R.failure(msg="agent已注册"))
-            IastAgent.objects.create(
-                token=token,
-                version=version,
-                latest_time=int(time.time()),
-                user=self.user,
-                is_running=1,
-                bind_project_id=0,
-                control=0,
-                is_control=0
-            )
-            return JsonResponse(R.success())
+            strategy_id = request.query_params.get('strategy_id')
+            if strategy_id:
+                search_vul_from_strategy.delay(strategy_id)
+
+            return R.success()
         except Exception as e:
-            return JsonResponse(R.failure(msg="参数错误"))
+            return R.failure(msg=f"{e}")

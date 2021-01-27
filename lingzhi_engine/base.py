@@ -4,6 +4,7 @@
 # datetime:2021/1/12 下午7:40
 # software: PyCharm
 # project: lingzhi-agent-server
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.views import APIView
 
@@ -51,16 +52,16 @@ class EndPoint(APIView):
 class R:
     @staticmethod
     def success(data=None, msg="success"):
-        return {
+        return JsonResponse({
             "status": 201,
             "msg": msg,
             "data": data
-        }
+        })
 
     @staticmethod
     def failure(data=None, msg="failure"):
-        return {
+        return JsonResponse({
             "status": 202,
             "msg": msg,
             "data": data
-        }
+        })

@@ -1,3 +1,5 @@
 Django==3.0.3
 djangorestframework==3.11.0
 mysqlclient==1.4.6
+celery==4.4.2
+redis==3.5.3
