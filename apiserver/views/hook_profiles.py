@@ -14,6 +14,8 @@ from AgentServer.base import R
 from AgentServer import const
 from apiserver.base.openapi import OpenApiEndPoint
 from apiserver.models.hook_talent_strategy import IastHookTalentStrategy
+# note: 当前依赖必须保留，否则无法通过hooktype反向查找策略
+from apiserver.models.hook_strategy import HookStrategy
 from apiserver.models.hook_type import HookType
 
 logger = logging.getLogger("django")
@@ -59,3 +61,7 @@ class HookProfilesEndPoint(OpenApiEndPoint):
         profiles = self.get_profiles(talent, user)
 
         return JsonResponse(R.success(data=profiles))
+
+
+if __name__ == '__main__':
+    strategy_count = HookStrategy.objects.count()
