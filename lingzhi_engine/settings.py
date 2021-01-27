@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from configparser import ConfigParser
+
+config = ConfigParser()
+config.read('conf/config.ini')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -76,11 +80,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {'charset': 'utf8mb4'},
-        'USER': os.environ.get("DATABASES_USER", 'iast'),
-        'NAME': os.environ.get("DATABASES_NAME", 'iast_webapi'),
-        'PASSWORD': os.environ.get("DATABASES_PASSWORD", 'TYKMTN2u2XxHjkLvKyg24q2kmYh7fn'),
-        'HOST': os.environ.get("DATABASES_HOST", 'huoxian-test.cn3hve3rx3aq.rds.cn-north-1.amazonaws.com.cn'),
-        'PORT': '3306',
+        'USER': config.get("mysql", 'user'),
+        'NAME': config.get("mysql", 'name'),
+        'PASSWORD': config.get("mysql", 'password'),
+        'HOST': config.get("mysql", 'host'),
+        'PORT': config.get("mysql", 'port'),
     }
 }
 
@@ -124,10 +128,10 @@ CELERY_LOG_DIR = os.path.join(BASE_DIR, 'logs')
 
 # Celery using redis as broker
 CELERY_BROKER_URL = 'redis://:%(password)s@%(host)s:%(port)s/%(db)s' % {
-    'password': os.environ.get("CELERY_REDIS_PASSWORD", '123456'),
-    'host': os.environ.get("CELERY_REDIS_HOST", '192.168.0.156'),
-    'port': os.environ.get("CELERY__REDIS_PORT", '6379'),
-    'db': os.environ.get("CELERY_REDIS_DB", '0'),
+    'password': config.get("redis", 'password'),
+    'host': config.get("redis", 'host'),
+    'port': config.get("redis", 'port'),
+    'db': config.get("redis", 'db'),
 }
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
