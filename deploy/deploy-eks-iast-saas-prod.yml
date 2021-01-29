@@ -23,7 +23,7 @@ spec:
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: configfile
-              mountPath: /opt/iast/engine/conf/config.ini
+              mountPath: /opt/iast/apiserver/conf/config.ini
               subPath: config.ini
 
           resources:
