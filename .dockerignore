@@ -2,3 +2,4 @@
 /*.docx
 .git
 .idea
+/logs/*.log

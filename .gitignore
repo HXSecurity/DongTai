@@ -12,3 +12,4 @@ conf/config.ini
 #Dockerfile
 doc
 doc/example.json
+logs/*.log
