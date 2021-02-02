@@ -4,13 +4,15 @@
 # datetime:2021/1/14 下午7:17
 # software: PyCharm
 # project: lingzhi-agent-server
-import uuid
+import uuid, logging
 
 from django.http import FileResponse
 from rest_framework.authtoken.models import Token
 
 from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint
+
+logger = logging.getLogger('lingzhi.api_server')
 
 
 class AgentDownload(OpenApiEndPoint):
@@ -44,7 +46,8 @@ class AgentDownload(OpenApiEndPoint):
                 return response
             else:
                 return R.failure(msg="agent file not exit.")
-        except:
+        except Exception as e:
+            logger.error(f'agent下载失败，用户: {request.user.get_username()}，错误详情：{e}')
             return R.failure(msg="agent file not exit.")
 
     @staticmethod
@@ -56,6 +59,7 @@ class AgentDownload(OpenApiEndPoint):
                     data.format(url=base_url, token=auth_token, agent_token=agent_token, jdk_level=jdk_level))
             return True
         except Exception as e:
+            logger.error(f'agent配置文件创建失败，原因：{e}')
             return False
 
     @staticmethod
