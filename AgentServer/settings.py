@@ -143,12 +143,18 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
         },
+        'lingzhi.api_server': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'logs/apiserver.log',
+            'backupCount': 5,
+            'maxBytes': 1024 * 1024 * 10,
+        },
     },
     'loggers': {
-        'django.db.backends': {
-            'handlers': ['console'],
+        'lingzhi.api_server': {
+            'handlers': ['console', 'lingzhi.api_server'],
             'propagate': True,
-            'level': 'DEBUG',
+            'level': 'INFO',
         },
     }
 }
