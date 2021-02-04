@@ -15,13 +15,16 @@ class MethodPoolEndPoint(UserEndPoint):
 
     def get(self, request):
         # todo 开放靶场用户的agent数据给每一个用户
-        queryset = IastAgentMethodPool.objects.filter(agent__in=self.get_auth_agents_with_user(request.user))
+        try:
+            queryset = IastAgentMethodPool.objects.filter(agent__in=self.get_auth_agents_with_user(request.user))
 
-        # 根据条件查询
-        page = int(request.query_params.get('page', 1))
-        page_size = int(request.query_params.get('pageSize', 25))
-        summary, data = self.get_paginator(queryset=queryset, page=page, page_size=page_size)
-        return R.success(data=MethodPoolSerialize(data, many=True).data, page=summary)
+            # 根据条件查询
+            page = request.query_params.get('page', 1)
+            page_size = request.query_params.get('pageSize', 25)
+            summary, data = self.get_paginator(queryset=queryset, page=page, page_size=page_size)
+            return R.success(data=MethodPoolSerialize(data, many=True).data, page=summary)
+        except ValueError as e:
+            return R.failure(msg='page和pageSize只能为数字')
 
     def post(self, request, id):
         return R.success()
