@@ -8,6 +8,7 @@
 from lingzhi_engine.base import R
 from vuln.base.method_pool import UserEndPoint
 from vuln.models.agent_method_pool import MethodPool
+from vuln.models.hook_strategy import HookStrategy
 from vuln.serializers.method_pool import MethodPoolSerialize
 
 
@@ -19,9 +20,16 @@ class MethodPoolEndPoint(UserEndPoint):
             queryset = MethodPool.objects.filter(agent__in=self.get_auth_agents_with_user(request.user))
 
             # 根据条件查询
+            sink_strategy_type = request.query_params.get('strategy_type_id')
+            if sink_strategy_type:
+                strategy = HookStrategy.objects.filter(id=sink_strategy_type).first()
+                if strategy:
+                    queryset = queryset.filter(sinks__in=[strategy])
+
             page = request.query_params.get('page', 1)
             page_size = request.query_params.get('pageSize', 25)
             summary, data = self.get_paginator(queryset=queryset, page=page, page_size=page_size)
+            # fixme 修改序列化实现类，增加需要的数据
             return R.success(data=MethodPoolSerialize(data, many=True).data, page=summary)
         except ValueError as e:
             return R.failure(msg='page和pageSize只能为数字')
