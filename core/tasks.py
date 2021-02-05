@@ -13,8 +13,9 @@ from celery.apps.worker import logger
 from account.models import User
 from core.core import VulEngine
 from vuln.models.agent import IastAgent
-from vuln.models.agent_method_pool import IastAgentMethodPool
+from vuln.models.agent_method_pool import MethodPool
 from vuln.models.hook_strategy import HookStrategy
+from vuln.models.hook_type import HookType
 from vuln.models.strategy import IastStrategyModel
 from vuln.models.vulnerablity import IastVulnerabilityModel
 
@@ -37,12 +38,19 @@ def queryset_to_iterator(queryset):
 
 
 def load_sink_strategy(user=None):
+    """
+    加载用户user有权限方法的策略
+    :param user:
+    :return:
+    """
     strategies = list()
-    strategy_models = HookStrategy.objects.filter(created_by__in=[user.id, 1] if user else [1])
+    strategy_models = HookStrategy.objects.filter(type__in=HookType.objects.filter(type=4),
+                                                  created_by__in=[user.id, 1] if user else [1])
     for sub_queryset in queryset_to_iterator(strategy_models):
         if sub_queryset:
             for strategy in sub_queryset:
                 strategies.append({
+                    'strategy': strategy,
                     'type': strategy.type.first().value,
                     'value': strategy.value.split('(')[0]
                 })
@@ -52,6 +60,16 @@ def load_sink_strategy(user=None):
 
 
 def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack):
+    """
+    保存漏洞数据
+    :param vul_meta:
+    :param vul_level:
+    :param vul_name:
+    :param vul_stack:
+    :param top_stack:
+    :param bottom_stack:
+    :return:
+    """
     iast_vuls = IastVulnerabilityModel.objects.filter(
         type=vul_name,  # 指定漏洞类型
         url=vul_meta.url,
@@ -103,6 +121,13 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack):
 
 
 def search_and_save_vul(engine, method_pool_model, strategy):
+    """
+    搜索方法池是否存在满足策略的数据，如果存在，保存相关数据为漏洞
+    :param engine: 云端检测引擎
+    :param method_pool_model: 方法池实例化对象
+    :param strategy: 策略数据
+    :return: None
+    """
     method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
     engine.search(
         method_pool=method_pool,
@@ -116,9 +141,28 @@ def search_and_save_vul(engine, method_pool_model, strategy):
                      sink_sign)
 
 
+def search_and_save_sink(engine, method_pool_model, strategy):
+    """
+    从方法池中搜索策略strategy对应的sink方法是否存在，如果存在，保存策略与污点池关系
+    :param engine: 云端搜索引擎实例化对象
+    :param method_pool_model: 方法池模型对象
+    :param strategy: json格式的策略
+    :return: None
+    """
+    method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
+    # fixme 检索匹配条件的sink点
+    is_hit = engine.search_sink(
+        method_pool=method_pool,
+        vul_method_signature=strategy.get('value')
+    )
+    if is_hit:
+        logger.info(f'发现sink点{strategy.get("type")}')
+        method_pool_model.sinks.add(strategy.get('strategy'))
+
+
 @shared_task(queue='vul-scan')
 def search_vul_from_method_pool(method_pool_id):
-    method_pool_model = IastAgentMethodPool.objects.filter(id=method_pool_id).first()
+    method_pool_model = MethodPool.objects.filter(id=method_pool_id).first()
     if method_pool_model is None:
         logger.info(f'方法池[{method_pool_id}]不存在')
     strategies = load_sink_strategy(method_pool_model.agent.user) if method_pool_model else []
@@ -130,12 +174,17 @@ def search_vul_from_method_pool(method_pool_id):
 
 @shared_task(queue='vul-scan')
 def search_vul_from_strategy(strategy_id):
+    """
+    根据sink方法策略ID搜索已有方法池中的数据是否存在满足条件的数据
+    :param strategy_id: 策略ID
+    :return: None
+    """
     strategy = HookStrategy.objects.filter(id=strategy_id).first()
     if strategy is None:
         logger.info(f'策略[{strategy_id}]不存在')
     user = User.objects.filter(id=strategy.created_by).first() if strategy else None
     agents = IastAgent.objects.filter(user=user) if user else None
-    method_pool_queryset = IastAgentMethodPool.objects.filter(agent__in=agents if agents else [])
+    method_pool_queryset = MethodPool.objects.filter(agent__in=agents if agents else [])
     engine = VulEngine()
     strategy_value = {
         'type': strategy.type.first().value,
@@ -145,3 +194,21 @@ def search_vul_from_strategy(strategy_id):
         if sub_queryset:
             for method_pool in sub_queryset:
                 search_and_save_vul(engine, method_pool, strategy_value)
+
+
+@shared_task(queue='vul-search')
+def search_sink_from_method_pool(method_pool_id):
+    """
+    根据方法池ID搜索方法池中是否匹配到策略库中的sink方法
+    :param method_pool_id: 方法池ID
+    :return: None
+    """
+    method_pool_model = MethodPool.objects.filter(id=method_pool_id).first()
+    if method_pool_model is None:
+        logger.info(f'方法池[{method_pool_id}]不存在')
+    strategies = load_sink_strategy(method_pool_model.agent.user) if method_pool_model else []
+    engine = VulEngine()
+
+    for strategy in strategies:
+        search_and_save_sink(engine, method_pool_model, strategy)
+    logger.info('任务执行完成')

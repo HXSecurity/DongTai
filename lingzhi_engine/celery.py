@@ -27,10 +27,12 @@ configs = {k: v for k, v in settings.__dict__.items() if k.startswith('CELERY')}
 configs["CELERY_QUEUES"] = [
     Queue("vul-scan-method-pool", Exchange("method_pool"), routing_key="method_pool"),
     Queue("vul-scan-strategy", Exchange("strategy"), routing_key="strategy"),
+    Queue("vul-scan-search", Exchange("search"), routing_key="search"),
 ]
 configs["CELERY_ROUTES"] = {
     "core.tasks.search_vul_from_method_pool": {'exchange': 'method_pool', 'routing_key': 'method_pool'},
     "core.tasks.search_vul_from_strategy": {'exchange': 'strategy', 'routing_key': 'strategy'},
+    "core.tasks.search_sink_from_method_pool": {'exchange': 'search', 'routing_key': 'search'},
 }
 
 app.namespace = 'CELERY'

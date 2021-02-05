@@ -7,7 +7,7 @@
 
 from lingzhi_engine.base import R
 from vuln.base.method_pool import UserEndPoint
-from vuln.models.agent_method_pool import IastAgentMethodPool
+from vuln.models.agent_method_pool import MethodPool
 from vuln.serializers.method_pool import MethodPoolSerialize
 
 
@@ -16,7 +16,7 @@ class MethodPoolEndPoint(UserEndPoint):
     def get(self, request):
         # todo 开放靶场用户的agent数据给每一个用户
         try:
-            queryset = IastAgentMethodPool.objects.filter(agent__in=self.get_auth_agents_with_user(request.user))
+            queryset = MethodPool.objects.filter(agent__in=self.get_auth_agents_with_user(request.user))
 
             # 根据条件查询
             page = request.query_params.get('page', 1)

@@ -5,11 +5,13 @@
 # software: PyCharm
 # project: lingzhi-agent-server
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from vuln.models.agent import IastAgent
+from vuln.models.hook_strategy import HookStrategy
 
 
-class IastAgentMethodPool(models.Model):
+class MethodPool(models.Model):
     agent = models.ForeignKey(IastAgent, models.DO_NOTHING, blank=True, null=True)
     url = models.CharField(max_length=2000, blank=True, null=True)
     uri = models.CharField(max_length=2000, blank=True, null=True)
@@ -28,6 +30,13 @@ class IastAgentMethodPool(models.Model):
     clent_ip = models.CharField(max_length=255, blank=True, null=True)
     create_time = models.IntegerField(blank=True, null=True)
     update_time = models.IntegerField(blank=True, null=True)
+    sinks = models.ManyToManyField(
+        HookStrategy,
+        verbose_name=_('sinks'),
+        blank=True,
+        related_name="method_pools",
+        related_query_name="method_pool",
+    )
 
     class Meta:
         managed = False

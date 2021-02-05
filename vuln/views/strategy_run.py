@@ -5,7 +5,7 @@
 # software: PyCharm
 # project: lingzhi-webapi
 
-from core.tasks import search_vul_from_strategy, search_vul_from_method_pool
+from core.tasks import search_vul_from_strategy, search_vul_from_method_pool, search_sink_from_method_pool
 from lingzhi_engine.base import R, EndPoint
 
 
@@ -33,6 +33,8 @@ class StrategyRunEndPoint(EndPoint):
             method_pool_id = request.query_params.get('method_pool_id')
             if method_pool_id:
                 search_vul_from_method_pool.delay(method_pool_id)
+                # search_sink_from_method_pool.delay(method_pool_id)
+                search_sink_from_method_pool(method_pool_id)
 
             strategy_id = request.query_params.get('strategy_id')
             if strategy_id:

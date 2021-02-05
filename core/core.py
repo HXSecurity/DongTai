@@ -4,6 +4,8 @@
 # datetime:2021/1/26 下午4:05
 # software: PyCharm
 # project: lingzhi-engine
+from kombu.utils import cached_property
+
 
 class VulEngine(object):
     """
@@ -84,6 +86,13 @@ class VulEngine(object):
                     self.pool_value = method.get('sourceHash')
                     break
 
+    @cached_property
+    def method_pool_signatures(self):
+        signatures = list()
+        for method in self.method_pool:
+            signatures.append(f"{method.get('className').replace('/', '.')}.{method.get('methodName')}")
+        return signatures
+
     def search(self, method_pool, vul_method_signature):
         self.prepare(method_pool, vul_method_signature)
         for method in self.method_pool:
@@ -91,6 +100,11 @@ class VulEngine(object):
                 continue
             if self.hit_vul:
                 self.do_propagator(method)
+
+    def search_sink(self, method_pool, vul_method_signature):
+        self.prepare(method_pool, vul_method_signature)
+        if vul_method_signature in self.method_pool_signatures:
+            return True
 
     def result(self):
         if self.vul_source_signature:
