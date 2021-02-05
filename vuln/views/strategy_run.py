@@ -5,7 +5,8 @@
 # software: PyCharm
 # project: lingzhi-webapi
 
-from core.tasks import search_vul_from_strategy, search_vul_from_method_pool, search_sink_from_method_pool
+from core.tasks import search_vul_from_strategy, search_vul_from_method_pool, search_sink_from_method_pool, \
+    search_sink_from_strategy
 from lingzhi_engine.base import R, EndPoint
 
 
@@ -39,6 +40,7 @@ class StrategyRunEndPoint(EndPoint):
             strategy_id = request.query_params.get('strategy_id')
             if strategy_id:
                 search_vul_from_strategy.delay(strategy_id)
+                search_sink_from_strategy.delay(strategy_id)
 
             return R.success()
         except Exception as e:

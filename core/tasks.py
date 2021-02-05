@@ -179,7 +179,7 @@ def search_vul_from_strategy(strategy_id):
     :param strategy_id: 策略ID
     :return: None
     """
-    strategy = HookStrategy.objects.filter(id=strategy_id).first()
+    strategy = HookStrategy.objects.filter(type__in=HookType.objects.filter(type=4), id=strategy_id).first()
     if strategy is None:
         logger.info(f'策略[{strategy_id}]不存在')
     user = User.objects.filter(id=strategy.created_by).first() if strategy else None
@@ -212,3 +212,29 @@ def search_sink_from_method_pool(method_pool_id):
     for strategy in strategies:
         search_and_save_sink(engine, method_pool_model, strategy)
     logger.info('任务执行完成')
+
+
+@shared_task(queue='vul-search')
+def search_sink_from_strategy(strategy_id):
+    """
+    根据策略ID搜索方法池中是否匹配到当前策略
+    :param strategy_id: 策略ID
+    :return: None
+    """
+    strategy = HookStrategy.objects.filter(type__in=HookType.objects.filter(type=4), id=strategy_id).first()
+    if strategy is None:
+        logger.info(f'策略[{strategy_id}]不存在')
+    # fixme 后续根据具体需要，获取用户对应的数据
+    user = User.objects.filter(id=strategy.created_by).first() if strategy else None
+    agents = IastAgent.objects.filter(user=user) if user else None
+    method_pool_queryset = MethodPool.objects.filter(agent__in=agents if agents else [])
+    engine = VulEngine()
+    strategy_value = {
+        'strategy': strategy,
+        'type': strategy.type.first().value,
+        'value': strategy.value.split('(')[0]
+    }
+    for sub_queryset in queryset_to_iterator(method_pool_queryset):
+        if sub_queryset:
+            for method_pool in sub_queryset:
+                search_and_save_sink(engine, method_pool, strategy_value)
