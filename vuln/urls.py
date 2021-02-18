@@ -8,9 +8,11 @@
 from django.urls import path
 
 from vuln.views.method_pool import MethodPoolEndPoint
+from vuln.views.signer import RunSigner
 from vuln.views.strategy_run import StrategyRunEndPoint
 
 urlpatterns = [
     path('run', StrategyRunEndPoint.as_view()),
     path('method_pools', MethodPoolEndPoint.as_view()),
+    path('sign', RunSigner.as_view()),
 ]

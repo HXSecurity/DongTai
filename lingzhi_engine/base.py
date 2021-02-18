@@ -15,6 +15,9 @@ from vuln.models.agent import IastAgent
 
 
 class EndPoint(APIView):
+    """
+    基于APIView封装的API入口处理类，需要针对请求进行统一处理的都通过该类实现
+    """
     name = "api-v1"
     description = "ApiServer接口"
 
@@ -29,6 +32,13 @@ class EndPoint(APIView):
 
     @csrf_exempt
     def dispatch(self, request, *args, **kwargs):
+        """
+        处理HTTP请求的入口方法
+        :param request: HTTP请求
+        :param args: 请求参数
+        :param kwargs:
+        :return: HTTP响应体
+        """
         self.args = args
         self.kwargs = kwargs
         request = self.initialize_request(request, *args, **kwargs)
@@ -103,35 +113,46 @@ class EndPoint(APIView):
 
 
 class AnonymousAuthEndPoint(EndPoint):
+    """
+    具有匿名用户权限验证的API入口
+    """
     authentication_classes = []
 
 
 class SessionAuthEndPoint(EndPoint):
+    """
+    通过Session验证用户的API入口
+    """
     authentication_classes = (SessionAuthentication,)
 
 
 class TokenAuthEndPoint(EndPoint):
+    """
+    通过Token验证用户的API入口
+    """
     authentication_classes = (TokenAuthentication,)
 
 
 class MixinAuthEndPoint(EndPoint):
+    """
+    通过Token和Sessin验证的API入口
+    """
     authentication_classes = (SessionAuthentication, TokenAuthentication,)
 
 
 class R:
     @staticmethod
     def success(data=None, msg="success", page=None):
-        return JsonResponse({
-            "status": 201,
-            "msg": msg,
-            "data": data,
-            "page": page
-        })
+        resp_data = {"status": 201, "msg": msg}
+        if data:
+            resp_data['data'] = data
+        if page:
+            resp_data['page'] = page
+        return JsonResponse(resp_data)
 
     @staticmethod
     def failure(data=None, msg="failure"):
-        return JsonResponse({
-            "status": 202,
-            "msg": msg,
-            "data": data
-        })
+        resp_data = {"status": 202, "msg": msg}
+        if data:
+            resp_data['data'] = data
+        return JsonResponse(resp_data)

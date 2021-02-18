@@ -16,8 +16,8 @@ class StrategyRunEndPoint(EndPoint):
     """
     authentication_classes = []
     permission_classes = []
-    name = "api-v1-agent-register"
-    description = "引擎注册"
+    name = "api-engine-run"
+    description = "引擎运行策略"
 
     def get(self, request):
         """
@@ -34,8 +34,7 @@ class StrategyRunEndPoint(EndPoint):
             method_pool_id = request.query_params.get('method_pool_id')
             if method_pool_id:
                 search_vul_from_method_pool.delay(method_pool_id)
-                # search_sink_from_method_pool.delay(method_pool_id)
-                search_sink_from_method_pool(method_pool_id)
+                search_sink_from_method_pool.delay(method_pool_id)
 
             strategy_id = request.query_params.get('strategy_id')
             if strategy_id:
