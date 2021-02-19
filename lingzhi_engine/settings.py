@@ -160,3 +160,30 @@ CELERY_WORKER_REDIRECT_STDOUTS_LEVEL = "INFO"
 # CELERY_WORKER_HIJACK_ROOT_LOGGER = True
 # CELERY_WORKER_MAX_TASKS_PER_CHILD = 40
 CELERY_TASK_SOFT_TIME_LIMIT = 3600
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+        'lingzhi.webapi': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'logs/apiserver.log',
+            'backupCount': 5,
+            'maxBytes': 1024 * 1024 * 10,
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+        'lingzhi.webapi': {
+            'handlers': ['console', 'lingzhi.webapi'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+    }
+}

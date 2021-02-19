@@ -11,7 +11,7 @@ from celery import shared_task
 from celery.apps.worker import logger
 
 from account.models import User
-from core.core import VulEngine
+from core.engine import VulEngine
 from vuln.models.agent import IastAgent
 from vuln.models.agent_method_pool import MethodPool
 from vuln.models.hook_strategy import HookStrategy
@@ -165,7 +165,7 @@ def search_vul_from_method_pool(method_pool_id):
     method_pool_model = MethodPool.objects.filter(id=method_pool_id).first()
     if method_pool_model is None:
         logger.info(f'方法池[{method_pool_id}]不存在')
-    strategies = load_sink_strategy(method_pool_model.agent.user) if method_pool_model else []
+    strategies = load_sink_strategy(method_pool_model.agent.user)
     engine = VulEngine()
 
     for strategy in strategies:
@@ -179,17 +179,9 @@ def search_vul_from_strategy(strategy_id):
     :param strategy_id: 策略ID
     :return: None
     """
-    strategy = HookStrategy.objects.filter(type__in=HookType.objects.filter(type=4), id=strategy_id).first()
-    if strategy is None:
-        logger.info(f'策略[{strategy_id}]不存在')
-    user = User.objects.filter(id=strategy.created_by).first() if strategy else None
-    agents = IastAgent.objects.filter(user=user) if user else None
-    method_pool_queryset = MethodPool.objects.filter(agent__in=agents if agents else [])
+    strategy_value, method_pool_queryset = load_methods_from_strategy(strategy_id=strategy_id)
     engine = VulEngine()
-    strategy_value = {
-        'type': strategy.type.first().value,
-        'value': strategy.value.split('(')[0]
-    }
+
     for sub_queryset in queryset_to_iterator(method_pool_queryset):
         if sub_queryset:
             for method_pool in sub_queryset:
@@ -206,7 +198,7 @@ def search_sink_from_method_pool(method_pool_id):
     method_pool_model = MethodPool.objects.filter(id=method_pool_id).first()
     if method_pool_model is None:
         logger.info(f'方法池[{method_pool_id}]不存在')
-    strategies = load_sink_strategy(method_pool_model.agent.user) if method_pool_model else []
+    strategies = load_sink_strategy(method_pool_model.agent.user)
     engine = VulEngine()
 
     for strategy in strategies:
@@ -221,20 +213,31 @@ def search_sink_from_strategy(strategy_id):
     :param strategy_id: 策略ID
     :return: None
     """
+    strategy_value, method_pool_queryset = load_methods_from_strategy(strategy_id=strategy_id)
+
+    engine = VulEngine()
+    for sub_queryset in queryset_to_iterator(method_pool_queryset):
+        if sub_queryset:
+            for method_pool in sub_queryset:
+                search_and_save_sink(engine, method_pool, strategy_value)
+
+
+def load_methods_from_strategy(strategy_id):
+    """
+    根据策略ID加载策略详情、策略对应的方法池数据
+    :param strategy_id: 策略ID
+    :return:
+    """
     strategy = HookStrategy.objects.filter(type__in=HookType.objects.filter(type=4), id=strategy_id).first()
     if strategy is None:
         logger.info(f'策略[{strategy_id}]不存在')
-    # fixme 后续根据具体需要，获取用户对应的数据
-    user = User.objects.filter(id=strategy.created_by).first() if strategy else None
-    agents = IastAgent.objects.filter(user=user) if user else None
-    method_pool_queryset = MethodPool.objects.filter(agent__in=agents if agents else [])
-    engine = VulEngine()
     strategy_value = {
         'strategy': strategy,
         'type': strategy.type.first().value,
         'value': strategy.value.split('(')[0]
     }
-    for sub_queryset in queryset_to_iterator(method_pool_queryset):
-        if sub_queryset:
-            for method_pool in sub_queryset:
-                search_and_save_sink(engine, method_pool, strategy_value)
+    # fixme 后续根据具体需要，获取用户对应的数据
+    user = User.objects.filter(id=strategy.created_by).first() if strategy else None
+    agents = IastAgent.objects.filter(user=user) if user else None
+    method_pool_queryset = MethodPool.objects.filter(agent__in=agents if agents else [])
+    return strategy_value, method_pool_queryset
