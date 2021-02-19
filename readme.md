@@ -31,3 +31,13 @@ sinks - sink点规则列表
 propagators - 传播节点规则列表
 
 目前只支持简单条件
+
+## Sql注入策略
+```json
+{
+  "id":"java-sqli",
+  "msg":"Sql注入漏洞策略",
+  "level":"high",
+  "sinks":["java.sql.Statement.addBatch","java.sql.Statement.execute","java.sql.Statement.executeQuery","java.sql.Connection.prepareCall","java.sql.Connection.prepareStatement",""]
+}
+```

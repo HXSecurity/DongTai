@@ -13,17 +13,16 @@ from vuln.views.signer import RunSigner
 from vuln.views.strategy_run import StrategyRunEndPoint
 from vuln.views.vul_rule import VulRuleEndPoint
 from vuln.views.vul_rule_detail import VulRuleDetailEndPoint
+from vuln.views.vul_rule_save import VulRuleSaveEndPoint
 
 urlpatterns = [
     # todo
-    #   内置策略
-    #   我的策略
     #   策略保存
-    #   策略结果展示
-    # fixme 增加搜素接口，根据输入的查询条件搜索数据
+    #   结果详情
     path('search', SearchEndPoint.as_view()),
     path('rule', VulRuleEndPoint.as_view()),
     path('rule/detail', VulRuleDetailEndPoint.as_view()),
+    path('rule/save', VulRuleSaveEndPoint.as_view()),
     path('run', StrategyRunEndPoint.as_view()),
     path('method_pools', MethodPoolEndPoint.as_view()),
     path('sign', RunSigner.as_view()),
