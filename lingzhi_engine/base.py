@@ -142,8 +142,8 @@ class MixinAuthEndPoint(EndPoint):
 
 class R:
     @staticmethod
-    def success(data=None, msg="success", page=None):
-        resp_data = {"status": 201, "msg": msg}
+    def success(status=201, data=None, msg="success", page=None):
+        resp_data = {"status": status, "msg": msg}
         if data:
             resp_data['data'] = data
         if page:

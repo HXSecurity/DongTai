@@ -5,10 +5,13 @@
 # software: PyCharm
 # project: lingzhi-engine
 
-# UserPermission
 from lingzhi_engine.base import MixinAuthEndPoint
 from vuln.base.user import UserPermission
 
 
 class UserEndPoint(MixinAuthEndPoint):
     permission_classes = (UserPermission,)
+
+
+class AnonymousAndUserEndPoint(MixinAuthEndPoint):
+    permission_classes = []
