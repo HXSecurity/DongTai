@@ -8,3 +8,5 @@
 RULE_USER = 'user'
 RULE_SYSTEM = 'system'
 RULE_IS_SYSTEM = 1
+
+USER_BUGENV = 'dt-range'

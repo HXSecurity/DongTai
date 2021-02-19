@@ -10,13 +10,19 @@ from vuln.models.agent_method_pool import MethodPool
 from vuln.models.dependency import Dependency
 from vuln.serializers.dependency import DependencySerialize
 from vuln.serializers.hook_strategy import SinkSerialize
+from vuln.utils import reduction_req_headers
 
 
 class MethodPoolSerialize(serializers.ModelSerializer):
+    req_header = serializers.SerializerMethodField()
+
     class Meta:
         model = MethodPool
-        fields = ['url', 'uri', 'http_method', 'req_header', 'req_params', 'req_data', 'res_header', 'res_body',
-                  'context_path', 'language', 'method_pool', 'clent_ip', 'create_time', 'update_time']
+        fields = ['url', 'req_header', 'res_header', 'res_body', 'language', 'method_pool']
+
+    def get_req_header(self, obj):
+        return reduction_req_headers(obj.http_method, obj.req_header, obj.uri, obj.req_params, obj.req_data,
+                                     obj.http_protocol)
 
 
 class MethodPoolListSerialize(serializers.ModelSerializer):
