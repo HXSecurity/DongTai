@@ -35,7 +35,7 @@ class MethodPoolListSerialize(serializers.ModelSerializer):
 
     class Meta:
         model = MethodPool
-        fields = ['url', 'req_params', 'language', 'update_time', 'rule', 'level', 'dependencies', 'agent_name',
+        fields = ['id', 'url', 'req_params', 'language', 'update_time', 'rule', 'level', 'dependencies', 'agent_name',
                   'sink_rules']
 
     def get_rule(self, obj):
