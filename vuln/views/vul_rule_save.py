@@ -18,7 +18,7 @@ class VulRuleSaveEndPoint(UserEndPoint):
 
     def post(self, request):
         rule_id = request.query_params.get('id')
-        rule_name = request.data.get('id')
+        rule_name = request.data.get('name')
         rule_level = request.data.get('level')
         rule_msg = request.data.get('msg')
         rule_value = request.data

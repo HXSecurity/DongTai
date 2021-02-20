@@ -16,7 +16,7 @@ celery -A lingzhi_engine worker -l info -E
 ## 搜索功能发送的数据格式
 ```json
 {
-  "id":"cmd-exec-1",
+  "name":"cmd-exec-1",
   "msg":"this is a cmd exec",
   "level":"ERROR",
   "sinks":["java.lang.Runtime.exec"],
@@ -35,7 +35,7 @@ propagators - 传播节点规则列表
 ## Sql注入策略
 ```json
 {
-  "id":"java-sqli",
+  "name":"java-sqli",
   "msg":"Sql注入漏洞策略",
   "level":"high",
   "sinks":["java.sql.Statement.addBatch","java.sql.Statement.execute","java.sql.Statement.executeQuery","java.sql.Connection.prepareCall","java.sql.Connection.prepareStatement",""]

@@ -75,7 +75,7 @@ class SearchEndPoint(EndPoint):
         :param request:
         :return: 规则ID、规则信息、规则等级、source方法、sink方法、propagator方法
         """
-        rule_id = request.data.get('id')
+        rule_id = request.data.get('name')
         rule_msg = request.data.get('msg')
         rule_level = request.data.get('level')
         rule_sources = request.data.get('sources')
