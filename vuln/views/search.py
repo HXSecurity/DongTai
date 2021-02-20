@@ -36,8 +36,7 @@ class SearchEndPoint(EndPoint):
         # 生成agent的唯一token
         # 注册
         try:
-            # fixme 后续考虑分页功能如何实现
-            latest_id = request.query_params.get('latestId', 0)
+            latest_id = request.query_params.get('latest', 0)
             page_size = request.query_params.get('pageSize', 20)
             if page_size > 100:
                 page_size = 100
