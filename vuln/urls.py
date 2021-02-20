@@ -24,7 +24,6 @@ urlpatterns = [
     path('rule/type', VulRuleTypeEndPoint.as_view()),
     path('rule/detail', VulRuleDetailEndPoint.as_view()),
     path('rule/save', VulRuleSaveEndPoint.as_view()),
-    # todo 结果详情
     path('method_pool/detail', MethodPoolDetailEndPoint.as_view()),
     path('run', StrategyRunEndPoint.as_view()),
     path('method_pools', MethodPoolEndPoint.as_view()),
