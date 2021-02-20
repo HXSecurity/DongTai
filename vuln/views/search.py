@@ -36,7 +36,7 @@ class SearchEndPoint(EndPoint):
         # 生成agent的唯一token
         # 注册
         try:
-            # todo 后续考虑分页功能如何实现
+            # fixme 后续考虑分页功能如何实现
             page_size = request.query_params.get('pageSize', 20)
             rule_id, rule_msg, rule_level, source_set, sink_set, propagator_set = \
                 self.parse_search_condition(request)
