@@ -142,12 +142,16 @@ class MixinAuthEndPoint(EndPoint):
 
 class R:
     @staticmethod
-    def success(status=201, data=None, msg="success", page=None):
+    def success(status=201, data=None, msg="success", page=None, **kwargs):
         resp_data = {"status": status, "msg": msg}
         if data is not None:
             resp_data['data'] = data
         if page:
             resp_data['page'] = page
+
+        for key, value in kwargs.items():
+            resp_data[key] = value
+
         return JsonResponse(resp_data)
 
     @staticmethod

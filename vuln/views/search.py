@@ -67,9 +67,9 @@ class SearchEndPoint(EndPoint):
                 queryset = MethodPoolListSerialize(rule=rule_id, level=rule_level, instance=search_condition_hits,
                                                    many=True).data
 
-                return R.success(data=queryset)
+                return R.success(data=queryset, latest=method_pool_ids[-1])
             else:
-                return R.success(msg='未查询到数据', data=list())
+                return R.success(msg='未查询到数据', data=list(), latest=0)
         except Exception as e:
             return R.failure(msg=f"{e}")
 
