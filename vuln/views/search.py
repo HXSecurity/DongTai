@@ -37,11 +37,15 @@ class SearchEndPoint(EndPoint):
         # 注册
         try:
             # fixme 后续考虑分页功能如何实现
+            latest_id = request.query_params.get('latestId', 0)
             page_size = request.query_params.get('pageSize', 20)
+            if page_size > 100:
+                page_size = 100
             rule_id, rule_msg, rule_level, source_set, sink_set, propagator_set = \
                 self.parse_search_condition(request)
 
-            method_pool_ids = self.get_match_methods(source_set, propagator_set, sink_set, match_times=page_size)
+            method_pool_ids = self.get_match_methods(source_set, propagator_set, sink_set, latest_id=latest_id,
+                                                     match_times=page_size, size=page_size * 5)
             if method_pool_ids:
                 method_pools = MethodPool.objects.filter(id__in=method_pool_ids)
                 search_condition_hits = list()
@@ -65,7 +69,7 @@ class SearchEndPoint(EndPoint):
 
                 return R.success(data=queryset)
             else:
-                return R.success(msg='未查询到数据')
+                return R.success(msg='未查询到数据', data=list())
         except Exception as e:
             return R.failure(msg=f"{e}")
 
@@ -88,8 +92,8 @@ class SearchEndPoint(EndPoint):
 
         return rule_id, rule_msg, rule_level, source_set, sink_set, propagator_set
 
-    def get_match_methods(self, source_set, propagator_set, sink_set, match_times=2, index=0, size=20):
-        queryset = MethodPool.objects.all()
+    def get_match_methods(self, source_set, propagator_set, sink_set, latest_id=0, match_times=2, index=0, size=20):
+        queryset = MethodPool.objects.filter(id__gt=latest_id).order_by('id')
         matches = list()
 
         while True:

@@ -144,7 +144,7 @@ class R:
     @staticmethod
     def success(status=201, data=None, msg="success", page=None):
         resp_data = {"status": status, "msg": msg}
-        if data:
+        if data is not None:
             resp_data['data'] = data
         if page:
             resp_data['page'] = page
