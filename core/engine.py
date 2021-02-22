@@ -146,12 +146,13 @@ class VulEngine(object):
 
     def create_node(self):
         for data in self.method_pool_asc:
+            source = ','.join([str(_) for _ in data['sourceHash']])
             node = {
                 'id': str(data['invokeId']),
-                'name': f"{data['className'].split('.')[-1]}.{data['methodName']}()",
+                'name': f"{data['className'].split('.')[-1]}.{data['methodName']}({source})",
                 'dataType': 'source' if data['source'] else 'sql',
                 'conf': [
-                    {'label': 'source', 'value': ','.join([str(_) for _ in data['sourceHash']])},
+                    {'label': 'source', 'value': source},
                     {'label': 'target', 'value': ','.join([str(_) for _ in data['targetHash']])},
                     {'label': 'caller', 'value': f"{data['callerClass']}.{data['callerMethod']}()"}
                 ]
