@@ -73,24 +73,24 @@ class VulEngine(object):
     def hit_vul_method(self, method):
         if f"{method.get('className')}.{method.get('methodName')}" == self.vul_method_signature:
             self.hit_vul = True
-            self.vul_stack.append(method)
+            #self.vul_stack.append(method)
             self.pool_value = method.get('sourceHash')
             return True
 
-    def do_propagator(self, method):
+    def do_propagator(self, method, current_link):
         is_source = method.get('source')
         target_hash = method.get('targetHash')
 
         if is_source:
             for hash in target_hash:
                 if hash in self.pool_value:
-                    self.vul_stack.append(method)
+                    current_link.append(method)
                     self.vul_source_signature = f"{method.get('className')}.{method.get('methodName')}"
-                    break
+                    return True
         else:
             for hash in target_hash:
                 if hash in self.pool_value:
-                    self.vul_stack.append(method)
+                    current_link.append(method)
                     self.pool_value = method.get('sourceHash')
                     break
 
@@ -103,11 +103,16 @@ class VulEngine(object):
 
     def search(self, method_pool, vul_method_signature):
         self.prepare(method_pool, vul_method_signature)
-        for method in self.method_pool:
-            if not self.hit_vul and self.hit_vul_method(method):
-                continue
-            if self.hit_vul:
-                self.do_propagator(method)
+        size = len(self.method_pool)
+        for index in range(size):
+            method = self.method_pool[index]
+            if self.hit_vul_method(method):
+                current_link = list()
+                current_link.append(method)
+                for sub_method in self.method_pool[index + 1:]:
+                    if self.do_propagator(sub_method, current_link):
+                        self.vul_stack.append(current_link[::-1])
+                        break
 
     def search_sink(self, method_pool, vul_method_signature):
         self.prepare(method_pool, vul_method_signature)
@@ -161,7 +166,7 @@ class VulEngine(object):
 
     def result(self):
         if self.vul_source_signature:
-            return True, self.vul_stack[::-1], self.vul_source_signature, self.vul_method_signature
+            return True, self.vul_stack, self.vul_source_signature, self.vul_method_signature
         return False, None, None, None
 
     def get_taint_links(self):

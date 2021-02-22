@@ -22,6 +22,7 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
             method_pool_id = request.query_params.get('id')
             rule_id, rule_msg, rule_level, source_set, sink_set, propagator_set = \
                 self.parse_search_condition(request)
+            # todo 根据条件，处理对应的路径
 
             if method_pool_id:
                 if request.user.is_active:
@@ -36,23 +37,28 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
                     else:
                         R.failure(msg='no permission')
                 if method_pool:
-                    engine = VulEngine()
-                    engine.prepare(method_pool=json.loads(method_pool.method_pool), vul_method_signature='')
-                    engine.search_all_link()
-                    data, link_count, method_count = engine.get_taint_links()
-                    # taint_link = self.search_taint_link(method_pool=method_pool, sources=source_set, sinks=sink_set,
-                    #                                     propagators=propagator_set)
+                    data, link_count, method_count = self.search_all_links(method_pool.method_pool)
+                    taint_links = self.search_taint_link(method_pool=method_pool, sources=source_set, sinks=sink_set,
+                                                         propagators=propagator_set)
+                    self.add_taint_links_to_all_links(taint_links=taint_links, all_links=data)
                     return R.success(data={
                         'vul': MethodPoolSerialize(method_pool).data,
                         'graphData': data,
                         'link_count': link_count,
-                        'method_count': method_count
+                        'method_count': method_count,
+                        'taint_link': taint_links
                     })
                 else:
                     R.failure(msg='数据不存在')
             return R.failure(msg='方法池ID为空')
         except ValueError as e:
             return R.failure(msg='page和pageSize只能为数字')
+
+    def search_all_links(self, method_pool):
+        engine = VulEngine()
+        engine.prepare(method_pool=json.loads(method_pool), vul_method_signature='')
+        engine.search_all_link()
+        return engine.get_taint_links()
 
     def search_taint_link(self, method_pool, sources, sinks, propagators):
         """
@@ -72,6 +78,7 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
         :return: 满足条件的污点链
         """
         engine = VulEngine()
+        links = list()
         if sinks:
             for sink in sinks:
                 engine.search(
@@ -83,11 +90,34 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
                     method_caller_set = self.convert_to_set(stack)
                     if self.check_match(method_caller_set, source_set=sources, propagator_set=propagators,
                                         sink_set=sinks):
-                        return stack
+                        links.append(stack)
         else:
             method_caller_set = self.convert_method_pool_to_set(method_pool.method_pool)
             if self.check_match(method_caller_set, source_set=sources, propagator_set=propagators):
-                return json.loads(method_pool.method_pool)
+                links.append(json.loads(method_pool.method_pool))
+        return links
+
+    def add_taint_links_to_all_links(self, taint_links, all_links):
+        if taint_links:
+            for links in taint_links:
+                for link in links:
+                    left = None
+                    edges = list()
+                    for node in link:
+                        if node['source']:
+                            left = node['invokeId']
+                        elif left is not None:
+                            right = node['invokeId']
+                            edges.append({
+                                'source': str(left),
+                                'target': str(right)
+                            })
+                            left = right
+                    for edge in edges:
+                        for _edge in all_links['edges']:
+                            if 'selected' not in _edge and _edge['source'] == edge['source'] and _edge['target'] == \
+                                    edge['target']:
+                                _edge['selected'] = True
 
     def parse_search_condition(self, request):
         """
@@ -112,11 +142,12 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
         method_callers = json.loads(method_pool)
         return self.convert_to_set(method_callers)
 
-    def convert_to_set(self, method_callers):
+    def convert_to_set(self, links):
         method_caller_set = set()
-        for method_caller in method_callers:
-            method_caller_set.add(
-                f'{method_caller.get("className").replace("/", ".")}.{method_caller.get("methodName")}')
+        for link in links:
+            for method_caller in link:
+                method_caller_set.add(
+                    f'{method_caller.get("className").replace("/", ".")}.{method_caller.get("methodName")}')
         return method_caller_set
 
     def check_match(self, method_caller_set, sink_set=None, source_set=None, propagator_set=None):
