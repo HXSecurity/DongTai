@@ -12,7 +12,6 @@ echo '启动celery服务'
 celery -A lingzhi_engine worker -l info -E
 ```
 
-
 ## 搜索功能发送的数据格式
 ```json
 {
@@ -23,6 +22,7 @@ celery -A lingzhi_engine worker -l info -E
   "sources":["org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument"]
 }
 ```
+
 id - 规则ID，如果为临时搜索，设置为query，否则，需要设置
 msg - 规则对应的信息
 security - 规则对应的漏洞ID

@@ -148,7 +148,7 @@ class VulEngine(object):
         for data in self.method_pool_asc:
             node = {
                 'id': str(data['invokeId']),
-                'name': f"{data['className']}.{data['methodName']}()",
+                'name': f"{data['className'].split('.')[-1]}.{data['methodName']}()",
                 'dataType': 'source' if data['source'] else 'sql',
                 'conf': [
                     {'label': 'source', 'value': ','.join([str(_) for _ in data['sourceHash']])},
