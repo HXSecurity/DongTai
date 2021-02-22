@@ -17,11 +17,18 @@ class VulEngine(object):
         构造函数，初始化相关数据
         """
         self._method_pool = None
+        self.method_pool_asc = None
         self._vul_method_signature = None
         self.hit_vul = False
         self.vul_stack = None
         self.pool_value = None
         self.vul_source_signature = None
+        self.graphy_data = {
+            'nodes': [],
+            'edges': []
+        }
+        self.method_counts = 0
+        self.taint_link_size = 0
 
     @property
     def method_pool(self):
@@ -61,6 +68,7 @@ class VulEngine(object):
         self.vul_stack = list()
         self.pool_value = -1
         self.vul_source_signature = ''
+        self.method_counts = len(self.method_pool)
 
     def hit_vul_method(self, method):
         if f"{method.get('className')}.{method.get('methodName')}" == self.vul_method_signature:
@@ -106,7 +114,53 @@ class VulEngine(object):
         if vul_method_signature in self.method_pool_signatures:
             return True
 
+    def search_all_link(self):
+        self.method_pool_asc = self.method_pool[::-1]
+        self.create_node()
+        self.create_edge()
+
+    def create_edge(self):
+        for index in range(self.method_counts):
+            data = self.method_pool_asc[index]
+            if data['source']:
+                current_hash = set(data['targetHash'])
+                left_node = str(data['invokeId'])
+                self.dfs(current_hash, left_node, index)
+
+    def dfs(self, current_hash, left_node, left_index):
+        not_found = True
+        for index in range(left_index + 1, self.method_counts):
+            data = self.method_pool_asc[index]
+            if current_hash & set(data['sourceHash']):
+                not_found = False
+                right_node = str(data['invokeId'])
+                self.graphy_data['edges'].append({
+                    'source': left_node,
+                    'target': right_node,
+                })
+                self.dfs(set(data['targetHash']), right_node, index)
+
+        if not_found:
+            self.taint_link_size = self.taint_link_size + 1
+
+    def create_node(self):
+        for data in self.method_pool_asc:
+            node = {
+                'id': str(data['invokeId']),
+                'name': f"{data['className']}.{data['methodName']}()",
+                'dataType': 'source' if data['source'] else 'sql',
+                'conf': [
+                    {'label': 'source', 'value': ','.join([str(_) for _ in data['sourceHash']])},
+                    {'label': 'target', 'value': ','.join([str(_) for _ in data['targetHash']])},
+                    {'label': 'caller', 'value': f"{data['callerClass']}.{data['callerMethod']}()"}
+                ]
+            }
+            self.graphy_data['nodes'].append(node)
+
     def result(self):
         if self.vul_source_signature:
             return True, self.vul_stack[::-1], self.vul_source_signature, self.vul_method_signature
         return False, None, None, None
+
+    def get_taint_links(self):
+        return self.graphy_data, self.taint_link_size, self.method_counts

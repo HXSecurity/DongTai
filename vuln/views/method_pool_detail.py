@@ -35,12 +35,21 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
                                                                 id=method_pool_id).first()
                     else:
                         R.failure(msg='no permission')
-                taint_link = self.search_taint_link(method_pool=method_pool, sources=source_set, sinks=sink_set,
-                                                    propagators=propagator_set)
-                return R.success(data={
-                    'vul': MethodPoolSerialize(method_pool).data,
-                    'taint_link': taint_link
-                })
+                if method_pool:
+                    engine = VulEngine()
+                    engine.prepare(method_pool=json.loads(method_pool.method_pool), vul_method_signature='')
+                    engine.search_all_link()
+                    data, link_count, method_count = engine.get_taint_links()
+                    # taint_link = self.search_taint_link(method_pool=method_pool, sources=source_set, sinks=sink_set,
+                    #                                     propagators=propagator_set)
+                    return R.success(data={
+                        'vul': MethodPoolSerialize(method_pool).data,
+                        'graph': data,
+                        'link_count': link_count,
+                        'method_count': method_count
+                    })
+                else:
+                    R.failure(msg='数据不存在')
             return R.failure(msg='方法池ID为空')
         except ValueError as e:
             return R.failure(msg='page和pageSize只能为数字')
