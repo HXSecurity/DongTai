@@ -138,6 +138,7 @@ class VulEngine(object):
                     'source': left_node,
                     'target': right_node,
                 })
+                data['sourceHash'] = list(set(data['sourceHash']) - current_hash)
                 self.dfs(set(data['targetHash']), right_node, index)
 
         if not_found:
