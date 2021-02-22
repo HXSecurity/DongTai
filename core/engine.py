@@ -73,7 +73,7 @@ class VulEngine(object):
     def hit_vul_method(self, method):
         if f"{method.get('className')}.{method.get('methodName')}" == self.vul_method_signature:
             self.hit_vul = True
-            #self.vul_stack.append(method)
+            # self.vul_stack.append(method)
             self.pool_value = method.get('sourceHash')
             return True
 
@@ -152,13 +152,14 @@ class VulEngine(object):
     def create_node(self):
         for data in self.method_pool_asc:
             source = ','.join([str(_) for _ in data['sourceHash']])
+            target = ','.join([str(_) for _ in data['targetHash']])
             node = {
                 'id': str(data['invokeId']),
-                'name': f"{data['className'].split('/')[-1]}.{data['methodName']}({source})",
+                'name': f"{data['className'].replace('/', '.').split('.')[-1]}.{data['methodName']}({source}) => {target}",
                 'dataType': 'source' if data['source'] else 'sql',
                 'conf': [
                     {'label': 'source', 'value': source},
-                    {'label': 'target', 'value': ','.join([str(_) for _ in data['targetHash']])},
+                    {'label': 'target', 'value': target},
                     {'label': 'caller', 'value': f"{data['callerClass']}.{data['callerMethod']}()"}
                 ]
             }
