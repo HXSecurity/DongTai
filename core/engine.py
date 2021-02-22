@@ -149,7 +149,7 @@ class VulEngine(object):
             source = ','.join([str(_) for _ in data['sourceHash']])
             node = {
                 'id': str(data['invokeId']),
-                'name': f"{data['className'].split('.')[-1]}.{data['methodName']}({source})",
+                'name': f"{data['className'].split('/')[-1]}.{data['methodName']}({source})",
                 'dataType': 'source' if data['source'] else 'sql',
                 'conf': [
                     {'label': 'source', 'value': source},
