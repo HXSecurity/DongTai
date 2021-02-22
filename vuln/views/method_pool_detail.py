@@ -44,7 +44,7 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
                     #                                     propagators=propagator_set)
                     return R.success(data={
                         'vul': MethodPoolSerialize(method_pool).data,
-                        'graph': data,
+                        'graphData': data,
                         'link_count': link_count,
                         'method_count': method_count
                     })
