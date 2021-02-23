@@ -120,11 +120,19 @@ class VulEngine(object):
             return True
 
     def search_all_link(self):
+        """
+        从方法池中搜索所有的污点传播链
+        :return:
+        """
         self.method_pool_asc = self.method_pool[::-1]
         self.create_node()
         self.create_edge()
 
     def create_edge(self):
+        """
+        创建污点链的边
+        :return:
+        """
         for index in range(self.method_counts):
             data = self.method_pool_asc[index]
             if data['source']:
@@ -133,6 +141,13 @@ class VulEngine(object):
                 self.dfs(current_hash, left_node, index)
 
     def dfs(self, current_hash, left_node, left_index):
+        """
+        深度优先搜索，搜索污点流图中的边
+        :param current_hash: 当前污点数据，set()
+        :param left_node: 上层节点方法的调用ID
+        :param left_index: 上层节点方法在方法队列中的编号
+        :return:
+        """
         not_found = True
         for index in range(left_index + 1, self.method_counts):
             data = self.method_pool_asc[index]
@@ -150,6 +165,10 @@ class VulEngine(object):
             self.taint_link_size = self.taint_link_size + 1
 
     def create_node(self):
+        """
+        创建污点流图中使用的节点数据
+        :return:
+        """
         for data in self.method_pool_asc:
             source = ','.join([str(_) for _ in data['sourceHash']])
             target = ','.join([str(_) for _ in data['targetHash']])

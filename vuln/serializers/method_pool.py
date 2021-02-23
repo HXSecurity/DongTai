@@ -40,9 +40,7 @@ class MethodPoolListSerialize(serializers.ModelSerializer):
     AGENTS = dict()
     rule = serializers.SerializerMethodField()
     level = serializers.SerializerMethodField()
-    dependencies = serializers.SerializerMethodField()
     agent_name = serializers.SerializerMethodField()
-    sink_rules = serializers.SerializerMethodField()
 
     def __init__(self, rule, level, **kwargs):
         super().__init__(**kwargs)
@@ -51,8 +49,7 @@ class MethodPoolListSerialize(serializers.ModelSerializer):
 
     class Meta:
         model = MethodPool
-        fields = ['id', 'url', 'req_params', 'language', 'update_time', 'rule', 'level', 'dependencies', 'agent_name',
-                  'sink_rules']
+        fields = ['id', 'url', 'req_params', 'language', 'update_time', 'rule', 'level', 'agent_name']
 
     def get_rule(self, obj):
         return self.rule
@@ -60,22 +57,11 @@ class MethodPoolListSerialize(serializers.ModelSerializer):
     def get_level(self, obj):
         return self.level
 
-    def get_dependencies(self, obj):
-        # fixme 内存溢出时，优先排查这里，临时使用类成员变量存储，后续考虑使用缓存来做
-        if obj.agent_id not in self.DEPENDENCIES:
-            dependencies = obj.agent.dependencies.all()
-            self.DEPENDENCIES[obj.agent_id] = DependencySerialize(dependencies, many=True).data
-        return self.DEPENDENCIES[obj.agent_id]
-
     def get_agent_name(self, obj):
         # fixme 内存溢出时，优先排查这里，临时使用类成员变量存储，后续考虑使用缓存来做
         if obj.agent_id not in self.AGENTS:
             self.AGENTS[obj.agent_id] = obj.agent.token
         return self.AGENTS[obj.agent_id]
-
-    def get_sink_rules(self, obj):
-        # fixme 查询效率过低时，优先排查这里，增加当前方法池命中的sink规则展示
-        return SinkSerialize(obj.sinks.all(), many=True).data
 
 
 if __name__ == '__main__':

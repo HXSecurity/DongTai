@@ -36,37 +36,17 @@ class SearchEndPoint(EndPoint):
         # 生成agent的唯一token
         # 注册
         try:
-            latest_id = request.query_params.get('latest', 0)
-            page_size = request.query_params.get('pageSize', 20)
-            if page_size > 100:
-                page_size = 100
-            rule_id, rule_msg, rule_level, source_set, sink_set, propagator_set = \
+            latest_id, page_size, rule_name, rule_msg, rule_level, source_set, sink_set, propagator_set = \
                 self.parse_search_condition(request)
-
+            # fixme 考虑入库时直接将数据拆分保存
             method_pool_ids = self.get_match_methods(source_set, propagator_set, sink_set, latest_id=latest_id,
                                                      match_times=page_size, size=page_size * 5)
             if method_pool_ids:
-                method_pools = MethodPool.objects.filter(id__in=method_pool_ids)
-                search_condition_hits = list()
-                if sink_set and (source_set or propagator_set):
-                    engine = VulEngine()
-                    for method_pool in method_pools:
-                        for sink in sink_set:
-                            engine.search(
-                                method_pool=json.loads(method_pool.method_pool),
-                                vul_method_signature=sink
-                            )
-                            status, stack, source, sink = engine.result()
-                            method_caller_set = self.convert_to_set(stack)
-                            if self.check_match(method_caller_set, source_set, propagator_set):
-                                search_condition_hits.append(method_pool)
-                else:
-                    search_condition_hits = list(method_pools)
-
-                queryset = MethodPoolListSerialize(rule=rule_id, level=rule_level, instance=search_condition_hits,
-                                                   many=True).data
-
-                return R.success(data=queryset, latest=method_pool_ids[-1])
+                return R.success(
+                    data=self.get_result_data(method_pool_ids, rule_name, rule_level, source_set, sink_set,
+                                              propagator_set),
+                    latest=method_pool_ids[-1]
+                )
             else:
                 return R.success(msg='未查询到数据', data=list(), latest=0)
         except Exception as e:
@@ -78,6 +58,11 @@ class SearchEndPoint(EndPoint):
         :param request:
         :return: 规则ID、规则信息、规则等级、source方法、sink方法、propagator方法
         """
+        latest_id = request.query_params.get('latest', 0)
+        page_size = request.query_params.get('pageSize', 20)
+        if page_size > 100:
+            page_size = 100
+
         rule_id = request.data.get('name', '临时搜索')
         rule_msg = request.data.get('msg')
         rule_level = request.data.get('level')
@@ -89,7 +74,7 @@ class SearchEndPoint(EndPoint):
         source_set = set(rule_sources) if rule_sources else set()
         propagator_set = set(rule_propagators) if rule_propagators else set()
 
-        return rule_id, rule_msg, rule_level, source_set, sink_set, propagator_set
+        return latest_id, page_size, rule_id, rule_msg, rule_level, source_set, sink_set, propagator_set
 
     def get_match_methods(self, source_set, propagator_set, sink_set, latest_id=0, match_times=2, index=0, size=20):
         queryset = MethodPool.objects.filter(id__gt=latest_id).order_by('id')
@@ -118,10 +103,16 @@ class SearchEndPoint(EndPoint):
         return self.convert_to_set(method_callers)
 
     def convert_to_set(self, method_callers):
+        def signature_concat(method_caller):
+            return f'{method_caller.get("className").replace("/", ".")}.{method_caller.get("methodName")}'
+
         method_caller_set = set()
         for method_caller in method_callers:
-            method_caller_set.add(
-                f'{method_caller.get("className").replace("/", ".")}.{method_caller.get("methodName")}')
+            if isinstance(method_caller, list):
+                for node in method_caller:
+                    method_caller_set.add(signature_concat(node))
+            elif isinstance(method_caller, dict):
+                method_caller_set.add(signature_concat(method_caller))
         return method_caller_set
 
     def check_match(self, method_caller_set, sink_set=None, source_set=None, propagator_set=None):
@@ -144,3 +135,38 @@ class SearchEndPoint(EndPoint):
             result = method_caller_set & propagator_set
             status = status and result is not None and len(result) > 0
         return status
+
+    def get_result_data(self, method_pool_ids, rule_name, rule_level, source_set, sink_set, propagator_set):
+        method_pools = MethodPool.objects.filter(id__in=method_pool_ids)
+        data = list()
+        if sink_set:
+            engine = VulEngine()
+            for method_pool in method_pools:
+                for sink in sink_set:
+                    engine.search(
+                        method_pool=json.loads(method_pool.method_pool),
+                        vul_method_signature=sink
+                    )
+                    status, links, source, sink = engine.result()
+                    if status:
+                        method_caller_set = self.convert_to_set(links)
+                        if self.check_match(method_caller_set, source_set, propagator_set):
+                            top_link = links[0]
+                            # fixme 直接构造数据
+                            data.append({
+                                'id': method_pool.id,
+                                'url': method_pool.url,
+                                'req_params': method_pool.req_params,
+                                'language': method_pool.language,
+                                'update_time': method_pool.update_time,
+                                'rule': rule_name,
+                                'level': rule_level,
+                                'agent_name': method_pool.agent.token,
+                                'top_stack': f"{top_link[0]['className'].replace('/', '.')}.{top_link[0]['methodName']}",
+                                'bottom_sttack': f"{top_link[-1]['className'].replace('/', '.')}.{top_link[-1]['methodName']}",
+                                'link_count': len(links)
+                            })
+
+        else:
+            data = MethodPoolListSerialize(rule=rule_name, level=rule_level, instance=method_pool_ids, many=True).data
+        return data
