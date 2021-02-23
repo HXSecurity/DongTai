@@ -162,7 +162,7 @@ class SearchEndPoint(EndPoint):
                                 'level': rule_level,
                                 'agent_name': method_pool.agent.token,
                                 'top_stack': f"{top_link[0]['className'].replace('/', '.')}.{top_link[0]['methodName']}",
-                                'bottom_sttack': f"{top_link[-1]['className'].replace('/', '.')}.{top_link[-1]['methodName']}",
+                                'bottom_stack': f"{top_link[-1]['className'].replace('/', '.')}.{top_link[-1]['methodName']}",
                                 'link_count': len(links)
                             })
 
