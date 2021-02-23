@@ -56,4 +56,4 @@ class VulRuleSaveEndPoint(UserEndPoint):
             return R.success(msg='规则保存成功')
         except Exception as e:
             logger.error(e)
-            return R.failure(msg=e)
+            return R.failure(msg=str(e))
