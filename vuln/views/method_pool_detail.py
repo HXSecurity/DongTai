@@ -5,6 +5,7 @@
 # software: PyCharm
 # project: lingzhi-engine
 import json
+import logging
 
 from account.models import User
 from core.engine import VulEngine
@@ -13,6 +14,8 @@ from lingzhi_engine.base import R
 from vuln.base.method_pool import AnonymousAndUserEndPoint
 from vuln.models.agent_method_pool import MethodPool
 from vuln.serializers.method_pool import MethodPoolSerialize
+
+logger = logging.getLogger('lingzhi.webapi')
 
 
 class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
@@ -53,6 +56,9 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
             return R.failure(msg='方法池ID为空')
         except ValueError as e:
             return R.failure(msg='page和pageSize只能为数字')
+        except Exception as e:
+            logger.error(e)
+            return R.failure(msg='接口出错')
 
     def search_all_links(self, method_pool):
         engine = VulEngine()
