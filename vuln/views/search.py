@@ -102,7 +102,8 @@ class SearchEndPoint(EndPoint):
         method_callers = json.loads(method_pool)
         return self.convert_to_set(method_callers)
 
-    def convert_to_set(self, method_callers):
+    @staticmethod
+    def convert_to_set(method_callers):
         def signature_concat(method_caller):
             return f'{method_caller.get("className").replace("/", ".")}.{method_caller.get("methodName")}'
 

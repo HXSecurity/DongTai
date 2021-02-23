@@ -14,6 +14,7 @@ from lingzhi_engine.base import R
 from vuln.base.method_pool import AnonymousAndUserEndPoint
 from vuln.models.agent_method_pool import MethodPool
 from vuln.serializers.method_pool import MethodPoolSerialize
+from vuln.views.search import SearchEndPoint
 
 logger = logging.getLogger('lingzhi.webapi')
 
@@ -41,9 +42,12 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
                         R.failure(msg='no permission')
                 if method_pool:
                     data, link_count, method_count = self.search_all_links(method_pool.method_pool)
-                    taint_links = self.search_taint_link(method_pool=method_pool, sources=source_set, sinks=sink_set,
-                                                         propagators=propagator_set)
-                    self.add_taint_links_to_all_links(taint_links=taint_links, all_links=data)
+                    taint_links = []
+                    if source_set or sink_set or propagator_set:
+                        taint_links = self.search_taint_link(method_pool=method_pool, sources=source_set,
+                                                             sinks=sink_set,
+                                                             propagators=propagator_set)
+                        self.add_taint_links_to_all_links(taint_links=taint_links, all_links=data)
                     return R.success(data={
                         'vul': MethodPoolSerialize(method_pool).data,
                         'graphData': data,
@@ -56,9 +60,6 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
             return R.failure(msg='方法池ID为空')
         except ValueError as e:
             return R.failure(msg='page和pageSize只能为数字')
-        except Exception as e:
-            logger.error(e)
-            return R.failure(msg='接口出错')
 
     def search_all_links(self, method_pool):
         engine = VulEngine()
@@ -93,7 +94,7 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
                 )
                 status, stack, source, sink = engine.result()
                 if status:
-                    method_caller_set = self.convert_to_set(stack)
+                    method_caller_set = SearchEndPoint.convert_to_set(stack)
                     if self.check_match(method_caller_set, source_set=sources, propagator_set=propagators,
                                         sink_set=sinks):
                         links.append(stack)
@@ -146,15 +147,7 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
 
     def convert_method_pool_to_set(self, method_pool):
         method_callers = json.loads(method_pool)
-        return self.convert_to_set(method_callers)
-
-    def convert_to_set(self, links):
-        method_caller_set = set()
-        for link in links:
-            for method_caller in link:
-                method_caller_set.add(
-                    f'{method_caller.get("className").replace("/", ".")}.{method_caller.get("methodName")}')
-        return method_caller_set
+        return SearchEndPoint.convert_to_set(method_callers)
 
     def check_match(self, method_caller_set, sink_set=None, source_set=None, propagator_set=None):
         """
