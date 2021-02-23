@@ -4,7 +4,6 @@
 # datetime:2021/2/19 下午3:07
 # software: PyCharm
 # project: lingzhi-engine
-from django.db.models import Q
 
 from lingzhi_engine import const
 from lingzhi_engine.base import R

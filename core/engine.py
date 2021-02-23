@@ -29,6 +29,7 @@ class VulEngine(object):
         }
         self.method_counts = 0
         self.taint_link_size = 0
+        self.edge_code = 1
 
     @property
     def method_pool(self):
@@ -124,6 +125,7 @@ class VulEngine(object):
         从方法池中搜索所有的污点传播链
         :return:
         """
+        self.edge_code = 1
         self.method_pool_asc = self.method_pool[::-1]
         self.create_node()
         self.create_edge()
@@ -155,9 +157,11 @@ class VulEngine(object):
                 not_found = False
                 right_node = str(data['invokeId'])
                 self.graphy_data['edges'].append({
+                    'id': str(self.edge_code),
                     'source': left_node,
                     'target': right_node,
                 })
+                self.edge_code = self.edge_code + 1
                 data['sourceHash'] = list(set(data['sourceHash']) - current_hash)
                 self.dfs(set(data['targetHash']), right_node, index)
 

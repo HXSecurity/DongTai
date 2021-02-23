@@ -4,6 +4,7 @@
 # datetime:2021/2/19 下午3:07
 # software: PyCharm
 # project: lingzhi-engine
+import json
 import time
 
 from lingzhi_engine.base import R
@@ -24,7 +25,7 @@ class VulRuleSaveEndPoint(UserEndPoint):
         rule_name = request.data.get('name')
         rule_level = request.data.get('level')
         rule_msg = request.data.get('msg')
-        rule_value = request.data
+        rule_value = json.dumps(request.data)
         is_system = True if request.user.is_system_admin() else False
         create_by = request.user.id
         timestamp = int(time.time())
