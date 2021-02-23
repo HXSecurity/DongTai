@@ -167,5 +167,5 @@ class SearchEndPoint(EndPoint):
                             })
 
         else:
-            data = MethodPoolListSerialize(rule=rule_name, level=rule_level, instance=method_pool_ids, many=True).data
+            data = MethodPoolListSerialize(rule=rule_name, level=rule_level, instance=method_pools, many=True).data
         return data
