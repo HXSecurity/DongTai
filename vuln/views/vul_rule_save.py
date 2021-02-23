@@ -9,6 +9,9 @@ import time
 from lingzhi_engine.base import R
 from vuln.base.method_pool import UserEndPoint
 from vuln.models.vul_rule import IastVulRule
+import logging
+
+logger = logging.getLogger('lingzhi.webapi')
 
 
 class VulRuleSaveEndPoint(UserEndPoint):
@@ -26,26 +29,30 @@ class VulRuleSaveEndPoint(UserEndPoint):
         create_by = request.user.id
         timestamp = int(time.time())
 
-        if rule_id:
-            rule = IastVulRule.objects.filter(create_by=request.user.id, id=rule_id).first()
-            rule.rule_value = rule_value
-            rule.rule_name = rule_name
-            rule.rule_level = rule_level
-            rule.rule_msg = rule_msg
-            rule.is_system = is_system
-            rule.create_by = create_by
-            rule.update_time = timestamp
-        else:
-            rule = IastVulRule(
-                rule_name=rule_name,
-                rule_level=rule_level,
-                rule_msg=rule_msg,
-                rule_value=rule_value,
-                is_system=is_system,
-                create_by=create_by,
-                update_time=timestamp,
-                create_time=timestamp
-            )
-        rule.save()
+        logger.info(f'保存策略，策略ID {rule_id}')
+        try:
+            if rule_id:
+                rule = IastVulRule.objects.filter(create_by=request.user.id, id=rule_id).first()
+                rule.rule_value = rule_value
+                rule.rule_name = rule_name
+                rule.rule_level = rule_level
+                rule.rule_msg = rule_msg
+                rule.is_system = is_system
+                rule.create_by = create_by
+                rule.update_time = timestamp
+            else:
+                rule = IastVulRule(
+                    rule_name=rule_name,
+                    rule_level=rule_level,
+                    rule_msg=rule_msg,
+                    rule_value=rule_value,
+                    is_system=is_system,
+                    create_by=create_by,
+                    update_time=timestamp,
+                    create_time=timestamp
+                )
+            rule.save()
+        except Exception as e:
+            logger.error(e)
 
         return R.success(msg='规则保存成功')

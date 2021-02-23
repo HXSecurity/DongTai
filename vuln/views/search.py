@@ -152,7 +152,6 @@ class SearchEndPoint(EndPoint):
                         method_caller_set = self.convert_to_set(links)
                         if self.check_match(method_caller_set, source_set, propagator_set):
                             top_link = links[0]
-                            # fixme 直接构造数据
                             data.append({
                                 'id': method_pool.id,
                                 'url': method_pool.url,
