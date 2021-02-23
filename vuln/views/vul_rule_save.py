@@ -34,26 +34,28 @@ class VulRuleSaveEndPoint(UserEndPoint):
         try:
             if rule_id:
                 rule = IastVulRule.objects.filter(create_by=request.user.id, id=rule_id).first()
-                rule.rule_value = rule_value
-                rule.rule_name = rule_name
-                rule.rule_level = rule_level
-                rule.rule_msg = rule_msg
-                rule.is_system = is_system
-                rule.create_by = create_by
-                rule.update_time = timestamp
-            else:
-                rule = IastVulRule(
-                    rule_name=rule_name,
-                    rule_level=rule_level,
-                    rule_msg=rule_msg,
-                    rule_value=rule_value,
-                    is_system=is_system,
-                    create_by=create_by,
-                    update_time=timestamp,
-                    create_time=timestamp
-                )
+                if rule:
+                    rule.rule_value = rule_value
+                    rule.rule_name = rule_name
+                    rule.rule_level = rule_level
+                    rule.rule_msg = rule_msg
+                    rule.is_system = is_system
+                    rule.create_by = create_by
+                    rule.update_time = timestamp
+                    return R.success(msg='策略更新成功')
+
+            rule = IastVulRule(
+                rule_name=rule_name,
+                rule_level=rule_level,
+                rule_msg=rule_msg,
+                rule_value=rule_value,
+                is_system=is_system,
+                create_by=create_by,
+                update_time=timestamp,
+                create_time=timestamp
+            )
             rule.save()
-            return R.success(msg='规则保存成功')
+            return R.success(msg='策略保存成功')
         except Exception as e:
             logger.error(e)
             return R.failure(msg=str(e))
