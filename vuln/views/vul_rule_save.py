@@ -53,7 +53,7 @@ class VulRuleSaveEndPoint(UserEndPoint):
                     create_time=timestamp
                 )
             rule.save()
+            return R.success(msg='规则保存成功')
         except Exception as e:
             logger.error(e)
-
-        return R.success(msg='规则保存成功')
+            return R.failure(msg=e)
