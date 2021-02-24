@@ -12,4 +12,4 @@ from vuln.models.dependency import Dependency
 class DependencySerialize(serializers.ModelSerializer):
     class Meta:
         model = Dependency
-        fields = ['package_name', 'vul_count']
+        fields = ['package_name', 'vul_count', 'version']
