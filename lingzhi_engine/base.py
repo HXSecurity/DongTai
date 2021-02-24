@@ -111,6 +111,9 @@ class EndPoint(APIView):
         """
         return IastAgent.objects.filter(user__in=users)
 
+    def parse_args(self, request):
+        pass
+
 
 class AnonymousAuthEndPoint(EndPoint):
     """
