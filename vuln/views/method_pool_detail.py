@@ -9,6 +9,7 @@ import logging
 
 from account.models import User
 from core.engine import VulEngine
+from core.engine_v2 import VulEngineV2
 from lingzhi_engine import const
 from lingzhi_engine.base import R
 from vuln.base.method_pool import AnonymousAndUserEndPoint
@@ -42,11 +43,12 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
                         R.failure(msg='no permission')
                 if method_pool:
                     data, link_count, method_count = self.search_all_links(method_pool.method_pool)
+                    # todo 增加无效边的删除
+                    # self.delete_invalid_edge(data)
                     taint_links = []
                     if source_set or sink_set or propagator_set:
                         taint_links = self.search_taint_link(method_pool=method_pool, sources=source_set,
-                                                             sinks=sink_set,
-                                                             propagators=propagator_set)
+                                                             sinks=sink_set, propagators=propagator_set)
                         self.add_taint_links_to_all_links(taint_links=taint_links, all_links=data)
                     return R.success(data={
                         'vul': MethodPoolSerialize(method_pool).data,
@@ -62,7 +64,8 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
             return R.failure(msg='page和pageSize只能为数字')
 
     def search_all_links(self, method_pool):
-        engine = VulEngine()
+        # engine = VulEngine()
+        engine = VulEngineV2()
         engine.prepare(method_pool=json.loads(method_pool), vul_method_signature='')
         engine.search_all_link()
         return engine.get_taint_links()
@@ -169,3 +172,52 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
             result = method_caller_set & propagator_set
             status = status and result is not None and len(result) > 0
         return status
+
+    # fixme 删除无效边的功能存在bug
+    def delete_invalid_edge(self, graph_data):
+        # 寻边
+        edge_count = len(graph_data['edges'])
+        invalid_edges = list()
+        for edge_index in range(edge_count):
+            is_invalid_node = False
+            has_children = False
+            for _edge in graph_data['edges']:
+                if graph_data['edges'][edge_index]['target'] == _edge['source']:
+                    has_children = True
+                    break
+            if has_children is False:
+                target_node = graph_data['edges'][edge_index]['target']
+                source_node = graph_data['edges'][edge_index]['source']
+                while True:
+                    status, index = self.is_invalid(graph_data['nodes'], target_node)
+                    if status:
+                        del graph_data['nodes'][index]
+                        invalid_edges.append(edge_index)
+                        status, index = self.is_invalid(graph_data['nodes'], source_node)
+                        if status:
+                            del graph_data['nodes'][index]
+                        else:
+                            break
+                    else:
+                        break
+
+    @staticmethod
+    def is_invalid(nodes, target_node):
+        node_count = len(nodes)
+        for index in range(node_count):
+            node = nodes[index]
+            if node['id'] == target_node:
+                if MethodPoolDetailEndPoint.is_invalid_node(node['nodeType']):
+                    return True, index
+        return False, 0
+
+    @staticmethod
+    def is_invalid_node(class_name):
+        return class_name in (
+            'String',
+            'StringBuilder',
+            'StringReader',
+            'Map',
+            'List',
+            'Enumeration',
+        )
