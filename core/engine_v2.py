@@ -136,9 +136,11 @@ class VulEngineV2(object):
             for sub_node in subs:
                 node_ids.add(sub_node)
                 edges.append({
+                    'id': str(self.edge_code),
                     'source': str(head),
                     'target': sub_node
                 })
+                self.edge_code = self.edge_code + 1
 
         nodes = [self.raw_node_data[int(node_id)] for node_id in node_ids]
         self.graphy_data['nodes'] = nodes
