@@ -44,7 +44,7 @@ class VulRuleSaveEndPoint(AnonymousAndUserEndPoint):
                     rule.is_system = kwargs['is_system']
                     rule.create_by = kwargs['create_by']
                     rule.update_time = kwargs['timestamp']
-                    return R.success(msg='策略更新成功')
+                    return True, '策略更新成功'
 
             rule = IastVulRule(
                 rule_name=kwargs['rule_name'],
