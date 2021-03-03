@@ -21,9 +21,9 @@ class VulRuleEndPoint(AnonymousAndUserEndPoint):
             return R.success(status=202, msg='请先登录')
 
         if rule_type == const.RULE_USER:
-            queryset = IastVulRule.objects.filter(create_by=user.id)
+            queryset = IastVulRule.objects.filter(create_by=user.id, is_enable=const.RULE_IS_ENABLE)
         elif rule_type == const.RULE_SYSTEM:
-            queryset = IastVulRule.objects.filter(is_system=const.RULE_IS_SYSTEM)
+            queryset = IastVulRule.objects.filter(is_system=const.RULE_IS_SYSTEM, is_enable=const.RULE_IS_ENABLE)
         else:
             return R.success(status=203, msg='策略类型只能为user或system')
 
