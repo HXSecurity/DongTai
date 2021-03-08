@@ -30,17 +30,7 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
             # todo 根据条件，处理对应的路径
 
             if method_pool_id:
-                if request.user.is_active:
-                    method_pool = MethodPool.objects.filter(agent__in=self.get_auth_agents_with_user(request.user),
-                                                            id=method_pool_id).first()
-                else:
-                    # fixme 使用更加优雅的方法，开放靶场的agent数据给每一个用户
-                    dt_range_user = User.objects.filter(username=const.USER_BUGENV).first()
-                    if dt_range_user:
-                        method_pool = MethodPool.objects.filter(agent__in=self.get_auth_agents_with_user(dt_range_user),
-                                                                id=method_pool_id).first()
-                    else:
-                        R.failure(msg='no permission')
+                method_pool = self.get_method_pool(request.user, method_pool_id)
                 if method_pool:
                     data, link_count, method_count = self.search_all_links(method_pool.method_pool)
                     # todo 增加无效边的删除
@@ -62,6 +52,27 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
             return R.failure(msg='方法池ID为空')
         except ValueError as e:
             return R.failure(msg='page和pageSize只能为数字')
+
+    def get_method_pool(self, user, method_pool_id):
+        """
+        根据用户和方法池ID获取方法池对象
+        :param user:
+        :param method_pool_id:
+        :return:
+        """
+        query_user = None
+        if user.is_active:
+            query_user = user
+
+        dt_range_user = User.objects.filter(username=const.USER_BUGENV).first()
+        if dt_range_user:
+            query_user = dt_range_user
+
+        if query_user:
+            return MethodPool.objects.filter(
+                agent__in=self.get_auth_agents_with_user(query_user),
+                id=method_pool_id
+            ).first()
 
     def search_all_links(self, method_pool):
         # engine = VulEngine()
