@@ -35,7 +35,8 @@ class HookStrategy(PermissionsMixin):
     track = models.CharField(max_length=5, blank=True, null=True)
     create_time = models.IntegerField(blank=True, null=True)
     update_time = models.IntegerField(blank=True, null=True)
-    created_by = models.IntegerField(blank=True, null=True)
+    created_by = models.IntegerField(blank=True, null=True, )
+    enable = models.IntegerField(max_length=1, blank=True, null=False, default=1)
 
     class Meta:
         managed = False
