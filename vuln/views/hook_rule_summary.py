@@ -18,7 +18,7 @@ class HookRuleSummaryEndPoint(UserEndPoint):
         rule_type_count = rule_type_queryset.count()
 
         sink_type_queryset = rule_type_queryset.filter(type=const.RULE_SINK)
-        sink_count = HookStrategy.objects.filter(type__in=sink_type_queryset)
+        sink_count = HookStrategy.objects.filter(type__in=sink_type_queryset).count()
 
         rule_queryset = HookStrategy.objects.filter(type__in=rule_type_queryset)
         rule_count = rule_queryset.count()
