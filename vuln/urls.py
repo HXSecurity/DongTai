@@ -46,7 +46,6 @@ urlpatterns = [
     path('hook/rule/enable', HookRuleEnableEndPoint.as_view()),
     path('hook/rule/disable', HookRuleDisableEndPoint.as_view()),
     path('hook/rule/delete', HookRuleDeleteEndPoint.as_view()),
-    # todo 待开发接口
     path('hook/rule/add', HookRuleAddEndPoint.as_view()),
     path('hook/rule/modify', HookRuleModifyEndPoint.as_view()),
     path('hook/rule_type/add', HookRuleTypeAddEndPoint.as_view()),

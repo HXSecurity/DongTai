@@ -26,10 +26,10 @@ class HookRuleTypeEnableEndPoint(UserEndPoint):
             return R.failure(msg='策略不存在')
 
         rule = HookStrategy.objects.filter(id=rule_id, created_by=request.user.id).first()
-        rule_type = rule.type.first()
-        if rule_type:
-            rule_type.enable = const.ENABLE
-            rule.save()
-            return R.success(msg='启用成功')
-        else:
-            return R.failure(msg='策略类型不存在')
+        if rule:
+            rule_type = rule.type.first()
+            if rule_type:
+                rule_type.enable = const.ENABLE
+                rule.save()
+                return R.success(msg='启用成功')
+        return R.failure(msg='策略类型不存在')
