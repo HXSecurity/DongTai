@@ -23,7 +23,7 @@ class HookRuleSerialize(serializers.ModelSerializer):
 
     class Meta:
         model = HookStrategy
-        fields = ['id', 'rule_type', 'value', 'source', 'target', 'inherit', 'track', 'update_time', 'user']
+        fields = ['id', 'rule_type', 'value', 'source', 'target', 'inherit', 'track', 'update_time', 'enable', 'user']
 
     # fixme 修改策略类型获取方式，解决重复查询的问题
     def get_rule_type(self, obj):
