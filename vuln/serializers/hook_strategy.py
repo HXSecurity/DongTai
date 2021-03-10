@@ -19,6 +19,7 @@ class SinkSerialize(serializers.ModelSerializer):
 class HookRuleSerialize(serializers.ModelSerializer):
     USER = dict()
     rule_type = serializers.SerializerMethodField()
+    rule_type_id = serializers.SerializerMethodField()
     user = serializers.SerializerMethodField()
 
     class Meta:
@@ -32,6 +33,13 @@ class HookRuleSerialize(serializers.ModelSerializer):
             return rule_type.name
         else:
             return 'Unknown'
+
+    def get_rule_type_id(self, obj):
+        rule_type = obj.type.first()
+        if rule_type:
+            return rule_type.id
+        else:
+            return -1
 
     def get_user(self, obj):
         if obj.created_by not in self.USER:
