@@ -14,7 +14,7 @@ from vuln.models.hook_type import HookType
 class HookRuleSummaryEndPoint(UserEndPoint):
     def get(self, request):
         rule_type_queryset = HookType.objects.filter(enable=const.ENABLE,
-                                                     created_by__in=[request.user, id, const.SYSTEM_USER_ID])
+                                                     created_by__in=[request.user.id, const.SYSTEM_USER_ID])
         rule_type_count = rule_type_queryset.count()
 
         sink_type_queryset = rule_type_queryset.filter(type=const.RULE_SINK)

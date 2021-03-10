@@ -26,7 +26,7 @@ class HookRuleAddEndPoint(UserEndPoint):
         :return:
         """
         try:
-            rule_type = request.data.get('rule_type').strip()
+            rule_type = request.data.get('rule_type_id').strip()
             rule_value = request.data.get('rule_value').strip()
             rule_source = request.data.get('rule_source').strip()
             rule_target = request.data.get('rule_target').strip()
