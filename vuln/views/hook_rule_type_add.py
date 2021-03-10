@@ -4,11 +4,13 @@
 # datetime:2021/3/9 下午12:06
 # software: PyCharm
 # project: lingzhi-engine
+import json
 import time
 
 from lingzhi_engine import const
 from lingzhi_engine.base import R
 from vuln.base.method_pool import UserEndPoint
+from vuln.models.hook_talent_strategy import IastHookTalentStrategy
 from vuln.models.hook_type import HookType
 
 
@@ -43,4 +45,12 @@ class HookRuleTypeAddEndPoint(UserEndPoint):
         hook_type = HookType(enable=enable, type=rule_type, name=short_name, value=name, create_time=timestamp,
                              update_time=timestamp, created_by=request.user.id)
         hook_type.save()
+        # 将hook规则添加至策略集中
+        talent = request.user.get_talent()
+        if talent:
+            talent_rule = IastHookTalentStrategy.objects.filter(talent=talent).first()
+            if talent_rule:
+                rule_types = json.loads(talent_rule.values)
+                rule_types.append(hook_type.id)
+                talent_rule.save()
         return R.success(msg='规则类型保存成功')
