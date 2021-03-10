@@ -10,6 +10,7 @@ from vuln.base.method_pool import UserEndPoint
 from vuln.models.hook_strategy import HookStrategy
 from vuln.models.hook_type import HookType
 from vuln.serializers.hook_strategy import HookRuleSerialize
+from vuln.serializers.hook_type_strategy import HookTypeSerialize
 
 
 class HookRuleTypesEndPoint(UserEndPoint):
@@ -27,6 +28,8 @@ class HookRuleTypesEndPoint(UserEndPoint):
 
             page_size = request.query_params.get('pageSize', 20)
             page_size = int(page_size)
+            if page_size > const.MAX_PAGE_SIZE:
+                page_size = const.MAX_PAGE_SIZE
 
             return rule_type, page, page_size
         except Exception as e:
@@ -38,10 +41,8 @@ class HookRuleTypesEndPoint(UserEndPoint):
         if rule_type is None:
             return R.failure(msg='策略类型不存在')
 
-        rule_type_queryset = HookType.objects.filter(enable=const.ENABLE,
-                                                     created_by__in=[request.user.id, const.SYSTEM_USER_ID],
-                                                     type=rule_type)
-        rule_queryset = HookStrategy.objects.filter(type__in=rule_type_queryset)
-        page_summary, queryset = self.get_paginator(rule_queryset, page=page, page_size=page_size)
-        data = HookRuleSerialize(queryset, many=True).data
-        return R.success(data=data, page=page_summary)
+        queryset = HookType.objects.filter(enable=const.ENABLE,
+                                           created_by__in=[request.user.id, const.SYSTEM_USER_ID],
+                                           type=rule_type)
+        data = HookTypeSerialize(queryset, many=True).data
+        return R.success(data=data)

@@ -11,6 +11,7 @@ from vuln.models.hook_strategy import HookStrategy
 from vuln.models.hook_type import HookType
 from vuln.serializers.hook_strategy import HookRuleSerialize
 
+
 class HookRulesEndPoint(UserEndPoint):
     def parse_args(self, request):
         try:
@@ -26,6 +27,8 @@ class HookRulesEndPoint(UserEndPoint):
 
             page_size = request.query_params.get('pageSize', 20)
             page_size = int(page_size)
+            if page_size > const.MAX_PAGE_SIZE:
+                page_size = const.MAX_PAGE_SIZE
 
             # todo 增加搜索条件
             return rule_type, page, page_size
