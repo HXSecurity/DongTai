@@ -18,8 +18,8 @@ class HookRuleModifyEndPoint(UserEndPoint):
         :return:
         """
         try:
-            rule_id = request.data.get('rule_id').strip()
-            rule_type = request.data.get('rule_type_id').strip()
+            rule_id = request.data.get('rule_id')
+            rule_type = request.data.get('rule_type_id')
             rule_value = request.data.get('rule_value').strip()
             rule_source = request.data.get('rule_source').strip()
             rule_target = request.data.get('rule_target').strip()
@@ -31,7 +31,7 @@ class HookRuleModifyEndPoint(UserEndPoint):
             # todo 增加异场打印
             return None, None, None, None, None, None, None
 
-    def get(self, request):
+    def post(self, request):
         rule_id, rule_type, rule_value, rule_source, rule_target, inherit, is_track = self.parse_args(request)
         if all((rule_id, rule_type, rule_value, rule_source, rule_target, inherit, is_track)) is False:
             return R.failure(msg='策略类型不存在')
