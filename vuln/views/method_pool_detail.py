@@ -115,7 +115,7 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
         else:
             method_caller_set = self.convert_method_pool_to_set(method_pool.method_pool)
             if self.check_match(method_caller_set, source_set=sources, propagator_set=propagators):
-                links.append(json.loads(method_pool.method_pool))
+                links.append([json.loads(method_pool.method_pool)])
         return links
 
     def add_taint_links_to_all_links(self, taint_links, all_links):

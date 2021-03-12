@@ -41,8 +41,8 @@ class HookRulesEndPoint(UserEndPoint):
         if rule_type is None:
             return R.failure(msg='策略类型不存在')
 
-        rule_type_queryset = HookType.objects.filter(enable=const.ENABLE,
-                                                     created_by__in=[const.SYSTEM_USER_ID], type=rule_type)
+        rule_type_queryset = HookType.objects.filter(enable=const.ENABLE, created_by__in=[request.user.id],
+                                                     type=rule_type)
         rule_queryset = HookStrategy.objects.filter(type__in=rule_type_queryset)
         page_summary, queryset = self.get_paginator(rule_queryset, page=page, page_size=page_size)
         data = HookRuleSerialize(queryset, many=True).data

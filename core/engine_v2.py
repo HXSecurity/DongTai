@@ -162,9 +162,10 @@ class VulEngineV2(object):
             'dataType': 'source' if data['source'] else 'sql',
             'nodeType': classname,
             'conf': [
-                {'label': 'source', 'value': source},
-                {'label': 'target', 'value': target},
-                {'label': 'caller', 'value': f"{data['callerClass']}.{data['callerMethod']}()"}
+                {'label': '污点来源为', 'value': source},
+                {'label': '污点转换为', 'value': target},
+                {'label': '调用方法', 'value': f"{data['callerClass']}.{data['callerMethod']}()"},
+                {'label': '行号', 'value': data['callerLineNumber']}
             ]
         }
         return node
