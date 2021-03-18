@@ -48,7 +48,7 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
                         'taint_link': taint_links
                     })
                 else:
-                    R.failure(msg='数据不存在')
+                    return R.failure(msg='数据不存在或无权限访问')
             return R.failure(msg='方法池ID为空')
         except ValueError as e:
             return R.failure(msg='page和pageSize只能为数字')
@@ -64,9 +64,10 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
         if user.is_active:
             query_user = user
 
-        dt_range_user = User.objects.filter(username=const.USER_BUGENV).first()
-        if dt_range_user:
-            query_user = dt_range_user
+        if query_user is None:
+            dt_range_user = User.objects.filter(username=const.USER_BUGENV).first()
+            if dt_range_user:
+                query_user = dt_range_user
 
         if query_user:
             return MethodPool.objects.filter(
