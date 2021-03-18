@@ -4,6 +4,8 @@
 # datetime:2021/1/12 下午7:40
 # software: PyCharm
 # project: lingzhi-agent-server
+import logging
+
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -12,6 +14,8 @@ from rest_framework.views import APIView
 
 from account.models import User
 from vuln.models.agent import IastAgent
+
+logger = logging.getLogger('lingzhi.webapi')
 
 
 class EndPoint(APIView):
@@ -58,6 +62,7 @@ class EndPoint(APIView):
             response = handler(request, *args, **kwargs)
 
         except Exception as exc:
+            logger.error(f"HTTP请求处理出错，错误详情：{exc}")
             response = self.handle_exception(exc)
 
         self.response = self.finalize_response(request, response, *args, **kwargs)
@@ -111,8 +116,12 @@ class EndPoint(APIView):
         """
         return IastAgent.objects.filter(user__in=users)
 
-    def parse_args(self, request):
-        pass
+    def parse_args(self, request, func):
+        try:
+            return func(request)
+        except Exception as e:
+            logger.error(f"参数解析出错，错误原因：{e}")
+            return None
 
 
 class AnonymousAuthEndPoint(EndPoint):

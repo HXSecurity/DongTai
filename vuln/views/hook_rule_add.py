@@ -67,7 +67,7 @@ class HookRuleAddEndPoint(UserEndPoint):
         strategy = self.create_strategy(rule_value, rule_source, rule_target, inherit, is_track, request.user.id)
         if strategy:
             hook_type = HookType.objects.filter(id=rule_type,
-                                                created_by=(request.user.id, const.SYSTEM_USER_ID)).first()
+                                                created_by__in=(request.user.id, const.SYSTEM_USER_ID)).first()
             if hook_type:
                 hook_type.strategies.add(strategy)
                 return R.success(msg='策略创建成功')

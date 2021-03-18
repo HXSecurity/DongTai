@@ -4,12 +4,16 @@
 # datetime:2021/3/9 下午12:06
 # software: PyCharm
 # project: lingzhi-engine
+import logging
+
 from lingzhi_engine import const
 from lingzhi_engine.base import R
 from vuln.base.method_pool import UserEndPoint
 from vuln.models.hook_strategy import HookStrategy
 from vuln.models.hook_type import HookType
 from vuln.serializers.hook_strategy import HookRuleSerialize
+
+logger = logging.getLogger('lingzhi.webapi')
 
 
 class HookRulesEndPoint(UserEndPoint):
@@ -34,6 +38,7 @@ class HookRulesEndPoint(UserEndPoint):
             return rule_type, page, page_size
         except Exception as e:
             # todo 增加异场打印
+            logger.error(f"参数解析出错，错误原因：{e}")
             return None, None, None
 
     def get(self, request):
@@ -41,9 +46,14 @@ class HookRulesEndPoint(UserEndPoint):
         if rule_type is None:
             return R.failure(msg='策略类型不存在')
 
-        rule_type_queryset = HookType.objects.filter(enable=const.ENABLE, created_by__in=[request.user.id],
-                                                     type=rule_type)
-        rule_queryset = HookStrategy.objects.filter(type__in=rule_type_queryset)
-        page_summary, queryset = self.get_paginator(rule_queryset, page=page, page_size=page_size)
-        data = HookRuleSerialize(queryset, many=True).data
-        return R.success(data=data, page=page_summary)
+        try:
+            rule_type_queryset = HookType.objects.filter(enable=const.ENABLE, created_by__in=[request.user.id],
+                                                         type=rule_type)
+            rule_queryset = HookStrategy.objects.filter(type__in=rule_type_queryset,
+                                                        enable__in=(const.ENABLE, const.DISABLE))
+            page_summary, queryset = self.get_paginator(rule_queryset, page=page, page_size=page_size)
+            data = HookRuleSerialize(queryset, many=True).data
+            return R.success(data=data, page=page_summary)
+        except Exception as e:
+            logger.error(f"规则读取出错，错误详情：{e}")
+            return R.failure()

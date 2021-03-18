@@ -4,10 +4,14 @@
 # datetime:2021/3/9 下午12:06
 # software: PyCharm
 # project: lingzhi-engine
+import logging
+
 from lingzhi_engine import const
 from lingzhi_engine.base import R
 from vuln.base.method_pool import UserEndPoint
 from vuln.models.hook_strategy import HookStrategy
+
+logger = logging.getLogger('lingzhi.webapi')
 
 
 class HookRuleTypeEnableEndPoint(UserEndPoint):
@@ -17,7 +21,7 @@ class HookRuleTypeEnableEndPoint(UserEndPoint):
             rule_type = int(rule_id)
             return rule_type
         except Exception as e:
-            # todo 增加异场打印
+            logger.error(f"参数处理失败，错误详情：{e}")
             return None
 
     def get(self, request):

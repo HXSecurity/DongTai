@@ -4,13 +4,15 @@
 # datetime:2021/3/9 下午12:06
 # software: PyCharm
 # project: lingzhi-engine
+import logging
+
 from lingzhi_engine import const
 from lingzhi_engine.base import R
 from vuln.base.method_pool import UserEndPoint
-from vuln.models.hook_strategy import HookStrategy
 from vuln.models.hook_type import HookType
-from vuln.serializers.hook_strategy import HookRuleSerialize
 from vuln.serializers.hook_type_strategy import HookTypeSerialize
+
+logger = logging.getLogger('lingzhi.webapi')
 
 
 class HookRuleTypesEndPoint(UserEndPoint):
@@ -33,7 +35,7 @@ class HookRuleTypesEndPoint(UserEndPoint):
 
             return rule_type, page, page_size
         except Exception as e:
-            # todo 增加异场打印
+            logger.error(f"参数解析出错，错误原因：{e}")
             return None, None, None
 
     def get(self, request):
