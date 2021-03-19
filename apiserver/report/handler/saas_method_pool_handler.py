@@ -7,11 +7,14 @@
 import time, json
 from hashlib import sha1
 import requests
+import logging
 
 from AgentServer.settings import BASE_ENGINE_URL
 from apiserver.models.agent import IastAgent
 from apiserver.models.agent_method_pool import IastAgentMethodPool
 from apiserver.report.handler.report_handler_interface import IReportHandler
+
+logger = logging.getLogger('lingzhi.api_server')
 
 
 class SaasMethodPoolHandler(IReportHandler):
@@ -78,7 +81,11 @@ class SaasMethodPoolHandler(IReportHandler):
 
     @staticmethod
     def send_to_engine(method_pool_id):
-        requests.get(url=BASE_ENGINE_URL.format(id=method_pool_id))
+        logger.info(f'[+] send method_pool [{method_pool_id}] to engine')
+        try:
+            requests.get(url=BASE_ENGINE_URL.format(id=method_pool_id))
+        except Exception as e:
+            logger.info(f'[-] Failure: send method_pool [{method_pool_id}], Error: {e}')
 
     def calc_hash(self):
         sign_raw = ''
