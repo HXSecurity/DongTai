@@ -8,6 +8,9 @@
 from core.tasks import search_vul_from_strategy, search_vul_from_method_pool, search_sink_from_method_pool, \
     search_sink_from_strategy
 from lingzhi_engine.base import R, EndPoint
+import logging
+
+logger = logging.getLogger('lingzhi.webapi')
 
 
 class StrategyRunEndPoint(EndPoint):
@@ -33,14 +36,19 @@ class StrategyRunEndPoint(EndPoint):
         try:
             method_pool_id = request.query_params.get('method_pool_id')
             if method_pool_id:
+                logger.info(f'[+] 接收方法池 [{method_pool_id}]')
                 search_vul_from_method_pool.delay(method_pool_id)
                 search_sink_from_method_pool.delay(method_pool_id)
+                logger.info(f'方法池扫描任务 [{method_pool_id}] 已下发')
 
             strategy_id = request.query_params.get('strategy_id')
             if strategy_id:
+                logger.info(f'[+] 接收方法池 [{method_pool_id}]')
                 search_vul_from_strategy.delay(strategy_id)
                 search_sink_from_strategy.delay(strategy_id)
+                logger.info(f'方法池扫描任务 [{method_pool_id}] 已下发')
 
             return R.success()
         except Exception as e:
+            logger.info(f'[-] 方法池扫描任务下发失败，原因：{e}')
             return R.failure(msg=f"{e}")
