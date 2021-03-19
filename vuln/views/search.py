@@ -7,22 +7,19 @@
 import json
 import logging
 
-from account.models import User
 from core.engine import VulEngine
-from lingzhi_engine import const
-from lingzhi_engine.base import EndPoint, R
+from lingzhi_engine.base import R
+from vuln.base.method_pool import AnonymousAndUserEndPoint
 from vuln.models.agent_method_pool import MethodPool
 from vuln.serializers.method_pool import MethodPoolListSerialize
 
 logger = logging.getLogger("django")
 
 
-class SearchEndPoint(EndPoint):
+class SearchEndPoint(AnonymousAndUserEndPoint):
     """
     引擎注册接口
     """
-    authentication_classes = []
-    permission_classes = []
     name = "api-engine-search"
     description = "引擎-根据策略搜索数据"
 
