@@ -35,6 +35,7 @@ class StrategyRunEndPoint(EndPoint):
         # 注册
         try:
             method_pool_id = request.query_params.get('method_pool_id')
+            print(method_pool_id)
             if method_pool_id:
                 logger.info(f'[+] 接收方法池 [{method_pool_id}]')
                 search_vul_from_method_pool.delay(method_pool_id)
@@ -42,11 +43,12 @@ class StrategyRunEndPoint(EndPoint):
                 logger.info(f'方法池扫描任务 [{method_pool_id}] 已下发')
 
             strategy_id = request.query_params.get('strategy_id')
+            print(strategy_id)
             if strategy_id:
-                logger.info(f'[+] 接收方法池 [{method_pool_id}]')
+                logger.info(f'[+] 接收策略 [{strategy_id}]')
                 search_vul_from_strategy.delay(strategy_id)
                 search_sink_from_strategy.delay(strategy_id)
-                logger.info(f'方法池扫描任务 [{method_pool_id}] 已下发')
+                logger.info(f'策略扫描任务 [{strategy_id}] 已下发')
 
             return R.success()
         except Exception as e:
