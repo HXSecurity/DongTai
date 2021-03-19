@@ -7,7 +7,9 @@
 import json
 import logging
 
+from account.models import User
 from core.engine import VulEngine
+from lingzhi_engine import const
 from lingzhi_engine.base import EndPoint, R
 from vuln.models.agent_method_pool import MethodPool
 from vuln.serializers.method_pool import MethodPoolListSerialize
@@ -39,8 +41,14 @@ class SearchEndPoint(EndPoint):
             latest_id, page_size, rule_name, rule_msg, rule_level, source_set, sink_set, propagator_set = \
                 self.parse_search_condition(request)
             # fixme 考虑入库时直接将数据拆分保存
-            method_pool_ids = self.get_match_methods(source_set, propagator_set, sink_set, latest_id=latest_id,
-                                                     match_times=page_size, size=page_size * 5)
+            method_pool_ids = self.get_match_methods(
+                agents=self.get_auth_and_anonymous_agents(request.user),
+                source_set=source_set,
+                propagator_set=propagator_set,
+                sink_set=sink_set,
+                latest_id=latest_id,
+                match_times=page_size,
+                size=page_size * 5)
             if method_pool_ids:
                 return R.success(
                     data=self.get_result_data(method_pool_ids, rule_name, rule_level, source_set, sink_set,
@@ -76,8 +84,9 @@ class SearchEndPoint(EndPoint):
 
         return latest_id, page_size, rule_id, rule_msg, rule_level, source_set, sink_set, propagator_set
 
-    def get_match_methods(self, source_set, propagator_set, sink_set, latest_id=0, match_times=2, index=0, size=20):
-        queryset = MethodPool.objects.filter(id__gt=latest_id).order_by('id')
+    def get_match_methods(self, agents, source_set, propagator_set, sink_set, latest_id=0, match_times=2, index=0,
+                          size=20):
+        queryset = MethodPool.objects.filter(id__gt=latest_id, agent__in=agents).order_by('id')
         matches = list()
 
         while True:

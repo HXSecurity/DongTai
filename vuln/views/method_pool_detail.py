@@ -7,10 +7,8 @@
 import json
 import logging
 
-from account.models import User
 from core.engine import VulEngine
 from core.engine_v2 import VulEngineV2
-from lingzhi_engine import const
 from lingzhi_engine.base import R
 from vuln.base.method_pool import AnonymousAndUserEndPoint
 from vuln.models.agent_method_pool import MethodPool
@@ -30,7 +28,10 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
             # todo 根据条件，处理对应的路径
 
             if method_pool_id:
-                method_pool = self.get_method_pool(request.user, method_pool_id)
+                method_pool = MethodPool.objects.filter(
+                    agent__in=self.get_auth_and_anonymous_agents(request.user),
+                    id=method_pool_id
+                ).first()
                 if method_pool:
                     data, link_count, method_count = self.search_all_links(method_pool.method_pool)
                     # todo 增加无效边的删除
@@ -60,20 +61,10 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
         :param method_pool_id:
         :return:
         """
-        query_user = None
-        if user.is_active:
-            query_user = user
-
-        if query_user is None:
-            dt_range_user = User.objects.filter(username=const.USER_BUGENV).first()
-            if dt_range_user:
-                query_user = dt_range_user
-
-        if query_user:
-            return MethodPool.objects.filter(
-                agent__in=self.get_auth_agents_with_user(query_user),
-                id=method_pool_id
-            ).first()
+        return MethodPool.objects.filter(
+            agent__in=self.get_auth_and_anonymous_agents(user),
+            id=method_pool_id
+        ).first()
 
     def search_all_links(self, method_pool):
         # engine = VulEngine()

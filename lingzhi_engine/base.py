@@ -13,6 +13,7 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from rest_framework.views import APIView
 
 from account.models import User
+from lingzhi_engine import const
 from vuln.models.agent import IastAgent
 
 logger = logging.getLogger('lingzhi.webapi')
@@ -115,6 +116,18 @@ class EndPoint(APIView):
         :return:
         """
         return IastAgent.objects.filter(user__in=users)
+
+    @staticmethod
+    def get_auth_and_anonymous_agents(user):
+        query_user = None
+        if user.is_active:
+            query_user = user
+
+        if query_user is None:
+            dt_range_user = User.objects.filter(username=const.USER_BUGENV).first()
+            if dt_range_user:
+                query_user = dt_range_user
+        return EndPoint.get_auth_agents_with_user(query_user)
 
     def parse_args(self, request, func):
         try:
