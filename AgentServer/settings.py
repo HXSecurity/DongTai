@@ -132,8 +132,7 @@ STATIC_URL = '/static/'
 PRIVATE_KEY = os.path.join(BASE_DIR, 'config', 'rsa_keys/private_key.pem')
 PUBLIC_KEY = os.path.join(BASE_DIR, 'config', 'rsa_keys/public_key.pem')
 
-BASE_ENGINE_URL = f'{config.get("engine", "url")}/api/engine/run?method_pool_id={id}'
-# os.environ.get("ENGINE_URL", 'http://127.0.0.1:8002') + '/api/engine/run?method_pool_id={id}'
+BASE_ENGINE_URL = config.get("engine", "url") + '/api/engine/run?method_pool_id={id}'
 
 LOGGING = {
     'version': 1,
