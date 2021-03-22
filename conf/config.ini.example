@@ -1,0 +1,15 @@
+[mysql]
+host = mysql-server
+port = mysql-port
+name = database_name
+user = username
+password = password
+
+[redis]
+host = redis-server
+port = redis-port
+password = password
+db = <celery broker db>
+
+[engine]
+url = engine-url
