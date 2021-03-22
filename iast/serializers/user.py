@@ -1,0 +1,26 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+# author:owefsad
+# datetime:2020/11/27 下午5:41
+# software: PyCharm
+# project: lingzhi-webapi
+from rest_framework import serializers
+
+from iast.models import User
+
+
+class UserSerializer(serializers.ModelSerializer):
+    department = serializers.SerializerMethodField()
+    talent = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'is_superuser', 'phone', 'talent', 'department']
+
+    def get_department(self, obj):
+        department = obj.department.filter().first()
+        return {'name': department.get_department_name(), 'id': department.id} if department else {'name': '', 'id': -1}
+
+    def get_talent(self, obj):
+        talent = obj.get_talent()
+        return talent.get_talent_name() if talent else ''
