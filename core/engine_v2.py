@@ -80,7 +80,6 @@ class VulEngineV2(object):
     def hit_vul_method(self, method):
         if f"{method.get('className')}.{method.get('methodName')}" == self.vul_method_signature:
             self.hit_vul = True
-            # self.vul_stack.append(method)
             self.pool_value = method.get('sourceHash')
             return True
 
