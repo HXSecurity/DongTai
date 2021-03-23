@@ -1,0 +1,15 @@
+[submodule "dongtai-webapi"]
+	path = dongtai-webapi
+	url = https://github.com/huoxianclub/dongtai-webapi.git
+[submodule "dongtai-engine"]
+	path = dongtai-engine
+	url = https://github.com/huoxianclub/dongtai-engine.git
+[submodule "dongtai-openapi"]
+	path = dongtai-openapi
+	url = https://github.com/huoxianclub/dongtai-openapi.git
+[submodule "dongtai-web"]
+	path = dongtai-web
+	url = https://github.com/huoxianclub/dongtai-web.git
+[submodule "agent/dongtai-agent-java"]
+	path = agent/dongtai-agent-java
+	url = https://github.com/huoxianclub/dongtai-agent-java.git
