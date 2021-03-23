@@ -34,9 +34,32 @@
 
 - 复制配置文件`conf/config.ini.example`为`conf/config.ini`并需改其中的配置；其中，`engine`对应的url为`dongtai-engine`的服务地址，`apiserver`对应的url为`dongtai-openapi`的服务地址
 
-3.运行服务 
+3.运行服务
 
 - 运行`python manage.py runserver`启动服务
+
+**容器部署**
+
+1.初始化数据库
+
+- 安装MySql 5.7，创建数据库`dongtai-webapi`，运行数据库文件`conf/db.sql`
+- 进入`webapi`目录，运行`python manage.py createsuperuser`命令创建管理员
+
+2.修改配置文件
+
+复制配置文件`conf/config.ini.example`为`conf/config.ini`并需改其中的配置；其中：
+- `engine`对应的url为`dongtai-engine`的服务地址
+- `apiserver`对应的url为`dongtai-openapi`的服务地址
+
+3.构建镜像
+```
+$ docker build -t huoxian/dongtai-openapi:latest .
+```
+
+4.启动容器
+```
+$ docker run -d -p 8000:8000 --restart=always --name dongtai-openapi huoxian/dongtai-openapi:latest
+```
 
 ### 文档
 - [官方文档](https://huoxianclub.github.io/LingZhi/#/)

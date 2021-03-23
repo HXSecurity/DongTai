@@ -109,7 +109,7 @@ XFF_TRUSTED_PROXY_DEPTH = 5
 
 # cstf token相关配置
 CSRF_COOKIE_NAME = "DTCsrfToken"
-CSRF_COOKIE_DOMAIN = "iast.huoxian.cn"
+#CSRF_COOKIE_DOMAIN = "iast.huoxian.cn"
 CSRF_HEADER_NAME = "HTTP_CSRF_TOKEN"
 AGENT_UPGRADE_URL = "https://www.huoxian.cn"
 
@@ -168,7 +168,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'webapi.wsgi.application'
 
-if sys.argv[1] == 'test':
+if len(sys.argv) > 1 and sys.argv[1] == 'test':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

@@ -2,17 +2,17 @@
 host = mysql-server
 port = mysql-port
 name = database_name
-user = username
-password = password
+user = mysql_username
+password = mysql_password
 
 [redis]
-host = redis-server
-port = redis-port
-password = password
-db = broker-db
+host = redis_server
+port = redis_port
+password = redis_password
+db = broker_db
 
 [engine]
-url = engine-url
+url = http://engine_url
 
 [apiserver]
-url = api-server-url
+url = http://api_server_url
