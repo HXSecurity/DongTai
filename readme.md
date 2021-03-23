@@ -1,7 +1,21 @@
 # dongtai-openapi
 > 负责与agent相关的api服务，包括：接收agent注册信息、接收心跳信息、接收错误日志信息、接收组件信息、接收漏洞信息、接收权限变更信息、发送引擎控制命令、发送hook点策略、下载检测引擎；
 
-## 源码部署
+## 项目介绍
+“火线～洞态IAST”是一款专为甲方安全人员、甲乙代码审计工程师和0 Day漏洞挖掘人员量身打造的辅助工具，可用于集成devops环境进行漏洞检测、作为代码审计的辅助工具和自动化挖掘0 Day。
+
+“火线～洞态IAST”具有五大模块，分别是`dongtai-webapi`、`dongtai-openapi`、`dongtai-engine`、`dongtai-web`、`agent`，其中：
+- `dongtai-webapi`用于与`dongtai-web`交互，负责用户相关的API请求；
+- `dongtai-openapi`用于与`agent`交互，处理agent上报的数据，向agent下发策略，控制agent的运行等
+- `dongtai-engine`用于对`dongtai-openapi`接收到的数据进行分析、处理，计算存在的漏洞和可用的污点调用链等
+- `dongtai-web`为“火线～洞态IAST”的前端项目，负责页面展示
+- `agent`为各语言的数据采集端，从安装探针的项目中采集相对应的数据，发送至`dongtai-openapi`服务
+
+
+### 应用场景
+“火线～洞态IAST”可应用于：`devsecops`阶段做自动化漏洞检测、开源软件/组件挖掘通用漏洞、上线前安全测试等场景，主要目的是降低现有漏洞检测的工作量，释放安全从业人员的生产力来做更专业的事情。
+
+### 部署方案
 
 1.配置安装`dongtai-webapi`服务
 
@@ -17,33 +31,6 @@
 
 - 运行`python manage.py runserver`启动服务
 
-### 接口
-- [x] 下载agent
-- [x] 自动化部署脚本下载
-- [x] 检测引擎下载
-- [x] agent注册接口
-- [x] 查询检测引擎更新标志
-- [x] 修改检测引擎更新标志
-- [x] 加载HOOK策略
-- [x] 加载agent配置
-- [x] 上传报告
-- [ ] 获取重放请求
-
-### 检测相关jar包
-- iast-agent.jar
-- iast-inject.jar
-- 高版本iast-core.jar
-- 低版本iast-core.jar : 6d791d60368bf7b1899a6b252c278ac
-
-jar包检测方法，计算jar包的SHA-1/MD5，与标准数据进行对比，检测下载的jar包是否正确
-
-| JAR包名称 | 哈希算法 | 哈希值 |
-| --- | ---- | --- |
-| iast-agent | MD5 | fb120d4c59e60c0a3b3bc31ed595225f |
-| iast-agent | SHA-1 | c6040c9797a9926553960ca9edf1f777142a63ba |
-| iast-inject | MD5 | c41164a757400b40e9e10b5a3ca32218 |
-| iast-inject | SHA-1 | 58102b2f34e16cc1c7da98421c4872efdbbe0d70 |
-| 低版本iast-core | MD5 | ed40fe3ad49397bb8c9700bab4b40596 |
-| 低版本iast-core | SHA-1 | b6c9607d608b4623defa50a5bf377bfe3bb1ab95 |
-| 高版本iast-core | MD5 | 08d8c5b5d8ce8b93994fdb889d02d197 |
-| 高版本iast-core | SHA-1 | b02980a245a633a90a8740d8dc7476e20b2ed123 |
+### 文档
+- [官方文档](https://huoxianclub.github.io/LingZhi/#/)
+- [快速体验](http://aws.iast.huoxian.cn:8000/login)
