@@ -18,6 +18,8 @@
 
 ### 部署方案
 
+**源码部署**
+
 1.配置安装`dongtai-webapi`服务
 
 2.修改配置文件
@@ -31,6 +33,28 @@
 3.运行服务 
 
 - 运行`python manage.py runserver`启动服务
+
+**容器部署**
+
+1.确保已通过[dongtai-webapi](https://github.com/huoxianclub/dongtai-webapi#%E9%83%A8%E7%BD%B2%E6%96%B9%E6%A1%88)创建并部署数据库
+
+2.修改配置文件
+
+复制配置文件`conf/config.ini.example`为`conf/config.ini`并需改其中的配置；其中：
+- `engine`对应的url为`dongtai-engine`的服务地址
+- `apiserver`对应的url为`dongtai-openapi`的服务地址
+- 数据库配置为`dongtai-webapi`服务所使用的数据库
+
+3.构建镜像
+```
+$ docker build -t huoxian/dongtai-engine:latest .
+```
+
+4.启动容器
+```
+$ docker run -d -p 8001:8000 --restart=always --name dongtai-engine huoxian/dongtai-engine:latest
+```
+
 
 ### 文档
 - [官方文档](https://huoxianclub.github.io/LingZhi/#/)

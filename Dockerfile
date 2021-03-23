@@ -16,10 +16,10 @@ RUN echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ buster main contrib n
 RUN curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add - \
     && apt-key fingerprint ABF5BD827BD9BF62 \
     && apt-get update -y \
-    && apt install -y libc6-dev unzip  vim cron swig openjdk-11-jdk
+    && apt install -y libc6-dev unzip  vim cron swig
 
 COPY requirements.txt /opt/iast/apiserver/requirements.txt
-RUN pip3 install -r /opt/iast/apiserver/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/ --trusted-host mirrors.aliyun.com
+RUN pip3 install --upgrade pip && pip3 install -r /opt/iast/apiserver/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/ --trusted-host mirrors.aliyun.com
 
 COPY . /opt/iast/engine
 WORKDIR /opt/iast/engine
