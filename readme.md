@@ -1,5 +1,21 @@
 # IAST云端检测引擎
 
+## 源码部署
+
+1.配置安装`dongtai-webapi`服务
+
+2.修改配置文件
+
+复制配置文件`conf/config.ini.example`为`conf/config.ini`并需改其中的配置；其中：
+
+- `engine`对应的url为`dongtai-engine`的服务地址
+- `apiserver`对应的url为`dongtai-openapi`的服务地址
+- 数据库配置为`dongtai-webapi`服务所使用的数据库
+
+3.运行服务 
+
+- 运行`python manage.py runserver`启动服务
+
 ## 功能
 - 根据hook规则，查找漏洞
 
