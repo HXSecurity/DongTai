@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import sys
 from configparser import ConfigParser
 
 config = ConfigParser()
@@ -167,17 +168,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'webapi.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {'charset': 'utf8mb4'},
-        'USER': config.get("mysql", 'user'),
-        'NAME': config.get("mysql", 'name'),
-        'PASSWORD': config.get("mysql", 'password'),
-        'HOST': config.get("mysql", 'host'),
-        'PORT': config.get("mysql", 'port'),
+if sys.argv[1] == 'test':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'OPTIONS': {'charset': 'utf8mb4'},
+            'USER': config.get("mysql", 'user'),
+            'NAME': config.get("mysql", 'name'),
+            'PASSWORD': config.get("mysql", 'password'),
+            'HOST': config.get("mysql", 'host'),
+            'PORT': config.get("mysql", 'port'),
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -232,7 +241,6 @@ LOGGING = {
         },
     }
 }
-
 
 REST_PROXY = {
     'HOST': config.get("engine", 'url'),
