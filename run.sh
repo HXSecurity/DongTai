@@ -82,6 +82,11 @@ build_web(){
     cd $CURRENT_PATH
 }
 
+download_source_code(){
+    git submodule init
+    git submodule update
+}
+
 while getopts "i:" arg #选项后面的冒号表示该选项需要参数
 do
     case $arg in
@@ -100,6 +105,11 @@ if [ ! $IP ]; then
     echo "Usage: run.sh -i <ip>, current server ip addr, eg: ./run.sh -i 192.168.2.155"
 else
     echo "[+] 开始初始化服务及配置，当前服务器IP：$IP"
+
+    echo -e "\033[33m[+] 开始下载代码...\033[0m"
+    download_source_code
+    echo -e "\033[32m[*]\033[0m 代码下载成功，准备构建"
+
     echo -e "\033[33m[+] 开始构建mysql服务...\033[0m"
     #build_mysql
     echo -e "\033[32m[*]\033[0m mysql服务启动成功"

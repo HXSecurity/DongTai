@@ -27,6 +27,12 @@
 
 Linux/Mac环境，安装docker服务时，可运行`run.sh`脚本，指定当前及机器的内网IP地址，如：192.168.0.1
 ```
+# 拉取最新的代码
+$ git clone https://github.com/huoxianclub/dongtai
+
+$ cd dongtai
+
+# 运行shell脚本，一键部署
 $ bash run.sh -i 192.168.0.1
 ```
 即可成功打包docker镜像并运行，运行之后，通过：http://内网地址 访问即可
