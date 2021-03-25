@@ -18,6 +18,7 @@ sleep 10
 
 echo "init database"
 mysql -uroot -p"dongtai-iast" < /opt/db.sql
+mysql -uroot -p"dongtai-iast" < /opt/db.sql
 
 echo "hello" > /tmp/a.log
 tail -f /tmp/a.log
