@@ -33,7 +33,7 @@ $ git clone https://github.com/huoxianclub/DongTai.git DongTai
 $ cd DongTai
 
 # 运行shell脚本，一键部署
-$ bash build.sh -i 192.168.0.1
+$ bash build.sh
 ```
 即可成功打包docker镜像并运行，运行之后，通过：http://内网地址 访问即可
 
