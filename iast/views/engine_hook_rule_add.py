@@ -4,8 +4,8 @@
 # datetime:2021/2/19 下午3:59
 # software: PyCharm
 # project: lingzhi-webapi
-from base.endpoint import SessionAuthProxyView
+from base.endpoint import MixinAuthPoxyView
 
 
-class EngineHookRuleAddEndPoint(SessionAuthProxyView):
+class EngineHookRuleAddEndPoint(MixinAuthPoxyView):
     source = 'api/engine/hook/rule/add'
