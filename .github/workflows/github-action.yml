@@ -27,7 +27,7 @@ jobs:
         uses: joelwmale/webhook-action@master
         with:
           url: ${{ secrets.WEBHOOK_URL }}
-          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "🚀🚀 开始编译构建**DongTai-webapi**","tag": "lark_md"}}, {"header": {"title": {"content": "开始构建DongTai-webapi","tag": "plain_text"}}}}'
+          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "🚀🚀 开始编译构建**DongTai-webapi**","tag": "lark_md"}}],"header": {"title": {"content": "开始构建DongTai-webapi","tag": "plain_text"}}}}'
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Set up Python 3.7
