@@ -55,4 +55,5 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
+          cp conf/config.ini.example conf/config.ini
           python3 manage.py test
