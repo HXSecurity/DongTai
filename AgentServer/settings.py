@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import sys
 from configparser import ConfigParser
 
 config = ConfigParser()
@@ -88,18 +89,25 @@ WSGI_APPLICATION = 'AgentServer.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {'charset': 'utf8mb4'},
-        'USER': config.get("mysql", 'user'),
-        'NAME': config.get("mysql", 'name'),
-        'PASSWORD': config.get("mysql", 'password'),
-        'HOST': config.get("mysql", 'host'),
-        'PORT': config.get("mysql", 'port'),
+if len(sys.argv) > 1 and sys.argv[1] == 'test':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'OPTIONS': {'charset': 'utf8mb4'},
+            'USER': config.get("mysql", 'user'),
+            'NAME': config.get("mysql", 'name'),
+            'PASSWORD': config.get("mysql", 'password'),
+            'HOST': config.get("mysql", 'host'),
+            'PORT': config.get("mysql", 'port'),
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
