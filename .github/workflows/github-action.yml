@@ -27,7 +27,7 @@ jobs:
         uses: joelwmale/webhook-action@master
         with:
           url: ${{ secrets.WEBHOOK_URL }}
-          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "**触发操作：** $GITHUB_EVENT_NAME\n**提交人：** $GITHUB_ACTOR\n**SHA-1 ** $GITHUB_SHA","tag": "lark_md"}}, {"actions": [{"tag": "button","text": {"content": "构建详情 :玫瑰:","tag": "lark_md"},"url": "$GITHUB_SERVER_URL","type": "default","value": {}}],"tag": "action"}],"header": {"title": {"content": "$GITHUB_REPOSITORY构建开始","tag": "plain_text"}}}}'
+          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "**行为 ** ${{GITHUB_EVENT_NAME}}\n**提交人：** $GITHUB_ACTOR\n**SHA-1 ** $GITHUB_SHA","tag": "lark_md"}}, {"actions": [{"tag": "button","text": {"content": "构建详情 :玫瑰:","tag": "lark_md"},"url": "$GITHUB_SERVER_URL","type": "default","value": {}}],"tag": "action"}],"header": {"title": {"content": "$GITHUB_REPOSITORY构建开始","tag": "plain_text"}}}}'
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Set up Python 3.7
