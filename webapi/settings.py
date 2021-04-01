@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import sys
 from configparser import ConfigParser
 
 config = ConfigParser()
@@ -40,13 +41,8 @@ SECRET_KEY = ranstr(50)
 DEBUG = os.environ.get("debug", 'false') == 'true'
 # DEBUG = True
 ALLOWED_HOSTS = ['*']
-WH_GROUP_NAME = "wh"
-COMPANY_GROUP_NAME = "company"
-WH_GROUP_PASSWORD = "secnium-auth-fire"
-COMPANY_ADMIN_GROUP_NAME = "company_admin"
 
 # Application definition
-# token过期天数
 TOKEN_EXP_DAY = 14
 
 INSTALLED_APPS = [
@@ -56,7 +52,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_crontab',
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
@@ -82,8 +77,8 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle'
     ),
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '100/min',
-        'user': '1000/min'
+        'anon': '1000/min',
+        'user': '5000/min'
     },
 }
 
@@ -103,12 +98,9 @@ MIDDLEWARE = [
 ]
 
 XFF_TRUSTED_PROXY_DEPTH = 5
-# XFF_REQUIRE_HEADER = True
-# XFF_ALWAYS_PROXY = True
 
 # cstf token相关配置
 CSRF_COOKIE_NAME = "DTCsrfToken"
-CSRF_COOKIE_DOMAIN = "iast.huoxian.cn"
 CSRF_HEADER_NAME = "HTTP_CSRF_TOKEN"
 AGENT_UPGRADE_URL = "https://www.huoxian.cn"
 
@@ -142,10 +134,6 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
-# captcha相关配置
-CAPTCHA_IMAGE_SIZE = (80, 36)  # 设置 captcha 图片大小
-CAPTCHA_LENGTH = 6  # 字符个数
-CAPTCHA_TIMEOUT = 1  # 超时(minutes)
 
 ROOT_URLCONF = 'webapi.urls'
 
@@ -167,17 +155,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'webapi.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {'charset': 'utf8mb4'},
-        'USER': config.get("mysql", 'user'),
-        'NAME': config.get("mysql", 'name'),
-        'PASSWORD': config.get("mysql", 'password'),
-        'HOST': config.get("mysql", 'host'),
-        'PORT': config.get("mysql", 'port'),
+if len(sys.argv) > 1 and sys.argv[1] == 'test':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'OPTIONS': {'charset': 'utf8mb4'},
+            'USER': config.get("mysql", 'user'),
+            'NAME': config.get("mysql", 'name'),
+            'PASSWORD': config.get("mysql", 'password'),
+            'HOST': config.get("mysql", 'host'),
+            'PORT': config.get("mysql", 'port'),
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -232,7 +228,6 @@ LOGGING = {
         },
     }
 }
-
 
 REST_PROXY = {
     'HOST': config.get("engine", 'url'),

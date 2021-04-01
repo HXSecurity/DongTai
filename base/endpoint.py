@@ -202,5 +202,9 @@ class SessionAuthProxyView(ProxyView):
         return headers
 
 
+class MixinAuthPoxyView(SessionAuthProxyView):
+    authentication_classes = (SessionAuthentication, TokenAuthentication)
+
+
 class AnonymousAuthProxyView(ProxyView):
     authentication_classes = (SessionAuthentication,)

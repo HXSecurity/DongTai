@@ -108,7 +108,7 @@ class VulnSummary(UserEndPoint):
             project_ids = [project["id"] for project in projects]
             auth_agents = auth_agents.filter(bind_project_id__in=project_ids)
 
-        project_id = request.query_params.get('project_id')  # 项目名称， fixme 后续统一修改
+        project_id = request.query_params.get('projectId')  # 项目名称， fixme 后续统一修改
         if project_id and project_id != '':
             auth_agents = auth_agents.filter(bind_project_id=project_id)
 
