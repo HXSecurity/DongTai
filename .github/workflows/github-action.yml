@@ -23,7 +23,7 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: notify
+      - name: start-build
         uses: joelwmale/webhook-action@master
         with:
           url: ${{ secrets.WEBHOOK_URL }}
@@ -54,3 +54,10 @@ jobs:
         run: |
           cp conf/config.ini.example conf/config.ini
           python3 manage.py test
+
+      - name: finish build
+        uses: joelwmale/webhook-action@master
+        with:
+          url: ${{ secrets.WEBHOOK_URL }}
+          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "🚀🚀 开始编译构建**DongTai-webapi**","tag": "lark_md"}}],"header": {"title": {"content": "项目DongTai-webapi构建完成","tag": "plain_text"}}}}'
+          
