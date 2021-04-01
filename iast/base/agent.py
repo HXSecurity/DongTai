@@ -129,12 +129,7 @@ def get_sca_count(users):
 # 通过agent_id 获取 漏洞分类汇总 详情
 # 漏洞类型 漏洞危害等级 首次发现时间 最近发现时间 漏洞地址  漏洞详情  编码语言
 def get_vul_count_by_agent(agent_ids, vid, user):
-    if user.is_talent_admin():
-        typeInfo = IastVulnerabilityModel.objects.filter(
-            agent_id__in=agent_ids).values().order_by("level")
-    else:
-        typeInfo = IastVulnerabilityModel.objects.filter(
-            agent_id__in=agent_ids, user=user).values().order_by("level")
+    typeInfo = IastVulnerabilityModel.objects.filter(agent_id__in=agent_ids).values().order_by("level")
     if vid:
         typeInfo = typeInfo.filter(id=vid)
     type_summary = []
@@ -182,7 +177,6 @@ def get_vul_count_by_agent(agent_ids, vid, user):
                     methodname = str(full_stack.get("methodname", ""))
                 except Exception as e:
                     print("======")
-                    print(one['full_stack'])
             detailStr3 = "在" + str(fileName) + rowStr + "调用" + classname + "." + methodname + "(),传入参数" + str(
                 one['taint_value'])
             cur_tile = one['type'] + "出现在" + str(one['uri']) + "的" + str(one['taint_position'])
