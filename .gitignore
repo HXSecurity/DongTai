@@ -2,7 +2,6 @@
 /venv
 */__pycache__/*
 */migrations/*
-*.sqlite3
 *.pyc
 .idea/
 scaapi/cron/logs/sca.log
