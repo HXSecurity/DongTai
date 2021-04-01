@@ -1,0 +1,63 @@
+# This is a basic workflow to help you get started with Actions
+
+name: DongTai-WebAPI-Build
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.7]
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: start-build
+        uses: joelwmale/webhook-action@master
+        with:
+          url: ${{ secrets.WEBHOOK_URL }}
+          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "🚀🚀 开始编译构建**DongTai-webapi**","tag": "lark_md"}}],"header": {"title": {"content": "开始构建DongTai-webapi","tag": "plain_text"}}}}'
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Set up Python 3.7
+        uses: actions/checkout@v1
+        with:
+          python-version: 3.7
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Lint with flake8
+        run: |
+          pip install flake8
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+      - name: Django Testing project
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          cp conf/config.ini.example conf/config.ini
+          python3 manage.py test
+
+      - name: finish build
+        uses: joelwmale/webhook-action@master
+        with:
+          url: ${{ secrets.WEBHOOK_URL }}
+          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "🚀🚀 开始编译构建**DongTai-webapi**","tag": "lark_md"}}],"header": {"title": {"content": "项目DongTai-webapi构建完成","tag": "plain_text"}}}}'
+          
