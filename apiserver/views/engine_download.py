@@ -35,7 +35,7 @@ class EngineDownloadEndPoint(OpenApiEndPoint):
                 "msg": "bad gay."
             })
         logger.debug(f'即将下载{package_name}文件')
-        if package_name in ('iast-core',) and jdk is '2':
+        if package_name in ('iast-core',) and jdk == '2':
             filename = f"iast-package/jdk-high/{package_name}.jar"
         else:
             filename = f"iast-package/{package_name}.jar"
