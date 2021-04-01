@@ -27,7 +27,7 @@ jobs:
         uses: distributhor/workflow-webhook@v1
         env:
           webhook_url: ${{ secrets.WEBHOOK_URL }}
-          webhook_secret: ""
+          webhook_secret: "secret"
           webhook_type: "json"
           silent: true
           data: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "**西湖**，位于浙江省杭州市西湖区龙井路1号，杭州市区西部，景区总面积49平方千米，汇水面积为21.22平方千米，湖面面积为6.38平方千米。","tag": "lark_md"}}, {"actions": [{"tag": "button","text": {"content": "更多景点介绍 :玫瑰:","tag": "lark_md"},"url": "https://www.example.com","type": "default","value": {}}],"tag": "action"}],"header": {"title": {"content": "今日旅游推荐","tag": "plain_text"}}}}'
