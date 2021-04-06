@@ -54,7 +54,7 @@ jobs:
         run: |
           cp conf/config.ini.example conf/config.ini
           python3 manage.py test
-          echo "latest,1.0.$BUILD_NUMBER"
+          echo "latest,1.0.$GITHUB_RUN_ID"
 
       - name: finish build
         uses: joelwmale/webhook-action@master
