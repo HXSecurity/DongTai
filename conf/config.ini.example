@@ -17,7 +17,7 @@ url = http://engine_url
 [apiserver]
 url = http://api_server_url
 
-[stmp]
+[smtp]
 server = smtp_server
 user = smtp_user
 password = smtp_password
