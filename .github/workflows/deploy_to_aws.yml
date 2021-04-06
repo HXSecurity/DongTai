@@ -1,10 +1,8 @@
 # This is a basic workflow to help you get started with Actions
 
-name: DongTai-WebAPI-Build
+name: Deploy DongTai WebApi To AWS
 
 on:
-  push:
-    branches: [ develop ]
   pull_request:
     branches: [ main ]
 
@@ -54,7 +52,15 @@ jobs:
         run: |
           cp conf/config.ini.example conf/config.ini
           python3 manage.py test
-          echo "latest,1.0.$BUILD_NUMBER"
+
+      - uses: actions/checkout@master
+      - name: Publish to Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: secnium/lingzhi-api:latest
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          tags: "latest,1.0.$BUILD_NUMBER"
 
       - name: finish build
         uses: joelwmale/webhook-action@master
