@@ -16,3 +16,11 @@ url = http://engine_url
 
 [apiserver]
 url = http://api_server_url
+
+[stmp]
+server = smtp_server
+user = smtp_user
+password = smtp_password
+from_addr = from_addr
+ssl = False
+cc_addr = cc_addr

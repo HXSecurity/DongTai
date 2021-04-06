@@ -14,9 +14,6 @@ import os
 import sys
 from configparser import ConfigParser
 
-config = ConfigParser()
-config.read('conf/config.ini')
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import random
 
@@ -39,6 +36,15 @@ SECRET_KEY = ranstr(50)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("debug", 'false') == 'true'
+
+# READ CONFIG FILE
+config = ConfigParser()
+status = config.read(
+    '/Users/shengnanwu/workspace/secnium/BugPlatflam/dongtai/dongtai-webapi/conf/config.ini') if DEBUG else config.read(
+    'conf/config.ini')
+if len(status) == 0:
+    print("config file not exist.")
+
 # DEBUG = True
 ALLOWED_HOSTS = ['*']
 
@@ -133,7 +139,6 @@ CORS_ALLOW_HEADERS = [
     'csrf-token',
     'x-requested-with',
 ]
-
 
 ROOT_URLCONF = 'webapi.urls'
 
@@ -236,3 +241,11 @@ REST_PROXY = {
 AGENT_SERVER_PROXY = {
     'HOST': config.get("apiserver", 'url'),
 }
+
+# notify
+EMAIL_SERVER = config.get('smtp', 'server')
+EMAIL_USER = config.get('smtp', 'user')
+EMAIL_PASSWORD = config.get('smtp', 'password')
+EMAIL_FROM_ADDR = config.get('smtp', 'from_addr')
+ENABLE_SSL = config.get('smtp', 'ssl') == 'True'
+ADMIN_EMAIL = config.get('smtp', 'cc_addr')
