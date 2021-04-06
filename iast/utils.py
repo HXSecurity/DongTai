@@ -28,3 +28,7 @@ def parse_data(stream_data):
     data = RsaCrypto.decrypt(data)
     objs = json.loads(data)
     return objs
+
+
+def notify():
+    pass
