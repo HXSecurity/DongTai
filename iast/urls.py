@@ -68,6 +68,7 @@ from iast.views.user_info import UserInfoEndpoint
 from iast.views.user_login import UserLogin
 from iast.views.user_logout import UserLogout
 from iast.views.user_passwrd import UserPassword
+from iast.views.user_register_batch import UserRegisterEndPoint
 from iast.views.user_token import UserToken
 from iast.views.vuln_delete import VulnDelete
 from iast.views.vuln_details import VulnDetail
@@ -100,6 +101,7 @@ urlpatterns = [
     path('user/logout', UserLogout.as_view()),
     path('user/info', UserInfoEndpoint.as_view()),
     path('user/token', UserToken.as_view()),
+    path('user/register', UserRegisterEndPoint.as_view()),
 
     # 验证码相关
     path('captcha/', include('captcha.urls')),
