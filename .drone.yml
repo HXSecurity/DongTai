@@ -54,8 +54,8 @@ steps:
       kubernetes_token:
         from_secret: iast_eks_prod_token
     commands:
-      - find deploy/deploy-eks-iast-saas-prod.yml -type f -exec sed -i 's/VERSION/0.1.${DRONE_BUILD_NUMBER}/g' {} \;
-      - ls deploy/deploy-eks-iast-saas-prod.yml | xargs -I {} kubectl apply -f {}
+      - find deploy/deploy-eks-iast-saas-openapi-prod.yml -type f -exec sed -i 's/VERSION/0.1.${DRONE_BUILD_NUMBER}/g' {} \;
+      - ls deploy/deploy-eks-iast-saas-openapi-prod.yml | xargs -I {} kubectl apply -f {}
     when:
       branch:
         - saas.master

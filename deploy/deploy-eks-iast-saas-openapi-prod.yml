@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: iast-agent-api-container
-          image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-apiserver:VERSION
+          image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi:VERSION
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: configfile
