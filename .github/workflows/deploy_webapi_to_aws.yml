@@ -65,9 +65,9 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
-          registry: ${{ aliyun_dockerhub_registry }}
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ${{ secrets.ALIYUN_REGISTRY }}
+          username: ${{ secrets.ALIYUN_DOCKERHUB_USER }}
+          password: ${{ secrets.ALIYUN_DOCKERHUB_PASSWORD }}
 
       - name: Build and push
         uses: docker/build-push-action@v2
@@ -83,7 +83,7 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
           args: |
-            find deploy/deploy-dongtai-webapi-prod.yml -type f -exec sed -i 's/VERSION/1.0.${DRONE_BUILD_NUMBER}/g' {} \;
+            find deploy/deploy-dongtai-webapi-prod.yml -type f -exec sed -i 's/VERSION/1.0.${{github.run_number}}/g' {} \;
             ls deploy/deploy-dongtai-webapi-prod.yml | xargs -I {} kubectl apply -f {}
 
     - name: finish build
