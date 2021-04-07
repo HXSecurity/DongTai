@@ -5,8 +5,6 @@ name: Build DongTai-engine
 on:
   push:
     branches: [ develop ]
-  pull_request:
-    branches: [ main ]
 
   workflow_dispatch:
 
