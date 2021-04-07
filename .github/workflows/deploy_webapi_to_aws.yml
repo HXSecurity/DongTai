@@ -25,7 +25,7 @@ jobs:
         uses: joelwmale/webhook-action@master
         with:
           url: ${{ secrets.WEBHOOK_URL }}
-          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "🚀🚀 开始编译构建**DongTai-webapi**","tag": "lark_md"}}],"header": {"title": {"content": "开始构建DongTai-webapi","tag": "plain_text"}}}}'
+          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "状态：构建开始\n项目：${{github.repository}}\n构建编号：${{github.run_number}}\n触发事件：${{github.event_name}}\n提交人：${{github.actor}}\nSHA-1：${{github.sha}}\n","tag": "lark_md"}}]}}'
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Set up Python 3.7
@@ -74,7 +74,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: "owef/github_action_samples:latest,owef/github_action_samples:1.0.${{github.run_number}}"
+          tags: "registry.cn-beijing.aliyuncs.com/secnium/iast-saas-webapi:latest,registry.cn-beijing.aliyuncs.com/secnium/iast-saas-webapi:1.0.${{github.run_number}}"
 
       - uses: actions/checkout@master
       - name: deploy to cluster
@@ -83,11 +83,11 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
           args: |
-            find deploy/deploy-dongtai-webapi-prod.yml -type f -exec sed -i 's/VERSION/0.1.${DRONE_BUILD_NUMBER}/g' {} \;
+            find deploy/deploy-dongtai-webapi-prod.yml -type f -exec sed -i 's/VERSION/1.0.${DRONE_BUILD_NUMBER}/g' {} \;
             ls deploy/deploy-dongtai-webapi-prod.yml | xargs -I {} kubectl apply -f {}
 
-      - name: finish build
-        uses: joelwmale/webhook-action@master
-        with:
-          url: ${{ secrets.WEBHOOK_URL }}
-          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "🚀🚀 开始编译构建**DongTai-webapi**","tag": "lark_md"}}],"header": {"title": {"content": "项目DongTai-webapi构建完成","tag": "plain_text"}}}}'
+    - name: finish build
+      uses: joelwmale/webhook-action@master
+      with:
+        url: ${{ secrets.WEBHOOK_URL }}
+        body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "状态：构建完成\n项目：${{github.repository}}\n构建编号：${{github.run_number}}\n触发事件：${{github.event_name}}\n提交人：${{github.actor}}\nSHA-1：${{github.sha}}\n","tag": "lark_md"}}]}}'
