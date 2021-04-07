@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: DongTai-WebAPI-Build
+name: Build DongTai-WebAPI
 
 on:
   push:
