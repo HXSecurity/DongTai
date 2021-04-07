@@ -8,7 +8,7 @@ metadata:
   labels:
     app: iast-agent-api
 spec:
-  replicas: 1
+  replicas: 5
   selector:
     matchLabels:
       app: iast-agent-api
@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: iast-agent-api-container
-          image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-apiserver:VERSION
+          image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi:VERSION
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: configfile

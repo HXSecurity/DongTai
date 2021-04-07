@@ -3,6 +3,7 @@
 [![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
 [![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://huoxianclub.github.io/LingZhi/)
 [![DongTai--openapi](https://img.shields.io/badge/DongTai--openapi-v1.0.0-lightgrey)](https://huoxianclub.github.io/LingZhi/#/doc/tutorial/quickstart)
+[![DongTai-OpenAPI-Build](https://github.com/HXSecurity/DongTai-openapi/actions/workflows/build-openapi.yml/badge.svg)](https://github.com/HXSecurity/DongTai-openapi/actions/workflows/build-openapi.yml)
 
 > 负责与agent相关的api服务，包括：接收agent注册信息、接收心跳信息、接收错误日志信息、接收组件信息、接收漏洞信息、接收权限变更信息、发送引擎控制命令、发送hook点策略、下载检测引擎；
 
