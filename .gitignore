@@ -13,5 +13,3 @@ doc/*
 doc/example.json
 conf/config.ini
 logs/*.log
-
-deploy/*.yml
