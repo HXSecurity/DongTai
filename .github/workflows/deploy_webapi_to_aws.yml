@@ -85,8 +85,8 @@ jobs:
             find deploy/deploy-dongtai-webapi-prod.yml -type f -exec sed -i 's/VERSION/1.0.${{github.run_number}}/g' {} \;
             ls deploy/deploy-dongtai-webapi-prod.yml | xargs -I {} kubectl apply -f {}
 
-    - name: finish build
-      uses: joelwmale/webhook-action@master
-      with:
-        url: ${{ secrets.WEBHOOK_URL }}
-        body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "状态：构建完成\n项目：${{github.repository}}\n分支：${{github.ref}}\n流程：${{github.workflow}}\n构建编号：${{github.run_number}}\n触发事件：${{github.event_name}}\n提交人：${{github.actor}}\nSHA-1：${{github.sha}}\n","tag": "lark_md"}}]}}'
+      - name: finish build
+        uses: joelwmale/webhook-action@master
+        with:
+          url: ${{ secrets.WEBHOOK_URL }}
+          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "状态：构建完成\n项目：${{github.repository}}\n分支：${{github.ref}}\n流程：${{github.workflow}}\n构建编号：${{github.run_number}}\n触发事件：${{github.event_name}}\n提交人：${{github.actor}}\nSHA-1：${{github.sha}}\n","tag": "lark_md"}}]}}'
