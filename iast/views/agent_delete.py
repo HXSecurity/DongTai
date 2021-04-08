@@ -11,7 +11,7 @@ from iast.base.user import UserEndPoint
 from iast.models.agent import IastAgent
 from iast.models.agent_method_pool import IastAgentMethodPool
 
-logger = logging.getLogger('lingzhi.webapi')
+logger = logging.getLogger('dongtai-webapi')
 
 
 class AgentDeleteEndPoint(UserEndPoint):

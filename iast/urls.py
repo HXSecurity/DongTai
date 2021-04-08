@@ -90,7 +90,6 @@ urlpatterns = [
     path('department/<int:pk>/delete', DepartmentEndPoint.as_view()),
 
     # 用户管理 - 租户管理员/系统管理员 - 创建用户、修改密码、登录、登出、获取token
-    # todo
     path('users', UserEndPoint.as_view()),
     path('user/add', UserEndPoint.as_view()),
     path('user/<int:user_id>/delete', UserEndPoint.as_view()),
