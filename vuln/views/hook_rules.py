@@ -13,7 +13,7 @@ from vuln.models.hook_strategy import HookStrategy
 from vuln.models.hook_type import HookType
 from vuln.serializers.hook_strategy import HookRuleSerialize
 
-logger = logging.getLogger('lingzhi.webapi')
+logger = logging.getLogger('dongtai-engine')
 
 
 class HookRulesEndPoint(UserEndPoint):

@@ -178,7 +178,7 @@ LOGGING = {
         'console': {
             'class': 'logging.StreamHandler',
         },
-        'lingzhi.webapi': {
+        'dongtai-engine': {
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': 'logs/apiserver.log',
             'backupCount': 5,
@@ -190,8 +190,8 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'DEBUG',
         },
-        'lingzhi.webapi': {
-            'handlers': ['console', 'lingzhi.webapi'],
+        'dongtai-engine': {
+            'handlers': ['console', 'dongtai-engine'],
             'propagate': True,
             'level': 'INFO',
         },

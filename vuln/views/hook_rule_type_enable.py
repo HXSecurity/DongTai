@@ -11,7 +11,7 @@ from lingzhi_engine.base import R
 from vuln.base.method_pool import UserEndPoint
 from vuln.models.hook_strategy import HookStrategy
 
-logger = logging.getLogger('lingzhi.webapi')
+logger = logging.getLogger('dongtai-engine')
 
 
 class HookRuleTypeEnableEndPoint(UserEndPoint):

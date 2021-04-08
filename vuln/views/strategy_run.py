@@ -10,7 +10,7 @@ from core.tasks import search_vul_from_strategy, search_vul_from_method_pool, se
 from lingzhi_engine.base import R, EndPoint
 import logging
 
-logger = logging.getLogger('lingzhi.webapi')
+logger = logging.getLogger('dongtai-engine')
 
 
 class StrategyRunEndPoint(EndPoint):
