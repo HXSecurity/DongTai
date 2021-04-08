@@ -13,3 +13,6 @@
 [submodule "agent/dongtai-agent-java"]
 	path = agent/dongtai-agent-java
 	url = https://github.com/huoxianclub/dongtai-agent-java.git
+[submodule "doc"]
+	path = doc
+	url = https://github.com/HXSecurity/DongTaiDoc.git
