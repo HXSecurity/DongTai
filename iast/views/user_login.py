@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login
 from base import R
 from iast.base.user import UserEndPoint
 
-logger = logging.getLogger("lingzhi.webapi")
+logger = logging.getLogger("dongtai-webapi")
 
 
 class UserLogin(UserEndPoint):
