@@ -37,7 +37,6 @@ class HookRulesEndPoint(UserEndPoint):
             # todo 增加搜索条件
             return rule_type, page, page_size
         except Exception as e:
-            # todo 增加异场打印
             logger.error(f"参数解析出错，错误原因：{e}")
             return None, None, None
 
@@ -47,7 +46,7 @@ class HookRulesEndPoint(UserEndPoint):
             return R.failure(msg='策略类型不存在')
 
         try:
-            rule_type_queryset = HookType.objects.filter(enable=const.ENABLE, created_by__in=[request.user.id],
+            rule_type_queryset = HookType.objects.filter(enable=const.ENABLE, created_by=request.user.id,
                                                          type=rule_type)
             rule_queryset = HookStrategy.objects.filter(type__in=rule_type_queryset,
                                                         enable__in=(const.ENABLE, const.DISABLE))
