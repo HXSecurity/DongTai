@@ -12,7 +12,7 @@ from vuln.base.method_pool import UserEndPoint
 from vuln.models.hook_type import HookType
 from vuln.serializers.hook_type_strategy import HookTypeSerialize
 
-logger = logging.getLogger('lingzhi.webapi')
+logger = logging.getLogger('dongtai-engine')
 
 
 class HookRuleTypesEndPoint(UserEndPoint):
@@ -43,8 +43,6 @@ class HookRuleTypesEndPoint(UserEndPoint):
         if rule_type is None:
             return R.failure(msg='策略类型不存在')
 
-        queryset = HookType.objects.filter(enable=const.ENABLE,
-                                           created_by__in=[request.user.id, const.SYSTEM_USER_ID],
-                                           type=rule_type)
+        queryset = HookType.objects.filter(enable=const.ENABLE, created_by=request.user.id, type=rule_type)
         data = HookTypeSerialize(queryset, many=True).data
         return R.success(data=data)

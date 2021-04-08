@@ -10,7 +10,7 @@ from core.tasks import search_vul_from_strategy, search_vul_from_method_pool, se
 from lingzhi_engine.base import R, EndPoint
 import logging
 
-logger = logging.getLogger('lingzhi.webapi')
+logger = logging.getLogger('dongtai-engine')
 
 
 class StrategyRunEndPoint(EndPoint):
@@ -35,7 +35,6 @@ class StrategyRunEndPoint(EndPoint):
         # 注册
         try:
             method_pool_id = request.query_params.get('method_pool_id')
-            logger.info(method_pool_id)
             if method_pool_id:
                 logger.info(f'[+] 接收方法池 [{method_pool_id}]')
                 search_vul_from_method_pool.delay(method_pool_id)
