@@ -12,7 +12,7 @@ from lingzhi_engine.base import R
 from vuln.base.method_pool import AnonymousAndUserEndPoint
 from vuln.models.vul_rule import IastVulRule
 
-logger = logging.getLogger('lingzhi.webapi')
+logger = logging.getLogger('dongtai-engine')
 
 
 class VulRuleSaveEndPoint(AnonymousAndUserEndPoint):

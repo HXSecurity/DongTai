@@ -24,12 +24,11 @@ class MethodPoolEndPoint(UserEndPoint):
             if sink_strategy_type:
                 strategy = HookStrategy.objects.filter(id=sink_strategy_type).first()
                 if strategy:
-                    queryset = queryset.filter(sinks__in=[strategy])
+                    queryset = queryset.filter(sinks=strategy)
 
             page = request.query_params.get('page', 1)
             page_size = request.query_params.get('pageSize', 25)
             summary, data = self.get_paginator(queryset=queryset, page=page, page_size=page_size)
-            # fixme 修改序列化实现类，增加需要的数据
             return R.success(data=MethodPoolSerialize(data, many=True).data, page=summary)
         except ValueError as e:
             return R.failure(msg='page和pageSize只能为数字')

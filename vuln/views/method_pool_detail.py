@@ -15,7 +15,7 @@ from vuln.models.agent_method_pool import MethodPool
 from vuln.serializers.method_pool import MethodPoolSerialize
 from vuln.views.search import SearchEndPoint
 
-logger = logging.getLogger('lingzhi.webapi')
+logger = logging.getLogger('dongtai-engine')
 
 
 class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):

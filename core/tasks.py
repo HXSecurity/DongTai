@@ -81,9 +81,6 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack):
         vul = iast_vuls[0]
         vul.req_header = vul_meta.req_header
         vul.req_params = vul_meta.req_params
-        # vul.full_stack = json.dumps(self.app_caller, ensure_ascii=False),
-        # vul.top_stack = top_stack,
-        # vul.bottom_stack = bottom_stack,
         vul.counts = iast_vuls[0].counts + 1
         vul.latest_time = int(time.time())
         vul.status = 'reported'
@@ -120,7 +117,7 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack):
         vul.save()
 
 
-def search_and_save_vul(engine, method_pool_model, strategy):
+def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
     """
     搜索方法池是否存在满足策略的数据，如果存在，保存相关数据为漏洞
     :param engine: 云端检测引擎
@@ -128,7 +125,6 @@ def search_and_save_vul(engine, method_pool_model, strategy):
     :param strategy: 策略数据
     :return: None
     """
-    method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
     engine.search(
         method_pool=method_pool,
         vul_method_signature=strategy.get('value')
@@ -168,8 +164,11 @@ def search_vul_from_method_pool(method_pool_id):
     strategies = load_sink_strategy(method_pool_model.agent.user)
     engine = VulEngine()
 
+    method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
+    signatures = [f'{method["className"]}.{method["methodName"]}' for method in method_pool]
     for strategy in strategies:
-        search_and_save_vul(engine, method_pool_model, strategy)
+        if strategy.get('value') in signatures:
+            search_and_save_vul(engine, method_pool_model, method_pool, strategy)
 
 
 @shared_task(queue='vul-scan')
@@ -184,8 +183,10 @@ def search_vul_from_strategy(strategy_id):
 
     for sub_queryset in queryset_to_iterator(method_pool_queryset):
         if sub_queryset:
-            for method_pool in sub_queryset:
-                search_and_save_vul(engine, method_pool, strategy_value)
+            for method_pool_model in sub_queryset:
+                method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
+                # todo 对数据做预处理，避免无效的计算
+                search_and_save_vul(engine, method_pool_model, method_pool, strategy_value)
 
 
 @shared_task(queue='vul-search')

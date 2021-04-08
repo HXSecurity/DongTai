@@ -16,7 +16,7 @@ from account.models import User
 from lingzhi_engine import const
 from vuln.models.agent import IastAgent
 
-logger = logging.getLogger('lingzhi.webapi')
+logger = logging.getLogger('dongtai-engine')
 
 
 class EndPoint(APIView):
