@@ -15,6 +15,9 @@ from iast.models import User
 from iast.models.department import Department
 from iast.models.talent import Talent
 from iast.serializers.talent import TalentSerializer
+import logging
+
+logger = logging.getLogger('dongtai-webapi')
 
 
 class TalentEndPoint(SystemEndPoint):
@@ -126,18 +129,19 @@ class TalentEndPoint(SystemEndPoint):
     @transaction.atomic
     def init_talent(talent_name, talent_email, created_by, default_username):
         try:
+            logger.info('开始创建租户')
             timestamp = int(time.time())
             talent = Talent(talent_name=talent_name, create_time=timestamp, update_time=timestamp,
                             created_by=created_by)
             talent.save()
 
-            # todo 创建默认部门
+            logger.info('租户创建完成，开始创建默认部门')
             default_department = Department(name='默认部门', create_time=timestamp, update_time=timestamp,
                                             created_by=created_by)
             default_department.save()
             talent.departments.add(default_department)
 
-            # todo 创建默认用户
+            logger.info('部门创建完成，开始创建默认用户')
             suffix_email = talent_email.split('@')[-1]
             email = f'{default_username}@{suffix_email}'
             password = '123456'
@@ -152,5 +156,6 @@ class TalentEndPoint(SystemEndPoint):
             group.save()
 
             default_department.users.add(default_user)
+            logger.info('租户创建及初始化完成')
         except:
             raise DatabaseError

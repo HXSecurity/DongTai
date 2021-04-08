@@ -13,7 +13,7 @@ from iast.base.user import UserEndPoint
 from webapi.settings import AGENT_SERVER_PROXY
 import logging
 
-logger = logging.getLogger('lingzhi.webapi')
+logger = logging.getLogger('dongtai-webapi')
 
 
 class AgentDownload(UserEndPoint):
