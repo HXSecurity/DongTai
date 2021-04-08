@@ -29,5 +29,5 @@ class UserLogout(AnonymousEndPoint):
             "status": 201,
             "msg": '退出成功'
         })
-        response.delete_cookie(key=settings.CSRF_COOKIE_NAME, domain=settings.CSRF_COOKIE_DOMAIN)
+        response.delete_cookie(key=settings.CSRF_COOKIE_NAME)
         return response

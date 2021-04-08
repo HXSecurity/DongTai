@@ -16,7 +16,7 @@ from iast.models.sca_artifact_db import ScaArtifactDb
 from iast.models.sca_maven_artifact import ScaMavenArtifact
 from iast.serializers.sca import ScaSerializer
 
-logger = logging.getLogger('lingzhi.webapi')
+logger = logging.getLogger('dongtai-webapi')
 
 
 class ScaDetailView(ScaEndPoint):
