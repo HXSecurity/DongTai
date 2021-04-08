@@ -4,7 +4,11 @@
 # datetime:2021/1/26 下午4:05
 # software: PyCharm
 # project: lingzhi-engine
+import logging
+
 from kombu.utils import cached_property
+
+logger = logging.getLogger('dongtai-engine')
 
 
 class VulEngine(object):
@@ -76,22 +80,22 @@ class VulEngine(object):
             self.hit_vul = True
             # self.vul_stack.append(method)
             self.pool_value = method.get('sourceHash')
+            logger.debug(f'==> current taint hash: {self.pool_value}')
             return True
 
     def do_propagator(self, method, current_link):
         is_source = method.get('source')
         target_hash = method.get('targetHash')
 
-        if is_source:
-            for hash in target_hash:
-                if hash in self.pool_value:
+        for hash in target_hash:
+            if hash in self.pool_value:
+                if is_source:
                     current_link.append(method)
                     self.vul_source_signature = f"{method.get('className')}.{method.get('methodName')}"
                     return True
-        else:
-            for hash in target_hash:
-                if hash in self.pool_value:
+                else:
                     current_link.append(method)
+                    logger.debug(f'=== taint hash propagator: {self.pool_value} > {method.get("sourceHash")}')
                     self.pool_value = method.get('sourceHash')
                     break
 
