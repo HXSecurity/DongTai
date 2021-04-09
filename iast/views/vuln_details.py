@@ -111,20 +111,20 @@ class VulnDetail(UserEndPoint):
 
         results = []
         try:
-            datas = json.loads(graphy)
-            data_length = len(datas)
-            for i in range(data_length):
-                data = datas[i]
-                class_name = data['className']
-                method_name = data['methodName']
-                source = ', '.join([str(_hash) for _hash in data['sourceHash']])
-                target = ', '.join([str(_hash) for _hash in data['targetHash']])
-                _item = f"{data['callerClass']}.{data['callerMethod']}()"
-                filename = data['callerClass']
-                line_number = data['callerLineNumber']
+            method_note_pool = json.loads(graphy)[0]
+            method_counts = len(method_note_pool)
+            for i in range(method_counts):
+                method = method_note_pool[i]
+                class_name = method['className']
+                method_name = method['methodName']
+                source = ', '.join([str(_hash) for _hash in method['sourceHash']])
+                target = ', '.join([str(_hash) for _hash in method['targetHash']])
+                _item = f"{method['callerClass']}.{method['callerMethod']}()"
+                filename = method['callerClass']
+                line_number = method['callerLineNumber']
                 if i == 0:
                     data_type = '污点来源方法'
-                elif i == data_length - 1:
+                elif i == method_counts - 1:
                     data_type = '危险方法'
                 else:
                     data_type = '传播方法'
@@ -150,9 +150,8 @@ class VulnDetail(UserEndPoint):
         return _data
 
     def get_vul(self, auth_agents):
-        queryset = IastVulnerabilityModel.objects.filter(id=self.vul_id, agent__in=auth_agents)
+        vul = IastVulnerabilityModel.objects.filter(id=self.vul_id, agent__in=auth_agents).first()
 
-        vul = queryset.first()
         agent = vul.agent
         project_id = agent.bind_project_id
         self.project = IastProject.objects.filter(id=project_id).first()
