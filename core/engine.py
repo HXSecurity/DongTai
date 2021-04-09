@@ -78,6 +78,9 @@ class VulEngine(object):
     def hit_vul_method(self, method):
         if f"{method.get('className')}.{method.get('methodName')}" == self.vul_method_signature:
             self.hit_vul = True
+            # self.vul_stack.append(method)
+            self.pool_value = method.get('sourceHash')
+            logger.debug(f'==> current taint hash: {self.pool_value}')
             return True
 
     def do_propagator(self, method, current_link):
@@ -92,14 +95,15 @@ class VulEngine(object):
                     return True
                 else:
                     current_link.append(method)
+                    logger.debug(f'=== taint hash propagator: {self.pool_value} > {method.get("sourceHash")}')
                     self.pool_value = method.get('sourceHash')
                     break
 
     @cached_property
     def method_pool_signatures(self):
-        signatures = set()
+        signatures = list()
         for method in self.method_pool:
-            signatures.add(f"{method.get('className').replace('/', '.')}.{method.get('methodName')}")
+            signatures.append(f"{method.get('className').replace('/', '.')}.{method.get('methodName')}")
         return signatures
 
     def search(self, method_pool, vul_method_signature):
@@ -108,39 +112,12 @@ class VulEngine(object):
         for index in range(size):
             method = self.method_pool[index]
             if self.hit_vul_method(method):
-                # 找到sink点所在方法，以此处为起点，寻找漏洞
-                pass
-            else:
-                continue
-
-            # 找到sink点所在索引后，开始向后递归
-            current_link = list()
-            current_link.append(method)
-            self.pool_value = set(method.get('sourceHash'))
-            self.vul_source_signature = None
-            logger.info(f'==> current taint hash: {self.pool_value}')
-            if self.loop(index, size, current_link):
-                break
-
-    def loop(self, index, size, current_link):
-        for sub_index in range(index + 1, size):
-            sub_method = self.method_pool[sub_index]
-            sub_target_hash = set(sub_method.get('targetHash'))
-            if sub_target_hash and sub_target_hash & self.pool_value:
-                if sub_method.get('source'):
-                    current_link.append(sub_method)
-                    self.vul_source_signature = f"{sub_method.get('className')}.{sub_method.get('methodName')}"
-                    self.vul_stack.append(current_link[::-1])
-                    current_link.pop()
-                    return True
-                else:
-                    current_link.append(sub_method)
-                    old_pool_value = self.pool_value
-                    self.pool_value = set(sub_method.get('sourceHash'))
-                    if self.loop(sub_index, size, current_link):
-                        return True
-                    self.pool_value = old_pool_value
-                    current_link.pop()
+                current_link = list()
+                current_link.append(method)
+                for sub_method in self.method_pool[index + 1:]:
+                    if self.do_propagator(sub_method, current_link):
+                        self.vul_stack.append(current_link[::-1])
+                        break
 
     def search_sink(self, method_pool, vul_method_signature):
         self.prepare(method_pool, vul_method_signature)
