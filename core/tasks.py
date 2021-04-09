@@ -46,18 +46,14 @@ def load_sink_strategy(user=None):
     strategies = list()
     strategy_models = HookStrategy.objects.filter(type__in=HookType.objects.filter(type=4),
                                                   created_by__in=[user.id, 1] if user else [1])
-    sub_method_signatures = set()
     for sub_queryset in queryset_to_iterator(strategy_models):
         if sub_queryset:
             for strategy in sub_queryset:
-                sub_method_signature = strategy.value.split('(')[0]
-                if sub_method_signature not in sub_method_signatures:
-                    sub_method_signatures.add(sub_method_signature)
-                    strategies.append({
-                        'strategy': strategy,
-                        'type': strategy.type.first().value,
-                        'value': sub_method_signature
-                    })
+                strategies.append({
+                    'strategy': strategy,
+                    'type': strategy.type.first().value,
+                    'value': strategy.value.split('(')[0]
+                })
         else:
             break
     return strategies
@@ -129,7 +125,6 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
     :param strategy: 策略数据
     :return: None
     """
-    logger.info(f'current sink rule is {strategy.get("type")}')
     engine.search(
         method_pool=method_pool,
         vul_method_signature=strategy.get('value')
@@ -170,11 +165,10 @@ def search_vul_from_method_pool(method_pool_id):
     engine = VulEngine()
 
     method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
-    engine.method_pool = method_pool
-    if method_pool:
-        for strategy in strategies:
-            if strategy.get('value') in engine.method_pool_signatures:
-                search_and_save_vul(engine, method_pool_model, method_pool, strategy)
+    signatures = [f'{method["className"]}.{method["methodName"]}' for method in method_pool]
+    for strategy in strategies:
+        if strategy.get('value') in signatures:
+            search_and_save_vul(engine, method_pool_model, method_pool, strategy)
 
 
 @shared_task(queue='vul-scan')
