@@ -74,18 +74,17 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack):
     :param bottom_stack:
     :return:
     """
-    iast_vuls = IastVulnerabilityModel.objects.filter(
+    vul = IastVulnerabilityModel.objects.filter(
         type=vul_name,  # 指定漏洞类型
         url=vul_meta.url,
         http_method=vul_meta.http_method,
         taint_position='',  # 或许补充相关数据
         agent=vul_meta.agent
-    )
-    if iast_vuls:
-        vul = iast_vuls[0]
+    ).first()
+    if vul:
         vul.req_header = vul_meta.req_header
         vul.req_params = vul_meta.req_params
-        vul.counts = iast_vuls[0].counts + 1
+        vul.counts = vul.counts + 1
         vul.latest_time = int(time.time())
         vul.status = 'reported'
         vul.save()
@@ -115,7 +114,7 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack):
             language=vul_meta.language,
             first_time=vul_meta.create_time,
             latest_time=int(time.time()),
-            client_ip=vul_meta.clent_ip,  # fixme 数据库字段创建错误
+            client_ip=vul_meta.clent_ip,
             param_name=''
         )
         vul.save()
