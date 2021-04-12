@@ -47,7 +47,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             project_name = param.get('project', 'Demo Project')
             if not token or not version or not project_name:
                 return R.failure(msg="参数错误")
-            exist_agent = IastAgent.objects.filter(token=token).exists()
+            exist_agent = IastAgent.objects.filter(token=token, user=self.user).exists()
             if exist_agent:
                 return R.failure(msg="agent已注册")
 
