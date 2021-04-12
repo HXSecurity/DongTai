@@ -12,6 +12,7 @@ from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint
 from apiserver.decrypter import parse_data
 from apiserver.models.agent import IastAgent
+from apiserver.models.project import IastProject
 
 
 class AgentRegisterEndPoint(OpenApiEndPoint):
@@ -43,18 +44,24 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             param = parse_data(request.read())
             token = param.get('name', '')
             version = param.get('version', '')
-            if not token or not version:
+            project_name = param.get('project', 'Demo Project')
+            if not token or not version or not project_name:
                 return R.failure(msg="参数错误")
-            have_token = IastAgent.objects.filter(token=token).exists()
-            if have_token:
+            exist_agent = IastAgent.objects.filter(token=token).exists()
+            if exist_agent:
                 return R.failure(msg="agent已注册")
+
+            # todo 检查是否存在目标项目，如果存在，自动关联;如果不存在，如何实现自动关联？更新agent表，增加project_name字段
+            project_name = project_name.strip()
+            project = IastProject.objects.filter(name=project_name, user=self.user).first()
             IastAgent.objects.create(
                 token=token,
                 version=version,
                 latest_time=int(time.time()),
                 user=self.user,
                 is_running=1,
-                bind_project_id=0,
+                bind_project_id=project.id if project else 0,
+                project_name=project_name,
                 control=0,
                 is_control=0
             )
