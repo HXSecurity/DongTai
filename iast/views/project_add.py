@@ -27,12 +27,14 @@ class ProjectAdd(UserEndPoint):
 
     def post(self, request):
         try:
-            name = request.data.get("name", None)
-            mode = request.data.get("mode", None)
-            # 扫描策略
-            scan_id = request.data.get("scan_id", None)
+            name = request.data.get("name")
+            mode = request.data.get("mode")
+            scan_id = request.data.get("scan_id")
             if not scan_id or not name or not mode:
                 return R.failure(status=202, msg='参数错误')
+
+            auth_users = self.get_auth_users(request.user)
+
             scan = IastStrategyUser.objects.filter(id=scan_id, user=request.user).first()
             agent_ids = request.data.get("agent_ids", None)
             if agent_ids:
@@ -41,32 +43,28 @@ class ProjectAdd(UserEndPoint):
                 agents = []
 
             pid = request.data.get("pid")
-            auth_users = self.get_auth_users(request.user)
             if pid:
+                # 如果存在pid，走修改逻辑
                 project = IastProject.objects.filter(id=pid, user=request.user).first()
                 project.name = name
             else:
                 # 检测项目名称是否存在
                 project = IastProject.objects.filter(name=name, user=request.user).first()
                 if not project:
-                    # 检测agent是否绑定其他项目
-                    haveBind = IastAgent.objects.filter(
-                        id__in=agents,
-                        user__in=auth_users,
-                        bind_project_id__gt=0
-                    ).exists()
-                    if haveBind:
-                        return R.failure(status=202, msg='agent已被其他项目绑定')
                     project = IastProject.objects.create(name=name, user=request.user)
+                else:
+                    return R.failure(status=203, msg='创建失败，项目名称已存在')
 
             # 检测agent是否绑定其他项目
-            haveBind = IastAgent.objects.filter(
-                ~Q(bind_project_id=project.id),
-                id__in=agents,
-                bind_project_id__gt=0,
-                user__in=auth_users).exists()
-            if haveBind:
-                return R.failure(status=202, msg='agent已被其他项目绑定')
+            if agent_ids:
+                haveBind = IastAgent.objects.filter(
+                    ~Q(bind_project_id=project.id),
+                    id__in=agents,
+                    bind_project_id__gt=0,
+                    user__in=auth_users).exists()
+                if haveBind:
+                    return R.failure(status=202, msg='agent已被其他项目绑定')
+
             project.scan = scan
             project.mode = mode
             project.agent_count = len(agents)
@@ -78,14 +76,18 @@ class ProjectAdd(UserEndPoint):
                 project.agent_count = IastAgent.objects.filter(
                     user__in=auth_users,
                     id__in=agents,
-                    bind_project_id=0
+                    bind_project_id=0,
+                    project_name=name
                 ).update(bind_project_id=project.id)
-
             else:
                 project.agent_count = IastAgent.objects.filter(
                     user__in=auth_users,
                     bind_project_id=project.id
                 ).update(bind_project_id=0)
+                project.agent_count = IastAgent.objects.filter(
+                    project_name=name,
+                    user__in=auth_users
+                ).update(bind_project_id=project.id)
             project.save()
 
             return R.success(msg='创建成功')

@@ -23,8 +23,8 @@ class ProjectDel(UserEndPoint):
             project_id = request.data['id']
             if project_id:
                 auth_users = self.get_auth_users(request.user)
-                IastProject.objects.filter(id=project_id, user__in=auth_users).delete()
                 IastAgent.objects.filter(bind_project_id=project_id, user__in=auth_users).update(bind_project_id=0)
+                IastProject.objects.filter(id=project_id, user__in=auth_users).delete()
 
             return R.success(msg='项目删除成功')
         except Exception as e:
