@@ -51,7 +51,6 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             if exist_agent:
                 return R.failure(msg="agent已注册")
 
-            # todo 检查是否存在目标项目，如果存在，自动关联;如果不存在，如何实现自动关联？更新agent表，增加project_name字段
             project_name = project_name.strip()
             project = IastProject.objects.filter(name=project_name, user=self.user).first()
             IastAgent.objects.create(
