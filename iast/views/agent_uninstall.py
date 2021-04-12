@@ -4,6 +4,7 @@
 # datetime:2020/11/25 下午2:29
 # software: PyCharm
 # project: lingzhi-webapi
+import time
 
 from base import R
 from iast.base.agent import AgentEndPoint
@@ -17,10 +18,11 @@ class AgentUninstall(AgentEndPoint):
     def post(self, request):
         agent_id = request.data.get('id')
         agent = IastAgent.objects.filter(user=request.user, id=agent_id).first()
-        if agent and agent.control != 2 and agent.is_control == 0:
+        if agent:
             if agent.control != 2 and agent.is_control == 0:
                 agent.control = 2
                 agent.is_control = 1
+                agent.latest_time = int(time.time())
                 agent.save()
                 return R.success(msg='正在卸载...')
             else:
