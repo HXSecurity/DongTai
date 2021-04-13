@@ -74,10 +74,9 @@ class ProjectAdd(UserEndPoint):
             if agents:
                 IastAgent.objects.filter(user__in=auth_users, bind_project_id=project.id).update(bind_project_id=0)
                 project.agent_count = IastAgent.objects.filter(
+                    Q(id__in=agents) | Q(project_name=name),
                     user__in=auth_users,
-                    id__in=agents,
-                    bind_project_id=0,
-                    project_name=name
+                    bind_project_id=0
                 ).update(bind_project_id=project.id)
             else:
                 project.agent_count = IastAgent.objects.filter(
