@@ -19,7 +19,7 @@ RUN curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add - \
     && apt install -y libc6-dev unzip  vim cron swig
 
 COPY requirements.txt /opt/iast/webapi/requirements.txt
-RUN pip3 install --upgrade pip && pip3 install -r /opt/iast/webapi/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/ --trusted-host mirrors.aliyun.com
+RUN pip3 install --upgrade pip && pip3 install -r /opt/iast/webapi/requirements.txt
 
 COPY . /opt/iast/webapi
 WORKDIR /opt

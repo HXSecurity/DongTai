@@ -4,6 +4,7 @@
 # datetime:2020/11/25 下午2:29
 # software: PyCharm
 # project: lingzhi-webapi
+import time
 
 from base import R
 from iast.base.agent import AgentEndPoint
@@ -21,6 +22,7 @@ class AgentInstall(AgentEndPoint):
             if agent.control != 1 and agent.is_control == 0:
                 agent.control = 1
                 agent.is_control = 1
+                agent.latest_time = int(time.time())
                 agent.save()
                 return R.success(msg='安装完成')
             else:

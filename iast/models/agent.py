@@ -28,6 +28,7 @@ class IastAgent(models.Model):
     is_control = models.IntegerField(blank=True, null=True)
     # fixme 将bind_project_id更改为project与agent的关联表
     bind_project_id = models.IntegerField(blank=True, null=True, default=0)
+    project_name = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         managed = False
