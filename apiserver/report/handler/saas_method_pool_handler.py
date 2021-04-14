@@ -51,7 +51,8 @@ class SaasMethodPoolHandler(IReportHandler):
                                          user=self.user_id).first()
         if agent:
             pool_sign = self.calc_hash()
-            method_pool = IastAgentMethodPool.objects.filter(pool_sign=pool_sign, agent=agent).first()
+            agents = self.get_project_agents(agent)
+            method_pool = IastAgentMethodPool.objects.filter(pool_sign=pool_sign, agent__in=agents).first()
             if method_pool:
                 method_pool.update_time = int(time.time())
                 method_pool.save()
