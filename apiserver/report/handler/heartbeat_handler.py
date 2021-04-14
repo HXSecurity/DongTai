@@ -33,6 +33,7 @@ class HeartBeatHandler(IReportHandler):
         self.network = self.detail.get('network')
         self.disk = self.detail.get('disk')
         self.agent_name = self.detail.get('agent_name')
+        self.project_name = self.detail.get('project_name', 'Demo Project')
 
     def save_heartbeat(self):
         heartbeat = IastHeartbeat(
@@ -106,7 +107,8 @@ class HeartBeatHandler(IReportHandler):
             return iast_server
 
     def save(self):
-        self.agent = IastAgent.objects.filter(token=self.agent_name, user=self.user_id).first()
+        self.agent = IastAgent.objects.filter(token=self.agent_name, project_name=self.project_name,
+                                              user=self.user_id).first()
         if self.agent:
             self.agent.is_running = 1
             self.agent.save()
