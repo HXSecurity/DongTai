@@ -34,6 +34,7 @@ class SaasMethodPoolHandler(IReportHandler):
         self.vuln_type = self.detail.get('vuln_type')
         self.language = self.detail.get('language', 'Java')
         self.agent_name = self.detail.get('agent_name')
+        self.project_name = self.detail.get('project_name', 'Demo Project')
         self.taint_value = self.detail.get('taint_value')
         self.taint_position = self.detail.get('taint_position')
         self.client_ip = self.detail.get('http_client_ip')
@@ -46,7 +47,8 @@ class SaasMethodPoolHandler(IReportHandler):
         # 数据存储
         # 计算唯一签名，确保数据唯一
         # 数据存储
-        agent = IastAgent.objects.filter(token=self.agent_name, user=self.user_id).first()
+        agent = IastAgent.objects.filter(token=self.agent_name, project_name=self.project_name,
+                                         user=self.user_id).first()
         if agent:
             pool_sign = self.calc_hash()
             method_pool = IastAgentMethodPool.objects.filter(pool_sign=pool_sign, agent=agent).first()
