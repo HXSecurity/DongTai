@@ -18,10 +18,11 @@ class ErrorLogHandler(IReportHandler):
         self.web_server_path = self.detail.get('web_server_path')
         self.log = self.detail.get('log')
         self.agent_name = self.detail.get('agent_name')
+        self.project_name = self.detail.get('project_name', 'Demo Project')
         self.language = self.detail.get('language')
 
     def save(self):
-        self.agent = IastAgent.objects.get(token=self.agent_name, user=self.user_id)
+        self.agent = IastAgent.objects.get(token=self.agent_name, project_name=self.project_name, user=self.user_id)
 
         IastErrorlog(
             errorlog=self.log,

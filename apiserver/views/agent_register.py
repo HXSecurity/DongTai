@@ -35,23 +35,18 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         # 注册
         try:
             self.user = request.user
-            # todo ：
-            #  1 分布式锁
-            #  2.检查当前用户是否具有安装agent的权限
-            #  3.减去一个license
-            #  4.启动注册
-            #  5.出现异常时，提供回滚功能，恢复license
             param = parse_data(request.read())
             token = param.get('name', '')
             version = param.get('version', '')
             project_name = param.get('project', 'Demo Project')
             if not token or not version or not project_name:
                 return R.failure(msg="参数错误")
-            exist_agent = IastAgent.objects.filter(token=token, user=self.user).exists()
+
+            project_name = project_name.strip()
+            exist_agent = IastAgent.objects.filter(token=token, project_name=project_name, user=self.user).exists()
             if exist_agent:
                 return R.failure(msg="agent已注册")
 
-            project_name = project_name.strip()
             project = IastProject.objects.filter(name=project_name, user=self.user).first()
             IastAgent.objects.create(
                 token=token,

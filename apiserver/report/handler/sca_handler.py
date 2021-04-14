@@ -27,6 +27,7 @@ class ScaHandler(IReportHandler):
         self.package_name = self.detail.get('package_name')
         self.package_algorithm = self.detail.get('package_algorithm')
         self.agent_name = self.detail.get('agent_name')
+        self.project_name = self.detail.get('project_name', 'Demo Project')
         self.language = self.detail.get('language')
 
     def save(self):
@@ -34,19 +35,17 @@ class ScaHandler(IReportHandler):
                 self.package_algorithm]) is False:
             logger.warn(f"数据不完整，数据：{json.dumps(self.report)}")
         else:
-            agent = IastAgent.objects.get(token=self.agent_name, user=self.user_id)
+            agent = IastAgent.objects.filter(token=self.agent_name, project_name=self.project_name,
+                                             user=self.user_id).first()
             if agent:
-                # 查询当前版本并保存，跟进signature查询maven_db库，查出aql与当前版本
                 smd = ScaMavenDb.objects.filter(sha_1=self.package_signature).values("version", "aql").first()
                 _version = self.package_name.split('/')[-1].replace('.jar', '').split('-')[-1]
                 version = smd.get('version', _version) if smd else _version
                 package_name = smd.get('aql', self.package_name) if smd else self.package_name
-                # 查询漏洞数量并保存：根据aql查询漏洞数量，根据漏洞查询危害等级跟进signature查询maven_db库，查出aql与当前版本，根据aql查询漏洞数量
                 aids = ScaMavenArtifact.objects.filter(signature=self.package_signature).values("aid")
                 if len(aids) > 0:
                     aids = [_['aid'] for _ in aids]
                 vul_count = len(aids)
-                # 查询漏洞危害等级并保存
                 levels = ScaVulDb.objects.filter(id__in=aids).values('vul_level')
 
                 level = 'info'
@@ -63,10 +62,9 @@ class ScaHandler(IReportHandler):
                     else:
                         level = 'info'
 
-                # 查询当前应用并保存
-                level = IastVulLevel.objects.get(name=level)
-
                 try:
+                    level = IastVulLevel.objects.get(name=level)
+
                     IastAsset(
                         package_path=self.package_path,
                         version=version,
