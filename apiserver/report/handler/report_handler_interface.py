@@ -4,6 +4,10 @@
 # datetime:2020/10/30 10:31
 # software: PyCharm
 # project: webapi
+from django.db.models import Q
+
+from apiserver.models.agent import IastAgent
+
 
 class IReportHandler:
     def __init__(self):
@@ -49,3 +53,12 @@ class IReportHandler:
         # todo 检查当前用户是否有操作该agent的权限
         self.parse()
         self.save()
+
+    def get_project_agents(self, agent):
+        if agent.bind_project_id != 0:
+            agents = IastAgent.objects.filter(
+                Q(project_name=self.project_name) | Q(bind_project_id=agent.bind_project_id),
+                user=self.user_id)
+        else:
+            agents = IastAgent.objects.filter(project_name=self.project_name, user=self.user_id)
+        return agents

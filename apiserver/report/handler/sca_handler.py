@@ -64,18 +64,24 @@ class ScaHandler(IReportHandler):
 
                 try:
                     level = IastVulLevel.objects.get(name=level)
+                    agents = self.get_project_agents(agent)
+                    asset_count = 0
+                    if agents:
+                        asset_count = IastAsset.objects.filter(signature_value=self.package_signature,
+                                                               agent__in=agents).count()
 
-                    IastAsset(
-                        package_path=self.package_path,
-                        version=version,
-                        vul_count=vul_count,
-                        level=level,
-                        package_name=package_name,
-                        signature_value=self.package_signature,
-                        signature_algorithm=self.package_algorithm,
-                        dt=time.time(),
-                        agent=agent,
-                        language=self.language
-                    ).save()
+                    if asset_count == 0:
+                        IastAsset(
+                            package_path=self.package_path,
+                            version=version,
+                            vul_count=vul_count,
+                            level=level,
+                            package_name=package_name,
+                            signature_value=self.package_signature,
+                            signature_algorithm=self.package_algorithm,
+                            dt=time.time(),
+                            agent=agent,
+                            language=self.language
+                        ).save()
                 except Exception as e:
                     pass
