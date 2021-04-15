@@ -52,5 +52,6 @@ class HookRuleTypeAddEndPoint(UserEndPoint):
             if talent_rule:
                 rule_types = json.loads(talent_rule.values)
                 rule_types.append(hook_type.id)
+                talent_rule.values = json.dumps(rule_types)
                 talent_rule.save()
         return R.success(msg='规则类型保存成功')
