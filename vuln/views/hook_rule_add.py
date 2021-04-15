@@ -61,8 +61,8 @@ class HookRuleAddEndPoint(UserEndPoint):
 
     def post(self, request):
         rule_type, rule_value, rule_source, rule_target, inherit, is_track = self.parse_args(request)
-        if all((rule_type, rule_value, rule_source, rule_target, inherit, is_track)) is False:
-            return R.failure(msg='策略类型不存在')
+        if all((rule_type, rule_value, rule_source, inherit, is_track)) is False:
+            return R.failure(msg='参数不完整，请检查')
 
         strategy = self.create_strategy(rule_value, rule_source, rule_target, inherit, is_track, request.user.id)
         if strategy:
