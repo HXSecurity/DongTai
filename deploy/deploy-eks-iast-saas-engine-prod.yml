@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: iast-engine
-  namespace: iast-test
+  namespace: iast-prod
   annotations:
     kubesphere.io/description: iast-engine
   labels:
@@ -43,7 +43,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: iast-engine-svc
-  namespace: iast-test
+  namespace: iast-prod
 spec:
   ports:
     - port: 80
