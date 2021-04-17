@@ -133,17 +133,32 @@ class UserEndPoint(TalentAdminEndPoint):
         # todo 待实现
         # 删除agent对应的数据
         user = User.objects.filter(id=user_id).first()
+        username = user.get_full_name()
         if self.check_permission_with_talent(request.user, user):
             agents = IastAgent.objects.filter(user=user)
             # 删除Agent相关的日志
-            Errorlog.objects.filter(agent__in=agents)
-            Heartbeat.objects.filter(agent__in=agents)
-            Asset.objects.filter(agent__in=agents)
-            VulOverpower.objects.filter(agent__in=agents)
+            if agents:
+                Errorlog.objects.filter(agent__in=agents)
+                Heartbeat.objects.filter(agent__in=agents)
+                Asset.objects.filter(agent__in=agents)
+                VulOverpower.objects.filter(agent__in=agents)
 
-        # 删除agent
-        # 删除用户
-        pass
+            try:
+                department = user.department.get()
+                department.users.remove(user)
+            except:
+                pass
+
+            try:
+                group = user.groups.get()
+                group.user_set.remove(user)
+            except:
+                pass
+        user.delete()
+        return JsonResponse({
+            "status": 201,
+            "msg": f"用户{username}删除成功"
+        })
 
     @transaction.atomic
     def put(self, request):
