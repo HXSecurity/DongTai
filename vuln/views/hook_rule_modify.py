@@ -28,13 +28,12 @@ class HookRuleModifyEndPoint(UserEndPoint):
 
             return rule_id, rule_type, rule_value, rule_source, rule_target, inherit, is_track
         except Exception as e:
-            # todo 增加异场打印
             return None, None, None, None, None, None, None
 
     def post(self, request):
         rule_id, rule_type, rule_value, rule_source, rule_target, inherit, is_track = self.parse_args(request)
-        if all((rule_id, rule_type, rule_value, rule_source, rule_target, inherit, is_track)) is False:
-            return R.failure(msg='策略类型不存在')
+        if all((rule_id, rule_type, rule_value, rule_source, inherit, is_track)) is False:
+            return R.failure(msg='参数不完整，请检查')
 
         strategy = HookStrategy.objects.filter(id=rule_id, created_by=request.user.id).first()
 
