@@ -105,6 +105,7 @@ build_web(){
     # 如果本地有node环境，可自己build部署，否则，直接使用内置的即可
     # npm install
     # npm run build
+    cp dongtai-web/nginx.conf.example dongtai-web/nginx.conf
     docker build -t huoxian/dongtai-web:latest .
     docker stop dongtai-web || true
     docker rm dongtai-web || true
