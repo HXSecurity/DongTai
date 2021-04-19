@@ -8,13 +8,13 @@ from iast.models.asset import Asset
 from iast.models.sca_maven_artifact import ScaMavenArtifact
 from iast.models.sca_vul_db import ScaVulDb
 from iast.models.vul_level import IastVulLevel
-from scaapi.cron.mvn_spider import MavenSpider
+from iast.notify.feishu import notify
 from scaapi.utils.common_log import logger
 
 
 def sync():
     assets = Asset.objects.all()
-    MavenSpider.notify(f"SCA组件漏洞同步开始，共{len(assets)}条数据待更新")
+    notify(f"SCA组件漏洞同步开始，共{len(assets)}条数据待更新")
     for asset in assets:
         signature = asset.signature_value
         aids = ScaMavenArtifact.objects.filter(signature=signature).values("aid")
@@ -38,7 +38,7 @@ def sync():
         asset.level = IastVulLevel.objects.get(name=level)
         asset.vul_count = vul_count
         asset.save()
-    MavenSpider.notify(f"SCA组件漏洞同步结束")
+    notify(f"SCA组件漏洞同步结束")
 
 
 if __name__ == '__main__':
