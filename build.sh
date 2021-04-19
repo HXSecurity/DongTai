@@ -1,6 +1,14 @@
 #!/bin/bash
 
 CURRENT_PATH=$(pwd)
+unameOut="$(uname -s)"
+case "${unameOut}" in
+    Linux*)     machine=Linux;;
+    Darwin*)    machine=Mac;;
+    CYGWIN*)    machine=Cygwin;;
+    MINGW*)     machine=MinGw;;
+    *)          machine="UNKNOWN:${unameOut}"
+esac
 
 create_network(){
     docker network rm dongtai-net || true
@@ -28,17 +36,31 @@ build_redis(){
 build_webapi(){
     cp dongtai-webapi/conf/config.ini.example dongtai-webapi/conf/config.ini
 
-    sed -i "" "s/mysql-server/dongtai-mysql/g" dongtai-webapi/conf/config.ini >/dev/null
-    sed -i "" "s/mysql-port/3306/g" dongtai-webapi/conf/config.ini >/dev/null
-    sed -i "" "s/database_name/dongtai_webapi/g" dongtai-webapi/conf/config.ini >/dev/null
-    sed -i "" "s/mysql_username/root/g" dongtai-webapi/conf/config.ini >/dev/null
-    sed -i "" "s/mysql_password/dongtai-iast/g" dongtai-webapi/conf/config.ini >/dev/null
-    sed -i "" "s/redis_server/dongtai-redis/g" dongtai-webapi/conf/config.ini >/dev/null
-    sed -i "" "s/redis_port/6379/g" dongtai-webapi/conf/config.ini >/dev/null
-    sed -i "" "s/redis_password/123456/g" dongtai-webapi/conf/config.ini >/dev/null
-    sed -i "" "s/broker_db/0/g" dongtai-webapi/conf/config.ini >/dev/null
-    sed -i "" "s/engine_url/dongtai-engine:8000/g" dongtai-webapi/conf/config.ini >/dev/null
-    sed -i "" "s/api_server_url/dongtai-openapi:8000/g" dongtai-webapi/conf/config.ini >/dev/null
+    if [ "${machine}" == "Mac" ]; then
+        sed -i "" "s/mysql-server/dongtai-mysql/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "" "s/mysql-port/3306/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "" "s/database_name/dongtai_webapi/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "" "s/mysql_username/root/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "" "s/mysql_password/dongtai-iast/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "" "s/redis_server/dongtai-redis/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "" "s/redis_port/6379/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "" "s/redis_password/123456/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "" "s/broker_db/0/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "" "s/engine_url/dongtai-engine:8000/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "" "s/api_server_url/dongtai-openapi:8000/g" dongtai-webapi/conf/config.ini >/dev/null
+    elif [ "${machine}" == "Linux" ]; then
+        sed -i "s/mysql-server/dongtai-mysql/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "s/mysql-port/3306/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "s/database_name/dongtai_webapi/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "s/mysql_username/root/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "s/mysql_password/dongtai-iast/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "s/redis_server/dongtai-redis/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "s/redis_port/6379/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "s/redis_password/123456/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "s/broker_db/0/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "s/engine_url/dongtai-engine:8000/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "s/api_server_url/dongtai-openapi:8000/g" dongtai-webapi/conf/config.ini >/dev/null
+    fi
 
     cd dongtai-webapi
     docker build -t huoxian/dongtai-webapi:latest .
@@ -55,7 +77,7 @@ build_openapi(){
     docker build -t huoxian/dongtai-openapi:latest .
     docker stop dongtai-openapi || true
     docker rm dongtai-openapi || true
-    docker run -d --network dongtai-net --name dongtai-openapi --restart=always huoxian/dongtai-openapi:latest
+    docker run -d --network dongtai-net -p 8000:8000 --name dongtai-openapi --restart=always huoxian/dongtai-openapi:latest
     cd $CURRENT_PATH
 }
 
@@ -73,7 +95,11 @@ build_engine(){
 build_web(){
     # 修改后端服务的地址
     cp dongtai-web/nginx.conf.example dongtai-web/nginx.conf
-    sed -i "" "s/lingzhi-api-svc/dongtai-webapi/g" dongtai-web/nginx.conf >/dev/null
+    if [ "${machine}" == "Mac" ]; then
+        sed -i "" "s/lingzhi-api-svc/dongtai-webapi/g" dongtai-web/nginx.conf >/dev/null
+    elif [ "${machine}" == "Linux" ]; then
+        sed -i "s/lingzhi-api-svc/dongtai-webapi/g" dongtai-web/nginx.conf >/dev/null
+    fi
 
     cd dongtai-web
     # 如果本地有node环境，可自己build部署，否则，直接使用内置的即可
@@ -92,7 +118,7 @@ download_source_code(){
 }
 
 
-echo "[+] 开始初始化服务及配置"
+echo "[+] 开始初始化服务及配置，当前系统：${machine}"
 
 echo -e "\033[33m[+] 开始下载代码...\033[0m"
 download_source_code
