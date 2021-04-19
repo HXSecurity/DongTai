@@ -33,7 +33,7 @@ CREATE TABLE `auth_department` (
   `parent_id` int(11) DEFAULT NULL COMMENT '父节点ID',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `name` (`name`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for auth_department_talent
@@ -49,7 +49,7 @@ CREATE TABLE `auth_department_talent` (
   KEY `talent_id` (`talent_id`) USING BTREE,
   CONSTRAINT `auth_department_talent_ibfk_1` FOREIGN KEY (`talent_id`) REFERENCES `auth_talent` (`id`),
   CONSTRAINT `auth_department_talent_ibfk_2` FOREIGN KEY (`department_id`) REFERENCES `auth_department` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for auth_group
@@ -60,7 +60,7 @@ CREATE TABLE `auth_group` (
   `name` varchar(150) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `name` (`name`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for auth_group_permissions
@@ -104,7 +104,7 @@ CREATE TABLE `auth_talent` (
   `is_active` tinyint(1) DEFAULT NULL COMMENT '租户是否启用',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `talent_name` (`talent_name`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for auth_user
@@ -124,7 +124,7 @@ CREATE TABLE `auth_user` (
   `date_joined` datetime(6) NOT NULL,
   `phone` bigint(11) DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for auth_user_department
@@ -135,7 +135,7 @@ CREATE TABLE `auth_user_department` (
   `user_id` int(11) DEFAULT NULL COMMENT '用户ID',
   `department_id` int(11) DEFAULT NULL COMMENT '部门ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for auth_user_groups
@@ -150,7 +150,7 @@ CREATE TABLE `auth_user_groups` (
   KEY `group_id` (`group_id`) USING BTREE,
   CONSTRAINT `auth_user_groups_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`),
   CONSTRAINT `auth_user_groups_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for auth_user_user_permissions
@@ -192,7 +192,7 @@ CREATE TABLE `captcha_captchastore` (
   `expiration` datetime(6) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `hashkey` (`hashkey`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2082 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for django_admin_log
@@ -212,7 +212,7 @@ CREATE TABLE `django_admin_log` (
   KEY `django_admin_log_user_id_c564eba6_fk_auth_user_id` (`user_id`) USING BTREE,
   CONSTRAINT `django_admin_log_content_type_id_c4bce8eb_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
   CONSTRAINT `django_admin_log_user_id_c564eba6_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=36314 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for django_content_type
@@ -224,7 +224,7 @@ CREATE TABLE `django_content_type` (
   `model` varchar(100) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=313 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for django_migrations
@@ -265,12 +265,13 @@ CREATE TABLE `iast_agent` (
   `control` int(1) DEFAULT NULL COMMENT 'agent控制位，1-安装、2-卸载、0-无控制',
   `is_control` int(1) DEFAULT NULL COMMENT '是否正处于控制中，0-否，1-是',
   `bind_project_id` int(11) DEFAULT '0' COMMENT '捆绑项目ID，存在则为已捆绑',
+  `project_name` varchar(255) DEFAULT NULL COMMENT '项目名称，用于先启动agent后创建项目',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `user_id` (`user_id`) USING BTREE,
   KEY `server_id` (`server_id`) USING BTREE,
   CONSTRAINT `iast_agent_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`),
   CONSTRAINT `iast_agent_ibfk_2` FOREIGN KEY (`server_id`) REFERENCES `iast_server` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=202 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for iast_agent_method_pool
@@ -300,7 +301,7 @@ CREATE TABLE `iast_agent_method_pool` (
   UNIQUE KEY `pool_sign` (`pool_sign`) USING BTREE,
   KEY `agent_id` (`agent_id`) USING BTREE,
   CONSTRAINT `iast_agent_method_pool_ibfk_1` FOREIGN KEY (`agent_id`) REFERENCES `iast_agent` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1574138 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for iast_agent_method_pool_sinks
@@ -311,7 +312,7 @@ CREATE TABLE `iast_agent_method_pool_sinks` (
   `methodpool_id` int(11) DEFAULT NULL,
   `hookstrategy_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=205 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for iast_agent_properties
@@ -326,7 +327,7 @@ CREATE TABLE `iast_agent_properties` (
   `updated_by` int(11) DEFAULT NULL COMMENT '修改人',
   `agent_id` int(11) DEFAULT NULL COMMENT 'agent',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for iast_asset
@@ -350,7 +351,7 @@ CREATE TABLE `iast_asset` (
   KEY `level_id` (`level_id`) USING BTREE,
   CONSTRAINT `iast_asset_ibfk_2` FOREIGN KEY (`agent_id`) REFERENCES `iast_agent` (`id`),
   CONSTRAINT `iast_asset_ibfk_3` FOREIGN KEY (`level_id`) REFERENCES `iast_vul_level` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15160 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for iast_deploy
@@ -362,7 +363,7 @@ CREATE TABLE `iast_deploy` (
   `middleware` varchar(255) DEFAULT NULL COMMENT '中间件',
   `os` varchar(255) DEFAULT NULL COMMENT '操作系统',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 BEGIN;
 INSERT INTO `iast_deploy`(`id`, `desc`, `middleware`, `os`) VALUES (1, '> Tomcat\n#### 手动修改\n\n进入tomcat主目录，找到`bin/catalina.sh`文件，定位到`elif [ \"$1\" = \"run\" ]; then`所在行，在该行的下面插入一行，内容 如下：\n\n```bash\nJAVA_OPTS=\"$JAVA_OPTS \"-javaagent:/opt/agent/agent.jar=token=e7509bf7-e44f-4e1f-8e25-5079e2540c63\n```\n\n其中，token为火线IAST页面中的Agent Token。\n\n#### 自动修改\n\n进入tomcat主目录，找到`bin/catalina.sh`文件，使用下面的shell命令修改catalina.sh文件\n\n```bash\nsed \"$(cat catalina.sh |grep -n \"$1\\\" = \\\"run\\\"\"|cut -d \":\" -f1) a\\ \\ JAVA_OPTS=\\\"\\$JAVA_OPTS\\ \\\"-javaagent:/opt/agent/agent.jar=token=e7509bf7-e44f-4e1f-8e25-5079e2540c63\" -i catalina.sh\n```', 'tomcat', 'linux');
@@ -389,7 +390,7 @@ CREATE TABLE `iast_errorlog` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `agent_id` (`agent_id`) USING BTREE,
   CONSTRAINT `iast_errorlog_ibfk_2` FOREIGN KEY (`agent_id`) REFERENCES `iast_agent` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=94994 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for iast_heartbeat
@@ -410,7 +411,7 @@ CREATE TABLE `iast_heartbeat` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `agent_id` (`agent_id`) USING BTREE,
   CONSTRAINT `iast_heartbeat_ibfk_2` FOREIGN KEY (`agent_id`) REFERENCES `iast_agent` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1560483 DEFAULT CHARSET=utf8mb4 COMMENT='IAST agent心跳表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='IAST agent心跳表';
 
 -- ----------------------------
 -- Table structure for iast_hook_strategy
@@ -428,7 +429,7 @@ CREATE TABLE `iast_hook_strategy` (
   `created_by` int(11) DEFAULT NULL COMMENT '创建人',
   `enable` tinyint(1) DEFAULT '1' COMMENT '启用状态：0-禁用，1-启用，-1-删除',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=500 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for iast_hook_strategy_type
@@ -440,7 +441,7 @@ CREATE TABLE `iast_hook_strategy_type` (
   `hooktype_id` int(11) DEFAULT NULL COMMENT '策略类型ID',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `hookstrategy_id` (`hookstrategy_id`,`hooktype_id`) USING HASH
-) ENGINE=InnoDB AUTO_INCREMENT=959 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for iast_hook_talent_strategy
@@ -454,7 +455,7 @@ CREATE TABLE `iast_hook_talent_strategy` (
   `update_time` int(11) DEFAULT NULL COMMENT '修改时间',
   `created_by` int(11) DEFAULT NULL COMMENT '创建者',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for iast_hook_type
@@ -470,7 +471,7 @@ CREATE TABLE `iast_hook_type` (
   `update_time` int(11) DEFAULT NULL COMMENT '修改时间',
   `created_by` int(11) DEFAULT NULL COMMENT '创建者',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for iast_project
@@ -490,7 +491,7 @@ CREATE TABLE `iast_project` (
   KEY `scan_id` (`scan_id`) USING BTREE,
   CONSTRAINT `iast_project_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`),
   CONSTRAINT `iast_project_ibfk_2` FOREIGN KEY (`scan_id`) REFERENCES `iast_strategy_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for iast_server
@@ -516,7 +517,7 @@ CREATE TABLE `iast_server` (
   `create_time` int(11) DEFAULT NULL COMMENT '启动时间',
   `update_time` int(11) DEFAULT NULL COMMENT '最近一次活跃',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for iast_strategy
@@ -537,7 +538,7 @@ CREATE TABLE `iast_strategy` (
   KEY `level_id` (`level_id`) USING BTREE,
   CONSTRAINT `iast_strategy_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`),
   CONSTRAINT `iast_strategy_ibfk_2` FOREIGN KEY (`level_id`) REFERENCES `iast_vul_level` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 BEGIN;
 INSERT INTO `iast_strategy`(`id`, `user_id`, `vul_type`, `level_id`, `state`, `dt`, `vul_name`, `vul_desc`, `vul_fix`) VALUES (1, 1, 'cmd-injection', 1, 'enable', 1, '命令注入', '命令注入漏洞是指由于Web应用程序对用户提交的数据过滤不严格，导致黑客可以通过构造特殊命令字符串的方式，将数据提交至Web应用程序中，并利用该方式执行外部程序或系统命令实施攻击，非法获取数据或者网络资源等。', NULL);
@@ -584,7 +585,7 @@ CREATE TABLE `iast_strategy_user` (
   UNIQUE KEY `id` (`id`) USING BTREE,
   KEY `user_id` (`user_id`) USING BTREE,
   CONSTRAINT `iast_strategy_user_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for iast_system
@@ -604,7 +605,7 @@ CREATE TABLE `iast_system` (
   UNIQUE KEY `id` (`id`) USING BTREE,
   KEY `user_id` (`user_id`) USING BTREE,
   CONSTRAINT `iast_system_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for iast_vul_level
@@ -616,7 +617,7 @@ CREATE TABLE `iast_vul_level` (
   `name_value` varchar(255) DEFAULT NULL COMMENT '漏洞等级值：高危、中危、低危、提示',
   `name_type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 BEGIN;
 INSERT INTO `iast_vul_level`(`id`, `name`, `name_value`, `name_type`) VALUES (1, 'high', '高危', '高危漏洞');
@@ -666,7 +667,7 @@ CREATE TABLE `iast_vul_rule` (
   `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `rule_name` (`rule_name`,`create_by`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for iast_vulnerability
@@ -704,7 +705,7 @@ CREATE TABLE `iast_vulnerability` (
   KEY `agent_id` (`agent_id`) USING BTREE,
   KEY `level_id` (`level_id`) USING BTREE,CONSTRAINT `iast_vulnerability_ibfk_2` FOREIGN KEY (`agent_id`) REFERENCES `iast_agent` (`id`),
   CONSTRAINT `iast_vulnerability_ibfk_3` FOREIGN KEY (`level_id`) REFERENCES `iast_vul_level` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=366 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for sca_artifact_db
@@ -729,7 +730,7 @@ CREATE TABLE `sca_artifact_db` (
   `level` varchar(20) DEFAULT NULL COMMENT '漏洞等级(以cvss3为准）',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `cve_id` (`cve_id`,`group_id`,`artifact_id`,`latest_version`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=39499 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for sca_maven_artifact
@@ -754,7 +755,7 @@ CREATE TABLE `sca_maven_artifact` (
   UNIQUE KEY `cph_version` (`cph_version`,`aid`) USING BTREE,
   KEY `aid` (`aid`) USING BTREE,
   CONSTRAINT `sca_maven_artifact_ibfk_1` FOREIGN KEY (`aid`) REFERENCES `sca_artifact_db` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=66971721 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for sca_maven_db
@@ -770,7 +771,7 @@ CREATE TABLE `sca_maven_db` (
   `aql` varchar(255) DEFAULT NULL COMMENT '组件查询语言',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `sha_1` (`sha_1`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=193562 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for sca_record
@@ -784,7 +785,7 @@ CREATE TABLE `sca_record` (
   `type` varchar(255) DEFAULT NULL COMMENT '记录类型',
   `data` varchar(255) DEFAULT NULL COMMENT '记录数据',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for sca_vul_db
@@ -811,7 +812,7 @@ CREATE TABLE `sca_vul_db` (
   `extra` varchar(2000) DEFAULT NULL COMMENT '附加数据，暂时不知道是否有用',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `package_type` (`package_type`,`cve`,`cwe`,`vul_name`,`aql`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=31963 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 BEGIN;
 -- 创建默认用户
