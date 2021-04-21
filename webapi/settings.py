@@ -110,8 +110,12 @@ CSRF_COOKIE_NAME = "DTCsrfToken"
 CSRF_HEADER_NAME = "HTTP_CSRF_TOKEN"
 #CSRF_COOKIE_DOMAIN = ".huoxian.cn"
 CSRF_TRUSTED_ORIGINS = (
+    ".huoxian.cn:8000",
+    ".huoxian.cn:8001",
     ".huoxian.cn",
     ".secnium.xyz"
+    ".secnium.xyz:8000"
+    ".secnium.xyz:8001"
 )
 
 AGENT_UPGRADE_URL = "https://www.huoxian.cn"
