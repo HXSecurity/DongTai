@@ -108,10 +108,19 @@ XFF_TRUSTED_PROXY_DEPTH = 5
 # cstf token相关配置
 CSRF_COOKIE_NAME = "DTCsrfToken"
 CSRF_HEADER_NAME = "HTTP_CSRF_TOKEN"
+#CSRF_COOKIE_DOMAIN = ".huoxian.cn"
+CSRF_TRUSTED_ORIGINS = (
+    ".huoxian.cn",
+    ".secnium.xyz"
+)
+
 AGENT_UPGRADE_URL = "https://www.huoxian.cn"
 
 # cors相关配置
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_REGEX_WHITELIST = [
+    r"^https://\w+\.huoxian.cn:(\:\d+)?$"
+]
+
 CORS_ALLOW_CREDENTIALS = True  # 指明在跨域访问中，后端是否支持对cookie的操作。
 CORS_ALLOW_METHODS = [
     'GET',
