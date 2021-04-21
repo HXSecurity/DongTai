@@ -111,13 +111,7 @@ CSRF_HEADER_NAME = "HTTP_CSRF_TOKEN"
 AGENT_UPGRADE_URL = "https://www.huoxian.cn"
 
 # cors相关配置
-CORS_ORIGIN_REGEX_WHITELIST = [
-    r"^https?://\w+\.secnium\.xyz(\:\d+)?$",
-    r"^https?://\w+\.secnium\.cn(\:\d+)?$",
-    r"^https?://\w+\.huoxian\.club(\:\d+)?$",
-    r"^https?://\w+\.huoxian\.cn(\:\d+)?$"
-]
-
+CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True  # 指明在跨域访问中，后端是否支持对cookie的操作。
 CORS_ALLOW_METHODS = [
     'GET',
