@@ -15,7 +15,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'is_superuser', 'phone', 'talent', 'department']
+        fields = ['id', 'username', 'email', 'is_superuser', 'phone', 'talent', 'department', 'is_active',
+                  'date_joined', 'last_login']
 
     def get_department(self, obj):
         department = obj.department.filter().first()

@@ -59,7 +59,7 @@ class UserEndPoint(TalentAdminEndPoint):
         department_id = request.query_params.get('departmentId')
 
         departments = self.get_auth_departments(user=request.user, department_id=department_id)
-        queryset = User.objects.filter(department__in=departments, is_active=1)
+        queryset = User.objects.filter(department__in=departments)
         if keywords:
             queryset = queryset.filter(
                 Q(username__icontains=keywords) | Q(phone__icontains=keywords) | Q(email__icontains=keywords))
