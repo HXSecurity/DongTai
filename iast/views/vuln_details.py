@@ -131,6 +131,7 @@ class VulnDetail(UserEndPoint):
                 results.append({
                     'type': data_type,
                     'file': filename,
+                    'caller': _item,
                     'line_number': line_number,
                     'class': class_name,
                     'method': method_name,
