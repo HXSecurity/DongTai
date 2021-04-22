@@ -111,5 +111,5 @@ $ npm run build
 **DongTai-agent-java**
 
 ### 文档
-- [官方文档](https://huoxianclub.github.io/LingZhi/#/)
-- [快速体验](http://aws.iast.huoxian.cn:8000/login)
+- [官方文档](https://hxsecurity.github.io/DongTaiDoc/#/doc/tutorial/quickstart)
+- [快速体验](https://iast.huoxian.cn:8001/)
