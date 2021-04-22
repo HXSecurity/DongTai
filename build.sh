@@ -66,7 +66,7 @@ build_webapi(){
     docker build -t huoxian/dongtai-webapi:latest .
     docker stop dongtai-webapi || true
     docker rm dongtai-webapi || true
-    docker run -d --network dongtai-net --name dongtai-webapi -e debug=true --restart=always huoxian/dongtai-webapi:latest
+    docker run -d --network dongtai-net --name dongtai-webapi -e debug=false --restart=always huoxian/dongtai-webapi:latest
     cd $CURRENT_PATH
 }
 
