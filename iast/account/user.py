@@ -4,10 +4,12 @@
 # datetime:2021/1/18 下午2:15
 # software: PyCharm
 # project: lingzhi-webapi
+from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import Group
 from django.db import DatabaseError, transaction
 from django.db.models import Q
 from django.http import JsonResponse
+from rest_framework.authtoken.models import Token
 
 from base import R
 from iast.base.user import TalentAdminEndPoint
@@ -18,6 +20,10 @@ from iast.models.department import Department
 from iast.models.errorlog import Errorlog
 from iast.models.heartbeat import Heartbeat
 from iast.models.iast_vul_overpower import VulOverpower
+from iast.models.project import IastProject
+from iast.models.strategy import IastStrategyModel
+from iast.models.strategy_user import IastStrategyUser
+from iast.models.system import IastSystem
 from iast.serializers.user import UserSerializer
 
 
@@ -130,13 +136,10 @@ class UserEndPoint(TalentAdminEndPoint):
             })
 
     def delete(self, request, user_id):
-        # todo 待实现
-        # 删除agent对应的数据
         user = User.objects.filter(id=user_id).first()
         username = user.get_full_name()
         if self.check_permission_with_talent(request.user, user):
             agents = IastAgent.objects.filter(user=user)
-            # 删除Agent相关的日志
             if agents:
                 Errorlog.objects.filter(agent__in=agents)
                 Heartbeat.objects.filter(agent__in=agents)
@@ -144,17 +147,23 @@ class UserEndPoint(TalentAdminEndPoint):
                 VulOverpower.objects.filter(agent__in=agents)
 
             try:
+                IastSystem.objects.filter(user=user).delete()
+                IastStrategyModel.objects.filter(user=user).delete()
+                Token.objects.filter(user=user).delete()
+                LogEntry.objects.filter(user=user).delete()
+                IastStrategyUser.objects.filter(user=user).delete()
+                IastProject.objects.filter(user=user).delete()
                 department = user.department.get()
                 department.users.remove(user)
-            except:
-                pass
-
-            try:
                 group = user.groups.get()
                 group.user_set.remove(user)
+                user.delete()
             except:
-                pass
-        user.delete()
+                return JsonResponse({
+                    "status": 202,
+                    "msg": f"用户{username}删除失败"
+                })
+
         return JsonResponse({
             "status": 201,
             "msg": f"用户{username}删除成功"
