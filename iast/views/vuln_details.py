@@ -136,7 +136,9 @@ class VulnDetail(UserEndPoint):
                     'class': class_name,
                     'method': method_name,
                     'source': source,
+                    'source_value':method.get('sourceValues', None),
                     'target': target,
+                    'target_value':method.get('targetValues', None),
                     'node': f'{class_name}.{method_name}()'
                 })
         except Exception as e:
