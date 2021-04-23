@@ -46,10 +46,13 @@ class HookRulesEndPoint(UserEndPoint):
             return R.failure(msg='策略类型不存在')
 
         try:
-            rule_type_queryset = HookType.objects.filter(enable=const.ENABLE, created_by=request.user.id,
+            user_id = request.user.id
+            rule_type_queryset = HookType.objects.filter(enable=const.ENABLE,
+                                                         created_by__in=(user_id, const.SYSTEM_USER_ID),
                                                          type=rule_type)
             rule_queryset = HookStrategy.objects.filter(type__in=rule_type_queryset,
-                                                        enable__in=(const.ENABLE, const.DISABLE))
+                                                        enable__in=(const.ENABLE, const.DISABLE),
+                                                        created_by=user_id)
             page_summary, queryset = self.get_paginator(rule_queryset, page=page, page_size=page_size)
             data = HookRuleSerialize(queryset, many=True).data
             return R.success(data=data, page=page_summary)
