@@ -133,6 +133,8 @@ class EndPoint(APIView):
         :param page_size:
         :return:
         """
+        if int(page_size) > 50:
+            page_size = 50
         page_info = Paginator(queryset, per_page=page_size)
         page_summary = {"alltotal": page_info.count, "num_pages": page_info.num_pages, "page_size": page_size}
 
