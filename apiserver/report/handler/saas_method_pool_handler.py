@@ -91,7 +91,7 @@ class SaasMethodPoolHandler(IReportHandler):
             logger.info(f'[-] Failure: send method_pool [{method_pool_id}], Error: {e}')
 
     def calc_hash(self):
-        sign_raw = ''
+        sign_raw = self.http_uri
         for method in self.method_pool:
             sign_raw += f"{method.get('className')}.{method.get('methodName')}()->"
         sign_sha1 = self.sha1(sign_raw)
