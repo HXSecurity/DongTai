@@ -53,11 +53,13 @@ class SaasMethodPoolHandler(IReportHandler):
             pool_sign = self.calc_hash()
             agents = self.get_project_agents(agent)
             method_pool = IastAgentMethodPool.objects.filter(pool_sign=pool_sign, agent__in=agents).first()
+            update_record = True
             if method_pool:
                 method_pool.update_time = int(time.time())
                 method_pool.save()
             else:
                 # 获取agent
+                update_record = False
                 timestamp = int(time.time())
                 method_pool = IastAgentMethodPool(
                     agent=agent,
@@ -80,11 +82,12 @@ class SaasMethodPoolHandler(IReportHandler):
                     update_time=timestamp
                 )
                 method_pool.save()
-            self.send_to_engine(method_pool.id)
+            self.send_to_engine(method_pool.id, update_record)
 
     @staticmethod
-    def send_to_engine(method_pool_id):
-        logger.info(f'[+] send method_pool [{method_pool_id}] to engine')
+    def send_to_engine(method_pool_id, update_record):
+        logger.info(
+            f'[+] send method_pool [{method_pool_id}] to engine for {"update" if update_record else "new record"}')
         try:
             requests.get(url=BASE_ENGINE_URL.format(id=method_pool_id))
         except Exception as e:
@@ -102,18 +105,3 @@ class SaasMethodPoolHandler(IReportHandler):
         h = sha1()
         h.update(raw.encode('utf-8'))
         return h.hexdigest()
-
-
-if __name__ == '__main__':
-    import json
-
-    with open('../../../doc/example.json', 'r') as f:
-        pool = json.load(f).get('detail', {}).get('pool', None)
-    print(pool if pool is None else len(pool))
-
-    sorted_pool = sorted(pool, key=lambda e: e.__getitem__('invokeId'), reverse=True)
-
-    class_name = 'java.sql.Statement'
-    method_name = 'executeQuery'
-    handler = SaasMethodPoolHandler()
-    handler.method_pool = sorted_pool
