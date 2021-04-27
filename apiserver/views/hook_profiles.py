@@ -38,7 +38,8 @@ class HookProfilesEndPoint(OpenApiEndPoint):
                 'value': enable_hook_type.value,
                 'details': strategy_details
             })
-            strategies = enable_hook_type.strategies.filter(created_by__in=[1, user.id] if user else [1])
+            strategies = enable_hook_type.strategies.filter(created_by__in=[1, user.id] if user else [1],
+                                                            enable=const.HOOK_TYPE_ENABLE)
             for strategy in strategies:
                 strategy_details.append({
                     "source": strategy.source,
