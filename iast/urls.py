@@ -16,6 +16,7 @@ from iast.views.agent_deploy_info import AgentDeployInfo
 from iast.views.agent_deploy_submit import AgentDeploySave
 from iast.views.agent_download import AgentDownload
 from iast.views.agent_install import AgentInstall
+from iast.views.agent_status_update import AgentStatusUpdate
 from iast.views.agent_uninstall import AgentUninstall
 from iast.views.agent_upgrade_offline import AgentUpgradeOffline
 from iast.views.agent_upgrade_online import AgentUpgradeOnline
@@ -148,6 +149,7 @@ urlpatterns = [
     path('agent/upgrade/online', AgentUpgradeOnline.as_view()),
     path('agent/upgrade/offline', AgentUpgradeOffline.as_view()),
     path('agent/download', AgentDownload.as_view()),
+    path('agent/status/update', AgentStatusUpdate.as_view()),
 
     # 获取openapi地址
     path('openapi', OpenApiEndpoint.as_view()),
