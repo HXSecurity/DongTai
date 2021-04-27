@@ -8,6 +8,7 @@ from apiserver import const
 from apiserver.report.handler.auth_info_handler import AuthAddHandler, AuthUpdateHandler
 from apiserver.report.handler.error_log_handler import ErrorLogHandler
 from apiserver.report.handler.heartbeat_handler import HeartBeatHandler
+from apiserver.report.handler.narmal_vul_handler import NormalVulnHandler
 from apiserver.report.handler.over_power_handler import OverPowerHandler
 from apiserver.report.handler.saas_method_pool_handler import SaasMethodPoolHandler
 from apiserver.report.handler.sca_handler import ScaHandler
@@ -24,7 +25,8 @@ class ReportHandlerFactory:
             return ScaHandler()
         elif report_type == const.REPORT_VULN_SAAS_POOL:
             return SaasMethodPoolHandler()
-        # 越权漏洞相关接口
+        elif report_type == const.REPORT_VULN_NORNAL:
+            return NormalVulnHandler()
         elif report_type == const.REPORT_AUTH_ADD:
             return AuthAddHandler()
         elif report_type == const.REPORT_AUTH_UPDATE:
