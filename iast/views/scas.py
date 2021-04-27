@@ -30,6 +30,11 @@ class ScaList(ScaEndPoint):
         order = request.query_params.get('order', None)
         package_kw = request.query_params.get('keyword', None)
 
+        project_id = request.query_params.get('project_id', None)
+        if project_id and project_id != '':
+            agents = self.get_auth_agents(auth_users).filter(bind_project_id=project_id)
+            if agents:
+                queryset = queryset.filter(agent__in=agents)
         project_name = request.query_params.get('project_name')
         if project_name and project_name != '':
             agent_ids = get_agents_with_project(project_name, queryset, auth_users)
