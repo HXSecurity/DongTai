@@ -136,9 +136,9 @@ class VulnDetail(UserEndPoint):
                     'class': class_name,
                     'method': method_name,
                     'source': source,
-                    'source_value':method.get('sourceValues', None),
+                    'source_value': method.get('sourceValues', None),
                     'target': target,
-                    'target_value':method.get('targetValues', None),
+                    'target_value': method.get('targetValues', None),
                     'node': f'{class_name}.{method_name}()'
                 })
         except Exception as e:
@@ -147,7 +147,7 @@ class VulnDetail(UserEndPoint):
 
     def parse_header(self, method, uri, query_param, protocol, header, data):
         _data = f"{method} {uri}?{query_param} {protocol}\n" if query_param else f"{method} {uri} {protocol}\n"
-        _data = _data + base64.b64decode(header.encode("utf-8")).decode("utf-8")
+        _data = _data + (base64.b64decode(header.encode("utf-8")).decode("utf-8") if header else '')
         if data:
             _data = _data + "\n" + data
         return _data
@@ -216,8 +216,8 @@ class VulnDetail(UserEndPoint):
                     'strategy': self.get_strategy()
                 }
             )
-        except:
-            return R.failure(msg='漏洞ID不存在')
+        except Exception as e:
+            return R.failure(msg=f'漏洞数据查询出错，错误原因：{e}')
 
 
 if __name__ == '__main__':
