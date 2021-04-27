@@ -23,7 +23,7 @@ class AgentList(AgentEndPoint):
         page = request.query_params.get('page', 1)
         page_size = request.query_params.get('pageSize', 20)
 
-        queryset = self.get_auth_agents_with_user(request.user).order_by("-latest_time")
+        queryset = self.get_auth_agents_with_user(request.user).filter(is_running=1).order_by("-latest_time")
         summery, queryset = self.get_paginator(queryset, page=page, page_size=page_size)
 
         return R.success(
