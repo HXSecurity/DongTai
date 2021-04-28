@@ -111,6 +111,7 @@ class HeartBeatHandler(IReportHandler):
                                               user=self.user_id).first()
         if self.agent:
             self.agent.is_running = 1
+            self.agent.latest_time = int(time.time())
             self.agent.save()
             self.save_heartbeat()
             self.agent.server = self.save_server()
