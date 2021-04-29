@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iast-engine-task
+  namespace: iast-prod
+  annotations:
+    kubesphere.io/description: iast-engine-task
+  labels:
+    app: iast-engine-task
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: iast-engine-task
+  template:
+    metadata:
+      labels:
+        app: iast-engine-task
+    spec:
+      containers:
+        - name: iast-engine-task-container
+          image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine:VERSION
+          args: ["task"]
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/iast/engine/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: iast-test-config.ini
+      imagePullSecrets:
+        - name: aliyun-registry-secret
