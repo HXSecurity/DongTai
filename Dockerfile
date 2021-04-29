@@ -15,4 +15,4 @@ RUN pip3 install --upgrade pip && pip3 install -r /opt/iast/apiserver/requiremen
 COPY . /opt/iast/engine
 WORKDIR /opt/iast/engine
 
-CMD ["/bin/bash","/opt/iast/engine/docker/entrypoint.sh"]
+ENTRYPOINT ["/bin/bash","/opt/iast/engine/docker/entrypoint.sh"]
