@@ -5,13 +5,16 @@ import django
 
 
 class MyTestCase(unittest.TestCase):
+    def __init__(self, methodName='runTest'):
+        super().__init__(methodName)
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "lingzhi_engine.settings")
+        os.environ.setdefault("debug", "true")
+        django.setup()
+
     def test_something(self):
         self.assertEqual(True, False)
 
     def test_celery_beat(self):
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "lingzhi_engine.settings")
-        os.environ.setdefault("debug", "true")
-        django.setup()
         from django_celery_beat.models import PeriodicTask, IntervalSchedule
         schedule, created = IntervalSchedule.objects.get_or_create(every=1, period=IntervalSchedule.HOURS, )
 
@@ -56,6 +59,10 @@ class MyTestCase(unittest.TestCase):
                 task='core.tasks.update_sca',
                 args=json.dumps([]),
             )
+
+    def test_agent_status_update(self):
+        from core.tasks import update_agent_status
+        update_agent_status()
 
 
 if __name__ == '__main__':
