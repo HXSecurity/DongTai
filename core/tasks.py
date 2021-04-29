@@ -9,14 +9,20 @@ import time
 
 from celery import shared_task
 from celery.apps.worker import logger
+from django.db.models import Sum, Q
 
 from account.models import User
 from core.engine import VulEngine
 from vuln.models.agent import IastAgent
 from vuln.models.agent_method_pool import MethodPool
+from vuln.models.asset import Asset
+from vuln.models.heartbeat import Heartbeat
 from vuln.models.hook_strategy import HookStrategy
 from vuln.models.hook_type import HookType
+from vuln.models.sca_maven_artifact import ScaMavenArtifact
+from vuln.models.sca_vul_db import ScaVulDb
 from vuln.models.strategy import IastStrategyModel
+from vuln.models.vul_level import IastVulLevel
 from vuln.models.vulnerablity import IastVulnerabilityModel
 
 
@@ -247,3 +253,71 @@ def load_methods_from_strategy(strategy_id):
     agents = IastAgent.objects.filter(user=user) if user else None
     method_pool_queryset = MethodPool.objects.filter(agent__in=agents if agents else [])
     return strategy_value, method_pool_queryset
+
+
+@shared_task(queue='periodic_task')
+def update_sca():
+    """
+    根据SCA数据库，更新SCA记录信息
+    :return:
+    """
+
+    assets = Asset.objects.all()
+    for asset in assets:
+        signature = asset.signature_value
+        aids = ScaMavenArtifact.objects.filter(signature=signature).values("aid")
+        vul_count = len(aids)
+        levels = ScaVulDb.objects.filter(id__in=aids).values('vul_level')
+
+        level = 'info'
+        if len(levels) > 0:
+            levels = [_['vul_level'] for _ in levels]
+            if 'high' in levels:
+                level = 'high'
+            elif 'high' in levels:
+                level = 'high'
+            elif 'medium' in levels:
+                level = 'medium'
+            elif 'low' in levels:
+                level = 'low'
+            else:
+                level = 'info'
+        logger.debug(f'开始更新，sha1: {signature}，危害等级：{level}')
+        asset.level = IastVulLevel.objects.get(name=level)
+        asset.vul_count = vul_count
+        asset.save()
+
+
+@shared_task(queue='periodic_task')
+def update_agent_status():
+    """
+    更新Agent状态
+    :return:
+    """
+    timestamp = int(time.time())
+    queryset = IastAgent.objects.all()
+    queryset = queryset.filter(
+        (Q(server=None) & (Q(latest_time__lt=(timestamp - 600)))) | Q(server__update_time__lt=(timestamp - 600)),
+        is_running=1)
+    queryset.update(is_running=0)
+
+
+@shared_task(queue='periodic_task')
+def heartbeat():
+    """
+    发送心跳
+    :return:
+    """
+    # 查询agent数量
+    agents = IastAgent.objects.all()
+    agent_enable = agents.filter(is_running=1).count()
+    agent_counts = agents.count()
+    heartbeat = Heartbeat.objects.filter(agent__in=agents).annotate(Sum("req_count")).count()
+    heartbeat_raw = {
+        "status": 200,
+        "msg": "engine is running",
+        "agentCount": agent_counts,
+        "reqCount": heartbeat,
+        "agentEnableCount": agent_enable
+    }
+    print(json.dumps(heartbeat_raw))

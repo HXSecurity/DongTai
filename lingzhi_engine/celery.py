@@ -28,12 +28,20 @@ configs["CELERY_QUEUES"] = [
     Queue("vul-scan-method-pool", Exchange("method_pool"), routing_key="method_pool"),
     Queue("vul-scan-strategy", Exchange("strategy"), routing_key="strategy"),
     Queue("vul-scan-search", Exchange("search"), routing_key="search"),
+    Queue("periodic_task", Exchange("periodic_task"), routing_key="periodic_task"),
 ]
 configs["CELERY_ROUTES"] = {
     "core.tasks.search_vul_from_method_pool": {'exchange': 'method_pool', 'routing_key': 'method_pool'},
     "core.tasks.search_vul_from_strategy": {'exchange': 'strategy', 'routing_key': 'strategy'},
     "core.tasks.search_sink_from_method_pool": {'exchange': 'search', 'routing_key': 'search'},
+    "core.tasks.update_sca": {'exchange': 'periodic_task', 'routing_key': 'periodic_task'},
+    "core.tasks.update_agent_status": {'exchange': 'periodic_task', 'routing_key': 'periodic_task'},
+    "core.tasks.heartbeat": {'exchange': 'periodic_task', 'routing_key': 'periodic_task'},
 }
+configs["CELERY_ENABLE_UTC"] = False
+configs["CELERY_TIMEZONE"] = settings.TIME_ZONE
+configs["DJANGO_CELERY_BEAT_TZ_AWARE"] = False
+configs["CELERY_BEAT_SCHEDULER"] = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 app.namespace = 'CELERY'
 app.conf.update(configs)
