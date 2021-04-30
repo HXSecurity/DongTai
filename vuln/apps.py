@@ -5,5 +5,6 @@ class VulnConfig(AppConfig):
     name = 'vuln'
 
     def ready(self):
-        from signals.handlers import save_vul
+        # 加载信号处理方法和信号
+        from signals.handlers import vul_handler
         from signals import vul_found
