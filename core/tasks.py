@@ -13,6 +13,7 @@ from django.db.models import Sum, Q
 
 from account.models import User
 from core.engine import VulEngine
+from core.mvn_spider import MavenSpider
 from vuln.models.agent import IastAgent
 from vuln.models.agent_method_pool import MethodPool
 from vuln.models.asset import Asset
@@ -334,3 +335,16 @@ def heartbeat():
     }
     heartbeat_data = json.dumps(heartbeat_raw)
     logger.info(f'core.tasks.heartbeat is finished, data: {heartbeat_data}')
+
+
+@shared_task(queue='periodic_task')
+def maven_spider():
+    """
+    发送心跳
+    :return:
+    """
+    spider = MavenSpider()
+    try:
+        spider.cron(MavenSpider.BASEURL, MavenSpider.INDEX)
+    except Exception as e:
+        logger.error(f'maven爬虫出现异常，异常信息：{e}')
