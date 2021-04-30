@@ -3,13 +3,15 @@ import unittest
 
 import django
 
+from core.tasks import maven_spider
+
 
 class MyTestCase(unittest.TestCase):
     def __init__(self, methodName='runTest'):
-        super().__init__(methodName)
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "lingzhi_engine.settings")
         os.environ.setdefault("debug", "true")
         django.setup()
+        super().__init__(methodName)
 
     def test_something(self):
         self.assertEqual(True, False)
@@ -63,6 +65,13 @@ class MyTestCase(unittest.TestCase):
     def test_agent_status_update(self):
         from core.tasks import update_agent_status
         update_agent_status()
+
+    def test_maven_spider(self):
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "lingzhi_engine.settings")
+        os.environ.setdefault("debug", "true")
+        django.setup()
+        print(os.environ)
+        maven_spider()
 
 
 if __name__ == '__main__':
