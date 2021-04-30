@@ -9,14 +9,20 @@ import time
 
 from celery import shared_task
 from celery.apps.worker import logger
+from django.db.models import Sum, Q
 
 from account.models import User
 from core.engine import VulEngine
 from vuln.models.agent import IastAgent
 from vuln.models.agent_method_pool import MethodPool
+from vuln.models.asset import Asset
+from vuln.models.heartbeat import Heartbeat
 from vuln.models.hook_strategy import HookStrategy
 from vuln.models.hook_type import HookType
+from vuln.models.sca_maven_artifact import ScaMavenArtifact
+from vuln.models.sca_vul_db import ScaVulDb
 from vuln.models.strategy import IastStrategyModel
+from vuln.models.vul_level import IastVulLevel
 from vuln.models.vulnerablity import IastVulnerabilityModel
 
 
@@ -162,6 +168,7 @@ def search_and_save_sink(engine, method_pool_model, strategy):
 
 @shared_task(queue='vul-scan')
 def search_vul_from_method_pool(method_pool_id):
+    logger.info('core.tasks.search_vul_from_method_pool is running')
     method_pool_model = MethodPool.objects.filter(id=method_pool_id).first()
     if method_pool_model is None:
         logger.info(f'方法池[{method_pool_id}]不存在')
@@ -174,6 +181,7 @@ def search_vul_from_method_pool(method_pool_id):
         for strategy in strategies:
             if strategy.get('value') in engine.method_pool_signatures:
                 search_and_save_vul(engine, method_pool_model, method_pool, strategy)
+    logger.info('core.tasks.search_sink_from_method_pool is finished')
 
 
 @shared_task(queue='vul-scan')
@@ -183,6 +191,7 @@ def search_vul_from_strategy(strategy_id):
     :param strategy_id: 策略ID
     :return: None
     """
+    logger.info('core.tasks.search_vul_from_strategy is running')
     strategy_value, method_pool_queryset = load_methods_from_strategy(strategy_id=strategy_id)
     engine = VulEngine()
 
@@ -192,6 +201,7 @@ def search_vul_from_strategy(strategy_id):
                 method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
                 # todo 对数据做预处理，避免无效的计算
                 search_and_save_vul(engine, method_pool_model, method_pool, strategy_value)
+    logger.info('core.tasks.search_sink_from_method_pool is finished')
 
 
 @shared_task(queue='vul-search')
@@ -201,6 +211,7 @@ def search_sink_from_method_pool(method_pool_id):
     :param method_pool_id: 方法池ID
     :return: None
     """
+    logger.info('core.tasks.search_sink_from_method_pool is running')
     method_pool_model = MethodPool.objects.filter(id=method_pool_id).first()
     if method_pool_model is None:
         logger.info(f'方法池[{method_pool_id}]不存在')
@@ -209,7 +220,7 @@ def search_sink_from_method_pool(method_pool_id):
 
     for strategy in strategies:
         search_and_save_sink(engine, method_pool_model, strategy)
-    logger.info('任务执行完成')
+    logger.info('core.tasks.search_sink_from_method_pool is finished')
 
 
 @shared_task(queue='vul-search')
@@ -219,6 +230,7 @@ def search_sink_from_strategy(strategy_id):
     :param strategy_id: 策略ID
     :return: None
     """
+    logger.info('core.tasks.search_sink_from_strategy is running')
     strategy_value, method_pool_queryset = load_methods_from_strategy(strategy_id=strategy_id)
 
     engine = VulEngine()
@@ -226,6 +238,7 @@ def search_sink_from_strategy(strategy_id):
         if sub_queryset:
             for method_pool in sub_queryset:
                 search_and_save_sink(engine, method_pool, strategy_value)
+    logger.info('core.tasks.search_sink_from_strategy is finished')
 
 
 def load_methods_from_strategy(strategy_id):
@@ -247,3 +260,77 @@ def load_methods_from_strategy(strategy_id):
     agents = IastAgent.objects.filter(user=user) if user else None
     method_pool_queryset = MethodPool.objects.filter(agent__in=agents if agents else [])
     return strategy_value, method_pool_queryset
+
+
+@shared_task(queue='periodic_task')
+def update_sca():
+    """
+    根据SCA数据库，更新SCA记录信息
+    :return:
+    """
+    logger.info('core.tasks.update_sca is running')
+    assets = Asset.objects.all()
+    for asset in assets:
+        signature = asset.signature_value
+        aids = ScaMavenArtifact.objects.filter(signature=signature).values("aid")
+        vul_count = len(aids)
+        levels = ScaVulDb.objects.filter(id__in=aids).values('vul_level')
+
+        level = 'info'
+        if len(levels) > 0:
+            levels = [_['vul_level'] for _ in levels]
+            if 'high' in levels:
+                level = 'high'
+            elif 'high' in levels:
+                level = 'high'
+            elif 'medium' in levels:
+                level = 'medium'
+            elif 'low' in levels:
+                level = 'low'
+            else:
+                level = 'info'
+        logger.debug(f'开始更新，sha1: {signature}，危害等级：{level}')
+        asset.level = IastVulLevel.objects.get(name=level)
+        asset.vul_count = vul_count
+        asset.save()
+    logger.info('core.tasks.update_sca is finished')
+
+
+@shared_task(queue='periodic_task')
+def update_agent_status():
+    """
+    更新Agent状态
+    :return:
+    """
+    logger.info('core.tasks.update_agent_status is running')
+    timestamp = int(time.time())
+    queryset = IastAgent.objects.all()
+    queryset = queryset.filter(
+        (Q(server=None) & (Q(latest_time__lt=(timestamp - 600)))) | Q(server__update_time__lt=(timestamp - 600)),
+        is_running=1)
+    queryset.update(is_running=0)
+    logger.info('core.tasks.update_agent_status is finished')
+
+
+@shared_task(queue='periodic_task')
+def heartbeat():
+    """
+    发送心跳
+    :return:
+    """
+    # 查询agent数量
+
+    logger.info('core.tasks.heartbeat is running')
+    agents = IastAgent.objects.all()
+    agent_enable = agents.filter(is_running=1).count()
+    agent_counts = agents.count()
+    heartbeat = Heartbeat.objects.filter(agent__in=agents).annotate(Sum("req_count")).count()
+    heartbeat_raw = {
+        "status": 200,
+        "msg": "engine is running",
+        "agentCount": agent_counts,
+        "reqCount": heartbeat,
+        "agentEnableCount": agent_enable
+    }
+    heartbeat_data = json.dumps(heartbeat_raw)
+    logger.info(f'core.tasks.heartbeat is finished, data: {heartbeat_data}')

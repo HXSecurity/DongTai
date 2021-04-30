@@ -4,3 +4,4 @@ mysqlclient==1.4.6
 celery==4.4.2
 redis==3.5.3
 uwsgi==2.0.19.1
+django-celery-beat==2.2.0
