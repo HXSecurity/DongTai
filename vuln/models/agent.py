@@ -5,6 +5,7 @@
 # software: PyCharm
 # project: lingzhi-webapi
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from vuln.models.server import IastServerModel
 from account.models import User
@@ -15,11 +16,18 @@ class IastAgent(models.Model):
     version = models.CharField(max_length=255, blank=True, null=True)
     latest_time = models.IntegerField(blank=True, null=True)
     user = models.ForeignKey(User, models.DO_NOTHING)
-    server = models.ForeignKey(IastServerModel, models.DO_NOTHING)
+    server = models.ForeignKey(
+        to=IastServerModel,
+        on_delete=models.DO_NOTHING,
+        related_name='agents',
+        related_query_name='agent',
+        verbose_name=_('server'),
+    )
     is_running = models.IntegerField(blank=True, null=True)
     control = models.IntegerField(blank=True, null=True)
     is_control = models.IntegerField(blank=True, null=True)
     bind_project_id = models.IntegerField(blank=True, null=True, default=0)
+    project_name = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         managed = False

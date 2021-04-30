@@ -14,11 +14,11 @@ import os
 import sys
 from configparser import ConfigParser
 
-config = ConfigParser()
-config.read('conf/config.ini')
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+config = ConfigParser()
+config.read(os.path.join(BASE_DIR, 'conf/config.ini'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'django_celery_beat',
     'account',
     'vuln'
 ]
@@ -179,7 +180,7 @@ LOGGING = {
         },
         'dongtai-engine': {
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'logs/apiserver.log',
+            'filename': os.path.join(BASE_DIR, 'logs/apiserver.log'),
             'backupCount': 5,
             'maxBytes': 1024 * 1024 * 10,
         },

@@ -13,3 +13,4 @@ doc
 *.log
 *.log.*
 conf/config.ini
+celerybeat.pid
