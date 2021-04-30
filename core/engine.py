@@ -147,27 +147,6 @@ class VulEngine(object):
         if vul_method_signature in self.method_pool_signatures:
             return True
 
-    def search_all_link(self):
-        """
-        从方法池中搜索所有的污点传播链
-        :return:
-        """
-        self.edge_code = 1
-        self.method_pool_asc = self.method_pool[::-1]
-        self.create_node()
-        self.create_edge()
-
-    def create_edge(self):
-        """
-        创建污点链的边
-        :return:
-        """
-        for index in range(self.method_counts):
-            data = self.method_pool_asc[index]
-            if data['source']:
-                current_hash = set(data['targetHash'])
-                left_node = str(data['invokeId'])
-                self.dfs(current_hash, left_node, index)
 
     def dfs(self, current_hash, left_node, left_index):
         """

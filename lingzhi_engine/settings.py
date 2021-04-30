@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_celery_beat',
     'account',
-    'vuln'
+    'vuln.apps.VulnConfig'
 ]
 
 MIDDLEWARE = [

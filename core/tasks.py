@@ -14,6 +14,7 @@ from django.db.models import Sum, Q
 from account.models import User
 from core.engine import VulEngine
 from core.mvn_spider import MavenSpider
+from signals import vul_found
 from vuln.models.agent import IastAgent
 from vuln.models.agent_method_pool import MethodPool
 from vuln.models.asset import Asset
@@ -136,16 +137,20 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
     :return: None
     """
     logger.info(f'current sink rule is {strategy.get("type")}')
-    engine.search(
-        method_pool=method_pool,
-        vul_method_signature=strategy.get('value')
-    )
-    status, stack, source_sign, sink_sign = engine.result()
-    if status:
-        vul_strategy = IastStrategyModel.objects.filter(vul_type=strategy['type']).first()
-        if vul_strategy:
-            save_vul(method_pool_model, vul_strategy.level, vul_strategy.vul_name, stack, source_sign,
-                     sink_sign)
+    vul_strategy = IastStrategyModel.objects.filter(vul_type=strategy['type']).first()
+    if vul_strategy:
+        engine.search(
+            method_pool=method_pool,
+            vul_method_signature=strategy.get('value')
+        )
+        status, stack, source_sign, sink_sign = engine.result()
+        if status:
+            vul_found.send(vul_meta=method_pool_model,
+                           vul_level=vul_strategy.level,
+                           vul_name=vul_strategy.vul_name,
+                           vul_stack=stack,
+                           top_stack=source_sign,
+                           bottom_stack=sink_sign)
 
 
 def search_and_save_sink(engine, method_pool_model, strategy):
