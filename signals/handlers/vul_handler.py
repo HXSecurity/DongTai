@@ -177,9 +177,6 @@ def send_to_web_hook(web_hook_url, template, vul_data):
         .replace("{{http_scheme}}", vul_data['http_scheme']) \
         .replace("{{http_protocol}}", vul_data['http_protocol']) \
         .replace("{{req_header}}", vul_data['req_header']) \
-        .replace("{{req_data}}", vul_data['req_data']) \
-        .replace("{{res_header}}", vul_data['res_header']) \
-        .replace("{{res_body}}", vul_data['res_body']) \
         .replace("{{vul_type}}", vul_data['vul_type']) \
         .replace("{{vul_level}}", vul_data['vul_level']) \
         .replace("{{full_stack}}", vul_data['full_stack']) \
@@ -189,12 +186,12 @@ def send_to_web_hook(web_hook_url, template, vul_data):
         .replace('{{taint_position}}', vul_data['taint_position']) \
         .replace('{{agent_token}}', vul_data['agent_token']) \
         .replace('{{project}}', vul_data['project']) \
-        .replace('{{counts}}', vul_data['counts']) \
+        .replace('{{counts}}', str(vul_data['counts'])) \
         .replace('{{language}}', vul_data['language']) \
         .replace('{{client_ip}}', vul_data['client_ip']) \
         .replace('{{username}}', vul_data['username'])
 
-    resp = requests.post(url=web_hook_url, json={"msg_type": "text", "content": {"text": notify_text}})
+    resp = requests.post(url=web_hook_url, json=json.loads(notify_text))
     if resp.status_code == 200:
         pass
 
