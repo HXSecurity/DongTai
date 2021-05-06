@@ -14,10 +14,9 @@ from queue import Queue
 from celery.apps.worker import logger
 
 import requests
-
-from vuln.models.sca_maven_artifact import ScaMavenArtifact
-from vuln.models.sca_maven_db import ScaMavenDb
-from vuln.models.sca_record import ScaRecord
+from dongtai_models.models.sca_maven_artifact import ScaMavenArtifact
+from dongtai_models.models.sca_maven_db import ScaMavenDb
+from dongtai_models.models.sca_record import ScaRecord
 
 PATTERN = re.compile('(.*?)href="(.*?)"(.*?)')
 

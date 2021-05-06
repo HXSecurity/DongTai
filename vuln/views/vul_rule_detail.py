@@ -5,11 +5,11 @@
 # software: PyCharm
 # project: lingzhi-engine
 from django.db.models import Q
+from dongtai_models.models.vul_rule import IastVulRule
 
 from lingzhi_engine import const
 from lingzhi_engine.base import R
 from vuln.base.method_pool import AnonymousAndUserEndPoint
-from vuln.models.vul_rule import IastVulRule
 from vuln.serializers.vul_rule import VulRuleDetailSerializer
 
 
@@ -18,7 +18,7 @@ class VulRuleDetailEndPoint(AnonymousAndUserEndPoint):
         rule_id = request.query_params.get('rule_id')
         if rule_id is None:
             return R.failure(msg='策略ID不能为空')
-        
+
         user = request.user
         if user.is_active:
             queryset = IastVulRule.objects.filter(Q(is_system=const.RULE_IS_SYSTEM) | Q(create_by=user.id),

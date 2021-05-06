@@ -10,21 +10,23 @@ import time
 from celery import shared_task
 from celery.apps.worker import logger
 from django.db.models import Sum, Q
+from dongtai_models.models import User
+from dongtai_models.models.agent import IastAgent
+from dongtai_models.models.agent_method_pool import MethodPool
+from dongtai_models.models.asset import Asset
+from dongtai_models.models.heartbeat import Heartbeat
+from dongtai_models.models.hook_strategy import HookStrategy
+from dongtai_models.models.hook_type import HookType
+from dongtai_models.models.project import IastProject
+from dongtai_models.models.sca_maven_artifact import ScaMavenArtifact
+from dongtai_models.models.sca_vul_db import ScaVulDb
+from dongtai_models.models.strategy import IastStrategyModel
+from dongtai_models.models.vul_level import IastVulLevel
+from dongtai_models.models.vulnerablity import IastVulnerabilityModel
 
-from account.models import User
 from core.engine import VulEngine
 from core.mvn_spider import MavenSpider
-from vuln.models.agent import IastAgent
-from vuln.models.agent_method_pool import MethodPool
-from vuln.models.asset import Asset
-from vuln.models.heartbeat import Heartbeat
-from vuln.models.hook_strategy import HookStrategy
-from vuln.models.hook_type import HookType
-from vuln.models.sca_maven_artifact import ScaMavenArtifact
-from vuln.models.sca_vul_db import ScaVulDb
-from vuln.models.strategy import IastStrategyModel
-from vuln.models.vul_level import IastVulLevel
-from vuln.models.vulnerablity import IastVulnerabilityModel
+from signals import vul_found
 
 
 def queryset_to_iterator(queryset):
@@ -136,16 +138,20 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
     :return: None
     """
     logger.info(f'current sink rule is {strategy.get("type")}')
-    engine.search(
-        method_pool=method_pool,
-        vul_method_signature=strategy.get('value')
-    )
-    status, stack, source_sign, sink_sign = engine.result()
-    if status:
-        vul_strategy = IastStrategyModel.objects.filter(vul_type=strategy['type']).first()
-        if vul_strategy:
-            save_vul(method_pool_model, vul_strategy.level, vul_strategy.vul_name, stack, source_sign,
-                     sink_sign)
+    vul_strategy = IastStrategyModel.objects.filter(vul_type=strategy['type']).first()
+    if vul_strategy:
+        engine.search(
+            method_pool=method_pool,
+            vul_method_signature=strategy.get('value')
+        )
+        status, stack, source_sign, sink_sign = engine.result()
+        if status:
+            vul_found.send(vul_meta=method_pool_model,
+                           vul_level=vul_strategy.level,
+                           vul_name=vul_strategy.vul_name,
+                           vul_stack=stack,
+                           top_stack=source_sign,
+                           bottom_stack=sink_sign)
 
 
 def search_and_save_sink(engine, method_pool_model, strategy):
@@ -326,15 +332,29 @@ def heartbeat():
     agent_enable = agents.filter(is_running=1).count()
     agent_counts = agents.count()
     heartbeat = Heartbeat.objects.filter(agent__in=agents).annotate(Sum("req_count")).count()
+    project_count = IastProject.objects.count()
+    user_count = User.objects.count()
+    vul_count = IastVulnerabilityModel.objects.count()
+    method_pool_count = MethodPool.objects.count()
     heartbeat_raw = {
         "status": 200,
         "msg": "engine is running",
         "agentCount": agent_counts,
         "reqCount": heartbeat,
-        "agentEnableCount": agent_enable
+        "agentEnableCount": agent_enable,
+        "projectCount": project_count,
+        "userCount": user_count,
+        "vulCount": vul_count,
+        "methodPoolCount": method_pool_count,
+        "timestamp": int(time.time())
     }
-    heartbeat_data = json.dumps(heartbeat_raw)
-    logger.info(f'core.tasks.heartbeat is finished, data: {heartbeat_data}')
+    try:
+        import requests
+        resp = requests.post(url='http://openapi.iast.huoxian.cn:8000/api/v1/engine/heartbeat', json=heartbeat_raw)
+        if resp.status_code == 200:
+            pass
+    except:
+        pass
 
 
 @shared_task(queue='periodic_task')
@@ -348,3 +368,12 @@ def maven_spider():
         spider.cron(MavenSpider.BASEURL, MavenSpider.INDEX)
     except Exception as e:
         logger.error(f'maven爬虫出现异常，异常信息：{e}')
+
+
+@shared_task(queue='periodic_task')
+def clear_error_log():
+    """
+    清理错误日志
+    :return:
+    """
+    pass
