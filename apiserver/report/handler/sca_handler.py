@@ -8,12 +8,13 @@ import json
 import logging
 import time
 
-from apiserver.models.agent import IastAgent
-from apiserver.models.asset import IastAsset
-from apiserver.models.sca_maven_artifact import ScaMavenArtifact
-from apiserver.models.sca_maven_db import ScaMavenDb
-from apiserver.models.sca_vul_db import ScaVulDb
-from apiserver.models.vul_level import IastVulLevel
+from dongtai_models.models.agent import IastAgent
+from dongtai_models.models.asset import Asset
+from dongtai_models.models.sca_maven_artifact import ScaMavenArtifact
+from dongtai_models.models.sca_maven_db import ScaMavenDb
+from dongtai_models.models.sca_vul_db import ScaVulDb
+from dongtai_models.models.vul_level import IastVulLevel
+
 from apiserver.report.handler.report_handler_interface import IReportHandler
 
 logger = logging.getLogger("django")
@@ -67,11 +68,11 @@ class ScaHandler(IReportHandler):
                     agents = self.get_project_agents(agent)
                     asset_count = 0
                     if agents:
-                        asset_count = IastAsset.objects.filter(signature_value=self.package_signature,
+                        asset_count = Asset.objects.filter(signature_value=self.package_signature,
                                                                agent__in=agents).count()
 
                     if asset_count == 0:
-                        IastAsset(
+                        Asset(
                             package_path=self.package_path,
                             version=version,
                             vul_count=vul_count,

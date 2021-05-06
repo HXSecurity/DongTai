@@ -4,7 +4,6 @@
 # datetime:2021/1/12 下午7:45
 # software: PyCharm
 # project: lingzhi-agent-server
-from django.http import JsonResponse
 
 from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint

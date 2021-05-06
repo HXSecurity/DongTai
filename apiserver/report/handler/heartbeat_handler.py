@@ -7,9 +7,10 @@
 import base64
 import time
 
-from apiserver.models.agent import IastAgent
-from apiserver.models.heartbeat import IastHeartbeat
-from apiserver.models.server import IastServerModel
+from dongtai_models.models.agent import IastAgent
+from dongtai_models.models.heartbeat import Heartbeat
+from dongtai_models.models.server import IastServerModel
+
 from apiserver.report.handler.report_handler_interface import IReportHandler
 
 
@@ -36,7 +37,7 @@ class HeartBeatHandler(IReportHandler):
         self.project_name = self.detail.get('project_name', 'Demo Project')
 
     def save_heartbeat(self):
-        heartbeat = IastHeartbeat(
+        heartbeat = Heartbeat(
             hostname=self.hostname,
             network=self.network,
             memory=self.memory,
