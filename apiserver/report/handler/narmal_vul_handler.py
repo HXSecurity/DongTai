@@ -10,15 +10,13 @@
 # datetime:2020/10/23 11:55
 # software: PyCharm
 # project: webapi
-import base64
-import json
 import time
 
-from apiserver.models.agent import IastAgent
-from apiserver.models.project import IastProject
-from apiserver.models.strategy import IastStrategyModel
-from apiserver.models.vul_level import IastVulLevel
-from apiserver.models.vulnerablity import IastVulnerabilityModel
+from dongtai_models.models.agent import IastAgent
+from dongtai_models.models.strategy import IastStrategyModel
+from dongtai_models.models.vul_level import IastVulLevel
+from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+
 from apiserver.report.handler.report_handler_interface import IReportHandler
 
 

@@ -8,9 +8,10 @@ import datetime
 import json
 import time
 
-from apiserver.models.iast_overpower_user import IastOverpowerUserAuth
-from apiserver.models.iast_vul_overpower import IastVulOverpower
-from apiserver.models.vulnerablity import IastVulnerabilityModel
+from dongtai_models.models.iast_overpower_user import IastOverpowerUserAuth
+from dongtai_models.models.iast_vul_overpower import IastVulOverpower
+from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+
 from apiserver.report.handler.report_handler_interface import IReportHandler
 
 

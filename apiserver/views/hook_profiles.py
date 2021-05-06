@@ -7,15 +7,15 @@
 import json
 import logging
 
+from dongtai_models.models.hook_strategy import HookStrategy
+from dongtai_models.models.hook_talent_strategy import IastHookTalentStrategy
+from dongtai_models.models.hook_type import HookType
 from rest_framework.request import Request
 
 from AgentServer import const
 from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint
 # note: 当前依赖必须保留，否则无法通过hooktype反向查找策略
-from apiserver.models.hook_strategy import HookStrategy
-from apiserver.models.hook_talent_strategy import IastHookTalentStrategy
-from apiserver.models.hook_type import HookType
 
 logger = logging.getLogger("django")
 
