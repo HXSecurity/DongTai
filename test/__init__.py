@@ -11,7 +11,7 @@ import django
 
 class DongTaiTestCase(unittest.TestCase):
     def __init__(self, methodName='runTest'):
+        super().__init__(methodName)
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "lingzhi_engine.settings")
         os.environ.setdefault("debug", "true")
         django.setup()
-        super().__init__(methodName)

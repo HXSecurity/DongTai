@@ -17,6 +17,7 @@ from dongtai_models.models.asset import Asset
 from dongtai_models.models.heartbeat import Heartbeat
 from dongtai_models.models.hook_strategy import HookStrategy
 from dongtai_models.models.hook_type import HookType
+from dongtai_models.models.project import IastProject
 from dongtai_models.models.sca_maven_artifact import ScaMavenArtifact
 from dongtai_models.models.sca_vul_db import ScaVulDb
 from dongtai_models.models.strategy import IastStrategyModel
@@ -331,15 +332,29 @@ def heartbeat():
     agent_enable = agents.filter(is_running=1).count()
     agent_counts = agents.count()
     heartbeat = Heartbeat.objects.filter(agent__in=agents).annotate(Sum("req_count")).count()
+    project_count = IastProject.objects.count()
+    user_count = User.objects.count()
+    vul_count = IastVulnerabilityModel.objects.count()
+    method_pool_count = MethodPool.objects.count()
     heartbeat_raw = {
         "status": 200,
         "msg": "engine is running",
         "agentCount": agent_counts,
         "reqCount": heartbeat,
-        "agentEnableCount": agent_enable
+        "agentEnableCount": agent_enable,
+        "projectCount": project_count,
+        "userCount": user_count,
+        "vulCount": vul_count,
+        "methodPoolCount": method_pool_count,
+        "timestamp": int(time.time())
     }
-    heartbeat_data = json.dumps(heartbeat_raw)
-    logger.info(f'core.tasks.heartbeat is finished, data: {heartbeat_data}')
+    try:
+        import requests
+        resp = requests.post(url='http://openapi.iast.huoxian.cn:8000/api/v1/engine/heartbeat', json=heartbeat_raw)
+        if resp.status_code == 200:
+            pass
+    except:
+        pass
 
 
 @shared_task(queue='periodic_task')

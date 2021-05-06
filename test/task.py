@@ -1,21 +1,10 @@
-import os
 import unittest
 
-import django
-
-from core.tasks import maven_spider
+from core.tasks import maven_spider, heartbeat
 from test import DongTaiTestCase
 
 
 class MyTestCase(DongTaiTestCase):
-    def __init__(self, methodName='runTest'):
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "lingzhi_engine.settings")
-        os.environ.setdefault("debug", "true")
-        django.setup()
-        super().__init__(methodName)
-
-    def test_something(self):
-        self.assertEqual(True, False)
 
     def test_celery_beat(self):
         from django_celery_beat.models import PeriodicTask, IntervalSchedule
@@ -69,6 +58,14 @@ class MyTestCase(DongTaiTestCase):
 
     def test_maven_spider(self):
         maven_spider()
+
+    def test_heart_beat(self):
+        import os
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "lingzhi_engine.settings")
+        os.environ.setdefault("debug", "true")
+        import django
+        django.setup()
+        heartbeat()
 
 
 if __name__ == '__main__':
