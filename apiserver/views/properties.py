@@ -6,12 +6,12 @@
 # project: webapi
 import logging
 
+from dongtai_models.models.agent import IastAgent
+from dongtai_models.models.agent_properties import IastAgentProperties
 from rest_framework.request import Request
 
 from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint
-from apiserver.models.agent import IastAgent
-from apiserver.models.agent_properties import IastAgentProperties
 from apiserver.serializers.agent_properties import AgentPropertiesSerialize
 
 logger = logging.getLogger("django")

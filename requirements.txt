@@ -1,6 +1,6 @@
-Django==3.0.3
-djangorestframework==3.11.0
+Django==3.2.2
+djangorestframework==3.12.4
 M2Crypto==0.35.2
-mysqlclient==1.4.6
+mysqlclient==2.0.3
 uwsgi==2.0.19.1
 requests==2.25.1
