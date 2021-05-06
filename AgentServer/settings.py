@@ -14,11 +14,11 @@ import os
 import sys
 from configparser import ConfigParser
 
-config = ConfigParser()
-config.read('conf/config.ini')
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+config = ConfigParser()
+config.read(os.path.join(BASE_DIR, 'conf/config.ini'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
