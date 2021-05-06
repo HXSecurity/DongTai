@@ -12,6 +12,7 @@ from apiserver.views.agent_download import AgentDownload
 from apiserver.views.agent_register import AgentRegisterEndPoint
 from apiserver.views.engine_auto_deploy import AutoDeployEndPoint
 from apiserver.views.engine_download import EngineDownloadEndPoint
+from apiserver.views.engine_heartbeat import EngineHeartBeatEndPoint
 from apiserver.views.engine_status import EngineUpdateEndPoint
 from apiserver.views.hook_profiles import HookProfilesEndPoint
 from apiserver.views.properties import PropertiesEndPoint
@@ -20,7 +21,7 @@ from apiserver.views.report_upload import ReportUploadEndPoint
 urlpatterns = [
     path('agent/download', AgentDownload.as_view()),
     path('deploy/auto', AutoDeployEndPoint.as_view()),
-
+    path('engine/heartbeat', EngineHeartBeatEndPoint.as_view()),
     path('engine/download', EngineDownloadEndPoint.as_view()),
     path('agent/register', AgentRegisterEndPoint.as_view()),
     path('engine/update', EngineUpdateEndPoint.as_view()),
