@@ -39,11 +39,10 @@ DEBUG = os.environ.get("debug", 'false') == 'true'
 
 # READ CONFIG FILE
 config = ConfigParser()
-status = config.read(
-    '/Users/shengnanwu/workspace/secnium/BugPlatflam/dongtai/dongtai-webapi/conf/config.ini') if DEBUG else config.read(
-    'conf/config.ini')
+status = config.read(os.path.join(BASE_DIR, 'conf/config.ini'))
 if len(status) == 0:
-    print("config file not exist.")
+    print("config file not exist. stop running")
+    exit(0)
 
 # DEBUG = True
 ALLOWED_HOSTS = ['*']
@@ -64,7 +63,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'captcha',
     'iast',
-    'scaapi',
 ]
 
 REST_FRAMEWORK = {

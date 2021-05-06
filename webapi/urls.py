@@ -20,6 +20,5 @@ from webapi import settings
 
 urlpatterns = [
     path('api/v1/', include('iast.urls')),
-    path('api/sca/', include('scaapi.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
