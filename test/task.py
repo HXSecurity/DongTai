@@ -4,9 +4,10 @@ import unittest
 import django
 
 from core.tasks import maven_spider
+from test import DongTaiTestCase
 
 
-class MyTestCase(unittest.TestCase):
+class MyTestCase(DongTaiTestCase):
     def __init__(self, methodName='runTest'):
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "lingzhi_engine.settings")
         os.environ.setdefault("debug", "true")
@@ -67,10 +68,6 @@ class MyTestCase(unittest.TestCase):
         update_agent_status()
 
     def test_maven_spider(self):
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "lingzhi_engine.settings")
-        os.environ.setdefault("debug", "true")
-        django.setup()
-        print(os.environ)
         maven_spider()
 
 

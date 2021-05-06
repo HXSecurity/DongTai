@@ -353,3 +353,12 @@ def maven_spider():
         spider.cron(MavenSpider.BASEURL, MavenSpider.INDEX)
     except Exception as e:
         logger.error(f'maven爬虫出现异常，异常信息：{e}')
+
+
+@shared_task(queue='periodic_task')
+def clear_error_log():
+    """
+    清理错误日志
+    :return:
+    """
+    pass
