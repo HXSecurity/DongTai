@@ -4,9 +4,8 @@
 # datetime:2021/3/10 下午12:26
 # software: PyCharm
 # project: lingzhi-engine
+from dongtai_models.models.hook_type import HookType
 from rest_framework import serializers
-
-from vuln.models.hook_type import HookType
 
 
 class HookTypeSerialize(serializers.ModelSerializer):

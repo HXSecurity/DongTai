@@ -8,10 +8,10 @@ import time
 
 import requests
 from django.dispatch import receiver
+from dongtai_models.models.notify_config import IastNotifyConfig
+from dongtai_models.models.vulnerablity import IastVulnerabilityModel
 
 from signals import vul_found
-from vuln.models.notify_config import IastNotifyConfig
-from vuln.models.vulnerablity import IastVulnerabilityModel
 
 
 def create_vul_data_from_model(vul):

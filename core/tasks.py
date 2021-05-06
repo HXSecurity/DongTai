@@ -10,22 +10,22 @@ import time
 from celery import shared_task
 from celery.apps.worker import logger
 from django.db.models import Sum, Q
+from dongtai_models.models import User
+from dongtai_models.models.agent import IastAgent
+from dongtai_models.models.agent_method_pool import MethodPool
+from dongtai_models.models.asset import Asset
+from dongtai_models.models.heartbeat import Heartbeat
+from dongtai_models.models.hook_strategy import HookStrategy
+from dongtai_models.models.hook_type import HookType
+from dongtai_models.models.sca_maven_artifact import ScaMavenArtifact
+from dongtai_models.models.sca_vul_db import ScaVulDb
+from dongtai_models.models.strategy import IastStrategyModel
+from dongtai_models.models.vul_level import IastVulLevel
+from dongtai_models.models.vulnerablity import IastVulnerabilityModel
 
-from account.models import User
 from core.engine import VulEngine
 from core.mvn_spider import MavenSpider
 from signals import vul_found
-from vuln.models.agent import IastAgent
-from vuln.models.agent_method_pool import MethodPool
-from vuln.models.asset import Asset
-from vuln.models.heartbeat import Heartbeat
-from vuln.models.hook_strategy import HookStrategy
-from vuln.models.hook_type import HookType
-from vuln.models.sca_maven_artifact import ScaMavenArtifact
-from vuln.models.sca_vul_db import ScaVulDb
-from vuln.models.strategy import IastStrategyModel
-from vuln.models.vul_level import IastVulLevel
-from vuln.models.vulnerablity import IastVulnerabilityModel
 
 
 def queryset_to_iterator(queryset):

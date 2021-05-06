@@ -6,10 +6,11 @@
 # project: lingzhi-engine
 import logging
 
+from dongtai_models.models.hook_strategy import HookStrategy
+
 from lingzhi_engine import const
 from lingzhi_engine.base import R
 from vuln.base.method_pool import UserEndPoint
-from vuln.models.hook_strategy import HookStrategy
 
 logger = logging.getLogger('dongtai-engine')
 

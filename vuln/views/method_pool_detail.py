@@ -7,11 +7,12 @@
 import json
 import logging
 
+from dongtai_models.models.agent_method_pool import MethodPool
+
 from core.engine import VulEngine
 from core.engine_v2 import VulEngineV2
 from lingzhi_engine.base import R
 from vuln.base.method_pool import AnonymousAndUserEndPoint
-from vuln.models.agent_method_pool import MethodPool
 from vuln.serializers.method_pool import MethodPoolSerialize
 from vuln.views.search import SearchEndPoint
 

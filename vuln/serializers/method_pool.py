@@ -4,12 +4,11 @@
 # datetime:2021/1/28 上午11:10
 # software: PyCharm
 # project: lingzhi-engine
+from dongtai_models.models.agent_method_pool import MethodPool
+from dongtai_models.models.dependency import Dependency
 from rest_framework import serializers
 
-from vuln.models.agent_method_pool import MethodPool
-from vuln.models.dependency import Dependency
 from vuln.serializers.dependency import DependencySerialize
-from vuln.serializers.hook_strategy import SinkSerialize
 from vuln.utils import reduction_req_headers
 
 

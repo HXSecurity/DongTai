@@ -6,10 +6,11 @@
 # project: lingzhi-engine
 import logging
 
+from dongtai_models.models.hook_type import HookType
+
 from lingzhi_engine import const
 from lingzhi_engine.base import R
 from vuln.base.method_pool import UserEndPoint
-from vuln.models.hook_type import HookType
 from vuln.serializers.hook_type_strategy import HookTypeSerialize
 
 logger = logging.getLogger('dongtai-engine')
@@ -43,6 +44,7 @@ class HookRuleTypesEndPoint(UserEndPoint):
         if rule_type is None:
             return R.failure(msg='策略类型不存在')
 
-        queryset = HookType.objects.filter(enable=const.ENABLE, created_by__in=[request.user.id, const.SYSTEM_USER_ID], type=rule_type)
+        queryset = HookType.objects.filter(enable=const.ENABLE, created_by__in=[request.user.id, const.SYSTEM_USER_ID],
+                                           type=rule_type)
         data = HookTypeSerialize(queryset, many=True).data
         return R.success(data=data)
