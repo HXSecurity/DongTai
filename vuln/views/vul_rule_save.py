@@ -8,9 +8,10 @@ import json
 import logging
 import time
 
+from dongtai_models.models.vul_rule import IastVulRule
+
 from lingzhi_engine.base import R
 from vuln.base.method_pool import AnonymousAndUserEndPoint
-from vuln.models.vul_rule import IastVulRule
 
 logger = logging.getLogger('dongtai-engine')
 

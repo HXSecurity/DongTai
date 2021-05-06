@@ -7,11 +7,12 @@
 import json
 import time
 
+from dongtai_models.models.hook_talent_strategy import IastHookTalentStrategy
+from dongtai_models.models.hook_type import HookType
+
 from lingzhi_engine import const
 from lingzhi_engine.base import R
 from vuln.base.method_pool import UserEndPoint
-from vuln.models.hook_talent_strategy import IastHookTalentStrategy
-from vuln.models.hook_type import HookType
 
 
 class HookRuleTypeAddEndPoint(UserEndPoint):
