@@ -30,14 +30,17 @@ class AgentDownload(OpenApiEndPoint):
         """
         try:
             base_url = request.query_params.get('url', 'https://www.huoxian.cn')
-            jdk_version = request.query_params.get('jdk.version', 'https://www.huoxian.cn')
+            jdk_version = request.query_params.get('jdk.version', 'Java 1.8')
+            project_name = request.query_params.get('projectName', 'Demo Project')
             if jdk_version in ["Java 9", "Java 10", "Java 11", "Java 13"]:
                 jdk_level = 2
             else:
                 jdk_level = 1
             token, success = Token.objects.get_or_create(user=request.user)
             agent_token = ''.join(str(uuid.uuid4()).split('-'))
-            if self.create_config_file(base_url, jdk_level, agent_token, token.key):
+            if self.create_config_file(base_url=base_url, jdk_level=jdk_level, agent_token=agent_token,
+                                       auth_token=token.key,
+                                       project_name=project_name):
                 self.replace_jar_config()
                 filename = f"iast-package/iast-agent.jar"
                 response = FileResponse(open(filename, "rb"))
@@ -51,12 +54,13 @@ class AgentDownload(OpenApiEndPoint):
             return R.failure(msg="agent file not exit.")
 
     @staticmethod
-    def create_config_file(base_url, jdk_level, agent_token, auth_token):
+    def create_config_file(base_url, jdk_level, agent_token, auth_token, project_name):
         try:
-            data = "iast.name=lingzhi-Enterprise 1.0.0\niast.version=1.0.0\niast.response.name=lingzhi\niast.response.value=1.0.0\niast.server.url={url}\niast.server.token={token}\niast.allhook.enable=false\niast.dump.class.enable=false\niast.dump.class.path=/tmp/iast-class-dump/\niast.service.heartbeat.interval=30000\niast.service.vulreport.interval=1000\napp.name=LingZhi\nengine.status=start\nengine.name={agent_token}\njdk.version={jdk_level}\nproject.name=Demo Project"
+            data = "iast.name=lingzhi-Enterprise 1.0.0\niast.version=1.0.0\niast.response.name=lingzhi\niast.response.value=1.0.0\niast.server.url={url}\niast.server.token={token}\niast.allhook.enable=false\niast.dump.class.enable=false\niast.dump.class.path=/tmp/iast-class-dump/\niast.service.heartbeat.interval=30000\niast.service.vulreport.interval=1000\napp.name=LingZhi\nengine.status=start\nengine.name={agent_token}\njdk.version={jdk_level}\nproject.name={project_name}"
             with open('/tmp/iast.properties', 'w') as config_file:
                 config_file.write(
-                    data.format(url=base_url, token=auth_token, agent_token=agent_token, jdk_level=jdk_level))
+                    data.format(url=base_url, token=auth_token, agent_token=agent_token, jdk_level=jdk_level,
+                                project_name=project_name))
             return True
         except Exception as e:
             logger.error(f'agent配置文件创建失败，原因：{e}')

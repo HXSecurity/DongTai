@@ -6,8 +6,9 @@
 # project: webapi
 import time
 
-from apiserver.models.agent import IastAgent
-from apiserver.models.errorlog import IastErrorlog
+from dongtai_models.models.agent import IastAgent
+from dongtai_models.models.errorlog import IastErrorlog
+
 from apiserver.report.handler.report_handler_interface import IReportHandler
 
 

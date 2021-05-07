@@ -6,13 +6,13 @@
 # project: lingzhi-webapi
 import time
 
+from dongtai_models.models.agent import IastAgent
+from dongtai_models.models.project import IastProject
 from rest_framework.request import Request
 
 from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint
 from apiserver.decrypter import parse_data
-from apiserver.models.agent import IastAgent
-from apiserver.models.project import IastProject
 
 
 class AgentRegisterEndPoint(OpenApiEndPoint):
