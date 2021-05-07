@@ -9,9 +9,10 @@ from hashlib import sha1
 import requests
 import logging
 
+from dongtai_models.models.agent import IastAgent
+from dongtai_models.models.agent_method_pool import MethodPool
+
 from AgentServer.settings import BASE_ENGINE_URL
-from apiserver.models.agent import IastAgent
-from apiserver.models.agent_method_pool import IastAgentMethodPool
 from apiserver.report.handler.report_handler_interface import IReportHandler
 
 logger = logging.getLogger('lingzhi.api_server')
@@ -52,7 +53,7 @@ class SaasMethodPoolHandler(IReportHandler):
         if agent:
             pool_sign = self.calc_hash()
             agents = self.get_project_agents(agent)
-            method_pool = IastAgentMethodPool.objects.filter(pool_sign=pool_sign, agent__in=agents).first()
+            method_pool = MethodPool.objects.filter(pool_sign=pool_sign, agent__in=agents).first()
             update_record = True
             if method_pool:
                 method_pool.update_time = int(time.time())
@@ -61,7 +62,7 @@ class SaasMethodPoolHandler(IReportHandler):
                 # 获取agent
                 update_record = False
                 timestamp = int(time.time())
-                method_pool = IastAgentMethodPool(
+                method_pool = MethodPool(
                     agent=agent,
                     url=self.http_url,
                     uri=self.http_uri,

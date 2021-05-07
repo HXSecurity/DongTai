@@ -5,8 +5,7 @@
 # software: PyCharm
 # project: webapi
 from django.db.models import Q
-
-from apiserver.models.agent import IastAgent
+from dongtai_models.models.agent import IastAgent
 
 
 class IReportHandler:

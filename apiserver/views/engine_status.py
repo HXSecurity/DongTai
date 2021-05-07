@@ -7,10 +7,10 @@
 import logging
 import time
 
+from dongtai_models.models.agent import IastAgent
+
 from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint
-from apiserver.models.agent import IastAgent
-from django.db import connection
 
 logger = logging.getLogger("django")
 
