@@ -7,8 +7,7 @@
 from dongtai_models.models.vul_rule import IastVulRule
 
 from lingzhi_engine import const
-from lingzhi_engine.base import R
-from vuln.base.method_pool import AnonymousAndUserEndPoint
+from lingzhi_engine.base import R, AnonymousAndUserEndPoint
 from vuln.serializers.vul_rule import VulRuleSerializer
 
 

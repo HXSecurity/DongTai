@@ -15,6 +15,7 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from rest_framework.views import APIView
 
 from lingzhi_engine import const
+from vuln.permissions import UserPermission
 
 logger = logging.getLogger('dongtai-engine')
 
@@ -163,6 +164,14 @@ class MixinAuthEndPoint(EndPoint):
     通过Token和Sessin验证的API入口
     """
     authentication_classes = (SessionAuthentication, TokenAuthentication,)
+
+
+class UserEndPoint(MixinAuthEndPoint):
+    permission_classes = (UserPermission,)
+
+
+class AnonymousAndUserEndPoint(MixinAuthEndPoint):
+    permission_classes = []
 
 
 class R:

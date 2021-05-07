@@ -9,8 +9,7 @@ import logging
 from dongtai_models.models.hook_type import HookType
 
 from lingzhi_engine import const
-from lingzhi_engine.base import R
-from vuln.base.method_pool import UserEndPoint
+from lingzhi_engine.base import R, UserEndPoint
 from vuln.serializers.hook_type_strategy import HookTypeSerialize
 
 logger = logging.getLogger('dongtai-engine')
