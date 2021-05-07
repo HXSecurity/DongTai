@@ -4,18 +4,19 @@
 # datetime:2021/1/18 下午2:16
 # software: PyCharm
 # project: lingzhi-webapi
+import logging
 import time
 
 from django.contrib.auth.models import Group
-from django.db import transaction, DatabaseError
+from django.db import transaction
 from django.http import JsonResponse
 
+from base import R
 from iast.base.system import SystemEndPoint
 from iast.models import User
 from iast.models.department import Department
 from iast.models.talent import Talent
 from iast.serializers.talent import TalentSerializer
-import logging
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -95,16 +96,11 @@ class TalentEndPoint(SystemEndPoint):
         talent_name = request.data.get('talent_name', None)
         talent_email = request.data.get('email', None)
         if talent_name is None or talent_email is None:
-            return JsonResponse({
-                'status': 202,
-                'msg': '租户名称或联系邮箱未指定'
-            })
-        self.init_talent(talent_name, talent_email, request.user.id, request.user.get_username())
-
-        return JsonResponse({
-            'status': 201,
-            'msg': f'租户{talent_name}创建成功',
-        })
+            return R.failure(msg='租户名称或联系邮箱未指定')
+        status, msg = self.init_talent(talent_name, talent_email, request.user.id, request.user.get_username())
+        if status:
+            return R.success(msg=f'租户{talent_name}创建成功')
+        return R.failure(msg=f'租户创建失败，原因：{msg}')
 
     def delete(self, request, pk):
         """
@@ -129,6 +125,13 @@ class TalentEndPoint(SystemEndPoint):
     @transaction.atomic
     def init_talent(talent_name, talent_email, created_by, default_username):
         try:
+            logger.info('查询默认租户信息是否存在')
+            suffix_email = talent_email.split('@')[-1]
+            email = f'{default_username}@{suffix_email}'
+            if User.objects.filter(username=email).exists():
+                logger.error('租户信息已存在，请先删除租户信息')
+                return False, '租户信息已存在，请先删除原有租户信息'
+
             logger.info('开始创建租户')
             timestamp = int(time.time())
             talent = Talent(talent_name=talent_name, create_time=timestamp, update_time=timestamp,
@@ -142,8 +145,7 @@ class TalentEndPoint(SystemEndPoint):
             talent.departments.add(default_department)
 
             logger.info('部门创建完成，开始创建默认用户')
-            suffix_email = talent_email.split('@')[-1]
-            email = f'{default_username}@{suffix_email}'
+
             password = '123456'
             default_user = User.objects.create_talent_user(username=email, password=password, email=email,
                                                            phone='11111111111')
@@ -157,5 +159,7 @@ class TalentEndPoint(SystemEndPoint):
 
             default_department.users.add(default_user)
             logger.info('租户创建及初始化完成')
-        except:
-            raise DatabaseError
+            return True
+        except Exception as e:
+            logger.error(f'创建租户失败，错误原因：{e}')
+            return False, str(e)
