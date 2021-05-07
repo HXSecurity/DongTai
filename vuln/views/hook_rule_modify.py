@@ -8,8 +8,7 @@ import time
 
 from dongtai_models.models.hook_strategy import HookStrategy
 
-from lingzhi_engine.base import R
-from vuln.base.method_pool import UserEndPoint
+from lingzhi_engine.base import R, UserEndPoint
 
 
 class HookRuleModifyEndPoint(UserEndPoint):
