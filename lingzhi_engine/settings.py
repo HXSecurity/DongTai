@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_celery_beat',
+    'rest_framework',
+    'rest_framework.authtoken',
     'dongtai_models',
     'vuln'
 ]

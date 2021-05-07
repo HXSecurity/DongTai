@@ -10,8 +10,7 @@ import logging
 from dongtai_models.models.agent_method_pool import MethodPool
 
 from core.engine import VulEngine
-from lingzhi_engine.base import R
-from vuln.base.method_pool import AnonymousAndUserEndPoint
+from lingzhi_engine.base import R, AnonymousAndUserEndPoint
 from vuln.serializers.method_pool import MethodPoolListSerialize
 
 logger = logging.getLogger("django")
