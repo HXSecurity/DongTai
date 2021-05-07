@@ -32,9 +32,10 @@ class AgentDownload(UserEndPoint):
         try:
             base_url = request.query_params.get('url', 'https://www.huoxian.cn')
             jdk_version = request.query_params.get('jdk.version', 'https://www.huoxian.cn')
+            project_name = request.query_params.get('projectName', 'Demo Project')
             token, success = Token.objects.values('key').get_or_create(user=request.user)
             resp = requests.get(
-                url=f'{AGENT_SERVER_PROXY["HOST"]}/api/v1/agent/download?url={base_url}&jdk.version={jdk_version}',
+                url=f'{AGENT_SERVER_PROXY["HOST"]}/api/v1/agent/download?url={base_url}&jdk.version={jdk_version}&projectName={project_name}',
                 headers={
                     'Authorization': f'Token {token["key"]}'
                 })
