@@ -92,6 +92,14 @@ build_engine(){
     cd $CURRENT_PATH
 }
 
+build_engine_task(){
+    cp dongtai-webapi/conf/config.ini dongtai-engine/conf/config.ini
+
+    cd dongtai-engine
+    docker run -d --network dongtai-net --name dongtai-engine --restart=always huoxian/dongtai-engine-task:latest bash /opt/iast/engine/docker/entrypoint.sh task
+    cd $CURRENT_PATH
+}
+
 build_web(){
     # 修改后端服务的地址
     cp dongtai-web/nginx.conf.example dongtai-web/nginx.conf
@@ -148,6 +156,10 @@ echo -e "\033[32m[*]\033[0m dongtai-openapi服务启动成功"
 echo -e "\033[33m[+] 开始构建dongtai-engine服务...\033[0m"
 build_engine
 echo -e "\033[32m[*]\033[0m dongtai-engine服务启动成功"
+
+echo -e "\033[33m[+] 开始构建dongtai-engine-task服务...\033[0m"
+build_engine_task
+echo -e "\033[32m[*]\033[0m dongtai-engine-task服务启动成功"
 
 echo -e "\033[33m[+] 开始构建dongtai-web服务...\033[0m"
 build_web
