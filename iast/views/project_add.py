@@ -87,7 +87,7 @@ class ProjectAdd(UserEndPoint):
                     project_name=name,
                     user__in=auth_users
                 ).update(bind_project_id=project.id)
-            project.save()
+            project.save(update_fields=['scan_id', 'mode', 'agent_count', 'user_id', 'latest_time'])
 
             return R.success(msg='创建成功')
         except Exception as e:
