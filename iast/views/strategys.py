@@ -8,7 +8,7 @@ from rest_framework.request import Request
 
 from base import R
 from iast.base.user import UserEndPoint
-from iast.models.strategy import IastStrategyModel
+from dongtai_models.models.strategy import IastStrategyModel
 from iast.serializers.strategy import StrategySerializer
 
 

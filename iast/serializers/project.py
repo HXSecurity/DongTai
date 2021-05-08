@@ -7,10 +7,10 @@
 from django.db.models import Count
 from rest_framework import serializers
 
-from iast.models.agent import IastAgent
-from iast.models.project import IastProject
-from iast.models.vul_level import IastVulLevel
-from iast.models.vulnerablity import IastVulnerabilityModel
+from dongtai_models.models.agent import IastAgent
+from dongtai_models.models.project import IastProject
+from dongtai_models.models.vul_level import IastVulLevel
+from dongtai_models.models.vulnerablity import IastVulnerabilityModel
 
 
 class ProjectSerializer(serializers.ModelSerializer):

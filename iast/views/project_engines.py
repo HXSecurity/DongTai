@@ -7,7 +7,7 @@
 
 from base import R
 from iast.base.user import UserEndPoint
-from iast.models.agent import IastAgent
+from dongtai_models.models.agent import IastAgent
 
 
 class ProjectEngines(UserEndPoint):

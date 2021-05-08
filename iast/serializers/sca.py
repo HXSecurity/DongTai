@@ -6,8 +6,8 @@
 # project: lingzhi-webapi
 from rest_framework import serializers
 
-from iast.models.asset import Asset
-from iast.models.project import IastProject
+from dongtai_models.models.asset import Asset
+from dongtai_models.models.project import IastProject
 
 
 class ScaSerializer(serializers.ModelSerializer):

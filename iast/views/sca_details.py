@@ -10,10 +10,10 @@ from rest_framework.request import Request
 
 from base import R
 from iast.base.sca import ScaEndPoint
-from iast.models.asset import Asset
-from iast.models.project import IastProject
-from iast.models.sca_artifact_db import ScaArtifactDb
-from iast.models.sca_maven_artifact import ScaMavenArtifact
+from dongtai_models.models.asset import Asset
+from dongtai_models.models.project import IastProject
+from dongtai_models.models.sca_artifact_db import ScaArtifactDb
+from dongtai_models.models.sca_maven_artifact import ScaMavenArtifact
 from iast.serializers.sca import ScaSerializer
 
 logger = logging.getLogger('dongtai-webapi')

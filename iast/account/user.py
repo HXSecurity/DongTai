@@ -9,21 +9,21 @@ from django.contrib.auth.models import Group
 from django.db import DatabaseError, transaction
 from django.db.models import Q
 from django.http import JsonResponse
+from dongtai_models.models.errorlog import IastErrorlog
+from dongtai_models.models.iast_vul_overpower import IastVulOverpower
 from rest_framework.authtoken.models import Token
 
 from base import R
 from iast.base.user import TalentAdminEndPoint
-from iast.models import User
-from iast.models.agent import IastAgent
-from iast.models.asset import Asset
-from iast.models.department import Department
-from iast.models.errorlog import Errorlog
-from iast.models.heartbeat import Heartbeat
-from iast.models.iast_vul_overpower import VulOverpower
-from iast.models.project import IastProject
-from iast.models.strategy import IastStrategyModel
-from iast.models.strategy_user import IastStrategyUser
-from iast.models.system import IastSystem
+from dongtai_models.models import User
+from dongtai_models.models.agent import IastAgent
+from dongtai_models.models.asset import Asset
+from dongtai_models.models.department import Department
+from dongtai_models.models.heartbeat import Heartbeat
+from dongtai_models.models.project import IastProject
+from dongtai_models.models.strategy import IastStrategyModel
+from dongtai_models.models.strategy_user import IastStrategyUser
+from dongtai_models.models.system import IastSystem
 from iast.serializers.user import UserSerializer
 
 
@@ -141,10 +141,10 @@ class UserEndPoint(TalentAdminEndPoint):
         if self.check_permission_with_talent(request.user, user):
             agents = IastAgent.objects.filter(user=user)
             if agents:
-                Errorlog.objects.filter(agent__in=agents)
+                IastErrorlog.objects.filter(agent__in=agents)
                 Heartbeat.objects.filter(agent__in=agents)
                 Asset.objects.filter(agent__in=agents)
-                VulOverpower.objects.filter(agent__in=agents)
+                IastVulOverpower.objects.filter(agent__in=agents)
 
             try:
                 IastSystem.objects.filter(user=user).delete()
