@@ -25,7 +25,7 @@ class UserPassword(UserEndPoint):
                 password = request.data['new_password']
                 # todo 增加用户密码格式验证
                 user.set_password(password)
-                user.save()
+                user.save(update_fields=['password'])
                 return R.success(msg='密码修改成功')
             else:
                 return R.failure(msg='原始密码错误')

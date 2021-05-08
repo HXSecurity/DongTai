@@ -17,7 +17,7 @@ class StrategyDisableEndpoint(TalentAdminEndPoint):
         strategy = IastStrategyModel.objects.filter(id=id)
         if strategy and len(strategy) > 0:
             strategy[0].state = STRATEGY_DISABLE
-            strategy[0].save()
+            strategy[0].save(update_fields=['state'])
             return R.success()
         else:
             return R.failure(status=202, msg='策略不存在')
