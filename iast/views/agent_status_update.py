@@ -9,7 +9,7 @@ from django.db.models import Q
 
 from base import R
 from iast.base.agent import AgentEndPoint
-from iast.models.agent import IastAgent
+from dongtai_models.models.agent import IastAgent
 
 
 class AgentStatusUpdate(AgentEndPoint):

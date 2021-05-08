@@ -8,7 +8,7 @@ import time
 
 from base import R
 from iast.base.agent import AgentEndPoint
-from iast.models.agent import IastAgent
+from dongtai_models.models.agent import IastAgent
 
 
 class AgentInstall(AgentEndPoint):
@@ -23,7 +23,7 @@ class AgentInstall(AgentEndPoint):
                 agent.control = 1
                 agent.is_control = 1
                 agent.latest_time = int(time.time())
-                agent.save()
+                agent.save(update_fields=['latest_time', 'control', 'is_control'])
                 return R.success(msg='安装完成')
             else:
                 return R.failure(msg='引擎正在被安装或卸载，请稍后再试')

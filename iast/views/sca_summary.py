@@ -10,8 +10,8 @@ from rest_framework.request import Request
 from base import R
 from iast.base.agent import get_agents_with_project, get_sca_count
 from iast.base.sca import ScaEndPoint
-from iast.models.asset import Asset
-from iast.models.vul_level import IastVulLevel
+from dongtai_models.models.asset import Asset
+from dongtai_models.models.vul_level import IastVulLevel
 
 
 class ScaSummary(ScaEndPoint):

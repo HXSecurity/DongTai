@@ -8,8 +8,8 @@
 import logging
 from base import R
 from iast.base.user import UserEndPoint
-from iast.models.agent import IastAgent
-from iast.models.agent_method_pool import IastAgentMethodPool
+from dongtai_models.models.agent import IastAgent
+from dongtai_models.models.agent_method_pool import MethodPool
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -69,4 +69,4 @@ class AgentDeleteEndPoint(UserEndPoint):
 
 if __name__ == '__main__':
     # 增加method_poll的引入，解决报错
-    IastAgentMethodPool.objects.get()
+    MethodPool.objects.get()

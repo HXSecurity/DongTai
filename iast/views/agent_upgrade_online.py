@@ -11,7 +11,7 @@ from rest_framework.request import Request
 
 from base import R
 from iast.base.user import TalentAdminEndPoint
-from iast.models import User
+from dongtai_models.models import User
 
 
 # 在线更新如何设计？

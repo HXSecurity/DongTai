@@ -6,7 +6,7 @@
 # project: lingzhi-webapi
 from rest_framework import serializers
 
-from iast.models import User
+from dongtai_models.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):

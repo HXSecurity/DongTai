@@ -9,7 +9,7 @@ import logging
 
 from base import R
 from iast.base.user import UserEndPoint
-from iast.models.project import IastProject
+from dongtai_models.models.project import IastProject
 from iast.serializers.project import ProjectSerializer
 
 logger = logging.getLogger("django")

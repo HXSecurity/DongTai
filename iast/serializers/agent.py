@@ -8,7 +8,7 @@ import time
 
 from rest_framework import serializers
 
-from iast.models.agent import IastAgent
+from dongtai_models.models.agent import IastAgent
 
 
 class AgentSerializer(serializers.ModelSerializer):

@@ -9,7 +9,7 @@ from rest_framework.request import Request
 
 from base import R
 from iast.base.sca import ScaEndPoint
-from iast.models.asset import Asset
+from dongtai_models.models.asset import Asset
 
 
 class ScaSidebarList(ScaEndPoint):

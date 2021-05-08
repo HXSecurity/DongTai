@@ -8,7 +8,7 @@ from rest_framework.request import Request
 
 from base import R
 from iast.base.user import UserEndPoint
-from iast.models.strategy_user import IastStrategyUser
+from dongtai_models.models.strategy_user import IastStrategyUser
 
 
 # 用户新增策略
