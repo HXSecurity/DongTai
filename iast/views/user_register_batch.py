@@ -10,8 +10,8 @@ from django.contrib.auth.models import Group
 
 from base import R
 from iast.base.user import TalentAdminEndPoint
-from iast.models import User
-from iast.models.department import Department
+from dongtai_models.models import User
+from dongtai_models.models.department import Department
 from iast.notify.email import Email
 from webapi import settings
 

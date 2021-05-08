@@ -13,9 +13,9 @@ from django.http import JsonResponse
 
 from base import R
 from iast.base.system import SystemEndPoint
-from iast.models import User
-from iast.models.department import Department
-from iast.models.talent import Talent
+from dongtai_models.models import User
+from dongtai_models.models.department import Department
+from dongtai_models.models.talent import Talent
 from iast.serializers.talent import TalentSerializer
 
 logger = logging.getLogger('dongtai-webapi')

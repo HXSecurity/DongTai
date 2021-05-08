@@ -9,7 +9,7 @@ from rest_framework.request import Request
 from base import R
 from iast.base.user import TalentAdminEndPoint
 from iast.const import STRATEGY_DISABLE
-from iast.models.strategy import IastStrategyModel
+from dongtai_models.models.strategy import IastStrategyModel
 
 
 class StrategyDisableEndpoint(TalentAdminEndPoint):

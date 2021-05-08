@@ -9,7 +9,7 @@ from rest_framework.request import Request
 
 from base import R
 from iast.base.agent import AgentEndPoint
-from iast.models.deploy import IastDeployDesc
+from dongtai_models.models.deploy import IastDeployDesc
 
 
 class AgentDeployInfo(AgentEndPoint):

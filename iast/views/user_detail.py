@@ -7,7 +7,7 @@
 
 from base import R
 from iast.base.user import TalentAdminEndPoint
-from iast.models import User
+from dongtai_models.models import User
 
 
 class UserDetailEndPoint(TalentAdminEndPoint):
