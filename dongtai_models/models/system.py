@@ -1,6 +1,6 @@
 from django.db import models
 
-from iast.models import User
+from dongtai_models.models import User
 
 
 class IastSystem(models.Model):
