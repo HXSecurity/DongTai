@@ -17,7 +17,7 @@ class StrategyEnableEndpoint(TalentAdminEndPoint):
         strategy = IastStrategyModel.objects.filter(id=id)
         if strategy and len(strategy) > 0:
             strategy[0].state = STRATEGY_ENABLE
-            strategy[0].save()
+            strategy[0].save(update_fields=['state'])
 
             return R.success(msg='success')
         else:
