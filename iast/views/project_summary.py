@@ -8,10 +8,10 @@ import time
 
 from base import R
 from iast.base.user import UserEndPoint
-from iast.models.agent import IastAgent
-from iast.models.project import IastProject
-from iast.models.vul_level import IastVulLevel
-from iast.models.vulnerablity import IastVulnerabilityModel
+from dongtai_models.models.agent import IastAgent
+from dongtai_models.models.project import IastProject
+from dongtai_models.models.vul_level import IastVulLevel
+from dongtai_models.models.vulnerablity import IastVulnerabilityModel
 
 
 class ProjectSummary(UserEndPoint):

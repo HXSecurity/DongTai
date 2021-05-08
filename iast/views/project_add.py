@@ -11,9 +11,9 @@ from django.db.models import Q
 
 from base import R
 from iast.base.user import UserEndPoint
-from iast.models.agent import IastAgent
-from iast.models.project import IastProject
-from iast.models.strategy_user import IastStrategyUser
+from dongtai_models.models.agent import IastAgent
+from dongtai_models.models.project import IastProject
+from dongtai_models.models.strategy_user import IastStrategyUser
 
 logger = logging.getLogger("django")
 

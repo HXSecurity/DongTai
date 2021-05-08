@@ -10,14 +10,13 @@ from django.contrib.admin.models import LogEntryManager, CHANGE, LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework import status, exceptions, parsers
+from dongtai_models.models import User
+from dongtai_models.models.agent import IastAgent
+from rest_framework import status, exceptions
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework_proxy.views import ProxyView
-
-from iast.models import User
-from iast.models.agent import IastAgent
 
 
 class EndPoint(APIView):

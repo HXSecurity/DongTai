@@ -8,7 +8,7 @@ from rest_framework.request import Request
 
 from base import R
 from iast.base.user import UserEndPoint
-from iast.models.vulnerablity import IastVulnerabilityModel
+from dongtai_models.models.vulnerablity import IastVulnerabilityModel
 
 
 class VulnDelete(UserEndPoint):
