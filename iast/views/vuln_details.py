@@ -182,7 +182,8 @@ class VulnDetail(UserEndPoint):
                                             vul.req_data),
             'graphy': self.parse_graphy(vul.full_stack),
             'context_path': vul.context_path,
-            'client_ip': vul.client_ip
+            'client_ip': vul.client_ip,
+            'status': vul.status,
         }
 
     def get_strategy(self):

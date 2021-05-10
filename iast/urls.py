@@ -75,6 +75,7 @@ from iast.views.vuln_delete import VulnDelete
 from iast.views.vuln_details import VulnDetail
 from iast.views.vuln_index import VulnList
 from iast.views.vuln_sidebar_index import VulnSideBarList
+from iast.views.vuln_status import VulnStatus
 from iast.views.vuln_summary import VulnSummary
 
 urlpatterns = [
@@ -120,6 +121,7 @@ urlpatterns = [
     path('vuln/summary', VulnSummary.as_view()),
     path('vuln/list', VulnSideBarList.as_view()),
     path('vuln/<int:id>', VulnDetail.as_view()),
+    path('vuln/status', VulnStatus.as_view()),
     path('vuln/delete/<int:id>', VulnDelete.as_view()),
     # 三方组件接口：组件列表、组件信息总览、组件详情侧边栏、组件详情
     path('scas', ScaList.as_view()),
