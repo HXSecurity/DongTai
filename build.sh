@@ -96,7 +96,7 @@ build_engine_task(){
     cp dongtai-webapi/conf/config.ini dongtai-engine/conf/config.ini
 
     cd dongtai-engine
-    docker run -d --network dongtai-net --name dongtai-engine --restart=always huoxian/dongtai-engine-task:latest bash /opt/iast/engine/docker/entrypoint.sh task
+    docker run -d --network dongtai-net --name dongtai-engine-task --restart=always huoxian/dongtai-engine:latest bash /opt/iast/engine/docker/entrypoint.sh task
     cd $CURRENT_PATH
 }
 
@@ -113,7 +113,6 @@ build_web(){
     # 如果本地有node环境，可自己build部署，否则，直接使用内置的即可
     # npm install
     # npm run build
-    cp dongtai-web/nginx.conf.example dongtai-web/nginx.conf
     docker build -t huoxian/dongtai-web:latest .
     docker stop dongtai-web || true
     docker rm dongtai-web || true
