@@ -47,7 +47,7 @@ build_webapi(){
         sed -i "" "s/redis_password/123456/g" dongtai-webapi/conf/config.ini >/dev/null
         sed -i "" "s/broker_db/0/g" dongtai-webapi/conf/config.ini >/dev/null
         sed -i "" "s/engine_url/dongtai-engine:8000/g" dongtai-webapi/conf/config.ini >/dev/null
-        sed -i "" "s/api_server_url/dongtai-openapi:8000/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "" "s/api_server_url/$getip:8000/g" dongtai-webapi/conf/config.ini >/dev/null
     elif [ "${machine}" == "Linux" ]; then
         sed -i "s/mysql-server/dongtai-mysql/g" dongtai-webapi/conf/config.ini >/dev/null
         sed -i "s/mysql-port/3306/g" dongtai-webapi/conf/config.ini >/dev/null
@@ -59,7 +59,7 @@ build_webapi(){
         sed -i "s/redis_password/123456/g" dongtai-webapi/conf/config.ini >/dev/null
         sed -i "s/broker_db/0/g" dongtai-webapi/conf/config.ini >/dev/null
         sed -i "s/engine_url/dongtai-engine:8000/g" dongtai-webapi/conf/config.ini >/dev/null
-        sed -i "s/api_server_url/dongtai-openapi:8000/g" dongtai-webapi/conf/config.ini >/dev/null
+        sed -i "s/api_server_url/$getip:8000/g" dongtai-webapi/conf/config.ini >/dev/null
     fi
 
     cd dongtai-webapi
@@ -127,6 +127,9 @@ download_source_code(){
 
 
 echo "[+] 开始初始化服务及配置，当前系统：${machine}"
+
+read -p "[+] 输入服务器IP地址:" getip
+echo "[*] 服务器IP地址:$getip"
 
 echo -e "\033[33m[+] 开始下载代码...\033[0m"
 download_source_code
