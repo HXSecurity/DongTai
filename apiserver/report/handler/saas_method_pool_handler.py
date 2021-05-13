@@ -57,12 +57,13 @@ class SaasMethodPoolHandler(IReportHandler):
             update_record = True
             if method_pool:
                 method_pool.update_time = int(time.time())
+                method_pool.method_pool = json.dumps(self.method_pool)
                 method_pool.save()
             else:
                 # 获取agent
                 update_record = False
                 timestamp = int(time.time())
-                method_pool = MethodPool(
+                method_pool = MethodPool.objects.create(
                     agent=agent,
                     url=self.http_url,
                     uri=self.http_uri,
@@ -82,7 +83,6 @@ class SaasMethodPoolHandler(IReportHandler):
                     create_time=timestamp,
                     update_time=timestamp
                 )
-                method_pool.save()
             self.send_to_engine(method_pool.id, update_record)
 
     @staticmethod
