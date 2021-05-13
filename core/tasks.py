@@ -96,6 +96,7 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack):
         vul.counts = vul.counts + 1
         vul.latest_time = int(time.time())
         vul.status = 'reported'
+        vul.full_stack = json.dumps(vul_stack, ensure_ascii=False)
         vul.save()
     else:
         vul = IastVulnerabilityModel(
@@ -146,7 +147,7 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
         )
         status, stack, source_sign, sink_sign = engine.result()
         if status:
-            vul_found.send(sender="tasks.search_and_save_vul",vul_meta=method_pool_model,
+            vul_found.send(sender="tasks.search_and_save_vul", vul_meta=method_pool_model,
                            vul_level=vul_strategy.level,
                            vul_name=vul_strategy.vul_name,
                            vul_stack=stack,
