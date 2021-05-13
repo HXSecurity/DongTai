@@ -14,12 +14,13 @@ class ScaSerializer(serializers.ModelSerializer):
     project_name = serializers.SerializerMethodField()
     level = serializers.SerializerMethodField()
     level_type = serializers.SerializerMethodField()
+    agent = serializers.SerializerMethodField()
     project_cache = dict()
 
     class Meta:
         model = Asset
         fields = ['id', 'package_name', 'version', 'project_name', 'language', 'agent', 'signature_value', 'level',
-                  'level_type', 'vul_count', 'dt']
+                  'level_type', 'vul_count', 'dt', 'agent']
 
     def get_project_name(self, obj):
         project_id = obj.agent.bind_project_id
@@ -37,3 +38,6 @@ class ScaSerializer(serializers.ModelSerializer):
 
     def get_level(self, obj):
         return obj.level.name_value
+
+    def get_agent(self, obj):
+        return obj.agent.token

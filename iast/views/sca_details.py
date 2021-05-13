@@ -32,17 +32,14 @@ class ScaDetailView(ScaEndPoint):
         try:
             agents = self.get_auth_agents_with_user(user)
             dependency = Asset.objects.filter(agent__in=agents, id=id).first()
-            # if user.is_talent_admin():
-            #     sca_data = Asset.objects.get(id=id)
-            # else:
-            #     sca_data = Asset.objects.get(user=user, id=id)
+
             if dependency is None:
                 return R.failure(msg='组件不存在或无权限访问')
             data = ScaSerializer(dependency).data
             project_id = dependency.agent.bind_project_id
-            iast_info = IastProject.objects.filter(id=project_id).first()
+            iast_info = IastProject.objects.values('name').filter(id=project_id).first()
             if iast_info:
-                data['project_name'] = iast_info.name
+                data['project_name'] = iast_info['name']
             else:
                 data['project_name'] = ""
             data['vuls'] = list()

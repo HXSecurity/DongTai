@@ -22,54 +22,44 @@ class VulnSideBarList(UserEndPoint):
         :param request:
         :return:
         """
-        # 提取过滤条件：
-        user_id = 1
+        queryset = IastVulnerabilityModel.objects.values(
+            'app_name',
+            'server_name',
+            'level',
+            'latest_time',
+            'language',
+            'type',
+            'uri',
+        ).filter(agent__in=self.get_auth_agents_with_user(request.user))
+
+        language = request.query_params.get('language')
+        if language:
+            queryset = queryset.filter(language=language)
+
+        level = request.query_params.get('level')
+        if level:
+            queryset = queryset.filter(level=level)
+
+        type = request.query_params.get('type')
+        if type:
+            queryset = queryset.filter(type=type)
+
+        app_name = request.query_params.get('app')
+        if app_name:
+            queryset = queryset.filter(app_name=app_name)
+
+        url = request.query_params.get('url')
+        if url:
+            queryset = queryset.filter(url=url)
+
+        order = request.query_params.get('order')
+        if order:
+            queryset = queryset.order_by(order)
+        else:
+            queryset = queryset.order_by('-latest_time')
+
         page = request.query_params.get('page', 1)
         page_size = request.query_params.get('pageSize', 10)
-        language = request.query_params.get('language', None)
-        level = request.query_params.get('level', None)
-        type = request.query_params.get('type', None)
-        app_name = request.query_params.get('app', None)
-        url = request.query_params.get('url', None)
-        order = request.query_params.get('order', None)
-        # 如果django ORM的order_by方法存在漏洞，则增加此限制，暂时不进行限制
-        # if order is not None and order not in ['vul_app', '-vul_app']:
-        #    end['status'] = '202'
-        #    return R.failure(status=202)
-
-        condition = Q(user_id=user_id)
-        if language:
-            condition = condition & Q(language=language)
-        if level:
-            condition = condition & Q(level=level)
-        if type:
-            condition = condition & Q(type=type)
-        if app_name:
-            condition = condition & Q(app_name=app_name)
-        if url:
-            condition = condition & Q(url=url)
-
-        if order:
-            datas = IastVulnerabilityModel.objects.values(
-                'app_name',
-                'server_name',
-                'level',
-                'latest_time',
-                'language',
-                'type',
-                'uri',
-            ).filter(condition).order_by(order)
-        else:
-            datas = IastVulnerabilityModel.objects.values(
-                'app_name',
-                'server_name',
-                'level',
-                'latest_time',
-                'language',
-                'type',
-                'uri',
-            ).filter(condition).order_by('-latest_time')
-
-        page_summary, queryset = self.get_paginator(datas, page=page, page_size=page_size)
+        page_summary, queryset = self.get_paginator(queryset, page=page, page_size=page_size)
 
         return R.success(page=page_summary, total=page_summary['alltotal'], data=queryset)

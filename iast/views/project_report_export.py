@@ -43,6 +43,23 @@ class ProjectReportExport(UserEndPoint):
         pass
 
     def get(self, request):
+        timestamp = time.time()
+        word_file_name = self.generate_word_report(request, timestamp)
+        if word_file_name:
+            report_file_path = word_file_name
+            report_type = request.query_params.get('type', 'docx')
+            if report_type == 'pdf':
+                report_file_path = self.generate_pdf_report(word_file_name)
+            report_filename = f'漏洞报告-{timestamp}.{report_type}'
+
+            response = FileResponse(open(report_file_path, "rb"))
+            response['content_type'] = 'application/octet-stream'
+            response['Content-Disposition'] = f"attachment; filename={report_filename}"
+            return response
+        else:
+            return R.failure(status=203, msg='no permission')
+
+    def generate_word_report(self, request, timestamp):
         try:
             pid = int(request.query_params.get("pid", 0))
             pname = request.query_params.get('pname')
@@ -234,12 +251,34 @@ class ProjectReportExport(UserEndPoint):
             document.styles['TitleTwo'].font.name = "Arial"
             document.styles['TitleThree'].font.size = Pt(16)
             document.styles['TitleFour'].font.size = Pt(14)
-            timestamp = time.time()
             filename = f"{MEDIA_ROOT}/reports/vul-report-{user.id}-{timestamp}.docx"
             document.save(filename)
-            response = FileResponse(open(filename, "rb"))
-            response['content_type'] = 'application/octet-stream'
-            response['Content-Disposition'] = f"attachment; filename=漏洞报告-{timestamp}.docx"
-            return response
-        else:
-            return R.failure(status=203, msg='no permission')
+            return filename
+
+    @staticmethod
+    def generate_pdf_report(filename):
+        try:
+            pdf_filename = filename.replace('docx', 'pdf')
+            return pdf_filename
+        except:
+            pass
+
+
+    @staticmethod
+    def generate_pdf_with_string():
+        from reportlab.lib.utils import ImageReader
+        from reportlab.pdfgen.canvas import Canvas
+        from reportlab.lib.pagesizes import A4
+        canv = Canvas('/tmp/text-on-image.pdf', pagesize=A4)
+        img = ImageReader('/tmp/pythonpowered.gif')
+
+        # now begin the work
+        x = 113
+        y = 217
+        w = 103
+        h = 119
+        canv.drawImage(img, x, y, w, h, anchor='sw', anchorAtXY=True, showBoundary=False)
+        canv.setFont('arial', 14)
+        canv.setFillColor((1, 0, 0))  # change the text color
+        canv.drawCentredString(x + w * 0.5, y + h * 0.5, 'On Top')
+        canv.save()
