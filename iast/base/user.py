@@ -5,7 +5,7 @@
 # software: PyCharm
 # project: sentry
 
-from base.endpoint import SessionAuthEndPoint
+from base.endpoint import SessionAuthEndPoint, TokenAuthEndPoint
 from iast.permissions import ScopedPermission
 
 
@@ -50,6 +50,10 @@ class AnonymousEndPoint(SessionAuthEndPoint):
 
 
 class UserEndPoint(SessionAuthEndPoint):
+    permission_classes = (UserPermission,)
+
+
+class UserTokenEndPoint(TokenAuthEndPoint):
     permission_classes = (UserPermission,)
 
 
