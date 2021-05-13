@@ -25,3 +25,9 @@ class VulSerializer(serializers.ModelSerializer):
             names = name.split(' ')[:-1]
             result = ' '.join(names).lower().strip()
         return result
+
+
+class VulForPluginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IastVulnerabilityModel
+        fields = ['id', 'type', 'level', 'url', 'http_method', 'top_stack', 'bottom_stack']

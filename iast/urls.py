@@ -71,9 +71,11 @@ from iast.views.user_logout import UserLogout
 from iast.views.user_passwrd import UserPassword
 from iast.views.user_register_batch import UserRegisterEndPoint
 from iast.views.user_token import UserToken
+from iast.views.vuln_count_for_plugin import VulnCountForPluginEndPoint
 from iast.views.vuln_delete import VulnDelete
 from iast.views.vuln_details import VulnDetail
 from iast.views.vuln_index import VulnList
+from iast.views.vuln_list_for_plugin import VulnListEndPoint
 from iast.views.vuln_sidebar_index import VulnSideBarList
 from iast.views.vuln_status import VulnStatus
 from iast.views.vuln_summary import VulnSummary
@@ -123,6 +125,8 @@ urlpatterns = [
     path('vuln/<int:id>', VulnDetail.as_view()),
     path('vuln/status', VulnStatus.as_view()),
     path('vuln/delete/<int:id>', VulnDelete.as_view()),
+    path('plugin/vuln/list', VulnListEndPoint.as_view()),
+    path('plugin/vuln/count', VulnCountForPluginEndPoint.as_view()),
     # 三方组件接口：组件列表、组件信息总览、组件详情侧边栏、组件详情
     path('scas', ScaList.as_view()),
     path('sca/summary', ScaSummary.as_view()),
