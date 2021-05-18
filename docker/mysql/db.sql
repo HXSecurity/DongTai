@@ -31,7 +31,7 @@ CREATE TABLE `auth_department` (
   `update_time` int(11) DEFAULT NULL COMMENT '修改时间',
   `created_by` int(11) DEFAULT NULL COMMENT '创建用户',
   `parent_id` int(11) DEFAULT NULL COMMENT '父节点ID',
-  PRIMARY KEY (`id`) USING BTREE,
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -45,9 +45,7 @@ CREATE TABLE `auth_department_talent` (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `department_id` (`department_id`,`talent_id`) USING BTREE,
   UNIQUE KEY `department_id_2` (`department_id`,`talent_id`) USING BTREE,
-  KEY `talent_id` (`talent_id`) USING BTREE,
-  CONSTRAINT `auth_department_talent_ibfk_1` FOREIGN KEY (`talent_id`) REFERENCES `auth_talent` (`id`),
-  CONSTRAINT `auth_department_talent_ibfk_2` FOREIGN KEY (`department_id`) REFERENCES `auth_department` (`id`)
+  KEY `talent_id` (`talent_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -71,9 +69,7 @@ CREATE TABLE `auth_group_permissions` (
   `permission_id` int(11) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `auth_group_permissions_group_id_permission_id_0cd325b0_uniq` (`group_id`,`permission_id`) USING BTREE,
-  KEY `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` (`permission_id`) USING BTREE,
-  CONSTRAINT `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
-  CONSTRAINT `auth_group_permissions_group_id_b120cbf9_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`)
+  KEY `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` (`permission_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -86,8 +82,7 @@ CREATE TABLE `auth_permission` (
   `content_type_id` int(11) NOT NULL,
   `codename` varchar(100) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `auth_permission_content_type_id_codename_01ab375a_uniq` (`content_type_id`,`codename`) USING BTREE,
-  CONSTRAINT `auth_permission_content_type_id_2f476e4b_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`)
+  UNIQUE KEY `auth_permission_content_type_id_codename_01ab375a_uniq` (`content_type_id`,`codename`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -135,9 +130,7 @@ CREATE TABLE `auth_user_department` (
   `department_id` int(11) DEFAULT NULL COMMENT '部门ID',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `user_id` (`user_id`),
-  KEY `department_id` (`department_id`),
-  CONSTRAINT `auth_user_department_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`),
-  CONSTRAINT `auth_user_department_ibfk_2` FOREIGN KEY (`department_id`) REFERENCES `auth_department` (`id`)
+  KEY `department_id` (`department_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -150,9 +143,7 @@ CREATE TABLE `auth_user_groups` (
   `group_id` int(11) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   KEY `user_id` (`user_id`) USING BTREE,
-  KEY `group_id` (`group_id`) USING BTREE,
-  CONSTRAINT `auth_user_groups_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`),
-  CONSTRAINT `auth_user_groups_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`)
+  KEY `group_id` (`group_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -165,9 +156,7 @@ CREATE TABLE `auth_user_user_permissions` (
   `permission_id` int(11) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `auth_user_user_permissions_user_id_permission_id_14a6b632_uniq` (`user_id`,`permission_id`) USING BTREE,
-  KEY `auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm` (`permission_id`) USING BTREE,
-  CONSTRAINT `auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
-  CONSTRAINT `auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
+  KEY `auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm` (`permission_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -179,8 +168,7 @@ CREATE TABLE `authtoken_token` (
   `created` datetime(6) NOT NULL,
   `user_id` int(11) NOT NULL,
   PRIMARY KEY (`key`) USING BTREE,
-  UNIQUE KEY `user_id` (`user_id`) USING BTREE,
-  CONSTRAINT `authtoken_token_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
+  UNIQUE KEY `user_id` (`user_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -212,9 +200,7 @@ CREATE TABLE `django_admin_log` (
   `user_id` int(11) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   KEY `django_admin_log_content_type_id_c4bce8eb_fk_django_co` (`content_type_id`) USING BTREE,
-  KEY `django_admin_log_user_id_c564eba6_fk_auth_user_id` (`user_id`) USING BTREE,
-  CONSTRAINT `django_admin_log_content_type_id_c4bce8eb_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
-  CONSTRAINT `django_admin_log_user_id_c564eba6_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
+  KEY `django_admin_log_user_id_c564eba6_fk_auth_user_id` (`user_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 -- ----------------------------
 -- Table structure for django_celery_beat_clockedschedule
@@ -253,11 +239,11 @@ CREATE TABLE `django_celery_beat_intervalschedule` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 BEGIN;
-INSERT INTO `iast_webapi`.`django_celery_beat_intervalschedule`(`id`, `every`, `period`) VALUES (1, 10, 'seconds');
-INSERT INTO `iast_webapi`.`django_celery_beat_intervalschedule`(`id`, `every`, `period`) VALUES (2, 1, 'hours');
-INSERT INTO `iast_webapi`.`django_celery_beat_intervalschedule`(`id`, `every`, `period`) VALUES (3, 5, 'minutes');
-INSERT INTO `iast_webapi`.`django_celery_beat_intervalschedule`(`id`, `every`, `period`) VALUES (4, 1, 'days');
-INSERT INTO `iast_webapi`.`django_celery_beat_intervalschedule`(`id`, `every`, `period`) VALUES (5, 30, 'days');
+INSERT INTO `django_celery_beat_intervalschedule`(`id`, `every`, `period`) VALUES (1, 10, 'seconds');
+INSERT INTO `django_celery_beat_intervalschedule`(`id`, `every`, `period`) VALUES (2, 1, 'hours');
+INSERT INTO `django_celery_beat_intervalschedule`(`id`, `every`, `period`) VALUES (3, 5, 'minutes');
+INSERT INTO `django_celery_beat_intervalschedule`(`id`, `every`, `period`) VALUES (4, 1, 'days');
+INSERT INTO `django_celery_beat_intervalschedule`(`id`, `every`, `period`) VALUES (5, 30, 'days');
 COMMIT;
 
 -- ----------------------------
@@ -293,19 +279,15 @@ CREATE TABLE `django_celery_beat_periodictask` (
   KEY `django_celery_beat_p_crontab_id_d3cba168_fk_django_ce` (`crontab_id`) USING BTREE,
   KEY `django_celery_beat_p_interval_id_a8ca27da_fk_django_ce` (`interval_id`) USING BTREE,
   KEY `django_celery_beat_p_solar_id_a87ce72c_fk_django_ce` (`solar_id`) USING BTREE,
-  KEY `django_celery_beat_p_clocked_id_47a69f82_fk_django_ce` (`clocked_id`) USING BTREE,
-  CONSTRAINT `django_celery_beat_p_clocked_id_47a69f82_fk_django_ce` FOREIGN KEY (`clocked_id`) REFERENCES `django_celery_beat_clockedschedule` (`id`),
-  CONSTRAINT `django_celery_beat_p_crontab_id_d3cba168_fk_django_ce` FOREIGN KEY (`crontab_id`) REFERENCES `django_celery_beat_crontabschedule` (`id`),
-  CONSTRAINT `django_celery_beat_p_interval_id_a8ca27da_fk_django_ce` FOREIGN KEY (`interval_id`) REFERENCES `django_celery_beat_intervalschedule` (`id`),
-  CONSTRAINT `django_celery_beat_p_solar_id_a87ce72c_fk_django_ce` FOREIGN KEY (`solar_id`) REFERENCES `django_celery_beat_solarschedule` (`id`)
+  KEY `django_celery_beat_p_clocked_id_47a69f82_fk_django_ce` (`clocked_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 BEGIN;
-INSERT INTO `iast_webapi`.`django_celery_beat_periodictask`(`id`, `name`, `task`, `args`, `kwargs`, `queue`, `exchange`, `routing_key`, `expires`, `enabled`, `last_run_at`, `total_run_count`, `date_changed`, `description`, `crontab_id`, `interval_id`, `solar_id`, `one_off`, `start_time`, `priority`, `headers`, `clocked_id`, `expire_seconds`) VALUES (1, 'celery.backend_cleanup', 'celery.backend_cleanup', '[]', '{}', NULL, NULL, NULL, NULL, 1, '2021-05-08 04:00:00.009489', 9, '2021-05-08 04:01:02.444358', '', 1, NULL, NULL, 0, NULL, NULL, '{}', NULL, 43200);
-INSERT INTO `iast_webapi`.`django_celery_beat_periodictask`(`id`, `name`, `task`, `args`, `kwargs`, `queue`, `exchange`, `routing_key`, `expires`, `enabled`, `last_run_at`, `total_run_count`, `date_changed`, `description`, `crontab_id`, `interval_id`, `solar_id`, `one_off`, `start_time`, `priority`, `headers`, `clocked_id`, `expire_seconds`) VALUES (2, 'engine.heartbeat', 'core.tasks.heartbeat', '[]', '{}', NULL, NULL, NULL, NULL, 1, '2021-05-08 05:34:02.743450', 509, '2021-05-08 05:35:33.100817', '', NULL, 2, NULL, 0, NULL, NULL, '{}', NULL, NULL);
-INSERT INTO `iast_webapi`.`django_celery_beat_periodictask`(`id`, `name`, `task`, `args`, `kwargs`, `queue`, `exchange`, `routing_key`, `expires`, `enabled`, `last_run_at`, `total_run_count`, `date_changed`, `description`, `crontab_id`, `interval_id`, `solar_id`, `one_off`, `start_time`, `priority`, `headers`, `clocked_id`, `expire_seconds`) VALUES (3, 'engine.update_agent_status', 'core.tasks.update_agent_status', '[]', '{}', NULL, NULL, NULL, NULL, 1, '2021-05-08 06:25:47.527645', 2509, '2021-05-08 06:27:22.947828', '', NULL, 3, NULL, 0, NULL, NULL, '{}', NULL, NULL);
-INSERT INTO `iast_webapi`.`django_celery_beat_periodictask`(`id`, `name`, `task`, `args`, `kwargs`, `queue`, `exchange`, `routing_key`, `expires`, `enabled`, `last_run_at`, `total_run_count`, `date_changed`, `description`, `crontab_id`, `interval_id`, `solar_id`, `one_off`, `start_time`, `priority`, `headers`, `clocked_id`, `expire_seconds`) VALUES (4, 'engine.update_sca', 'core.tasks.update_sca', '[]', '{}', NULL, NULL, NULL, NULL, 1, '2021-05-08 06:25:35.184066', 8, '2021-05-08 06:27:22.926700', '', NULL, 4, NULL, 0, NULL, NULL, '{}', NULL, NULL);
-INSERT INTO `iast_webapi`.`django_celery_beat_periodictask`(`id`, `name`, `task`, `args`, `kwargs`, `queue`, `exchange`, `routing_key`, `expires`, `enabled`, `last_run_at`, `total_run_count`, `date_changed`, `description`, `crontab_id`, `interval_id`, `solar_id`, `one_off`, `start_time`, `priority`, `headers`, `clocked_id`, `expire_seconds`) VALUES (5, 'engine.maven_spider', 'core.tasks.maven_spider', '[]', '{}', NULL, NULL, NULL, NULL, 1, NULL, 0, '0000-00-00 00:00:00.000000', '', NULL, 5, NULL, 0, NULL, NULL, '{}', NULL, NULL);
+INSERT INTO `django_celery_beat_periodictask`(`id`, `name`, `task`, `args`, `kwargs`, `queue`, `exchange`, `routing_key`, `expires`, `enabled`, `last_run_at`, `total_run_count`, `date_changed`, `description`, `crontab_id`, `interval_id`, `solar_id`, `one_off`, `start_time`, `priority`, `headers`, `clocked_id`, `expire_seconds`) VALUES (1, 'celery.backend_cleanup', 'celery.backend_cleanup', '[]', '{}', NULL, NULL, NULL, NULL, 1, '2021-05-08 04:00:00.009489', 9, '2021-05-08 04:01:02.444358', '', 1, NULL, NULL, 0, NULL, NULL, '{}', NULL, 43200);
+INSERT INTO `django_celery_beat_periodictask`(`id`, `name`, `task`, `args`, `kwargs`, `queue`, `exchange`, `routing_key`, `expires`, `enabled`, `last_run_at`, `total_run_count`, `date_changed`, `description`, `crontab_id`, `interval_id`, `solar_id`, `one_off`, `start_time`, `priority`, `headers`, `clocked_id`, `expire_seconds`) VALUES (2, 'engine.heartbeat', 'core.tasks.heartbeat', '[]', '{}', NULL, NULL, NULL, NULL, 1, '2021-05-08 05:34:02.743450', 509, '2021-05-08 05:35:33.100817', '', NULL, 2, NULL, 0, NULL, NULL, '{}', NULL, NULL);
+INSERT INTO `django_celery_beat_periodictask`(`id`, `name`, `task`, `args`, `kwargs`, `queue`, `exchange`, `routing_key`, `expires`, `enabled`, `last_run_at`, `total_run_count`, `date_changed`, `description`, `crontab_id`, `interval_id`, `solar_id`, `one_off`, `start_time`, `priority`, `headers`, `clocked_id`, `expire_seconds`) VALUES (3, 'engine.update_agent_status', 'core.tasks.update_agent_status', '[]', '{}', NULL, NULL, NULL, NULL, 1, '2021-05-08 06:25:47.527645', 2509, '2021-05-08 06:27:22.947828', '', NULL, 3, NULL, 0, NULL, NULL, '{}', NULL, NULL);
+INSERT INTO `django_celery_beat_periodictask`(`id`, `name`, `task`, `args`, `kwargs`, `queue`, `exchange`, `routing_key`, `expires`, `enabled`, `last_run_at`, `total_run_count`, `date_changed`, `description`, `crontab_id`, `interval_id`, `solar_id`, `one_off`, `start_time`, `priority`, `headers`, `clocked_id`, `expire_seconds`) VALUES (4, 'engine.update_sca', 'core.tasks.update_sca', '[]', '{}', NULL, NULL, NULL, NULL, 1, '2021-05-08 06:25:35.184066', 8, '2021-05-08 06:27:22.926700', '', NULL, 4, NULL, 0, NULL, NULL, '{}', NULL, NULL);
+INSERT INTO `django_celery_beat_periodictask`(`id`, `name`, `task`, `args`, `kwargs`, `queue`, `exchange`, `routing_key`, `expires`, `enabled`, `last_run_at`, `total_run_count`, `date_changed`, `description`, `crontab_id`, `interval_id`, `solar_id`, `one_off`, `start_time`, `priority`, `headers`, `clocked_id`, `expire_seconds`) VALUES (5, 'engine.maven_spider', 'core.tasks.maven_spider', '[]', '{}', NULL, NULL, NULL, NULL, 1, NULL, 0, '0000-00-00 00:00:00.000000', '', NULL, 5, NULL, 0, NULL, NULL, '{}', NULL, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -386,9 +368,7 @@ CREATE TABLE `iast_agent` (
   `project_name` varchar(255) DEFAULT NULL COMMENT '项目名称，用于先启动agent后创建项目',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `user_id` (`user_id`) USING BTREE,
-  KEY `server_id` (`server_id`) USING BTREE,
-  CONSTRAINT `iast_agent_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`),
-  CONSTRAINT `iast_agent_ibfk_2` FOREIGN KEY (`server_id`) REFERENCES `iast_server` (`id`)
+  KEY `server_id` (`server_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -417,8 +397,7 @@ CREATE TABLE `iast_agent_method_pool` (
   `pool_sign` varchar(40) DEFAULT NULL COMMENT '方法池签名',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `pool_sign` (`pool_sign`,`agent_id`) USING BTREE,
-  KEY `agent_id` (`agent_id`) USING BTREE,
-  CONSTRAINT `iast_agent_method_pool_ibfk_1` FOREIGN KEY (`agent_id`) REFERENCES `iast_agent` (`id`)
+  KEY `agent_id` (`agent_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -430,8 +409,7 @@ CREATE TABLE `iast_agent_method_pool_sinks` (
   `methodpool_id` int(11) DEFAULT NULL,
   `hookstrategy_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `methodpool_id` (`methodpool_id`),
-  CONSTRAINT `iast_agent_method_pool_sinks_ibfk_1` FOREIGN KEY (`methodpool_id`) REFERENCES `iast_agent_method_pool` (`id`)
+  KEY `methodpool_id` (`methodpool_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -468,9 +446,7 @@ CREATE TABLE `iast_asset` (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `signature_value` (`signature_value`,`agent_id`) USING HASH,
   KEY `agent_id` (`agent_id`) USING BTREE,
-  KEY `level_id` (`level_id`) USING BTREE,
-  CONSTRAINT `iast_asset_ibfk_2` FOREIGN KEY (`agent_id`) REFERENCES `iast_agent` (`id`),
-  CONSTRAINT `iast_asset_ibfk_3` FOREIGN KEY (`level_id`) REFERENCES `iast_vul_level` (`id`)
+  KEY `level_id` (`level_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -528,8 +504,7 @@ CREATE TABLE `iast_errorlog` (
   `dt` int(11) DEFAULT NULL COMMENT '日志触发时间',
   `agent_id` int(11) DEFAULT NULL COMMENT 'agent id',
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `agent_id` (`agent_id`) USING BTREE,
-  CONSTRAINT `iast_errorlog_ibfk_2` FOREIGN KEY (`agent_id`) REFERENCES `iast_agent` (`id`)
+  KEY `agent_id` (`agent_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -549,8 +524,7 @@ CREATE TABLE `iast_heartbeat` (
   `dt` int(11) DEFAULT NULL COMMENT '最近一次心跳时间',
   `agent_id` int(11) DEFAULT NULL COMMENT 'agent ID',
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `agent_id` (`agent_id`) USING BTREE,
-  CONSTRAINT `iast_heartbeat_ibfk_2` FOREIGN KEY (`agent_id`) REFERENCES `iast_agent` (`id`)
+  KEY `agent_id` (`agent_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='IAST agent心跳表';
 
 -- ----------------------------
@@ -595,8 +569,7 @@ CREATE TABLE `iast_hook_talent_strategy` (
   `update_time` int(11) DEFAULT NULL COMMENT '修改时间',
   `created_by` int(11) DEFAULT NULL COMMENT '创建者',
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `talent_id` (`talent_id`),
-  CONSTRAINT `iast_hook_talent_strategy_ibfk_1` FOREIGN KEY (`talent_id`) REFERENCES `auth_talent` (`id`)
+  KEY `talent_id` (`talent_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -642,9 +615,7 @@ CREATE TABLE `iast_project` (
   `scan_id` bigint(20) unsigned DEFAULT NULL COMMENT '扫描策略ID',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `user_id` (`user_id`) USING BTREE,
-  KEY `scan_id` (`scan_id`) USING BTREE,
-  CONSTRAINT `iast_project_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`),
-  CONSTRAINT `iast_project_ibfk_2` FOREIGN KEY (`scan_id`) REFERENCES `iast_strategy_user` (`id`)
+  KEY `scan_id` (`scan_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -689,9 +660,7 @@ CREATE TABLE `iast_strategy` (
   `vul_fix` text COMMENT '修复建议',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `user_id` (`user_id`) USING BTREE,
-  KEY `level_id` (`level_id`) USING BTREE,
-  CONSTRAINT `iast_strategy_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`),
-  CONSTRAINT `iast_strategy_ibfk_2` FOREIGN KEY (`level_id`) REFERENCES `iast_vul_level` (`id`)
+  KEY `level_id` (`level_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 BEGIN;
@@ -737,8 +706,7 @@ CREATE TABLE `iast_strategy_user` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `id` (`id`) USING BTREE,
-  KEY `user_id` (`user_id`) USING BTREE,
-  CONSTRAINT `iast_strategy_user_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
+  KEY `user_id` (`user_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -757,8 +725,7 @@ CREATE TABLE `iast_system` (
   `user_id` int(11) DEFAULT NULL COMMENT '操作用户',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `id` (`id`) USING BTREE,
-  KEY `user_id` (`user_id`) USING BTREE,
-  CONSTRAINT `iast_system_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
+  KEY `user_id` (`user_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -800,8 +767,7 @@ CREATE TABLE `iast_vul_overpower` (
   `created_time` datetime DEFAULT NULL,
   `updated_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `agent_id` (`agent_id`) USING BTREE,
-  CONSTRAINT `iast_vul_overpower_ibfk_2` FOREIGN KEY (`agent_id`) REFERENCES `iast_agent` (`id`)
+  KEY `agent_id` (`agent_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -857,9 +823,7 @@ CREATE TABLE `iast_vulnerability` (
   `param_name` varchar(255) DEFAULT NULL COMMENT '传递参数变量名称',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `agent_id` (`agent_id`) USING BTREE,
-  KEY `level_id` (`level_id`) USING BTREE,
-  CONSTRAINT `iast_vulnerability_ibfk_2` FOREIGN KEY (`agent_id`) REFERENCES `iast_agent` (`id`),
-  CONSTRAINT `iast_vulnerability_ibfk_3` FOREIGN KEY (`level_id`) REFERENCES `iast_vul_level` (`id`)
+  KEY `level_id` (`level_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -908,8 +872,7 @@ CREATE TABLE `sca_maven_artifact` (
   `package_name` varchar(255) DEFAULT NULL COMMENT '包名',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `cph_version` (`cph_version`,`aid`) USING BTREE,
-  KEY `aid` (`aid`) USING BTREE,
-  CONSTRAINT `sca_maven_artifact_ibfk_1` FOREIGN KEY (`aid`) REFERENCES `sca_artifact_db` (`id`)
+  KEY `aid` (`aid`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
