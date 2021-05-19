@@ -83,7 +83,7 @@ class ScaSummary(ScaEndPoint):
 
         project_name = request.query_params.get('project_name', None)
         if project_name and project_name != '':
-            agent_ids = get_agents_with_project(project_name, queryset, auth_users)
+            agent_ids = get_agents_with_project(project_name, auth_users)
             if agent_ids:
                 queryset = queryset.filter(agent_id__in=agent_ids)
         package_kw = request.query_params.get('keyword', None)
