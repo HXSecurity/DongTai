@@ -13,3 +13,4 @@ doc/*
 doc/example.json
 conf/config.ini
 logs/*.log
+build_docker.sh
