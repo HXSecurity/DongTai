@@ -68,10 +68,12 @@ class VulnList(UserEndPoint):
         if url and url != '':
             queryset = queryset.filter(url__icontains=url)
 
-        order = request.query_params.get('order', '-latest_time')
+        order = request.query_params.get('order')
         print(f'排序条件为：{order}')
         if order:
             queryset = queryset.order_by(order)
+        else:
+            queryset = queryset.order_by('-latest_time')
 
         # 获取所有项目名称
         projects_info = get_user_project_name(auth_users)
