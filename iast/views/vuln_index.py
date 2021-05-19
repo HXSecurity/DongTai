@@ -40,8 +40,6 @@ class VulnList(UserEndPoint):
         user = request.user
         auth_users = self.get_auth_users(user)
 
-        condition = Q()
-
         language = request.query_params.get('language')
         if language:
             queryset = queryset.filter(language=language)
@@ -56,7 +54,7 @@ class VulnList(UserEndPoint):
 
         project_name = request.query_params.get('project_name')
         if project_name:
-            agent_ids = get_agents_with_project(project_name, condition, auth_users)
+            agent_ids = get_agents_with_project(project_name, auth_users)
             if agent_ids:
                 queryset = queryset.filter(agent_id__in=agent_ids)
 
@@ -71,6 +69,7 @@ class VulnList(UserEndPoint):
             queryset = queryset.filter(url__icontains=url)
 
         order = request.query_params.get('order', '-latest_time')
+        print(f'排序条件为：{order}')
         if order:
             queryset = queryset.order_by(order)
 

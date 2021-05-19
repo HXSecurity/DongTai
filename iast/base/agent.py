@@ -18,11 +18,10 @@ from dongtai_models.models.vulnerablity import IastVulnerabilityModel
 from iast.permissions import ScopedPermission
 
 
-def get_agents_with_project(project_name, queryset, users):
+def get_agents_with_project(project_name, users):
     """
     根据项目名称和授权的用户列表查询有权限访问的agent列表
     :param project_name:项目名称
-    :param queryset:无效字段，不传
     :param users:当前有权限的用户列表，如果是普通用户，该字段为[user]
     :return:
     """
@@ -38,14 +37,6 @@ def get_agents_with_project(project_name, queryset, users):
             relations = IastAgent.objects.filter(bind_project_id__in=project_ids).values("id")
             agent_ids = [relation['id'] for relation in relations]
 
-    return agent_ids
-
-
-def get_agentId_project_id(project_id, queryset, user):
-    agents = IastAgent.objects.filter(bind_project_id=project_id).values("id")
-    if user and user.is_talent_admin() is False:
-        agents = agents.filter(user=user)
-    agent_ids = [agent['id'] for agent in agents]
     return agent_ids
 
 
