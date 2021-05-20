@@ -3,3 +3,4 @@
 .git
 .idea
 /logs/*.log
+build_docker.sh
