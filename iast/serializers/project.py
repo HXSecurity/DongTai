@@ -12,6 +12,8 @@ from dongtai_models.models.project import IastProject
 from dongtai_models.models.vul_level import IastVulLevel
 from dongtai_models.models.vulnerablity import IastVulnerabilityModel
 
+from iast import const
+
 
 class ProjectSerializer(serializers.ModelSerializer):
     vul_count = serializers.SerializerMethodField()
@@ -26,7 +28,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         try:
             agents = getattr(obj, 'project_agents')
         except:
-            agents = IastAgent.objects.filter(bind_project_id=obj.id).values('id')
+            agents = IastAgent.objects.filter(bind_project_id=obj.id, is_running=const.RUNNING).values('id')
             setattr(obj, 'project_agents', agents)
         return agents
 
