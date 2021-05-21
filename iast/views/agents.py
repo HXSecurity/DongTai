@@ -7,6 +7,7 @@
 from rest_framework.request import Request
 
 from base import R
+from iast import const
 from iast.base.agent import AgentEndPoint
 from iast.serializers.agent import AgentSerializer
 
@@ -23,7 +24,7 @@ class AgentList(AgentEndPoint):
         page = request.query_params.get('page', 1)
         page_size = request.query_params.get('pageSize', 20)
 
-        queryset = self.get_auth_agents_with_user(request.user).filter(is_running=1).order_by("-latest_time")
+        queryset = self.get_auth_agents_with_user(request.user).filter(is_running=const.RUNNING).order_by("-latest_time")
         summery, queryset = self.get_paginator(queryset, page=page, page_size=page_size)
 
         return R.success(
