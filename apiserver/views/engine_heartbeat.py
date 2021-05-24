@@ -26,9 +26,9 @@ class EngineHeartBeatEndPoint(OpenApiEndPoint):
         :param request:
         :return:
         """
-        client_ip = self.get_client_ip(request)
-        logger.info(f'【{client_ip}】开始处理心跳数据')
+        logger.info('开始处理心跳数据')
         try:
+            client_ip = self.get_client_ip(request)
             data = request.data
             IastEngineHeartbeat.objects.create(
                 client_ip=client_ip,
@@ -51,8 +51,11 @@ class EngineHeartBeatEndPoint(OpenApiEndPoint):
 
     @staticmethod
     def get_client_ip(request):
-        if request.META.has_key('HTTP_X_FORWARDED_FOR'):
-            ip = request.META['HTTP_X_FORWARDED_FOR']
-        else:
-            ip = request.META['REMOTE_ADDR']
-        return ip
+        try:
+            if request.META.has_key('HTTP_X_FORWARDED_FOR'):
+                ip = request.META['HTTP_X_FORWARDED_FOR']
+            else:
+                ip = request.META['REMOTE_ADDR']
+            return ip
+        except:
+            return ''
