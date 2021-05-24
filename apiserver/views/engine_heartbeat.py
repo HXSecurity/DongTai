@@ -11,7 +11,7 @@ from dongtai_models.models.engine_heartbeat import IastEngineHeartbeat
 from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint
 
-logger = logging.getLogger("django")
+logger = logging.getLogger("lingzhi.api_server")
 
 
 class EngineHeartBeatEndPoint(OpenApiEndPoint):
@@ -57,5 +57,6 @@ class EngineHeartBeatEndPoint(OpenApiEndPoint):
             else:
                 ip = request.META['REMOTE_ADDR']
             return ip
-        except:
+        except Exception as e:
+            logger.error(f'客户端IP获取失败，原因：{e}')
             return ''
