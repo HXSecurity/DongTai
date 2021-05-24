@@ -352,12 +352,15 @@ def heartbeat():
         "timestamp": int(time.time())
     }
     try:
+        logger.info('[core.tasks.heartbeat] send heartbeat data to OpenApi Service.')
         import requests
         resp = requests.post(url='http://openapi.iast.huoxian.cn:8000/api/v1/engine/heartbeat', json=heartbeat_raw)
         if resp.status_code == 200:
+            logger.info('[core.tasks.heartbeat] send heartbeat data to OpenApi Service Successful.')
             pass
-    except:
-        pass
+        logger.info('[core.tasks.heartbeat] send heartbeat data to OpenApi Service Failure.')
+    except Exception as e:
+        logger.info(f'[core.tasks.heartbeat] send heartbeat data to OpenApi Service Error. reason is {e}')
 
 
 @shared_task(queue='periodic_task')
