@@ -26,27 +26,36 @@ class EngineHeartBeatEndPoint(OpenApiEndPoint):
         :param request:
         :return:
         """
-        client_ip = self.get_client_ip(request)
-        data = request.data
-        IastEngineHeartbeat.objects.create(
-            client_ip=client_ip,
-            status=data['status'],
-            msg=data['msg'],
-            agentcount=data['agentCount'],
-            reqcount=data['reqCount'],
-            agentenablecount=data['agentEnableCount'],
-            projectcount=data['projectCount'],
-            usercount=data['userCount'],
-            vulcount=data['vulCount'],
-            methodpoolcount=data['methodPoolCount'],
-            timestamp=data['timestamp'],
-        )
-        return R.success(data=data)
+        logger.info('开始处理心跳数据')
+        try:
+            client_ip = self.get_client_ip(request)
+            data = request.data
+            IastEngineHeartbeat.objects.create(
+                client_ip=client_ip,
+                status=data['status'],
+                msg=data['msg'],
+                agentcount=data['agentCount'],
+                reqcount=data['reqCount'],
+                agentenablecount=data['agentEnableCount'],
+                projectcount=data['projectCount'],
+                usercount=data['userCount'],
+                vulcount=data['vulCount'],
+                methodpoolcount=data['methodPoolCount'],
+                timestamp=data['timestamp'],
+            )
+            logger.info(f'【{client_ip}】心跳数据处理成功')
+            return R.success(data=data)
+        except Exception as e:
+            logger.error(f'心跳数据处理失败，错误原因：{e}')
+            return R.failure()
 
     @staticmethod
     def get_client_ip(request):
-        if request.META.has_key('HTTP_X_FORWARDED_FOR'):
-            ip = request.META['HTTP_X_FORWARDED_FOR']
-        else:
-            ip = request.META['REMOTE_ADDR']
-        return ip
+        try:
+            if request.META.has_key('HTTP_X_FORWARDED_FOR'):
+                ip = request.META['HTTP_X_FORWARDED_FOR']
+            else:
+                ip = request.META['REMOTE_ADDR']
+            return ip
+        except:
+            return ''
