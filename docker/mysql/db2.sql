@@ -21,6 +21,18 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
+-- Table structure for django_content_type
+-- ----------------------------
+DROP TABLE IF EXISTS `django_content_type`;
+CREATE TABLE `django_content_type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `app_label` varchar(100) NOT NULL,
+  `model` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
 -- Table structure for auth_department
 -- ----------------------------
 DROP TABLE IF EXISTS `auth_department`;
@@ -34,19 +46,6 @@ CREATE TABLE `auth_department` (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
--- ----------------------------
--- Table structure for auth_department_talent
--- ----------------------------
-DROP TABLE IF EXISTS `auth_department_talent`;
-CREATE TABLE `auth_department_talent` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `department_id` int(11) DEFAULT NULL COMMENT '部门ID',
-  `talent_id` int(11) DEFAULT NULL COMMENT '租户ID',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `department_id` (`department_id`,`talent_id`) USING BTREE,
-  UNIQUE KEY `department_id_2` (`department_id`,`talent_id`) USING BTREE,
-  KEY `talent_id` (`talent_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for auth_group
@@ -59,31 +58,21 @@ CREATE TABLE `auth_group` (
   UNIQUE KEY `name` (`name`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
--- ----------------------------
--- Table structure for auth_group_permissions
--- ----------------------------
-DROP TABLE IF EXISTS `auth_group_permissions`;
-CREATE TABLE `auth_group_permissions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `group_id` int(11) NOT NULL,
-  `permission_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `auth_group_permissions_group_id_permission_id_0cd325b0_uniq` (`group_id`,`permission_id`) USING BTREE,
-  KEY `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` (`permission_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
--- Table structure for auth_permission
+-- Table structure for auth_group_routes
 -- ----------------------------
-DROP TABLE IF EXISTS `auth_permission`;
-CREATE TABLE `auth_permission` (
+DROP TABLE IF EXISTS `auth_group_routes`;
+CREATE TABLE `auth_group_routes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `content_type_id` int(11) NOT NULL,
-  `codename` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `auth_permission_content_type_id_codename_01ab375a_uniq` (`content_type_id`,`codename`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `routes` json DEFAULT NULL COMMENT '可访问的路由',
+  `group_id` int(11) DEFAULT NULL COMMENT '用户组ID',
+  `created_by_id` int(11) DEFAULT NULL COMMENT '创建者',
+  `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
+  `update_time` int(11) DEFAULT NULL COMMENT '修改时间',
+  `is_active` int(11) DEFAULT NULL COMMENT '是否启用，0-禁用，1-启用',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for auth_talent
@@ -118,6 +107,46 @@ CREATE TABLE `auth_user` (
   `date_joined` datetime(6) NOT NULL,
   `phone` bigint(11) DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for auth_permission
+-- ----------------------------
+DROP TABLE IF EXISTS `auth_permission`;
+CREATE TABLE `auth_permission` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `content_type_id` int(11) NOT NULL,
+  `codename` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `auth_permission_content_type_id_codename_01ab375a_uniq` (`content_type_id`,`codename`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for auth_group_permissions
+-- ----------------------------
+DROP TABLE IF EXISTS `auth_group_permissions`;
+CREATE TABLE `auth_group_permissions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL,
+  `permission_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `auth_group_permissions_group_id_permission_id_0cd325b0_uniq` (`group_id`,`permission_id`) USING BTREE,
+  KEY `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` (`permission_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for auth_department_talent
+-- ----------------------------
+DROP TABLE IF EXISTS `auth_department_talent`;
+CREATE TABLE `auth_department_talent` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `department_id` int(11) DEFAULT NULL COMMENT '部门ID',
+  `talent_id` int(11) DEFAULT NULL COMMENT '租户ID',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `department_id` (`department_id`,`talent_id`) USING BTREE,
+  UNIQUE KEY `department_id_2` (`department_id`,`talent_id`) USING BTREE,
+  KEY `talent_id` (`talent_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -246,6 +275,30 @@ INSERT INTO `django_celery_beat_intervalschedule`(`id`, `every`, `period`) VALUE
 INSERT INTO `django_celery_beat_intervalschedule`(`id`, `every`, `period`) VALUES (5, 30, 'days');
 COMMIT;
 
+
+-- ----------------------------
+-- Table structure for django_celery_beat_periodictasks
+-- ----------------------------
+DROP TABLE IF EXISTS `django_celery_beat_periodictasks`;
+CREATE TABLE `django_celery_beat_periodictasks` (
+  `ident` smallint(6) NOT NULL,
+  `last_update` datetime(6) NOT NULL,
+  PRIMARY KEY (`ident`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for django_celery_beat_solarschedule
+-- ----------------------------
+DROP TABLE IF EXISTS `django_celery_beat_solarschedule`;
+CREATE TABLE `django_celery_beat_solarschedule` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `event` varchar(24) NOT NULL,
+  `latitude` decimal(9,6) NOT NULL,
+  `longitude` decimal(9,6) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `django_celery_beat_solar_event_latitude_longitude_ba64999a_uniq` (`event`,`latitude`,`longitude`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- ----------------------------
 -- Table structure for django_celery_beat_periodictask
 -- ----------------------------
@@ -287,43 +340,8 @@ INSERT INTO `django_celery_beat_periodictask`(`id`, `name`, `task`, `args`, `kwa
 INSERT INTO `django_celery_beat_periodictask`(`id`, `name`, `task`, `args`, `kwargs`, `queue`, `exchange`, `routing_key`, `expires`, `enabled`, `last_run_at`, `total_run_count`, `date_changed`, `description`, `crontab_id`, `interval_id`, `solar_id`, `one_off`, `start_time`, `priority`, `headers`, `clocked_id`, `expire_seconds`) VALUES (2, 'engine.heartbeat', 'core.tasks.heartbeat', '[]', '{}', NULL, NULL, NULL, NULL, 1, '2021-05-08 05:34:02.743450', 509, '2021-05-08 05:35:33.100817', '', NULL, 2, NULL, 0, NULL, NULL, '{}', NULL, NULL);
 INSERT INTO `django_celery_beat_periodictask`(`id`, `name`, `task`, `args`, `kwargs`, `queue`, `exchange`, `routing_key`, `expires`, `enabled`, `last_run_at`, `total_run_count`, `date_changed`, `description`, `crontab_id`, `interval_id`, `solar_id`, `one_off`, `start_time`, `priority`, `headers`, `clocked_id`, `expire_seconds`) VALUES (3, 'engine.update_agent_status', 'core.tasks.update_agent_status', '[]', '{}', NULL, NULL, NULL, NULL, 1, '2021-05-08 06:25:47.527645', 2509, '2021-05-08 06:27:22.947828', '', NULL, 3, NULL, 0, NULL, NULL, '{}', NULL, NULL);
 INSERT INTO `django_celery_beat_periodictask`(`id`, `name`, `task`, `args`, `kwargs`, `queue`, `exchange`, `routing_key`, `expires`, `enabled`, `last_run_at`, `total_run_count`, `date_changed`, `description`, `crontab_id`, `interval_id`, `solar_id`, `one_off`, `start_time`, `priority`, `headers`, `clocked_id`, `expire_seconds`) VALUES (4, 'engine.update_sca', 'core.tasks.update_sca', '[]', '{}', NULL, NULL, NULL, NULL, 1, '2021-05-08 06:25:35.184066', 8, '2021-05-08 06:27:22.926700', '', NULL, 4, NULL, 0, NULL, NULL, '{}', NULL, NULL);
+INSERT INTO `django_celery_beat_periodictask`(`id`, `name`, `task`, `args`, `kwargs`, `queue`, `exchange`, `routing_key`, `expires`, `enabled`, `last_run_at`, `total_run_count`, `date_changed`, `description`, `crontab_id`, `interval_id`, `solar_id`, `one_off`, `start_time`, `priority`, `headers`, `clocked_id`, `expire_seconds`) VALUES (5, 'engine.maven_spider', 'core.tasks.maven_spider', '[]', '{}', NULL, NULL, NULL, NULL, 1, NULL, 0, '2021-05-08 06:25:35.184066', '', NULL, 5, NULL, 0, NULL, NULL, '{}', NULL, NULL);
 COMMIT;
-
--- ----------------------------
--- Table structure for django_celery_beat_periodictasks
--- ----------------------------
-DROP TABLE IF EXISTS `django_celery_beat_periodictasks`;
-CREATE TABLE `django_celery_beat_periodictasks` (
-  `ident` smallint(6) NOT NULL,
-  `last_update` datetime(6) NOT NULL,
-  PRIMARY KEY (`ident`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- ----------------------------
--- Table structure for django_celery_beat_solarschedule
--- ----------------------------
-DROP TABLE IF EXISTS `django_celery_beat_solarschedule`;
-CREATE TABLE `django_celery_beat_solarschedule` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `event` varchar(24) NOT NULL,
-  `latitude` decimal(9,6) NOT NULL,
-  `longitude` decimal(9,6) NOT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `django_celery_beat_solar_event_latitude_longitude_ba64999a_uniq` (`event`,`latitude`,`longitude`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
--- ----------------------------
--- Table structure for django_content_type
--- ----------------------------
-DROP TABLE IF EXISTS `django_content_type`;
-CREATE TABLE `django_content_type` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `app_label` varchar(100) NOT NULL,
-  `model` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for django_migrations
@@ -933,7 +951,7 @@ CREATE TABLE `sca_vul_db` (
 
 BEGIN;
 -- 创建默认用户
-INSERT INTO `auth_user`(`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`, `phone`) VALUES (1, 'pbkdf2_sha256$180000$tpUFyXYrIGXh$PIqkgklZerTwKsDe5s9P+6USI/Z2Yq+5J6oXx4kbiKI=', '2021-03-23 18:32:44.117558', 1, 'admin', 'admin', 'admin', 'admin@huoxian.cn', 1, 1, '2020-01-01 00:00:00.000000', 1);
+INSERT INTO `auth_user`(`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`, `phone`) VALUES (1, 'pbkdf2_sha256$260000$bJinFwRnTiKxrBCcGQyoDy$XmNFwi3eLq7R8yejmUwwt+8B2LC2OTh4kxY0sZEWnAk=', '2021-05-14 11:45:47.862892', 1, 'admin', 'admin', 'admin', 'admin@django.com', 1, 1, '2020-01-01 00:00:00.000000', 1);
 
 -- 创建租户
 INSERT INTO `auth_talent`(`id`, `talent_name`, `create_time`, `update_time`, `created_by`, `is_active`) VALUES (1, '默认租户', 1610532209, 1611031026, 1, 1);
@@ -943,13 +961,18 @@ INSERT INTO `auth_department`(`id`, `name`, `create_time`, `update_time`, `creat
 
 -- 创建组
 INSERT INTO `auth_group`(`id`, `name`) VALUES (1, 'system_admin');
-INSERT INTO `auth_group`(`id`, `name`) VALUES (5, 'talent_admin');
-INSERT INTO `auth_group`(`id`, `name`) VALUES (2, 'user');
+INSERT INTO `auth_group`(`id`, `name`) VALUES (2, 'talent_admin');
+INSERT INTO `auth_group`(`id`, `name`) VALUES (3, 'user');
 
 -- 创建关联关系
 INSERT INTO `auth_department_talent`(`id`, `department_id`, `talent_id`) VALUES (1, 1, 1);
 INSERT INTO `auth_user_department`(`id`, `user_id`, `department_id`) VALUES (1, 1, 1);
 INSERT INTO `auth_user_groups`(`id`, `user_id`, `group_id`) VALUES (1, 1, 1);
+
+-- 创建路由
+INSERT INTO `auth_group_routes`(`id`, `routes`, `group_id`, `created_by_id`, `create_time`, `update_time`, `is_active`) VALUES (1, '[\"/\", \"login\", \"project\", \"projectManage\", \"projectEdit/:pid?\", \"projectDetail/:pid\", \"vuln\", \"vulnList\", \"vulnDetail/:page/:id\", \"sca\", \"scaList\", \"scaDetail/:page/:id\", \"taint\", \"search\", \"poolDetail/:id\", \"setting\", \"agentManage\", \"strategyManage\", \"hookRule\", \"upgradeOnline\", \"changePassword\", \"logManage\", \"loadState\", \"speed\", \"email\", \"blackList\", \"hostSetting\", \"authoritySetting\", \"department\", \"departmentList\", \"/deploy\", \"/role\"]', 1, 1, 1620636855, 1620643763, 1);
+INSERT INTO `auth_group_routes`(`id`, `routes`, `group_id`, `created_by_id`, `create_time`, `update_time`, `is_active`) VALUES (2, '[\"/\", \"login\", \"project\", \"projectManage\", \"projectEdit/:pid?\", \"projectDetail/:pid\", \"vuln\", \"vulnList\", \"vulnDetail/:page/:id\", \"sca\", \"scaList\", \"scaDetail/:page/:id\", \"taint\", \"search\", \"poolDetail/:id\", \"setting\", \"agentManage\", \"strategyManage\", \"hookRule\", \"upgradeOnline\", \"changePassword\", \"logManage\", \"loadState\", \"speed\", \"email\", \"blackList\", \"hostSetting\", \"authoritySetting\", \"department\", \"departmentList\", \"/deploy\", \"/role\"]', 2, 1, 1620636855, 1620643768, 1);
+INSERT INTO `auth_group_routes`(`id`, `routes`, `group_id`, `created_by_id`, `create_time`, `update_time`, `is_active`) VALUES (3, '[\"/\", \"login\", \"project\", \"projectManage\", \"projectEdit/:pid?\", \"projectDetail/:pid\", \"vuln\", \"vulnList\", \"vulnDetail/:page/:id\", \"sca\", \"scaList\", \"scaDetail/:page/:id\", \"taint\", \"setting\", \"agentManage\", \"strategyManage\", \"hookRule\", \"changePassword\", \"logManage\", \"loadState\", \"/deploy\"]', 3, 1, 1620636855, 1620643763, 1);
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;

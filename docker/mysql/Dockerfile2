@@ -1,0 +1,12 @@
+FROM mysql:5.7
+
+ENV MYSQL_ROOT_PASSWORD dongtai-iast
+
+ADD https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/sca.sql /opt/sca.sql
+ADD https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/rule.sql /opt/rule.sql
+COPY db2.sql /opt/db.sql
+COPY init.sh /opt/init.sh
+
+RUN chmod u+x /opt/init.sh
+
+CMD ["bash", "/opt/init.sh"]
