@@ -12,6 +12,8 @@ from dongtai_models.models.project import IastProject
 from dongtai_models.models.vul_level import IastVulLevel
 from dongtai_models.models.vulnerablity import IastVulnerabilityModel
 
+from iast import const
+
 
 class ProjectSerializer(serializers.ModelSerializer):
     vul_count = serializers.SerializerMethodField()
@@ -24,11 +26,12 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_agents(self, obj):
         try:
-            agents = getattr(obj, 'project_agents')
+            all_agents = getattr(obj, 'project_agents')
         except:
-            agents = IastAgent.objects.filter(bind_project_id=obj.id).values('id')
-            setattr(obj, 'project_agents', agents)
-        return agents
+            all_agents = IastAgent.objects.filter(bind_project_id=obj.id)
+            # agents = IastAgent.objects.filter(bind_project_id=obj.id, is_running=const.RUNNING).values('id')
+            setattr(obj, 'project_agents', all_agents)
+        return all_agents
 
     def get_vul_count(self, obj):
         agents = self.get_agents(obj)
@@ -43,4 +46,4 @@ class ProjectSerializer(serializers.ModelSerializer):
         return obj.user.get_username()
 
     def get_agent_count(self, obj):
-        return len(self.get_agents(obj))
+        return self.get_agents(obj).filter(is_running=const.RUNNING).count()

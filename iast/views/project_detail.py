@@ -6,6 +6,7 @@
 # project: lingzhi-webapi
 
 from base import R
+from iast import const
 from iast.base.user import UserEndPoint
 from dongtai_models.models.agent import IastAgent
 from dongtai_models.models.project import IastProject
@@ -23,7 +24,7 @@ class ProjectDetail(UserEndPoint):
         project = IastProject.objects.filter(user__in=auth_users, id=id).first()
 
         if project:
-            relations = IastAgent.objects.filter(bind_project_id=project.id)
+            relations = IastAgent.objects.filter(bind_project_id=project.id, is_running=const.RUNNING)
             agents = [{"id": relation.id, "name": relation.token} for relation in relations]
             if project.scan:
                 scan_id = project.scan.id

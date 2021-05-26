@@ -8,6 +8,7 @@ import time
 from django.db.models import Q
 
 from base import R
+from iast import const
 from iast.base.agent import AgentEndPoint
 from dongtai_models.models.agent import IastAgent
 
@@ -16,10 +17,11 @@ class AgentStatusUpdate(AgentEndPoint):
     def get(self, request):
         timestamp = int(time.time())
         queryset = IastAgent.objects.filter(user=request.user)
-        no_heart_beat_queryset = queryset.filter((Q(server=None) & Q(latest_time__lt=(timestamp - 600))), is_running=1)
+        no_heart_beat_queryset = queryset.filter((Q(server=None) & Q(latest_time__lt=(timestamp - 600))),
+                                                 is_running=const.RUNNING)
         no_heart_beat_queryset.update(is_running=0)
 
-        heart_beat_queryset = queryset.filter(server__update_time__lt=(timestamp - 600), is_running=1)
+        heart_beat_queryset = queryset.filter(server__update_time__lt=(timestamp - 600), is_running=const.RUNNING)
         heart_beat_queryset.update(is_running=0)
 
         return R.success(msg='引擎状态更新成功')
