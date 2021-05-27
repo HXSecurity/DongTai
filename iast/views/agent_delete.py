@@ -6,6 +6,13 @@
 # project: lingzhi-webapi
 
 import logging
+
+from dongtai_models.models.asset import Asset
+from dongtai_models.models.errorlog import IastErrorlog
+from dongtai_models.models.heartbeat import Heartbeat
+from dongtai_models.models.iast_overpower_user import IastOverpowerUserAuth
+from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+
 from base import R
 from iast.base.user import UserEndPoint
 from dongtai_models.models.agent import IastAgent
@@ -49,24 +56,48 @@ class AgentDeleteEndPoint(UserEndPoint):
         server.delete()
 
     def delete_error_log(self):
-        self.agent.error_logs.all().delete()
+        try:
+            IastErrorlog.objects.filter(agent=self.agent).delete()
+        except Exception as e:
+            print(e)
 
     def delete_heart_beat(self):
-        self.agent.heartbeats.all().delete()
+        try:
+            Heartbeat.objects.filter(agent=self.agent).delete()
+        except Exception as e:
+            logger.error(f'心跳数据删除失败，原因：{e}')
 
     def delete_vul_overpower(self):
-        self.agent.vul_overpowers.all().delete()
+        try:
+            IastOverpowerUserAuth.objects.filter(agent=self.agent).delete()
+        except Exception as e:
+            logger.error(f'越权相关数据删除失败，原因：{e}')
 
     def delete_vul(self):
-        self.agent.vuls.all().delete()
+        try:
+            IastVulnerabilityModel.objects.filter(agent=self.agent).delete()
+        except Exception as e:
+            logger.error(f'漏洞数据删除失败，原因：{e}')
 
     def delete_sca(self):
-        self.agent.assets.all().delete()
+        try:
+            Asset.objects.filter(agent=self.agent).delete()
+        except Exception as e:
+            logger.error(f'第三方组件数据删除失败，原因：{e}')
 
     def delete_method_pool(self):
-        self.agent.method_pools.all().delete()
+        try:
+            MethodPool.objects.filter(agent=self.agent).delete()
+        except Exception as e:
+            logger.error(f'方法池数据删除失败，原因：{e}')
 
 
 if __name__ == '__main__':
     # 增加method_poll的引入，解决报错
-    MethodPool.objects.get()
+    MethodPool.objects.count()
+    IastErrorlog.objects.count()
+    Heartbeat.objects.count()
+    IastOverpowerUserAuth.objects.count()
+    Asset.objects.count()
+    IastVulnerabilityModel.objects.count()
+    MethodPool.objects.count()
