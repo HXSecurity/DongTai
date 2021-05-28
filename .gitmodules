@@ -1,18 +1,18 @@
 [submodule "dongtai-webapi"]
 	path = dongtai-webapi
-	url = git@github.com/HXSecurity/DongTai-webapi.git
+	url = git@github.com:HXSecurity/DongTai-webapi.git
 [submodule "dongtai-engine"]
 	path = dongtai-engine
-	url = git@github.com/HXSecurity/DongTai-engine.git
+	url = git@github.com:HXSecurity/DongTai-engine.git
 [submodule "dongtai-openapi"]
 	path = dongtai-openapi
-	url = git@github.com/HXSecurity/DongTai-openapi.git
+	url = git@github.com:HXSecurity/DongTai-openapi.git
 [submodule "dongtai-web"]
 	path = dongtai-web
-	url = git@github.com/HXSecurity/DongTai-web.git
+	url = git@github.com:HXSecurity/DongTai-web.git
 [submodule "agent/dongtai-agent-java"]
 	path = agent/dongtai-agent-java
-	url = git@github.com/HXSecurity/DongTai-agent-java.git
+	url = git@github.com:HXSecurity/DongTai-agent-java.git
 [submodule "doc"]
 	path = doc
-	url = git@github.com/HXSecurity/DongTaiDoc.git
+	url = git@github.com:HXSecurity/DongTaiDoc.git
