@@ -5,6 +5,7 @@
 # software: PyCharm
 # project: lingzhi-webapi
 import base64
+import logging
 
 from rest_framework.request import Request
 
@@ -68,6 +69,7 @@ from iast.serializers.vul import VulSerializer
 - 修复建议
 
 """
+logger = logging.getLogger('dongtai-webapi')
 
 
 class VulnDetail(UserEndPoint):
@@ -147,7 +149,11 @@ class VulnDetail(UserEndPoint):
 
     def parse_header(self, method, uri, query_param, protocol, header, data):
         _data = f"{method} {uri}?{query_param} {protocol}\n" if query_param else f"{method} {uri} {protocol}\n"
-        _data = _data + (base64.b64decode(header.encode("utf-8")).decode("utf-8") if header else '')
+        try:
+            _data = _data + (base64.b64decode(header.encode("utf-8")).decode("utf-8") if header else '')
+        except Exception as e:
+            logger.error(f'header解析出错，错误原因：{e}')
+            pass
         if data:
             _data = _data + "\n" + data
         return _data
