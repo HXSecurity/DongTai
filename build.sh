@@ -116,7 +116,7 @@ build_web(){
     docker build -t huoxian/dongtai-web:latest .
     docker stop dongtai-web || true
     docker rm dongtai-web || true
-    docker run -d -p 80:80 --network dongtai-net --name dongtai-web --restart=always huoxian/dongtai-web:latest
+    docker run -d -p $getip:80:80 --network dongtai-net --name dongtai-web --restart=always huoxian/dongtai-web:latest
     cd $CURRENT_PATH
 }
 
