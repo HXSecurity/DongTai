@@ -13,3 +13,15 @@ db = <celery broker db>
 
 [engine]
 url = engine-url
+
+[smtp]
+server = server
+user = user
+password = password
+from_addr = from_add
+ssl = ssl
+cc_addr = cc_addr
+
+[aliyun_oss]
+access_key = access_key
+access_key_secret = access_key_secret

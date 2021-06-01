@@ -13,3 +13,4 @@ doc
 doc/example.json
 logs/*.log
 build_docker.sh
+iast-package
