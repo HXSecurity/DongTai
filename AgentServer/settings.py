@@ -150,7 +150,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
         },
-        'lingzhi.api_server': {
+        'dongtai.openapi': {
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': 'logs/apiserver.log',
             'backupCount': 5,
@@ -158,10 +158,14 @@ LOGGING = {
         },
     },
     'loggers': {
-        'lingzhi.api_server': {
-            'handlers': ['console', 'lingzhi.api_server'],
+        'dongtai.openapi': {
+            'handlers': ['console', 'dongtai.openapi'],
             'propagate': True,
             'level': 'INFO',
         },
     }
 }
+
+# 配置阿里云OSS访问凭证
+ACCESS_KEY = config.get('aliyun_oss', 'access_key')
+ACCESS_KEY_SECRET = config.get('aliyun_oss', 'access_key_secret')
