@@ -55,14 +55,12 @@ class VulnList(UserEndPoint):
         project_name = request.query_params.get('project_name')
         if project_name:
             agent_ids = get_agents_with_project(project_name, auth_users)
-            if agent_ids:
-                queryset = queryset.filter(agent_id__in=agent_ids)
+            queryset = queryset.filter(agent_id__in=agent_ids)
 
         project_id = request.query_params.get('project_id')
         if project_id:
             agents = self.get_auth_agents(auth_users).filter(bind_project_id=project_id)
-            if agents:
-                queryset = queryset.filter(agent_id__in=agents)
+            queryset = queryset.filter(agent_id__in=agents)
 
         url = request.query_params.get('url', None)
         if url and url != '':
