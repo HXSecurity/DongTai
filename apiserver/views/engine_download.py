@@ -6,6 +6,7 @@
 # project: webapi
 
 import logging
+import os
 
 from django.http import FileResponse
 from rest_framework import status
@@ -13,13 +14,16 @@ from rest_framework.request import Request
 
 from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint
+from apiserver.utils import OssDownloader
 
-logger = logging.getLogger("django")
+logger = logging.getLogger("dongtai.openapi")
 
 
 class EngineDownloadEndPoint(OpenApiEndPoint):
     name = "download_core_jar_package"
     description = "iast agent-下载IAST依赖的core、inject jar包"
+    LOCAL_AGENT_FILE = '/tmp/{package_name}.jar'
+    REMOTE_AGENT_FILE = 'agent/java/{package_name}.jar'
 
     def get(self, request: Request):
         """
@@ -34,15 +38,25 @@ class EngineDownloadEndPoint(OpenApiEndPoint):
                 "status": -1,
                 "msg": "bad gay."
             })
-        logger.debug(f'即将下载{package_name}文件')
-        if package_name in ('iast-core',) and jdk == '2':
-            filename = f"iast-package/jdk-high/{package_name}.jar"
+
+        local_file_name = EngineDownloadEndPoint.LOCAL_AGENT_FILE.format(package_name=package_name)
+        remote_file_name = EngineDownloadEndPoint.REMOTE_AGENT_FILE.format(package_name=package_name)
+        logger.debug(f'download file from oss or local cache, file: {local_file_name}')
+        if self.download_agent_jar(remote_agent_file=remote_file_name, local_agent_file=local_file_name):
+            try:
+                response = FileResponse(open(local_file_name, "rb"))
+                response['content_type'] = 'application/octet-stream'
+                response['Content-Disposition'] = f"attachment; filename={package_name}.jar"
+                return response
+            except:
+                return R.failure(msg="file not exit.", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
-            filename = f"iast-package/{package_name}.jar"
-        try:
-            response = FileResponse(open(filename, "rb"))
-            response['content_type'] = 'application/octet-stream'
-            response['Content-Disposition'] = f"attachment; filename={package_name}.jar"
-            return response
-        except:
             return R.failure(msg="file not exit.", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @staticmethod
+    def download_agent_jar(remote_agent_file, local_agent_file):
+        if os.path.exists(local_agent_file):
+            return True
+        else:
+            return OssDownloader.download_file(object_name=remote_agent_file,
+                                               local_file=local_agent_file)

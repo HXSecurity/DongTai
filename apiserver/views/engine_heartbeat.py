@@ -11,7 +11,7 @@ from dongtai_models.models.engine_heartbeat import IastEngineHeartbeat
 from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint
 
-logger = logging.getLogger("lingzhi.api_server")
+logger = logging.getLogger("dongtai.openapi")
 
 
 class EngineHeartBeatEndPoint(OpenApiEndPoint):

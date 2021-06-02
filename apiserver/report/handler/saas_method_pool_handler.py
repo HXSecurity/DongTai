@@ -15,7 +15,7 @@ from dongtai_models.models.agent_method_pool import MethodPool
 from AgentServer.settings import BASE_ENGINE_URL
 from apiserver.report.handler.report_handler_interface import IReportHandler
 
-logger = logging.getLogger('lingzhi.api_server')
+logger = logging.getLogger('dongtai.openapi')
 
 
 class SaasMethodPoolHandler(IReportHandler):
