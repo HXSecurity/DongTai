@@ -28,6 +28,6 @@ class ErrorLogHandler(IReportHandler):
         IastErrorlog(
             errorlog=self.log,
             agent=self.agent,
-            state='reported',
+            state='已上报',
             dt=int(time.time())
         ).save()
