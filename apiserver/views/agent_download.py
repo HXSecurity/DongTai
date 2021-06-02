@@ -4,6 +4,7 @@
 # datetime:2021/1/14 下午7:17
 # software: PyCharm
 # project: lingzhi-agent-server
+import os
 import uuid, logging
 
 from django.http import FileResponse
@@ -11,8 +12,9 @@ from rest_framework.authtoken.models import Token
 
 from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint
+from apiserver.utils import OssDownloader
 
-logger = logging.getLogger('lingzhi.api_server')
+logger = logging.getLogger('dongtai.openapi')
 
 
 class AgentDownload(OpenApiEndPoint):
@@ -21,6 +23,8 @@ class AgentDownload(OpenApiEndPoint):
     """
     name = "download_iast_agent"
     description = "下载洞态Agent"
+    LOCAL_AGENT_FILE = '/tmp/iast-agent.jar'
+    REMOTE_AGENT_FILE = 'agent/java/iast-agent.jar'
 
     def get(self, request):
         """
@@ -30,20 +34,18 @@ class AgentDownload(OpenApiEndPoint):
         """
         try:
             base_url = request.query_params.get('url', 'https://www.huoxian.cn')
-            jdk_version = request.query_params.get('jdk.version', 'Java 1.8')
             project_name = request.query_params.get('projectName', 'Demo Project')
-            if jdk_version in ["Java 9", "Java 10", "Java 11", "Java 13"]:
-                jdk_level = 2
-            else:
-                jdk_level = 1
+
+            if self.download_agent_jar() is False:
+                return R.failure(msg="agent file download failure. please contact official staff for help.")
+
             token, success = Token.objects.get_or_create(user=request.user)
             agent_token = ''.join(str(uuid.uuid4()).split('-'))
-            if self.create_config_file(base_url=base_url, jdk_level=jdk_level, agent_token=agent_token,
+            if self.create_config_file(base_url=base_url, agent_token=agent_token,
                                        auth_token=token.key,
                                        project_name=project_name):
                 self.replace_jar_config()
-                filename = f"iast-package/iast-agent.jar"
-                response = FileResponse(open(filename, "rb"))
+                response = FileResponse(open(AgentDownload.LOCAL_AGENT_FILE, "rb"))
                 response['content_type'] = 'application/octet-stream'
                 response['Content-Disposition'] = "attachment; filename=agent.jar"
                 return response
@@ -54,12 +56,12 @@ class AgentDownload(OpenApiEndPoint):
             return R.failure(msg="agent file not exit.")
 
     @staticmethod
-    def create_config_file(base_url, jdk_level, agent_token, auth_token, project_name):
+    def create_config_file(base_url, agent_token, auth_token, project_name):
         try:
             data = "iast.name=lingzhi-Enterprise 1.0.0\niast.version=1.0.0\niast.response.name=lingzhi\niast.response.value=1.0.0\niast.server.url={url}\niast.server.token={token}\niast.allhook.enable=false\niast.dump.class.enable=false\niast.dump.class.path=/tmp/iast-class-dump/\niast.service.heartbeat.interval=30000\niast.service.vulreport.interval=1000\napp.name=LingZhi\nengine.status=start\nengine.name={agent_token}\njdk.version={jdk_level}\nproject.name={project_name}\niast.proxy.enable=false\niast.proxy.host=\niast.proxy.port=\n"
             with open('/tmp/iast.properties', 'w') as config_file:
                 config_file.write(
-                    data.format(url=base_url, token=auth_token, agent_token=agent_token, jdk_level=jdk_level,
+                    data.format(url=base_url, token=auth_token, agent_token=agent_token, jdk_level=1,
                                 project_name=project_name))
             return True
         except Exception as e:
@@ -68,6 +70,14 @@ class AgentDownload(OpenApiEndPoint):
 
     @staticmethod
     def replace_jar_config():
-        # 执行jar -uvf iast/upload/iast-package/iast-agent.jar /tmp/iast.properties更新jar包的文件
+        # 执行jar -uvf {AgentDownload.LOCAL_AGENT_FILE} iast.properties更新jar包的文件
         import os
-        os.system('cd /tmp;jar -uvf /opt/iast/apiserver/iast-package/iast-agent.jar iast.properties')
+        os.system(f'cd /tmp;jar -uvf {AgentDownload.LOCAL_AGENT_FILE} iast.properties')
+
+    @staticmethod
+    def download_agent_jar():
+        if os.path.exists(AgentDownload.LOCAL_AGENT_FILE):
+            return True
+        else:
+            return OssDownloader.download_file(object_name=AgentDownload.REMOTE_AGENT_FILE,
+                                               local_file=AgentDownload.LOCAL_AGENT_FILE)

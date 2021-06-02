@@ -104,7 +104,7 @@ class NormalVulnHandler(BaseVulnHandler):
                         iast_vul.req_params = self.http_query_string
                         iast_vul.counts = iast_vul.counts + 1
                         iast_vul.latest_time = int(time.time())
-                        iast_vul.status = 'reported'
+                        iast_vul.status = '已上报'
                         iast_vul.save()
                     else:
                         vul = IastVulnerabilityModel(
@@ -123,7 +123,7 @@ class NormalVulnHandler(BaseVulnHandler):
                             agent=agent,
                             context_path=self.app_name,
                             counts=1,
-                            status='reported',
+                            status='已上报',
                             language=self.language,
                             first_time=int(time.time()),
                             latest_time=int(time.time()),
