@@ -43,6 +43,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 return R.failure(msg="参数错误")
 
             project_name = project_name.strip()
+            # todo 增加其他字段， 版本为空
             exist_agent = IastAgent.objects.filter(token=token, project_name=project_name, user=self.user).exists()
             if exist_agent:
                 return R.failure(msg="agent已注册")
