@@ -67,7 +67,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: "registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi:latest,registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi:1.0.${{github.run_number}}"
+          tags: "registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi:latest,registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi:1.0.${{github.run_number}},registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:latest,"
 
       - uses: actions/checkout@master
       - name: deploy to cluster
