@@ -14,6 +14,7 @@ from apiserver.views.engine_auto_deploy import AutoDeployEndPoint
 from apiserver.views.engine_download import EngineDownloadEndPoint
 from apiserver.views.engine_heartbeat import EngineHeartBeatEndPoint
 from apiserver.views.engine_status import EngineUpdateEndPoint
+from apiserver.views.engine_status import EngineStopStart
 from apiserver.views.hook_profiles import HookProfilesEndPoint
 from apiserver.views.properties import PropertiesEndPoint
 from apiserver.views.report_upload import ReportUploadEndPoint
@@ -29,5 +30,6 @@ urlpatterns = [
     path('profiles', HookProfilesEndPoint.as_view()),
     path('properties', PropertiesEndPoint.as_view()),
     path('report/upload', ReportUploadEndPoint.as_view()),
+    path('engine/startstop', EngineStopStart.as_view()),
     # todo 增加重放请求获取接口，用于后续逻辑漏洞/漏洞验证等功能，暂时先不实现
 ]
