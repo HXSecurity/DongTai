@@ -3,6 +3,8 @@
 name: Deploy DongTai Base Image To Aliyun
 
 on:
+  push:
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
