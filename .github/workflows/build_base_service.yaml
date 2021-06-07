@@ -43,14 +43,14 @@ jobs:
       - name: Build and push MySql
         uses: docker/build-push-action@v2
         with:
-          context: ./mysql
+          context: ./docker/mysql
           push: true
           tags: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:5.7,"
       
       - name: Build and push Redis
         uses: docker/build-push-action@v2
         with:
-          context: ./redis
+          context: ./docker/redis
           push: true
           tags: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:latest,"
 
