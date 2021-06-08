@@ -1,14 +1,10 @@
-version: "3"
+version: "2"
 services:
   dongtai-mysql:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:5.7
-    ports:
-      - "3306:3306"
 
   dongtai-redis:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:latest
-    ports:
-      - "6379:6379"
 
   dongtai-webapi:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:latest
@@ -53,3 +49,4 @@ services:
     depends_on:
       - dongtai-mysql
       - dongtai-redis
+      - dongtai-engine

@@ -23,6 +23,9 @@
 
 ## 部署
 
+### docker-compose一键部署
+[部署方案](deploy/docker-compose/readme.md)
+
 ### 一键源码部署Docker环境
 
 Linux/Mac环境，安装docker服务时，可运行`build_with_source.sh`脚本，指定当前及机器的内网IP地址，如：192.168.0.1
