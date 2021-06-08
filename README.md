@@ -25,7 +25,7 @@
 
 > 一键源码部署Docker环境
 
-Linux/Mac环境，安装docker服务时，可运行`build.sh`脚本，指定当前及机器的内网IP地址，如：192.168.0.1
+Linux/Mac环境，安装docker服务时，可运行`build_with_source.sh`脚本，指定当前及机器的内网IP地址，如：192.168.0.1
 ```
 # 拉取最新的代码
 $ git clone https://github.com/huoxianclub/DongTai.git DongTai
@@ -33,7 +33,7 @@ $ git clone https://github.com/huoxianclub/DongTai.git DongTai
 $ cd DongTai
 
 # 运行shell脚本，一键部署
-$ bash build.sh
+$ bash build_with_source.sh
 ```
 即可成功打包docker镜像并运行，运行之后，通过：http://内网地址 访问即可
 
