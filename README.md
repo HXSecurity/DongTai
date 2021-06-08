@@ -23,7 +23,7 @@
 
 ## 部署
 
-> 一键源码部署Docker环境
+### 一键源码部署Docker环境
 
 Linux/Mac环境，安装docker服务时，可运行`build_with_source.sh`脚本，指定当前及机器的内网IP地址，如：192.168.0.1
 ```
@@ -37,7 +37,7 @@ $ bash build_with_source.sh
 ```
 即可成功打包docker镜像并运行，运行之后，通过：http://内网地址 访问即可
 
-> 手动部署
+### 手动部署
 
 服务之间存在一定的依赖，部署时，需按照顺序进行部署，顺序如下：
 - DongTai-webapi
@@ -46,7 +46,7 @@ $ bash build_with_source.sh
 - DongTai-web
 - agent
 
-### DongTai-webapi服务
+#### DongTai-webapi服务
 
 源码部署
 
@@ -64,7 +64,7 @@ $ bash build_with_source.sh
 
 运行`python manage.py runserver`启动服务
 
-### DongTai-openapi服务
+#### DongTai-openapi服务
 
 1.修改配置文件
 
@@ -78,7 +78,7 @@ $ bash build_with_source.sh
 
 运行`python manage.py runserver`启动服务
 
-### DongTai-engine服务
+#### DongTai-engine服务
 1.修改配置文件
 
 复制配置文件`conf/config.ini.example`为`conf/config.ini`并需改其中的配置；其中：
@@ -91,7 +91,7 @@ $ bash build_with_source.sh
 
 运行`python manage.py runserver`启动服务
 
-### DongTai-web服务
+#### DongTai-web服务
 1.安装`npm`依赖
 ```bash
 $ npm install
@@ -106,9 +106,41 @@ $ npm run build
 
 4.修改nginx配置，设置前端接口对应的后端服务，nginx的配置可参考`nginx.conf`
 
-### agent的部署
+#### agent的部署
 
 **DongTai-agent-java**
+
+
+### Docker Compose部署
+使用docker-compose快速部署测试环境。
+
+
+> ⚠️新版本中docker内置了compose子命令，请注意区分。
+
+- 开始部署：
+```
+cd deploy/docker-compose/
+
+docker-compose -p dongtai-iast up -d
+
+```
+- 启动完成后访问测试
+
+dongtai-web地址：
+```
+http://${YOUR_IP_ADDRESS}/login
+```
+dongtai-openapi地址：
+```
+http://${YOUR_IP_ADDRESS}:8000
+```
+
+- 清理
+```
+docker-compose -p dongtai-iast down
+```
+
+
 
 ### 文档
 - [官方文档](https://hxsecurity.github.io/DongTaiDoc/#/doc/tutorial/quickstart)
