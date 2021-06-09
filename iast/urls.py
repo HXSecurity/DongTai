@@ -53,6 +53,12 @@ from iast.views.project_engines import ProjectEngines
 from iast.views.project_report_export import ProjectReportExport
 from iast.views.project_summary import ProjectSummary
 from iast.views.projects import Projects
+from iast.views.project_version_add import ProjectVersionAdd
+from iast.views.project_version_update import ProjectVersionUpdate
+from iast.views.project_version_delete import ProjectVersionDelete
+from iast.views.project_version_current import ProjectVersionCurrent
+from iast.views.project_version_list import ProjectVersionList
+
 from iast.views.sca_details import ScaDetailView
 from iast.views.sca_sidebar_index import ScaSidebarList
 from iast.views.sca_summary import ScaSummary
@@ -118,6 +124,12 @@ urlpatterns = [
     path('projects/summary/<int:id>', ProjectSummary.as_view()),
     path('project/engines/<int:pid>', ProjectEngines.as_view()),
     path('project/export', ProjectReportExport.as_view()),
+    # 更新项目版本信息
+    path('project/version/add', ProjectVersionAdd.as_view()),
+    path('project/version/update', ProjectVersionUpdate.as_view()),
+    path('project/version/delete', ProjectVersionDelete.as_view()),
+    path('project/version/current', ProjectVersionCurrent.as_view()),
+    path('project/version/list', ProjectVersionList.as_view()),
     # 漏洞接口：漏洞列表、漏洞信息总览、漏洞详情侧边栏、漏洞详情
     path('vulns', VulnList.as_view()),
     path('vuln/summary', VulnSummary.as_view()),
