@@ -12,8 +12,10 @@ from django.db.models import Q
 from base import R
 from iast.base.user import UserEndPoint
 from dongtai_models.models.agent import IastAgent
+from dongtai_models.models.project_version import IastProjectVersion
 from dongtai_models.models.project import IastProject
 from dongtai_models.models.strategy_user import IastStrategyUser
+from iast.base.project_version import version_modify
 
 logger = logging.getLogger("django")
 
@@ -30,11 +32,10 @@ class ProjectAdd(UserEndPoint):
             name = request.data.get("name")
             mode = request.data.get("mode")
             scan_id = request.data.get("scan_id")
+
             if not scan_id or not name or not mode:
                 return R.failure(status=202, msg='参数错误')
-
             auth_users = self.get_auth_users(request.user)
-
             scan = IastStrategyUser.objects.filter(id=scan_id, user=request.user).first()
             agent_ids = request.data.get("agent_ids", None)
             if agent_ids:
@@ -42,7 +43,17 @@ class ProjectAdd(UserEndPoint):
             else:
                 agents = []
 
-            pid = request.data.get("pid")
+            version_name = request.data.get("version_name", "")
+            if not version_name:
+                version_name = "V1.0"
+            pid = request.data.get("pid", 0)
+            versionData = {
+                "project_id": pid,
+                "version_id": request.data.get("version_id", 0),
+                "version_name": version_name,
+                "description": request.data.get("description", ""),
+                "current_version": 1
+            }
             if pid:
                 # 如果存在pid，走修改逻辑
                 project = IastProject.objects.filter(id=pid, user=request.user).first()
@@ -54,7 +65,9 @@ class ProjectAdd(UserEndPoint):
                     project = IastProject.objects.create(name=name, user=request.user)
                 else:
                     return R.failure(status=203, msg='创建失败，项目名称已存在')
-
+            result = version_modify(request.user, versionData)
+            if result.get("status", "202") == "202":
+                return R.failure(status=202, msg=result.get("msg", "参数错误"))
             # 检测agent是否绑定其他项目
             if agent_ids:
                 haveBind = IastAgent.objects.filter(
@@ -91,4 +104,5 @@ class ProjectAdd(UserEndPoint):
 
             return R.success(msg='创建成功')
         except Exception as e:
+            print(e)
             return R.failure(status=202, msg=e)
