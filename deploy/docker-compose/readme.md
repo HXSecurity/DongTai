@@ -4,15 +4,13 @@
 
 ### 部署流程
 
-**1.修改`config-tutorial.ini`配置文件**
+1. 查看当前机器的内网IP地址：`ifconfig`，如：192.168.1.101
 
-1.1 查看当前机器的内网IP地址：`ifconfig`，如：192.168.1.101
+2. 执行`install.sh`启动环境安装。用法: `./install.sh <ip>`, 例如：
 
-1.2 修改`config-tutorial.ini`文件，将**dongtai-openapi**修改为**内网IP**地址：192.168.1.101 即可
-
-**2.使用`docker-compose`启动环境**
-```bash
-$ docker-compose up -d
-```
+    ```shell script
+       ./install.sh 192.168.1.101
+    ```
+    
 环境启动成功后，通过80端口访问即可。
 
