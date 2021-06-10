@@ -1,4 +1,4 @@
-## docker-compose一键部署
+## docker-compose一键部署【单机】
 洞态IAST云端支持通过`docker-compose`的方式进行一键安装，但是需要提前安装`docker-compose`工具。可以通过`docker-compose -version`命令查看当前机器是否已经安装，如果没有安装，通过百度查询并安装`docker-compose`即可。
 
 
