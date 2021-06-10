@@ -19,11 +19,8 @@ class ProjectVersionList(UserEndPoint):
     name = "api-v1-project-version-list"
     description = "查看项目版本列表"
 
-    def get(self, request):
+    def get(self, request, project_id):
         try:
-            project_id = request.GET.get("project_id", 0)
-            if not project_id:
-                return R.failure(status=202, msg='参数错误')
             versionInfo = IastProjectVersion.objects.filter(project_id=project_id, user=request.user, status=1).order_by("-id")
             data = []
             if versionInfo:

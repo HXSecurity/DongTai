@@ -47,13 +47,7 @@ class ProjectAdd(UserEndPoint):
             if not version_name:
                 version_name = "V1.0"
             pid = request.data.get("pid", 0)
-            versionData = {
-                "project_id": pid,
-                "version_id": request.data.get("version_id", 0),
-                "version_name": version_name,
-                "description": request.data.get("description", ""),
-                "current_version": 1
-            }
+
             if pid:
                 # 如果存在pid，走修改逻辑
                 project = IastProject.objects.filter(id=pid, user=request.user).first()
@@ -65,6 +59,13 @@ class ProjectAdd(UserEndPoint):
                     project = IastProject.objects.create(name=name, user=request.user)
                 else:
                     return R.failure(status=203, msg='创建失败，项目名称已存在')
+            versionData = {
+                "project_id": project.id,
+                "version_id": request.data.get("version_id", 0),
+                "version_name": version_name,
+                "description": request.data.get("description", ""),
+                "current_version": 1
+            }
             result = version_modify(request.user, versionData)
             if result.get("status", "202") == "202":
                 return R.failure(status=202, msg=result.get("msg", "参数错误"))

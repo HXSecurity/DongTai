@@ -22,9 +22,10 @@ class ProjectVersionDelete(UserEndPoint):
     def post(self, request):
         try:
             version_id = request.data.get("version_id", 0)
-            if not version_id:
+            project_id = request.data.get("project_id", 0)
+            if not version_id or not project_id:
                 return R.failure(status=202, msg='参数错误')
-            version = IastProjectVersion.objects.filter(id=version_id, user=request.user, status=1).first()
+            version = IastProjectVersion.objects.filter(id=version_id, project_id=project_id, user=request.user, status=1).first()
             if version:
                 version.status = 0
                 version.update_time = int(time.time())

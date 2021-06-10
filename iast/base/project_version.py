@@ -51,3 +51,21 @@ def version_modify(user, versionData=None):
         "status": "201",
         "msg": "success"
     }
+
+
+# 获取项目版本信息
+def get_project_version(project_id,user):
+    versionInfo = IastProjectVersion.objects.filter(project_id=project_id, status=1, current_version=1, user=user).first()
+    if versionInfo:
+        versionData = {
+            "version_id": versionInfo.id,
+            "version_name": versionInfo.version_name,
+            "description": versionInfo.description
+        }
+    else:
+        versionData = {
+            "version_id": "",
+            "version_name": "",
+            "description": "",
+        }
+    return versionData
