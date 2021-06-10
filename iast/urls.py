@@ -129,7 +129,7 @@ urlpatterns = [
     path('project/version/update', ProjectVersionUpdate.as_view()),
     path('project/version/delete', ProjectVersionDelete.as_view()),
     path('project/version/current', ProjectVersionCurrent.as_view()),
-    path('project/version/list', ProjectVersionList.as_view()),
+    path('project/version/list/<int:project_id>', ProjectVersionList.as_view()),
     # 漏洞接口：漏洞列表、漏洞信息总览、漏洞详情侧边栏、漏洞详情
     path('vulns', VulnList.as_view()),
     path('vuln/summary', VulnSummary.as_view()),

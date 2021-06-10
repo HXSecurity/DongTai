@@ -11,6 +11,7 @@ from iast.base.user import UserEndPoint
 from dongtai_models.models.agent import IastAgent
 from dongtai_models.models.project import IastProject
 from dongtai_models.models.project_version import IastProjectVersion
+from iast.base.project_version import get_project_version
 
 
 class ProjectDetail(UserEndPoint):
@@ -31,20 +32,8 @@ class ProjectDetail(UserEndPoint):
                 scan_id = project.scan.id
             else:
                 scan_id = 0
-            # 获取项目当前版本号
-            versionInfo = IastProjectVersion.objects.filter(project_id=project.id, status=1, current_version=1, user=request.user).first()
-            if versionInfo:
-                versionData = {
-                    "version_id": versionInfo.id,
-                    "version_name": versionInfo.version_name,
-                    "description": versionInfo.description
-                }
-            else:
-                versionData = {
-                    "version_id": "",
-                    "version_name": "",
-                    "description": "",
-                }
+            # 获取项目当前版本信息
+            versionData = get_project_version(project.id, request.user)
             return R.success(data={
                 "name": project.name,
                 "id": project.id,
