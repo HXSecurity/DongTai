@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: dongtai-iast
+  name: CHANGE_THIS_NAMESPACE
 spec:
   finalizers:
     - kubernetes
@@ -15,5 +15,5 @@ data:
 kind: Secret
 metadata:
   name: dongtai-iast-image-registry-secret
-  namespace: dongtai-iast
+  namespace: CHANGE_THIS_NAMESPACE
 type: kubernetes.io/dockerconfigjson

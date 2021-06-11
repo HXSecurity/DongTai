@@ -17,13 +17,13 @@ data:
 kind: ConfigMap
 metadata:
   name: redis-conf
-  namespace: dongtai-iast
+  namespace: CHANGE_THIS_NAMESPACE
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: redis
-  namespace: dongtai-iast
+  namespace: CHANGE_THIS_NAMESPACE
 spec:
   selector:
     matchLabels:
@@ -77,7 +77,7 @@ metadata:
     app: redis
     statefulset.kubernetes.io/pod-name: redis-0
   name: dongtai-redis
-  namespace: dongtai-iast
+  namespace: CHANGE_THIS_NAMESPACE
 spec:
   ports:
     - port: 6379

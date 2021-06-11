@@ -36,14 +36,14 @@ data:
 kind: ConfigMap
 metadata:
   name: dongtai-iast-config.ini
-  namespace: dongtai-iast
+  namespace: CHANGE_THIS_NAMESPACE
 ---
 # dongtai-webapi服务
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dongtai-webapi
-  namespace: dongtai-iast
+  namespace: CHANGE_THIS_NAMESPACE
   annotations:
     kubesphere.io/description: dongtai-webapi接口
   labels:
@@ -84,7 +84,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: dongtai-webapi-svc
-  namespace: dongtai-iast
+  namespace: CHANGE_THIS_NAMESPACE
 spec:
   ports:
     - port: 80
@@ -99,7 +99,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dongtai-openapi
-  namespace: dongtai-iast
+  namespace: CHANGE_THIS_NAMESPACE
   annotations:
     kubesphere.io/description: dongtai-openapi
   labels:
@@ -141,7 +141,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: dongtai-openapi-svc
-  namespace: dongtai-iast
+  namespace: CHANGE_THIS_NAMESPACE
 spec:
   ports:
     - port: 80
@@ -202,13 +202,13 @@ data:
 kind: ConfigMap
 metadata:
   name: dongtai-web-nginx-conf
-  namespace: dongtai-iast
+  namespace: CHANGE_THIS_NAMESPACE
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dongtai-web
-  namespace: dongtai-iast
+  namespace: CHANGE_THIS_NAMESPACE
   annotations:
     kubesphere.io/description: dongtai前端项目
   labels:
@@ -250,7 +250,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dongtai-engine
-  namespace: dongtai-iast
+  namespace: CHANGE_THIS_NAMESPACE
   annotations:
     kubesphere.io/description: dongtai-engine
   labels:
@@ -291,7 +291,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: dongtai-engine-svc
-  namespace: dongtai-iast
+  namespace: CHANGE_THIS_NAMESPACE
 spec:
   ports:
     - port: 80
@@ -306,7 +306,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dongtai-engine-task
-  namespace: dongtai-iast
+  namespace: CHANGE_THIS_NAMESPACE
   annotations:
     kubesphere.io/description: dongtai-engine-task
   labels:

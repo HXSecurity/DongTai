@@ -6,7 +6,7 @@ metadata:
   labels:
     app: dongtai-web
   name: dongtai-web-pub-svc
-  namespace: dongtai-iast
+  namespace: CHANGE_THIS_NAMESPACE
 spec:
   ports:
     - port: 8009
@@ -24,7 +24,7 @@ metadata:
   labels:
     app: dongtai-engine
   name: dongtai-engine-pub-svc
-  namespace: dongtai-iast
+  namespace: CHANGE_THIS_NAMESPACE
 spec:
   ports:
     - port: 8000
