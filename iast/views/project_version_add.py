@@ -26,7 +26,7 @@ class ProjectVersionAdd(UserEndPoint):
             if result.get("status", "202") == "202":
                 return R.failure(status=202, msg=result.get("msg", "参数错误"))
             else:
-                return R.success(msg='创建成功')
+                return R.success(msg='创建成功', data=result.get("data", {}))
 
             # version = IastProjectVersion.objects.filter(project_id=project_id, version_name=version_name, user=request.user, status=1).first()
             # if version:

@@ -9,6 +9,7 @@ from base import R
 from django.db.models import Q
 from iast.base.user import UserEndPoint
 from dongtai_models.models.project_version import IastProjectVersion
+from dongtai_models.models.agent import IastAgent
 
 logger = logging.getLogger("django")
 
@@ -34,6 +35,7 @@ class ProjectVersionCurrent(UserEndPoint):
                 version.update_time = int(time.time())
                 version.save(update_fields=["current_version", "update_time"])
                 # 置空之前项目设置版本
+                IastAgent.objects.filter(user__in=request.user, bind_project_id=project_id).update(online=0)
                 IastProjectVersion.objects.filter(
                     ~Q(id=version_id),
                     project_id=project_id,
@@ -41,6 +43,7 @@ class ProjectVersionCurrent(UserEndPoint):
                     current_version=1,
                     status=1
                 ).update(current_version=0, update_time=int(time.time()))
+
                 return R.success(msg='版本设置成功')
             else:
                 return R.failure(status=202, msg='版本不存在')
