@@ -49,7 +49,12 @@ def version_modify(user, versionData=None):
     version.save()
     return {
         "status": "201",
-        "msg": "success"
+        "msg": "success",
+        "data": {
+            "version_id": version.id,
+            "version_name": version_name,
+            "description": description
+        }
     }
 
 

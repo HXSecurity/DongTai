@@ -67,8 +67,11 @@ class ProjectAdd(UserEndPoint):
                 "current_version": 1
             }
             result = version_modify(request.user, versionData)
+            project_version_id = 0
             if result.get("status", "202") == "202":
                 return R.failure(status=202, msg=result.get("msg", "参数错误"))
+            else:
+                project_version_id = result.get("data", {}).get("version_id", 0)
             # 检测agent是否绑定其他项目
             if agent_ids:
                 haveBind = IastAgent.objects.filter(
@@ -86,17 +89,18 @@ class ProjectAdd(UserEndPoint):
             project.latest_time = int(time.time())
             # 创建项目-ID列表
             if agents:
-                IastAgent.objects.filter(user__in=auth_users, bind_project_id=project.id).update(bind_project_id=0)
+                IastAgent.objects.filter(user__in=auth_users, bind_project_id=project.id).update(bind_project_id=0, online=0)
                 project.agent_count = IastAgent.objects.filter(
                     Q(id__in=agents) | Q(project_name=name),
                     user__in=auth_users,
-                    bind_project_id=0
-                ).update(bind_project_id=project.id)
+                    bind_project_id=0,
+                    project_version_id=0
+                ).update(bind_project_id=project.id, project_version_id=project_version_id, online=1)
             else:
                 project.agent_count = IastAgent.objects.filter(
                     user__in=auth_users,
                     bind_project_id=project.id
-                ).update(bind_project_id=0)
+                ).update(bind_project_id=0, online=0)
                 project.agent_count = IastAgent.objects.filter(
                     project_name=name,
                     user__in=auth_users
