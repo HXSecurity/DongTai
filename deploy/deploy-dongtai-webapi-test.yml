@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lingzhi-api
+  namespace: iast-prod
+  annotations:
+    kubesphere.io/description: lingzhi-api接口
+  labels:
+    app: lingzhi-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lingzhi-api
+  template:
+    metadata:
+      labels:
+        app: lingzhi-api
+    spec:
+      containers:
+        - name: lingzhi-api-container
+          image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-webapi-test:VERSION
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/iast/webapi/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: iast-test-config.ini
+      imagePullSecrets:
+        - name: aliyun-registry-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lingzhi-api-svc
+  namespace: iast-prod
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    app: lingzhi-api
+  type: ClusterIP
