@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: lingzhi-api
-  namespace: iast-prod
+  namespace: iast-test
   annotations:
     kubesphere.io/description: lingzhi-api接口
   labels:
