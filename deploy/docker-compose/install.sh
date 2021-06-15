@@ -34,9 +34,9 @@ create_temporary_conf(){
   cp $CONF $TEMP
   echo "[Info] Copying temporary config ..."
   if [ "${machine}" == "Mac" ]; then
-    sed -i "" "s/$OPEN_API/$IP/g" $TEMP >/dev/null
+    sed -i "" "s/$OPEN_API/$IP/g" $CONF >/dev/null
   elif [ "${machine}" == "Linux" ]; then
-    sed -i "s/$OPEN_API/$IP/g" $TEMP >/dev/null
+    sed -i "s/$OPEN_API/$IP/g" $CONF >/dev/null
   else
       echo "[Error] Unsupported shell version."
       exit 1
@@ -50,6 +50,7 @@ start_docker_compose(){
 
 clean_temporary_conf(){
   echo "[Info] Cleaning temporary config ..."
+  cp $TEMP $CONF
   rm $TEMP
 }
 
