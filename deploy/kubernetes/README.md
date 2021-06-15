@@ -28,6 +28,9 @@ n: 指定namespace，默认为：`dongtai-iast`
 
 ## 自定义配置
 如需修改mysql和redis的配置，需要手动修改 `manifest/4.deploy-iast-server.yml`最上部分的`[mysql]`和`redis`部分配置。
+
+> 说明：假设`mysql`和`redis`的配置可用于生产环境，此部署方案即可用于生产环境部署。
+
    
 ## 访问
 
