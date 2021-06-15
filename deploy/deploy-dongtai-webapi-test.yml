@@ -43,7 +43,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: lingzhi-api-svc
-  namespace: iast-prod
+  namespace: iast-test
 spec:
   ports:
     - port: 80
