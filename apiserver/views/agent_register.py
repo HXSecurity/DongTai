@@ -8,6 +8,7 @@ import time
 
 from dongtai_models.models.agent import IastAgent
 from dongtai_models.models.project import IastProject
+from dongtai_models.models.project_version import IastProjectVersion
 from rest_framework.request import Request
 
 from AgentServer.base import R
@@ -49,16 +50,29 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 return R.failure(msg="agent已注册")
 
             project = IastProject.objects.filter(name=project_name, user=self.user).first()
+            project_version_id = 0
+            online = 0
+            project_id = 0
+            if project:
+                project_id = project.id
+                versionInfo = IastProjectVersion.objects.filter(project_id=project_id, user=self.user, current_version=1, status=1).first()
+                if versionInfo:
+                    project_version_id = versionInfo.id
+                    online = 1
+                    # 下线同一台客户端其他版本
+                    IastAgent.objects.filter(token=token, online=1, user=self.user).update(online=0)
             IastAgent.objects.create(
                 token=token,
                 version=version,
                 latest_time=int(time.time()),
                 user=self.user,
                 is_running=1,
-                bind_project_id=project.id if project else 0,
+                bind_project_id=project_id,
                 project_name=project_name,
                 control=0,
-                is_control=0
+                is_control=0,
+                online=online,
+                project_version_id=project_version_id
             )
             return R.success()
         except Exception as e:
