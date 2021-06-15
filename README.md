@@ -114,35 +114,9 @@ $ npm run build
 **DongTai-agent-java**
 
 
-### Docker Compose部署
-使用docker-compose快速部署测试环境。
-
-
-> ⚠️新版本中docker内置了compose子命令，请注意区分。
-
-- 开始部署：
-```
-cd deploy/docker-compose/
-
-docker-compose -p dongtai-iast up -d
-
-```
-- 启动完成后访问测试
-
-dongtai-web地址：
-```
-http://${YOUR_IP_ADDRESS}/login
-```
-dongtai-openapi地址：
-```
-http://${YOUR_IP_ADDRESS}:8000
-```
-
-- 清理
-```
-docker-compose -p dongtai-iast down
-```
-
+## 【集群版】部署方案
+### Kubernetes版本一键部署
+[部署方案](deploy/kubernetes/README.md)
 
 
 ### 文档

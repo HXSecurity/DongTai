@@ -1,0 +1,19 @@
+---
+# 创建命名空间
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: CHANGE_THIS_NAMESPACE
+spec:
+  finalizers:
+    - kubernetes
+---
+#创建镜像仓库secret
+apiVersion: v1
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJyZWdpc3RyeS5jbi1iZWlqaW5nLmFsaXl1bmNzLmNvbSI6eyJ1c2VybmFtZSI6ImRvbmd0YWktaW1hZ2VAaHVveGlhbiIsInBhc3N3b3JkIjoiRGtoY3VpY2d5RXp3eEJyMk1OeTJpUTg5IiwiZW1haWwiOiJoYXJkeUBodW94aWFuLmNuIiwiYXV0aCI6IlpHOXVaM1JoYVMxcGJXRm5aVUJvZFc5NGFXRnVPa1JyYUdOMWFXTm5lVVY2ZDNoQ2NqSk5Ubmt5YVZFNE9RPT0ifX19
+kind: Secret
+metadata:
+  name: dongtai-iast-image-registry-secret
+  namespace: CHANGE_THIS_NAMESPACE
+type: kubernetes.io/dockerconfigjson
