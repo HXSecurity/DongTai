@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iast-engine
+  namespace: iast-test
+  annotations:
+    kubesphere.io/description: iast-engine
+  labels:
+    app: iast-engine
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: iast-engine
+  template:
+    metadata:
+      labels:
+        app: iast-engine
+    spec:
+      containers:
+        - name: iast-engine-container
+          image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine-test:VERSION
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/iast/engine/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: iast-test-config.ini
+      imagePullSecrets:
+        - name: aliyun-registry-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iast-engine-svc
+  namespace: iast-test
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    app: iast-engine
+  type: ClusterIP
