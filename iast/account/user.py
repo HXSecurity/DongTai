@@ -107,15 +107,8 @@ class UserEndPoint(TalentAdminEndPoint):
                     user.phone = phone
 
                 password = request.data.get('password')
-                old_password = request.data.get('old_password')
-                if password and old_password and password != '' and password != old_password:
-                    if user.check_password(old_password):
-                        user.set_password(password)
-                    else:
-                        return JsonResponse({
-                            "status": 203,
-                            "msg": "原始密码不正确"
-                        })
+                if password and password != '':
+                    user.set_password(password)
 
                 user.save()
 
