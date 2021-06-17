@@ -35,7 +35,7 @@ class ProjectVersionCurrent(UserEndPoint):
                 version.update_time = int(time.time())
                 version.save(update_fields=["current_version", "update_time"])
                 # 置空之前项目设置版本
-                IastAgent.objects.filter(user__in=request.user, bind_project_id=project_id).update(online=0)
+                IastAgent.objects.filter(user=request.user, bind_project_id=project_id).update(online=0)
                 IastProjectVersion.objects.filter(
                     ~Q(id=version_id),
                     project_id=project_id,
@@ -49,4 +49,4 @@ class ProjectVersionCurrent(UserEndPoint):
                 return R.failure(status=202, msg='版本不存在')
 
         except Exception as e:
-            return R.failure(status=202, msg=e)
+            return R.failure(status=202, msg="版本设置失败")
