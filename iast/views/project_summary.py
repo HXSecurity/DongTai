@@ -5,18 +5,18 @@
 # software: PyCharm
 # project: lingzhi-webapi
 import time
-
 from base import R
 from iast.base.user import UserEndPoint
 from dongtai_models.models.agent import IastAgent
 from dongtai_models.models.project import IastProject
 from dongtai_models.models.vul_level import IastVulLevel
 from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+from iast.base.project_version import get_project_version
 
 
 class ProjectSummary(UserEndPoint):
     """
-    add by song 项目详情概括
+    edit by song 项目详情概括
     """
     name = "api-v1-project-summary-<id>"
     description = "查看项目详情-概括"
@@ -36,7 +36,15 @@ class ProjectSummary(UserEndPoint):
         data['type_summary'] = []
         data['day_num'] = []
         data['level_count'] = []
-        relations = IastAgent.objects.filter(user__in=auth_users, bind_project_id=project.id).values("id")
+        # 获取项目当前版本信息
+        versionData = get_project_version(project.id, request.user)
+        data['versionData'] = versionData
+        relations = IastAgent.objects.filter(
+            user__in=auth_users,
+            bind_project_id=project.id,
+            online=1,
+            project_version_id=versionData.get("version_id", 0)
+        ).values("id")
         # 通过agent获取漏洞数量，类型
         agent_ids = [relation['id'] for relation in relations]
         typeInfo = IastVulnerabilityModel.objects.filter(
