@@ -61,3 +61,7 @@ class IReportHandler:
         else:
             agents = IastAgent.objects.filter(project_name=self.project_name, user=self.user_id)
         return agents
+
+    def get_agent(self, agent_name, project_name):
+        return IastAgent.objects.filter(token=agent_name, project_name=project_name, online=1,
+                                        user=self.user_id).first()
