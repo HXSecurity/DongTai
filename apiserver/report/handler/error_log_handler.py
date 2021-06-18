@@ -6,7 +6,6 @@
 # project: webapi
 import time
 
-from dongtai_models.models.agent import IastAgent
 from dongtai_models.models.errorlog import IastErrorlog
 
 from apiserver.report.handler.report_handler_interface import IReportHandler
@@ -23,11 +22,11 @@ class ErrorLogHandler(IReportHandler):
         self.language = self.detail.get('language')
 
     def save(self):
-        self.agent = IastAgent.objects.get(token=self.agent_name, project_name=self.project_name, user=self.user_id)
-
-        IastErrorlog(
-            errorlog=self.log,
-            agent=self.agent,
-            state='已上报',
-            dt=int(time.time())
-        ).save()
+        self.agent = self.get_agent(project_name=self.project_name, agent_name=self.agent_name)
+        if self.agent:
+            IastErrorlog(
+                errorlog=self.log,
+                agent=self.agent,
+                state='已上报',
+                dt=int(time.time())
+            ).save()
