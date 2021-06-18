@@ -4,12 +4,12 @@
 # datetime:2021/1/5 下午12:36
 # software: PyCharm
 # project: lingzhi-webapi
-import time, json
-from hashlib import sha1
-import requests
+import json
 import logging
+import time
+from hashlib import sha1
 
-from dongtai_models.models.agent import IastAgent
+import requests
 from dongtai_models.models.agent_method_pool import MethodPool
 
 from AgentServer.settings import BASE_ENGINE_URL
@@ -48,8 +48,7 @@ class SaasMethodPoolHandler(IReportHandler):
         # 数据存储
         # 计算唯一签名，确保数据唯一
         # 数据存储
-        agent = IastAgent.objects.filter(token=self.agent_name, project_name=self.project_name,
-                                         user=self.user_id).first()
+        agent = self.get_agent(self.project_name, self.agent_name)
         if agent:
             pool_sign = self.calc_hash()
             agents = self.get_project_agents(agent)
