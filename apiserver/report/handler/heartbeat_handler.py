@@ -7,7 +7,6 @@
 import base64
 import time
 
-from dongtai_models.models.agent import IastAgent
 from dongtai_models.models.heartbeat import Heartbeat
 from dongtai_models.models.server import IastServerModel
 
@@ -108,8 +107,7 @@ class HeartBeatHandler(IReportHandler):
             return iast_server
 
     def save(self):
-        self.agent = IastAgent.objects.filter(token=self.agent_name, project_name=self.project_name,
-                                              user=self.user_id).first()
+        self.agent = self.get_agent(project_name=self.project_name, agent_name=self.agent_name)
         if self.agent:
             self.agent.is_running = 1
             self.agent.latest_time = int(time.time())
