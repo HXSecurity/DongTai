@@ -22,7 +22,7 @@ class AgentSerializer(serializers.ModelSerializer):
     class Meta:
         model = IastAgent
         fields = ['id', 'token', 'server', 'version', 'running_status', 'system_load', 'owner', 'latest_time',
-                  'project_name']
+                  'project_name', 'is_core_running']
 
     def get_latest_heartbeat(self, obj):
         try:
@@ -68,4 +68,4 @@ class AgentSerializer(serializers.ModelSerializer):
 class ProjectEngineSerializer(serializers.ModelSerializer):
     class Meta:
         model = IastAgent
-        fields = ['id', 'token']
+        fields = ['id', 'token', 'is_core_running']
