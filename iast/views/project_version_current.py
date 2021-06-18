@@ -34,8 +34,9 @@ class ProjectVersionCurrent(UserEndPoint):
                 version.current_version = 1
                 version.update_time = int(time.time())
                 version.save(update_fields=["current_version", "update_time"])
+                IastAgent.objects.filter(user=request.user, bind_project_id=project_id, project_version_id=version_id).update(online=1)
                 # 置空之前项目设置版本
-                IastAgent.objects.filter(user=request.user, bind_project_id=project_id).update(online=0)
+                IastAgent.objects.filter(~Q(project_version_id=version_id), user=request.user, bind_project_id=project_id).update(online=0)
                 IastProjectVersion.objects.filter(
                     ~Q(id=version_id),
                     project_id=project_id,

@@ -59,15 +59,19 @@ class ProjectAdd(UserEndPoint):
                     project = IastProject.objects.create(name=name, user=request.user)
                 else:
                     return R.failure(status=203, msg='创建失败，项目名称已存在')
+            versionInfo = IastProjectVersion.objects.filter(project_id=project.id, user=request.user, current_version=1, status=1).first()
+            if versionInfo:
+                project_version_id = versionInfo.id
+            else:
+                project_version_id =0
             versionData = {
                 "project_id": project.id,
-                "version_id": request.data.get("version_id", 0),
+                "version_id": project_version_id,
                 "version_name": version_name,
                 "description": request.data.get("description", ""),
                 "current_version": 1
             }
             result = version_modify(request.user, versionData)
-            project_version_id = 0
             if result.get("status", "202") == "202":
                 return R.failure(status=202, msg=result.get("msg", "参数错误"))
             else:
