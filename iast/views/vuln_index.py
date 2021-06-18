@@ -12,6 +12,7 @@ from iast.base.agent import get_agents_with_project, get_user_project_name, \
     get_user_agent_pro, get_all_server
 from iast.base.user import UserEndPoint
 from dongtai_models.models.vul_level import IastVulLevel
+from iast.base.project_version import get_project_version
 from dongtai_models.models.vulnerablity import IastVulnerabilityModel
 from iast.serializers.vul import VulSerializer
 
@@ -59,7 +60,12 @@ class VulnList(UserEndPoint):
 
         project_id = request.query_params.get('project_id')
         if project_id:
-            agents = self.get_auth_agents(auth_users).filter(bind_project_id=project_id)
+            # 获取项目当前版本信息
+            versionData = get_project_version(project_id, request.user)
+            agents = self.get_auth_agents(auth_users).filter(
+                bind_project_id=project_id,
+                online=1,
+                project_version_id=versionData.get("version_id", 0))
             queryset = queryset.filter(agent_id__in=agents)
 
         url = request.query_params.get('url', None)
