@@ -8,7 +8,6 @@ import json
 import logging
 import time
 
-from dongtai_models.models.agent import IastAgent
 from dongtai_models.models.asset import Asset
 from dongtai_models.models.sca_maven_artifact import ScaMavenArtifact
 from dongtai_models.models.sca_maven_db import ScaMavenDb
@@ -36,8 +35,7 @@ class ScaHandler(IReportHandler):
                 self.package_algorithm]) is False:
             logger.warn(f"数据不完整，数据：{json.dumps(self.report)}")
         else:
-            agent = IastAgent.objects.filter(token=self.agent_name, project_name=self.project_name,
-                                             user=self.user_id).first()
+            agent = self.get_agent(self.project_name, self.agent_name)
             if agent:
                 smd = ScaMavenDb.objects.filter(sha_1=self.package_signature).values("version", "aql").first()
                 _version = self.package_name.split('/')[-1].replace('.jar', '').split('-')[-1]
@@ -69,7 +67,7 @@ class ScaHandler(IReportHandler):
                     asset_count = 0
                     if agents:
                         asset_count = Asset.objects.filter(signature_value=self.package_signature,
-                                                               agent__in=agents).count()
+                                                           agent__in=agents).count()
 
                     if asset_count == 0:
                         Asset(
