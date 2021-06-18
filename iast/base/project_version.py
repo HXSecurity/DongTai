@@ -69,7 +69,7 @@ def get_project_version(project_id,user):
         }
     else:
         versionData = {
-            "version_id": "",
+            "version_id": 0,
             "version_name": "",
             "description": "",
         }
