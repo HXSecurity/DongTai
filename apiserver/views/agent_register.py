@@ -35,7 +35,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         # 生成agent的唯一token
         # 注册
         try:
-            self.user = request.user
+            user = request.user
             param = parse_data(request.read())
             token = param.get('name', '')
             version = param.get('version', '')
@@ -43,17 +43,20 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             if not token or not version or not project_name:
                 return R.failure(msg="参数错误")
 
-            project = self.get_project(project_name, self.user)
+            project = self.get_project(project_name, user)
             if project:
-                project_current_version = self.get_project_current_version(project)
-                if self.is_exist_agent(token, project_name, self.user, project_current_version):
+                project_current_version = self.get_project_current_version(project['id'])
+                if self.is_exist_agent(token, project_name, user, project_current_version['id']):
                     return R.failure(msg="agent已注册")
                 else:
                     # 注册项目
-                    self.register_agent(True, token, self.user, version, project.id, project_name,
-                                        project_current_version.id)
+                    self.register_agent(True, token, user, version, project['id'], project_name,
+                                        project_current_version['id'])
             else:
-                self.register_agent(False, token, self.user, version, 0, project_name, 0)
+                if self.is_exist_agent(token, project_name, user, 0):
+                    return R.failure(msg="agent已注册")
+                else:
+                    self.register_agent(False, token, user, version, 0, project_name, 0)
 
             return R.success()
         except Exception as e:
@@ -64,14 +67,14 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         return IastProject.objects.values("id").filter(name=project_name, user=user).first()
 
     @staticmethod
-    def get_project_current_version(project):
-        return IastProjectVersion.objects.filter(project_id=project.id, current_version=1, status=1).values(
+    def get_project_current_version(project_id):
+        return IastProjectVersion.objects.filter(project_id=project_id, current_version=1, status=1).values(
             "id").first()
 
     @staticmethod
-    def is_exist_agent(token, project_name, user, current_project_version):
+    def is_exist_agent(token, project_name, user, current_project_version_id):
         return IastAgent.objects.values("id").filter(token=token, project_name=project_name, user=user,
-                                                     project_version_id=current_project_version.id).exists()
+                                                     project_version_id=current_project_version_id).exists()
 
     @staticmethod
     def register_agent(exist_project, token, user, version, project_id, project_name, project_version_id):
