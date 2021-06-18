@@ -63,11 +63,11 @@ class ScaHandler(IReportHandler):
 
                 try:
                     level = IastVulLevel.objects.get(name=level)
-                    agents = self.get_project_agents(agent)
+                    current_version_agents = self.get_project_agents(agent)
                     asset_count = 0
-                    if agents:
-                        asset_count = Asset.objects.filter(signature_value=self.package_signature,
-                                                           agent__in=agents).count()
+                    if current_version_agents:
+                        asset_count = Asset.objects.values(1).filter(signature_value=self.package_signature,
+                                                                     agent__in=current_version_agents).count()
 
                     if asset_count == 0:
                         Asset(
