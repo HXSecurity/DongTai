@@ -18,7 +18,7 @@ class AgentStop(AgentEndPoint):
     def post(self, request):
         agent_id = request.data.get('id')
         agent = IastAgent.objects.filter(user=request.user, id=agent_id).first()
-        if agent == None:
+        if agent is None:
             return R.failure(msg='引擎不存在或无权操作')
         if agent.is_control == 1 and agent.control != 3 and agent.control != 4:
             return R.failure(msg='agent正在进行非启动停止操作，请稍后再试')
