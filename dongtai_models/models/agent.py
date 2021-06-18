@@ -24,6 +24,7 @@ class IastAgent(models.Model):
         verbose_name=_('server'),
     )
     is_running = models.IntegerField(blank=True, null=True)
+    is_core_running = models.IntegerField(blank=True, null=True)
     control = models.IntegerField(blank=True, null=True)
     is_control = models.IntegerField(blank=True, null=True)
     bind_project_id = models.IntegerField(blank=True, null=True, default=0)
