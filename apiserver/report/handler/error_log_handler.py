@@ -22,7 +22,7 @@ class ErrorLogHandler(IReportHandler):
         self.language = self.detail.get('language')
 
     def save(self):
-        self.agent = self.get_agent(self.project_name, self.agent_name)
+        self.agent = self.get_agent(project_name=self.project_name, agent_name=self.agent_name)
         if self.agent:
             IastErrorlog(
                 errorlog=self.log,

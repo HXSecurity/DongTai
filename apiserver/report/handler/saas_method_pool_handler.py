@@ -48,7 +48,7 @@ class SaasMethodPoolHandler(IReportHandler):
         # 数据存储
         # 计算唯一签名，确保数据唯一
         # 数据存储
-        agent = self.get_agent(self.project_name, self.agent_name)
+        agent = self.get_agent(project_name=self.project_name, agent_name=self.agent_name)
         if agent:
             pool_sign = self.calc_hash()
             current_version_agents = self.get_project_agents(agent)

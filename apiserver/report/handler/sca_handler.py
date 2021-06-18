@@ -35,7 +35,7 @@ class ScaHandler(IReportHandler):
                 self.package_algorithm]) is False:
             logger.warn(f"数据不完整，数据：{json.dumps(self.report)}")
         else:
-            agent = self.get_agent(self.project_name, self.agent_name)
+            agent = self.get_agent(project_name=self.project_name, agent_name=self.agent_name)
             if agent:
                 smd = ScaMavenDb.objects.filter(sha_1=self.package_signature).values("version", "aql").first()
                 _version = self.package_name.split('/')[-1].replace('.jar', '').split('-')[-1]
@@ -66,7 +66,7 @@ class ScaHandler(IReportHandler):
                     current_version_agents = self.get_project_agents(agent)
                     asset_count = 0
                     if current_version_agents:
-                        asset_count = Asset.objects.values(1).filter(signature_value=self.package_signature,
+                        asset_count = Asset.objects.values("id").filter(signature_value=self.package_signature,
                                                                      agent__in=current_version_agents).count()
 
                     if asset_count == 0:
