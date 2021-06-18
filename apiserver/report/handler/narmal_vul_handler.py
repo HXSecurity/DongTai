@@ -12,7 +12,6 @@
 # project: webapi
 import time
 
-from dongtai_models.models.agent import IastAgent
 from dongtai_models.models.strategy import IastStrategyModel
 from dongtai_models.models.vul_level import IastVulLevel
 from dongtai_models.models.vulnerablity import IastVulnerabilityModel
@@ -81,12 +80,13 @@ class BaseVulnHandler(IReportHandler):
         self.param_name = self.detail.get('param_name')
         self.container = self.detail.get('container')
         self.container_path = self.detail.get('container_path')
+        self.project_name = self.detail.get('project_name', 'Demo Project')
 
 
 class NormalVulnHandler(BaseVulnHandler):
     def save(self):
         #  查漏洞名称对应的漏洞等级，狗咋熬漏洞等级表
-        agent = IastAgent.objects.filter(token=self.agent_name).first()
+        agent = self.get_agent(project_name=self.project_name, agent_name=self.agent_name)
         if agent:
             vul_level, vul_type, vul_type_enable = self.get_vul_info(agent)
             if vul_type_enable == 'enable':
