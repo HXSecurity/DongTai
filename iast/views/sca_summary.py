@@ -12,6 +12,7 @@ from iast.base.agent import get_agents_with_project, get_sca_count
 from iast.base.sca import ScaEndPoint
 from dongtai_models.models.asset import Asset
 from dongtai_models.models.vul_level import IastVulLevel
+from iast.base.project_version import get_project_version
 
 
 class ScaSummary(ScaEndPoint):
@@ -77,9 +78,14 @@ class ScaSummary(ScaEndPoint):
 
         project_id = request.query_params.get('project_id', None)
         if project_id and project_id != '':
-            agents = self.get_auth_agents(auth_users).filter(bind_project_id=project_id)
-            if agents:
-                queryset = queryset.filter(agent__in=agents)
+            # 获取项目当前版本信息
+            versionData = get_project_version(project_id, request.user)
+            agents = self.get_auth_agents(auth_users).filter(
+                bind_project_id=project_id,
+                online=1,
+                project_version_id=versionData.get("version_id", 0)
+            )
+            queryset = queryset.filter(agent__in=agents)
 
         project_name = request.query_params.get('project_name', None)
         if project_name and project_name != '':
