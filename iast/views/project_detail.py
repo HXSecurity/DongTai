@@ -33,14 +33,14 @@ class ProjectDetail(UserEndPoint):
             else:
                 scan_id = 0
             # 获取项目当前版本信息
-            versionData = get_project_version(project.id, request.user)
+            current_project_version = get_project_version(project.id, auth_users)
             return R.success(data={
                 "name": project.name,
                 "id": project.id,
                 "mode": project.mode,
                 "scan_id": scan_id,
                 "agents": agents,
-                "versionData": versionData,
+                "versionData": current_project_version,
             })
         else:
             return R.failure(status=203, msg='no permission')
