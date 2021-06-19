@@ -21,7 +21,8 @@ class ProjectVersionList(UserEndPoint):
 
     def get(self, request, project_id):
         try:
-            versionInfo = IastProjectVersion.objects.filter(project_id=project_id, user=request.user, status=1).order_by("-id")
+            auth_users = self.get_auth_users(request.user)
+            versionInfo = IastProjectVersion.objects.filter(project_id=project_id, user__in=auth_users, status=1).order_by("-id")
             data = []
             if versionInfo:
                 for item in versionInfo:

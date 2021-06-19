@@ -64,14 +64,14 @@ class ProjectAdd(UserEndPoint):
                 project_version_id = versionInfo.id
             else:
                 project_version_id =0
-            versionData = {
+            current_project_version = {
                 "project_id": project.id,
                 "version_id": project_version_id,
                 "version_name": version_name,
                 "description": request.data.get("description", ""),
                 "current_version": 1
             }
-            result = version_modify(request.user, versionData)
+            result = version_modify(request.user, current_project_version)
             if result.get("status", "202") == "202":
                 return R.failure(status=202, msg=result.get("msg", "参数错误"))
             else:

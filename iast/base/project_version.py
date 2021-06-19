@@ -59,18 +59,18 @@ def version_modify(user, versionData=None):
 
 
 # 获取项目版本信息
-def get_project_version(project_id,user):
-    versionInfo = IastProjectVersion.objects.filter(project_id=project_id, status=1, current_version=1, user=user).first()
+def get_project_version(project_id,auth_users):
+    versionInfo = IastProjectVersion.objects.filter(project_id=project_id, status=1, current_version=1, user__in=auth_users).first()
     if versionInfo:
-        versionData = {
+        current_project_version = {
             "version_id": versionInfo.id,
             "version_name": versionInfo.version_name,
             "description": versionInfo.description
         }
     else:
-        versionData = {
+        current_project_version = {
             "version_id": 0,
             "version_name": "",
             "description": "",
         }
-    return versionData
+    return current_project_version

@@ -37,13 +37,13 @@ class ProjectSummary(UserEndPoint):
         data['day_num'] = []
         data['level_count'] = []
         # 获取项目当前版本信息
-        versionData = get_project_version(project.id, request.user)
-        data['versionData'] = versionData
+        current_project_version = get_project_version(project.id, auth_users)
+        data['versionData'] = current_project_version
         relations = IastAgent.objects.filter(
             user__in=auth_users,
             bind_project_id=project.id,
             online=1,
-            project_version_id=versionData.get("version_id", 0)
+            project_version_id=current_project_version.get("version_id", 0)
         ).values("id")
         # 通过agent获取漏洞数量，类型
         agent_ids = [relation['id'] for relation in relations]
