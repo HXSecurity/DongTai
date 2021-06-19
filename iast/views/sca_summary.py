@@ -65,8 +65,7 @@ class ScaSummary(ScaEndPoint):
             "data": {}
         }
         auth_users = self.get_auth_users(request.user)
-        agents = self.get_auth_agents(auth_users)
-        queryset = Asset.objects.filter(agent__in=agents)
+        queryset = Asset.objects.all()
 
         language = request.query_params.get('language', None)
         if language:
@@ -79,11 +78,11 @@ class ScaSummary(ScaEndPoint):
         project_id = request.query_params.get('project_id', None)
         if project_id and project_id != '':
             # 获取项目当前版本信息
-            versionData = get_project_version(project_id, request.user)
+            current_project_version = get_project_version(project_id, auth_users)
             agents = self.get_auth_agents(auth_users).filter(
                 bind_project_id=project_id,
                 online=1,
-                project_version_id=versionData.get("version_id", 0)
+                project_version_id=current_project_version.get("version_id", 0)
             )
             queryset = queryset.filter(agent__in=agents)
 
