@@ -26,7 +26,7 @@ class EngineUpdateEndPoint(OpenApiEndPoint):
         :return:
         """
         agent_name = request.query_params.get('agent_name')
-        agent = IastAgent.objects.filter(user=request.user, token=agent_name).first()
+        agent = IastAgent.objects.filter(user=request.user, token=agent_name, is_running=1).first()
         if not agent:
             return R.failure("agent不存在或无权限访问")
 
@@ -60,7 +60,7 @@ class EngineStopStart(OpenApiEndPoint):
         :return:
         """
         agent_name = request.query_params.get('agent_name')
-        agent = IastAgent.objects.filter(user=request.user, token=agent_name).first()
+        agent = IastAgent.objects.filter(user=request.user, token=agent_name, is_running=1).first()
         if not agent:
             return R.failure("agent不存在或无权限访问")
         
