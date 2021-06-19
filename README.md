@@ -5,7 +5,7 @@
 [![Build DongTai-WebAPI](https://github.com/HXSecurity/DongTai-webapi/actions/workflows/build-webapi.yml/badge.svg)](https://github.com/HXSecurity/DongTai-webapi/actions/workflows/build-webapi.yml)
 
 ## 项目介绍
-“火线～洞态IAST”是一款专为甲方安全人员、甲乙代码审计工程师和0 Day漏洞挖掘人员量身打造的辅助工具，可用于集成devops环境进行漏洞检测、作为代码审计的辅助工具和自动化挖掘0 Day。
+“火线～洞态IAST”是一款专为甲方安全人员、代码审计工程师和0 Day漏洞挖掘人员量身打造的辅助工具，可用于集成devops环境进行漏洞检测、作为代码审计的辅助工具和自动化挖掘0 Day。
 
 “火线～洞态IAST”具有五大模块，分别是`DongTai-webapi`、`DongTai-openapi`、`DongTai-engine`、`DongTai-web`、`agent`，其中：
 - `DongTai-webapi`用于与`DongTai-web`交互，负责用户相关的API请求；
