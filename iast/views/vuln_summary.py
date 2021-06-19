@@ -11,6 +11,7 @@ from rest_framework.request import Request
 from base import R
 from iast.base.agent import get_project_vul_count
 from iast.base.user import UserEndPoint
+from iast.base.project_version import get_project_version
 from dongtai_models.models.project import IastProject
 from dongtai_models.models.vul_level import IastVulLevel
 from dongtai_models.models.vulnerablity import IastVulnerabilityModel
@@ -70,8 +71,7 @@ class VulnSummary(UserEndPoint):
         # 提取过滤条件
         auth_users = self.get_auth_users(request.user)
         auth_agents = self.get_auth_agents(auth_users)
-        queryset = IastVulnerabilityModel.objects.filter(agent__in=auth_agents)
-        user = request.user
+        queryset = IastVulnerabilityModel.objects.all()
 
         # icontains
         url = request.query_params.get('url', None)
@@ -85,7 +85,6 @@ class VulnSummary(UserEndPoint):
                 levelNameArr[level_item.name_value] = level_item.id
                 levelIdArr[level_item.id] = level_item.name_value
         # 动态创建
-        condition = Q()
 
         language = request.query_params.get('language')
         if language:
@@ -110,7 +109,13 @@ class VulnSummary(UserEndPoint):
 
         project_id = request.query_params.get('projectId')  # 项目名称， fixme 后续统一修改
         if project_id and project_id != '':
-            auth_agents = auth_agents.filter(bind_project_id=project_id)
+            # 获取项目当前版本信息
+            current_project_version = get_project_version(project_id, auth_users)
+            auth_agents = auth_agents.filter(
+                bind_project_id=project_id,
+                online=1,
+                project_version_id=current_project_version.get("version_id", 0)
+            )
 
         datas = queryset.filter(agent__in=auth_agents).values('language', 'level', 'type', 'agent')
 

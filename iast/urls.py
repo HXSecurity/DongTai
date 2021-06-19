@@ -17,6 +17,8 @@ from iast.views.agent_deploy_submit import AgentDeploySave
 from iast.views.agent_download import AgentDownload
 from iast.views.agent_install import AgentInstall
 from iast.views.agent_status_update import AgentStatusUpdate
+from iast.views.agent_start import AgentStart
+from iast.views.agent_stop import AgentStop
 from iast.views.agent_uninstall import AgentUninstall
 from iast.views.agent_upgrade_offline import AgentUpgradeOffline
 from iast.views.agent_upgrade_online import AgentUpgradeOnline
@@ -53,6 +55,12 @@ from iast.views.project_engines import ProjectEngines
 from iast.views.project_report_export import ProjectReportExport
 from iast.views.project_summary import ProjectSummary
 from iast.views.projects import Projects
+from iast.views.project_version_add import ProjectVersionAdd
+from iast.views.project_version_update import ProjectVersionUpdate
+from iast.views.project_version_delete import ProjectVersionDelete
+from iast.views.project_version_current import ProjectVersionCurrent
+from iast.views.project_version_list import ProjectVersionList
+
 from iast.views.sca_details import ScaDetailView
 from iast.views.sca_sidebar_index import ScaSidebarList
 from iast.views.sca_summary import ScaSummary
@@ -118,6 +126,12 @@ urlpatterns = [
     path('projects/summary/<int:id>', ProjectSummary.as_view()),
     path('project/engines/<int:pid>', ProjectEngines.as_view()),
     path('project/export', ProjectReportExport.as_view()),
+    # 更新项目版本信息
+    path('project/version/add', ProjectVersionAdd.as_view()),
+    path('project/version/update', ProjectVersionUpdate.as_view()),
+    path('project/version/delete', ProjectVersionDelete.as_view()),
+    path('project/version/current', ProjectVersionCurrent.as_view()),
+    path('project/version/list/<int:project_id>', ProjectVersionList.as_view()),
     # 漏洞接口：漏洞列表、漏洞信息总览、漏洞详情侧边栏、漏洞详情
     path('vulns', VulnList.as_view()),
     path('vuln/summary', VulnSummary.as_view()),
@@ -156,6 +170,8 @@ urlpatterns = [
     path('agent/upgrade/offline', AgentUpgradeOffline.as_view()),
     path('agent/download', AgentDownload.as_view()),
     path('agent/status/update', AgentStatusUpdate.as_view()),
+    path('agent/start', AgentStart.as_view()),
+    path('agent/stop', AgentStop.as_view()),
 
     # 获取openapi地址
     path('openapi', OpenApiEndpoint.as_view()),
