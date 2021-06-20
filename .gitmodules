@@ -16,9 +16,3 @@
 [submodule "doc"]
 	path = doc
 	url = git@github.com:HXSecurity/DongTaiDoc.git
-[submodule "docker"]
-	path = docker
-	url = https://github.com/HXSecurity/dongtai-base-image.git
-[submodule "deploy"]
-	path = deploy
-	url = https://github.com/HXSecurity/dongtai-deploy.git
