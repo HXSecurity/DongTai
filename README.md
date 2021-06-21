@@ -36,7 +36,7 @@
 
 - 单机版部署
   - [x] [docker-compose一键部署](https://github.com/HXSecurity/dongtai-deploy/tree/main/docker-compose)
-  - [x] [源码一键部署](https://github.com/HXSecurity/dongtai-deploy)
+  - [x] [源码一键部署](https://github.com/HXSecurity/dongtai-deploy#3-%E6%BA%90%E7%A0%81%E4%B8%80%E9%94%AE%E9%83%A8%E7%BD%B2)
   - [ ] docker一键部署方案待更新
 - 集群版部署
   - [x] [Kubernetes一键部署](https://github.com/HXSecurity/dongtai-deploy/tree/main/kubernetes)
