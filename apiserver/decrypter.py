@@ -22,6 +22,7 @@ def parse_data(stream_data):
     :return: iast agent上报的json数据，如果解压缩、解密过程失败，则抛出异常
     """
     data = gzip.decompress(stream_data).decode('utf-8')
-    data = RsaCrypto.decrypt(data)
+    # fixme JavaAgent中RSA加密后数据无法在云端正常解密，导致部分漏洞无法检出，暂时关闭RSA加解密功能
+    # data = RsaCrypto.decrypt(data)
     objs = json.loads(data)
     return objs
