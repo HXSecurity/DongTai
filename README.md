@@ -1,5 +1,6 @@
 # DongTai
 [![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
+[![license GPL-3.0](https://img.shields.io/github/license/HXSecurity/DongTai-agent-java)](https://github.com/HXSecurity/DongTai-agent-java/blob/main/LICENSE)
 [![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://github.com/HXSecurity/DongTai)
 [![DongTai--webapi](https://img.shields.io/badge/DongTai--webapi-v1.0.0-lightgrey)](https://github.com/HXSecurity/DongTai-webapi)
 [![DongTai--openapi](https://img.shields.io/badge/DongTai--openapi-v1.0.0-lightgrey)](https://github.com/HXSecurity/DongTai-openapi)
@@ -22,23 +23,23 @@
 “火线～洞态IAST”可应用于：`devsecops`阶段做自动化漏洞检测、开源软件/组件挖掘通用漏洞、上线前安全测试等场景，主要目的是降低现有漏洞检测的工作量，释放安全从业人员的生产力来做更专业的事情。
 
 ## 三、快速开始
-`洞态IAST`提供**SaaS版本**、**本地化部署版本**，详细部署方案见：[**部署文档**]()
+`洞态IAST`提供**SaaS版本**、**本地化部署版本**，详细部署方案见：[**部署文档**](https://github.com/HXSecurity/dongtai-deploy)
 
 ### 1. SaaS版本
-  - 填写问卷注册SaaS版本账号
-  -  登录[洞态IAST](https://iast.huoxian.cn/login)系统
-  -  根据[在线文档](https://hxsecurity.github.io/DongTaiDoc/#/doc/tutorial/quickstart?id=%e5%9c%a8%e7%ba%bf%e9%9d%b6%e5%9c%ba-%e5%bf%ab%e9%80%9f%e4%bd%93%e9%aa%8ciast)进行快速体验
+  - 填写[在线问卷](https://wj.qq.com/s2/8269653/6ff2/)注册账号
+  - 登录[洞态IAST](https://iast.huoxian.cn/login)系统
+  - 根据[在线文档](https://hxsecurity.github.io/DongTaiDoc/#/doc/tutorial/quickstart?id=%e5%9c%a8%e7%ba%bf%e9%9d%b6%e5%9c%ba-%e5%bf%ab%e9%80%9f%e4%bd%93%e9%aa%8ciast)进行快速体验
 
 ### 2. 本地化部署版本
 
 **洞态IAST**云端支持多种部署方案，可通过[部署文档](https://github.com/HXSecurity/dongtai-deploy)了解部署方案详情，方案如下：
 
 - 单机版部署
-  - [docker-compose一键部署]()
-  - [源码一键部署]()
-  - [docker一键部署方案待更新]()
+  - [x] [docker-compose一键部署](https://github.com/HXSecurity/dongtai-deploy/tree/main/docker-compose)
+  - [x] [源码一键部署](https://github.com/HXSecurity/dongtai-deploy)
+  - [ ] docker一键部署方案待更新
 - 集群版部署
-  - [Kubernetes一键部署]()
+  - [x] [Kubernetes一键部署](https://github.com/HXSecurity/dongtai-deploy/tree/main/kubernetes)
 
 ## 四、文档
 - [官方文档](https://hxsecurity.github.io/DongTaiDoc/#/doc/tutorial/quickstart)
