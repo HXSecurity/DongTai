@@ -30,7 +30,9 @@
   - 登录[洞态IAST](https://iast.huoxian.cn/login)系统
   - 根据[在线文档](https://hxsecurity.github.io/DongTaiDoc/#/doc/tutorial/quickstart?id=%e5%9c%a8%e7%ba%bf%e9%9d%b6%e5%9c%ba-%e5%bf%ab%e9%80%9f%e4%bd%93%e9%aa%8ciast)进行快速体验
 
-### 2. 本地化部署版本
+### 2. 本地化部署版本【针对联合共建的企业进行开源】
+
+本地化部署版本需要自行申请，申请方式见下文
 
 **洞态IAST**云端支持多种部署方案，可通过[部署文档](https://github.com/HXSecurity/dongtai-deploy)了解部署方案详情，方案如下：
 
@@ -40,6 +42,9 @@
   - [ ] docker一键部署方案待更新
 - 集群版部署
   - [x] [Kubernetes一键部署](https://github.com/HXSecurity/dongtai-deploy/tree/main/kubernetes)
+
+#### 申请方式
+洞态IAST合作伙伴计划—整体开源联合开发，[报名地址](https://jinshuju.net/f/PKPl99)
 
 ## 四、文档
 - [官方文档](https://hxsecurity.github.io/DongTaiDoc/#/doc/tutorial/quickstart)
