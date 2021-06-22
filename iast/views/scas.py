@@ -25,7 +25,8 @@ class ScaList(ScaEndPoint):
         :return:
         """
         auth_users = self.get_auth_users(request.user)
-        queryset = Asset.objects.all()
+        auth_agents = self.get_auth_agents(auth_users)
+        queryset = Asset.objects.filter(agent__in=auth_agents)
 
         order = request.query_params.get('order', None)
         package_kw = request.query_params.get('keyword', None)
