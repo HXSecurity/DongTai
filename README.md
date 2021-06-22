@@ -43,6 +43,17 @@
 - 集群版部署
   - [x] [Kubernetes一键部署](https://github.com/HXSecurity/dongtai-deploy/tree/main/kubernetes)
 
+#### docker-compose一键部署
+
+参与联合共建的企业可直接使用如下方式进行部署
+
+```shell script
+$ git clone https://github.com/HXSecurity/DongTai.git
+$ cd DongTai
+$ chmod u+x build_with_docker_compose.sh
+$ ./build_with_docker_compose.sh
+```
+
 #### 申请方式
 洞态IAST合作伙伴计划—整体开源联合开发，[报名地址](https://jinshuju.net/f/PKPl99)
 
