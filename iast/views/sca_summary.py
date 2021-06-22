@@ -65,7 +65,8 @@ class ScaSummary(ScaEndPoint):
             "data": {}
         }
         auth_users = self.get_auth_users(request.user)
-        queryset = Asset.objects.all()
+        auth_agents = self.get_auth_agents(auth_users)
+        queryset = Asset.objects.filter(agent__in=auth_agents)
 
         language = request.query_params.get('language', None)
         if language:
