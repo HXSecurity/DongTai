@@ -96,7 +96,7 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
         vul.req_params = vul_meta.req_params
         vul.counts = vul.counts + 1
         vul.latest_time = int(time.time())
-        vul.status = 'reported'
+        vul.status = '待处理'
         vul.save()
     else:
         vul = IastVulnerabilityModel(
@@ -120,7 +120,7 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
             agent=vul_meta.agent,
             context_path=vul_meta.context_path,
             counts=1,
-            status='reported',
+            status='待处理',
             language=vul_meta.language,
             first_time=vul_meta.create_time,
             latest_time=int(time.time()),
