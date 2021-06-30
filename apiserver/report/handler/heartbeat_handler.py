@@ -110,6 +110,7 @@ class HeartBeatHandler(IReportHandler):
         self.agent = self.get_agent(project_name=self.project_name, agent_name=self.agent_name)
         if self.agent:
             self.agent.is_running = 1
+            self.agent.is_core_running = 1
             self.agent.latest_time = int(time.time())
             self.agent.save()
             self.save_heartbeat()
