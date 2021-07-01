@@ -112,7 +112,6 @@ def parse_header(req_header, taint_value):
     import base64
     header_raw = base64.b64decode(req_header).decode('utf-8').split('\n')
     for header in header_raw:
-        # fixme 解析，然后匹配
         _header_list = header.split(':')
         _header_name = _header_list[0]
         _header_value = ':'.join(_header_list[1:])
