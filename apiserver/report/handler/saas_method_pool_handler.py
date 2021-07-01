@@ -57,7 +57,17 @@ class SaasMethodPoolHandler(IReportHandler):
             if method_pool:
                 method_pool.update_time = int(time.time())
                 method_pool.method_pool = json.dumps(self.method_pool)
-                method_pool.save()
+                method_pool.uri = self.http_uri
+                method_pool.url = self.http_url
+                method_pool.http_method = self.http_method
+                method_pool.req_header = self.http_req_header
+                method_pool.req_params = self.http_query_string
+                method_pool.req_data = self.http_req_data
+                method_pool.res_header = self.http_res_header
+                method_pool.res_body = self.http_res_body
+                method_pool.save(
+                    ['update_time', 'method_pool', 'uri', 'url', 'http_method', 'req_header', 'req_params', 'req_data',
+                     'res_header', 'res_body'])
             else:
                 # 获取agent
                 update_record = False
