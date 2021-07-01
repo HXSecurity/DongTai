@@ -8,8 +8,10 @@ import base64
 import time
 
 from dongtai_models.models.heartbeat import Heartbeat
+from dongtai_models.models.replay_queue import IastReplayQueue
 from dongtai_models.models.server import IastServerModel
 
+from apiserver import const
 from apiserver.report.handler.report_handler_interface import IReportHandler
 
 
@@ -105,6 +107,18 @@ class HeartBeatHandler(IReportHandler):
             )
             iast_server.save()
             return iast_server
+
+    def get_result(self):
+        if self.agent:
+            replay_queryset = IastReplayQueue.objects.values('id', 'relation_id', 'uri', 'method', 'scheme', 'header',
+                                                             'params', 'body', 'replay_type').filter(agent=self.agent,
+                                                                                                     state=const.WAITING).first()
+            # 读取，然后返回
+            if replay_queryset:
+                IastReplayQueue.objects.filter(id=replay_queryset['id']).update(update_time=int(time.time()),
+                                                                                state=const.SOLVING)
+                return dict(replay_queryset)
+        return ''
 
     def save(self):
         self.agent = self.get_agent(project_name=self.project_name, agent_name=self.agent_name)

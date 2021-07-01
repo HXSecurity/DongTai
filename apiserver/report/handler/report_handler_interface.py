@@ -44,6 +44,9 @@ class IReportHandler:
     def save(self):
         pass
 
+    def get_result(self):
+        return ''
+
     def handle(self, report, user):
         self.report = report
         self.detail = self.report.get('detail')
@@ -52,6 +55,7 @@ class IReportHandler:
         # todo 检查当前用户是否有操作该agent的权限
         self.parse()
         self.save()
+        return self.get_result()
 
     def get_project_agents(self, agent):
         if agent.bind_project_id != 0:

@@ -20,8 +20,8 @@ class ReportUploadEndPoint(OpenApiEndPoint):
             report = parse_data(request.read())
             report_type = report.get('type')
             handler = ReportHandlerFactory.get_handler(report_type)
-            handler.handle(report, request.user)
+            data = handler.handle(report, request.user)
 
-            return R.success(msg="report upload success.")
+            return R.success(msg="report upload success.", data=data)
         except Exception as e:
             return R.failure(msg=f"report upload failed, reason: {e}")
