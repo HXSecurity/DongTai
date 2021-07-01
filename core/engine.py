@@ -113,6 +113,8 @@ class VulEngine(object):
             else:
                 continue
 
+            if 'sourceValues' in method:
+                self.taint_value = method['sourceValues']
             # 找到sink点所在索引后，开始向后递归
             current_link = list()
             current_link.append(method)
@@ -146,7 +148,6 @@ class VulEngine(object):
         self.prepare(method_pool, vul_method_signature)
         if vul_method_signature in self.method_pool_signatures:
             return True
-
 
     def dfs(self, current_hash, left_node, left_index):
         """
@@ -196,7 +197,7 @@ class VulEngine(object):
 
     def result(self):
         if self.vul_source_signature:
-            return True, self.vul_stack, self.vul_source_signature, self.vul_method_signature
+            return True, self.vul_stack, self.vul_source_signature, self.vul_method_signature, self.taint_value
         return False, None, None, None
 
     def get_taint_links(self):

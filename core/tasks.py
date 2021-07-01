@@ -139,20 +139,22 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
     :return: None
     """
     logger.info(f'current sink rule is {strategy.get("type")}')
-    vul_strategy = IastStrategyModel.objects.filter(vul_type=strategy['type']).first()
+    vul_strategy = IastStrategyModel.objects.values("level", "vul_name").filter(vul_type=strategy['type']).first()
     if vul_strategy:
         engine.search(
             method_pool=method_pool,
             vul_method_signature=strategy.get('value')
         )
-        status, stack, source_sign, sink_sign = engine.result()
+        status, stack, source_sign, sink_sign, taint_value = engine.result()
         if status:
+            # todo 增加source点来源标识
             vul_found.send(sender="tasks.search_and_save_vul", vul_meta=method_pool_model,
-                           vul_level=vul_strategy.level,
-                           vul_name=vul_strategy.vul_name,
+                           vul_level=vul_strategy['level'],
+                           vul_name=vul_strategy['vul_name'],
                            vul_stack=stack,
                            top_stack=source_sign,
-                           bottom_stack=sink_sign)
+                           bottom_stack=sink_sign,
+                           taint_value=taint_value)
 
 
 def search_and_save_sink(engine, method_pool_model, strategy):
@@ -176,6 +178,7 @@ def search_and_save_sink(engine, method_pool_model, strategy):
 
 @shared_task(queue='vul-scan')
 def search_vul_from_method_pool(method_pool_id):
+    # fixme 先搜索污点池中命中的sink策略，然后再进行漏洞检测
     logger.info('core.tasks.search_vul_from_method_pool is running')
     method_pool_model = MethodPool.objects.filter(id=method_pool_id).first()
     if method_pool_model is None:
