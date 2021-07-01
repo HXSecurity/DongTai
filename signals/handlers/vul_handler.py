@@ -81,6 +81,8 @@ def parse_params(param_values, taint_value):
     """
     从param参数中解析污点的位置
     """
+    # 分析是否为json
+    #
     param_name = None
     _param_items = param_values.split('&')
     for _param_item in _param_items:
@@ -91,6 +93,16 @@ def parse_params(param_values, taint_value):
             param_name = _param_name
             break
     return param_name
+
+
+def parse_body(body, taint_value):
+    try:
+        post_body = json.loads(body)
+        for key, value in post_body.items():
+            if equals(taint_value, value):
+                return key
+    except Exception as e:
+        return parse_params(body, taint_value)
 
 
 def parse_header(req_header, taint_value):
@@ -108,6 +120,30 @@ def parse_header(req_header, taint_value):
             return _header_name
 
 
+def parse_cookie(req_header, taint_value):
+    """
+    从cookie中解析
+    """
+    import base64
+    header_raw = base64.b64decode(req_header).decode('utf-8').split('\n')
+    cookie_raw = ''
+    for header in header_raw:
+        # fixme 解析，然后匹配
+        _header_list = header.split(':')
+        _header_name = _header_list[0]
+        if _header_name == 'cookie' or _header_name == 'Cookie':
+            cookie_raw = ':'.join(_header_list[1:])
+            break
+
+    if cookie_raw:
+        cookie_raw_items = cookie_raw.split(';')
+        for item in cookie_raw_items:
+            cookie_item = item.split('=')
+            cookie_value = '='.join(cookie_item[1:])
+            if equals(taint_value, cookie_value):
+                return cookie_item[0]
+
+
 def parse_path(uri, taint_value):
     """
     从PathVariable中解析污点位置
@@ -115,7 +151,9 @@ def parse_path(uri, taint_value):
     # 根据/拆分uri，然后进行对比
     path_items = uri.split('/')
     for item in path_items:
-        if equals(taint_value, item):
+        if taint_value == item:
+            # if equals(taint_value, item):
+            # fixme 暂时先使用完全匹配，后续考虑解决误报问题
             return True
 
 
@@ -131,7 +169,7 @@ def parse_taint_position(source_method, vul_meta, taint_value):
 
         # 检查post参数
         if vul_meta.req_data:
-            param_name = parse_params(vul_meta.req_data, taint_value)
+            param_name = parse_body(vul_meta.req_data, taint_value)
             if param_name:
                 param_names['POST'] = param_name
                 print('污点来自POST参数: ' + param_name)
@@ -152,20 +190,29 @@ def parse_taint_position(source_method, vul_meta, taint_value):
 
         # fixme 按照哪种策略对数据进行分析和处理呢？如何识别单点与多点
         return param_names
-    elif 'javax.servlet.ServletRequest.getParameter' == source_method:
+    elif 'javax.servlet.ServletRequest.getParameter' == source_method or 'javax.servlet.ServletRequest.getParameterValues' == source_method:
         if vul_meta.req_params:
             param_name = parse_params(vul_meta.req_params, taint_value)
-            param_names['GET'] = param_name
+            if param_name:
+                param_names['GET'] = param_name
         else:
             param_name = parse_params(vul_meta.req_data, taint_value)
-            param_names['POST'] = param_name
+            if param_name:
+                param_names['POST'] = param_name
     elif 'javax.servlet.http.HttpServletRequest.getHeader' == source_method:
         # 分析header头
         param_name = parse_header(vul_meta.req_header, taint_value)
-        param_names['HEADER'] = param_name
+        if param_name:
+            param_names['HEADER'] = param_name
     elif 'javax.servlet.http.HttpServletRequest.getQueryString' == source_method:
         param_name = parse_params(vul_meta.req_params, taint_value)
-        param_names['GET'] = param_name
+        if param_name:
+            param_names['GET'] = param_name
+    elif 'javax.servlet.http.HttpServletRequest.getCookies' == source_method:
+        param_name = parse_cookie(vul_meta.req_header, taint_value)
+        if param_name:
+            param_names['COOKIE'] = param_name
+
     return param_names
 
 
