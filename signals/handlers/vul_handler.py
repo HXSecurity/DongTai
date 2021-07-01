@@ -72,36 +72,50 @@ def create_vul_data_from_model(vul):
     return vul_data
 
 
+def equals(source, target):
+    if source == target or source in target or target in source:
+        return True
+
+
 def parse_params(param_values, taint_value):
+    """
+    从param参数中解析污点的位置
+    """
     param_name = None
     _param_items = param_values.split('&')
     for _param_item in _param_items:
         _params = _param_item.split('=')
         _param_name = _params[0]
         _param_value = '='.join(_params[1:])
-        if taint_value == _param_value:
+        if equals(taint_value, _param_value):
             param_name = _param_name
             break
     return param_name
 
 
 def parse_header(req_header, taint_value):
+    """
+    从header头中解析污点的位置
+    """
     import base64
     header_raw = base64.b64decode(req_header).decode('utf-8').split('\n')
     for header in header_raw:
         # fixme 解析，然后匹配
         _header_list = header.split(':')
         _header_name = _header_list[0]
-        _header_values = ':'.join(_header_list[1:])
-        if taint_value in _header_values:
+        _header_value = ':'.join(_header_list[1:])
+        if equals(taint_value, _header_value):
             return _header_name
 
 
 def parse_path(uri, taint_value):
+    """
+    从PathVariable中解析污点位置
+    """
     # 根据/拆分uri，然后进行对比
     path_items = uri.split('/')
     for item in path_items:
-        if item == taint_value:
+        if equals(taint_value, item):
             return True
 
 
@@ -167,8 +181,7 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
     :param bottom_stack:
     :return:
     """
-    # todo 分析taint_posotion
-    # fixme 可能的污点位置：header、cookie、get参数、post参数、path
+    # fixme 后续迁移至agent内部根据source点直接分析污点
     taint_value = kwargs['taint_value']
     param_names = parse_taint_position(source_method=top_stack, vul_meta=vul_meta, taint_value=taint_value)
     if parse_params:
