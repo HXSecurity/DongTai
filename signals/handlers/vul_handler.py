@@ -72,6 +72,89 @@ def create_vul_data_from_model(vul):
     return vul_data
 
 
+def parse_params(param_values, taint_value):
+    param_name = None
+    _param_items = param_values.split('&')
+    for _param_item in _param_items:
+        _params = _param_item.split('=')
+        _param_name = _params[0]
+        _param_value = '='.join(_params[1:])
+        if taint_value == _param_value:
+            param_name = _param_name
+            break
+    return param_name
+
+
+def parse_header(req_header, taint_value):
+    import base64
+    header_raw = base64.b64decode(req_header).decode('utf-8').split('\n')
+    for header in header_raw:
+        # fixme 解析，然后匹配
+        _header_list = header.split(':')
+        _header_name = _header_list[0]
+        _header_values = ':'.join(_header_list[1:])
+        if taint_value in _header_values:
+            return _header_name
+
+
+def parse_path(uri, taint_value):
+    # 根据/拆分uri，然后进行对比
+    path_items = uri.split('/')
+    for item in path_items:
+        if item == taint_value:
+            return True
+
+
+def parse_taint_position(source_method, vul_meta, taint_value):
+    param_names = dict()
+    if 'org.springframework.web.method.support.HandlerMethodArgumentResolver.resolveArgument' == source_method:
+        # 检查get参数
+        if vul_meta.req_params:
+            param_name = parse_params(vul_meta.req_params, taint_value)
+            if param_name:
+                param_names['GET'] = param_name
+                print('污点来自GET参数: ' + param_name)
+
+        # 检查post参数
+        if vul_meta.req_data:
+            param_name = parse_params(vul_meta.req_data, taint_value)
+            if param_name:
+                param_names['POST'] = param_name
+                print('污点来自POST参数: ' + param_name)
+
+        # 检查header
+        if vul_meta.req_header:
+            param_name = parse_header(vul_meta.req_header, taint_value)
+            if param_name:
+                param_names['HEADER'] = param_name
+                print('污点来自HEADER头: ' + param_name)
+
+        # 检查path
+        if vul_meta.uri:
+            param_name = parse_path(vul_meta.uri, taint_value)
+            if param_name:
+                param_names['PATH'] = taint_value
+                print('污点来自URI[' + vul_meta.uri + ']: ' + taint_value)
+
+        # fixme 按照哪种策略对数据进行分析和处理呢？如何识别单点与多点
+        return param_names
+    elif 'javax.servlet.ServletRequest.getParameter' == source_method:
+        if vul_meta.req_params:
+            param_name = parse_params(vul_meta.req_params, taint_value)
+            param_names['GET'] = param_name
+        else:
+            param_name = parse_params(vul_meta.req_data, taint_value)
+            param_names['POST'] = param_name
+    elif 'javax.servlet.http.HttpServletRequest.getHeader' == source_method:
+        # 分析header头
+        param_name = parse_header(vul_meta.req_header, taint_value)
+        param_names['HEADER'] = param_name
+    elif 'javax.servlet.http.HttpServletRequest.getQueryString' == source_method:
+        param_name = parse_params(vul_meta.req_params, taint_value)
+        param_names['GET'] = param_name
+    return param_names
+
+
 @receiver(vul_found)
 def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs):
     """
@@ -84,11 +167,23 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
     :param bottom_stack:
     :return:
     """
+    # todo 分析taint_posotion
+    # fixme 可能的污点位置：header、cookie、get参数、post参数、path
+    taint_value = kwargs['taint_value']
+    param_names = parse_taint_position(source_method=top_stack, vul_meta=vul_meta, taint_value=taint_value)
+    if parse_params:
+        param_name = json.dumps(param_names)
+        taint_position = '/'.join(param_names.keys())
+    else:
+        param_name = ''
+        taint_position = ''
+
     vul = IastVulnerabilityModel.objects.filter(
         type=vul_name,  # 指定漏洞类型
         url=vul_meta.url,
         http_method=vul_meta.http_method,
-        taint_position='',  # 或许补充相关数据
+        taint_position=taint_position,
+        param_name=param_name,
         agent=vul_meta.agent
     ).first()
     if vul:
@@ -101,7 +196,7 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
     else:
         vul = IastVulnerabilityModel(
             type=vul_name,
-            level=vul_level,
+            level_id=vul_level,
             url=vul_meta.url,
             uri=vul_meta.uri,
             http_method=vul_meta.http_method,
@@ -115,8 +210,8 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
             full_stack=json.dumps(vul_stack, ensure_ascii=False),
             top_stack=top_stack,
             bottom_stack=bottom_stack,
-            taint_value='',  # fixme: 污点数据，后续补充
-            taint_position='',  # fixme 增加污点位置
+            taint_value=taint_value,
+            taint_position=taint_position,
             agent=vul_meta.agent,
             context_path=vul_meta.context_path,
             counts=1,
@@ -125,7 +220,7 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
             first_time=vul_meta.create_time,
             latest_time=int(time.time()),
             client_ip=vul_meta.clent_ip,
-            param_name=''
+            param_name=param_name
         )
         vul.save()
 
