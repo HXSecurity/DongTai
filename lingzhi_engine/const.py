@@ -27,3 +27,17 @@ RULE_ENTRY_POINT = 5
 
 # 限制每页的最大数量
 MAX_PAGE_SIZE = 50
+
+# 定义重放类型
+VUL_REPLAY = 1
+REQUEST_REPLAY = 2
+
+# 定义重放数据类型
+PENDING = 0
+WAITING = 1
+SOLVED = 2
+
+# 定义漏洞验证结果
+RECHECK_ERROR = 2
+RECHECK_TRUE = 1
+RECHECK_FALSE = 0
