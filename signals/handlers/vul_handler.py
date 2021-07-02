@@ -251,9 +251,9 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
         vul.counts = vul.counts + 1
         vul.latest_time = int(time.time())
         vul.status = '待处理'
-        vul.save()
+        vul.save(update_fields=['req_header', 'req_params', 'counts', 'latest_time', 'status'])
     else:
-        vul = IastVulnerabilityModel(
+        vul = IastVulnerabilityModel.objects.create(
             type=vul_name,
             level_id=vul_level,
             url=vul_meta.url,
@@ -281,8 +281,6 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
             client_ip=vul_meta.clent_ip,
             param_name=param_name
         )
-        vul.save()
-
     if vul:
         send_vul_notify(vul)
 
