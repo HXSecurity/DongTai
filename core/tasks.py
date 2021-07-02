@@ -536,7 +536,7 @@ def vul_recheck():
                     replay.method = vulnerability['http_method']
                     replay.scheme = vulnerability['http_scheme']
                     replay.header = headers
-                    replay.params = params
+                    replay.params = param_value
                     replay.body = body
                     replay.update_time = timestamp
                     replay.state = const.WAITING
