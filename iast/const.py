@@ -20,3 +20,18 @@ STRATEGY_ENABLE = 'enable'
 STRATEGY_DISABLE = 'disable'
 
 RUNNING = 1
+
+# 定义重放类型
+VUL_REPLAY = 1
+REQUEST_REPLAY = 2
+
+# 定义重放数据类型
+PENDING = 0
+WAITING = 1
+SOLVED = 2
+SOLVING = 3
+
+# 定义漏洞验证结果
+RECHECK_ERROR = 2
+RECHECK_TRUE = 1
+RECHECK_FALSE = 0
