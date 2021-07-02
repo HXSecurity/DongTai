@@ -100,9 +100,9 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack):
         vul.latest_time = int(time.time())
         vul.status = '待处理'
         vul.full_stack = json.dumps(vul_stack, ensure_ascii=False)
-        vul.save()
+        vul.save(update_fields=['req_header', 'req_params', 'counts', 'latest_time', 'status', 'full_stack'])
     else:
-        vul = IastVulnerabilityModel(
+        IastVulnerabilityModel.objects.create(
             type=vul_name,
             level=vul_level,
             url=vul_meta.url,
@@ -130,7 +130,6 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack):
             client_ip=vul_meta.clent_ip,
             param_name=''
         )
-        vul.save()
 
 
 def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
@@ -318,7 +317,7 @@ def update_sca():
             logger.debug(f'开始更新，sha1: {signature}，危害等级：{level}')
             asset.level = IastVulLevel.objects.get(name=level)
             asset.vul_count = vul_count
-            asset.save()
+            asset.save(update_fields=['level', 'vul_count'])
         logger.error(f'[{__name__}] SCA离线检测完成')
     except Exception as e:
         logger.error(f'[{__name__}] SCA离线检测出错，错误原因：{e}')
@@ -542,7 +541,8 @@ def vul_recheck():
                     replay.update_time = timestamp
                     replay.state = const.WAITING
                     replay.agent_id = vulnerability['agent']
-                    replay.save(['uri', 'method', 'scheme', 'header', 'params', 'body', 'update_time', 'state'])
+                    replay.save(
+                        update_fields=['uri', 'method', 'scheme', 'header', 'params', 'body', 'update_time', 'state'])
 
                 else:
                     # 如果未识别到污点位置，不进行重放验证
@@ -550,13 +550,13 @@ def vul_recheck():
                     replay.verify_time = timestamp
                     replay.state = const.SOLVED
                     replay.result = const.RECHECK_ERROR
-                    replay.save(['update_time', 'verify_time', 'state', 'result'])
+                    replay.save(update_fields=['update_time', 'verify_time', 'state', 'result'])
             else:
                 replay.update_time = timestamp
                 replay.verify_time = timestamp
                 replay.state = const.SOLVED
                 replay.result = const.RECHECK_ERROR
-                replay.save(['update_time', 'verify_time', 'state', 'result'])
+                replay.save(update_fields=['update_time', 'verify_time', 'state', 'result'])
 
         logger.error(f'[{__name__}] 漏洞重放数据处理完成')
     else:
