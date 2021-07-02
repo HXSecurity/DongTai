@@ -445,7 +445,7 @@ def vul_recheck():
                     params = {}
                 if params:
                     uri = vulnerability['uri']
-                    param_value = vulnerability['req_params']
+                    param_value = vulnerability['req_params'] if vulnerability['req_params'] else ''
                     headers = vulnerability['req_header']
                     body = vulnerability['req_data']
                     taint_value = vulnerability['taint_value']
