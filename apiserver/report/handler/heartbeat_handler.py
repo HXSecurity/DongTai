@@ -7,6 +7,7 @@
 import base64
 import time
 
+from dongtai_models.models.agent import IastAgent
 from dongtai_models.models.heartbeat import Heartbeat
 from dongtai_models.models.replay_queue import IastReplayQueue
 from dongtai_models.models.server import IastServerModel
@@ -38,7 +39,7 @@ class HeartBeatHandler(IReportHandler):
         self.project_name = self.detail.get('project_name', 'Demo Project')
 
     def save_heartbeat(self):
-        heartbeat = Heartbeat(
+        Heartbeat.objects.create(
             hostname=self.hostname,
             network=self.network,
             memory=self.memory,
@@ -50,7 +51,6 @@ class HeartBeatHandler(IReportHandler):
             dt=int(time.time()),
             agent=self.agent
         )
-        heartbeat.save()
 
     def get_command(self, envs):
         for env in envs:
@@ -110,15 +110,37 @@ class HeartBeatHandler(IReportHandler):
 
     def get_result(self):
         if self.agent:
-            replay_queryset = IastReplayQueue.objects.values('id', 'relation_id', 'uri', 'method', 'scheme', 'header',
-                                                             'params', 'body', 'replay_type').filter(agent=self.agent,
-                                                                                                     state=const.WAITING).first()
-            # 读取，然后返回
-            if replay_queryset:
-                IastReplayQueue.objects.filter(id=replay_queryset['id']).update(update_time=int(time.time()),
-                                                                                state=const.SOLVING)
-                return dict(replay_queryset)
-        return ''
+            # 根据agent查找项目
+            try:
+                project_agents = IastAgent.objects.values('id').filter(bind_project_id=self.agent.bind_project_id)
+                if project_agents:
+                    replay_queryset = IastReplayQueue.objects.values('id', 'relation_id', 'uri', 'method', 'scheme',
+                                                                     'header',
+                                                                     'params', 'body', 'replay_type').filter(
+                        agent_id__in=project_agents,
+                        state=const.WAITING)[:10]
+                    # 读取，然后返回
+                    if replay_queryset:
+                        success_ids = []
+                        failure_ids = []
+                        replay_requests = list()
+                        for replay_request in replay_queryset:
+                            if replay_request['uri']:
+                                replay_requests.append(replay_request)
+                                success_ids.append(replay_request['id'])
+                            else:
+                                failure_ids.append(replay_request['id'])
+
+                        IastReplayQueue.objects.filter(id__in=success_ids).update(update_time=int(time.time()),
+                                                                                  state=const.SOLVING)
+                        IastReplayQueue.objects.filter(id__in=failure_ids).update(update_time=int(time.time()),
+                                                                                  state=const.SOLVED)
+                        return replay_requests
+                else:
+                    return list()
+            except Exception as e:
+                return list()
+        return list()
 
     def save(self):
         self.agent = self.get_agent(project_name=self.project_name, agent_name=self.agent_name)
