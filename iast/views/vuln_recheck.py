@@ -58,12 +58,6 @@ class VulReCheck(UserEndPoint):
                         count=1,
                         create_time=timestamp,
                         update_time=timestamp,
-                        uri=vul.uri,
-                        method=vul.http_method,
-                        scheme=vul.http_scheme,
-                        header=vul.req_header,
-                        params=vul.req_params,
-                        body=vul.req_data,
                         replay_type=const.VUL_REPLAY
                     )
                     success_count = success_count + 1
