@@ -5,6 +5,8 @@
 # software: PyCharm
 # project: lingzhi-engine
 import json
+from json import JSONDecodeError
+
 import time
 
 from celery import shared_task
@@ -436,7 +438,11 @@ def vul_recheck():
             timestamp = int(time.time())
             if vulnerability:
                 param_name_value = vulnerability['param_name']
-                params = json.loads(param_name_value)
+                try:
+                    params = json.loads(param_name_value)
+                except JSONDecodeError as e:
+                    logger.error(f'[{__name__}] 污点数据解析出错，原因：{e}')
+                    params = {}
                 if params:
                     uri = vulnerability['uri']
                     param_value = vulnerability['req_params']
