@@ -431,8 +431,8 @@ def vul_recheck():
             # 构造重放请求包
             vul_id = replay.relation_id
             vulnerability = IastVulnerabilityModel.objects.values('agent', 'uri', 'http_method', 'http_scheme',
-                                                                  'req_header', 'req_params', 'req_data', 'taint_value'
-                                                                                                          'param_name').filter(
+                                                                  'req_header', 'req_params', 'req_data', 'taint_value',
+                                                                  'param_name').filter(
                 id=vul_id).first()
             timestamp = int(time.time())
             if vulnerability:
