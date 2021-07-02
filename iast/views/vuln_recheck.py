@@ -80,11 +80,14 @@ class VulReCheck(UserEndPoint):
                                                                     user__in=self.get_auth_users(request.user)).exists()
             if project_exist:
                 agent_queryset = IastAgent.objects.values("id").filter(bind_project_id=project_id)
-                agent_ids = agent_queryset.values()
-                vul_queryset = IastVulnerabilityModel.objects.filter(agent_id__in=agent_ids)
-                waiting_count, success_count, re_success_count = self.recheck(vul_queryset)
-                return R.success(
-                    msg=f'{waiting_count}条数据待重放，无需重复验证；{re_success_count}条数据重新下发验证请求；{success_count}条数据已下发验证请求')
+                if agent_queryset:
+                    agent_ids = agent_queryset.values()
+                    vul_queryset = IastVulnerabilityModel.objects.filter(agent_id__in=agent_ids)
+                    waiting_count, success_count, re_success_count = self.recheck(vul_queryset)
+                    return R.success(
+                        msg=f'{waiting_count}条数据待重放，无需重复验证；{re_success_count}条数据重新下发验证请求；{success_count}条数据已下发验证请求')
+                else:
+                    return R.failure(msg='当前项目尚未发现漏洞，无法重放')
             else:
                 return R.failure(msg=f'无权访问项目[{project_id}]')
         except Exception as e:
