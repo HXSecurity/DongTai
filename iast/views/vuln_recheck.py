@@ -79,7 +79,7 @@ class VulReCheck(UserEndPoint):
             project_exist = IastProject.objects.values("id").filter(id=project_id,
                                                                     user__in=self.get_auth_users(request.user)).exists()
             if project_exist:
-                agent_queryset = IastAgent.objects.values("id").filter(bind_project_id=project_id)
+                agent_queryset = IastAgent.objects.values("id").filter(bind_project_id=project_id).first()
                 if agent_queryset:
                     agent_ids = agent_queryset.values()
                     vul_queryset = IastVulnerabilityModel.objects.filter(agent_id__in=agent_ids)
