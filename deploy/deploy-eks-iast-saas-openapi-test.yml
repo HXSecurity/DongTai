@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: iast-agent-api
+  name: dongtai-openapi
   namespace: iast-test
   annotations:
-    kubesphere.io/description: iast-agent-api
+    kubesphere.io/description: dongtai-openapi
   labels:
-    app: iast-agent-api
+    app: dongtai-openapi
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: iast-agent-api
+      app: dongtai-openapi
   template:
     metadata:
       labels:
-        app: iast-agent-api
+        app: dongtai-openapi
     spec:
       containers:
-        - name: iast-agent-api-container
+        - name: dongtai-openapi-container
           image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi-test:VERSION
           imagePullPolicy: Always
           volumeMounts:
@@ -39,17 +39,3 @@ spec:
             name: iast-test-config.ini
       imagePullSecrets:
         - name: aliyun-registry-secret
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: iast-agent-api-svc
-  namespace: iast-test
-spec:
-  ports:
-    - port: 80
-      protocol: TCP
-      targetPort: 8000
-  selector:
-    app: iast-agent-api
-  type: ClusterIP

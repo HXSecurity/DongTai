@@ -5,15 +5,40 @@
 # software: PyCharm
 # project: webapi
 import base64
+import logging
+
 import time
 
+from dongtai_models.models.agent import IastAgent
 from dongtai_models.models.heartbeat import Heartbeat
+from dongtai_models.models.replay_queue import IastReplayQueue
 from dongtai_models.models.server import IastServerModel
 
+from apiserver import const
 from apiserver.report.handler.report_handler_interface import IReportHandler
+
+logger = logging.getLogger('dongtai.openapi')
 
 
 class HeartBeatHandler(IReportHandler):
+    def __init__(self):
+        super().__init__()
+        self.server_env = None
+        self.app_name = None
+        self.app_path = None
+        self.web_server_name = None
+        self.web_server_port = None
+        self.web_server_version = None
+        self.web_server_hostname = None
+        self.web_server_ip = None
+        self.web_server_path = None
+        self.req_count = None
+        self.pid = None
+        self.hostname = None
+        self.cpu = None
+        self.memory = None
+        self.network = None
+        self.disk = None
 
     def parse(self):
         self.server_env = self.detail.get('server_env')
@@ -32,11 +57,9 @@ class HeartBeatHandler(IReportHandler):
         self.memory = self.detail.get('memory')
         self.network = self.detail.get('network')
         self.disk = self.detail.get('disk')
-        self.agent_name = self.detail.get('agent_name')
-        self.project_name = self.detail.get('project_name', 'Demo Project')
 
     def save_heartbeat(self):
-        heartbeat = Heartbeat(
+        Heartbeat.objects.create(
             hostname=self.hostname,
             network=self.network,
             memory=self.memory,
@@ -48,7 +71,6 @@ class HeartBeatHandler(IReportHandler):
             dt=int(time.time()),
             agent=self.agent
         )
-        heartbeat.save()
 
     def get_command(self, envs):
         for env in envs:
@@ -64,6 +86,7 @@ class HeartBeatHandler(IReportHandler):
 
     def save_server(self):
         # 根据服务器信息检查是否存在当前服务器，如果存在，标记为存活，否则，标记为失败
+        logger.info(f'服务器信息更新开始')
         env = ""
         envs = []
         self.command = ""
@@ -73,26 +96,31 @@ class HeartBeatHandler(IReportHandler):
             envs = env.split(',')
             self.command = self.get_command(envs)
 
-        iast_servers = IastServerModel.objects.filter(
+        try:
+            port = int(self.web_server_port)
+        except Exception as e:
+            logger.error(f'服务器端口不存在，已设置为默认值：0')
+            port = 0
+        iast_server = IastServerModel.objects.filter(
             name=self.web_server_name,
             hostname=self.hostname,
             ip=self.web_server_ip,
-            port=self.web_server_port,
+            port=port,
             command=self.command
-        )
+        ).first()
 
-        if len(iast_servers) > 0:
-            iast_server = iast_servers[0]
+        if iast_server:
             iast_server.status = 'online'
             iast_server.update_time = int(time.time())
-            iast_server.save()
+            iast_server.save(update_fields=['status', 'update_time'])
+            logger.info(f'服务器记录更新成功')
             return iast_server
         else:
-            iast_server = IastServerModel(
+            iast_server = IastServerModel.objects.create(
                 name=self.web_server_name,
                 hostname=self.hostname,
                 ip=self.web_server_ip,
-                port=self.web_server_port,
+                port=port,
                 environment=env,
                 path=self.web_server_path,
                 status='online',
@@ -103,15 +131,49 @@ class HeartBeatHandler(IReportHandler):
                 create_time=int(time.time()),
                 update_time=int(time.time())
             )
-            iast_server.save()
+            logger.info(f'服务器记录创建成功')
             return iast_server
 
+    def get_result(self, msg=None):
+        try:
+            project_agents = IastAgent.objects.values('id').filter(bind_project_id=self.agent.bind_project_id)
+            if project_agents:
+                replay_queryset = IastReplayQueue.objects.values('id', 'relation_id', 'uri', 'method', 'scheme',
+                                                                 'header',
+                                                                 'params', 'body', 'replay_type').filter(
+                    agent_id__in=project_agents,
+                    state=const.WAITING)[:10]
+                # 读取，然后返回
+                if replay_queryset:
+                    success_ids = []
+                    failure_ids = []
+                    replay_requests = list()
+                    for replay_request in replay_queryset:
+                        if replay_request['uri']:
+                            replay_requests.append(replay_request)
+                            success_ids.append(replay_request['id'])
+                        else:
+                            failure_ids.append(replay_request['id'])
+
+                    IastReplayQueue.objects.filter(id__in=success_ids).update(update_time=int(time.time()),
+                                                                              state=const.SOLVING)
+                    IastReplayQueue.objects.filter(id__in=failure_ids).update(update_time=int(time.time()),
+                                                                              state=const.SOLVED)
+                    logger.info(f'重放请求下发成功')
+                    return replay_requests
+                else:
+                    logger.info(f'重放请求不存在')
+            else:
+                logger.info(f'项目下不存在探针')
+        except Exception as e:
+            logger.info(f'重放请求查询失败，原因：{e}')
+        return list()
+
     def save(self):
-        self.agent = self.get_agent(project_name=self.project_name, agent_name=self.agent_name)
-        if self.agent:
-            self.agent.is_running = 1
-            self.agent.latest_time = int(time.time())
-            self.agent.save()
-            self.save_heartbeat()
-            self.agent.server = self.save_server()
-            self.agent.save()
+        self.agent.is_running = 1
+        self.agent.is_core_running = 1
+        self.agent.latest_time = int(time.time())
+        self.agent.save(update_fields=['is_running', 'is_core_running', 'latest_time'])
+        self.save_heartbeat()
+        self.agent.server = self.save_server()
+        self.agent.save(update_fields=['server'])
