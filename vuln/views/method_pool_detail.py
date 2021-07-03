@@ -23,8 +23,8 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
     def post(self, request):
         try:
             method_pool_id = request.query_params.get('id')
-            rule_id, rule_msg, rule_level, source_set, sink_set, propagator_set = \
-                self.parse_search_condition(request)
+            latest_id, page_size, rule_id, rule_msg, rule_level, source_set, sink_set, propagator_set = \
+                SearchEndPoint.parse_search_condition(request)
             # todo 根据条件，处理对应的路径
 
             if method_pool_id:
@@ -34,8 +34,6 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
                 ).first()
                 if method_pool:
                     data, link_count, method_count = self.search_all_links(method_pool.method_pool)
-                    # todo 增加无效边的删除
-                    # self.delete_invalid_edge(data)
                     taint_links = []
                     if source_set or sink_set or propagator_set:
                         taint_links = self.search_taint_link(method_pool=method_pool, sources=source_set,
@@ -67,7 +65,6 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
         ).first()
 
     def search_all_links(self, method_pool):
-        # engine = VulEngine()
         engine = VulEngineV2()
         engine.prepare(method_pool=json.loads(method_pool), vul_method_signature='')
         engine.search_all_link()
@@ -131,25 +128,6 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
                             if 'selected' not in _edge and _edge['source'] == edge['source'] and _edge['target'] == \
                                     edge['target']:
                                 _edge['selected'] = True
-
-    def parse_search_condition(self, request):
-        """
-        从request对象中解析搜索条件
-        :param request:
-        :return: 规则ID、规则信息、规则等级、source方法、sink方法、propagator方法
-        """
-        rule_id = request.data.get('name')
-        rule_msg = request.data.get('msg')
-        rule_level = request.data.get('level')
-        rule_sources = request.data.get('sources')
-        rule_sinks = request.data.get('sinks')
-        rule_propagators = request.data.get('propagators')
-
-        sink_set = set(rule_sinks) if rule_sinks else set()
-        source_set = set(rule_sources) if rule_sources else set()
-        propagator_set = set(rule_propagators) if rule_propagators else set()
-
-        return rule_id, rule_msg, rule_level, source_set, sink_set, propagator_set
 
     def convert_method_pool_to_set(self, method_pool):
         method_callers = json.loads(method_pool)

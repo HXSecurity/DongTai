@@ -57,7 +57,8 @@ class SearchEndPoint(AnonymousAndUserEndPoint):
         except Exception as e:
             return R.failure(msg=f"{e}")
 
-    def parse_search_condition(self, request):
+    @staticmethod
+    def parse_search_condition(request):
         """
         从request对象中解析搜索条件
         :param request:
