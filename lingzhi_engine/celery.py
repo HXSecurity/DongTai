@@ -25,10 +25,12 @@ configs = {k: v for k, v in settings.__dict__.items() if k.startswith('CELERY')}
 #   should have a `CELERY_` prefix.
 
 configs["CELERY_QUEUES"] = [
-    Queue("vul-scan-method-pool", Exchange("method_pool"), routing_key="method_pool"),
-    Queue("vul-scan-strategy", Exchange("strategy"), routing_key="strategy"),
-    Queue("vul-scan-search", Exchange("search"), routing_key="search"),
-    Queue("periodic_task", Exchange("periodic_task"), routing_key="periodic_task"),
+    Queue("dongtai-method-pool-scan", Exchange("method_pool"), routing_key="method_pool"),
+    Queue("dongtai-replay-vul-scan", Exchange("method_pool"), routing_key="method_pool"),
+    Queue("dongtai-strategy-scan", Exchange("strategy"), routing_key="strategy"),
+    Queue("dongtai-search-scan", Exchange("search"), routing_key="search"),
+    Queue("dongtai-periodic-task", Exchange("periodic_task"), routing_key="periodic_task"),
+    Queue("dongtai-replay-task", Exchange("replay_task"), routing_key="replay_task"),
 ]
 configs["CELERY_ROUTES"] = {
     "core.tasks.search_vul_from_method_pool": {'exchange': 'method_pool', 'routing_key': 'method_pool'},
@@ -37,6 +39,8 @@ configs["CELERY_ROUTES"] = {
     "core.tasks.update_sca": {'exchange': 'periodic_task', 'routing_key': 'periodic_task'},
     "core.tasks.update_agent_status": {'exchange': 'periodic_task', 'routing_key': 'periodic_task'},
     "core.tasks.heartbeat": {'exchange': 'periodic_task', 'routing_key': 'periodic_task'},
+    "core.tasks.clear_error_log": {'exchange': 'periodic_task', 'routing_key': 'periodic_task'},
+    "core.tasks.vul_recheck": {'exchange': 'replay_task', 'routing_key': 'replay_task'},
 }
 configs["CELERY_ENABLE_UTC"] = False
 configs["CELERY_TIMEZONE"] = settings.TIME_ZONE

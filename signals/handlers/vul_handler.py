@@ -8,8 +8,11 @@ import time
 
 import requests
 from django.dispatch import receiver
+from dongtai_models.models.replay_queue import IastReplayQueue
+
 from dongtai_models.models.notify_config import IastNotifyConfig
 from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+from lingzhi_engine import const
 
 from signals import vul_found
 
@@ -72,23 +75,166 @@ def create_vul_data_from_model(vul):
     return vul_data
 
 
-@receiver(vul_found)
+def equals(source, target):
+    if source == target or source in target or target in source:
+        return True
+
+
+def parse_params(param_values, taint_value):
+    """
+    从param参数中解析污点的位置
+    """
+    # 分析是否为json
+    #
+    param_name = None
+    _param_items = param_values.split('&')
+    for _param_item in _param_items:
+        _params = _param_item.split('=')
+        _param_name = _params[0]
+        _param_value = '='.join(_params[1:])
+        if equals(taint_value, _param_value):
+            param_name = _param_name
+            break
+    return param_name
+
+
+def parse_body(body, taint_value):
+    try:
+        post_body = json.loads(body)
+        for key, value in post_body.items():
+            if equals(taint_value, value):
+                return key
+    except Exception as e:
+        return parse_params(body, taint_value)
+
+
+def parse_header(req_header, taint_value):
+    """
+    从header头中解析污点的位置
+    """
+    import base64
+    header_raw = base64.b64decode(req_header).decode('utf-8').split('\n')
+    for header in header_raw:
+        _header_list = header.split(':')
+        _header_name = _header_list[0]
+        _header_value = ':'.join(_header_list[1:])
+        if equals(taint_value, _header_value):
+            return _header_name
+
+
+def parse_cookie(req_header, taint_value):
+    """
+    从cookie中解析
+    """
+    import base64
+    header_raw = base64.b64decode(req_header).decode('utf-8').split('\n')
+    cookie_raw = ''
+    for header in header_raw:
+        # fixme 解析，然后匹配
+        _header_list = header.split(':')
+        _header_name = _header_list[0]
+        if _header_name == 'cookie' or _header_name == 'Cookie':
+            cookie_raw = ':'.join(_header_list[1:])
+            break
+
+    if cookie_raw:
+        cookie_raw_items = cookie_raw.split(';')
+        for item in cookie_raw_items:
+            cookie_item = item.split('=')
+            cookie_value = '='.join(cookie_item[1:])
+            if equals(taint_value, cookie_value):
+                return cookie_item[0]
+
+
+def parse_path(uri, taint_value):
+    """
+    从PathVariable中解析污点位置
+    """
+    # 根据/拆分uri，然后进行对比
+    path_items = uri.split('/')
+    for item in path_items:
+        if taint_value == item:
+            # if equals(taint_value, item):
+            # fixme 暂时先使用完全匹配，后续考虑解决误报问题
+            return True
+
+
+def parse_taint_position(source_method, vul_meta, taint_value):
+    param_names = dict()
+    if 'org.springframework.web.method.support.HandlerMethodArgumentResolver.resolveArgument' == source_method:
+        # 检查get参数
+        if vul_meta.req_params:
+            param_name = parse_params(vul_meta.req_params, taint_value)
+            if param_name:
+                param_names['GET'] = param_name
+                print('污点来自GET参数: ' + param_name)
+
+        # 检查post参数
+        if vul_meta.req_data:
+            param_name = parse_body(vul_meta.req_data, taint_value)
+            if param_name:
+                param_names['POST'] = param_name
+                print('污点来自POST参数: ' + param_name)
+
+        # 检查header
+        if vul_meta.req_header:
+            param_name = parse_header(vul_meta.req_header, taint_value)
+            if param_name:
+                param_names['HEADER'] = param_name
+                print('污点来自HEADER头: ' + param_name)
+
+        # 检查path
+        if vul_meta.uri:
+            param_name = parse_path(vul_meta.uri, taint_value)
+            if param_name:
+                param_names['PATH'] = taint_value
+                print('污点来自URI[' + vul_meta.uri + ']: ' + taint_value)
+
+        # fixme 按照哪种策略对数据进行分析和处理呢？如何识别单点与多点
+        return param_names
+    elif 'javax.servlet.ServletRequest.getParameter' == source_method or 'javax.servlet.ServletRequest.getParameterValues' == source_method:
+        if vul_meta.req_params:
+            param_name = parse_params(vul_meta.req_params, taint_value)
+            if param_name:
+                param_names['GET'] = param_name
+        else:
+            param_name = parse_params(vul_meta.req_data, taint_value)
+            if param_name:
+                param_names['POST'] = param_name
+    elif 'javax.servlet.http.HttpServletRequest.getHeader' == source_method:
+        # 分析header头
+        param_name = parse_header(vul_meta.req_header, taint_value)
+        if param_name:
+            param_names['HEADER'] = param_name
+    elif 'javax.servlet.http.HttpServletRequest.getQueryString' == source_method:
+        param_name = parse_params(vul_meta.req_params, taint_value)
+        if param_name:
+            param_names['GET'] = param_name
+    elif 'javax.servlet.http.HttpServletRequest.getCookies' == source_method:
+        param_name = parse_cookie(vul_meta.req_header, taint_value)
+        if param_name:
+            param_names['COOKIE'] = param_name
+
+    return param_names
+
+
 def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs):
-    """
-    保存漏洞数据
-    :param vul_meta:
-    :param vul_level:
-    :param vul_name:
-    :param vul_stack:
-    :param top_stack:
-    :param bottom_stack:
-    :return:
-    """
+    # 如果是重放请求，且重放请求类型为漏洞验证，更新漏洞状态为
+    taint_value = kwargs['taint_value']
+    param_names = parse_taint_position(source_method=top_stack, vul_meta=vul_meta, taint_value=taint_value)
+    if parse_params:
+        param_name = json.dumps(param_names)
+        taint_position = '/'.join(param_names.keys())
+    else:
+        param_name = ''
+        taint_position = ''
+
     vul = IastVulnerabilityModel.objects.filter(
         type=vul_name,  # 指定漏洞类型
         url=vul_meta.url,
         http_method=vul_meta.http_method,
-        taint_position='',  # 或许补充相关数据
+        taint_position=taint_position,
+        param_name=param_name,
         agent=vul_meta.agent
     ).first()
     if vul:
@@ -96,12 +242,12 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
         vul.req_params = vul_meta.req_params
         vul.counts = vul.counts + 1
         vul.latest_time = int(time.time())
-        vul.status = 'reported'
-        vul.save()
+        vul.status = '待处理'
+        vul.save(update_fields=['req_header', 'req_params', 'counts', 'latest_time', 'status'])
     else:
-        vul = IastVulnerabilityModel(
+        vul = IastVulnerabilityModel.objects.create(
             type=vul_name,
-            level=vul_level,
+            level_id=vul_level,
             url=vul_meta.url,
             uri=vul_meta.uri,
             http_method=vul_meta.http_method,
@@ -115,19 +261,66 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
             full_stack=json.dumps(vul_stack, ensure_ascii=False),
             top_stack=top_stack,
             bottom_stack=bottom_stack,
-            taint_value='',  # fixme: 污点数据，后续补充
-            taint_position='',  # fixme 增加污点位置
+            taint_value=taint_value,
+            taint_position=taint_position,
             agent=vul_meta.agent,
             context_path=vul_meta.context_path,
             counts=1,
-            status='reported',
+            status='待处理',
             language=vul_meta.language,
             first_time=vul_meta.create_time,
             latest_time=int(time.time()),
             client_ip=vul_meta.clent_ip,
-            param_name=''
+            param_name=param_name
         )
-        vul.save()
+    return vul
+
+
+def handler_replay_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs):
+    timestamp = int(time.time())
+    vul = IastVulnerabilityModel.objects.filter(id=kwargs['relation_id']).first()
+    if vul and vul.type == vul_name:
+        vul.status = '已验证存在'
+        vul.latest_time = timestamp
+        vul.save(update_fields=['status', 'latest_time'])
+
+        IastReplayQueue.objects.filter(id=kwargs['replay_id']).update(
+            state=const.SOLVED,
+            result=const.RECHECK_FALSE,
+            verify_time=timestamp,
+            update_time=timestamp
+        )
+    else:
+        vul = save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs)
+    return vul
+
+
+@receiver(vul_found)
+def handler_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs):
+    """
+    保存漏洞数据
+    :param vul_meta:
+    :param vul_level:
+    :param vul_name:
+    :param vul_stack:
+    :param top_stack:
+    :param bottom_stack:
+    :return:
+    """
+    # 如果是重放请求，且重放请求类型为漏洞验证，更新漏洞状态为
+    try:
+        replay_id = vul_meta.replay_id
+        replay_type = vul_meta.replay_type
+        relation_id = vul_meta.relation_id
+
+        if replay_type == const.VUL_REPLAY:
+            kwargs['relation_id'] = relation_id
+            kwargs['replay_id'] = replay_id
+            vul = handler_replay_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs)
+        else:
+            vul = save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs)
+    except Exception as e:
+        vul = save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs)
 
     if vul:
         send_vul_notify(vul)

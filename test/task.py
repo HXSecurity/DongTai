@@ -15,7 +15,7 @@ class MyTestCase(DongTaiTestCase):
         if heartbeat_task:
             heartbeat_task.task = 'core.tasks.heartbeat'
             heartbeat_task.interval = schedule
-            heartbeat_task.save()
+            heartbeat_task.save(update_fields=['task', 'interval'])
         else:
             PeriodicTask.objects.create(
                 interval=schedule,
