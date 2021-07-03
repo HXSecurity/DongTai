@@ -174,15 +174,30 @@ CELERY_TASK_SOFT_TIME_LIMIT = 3600
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} [{module}.{funcName}:{lineno}] {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
         },
         'dongtai-engine': {
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs/apiserver.log'),
+            'filename': os.path.join(BASE_DIR, 'logs/dongtai-engine.log'),
             'backupCount': 5,
             'maxBytes': 1024 * 1024 * 10,
+            'formatter': 'verbose'
+        },
+        'celery.apps.worker': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs/worker.log'),
+            'backupCount': 5,
+            'maxBytes': 1024 * 1024 * 10,
+            'formatter': 'verbose'
         },
     },
     'loggers': {
@@ -192,6 +207,11 @@ LOGGING = {
         },
         'dongtai-engine': {
             'handlers': ['console', 'dongtai-engine'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'celery.apps.worker': {
+            'handlers': ['console', 'celery.apps.worker'],
             'propagate': True,
             'level': 'INFO',
         },
