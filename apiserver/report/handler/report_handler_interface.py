@@ -4,8 +4,12 @@
 # datetime:2020/10/30 10:31
 # software: PyCharm
 # project: webapi
+import logging
+
 from django.db.models import Q
 from dongtai_models.models.agent import IastAgent
+
+logger = logging.getLogger('dongtai.openapi')
 
 
 class IReportHandler:
@@ -13,6 +17,10 @@ class IReportHandler:
         self._report = None
         self._detail = None
         self._user_id = None
+        self.agent_name = None
+        self.project_name = None
+        self.language = None
+        self.agent = None
 
     @property
     def report(self):
@@ -38,24 +46,38 @@ class IReportHandler:
     def user_id(self, user_id):
         self._user_id = user_id
 
+    def common_header(self):
+        self.detail = self.report.get('detail')
+        self.agent_name = self.detail.get('agent_name')
+        self.project_name = self.detail.get('project_name', 'Demo Project')
+        self.language = self.detail.get('language', 'JAVA')
+
+    def has_permission(self):
+        self.agent = self.get_agent(project_name=self.project_name, agent_name=self.agent_name)
+        return self.agent
+
     def parse(self):
         pass
 
     def save(self):
         pass
 
-    def get_result(self):
-        return ''
+    def get_result(self, msg=None):
+        return msg if msg else ''
 
     def handle(self, report, user):
+        logger.info('报告解析开始')
         self.report = report
-        self.detail = self.report.get('detail')
-        self.agent_token = self.detail.get('agent_name')
         self.user_id = user
-        # todo 检查当前用户是否有操作该agent的权限
-        self.parse()
-        self.save()
-        return self.get_result()
+        self.common_header()
+        if self.has_permission():
+            self.parse()
+            self.save()
+            logger.info('报告解析完成')
+            return self.get_result()
+        else:
+            logger.info('报告解析失败，Agent不存在或无权访问')
+            return self.get_result(msg='no permission')
 
     def get_project_agents(self, agent):
         if agent.bind_project_id != 0:

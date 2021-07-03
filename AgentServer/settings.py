@@ -141,23 +141,40 @@ PRIVATE_KEY = os.path.join(BASE_DIR, 'config', 'rsa_keys/private_key.pem')
 PUBLIC_KEY = os.path.join(BASE_DIR, 'config', 'rsa_keys/public_key.pem')
 
 BASE_ENGINE_URL = config.get("engine", "url") + '/api/engine/run?method_pool_id={id}'
+REPLAY_ENGINE_URL = config.get("engine", "url") + '/api/engine/run?method_pool_id={id}&model=replay'
 
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} [{module}.{funcName}:{lineno}] {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
         },
         'dongtai.openapi': {
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'logs/apiserver.log',
+            'filename': 'logs/openapi.log',
             'backupCount': 5,
             'maxBytes': 1024 * 1024 * 10,
+            'formatter': 'verbose'
         },
     },
     'loggers': {
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
         'dongtai.openapi': {
             'handlers': ['console', 'dongtai.openapi'],
             'propagate': True,
