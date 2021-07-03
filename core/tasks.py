@@ -182,11 +182,11 @@ def search_and_save_sink(engine, method_pool_model, strategy):
 
 @shared_task(queue='vul-scan')
 def search_vul_from_method_pool(method_pool_id):
-    logger.error(f'[{__name__}] 漏洞检测开始，方法池 {method_pool_id}')
+    logger.info(f'漏洞检测开始，方法池 {method_pool_id}')
     try:
         method_pool_model = MethodPool.objects.filter(id=method_pool_id).first()
         if method_pool_model is None:
-            logger.error(f'[{__name__}] 漏洞检测终止，方法池 {method_pool_id} 不存在')
+            logger.warn(f'漏洞检测终止，方法池 {method_pool_id} 不存在')
         strategies = load_sink_strategy(method_pool_model.agent.user)
         engine = VulEngine()
 
@@ -196,9 +196,9 @@ def search_vul_from_method_pool(method_pool_id):
             for strategy in strategies:
                 if strategy.get('value') in engine.method_pool_signatures:
                     search_and_save_vul(engine, method_pool_model, method_pool, strategy)
-        logger.error(f'[{__name__}] 漏洞检测成功')
+        logger.info(f'漏洞检测成功')
     except Exception as e:
-        logger.error(f'[{__name__}] 漏洞检测出错，错误原因：{e}')
+        logger.error(f'漏洞检测出错，错误原因：{e}')
 
 
 @shared_task(queue='vul-scan')
@@ -208,7 +208,7 @@ def search_vul_from_strategy(strategy_id):
     :param strategy_id: 策略ID
     :return: None
     """
-    logger.error(f'[{__name__}] 漏洞检测开始，策略 {strategy_id}')
+    logger.info(f'漏洞检测开始，策略 {strategy_id}')
     try:
         strategy_value, method_pool_queryset = load_methods_from_strategy(strategy_id=strategy_id)
         engine = VulEngine()
@@ -219,9 +219,9 @@ def search_vul_from_strategy(strategy_id):
                     method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
                     # todo 对数据做预处理，避免无效的计算
                     search_and_save_vul(engine, method_pool_model, method_pool, strategy_value)
-        logger.error(f'[{__name__}] 漏洞检测成功')
+        logger.info(f'漏洞检测成功')
     except Exception as e:
-        logger.error(f'[{__name__}] 漏洞检测出错，错误原因：{e}')
+        logger.error(f'漏洞检测出错，错误原因：{e}')
 
 
 @shared_task(queue='vul-search')
@@ -231,19 +231,19 @@ def search_sink_from_method_pool(method_pool_id):
     :param method_pool_id: 方法池ID
     :return: None
     """
-    logger.error(f'[{__name__}] sink规则扫描开始，方法池ID[{method_pool_id}]')
+    logger.info(f'sink规则扫描开始，方法池ID[{method_pool_id}]')
     try:
         method_pool_model = MethodPool.objects.filter(id=method_pool_id).first()
         if method_pool_model is None:
-            logger.error(f'[{__name__}] sink规则扫描终止，方法池 [{method_pool_id}] 不存在')
+            logger.warn(f'sink规则扫描终止，方法池 [{method_pool_id}] 不存在')
         strategies = load_sink_strategy(method_pool_model.agent.user)
         engine = VulEngine()
 
         for strategy in strategies:
             search_and_save_sink(engine, method_pool_model, strategy)
-        logger.error(f'[{__name__}] sink规则扫描完成')
+        logger.info(f'sink规则扫描完成')
     except Exception as e:
-        logger.error(f'[{__name__}] sink规则扫描出错，错误原因：{e}')
+        logger.error(f'sink规则扫描出错，错误原因：{e}')
 
 
 @shared_task(queue='vul-search')
@@ -253,7 +253,7 @@ def search_sink_from_strategy(strategy_id):
     :param strategy_id: 策略ID
     :return: None
     """
-    logger.error(f'[{__name__}] sink规则扫描开始')
+    logger.info(f'sink规则扫描开始')
     try:
         strategy_value, method_pool_queryset = load_methods_from_strategy(strategy_id=strategy_id)
 
@@ -262,9 +262,9 @@ def search_sink_from_strategy(strategy_id):
             if sub_queryset:
                 for method_pool in sub_queryset:
                     search_and_save_sink(engine, method_pool, strategy_value)
-        logger.error(f'[{__name__}] sink规则扫描完成')
+        logger.info(f'sink规则扫描完成')
     except Exception as e:
-        logger.error(f'[{__name__}] sink规则扫描出错，错误原因：{e}')
+        logger.error(f'sink规则扫描出错，错误原因：{e}')
 
 
 def load_methods_from_strategy(strategy_id):
@@ -294,7 +294,7 @@ def update_sca():
     根据SCA数据库，更新SCA记录信息
     :return:
     """
-    logger.error(f'[{__name__}] SCA离线检测开始')
+    logger.info(f'SCA离线检测开始')
     try:
         assets = Asset.objects.all()
         for asset in assets:
@@ -316,13 +316,13 @@ def update_sca():
                     level = 'low'
                 else:
                     level = 'info'
-            logger.debug(f'开始更新，sha1: {signature}，危害等级：{level}')
+            logger.info(f'开始更新，sha1: {signature}，危害等级：{level}')
             asset.level = IastVulLevel.objects.get(name=level)
             asset.vul_count = vul_count
             asset.save(update_fields=['level', 'vul_count'])
-        logger.error(f'[{__name__}] SCA离线检测完成')
+        logger.info(f'SCA离线检测完成')
     except Exception as e:
-        logger.error(f'[{__name__}] SCA离线检测出错，错误原因：{e}')
+        logger.error(f'SCA离线检测出错，错误原因：{e}')
 
 
 @shared_task(queue='periodic_task')
@@ -331,7 +331,7 @@ def update_agent_status():
     更新Agent状态
     :return:
     """
-    logger.error(f'[{__name__}] 检测引擎状态更新开始')
+    logger.info(f'检测引擎状态更新开始')
     try:
         timestamp = int(time.time())
         queryset = IastAgent.objects.all()
@@ -340,9 +340,9 @@ def update_agent_status():
 
         heart_beat_queryset = queryset.filter(server__update_time__lt=(timestamp - 600), is_running=1)
         heart_beat_queryset.update(is_running=0)
-        logger.error(f'[{__name__}] 检测引擎状态更新成功')
+        logger.info(f'检测引擎状态更新成功')
     except Exception as e:
-        logger.error(f'[{__name__}] 检测引擎状态更新出错，错误详情：{e}')
+        logger.error(f'检测引擎状态更新出错，错误详情：{e}')
 
 
 @shared_task(queue='periodic_task')
@@ -405,15 +405,15 @@ def clear_error_log():
     清理错误日志
     :return:
     """
-    logger.error(f'[{__name__}] 日志清理开始')
+    logger.info(f'日志清理开始')
     try:
         timestamp = int(time.time())
         out_date_timestamp = 60 * 60 * 24 * 30
         IastErrorlog.objects.filter(dt__lt=(timestamp - out_date_timestamp)).delete()
         # LogEntryManager().filter()
-        logger.error(f'[{__name__}] 日志清理成功')
+        logger.info(f'日志清理成功')
     except Exception as e:
-        logger.error(f'[{__name__}] 日志清理失败，错误详情：{e}')
+        logger.error(f'日志清理失败，错误详情：{e}')
 
 
 @shared_task(queue='replay_task')
@@ -423,7 +423,7 @@ def vul_recheck():
     """
     # 读取待重放的漏洞ID
     # 根据漏洞ID构造重放请求包
-    logger.error(f'[{__name__}] 开始处理漏洞重放数据')
+    logger.info('开始处理漏洞重放数据')
     relay_queue_queryset = IastReplayQueue.objects.filter(replay_type=const.VUL_REPLAY, state=const.PENDING)
     # 循环遍历，构造重放请求包
     if relay_queue_queryset:
@@ -441,7 +441,7 @@ def vul_recheck():
                 try:
                     params = json.loads(param_name_value)
                 except JSONDecodeError as e:
-                    logger.error(f'[{__name__}] 污点数据解析出错，原因：{e}')
+                    logger.error(f'污点数据解析出错，原因：{e}')
                     params = {}
                 if params:
                     uri = vulnerability['uri']
@@ -498,7 +498,7 @@ def vul_recheck():
                                 _header_list = header_raw[index].split(':')
                                 _header_name = _header_list[0]
                                 if _header_name == param_name:
-                                    header_raw[index] = f'{_header_name}:/../`dongtai'
+                                    header_raw[index] = f'{_header_name}:/../dongtaiIAST'
                                     break
 
                             headers = base64.b64encode('\n'.join(header_raw))
@@ -564,6 +564,6 @@ def vul_recheck():
                 replay.result = const.RECHECK_ERROR
                 replay.save(update_fields=['update_time', 'verify_time', 'state', 'result'])
 
-        logger.error(f'[{__name__}] 漏洞重放数据处理完成')
+        logger.info('漏洞重放数据处理完成')
     else:
-        logger.error(f'[{__name__}] 暂无需要处理的漏洞重放数据')
+        logger.info('暂无需要处理的漏洞重放数据')
