@@ -39,17 +39,3 @@ spec:
             name: iast-test-config.ini
       imagePullSecrets:
         - name: aliyun-registry-secret
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: dongtai-openapi-svc
-  namespace: iast-test
-spec:
-  ports:
-    - port: 80
-      protocol: TCP
-      targetPort: 8000
-  selector:
-    app: dongtai-openapi
-  type: ClusterIP
