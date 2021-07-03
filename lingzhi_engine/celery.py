@@ -26,6 +26,7 @@ configs = {k: v for k, v in settings.__dict__.items() if k.startswith('CELERY')}
 
 configs["CELERY_QUEUES"] = [
     Queue("dongtai-method-pool-scan", Exchange("method_pool"), routing_key="method_pool"),
+    Queue("dongtai-replay-vul-scan", Exchange("method_pool"), routing_key="method_pool"),
     Queue("dongtai-strategy-scan", Exchange("strategy"), routing_key="strategy"),
     Queue("dongtai-search-scan", Exchange("search"), routing_key="search"),
     Queue("dongtai-periodic-task", Exchange("periodic_task"), routing_key="periodic_task"),

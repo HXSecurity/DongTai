@@ -12,6 +12,7 @@ import time
 from celery import shared_task
 from celery.apps.worker import logger
 from django.db.models import Sum, Q
+from dongtai_models.models.replay_method_pool import IastAgentMethodPoolReplay
 
 from core.engine import VulEngine
 from core.mvn_spider import MavenSpider
@@ -159,6 +160,27 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
                            top_stack=source_sign,
                            bottom_stack=sink_sign,
                            taint_value=taint_value)
+        else:
+            # 更新漏洞状态为
+            try:
+                replay_id = method_pool_model.replay_id
+                replay_type = method_pool_model.replay_type
+                relation_id = method_pool_model.relation_id
+
+                if replay_type == const.VUL_REPLAY:
+                    timestamp = int(time.time())
+                    IastVulnerabilityModel.objects.filter(id=relation_id).update(
+                        status='未验证成功',
+                        latest_time=timestamp
+                    )
+                    IastReplayQueue.objects.filter(id=replay_id).update(
+                        state=const.SOLVED,
+                        result=const.RECHECK_FALSE,
+                        verify_time=timestamp,
+                        update_time=timestamp
+                    )
+            except Exception as e:
+                pass
 
 
 def search_and_save_sink(engine, method_pool_model, strategy):
@@ -185,6 +207,27 @@ def search_vul_from_method_pool(method_pool_id):
     logger.info(f'漏洞检测开始，方法池 {method_pool_id}')
     try:
         method_pool_model = MethodPool.objects.filter(id=method_pool_id).first()
+        if method_pool_model is None:
+            logger.warn(f'漏洞检测终止，方法池 {method_pool_id} 不存在')
+        strategies = load_sink_strategy(method_pool_model.agent.user)
+        engine = VulEngine()
+
+        method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
+        engine.method_pool = method_pool
+        if method_pool:
+            for strategy in strategies:
+                if strategy.get('value') in engine.method_pool_signatures:
+                    search_and_save_vul(engine, method_pool_model, method_pool, strategy)
+        logger.info(f'漏洞检测成功')
+    except Exception as e:
+        logger.error(f'漏洞检测出错，错误原因：{e}')
+
+
+@shared_task(queue='replay-vul-scan')
+def search_vul_from_replay_method_pool(method_pool_id):
+    logger.info(f'漏洞检测开始，方法池 {method_pool_id}')
+    try:
+        method_pool_model = IastAgentMethodPoolReplay.objects.filter(id=method_pool_id).first()
         if method_pool_model is None:
             logger.warn(f'漏洞检测终止，方法池 {method_pool_id} 不存在')
         strategies = load_sink_strategy(method_pool_model.agent.user)
