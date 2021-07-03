@@ -24,10 +24,13 @@ class IastAgent(models.Model):
         verbose_name=_('server'),
     )
     is_running = models.IntegerField(blank=True, null=True)
+    is_core_running = models.IntegerField(blank=True, null=True)
     control = models.IntegerField(blank=True, null=True)
     is_control = models.IntegerField(blank=True, null=True)
     bind_project_id = models.IntegerField(blank=True, null=True, default=0)
     project_name = models.CharField(max_length=255, blank=True, null=True)
+    online = models.PositiveSmallIntegerField(blank=True, default=0)
+    project_version_id = models.IntegerField(blank=True, null=True, default=0)
 
     class Meta:
         managed = False
