@@ -8,8 +8,11 @@ import time
 
 import requests
 from django.dispatch import receiver
+from dongtai_models.models.replay_queue import IastReplayQueue
+
 from dongtai_models.models.notify_config import IastNotifyConfig
 from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+from lingzhi_engine import const
 
 from signals import vul_found
 
@@ -215,19 +218,8 @@ def parse_taint_position(source_method, vul_meta, taint_value):
     return param_names
 
 
-@receiver(vul_found)
 def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs):
-    """
-    保存漏洞数据
-    :param vul_meta:
-    :param vul_level:
-    :param vul_name:
-    :param vul_stack:
-    :param top_stack:
-    :param bottom_stack:
-    :return:
-    """
-    # fixme 后续迁移至agent内部根据source点直接分析污点
+    # 如果是重放请求，且重放请求类型为漏洞验证，更新漏洞状态为
     taint_value = kwargs['taint_value']
     param_names = parse_taint_position(source_method=top_stack, vul_meta=vul_meta, taint_value=taint_value)
     if parse_params:
@@ -281,6 +273,55 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
             client_ip=vul_meta.clent_ip,
             param_name=param_name
         )
+    return vul
+
+
+def handler_replay_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs):
+    timestamp = int(time.time())
+    vul = IastVulnerabilityModel.objects.filter(id=kwargs['relation_id']).first()
+    if vul and vul.type == vul_name:
+        vul.status = '已验证存在'
+        vul.latest_time = timestamp
+        vul.save(update_fields=['status', 'latest_time'])
+
+        IastReplayQueue.objects.filter(id=kwargs['replay_id']).update(
+            state=const.SOLVED,
+            result=const.RECHECK_FALSE,
+            verify_time=timestamp,
+            update_time=timestamp
+        )
+    else:
+        vul = save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs)
+    return vul
+
+
+@receiver(vul_found)
+def handler_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs):
+    """
+    保存漏洞数据
+    :param vul_meta:
+    :param vul_level:
+    :param vul_name:
+    :param vul_stack:
+    :param top_stack:
+    :param bottom_stack:
+    :return:
+    """
+    # 如果是重放请求，且重放请求类型为漏洞验证，更新漏洞状态为
+    try:
+        replay_id = vul_meta.replay_id
+        replay_type = vul_meta.replay_type
+        relation_id = vul_meta.relation_id
+
+        if replay_type == const.VUL_REPLAY:
+            kwargs['relation_id'] = relation_id
+            kwargs['replay_id'] = replay_id
+            vul = handler_replay_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs)
+        else:
+            vul = save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs)
+    except Exception as e:
+        vul = save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs)
+
     if vul:
         send_vul_notify(vul)
 
