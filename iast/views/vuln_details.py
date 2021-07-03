@@ -5,6 +5,7 @@
 # software: PyCharm
 # project: lingzhi-webapi
 import base64
+import json
 import logging
 
 from rest_framework.request import Request
@@ -144,6 +145,7 @@ class VulnDetail(UserEndPoint):
                     'node': f'{class_name}.{method_name}()'
                 })
         except Exception as e:
+            logger.error(f'[{__name__}] 污点调用图解析出错，原因：{e}')
             results = None
         return results
 
@@ -163,12 +165,11 @@ class VulnDetail(UserEndPoint):
 
         agent = vul.agent
         project_id = agent.bind_project_id
-        self.project = IastProject.objects.filter(id=project_id).first()
+        project = IastProject.objects.values("name").filter(id=project_id).first()
         try:
             self.server = agent.server
         except Exception as e:
-            print(e)
-            print("no server")
+            logger.error(f'[{__name__}] 漏洞信息解析出错，原因：{e}')
             self.server = {}
         self.vul_name = vul.type
         return {
@@ -179,7 +180,7 @@ class VulnDetail(UserEndPoint):
             'taint_position': vul.taint_position,
             'first_time': vul.first_time,
             'latest_time': vul.latest_time,
-            'project_name': self.project.name if self.project else '暂未绑定项目',
+            'project_name': project['name'] if project else '暂未绑定项目',
             'language': vul.language,
             'level': vul.level.name_value,
             'level_type': vul.level.id,
@@ -190,6 +191,8 @@ class VulnDetail(UserEndPoint):
             'context_path': vul.context_path,
             'client_ip': vul.client_ip,
             'status': vul.status,
+            'taint_value': vul.taint_value,
+            'param_name': json.loads(vul.param_name)
         }
 
     def get_strategy(self):

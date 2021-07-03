@@ -78,6 +78,7 @@ class EndPoint(APIView):
             response = handler(request, *args, **kwargs)
 
         except Exception as exc:
+            # fixme 增加全局异常处置
             response = self.handle_exception(exc)
 
         self.response = self.finalize_response(request, response, *args, **kwargs)

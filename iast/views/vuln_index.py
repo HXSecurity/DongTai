@@ -73,7 +73,6 @@ class VulnList(UserEndPoint):
             queryset = queryset.filter(url__icontains=url)
 
         order = request.query_params.get('order')
-        print(f'排序条件为：{order}')
         if order:
             queryset = queryset.order_by(order)
         else:
