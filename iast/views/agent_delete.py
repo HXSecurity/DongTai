@@ -34,12 +34,10 @@ class AgentDeleteEndPoint(UserEndPoint):
                 # todo 删除agent
                 self.delete_error_log()
                 self.delete_heart_beat()
-                self.delete_vul_overpower()
+                # self.delete_vul_overpower()
                 self.delete_sca()
                 self.delete_vul()
                 self.delete_method_pool()
-                # fixme 测试server的删除方法是否有效
-                # self.delete_server()
                 self.agent.delete()
 
                 return R.success(msg="agent及相关数据删除成功")
@@ -48,12 +46,6 @@ class AgentDeleteEndPoint(UserEndPoint):
         except Exception as e:
             logger.error(f'user_id:{request.user.id} msg:{e}')
             return R.failure(msg="删除过程出错，请稍后重试")
-
-    def delete_server(self):
-        # fixme 测试下面的删除方法是否有效
-        server = self.agent.server
-        server.agents.all().delete()
-        server.delete()
 
     def delete_error_log(self):
         try:

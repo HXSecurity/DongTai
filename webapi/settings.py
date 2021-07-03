@@ -217,15 +217,23 @@ CAPTCHA_TIMEOUT = 1  # 超时(minutes)
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} [{module}.{funcName}:{lineno}] {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
         },
         'dongtai-webapi': {
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'logs/apiserver.log',
+            'filename': 'logs/dongtai-webapi.log',
             'backupCount': 5,
             'maxBytes': 1024 * 1024 * 10,
+            'formatter': 'verbose'
         },
     },
     'loggers': {
