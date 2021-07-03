@@ -10,6 +10,8 @@
 # datetime:2020/10/23 11:55
 # software: PyCharm
 # project: webapi
+import logging
+
 import time
 
 from dongtai_models.models.strategy import IastStrategyModel
@@ -17,9 +19,38 @@ from dongtai_models.models.vul_level import IastVulLevel
 from dongtai_models.models.vulnerablity import IastVulnerabilityModel
 
 from apiserver.report.handler.report_handler_interface import IReportHandler
+from apiserver.report.handler.saas_method_pool_handler import SaasMethodPoolHandler
+
+logger = logging.getLogger('dongtai.openapi')
 
 
 class BaseVulnHandler(IReportHandler):
+    def __init__(self):
+        super().__init__()
+        self.server_name = None
+        self.server_port = None
+        self.server_env = None
+        self.hostname = None
+        self.agent_version = None
+        self.app_name = None
+        self.app_path = None
+        self.http_uri = None
+        self.http_url = None
+        self.http_query_string = None
+        self.http_header = None
+        self.http_method = None
+        self.http_scheme = None
+        self.http_secure = None
+        self.http_protocol = None
+        self.vuln_type = None
+        self.app_caller = None
+        self.taint_value = None
+        self.taint_position = None
+        self.client_ip = None
+        self.param_name = None
+        self.container = None
+        self.container_path = None
+
     @staticmethod
     def create_top_stack(obj):
         stack = f'{obj["classname"]}.{obj["methodname"]}({obj["in"]})'
@@ -65,7 +96,7 @@ class BaseVulnHandler(IReportHandler):
         self.http_uri = self.detail.get('http_uri')
         self.http_url = self.detail.get('http_url')
         self.http_query_string = self.detail.get('http_query_string')
-        self.http_header = self.detail.get('http_header')
+        self.http_header = self.detail.get('http_req_header')
         self.http_method = self.detail.get('http_method')
         self.http_scheme = self.detail.get('http_scheme')
         self.http_secure = self.detail.get('http_secure')
@@ -73,22 +104,23 @@ class BaseVulnHandler(IReportHandler):
         self.vuln_type = self.detail.get('vuln_type')
         self.app_caller = self.detail.get('app_caller')
         self.language = self.detail.get('language')
-        self.agent_name = self.detail.get('agent_name')
         self.taint_value = self.detail.get('taint_value')
         self.taint_position = self.detail.get('taint_position')
         self.client_ip = self.detail.get('http_client_ip')
         self.param_name = self.detail.get('param_name')
         self.container = self.detail.get('container')
         self.container_path = self.detail.get('container_path')
-        self.project_name = self.detail.get('project_name', 'Demo Project')
+        self.http_replay = self.detail.get('http_replay_request')
 
 
 class NormalVulnHandler(BaseVulnHandler):
     def save(self):
-        #  查漏洞名称对应的漏洞等级，狗咋熬漏洞等级表
-        agent = self.get_agent(project_name=self.project_name, agent_name=self.agent_name)
-        if agent:
-            vul_level, vul_type, vul_type_enable = self.get_vul_info(agent)
+        if self.http_replay:
+            # todo 检查重放请求的漏洞ID，如果存在，则更新状态为已验证；如果不存在，则创建漏洞
+            headers = SaasMethodPoolHandler.parse_headers(self.http_header)
+            logger.info('重放请求无需保存基础漏洞')
+        else:
+            vul_level, vul_type, vul_type_enable = self.get_vul_info(self.agent)
             if vul_type_enable == 'enable':
                 level = IastVulLevel.objects.filter(id=vul_level).first()
                 strategy = IastStrategyModel.objects.filter(vul_type=vul_type).first()
@@ -97,7 +129,7 @@ class NormalVulnHandler(BaseVulnHandler):
                         type=strategy.vul_name,
                         url=self.http_url,
                         http_method=self.http_method,
-                        agent=agent
+                        agent=self.agent
                     ).first()
                     if iast_vul:
                         iast_vul.req_header = self.http_header
@@ -107,7 +139,7 @@ class NormalVulnHandler(BaseVulnHandler):
                         iast_vul.status = '已上报'
                         iast_vul.save()
                     else:
-                        vul = IastVulnerabilityModel(
+                        IastVulnerabilityModel.objects.create(
                             type=strategy.vul_name,
                             level=level,
                             url=self.http_url,
@@ -120,7 +152,7 @@ class NormalVulnHandler(BaseVulnHandler):
                             req_data='',  # fixme 请求体 数据保存
                             res_header='',  # fixme 响应头，暂时没有，后续补充
                             res_body='',  # fixme 响应体数据
-                            agent=agent,
+                            agent=self.agent,
                             context_path=self.app_name,
                             counts=1,
                             status='已上报',
@@ -129,4 +161,3 @@ class NormalVulnHandler(BaseVulnHandler):
                             latest_time=int(time.time()),
                             client_ip=self.client_ip
                         )
-                        vul.save()
