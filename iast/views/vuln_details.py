@@ -192,7 +192,7 @@ class VulnDetail(UserEndPoint):
             'client_ip': vul.client_ip,
             'status': vul.status,
             'taint_value': vul.taint_value,
-            'param_name': json.loads(vul.param_name)
+            'param_name': json.loads(vul.param_name) if vul.param_name else {}
         }
 
     def get_strategy(self):
