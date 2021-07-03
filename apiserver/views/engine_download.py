@@ -33,7 +33,7 @@ class EngineDownloadEndPoint(OpenApiEndPoint):
         """
         package_name = request.query_params.get('package_name')
         jdk = request.query_params.get('jdk.version')
-        if package_name not in ('iast-core', 'iast-inject') or jdk not in ('1', '2'):
+        if package_name not in ('iast-core', 'iast-inject', 'dongtai-servlet'):
             return R.failure({
                 "status": -1,
                 "msg": "bad gay."
