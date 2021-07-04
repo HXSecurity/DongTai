@@ -22,3 +22,6 @@
 [submodule "docker"]
 	path = docker
 	url = https://github.com/HXSecurity/dongtai-base-image.git
+[submodule "plugins/IDEA"]
+	path = plugins/IDEA
+	url = https://github.com/HXSecurity/DongTai-Plugin-IDEA.git
