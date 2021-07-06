@@ -14,7 +14,6 @@ from dongtai_models.models.agent_method_pool import MethodPool
 from dongtai_models.models.replay_method_pool import IastAgentMethodPoolReplay
 
 from AgentServer import settings
-from AgentServer.settings import BASE_ENGINE_URL
 from apiserver.report.handler.report_handler_interface import IReportHandler
 
 logger = logging.getLogger('dongtai.openapi')
@@ -71,10 +70,11 @@ class SaasMethodPoolHandler(IReportHandler):
             timestamp = int(time.time())
 
             # fixme 直接查询replay_id是否存在，如果存在，直接覆盖
-            is_exist = IastAgentMethodPoolReplay.objects.values("id").filter(replay_id=replay_id).exists()
-            if is_exist:
+            query_set = IastAgentMethodPoolReplay.objects.values("id").filter(replay_id=replay_id)
+            if query_set.exists():
                 # 更新
-                replay_model = IastAgentMethodPoolReplay.objects.filter(replay_id=replay_id).update(
+                replay_model = query_set.first()
+                replay_model.update(
                     url=self.http_url,
                     uri=self.http_uri,
                     req_header=self.http_req_header,
@@ -88,7 +88,7 @@ class SaasMethodPoolHandler(IReportHandler):
                     clent_ip=self.client_ip,
                     update_time=timestamp
                 )
-                pass
+                method_pool_id = replay_model['id']
             else:
                 # 新增
                 replay_model = IastAgentMethodPoolReplay.objects.create(
@@ -113,8 +113,9 @@ class SaasMethodPoolHandler(IReportHandler):
                     create_time=timestamp,
                     update_time=timestamp
                 )
-                pass
-            self.send_to_engine(method_pool_id=replay_model.id, model='replay')
+                method_pool_id = replay_model.id
+            if method_pool_id:
+                self.send_to_engine(method_pool_id=method_pool_id, model='replay')
         else:
             pool_sign = self.calc_hash()
             current_version_agents = self.get_project_agents(self.agent)
