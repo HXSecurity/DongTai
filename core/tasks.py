@@ -8,14 +8,11 @@ import json
 from json import JSONDecodeError
 
 import time
-
 from celery import shared_task
 from celery.apps.worker import logger
 from django.db.models import Sum, Q
-from dongtai_models.models.replay_method_pool import IastAgentMethodPoolReplay
 
 from core.engine import VulEngine
-from core.mvn_spider import MavenSpider
 from dongtai_models.models import User
 from dongtai_models.models.agent import IastAgent
 from dongtai_models.models.agent_method_pool import MethodPool
@@ -25,6 +22,7 @@ from dongtai_models.models.heartbeat import Heartbeat
 from dongtai_models.models.hook_strategy import HookStrategy
 from dongtai_models.models.hook_type import HookType
 from dongtai_models.models.project import IastProject
+from dongtai_models.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai_models.models.replay_queue import IastReplayQueue
 from dongtai_models.models.sca_maven_artifact import ScaMavenArtifact
 from dongtai_models.models.sca_vul_db import ScaVulDb
@@ -152,7 +150,6 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
         )
         status, stack, source_sign, sink_sign, taint_value = engine.result()
         if status:
-            # todo 增加source点来源标识
             vul_found.send(sender="tasks.search_and_save_vul", vul_meta=method_pool_model,
                            vul_level=vul_strategy['level'],
                            vul_name=vul_strategy['vul_name'],
@@ -170,7 +167,7 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
                 if replay_type == const.VUL_REPLAY:
                     timestamp = int(time.time())
                     IastVulnerabilityModel.objects.filter(id=relation_id).update(
-                        status='未验证成功',
+                        status='已忽略',
                         latest_time=timestamp
                     )
                     IastReplayQueue.objects.filter(id=replay_id).update(
@@ -202,7 +199,7 @@ def search_and_save_sink(engine, method_pool_model, strategy):
         method_pool_model.sinks.add(strategy.get('strategy'))
 
 
-@shared_task(queue='vul-scan')
+@shared_task(queue='dongtai-method-pool-scan')
 def search_vul_from_method_pool(method_pool_id):
     logger.info(f'漏洞检测开始，方法池 {method_pool_id}')
     try:
@@ -223,7 +220,7 @@ def search_vul_from_method_pool(method_pool_id):
         logger.error(f'漏洞检测出错，错误原因：{e}')
 
 
-@shared_task(queue='replay-vul-scan')
+@shared_task(queue='dongtai-replay-vul-scan')
 def search_vul_from_replay_method_pool(method_pool_id):
     logger.info(f'漏洞检测开始，方法池 {method_pool_id}')
     try:
@@ -244,7 +241,7 @@ def search_vul_from_replay_method_pool(method_pool_id):
         logger.error(f'漏洞检测出错，错误原因：{e}')
 
 
-@shared_task(queue='vul-scan')
+@shared_task(queue='dongtai-strategy-scan')
 def search_vul_from_strategy(strategy_id):
     """
     根据sink方法策略ID搜索已有方法池中的数据是否存在满足条件的数据
@@ -267,7 +264,7 @@ def search_vul_from_strategy(strategy_id):
         logger.error(f'漏洞检测出错，错误原因：{e}')
 
 
-@shared_task(queue='vul-search')
+@shared_task(queue='dongtai-search-scan')
 def search_sink_from_method_pool(method_pool_id):
     """
     根据方法池ID搜索方法池中是否匹配到策略库中的sink方法
@@ -289,7 +286,7 @@ def search_sink_from_method_pool(method_pool_id):
         logger.error(f'sink规则扫描出错，错误原因：{e}')
 
 
-@shared_task(queue='vul-search')
+@shared_task(queue='dongtai-search-scan')
 def search_sink_from_strategy(strategy_id):
     """
     根据策略ID搜索方法池中是否匹配到当前策略
@@ -331,7 +328,7 @@ def load_methods_from_strategy(strategy_id):
     return strategy_value, method_pool_queryset
 
 
-@shared_task(queue='periodic_task')
+@shared_task(queue='dongtai-periodic-task')
 def update_sca():
     """
     根据SCA数据库，更新SCA记录信息
@@ -368,7 +365,7 @@ def update_sca():
         logger.error(f'SCA离线检测出错，错误原因：{e}')
 
 
-@shared_task(queue='periodic_task')
+@shared_task(queue='dongtai-periodic-task')
 def update_agent_status():
     """
     更新Agent状态
@@ -388,7 +385,7 @@ def update_agent_status():
         logger.error(f'检测引擎状态更新出错，错误详情：{e}')
 
 
-@shared_task(queue='periodic_task')
+@shared_task(queue='dongtai-periodic-task')
 def heartbeat():
     """
     发送心跳
@@ -398,13 +395,13 @@ def heartbeat():
 
     logger.info('core.tasks.heartbeat is running')
     agents = IastAgent.objects.all()
-    agent_enable = agents.filter(is_running=1).count()
-    agent_counts = agents.count()
-    heartbeat = Heartbeat.objects.filter(agent__in=agents).annotate(Sum("req_count")).count()
-    project_count = IastProject.objects.count()
-    user_count = User.objects.count()
-    vul_count = IastVulnerabilityModel.objects.count()
-    method_pool_count = MethodPool.objects.count()
+    agent_enable = agents.values('id').filter(is_running=1).count()
+    agent_counts = agents.values('id').count()
+    heartbeat = Heartbeat.objects.values('id').filter(agent__in=agents).annotate(Sum("req_count")).count()
+    project_count = IastProject.objects.values('id').count()
+    user_count = User.objects.values('id').count()
+    vul_count = IastVulnerabilityModel.objects.values('id').count()
+    method_pool_count = MethodPool.objects.values('id').count()
     heartbeat_raw = {
         "status": 200,
         "msg": "engine is running",
@@ -428,21 +425,7 @@ def heartbeat():
     except Exception as e:
         logger.info(f'[core.tasks.heartbeat] send heartbeat data to OpenApi Service Error. reason is {e}')
 
-
-@shared_task(queue='periodic_task')
-def maven_spider():
-    """
-    发送心跳
-    :return:
-    """
-    spider = MavenSpider()
-    try:
-        spider.cron(MavenSpider.BASEURL, MavenSpider.INDEX)
-    except Exception as e:
-        logger.error(f'maven爬虫出现异常，异常信息：{e}')
-
-
-@shared_task(queue='periodic_task')
+@shared_task(queue='dongtai-periodic-task')
 def clear_error_log():
     """
     清理错误日志
@@ -453,13 +436,12 @@ def clear_error_log():
         timestamp = int(time.time())
         out_date_timestamp = 60 * 60 * 24 * 30
         IastErrorlog.objects.filter(dt__lt=(timestamp - out_date_timestamp)).delete()
-        # LogEntryManager().filter()
         logger.info(f'日志清理成功')
     except Exception as e:
         logger.error(f'日志清理失败，错误详情：{e}')
 
 
-@shared_task(queue='replay_task')
+@shared_task(queue='dongtai-replay-task')
 def vul_recheck():
     """
     定时处理漏洞验证
