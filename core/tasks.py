@@ -492,7 +492,7 @@ def vul_recheck():
                                 # 检查body，替换
                                 post_body = json.loads(body)
                                 if param_name in post_body:
-                                    post_body[param_name] = '/../`dongtai'
+                                    post_body[param_name] = '.%2F..%2F%60dongtai'
                                     body = json.dumps(post_body)
                                 else:
                                     _param_items = param_value.split('&')
@@ -523,7 +523,7 @@ def vul_recheck():
                                 _header_list = header_raw[index].split(':')
                                 _header_name = _header_list[0]
                                 if _header_name == param_name:
-                                    header_raw[index] = f'{_header_name}:/../dongtaiIAST'
+                                    header_raw[index] = f'{_header_name}:.%2F..%2F%60dongtai'
                                     break
 
                             headers = base64.b64encode('\n'.join(header_raw))
@@ -547,7 +547,7 @@ def vul_recheck():
                                 for index in range(item_length):
                                     cookie_item = cookie_raw_items[index].split('=')
                                     if cookie_item[0] == param_name:
-                                        cookie_raw_items[index] = f'{param_name}=/../`dongtai'
+                                        cookie_raw_items[index] = f'{param_name}=.%2F..%2F%60dongtai'
                                         break
                                 cookie_raw = ';'.join(cookie_raw_items)
                                 header_raw[cookie_index] = cookie_raw
