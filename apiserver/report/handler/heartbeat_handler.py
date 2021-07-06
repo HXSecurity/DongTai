@@ -13,6 +13,7 @@ from dongtai_models.models.agent import IastAgent
 from dongtai_models.models.heartbeat import Heartbeat
 from dongtai_models.models.replay_queue import IastReplayQueue
 from dongtai_models.models.server import IastServerModel
+from dongtai_models.models.vulnerablity import IastVulnerabilityModel
 
 from apiserver import const
 from apiserver.report.handler.report_handler_interface import IReportHandler
@@ -136,6 +137,7 @@ class HeartBeatHandler(IReportHandler):
 
     def get_result(self, msg=None):
         try:
+            timestamp = int(time.time())
             project_agents = IastAgent.objects.values('id').filter(bind_project_id=self.agent.bind_project_id)
             if project_agents:
                 replay_queryset = IastReplayQueue.objects.values('id', 'relation_id', 'uri', 'method', 'scheme',
@@ -146,19 +148,33 @@ class HeartBeatHandler(IReportHandler):
                 # 读取，然后返回
                 if replay_queryset:
                     success_ids = []
+                    success_vul_ids = []
                     failure_ids = []
+                    failure_vul_ids = []
                     replay_requests = list()
                     for replay_request in replay_queryset:
                         if replay_request['uri']:
                             replay_requests.append(replay_request)
                             success_ids.append(replay_request['id'])
+                            if replay_request['replay_type'] == const.VUL_REPLAY:
+                                success_vul_ids.append(replay_request['relation_id'])
                         else:
                             failure_ids.append(replay_request['id'])
+                            if replay_request['replay_type'] == const.VUL_REPLAY:
+                                failure_vul_ids.append(replay_request['relation_id'])
 
-                    IastReplayQueue.objects.filter(id__in=success_ids).update(update_time=int(time.time()),
+                    IastReplayQueue.objects.filter(id__in=success_ids).update(update_time=timestamp,
                                                                               state=const.SOLVING)
-                    IastReplayQueue.objects.filter(id__in=failure_ids).update(update_time=int(time.time()),
-                                                                              state=const.SOLVED)
+                    IastReplayQueue.objects.filter(id__in=failure_ids).update(update_time=timestamp, state=const.SOLVED)
+
+                    IastVulnerabilityModel.objects.filter(id__in=success_vul_ids).update(
+                        latest_time=timestamp,
+                        status='验证中'
+                    )
+                    IastVulnerabilityModel.objects.filter(id__in=failure_vul_ids).update(
+                        latest_time=timestamp,
+                        status='验证失败'
+                    )
                     logger.info(f'重放请求下发成功')
                     return replay_requests
                 else:
