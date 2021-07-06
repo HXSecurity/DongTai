@@ -280,13 +280,13 @@ def handler_replay_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bott
     timestamp = int(time.time())
     vul = IastVulnerabilityModel.objects.filter(id=kwargs['relation_id']).first()
     if vul and vul.type == vul_name:
-        vul.status = '已验证存在'
+        vul.status = '已确认'
         vul.latest_time = timestamp
         vul.save(update_fields=['status', 'latest_time'])
 
         IastReplayQueue.objects.filter(id=kwargs['replay_id']).update(
             state=const.SOLVED,
-            result=const.RECHECK_FALSE,
+            result=const.RECHECK_TRUE,
             verify_time=timestamp,
             update_time=timestamp
         )

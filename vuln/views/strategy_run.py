@@ -33,7 +33,7 @@ class StrategyRunEndPoint(EndPoint):
             model = request.query_params.get('model')
             if method_pool_id:
                 if model == 'replay':
-                    pass
+                    self.handler_replay_request(method_pool_id)
                 else:
                     self.handler_method_pool(method_pool_id)
 
