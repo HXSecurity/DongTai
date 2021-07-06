@@ -484,7 +484,7 @@ def vul_recheck():
                                 _params = _param_items[index].split('=')
                                 _param_name = _params[0]
                                 if _param_name == param_name:
-                                    _param_items[index] = f'{_param_name}=./../`dongtai'
+                                    _param_items[index] = f'{_param_name}=.%2F..%2F%60dongtai'
                                     break
                             param_value = '&'.join(_param_items)
                         elif position == 'POST':
@@ -501,7 +501,7 @@ def vul_recheck():
                                         _params = _param_items[index].split('=')
                                         _param_name = _params[0]
                                         if _param_name == param_name:
-                                            _param_items[index] = f'{_param_name}=./../`dongtai'
+                                            _param_items[index] = f'{_param_name}=.%2F..%2F%60dongtai'
                                             break
                                     param_value = '&'.join(_param_items)
                             except:
@@ -511,7 +511,7 @@ def vul_recheck():
                                     _params = _param_items[index].split('=')
                                     _param_name = _params[0]
                                     if _param_name == param_name:
-                                        _param_items[index] = f'{_param_name}=./../`dongtai'
+                                        _param_items[index] = f'{_param_name}=.%2F..%2F%60dongtai'
                                         break
                                 param_value = '&'.join(_param_items)
                         elif position == 'HEADER':
