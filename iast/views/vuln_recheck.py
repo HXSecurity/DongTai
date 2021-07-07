@@ -54,41 +54,104 @@ class VulReCheck(UserEndPoint):
                     replay_type=const.VUL_REPLAY
                 )
                 success_count = success_count + 1
+
+            vul.status = const.VUL_WAITING
+            vul.latest_time = timestamp
+            vul.save(update_fields=['status', 'latest_time'])
         return waiting_count, success_count, re_success_count
+
+    @staticmethod
+    def vul_check_for_queryset(vul_queryset):
+        no_agent, checked_vuls = 0, list()
+        for vul_model in vul_queryset:
+            project_id = vul_model.agent.bind_project_id
+            if project_id and IastAgent.objects.values("id").filter(bind_project_id=project_id,
+                                                                    is_running=const.RUNNING,
+                                                                    is_core_running=const.CORE_IS_RUNNING).exists():
+                checked_vuls.append(vul_model)
+            else:
+                no_agent = no_agent + 1
+        waiting_count, success_count, re_success_count = VulReCheck.recheck(vul_queryset)
+        return no_agent, waiting_count, success_count, re_success_count
 
     def post(self, request):
         """
+        查找项目中存在活跃探针的数量
         :param request:
         :return:
         """
         try:
             vul_ids = request.data.get('ids')
             vul_ids = vul_ids.split(',')
-            auth_agents = self.get_auth_agents_with_user(user=request.user)
-            vul_queryset = IastVulnerabilityModel.objects.filter(id__in=vul_ids, agent__in=auth_agents)
-            waiting_count, success_count, re_success_count = self.recheck(vul_queryset)
-            return R.success(
-                msg=f'{waiting_count}条数据待重放，无需重复验证；{re_success_count}条数据重新下发验证请求；{success_count}条数据已下发验证请求')
+            if vul_ids:
+                auth_agents = self.get_auth_agents_with_user(user=request.user)
+                vul_queryset = IastVulnerabilityModel.objects.filter(id__in=vul_ids, agent__in=auth_agents)
+                no_agent, waiting_count, success_count, re_success_count = self.vul_check_for_queryset(vul_queryset)
+
+                return R.success(
+                    data={
+                        "no_agent": no_agent,
+                        "pending": waiting_count,
+                        "recheck": re_success_count,
+                        "checking": success_count
+                    },
+                    msg=f'处理成功')
+            else:
+                return R.failure(msg='验证的漏洞数据不能为空')
         except Exception as e:
             return R.failure(msg=f'漏洞重放出错，错误原因：{e}')
 
-    def get(self, request):
-        # 处理批量重放，例如，项目名称
+    def vul_check_for_project(self, project_id, auth_users):
         try:
-            project_id = request.query_params.get('projectId')
-            project_exist = IastProject.objects.values("id").filter(id=project_id,
-                                                                    user__in=self.get_auth_users(request.user)).exists()
+            project_exist = IastProject.objects.values("id").filter(id=project_id, user__in=auth_users).exists()
             if project_exist:
-                agent_queryset = IastAgent.objects.values("id").filter(bind_project_id=project_id).first()
+                agent_queryset = IastAgent.objects.values("id").filter(bind_project_id=project_id)
                 if agent_queryset:
                     agent_ids = agent_queryset.values()
                     vul_queryset = IastVulnerabilityModel.objects.filter(agent_id__in=agent_ids)
                     waiting_count, success_count, re_success_count = self.recheck(vul_queryset)
-                    return R.success(
-                        msg=f'{waiting_count}条数据待重放，无需重复验证；{re_success_count}条数据重新下发验证请求；{success_count}条数据已下发验证请求')
+                    return True, waiting_count, re_success_count, success_count, None
                 else:
-                    return R.failure(msg='当前项目尚未发现漏洞，无法重放')
+                    return False, 0, 0, 0, '当前项目尚未关联探针，无法进行漏洞重放'
             else:
-                return R.failure(msg=f'无权访问项目[{project_id}]')
+                return False, 0, 0, 0, f'无权访问项目[{project_id}]'
+        except Exception as e:
+            return False, 0, 0, 0, f'批量重放出错，错误详情：{e}'
+
+    def get(self, request):
+        # 处理批量重放，例如，项目名称
+        try:
+            check_type = request.query_params.get('type')
+
+            if check_type == 'all':
+                vul_queryset = IastVulnerabilityModel.objects.filter(
+                    agent__in=self.get_auth_agents_with_user(request.user))
+                no_agent, pending, recheck, checking = self.vul_check_for_queryset(vul_queryset)
+
+                return R.success(
+                    data={
+                        "no_agent": no_agent,
+                        "pending": pending,
+                        "recheck": recheck,
+                        "checking": checking
+                    },
+                    msg=f'处理成功')
+            elif check_type == 'project':
+                project_id = request.query_params.get('projectId')
+                auth_users = self.get_auth_users(request.user)
+                if project_id:
+                    status, pending, recheck, checking, msg = self.vul_check_for_project(project_id,
+                                                                                         auth_users=auth_users)
+                    return R.success(
+                        data={
+                            "no_agent": 0,
+                            "pending": pending,
+                            "recheck": recheck,
+                            "checking": checking
+                        },
+                        msg=msg)
+                return R.failure(msg=f'项目ID不能为空')
+            return R.failure(msg="参数格式不正确")
+
         except Exception as e:
             return R.failure(msg=f'批量重放出错，错误详情：{e}')
