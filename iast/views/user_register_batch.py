@@ -64,8 +64,13 @@ class UserRegisterEndPoint(SystemAdminEndPoint):
             username = entry['field_1']
             phone = entry['field_2']
             email_addr = entry['field_3']
-            self.register_with_raw(username=username, phone=phone, email_addr=email_addr, email=self.email)
-            logger.info(f'用户{username}创建成功')
+
+            _user = User.objects.filter(username=username).first()
+            if _user:
+                logger.info(f'用户{username}已存在')
+            else:
+                self.register_with_raw(username=username, phone=phone, email_addr=email_addr, email=self.email)
+                logger.info(f'用户{username}创建成功')
         else:
             logger.warn(f'用户创建失败，原因：token不正确')
         return R.success(msg='账号注册成功')
