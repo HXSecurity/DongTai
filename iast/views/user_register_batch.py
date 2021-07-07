@@ -5,6 +5,7 @@
 # project: dongtai-webapi
 
 import csv
+import logging
 
 from django.contrib.auth.models import Group
 from dongtai_models.models import User
@@ -14,6 +15,8 @@ from base import R
 from iast.base.user import SystemAdminEndPoint
 from iast.notify.email import Email
 from webapi import settings
+
+logger = logging.getLogger("dongtai-webapi")
 
 
 class UserRegisterEndPoint(SystemAdminEndPoint):
@@ -58,14 +61,13 @@ class UserRegisterEndPoint(SystemAdminEndPoint):
         webhook_token = request.data.get('token')
         if token == webhook_token:
             entry = request.data['entry']
-            username = entry['field1']
-            phone = entry['field2']
-            email_addr = entry['field3']
+            username = entry['field_1']
+            phone = entry['field_2']
+            email_addr = entry['field_3']
             self.register_with_raw(username=username, phone=phone, email_addr=email_addr, email=self.email)
-            print(request.data)
-            print('开始注册')
+            logger.info(f'用户{username}创建成功')
         else:
-            print('token不正确')
+            logger.warn(f'用户创建失败，原因：token不正确')
         return R.success(msg='账号注册成功')
 
     def read_user_data(self):
