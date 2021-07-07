@@ -116,6 +116,7 @@ urlpatterns = [
     path('user/info', UserInfoEndpoint.as_view()),
     path('user/token', UserToken.as_view()),
     path('user/register', UserRegisterEndPoint.as_view()),
+    path('user/register/<str:token>', UserRegisterEndPoint.as_view()),
     path('user/password/reset', UserPasswordReset.as_view()),
 
     # 验证码相关
