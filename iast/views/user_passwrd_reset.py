@@ -26,6 +26,7 @@ class UserPasswordReset(TalentAdminEndPoint):
                 if user:
                     username = user.get_username()
                     user.set_password(f'{username}@123')
+                    user.save(update_fields=['password'])
                     msg = f'用户{username}密码重置成功'
                     return R.success(msg=msg)
                 else:
