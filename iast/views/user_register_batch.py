@@ -58,7 +58,7 @@ class UserRegisterEndPoint(SystemAdminEndPoint):
         :return:
         """
         # 接受参数
-        webhook_token = request.data.get('token')
+        webhook_token = settings.config.get('wenjuan_webhook', 'token')
         if token == webhook_token:
             entry = request.data['entry']
             username = entry['field_1']
