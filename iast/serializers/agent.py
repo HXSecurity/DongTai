@@ -40,6 +40,11 @@ class AgentSerializer(serializers.ModelSerializer):
             return "未运行"
 
     def get_system_load(self, obj):
+        """
+        fixme 修改数据格式，仅展示内存占比、CPU占比
+        :param obj:
+        :return:
+        """
         heartbeat = self.get_latest_heartbeat(obj)
         if heartbeat:
             return heartbeat['cpu']
@@ -49,12 +54,15 @@ class AgentSerializer(serializers.ModelSerializer):
     def get_server(self, obj):
         def get_server_addr():
             if obj.server_id not in self.SERVER_MAP:
-                self.SERVER_MAP[obj.server_id] = f'{obj.server.ip}:{obj.server.port}'
+                if obj.server.ip and obj.server.port and obj.server.port != 0:
+                    self.SERVER_MAP[obj.server_id] = f'{obj.server.ip}:{obj.server.port}'
+                else:
+                    return '探针暂未检测到流量'
             return self.SERVER_MAP[obj.server_id]
 
         if obj.server_id:
             return get_server_addr()
-        return '暂未绑定服务器信息'
+        return '探针暂未检测到流量'
 
     def get_user(self, obj):
         if obj.user_id not in self.USER_MAP:

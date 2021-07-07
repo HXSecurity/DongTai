@@ -5,6 +5,7 @@
 # software: PyCharm
 # project: sentry
 import json
+import logging
 
 from django.contrib.admin.models import LogEntryManager, CHANGE, LogEntry
 from django.contrib.contenttypes.models import ContentType
@@ -17,6 +18,8 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework_proxy.views import ProxyView
+
+logger = logging.getLogger("dongtai-webapi")
 
 
 class EndPoint(APIView):
@@ -79,6 +82,7 @@ class EndPoint(APIView):
 
         except Exception as exc:
             # fixme 增加全局异常处置
+            logger.error(f'url: {self.request.path}出错，原因：{exc}')
             response = self.handle_exception(exc)
 
         self.response = self.finalize_response(request, response, *args, **kwargs)

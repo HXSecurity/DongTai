@@ -33,11 +33,17 @@ class VulnList(UserEndPoint):
             "msg": "success",
             "data": []
         }
-        queryset = IastVulnerabilityModel.objects.values('id', 'type', 'url', 'uri', 'agent_id', 'level_id',
-                                                         'http_method', 'top_stack', 'bottom_stack', 'taint_position',
-                                                         'latest_time', 'first_time', 'language', 'status').filter(
-            agent__in=self.get_auth_agents_with_user(request.user))
-        # 提取过滤条件：
+        auth_agents = self.get_auth_agents_with_user(request.user)
+        if auth_agents:
+            queryset = IastVulnerabilityModel.objects.values('id', 'type', 'url', 'uri', 'agent_id', 'level_id',
+                                                             'http_method', 'top_stack', 'bottom_stack',
+                                                             'taint_position',
+                                                             'latest_time', 'first_time', 'language', 'status').filter(
+                agent__in=auth_agents)
+        else:
+            return R.success(page={}, data=[])
+
+            # 提取过滤条件：
         user = request.user
         auth_users = self.get_auth_users(user)
 
@@ -62,7 +68,7 @@ class VulnList(UserEndPoint):
         if project_id:
             # 获取项目当前版本信息
             current_project_version = get_project_version(project_id, auth_users)
-            agents = self.get_auth_agents(auth_users).filter(
+            agents = auth_agents.filter(
                 bind_project_id=project_id,
                 online=1,
                 project_version_id=current_project_version.get("version_id", 0))
@@ -71,6 +77,10 @@ class VulnList(UserEndPoint):
         url = request.query_params.get('url', None)
         if url and url != '':
             queryset = queryset.filter(url__icontains=url)
+
+        status = request.query_params.get('status')
+        if status:
+            queryset = queryset.filter(status=status)
 
         order = request.query_params.get('order')
         if order:

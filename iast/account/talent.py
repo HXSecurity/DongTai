@@ -10,6 +10,7 @@ import time
 from django.contrib.auth.models import Group
 from django.db import transaction
 from django.http import JsonResponse
+from dongtai_models.models.hook_talent_strategy import IastHookTalentStrategy
 
 from base import R
 from iast.base.system import SystemEndPoint
@@ -115,6 +116,7 @@ class TalentEndPoint(SystemEndPoint):
             department.users.all().delete()
             # todo 增加用户创建的agent及相关数据的删除
         departments.delete()
+        IastHookTalentStrategy.objects.filter(talent=talent).delete()
         talent.delete()
         return JsonResponse({
             'status': 201,

@@ -21,6 +21,10 @@ STRATEGY_DISABLE = 'disable'
 
 RUNNING = 1
 
+# 定义Agent运行状态
+CORE_IS_RUNNING = 1
+CORE_NOT_RUNNING = 0
+
 # 定义重放类型
 VUL_REPLAY = 1
 REQUEST_REPLAY = 2
@@ -35,3 +39,9 @@ SOLVING = 3
 RECHECK_ERROR = 2
 RECHECK_TRUE = 1
 RECHECK_FALSE = 0
+
+# 定义漏洞状态
+VUL_WAITING = '待验证'
+VUL_VERIFY = '验证中'
+VUL_TRUE = '已确认'
+VUL_FALSE = '已忽略'
