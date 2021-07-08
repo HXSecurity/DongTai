@@ -52,6 +52,8 @@ class EngineHeartBeatEndPoint(OpenApiEndPoint):
     @staticmethod
     def get_client_ip(request):
         try:
+            logger.info(request.META['HTTP_X_FORWARDED_FOR'])
+            logger.info(request.META['REMOTE_ADDR'])
             if 'HTTP_X_FORWARDED_FOR' in request.META:
                 ip = request.META['HTTP_X_FORWARDED_FOR']
             else:
