@@ -221,6 +221,7 @@ def parse_taint_position(source_method, vul_meta, taint_value):
 def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs):
     # 如果是重放请求，且重放请求类型为漏洞验证，更新漏洞状态为
     taint_value = kwargs['taint_value']
+    timestamp = int(time.time())
     param_names = parse_taint_position(source_method=top_stack, vul_meta=vul_meta, taint_value=taint_value)
     if parse_params:
         param_name = json.dumps(param_names)
@@ -241,7 +242,7 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
         vul.req_header = vul_meta.req_header
         vul.req_params = vul_meta.req_params
         vul.counts = vul.counts + 1
-        vul.latest_time = int(time.time())
+        vul.latest_time = timestamp
         vul.status = '待处理'
         vul.save(update_fields=['req_header', 'req_params', 'counts', 'latest_time', 'status'])
     else:
@@ -269,11 +270,33 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
             status='待处理',
             language=vul_meta.language,
             first_time=vul_meta.create_time,
-            latest_time=int(time.time()),
+            latest_time=timestamp,
             client_ip=vul_meta.clent_ip,
             param_name=param_name
         )
     return vul
+
+
+def create_vul_recheck_task(vul_id, agent, timestamp):
+    replay_model = IastReplayQueue.objects.filter(replay_type=const.VUL_REPLAY, relation_id=vul_id).first()
+    if replay_model:
+        if replay_model.state in [const.PENDING, const.WAITING, const.SOLVING]:
+            replay_model.count()
+        else:
+            replay_model.state = const.PENDING
+            replay_model.update_time = timestamp
+            replay_model.count = replay_model.count + 1
+            replay_model.save(update_fields=['state', 'update_time', 'count'])
+    else:
+        IastReplayQueue.objects.create(
+            agent=agent,
+            relation_id=vul_id,
+            state=const.PENDING,
+            count=1,
+            create_time=timestamp,
+            update_time=timestamp,
+            replay_type=const.VUL_REPLAY
+        )
 
 
 def handler_replay_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs):
@@ -292,6 +315,7 @@ def handler_replay_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bott
         )
     else:
         vul = save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs)
+        create_vul_recheck_task(vul_id=vul.id, agent=vul.agent, timestamp=timestamp)
     return vul
 
 
@@ -308,6 +332,7 @@ def handler_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stac
     :return:
     """
     # 如果是重放请求，且重放请求类型为漏洞验证，更新漏洞状态为
+    timestamp = int(time.time())
     try:
         replay_id = vul_meta.replay_id
         replay_type = vul_meta.replay_type
@@ -319,8 +344,10 @@ def handler_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stac
             vul = handler_replay_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs)
         else:
             vul = save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs)
+            create_vul_recheck_task(vul_id=vul.id, agent=vul.agent, timestamp=timestamp)
     except Exception as e:
         vul = save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs)
+        create_vul_recheck_task(vul_id=vul.id, agent=vul.agent, timestamp=timestamp)
 
     if vul:
         send_vul_notify(vul)
