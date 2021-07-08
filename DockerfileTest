@@ -11,7 +11,7 @@ RUN curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add - \
 
 COPY requirements.txt /opt/iast/apiserver/requirements.txt
 ADD https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/dongtai-models-test-1.0.tar.gz /opt/iast/apiserver/dongtai-models-1.0.tar.gz
-RUN pip3 install -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com  -r /opt/iast/apiserver/requirements.txt && pip3 install /opt/iast/apiserver/dongtai-models-1.0.tar.gz && rm -rf /opt/iast/apiserver/dongtai-models-1.0.tar.gz
+RUN pip3 install -r /opt/iast/apiserver/requirements.txt && pip3 install /opt/iast/apiserver/dongtai-models-1.0.tar.gz && rm -rf /opt/iast/apiserver/dongtai-models-1.0.tar.gz
 
 
 COPY . /opt/iast/apiserver
