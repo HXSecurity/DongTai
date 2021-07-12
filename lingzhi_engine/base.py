@@ -9,12 +9,12 @@ import logging
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from dongtai_models.models import User
-from dongtai_models.models.agent import IastAgent
+from dongtai.models import User
+from dongtai.models.agent import IastAgent
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.views import APIView
 
-from lingzhi_engine import const
+from dongtai.utils import const
 from vuln.permissions import UserPermission
 
 logger = logging.getLogger('dongtai-engine')

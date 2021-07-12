@@ -13,23 +13,23 @@ from celery.apps.worker import logger
 from django.db.models import Sum, Q
 
 from core.engine import VulEngine
-from dongtai_models.models import User
-from dongtai_models.models.agent import IastAgent
-from dongtai_models.models.agent_method_pool import MethodPool
-from dongtai_models.models.asset import Asset
-from dongtai_models.models.errorlog import IastErrorlog
-from dongtai_models.models.heartbeat import Heartbeat
-from dongtai_models.models.hook_strategy import HookStrategy
-from dongtai_models.models.hook_type import HookType
-from dongtai_models.models.project import IastProject
-from dongtai_models.models.replay_method_pool import IastAgentMethodPoolReplay
-from dongtai_models.models.replay_queue import IastReplayQueue
-from dongtai_models.models.sca_maven_artifact import ScaMavenArtifact
-from dongtai_models.models.sca_vul_db import ScaVulDb
-from dongtai_models.models.strategy import IastStrategyModel
-from dongtai_models.models.vul_level import IastVulLevel
-from dongtai_models.models.vulnerablity import IastVulnerabilityModel
-from lingzhi_engine import const
+from dongtai.models import User
+from dongtai.models.agent import IastAgent
+from dongtai.models.agent_method_pool import MethodPool
+from dongtai.models.asset import Asset
+from dongtai.models.errorlog import IastErrorlog
+from dongtai.models.heartbeat import Heartbeat
+from dongtai.models.hook_strategy import HookStrategy
+from dongtai.models.hook_type import HookType
+from dongtai.models.project import IastProject
+from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
+from dongtai.models.replay_queue import IastReplayQueue
+from dongtai.models.sca_maven_artifact import ScaMavenArtifact
+from dongtai.models.sca_vul_db import ScaVulDb
+from dongtai.models.strategy import IastStrategyModel
+from dongtai.models.vul_level import IastVulLevel
+from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai.utils import const
 from signals import vul_found
 
 
