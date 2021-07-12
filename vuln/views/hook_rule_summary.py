@@ -14,13 +14,12 @@ from lingzhi_engine.base import R, UserEndPoint
 class HookRuleSummaryEndPoint(UserEndPoint):
     def get(self, request):
         rule_type_queryset = HookType.objects.filter(created_by__in=[request.user.id, const.SYSTEM_USER_ID])
-        rule_type_count = rule_type_queryset.count()
+        rule_type_count = rule_type_queryset.values('id').count()
 
         sink_type_queryset = rule_type_queryset.filter(type=const.RULE_SINK)
-        sink_count = HookStrategy.objects.filter(type__in=sink_type_queryset).count()
+        sink_count = HookStrategy.objects.values('id').filter(type__in=sink_type_queryset).count()
 
-        rule_queryset = HookStrategy.objects.filter(type__in=rule_type_queryset)
-        rule_count = rule_queryset.count()
+        rule_count = HookStrategy.objects.values('id').filter(type__in=rule_type_queryset).count()
         return R.success(data={
             'typeCount': rule_type_count,
             'ruleCount': rule_count,
