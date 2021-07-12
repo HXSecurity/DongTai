@@ -11,15 +11,15 @@ from base import R
 from iast.base.agent import get_agents_with_project, get_user_project_name, \
     get_user_agent_pro, get_all_server
 from iast.base.user import UserEndPoint
-from dongtai_models.models.vul_level import IastVulLevel
+from dongtai.models.vul_level import IastVulLevel
 from iast.base.project_version import get_project_version
-from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.vulnerablity import IastVulnerabilityModel
 from iast.serializers.vul import VulSerializer
 
 
 class VulnList(UserEndPoint):
 
-    def get(self, request: Request):
+    def get(self, request):
         """
         获取漏洞列表
         - 支持排序
@@ -33,7 +33,8 @@ class VulnList(UserEndPoint):
             "msg": "success",
             "data": []
         }
-        auth_agents = self.get_auth_agents_with_user(request.user)
+        auth_users = self.get_auth_users(request.user)
+        auth_agents = self.get_auth_agents(auth_users)
         if auth_agents:
             queryset = IastVulnerabilityModel.objects.values('id', 'type', 'url', 'uri', 'agent_id', 'level_id',
                                                              'http_method', 'top_stack', 'bottom_stack',
@@ -42,10 +43,6 @@ class VulnList(UserEndPoint):
                 agent__in=auth_agents)
         else:
             return R.success(page={}, data=[])
-
-            # 提取过滤条件：
-        user = request.user
-        auth_users = self.get_auth_users(user)
 
         language = request.query_params.get('language')
         if language:

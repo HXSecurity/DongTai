@@ -9,13 +9,13 @@ from rest_framework.request import Request
 from base import R
 from iast.base.agent import get_agents_with_project
 from iast.base.sca import ScaEndPoint
-from dongtai_models.models.asset import Asset
+from dongtai.models.asset import Asset
 from iast.serializers.sca import ScaSerializer
 from iast.base.project_version import get_project_version
 
 
 class ScaList(ScaEndPoint):
-    def get(self, request: Request):
+    def get(self, request):
         """
         获取三方组件列表
         - 支持排序

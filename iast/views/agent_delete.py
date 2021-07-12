@@ -7,16 +7,16 @@
 
 import logging
 
-from dongtai_models.models.asset import Asset
-from dongtai_models.models.errorlog import IastErrorlog
-from dongtai_models.models.heartbeat import Heartbeat
-from dongtai_models.models.iast_overpower_user import IastOverpowerUserAuth
-from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.asset import Asset
+from dongtai.models.errorlog import IastErrorlog
+from dongtai.models.heartbeat import Heartbeat
+from dongtai.models.iast_overpower_user import IastOverpowerUserAuth
+from dongtai.models.vulnerablity import IastVulnerabilityModel
 
 from base import R
 from iast.base.user import UserEndPoint
-from dongtai_models.models.agent import IastAgent
-from dongtai_models.models.agent_method_pool import MethodPool
+from dongtai.models.agent import IastAgent
+from dongtai.models.agent_method_pool import MethodPool
 
 logger = logging.getLogger('dongtai-webapi')
 

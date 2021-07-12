@@ -8,9 +8,9 @@ import time
 from django.db.models import Q
 
 from base import R
-from iast import const
+from dongtai.utils import const
 from iast.base.agent import AgentEndPoint
-from dongtai_models.models.agent import IastAgent
+from dongtai.models.agent import IastAgent
 
 
 class AgentStatusUpdate(AgentEndPoint):

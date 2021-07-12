@@ -7,7 +7,7 @@
 
 from rest_framework import serializers
 
-from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.vulnerablity import IastVulnerabilityModel
 
 
 class VulSerializer(serializers.ModelSerializer):

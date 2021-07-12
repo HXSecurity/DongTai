@@ -9,11 +9,11 @@ from rest_framework.request import Request
 
 from base import R
 from iast.base.user import UserEndPoint
-from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.vulnerablity import IastVulnerabilityModel
 
 
 class VulnSideBarList(UserEndPoint):
-    def get(self, request: Request):
+    def get(self, request):
         """
         获取漏洞列表
         - 支持排序

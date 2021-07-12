@@ -10,11 +10,11 @@ import re
 import time
 
 from base.endpoint import MixinAuthEndPoint
-from dongtai_models.models.agent import IastAgent
-from dongtai_models.models.asset import Asset
-from dongtai_models.models.project import IastProject
-from dongtai_models.models.server import IastServerModel
-from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.agent import IastAgent
+from dongtai.models.asset import Asset
+from dongtai.models.project import IastProject
+from dongtai.models.server import IastServerModel
+from dongtai.models.vulnerablity import IastVulnerabilityModel
 from iast.permissions import ScopedPermission
 
 

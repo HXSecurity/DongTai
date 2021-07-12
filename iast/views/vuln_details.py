@@ -12,9 +12,9 @@ from rest_framework.request import Request
 
 from base import R
 from iast.base.user import UserEndPoint
-from dongtai_models.models.project import IastProject
-from dongtai_models.models.strategy import IastStrategyModel
-from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.project import IastProject
+from dongtai.models.strategy import IastStrategyModel
+from dongtai.models.vulnerablity import IastVulnerabilityModel
 from iast.serializers.vul import VulSerializer
 
 """
@@ -211,7 +211,7 @@ class VulnDetail(UserEndPoint):
                 'repair_suggestion': ''
             }
 
-    def get(self, request: Request, id):
+    def get(self, request, id):
         """
         :param request:
         :return:

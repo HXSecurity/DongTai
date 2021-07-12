@@ -8,14 +8,14 @@ from rest_framework.request import Request
 
 from base import R
 from iast.base.user import UserEndPoint
-from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.vulnerablity import IastVulnerabilityModel
 
 
 class VulnDelete(UserEndPoint):
     name = 'api-v1-vul-delete-<id>'
     description = '删除漏洞'
 
-    def post(self, request: Request, id):
+    def post(self, request, id):
         """
         :param request:
         :return:

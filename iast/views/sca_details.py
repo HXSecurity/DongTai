@@ -10,10 +10,10 @@ from rest_framework.request import Request
 
 from base import R
 from iast.base.sca import ScaEndPoint
-from dongtai_models.models.asset import Asset
-from dongtai_models.models.project import IastProject
-from dongtai_models.models.sca_artifact_db import ScaArtifactDb
-from dongtai_models.models.sca_maven_artifact import ScaMavenArtifact
+from dongtai.models.asset import Asset
+from dongtai.models.project import IastProject
+from dongtai.models.sca_artifact_db import ScaArtifactDb
+from dongtai.models.sca_maven_artifact import ScaMavenArtifact
 from iast.serializers.sca import ScaSerializer
 
 logger = logging.getLogger('dongtai-webapi')
@@ -26,7 +26,7 @@ class ScaDetailView(ScaEndPoint):
     name = "api-v1-scas"
     description = ""
 
-    def get(self, request: Request, id):
+    def get(self, request, id):
         user = request.user
 
         try:

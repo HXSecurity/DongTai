@@ -9,21 +9,21 @@ from django.contrib.auth.models import Group
 from django.db import DatabaseError, transaction
 from django.db.models import Q
 from django.http import JsonResponse
-from dongtai_models.models.errorlog import IastErrorlog
-from dongtai_models.models.iast_vul_overpower import IastVulOverpower
+from dongtai.models.errorlog import IastErrorlog
+from dongtai.models.iast_vul_overpower import IastVulOverpower
 from rest_framework.authtoken.models import Token
 
 from base import R
 from iast.base.user import TalentAdminEndPoint
-from dongtai_models.models import User
-from dongtai_models.models.agent import IastAgent
-from dongtai_models.models.asset import Asset
-from dongtai_models.models.department import Department
-from dongtai_models.models.heartbeat import Heartbeat
-from dongtai_models.models.project import IastProject
-from dongtai_models.models.strategy import IastStrategyModel
-from dongtai_models.models.strategy_user import IastStrategyUser
-from dongtai_models.models.system import IastSystem
+from dongtai.models import User
+from dongtai.models.agent import IastAgent
+from dongtai.models.asset import Asset
+from dongtai.models.department import Department
+from dongtai.models.heartbeat import Heartbeat
+from dongtai.models.project import IastProject
+from dongtai.models.strategy import IastStrategyModel
+from dongtai.models.strategy_user import IastStrategyUser
+from dongtai.models.system import IastSystem
 from iast.serializers.user import UserSerializer
 
 

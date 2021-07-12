@@ -62,7 +62,7 @@ INSTALLED_APPS = [
     'django_filters',
     'corsheaders',
     'captcha',
-    'dongtai_models',
+    'dongtai',
     'iast',
 ]
 
@@ -195,7 +195,7 @@ AUTH_PASSWORD_VALIDATORS = [
         }
     },
 ]
-AUTH_USER_MODEL = 'dongtai_models.User'
+AUTH_USER_MODEL = 'dongtai.User'
 
 LANGUAGE_CODE = 'zh-cn'
 

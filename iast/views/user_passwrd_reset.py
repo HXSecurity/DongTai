@@ -6,7 +6,7 @@
 # project: lingzhi-webapi
 import logging
 
-from dongtai_models.models import User
+from dongtai.models import User
 
 from base import R
 from iast.base.user import TalentAdminEndPoint

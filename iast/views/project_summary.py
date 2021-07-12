@@ -7,10 +7,10 @@
 import time
 from base import R
 from iast.base.user import UserEndPoint
-from dongtai_models.models.agent import IastAgent
-from dongtai_models.models.project import IastProject
-from dongtai_models.models.vul_level import IastVulLevel
-from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.agent import IastAgent
+from dongtai.models.project import IastProject
+from dongtai.models.vul_level import IastVulLevel
+from dongtai.models.vulnerablity import IastVulnerabilityModel
 from iast.base.project_version import get_project_version
 
 
