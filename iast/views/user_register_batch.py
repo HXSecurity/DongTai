@@ -8,8 +8,8 @@ import csv
 import logging
 
 from django.contrib.auth.models import Group
-from dongtai_models.models import User
-from dongtai_models.models.department import Department
+from dongtai.models import User
+from dongtai.models.department import Department
 
 from base import R
 from iast.base.user import SystemAdminEndPoint

@@ -9,11 +9,11 @@ from rest_framework.request import Request
 
 from base import R
 from iast.base.sca import ScaEndPoint
-from dongtai_models.models.asset import Asset
+from dongtai.models.asset import Asset
 
 
 class ScaSidebarList(ScaEndPoint):
-    def get(self, request: Request):
+    def get(self, request):
         """
         获取三方组件列表
         - 支持排序

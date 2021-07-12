@@ -3,8 +3,8 @@
 # author: owefsad@huoxian.cn
 # datetime: 2021/5/13 下午5:59
 # project: dongtai-webapi
-from dongtai_models.models.agent import IastAgent
-from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.agent import IastAgent
+from dongtai.models.vulnerablity import IastVulnerabilityModel
 
 from base import R
 from iast.base.user import UserTokenEndPoint

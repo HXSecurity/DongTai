@@ -5,18 +5,17 @@
 # software: PyCharm
 # project: lingzhi-webapi
 import logging
-import time
 
+import time
 from django.contrib.auth.models import Group
 from django.db import transaction
 from django.http import JsonResponse
-from dongtai_models.models.hook_talent_strategy import IastHookTalentStrategy
+from dongtai.models import User
+from dongtai.models.department import Department
+from dongtai.models.talent import Talent
 
 from base import R
 from iast.base.system import SystemEndPoint
-from dongtai_models.models import User
-from dongtai_models.models.department import Department
-from dongtai_models.models.talent import Talent
 from iast.serializers.talent import TalentSerializer
 
 logger = logging.getLogger('dongtai-webapi')
@@ -116,7 +115,6 @@ class TalentEndPoint(SystemEndPoint):
             department.users.all().delete()
             # todo 增加用户创建的agent及相关数据的删除
         departments.delete()
-        IastHookTalentStrategy.objects.filter(talent=talent).delete()
         talent.delete()
         return JsonResponse({
             'status': 201,

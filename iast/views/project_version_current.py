@@ -8,8 +8,8 @@ import logging, time
 from base import R
 from django.db.models import Q
 from iast.base.user import UserEndPoint
-from dongtai_models.models.project_version import IastProjectVersion
-from dongtai_models.models.agent import IastAgent
+from dongtai.models.project_version import IastProjectVersion
+from dongtai.models.agent import IastAgent
 
 logger = logging.getLogger("django")
 

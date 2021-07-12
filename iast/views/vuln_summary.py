@@ -12,16 +12,16 @@ from base import R
 from iast.base.agent import get_project_vul_count
 from iast.base.user import UserEndPoint
 from iast.base.project_version import get_project_version
-from dongtai_models.models.project import IastProject
-from dongtai_models.models.vul_level import IastVulLevel
-from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.project import IastProject
+from dongtai.models.vul_level import IastVulLevel
+from dongtai.models.vulnerablity import IastVulnerabilityModel
 
 
 class VulnSummary(UserEndPoint):
     name = "rest-api-vulnerability-summary"
     description = "应用漏洞概览"
 
-    def get(self, request: Request):
+    def get(self, request):
         """
         应用漏洞总览接口
         - 语言

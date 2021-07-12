@@ -6,9 +6,9 @@
 # project: lingzhi-webapi
 
 from base import R
-from iast import const
+from dongtai.utils import const
 from iast.base.user import UserEndPoint
-from dongtai_models.models.agent import IastAgent
+from dongtai.models.agent import IastAgent
 
 
 class ProjectEngines(UserEndPoint):

@@ -9,7 +9,7 @@ import logging
 from rest_framework.request import Request
 
 from base import R
-from iast import const
+from dongtai.utils import const
 from iast.base.agent import AgentEndPoint
 from iast.serializers.agent import AgentSerializer
 
@@ -23,7 +23,7 @@ class AgentList(AgentEndPoint):
     name = "api-v1-agents"
     description = "agent列表"
 
-    def get(self, request: Request):
+    def get(self, request):
         try:
             page = int(request.query_params.get('page', 1))
             page_size = int(request.query_params.get('pageSize', 20))

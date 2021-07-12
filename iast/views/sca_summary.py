@@ -10,8 +10,8 @@ from rest_framework.request import Request
 from base import R
 from iast.base.agent import get_agents_with_project, get_sca_count
 from iast.base.sca import ScaEndPoint
-from dongtai_models.models.asset import Asset
-from dongtai_models.models.vul_level import IastVulLevel
+from dongtai.models.asset import Asset
+from dongtai.models.vul_level import IastVulLevel
 from iast.base.project_version import get_project_version
 
 
@@ -19,7 +19,7 @@ class ScaSummary(ScaEndPoint):
     name = "rest-api-sca-summary"
     description = "三方组件概览"
 
-    def get(self, request: Request):
+    def get(self, request):
         """
         应用漏洞总览接口
         - 语言
