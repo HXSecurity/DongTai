@@ -4,8 +4,8 @@
 # datetime:2021/1/28 上午11:10
 # software: PyCharm
 # project: lingzhi-engine
-from dongtai_models.models.agent_method_pool import MethodPool
-from dongtai_models.models.dependency import Dependency
+from dongtai.models.agent_method_pool import MethodPool
+from dongtai.models.dependency import Dependency
 from rest_framework import serializers
 
 from vuln.serializers.dependency import DependencySerialize

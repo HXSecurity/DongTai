@@ -7,7 +7,7 @@
 import json
 import logging
 
-from dongtai_models.models.agent_method_pool import MethodPool
+from dongtai.models.agent_method_pool import MethodPool
 
 from core.engine import VulEngine
 from lingzhi_engine.base import R, AnonymousAndUserEndPoint

@@ -4,17 +4,16 @@
 # datetime:2021/3/9 下午12:06
 # software: PyCharm
 # project: lingzhi-engine
-from dongtai_models.models.hook_strategy import HookStrategy
-from dongtai_models.models.hook_type import HookType
+from dongtai.models.hook_strategy import HookStrategy
+from dongtai.models.hook_type import HookType
 
-from lingzhi_engine import const
+from dongtai.utils import const
 from lingzhi_engine.base import R, UserEndPoint
 
 
 class HookRuleSummaryEndPoint(UserEndPoint):
     def get(self, request):
-        rule_type_queryset = HookType.objects.filter(enable=const.ENABLE,
-                                                     created_by__in=[request.user.id, const.SYSTEM_USER_ID])
+        rule_type_queryset = HookType.objects.filter(created_by__in=[request.user.id, const.SYSTEM_USER_ID])
         rule_type_count = rule_type_queryset.count()
 
         sink_type_queryset = rule_type_queryset.filter(type=const.RULE_SINK)

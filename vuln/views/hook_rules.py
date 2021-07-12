@@ -6,10 +6,10 @@
 # project: lingzhi-engine
 import logging
 
-from dongtai_models.models.hook_strategy import HookStrategy
-from dongtai_models.models.hook_type import HookType
+from dongtai.models.hook_strategy import HookStrategy
+from dongtai.models.hook_type import HookType
 
-from lingzhi_engine import const
+from dongtai.utils import const
 from lingzhi_engine.base import R, UserEndPoint
 from vuln.serializers.hook_strategy import HookRuleSerialize
 
@@ -47,12 +47,8 @@ class HookRulesEndPoint(UserEndPoint):
 
         try:
             user_id = request.user.id
-            rule_type_queryset = HookType.objects.filter(enable=const.ENABLE,
-                                                         created_by__in=(user_id, const.SYSTEM_USER_ID),
-                                                         type=rule_type)
-            rule_queryset = HookStrategy.objects.filter(type__in=rule_type_queryset,
-                                                        enable__in=(const.ENABLE, const.DISABLE),
-                                                        created_by=user_id)
+            rule_type_queryset = HookType.objects.filter(created_by__in=(user_id, const.SYSTEM_USER_ID), type=rule_type)
+            rule_queryset = HookStrategy.objects.filter(type__in=rule_type_queryset, created_by=user_id)
             page_summary, queryset = self.get_paginator(rule_queryset, page=page, page_size=page_size)
             data = HookRuleSerialize(queryset, many=True).data
             return R.success(data=data, page=page_summary)

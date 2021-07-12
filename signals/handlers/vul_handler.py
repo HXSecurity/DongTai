@@ -8,11 +8,11 @@ import time
 
 import requests
 from django.dispatch import receiver
-from dongtai_models.models.replay_queue import IastReplayQueue
+from dongtai.models.replay_queue import IastReplayQueue
 
-from dongtai_models.models.notify_config import IastNotifyConfig
-from dongtai_models.models.vulnerablity import IastVulnerabilityModel
-from lingzhi_engine import const
+from dongtai.models.notify_config import IastNotifyConfig
+from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai.utils import const
 
 from signals import vul_found
 

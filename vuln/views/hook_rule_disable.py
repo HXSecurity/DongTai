@@ -4,9 +4,9 @@
 # datetime:2021/3/9 下午12:06
 # software: PyCharm
 # project: lingzhi-engine
-from dongtai_models.models.hook_strategy import HookStrategy
+from dongtai.models.hook_strategy import HookStrategy
 
-from lingzhi_engine import const
+from dongtai.utils import const
 from lingzhi_engine.base import R, UserEndPoint
 
 

@@ -4,7 +4,7 @@
 # datetime:2021/2/19 上午11:31
 # software: PyCharm
 # project: lingzhi-engine
-from dongtai_models.models.dependency import Dependency
+from dongtai.models.dependency import Dependency
 from rest_framework import serializers
 
 
