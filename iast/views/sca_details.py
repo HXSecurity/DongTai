@@ -6,6 +6,7 @@
 # project: webapi
 import logging
 
+from dongtai.models.project_version import IastProjectVersion
 from rest_framework.request import Request
 
 from base import R
@@ -36,12 +37,6 @@ class ScaDetailView(ScaEndPoint):
             if dependency is None:
                 return R.failure(msg='组件不存在或无权限访问')
             data = ScaSerializer(dependency).data
-            project_id = dependency.agent.bind_project_id
-            iast_info = IastProject.objects.values('name').filter(id=project_id).first()
-            if iast_info:
-                data['project_name'] = iast_info['name']
-            else:
-                data['project_name'] = ""
             data['vuls'] = list()
             # 替换英文vul_type为中文漏洞类型
             # 查询组件对应的漏洞数据，如果无法查找到则标记为无

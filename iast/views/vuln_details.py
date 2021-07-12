@@ -8,6 +8,7 @@ import base64
 import json
 import logging
 
+from dongtai.models.project_version import IastProjectVersion
 from rest_framework.request import Request
 
 from base import R
@@ -166,6 +167,16 @@ class VulnDetail(UserEndPoint):
         agent = vul.agent
         project_id = agent.bind_project_id
         project = IastProject.objects.values("name").filter(id=project_id).first()
+
+        project_version_id = agent.project_version_id
+        if project_version_id:
+            project_version = IastProjectVersion.objects.values('version_name').filter(id=project_version_id).first()
+            if project_version:
+                project_version_name = project_version['version_name']
+            else:
+                project_version_name = ''
+        else:
+            project_version_name = ''
         try:
             self.server = agent.server
         except Exception as e:
@@ -175,12 +186,14 @@ class VulnDetail(UserEndPoint):
         return {
             'url': vul.url,
             'uri': vul.uri,
+            'agent_name': agent.token,
             'http_method': vul.http_method,
             'type': vul.type,
             'taint_position': vul.taint_position,
             'first_time': vul.first_time,
             'latest_time': vul.latest_time,
             'project_name': project['name'] if project else '暂未绑定项目',
+            'project_version': project_version_name,
             'language': vul.language,
             'level': vul.level.name_value,
             'level_type': vul.level.id,
