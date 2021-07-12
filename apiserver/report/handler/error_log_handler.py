@@ -8,7 +8,7 @@ import logging
 
 import time
 
-from dongtai_models.models.errorlog import IastErrorlog
+from dongtai.models.errorlog import IastErrorlog
 
 from apiserver.report.handler.report_handler_interface import IReportHandler
 

@@ -4,7 +4,7 @@
 # datetime:2020/10/23 12:00
 # software: PyCharm
 # project: webapi
-from apiserver import const
+from dongtai.utils import const
 
 
 class ReportHandler:

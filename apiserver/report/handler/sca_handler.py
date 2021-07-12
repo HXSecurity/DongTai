@@ -8,11 +8,11 @@ import json
 import logging
 import time
 
-from dongtai_models.models.asset import Asset
-from dongtai_models.models.sca_maven_artifact import ScaMavenArtifact
-from dongtai_models.models.sca_maven_db import ScaMavenDb
-from dongtai_models.models.sca_vul_db import ScaVulDb
-from dongtai_models.models.vul_level import IastVulLevel
+from dongtai.models.asset import Asset
+from dongtai.models.sca_maven_artifact import ScaMavenArtifact
+from dongtai.models.sca_maven_db import ScaMavenDb
+from dongtai.models.sca_vul_db import ScaVulDb
+from dongtai.models.vul_level import IastVulLevel
 
 from apiserver.report.handler.report_handler_interface import IReportHandler
 

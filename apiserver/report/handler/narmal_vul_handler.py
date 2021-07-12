@@ -14,9 +14,9 @@ import logging
 
 import time
 
-from dongtai_models.models.strategy import IastStrategyModel
-from dongtai_models.models.vul_level import IastVulLevel
-from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.strategy import IastStrategyModel
+from dongtai.models.vul_level import IastVulLevel
+from dongtai.models.vulnerablity import IastVulnerabilityModel
 
 from apiserver.report.handler.report_handler_interface import IReportHandler
 from apiserver.report.handler.saas_method_pool_handler import SaasMethodPoolHandler
