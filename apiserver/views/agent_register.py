@@ -6,9 +6,9 @@
 # project: lingzhi-webapi
 import time
 
-from dongtai_models.models.agent import IastAgent
-from dongtai_models.models.project import IastProject
-from dongtai_models.models.project_version import IastProjectVersion
+from dongtai.models.agent import IastAgent
+from dongtai.models.project import IastProject
+from dongtai.models.project_version import IastProjectVersion
 from rest_framework.request import Request
 
 from AgentServer.base import R

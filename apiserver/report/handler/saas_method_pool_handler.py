@@ -10,8 +10,8 @@ import time
 from hashlib import sha1
 
 import requests
-from dongtai_models.models.agent_method_pool import MethodPool
-from dongtai_models.models.replay_method_pool import IastAgentMethodPoolReplay
+from dongtai.models.agent_method_pool import MethodPool
+from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
 
 from AgentServer import settings
 from apiserver.report.handler.report_handler_interface import IReportHandler

@@ -7,7 +7,7 @@
 import logging
 import time
 
-from dongtai_models.models.agent import IastAgent
+from dongtai.models.agent import IastAgent
 
 from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint

@@ -4,7 +4,7 @@
 # datetime:2020/10/30 10:29
 # software: PyCharm
 # project: webapi
-from apiserver import const
+from dongtai.utils import const
 from apiserver.report.handler.auth_info_handler import AuthAddHandler, AuthUpdateHandler
 from apiserver.report.handler.error_log_handler import ErrorLogHandler
 from apiserver.report.handler.heartbeat_handler import HeartBeatHandler

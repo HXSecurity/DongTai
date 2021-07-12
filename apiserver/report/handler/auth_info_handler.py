@@ -7,7 +7,7 @@
 
 import datetime
 
-from dongtai_models.models.iast_overpower_user import IastOverpowerUserAuth
+from dongtai.models.iast_overpower_user import IastOverpowerUserAuth
 
 from apiserver.report.handler.report_handler_interface import IReportHandler
 from apiserver.report.report_handler_factory import ReportHandler

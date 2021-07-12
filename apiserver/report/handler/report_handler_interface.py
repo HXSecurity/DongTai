@@ -7,7 +7,7 @@
 import logging
 
 from django.db.models import Q
-from dongtai_models.models.agent import IastAgent
+from dongtai.models.agent import IastAgent
 
 logger = logging.getLogger('dongtai.openapi')
 
