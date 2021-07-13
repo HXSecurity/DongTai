@@ -79,7 +79,7 @@ class HookRuleStatusEndPoint(UserEndPoint):
         strategy_ids = strategy_ids.split(',')
         if strategy_ids:
             count = self.set_strategy_status(strategy_id=None, strategy_ids=strategy_ids, user_id=request.user.id,
-                                             enable_status=const.DISABLE)
+                                             enable_status=op)
             logger.info('策略操作成功，共%s条', count)
             return R.success(msg='操作成功')
         else:
