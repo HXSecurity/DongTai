@@ -28,11 +28,11 @@ class HookRuleStatusEndPoint(UserEndPoint):
             if rule:
                 rule.enable = enable_status
                 rule.save()
-                return True
+                return 1
         elif strategy_ids:
-            HookStrategy.objects.filter(id=strategy_id, created_by=user_id).update(enable=const.DISABLE)
-            return True
-        return False
+            count = HookStrategy.objects.filter(id__in=strategy_ids, created_by=user_id).update(enable=const.DISABLE)
+            return count
+        return 0
 
     @staticmethod
     def check_op(op):
