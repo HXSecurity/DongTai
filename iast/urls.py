@@ -10,14 +10,15 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from iast.account.department import DepartmentEndPoint
 from iast.account.talent import TalentEndPoint
 from iast.account.user import UserEndPoint
+from iast.base.update_project_version import UpdateProjectVersion
 from iast.views.agent_delete import AgentDeleteEndPoint
 from iast.views.agent_deploy_doc import AgentDeployDesc
 from iast.views.agent_deploy_info import AgentDeployInfo
 from iast.views.agent_deploy_submit import AgentDeploySave
 from iast.views.agent_download import AgentDownload
 from iast.views.agent_install import AgentInstall
-from iast.views.agent_status_update import AgentStatusUpdate
 from iast.views.agent_start import AgentStart
+from iast.views.agent_status_update import AgentStatusUpdate
 from iast.views.agent_stop import AgentStop
 from iast.views.agent_uninstall import AgentUninstall
 from iast.views.agent_upgrade_offline import AgentUpgradeOffline
@@ -26,10 +27,8 @@ from iast.views.agents import AgentList
 from iast.views.agents_user import UserAgentList
 from iast.views.captcha_create import CaptchaCreate
 from iast.views.engine_hook_rule_add import EngineHookRuleAddEndPoint
-from iast.views.engine_hook_rule_delete import EngineHookRuleDeleteEndPoint
-from iast.views.engine_hook_rule_disable import EngineHookRuleDisableEndPoint
-from iast.views.engine_hook_rule_enable import EngineHookRuleEnableEndPoint
 from iast.views.engine_hook_rule_modify import EngineHookRuleModifyEndPoint
+from iast.views.engine_hook_rule_status import EngineHookRuleEnableEndPoint
 from iast.views.engine_hook_rule_summary import EngineHookRuleSummaryEndPoint
 from iast.views.engine_hook_rule_type_add import EngineHookRuleTypeAddEndPoint
 from iast.views.engine_hook_rule_type_disable import EngineHookRuleTypeDisableEndPoint
@@ -37,6 +36,7 @@ from iast.views.engine_hook_rule_type_enable import EngineHookRuleTypeEnableEndP
 from iast.views.engine_hook_rule_types import EngineHookRuleTypesEndPoint
 from iast.views.engine_hook_rules import EngineHookRulesEndPoint
 from iast.views.engine_method_pool_detail import MethodPoolDetailProxy
+from iast.views.engine_method_pool_search import MethodPoolSearchProxy
 from iast.views.engine_vul_rule import EngineVulRuleEndPoint
 from iast.views.engine_vul_rule_detail import EngineVulRuleDetailEndPoint
 from iast.views.engine_vul_rule_save import EngineVulRuleSaveEndPoint
@@ -45,8 +45,6 @@ from iast.views.log_clear import LogClear
 from iast.views.log_delete import LogDelete
 from iast.views.log_export import LogExport
 from iast.views.logs import LogsEndpoint
-from iast.views.engine_method_pool_search import MethodPoolSearchProxy
-from iast.views.engine_method_pools import MethodPoolProxy
 from iast.views.openapi import OpenApiEndpoint
 from iast.views.project_add import ProjectAdd
 from iast.views.project_delete import ProjectDel
@@ -54,14 +52,12 @@ from iast.views.project_detail import ProjectDetail
 from iast.views.project_engines import ProjectEngines
 from iast.views.project_report_export import ProjectReportExport
 from iast.views.project_summary import ProjectSummary
-from iast.views.projects import Projects
 from iast.views.project_version_add import ProjectVersionAdd
-from iast.views.project_version_update import ProjectVersionUpdate
-from iast.views.project_version_delete import ProjectVersionDelete
 from iast.views.project_version_current import ProjectVersionCurrent
+from iast.views.project_version_delete import ProjectVersionDelete
 from iast.views.project_version_list import ProjectVersionList
-from iast.base.update_project_version import UpdateProjectVersion
-
+from iast.views.project_version_update import ProjectVersionUpdate
+from iast.views.projects import Projects
 from iast.views.sca_details import ScaDetailView
 from iast.views.sca_sidebar_index import ScaSidebarList
 from iast.views.sca_summary import ScaSummary
@@ -204,9 +200,7 @@ urlpatterns = [
     path('engine/hook/rule/summary', EngineHookRuleSummaryEndPoint.as_view()),
     path('engine/hook/rule/add', EngineHookRuleAddEndPoint.as_view()),
     path('engine/hook/rule/modify', EngineHookRuleModifyEndPoint.as_view()),
-    path('engine/hook/rule/enable', EngineHookRuleEnableEndPoint.as_view()),
-    path('engine/hook/rule/disable', EngineHookRuleDisableEndPoint.as_view()),
-    path('engine/hook/rule/delete', EngineHookRuleDeleteEndPoint.as_view()),
+    path('engine/hook/rule/status', EngineHookRuleEnableEndPoint.as_view()),
     path('engine/hook/rule_type/add', EngineHookRuleTypeAddEndPoint.as_view()),
     path('engine/hook/rule_type/disable', EngineHookRuleTypeDisableEndPoint.as_view()),
     path('engine/hook/rule_type/enable', EngineHookRuleTypeEnableEndPoint.as_view()),
