@@ -5,19 +5,17 @@
 # software: PyCharm
 # project: lingzhi-webapi
 from django.db.models import Count
-from django.db.models import Q
-from rest_framework.request import Request
-
-from base import R
-from iast.base.agent import get_project_vul_count
-from iast.base.user import UserEndPoint
-from iast.base.project_version import get_project_version
 from dongtai.models.project import IastProject
 from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 
+from base import R
+from iast.base.agent import get_project_vul_count
+from iast.base.project_version import get_project_version
+from iast.base.user import UserEndPoint
 
-class VulnSummary(UserEndPoint):
+
+class VulSummary(UserEndPoint):
     name = "rest-api-vulnerability-summary"
     description = "应用漏洞概览"
 

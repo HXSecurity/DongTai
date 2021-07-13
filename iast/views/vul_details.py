@@ -8,14 +8,13 @@ import base64
 import json
 import logging
 
+from dongtai.models.project import IastProject
 from dongtai.models.project_version import IastProjectVersion
-from rest_framework.request import Request
+from dongtai.models.strategy import IastStrategyModel
+from dongtai.models.vulnerablity import IastVulnerabilityModel
 
 from base import R
 from iast.base.user import UserEndPoint
-from dongtai.models.project import IastProject
-from dongtai.models.strategy import IastStrategyModel
-from dongtai.models.vulnerablity import IastVulnerabilityModel
 from iast.serializers.vul import VulSerializer
 
 """
@@ -74,7 +73,7 @@ from iast.serializers.vul import VulSerializer
 logger = logging.getLogger('dongtai-webapi')
 
 
-class VulnDetail(UserEndPoint):
+class VulDetail(UserEndPoint):
 
     def get_server(self):
         server = self.server
@@ -205,7 +204,8 @@ class VulnDetail(UserEndPoint):
             'client_ip': vul.client_ip,
             'status': vul.status,
             'taint_value': vul.taint_value,
-            'param_name': json.loads(vul.param_name) if vul.param_name else {}
+            'param_name': json.loads(vul.param_name) if vul.param_name else {},
+            'method_pool_id': vul.method_pool_id,
         }
 
     def get_strategy(self):
@@ -244,6 +244,6 @@ class VulnDetail(UserEndPoint):
 
 
 if __name__ == '__main__':
-    vul = VulnDetail()
+    vul = VulDetail()
     graphy = '[{"classname": "org.apache.struts2.dispatcher.StrutsRequestWrapper", "methodname": "getParameter", "in": ", "out": "desc", "stack": "javax.servlet.ServletRequestWrapper.getParameter(ServletRequestWrapper.java)"}, {"classname": "java.lang.StringBuilder", "methodname": "append", "in": "desc", "out": "select host,user from user where user=+desc order by host ", "stack": "java.lang.StringBuilder.append(StringBuilder.java)"}, {"classname": "java.lang.StringBuilder", "methodname": "toString", "in": "select host,user from user where user=+desc order by host ", "out": "select host,user from user where user=+desc order by host ", "stack": "java.lang.StringBuilder.toString(StringBuilder.java)"}, {"classname": "com.mysql.jdbc.JDBC4Connection", "methodname": "prepareStatement", "in": "select host,user from user where user=+desc order by host ", "out": "NULL", "stack": "com.mysql.jdbc.ConnectionImpl.prepareStatement(ConnectionImpl.java)"}]'
     vul.parse_graphy(graphy)

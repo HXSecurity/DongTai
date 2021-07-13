@@ -230,7 +230,7 @@ LOGGING = {
         },
         'dongtai-webapi': {
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'logs/dongtai-webapi.log',
+            'filename': os.path.join(BASE_DIR, 'logs/dongtai-webapi.log'),
             'backupCount': 5,
             'maxBytes': 1024 * 1024 * 10,
             'formatter': 'verbose'

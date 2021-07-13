@@ -11,7 +11,7 @@ from iast.base.user import UserTokenEndPoint
 from iast.serializers.vul import VulForPluginSerializer
 
 
-class VulnListEndPoint(UserTokenEndPoint):
+class VulListEndPoint(UserTokenEndPoint):
     def get(self, request):
         agent_name = request.query_params.get('name')
         if not agent_name:

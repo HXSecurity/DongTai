@@ -77,15 +77,16 @@ from iast.views.user_passwrd import UserPassword
 from iast.views.user_passwrd_reset import UserPasswordReset
 from iast.views.user_register_batch import UserRegisterEndPoint
 from iast.views.user_token import UserToken
-from iast.views.vuln_count_for_plugin import VulnCountForPluginEndPoint
-from iast.views.vuln_delete import VulnDelete
-from iast.views.vuln_details import VulnDetail
-from iast.views.vuln_index import VulnList
-from iast.views.vuln_list_for_plugin import VulnListEndPoint
-from iast.views.vuln_recheck import VulReCheck
-from iast.views.vuln_sidebar_index import VulnSideBarList
-from iast.views.vuln_status import VulnStatus
-from iast.views.vuln_summary import VulnSummary
+from iast.views.vul_count_for_plugin import VulCountForPluginEndPoint
+from iast.views.vul_delete import VulDelete
+from iast.views.vul_details import VulDetail
+from iast.views.vul_request_replay import RequestReplayEndPoint
+from iast.views.vuls import VulsEndPoint
+from iast.views.vul_list_for_plugin import VulListEndPoint
+from iast.views.vul_recheck import VulReCheck
+from iast.views.vul_sidebar_index import VulSideBarList
+from iast.views.vul_status import VulStatus
+from iast.views.vul_summary import VulSummary
 
 urlpatterns = [
     # 租户管理 - 系统管理员
@@ -135,15 +136,15 @@ urlpatterns = [
     path('project/version/list/<int:project_id>', ProjectVersionList.as_view()),
     path('project/version/check', UpdateProjectVersion.as_view()),
     # 漏洞接口：漏洞列表、漏洞信息总览、漏洞详情侧边栏、漏洞详情
-    path('vulns', VulnList.as_view()),
-    path('vuln/summary', VulnSummary.as_view()),
-    path('vuln/list', VulnSideBarList.as_view()),
-    path('vuln/<int:id>', VulnDetail.as_view()),
-    path('vuln/status', VulnStatus.as_view()),
-    path('vuln/delete/<int:id>', VulnDelete.as_view()),
+    path('vulns', VulsEndPoint.as_view()),
+    path('vuln/summary', VulSummary.as_view()),
+    path('vuln/list', VulSideBarList.as_view()),
+    path('vuln/<int:id>', VulDetail.as_view()),
+    path('vuln/status', VulStatus.as_view()),
+    path('vuln/delete/<int:id>', VulDelete.as_view()),
     path('vul/recheck', VulReCheck.as_view()),
-    path('plugin/vuln/list', VulnListEndPoint.as_view()),
-    path('plugin/vuln/count', VulnCountForPluginEndPoint.as_view()),
+    path('plugin/vuln/list', VulListEndPoint.as_view()),
+    path('plugin/vuln/count', VulCountForPluginEndPoint.as_view()),
     # 三方组件接口：组件列表、组件信息总览、组件详情侧边栏、组件详情
     path('scas', ScaList.as_view()),
     path('sca/summary', ScaSummary.as_view()),
@@ -196,6 +197,7 @@ urlpatterns = [
     path('engine/vul_rule/type', EngineVulRuleTypeEndPoint.as_view()),
     path('engine/vul_rule/detail', EngineVulRuleDetailEndPoint.as_view()),
     path('engine/vul_rule/save', EngineVulRuleSaveEndPoint.as_view()),
+    path('engine/request/replay', RequestReplayEndPoint.as_view()),
     # hook规则相关
     path('engine/hook/rule/summary', EngineHookRuleSummaryEndPoint.as_view()),
     path('engine/hook/rule/add', EngineHookRuleAddEndPoint.as_view()),
