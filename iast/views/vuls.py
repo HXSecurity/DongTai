@@ -17,7 +17,7 @@ from dongtai.models.vulnerablity import IastVulnerabilityModel
 from iast.serializers.vul import VulSerializer
 
 
-class VulnList(UserEndPoint):
+class VulsEndPoint(UserEndPoint):
 
     def get(self, request):
         """

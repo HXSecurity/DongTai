@@ -12,7 +12,7 @@ from iast.base.user import UserEndPoint
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 
 
-class VulnSideBarList(UserEndPoint):
+class VulSideBarList(UserEndPoint):
     def get(self, request):
         """
         获取漏洞列表

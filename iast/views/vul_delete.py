@@ -11,7 +11,7 @@ from iast.base.user import UserEndPoint
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 
 
-class VulnDelete(UserEndPoint):
+class VulDelete(UserEndPoint):
     name = 'api-v1-vul-delete-<id>'
     description = '删除漏洞'
 

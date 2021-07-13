@@ -10,7 +10,7 @@ from base import R
 from iast.base.user import UserTokenEndPoint
 
 
-class VulnCountForPluginEndPoint(UserTokenEndPoint):
+class VulCountForPluginEndPoint(UserTokenEndPoint):
     def get(self, request):
         agent_name = request.query_params.get('name')
         if not agent_name:

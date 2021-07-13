@@ -11,7 +11,7 @@ from base import R
 from iast.base.user import UserEndPoint
 
 
-class VulnStatus(UserEndPoint):
+class VulStatus(UserEndPoint):
     name = "api-v1-vuln-status"
     description = "修改漏洞状态"
 
