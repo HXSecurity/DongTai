@@ -30,7 +30,7 @@ class HookRuleStatusEndPoint(UserEndPoint):
                 rule.save()
                 return 1
         elif strategy_ids:
-            count = HookStrategy.objects.filter(id__in=strategy_ids, created_by=user_id).update(enable=const.DISABLE)
+            count = HookStrategy.objects.filter(id__in=strategy_ids, created_by=user_id).update(enable=enable_status)
             return count
         return 0
 
