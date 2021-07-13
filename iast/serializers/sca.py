@@ -18,6 +18,7 @@ class ScaSerializer(serializers.ModelSerializer):
     level_type = serializers.SerializerMethodField()
     agent_name = serializers.SerializerMethodField()
     project_cache = dict()
+    project_version_cache = dict()
 
     class Meta:
         model = Asset
@@ -36,21 +37,18 @@ class ScaSerializer(serializers.ModelSerializer):
                 return self.project_cache[project_id]
 
     def get_project_version(self, obj):
-        project_id = obj.agent.bind_project_id
-        if project_id == 0:
-            return "暂未绑定项目"
-        else:
-            project_version_id = obj.agent.project_version_id
-            if project_version_id:
+        project_version_id = obj.agent.project_version_id
+        if project_version_id:
+            if project_version_id in self.project_version_cache:
+                return self.project_version_cache[project_version_id]
+            else:
                 project_version = IastProjectVersion.objects.values('version_name').filter(
                     id=project_version_id).first()
-                if project_version:
-                    project_version_name = project_version['version_name']
-                else:
-                    project_version_name = ''
-                return project_version_name
-            else:
-                return '暂未创建项目版本'
+                self.project_version_cache[project_version_id] = project_version['version_name']
+
+            return self.project_version_cache[project_version_id]
+        else:
+            return '暂未创建项目版本'
 
     def get_level_type(self, obj):
         return obj.level.id
