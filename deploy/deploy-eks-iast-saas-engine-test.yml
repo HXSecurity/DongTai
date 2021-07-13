@@ -20,7 +20,7 @@ spec:
       containers:
         - name: dongtai-engine-container
           image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine-test:VERSION
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           volumeMounts:
             - name: configfile
               mountPath: /opt/iast/engine/conf/config.ini
@@ -35,20 +35,6 @@ spec:
       volumes:
         - name: configfile
           configMap:
-            name: iast-test-config.ini
+            name: dongtai-test-config.ini
       imagePullSecrets:
         - name: aliyun-registry-secret
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: dongtai-engine-svc
-  namespace: iast-test
-spec:
-  ports:
-    - port: 80
-      protocol: TCP
-      targetPort: 8000
-  selector:
-    app: dongtai-engine
-  type: ClusterIP
