@@ -425,6 +425,7 @@ def heartbeat():
     except Exception as e:
         logger.info(f'[core.tasks.heartbeat] send heartbeat data to OpenApi Service Error. reason is {e}')
 
+
 @shared_task(queue='dongtai-periodic-task')
 def clear_error_log():
     """
@@ -573,7 +574,8 @@ def vul_recheck():
                     replay.state = const.WAITING
                     replay.agent_id = vulnerability['agent']
                     replay.save(
-                        update_fields=['uri', 'method', 'scheme', 'header', 'params', 'body', 'update_time', 'state'])
+                        update_fields=['uri', 'method', 'scheme', 'header', 'params', 'body', 'update_time', 'state',
+                                       'agent_id'])
 
                 else:
                     # 如果未识别到污点位置，不进行重放验证

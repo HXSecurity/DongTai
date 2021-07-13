@@ -243,6 +243,7 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
         vul.req_params = vul_meta.req_params
         vul.counts = vul.counts + 1
         vul.latest_time = timestamp
+        vul.method_pool_id = vul_meta.id
         vul.status = '待处理'
         vul.save(update_fields=['req_header', 'req_params', 'counts', 'latest_time', 'status'])
     else:
@@ -272,7 +273,8 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
             first_time=vul_meta.create_time,
             latest_time=timestamp,
             client_ip=vul_meta.clent_ip,
-            param_name=param_name
+            param_name=param_name,
+            method_pool_id=vul_meta.id
         )
     return vul
 
