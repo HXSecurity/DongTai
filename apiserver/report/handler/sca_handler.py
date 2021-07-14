@@ -13,12 +13,15 @@ from dongtai.models.sca_maven_artifact import ScaMavenArtifact
 from dongtai.models.sca_maven_db import ScaMavenDb
 from dongtai.models.sca_vul_db import ScaVulDb
 from dongtai.models.vul_level import IastVulLevel
+from dongtai.utils import const
 
 from apiserver.report.handler.report_handler_interface import IReportHandler
+from apiserver.report.report_handler_factory import ReportHandler
 
-logger = logging.getLogger("django")
+logger = logging.getLogger('dongtai.openapi')
 
 
+@ReportHandler.register(const.REPORT_SCA)
 class ScaHandler(IReportHandler):
 
     def parse(self):
@@ -26,17 +29,13 @@ class ScaHandler(IReportHandler):
         self.package_signature = self.detail.get('package_signature')
         self.package_name = self.detail.get('package_name')
         self.package_algorithm = self.detail.get('package_algorithm')
-        self.agent_name = self.detail.get('agent_name')
-        self.project_name = self.detail.get('project_name', 'Demo Project')
-        self.language = self.detail.get('language')
 
     def save(self):
-        if all([self.agent_name, self.package_path, self.package_name, self.package_signature,
+        if all([self.agent_id, self.package_path, self.package_name, self.package_signature,
                 self.package_algorithm]) is False:
-            logger.warn(f"数据不完整，数据：{json.dumps(self.report)}")
+            logger.warning(f"数据不完整，数据：{json.dumps(self.report)}")
         else:
-            agent = self.get_agent(project_name=self.project_name, agent_name=self.agent_name)
-            if agent:
+            if self.agent:
                 smd = ScaMavenDb.objects.filter(sha_1=self.package_signature).values("version", "aql").first()
                 _version = self.package_name.split('/')[-1].replace('.jar', '').split('-')[-1]
                 version = smd.get('version', _version) if smd else _version
@@ -63,11 +62,11 @@ class ScaHandler(IReportHandler):
 
                 try:
                     level = IastVulLevel.objects.get(name=level)
-                    current_version_agents = self.get_project_agents(agent)
+                    current_version_agents = self.get_project_agents(self.agent)
                     asset_count = 0
                     if current_version_agents:
                         asset_count = Asset.objects.values("id").filter(signature_value=self.package_signature,
-                                                                     agent__in=current_version_agents).count()
+                                                                        agent__in=current_version_agents).count()
 
                     if asset_count == 0:
                         Asset(
@@ -79,8 +78,8 @@ class ScaHandler(IReportHandler):
                             signature_value=self.package_signature,
                             signature_algorithm=self.package_algorithm,
                             dt=time.time(),
-                            agent=agent,
+                            agent=self.agent,
                             language=self.language
                         ).save()
                 except Exception as e:
-                    pass
+                    logger.error(f'sca数据解析失败，原因：{e}')

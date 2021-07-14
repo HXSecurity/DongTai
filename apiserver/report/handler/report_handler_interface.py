@@ -17,7 +17,7 @@ class IReportHandler:
         self._report = None
         self._detail = None
         self._user_id = None
-        self.agent_name = None
+        self.agent_id = None
         self.project_name = None
         self.language = None
         self.agent = None
@@ -48,12 +48,10 @@ class IReportHandler:
 
     def common_header(self):
         self.detail = self.report.get('detail')
-        self.agent_name = self.detail.get('agent_name')
-        self.project_name = self.detail.get('project_name', 'Demo Project')
-        self.language = self.detail.get('language', 'JAVA')
+        self.agent_id = self.detail.get('agent_id')
 
     def has_permission(self):
-        self.agent = self.get_agent(project_name=self.project_name, agent_name=self.agent_name)
+        self.agent = self.get_agent(agent_id=self.agent_id)
         return self.agent
 
     def parse(self):
@@ -85,9 +83,8 @@ class IReportHandler:
                 Q(project_name=self.project_name) | Q(bind_project_id=agent.bind_project_id), online=1,
                 user=self.user_id)
         else:
-            agents = IastAgent.objects.filter(project_name=self.project_name, user=self.user_id)
+            agents = IastAgent.objects.filter(project_name=agent.project_name, user=self.user_id)
         return agents
 
-    def get_agent(self, agent_name, project_name):
-        return IastAgent.objects.filter(token=agent_name, project_name=project_name, online=1,
-                                        user=self.user_id).first()
+    def get_agent(self, agent_id):
+        return IastAgent.objects.filter(id=agent_id, online=1, user=self.user_id).first()
