@@ -59,14 +59,27 @@ class HeartBeatHandler(IReportHandler):
         self.disk = self.detail.get('disk')
 
     def save_heartbeat(self):
-        IastHeartbeat.objects.create(
-            memory=self.memory,
-            cpu=self.cpu,
-            disk=self.disk,
-            req_count=self.req_count,
-            dt=int(time.time()),
-            agent=self.agent
-        )
+        # todo 查询agent对应的心跳是否存在，如果存在，直接update
+        queryset = IastHeartbeat.objects.filter(agent=self.agent)
+        heartbeat_count = queryset.values('id').count()
+        if heartbeat_count == 1:
+            heartbeat = queryset.first()
+            heartbeat.memory = self.memory
+            heartbeat.cpu = self.cpu
+            heartbeat.disk = self.disk
+            heartbeat.req_count = self.req_count
+            heartbeat.dt = int(time.time())
+            heartbeat.save(update_fields=['memory', 'cpu', 'disk', 'req_count', 'dt'])
+        else:
+            queryset.delete()
+            IastHeartbeat.objects.create(
+                memory=self.memory,
+                cpu=self.cpu,
+                disk=self.disk,
+                req_count=self.req_count,
+                dt=int(time.time()),
+                agent=self.agent
+            )
 
     def get_result(self, msg=None):
         try:
