@@ -58,7 +58,7 @@ class RequestReplayEndPoint(UserEndPoint):
                 'uri': replay_request.uri,
                 'params': replay_request.params,
                 'scheme': replay_request.request_version,
-                'header': base64.b64encode(replay_request.headers.as_string().strip()),
+                'header': base64.b64encode(replay_request.headers.as_string().strip().encode()),
                 'body': replay_request.body,
             }
 
@@ -169,7 +169,22 @@ class RequestReplayEndPoint(UserEndPoint):
         except Exception as e:
             return R.failure(msg=f'漏洞重放出错，错误原因：{e}')
 
+    @staticmethod
+    def check_replay_data_permission(replay_id, auth_agents):
+        return IastReplayQueue.objects.values('id').filter(id=replay_id, agent__in=auth_agents).exists()
+
     def get(self, request):
-        # todo 增加相应体查询
         replay_id = request.query_param.get('replayId')
-        return R.success()
+        auth_agents = self.get_auth_agents_with_user(request.user)
+
+        has_permission = self.check_replay_data_permission(replay_id=replay_id, auth_agents=auth_agents)
+        if has_permission is False:
+            return R.failure(msg='重放请求不存在或无操作权限')
+
+        # 查询响应体
+        # 查询污点调用链
+
+        return R.success(data={
+            'response': '',
+            'graph': ''
+        })
