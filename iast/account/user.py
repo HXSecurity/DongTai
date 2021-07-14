@@ -19,7 +19,7 @@ from dongtai.models import User
 from dongtai.models.agent import IastAgent
 from dongtai.models.asset import Asset
 from dongtai.models.department import Department
-from dongtai.models.heartbeat import Heartbeat
+from dongtai.models.heartbeat import IastHeartbeat
 from dongtai.models.project import IastProject
 from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.strategy_user import IastStrategyUser
@@ -135,7 +135,7 @@ class UserEndPoint(TalentAdminEndPoint):
             agents = IastAgent.objects.filter(user=user)
             if agents:
                 IastErrorlog.objects.filter(agent__in=agents)
-                Heartbeat.objects.filter(agent__in=agents)
+                IastHeartbeat.objects.filter(agent__in=agents)
                 Asset.objects.filter(agent__in=agents)
                 IastVulOverpower.objects.filter(agent__in=agents)
 

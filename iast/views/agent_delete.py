@@ -9,7 +9,7 @@ import logging
 
 from dongtai.models.asset import Asset
 from dongtai.models.errorlog import IastErrorlog
-from dongtai.models.heartbeat import Heartbeat
+from dongtai.models.heartbeat import IastHeartbeat
 from dongtai.models.iast_overpower_user import IastOverpowerUserAuth
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 
@@ -55,7 +55,7 @@ class AgentDeleteEndPoint(UserEndPoint):
 
     def delete_heart_beat(self):
         try:
-            Heartbeat.objects.filter(agent=self.agent).delete()
+            IastHeartbeat.objects.filter(agent=self.agent).delete()
         except Exception as e:
             logger.error(f'心跳数据删除失败，原因：{e}')
 
@@ -88,7 +88,7 @@ if __name__ == '__main__':
     # 增加method_poll的引入，解决报错
     MethodPool.objects.count()
     IastErrorlog.objects.count()
-    Heartbeat.objects.count()
+    IastHeartbeat.objects.count()
     IastOverpowerUserAuth.objects.count()
     Asset.objects.count()
     IastVulnerabilityModel.objects.count()

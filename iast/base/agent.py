@@ -13,7 +13,7 @@ from base.endpoint import MixinAuthEndPoint
 from dongtai.models.agent import IastAgent
 from dongtai.models.asset import Asset
 from dongtai.models.project import IastProject
-from dongtai.models.server import IastServerModel
+from dongtai.models.server import IastServer
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from iast.permissions import ScopedPermission
 
@@ -68,7 +68,7 @@ def get_user_agent_pro(auth_users, bindId):
 
 # 根据server_id 获取所有 server_name
 def get_all_server(ids):
-    alls = IastServerModel.objects.filter(id__in=ids).values("id", "container")
+    alls = IastServer.objects.filter(id__in=ids).values("id", "container")
     result = {}
     if alls:
         for item in alls:
