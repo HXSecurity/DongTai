@@ -9,22 +9,21 @@ import logging
 import time
 
 from dongtai.models.errorlog import IastErrorlog
+from dongtai.utils import const
 
 from apiserver.report.handler.report_handler_interface import IReportHandler
+from apiserver.report.report_handler_factory import ReportHandler
 
 logger = logging.getLogger('dongtai.openapi')
 
 
+@ReportHandler.register(const.REPORT_ERROR_LOG)
 class ErrorLogHandler(IReportHandler):
     def __init__(self):
         super().__init__()
-        self.app_name = None
-        self.web_server_path = None
         self.log = None
 
     def parse(self):
-        self.app_name = self.detail.get('app_name')
-        self.web_server_path = self.detail.get('web_server_path')
         self.log = self.detail.get('log')
 
     def save(self):

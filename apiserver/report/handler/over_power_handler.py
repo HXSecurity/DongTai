@@ -11,10 +11,13 @@ import time
 from dongtai.models.iast_overpower_user import IastOverpowerUserAuth
 from dongtai.models.iast_vul_overpower import IastVulOverpower
 from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai.utils import const
 
 from apiserver.report.handler.report_handler_interface import IReportHandler
+from apiserver.report.report_handler_factory import ReportHandler
 
 
+@ReportHandler.register(const.REPORT_VULN_OVER_POWER)
 class OverPowerHandler(IReportHandler):
 
     def parse(self):

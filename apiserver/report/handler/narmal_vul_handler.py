@@ -17,9 +17,11 @@ import time
 from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai.utils import const
 
 from apiserver.report.handler.report_handler_interface import IReportHandler
 from apiserver.report.handler.saas_method_pool_handler import SaasMethodPoolHandler
+from apiserver.report.report_handler_factory import ReportHandler
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -113,6 +115,7 @@ class BaseVulnHandler(IReportHandler):
         self.http_replay = self.detail.get('http_replay_request')
 
 
+@ReportHandler.register(const.REPORT_VULN_NORNAL)
 class NormalVulnHandler(BaseVulnHandler):
     def save(self):
         if self.http_replay:

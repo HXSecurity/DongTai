@@ -12,13 +12,16 @@ from hashlib import sha1
 import requests
 from dongtai.models.agent_method_pool import MethodPool
 from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
+from dongtai.utils import const
 
 from AgentServer import settings
 from apiserver.report.handler.report_handler_interface import IReportHandler
+from apiserver.report.report_handler_factory import ReportHandler
 
 logger = logging.getLogger('dongtai.openapi')
 
 
+@ReportHandler.register(const.REPORT_VULN_SAAS_POOL)
 class SaasMethodPoolHandler(IReportHandler):
 
     @staticmethod
