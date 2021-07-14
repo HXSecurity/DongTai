@@ -7,15 +7,11 @@
 from django.db import models
 
 
-class IastServerModel(models.Model):
-    name = models.CharField(max_length=255, blank=True, null=True)
+class IastServer(models.Model):
     hostname = models.CharField(max_length=255, blank=True, null=True)
     ip = models.CharField(max_length=255, blank=True, null=True)
     port = models.IntegerField(blank=True, null=True)
     environment = models.TextField(blank=True, null=True)
-    agent_version = models.CharField(max_length=20, blank=True, null=True)
-    latest_agent_version = models.CharField(max_length=255, blank=True, null=True)
-    language = models.CharField(max_length=20, blank=True, null=True)
     path = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(max_length=255, blank=True, null=True)
     container = models.CharField(max_length=255, blank=True, null=True)
@@ -25,6 +21,8 @@ class IastServerModel(models.Model):
     runtime = models.CharField(max_length=255, blank=True, null=True)
     create_time = models.IntegerField(blank=True, null=True)
     update_time = models.IntegerField(blank=True, null=True)
+    network = models.CharField(max_length=255, blank=True, null=True)
+    pid = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False

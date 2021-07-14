@@ -8,7 +8,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from dongtai.models import User
-from dongtai.models.server import IastServerModel
+from dongtai.models.server import IastServer
 
 
 class IastAgent(models.Model):
@@ -17,7 +17,7 @@ class IastAgent(models.Model):
     latest_time = models.IntegerField(blank=True, null=True)
     user = models.ForeignKey(User, models.DO_NOTHING)
     server = models.ForeignKey(
-        to=IastServerModel,
+        to=IastServer,
         on_delete=models.DO_NOTHING,
         related_name='agents',
         related_query_name='agent',
