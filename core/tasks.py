@@ -18,7 +18,7 @@ from dongtai.models.agent import IastAgent
 from dongtai.models.agent_method_pool import MethodPool
 from dongtai.models.asset import Asset
 from dongtai.models.errorlog import IastErrorlog
-from dongtai.models.heartbeat import Heartbeat
+from dongtai.models.heartbeat import IastHeartbeat
 from dongtai.models.hook_strategy import HookStrategy
 from dongtai.models.hook_type import HookType
 from dongtai.models.project import IastProject
@@ -397,7 +397,7 @@ def heartbeat():
     agents = IastAgent.objects.all()
     agent_enable = agents.values('id').filter(is_running=1).count()
     agent_counts = agents.values('id').count()
-    heartbeat = Heartbeat.objects.values('id').filter(agent__in=agents).annotate(Sum("req_count")).count()
+    heartbeat = IastHeartbeat.objects.values('id').filter(agent__in=agents).annotate(Sum("req_count")).count()
     project_count = IastProject.objects.values('id').count()
     user_count = User.objects.values('id').count()
     vul_count = IastVulnerabilityModel.objects.values('id').count()
