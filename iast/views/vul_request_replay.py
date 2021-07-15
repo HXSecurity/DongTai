@@ -10,6 +10,7 @@ from io import BytesIO
 import base64
 import time
 from dongtai.models.agent_method_pool import MethodPool
+from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai.models.replay_queue import IastReplayQueue
 from dongtai.utils import const
 
@@ -173,6 +174,15 @@ class RequestReplayEndPoint(UserEndPoint):
     def check_replay_data_permission(replay_id, auth_agents):
         return IastReplayQueue.objects.values('id').filter(id=replay_id, agent__in=auth_agents).exists()
 
+    @staticmethod
+    def parse_response(header, body):
+        try:
+            _data = base64.b64decode(header.encode("utf-8")).decode("utf-8")
+        except Exception as e:
+            _data = ''
+            logger.error(f'Response Header解析出错，错误原因：{e}')
+        return '{header}\n\n{body}'.format(header=_data, body=body)
+
     def get(self, request):
         replay_id = request.query_param.get('replayId')
         auth_agents = self.get_auth_agents_with_user(request.user)
@@ -182,9 +192,14 @@ class RequestReplayEndPoint(UserEndPoint):
             return R.failure(msg='重放请求不存在或无操作权限')
 
         # 查询响应体
-        # 查询污点调用链
-
-        return R.success(data={
-            'response': '',
-            'graph': ''
-        })
+        replay_data = IastAgentMethodPoolReplay.objects.filter(replay_id=replay_id,
+                                                               replay_type=const.REQUEST_REPLAY).values(
+            'res_header', 'res_body', 'method_pool').first()
+        # todo 调用污点链构造方法，构造污点链
+        if replay_data:
+            return R.success(data={
+                'response': self.parse_response(replay_data['res_header'], replay_data['res_body']),
+                'graph': ''
+            })
+        else:
+            return R.failure(msg='重放请求处理中')

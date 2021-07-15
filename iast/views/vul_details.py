@@ -149,16 +149,25 @@ class VulDetail(UserEndPoint):
             results = None
         return results
 
-    def parse_header(self, method, uri, query_param, protocol, header, data):
+    @staticmethod
+    def parse_request(method, uri, query_param, protocol, header, data):
         _data = f"{method} {uri}?{query_param} {protocol}\n" if query_param else f"{method} {uri} {protocol}\n"
         try:
             _data = _data + (base64.b64decode(header.encode("utf-8")).decode("utf-8") if header else '')
         except Exception as e:
             logger.error(f'header解析出错，错误原因：{e}')
-            pass
         if data:
             _data = _data + "\n" + data
         return _data
+
+    @staticmethod
+    def parse_response(header, body):
+        try:
+            _data = base64.b64decode(header.encode("utf-8")).decode("utf-8")
+        except Exception as e:
+            _data = ''
+            logger.error(f'Response Header解析出错，错误原因：{e}')
+        return '{header}\n\n{body}'.format(header=_data, body=body)
 
     def get_vul(self, auth_agents):
         vul = IastVulnerabilityModel.objects.filter(id=self.vul_id, agent__in=auth_agents).first()
@@ -200,9 +209,11 @@ class VulDetail(UserEndPoint):
             'level': vul.level.name_value,
             'level_type': vul.level.id,
             'counts': vul.counts,
-            'req_header': self.parse_header(vul.http_method, vul.uri, vul.req_params, vul.http_protocol, vul.req_header,
-                                            vul.req_data),
-            'graphy': self.parse_graphy(vul.full_stack),
+            'req_header': self.parse_request(vul.http_method, vul.uri, vul.req_params, vul.http_protocol,
+                                             vul.req_header,
+                                             vul.req_data),
+            'response': self.parse_response(vul.res_header, vul.res_body),
+            'graph': self.parse_graphy(vul.full_stack),
             'context_path': vul.context_path,
             'client_ip': vul.client_ip,
             'status': vul.status,
