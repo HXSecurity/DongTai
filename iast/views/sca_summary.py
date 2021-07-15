@@ -13,6 +13,7 @@ from iast.base.sca import ScaEndPoint
 from dongtai.models.asset import Asset
 from dongtai.models.vul_level import IastVulLevel
 from iast.base.project_version import get_project_version
+from iast.views.vul_summary import VulSummary
 
 
 class ScaSummary(ScaEndPoint):
@@ -27,37 +28,8 @@ class ScaSummary(ScaEndPoint):
         - 漏洞类型
         - 应用程序
         :param request:
-        :return: {
-            "status": 201,
-            "msg": "success",
-            "data": {
-                "language": {
-                    "Java": 60,
-                    ".NET": 60
-                },
-                "level": {
-                    "critical": 10,
-                    "high": 20,
-                    "medium": 30,
-                    "low": 10,
-                    "note": 0
-                },
-                "type": {
-                    "sql injection": 40,
-                    "cmd injection": 40,
-                    "xpath injection": 40,
-                    "ldap injection": 40,
-                    "ognl injection": 40,
-                    "el injection": 40
-                },
-
-                "application": {
-                    "struts2-test": 20
-                }
-            }
-        }
+        :return:
         """
-        DEFAULT_LANGUAGE = {"JAVA": 0, ".NET": 0}
 
         end = {
             "status": 201,
@@ -66,10 +38,12 @@ class ScaSummary(ScaEndPoint):
         }
         auth_users = self.get_auth_users(request.user)
         auth_agents = self.get_auth_agents(auth_users)
-        queryset = Asset.objects.filter(agent__in=auth_agents)
+
         language = request.query_params.get('language', None)
         if language:
-            queryset = queryset.filter(language=language)
+            auth_agents = auth_agents.filter(language=language)
+
+        queryset = Asset.objects.filter(agent__in=auth_agents)
 
         level = request.query_params.get('level', None)
         if level:
@@ -95,10 +69,7 @@ class ScaSummary(ScaEndPoint):
         if package_kw and package_kw.strip() != '':
             queryset = queryset.filter(package_name__icontains=package_kw)
 
-        datas = queryset.values('language', 'level', 'agent')
-
-        language_summary = datas.values('language').order_by('language').annotate(total=Count('language'))
-        level_summary = datas.values('level').order_by('level').annotate(total=Count('level'))
+        level_summary = queryset.values('level').order_by('level').annotate(total=Count('level'))
         levelInfo = IastVulLevel.objects.all()
         levelNameArr = {}
         levelIdArr = {}
@@ -108,18 +79,9 @@ class ScaSummary(ScaEndPoint):
                 DEFAULT_LEVEL[level_item.name_value] = 0
                 levelNameArr[level_item.name_value] = level_item.id
                 levelIdArr[level_item.id] = level_item.name_value
-        _temp_data = {_['language']: _['total'] for _ in language_summary}
-        # if language:
-        #     end['data']['language'] = [{'language': _key, 'count': _value} for _key, _value in _temp_data.items()]
-        # else:
-        DEFAULT_LANGUAGE.update(_temp_data)
-        end['data']['language'] = [{'language': _key, 'count': _value} for _key, _value in DEFAULT_LANGUAGE.items()]
+
+        end['data']['language'] = VulSummary.get_languages(queryset.values('agent_id'))
         _temp_data = {levelIdArr[_['level']]: _['total'] for _ in level_summary}
-        # if level:
-        #     end['data']['level'] = [{
-        #         'level': levelIdArr[_['level']], 'count': _['total'], 'level_id': _['level']
-        #     } for _ in level_summary]
-        # else:
         DEFAULT_LEVEL.update(_temp_data)
         end['data']['level'] = [{
             'level': _key, 'count': _value, 'level_id': levelNameArr[_key]

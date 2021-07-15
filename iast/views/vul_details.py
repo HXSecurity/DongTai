@@ -79,7 +79,7 @@ class VulDetail(UserEndPoint):
         server = self.server
         if server:
             return {
-                'name': server.name,
+                'name': 'server.name',
                 'hostname': server.hostname,
                 'ip': server.ip,
                 'port': server.port,
@@ -87,7 +87,7 @@ class VulDetail(UserEndPoint):
                 'server_type': VulSerializer.split_container_name(server.container),
                 'container_path': server.container_path,
                 'runtime': server.runtime,
-                'environment': server.environment,
+                'environment': server.env,
                 'command': server.command
             }
         else:
@@ -96,7 +96,7 @@ class VulDetail(UserEndPoint):
                 'hostname': "",
                 'ip': "",
                 'port': "",
-                'container': "",
+                'container': "JavaApplication",
                 'server_type': "",
                 'container_path': "",
                 'runtime': "",
@@ -165,7 +165,10 @@ class VulDetail(UserEndPoint):
 
         agent = vul.agent
         project_id = agent.bind_project_id
-        project = IastProject.objects.values("name").filter(id=project_id).first()
+        if project_id is None or project_id == 0:
+            project = None
+        else:
+            project = IastProject.objects.values("name").filter(id=project_id).first()
 
         project_version_id = agent.project_version_id
         if project_version_id:
@@ -193,7 +196,7 @@ class VulDetail(UserEndPoint):
             'latest_time': vul.latest_time,
             'project_name': project['name'] if project else '暂未绑定项目',
             'project_version': project_version_name,
-            'language': vul.language,
+            'language': agent.language,
             'level': vul.level.name_value,
             'level_type': vul.level.id,
             'counts': vul.counts,

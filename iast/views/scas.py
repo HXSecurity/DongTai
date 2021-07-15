@@ -26,6 +26,11 @@ class ScaList(ScaEndPoint):
         """
         auth_users = self.get_auth_users(request.user)
         auth_agents = self.get_auth_agents(auth_users)
+
+        language = request.query_params.get('language')
+        if language:
+            auth_agents = auth_agents.filter(language=language)
+
         queryset = Asset.objects.filter(agent__in=auth_agents)
 
         order = request.query_params.get('order', None)
@@ -46,10 +51,6 @@ class ScaList(ScaEndPoint):
             agent_ids = get_agents_with_project(project_name, auth_users)
             if agent_ids:
                 queryset = queryset.filter(agent_id__in=agent_ids)
-
-        language = request.query_params.get('language')
-        if language:
-            queryset = queryset.filter(language=language)
 
         level = request.query_params.get('level')
         if level:
