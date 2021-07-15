@@ -69,17 +69,16 @@ class ScaHandler(IReportHandler):
                                                                         agent__in=current_version_agents).count()
 
                     if asset_count == 0:
-                        Asset(
-                            package_path=self.package_path,
-                            version=version,
-                            vul_count=vul_count,
-                            level=level,
+                        Asset.objects.create(
                             package_name=package_name,
-                            signature_value=self.package_signature,
+                            package_path=self.package_path,
                             signature_algorithm=self.package_algorithm,
+                            signature_value=self.package_signature,
                             dt=time.time(),
-                            agent=self.agent,
-                            language=self.language
-                        ).save()
+                            version=version,
+                            level=level,
+                            vul_count=vul_count,
+                            agent=self.agent
+                        )
                 except Exception as e:
                     logger.error(f'sca数据解析失败，原因：{e}')

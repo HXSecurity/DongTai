@@ -19,7 +19,6 @@ class IReportHandler:
         self._user_id = None
         self.agent_id = None
         self.project_name = None
-        self.language = None
         self.agent = None
 
     @property
