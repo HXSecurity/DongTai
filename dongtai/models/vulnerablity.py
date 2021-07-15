@@ -26,7 +26,6 @@ class IastVulnerabilityModel(models.Model):
     context_path = models.CharField(max_length=255, blank=True, null=True)
     counts = models.IntegerField(blank=True, null=True)
     status = models.CharField(max_length=255, blank=True, null=True)
-    language = models.CharField(max_length=255, blank=True, null=True)
     first_time = models.IntegerField(blank=True, null=True)
     latest_time = models.IntegerField(blank=True, null=True)
     client_ip = models.CharField(max_length=255, blank=True, null=True)

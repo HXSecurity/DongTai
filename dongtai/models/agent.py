@@ -31,6 +31,7 @@ class IastAgent(models.Model):
     project_name = models.CharField(max_length=255, blank=True, null=True)
     online = models.PositiveSmallIntegerField(blank=True, default=0)
     project_version_id = models.IntegerField(blank=True, null=True, default=0)
+    language = models.CharField(max_length=10, blank=True, null=True)
 
     class Meta:
         managed = False

@@ -22,7 +22,6 @@ class IastAgentMethodPoolReplay(models.Model):
     res_header = models.CharField(max_length=1000, blank=True, null=True)
     res_body = models.CharField(max_length=1000, blank=True, null=True)
     context_path = models.CharField(max_length=255, blank=True, null=True)
-    language = models.CharField(max_length=20, blank=True, null=True)
     method_pool = models.TextField(blank=True, null=True)  # This field type is a guess.
     clent_ip = models.CharField(max_length=255, blank=True, null=True)
     create_time = models.IntegerField(blank=True, null=True)
