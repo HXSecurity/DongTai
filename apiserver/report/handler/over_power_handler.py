@@ -53,7 +53,6 @@ class OverPowerHandler(IReportHandler):
         self.x_trace_id = self.detail.get('x-trace-id')
         self.cookie = self.detail.get('cookie')
         self.sql = self.detail.get('sql')
-        self.language = self.detail.get('language')
 
     def save(self):
         # 检查trace_id是否存于数据库中
@@ -120,7 +119,6 @@ class OverPowerHandler(IReportHandler):
                         server_name=self.server_name,
                         counts=1,
                         status='已上报',
-                        language=self.language,
                         first_time=int(time.time()),
                         latest_time=int(time.time())
                     ).save()

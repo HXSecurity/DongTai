@@ -99,13 +99,13 @@ class BaseVulnHandler(IReportHandler):
         self.http_url = self.detail.get('http_url')
         self.http_query_string = self.detail.get('http_query_string')
         self.http_header = self.detail.get('http_req_header')
+        self.http_req_data = self.detail.get('http_body')
         self.http_method = self.detail.get('http_method')
         self.http_scheme = self.detail.get('http_scheme')
         self.http_secure = self.detail.get('http_secure')
         self.http_protocol = self.detail.get('http_protocol')
         self.vuln_type = self.detail.get('vuln_type')
         self.app_caller = self.detail.get('app_caller')
-        self.language = self.detail.get('language')
         self.taint_value = self.detail.get('taint_value')
         self.taint_position = self.detail.get('taint_position')
         self.client_ip = self.detail.get('http_client_ip')
@@ -113,6 +113,8 @@ class BaseVulnHandler(IReportHandler):
         self.container = self.detail.get('container')
         self.container_path = self.detail.get('container_path')
         self.http_replay = self.detail.get('http_replay_request')
+        self.http_res_header = self.detail.get('http_res_header')
+        self.http_res_body = self.detail.get('http_res_body')
 
 
 @ReportHandler.register(const.REPORT_VULN_NORNAL)
@@ -152,14 +154,13 @@ class NormalVulnHandler(BaseVulnHandler):
                             http_protocol=self.http_protocol,
                             req_header=self.http_header,
                             req_params=self.http_query_string,
-                            req_data='',  # fixme 请求体 数据保存
-                            res_header='',  # fixme 响应头，暂时没有，后续补充
-                            res_body='',  # fixme 响应体数据
+                            req_data=self.http_req_data,
+                            res_header=self.http_res_header,
+                            res_body=self.http_res_body,
                             agent=self.agent,
                             context_path=self.app_name,
                             counts=1,
                             status='已上报',
-                            language=self.language,
                             first_time=int(time.time()),
                             latest_time=int(time.time()),
                             client_ip=self.client_ip
