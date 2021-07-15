@@ -35,18 +35,16 @@ class VulsEndPoint(UserEndPoint):
         }
         auth_users = self.get_auth_users(request.user)
         auth_agents = self.get_auth_agents(auth_users)
-        if auth_agents:
-            queryset = IastVulnerabilityModel.objects.values('id', 'type', 'url', 'uri', 'agent_id', 'level_id',
-                                                             'http_method', 'top_stack', 'bottom_stack',
-                                                             'taint_position',
-                                                             'latest_time', 'first_time', 'language', 'status').filter(
-                agent__in=auth_agents)
-        else:
-            return R.success(page={}, data=[])
+        if auth_agents is None:
+            return R.success(page={}, data=[], msg='暂无数据')
 
         language = request.query_params.get('language')
         if language:
-            queryset = queryset.filter(language=language)
+            auth_agents = auth_agents.filter(language=language)
+
+        queryset = IastVulnerabilityModel.objects.values(
+            'id', 'type', 'url', 'uri', 'agent_id', 'level_id', 'http_method', 'top_stack', 'bottom_stack',
+            'taint_position', 'latest_time', 'first_time', 'status').filter(agent__in=auth_agents)
 
         level = request.query_params.get('level')
         if level:

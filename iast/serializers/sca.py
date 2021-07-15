@@ -4,6 +4,7 @@
 # datetime:2020/11/30 下午2:18
 # software: PyCharm
 # project: lingzhi-webapi
+from dongtai.models.agent import IastAgent
 from dongtai.models.project_version import IastProjectVersion
 from rest_framework import serializers
 
@@ -17,8 +18,11 @@ class ScaSerializer(serializers.ModelSerializer):
     level = serializers.SerializerMethodField()
     level_type = serializers.SerializerMethodField()
     agent_name = serializers.SerializerMethodField()
+    language = serializers.SerializerMethodField()
+
     project_cache = dict()
     project_version_cache = dict()
+    AGENT_LANGUAGE_MAP = {}
 
     class Meta:
         model = Asset
@@ -58,3 +62,10 @@ class ScaSerializer(serializers.ModelSerializer):
 
     def get_agent_name(self, obj):
         return obj.agent.token
+
+    def get_language(self, obj):
+        if obj.agent_id not in self.AGENT_LANGUAGE_MAP:
+            agent_model = IastAgent.objects.filter(id=obj.agent_id).first()
+            if agent_model:
+                self.AGENT_LANGUAGE_MAP[obj.agent_id] = agent_model.language
+        return self.AGENT_LANGUAGE_MAP[obj.agent_id]
