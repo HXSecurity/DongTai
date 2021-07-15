@@ -164,7 +164,7 @@ class SearchEndPoint(AnonymousAndUserEndPoint):
                                 'id': method_pool.id,
                                 'url': method_pool.url,
                                 'req_params': method_pool.req_params,
-                                'language': method_pool.language,
+                                'language': method_pool.agent.language,
                                 'update_time': method_pool.update_time,
                                 'rule': rule_name,
                                 'level': rule_level,

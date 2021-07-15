@@ -17,6 +17,7 @@ class MethodPoolSerialize(serializers.ModelSerializer):
     AGENTS = dict()
     req_header = serializers.SerializerMethodField()
     dependencies = serializers.SerializerMethodField()
+    language = serializers.SerializerMethodField()
 
     class Meta:
         model = MethodPool
@@ -33,6 +34,9 @@ class MethodPoolSerialize(serializers.ModelSerializer):
             self.DEPENDENCIES[obj.agent_id] = DependencySerialize(dependencies, many=True).data
         return self.DEPENDENCIES[obj.agent_id]
 
+    def get_language(self, obj):
+        return obj.agent.language
+
 
 class MethodPoolListSerialize(serializers.ModelSerializer):
     DEPENDENCIES = dict()
@@ -40,6 +44,7 @@ class MethodPoolListSerialize(serializers.ModelSerializer):
     rule = serializers.SerializerMethodField()
     level = serializers.SerializerMethodField()
     agent_name = serializers.SerializerMethodField()
+    language = serializers.SerializerMethodField()
 
     def __init__(self, rule, level, **kwargs):
         super().__init__(**kwargs)
@@ -61,6 +66,9 @@ class MethodPoolListSerialize(serializers.ModelSerializer):
         if obj.agent_id not in self.AGENTS:
             self.AGENTS[obj.agent_id] = obj.agent.token
         return self.AGENTS[obj.agent_id]
+
+    def get_language(self, obj):
+        return obj.agent.language
 
 
 if __name__ == '__main__':
