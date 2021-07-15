@@ -86,7 +86,7 @@ class SaasMethodPoolHandler(IReportHandler):
                     res_header=self.http_res_header,
                     res_body=self.http_res_body,
                     context_path=self.context_path,
-                    language=self.language,
+                    language=self.agent.language,
                     method_pool=json.dumps(self.method_pool),
                     clent_ip=self.client_ip,
                     update_time=timestamp
@@ -107,7 +107,7 @@ class SaasMethodPoolHandler(IReportHandler):
                     res_header=self.http_res_header,
                     res_body=self.http_res_body,
                     context_path=self.context_path,
-                    language=self.language,
+                    language=self.agent.language,
                     method_pool=json.dumps(self.method_pool),
                     clent_ip=self.client_ip,
                     replay_id=replay_id,
