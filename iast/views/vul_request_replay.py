@@ -149,10 +149,6 @@ class RequestReplayEndPoint(UserEndPoint):
             method_pool_id = request.data.get('methodPoolId')
             replay_request = request.data.get('replayRequest')
 
-            check_failure, checked_request = self.check_replay_request(raw_request=replay_request)
-            if check_failure:
-                return R.failure(msg='重放请求不合法')
-
             check_failure, method_pool_model = self.check_method_pool(method_pool_id, request.user)
             if check_failure:
                 return R.failure(msg='污点池数据不存在或无权操作')
@@ -160,6 +156,10 @@ class RequestReplayEndPoint(UserEndPoint):
             check_failure = self.check_agent_active(method_pool_model.agent)
             if check_failure:
                 return R.failure(msg='探针已销毁或暂停运行，请选检查探针状态')
+
+            check_failure, checked_request = self.check_replay_request(raw_request=replay_request)
+            if check_failure:
+                return R.failure(msg='重放请求不合法')
 
             replay_id = self.send_request_to_replay_queue(relation_id=method_pool_model.id,
                                                           agent_id=method_pool_model.agent.id,

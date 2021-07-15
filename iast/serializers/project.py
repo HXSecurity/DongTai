@@ -19,6 +19,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     vul_count = serializers.SerializerMethodField()
     owner = serializers.SerializerMethodField()
     agent_count = serializers.SerializerMethodField()
+    USER_MAP = {}
 
     class Meta:
         model = IastProject
@@ -28,8 +29,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         try:
             all_agents = getattr(obj, 'project_agents')
         except:
-            all_agents = IastAgent.objects.filter(bind_project_id=obj.id)
-            # agents = IastAgent.objects.filter(bind_project_id=obj.id, is_running=const.RUNNING).values('id')
+            all_agents = IastAgent.objects.values('id').filter(bind_project_id=obj.id)
             setattr(obj, 'project_agents', all_agents)
         return all_agents
 
@@ -43,7 +43,9 @@ class ProjectSerializer(serializers.ModelSerializer):
         return list(vul_levels) if vul_levels else list()
 
     def get_owner(self, obj):
-        return obj.user.get_username()
+        if obj not in self.USER_MAP:
+            self.USER_MAP[obj] = obj.user.get_username()
+        return self.USER_MAP[obj]
 
     def get_agent_count(self, obj):
         return self.get_agents(obj).filter(is_running=const.RUNNING).count()
