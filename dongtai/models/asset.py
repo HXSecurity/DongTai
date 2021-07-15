@@ -30,7 +30,6 @@ class Asset(models.Model):
         blank=True,
         null=True
     )
-    language = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         managed = False
