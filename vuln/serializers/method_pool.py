@@ -4,28 +4,33 @@
 # datetime:2021/1/28 上午11:10
 # software: PyCharm
 # project: lingzhi-engine
-from dongtai.models.agent_method_pool import MethodPool
-from dongtai.models.dependency import Dependency
+
 from rest_framework import serializers
 
+from dongtai.models.agent_method_pool import MethodPool
+from dongtai.models.dependency import Dependency
+from vuln import utils
 from vuln.serializers.dependency import DependencySerialize
-from vuln.utils import reduction_req_headers
 
 
 class MethodPoolSerialize(serializers.ModelSerializer):
     DEPENDENCIES = dict()
     AGENTS = dict()
-    req_header = serializers.SerializerMethodField()
+    request = serializers.SerializerMethodField()
+    response = serializers.SerializerMethodField()
     dependencies = serializers.SerializerMethodField()
     language = serializers.SerializerMethodField()
 
     class Meta:
         model = MethodPool
-        fields = ['url', 'req_header', 'res_header', 'res_body', 'language', 'method_pool', 'dependencies']
+        fields = ['url', 'request', 'response', 'language', 'method_pool', 'dependencies']
 
-    def get_req_header(self, obj):
-        return reduction_req_headers(obj.http_method, obj.req_header, obj.uri, obj.req_params, obj.req_data,
-                                     obj.http_protocol)
+    def get_request(self, obj):
+        return utils.build_request(obj.http_method, obj.req_header, obj.uri, obj.req_params, obj.req_data,
+                                   obj.http_protocol)
+
+    def get_response(self, obj):
+        return utils.build_response(obj.res_header, obj.res_body)
 
     def get_dependencies(self, obj):
         # fixme 内存溢出时，优先排查这里，临时使用类成员变量存储，后续考虑使用缓存来做
