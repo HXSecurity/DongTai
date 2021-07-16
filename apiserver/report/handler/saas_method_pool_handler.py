@@ -12,6 +12,7 @@ from hashlib import sha1
 import requests
 from dongtai.models.agent_method_pool import MethodPool
 from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
+from dongtai.models.replay_queue import IastReplayQueue
 from dongtai.utils import const
 
 from AgentServer import settings
@@ -115,6 +116,7 @@ class SaasMethodPoolHandler(IReportHandler):
                     update_time=timestamp
                 )
                 method_pool_id = replay_model.id
+            IastReplayQueue.objects.filter(id=replay_id).update(state=const.SOLVED)
             if method_pool_id:
                 self.send_to_engine(method_pool_id=method_pool_id, model='replay')
         else:
