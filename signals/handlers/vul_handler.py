@@ -341,6 +341,9 @@ def handler_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stac
             kwargs['relation_id'] = relation_id
             kwargs['replay_id'] = replay_id
             vul = handler_replay_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs)
+        elif replay_type == const.REQUEST_REPLAY:
+            # 数据包调试数据暂不检测漏洞
+            vul = None
         else:
             vul = save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs)
             create_vul_recheck_task(vul_id=vul.id, agent=vul.agent, timestamp=timestamp)
