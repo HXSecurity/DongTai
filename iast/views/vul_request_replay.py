@@ -59,7 +59,7 @@ class RequestReplayEndPoint(UserEndPoint):
                 'uri': replay_request.uri,
                 'params': replay_request.params,
                 'scheme': replay_request.request_version,
-                'header': base64.b64encode(replay_request.headers.as_string().strip().encode()),
+                'header': base64.b64encode(replay_request.headers.as_string().strip().encode()).decode(),
                 'body': replay_request.body,
             }
 
@@ -111,8 +111,8 @@ class RequestReplayEndPoint(UserEndPoint):
             relation_id=relation_id
         ).first()
         if replay_queue:
-            if replay_queue.state not in [const.PENDING, const.WAITING, const.SOLVING]:
-                replay_queue.state = const.PENDING
+            if replay_queue.state not in [const.WAITING, const.SOLVING]:
+                replay_queue.state = const.WAITING
                 replay_queue.uri = replay_request['uri']
                 replay_queue.method = replay_request['method']
                 replay_queue.scheme = replay_request['scheme']
@@ -128,13 +128,15 @@ class RequestReplayEndPoint(UserEndPoint):
             replay_queue = IastReplayQueue.objects.create(
                 relation_id=relation_id,
                 replay_type=const.REQUEST_REPLAY,
-                state=const.PENDING,
+                state=const.WAITING,
                 uri=replay_request['uri'],
                 method=replay_request['method'],
                 scheme=replay_request['scheme'],
                 header=replay_request['header'],
                 params=replay_request['params'],
                 body=replay_request['body'],
+                create_time=timestamp,
+                count=0,
                 update_time=timestamp,
                 agent_id=agent_id,
             )
