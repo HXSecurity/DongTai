@@ -124,6 +124,10 @@ class RequestReplayEndPoint(UserEndPoint):
                 replay_queue.save(
                     update_fields=['uri', 'method', 'scheme', 'header', 'params', 'body', 'update_time', 'agent_id',
                                    'state', 'agent_id'])
+                IastAgentMethodPoolReplay.objects.filter(
+                    replay_id=replay_queue.id,
+                    replay_type=const.REQUEST_REPLAY
+                ).delete()
         else:
             replay_queue = IastReplayQueue.objects.create(
                 relation_id=relation_id,
