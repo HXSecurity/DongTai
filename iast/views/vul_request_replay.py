@@ -78,6 +78,9 @@ class RequestReplayEndPoint(UserEndPoint):
             status: True - 方法池存在且用户可操作；False - 方法池不存在或用户无权限操作
             model: 方法池对象；None
         """
+        if method_pool_id is None or method_pool_id == '':
+            return True, None
+
         auth_agents = RequestReplayEndPoint.get_auth_agents_with_user(user)
         method_pool_model = MethodPool.objects.filter(id=method_pool_id, agent__in=auth_agents).first()
         if method_pool_model:
@@ -162,9 +165,11 @@ class RequestReplayEndPoint(UserEndPoint):
             if check_failure:
                 return R.failure(msg='重放请求不合法')
 
-            replay_id = self.send_request_to_replay_queue(relation_id=method_pool_model.id,
-                                                          agent_id=method_pool_model.agent.id,
-                                                          replay_request=checked_request)
+            replay_id = self.send_request_to_replay_queue(
+                relation_id=method_pool_model.id,
+                agent_id=method_pool_model.agent.id,
+                replay_request=checked_request
+            )
             return R.success(msg='请求重返成功', data={'replayId': replay_id})
 
         except Exception as e:
