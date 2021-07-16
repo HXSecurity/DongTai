@@ -83,49 +83,37 @@ class HeartBeatHandler(IReportHandler):
 
     def get_result(self, msg=None):
         try:
-            timestamp = int(time.time())
             project_agents = IastAgent.objects.values('id').filter(bind_project_id=self.agent.bind_project_id)
-            if project_agents:
-                replay_queryset = IastReplayQueue.objects.values('id', 'relation_id', 'uri', 'method', 'scheme',
-                                                                 'header', 'params', 'body', 'replay_type').filter(
-                    agent_id__in=project_agents, state=const.WAITING
-                ).order_by('replay_type')[:10]
-                # 读取，然后返回
-                if replay_queryset:
-                    success_ids = []
-                    success_vul_ids = []
-                    failure_ids = []
-                    failure_vul_ids = []
-                    replay_requests = list()
-                    for replay_request in replay_queryset:
-                        if replay_request['uri']:
-                            replay_requests.append(replay_request)
-                            success_ids.append(replay_request['id'])
-                            if replay_request['replay_type'] == const.VUL_REPLAY:
-                                success_vul_ids.append(replay_request['relation_id'])
-                        else:
-                            failure_ids.append(replay_request['id'])
-                            if replay_request['replay_type'] == const.VUL_REPLAY:
-                                failure_vul_ids.append(replay_request['relation_id'])
-
-                    IastReplayQueue.objects.filter(id__in=success_ids).update(update_time=timestamp,
-                                                                              state=const.SOLVING)
-                    IastReplayQueue.objects.filter(id__in=failure_ids).update(update_time=timestamp, state=const.SOLVED)
-
-                    IastVulnerabilityModel.objects.filter(id__in=success_vul_ids).update(
-                        latest_time=timestamp,
-                        status='验证中'
-                    )
-                    IastVulnerabilityModel.objects.filter(id__in=failure_vul_ids).update(
-                        latest_time=timestamp,
-                        status='验证失败'
-                    )
-                    logger.info(f'重放请求下发成功')
-                    return replay_requests
-                else:
-                    logger.info(f'重放请求不存在')
-            else:
+            if project_agents is None:
                 logger.info(f'项目下不存在探针')
+
+            replay_queryset = IastReplayQueue.objects.values(
+                'id', 'relation_id', 'uri', 'method', 'scheme', 'header', 'params', 'body', 'replay_type'
+            ).filter(agent_id__in=project_agents, state=const.WAITING)[:10]
+            if len(replay_queryset) == 0:
+                logger.info(f'重放请求不存在')
+
+            success_ids, success_vul_ids, failure_ids, failure_vul_ids, replay_requests = [], [], [], [], []
+            for replay_request in replay_queryset:
+                if replay_request['uri']:
+                    replay_requests.append(replay_request)
+                    success_ids.append(replay_request['id'])
+                    if replay_request['replay_type'] == const.VUL_REPLAY:
+                        success_vul_ids.append(replay_request['relation_id'])
+                else:
+                    failure_ids.append(replay_request['id'])
+                    if replay_request['replay_type'] == const.VUL_REPLAY:
+                        failure_vul_ids.append(replay_request['relation_id'])
+
+            timestamp = int(time.time())
+            IastReplayQueue.objects.filter(id__in=success_ids).update(update_time=timestamp, state=const.SOLVING)
+            IastReplayQueue.objects.filter(id__in=failure_ids).update(update_time=timestamp, state=const.SOLVED)
+
+            IastVulnerabilityModel.objects.filter(id__in=success_vul_ids).update(latest_time=timestamp, status='验证中')
+            IastVulnerabilityModel.objects.filter(id__in=failure_vul_ids).update(latest_time=timestamp, status='验证失败')
+            logger.info(f'重放请求下发成功')
+
+            return replay_requests
         except Exception as e:
             logger.info(f'重放请求查询失败，原因：{e}')
         return list()
