@@ -467,7 +467,7 @@ def vul_recheck():
         vul_id = replay.relation_id
         if vul_id is None:
             logger.info('重放请求数据格式不正确，relation id不能为空')
-            Replay.replay_failed(timestamp, replay)
+            Replay.replay_failed(timestamp=timestamp, replay=replay)
             continue
 
         vulnerability = IastVulnerabilityModel.objects.values(
@@ -475,7 +475,7 @@ def vul_recheck():
             'param_name'
         ).filter(id=vul_id).first()
         if vulnerability is None:
-            Replay.replay_failed(timestamp, replay)
+            Replay.replay_failed(timestamp=timestamp, replay=replay)
             continue
 
         param_name_value = vulnerability['param_name']
