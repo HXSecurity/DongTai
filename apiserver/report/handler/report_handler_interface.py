@@ -63,17 +63,17 @@ class IReportHandler:
         return msg if msg else ''
 
     def handle(self, report, user):
-        logger.info('报告解析开始')
+        logger.info(f'[{self.__class__.__name__}]报告解析开始')
         self.report = report
         self.user_id = user
         self.common_header()
         if self.has_permission():
             self.parse()
             self.save()
-            logger.info('报告解析完成')
+            logger.info(f'[{self.__class__.__name__}]报告解析完成')
             return self.get_result()
         else:
-            logger.info('报告解析失败，Agent不存在或无权访问')
+            logger.info(f'[{self.__class__.__name__}]报告解析失败，Agent不存在或无权访问')
             return self.get_result(msg='no permission')
 
     def get_project_agents(self, agent):
