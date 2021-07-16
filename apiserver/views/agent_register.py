@@ -47,7 +47,8 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                     version=version,
                     project_id=project['id'],
                     project_name=project_name,
-                    project_version_id=project_current_version['id']
+                    project_version_id=project_current_version['id'],
+                    language=language,
                 )
         else:
             agent_id = AgentRegisterEndPoint.get_agent_id(token=token, project_name=project_name, user=user,
@@ -60,7 +61,8 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                     version=version,
                     project_id=0,
                     project_name=project_name,
-                    project_version_id=0
+                    project_version_id=0,
+                    language=language,
                 )
         return agent_id
 
@@ -199,12 +201,12 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 server_port=server_port,
                 server_path=server_path,
                 server_env=server_env,
-                pid=pid
+                pid=pid,
             )
 
             return R.success(data={'id': agent_id})
         except Exception as e:
-            return R.failure(msg="参数错误")
+            return R.failure(msg="探针注册失败，原因：{reason}".format(reason=e))
 
     @staticmethod
     def get_agent_id(token, project_name, user, current_project_version_id):
@@ -217,7 +219,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         return agent['id'] if agent else -1
 
     @staticmethod
-    def __register_agent(exist_project, token, user, version, project_id, project_name, project_version_id):
+    def __register_agent(exist_project, token, user, version, project_id, project_name, project_version_id, language):
         if exist_project:
             IastAgent.objects.filter(token=token, online=1, user=user).update(online=0)
 
@@ -232,6 +234,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             control=0,
             is_control=0,
             online=1,
-            project_version_id=project_version_id
+            project_version_id=project_version_id,
+            language=language
         )
         return agent.id
