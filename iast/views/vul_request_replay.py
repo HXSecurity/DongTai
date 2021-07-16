@@ -191,7 +191,7 @@ class RequestReplayEndPoint(UserEndPoint):
         return '{header}\n\n{body}'.format(header=_data, body=body)
 
     def get(self, request):
-        replay_id = request.query_param.get('replayId')
+        replay_id = request.query_params.get('replayId')
         auth_agents = self.get_auth_agents_with_user(request.user)
 
         has_permission = self.check_replay_data_permission(replay_id=replay_id, auth_agents=auth_agents)
