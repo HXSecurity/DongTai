@@ -101,7 +101,9 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack):
         vul.latest_time = int(time.time())
         vul.status = '待处理'
         vul.full_stack = json.dumps(vul_stack, ensure_ascii=False)
-        vul.save(update_fields=['req_header', 'req_params', 'counts', 'latest_time', 'status', 'full_stack'])
+        vul.method_pool_id = vul_meta.id
+        vul.save(update_fields=['req_header', 'req_params', 'counts', 'latest_time', 'status', 'full_stack',
+                                'method_pool_id'])
     else:
         IastVulnerabilityModel.objects.create(
             type=vul_name,
@@ -125,11 +127,11 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack):
             context_path=vul_meta.context_path,
             counts=1,
             status='待处理',
-            language=vul_meta.language,
             first_time=vul_meta.create_time,
             latest_time=int(time.time()),
             client_ip=vul_meta.clent_ip,
-            param_name=''
+            param_name='',
+            method_pool_id=vul_meta.id
         )
 
 
