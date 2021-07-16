@@ -42,7 +42,6 @@ def create_vul_data_from_model(vul):
         agent_token: Agent的token
         project: 所在的项目
         counts: 漏洞出现次数
-        language: 当前项目所用的语言
         client_ip: 客户端IP
         username: 漏洞所在用户的用户名
     }
@@ -69,7 +68,6 @@ def create_vul_data_from_model(vul):
     vul_data['project'] = agent.project_name
     vul_data['context_path'] = vul.context_path
     vul_data['counts'] = vul.counts
-    vul_data['language'] = vul.language
     vul_data['client_ip'] = vul.client_ip
     vul_data['username'] = vul.agent.user.get_username()
     return vul_data
@@ -269,7 +267,6 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
             context_path=vul_meta.context_path,
             counts=1,
             status='待处理',
-            language=vul_meta.language,
             first_time=vul_meta.create_time,
             latest_time=timestamp,
             client_ip=vul_meta.clent_ip,
@@ -409,7 +406,6 @@ def send_to_web_hook(web_hook_url, template, vul_data):
         .replace('{{agent_token}}', vul_data['agent_token']) \
         .replace('{{project}}', vul_data['project']) \
         .replace('{{counts}}', str(vul_data['counts'])) \
-        .replace('{{language}}', vul_data['language']) \
         .replace('{{client_ip}}', vul_data['client_ip']) \
         .replace('{{username}}', vul_data['username'])
 

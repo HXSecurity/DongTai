@@ -152,13 +152,16 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
         )
         status, stack, source_sign, sink_sign, taint_value = engine.result()
         if status:
-            vul_found.send(sender="tasks.search_and_save_vul", vul_meta=method_pool_model,
-                           vul_level=vul_strategy['level'],
-                           vul_name=vul_strategy['vul_name'],
-                           vul_stack=stack,
-                           top_stack=source_sign,
-                           bottom_stack=sink_sign,
-                           taint_value=taint_value)
+            vul_found.send(
+                sender="tasks.search_and_save_vul",
+                vul_meta=method_pool_model,
+                vul_level=vul_strategy['level'],
+                vul_name=vul_strategy['vul_name'],
+                vul_stack=stack,
+                top_stack=source_sign,
+                bottom_stack=sink_sign,
+                taint_value=taint_value
+            )
         else:
             # 更新漏洞状态为
             try:
