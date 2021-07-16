@@ -11,6 +11,7 @@ from dongtai.models.agent_method_pool import MethodPool
 
 from core.engine import VulEngine
 from core.engine_v2 import VulEngineV2
+from dongtai.utils.validate import Validate
 from lingzhi_engine.base import R, AnonymousAndUserEndPoint
 from vuln.serializers.method_pool import MethodPoolSerialize
 from vuln.views.search import SearchEndPoint
@@ -23,32 +24,33 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
     def post(self, request):
         try:
             method_pool_id = request.query_params.get('id')
+            if Validate.is_empty(method_pool_id):
+                return R.failure(msg='方法池ID为空')
+
             latest_id, page_size, rule_id, rule_msg, rule_level, source_set, sink_set, propagator_set = \
                 SearchEndPoint.parse_search_condition(request)
-            # todo 根据条件，处理对应的路径
 
-            if method_pool_id:
-                method_pool = MethodPool.objects.filter(
-                    agent__in=self.get_auth_and_anonymous_agents(request.user),
-                    id=method_pool_id
-                ).first()
-                if method_pool:
-                    data, link_count, method_count = self.search_all_links(method_pool.method_pool)
-                    taint_links = []
-                    if source_set or sink_set or propagator_set:
-                        taint_links = self.search_taint_link(method_pool=method_pool, sources=source_set,
-                                                             sinks=sink_set, propagators=propagator_set)
-                        self.add_taint_links_to_all_links(taint_links=taint_links, all_links=data)
-                    return R.success(data={
-                        'vul': MethodPoolSerialize(method_pool).data,
-                        'graphData': data,
-                        'link_count': link_count,
-                        'method_count': method_count,
-                        'taint_link': taint_links
-                    })
-                else:
-                    return R.failure(msg='数据不存在或无权限访问')
-            return R.failure(msg='方法池ID为空')
+            method_pool = MethodPool.objects.filter(
+                agent__in=self.get_auth_and_anonymous_agents(request.user),
+                id=method_pool_id
+            ).first()
+            if method_pool is None:
+                return R.failure(msg='数据不存在或无权限访问')
+
+            data, link_count, method_count = self.search_all_links(method_pool.method_pool)
+            taint_links = []
+            if source_set or sink_set or propagator_set:
+                taint_links = self.search_taint_link(method_pool=method_pool, sources=source_set,
+                                                     sinks=sink_set, propagators=propagator_set)
+                self.add_taint_links_to_all_links(taint_links=taint_links, all_links=data)
+            return R.success(data={
+                'vul': MethodPoolSerialize(method_pool).data,
+                'graphData': data,
+                'link_count': link_count,
+                'method_count': method_count,
+                'taint_link': taint_links
+            })
+
         except ValueError as e:
             return R.failure(msg='page和pageSize只能为数字')
 
@@ -96,11 +98,19 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
                     vul_method_signature=sink
                 )
                 status, stack, source, sink = engine.result()
-                if status:
-                    method_caller_set = SearchEndPoint.convert_to_set(stack)
-                    if self.check_match(method_caller_set, source_set=sources, propagator_set=propagators,
-                                        sink_set=sinks):
-                        links.append(stack)
+                if status is False:
+                    continue
+
+                method_caller_set = SearchEndPoint.convert_to_set(stack)
+                if self.check_match(
+                        method_caller_set=method_caller_set,
+                        source_set=sources,
+                        propagator_set=propagators,
+                        sink_set=sinks
+                ) is False:
+                    continue
+
+                links.append(stack)
         else:
             method_caller_set = self.convert_method_pool_to_set(method_pool.method_pool)
             if self.check_match(method_caller_set, source_set=sources, propagator_set=propagators):

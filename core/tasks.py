@@ -13,6 +13,7 @@ from celery.apps.worker import logger
 from django.db.models import Sum, Q
 
 from core.engine import VulEngine
+from core.replay import Replay
 from dongtai.models import User
 from dongtai.models.agent import IastAgent
 from dongtai.models.agent_method_pool import MethodPool
@@ -441,8 +442,8 @@ def clear_error_log():
     try:
         timestamp = int(time.time())
         out_date_timestamp = 60 * 60 * 24 * 30
-        IastErrorlog.objects.filter(dt__lt=(timestamp - out_date_timestamp)).delete()
-        logger.info(f'日志清理成功')
+        count = IastErrorlog.objects.filter(dt__lt=(timestamp - out_date_timestamp)).delete()
+        logger.info(f'日志清理成功，共{count}条')
     except Exception as e:
         logger.error(f'日志清理失败，错误详情：{e}')
 
@@ -452,150 +453,141 @@ def vul_recheck():
     """
     定时处理漏洞验证
     """
-    # 读取待重放的漏洞ID
-    # 根据漏洞ID构造重放请求包
     logger.info('开始处理漏洞重放数据')
+
     relay_queue_queryset = IastReplayQueue.objects.filter(replay_type=const.VUL_REPLAY, state=const.PENDING)
-    # 循环遍历，构造重放请求包
-    if relay_queue_queryset:
-        sub_replay_queue = relay_queue_queryset[:50]
-        for replay in sub_replay_queue:
-            # 构造重放请求包
-            vul_id = replay.relation_id
-            vulnerability = IastVulnerabilityModel.objects.values('agent', 'uri', 'http_method', 'http_scheme',
-                                                                  'req_header', 'req_params', 'req_data', 'taint_value',
-                                                                  'param_name').filter(
-                id=vul_id).first()
-            timestamp = int(time.time())
-            if vulnerability:
-                param_name_value = vulnerability['param_name']
+    if relay_queue_queryset is None:
+        logger.info('暂无需要处理的漏洞重放数据')
+        return
+
+    timestamp = int(time.time())
+    sub_replay_queue = relay_queue_queryset[:50]
+    for replay in sub_replay_queue:
+        # 构造重放请求包
+        vul_id = replay.relation_id
+        if vul_id is None:
+            logger.info('重放请求数据格式不正确，relation id不能为空')
+            Replay.replay_failed(timestamp, replay)
+            continue
+
+        vulnerability = IastVulnerabilityModel.objects.values(
+            'agent', 'uri', 'http_method', 'http_scheme', 'req_header', 'req_params', 'req_data', 'taint_value',
+            'param_name'
+        ).filter(id=vul_id).first()
+        if vulnerability is None:
+            Replay.replay_failed(timestamp, replay)
+            continue
+
+        param_name_value = vulnerability['param_name']
+        try:
+            params = json.loads(param_name_value)
+        except JSONDecodeError as e:
+            logger.error(f'污点数据解析出错，原因：{e}')
+            Replay.replay_failed(replay=replay, timestamp=timestamp)
+            continue
+
+        uri = vulnerability['uri']
+        param_value = vulnerability['req_params'] if vulnerability['req_params'] else ''
+        headers = vulnerability['req_header']
+        body = vulnerability['req_data']
+        taint_value = vulnerability['taint_value']
+
+        # 构造带payload的重放请求
+        for position, param_name in params.items():
+            if position == 'GET':
+                _param_items = param_value.split('&')
+                item_length = len(_param_items)
+                for index in range(item_length):
+                    _params = _param_items[index].split('=')
+                    _param_name = _params[0]
+                    if _param_name == param_name:
+                        _param_items[index] = f'{_param_name}=.%2F..%2F%60dongtai'
+                        break
+                param_value = '&'.join(_param_items)
+            elif position == 'POST':
                 try:
-                    params = json.loads(param_name_value)
-                except JSONDecodeError as e:
-                    logger.error(f'污点数据解析出错，原因：{e}')
-                    params = {}
-                if params:
-                    uri = vulnerability['uri']
-                    param_value = vulnerability['req_params'] if vulnerability['req_params'] else ''
-                    headers = vulnerability['req_header']
-                    body = vulnerability['req_data']
-                    taint_value = vulnerability['taint_value']
+                    post_body = json.loads(body)
+                    if param_name in post_body:
+                        post_body[param_name] = '.%2F..%2F%60dongtai'
+                        body = json.dumps(post_body)
+                    else:
+                        _param_items = param_value.split('&')
+                        item_length = len(_param_items)
+                        for index in range(item_length):
+                            _params = _param_items[index].split('=')
+                            _param_name = _params[0]
+                            if _param_name == param_name:
+                                _param_items[index] = f'{_param_name}=.%2F..%2F%60dongtai'
+                                break
+                        param_value = '&'.join(_param_items)
+                except:
+                    _param_items = param_value.split('&')
+                    item_length = len(_param_items)
+                    for index in range(item_length):
+                        _params = _param_items[index].split('=')
+                        _param_name = _params[0]
+                        if _param_name == param_name:
+                            _param_items[index] = f'{_param_name}=.%2F..%2F%60dongtai'
+                            break
+                    param_value = '&'.join(_param_items)
+            elif position == 'HEADER':
+                import base64
+                header_raw = base64.b64decode(headers).decode('utf-8').split('\n')
+                item_length = len(header_raw)
+                for index in range(item_length):
+                    _header_list = header_raw[index].split(':')
+                    _header_name = _header_list[0]
+                    if _header_name == param_name:
+                        header_raw[index] = f'{_header_name}:.%2F..%2F%60dongtai'
+                        break
 
-                    for position, param_name in params.items():
-                        if position == 'GET':
-                            # 检查param_value，替换param_value
-                            _param_items = param_value.split('&')
-                            item_length = len(_param_items)
-                            for index in range(item_length):
-                                _params = _param_items[index].split('=')
-                                _param_name = _params[0]
-                                if _param_name == param_name:
-                                    _param_items[index] = f'{_param_name}=.%2F..%2F%60dongtai'
-                                    break
-                            param_value = '&'.join(_param_items)
-                        elif position == 'POST':
-                            try:
-                                # 检查body，替换
-                                post_body = json.loads(body)
-                                if param_name in post_body:
-                                    post_body[param_name] = '.%2F..%2F%60dongtai'
-                                    body = json.dumps(post_body)
-                                else:
-                                    _param_items = param_value.split('&')
-                                    item_length = len(_param_items)
-                                    for index in range(item_length):
-                                        _params = _param_items[index].split('=')
-                                        _param_name = _params[0]
-                                        if _param_name == param_name:
-                                            _param_items[index] = f'{_param_name}=.%2F..%2F%60dongtai'
-                                            break
-                                    param_value = '&'.join(_param_items)
-                            except:
-                                _param_items = param_value.split('&')
-                                item_length = len(_param_items)
-                                for index in range(item_length):
-                                    _params = _param_items[index].split('=')
-                                    _param_name = _params[0]
-                                    if _param_name == param_name:
-                                        _param_items[index] = f'{_param_name}=.%2F..%2F%60dongtai'
-                                        break
-                                param_value = '&'.join(_param_items)
-                        elif position == 'HEADER':
-                            # 检查header，替换
-                            import base64
-                            header_raw = base64.b64decode(headers).decode('utf-8').split('\n')
-                            item_length = len(header_raw)
-                            for index in range(item_length):
-                                _header_list = header_raw[index].split(':')
-                                _header_name = _header_list[0]
-                                if _header_name == param_name:
-                                    header_raw[index] = f'{_header_name}:.%2F..%2F%60dongtai'
-                                    break
+                headers = base64.b64encode('\n'.join(header_raw))
+            elif position == 'COOKIE':
+                import base64
+                header_raw = base64.b64decode(headers).decode('utf-8').split('\n')
+                item_length = len(header_raw)
+                cookie_index = 0
+                cookie_raw = None
+                for index in range(item_length):
+                    _header_list = header_raw[index].split(':')
+                    _header_name = _header_list[0]
+                    if _header_name == 'cookie' or _header_name == 'Cookie':
+                        cookie_index = index
+                        cookie_raw = ':'.join(_header_list[1:])
+                        break
+                if cookie_index > 0:
+                    cookie_raw_items = cookie_raw.split(';')
+                    item_length = len(cookie_raw_items)
+                    for index in range(item_length):
+                        cookie_item = cookie_raw_items[index].split('=')
+                        if cookie_item[0] == param_name:
+                            cookie_raw_items[index] = f'{param_name}=.%2F..%2F%60dongtai'
+                            break
+                    cookie_raw = ';'.join(cookie_raw_items)
+                    header_raw[cookie_index] = cookie_raw
+                headers = base64.b64encode('\n'.join(header_raw))
 
-                            headers = base64.b64encode('\n'.join(header_raw))
-                        elif position == 'COOKIE':
-                            # 检查cookie，替换
-                            import base64
-                            header_raw = base64.b64decode(headers).decode('utf-8').split('\n')
-                            item_length = len(header_raw)
-                            cookie_index = 0
-                            cookie_raw = None
-                            for index in range(item_length):
-                                _header_list = header_raw[index].split(':')
-                                _header_name = _header_list[0]
-                                if _header_name == 'cookie' or _header_name == 'Cookie':
-                                    cookie_index = index
-                                    cookie_raw = ':'.join(_header_list[1:])
-                                    break
-                            if cookie_index > 0:
-                                cookie_raw_items = cookie_raw.split(';')
-                                item_length = len(cookie_raw_items)
-                                for index in range(item_length):
-                                    cookie_item = cookie_raw_items[index].split('=')
-                                    if cookie_item[0] == param_name:
-                                        cookie_raw_items[index] = f'{param_name}=.%2F..%2F%60dongtai'
-                                        break
-                                cookie_raw = ';'.join(cookie_raw_items)
-                                header_raw[cookie_index] = cookie_raw
-                            headers = base64.b64encode('\n'.join(header_raw))
+            elif position == 'PATH':
+                # 检查path，替换
+                path_items = uri.split('/')
+                item_length = len(path_items)
+                for index in range(item_length):
+                    if taint_value == path_items[index]:
+                        path_items[index] = 'dongtai'
+                        break
+                uri = '/'.join(path_items)
 
-                        elif position == 'PATH':
-                            # 检查path，替换
-                            path_items = uri.split('/')
-                            item_length = len(path_items)
-                            for index in range(item_length):
-                                if taint_value == path_items[index]:
-                                    path_items[index] = 'dongtai'
-                                    break
-                            uri = '/'.join(path_items)
-
-                    replay.uri = uri
-                    replay.method = vulnerability['http_method']
-                    replay.scheme = vulnerability['http_scheme']
-                    replay.header = headers
-                    replay.params = param_value
-                    replay.body = body
-                    replay.update_time = timestamp
-                    replay.state = const.WAITING
-                    replay.agent_id = vulnerability['agent']
-                    replay.save(
-                        update_fields=['uri', 'method', 'scheme', 'header', 'params', 'body', 'update_time', 'state',
-                                       'agent_id'])
-
-                else:
-                    # 如果未识别到污点位置，不进行重放验证
-                    replay.update_time = timestamp
-                    replay.verify_time = timestamp
-                    replay.state = const.SOLVED
-                    replay.result = const.RECHECK_ERROR
-                    replay.save(update_fields=['update_time', 'verify_time', 'state', 'result'])
-            else:
-                replay.update_time = timestamp
-                replay.verify_time = timestamp
-                replay.state = const.SOLVED
-                replay.result = const.RECHECK_ERROR
-                replay.save(update_fields=['update_time', 'verify_time', 'state', 'result'])
+        replay.uri = uri
+        replay.method = vulnerability['http_method']
+        replay.scheme = vulnerability['http_scheme']
+        replay.header = headers
+        replay.params = param_value
+        replay.body = body
+        replay.update_time = timestamp
+        replay.state = const.WAITING
+        replay.agent_id = vulnerability['agent']
+        replay.save(
+            update_fields=['uri', 'method', 'scheme', 'header', 'params', 'body', 'update_time', 'state', 'agent_id']
+        )
 
         logger.info('漏洞重放数据处理完成')
-    else:
-        logger.info('暂无需要处理的漏洞重放数据')

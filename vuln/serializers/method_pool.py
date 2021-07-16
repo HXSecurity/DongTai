@@ -23,7 +23,7 @@ class MethodPoolSerialize(serializers.ModelSerializer):
 
     class Meta:
         model = MethodPool
-        fields = ['url', 'request', 'response', 'language', 'method_pool', 'dependencies']
+        fields = ['url', 'request', 'response', 'language', 'dependencies']
 
     def get_request(self, obj):
         return utils.build_request(obj.http_method, obj.req_header, obj.uri, obj.req_params, obj.req_data,
@@ -35,7 +35,7 @@ class MethodPoolSerialize(serializers.ModelSerializer):
     def get_dependencies(self, obj):
         # fixme 内存溢出时，优先排查这里，临时使用类成员变量存储，后续考虑使用缓存来做
         if obj.agent_id not in self.DEPENDENCIES:
-            dependencies = obj.agent.dependencies.all()
+            dependencies = obj.agent.dependencies.values('package_name', 'vul_count', 'version').all()
             self.DEPENDENCIES[obj.agent_id] = DependencySerialize(dependencies, many=True).data
         return self.DEPENDENCIES[obj.agent_id]
 
