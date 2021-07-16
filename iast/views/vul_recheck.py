@@ -11,6 +11,7 @@ from dongtai.models.agent import IastAgent
 from dongtai.models.project import IastProject
 from dongtai.models.replay_queue import IastReplayQueue
 from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai.utils.validate import Validate
 
 from base import R
 from dongtai.utils import const
@@ -78,22 +79,26 @@ class VulReCheck(UserEndPoint):
         """
         try:
             vul_ids = request.data.get('ids')
-            vul_ids = vul_ids.split(',')
-            if vul_ids:
-                auth_agents = self.get_auth_agents_with_user(user=request.user)
-                vul_queryset = IastVulnerabilityModel.objects.filter(id__in=vul_ids, agent__in=auth_agents)
-                no_agent, waiting_count, success_count, re_success_count = self.vul_check_for_queryset(vul_queryset)
+            if vul_ids is None or vul_ids == '':
+                return R.failure('ids不能为空')
 
-                return R.success(
-                    data={
-                        "no_agent": no_agent,
-                        "pending": waiting_count,
-                        "recheck": re_success_count,
-                        "checking": success_count
-                    },
-                    msg=f'处理成功')
-            else:
-                return R.failure(msg='验证的漏洞数据不能为空')
+            vul_ids = vul_ids.split(',')
+            if Validate.is_number(vul_ids) is False:
+                return R.failure('ids必须为：漏洞ID,漏洞ID 格式')
+
+            auth_agents = self.get_auth_agents_with_user(user=request.user)
+            vul_queryset = IastVulnerabilityModel.objects.filter(id__in=vul_ids, agent__in=auth_agents)
+            no_agent, waiting_count, success_count, re_success_count = self.vul_check_for_queryset(vul_queryset)
+
+            return R.success(
+                data={
+                    "no_agent": no_agent,
+                    "pending": waiting_count,
+                    "recheck": re_success_count,
+                    "checking": success_count
+                },
+                msg=f'处理成功')
+
         except Exception as e:
             return R.failure(msg=f'漏洞重放出错，错误原因：{e}')
 

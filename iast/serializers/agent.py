@@ -5,6 +5,7 @@
 # software: PyCharm
 # project: lingzhi-webapi
 import time
+from dongtai.models.heartbeat import IastHeartbeat
 
 from rest_framework import serializers
 
@@ -18,11 +19,12 @@ class AgentSerializer(serializers.ModelSerializer):
     running_status = serializers.SerializerMethodField()
     server = serializers.SerializerMethodField()
     owner = serializers.SerializerMethodField()
+    flow = serializers.SerializerMethodField()
 
     class Meta:
         model = IastAgent
         fields = ['id', 'token', 'server', 'running_status', 'system_load', 'owner', 'latest_time', 'project_name',
-                  'is_core_running', 'language']
+                  'is_core_running', 'language', 'flow']
 
     def get_latest_heartbeat(self, obj):
         try:
@@ -71,6 +73,10 @@ class AgentSerializer(serializers.ModelSerializer):
 
     def get_owner(self, obj):
         return self.get_user(obj)
+
+    def get_flow(self, obj):
+        heartbeat = IastHeartbeat.objects.values('req_count').filter(agent=obj).first()
+        return heartbeat['req_count'] if heartbeat else 0
 
 
 class ProjectEngineSerializer(serializers.ModelSerializer):
