@@ -74,7 +74,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: "registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine:latest,registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine:1.0.${{github.run_number}},registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest,"
+          tags: "registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine:0.1.0,registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine:1.0.${{github.run_number}},registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:0.1.0,"
 
       - uses: actions/checkout@master
       - name: deploy Engine to cluster
