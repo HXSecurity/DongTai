@@ -11,10 +11,10 @@ from django.db.models import Q
 
 from base import R
 from iast.base.user import UserEndPoint
-from dongtai_models.models.agent import IastAgent
-from dongtai_models.models.project_version import IastProjectVersion
-from dongtai_models.models.project import IastProject
-from dongtai_models.models.strategy_user import IastStrategyUser
+from dongtai.models.agent import IastAgent
+from dongtai.models.project_version import IastProjectVersion
+from dongtai.models.project import IastProject
+from dongtai.models.strategy_user import IastStrategyUser
 from iast.base.project_version import version_modify
 
 logger = logging.getLogger("django")

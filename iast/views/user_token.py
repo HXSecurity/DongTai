@@ -24,7 +24,7 @@ class UserToken(UserEndPoint):
     name = "iast-v1-user-token"
     description = "获取OpenApi Token"
 
-    def get(self, request: Request):
+    def get(self, request):
         token, success = Token.objects.get_or_create(user=request.user)
 
         if not request.user.upgrade_url:
