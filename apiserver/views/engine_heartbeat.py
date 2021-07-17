@@ -6,7 +6,7 @@
 # project: webapi
 import logging
 
-from dongtai_models.models.engine_heartbeat import IastEngineHeartbeat
+from dongtai.models.engine_heartbeat import IastEngineHeartbeat
 
 from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint
@@ -52,6 +52,7 @@ class EngineHeartBeatEndPoint(OpenApiEndPoint):
     @staticmethod
     def get_client_ip(request):
         try:
+            logger.info(request.META)
             if 'HTTP_X_FORWARDED_FOR' in request.META:
                 ip = request.META['HTTP_X_FORWARDED_FOR']
             else:

@@ -7,7 +7,8 @@
 
 import datetime
 
-from dongtai_models.models.iast_overpower_user import IastOverpowerUserAuth
+from dongtai.models.iast_overpower_user import IastOverpowerUserAuth
+from dongtai.utils import const
 
 from apiserver.report.handler.report_handler_interface import IReportHandler
 from apiserver.report.report_handler_factory import ReportHandler
@@ -32,6 +33,7 @@ class AuthInfoHandler:
             return _authinfo
 
 
+@ReportHandler.register(const.REPORT_AUTH_ADD)
 class AuthAddHandler(IReportHandler):
     def parse(self):
         # todo 增加appnem字段
@@ -78,6 +80,7 @@ class AuthAddHandler(IReportHandler):
             pass
 
 
+@ReportHandler.register(const.REPORT_AUTH_UPDATE)
 class AuthUpdateHandler(IReportHandler):
     """
     {
