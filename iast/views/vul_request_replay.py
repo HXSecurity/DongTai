@@ -111,7 +111,7 @@ class RequestReplayEndPoint(UserEndPoint):
             relation_id=relation_id
         ).first()
         if replay_queue:
-            if replay_queue.state not in [const.WAITING, const.SOLVING]:
+            if replay_queue.state not in [const.WAITING, ]:
                 replay_queue.state = const.WAITING
                 replay_queue.uri = replay_request['uri']
                 replay_queue.method = replay_request['method']
