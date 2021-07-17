@@ -28,3 +28,4 @@ class IastReplayQueue(models.Model):
     class Meta:
         managed = False
         db_table = 'iast_replay_queue'
+        ordering = ('-replay_type',)
