@@ -8,7 +8,7 @@
 from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint
 from apiserver.decrypter import parse_data
-from apiserver.report.handler.report_handler_factory import ReportHandlerFactory
+from apiserver.report.report_handler_factory import ReportHandler
 
 
 class ReportUploadEndPoint(OpenApiEndPoint):
@@ -18,9 +18,7 @@ class ReportUploadEndPoint(OpenApiEndPoint):
     def post(self, request):
         try:
             report = parse_data(request.read())
-            report_type = report.get('type')
-            handler = ReportHandlerFactory.get_handler(report_type)
-            data = handler.handle(report, request.user)
+            data = ReportHandler.handler(report, request.user)
 
             return R.success(msg="report upload success.", data=data)
         except Exception as e:

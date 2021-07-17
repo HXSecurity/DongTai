@@ -8,13 +8,16 @@ import datetime
 import json
 import time
 
-from dongtai_models.models.iast_overpower_user import IastOverpowerUserAuth
-from dongtai_models.models.iast_vul_overpower import IastVulOverpower
-from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.iast_overpower_user import IastOverpowerUserAuth
+from dongtai.models.iast_vul_overpower import IastVulOverpower
+from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai.utils import const
 
 from apiserver.report.handler.report_handler_interface import IReportHandler
+from apiserver.report.report_handler_factory import ReportHandler
 
 
+@ReportHandler.register(const.REPORT_VULN_OVER_POWER)
 class OverPowerHandler(IReportHandler):
 
     def parse(self):
@@ -50,7 +53,6 @@ class OverPowerHandler(IReportHandler):
         self.x_trace_id = self.detail.get('x-trace-id')
         self.cookie = self.detail.get('cookie')
         self.sql = self.detail.get('sql')
-        self.language = self.detail.get('language')
 
     def save(self):
         # 检查trace_id是否存于数据库中
@@ -117,7 +119,6 @@ class OverPowerHandler(IReportHandler):
                         server_name=self.server_name,
                         counts=1,
                         status='已上报',
-                        language=self.language,
                         first_time=int(time.time()),
                         latest_time=int(time.time())
                     ).save()
