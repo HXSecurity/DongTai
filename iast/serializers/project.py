@@ -35,7 +35,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_vul_count(self, obj):
         agents = self.get_agents(obj)
-        vul_levels = IastVulnerabilityModel.objects.values('level').filter(agent__in=agents).annotate(
+        vul_levels = IastVulnerabilityModel.objects.values('level').filter(agent__in=agents, status='已确认').annotate(
             total=Count('level'))
         for vul_level in vul_levels:
             level = IastVulLevel.objects.get(id=vul_level['level'])

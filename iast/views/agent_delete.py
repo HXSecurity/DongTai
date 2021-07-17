@@ -11,6 +11,8 @@ from dongtai.models.asset import Asset
 from dongtai.models.errorlog import IastErrorlog
 from dongtai.models.heartbeat import IastHeartbeat
 from dongtai.models.iast_overpower_user import IastOverpowerUserAuth
+from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
+from dongtai.models.replay_queue import IastReplayQueue
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 
 from base import R
@@ -31,13 +33,14 @@ class AgentDeleteEndPoint(UserEndPoint):
             queryset = IastAgent.objects.filter(user=user, id=pk).first()
             if queryset:
                 self.agent = queryset
-                # todo 删除agent
                 self.delete_error_log()
                 self.delete_heart_beat()
                 # self.delete_vul_overpower()
                 self.delete_sca()
                 self.delete_vul()
                 self.delete_method_pool()
+                self.delete_method_pool_replay()
+                self.delete_replay_queue()
                 self.agent.delete()
 
                 return R.success(msg="agent及相关数据删除成功")
@@ -49,39 +52,59 @@ class AgentDeleteEndPoint(UserEndPoint):
 
     def delete_error_log(self):
         try:
-            IastErrorlog.objects.filter(agent=self.agent).delete()
+            deleted, _rows_count = IastErrorlog.objects.filter(agent=self.agent).delete()
+            logger.error(f'错误日志删除成功，共删除：{deleted}条')
         except Exception as e:
-            print(e)
+            logger.error(f'错误日志删除失败，探针ID: {self.agent.id}，原因：{e}')
 
     def delete_heart_beat(self):
         try:
-            IastHeartbeat.objects.filter(agent=self.agent).delete()
+            deleted, _rows_count = IastHeartbeat.objects.filter(agent=self.agent).delete()
+            logger.error(f'重放请求方法池数据删除成功，共删除：{deleted}条')
         except Exception as e:
             logger.error(f'心跳数据删除失败，原因：{e}')
 
     def delete_vul_overpower(self):
         try:
-            IastOverpowerUserAuth.objects.filter(agent=self.agent).delete()
+            deleted, _rows_count = IastOverpowerUserAuth.objects.filter(agent=self.agent).delete()
+            logger.error(f'重放请求方法池数据删除成功，共删除：{deleted}条')
         except Exception as e:
             logger.error(f'越权相关数据删除失败，原因：{e}')
 
     def delete_vul(self):
         try:
-            IastVulnerabilityModel.objects.filter(agent=self.agent).delete()
+            deleted, _rows_count = IastVulnerabilityModel.objects.filter(agent=self.agent).delete()
+            logger.error(f'重放请求方法池数据删除成功，共删除：{deleted}条')
         except Exception as e:
             logger.error(f'漏洞数据删除失败，原因：{e}')
 
     def delete_sca(self):
         try:
-            Asset.objects.filter(agent=self.agent).delete()
+            deleted, _rows_count = Asset.objects.filter(agent=self.agent).delete()
+            logger.error(f'重放请求方法池数据删除成功，共删除：{deleted}条')
         except Exception as e:
             logger.error(f'第三方组件数据删除失败，原因：{e}')
 
     def delete_method_pool(self):
         try:
-            MethodPool.objects.filter(agent=self.agent).delete()
+            deleted, _rows_count = MethodPool.objects.filter(agent=self.agent).delete()
+            logger.error(f'重放请求方法池数据删除成功，共删除：{deleted}条')
         except Exception as e:
             logger.error(f'方法池数据删除失败，原因：{e}')
+
+    def delete_method_pool_replay(self):
+        try:
+            deleted, _rows_count = IastAgentMethodPoolReplay.objects.filter(agent=self.agent).delete()
+            logger.error(f'重放请求方法池数据删除成功，共删除：{deleted}条')
+        except Exception as e:
+            logger.error(f'重放请求方法池数据删除失败，原因：{e}')
+
+    def delete_replay_queue(self):
+        try:
+            deleted, _rows_count = IastReplayQueue.objects.filter(agent=self.agent).delete()
+            logger.error(f'重放请求队列删除成功，共删除：{deleted}条')
+        except Exception as e:
+            logger.error(f'重放请求队列删除失败，原因：{e}')
 
 
 if __name__ == '__main__':
