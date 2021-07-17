@@ -4,9 +4,9 @@
 # datetime:2021/2/19 下午3:07
 # software: PyCharm
 # project: lingzhi-engine
-from dongtai_models.models.vul_rule import IastVulRule
+from dongtai.models.vul_rule import IastVulRule
 
-from lingzhi_engine import const
+from dongtai.utils import const
 from lingzhi_engine.base import R, AnonymousAndUserEndPoint
 from vuln.serializers.vul_rule import VulRuleSerializer
 

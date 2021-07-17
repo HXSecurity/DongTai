@@ -35,10 +35,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          wget https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/dongtai-models-test-1.0.tar.gz -O /tmp/dongtai-models-1.0.tar.gz
+          wget https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/dongtai-test-0.1.0.tar.gz -O /tmp/dongtai-test-0.1.0.tar.gz
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install /tmp/dongtai-models-1.0.tar.gz
+          pip install /tmp/dongtai-test-0.1.0.tar.gz
       - name: Lint with flake8
         run: |
           pip install flake8
@@ -74,7 +74,7 @@ jobs:
           context: .
           file: DockerfileTest
           push: true
-          tags: "registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine-test:latest,registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine-test:1.0.${{github.run_number}},"
+          tags: "registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine-test:0.1.0,registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine-test:0.1.${{github.run_number}},"
 
       - uses: actions/checkout@master
       - name: deploy Engine to cluster
@@ -83,7 +83,7 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_TEST_DATA }}
         with:
           args: |
-            find deploy/deploy-eks-iast-saas-engine-test.yml -type f -exec sed -i 's/VERSION/1.0.${{github.run_number}}/g' {} \;
+            find deploy/deploy-eks-iast-saas-engine-test.yml -type f -exec sed -i 's/VERSION/0.1.${{github.run_number}}/g' {} \;
             ls deploy/deploy-eks-iast-saas-engine-test.yml | xargs -I {} kubectl apply -f {}
       - uses: actions/checkout@master
       - name: deploy Engine Task to cluster
@@ -92,7 +92,7 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_TEST_DATA }}
         with:
           args: |
-            find deploy/deploy-eks-iast-saas-engine-task-test.yml -type f -exec sed -i 's/VERSION/1.0.${{github.run_number}}/g' {} \;
+            find deploy/deploy-eks-iast-saas-engine-task-test.yml -type f -exec sed -i 's/VERSION/0.1.${{github.run_number}}/g' {} \;
             ls deploy/deploy-eks-iast-saas-engine-task-test.yml | xargs -I {} kubectl apply -f {}
       - name: finish build
         uses: joelwmale/webhook-action@master

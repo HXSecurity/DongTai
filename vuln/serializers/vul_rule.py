@@ -4,7 +4,7 @@
 # datetime:2021/2/19 下午3:05
 # software: PyCharm
 # project: lingzhi-engine
-from dongtai_models.models.vul_rule import IastVulRule
+from dongtai.models.vul_rule import IastVulRule
 from rest_framework import serializers
 
 

@@ -10,7 +10,7 @@ from test import DongTaiTestCase
 
 class VulHandlerTest(DongTaiTestCase):
     def test_send_vul_notify(self):
-        from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+        from dongtai.models.vulnerablity import IastVulnerabilityModel
         vul = IastVulnerabilityModel.objects.filter(id=2208).first()
         from signals.handlers import send_vul_notify
         send_vul_notify(vul)
@@ -21,12 +21,13 @@ class VulHandlerTest(DongTaiTestCase):
             'template': 'url：{{url}}\n漏洞类型：{{vul_type}}\n账号：{{username}}\n项目：{{project}}'
         }
         import json
-        from dongtai_models.models.notify_config import IastNotifyConfig
+        from dongtai.models.notify_config import IastNotifyConfig
         notify_config = IastNotifyConfig.objects.create(
             notify_type=IastNotifyConfig.WEB_HOOK,
             notify_metadata=json.dumps(web_hook_config),
             user_id=18
         )
+
 
 
 if __name__ == '__main__':

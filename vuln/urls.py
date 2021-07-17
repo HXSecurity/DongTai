@@ -8,10 +8,8 @@
 from django.urls import path
 
 from vuln.views.hook_rule_add import HookRuleAddEndPoint
-from vuln.views.hook_rule_delete import HookRuleDeleteEndPoint
-from vuln.views.hook_rule_disable import HookRuleDisableEndPoint
-from vuln.views.hook_rule_enable import HookRuleEnableEndPoint
 from vuln.views.hook_rule_modify import HookRuleModifyEndPoint
+from vuln.views.hook_rule_status import HookRuleStatusEndPoint
 from vuln.views.hook_rule_summary import HookRuleSummaryEndPoint
 from vuln.views.hook_rule_type_add import HookRuleTypeAddEndPoint
 from vuln.views.hook_rule_type_disable import HookRuleTypeDisableEndPoint
@@ -43,9 +41,7 @@ urlpatterns = [
     # hook rule
     path('hook/rule/summary', HookRuleSummaryEndPoint.as_view()),
     path('hook/rules', HookRulesEndPoint.as_view()),
-    path('hook/rule/enable', HookRuleEnableEndPoint.as_view()),
-    path('hook/rule/disable', HookRuleDisableEndPoint.as_view()),
-    path('hook/rule/delete', HookRuleDeleteEndPoint.as_view()),
+    path('hook/rule/status', HookRuleStatusEndPoint.as_view()),
     path('hook/rule/add', HookRuleAddEndPoint.as_view()),
     path('hook/rule/modify', HookRuleModifyEndPoint.as_view()),
     path('hook/rule_type/add', HookRuleTypeAddEndPoint.as_view()),

@@ -37,6 +37,6 @@ spec:
       volumes:
         - name: configfile
           configMap:
-            name: iast-test-config.ini
+            name: dongtai-test-config.ini
       imagePullSecrets:
         - name: aliyun-registry-secret
