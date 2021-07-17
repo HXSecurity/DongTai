@@ -168,7 +168,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             token = param.get('name')
             language = param.get('language')
             version = param.get('version')
-            project_name = param.get('project', 'Demo Project').strip()
+            project_name = param.get('project_name', 'Demo Project').strip()
             if not token or not version or not project_name:
                 return R.failure(msg="参数错误")
 
