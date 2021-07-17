@@ -210,13 +210,17 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
 
     @staticmethod
     def get_agent_id(token, project_name, user, current_project_version_id):
-        agent = IastAgent.objects.values('id').filter(
+        queryset = IastAgent.objects.values('id').filter(
             token=token,
             project_name=project_name,
             user=user,
             project_version_id=current_project_version_id
-        ).first()
-        return agent['id'] if agent else -1
+        )
+        agent = queryset.first()
+        if agent:
+            queryset.update(is_core_running=1)
+            return agent['id']
+        return -1
 
     @staticmethod
     def __register_agent(exist_project, token, user, version, project_id, project_name, project_version_id, language):
@@ -233,6 +237,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             project_name=project_name,
             control=0,
             is_control=0,
+            is_core_running=1,
             online=1,
             project_version_id=project_version_id,
             language=language
