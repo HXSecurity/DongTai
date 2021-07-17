@@ -10,16 +10,19 @@ import time
 from hashlib import sha1
 
 import requests
-from dongtai_models.models.agent_method_pool import MethodPool
-from dongtai_models.models.replay_method_pool import IastAgentMethodPoolReplay
+from dongtai.models.agent_method_pool import MethodPool
+from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
+from dongtai.models.replay_queue import IastReplayQueue
+from dongtai.utils import const
 
 from AgentServer import settings
-from AgentServer.settings import BASE_ENGINE_URL
 from apiserver.report.handler.report_handler_interface import IReportHandler
+from apiserver.report.report_handler_factory import ReportHandler
 
 logger = logging.getLogger('dongtai.openapi')
 
 
+@ReportHandler.register(const.REPORT_VULN_SAAS_POOL)
 class SaasMethodPoolHandler(IReportHandler):
 
     @staticmethod
@@ -71,10 +74,11 @@ class SaasMethodPoolHandler(IReportHandler):
             timestamp = int(time.time())
 
             # fixme 直接查询replay_id是否存在，如果存在，直接覆盖
-            is_exist = IastAgentMethodPoolReplay.objects.values("id").filter(replay_id=replay_id).exists()
-            if is_exist:
+            query_set = IastAgentMethodPoolReplay.objects.values("id").filter(replay_id=replay_id)
+            if query_set.exists():
                 # 更新
-                replay_model = IastAgentMethodPoolReplay.objects.filter(replay_id=replay_id).update(
+                replay_model = query_set.first()
+                replay_model.update(
                     url=self.http_url,
                     uri=self.http_uri,
                     req_header=self.http_req_header,
@@ -83,12 +87,11 @@ class SaasMethodPoolHandler(IReportHandler):
                     res_header=self.http_res_header,
                     res_body=self.http_res_body,
                     context_path=self.context_path,
-                    language=self.language,
                     method_pool=json.dumps(self.method_pool),
                     clent_ip=self.client_ip,
                     update_time=timestamp
                 )
-                pass
+                method_pool_id = replay_model['id']
             else:
                 # 新增
                 replay_model = IastAgentMethodPoolReplay.objects.create(
@@ -104,7 +107,6 @@ class SaasMethodPoolHandler(IReportHandler):
                     res_header=self.http_res_header,
                     res_body=self.http_res_body,
                     context_path=self.context_path,
-                    language=self.language,
                     method_pool=json.dumps(self.method_pool),
                     clent_ip=self.client_ip,
                     replay_id=replay_id,
@@ -113,8 +115,10 @@ class SaasMethodPoolHandler(IReportHandler):
                     create_time=timestamp,
                     update_time=timestamp
                 )
-                pass
-            self.send_to_engine(method_pool_id=replay_model.id, model='replay')
+                method_pool_id = replay_model.id
+            IastReplayQueue.objects.filter(id=replay_id).update(state=const.SOLVED)
+            if method_pool_id:
+                self.send_to_engine(method_pool_id=method_pool_id, model='replay')
         else:
             pool_sign = self.calc_hash()
             current_version_agents = self.get_project_agents(self.agent)
@@ -161,7 +165,6 @@ class SaasMethodPoolHandler(IReportHandler):
                 res_header=self.http_res_header,
                 res_body=self.http_res_body,
                 context_path=self.context_path,
-                language=self.language,
                 method_pool=json.dumps(self.method_pool),
                 pool_sign=pool_sign,
                 clent_ip=self.client_ip,

@@ -4,17 +4,16 @@
 # datetime:2020/11/24 下午9:16
 # software: PyCharm
 # project: lingzhi-webapi
-import json
 import logging
 
-from dongtai_models.models.hook_strategy import HookStrategy
-from dongtai_models.models.hook_talent_strategy import IastHookTalentStrategy
-from dongtai_models.models.hook_type import HookType
+from dongtai.models.hook_strategy import HookStrategy
+from dongtai.models.hook_type import HookType
 from rest_framework.request import Request
 
-from AgentServer import const
+from dongtai.utils import const
 from AgentServer.base import R
 from apiserver.base.openapi import OpenApiEndPoint
+
 # note: 当前依赖必须保留，否则无法通过hooktype反向查找策略
 
 logger = logging.getLogger("django")
@@ -25,21 +24,19 @@ class HookProfilesEndPoint(OpenApiEndPoint):
     description = "获取HOOK策略"
 
     @staticmethod
-    def get_profiles(talent, user=None):
+    def get_profiles(user=None):
         profiles = list()
-        talent_strategy = IastHookTalentStrategy.objects.filter(talent=talent).first()
-        strategy_types = json.loads(talent_strategy.values)
-        enable_hook_types = HookType.objects.filter(id__in=strategy_types, enable=const.HOOK_TYPE_ENABLE)
-        for enable_hook_type in enable_hook_types:
+        hook_types = HookType.objects.all()
+        for hook_type in hook_types:
             strategy_details = list()
             profiles.append({
-                'type': enable_hook_type.type,
-                'enable': enable_hook_type.enable,
-                'value': enable_hook_type.value,
+                'type': hook_type.type,
+                'enable': hook_type.enable,
+                'value': hook_type.value,
                 'details': strategy_details
             })
-            strategies = enable_hook_type.strategies.filter(created_by__in=[1, user.id] if user else [1],
-                                                            enable=const.HOOK_TYPE_ENABLE)
+            strategies = hook_type.strategies.filter(created_by__in=[1, user.id] if user else [1],
+                                                     enable=const.HOOK_TYPE_ENABLE)
             for strategy in strategies:
                 strategy_details.append({
                     "source": strategy.source,
@@ -57,8 +54,7 @@ class HookProfilesEndPoint(OpenApiEndPoint):
         :return:
         """
         user = request.user
-        talent = user.get_talent()
-        profiles = self.get_profiles(talent, user)
+        profiles = self.get_profiles(user)
 
         return R.success(data=profiles)
 
