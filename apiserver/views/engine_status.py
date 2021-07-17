@@ -63,22 +63,22 @@ class EngineStopStart(OpenApiEndPoint):
         agent = IastAgent.objects.filter(user=request.user, token=agent_name, is_running=1).first()
         if not agent:
             return R.failure("agent不存在或无权限访问")
-        
-        if agent.is_control ==0:
+
+        if agent.is_control == 0:
             return R.failure(msg="暂无命令", data="notcmd")
 
-        #启动
+        # 启动
         if agent.control == 3:
             agent.is_control = 0
             agent.is_core_running = 1
             agent.latest_time = int(time.time())
             agent.save()
-            return  R.success(data="start", msg=str(agent.is_running)+agent.token)
-        #暂停
+            return R.success(data="start", msg=str(agent.is_running) + agent.token)
+        # 暂停
         if agent.control == 4:
             agent.is_control = 0
             agent.is_core_running = 0
             agent.latest_time = int(time.time())
             agent.save()
-            return  R.success(data="stop")
-        return  R.success(data="notcmd")
+            return R.success(data="stop")
+        return R.success(data="notcmd")
