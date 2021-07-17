@@ -5,9 +5,9 @@
 # software: PyCharm
 # project: lingzhi-engine
 from django.db.models import Q
-from dongtai_models.models.vul_rule import IastVulRule
+from dongtai.models.vul_rule import IastVulRule
 
-from lingzhi_engine import const
+from dongtai.utils import const
 from lingzhi_engine.base import R, AnonymousAndUserEndPoint
 from vuln.serializers.vul_rule import VulRuleDetailSerializer
 

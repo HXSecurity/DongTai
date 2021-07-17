@@ -8,7 +8,7 @@ import json
 import logging
 import time
 
-from dongtai_models.models.vul_rule import IastVulRule
+from dongtai.models.vul_rule import IastVulRule
 
 from lingzhi_engine.base import R, AnonymousAndUserEndPoint
 

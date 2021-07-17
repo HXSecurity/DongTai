@@ -8,30 +8,29 @@ import json
 from json import JSONDecodeError
 
 import time
-
 from celery import shared_task
 from celery.apps.worker import logger
 from django.db.models import Sum, Q
-from dongtai_models.models.replay_method_pool import IastAgentMethodPoolReplay
 
 from core.engine import VulEngine
-from core.mvn_spider import MavenSpider
-from dongtai_models.models import User
-from dongtai_models.models.agent import IastAgent
-from dongtai_models.models.agent_method_pool import MethodPool
-from dongtai_models.models.asset import Asset
-from dongtai_models.models.errorlog import IastErrorlog
-from dongtai_models.models.heartbeat import Heartbeat
-from dongtai_models.models.hook_strategy import HookStrategy
-from dongtai_models.models.hook_type import HookType
-from dongtai_models.models.project import IastProject
-from dongtai_models.models.replay_queue import IastReplayQueue
-from dongtai_models.models.sca_maven_artifact import ScaMavenArtifact
-from dongtai_models.models.sca_vul_db import ScaVulDb
-from dongtai_models.models.strategy import IastStrategyModel
-from dongtai_models.models.vul_level import IastVulLevel
-from dongtai_models.models.vulnerablity import IastVulnerabilityModel
-from lingzhi_engine import const
+from core.replay import Replay
+from dongtai.models import User
+from dongtai.models.agent import IastAgent
+from dongtai.models.agent_method_pool import MethodPool
+from dongtai.models.asset import Asset
+from dongtai.models.errorlog import IastErrorlog
+from dongtai.models.heartbeat import IastHeartbeat
+from dongtai.models.hook_strategy import HookStrategy
+from dongtai.models.hook_type import HookType
+from dongtai.models.project import IastProject
+from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
+from dongtai.models.replay_queue import IastReplayQueue
+from dongtai.models.sca_maven_artifact import ScaMavenArtifact
+from dongtai.models.sca_vul_db import ScaVulDb
+from dongtai.models.strategy import IastStrategyModel
+from dongtai.models.vul_level import IastVulLevel
+from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai.utils import const
 from signals import vul_found
 
 
@@ -103,7 +102,9 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack):
         vul.latest_time = int(time.time())
         vul.status = '待处理'
         vul.full_stack = json.dumps(vul_stack, ensure_ascii=False)
-        vul.save(update_fields=['req_header', 'req_params', 'counts', 'latest_time', 'status', 'full_stack'])
+        vul.method_pool_id = vul_meta.id
+        vul.save(update_fields=['req_header', 'req_params', 'counts', 'latest_time', 'status', 'full_stack',
+                                'method_pool_id'])
     else:
         IastVulnerabilityModel.objects.create(
             type=vul_name,
@@ -127,11 +128,11 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack):
             context_path=vul_meta.context_path,
             counts=1,
             status='待处理',
-            language=vul_meta.language,
             first_time=vul_meta.create_time,
             latest_time=int(time.time()),
             client_ip=vul_meta.clent_ip,
-            param_name=''
+            param_name='',
+            method_pool_id=vul_meta.id
         )
 
 
@@ -152,14 +153,16 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
         )
         status, stack, source_sign, sink_sign, taint_value = engine.result()
         if status:
-            # todo 增加source点来源标识
-            vul_found.send(sender="tasks.search_and_save_vul", vul_meta=method_pool_model,
-                           vul_level=vul_strategy['level'],
-                           vul_name=vul_strategy['vul_name'],
-                           vul_stack=stack,
-                           top_stack=source_sign,
-                           bottom_stack=sink_sign,
-                           taint_value=taint_value)
+            vul_found.send(
+                sender="tasks.search_and_save_vul",
+                vul_meta=method_pool_model,
+                vul_level=vul_strategy['level'],
+                vul_name=vul_strategy['vul_name'],
+                vul_stack=stack,
+                top_stack=source_sign,
+                bottom_stack=sink_sign,
+                taint_value=taint_value
+            )
         else:
             # 更新漏洞状态为
             try:
@@ -170,7 +173,7 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
                 if replay_type == const.VUL_REPLAY:
                     timestamp = int(time.time())
                     IastVulnerabilityModel.objects.filter(id=relation_id).update(
-                        status='未验证成功',
+                        status='已忽略',
                         latest_time=timestamp
                     )
                     IastReplayQueue.objects.filter(id=replay_id).update(
@@ -202,7 +205,7 @@ def search_and_save_sink(engine, method_pool_model, strategy):
         method_pool_model.sinks.add(strategy.get('strategy'))
 
 
-@shared_task(queue='vul-scan')
+@shared_task(queue='dongtai-method-pool-scan')
 def search_vul_from_method_pool(method_pool_id):
     logger.info(f'漏洞检测开始，方法池 {method_pool_id}')
     try:
@@ -223,7 +226,7 @@ def search_vul_from_method_pool(method_pool_id):
         logger.error(f'漏洞检测出错，错误原因：{e}')
 
 
-@shared_task(queue='replay-vul-scan')
+@shared_task(queue='dongtai-replay-vul-scan')
 def search_vul_from_replay_method_pool(method_pool_id):
     logger.info(f'漏洞检测开始，方法池 {method_pool_id}')
     try:
@@ -244,7 +247,7 @@ def search_vul_from_replay_method_pool(method_pool_id):
         logger.error(f'漏洞检测出错，错误原因：{e}')
 
 
-@shared_task(queue='vul-scan')
+@shared_task(queue='dongtai-strategy-scan')
 def search_vul_from_strategy(strategy_id):
     """
     根据sink方法策略ID搜索已有方法池中的数据是否存在满足条件的数据
@@ -267,7 +270,7 @@ def search_vul_from_strategy(strategy_id):
         logger.error(f'漏洞检测出错，错误原因：{e}')
 
 
-@shared_task(queue='vul-search')
+@shared_task(queue='dongtai-search-scan')
 def search_sink_from_method_pool(method_pool_id):
     """
     根据方法池ID搜索方法池中是否匹配到策略库中的sink方法
@@ -289,7 +292,7 @@ def search_sink_from_method_pool(method_pool_id):
         logger.error(f'sink规则扫描出错，错误原因：{e}')
 
 
-@shared_task(queue='vul-search')
+@shared_task(queue='dongtai-search-scan')
 def search_sink_from_strategy(strategy_id):
     """
     根据策略ID搜索方法池中是否匹配到当前策略
@@ -331,7 +334,7 @@ def load_methods_from_strategy(strategy_id):
     return strategy_value, method_pool_queryset
 
 
-@shared_task(queue='periodic_task')
+@shared_task(queue='dongtai-periodic-task')
 def update_sca():
     """
     根据SCA数据库，更新SCA记录信息
@@ -368,7 +371,7 @@ def update_sca():
         logger.error(f'SCA离线检测出错，错误原因：{e}')
 
 
-@shared_task(queue='periodic_task')
+@shared_task(queue='dongtai-periodic-task')
 def update_agent_status():
     """
     更新Agent状态
@@ -379,16 +382,16 @@ def update_agent_status():
         timestamp = int(time.time())
         queryset = IastAgent.objects.all()
         no_heart_beat_queryset = queryset.filter((Q(server=None) & Q(latest_time__lt=(timestamp - 600))), is_running=1)
-        no_heart_beat_queryset.update(is_running=0)
+        no_heart_beat_queryset.update(is_running=0, is_core_running=0)
 
         heart_beat_queryset = queryset.filter(server__update_time__lt=(timestamp - 600), is_running=1)
-        heart_beat_queryset.update(is_running=0)
+        heart_beat_queryset.update(is_running=0, is_core_running=0)
         logger.info(f'检测引擎状态更新成功')
     except Exception as e:
         logger.error(f'检测引擎状态更新出错，错误详情：{e}')
 
 
-@shared_task(queue='periodic_task')
+@shared_task(queue='dongtai-periodic-task')
 def heartbeat():
     """
     发送心跳
@@ -398,13 +401,13 @@ def heartbeat():
 
     logger.info('core.tasks.heartbeat is running')
     agents = IastAgent.objects.all()
-    agent_enable = agents.filter(is_running=1).count()
-    agent_counts = agents.count()
-    heartbeat = Heartbeat.objects.filter(agent__in=agents).annotate(Sum("req_count")).count()
-    project_count = IastProject.objects.count()
-    user_count = User.objects.count()
-    vul_count = IastVulnerabilityModel.objects.count()
-    method_pool_count = MethodPool.objects.count()
+    agent_enable = agents.values('id').filter(is_running=1).count()
+    agent_counts = agents.values('id').count()
+    heartbeat = IastHeartbeat.objects.values('id').filter(agent__in=agents).annotate(Sum("req_count")).count()
+    project_count = IastProject.objects.values('id').count()
+    user_count = User.objects.values('id').count()
+    vul_count = IastVulnerabilityModel.objects.values('id').count()
+    method_pool_count = MethodPool.objects.values('id').count()
     heartbeat_raw = {
         "status": 200,
         "msg": "engine is running",
@@ -429,20 +432,7 @@ def heartbeat():
         logger.info(f'[core.tasks.heartbeat] send heartbeat data to OpenApi Service Error. reason is {e}')
 
 
-@shared_task(queue='periodic_task')
-def maven_spider():
-    """
-    发送心跳
-    :return:
-    """
-    spider = MavenSpider()
-    try:
-        spider.cron(MavenSpider.BASEURL, MavenSpider.INDEX)
-    except Exception as e:
-        logger.error(f'maven爬虫出现异常，异常信息：{e}')
-
-
-@shared_task(queue='periodic_task')
+@shared_task(queue='dongtai-periodic-task')
 def clear_error_log():
     """
     清理错误日志
@@ -452,161 +442,152 @@ def clear_error_log():
     try:
         timestamp = int(time.time())
         out_date_timestamp = 60 * 60 * 24 * 30
-        IastErrorlog.objects.filter(dt__lt=(timestamp - out_date_timestamp)).delete()
-        # LogEntryManager().filter()
-        logger.info(f'日志清理成功')
+        count = IastErrorlog.objects.filter(dt__lt=(timestamp - out_date_timestamp)).delete()
+        logger.info(f'日志清理成功，共{count}条')
     except Exception as e:
         logger.error(f'日志清理失败，错误详情：{e}')
 
 
-@shared_task(queue='replay_task')
+@shared_task(queue='dongtai-replay-task')
 def vul_recheck():
     """
     定时处理漏洞验证
     """
-    # 读取待重放的漏洞ID
-    # 根据漏洞ID构造重放请求包
     logger.info('开始处理漏洞重放数据')
+
     relay_queue_queryset = IastReplayQueue.objects.filter(replay_type=const.VUL_REPLAY, state=const.PENDING)
-    # 循环遍历，构造重放请求包
-    if relay_queue_queryset:
-        sub_replay_queue = relay_queue_queryset[:50]
-        for replay in sub_replay_queue:
-            # 构造重放请求包
-            vul_id = replay.relation_id
-            vulnerability = IastVulnerabilityModel.objects.values('agent', 'uri', 'http_method', 'http_scheme',
-                                                                  'req_header', 'req_params', 'req_data', 'taint_value',
-                                                                  'param_name').filter(
-                id=vul_id).first()
-            timestamp = int(time.time())
-            if vulnerability:
-                param_name_value = vulnerability['param_name']
+    if relay_queue_queryset is None:
+        logger.info('暂无需要处理的漏洞重放数据')
+        return
+
+    timestamp = int(time.time())
+    sub_replay_queue = relay_queue_queryset[:50]
+    for replay in sub_replay_queue:
+        # 构造重放请求包
+        vul_id = replay.relation_id
+        if vul_id is None:
+            logger.info('重放请求数据格式不正确，relation id不能为空')
+            Replay.replay_failed(timestamp=timestamp, replay=replay)
+            continue
+
+        vulnerability = IastVulnerabilityModel.objects.values(
+            'agent', 'uri', 'http_method', 'http_scheme', 'req_header', 'req_params', 'req_data', 'taint_value',
+            'param_name'
+        ).filter(id=vul_id).first()
+        if vulnerability is None:
+            Replay.replay_failed(timestamp=timestamp, replay=replay)
+            continue
+
+        param_name_value = vulnerability['param_name']
+        try:
+            params = json.loads(param_name_value)
+        except JSONDecodeError as e:
+            logger.error(f'污点数据解析出错，原因：{e}')
+            Replay.replay_failed(replay=replay, timestamp=timestamp)
+            continue
+
+        uri = vulnerability['uri']
+        param_value = vulnerability['req_params'] if vulnerability['req_params'] else ''
+        headers = vulnerability['req_header']
+        body = vulnerability['req_data']
+        taint_value = vulnerability['taint_value']
+
+        # 构造带payload的重放请求
+        for position, param_name in params.items():
+            if position == 'GET':
+                _param_items = param_value.split('&')
+                item_length = len(_param_items)
+                for index in range(item_length):
+                    _params = _param_items[index].split('=')
+                    _param_name = _params[0]
+                    if _param_name == param_name:
+                        _param_items[index] = f'{_param_name}=.%2F..%2F%60dongtai'
+                        break
+                param_value = '&'.join(_param_items)
+            elif position == 'POST':
                 try:
-                    params = json.loads(param_name_value)
-                except JSONDecodeError as e:
-                    logger.error(f'污点数据解析出错，原因：{e}')
-                    params = {}
-                if params:
-                    uri = vulnerability['uri']
-                    param_value = vulnerability['req_params'] if vulnerability['req_params'] else ''
-                    headers = vulnerability['req_header']
-                    body = vulnerability['req_data']
-                    taint_value = vulnerability['taint_value']
+                    post_body = json.loads(body)
+                    if param_name in post_body:
+                        post_body[param_name] = '.%2F..%2F%60dongtai'
+                        body = json.dumps(post_body)
+                    else:
+                        _param_items = param_value.split('&')
+                        item_length = len(_param_items)
+                        for index in range(item_length):
+                            _params = _param_items[index].split('=')
+                            _param_name = _params[0]
+                            if _param_name == param_name:
+                                _param_items[index] = f'{_param_name}=.%2F..%2F%60dongtai'
+                                break
+                        param_value = '&'.join(_param_items)
+                except:
+                    _param_items = param_value.split('&')
+                    item_length = len(_param_items)
+                    for index in range(item_length):
+                        _params = _param_items[index].split('=')
+                        _param_name = _params[0]
+                        if _param_name == param_name:
+                            _param_items[index] = f'{_param_name}=.%2F..%2F%60dongtai'
+                            break
+                    param_value = '&'.join(_param_items)
+            elif position == 'HEADER':
+                import base64
+                header_raw = base64.b64decode(headers).decode('utf-8').split('\n')
+                item_length = len(header_raw)
+                for index in range(item_length):
+                    _header_list = header_raw[index].split(':')
+                    _header_name = _header_list[0]
+                    if _header_name == param_name:
+                        header_raw[index] = f'{_header_name}:.%2F..%2F%60dongtai'
+                        break
 
-                    for position, param_name in params.items():
-                        if position == 'GET':
-                            # 检查param_value，替换param_value
-                            _param_items = param_value.split('&')
-                            item_length = len(_param_items)
-                            for index in range(item_length):
-                                _params = _param_items[index].split('=')
-                                _param_name = _params[0]
-                                if _param_name == param_name:
-                                    _param_items[index] = f'{_param_name}=./../`dongtai'
-                                    break
-                            param_value = '&'.join(_param_items)
-                        elif position == 'POST':
-                            try:
-                                # 检查body，替换
-                                post_body = json.loads(body)
-                                if param_name in post_body:
-                                    post_body[param_name] = '/../`dongtai'
-                                    body = json.dumps(post_body)
-                                else:
-                                    _param_items = param_value.split('&')
-                                    item_length = len(_param_items)
-                                    for index in range(item_length):
-                                        _params = _param_items[index].split('=')
-                                        _param_name = _params[0]
-                                        if _param_name == param_name:
-                                            _param_items[index] = f'{_param_name}=./../`dongtai'
-                                            break
-                                    param_value = '&'.join(_param_items)
-                            except:
-                                _param_items = param_value.split('&')
-                                item_length = len(_param_items)
-                                for index in range(item_length):
-                                    _params = _param_items[index].split('=')
-                                    _param_name = _params[0]
-                                    if _param_name == param_name:
-                                        _param_items[index] = f'{_param_name}=./../`dongtai'
-                                        break
-                                param_value = '&'.join(_param_items)
-                        elif position == 'HEADER':
-                            # 检查header，替换
-                            import base64
-                            header_raw = base64.b64decode(headers).decode('utf-8').split('\n')
-                            item_length = len(header_raw)
-                            for index in range(item_length):
-                                _header_list = header_raw[index].split(':')
-                                _header_name = _header_list[0]
-                                if _header_name == param_name:
-                                    header_raw[index] = f'{_header_name}:/../dongtaiIAST'
-                                    break
+                headers = base64.b64encode('\n'.join(header_raw))
+            elif position == 'COOKIE':
+                import base64
+                header_raw = base64.b64decode(headers).decode('utf-8').split('\n')
+                item_length = len(header_raw)
+                cookie_index = 0
+                cookie_raw = None
+                for index in range(item_length):
+                    _header_list = header_raw[index].split(':')
+                    _header_name = _header_list[0]
+                    if _header_name == 'cookie' or _header_name == 'Cookie':
+                        cookie_index = index
+                        cookie_raw = ':'.join(_header_list[1:])
+                        break
+                if cookie_index > 0:
+                    cookie_raw_items = cookie_raw.split(';')
+                    item_length = len(cookie_raw_items)
+                    for index in range(item_length):
+                        cookie_item = cookie_raw_items[index].split('=')
+                        if cookie_item[0] == param_name:
+                            cookie_raw_items[index] = f'{param_name}=.%2F..%2F%60dongtai'
+                            break
+                    cookie_raw = ';'.join(cookie_raw_items)
+                    header_raw[cookie_index] = cookie_raw
+                headers = base64.b64encode('\n'.join(header_raw))
 
-                            headers = base64.b64encode('\n'.join(header_raw))
-                        elif position == 'COOKIE':
-                            # 检查cookie，替换
-                            import base64
-                            header_raw = base64.b64decode(headers).decode('utf-8').split('\n')
-                            item_length = len(header_raw)
-                            cookie_index = 0
-                            cookie_raw = None
-                            for index in range(item_length):
-                                _header_list = header_raw[index].split(':')
-                                _header_name = _header_list[0]
-                                if _header_name == 'cookie' or _header_name == 'Cookie':
-                                    cookie_index = index
-                                    cookie_raw = ':'.join(_header_list[1:])
-                                    break
-                            if cookie_index > 0:
-                                cookie_raw_items = cookie_raw.split(';')
-                                item_length = len(cookie_raw_items)
-                                for index in range(item_length):
-                                    cookie_item = cookie_raw_items[index].split('=')
-                                    if cookie_item[0] == param_name:
-                                        cookie_raw_items[index] = f'{param_name}=/../`dongtai'
-                                        break
-                                cookie_raw = ';'.join(cookie_raw_items)
-                                header_raw[cookie_index] = cookie_raw
-                            headers = base64.b64encode('\n'.join(header_raw))
+            elif position == 'PATH':
+                # 检查path，替换
+                path_items = uri.split('/')
+                item_length = len(path_items)
+                for index in range(item_length):
+                    if taint_value == path_items[index]:
+                        path_items[index] = 'dongtai'
+                        break
+                uri = '/'.join(path_items)
 
-                        elif position == 'PATH':
-                            # 检查path，替换
-                            path_items = uri.split('/')
-                            item_length = len(path_items)
-                            for index in range(item_length):
-                                if taint_value == path_items[index]:
-                                    path_items[index] = 'dongtai'
-                                    break
-                            uri = '/'.join(path_items)
-
-                    replay.uri = uri
-                    replay.method = vulnerability['http_method']
-                    replay.scheme = vulnerability['http_scheme']
-                    replay.header = headers
-                    replay.params = param_value
-                    replay.body = body
-                    replay.update_time = timestamp
-                    replay.state = const.WAITING
-                    replay.agent_id = vulnerability['agent']
-                    replay.save(
-                        update_fields=['uri', 'method', 'scheme', 'header', 'params', 'body', 'update_time', 'state'])
-
-                else:
-                    # 如果未识别到污点位置，不进行重放验证
-                    replay.update_time = timestamp
-                    replay.verify_time = timestamp
-                    replay.state = const.SOLVED
-                    replay.result = const.RECHECK_ERROR
-                    replay.save(update_fields=['update_time', 'verify_time', 'state', 'result'])
-            else:
-                replay.update_time = timestamp
-                replay.verify_time = timestamp
-                replay.state = const.SOLVED
-                replay.result = const.RECHECK_ERROR
-                replay.save(update_fields=['update_time', 'verify_time', 'state', 'result'])
+        replay.uri = uri
+        replay.method = vulnerability['http_method']
+        replay.scheme = vulnerability['http_scheme']
+        replay.header = headers
+        replay.params = param_value
+        replay.body = body
+        replay.update_time = timestamp
+        replay.state = const.WAITING
+        replay.agent_id = vulnerability['agent']
+        replay.save(
+            update_fields=['uri', 'method', 'scheme', 'header', 'params', 'body', 'update_time', 'state', 'agent_id']
+        )
 
         logger.info('漏洞重放数据处理完成')
-    else:
-        logger.info('暂无需要处理的漏洞重放数据')
