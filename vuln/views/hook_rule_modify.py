@@ -6,7 +6,7 @@
 # project: lingzhi-engine
 import time
 
-from dongtai_models.models.hook_strategy import HookStrategy
+from dongtai.models.hook_strategy import HookStrategy
 
 from lingzhi_engine.base import R, UserEndPoint
 

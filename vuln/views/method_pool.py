@@ -4,8 +4,8 @@
 # datetime:2021/1/28 上午10:12
 # software: PyCharm
 # project: lingzhi-engine
-from dongtai_models.models.agent_method_pool import MethodPool
-from dongtai_models.models.hook_strategy import HookStrategy
+from dongtai.models.agent_method_pool import MethodPool
+from dongtai.models.hook_strategy import HookStrategy
 
 from lingzhi_engine.base import R, UserEndPoint
 from vuln.serializers.method_pool import MethodPoolSerialize

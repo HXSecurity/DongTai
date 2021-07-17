@@ -8,11 +8,11 @@ import time
 
 import requests
 from django.dispatch import receiver
-from dongtai_models.models.replay_queue import IastReplayQueue
+from dongtai.models.replay_queue import IastReplayQueue
 
-from dongtai_models.models.notify_config import IastNotifyConfig
-from dongtai_models.models.vulnerablity import IastVulnerabilityModel
-from lingzhi_engine import const
+from dongtai.models.notify_config import IastNotifyConfig
+from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai.utils import const
 
 from signals import vul_found
 
@@ -42,7 +42,6 @@ def create_vul_data_from_model(vul):
         agent_token: Agent的token
         project: 所在的项目
         counts: 漏洞出现次数
-        language: 当前项目所用的语言
         client_ip: 客户端IP
         username: 漏洞所在用户的用户名
     }
@@ -69,7 +68,6 @@ def create_vul_data_from_model(vul):
     vul_data['project'] = agent.project_name
     vul_data['context_path'] = vul.context_path
     vul_data['counts'] = vul.counts
-    vul_data['language'] = vul.language
     vul_data['client_ip'] = vul.client_ip
     vul_data['username'] = vul.agent.user.get_username()
     return vul_data
@@ -221,6 +219,7 @@ def parse_taint_position(source_method, vul_meta, taint_value):
 def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs):
     # 如果是重放请求，且重放请求类型为漏洞验证，更新漏洞状态为
     taint_value = kwargs['taint_value']
+    timestamp = int(time.time())
     param_names = parse_taint_position(source_method=top_stack, vul_meta=vul_meta, taint_value=taint_value)
     if parse_params:
         param_name = json.dumps(param_names)
@@ -241,8 +240,9 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
         vul.req_header = vul_meta.req_header
         vul.req_params = vul_meta.req_params
         vul.counts = vul.counts + 1
-        vul.latest_time = int(time.time())
-        vul.status = '待处理'
+        vul.latest_time = timestamp
+        vul.method_pool_id = vul_meta.id
+        vul.status = '待验证'
         vul.save(update_fields=['req_header', 'req_params', 'counts', 'latest_time', 'status'])
     else:
         vul = IastVulnerabilityModel.objects.create(
@@ -266,32 +266,55 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
             agent=vul_meta.agent,
             context_path=vul_meta.context_path,
             counts=1,
-            status='待处理',
-            language=vul_meta.language,
+            status='待验证',
             first_time=vul_meta.create_time,
-            latest_time=int(time.time()),
+            latest_time=timestamp,
             client_ip=vul_meta.clent_ip,
-            param_name=param_name
+            param_name=param_name,
+            method_pool_id=vul_meta.id
         )
     return vul
+
+
+def create_vul_recheck_task(vul_id, agent, timestamp):
+    replay_model = IastReplayQueue.objects.filter(replay_type=const.VUL_REPLAY, relation_id=vul_id).first()
+    if replay_model:
+        if replay_model.state in [const.PENDING, const.WAITING, const.SOLVING]:
+            replay_model.count()
+        else:
+            replay_model.state = const.PENDING
+            replay_model.update_time = timestamp
+            replay_model.count = replay_model.count + 1
+            replay_model.save(update_fields=['state', 'update_time', 'count'])
+    else:
+        IastReplayQueue.objects.create(
+            agent=agent,
+            relation_id=vul_id,
+            state=const.PENDING,
+            count=1,
+            create_time=timestamp,
+            update_time=timestamp,
+            replay_type=const.VUL_REPLAY
+        )
 
 
 def handler_replay_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs):
     timestamp = int(time.time())
     vul = IastVulnerabilityModel.objects.filter(id=kwargs['relation_id']).first()
     if vul and vul.type == vul_name:
-        vul.status = '已验证存在'
+        vul.status = '已确认'
         vul.latest_time = timestamp
         vul.save(update_fields=['status', 'latest_time'])
 
         IastReplayQueue.objects.filter(id=kwargs['replay_id']).update(
             state=const.SOLVED,
-            result=const.RECHECK_FALSE,
+            result=const.RECHECK_TRUE,
             verify_time=timestamp,
             update_time=timestamp
         )
     else:
         vul = save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs)
+        create_vul_recheck_task(vul_id=vul.id, agent=vul.agent, timestamp=timestamp)
     return vul
 
 
@@ -308,6 +331,7 @@ def handler_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stac
     :return:
     """
     # 如果是重放请求，且重放请求类型为漏洞验证，更新漏洞状态为
+    timestamp = int(time.time())
     try:
         replay_id = vul_meta.replay_id
         replay_type = vul_meta.replay_type
@@ -317,10 +341,15 @@ def handler_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stac
             kwargs['relation_id'] = relation_id
             kwargs['replay_id'] = replay_id
             vul = handler_replay_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs)
+        elif replay_type == const.REQUEST_REPLAY:
+            # 数据包调试数据暂不检测漏洞
+            vul = None
         else:
             vul = save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs)
+            create_vul_recheck_task(vul_id=vul.id, agent=vul.agent, timestamp=timestamp)
     except Exception as e:
         vul = save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, **kwargs)
+        create_vul_recheck_task(vul_id=vul.id, agent=vul.agent, timestamp=timestamp)
 
     if vul:
         send_vul_notify(vul)
@@ -380,7 +409,6 @@ def send_to_web_hook(web_hook_url, template, vul_data):
         .replace('{{agent_token}}', vul_data['agent_token']) \
         .replace('{{project}}', vul_data['project']) \
         .replace('{{counts}}', str(vul_data['counts'])) \
-        .replace('{{language}}', vul_data['language']) \
         .replace('{{client_ip}}', vul_data['client_ip']) \
         .replace('{{username}}', vul_data['username'])
 

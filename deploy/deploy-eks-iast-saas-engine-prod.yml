@@ -20,7 +20,7 @@ spec:
       containers:
         - name: iast-engine-container
           image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine:VERSION
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           volumeMounts:
             - name: configfile
               mountPath: /opt/iast/engine/conf/config.ini
@@ -38,17 +38,3 @@ spec:
             name: iast-test-config.ini
       imagePullSecrets:
         - name: aliyun-registry-secret
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: iast-engine-svc
-  namespace: iast-prod
-spec:
-  ports:
-    - port: 80
-      protocol: TCP
-      targetPort: 8000
-  selector:
-    app: iast-engine
-  type: ClusterIP
