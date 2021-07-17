@@ -77,6 +77,10 @@ class VulSummary(UserEndPoint):
         if language:
             queryset = queryset.filter(language=language)
 
+        status = request.query_params.get('status')
+        if status:
+            queryset = queryset.filter(status=status)
+
         level = request.query_params.get('level')
         if level:
             queryset = queryset.filter(level=level)
@@ -119,10 +123,9 @@ class VulSummary(UserEndPoint):
             'level': _key, 'count': _value, 'level_id': vul_level_metadata[_key]
         } for _key, _value in DEFAULT_LEVEL.items()]
 
-        # result = sorted(result, key=lambda x: x['count'], reverse=True)
         vul_type_list = [{"type": _['type'], "count": _['total']} for _ in type_summary]
         end['data']['type'] = sorted(vul_type_list, key=lambda x: x['count'], reverse=True)
-        end['data']['projects'] = get_project_vul_count(auth_users)
+        end['data']['projects'] = get_project_vul_count(auth_users, queryset)
 
         return R.success(data=end['data'], level_data=end['level_data'])
 

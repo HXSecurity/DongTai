@@ -21,6 +21,19 @@ class ProjectSummary(UserEndPoint):
     name = "api-v1-project-summary-<id>"
     description = "查看项目详情-概括"
 
+    @staticmethod
+    def weeks_ago(week=1):
+        # 最近7天，每天漏洞数量统计
+        weekend = 7 * week
+        current_timestamp = int(time.time())
+        weekend_ago_time = time.localtime(current_timestamp - 86400 * weekend)
+        weekend_ago_time_str = str(weekend_ago_time.tm_year) + "-" + str(weekend_ago_time.tm_mon) + "-" + str(
+            weekend_ago_time.tm_mday) + " 00:00:00"
+        beginArray = time.strptime(weekend_ago_time_str, "%Y-%m-%d %H:%M:%S")
+        # 最近第七天0点
+        beginT = int(time.mktime(beginArray))
+        return current_timestamp, beginT, weekend
+
     def get(self, request, id):
         auth_users = self.get_auth_users(request.user)
         project = IastProject.objects.filter(user__in=auth_users, id=id).first()
@@ -47,13 +60,15 @@ class ProjectSummary(UserEndPoint):
         ).values("id")
         # 通过agent获取漏洞数量，类型
         agent_ids = [relation['id'] for relation in relations]
-        typeInfo = IastVulnerabilityModel.objects.filter(
-            agent_id__in=agent_ids).values("type", "level_id")
+        queryset = IastVulnerabilityModel.objects.filter(
+            agent_id__in=agent_ids,
+            status='已确认'
+        ).values("type", "level_id", "latest_time")
         typeArr = {}
         typeLevel = {}
         levelCount = {}
-        if typeInfo:
-            for one in typeInfo:
+        if queryset:
+            for one in queryset:
                 typeArr[one['type']] = typeArr.get(one['type'], 0) + 1
                 typeLevel[one['type']] = one['level_id']
                 levelCount[one['level_id']] = levelCount.get(one['level_id'], 0) + 1
@@ -67,23 +82,18 @@ class ProjectSummary(UserEndPoint):
                     }
                 )
         # 最近7天，每天漏洞数量统计
-        weekend = 6
-        nowTime = int(time.time())
-        beginDay = time.localtime(nowTime - 86400 * weekend)
-        beginStr = str(beginDay.tm_year) + "-" + str(beginDay.tm_mon) + "-" + str(beginDay.tm_mday) + " 00:00:00"
-        beginArray = time.strptime(beginStr, "%Y-%m-%d %H:%M:%S")
-        # 最近第七天0点
-        beginT = int(time.mktime(beginArray))
-        vulInfo = IastVulnerabilityModel.objects.filter(
-            agent_id__in=agent_ids, latest_time__gt=beginT, latest_time__lt=nowTime
+        current_timestamp, a_week_ago_timestamp, days = self.weeks_ago(week=1)
+        vulInfo = queryset.filter(
+            latest_time__gt=a_week_ago_timestamp,
+            latest_time__lt=current_timestamp
         ).values("type", "latest_time")
 
         dayNum = {}
-        while weekend >= 0:
-            wDay = time.localtime(nowTime - 86400 * weekend)
+        while days >= 0:
+            wDay = time.localtime(current_timestamp - 86400 * days)
             wkey = str(wDay.tm_mon) + "-" + str(wDay.tm_mday)
             dayNum[wkey] = 0
-            weekend = weekend - 1
+            days = days - 1
 
         if vulInfo:
             for vul in vulInfo:

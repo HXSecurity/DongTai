@@ -77,7 +77,7 @@ def get_all_server(ids):
 
 
 # 获取项目漏洞数量
-def get_project_vul_count(users):
+def get_project_vul_count(users, queryset):
     result = []
     projects = IastProject.objects.filter(user__in=users).values("name", "vul_count", "id")
 
@@ -85,7 +85,7 @@ def get_project_vul_count(users):
         for project in projects:
             try:
                 agents = IastAgent.objects.filter(bind_project_id=project['id'], user__in=users)
-                vul_count = IastVulnerabilityModel.objects.filter(agent__in=agents).count()
+                vul_count = queryset.filter(agent__in=agents).count()
             except Exception:
                 vul_count = 0
             result.append({
