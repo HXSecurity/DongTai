@@ -8,13 +8,13 @@ from rest_framework.request import Request
 
 from base import R
 from iast.base.user import UserEndPoint
-from dongtai_models.models.strategy_user import IastStrategyUser
+from dongtai.models.strategy_user import IastStrategyUser
 
 
 # 用户新增策略
 class StrategyAdd(UserEndPoint):
 
-    def post(self, request: Request):
+    def post(self, request):
         # 获取策略ID，str
         ids = request.data.get("ids", None)
         # 策略名称

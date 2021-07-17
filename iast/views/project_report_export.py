@@ -12,9 +12,9 @@ from docx.shared import Pt
 from base import R
 from iast.base.agent import get_vul_count_by_agent
 from iast.base.user import UserEndPoint
-from dongtai_models.models.agent import IastAgent
-from dongtai_models.models.project import IastProject
-from dongtai_models.models.vul_level import IastVulLevel
+from dongtai.models.agent import IastAgent
+from dongtai.models.project import IastProject
+from dongtai.models.vul_level import IastVulLevel
 from webapi.settings import MEDIA_ROOT
 
 

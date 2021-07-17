@@ -8,13 +8,13 @@ from rest_framework.request import Request
 
 from base import R
 from iast.base.user import UserEndPoint
-from dongtai_models.models.strategy_user import IastStrategyUser
+from dongtai.models.strategy_user import IastStrategyUser
 
 
 # 用户获取自有策略列表
 class StrategyList(UserEndPoint):
 
-    def get(self, request: Request):
+    def get(self, request):
         user = request.user
         queryset = IastStrategyUser.objects.filter(
             user=user,

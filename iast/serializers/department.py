@@ -6,8 +6,8 @@
 # project: lingzhi-webapi
 from rest_framework import serializers
 
-from dongtai_models.models import User
-from dongtai_models.models.department import Department
+from dongtai.models import User
+from dongtai.models.department import Department
 
 
 class DepartmentSerializer(serializers.ModelSerializer):

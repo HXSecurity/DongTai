@@ -8,13 +8,13 @@ import base64
 import json
 import logging
 
-from rest_framework.request import Request
+from dongtai.models.project import IastProject
+from dongtai.models.project_version import IastProjectVersion
+from dongtai.models.strategy import IastStrategyModel
+from dongtai.models.vulnerablity import IastVulnerabilityModel
 
 from base import R
 from iast.base.user import UserEndPoint
-from dongtai_models.models.project import IastProject
-from dongtai_models.models.strategy import IastStrategyModel
-from dongtai_models.models.vulnerablity import IastVulnerabilityModel
 from iast.serializers.vul import VulSerializer
 
 """
@@ -73,13 +73,13 @@ from iast.serializers.vul import VulSerializer
 logger = logging.getLogger('dongtai-webapi')
 
 
-class VulnDetail(UserEndPoint):
+class VulDetail(UserEndPoint):
 
     def get_server(self):
         server = self.server
         if server:
             return {
-                'name': server.name,
+                'name': 'server.name',
                 'hostname': server.hostname,
                 'ip': server.ip,
                 'port': server.port,
@@ -87,7 +87,7 @@ class VulnDetail(UserEndPoint):
                 'server_type': VulSerializer.split_container_name(server.container),
                 'container_path': server.container_path,
                 'runtime': server.runtime,
-                'environment': server.environment,
+                'environment': server.env,
                 'command': server.command
             }
         else:
@@ -96,7 +96,7 @@ class VulnDetail(UserEndPoint):
                 'hostname': "",
                 'ip': "",
                 'port': "",
-                'container': "",
+                'container': "JavaApplication",
                 'server_type': "",
                 'container_path': "",
                 'runtime': "",
@@ -149,23 +149,45 @@ class VulnDetail(UserEndPoint):
             results = None
         return results
 
-    def parse_header(self, method, uri, query_param, protocol, header, data):
+    @staticmethod
+    def parse_request(method, uri, query_param, protocol, header, data):
         _data = f"{method} {uri}?{query_param} {protocol}\n" if query_param else f"{method} {uri} {protocol}\n"
         try:
             _data = _data + (base64.b64decode(header.encode("utf-8")).decode("utf-8") if header else '')
         except Exception as e:
             logger.error(f'header解析出错，错误原因：{e}')
-            pass
         if data:
             _data = _data + "\n" + data
         return _data
+
+    @staticmethod
+    def parse_response(header, body):
+        try:
+            _data = base64.b64decode(header.encode("utf-8")).decode("utf-8")
+        except Exception as e:
+            _data = ''
+            logger.error(f'Response Header解析出错，错误原因：{e}')
+        return '{header}\n\n{body}'.format(header=_data, body=body)
 
     def get_vul(self, auth_agents):
         vul = IastVulnerabilityModel.objects.filter(id=self.vul_id, agent__in=auth_agents).first()
 
         agent = vul.agent
         project_id = agent.bind_project_id
-        project = IastProject.objects.values("name").filter(id=project_id).first()
+        if project_id is None or project_id == 0:
+            project = None
+        else:
+            project = IastProject.objects.values("name").filter(id=project_id).first()
+
+        project_version_id = agent.project_version_id
+        if project_version_id:
+            project_version = IastProjectVersion.objects.values('version_name').filter(id=project_version_id).first()
+            if project_version:
+                project_version_name = project_version['version_name']
+            else:
+                project_version_name = ''
+        else:
+            project_version_name = ''
         try:
             self.server = agent.server
         except Exception as e:
@@ -175,24 +197,29 @@ class VulnDetail(UserEndPoint):
         return {
             'url': vul.url,
             'uri': vul.uri,
+            'agent_name': agent.token,
             'http_method': vul.http_method,
             'type': vul.type,
             'taint_position': vul.taint_position,
             'first_time': vul.first_time,
             'latest_time': vul.latest_time,
             'project_name': project['name'] if project else '暂未绑定项目',
-            'language': vul.language,
+            'project_version': project_version_name,
+            'language': agent.language,
             'level': vul.level.name_value,
             'level_type': vul.level.id,
             'counts': vul.counts,
-            'req_header': self.parse_header(vul.http_method, vul.uri, vul.req_params, vul.http_protocol, vul.req_header,
-                                            vul.req_data),
-            'graphy': self.parse_graphy(vul.full_stack),
+            'req_header': self.parse_request(vul.http_method, vul.uri, vul.req_params, vul.http_protocol,
+                                             vul.req_header,
+                                             vul.req_data),
+            'response': self.parse_response(vul.res_header, vul.res_body),
+            'graph': self.parse_graphy(vul.full_stack),
             'context_path': vul.context_path,
             'client_ip': vul.client_ip,
             'status': vul.status,
             'taint_value': vul.taint_value,
-            'param_name': json.loads(vul.param_name) if vul.param_name else {}
+            'param_name': json.loads(vul.param_name) if vul.param_name else {},
+            'method_pool_id': vul.method_pool_id,
         }
 
     def get_strategy(self):
@@ -211,7 +238,7 @@ class VulnDetail(UserEndPoint):
                 'repair_suggestion': ''
             }
 
-    def get(self, request: Request, id):
+    def get(self, request, id):
         """
         :param request:
         :return:
@@ -231,6 +258,6 @@ class VulnDetail(UserEndPoint):
 
 
 if __name__ == '__main__':
-    vul = VulnDetail()
+    vul = VulDetail()
     graphy = '[{"classname": "org.apache.struts2.dispatcher.StrutsRequestWrapper", "methodname": "getParameter", "in": ", "out": "desc", "stack": "javax.servlet.ServletRequestWrapper.getParameter(ServletRequestWrapper.java)"}, {"classname": "java.lang.StringBuilder", "methodname": "append", "in": "desc", "out": "select host,user from user where user=+desc order by host ", "stack": "java.lang.StringBuilder.append(StringBuilder.java)"}, {"classname": "java.lang.StringBuilder", "methodname": "toString", "in": "select host,user from user where user=+desc order by host ", "out": "select host,user from user where user=+desc order by host ", "stack": "java.lang.StringBuilder.toString(StringBuilder.java)"}, {"classname": "com.mysql.jdbc.JDBC4Connection", "methodname": "prepareStatement", "in": "select host,user from user where user=+desc order by host ", "out": "NULL", "stack": "com.mysql.jdbc.ConnectionImpl.prepareStatement(ConnectionImpl.java)"}]'
     vul.parse_graphy(graphy)

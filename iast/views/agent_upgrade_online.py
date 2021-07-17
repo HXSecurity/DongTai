@@ -7,11 +7,10 @@
 from urllib.parse import urljoin
 
 import requests
-from rest_framework.request import Request
+from dongtai.models import User
 
 from base import R
 from iast.base.user import TalentAdminEndPoint
-from dongtai_models.models import User
 
 
 # 在线更新如何设计？
@@ -19,7 +18,7 @@ class AgentUpgradeOnline(TalentAdminEndPoint):
     name = "api-v1-agent-install"
     description = "在线升级agent"
 
-    def post(self, request: Request):
+    def post(self, request):
         url = request.data['url']
         token = request.data['token']
         try:

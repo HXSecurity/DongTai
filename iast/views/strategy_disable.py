@@ -4,20 +4,27 @@
 # datetime:2020/11/27 下午3:34
 # software: PyCharm
 # project: lingzhi-webapi
-from rest_framework.request import Request
+from dongtai.models.hook_type import HookType
+from dongtai.models.hook_strategy import HookStrategy
+from dongtai.utils import const
 
 from base import R
 from iast.base.user import TalentAdminEndPoint
-from iast.const import STRATEGY_DISABLE
-from dongtai_models.models.strategy import IastStrategyModel
 
 
 class StrategyDisableEndpoint(TalentAdminEndPoint):
-    def get(self, request: Request, id):
-        strategy = IastStrategyModel.objects.filter(id=id)
-        if strategy and len(strategy) > 0:
-            strategy[0].state = STRATEGY_DISABLE
-            strategy[0].save(update_fields=['state'])
-            return R.success()
+    def get(self, request, id):
+        strategy_model = HookType.objects.filter(id=id).first()
+        if strategy_model:
+            counts = strategy_model.strategies.filter(enable=const.HOOK_TYPE_ENABLE).update(enable=const.HOOK_TYPE_DISABLE)
+            strategy_model.enable = const.HOOK_TYPE_DISABLE
+            strategy_model.save(update_fields=['enable'])
+
+            return R.success(msg=f'策略禁用成功，共{counts}条hook规则')
         else:
             return R.failure(status=202, msg='策略不存在')
+
+
+if __name__ == '__main__':
+    # 增加HookStrategy调用，确保关联关系存在
+    HookStrategy.objects.values("id").count()

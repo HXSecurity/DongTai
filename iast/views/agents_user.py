@@ -4,11 +4,11 @@
 # datetime:2020/11/25 下午2:23
 # software: PyCharm
 # project: lingzhi-webapi
-from rest_framework.request import Request
+
+from dongtai.models.agent import IastAgent
 
 from base import R
 from iast.base.agent import AgentEndPoint
-from dongtai_models.models.agent import IastAgent
 
 """
 获取用户agent ID token
@@ -16,7 +16,7 @@ from dongtai_models.models.agent import IastAgent
 
 
 class UserAgentList(AgentEndPoint):
-    def get(self, request: Request):
+    def get(self, request):
         user = request.user
         if user.is_talent_admin():
             queryset = IastAgent.objects.all()

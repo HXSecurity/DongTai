@@ -62,7 +62,7 @@ INSTALLED_APPS = [
     'django_filters',
     'corsheaders',
     'captcha',
-    'dongtai_models',
+    'dongtai',
     'iast',
 ]
 
@@ -195,7 +195,7 @@ AUTH_PASSWORD_VALIDATORS = [
         }
     },
 ]
-AUTH_USER_MODEL = 'dongtai_models.User'
+AUTH_USER_MODEL = 'dongtai.User'
 
 LANGUAGE_CODE = 'zh-cn'
 
@@ -230,7 +230,7 @@ LOGGING = {
         },
         'dongtai-webapi': {
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'logs/dongtai-webapi.log',
+            'filename': os.path.join(BASE_DIR, 'logs/dongtai-webapi.log'),
             'backupCount': 5,
             'maxBytes': 1024 * 1024 * 10,
             'formatter': 'verbose'

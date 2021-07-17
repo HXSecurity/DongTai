@@ -11,15 +11,15 @@ from base import R
 from iast.base.agent import get_agents_with_project, get_user_project_name, \
     get_user_agent_pro, get_all_server
 from iast.base.user import UserEndPoint
-from dongtai_models.models.vul_level import IastVulLevel
+from dongtai.models.vul_level import IastVulLevel
 from iast.base.project_version import get_project_version
-from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.vulnerablity import IastVulnerabilityModel
 from iast.serializers.vul import VulSerializer
 
 
-class VulnList(UserEndPoint):
+class VulsEndPoint(UserEndPoint):
 
-    def get(self, request: Request):
+    def get(self, request):
         """
         获取漏洞列表
         - 支持排序
@@ -33,17 +33,18 @@ class VulnList(UserEndPoint):
             "msg": "success",
             "data": []
         }
-        queryset = IastVulnerabilityModel.objects.values('id', 'type', 'url', 'uri', 'agent_id', 'level_id',
-                                                         'http_method', 'top_stack', 'bottom_stack', 'taint_position',
-                                                         'latest_time', 'first_time', 'language', 'status').filter(
-            agent__in=self.get_auth_agents_with_user(request.user))
-        # 提取过滤条件：
-        user = request.user
-        auth_users = self.get_auth_users(user)
+        auth_users = self.get_auth_users(request.user)
+        auth_agents = self.get_auth_agents(auth_users)
+        if auth_agents is None:
+            return R.success(page={}, data=[], msg='暂无数据')
 
         language = request.query_params.get('language')
         if language:
-            queryset = queryset.filter(language=language)
+            auth_agents = auth_agents.filter(language=language)
+
+        queryset = IastVulnerabilityModel.objects.values(
+            'id', 'type', 'url', 'uri', 'agent_id', 'level_id', 'http_method', 'top_stack', 'bottom_stack',
+            'taint_position', 'latest_time', 'first_time', 'status').filter(agent__in=auth_agents)
 
         level = request.query_params.get('level')
         if level:
@@ -62,7 +63,7 @@ class VulnList(UserEndPoint):
         if project_id:
             # 获取项目当前版本信息
             current_project_version = get_project_version(project_id, auth_users)
-            agents = self.get_auth_agents(auth_users).filter(
+            agents = auth_agents.filter(
                 bind_project_id=project_id,
                 online=1,
                 project_version_id=current_project_version.get("version_id", 0))
@@ -71,6 +72,10 @@ class VulnList(UserEndPoint):
         url = request.query_params.get('url', None)
         if url and url != '':
             queryset = queryset.filter(url__icontains=url)
+
+        status = request.query_params.get('status')
+        if status:
+            queryset = queryset.filter(status=status)
 
         order = request.query_params.get('order')
         if order:
