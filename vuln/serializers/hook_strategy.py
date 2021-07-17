@@ -4,8 +4,8 @@
 # datetime:2021/2/19 上午11:56
 # software: PyCharm
 # project: lingzhi-engine
-from dongtai_models.models import User
-from dongtai_models.models.hook_strategy import HookStrategy
+from dongtai.models import User
+from dongtai.models.hook_strategy import HookStrategy
 from rest_framework import serializers
 
 
