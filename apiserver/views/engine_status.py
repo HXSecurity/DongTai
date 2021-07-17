@@ -67,18 +67,17 @@ class EngineStopStart(OpenApiEndPoint):
         if agent.is_control == 0:
             return R.failure(msg="暂无命令", data="notcmd")
 
-        # 启动
         if agent.control == 3:
             agent.is_control = 0
             agent.is_core_running = 1
             agent.latest_time = int(time.time())
-            agent.save()
+            agent.save(update_fields=['is_control', 'is_core_running', 'latest_time'])
             return R.success(data="start", msg=str(agent.is_running) + agent.token)
-        # 暂停
+
         if agent.control == 4:
             agent.is_control = 0
             agent.is_core_running = 0
             agent.latest_time = int(time.time())
-            agent.save()
+            agent.save(update_fields=['is_control', 'is_core_running', 'latest_time'])
             return R.success(data="stop")
         return R.success(data="notcmd")
