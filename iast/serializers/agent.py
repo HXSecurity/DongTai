@@ -24,7 +24,7 @@ class AgentSerializer(serializers.ModelSerializer):
     class Meta:
         model = IastAgent
         fields = ['id', 'token', 'server', 'running_status', 'system_load', 'owner', 'latest_time', 'project_name',
-                  'is_core_running', 'language', 'flow']
+                  'is_core_running', 'language', 'flow', 'is_control']
 
     def get_latest_heartbeat(self, obj):
         try:
