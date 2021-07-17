@@ -6,14 +6,12 @@
 # project: webapi
 
 import time
-
+from dongtai.models.deploy import IastDeployDesc
+from dongtai.models.system import IastSystem
 from rest_framework.authtoken.models import Token
-from rest_framework.request import Request
 
 from base import R
 from iast.base.agent import AgentEndPoint
-from dongtai_models.models.deploy import IastDeployDesc
-from dongtai_models.models.system import IastSystem
 
 
 class AgentDeploySave(AgentEndPoint):
@@ -24,7 +22,7 @@ class AgentDeploySave(AgentEndPoint):
     description = "上传Agent配置"
 
     # 获取当前部署信息
-    def get(self, request: Request):
+    def get(self, request):
         end = {
             "status": 201,
             "msg": "success",

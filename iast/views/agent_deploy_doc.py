@@ -5,11 +5,10 @@
 # software: PyCharm
 # project: webapi
 
-from rest_framework.request import Request
+from dongtai.models.deploy import IastDeployDesc
 
 from base import R
 from iast.base.agent import AgentEndPoint
-from dongtai_models.models.deploy import IastDeployDesc
 
 
 class AgentDeployDesc(AgentEndPoint):
@@ -19,7 +18,7 @@ class AgentDeployDesc(AgentEndPoint):
     name = "api-v1-iast-deploy-desc"
     description = "Agent部署文档"
 
-    def get(self, request: Request):
+    def get(self, request):
         queryset = IastDeployDesc.objects.all()
 
         os = request.query_params.get('os', 'linux')

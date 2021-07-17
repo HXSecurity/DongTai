@@ -5,10 +5,11 @@
 # software: PyCharm
 # project: lingzhi-webapi
 import time
+from dongtai.models.heartbeat import IastHeartbeat
 
 from rest_framework import serializers
 
-from dongtai_models.models.agent import IastAgent
+from dongtai.models.agent import IastAgent
 
 
 class AgentSerializer(serializers.ModelSerializer):
@@ -18,11 +19,12 @@ class AgentSerializer(serializers.ModelSerializer):
     running_status = serializers.SerializerMethodField()
     server = serializers.SerializerMethodField()
     owner = serializers.SerializerMethodField()
+    flow = serializers.SerializerMethodField()
 
     class Meta:
         model = IastAgent
-        fields = ['id', 'token', 'server', 'version', 'running_status', 'system_load', 'owner', 'latest_time',
-                  'project_name', 'is_core_running']
+        fields = ['id', 'token', 'server', 'running_status', 'system_load', 'owner', 'latest_time', 'project_name',
+                  'is_core_running', 'language', 'flow', 'is_control']
 
     def get_latest_heartbeat(self, obj):
         try:
@@ -40,6 +42,11 @@ class AgentSerializer(serializers.ModelSerializer):
             return "未运行"
 
     def get_system_load(self, obj):
+        """
+        fixme 修改数据格式，仅展示内存占比、CPU占比
+        :param obj:
+        :return:
+        """
         heartbeat = self.get_latest_heartbeat(obj)
         if heartbeat:
             return heartbeat['cpu']
@@ -49,12 +56,15 @@ class AgentSerializer(serializers.ModelSerializer):
     def get_server(self, obj):
         def get_server_addr():
             if obj.server_id not in self.SERVER_MAP:
-                self.SERVER_MAP[obj.server_id] = f'{obj.server.ip}:{obj.server.port}'
+                if obj.server.ip and obj.server.port and obj.server.port != 0:
+                    self.SERVER_MAP[obj.server_id] = f'{obj.server.ip}:{obj.server.port}'
+                else:
+                    return '探针暂未检测到流量'
             return self.SERVER_MAP[obj.server_id]
 
         if obj.server_id:
             return get_server_addr()
-        return '暂未绑定服务器信息'
+        return '探针暂未检测到流量'
 
     def get_user(self, obj):
         if obj.user_id not in self.USER_MAP:
@@ -63,6 +73,10 @@ class AgentSerializer(serializers.ModelSerializer):
 
     def get_owner(self, obj):
         return self.get_user(obj)
+
+    def get_flow(self, obj):
+        heartbeat = IastHeartbeat.objects.values('req_count').filter(agent=obj).first()
+        return heartbeat['req_count'] if heartbeat else 0
 
 
 class ProjectEngineSerializer(serializers.ModelSerializer):

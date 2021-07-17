@@ -5,17 +5,17 @@
 # software: PyCharm
 # project: lingzhi-webapi
 import logging
-import time
 
+import time
 from django.contrib.auth.models import Group
 from django.db import transaction
 from django.http import JsonResponse
+from dongtai.models import User
+from dongtai.models.department import Department
+from dongtai.models.talent import Talent
 
 from base import R
 from iast.base.system import SystemEndPoint
-from dongtai_models.models import User
-from dongtai_models.models.department import Department
-from dongtai_models.models.talent import Talent
 from iast.serializers.talent import TalentSerializer
 
 logger = logging.getLogger('dongtai-webapi')

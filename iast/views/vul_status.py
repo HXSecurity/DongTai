@@ -5,13 +5,13 @@
 # project: dongtai-webapi
 
 # status
-from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.vulnerablity import IastVulnerabilityModel
 
 from base import R
 from iast.base.user import UserEndPoint
 
 
-class VulnStatus(UserEndPoint):
+class VulStatus(UserEndPoint):
     name = "api-v1-vuln-status"
     description = "修改漏洞状态"
 
