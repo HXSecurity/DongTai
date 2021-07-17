@@ -11,8 +11,8 @@ from django.db import transaction
 from django.http import JsonResponse
 
 from iast.base.user import TalentAdminEndPoint
-from dongtai_models.models.department import Department
-from dongtai_models.models.talent import Talent
+from dongtai.models.department import Department
+from dongtai.models.talent import Talent
 
 
 class DepartmentEndPoint(TalentAdminEndPoint):

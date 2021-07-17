@@ -5,23 +5,41 @@
 # software: PyCharm
 # project: lingzhi-webapi
 from django.db.models import Count
-from django.db.models import Q
-from rest_framework.request import Request
+from dongtai.models.agent import IastAgent
+from dongtai.models.project import IastProject
+from dongtai.models.vul_level import IastVulLevel
+from dongtai.models.vulnerablity import IastVulnerabilityModel
 
 from base import R
 from iast.base.agent import get_project_vul_count
-from iast.base.user import UserEndPoint
 from iast.base.project_version import get_project_version
-from dongtai_models.models.project import IastProject
-from dongtai_models.models.vul_level import IastVulLevel
-from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+from iast.base.user import UserEndPoint
 
 
-class VulnSummary(UserEndPoint):
+class VulSummary(UserEndPoint):
     name = "rest-api-vulnerability-summary"
     description = "应用漏洞概览"
 
-    def get(self, request: Request):
+    @staticmethod
+    def get_languages(agent_items):
+        default_language = {"JAVA": 0, ".NET": 0}
+        agent_ids = dict()
+        for agent_item in agent_items:
+            agent_id = agent_item['agent_id']
+            if agent_id not in agent_ids:
+                agent_ids[agent_id] = 0
+            agent_ids[agent_id] = agent_ids[agent_id] + 1
+
+        language_agents = dict()
+        language_items = IastAgent.objects.filter(id__in=agent_ids.keys()).values('id', 'language')
+        for language_item in language_items:
+            language_agents[language_item['id']] = language_item['language']
+
+        for agent_id, count in agent_ids.items():
+            default_language[language_agents[agent_id]] = count + default_language[language_agents[agent_id]]
+        return [{'language': _key, 'count': _value} for _key, _value in default_language.items()]
+
+    def get(self, request):
         """
         应用漏洞总览接口
         - 语言
@@ -29,37 +47,8 @@ class VulnSummary(UserEndPoint):
         - 漏洞类型
         - 应用程序
         :param request:
-        :return: {
-            "status": 201,
-            "msg": "success",
-            "data": {
-                "language": {
-                    "Java": 60,
-                    ".NET": 60
-                },
-                "level": {
-                    "critical": 10,
-                    "high": 20,
-                    "medium": 30,
-                    "low": 10,
-                    "note": 0
-                },
-                "type": {
-                    "sql injection": 40,
-                    "cmd injection": 40,
-                    "xpath injection": 40,
-                    "ldap injection": 40,
-                    "ognl injection": 40,
-                    "el injection": 40
-                },
-
-                "application": {
-                    "struts2-test": 20
-                }
-            }
-        }
+        :return:
         """
-        DEFAULT_LANGUAGE = {"JAVA": 0, ".NET": 0}
 
         end = {
             "status": 201,
@@ -73,22 +62,24 @@ class VulnSummary(UserEndPoint):
         auth_agents = self.get_auth_agents(auth_users)
         queryset = IastVulnerabilityModel.objects.all()
 
-        # icontains
-        url = request.query_params.get('url', None)
-        levelInfo = IastVulLevel.objects.all()
-        levelNameArr = {}
+        vul_level = IastVulLevel.objects.all()
+        vul_level_metadata = {}
         levelIdArr = {}
         DEFAULT_LEVEL = {}
-        if levelInfo:
-            for level_item in levelInfo:
+        if vul_level:
+            for level_item in vul_level:
                 DEFAULT_LEVEL[level_item.name_value] = 0
-                levelNameArr[level_item.name_value] = level_item.id
+                vul_level_metadata[level_item.name_value] = level_item.id
                 levelIdArr[level_item.id] = level_item.name_value
         # 动态创建
 
         language = request.query_params.get('language')
         if language:
             queryset = queryset.filter(language=language)
+
+        status = request.query_params.get('status')
+        if status:
+            queryset = queryset.filter(status=status)
 
         level = request.query_params.get('level')
         if level:
@@ -98,6 +89,7 @@ class VulnSummary(UserEndPoint):
         if vul_type:
             queryset = queryset.filter(type=vul_type)
 
+        url = request.query_params.get('url')
         if url and url != '':
             queryset = queryset.filter(url__icontains=url)
 
@@ -117,28 +109,23 @@ class VulnSummary(UserEndPoint):
                 project_version_id=current_project_version.get("version_id", 0)
             )
 
-        datas = queryset.filter(agent__in=auth_agents).values('language', 'level', 'type', 'agent')
+        queryset = queryset.filter(agent__in=auth_agents)
 
-        language_summary = datas.values('language').order_by('language').annotate(total=Count('language'))
-        level_summary = datas.values('level').order_by('level').annotate(total=Count('level'))
-        type_summary = datas.values('type').order_by('type').annotate(total=Count('type'))
+        level_summary = queryset.values('level').order_by('level').annotate(total=Count('level'))
+        type_summary = queryset.values('type').order_by('type').annotate(total=Count('type'))
 
-        _temp_data = {_['language']: _['total'] for _ in language_summary}
-
-        DEFAULT_LANGUAGE.update(_temp_data)
-        end['data']['language'] = [{'language': _key, 'count': _value} for _key, _value in DEFAULT_LANGUAGE.items()]
+        end['data']['language'] = self.get_languages(queryset.values('agent_id'))
 
         _temp_data = {levelIdArr[_['level']]: _['total'] for _ in level_summary}
 
         DEFAULT_LEVEL.update(_temp_data)
         end['data']['level'] = [{
-            'level': _key, 'count': _value, 'level_id': levelNameArr[_key]
+            'level': _key, 'count': _value, 'level_id': vul_level_metadata[_key]
         } for _key, _value in DEFAULT_LEVEL.items()]
 
-        # result = sorted(result, key=lambda x: x['count'], reverse=True)
         vul_type_list = [{"type": _['type'], "count": _['total']} for _ in type_summary]
         end['data']['type'] = sorted(vul_type_list, key=lambda x: x['count'], reverse=True)
-        end['data']['projects'] = get_project_vul_count(auth_users)
+        end['data']['projects'] = get_project_vul_count(auth_users, queryset)
 
         return R.success(data=end['data'], level_data=end['level_data'])
 

@@ -8,14 +8,14 @@ from rest_framework.request import Request
 
 from base import R
 from iast.base.user import UserEndPoint
-from dongtai_models.models.strategy import IastStrategyModel
-from dongtai_models.models.vul_level import IastVulLevel
+from dongtai.models.strategy import IastStrategyModel
+from dongtai.models.vul_level import IastVulLevel
 
 
 # 按高中低分类策略
 class StrategyType(UserEndPoint):
 
-    def get(self, request: Request):
+    def get(self, request):
         queryset = IastStrategyModel.objects.all()
         allType = IastVulLevel.objects.all().order_by("id")
         result = []

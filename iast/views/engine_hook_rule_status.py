@@ -7,5 +7,5 @@
 from base.endpoint import SessionAuthProxyView
 
 
-class EngineHookRuleDisableEndPoint(SessionAuthProxyView):
-    source = 'api/engine/hook/rule/disable'
+class EngineHookRuleEnableEndPoint(SessionAuthProxyView):
+    source = 'api/engine/hook/rule/status'

@@ -10,11 +10,11 @@ import re
 import time
 
 from base.endpoint import MixinAuthEndPoint
-from dongtai_models.models.agent import IastAgent
-from dongtai_models.models.asset import Asset
-from dongtai_models.models.project import IastProject
-from dongtai_models.models.server import IastServerModel
-from dongtai_models.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.agent import IastAgent
+from dongtai.models.asset import Asset
+from dongtai.models.project import IastProject
+from dongtai.models.server import IastServer
+from dongtai.models.vulnerablity import IastVulnerabilityModel
 from iast.permissions import ScopedPermission
 
 
@@ -68,7 +68,7 @@ def get_user_agent_pro(auth_users, bindId):
 
 # 根据server_id 获取所有 server_name
 def get_all_server(ids):
-    alls = IastServerModel.objects.filter(id__in=ids).values("id", "container")
+    alls = IastServer.objects.filter(id__in=ids).values("id", "container")
     result = {}
     if alls:
         for item in alls:
@@ -77,7 +77,7 @@ def get_all_server(ids):
 
 
 # 获取项目漏洞数量
-def get_project_vul_count(users):
+def get_project_vul_count(users, queryset):
     result = []
     projects = IastProject.objects.filter(user__in=users).values("name", "vul_count", "id")
 
@@ -85,7 +85,7 @@ def get_project_vul_count(users):
         for project in projects:
             try:
                 agents = IastAgent.objects.filter(bind_project_id=project['id'], user__in=users)
-                vul_count = IastVulnerabilityModel.objects.filter(agent__in=agents).count()
+                vul_count = queryset.filter(agent__in=agents).count()
             except Exception:
                 vul_count = 0
             result.append({
