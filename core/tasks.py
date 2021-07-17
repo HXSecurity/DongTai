@@ -100,7 +100,7 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack):
         vul.req_params = vul_meta.req_params
         vul.counts = vul.counts + 1
         vul.latest_time = int(time.time())
-        vul.status = '待处理'
+        vul.status = '待验证'
         vul.full_stack = json.dumps(vul_stack, ensure_ascii=False)
         vul.method_pool_id = vul_meta.id
         vul.save(update_fields=['req_header', 'req_params', 'counts', 'latest_time', 'status', 'full_stack',
@@ -127,7 +127,7 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack):
             agent=vul_meta.agent,
             context_path=vul_meta.context_path,
             counts=1,
-            status='待处理',
+            status='待验证',
             first_time=vul_meta.create_time,
             latest_time=int(time.time()),
             client_ip=vul_meta.clent_ip,
