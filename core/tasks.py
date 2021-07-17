@@ -471,7 +471,7 @@ def vul_recheck():
             continue
 
         vulnerability = IastVulnerabilityModel.objects.values(
-            'agent', 'uri', 'http_method', 'http_scheme', 'req_header', 'req_params', 'req_data', 'taint_value',
+            'id', 'agent', 'uri', 'http_method', 'http_scheme', 'req_header', 'req_params', 'req_data', 'taint_value',
             'param_name'
         ).filter(id=vul_id).first()
         if vulnerability is None:
@@ -540,8 +540,10 @@ def vul_recheck():
                     if _header_name == param_name:
                         header_raw[index] = f'{_header_name}:.%2F..%2F%60dongtai'
                         break
-
-                headers = base64.b64encode('\n'.join(header_raw))
+                try:
+                    headers = base64.b64encode('\n'.join(header_raw))
+                except Exception as e:
+                    logger.error(f'请求头解析失败，漏洞ID: {vulnerability.id}')
             elif position == 'COOKIE':
                 import base64
                 header_raw = base64.b64decode(headers).decode('utf-8').split('\n')
@@ -565,7 +567,10 @@ def vul_recheck():
                             break
                     cookie_raw = ';'.join(cookie_raw_items)
                     header_raw[cookie_index] = cookie_raw
-                headers = base64.b64encode('\n'.join(header_raw))
+                try:
+                    headers = base64.b64encode('\n'.join(header_raw))
+                except Exception as e:
+                    logger.error(f'请求头解析失败，漏洞ID: {vulnerability.id}')
 
             elif position == 'PATH':
                 # 检查path，替换
