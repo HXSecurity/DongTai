@@ -382,10 +382,10 @@ def update_agent_status():
         timestamp = int(time.time())
         queryset = IastAgent.objects.all()
         no_heart_beat_queryset = queryset.filter((Q(server=None) & Q(latest_time__lt=(timestamp - 600))), is_running=1)
-        no_heart_beat_queryset.update(is_running=0)
+        no_heart_beat_queryset.update(is_running=0, is_core_running=0)
 
         heart_beat_queryset = queryset.filter(server__update_time__lt=(timestamp - 600), is_running=1)
-        heart_beat_queryset.update(is_running=0)
+        heart_beat_queryset.update(is_running=0, is_core_running=0)
         logger.info(f'检测引擎状态更新成功')
     except Exception as e:
         logger.error(f'检测引擎状态更新出错，错误详情：{e}')
