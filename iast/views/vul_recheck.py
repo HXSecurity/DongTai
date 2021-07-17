@@ -31,7 +31,7 @@ class VulReCheck(UserEndPoint):
             history_replay_queryset = IastReplayQueue.objects.filter(relation_id=vul.id,
                                                                      replay_type=const.VUL_REPLAY).first()
             if history_replay_queryset:
-                if history_replay_queryset.state in [const.PENDING, const.WAITING, const.SOLVING]:
+                if history_replay_queryset.state in [const.PENDING, const.WAITING]:
                     waiting_count = waiting_count + 1
                     continue
                 else:
