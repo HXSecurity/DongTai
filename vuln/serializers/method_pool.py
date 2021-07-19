@@ -53,18 +53,18 @@ class MethodPoolListSerialize(serializers.ModelSerializer):
 
     def __init__(self, rule, level, **kwargs):
         super().__init__(**kwargs)
-        self.rule = rule
-        self.level = level
+        self._rule = rule
+        self._level = level
 
     class Meta:
         model = MethodPool
         fields = ['id', 'url', 'req_params', 'language', 'update_time', 'rule', 'level', 'agent_name']
 
     def get_rule(self, obj):
-        return self.rule
+        return self._rule
 
     def get_level(self, obj):
-        return self.level
+        return self._level
 
     def get_agent_name(self, obj):
         # fixme 内存溢出时，优先排查这里，临时使用类成员变量存储，后续考虑使用缓存来做
