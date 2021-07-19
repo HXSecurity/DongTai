@@ -120,7 +120,7 @@ class VulEngineV2(object):
         self.edge_code = 1
         self.method_pool_asc = self.method_pool[::-1]
         self.create_graph()
-        self.filter_invalid_data()
+        # self.filter_invalid_data()
         self.create_edge()
 
     def create_edge(self):
