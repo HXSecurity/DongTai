@@ -21,6 +21,11 @@ class MyTestCase(DongTaiTestCase):
         from core.tasks import search_vul_from_method_pool
         search_vul_from_method_pool(method_pool_id)
 
+    def test_update_agent_status(self):
+        from core.tasks import update_agent_status
+        update_agent_status()
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()
