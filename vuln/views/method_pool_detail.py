@@ -99,7 +99,7 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
                     method_pool=json.loads(method_pool.method_pool),
                     vul_method_signature=sink
                 )
-                status, stack, source, sink = engine.result()
+                status, stack, source, sink, taint_value = engine.result()
                 if status is False:
                     continue
 
