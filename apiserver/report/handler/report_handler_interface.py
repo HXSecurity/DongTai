@@ -73,8 +73,8 @@ class IReportHandler:
             logger.info(f'[{self.__class__.__name__}]报告解析完成')
             return self.get_result()
         else:
-            logger.info(f'[{self.__class__.__name__}]报告解析失败，Agent不存在或无权访问')
-            return self.get_result(msg='no permission')
+            logger.info(f'[{self.__class__.__name__}]报告解析失败，Agent不存在或无权访问，报告数据：{self.report}')
+            return 'no permission'
 
     def get_project_agents(self, agent):
         if agent.bind_project_id != 0:
