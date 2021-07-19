@@ -7,6 +7,7 @@
 import logging
 
 from django.core.paginator import Paginator
+from django.db.models import QuerySet
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from dongtai.models import User
@@ -116,7 +117,7 @@ class EndPoint(APIView):
         :param users:
         :return:
         """
-        if isinstance(users, list):
+        if isinstance(users, QuerySet):
             return IastAgent.objects.filter(user__in=users)
         else:
             return IastAgent.objects.filter(user=users)
