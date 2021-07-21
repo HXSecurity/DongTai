@@ -10,7 +10,7 @@ from django.utils.encoding import escape_uri_path
 from import_export import resources
 from rest_framework.generics import GenericAPIView
 
-from base import R
+from dongtai.endpoint import R
 
 
 class LogResurce(resources.ModelResource):

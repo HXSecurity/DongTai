@@ -5,18 +5,16 @@
 # software: PyCharm
 # project: lingzhi-webapi
 from django.db.models import Count
-from rest_framework.request import Request
-
-from base import R
-from iast.base.agent import get_agents_with_project, get_sca_count
-from iast.base.sca import ScaEndPoint
+from dongtai.endpoint import R, UserEndPoint
 from dongtai.models.asset import Asset
 from dongtai.models.vul_level import IastVulLevel
+
+from iast.base.agent import get_agents_with_project, get_sca_count
 from iast.base.project_version import get_project_version
 from iast.views.vul_summary import VulSummary
 
 
-class ScaSummary(ScaEndPoint):
+class ScaSummary(UserEndPoint):
     name = "rest-api-sca-summary"
     description = "三方组件概览"
 

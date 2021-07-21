@@ -9,8 +9,8 @@ import logging
 from rest_framework.authtoken.models import Token
 from rest_framework.request import Request
 
-from base import R
-from iast.base.user import UserEndPoint
+from dongtai.endpoint import R
+from dongtai.endpoint import UserEndPoint
 from webapi import settings
 
 logger = logging.getLogger("django")

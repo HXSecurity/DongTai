@@ -8,14 +8,14 @@ import logging
 
 from django.contrib.auth import logout
 from django.http import JsonResponse
+from dongtai.endpoint import AnonymousAuthEndPoint
 
-from iast.base.user import AnonymousEndPoint
 from webapi import settings
 
 logger = logging.getLogger("django")
 
 
-class UserLogout(AnonymousEndPoint):
+class UserLogout(AnonymousAuthEndPoint):
     """
     用户登录
     """

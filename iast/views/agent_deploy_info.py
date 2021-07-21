@@ -4,14 +4,11 @@
 # datetime:2020/6/3 11:36
 # software: PyCharm
 # project: webapi
-
+from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.deploy import IastDeployDesc
 
-from base import R
-from iast.base.agent import AgentEndPoint
 
-
-class AgentDeployInfo(AgentEndPoint):
+class AgentDeployInfo(UserEndPoint):
     """
     IAST部署,前置选择条件
     """

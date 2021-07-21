@@ -4,14 +4,11 @@
 # datetime:2020/6/3 11:36
 # software: PyCharm
 # project: webapi
-
+from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.deploy import IastDeployDesc
 
-from base import R
-from iast.base.agent import AgentEndPoint
 
-
-class AgentDeployDesc(AgentEndPoint):
+class AgentDeployDesc(UserEndPoint):
     """
     IAST部署说明
     """
@@ -31,6 +28,6 @@ class AgentDeployDesc(AgentEndPoint):
 
         queryset = queryset.last()
         if queryset:
-            return R.success(desc=queryset.desc)
+            return R.success(msg=queryset.desc)
         else:
-            return R.failure(desc='暂无数据')
+            return R.failure(msg='暂无数据')
