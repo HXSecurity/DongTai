@@ -12,6 +12,9 @@ dongtai.egg-info/dependency_links.txt
 dongtai.egg-info/requires.txt
 dongtai.egg-info/top_level.txt
 dongtai/endpoint/__init__.py
+dongtai/engine/__init__.py
+dongtai/engine/vul_engine.py
+dongtai/engine/vul_engine_v2.py
 dongtai/models/__init__.py
 dongtai/models/agent.py
 dongtai/models/agent_method_pool.py
@@ -49,6 +52,8 @@ dongtai/models/user.py
 dongtai/models/vul_level.py
 dongtai/models/vul_rule.py
 dongtai/models/vulnerablity.py
+dongtai/permissions/__init__.py
 dongtai/utils/__init__.py
 dongtai/utils/const.py
+dongtai/utils/http.py
 dongtai/utils/validate.py
