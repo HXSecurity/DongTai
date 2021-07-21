@@ -8,8 +8,8 @@ import logging
 
 from dongtai.models import User
 
-from base import R
-from iast.base.user import TalentAdminEndPoint
+from dongtai.endpoint import R
+from dongtai.endpoint import TalentAdminEndPoint
 
 logger = logging.getLogger("dongtai-webapi")
 

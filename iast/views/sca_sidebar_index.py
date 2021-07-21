@@ -5,14 +5,12 @@
 # software: PyCharm
 # project: lingzhi-webapi
 from django.db.models import Q
-from rest_framework.request import Request
 
-from base import R
-from iast.base.sca import ScaEndPoint
+from dongtai.endpoint import R, UserEndPoint
 from dongtai.models.asset import Asset
 
 
-class ScaSidebarList(ScaEndPoint):
+class ScaSidebarList(UserEndPoint):
     def get(self, request):
         """
         获取三方组件列表
