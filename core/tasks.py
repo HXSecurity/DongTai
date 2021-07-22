@@ -11,8 +11,8 @@ import time
 from celery import shared_task
 from celery.apps.worker import logger
 from django.db.models import Sum, Q
+from dongtai.engine.vul_engine import VulEngine
 
-from core.engine import VulEngine
 from core.replay import Replay
 from dongtai.models import User
 from dongtai.models.agent import IastAgent
@@ -145,45 +145,49 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
     :return: None
     """
     logger.info(f'current sink rule is {strategy.get("type")}')
-    vul_strategy = IastStrategyModel.objects.values("level", "vul_name").filter(vul_type=strategy['type']).first()
-    if vul_strategy:
-        engine.search(
-            method_pool=method_pool,
-            vul_method_signature=strategy.get('value')
-        )
-        status, stack, source_sign, sink_sign, taint_value = engine.result()
-        if status:
-            vul_found.send(
-                sender="tasks.search_and_save_vul",
-                vul_meta=method_pool_model,
-                vul_level=vul_strategy['level'],
-                vul_name=vul_strategy['vul_name'],
-                vul_stack=stack,
-                top_stack=source_sign,
-                bottom_stack=sink_sign,
-                taint_value=taint_value
-            )
-        else:
-            # 更新漏洞状态为
-            try:
-                replay_id = method_pool_model.replay_id
-                replay_type = method_pool_model.replay_type
-                relation_id = method_pool_model.relation_id
 
-                if replay_type == const.VUL_REPLAY:
-                    timestamp = int(time.time())
-                    IastVulnerabilityModel.objects.filter(id=relation_id).update(
-                        status='已忽略',
-                        latest_time=timestamp
-                    )
-                    IastReplayQueue.objects.filter(id=replay_id).update(
-                        state=const.SOLVED,
-                        result=const.RECHECK_FALSE,
-                        verify_time=timestamp,
-                        update_time=timestamp
-                    )
-            except Exception as e:
-                pass
+    queryset = IastStrategyModel.objects.filter(vul_type=strategy['type'])
+    if queryset.values('id').exists() is False:
+        return
+
+    vul_strategy = queryset.values("level", "vul_name").first()
+    engine.search(method_pool=method_pool, vul_method_signature=strategy.get('value'))
+    status, stack, source_sign, sink_sign, taint_value = engine.result()
+
+    if status:
+        vul_found.send(
+            sender="tasks.search_and_save_vul",
+            vul_meta=method_pool_model,
+            vul_level=vul_strategy['level'],
+            vul_name=vul_strategy['vul_name'],
+            vul_stack=stack,
+            top_stack=source_sign,
+            bottom_stack=sink_sign,
+            taint_value=taint_value
+        )
+    else:
+        # 更新漏洞状态为已忽略/误报
+        try:
+            replay_type = method_pool_model.replay_type
+            if replay_type != const.VUL_REPLAY:
+                return
+
+            replay_id = method_pool_model.replay_id
+            relation_id = method_pool_model.relation_id
+            timestamp = int(time.time())
+
+            IastVulnerabilityModel.objects.filter(id=relation_id).update(
+                status='已忽略',
+                latest_time=timestamp
+            )
+            IastReplayQueue.objects.filter(id=replay_id).update(
+                state=const.SOLVED,
+                result=const.RECHECK_FALSE,
+                verify_time=timestamp,
+                update_time=timestamp
+            )
+        except Exception as e:
+            logger.info(f'漏洞数据处理出错，原因：{e}')
 
 
 def search_and_save_sink(engine, method_pool_model, strategy):
