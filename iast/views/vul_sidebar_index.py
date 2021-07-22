@@ -7,8 +7,8 @@
 from django.db.models import Q
 from rest_framework.request import Request
 
-from base import R
-from iast.base.user import UserEndPoint
+from dongtai.endpoint import R
+from dongtai.endpoint import UserEndPoint
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 
 

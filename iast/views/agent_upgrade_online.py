@@ -7,10 +7,8 @@
 from urllib.parse import urljoin
 
 import requests
+from dongtai.endpoint import TalentAdminEndPoint, R
 from dongtai.models import User
-
-from base import R
-from iast.base.user import TalentAdminEndPoint
 
 
 # 在线更新如何设计？

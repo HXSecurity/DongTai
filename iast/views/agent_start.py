@@ -5,14 +5,12 @@
 # software: PyCharm
 # project: lingzhi-webapi
 import time
+from dongtai.endpoint import UserEndPoint, R
 
-from base import R
-from iast.base.agent import AgentEndPoint
-# from iast.models.agent import IastAgent
 from dongtai.models.agent import IastAgent
 
 
-class AgentStart(AgentEndPoint):
+class AgentStart(UserEndPoint):
     name = "api-v1-agent-stop"
     description = "暂停agent"
 

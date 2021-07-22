@@ -6,11 +6,9 @@
 # project: lingzhi-webapi
 import logging
 
-from rest_framework.request import Request
+from dongtai.endpoint import UserEndPoint, R
 
-from base import R
 from dongtai.utils import const
-from iast.base.agent import AgentEndPoint
 from iast.serializers.agent import AgentSerializer
 
 logger = logging.getLogger('dongtai-webapi')
@@ -19,7 +17,7 @@ agent唯一标识、Agent名称、服务器地址、服务器负载、运行状�
 """
 
 
-class AgentList(AgentEndPoint):
+class AgentList(UserEndPoint):
     name = "api-v1-agents"
     description = "agent列表"
 

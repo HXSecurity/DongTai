@@ -8,9 +8,9 @@ from dongtai.utils import const
 from dongtai.models.hook_type import HookType
 from dongtai.models.strategy import IastStrategyModel
 
-from base import R
+from dongtai.endpoint import R
 from dongtai.utils import const
-from iast.base.user import UserEndPoint
+from dongtai.endpoint import UserEndPoint
 from iast.serializers.strategy import StrategySerializer
 
 

@@ -13,8 +13,8 @@ from dongtai.models.project_version import IastProjectVersion
 from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 
-from base import R
-from iast.base.user import UserEndPoint
+from dongtai.endpoint import R
+from dongtai.endpoint import UserEndPoint
 from iast.serializers.vul import VulSerializer
 
 """

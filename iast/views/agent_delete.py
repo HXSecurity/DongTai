@@ -7,6 +7,7 @@
 
 import logging
 
+from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.asset import Asset
 from dongtai.models.errorlog import IastErrorlog
 from dongtai.models.heartbeat import IastHeartbeat
@@ -15,8 +16,6 @@ from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai.models.replay_queue import IastReplayQueue
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 
-from base import R
-from iast.base.user import UserEndPoint
 from dongtai.models.agent import IastAgent
 from dongtai.models.agent_method_pool import MethodPool
 

@@ -9,13 +9,11 @@ import json
 import re
 import time
 
-from base.endpoint import MixinAuthEndPoint
 from dongtai.models.agent import IastAgent
 from dongtai.models.asset import Asset
 from dongtai.models.project import IastProject
 from dongtai.models.server import IastServer
 from dongtai.models.vulnerablity import IastVulnerabilityModel
-from iast.permissions import ScopedPermission
 
 
 def get_agents_with_project(project_name, users):
@@ -197,18 +195,3 @@ def get_vul_count_by_agent(agent_ids, vid, user):
         'levelCount': levelCount,
         'vulDetail': vulDetail
     }
-
-
-class AgentPermission(ScopedPermission):
-    def has_permission(self, request, view):
-        user = request.user
-        if user is not None and user.is_active:
-            return True
-        return False
-
-    def has_object_permission(self, request, view, obj):
-        return super().has_object_permission(request, view, obj)
-
-
-class AgentEndPoint(MixinAuthEndPoint):
-    permission_classes = (AgentPermission,)
