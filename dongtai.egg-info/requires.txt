@@ -1,0 +1,4 @@
+Django>=3.0
+mysqlclient==1.4.6
+swagger-spec-validator==2.7.3
+drf-yasg==1.20.0
