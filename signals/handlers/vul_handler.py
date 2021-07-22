@@ -280,12 +280,12 @@ def create_vul_recheck_task(vul_id, agent, timestamp):
     replay_model = IastReplayQueue.objects.filter(replay_type=const.VUL_REPLAY, relation_id=vul_id).first()
     if replay_model:
         if replay_model.state in [const.PENDING, const.WAITING, const.SOLVING]:
-            replay_model.count()
-        else:
-            replay_model.state = const.PENDING
-            replay_model.update_time = timestamp
-            replay_model.count = replay_model.count + 1
-            replay_model.save(update_fields=['state', 'update_time', 'count'])
+            return
+
+        replay_model.state = const.PENDING
+        replay_model.update_time = timestamp
+        replay_model.count = replay_model.count + 1
+        replay_model.save(update_fields=['state', 'update_time', 'count'])
     else:
         IastReplayQueue.objects.create(
             agent=agent,
