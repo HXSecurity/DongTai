@@ -25,7 +25,6 @@ spec:
             - name: configfile
               mountPath: /opt/iast/apiserver/conf/config.ini
               subPath: config.ini
-
           resources:
             limits:
               cpu: "500m"
@@ -33,6 +32,9 @@ spec:
             requests:
               cpu: "500m"
               memory: 1000Mi
+          env:
+            - name: "active.profile"
+              value: "TEST"
       volumes:
         - name: configfile
           configMap:

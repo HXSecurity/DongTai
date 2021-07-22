@@ -9,8 +9,7 @@ import time
 
 from dongtai.models.agent import IastAgent
 
-from AgentServer.base import R
-from apiserver.base.openapi import OpenApiEndPoint
+from dongtai.endpoint import OpenApiEndPoint, R
 
 logger = logging.getLogger("django")
 

@@ -5,8 +5,7 @@
 # software: PyCharm
 # project: lingzhi-agent-server
 
-from AgentServer.base import R
-from apiserver.base.openapi import OpenApiEndPoint
+from dongtai.endpoint import OpenApiEndPoint, R
 from apiserver.decrypter import parse_data
 from apiserver.report.report_handler_factory import ReportHandler
 
@@ -16,6 +15,11 @@ class ReportUploadEndPoint(OpenApiEndPoint):
     description = "agent上传报告"
 
     def post(self, request):
+        """
+        探针上传报告
+        :param request:
+        :return:
+        """
         try:
             report = parse_data(request.read())
             data = ReportHandler.handler(report, request.user)

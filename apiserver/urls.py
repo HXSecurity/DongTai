@@ -19,6 +19,7 @@ from apiserver.views.hook_profiles import HookProfilesEndPoint
 from apiserver.views.properties import PropertiesEndPoint
 from apiserver.views.report_upload import ReportUploadEndPoint
 
+
 urlpatterns = [
     path('agent/download', AgentDownload.as_view()),
     path('deploy/auto', AutoDeployEndPoint.as_view()),
