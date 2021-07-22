@@ -14,4 +14,4 @@ doc/example.json
 conf/config.ini
 logs/*.log
 dist
-dongtai_models.egg-info
+dongtai.egg-info
