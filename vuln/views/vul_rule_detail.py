@@ -8,7 +8,7 @@ from django.db.models import Q
 from dongtai.models.vul_rule import IastVulRule
 
 from dongtai.utils import const
-from lingzhi_engine.base import R, AnonymousAndUserEndPoint
+from dongtai.endpoint import R, AnonymousAndUserEndPoint
 from vuln.serializers.vul_rule import VulRuleDetailSerializer
 
 

@@ -8,7 +8,7 @@ import time
 
 from dongtai.models.hook_type import HookType
 from dongtai.utils import const
-from lingzhi_engine.base import R, UserEndPoint
+from dongtai.endpoint import R, UserEndPoint
 
 
 class HookRuleTypeAddEndPoint(UserEndPoint):

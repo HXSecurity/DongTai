@@ -10,7 +10,7 @@ import logging
 from dongtai.models.agent_method_pool import MethodPool
 
 from core.engine import VulEngine
-from lingzhi_engine.base import R, AnonymousAndUserEndPoint
+from dongtai.endpoint import R, AnonymousAndUserEndPoint
 from vuln.serializers.method_pool import MethodPoolListSerialize
 
 logger = logging.getLogger("django")
@@ -46,7 +46,7 @@ class SearchEndPoint(AnonymousAndUserEndPoint):
                 propagator_set=propagator_set,
                 sink_set=sink_set,
                 latest_id=latest_id,
-                match_times=page_size,
+                page_size=page_size,
                 size=page_size * 5)
             if method_pool_ids is None:
                 return R.success(msg='未查询到数据', data=list(), latest=0)
@@ -83,7 +83,7 @@ class SearchEndPoint(AnonymousAndUserEndPoint):
 
         return latest_id, page_size, rule_id, rule_msg, rule_level, source_set, sink_set, propagator_set
 
-    def get_match_methods(self, agents, source_set, propagator_set, sink_set, latest_id=0, match_times=2, index=0,
+    def get_match_methods(self, agents, source_set, propagator_set, sink_set, latest_id=0, page_size=20, index=0,
                           size=20):
         queryset = MethodPool.objects.order_by('id')
         if latest_id == 0:
@@ -99,15 +99,19 @@ class SearchEndPoint(AnonymousAndUserEndPoint):
             logger.debug(f'正在搜索，当前第{index + 1}页')
             page = queryset.values('id', 'method_pool')[index * size:(index + 1) * size - 1]
             if page:
+                if len(matches) == page_size:
+                    break
                 for method_pool in page:
+                    if len(matches) == page_size:
+                        break
                     method_caller_set = self.convert_method_pool_to_set(method_pool['method_pool'])
                     if self.check_match(method_caller_set, source_set, propagator_set, sink_set):
-                        match_times = match_times - 1
+                        # match_times = match_times - 1
                         matches.append(method_pool['id'])
-                    if match_times == 0:
-                        break
-                if match_times == 0:
-                    break
+                #     if match_times == 0:
+                #         break
+                # if match_times == 0:
+                #     break
             else:
                 break
             index = index + 1

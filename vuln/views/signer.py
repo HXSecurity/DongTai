@@ -6,7 +6,7 @@
 # project: lingzhi-engine
 from django.core.signing import TimestampSigner, SignatureExpired, BadSignature
 
-from lingzhi_engine.base import EndPoint, R
+from dongtai.endpoint import EndPoint, R
 
 """
 Django内置签名的计算方法：

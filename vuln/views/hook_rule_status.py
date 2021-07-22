@@ -6,9 +6,10 @@
 # project: lingzhi-engine
 import logging
 
+from dongtai.endpoint import UserEndPoint, R
+
 from dongtai.models.hook_strategy import HookStrategy
 from dongtai.utils import const
-from lingzhi_engine.base import R, UserEndPoint
 
 logger = logging.getLogger('dongtai-engine')
 
