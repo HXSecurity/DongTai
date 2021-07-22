@@ -8,8 +8,8 @@ from dongtai.models.hook_type import HookType
 from dongtai.models.hook_strategy import HookStrategy
 from dongtai.utils import const
 
-from base import R
-from iast.base.user import TalentAdminEndPoint
+from dongtai.endpoint import R
+from dongtai.endpoint import TalentAdminEndPoint
 
 
 class StrategyEnableEndpoint(TalentAdminEndPoint):

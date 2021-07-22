@@ -6,21 +6,17 @@
 # project: webapi
 import logging
 
-from dongtai.models.project_version import IastProjectVersion
-from rest_framework.request import Request
-
-from base import R
-from iast.base.sca import ScaEndPoint
+from dongtai.endpoint import R, UserEndPoint
 from dongtai.models.asset import Asset
-from dongtai.models.project import IastProject
 from dongtai.models.sca_artifact_db import ScaArtifactDb
 from dongtai.models.sca_maven_artifact import ScaMavenArtifact
+
 from iast.serializers.sca import ScaSerializer
 
 logger = logging.getLogger('dongtai-webapi')
 
 
-class ScaDetailView(ScaEndPoint):
+class ScaDetailView(UserEndPoint):
     """
     当前用户详情
     """
@@ -45,18 +41,20 @@ class ScaDetailView(ScaEndPoint):
                 svds = ScaArtifactDb.objects.filter(id=sma['aid']).values(
                     'cve_id', 'cwe_id', 'title', 'overview', 'teardown', 'reference', 'level'
                 )
-                if len(svds) > 0:
-                    svd = svds[0]
-                    data['vuls'].append({
-                        'safe_version': sma['safe_version'] if sma['safe_version'] else '当前版本已停止维护或暂无安全版本',
-                        'vulcve': svd['cve_id'],
-                        'vulcwe': svd['cwe_id'],
-                        'vulname': svd['title'],
-                        'overview': svd['overview'],
-                        'teardown': svd['teardown'],
-                        'reference': svd['reference'],
-                        'level': svd['level'],
-                    })
+                if len(svds) == 0:
+                    continue
+
+                svd = svds[0]
+                data['vuls'].append({
+                    'safe_version': sma['safe_version'] if sma['safe_version'] else '当前版本已停止维护或暂无安全版本',
+                    'vulcve': svd['cve_id'],
+                    'vulcwe': svd['cwe_id'],
+                    'vulname': svd['title'],
+                    'overview': svd['overview'],
+                    'teardown': svd['teardown'],
+                    'reference': svd['reference'],
+                    'level': svd['level'],
+                })
             return R.success(data=data)
         except Exception as e:
             logger.error(e)

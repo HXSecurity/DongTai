@@ -37,10 +37,6 @@ from iast.views.engine_hook_rule_types import EngineHookRuleTypesEndPoint
 from iast.views.engine_hook_rules import EngineHookRulesEndPoint
 from iast.views.engine_method_pool_detail import MethodPoolDetailProxy
 from iast.views.engine_method_pool_search import MethodPoolSearchProxy
-from iast.views.engine_vul_rule import EngineVulRuleEndPoint
-from iast.views.engine_vul_rule_detail import EngineVulRuleDetailEndPoint
-from iast.views.engine_vul_rule_save import EngineVulRuleSaveEndPoint
-from iast.views.engine_vul_rule_type import EngineVulRuleTypeEndPoint
 from iast.views.log_clear import LogClear
 from iast.views.log_delete import LogDelete
 from iast.views.log_export import LogExport
@@ -80,13 +76,13 @@ from iast.views.user_token import UserToken
 from iast.views.vul_count_for_plugin import VulCountForPluginEndPoint
 from iast.views.vul_delete import VulDelete
 from iast.views.vul_details import VulDetail
-from iast.views.vul_request_replay import RequestReplayEndPoint
-from iast.views.vuls import VulsEndPoint
 from iast.views.vul_list_for_plugin import VulListEndPoint
 from iast.views.vul_recheck import VulReCheck
+from iast.views.vul_request_replay import RequestReplayEndPoint
 from iast.views.vul_sidebar_index import VulSideBarList
 from iast.views.vul_status import VulStatus
 from iast.views.vul_summary import VulSummary
+from iast.views.vuls import VulsEndPoint
 
 urlpatterns = [
     # 租户管理 - 系统管理员
@@ -192,11 +188,6 @@ urlpatterns = [
     # path('method_pools', MethodPoolProxy.as_view()),
     path('engine/method_pool/search', MethodPoolSearchProxy.as_view()),
     path('engine/method_pool/detail', MethodPoolDetailProxy.as_view()),
-    path('engine/vul_rule', EngineVulRuleEndPoint.as_view()),
-    # /api/engine/rule/type
-    path('engine/vul_rule/type', EngineVulRuleTypeEndPoint.as_view()),
-    path('engine/vul_rule/detail', EngineVulRuleDetailEndPoint.as_view()),
-    path('engine/vul_rule/save', EngineVulRuleSaveEndPoint.as_view()),
     path('engine/request/replay', RequestReplayEndPoint.as_view()),
     # hook规则相关
     path('engine/hook/rule/summary', EngineHookRuleSummaryEndPoint.as_view()),

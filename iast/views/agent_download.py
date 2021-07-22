@@ -3,15 +3,15 @@
 # author: owefsad@huoxian.cn
 # datetime: 2021/3/19 下午2:44
 # project: lingzhi-webapi
+import logging
 import os
 
 import requests
-from django.http import FileResponse, JsonResponse, StreamingHttpResponse
+from django.http import FileResponse
+from dongtai.endpoint import UserEndPoint, R
 from rest_framework.authtoken.models import Token
 
-from iast.base.user import UserEndPoint
 from webapi.settings import AGENT_SERVER_PROXY
-import logging
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -51,7 +51,7 @@ class AgentDownload(UserEndPoint):
             return response
         except Exception as e:
             logger.error(e)
-            return JsonResponse({
+            return R.failure(data={
                 "status": '203',
                 "msg": "agent file not exit."
             })
