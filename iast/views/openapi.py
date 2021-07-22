@@ -4,8 +4,8 @@
 # datetime:2021/2/4 下午3:50
 # software: PyCharm
 # project: lingzhi-webapi
-from base import R
-from iast.base.user import UserEndPoint
+from dongtai.endpoint import R
+from dongtai.endpoint import UserEndPoint
 from webapi.settings import config
 
 

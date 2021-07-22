@@ -8,15 +8,16 @@ from dongtai.models.hook_type import HookType
 from dongtai.models.hook_strategy import HookStrategy
 from dongtai.utils import const
 
-from base import R
-from iast.base.user import TalentAdminEndPoint
+from dongtai.endpoint import R
+from dongtai.endpoint import TalentAdminEndPoint
 
 
 class StrategyDisableEndpoint(TalentAdminEndPoint):
     def get(self, request, id):
         strategy_model = HookType.objects.filter(id=id).first()
         if strategy_model:
-            counts = strategy_model.strategies.filter(enable=const.HOOK_TYPE_ENABLE).update(enable=const.HOOK_TYPE_DISABLE)
+            counts = strategy_model.strategies.filter(enable=const.HOOK_TYPE_ENABLE).update(
+                enable=const.HOOK_TYPE_DISABLE)
             strategy_model.enable = const.HOOK_TYPE_DISABLE
             strategy_model.save(update_fields=['enable'])
 

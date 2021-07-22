@@ -6,15 +6,13 @@
 # project: webapi
 
 import time
+from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.deploy import IastDeployDesc
 from dongtai.models.system import IastSystem
 from rest_framework.authtoken.models import Token
 
-from base import R
-from iast.base.agent import AgentEndPoint
 
-
-class AgentDeploySave(AgentEndPoint):
+class AgentDeploySave(UserEndPoint):
     """
     IAST部署信息保存
     """

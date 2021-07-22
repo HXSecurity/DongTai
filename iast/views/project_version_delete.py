@@ -5,8 +5,8 @@
 # software: PyCharm
 # project: lingzhi-webapi
 import logging, time
-from base import R
-from iast.base.user import UserEndPoint
+from dongtai.endpoint import R
+from dongtai.endpoint import UserEndPoint
 from dongtai.models.project_version import IastProjectVersion
 
 logger = logging.getLogger("django")

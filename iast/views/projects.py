@@ -7,8 +7,8 @@
 
 import logging
 
-from base import R
-from iast.base.user import UserEndPoint
+from dongtai.endpoint import R
+from dongtai.endpoint import UserEndPoint
 from dongtai.models.project import IastProject
 from iast.serializers.project import ProjectSerializer
 

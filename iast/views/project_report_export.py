@@ -9,9 +9,9 @@ from docx.enum.style import WD_STYLE_TYPE
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt
 
-from base import R
+from dongtai.endpoint import R
 from iast.base.agent import get_vul_count_by_agent
-from iast.base.user import UserEndPoint
+from dongtai.endpoint import UserEndPoint
 from dongtai.models.agent import IastAgent
 from dongtai.models.project import IastProject
 from dongtai.models.vul_level import IastVulLevel
