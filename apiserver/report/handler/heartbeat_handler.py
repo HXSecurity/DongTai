@@ -119,7 +119,4 @@ class HeartBeatHandler(IReportHandler):
         return list()
 
     def save(self):
-        self.agent.is_running = 1
-        self.agent.latest_time = int(time.time())
-        self.agent.save(update_fields=['is_running', 'is_core_running', 'latest_time'])
         self.save_heartbeat()

@@ -100,7 +100,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         agent = IastAgent.objects.filter(id=agent_id).first()
         if agent is None:
             return
-
+        # todo 需要根据不同的语言做兼容
         if server_env:
             env = base64.b64decode(server_env).decode('utf-8')
             env = env.replace('{', '').replace('}', '')
