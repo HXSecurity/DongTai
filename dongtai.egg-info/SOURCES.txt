@@ -11,6 +11,7 @@ dongtai.egg-info/SOURCES.txt
 dongtai.egg-info/dependency_links.txt
 dongtai.egg-info/requires.txt
 dongtai.egg-info/top_level.txt
+dongtai/doc/__init__.py
 dongtai/endpoint/__init__.py
 dongtai/engine/__init__.py
 dongtai/engine/vul_engine.py
