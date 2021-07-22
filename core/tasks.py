@@ -57,6 +57,7 @@ def load_sink_strategy(user=None):
     :param user:
     :return:
     """
+    # todo 增加语言筛选
     strategies = list()
     strategy_models = HookStrategy.objects.filter(type__in=HookType.objects.filter(type=4),
                                                   created_by__in=[user.id, 1] if user else [1])
@@ -168,6 +169,9 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
     else:
         # 更新漏洞状态为已忽略/误报
         try:
+            if isinstance(method_pool_model, MethodPool):
+                return
+
             replay_type = method_pool_model.replay_type
             if replay_type != const.VUL_REPLAY:
                 return
