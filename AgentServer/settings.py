@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'dongtai',
-    'apiserver'
+    'apiserver',
+    'drf_yasg',
 ]
 
 REST_FRAMEWORK = {
@@ -55,7 +56,7 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
-    ]
+    ],
 }
 
 MIDDLEWARE = [
@@ -176,6 +177,11 @@ LOGGING = {
             'level': 'DEBUG',
         },
         'dongtai.openapi': {
+            'handlers': ['console', 'dongtai.openapi'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'dongtai-core': {
             'handlers': ['console', 'dongtai.openapi'],
             'propagate': True,
             'level': 'INFO',

@@ -12,8 +12,7 @@ from django.http import FileResponse
 from rest_framework import status
 from rest_framework.request import Request
 
-from AgentServer.base import R
-from apiserver.base.openapi import OpenApiEndPoint
+from dongtai.endpoint import OpenApiEndPoint, R
 from apiserver.utils import OssDownloader
 
 logger = logging.getLogger("dongtai.openapi")

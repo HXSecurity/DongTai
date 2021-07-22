@@ -5,11 +5,9 @@
 # software: PyCharm
 # project: webapi
 
+from dongtai.endpoint import OpenApiEndPoint
 from django.http import StreamingHttpResponse
 from rest_framework.authtoken.models import Token
-from rest_framework.request import Request
-
-from apiserver.base.openapi import OpenApiEndPoint
 
 TEMPLAGE_DATA = """#/bin/bash
 PID=''
@@ -88,9 +86,9 @@ class AutoDeployEndPoint(OpenApiEndPoint):
     name = "download_iast_agent"
     description = "白帽子-下载IAST 自动部署脚本"
 
-    def get(self, request: Request):
+    def get(self, request):
         """
-        IAST下载 agent接口s
+        IAST下载 agent接口
         :param request:
         :return:
         """
