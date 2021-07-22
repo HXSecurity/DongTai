@@ -4,7 +4,7 @@
 # datetime:2021/2/19 下午7:54
 # software: PyCharm
 # project: lingzhi-engine
-from lingzhi_engine.base import R, AnonymousAndUserEndPoint
+from dongtai.endpoint import R, AnonymousAndUserEndPoint
 
 
 class VulRuleTypeEndPoint(AnonymousAndUserEndPoint):

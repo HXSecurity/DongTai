@@ -27,13 +27,14 @@ class VulEngine(object):
         self.vul_stack = None
         self.pool_value = None
         self.vul_source_signature = None
-        self.graphy_data = {
+        self.graph_data = {
             'nodes': [],
             'edges': []
         }
         self.method_counts = 0
         self.taint_link_size = 0
         self.edge_code = 1
+        self.taint_value = ''
 
     @property
     def method_pool(self):
@@ -163,7 +164,7 @@ class VulEngine(object):
             if current_hash & set(data['sourceHash']):
                 not_found = False
                 right_node = str(data['invokeId'])
-                self.graphy_data['edges'].append({
+                self.graph_data['edges'].append({
                     'id': str(self.edge_code),
                     'source': left_node,
                     'target': right_node,
@@ -193,7 +194,7 @@ class VulEngine(object):
                     {'label': 'caller', 'value': f"{data['callerClass']}.{data['callerMethod']}()"}
                 ]
             }
-            self.graphy_data['nodes'].append(node)
+            self.graph_data['nodes'].append(node)
 
     def result(self):
         if self.vul_source_signature:
@@ -201,4 +202,4 @@ class VulEngine(object):
         return False, None, None, None
 
     def get_taint_links(self):
-        return self.graphy_data, self.taint_link_size, self.method_counts
+        return self.graph_data, self.taint_link_size, self.method_counts

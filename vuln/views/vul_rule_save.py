@@ -10,7 +10,7 @@ import time
 
 from dongtai.models.vul_rule import IastVulRule
 
-from lingzhi_engine.base import R, AnonymousAndUserEndPoint
+from dongtai.endpoint import R, AnonymousAndUserEndPoint
 
 logger = logging.getLogger('dongtai-engine')
 

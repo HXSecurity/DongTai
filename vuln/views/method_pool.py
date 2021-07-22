@@ -7,7 +7,7 @@
 from dongtai.models.agent_method_pool import MethodPool
 from dongtai.models.hook_strategy import HookStrategy
 
-from lingzhi_engine.base import R, UserEndPoint
+from dongtai.endpoint import R, UserEndPoint
 from vuln.serializers.method_pool import MethodPoolSerialize
 
 

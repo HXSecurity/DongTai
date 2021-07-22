@@ -5,10 +5,9 @@
 # software: PyCharm
 # project: lingzhi-engine
 import time
+from dongtai.endpoint import UserEndPoint, R
 
 from dongtai.models.hook_strategy import HookStrategy
-
-from lingzhi_engine.base import R, UserEndPoint
 
 
 class HookRuleModifyEndPoint(UserEndPoint):

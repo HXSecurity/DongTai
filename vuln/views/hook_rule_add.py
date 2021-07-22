@@ -5,12 +5,12 @@
 # software: PyCharm
 # project: lingzhi-engine
 import time
+from dongtai.endpoint import UserEndPoint, R
 
 from dongtai.models.hook_strategy import HookStrategy
 from dongtai.models.hook_type import HookType
 
 from dongtai.utils import const
-from lingzhi_engine.base import R, UserEndPoint
 
 
 class HookRuleAddEndPoint(UserEndPoint):

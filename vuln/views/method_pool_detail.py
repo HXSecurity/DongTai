@@ -12,7 +12,7 @@ from dongtai.models.agent_method_pool import MethodPool
 from core.engine import VulEngine
 from core.engine_v2 import VulEngineV2
 from dongtai.utils.validate import Validate
-from lingzhi_engine.base import R, AnonymousAndUserEndPoint
+from dongtai.endpoint import R, AnonymousAndUserEndPoint
 from vuln.serializers.method_pool import MethodPoolSerialize
 from vuln.views.search import SearchEndPoint
 

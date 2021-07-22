@@ -7,7 +7,7 @@
 from dongtai.models.hook_strategy import HookStrategy
 
 from dongtai.utils import const
-from lingzhi_engine.base import R, UserEndPoint
+from dongtai.endpoint import R, UserEndPoint
 
 
 class HookRuleTypeDisableEndPoint(UserEndPoint):

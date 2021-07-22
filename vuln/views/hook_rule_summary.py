@@ -4,11 +4,12 @@
 # datetime:2021/3/9 下午12:06
 # software: PyCharm
 # project: lingzhi-engine
+from dongtai.endpoint import UserEndPoint, R
+
 from dongtai.models.hook_strategy import HookStrategy
 from dongtai.models.hook_type import HookType
 
 from dongtai.utils import const
-from lingzhi_engine.base import R, UserEndPoint
 
 
 class HookRuleSummaryEndPoint(UserEndPoint):
