@@ -8,10 +8,12 @@ import os
 import uuid, logging
 
 from django.http import FileResponse
+from dongtai.endpoint import OpenApiEndPoint, R
+from drf_yasg import openapi
+from drf_yasg.openapi import Response
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.authtoken.models import Token
 
-from AgentServer.base import R
-from apiserver.base.openapi import OpenApiEndPoint
 from apiserver.utils import OssDownloader
 
 logger = logging.getLogger('dongtai.openapi')
@@ -26,12 +28,17 @@ class AgentDownload(OpenApiEndPoint):
     LOCAL_AGENT_FILE = '/tmp/iast-agent.jar'
     REMOTE_AGENT_FILE = 'agent/java/iast-agent.jar'
 
+    @swagger_auto_schema(
+        operation_description="下载Java探针",
+        manual_parameters=(
+                openapi.Parameter("url", openapi.IN_QUERY, required=True, description="OpenAPI服务器地址",
+                                  type=openapi.TYPE_STRING),
+                openapi.Parameter("projectName", openapi.IN_QUERY, required=True, description="项目名称",
+                                  type=openapi.TYPE_STRING)
+        ),
+        responses={200: Response(description='修改成功', examples={'json': {'msg': '修改成功！', "data": []}})},
+    )
     def get(self, request):
-        """
-        IAST下载 agent接口s
-        :param request:
-        :return:
-        """
         try:
             base_url = request.query_params.get('url', 'https://www.huoxian.cn')
             project_name = request.query_params.get('projectName', 'Demo Project')

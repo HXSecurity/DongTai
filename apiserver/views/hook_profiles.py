@@ -11,8 +11,7 @@ from dongtai.models.hook_type import HookType
 from rest_framework.request import Request
 
 from dongtai.utils import const
-from AgentServer.base import R
-from apiserver.base.openapi import OpenApiEndPoint
+from dongtai.endpoint import OpenApiEndPoint, R
 
 # note: 当前依赖必须保留，否则无法通过hooktype反向查找策略
 
