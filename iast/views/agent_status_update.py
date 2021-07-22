@@ -6,14 +6,13 @@
 import time
 
 from django.db.models import Q
+from dongtai.endpoint import UserEndPoint, R
 
-from base import R
 from dongtai.utils import const
-from iast.base.agent import AgentEndPoint
 from dongtai.models.agent import IastAgent
 
 
-class AgentStatusUpdate(AgentEndPoint):
+class AgentStatusUpdate(UserEndPoint):
     def get(self, request):
         timestamp = int(time.time())
         queryset = IastAgent.objects.filter(user=request.user)

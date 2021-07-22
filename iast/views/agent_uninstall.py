@@ -6,12 +6,11 @@
 # project: lingzhi-webapi
 import time
 
-from base import R
-from iast.base.agent import AgentEndPoint
+from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.agent import IastAgent
 
 
-class AgentUninstall(AgentEndPoint):
+class AgentUninstall(UserEndPoint):
     name = "api-v1-agent-uninstall"
     description = "卸载agent"
 

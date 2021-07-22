@@ -8,8 +8,8 @@ import logging
 
 from django.contrib.auth.models import Group
 
-from base import R
-from iast.base.user import UserEndPoint
+from dongtai.endpoint import R
+from dongtai.endpoint import UserEndPoint
 
 logger = logging.getLogger("django")
 

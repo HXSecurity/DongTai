@@ -6,8 +6,8 @@
 # project: lingzhi-webapi
 from rest_framework.request import Request
 
-from base import R
-from iast.base.user import UserEndPoint
+from dongtai.endpoint import R
+from dongtai.endpoint import UserEndPoint
 from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.vul_level import IastVulLevel
 
