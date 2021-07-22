@@ -30,8 +30,10 @@ class MethodPoolDetailEndPoint(AnonymousAndUserEndPoint):
             latest_id, page_size, rule_id, rule_msg, rule_level, source_set, sink_set, propagator_set = \
                 SearchEndPoint.parse_search_condition(request)
 
+            auth_agents = self.get_auth_and_anonymous_agents(request.user).values('id')
+            auth_agent_ids = [agent['id'] for agent in auth_agents]
             method_pool = MethodPool.objects.filter(
-                agent__in=self.get_auth_and_anonymous_agents(request.user),
+                agent_id__in=auth_agent_ids,
                 id=method_pool_id
             ).first()
             if method_pool is None:
