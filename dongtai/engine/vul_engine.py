@@ -198,7 +198,7 @@ class VulEngine(object):
     def result(self):
         if self.vul_source_signature:
             return True, self.vul_stack, self.vul_source_signature, self.vul_method_signature, self.taint_value
-        return False, None, None, None
+        return False, None, None, None, None
 
     def get_taint_links(self):
         return self.graph_data, self.taint_link_size, self.method_counts
