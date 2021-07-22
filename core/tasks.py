@@ -371,6 +371,10 @@ def update_sca():
         logger.error(f'SCA离线检测出错，错误原因：{e}')
 
 
+def is_alive(agent_id, timestamp):
+    return IastHeartbeat.objects.values('id').filter(agent__id=agent_id, dt__gt=(timestamp - 600)).exists()
+
+
 @shared_task(queue='dongtai-periodic-task')
 def update_agent_status():
     """
@@ -378,14 +382,23 @@ def update_agent_status():
     :return:
     """
     logger.info(f'检测引擎状态更新开始')
+    timestamp = int(time.time())
     try:
-        timestamp = int(time.time())
-        queryset = IastAgent.objects.all()
-        no_heart_beat_queryset = queryset.filter((Q(server=None) & Q(latest_time__lt=(timestamp - 600))), is_running=1)
-        no_heart_beat_queryset.update(is_running=0, is_core_running=0)
+        running_agents = IastAgent.objects.values("id").filter(is_running=1)
+        is_stopped_agents = list()
+        is_running_agents = list()
+        for agent in running_agents:
+            agent_id = agent['id']
+            if is_alive(agent_id=agent_id, timestamp=timestamp):
+                is_running_agents.append(agent_id)
+                continue
+            else:
+                is_stopped_agents.append(agent_id)
+        if is_stopped_agents:
+            IastAgent.objects.filter(id__in=is_stopped_agents).update(is_running=0, is_core_running=0)
+        if is_running_agents:
+            IastAgent.objects.filter(id__in=is_running_agents).update(is_running=1, is_core_running=1)
 
-        heart_beat_queryset = queryset.filter(server__update_time__lt=(timestamp - 600), is_running=1)
-        heart_beat_queryset.update(is_running=0, is_core_running=0)
         logger.info(f'检测引擎状态更新成功')
     except Exception as e:
         logger.error(f'检测引擎状态更新出错，错误详情：{e}')
