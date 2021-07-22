@@ -4,7 +4,7 @@
 # datetime:2020/11/25 下午2:23
 # software: PyCharm
 # project: lingzhi-webapi
-from dongtai.endpoint import UserEndPoint
+from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.agent import IastAgent
 
 """
