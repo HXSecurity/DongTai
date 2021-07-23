@@ -42,6 +42,7 @@ from iast.views.log_delete import LogDelete
 from iast.views.log_export import LogExport
 from iast.views.logs import LogsEndpoint
 from iast.views.openapi import OpenApiEndpoint
+from iast.views.profile import ProfileEndpoint
 from iast.views.project_add import ProjectAdd
 from iast.views.project_delete import ProjectDel
 from iast.views.project_detail import ProjectDetail
@@ -181,7 +182,7 @@ urlpatterns = [
 
     # 获取openapi地址
     path('openapi', OpenApiEndpoint.as_view()),
-
+    path('profile/<str:key>', ProfileEndpoint.as_view()),
     # 系统信息
     path('system/info', SystemInfo.as_view()),
     # 日志信息
