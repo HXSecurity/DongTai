@@ -48,6 +48,7 @@ from iast.views.project_detail import ProjectDetail
 from iast.views.project_engines import ProjectEngines
 from iast.views.project_report_export import ProjectReportExport
 from iast.views.project_summary import ProjectSummary
+from iast.views.project_search import ProjectSearch
 from iast.views.project_version_add import ProjectVersionAdd
 from iast.views.project_version_current import ProjectVersionCurrent
 from iast.views.project_version_delete import ProjectVersionDelete
@@ -64,6 +65,8 @@ from iast.views.strategys import StrategyEndpoint
 from iast.views.strategys_add import StrategyAdd
 from iast.views.strategys_list import StrategyList
 from iast.views.strategys_type import StrategyType
+from iast.views.strategy_delete import StrategyDelete
+from iast.views.strategy_modified import StrategyModified
 from iast.views.system_info import SystemInfo
 from iast.views.user_detail import UserDetailEndPoint
 from iast.views.user_info import UserInfoEndpoint
@@ -124,6 +127,7 @@ urlpatterns = [
     path('projects/summary/<int:id>', ProjectSummary.as_view()),
     path('project/engines/<int:pid>', ProjectEngines.as_view()),
     path('project/export', ProjectReportExport.as_view()),
+    path('project/search', ProjectSearch.as_view()),
     # 更新项目版本信息
     path('project/version/add', ProjectVersionAdd.as_view()),
     path('project/version/update', ProjectVersionUpdate.as_view()),
@@ -150,6 +154,8 @@ urlpatterns = [
     path('strategys', StrategyEndpoint.as_view()),
     path('strategy/<int:id>/enable', StrategyEnableEndpoint.as_view()),
     path('strategy/<int:id>/disable', StrategyDisableEndpoint.as_view()),
+    path('strategy/<int:id>/delete', StrategyDelete.as_view()),
+    path('strategy/<int:id_>/update', StrategyModified.as_view()),
     # 获取 按类型获取策略信息
     path('strategy/types', StrategyType.as_view()),
     # 用户创建策略
