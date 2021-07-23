@@ -154,7 +154,7 @@ urlpatterns = [
     path('strategys', StrategyEndpoint.as_view()),
     path('strategy/<int:id>/enable', StrategyEnableEndpoint.as_view()),
     path('strategy/<int:id>/disable', StrategyDisableEndpoint.as_view()),
-    path('strategy/<int:id>/delete', StrategyDelete.as_view()),
+    path('strategy/<int:id_>/delete', StrategyDelete.as_view()),
     path('strategy/<int:id_>/update', StrategyModified.as_view()),
     # 获取 按类型获取策略信息
     path('strategy/types', StrategyType.as_view()),
