@@ -12,6 +12,7 @@ from dongtai.models.strategy_user import IastStrategyUser
 from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.hook_type import HookType
 from dongtai.models.hook_strategy import HookStrategy
+from dongtai.utils import const
 
 class StrategyDelete(UserEndPoint):
 
@@ -24,8 +25,8 @@ class StrategyDelete(UserEndPoint):
             return R.failure(msg='该策略不存在')
         hook_strategies = hook_type.strategies.all()
         for hook_strategy in hook_strategies:
-            hook_strategy.enable = -1
+            hook_strategy.enable = const.DELETE
             hook_strategy.save()
-        hook_type.enable = -1
+        hook_type.enable = const.DELETE
         hook_type.save()
         return R.success(data={"id": id_})
