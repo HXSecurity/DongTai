@@ -15,15 +15,17 @@ from dongtai.models.hook_strategy import HookStrategy
 
 class StrategyDelete(UserEndPoint):
 
-    def delete(self, request,id_):
+    def delete(self, request, id_):
         '''
         用户删除策略
         '''
         hook_type = HookType.objects.filter(pk=id_).first()
-        strategy = IastStrategyModel.objects.filter(hook_type=hook_type.id).first()
+        if not hook_type:
+            return R.failure(msg='该策略不存在')
         hook_strategies = hook_type.strategies.all()
         for hook_strategy in hook_strategies:
-            hook_strategy.delete()
-        strategy.delete()
-        hook_type.delete()
+            hook_strategy.enable = -1
+            hook_strategy.save()
+        hook_type.enable = -1
+        hook_type.save()
         return R.success(data={"id": id_})
