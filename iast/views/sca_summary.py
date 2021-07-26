@@ -85,4 +85,4 @@ class ScaSummary(UserEndPoint):
             'level': _key, 'count': _value, 'level_id': levelNameArr[_key]
         } for _key, _value in DEFAULT_LEVEL.items()]
         end['data']['projects'] = get_sca_count(auth_users)
-        return R.success(end['data'])
+        return R.success(data=end['data'])
