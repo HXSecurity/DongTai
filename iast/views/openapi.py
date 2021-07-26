@@ -17,3 +17,19 @@ class OpenApiEndpoint(UserEndPoint):
         if profiles == []:
             return R.failure(msg="获取openapi配置失败")
         return R.success(data={'url': profiles[0]})
+
+
+    def post(self, request):
+        """
+        创建
+        """
+        value = request.data.get('value', '')
+        profilefromdb = IastProfile.objects.filter(
+            key='openapi').first()
+        if profilefromdb:
+            profilefromdb.value = value
+            profilefromdb.save()
+            return R.success(msg="创建成功")
+        profilefromdb = IastProfile.objects.create(key='openapi',value=value)
+        profilefromdb.save()
+        return R.success(msg="创建成功")
