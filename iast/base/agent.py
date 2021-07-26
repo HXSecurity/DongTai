@@ -88,7 +88,8 @@ def get_project_vul_count(users, queryset):
                 vul_count = 0
             result.append({
                 "project_name": project['name'],
-                "count": vul_count
+                "count": vul_count,
+                "id": project['id']
             })
     result = sorted(result, key=lambda x: x['count'], reverse=True)
     result = result[0:5]
