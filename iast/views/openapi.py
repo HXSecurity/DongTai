@@ -25,7 +25,7 @@ class OpenApiEndpoint(UserEndPoint):
         """
         value = request.data.get('value', '')
         profilefromdb = IastProfile.objects.filter(
-            key='openapi').first()
+            key='apiserver').first()
         if profilefromdb:
             profilefromdb.value = value
             profilefromdb.save()
