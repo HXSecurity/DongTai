@@ -30,6 +30,6 @@ class OpenApiEndpoint(UserEndPoint):
             profilefromdb.value = value
             profilefromdb.save()
             return R.success(msg="创建成功")
-        profilefromdb = IastProfile.objects.create(key='openapi',value=value)
+        profilefromdb = IastProfile.objects.create(key='apiserver',value=value)
         profilefromdb.save()
         return R.success(msg="创建成功")
