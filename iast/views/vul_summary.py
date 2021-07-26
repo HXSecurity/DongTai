@@ -22,7 +22,7 @@ class VulSummary(UserEndPoint):
 
     @staticmethod
     def get_languages(agent_items):
-        default_language = {"JAVA": 0, ".NET": 0}
+        default_language = {"JAVA": 0, ".NET": 0, "PYTHON": 0 }
         agent_ids = dict()
         for agent_item in agent_items:
             agent_id = agent_item['agent_id']
