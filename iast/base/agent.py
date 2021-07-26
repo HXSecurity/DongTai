@@ -14,7 +14,7 @@ from dongtai.models.asset import Asset
 from dongtai.models.project import IastProject
 from dongtai.models.server import IastServer
 from dongtai.models.vulnerablity import IastVulnerabilityModel
-
+from django.db.models import Count
 
 def get_agents_with_project(project_name, users):
     """
@@ -99,23 +99,20 @@ def get_project_vul_count(users, queryset):
 def get_sca_count(users):
     result = []
 
-    projects = IastProject.objects.filter(user__in=users).values("name", "vul_count", "id")
-    if projects:
-        for project in projects:
-            try:
-                agents = IastAgent.objects.filter(bind_project_id=project['id'])
-                vul_count = Asset.objects.filter(agent__in=agents).count()
-            except Exception:
-                vul_count = 0
-            result.append({
-                "project_name": project['name'],
-                "count": vul_count,
-                "id": project['id']
-            })
-    result = sorted(result, key=lambda x: x['count'], reverse=True)
-    result = result[0:5]
+    result = IastProject.objects.filter(user__in=users).annotate(count=Count(
+        Asset.objects.filter(agent_id__in=IastAgent.objects.filter(
+            bind_project_id=1).values("id")).values("id"))).values(
+                    'id', "name", 'count').order_by('count')[0:5]
+    result = list(
+        map(lambda x: change_dict_key(x, {'name': "project_name"}),
+            result))  # 兼容之前版本
     return result
 
+
+def change_dict_key(dic, keypair):
+    for k, v in keypair.items():
+        dic[v] = dic.pop(k)
+    return dic
 # 通过agent_id 获取 漏洞分类汇总 详情
 # 漏洞类型 漏洞危害等级 首次发现时间 最近发现时间 漏洞地址  漏洞详情  编码语言
 def get_vul_count_by_agent(agent_ids, vid, user):
