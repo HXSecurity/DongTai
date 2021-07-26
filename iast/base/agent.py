@@ -97,8 +97,6 @@ def get_project_vul_count(users, queryset):
 
 
 def get_sca_count(users):
-    result = []
-
     result = IastProject.objects.filter(user__in=users).annotate(count=Count(
         Asset.objects.filter(agent_id__in=IastAgent.objects.filter(
             bind_project_id=1).values("id")).values("id"))).values(
