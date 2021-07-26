@@ -108,12 +108,12 @@ def get_sca_count(users):
                 vul_count = 0
             result.append({
                 "project_name": project['name'],
-                "count": vul_count
+                "count": vul_count,
+                "id": project['id']
             })
     result = sorted(result, key=lambda x: x['count'], reverse=True)
     result = result[0:5]
     return result
-
 
 # 通过agent_id 获取 漏洞分类汇总 详情
 # 漏洞类型 漏洞危害等级 首次发现时间 最近发现时间 漏洞地址  漏洞详情  编码语言
