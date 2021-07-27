@@ -1,5 +1,9 @@
 name: 🚀 Feature request
 description: Suggest an idea for DongTai
+title: "[Feature]: "
+labels: [feature, ]
+assignees:
+  - exexute
 body:
 - type: markdown
   attributes:
