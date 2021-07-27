@@ -22,5 +22,5 @@ class AgentDeploy(UserEndPoint):
         filters = {k: v for k, v in request.data.items() if k in fields}
         desc = IastDeployDesc.objects.filter(**filters).first()
         if desc:
-            return R.success(model_to_dict(desc))
+            return R.success(data= model_to_dict(desc))
         return R.failure(msg='找不到对应部署文档')
