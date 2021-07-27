@@ -26,6 +26,7 @@ from iast.views.agent_upgrade_online import AgentUpgradeOnline
 from iast.views.agents import AgentList
 from iast.views.agents_user import UserAgentList
 from iast.views.captcha_create import CaptchaCreate
+from iast.views.documents import DocumentsEndpoint
 from iast.views.engine_hook_rule_add import EngineHookRuleAddEndPoint
 from iast.views.engine_hook_rule_modify import EngineHookRuleModifyEndPoint
 from iast.views.engine_hook_rule_status import EngineHookRuleEnableEndPoint
@@ -206,6 +207,10 @@ urlpatterns = [
     path('engine/hook/rule_type/enable', EngineHookRuleTypeEnableEndPoint.as_view()),
     path('engine/hook/rule_types', EngineHookRuleTypesEndPoint.as_view()),
     path('engine/hook/rules', EngineHookRulesEndPoint.as_view()),
+
+    #文档资源
+    path('documents', DocumentsEndpoint.as_view()),
+
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
