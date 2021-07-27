@@ -1,4 +1,4 @@
-name: Build And Push DongTai Base Image To Aliyun Repo
+name: Build DongTai Core Package and push to Ali OSS
 
 on:
   pull_request:
@@ -27,7 +27,7 @@ jobs:
 
       - name: Build DongTai Core Package
         run: |
-          python setup.py sdist bdist_wheel
+          python setup.py sdist
 
       - name: Upload to oss
         id: upload_to_oss
