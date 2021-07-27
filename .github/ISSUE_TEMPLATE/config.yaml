@@ -1,0 +1,10 @@
+blank_issues_enabled: false
+contact_links:
+
+  - name: ❓ Ask a question
+    url: https://github.com/HXSecurity/DongTai/discussions/new?category=q-a
+    about: Ask and discuss questions with other DongTai community members
+
+  - name: 📚 Documentation
+    url: https://hxsecurity.github.io/DongTaiDoc
+    about: Check the documentation for help
