@@ -12,6 +12,7 @@ from iast.account.talent import TalentEndPoint
 from iast.account.user import UserEndPoint
 from iast.base.update_project_version import UpdateProjectVersion
 from iast.views.agent_delete import AgentDeleteEndPoint
+from iast.views.agent_deploy import AgentDeploy
 from iast.views.agent_deploy_doc import AgentDeployDesc
 from iast.views.agent_deploy_info import AgentDeployInfo
 from iast.views.agent_deploy_submit import AgentDeploySave
@@ -166,6 +167,7 @@ urlpatterns = [
     path('strategy/user/list', StrategyList.as_view()),
     # 新增项目捆绑策略
     # agent相关接口：下载agent、下载自动化部署工具、部署文档、agent列表、安装agent、卸载agent、在线升级、离线升级
+    path('agent/deploy/', AgentDeploy.as_view()),
     path('agent/deploy/doc', AgentDeployDesc.as_view()),
     path('agent/deploy/info', AgentDeployInfo.as_view()),
     path('agent/deploy/submit', AgentDeploySave.as_view()),
