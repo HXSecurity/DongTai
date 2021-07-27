@@ -13,6 +13,6 @@ COPY requirements-test.txt /opt/dongtai/openapi/requirements.txt
 RUN pip3 install -r /opt/dongtai/openapi/requirements.txt
 
 COPY . /opt/dongtai/openapi
-WORKDIR /opt
+WORKDIR /opt/dongtai/openapi
 
 CMD ["/usr/local/bin/uwsgi","--ini", "/opt/dongtai/openapi/conf/uwsgi.ini"]
