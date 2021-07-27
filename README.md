@@ -26,7 +26,7 @@
 `洞态IAST`提供**SaaS版本**、**本地化部署版本**，详细部署方案见：[**部署文档**](https://github.com/HXSecurity/dongtai-deploy)
 
 ### 1. SaaS版本
-  - 填写[在线问卷](https://wj.qq.com/s2/8269653/6ff2/)注册账号
+  - 填写[在线问卷](https://jinshuju.net/f/I9PNmf)注册账号
   - 登录[洞态IAST](https://iast.huoxian.cn/login)系统
   - 根据[在线文档](https://hxsecurity.github.io/DongTaiDoc/#/doc/tutorial/quickstart?id=%e5%9c%a8%e7%ba%bf%e9%9d%b6%e5%9c%ba-%e5%bf%ab%e9%80%9f%e4%bd%93%e9%aa%8ciast)进行快速体验
 
