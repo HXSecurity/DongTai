@@ -19,7 +19,7 @@ class AgentDeploy(UserEndPoint):
 
         fields = get_model_field(IastDeployDesc,
                                  include=['middleware', 'language'])
-        filters = {k: v for k, v in request.data.items() if k in fields}
+        filters = {k: v for k, v in request.GET.items() if k in fields}
         desc = IastDeployDesc.objects.filter(**filters).first()
         if desc:
             return R.success(data= model_to_dict(desc))
