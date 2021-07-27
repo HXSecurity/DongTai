@@ -1,5 +1,9 @@
 name: 🐛 Bug report
 description: Report a bug to help us improve DongTai
+title: "[Bug]: "
+labels: [bug]
+assignees:
+  - exexute
 body:
 - type: markdown
   attributes:
