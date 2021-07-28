@@ -13,7 +13,7 @@ from iast.utils import get_model_field
 class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
     def get(self, request):
         page_size = request.GET.get('page_size', 10)
-        page = request.GET.get('page', 4)
+        page = request.GET.get('page_index', 1)
         fields = ['url', 'res_body']
         fields = get_model_field(
             MethodPool,
