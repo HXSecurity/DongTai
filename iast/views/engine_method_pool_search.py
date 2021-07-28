@@ -12,15 +12,8 @@ from iast.utils import get_model_field
 
 class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
     def get(self, request):
-        """
-        IAST下载 agent接口
-        :param request:
-        :return:
-        服务器作为agent的唯一值绑定
-        token: agent-ip-port-path
-        """
-        page_size = request.GET.get('page_size', 50)
-        page = request.GET.get('page', 1)
+        page_size = request.GET.get('page_size', 10)
+        page = request.GET.get('page', 4)
         fields = ['url', 'res_body']
         fields = get_model_field(
             MethodPool,
@@ -34,14 +27,13 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             ''.join([k, '__iregex']): v
             for k, v in searchfields.items()
         }
+        
         q = Q()
         for k, v in searchfields.items():
             params = {k: v}
             q = q | Q(**params)
-
 #        qset = [Q(**{k: v}) for k, v in searchfields.items()]
 #        q = set.union(qset)
-
         queryset = MethodPool.objects.filter(q).order_by('-create_time').all()
         page_summary, method_pools = self.get_paginator(
             queryset, page, page_size)
