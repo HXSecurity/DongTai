@@ -10,7 +10,7 @@ RUN curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add - \
     && apt install -y libc6-dev unzip  vim cron swig
 
 COPY requirements-test.txt /opt/dongtai/webapi/requirements.txt
-RUN pip3 install -r /opt/dongtai/webapi/requirements.txt
+RUN pip3 install --upgrade pip  &&  pip3 install -r /opt/dongtai/webapi/requirements.txt
 
 COPY . /opt/dongtai/webapi
 WORKDIR /opt/dongtai/webapi
