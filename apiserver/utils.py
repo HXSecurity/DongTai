@@ -5,6 +5,7 @@
 # project: dongtai-openapi
 
 # -*- coding: utf-8 -*-
+import base64
 import logging
 
 import oss2
@@ -52,3 +53,16 @@ class OssDownloader(object):
                                                    bucket_name=OssDownloader.BUCKET_NAME,
                                                    object_name=object_name,
                                                    local_file=local_file)
+
+
+def base64_decode(raw):
+    try:
+        return base64.b64decode(raw).decode('utf-8').strip()
+    except Exception as decode_error:
+        logger.error(f'base64 decode error, raw: {raw}\nreason:{decode_error}')
+        return ""
+
+
+def build_request_header(req_method, raw_req_header, uri, query_params, http_protocol):
+    decode_req_header = base64_decode(raw_req_header)
+    return f"{req_method} {uri + ('?' + query_params if query_params else '')} {http_protocol}\n{decode_req_header}"
