@@ -24,6 +24,7 @@ from iast.views.agent_stop import AgentStop
 from iast.views.agent_uninstall import AgentUninstall
 from iast.views.agent_upgrade_offline import AgentUpgradeOffline
 from iast.views.agent_upgrade_online import AgentUpgradeOnline
+from iast.views.agent import Agent
 from iast.views.agents import AgentList
 from iast.views.agents_user import UserAgentList
 from iast.views.captcha_create import CaptchaCreate
@@ -167,6 +168,7 @@ urlpatterns = [
     path('strategy/user/list', StrategyList.as_view()),
     # 新增项目捆绑策略
     # agent相关接口：下载agent、下载自动化部署工具、部署文档、agent列表、安装agent、卸载agent、在线升级、离线升级
+    path('agent/<int:id_>',Agent.as_view()),
     path('agent/deploy/', AgentDeploy.as_view()),
     path('agent/deploy/doc', AgentDeployDesc.as_view()),
     path('agent/deploy/info', AgentDeployInfo.as_view()),
