@@ -63,18 +63,19 @@ def load_sink_strategy(user=None):
                                                   created_by__in=[user.id, 1] if user else [1])
     sub_method_signatures = set()
     for sub_queryset in queryset_to_iterator(strategy_models):
-        if sub_queryset:
-            for strategy in sub_queryset:
-                sub_method_signature = strategy.value.split('(')[0]
-                if sub_method_signature not in sub_method_signatures:
-                    sub_method_signatures.add(sub_method_signature)
-                    strategies.append({
-                        'strategy': strategy,
-                        'type': strategy.type.first().value,
-                        'value': sub_method_signature
-                    })
-        else:
+        if sub_queryset is None:
             break
+        for strategy in sub_queryset:
+            sub_method_signature = strategy.value.split('(')[0]
+            if sub_method_signature in sub_method_signatures:
+                continue
+
+            sub_method_signatures.add(sub_method_signature)
+            strategies.append({
+                'strategy': strategy,
+                'type': strategy.type.first().value,
+                'value': sub_method_signature
+            })
     return strategies
 
 
@@ -202,15 +203,17 @@ def search_and_save_sink(engine, method_pool_model, strategy):
     :param strategy: json格式的策略
     :return: None
     """
-    method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
+    method_pool = json.loads(method_pool_model.method_pool)
     # fixme 检索匹配条件的sink点
     is_hit = engine.search_sink(
         method_pool=method_pool,
         vul_method_signature=strategy.get('value')
     )
-    if is_hit:
-        logger.info(f'发现sink点{strategy.get("type")}')
-        method_pool_model.sinks.add(strategy.get('strategy'))
+    if is_hit is None:
+        return
+
+    logger.info(f'发现sink点{strategy.get("type")}')
+    method_pool_model.sinks.add(strategy.get('strategy'))
 
 
 @shared_task(queue='dongtai-method-pool-scan')
@@ -244,12 +247,16 @@ def search_vul_from_replay_method_pool(method_pool_id):
         strategies = load_sink_strategy(method_pool_model.agent.user)
         engine = VulEngine()
 
-        method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
+        method_pool = json.loads(method_pool_model.method_pool)
+        if method_pool is None or len(method_pool) == 0:
+            return
+
         engine.method_pool = method_pool
-        if method_pool:
-            for strategy in strategies:
-                if strategy.get('value') in engine.method_pool_signatures:
-                    search_and_save_vul(engine, method_pool_model, method_pool, strategy)
+        for strategy in strategies:
+            if strategy.get('value') not in engine.method_pool_signatures:
+                continue
+
+            search_and_save_vul(engine, method_pool_model, method_pool, strategy)
         logger.info(f'漏洞检测成功')
     except Exception as e:
         logger.error(f'漏洞检测出错，错误原因：{e}')
@@ -313,9 +320,10 @@ def search_sink_from_strategy(strategy_id):
 
         engine = VulEngine()
         for sub_queryset in queryset_to_iterator(method_pool_queryset):
-            if sub_queryset:
-                for method_pool in sub_queryset:
-                    search_and_save_sink(engine, method_pool, strategy_value)
+            if sub_queryset is None:
+                break
+            for method_pool in sub_queryset:
+                search_and_save_sink(engine, method_pool, strategy_value)
         logger.info(f'sink规则扫描完成')
     except Exception as e:
         logger.error(f'sink规则扫描出错，错误原因：{e}')
@@ -330,15 +338,25 @@ def load_methods_from_strategy(strategy_id):
     strategy = HookStrategy.objects.filter(type__in=HookType.objects.filter(type=4), id=strategy_id).first()
     if strategy is None:
         logger.info(f'策略[{strategy_id}]不存在')
+        return None, None
     strategy_value = {
         'strategy': strategy,
         'type': strategy.type.first().value,
         'value': strategy.value.split('(')[0]
     }
     # fixme 后续根据具体需要，获取用户对应的数据
-    user = User.objects.filter(id=strategy.created_by).first() if strategy else None
-    agents = IastAgent.objects.filter(user=user) if user else None
-    method_pool_queryset = MethodPool.objects.filter(agent__in=agents if agents else [])
+    if strategy is None:
+        return strategy_value, None
+
+    user = User.objects.filter(id=strategy.created_by).first()
+    if user is None:
+        return strategy_value, None
+
+    agents = IastAgent.objects.filter(user=user)
+    if agents.values('id').exists() is False:
+        return strategy_value, None
+
+    method_pool_queryset = MethodPool.objects.filter(agent__in=agents)
     return strategy_value, method_pool_queryset
 
 
