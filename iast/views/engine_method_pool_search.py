@@ -17,25 +17,23 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         fields = ['url', 'res_body']
         fields = get_model_field(
             MethodPool,
-            include=[
-                'url', 'res_body', 'req_header', 'req_data'
-            ],
+            include=['url', 'res_header','res_body', 'req_header_fs', 'req_data'],
         )
         fields.extend(['sinkvalues', 'signature'])
         searchfields = dict(
             filter(lambda k: k[0] in fields, request.GET.items()))
         searchfields_ = []
         for k, v in searchfields.items():
-            if k == 'sinks':  # 污点数据
+            if k == 'sinkvalues':  # 污点数据
                 templates = [
                     r'"targetValues": ".*{}.*"', r'"sourceValues": ".*{}.*"'
                 ]
                 searchfields_.extend(
-                    map(lambda x: ('method_pool', x.format(v), templates)))
+                    map(lambda x: ('method_pool', x.format(v)), templates))
             elif k == 'signature':  # 方法签名
                 templates = [r'"signature": ".*{}.*"']
                 searchfields_.extend(
-                    map(lambda x: ('method_pool', x.format(v), templates)))
+                    map(lambda x: ('method_pool', x.format(v)), templates))
             else:
                 searchfields_.append((k, v))
         q = reduce(
