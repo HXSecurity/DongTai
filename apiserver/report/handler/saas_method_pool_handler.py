@@ -16,6 +16,7 @@ from dongtai.models.replay_queue import IastReplayQueue
 from dongtai.utils import const
 
 from AgentServer import settings
+from apiserver import utils
 from apiserver.report.handler.report_handler_interface import IReportHandler
 from apiserver.report.report_handler_factory import ReportHandler
 
@@ -143,11 +144,19 @@ class SaasMethodPoolHandler(IReportHandler):
             method_pool.req_header = self.http_req_header
             method_pool.req_params = self.http_query_string
             method_pool.req_data = self.http_req_data
-            method_pool.res_header = self.http_res_header
+            method_pool.req_header_for_search = utils.build_request_header(
+                req_method=self.http_method,
+                raw_req_header=self.http_req_header,
+                uri=self.http_uri,
+                query_params=self.http_query_string,
+                http_protocol=self.http_protocol
+            )
+            method_pool.res_header = utils.base64_decode(self.http_res_header)
             method_pool.res_body = self.http_res_body
-            method_pool.save(update_fields=['update_time', 'method_pool', 'uri', 'url', 'http_method', 'req_header',
-                                            'req_params', 'req_data',
-                                            'res_header', 'res_body'])
+            method_pool.save(update_fields=[
+                'update_time', 'method_pool', 'uri', 'url', 'http_method', 'req_header', 'req_params', 'req_data',
+                'req_header_for_search', 'res_header', 'res_body'
+            ])
         else:
             # 获取agent
             update_record = False
@@ -162,7 +171,14 @@ class SaasMethodPoolHandler(IReportHandler):
                 req_header=self.http_req_header,
                 req_params=self.http_query_string,
                 req_data=self.http_req_data,
-                res_header=self.http_res_header,
+                req_header_for_search=utils.build_request_header(
+                    req_method=self.http_method,
+                    raw_req_header=self.http_req_header,
+                    uri=self.http_uri,
+                    query_params=self.http_query_string,
+                    http_protocol=self.http_protocol
+                ),
+                res_header=utils.base64_decode(self.http_res_header),
                 res_body=self.http_res_body,
                 context_path=self.context_path,
                 method_pool=json.dumps(self.method_pool),
