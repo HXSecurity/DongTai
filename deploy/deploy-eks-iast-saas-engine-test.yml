@@ -23,7 +23,7 @@ spec:
           imagePullPolicy: Always
           volumeMounts:
             - name: configfile
-              mountPath: /opt/iast/engine/conf/config.ini
+              mountPath: /opt/dongtai/engine/conf/config.ini
               subPath: config.ini
           resources:
             limits:

@@ -20,12 +20,12 @@ spec:
       containers:
         - name: iast-engine-task-container
           image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine:VERSION
-          command: ["/bin/bash","/opt/iast/engine/docker/entrypoint.sh"]
+          command: ["/bin/bash","/opt/dongtai/engine/docker/entrypoint.sh"]
           args: ["task"]
           imagePullPolicy: Always
           volumeMounts:
             - name: configfile
-              mountPath: /opt/iast/engine/conf/config.ini
+              mountPath: /opt/dongtai/engine/conf/config.ini
               subPath: config.ini
           resources:
             limits:
