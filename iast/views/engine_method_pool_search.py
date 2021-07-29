@@ -98,14 +98,14 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             if agent:
                 item['agent_id'] = agent['id']
                 item['agent_name'] = agent['token']
-                project = projects.get('bind_project_id', None)
+                project = projects.get(agent['bind_project_id'], None)
                 if project:
                     item['project_id'] = project['id']
                     item['project_name'] = project['name']
-                    user = users.get(project['user_id'])
+                    user = users.get(project['user_id'], None)
                     if user:
                         item['user_id'] = user['id']
-                        item['user_name'] = user['name']
+                        item['user_name'] = user['username']
             item['vulnerablities'] = []
             for vulnerablity in list(
                     filter(lambda _: _['method_pool_id'] == method_pool['id'],
