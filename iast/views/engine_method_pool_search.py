@@ -9,18 +9,20 @@ from dongtai.models.user import User
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 
 from iast.utils import get_model_field
-
+import re
 
 class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
     def get(self, request):
         page_size = request.query_params.get('page_size', 1)
         page = request.query_params.get('page_index', 1)
+        highlight = request.query_params.get('highlight',1)
         fields = ['url', 'res_body']
+        modelfields = [
+            'url', 'res_header', 'res_body', 'req_header_fs', 'req_data'
+        ]
         fields = get_model_field(
             MethodPool,
-            include=[
-                'id','url', 'res_header', 'res_body', 'req_header_fs', 'req_data'
-            ],
+            include=modelfields,
         )
         fields.extend(['sinkvalues', 'signature'])
         search_after_keys = ['update_time']
@@ -63,6 +65,8 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     lambda kv_pair:
                     {'__'.join([kv_pair[0], 'lt']): kv_pair[1]},
                     search_after_fields.items())), q)
+        if 'id' in request.query_params.keys():
+            q = q & Q(pk=request.query_params['id'])
         queryset = MethodPool.objects.filter(q).order_by('-update_time').all()
         page_size= int(page_size)
         method_pools =  queryset[:page_size]
@@ -118,6 +122,15 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     'method_pool_id': x['method_pool_id'],
                     'count': len(x['vulnerablities'])
                 }, relations))
+        if highlight:
+            for method_pool in method_pools:
+                for field in modelfields:
+                    if field in searchfields.keys() and request.GET.get(
+                            field, None):
+                        method_pool['_'.join([field, 'highlight'
+                                              ])] = highlight_matches(
+                                                  request.GET[field],
+                                                  method_pool[field])
         return R.success(
             data={
                 'method_pools': method_pools,
@@ -125,3 +138,10 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                 'aggregation': aggregation,
                 'afterkeys': afterkeys
             })
+
+
+def highlight_matches(query, text):
+    def span_matches(match):
+        html = "<span style='color:red'>{0}</span>"
+        return html.format(match.group(0))
+    return re.sub(query, span_matches, text, flags=re.I)
