@@ -23,6 +23,28 @@ class AgentDownload(UserEndPoint):
     name = "download_iast_agent"
     description = "下载洞态Agent"
 
+    def __init__(self):
+        self.common_info = {
+            "java": {
+                "extension": "jar",
+                "filename": "agent.jar"
+            },
+            "python": {
+                "extension": "tar.gz",
+                "filename": "dongtai-agent-python.tar.gz"
+            }
+        }
+
+    def res_by_langguage(self,langguage, token, resp):
+        temp_filename = f'temp/dongtai-agent-{langguage}-{token["key"]}.{self.common_info[langguage]["extension"]}'
+        with open(temp_filename, 'wb') as f:
+            f.write(resp.content)
+        response = FileResponse(open(temp_filename, 'rb'))
+        response['content_type'] = 'application/octet-stream'
+        response['Content-Disposition'] = "attachment; filename={}" % self.common_info[langguage]['filename']
+        os.remove(temp_filename)
+        return response
+
     def get(self, request):
         """
         IAST下载 agent接口s
@@ -40,21 +62,7 @@ class AgentDownload(UserEndPoint):
                     'Authorization': f'Token {token["key"]}'
                 })
             # 创建文件
-            if langguage == "java":
-                temp_filename = f'temp/agent-{token["key"]}.jar'
-                with open(temp_filename, 'wb') as f:
-                    f.write(resp.content)
-                response = FileResponse(open(temp_filename, 'rb'))
-                response['content_type'] = 'application/octet-stream'
-                response['Content-Disposition'] = "attachment; filename=agent.jar"
-            else:
-                temp_filename = f'temp/dongtai-agent-python-{token["key"]}.tar.gz'
-                with open(temp_filename, 'wb') as f:
-                    f.write(resp.content)
-                response = FileResponse(open(temp_filename, 'rb'))
-                response['content_type'] = 'application/octet-stream'
-                response['Content-Disposition'] = "attachment; filename=dongtai-agent-python.tar.gz"
-            os.remove(temp_filename)
+            response = self.res_by_langguage(langguage, token, resp)
             return response
         except Exception as e:
             logger.error(e)
