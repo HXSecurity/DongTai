@@ -93,33 +93,33 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         users = {_['id']: _ for _ in users}
         for method_pool in method_pools:
             item = {}
-            item['method_pool.id'] = method_pool['id']
+            item['method_pool_id'] = method_pool['id']
             agent = agents.get(method_pool['agent_id'], None)
             if agent:
-                item['agent.id'] = agent['id']
-                item['agent.name'] = agent['token']
+                item['agent_id'] = agent['id']
+                item['agent_name'] = agent['token']
                 project = projects.get('bind_project_id', None)
                 if project:
-                    item['project.id'] = project['id']
-                    item['project.name'] = project['name']
+                    item['project_id'] = project['id']
+                    item['project_name'] = project['name']
                     user = users.get(project['user_id'])
                     if user:
-                        item['user.id'] = user['id']
-                        item['user.name'] = user['name']
+                        item['user_id'] = user['id']
+                        item['user_name'] = user['name']
             item['vulnerablities'] = []
             for vulnerablity in list(
                     filter(lambda _: _['method_pool_id'] == method_pool['id'],
                            vulnerablities)):
                 _ = {}
-                _['vulnerablity.id'] = vulnerablity['id']
-                _['vulnerablity.type'] = vulnerablity['type']
+                _['vulnerablity_id'] = vulnerablity['id']
+                _['vulnerablity_type'] = vulnerablity['type']
                 item['vulnerablities'].append(_)
             relations.append(item)
         aggregation = {}
         aggregation['vulnerablities_count'] = list(
             map(
                 lambda x: {
-                    'method_pools.id': x['method_pool.id'],
+                    'method_pools_id': x['method_pool_id'],
                     'count': len(x['vulnerablities'])
                 }, relations))
         return R.success(
