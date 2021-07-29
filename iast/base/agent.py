@@ -16,6 +16,7 @@ from dongtai.models.server import IastServer
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from django.db.models import Count
 
+
 def get_agents_with_project(project_name, users):
     """
     根据项目名称和授权的用户列表查询有权限访问的agent列表
@@ -75,15 +76,16 @@ def get_all_server(ids):
 
 
 # 获取项目漏洞数量
-def get_project_vul_count(users, queryset):
+def get_project_vul_count(users, queryset, auth_agents, project_id=None):
     result = []
-    projects = IastProject.objects.filter(user__in=users).values("name", "vul_count", "id")
+    project_queryset = IastProject.objects.filter(user__in=users).values("name", "vul_count", "id")
+    if project_id:
+        project_queryset = project_queryset.filter(id=project_id)
 
-    if projects:
-        for project in projects:
+    if project_queryset:
+        for project in project_queryset:
             try:
-                agents = IastAgent.objects.filter(bind_project_id=project['id'], user__in=users)
-                vul_count = queryset.filter(agent__in=agents).count()
+                vul_count = queryset.filter(agent__in=auth_agents).values('id').count()
             except Exception:
                 vul_count = 0
             result.append({
@@ -96,11 +98,16 @@ def get_project_vul_count(users, queryset):
     return result
 
 
-def get_sca_count(users):
-    result = IastProject.objects.filter(user__in=users).annotate(count=Count(
-        Asset.objects.filter(agent_id__in=IastAgent.objects.filter(
-            bind_project_id=1).values("id")).values("id"))).values(
-                    'id', "name", 'count').order_by('count')[0:5]
+def get_sca_count(users, auth_agents, project_id):
+    if project_id:
+        # 利用项目id查询探针，
+        result = IastProject.objects.filter(id=project_id, user__in=users).annotate(
+            count=Count(Asset.objects.filter(agent_id__in=auth_agents).values("id"))
+        ).values('id', "name", 'count').order_by('count')[0:5]
+    else:
+        result = IastProject.objects.filter(user__in=users).annotate(
+            count=Count(Asset.objects.filter(agent_id__in=auth_agents).values("id"))
+        ).values('id', "name", 'count').order_by('count')[0:5]
     result = list(
         map(lambda x: change_dict_key(x, {'name': "project_name"}),
             result))  # 兼容之前版本
@@ -111,6 +118,8 @@ def change_dict_key(dic, keypair):
     for k, v in keypair.items():
         dic[v] = dic.pop(k)
     return dic
+
+
 # 通过agent_id 获取 漏洞分类汇总 详情
 # 漏洞类型 漏洞危害等级 首次发现时间 最近发现时间 漏洞地址  漏洞详情  编码语言
 def get_vul_count_by_agent(agent_ids, vid, user):
