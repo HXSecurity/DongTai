@@ -17,6 +17,8 @@ class AgentStop(UserEndPoint):
     def post(self, request):
         agent_id = request.data.get('id', None)
         agent_ids = request.data.get('ids', None)
+        if agent_ids:
+            agent_ids = agent_ids.split(',')
         if agent_id:
             agent = IastAgent.objects.filter(user=request.user,
                                              id=agent_id).first()
