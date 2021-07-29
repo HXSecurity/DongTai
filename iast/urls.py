@@ -45,6 +45,7 @@ from iast.views.log_clear import LogClear
 from iast.views.log_delete import LogDelete
 from iast.views.log_export import LogExport
 from iast.views.logs import LogsEndpoint
+from iast.views.method_graph import MethodGraph
 from iast.views.openapi import OpenApiEndpoint
 from iast.views.profile import ProfileEndpoint
 from iast.views.project_add import ProjectAdd
@@ -169,7 +170,7 @@ urlpatterns = [
     path('strategy/user/list', StrategyList.as_view()),
     # 新增项目捆绑策略
     # agent相关接口：下载agent、下载自动化部署工具、部署文档、agent列表、安装agent、卸载agent、在线升级、离线升级
-    path('agent/<int:id_>',Agent.as_view()),
+    path('agent/<int:id_>', Agent.as_view()),
     path('agent/deploy/', AgentDeploy.as_view()),
     path('agent/deploy/doc', AgentDeployDesc.as_view()),
     path('agent/deploy/info', AgentDeployInfo.as_view()),
@@ -198,9 +199,9 @@ urlpatterns = [
     path('log/clear', LogClear.as_view()),
 
     # 方法池相关
-    # path('method_pools', MethodPoolProxy.as_view()),
     path('engine/method_pool/search', MethodPoolSearchProxy.as_view()),
     path('engine/method_pool/detail', MethodPoolDetailProxy.as_view()),
+    path('engine/graph', MethodGraph.as_view()),
     path('engine/request/replay', RequestReplayEndPoint.as_view()),
     # hook规则相关
     path('engine/hook/rule/summary', EngineHookRuleSummaryEndPoint.as_view()),
@@ -213,7 +214,7 @@ urlpatterns = [
     path('engine/hook/rule_types', EngineHookRuleTypesEndPoint.as_view()),
     path('engine/hook/rules', EngineHookRulesEndPoint.as_view()),
 
-    #文档资源
+    # 文档资源
     path('documents', DocumentsEndpoint.as_view()),
 
 ]
