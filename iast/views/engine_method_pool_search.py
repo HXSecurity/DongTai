@@ -27,8 +27,9 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             ],
         )
         fields.extend(['sinkvalues', 'signature'])
+        search_after_keys = ['update_time']
         searchfields = dict(
-            filter(lambda k: k[0] in fields, request.GET.items()))
+            filter(lambda k: k[0] in fields, request.query_params.items()))
         searchfields_ = []
         for k, v in searchfields.items():
             if k == 'sinkvalues':  # 污点数据
@@ -41,7 +42,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                 templates = [r'"signature": ".*{}.*"']
                 searchfields_.extend(
                     map(lambda x: ('method_pool', x.format(v)), templates))
-            else:
+            elif k in fields:
                 searchfields_.append((k, v))
         q = reduce(
             lambda x, y: x | y,
@@ -51,10 +52,28 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     lambda kv_pair:
                     {'__'.join([kv_pair[0], 'regex']): kv_pair[1]},
                     searchfields_)), Q())
-        queryset = MethodPool.objects.filter(q).order_by('-create_time').all()
-        page_summary, method_pools = self.get_paginator(
-            queryset, page, page_size)
+        search_after_fields = dict(
+            filter(
+                lambda x: x[0] in search_after_keys,
+                map(
+                    lambda x: (x[0].replace('search_after_', ''),x[1]),
+                    filter(lambda x: x[0].startswith('search_after_'),
+                           request.query_params.items()))))
+        q = reduce(                                                         # fixme to extract out as a function
+            lambda x, y: x & y,
+            map(
+                lambda x: Q(**x),
+                map(
+                    lambda kv_pair:
+                    {'__'.join([kv_pair[0], 'lt']): kv_pair[1]},
+                    search_after_fields.items())), q)
+        queryset = MethodPool.objects.filter(q).order_by('-update_time').all()
+        page_size= int(page_size)
+        method_pools =  queryset[:page_size]
         method_pools = list(method_pools.values())
+        afterkeys = {}
+        for i in method_pools[-1:]:
+            afterkeys['update_time'] = i['update_time']
         agents = IastAgent.objects.filter(
             pk__in=[i['agent_id'] for i in method_pools]).all().values(
                 'bind_project_id', 'token', 'id')
@@ -107,6 +126,6 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             data={
                 'method_pools': method_pools,
                 'relations': relations,
-                'summary': page_summary,
-                'aggregation': aggregation
+                'aggregation': aggregation,
+                'afterkeys': afterkeys
             })
