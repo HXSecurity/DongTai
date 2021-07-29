@@ -5,7 +5,7 @@
 # software: PyCharm
 # project: lingzhi-agent-server
 import json
-import os
+import os, re
 import uuid, logging
 
 from django.http import FileResponse
@@ -56,7 +56,12 @@ class JavaAgentDownload():
 
 class PythonAgentDownload():
     LOCAL_AGENT_FILE = '/tmp/dongtai_agent_python.tar.gz'
+    LOCAL_AGENT_DIR = '/tmp/dongtai_agent_python'
     REMOTE_AGENT_FILE = 'agent/python/dongtai_agent_python.tar.gz'
+
+    def __init__(self):
+        import tarfile
+        self.tarfile = tarfile
 
     @staticmethod
     def download_agent():
@@ -67,8 +72,7 @@ class PythonAgentDownload():
                 object_name=PythonAgentDownload.REMOTE_AGENT_FILE, local_file=PythonAgentDownload.LOCAL_AGENT_FILE
             )
 
-    @staticmethod
-    def create_config(base_url, agent_token, auth_token, project_name):
+    def create_config(self,base_url, agent_token, auth_token, project_name):
         raw_config = {
             "debug": False,
             "iast": {
@@ -121,15 +125,34 @@ class PythonAgentDownload():
                 "log_path": "/tmp/dongtai_py_agent_log.txt"
             }
         }
-        config_file = open("/tmp/config.json", "w")
-        json.dump(raw_config, config_file)
+        try:
+            agent_file = self.tarfile.open(PythonAgentDownload.LOCAL_AGENT_FILE)
+            agent_file.extractall(path="/tmp/")
+            names = agent_file.getnames()
+            PythonAgentDownload.LOCAL_AGENT_DIR = "/tmp/" + names[0]
+            config_path = ""
+            for item in names:
+                res = re.search("config.json", item)
+                if res is not None:
+                    config_path = item
+                    break
 
-    @staticmethod
-    def replace_config():
-        # todo 替换config文件
-        import tarfile
-        agent_file = tarfile.open(PythonAgentDownload.LOCAL_AGENT_FILE, "x:gz")
-        os.system(f'cd /tmp;tar -uvf {JavaAgentDownload.LOCAL_AGENT_FILE} iast.properties')
+            with open("/tmp/"+config_path, "w+") as config_file:
+                json.dump(raw_config, config_file)
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+    def replace_config(self):
+        try:
+            with self.tarfile.open(PythonAgentDownload.LOCAL_AGENT_FILE, "w:gz") as tar:
+                tar.add(PythonAgentDownload.LOCAL_AGENT_DIR, arcname=os.path.basename(PythonAgentDownload.LOCAL_AGENT_DIR))
+            return True
+        except Exception as e:
+            print(e)
+            return False
+        # os.system(f'cd /tmp;tar -uvf {JavaAgentDownload.LOCAL_AGENT_FILE} iast.properties')
 
 
 class AgentDownload(OpenApiEndPoint):
