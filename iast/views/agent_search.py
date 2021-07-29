@@ -27,7 +27,6 @@ class AgentSearch(AnonymousAndUserEndPoint):
             IastAgent,
             include=['token', 'project_name'],
         )
-        print(fields)
         searchfields = dict(
             filter(lambda k: k[0] in fields, request.query_params.items()))
         searchfields_ = {k: v for k, v in searchfields.items() if k in fields}
