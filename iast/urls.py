@@ -40,6 +40,7 @@ from iast.views.engine_hook_rule_type_enable import EngineHookRuleTypeEnableEndP
 from iast.views.engine_hook_rule_types import EngineHookRuleTypesEndPoint
 from iast.views.engine_hook_rules import EngineHookRulesEndPoint
 from iast.views.engine_method_pool_detail import MethodPoolDetailProxy
+from iast.views.engine_method_pool_sca import EngineMethodPoolSca
 from iast.views.engine_method_pool_search import MethodPoolSearchProxy
 from iast.views.log_clear import LogClear
 from iast.views.log_delete import LogDelete
@@ -201,6 +202,7 @@ urlpatterns = [
     # 方法池相关
     path('engine/method_pool/search', MethodPoolSearchProxy.as_view()),
     path('engine/method_pool/detail', MethodPoolDetailProxy.as_view()),
+    path('engine/method_pool/sca', EngineMethodPoolSca.as_view()),
     path('engine/graph', MethodGraph.as_view()),
     path('engine/request/replay', RequestReplayEndPoint.as_view()),
     # hook规则相关
