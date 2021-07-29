@@ -13,9 +13,6 @@ class StrategyModified(UserEndPoint):
         '''
         用户修改策略
         '''
-        #fields = set(
-        #    get_model_field(HookType, ['id']) +
-        #    get_model_field(IastStrategyModel, exclude=['id']))
         fields = ['name', 'vul_desc', 'vul_fix', 'enable']
         data = {k: v for k, v in request.data.items() if k in fields}
         hook_type = HookType.objects.filter(pk=id_).first()
