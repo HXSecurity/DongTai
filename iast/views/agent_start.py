@@ -17,8 +17,10 @@ class AgentStart(UserEndPoint):
     def post(self, request):
         agent_id = request.data.get('id')
         agent_ids = request.data.get('ids', None)
-        agent = IastAgent.objects.filter(user=request.user, id=agent_id).first()
+        if agent_ids:
+            agent_ids = agent_ids.split(',')
         if agent_id:
+            agent = IastAgent.objects.filter(user=request.user, id=agent_id).first()
             if agent is None:
                 return R.failure(msg='引擎不存在或无权操作')
             if agent.is_control == 1 and agent.control != 3 and agent.control != 4:
