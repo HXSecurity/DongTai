@@ -5,15 +5,14 @@
 # software: PyCharm
 # project: lingzhi-webapi
 from django.db.models import Count
+from dongtai.endpoint import R
+from dongtai.endpoint import UserEndPoint
 from dongtai.models.agent import IastAgent
-from dongtai.models.project import IastProject
 from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 
-from dongtai.endpoint import R
 from iast.base.agent import get_project_vul_count
 from iast.base.project_version import get_project_version
-from dongtai.endpoint import UserEndPoint
 
 
 class VulSummary(UserEndPoint):

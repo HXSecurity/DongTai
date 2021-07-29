@@ -75,42 +75,34 @@ def get_all_server(ids):
     return result
 
 
-# 获取项目漏洞数量
 def get_project_vul_count(users, queryset, auth_agents, project_id=None):
-    result = []
-    project_queryset = IastProject.objects.filter(user__in=users).values("name", "vul_count", "id")
+    # 查询所有项目
+    result = list()
+    project_queryset = IastProject.objects.filter(user__in=users)
+    if project_queryset.values('id').exists() is False:
+        return result
+
     if project_id:
         project_queryset = project_queryset.filter(id=project_id)
 
-    if project_queryset:
-        for project in project_queryset:
-            try:
-                vul_count = queryset.filter(agent__in=auth_agents).values('id').count()
-            except Exception:
-                vul_count = 0
+    project_queryset = project_queryset.values('name', 'id')
+    for project in project_queryset:
+        project_id = project['id']
+
+        agent_queryset = auth_agents.filter(bind_project_id=project_id)
+        if agent_queryset.values('id').exists() is False:
             result.append({
                 "project_name": project['name'],
-                "count": vul_count,
-                "id": project['id']
+                "count": 0,
+                "id": project_id
             })
-    result = sorted(result, key=lambda x: x['count'], reverse=True)
-    result = result[0:5]
-    return result
-
-
-def get_sca_count(users, auth_agents, project_id):
-    if project_id:
-        # 利用项目id查询探针，
-        result = IastProject.objects.filter(id=project_id, user__in=users).annotate(
-            count=Count(Asset.objects.filter(agent_id__in=auth_agents).values("id"))
-        ).values('id', "name", 'count').order_by('count')[0:5]
-    else:
-        result = IastProject.objects.filter(user__in=users).annotate(
-            count=Count(Asset.objects.filter(agent_id__in=auth_agents).values("id"))
-        ).values('id', "name", 'count').order_by('count')[0:5]
-    result = list(
-        map(lambda x: change_dict_key(x, {'name': "project_name"}),
-            result))  # 兼容之前版本
+        else:
+            result.append({
+                "project_name": project['name'],
+                "count": queryset.filter(agent__in=agent_queryset).values('id').count(),
+                "id": project_id
+            })
+    result = sorted(result, key=lambda item: item['count'], reverse=True)[:5]
     return result
 
 

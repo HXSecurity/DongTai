@@ -9,7 +9,7 @@ from dongtai.endpoint import R, UserEndPoint
 from dongtai.models.asset import Asset
 from dongtai.models.vul_level import IastVulLevel
 
-from iast.base.agent import get_agents_with_project, get_sca_count
+from iast.base.agent import get_project_vul_count
 from iast.base.project_version import get_project_version
 from iast.views.vul_summary import VulSummary
 
@@ -78,6 +78,6 @@ class ScaSummary(UserEndPoint):
         end['data']['level'] = [{
             'level': _key, 'count': _value, 'level_id': levelNameArr[_key]
         } for _key, _value in DEFAULT_LEVEL.items()]
-        end['data']['projects'] = get_sca_count(auth_users, auth_agents.values('id'), project_id)
+        end['data']['projects'] = get_project_vul_count(auth_users, queryset, auth_agents.values('id'), project_id)
 
         return R.success(data=end['data'])
