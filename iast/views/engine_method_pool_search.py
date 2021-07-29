@@ -13,13 +13,13 @@ from iast.utils import get_model_field
 
 class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
     def get(self, request):
-        page_size = request.query_params.get('page_size', 10)
+        page_size = request.query_params.get('page_size', 1)
         page = request.query_params.get('page_index', 1)
         fields = ['url', 'res_body']
         fields = get_model_field(
             MethodPool,
             include=[
-                'url', 'res_header', 'res_body', 'req_header_fs', 'req_data'
+                'id','url', 'res_header', 'res_body', 'req_header_fs', 'req_data'
             ],
         )
         fields.extend(['sinkvalues', 'signature'])
