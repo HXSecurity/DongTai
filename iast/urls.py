@@ -25,6 +25,7 @@ from iast.views.agent_uninstall import AgentUninstall
 from iast.views.agent_upgrade_offline import AgentUpgradeOffline
 from iast.views.agent_upgrade_online import AgentUpgradeOnline
 from iast.views.agent import Agent
+from iast.views.agent_search import AgentSearch
 from iast.views.agents import AgentList
 from iast.views.agents_user import UserAgentList
 from iast.views.captcha_create import CaptchaCreate
@@ -184,7 +185,7 @@ urlpatterns = [
     path('agent/status/update', AgentStatusUpdate.as_view()),
     path('agent/start', AgentStart.as_view()),
     path('agent/stop', AgentStop.as_view()),
-
+    path('agents/search', AgentSearch.as_view()),
     # 获取openapi地址
     path('openapi', OpenApiEndpoint.as_view()),
     path('profile/<str:key>', ProfileEndpoint.as_view()),
