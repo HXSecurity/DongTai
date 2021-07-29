@@ -119,7 +119,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         aggregation['vulnerablities_count'] = list(
             map(
                 lambda x: {
-                    'method_pools_id': x['method_pool_id'],
+                    'method_pool_id': x['method_pool_id'],
                     'count': len(x['vulnerablities'])
                 }, relations))
         return R.success(
