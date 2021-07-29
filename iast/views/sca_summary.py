@@ -37,9 +37,19 @@ class ScaSummary(UserEndPoint):
         auth_users = self.get_auth_users(request.user)
         auth_agents = self.get_auth_agents(auth_users)
 
-        language = request.query_params.get('language', None)
+        language = request.query_params.get('language')
         if language:
             auth_agents = auth_agents.filter(language=language)
+
+        project_id = request.query_params.get('project_id')
+        if project_id and project_id != '':
+            # 获取项目当前版本信息
+            current_project_version = get_project_version(project_id, auth_users)
+            auth_agents = auth_agents.filter(
+                bind_project_id=project_id,
+                online=1,
+                project_version_id=current_project_version.get("version_id", 0)
+            )
 
         queryset = Asset.objects.filter(agent__in=auth_agents)
 
@@ -47,22 +57,6 @@ class ScaSummary(UserEndPoint):
         if level:
             queryset = queryset.filter(level=level)
 
-        project_id = request.query_params.get('project_id', None)
-        if project_id and project_id != '':
-            # 获取项目当前版本信息
-            current_project_version = get_project_version(project_id, auth_users)
-            agents = self.get_auth_agents(auth_users).filter(
-                bind_project_id=project_id,
-                online=1,
-                project_version_id=current_project_version.get("version_id", 0)
-            )
-            queryset = queryset.filter(agent__in=agents)
-
-        project_name = request.query_params.get('project_name', None)
-        if project_name and project_name != '':
-            agent_ids = get_agents_with_project(project_name, auth_users)
-            if agent_ids:
-                queryset = queryset.filter(agent_id__in=agent_ids)
         package_kw = request.query_params.get('keyword', None)
         if package_kw and package_kw.strip() != '':
             queryset = queryset.filter(package_name__icontains=package_kw)
@@ -84,5 +78,6 @@ class ScaSummary(UserEndPoint):
         end['data']['level'] = [{
             'level': _key, 'count': _value, 'level_id': levelNameArr[_key]
         } for _key, _value in DEFAULT_LEVEL.items()]
-        end['data']['projects'] = get_sca_count(auth_users)
+        end['data']['projects'] = get_sca_count(auth_users, auth_agents.values('id'), project_id)
+
         return R.success(data=end['data'])
