@@ -217,6 +217,7 @@ class VulDetail(UserEndPoint):
             'taint_value': vul.taint_value,
             'param_name': json.loads(vul.param_name) if vul.param_name else {},
             'method_pool_id': vul.method_pool_id,
+            'project_id': project_id
         }
 
     def get_strategy(self):
