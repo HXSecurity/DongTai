@@ -1,10 +1,10 @@
 from dongtai.endpoint import R
-from dongtai.endpoint import UserEndPoint
+from dongtai.endpoint import TalentAdminEndPoint
 from webapi.settings import config
 from dongtai.models.profile import IastProfile
 
 
-class OpenApiEndpoint(UserEndPoint):
+class OpenApiEndpoint(TalentAdminEndPoint):
     def get(self, request):
         """
         获取openapi配置
