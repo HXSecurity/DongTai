@@ -15,8 +15,11 @@ class DocumentsEndpoint(UserEndPoint):
     def get(self, request):
         page_size = request.GET.get('page_size', 100)
         page = request.GET.get('page', 1)
-        language = request.GET.get('language', 1)
-        q = Q(language=language)
+        language = request.GET.get('language', None)
+        if language:
+            q = Q(language=language)
+        else:
+            q = Q()
         _, documents = self.get_paginator(
             IastDocument.objects.filter(q).order_by('-weight').all(), page,
             page_size)
