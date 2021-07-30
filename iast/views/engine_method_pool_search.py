@@ -142,7 +142,6 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
 
 
 def highlight_matches(query, text, html):
-    def span_matches(match, html):
+    def span_matches(match):
         return html.format(match.group(0))
-
     return re.sub(query, span_matches, text, flags=re.I)
