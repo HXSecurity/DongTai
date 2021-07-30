@@ -217,7 +217,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         )
         agent = queryset.first()
         if agent:
-            queryset.update(is_core_running=1)
+            queryset.update(is_core_running=1, online=1, is_running=1)
             return agent['id']
         return -1
 

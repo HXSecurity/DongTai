@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'dongtai',
     'apiserver',
-    'drf_yasg',
 ]
 
 REST_FRAMEWORK = {
