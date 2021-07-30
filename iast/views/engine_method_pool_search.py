@@ -131,7 +131,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                                               ])] = highlight_matches(
                                                   request.GET[field],
                                                   method_pool[field],
-                                                  "<mkspan>{0}</mkspan>")
+                                                  "<em>{0}</em>")
         return R.success(
             data={
                 'method_pools': method_pools,
