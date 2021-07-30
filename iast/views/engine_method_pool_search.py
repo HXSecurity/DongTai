@@ -76,7 +76,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             afterkeys['update_time'] = i['update_time']
         agents = IastAgent.objects.filter(
             pk__in=[i['agent_id'] for i in method_pools]).all().values(
-                'bind_project_id', 'token', 'id')
+                'bind_project_id', 'token', 'id','user_id')
         projects = IastProject.objects.filter(
             pk__in=[i['bind_project_id']
                     for i in agents]).values('id', 'name', 'user_id')
@@ -84,7 +84,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             method_pool_id__in=[i['id'] for i in method_pools]).all().values(
                 'id', 'type', 'method_pool_id').distinct()
         users = User.objects.filter(pk__in=[_['user_id']
-                                            for _ in projects]).values(
+                                            for _ in agents]).values(
                                                 'id', 'username')
         relations = []
         agents = {_['id']: _ for _ in agents}
@@ -102,7 +102,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                 if project:
                     item['project_id'] = project['id']
                     item['project_name'] = project['name']
-                    user = users.get(project['user_id'], None)
+                    user = users.get(agent['user_id'], None)
                     if user:
                         item['user_id'] = user['id']
                         item['user_name'] = user['username']
