@@ -44,7 +44,7 @@ class AgentList(UserEndPoint):
                     lambda x: Q(**x),
                     map(
                         lambda kv_pair:
-                        {'__'.join([kv_pair[0], 'contains']): kv_pair[1]},
+                        {'__'.join([kv_pair[0], 'icontains']): kv_pair[1]},
                         searchfields_.items())), Q())
             q = q & Q(is_running=running_state)
             queryset = IastAgent.objects.filter(q).order_by('-latest_time').all()
