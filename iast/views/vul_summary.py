@@ -12,7 +12,7 @@ from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 
 from iast.base.agent import get_project_vul_count
-from iast.base.project_version import get_project_version
+from iast.base.project_version import get_project_version, get_project_version_by_id
 
 
 class VulSummary(UserEndPoint):
@@ -78,7 +78,12 @@ class VulSummary(UserEndPoint):
         project_id = request.query_params.get('project_id')
         if project_id and project_id != '':
             # 获取项目当前版本信息
-            current_project_version = get_project_version(project_id, auth_users)
+            version_id = request.GET.get('version_id', None)
+            if not version_id:
+                current_project_version = get_project_version(
+                    project_id, auth_users)
+            else:
+                current_project_version = get_project_version_by_id(version_id)
             auth_agents = auth_agents.filter(
                 bind_project_id=project_id,
                 online=1,
