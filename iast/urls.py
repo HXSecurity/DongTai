@@ -20,6 +20,7 @@ from iast.views.agent_download import AgentDownload
 from iast.views.agent_install import AgentInstall
 from iast.views.agent_start import AgentStart
 from iast.views.agent_status_update import AgentStatusUpdate
+from iast.views.agents_delete import AgentsDeleteEndPoint
 from iast.views.agent_stop import AgentStop
 from iast.views.agent_uninstall import AgentUninstall
 from iast.views.agent_upgrade_offline import AgentUpgradeOffline
@@ -188,6 +189,7 @@ urlpatterns = [
     path('agent/start', AgentStart.as_view()),
     path('agent/stop', AgentStop.as_view()),
     path('agents/search', AgentSearch.as_view()),
+    path('agents/delete', AgentsDeleteEndPoint.as_view()),
     # 获取openapi地址
     path('openapi', OpenApiEndpoint.as_view()),
     path('profile/<str:key>', ProfileEndpoint.as_view()),
