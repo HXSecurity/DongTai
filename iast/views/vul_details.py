@@ -118,7 +118,7 @@ class VulDetail(UserEndPoint):
             method_counts = len(method_note_pool)
             for i in range(method_counts):
                 method = method_note_pool[i]
-                class_name = method['className']
+                class_name = method['originClassName'] if 'originClassName' in method else method['className']
                 method_name = method['methodName']
                 source = ', '.join([str(_hash) for _hash in method['sourceHash']])
                 target = ', '.join([str(_hash) for _hash in method['targetHash']])
