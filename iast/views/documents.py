@@ -8,14 +8,18 @@ from dongtai.utils import const
 from dongtai.endpoint import UserEndPoint
 from iast.serializers.strategy import StrategySerializer
 from django.forms.models import model_to_dict
+from django.db.models import Q
 
 
 class DocumentsEndpoint(UserEndPoint):
     def get(self, request):
         page_size = request.GET.get('page_size', 100)
         page = request.GET.get('page', 1)
-
-        page_summary, documents = self.get_paginator(IastDocument.objects.all(), page,
-                                                     page_size)
-        return R.success(
-                data={'documents':[model_to_dict(document) for document in documents]})
+        language = request.GET.get('language', 1)
+        q = Q(language=language)
+        _, documents = self.get_paginator(
+            IastDocument.objects.filter(q).order_by('-weight').all(), page,
+            page_size)
+        return R.success(data={
+            'documents': [model_to_dict(document) for document in documents]
+        })
