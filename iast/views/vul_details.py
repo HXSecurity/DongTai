@@ -142,7 +142,9 @@ class VulDetail(UserEndPoint):
                     'source_value': method.get('sourceValues', None),
                     'target': target,
                     'target_value': method.get('targetValues', None),
-                    'node': f'{class_name}.{method_name}()'
+                    'node': f'{class_name}.{method_name}()',
+                    'tag': method.get('tag', None),
+                    'code': method.get('code', None),
                 })
         except Exception as e:
             logger.error(f'[{__name__}] 污点调用图解析出错，原因：{e}')
