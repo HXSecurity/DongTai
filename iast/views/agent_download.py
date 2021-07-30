@@ -24,6 +24,7 @@ class AgentDownload(UserEndPoint):
     description = "下载洞态Agent"
 
     def __init__(self):
+        super().__init__()
         self.common_info = {
             "java": {
                 "extension": "jar",
