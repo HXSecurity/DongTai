@@ -223,6 +223,7 @@ def search_vul_from_method_pool(method_pool_id):
         method_pool_model = MethodPool.objects.filter(id=method_pool_id).first()
         if method_pool_model is None:
             logger.warn(f'漏洞检测终止，方法池 {method_pool_id} 不存在')
+            return
         strategies = load_sink_strategy(method_pool_model.agent.user)
         engine = VulEngine()
 
