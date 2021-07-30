@@ -164,12 +164,7 @@ class VulDetail(UserEndPoint):
 
     @staticmethod
     def parse_response(header, body):
-        try:
-            _data = base64.b64decode(header.encode("utf-8")).decode("utf-8")
-        except Exception as e:
-            _data = ''
-            logger.error(f'Response Header解析出错，错误原因：{e}')
-        return '{header}\n\n{body}'.format(header=_data, body=body)
+        return '{header}\n\n{body}'.format(header=header, body=body)
 
     def get_vul(self, auth_agents):
         vul = IastVulnerabilityModel.objects.filter(id=self.vul_id, agent__in=auth_agents).first()
