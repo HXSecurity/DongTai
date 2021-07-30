@@ -85,7 +85,7 @@ REST_FRAMEWORK = {
         'user': '5000/min'
     },
 }
-if os.getenv('active_profile', 'PROD') == 'TEST':
+if os.getenv('environment', 'PROD') == 'TEST':
     INSTALLED_APPS.append('drf_spectacular') 
     SPECTACULAR_SETTINGS = {
         'TITLE': 'DongTai webapi',

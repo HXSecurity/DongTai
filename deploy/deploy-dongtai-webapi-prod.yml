@@ -33,7 +33,7 @@ spec:
               cpu: "500m"
               memory: 1000Mi
           env:
-            - name: "active.profile"
+            - name: "environment"
               value: "PROD"
       volumes:
         - name: configfile
