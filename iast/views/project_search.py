@@ -14,11 +14,11 @@ class ProjectSearch(UserEndPoint):
     '''
     def get(self, request):
         name = request.query_params.get('name', '')
-        size = request.query_params.get('size', 10)
-        user = request.user
-        size = int(size)
+        size = int(request.query_params.get('size', 30))
+        users = self.get_auth_users(request.user)
         projects = IastProject.objects.filter(
-            user_id=user.id, name__icontains=name).order_by('-latest_time')[:size]
+            user__in=users,
+            name__icontains=name).order_by('-latest_time')[:size]
         data = [
             model_to_dict(project, fields=['id', 'name'])
             for project in projects
