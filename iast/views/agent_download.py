@@ -41,7 +41,8 @@ class AgentDownload(UserEndPoint):
             f.write(resp.content)
         response = FileResponse(open(temp_filename, 'rb'))
         response['content_type'] = 'application/octet-stream'
-        response['Content-Disposition'] = "attachment; filename={}" % self.common_info[langguage]['filename']
+
+        response['Content-Disposition'] = "attachment; filename={}".format(self.common_info[langguage]['filename'])
         os.remove(temp_filename)
         return response
 
@@ -51,22 +52,23 @@ class AgentDownload(UserEndPoint):
         :param request:
         :return:
         """
-        try:
-            base_url = request.query_params.get('url', 'https://www.huoxian.cn')
-            langguage = request.query_params.get('langguage', 'java')
-            project_name = request.query_params.get('projectName', 'Demo Project')
-            token, success = Token.objects.values('key').get_or_create(user=request.user)
-            resp = requests.get(
-                url=f'{AGENT_SERVER_PROXY["HOST"]}/api/v1/agent/download?url={base_url}&langguage={langguage}&projectName={project_name}',
-                headers={
-                    'Authorization': f'Token {token["key"]}'
-                })
-            # 创建文件
-            response = self.res_by_langguage(langguage, token, resp)
-            return response
-        except Exception as e:
-            logger.error(e)
-            return R.failure(data={
-                "status": '203',
-                "msg": "agent file not exit."
+        # try:
+        base_url = request.query_params.get('url', 'https://www.huoxian.cn')
+        langguage = request.query_params.get('langguage', 'java')
+        project_name = request.query_params.get('projectName', 'Demo Project')
+        token, success = Token.objects.values('key').get_or_create(user=request.user)
+        resp = requests.get(
+            url=f'{AGENT_SERVER_PROXY["HOST"]}/api/v1/agent/download?url={base_url}&langguage={langguage}&projectName={project_name}',
+            headers={
+                'Authorization': f'Token {token["key"]}'
             })
+        # 创建文件
+        response = self.res_by_langguage(langguage, token, resp)
+        print(response)
+        return response
+        # except Exception as e:
+        #     logger.error(e)
+        #     return R.failure(data={
+        #         "status": '203',
+        #         "msg": "agent file not exit."
+        #     })
