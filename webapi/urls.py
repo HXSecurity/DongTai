@@ -15,10 +15,21 @@ Including another URLconf
 """
 from django.conf.urls.static import static
 from django.urls import include, path
-
+import os
 from webapi import settings
 
 urlpatterns = [
     path('api/v1/', include('iast.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+if os.getenv('active_profile', 'PROD') == 'TEST':
+    from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+    urlpatterns.extend([
+    # YOUR PATTERNS
+    path('api/XZPcGFKoxYXScwGjQtJx8u/schema/', SpectacularAPIView.as_view(), name='schema'),
+    # Optional UI:
+    path('api/XZPcGFKoxYXScwGjQtJx8u/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/XZPcGFKoxYXScwGjQtJx8u/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    ])
