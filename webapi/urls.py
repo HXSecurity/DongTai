@@ -24,7 +24,7 @@ urlpatterns = [
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
-if os.getenv('active_profile', 'PROD') == 'TEST':
+if os.getenv('environment', 'PROD') == 'TEST':
     from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
     urlpatterns.extend([
     # YOUR PATTERNS
