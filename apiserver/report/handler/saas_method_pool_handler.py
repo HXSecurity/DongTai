@@ -144,7 +144,7 @@ class SaasMethodPoolHandler(IReportHandler):
             method_pool.req_header = self.http_req_header
             method_pool.req_params = self.http_query_string
             method_pool.req_data = self.http_req_data
-            method_pool.req_header_for_search = utils.build_request_header(
+            method_pool.req_header_fs = utils.build_request_header(
                 req_method=self.http_method,
                 raw_req_header=self.http_req_header,
                 uri=self.http_uri,
@@ -155,7 +155,7 @@ class SaasMethodPoolHandler(IReportHandler):
             method_pool.res_body = self.http_res_body
             method_pool.save(update_fields=[
                 'update_time', 'method_pool', 'uri', 'url', 'http_method', 'req_header', 'req_params', 'req_data',
-                'req_header_for_search', 'res_header', 'res_body'
+                'req_header_fs', 'res_header', 'res_body'
             ])
         else:
             # 获取agent
@@ -171,7 +171,7 @@ class SaasMethodPoolHandler(IReportHandler):
                 req_header=self.http_req_header,
                 req_params=self.http_query_string,
                 req_data=self.http_req_data,
-                req_header_for_search=utils.build_request_header(
+                req_header_fs=utils.build_request_header(
                     req_method=self.http_method,
                     raw_req_header=self.http_req_header,
                     uri=self.http_uri,
