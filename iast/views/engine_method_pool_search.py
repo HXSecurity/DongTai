@@ -130,7 +130,8 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                         method_pool['_'.join([field, 'highlight'
                                               ])] = highlight_matches(
                                                   request.GET[field],
-                                                  method_pool[field])
+                                                  method_pool[field],
+                                                  "<mkspan>{0}</mkspan>")
         return R.success(
             data={
                 'method_pools': method_pools,
@@ -140,8 +141,8 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             })
 
 
-def highlight_matches(query, text):
-    def span_matches(match):
-        html = "<span style='color:red'>{0}</span>"
+def highlight_matches(query, text, html):
+    def span_matches(match, html):
         return html.format(match.group(0))
+
     return re.sub(query, span_matches, text, flags=re.I)
