@@ -26,6 +26,7 @@ dongtai/models/authorization.py
 dongtai/models/department.py
 dongtai/models/dependency.py
 dongtai/models/deploy.py
+dongtai/models/document.py
 dongtai/models/engine_heartbeat.py
 dongtai/models/errorlog.py
 dongtai/models/group_routes.py
@@ -35,6 +36,7 @@ dongtai/models/hook_type.py
 dongtai/models/iast_overpower_user.py
 dongtai/models/iast_vul_overpower.py
 dongtai/models/notify_config.py
+dongtai/models/profile.py
 dongtai/models/project.py
 dongtai/models/project_version.py
 dongtai/models/replay_method_pool.py
