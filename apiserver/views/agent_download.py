@@ -180,7 +180,7 @@ class AgentDownload(OpenApiEndPoint):
         try:
             base_url = request.query_params.get('url', 'https://www.huoxian.cn')
             project_name = request.query_params.get('projectName', 'Demo Project')
-            language = request.query_params.get('langguage')
+            language = request.query_params.get('language','java')
 
             handler = self.DOWNLOAD_HANDLER[language]
 
