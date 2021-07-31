@@ -242,8 +242,9 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
         vul.counts = vul.counts + 1
         vul.latest_time = timestamp
         vul.method_pool_id = vul_meta.id
+        vul.full_stack = json.dumps(vul_stack, ensure_ascii=False)
         vul.status = '待验证'
-        vul.save(update_fields=['req_header', 'req_params', 'counts', 'latest_time', 'status'])
+        vul.save(update_fields=['req_header', 'req_params', 'full_stack', 'counts', 'latest_time', 'status'])
     else:
         vul = IastVulnerabilityModel.objects.create(
             type=vul_name,
@@ -280,12 +281,12 @@ def create_vul_recheck_task(vul_id, agent, timestamp):
     replay_model = IastReplayQueue.objects.filter(replay_type=const.VUL_REPLAY, relation_id=vul_id).first()
     if replay_model:
         if replay_model.state in [const.PENDING, const.WAITING, const.SOLVING]:
-            replay_model.count()
-        else:
-            replay_model.state = const.PENDING
-            replay_model.update_time = timestamp
-            replay_model.count = replay_model.count + 1
-            replay_model.save(update_fields=['state', 'update_time', 'count'])
+            return
+
+        replay_model.state = const.PENDING
+        replay_model.update_time = timestamp
+        replay_model.count = replay_model.count + 1
+        replay_model.save(update_fields=['state', 'update_time', 'count'])
     else:
         IastReplayQueue.objects.create(
             agent=agent,

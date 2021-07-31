@@ -9,11 +9,10 @@ RUN curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add - \
     && apt-get update -y \
     && apt install -y libc6-dev vim
 
-COPY requirements.txt /opt/iast/apiserver/requirements.txt
-ADD https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/dongtai-test-0.1.0.tar.gz /opt/iast/apiserver/dongtai-test-0.1.0.tar.gz
-RUN pip3 install --upgrade pip && pip3 install -r /opt/iast/apiserver/requirements.txt && pip3 install /opt/iast/apiserver/dongtai-test-0.1.0.tar.gz && rm -rf /opt/iast/apiserver/dongtai-test-0.1.0.tar.gz
+COPY requirements-test.txt /opt/dongtai/engine/requirements.txt
+RUN pip3 install --upgrade pip && pip3 install -r /opt/dongtai/engine/requirements.txt
 
-COPY . /opt/iast/engine
-WORKDIR /opt/iast/engine
+COPY . /opt/dongtai/engine
+WORKDIR /opt/dongtai/engine
 
-ENTRYPOINT ["/bin/bash","/opt/iast/engine/docker/entrypoint.sh"]
+ENTRYPOINT ["/bin/bash","/opt/dongtai/engine/docker/entrypoint.sh"]
