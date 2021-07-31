@@ -35,10 +35,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          wget https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/dongtai-test-0.1.0.tar.gz -O /tmp/dongtai-test-0.1.0.tar.gz
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install /tmp/dongtai-test-0.1.0.tar.gz
+          pip install -r requirements-test.txt
       - name: Lint with flake8
         run: |
           pip install flake8
