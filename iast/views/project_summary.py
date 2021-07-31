@@ -11,7 +11,7 @@ from dongtai.models.agent import IastAgent
 from dongtai.models.project import IastProject
 from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
-from iast.base.project_version import get_project_version
+from iast.base.project_version import get_project_version ,get_project_version_by_id
 
 
 class ProjectSummary(UserEndPoint):
@@ -40,6 +40,7 @@ class ProjectSummary(UserEndPoint):
 
         if not project:
             return R.failure(status=203, msg='no permission')
+        version_id = request.GET.get('version_id',None)
         data = dict()
         data['owner'] = project.user.get_username()
         data['name'] = project.name
@@ -50,7 +51,11 @@ class ProjectSummary(UserEndPoint):
         data['day_num'] = []
         data['level_count'] = []
         # 获取项目当前版本信息
-        current_project_version = get_project_version(project.id, auth_users)
+        if not version_id:
+            current_project_version = get_project_version(
+                project.id, auth_users)
+        else:
+            current_project_version = get_project_version_by_id(version_id)
         data['versionData'] = current_project_version
         relations = IastAgent.objects.filter(
             user__in=auth_users,

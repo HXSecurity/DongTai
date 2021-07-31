@@ -11,6 +11,7 @@ from iast.base.agent import get_agents_with_project
 from dongtai.models.asset import Asset
 from iast.serializers.sca import ScaSerializer
 from iast.base.project_version import get_project_version
+from iast.base.project_version import get_project_version, get_project_version_by_id
 
 
 class ScaList(UserEndPoint):
@@ -38,7 +39,12 @@ class ScaList(UserEndPoint):
         project_id = request.query_params.get('project_id', None)
         if project_id and project_id != '':
             # 获取项目当前版本信息
-            current_project_version = get_project_version(project_id, auth_users)
+            version_id = request.GET.get('version_id', None)
+            if not version_id:
+                current_project_version = get_project_version(
+                    project_id, auth_users)
+            else:
+                current_project_version = get_project_version_by_id(version_id)
             agents = self.get_auth_agents(auth_users).filter(
                 bind_project_id=project_id,
                 online=1,

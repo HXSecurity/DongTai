@@ -10,6 +10,10 @@ from dongtai.endpoint import UserEndPoint, R
 
 from dongtai.utils import const
 from iast.serializers.agent import AgentSerializer
+from iast.utils import get_model_field
+from dongtai.models.agent import IastAgent
+from functools import reduce
+from django.db.models import Q
 
 logger = logging.getLogger('dongtai-webapi')
 """
@@ -27,8 +31,23 @@ class AgentList(UserEndPoint):
             page_size = int(request.query_params.get('pageSize', 20))
             running_state = int(request.query_params.get('state', const.RUNNING))
 
-            queryset = self.get_auth_agents_with_user(request.user).filter(is_running=running_state).order_by(
-                "-latest_time")
+            fields = get_model_field(
+                IastAgent,
+                include=['token', 'project_name'],
+            )
+            searchfields = dict(
+                filter(lambda k: k[0] in fields, request.query_params.items()))
+            searchfields_ = {k: v for k, v in searchfields.items() if k in fields}
+            q = reduce(
+                lambda x, y: x | y,
+                map(
+                    lambda x: Q(**x),
+                    map(
+                        lambda kv_pair:
+                        {'__'.join([kv_pair[0], 'icontains']): kv_pair[1]},
+                        searchfields_.items())), Q())
+            q = q & Q(is_running=running_state)
+            queryset = IastAgent.objects.filter(q).order_by('-latest_time').all()
             summery, queryset = self.get_paginator(queryset, page=page, page_size=page_size)
 
             return R.success(
