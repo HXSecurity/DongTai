@@ -6,9 +6,9 @@
 # project: lingzhi-webapi
 import logging
 
-from base import R
+from dongtai.endpoint import R
 from iast.base.project_version import version_modify
-from iast.base.user import UserEndPoint
+from dongtai.endpoint import UserEndPoint
 
 logger = logging.getLogger("django")
 

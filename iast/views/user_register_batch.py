@@ -11,8 +11,8 @@ from django.contrib.auth.models import Group
 from dongtai.models import User
 from dongtai.models.department import Department
 
-from base import R
-from iast.base.user import SystemAdminEndPoint
+from dongtai.endpoint import R
+from dongtai.endpoint import SystemAdminEndPoint
 from iast.notify.email import Email
 from webapi import settings
 

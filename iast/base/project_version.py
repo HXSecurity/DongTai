@@ -74,3 +74,18 @@ def get_project_version(project_id,auth_users):
             "description": "",
         }
     return current_project_version
+def get_project_version_by_id(version_id):
+    versionInfo = IastProjectVersion.objects.filter(pk=version_id).first()
+    if versionInfo:
+        current_project_version = {
+            "version_id": versionInfo.id,
+            "version_name": versionInfo.version_name,
+            "description": versionInfo.description
+        }
+    else:
+        current_project_version = {
+            "version_id": 0,
+            "version_name": "",
+            "description": "",
+        }
+    return current_project_version

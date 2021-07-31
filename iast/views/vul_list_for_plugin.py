@@ -6,12 +6,12 @@
 from dongtai.models.agent import IastAgent
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 
-from base import R
-from iast.base.user import UserTokenEndPoint
+from dongtai.endpoint import R
+from dongtai.endpoint import MixinAuthEndPoint
 from iast.serializers.vul import VulForPluginSerializer
 
 
-class VulListEndPoint(UserTokenEndPoint):
+class VulListEndPoint(MixinAuthEndPoint):
     def get(self, request):
         agent_name = request.query_params.get('name')
         if not agent_name:

@@ -5,8 +5,8 @@
 # software: PyCharm
 # project: lingzhi-webapi
 
-from base import R
-from iast.base.user import TalentAdminEndPoint
+from dongtai.endpoint import R
+from dongtai.endpoint import TalentAdminEndPoint
 
 
 class SystemInfo(TalentAdminEndPoint):

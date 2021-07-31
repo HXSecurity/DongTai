@@ -9,11 +9,10 @@ RUN curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add - \
     && apt-get update -y \
     && apt install -y libc6-dev unzip  vim cron swig
 
-ADD https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/dongtai-0.1.0.tar.gz /opt/iast/webapi/dongtai-0.1.0.tar.gz
-COPY requirements.txt /opt/iast/webapi/requirements.txt
-RUN pip3 install --upgrade pip && pip3 install -r /opt/iast/webapi/requirements.txt  && pip3 install /opt/iast/webapi/dongtai-0.1.0.tar.gz && rm -rf /opt/iast/webapi/dongtai-0.1.0.tar.gz
+COPY requirements-prod.txt /opt/dongtai/webapi/requirements.txt
+RUN pip3 install -r /opt/dongtai/webapi/requirements.txt
 
-COPY . /opt/iast/webapi
-WORKDIR /opt
+COPY . /opt/dongtai/webapi
+WORKDIR /opt/dongtai/webapi
 
-CMD ["/usr/local/bin/uwsgi","--ini", "/opt/iast/webapi/conf/fire_uwsgi.ini"]
+CMD ["/usr/local/bin/uwsgi","--ini", "/opt/dongtai/webapi/conf/uwsgi.ini"]

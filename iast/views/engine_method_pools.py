@@ -6,7 +6,7 @@
 # project: lingzhi-webapi
 
 from base.endpoint import SessionAuthProxyView
-from iast.base.user import UserPermission
+from dongtai.endpoint import UserPermission
 
 
 class MethodPoolProxy(SessionAuthProxyView):

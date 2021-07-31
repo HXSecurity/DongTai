@@ -9,8 +9,8 @@ import time
 
 from django.db import transaction
 from django.http import JsonResponse
+from dongtai.endpoint import TalentAdminEndPoint
 
-from iast.base.user import TalentAdminEndPoint
 from dongtai.models.department import Department
 from dongtai.models.talent import Talent
 
