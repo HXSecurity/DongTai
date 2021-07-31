@@ -82,7 +82,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     for i in agents]).values('id', 'name', 'user_id')
         vulnerablity = IastVulnerabilityModel.objects.filter(
             method_pool_id__in=[i['id'] for i in method_pools]).all().values(
-                'id', 'type', 'method_pool_id').distinct()
+                'id', 'type', 'method_pool_id', 'level_id').distinct()
         users = User.objects.filter(pk__in=[_['user_id']
                                             for _ in agents]).values(
                                                 'id', 'username')
@@ -113,6 +113,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                 _ = {}
                 _['vulnerablity_id'] = vulnerablity['id']
                 _['vulnerablity_type'] = vulnerablity['type']
+                _['level_id'] = vulnerablity['level_id']
                 item['vulnerablities'].append(_)
             relations.append(item)
         aggregation = {}
