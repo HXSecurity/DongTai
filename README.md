@@ -134,7 +134,7 @@ $ docker run -d --name dongtai-engine-task -v /etc/dongtai/config.ini:/opt/dongt
 ### Contributing
 Contributions are welcomed and greatly appreciated. See [CONTRIBUTING.md](https://github.com/HXSecurity/DongTai/blob/main/CONTRIBUTING.md) for details on submitting patches and the contribution workflow.
 
-Any questions? Let's discuss in #sig-migrate in [#DongTai discussions](https://github.com/HXSecurity/DongTai/discussions)
+Any questions? Let's discuss in [#DongTai discussions](https://github.com/HXSecurity/DongTai/discussions)
 
 ### More resources
 - [Documentation](https://hxsecurity.github.io/DongTai-Doc/#/)
