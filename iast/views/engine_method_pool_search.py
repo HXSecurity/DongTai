@@ -76,7 +76,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             afterkeys['update_time'] = i['update_time']
         agents = IastAgent.objects.filter(
             pk__in=[i['agent_id'] for i in method_pools]).all().values(
-                'bind_project_id', 'token', 'id','user_id')
+                'bind_project_id', 'token', 'id','user_id','is_running')
         projects = IastProject.objects.filter(
             pk__in=[i['bind_project_id']
                     for i in agents]).values('id', 'name', 'user_id')
@@ -98,14 +98,15 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             if agent:
                 item['agent_id'] = agent['id']
                 item['agent_name'] = agent['token']
+                item['agent_is_running'] = agent['is_running']
                 project = projects.get(agent['bind_project_id'], None)
                 if project:
                     item['project_id'] = project['id']
                     item['project_name'] = project['name']
-                    user = users.get(agent['user_id'], None)
-                    if user:
-                        item['user_id'] = user['id']
-                        item['user_name'] = user['username']
+                user = users.get(agent['user_id'], None)
+                if user:
+                    item['user_id'] = user['id']
+                    item['user_name'] = user['username']
             item['vulnerablities'] = []
             for vulnerablity in list(
                     filter(lambda _: _['method_pool_id'] == method_pool['id'],
