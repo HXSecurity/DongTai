@@ -47,7 +47,7 @@ port = 6379
 password = 123456
 db = 0
 
-; 下面的内容未使用，直接保持默认，不需要修改
+; 下面的内容未使用，保持默认
 [engine]
 url = http://engine_url
 
@@ -99,7 +99,7 @@ port = 6379
 password = 123456
 db = 0
 
-; 下面的内容未使用，直接保持默认，不需要修改
+; 下面的内容未使用，保持默认
 [engine]
 url = http://engine_url
 
@@ -131,4 +131,4 @@ $ docker run -d --name dongtai-engine-task -v /etc/dongtai/config.ini:/opt/dongt
 
 ### 文档
 - [官方文档](https://hxsecurity.github.io/DongTai-Doc/#/)
-- [快速体验](https://iast.huoxian.cn/)
+- [洞态官网](https://iast.huoxian.cn/)
