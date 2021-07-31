@@ -49,7 +49,7 @@ port = 6379
 password = 123456
 db = 0
 
-; The following content is not used, just keep the default
+; The following content is not used, keep the default
 [engine]
 url = http://engine_url
 
@@ -101,7 +101,7 @@ port = 6379
 password = 123456
 db = 0
 
-; 下面的内容未使用，直接保持默认，不需要修改
+; The following content is not used, keep the default
 [engine]
 url = http://engine_url
 
