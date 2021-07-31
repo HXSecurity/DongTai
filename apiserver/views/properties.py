@@ -10,8 +10,7 @@ from dongtai.models.agent import IastAgent
 from dongtai.models.agent_properties import IastAgentProperties
 from rest_framework.request import Request
 
-from AgentServer.base import R
-from apiserver.base.openapi import OpenApiEndPoint
+from dongtai.endpoint import OpenApiEndPoint, R
 from apiserver.serializers.agent_properties import AgentPropertiesSerialize
 
 logger = logging.getLogger("django")

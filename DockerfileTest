@@ -9,12 +9,10 @@ RUN curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add - \
     && apt-get update -y \
     && apt install -y libc6-dev unzip vim cron swig openjdk-11-jdk
 
-COPY requirements.txt /opt/iast/apiserver/requirements.txt
-ADD https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/dongtai-test-0.1.0.tar.gz /opt/iast/apiserver/dongtai-test-0.1.0.tar.gz
-RUN pip3 install -r /opt/iast/apiserver/requirements.txt && pip3 install /opt/iast/apiserver/dongtai-test-0.1.0.tar.gz && rm -rf /opt/iast/apiserver/dongtai-test-0.1.0.tar.gz
+COPY requirements-test.txt /opt/dongtai/openapi/requirements.txt
+RUN pip3 install -r /opt/dongtai/openapi/requirements.txt
 
+COPY . /opt/dongtai/openapi
+WORKDIR /opt/dongtai/openapi
 
-COPY . /opt/iast/apiserver
-WORKDIR /opt
-
-CMD ["/usr/local/bin/uwsgi","--ini", "/opt/iast/apiserver/conf/uwsgi.ini"]
+CMD ["/usr/local/bin/uwsgi","--ini", "/opt/dongtai/openapi/conf/uwsgi.ini"]

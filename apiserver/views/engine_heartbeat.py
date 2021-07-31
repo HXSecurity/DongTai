@@ -8,8 +8,7 @@ import logging
 
 from dongtai.models.engine_heartbeat import IastEngineHeartbeat
 
-from AgentServer.base import R
-from apiserver.base.openapi import OpenApiEndPoint
+from dongtai.endpoint import OpenApiEndPoint, R
 
 logger = logging.getLogger("dongtai.openapi")
 
