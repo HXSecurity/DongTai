@@ -14,6 +14,7 @@ from dongtai.models.asset import Asset
 from dongtai.models.project import IastProject
 from dongtai.models.server import IastServer
 from dongtai.models.vulnerablity import IastVulnerabilityModel
+from django.db.models import Count
 
 
 def get_agents_with_project(project_name, users):
@@ -74,45 +75,41 @@ def get_all_server(ids):
     return result
 
 
-# 获取项目漏洞数量
-def get_project_vul_count(users, queryset):
-    result = []
-    projects = IastProject.objects.filter(user__in=users).values("name", "vul_count", "id")
+def get_project_vul_count(users, queryset, auth_agents, project_id=None):
+    # 查询所有项目
+    result = list()
+    project_queryset = IastProject.objects.filter(user__in=users)
+    if project_queryset.values('id').exists() is False:
+        return result
 
-    if projects:
-        for project in projects:
-            try:
-                agents = IastAgent.objects.filter(bind_project_id=project['id'], user__in=users)
-                vul_count = queryset.filter(agent__in=agents).count()
-            except Exception:
-                vul_count = 0
+    if project_id:
+        project_queryset = project_queryset.filter(id=project_id)
+
+    project_queryset = project_queryset.values('name', 'id')
+    for project in project_queryset:
+        project_id = project['id']
+
+        agent_queryset = auth_agents.filter(bind_project_id=project_id)
+        if agent_queryset.values('id').exists() is False:
             result.append({
                 "project_name": project['name'],
-                "count": vul_count
+                "count": 0,
+                "id": project_id
             })
-    result = sorted(result, key=lambda x: x['count'], reverse=True)
-    result = result[0:5]
+        else:
+            result.append({
+                "project_name": project['name'],
+                "count": queryset.filter(agent__in=agent_queryset).values('id').count(),
+                "id": project_id
+            })
+    result = sorted(result, key=lambda item: item['count'], reverse=True)[:5]
     return result
 
 
-def get_sca_count(users):
-    result = []
-
-    projects = IastProject.objects.filter(user__in=users).values("name", "vul_count", "id")
-    if projects:
-        for project in projects:
-            try:
-                agents = IastAgent.objects.filter(bind_project_id=project['id'])
-                vul_count = Asset.objects.filter(agent__in=agents).count()
-            except Exception:
-                vul_count = 0
-            result.append({
-                "project_name": project['name'],
-                "count": vul_count
-            })
-    result = sorted(result, key=lambda x: x['count'], reverse=True)
-    result = result[0:5]
-    return result
+def change_dict_key(dic, keypair):
+    for k, v in keypair.items():
+        dic[v] = dic.pop(k)
+    return dic
 
 
 # 通过agent_id 获取 漏洞分类汇总 详情

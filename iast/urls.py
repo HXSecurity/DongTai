@@ -12,6 +12,7 @@ from iast.account.talent import TalentEndPoint
 from iast.account.user import UserEndPoint
 from iast.base.update_project_version import UpdateProjectVersion
 from iast.views.agent_delete import AgentDeleteEndPoint
+from iast.views.agent_deploy import AgentDeploy
 from iast.views.agent_deploy_doc import AgentDeployDesc
 from iast.views.agent_deploy_info import AgentDeployInfo
 from iast.views.agent_deploy_submit import AgentDeploySave
@@ -19,13 +20,17 @@ from iast.views.agent_download import AgentDownload
 from iast.views.agent_install import AgentInstall
 from iast.views.agent_start import AgentStart
 from iast.views.agent_status_update import AgentStatusUpdate
+from iast.views.agents_delete import AgentsDeleteEndPoint
 from iast.views.agent_stop import AgentStop
 from iast.views.agent_uninstall import AgentUninstall
 from iast.views.agent_upgrade_offline import AgentUpgradeOffline
 from iast.views.agent_upgrade_online import AgentUpgradeOnline
+from iast.views.agent import Agent
+from iast.views.agent_search import AgentSearch
 from iast.views.agents import AgentList
 from iast.views.agents_user import UserAgentList
 from iast.views.captcha_create import CaptchaCreate
+from iast.views.documents import DocumentsEndpoint
 from iast.views.engine_hook_rule_add import EngineHookRuleAddEndPoint
 from iast.views.engine_hook_rule_modify import EngineHookRuleModifyEndPoint
 from iast.views.engine_hook_rule_status import EngineHookRuleEnableEndPoint
@@ -36,18 +41,22 @@ from iast.views.engine_hook_rule_type_enable import EngineHookRuleTypeEnableEndP
 from iast.views.engine_hook_rule_types import EngineHookRuleTypesEndPoint
 from iast.views.engine_hook_rules import EngineHookRulesEndPoint
 from iast.views.engine_method_pool_detail import MethodPoolDetailProxy
+from iast.views.engine_method_pool_sca import EngineMethodPoolSca
 from iast.views.engine_method_pool_search import MethodPoolSearchProxy
 from iast.views.log_clear import LogClear
 from iast.views.log_delete import LogDelete
 from iast.views.log_export import LogExport
 from iast.views.logs import LogsEndpoint
+from iast.views.method_graph import MethodGraph
 from iast.views.openapi import OpenApiEndpoint
+from iast.views.profile import ProfileEndpoint
 from iast.views.project_add import ProjectAdd
 from iast.views.project_delete import ProjectDel
 from iast.views.project_detail import ProjectDetail
 from iast.views.project_engines import ProjectEngines
 from iast.views.project_report_export import ProjectReportExport
 from iast.views.project_summary import ProjectSummary
+from iast.views.project_search import ProjectSearch
 from iast.views.project_version_add import ProjectVersionAdd
 from iast.views.project_version_current import ProjectVersionCurrent
 from iast.views.project_version_delete import ProjectVersionDelete
@@ -64,6 +73,8 @@ from iast.views.strategys import StrategyEndpoint
 from iast.views.strategys_add import StrategyAdd
 from iast.views.strategys_list import StrategyList
 from iast.views.strategys_type import StrategyType
+from iast.views.strategy_delete import StrategyDelete
+from iast.views.strategy_modified import StrategyModified
 from iast.views.system_info import SystemInfo
 from iast.views.user_detail import UserDetailEndPoint
 from iast.views.user_info import UserInfoEndpoint
@@ -83,7 +94,7 @@ from iast.views.vul_sidebar_index import VulSideBarList
 from iast.views.vul_status import VulStatus
 from iast.views.vul_summary import VulSummary
 from iast.views.vuls import VulsEndPoint
-
+from iast.views.version_update import MethodPoolVersionUpdate 
 urlpatterns = [
     # 租户管理 - 系统管理员
     path("talents", TalentEndPoint.as_view()),
@@ -124,6 +135,7 @@ urlpatterns = [
     path('projects/summary/<int:id>', ProjectSummary.as_view()),
     path('project/engines/<int:pid>', ProjectEngines.as_view()),
     path('project/export', ProjectReportExport.as_view()),
+    path('project/search', ProjectSearch.as_view()),
     # 更新项目版本信息
     path('project/version/add', ProjectVersionAdd.as_view()),
     path('project/version/update', ProjectVersionUpdate.as_view()),
@@ -150,6 +162,8 @@ urlpatterns = [
     path('strategys', StrategyEndpoint.as_view()),
     path('strategy/<int:id>/enable', StrategyEnableEndpoint.as_view()),
     path('strategy/<int:id>/disable', StrategyDisableEndpoint.as_view()),
+    path('strategy/<int:id_>/delete', StrategyDelete.as_view()),
+    path('strategy/<int:id_>/update', StrategyModified.as_view()),
     # 获取 按类型获取策略信息
     path('strategy/types', StrategyType.as_view()),
     # 用户创建策略
@@ -158,6 +172,8 @@ urlpatterns = [
     path('strategy/user/list', StrategyList.as_view()),
     # 新增项目捆绑策略
     # agent相关接口：下载agent、下载自动化部署工具、部署文档、agent列表、安装agent、卸载agent、在线升级、离线升级
+    path('agent/<int:id_>', Agent.as_view()),
+    path('agent/deploy/', AgentDeploy.as_view()),
     path('agent/deploy/doc', AgentDeployDesc.as_view()),
     path('agent/deploy/info', AgentDeployInfo.as_view()),
     path('agent/deploy/submit', AgentDeploySave.as_view()),
@@ -172,10 +188,11 @@ urlpatterns = [
     path('agent/status/update', AgentStatusUpdate.as_view()),
     path('agent/start', AgentStart.as_view()),
     path('agent/stop', AgentStop.as_view()),
-
+    path('agents/search', AgentSearch.as_view()),
+    path('agents/delete', AgentsDeleteEndPoint.as_view()),
     # 获取openapi地址
     path('openapi', OpenApiEndpoint.as_view()),
-
+    path('profile/<str:key>', ProfileEndpoint.as_view()),
     # 系统信息
     path('system/info', SystemInfo.as_view()),
     # 日志信息
@@ -185,9 +202,10 @@ urlpatterns = [
     path('log/clear', LogClear.as_view()),
 
     # 方法池相关
-    # path('method_pools', MethodPoolProxy.as_view()),
     path('engine/method_pool/search', MethodPoolSearchProxy.as_view()),
     path('engine/method_pool/detail', MethodPoolDetailProxy.as_view()),
+    path('engine/method_pool/sca', EngineMethodPoolSca.as_view()),
+    path('engine/graph', MethodGraph.as_view()),
     path('engine/request/replay', RequestReplayEndPoint.as_view()),
     # hook规则相关
     path('engine/hook/rule/summary', EngineHookRuleSummaryEndPoint.as_view()),
@@ -199,6 +217,12 @@ urlpatterns = [
     path('engine/hook/rule_type/enable', EngineHookRuleTypeEnableEndPoint.as_view()),
     path('engine/hook/rule_types', EngineHookRuleTypesEndPoint.as_view()),
     path('engine/hook/rules', EngineHookRulesEndPoint.as_view()),
+
+    # 文档资源
+    path('documents', DocumentsEndpoint.as_view()),
+
+    # 更新接口
+    path('version_update/K23DiutPrwpoqAddqNbHUk', MethodPoolVersionUpdate.as_view())
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -5,15 +5,14 @@
 # software: PyCharm
 # project: lingzhi-webapi
 from django.db.models import Count
+from dongtai.endpoint import R
+from dongtai.endpoint import UserEndPoint
 from dongtai.models.agent import IastAgent
-from dongtai.models.project import IastProject
 from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 
-from dongtai.endpoint import R
 from iast.base.agent import get_project_vul_count
-from iast.base.project_version import get_project_version
-from dongtai.endpoint import UserEndPoint
+from iast.base.project_version import get_project_version, get_project_version_by_id
 
 
 class VulSummary(UserEndPoint):
@@ -22,7 +21,7 @@ class VulSummary(UserEndPoint):
 
     @staticmethod
     def get_languages(agent_items):
-        default_language = {"JAVA": 0, ".NET": 0}
+        default_language = {"JAVA": 0, "PYTHON": 0}
         agent_ids = dict()
         for agent_item in agent_items:
             agent_id = agent_item['agent_id']
@@ -71,11 +70,27 @@ class VulSummary(UserEndPoint):
                 DEFAULT_LEVEL[level_item.name_value] = 0
                 vul_level_metadata[level_item.name_value] = level_item.id
                 levelIdArr[level_item.id] = level_item.name_value
-        # 动态创建
 
         language = request.query_params.get('language')
         if language:
-            queryset = queryset.filter(language=language)
+            auth_agents = auth_agents.filter(language=language)
+
+        project_id = request.query_params.get('project_id')
+        if project_id and project_id != '':
+            # 获取项目当前版本信息
+            version_id = request.GET.get('version_id', None)
+            if not version_id:
+                current_project_version = get_project_version(
+                    project_id, auth_users)
+            else:
+                current_project_version = get_project_version_by_id(version_id)
+            auth_agents = auth_agents.filter(
+                bind_project_id=project_id,
+                online=1,
+                project_version_id=current_project_version.get("version_id", 0)
+            )
+
+        queryset = queryset.filter(agent__in=auth_agents)
 
         status = request.query_params.get('status')
         if status:
@@ -93,24 +108,6 @@ class VulSummary(UserEndPoint):
         if url and url != '':
             queryset = queryset.filter(url__icontains=url)
 
-        project_name = request.query_params.get('project_name')  # 项目名称， fixme 后续统一修改
-        if project_name and project_name != '':
-            projects = IastProject.objects.filter(user__in=auth_users, name__icontains=project_name).values("id")
-            project_ids = [project["id"] for project in projects]
-            auth_agents = auth_agents.filter(bind_project_id__in=project_ids)
-
-        project_id = request.query_params.get('projectId')  # 项目名称， fixme 后续统一修改
-        if project_id and project_id != '':
-            # 获取项目当前版本信息
-            current_project_version = get_project_version(project_id, auth_users)
-            auth_agents = auth_agents.filter(
-                bind_project_id=project_id,
-                online=1,
-                project_version_id=current_project_version.get("version_id", 0)
-            )
-
-        queryset = queryset.filter(agent__in=auth_agents)
-
         level_summary = queryset.values('level').order_by('level').annotate(total=Count('level'))
         type_summary = queryset.values('type').order_by('type').annotate(total=Count('type'))
 
@@ -125,7 +122,8 @@ class VulSummary(UserEndPoint):
 
         vul_type_list = [{"type": _['type'], "count": _['total']} for _ in type_summary]
         end['data']['type'] = sorted(vul_type_list, key=lambda x: x['count'], reverse=True)
-        end['data']['projects'] = get_project_vul_count(auth_users, queryset)
+        end['data']['projects'] = get_project_vul_count(users=auth_users, queryset=queryset, auth_agents=auth_agents,
+                                                        project_id=project_id)
 
         return R.success(data=end['data'], level_data=end['level_data'])
 
