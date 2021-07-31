@@ -14,8 +14,7 @@ from dongtai.models.project_version import IastProjectVersion
 from dongtai.models.server import IastServer
 from rest_framework.request import Request
 
-from AgentServer.base import R
-from apiserver.base.openapi import OpenApiEndPoint
+from dongtai.endpoint import OpenApiEndPoint, R
 from apiserver.decrypter import parse_data
 
 logger = logging.getLogger('dongtai.openapi')
@@ -218,7 +217,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         )
         agent = queryset.first()
         if agent:
-            queryset.update(is_core_running=1)
+            queryset.update(is_core_running=1, online=1, is_running=1)
             return agent['id']
         return -1
 
