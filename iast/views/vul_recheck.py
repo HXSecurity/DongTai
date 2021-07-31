@@ -13,9 +13,9 @@ from dongtai.models.replay_queue import IastReplayQueue
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.utils.validate import Validate
 
-from base import R
+from dongtai.endpoint import R
 from dongtai.utils import const
-from iast.base.user import UserEndPoint
+from dongtai.endpoint import UserEndPoint
 
 logger = logging.getLogger('dongtai-webapi')
 

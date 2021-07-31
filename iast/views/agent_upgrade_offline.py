@@ -4,9 +4,7 @@
 # datetime:2020/11/25 下午2:37
 # software: PyCharm
 # project: lingzhi-webapi
-
-from base import R
-from iast.base.user import TalentAdminEndPoint
+from dongtai.endpoint import TalentAdminEndPoint, R
 
 
 class AgentUpgradeOffline(TalentAdminEndPoint):

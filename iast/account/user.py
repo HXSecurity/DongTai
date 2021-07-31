@@ -9,12 +9,11 @@ from django.contrib.auth.models import Group
 from django.db import DatabaseError, transaction
 from django.db.models import Q
 from django.http import JsonResponse
+from dongtai.endpoint import TalentAdminEndPoint, R
 from dongtai.models.errorlog import IastErrorlog
 from dongtai.models.iast_vul_overpower import IastVulOverpower
 from rest_framework.authtoken.models import Token
 
-from base import R
-from iast.base.user import TalentAdminEndPoint
 from dongtai.models import User
 from dongtai.models.agent import IastAgent
 from dongtai.models.asset import Asset

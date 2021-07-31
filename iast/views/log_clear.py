@@ -6,9 +6,7 @@
 # project: lingzhi-webapi
 
 from django.contrib.admin.models import LogEntry
-
-from base import R
-from iast.base.user import UserEndPoint
+from dongtai.endpoint import UserEndPoint, R
 
 
 class LogClear(UserEndPoint):

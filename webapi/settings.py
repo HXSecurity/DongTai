@@ -67,7 +67,8 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
-    'PAGE_SIZE': 20,
+    'PAGE_SIZE':
+    20,
     'DEFAULT_PAGINATION_CLASS': ['django.core.paginator'],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
@@ -77,15 +78,20 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
-    'DEFAULT_THROTTLE_CLASSES': (
-        'rest_framework.throttling.AnonRateThrottle',
-        'rest_framework.throttling.UserRateThrottle'
-    ),
+    'DEFAULT_THROTTLE_CLASSES': ('rest_framework.throttling.AnonRateThrottle',
+                                 'rest_framework.throttling.UserRateThrottle'),
     'DEFAULT_THROTTLE_RATES': {
         'anon': '1000/min',
         'user': '5000/min'
     },
 }
+if os.getenv('environment', 'PROD') == 'TEST':
+    INSTALLED_APPS.append('drf_spectacular') 
+    SPECTACULAR_SETTINGS = {
+        'TITLE': 'DongTai webapi',
+    }
+    REST_FRAMEWORK['DEFAULT_SCHEMA_CLASS']='drf_spectacular.openapi.AutoSchema'
+
 
 basedir = os.path.dirname(os.path.realpath(__file__))
 costcontrol_crontab = os.path.join(basedir, "costcontrol_crontab.log")

@@ -65,3 +65,30 @@ $ docker run -d -p 8000:8000 --restart=always --name dongtai-openapi huoxian/don
 ### 文档
 - [官方文档](https://huoxianclub.github.io/LingZhi/#/)
 - [快速体验](http://aws.iast.huoxian.cn:8000/login)
+-
+- # DongTai-web
+[![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
+[![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://github.com/huoxianclub/DongTai)
+[![DongTai--web](https://img.shields.io/badge/DongTai--web-v1.0.0-lightgrey)](https://github.com/huoxianclub/DongTai-web)
+
+[中文版本(Chinese version)](README.ZH_CN.md)
+
+##Project introduction
+"huoxian DongTaiIast" is an auxiliary tool specially designed for Party A's security personnel, Party A's code audit engineers and 0 day.
+
+vulnerability mining personnel. It can be used to integrate Devops environment for vulnerability detection, as an auxiliary tool for code audit and automatic mining 0 day.
+"huoxian DongTaiIast" has five modules, namely ` Dongtai webapi `, ` Dongtai OpenAPI`, ` Dongtai engine `, ` Dongtai web` and ` agent `, among which:
+
+- `dongtai webapi `is used to interact with` Dongtai web `and is responsible for user related API requests;
+- `dongtai OpenAPI `is used to interact with` agent `, process the data reported by agent, issue policies to agent, control the operation of agent, etc
+- `dongtai engine `is used to analyze and process the data received by` Dongtai OpenAPI `, calculate the existing vulnerabilities and available stain call chains, etc
+- `dongtai web `is the front-end project of "huoxian DongTaiIast" and is responsible for page display
+- The `agent` is the data collection terminal of each language. It collects the corresponding data from the project where the probe is installed and sends it to the `Dongtai OpenAPI` service
+
+
+###Documentation
+
+- [official documents]（ https://huoxianclub.github.io/LingZhi/#/ )
+
+- [quick experience]（ http://aws.iast.huoxian.cn:8000/login )
+

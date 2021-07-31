@@ -7,12 +7,12 @@
 from django.db.models import Q
 from rest_framework.request import Request
 
-from base import R
+from dongtai.endpoint import R
 from iast.base.agent import get_agents_with_project, get_user_project_name, \
     get_user_agent_pro, get_all_server
-from iast.base.user import UserEndPoint
+from dongtai.endpoint import UserEndPoint
 from dongtai.models.vul_level import IastVulLevel
-from iast.base.project_version import get_project_version
+from iast.base.project_version import get_project_version, get_project_version_by_id
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from iast.serializers.vul import VulSerializer
 
@@ -62,7 +62,12 @@ class VulsEndPoint(UserEndPoint):
         project_id = request.query_params.get('project_id')
         if project_id:
             # 获取项目当前版本信息
-            current_project_version = get_project_version(project_id, auth_users)
+            version_id = request.GET.get('version_id', None)
+            if not version_id:
+                current_project_version = get_project_version(
+                    project_id, auth_users)
+            else:
+                current_project_version = get_project_version_by_id(version_id)
             agents = auth_agents.filter(
                 bind_project_id=project_id,
                 online=1,

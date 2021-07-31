@@ -13,8 +13,8 @@ from dongtai.models.project_version import IastProjectVersion
 from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 
-from base import R
-from iast.base.user import UserEndPoint
+from dongtai.endpoint import R
+from dongtai.endpoint import UserEndPoint
 from iast.serializers.vul import VulSerializer
 
 """
@@ -118,7 +118,7 @@ class VulDetail(UserEndPoint):
             method_counts = len(method_note_pool)
             for i in range(method_counts):
                 method = method_note_pool[i]
-                class_name = method['className']
+                class_name = method['originClassName'] if 'originClassName' in method else method['className']
                 method_name = method['methodName']
                 source = ', '.join([str(_hash) for _hash in method['sourceHash']])
                 target = ', '.join([str(_hash) for _hash in method['targetHash']])
@@ -142,7 +142,9 @@ class VulDetail(UserEndPoint):
                     'source_value': method.get('sourceValues', None),
                     'target': target,
                     'target_value': method.get('targetValues', None),
-                    'node': f'{class_name}.{method_name}()'
+                    'node': f'{class_name}.{method_name}()',
+                    'tag': method.get('tag', None),
+                    'code': method.get('code', None),
                 })
         except Exception as e:
             logger.error(f'[{__name__}] 污点调用图解析出错，原因：{e}')
@@ -162,12 +164,7 @@ class VulDetail(UserEndPoint):
 
     @staticmethod
     def parse_response(header, body):
-        try:
-            _data = base64.b64decode(header.encode("utf-8")).decode("utf-8")
-        except Exception as e:
-            _data = ''
-            logger.error(f'Response Header解析出错，错误原因：{e}')
-        return '{header}\n\n{body}'.format(header=_data, body=body)
+        return '{header}\n\n{body}'.format(header=header, body=body)
 
     def get_vul(self, auth_agents):
         vul = IastVulnerabilityModel.objects.filter(id=self.vul_id, agent__in=auth_agents).first()
@@ -220,6 +217,7 @@ class VulDetail(UserEndPoint):
             'taint_value': vul.taint_value,
             'param_name': json.loads(vul.param_name) if vul.param_name else {},
             'method_pool_id': vul.method_pool_id,
+            'project_id': project_id
         }
 
     def get_strategy(self):

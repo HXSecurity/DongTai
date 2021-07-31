@@ -9,8 +9,8 @@ import logging
 from rest_framework.authtoken.models import Token
 from rest_framework.request import Request
 
-from base import R
-from iast.base.user import UserEndPoint
+from dongtai.endpoint import R
+from dongtai.endpoint import UserEndPoint
 from webapi import settings
 
 logger = logging.getLogger("django")
@@ -27,9 +27,4 @@ class UserToken(UserEndPoint):
     def get(self, request):
         token, success = Token.objects.get_or_create(user=request.user)
 
-        if not request.user.upgrade_url:
-            upgrade_url = settings.AGENT_UPGRADE_URL
-        else:
-            upgrade_url = request.user.upgrade_url
-
-        return R.success(token=token.key, upgrade_url=upgrade_url)
+        return R.success(data={'token': token.key})
