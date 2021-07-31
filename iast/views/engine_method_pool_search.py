@@ -8,12 +8,12 @@ from dongtai.models.project import IastProject
 from dongtai.models.user import User
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 
-from iast.utils import get_model_field
+from iast.utils import get_model_field, assemble_query
 import re
-
+import operator
 class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
     def get(self, request):
-        page_size = request.query_params.get('page_size', 1)
+        page_size = int(request.query_params.get('page_size', 1))
         page = request.query_params.get('page_index', 1)
         highlight = request.query_params.get('highlight',1)
         fields = ['url', 'res_body']
@@ -42,14 +42,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     map(lambda x: ('method_pool', x.format(v)), templates))
             elif k in fields:
                 searchfields_.append((k, v))
-        q = reduce(
-            lambda x, y: x | y,
-            map(
-                lambda x: Q(**x),
-                map(
-                    lambda kv_pair:
-                    {'__'.join([kv_pair[0], 'regex']): kv_pair[1]},
-                    searchfields_)), Q())
+        q = assemble_query(searchfields_, 'regex', Q(), operator.or_)
         search_after_fields = dict(
             filter(
                 lambda x: x[0] in search_after_keys,
@@ -57,18 +50,10 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     lambda x: (x[0].replace('search_after_', ''),x[1]),
                     filter(lambda x: x[0].startswith('search_after_'),
                            request.query_params.items()))))
-        q = reduce(                                                         # fixme to extract out as a function
-            lambda x, y: x & y,
-            map(
-                lambda x: Q(**x),
-                map(
-                    lambda kv_pair:
-                    {'__'.join([kv_pair[0], 'lt']): kv_pair[1]},
-                    search_after_fields.items())), q)
+        q = assemble_query(search_after_fields, 'lt', q, operator.and_)
         if 'id' in request.query_params.keys():
-            q = q & Q(pk=request.query_params['id'])
+            q = assemble_query(search_after_fields, '', q, operator.and_)
         queryset = MethodPool.objects.filter(q).order_by('-update_time').all()
-        page_size= int(page_size)
         method_pools =  queryset[:page_size]
         method_pools = list(method_pools.values())
         afterkeys = {}
@@ -86,11 +71,9 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         users = User.objects.filter(pk__in=[_['user_id']
                                             for _ in agents]).values(
                                                 'id', 'username')
-        relations = []
-        agents = {_['id']: _ for _ in agents}
-        projects = {_['id']: _ for _ in projects}
         vulnerablities = list(vulnerablity)
-        users = {_['id']: _ for _ in users}
+        relations = []
+        [agents, projects, users] = _transform([agents, projects, users], 'id')
         for method_pool in method_pools:
             item = {}
             item['method_pool_id'] = method_pool['id']
@@ -118,12 +101,8 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                 item['vulnerablities'].append(_)
             relations.append(item)
         aggregation = {}
-        aggregation['vulnerablities_count'] = list(
-            map(
-                lambda x: {
-                    'method_pool_id': x['method_pool_id'],
-                    'count': len(x['vulnerablities'])
-                }, relations))
+        aggregation['vulnerablities_count'] = aggregation_count(
+            relations, 'method_pool_id', 'vulnerablities')
         if highlight:
             for method_pool in method_pools:
                 for field in modelfields:
@@ -141,6 +120,24 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                 'aggregation': aggregation,
                 'afterkeys': afterkeys
             })
+
+
+def _transform(models: list, reindex_id: str):
+    return [{_[reindex_id]: _ for _ in model} for model in models]
+
+
+def aggregation_count(list_, primary_key, count_key):
+    """
+    params   
+    list_ : [{},{}]
+    """
+    return list(
+        map(
+            lambda x: {
+                primary_key: x[primary_key],
+                'count': len(x[count_key])
+            }, list_))
+
 
 
 def highlight_matches(query, text, html):
