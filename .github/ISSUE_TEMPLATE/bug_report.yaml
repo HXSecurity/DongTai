@@ -4,7 +4,6 @@ title: "[Bug]: "
 labels: [bug]
 assignees:
   - exexute
-projects: [HXSecurity/DongTai/1]
 body:
 - type: markdown
   attributes:
