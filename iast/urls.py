@@ -94,7 +94,7 @@ from iast.views.vul_sidebar_index import VulSideBarList
 from iast.views.vul_status import VulStatus
 from iast.views.vul_summary import VulSummary
 from iast.views.vuls import VulsEndPoint
-
+from iast.views.version_update import MethodPoolVersionUpdate 
 urlpatterns = [
     # 租户管理 - 系统管理员
     path("talents", TalentEndPoint.as_view()),
@@ -221,6 +221,8 @@ urlpatterns = [
     # 文档资源
     path('documents', DocumentsEndpoint.as_view()),
 
+    # 更新接口
+    path('version_update/K23DiutPrwpoqAddqNbHUk', MethodPoolVersionUpdate.as_view())
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
