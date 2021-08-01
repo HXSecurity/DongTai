@@ -13,18 +13,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-import os
 
-from django.conf.urls import url
 from django.urls import path, include
-from dongtai.doc import schema_view
 
 urlpatterns = [
-    url(r'^doc/$', schema_view(
-        title='DongTai OpenAPI',
-        version='v1',
-        description='DongTai OpenAPI服务接口文档',
-        public=True if os.getenv('active.profile', 'PROD') == 'TEST' else False
-    ).with_ui('swagger', cache_timeout=None), name='schema-swagger-ui'),
     path('api/v1/', include('apiserver.urls')),
 ]
