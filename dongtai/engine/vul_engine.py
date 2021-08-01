@@ -4,6 +4,7 @@
 # datetime: 2021/7/21 下午7:07
 # project: dongtai-engine
 import logging
+import copy
 
 from django.utils.functional import cached_property
 
@@ -107,22 +108,45 @@ class VulEngine(object):
         size = len(self.method_pool)
         for index in range(size):
             method = self.method_pool[index]
-            if self.hit_vul_method(method):
-                # 找到sink点所在方法，以此处为起点，寻找漏洞
-                pass
-            else:
+            if self.hit_vul_method(method) is None:
                 continue
 
             if 'sourceValues' in method:
                 self.taint_value = method['sourceValues']
             # 找到sink点所在索引后，开始向后递归
             current_link = list()
-            current_link.append(method)
+            vul_method_detail = self.copy_method(method_detail=method, sink=True)
+            current_link.append(vul_method_detail)
             self.pool_value = set(method.get('sourceHash'))
             self.vul_source_signature = None
             logger.info(f'==> current taint hash: {self.pool_value}')
             if self.loop(index, size, current_link):
                 break
+
+    @staticmethod
+    def copy_method(method_detail, sink=False, source=False, propagator=False, filter=False):
+        vul_method_detail = copy.deepcopy(method_detail)
+        vul_method_detail['originClassName'] = vul_method_detail['originClassName'].split('.')[-1]
+        # todo  根据类型进行拼接
+        if source:
+            vul_method_detail['tag'] = 'source'
+            vul_method_detail[
+                'code'] = f'<em>{vul_method_detail["targetValues"]}</em> = {vul_method_detail["signature"]}(...)'
+        elif propagator:
+            vul_method_detail['tag'] = 'propagator'
+            vul_method_detail[
+                'code'] = f'<em>{vul_method_detail["targetValues"]}</em> = {vul_method_detail["signature"]}(..., <em>{vul_method_detail["sourceValues"]}</em>, ...)'
+        elif filter:
+            vul_method_detail['tag'] = 'filter'
+            vul_method_detail[
+                'code'] = f'<em>{vul_method_detail["targetValues"]}</em> = {vul_method_detail["signature"]}(..., <em>{vul_method_detail["sourceValues"]}</em>, ...)'
+        elif sink:
+            vul_method_detail['tag'] = 'sink'
+            vul_method_detail[
+                'code'] = f'{vul_method_detail["signature"]}(..., <em>{vul_method_detail["sourceValues"]}</em>, ...)'
+        else:
+            vul_method_detail['code'] = vul_method_detail["signature"]
+        return vul_method_detail
 
     def loop(self, index, size, current_link):
         for sub_index in range(index + 1, size):
@@ -130,13 +154,13 @@ class VulEngine(object):
             sub_target_hash = set(sub_method.get('targetHash'))
             if sub_target_hash and sub_target_hash & self.pool_value:
                 if sub_method.get('source'):
-                    current_link.append(sub_method)
+                    current_link.append(self.copy_method(sub_method, source=True))
                     self.vul_source_signature = f"{sub_method.get('className')}.{sub_method.get('methodName')}"
                     self.vul_stack.append(current_link[::-1])
                     current_link.pop()
                     return True
                 else:
-                    current_link.append(sub_method)
+                    current_link.append(self.copy_method(sub_method, propagator=True))
                     old_pool_value = self.pool_value
                     self.pool_value = set(sub_method.get('sourceHash'))
                     if self.loop(sub_index, size, current_link):
