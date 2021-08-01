@@ -47,6 +47,7 @@ class AgentList(UserEndPoint):
                         {'__'.join([kv_pair[0], 'icontains']): kv_pair[1]},
                         searchfields_.items())), Q())
             q = q & Q(is_running=running_state)
+            q = q & Q(user__in=self.get_auth_users(request.user))
             queryset = IastAgent.objects.filter(q).order_by('-latest_time').all()
             summery, queryset = self.get_paginator(queryset, page=page, page_size=page_size)
 
