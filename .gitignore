@@ -15,3 +15,4 @@ conf/config.ini
 logs/*.log
 dist
 dongtai.egg-info
+build
