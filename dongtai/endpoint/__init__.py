@@ -168,7 +168,7 @@ class EndPoint(APIView):
             departments = talent.departments.all()
             users = User.objects.filter(department__in=departments)
         else:
-            users = user
+            users = [user]
         return users
 
     @staticmethod
