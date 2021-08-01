@@ -1,10 +1,10 @@
 from dongtai.endpoint import R
-from dongtai.endpoint import TalentAdminEndPoint
+from dongtai.endpoint import UserEndPoint
 from webapi.settings import config
 from dongtai.models.profile import IastProfile
 
 
-class OpenApiEndpoint(TalentAdminEndPoint):
+class OpenApiEndpoint(UserEndPoint):
     def get(self, request):
         """
         获取openapi配置
@@ -23,6 +23,8 @@ class OpenApiEndpoint(TalentAdminEndPoint):
         """
         创建
         """
+        if request.uset.is_talent_admin():
+            return R.failure(msg="当前用户无权修改")
         value = request.data.get('value', '')
         profilefromdb = IastProfile.objects.filter(
             key='apiserver').first()
