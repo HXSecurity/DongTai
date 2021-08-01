@@ -10,9 +10,6 @@ import uuid, logging
 
 from django.http import FileResponse
 from dongtai.endpoint import OpenApiEndPoint, R
-from drf_yasg import openapi
-from drf_yasg.openapi import Response
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework.authtoken.models import Token
 
 from apiserver.utils import OssDownloader
@@ -72,7 +69,7 @@ class PythonAgentDownload():
                 object_name=PythonAgentDownload.REMOTE_AGENT_FILE, local_file=PythonAgentDownload.LOCAL_AGENT_FILE
             )
 
-    def create_config(self,base_url, agent_token, auth_token, project_name):
+    def create_config(self, base_url, agent_token, auth_token, project_name):
         raw_config = {
             "debug": False,
             "iast": {
@@ -137,7 +134,7 @@ class PythonAgentDownload():
                     config_path = item
                     break
 
-            with open("/tmp/"+config_path, "w+") as config_file:
+            with open("/tmp/" + config_path, "w+") as config_file:
                 json.dump(raw_config, config_file)
             return True
         except Exception as e:
@@ -147,7 +144,8 @@ class PythonAgentDownload():
     def replace_config(self):
         try:
             with self.tarfile.open(PythonAgentDownload.LOCAL_AGENT_FILE, "w:gz") as tar:
-                tar.add(PythonAgentDownload.LOCAL_AGENT_DIR, arcname=os.path.basename(PythonAgentDownload.LOCAL_AGENT_DIR))
+                tar.add(PythonAgentDownload.LOCAL_AGENT_DIR,
+                        arcname=os.path.basename(PythonAgentDownload.LOCAL_AGENT_DIR))
             return True
         except Exception as e:
             print(e)
@@ -166,16 +164,6 @@ class AgentDownload(OpenApiEndPoint):
         'java': JavaAgentDownload(),
     }
 
-    @swagger_auto_schema(
-        operation_description="下载Java探针",
-        manual_parameters=(
-                openapi.Parameter("url", openapi.IN_QUERY, required=True, description="OpenAPI服务器地址",
-                                  type=openapi.TYPE_STRING),
-                openapi.Parameter("projectName", openapi.IN_QUERY, required=True, description="项目名称",
-                                  type=openapi.TYPE_STRING)
-        ),
-        responses={200: Response(description='修改成功', examples={'json': {'msg': '修改成功！', "data": []}})},
-    )
     def get(self, request):
         try:
             base_url = request.query_params.get('url', 'https://www.huoxian.cn')
