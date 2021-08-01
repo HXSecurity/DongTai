@@ -168,7 +168,7 @@ class EndPoint(APIView):
             departments = talent.departments.all()
             users = User.objects.filter(department__in=departments)
         else:
-            users = user
+            users = [user]
         return users
 
     @staticmethod
@@ -187,10 +187,11 @@ class EndPoint(APIView):
         :param users:
         :return:
         """
-        if isinstance(users, QuerySet):
-            return IastAgent.objects.filter(user__in=users)
-        else:
-            return IastAgent.objects.filter(user=users)
+        return IastAgent.objects.filter(user__in=users)
+        #if isinstance(users, QuerySet):
+        #    return IastAgent.objects.filter(user__in=users)
+        #else:
+        #    return IastAgent.objects.filter(user=users)
 
     @staticmethod
     def get_auth_and_anonymous_agents(user):
