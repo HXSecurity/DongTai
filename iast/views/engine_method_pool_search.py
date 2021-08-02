@@ -59,7 +59,6 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             item['id'] for item in list(
                 self.get_auth_agents_with_user(request.user).values('id'))
         ])
-        import pdb;pdb.set_trace()
         queryset = MethodPool.objects.filter(q).order_by(
             '-update_time')[:page_size]
         method_pools = list(queryset.values())
