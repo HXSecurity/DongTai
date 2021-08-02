@@ -43,9 +43,9 @@ class MethodPoolSearchProxy(UserEndPoint):
             elif k in fields:
                 searchfields_.append((k, v))
         q = assemble_query(searchfields_, 'regex', Q(), operator.or_)
-        search_after_fields = dict(
+        search_after_fields = list(
             filter(
-                lambda x: (x[0], x[1]) in search_after_keys,
+                lambda x: x[0] in search_after_keys,
                 map(
                     lambda x: (x[0].replace('search_after_', ''), x[1]),
                     filter(lambda x: x[0].startswith('search_after_'),
