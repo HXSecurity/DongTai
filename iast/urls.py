@@ -94,7 +94,8 @@ from iast.views.vul_sidebar_index import VulSideBarList
 from iast.views.vul_status import VulStatus
 from iast.views.vul_summary import VulSummary
 from iast.views.vuls import VulsEndPoint
-from iast.views.version_update import MethodPoolVersionUpdate 
+from iast.views.version_update import MethodPoolVersionUpdate
+
 urlpatterns = [
     # 租户管理 - 系统管理员
     path("talents", TalentEndPoint.as_view()),
