@@ -17,32 +17,32 @@ class MethodPoolSearchProxy(AnonymousAuthEndPoint):
         page = request.query_params.get('page_index', 1)
         highlight = request.query_params.get('highlight',1)
         fields = ['url', 'res_body']
-        modelfields = [
+        model_fields = [
             'url', 'res_header', 'res_body', 'req_header_fs', 'req_data'
         ]
         fields = get_model_field(
             MethodPool,
-            include=modelfields,
+            include=model_fields,
         )
         fields.extend(['sinkvalues', 'signature'])
         search_after_keys = ['update_time']
-        searchfields = dict(
+        search_fields = dict(
             filter(lambda k: k[0] in fields, request.query_params.items()))
-        searchfields_ = []
-        for k, v in searchfields.items():
+        search_fields_ = []
+        for k, v in search_fields.items():
             if k == 'sinkvalues':  # 污点数据
                 templates = [
                     r'"targetValues": ".*{}.*"', r'"sourceValues": ".*{}.*"'
                 ]
-                searchfields_.extend(
+                search_fields_.extend(
                     map(lambda x: ('method_pool', x.format(v)), templates))
             elif k == 'signature':  # 方法签名
                 templates = [r'"signature": ".*{}.*"']
-                searchfields_.extend(
+                search_fields_.extend(
                     map(lambda x: ('method_pool', x.format(v)), templates))
             elif k in fields:
-                searchfields_.append((k, v))
-        q = assemble_query(searchfields_, 'regex', Q(), operator.or_)
+                search_fields_.append((k, v))
+        q = assemble_query(search_fields_, 'regex', Q(), operator.or_)
         search_after_fields = list(
             filter(
                 lambda x: x[0] in search_after_keys,
@@ -53,10 +53,9 @@ class MethodPoolSearchProxy(AnonymousAuthEndPoint):
         q = assemble_query(search_after_fields, 'lt', q, operator.and_)
         if 'id' in request.query_params.keys():
             q = assemble_query(search_after_fields, '', q, operator.and_)
-        q = q & Q(agent__in=self.get_auth_agents_with_user(request.user))
-        queryset = MethodPool.objects.filter(q).order_by('-update_time').all()
-        method_pools = queryset[:page_size]
-        method_pools = list(method_pools.values())
+        q = q & Q(agent_id__in=[item['id'] for item in list(self.get_auth_agents_with_user(request.user).values('id'))])
+        queryset = MethodPool.objects.filter(q).order_by('-update_time')[:page_size]
+        method_pools = list(queryset.values())
         afterkeys = {}
         for i in method_pools[-1:]:
             afterkeys['update_time'] = i['update_time']
@@ -106,9 +105,11 @@ class MethodPoolSearchProxy(AnonymousAuthEndPoint):
             relations, 'method_pool_id', 'vulnerablities')
         if highlight:
             for method_pool in method_pools:
-                for field in modelfields:
-                    if field in searchfields.keys() and request.GET.get(
+                for field in model_fields:
+                    if field in search_fields.keys() and request.GET.get(
                             field, None):
+                        if method_pool[field] is None:
+                            continue
                         method_pool['_'.join([field, 'highlight'
                                               ])] = highlight_matches(
                                                   request.GET[field],
