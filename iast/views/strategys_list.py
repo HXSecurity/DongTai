@@ -4,7 +4,6 @@
 # datetime:2020/11/25 下午3:00
 # software: PyCharm
 # project: lingzhi-webapi
-from rest_framework.request import Request
 
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint

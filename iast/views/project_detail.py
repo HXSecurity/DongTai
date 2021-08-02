@@ -6,11 +6,11 @@
 # project: lingzhi-webapi
 
 from dongtai.endpoint import R
-from dongtai.utils import const
 from dongtai.endpoint import UserEndPoint
 from dongtai.models.agent import IastAgent
 from dongtai.models.project import IastProject
-from dongtai.models.project_version import IastProjectVersion
+from dongtai.utils import const
+
 from iast.base.project_version import get_project_version
 
 

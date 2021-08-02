@@ -76,7 +76,7 @@ class UserEndPoint(TalentAdminEndPoint):
                 "page": page_summary,
                 "total": page_summary['alltotal']
             })
-        except ValueError as e:
+        except ValueError as arg_invalid_error:
             return R.failure(msg='page和pageSize必须是数字')
 
     def post(self, request, user_id):

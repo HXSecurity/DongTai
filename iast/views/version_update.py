@@ -6,14 +6,14 @@
 import base64
 import logging
 
-from dongtai.endpoint import AnonymousAndUserEndPoint, R
+from dongtai.endpoint import R, TalentAdminEndPoint
 from dongtai.models.agent_method_pool import MethodPool
 from dongtai.models.profile import IastProfile
 
 logger = logging.getLogger('dongtai-webapi')
 
 
-class MethodPoolVersionUpdate(AnonymousAndUserEndPoint):
+class MethodPoolVersionUpdate(TalentAdminEndPoint):
     def get(self, request):
         profile_model = IastProfile.objects.filter(key='enable_update').first()
         if profile_model is None or profile_model.value != 'TRUE':
