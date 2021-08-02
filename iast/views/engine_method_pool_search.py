@@ -54,7 +54,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                            request.query_params.items()))))
         q = assemble_query(search_after_fields, 'lt', q, operator.and_)
         if 'id' in request.query_params.keys():
-            q = assemble_query(search_after_fields, '', q, operator.and_)
+            q = q & Q(pk=request.query_params['id'])
         q = q & Q(agent_id__in=[
             item['id'] for item in list(
                 self.get_auth_agents_with_user(request.user).values('id'))
