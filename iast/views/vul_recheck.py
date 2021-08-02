@@ -151,7 +151,7 @@ class VulReCheck(UserEndPoint):
                             "checking": checking
                         },
                         msg=msg)
-                return R.failure(msg=f'项目ID不能为空')
+                return R.failure(msg='项目ID不能为空')
             return R.failure(msg="参数格式不正确")
 
         except Exception as e:

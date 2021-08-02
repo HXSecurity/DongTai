@@ -29,6 +29,7 @@ class AgentsDeleteEndPoint(UserEndPoint):
     def get(self, request):
         agent_ids = request.GET.get('ids')
         agent_ids = agent_ids.split(',')
+        result = []
         for pk in agent_ids:
             try:
                 user = request.user
@@ -44,15 +45,20 @@ class AgentsDeleteEndPoint(UserEndPoint):
                     self.delete_method_pool_replay()
                     self.delete_replay_queue()
                     self.agent.delete()
-
-                    #return R.success(msg="agent及相关数据删除成功")
+                    result.append(True)
                 else:
+                    result.append(False)
                     pass
-                    #return R.failure(msg="agent不存在或无权限访问")
             except Exception as e:
+                result.append(False)
                 logger.error(f'user_id:{request.user.id} msg:{e}')
-                #return R.failure(msg="删除过程出错，请稍后重试")
-        return R.success(msg='正在删除..')
+        success = list(filter(lambda x: x is True, result))
+        failure = list(filter(lambda x: x is False, result))
+        if len(success) == len(agent_ids):
+            return R.success(msg='删除成功')
+        if len(failure) == len(agent_ids):
+            return R.success(msg='删除失败')
+        return R.success(msg='成功删除{}条，删除失败{}条'.format(len(success), len(failure)))
 
     def delete_error_log(self):
         try:
