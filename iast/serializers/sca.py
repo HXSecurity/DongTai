@@ -14,6 +14,7 @@ from dongtai.models.project import IastProject
 
 class ScaSerializer(serializers.ModelSerializer):
     project_name = serializers.SerializerMethodField()
+    project_id = serializers.SerializerMethodField()
     project_version = serializers.SerializerMethodField()
     level = serializers.SerializerMethodField()
     level_type = serializers.SerializerMethodField()
@@ -26,8 +27,8 @@ class ScaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Asset
-        fields = ['id', 'package_name', 'version', 'project_name', 'project_version', 'language', 'agent_name',
-                  'signature_value', 'level', 'level_type', 'vul_count', 'dt']
+        fields = ['id', 'package_name', 'version', 'project_name', 'project_id', 'project_version', 'language',
+                  'agent_name', 'signature_value', 'level', 'level_type', 'vul_count', 'dt']
 
     def get_project_name(self, obj):
         project_id = obj.agent.bind_project_id
@@ -39,6 +40,9 @@ class ScaSerializer(serializers.ModelSerializer):
             else:
                 self.project_cache[project_id] = IastProject.objects.filter(id=project_id).first().name
                 return self.project_cache[project_id]
+
+    def get_project_id(self, obj):
+        return obj.agent.bind_project_id
 
     def get_project_version(self, obj):
         project_version_id = obj.agent.project_version_id
