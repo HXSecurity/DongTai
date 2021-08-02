@@ -114,6 +114,7 @@ class VulsEndPoint(UserEndPoint):
                 item = datas[index]
                 item['index'] = index
                 item['project_name'] = projects_info.get(agentPro.get(item['agent_id'], 0), "暂未绑定项目")
+                item['project_id'] = agentPro.get(item['agent_id'], 0)
                 item['server_name'] = allServer.get(agentServer.get(item['agent_id'], 0), "JavaApplication")
                 item['server_type'] = VulSerializer.split_container_name(item['server_name'])
 
