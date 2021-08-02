@@ -3,30 +3,49 @@
 # author: owefsad@huoxian.cn
 # datetime: 2021/7/29 下午4:56
 # project: dongtai-webapi
-from dongtai.endpoint import AnonymousAndUserEndPoint, R
-from dongtai.models.agent_method_pool import MethodPool
-from dongtai.models.asset import Asset
-from dongtai.models.profile import IastProfile
-from iast.serializers.sca import ScaSerializer
 import base64
 import logging
+
+from dongtai.endpoint import R, TalentAdminEndPoint
+from dongtai.models.agent_method_pool import MethodPool
+from dongtai.models.profile import IastProfile
 
 logger = logging.getLogger('dongtai-webapi')
 
 
-class MethodPoolVersionUpdate(AnonymousAndUserEndPoint):
+class MethodPoolVersionUpdate(TalentAdminEndPoint):
     def get(self, request):
-        updateable = IastProfile.objects.filter(name='updateable')
-        if not updateable.value != 'TRUE':
+        profile_model = IastProfile.objects.filter(key='enable_update').first()
+        if profile_model is None or profile_model.value != 'TRUE':
             return R.failure(msg='当前不允许更新')
         method_pools = MethodPool.objects.all()
-        for method_pool in method_pools:
-            method_pool.req_header_fs = build_request_header(
-                method_pool.req_method, method_pool.req_header,
-                method_pool.uri, method_pool.req_params,
-                method_pool.http_protocol)
-            method_pool.res_header = base64_decode(method_pool.res_header)
-            method_pool.save(update_fields=['req_header_fs', 'res_header'])
+        length = 5
+        index = 0
+        while True:
+            start = index * length
+            end = (index + 1) * length
+            print(start)
+            print(end)
+            sub_method_pools = method_pools.values('id', 'http_method', 'req_header', 'uri', 'req_params',
+                                                   'http_protocol', 'res_header')[start:end]
+            for method_pool in sub_method_pools:
+                id = method_pool['id']
+                http_method = method_pool['http_method']
+                req_header = method_pool['req_header']
+                uri = method_pool['uri']
+                req_params = method_pool['req_params']
+                http_protocol = method_pool['http_protocol']
+                res_header = method_pool['res_header']
+                MethodPool.objects.filter(id=id).update(
+                    req_header_fs=build_request_header(http_method, req_header, uri, req_params, http_protocol),
+                    res_header=base64_decode(res_header)
+                )
+            if len(sub_method_pools) == length:
+                index = index + 1
+            else:
+                break
+        profile_model.value = 'FALSE'
+        profile_model.save(update_fields=['value'])
         return R.success(msg='更新成功')
 
 

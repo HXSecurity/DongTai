@@ -68,7 +68,7 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     'PAGE_SIZE':
-    20,
+        20,
     'DEFAULT_PAGINATION_CLASS': ['django.core.paginator'],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
@@ -86,15 +86,13 @@ REST_FRAMEWORK = {
     },
 }
 if os.getenv('environment', 'PROD') == 'TEST':
-    INSTALLED_APPS.append('drf_spectacular') 
+    INSTALLED_APPS.append('drf_spectacular')
     SPECTACULAR_SETTINGS = {
         'TITLE': 'DongTai webapi',
     }
-    REST_FRAMEWORK['DEFAULT_SCHEMA_CLASS']='drf_spectacular.openapi.AutoSchema'
-
+    REST_FRAMEWORK['DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'
 
 basedir = os.path.dirname(os.path.realpath(__file__))
-costcontrol_crontab = os.path.join(basedir, "costcontrol_crontab.log")
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -1,23 +1,14 @@
-import json
-import logging
-
-from dongtai.endpoint import R, AnonymousAndUserEndPoint
-from dongtai.engine.vul_engine import VulEngine
-from dongtai.models.agent_method_pool import MethodPool
-from dongtai.models.agent import IastAgent
-from dongtai.models.project import IastProject
-from dongtai.models.user import User
-from dongtai.models.vulnerablity import IastVulnerabilityModel
-from iast.serializers.method_pool import MethodPoolListSerialize
-from django.db.models import Q
-from django.forms.models import model_to_dict
-from iast.utils import get_model_field
 from functools import reduce
+
+from django.core.paginator import Paginator
+from django.db.models import Q
+from dongtai.endpoint import R, AnonymousAndUserEndPoint
 from dongtai.models.agent import IastAgent
 from dongtai.models.heartbeat import IastHeartbeat
 from dongtai.models.server import IastServer
-from django.core.paginator import Paginator
-from iast.serializers.agent import AgentSerializer
+
+from iast.utils import get_model_field
+
 
 class AgentSearch(AnonymousAndUserEndPoint):
     def get(self, request):
@@ -44,7 +35,7 @@ class AgentSearch(AnonymousAndUserEndPoint):
         summary = {"alltotal": paginator.count, "num_pages": paginator.num_pages, "page_size": page_size}
         agents = paginator.page(page).object_list
         agents = list(agents.values())
-        servers = IastServer.objects.filter(pk__in=[_['server_id']for _ in agents]).all().values()
+        servers = IastServer.objects.filter(pk__in=[_['server_id'] for _ in agents]).all().values()
         heartbeats = IastHeartbeat.objects.filter(agent_id__in=[_['id'] for _ in agents]).all().values()
         servers = {_['id']: _ for _ in servers}
         heartbeats = {_['agent_id']: _ for _ in heartbeats}
