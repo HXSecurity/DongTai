@@ -161,7 +161,9 @@ class EndPoint(APIView):
         :param user:
         :return:
         """
-        if user.is_system_admin():
+        if user.is_anonymous:
+            users = User.objects.filter(username=const.USER_BUGENV)
+        elif user.is_system_admin():
             users = User.objects.all()
         elif user.is_talent_admin():
             talent = user.get_talent()
@@ -195,11 +197,11 @@ class EndPoint(APIView):
 
     @staticmethod
     def get_auth_and_anonymous_agents(user):
-        query_user = None
+        query_user = []
         if user.is_active:
             query_user = user
 
-        if query_user is None:
+        if query_user == []:
             dt_range_user = User.objects.filter(username=const.USER_BUGENV).first()
             if dt_range_user:
                 query_user = dt_range_user
