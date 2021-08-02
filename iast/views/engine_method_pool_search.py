@@ -1,7 +1,7 @@
 from functools import reduce
 
 from django.db.models import Q
-from dongtai.endpoint import R, UserEndPoint
+from dongtai.endpoint import R, AnonymousAuthEndPoint
 from dongtai.models.agent import IastAgent
 from dongtai.models.agent_method_pool import MethodPool
 from dongtai.models.project import IastProject
@@ -11,7 +11,7 @@ from dongtai.models.vulnerablity import IastVulnerabilityModel
 from iast.utils import get_model_field, assemble_query
 import re
 import operator
-class MethodPoolSearchProxy(UserEndPoint):
+class MethodPoolSearchProxy(AnonymousAuthEndPoint):
     def get(self, request):
         page_size = int(request.query_params.get('page_size', 1))
         page = request.query_params.get('page_index', 1)
