@@ -45,9 +45,9 @@ class MethodPoolSearchProxy(UserEndPoint):
         q = assemble_query(searchfields_, 'regex', Q(), operator.or_)
         search_after_fields = dict(
             filter(
-                lambda x: x[0] in search_after_keys,
+                lambda x: (x[0], x[1]) in search_after_keys,
                 map(
-                    lambda x: (x[0].replace('search_after_', ''),x[1]),
+                    lambda x: (x[0].replace('search_after_', ''), x[1]),
                     filter(lambda x: x[0].startswith('search_after_'),
                            request.query_params.items()))))
         q = assemble_query(search_after_fields, 'lt', q, operator.and_)
@@ -55,14 +55,14 @@ class MethodPoolSearchProxy(UserEndPoint):
             q = assemble_query(search_after_fields, '', q, operator.and_)
         q = q & Q(agent__in=self.get_auth_agents_with_user(request.user))
         queryset = MethodPool.objects.filter(q).order_by('-update_time').all()
-        method_pools =  queryset[:page_size]
+        method_pools = queryset[:page_size]
         method_pools = list(method_pools.values())
         afterkeys = {}
         for i in method_pools[-1:]:
             afterkeys['update_time'] = i['update_time']
         agents = IastAgent.objects.filter(
             pk__in=[i['agent_id'] for i in method_pools]).all().values(
-                'bind_project_id', 'token', 'id','user_id','is_running')
+                'bind_project_id', 'token', 'id', 'user_id', 'is_running')
         projects = IastProject.objects.filter(
             pk__in=[i['bind_project_id']
                     for i in agents]).values('id', 'name', 'user_id')
