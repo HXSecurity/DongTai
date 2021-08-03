@@ -89,7 +89,7 @@ services:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:1.0.0
     restart: always
     volumes:
-       - $PWD/config-tutorial.ini:/opt/dongtai/apiserver/conf/config.ini
+       - $PWD/config-tutorial.ini:/opt/dongtai/openapi/conf/config.ini
     ports:
       - "'''$OPENAPI_SERVICE_PORT''':8000"
     depends_on:
