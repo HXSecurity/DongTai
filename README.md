@@ -4,6 +4,8 @@
 [![DongTai--webapi](https://img.shields.io/badge/DongTai--webapi-v1.0.0-lightgrey)](https://huoxianclub.github.io/LingZhi/#/doc/tutorial/quickstart)
 [![Build DongTai-WebAPI](https://github.com/HXSecurity/DongTai-webapi/actions/workflows/build-webapi.yml/badge.svg)](https://github.com/HXSecurity/DongTai-webapi/actions/workflows/build-webapi.yml)
 
+[中文版本(Chinese version)](README.ZH_CN.md)
+
 ## Whit is DongTai-WebApi?
 DongTai-WebAPI is used to user resource management ,including:
 
