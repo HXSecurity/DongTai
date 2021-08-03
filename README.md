@@ -45,16 +45,12 @@ DongTai-WebAPI is used to user resource management ,including:
 
 1.Initialize the database
 
-- 安装MySql 5.7，创建数据库`DongTai-webapi`，运行数据库文件`conf/db.sql`
 - Install MySql 5.7, create the database `DongTai-webapi`, and run the database file `conf/db.sql`
-- 进入`webapi`目录，运行`python manage.py createsuperuser`命令创建管理员
 - Enter the `webapi` directory and run the `python manage.py createsuperuser` command to create an administrator
 
 2. Modify the configuration file
 
 Copy the configuration file `conf/config.ini.example` to `conf/config.ini` and change the configuration; among them:
-- `engine`对应的url为`DongTai-engine`的服务地址
-- `apiserver`对应的url为`DongTai-openapi`的服务地址
 - The URL corresponding to the `engine` is the service address of `DongTai-engine`
 - The url corresponding to `apiserver` is the service address of `DongTai-openapi`
 
