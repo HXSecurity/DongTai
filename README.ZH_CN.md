@@ -2,7 +2,7 @@
 [![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
 [![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://huoxianclub.github.io/LingZhi/)
 [![DongTai--webapi](https://img.shields.io/badge/DongTai--webapi-v1.0.0-lightgrey)](https://huoxianclub.github.io/LingZhi/#/doc/tutorial/quickstart)
-[![Build DongTai-WebAPI](https://github.com/HXSecurity/DongTai-webapi/actions/workflows/build-webapi.yml/badge.svg)](https://github.com/HXSecurity/DongTai-webapi/actions/workflows/build-webapi.yml)
+[![Deploy DongTai WebApi To AWS](https://github.com/HXSecurity/DongTai-webapi/actions/workflows/deploy_webapi_to_aws.yml/badge.svg)](https://github.com/HXSecurity/DongTai-webapi/actions/workflows/deploy_webapi_to_aws.yml)
 
 [English](README.MD)
 
