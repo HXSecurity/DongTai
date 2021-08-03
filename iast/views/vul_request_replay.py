@@ -200,7 +200,7 @@ class RequestReplayEndPoint(UserEndPoint):
 
         replay_data = IastReplayQueue.objects.filter(id=replay_id, agent__in=auth_agents).values('state').first()
         if not replay_data:
-            return R.failure(msg='重放请求不存在或无操作权限')
+            return R.failure(status=203, msg='重放请求不存在或无操作权限')
         if replay_data['state'] != const.SOLVED:
             return R.failure(msg='重放请求处理中')
 
