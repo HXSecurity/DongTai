@@ -9,6 +9,7 @@ from functools import reduce
 from django.db.models import Q
 import operator
 
+
 def get_model_field(model, exclude=[], include=[]):
     fields = [field.name for field in model._meta.fields]
     if include:
@@ -30,5 +31,5 @@ def assemble_query(condictions: dict,
             map(
                 lambda kv_pair: {
                     '__'.join(filter(lambda x: x, [kv_pair[0], lookuptype])):
-                    kv_pair[1]
+                        kv_pair[1]
                 }, condictions)), base_query)

@@ -10,11 +10,9 @@ import re
 import time
 
 from dongtai.models.agent import IastAgent
-from dongtai.models.asset import Asset
 from dongtai.models.project import IastProject
 from dongtai.models.server import IastServer
 from dongtai.models.vulnerablity import IastVulnerabilityModel
-from django.db.models import Count
 
 
 def get_agents_with_project(project_name, users):

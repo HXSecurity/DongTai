@@ -20,13 +20,13 @@ def version_modify(user, versionData=None):
             "msg": "参数错误"
         }
     baseVersion = IastProjectVersion.objects.filter(
-             project_id=project_id,
-             version_name=version_name,
-             user=user,
-             status=1
-         )
+        project_id=project_id,
+        version_name=version_name,
+        user=user,
+        status=1
+    )
     if version_id:
-         baseVersion = baseVersion.filter(~Q(id=version_id))
+        baseVersion = baseVersion.filter(~Q(id=version_id))
     existVersion = baseVersion.exists()
     if existVersion:
         return {
@@ -43,7 +43,8 @@ def version_modify(user, versionData=None):
         else:
             version.update_time = int(time.time())
     else:
-        version = IastProjectVersion.objects.create(project_id=project_id, user=user, status=1, current_version=current_version)
+        version = IastProjectVersion.objects.create(project_id=project_id, user=user, status=1,
+                                                    current_version=current_version)
     version.version_name = version_name
     version.description = description
     version.save()
@@ -59,8 +60,10 @@ def version_modify(user, versionData=None):
 
 
 # 获取项目版本信息
-def get_project_version(project_id,auth_users):
-    versionInfo = IastProjectVersion.objects.filter(project_id=project_id, status=1, current_version=1, user__in=auth_users).first()
+def get_project_version(project_id, auth_users):
+    versionInfo = IastProjectVersion.objects.filter(
+        project_id=project_id, status=1, current_version=1, user__in=auth_users
+    ).first()
     if versionInfo:
         current_project_version = {
             "version_id": versionInfo.id,
@@ -74,6 +77,8 @@ def get_project_version(project_id,auth_users):
             "description": "",
         }
     return current_project_version
+
+
 def get_project_version_by_id(version_id):
     versionInfo = IastProjectVersion.objects.filter(pk=version_id).first()
     if versionInfo:

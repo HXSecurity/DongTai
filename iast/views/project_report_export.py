@@ -263,7 +263,6 @@ class ProjectReportExport(UserEndPoint):
         except:
             pass
 
-
     @staticmethod
     def generate_pdf_with_string():
         from reportlab.lib.utils import ImageReader

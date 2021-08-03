@@ -4,21 +4,22 @@
 [![DongTai--webapi](https://img.shields.io/badge/DongTai--webapi-v1.0.0-lightgrey)](https://huoxianclub.github.io/LingZhi/#/doc/tutorial/quickstart)
 [![Build DongTai-WebAPI](https://github.com/HXSecurity/DongTai-webapi/actions/workflows/build-webapi.yml/badge.svg)](https://github.com/HXSecurity/DongTai-webapi/actions/workflows/build-webapi.yml)
 
+[English](README.MD)
+
 ## 项目介绍
-“火线～洞态IAST”是一款专为甲方安全人员、代码审计工程师和0 Day漏洞挖掘人员量身打造的辅助工具，可用于集成devops环境进行漏洞检测、作为代码审计的辅助工具和自动化挖掘0 Day。
-
-“火线～洞态IAST”具有五大模块，分别是`DongTai-webapi`、`DongTai-openapi`、`DongTai-engine`、`DongTai-web`、`agent`，其中：
-- `DongTai-webapi`用于与`DongTai-web`交互，负责用户相关的API请求；
-- `DongTai-openapi`用于与`agent`交互，处理agent上报的数据，向agent下发策略，控制agent的运行等
-- `DongTai-engine`用于对`DongTai-openapi`接收到的数据进行分析、处理，计算存在的漏洞和可用的污点调用链等
-- `DongTai-web`为“火线～洞态IAST”的前端项目，负责页面展示
-- `agent`为各语言的数据采集端，从安装探针的项目中采集相对应的数据，发送至`DongTai-openapi`服务
-
-当前项目为`DongTai-webapi`，本项目用于负责用户侧的相关操作，包括：项目管理、漏洞管理、组件管理、系统配置、用户/角色管理、Agent部署、租户管理等，具体内容可使用**管理员**账号登陆查看
+DongTai-WebAPI 用于处理DongTai用户资源管理的相关请求，包括：
 
 
-### 应用场景
-“火线～洞态IAST”可应用于：`devsecops`阶段做自动化漏洞检测、开源软件/组件挖掘通用漏洞、上线前安全测试等场景，主要目的是降低现有漏洞检测的工作量，释放安全从业人员的生产力来做更专业的事情。
+- 项目管理请求
+- 漏洞管理
+- 用户数据检索
+- 系统配置资源
+- 用户/角色管理
+- Agent部署管理
+- 租户管理
+- 部署文档检索
+
+
 
 ### 部署方案
 - 源码部署
@@ -54,12 +55,12 @@
 
 3.构建镜像
 ```
-$ docker build -t huoxian/dongtai-openapi:latest .
+$ docker build -t huoxian/dongtai-webapi:latest .
 ```
 
 4.启动容器
 ```
-$ docker run -d -p 8000:8000 --restart=always --name dongtai-openapi huoxian/dongtai-openapi:latest
+$ docker run -d -p 8000:8000 --restart=always --name dongtai-webapi huoxian/dongtai-webapi:latest
 ```
 
 ### 文档
