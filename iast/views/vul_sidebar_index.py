@@ -4,8 +4,6 @@
 # datetime:2020/11/23 下午2:15
 # software: idea
 # project: lingzhi-webapi
-from django.db.models import Q
-from rest_framework.request import Request
 
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint

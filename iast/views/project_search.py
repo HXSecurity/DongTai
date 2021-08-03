@@ -1,17 +1,18 @@
 import logging
 
+from django.forms.models import model_to_dict
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from dongtai.models.project import IastProject
-from iast.serializers.project import ProjectSerializer
-from django.forms.models import model_to_dict
 
 logger = logging.getLogger("django")
 
+
 class ProjectSearch(UserEndPoint):
-    '''
+    """
     项目名称搜索项目
-    '''
+    """
+
     def get(self, request):
         name = request.query_params.get('name', '')
         users = self.get_auth_users(request.user)

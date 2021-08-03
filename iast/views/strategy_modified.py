@@ -1,10 +1,7 @@
-from rest_framework.request import Request
-
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
-from dongtai.models.strategy_user import IastStrategyUser
-from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.hook_type import HookType
+from dongtai.models.strategy import IastStrategyModel
 
 
 class StrategyModified(UserEndPoint):

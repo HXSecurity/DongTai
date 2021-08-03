@@ -20,12 +20,7 @@ class ScaSidebarList(UserEndPoint):
         :param request:
         :return:
         """
-        end = {
-            "status": 201,
-            "msg": "success"
-        }
         # 提取过滤条件：
-        page = request.query_params.get('page', 1)
         language = request.query_params.get('language', None)
         level = request.query_params.get('level', None)
         app_name = request.query_params.get('app', None)

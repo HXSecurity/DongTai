@@ -34,7 +34,8 @@ class UserLogin(UserEndPoint):
                     login(request, user)
                     return R.success(msg='登录成功')
                 else:
-                    logger.warn(f"user [{username}] login failure, rease: {'user not exist'if user is None else 'user is disable'}")
+                    logger.warn(
+                        f"user [{username}] login failure, rease: {'user not exist' if user is None else 'user is disable'}")
                     return R.failure(status=202, msg='登录失败')
             else:
                 return R.failure(status=203, msg='验证码错误')

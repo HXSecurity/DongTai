@@ -4,14 +4,13 @@
 # datetime:2020/11/23 下午2:15
 # software: PyCharm
 # project: lingzhi-webapi
-from rest_framework.request import Request
 
 from dongtai.endpoint import R, UserEndPoint
-from iast.base.agent import get_agents_with_project
 from dongtai.models.asset import Asset
-from iast.serializers.sca import ScaSerializer
-from iast.base.project_version import get_project_version
+
+from iast.base.agent import get_agents_with_project
 from iast.base.project_version import get_project_version, get_project_version_by_id
+from iast.serializers.sca import ScaSerializer
 
 
 class ScaList(UserEndPoint):
