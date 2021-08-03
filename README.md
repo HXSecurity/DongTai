@@ -3,6 +3,7 @@
 [![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
 [![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://hxsecurity.github.io/DongTaiDoc)
 [![DongTai-core](https://img.shields.io/badge/DongTai--core-v1.0-lightgrey)](https://github.com/HXSecurity/dongtai-models)
+[中文版本(Chinese version)](README.ZH_CN.md)
 
 ## Whit is DongTai-WebApi?
 Provides the Django Model class that the DongTai project depends on, the Django API abstract class of the DongTai project, the vulnerability detection engine, constants, documents, etc.
