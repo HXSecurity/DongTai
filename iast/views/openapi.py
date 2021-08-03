@@ -23,7 +23,7 @@ class OpenApiEndpoint(UserEndPoint):
         """
         创建
         """
-        if request.uset.is_talent_admin():
+        if not request.user.is_talent_admin():
             return R.failure(msg="当前用户无权修改")
         value = request.data.get('value', '')
         profilefromdb = IastProfile.objects.filter(

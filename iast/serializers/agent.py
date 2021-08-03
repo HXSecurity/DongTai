@@ -29,7 +29,7 @@ class AgentSerializer(serializers.ModelSerializer):
     def get_latest_heartbeat(self, obj):
         try:
             latest_heartbeat = getattr(obj, 'latest_heartbeat')
-        except Exception as e:
+        except Exception as heartbeat_not_found:
             latest_heartbeat = obj.heartbeats.values('dt', 'cpu').order_by('-dt').first()
             setattr(obj, 'latest_heartbeat', latest_heartbeat)
         return latest_heartbeat

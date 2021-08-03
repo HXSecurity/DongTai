@@ -21,8 +21,10 @@ class VulDelete(UserEndPoint):
         :return:
         """
         try:
-            IastVulnerabilityModel.objects.get(id=id,
-                                               agent_id__in=self.get_auth_agents_with_user(request.user)).delete()
+            IastVulnerabilityModel.objects.get(
+                id=id,
+                agent_id__in=self.get_auth_agents_with_user(request.user)
+            ).delete()
             return R.success(msg='删除成功')
         except IastVulnerabilityModel.DoesNotExist as e:
             return R.failure(msg='删除失败，原因：漏洞不存在')
