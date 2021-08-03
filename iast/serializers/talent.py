@@ -15,7 +15,10 @@ class TalentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Talent
-        fields = ['id', 'talent_name', 'create_time', 'update_time', 'created', 'is_active']
+        fields = [
+            'id', 'talent_name', 'create_time', 'update_time', 'created',
+            'is_active'
+        ]
 
     def get_created(self, obj):
         user = User.objects.filter(id=obj.created_by).first()
