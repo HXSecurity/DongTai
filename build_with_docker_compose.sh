@@ -1,5 +1,3 @@
-SERVER_ADDR=127.0.0.1
-
 # 拉取代码
 downloa_deploy_repo(){
 	echo "\033[33m[+] check Repo[deploy] status\033[0m"
@@ -61,15 +59,15 @@ check_port(){
 	echo '''version: "2"
 services:
   dongtai-mysql:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:5.7
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:1.0.0
     restart: always
 
   dongtai-redis:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:latest
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:1.0.0
     restart: always
 
   dongtai-webapi:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:latest
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:1.0.0
     restart: always
     volumes:
       - $PWD/config-tutorial.ini:/opt/iast/webapi/conf/config.ini
@@ -78,7 +76,7 @@ services:
       - dongtai-redis
 
   dongtai-web:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-web:latest
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-web:1.0.0
     restart: always
     ports:
       - "'''$WEB_SERVICE_PORT''':80"
@@ -88,7 +86,7 @@ services:
       - dongtai-webapi
 
   dongtai-openapi:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:latest
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:1.0.0
     restart: always
     volumes:
        - $PWD/config-tutorial.ini:/opt/iast/apiserver/conf/config.ini
@@ -99,7 +97,7 @@ services:
       - dongtai-redis
 
   dongtai-engine:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:1.0.0
     restart: always
     volumes:
       - $PWD/config-tutorial.ini:/opt/iast/engine/conf/config.ini
@@ -108,7 +106,7 @@ services:
       - dongtai-redis
 
   dongtai-engine-task:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:1.0.0
     restart: always
     command: ["/opt/iast/engine/docker/entrypoint.sh", "task"]
     volumes:
@@ -117,20 +115,6 @@ services:
       - dongtai-mysql
       - dongtai-redis
       - dongtai-engine''' > deploy/docker-compose/docker-compose.yml
-}
-
-read_ip(){
-	echo "\n\033[33m[+] check ip address\033[0m"
-	ifconfig
-
-	read -p "[+] please input server address: " SERVER_ADDR
-	
-	if [ -z $SERVER_ADDR ]; then
-		echo "\033[31m[-] server addr is empty, it must be domain or ip addr\033[0m"
-		exit
-	else
-		echo "\033[32m[*]\033[0m server addr is $SERVER_ADDR"
-	fi
 }
 
 build_dongtai_iast(){
@@ -147,5 +131,4 @@ build_dongtai_iast(){
 downloa_deploy_repo
 check_docker
 check_port
-read_ip
-build_dongtai_iast $SERVER_ADDR
+build_dongtai_iast
