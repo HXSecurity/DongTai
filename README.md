@@ -6,7 +6,7 @@
 
 [中文版本(Chinese version)](README.ZH_CN.md)
 
-## Whit is DongTai-WebApi?
+## Whit is DongTai-Core?
 Provides the Django Model class that the DongTai project depends on, the Django API abstract class of the DongTai project, the vulnerability detection engine, constants, documents, etc.
 
 ## Quickstart
