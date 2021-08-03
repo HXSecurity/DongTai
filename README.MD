@@ -5,7 +5,7 @@
 [![DongTai--openapi](https://img.shields.io/badge/DongTai--openapi-v1.0.0-lightgrey)](https://huoxianclub.github.io/LingZhi/#/doc/tutorial/quickstart)
 [![DongTai-OpenAPI-Build](https://github.com/HXSecurity/DongTai-openapi/actions/workflows/build-openapi.yml/badge.svg)](https://github.com/HXSecurity/DongTai-openapi/actions/workflows/build-openapi.yml)
 
-[中文版本(Chinese version)](README_CN.MD)
+[中文版本(Chinese version)](README.ZH-CN.MD)
 
 ## Whit is DongTai-Engine?
 DongTai-OpenAPI is used to process DongTai probe related requests, including:
