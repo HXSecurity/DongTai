@@ -28,7 +28,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     def get_agents(self, obj):
         try:
             all_agents = getattr(obj, 'project_agents')
-        except:
+        except Exception as agent_not_founc:
             all_agents = IastAgent.objects.values('id').filter(bind_project_id=obj.id)
             setattr(obj, 'project_agents', all_agents)
         return all_agents

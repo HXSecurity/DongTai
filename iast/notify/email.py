@@ -53,6 +53,7 @@ Example 1:发送html格式的邮件:
     mail_content = '
       Hi,
         This is a auto - send mail.'
-    mail = Email("smtp.qq.com", "execute@qq.com", password, "send_user@qq.com", ["recv1@qq.com", "recv2@qq.com"], "Test Moudle", mail_content)
+    mail = Email("smtp.qq.com", "execute@qq.com", password, "send_user@qq.com", ["recv1@qq.com", "recv2@qq.com"], 
+    "Test Moudle", mail_content)
     mail.sendmail()
 '''

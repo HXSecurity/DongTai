@@ -6,12 +6,9 @@
 # project: webapi
 import logging
 
-from rest_framework.authtoken.models import Token
-from rest_framework.request import Request
-
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
-from webapi import settings
+from rest_framework.authtoken.models import Token
 
 logger = logging.getLogger("django")
 
