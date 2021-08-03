@@ -12,6 +12,7 @@ from dongtai.engine.vul_engine import VulEngine
 from dongtai.engine.vul_engine_v2 import VulEngineV2
 from dongtai.models.agent_method_pool import MethodPool
 from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
+from dongtai.utils import const
 from dongtai.utils.validate import Validate
 
 logger = logging.getLogger('dongtai-webapi')
@@ -35,7 +36,8 @@ class MethodGraph(AnonymousAndUserEndPoint):
             elif method_pool_type == 'replay':
                 method_pool = IastAgentMethodPoolReplay.objects.filter(
                     agent_id__in=auth_agent_ids,
-                    id=method_pool_id
+                    relation_id=method_pool_id,
+                    replay_type=const.REQUEST_REPLAY
                 ).first()
             else:
                 return R.failure(msg='污点调用图类型不存在')
