@@ -96,7 +96,7 @@ build_engine_task(){
     cp dongtai-webapi/conf/config.ini dongtai-engine/conf/config.ini
 
     cd dongtai-engine
-    docker run -d --network dongtai-net --name dongtai-engine-task --restart=always huoxian/dongtai-engine:latest bash /opt/iast/engine/docker/entrypoint.sh task
+    docker run -d --network dongtai-net --name dongtai-engine-task --restart=always huoxian/dongtai-engine:latest bash /opt/dongtai/engine/docker/entrypoint.sh task
     cd $CURRENT_PATH
 }
 
