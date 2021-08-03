@@ -202,7 +202,7 @@ class RequestReplayEndPoint(UserEndPoint):
         if not replay_data:
             return R.failure(msg='重放请求不存在或无操作权限')
         if replay_data['state'] != const.SOLVED:
-            return R.failure('重放请求处理中')
+            return R.failure(msg='重放请求处理中')
 
         replay_data = IastAgentMethodPoolReplay.objects.filter(replay_id=replay_id,
                                                                replay_type=const.REQUEST_REPLAY).values(
