@@ -129,7 +129,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             server.env = env
             server.status = 'online'
             server.update_time = int(time.time())
-            server.save(update_fields=['hostname', 'command', 'ip', 'port', 'environment', 'status', 'update_time'])
+            server.save(update_fields=['hostname', 'command', 'ip', 'port', 'env', 'status', 'update_time'])
         else:
             server = IastServer.objects.create(
                 hostname=hostname,
