@@ -23,36 +23,13 @@ logger = logging.getLogger('dongtai.openapi')
 class HeartBeatHandler(IReportHandler):
     def __init__(self):
         super().__init__()
-        self.server_env = None
-        self.app_name = None
-        self.app_path = None
-        self.web_server_name = None
-        self.web_server_port = None
-        self.web_server_version = None
-        self.web_server_hostname = None
-        self.web_server_ip = None
-        self.web_server_path = None
         self.req_count = None
-        self.pid = None
-        self.hostname = None
         self.cpu = None
         self.memory = None
         self.network = None
         self.disk = None
 
     def parse(self):
-        self.server_env = self.detail.get('server_env')
-        self.app_name = self.detail.get('app_name')
-        self.app_path = self.detail.get('app_path')
-        self.web_server_name = self.detail.get('web_server_name')
-        self.web_server_port = self.detail.get('web_server_port')
-        self.web_server_version = self.detail.get('web_server_version')
-        self.web_server_path = self.detail.get('web_server_path')
-        self.web_server_hostname = self.detail.get('web_server_hostname')
-        self.web_server_ip = self.detail.get('web_server_ip')
-        self.req_count = self.detail.get('req_count')
-        self.pid = self.detail.get('pid')
-        self.hostname = self.detail.get('hostname')
         self.cpu = self.detail.get('cpu')
         self.memory = self.detail.get('memory')
         self.network = self.detail.get('network')
