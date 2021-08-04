@@ -268,3 +268,4 @@ EMAIL_PASSWORD = config.get('smtp', 'password')
 EMAIL_FROM_ADDR = config.get('smtp', 'from_addr')
 ENABLE_SSL = config.get('smtp', 'ssl') == 'True'
 ADMIN_EMAIL = config.get('smtp', 'cc_addr')
+DOMAIN = config.get('other', 'domain')
