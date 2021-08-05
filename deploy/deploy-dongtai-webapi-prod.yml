@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: lingzhi-api
+  name: dongtai-webapi
   namespace: iast-prod
   annotations:
-    kubesphere.io/description: lingzhi-api接口
+    kubesphere.io/description: dongtai-webapi接口
   labels:
-    app: lingzhi-api
+    app: dongtai-webapi
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: lingzhi-api
+      app: dongtai-webapi
   template:
     metadata:
       labels:
-        app: lingzhi-api
+        app: dongtai-webapi
     spec:
       containers:
-        - name: lingzhi-api-container
+        - name: dongtai-webapi-container
           image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-webapi:VERSION
           imagePullPolicy: IfNotPresent
           volumeMounts:
@@ -38,14 +38,14 @@ spec:
       volumes:
         - name: configfile
           configMap:
-            name: iast-test-config.ini
+            name: dongtai-iast-config-prod.ini
       imagePullSecrets:
         - name: aliyun-registry-secret
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: lingzhi-api-svc
+  name: dongtai-webapi-svc
   namespace: iast-prod
 spec:
   ports:
@@ -53,5 +53,5 @@ spec:
       protocol: TCP
       targetPort: 8000
   selector:
-    app: lingzhi-api
+    app: dongtai-webapi
   type: ClusterIP
