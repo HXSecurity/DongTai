@@ -192,11 +192,10 @@ class SaasMethodPoolHandler(IReportHandler):
     @staticmethod
     def send_to_engine(method_pool_id, update_record=False, model=None):
         try:
-            if update_record:
-                logger.info(
-                    f'[+] send method_pool [{method_pool_id}] to engine for {"update" if update_record else "new record"}')
+            if model is None:
+                logger.info(f'[+] send method_pool [{method_pool_id}] to engine for {"update" if update_record else "new record"}')
                 requests.get(url=settings.BASE_ENGINE_URL.format(id=method_pool_id))
-            if model:
+            else:
                 logger.info(
                     f'[+] send method_pool [{method_pool_id}] to engine for {model if model else ""}')
                 requests.get(url=settings.REPLAY_ENGINE_URL.format(id=method_pool_id))
