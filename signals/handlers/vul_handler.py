@@ -230,11 +230,10 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
 
     vul = IastVulnerabilityModel.objects.filter(
         type=vul_name,  # 指定漏洞类型
-        url=vul_meta.url,
+        uri=vul_meta.uri,
         http_method=vul_meta.http_method,
-        taint_position=taint_position,
-        param_name=param_name,
-        agent=vul_meta.agent
+        agent=vul_meta.agent,
+        method_pool_id=vul_meta.id
     ).first()
     if vul:
         vul.req_header = vul_meta.req_header
