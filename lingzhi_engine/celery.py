@@ -25,22 +25,23 @@ configs = {k: v for k, v in settings.__dict__.items() if k.startswith('CELERY')}
 #   should have a `CELERY_` prefix.
 
 configs["CELERY_QUEUES"] = [
-    Queue("dongtai-method-pool-scan", Exchange("method_pool"), routing_key="method_pool"),
-    Queue("dongtai-replay-vul-scan", Exchange("method_pool"), routing_key="method_pool"),
-    Queue("dongtai-strategy-scan", Exchange("strategy"), routing_key="strategy"),
-    Queue("dongtai-search-scan", Exchange("search"), routing_key="search"),
-    Queue("dongtai-periodic-task", Exchange("periodic_task"), routing_key="periodic_task"),
-    Queue("dongtai-replay-task", Exchange("replay_task"), routing_key="replay_task"),
+    Queue("dongtai-method-pool-scan", Exchange("dongtai-method-pool-scan"), routing_key="dongtai-method-pool-scan"),
+    Queue("dongtai-replay-vul-scan", Exchange("dongtai-replay-vul-scan"), routing_key="dongtai-replay-vul-scan"),
+    Queue("dongtai-strategy-scan", Exchange("dongtai-strategy-scan"), routing_key="dongtai-strategy-scan"),
+    Queue("dongtai-search-scan", Exchange("dongtai-search-scan"), routing_key="dongtai-search-scan"),
+    Queue("dongtai-periodic-task", Exchange("dongtai-periodic-task"), routing_key="dongtai-periodic-task"),
+    Queue("dongtai-replay-task", Exchange("dongtai-replay-task"), routing_key="dongtai-replay-task"),
 ]
 configs["CELERY_ROUTES"] = {
-    "core.tasks.search_vul_from_method_pool": {'exchange': 'method_pool', 'routing_key': 'method_pool'},
-    "core.tasks.search_vul_from_strategy": {'exchange': 'strategy', 'routing_key': 'strategy'},
-    "core.tasks.search_sink_from_method_pool": {'exchange': 'search', 'routing_key': 'search'},
-    "core.tasks.update_sca": {'exchange': 'periodic_task', 'routing_key': 'periodic_task'},
-    "core.tasks.update_agent_status": {'exchange': 'periodic_task', 'routing_key': 'periodic_task'},
-    "core.tasks.heartbeat": {'exchange': 'periodic_task', 'routing_key': 'periodic_task'},
-    "core.tasks.clear_error_log": {'exchange': 'periodic_task', 'routing_key': 'periodic_task'},
-    "core.tasks.vul_recheck": {'exchange': 'replay_task', 'routing_key': 'replay_task'},
+    "core.tasks.search_vul_from_method_pool": {'exchange': 'dongtai-method-pool-scan', 'routing_key': 'dongtai-method-pool-scan'},
+    "core.tasks.search_vul_from_strategy": {'exchange': 'dongtai-strategy-scan', 'routing_key': 'dongtai-strategy-scan'},
+    "core.tasks.search_vul_from_replay_method_pool": {'exchange': 'dongtai-replay-vul-scan', 'routing_key': 'dongtai-replay-vul-scan'},
+    "core.tasks.search_sink_from_method_pool": {'exchange': 'dongtai-search-scan', 'routing_key': 'dongtai-search-scan'},
+    "core.tasks.update_sca": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
+    "core.tasks.update_agent_status": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
+    "core.tasks.heartbeat": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
+    "core.tasks.clear_error_log": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
+    "core.tasks.vul_recheck": {'exchange': 'dongtai-replay-task', 'routing_key': 'dongtai-replay-task'},
 }
 configs["CELERY_ENABLE_UTC"] = False
 configs["CELERY_TIMEZONE"] = settings.TIME_ZONE
