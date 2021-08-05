@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: iast-engine
+  name: dongtai-engine
   namespace: iast-prod
   annotations:
-    kubesphere.io/description: iast-engine
+    kubesphere.io/description: dongtai-engine
   labels:
-    app: iast-engine
+    app: dongtai-engine
 spec:
   replicas: 5
   selector:
     matchLabels:
-      app: iast-engine
+      app: dongtai-engine
   template:
     metadata:
       labels:
-        app: iast-engine
+        app: dongtai-engine
     spec:
       containers:
-        - name: iast-engine-container
+        - name: dongtai-engine-container
           image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine:VERSION
           imagePullPolicy: Always
           volumeMounts:
