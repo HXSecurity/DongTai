@@ -1,6 +1,6 @@
 import unittest
 
-from core.tasks import maven_spider, heartbeat
+from core.tasks import heartbeat, search_vul_from_method_pool
 from test import DongTaiTestCase
 
 
@@ -55,9 +55,6 @@ class MyTestCase(DongTaiTestCase):
     def test_agent_status_update(self):
         from core.tasks import update_agent_status
         update_agent_status()
-
-    def test_maven_spider(self):
-        maven_spider()
 
     def test_heart_beat(self):
         import os
