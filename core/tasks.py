@@ -399,7 +399,7 @@ def update_sca():
 
 
 def is_alive(agent_id, timestamp):
-    return IastHeartbeat.objects.values('id').filter(agent__id=agent_id, dt__gt=(timestamp - 600)).exists()
+    return IastHeartbeat.objects.values('id').filter(agent__id=agent_id, dt__gt=(timestamp - 60 * 20)).exists()
 
 
 @shared_task(queue='dongtai-periodic-task')
