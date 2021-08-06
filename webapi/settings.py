@@ -269,3 +269,11 @@ EMAIL_FROM_ADDR = config.get('smtp', 'from_addr')
 ENABLE_SSL = config.get('smtp', 'ssl') == 'True'
 ADMIN_EMAIL = config.get('smtp', 'cc_addr')
 DOMAIN = config.get('other', 'domain')
+DEMO_SESSION_COOKIE_DOMAIN = config.get('other', 'demo_session_cookie_domain')
+DEMO_CSRF_COOKIE_DOMAIN = DEMO_SESSION_COOKIE_DOMAIN
+
+CSRF_COOKIE_SAMESITE = 'None'
+
+SESSION_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
