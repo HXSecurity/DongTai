@@ -27,12 +27,12 @@ class Demo(UserEndPoint):
                        request.session.session_key,
                        None,
                        None,
-                       settings.DEMO_SESSION_COOKIE_DOMAIN,
-                       samesite='None')
+                       domain=settings.DEMO_SESSION_COOKIE_DOMAIN,
+                       )
         res.set_cookie(settings.CSRF_COOKIE_NAME,
                        request.META['CSRF_COOKIE'],
                        None,
                        None,
-                       settings.DEMO_SESSION_COOKIE_DOMAIN,
-                       samesite='None')
+                       domain=settings.DEMO_SESSION_COOKIE_DOMAIN,
+                       )
         return res
