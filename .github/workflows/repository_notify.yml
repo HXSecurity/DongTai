@@ -1,0 +1,43 @@
+name: Repository Popularity Statistice Notify
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - id: repo-stars
+        run: |
+          STARS=`curl -s 'https://api.github.com/repos/${{github.repository}}?page=$i&per_page=100' | jq .stargazers_count`
+          echo "::set-output name=stars::$STARS"
+        shell: bash
+
+      - id: repo-forks
+        run: |
+          STARS=`curl -s 'https://api.github.com/repos/${{github.repository}}?page=$i&per_page=100' | jq .forks_count`
+          echo "::set-output name=forks::$STARS"
+        shell: bash
+
+      - id: repo-issues
+        run: |
+          STARS=`curl -s 'https://api.github.com/repos/${{github.repository}}?page=$i&per_page=100' | jq .open_issues_count`
+          echo "::set-output name=issues::$STARS"
+        shell: bash
+
+      - id: echo
+        run: |
+          echo "${{ steps.repo-stars.outputs.stars }}"
+          echo "${{ steps.repo-forks.outputs.forks }}"
+          echo "${{ steps.repo-issues.outputs.issues }}"
+        shell: bash
+
+      - name: notify
+        env:
+          LABELS: ${{ toJson(github.event.issue.labels) }}
+        uses: joelwmale/webhook-action@master
+        with:
+          url: ${{ secrets.COMMUNITY_NOTIFY_URL }}
+          body: '{"msg_type": "interactive","card": {"header": {"title": {"tag": "plain_text", "content": "Repository Popularity Statistice Notify"}}, "config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "**repository: **${{ github.repository }}\n**star: ** ${{ steps.repo-stars.outputs.stars }}\n**fork: **${{ steps.repo-forks.outputs.forks }}\n**issue count: **${{ steps.repo-issues.outputs.issues }}\n","tag": "lark_md"}}]}}'
+

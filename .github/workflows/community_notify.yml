@@ -1,0 +1,64 @@
+name: Community Notify
+
+on:
+  issues:
+    types: [opened, edited, deleted, closed]
+  issue_comment:
+  discussion:
+    types: [opened, edited, deleted]
+  discussion_comment:
+
+jobs:
+  issues:
+    name: Issue Created
+    if: ${{ github.event_name == 'issues' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: official notify
+        uses: joelwmale/webhook-action@master
+        with:
+          url: ${{ secrets.COMMUNITY_NOTIFY_URL }}
+          body: '{"msg_type":"interactive","card": {"header": {"title": {"tag": "plain_text", "content": "NOTIFY: issue ${{ github.event.issue.number }} ${{ github.event.action }}"}},"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "**repository**: ${{ github.event.repository.name }}\r\n**issue title**: ${{ github.event.issue.title }}\r\n**issue body**: ${{ github.event.issue.body }}\r\n**issue link:** [open issue link](${{ github.event.issue.html_url }})\r\n**issue state**: ${{ github.event.issue.state }}\r\n**assignee:** ${{ github.event.issue.assignee }} \r\n**assignees:** ${{ github.event.issue.assignees }} \r\n**issue labels**: ${{ github.event.issue.labels }}\r\n**issue author:** ${{github.actor}} \r\n**created at:** ${{ github.event.issue.created_at }}\r\n**updated at:** ${{ github.event.issue.updated_at }}\r\n","tag": "lark_md"}}]}}'
+
+  issue_commented:
+    name: Issue comment
+    if: ${{ github.event_name == 'issue_comment' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: discussion comment notify
+        if: ${{ !github.event.issue.pull_request }}
+        uses: joelwmale/webhook-action@master
+        with:
+          url: ${{ secrets.COMMUNITY_NOTIFY_URL }}
+          body: '{"msg_type": "interactive","card": {"header": {"title": {"tag": "plain_text", "content": "NOTIFY: issue ${{ github.event.issue.number }} comment ${{ github.event.comment.number }} ${{ github.event.action }}"}}, "config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "**repository name**: ${{ github.event.repository.name }}\n**issue title**: ${{ github.event.issue.title }}\n**comment body**: ${{ github.event.comment.body }}\n**issue comment link:** [open issue comment](${{ github.event.comment.html_url }})\n**issue state**: ${{ github.event.issue.state }}\n**assignee:** ${{ github.event.issue.assignee }} \n**assignees:** ${{ github.event.issue.assignees }} \n**issue labels**: ${{ github.event.issue.labels }}\n**issue comment author:** ${{github.actor}}\n**created at:** ${{ github.event.issue.created_at }}\n**updated at:** ${{ github.event.issue.updated_at }}","tag": "lark_md"}}]}}'
+
+      - name: start-build
+        if: ${{ github.event.issue.pull_request }}
+        uses: joelwmale/webhook-action@master
+        with:
+          url: ${{ secrets.COMMUNITY_NOTIFY_URL }}
+          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "PR Comment\r\n触发事件：${{github.event_name}}\r\n提交人：${{github.actor}}","tag": "lark_md"}}]}}'
+
+  discussion:
+    name: Discussion Created
+    if: ${{ github.event_name == 'discussion' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: notify
+        uses: joelwmale/webhook-action@master
+        with:
+          url: ${{ secrets.COMMUNITY_NOTIFY_URL }}
+          body: '{"msg_type":"interactive","card": {"header": {"title": {"tag": "plain_text", "content": "NOTIFY: Discussion ${{ github.event.discussion.number }} ${{ github.event.action }}"}},"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "**repository**: ${{ github.event.repository.full_name }}\r\n**title**: ${{ github.event.discussion.title }}\r\n**body**: ${{ github.event.discussion.body }}\r\n**category:** ${{ github.event.discussion.category.name }}\r\n**state**: ${{ github.event.discussion.state }}\r\n**author:** ${{github.actor}}\r\n**created at:** ${{ github.event.discussion.created_at }}\r\n**updated at:** ${{ github.event.discussion.updated_at }}\r\n","tag": "lark_md"}}]}}'
+
+  discussion_commented:
+    name: discussion commented notify
+    if: ${{ github.event_name == 'discussion_comment' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: notify
+        env:
+          LABELS: ${{ toJson(github.event.issue.labels) }}
+        uses: joelwmale/webhook-action@master
+        with:
+          url: ${{ secrets.COMMUNITY_NOTIFY_URL }}
+          body: '{"msg_type":"interactive","card": {"header": {"title": {"tag": "plain_text", "content": "NOTIFY: Discussion ${{ github.event.discussion.number }} comment ${{ github.event.action }}"}},"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "**repository**: ${{ github.event.repository.full_name }}\r\n**category:** ${{ github.event.discussion.category.name }}\r\n**state**: ${{ github.event.discussion.state }}\r\n**title**: ${{ github.event.discussion.title }}\r\n**body**: ${{ github.event.discussion.body }}\r\n**comment**: ${{ github.event.comment.body }}\r\n**author:** ${{github.actor}}\r\n**created at:** ${{ github.event.discussion.created_at }}\r\n**updated at:** ${{ github.event.discussion.updated_at }}\r\n","tag": "lark_md"}}]}}'
