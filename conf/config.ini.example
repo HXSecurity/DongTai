@@ -31,3 +31,4 @@ access_key_secret = ZoEOSi7KfayQ7JalvJVHa37fdZ4XFY
 
 [other]
 domain = http://localhost.domain/
+demo_session_cookie_domain = .huoxian.cn
