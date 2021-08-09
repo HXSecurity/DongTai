@@ -30,4 +30,5 @@ class UserLogout(AnonymousAuthEndPoint):
             "msg": '退出成功'
         })
         response.delete_cookie(key=settings.CSRF_COOKIE_NAME)
+        response.delete_cookie(key='sessionid')
         return response
