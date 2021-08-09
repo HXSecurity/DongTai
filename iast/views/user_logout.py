@@ -31,4 +31,8 @@ class UserLogout(AnonymousAuthEndPoint):
         })
         response.delete_cookie(key=settings.CSRF_COOKIE_NAME)
         response.delete_cookie(key='sessionid')
+        response.delete_cookie(key=settings.CSRF_COOKIE_NAME,
+                               domain=settings.DEMO_SESSION_COOKIE_DOMAIN)
+        response.delete_cookie(key='sessionid',
+                               domain=settings.DEMO_SESSION_COOKIE_DOMAIN)
         return response
