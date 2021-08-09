@@ -38,6 +38,6 @@ jobs:
           LABELS: ${{ toJson(github.event.issue.labels) }}
         uses: joelwmale/webhook-action@master
         with:
-          url: ${{ secrets.WEBHOOK_URL }}
+          url: ${{ secrets.COMMUNITY_NOTIFY_URL }}
           body: '{"msg_type": "interactive","card": {"header": {"title": {"tag": "plain_text", "content": "Repository Popularity Statistice Notify"}}, "config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "**repository: **${{ github.repository }}\n**star: ** ${{ steps.repo-stars.outputs.stars }}\n**fork: **${{ steps.repo-forks.outputs.forks }}\n**issue count: **${{ steps.repo-issues.outputs.issues }}\n","tag": "lark_md"}}]}}'
 
