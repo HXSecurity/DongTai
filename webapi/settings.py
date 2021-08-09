@@ -85,12 +85,6 @@ REST_FRAMEWORK = {
         'user': '5000/min'
     },
 }
-if os.getenv('environment', 'PROD') == 'TEST':
-    INSTALLED_APPS.append('drf_spectacular')
-    SPECTACULAR_SETTINGS = {
-        'TITLE': 'DongTai webapi',
-    }
-    REST_FRAMEWORK['DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'
 
 basedir = os.path.dirname(os.path.realpath(__file__))
 
@@ -268,6 +262,15 @@ EMAIL_PASSWORD = config.get('smtp', 'password')
 EMAIL_FROM_ADDR = config.get('smtp', 'from_addr')
 ENABLE_SSL = config.get('smtp', 'ssl') == 'True'
 ADMIN_EMAIL = config.get('smtp', 'cc_addr')
-DOMAIN = config.get('other', 'domain')
-DEMO_SESSION_COOKIE_DOMAIN = config.get('other', 'demo_session_cookie_domain')
-DEMO_CSRF_COOKIE_DOMAIN = DEMO_SESSION_COOKIE_DOMAIN
+if os.getenv('environment', 'PROD') == 'TEST':
+    INSTALLED_APPS.append('drf_spectacular')
+    SPECTACULAR_SETTINGS = {
+        'TITLE': 'DongTai webapi',
+    }
+    REST_FRAMEWORK[
+        'DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'
+if os.getenv('environment', None) in ('TEST', 'PROD'):
+    DEMO_SESSION_COOKIE_DOMAIN = config.get('other',
+                                            'demo_session_cookie_domain')
+    DEMO_CSRF_COOKIE_DOMAIN = DEMO_SESSION_COOKIE_DOMAIN
+    DOMAIN = config.get('other', 'domain')
