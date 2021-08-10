@@ -18,11 +18,14 @@ logger = logging.getLogger('dongtai.openapi')
 
 
 class JavaAgentDownload():
-    LOCAL_AGENT_FILE = '/tmp/iast-agent.jar'
+    LOCAL_AGENT_PATH = '/tmp/iast_cache/package'
+    LOCAL_AGENT_FILE = '/tmp/iast_cache/package/iast-agent.jar'
     REMOTE_AGENT_FILE = 'agent/java/iast-agent.jar'
 
     @staticmethod
     def download_agent():
+        if not os.path.exists(JavaAgentDownload.LOCAL_AGENT_PATH):
+            os.makedirs(JavaAgentDownload.LOCAL_AGENT_PATH)
         if os.path.exists(JavaAgentDownload.LOCAL_AGENT_FILE):
             return True
         else:
