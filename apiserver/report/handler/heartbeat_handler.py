@@ -34,6 +34,7 @@ class HeartBeatHandler(IReportHandler):
         self.memory = self.detail.get('memory')
         self.network = self.detail.get('network')
         self.disk = self.detail.get('disk')
+        self.req_count = self.detail.get('req_count')
 
     def save_heartbeat(self):
         # todo 查询agent对应的心跳是否存在，如果存在，直接update
