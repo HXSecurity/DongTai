@@ -37,7 +37,10 @@ class HeartBeatHandler(IReportHandler):
         self.req_count = self.detail.get('req_count')
 
     def save_heartbeat(self):
-        # todo 查询agent对应的心跳是否存在，如果存在，直接update
+        # update agent state
+        self.agent.is_running = 1
+        self.agent.online = 1
+        self.agent.save(update_fields=['is_running', 'online'])
         queryset = IastHeartbeat.objects.filter(agent=self.agent)
         heartbeat_count = queryset.values('id').count()
         if heartbeat_count == 1:
