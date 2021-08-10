@@ -17,7 +17,6 @@ from dongtai.models.project import IastProject
 from dongtai.models.vul_level import IastVulLevel
 from webapi.settings import MEDIA_ROOT
 
-from dongtai.endpoint import R, UserEndPoint
 
 class ProjectReportExport(UserEndPoint):
     name = 'api-v1-word-maker'
@@ -54,7 +53,7 @@ class ProjectReportExport(UserEndPoint):
             pid = 0
             vid = 0
             pname = ''
-        if (pid == 0 and pname == '') or vid == 0:
+        if (pid == 0 and pname == ''):
             return R.failure(status=202, msg='参数错误')
         auth_users = self.get_auth_users(request.user)
         word_file_name = self.generate_word_report(pid, pname, vid, auth_users,
