@@ -67,7 +67,8 @@ class ProjectReportExport(UserEndPoint):
 
             response = FileResponse(open(report_file_path, "rb"))
             response['content_type'] = 'application/octet-stream'
-            response['Content-Disposition'] = f"attachment; filename={report_filename}"
+            response[
+                'Content-Disposition'] = f"attachment; filename={report_filename}"
             return response
         else:
             return R.failure(status=203, msg='no permission')
