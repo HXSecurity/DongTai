@@ -23,18 +23,4 @@ class Demo(UserEndPoint):
         user = User.objects.filter(username="demo").first()
         login(request, user)
         res = HttpResponseRedirect(settings.DOMAIN + "project/projectManage")
-        res.set_cookie(
-            settings.SESSION_COOKIE_NAME,
-            request.session.session_key,
-            None,
-            None,
-            domain=settings.DEMO_SESSION_COOKIE_DOMAIN,
-        )
-        res.set_cookie(
-            settings.CSRF_COOKIE_NAME,
-            request.META['CSRF_COOKIE'],
-            None,
-            None,
-            domain=settings.DEMO_SESSION_COOKIE_DOMAIN,
-        )
         return res
