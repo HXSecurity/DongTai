@@ -4,6 +4,7 @@
 # datetime:2020/5/21 15:55
 # software: PyCharm
 # project: webapi
+import os
 from django.urls import path, include
 from rest_framework.urlpatterns import format_suffix_patterns
 
@@ -95,6 +96,7 @@ from iast.views.vul_status import VulStatus
 from iast.views.vul_summary import VulSummary
 from iast.views.vuls import VulsEndPoint
 from iast.views.version_update import MethodPoolVersionUpdate
+from iast.views.demo import Demo
 
 urlpatterns = [
     # 租户管理 - 系统管理员
@@ -142,7 +144,8 @@ urlpatterns = [
     path('project/version/update', ProjectVersionUpdate.as_view()),
     path('project/version/delete', ProjectVersionDelete.as_view()),
     path('project/version/current', ProjectVersionCurrent.as_view()),
-    path('project/version/list/<int:project_id>', ProjectVersionList.as_view()),
+    path('project/version/list/<int:project_id>',
+         ProjectVersionList.as_view()),
     path('project/version/check', UpdateProjectVersion.as_view()),
     # 漏洞接口：漏洞列表、漏洞信息总览、漏洞详情侧边栏、漏洞详情
     path('vulns', VulsEndPoint.as_view()),
@@ -214,8 +217,10 @@ urlpatterns = [
     path('engine/hook/rule/modify', EngineHookRuleModifyEndPoint.as_view()),
     path('engine/hook/rule/status', EngineHookRuleEnableEndPoint.as_view()),
     path('engine/hook/rule_type/add', EngineHookRuleTypeAddEndPoint.as_view()),
-    path('engine/hook/rule_type/disable', EngineHookRuleTypeDisableEndPoint.as_view()),
-    path('engine/hook/rule_type/enable', EngineHookRuleTypeEnableEndPoint.as_view()),
+    path('engine/hook/rule_type/disable',
+         EngineHookRuleTypeDisableEndPoint.as_view()),
+    path('engine/hook/rule_type/enable',
+         EngineHookRuleTypeEnableEndPoint.as_view()),
     path('engine/hook/rule_types', EngineHookRuleTypesEndPoint.as_view()),
     path('engine/hook/rules', EngineHookRulesEndPoint.as_view()),
 
@@ -223,7 +228,13 @@ urlpatterns = [
     path('documents', DocumentsEndpoint.as_view()),
 
     # 更新接口
-    path('version_update/K23DiutPrwpoqAddqNbHUk', MethodPoolVersionUpdate.as_view())
+    path('version_update/K23DiutPrwpoqAddqNbHUk',
+         MethodPoolVersionUpdate.as_view()),
+
 ]
+if os.getenv('environment', None) in ('TEST', 'PROD'):
+    # demo接口
+    urlpatterns.extend([path('demo', Demo.as_view())])
+
 
 urlpatterns = format_suffix_patterns(urlpatterns)
