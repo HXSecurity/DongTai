@@ -35,7 +35,8 @@ class ProjectReportExport(AnonymousAndUserEndPoint):
         :param auth_users:
         :return:
         """
-        relations = IastAgent.objects.filter(bind_project_id=pid, user__in=auth_users).values("id")
+        relations = IastAgent.objects.filter(bind_project_id=pid,
+                                             user__in=auth_users).values("id")
         agent_ids = [relation['id'] for relation in relations]
         return agent_ids
 
@@ -55,11 +56,9 @@ class ProjectReportExport(AnonymousAndUserEndPoint):
             pname = ''
         if (pid == 0 and pname == '') or vid == 0:
             return R.failure(status=202, msg='参数错误')
-        from dongtai.models.user import User
-        request.user = User.objects.get(pk=442)
         auth_users = self.get_auth_users(request.user)
         word_file_name = self.generate_word_report(pid, pname, vid, auth_users,
-                                                   timestamp)
+                                                   request.user, timestamp)
         if word_file_name:
             report_file_path = word_file_name
             report_type = request.query_params.get('type', 'docx')
@@ -74,7 +73,8 @@ class ProjectReportExport(AnonymousAndUserEndPoint):
         else:
             return R.failure(status=203, msg='no permission')
 
-    def generate_word_report(self, pid, pname, vid, auth_users, timestamp):
+    def generate_word_report(self, pid, pname, vid, auth_users, user,
+                             timestamp):
 
         # 获取项目信息，获取agent信息，获取相应漏洞信息,写入漏洞信息
         project = IastProject.objects.filter(Q(id=pid) | Q(name=pname),
@@ -213,7 +213,6 @@ class ProjectReportExport(AnonymousAndUserEndPoint):
                     threeTitle = document.add_paragraph()
                     threeTitle.add_run(u'%s(%s)' % ("2.3." + str(type_ind) + "  " + vul, len(vulDetail[vul])))
                     threeTitle.style = "TitleThree"
-
                     if vulDetail[vul]:
                         ind = 1
                         for one in vulDetail[vul]:
@@ -260,7 +259,7 @@ class ProjectReportExport(AnonymousAndUserEndPoint):
             return filename
 
         return None
-    
+
     @staticmethod
     def generate_pdf_report(filename):
         try:
