@@ -13,11 +13,6 @@ from rest_framework.authtoken.models import Token
 from dongtai.models.profile import IastProfile
 
 
-APISERVER = IastProfile.objects.filter(key='apiserver').values_list('value',
-                                                            flat=True).first()
-AGENT_SERVER_PROXY = {
-    'HOST': APISERVER if APISERVER is not None else ''
-}
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -64,6 +59,10 @@ class AgentDownload(UserEndPoint):
         language = request.query_params.get('language', 'java')
         project_name = request.query_params.get('projectName', 'Demo Project')
         token, success = Token.objects.values('key').get_or_create(user=request.user)
+        AGENT_SERVER_PROXY={'HOST':''}
+        APISERVER = IastProfile.objects.filter(key='apiserver').values_list('value',
+                                                            flat=True).first()       
+        AGENT_SERVER_PROXY['HOST'] = APISERVER if APISERVER is not None else ''
         resp = requests.get(
             url=f'{AGENT_SERVER_PROXY["HOST"]}/api/v1/agent/download?url={base_url}&language={language}&projectName={project_name}',
             headers={
