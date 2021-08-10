@@ -3,7 +3,10 @@
 [![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
 [![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://huoxianclub.github.io/LingZhi/)
 [![DongTai--openapi](https://img.shields.io/badge/DongTai--openapi-v1.0.0-lightgrey)](https://huoxianclub.github.io/LingZhi/#/doc/tutorial/quickstart)
-[![DongTai-OpenAPI-Build](https://github.com/HXSecurity/DongTai-openapi/actions/workflows/build-openapi.yml/badge.svg)](https://github.com/HXSecurity/DongTai-openapi/actions/workflows/build-openapi.yml)
+
+[![Deploy DongTai OpenAPI To AWS Test](https://github.com/HXSecurity/DongTai-openapi/actions/workflows/deploy_openapi_to_aws_test.yml/badge.svg)](https://github.com/HXSecurity/DongTai-openapi/actions/workflows/deploy_openapi_to_aws_test.yml)
+[![Deploy DongTai OpenAPI To AWS](https://github.com/HXSecurity/DongTai-openapi/actions/workflows/deploy_openapi_to_aws.yml/badge.svg)](https://github.com/HXSecurity/DongTai-openapi/actions/workflows/deploy_openapi_to_aws.yml)
+[![Release DongTai OpenAPI](https://github.com/HXSecurity/DongTai-openapi/actions/workflows/release_openapi.yml/badge.svg)](https://github.com/HXSecurity/DongTai-openapi/actions/workflows/release_openapi.yml)
 
 [中文版本(Chinese version)](README.ZH-CN.MD)
 
