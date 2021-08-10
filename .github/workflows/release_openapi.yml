@@ -58,12 +58,17 @@ jobs:
           username: ${{ secrets.ALIYUN_DOCKERHUB_USER }}
           password: ${{ secrets.ALIYUN_DOCKERHUB_PASSWORD }}
 
+      - id: release
+        run: |
+          VERSION=`echo ${GITHUB_REF##*/} | awk -F'-' '{print $2}'`
+          echo "::set-output name=version::$VERSION"
+
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
-          tags: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:1.0.0,"
+          tags: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:${{ steps.release.outputs.version }},"
 
 
       - name: finish build
