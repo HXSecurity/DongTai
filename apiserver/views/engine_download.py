@@ -21,7 +21,8 @@ logger = logging.getLogger("dongtai.openapi")
 class EngineDownloadEndPoint(OpenApiEndPoint):
     name = "download_core_jar_package"
     description = "iast agent-下载IAST依赖的core、inject jar包"
-    LOCAL_AGENT_FILE = '/tmp/{package_name}.jar'
+    LOCAL_AGENT_PATH = '/tmp/iast_cache/package'
+    LOCAL_AGENT_FILE = '/tmp/iast_cache/package/{package_name}.jar'
     REMOTE_AGENT_FILE = 'agent/java/{package_name}.jar'
 
     def get(self, request: Request):
@@ -54,6 +55,8 @@ class EngineDownloadEndPoint(OpenApiEndPoint):
 
     @staticmethod
     def download_agent_jar(remote_agent_file, local_agent_file):
+        if not os.path.exists(EngineDownloadEndPoint.LOCAL_AGENT_PATH):
+            os.makedirs(EngineDownloadEndPoint.LOCAL_AGENT_PATH)
         if os.path.exists(local_agent_file):
             return True
         else:
