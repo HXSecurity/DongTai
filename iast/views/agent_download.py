@@ -10,8 +10,13 @@ import requests
 from django.http import FileResponse
 from dongtai.endpoint import UserEndPoint, R
 from rest_framework.authtoken.models import Token
+from dongtai.models.profile import IastProfile
 
-from webapi.settings import AGENT_SERVER_PROXY
+AGENT_SERVER_PROXY = {
+    'HOST':
+    IastProfile.objects.filter(key='apiserver').values_list('value',
+                                                            flat=True).first()
+}
 
 logger = logging.getLogger('dongtai-webapi')
 
