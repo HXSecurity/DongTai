@@ -238,12 +238,24 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack, 
     if vul:
         vul.req_header = vul_meta.req_header
         vul.req_params = vul_meta.req_params
+        vul.req_data = vul_meta.req_data
+        vul.res_header = vul_meta.res_header
+        vul.res_body = vul_meta.res_body
+        vul.taint_value = taint_value
+        vul.taint_position = taint_position
+        vul.context_path = vul_meta.context_path
+        vul.client_ip = vul_meta.clent_ip
+        vul.top_stack = top_stack
+        vul.bottom_stack = bottom_stack
         vul.counts = vul.counts + 1
         vul.latest_time = timestamp
         vul.method_pool_id = vul_meta.id
         vul.full_stack = json.dumps(vul_stack, ensure_ascii=False)
         vul.status = '待验证'
-        vul.save(update_fields=['req_header', 'req_params', 'full_stack', 'counts', 'latest_time', 'status'])
+        vul.save(update_fields=[
+            'req_header', 'req_params', 'req_data', 'res_header', 'res_body', 'taint_value', 'taint_position',
+            'context_path', 'client_ip', 'top_stack', 'bottom_stack', 'full_stack', 'counts', 'latest_time', 'status'
+        ])
     else:
         vul = IastVulnerabilityModel.objects.create(
             type=vul_name,
