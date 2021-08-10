@@ -28,3 +28,7 @@ cc_addr = cc_addr
 [aliyun_oss]
 access_key = LTAI5t7pu9WUT2DcbknfNiaD
 access_key_secret = ZoEOSi7KfayQ7JalvJVHa37fdZ4XFY
+
+[other]
+domain = http://localhost.domain/
+demo_session_cookie_domain = .huoxian.cn
