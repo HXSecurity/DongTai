@@ -17,9 +17,9 @@ from dongtai.models.project import IastProject
 from dongtai.models.vul_level import IastVulLevel
 from webapi.settings import MEDIA_ROOT
 
-from dongtai.endpoint import R, AnonymousAndUserEndPoint
+from dongtai.endpoint import R, UserEndPoint
 
-class ProjectReportExport(AnonymousAndUserEndPoint):
+class ProjectReportExport(UserEndPoint):
     name = 'api-v1-word-maker'
     description = '漏洞word报告生成'
 
