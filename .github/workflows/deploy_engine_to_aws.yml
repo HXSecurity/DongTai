@@ -45,10 +45,9 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
       - name: Django Testing project
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           cp conf/config.ini.example conf/config.ini
+          python3 manage.py migrate
           python3 manage.py test
 
       - name: Checkout
