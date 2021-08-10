@@ -34,7 +34,8 @@ class ProjectReportExport(UserEndPoint):
         :param auth_users:
         :return:
         """
-        relations = IastAgent.objects.filter(bind_project_id=pid, user__in=auth_users).values("id")
+        relations = IastAgent.objects.filter(bind_project_id=pid,
+                                             user__in=auth_users).values("id")
         agent_ids = [relation['id'] for relation in relations]
         return agent_ids
 
@@ -44,7 +45,19 @@ class ProjectReportExport(UserEndPoint):
 
     def get(self, request):
         timestamp = time.time()
-        word_file_name = self.generate_word_report(request, timestamp)
+        try:
+            pid = int(request.query_params.get("pid", 0))
+            pname = request.query_params.get('pname')
+            vid = int(request.query_params.get("vid", 0))
+        except:
+            pid = 0
+            vid = 0
+            pname = ''
+        if (pid == 0 and pname == ''):
+            return R.failure(status=202, msg='参数错误')
+        auth_users = self.get_auth_users(request.user)
+        word_file_name = self.generate_word_report(pid, pname, vid, auth_users,
+                                                   request.user, timestamp)
         if word_file_name:
             report_file_path = word_file_name
             report_type = request.query_params.get('type', 'docx')
@@ -59,22 +72,12 @@ class ProjectReportExport(UserEndPoint):
         else:
             return R.failure(status=203, msg='no permission')
 
-    def generate_word_report(self, request, timestamp):
-        try:
-            pid = int(request.query_params.get("pid", 0))
-            pname = request.query_params.get('pname')
-            vid = int(request.query_params.get("vid", 0))
-        except:
-            pid = 0
-            vid = 0
-            pname = ''
-        if pid == 0 and pname == '':
-            return R.failure(status=202, msg='参数错误')
+    def generate_word_report(self, pid, pname, vid, auth_users, user,
+                             timestamp):
 
         # 获取项目信息，获取agent信息，获取相应漏洞信息,写入漏洞信息
-        user = request.user
-        auth_users = self.get_auth_users(request.user)
-        project = IastProject.objects.filter(Q(id=pid) | Q(name=pname), user__in=auth_users).first()
+        project = IastProject.objects.filter(Q(id=pid) | Q(name=pname),
+                                             user__in=auth_users).first()
 
         if project:
             agent_ids = self.get_agents_with_project_id(project.id, auth_users)
@@ -209,7 +212,6 @@ class ProjectReportExport(UserEndPoint):
                     threeTitle = document.add_paragraph()
                     threeTitle.add_run(u'%s(%s)' % ("2.3." + str(type_ind) + "  " + vul, len(vulDetail[vul])))
                     threeTitle.style = "TitleThree"
-
                     if vulDetail[vul]:
                         ind = 1
                         for one in vulDetail[vul]:
@@ -254,6 +256,8 @@ class ProjectReportExport(UserEndPoint):
             filename = f"{MEDIA_ROOT}/reports/vul-report-{user.id}-{timestamp}.docx"
             document.save(filename)
             return filename
+
+        return None
 
     @staticmethod
     def generate_pdf_report(filename):
