@@ -11,7 +11,7 @@ class OpenApiEndpoint(UserEndPoint):
         """
         profilefromdb = IastProfile.objects.filter(
             key='apiserver').values_list('value', flat=True).first()
-        profilefromini = config.get('apiserver', 'url')
+        profilefromini = None
         profiles = list(
             filter(lambda x: x is not None, [profilefromdb, profilefromini]))
         if profiles == []:
