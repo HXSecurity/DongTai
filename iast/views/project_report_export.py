@@ -17,8 +17,9 @@ from dongtai.models.project import IastProject
 from dongtai.models.vul_level import IastVulLevel
 from webapi.settings import MEDIA_ROOT
 
+from dongtai.endpoint import R, AnonymousAndUserEndPoint
 
-class ProjectReportExport(UserEndPoint):
+class ProjectReportExport(AnonymousAndUserEndPoint):
     name = 'api-v1-word-maker'
     description = '漏洞word报告生成'
 
@@ -44,7 +45,21 @@ class ProjectReportExport(UserEndPoint):
 
     def get(self, request):
         timestamp = time.time()
-        word_file_name = self.generate_word_report(request, timestamp)
+        try:
+            pid = int(request.query_params.get("pid", 0))
+            pname = request.query_params.get('pname')
+            vid = int(request.query_params.get("vid", 0))
+        except:
+            pid = 0
+            vid = 0
+            pname = ''
+        if (pid == 0 and pname == '') or vid == 0:
+            return R.failure(status=202, msg='参数错误')
+        from dongtai.models.user import User
+        request.user = User.objects.get(pk=442)
+        auth_users = self.get_auth_users(request.user)
+        word_file_name = self.generate_word_report(pid, pname, vid, auth_users,
+                                                   timestamp)
         if word_file_name:
             report_file_path = word_file_name
             report_type = request.query_params.get('type', 'docx')
@@ -59,22 +74,11 @@ class ProjectReportExport(UserEndPoint):
         else:
             return R.failure(status=203, msg='no permission')
 
-    def generate_word_report(self, request, timestamp):
-        try:
-            pid = int(request.query_params.get("pid", 0))
-            pname = request.query_params.get('pname')
-            vid = int(request.query_params.get("vid", 0))
-        except:
-            pid = 0
-            vid = 0
-            pname = ''
-        if pid == 0 and pname == '':
-            return R.failure(status=202, msg='参数错误')
+    def generate_word_report(self, pid, pname, vid, auth_users, timestamp):
 
         # 获取项目信息，获取agent信息，获取相应漏洞信息,写入漏洞信息
-        user = request.user
-        auth_users = self.get_auth_users(request.user)
-        project = IastProject.objects.filter(Q(id=pid) | Q(name=pname), user__in=auth_users).first()
+        project = IastProject.objects.filter(Q(id=pid) | Q(name=pname),
+                                             user__in=auth_users).first()
 
         if project:
             agent_ids = self.get_agents_with_project_id(project.id, auth_users)
@@ -255,6 +259,8 @@ class ProjectReportExport(UserEndPoint):
             document.save(filename)
             return filename
 
+        return None
+    
     @staticmethod
     def generate_pdf_report(filename):
         try:
