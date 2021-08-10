@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, login
 
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
+import time
 
 logger = logging.getLogger("dongtai-webapi")
 
@@ -24,9 +25,11 @@ class UserLogin(UserEndPoint):
         captcha_hash_key = request.data["captcha_hash_key"]
         captcha = request.data["captcha"]
         if captcha_hash_key and captcha:
-            get_captcha = CaptchaStore.objects.get(hashkey=captcha_hash_key)
+            captcha_obj = CaptchaStore.objects.get(hashkey=captcha_hash_key)
             # 如果验证码匹配
-            if get_captcha.response == captcha.lower():
+            if int(captcha_obj.expiration.timestamp()) < int(time.time()):
+                return R.failure(status=203, msg='Captcha timed out')
+            if captcha_obj.response == captcha.lower():
                 username = request.data["username"]
                 password = request.data["password"]
                 user = authenticate(username=username, password=password)
