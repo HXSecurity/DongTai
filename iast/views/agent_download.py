@@ -12,10 +12,11 @@ from dongtai.endpoint import UserEndPoint, R
 from rest_framework.authtoken.models import Token
 from dongtai.models.profile import IastProfile
 
-AGENT_SERVER_PROXY = {
-    'HOST':
-    IastProfile.objects.filter(key='apiserver').values_list('value',
+
+APISERVER = IastProfile.objects.filter(key='apiserver').values_list('value',
                                                             flat=True).first()
+AGENT_SERVER_PROXY = {
+    'HOST': APISERVER if APISERVER is not None else ''
 }
 
 logger = logging.getLogger('dongtai-webapi')

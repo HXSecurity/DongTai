@@ -257,9 +257,6 @@ REST_PROXY = {
     'HOST': config.get("engine", 'url'),
 }
 
-AGENT_SERVER_PROXY = {
-    'HOST': config.get("apiserver", 'url'),
-}
 
 # notify
 EMAIL_SERVER = config.get('smtp', 'server')
