@@ -235,16 +235,16 @@ def search_vul_from_method_pool(method_pool_id):
                     search_and_save_vul(engine, method_pool_model, method_pool, strategy)
         logger.info(f'漏洞检测成功')
     except Exception as e:
-        logger.error(f'漏洞检测出错，错误原因：{e}')
+        logger.error(f'漏洞检测出错，方法池 {method_pool_id}. 错误原因：{e}')
 
 
 @shared_task(queue='dongtai-replay-vul-scan')
 def search_vul_from_replay_method_pool(method_pool_id):
-    logger.info(f'漏洞检测开始，方法池 {method_pool_id}')
+    logger.info(f'重放数据漏洞检测开始，方法池 {method_pool_id}')
     try:
         method_pool_model = IastAgentMethodPoolReplay.objects.filter(id=method_pool_id).first()
         if method_pool_model is None:
-            logger.warn(f'漏洞检测终止，方法池 {method_pool_id} 不存在')
+            logger.warn(f'重放数据漏洞检测终止，方法池 {method_pool_id} 不存在')
         strategies = load_sink_strategy(method_pool_model.agent.user)
         engine = VulEngine()
 
@@ -258,9 +258,9 @@ def search_vul_from_replay_method_pool(method_pool_id):
                 continue
 
             search_and_save_vul(engine, method_pool_model, method_pool, strategy)
-        logger.info(f'漏洞检测成功')
+        logger.info(f'重放数据漏洞检测成功')
     except Exception as e:
-        logger.error(f'漏洞检测出错，错误原因：{e}')
+        logger.error(f'重放数据漏洞检测出错，方法池 {method_pool_id}. 错误原因：{e}')
 
 
 @shared_task(queue='dongtai-strategy-scan')
@@ -583,7 +583,7 @@ def vul_recheck():
                 try:
                     headers = base64.b64encode('\n'.join(header_raw))
                 except Exception as e:
-                    logger.error(f'请求头解析失败，漏洞ID: {vulnerability.id}')
+                    logger.error(f'请求头解析失败，漏洞ID: {vulnerability["id"]}')
             elif position == 'COOKIE':
                 import base64
                 header_raw = base64.b64decode(headers).decode('utf-8').split('\n')
@@ -610,7 +610,7 @@ def vul_recheck():
                 try:
                     headers = base64.b64encode('\n'.join(header_raw))
                 except Exception as e:
-                    logger.error(f'请求头解析失败，漏洞ID: {vulnerability.id}')
+                    logger.error(f'请求头解析失败，漏洞ID: {vulnerability["id"]}')
 
             elif position == 'PATH':
                 # 检查path，替换
