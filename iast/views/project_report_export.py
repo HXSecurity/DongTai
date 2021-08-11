@@ -1,6 +1,8 @@
 # coding:utf-8
 # 写word文档文件
 import time
+from collections import namedtuple
+from iast.utils import get_model_field
 
 from django.db.models import Q
 from django.http import FileResponse
@@ -8,7 +10,7 @@ from docx import Document
 from docx.enum.style import WD_STYLE_TYPE
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt
-
+from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.endpoint import R
 from iast.base.agent import get_vul_count_by_agent
 from dongtai.endpoint import UserEndPoint
@@ -80,7 +82,22 @@ class ProjectReportExport(UserEndPoint):
         project = IastProject.objects.filter(Q(id=pid) | Q(name=pname),
                                              user__in=auth_users).first()
 
-        if project:
+        vul = IastVulnerabilityModel.objects.filter(pk=vid).first()
+        if project or vul:
+            if not project:
+                Project = namedtuple(
+                    'Project',
+                    get_model_field(IastProject,
+                                    include=[
+                                        'id', 'name', 'mode', 'latest_time',
+                                        'vul_count', 'agent_count'
+                                    ]))
+                project = Project(id=0,
+                                  name='NAN',
+                                  mode='NAN',
+                                  latest_time=time.time(),
+                                  vul_count=1,
+                                  agent_count=0)
             agent_ids = self.get_agents_with_project_id(project.id, auth_users)
 
             document = Document()
