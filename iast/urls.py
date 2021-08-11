@@ -4,6 +4,7 @@
 # datetime:2020/5/21 15:55
 # software: PyCharm
 # project: webapi
+import os
 from django.urls import path, include
 from rest_framework.urlpatterns import format_suffix_patterns
 
@@ -230,8 +231,10 @@ urlpatterns = [
     path('version_update/K23DiutPrwpoqAddqNbHUk',
          MethodPoolVersionUpdate.as_view()),
 
-    # demo接口
-    path('demo', Demo.as_view()),
 ]
+if os.getenv('environment', None) in ('TEST', 'PROD'):
+    # demo接口
+    urlpatterns.extend([path('demo', Demo.as_view())])
+
 
 urlpatterns = format_suffix_patterns(urlpatterns)
