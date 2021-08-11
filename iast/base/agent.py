@@ -127,6 +127,9 @@ def get_vul_count_by_agent(agent_ids, vid, user):
             typeArr[one['type']] = typeArr.get(one['type'], 0) + 1
             typeLevel[one['type']] = one['level_id']
             levelCount[one['level_id']] = levelCount.get(one['level_id'], 0) + 1
+            language = IastAgent.objects.filter(
+                pk=one['agent_id']).values_list('language', flat=True).first()
+            one['language'] = language if language is not None else ''
             if one['type'] not in vulDetail.keys():
                 vulDetail[one['type']] = []
             detailStr1 = "我们发现在{0}页面中存在{1}，攻击者可以改变{2}的值进行攻击：".format(

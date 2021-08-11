@@ -10,8 +10,8 @@ from dongtai.endpoint import R, UserEndPoint
 from dongtai.models.user import User
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect
-from webapi.settings import DOMAIN
 from django.conf import settings
+
 
 class Demo(UserEndPoint):
     permission_classes = []
@@ -22,17 +22,5 @@ class Demo(UserEndPoint):
     def get(self, request):
         user = User.objects.filter(username="demo").first()
         login(request, user)
-        res = HttpResponseRedirect(DOMAIN + "project/projectManage")
-        res.set_cookie(settings.SESSION_COOKIE_NAME,
-                       request.session.session_key,
-                       None,
-                       None,
-                       domain=settings.DEMO_SESSION_COOKIE_DOMAIN,
-                       )
-        res.set_cookie(settings.CSRF_COOKIE_NAME,
-                       request.META['CSRF_COOKIE'],
-                       None,
-                       None,
-                       domain=settings.DEMO_SESSION_COOKIE_DOMAIN,
-                       )
+        res = HttpResponseRedirect(settings.DOMAIN + "project/projectManage")
         return res
