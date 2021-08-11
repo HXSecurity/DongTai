@@ -89,7 +89,7 @@ REST_FRAMEWORK = {
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-if len(sys.argv) > 1 and sys.argv[1] == 'test':
+if len(sys.argv) > 1 and sys.argv[1] in ('test', 'migrate', 'makemigrations'):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
