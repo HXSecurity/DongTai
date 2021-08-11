@@ -9,6 +9,24 @@ from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 
 logger = logging.getLogger("dongtai-webapi")
+def decorator_factory(querys, request_body):
+    def myextend_schema(func):
+        import os
+        if os.getenv('environment', None) == 'TEST':
+            from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes
+            deco = extend_schema(
+                parameters=[OpenApiParameter(**query) for query in querys],
+                examples=[OpenApiExample('Example1', value=request_body)],
+                request={'application/json': OpenApiTypes.OBJECT},
+            )
+            funcw = deco(func)
+            funcw.querys = querys
+            funcw.reqbody = request_body
+            return funcw
+        return func
+
+    return myextend_schema
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes
 
 
 class UserLogin(UserEndPoint):
@@ -20,6 +38,12 @@ class UserLogin(UserEndPoint):
     name = "user_views_login"
     description = "用户登录"
 
+    @decorator_factory([], {
+        'username': "",
+        'password': "",
+        'captcha_hash_key': "",
+        'captcha': ""
+    })
     def post(self, request):
         captcha_hash_key = request.data["captcha_hash_key"]
         captcha = request.data["captcha"]
