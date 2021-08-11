@@ -10,7 +10,7 @@ from dongtai.models.heartbeat import IastHeartbeat
 from rest_framework import serializers
 
 from dongtai.models.agent import IastAgent
-
+from collections import defaultdict
 
 class AgentSerializer(serializers.ModelSerializer):
     USER_MAP = dict()
@@ -35,11 +35,9 @@ class AgentSerializer(serializers.ModelSerializer):
         return latest_heartbeat
 
     def get_running_status(self, obj):
-        heartbeat = self.get_latest_heartbeat(obj)
-        if heartbeat:
-            return "运行中" if (time.time() - heartbeat['dt']) < 60 * 5 else '未运行'
-        else:
-            return "未运行"
+        mapping = defaultdict(str)
+        mapping.update({1: "Online", 2: "Offline"})
+        return mapping[obj.online]
 
     def get_system_load(self, obj):
         """
