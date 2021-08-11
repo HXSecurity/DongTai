@@ -10,6 +10,9 @@ downloa_deploy_repo(){
 	fi
 
 	git submodule update deploy
+	cd deploy
+	git checkout release-1.0.1
+	cd ..
 }
 
 # 检查docker容器是否启动
@@ -59,15 +62,17 @@ check_port(){
 	echo '''version: "2"
 services:
   dongtai-mysql:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:1.0.0
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:1.0.1
     restart: always
+    volumes:
+      - ./data:/var/lib/mysql
 
   dongtai-redis:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:1.0.0
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:1.0.1
     restart: always
 
   dongtai-webapi:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:1.0.0
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:1.0.1
     restart: always
     volumes:
       - $PWD/config-tutorial.ini:/opt/iast/webapi/conf/config.ini
@@ -76,7 +81,7 @@ services:
       - dongtai-redis
 
   dongtai-web:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-web:1.0.0
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-web:1.0.1
     restart: always
     ports:
       - "'''$WEB_SERVICE_PORT''':80"
@@ -86,7 +91,7 @@ services:
       - dongtai-webapi
 
   dongtai-openapi:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:1.0.0
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:1.0.1
     restart: always
     volumes:
        - $PWD/config-tutorial.ini:/opt/iast/apiserver/conf/config.ini
@@ -97,7 +102,7 @@ services:
       - dongtai-redis
 
   dongtai-engine:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:1.0.0
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:1.0.1
     restart: always
     volumes:
       - $PWD/config-tutorial.ini:/opt/iast/engine/conf/config.ini
@@ -106,7 +111,7 @@ services:
       - dongtai-redis
 
   dongtai-engine-task:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:1.0.0
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:1.0.1
     restart: always
     command: ["/opt/iast/engine/docker/entrypoint.sh", "task"]
     volumes:
