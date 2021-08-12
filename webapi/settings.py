@@ -133,7 +133,7 @@ CORS_ORIGIN_REGEX_WHITELIST = [
     r"^https://\w+\.huoxian.cn:(\:\d+)?$"
 ]
 
-CORS_ALLOW_CREDENTIALS = True  
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = [
     'GET',
     'OPTIONS',
@@ -186,12 +186,17 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'OPTIONS': {'charset': 'utf8mb4'},
+            'OPTIONS': {
+                'charset': 'utf8mb4'
+            },
             'USER': config.get("mysql", 'user'),
             'NAME': config.get("mysql", 'name'),
             'PASSWORD': config.get("mysql", 'password'),
             'HOST': config.get("mysql", 'host'),
             'PORT': config.get("mysql", 'port'),
+            'OPTIONS': {
+                'init_command': 'SET max_execution_time=20000'
+            },
         }
     }
 
@@ -218,9 +223,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'iast', 'upload')
 MEDIA_URL = "/upload/masterimg/"
 
 
-CAPTCHA_IMAGE_SIZE = (80, 45)  
-CAPTCHA_LENGTH = 4  
-CAPTCHA_TIMEOUT = 1  
+CAPTCHA_IMAGE_SIZE = (80, 45)
+CAPTCHA_LENGTH = 4
+CAPTCHA_TIMEOUT = 1
 
 LOGGING = {
     'version': 1,
