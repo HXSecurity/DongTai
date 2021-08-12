@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2021/1/18 下午2:15
 # software: PyCharm
 # project: lingzhi-webapi
 from django.contrib.admin.models import LogEntry
@@ -24,6 +23,7 @@ from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.strategy_user import IastStrategyUser
 from dongtai.models.system import IastSystem
 from iast.serializers.user import UserSerializer
+from django.utils.translation import gettext_lazy  as _
 
 
 class UserEndPoint(TalentAdminEndPoint):
@@ -50,7 +50,6 @@ class UserEndPoint(TalentAdminEndPoint):
 
     def get(self, request):
         """
-        获取用户列表
         :param request:
         :return:
         """
@@ -77,20 +76,18 @@ class UserEndPoint(TalentAdminEndPoint):
                 "total": page_summary['alltotal']
             })
         except ValueError as arg_invalid_error:
-            return R.failure(msg='page和pageSize必须是数字')
+            return R.failure(msg=_('Page and PageSize must be numbers'))
 
     def post(self, request, user_id):
         try:
             user = User.objects.get(id=user_id)
             talent = user.get_talent()
             if self.check_permission_with_talent(request.user, user):
-                # 检查
                 department = request.data.get('department')
                 department_name = department.get('name', None)
                 if department_name and department_name != user.department.get().get_department_name():
                     department = talent.departments.filter(name=department_name).first()
                     if department:
-                        # todo 删除历史部门与用户的关系
                         user.department.set(department)
 
                 role = int(request.data.get("role", 0))
@@ -113,12 +110,12 @@ class UserEndPoint(TalentAdminEndPoint):
 
                 return JsonResponse({
                     "status": 201,
-                    "msg": "数据更新成功"
+                    "msg": _("Data update success")
                 })
             else:
                 return JsonResponse({
                     "status": 203,
-                    "msg": "no permission"
+                    "msg": _("no permission")
                 })
 
         except DatabaseError as e:
@@ -153,12 +150,12 @@ class UserEndPoint(TalentAdminEndPoint):
             except:
                 return JsonResponse({
                     "status": 202,
-                    "msg": f"用户{username}删除失败"
+                    "msg": _("User {} delete failed").format(username)
                 })
 
         return JsonResponse({
             "status": 201,
-            "msg": f"用户{username}删除成功"
+            "msg": _("User {} delete success").format(username)
         })
 
     @transaction.atomic
@@ -171,7 +168,7 @@ class UserEndPoint(TalentAdminEndPoint):
             else:
                 return JsonResponse({
                     "status": 204,
-                    "msg": '密码一致'
+                    "msg": _('Consistent')
                 })
 
             username = request.data.get('username')
@@ -180,7 +177,7 @@ class UserEndPoint(TalentAdminEndPoint):
                 if exist_user:
                     return JsonResponse({
                         "status": 205,
-                        "msg": '用户名已存在'
+                        "msg": _('Username already exists')
                     })
 
             talent = request.user.get_talent()
@@ -189,7 +186,7 @@ class UserEndPoint(TalentAdminEndPoint):
             if department_id is None:
                 return JsonResponse({
                     "status": 204,
-                    "msg": '部门不存在'
+                    "msg": _('Department does not exist')
                 })
 
             _department = talent.departments.filter(id=department_id).first()
@@ -221,20 +218,20 @@ class UserEndPoint(TalentAdminEndPoint):
                 else:
                     return JsonResponse({
                         "status": 202,
-                        "msg": "用户创建失败"
+                        "msg": _("User creation failed")
                     })
 
                 return JsonResponse({
                     "status": 201,
-                    "msg": f"用户{username}创建成功"
+                    "msg": _("User {} creates success").format(username)
                 })
             else:
                 return JsonResponse({
                     "status": 203,
-                    "msg": "部门不存在或无访问权限"
+                    "msg": _("Department does not exist or have no access")
                 })
         except Exception as e:
             return JsonResponse({
                 "status": 202,
-                "msg": "用户创建失败"
+                "msg": _("User creation failed")
             })

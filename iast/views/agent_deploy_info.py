@@ -6,14 +6,12 @@
 # project: webapi
 from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.deploy import IastDeployDesc
+from django.utils.translation import gettext_lazy as _
 
 
 class AgentDeployInfo(UserEndPoint):
-    """
-    IAST部署,前置选择条件
-    """
     name = "api-v1-iast-deploy-info"
-    description = "Agent部署文档"
+    description = _("Agent deployment documentation")
 
     def get(self, request):
         condition = {

@@ -17,9 +17,12 @@ from django.conf.urls.static import static
 from django.urls import include, path
 import os
 from webapi import settings
+from django.views.decorators.csrf import csrf_exempt
+from i18n.views.setlang import LanguageSetting
 
 urlpatterns = [
     path('api/v1/', include('iast.urls')),
+    path('i18n/setlang', LanguageSetting.as_view()),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

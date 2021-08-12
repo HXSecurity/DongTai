@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/23 下午2:16
 # software: PyCharm
 # project: lingzhi-webapi
 import logging
@@ -16,6 +15,7 @@ from dongtai.utils import const
 
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -48,7 +48,6 @@ class RequestReplayEndPoint(UserEndPoint):
     @staticmethod
     def check_replay_request(raw_request):
         """
-        检查重放请求是否符合要求：不存在恶意攻击数据
         :param replay_request:
         :return:
         """
@@ -65,18 +64,17 @@ class RequestReplayEndPoint(UserEndPoint):
 
             return False, requests
         except Exception as e:
-            logger.error(f'HTTP请求解析出错，原因：{e}')
+            logger.error(_('HTTP request parsing error, reason: {}').format(e))
             return True, None
 
     @staticmethod
     def check_method_pool(method_pool_id, user):
         """
-        检查方法池数据是否符合重放要求：方法池存在及用户有操作权限
-        :param method_pool_id: 方法池ID
-        :param user: 用户对象
+        :param method_pool_id: 
+        :param user: 
         :return:
-            status: True - 方法池存在且用户可操作；False - 方法池不存在或用户无权限操作
-            model: 方法池对象；None
+            status: True；False 
+            model: methodpool;None
         """
         if method_pool_id is None or method_pool_id == '':
             return True, None
@@ -91,19 +89,17 @@ class RequestReplayEndPoint(UserEndPoint):
     @staticmethod
     def check_agent_active(agent):
         """
-        检查agent是否为存活状态：agent及检测引擎均在运行中
-        :param agent: agent对象
-        :return: True - 未存活；False - 存活
+        :param agent: 
+        :return: True  ；False 
         """
         return agent.is_running == 0 or agent.is_core_running == 0
 
     @staticmethod
     def send_request_to_replay_queue(relation_id, agent_id, replay_request):
         """
-        发送重放请求到重放队列
-        :param replay_request: 重放请求数据
-        :param method_pool_model: 重放的方法池
-        :return: 0-成功、1-正在重放中
+        :param replay_request: 
+        :param method_pool_model: 
+        :return: 0、1
         """
         timestamp = int(time.time())
         replay_queue = IastReplayQueue.objects.filter(
@@ -148,7 +144,6 @@ class RequestReplayEndPoint(UserEndPoint):
 
     def post(self, request):
         """
-        查找项目中存在活跃探针的数量
         :param request:{
             'id':vul_id,
             'request': 'header'
@@ -161,25 +156,26 @@ class RequestReplayEndPoint(UserEndPoint):
 
             check_failure, method_pool_model = self.check_method_pool(method_pool_id, request.user)
             if check_failure:
-                return R.failure(msg='污点池数据不存在或无权操作')
+                return R.failure(msg=_('Stain pool data does not exist or no right to operate'))
 
             check_failure = self.check_agent_active(method_pool_model.agent)
             if check_failure:
-                return R.failure(msg='探针已销毁或暂停运行，请选检查探针状态')
+                return R.failure(msg=_('The probe has been destroyed or suspended, please check the probe status'))
 
             check_failure, checked_request = self.check_replay_request(raw_request=replay_request)
             if check_failure:
-                return R.failure(msg='重放请求不合法')
+                return R.failure(msg=_('Replay request is not legal'))
 
             replay_id = self.send_request_to_replay_queue(
                 relation_id=method_pool_model.id,
                 agent_id=method_pool_model.agent.id,
                 replay_request=checked_request
             )
-            return R.success(msg='请求重返成功', data={'replayId': replay_id})
+            return R.success(msg=_('Request to return success'), data={'replayId': replay_id})
 
         except Exception as e:
-            return R.failure(msg=f'漏洞重放出错，错误原因：{e}')
+            logger.error(f'user_id:{request.user.id} msg:{e}')
+            return R.failure(msg=_('Vulnerability replay error'))
 
     @staticmethod
     def check_replay_data_permission(replay_id, auth_agents):
@@ -191,7 +187,7 @@ class RequestReplayEndPoint(UserEndPoint):
             _data = base64.b64decode(header.encode("utf-8")).decode("utf-8")
         except Exception as e:
             _data = ''
-            logger.error(f'Response Header解析出错，错误原因：{e}')
+            logger.error(_('Response header analysis error, error reason: {}'.format(e)))
         return '{header}\n\n{body}'.format(header=_data, body=body)
 
     def get(self, request):
@@ -200,17 +196,17 @@ class RequestReplayEndPoint(UserEndPoint):
 
         replay_data = IastReplayQueue.objects.filter(id=replay_id, agent__in=auth_agents).values('state').first()
         if not replay_data:
-            return R.failure(status=203, msg='重放请求不存在或无操作权限')
+            return R.failure(status=203,msg=_('Replay request does not exist or no operational permissions'))
         if replay_data['state'] != const.SOLVED:
-            return R.failure(msg='重放请求处理中')
+            return R.failure(msg=_('Replay request processing'))
 
         replay_data = IastAgentMethodPoolReplay.objects.filter(replay_id=replay_id,
                                                                replay_type=const.REQUEST_REPLAY).values(
             'res_header', 'res_body', 'method_pool').first()
-        # todo 调用污点链构造方法，构造污点链
+        
         if replay_data:
             return R.success(data={
                 'response': self.parse_response(replay_data['res_header'], replay_data['res_body']),
             })
         else:
-            return R.failure(status=203, msg='重放失败')
+            return R.failure(status=203, msg=_('Replay failure'))

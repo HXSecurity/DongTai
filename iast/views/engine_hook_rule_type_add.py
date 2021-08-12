@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2021/2/19 下午3:59
 # software: PyCharm
 # project: lingzhi-webapi
 import time
@@ -9,6 +8,7 @@ import time
 from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.hook_type import HookType
 from dongtai.utils import const
+from django.utils.translation import gettext_lazy as _
 
 
 class EngineHookRuleTypeAddEndPoint(UserEndPoint):
@@ -31,15 +31,15 @@ class EngineHookRuleTypeAddEndPoint(UserEndPoint):
                 return None, None, None, None
             return rule_type, name, short_name, enable
         except Exception as e:
-            # todo 增加异场打印
+            
             return None, None, None, None
 
     def post(self, request):
         rule_type, name, short_name, enable = self.parse_args(request)
         if all((rule_type, name, short_name)) is False:
-            return R.failure(msg='数据不完整')
+            return R.failure(msg=_('incomplete data'))
         timestamp = int(time.time())
         hook_type = HookType(enable=enable, type=rule_type, name=short_name, value=name, create_time=timestamp,
                              update_time=timestamp, created_by=request.user.id)
         hook_type.save()
-        return R.success(msg='规则类型保存成功')
+        return R.success(msg=_('Rule type Save success'))
