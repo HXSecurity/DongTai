@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2021/2/19 下午3:59
 # software: PyCharm
 # project: lingzhi-webapi
 from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.hook_strategy import HookStrategy
 from dongtai.utils import const
+from django.utils.translation import gettext_lazy as _
 
 
 class EngineHookRuleTypeDisableEndPoint(UserEndPoint):
@@ -16,13 +16,13 @@ class EngineHookRuleTypeDisableEndPoint(UserEndPoint):
             rule_type = int(rule_id)
             return rule_type
         except Exception as e:
-            # todo 增加异场打印
+            
             return None
 
     def get(self, request):
         rule_id = self.parse_args(request)
         if rule_id is None:
-            return R.failure(msg='策略不存在')
+            return R.failure(msg=_('No strategy does not exist'))
 
         rule = HookStrategy.objects.filter(id=rule_id, created_by=request.user.id).first()
         if rule:
@@ -30,5 +30,5 @@ class EngineHookRuleTypeDisableEndPoint(UserEndPoint):
             if rule_type:
                 rule_type.enable = const.DISABLE
                 rule.save()
-                return R.success(msg='禁用成功')
-        return R.failure(msg='策略类型不存在')
+                return R.success(msg=_('Successful'))
+        return R.failure(msg=_('Strategy type does not exist'))

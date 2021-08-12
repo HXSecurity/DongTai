@@ -1,20 +1,20 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/12/5 上午10:44
 # software: PyCharm
 # project: lingzhi-webapi
 from django.contrib.admin.models import LogEntry
 import logging
 
 from dongtai.endpoint import UserEndPoint, R
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('dongtai-webapi')
 
 
 class LogsEndpoint(UserEndPoint):
     name = 'api-v1-logs'
-    description = '日志列表'
+    description = _('Log list')
 
     def parse_args(self, request):
         page = request.query_params.get('page', 1)
@@ -45,7 +45,7 @@ class LogsEndpoint(UserEndPoint):
                     })
                 return R.success(data=data, total=summary['alltotal'])
             else:
-                return R.failure(msg='无权限访问', status=203)
+                return R.failure(msg=_('No right access'), status=203)
         except Exception as e:
             logger.error(e)
-            return R.success(data=list(), msg='failure')
+            return R.success(data=list(), msg=_('failure'))

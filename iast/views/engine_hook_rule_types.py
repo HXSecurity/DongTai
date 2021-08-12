@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2021/2/19 下午3:59
 # software: PyCharm
 # project: lingzhi-webapi
 import logging
@@ -11,6 +10,7 @@ from dongtai.models.hook_type import HookType
 from dongtai.utils import const
 
 from iast.serializers.hook_type_strategy import HookTypeSerialize
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -35,13 +35,13 @@ class EngineHookRuleTypesEndPoint(UserEndPoint):
 
             return rule_type, page, page_size
         except Exception as e:
-            logger.error(f"参数解析出错，错误原因：{e}")
+            logger.error(_("Parameter parsing error, error reason: {}").format(e))
             return None, None, None
 
     def get(self, request):
         rule_type, page, page_size = self.parse_args(request)
         if rule_type is None:
-            return R.failure(msg='策略类型不存在')
+            return R.failure(msg=_('Strategy type does not exist'))
 
         queryset = HookType.objects.filter(created_by__in=[request.user.id, const.SYSTEM_USER_ID], type=rule_type)
         data = HookTypeSerialize(queryset, many=True).data

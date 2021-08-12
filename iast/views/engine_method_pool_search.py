@@ -32,13 +32,13 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             filter(lambda k: k[0] in fields, request.query_params.items()))
         search_fields_ = []
         for k, v in search_fields.items():
-            if k == 'sinkvalues':  # 污点数据
+            if k == 'sinkvalues':  
                 templates = [
                     r'"targetValues": ".*{}.*"', r'"sourceValues": ".*{}.*"'
                 ]
                 search_fields_.extend(
                     map(lambda x: ('method_pool', x.format(v)), templates))
-            elif k == 'signature':  # 方法签名
+            elif k == 'signature':  
                 templates = [r'"signature": ".*{}.*"']
                 search_fields_.extend(
                     map(lambda x: ('method_pool', x.format(v)), templates))

@@ -6,14 +6,12 @@
 # project: webapi
 from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.deploy import IastDeployDesc
+from django.utils.translation import gettext_lazy as _
 
 
 class AgentDeployDesc(UserEndPoint):
-    """
-    IAST部署说明
-    """
     name = "api-v1-iast-deploy-desc"
-    description = "Agent部署文档"
+    description = _("Agent deployment documentation")
 
     def get(self, request):
         queryset = IastDeployDesc.objects.all()
@@ -30,4 +28,4 @@ class AgentDeployDesc(UserEndPoint):
         if queryset:
             return R.success(msg=queryset.desc)
         else:
-            return R.failure(msg='暂无数据')
+            return R.failure(msg=_('No data'))

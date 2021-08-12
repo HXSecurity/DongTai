@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:sjh
-# datetime:2021/06/09 上午10:52
 # software: PyCharm
 # project: lingzhi-webapi
 import logging, time
@@ -9,13 +8,14 @@ from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.project_version import IastProjectVersion
 from dongtai.models.project import IastProject
 from dongtai.models.agent import IastAgent
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("django")
 
 
 class UpdateProjectVersion(UserEndPoint):
     name = "api-v1-project-version-check"
-    description = "检测并关联项目版本信息"
+    description = _("Detect and associate project version information")
 
     def get(self, request):
         try:
@@ -40,6 +40,6 @@ class UpdateProjectVersion(UserEndPoint):
                     project_version_id=result.id,
                     latest_time=int(time.time())
                 )
-            return R.success(msg='检测完成', data=data)
+            return R.success(msg=_('Test'), data=data)
         except Exception as e:
-            return R.failure(status=202, msg=e)
+            return R.failure(status=202, msg=_('Detection failure'))
