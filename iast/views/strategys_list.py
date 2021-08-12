@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/25 下午3:00
 # software: PyCharm
 # project: lingzhi-webapi
 
@@ -10,7 +9,6 @@ from dongtai.endpoint import UserEndPoint
 from dongtai.models.strategy_user import IastStrategyUser
 
 
-# 用户获取自有策略列表
 class StrategyList(UserEndPoint):
 
     def get(self, request):

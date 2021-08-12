@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/27 下午2:58
+
 # software: PyCharm
 # project: lingzhi-webapi
 import logging
@@ -10,16 +10,14 @@ from django.contrib.auth.models import Group
 
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("django")
 
 
 class UserInfoEndpoint(UserEndPoint):
-    """
-    用户登录
-    """
     name = "api-v1-user-info"
-    description = "用户信息"
+    description = _("User Info")
 
     def get(self, request):
         user = request.user

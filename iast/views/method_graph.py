@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author: owefsad@huoxian.cn
-# datetime: 2021/7/29 下午3:02
 # project: dongtai-webapi
 
 import json
@@ -14,6 +13,7 @@ from dongtai.models.agent_method_pool import MethodPool
 from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai.utils import const
 from dongtai.utils.validate import Validate
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -24,7 +24,7 @@ class MethodGraph(AnonymousAndUserEndPoint):
             method_pool_id = request.query_params.get('method_pool_id')
             method_pool_type = request.query_params.get('method_pool_type')
             if Validate.is_empty(method_pool_id):
-                return R.failure(msg='方法池ID为空')
+                return R.failure(msg=_('Method pool ID is empty'))
 
             auth_agents = self.get_auth_and_anonymous_agents(request.user).values('id')
             auth_agent_ids = [agent['id'] for agent in auth_agents]
@@ -40,20 +40,19 @@ class MethodGraph(AnonymousAndUserEndPoint):
                     replay_type=const.REQUEST_REPLAY
                 ).first()
             else:
-                return R.failure(msg='污点调用图类型不存在')
+                return R.failure(msg=_('Stain call map type does not exist'))
 
             if method_pool is None:
-                return R.failure(msg='数据不存在或无权限访问')
+                return R.failure(msg=_('Data does not exist or have no right to access'))
 
             data, link_count, method_count = self.search_all_links(method_pool.method_pool)
             return R.success(data=data)
 
         except ValueError as e:
-            return R.failure(msg='page和pageSize只能为数字')
+            return R.failure(msg=_('Page and PageSize can only be numbers'))
 
     def get_method_pool(self, user, method_pool_id):
         """
-        根据用户和方法池ID获取方法池对象
         :param user:
         :param method_pool_id:
         :return:
@@ -71,20 +70,11 @@ class MethodGraph(AnonymousAndUserEndPoint):
 
     def search_taint_link(self, method_pool, sources, sinks, propagators):
         """
-        根据策略搜索满足条件的污点链
-          1.如果存在sink点，根据sink点搜索污点链，
-            1.1 如果存在污点链
-                1.1.1 如果存在source节点或propagator节点，检查污点链中是否存在source节点或propagator节点
-                1.1.2 如果不存在，则直接返回污点链
-            1.2 如果不存在污点链，返回空
-          2.如果不存在sink节点，直接进入2.1
-            2.1 如果存在source节点或propagator节点，检查方法池中是否存在source节点或propagator节点
-            2.2 如果不存在，返回空
-        :param method_pool: 原始方法池
-        :param sources: 污点源方法集合
-        :param sinks: 危险函数方法集合
-        :param propagators: 传播方法集合
-        :return: 满足条件的污点链
+        :param method_pool: 
+        :param sources: 
+        :param sinks: 
+        :param propagators: 
+        :return: 
         """
         engine = VulEngine()
         links = list()
@@ -142,7 +132,6 @@ class MethodGraph(AnonymousAndUserEndPoint):
 
     def check_match(self, method_caller_set, sink_set=None, source_set=None, propagator_set=None):
         """
-        根据方法调用栈、source方法调用栈、传播方法调用栈、sink方法调用栈综合判断是否满足条件
         :param method_caller_set:
         :param sink_set:
         :param source_set:

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2021/2/19 下午3:59
 # software: PyCharm
 # project: lingzhi-webapi
 import logging
@@ -9,6 +8,7 @@ import logging
 from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.hook_strategy import HookStrategy
 from dongtai.utils import const
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -53,34 +53,34 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
 
         op = self.check_op(op)
         if op is None:
-            return R.failure('操作类型不存在')
+            return R.failure(msg=_('Operation type does not exist'))
 
         if rule_type is not None and scope == 'all':
             count = HookStrategy.objects.filter(type__id=rule_type, created_by=user_id).update(enable=op)
-            logger.info('策略类型%s操作成功，共%s条', rule_type, count)
+            logger.info(_('Policy type {} operation success, total {}').format(rule_type, count))
             status = True
         elif rule_id is not None:
             status = self.set_strategy_status(strategy_id=rule_id, strategy_ids=None, user_id=user_id,
                                               enable_status=op)
-            logger.info('策略%s操作成功', rule_id)
+            logger.info(_('Policy {}').format(rule_id))
 
         if status:
-            return R.success(msg='操作成功')
+            return R.success(msg=_('Successful operation'))
         else:
-            return R.failure(msg='策略不存在')
+            return R.failure(msg=_('No strategy does not exist'))
 
     def post(self, request):
         op = request.data.get('op')
         op = self.check_op(op)
         if op is None:
-            return R.failure('操作类型不存在')
+            return R.failure(msg=_('Operation type does not exist'))
 
         strategy_ids = request.data.get('ids')
         strategy_ids = strategy_ids.split(',')
         if strategy_ids:
             count = self.set_strategy_status(strategy_id=None, strategy_ids=strategy_ids, user_id=request.user.id,
                                              enable_status=op)
-            logger.info('策略操作成功，共%s条', count)
-            return R.success(msg='操作成功')
+            logger.info(_('Strategy operation is successful, total {}').format(count))
+            return R.success(msg=_('Successful operation'))
         else:
-            return R.failure(msg='参数不正确')
+            return R.failure(msg=_('The parameter is incorrect'))

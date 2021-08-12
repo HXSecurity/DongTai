@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/30 下午9:55
 # software: PyCharm
 # project: lingzhi-webapi
 from django.db.models import Count

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/25 下午3:00
+
 # software: PyCharm
 # project: lingzhi-webapi
 from dongtai.utils import const
@@ -12,6 +12,7 @@ from dongtai.endpoint import R
 from dongtai.utils import const
 from dongtai.endpoint import UserEndPoint
 from iast.serializers.strategy import StrategySerializer
+from django.utils.translation import gettext_lazy as _
 
 
 class StrategyEndpoint(UserEndPoint):
@@ -39,7 +40,7 @@ class StrategyEndpoint(UserEndPoint):
                     'level':
                     1,
                     'dt':
-                    1  # 删除该字段
+                    1  
                 }
 
             strategy_ids = models.keys()
@@ -54,4 +55,4 @@ class StrategyEndpoint(UserEndPoint):
                     models[strategy_id]['level'] = profile['level_id']
             return R.success(data=list(models.values()))
         else:
-            return R.success(msg='暂无策略')
+            return R.success(msg=_('No strategy'))

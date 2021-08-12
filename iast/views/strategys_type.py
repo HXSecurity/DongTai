@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/25 下午3:00
+
 # software: PyCharm
 # project: lingzhi-webapi
 
@@ -11,7 +11,7 @@ from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.vul_level import IastVulLevel
 
 
-# 按高中低分类策略
+
 class StrategyType(UserEndPoint):
 
     def get(self, request):

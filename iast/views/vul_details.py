@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/23 下午2:16
 # software: PyCharm
 # project: lingzhi-webapi
 import base64
@@ -16,60 +15,8 @@ from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from iast.serializers.vul import VulSerializer
+from django.utils.translation import gettext_lazy as _
 
-"""
-左侧边栏：
-[x] server信息接口
-漏洞信息接口
-污点流图接口
-修复建议接口
-[x] 应用信息接口
-[x] 运行时环境接口
-[x] 环境变量接口
-
-漏洞id -> 应用id -> 应用信息
-漏洞ID -> 服务器ID -> 服务器信息接口
-
-服务器信息接口：
-- 入参：漏洞ID
-- request对象：用户ID
-- 漏洞表：服务器ID
-- 服务器表：
-    - name
-    - hostname
-    - ip
-    - port
-    - 中间件
-    - 运行时环境
-    - 环境变量
-
-应用信息接口
-- 入参：漏洞ID
-- request对象：用户ID
-- 漏洞表：应用ID
-- 应用表：
-    - name
-    - path
-
-漏洞信息接口：
-- url
-- http请求方法
-- 漏洞类型
-- 污点位置
-- 首次出现时间
-- 应用名称
-- 语言
-- 等级
-- 出现次数
-- http请求头
-- 污点流图
-
-策略接口：
-- 漏洞描述
-- 请求代码示例
-- 修复建议
-
-"""
 logger = logging.getLogger('dongtai-webapi')
 
 
@@ -126,11 +73,11 @@ class VulDetail(UserEndPoint):
                 filename = method['callerClass']
                 line_number = method['callerLineNumber']
                 if i == 0:
-                    data_type = '污点来源方法'
+                    data_type = _('Source method')
                 elif i == method_counts - 1:
-                    data_type = '危险方法'
+                    data_type = _('Hazardous method')
                 else:
-                    data_type = '传播方法'
+                    data_type = _('Propagation method')
                 results.append({
                     'type': data_type,
                     'file': filename,
@@ -147,7 +94,7 @@ class VulDetail(UserEndPoint):
                     'code': method.get('code', None),
                 })
         except Exception as e:
-            logger.error(f'[{__name__}] 污点调用图解析出错，原因：{e}')
+            logger.error(_('Analysis of errovence analysis of stain call diagram: {}').format(__name__,e))
             results = None
         return results
 
@@ -157,7 +104,7 @@ class VulDetail(UserEndPoint):
         try:
             _data = _data + (base64.b64decode(header.encode("utf-8")).decode("utf-8") if header else '')
         except Exception as e:
-            logger.error(f'header解析出错，错误原因：{e}')
+            logger.error(_('Error analysis of Header, error: {}').format(e))
         if data:
             _data = _data + "\n" + data
         return _data
@@ -188,7 +135,7 @@ class VulDetail(UserEndPoint):
         try:
             self.server = agent.server
         except Exception as e:
-            logger.error(f'[{__name__}] 漏洞信息解析出错，原因：{e}')
+            logger.error(_('[{}] Vulnerability information parsing error, reason: {}').format(__name__,e))
             self.server = {}
         self.vul_name = vul.type
         return {
@@ -200,7 +147,7 @@ class VulDetail(UserEndPoint):
             'taint_position': vul.taint_position,
             'first_time': vul.first_time,
             'latest_time': vul.latest_time,
-            'project_name': project['name'] if project else '暂未绑定项目',
+            'project_name': project['name'] if project else _('Not bind project'),
             'project_version': project_version_name,
             'language': agent.language,
             'level': vul.level.name_value,
@@ -221,7 +168,7 @@ class VulDetail(UserEndPoint):
         }
 
     def get_strategy(self):
-        # todo 暂时策略不允许修改
+        
         strategy = IastStrategyModel.objects.filter(vul_name=self.vul_name).first()
         if strategy:
             return {
@@ -252,7 +199,8 @@ class VulDetail(UserEndPoint):
                 }
             )
         except Exception as e:
-            return R.failure(msg=f'漏洞数据查询出错，错误原因：{e}')
+            logger.error(_('[{}] Vulnerability information parsing error, reason: {}').format(__name__,e))
+            return R.failure(msg=_('Vulnerability data query error'))
 
 
 if __name__ == '__main__':

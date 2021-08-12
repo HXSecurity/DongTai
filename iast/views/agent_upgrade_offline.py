@@ -1,24 +1,23 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/25 下午2:37
 # software: PyCharm
 # project: lingzhi-webapi
 from dongtai.endpoint import TalentAdminEndPoint, R
+from django.utils.translation import gettext_lazy as _
 
 
 class AgentUpgradeOffline(TalentAdminEndPoint):
     name = "api-v1-agent-offline-upgrade"
-    description = "离线升级agent"
+    description = _("Offline Upgrade Agent")
 
     def post(self, request):
         file = request.FILES['file']
         status, filename = AgentUpgradeOffline.check_file(file.name)
         if status:
             AgentUpgradeOffline.handle_uploaded_file(filename, file)
-            return R.success(msg='上传成功')
-        return R.failure(msg=f'不支持{filename}文件')
-
+            return R.success(msg=_('Upload success'))
+        return R.failure(msg=_('{} File').format(filename))
     @staticmethod
     def handle_uploaded_file(filename, file):
         with open(f'iast/upload/iast-package/{filename}', 'wb+') as destination:

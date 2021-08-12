@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2021/2/19 上午11:56
 # software: PyCharm
 # project: lingzhi-engine
 from dongtai.models import User
@@ -26,7 +25,6 @@ class HookRuleSerialize(serializers.ModelSerializer):
         fields = ['id', 'rule_type_id', 'rule_type', 'value', 'source', 'target', 'inherit', 'track', 'update_time',
                   'enable', 'user']
 
-    # fixme 修改策略类型获取方式，解决重复查询的问题
     def get_rule_type(self, obj):
         rule_type = obj.type.first()
         if rule_type:
