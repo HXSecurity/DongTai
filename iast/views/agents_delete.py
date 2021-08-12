@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2021/1/11 下午6:47
 # software: PyCharm
 # project: lingzhi-webapi
 
@@ -18,13 +17,14 @@ from dongtai.models.vulnerablity import IastVulnerabilityModel
 
 from dongtai.models.agent import IastAgent
 from dongtai.models.agent_method_pool import MethodPool
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('dongtai-webapi')
 
 
 class AgentsDeleteEndPoint(UserEndPoint):
     name = "api-v1-agent-<pk>-delete"
-    description = "删除agent"
+    description = _("Delete Agent")
 
     def get(self, request):
         agent_ids = request.GET.get('ids')
@@ -38,7 +38,6 @@ class AgentsDeleteEndPoint(UserEndPoint):
                     self.agent = queryset
                     self.delete_error_log()
                     self.delete_heart_beat()
-                    # self.delete_vul_overpower()
                     self.delete_sca()
                     self.delete_vul()
                     self.delete_method_pool()
@@ -55,70 +54,70 @@ class AgentsDeleteEndPoint(UserEndPoint):
         success = list(filter(lambda x: x is True, result))
         failure = list(filter(lambda x: x is False, result))
         if len(success) == len(agent_ids):
-            return R.success(msg='删除成功')
+            return R.success(msg=_('successfully deleted'))
         if len(failure) == len(agent_ids):
-            return R.success(msg='删除失败')
-        return R.success(msg='成功删除{}条，删除失败{}条'.format(len(success), len(failure)))
+            return R.success(msg=_('failed to delete'))
+        return R.success(msg=_('Successfully deleted {} strips, delete failed {}').format(len(success), len(failure)))
 
     def delete_error_log(self):
         try:
             deleted, _rows_count = IastErrorlog.objects.filter(agent=self.agent).delete()
-            logger.error(f'错误日志删除成功，共删除：{deleted}条')
+            logger.error(_('Error log deletion success, copied: {}').format(deleted))
         except Exception as e:
-            logger.error(f'错误日志删除失败，探针ID: {self.agent.id}，原因：{e}')
+            logger.error(_('Error log deletion failed, probe ID: {}, reason: {}').format(self.agent.id,e))
 
     def delete_heart_beat(self):
         try:
             deleted, _rows_count = IastHeartbeat.objects.filter(agent=self.agent).delete()
-            logger.error(f'重放请求方法池数据删除成功，共删除：{deleted}条')
+            logger.error(_('Replay request method pool data delete success, copied: {}').format(deleted))
         except Exception as e:
-            logger.error(f'心跳数据删除失败，原因：{e}')
+            logger.error(_('Heartbeat data deletion failed, reasons: {}').format(e))
 
     def delete_vul_overpower(self):
         try:
             deleted, _rows_count = IastOverpowerUserAuth.objects.filter(agent=self.agent).delete()
-            logger.error(f'重放请求方法池数据删除成功，共删除：{deleted}条')
+            logger.error(_('Replay request method pool data delete success, copied: {}').format(deleted))
         except Exception as e:
-            logger.error(f'越权相关数据删除失败，原因：{e}')
+            logger.error(_('Bypass Related Data Deletion Failure, Reason: {}').format(e))
 
     def delete_vul(self):
         try:
             deleted, _rows_count = IastVulnerabilityModel.objects.filter(agent=self.agent).delete()
-            logger.error(f'重放请求方法池数据删除成功，共删除：{deleted}条')
+            logger.error(_('Replay request method pool data delete success, copied: {}').format(deleted))
         except Exception as e:
-            logger.error(f'漏洞数据删除失败，原因：{e}')
+            logger.error(_('Vulnerability data deletion failed, reason: {}').format(e))
 
     def delete_sca(self):
         try:
             deleted, _rows_count = Asset.objects.filter(agent=self.agent).delete()
-            logger.error(f'重放请求方法池数据删除成功，共删除：{deleted}条')
+            logger.error(_('Replay request method pool data delete success, copied: {}').format(deleted))
         except Exception as e:
-            logger.error(f'第三方组件数据删除失败，原因：{e}')
+            logger.error(_('Third-party component data deletion failed, reasons: {}').format(e))
 
     def delete_method_pool(self):
         try:
             deleted, _rows_count = MethodPool.objects.filter(agent=self.agent).delete()
-            logger.error(f'重放请求方法池数据删除成功，共删除：{deleted}条')
+            logger.error(_('Replay request method pool data delete success, copied: {}').format(deleted))
         except Exception as e:
-            logger.error(f'方法池数据删除失败，原因：{e}')
+            logger.error(_('Method pool data deletion failed, reasons: {}').format(e))
 
     def delete_method_pool_replay(self):
         try:
             deleted, _rows_count = IastAgentMethodPoolReplay.objects.filter(agent=self.agent).delete()
-            logger.error(f'重放请求方法池数据删除成功，共删除：{deleted}条')
+            logger.error(_('Replay request method pool data delete success, copied: {}').format(deleted))
         except Exception as e:
-            logger.error(f'重放请求方法池数据删除失败，原因：{e}')
+            logger.error(_('Replay request method pool data deletion failed, reasons: {}').format(e))
 
     def delete_replay_queue(self):
         try:
             deleted, _rows_count = IastReplayQueue.objects.filter(agent=self.agent).delete()
-            logger.error(f'重放请求队列删除成功，共删除：{deleted}条')
+            logger.error(_('Replay request queue delete success, copied: {}').format(deleted))
         except Exception as e:
-            logger.error(f'重放请求队列删除失败，原因：{e}')
+            logger.error(_('Replay request queue delete failed, reason: {}').format(e))
 
 
 if __name__ == '__main__':
-    # 增加method_poll的引入，解决报错
+    
     MethodPool.objects.count()
     IastErrorlog.objects.count()
     IastHeartbeat.objects.count()

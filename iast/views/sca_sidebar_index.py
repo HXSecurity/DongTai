@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/23 下午2:15
 # software: PyCharm
 # project: lingzhi-webapi
 from django.db.models import Q
@@ -13,14 +12,9 @@ from dongtai.models.asset import Asset
 class ScaSidebarList(UserEndPoint):
     def get(self, request):
         """
-        获取三方组件列表
-        - 支持排序
-        - 支持搜索
-        - 支持分页
         :param request:
         :return:
         """
-        # 提取过滤条件：
         language = request.query_params.get('language', None)
         level = request.query_params.get('level', None)
         app_name = request.query_params.get('app', None)

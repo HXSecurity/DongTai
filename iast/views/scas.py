@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/23 下午2:15
 # software: PyCharm
 # project: lingzhi-webapi
 
@@ -11,15 +10,12 @@ from dongtai.models.asset import Asset
 from iast.base.agent import get_agents_with_project
 from iast.base.project_version import get_project_version, get_project_version_by_id
 from iast.serializers.sca import ScaSerializer
+from django.utils.translation import gettext_lazy as _
 
 
 class ScaList(UserEndPoint):
     def get(self, request):
         """
-        获取三方组件列表
-        - 支持排序
-        - 支持搜索
-        - 支持分页
         :param request:
         :return:
         """
@@ -37,7 +33,7 @@ class ScaList(UserEndPoint):
 
         project_id = request.query_params.get('project_id', None)
         if project_id and project_id != '':
-            # 获取项目当前版本信息
+            
             version_id = request.GET.get('version_id', None)
             if not version_id:
                 current_project_version = get_project_version(

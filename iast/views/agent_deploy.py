@@ -12,6 +12,7 @@ from dongtai.models.system import IastSystem
 from rest_framework.authtoken.models import Token
 from iast.utils import get_model_field
 from django.forms.models import model_to_dict
+from django.utils.translation import gettext_lazy as _
 
 
 class AgentDeploy(UserEndPoint):
@@ -23,4 +24,4 @@ class AgentDeploy(UserEndPoint):
         desc = IastDeployDesc.objects.filter(**filters).first()
         if desc:
             return R.success(data= model_to_dict(desc))
-        return R.failure(msg='找不到对应部署文档')
+        return R.failure(msg=_("Can't find a corresponding deployment document"))

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2021/2/19 下午3:59
 # software: PyCharm
 # project: lingzhi-webapi
 import time
@@ -10,17 +9,12 @@ from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.hook_strategy import HookStrategy
 from dongtai.models.hook_type import HookType
 from dongtai.utils import const
+from django.utils.translation import gettext_lazy as _
 
 
 class EngineHookRuleAddEndPoint(UserEndPoint):
     def parse_args(self, request):
         """
-        规则类型ID
-        规则详情
-        污点来源
-        污点去向
-        是否跟踪
-        继承深度
         :param request:
         :return:
         """
@@ -34,13 +28,13 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
 
             return rule_type, rule_value, rule_source, rule_target, inherit, is_track
         except Exception as e:
-            # todo 增加异场打印
+            
             return None, None, None, None, None, None
 
     def create_strategy(self, value, source, target, inherit, track, created_by):
         try:
-            # todo 考虑将前端发送的数据进行转换
-            # 前端直接处理为最终的数据格式？
+            
+            
             timestamp = int(time.time())
             strategy = HookStrategy(
                 value=value,
@@ -61,7 +55,7 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
     def post(self, request):
         rule_type, rule_value, rule_source, rule_target, inherit, is_track = self.parse_args(request)
         if all((rule_type, rule_value, rule_source, inherit, is_track)) is False:
-            return R.failure(msg='参数不完整，请检查')
+            return R.failure(msg=_('The parameter is incomplete, please check'))
 
         strategy = self.create_strategy(rule_value, rule_source, rule_target, inherit, is_track, request.user.id)
         if strategy:
@@ -71,5 +65,5 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             ).first()
             if hook_type:
                 hook_type.strategies.add(strategy)
-                return R.success(msg='策略创建成功')
-        return R.failure(msg='策略创建失败')
+                return R.success(msg=_('Strategy creation success'))
+        return R.failure(msg=_('Strategy creation failed'))

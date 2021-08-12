@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/12/24 下午3:26
 # software: PyCharm
 # project: lingzhi-webapi
 from captcha.helpers import captcha_image_url

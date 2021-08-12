@@ -7,9 +7,6 @@ from dongtai.models.strategy import IastStrategyModel
 class StrategyModified(UserEndPoint):
 
     def put(self, request, id_):
-        '''
-        用户修改策略
-        '''
         fields = ['name', 'vul_desc', 'vul_fix', 'enable']
         data = {k: v for k, v in request.data.items() if k in fields}
         hook_type = HookType.objects.filter(pk=id_).first()

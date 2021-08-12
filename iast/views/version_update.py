@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author: owefsad@huoxian.cn
-# datetime: 2021/7/29 下午4:56
 # project: dongtai-webapi
 import base64
 import logging
@@ -9,6 +8,7 @@ import logging
 from dongtai.endpoint import R, TalentAdminEndPoint
 from dongtai.models.agent_method_pool import MethodPool
 from dongtai.models.profile import IastProfile
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -17,7 +17,7 @@ class MethodPoolVersionUpdate(TalentAdminEndPoint):
     def get(self, request):
         profile_model = IastProfile.objects.filter(key='enable_update').first()
         if profile_model is None or profile_model.value != 'TRUE':
-            return R.failure(msg='当前不允许更新')
+            return R.failure(msg=_('Updated is currently not allowed'))
         method_pools = MethodPool.objects.all()
         length = 5
         index = 0
@@ -46,7 +46,7 @@ class MethodPoolVersionUpdate(TalentAdminEndPoint):
                 break
         profile_model.value = 'FALSE'
         profile_model.save(update_fields=['value'])
-        return R.success(msg='更新成功')
+        return R.success(msg=_('update completed'))
 
 
 def base64_decode(raw):

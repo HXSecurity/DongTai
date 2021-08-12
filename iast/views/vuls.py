@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/23 下午2:15
 # software: PyCharm
 # project: lingzhi-webapi
 
@@ -14,16 +13,13 @@ from iast.base.agent import get_agents_with_project, get_user_project_name, \
     get_user_agent_pro, get_all_server
 from iast.base.project_version import get_project_version, get_project_version_by_id
 from iast.serializers.vul import VulSerializer
+from django.utils.translation import gettext_lazy as _
 
 
 class VulsEndPoint(UserEndPoint):
 
     def get(self, request):
         """
-        获取漏洞列表
-        - 支持排序
-        - 支持搜索
-        - 支持分页
         :param request:
         :return:
         """
@@ -35,7 +31,7 @@ class VulsEndPoint(UserEndPoint):
         auth_users = self.get_auth_users(request.user)
         auth_agents = self.get_auth_agents(auth_users)
         if auth_agents is None:
-            return R.success(page={}, data=[], msg='暂无数据')
+            return R.success(page={}, data=[], msg=_('No data'))
 
         language = request.query_params.get('language')
         if language:
@@ -60,7 +56,7 @@ class VulsEndPoint(UserEndPoint):
 
         project_id = request.query_params.get('project_id')
         if project_id:
-            # 获取项目当前版本信息
+            
             version_id = request.GET.get('version_id', None)
             if not version_id:
                 current_project_version = get_project_version(
@@ -87,9 +83,9 @@ class VulsEndPoint(UserEndPoint):
         else:
             queryset = queryset.order_by('-latest_time')
 
-        # 获取所有项目名称
+        
         projects_info = get_user_project_name(auth_users)
-        # 获取用户所有agent绑定项目ID
+        
         agentArr = get_user_agent_pro(auth_users, projects_info.keys())
         agentPro = agentArr['pidArr']
         agentServer = agentArr['serverArr']
@@ -100,7 +96,7 @@ class VulsEndPoint(UserEndPoint):
         if allType:
             for item in allType:
                 allTypeArr[item.id] = item.name_value
-        # 获取server_name
+        
 
         page = request.query_params.get('page', 1)
         page_size = request.query_params.get("pageSize", 20)
@@ -112,7 +108,7 @@ class VulsEndPoint(UserEndPoint):
             for index in range(pro_length):
                 item = datas[index]
                 item['index'] = index
-                item['project_name'] = projects_info.get(agentPro.get(item['agent_id'], 0), "暂未绑定项目")
+                item['project_name'] = projects_info.get(agentPro.get(item['agent_id'], 0), _("Not bind project"))
                 item['project_id'] = agentPro.get(item['agent_id'], 0)
                 item['server_name'] = allServer.get(agentServer.get(item['agent_id'], 0), "JavaApplication")
                 item['server_type'] = VulSerializer.split_container_name(item['server_name'])

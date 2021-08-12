@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/24 下午9:07
 # software: PyCharm
 # project: lingzhi-webapi
 import logging
@@ -10,13 +9,14 @@ from dongtai.models import User
 
 from dongtai.endpoint import R
 from dongtai.endpoint import TalentAdminEndPoint
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("dongtai-webapi")
 
 
 class UserPasswordReset(TalentAdminEndPoint):
     name = "api-v1-user-password-reset"
-    description = "重置密码"
+    description = _("reset Password")
 
     def post(self, request):
         try:
@@ -27,20 +27,20 @@ class UserPasswordReset(TalentAdminEndPoint):
                     username = user.get_username()
                     user.set_password(f'{username}@123')
                     user.save(update_fields=['password'])
-                    msg = f'用户{username}密码重置成功'
+                    msg = _('User {} password reset success').format(username)
                     return R.success(msg=msg)
                 else:
-                    msg = '用户不存在'
+                    msg = _('User does not exist')
                     logger.warning(msg)
                     return R.failure(msg=msg)
             else:
-                msg = 'userId为空'
-                logger.error('用户ID为空')
+                msg = _('UserID is empty')
+                logger.error(_('User ID is empty'))
                 return R.failure(msg=msg)
         except ValueError as e:
-            msg = 'userId必须为数字'
+            msg = _('UserID must be a number')
             logger.error(msg)
         except Exception as e:
-            msg = f'密码重置失败，原因：{e}'
+            msg = _('Password reset failed, reasons: {E}').format(e)
             logger.error(msg)
         return R.failure(msg=msg)
