@@ -3,6 +3,7 @@
 # author: owefsad@huoxian.cn
 # project: dongtai-webapi
 import requests
+from django.utils.translation import gettext_lazy as _
 
 
 def notify(msg):
