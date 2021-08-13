@@ -11,6 +11,7 @@ from django.utils.translation import gettext_lazy as _
 
 from dongtai.models.talent import Talent
 import os
+from dongtai.utils.customfields import transCharField
 
 
 class IastDepartment(models.Model):
@@ -39,7 +40,7 @@ class PermissionsMixin(models.Model):
 
 
 class Department(PermissionsMixin):
-    name = models.CharField(
+    name = transCharField(
         _('name'),
         unique=True,
         max_length=100,

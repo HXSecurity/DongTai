@@ -7,10 +7,11 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 import os
+from dongtai.utils.customfields import transCharField
 
 
 class Talent(models.Model):
-    talent_name = models.CharField(
+    talent_name = transCharField(
         unique=True,
         verbose_name=_('talent'),
         max_length=255,

@@ -6,6 +6,7 @@
 # project: dongtai-models
 from django.db import models
 import os
+from dongtai.utils.customfields import transCharField
 
 
 class ScaArtifactDb(models.Model):
@@ -23,9 +24,10 @@ class ScaArtifactDb(models.Model):
     reference = models.TextField(blank=True, null=True)
     cvss_score = models.FloatField(blank=True, null=True)
     cvss3_score = models.FloatField(blank=True, null=True)
-    level = models.CharField(max_length=20, blank=True, null=True)
+    level = transCharField(max_length=20, blank=True, null=True)
 
     class Meta:
-        managed = True if os.getenv('environment',None) == 'TEST' else False
+        managed = True if os.getenv('environment', None) == 'TEST' else False
         db_table = 'sca_artifact_db'
-        unique_together = (('cve_id', 'group_id', 'artifact_id', 'latest_version'),)
+        unique_together = (('cve_id', 'group_id', 'artifact_id',
+                            'latest_version'), )
