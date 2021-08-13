@@ -3,11 +3,11 @@
 # author:owefsad
 # software: PyCharm
 # project: lingzhi-engine
-from dongtai.models.dependency import Dependency
+from dongtai.models.asset import Asset
 from rest_framework import serializers
 
 
 class DependencySerialize(serializers.ModelSerializer):
     class Meta:
-        model = Dependency
+        model = Asset
         fields = ['package_name', 'vul_count', 'version']
