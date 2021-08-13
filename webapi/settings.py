@@ -175,7 +175,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'webapi.wsgi.application'
 
-if len(sys.argv) > 1 and sys.argv[1] == 'test':
+if 0 and len(sys.argv) > 1 and sys.argv[1] in ('test', 'makemigrations',
+                                         'sqlmigrate','migrate'):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
