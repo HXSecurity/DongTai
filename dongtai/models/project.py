@@ -8,6 +8,7 @@ from django.db import models
 
 from dongtai.models import User
 from dongtai.models.strategy_user import IastStrategyUser
+import os
 
 
 class IastProject(models.Model):
@@ -21,5 +22,5 @@ class IastProject(models.Model):
     scan = models.ForeignKey(IastStrategyUser, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True if os.getenv('environment',None) == 'TEST' else False
         db_table = 'iast_project'

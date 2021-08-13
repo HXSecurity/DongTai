@@ -5,6 +5,7 @@
 # software: PyCharm
 # project: dongtai-models
 from django.db import models
+import os
 
 
 class ScaMavenDb(models.Model):
@@ -16,5 +17,5 @@ class ScaMavenDb(models.Model):
     aql = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True if os.getenv('environment',None) == 'TEST' else False
         db_table = 'sca_maven_db'

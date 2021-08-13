@@ -7,6 +7,7 @@
 from django.db import models
 
 from dongtai.models.agent import IastAgent
+import os
 
 
 class IastAgentMethodPoolReplay(models.Model):
@@ -31,5 +32,5 @@ class IastAgentMethodPoolReplay(models.Model):
     relation_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True if os.getenv('environment',None) == 'TEST' else False
         db_table = 'iast_agent_method_pool_replay'

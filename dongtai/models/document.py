@@ -1,4 +1,5 @@
 from django.db import models
+import os
 
 class IastDocument(models.Model):
     title = models.CharField(max_length=100, blank=True, null=True)
@@ -7,5 +8,5 @@ class IastDocument(models.Model):
     weight = models.IntegerField(default=0)
 
     class Meta:
-        managed = False
+        managed = True if os.getenv('environment',None) == 'TEST' else False
         db_table = 'iast_document'

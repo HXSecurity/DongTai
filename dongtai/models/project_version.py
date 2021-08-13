@@ -9,6 +9,7 @@ from django.db import models
 from dongtai.models import User
 from dongtai.models.project import IastProject
 from django.utils.translation import gettext_lazy as _
+import os
 
 
 class IastProjectVersion(models.Model):
@@ -22,5 +23,5 @@ class IastProjectVersion(models.Model):
     project = models.ForeignKey(IastProject, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True if os.getenv('environment',None) == 'TEST' else False
         db_table = 'iast_project_version'

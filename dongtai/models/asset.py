@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 
 from dongtai.models.agent import IastAgent
 from dongtai.models.vul_level import IastVulLevel
+import os
 
 
 class Asset(models.Model):
@@ -32,5 +33,5 @@ class Asset(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = True if os.getenv('environment',None) == 'TEST' else False
         db_table = 'iast_asset'

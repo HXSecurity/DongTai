@@ -6,6 +6,7 @@
 from django.db import models
 
 from dongtai.models.agent import IastAgent
+import os
 
 
 class IastReplayQueue(models.Model):
@@ -26,6 +27,6 @@ class IastReplayQueue(models.Model):
     replay_type = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True if os.getenv('environment',None) == 'TEST' else False
         db_table = 'iast_replay_queue'
         ordering = ('-replay_type',)

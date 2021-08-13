@@ -5,6 +5,7 @@
 # software: PyCharm
 # project: dongtai-models
 from django.db import models
+import os
 
 
 class IastVulRule(models.Model):
@@ -19,5 +20,5 @@ class IastVulRule(models.Model):
     update_time = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True if os.getenv('environment',None) == 'TEST' else False
         db_table = 'iast_vul_rule'
