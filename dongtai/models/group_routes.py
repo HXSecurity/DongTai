@@ -7,6 +7,7 @@ from django.contrib.auth.models import Group
 from django.db import models
 
 from dongtai.models import User
+import os
 
 
 class AuthGroupRoutes(models.Model):
@@ -18,5 +19,5 @@ class AuthGroupRoutes(models.Model):
     update_time = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True if os.getenv('environment',None) == 'TEST' else False
         db_table = 'auth_group_routes'

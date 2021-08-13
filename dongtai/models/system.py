@@ -1,6 +1,7 @@
 from django.db import models
 
 from dongtai.models import User
+import os
 
 
 class IastSystem(models.Model):
@@ -15,5 +16,5 @@ class IastSystem(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True if os.getenv('environment',None) == 'TEST' else False
         db_table = 'iast_system'

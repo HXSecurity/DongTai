@@ -6,6 +6,7 @@
 # project: dongtai-models
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+import os
 
 
 class Talent(models.Model):
@@ -32,7 +33,7 @@ class Talent(models.Model):
 
     class Meta:
         verbose_name = _('talent')
-        managed = False
+        managed = True if os.getenv('environment',None) == 'TEST' else False
         db_table = 'auth_talent'
 
     def get_talent_name(self):

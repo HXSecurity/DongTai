@@ -10,13 +10,14 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from dongtai.models.talent import Talent
+import os
 
 
 class IastDepartment(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True if os.getenv('environment',None) == 'TEST' else False
         db_table = 'iast_department'
 
 
@@ -52,7 +53,7 @@ class Department(PermissionsMixin):
     parent_id = models.IntegerField(_('parent id'), blank=True)
 
     class Meta:
-        managed = False
+        managed = True if os.getenv('environment',None) == 'TEST' else False
         db_table = 'auth_department'
 
     def get_department_name(self):

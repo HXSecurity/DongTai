@@ -5,6 +5,7 @@
 # software: PyCharm
 # project: dongtai-models
 from django.db import models
+import os
 
 from dongtai.models import User
 
@@ -19,6 +20,6 @@ class IastApplicationModel(models.Model):
     dt = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True if os.getenv('environment',None) == 'TEST' else False
         db_table = 'iast_application'
         unique_together = (('name', 'path'),)

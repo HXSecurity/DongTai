@@ -45,5 +45,5 @@ class MethodPool(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = True if os.getenv('environment',None) == 'TEST' else False
         db_table = 'iast_agent_method_pool'

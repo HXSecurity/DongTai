@@ -5,6 +5,7 @@
 # software: PyCharm
 # project: dongtai-models
 from django.db import models
+import os
 
 
 class ScaVulDb(models.Model):
@@ -27,5 +28,5 @@ class ScaVulDb(models.Model):
     extra = models.CharField(max_length=2000, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True if os.getenv('environment',None) == 'TEST' else False
         db_table = 'sca_vul_db'

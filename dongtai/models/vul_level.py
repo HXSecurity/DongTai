@@ -5,6 +5,7 @@
 # software: PyCharm
 # project: dongtai-models
 from django.db import models
+import os
 
 
 class IastVulLevel(models.Model):
@@ -13,5 +14,5 @@ class IastVulLevel(models.Model):
     name_type = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True if os.getenv('environment',None) == 'TEST' else False
         db_table = 'iast_vul_level'
