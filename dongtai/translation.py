@@ -14,6 +14,8 @@ from models.vulnerablity import IastVulnerabilityModel
 from models.deploy import IastDeployDesc
 from models.document import IastDocument
 from models.hook_type import HookType
+from models.department import Department
+from models.Talent import Talent
 
 
 @register(IastStrategyModel)
@@ -26,11 +28,6 @@ class IastVulLevelTranslationOptions(TranslationOptions):
     fields = ('name_value', 'name_type')
 
 
-@register(IastVulnerabilityModel)
-class IastVulnerabilityModelTranslationOptions(TranslationOptions):
-    fields = ('type')
-
-
 @register(IastDeployDesc)
 class IastDeployDescTranslationOptions(TranslationOptions):
     fields = ('desc')
@@ -38,14 +35,10 @@ class IastDeployDescTranslationOptions(TranslationOptions):
 
 @register(IastDocument)
 class IastDocumentTranslationOptions(TranslationOptions):
-    fields = ('title')
-
-
-@register(IastDocument)
-class IastDocumentTranslationOptions(TranslationOptions):
-    fields = ('title')
+    fields = ('title', 'url')
 
 
 @register(HookType)
 class HookTypeTranslationOptions(TranslationOptions):
     fields = ('name')
+
