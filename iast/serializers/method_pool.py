@@ -7,7 +7,7 @@
 from rest_framework import serializers
 
 from dongtai.models.agent_method_pool import MethodPool
-from dongtai.models.dependency import Dependency
+from dongtai.models.asset import Asset
 from dongtai.utils import http
 
 from iast.serializers.dependency import DependencySerialize
@@ -75,4 +75,4 @@ class MethodPoolListSerialize(serializers.ModelSerializer):
 
 
 if __name__ == '__main__':
-    d = Dependency()
+    d = Asset()
