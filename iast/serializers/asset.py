@@ -7,7 +7,7 @@ from dongtai.models.asset import Asset
 from rest_framework import serializers
 
 
-class DependencySerialize(serializers.ModelSerializer):
+class AssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Asset
         fields = ['package_name', 'vul_count', 'version']
