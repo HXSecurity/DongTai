@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 
 from dongtai.models.agent import IastAgent
 from dongtai.models.hook_strategy import HookStrategy
-
+import os
 
 class MethodPool(models.Model):
     agent = models.ForeignKey(IastAgent,
