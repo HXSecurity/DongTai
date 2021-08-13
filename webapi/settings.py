@@ -64,8 +64,9 @@ INSTALLED_APPS = [
     'captcha',
     'dongtai',
     'iast',
+    'modeltranslation',
 ]
-
+MODELTRANSLATION_LANGUAGES = ('en', 'zh')
 REST_FRAMEWORK = {
     'PAGE_SIZE':
         20,
