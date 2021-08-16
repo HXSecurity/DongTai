@@ -6,7 +6,7 @@
 # project: dongtai-models
 from django.db import models
 import os
-from dongtai.utils.customfields import transCharField
+from dongtai.utils.customfields import trans_char_field
 
 
 class ScaArtifactDb(models.Model):
@@ -24,7 +24,9 @@ class ScaArtifactDb(models.Model):
     reference = models.TextField(blank=True, null=True)
     cvss_score = models.FloatField(blank=True, null=True)
     cvss3_score = models.FloatField(blank=True, null=True)
-    level = transCharField(max_length=20, blank=True, null=True)
+    level = trans_char_field(["低危", "中危", "高危", "严重"])(max_length=20,
+                                                       blank=True,
+                                                       null=True)
 
     class Meta:
         managed = True if os.getenv('environment', None) == 'TEST' else False

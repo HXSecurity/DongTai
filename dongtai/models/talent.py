@@ -7,11 +7,11 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 import os
-from dongtai.utils.customfields import transCharField
+from dongtai.utils.customfields import trans_char_field
 
 
 class Talent(models.Model):
-    talent_name = transCharField(
+    talent_name = trans_char_field(["默认租户"])(
         unique=True,
         verbose_name=_('talent'),
         max_length=255,
@@ -28,13 +28,12 @@ class Talent(models.Model):
         default=True,
         help_text=_(
             'Designates whether this user should be treated as active. '
-            'Unselect this instead of deleting accounts.'
-        ),
+            'Unselect this instead of deleting accounts.'),
     )
 
     class Meta:
         verbose_name = _('talent')
-        managed = True if os.getenv('environment',None) == 'TEST' else False
+        managed = True if os.getenv('environment', None) == 'TEST' else False
         db_table = 'auth_talent'
 
     def get_talent_name(self):
