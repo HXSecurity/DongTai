@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2021/1/28 上午11:32
 # software: PyCharm
 # project: lingzhi-webapi
 import json
@@ -12,33 +11,29 @@ from dongtai.engine.vul_engine import VulEngine
 from dongtai.models.agent_method_pool import MethodPool
 
 from iast.serializers.method_pool import MethodPoolListSerialize
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('dongtai-webapi')
 
 
 class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
-    """
-    引擎注册接口
-    """
     name = "api-engine-search"
-    description = "引擎-根据策略搜索数据"
+    description = _("Engine - search data according to policy")
 
     def post(self, request):
         """
-        IAST下载 agent接口
         :param request:
         :return:
-        服务器作为agent的唯一值绑定
         token: agent-ip-port-path
         """
-        # 接受 token名称，version，校验token重复性，latest_time = now.time()
-        # 生成agent的唯一token
-        # 注册
+        
+        
+        
         try:
             latest_id, page_size, rule_name, rule_msg, rule_level, source_set, sink_set, propagator_set = \
                 self.parse_search_condition(request)
             auth_agents = self.get_auth_and_anonymous_agents(request.user).values('id')
-            # todo 后续根据语言/项目对agent进行进一步过滤
+            
             auth_agent_ids = [agent['id'] for agent in auth_agents]
             method_pool_ids = self.get_match_methods(
                 agents=auth_agent_ids,
@@ -49,28 +44,27 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
                 page_size=page_size,
                 size=page_size * 5)
             if method_pool_ids is None:
-                return R.success(msg='未查询到数据', data=list(), latest=0)
+                return R.success(msg=_('Not queried'), data=list(), latest=0)
 
             return R.success(
                 data=self.get_result_data(method_pool_ids, rule_name, rule_level, source_set, sink_set, propagator_set),
                 latest=method_pool_ids[-1]
             )
         except Exception as e:
-            return R.failure(msg=f"{e}")
+            return R.failure(msg=_("Acquisition failure"))
 
     @staticmethod
     def parse_search_condition(request):
         """
-        从request对象中解析搜索条件
         :param request:
-        :return: 规则ID、规则信息、规则等级、source方法、sink方法、propagator方法
+        :return: 
         """
         latest_id = int(request.query_params.get('latest', 0))
         page_size = int(request.query_params.get('pageSize', 20))
         if page_size > 100:
             page_size = 100
 
-        rule_id = request.data.get('name', '临时搜索')
+        rule_id = request.data.get('name', _('Temporary search'))
         rule_msg = request.data.get('msg')
         rule_level = request.data.get('level')
         rule_sources = request.data.get('sources')
@@ -93,10 +87,10 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
         if queryset.values('id').exists() is False:
             return None
 
-        # method_pool 由于数据量太大导致数据库传输时间长
+        
         matches = list()
         while True:
-            logger.debug(f'正在搜索，当前第{index + 1}页')
+            logger.debug(_('Search, current {} page').format(index+1))
             page = queryset.values('id', 'method_pool')[index * size:(index + 1) * size - 1]
             if page:
                 if len(matches) == page_size:
@@ -106,12 +100,7 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
                         break
                     method_caller_set = self.convert_method_pool_to_set(method_pool['method_pool'])
                     if self.check_match(method_caller_set, source_set, propagator_set, sink_set):
-                        # match_times = match_times - 1
                         matches.append(method_pool['id'])
-                #     if match_times == 0:
-                #         break
-                # if match_times == 0:
-                #     break
             else:
                 break
             index = index + 1
@@ -137,7 +126,6 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
 
     def check_match(self, method_caller_set, sink_set=None, source_set=None, propagator_set=None):
         """
-        根据方法调用栈、source方法调用栈、传播方法调用栈、sink方法调用栈综合判断是否满足条件
         :param method_caller_set:
         :param sink_set:
         :param source_set:
@@ -164,7 +152,6 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
             return data
 
         if len(sink_set) == 0:
-            # method_pools = method_pools.values('id', 'url', 'req_params', 'update_time')
             return MethodPoolListSerialize(rule=rule_name, level=rule_level, instance=method_pools, many=True).data
 
         engine = VulEngine()

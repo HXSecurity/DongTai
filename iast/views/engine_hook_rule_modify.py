@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2021/2/19 下午3:59
 # software: PyCharm
 # project: lingzhi-webapi
 import time
 
 from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.hook_strategy import HookStrategy
+from django.utils.translation import gettext_lazy as _
 
 
 class EngineHookRuleModifyEndPoint(UserEndPoint):
@@ -32,7 +32,7 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
     def post(self, request):
         rule_id, rule_type, rule_value, rule_source, rule_target, inherit, is_track = self.parse_args(request)
         if all((rule_id, rule_type, rule_value, rule_source, inherit, is_track)) is False:
-            return R.failure(msg='参数不完整，请检查')
+            return R.failure(msg=_('The parameter is incomplete, please check'))
 
         strategy = HookStrategy.objects.filter(id=rule_id, created_by=request.user.id).first()
 
@@ -45,5 +45,5 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
             strategy.update_time = int(time.time())
             strategy.save()
 
-            return R.success(msg='策略创建成功')
-        return R.failure(msg='策略创建失败')
+            return R.success(msg=_('Strategy creation success'))
+        return R.failure(msg=_('Strategy creation failed'))

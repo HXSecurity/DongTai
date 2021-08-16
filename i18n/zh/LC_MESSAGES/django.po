@@ -1,0 +1,1059 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-08-06 12:03+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: iast/account/department.py:96 iast/account/department.py:135
+msgid "Department {} already exists"
+msgstr "部门{}已存在"
+
+#: iast/account/department.py:106
+msgid "The department name has been modified to {}"
+msgstr "部门名称已修改为{}"
+
+#: iast/account/department.py:111 iast/account/department.py:158
+#: iast/account/user.py:189
+msgid "Department does not exist"
+msgstr "部门不存在"
+
+#: iast/account/department.py:147
+msgid "Department {} creation success"
+msgstr "部门{}创建成功"
+
+#: iast/account/department.py:153
+msgid "Father no access"
+msgstr "父部门无访问权限"
+
+#: iast/account/department.py:173
+msgid ""
+"Delete failed, existence of users under department {}, please implement "
+"forced deletion"
+msgstr "删除失败，部门{}下存在用户，请执行强制删除"
+
+#: iast/account/department.py:180 iast/views/agents_delete.py:57
+#: iast/views/project_version_delete.py:30 iast/views/vul_delete.py:31
+msgid "successfully deleted"
+msgstr "删除成功"
+
+#: iast/account/talent.py:25
+msgid "Tenant management"
+msgstr "租户管理"
+
+#: iast/account/talent.py:83
+msgid "Tenant has been discontinued"
+msgstr "租户已停用"
+
+#: iast/account/talent.py:83
+msgid "Tenant does not exist"
+msgstr "租户不存在"
+
+#: iast/account/talent.py:94
+msgid "Tenant name or contact email is not specified"
+msgstr "租户名称或联系邮箱未指定"
+
+#: iast/account/talent.py:97
+msgid "Tenant {} creation success"
+msgstr "租户{}创建成功"
+
+#: iast/account/talent.py:98
+msgid "Tenant creation failed, reasons: {}"
+msgstr "租户创建失败，原因：{}"
+
+#: iast/account/talent.py:106
+msgid "Tenant: {} Delete success"
+msgstr "租户：{} 删除成功"
+
+#: iast/account/talent.py:121
+msgid "Query if the default tenant information exists"
+msgstr "查询默认租户信息是否存在"
+
+#: iast/account/talent.py:125
+msgid ""
+"Tenant information already exists, please delete tenant information first"
+msgstr "租户信息已存在，请先删除租户信息"
+
+#: iast/account/talent.py:126
+msgid ""
+"Tenant information already exists, please delete the original tenant "
+"information first."
+msgstr "租户信息已存在，请先删除原有租户信息"
+
+#: iast/account/talent.py:128
+msgid "Started to create a tenant"
+msgstr "开始创建租户"
+
+#: iast/account/talent.py:134
+msgid ""
+"Tenant creation is completed, starting to create the default department"
+msgstr "租户创建完成，开始创建默认部门"
+
+#: iast/account/talent.py:135
+msgid "Default department"
+msgstr "默认部门"
+
+#: iast/account/talent.py:140
+msgid ""
+"The department creation is completed and started to create the default user"
+msgstr "部门创建完成，开始创建默认用户"
+
+#: iast/account/talent.py:153
+msgid "Tenker creation and initialization"
+msgstr "租户创建及初始化完成"
+
+#: iast/account/talent.py:156
+msgid "Create a tenant failed, error reason: {}"
+msgstr "创建租户失败，错误原因：{}"
+
+#: iast/account/user.py:79
+msgid "Page and PageSize must be numbers"
+msgstr "page和pageSize必须是数字"
+
+#: iast/account/user.py:113
+msgid "Data update success"
+msgstr "数据更新成功"
+
+#: iast/account/user.py:118 iast/views/project_detail.py:43
+#: iast/views/project_report_export.py:60 iast/views/project_summary.py:39
+#: iast/views/user_detail.py:32
+msgid "no permission"
+msgstr "no permission"
+
+#: iast/account/user.py:153
+msgid "User {} delete failed"
+msgstr "用户{}删除失败"
+
+#: iast/account/user.py:158
+msgid "User {} delete success"
+msgstr "用户{}删除成功"
+
+#: iast/account/user.py:171
+msgid "Consistent"
+msgstr "密码一致"
+
+#: iast/account/user.py:180
+msgid "Username already exists"
+msgstr "用户名已存在"
+
+#: iast/account/user.py:221 iast/account/user.py:236
+msgid "User creation failed"
+msgstr "用户创建失败"
+
+#: iast/account/user.py:226 iast/views/user_register_batch.py:70
+msgid "User {} creates success"
+msgstr "用户{}创建成功"
+
+#: iast/account/user.py:231
+msgid "Department does not exist or have no access"
+msgstr "部门不存在或无访问权限"
+
+#: iast/base/agent.py:124
+#, python-brace-format
+msgid ""
+"We found that there is {1} in the {0} page, and the attacker can change the "
+"value of {2} to attack:"
+msgstr "我们发现在{0}页面中存在{1}，攻击者可以改变{2}的值进行攻击："
+
+#: iast/base/agent.py:139
+msgid "{} Line"
+msgstr "的{}行"
+
+#: iast/base/agent.py:155
+msgid "In {} {} call {}. {} (), Incoming parameters {}"
+msgstr "在{}{}调用{}.{}(),传入参数{}"
+
+#: iast/base/agent.py:158
+msgid "{} Appears in {} {}"
+msgstr "{}出现在{}的{}"
+
+#: iast/base/project_version.py:11 iast/base/project_version.py:21
+#: iast/views/project_add.py:34 iast/views/project_add.py:73
+#: iast/views/project_report_export.py:72 iast/views/project_version_add.py:25
+#: iast/views/project_version_current.py:27
+#: iast/views/project_version_delete.py:24
+#: iast/views/project_version_update.py:25 iast/views/strategys_add.py:25
+msgid "Parameter error"
+msgstr "参数错误"
+
+#: iast/base/project_version.py:35
+msgid "Repeated version name"
+msgstr "版本名称重复"
+
+#: iast/base/project_version.py:42 iast/views/project_version_current.py:48
+#: iast/views/project_version_delete.py:32
+msgid "Version does not exist"
+msgstr "版本不存在"
+
+#: iast/base/update_project_version.py:18
+msgid "Detect and associate project version information"
+msgstr "检测并关联项目版本信息"
+
+#: iast/base/update_project_version.py:43
+msgid "Test"
+msgstr "检测完成"
+
+#: iast/base/update_project_version.py:45
+msgid "Detection failure"
+msgstr "检测失败"
+
+#: iast/notify/feishu.py:11
+msgid "Maven official crawler"
+msgstr "Maven官方爬虫"
+
+#: iast/serializers/agent.py:40
+msgid "Run in operation"
+msgstr "运行中"
+
+#: iast/serializers/agent.py:40 iast/serializers/agent.py:42
+msgid "Not running"
+msgstr "未运行"
+
+#: iast/serializers/agent.py:53
+msgid "Load data is not uploaded"
+msgstr "负载数据暂未上传"
+
+#: iast/serializers/agent.py:61 iast/serializers/agent.py:66
+msgid "The probe has not detected traffic"
+msgstr "探针暂未检测到流量"
+
+#: iast/serializers/login.py:15
+msgid "Username can not be empty"
+msgstr "用户名不能为空"
+
+#: iast/serializers/login.py:22
+msgid "password can not be blank"
+msgstr "密码不能为空"
+
+#: iast/serializers/sca.py:36 iast/views/vul_details.py:150
+#: iast/views/vuls.py:111
+msgid "Not bind project"
+msgstr "暂未绑定项目"
+
+#: iast/serializers/sca.py:59
+msgid "No project version has been created yet"
+msgstr "暂未创建项目版本"
+
+#: iast/views/agent.py:24
+msgid "Can't find relevant data"
+msgstr "找不到相关数据"
+
+#: iast/views/agent_delete.py:28 iast/views/agents_delete.py:27
+msgid "Delete Agent"
+msgstr "删除agent"
+
+#: iast/views/agent_delete.py:46
+msgid "Agent and related data deletion success"
+msgstr "agent及相关数据删除成功"
+
+#: iast/views/agent_delete.py:48
+msgid "Agent does not exist or have no right to access"
+msgstr "agent不存在或无权限访问"
+
+#: iast/views/agent_delete.py:51
+msgid "Delete the process error, please try again later"
+msgstr "删除过程出错，请稍后重试"
+
+#: iast/views/agent_delete.py:56 iast/views/agents_delete.py:65
+msgid "Error log deletion success, copied: {}"
+msgstr "错误日志删除成功，共删除：{}条"
+
+#: iast/views/agent_delete.py:58 iast/views/agents_delete.py:67
+msgid "Error log deletion failed, probe ID: {}, reason: {}"
+msgstr "错误日志删除失败，探针ID: {}，原因：{}"
+
+#: iast/views/agent_delete.py:63 iast/views/agent_delete.py:70
+#: iast/views/agent_delete.py:77 iast/views/agent_delete.py:84
+#: iast/views/agent_delete.py:91 iast/views/agent_delete.py:98
+#: iast/views/agents_delete.py:72 iast/views/agents_delete.py:79
+#: iast/views/agents_delete.py:86 iast/views/agents_delete.py:93
+#: iast/views/agents_delete.py:100 iast/views/agents_delete.py:107
+msgid "Replay request method pool data delete success, copied: {}"
+msgstr "重放请求方法池数据删除成功，共删除：{}条"
+
+#: iast/views/agent_delete.py:65 iast/views/agents_delete.py:74
+msgid "Heartbeat data deletion failed, reasons: {}"
+msgstr "心跳数据删除失败，原因：{}"
+
+#: iast/views/agent_delete.py:72 iast/views/agents_delete.py:81
+msgid "Bypass Related Data Deletion Failure, Reason: {}"
+msgstr "越权相关数据删除失败，原因：{}"
+
+#: iast/views/agent_delete.py:79 iast/views/agents_delete.py:88
+msgid "Vulnerability data deletion failed, reason: {}"
+msgstr "漏洞数据删除失败，原因：{}"
+
+#: iast/views/agent_delete.py:86 iast/views/agents_delete.py:95
+msgid "Third-party component data deletion failed, reasons: {}"
+msgstr "第三方组件数据删除失败，原因：{}"
+
+#: iast/views/agent_delete.py:93 iast/views/agents_delete.py:102
+msgid "Method pool data deletion failed, reasons: {}"
+msgstr "方法池数据删除失败，原因：{}"
+
+#: iast/views/agent_delete.py:100 iast/views/agents_delete.py:109
+msgid "Replay request method pool data deletion failed, reasons: {}"
+msgstr "重放请求方法池数据删除失败，原因：{}"
+
+#: iast/views/agent_delete.py:105 iast/views/agents_delete.py:114
+msgid "Replay request queue delete success, copied: {}"
+msgstr "重放请求队列删除成功，共删除：{}条"
+
+#: iast/views/agent_delete.py:107 iast/views/agents_delete.py:116
+msgid "Replay request queue delete failed, reason: {}"
+msgstr "重放请求队列删除失败，原因：{}"
+
+#: iast/views/agent_deploy.py:27
+msgid "Can't find a corresponding deployment document"
+msgstr "找不到对应部署文档"
+
+#: iast/views/agent_deploy_doc.py:14 iast/views/agent_deploy_info.py:14
+msgid "Agent deployment documentation"
+msgstr "Agent部署文档"
+
+#: iast/views/agent_deploy_doc.py:31 iast/views/vuls.py:34
+msgid "No data"
+msgstr "暂无数据"
+
+#: iast/views/agent_deploy_submit.py:18
+msgid "Upload Agent configuration"
+msgstr "上传Agent配置"
+
+#: iast/views/agent_download.py:21
+msgid "Download DongTai Agent"
+msgstr "下载洞态Agent"
+
+#: iast/views/agent_install.py:15
+msgid "Installing an Agent"
+msgstr "安装agent"
+
+#: iast/views/agent_install.py:26
+msgid "The installation is complete"
+msgstr "安装完成"
+
+#: iast/views/agent_install.py:28
+msgid "The engine is being installed or uninstalled, please try again later"
+msgstr "引擎正在被安装或卸载，请稍后再试"
+
+#: iast/views/agent_install.py:30 iast/views/agent_start.py:25
+#: iast/views/agent_stop.py:25 iast/views/agent_uninstall.py:30
+msgid "Engine does not exist or no right to operate"
+msgstr "引擎不存在或无权操作"
+
+#: iast/views/agent_start.py:15
+msgid "Start Agent"
+msgstr "启动agent"
+
+#: iast/views/agent_start.py:27 iast/views/agent_stop.py:27
+msgid "Agent is ongoing non-start stop operation, please try again later"
+msgstr "agent正在进行非启动停止操作，请稍后再试"
+
+#: iast/views/agent_start.py:43
+msgid "turning on..."
+msgstr "正在启动..."
+
+#: iast/views/agent_status_update.py:26
+msgid "Engine state update success"
+msgstr "引擎状态更新成功"
+
+#: iast/views/agent_stop.py:14
+msgid "Pause Agent"
+msgstr "暂停agent"
+
+#: iast/views/agent_stop.py:46
+msgid "Suspension ..."
+msgstr "正在暂停..."
+
+#: iast/views/agent_uninstall.py:15
+msgid "Uninstall Agent"
+msgstr "卸载agent"
+
+#: iast/views/agent_uninstall.py:26
+msgid "Uninstalling ..."
+msgstr "正在卸载..."
+
+#: iast/views/agent_uninstall.py:28
+msgid "Agent is being installed or uninstalled, please try again later"
+msgstr "agent正在被安装或卸载，请稍后再试"
+
+#: iast/views/agent_upgrade_offline.py:12
+msgid "Offline Upgrade Agent"
+msgstr "离线升级agent"
+
+#: iast/views/agent_upgrade_offline.py:19
+msgid "Upload success"
+msgstr "上传成功"
+
+#: iast/views/agent_upgrade_offline.py:20
+msgid "{} File"
+msgstr "不支持{}文件"
+
+#: iast/views/agent_upgrade_online.py:16
+msgid "Upgrade Agent"
+msgstr "在线升级agent"
+
+#: iast/views/agent_upgrade_online.py:24
+msgid "Online upgrade success"
+msgstr "在线升级成功"
+
+#: iast/views/agent_upgrade_online.py:26
+msgid ""
+"Token verification failed, confirm that the input address and token are "
+"correct"
+msgstr "token验证失败，请确认输入的地址和token是正确的"
+
+#: iast/views/agents.py:23
+msgid "Agent list"
+msgstr "agent列表"
+
+#: iast/views/agents.py:57
+msgid "The parameter format is incorrect, please check."
+msgstr "参数格式不正确，请检查。"
+
+#: iast/views/agents.py:60 iast/views/project_version_update.py:30
+msgid "Program error"
+msgstr "程序错误"
+
+#: iast/views/agents_delete.py:59 iast/views/vul_delete.py:36
+msgid "failed to delete"
+msgstr "删除失败"
+
+#: iast/views/agents_delete.py:60
+msgid "Successfully deleted {} strips, delete failed {}"
+msgstr "成功删除{}条，删除失败{}条"
+
+#: iast/views/engine_hook_rule_add.py:58
+#: iast/views/engine_hook_rule_modify.py:35
+msgid "The parameter is incomplete, please check"
+msgstr "参数不完整，请检查"
+
+#: iast/views/engine_hook_rule_add.py:68
+#: iast/views/engine_hook_rule_modify.py:48
+msgid "Strategy creation success"
+msgstr "策略创建成功"
+
+#: iast/views/engine_hook_rule_add.py:69
+#: iast/views/engine_hook_rule_modify.py:49
+msgid "Strategy creation failed"
+msgstr "策略创建失败"
+
+#: iast/views/engine_hook_rule_status.py:56
+#: iast/views/engine_hook_rule_status.py:76
+msgid "Operation type does not exist"
+msgstr "操作类型不存在"
+
+#: iast/views/engine_hook_rule_status.py:60
+msgid "Policy type {} operation success, total {}"
+msgstr "策略类型{}操作成功，共{}条"
+
+#: iast/views/engine_hook_rule_status.py:65
+msgid "Policy {}"
+msgstr "策略{}作成功"
+
+#: iast/views/engine_hook_rule_status.py:68
+#: iast/views/engine_hook_rule_status.py:84
+msgid "Successful operation"
+msgstr "操作成功"
+
+#: iast/views/engine_hook_rule_status.py:70
+#: iast/views/engine_hook_rule_type_disable.py:25
+#: iast/views/engine_hook_rule_type_enable.py:29
+#: iast/views/strategy_disable.py:26 iast/views/strategy_enable.py:27
+msgid "No strategy does not exist"
+msgstr "策略不存在"
+
+#: iast/views/engine_hook_rule_status.py:83
+msgid "Strategy operation is successful, total {}"
+msgstr "策略操作成功，共{}条"
+
+#: iast/views/engine_hook_rule_status.py:86 iast/views/vul_status.py:28
+msgid "The parameter is incorrect"
+msgstr "参数不正确"
+
+#: iast/views/engine_hook_rule_type_add.py:40
+msgid "incomplete data"
+msgstr "数据不完整"
+
+#: iast/views/engine_hook_rule_type_add.py:45
+msgid "Rule type Save success"
+msgstr "规则类型保存成功"
+
+#: iast/views/engine_hook_rule_type_disable.py:33
+msgid "Successful"
+msgstr "禁用成功"
+
+#: iast/views/engine_hook_rule_type_disable.py:34
+#: iast/views/engine_hook_rule_type_enable.py:38
+#: iast/views/engine_hook_rule_types.py:44 iast/views/engine_hook_rules.py:47
+msgid "Strategy type does not exist"
+msgstr "策略类型不存在"
+
+#: iast/views/engine_hook_rule_type_enable.py:23
+msgid "Parameter processing failed, error details: {}"
+msgstr "参数处理失败，错误详情：{}"
+
+#: iast/views/engine_hook_rule_type_enable.py:37
+msgid "Enable success"
+msgstr "启用成功"
+
+#: iast/views/engine_hook_rule_types.py:38 iast/views/engine_hook_rules.py:41
+msgid "Parameter parsing error, error reason: {}"
+msgstr "参数解析出错，错误原因：{}"
+
+#: iast/views/engine_hook_rules.py:63
+msgid "Rule reading error, error details: {}"
+msgstr "规则读取出错，错误详情：{}"
+
+#: iast/views/engine_method_pool_detail.py:21
+msgid "Engine - search data according to policy"
+msgstr "引擎-根据策略搜索数据"
+
+#: iast/views/engine_method_pool_detail.py:47
+msgid "Not queried"
+msgstr "未查询到数据"
+
+#: iast/views/engine_method_pool_detail.py:54
+msgid "Acquisition failure"
+msgstr "获取失败"
+
+#: iast/views/engine_method_pool_detail.py:67
+msgid "Temporary search"
+msgstr "临时搜索"
+
+#: iast/views/engine_method_pool_detail.py:93
+msgid "Search, current {} page"
+msgstr "正在搜索，当前第{}页"
+
+#: iast/views/engine_method_pool_sca.py:18
+msgid "method_pool_id is empty"
+msgstr "method_pool_id is empty"
+
+#: iast/views/engine_method_pool_sca.py:22
+msgid "method_pool does not exist"
+msgstr "method_pool does not exist"
+
+#: iast/views/engine_method_pool_sca.py:27
+msgid "method_pool has no permission"
+msgstr "method_pool has no permission"
+
+#: iast/views/log_clear.py:14
+msgid "Log emptiness"
+msgstr "日志清空"
+
+#: iast/views/log_delete.py:14
+msgid "Log Delete"
+msgstr "日志删除"
+
+#: iast/views/log_delete.py:27
+msgid "success"
+msgstr "success"
+
+#: iast/views/log_delete.py:29
+msgid "The data to be deleted cannot be empty"
+msgstr "待删除的数据不能为空"
+
+#: iast/views/log_export.py:58
+msgid "The export failed, the reason: the log id cannot be empty"
+msgstr "导出失败，原因：日志ID不能为空"
+
+#: iast/views/logs.py:17
+msgid "Log list"
+msgstr "日志列表"
+
+#: iast/views/logs.py:48
+msgid "No right access"
+msgstr "无权限访问"
+
+#: iast/views/logs.py:51
+msgid "failure"
+msgstr "failure"
+
+#: iast/views/method_graph.py:26
+msgid "Method pool ID is empty"
+msgstr "方法池ID为空"
+
+#: iast/views/method_graph.py:41
+msgid "Stain call map type does not exist"
+msgstr "污点调用图类型不存在"
+
+#: iast/views/method_graph.py:44
+msgid "Data does not exist or have no right to access"
+msgstr "数据不存在或无权限访问"
+
+#: iast/views/method_graph.py:50
+msgid "Page and PageSize can only be numbers"
+msgstr "page和pageSize只能为数字"
+
+#: iast/views/openapi.py:16
+msgid "Get OpenAPI configuration failed"
+msgstr "获取openapi配置失败"
+
+#: iast/views/openapi.py:22
+msgid "Current users have no right to modify"
+msgstr "当前用户无权修改"
+
+#: iast/views/openapi.py:29 iast/views/openapi.py:32
+#: iast/views/project_add.py:111 iast/views/project_version_add.py:27
+msgid "Create success"
+msgstr "创建成功"
+
+#: iast/views/profile.py:13
+msgid "Get {} configuration failed"
+msgstr "获取{}配置失败"
+
+#: iast/views/profile.py:25
+msgid "Update {} failed"
+msgstr "更新{}失败"
+
+#: iast/views/project_add.py:25
+msgid "New project"
+msgstr "新增项目"
+
+#: iast/views/project_add.py:58
+msgid "Creation failed, the project name already exists"
+msgstr "创建失败，项目名称已存在"
+
+#: iast/views/project_add.py:84
+msgid "Agent has been bound by other projects"
+msgstr "agent已被其他项目绑定"
+
+#: iast/views/project_delete.py:16
+msgid "Delete project"
+msgstr "删除项目"
+
+#: iast/views/project_delete.py:26
+msgid "Project deletion success"
+msgstr "项目删除成功"
+
+#: iast/views/project_detail.py:19
+msgid "View item details"
+msgstr "查看项目详情"
+
+#: iast/views/project_engines.py:16
+msgid "View engine list"
+msgstr "查看引擎列表"
+
+#: iast/views/project_report_export.py:24
+msgid "Vulnerability Word Report Generation"
+msgstr "漏洞word报告生成"
+
+#: iast/views/project_report_export.py:53
+msgid "Vulnerability Report - {}. {}"
+msgstr "漏洞报告-{}.{}"
+
+#: iast/views/project_report_export.py:101
+msgid "Safety test report"
+msgstr "安全测试报告"
+
+#: iast/views/project_report_export.py:114
+msgid "First, project basic information"
+msgstr "一 、项目基础信息"
+
+#: iast/views/project_report_export.py:122
+msgid "project name"
+msgstr "项目名称"
+
+#: iast/views/project_report_export.py:125
+msgid "Creative personnel"
+msgstr "创建人员"
+
+#: iast/views/project_report_export.py:128
+msgid "project type"
+msgstr "项目类型"
+
+#: iast/views/project_report_export.py:131
+msgid "Vulnerability quantity"
+msgstr "漏洞数量"
+
+#: iast/views/project_report_export.py:134
+msgid "Agent quantity"
+msgstr "Agent数量"
+
+#: iast/views/project_report_export.py:137
+msgid "Latest time"
+msgstr "最新时间"
+
+#: iast/views/project_report_export.py:159
+msgid "Second, the result analysis"
+msgstr "二、结果分析"
+
+#: iast/views/project_report_export.py:163
+msgid "2.1 Vulnerability Level Distribution"
+msgstr "2.1  漏洞等级分布"
+
+#: iast/views/project_report_export.py:173
+msgid "2.2 Distribution of Vulnerability"
+msgstr "2.2  漏洞类型分布"
+
+#: iast/views/project_report_export.py:181
+msgid "Vulnerability"
+msgstr "漏洞等级"
+
+#: iast/views/project_report_export.py:182
+msgid "Vulnerability type name"
+msgstr "漏洞类型名称"
+
+#: iast/views/project_report_export.py:183
+msgid "quantity"
+msgstr "数量"
+
+#: iast/views/project_report_export.py:196
+msgid "2.3 Vulnerability details"
+msgstr "2.3  漏洞详情"
+
+#: iast/views/project_report_export.py:220
+msgid "Summary information"
+msgstr "概要信息"
+
+#: iast/views/project_report_export.py:224
+msgid "Hazard level"
+msgstr "危害等级"
+
+#: iast/views/project_report_export.py:228
+msgid "First test time"
+msgstr "首次检测时间"
+
+#: iast/views/project_report_export.py:232
+msgid "Recently test time"
+msgstr "最近检测时间"
+
+#: iast/views/project_report_export.py:236
+msgid "Development language"
+msgstr "开发语言"
+
+#: iast/views/project_report_export.py:240
+msgid "Vulnerability URL"
+msgstr "漏洞url"
+
+#: iast/views/project_report_export.py:242
+msgid "Vulnerability description"
+msgstr "漏洞描述"
+
+#: iast/views/project_summary.py:19
+msgid "View item details - summarization"
+msgstr "查看项目详情-概括"
+
+#: iast/views/project_summary.py:67
+msgid "confirmed"
+msgstr "已确认"
+
+#: iast/views/project_version_add.py:19
+msgid "New project version information"
+msgstr "新增项目版本信息"
+
+#: iast/views/project_version_current.py:20
+msgid "Set to the current project version"
+msgstr "设置为当前项目版本"
+
+#: iast/views/project_version_current.py:46
+msgid "Version setting success"
+msgstr "版本设置成功"
+
+#: iast/views/project_version_current.py:51
+msgid "Version setting failed"
+msgstr "版本设置失败"
+
+#: iast/views/project_version_delete.py:17
+msgid "Delete project version information"
+msgstr "删除项目版本信息"
+
+#: iast/views/project_version_list.py:17
+msgid "View project version list"
+msgstr "查看项目版本列表"
+
+#: iast/views/project_version_list.py:32
+msgid "search successful"
+msgstr "查询成功"
+
+#: iast/views/project_version_update.py:18
+msgid "Update project version information"
+msgstr "更新项目版本信息"
+
+#: iast/views/project_version_update.py:27 iast/views/version_update.py:49
+msgid "update completed"
+msgstr "更新成功"
+
+#: iast/views/projects.py:20
+msgid "View item list"
+msgstr "查看项目列表"
+
+#: iast/views/sca_details.py:32
+msgid "Components do not exist or have no right to access"
+msgstr "组件不存在或无权限访问"
+
+#: iast/views/sca_details.py:47
+msgid "The current version has stopped maintenance or no secure version"
+msgstr "当前版本已停止维护或暂无安全版本"
+
+#: iast/views/sca_details.py:59
+msgid "Component information query failed"
+msgstr "组件信息查询失败"
+
+#: iast/views/sca_summary.py:19
+msgid "Three-party components overview"
+msgstr "三方组件概览"
+
+#: iast/views/strategy_delete.py:22
+msgid "This strategy does not exist"
+msgstr "该策略不存在"
+
+#: iast/views/strategy_disable.py:24
+msgid "Strategy is disabled, total {} hook rules"
+msgstr "策略禁用成功，共{}条hook规则"
+
+#: iast/views/strategy_enable.py:25
+msgid "Policy enabled success, total {} hook rules"
+msgstr "策略启用成功，共{}条hook规则"
+
+#: iast/views/strategys.py:58
+msgid "No strategy"
+msgstr "暂无策略"
+
+#: iast/views/system_info.py:14
+msgid "API - System Information Page"
+msgstr "api - 系统信息页面"
+
+#: iast/views/user_info.py:20
+msgid "User Info"
+msgstr "用户信息"
+
+#: iast/views/user_login.py:19
+msgid "User login"
+msgstr "用户登录"
+
+#: iast/views/user_login.py:32
+msgid "login successful"
+msgstr "登录成功"
+
+#: iast/views/user_login.py:36
+msgid "Login failed"
+msgstr "登录失败"
+
+#: iast/views/user_login.py:38
+msgid "Verification code error"
+msgstr "验证码错误"
+
+#: iast/views/user_login.py:40
+msgid "verification code must be filled"
+msgstr "验证码不能为空"
+
+#: iast/views/user_logout.py:21
+msgid "sign out"
+msgstr "退出登录"
+
+#: iast/views/user_logout.py:28
+msgid "exit successfully"
+msgstr "退出成功"
+
+#: iast/views/user_passwrd.py:16
+msgid "change Password"
+msgstr "修改密码"
+
+#: iast/views/user_passwrd.py:22
+msgid "The password is not allowed to be empty"
+msgstr "密码不允许为空"
+
+#: iast/views/user_passwrd.py:30
+msgid "Password reset complete"
+msgstr "密码修改成功"
+
+#: iast/views/user_passwrd.py:32
+msgid "Original password error"
+msgstr "原始密码错误"
+
+#: iast/views/user_passwrd_reset.py:19
+msgid "reset Password"
+msgstr "重置密码"
+
+#: iast/views/user_passwrd_reset.py:30
+msgid "User {} password reset success"
+msgstr "用户{}密码重置成功"
+
+#: iast/views/user_passwrd_reset.py:33
+msgid "User does not exist"
+msgstr "用户不存在"
+
+#: iast/views/user_passwrd_reset.py:37
+msgid "UserID is empty"
+msgstr "userId为空"
+
+#: iast/views/user_passwrd_reset.py:38
+msgid "User ID is empty"
+msgstr "用户ID为空"
+
+#: iast/views/user_passwrd_reset.py:41
+msgid "UserID must be a number"
+msgstr "userId必须为数字"
+
+#: iast/views/user_passwrd_reset.py:44
+#, python-brace-format
+msgid "Password reset failed, reasons: {E}"
+msgstr "密码重置失败，原因：{e}"
+
+#: iast/views/user_register_batch.py:41
+msgid "Account creation success"
+msgstr "账号创建成功"
+
+#: iast/views/user_register_batch.py:67
+msgid "User {} already exists"
+msgstr "用户{}已存在"
+
+#: iast/views/user_register_batch.py:72
+msgid "User creation failed because: token is incorrect"
+msgstr "用户创建失败，原因：token不正确"
+
+#: iast/views/user_register_batch.py:73
+msgid "Account registration success"
+msgstr "账号注册成功"
+
+#: iast/views/user_register_batch.py:88
+msgid "User account file read error"
+msgstr "用户账号文件读取错误"
+
+#: iast/views/user_token.py:19
+msgid "Get OpenAPI token"
+msgstr "获取OpenApi Token"
+
+#: iast/views/version_update.py:20
+msgid "Updated is currently not allowed"
+msgstr "当前不允许更新"
+
+#: iast/views/vul_count_for_plugin.py:17 iast/views/vul_list_for_plugin.py:18
+msgid "please input agent name."
+msgstr "please input agent name."
+
+#: iast/views/vul_count_for_plugin.py:24 iast/views/vul_list_for_plugin.py:25
+msgid "Not found agent_name!"
+msgstr "Not found agent_name!"
+
+#: iast/views/vul_delete.py:19
+msgid "Delete vulnerability"
+msgstr "删除漏洞"
+
+#: iast/views/vul_delete.py:33
+msgid "Delete failed, the reason: the vulnerability does not exist"
+msgstr "删除失败，原因：漏洞不存在"
+
+#: iast/views/vul_details.py:76
+msgid "Source method"
+msgstr "污点来源方法"
+
+#: iast/views/vul_details.py:78
+msgid "Hazardous method"
+msgstr "危险方法"
+
+#: iast/views/vul_details.py:80
+msgid "Propagation method"
+msgstr "传播方法"
+
+#: iast/views/vul_details.py:97
+msgid "Analysis of errovence analysis of stain call diagram: {}"
+msgstr "[{}] 污点调用图解析出错，原因：{}"
+
+#: iast/views/vul_details.py:107
+msgid "Error analysis of Header, error: {}"
+msgstr "header解析出错，错误原因：{}"
+
+#: iast/views/vul_details.py:138 iast/views/vul_details.py:202
+msgid "[{}] Vulnerability information parsing error, reason: {}"
+msgstr "[{}] 漏洞信息解析出错，原因：{}"
+
+#: iast/views/vul_details.py:203
+msgid "Vulnerability data query error"
+msgstr "漏洞数据查询出错"
+
+#: iast/views/vul_recheck.py:82
+msgid "IDS can't be empty"
+msgstr "ids不能为空"
+
+#: iast/views/vul_recheck.py:86
+msgid "IDS must be: Vulnerability ID, Vulnerability ID Format"
+msgstr "ids必须为：漏洞ID,漏洞ID 格式"
+
+#: iast/views/vul_recheck.py:99 iast/views/vul_recheck.py:140
+msgid "Handle success"
+msgstr "处理成功"
+
+#: iast/views/vul_recheck.py:103 iast/views/vul_request_replay.py:178
+msgid "Vulnerability replay error"
+msgstr "漏洞重放出错"
+
+#: iast/views/vul_recheck.py:116
+msgid ""
+"The current project has not been associated with probes and cannot be "
+"reproduced."
+msgstr "当前项目尚未关联探针，无法进行漏洞重放"
+
+
+#: iast/views/vul_recheck.py:121 iast/views/vul_recheck.py:160
+msgid "Batch playback error"
+msgstr "批量重放出错"
+
+#: iast/views/vul_recheck.py:155
+msgid "Item ID can't be empty"
+msgstr "项目ID不能为空"
+
+#: iast/views/vul_recheck.py:156
+msgid "The parameter format is incorrect"
+msgstr "参数格式不正确"
+
+#: iast/views/vul_request_replay.py:67
+msgid "HTTP request parsing error, reason: {}"
+msgstr "HTTP请求解析出错，原因：{}"
+
+#: iast/views/vul_request_replay.py:159
+msgid "Stain pool data does not exist or no right to operate"
+msgstr "污点池数据不存在或无权操作"
+
+#: iast/views/vul_request_replay.py:163
+msgid ""
+"The probe has been destroyed or suspended, please check the probe status"
+msgstr "探针已销毁或暂停运行，请选检查探针状态"
+
+#: iast/views/vul_request_replay.py:167
+msgid "Replay request is not legal"
+msgstr "重放请求不合法"
+
+#: iast/views/vul_request_replay.py:174
+msgid "Request to return success"
+msgstr "请求重返成功"
+
+#: iast/views/vul_request_replay.py:190
+msgid "Response header analysis error, error reason: {}"
+msgstr "Response Header解析出错，错误原因：{}"
+
+#: iast/views/vul_request_replay.py:199
+msgid "Replay request does not exist or no operational permissions"
+msgstr "重放请求不存在或无操作权限"
+
+#: iast/views/vul_request_replay.py:201
+msgid "Replay request processing"
+msgstr "重放请求处理中"
+
+#: iast/views/vul_request_replay.py:212
+msgid "Replay failure"
+msgstr "重放失败"
+
+#: iast/views/vul_status.py:16
+msgid "Modify the vulnerability status"
+msgstr "修改漏洞状态"
+
+#: iast/views/vul_status.py:26
+msgid "Vulnerability status is modified to {}"
+msgstr "漏洞状态修改为{}"
+
+#: iast/views/vul_summary.py:20
+msgid "Applied vulnerability overview"
+msgstr "应用漏洞概览"

@@ -11,7 +11,7 @@ from dongtai.models.vulnerablity import IastVulnerabilityModel
 from iast.utils import get_model_field, assemble_query
 import re
 import operator
-
+import time
 
 class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
     def get(self, request):
@@ -28,17 +28,19 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         )
         fields.extend(['sinkvalues', 'signature'])
         search_after_keys = ['update_time']
+        ids = request.query_params.get('exclude_ids', None)
+        time_range = request.query_params.get('time_range', None)
         search_fields = dict(
             filter(lambda k: k[0] in fields, request.query_params.items()))
         search_fields_ = []
         for k, v in search_fields.items():
-            if k == 'sinkvalues':  # 污点数据
+            if k == 'sinkvalues':
                 templates = [
                     r'"targetValues": ".*{}.*"', r'"sourceValues": ".*{}.*"'
                 ]
                 search_fields_.extend(
                     map(lambda x: ('method_pool', x.format(v)), templates))
-            elif k == 'signature':  # 方法签名
+            elif k == 'signature':
                 templates = [r'"signature": ".*{}.*"']
                 search_fields_.extend(
                     map(lambda x: ('method_pool', x.format(v)), templates))
@@ -52,13 +54,22 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     lambda x: (x[0].replace('search_after_', ''), x[1]),
                     filter(lambda x: x[0].startswith('search_after_'),
                            request.query_params.items()))))
-        q = assemble_query(search_after_fields, 'lt', q, operator.and_)
+        q = assemble_query(search_after_fields, 'lte', q, operator.and_)
         if 'id' in request.query_params.keys():
             q = q & Q(pk=request.query_params['id'])
         q = q & Q(agent_id__in=[
             item['id'] for item in list(
                 self.get_auth_agents_with_user(request.user).values('id'))
         ])
+        [start_time, end_time
+         ] = [int(i)
+              for i in time_range.split(',')] if time_range is not None else [
+                  int(time.time()) -
+                  86400 * 7, int(time.time())
+              ]
+        q = (q &
+             (Q(update_time__gte=start_time) & Q(update_time__lte=end_time)))
+        q = (q & (~Q(pk__in=ids.split(',')))) if ids is not None and ids != '' else q
         queryset = MethodPool.objects.filter(q).order_by(
             '-update_time')[:page_size]
         method_pools = list(queryset.values())

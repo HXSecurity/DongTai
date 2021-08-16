@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/12/5 上午10:46
 # software: PyCharm
 # project: lingzhi-webapi
 from django.contrib.admin.models import LogEntry

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/30 下午6:55
 # software: PyCharm
 # project: lingzhi-webapi
 import time
@@ -10,7 +9,9 @@ from dongtai.models.heartbeat import IastHeartbeat
 from rest_framework import serializers
 
 from dongtai.models.agent import IastAgent
+from django.utils.translation import gettext_lazy as _
 
+from collections import defaultdict
 
 class AgentSerializer(serializers.ModelSerializer):
     USER_MAP = dict()
@@ -35,15 +36,12 @@ class AgentSerializer(serializers.ModelSerializer):
         return latest_heartbeat
 
     def get_running_status(self, obj):
-        heartbeat = self.get_latest_heartbeat(obj)
-        if heartbeat:
-            return "运行中" if (time.time() - heartbeat['dt']) < 60 * 5 else '未运行'
-        else:
-            return "未运行"
+        mapping = defaultdict(str)
+        mapping.update({1: _("Online"), 2: _("Offline")})
+        return mapping[obj.online]
 
     def get_system_load(self, obj):
         """
-        fixme 修改数据格式，仅展示内存占比、CPU占比
         :param obj:
         :return:
         """
@@ -51,7 +49,7 @@ class AgentSerializer(serializers.ModelSerializer):
         if heartbeat:
             return heartbeat['cpu']
         else:
-            return "负载数据暂未上传"
+            return _("Load data is not uploaded")
 
     def get_server(self, obj):
         def get_server_addr():
@@ -59,12 +57,12 @@ class AgentSerializer(serializers.ModelSerializer):
                 if obj.server.ip and obj.server.port and obj.server.port != 0:
                     self.SERVER_MAP[obj.server_id] = f'{obj.server.ip}:{obj.server.port}'
                 else:
-                    return '探针暂未检测到流量'
+                    return _('The probe has not detected traffic')
             return self.SERVER_MAP[obj.server_id]
 
         if obj.server_id:
             return get_server_addr()
-        return '探针暂未检测到流量'
+        return _('The probe has not detected traffic')
 
     def get_user(self, obj):
         if obj.user_id not in self.USER_MAP:

@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2021/1/18 下午3:39
+
 # software: PyCharm
 # project: lingzhi-webapi
 
 from dongtai.endpoint import R
 from dongtai.endpoint import TalentAdminEndPoint
 from dongtai.models import User
+from django.utils.translation import gettext_lazy as _
 
 
 class UserDetailEndPoint(TalentAdminEndPoint):
@@ -19,7 +20,7 @@ class UserDetailEndPoint(TalentAdminEndPoint):
             if talent:
                 current_talent = request.user.get_talent()
                 if current_talent == talent:
-                    # 返回基本信息
+                    
                     department = user.get_department()
                     return R.success(data={
                         'username': user.get_username(),
@@ -28,4 +29,4 @@ class UserDetailEndPoint(TalentAdminEndPoint):
                     })
         except:
             pass
-        return R.failure(status=203, msg='no permission')
+        return R.failure(status=203, msg=_('no permission'))
