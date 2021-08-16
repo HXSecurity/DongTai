@@ -40,7 +40,7 @@ class PermissionsMixin(models.Model):
 
 
 class Department(PermissionsMixin):
-    name = trans_char_field(['默认部门'])(
+    name = models.CharField(
         _('name'),
         unique=True,
         max_length=100,
@@ -59,3 +59,9 @@ class Department(PermissionsMixin):
 
     def get_department_name(self):
         return self.name
+
+    def __getattribute__(self, name):
+        value = super().__getattribute__(name)
+        translist = ['默认部门']
+        return _(list(filter(lambda x: x == value, translist))[0]
+                 ) if value in translist and name == 'name' else value
