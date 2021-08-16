@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author: owefsad@huoxian.cn
-# datetime: 2021/4/27 下午6:23
 # project: dongtai-webapi
 import time
 
@@ -10,6 +9,7 @@ from dongtai.endpoint import UserEndPoint, R
 
 from dongtai.utils import const
 from dongtai.models.agent import IastAgent
+from django.utils.translation import gettext_lazy as _
 
 
 class AgentStatusUpdate(UserEndPoint):
@@ -23,4 +23,4 @@ class AgentStatusUpdate(UserEndPoint):
         heart_beat_queryset = queryset.filter(server__update_time__lt=(timestamp - 600), is_running=const.RUNNING)
         heart_beat_queryset.update(is_running=0)
 
-        return R.success(msg='引擎状态更新成功')
+        return R.success(msg=_('Engine state update success'))

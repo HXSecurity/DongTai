@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/23 下午12:23
 # software: PyCharm
 # project: lingzhi-webapi
 from django.db.models import Count
@@ -13,11 +12,12 @@ from dongtai.models.vulnerablity import IastVulnerabilityModel
 
 from iast.base.agent import get_project_vul_count
 from iast.base.project_version import get_project_version, get_project_version_by_id
+from django.utils.translation import gettext_lazy as _
 
 
 class VulSummary(UserEndPoint):
     name = "rest-api-vulnerability-summary"
-    description = "应用漏洞概览"
+    description = _("Applied vulnerability overview")
 
     @staticmethod
     def get_languages(agent_items):
@@ -40,11 +40,6 @@ class VulSummary(UserEndPoint):
 
     def get(self, request):
         """
-        应用漏洞总览接口
-        - 语言
-        - 漏洞等级
-        - 漏洞类型
-        - 应用程序
         :param request:
         :return:
         """
@@ -56,7 +51,7 @@ class VulSummary(UserEndPoint):
             "data": {}
         }
 
-        # 提取过滤条件
+        
         auth_users = self.get_auth_users(request.user)
         auth_agents = self.get_auth_agents(auth_users)
         queryset = IastVulnerabilityModel.objects.all()
@@ -77,7 +72,7 @@ class VulSummary(UserEndPoint):
 
         project_id = request.query_params.get('project_id')
         if project_id and project_id != '':
-            # 获取项目当前版本信息
+            
             version_id = request.GET.get('version_id', None)
             if not version_id:
                 current_project_version = get_project_version(

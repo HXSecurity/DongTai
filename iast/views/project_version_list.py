@@ -1,23 +1,20 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:sjh
-# datetime:2021/06/09 上午10:52
 # software: PyCharm
 # project: lingzhi-webapi
 import logging, time
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from dongtai.models.project_version import IastProjectVersion
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("django")
 
 
 class ProjectVersionList(UserEndPoint):
-    """
-    查看项目版本列表
-    """
     name = "api-v1-project-version-list"
-    description = "查看项目版本列表"
+    description = _("View project version list")
 
     def get(self, request, project_id):
         try:
@@ -32,6 +29,6 @@ class ProjectVersionList(UserEndPoint):
                         "current_version": item.current_version,
                         "description": item.description,
                     })
-            return R.success(msg='查询成功', data=data)
+            return R.success(msg=_('search successful'), data=data)
         except Exception as e:
             return R.failure(status=202, msg=e)

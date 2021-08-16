@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author: owefsad@huoxian.cn
-# datetime: 2021/3/19 下午2:44
 # project: lingzhi-webapi
 import logging
 import os
@@ -10,6 +9,7 @@ import requests
 from django.http import FileResponse
 from dongtai.endpoint import UserEndPoint, R
 from rest_framework.authtoken.models import Token
+from django.utils.translation import gettext_lazy as _
 from dongtai.models.profile import IastProfile
 
 
@@ -18,11 +18,8 @@ logger = logging.getLogger('dongtai-webapi')
 
 
 class AgentDownload(UserEndPoint):
-    """
-    当前用户详情
-    """
     name = "download_iast_agent"
-    description = "下载洞态Agent"
+    description = _("Download DongTai Agent")
 
     def __init__(self):
         super().__init__()
@@ -50,11 +47,9 @@ class AgentDownload(UserEndPoint):
 
     def get(self, request):
         """
-        IAST下载 agent接口s
         :param request:
         :return:
         """
-        # try:
         base_url = request.query_params.get('url', 'https://www.huoxian.cn')
         language = request.query_params.get('language', 'java')
         project_name = request.query_params.get('projectName', 'Demo Project')
@@ -68,13 +63,7 @@ class AgentDownload(UserEndPoint):
             headers={
                 'Authorization': f'Token {token["key"]}'
             })
-        # 创建文件
+        
         response = self.res_by_language(language, token, resp)
 
         return response
-        # except Exception as e:
-        #     logger.error(e)
-        #     return R.failure(data={
-        #         "status": '203',
-        #         "msg": "agent file not exit."
-        #     })

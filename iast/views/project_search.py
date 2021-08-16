@@ -4,14 +4,12 @@ from django.forms.models import model_to_dict
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from dongtai.models.project import IastProject
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("django")
 
 
 class ProjectSearch(UserEndPoint):
-    """
-    项目名称搜索项目
-    """
 
     def get(self, request):
         name = request.query_params.get('name', '')

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/27 上午10:52
 # software: PyCharm
 # project: lingzhi-webapi
 
@@ -9,14 +8,12 @@ from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from dongtai.models.agent import IastAgent
 from dongtai.models.project import IastProject
+from django.utils.translation import gettext_lazy as _
 
 
 class ProjectDel(UserEndPoint):
-    """
-    创建用户，默认只能创建普通用户
-    """
     name = "api-v1-project-del"
-    description = "删除项目"
+    description = _("Delete project")
 
     def post(self, request):
         try:
@@ -26,6 +23,6 @@ class ProjectDel(UserEndPoint):
                 IastAgent.objects.filter(bind_project_id=project_id, user__in=auth_users).update(bind_project_id=0)
                 IastProject.objects.filter(id=project_id, user__in=auth_users).delete()
 
-            return R.success(msg='项目删除成功')
+            return R.success(msg=_('Project deletion success'))
         except Exception as e:
             return R.failure(msg=e)

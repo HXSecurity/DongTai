@@ -99,19 +99,14 @@ from iast.views.version_update import MethodPoolVersionUpdate
 from iast.views.demo import Demo
 
 urlpatterns = [
-    # 租户管理 - 系统管理员
     path("talents", TalentEndPoint.as_view()),
     path("talent/<int:pk>", TalentEndPoint.as_view()),
     path("talent/add", TalentEndPoint.as_view()),
     path("talent/<int:pk>/delete", TalentEndPoint.as_view()),
-
-    # 部门管理（支持多级） - 系统管理员 - 考虑多级部门的实现
     path('departments', DepartmentEndPoint.as_view()),
     path('department/<int:pk>', DepartmentEndPoint.as_view()),
     path('department/add', DepartmentEndPoint.as_view()),
     path('department/<int:pk>/delete', DepartmentEndPoint.as_view()),
-
-    # 用户管理 - 租户管理员/系统管理员 - 创建用户、修改密码、登录、登出、获取token
     path('users', UserEndPoint.as_view()),
     path('user/add', UserEndPoint.as_view()),
     path('user/<int:user_id>/delete', UserEndPoint.as_view()),
@@ -125,12 +120,8 @@ urlpatterns = [
     path('user/register', UserRegisterEndPoint.as_view()),
     path('user/register/<str:token>', UserRegisterEndPoint.as_view()),
     path('user/password/reset', UserPasswordReset.as_view()),
-
-    # 验证码相关
     path('captcha/', include('captcha.urls')),
     path(r'captcha/refresh', CaptchaCreate.as_view()),
-
-    # 项目接口
     path('project/<int:id>', ProjectDetail.as_view()),
     path('project/add', ProjectAdd.as_view()),
     path('project/delete', ProjectDel.as_view()),
@@ -139,7 +130,6 @@ urlpatterns = [
     path('project/engines/<int:pid>', ProjectEngines.as_view()),
     path('project/export', ProjectReportExport.as_view()),
     path('project/search', ProjectSearch.as_view()),
-    # 更新项目版本信息
     path('project/version/add', ProjectVersionAdd.as_view()),
     path('project/version/update', ProjectVersionUpdate.as_view()),
     path('project/version/delete', ProjectVersionDelete.as_view()),
@@ -147,7 +137,6 @@ urlpatterns = [
     path('project/version/list/<int:project_id>',
          ProjectVersionList.as_view()),
     path('project/version/check', UpdateProjectVersion.as_view()),
-    # 漏洞接口：漏洞列表、漏洞信息总览、漏洞详情侧边栏、漏洞详情
     path('vulns', VulsEndPoint.as_view()),
     path('vuln/summary', VulSummary.as_view()),
     path('vuln/list', VulSideBarList.as_view()),
@@ -157,25 +146,18 @@ urlpatterns = [
     path('vul/recheck', VulReCheck.as_view()),
     path('plugin/vuln/list', VulListEndPoint.as_view()),
     path('plugin/vuln/count', VulCountForPluginEndPoint.as_view()),
-    # 三方组件接口：组件列表、组件信息总览、组件详情侧边栏、组件详情
     path('scas', ScaList.as_view()),
     path('sca/summary', ScaSummary.as_view()),
     path('sca/list', ScaSidebarList.as_view()),
     path('sca/<int:id>', ScaDetailView.as_view()),
-    # 策略列表接口
     path('strategys', StrategyEndpoint.as_view()),
     path('strategy/<int:id>/enable', StrategyEnableEndpoint.as_view()),
     path('strategy/<int:id>/disable', StrategyDisableEndpoint.as_view()),
     path('strategy/<int:id_>/delete', StrategyDelete.as_view()),
     path('strategy/<int:id_>/update', StrategyModified.as_view()),
-    # 获取 按类型获取策略信息
     path('strategy/types', StrategyType.as_view()),
-    # 用户创建策略
     path('strategy/user/add', StrategyAdd.as_view()),
-    # 用户查询自有策略
     path('strategy/user/list', StrategyList.as_view()),
-    # 新增项目捆绑策略
-    # agent相关接口：下载agent、下载自动化部署工具、部署文档、agent列表、安装agent、卸载agent、在线升级、离线升级
     path('agent/<int:id_>', Agent.as_view()),
     path('agent/deploy/', AgentDeploy.as_view()),
     path('agent/deploy/doc', AgentDeployDesc.as_view()),
@@ -194,24 +176,18 @@ urlpatterns = [
     path('agent/stop', AgentStop.as_view()),
     path('agents/search', AgentSearch.as_view()),
     path('agents/delete', AgentsDeleteEndPoint.as_view()),
-    # 获取openapi地址
     path('openapi', OpenApiEndpoint.as_view()),
     path('profile/<str:key>', ProfileEndpoint.as_view()),
-    # 系统信息
     path('system/info', SystemInfo.as_view()),
-    # 日志信息
     path('logs', LogsEndpoint.as_view()),
     path('log/export', LogExport.as_view()),
     path('log/delete', LogDelete.as_view()),
     path('log/clear', LogClear.as_view()),
-
-    # 方法池相关
     path('engine/method_pool/search', MethodPoolSearchProxy.as_view()),
     path('engine/method_pool/detail', MethodPoolDetailProxy.as_view()),
     path('engine/method_pool/sca', EngineMethodPoolSca.as_view()),
     path('engine/graph', MethodGraph.as_view()),
     path('engine/request/replay', RequestReplayEndPoint.as_view()),
-    # hook规则相关
     path('engine/hook/rule/summary', EngineHookRuleSummaryEndPoint.as_view()),
     path('engine/hook/rule/add', EngineHookRuleAddEndPoint.as_view()),
     path('engine/hook/rule/modify', EngineHookRuleModifyEndPoint.as_view()),
@@ -223,14 +199,9 @@ urlpatterns = [
          EngineHookRuleTypeEnableEndPoint.as_view()),
     path('engine/hook/rule_types', EngineHookRuleTypesEndPoint.as_view()),
     path('engine/hook/rules', EngineHookRulesEndPoint.as_view()),
-
-    # 文档资源
     path('documents', DocumentsEndpoint.as_view()),
-
-    # 更新接口
     path('version_update/K23DiutPrwpoqAddqNbHUk',
-         MethodPoolVersionUpdate.as_view()),
-
+         MethodPoolVersionUpdate.as_view())
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口

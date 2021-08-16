@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/23 下午2:15
 # software: idea
 # project: lingzhi-webapi
 
@@ -13,10 +12,6 @@ from dongtai.models.vulnerablity import IastVulnerabilityModel
 class VulSideBarList(UserEndPoint):
     def get(self, request):
         """
-        获取漏洞列表
-        - 支持排序
-        - 支持搜索
-        - 支持分页
         :param request:
         :return:
         """

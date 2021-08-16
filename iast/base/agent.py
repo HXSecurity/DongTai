@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/26 下午12:41
 # software: PyCharm
 # project: lingzhi-webapi
 
@@ -13,13 +12,13 @@ from dongtai.models.agent import IastAgent
 from dongtai.models.project import IastProject
 from dongtai.models.server import IastServer
 from dongtai.models.vulnerablity import IastVulnerabilityModel
+from django.utils.translation import gettext_lazy as _
 
 
 def get_agents_with_project(project_name, users):
     """
-    根据项目名称和授权的用户列表查询有权限访问的agent列表
-    :param project_name:项目名称
-    :param users:当前有权限的用户列表，如果是普通用户，该字段为[user]
+    :param project_name:
+    :param users:
     :return:
     """
     agent_ids = []
@@ -37,7 +36,6 @@ def get_agents_with_project(project_name, users):
     return agent_ids
 
 
-# 获取用户所有项目
 def get_user_project_name(auth_users):
     project_models = IastProject.objects.filter(user__in=auth_users).values("id", "name")
     projects_info = {}
@@ -47,7 +45,6 @@ def get_user_project_name(auth_users):
     return projects_info
 
 
-# 获取用户所有agent项目ID
 def get_user_agent_pro(auth_users, bindId):
     agentInfo = IastAgent.objects.filter(
         user__in=auth_users,
@@ -63,7 +60,6 @@ def get_user_agent_pro(auth_users, bindId):
     return result
 
 
-# 根据server_id 获取所有 server_name
 def get_all_server(ids):
     alls = IastServer.objects.filter(id__in=ids).values("id", "container")
     result = {}
@@ -74,7 +70,6 @@ def get_all_server(ids):
 
 
 def get_project_vul_count(users, queryset, auth_agents, project_id=None):
-    # 查询所有项目
     result = list()
     project_queryset = IastProject.objects.filter(user__in=users)
     if project_queryset.values('id').exists() is False:
@@ -110,15 +105,12 @@ def change_dict_key(dic, keypair):
     return dic
 
 
-# 通过agent_id 获取 漏洞分类汇总 详情
-# 漏洞类型 漏洞危害等级 首次发现时间 最近发现时间 漏洞地址  漏洞详情  编码语言
 def get_vul_count_by_agent(agent_ids, vid, user):
     typeInfo = IastVulnerabilityModel.objects.filter(agent_id__in=agent_ids).values().order_by("level")
     if vid:
         typeInfo = typeInfo.filter(id=vid)
     type_summary = []
     levelCount = {}
-    # 漏洞详情
     vulDetail = {}
     if typeInfo:
         typeArr = {}
@@ -132,7 +124,7 @@ def get_vul_count_by_agent(agent_ids, vid, user):
             one['language'] = language if language is not None else ''
             if one['type'] not in vulDetail.keys():
                 vulDetail[one['type']] = []
-            detailStr1 = "我们发现在{0}页面中存在{1}，攻击者可以改变{2}的值进行攻击：".format(
+            detailStr1 = _("We found that there is {1} in the {0} page, and the attacker can change the value of {2} to attack:").format(
                 one['uri'], one['type'], one['taint_position'])
 
             try:
@@ -140,7 +132,6 @@ def get_vul_count_by_agent(agent_ids, vid, user):
             except Exception as e:
                 one['req_params'] = ""
             detailStr2 = one['http_method'] + " " + one['uri'] + "?" + one['req_params'] + one['http_protocol']
-            # 获取最新漏洞文件
             try:
                 fileData = one['full_stack'][-1].get("stack", "")
                 pattern = r'.*?\((.*?)\).*?'
@@ -148,7 +139,7 @@ def get_vul_count_by_agent(agent_ids, vid, user):
                 uriArr = resMatch.group(1).split(":")
                 fileName = uriArr[0]
                 if len(uriArr) > 1:
-                    rowStr = "的" + str(uriArr[1]) + "行"
+                    rowStr = _("{} Line").format(str(uriArr[1]))
                 else:
                     rowStr = ""
             except Exception as e:
@@ -164,9 +155,10 @@ def get_vul_count_by_agent(agent_ids, vid, user):
                     methodname = str(full_stack.get("methodname", ""))
                 except Exception as e:
                     print("======")
-            detailStr3 = "在" + str(fileName) + rowStr + "调用" + classname + "." + methodname + "(),传入参数" + str(
-                one['taint_value'])
-            cur_tile = one['type'] + "出现在" + str(one['uri']) + "的" + str(one['taint_position'])
+            detailStr3 = _("In {} {} call {}. {} (), Incoming parameters {}").format(
+                str(fileName), rowStr, classname, methodname,
+                str(one['taint_value']))
+            cur_tile = _("{} Appears in {} {}").format(one['type'],str(one['uri']),str(one['taint_position']))
             if one['param_name']:
                 cur_tile = cur_tile + "\"" + str(one['param_name']) + "\""
             vulDetail[one['type']].append({
