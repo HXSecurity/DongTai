@@ -7,10 +7,10 @@
 from rest_framework import serializers
 
 from dongtai.models.agent_method_pool import MethodPool
-from dongtai.models.dependency import Dependency
+from dongtai.models.asset import Asset
 from dongtai.utils import http
 
-from iast.serializers.dependency import DependencySerialize
+from iast.serializers.asset import AssetSerializer
 
 
 class MethodPoolSerialize(serializers.ModelSerializer):
@@ -35,7 +35,7 @@ class MethodPoolSerialize(serializers.ModelSerializer):
     def get_dependencies(self, obj):
         if obj.agent_id not in self.DEPENDENCIES:
             dependencies = obj.agent.dependencies.values('package_name', 'vul_count', 'version').all()
-            self.DEPENDENCIES[obj.agent_id] = DependencySerialize(dependencies, many=True).data
+            self.DEPENDENCIES[obj.agent_id] = AssetSerializer(dependencies, many=True).data
         return self.DEPENDENCIES[obj.agent_id]
 
     def get_language(self, obj):
@@ -75,4 +75,4 @@ class MethodPoolListSerialize(serializers.ModelSerializer):
 
 
 if __name__ == '__main__':
-    d = Dependency()
+    d = Asset()
