@@ -103,7 +103,7 @@ class TalentEndPoint(SystemAdminEndPoint):
         :return:
         """
         talent = Talent.objects.filter(id=pk).first()
-        msg = _('Tenant: {} Delete success').format(talent.get_telent_name())
+        msg = _('Tenant: {} Delete success').format(talent.get_talent_name())
         departments = talent.departments.all()
         for department in departments:
             department.users.all().delete()
