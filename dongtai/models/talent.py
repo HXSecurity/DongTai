@@ -8,10 +8,11 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 import os
 from dongtai.utils.customfields import trans_char_field
+from typing import Any
 
 
 class Talent(models.Model):
-    talent_name = trans_char_field(["默认租户"])(
+    talent_name = models.CharField(
         unique=True,
         verbose_name=_('talent'),
         max_length=255,
@@ -38,3 +39,7 @@ class Talent(models.Model):
 
     def get_talent_name(self):
         return self.talent_name
+
+    @trans_char_field('talent_name', ["默认租户"])
+    def __getattribute__(self, name) -> Any:
+        return super().__getattribute__(name)
