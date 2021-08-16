@@ -38,7 +38,7 @@ The usage scenarios of "DongTai IAST" include but not limited to:
 ### 1. SaaS Version
   - Fill out the [Online Form](https://jinshuju.net/f/I9PNmf) to register an account.
   - Log in to the [DongTai IAST] (https://iast.huoxian.cn).
-  - Have a quick start with [Online Guideline](https://hxsecurity.github.io/DongTaiDoc/#/doc/tutorial/quickstart?id=%e5%9c%a8%e7%ba%bf%e9%9d%b6%e5%9c%ba-%e5%bf%ab%e9%80%9f%e4%bd%93%e9%aa%8ciast).
+  - Have a quick start with [Online Guideline](https://hxsecurity.github.io/DongTai-Doc/#/doc/tutorial/quickstart?id=%e5%9c%a8%e7%ba%bf%e9%9d%b6%e5%9c%ba-%e5%bf%ab%e9%80%9f%e4%bd%93%e9%aa%8ciast).
 
 ### 2. Localized Deployment Version [Open Source for Jointly Partnership]
 
