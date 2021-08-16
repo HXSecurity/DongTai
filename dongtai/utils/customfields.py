@@ -6,10 +6,15 @@
 # @description :
 ######################################################################
 
-
 from django.db.models import CharField
+from django.utils.translation import gettext_lazy as _
 
 
-class transCharField(CharField):
-    def to_python(self, value):
-        return _(super().to_python())
+def trans_char_field(translist: list) -> CharField:
+    class transCharField(CharField):
+        def to_python(self, value):
+            value = super().to_python(value)
+            return _(list(
+                filter(lambda x: x == value,
+                       translist))[0]) if value in translist else value
+    return transCharField

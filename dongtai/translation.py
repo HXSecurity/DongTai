@@ -8,14 +8,14 @@
 
 
 from modeltranslation.translator import translator, TranslationOptions, register
-from models.strategy import IastStrategyModel
-from models.vul_level import IastVulLevel
-from models.vulnerablity import IastVulnerabilityModel
-from models.deploy import IastDeployDesc
-from models.document import IastDocument
-from models.hook_type import HookType
-from models.department import Department
-from models.Talent import Talent
+from dongtai.models.strategy import IastStrategyModel
+from dongtai.models.vul_level import IastVulLevel
+from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.deploy import IastDeployDesc
+from dongtai.models.document import IastDocument
+from dongtai.models.hook_type import HookType
+from dongtai.models.department import Department
+from dongtai.models.talent import Talent
 
 
 @register(IastStrategyModel)
@@ -30,7 +30,7 @@ class IastVulLevelTranslationOptions(TranslationOptions):
 
 @register(IastDeployDesc)
 class IastDeployDescTranslationOptions(TranslationOptions):
-    fields = ('desc')
+    fields = ('desc',)
 
 
 @register(IastDocument)
@@ -40,5 +40,4 @@ class IastDocumentTranslationOptions(TranslationOptions):
 
 @register(HookType)
 class HookTypeTranslationOptions(TranslationOptions):
-    fields = ('name')
-
+    fields = ('name',)
