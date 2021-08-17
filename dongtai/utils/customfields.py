@@ -7,25 +7,30 @@
 ######################################################################
 
 from django.db.models import CharField
-from django.utils.translation import gettext_lazy as _
 from functools import wraps
+from django.utils.translation import get_language
+from collections import defaultdict
 
 
-def trans_char_field(field, translist):
+def trans_char_field(field, transdict):
     def wrapper(func):
         @wraps(func)
         def wrapped(*args, **kwargs):
             value = func(*args, **kwargs)
             try:
-                if len(args) > 2:
+                if len(args) > 1:
                     name = args[1]
                 else:
                     name = kwargs['name']
-                print(name)
             except BaseException as e:
                 print(e)
                 return value
-            return _(list(filter(lambda x: x == value, translist))
-                     [0]) if value in translist and name == field else value
+            res = [
+                v[value] for k, v in transdict.items() if name == field
+                and k == get_language() and v.get(value, None)
+            ]
+            return res[0] if res else value
+
         return wrapped
+
     return wrapper

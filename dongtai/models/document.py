@@ -3,7 +3,7 @@ import os
 
 class IastDocument(models.Model):
     title = models.CharField(max_length=100, blank=True, null=True)
-    url = models.CharField(max_length=100, blank=True, null=True)
+    url = models.CharField(max_length=2000, blank=True, null=True)
     language = models.CharField(max_length=100, blank=True, null=True)
     weight = models.IntegerField(default=0)
 

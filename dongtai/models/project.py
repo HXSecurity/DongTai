@@ -9,8 +9,6 @@ from django.db import models
 from dongtai.models import User
 from dongtai.models.strategy_user import IastStrategyUser
 import os
-from dongtai.utils.customfields import trans_char_field
-from typing import Any
 
 
 class IastProject(models.Model):
@@ -30,6 +28,3 @@ class IastProject(models.Model):
         managed = True if os.getenv('environment', None) == 'TEST' else False
         db_table = 'iast_project'
 
-    @trans_char_field('mode', ["插桩模式", "流量模式"])
-    def __getattribute__(self, name) -> Any:
-        return super().__getattribute__(name)

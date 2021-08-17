@@ -40,6 +40,13 @@ class Talent(models.Model):
     def get_talent_name(self):
         return self.talent_name
 
-    @trans_char_field('talent_name', ["默认租户"])
+    @trans_char_field('talent_name', {
+        'zh': {
+            "默认租户": "默认租户"
+        },
+        "en": {
+            '默认租户': "Default Tenant"
+        }
+    })
     def __getattribute__(self, name) -> Any:
         return super().__getattribute__(name)

@@ -12,6 +12,7 @@ from django.utils.translation import gettext_lazy as _
 from dongtai.models.talent import Talent
 import os
 from dongtai.utils.customfields import trans_char_field
+from typing import Any
 
 
 class IastDepartment(models.Model):
@@ -60,8 +61,13 @@ class Department(PermissionsMixin):
     def get_department_name(self):
         return self.name
 
-    def __getattribute__(self, name):
-        value = super().__getattribute__(name)
-        translist = ['默认部门']
-        return _(list(filter(lambda x: x == value, translist))[0]
-                 ) if value in translist and name == 'name' else value
+    @trans_char_field('name', {
+        'zh': {
+            '默认部门': '默认部门'
+        },
+        'en': {
+            '默认部门': 'default department'
+        }
+    })
+    def __getattribute__(self, name) -> Any:
+        return super().__getattribute__(name)
