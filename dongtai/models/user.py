@@ -10,7 +10,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from dongtai.models.department import Department
-import os
+from dongtai.utils.settings import get_managed
 
 
 class PermissionsMixin(models.Model):

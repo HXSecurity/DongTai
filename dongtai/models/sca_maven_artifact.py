@@ -7,7 +7,7 @@
 from django.db import models
 
 from dongtai.models.sca_artifact_db import ScaArtifactDb
-import os
+from dongtai.utils.settings import get_managed
 
 
 class ScaMavenArtifact(models.Model):
@@ -26,6 +26,6 @@ class ScaMavenArtifact(models.Model):
     package_name = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = True if os.getenv('environment',None) == 'TEST' else False
+        managed = get_managed()
         db_table = 'sca_maven_artifact'
         unique_together = (('cph_version', 'aid'),)

@@ -9,7 +9,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from dongtai.models.agent import IastAgent
-import os
+from dongtai.utils.settings import get_managed
 
 
 class IastHeartbeat(models.Model):
@@ -29,5 +29,5 @@ class IastHeartbeat(models.Model):
     )
 
     class Meta:
-        managed = True if os.getenv('environment',None) == 'TEST' else False
+        managed = get_managed()
         db_table = 'iast_heartbeat'

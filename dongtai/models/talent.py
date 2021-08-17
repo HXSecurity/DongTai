@@ -6,7 +6,7 @@
 # project: dongtai-models
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-import os
+from dongtai.utils.settings import get_managed
 from dongtai.utils.customfields import trans_char_field
 from typing import Any
 
@@ -34,7 +34,7 @@ class Talent(models.Model):
 
     class Meta:
         verbose_name = _('talent')
-        managed = True if os.getenv('environment', None) == 'TEST' else False
+        managed = get_managed()
         db_table = 'auth_talent'
 
     def get_talent_name(self):
