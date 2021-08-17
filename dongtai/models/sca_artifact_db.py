@@ -33,6 +33,20 @@ class ScaArtifactDb(models.Model):
         unique_together = (('cve_id', 'group_id', 'artifact_id',
                             'latest_version'), )
 
-    @trans_char_field('level', ["低危", "中危", "高危", "严重"])
+    @trans_char_field(
+        'level', {
+            'zh': {
+                "无风险": "无风险",
+                "低危": "低危",
+                "中危": "中危",
+                "高危": "高危"
+            },
+            'en': {
+                "无风险": "No risk",
+                "低危": "low",
+                "中危": "Medium",
+                "高危": "High"
+            },
+        })
     def __getattribute__(self, name) -> Any:
         return super().__getattribute__(name)
