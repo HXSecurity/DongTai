@@ -1070,3 +1070,7 @@ msgstr "Vulnerability status is modified to {}"
 #: iast/views/vul_summary.py:20
 msgid "Applied vulnerability overview"
 msgstr "Applied vulnerability overview"
+
+#:
+msgid "默认租户"
+msgstr "default talent"

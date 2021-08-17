@@ -64,8 +64,10 @@ INSTALLED_APPS = [
     'captcha',
     'dongtai',
     'iast',
+    'modeltranslation',
 ]
-
+MODELTRANSLATION_LANGUAGES = ('en', 'zh')
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'zh'
 REST_FRAMEWORK = {
     'PAGE_SIZE':
         20,
@@ -97,7 +99,7 @@ LANGUAGES = (
 )
 USE_I18N = True
 USE_L10N = True
-
+MODELTRANSLATION_FALLBACK_LANGUAGES = ('zh', 'en')
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -175,7 +177,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'webapi.wsgi.application'
 
-if len(sys.argv) > 1 and sys.argv[1] == 'test':
+if  len(sys.argv) > 1 and sys.argv[1] in ('test', 'makemigrations',
+                                         'sqlmigrate','migrate'):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
