@@ -43,7 +43,7 @@ class ScaArtifactDb(models.Model):
             },
             'en': {
                 "无风险": "No risk",
-                "低危": "low",
+                "低危": "Low",
                 "中危": "Medium",
                 "高危": "High"
             },
