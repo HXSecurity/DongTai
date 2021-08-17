@@ -37,8 +37,8 @@ jobs:
           key-secret: ${{ secrets.OSS_KEY_SECRET }}
           region: oss-cn-beijing
           bucket: huoqi-public
-          asset-path: ./dist/dongtai-1.0.1.tar.gz
-          target-path: /iast/dongtai-test-1.0.1.tar.gz
+          asset-path: ./dist/dongtai-1.0.2.tar.gz
+          target-path: /iast/dongtai-test-1.0.2.tar.gz
 
       - name: finish build
         uses: joelwmale/webhook-action@master
