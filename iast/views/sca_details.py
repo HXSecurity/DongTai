@@ -26,11 +26,11 @@ class ScaDetailView(UserEndPoint):
 
         try:
             agents = self.get_auth_agents_with_user(user)
-            dependency = Asset.objects.filter(agent__in=agents, id=id).first()
+            asset = Asset.objects.filter(agent__in=agents, id=id).first()
 
-            if dependency is None:
+            if asset is None:
                 return R.failure(msg=_('Components do not exist or have no right to access'))
-            data = ScaSerializer(dependency).data
+            data = ScaSerializer(asset).data
             data['vuls'] = list()
             
             

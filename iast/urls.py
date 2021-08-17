@@ -97,6 +97,7 @@ from iast.views.vul_summary import VulSummary
 from iast.views.vuls import VulsEndPoint
 from iast.views.version_update import MethodPoolVersionUpdate
 from iast.views.demo import Demo
+from i18n.views.setlang import LanguageSetting
 
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
@@ -201,7 +202,8 @@ urlpatterns = [
     path('engine/hook/rules', EngineHookRulesEndPoint.as_view()),
     path('documents', DocumentsEndpoint.as_view()),
     path('version_update/K23DiutPrwpoqAddqNbHUk',
-         MethodPoolVersionUpdate.as_view())
+         MethodPoolVersionUpdate.as_view()),
+    path('i18n/setlang', LanguageSetting.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
