@@ -5,6 +5,9 @@
 # software: PyCharm
 # project: dongtai-models
 from django.db import models
+from dongtai.utils.settings import get_managed
+from dongtai.utils.customfields import trans_char_field
+from typing import Any
 
 
 class ScaArtifactDb(models.Model):
@@ -25,6 +28,25 @@ class ScaArtifactDb(models.Model):
     level = models.CharField(max_length=20, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = get_managed()
         db_table = 'sca_artifact_db'
-        unique_together = (('cve_id', 'group_id', 'artifact_id', 'latest_version'),)
+        unique_together = (('cve_id', 'group_id', 'artifact_id',
+                            'latest_version'), )
+
+    @trans_char_field(
+        'level', {
+            'zh': {
+                "无风险": "无风险",
+                "低危": "低危",
+                "中危": "中危",
+                "高危": "高危"
+            },
+            'en': {
+                "无风险": "No risk",
+                "低危": "Low",
+                "中危": "Medium",
+                "高危": "High"
+            },
+        })
+    def __getattribute__(self, name) -> Any:
+        return super().__getattribute__(name)

@@ -2,6 +2,7 @@ from django.db import models
 
 from dongtai.models.agent import IastAgent
 from dongtai.models.vul_level import IastVulLevel
+from dongtai.utils.settings import get_managed
 
 
 class IastVulnerabilityModel(models.Model):
@@ -33,5 +34,5 @@ class IastVulnerabilityModel(models.Model):
     method_pool_id = models.IntegerField(max_length=11, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = get_managed()
         db_table = 'iast_vulnerability'

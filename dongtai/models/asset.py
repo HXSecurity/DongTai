@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 
 from dongtai.models.agent import IastAgent
 from dongtai.models.vul_level import IastVulLevel
+from dongtai.utils.settings import get_managed
 
 
 class Asset(models.Model):
@@ -32,5 +33,5 @@ class Asset(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = get_managed()
         db_table = 'iast_asset'
