@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/12/8 下午12:03
 # software: PyCharm
 # project: lingzhi-webapi
 
@@ -9,11 +8,12 @@ from dongtai.endpoint import R
 from dongtai.utils import const
 from dongtai.endpoint import UserEndPoint
 from dongtai.models.agent import IastAgent
+from django.utils.translation import gettext_lazy as _
 
 
 class ProjectEngines(UserEndPoint):
     name = "api-v1-project-engines"
-    description = "查看引擎列表"
+    description = _("View engine list")
 
     def get(self, request, pid):
         auth_users = self.get_auth_users(request.user)

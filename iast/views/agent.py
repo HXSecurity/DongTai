@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/25 下午2:23
+
 # software: PyCharm
 # project: lingzhi-webapi
 import logging
@@ -13,11 +13,12 @@ from iast.serializers.agent import AgentSerializer
 from iast.utils import get_model_field
 from dongtai.models.agent import IastAgent
 from django.forms.models import model_to_dict
+from django.utils.translation import gettext_lazy as _
 
 
 class Agent(UserEndPoint):
-    def get(self, request, id_): 
+    def get(self, request, id_):
         agent = IastAgent.objects.filter(pk=id_).first()
         if agent:
             return R.success(data={'agent':model_to_dict(agent)})
-        return R.failure(msg='找不到相关数据')
+        return R.failure(msg=_("Can't find relevant data"))

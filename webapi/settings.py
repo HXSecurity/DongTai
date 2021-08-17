@@ -64,8 +64,10 @@ INSTALLED_APPS = [
     'captcha',
     'dongtai',
     'iast',
+    'modeltranslation',
 ]
-
+MODELTRANSLATION_LANGUAGES = ('en', 'zh')
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'zh'
 REST_FRAMEWORK = {
     'PAGE_SIZE':
         20,
@@ -87,10 +89,21 @@ REST_FRAMEWORK = {
 }
 
 basedir = os.path.dirname(os.path.realpath(__file__))
-
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'i18n'),
+)
+LANGUAGE_CODE = 'zh'
+LANGUAGES = (
+    ('en', 'English'),
+    ('zh', '简体中文'),
+)
+USE_I18N = True
+USE_L10N = True
+MODELTRANSLATION_FALLBACK_LANGUAGES = ('zh', 'en')
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -102,7 +115,6 @@ MIDDLEWARE = [
 
 XFF_TRUSTED_PROXY_DEPTH = 5
 
-# cstf token相关配置
 CSRF_COOKIE_NAME = "DTCsrfToken"
 CSRF_HEADER_NAME = "HTTP_CSRF_TOKEN"
 # CSRF_COOKIE_DOMAIN = ".huoxian.cn"
@@ -118,12 +130,12 @@ CSRF_COOKIE_AGE = 60 * 60 * 24
 
 AGENT_UPGRADE_URL = "https://www.huoxian.cn"
 
-# cors相关配置
+
 CORS_ORIGIN_REGEX_WHITELIST = [
     r"^https://\w+\.huoxian.cn:(\:\d+)?$"
 ]
 
-CORS_ALLOW_CREDENTIALS = True  # 指明在跨域访问中，后端是否支持对cookie的操作。
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = [
     'GET',
     'OPTIONS',
@@ -165,7 +177,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'webapi.wsgi.application'
 
-if len(sys.argv) > 1 and sys.argv[1] == 'test':
+if  len(sys.argv) > 1 and sys.argv[1] in ('test', 'makemigrations',
+                                         'sqlmigrate','migrate'):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -176,12 +189,17 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'OPTIONS': {'charset': 'utf8mb4'},
+            'OPTIONS': {
+                'charset': 'utf8mb4'
+            },
             'USER': config.get("mysql", 'user'),
             'NAME': config.get("mysql", 'name'),
             'PASSWORD': config.get("mysql", 'password'),
             'HOST': config.get("mysql", 'host'),
             'PORT': config.get("mysql", 'port'),
+            'OPTIONS': {
+                'init_command': 'SET max_execution_time=20000'
+            },
         }
     }
 
@@ -195,7 +213,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 AUTH_USER_MODEL = 'dongtai.User'
 
-LANGUAGE_CODE = 'zh-cn'
+LANGUAGE_CODE = 'zh'
 
 TIME_ZONE = "Asia/Shanghai"
 
@@ -207,10 +225,10 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'iast', 'upload')
 MEDIA_URL = "/upload/masterimg/"
 
-# 字母验证码
-CAPTCHA_IMAGE_SIZE = (80, 45)  # 设置 captcha 图片大小
-CAPTCHA_LENGTH = 4  # 字符个数
-CAPTCHA_TIMEOUT = 1  # 超时(minutes)
+
+CAPTCHA_IMAGE_SIZE = (80, 45)
+CAPTCHA_LENGTH = 4
+CAPTCHA_TIMEOUT = 1
 
 LOGGING = {
     'version': 1,

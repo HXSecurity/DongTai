@@ -17,6 +17,7 @@ from django.conf.urls.static import static
 from django.urls import include, path
 import os
 from webapi import settings
+from django.views.decorators.csrf import csrf_exempt
 
 urlpatterns = [
     path('api/v1/', include('iast.urls')),

@@ -10,16 +10,13 @@ from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.deploy import IastDeployDesc
 from dongtai.models.system import IastSystem
 from rest_framework.authtoken.models import Token
+from django.utils.translation import gettext_lazy as _
 
 
 class AgentDeploySave(UserEndPoint):
-    """
-    IAST部署信息保存
-    """
     name = "api-v1-iast-deploy-submit"
-    description = "上传Agent配置"
+    description = _("Upload Agent configuration")
 
-    # 获取当前部署信息
     def get(self, request):
         end = {
             "status": 201,
@@ -50,7 +47,7 @@ class AgentDeploySave(UserEndPoint):
         end['step'] = step
         return R.success(step=step, data=end['data'], user_token=end['user_token'], desc=end['desc'])
 
-    # 提交部署信息
+    
     def post(self, request):
         user = request.user
         token, success = Token.objects.get_or_create(user=user)

@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2021/1/28 上午11:10
 # software: PyCharm
 # project: lingzhi-engine
 
 from rest_framework import serializers
 
 from dongtai.models.agent_method_pool import MethodPool
-from dongtai.models.dependency import Dependency
+from dongtai.models.asset import Asset
 from dongtai.utils import http
 
-from iast.serializers.dependency import DependencySerialize
+from iast.serializers.asset import AssetSerializer
 
 
 class MethodPoolSerialize(serializers.ModelSerializer):
@@ -34,10 +33,9 @@ class MethodPoolSerialize(serializers.ModelSerializer):
         return http.build_response(obj.res_header, obj.res_body)
 
     def get_dependencies(self, obj):
-        # fixme 内存溢出时，优先排查这里，临时使用类成员变量存储，后续考虑使用缓存来做
         if obj.agent_id not in self.DEPENDENCIES:
             dependencies = obj.agent.dependencies.values('package_name', 'vul_count', 'version').all()
-            self.DEPENDENCIES[obj.agent_id] = DependencySerialize(dependencies, many=True).data
+            self.DEPENDENCIES[obj.agent_id] = AssetSerializer(dependencies, many=True).data
         return self.DEPENDENCIES[obj.agent_id]
 
     def get_language(self, obj):
@@ -68,7 +66,6 @@ class MethodPoolListSerialize(serializers.ModelSerializer):
         return self._level
 
     def get_agent_name(self, obj):
-        # fixme 内存溢出时，优先排查这里，临时使用类成员变量存储，后续考虑使用缓存来做
         if obj.agent_id not in self.AGENTS:
             self.AGENTS[obj.agent_id] = obj.agent.token
         return self.AGENTS[obj.agent_id]
@@ -78,4 +75,4 @@ class MethodPoolListSerialize(serializers.ModelSerializer):
 
 
 if __name__ == '__main__':
-    d = Dependency()
+    d = Asset()

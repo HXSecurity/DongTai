@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author: owefsad@huoxian.cn
-# datetime: 2021/4/3 上午9:16
 # project: dongtai-webapi
 
 import csv
@@ -15,6 +14,7 @@ from dongtai.endpoint import R
 from dongtai.endpoint import SystemAdminEndPoint
 from iast.notify.email import Email
 from webapi import settings
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("dongtai-webapi")
 
@@ -38,13 +38,10 @@ class UserRegisterEndPoint(SystemAdminEndPoint):
     def get(self, request):
         users = self.read_user_data()
         self.register(users)
-        return R.success(msg='账号创建成功')
+        return R.success(msg=_('Account creation success'))
 
     def post(self, request, token):
         """
-        从问卷表接收数据并自动创建账号
-
-        数据样例：
         {
             "form": "xJfeTv",
             "entry": {
@@ -57,7 +54,7 @@ class UserRegisterEndPoint(SystemAdminEndPoint):
         :param token:
         :return:
         """
-        # 接受参数
+        
         webhook_token = settings.config.get('wenjuan_webhook', 'token')
         if token == webhook_token:
             entry = request.data['entry']
@@ -67,19 +64,19 @@ class UserRegisterEndPoint(SystemAdminEndPoint):
 
             _user = User.objects.filter(username=username).first()
             if _user:
-                logger.info(f'用户{username}已存在')
+                logger.info(_('User {} already exists').format(username))
             else:
                 self.register_with_raw(username=username, phone=phone, email_addr=email_addr, email=self.email)
-                logger.info(f'用户{username}创建成功')
+                logger.info(_('User {} creates success').format(username))
         else:
-            logger.warn(f'用户创建失败，原因：token不正确')
-        return R.success(msg='账号注册成功')
+            logger.warn(_('User creation failed because: token is incorrect'))
+        return R.success(msg=_('Account registration success'))
 
     def read_user_data(self):
         header = True
         users = list()
         try:
-            # fixme 后续增加上传功能，上传用户csv后自动创建并发送通知
+            
             with open('/tmp/user_register.csv', newline='', encoding='utf-8') as f:
                 reader = csv.reader(f)
                 for row in reader:
@@ -88,7 +85,7 @@ class UserRegisterEndPoint(SystemAdminEndPoint):
                         continue
                     users.append((row[11].strip(), row[12].strip(), row[13].strip()))
         except:
-            print(f'用户账号文件读取错误')
+            print(_('User account file read error'))
         return users
 
     @staticmethod

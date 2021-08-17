@@ -2,23 +2,18 @@ from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from webapi.settings import config
 from dongtai.models.profile import IastProfile
+from django.utils.translation import gettext_lazy as _
 
 
 class ProfileEndpoint(UserEndPoint):
     def get(self, request, key):
-        """
-        获取profile配置
-        """
         profile = IastProfile.objects.filter(key=key).values_list(
             'value', flat=True).first()
         if profile is None:
-            return R.failure(msg=''.join(["获取", key, "配置失败"]))
+            return R.failure(msg=_("Get {} configuration failed").format(key))
         return R.success(data={key: profile})
 
     def put(self, request, key):
-        """
-        更新profile配置
-        """
         fields = get_model_field(IastProfile, exclude=['id'])
         data = {k: v for k, v in request.data.items() if k in fields}
         profile = IastProfile.objects.filter(key=key).first()
@@ -27,7 +22,7 @@ class ProfileEndpoint(UserEndPoint):
             profile.save()
         except Exception as e:
             print(e)
-            return R.failure(msg="".join(["更新", key, "失败"]))
+            return R.failure(msg=_("Update {} failed").format(key))
         return R.success(data={'key': profile.key})
 
 def get_model_field(model, exclude=[], include=[]):

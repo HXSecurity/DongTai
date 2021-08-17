@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/25 下午2:37
 # software: PyCharm
 # project: lingzhi-webapi
 from urllib.parse import urljoin
@@ -9,12 +8,12 @@ from urllib.parse import urljoin
 import requests
 from dongtai.endpoint import TalentAdminEndPoint, R
 from dongtai.models import User
+from django.utils.translation import gettext_lazy as _
 
 
-# 在线更新如何设计？
 class AgentUpgradeOnline(TalentAdminEndPoint):
     name = "api-v1-agent-install"
-    description = "在线升级agent"
+    description = _("Upgrade Agent")
 
     def post(self, request):
         url = request.data['url']
@@ -22,11 +21,10 @@ class AgentUpgradeOnline(TalentAdminEndPoint):
         try:
             self.download(url, token)
             User.objects.filter(id=request.user.id).update(upgrade_url=url)
-            return R.success(msg='在线升级成功')
+            return R.success(msg=_('Online upgrade success'))
         except Exception as e:
-            return R.failure(msg='token验证失败，请确认输入的地址和token是正确的')
+            return R.failure(msg=_('Token verification failed, confirm that the input address and token are correct'))
 
-    # 暂未使用
     def token_verify(self, url, token):
         req_url = urljoin(url, 'token/verify')
         resp = requests.get(req_url, headers={'Authorization': f'Token {token}'})

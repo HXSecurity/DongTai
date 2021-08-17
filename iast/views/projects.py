@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/27 上午10:52
 # software: PyCharm
 # project: lingzhi-webapi
 
@@ -11,16 +10,14 @@ from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from dongtai.models.project import IastProject
 from iast.serializers.project import ProjectSerializer
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("django")
 
 
 class Projects(UserEndPoint):
-    """
-    创建用户，默认只能创建普通用户
-    """
     name = "api-v1-projects"
-    description = "查看项目列表"
+    description = _("View item list")
 
     def get(self, request):
         page = request.query_params.get('page', 1)
