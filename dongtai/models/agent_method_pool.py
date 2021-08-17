@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 
 from dongtai.models.agent import IastAgent
 from dongtai.models.hook_strategy import HookStrategy
-import os
+from dongtai.utils.settings import get_managed
 
 class MethodPool(models.Model):
     agent = models.ForeignKey(IastAgent,
@@ -45,5 +45,5 @@ class MethodPool(models.Model):
     )
 
     class Meta:
-        managed = True if os.getenv('environment',None) == 'TEST' else False
+        managed = get_managed()
         db_table = 'iast_agent_method_pool'

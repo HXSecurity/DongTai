@@ -5,7 +5,7 @@
 # software: PyCharm
 # project: dongtai-models
 from django.db import models
-import os
+from dongtai.utils.settings import get_managed
 
 
 class IastAuthorization(models.Model):
@@ -16,5 +16,5 @@ class IastAuthorization(models.Model):
     dt = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = True if os.getenv('environment',None) == 'TEST' else False
+        managed = get_managed()
         db_table = 'iast_authorization'

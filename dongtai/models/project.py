@@ -8,7 +8,7 @@ from django.db import models
 
 from dongtai.models import User
 from dongtai.models.strategy_user import IastStrategyUser
-import os
+from dongtai.utils.settings import get_managed
 
 
 class IastProject(models.Model):
@@ -25,6 +25,6 @@ class IastProject(models.Model):
                              null=True)
 
     class Meta:
-        managed = True if os.getenv('environment', None) == 'TEST' else False
+        managed = get_managed()
         db_table = 'iast_project'
 

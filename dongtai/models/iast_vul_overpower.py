@@ -8,7 +8,7 @@ from django.db import models
 
 from dongtai.models.agent import IastAgent
 
-import os
+from dongtai.utils.settings import get_managed
 
 
 class IastVulOverpower(models.Model):
@@ -27,5 +27,5 @@ class IastVulOverpower(models.Model):
     updated_time = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = True if os.getenv('environment',None) == 'TEST' else False
+        managed = get_managed()
         db_table = 'iast_vul_overpower'

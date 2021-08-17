@@ -6,7 +6,7 @@
 from django.db import models
 
 from dongtai.models import User
-import os
+from dongtai.utils.settings import get_managed
 
 WEB_HOOK = 1
 DING_DING = 2
@@ -34,5 +34,5 @@ class IastNotifyConfig(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        managed = True if os.getenv('environment',None) == 'TEST' else False
+        managed = get_managed()
         db_table = 'iast_notify_config'

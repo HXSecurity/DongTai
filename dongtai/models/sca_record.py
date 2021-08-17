@@ -4,7 +4,7 @@
 # datetime: 2021/4/30 下午12:08
 # project: dongtai-models
 from django.db import models
-import os
+from dongtai.utils.settings import get_managed
 
 
 class ScaRecord(models.Model):
@@ -15,5 +15,5 @@ class ScaRecord(models.Model):
     data = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = True if os.getenv('environment',None) == 'TEST' else False
+        managed = get_managed()
         db_table = 'sca_record'
