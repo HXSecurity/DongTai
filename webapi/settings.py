@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'modeltranslation',
 ]
 MODELTRANSLATION_LANGUAGES = ('en', 'zh')
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'zh'
 REST_FRAMEWORK = {
     'PAGE_SIZE':
         20,
@@ -98,7 +99,7 @@ LANGUAGES = (
 )
 USE_I18N = True
 USE_L10N = True
-
+MODELTRANSLATION_FALLBACK_LANGUAGES = ('zh', 'en')
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
