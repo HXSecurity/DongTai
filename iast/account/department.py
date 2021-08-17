@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2021/1/18 下午2:16
 # software: PyCharm
 # project: lingzhi-webapi
 import queue
@@ -13,6 +12,7 @@ from dongtai.endpoint import TalentAdminEndPoint
 
 from dongtai.models.department import Department
 from dongtai.models.talent import Talent
+from django.utils.translation import gettext_lazy as _
 
 
 class DepartmentEndPoint(TalentAdminEndPoint):
@@ -50,7 +50,6 @@ class DepartmentEndPoint(TalentAdminEndPoint):
 
     def get(self, request):
         """
-        部门列表，支持查询条件
         :param request:
         :return:
         """
@@ -82,9 +81,8 @@ class DepartmentEndPoint(TalentAdminEndPoint):
 
     def post(self, request, pk):
         """
-        更新部门信息
         :param request:
-        :param pk: 部门ID
+        :param pk: 
         :return:
         """
         user = request.user
@@ -95,7 +93,7 @@ class DepartmentEndPoint(TalentAdminEndPoint):
             if self.exist(name):
                 return JsonResponse({
                     'status': 202,
-                    'msg': f'部门{name}已存在'
+                    'msg': _('Department {} already exists').format(name)
                 })
             else:
                 department.created_by = request.user.id
@@ -105,12 +103,12 @@ class DepartmentEndPoint(TalentAdminEndPoint):
 
                 return JsonResponse({
                     'status': 201,
-                    'msg': f'部门名称已修改为{name}'
+                    'msg': _('The department name has been modified to {}').format(name)
                 })
         else:
             return JsonResponse({
                 'status': 202,
-                'msg': '部门不存在'
+                'msg': _('Department does not exist')
             })
 
     @staticmethod
@@ -125,7 +123,6 @@ class DepartmentEndPoint(TalentAdminEndPoint):
     @transaction.atomic
     def put(self, request):
         """
-        创建部门
         :param request:
         :return:
         """
@@ -135,10 +132,9 @@ class DepartmentEndPoint(TalentAdminEndPoint):
             if self.exist(name):
                 return JsonResponse({
                     'status': 202,
-                    'msg': f'部门{name}已存在'
+                    'msg': _('Department {} already exists').format(name)
                 })
             else:
-                # 检查父部门是否为当前租户
                 if parent == -1 or self.has_department_permission(request.user, parent):
                     timestamp = int(time.time())
                     department = Department(name=name, create_time=timestamp, update_time=timestamp,
@@ -148,18 +144,18 @@ class DepartmentEndPoint(TalentAdminEndPoint):
                     talent.departments.add(department)
                     return JsonResponse({
                         'status': 201,
-                        'msg': f'部门{name}创建成功',
+                        'msg': _('Department {} creation success').format(name),
                         'data': department.id
                     })
                 else:
                     return JsonResponse({
                         'status': 203,
-                        'msg': '父部门无访问权限'
+                        'msg': _('Father no access')
                     })
         else:
             return JsonResponse({
                 'status': 202,
-                'msg': '部门不存在'
+                'msg': _('Department does not exist')
             })
 
     @transaction.atomic
@@ -174,12 +170,12 @@ class DepartmentEndPoint(TalentAdminEndPoint):
             else:
                 return JsonResponse({
                     'status': 202,
-                    'msg': f'删除失败，部门{department.get_department_name()}下存在用户，请执行强制删除',
+                    'msg': _('Delete failed, existence of users under department {}, please implement forced deletion').format(department.get_department_name()),
                 })
                 pass
         else:
             department.delete()
         return JsonResponse({
             'status': 201,
-            'msg': '删除成功'
+            'msg': _('successfully deleted')
         })

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/25 下午2:23
 # software: PyCharm
 # project: lingzhi-webapi
 import logging
@@ -14,16 +13,14 @@ from iast.utils import get_model_field
 from dongtai.models.agent import IastAgent
 from functools import reduce
 from django.db.models import Q
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('dongtai-webapi')
-"""
-agent唯一标识、Agent名称、服务器地址、服务器负载、运行状态
-"""
 
 
 class AgentList(UserEndPoint):
     name = "api-v1-agents"
-    description = "agent列表"
+    description = _("Agent list")
 
     def get(self, request):
         try:
@@ -57,7 +54,7 @@ class AgentList(UserEndPoint):
             )
         except ValueError as e:
             logger.error(e)
-            return R.failure(msg=f'参数格式不正确，请检查。错误信息：{e}')
+            return R.failure(msg=_('The parameter format is incorrect, please check.'))
         except Exception as e:
             logger.error(e)
-            return R.failure(msg=str(e))
+            return R.failure(msg=_('Program error'))

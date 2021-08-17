@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/27 下午5:00
 # software: PyCharm
 # project: lingzhi-webapi
 from rest_framework import serializers

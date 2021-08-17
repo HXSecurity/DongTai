@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/30 下午9:56
 # software: PyCharm
 # project: lingzhi-webapi
 import time
@@ -12,25 +11,23 @@ from dongtai.models.project import IastProject
 from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from iast.base.project_version import get_project_version, get_project_version_by_id
+from django.utils.translation import gettext_lazy as _
 
 
 class ProjectSummary(UserEndPoint):
-    """
-    edit by song 项目详情概括
-    """
     name = "api-v1-project-summary-<id>"
-    description = "查看项目详情-概括"
+    description = _("View item details - summarization")
 
     @staticmethod
     def weeks_ago(week=1):
-        # 最近7天，每天漏洞数量统计
+        
         weekend = 7 * week
         current_timestamp = int(time.time())
         weekend_ago_time = time.localtime(current_timestamp - 86400 * weekend)
         weekend_ago_time_str = str(weekend_ago_time.tm_year) + "-" + str(weekend_ago_time.tm_mon) + "-" + str(
             weekend_ago_time.tm_mday) + " 00:00:00"
         beginArray = time.strptime(weekend_ago_time_str, "%Y-%m-%d %H:%M:%S")
-        # 最近第七天0点
+        
         beginT = int(time.mktime(beginArray))
         return current_timestamp, beginT, weekend
 
@@ -39,7 +36,7 @@ class ProjectSummary(UserEndPoint):
         project = IastProject.objects.filter(user__in=auth_users, id=id).first()
 
         if not project:
-            return R.failure(status=203, msg='no permission')
+            return R.failure(status=203, msg=_('no permission'))
         version_id = request.GET.get('version_id', None)
         data = dict()
         data['owner'] = project.user.get_username()
@@ -50,7 +47,7 @@ class ProjectSummary(UserEndPoint):
         data['type_summary'] = []
         data['day_num'] = []
         data['level_count'] = []
-        # 获取项目当前版本信息
+        
         if not version_id:
             current_project_version = get_project_version(
                 project.id, auth_users)
@@ -63,11 +60,11 @@ class ProjectSummary(UserEndPoint):
             online=1,
             project_version_id=current_project_version.get("version_id", 0)
         ).values("id")
-        # 通过agent获取漏洞数量，类型
+        
         agent_ids = [relation['id'] for relation in relations]
         queryset = IastVulnerabilityModel.objects.filter(
             agent_id__in=agent_ids,
-            status='已确认'
+            status=_('confirmed')
         ).values("type", "level_id", "latest_time")
         typeArr = {}
         typeLevel = {}
@@ -86,7 +83,7 @@ class ProjectSummary(UserEndPoint):
                         'type_level': typeLevel[item_type]
                     }
                 )
-        # 最近7天，每天漏洞数量统计
+        
         current_timestamp, a_week_ago_timestamp, days = self.weeks_ago(week=1)
         vulInfo = queryset.filter(
             latest_time__gt=a_week_ago_timestamp,

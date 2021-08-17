@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author: owefsad@huoxian.cn
-# datetime: 2021/5/8 下午4:56
 # project: dongtai-webapi
 
 # status
@@ -9,11 +8,12 @@ from dongtai.models.vulnerablity import IastVulnerabilityModel
 
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
+from django.utils.translation import gettext_lazy as _
 
 
 class VulStatus(UserEndPoint):
     name = "api-v1-vuln-status"
-    description = "修改漏洞状态"
+    description = _("Modify the vulnerability status")
 
     def post(self, request):
         vul_id = request.data.get('id')
@@ -23,7 +23,7 @@ class VulStatus(UserEndPoint):
                 request.user)).first()
             vul_model.status = status
             vul_model.save(update_fields=['status'])
-            msg = f'漏洞状态修改为{status}'
+            msg = _('Vulnerability status is modified to {}').format(status)
         else:
-            msg = '参数不正确'
+            msg = _('The parameter is incorrect')
         return R.success(msg=msg)

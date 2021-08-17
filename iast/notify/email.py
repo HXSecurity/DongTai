@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author: owefsad@huoxian.cn
-# datetime: 2021/4/6 下午2:14
 # project: dongtai-webapi
 
 
@@ -44,13 +43,11 @@ class Email:
 
 
 '''
-Example 1:发送html格式的邮件:
-    mail_content = "<span>This is a auto-send mail.</span>"
+Example 1:    mail_content = "<span>This is a auto-send mail.</span>"
     mail = Email("smtp.qq.com", "execute@qq.com", password, "send_user@qq.com", [
                   "recv1@qq.com", "recv2@qq.com"], "Test Moudle", mail_content, "html")
     mail.sendmail()
- Example 2:发送文本格式的邮件：
-    mail_content = '
+ Example 2:    mail_content = '
       Hi,
         This is a auto - send mail.'
     mail = Email("smtp.qq.com", "execute@qq.com", password, "send_user@qq.com", ["recv1@qq.com", "recv2@qq.com"], 

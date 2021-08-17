@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2021/1/18 下午2:16
 # software: PyCharm
 # project: lingzhi-webapi
 import logging
@@ -16,23 +15,22 @@ from dongtai.models.department import Department
 from dongtai.models.talent import Talent
 
 from iast.serializers.talent import TalentSerializer
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('dongtai-webapi')
 
 
 class TalentEndPoint(SystemAdminEndPoint):
     name = 'api-v1-talent'
-    description = '租户管理'
+    description = _('Tenant management')
 
     def get(self, request):
         """
-        查询所有租户
         :param request:
         :return:
         """
         queryset = Talent.objects.all()
 
-        # todo 处理查询条件
         name = request.query_params.get('name')
         if name:
             queryset = queryset.filter(talent_name__icontains=name)
@@ -56,7 +54,6 @@ class TalentEndPoint(SystemAdminEndPoint):
 
     def post(self, request, pk):
         """
-        修改租户
         :param request:
         :param pk:
         :return:
@@ -83,36 +80,33 @@ class TalentEndPoint(SystemAdminEndPoint):
         else:
             return JsonResponse({
                 'status': 202,
-                'msg': '租户已停用' if talent else '租户不存在'
+                'msg': _('Tenant has been discontinued') if talent else _('Tenant does not exist')
             })
 
     def put(self, request):
         """
-        新增租户
         :param request:
         :return:
         """
         talent_name = request.data.get('talent_name', None)
         talent_email = request.data.get('email', None)
         if talent_name is None or talent_email is None:
-            return R.failure(msg='租户名称或联系邮箱未指定')
+            return R.failure(msg=_('Tenant name or contact email is not specified'))
         status, msg = self.init_talent(talent_name, talent_email, request.user.id, request.user.get_username())
         if status:
-            return R.success(msg=f'租户{talent_name}创建成功')
-        return R.failure(msg=f'租户创建失败，原因：{msg}')
+            return R.success(msg=_('Tenant {} creation success').format(talent_name))
+        return R.failure(msg=_('Tenant creation failed, reasons: {}').format(msg=msg))
 
     def delete(self, request, pk):
         """
-        删除租户
         :param request:
         :return:
         """
         talent = Talent.objects.filter(id=pk).first()
-        msg = f'租户：{talent.get_talent_name()} 删除成功'
+        msg = _('Tenant: {} Delete success').format(talent.get_talent_name())
         departments = talent.departments.all()
         for department in departments:
             department.users.all().delete()
-            # todo 增加用户创建的agent及相关数据的删除
         departments.delete()
         talent.delete()
         return JsonResponse({
@@ -124,26 +118,26 @@ class TalentEndPoint(SystemAdminEndPoint):
     @transaction.atomic
     def init_talent(talent_name, talent_email, created_by, default_username):
         try:
-            logger.info('查询默认租户信息是否存在')
+            logger.info(_('Query if the default tenant information exists'))
             suffix_email = talent_email.split('@')[-1]
             email = f'{default_username}@{suffix_email}'
             if User.objects.filter(username=email).exists():
-                logger.error('租户信息已存在，请先删除租户信息')
-                return False, '租户信息已存在，请先删除原有租户信息'
+                logger.error(_('Tenant information already exists, please delete tenant information first'))
+                return False, _('Tenant information already exists, please delete the original tenant information first.')
 
-            logger.info('开始创建租户')
+            logger.info(_('Started to create a tenant'))
             timestamp = int(time.time())
             talent = Talent(talent_name=talent_name, create_time=timestamp, update_time=timestamp,
                             created_by=created_by)
             talent.save()
 
-            logger.info('租户创建完成，开始创建默认部门')
-            default_department = Department(name='默认部门', create_time=timestamp, update_time=timestamp,
+            logger.info(_('Tenant creation is completed, starting to create the default department'))
+            default_department = Department(name=_('Default department'), create_time=timestamp, update_time=timestamp,
                                             created_by=created_by)
             default_department.save()
             talent.departments.add(default_department)
 
-            logger.info('部门创建完成，开始创建默认用户')
+            logger.info(_('The department creation is completed and started to create the default user'))
 
             password = '123456'
             default_user = User.objects.create_talent_user(username=email, password=password, email=email,
@@ -151,14 +145,13 @@ class TalentEndPoint(SystemAdminEndPoint):
             default_user.is_active = True
             default_user.save()
 
-            # 将用户插入部门
             group, success = Group.objects.get_or_create(name='talent_admin')
             group.user_set.add(default_user)
             group.save()
 
             default_department.users.add(default_user)
-            logger.info('租户创建及初始化完成')
+            logger.info(_('Tenker creation and initialization'))
             return True
         except Exception as e:
-            logger.error(f'创建租户失败，错误原因：{e}')
+            logger.error(_('Create a tenant failed, error reason: {}').format(e))
             return False, str(e)

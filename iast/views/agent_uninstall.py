@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/25 下午2:29
 # software: PyCharm
 # project: lingzhi-webapi
 import time
 
 from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.agent import IastAgent
+from django.utils.translation import gettext_lazy as _
 
 
 class AgentUninstall(UserEndPoint):
     name = "api-v1-agent-uninstall"
-    description = "卸载agent"
+    description = _("Uninstall Agent")
 
     def post(self, request):
         agent_id = request.data.get('id')
@@ -23,8 +23,8 @@ class AgentUninstall(UserEndPoint):
                 agent.is_control = 1
                 agent.latest_time = int(time.time())
                 agent.save(update_fields=['latest_time', 'control', 'is_control'])
-                return R.success(msg='正在卸载...')
+                return R.success(msg=_('Uninstalling ...'))
             else:
-                return R.failure(msg='agent正在被安装或卸载，请稍后再试')
+                return R.failure(msg=_('Agent is being installed or uninstalled, please try again later'))
         else:
-            return R.failure(msg='引擎不存在或无权操作')
+            return R.failure(msg=_('Engine does not exist or no right to operate'))

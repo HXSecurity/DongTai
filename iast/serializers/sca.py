@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/30 下午2:18
 # software: PyCharm
 # project: lingzhi-webapi
 from dongtai.models.agent import IastAgent
@@ -10,6 +9,7 @@ from rest_framework import serializers
 
 from dongtai.models.asset import Asset
 from dongtai.models.project import IastProject
+from django.utils.translation import gettext_lazy as _
 
 
 class ScaSerializer(serializers.ModelSerializer):
@@ -33,7 +33,7 @@ class ScaSerializer(serializers.ModelSerializer):
     def get_project_name(self, obj):
         project_id = obj.agent.bind_project_id
         if project_id == 0:
-            return "暂未绑定项目"
+            return _("Not bind project")
         else:
             if project_id in self.project_cache:
                 return self.project_cache[project_id]
@@ -56,7 +56,7 @@ class ScaSerializer(serializers.ModelSerializer):
 
             return self.project_version_cache[project_version_id]
         else:
-            return '暂未创建项目版本'
+            return _('No project version has been created yet')
 
     def get_level_type(self, obj):
         return obj.level.id

@@ -1,15 +1,11 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/25 下午2:23
 # software: PyCharm
 # project: lingzhi-webapi
 from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.agent import IastAgent
 
-"""
-获取用户agent ID token
-"""
 
 
 class UserAgentList(UserEndPoint):

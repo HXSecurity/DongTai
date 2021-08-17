@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
-# datetime:2020/11/23 下午2:16
 # software: PyCharm
 # project: lingzhi-webapi
 import logging
@@ -16,6 +15,7 @@ from dongtai.utils.validate import Validate
 from dongtai.endpoint import R
 from dongtai.utils import const
 from dongtai.endpoint import UserEndPoint
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -73,18 +73,17 @@ class VulReCheck(UserEndPoint):
 
     def post(self, request):
         """
-        查找项目中存在活跃探针的数量
         :param request:
         :return:
         """
         try:
             vul_ids = request.data.get('ids')
             if vul_ids is None or vul_ids == '':
-                return R.failure('ids不能为空')
+                return R.failure(_("IDS can't be empty"))
 
             vul_ids = vul_ids.split(',')
             if Validate.is_number(vul_ids) is False:
-                return R.failure('ids必须为：漏洞ID,漏洞ID 格式')
+                return R.failure(_('IDS must be: Vulnerability ID, Vulnerability ID Format'))
 
             auth_agents = self.get_auth_agents_with_user(user=request.user)
             vul_queryset = IastVulnerabilityModel.objects.filter(id__in=vul_ids, agent__in=auth_agents)
@@ -97,10 +96,11 @@ class VulReCheck(UserEndPoint):
                     "recheck": re_success_count,
                     "checking": success_count
                 },
-                msg=f'处理成功')
+                msg=_('Handle success'))
 
         except Exception as e:
-            return R.failure(msg=f'漏洞重放出错，错误原因：{e}')
+            logger.error(f' msg:{e}')
+            return R.failure(msg=_('Vulnerability replay error'))
 
     def vul_check_for_project(self, project_id, auth_users):
         try:
@@ -113,14 +113,15 @@ class VulReCheck(UserEndPoint):
                     waiting_count, success_count, re_success_count = self.recheck(vul_queryset)
                     return True, waiting_count, re_success_count, success_count, None
                 else:
-                    return False, 0, 0, 0, '当前项目尚未关联探针，无法进行漏洞重放'
+                    return False, 0, 0, 0, _('The current project has not been associated with probes and cannot be reproduced.')
             else:
-                return False, 0, 0, 0, f'无权访问项目[{project_id}]'
+                return False, 0, 0, 0, _('No right access')
         except Exception as e:
-            return False, 0, 0, 0, f'批量重放出错，错误详情：{e}'
+            logger.error(f' msg:{e}')
+            return False, 0, 0, 0, _('Batch playback error')
 
     def get(self, request):
-        # 处理批量重放，例如，项目名称
+        
         try:
             check_type = request.query_params.get('type')
 
@@ -136,7 +137,7 @@ class VulReCheck(UserEndPoint):
                         "recheck": recheck,
                         "checking": checking
                     },
-                    msg=f'处理成功')
+                    msg=_('Handle success'))
             elif check_type == 'project':
                 project_id = request.query_params.get('projectId')
                 auth_users = self.get_auth_users(request.user)
@@ -150,9 +151,10 @@ class VulReCheck(UserEndPoint):
                             "recheck": recheck,
                             "checking": checking
                         },
-                        msg=msg)
-                return R.failure(msg='项目ID不能为空')
-            return R.failure(msg="参数格式不正确")
+                        msg=_(msg))
+                return R.failure(msg=_("Item ID can't be empty"))
+            return R.failure(msg=_("The parameter format is incorrect"))
 
         except Exception as e:
-            return R.failure(msg=f'批量重放出错，错误详情：{e}')
+            logger.error(f'user_id:{request.user.id} msg:{e}')
+            return R.failure(msg=_('Batch playback error'))
