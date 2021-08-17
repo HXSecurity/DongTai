@@ -10,13 +10,16 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from dongtai.models.talent import Talent
+from dongtai.utils.settings import get_managed
+from dongtai.utils.customfields import trans_char_field
+from typing import Any
 
 
 class IastDepartment(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = get_managed()
         db_table = 'iast_department'
 
 
@@ -52,8 +55,19 @@ class Department(PermissionsMixin):
     parent_id = models.IntegerField(_('parent id'), blank=True)
 
     class Meta:
-        managed = False
+        managed = get_managed()
         db_table = 'auth_department'
 
     def get_department_name(self):
         return self.name
+
+    @trans_char_field('name', {
+        'zh': {
+            '默认部门': '默认部门'
+        },
+        'en': {
+            '默认部门': 'default department'
+        }
+    })
+    def __getattribute__(self, name) -> Any:
+        return super().__getattribute__(name)

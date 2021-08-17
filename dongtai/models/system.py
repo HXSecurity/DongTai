@@ -1,6 +1,7 @@
 from django.db import models
 
 from dongtai.models import User
+from dongtai.utils.settings import get_managed
 
 
 class IastSystem(models.Model):
@@ -15,5 +16,5 @@ class IastSystem(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = get_managed()
         db_table = 'iast_system'
