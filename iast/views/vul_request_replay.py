@@ -64,7 +64,7 @@ class RequestReplayEndPoint(UserEndPoint):
 
             return False, requests
         except Exception as e:
-            logger.error(_('HTTP request parsing error, reason: {}').format(e))
+            logger.error(_('HTTP request parsing error, error message: {}').format(e))
             return True, None
 
     @staticmethod
@@ -156,7 +156,7 @@ class RequestReplayEndPoint(UserEndPoint):
 
             check_failure, method_pool_model = self.check_method_pool(method_pool_id, request.user)
             if check_failure:
-                return R.failure(msg=_('Stain pool data does not exist or no right to operate'))
+                return R.failure(msg=_('Stain pool data does not exist or no permission to access'))
 
             check_failure = self.check_agent_active(method_pool_model.agent)
             if check_failure:
@@ -164,14 +164,14 @@ class RequestReplayEndPoint(UserEndPoint):
 
             check_failure, checked_request = self.check_replay_request(raw_request=replay_request)
             if check_failure:
-                return R.failure(msg=_('Replay request is not legal'))
+                return R.failure(msg=_('Replay request is illegal'))
 
             replay_id = self.send_request_to_replay_queue(
                 relation_id=method_pool_model.id,
                 agent_id=method_pool_model.agent.id,
                 replay_request=checked_request
             )
-            return R.success(msg=_('Request to return success'), data={'replayId': replay_id})
+            return R.success(msg=_('Relay request success'), data={'replayId': replay_id})
 
         except Exception as e:
             logger.error(f'user_id:{request.user.id} msg:{e}')
@@ -187,7 +187,7 @@ class RequestReplayEndPoint(UserEndPoint):
             _data = base64.b64decode(header.encode("utf-8")).decode("utf-8")
         except Exception as e:
             _data = ''
-            logger.error(_('Response header analysis error, error reason: {}'.format(e)))
+            logger.error(_('Response header analysis error, error message: {}'.format(e)))
         return '{header}\n\n{body}'.format(header=_data, body=body)
 
     def get(self, request):
@@ -196,7 +196,7 @@ class RequestReplayEndPoint(UserEndPoint):
 
         replay_data = IastReplayQueue.objects.filter(id=replay_id, agent__in=auth_agents).values('state').first()
         if not replay_data:
-            return R.failure(status=203,msg=_('Replay request does not exist or no operational permissions'))
+            return R.failure(status=203,msg=_('Replay request does not exist or no permission to access'))
         if replay_data['state'] != const.SOLVED:
             return R.failure(msg=_('Replay request processing'))
 
@@ -209,4 +209,4 @@ class RequestReplayEndPoint(UserEndPoint):
                 'response': self.parse_response(replay_data['res_header'], replay_data['res_body']),
             })
         else:
-            return R.failure(status=203, msg=_('Replay failure'))
+            return R.failure(status=203, msg=_('Replay failed'))

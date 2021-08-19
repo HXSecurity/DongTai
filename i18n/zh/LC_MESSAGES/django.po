@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-16 19:55+0800\n"
+"POT-Creation-Date: 2021-08-19 17:31+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -901,8 +901,9 @@ msgid "UserID must be a number"
 msgstr "userId必须为数字"
 
 #: iast/views/user_passwrd_reset.py:44
-#, python-brace-format
-msgid "Password reset failed, reasons: {}"
+#, fuzzy, python-brace-format
+#| msgid "Password reset failed, reasons: {}"
+msgid "Password reset failed, reasons: {E}"
 msgstr "密码重置失败，原因：{}"
 
 #: iast/views/user_register_batch.py:41
@@ -1060,9 +1061,8 @@ msgstr "漏洞状态修改为{}"
 msgid "Applied vulnerability overview"
 msgstr "应用漏洞概览"
 
-#:
-msgid "默认租户"
-msgstr "default talent"
+#~ msgid "默认租户"
+#~ msgstr "default talent"
 
 #~ msgid "Run in operation"
 #~ msgstr "运行中"

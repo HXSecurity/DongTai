@@ -17,7 +17,7 @@ logger = logging.getLogger("django")
 
 class ProjectVersionCurrent(UserEndPoint):
     name = "api-v1-project-version-current"
-    description = _("Set to the current project version")
+    description = _("Set to the current application version")
 
     def post(self, request):
         try:

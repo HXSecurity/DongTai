@@ -22,7 +22,7 @@ class EngineHookRuleTypeDisableEndPoint(UserEndPoint):
     def get(self, request):
         rule_id = self.parse_args(request)
         if rule_id is None:
-            return R.failure(msg=_('No strategy does not exist'))
+            return R.failure(msg=_('Strategy does not exist'))
 
         rule = HookStrategy.objects.filter(id=rule_id, created_by=request.user.id).first()
         if rule:
@@ -30,5 +30,5 @@ class EngineHookRuleTypeDisableEndPoint(UserEndPoint):
             if rule_type:
                 rule_type.enable = const.DISABLE
                 rule.save()
-                return R.success(msg=_('Successful'))
+                return R.success(msg=_('Forbidden success'))
         return R.failure(msg=_('Strategy type does not exist'))

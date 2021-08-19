@@ -14,7 +14,7 @@ logger = logging.getLogger("django")
 
 class ProjectVersionList(UserEndPoint):
     name = "api-v1-project-version-list"
-    description = _("View project version list")
+    description = _("View application version list")
 
     def get(self, request, project_id):
         try:
@@ -29,6 +29,6 @@ class ProjectVersionList(UserEndPoint):
                         "current_version": item.current_version,
                         "description": item.description,
                     })
-            return R.success(msg=_('search successful'), data=data)
+            return R.success(msg=_('Search successful'), data=data)
         except Exception as e:
             return R.failure(status=202, msg=e)
