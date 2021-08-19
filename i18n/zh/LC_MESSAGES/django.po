@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-06 12:03+0800\n"
+"POT-Creation-Date: 2021-08-19 17:31+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -97,8 +97,7 @@ msgid "Started to create a tenant"
 msgstr "开始创建租户"
 
 #: iast/account/talent.py:134
-msgid ""
-"Tenant creation is completed, starting to create the default department"
+msgid "Tenant creation is completed, starting to create the default department"
 msgstr "租户创建完成，开始创建默认部门"
 
 #: iast/account/talent.py:135
@@ -127,7 +126,7 @@ msgid "Data update success"
 msgstr "数据更新成功"
 
 #: iast/account/user.py:118 iast/views/project_detail.py:43
-#: iast/views/project_report_export.py:60 iast/views/project_summary.py:39
+#: iast/views/project_report_export.py:76 iast/views/project_summary.py:39
 #: iast/views/user_detail.py:32
 msgid "no permission"
 msgstr "no permission"
@@ -160,28 +159,28 @@ msgstr "用户{}创建成功"
 msgid "Department does not exist or have no access"
 msgstr "部门不存在或无访问权限"
 
-#: iast/base/agent.py:124
+#: iast/base/agent.py:127
 #, python-brace-format
 msgid ""
 "We found that there is {1} in the {0} page, and the attacker can change the "
 "value of {2} to attack:"
 msgstr "我们发现在{0}页面中存在{1}，攻击者可以改变{2}的值进行攻击："
 
-#: iast/base/agent.py:139
+#: iast/base/agent.py:142
 msgid "{} Line"
 msgstr "的{}行"
 
-#: iast/base/agent.py:155
+#: iast/base/agent.py:158
 msgid "In {} {} call {}. {} (), Incoming parameters {}"
 msgstr "在{}{}调用{}.{}(),传入参数{}"
 
-#: iast/base/agent.py:158
+#: iast/base/agent.py:161
 msgid "{} Appears in {} {}"
 msgstr "{}出现在{}的{}"
 
 #: iast/base/project_version.py:11 iast/base/project_version.py:21
 #: iast/views/project_add.py:34 iast/views/project_add.py:73
-#: iast/views/project_report_export.py:72 iast/views/project_version_add.py:25
+#: iast/views/project_report_export.py:59 iast/views/project_version_add.py:25
 #: iast/views/project_version_current.py:27
 #: iast/views/project_version_delete.py:24
 #: iast/views/project_version_update.py:25 iast/views/strategys_add.py:25
@@ -209,23 +208,23 @@ msgstr "检测完成"
 msgid "Detection failure"
 msgstr "检测失败"
 
-#: iast/notify/feishu.py:11
+#: iast/notify/feishu.py:12
 msgid "Maven official crawler"
 msgstr "Maven官方爬虫"
 
 #: iast/serializers/agent.py:40
-msgid "Run in operation"
-msgstr "运行中"
+msgid "Online"
+msgstr ""
 
-#: iast/serializers/agent.py:40 iast/serializers/agent.py:42
-msgid "Not running"
-msgstr "未运行"
+#: iast/serializers/agent.py:40
+msgid "Offline"
+msgstr ""
 
-#: iast/serializers/agent.py:53
+#: iast/serializers/agent.py:52
 msgid "Load data is not uploaded"
 msgstr "负载数据暂未上传"
 
-#: iast/serializers/agent.py:61 iast/serializers/agent.py:66
+#: iast/serializers/agent.py:60 iast/serializers/agent.py:65
 msgid "The probe has not detected traffic"
 msgstr "探针暂未检测到流量"
 
@@ -331,7 +330,7 @@ msgstr "暂无数据"
 msgid "Upload Agent configuration"
 msgstr "上传Agent配置"
 
-#: iast/views/agent_download.py:21
+#: iast/views/agent_download.py:22
 msgid "Download DongTai Agent"
 msgstr "下载洞态Agent"
 
@@ -572,7 +571,7 @@ msgstr "导出失败，原因：日志ID不能为空"
 msgid "Log list"
 msgstr "日志列表"
 
-#: iast/views/logs.py:48
+#: iast/views/logs.py:48 iast/views/vul_recheck.py:118
 msgid "No right access"
 msgstr "无权限访问"
 
@@ -580,19 +579,19 @@ msgstr "无权限访问"
 msgid "failure"
 msgstr "failure"
 
-#: iast/views/method_graph.py:26
+#: iast/views/method_graph.py:27
 msgid "Method pool ID is empty"
 msgstr "方法池ID为空"
 
-#: iast/views/method_graph.py:41
+#: iast/views/method_graph.py:43
 msgid "Stain call map type does not exist"
 msgstr "污点调用图类型不存在"
 
-#: iast/views/method_graph.py:44
+#: iast/views/method_graph.py:46
 msgid "Data does not exist or have no right to access"
 msgstr "数据不存在或无权限访问"
 
-#: iast/views/method_graph.py:50
+#: iast/views/method_graph.py:52
 msgid "Page and PageSize can only be numbers"
 msgstr "page和pageSize只能为数字"
 
@@ -645,99 +644,99 @@ msgstr "查看项目详情"
 msgid "View engine list"
 msgstr "查看引擎列表"
 
-#: iast/views/project_report_export.py:24
+#: iast/views/project_report_export.py:26
 msgid "Vulnerability Word Report Generation"
 msgstr "漏洞word报告生成"
 
-#: iast/views/project_report_export.py:53
+#: iast/views/project_report_export.py:68
 msgid "Vulnerability Report - {}. {}"
 msgstr "漏洞报告-{}.{}"
 
-#: iast/views/project_report_export.py:101
+#: iast/views/project_report_export.py:121
 msgid "Safety test report"
 msgstr "安全测试报告"
 
-#: iast/views/project_report_export.py:114
+#: iast/views/project_report_export.py:134
 msgid "First, project basic information"
 msgstr "一 、项目基础信息"
 
-#: iast/views/project_report_export.py:122
+#: iast/views/project_report_export.py:142
 msgid "project name"
 msgstr "项目名称"
 
-#: iast/views/project_report_export.py:125
+#: iast/views/project_report_export.py:145
 msgid "Creative personnel"
 msgstr "创建人员"
 
-#: iast/views/project_report_export.py:128
+#: iast/views/project_report_export.py:148
 msgid "project type"
 msgstr "项目类型"
 
-#: iast/views/project_report_export.py:131
+#: iast/views/project_report_export.py:151
 msgid "Vulnerability quantity"
 msgstr "漏洞数量"
 
-#: iast/views/project_report_export.py:134
+#: iast/views/project_report_export.py:154
 msgid "Agent quantity"
 msgstr "Agent数量"
 
-#: iast/views/project_report_export.py:137
+#: iast/views/project_report_export.py:157
 msgid "Latest time"
 msgstr "最新时间"
 
-#: iast/views/project_report_export.py:159
+#: iast/views/project_report_export.py:179
 msgid "Second, the result analysis"
 msgstr "二、结果分析"
 
-#: iast/views/project_report_export.py:163
+#: iast/views/project_report_export.py:183
 msgid "2.1 Vulnerability Level Distribution"
 msgstr "2.1  漏洞等级分布"
 
-#: iast/views/project_report_export.py:173
+#: iast/views/project_report_export.py:193
 msgid "2.2 Distribution of Vulnerability"
 msgstr "2.2  漏洞类型分布"
 
-#: iast/views/project_report_export.py:181
+#: iast/views/project_report_export.py:201
 msgid "Vulnerability"
 msgstr "漏洞等级"
 
-#: iast/views/project_report_export.py:182
+#: iast/views/project_report_export.py:202
 msgid "Vulnerability type name"
 msgstr "漏洞类型名称"
 
-#: iast/views/project_report_export.py:183
+#: iast/views/project_report_export.py:203
 msgid "quantity"
 msgstr "数量"
 
-#: iast/views/project_report_export.py:196
+#: iast/views/project_report_export.py:216
 msgid "2.3 Vulnerability details"
 msgstr "2.3  漏洞详情"
 
-#: iast/views/project_report_export.py:220
+#: iast/views/project_report_export.py:239
 msgid "Summary information"
 msgstr "概要信息"
 
-#: iast/views/project_report_export.py:224
+#: iast/views/project_report_export.py:243
 msgid "Hazard level"
 msgstr "危害等级"
 
-#: iast/views/project_report_export.py:228
+#: iast/views/project_report_export.py:247
 msgid "First test time"
 msgstr "首次检测时间"
 
-#: iast/views/project_report_export.py:232
+#: iast/views/project_report_export.py:251
 msgid "Recently test time"
 msgstr "最近检测时间"
 
-#: iast/views/project_report_export.py:236
+#: iast/views/project_report_export.py:255
 msgid "Development language"
 msgstr "开发语言"
 
-#: iast/views/project_report_export.py:240
+#: iast/views/project_report_export.py:259
 msgid "Vulnerability URL"
 msgstr "漏洞url"
 
-#: iast/views/project_report_export.py:242
+#: iast/views/project_report_export.py:261
 msgid "Vulnerability description"
 msgstr "漏洞描述"
 
@@ -829,23 +828,27 @@ msgstr "api - 系统信息页面"
 msgid "User Info"
 msgstr "用户信息"
 
-#: iast/views/user_login.py:19
+#: iast/views/user_login.py:20
 msgid "User login"
 msgstr "用户登录"
 
-#: iast/views/user_login.py:32
+#: iast/views/user_login.py:28
+msgid "Captcha timed out"
+msgstr ""
+
+#: iast/views/user_login.py:35
 msgid "login successful"
 msgstr "登录成功"
 
-#: iast/views/user_login.py:36
+#: iast/views/user_login.py:39
 msgid "Login failed"
 msgstr "登录失败"
 
-#: iast/views/user_login.py:38
+#: iast/views/user_login.py:41
 msgid "Verification code error"
 msgstr "验证码错误"
 
-#: iast/views/user_login.py:40
+#: iast/views/user_login.py:43
 msgid "verification code must be filled"
 msgstr "验证码不能为空"
 
@@ -898,9 +901,10 @@ msgid "UserID must be a number"
 msgstr "userId必须为数字"
 
 #: iast/views/user_passwrd_reset.py:44
-#, python-brace-format
+#, fuzzy, python-brace-format
+#| msgid "Password reset failed, reasons: {}"
 msgid "Password reset failed, reasons: {E}"
-msgstr "密码重置失败，原因：{e}"
+msgstr "密码重置失败，原因：{}"
 
 #: iast/views/user_register_batch.py:41
 msgid "Account creation success"
@@ -996,7 +1000,6 @@ msgid ""
 "reproduced."
 msgstr "当前项目尚未关联探针，无法进行漏洞重放"
 
-
 #: iast/views/vul_recheck.py:121 iast/views/vul_recheck.py:160
 msgid "Batch playback error"
 msgstr "批量重放出错"
@@ -1057,3 +1060,12 @@ msgstr "漏洞状态修改为{}"
 #: iast/views/vul_summary.py:20
 msgid "Applied vulnerability overview"
 msgstr "应用漏洞概览"
+
+#~ msgid "默认租户"
+#~ msgstr "default talent"
+
+#~ msgid "Run in operation"
+#~ msgstr "运行中"
+
+#~ msgid "Not running"
+#~ msgstr "未运行"

@@ -35,7 +35,7 @@ class EngineHookRuleTypesEndPoint(UserEndPoint):
 
             return rule_type, page, page_size
         except Exception as e:
-            logger.error(_("Parameter parsing error, error reason: {}").format(e))
+            logger.error(_("Parameter parsing failed, error message: {}").format(e))
             return None, None, None
 
     def get(self, request):

@@ -15,14 +15,14 @@ class VulListEndPoint(MixinAuthEndPoint):
     def get(self, request):
         agent_name = request.query_params.get('name')
         if not agent_name:
-            return R.failure(msg=_("please input agent name."))
+            return R.failure(msg=_("Please input agent name."))
 
         agent = IastAgent.objects.filter(
             token=agent_name,
             id__in=self.get_auth_agents_with_user(request.user)
         ).first()
         if not agent:
-            return R.failure(msg=_("Not found agent_name!"))
+            return R.failure(msg=_("agent_name not found"))
 
         queryset = IastVulnerabilityModel.objects.values('id', 'type', 'url', 'http_method', 'top_stack',
                                                          'bottom_stack').filter(

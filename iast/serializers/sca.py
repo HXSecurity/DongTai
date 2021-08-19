@@ -33,7 +33,7 @@ class ScaSerializer(serializers.ModelSerializer):
     def get_project_name(self, obj):
         project_id = obj.agent.bind_project_id
         if project_id == 0:
-            return _("Not bind project")
+            return _("The application has not been binded")
         else:
             if project_id in self.project_cache:
                 return self.project_cache[project_id]
@@ -56,7 +56,7 @@ class ScaSerializer(serializers.ModelSerializer):
 
             return self.project_version_cache[project_version_id]
         else:
-            return _('No project version has been created yet')
+            return _('No application version has been created')
 
     def get_level_type(self, obj):
         return obj.level.id
