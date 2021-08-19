@@ -45,7 +45,7 @@ class LogsEndpoint(UserEndPoint):
                     })
                 return R.success(data=data, total=summary['alltotal'])
             else:
-                return R.failure(msg=_('No right access'), status=203)
+                return R.failure(msg=_('No permission to access'), status=203)
         except Exception as e:
             logger.error(e)
             return R.success(data=list(), msg=_('failure'))

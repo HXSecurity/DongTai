@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 
 class LogClear(UserEndPoint):
     name = 'api-v1-log-clear'
-    description = _('Log emptiness')
+    description = _('Log clear')
 
     def get(self, request):
         user = request.user

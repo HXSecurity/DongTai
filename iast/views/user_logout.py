@@ -18,14 +18,14 @@ from datetime import datetime
 
 class UserLogout(AnonymousAuthEndPoint):
     name = "api-v1-user-logout"
-    description = _("sign out")
+    description = _("Sign out")
 
     def get(self, request):
         if request.user.is_active:
             logout(request)
         response = JsonResponse({
             "status": 201,
-            "msg": _('exit successfully')
+            "msg": _('Sign out successfully')
         })
         response.delete_cookie(key=settings.CSRF_COOKIE_NAME,domain=settings.SESSION_COOKIE_DOMAIN)
         response.delete_cookie(key='sessionid',domain=settings.SESSION_COOKIE_DOMAIN)

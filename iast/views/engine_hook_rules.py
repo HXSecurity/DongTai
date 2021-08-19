@@ -38,7 +38,7 @@ class EngineHookRulesEndPoint(UserEndPoint):
             strategy_type = request.query_params.get('strategy_type')
             return rule_type, page, page_size, strategy_type
         except Exception as e:
-            logger.error(_("Parameter parsing error, error reason: {}").format(e))
+            logger.error(_("Parameter parsing failed, error message: {}").format(e))
             return None, None, None
 
     def get(self, request):
@@ -60,5 +60,5 @@ class EngineHookRulesEndPoint(UserEndPoint):
             data = HookRuleSerialize(queryset, many=True).data
             return R.success(data=data, page=page_summary)
         except Exception as e:
-            logger.error(_("Rule reading error, error details: {}").format(e))
+            logger.error(_("Rule read error, error message: {}").format(e))
             return R.failure()

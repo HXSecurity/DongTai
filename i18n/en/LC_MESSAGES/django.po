@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-06 12:03+0800\n"
+"POT-Creation-Date: 2021-08-19 17:31+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -134,7 +134,7 @@ msgid "Data update success"
 msgstr "Data update success"
 
 #: iast/account/user.py:118 iast/views/project_detail.py:43
-#: iast/views/project_report_export.py:60 iast/views/project_summary.py:39
+#: iast/views/project_report_export.py:76 iast/views/project_summary.py:39
 #: iast/views/user_detail.py:32
 msgid "no permission"
 msgstr "no permission"
@@ -167,7 +167,7 @@ msgstr "User {} creates success"
 msgid "Department does not exist or have no access"
 msgstr "Department does not exist or have no access"
 
-#: iast/base/agent.py:124
+#: iast/base/agent.py:127
 #, python-brace-format
 msgid ""
 "We found that there is {1} in the {0} page, and the attacker can change the "
@@ -176,21 +176,21 @@ msgstr ""
 "We found that there is {1} in the {0} page, and the attacker can change the "
 "value of {2} to attack:"
 
-#: iast/base/agent.py:139
+#: iast/base/agent.py:142
 msgid "{} Line"
 msgstr "{} Line"
 
-#: iast/base/agent.py:155
+#: iast/base/agent.py:158
 msgid "In {} {} call {}. {} (), Incoming parameters {}"
 msgstr "In {} {} call {}. {} (), Incoming parameters {}"
 
-#: iast/base/agent.py:158
+#: iast/base/agent.py:161
 msgid "{} Appears in {} {}"
 msgstr "{} Appears in {} {}"
 
 #: iast/base/project_version.py:11 iast/base/project_version.py:21
 #: iast/views/project_add.py:34 iast/views/project_add.py:73
-#: iast/views/project_report_export.py:72 iast/views/project_version_add.py:25
+#: iast/views/project_report_export.py:59 iast/views/project_version_add.py:25
 #: iast/views/project_version_current.py:27
 #: iast/views/project_version_delete.py:24
 #: iast/views/project_version_update.py:25 iast/views/strategys_add.py:25
@@ -218,23 +218,23 @@ msgstr "Test"
 msgid "Detection failure"
 msgstr "Detection failure"
 
-#: iast/notify/feishu.py:11
+#: iast/notify/feishu.py:12
 msgid "Maven official crawler"
 msgstr "Maven official crawler"
 
 #: iast/serializers/agent.py:40
-msgid "Run in operation"
-msgstr "Run in operation"
+msgid "Online"
+msgstr "Online"
 
-#: iast/serializers/agent.py:40 iast/serializers/agent.py:42
-msgid "Not running"
-msgstr "Not running"
+#: iast/serializers/agent.py:40
+msgid "Offline"
+msgstr "Offline"
 
-#: iast/serializers/agent.py:53
+#: iast/serializers/agent.py:52
 msgid "Load data is not uploaded"
 msgstr "Load data is not uploaded"
 
-#: iast/serializers/agent.py:61 iast/serializers/agent.py:66
+#: iast/serializers/agent.py:60 iast/serializers/agent.py:65
 msgid "The probe has not detected traffic"
 msgstr "The probe has not detected traffic"
 
@@ -340,7 +340,7 @@ msgstr "No data"
 msgid "Upload Agent configuration"
 msgstr "Upload Agent configuration"
 
-#: iast/views/agent_download.py:21
+#: iast/views/agent_download.py:22
 msgid "Download DongTai Agent"
 msgstr "Download DongTai Agent"
 
@@ -583,7 +583,7 @@ msgstr "The export failed, the reason: the log id cannot be empty"
 msgid "Log list"
 msgstr "Log list"
 
-#: iast/views/logs.py:48
+#: iast/views/logs.py:48 iast/views/vul_recheck.py:118
 msgid "No right access"
 msgstr "No right access"
 
@@ -591,19 +591,19 @@ msgstr "No right access"
 msgid "failure"
 msgstr "failure"
 
-#: iast/views/method_graph.py:26
+#: iast/views/method_graph.py:27
 msgid "Method pool ID is empty"
 msgstr "Method pool ID is empty"
 
-#: iast/views/method_graph.py:41
+#: iast/views/method_graph.py:43
 msgid "Stain call map type does not exist"
 msgstr "Stain call map type does not exist"
 
-#: iast/views/method_graph.py:44
+#: iast/views/method_graph.py:46
 msgid "Data does not exist or have no right to access"
 msgstr "Data does not exist or have no right to access"
 
-#: iast/views/method_graph.py:50
+#: iast/views/method_graph.py:52
 msgid "Page and PageSize can only be numbers"
 msgstr "Page and PageSize can only be numbers"
 
@@ -656,99 +656,99 @@ msgstr "View item details"
 msgid "View engine list"
 msgstr "View engine list"
 
-#: iast/views/project_report_export.py:24
+#: iast/views/project_report_export.py:26
 msgid "Vulnerability Word Report Generation"
 msgstr "Vulnerability Word Report Generation"
 
-#: iast/views/project_report_export.py:53
+#: iast/views/project_report_export.py:68
 msgid "Vulnerability Report - {}. {}"
 msgstr "Vulnerability Report - {}. {}"
 
-#: iast/views/project_report_export.py:101
+#: iast/views/project_report_export.py:121
 msgid "Safety test report"
 msgstr "Safety test report"
 
-#: iast/views/project_report_export.py:114
+#: iast/views/project_report_export.py:134
 msgid "First, project basic information"
 msgstr "First, project basic information"
 
-#: iast/views/project_report_export.py:122
+#: iast/views/project_report_export.py:142
 msgid "project name"
 msgstr "project name"
 
-#: iast/views/project_report_export.py:125
+#: iast/views/project_report_export.py:145
 msgid "Creative personnel"
 msgstr "Creative personnel"
 
-#: iast/views/project_report_export.py:128
+#: iast/views/project_report_export.py:148
 msgid "project type"
 msgstr "project type"
 
-#: iast/views/project_report_export.py:131
+#: iast/views/project_report_export.py:151
 msgid "Vulnerability quantity"
 msgstr "Vulnerability quantity"
 
-#: iast/views/project_report_export.py:134
+#: iast/views/project_report_export.py:154
 msgid "Agent quantity"
 msgstr "Agent quantity"
 
-#: iast/views/project_report_export.py:137
+#: iast/views/project_report_export.py:157
 msgid "Latest time"
 msgstr "Latest time"
 
-#: iast/views/project_report_export.py:159
+#: iast/views/project_report_export.py:179
 msgid "Second, the result analysis"
 msgstr "Second, the result analysis"
 
-#: iast/views/project_report_export.py:163
+#: iast/views/project_report_export.py:183
 msgid "2.1 Vulnerability Level Distribution"
 msgstr "2.1 Vulnerability Level Distribution"
 
-#: iast/views/project_report_export.py:173
+#: iast/views/project_report_export.py:193
 msgid "2.2 Distribution of Vulnerability"
 msgstr "2.2 Distribution of Vulnerability"
 
-#: iast/views/project_report_export.py:181
+#: iast/views/project_report_export.py:201
 msgid "Vulnerability"
 msgstr "Vulnerability"
 
-#: iast/views/project_report_export.py:182
+#: iast/views/project_report_export.py:202
 msgid "Vulnerability type name"
 msgstr "Vulnerability type name"
 
-#: iast/views/project_report_export.py:183
+#: iast/views/project_report_export.py:203
 msgid "quantity"
 msgstr "quantity"
 
-#: iast/views/project_report_export.py:196
+#: iast/views/project_report_export.py:216
 msgid "2.3 Vulnerability details"
 msgstr "2.3 Vulnerability details"
 
-#: iast/views/project_report_export.py:220
+#: iast/views/project_report_export.py:239
 msgid "Summary information"
 msgstr "Summary information"
 
-#: iast/views/project_report_export.py:224
+#: iast/views/project_report_export.py:243
 msgid "Hazard level"
 msgstr "Hazard level"
 
-#: iast/views/project_report_export.py:228
+#: iast/views/project_report_export.py:247
 msgid "First test time"
 msgstr "First test time"
 
-#: iast/views/project_report_export.py:232
+#: iast/views/project_report_export.py:251
 msgid "Recently test time"
 msgstr "Recently test time"
 
-#: iast/views/project_report_export.py:236
+#: iast/views/project_report_export.py:255
 msgid "Development language"
 msgstr "Development language"
 
-#: iast/views/project_report_export.py:240
+#: iast/views/project_report_export.py:259
 msgid "Vulnerability URL"
 msgstr "Vulnerability URL"
 
-#: iast/views/project_report_export.py:242
+#: iast/views/project_report_export.py:261
 msgid "Vulnerability description"
 msgstr "Vulnerability description"
 
@@ -840,23 +840,27 @@ msgstr "API - System Information Page"
 msgid "User Info"
 msgstr "User Info"
 
-#: iast/views/user_login.py:19
+#: iast/views/user_login.py:20
 msgid "User login"
 msgstr "User login"
 
-#: iast/views/user_login.py:32
+#: iast/views/user_login.py:28
+msgid "Captcha timed out"
+msgstr "Captcha timed out"
+
+#: iast/views/user_login.py:35
 msgid "login successful"
 msgstr "login successful"
 
-#: iast/views/user_login.py:36
+#: iast/views/user_login.py:39
 msgid "Login failed"
 msgstr "Login failed"
 
-#: iast/views/user_login.py:38
+#: iast/views/user_login.py:41
 msgid "Verification code error"
 msgstr "Verification code error"
 
-#: iast/views/user_login.py:40
+#: iast/views/user_login.py:43
 msgid "verification code must be filled"
 msgstr "verification code must be filled"
 
@@ -909,7 +913,8 @@ msgid "UserID must be a number"
 msgstr "UserID must be a number"
 
 #: iast/views/user_passwrd_reset.py:44
-#, python-brace-format
+#, fuzzy, python-brace-format
+#| msgid "Password reset failed, reasons: {}"
 msgid "Password reset failed, reasons: {E}"
 msgstr "Password reset failed, reasons: {E}"
 
@@ -1070,3 +1075,12 @@ msgstr "Vulnerability status is modified to {}"
 #: iast/views/vul_summary.py:20
 msgid "Applied vulnerability overview"
 msgstr "Applied vulnerability overview"
+
+#~ msgid "默认租户"
+#~ msgstr "默认租户"
+
+#~ msgid "Run in operation"
+#~ msgstr "Run in operation"
+
+#~ msgid "Not running"
+#~ msgstr "Not running"

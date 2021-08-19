@@ -80,7 +80,7 @@ class TalentEndPoint(SystemAdminEndPoint):
         else:
             return JsonResponse({
                 'status': 202,
-                'msg': _('Tenant has been discontinued') if talent else _('Tenant does not exist')
+                'msg': _('Tenant has been deactivated') if talent else _('Tenant does not exist')
             })
 
     def put(self, request):
@@ -91,11 +91,11 @@ class TalentEndPoint(SystemAdminEndPoint):
         talent_name = request.data.get('talent_name', None)
         talent_email = request.data.get('email', None)
         if talent_name is None or talent_email is None:
-            return R.failure(msg=_('Tenant name or contact email is not specified'))
+            return R.failure(msg=_('Tenant name or email is not specified'))
         status, msg = self.init_talent(talent_name, talent_email, request.user.id, request.user.get_username())
         if status:
-            return R.success(msg=_('Tenant {} creation success').format(talent_name))
-        return R.failure(msg=_('Tenant creation failed, reasons: {}').format(msg=msg))
+            return R.success(msg=_('Tenant {} has been created successfully').format(talent_name))
+        return R.failure(msg=_('Tenant {} creation failed, error message:{}').format(msg=msg))
 
     def delete(self, request, pk):
         """
@@ -103,7 +103,7 @@ class TalentEndPoint(SystemAdminEndPoint):
         :return:
         """
         talent = Talent.objects.filter(id=pk).first()
-        msg = _('Tenant: {} Delete success').format(talent.get_telent_name())
+        msg = _('Tenant: {} Delete successfully').format(talent.get_talent_name())
         departments = talent.departments.all()
         for department in departments:
             department.users.all().delete()
@@ -123,21 +123,21 @@ class TalentEndPoint(SystemAdminEndPoint):
             email = f'{default_username}@{suffix_email}'
             if User.objects.filter(username=email).exists():
                 logger.error(_('Tenant information already exists, please delete tenant information first'))
-                return False, _('Tenant information already exists, please delete the original tenant information first.')
+                return False, _('The tenant information already existed, please delete the existing information first')
 
-            logger.info(_('Started to create a tenant'))
+            logger.info(_('Started creating a tenant'))
             timestamp = int(time.time())
             talent = Talent(talent_name=talent_name, create_time=timestamp, update_time=timestamp,
                             created_by=created_by)
             talent.save()
 
-            logger.info(_('Tenant creation is completed, starting to create the default department'))
+            logger.info(_('Finished creating tenant, start to create tenant default department'))
             default_department = Department(name=_('Default department'), create_time=timestamp, update_time=timestamp,
                                             created_by=created_by)
             default_department.save()
             talent.departments.add(default_department)
 
-            logger.info(_('The department creation is completed and started to create the default user'))
+            logger.info(_('Finished creating department, start to create default user'))
 
             password = '123456'
             default_user = User.objects.create_talent_user(username=email, password=password, email=email,
@@ -150,8 +150,8 @@ class TalentEndPoint(SystemAdminEndPoint):
             group.save()
 
             default_department.users.add(default_user)
-            logger.info(_('Tenker creation and initialization'))
+            logger.info(_('Finsihed creating and initializing tenant'))
             return True
         except Exception as e:
-            logger.error(_('Create a tenant failed, error reason: {}').format(e))
+            logger.error(_('Failed to created a tenant, error message:{}').format(e))
             return False, str(e)
