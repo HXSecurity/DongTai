@@ -12,7 +12,7 @@ from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from iast.base.project_version import get_project_version, get_project_version_by_id
 from django.utils.translation import gettext_lazy as _
-
+from iast.serializers.project import ProjectSerializer
 
 class ProjectSummary(UserEndPoint):
     name = "api-v1-project-summary-<id>"
@@ -20,14 +20,14 @@ class ProjectSummary(UserEndPoint):
 
     @staticmethod
     def weeks_ago(week=1):
-        
+
         weekend = 7 * week
         current_timestamp = int(time.time())
         weekend_ago_time = time.localtime(current_timestamp - 86400 * weekend)
         weekend_ago_time_str = str(weekend_ago_time.tm_year) + "-" + str(weekend_ago_time.tm_mon) + "-" + str(
             weekend_ago_time.tm_mday) + " 00:00:00"
         beginArray = time.strptime(weekend_ago_time_str, "%Y-%m-%d %H:%M:%S")
-        
+
         beginT = int(time.mktime(beginArray))
         return current_timestamp, beginT, weekend
 
@@ -47,7 +47,7 @@ class ProjectSummary(UserEndPoint):
         data['type_summary'] = []
         data['day_num'] = []
         data['level_count'] = []
-        
+
         if not version_id:
             current_project_version = get_project_version(
                 project.id, auth_users)
@@ -60,7 +60,7 @@ class ProjectSummary(UserEndPoint):
             online=1,
             project_version_id=current_project_version.get("version_id", 0)
         ).values("id")
-        
+
         agent_ids = [relation['id'] for relation in relations]
         queryset = IastVulnerabilityModel.objects.filter(
             agent_id__in=agent_ids,
@@ -83,7 +83,7 @@ class ProjectSummary(UserEndPoint):
                         'type_level': typeLevel[item_type]
                     }
                 )
-        
+
         current_timestamp, a_week_ago_timestamp, days = self.weeks_ago(week=1)
         vulInfo = queryset.filter(
             latest_time__gt=a_week_ago_timestamp,
@@ -120,5 +120,6 @@ class ProjectSummary(UserEndPoint):
                     'day_label': day_label,
                     'day_num': dayNum[day_label]
                 })
-
+        data['agent_language'] = ProjectSerializer(
+            project).data['agent_language']
         return R.success(data=data)
