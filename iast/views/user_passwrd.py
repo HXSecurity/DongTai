@@ -13,13 +13,13 @@ from django.utils.translation import gettext_lazy as _
 
 class UserPassword(UserEndPoint):
     name = "api-v1-user-password"
-    description = _("change Password")
+    description = _("Change Password")
 
     def post(self, request):
         user = request.user
         
         if not request.data['old_password'] or not request.data['new_password']:
-            return R.failure(msg=_('The password is not allowed to be empty'))
+            return R.failure(msg=_('Password should not be empty'))
         else:
             user_check = authenticate(username=user.username, password=request.data['old_password'])
             if user_check is not None and user_check.is_active:
@@ -27,6 +27,6 @@ class UserPassword(UserEndPoint):
                 
                 user.set_password(password)
                 user.save(update_fields=['password'])
-                return R.success(msg=_('Password reset complete'))
+                return R.success(msg=_('Password has been changed successfully'))
             else:
-                return R.failure(msg=_('Original password error'))
+                return R.failure(msg=_('Incorrect old password'))

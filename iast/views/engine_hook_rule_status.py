@@ -57,17 +57,17 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
 
         if rule_type is not None and scope == 'all':
             count = HookStrategy.objects.filter(type__id=rule_type, created_by=user_id).update(enable=op)
-            logger.info(_('Policy type {} operation success, total {}').format(rule_type, count))
+            logger.info(_('Policy type {} operation success, total of {} Policy types').format(rule_type, count))
             status = True
         elif rule_id is not None:
             status = self.set_strategy_status(strategy_id=rule_id, strategy_ids=None, user_id=user_id,
                                               enable_status=op)
-            logger.info(_('Policy {}').format(rule_id))
+            logger.info(_('Policy {} succeed').format(rule_id))
 
         if status:
-            return R.success(msg=_('Successful operation'))
+            return R.success(msg=_('Operation success'))
         else:
-            return R.failure(msg=_('No strategy does not exist'))
+            return R.failure(msg=_('Strategy does not exist'))
 
     def post(self, request):
         op = request.data.get('op')
@@ -80,7 +80,7 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
         if strategy_ids:
             count = self.set_strategy_status(strategy_id=None, strategy_ids=strategy_ids, user_id=request.user.id,
                                              enable_status=op)
-            logger.info(_('Strategy operation is successful, total {}').format(count))
-            return R.success(msg=_('Successful operation'))
+            logger.info(_('Strategy operation success, total {}').format(count))
+            return R.success(msg=_('Operation success'))
         else:
-            return R.failure(msg=_('The parameter is incorrect'))
+            return R.failure(msg=_('Incorrect parameter'))

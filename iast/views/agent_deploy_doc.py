@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 
 class AgentDeployDesc(UserEndPoint):
     name = "api-v1-iast-deploy-desc"
-    description = _("Agent deployment documentation")
+    description = _("Agent deployment document")
 
     def get(self, request):
         queryset = IastDeployDesc.objects.all()

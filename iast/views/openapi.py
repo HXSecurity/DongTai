@@ -19,14 +19,14 @@ class OpenApiEndpoint(UserEndPoint):
 
     def post(self, request):
         if not request.user.is_talent_admin():
-            return R.failure(msg=_("Current users have no right to modify"))
+            return R.failure(msg=_("Current users have no permission to modify"))
         value = request.data.get('value', '')
         profilefromdb = IastProfile.objects.filter(
             key='apiserver').first()
         if profilefromdb:
             profilefromdb.value = value
             profilefromdb.save()
-            return R.success(msg=_("Create success"))
+            return R.success(msg=_("Created success"))
         profilefromdb = IastProfile.objects.create(key='apiserver',value=value)
         profilefromdb.save()
-        return R.success(msg=_("Create success"))
+        return R.success(msg=_("Created success"))

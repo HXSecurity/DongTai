@@ -16,7 +16,7 @@ from iast.serializers.project import ProjectSerializer
 
 class ProjectSummary(UserEndPoint):
     name = "api-v1-project-summary-<id>"
-    description = _("View item details - summarization")
+    description = _("Item details - Summary")
 
     @staticmethod
     def weeks_ago(week=1):
@@ -64,7 +64,7 @@ class ProjectSummary(UserEndPoint):
         agent_ids = [relation['id'] for relation in relations]
         queryset = IastVulnerabilityModel.objects.filter(
             agent_id__in=agent_ids,
-            status=_('confirmed')
+            status=_('Confirmed')
         ).values("type", "level_id", "latest_time")
         typeArr = {}
         typeLevel = {}
