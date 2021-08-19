@@ -16,7 +16,7 @@ logger = logging.getLogger("django")
 
 class ProjectVersionAdd(UserEndPoint):
     name = "api-v1-project-version-add"
-    description = _("New project version information")
+    description = _("New application version information")
 
     def post(self, request):
         try:
@@ -24,7 +24,7 @@ class ProjectVersionAdd(UserEndPoint):
             if result.get("status", "202") == "202":
                 return R.failure(status=202, msg=_("Parameter error"))
             else:
-                return R.success(msg=_('Create success'), data=result.get("data", {}))
+                return R.success(msg=_('Created success'), data=result.get("data", {}))
 
         except Exception as e:
             return R.failure(status=202, msg=e)

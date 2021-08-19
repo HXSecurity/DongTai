@@ -24,4 +24,4 @@ class AgentDeploy(UserEndPoint):
         desc = IastDeployDesc.objects.filter(**filters).first()
         if desc:
             return R.success(data= model_to_dict(desc))
-        return R.failure(msg=_("Can't find a corresponding deployment document"))
+        return R.failure(msg=_("Corresponding deployment document could not be found"))

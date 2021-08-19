@@ -27,4 +27,4 @@ class AgentInstall(UserEndPoint):
             else:
                 return R.failure(msg=_('The engine is being installed or uninstalled, please try again later'))
         else:
-            return R.failure(msg=_('Engine does not exist or no right to operate'))
+            return R.failure(msg=_('Engine does not exist or no permission to access'))

@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 
 class LogDelete(UserEndPoint):
     name = 'api-v1-log-delete'
-    description = _('Log Delete')
+    description = _('Log delete')
 
     def post(self, request):
         ids = request.data.get('ids')
@@ -26,4 +26,4 @@ class LogDelete(UserEndPoint):
 
             return R.success(msg=_('success'))
         else:
-            return R.failure(status=203, msg=_('The data to be deleted cannot be empty'))
+            return R.failure(status=203, msg=_('The data to be deleted should not be empty'))

@@ -104,7 +104,7 @@ class VulDetail(UserEndPoint):
         try:
             _data = _data + (base64.b64decode(header.encode("utf-8")).decode("utf-8") if header else '')
         except Exception as e:
-            logger.error(_('Error analysis of Header, error: {}').format(e))
+            logger.error(_('Error analysis of Header, error message: {}').format(e))
         if data:
             _data = _data + "\n" + data
         return _data
@@ -135,7 +135,7 @@ class VulDetail(UserEndPoint):
         try:
             self.server = agent.server
         except Exception as e:
-            logger.error(_('[{}] Vulnerability information parsing error, reason: {}').format(__name__,e))
+            logger.error(_('[{}] Vulnerability information parsing error, error message: {}').format(__name__,e))
             self.server = {}
         self.vul_name = vul.type
         return {
@@ -147,7 +147,7 @@ class VulDetail(UserEndPoint):
             'taint_position': vul.taint_position,
             'first_time': vul.first_time,
             'latest_time': vul.latest_time,
-            'project_name': project['name'] if project else _('Not bind project'),
+            'project_name': project['name'] if project else _('The application has not been binded'),
             'project_version': project_version_name,
             'language': agent.language,
             'level': vul.level.name_value,
@@ -199,7 +199,7 @@ class VulDetail(UserEndPoint):
                 }
             )
         except Exception as e:
-            logger.error(_('[{}] Vulnerability information parsing error, reason: {}').format(__name__,e))
+            logger.error(_('[{}] Vulnerability information parsing error, error message: {}').format(__name__,e))
             return R.failure(msg=_('Vulnerability data query error'))
 
 

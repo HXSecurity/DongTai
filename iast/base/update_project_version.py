@@ -15,7 +15,7 @@ logger = logging.getLogger("django")
 
 class UpdateProjectVersion(UserEndPoint):
     name = "api-v1-project-version-check"
-    description = _("Detect and associate project version information")
+    description = _("Detects and associates application version information")
 
     def get(self, request):
         try:
@@ -40,6 +40,6 @@ class UpdateProjectVersion(UserEndPoint):
                     project_version_id=result.id,
                     latest_time=int(time.time())
                 )
-            return R.success(msg=_('Test'), data=data)
+            return R.success(msg=_('Detection finished'), data=data)
         except Exception as e:
-            return R.failure(status=202, msg=_('Detection failure'))
+            return R.failure(status=202, msg=_('Detection failed'))
