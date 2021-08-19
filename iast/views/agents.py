@@ -54,7 +54,7 @@ class AgentList(UserEndPoint):
             )
         except ValueError as e:
             logger.error(e)
-            return R.failure(msg=_('The parameter format is incorrect, please check.'))
+            return R.failure(msg=_('Incorrect format parameter, please check again'))
         except Exception as e:
             logger.error(e)
             return R.failure(msg=_('Program error'))

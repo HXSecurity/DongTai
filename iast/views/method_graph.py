@@ -43,13 +43,13 @@ class MethodGraph(AnonymousAndUserEndPoint):
                 return R.failure(msg=_('Stain call map type does not exist'))
 
             if method_pool is None:
-                return R.failure(msg=_('Data does not exist or have no right to access'))
+                return R.failure(msg=_('Data does not exist or no permission to access'))
 
             data, link_count, method_count = self.search_all_links(method_pool.method_pool)
             return R.success(data=data)
 
         except ValueError as e:
-            return R.failure(msg=_('Page and PageSize can only be numbers'))
+            return R.failure(msg=_('Page and PageSize can only be numeric'))
 
     def get_method_pool(self, user, method_pool_id):
         """

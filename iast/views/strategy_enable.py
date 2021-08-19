@@ -24,7 +24,7 @@ class StrategyEnableEndpoint(TalentAdminEndPoint):
 
             return R.success(msg=_('Policy enabled success, total {} hook rules').format(counts))
         else:
-            return R.failure(msg=_('No strategy does not exist'))
+            return R.failure(msg=_('Strategy does not exist'))
 
 
 if __name__ == '__main__':

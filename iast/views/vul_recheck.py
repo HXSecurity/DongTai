@@ -79,7 +79,7 @@ class VulReCheck(UserEndPoint):
         try:
             vul_ids = request.data.get('ids')
             if vul_ids is None or vul_ids == '':
-                return R.failure(_("IDS can't be empty"))
+                return R.failure(_("IDS should not be empty"))
 
             vul_ids = vul_ids.split(',')
             if Validate.is_number(vul_ids) is False:
@@ -113,9 +113,9 @@ class VulReCheck(UserEndPoint):
                     waiting_count, success_count, re_success_count = self.recheck(vul_queryset)
                     return True, waiting_count, re_success_count, success_count, None
                 else:
-                    return False, 0, 0, 0, _('The current project has not been associated with probes and cannot be reproduced.')
+                    return False, 0, 0, 0, _('Current application has not been associated with probes and cannot be reproduced.')
             else:
-                return False, 0, 0, 0, _('No right access')
+                return False, 0, 0, 0, _('No permission to access')
         except Exception as e:
             logger.error(f' msg:{e}')
             return False, 0, 0, 0, _('Batch playback error')
@@ -152,8 +152,8 @@ class VulReCheck(UserEndPoint):
                             "checking": checking
                         },
                         msg=_(msg))
-                return R.failure(msg=_("Item ID can't be empty"))
-            return R.failure(msg=_("The parameter format is incorrect"))
+                return R.failure(msg=_("Item ID should not be empty"))
+            return R.failure(msg=_("Incorrect format parameter"))
 
         except Exception as e:
             logger.error(f'user_id:{request.user.id} msg:{e}')

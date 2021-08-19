@@ -23,7 +23,7 @@ from django.utils.translation import gettext_lazy as _
 
 class ProjectReportExport(UserEndPoint):
     name = 'api-v1-word-maker'
-    description = _('Vulnerability Word Report Generation')
+    description = _('Vulnerability Report Generate - Word')
 
     @staticmethod
     def create_word():
@@ -118,7 +118,7 @@ class ProjectReportExport(UserEndPoint):
             pTime.paragraph_format.space_before = Pt(400)
             pTime.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
-            pReport = document.add_paragraph(_(u'Safety test report'))
+            pReport = document.add_paragraph(_(u'Security Testing Report'))
             pReport.paragraph_format.line_spacing = Pt(20)
             pReport.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
@@ -131,7 +131,7 @@ class ProjectReportExport(UserEndPoint):
 
             
             oneTitle = document.add_paragraph()
-            oneTitle.add_run(_(u'First, project basic information')).font.name = 'Arial'
+            oneTitle.add_run(_(u'First, project information')).font.name = 'Arial'
             oneTitle.style = "TitleOne"
             
             table = document.add_table(rows=1, cols=2, style='Table Grid')
@@ -139,19 +139,19 @@ class ProjectReportExport(UserEndPoint):
             hdr_cells = table.rows[0].cells
             
             new_cells = table.add_row().cells
-            new_cells[0].text = _('project name')
+            new_cells[0].text = _('Application name')
             new_cells[1].text = project.name
             new_cells = table.add_row().cells
-            new_cells[0].text = _('Creative personnel')
+            new_cells[0].text = _('Author')
             new_cells[1].text = user.username
             new_cells = table.add_row().cells
-            new_cells[0].text = _('project type')
+            new_cells[0].text = _('Application type')
             new_cells[1].text = project.mode
             new_cells = table.add_row().cells
-            new_cells[0].text = _('Vulnerability quantity')
+            new_cells[0].text = _('Number of Vulnerability')
             new_cells[1].text = str(project.vul_count)
             new_cells = table.add_row().cells
-            new_cells[0].text = _('Agent quantity')
+            new_cells[0].text = _('Number of Agent')
             new_cells[1].text = str(project.agent_count)
             new_cells = table.add_row().cells
             new_cells[0].text = _('Latest time')
@@ -180,7 +180,7 @@ class ProjectReportExport(UserEndPoint):
             oneTitle.style = "TitleOne"
 
             twoTitle = document.add_paragraph()
-            twoTitle.add_run(_(u'2.1 Vulnerability Level Distribution'))
+            twoTitle.add_run(_(u'2.1 Vulnerability Severity Levels Distribution'))
             twoTitle.style = "TitleTwo"
             levelCountArr = []
             if levelCount:
@@ -198,9 +198,9 @@ class ProjectReportExport(UserEndPoint):
             hdr_cells = table.rows[0].cells
             
             
-            hdr_cells[0].text = _('Vulnerability')
+            hdr_cells[0].text = _('Severity levels')
             hdr_cells[1].text = _('Vulnerability type name')
-            hdr_cells[2].text = _('quantity')
+            hdr_cells[2].text = _('Number')
             if type_summary:
                 for type_item in type_summary:
                     
@@ -236,19 +236,19 @@ class ProjectReportExport(UserEndPoint):
                             p.add_run("2.3." + str(type_ind) + "." + str(ind) + "  " + one['title']).bold = True
                             p.style = "TitleFour"
                             ind = ind + 1
-                            document.add_heading(_(u'Summary information'), level=4)
+                            document.add_heading(_(u'Summary'), level=4)
                             
                             table = document.add_table(rows=1, cols=2, style='Table Grid')
                             new_cells = table.add_row().cells
-                            new_cells[0].text = _("Hazard level")
+                            new_cells[0].text = _("Severity level")
                             new_cells[1].text = levelIdArr[one['level_id']]
 
                             new_cells = table.add_row().cells
-                            new_cells[0].text = _("First test time")
+                            new_cells[0].text = _("First scan time")
                             new_cells[1].text = one['first_time']
 
                             new_cells = table.add_row().cells
-                            new_cells[0].text = _("Recently test time")
+                            new_cells[0].text = _("Last scan time")
                             new_cells[1].text = one['latest_time']
 
                             new_cells = table.add_row().cells

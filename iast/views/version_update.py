@@ -46,7 +46,7 @@ class MethodPoolVersionUpdate(TalentAdminEndPoint):
                 break
         profile_model.value = 'FALSE'
         profile_model.save(update_fields=['value'])
-        return R.success(msg=_('update completed'))
+        return R.success(msg=_('Update completed'))
 
 
 def base64_decode(raw):

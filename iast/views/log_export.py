@@ -55,7 +55,7 @@ class ExportMixin(object):
             export_data = resources.export(queryset, False)
             return ExportMixin.attachment_response(getattr(export_data, 'xls'), filename='用户操作日志.xls')
         else:
-            return R.failure(status=202, msg=_('The export failed, the reason: the log id cannot be empty'))
+            return R.failure(status=202, msg=_('Export failed, error message: Log id should not be empty'))
 
 
 class LogExport(ExportMixin, GenericAPIView):

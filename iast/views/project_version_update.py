@@ -15,7 +15,7 @@ logger = logging.getLogger("django")
 
 class ProjectVersionUpdate(UserEndPoint):
     name = "api-v1-project-version-update"
-    description = _("Update project version information")
+    description = _("Update application version information")
 
     def post(self, request):
         try:
@@ -24,7 +24,7 @@ class ProjectVersionUpdate(UserEndPoint):
             if not version_id or result.get("status", "202") == "202":
                 return R.failure(status=202, msg=_("Parameter error"))
             else:
-                return R.success(msg=_('update completed'))
+                return R.success(msg=_('Update completed'))
 
         except Exception as e:
             return R.failure(status=202, msg=_('Program error'))

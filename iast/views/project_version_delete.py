@@ -14,7 +14,7 @@ logger = logging.getLogger("django")
 
 class ProjectVersionDelete(UserEndPoint):
     name = "api-v1-project-version-delete"
-    description = _("Delete project version information")
+    description = _("Delete application version information")
 
     def post(self, request):
         try:
@@ -27,7 +27,7 @@ class ProjectVersionDelete(UserEndPoint):
                 version.status = 0
                 version.update_time = int(time.time())
                 version.save(update_fields=['status'])
-                return R.success(msg=_('successfully deleted'))
+                return R.success(msg=_('Deleted Successfully'))
             else:
                 return R.failure(status=202, msg=_('Version does not exist'))
 

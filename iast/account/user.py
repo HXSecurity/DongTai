@@ -76,7 +76,7 @@ class UserEndPoint(TalentAdminEndPoint):
                 "total": page_summary['alltotal']
             })
         except ValueError as arg_invalid_error:
-            return R.failure(msg=_('Page and PageSize must be numbers'))
+            return R.failure(msg=_('The format of  ‘page’ and ‘pageSize’ only can be numberic'))
 
     def post(self, request, user_id):
         try:
@@ -110,7 +110,7 @@ class UserEndPoint(TalentAdminEndPoint):
 
                 return JsonResponse({
                     "status": 201,
-                    "msg": _("Data update success")
+                    "msg": _("Data update succeeded")
                 })
             else:
                 return JsonResponse({
@@ -150,12 +150,12 @@ class UserEndPoint(TalentAdminEndPoint):
             except:
                 return JsonResponse({
                     "status": 202,
-                    "msg": _("User {} delete failed").format(username)
+                    "msg": _("Failed to delete User {}").format(username)
                 })
 
         return JsonResponse({
             "status": 201,
-            "msg": _("User {} delete success").format(username)
+            "msg": _("User {} successfully deleted").format(username)
         })
 
     @transaction.atomic
@@ -223,12 +223,12 @@ class UserEndPoint(TalentAdminEndPoint):
 
                 return JsonResponse({
                     "status": 201,
-                    "msg": _("User {} creates success").format(username)
+                    "msg": _("User {} has been created successfully").format(username)
                 })
             else:
                 return JsonResponse({
                     "status": 203,
-                    "msg": _("Department does not exist or have no access")
+                    "msg": _("Department does not exist or no permission to access")
                 })
         except Exception as e:
             return JsonResponse({

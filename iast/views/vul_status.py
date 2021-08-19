@@ -25,5 +25,5 @@ class VulStatus(UserEndPoint):
             vul_model.save(update_fields=['status'])
             msg = _('Vulnerability status is modified to {}').format(status)
         else:
-            msg = _('The parameter is incorrect')
+            msg = _('Incorrect parameter')
         return R.success(msg=msg)
