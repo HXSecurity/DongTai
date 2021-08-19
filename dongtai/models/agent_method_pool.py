@@ -11,14 +11,16 @@ from dongtai.models.agent import IastAgent
 from dongtai.models.hook_strategy import HookStrategy
 from dongtai.utils.settings import get_managed
 
+
 class MethodPool(models.Model):
     agent = models.ForeignKey(IastAgent,
                               models.DO_NOTHING,
                               blank=True,
-                              null=True)
+                              null=True,
+                              db_constraint=False)
     url = models.CharField(max_length=2000, blank=True, null=True)
     uri = models.CharField(max_length=2000, blank=True, null=True)
-    http_method = models.CharField(max_length=10, blank=True, null=True)
+    http_method = models.CharField(max_length=10, blank=True, default='')
     http_scheme = models.CharField(max_length=20, blank=True, null=True)
     http_protocol = models.CharField(max_length=255, blank=True, null=True)
     req_header = models.CharField(max_length=2000, blank=True, null=True)
@@ -32,10 +34,17 @@ class MethodPool(models.Model):
     context_path = models.CharField(max_length=255, blank=True, null=True)
     method_pool = models.TextField(blank=True,
                                    null=True)  # This field type is a guess.
-    pool_sign = models.CharField(unique=True, max_length=40, blank=True, null=True)  # This field type is a guess.
+    pool_sign = models.CharField(unique=True,
+                                 max_length=40,
+                                 blank=True,
+                                 null=True)  # This field type is a guess.
     clent_ip = models.CharField(max_length=255, blank=True, null=True)
     create_time = models.IntegerField(blank=True, null=True)
     update_time = models.IntegerField(blank=True, null=True)
+    uri_sha1 = models.CharField(max_length=40,
+                                blank=True,
+                                default='',
+                                db_index=True)
     sinks = models.ManyToManyField(
         HookStrategy,
         verbose_name=_('sinks'),
@@ -47,3 +56,4 @@ class MethodPool(models.Model):
     class Meta:
         managed = get_managed()
         db_table = 'iast_agent_method_pool'
+        indexes = [models.Index(fields=['uri_sha1', 'http_method', 'agent'])]
