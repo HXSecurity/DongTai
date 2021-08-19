@@ -12,13 +12,13 @@ class LoginSerializer(serializers.Serializer):
         required=True,
         max_length=12,
         error_messages={
-            "username": _("Username can not be empty")
+            "username": _("Username should not be empty")
         }
     )
     password = serializers.CharField(
         required=True,
         max_length=6,
         error_messages={
-            "password": _("password can not be blank")
+            "password": _("Password should not be blank")
         }
     )

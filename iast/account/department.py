@@ -103,7 +103,7 @@ class DepartmentEndPoint(TalentAdminEndPoint):
 
                 return JsonResponse({
                     'status': 201,
-                    'msg': _('The department name has been modified to {}').format(name)
+                    'msg': _('Department name has been modified to {}').format(name)
                 })
         else:
             return JsonResponse({
@@ -144,13 +144,13 @@ class DepartmentEndPoint(TalentAdminEndPoint):
                     talent.departments.add(department)
                     return JsonResponse({
                         'status': 201,
-                        'msg': _('Department {} creation success').format(name),
+                        'msg': _('Department {} has been created successfully').format(name),
                         'data': department.id
                     })
                 else:
                     return JsonResponse({
                         'status': 203,
-                        'msg': _('Father no access')
+                        'msg': _('Access Denied')
                     })
         else:
             return JsonResponse({
@@ -177,5 +177,5 @@ class DepartmentEndPoint(TalentAdminEndPoint):
             department.delete()
         return JsonResponse({
             'status': 201,
-            'msg': _('successfully deleted')
+            'msg': _('Deleted Successfully')
         })

@@ -51,7 +51,7 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
                 latest=method_pool_ids[-1]
             )
         except Exception as e:
-            return R.failure(msg=_("Acquisition failure"))
+            return R.failure(msg=_("Acquisition fail"))
 
     @staticmethod
     def parse_search_condition(request):
@@ -90,7 +90,7 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
         
         matches = list()
         while True:
-            logger.debug(_('Search, current {} page').format(index+1))
+            logger.debug(_('Searching, current {} page').format(index+1))
             page = queryset.values('id', 'method_pool')[index * size:(index + 1) * size - 1]
             if page:
                 if len(matches) == page_size:

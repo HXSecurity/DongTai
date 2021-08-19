@@ -16,7 +16,7 @@ logger = logging.getLogger("dongtai-webapi")
 
 class UserPasswordReset(TalentAdminEndPoint):
     name = "api-v1-user-password-reset"
-    description = _("reset Password")
+    description = _("Reset Password")
 
     def post(self, request):
         try:
@@ -35,10 +35,10 @@ class UserPasswordReset(TalentAdminEndPoint):
                     return R.failure(msg=msg)
             else:
                 msg = _('UserID is empty')
-                logger.error(_('User ID is empty'))
+                logger.error(_('UserID is empty'))
                 return R.failure(msg=msg)
         except ValueError as e:
-            msg = _('UserID must be a number')
+            msg = _('UserID must be a numeric')
             logger.error(msg)
         except Exception as e:
             msg = _('Password reset failed, reasons: {E}').format(e)

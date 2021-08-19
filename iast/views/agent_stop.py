@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 
 class AgentStop(UserEndPoint):
     name = "api-v1-agent-stop"
-    description = _("Pause Agent")
+    description = _("Suspend Agent")
 
     def post(self, request):
         agent_id = request.data.get('id', None)
@@ -22,9 +22,9 @@ class AgentStop(UserEndPoint):
             agent = IastAgent.objects.filter(user=request.user,
                                              id=agent_id).first()
             if agent is None:
-                return R.failure(msg=_('Engine does not exist or no right to operate'))
+                return R.failure(msg=_('Engine does not exist or no permission to access'))
             if agent.is_control == 1 and agent.control != 3 and agent.control != 4:
-                return R.failure(msg=_('Agent is ongoing non-start stop operation, please try again later'))
+                return R.failure(msg=_('Agent is stopping service, please try again later'))
             agent.control = 4
             agent.is_control = 1
             agent.latest_time = int(time.time())
@@ -43,4 +43,4 @@ class AgentStop(UserEndPoint):
                 agent.save(
                     update_fields=['latest_time', 'control', 'is_control'])
 
-        return R.success(msg=_('Suspension ...'))
+        return R.success(msg=_('Suspending ...'))
