@@ -15,7 +15,7 @@ from django.utils.translation import gettext_lazy as _
 
 class AgentDeploySave(UserEndPoint):
     name = "api-v1-iast-deploy-submit"
-    description = _("Upload Agent configuration")
+    description = _("Uploading Agent configuration")
 
     def get(self, request):
         end = {

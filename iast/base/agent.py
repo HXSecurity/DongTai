@@ -124,7 +124,7 @@ def get_vul_count_by_agent(agent_ids, vid, user):
             one['language'] = language if language is not None else ''
             if one['type'] not in vulDetail.keys():
                 vulDetail[one['type']] = []
-            detailStr1 = _("We found that there is {1} in the {0} page, and the attacker can change the value of {2} to attack:").format(
+            detailStr1 = _("We found that there is {1} in the {0} page, attacker can modify the value of {2} to attack:").format(
                 one['uri'], one['type'], one['taint_position'])
 
             try:

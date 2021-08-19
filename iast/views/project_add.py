@@ -22,7 +22,7 @@ logger = logging.getLogger("django")
 
 class ProjectAdd(UserEndPoint):
     name = "api-v1-project-add"
-    description = _("New project")
+    description = _("New application")
 
     def post(self, request):
         try:
@@ -55,7 +55,7 @@ class ProjectAdd(UserEndPoint):
                 if not project:
                     project = IastProject.objects.create(name=name, user=request.user)
                 else:
-                    return R.failure(status=203, msg=_('Creation failed, the project name already exists'))
+                    return R.failure(status=203, msg=_('Failed to create, the application name already exists'))
             versionInfo = IastProjectVersion.objects.filter(project_id=project.id, user=request.user, current_version=1, status=1).first()
             if versionInfo:
                 project_version_id = versionInfo.id
@@ -81,7 +81,7 @@ class ProjectAdd(UserEndPoint):
                     bind_project_id__gt=0,
                     user__in=auth_users).exists()
                 if haveBind:
-                    return R.failure(status=202, msg=_('Agent has been bound by other projects'))
+                    return R.failure(status=202, msg=_('Agent has been bound by other application'))
 
             project.scan = scan
             project.mode = mode
@@ -108,7 +108,7 @@ class ProjectAdd(UserEndPoint):
                         project_version_id=project_version_id)
             project.save(update_fields=['scan_id', 'mode', 'agent_count', 'user_id', 'latest_time'])
 
-            return R.success(msg=_('Create success'))
+            return R.success(msg=_('Created success'))
         except Exception as e:
             print(e)
             return R.failure(status=202, msg=e)

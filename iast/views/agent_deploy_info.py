@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 
 class AgentDeployInfo(UserEndPoint):
     name = "api-v1-iast-deploy-info"
-    description = _("Agent deployment documentation")
+    description = _("Agent deployment document")
 
     def get(self, request):
         condition = {

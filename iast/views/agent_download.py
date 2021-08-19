@@ -19,7 +19,7 @@ logger = logging.getLogger('dongtai-webapi')
 
 class AgentDownload(UserEndPoint):
     name = "download_iast_agent"
-    description = _("Download DongTai Agent")
+    description = _("Downloading DongTai Agent")
 
     def __init__(self):
         super().__init__()

@@ -13,7 +13,7 @@ from django.utils.translation import gettext_lazy as _
 
 class AgentUpgradeOnline(TalentAdminEndPoint):
     name = "api-v1-agent-install"
-    description = _("Upgrade Agent")
+    description = _("Online Upgrade Agent")
 
     def post(self, request):
         url = request.data['url']
@@ -21,9 +21,9 @@ class AgentUpgradeOnline(TalentAdminEndPoint):
         try:
             self.download(url, token)
             User.objects.filter(id=request.user.id).update(upgrade_url=url)
-            return R.success(msg=_('Online upgrade success'))
+            return R.success(msg=_('Online upgrade successful'))
         except Exception as e:
-            return R.failure(msg=_('Token verification failed, confirm that the input address and token are correct'))
+            return R.failure(msg=_('Token verification failed, please confirm your input address and token are correct'))
 
     def token_verify(self, url, token):
         req_url = urljoin(url, 'token/verify')

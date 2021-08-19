@@ -23,7 +23,7 @@ class StrategyDisableEndpoint(TalentAdminEndPoint):
 
             return R.success(msg=_('Strategy is disabled, total {} hook rules').format(counts))
         else:
-            return R.failure(status=202, msg=_('No strategy does not exist'))
+            return R.failure(status=202, msg=_('Strategy does not exist'))
 
 
 if __name__ == '__main__':
