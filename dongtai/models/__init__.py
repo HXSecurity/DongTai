@@ -6,3 +6,4 @@
 # project: dongtai-models
 
 from .user import User
+from . import api_route

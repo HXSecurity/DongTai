@@ -20,7 +20,7 @@ class MethodPool(models.Model):
                               db_constraint=False)
     url = models.CharField(max_length=2000, blank=True, null=True)
     uri = models.CharField(max_length=2000, blank=True, null=True)
-    http_method = models.CharField(max_length=10, blank=True, dafault='')
+    http_method = models.CharField(max_length=10, blank=True, default='')
     http_scheme = models.CharField(max_length=20, blank=True, null=True)
     http_protocol = models.CharField(max_length=255, blank=True, null=True)
     req_header = models.CharField(max_length=2000, blank=True, null=True)
@@ -41,7 +41,10 @@ class MethodPool(models.Model):
     clent_ip = models.CharField(max_length=255, blank=True, null=True)
     create_time = models.IntegerField(blank=True, null=True)
     update_time = models.IntegerField(blank=True, null=True)
-    uri_sha1 = models.CharField(max_length=40, blank=True, db_index=True)
+    uri_sha1 = models.CharField(max_length=40,
+                                blank=True,
+                                default='',
+                                db_index=True)
     sinks = models.ManyToManyField(
         HookStrategy,
         verbose_name=_('sinks'),

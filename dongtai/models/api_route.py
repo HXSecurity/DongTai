@@ -19,6 +19,16 @@ class HttpMethod(models.Model):
         db_table = 'iast_http_method'
 
 
+class IastApiMethod(models.Model):
+    method = models.CharField(max_length=100, blank=True)
+    http_method = models.ManyToManyField(
+        HttpMethod, blank=True, through='IastApiMethodHttpMethodRelation')
+
+    class Meta:
+        managed = get_managed()
+        db_table = 'iast_api_methods'
+
+
 class IastApiMethodHttpMethodRelation(models.Model):
     api_method = models.ForeignKey(IastApiMethod,
                                    on_delete=models.CASCADE,
@@ -35,29 +45,20 @@ class IastApiMethodHttpMethodRelation(models.Model):
         unique_together = ['api_method_id', 'http_method_id']
 
 
-class IastApiMethod(models.Model):
-    method = models.CharField(max_length=100, blank=True)
-    http_method = models.ManyToManyField(
-        HttpMethod,
-        blank=True,
-        through=IastApiMethodHttpMethodRelation,
-        db_constraint=False)
-
-    class Meta:
-        managed = get_managed()
-        db_table = 'iast_api_methods'
-
-
 class IastApiRoute(models.Model):
     path = models.CharField(max_length=255, blank=True)
-    class_ = models.CharField(max_length=255, blank=True, db_column='class')
+    code_class = models.CharField(max_length=255,
+                                  blank=True,
+                                  db_column='code_class')
     description = models.CharField(max_length=500, blank=True)
     method = models.ForeignKey(IastApiMethod,
                                on_delete=models.DO_NOTHING,
                                db_constraint=False,
                                db_index=True,
                                db_column='method_id')
-    file_ = models.CharField(max_length=500, blank=True, db_column='file')
+    code_file = models.CharField(max_length=500,
+                                 blank=True,
+                                 db_column='code_file')
     controller = models.CharField(max_length=100, blank=True)
     agent = models.ForeignKey(IastAgent,
                               on_delete=models.DO_NOTHING,
@@ -73,7 +74,9 @@ class IastApiRoute(models.Model):
 
 class IastApiParameter(models.Model):
     name = models.CharField(max_length=100, blank=True)
-    type_ = models.CharField(max_length=100, blank=True, db_column='type')
+    parameter_type = models.CharField(max_length=100,
+                                      blank=True,
+                                      db_column='type')
     annotation = models.CharField(max_length=500, blank=True)
     route = models.ForeignKey(IastApiRoute,
                               on_delete=models.CASCADE,
