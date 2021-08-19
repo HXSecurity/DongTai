@@ -37,8 +37,19 @@ jobs:
           key-secret: ${{ secrets.OSS_KEY_SECRET }}
           region: oss-cn-beijing
           bucket: huoqi-public
-          asset-path: ./dist/dongtai-1.0.2.tar.gz
-          target-path: /iast/dongtai-test-1.0.2.tar.gz
+          asset-path: ./dist/dongtai-1.0.3.tar.gz
+          target-path: /iast/dongtai-test-1.0.3.tar.gz
+
+      - name: Upload to oss
+        id: upload_to_oss
+        uses: tvrcgo/upload-to-oss@master
+        with:
+          key-id: ${{ secrets.OSS_KEY_ID }}
+          key-secret: ${{ secrets.OSS_KEY_SECRET }}
+          region: oss-cn-beijing
+          bucket: huoqi-public
+          asset-path: ./dist/dongtai-1.0.3.tar.gz
+          target-path: /iast/dongtai-test-latest.tar.gz
 
       - name: finish build
         uses: joelwmale/webhook-action@master
