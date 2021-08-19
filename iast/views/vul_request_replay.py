@@ -12,10 +12,11 @@ from dongtai.models.agent_method_pool import MethodPool
 from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai.models.replay_queue import IastReplayQueue
 from dongtai.utils import const
-
+from dongtai.models.agent import IastAgent
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from django.utils.translation import gettext_lazy as _
+from collections import namedtuple
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -54,12 +55,19 @@ class RequestReplayEndPoint(UserEndPoint):
         try:
             replay_request = HttpRequest(raw_request=raw_request)
             requests = {
-                'method': replay_request.command,
-                'uri': replay_request.uri,
-                'params': replay_request.params,
-                'scheme': replay_request.request_version,
-                'header': base64.b64encode(replay_request.headers.as_string().strip().encode()).decode(),
-                'body': replay_request.body,
+                'method':
+                replay_request.command,
+                'uri':
+                replay_request.uri,
+                'params':
+                replay_request.params,
+                'scheme':
+                replay_request.request_version,
+                'header':
+                base64.b64encode(replay_request.headers.as_string().strip().
+                                 encode()).decode(),
+                'body':
+                replay_request.body,
             }
 
             return False, requests
@@ -80,7 +88,16 @@ class RequestReplayEndPoint(UserEndPoint):
             return True, None
 
         auth_agents = RequestReplayEndPoint.get_auth_agents_with_user(user)
-        method_pool_model = MethodPool.objects.filter(id=method_pool_id, agent__in=auth_agents).first()
+        if method_pool_id == -1:
+            method_pool_model = namedtuple('MethodPool', ['id', 'agent'])
+            agent = namedtuple('MethodPool', ['id', 'is_running'])
+            agent.id = 0
+            agent.is_running = 0
+            method_pool_model.agent = agent
+            method_pool_model.id = -1
+        else:
+            method_pool_model = MethodPool.objects.filter(
+                id=method_pool_id, agent__in=auth_agents).first()
         if method_pool_model:
             return False, method_pool_model
         else:
@@ -92,7 +109,8 @@ class RequestReplayEndPoint(UserEndPoint):
         :param agent: 
         :return: True  ；False 
         """
-        return agent.is_running == 0 or agent.is_core_running == 0
+        return (not agent) and (agent.is_running == 0
+                                or agent.is_core_running == 0)
 
     @staticmethod
     def send_request_to_replay_queue(relation_id, agent_id, replay_request):
@@ -103,11 +121,11 @@ class RequestReplayEndPoint(UserEndPoint):
         """
         timestamp = int(time.time())
         replay_queue = IastReplayQueue.objects.filter(
-            replay_type=const.REQUEST_REPLAY,
-            relation_id=relation_id
-        ).first()
+            replay_type=const.REQUEST_REPLAY, relation_id=relation_id).first()
         if replay_queue:
-            if replay_queue.state not in [const.WAITING, ]:
+            if replay_queue.state not in [
+                    const.WAITING,
+            ]:
                 replay_queue.state = const.WAITING
                 replay_queue.uri = replay_request['uri']
                 replay_queue.method = replay_request['method']
@@ -117,13 +135,13 @@ class RequestReplayEndPoint(UserEndPoint):
                 replay_queue.body = replay_request['body']
                 replay_queue.update_time = timestamp
                 replay_queue.agent_id = agent_id
-                replay_queue.save(
-                    update_fields=['uri', 'method', 'scheme', 'header', 'params', 'body', 'update_time', 'agent_id',
-                                   'state', 'agent_id'])
+                replay_queue.save(update_fields=[
+                    'uri', 'method', 'scheme', 'header', 'params', 'body',
+                    'update_time', 'agent_id', 'state', 'agent_id'
+                ])
                 IastAgentMethodPoolReplay.objects.filter(
                     replay_id=replay_queue.id,
-                    replay_type=const.REQUEST_REPLAY
-                ).delete()
+                    replay_type=const.REQUEST_REPLAY).delete()
         else:
             replay_queue = IastReplayQueue.objects.create(
                 relation_id=relation_id,
@@ -153,25 +171,41 @@ class RequestReplayEndPoint(UserEndPoint):
         try:
             method_pool_id = request.data.get('methodPoolId')
             replay_request = request.data.get('replayRequest')
+            agent_id = request.data.get('agent_id', None)
 
-            check_failure, method_pool_model = self.check_method_pool(method_pool_id, request.user)
+            check_failure, method_pool_model = self.check_method_pool(
+                method_pool_id, request.user)
             if check_failure:
-                return R.failure(msg=_('Stain pool data does not exist or no right to operate'))
+                return R.failure(msg=_(
+                    'Stain pool data does not exist or no right to operate'))
 
-            check_failure = self.check_agent_active(method_pool_model.agent)
-            if check_failure:
-                return R.failure(msg=_('The probe has been destroyed or suspended, please check the probe status'))
+            if agent_id:
+                agent = IastAgent.objects.filter(pk=agent_id).first()
+                check_failure = self.check_agent_active(agent)
+            else:
+                check_failure = self.check_agent_active(
+                    method_pool_model.agent)
+                if check_failure:
+                    return R.failure(msg=_(
+                        'The probe has been destroyed or suspended, please check the probe status'
+                    ))
 
-            check_failure, checked_request = self.check_replay_request(raw_request=replay_request)
+            check_failure, checked_request = self.check_replay_request(
+                raw_request=replay_request)
             if check_failure:
                 return R.failure(msg=_('Replay request is not legal'))
-
-            replay_id = self.send_request_to_replay_queue(
-                relation_id=method_pool_model.id,
-                agent_id=method_pool_model.agent.id,
-                replay_request=checked_request
-            )
-            return R.success(msg=_('Request to return success'), data={'replayId': replay_id})
+            if agent_id:
+                replay_id = self.send_request_to_replay_queue(
+                    relation_id=method_pool_model.id,
+                    agent_id=agent_id,
+                    replay_request=checked_request)
+            else:
+                replay_id = self.send_request_to_replay_queue(
+                    relation_id=method_pool_model.id,
+                    agent_id=method_pool_model.agent.id,
+                    replay_request=checked_request)
+            return R.success(msg=_('Request to return success'),
+                             data={'replayId': replay_id})
 
         except Exception as e:
             logger.error(f'user_id:{request.user.id} msg:{e}')
@@ -179,7 +213,8 @@ class RequestReplayEndPoint(UserEndPoint):
 
     @staticmethod
     def check_replay_data_permission(replay_id, auth_agents):
-        return IastReplayQueue.objects.values('id').filter(id=replay_id, agent__in=auth_agents).exists()
+        return IastReplayQueue.objects.values('id').filter(
+            id=replay_id, agent__in=auth_agents).exists()
 
     @staticmethod
     def parse_response(header, body):
@@ -187,23 +222,30 @@ class RequestReplayEndPoint(UserEndPoint):
             _data = base64.b64decode(header.encode("utf-8")).decode("utf-8")
         except Exception as e:
             _data = ''
-            logger.error(_('Response header analysis error, error reason: {}'.format(e)))
+            logger.error(
+                _('Response header analysis error, error reason: {}'.format(
+                    e)))
         return '{header}\n\n{body}'.format(header=_data, body=body)
 
     def get(self, request):
         replay_id = request.query_params.get('replayId')
         auth_agents = self.get_auth_agents_with_user(request.user)
 
-        replay_data = IastReplayQueue.objects.filter(id=replay_id, agent__in=auth_agents).values('state').first()
+        replay_data = IastReplayQueue.objects.filter(
+            id=replay_id, agent__in=auth_agents).values('state').first()
         if not replay_data:
-            return R.failure(status=203,msg=_('Replay request does not exist or no operational permissions'))
+            return R.failure(
+                status=203,
+                msg=
+                _('Replay request does not exist or no operational permissions'
+                  ))
         if replay_data['state'] != const.SOLVED:
             return R.failure(msg=_('Replay request processing'))
 
         replay_data = IastAgentMethodPoolReplay.objects.filter(replay_id=replay_id,
                                                                replay_type=const.REQUEST_REPLAY).values(
             'res_header', 'res_body', 'method_pool').first()
-        
+
         if replay_data:
             return R.success(data={
                 'response': self.parse_response(replay_data['res_header'], replay_data['res_body']),
