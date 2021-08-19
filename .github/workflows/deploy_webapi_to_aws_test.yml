@@ -34,7 +34,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          wget https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/dongtai-test-0.1.0.tar.gz -O /tmp/dongtai-test-0.1.0.tar.gz
           python -m pip install --upgrade pip
           pip install -r requirements-test.txt
           pip install /tmp/dongtai-test-0.1.0.tar.gz
@@ -76,7 +75,7 @@ jobs:
           context: .
           file: DockerfileTest
           push: true
-          tags: "registry.cn-beijing.aliyuncs.com/secnium/iast-saas-webapi-test:0.1.0,registry.cn-beijing.aliyuncs.com/secnium/iast-saas-webapi-test:0.1.${{github.run_number}},"
+          tags: "registry.cn-beijing.aliyuncs.com/secnium/iast-saas-webapi-test:latest,registry.cn-beijing.aliyuncs.com/secnium/iast-saas-webapi-test:0.1.${{github.run_number}},"
 
       - uses: actions/checkout@master
       - name: deploy to cluster
