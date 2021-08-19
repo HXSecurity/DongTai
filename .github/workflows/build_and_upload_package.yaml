@@ -41,7 +41,7 @@ jobs:
           target-path: /iast/dongtai-test-1.0.3.tar.gz
 
       - name: Upload to oss latest
-        id: upload_to_oss
+        id: upload_to_oss_latest
         uses: tvrcgo/upload-to-oss@master
         with:
           key-id: ${{ secrets.OSS_KEY_ID }}
