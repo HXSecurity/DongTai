@@ -72,7 +72,7 @@ class RequestReplayEndPoint(UserEndPoint):
 
             return False, requests
         except Exception as e:
-            logger.error(_('HTTP request parsing error, reason: {}').format(e))
+            logger.error(_('HTTP request parsing error, error message: {}').format(e))
             return True, None
 
     @staticmethod
@@ -177,7 +177,7 @@ class RequestReplayEndPoint(UserEndPoint):
                 method_pool_id, request.user)
             if check_failure:
                 return R.failure(msg=_(
-                    'Stain pool data does not exist or no right to operate'))
+                   'Stain pool data does not exist or no permission to access'))
 
             if agent_id:
                 agent = IastAgent.objects.filter(pk=agent_id).first()
@@ -193,7 +193,7 @@ class RequestReplayEndPoint(UserEndPoint):
             check_failure, checked_request = self.check_replay_request(
                 raw_request=replay_request)
             if check_failure:
-                return R.failure(msg=_('Replay request is not legal'))
+                return R.failure(msg=_('Replay request is illegal'))
             if agent_id:
                 replay_id = self.send_request_to_replay_queue(
                     relation_id=method_pool_model.id,
@@ -204,7 +204,7 @@ class RequestReplayEndPoint(UserEndPoint):
                     relation_id=method_pool_model.id,
                     agent_id=method_pool_model.agent.id,
                     replay_request=checked_request)
-            return R.success(msg=_('Request to return success'),
+            return R.success(msg=_('Relay request success'),
                              data={'replayId': replay_id})
 
         except Exception as e:
@@ -223,7 +223,7 @@ class RequestReplayEndPoint(UserEndPoint):
         except Exception as e:
             _data = ''
             logger.error(
-                _('Response header analysis error, error reason: {}'.format(
+                _('Response header analysis error, error message: {}'.format(
                     e)))
         return '{header}\n\n{body}'.format(header=_data, body=body)
 
@@ -236,19 +236,23 @@ class RequestReplayEndPoint(UserEndPoint):
         if not replay_data:
             return R.failure(
                 status=203,
-                msg=
-                _('Replay request does not exist or no operational permissions'
-                  ))
+                msg=_(
+                    'Replay request does not exist or no permission to access')
+            )
         if replay_data['state'] != const.SOLVED:
             return R.failure(msg=_('Replay request processing'))
 
-        replay_data = IastAgentMethodPoolReplay.objects.filter(replay_id=replay_id,
-                                                               replay_type=const.REQUEST_REPLAY).values(
-            'res_header', 'res_body', 'method_pool').first()
+        replay_data = IastAgentMethodPoolReplay.objects.filter(
+            replay_id=replay_id,
+            replay_type=const.REQUEST_REPLAY).values('res_header', 'res_body',
+                                                     'method_pool').first()
 
         if replay_data:
-            return R.success(data={
-                'response': self.parse_response(replay_data['res_header'], replay_data['res_body']),
-            })
+            return R.success(
+                data={
+                    'response':
+                    self.parse_response(replay_data['res_header'],
+                                        replay_data['res_body']),
+                })
         else:
-            return R.failure(status=203, msg=_('Replay failure'))
+            return R.failure(status=203, msg=_('Replay failed'))

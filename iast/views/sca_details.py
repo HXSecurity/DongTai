@@ -29,7 +29,7 @@ class ScaDetailView(UserEndPoint):
             asset = Asset.objects.filter(agent__in=agents, id=id).first()
 
             if asset is None:
-                return R.failure(msg=_('Components do not exist or have no right to access'))
+                return R.failure(msg=_('Components do not exist or no permission to access'))
             data = ScaSerializer(asset).data
             data['vuls'] = list()
             
@@ -44,7 +44,7 @@ class ScaDetailView(UserEndPoint):
 
                 svd = svds[0]
                 data['vuls'].append({
-                    'safe_version': sma['safe_version'] if sma['safe_version'] else _('The current version has stopped maintenance or no secure version'),
+                    'safe_version': sma['safe_version'] if sma['safe_version'] else _('Current version stopped for maintenance or it is not a secure version'),
                     'vulcve': svd['cve_id'],
                     'vulcwe': svd['cwe_id'],
                     'vulname': svd['title'],

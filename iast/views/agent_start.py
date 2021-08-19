@@ -22,9 +22,9 @@ class AgentStart(UserEndPoint):
         if agent_id:
             agent = IastAgent.objects.filter(user=request.user, id=agent_id).first()
             if agent is None:
-                return R.failure(msg=_('Engine does not exist or no right to operate'))
+                return R.failure(msg=_('Engine does not exist or no permission to access'))
             if agent.is_control == 1 and agent.control != 3 and agent.control != 4:
-                return R.failure(msg=_('Agent is ongoing non-start stop operation, please try again later'))
+                return R.failure(msg=_('Agent is stopping service, please try again later'))
             agent.control = 3
             agent.is_control = 1
             agent.latest_time = int(time.time())
@@ -40,4 +40,4 @@ class AgentStart(UserEndPoint):
                 agent.is_control = 1
                 agent.latest_time = int(time.time())
                 agent.save(update_fields=['latest_time', 'control', 'is_control'])
-        return R.success(msg=_('turning on...'))
+        return R.success(msg=_('Starting…'))

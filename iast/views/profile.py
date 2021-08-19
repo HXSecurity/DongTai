@@ -10,7 +10,7 @@ class ProfileEndpoint(UserEndPoint):
         profile = IastProfile.objects.filter(key=key).values_list(
             'value', flat=True).first()
         if profile is None:
-            return R.failure(msg=_("Get {} configuration failed").format(key))
+            return R.failure(msg=_("Failed to get {} configuration").format(key))
         return R.success(data={key: profile})
 
     def put(self, request, key):

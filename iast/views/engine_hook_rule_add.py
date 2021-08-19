@@ -55,7 +55,7 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
     def post(self, request):
         rule_type, rule_value, rule_source, rule_target, inherit, is_track = self.parse_args(request)
         if all((rule_type, rule_value, rule_source, inherit, is_track)) is False:
-            return R.failure(msg=_('The parameter is incomplete, please check'))
+            return R.failure(msg=_('Incomplete parameter, please check again'))
 
         strategy = self.create_strategy(rule_value, rule_source, rule_target, inherit, is_track, request.user.id)
         if strategy:
@@ -65,5 +65,5 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             ).first()
             if hook_type:
                 hook_type.strategies.add(strategy)
-                return R.success(msg=_('Strategy creation success'))
-        return R.failure(msg=_('Strategy creation failed'))
+                return R.success(msg=_('Strategy has been created successfully'))
+        return R.failure(msg=_('Failed to create strategy'))

@@ -13,7 +13,7 @@ from django.utils.translation import gettext_lazy as _
 
 class ProjectDel(UserEndPoint):
     name = "api-v1-project-del"
-    description = _("Delete project")
+    description = _("Delete application")
 
     def post(self, request):
         try:
@@ -23,6 +23,6 @@ class ProjectDel(UserEndPoint):
                 IastAgent.objects.filter(bind_project_id=project_id, user__in=auth_users).update(bind_project_id=0)
                 IastProject.objects.filter(id=project_id, user__in=auth_users).delete()
 
-            return R.success(msg=_('Project deletion success'))
+            return R.success(msg=_('Application has been deleted successfully'))
         except Exception as e:
             return R.failure(msg=e)

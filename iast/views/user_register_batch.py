@@ -38,7 +38,7 @@ class UserRegisterEndPoint(SystemAdminEndPoint):
     def get(self, request):
         users = self.read_user_data()
         self.register(users)
-        return R.success(msg=_('Account creation success'))
+        return R.success(msg=_('Account has been created successfully'))
 
     def post(self, request, token):
         """
@@ -67,10 +67,10 @@ class UserRegisterEndPoint(SystemAdminEndPoint):
                 logger.info(_('User {} already exists').format(username))
             else:
                 self.register_with_raw(username=username, phone=phone, email_addr=email_addr, email=self.email)
-                logger.info(_('User {} creates success').format(username))
+                logger.info(_('User {} has been created successfully').format(username))
         else:
-            logger.warn(_('User creation failed because: token is incorrect'))
-        return R.success(msg=_('Account registration success'))
+            logger.warn(_('Failed to create user, error message: token is incorrect'))
+        return R.success(msg=_('Account registration successful'))
 
     def read_user_data(self):
         header = True

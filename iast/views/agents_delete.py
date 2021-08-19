@@ -54,66 +54,66 @@ class AgentsDeleteEndPoint(UserEndPoint):
         success = list(filter(lambda x: x is True, result))
         failure = list(filter(lambda x: x is False, result))
         if len(success) == len(agent_ids):
-            return R.success(msg=_('successfully deleted'))
+            return R.success(msg=_('Deleted Successfully'))
         if len(failure) == len(agent_ids):
-            return R.success(msg=_('failed to delete'))
-        return R.success(msg=_('Successfully deleted {} strips, delete failed {}').format(len(success), len(failure)))
+            return R.success(msg=_('Deletion failed'))
+        return R.success(msg=_('Successfully deleted {} strips, failed to deleted {} strips').format(len(success), len(failure)))
 
     def delete_error_log(self):
         try:
             deleted, _rows_count = IastErrorlog.objects.filter(agent=self.agent).delete()
-            logger.error(_('Error log deletion success, copied: {}').format(deleted))
+            logger.error(_('Error logs deleted successfully, Deletion Amount: {}').format(deleted))
         except Exception as e:
-            logger.error(_('Error log deletion failed, probe ID: {}, reason: {}').format(self.agent.id,e))
+            logger.error(_('Failed to delete error logs, probe ID: {}, error message: {}').format(self.agent.id,e))
 
     def delete_heart_beat(self):
         try:
             deleted, _rows_count = IastHeartbeat.objects.filter(agent=self.agent).delete()
-            logger.error(_('Replay request method pool data delete success, copied: {}').format(deleted))
+            logger.error(_('The replay request method pool data was successfully deleted, A total of {} replay requests are deleted').format(deleted))
         except Exception as e:
-            logger.error(_('Heartbeat data deletion failed, reasons: {}').format(e))
+            logger.error(_('Failed to delete heartbeat data, error message: {}').format(e))
 
     def delete_vul_overpower(self):
         try:
             deleted, _rows_count = IastOverpowerUserAuth.objects.filter(agent=self.agent).delete()
-            logger.error(_('Replay request method pool data delete success, copied: {}').format(deleted))
+            logger.error(_('The replay request method pool data was successfully deleted, A total of {} replay requests are deleted').format(deleted))
         except Exception as e:
-            logger.error(_('Bypass Related Data Deletion Failure, Reason: {}').format(e))
+            logger.error(_('Failed to delete unauthorized data, error message: {}').format(e))
 
     def delete_vul(self):
         try:
             deleted, _rows_count = IastVulnerabilityModel.objects.filter(agent=self.agent).delete()
-            logger.error(_('Replay request method pool data delete success, copied: {}').format(deleted))
+            logger.error(_('The replay request method pool data was successfully deleted, A total of {} replay requests are deleted').format(deleted))
         except Exception as e:
-            logger.error(_('Vulnerability data deletion failed, reason: {}').format(e))
+            logger.error(_('Failed to delete vulnerability data, error message: {}').format(e))
 
     def delete_sca(self):
         try:
             deleted, _rows_count = Asset.objects.filter(agent=self.agent).delete()
-            logger.error(_('Replay request method pool data delete success, copied: {}').format(deleted))
+            logger.error(_('The replay request method pool data was successfully deleted, A total of {} replay requests are deleted').format(deleted))
         except Exception as e:
-            logger.error(_('Third-party component data deletion failed, reasons: {}').format(e))
+            logger.error(_('Failed to delete third-party component data, error message: {}').format(e))
 
     def delete_method_pool(self):
         try:
             deleted, _rows_count = MethodPool.objects.filter(agent=self.agent).delete()
-            logger.error(_('Replay request method pool data delete success, copied: {}').format(deleted))
+            logger.error(_('The replay request method pool data was successfully deleted, A total of {} replay requests are deleted').format(deleted))
         except Exception as e:
-            logger.error(_('Method pool data deletion failed, reasons: {}').format(e))
+            logger.error(_('Failed to delete method pool data, error message: {}').format(e))
 
     def delete_method_pool_replay(self):
         try:
             deleted, _rows_count = IastAgentMethodPoolReplay.objects.filter(agent=self.agent).delete()
-            logger.error(_('Replay request method pool data delete success, copied: {}').format(deleted))
+            logger.error(_('The replay request method pool data was successfully deleted, A total of {} replay requests are deleted').format(deleted))
         except Exception as e:
-            logger.error(_('Replay request method pool data deletion failed, reasons: {}').format(e))
+            logger.error(_('Failed to delete replay request queue, error message: {}').format(e))
 
     def delete_replay_queue(self):
         try:
             deleted, _rows_count = IastReplayQueue.objects.filter(agent=self.agent).delete()
-            logger.error(_('Replay request queue delete success, copied: {}').format(deleted))
+            logger.error(_('Replay request queue deleted successfully, Deletion amount: {}').format(deleted))
         except Exception as e:
-            logger.error(_('Replay request queue delete failed, reason: {}').format(e))
+            logger.error(_('Failed to delete replay request queue, error message: {}').format(e))
 
 
 if __name__ == '__main__':
