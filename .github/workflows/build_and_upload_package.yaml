@@ -40,7 +40,7 @@ jobs:
           asset-path: ./dist/dongtai-1.0.3.tar.gz
           target-path: /iast/dongtai-test-1.0.3.tar.gz
 
-      - name: Upload to oss
+      - name: Upload to oss latest
         id: upload_to_oss
         uses: tvrcgo/upload-to-oss@master
         with:
