@@ -1,7 +1,7 @@
 # DongTai-engine
 [![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
-[![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://huoxianclub.github.io/LingZhi/)
-[![DongTai-engine](https://img.shields.io/badge/DongTai--engine-v1.0.0-lightgrey)](https://huoxianclub.github.io/LingZhi/#/doc/tutorial/quickstart)
+[![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://huoxianclub.github.io/DongTai-Doc/)
+[![DongTai-engine](https://img.shields.io/badge/DongTai--engine-latest-lightgrey)](https://huoxianclub.github.io/DongTai-Doc/)
 [![Deploy DongTai Engine To AWS Test](https://github.com/HXSecurity/DongTai-engine/actions/workflows/deploy_engine_to_aws_test.yml/badge.svg)](https://github.com/HXSecurity/DongTai-engine/actions/workflows/deploy_engine_to_aws_test.yml)
 [![Deploy DongTai Engine To AWS](https://github.com/HXSecurity/DongTai-engine/actions/workflows/deploy_engine_to_aws.yml/badge.svg)](https://github.com/HXSecurity/DongTai-engine/actions/workflows/deploy_engine_to_aws.yml)
 
@@ -31,7 +31,7 @@ The basic service configuration is as follows：
 
 1. Pull image
 ```shell script
-$ docker pull registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine:1.0.0
+$ docker pull registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine:latest
 ```
 
 2. Create a configuration file：`/etc/dongtai/config.ini`，The content is as follows：
@@ -53,8 +53,6 @@ db = 0
 [engine]
 url = http://engine_url
 
-[apiserver]
-url = http://api_server_url
 
 [smtp]
 server = server
@@ -71,19 +69,19 @@ access_key_secret = access_key
 
 3. Start the `dongtai-engine` container and map the configuration file
 ```shell script
-$ docker run -d --name dongtai-engine -v /etc/dongtai/config.ini:/opt/dongtai/engine/conf/config.ini --restart=always secnium/iast-saas-engine:1.0.0
+$ docker run -d --name dongtai-engine -v /etc/dongtai/config.ini:/opt/dongtai/engine/conf/config.ini --restart=always secnium/iast-saas-engine:latest
 ```
 
 4. Start the `dongtai-engine-task` container and map the configuration file
 ```shell script
-$ docker run -d --name dongtai-engine-task -v /etc/dongtai/config.ini:/opt/dongtai/engine/conf/config.ini --restart=always secnium/iast-saas-engine:1.0.0 bash /opt/dongtai/engine/docker/entrypoint.sh
+$ docker run -d --name dongtai-engine-task -v /etc/dongtai/config.ini:/opt/dongtai/engine/conf/config.ini --restart=always secnium/iast-saas-engine:latest bash /opt/dongtai/engine/docker/entrypoint.sh
 ```
 
 ### Build custom image
 
 1. Build image
 ```shell script
-$ docker build -t secnium/iast-saas-engine:1.0.0 .
+$ docker build -t secnium/iast-saas-engine:latest .
 ```
 
 2. Create a configuration file：`/etc/dongtai/config.ini`，The content is as follows：
@@ -105,9 +103,6 @@ db = 0
 [engine]
 url = http://engine_url
 
-[apiserver]
-url = http://api_server_url
-
 [smtp]
 server = server
 user = user
@@ -123,12 +118,12 @@ access_key_secret = access_key
 
 3. Start the `dongtai-engine` container and map the configuration file
 ```shell script
-$ docker run -d --name dongtai-engine -v /etc/dongtai/config.ini:/opt/dongtai/engine/conf/config.ini --restart=always secnium/iast-saas-engine:1.0.0
+$ docker run -d --name dongtai-engine -v /etc/dongtai/config.ini:/opt/dongtai/engine/conf/config.ini --restart=always secnium/iast-saas-engine:latest
 ```
 
 4. Start the `dongtai-engine-task` container and map the configuration file
 ```shell script
-$ docker run -d --name dongtai-engine-task -v /etc/dongtai/config.ini:/opt/dongtai/engine/conf/config.ini --restart=always secnium/iast-saas-engine:1.0.0 bash /opt/dongtai/engine/docker/entrypoint.sh
+$ docker run -d --name dongtai-engine-task -v /etc/dongtai/config.ini:/opt/dongtai/engine/conf/config.ini --restart=always secnium/iast-saas-engine:latest bash /opt/dongtai/engine/docker/entrypoint.sh
 ```
 
 ### Contributing
