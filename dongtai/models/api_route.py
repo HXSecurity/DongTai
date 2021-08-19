@@ -8,39 +8,94 @@
 
 from django.db import models
 from dongtai.utils.settings import get_managed
+from dongtai.models.agent import IastAgent
 
 
-class ApiRoute(models.Model):
-    path = models.CharField(max_length=255, blank=True)
-    description = models.CharField(max_length=500, blank=True)
+class HttpMethod(models.Model):
     method = models.CharField(max_length=100, blank=True)
+
+    class Meta:
+        managed = get_managed()
+        db_table = 'iast_http_method'
+
+
+class IastApiMethodHttpMethodRelation(models.Model):
+    api_method = models.ForeignKey(IastApiMethod,
+                                   on_delete=models.CASCADE,
+                                   db_constraint=False,
+                                   db_column='api_method_id')
+    http_method = models.ForeignKey(HttpMethod,
+                                    on_delete=models.CASCADE,
+                                    db_constraint=False,
+                                    db_column='http_method_id')
+
+    class Meta:
+        managed = get_managed()
+        db_table = 'iast_http_method_relation'
+        unique_together = ['api_method_id', 'http_method_id']
+
+
+class IastApiMethod(models.Model):
+    method = models.CharField(max_length=100, blank=True)
+    http_method = models.ManyToManyField(
+        HttpMethod,
+        blank=True,
+        through=IastApiMethodHttpMethodRelation,
+        db_constraint=False)
+
+    class Meta:
+        managed = get_managed()
+        db_table = 'iast_api_methods'
+
+
+class IastApiRoute(models.Model):
+    path = models.CharField(max_length=255, blank=True)
+    class_ = models.CharField(max_length=255, blank=True, db_column='class')
+    description = models.CharField(max_length=500, blank=True)
+    method = models.ForeignKey(IastApiMethod,
+                               on_delete=models.DO_NOTHING,
+                               db_constraint=False,
+                               db_index=True,
+                               db_column='method_id')
     file_ = models.CharField(max_length=500, blank=True, db_column='file')
     controller = models.CharField(max_length=100, blank=True)
+    agent = models.ForeignKey(IastAgent,
+                              on_delete=models.DO_NOTHING,
+                              db_constraint=False,
+                              db_index=True,
+                              db_column='agent_id')
 
     class Meta:
         managed = get_managed()
         db_table = 'iast_api_route'
+        unique_together = ['path', 'method']
 
 
-class ApiParameter(models.Model):
+class IastApiParameter(models.Model):
     name = models.CharField(max_length=100, blank=True)
     type_ = models.CharField(max_length=100, blank=True, db_column='type')
     annotation = models.CharField(max_length=500, blank=True)
-    route_id = models.ForeignKey(ApiRoute,
-                                 on_delete=models.CASCADE,
-                                 db_constraint=False)
+    route = models.ForeignKey(IastApiRoute,
+                              on_delete=models.CASCADE,
+                              db_constraint=False,
+                              db_index=True,
+                              db_column='route_id')
 
     class Meta:
         managed = get_managed()
         db_table = 'iast_api_parameter'
+        unique_together = ['name', 'route_id']
 
 
-class ApiResponse(models.Model):
+class IastApiResponse(models.Model):
     return_type = models.CharField(max_length=100, blank=True)
-    route_id = models.ForeignKey(ApiRoute,
-                                 on_delete=models.CASCADE,
-                                 db_constraint=False)
+    route = models.ForeignKey(IastApiRoute,
+                              on_delete=models.CASCADE,
+                              db_constraint=False,
+                              db_index=True,
+                              db_column='route_id')
 
     class Meta:
         managed = get_managed()
         db_table = 'iast_api_response'
+        unique_together = ['return_type', 'route_id']
