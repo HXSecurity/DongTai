@@ -57,12 +57,12 @@ class AgentSerializer(serializers.ModelSerializer):
                 if obj.server.ip and obj.server.port and obj.server.port != 0:
                     self.SERVER_MAP[obj.server_id] = f'{obj.server.ip}:{obj.server.port}'
                 else:
-                    return _('The probe has not detected traffic')
+                    return _('No flow is detected by the probe')
             return self.SERVER_MAP[obj.server_id]
 
         if obj.server_id:
             return get_server_addr()
-        return _('The probe has not detected traffic')
+        return _('No flow is detected by the probe')
 
     def get_user(self, obj):
         if obj.user_id not in self.USER_MAP:

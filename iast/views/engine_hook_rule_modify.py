@@ -32,7 +32,7 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
     def post(self, request):
         rule_id, rule_type, rule_value, rule_source, rule_target, inherit, is_track = self.parse_args(request)
         if all((rule_id, rule_type, rule_value, rule_source, inherit, is_track)) is False:
-            return R.failure(msg=_('The parameter is incomplete, please check'))
+            return R.failure(msg=_('Incomplete parameter, please check again'))
 
         strategy = HookStrategy.objects.filter(id=rule_id, created_by=request.user.id).first()
 
@@ -45,5 +45,5 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
             strategy.update_time = int(time.time())
             strategy.save()
 
-            return R.success(msg=_('Strategy creation success'))
-        return R.failure(msg=_('Strategy creation failed'))
+            return R.success(msg=_('Strategy has been created successfully'))
+        return R.failure(msg=_('Failed to create strategy'))

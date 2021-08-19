@@ -28,9 +28,9 @@ class VulDelete(UserEndPoint):
                 id=id,
                 agent_id__in=self.get_auth_agents_with_user(request.user)
             ).delete()
-            return R.success(msg=_('successfully deleted'))
+            return R.success(msg=_('Deleted Successfully'))
         except IastVulnerabilityModel.DoesNotExist as e:
-            return R.failure(msg=_('Delete failed, the reason: the vulnerability does not exist'))
+            return R.failure(msg=_('Failed to delete, error message: Vulnerability does not exist'))
         except Exception as e:
             logger.error(f'user_id:{request.user.id} msg:{e}')
-            return R.failure(msg=_('failed to delete'))
+            return R.failure(msg=_('Deletion failed'))

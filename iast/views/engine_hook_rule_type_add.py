@@ -37,9 +37,9 @@ class EngineHookRuleTypeAddEndPoint(UserEndPoint):
     def post(self, request):
         rule_type, name, short_name, enable = self.parse_args(request)
         if all((rule_type, name, short_name)) is False:
-            return R.failure(msg=_('incomplete data'))
+            return R.failure(msg=_('Incomplete data'))
         timestamp = int(time.time())
         hook_type = HookType(enable=enable, type=rule_type, name=short_name, value=name, create_time=timestamp,
                              update_time=timestamp, created_by=request.user.id)
         hook_type.save()
-        return R.success(msg=_('Rule type Save success'))
+        return R.success(msg=_('Rule type successfully saved'))

@@ -38,7 +38,7 @@ class UserLogin(UserEndPoint):
                 user = authenticate(username=username, password=password)
                 if user is not None and user.is_active:
                     login(request, user)
-                    return R.success(msg=_('login successful'))
+                    return R.success(msg=_('Login successful'))
                 else:
                     logger.warn(
                         f"user [{username}] login failure, rease: {'user not exist' if user is None else 'user is disable'}")
@@ -46,4 +46,4 @@ class UserLogin(UserEndPoint):
             else:
                 return R.failure(status=203, msg=_('Verification code error'))
         else:
-            return R.failure(status=204, msg=_('verification code must be filled'))
+            return R.failure(status=204, msg=_('verification code should not be empty'))

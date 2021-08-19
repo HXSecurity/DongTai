@@ -20,13 +20,13 @@ class EngineHookRuleTypeEnableEndPoint(UserEndPoint):
             rule_type = int(rule_id)
             return rule_type
         except Exception as e:
-            logger.error(_("Parameter processing failed, error details: {}").format(e))
+            logger.error(_("Parameter processing failed, error message: {}").format(e))
             return None
 
     def get(self, request):
         rule_id = self.parse_args(request)
         if rule_id is None:
-            return R.failure(msg=_('No strategy does not exist'))
+            return R.failure(msg=_('Strategy does not exist'))
 
         rule = HookStrategy.objects.filter(id=rule_id, created_by=request.user.id).first()
         if rule:
@@ -34,5 +34,5 @@ class EngineHookRuleTypeEnableEndPoint(UserEndPoint):
             if rule_type:
                 rule_type.enable = const.ENABLE
                 rule.save()
-                return R.success(msg=_('Enable success'))
+                return R.success(msg=_('Enable successfully'))
         return R.failure(msg=_('Strategy type does not exist'))
