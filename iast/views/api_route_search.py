@@ -47,7 +47,7 @@ class ApiRouteSearch(UserEndPoint):
             method_id__in=[_['method_id']
                            for _ in api_methods]) if api_methods != [] else q
         q = q & Q(uri__icontains=uri)
-        api_routes = IastApiRoute.objects.filter(q).all()
+        api_routes = IastApiRoute.objects.filter(q).order_by('id').all()
         summary, api_routes = self.get_paginator(api_routes, page, page_size)
         return R.success(data=[
             _serialize(api_route, agents, http_method)
@@ -57,7 +57,7 @@ class ApiRouteSearch(UserEndPoint):
 
 def _filter_and_label(api_routes, limit, cover=None):
     api_routes_after_filter = []
-    for api_route in batch_qs(api_routes,batch_size=1):
+    for api_route in batch_queryset(api_routes):
         api_route.is_cover = _checkcover(api_route)
         if cover:
             api_routes_after_filter += [
@@ -70,12 +70,15 @@ def _filter_and_label(api_routes, limit, cover=None):
     return api_routes_after_filter
 
 
+def batch_queryset(queryset, batch_size=1):
+    iter_ = 0
+    while True:
+        queryset = list(queryset[iter_:iter_ + 1])
+        if not queryset:
+            break
+        else:
+            yield queryset[0]
 
-def batch_qs(qs, batch_size=1):
-    total = qs.count()
-    for start in range(0, total, batch_size):
-        end = min(start + batch_size, total)
-        yield (start, end, total, qs[start:end])
 
 def _serialize(api_route, agents, http_method):
     item = model_to_dict(api_route)
@@ -105,6 +108,6 @@ def _checkcover(api_route, agents, http_method):
     q = Q(agent_id__in=[_['id'] for _ in agents])
     q = q & Q(http_method__in=http_methods)
     q = q & Q(uri_hash=uri_hash)
-    if MethodPool.objects.filter(q).first():
+    if MethodPool.objects.filter(q)[0:1]:
         return True
     return False
