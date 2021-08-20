@@ -72,7 +72,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:${{ steps.release.outputs.version }},"
+          tags: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:latest,registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:${{ steps.release.outputs.version }},"
 
 
       - name: finish build
