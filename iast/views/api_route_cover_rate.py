@@ -14,7 +14,7 @@ from django.utils.translation import gettext_lazy as _
 from iast.utils import checkcover, batch_queryset
 
 
-class ApiRouteSearch(UserEndPoint):
+class ApiRouteCoverRate(UserEndPoint):
     def get(self, request):
         project_id = request.query_params.get('project_id', None)
         version_id = request.query_params.get('version_id', None)
