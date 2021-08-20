@@ -19,11 +19,17 @@ from django.forms.models import model_to_dict
 class ApiRouteSearch(UserEndPoint):
     def get(self, request):
         page_size = int(request.query_params.get('page_size', 1))
-        page = int(request.query_params.get('page_index', 1))
+        page_index = int(request.query_params.get('page_index', 1))
         uri = request.query_params.get('uri', None)
         http_method = request.query_params.get('http_method', None)
         project_id = request.query_params.get('project_id', None)
         version_id = request.query_params.get('version_id', None)
+        exclude_id = request.query_params.get('exclude_id', None)
+        exclude_id = [int(i)
+                      for i in exclude_id.split(',')] if exclude_id else None
+        is_cover = request.query_params.get('is_cover', None)
+        is_cover_dict = {'1': True, '0': False}
+        is_cover = is_cover_dict[int(is_cover)] if is_cover else None
         auth_users = self.get_auth_users(request.user)
 
         if http_method:
@@ -47,22 +53,26 @@ class ApiRouteSearch(UserEndPoint):
             method_id__in=[_['method_id']
                            for _ in api_methods]) if api_methods != [] else q
         q = q & Q(uri__icontains=uri)
+        q = q & ~Q(pk__in=exclude_id) if exclude_id else q
         api_routes = IastApiRoute.objects.filter(q).order_by('id').all()
-        summary, api_routes = self.get_paginator(api_routes, page, page_size)
+        api_routes = _filter_and_label(
+            api_routes, page_size,
+            is_cover) if is_cover else _filter_and_label(
+                api_routes, page_size)
         return R.success(data=[
             _serialize(api_route, agents, http_method)
             for api_route in api_routes
         ])
 
 
-def _filter_and_label(api_routes, limit, cover=None):
+def _filter_and_label(api_routes, limit, is_cover=None):
     api_routes_after_filter = []
     for api_route in batch_queryset(api_routes):
         api_route.is_cover = _checkcover(api_route)
-        if cover:
+        if is_cover:
             api_routes_after_filter += [
                 api_route
-            ] if api_route.is_cover == cover else []
+            ] if api_route.is_cover == is_cover else []
         else:
             api_routes_after_filter += [api_route]
         if limit == len(api_routes_after_filter):
