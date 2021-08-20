@@ -37,7 +37,7 @@ class ApiRouteHandler(IReportHandler):
                         method=http_method.upper())
                     http_methods.append(http_method)
                 api_method, is_create = IastApiMethod.get_or_create(
-                    method=api_route['method'])
+                    method='/'.join(api_route['method']))
                 if is_create:
                     for http_method in http_methods:
                         IastApiMethodHttpMethodRelation.create(
