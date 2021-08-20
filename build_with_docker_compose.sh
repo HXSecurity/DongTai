@@ -69,7 +69,7 @@ services:
     restart: always
 
   dongtai-webapi:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:1.0.2
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:latest
     restart: always
     volumes:
       - $PWD/config-tutorial.ini:/opt/dongtai/webapi/conf/config.ini
@@ -88,7 +88,7 @@ services:
       - dongtai-webapi
 
   dongtai-openapi:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:1.0.2
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:latest
     restart: always
     volumes:
        - $PWD/config-tutorial.ini:/opt/dongtai/openapi/conf/config.ini
@@ -99,7 +99,7 @@ services:
       - dongtai-redis
 
   dongtai-engine:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:1.0.2
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
     restart: always
     volumes:
       - $PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini
@@ -108,7 +108,7 @@ services:
       - dongtai-redis
 
   dongtai-engine-task:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:1.0.2
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
     restart: always
     command: ["/opt/dongtai/engine/docker/entrypoint.sh", "task"]
     volumes:
