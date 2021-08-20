@@ -3,27 +3,27 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-19 17:31+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2021-08-20 14:51+0800\n"
+"PO-Revision-Date: 2021-08-09 12:55+0800\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Application-Id-Version: \n"
+"X-Generator: Poedit 2.2.2\n"
 
 #: iast/account/department.py:96 iast/account/department.py:135
 msgid "Department {} already exists"
 msgstr "Department {} already exists"
 
 #: iast/account/department.py:106
-msgid "The department name has been modified to {}"
-msgstr "The department name has been modified to {}"
+msgid "Department name has been modified to {}"
+msgstr "Department name has been modified to {}"
 
 #: iast/account/department.py:111 iast/account/department.py:158
 #: iast/account/user.py:189
@@ -31,12 +31,12 @@ msgid "Department does not exist"
 msgstr "Department does not exist"
 
 #: iast/account/department.py:147
-msgid "Department {} creation success"
-msgstr "Department {} creation success"
+msgid "Department {} has been created successfully"
+msgstr "Department {} has been created successfully"
 
 #: iast/account/department.py:153
-msgid "Father no access"
-msgstr "Father no access"
+msgid "Access Denied"
+msgstr "Access Denied"
 
 #: iast/account/department.py:173
 msgid ""
@@ -48,42 +48,46 @@ msgstr ""
 
 #: iast/account/department.py:180 iast/views/agents_delete.py:57
 #: iast/views/project_version_delete.py:30 iast/views/vul_delete.py:31
-msgid "successfully deleted"
-msgstr "successfully deleted"
+msgid "Deleted Successfully"
+msgstr "Deleted Successfully"
 
 #: iast/account/talent.py:25
 msgid "Tenant management"
 msgstr "Tenant management"
 
 #: iast/account/talent.py:83
-msgid "Tenant has been discontinued"
-msgstr "Tenant has been discontinued"
+msgid "Tenant has been deactivated"
+msgstr "Tenant has been deactivated"
 
 #: iast/account/talent.py:83
 msgid "Tenant does not exist"
 msgstr "Tenant does not exist"
 
 #: iast/account/talent.py:94
-msgid "Tenant name or contact email is not specified"
-msgstr "Tenant name or contact email is not specified"
+msgid "Tenant name or email is not specified"
+msgstr "Tenant name or email is not specified"
 
 #: iast/account/talent.py:97
-msgid "Tenant {} creation success"
-msgstr "Tenant {} creation success"
+msgid "Tenant {} has been created successfully"
+msgstr "Tenant {} has been created successfully"
 
 #: iast/account/talent.py:98
-msgid "Tenant creation failed, reasons: {}"
-msgstr "Tenant creation failed, reasons: {}"
+msgid "Tenant {} creation failed, error message:{}"
+msgstr "Tenant {} creation failed, error message:{}"
 
 #: iast/account/talent.py:106
-msgid "Tenant: {} Delete success"
-msgstr "Tenant: {} Delete success"
+msgid "Tenant: {} Delete successfully"
+msgstr "Tenant: {} Delete successfully"
 
 #: iast/account/talent.py:121
 msgid "Query if the default tenant information exists"
 msgstr "Query if the default tenant information exists"
 
 #: iast/account/talent.py:125
+#, fuzzy
+#| msgid ""
+#| "The tenant information already existed, please delete the existing "
+#| "information first"
 msgid ""
 "Tenant information already exists, please delete tenant information first"
 msgstr ""
@@ -91,47 +95,43 @@ msgstr ""
 
 #: iast/account/talent.py:126
 msgid ""
-"Tenant information already exists, please delete the original tenant "
-"information first."
+"The tenant information already existed, please delete the existing "
+"information first"
 msgstr ""
-"Tenant information already exists, please delete the original tenant "
-"information first."
+"The tenant information already existed, please delete the existing "
+"information first"
 
 #: iast/account/talent.py:128
-msgid "Started to create a tenant"
-msgstr "Started to create a tenant"
+msgid "Started creating a tenant"
+msgstr "Started creating a tenant"
 
 #: iast/account/talent.py:134
-msgid ""
-"Tenant creation is completed, starting to create the default department"
-msgstr ""
-"Tenant creation is completed, starting to create the default department"
+msgid "Finished creating tenant, start to create tenant default department"
+msgstr "Finished creating tenant, start to create tenant default department"
 
 #: iast/account/talent.py:135
 msgid "Default department"
 msgstr "Default department"
 
 #: iast/account/talent.py:140
-msgid ""
-"The department creation is completed and started to create the default user"
-msgstr ""
-"The department creation is completed and started to create the default user"
+msgid "Finished creating department, start to create default user"
+msgstr "Finished creating department, start to create default user"
 
 #: iast/account/talent.py:153
-msgid "Tenker creation and initialization"
-msgstr "Tenker creation and initialization"
+msgid "Finsihed creating and initializing tenant"
+msgstr "Finsihed creating and initializing tenant"
 
 #: iast/account/talent.py:156
-msgid "Create a tenant failed, error reason: {}"
-msgstr "Create a tenant failed, error reason: {}"
+msgid "Failed to created a tenant, error message:{}"
+msgstr "Failed to created a tenant, error message:{}"
 
 #: iast/account/user.py:79
-msgid "Page and PageSize must be numbers"
-msgstr "Page and PageSize must be numbers"
+msgid "The format of  ‘page’ and ‘pageSize’ only can be numberic"
+msgstr "The format of  ‘page’ and ‘pageSize’ only can be numberic"
 
 #: iast/account/user.py:113
-msgid "Data update success"
-msgstr "Data update success"
+msgid "Data update succeeded"
+msgstr "Data update succeeded"
 
 #: iast/account/user.py:118 iast/views/project_detail.py:43
 #: iast/views/project_report_export.py:76 iast/views/project_summary.py:39
@@ -140,12 +140,12 @@ msgid "no permission"
 msgstr "no permission"
 
 #: iast/account/user.py:153
-msgid "User {} delete failed"
-msgstr "User {} delete failed"
+msgid "Failed to delete User {}"
+msgstr "Failed to delete User {}"
 
 #: iast/account/user.py:158
-msgid "User {} delete success"
-msgstr "User {} delete success"
+msgid "User {} successfully deleted"
+msgstr "User {} successfully deleted"
 
 #: iast/account/user.py:171
 msgid "Consistent"
@@ -160,21 +160,21 @@ msgid "User creation failed"
 msgstr "User creation failed"
 
 #: iast/account/user.py:226 iast/views/user_register_batch.py:70
-msgid "User {} creates success"
-msgstr "User {} creates success"
+msgid "User {} has been created successfully"
+msgstr "User {} has been created successfully"
 
 #: iast/account/user.py:231
-msgid "Department does not exist or have no access"
-msgstr "Department does not exist or have no access"
+msgid "Department does not exist or no permission to access"
+msgstr "Department does not exist or no permission to access"
 
 #: iast/base/agent.py:127
 #, python-brace-format
 msgid ""
-"We found that there is {1} in the {0} page, and the attacker can change the "
-"value of {2} to attack:"
+"We found that there is {1} in the {0} page, attacker can modify the value of"
+" {2} to attack:"
 msgstr ""
-"We found that there is {1} in the {0} page, and the attacker can change the "
-"value of {2} to attack:"
+"We found that there is {1} in the {0} page, attacker can modify the value of"
+" {2} to attack:"
 
 #: iast/base/agent.py:142
 msgid "{} Line"
@@ -207,16 +207,16 @@ msgid "Version does not exist"
 msgstr "Version does not exist"
 
 #: iast/base/update_project_version.py:18
-msgid "Detect and associate project version information"
-msgstr "Detect and associate project version information"
+msgid "Detects and associates application version information"
+msgstr "Detects and associates application version information"
 
 #: iast/base/update_project_version.py:43
-msgid "Test"
-msgstr "Test"
+msgid "Detection finished"
+msgstr "Detection finished"
 
 #: iast/base/update_project_version.py:45
-msgid "Detection failure"
-msgstr "Detection failure"
+msgid "Detection failed"
+msgstr "Detection failed"
 
 #: iast/notify/feishu.py:12
 msgid "Maven official crawler"
@@ -235,25 +235,25 @@ msgid "Load data is not uploaded"
 msgstr "Load data is not uploaded"
 
 #: iast/serializers/agent.py:60 iast/serializers/agent.py:65
-msgid "The probe has not detected traffic"
-msgstr "The probe has not detected traffic"
+msgid "No flow is detected by the probe"
+msgstr "No flow is detected by the probe"
 
 #: iast/serializers/login.py:15
-msgid "Username can not be empty"
-msgstr "Username can not be empty"
+msgid "Username should not be empty"
+msgstr "Username should not be empty"
 
 #: iast/serializers/login.py:22
-msgid "password can not be blank"
-msgstr "password can not be blank"
+msgid "Password should not be blank"
+msgstr "Password should not be blank"
 
 #: iast/serializers/sca.py:36 iast/views/vul_details.py:150
 #: iast/views/vuls.py:111
-msgid "Not bind project"
-msgstr "Not bind project"
+msgid "The application has not been binded"
+msgstr "The application has not been binded"
 
 #: iast/serializers/sca.py:59
-msgid "No project version has been created yet"
-msgstr "No project version has been created yet"
+msgid "No application version has been created"
+msgstr "No application version has been created"
 
 #: iast/views/agent.py:24
 msgid "Can't find relevant data"
@@ -264,24 +264,24 @@ msgid "Delete Agent"
 msgstr "Delete Agent"
 
 #: iast/views/agent_delete.py:46
-msgid "Agent and related data deletion success"
-msgstr "Agent and related data deletion success"
+msgid "Agent and related data deleted successfully"
+msgstr "Agent and related data deleted successfully"
 
 #: iast/views/agent_delete.py:48
-msgid "Agent does not exist or have no right to access"
-msgstr "Agent does not exist or have no right to access"
+msgid "Agent does not exist or no permission to access"
+msgstr "Agent does not exist or no permission to access"
 
 #: iast/views/agent_delete.py:51
-msgid "Delete the process error, please try again later"
-msgstr "Delete the process error, please try again later"
+msgid "Error while deleting, please try again later"
+msgstr "Error while deleting, please try again later"
 
 #: iast/views/agent_delete.py:56 iast/views/agents_delete.py:65
-msgid "Error log deletion success, copied: {}"
-msgstr "Error log deletion success, copied: {}"
+msgid "Error logs deleted successfully, Deletion Amount: {}"
+msgstr "Error logs deleted successfully, Deletion Amount: {}"
 
 #: iast/views/agent_delete.py:58 iast/views/agents_delete.py:67
-msgid "Error log deletion failed, probe ID: {}, reason: {}"
-msgstr "Error log deletion failed, probe ID: {}, reason: {}"
+msgid "Failed to delete error logs, probe ID: {}, error message: {}"
+msgstr "Failed to delete error logs, probe ID: {}, error message: {}"
 
 #: iast/views/agent_delete.py:63 iast/views/agent_delete.py:70
 #: iast/views/agent_delete.py:77 iast/views/agent_delete.py:84
@@ -289,60 +289,65 @@ msgstr "Error log deletion failed, probe ID: {}, reason: {}"
 #: iast/views/agents_delete.py:72 iast/views/agents_delete.py:79
 #: iast/views/agents_delete.py:86 iast/views/agents_delete.py:93
 #: iast/views/agents_delete.py:100 iast/views/agents_delete.py:107
-msgid "Replay request method pool data delete success, copied: {}"
-msgstr "Replay request method pool data delete success, copied: {}"
+msgid ""
+"The replay request method pool data was successfully deleted, A total of {} "
+"replay requests are deleted"
+msgstr ""
+"The replay request method pool data was successfully deleted, A total of {} "
+"replay requests are deleted"
 
 #: iast/views/agent_delete.py:65 iast/views/agents_delete.py:74
-msgid "Heartbeat data deletion failed, reasons: {}"
-msgstr "Heartbeat data deletion failed, reasons: {}"
+msgid "Failed to delete heartbeat data, error message: {}"
+msgstr "Failed to delete heartbeat data, error message: {}"
 
 #: iast/views/agent_delete.py:72 iast/views/agents_delete.py:81
-msgid "Bypass Related Data Deletion Failure, Reason: {}"
-msgstr "Bypass Related Data Deletion Failure, Reason: {}"
+msgid "Failed to delete unauthorized data, error message: {}"
+msgstr "Failed to delete unauthorized data, error message: {}"
 
 #: iast/views/agent_delete.py:79 iast/views/agents_delete.py:88
-msgid "Vulnerability data deletion failed, reason: {}"
-msgstr "Vulnerability data deletion failed, reason: {}"
+msgid "Failed to delete vulnerability data, error message: {}"
+msgstr "Failed to delete vulnerability data, error message: {}"
 
 #: iast/views/agent_delete.py:86 iast/views/agents_delete.py:95
-msgid "Third-party component data deletion failed, reasons: {}"
-msgstr "Third-party component data deletion failed, reasons: {}"
+msgid "Failed to delete third-party component data, error message: {}"
+msgstr "Failed to delete third-party component data, error message: {}"
 
 #: iast/views/agent_delete.py:93 iast/views/agents_delete.py:102
-msgid "Method pool data deletion failed, reasons: {}"
-msgstr "Method pool data deletion failed, reasons: {}"
+msgid "Failed to delete method pool data, error message: {}"
+msgstr "Failed to delete method pool data, error message: {}"
 
-#: iast/views/agent_delete.py:100 iast/views/agents_delete.py:109
-msgid "Replay request method pool data deletion failed, reasons: {}"
-msgstr "Replay request method pool data deletion failed, reasons: {}"
+#: iast/views/agent_delete.py:100
+msgid "Failed to delete replay request method pool data, error message: {}"
+msgstr "Failed to delete replay request method pool data, error message: {}"
 
 #: iast/views/agent_delete.py:105 iast/views/agents_delete.py:114
-msgid "Replay request queue delete success, copied: {}"
-msgstr "Replay request queue delete success, copied: {}"
+msgid "Replay request queue deleted successfully, Deletion amount: {}"
+msgstr "Replay request queue deleted successfully, Deletion amount: {}"
 
-#: iast/views/agent_delete.py:107 iast/views/agents_delete.py:116
-msgid "Replay request queue delete failed, reason: {}"
-msgstr "Replay request queue delete failed, reason: {}"
+#: iast/views/agent_delete.py:107 iast/views/agents_delete.py:109
+#: iast/views/agents_delete.py:116
+msgid "Failed to delete replay request queue, error message: {}"
+msgstr "Failed to delete replay request queue, error message: {}"
 
 #: iast/views/agent_deploy.py:27
-msgid "Can't find a corresponding deployment document"
-msgstr "Can't find a corresponding deployment document"
+msgid "Corresponding deployment document could not be found"
+msgstr "Corresponding deployment document could not be found"
 
 #: iast/views/agent_deploy_doc.py:14 iast/views/agent_deploy_info.py:14
-msgid "Agent deployment documentation"
-msgstr "Agent deployment documentation"
+msgid "Agent deployment document"
+msgstr "Agent deployment document"
 
 #: iast/views/agent_deploy_doc.py:31 iast/views/vuls.py:34
 msgid "No data"
 msgstr "No data"
 
 #: iast/views/agent_deploy_submit.py:18
-msgid "Upload Agent configuration"
-msgstr "Upload Agent configuration"
+msgid "Uploading Agent configuration"
+msgstr "Uploading Agent configuration"
 
 #: iast/views/agent_download.py:22
-msgid "Download DongTai Agent"
-msgstr "Download DongTai Agent"
+msgid "Downloading DongTai Agent"
+msgstr "Downloading DongTai Agent"
 
 #: iast/views/agent_install.py:15
 msgid "Installing an Agent"
@@ -358,32 +363,32 @@ msgstr "The engine is being installed or uninstalled, please try again later"
 
 #: iast/views/agent_install.py:30 iast/views/agent_start.py:25
 #: iast/views/agent_stop.py:25 iast/views/agent_uninstall.py:30
-msgid "Engine does not exist or no right to operate"
-msgstr "Engine does not exist or no right to operate"
+msgid "Engine does not exist or no permission to access"
+msgstr "Engine does not exist or no permission to access"
 
 #: iast/views/agent_start.py:15
 msgid "Start Agent"
 msgstr "Start Agent"
 
 #: iast/views/agent_start.py:27 iast/views/agent_stop.py:27
-msgid "Agent is ongoing non-start stop operation, please try again later"
-msgstr "Agent is ongoing non-start stop operation, please try again later"
+msgid "Agent is stopping service, please try again later"
+msgstr "Agent is stopping service, please try again later"
 
 #: iast/views/agent_start.py:43
-msgid "turning on..."
-msgstr "turning on..."
+msgid "Starting…"
+msgstr "Starting…"
 
 #: iast/views/agent_status_update.py:26
-msgid "Engine state update success"
-msgstr "Engine state update success"
+msgid "Engine status was updated successfully."
+msgstr "Engine status was updated successfully."
 
 #: iast/views/agent_stop.py:14
-msgid "Pause Agent"
-msgstr "Pause Agent"
+msgid "Suspend Agent"
+msgstr "Suspend Agent"
 
 #: iast/views/agent_stop.py:46
-msgid "Suspension ..."
-msgstr "Suspension ..."
+msgid "Suspending ..."
+msgstr "Suspending ..."
 
 #: iast/views/agent_uninstall.py:15
 msgid "Uninstall Agent"
@@ -402,27 +407,27 @@ msgid "Offline Upgrade Agent"
 msgstr "Offline Upgrade Agent"
 
 #: iast/views/agent_upgrade_offline.py:19
-msgid "Upload success"
-msgstr "Upload success"
+msgid "Upload successful"
+msgstr "Upload successful"
 
 #: iast/views/agent_upgrade_offline.py:20
-msgid "{} File"
-msgstr "{} File"
+msgid "{} files not supported"
+msgstr "{} files not supported"
 
 #: iast/views/agent_upgrade_online.py:16
-msgid "Upgrade Agent"
-msgstr "Upgrade Agent"
+msgid "Online Upgrade Agent"
+msgstr "Online Upgrade Agent"
 
 #: iast/views/agent_upgrade_online.py:24
-msgid "Online upgrade success"
-msgstr "Online upgrade success"
+msgid "Online upgrade successful"
+msgstr "Online upgrade successful"
 
 #: iast/views/agent_upgrade_online.py:26
 msgid ""
-"Token verification failed, confirm that the input address and token are "
+"Token verification failed, please confirm your input address and token are "
 "correct"
 msgstr ""
-"Token verification failed, confirm that the input address and token are "
+"Token verification failed, please confirm your input address and token are "
 "correct"
 
 #: iast/views/agents.py:23
@@ -430,35 +435,35 @@ msgid "Agent list"
 msgstr "Agent list"
 
 #: iast/views/agents.py:57
-msgid "The parameter format is incorrect, please check."
-msgstr "The parameter format is incorrect, please check."
+msgid "Incorrect format parameter, please check again"
+msgstr "Incorrect format parameter, please check again"
 
 #: iast/views/agents.py:60 iast/views/project_version_update.py:30
 msgid "Program error"
 msgstr "Program error"
 
 #: iast/views/agents_delete.py:59 iast/views/vul_delete.py:36
-msgid "failed to delete"
-msgstr "failed to delete"
+msgid "Deletion failed"
+msgstr "Deletion failed"
 
 #: iast/views/agents_delete.py:60
-msgid "Successfully deleted {} strips, delete failed {}"
-msgstr "Successfully deleted {} strips, delete failed {}"
+msgid "Successfully deleted {} strips, failed to deleted {} strips"
+msgstr "Successfully deleted {} strips, failed to deleted {} strips"
 
 #: iast/views/engine_hook_rule_add.py:58
 #: iast/views/engine_hook_rule_modify.py:35
-msgid "The parameter is incomplete, please check"
-msgstr "The parameter is incomplete, please check"
+msgid "Incomplete parameter, please check again"
+msgstr "Incomplete parameter, please check again"
 
 #: iast/views/engine_hook_rule_add.py:68
 #: iast/views/engine_hook_rule_modify.py:48
-msgid "Strategy creation success"
-msgstr "Strategy creation success"
+msgid "Strategy has been created successfully"
+msgstr "Strategy has been created successfully"
 
 #: iast/views/engine_hook_rule_add.py:69
 #: iast/views/engine_hook_rule_modify.py:49
-msgid "Strategy creation failed"
-msgstr "Strategy creation failed"
+msgid "Failed to create strategy"
+msgstr "Failed to create strategy"
 
 #: iast/views/engine_hook_rule_status.py:56
 #: iast/views/engine_hook_rule_status.py:76
@@ -466,44 +471,44 @@ msgid "Operation type does not exist"
 msgstr "Operation type does not exist"
 
 #: iast/views/engine_hook_rule_status.py:60
-msgid "Policy type {} operation success, total {}"
-msgstr "Policy type {} operation success, total {}"
+msgid "Policy type {} operation success, total of {} Policy types"
+msgstr "Policy type {} operation success, total of {} Policy types"
 
 #: iast/views/engine_hook_rule_status.py:65
-msgid "Policy {}"
-msgstr "Policy {}"
+msgid "Policy {} succeed"
+msgstr "Policy {} succeed"
 
 #: iast/views/engine_hook_rule_status.py:68
 #: iast/views/engine_hook_rule_status.py:84
-msgid "Successful operation"
-msgstr "Successful operation"
+msgid "Operation success"
+msgstr "Operation success"
 
 #: iast/views/engine_hook_rule_status.py:70
 #: iast/views/engine_hook_rule_type_disable.py:25
 #: iast/views/engine_hook_rule_type_enable.py:29
 #: iast/views/strategy_disable.py:26 iast/views/strategy_enable.py:27
-msgid "No strategy does not exist"
-msgstr "No strategy does not exist"
+msgid "Strategy does not exist"
+msgstr "Strategy does not exist"
 
 #: iast/views/engine_hook_rule_status.py:83
-msgid "Strategy operation is successful, total {}"
-msgstr "Strategy operation is successful, total {}"
+msgid "Strategy operation success, total {}"
+msgstr "Strategy operation success, total {}"
 
 #: iast/views/engine_hook_rule_status.py:86 iast/views/vul_status.py:28
-msgid "The parameter is incorrect"
-msgstr "The parameter is incorrect"
+msgid "Incorrect parameter"
+msgstr "Incorrect parameter"
 
 #: iast/views/engine_hook_rule_type_add.py:40
-msgid "incomplete data"
-msgstr "incomplete data"
+msgid "Incomplete data"
+msgstr "Incomplete data"
 
 #: iast/views/engine_hook_rule_type_add.py:45
-msgid "Rule type Save success"
-msgstr "Rule type Save success"
+msgid "Rule type successfully saved"
+msgstr "Rule type successfully saved"
 
 #: iast/views/engine_hook_rule_type_disable.py:33
-msgid "Successful"
-msgstr "Successful"
+msgid "Forbidden success"
+msgstr "Forbidden success"
 
 #: iast/views/engine_hook_rule_type_disable.py:34
 #: iast/views/engine_hook_rule_type_enable.py:38
@@ -512,20 +517,20 @@ msgid "Strategy type does not exist"
 msgstr "Strategy type does not exist"
 
 #: iast/views/engine_hook_rule_type_enable.py:23
-msgid "Parameter processing failed, error details: {}"
-msgstr "Parameter processing failed, error details: {}"
+msgid "Parameter processing failed, error message: {}"
+msgstr "Parameter processing failed, error message: {}"
 
 #: iast/views/engine_hook_rule_type_enable.py:37
-msgid "Enable success"
-msgstr "Enable success"
+msgid "Enable successfully"
+msgstr "Enable successfully"
 
 #: iast/views/engine_hook_rule_types.py:38 iast/views/engine_hook_rules.py:41
-msgid "Parameter parsing error, error reason: {}"
-msgstr "Parameter parsing error, error reason: {}"
+msgid "Parameter parsing failed, error message: {}"
+msgstr "Parameter parsing failed, error message: {}"
 
 #: iast/views/engine_hook_rules.py:63
-msgid "Rule reading error, error details: {}"
-msgstr "Rule reading error, error details: {}"
+msgid "Rule read error, error message: {}"
+msgstr "Rule read error, error message: {}"
 
 #: iast/views/engine_method_pool_detail.py:21
 msgid "Engine - search data according to policy"
@@ -536,16 +541,16 @@ msgid "Not queried"
 msgstr "Not queried"
 
 #: iast/views/engine_method_pool_detail.py:54
-msgid "Acquisition failure"
-msgstr "Acquisition failure"
+msgid "Acquisition fail"
+msgstr "Acquisition fail"
 
 #: iast/views/engine_method_pool_detail.py:67
 msgid "Temporary search"
 msgstr "Temporary search"
 
 #: iast/views/engine_method_pool_detail.py:93
-msgid "Search, current {} page"
-msgstr "Search, current {} page"
+msgid "Searching, current {} page"
+msgstr "Searching, current {} page"
 
 #: iast/views/engine_method_pool_sca.py:18
 msgid "method_pool_id is empty"
@@ -560,32 +565,32 @@ msgid "method_pool has no permission"
 msgstr "method_pool has no permission"
 
 #: iast/views/log_clear.py:14
-msgid "Log emptiness"
-msgstr "Log emptiness"
+msgid "Log clear"
+msgstr "Log clear"
 
 #: iast/views/log_delete.py:14
-msgid "Log Delete"
-msgstr "Log Delete"
+msgid "Log delete"
+msgstr "Log delete"
 
 #: iast/views/log_delete.py:27
 msgid "success"
 msgstr "success"
 
 #: iast/views/log_delete.py:29
-msgid "The data to be deleted cannot be empty"
-msgstr "The data to be deleted cannot be empty"
+msgid "The data to be deleted should not be empty"
+msgstr "The data to be deleted should not be empty"
 
 #: iast/views/log_export.py:58
-msgid "The export failed, the reason: the log id cannot be empty"
-msgstr "The export failed, the reason: the log id cannot be empty"
+msgid "Export failed, error message: Log id should not be empty"
+msgstr "Export failed, error message: Log id should not be empty"
 
 #: iast/views/logs.py:17
 msgid "Log list"
 msgstr "Log list"
 
 #: iast/views/logs.py:48 iast/views/vul_recheck.py:118
-msgid "No right access"
-msgstr "No right access"
+msgid "No permission to access"
+msgstr "No permission to access"
 
 #: iast/views/logs.py:51
 msgid "failure"
@@ -600,53 +605,53 @@ msgid "Stain call map type does not exist"
 msgstr "Stain call map type does not exist"
 
 #: iast/views/method_graph.py:46
-msgid "Data does not exist or have no right to access"
-msgstr "Data does not exist or have no right to access"
+msgid "Data does not exist or no permission to access"
+msgstr "Data does not exist or no permission to access"
 
 #: iast/views/method_graph.py:52
-msgid "Page and PageSize can only be numbers"
-msgstr "Page and PageSize can only be numbers"
+msgid "Page and PageSize can only be numeric"
+msgstr "Page and PageSize can only be numeric"
 
 #: iast/views/openapi.py:16
 msgid "Get OpenAPI configuration failed"
 msgstr "Get OpenAPI configuration failed"
 
 #: iast/views/openapi.py:22
-msgid "Current users have no right to modify"
-msgstr "Current users have no right to modify"
+msgid "Current users have no permission to modify"
+msgstr "Current users have no permission to modify"
 
 #: iast/views/openapi.py:29 iast/views/openapi.py:32
 #: iast/views/project_add.py:111 iast/views/project_version_add.py:27
-msgid "Create success"
-msgstr "Create success"
+msgid "Created success"
+msgstr "Created success"
 
 #: iast/views/profile.py:13
-msgid "Get {} configuration failed"
-msgstr "Get {} configuration failed"
+msgid "Failed to get {} configuration"
+msgstr "Failed to get {} configuration"
 
 #: iast/views/profile.py:25
 msgid "Update {} failed"
 msgstr "Update {} failed"
 
 #: iast/views/project_add.py:25
-msgid "New project"
-msgstr "New project"
+msgid "New application"
+msgstr "New application"
 
 #: iast/views/project_add.py:58
-msgid "Creation failed, the project name already exists"
-msgstr "Creation failed, the project name already exists"
+msgid "Failed to create, the application name already exists"
+msgstr "Failed to create, the application name already exists"
 
 #: iast/views/project_add.py:84
-msgid "Agent has been bound by other projects"
-msgstr "Agent has been bound by other projects"
+msgid "Agent has been bound by other application"
+msgstr "Agent has been bound by other application"
 
 #: iast/views/project_delete.py:16
-msgid "Delete project"
-msgstr "Delete project"
+msgid "Delete application"
+msgstr "Delete application"
 
 #: iast/views/project_delete.py:26
-msgid "Project deletion success"
-msgstr "Project deletion success"
+msgid "Application has been deleted successfully"
+msgstr "Application has been deleted successfully"
 
 #: iast/views/project_detail.py:19
 msgid "View item details"
@@ -657,40 +662,40 @@ msgid "View engine list"
 msgstr "View engine list"
 
 #: iast/views/project_report_export.py:26
-msgid "Vulnerability Word Report Generation"
-msgstr "Vulnerability Word Report Generation"
+msgid "Vulnerability Report Generate - Word"
+msgstr "Vulnerability Report Generate - Word"
 
 #: iast/views/project_report_export.py:68
 msgid "Vulnerability Report - {}. {}"
 msgstr "Vulnerability Report - {}. {}"
 
 #: iast/views/project_report_export.py:121
-msgid "Safety test report"
-msgstr "Safety test report"
+msgid "Security Testing Report"
+msgstr "Security Testing Report"
 
 #: iast/views/project_report_export.py:134
-msgid "First, project basic information"
-msgstr "First, project basic information"
+msgid "First, project information"
+msgstr "First, project information"
 
 #: iast/views/project_report_export.py:142
-msgid "project name"
-msgstr "project name"
+msgid "Application name"
+msgstr "Application name"
 
 #: iast/views/project_report_export.py:145
-msgid "Creative personnel"
-msgstr "Creative personnel"
+msgid "Author"
+msgstr "Author"
 
 #: iast/views/project_report_export.py:148
-msgid "project type"
-msgstr "project type"
+msgid "Application type"
+msgstr "Application type"
 
 #: iast/views/project_report_export.py:151
-msgid "Vulnerability quantity"
-msgstr "Vulnerability quantity"
+msgid "Number of Vulnerability"
+msgstr "Number of Vulnerability"
 
 #: iast/views/project_report_export.py:154
-msgid "Agent quantity"
-msgstr "Agent quantity"
+msgid "Number of Agent"
+msgstr "Number of Agent"
 
 #: iast/views/project_report_export.py:157
 msgid "Latest time"
@@ -701,44 +706,44 @@ msgid "Second, the result analysis"
 msgstr "Second, the result analysis"
 
 #: iast/views/project_report_export.py:183
-msgid "2.1 Vulnerability Level Distribution"
-msgstr "2.1 Vulnerability Level Distribution"
+msgid "2.1 Vulnerability Severity Levels Distribution"
+msgstr "2.1 Vulnerability Severity Levels Distribution"
 
 #: iast/views/project_report_export.py:193
 msgid "2.2 Distribution of Vulnerability"
 msgstr "2.2 Distribution of Vulnerability"
 
 #: iast/views/project_report_export.py:201
-msgid "Vulnerability"
-msgstr "Vulnerability"
+msgid "Severity levels"
+msgstr "Severity levels"
 
 #: iast/views/project_report_export.py:202
 msgid "Vulnerability type name"
 msgstr "Vulnerability type name"
 
 #: iast/views/project_report_export.py:203
-msgid "quantity"
-msgstr "quantity"
+msgid "Number"
+msgstr "Number"
 
 #: iast/views/project_report_export.py:216
 msgid "2.3 Vulnerability details"
 msgstr "2.3 Vulnerability details"
 
 #: iast/views/project_report_export.py:239
-msgid "Summary information"
-msgstr "Summary information"
+msgid "Summary"
+msgstr "Summary"
 
 #: iast/views/project_report_export.py:243
-msgid "Hazard level"
-msgstr "Hazard level"
+msgid "Severity level"
+msgstr "Severity level"
 
 #: iast/views/project_report_export.py:247
-msgid "First test time"
-msgstr "First test time"
+msgid "First scan time"
+msgstr "First scan time"
 
 #: iast/views/project_report_export.py:251
-msgid "Recently test time"
-msgstr "Recently test time"
+msgid "Last scan time"
+msgstr "Last scan time"
 
 #: iast/views/project_report_export.py:255
 msgid "Development language"
@@ -753,20 +758,20 @@ msgid "Vulnerability description"
 msgstr "Vulnerability description"
 
 #: iast/views/project_summary.py:19
-msgid "View item details - summarization"
-msgstr "View item details - summarization"
+msgid "Item details - Summary"
+msgstr "Item details - Summary"
 
 #: iast/views/project_summary.py:67
-msgid "confirmed"
-msgstr "confirmed"
+msgid "Confirmed"
+msgstr "Confirmed"
 
 #: iast/views/project_version_add.py:19
-msgid "New project version information"
-msgstr "New project version information"
+msgid "New application version information"
+msgstr "New application version information"
 
 #: iast/views/project_version_current.py:20
-msgid "Set to the current project version"
-msgstr "Set to the current project version"
+msgid "Set to the current application version"
+msgstr "Set to the current application version"
 
 #: iast/views/project_version_current.py:46
 msgid "Version setting success"
@@ -777,36 +782,36 @@ msgid "Version setting failed"
 msgstr "Version setting failed"
 
 #: iast/views/project_version_delete.py:17
-msgid "Delete project version information"
-msgstr "Delete project version information"
+msgid "Delete application version information"
+msgstr "Delete application version information"
 
 #: iast/views/project_version_list.py:17
-msgid "View project version list"
-msgstr "View project version list"
+msgid "View application version list"
+msgstr "View application version list"
 
 #: iast/views/project_version_list.py:32
-msgid "search successful"
-msgstr "search successful"
+msgid "Search successful"
+msgstr "Search successful"
 
 #: iast/views/project_version_update.py:18
-msgid "Update project version information"
-msgstr "Update project version information"
+msgid "Update application version information"
+msgstr "Update application version information"
 
 #: iast/views/project_version_update.py:27 iast/views/version_update.py:49
-msgid "update completed"
-msgstr "update completed"
+msgid "Update completed"
+msgstr "Update completed"
 
 #: iast/views/projects.py:20
 msgid "View item list"
 msgstr "View item list"
 
 #: iast/views/sca_details.py:32
-msgid "Components do not exist or have no right to access"
-msgstr "Components do not exist or have no right to access"
+msgid "Components do not exist or no permission to access"
+msgstr "Components do not exist or no permission to access"
 
 #: iast/views/sca_details.py:47
-msgid "The current version has stopped maintenance or no secure version"
-msgstr "The current version has stopped maintenance or no secure version"
+msgid "Current version stopped for maintenance or it is not a secure version"
+msgstr "Current version stopped for maintenance or it is not a secure version"
 
 #: iast/views/sca_details.py:59
 msgid "Component information query failed"
@@ -849,8 +854,8 @@ msgid "Captcha timed out"
 msgstr "Captcha timed out"
 
 #: iast/views/user_login.py:35
-msgid "login successful"
-msgstr "login successful"
+msgid "Login successful"
+msgstr "Login successful"
 
 #: iast/views/user_login.py:39
 msgid "Login failed"
@@ -861,36 +866,36 @@ msgid "Verification code error"
 msgstr "Verification code error"
 
 #: iast/views/user_login.py:43
-msgid "verification code must be filled"
-msgstr "verification code must be filled"
+msgid "verification code should not be empty"
+msgstr "verification code should not be empty"
 
 #: iast/views/user_logout.py:21
-msgid "sign out"
-msgstr "sign out"
+msgid "Sign out"
+msgstr "Sign out"
 
 #: iast/views/user_logout.py:28
-msgid "exit successfully"
-msgstr "exit successfully"
+msgid "Sign out successfully"
+msgstr "Sign out successfully"
 
 #: iast/views/user_passwrd.py:16
-msgid "change Password"
-msgstr "change Password"
+msgid "Change Password"
+msgstr "Change Password"
 
 #: iast/views/user_passwrd.py:22
-msgid "The password is not allowed to be empty"
-msgstr "The password is not allowed to be empty"
+msgid "Password should not be empty"
+msgstr "Password should not be empty"
 
 #: iast/views/user_passwrd.py:30
-msgid "Password reset complete"
-msgstr "Password reset complete"
+msgid "Password has been changed successfully"
+msgstr "Password has been changed successfully"
 
 #: iast/views/user_passwrd.py:32
-msgid "Original password error"
-msgstr "Original password error"
+msgid "Incorrect old password"
+msgstr "Incorrect old password"
 
 #: iast/views/user_passwrd_reset.py:19
-msgid "reset Password"
-msgstr "reset Password"
+msgid "Reset Password"
+msgstr "Reset Password"
 
 #: iast/views/user_passwrd_reset.py:30
 msgid "User {} password reset success"
@@ -900,39 +905,35 @@ msgstr "User {} password reset success"
 msgid "User does not exist"
 msgstr "User does not exist"
 
-#: iast/views/user_passwrd_reset.py:37
+#: iast/views/user_passwrd_reset.py:37 iast/views/user_passwrd_reset.py:38
 msgid "UserID is empty"
 msgstr "UserID is empty"
 
-#: iast/views/user_passwrd_reset.py:38
-msgid "User ID is empty"
-msgstr "User ID is empty"
-
 #: iast/views/user_passwrd_reset.py:41
-msgid "UserID must be a number"
-msgstr "UserID must be a number"
+msgid "UserID must be a numeric"
+msgstr "UserID must be a numeric"
 
 #: iast/views/user_passwrd_reset.py:44
 #, fuzzy, python-brace-format
-#| msgid "Password reset failed, reasons: {}"
+#| msgid "Password reset failed, error message: {E}"
 msgid "Password reset failed, reasons: {E}"
 msgstr "Password reset failed, reasons: {E}"
 
 #: iast/views/user_register_batch.py:41
-msgid "Account creation success"
-msgstr "Account creation success"
+msgid "Account has been created successfully"
+msgstr "Account has been created successfully"
 
 #: iast/views/user_register_batch.py:67
 msgid "User {} already exists"
 msgstr "User {} already exists"
 
 #: iast/views/user_register_batch.py:72
-msgid "User creation failed because: token is incorrect"
-msgstr "User creation failed because: token is incorrect"
+msgid "Failed to create user, error message: token is incorrect"
+msgstr "Failed to create user, error message: token is incorrect"
 
 #: iast/views/user_register_batch.py:73
-msgid "Account registration success"
-msgstr "Account registration success"
+msgid "Account registration successful"
+msgstr "Account registration successful"
 
 #: iast/views/user_register_batch.py:88
 msgid "User account file read error"
@@ -947,20 +948,20 @@ msgid "Updated is currently not allowed"
 msgstr "Updated is currently not allowed"
 
 #: iast/views/vul_count_for_plugin.py:17 iast/views/vul_list_for_plugin.py:18
-msgid "please input agent name."
-msgstr "please input agent name."
+msgid "Please input agent name."
+msgstr "Please input agent name."
 
 #: iast/views/vul_count_for_plugin.py:24 iast/views/vul_list_for_plugin.py:25
-msgid "Not found agent_name!"
-msgstr "Not found agent_name!"
+msgid "agent_name not found"
+msgstr "agent_name not found"
 
 #: iast/views/vul_delete.py:19
 msgid "Delete vulnerability"
 msgstr "Delete vulnerability"
 
 #: iast/views/vul_delete.py:33
-msgid "Delete failed, the reason: the vulnerability does not exist"
-msgstr "Delete failed, the reason: the vulnerability does not exist"
+msgid "Failed to delete, error message: Vulnerability does not exist"
+msgstr "Failed to delete, error message: Vulnerability does not exist"
 
 #: iast/views/vul_details.py:76
 msgid "Source method"
@@ -979,20 +980,20 @@ msgid "Analysis of errovence analysis of stain call diagram: {}"
 msgstr "Analysis of errovence analysis of stain call diagram: {}"
 
 #: iast/views/vul_details.py:107
-msgid "Error analysis of Header, error: {}"
-msgstr "Error analysis of Header, error: {}"
+msgid "Error analysis of Header, error message: {}"
+msgstr "Error analysis of Header, error message: {}"
 
 #: iast/views/vul_details.py:138 iast/views/vul_details.py:202
-msgid "[{}] Vulnerability information parsing error, reason: {}"
-msgstr "[{}] Vulnerability information parsing error, reason: {}"
+msgid "[{}] Vulnerability information parsing error, error message: {}"
+msgstr "[{}] Vulnerability information parsing error, error message: {}"
 
 #: iast/views/vul_details.py:203
 msgid "Vulnerability data query error"
 msgstr "Vulnerability data query error"
 
 #: iast/views/vul_recheck.py:82
-msgid "IDS can't be empty"
-msgstr "IDS can't be empty"
+msgid "IDS should not be empty"
+msgstr "IDS should not be empty"
 
 #: iast/views/vul_recheck.py:86
 msgid "IDS must be: Vulnerability ID, Vulnerability ID Format"
@@ -1008,10 +1009,10 @@ msgstr "Vulnerability replay error"
 
 #: iast/views/vul_recheck.py:116
 msgid ""
-"The current project has not been associated with probes and cannot be "
+"Current application has not been associated with probes and cannot be "
 "reproduced."
 msgstr ""
-"The current project has not been associated with probes and cannot be "
+"Current application has not been associated with probes and cannot be "
 "reproduced."
 
 #: iast/views/vul_recheck.py:121 iast/views/vul_recheck.py:160
@@ -1019,20 +1020,20 @@ msgid "Batch playback error"
 msgstr "Batch playback error"
 
 #: iast/views/vul_recheck.py:155
-msgid "Item ID can't be empty"
-msgstr "Item ID can't be empty"
+msgid "Item ID should not be empty"
+msgstr "Item ID should not be empty"
 
 #: iast/views/vul_recheck.py:156
-msgid "The parameter format is incorrect"
-msgstr "The parameter format is incorrect"
+msgid "Incorrect format parameter"
+msgstr "Incorrect format parameter"
 
 #: iast/views/vul_request_replay.py:67
-msgid "HTTP request parsing error, reason: {}"
-msgstr "HTTP request parsing error, reason: {}"
+msgid "HTTP request parsing error, error message: {}"
+msgstr "HTTP request parsing error, error message: {}"
 
 #: iast/views/vul_request_replay.py:159
-msgid "Stain pool data does not exist or no right to operate"
-msgstr "Stain pool data does not exist or no right to operate"
+msgid "Stain pool data does not exist or no permission to access"
+msgstr "Stain pool data does not exist or no permission to access"
 
 #: iast/views/vul_request_replay.py:163
 msgid ""
@@ -1041,28 +1042,28 @@ msgstr ""
 "The probe has been destroyed or suspended, please check the probe status"
 
 #: iast/views/vul_request_replay.py:167
-msgid "Replay request is not legal"
-msgstr "Replay request is not legal"
+msgid "Replay request is illegal"
+msgstr "Replay request is illegal"
 
 #: iast/views/vul_request_replay.py:174
-msgid "Request to return success"
-msgstr "Request to return success"
+msgid "Relay request success"
+msgstr "Relay request success"
 
 #: iast/views/vul_request_replay.py:190
-msgid "Response header analysis error, error reason: {}"
-msgstr "Response header analysis error, error reason: {}"
+msgid "Response header analysis error, error message: {}"
+msgstr "Response header analysis error, error message: {}"
 
 #: iast/views/vul_request_replay.py:199
-msgid "Replay request does not exist or no operational permissions"
-msgstr "Replay request does not exist or no operational permissions"
+msgid "Replay request does not exist or no permission to access"
+msgstr "Replay request does not exist or no permission to access"
 
 #: iast/views/vul_request_replay.py:201
 msgid "Replay request processing"
 msgstr "Replay request processing"
 
 #: iast/views/vul_request_replay.py:212
-msgid "Replay failure"
-msgstr "Replay failure"
+msgid "Replay failed"
+msgstr "Replay failed"
 
 #: iast/views/vul_status.py:16
 msgid "Modify the vulnerability status"
@@ -1076,11 +1077,15 @@ msgstr "Vulnerability status is modified to {}"
 msgid "Applied vulnerability overview"
 msgstr "Applied vulnerability overview"
 
-#~ msgid "默认租户"
-#~ msgstr "默认租户"
+#~ msgid ""
+#~ "Deletion failed, please forcely delete all the users belong to the "
+#~ "department{}"
+#~ msgstr ""
+#~ "Deletion failed, please forcely delete all the users belong to the "
+#~ "department{}"
 
-#~ msgid "Run in operation"
-#~ msgstr "Run in operation"
+#~ msgid "Running"
+#~ msgstr "Running"
 
-#~ msgid "Not running"
-#~ msgstr "Not running"
+#~ msgid "Stopped"
+#~ msgstr "Stopped"
