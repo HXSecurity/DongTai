@@ -14,6 +14,7 @@ from iast.base.project_version import get_project_version, get_project_version_b
 import hashlib
 from dongtai.models.agent_method_pool import MethodPool
 from django.forms.models import model_to_dict
+from iast.utils import checkcover, batch_queryset
 
 
 class ApiRouteSearch(UserEndPoint):
@@ -68,7 +69,7 @@ class ApiRouteSearch(UserEndPoint):
 def _filter_and_label(api_routes, limit, is_cover=None):
     api_routes_after_filter = []
     for api_route in batch_queryset(api_routes):
-        api_route.is_cover = _checkcover(api_route)
+        api_route.is_cover = checkcover(api_route)
         if is_cover:
             api_routes_after_filter += [
                 api_route
@@ -80,14 +81,6 @@ def _filter_and_label(api_routes, limit, is_cover=None):
     return api_routes_after_filter
 
 
-def batch_queryset(queryset, batch_size=1):
-    iter_ = 0
-    while True:
-        queryset = list(queryset[iter_:iter_ + 1])
-        if not queryset:
-            break
-        else:
-            yield queryset[0]
 
 
 def _serialize(api_route, agents, http_method):
@@ -108,16 +101,3 @@ def _get_responses(api_route):
     return [model_to_dict(response) for response in responses]
 
 
-def _checkcover(api_route, agents, http_method):
-    uri_hash = hashlib.sha1(api_route.uri.encode('utf-8')).hexdigest()
-    api_method_id = api_route.values('method_id')
-    http_method_ids = IastApiMethodHttpMethodRelation.objects.filter(
-        api_method_id=api_method_id).values('api_method_id')
-    http_methods = HttpMethod.objects.filter(
-        http_method_ids__in=http_method_ids).all().values_list('method')
-    q = Q(agent_id__in=[_['id'] for _ in agents])
-    q = q & Q(http_method__in=http_methods)
-    q = q & Q(uri_hash=uri_hash)
-    if MethodPool.objects.filter(q)[0:1]:
-        return True
-    return False
