@@ -53,6 +53,5 @@ class ApiRouteRelationRequest(UserEndPoint):
         q = q & Q(
             http_method__in=[_.method for _ in api_route.method.http_method.all()])
         method = MethodPool.objects.filter(q).order_by('-update_time')[0:1].values()
-        method = MethodPool.objects.all()[0:1].values()
         data = list(method)[0] if method else {}
         return R.success(data=data)
