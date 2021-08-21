@@ -8,7 +8,7 @@
 
 from django.db.models import Q
 from dongtai.endpoint import R, UserEndPoint
-from dongtai.models.api_route import IastApiRoute, IastApiMethod, IastApiRoute, HttpMethod, IastApiResponse, IastApiMethodHttpMethodRelation
+from dongtai.models.api_route import IastApiRoute, IastApiMethod, IastApiRoute, HttpMethod, IastApiResponse, IastApiMethodHttpMethodRelation, IastApiParameter
 from dongtai.models.agent import IastAgent
 from iast.base.project_version import get_project_version, get_project_version_by_id
 import hashlib
@@ -53,23 +53,23 @@ class ApiRouteSearch(UserEndPoint):
         q = q & Q(
             method_id__in=[_['method_id']
                            for _ in api_methods]) if api_methods != [] else q
-        q = q & Q(uri__icontains=uri)
+        q = q & Q(path__icontains=uri) if uri else q
         q = q & ~Q(pk__in=exclude_id) if exclude_id else q
         api_routes = IastApiRoute.objects.filter(q).order_by('id').all()
         api_routes = _filter_and_label(
-            api_routes, page_size,
+            api_routes, page_size,agents,http_method,
             is_cover) if is_cover else _filter_and_label(
-                api_routes, page_size)
+                api_routes, page_size,agents,http_method)
         return R.success(data=[
-            _serialize(api_route, agents, http_method)
+            _serialize(api_route)
             for api_route in api_routes
         ])
 
 
-def _filter_and_label(api_routes, limit, is_cover=None):
+def _filter_and_label(api_routes, limit,agents,http_method, is_cover=None):
     api_routes_after_filter = []
     for api_route in batch_queryset(api_routes):
-        api_route.is_cover = checkcover(api_route)
+        api_route.is_cover = checkcover(api_route,agents,http_method)
         if is_cover:
             api_routes_after_filter += [
                 api_route
@@ -83,21 +83,31 @@ def _filter_and_label(api_routes, limit, is_cover=None):
 
 
 
-def _serialize(api_route, agents, http_method):
+def _serialize(api_route):
     item = model_to_dict(api_route)
     item['is_cover'] = api_route.is_cover
     item['parameters'] = _get_parameters(api_route)
     item['responses'] = _get_responses(api_route)
+    item['method'] = _get_api_method(item['method'])
     return item
 
 
 def _get_parameters(api_route):
-    parameters = api_route.IastApiParameter__set.all()
+    parameters = IastApiParameter.objects.filter(route=api_route).all()
     return [model_to_dict(parameter) for parameter in parameters]
 
 
 def _get_responses(api_route):
-    responses = api_route.IastApiResponse__set.all()
+    #responses = api_route.IastApiResponse__set.all()
+    responses = IastApiResponse.objects.filter(route=api_route).all()
     return [model_to_dict(response) for response in responses]
 
 
+def _get_api_method(api_method_id):
+    apimethod = IastApiMethod.objects.filter(pk=api_method_id).first()
+    if apimethod:
+        res = {}
+        res['apimethod'] = apimethod.method
+        res['httpmethods'] = [_.method for _ in apimethod.http_method.all()]
+        return res
+    return {}
