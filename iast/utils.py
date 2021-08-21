@@ -38,6 +38,23 @@ def assemble_query(condictions: dict,
                 }, condictions)), base_query)
 
 
+def extend_schema_with_envcheck(querys: list = [], request_body: list = []):
+    def myextend_schema(func):
+        import os
+        if os.getenv('environment', None) == 'TEST':
+            from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes
+            deco = extend_schema(
+                parameters=[OpenApiParameter(**query) for query in querys],
+                examples=[OpenApiExample('Example1', value=request_body)],
+                request={'application/json': OpenApiTypes.OBJECT},
+            )
+            funcw = deco(func)
+            funcw.querys = querys
+            funcw.reqbody = request_body
+            return funcw
+        return func
+
+    return myextend_schema
 
 def batch_queryset(queryset, batch_size=1):
     iter_ = 0

@@ -4,7 +4,7 @@ import logging
 
 from captcha.models import CaptchaStore
 from django.contrib.auth import authenticate, login
-
+from iast.utils import extend_schema_with_envcheck
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from django.utils.translation import gettext_lazy as _
@@ -19,6 +19,12 @@ class UserLogin(UserEndPoint):
     name = "user_views_login"
     description = _("User login")
 
+    @extend_schema_with_envcheck([], {
+        'username': "",
+        'password': "",
+        'captcha_hash_key': "",
+        'captcha': ""
+    })
     def post(self, request):
         captcha_hash_key = request.data["captcha_hash_key"]
         captcha = request.data["captcha"]
