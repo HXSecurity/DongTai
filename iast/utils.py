@@ -50,15 +50,19 @@ def batch_queryset(queryset, batch_size=1):
 
 
 def checkcover(api_route, agents, http_method):
-    uri_hash = hashlib.sha1(api_route.uri.encode('utf-8')).hexdigest()
-    api_method_id = api_route.values('method_id')
+    uri_hash = hashlib.sha1(api_route.path.encode('utf-8')).hexdigest()
+    api_method_id = api_route.method_id
     http_method_ids = IastApiMethodHttpMethodRelation.objects.filter(
         api_method_id=api_method_id).values('api_method_id')
     http_methods = HttpMethod.objects.filter(
-        http_method_ids__in=http_method_ids).all().values_list('method')
+        pk__in=http_method_ids).all().values_list('method')
     q = Q(agent_id__in=[_['id'] for _ in agents])
     q = q & Q(http_method__in=http_methods)
-    q = q & Q(uri_hash=uri_hash)
+    q = q & Q(uri_sha1=uri_hash)
     if MethodPool.objects.filter(q)[0:1]:
         return True
     return False
+
+
+def sha1(string, encoding='utf-8'):
+    return hashlib.sha1(string.encode(encoding)).hexdigest()
