@@ -11,6 +11,7 @@ import operator
 import hashlib
 from dongtai.models.api_route import IastApiRoute, IastApiMethod, IastApiRoute, HttpMethod, IastApiResponse, IastApiMethodHttpMethodRelation
 from dongtai.models.agent_method_pool import MethodPool
+from rest_framework.serializers import Serializer
 
 
 def get_model_field(model, exclude=[], include=[]):
@@ -44,7 +45,7 @@ def extend_schema_with_envcheck(querys: list = [], request_body: list = []):
         if os.getenv('environment', None) == 'TEST':
             from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes
             deco = extend_schema(
-                parameters=[OpenApiParameter(**query) for query in querys],
+                parameters=[OpenApiParameter(**_)for _ in querys],
                 examples=[OpenApiExample('Example1', value=request_body)],
                 request={'application/json': OpenApiTypes.OBJECT},
             )
@@ -59,22 +60,24 @@ def extend_schema_with_envcheck(querys: list = [], request_body: list = []):
 def batch_queryset(queryset, batch_size=1):
     iter_ = 0
     while True:
-        queryset = list(queryset[iter_:iter_ + 1])
-        if not queryset:
+        queryset_ = list(queryset[iter_:iter_ + 1])
+        iter_ += 1
+        if not queryset_:
             break
         else:
-            yield queryset[0]
+            yield queryset_[0]
 
 
-def checkcover(api_route, agents, http_method):
+def checkcover(api_route, agents, http_method=None):
     uri_hash = hashlib.sha1(api_route.path.encode('utf-8')).hexdigest()
     api_method_id = api_route.method_id
-    http_method_ids = IastApiMethodHttpMethodRelation.objects.filter(
-        api_method_id=api_method_id).values('api_method_id')
-    http_methods = HttpMethod.objects.filter(
-        pk__in=http_method_ids).all().values_list('method')
     q = Q(agent_id__in=[_['id'] for _ in agents])
-    q = q & Q(http_method__in=http_methods)
+    if http_method:
+        http_method_ids = IastApiMethodHttpMethodRelation.objects.filter(
+            api_method_id=api_method_id).values('api_method_id')
+        http_methods = HttpMethod.objects.filter(
+            pk__in=http_method_ids).all().values_list('method')
+        q = q & Q(http_method__in=http_methods)
     q = q & Q(uri_sha1=uri_hash)
     if MethodPool.objects.filter(q)[0:1]:
         return True
