@@ -38,7 +38,7 @@ def assemble_query(condictions: dict,
                 }, condictions)), base_query)
 
 
-def extend_schema_with_envcheck(querys, request_body):
+def extend_schema_with_envcheck(querys: list = [], request_body: list = []):
     def myextend_schema(func):
         import os
         if os.getenv('environment', None) == 'TEST':

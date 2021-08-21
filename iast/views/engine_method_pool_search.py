@@ -14,13 +14,23 @@ import operator
 import time
 
 class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
-    @extend_schema_with_envcheck([{
-        'name': "page_size",
-        "type": int,
-    }, {
-        'name': "page_index",
-        "type": int,
-    }],{})
+    @extend_schema_with_envcheck(
+        [{
+            'name': "page_size",
+            "type": int,
+        }, {
+            'name': "page_index",
+            "type": int,
+        }, {
+            'name': "highlight",
+            "type": int
+        }, {
+            "name": "exclude_ids",
+            "type": str
+        }, {
+            'name': "time_range",
+            "type": str
+        }],[])
     def get(self, request):
         page_size = int(request.query_params.get('page_size', 1))
         page = request.query_params.get('page_index', 1)
