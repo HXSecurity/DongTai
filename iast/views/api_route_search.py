@@ -25,17 +25,19 @@ class ApiRouteSearch(UserEndPoint):
         http_method = request.query_params.get('http_method', None)
         project_id = request.query_params.get('project_id', None)
         version_id = request.query_params.get('version_id', None)
-        exclude_id = request.query_params.get('exclude_id', None)
+        exclude_id = request.query_params.get('exclude_ids', None)
         exclude_id = [int(i)
                       for i in exclude_id.split(',')] if exclude_id else None
         is_cover = request.query_params.get('is_cover', None)
-        is_cover_dict = {'1': True, '0': False}
+        is_cover_dict = {1: True, 0: False}
         is_cover = is_cover_dict[int(is_cover)] if is_cover else None
         auth_users = self.get_auth_users(request.user)
 
         if http_method:
-            api_methods = IastApiMethod.objects.filter(
-                http_method__method=http_method.upper()).all().values('id')
+            http_method_obj = HttpMethod.objects.filter(method=http_method.upper())[0:1]
+            if http_method_obj:
+                api_methods = IastApiMethod.objects.filter(
+                    http_method__id=http_method_obj[0].id).all().values('id')
         else:
             api_methods = []
 
@@ -51,26 +53,24 @@ class ApiRouteSearch(UserEndPoint):
                                                            0)).values("id")
         q = Q(agent_id__in=[_['id'] for _ in agents])
         q = q & Q(
-            method_id__in=[_['method_id']
+            method_id__in=[_['id']
                            for _ in api_methods]) if api_methods != [] else q
         q = q & Q(path__icontains=uri) if uri else q
         q = q & ~Q(pk__in=exclude_id) if exclude_id else q
         api_routes = IastApiRoute.objects.filter(q).order_by('id').all()
         api_routes = _filter_and_label(
-            api_routes, page_size,agents,http_method,
+            api_routes, page_size, agents, http_method,
             is_cover) if is_cover else _filter_and_label(
-                api_routes, page_size,agents,http_method)
-        return R.success(data=[
-            _serialize(api_route)
-            for api_route in api_routes
-        ])
+                api_routes, page_size, agents, http_method)
+        return R.success(
+            data=[_serialize(api_route) for api_route in api_routes])
 
 
-def _filter_and_label(api_routes, limit,agents,http_method, is_cover=None):
+def _filter_and_label(api_routes, limit, agents, http_method, is_cover=None):
     api_routes_after_filter = []
     for api_route in batch_queryset(api_routes):
-        api_route.is_cover = checkcover(api_route,agents,http_method)
-        if is_cover:
+        api_route.is_cover = checkcover(api_route, agents, http_method)
+        if is_cover is not None:
             api_routes_after_filter += [
                 api_route
             ] if api_route.is_cover == is_cover else []

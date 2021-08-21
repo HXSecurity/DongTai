@@ -14,9 +14,20 @@ from dongtai.models.agent import IastAgent
 from django.db.models import Q
 from django.forms.models import model_to_dict
 from iast.utils import sha1
+from iast.utils import extend_schema_with_envcheck
 
 
 class ApiRouteRelationRequest(UserEndPoint):
+    @extend_schema_with_envcheck([{
+        'name': 'api_route_id',
+        'type': int
+    }, {
+        'name': 'project_id',
+        'type': int
+    }, {
+        'name': 'version_id',
+        'type': int
+    }])
     def get(self, request):
         page_size = int(request.query_params.get('page_size', 1))
         page_index = int(request.query_params.get('page_index', 1))
@@ -40,6 +51,8 @@ class ApiRouteRelationRequest(UserEndPoint):
         q = q & Q(agent_id__in=[_['id'] for _ in agents]) if project_id else q
         q = q & Q(uri_sha1=sha1(api_route.path))
         q = q & Q(
-            method__in=[_.method for _ in api_route.method.http_method.all()])
-        method = MethodPool.objects.filter(q).order_by('-update_time').first()
-        return R.success(data=model_to_dict(method))
+            http_method__in=[_.method for _ in api_route.method.http_method.all()])
+        method = MethodPool.objects.filter(q).order_by('-update_time')[0:1].values()
+        method = MethodPool.objects.all()[0:1].values()
+        data = list(method)[0] if method else {}
+        return R.success(data=data)

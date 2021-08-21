@@ -12,9 +12,17 @@ from dongtai.endpoint import R, UserEndPoint
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from iast.utils import checkcover, batch_queryset
-
+from iast.utils import extend_schema_with_envcheck
+from dongtai.models.api_route import IastApiRoute
 
 class ApiRouteCoverRate(UserEndPoint):
+    @extend_schema_with_envcheck([{
+        'name': 'project_id',
+        'type': int
+    }, {
+        'name': 'version_id',
+        'type': int
+    }])
     def get(self, request):
         project_id = request.query_params.get('project_id', None)
         version_id = request.query_params.get('version_id', None)
@@ -30,11 +38,12 @@ class ApiRouteCoverRate(UserEndPoint):
             project_version_id=current_project_version.get("version_id",
                                                            0)).values("id")
         q = Q(agent_id__in=[_['id'] for _ in agents])
-        total = q.count()
+        queryset = IastApiRoute.objects.filter(q)
+        total = queryset.count()
         cover_count = 0
-        for api_route in batch_queryset(q):
-            if checkcover(api_route):
+        for api_route in batch_queryset(queryset):
+            if checkcover(api_route,agents):
                 cover_count += 1
-        cover_rate = "{.2f}%".format(cover_count / total)
+        cover_rate = "{:.2f}%".format(cover_count / total)
         return R.success(msg=_('API coverage rate obtained successfully'),
                          data={'cover_rate': cover_rate})
