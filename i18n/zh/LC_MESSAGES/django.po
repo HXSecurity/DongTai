@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-20 14:51+0800\n"
+"POT-Creation-Date: 2021-08-23 12:09+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -320,7 +320,7 @@ msgstr "重放请求队列删除成功，共删除：{}条"
 msgid "Failed to delete replay request queue, error message: {}"
 msgstr "重放请求队列删除失败，原因：{}"
 
-#: iast/views/agent_deploy.py:27
+#: iast/views/agent_deploy.py:33
 msgid "Corresponding deployment document could not be found"
 msgstr "找不到对应部署文档"
 
@@ -328,7 +328,7 @@ msgstr "找不到对应部署文档"
 msgid "Agent deployment document"
 msgstr "Agent部署文档"
 
-#: iast/views/agent_deploy_doc.py:31 iast/views/vuls.py:34
+#: iast/views/agent_deploy_doc.py:38 iast/views/vuls.py:34
 msgid "No data"
 msgstr "暂无数据"
 
@@ -438,6 +438,12 @@ msgstr "删除失败"
 #: iast/views/agents_delete.py:60
 msgid "Successfully deleted {} strips, failed to deleted {} strips"
 msgstr "成功删除{}条，删除失败{}条"
+
+#: iast/views/api_route_cover_rate.py:48
+#, fuzzy
+#| msgid "Agent and related data deleted successfully"
+msgid "API coverage rate obtained successfully"
+msgstr "agent及相关数据删除成功"
 
 #: iast/views/engine_hook_rule_add.py:58
 #: iast/views/engine_hook_rule_modify.py:35
@@ -552,6 +558,10 @@ msgstr "method_pool does not exist"
 #: iast/views/engine_method_pool_sca.py:27
 msgid "method_pool has no permission"
 msgstr "method_pool has no permission"
+
+#: iast/views/engine_method_pool_search.py:97
+msgid "The regular expression format is wrong, please use REGEX POSIX 1003.2"
+msgstr "正则表达式格式错误，请使用REGEX POSIX 1003.2"
 
 #: iast/views/log_clear.py:14
 msgid "Log clear"
@@ -838,23 +848,23 @@ msgstr "用户信息"
 msgid "User login"
 msgstr "用户登录"
 
-#: iast/views/user_login.py:28
+#: iast/views/user_login.py:34
 msgid "Captcha timed out"
 msgstr ""
 
-#: iast/views/user_login.py:35
+#: iast/views/user_login.py:41
 msgid "Login successful"
 msgstr "登录成功"
 
-#: iast/views/user_login.py:39
+#: iast/views/user_login.py:45
 msgid "Login failed"
 msgstr "登录失败"
 
-#: iast/views/user_login.py:41
+#: iast/views/user_login.py:47
 msgid "Verification code error"
 msgstr "验证码错误"
 
-#: iast/views/user_login.py:43
+#: iast/views/user_login.py:49
 msgid "verification code should not be empty"
 msgstr "验证码不能为空"
 
@@ -992,7 +1002,7 @@ msgstr "ids必须为：漏洞ID,漏洞ID 格式"
 msgid "Handle success"
 msgstr "处理成功"
 
-#: iast/views/vul_recheck.py:103 iast/views/vul_request_replay.py:178
+#: iast/views/vul_recheck.py:103 iast/views/vul_request_replay.py:212
 msgid "Vulnerability replay error"
 msgstr "漏洞重放出错"
 
@@ -1014,40 +1024,40 @@ msgstr "项目ID不能为空"
 msgid "Incorrect format parameter"
 msgstr "参数格式不正确"
 
-#: iast/views/vul_request_replay.py:67
+#: iast/views/vul_request_replay.py:75
 msgid "HTTP request parsing error, error message: {}"
 msgstr "HTTP请求解析出错，原因：{}"
 
-#: iast/views/vul_request_replay.py:159
+#: iast/views/vul_request_replay.py:180
 msgid "Stain pool data does not exist or no permission to access"
 msgstr "污点池数据不存在或无权操作"
 
-#: iast/views/vul_request_replay.py:163
+#: iast/views/vul_request_replay.py:190
 msgid ""
 "The probe has been destroyed or suspended, please check the probe status"
 msgstr "探针已销毁或暂停运行，请选检查探针状态"
 
-#: iast/views/vul_request_replay.py:167
+#: iast/views/vul_request_replay.py:196
 msgid "Replay request is illegal"
 msgstr "重放请求不合法"
 
-#: iast/views/vul_request_replay.py:174
+#: iast/views/vul_request_replay.py:207
 msgid "Relay request success"
 msgstr "请求重返成功"
 
-#: iast/views/vul_request_replay.py:190
+#: iast/views/vul_request_replay.py:226
 msgid "Response header analysis error, error message: {}"
 msgstr "Response Header解析出错，错误原因：{}"
 
-#: iast/views/vul_request_replay.py:199
+#: iast/views/vul_request_replay.py:240
 msgid "Replay request does not exist or no permission to access"
 msgstr "重放请求不存在或无操作权限"
 
-#: iast/views/vul_request_replay.py:201
+#: iast/views/vul_request_replay.py:243
 msgid "Replay request processing"
 msgstr "重放请求处理中"
 
-#: iast/views/vul_request_replay.py:212
+#: iast/views/vul_request_replay.py:258
 msgid "Replay failed"
 msgstr "重放失败"
 
