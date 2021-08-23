@@ -199,7 +199,7 @@ class SaasMethodPoolHandler(IReportHandler):
                 clent_ip=self.client_ip,
                 create_time=timestamp,
                 update_time=timestamp,
-                url_sha1=self.sha1(self.http_uri),
+                uri_sha1=self.sha1(self.http_uri),
             )
         return update_record, method_pool
 
