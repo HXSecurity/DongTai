@@ -8,7 +8,9 @@ from dongtai.models.project import IastProject
 from dongtai.models.user import User
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 
-from iast.utils import get_model_field, assemble_query,extend_schema_with_envcheck
+from iast.utils import get_model_field, assemble_query, extend_schema_with_envcheck
+from django.utils.translation import gettext_lazy 
+from django.db.utils import OperationalError
 import re
 import operator
 import time
@@ -89,7 +91,10 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         q = (q & (~Q(pk__in=ids.split(',')))) if ids is not None and ids != '' else q
         queryset = MethodPool.objects.filter(q).order_by(
             '-update_time')[:page_size]
-        method_pools = list(queryset.values())
+        try:
+            method_pools = list(queryset.values())
+        except OperationalError as e:
+            return R.failure(msg=gettext_lazy("The regular expression format is wrong, please use REGEX POSIX 1003.2"))
         afterkeys = {}
         for i in method_pools[-1:]:
             afterkeys['update_time'] = i['update_time']
