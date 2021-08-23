@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-20 14:51+0800\n"
+"POT-Creation-Date: 2021-08-23 12:09+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -170,11 +170,11 @@ msgstr "Department does not exist or no permission to access"
 #: iast/base/agent.py:127
 #, python-brace-format
 msgid ""
-"We found that there is {1} in the {0} page, attacker can modify the value of"
-" {2} to attack:"
+"We found that there is {1} in the {0} page, attacker can modify the value of "
+"{2} to attack:"
 msgstr ""
-"We found that there is {1} in the {0} page, attacker can modify the value of"
-" {2} to attack:"
+"We found that there is {1} in the {0} page, attacker can modify the value of "
+"{2} to attack:"
 
 #: iast/base/agent.py:142
 msgid "{} Line"
@@ -329,7 +329,7 @@ msgstr "Replay request queue deleted successfully, Deletion amount: {}"
 msgid "Failed to delete replay request queue, error message: {}"
 msgstr "Failed to delete replay request queue, error message: {}"
 
-#: iast/views/agent_deploy.py:27
+#: iast/views/agent_deploy.py:33
 msgid "Corresponding deployment document could not be found"
 msgstr "Corresponding deployment document could not be found"
 
@@ -337,7 +337,7 @@ msgstr "Corresponding deployment document could not be found"
 msgid "Agent deployment document"
 msgstr "Agent deployment document"
 
-#: iast/views/agent_deploy_doc.py:31 iast/views/vuls.py:34
+#: iast/views/agent_deploy_doc.py:38 iast/views/vuls.py:34
 msgid "No data"
 msgstr "No data"
 
@@ -449,6 +449,12 @@ msgstr "Deletion failed"
 #: iast/views/agents_delete.py:60
 msgid "Successfully deleted {} strips, failed to deleted {} strips"
 msgstr "Successfully deleted {} strips, failed to deleted {} strips"
+
+#: iast/views/api_route_cover_rate.py:48
+#, fuzzy
+#| msgid "Agent and related data deleted successfully"
+msgid "API coverage rate obtained successfully"
+msgstr "Agent and related data deleted successfully"
 
 #: iast/views/engine_hook_rule_add.py:58
 #: iast/views/engine_hook_rule_modify.py:35
@@ -563,6 +569,10 @@ msgstr "method_pool does not exist"
 #: iast/views/engine_method_pool_sca.py:27
 msgid "method_pool has no permission"
 msgstr "method_pool has no permission"
+
+#: iast/views/engine_method_pool_search.py:97
+msgid "The regular expression format is wrong, please use REGEX POSIX 1003.2"
+msgstr "The regular expression format is wrong, please use REGEX POSIX 1003.2"
 
 #: iast/views/log_clear.py:14
 msgid "Log clear"
@@ -849,23 +859,23 @@ msgstr "User Info"
 msgid "User login"
 msgstr "User login"
 
-#: iast/views/user_login.py:28
+#: iast/views/user_login.py:34
 msgid "Captcha timed out"
 msgstr "Captcha timed out"
 
-#: iast/views/user_login.py:35
+#: iast/views/user_login.py:41
 msgid "Login successful"
 msgstr "Login successful"
 
-#: iast/views/user_login.py:39
+#: iast/views/user_login.py:45
 msgid "Login failed"
 msgstr "Login failed"
 
-#: iast/views/user_login.py:41
+#: iast/views/user_login.py:47
 msgid "Verification code error"
 msgstr "Verification code error"
 
-#: iast/views/user_login.py:43
+#: iast/views/user_login.py:49
 msgid "verification code should not be empty"
 msgstr "verification code should not be empty"
 
@@ -1003,7 +1013,7 @@ msgstr "IDS must be: Vulnerability ID, Vulnerability ID Format"
 msgid "Handle success"
 msgstr "Handle success"
 
-#: iast/views/vul_recheck.py:103 iast/views/vul_request_replay.py:178
+#: iast/views/vul_recheck.py:103 iast/views/vul_request_replay.py:212
 msgid "Vulnerability replay error"
 msgstr "Vulnerability replay error"
 
@@ -1027,41 +1037,41 @@ msgstr "Item ID should not be empty"
 msgid "Incorrect format parameter"
 msgstr "Incorrect format parameter"
 
-#: iast/views/vul_request_replay.py:67
+#: iast/views/vul_request_replay.py:75
 msgid "HTTP request parsing error, error message: {}"
 msgstr "HTTP request parsing error, error message: {}"
 
-#: iast/views/vul_request_replay.py:159
+#: iast/views/vul_request_replay.py:180
 msgid "Stain pool data does not exist or no permission to access"
 msgstr "Stain pool data does not exist or no permission to access"
 
-#: iast/views/vul_request_replay.py:163
+#: iast/views/vul_request_replay.py:190
 msgid ""
 "The probe has been destroyed or suspended, please check the probe status"
 msgstr ""
 "The probe has been destroyed or suspended, please check the probe status"
 
-#: iast/views/vul_request_replay.py:167
+#: iast/views/vul_request_replay.py:196
 msgid "Replay request is illegal"
 msgstr "Replay request is illegal"
 
-#: iast/views/vul_request_replay.py:174
+#: iast/views/vul_request_replay.py:207
 msgid "Relay request success"
 msgstr "Relay request success"
 
-#: iast/views/vul_request_replay.py:190
+#: iast/views/vul_request_replay.py:226
 msgid "Response header analysis error, error message: {}"
 msgstr "Response header analysis error, error message: {}"
 
-#: iast/views/vul_request_replay.py:199
+#: iast/views/vul_request_replay.py:240
 msgid "Replay request does not exist or no permission to access"
 msgstr "Replay request does not exist or no permission to access"
 
-#: iast/views/vul_request_replay.py:201
+#: iast/views/vul_request_replay.py:243
 msgid "Replay request processing"
 msgstr "Replay request processing"
 
-#: iast/views/vul_request_replay.py:212
+#: iast/views/vul_request_replay.py:258
 msgid "Replay failed"
 msgstr "Replay failed"
 
