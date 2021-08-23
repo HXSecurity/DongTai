@@ -61,7 +61,7 @@ class IastApiRoute(models.Model):
                                  db_column='code_file')
     controller = models.CharField(max_length=100, blank=True)
     agent = models.ForeignKey(IastAgent,
-                              on_delete=models.DO_NOTHING,
+                              on_delete=models.CASCADE,
                               db_constraint=False,
                               db_index=True,
                               db_column='agent_id')
