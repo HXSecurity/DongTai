@@ -98,6 +98,9 @@ from iast.views.vuls import VulsEndPoint
 from iast.views.version_update import MethodPoolVersionUpdate
 from iast.views.demo import Demo
 from i18n.views.setlang import LanguageSetting
+from iast.views.api_route_search import ApiRouteSearch
+from iast.views.api_route_related_request import ApiRouteRelationRequest
+from iast.views.api_route_cover_rate import ApiRouteCoverRate
 
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
@@ -204,6 +207,9 @@ urlpatterns = [
     path('version_update/K23DiutPrwpoqAddqNbHUk',
          MethodPoolVersionUpdate.as_view()),
     path('i18n/setlang', LanguageSetting.as_view()),
+    path('api_route/search', ApiRouteSearch.as_view()),
+    path('api_route/relationrequest', ApiRouteRelationRequest.as_view()),
+    path('api_route/cover_rate', ApiRouteCoverRate.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
