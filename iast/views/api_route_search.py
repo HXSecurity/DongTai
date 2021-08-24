@@ -15,7 +15,8 @@ import hashlib
 from dongtai.models.agent_method_pool import MethodPool
 from django.forms.models import model_to_dict
 from iast.utils import checkcover, batch_queryset
-
+from django.core.cache import caches
+from functools import partial
 
 class ApiRouteSearch(UserEndPoint):
     def get(self, request):
@@ -58,17 +59,42 @@ class ApiRouteSearch(UserEndPoint):
         q = q & Q(path__icontains=uri) if uri else q
         q = q & ~Q(pk__in=exclude_id) if exclude_id else q
         api_routes = IastApiRoute.objects.filter(q).order_by('id').all()
-        api_routes = _filter_and_label(
+        distinct_fields = ["path", "method_id"]
+        distinct_exist_list = [] if not exclude_id else list(
+            set([
+                distinct_key(
+                    IastApiRoute.objects.filter(id=i).values(
+                        *distinct_fields), distinct_fields) for i in exclude_id
+            ]))
+        _filter_and_label_partial = partial(
+            _filter_and_label,
+            distinct=True,
+            distinct_fields=distinct_fields,
+            distinct_exist_list=distinct_exist_list)
+        api_routes = _filter_and_label_partial(
             api_routes, page_size, agents, http_method,
-            is_cover) if is_cover else _filter_and_label(
+            is_cover) if is_cover else _filter_and_label_partial(
                 api_routes, page_size, agents, http_method)
         return R.success(
             data=[_serialize(api_route) for api_route in api_routes])
 
 
-def _filter_and_label(api_routes, limit, agents, http_method, is_cover=None):
+def _filter_and_label(api_routes,
+                      limit,
+                      agents,
+                      http_method,
+                      is_cover=None,
+                      distinct=True,
+                      distinct_fields=['path', 'method_id'],
+                      distinct_exist_list=[]):
     api_routes_after_filter = []
+    distinct_exist_list = distinct_exist_list.copy()
     for api_route in batch_queryset(api_routes):
+        distinct_key_ = distinct_key(api_route, distinct_fields)
+        if distinct_key_ in distinct_exist_list:
+            continue
+        else:
+            distinct_exist_list.append(distinct_key_)
         api_route.is_cover = checkcover(api_route, agents, http_method)
         if is_cover is not None:
             api_routes_after_filter += [
@@ -81,11 +107,19 @@ def _filter_and_label(api_routes, limit, agents, http_method, is_cover=None):
     return api_routes_after_filter
 
 
+def distinct_key(objects, fields):
+    sequence = [getattr(objects, field, 'None') for field in fields]
+    sequence = [
+        item if isinstance(item, str) else str(item) for item in sequence
+    ]
+    return '_'.join(sequence)
 
 
 def _serialize(api_route):
     item = model_to_dict(api_route)
-    item['is_cover'] = api_route.is_cover
+    is_cover_dict = {1: True, 0: False}
+    is_cover_dict = _inverse_dict(is_cover_dict)
+    item['is_cover'] = is_cover_dict[api_route.is_cover]
     item['parameters'] = _get_parameters(api_route)
     item['responses'] = _get_responses(api_route)
     item['method'] = _get_api_method(item['method'])
@@ -98,7 +132,6 @@ def _get_parameters(api_route):
 
 
 def _get_responses(api_route):
-    #responses = api_route.IastApiResponse__set.all()
     responses = IastApiResponse.objects.filter(route=api_route).all()
     return [model_to_dict(response) for response in responses]
 
@@ -111,3 +144,7 @@ def _get_api_method(api_method_id):
         res['httpmethods'] = [_.method for _ in apimethod.http_method.all()]
         return res
     return {}
+
+
+def _inverse_dict(dic: dict) -> dict:
+    return {v: k for k, v in dic.items()}
