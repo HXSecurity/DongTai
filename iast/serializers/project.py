@@ -18,11 +18,15 @@ class ProjectSerializer(serializers.ModelSerializer):
     vul_count = serializers.SerializerMethodField()
     owner = serializers.SerializerMethodField()
     agent_count = serializers.SerializerMethodField()
+    agent_language = serializers.SerializerMethodField()
     USER_MAP = {}
 
     class Meta:
         model = IastProject
-        fields = ['id', 'name', 'mode', 'vul_count', 'agent_count', 'owner', 'latest_time']
+        fields = [
+            'id', 'name', 'mode', 'vul_count', 'agent_count', 'owner',
+            'latest_time', 'agent_language'
+        ]
 
     def get_agents(self, obj):
         try:
@@ -48,3 +52,8 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_agent_count(self, obj):
         return self.get_agents(obj).filter(is_running=const.RUNNING).count()
+
+    def get_agent_language(self, obj):
+        res = self.get_agents(obj).filter(online=1).values_list(
+            'language', flat=True).distinct()
+        return list(res)

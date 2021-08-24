@@ -13,11 +13,17 @@ from rest_framework.authtoken.models import Token
 from iast.utils import get_model_field
 from django.forms.models import model_to_dict
 from django.utils.translation import gettext_lazy as _
+from iast.utils import extend_schema_with_envcheck
 
+
+_fields = get_model_field(IastDeployDesc, include=['middleware', 'language'])
 
 class AgentDeploy(UserEndPoint):
+    @extend_schema_with_envcheck([{
+        'name': field,
+        'type': str
+    } for field in _fields], [])
     def get(self, request):
-
         fields = get_model_field(IastDeployDesc,
                                  include=['middleware', 'language'])
         filters = {k: v for k, v in request.GET.items() if k in fields}
