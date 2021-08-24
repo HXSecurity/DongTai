@@ -9,7 +9,6 @@ from dongtai.endpoint import OpenApiEndPoint, R
 from apiserver.decrypter import parse_data
 from apiserver.report.report_handler_factory import ReportHandler
 
-
 class ReportUploadEndPoint(OpenApiEndPoint):
     name = "api-v1-report-upload"
     description = "agent上传报告"
@@ -21,6 +20,7 @@ class ReportUploadEndPoint(OpenApiEndPoint):
         :return:
         """
         try:
+
             report = parse_data(request.read())
             data = ReportHandler.handler(report, request.user)
 
