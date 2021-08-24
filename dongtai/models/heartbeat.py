@@ -18,6 +18,19 @@ class IastHeartbeat(models.Model):
     disk = models.CharField(max_length=1000, blank=True, null=True)
     req_count = models.IntegerField(blank=True, null=True)
     dt = models.IntegerField(blank=True, null=True)
+    report_queue = models.PositiveIntegerField(max_length=3,
+                                               default=0,
+                                               null=False,
+                                               blank=False)
+    method_queue = models.PositiveIntegerField(max_length=3,
+                                               default=0,
+                                               null=False,
+                                               blank=False)
+    replay_queue = models.PositiveIntegerField(max_length=3,
+                                               default=0,
+                                               null=False,
+                                               blank=False)
+
     agent = models.ForeignKey(
         to=IastAgent,
         on_delete=models.DO_NOTHING,
