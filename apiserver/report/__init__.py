@@ -9,6 +9,7 @@ from apiserver.report.handler.heartbeat_handler import HeartBeatHandler
 from apiserver.report.handler.narmal_vul_handler import NormalVulnHandler
 from apiserver.report.handler.saas_method_pool_handler import SaasMethodPoolHandler
 from apiserver.report.handler.sca_handler import ScaHandler
+from apiserver.report.handler.api_route_handler import ApiRouteHandler
 
 if __name__ == '__main__':
     ErrorLogHandler()
@@ -16,3 +17,4 @@ if __name__ == '__main__':
     ScaHandler()
     NormalVulnHandler()
     SaasMethodPoolHandler()
+    ApiRouteHandler()

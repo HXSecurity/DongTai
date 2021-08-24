@@ -25,7 +25,6 @@ logger = logging.getLogger('dongtai.openapi')
 
 @ReportHandler.register(const.REPORT_VULN_SAAS_POOL)
 class SaasMethodPoolHandler(IReportHandler):
-
     @staticmethod
     def parse_headers(headers_raw):
         headers = dict()
@@ -59,7 +58,9 @@ class SaasMethodPoolHandler(IReportHandler):
         self.param_name = self.detail.get('param_name')
         self.method_pool = self.report.get('detail', {}).get('pool', None)
         if self.method_pool:
-            self.method_pool = sorted(self.method_pool, key=lambda e: e.__getitem__('invokeId'), reverse=True)
+            self.method_pool = sorted(self.method_pool,
+                                      key=lambda e: e.__getitem__('invokeId'),
+                                      reverse=True)
 
     def save(self):
         """
@@ -75,23 +76,22 @@ class SaasMethodPoolHandler(IReportHandler):
             timestamp = int(time.time())
 
             # fixme 直接查询replay_id是否存在，如果存在，直接覆盖
-            query_set = IastAgentMethodPoolReplay.objects.values("id").filter(replay_id=replay_id)
+            query_set = IastAgentMethodPoolReplay.objects.values("id").filter(
+                replay_id=replay_id)
             if query_set.exists():
                 # 更新
                 replay_model = query_set.first()
-                replay_model.update(
-                    url=self.http_url,
-                    uri=self.http_uri,
-                    req_header=self.http_req_header,
-                    req_params=self.http_query_string,
-                    req_data=self.http_req_data,
-                    res_header=self.http_res_header,
-                    res_body=self.http_res_body,
-                    context_path=self.context_path,
-                    method_pool=json.dumps(self.method_pool),
-                    clent_ip=self.client_ip,
-                    update_time=timestamp
-                )
+                replay_model.update(url=self.http_url,
+                                    uri=self.http_uri,
+                                    req_header=self.http_req_header,
+                                    req_params=self.http_query_string,
+                                    req_data=self.http_req_data,
+                                    res_header=self.http_res_header,
+                                    res_body=self.http_res_body,
+                                    context_path=self.context_path,
+                                    method_pool=json.dumps(self.method_pool),
+                                    clent_ip=self.client_ip,
+                                    update_time=timestamp)
                 method_pool_id = replay_model['id']
             else:
                 # 新增
@@ -114,17 +114,20 @@ class SaasMethodPoolHandler(IReportHandler):
                     replay_type=replay_type,
                     relation_id=relation_id,
                     create_time=timestamp,
-                    update_time=timestamp
-                )
+                    update_time=timestamp)
                 method_pool_id = replay_model.id
-            IastReplayQueue.objects.filter(id=replay_id).update(state=const.SOLVED)
+            IastReplayQueue.objects.filter(id=replay_id).update(
+                state=const.SOLVED)
             if method_pool_id:
-                self.send_to_engine(method_pool_id=method_pool_id, model='replay')
+                self.send_to_engine(method_pool_id=method_pool_id,
+                                    model='replay')
         else:
             pool_sign = self.calc_hash()
             current_version_agents = self.get_project_agents(self.agent)
-            update_record, method_pool = self.save_method_call(pool_sign, current_version_agents)
-            self.send_to_engine(method_pool_id=method_pool.id, update_record=update_record)
+            update_record, method_pool = self.save_method_call(
+                pool_sign, current_version_agents)
+            self.send_to_engine(method_pool_id=method_pool.id,
+                                update_record=update_record)
 
     def save_method_call(self, pool_sign, current_version_agents):
         """
@@ -133,7 +136,8 @@ class SaasMethodPoolHandler(IReportHandler):
         :param current_version_agents:
         :return:
         """
-        method_pool = MethodPool.objects.filter(pool_sign=pool_sign, agent__in=current_version_agents).first()
+        method_pool = MethodPool.objects.filter(
+            pool_sign=pool_sign, agent__in=current_version_agents).first()
         update_record = True
         if method_pool:
             method_pool.update_time = int(time.time())
@@ -149,13 +153,23 @@ class SaasMethodPoolHandler(IReportHandler):
                 raw_req_header=self.http_req_header,
                 uri=self.http_uri,
                 query_params=self.http_query_string,
-                http_protocol=self.http_protocol
-            )
+                http_protocol=self.http_protocol)
             method_pool.res_header = utils.base64_decode(self.http_res_header)
             method_pool.res_body = self.http_res_body
+            method_pool.uri_sha1 = self.sha1(self.http_uri)
             method_pool.save(update_fields=[
-                'update_time', 'method_pool', 'uri', 'url', 'http_method', 'req_header', 'req_params', 'req_data',
-                'req_header_fs', 'res_header', 'res_body'
+                'update_time',
+                'method_pool',
+                'uri',
+                'url',
+                'http_method',
+                'req_header',
+                'req_params',
+                'req_data',
+                'req_header_fs',
+                'res_header',
+                'res_body',
+                'uri_sha1',
             ])
         else:
             # 获取agent
@@ -176,8 +190,7 @@ class SaasMethodPoolHandler(IReportHandler):
                     raw_req_header=self.http_req_header,
                     uri=self.http_uri,
                     query_params=self.http_query_string,
-                    http_protocol=self.http_protocol
-                ),
+                    http_protocol=self.http_protocol),
                 res_header=utils.base64_decode(self.http_res_header),
                 res_body=self.http_res_body,
                 context_path=self.context_path,
@@ -185,7 +198,8 @@ class SaasMethodPoolHandler(IReportHandler):
                 pool_sign=pool_sign,
                 clent_ip=self.client_ip,
                 create_time=timestamp,
-                update_time=timestamp
+                update_time=timestamp,
+                uri_sha1=self.sha1(self.http_uri),
             )
         return update_record, method_pool
 
