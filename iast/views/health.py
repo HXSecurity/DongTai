@@ -18,9 +18,10 @@ from rest_framework.authtoken.models import Token
 from requests.exceptions import ConnectionError, ConnectTimeout
 import json
 import logging
+from django.utils.translation import get_language
 logger = logging.getLogger('dongtai-webapi')
 
-HEALTHPATH = 'api/v1/path'
+HEALTHPATH = 'api/v1/health'
 
 
 class HealthView(UserEndPoint):
@@ -50,6 +51,13 @@ class HealthView(UserEndPoint):
                 },
                 "engine_monitoring_indicators": [],
             })
+        cur_language = get_language()
+        for indicator in data['engine_monitoring_indicators']:
+            cur_language_field = indicator.get('_'.join(['name', cur_language],
+                                                        None))
+            indicator[
+                'name'] = cur_language_field if cur_language_field else indicator[
+                    'name']
         return R.success(data=data)
 
 
@@ -59,7 +67,7 @@ def _checkopenapistatus(openapiurl, token):
             openapiurl,
             timeout=5,
             headers={'Authorization': "Token {}".format(token)})
-        resp = json.load(resp.content)
+        resp = json.loads(resp.content)
         resp = resp.get("data", None)
     except (ConnectionError, ConnectTimeout):
         return False, None
