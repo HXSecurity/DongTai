@@ -7,8 +7,10 @@
 
 from django.urls import path
 
+from vuln.views.health import HealthEndPoint
 from vuln.views.strategy_run import StrategyRunEndPoint
 
 urlpatterns = [
     path('run', StrategyRunEndPoint.as_view()),
+    path('health', HealthEndPoint.as_view()),
 ]
