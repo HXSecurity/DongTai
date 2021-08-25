@@ -38,24 +38,33 @@ def assemble_query(condictions: dict,
                         kv_pair[1]
                 }, condictions)), base_query)
 
-
+from rest_framework.serializers import SerializerMetaclass
 def extend_schema_with_envcheck(querys: list = [], request_body: list = []):
     def myextend_schema(func):
         import os
         if os.getenv('environment', None) == 'TEST':
             from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes
+            parameters = list(filter(lambda x: x, map(_filter_query, querys)))
             deco = extend_schema(
-                parameters=[OpenApiParameter(**_)for _ in querys],
+                parameters=parameters,
                 examples=[OpenApiExample('Example1', value=request_body)],
                 request={'application/json': OpenApiTypes.OBJECT},
             )
             funcw = deco(func)
-            funcw.querys = querys
-            funcw.reqbody = request_body
+            funcw.querys = parameters
+            funcw.request_body = request_body
             return funcw
         return func
-
     return myextend_schema
+
+
+def _filter_query(item):
+    from drf_spectacular.utils import OpenApiParameter
+    if isinstance(item, SerializerMetaclass):
+        return item
+    elif isinstance(item, dict):
+        return OpenApiParameter(**item)
+
 
 def batch_queryset(queryset, batch_size=1):
     iter_ = 0
