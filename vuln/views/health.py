@@ -5,6 +5,8 @@
 # project: dongtai-engine
 
 import logging
+
+from django.forms import model_to_dict
 from dongtai.endpoint import R, AnonymousAndUserEndPoint
 
 logger = logging.getLogger('dongtai-engine')
@@ -43,11 +45,14 @@ class HealthEndPoint(AnonymousAndUserEndPoint):
             )
 
             monitor_models = monitor_models.values('key', 'name')
+            monitor_datas = model_to_dict(monitor_models)
             mock_data['engine_monitoring_indicators'] = list()
-            for monitor_model in monitor_models:
+            for monitor_model in monitor_datas:
                 mock_data['engine_monitoring_indicators'].append({
                     'key': monitor_model['key'],
                     'name': monitor_model['name'],
+                    'name_en': monitor_model['name_en'],
+                    'name_cn': monitor_model['name_cn'],
                     'value': redis_cli.llen(monitor_model['key'])
                 })
         return R.success(data=mock_data)
