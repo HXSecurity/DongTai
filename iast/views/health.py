@@ -33,7 +33,7 @@ class HealthView(UserEndPoint):
 
         token, success = Token.objects.get_or_create(user=request.user)
         openapistatus, openapi_resp = _checkopenapistatus(
-            urljoin(openapi, HEALTHPATH))
+            urljoin(openapi, HEALTHPATH), token.key)
         data = {"dongtai_webapi": 1}
         if openapistatus:
             data.update(openapi_resp)
@@ -53,9 +53,11 @@ class HealthView(UserEndPoint):
         return R.success(data=data)
 
 
-def _checkopenapistatus(openapiurl):
+def _checkopenapistatus(openapiurl, token):
     try:
-        resp = requests.get(openapiurl, timeout=5)
+        resp = requests.get(openapiurl,
+                            timeout=5,
+                            headers={'Authorization': token})
         resp = json.load(resp.content)
         resp = resp.get("data", None)
     except (ConnectionError, ConnectTimeout):
