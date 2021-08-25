@@ -6,22 +6,22 @@
 # @description :
 ######################################################################
 
-import django
-from rest_framework.test import APITestCase
-from iast.account.department import DepartmentEndPoint
-from django.urls import reserse
-from urllib.parse import urlencode
-class DepartmentTests(APITestCase):
-    def test_create_account(self):
-        url = reserse(DepartmentEndPoint.as_view())
-        self.client.login(username='lauren', password='secret')
-        response = self.client.post(urlassamble(url, {'name': 'random'}))
-        self.assertEqual(response.status_code,200)
-        self.assertSetEqual(DepartmentEndPoint.objects)
-
-
-
-def urlassamble(url, query={}):
-    return url + urlencode(query)
-
-
+#import django
+#from rest_framework.test import APITestCase
+#from iast.account.department import DepartmentEndPoint
+#from django.urls import reserse
+#from urllib.parse import urlencode
+#class DepartmentTests(APITestCase):
+#    def test_create_account(self):
+#        url = reserse(DepartmentEndPoint.as_view())
+#        self.client.login(username='lauren', password='secret')
+#        response = self.client.post(urlassamble(url, {'name': 'random'}))
+#        self.assertEqual(response.status_code,200)
+#        self.assertSetEqual(DepartmentEndPoint.objects)
+#
+#
+#
+#def urlassamble(url, query={}):
+#    return url + urlencode(query)
+#
+#
