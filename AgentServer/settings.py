@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 import sys
 from configparser import ConfigParser
-
+from urllib.parse import urljoin
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -140,6 +140,8 @@ STATIC_URL = '/static/'
 PRIVATE_KEY = os.path.join(BASE_DIR, 'config', 'rsa_keys/private_key.pem')
 PUBLIC_KEY = os.path.join(BASE_DIR, 'config', 'rsa_keys/public_key.pem')
 
+ENGINE_URL = config.get("engine", "url")
+HEALTH_ENGINE_URL = urljoin(ENGINE_URL, "/api/engine/health")
 BASE_ENGINE_URL = config.get("engine", "url") + '/api/engine/run?method_pool_id={id}'
 REPLAY_ENGINE_URL = config.get("engine", "url") + '/api/engine/run?method_pool_id={id}&model=replay'
 
@@ -191,3 +193,5 @@ LOGGING = {
 # 配置阿里云OSS访问凭证
 ACCESS_KEY = config.get('aliyun_oss', 'access_key')
 ACCESS_KEY_SECRET = config.get('aliyun_oss', 'access_key_secret')
+BUCKET_URL = 'https://oss-cn-beijing.aliyuncs.com'
+BUCKET_NAME = 'dongtai'
