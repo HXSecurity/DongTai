@@ -64,6 +64,6 @@ def _checkopenapistatus(openapiurl, token):
     except (ConnectionError, ConnectTimeout):
         return False, None
     except Exception as e:
-        logger.log("HealthView_checkenginestatus:{}".format(e))
+        logger.info("HealthView_checkenginestatus:{}".format(e))
         return False, None
     return True, resp
