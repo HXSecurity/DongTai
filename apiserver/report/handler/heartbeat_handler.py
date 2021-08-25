@@ -35,7 +35,9 @@ class HeartBeatHandler(IReportHandler):
         self.network = self.detail.get('network')
         self.disk = self.detail.get('disk')
         self.req_count = self.detail.get('req_count')
-
+        self.report_queue = self.detail.get('report_queue')
+        self.method_queue = self.detail.get('method_queue')
+        self.replay_queue = self.detail.get('replay_queue')
     def save_heartbeat(self):
         # update agent state
         self.agent.is_running = 1
@@ -43,24 +45,32 @@ class HeartBeatHandler(IReportHandler):
         self.agent.save(update_fields=['is_running', 'online'])
         queryset = IastHeartbeat.objects.filter(agent=self.agent)
         heartbeat_count = queryset.values('id').count()
+        logger.info("{},{}".format(self.agent, self.detail))
         if heartbeat_count == 1:
             heartbeat = queryset.first()
             heartbeat.memory = self.memory
             heartbeat.cpu = self.cpu
             heartbeat.disk = self.disk
             heartbeat.req_count = self.req_count
+            heartbeat.report_queue = self.report_queue
+            heartbeat.method_queue = self.method_queue
+            heartbeat.replay_queue = self.replay_queue
             heartbeat.dt = int(time.time())
-            heartbeat.save(update_fields=['memory', 'cpu', 'disk', 'req_count', 'dt'])
+            heartbeat.save(update_fields=[
+                'memory', 'cpu', 'disk', 'req_count', 'dt', 'report_queue',
+                'method_queue', 'replay_queue'
+            ])
         else:
             queryset.delete()
-            IastHeartbeat.objects.create(
-                memory=self.memory,
-                cpu=self.cpu,
-                disk=self.disk,
-                req_count=self.req_count,
-                dt=int(time.time()),
-                agent=self.agent
-            )
+            IastHeartbeat.objects.create(memory=self.memory,
+                                         cpu=self.cpu,
+                                         disk=self.disk,
+                                         req_count=self.req_count,
+                                         report_queue=self.replay_queue,
+                                         method_queue=self.method_queue,
+                                         replay_queue=self.replay_queue,
+                                         dt=int(time.time()),
+                                         agent=self.agent)
 
     def get_result(self, msg=None):
         try:
