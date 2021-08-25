@@ -30,7 +30,7 @@ def _checkossstatus():
     except RequestError:
         return False, None
     except Exception as e:
-        logger.log("HealthView_checkossstatus:{}".format(e))
+        logger.info("HealthView_checkossstatus:{}".format(e))
         return False, None
     return True, None
 
@@ -43,7 +43,7 @@ def _checkenginestatus():
     except (ConnectionError, ConnectTimeout):
         return False, None
     except Exception as e:
-        logger.log("HealthView_checkenginestatus:{}".format(e))
+        logger.info("HealthView_checkenginestatus:{}".format(e))
         return False, None
     return True, resp
 
