@@ -55,9 +55,10 @@ class HealthView(UserEndPoint):
 
 def _checkopenapistatus(openapiurl, token):
     try:
-        resp = requests.get(openapiurl,
-                            timeout=5,
-                            headers={'Authorization': token})
+        resp = requests.get(
+            openapiurl,
+            timeout=5,
+            headers={'Authorization': "Token {}".format(token)})
         resp = json.load(resp.content)
         resp = resp.get("data", None)
     except (ConnectionError, ConnectTimeout):
