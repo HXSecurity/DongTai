@@ -44,7 +44,7 @@ class HealthEndPoint(AnonymousAndUserEndPoint):
                 db=settings.config.get("redis", 'db'),
             )
 
-            monitor_models = monitor_models.values('key', 'name')
+            monitor_models = monitor_models.values('key', 'name', 'name_en', 'name_zh')
             monitor_datas = model_to_dict(monitor_models)
             mock_data['engine_monitoring_indicators'] = list()
             for monitor_model in monitor_datas:
@@ -52,7 +52,7 @@ class HealthEndPoint(AnonymousAndUserEndPoint):
                     'key': monitor_model['key'],
                     'name': monitor_model['name'],
                     'name_en': monitor_model['name_en'],
-                    'name_cn': monitor_model['name_cn'],
+                    'name_cn': monitor_model['name_zh'],
                     'value': redis_cli.llen(monitor_model['key'])
                 })
         return R.success(data=mock_data)
