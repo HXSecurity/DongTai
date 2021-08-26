@@ -38,24 +38,33 @@ def assemble_query(condictions: dict,
                         kv_pair[1]
                 }, condictions)), base_query)
 
-
+from rest_framework.serializers import SerializerMetaclass
 def extend_schema_with_envcheck(querys: list = [], request_body: list = []):
     def myextend_schema(func):
         import os
         if os.getenv('environment', None) == 'TEST':
             from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes
+            parameters = list(filter(lambda x: x, map(_filter_query, querys)))
             deco = extend_schema(
-                parameters=[OpenApiParameter(**_)for _ in querys],
+                parameters=parameters,
                 examples=[OpenApiExample('Example1', value=request_body)],
                 request={'application/json': OpenApiTypes.OBJECT},
             )
             funcw = deco(func)
-            funcw.querys = querys
-            funcw.reqbody = request_body
+            funcw.querys = parameters
+            funcw.request_body = request_body
             return funcw
         return func
-
     return myextend_schema
+
+
+def _filter_query(item):
+    from drf_spectacular.utils import OpenApiParameter
+    if isinstance(item, SerializerMetaclass):
+        return item
+    elif isinstance(item, dict):
+        return OpenApiParameter(**item)
+
 
 def batch_queryset(queryset, batch_size=1):
     iter_ = 0
@@ -92,3 +101,49 @@ def apiroute_cachekey(api_route, agents, http_method=None):
 
 def sha1(string, encoding='utf-8'):
     return hashlib.sha1(string.encode(encoding)).hexdigest()
+from dongtai.models.profile import IastProfile
+def get_openapi():
+    profilefromdb = IastProfile.objects.filter(
+        key='apiserver').values_list('value', flat=True).first()
+    profilefromini = None
+    profiles = list(
+        filter(lambda x: x is not None, [profilefromdb, profilefromini]))
+    if profiles == []:
+        return None
+    return profiles[0]
+
+from urllib.parse import urlparse
+
+def validate_url(url):
+    try:
+        result = urlparse(url)
+        return all([result.scheme, result.netloc])
+    except:
+        return False
+    return True
+
+
+
+import requests
+import json
+import logging
+from django.utils.translation import get_language
+from requests.exceptions import ConnectionError, ConnectTimeout
+
+logger = logging.getLogger('dongtai-webapi')
+
+
+def checkopenapistatus(openapiurl, token):
+    try:
+        resp = requests.get(
+            openapiurl,
+            timeout=5,
+            headers={'Authorization': "Token {}".format(token)})
+        resp = json.loads(resp.content)
+        resp = resp.get("data", None)
+    except (ConnectionError, ConnectTimeout):
+        return False, None
+    except Exception as e:
+        logger.info("HealthView_{}:{}".format(openapiurl, e))
+        return False, None
+    return True, resp

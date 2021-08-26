@@ -13,34 +13,27 @@ from rest_framework import serializers
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes
 from rest_framework.serializers import ValidationError
 from iast.utils import extend_schema_with_envcheck
-class DocumentSerializer(serializers.Serializer):
+
+
+
+
+class DocumentArgsSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=1)
     page = serializers.IntegerField(default=1)
     language = serializers.CharField(default=None)
 
-    def validate_page_size(self, value):
-        try:
-            print(value)
-            value = int(value)
-        except Exception as e:
-            print(e)
-            raise serializers.ValidationError("page_size must be number")
-        return value
-
-    def validate_page(self, value):
-        try:
-            print(value)
-            value = int(value)
-        except Exception as e:
-            print(e)
-            raise serializers.ValidationError("page must be number")
-        return value
 
 class DocumentsEndpoint(UserEndPoint):
+    @extend_schema_with_envcheck([DocumentArgsSerializer])
     def get(self, request):
-        page_size = request.GET.get('page_size', 100)
-        page = request.GET.get('page', 1)
-        language = request.GET.get('language', None)
+        ser = DocumentArgsSerializer(data=request.GET)
+        try:
+            if ser.is_valid(True):
+                page_size = ser.validated_data['page_size']
+                page = ser.validated_data['page']
+                language = ser.validated_data['language']
+        except ValidationError as e:
+            return R.failure(data=e.detail)
         if language:
             q = Q(language=language)
         else:
@@ -51,4 +44,3 @@ class DocumentsEndpoint(UserEndPoint):
         return R.success(data={
             'documents': [model_to_dict(document) for document in documents]
         })
-
