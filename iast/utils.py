@@ -93,5 +93,11 @@ def checkcover(api_route, agents, http_method=None):
     return False
 
 
+def apiroute_cachekey(api_route, agents, http_method=None):
+    agent_id = sha1(str([_['id'] for _ in agents]))
+    http_method = str(http_method)
+    return "{}_{}_{}".format(agent_id, http_method, api_route.id)
+
+
 def sha1(string, encoding='utf-8'):
     return hashlib.sha1(string.encode(encoding)).hexdigest()

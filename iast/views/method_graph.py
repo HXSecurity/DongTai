@@ -23,7 +23,15 @@ class MethodGraph(AnonymousAndUserEndPoint):
         try:
             method_pool_id = request.query_params.get('method_pool_id')
             method_pool_type = request.query_params.get('method_pool_type')
-            if Validate.is_empty(method_pool_id):
+            replay_id = request.query_params.get('method_pool_replay_id', None)
+            replay_type = request.query_params.get('replay_type', None)
+            if replay_type is not None and int(replay_type) not in [
+                    const.API_REPLAY, const.REQUEST_REPLAY
+            ]:
+                return R.failure(msg="replay_type error")
+            replay_type = const.REQUEST_REPLAY if replay_type is None else int(
+                replay_type)
+            if Validate.is_empty(method_pool_id) and replay_id is None:
                 return R.failure(msg=_('Method pool ID is empty'))
 
             auth_agents = self.get_auth_and_anonymous_agents(request.user).values('id')
@@ -34,11 +42,17 @@ class MethodGraph(AnonymousAndUserEndPoint):
                     id=method_pool_id
                 ).first()
             elif method_pool_type == 'replay':
-                method_pool = IastAgentMethodPoolReplay.objects.filter(
-                    agent_id__in=auth_agent_ids,
-                    relation_id=method_pool_id,
-                    replay_type=const.REQUEST_REPLAY
-                ).first()
+                if replay_id:
+                    method_pool = IastAgentMethodPoolReplay.objects.filter(
+                        id=replay_id,
+                        replay_type=replay_type
+                    ).first()
+                else:
+                    method_pool = IastAgentMethodPoolReplay.objects.filter(
+                        agent_id__in=auth_agent_ids,
+                        relation_id=method_pool_id,
+                        replay_type=replay_type
+                    ).first()
             else:
                 return R.failure(msg=_('Stain call map type does not exist'))
 

@@ -113,7 +113,8 @@ class RequestReplayEndPoint(UserEndPoint):
                                 or agent.is_core_running == 0)
 
     @staticmethod
-    def send_request_to_replay_queue(relation_id, agent_id, replay_request):
+    def send_request_to_replay_queue(relation_id, agent_id, replay_request,
+                                     replay_type):
         """
         :param replay_request: 
         :param method_pool_model: 
@@ -121,7 +122,9 @@ class RequestReplayEndPoint(UserEndPoint):
         """
         timestamp = int(time.time())
         replay_queue = IastReplayQueue.objects.filter(
-            replay_type=const.REQUEST_REPLAY, relation_id=relation_id).first()
+            replay_type=replay_type,
+            relation_id=relation_id,
+            agent_id=agent_id).first()
         if replay_queue:
             if replay_queue.state not in [
                     const.WAITING,
@@ -141,11 +144,11 @@ class RequestReplayEndPoint(UserEndPoint):
                 ])
                 IastAgentMethodPoolReplay.objects.filter(
                     replay_id=replay_queue.id,
-                    replay_type=const.REQUEST_REPLAY).delete()
+                    replay_type=replay_type).delete()
         else:
             replay_queue = IastReplayQueue.objects.create(
                 relation_id=relation_id,
-                replay_type=const.REQUEST_REPLAY,
+                replay_type=replay_type,
                 state=const.WAITING,
                 uri=replay_request['uri'],
                 method=replay_request['method'],
@@ -172,6 +175,13 @@ class RequestReplayEndPoint(UserEndPoint):
             method_pool_id = request.data.get('methodPoolId')
             replay_request = request.data.get('replayRequest')
             agent_id = request.data.get('agent_id', None)
+            replay_type = request.data.get('replay_type', None)
+            if replay_type is not None and int(replay_type) not in [
+                    const.API_REPLAY, const.REQUEST_REPLAY
+            ]:
+                return R.failure(msg="replay_type error")
+            replay_type = const.REQUEST_REPLAY if replay_type is None else int(
+                replay_type)
 
             check_failure, method_pool_model = self.check_method_pool(
                 method_pool_id, request.user)
@@ -182,13 +192,19 @@ class RequestReplayEndPoint(UserEndPoint):
             if agent_id:
                 agent = IastAgent.objects.filter(pk=agent_id).first()
                 check_failure = self.check_agent_active(agent)
+                if check_failure and agent is not None:
+                    agent = IastAgent.objects.filter(
+                        bind_project_id=agent.bind_project_id,
+                        online=1,
+                        is_running=1,
+                        is_core_running=1).first()
             else:
                 check_failure = self.check_agent_active(
                     method_pool_model.agent)
-                if check_failure:
-                    return R.failure(msg=_(
-                        'The probe has been destroyed or suspended, please check the probe status'
-                    ))
+            if check_failure:
+                return R.failure(msg=_(
+                    'The probe has been destroyed or suspended, please check the probe status'
+                ))
 
             check_failure, checked_request = self.check_replay_request(
                 raw_request=replay_request)
@@ -197,13 +213,15 @@ class RequestReplayEndPoint(UserEndPoint):
             if agent_id:
                 replay_id = self.send_request_to_replay_queue(
                     relation_id=method_pool_model.id,
-                    agent_id=agent_id,
-                    replay_request=checked_request)
+                    agent_id=agent.id,
+                    replay_request=checked_request,
+                    replay_type=replay_type)
             else:
                 replay_id = self.send_request_to_replay_queue(
                     relation_id=method_pool_model.id,
                     agent_id=method_pool_model.agent.id,
-                    replay_request=checked_request)
+                    replay_request=checked_request,
+                    replay_type=replay_type)
             return R.success(msg=_('Relay request success'),
                              data={'replayId': replay_id})
 
@@ -230,7 +248,13 @@ class RequestReplayEndPoint(UserEndPoint):
     def get(self, request):
         replay_id = request.query_params.get('replayId')
         auth_agents = self.get_auth_agents_with_user(request.user)
-
+        replay_type = request.query_params.get('replay_type', None)
+        if replay_type is not None and int(replay_type) not in [
+                const.API_REPLAY, const.REQUEST_REPLAY
+        ]:
+            return R.failure(msg="replay_type error")
+        replay_type = const.REQUEST_REPLAY if replay_type is None else int(
+            replay_type)
         replay_data = IastReplayQueue.objects.filter(
             id=replay_id, agent__in=auth_agents).values('state').first()
         if not replay_data:
@@ -241,18 +265,17 @@ class RequestReplayEndPoint(UserEndPoint):
             )
         if replay_data['state'] != const.SOLVED:
             return R.failure(msg=_('Replay request processing'))
-
         replay_data = IastAgentMethodPoolReplay.objects.filter(
             replay_id=replay_id,
-            replay_type=const.REQUEST_REPLAY).values('res_header', 'res_body',
-                                                     'method_pool').first()
-
+            replay_type=replay_type).values('res_header', 'res_body',
+                                            'method_pool', 'id').first()
         if replay_data:
             return R.success(
                 data={
                     'response':
                     self.parse_response(replay_data['res_header'],
                                         replay_data['res_body']),
+                    'method_pool_replay_id':replay_data['id'],
                 })
         else:
             return R.failure(status=203, msg=_('Replay failed'))
