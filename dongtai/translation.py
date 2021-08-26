@@ -16,6 +16,7 @@ from dongtai.models.document import IastDocument
 from dongtai.models.hook_type import HookType
 from dongtai.models.department import Department
 from dongtai.models.talent import Talent
+from dongtai.models.engine_monitoring_indicators import IastEnginMonitoringIndicators
 
 
 @register(IastStrategyModel)
@@ -41,3 +42,8 @@ class IastDocumentTranslationOptions(TranslationOptions):
 @register(HookType)
 class HookTypeTranslationOptions(TranslationOptions):
     fields = ('name',)
+
+
+@register(IastEnginMonitoringIndicators)
+class IastEnginMonitoringIndicatorsOptions(TranslationOptions):
+    fields = ('name', )
