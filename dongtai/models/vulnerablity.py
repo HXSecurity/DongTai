@@ -32,7 +32,11 @@ class IastVulnerabilityModel(models.Model):
     client_ip = models.CharField(max_length=255, blank=True, null=True)
     param_name = models.CharField(max_length=255, blank=True, null=True)
     method_pool_id = models.IntegerField(max_length=11, blank=True, null=True)
-    hook_type = models.ForeignKey(HookType,on_delete=models.DO_NOTHING)
+    hook_type = models.ForeignKey(HookType,
+                                  on_delete=models.DO_NOTHING,
+                                  db_constraint=False,
+                                  db_column='http_method_id')
+
     class Meta:
         managed = get_managed()
         db_table = 'iast_vulnerability'
