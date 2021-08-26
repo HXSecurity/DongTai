@@ -11,6 +11,7 @@ from rest_framework.authtoken.models import Token
 from iast.utils import checkopenapistatus
 from dongtai.endpoint import UserEndPoint
 from dongtai.endpoint import R
+from django.utils.translation import gettext_lazy as _
 
 OSSHEALTHPATH = 'api/v1/oss/health'
 
