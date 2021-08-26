@@ -18,7 +18,8 @@ from apiserver.views.engine_status import EngineStopStart
 from apiserver.views.hook_profiles import HookProfilesEndPoint
 from apiserver.views.properties import PropertiesEndPoint
 from apiserver.views.report_upload import ReportUploadEndPoint
-
+from apiserver.views.health import HealthView
+from apiserver.views.health_oss import OSSHealthView
 
 urlpatterns = [
     path('agent/download', AgentDownload.as_view()),
@@ -33,4 +34,6 @@ urlpatterns = [
     path('report/upload', ReportUploadEndPoint.as_view()),
     path('engine/startstop', EngineStopStart.as_view()),
     # todo 增加重放请求获取接口，用于后续逻辑漏洞/漏洞验证等功能，暂时先不实现
+    path('health', HealthView.as_view()),
+    path('oss/health', OSSHealthView.as_view()),
 ]
