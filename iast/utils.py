@@ -121,3 +121,29 @@ def validate_url(url):
     except:
         return False
     return True
+
+
+
+import requests
+import json
+import logging
+from django.utils.translation import get_language
+from requests.exceptions import ConnectionError, ConnectTimeout
+
+logger = logging.getLogger('dongtai-webapi')
+
+
+def checkopenapistatus(openapiurl, token):
+    try:
+        resp = requests.get(
+            openapiurl,
+            timeout=5,
+            headers={'Authorization': "Token {}".format(token)})
+        resp = json.loads(resp.content)
+        resp = resp.get("data", None)
+    except (ConnectionError, ConnectTimeout):
+        return False, None
+    except Exception as e:
+        logger.info("HealthView_{}:{}".format(openapiurl, e))
+        return False, None
+    return True, resp
