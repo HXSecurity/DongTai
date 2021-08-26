@@ -44,6 +44,11 @@ class ApiRouteCoverRate(UserEndPoint):
         for api_route in batch_queryset(queryset):
             if checkcover(api_route,agents):
                 cover_count += 1
-        cover_rate = "{:.2f}%".format(cover_count / total)
+        try:
+            cover_rate = "{:.2%}".format(cover_count / total)
+        except ZeroDivisionError as e:
+            print(e)
+            cover_rate = "{:.2%}".format(1.0)
+
         return R.success(msg=_('API coverage rate obtained successfully'),
                          data={'cover_rate': cover_rate})
