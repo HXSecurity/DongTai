@@ -42,6 +42,10 @@ class MyTestCase(DongTaiTestCase):
         if is_running_agents:
             IastAgent.objects.filter(id__in=is_running_agents).update(is_running=1, is_core_running=1)
 
+    def test_update_sca(self):
+        from core.tasks import update_sca
+        update_sca()
+
 
 if __name__ == '__main__':
     unittest.main()
