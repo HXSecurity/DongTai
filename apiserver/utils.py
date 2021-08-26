@@ -10,6 +10,7 @@ import logging
 
 import oss2
 from oss2.exceptions import NoSuchKey
+from oss2.exceptions import RequestError
 
 from AgentServer import settings
 
@@ -66,3 +67,21 @@ def base64_decode(raw):
 def build_request_header(req_method, raw_req_header, uri, query_params, http_protocol):
     decode_req_header = base64_decode(raw_req_header)
     return f"{req_method} {uri + ('?' + query_params if query_params else '')} {http_protocol}\n{decode_req_header}"
+
+
+STATUSMAP = {True: 1, False: 0}
+
+def checkossstatus():
+    try:
+        auth = oss2.Auth(settings.ACCESS_KEY, settings.ACCESS_KEY_SECRET)
+        bucket = oss2.Bucket(auth,
+                             settings.BUCKET_URL,
+                             settings.BUCKET_NAME,
+                             connect_timeout=2)
+        bucket.list_objects()
+    except RequestError:
+        return False, None
+    except Exception as e:
+        logger.info("HealthView_checkossstatus:{}".format(e))
+        return False, None
+    return True, None
