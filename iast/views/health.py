@@ -19,6 +19,7 @@ from requests.exceptions import ConnectionError, ConnectTimeout
 import json
 import logging
 from django.utils.translation import get_language
+from iast.utils import checkopenapistatus 
 logger = logging.getLogger('dongtai-webapi')
 
 HEALTHPATH = 'api/v1/health'
@@ -33,7 +34,7 @@ class HealthView(UserEndPoint):
             return R.failure(msg=_("OpenAPI configuration error"))
 
         token, success = Token.objects.get_or_create(user=request.user)
-        openapistatus, openapi_resp = _checkopenapistatus(
+        openapistatus, openapi_resp = checkopenapistatus(
             urljoin(openapi, HEALTHPATH), token.key)
         data = {"dongtai_webapi": 1}
         if openapistatus:
@@ -61,17 +62,3 @@ class HealthView(UserEndPoint):
         return R.success(data=data)
 
 
-def _checkopenapistatus(openapiurl, token):
-    try:
-        resp = requests.get(
-            openapiurl,
-            timeout=5,
-            headers={'Authorization': "Token {}".format(token)})
-        resp = json.loads(resp.content)
-        resp = resp.get("data", None)
-    except (ConnectionError, ConnectTimeout):
-        return False, None
-    except Exception as e:
-        logger.info("HealthView_checkenginestatus:{}".format(e))
-        return False, None
-    return True, resp
