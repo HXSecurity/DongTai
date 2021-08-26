@@ -140,7 +140,7 @@ class EndPoint(APIView):
         pass
 
     @staticmethod
-    def get_paginator(queryset, page=1, page_size=20):
+    def get_paginator(queryset, page: int = 1, page_size: int = 20):
         """
         根据模型集合、页号、每页大小获取分页数据
         :param queryset:
@@ -150,7 +150,8 @@ class EndPoint(APIView):
         :param page_size:
         :return:
         """
-        page_size = min(50, page_size)
+        page_size = min(50, int(page_size))
+        page = int(page)
         page_info = Paginator(queryset, per_page=page_size)
         page_summary = {
             "alltotal": page_info.count,
