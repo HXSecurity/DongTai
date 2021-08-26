@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-23 12:09+0800\n"
+"POT-Creation-Date: 2021-08-26 14:19+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -215,19 +215,19 @@ msgstr "检测失败"
 msgid "Maven official crawler"
 msgstr "Maven官方爬虫"
 
-#: iast/serializers/agent.py:40
+#: iast/serializers/agent.py:47
 msgid "Online"
 msgstr ""
 
-#: iast/serializers/agent.py:40
+#: iast/serializers/agent.py:47
 msgid "Offline"
 msgstr ""
 
-#: iast/serializers/agent.py:52
+#: iast/serializers/agent.py:59
 msgid "Load data is not uploaded"
 msgstr "负载数据暂未上传"
 
-#: iast/serializers/agent.py:60 iast/serializers/agent.py:65
+#: iast/serializers/agent.py:67 iast/serializers/agent.py:72
 msgid "No flow is detected by the probe"
 msgstr "探针暂未检测到流量"
 
@@ -320,7 +320,7 @@ msgstr "重放请求队列删除成功，共删除：{}条"
 msgid "Failed to delete replay request queue, error message: {}"
 msgstr "重放请求队列删除失败，原因：{}"
 
-#: iast/views/agent_deploy.py:33
+#: iast/views/agent_deploy.py:40
 msgid "Corresponding deployment document could not be found"
 msgstr "找不到对应部署文档"
 
@@ -439,7 +439,7 @@ msgstr "删除失败"
 msgid "Successfully deleted {} strips, failed to deleted {} strips"
 msgstr "成功删除{}条，删除失败{}条"
 
-#: iast/views/api_route_cover_rate.py:48
+#: iast/views/api_route_cover_rate.py:53
 #, fuzzy
 #| msgid "Agent and related data deleted successfully"
 msgid "API coverage rate obtained successfully"
@@ -563,6 +563,16 @@ msgstr "method_pool has no permission"
 msgid "The regular expression format is wrong, please use REGEX POSIX 1003.2"
 msgstr "正则表达式格式错误，请使用REGEX POSIX 1003.2"
 
+#: iast/views/health.py:32 iast/views/openapi.py:16 iast/views/oss_health.py:23
+msgid "Get OpenAPI configuration failed"
+msgstr "获取openapi配置失败"
+
+#: iast/views/health.py:34 iast/views/oss_health.py:25
+#, fuzzy
+#| msgid "Get OpenAPI configuration failed"
+msgid "OpenAPI configuration error"
+msgstr "获取openapi配置失败"
+
 #: iast/views/log_clear.py:14
 msgid "Log clear"
 msgstr "日志清空"
@@ -595,25 +605,21 @@ msgstr "无权限访问"
 msgid "failure"
 msgstr "failure"
 
-#: iast/views/method_graph.py:27
+#: iast/views/method_graph.py:35
 msgid "Method pool ID is empty"
 msgstr "方法池ID为空"
 
-#: iast/views/method_graph.py:43
+#: iast/views/method_graph.py:57
 msgid "Stain call map type does not exist"
 msgstr "污点调用图类型不存在"
 
-#: iast/views/method_graph.py:46
+#: iast/views/method_graph.py:60
 msgid "Data does not exist or no permission to access"
 msgstr "数据不存在或无权限访问"
 
-#: iast/views/method_graph.py:52
+#: iast/views/method_graph.py:66
 msgid "Page and PageSize can only be numeric"
 msgstr "page和pageSize只能为数字"
-
-#: iast/views/openapi.py:16
-msgid "Get OpenAPI configuration failed"
-msgstr "获取openapi配置失败"
 
 #: iast/views/openapi.py:22
 msgid "Current users have no permission to modify"
@@ -1002,7 +1008,7 @@ msgstr "ids必须为：漏洞ID,漏洞ID 格式"
 msgid "Handle success"
 msgstr "处理成功"
 
-#: iast/views/vul_recheck.py:103 iast/views/vul_request_replay.py:212
+#: iast/views/vul_recheck.py:103 iast/views/vul_request_replay.py:230
 msgid "Vulnerability replay error"
 msgstr "漏洞重放出错"
 
@@ -1028,36 +1034,36 @@ msgstr "参数格式不正确"
 msgid "HTTP request parsing error, error message: {}"
 msgstr "HTTP请求解析出错，原因：{}"
 
-#: iast/views/vul_request_replay.py:180
+#: iast/views/vul_request_replay.py:190
 msgid "Stain pool data does not exist or no permission to access"
 msgstr "污点池数据不存在或无权操作"
 
-#: iast/views/vul_request_replay.py:190
+#: iast/views/vul_request_replay.py:206
 msgid ""
 "The probe has been destroyed or suspended, please check the probe status"
 msgstr "探针已销毁或暂停运行，请选检查探针状态"
 
-#: iast/views/vul_request_replay.py:196
+#: iast/views/vul_request_replay.py:212
 msgid "Replay request is illegal"
 msgstr "重放请求不合法"
 
-#: iast/views/vul_request_replay.py:207
+#: iast/views/vul_request_replay.py:225
 msgid "Relay request success"
 msgstr "请求重返成功"
 
-#: iast/views/vul_request_replay.py:226
+#: iast/views/vul_request_replay.py:244
 msgid "Response header analysis error, error message: {}"
 msgstr "Response Header解析出错，错误原因：{}"
 
-#: iast/views/vul_request_replay.py:240
+#: iast/views/vul_request_replay.py:264
 msgid "Replay request does not exist or no permission to access"
 msgstr "重放请求不存在或无操作权限"
 
-#: iast/views/vul_request_replay.py:243
+#: iast/views/vul_request_replay.py:267
 msgid "Replay request processing"
 msgstr "重放请求处理中"
 
-#: iast/views/vul_request_replay.py:258
+#: iast/views/vul_request_replay.py:281
 msgid "Replay failed"
 msgstr "重放失败"
 
