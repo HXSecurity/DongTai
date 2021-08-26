@@ -29,11 +29,15 @@ class ScaList(UserEndPoint):
         queryset = Asset.objects.filter(agent__in=auth_agents)
 
         order = request.query_params.get('order', None)
+        order = order if order in [
+            'level', 'package_name', 'vul_count', 'version'
+        ] else None
+
         package_kw = request.query_params.get('keyword', None)
 
         project_id = request.query_params.get('project_id', None)
         if project_id and project_id != '':
-            
+
             version_id = request.GET.get('version_id', None)
             if not version_id:
                 current_project_version = get_project_version(
@@ -63,7 +67,6 @@ class ScaList(UserEndPoint):
             queryset = queryset.order_by(order)
         else:
             queryset = queryset.order_by('-dt')
-
         page = request.query_params.get('page', 1)
         page_size = request.query_params.get('pageSize', 20)
         page_summary, page_data = self.get_paginator(queryset, page, page_size)

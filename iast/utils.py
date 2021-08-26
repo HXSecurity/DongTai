@@ -101,3 +101,49 @@ def apiroute_cachekey(api_route, agents, http_method=None):
 
 def sha1(string, encoding='utf-8'):
     return hashlib.sha1(string.encode(encoding)).hexdigest()
+from dongtai.models.profile import IastProfile
+def get_openapi():
+    profilefromdb = IastProfile.objects.filter(
+        key='apiserver').values_list('value', flat=True).first()
+    profilefromini = None
+    profiles = list(
+        filter(lambda x: x is not None, [profilefromdb, profilefromini]))
+    if profiles == []:
+        return None
+    return profiles[0]
+
+from urllib.parse import urlparse
+
+def validate_url(url):
+    try:
+        result = urlparse(url)
+        return all([result.scheme, result.netloc])
+    except:
+        return False
+    return True
+
+
+
+import requests
+import json
+import logging
+from django.utils.translation import get_language
+from requests.exceptions import ConnectionError, ConnectTimeout
+
+logger = logging.getLogger('dongtai-webapi')
+
+
+def checkopenapistatus(openapiurl, token):
+    try:
+        resp = requests.get(
+            openapiurl,
+            timeout=5,
+            headers={'Authorization': "Token {}".format(token)})
+        resp = json.loads(resp.content)
+        resp = resp.get("data", None)
+    except (ConnectionError, ConnectTimeout):
+        return False, None
+    except Exception as e:
+        logger.info("HealthView_{}:{}".format(openapiurl, e))
+        return False, None
+    return True, resp
