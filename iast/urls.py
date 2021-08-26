@@ -101,7 +101,8 @@ from i18n.views.setlang import LanguageSetting
 from iast.views.api_route_search import ApiRouteSearch
 from iast.views.api_route_related_request import ApiRouteRelationRequest
 from iast.views.api_route_cover_rate import ApiRouteCoverRate
-
+from iast.views.health import HealthView
+from iast.views.oss_health import OssHealthView
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
     path("talent/<int:pk>", TalentEndPoint.as_view()),
@@ -210,6 +211,8 @@ urlpatterns = [
     path('api_route/search', ApiRouteSearch.as_view()),
     path('api_route/relationrequest', ApiRouteRelationRequest.as_view()),
     path('api_route/cover_rate', ApiRouteCoverRate.as_view()),
+    path('health', HealthView.as_view()),
+    path('oss/health', OssHealthView.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
