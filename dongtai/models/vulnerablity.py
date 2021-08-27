@@ -6,7 +6,6 @@ from dongtai.utils.settings import get_managed
 from dongtai.models.hook_type import HookType
 
 class IastVulnerabilityModel(models.Model):
-    type = models.CharField(max_length=255, blank=True, null=True)
     level = models.ForeignKey(IastVulLevel, models.DO_NOTHING, blank=True, null=True)
     url = models.CharField(max_length=2000, blank=True, null=True)
     uri = models.CharField(max_length=255, blank=True, null=True)
