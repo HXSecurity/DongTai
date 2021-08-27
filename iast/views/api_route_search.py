@@ -34,7 +34,6 @@ class ApiRouteSearch(UserEndPoint):
         is_cover = request.query_params.get('is_cover', None)
         is_cover_dict = {1: True, 0: False}
         is_cover = is_cover_dict[int(is_cover)] if is_cover is not None and is_cover != '' else None
-        print(is_cover)
         auth_users = self.get_auth_users(request.user)
 
         if http_method:
@@ -147,12 +146,27 @@ def _get_hook_type(vul):
 
 def _get_parameters(api_route):
     parameters = IastApiParameter.objects.filter(route=api_route).all()
-    return [model_to_dict(parameter) for parameter in parameters]
+    parameters = [model_to_dict(parameter) for parameter in parameters]
+    parameters = [_get_parameters_type(parameter) for parameter in parameters]
+    return parameters
+
+
+def _get_parameters_type(api_route):
+    api_route['parameter_type_shortcut'] = api_route['parameter_type'].split(
+        '.')[-1]
+    return api_route
 
 
 def _get_responses(api_route):
     responses = IastApiResponse.objects.filter(route=api_route).all()
-    return [model_to_dict(response) for response in responses]
+    responses = [model_to_dict(response) for response in responses]
+    responses = [_get_responses_type(response) for response in responses]
+    return responses
+
+
+def _get_responses_type(api_route):
+    api_route['return_type_shortcut'] = api_route['return_type'].split('.')[-1]
+    return api_route
 
 
 def _get_api_method(api_method_id):
