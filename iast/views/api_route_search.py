@@ -34,6 +34,7 @@ class ApiRouteSearch(UserEndPoint):
         is_cover = request.query_params.get('is_cover', None)
         is_cover_dict = {1: True, 0: False}
         is_cover = is_cover_dict[int(is_cover)] if is_cover is not None and is_cover != '' else None
+        print(is_cover)
         auth_users = self.get_auth_users(request.user)
 
         if http_method:
@@ -75,7 +76,7 @@ class ApiRouteSearch(UserEndPoint):
             distinct_exist_list=distinct_exist_list)
         api_routes = _filter_and_label_partial(
             api_routes, page_size, agents, http_method,
-            is_cover) if is_cover else _filter_and_label_partial(
+            is_cover) if is_cover is not None else _filter_and_label_partial(
                 api_routes, page_size, agents, http_method)
         return R.success(
             data=[_serialize(api_route,agents) for api_route in api_routes])
