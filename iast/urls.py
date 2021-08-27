@@ -95,6 +95,7 @@ from iast.views.vul_sidebar_index import VulSideBarList
 from iast.views.vul_status import VulStatus
 from iast.views.vul_summary import VulSummary
 from iast.views.vuls import VulsEndPoint
+from iast.views.vulnerability_status import VulnerabilityStatusView
 from iast.views.version_update import MethodPoolVersionUpdate
 from iast.views.demo import Demo
 from i18n.views.setlang import LanguageSetting
@@ -149,6 +150,7 @@ urlpatterns = [
     path('vuln/status', VulStatus.as_view()),
     path('vuln/delete/<int:id>', VulDelete.as_view()),
     path('vul/recheck', VulReCheck.as_view()),
+    path('vul/status_list', VulnerabilityStatusView.as_view()),
     path('plugin/vuln/list', VulListEndPoint.as_view()),
     path('plugin/vuln/count', VulCountForPluginEndPoint.as_view()),
     path('scas', ScaList.as_view()),

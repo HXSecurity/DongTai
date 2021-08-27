@@ -12,7 +12,9 @@ from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from iast.base.project_version import get_project_version, get_project_version_by_id
 from django.utils.translation import gettext_lazy as _
+from dongtai.models.vulnerablity import IastVulnerabilityStatus
 from iast.serializers.project import ProjectSerializer
+from dongtai.models.hook_type import HookType
 
 class ProjectSummary(UserEndPoint):
     name = "api-v1-project-summary-<id>"
@@ -64,31 +66,31 @@ class ProjectSummary(UserEndPoint):
         agent_ids = [relation['id'] for relation in relations]
         queryset = IastVulnerabilityModel.objects.filter(
             agent_id__in=agent_ids,
-            status=_('Confirmed')
-        ).values("type", "level_id", "latest_time")
+            status_id=3).values("hook_type_id", "level_id", "latest_time")
         typeArr = {}
         typeLevel = {}
         levelCount = {}
         if queryset:
             for one in queryset:
+                hook_type = HookType.objects.filter(
+                    pk=one['hook_type_id']).first()
+                one['type'] = hook_type.name if hook_type else ''
                 typeArr[one['type']] = typeArr.get(one['type'], 0) + 1
                 typeLevel[one['type']] = one['level_id']
-                levelCount[one['level_id']] = levelCount.get(one['level_id'], 0) + 1
+                levelCount[one['level_id']] = levelCount.get(
+                    one['level_id'], 0) + 1
             typeArrKeys = typeArr.keys()
             for item_type in typeArrKeys:
-                data['type_summary'].append(
-                    {
-                        'type_name': item_type,
-                        'type_count': typeArr[item_type],
-                        'type_level': typeLevel[item_type]
-                    }
-                )
+                data['type_summary'].append({
+                    'type_name': item_type,
+                    'type_count': typeArr[item_type],
+                    'type_level': typeLevel[item_type]
+                })
 
         current_timestamp, a_week_ago_timestamp, days = self.weeks_ago(week=1)
-        vulInfo = queryset.filter(
-            latest_time__gt=a_week_ago_timestamp,
-            latest_time__lt=current_timestamp
-        ).values("type", "latest_time")
+        vulInfo = queryset.filter(latest_time__gt=a_week_ago_timestamp,
+                                  latest_time__lt=current_timestamp).values(
+                                      "hook_type_id", "latest_time")
 
         dayNum = {}
         while days >= 0:

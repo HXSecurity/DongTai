@@ -7,6 +7,7 @@
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.hook_type import HookType
 
 
 class VulSideBarList(UserEndPoint):
@@ -21,7 +22,7 @@ class VulSideBarList(UserEndPoint):
             'level',
             'latest_time',
             'language',
-            'type',
+            'hook_type_id',
             'uri',
         ).filter(agent__in=self.get_auth_agents_with_user(request.user))
 
@@ -54,5 +55,9 @@ class VulSideBarList(UserEndPoint):
         page = request.query_params.get('page', 1)
         page_size = request.query_params.get('pageSize', 10)
         page_summary, queryset = self.get_paginator(queryset, page=page, page_size=page_size)
-
-        return R.success(page=page_summary, total=page_summary['alltotal'], data=queryset)
+        for obj in queryset:
+            hook_type = HookType.objects.filter(pk=obj['hook_type_id']).first()
+            return hook_type.name if hook_type else ''
+        return R.success(page=page_summary,
+                         total=page_summary['alltotal'],
+                         data=queryset)
