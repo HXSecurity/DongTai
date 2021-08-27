@@ -34,7 +34,7 @@ class IastVulnerabilityModel(models.Model):
     hook_type = models.ForeignKey(HookType,
                                   on_delete=models.DO_NOTHING,
                                   db_constraint=False,
-                                  db_column='http_method_id')
+                                  db_column='hook_type_id')
 
     class Meta:
         managed = get_managed()
