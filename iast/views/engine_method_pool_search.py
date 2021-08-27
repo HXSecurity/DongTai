@@ -9,7 +9,7 @@ from dongtai.models.user import User
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 
 from iast.utils import get_model_field, assemble_query, extend_schema_with_envcheck
-from django.utils.translation import gettext_lazy 
+from django.utils.translation import gettext_lazy
 from django.db.utils import OperationalError
 import re
 import operator
@@ -154,6 +154,12 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                                                   request.GET[field],
                                                   method_pool[field],
                                                   "<em>{0}</em>")
+                    elif field in search_fields.keys():
+                        if method_pool[field] is None:
+                            continue
+                        method_pool['_'.join([field, 'highlight'
+                                              ])] = method_pool[field].replce(
+                                                  '<', '&lt;')
         return R.success(
             data={
                 'method_pools': method_pools,
