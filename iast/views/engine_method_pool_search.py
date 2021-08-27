@@ -7,6 +7,7 @@ from dongtai.models.agent_method_pool import MethodPool
 from dongtai.models.project import IastProject
 from dongtai.models.user import User
 from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.hook_type import HookType
 
 from iast.utils import get_model_field, assemble_query, extend_schema_with_envcheck
 from django.utils.translation import gettext_lazy
@@ -100,17 +101,18 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             afterkeys['update_time'] = i['update_time']
         agents = IastAgent.objects.filter(
             pk__in=[i['agent_id'] for i in method_pools]).all().values(
-                'bind_project_id', 'token', 'id', 'user_id', 'is_running')
+                'bind_project_id', 'token', 'id', 'user_id', 'online')
         projects = IastProject.objects.filter(
             pk__in=[i['bind_project_id']
                     for i in agents]).values('id', 'name', 'user_id')
         vulnerablity = IastVulnerabilityModel.objects.filter(
             method_pool_id__in=[i['id'] for i in method_pools]).all().values(
-                'id', 'type', 'method_pool_id', 'level_id').distinct()
+                'id', 'hook_type_id', 'method_pool_id', 'level_id').distinct()
         users = User.objects.filter(pk__in=[_['user_id']
                                             for _ in agents]).values(
                                                 'id', 'username')
         vulnerablities = list(vulnerablity)
+        print(vulnerablities)
         relations = []
         [agents, projects, users] = _transform([agents, projects, users], 'id')
         for method_pool in method_pools:
@@ -120,7 +122,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             if agent:
                 item['agent_id'] = agent['id']
                 item['agent_name'] = agent['token']
-                item['agent_is_running'] = agent['is_running']
+                item['agent_is_running'] = agent['online']
                 project = projects.get(agent['bind_project_id'], None)
                 if project:
                     item['project_id'] = project['id']
@@ -134,8 +136,10 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     filter(lambda _: _['method_pool_id'] == method_pool['id'],
                            vulnerablities)):
                 _ = {}
+                hook_type = HookType.objects.filter(pk=vulnerablity['hook_type_id']).first()
+                _['vulnerablity_type'] = hook_type.name if hook_type else ''
                 _['vulnerablity_id'] = vulnerablity['id']
-                _['vulnerablity_type'] = vulnerablity['type']
+                _['vulnerablity_hook_type_id'] = vulnerablity['hook_type_id']
                 _['level_id'] = vulnerablity['level_id']
                 item['vulnerablities'].append(_)
             relations.append(item)
