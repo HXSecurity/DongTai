@@ -10,7 +10,7 @@ from dongtai.models.agent import IastAgent
 from dongtai.models.project import IastProject
 from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
-
+from dongtai.models.vulnerablity import IastVulnerabilityStatus
 from dongtai.utils import const
 
 
@@ -38,8 +38,9 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_vul_count(self, obj):
         agents = self.get_agents(obj)
-        vul_levels = IastVulnerabilityModel.objects.values('level').filter(agent__in=agents, status='已确认').annotate(
-            total=Count('level'))
+        vul_levels = IastVulnerabilityModel.objects.values('level').filter(
+            agent__in=agents,
+            status__name='已确认').annotate(total=Count('level'))
         for vul_level in vul_levels:
             level = IastVulLevel.objects.get(id=vul_level['level'])
             vul_level['name'] = level.name_value

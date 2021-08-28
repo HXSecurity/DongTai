@@ -11,12 +11,14 @@ from dongtai.endpoint import R, UserEndPoint
 from dongtai.models.api_route import IastApiRoute, IastApiMethod, IastApiRoute, HttpMethod, IastApiResponse, IastApiMethodHttpMethodRelation, IastApiParameter
 from dongtai.models.agent import IastAgent
 from iast.base.project_version import get_project_version, get_project_version_by_id
+from dongtai.models.vulnerablity import IastVulnerabilityModel
 import hashlib
 from dongtai.models.agent_method_pool import MethodPool
 from django.forms.models import model_to_dict
 from iast.utils import checkcover, batch_queryset
 from django.core.cache import caches
 from functools import partial
+from dongtai.models.hook_type import HookType
 
 class ApiRouteSearch(UserEndPoint):
     def get(self, request):
@@ -31,7 +33,7 @@ class ApiRouteSearch(UserEndPoint):
                       for i in exclude_id.split(',')] if exclude_id else None
         is_cover = request.query_params.get('is_cover', None)
         is_cover_dict = {1: True, 0: False}
-        is_cover = is_cover_dict[int(is_cover)] if is_cover else None
+        is_cover = is_cover_dict[int(is_cover)] if is_cover is not None and is_cover != '' else None
         auth_users = self.get_auth_users(request.user)
 
         if http_method:
@@ -73,10 +75,10 @@ class ApiRouteSearch(UserEndPoint):
             distinct_exist_list=distinct_exist_list)
         api_routes = _filter_and_label_partial(
             api_routes, page_size, agents, http_method,
-            is_cover) if is_cover else _filter_and_label_partial(
+            is_cover) if is_cover is not None else _filter_and_label_partial(
                 api_routes, page_size, agents, http_method)
         return R.success(
-            data=[_serialize(api_route) for api_route in api_routes])
+            data=[_serialize(api_route,agents) for api_route in api_routes])
 
 
 def _filter_and_label(api_routes,
@@ -115,7 +117,7 @@ def distinct_key(objects, fields):
     return '_'.join(sequence)
 
 
-def _serialize(api_route):
+def _serialize(api_route, agents):
     item = model_to_dict(api_route)
     is_cover_dict = {1: True, 0: False}
     is_cover_dict = _inverse_dict(is_cover_dict)
@@ -123,17 +125,48 @@ def _serialize(api_route):
     item['parameters'] = _get_parameters(api_route)
     item['responses'] = _get_responses(api_route)
     item['method'] = _get_api_method(item['method'])
+    item['vulnerablities'] = _get_vuls(item['path'], agents)
     return item
+
+
+def _get_vuls(uri, agents):
+    vuls = IastVulnerabilityModel.objects.filter(
+        uri=uri, agent_id__in=[_['id'] for _ in agents
+                               ]).distinct().values('hook_type_id',
+                                                    'level_id').all()
+    return [_get_hook_type(vul) for vul in vuls]
+
+
+def _get_hook_type(vul):
+
+    hook_type = HookType.objects.filter(pk=vul['hook_type_id']).first()
+    if hook_type:
+        return {'hook_type_name': hook_type.name, 'level_id': vul['level_id']}
 
 
 def _get_parameters(api_route):
     parameters = IastApiParameter.objects.filter(route=api_route).all()
-    return [model_to_dict(parameter) for parameter in parameters]
+    parameters = [model_to_dict(parameter) for parameter in parameters]
+    parameters = [_get_parameters_type(parameter) for parameter in parameters]
+    return parameters
+
+
+def _get_parameters_type(api_route):
+    api_route['parameter_type_shortcut'] = api_route['parameter_type'].split(
+        '.')[-1]
+    return api_route
 
 
 def _get_responses(api_route):
     responses = IastApiResponse.objects.filter(route=api_route).all()
-    return [model_to_dict(response) for response in responses]
+    responses = [model_to_dict(response) for response in responses]
+    responses = [_get_responses_type(response) for response in responses]
+    return responses
+
+
+def _get_responses_type(api_route):
+    api_route['return_type_shortcut'] = api_route['return_type'].split('.')[-1]
+    return api_route
 
 
 def _get_api_method(api_method_id):
