@@ -5,6 +5,7 @@
 
 # status
 from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.vulnerablity import IastVulnerabilityStatus
 
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
@@ -19,10 +20,14 @@ class VulStatus(UserEndPoint):
         vul_id = request.data.get('id')
         status = request.data.get('status')
         if vul_id and status:
-            vul_model = IastVulnerabilityModel.objects.filter(id=vul_id, agent__in=self.get_auth_agents_with_user(
-                request.user)).first()
-            vul_model.status = status
-            vul_model.save(update_fields=['status'])
+            vul_model = IastVulnerabilityModel.objects.filter(
+                id=vul_id,
+                agent__in=self.get_auth_agents_with_user(
+                    request.user)).first()
+            status_, iscreate = IastVulnerabilityStatus.objects.get_or_create(
+                name=status)
+            vul_model.status_id = status_.id
+            vul_model.save()
             msg = _('Vulnerability status is modified to {}').format(status)
         else:
             msg = _('Incorrect parameter')
