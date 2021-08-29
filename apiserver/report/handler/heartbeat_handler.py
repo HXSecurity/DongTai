@@ -45,7 +45,6 @@ class HeartBeatHandler(IReportHandler):
         self.agent.save(update_fields=['is_running', 'online'])
         queryset = IastHeartbeat.objects.filter(agent=self.agent)
         heartbeat_count = queryset.values('id').count()
-        logger.info("{},{}".format(self.agent, self.detail))
         if heartbeat_count == 1:
             heartbeat = queryset.first()
             heartbeat.memory = self.memory
