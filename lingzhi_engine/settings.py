@@ -221,3 +221,10 @@ LOGGING = {
         },
     }
 }
+
+# CONST
+PENDING = 1
+VERIFYING = 2
+CONFIRMED = 3
+IGNORE = 4
+SOLVED = 5
