@@ -5,16 +5,13 @@
 # software: PyCharm
 # project: lingzhi-engine
 import json
+import time
 from json import JSONDecodeError
 
-import time
 from celery import shared_task
 from celery.apps.worker import logger
-from django.db.models import Sum, Q
+from django.db.models import Sum
 from dongtai.engine.vul_engine import VulEngine
-from dongtai.models.sca_maven_db import ScaMavenDb
-
-from core.replay import Replay
 from dongtai.models import User
 from dongtai.models.agent import IastAgent
 from dongtai.models.agent_method_pool import MethodPool
@@ -27,11 +24,15 @@ from dongtai.models.project import IastProject
 from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai.models.replay_queue import IastReplayQueue
 from dongtai.models.sca_maven_artifact import ScaMavenArtifact
+from dongtai.models.sca_maven_db import ScaMavenDb
 from dongtai.models.sca_vul_db import ScaVulDb
 from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.utils import const
+
+from core.replay import Replay
+from lingzhi_engine import settings
 from signals import vul_found
 
 
@@ -103,11 +104,12 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack):
         vul.req_params = vul_meta.req_params
         vul.counts = vul.counts + 1
         vul.latest_time = int(time.time())
-        vul.status = '待验证'
+        vul.status_id = settings.PENDING
         vul.full_stack = json.dumps(vul_stack, ensure_ascii=False)
         vul.method_pool_id = vul_meta.id
-        vul.save(update_fields=['req_header', 'req_params', 'counts', 'latest_time', 'status', 'full_stack',
-                                'method_pool_id'])
+        vul.save(update_fields=[
+            'req_header', 'req_params', 'counts', 'latest_time', 'full_stack', 'method_pool_id', 'status_id'
+        ])
     else:
         IastVulnerabilityModel.objects.create(
             type=vul_name,
@@ -130,7 +132,7 @@ def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack):
             agent=vul_meta.agent,
             context_path=vul_meta.context_path,
             counts=1,
-            status='待验证',
+            status_id=settings.PENDING,
             first_time=vul_meta.create_time,
             latest_time=int(time.time()),
             client_ip=vul_meta.clent_ip,
@@ -153,6 +155,13 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
     if queryset.values('id').exists() is False:
         return
 
+    hook_type = HookType.objects.values('id').filter(value=strategy.get("type")).first()
+    if hook_type is None:
+        logger.error(f'current sink rule is {strategy.get("type")}, hook type is not exists.')
+        return
+
+    hook_type_id = hook_type['id']
+
     vul_strategy = queryset.values("level", "vul_name").first()
     engine.search(method_pool=method_pool, vul_method_signature=strategy.get('value'))
     status, stack, source_sign, sink_sign, taint_value = engine.result()
@@ -162,7 +171,7 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
             sender="tasks.search_and_save_vul",
             vul_meta=method_pool_model,
             vul_level=vul_strategy['level'],
-            vul_name=vul_strategy['vul_name'],
+            hook_type_id=hook_type_id,
             vul_stack=stack,
             top_stack=source_sign,
             bottom_stack=sink_sign,
@@ -183,7 +192,7 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
             timestamp = int(time.time())
 
             IastVulnerabilityModel.objects.filter(id=relation_id).update(
-                status='已忽略',
+                status_id=settings.IGNORE,
                 latest_time=timestamp
             )
             IastReplayQueue.objects.filter(id=replay_id).update(
@@ -299,6 +308,7 @@ def search_sink_from_method_pool(method_pool_id):
         method_pool_model = MethodPool.objects.filter(id=method_pool_id).first()
         if method_pool_model is None:
             logger.warn(f'sink规则扫描终止，方法池 [{method_pool_id}] 不存在')
+            return
         strategies = load_sink_strategy(method_pool_model.agent.user)
         engine = VulEngine()
 
