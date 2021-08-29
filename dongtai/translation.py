@@ -10,7 +10,7 @@
 from modeltranslation.translator import translator, TranslationOptions, register
 from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.vul_level import IastVulLevel
-from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.vulnerablity import IastVulnerabilityStatus
 from dongtai.models.deploy import IastDeployDesc
 from dongtai.models.document import IastDocument
 from dongtai.models.hook_type import HookType
@@ -41,9 +41,14 @@ class IastDocumentTranslationOptions(TranslationOptions):
 
 @register(HookType)
 class HookTypeTranslationOptions(TranslationOptions):
-    fields = ('name',)
+    fields = ('name', )
 
 
 @register(IastEnginMonitoringIndicators)
 class IastEnginMonitoringIndicatorsOptions(TranslationOptions):
+    fields = ('name', )
+
+
+@register(IastVulnerabilityStatus)
+class IastVulnerabilityStatusOptions(TranslationOptions):
     fields = ('name', )
