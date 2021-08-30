@@ -249,11 +249,11 @@ msgstr "Password should not be blank"
 #: iast/serializers/sca.py:36 iast/views/vul_details.py:150
 #: iast/views/vuls.py:111
 msgid "The application has not been binded"
-msgstr "The application has not been binded"
+msgstr "No application"
 
 #: iast/serializers/sca.py:59
 msgid "No application version has been created"
-msgstr "No application version has been created"
+msgstr "No application version"
 
 #: iast/views/agent.py:24
 msgid "Can't find relevant data"
