@@ -31,7 +31,7 @@ class HealthView(UserEndPoint):
         if openapi is None:
             return R.failure(msg=_("Get OpenAPI configuration failed"))
         if not validate_url(openapi):
-            return R.failure(msg=_("OpenAPI configuration error"))
+            return R.failure(msg=_("OpenAPI service is down, Please check it."))
 
         token, success = Token.objects.get_or_create(user=request.user)
         openapistatus, openapi_resp = checkopenapistatus(

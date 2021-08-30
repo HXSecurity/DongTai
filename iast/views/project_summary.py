@@ -59,7 +59,6 @@ class ProjectSummary(UserEndPoint):
         relations = IastAgent.objects.filter(
             user__in=auth_users,
             bind_project_id=project.id,
-            online=1,
             project_version_id=current_project_version.get("version_id", 0)
         ).values("id")
 
