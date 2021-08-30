@@ -46,7 +46,6 @@ class ScaList(UserEndPoint):
                 current_project_version = get_project_version_by_id(version_id)
             agents = self.get_auth_agents(auth_users).filter(
                 bind_project_id=project_id,
-                online=1,
                 project_version_id=current_project_version.get("version_id", 0)
             )
             queryset = queryset.filter(agent__in=agents)
