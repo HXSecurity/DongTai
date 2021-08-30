@@ -17,10 +17,10 @@ class AgentStatusUpdate(UserEndPoint):
         timestamp = int(time.time())
         queryset = IastAgent.objects.filter(user=request.user)
         no_heart_beat_queryset = queryset.filter((Q(server=None) & Q(latest_time__lt=(timestamp - 600))),
-                                                 is_running=const.RUNNING)
-        no_heart_beat_queryset.update(is_running=0)
+                                                 online=const.RUNNING)
+        no_heart_beat_queryset.update(online=0)
 
-        heart_beat_queryset = queryset.filter(server__update_time__lt=(timestamp - 600), is_running=const.RUNNING)
-        heart_beat_queryset.update(is_running=0)
+        heart_beat_queryset = queryset.filter(server__update_time__lt=(timestamp - 600), online=const.RUNNING)
+        heart_beat_queryset.update(online=0)
 
         return R.success(msg=_('Engine status was updated successfully.'))
