@@ -109,8 +109,9 @@ class RequestReplayEndPoint(UserEndPoint):
         :param agent: 
         :return: True  ；False 
         """
-        return (not agent) and (agent.is_running == 0
-                                or agent.is_core_running == 0)
+        if not agent:
+            return True
+        return (agent.online == 0)
 
     @staticmethod
     def send_request_to_replay_queue(relation_id, agent_id, replay_request,
@@ -188,16 +189,14 @@ class RequestReplayEndPoint(UserEndPoint):
             if check_failure:
                 return R.failure(msg=_(
                    'Stain pool data does not exist or no permission to access'))
-
             if agent_id:
                 agent = IastAgent.objects.filter(pk=agent_id).first()
                 check_failure = self.check_agent_active(agent)
                 if check_failure and agent is not None:
                     agent = IastAgent.objects.filter(
                         bind_project_id=agent.bind_project_id,
-                        online=1,
-                        is_running=1,
-                        is_core_running=1).first()
+                        online=1).first()
+                check_failure = self.check_agent_active(agent)
             else:
                 check_failure = self.check_agent_active(
                     method_pool_model.agent)

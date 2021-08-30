@@ -24,7 +24,7 @@ class VulListEndPoint(MixinAuthEndPoint):
         if not agent:
             return R.failure(msg=_("agent_name not found"))
 
-        queryset = IastVulnerabilityModel.objects.values('id', 'type', 'url', 'http_method', 'top_stack',
+        queryset = IastVulnerabilityModel.objects.values('id', 'hook_type_id', 'url', 'http_method', 'top_stack',
                                                          'bottom_stack').filter(
             agent=agent)
 
