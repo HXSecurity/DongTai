@@ -76,11 +76,13 @@ class VulsEndPoint(UserEndPoint):
         url = request.query_params.get('url', None)
         if url and url != '':
             queryset = queryset.filter(url__icontains=url)
-
         status = request.query_params.get('status')
         if status:
             queryset = queryset.filter(status__name=status)
-
+       
+        status_id = request.query_params.get('status_id')
+        if status_id:
+            queryset = queryset.filter(status_id=status_id)
         order = request.query_params.get('order')
         if order:
             if order == 'type':
