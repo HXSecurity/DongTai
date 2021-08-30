@@ -70,7 +70,6 @@ class VulsEndPoint(UserEndPoint):
                 current_project_version = get_project_version_by_id(version_id)
             agents = auth_agents.filter(
                 bind_project_id=project_id,
-                online=1,
                 project_version_id=current_project_version.get("version_id", 0))
             queryset = queryset.filter(agent_id__in=agents)
 
@@ -105,7 +104,6 @@ class VulsEndPoint(UserEndPoint):
         page = request.query_params.get('page', 1)
         page_size = request.query_params.get("pageSize", 20)
         page_summary, page_data = self.get_paginator(queryset, page, page_size)
-
         datas = VulSerializer(page_data, many=True).data
         pro_length = len(datas)
         if pro_length > 0:
