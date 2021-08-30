@@ -52,7 +52,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         return self.USER_MAP[obj]
 
     def get_agent_count(self, obj):
-        return self.get_agents(obj).filter(is_running=const.RUNNING).count()
+        return self.get_agents(obj).filter(online=const.RUNNING).count()
 
     def get_agent_language(self, obj):
         res = self.get_agents(obj).filter(online=1).values_list(

@@ -65,8 +65,9 @@ class ApiRouteSearch(UserEndPoint):
         distinct_exist_list = [] if not exclude_id else list(
             set([
                 distinct_key(
-                    IastApiRoute.objects.filter(id=i).values(
-                        *distinct_fields), distinct_fields) for i in exclude_id
+                    IastApiRoute.objects.filter(pk=i).values(
+                        "path", "method_id").first(), distinct_fields)
+                for i in exclude_id
             ]))
         _filter_and_label_partial = partial(
             _filter_and_label,
@@ -92,7 +93,11 @@ def _filter_and_label(api_routes,
     api_routes_after_filter = []
     distinct_exist_list = distinct_exist_list.copy()
     for api_route in batch_queryset(api_routes):
-        distinct_key_ = distinct_key(api_route, distinct_fields)
+        distinct_key_ = distinct_key(
+            {
+                'path': api_route.path,
+                'method_id': api_route.method.id
+            }, distinct_fields)
         if distinct_key_ in distinct_exist_list:
             continue
         else:
@@ -110,7 +115,7 @@ def _filter_and_label(api_routes,
 
 
 def distinct_key(objects, fields):
-    sequence = [getattr(objects, field, 'None') for field in fields]
+    sequence = [objects.get(field, 'None') for field in fields]
     sequence = [
         item if isinstance(item, str) else str(item) for item in sequence
     ]

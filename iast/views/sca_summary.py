@@ -47,7 +47,6 @@ class ScaSummary(UserEndPoint):
                 current_project_version = get_project_version_by_id(version_id)
             auth_agents = auth_agents.filter(
                 bind_project_id=project_id,
-                online=1,
                 project_version_id=current_project_version.get("version_id", 0)
             )
 
