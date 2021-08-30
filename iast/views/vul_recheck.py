@@ -51,10 +51,9 @@ class VulReCheck(UserEndPoint):
                     replay_type=const.VUL_REPLAY
                 )
                 success_count = success_count + 1
-
-            vul.status = const.VUL_WAITING
+            vul.status_id = 1 
             vul.latest_time = timestamp
-            vul.save(update_fields=['status', 'latest_time'])
+            vul.save(update_fields=['status_id', 'latest_time'])
         return waiting_count, success_count, re_success_count
 
     @staticmethod
