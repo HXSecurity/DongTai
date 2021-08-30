@@ -452,18 +452,14 @@ def update_agent_status():
     try:
         running_agents = IastAgent.objects.values("id").filter(is_running=1)
         is_stopped_agents = list()
-        # is_running_agents = list()
         for agent in running_agents:
             agent_id = agent['id']
             if is_alive(agent_id=agent_id, timestamp=timestamp):
-                # is_running_agents.append(agent_id)
                 continue
             else:
                 is_stopped_agents.append(agent_id)
         if is_stopped_agents:
-            IastAgent.objects.filter(id__in=is_stopped_agents).update(is_running=0, is_core_running=0)
-        # if is_running_agents:
-        #     IastAgent.objects.filter(id__in=is_running_agents).update(is_running=1, is_core_running=1)
+            IastAgent.objects.filter(id__in=is_stopped_agents).update(is_running=0, is_core_running=0, online=0)
 
         logger.info(f'检测引擎状态更新成功')
     except Exception as e:
