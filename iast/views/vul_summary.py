@@ -14,6 +14,7 @@ from iast.base.agent import get_project_vul_count
 from iast.base.project_version import get_project_version, get_project_version_by_id
 from django.utils.translation import gettext_lazy as _
 from dongtai.models.hook_type import HookType
+from django.db.models import Q
 
 
 class VulSummary(UserEndPoint):
@@ -107,6 +108,9 @@ class VulSummary(UserEndPoint):
         url = request.query_params.get('url')
         if url and url != '':
             queryset = queryset.filter(url__icontains=url)
+
+        q = ~Q(hook_type_id=0)
+        queryset = queryset.filter(q)
 
         level_summary = queryset.values('level').order_by('level').annotate(total=Count('level'))
         type_summary = queryset.values('hook_type_id').order_by(
