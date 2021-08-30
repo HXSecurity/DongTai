@@ -158,11 +158,11 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                                                   request.GET[field],
                                                   method_pool[field],
                                                   "<em>{0}</em>")
-                    elif field in search_fields.keys():
+                    elif field in fields:
                         if method_pool[field] is None:
                             continue
                         method_pool['_'.join([field, 'highlight'
-                                              ])] = method_pool[field].replce(
+                                              ])] = method_pool[field].replace(
                                                   '<', '&lt;')
         return R.success(
             data={
