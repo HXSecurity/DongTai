@@ -17,7 +17,7 @@ class ProjectEngines(UserEndPoint):
 
     def get(self, request, pid):
         auth_users = self.get_auth_users(request.user)
-        queryset = IastAgent.objects.filter(user__in=auth_users, is_running=const.RUNNING, bind_project_id__in=[0, pid]).values(
+        queryset = IastAgent.objects.filter(user__in=auth_users, online=const.RUNNING, bind_project_id__in=[0, pid]).values(
             "id", "token")
         data = []
         if queryset:

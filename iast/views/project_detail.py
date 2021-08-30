@@ -23,7 +23,7 @@ class ProjectDetail(UserEndPoint):
         project = IastProject.objects.filter(user__in=auth_users, id=id).first()
 
         if project:
-            relations = IastAgent.objects.filter(bind_project_id=project.id, is_running=const.RUNNING)
+            relations = IastAgent.objects.filter(bind_project_id=project.id, online=const.RUNNING)
             agents = [{"id": relation.id, "name": relation.token} for relation in relations]
             if project.scan:
                 scan_id = project.scan.id
