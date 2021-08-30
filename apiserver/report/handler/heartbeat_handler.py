@@ -99,8 +99,8 @@ class HeartBeatHandler(IReportHandler):
             IastReplayQueue.objects.filter(id__in=success_ids).update(update_time=timestamp, state=const.SOLVING)
             IastReplayQueue.objects.filter(id__in=failure_ids).update(update_time=timestamp, state=const.SOLVED)
 
-            IastVulnerabilityModel.objects.filter(id__in=success_vul_ids).update(latest_time=timestamp, status='验证中')
-            IastVulnerabilityModel.objects.filter(id__in=failure_vul_ids).update(latest_time=timestamp, status='验证失败')
+            IastVulnerabilityModel.objects.filter(id__in=success_vul_ids).update(latest_time=timestamp, status_id=2)
+            IastVulnerabilityModel.objects.filter(id__in=failure_vul_ids).update(latest_time=timestamp, status_id=1)
             logger.info(f'重放请求下发成功')
 
             return replay_requests
