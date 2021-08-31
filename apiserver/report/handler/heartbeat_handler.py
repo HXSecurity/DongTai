@@ -35,7 +35,9 @@ class HeartBeatHandler(IReportHandler):
         self.network = self.detail.get('network')
         self.disk = self.detail.get('disk')
         self.req_count = self.detail.get('req_count')
-
+        self.report_queue = self.detail.get('report_queue')
+        self.method_queue = self.detail.get('method_queue')
+        self.replay_queue = self.detail.get('replay_queue')
     def save_heartbeat(self):
         # update agent state
         self.agent.is_running = 1
@@ -49,18 +51,25 @@ class HeartBeatHandler(IReportHandler):
             heartbeat.cpu = self.cpu
             heartbeat.disk = self.disk
             heartbeat.req_count = self.req_count
+            heartbeat.report_queue = self.report_queue
+            heartbeat.method_queue = self.method_queue
+            heartbeat.replay_queue = self.replay_queue
             heartbeat.dt = int(time.time())
-            heartbeat.save(update_fields=['memory', 'cpu', 'disk', 'req_count', 'dt'])
+            heartbeat.save(update_fields=[
+                'memory', 'cpu', 'disk', 'req_count', 'dt', 'report_queue',
+                'method_queue', 'replay_queue'
+            ])
         else:
             queryset.delete()
-            IastHeartbeat.objects.create(
-                memory=self.memory,
-                cpu=self.cpu,
-                disk=self.disk,
-                req_count=self.req_count,
-                dt=int(time.time()),
-                agent=self.agent
-            )
+            IastHeartbeat.objects.create(memory=self.memory,
+                                         cpu=self.cpu,
+                                         disk=self.disk,
+                                         req_count=self.req_count,
+                                         report_queue=self.replay_queue,
+                                         method_queue=self.method_queue,
+                                         replay_queue=self.replay_queue,
+                                         dt=int(time.time()),
+                                         agent=self.agent)
 
     def get_result(self, msg=None):
         try:
@@ -90,8 +99,8 @@ class HeartBeatHandler(IReportHandler):
             IastReplayQueue.objects.filter(id__in=success_ids).update(update_time=timestamp, state=const.SOLVING)
             IastReplayQueue.objects.filter(id__in=failure_ids).update(update_time=timestamp, state=const.SOLVED)
 
-            IastVulnerabilityModel.objects.filter(id__in=success_vul_ids).update(latest_time=timestamp, status='验证中')
-            IastVulnerabilityModel.objects.filter(id__in=failure_vul_ids).update(latest_time=timestamp, status='验证失败')
+            IastVulnerabilityModel.objects.filter(id__in=success_vul_ids).update(latest_time=timestamp, status_id=2)
+            IastVulnerabilityModel.objects.filter(id__in=failure_vul_ids).update(latest_time=timestamp, status_id=1)
             logger.info(f'重放请求下发成功')
 
             return replay_requests
