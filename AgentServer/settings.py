@@ -14,6 +14,7 @@ import os
 import sys
 from configparser import ConfigParser
 from urllib.parse import urljoin
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -195,3 +196,10 @@ ACCESS_KEY = config.get('aliyun_oss', 'access_key')
 ACCESS_KEY_SECRET = config.get('aliyun_oss', 'access_key_secret')
 BUCKET_URL = 'https://oss-cn-beijing.aliyuncs.com'
 BUCKET_NAME = 'dongtai'
+
+# CONST
+PENDING = 1
+VERIFYING = 2
+CONFIRMED = 3
+IGNORE = 4
+SOLVED = 5
