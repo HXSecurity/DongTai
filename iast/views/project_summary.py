@@ -12,7 +12,10 @@ from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from iast.base.project_version import get_project_version, get_project_version_by_id
 from django.utils.translation import gettext_lazy as _
-
+from dongtai.models.vulnerablity import IastVulnerabilityStatus
+from iast.serializers.project import ProjectSerializer
+from dongtai.models.hook_type import HookType
+from django.db.models import Q
 
 class ProjectSummary(UserEndPoint):
     name = "api-v1-project-summary-<id>"
@@ -20,14 +23,14 @@ class ProjectSummary(UserEndPoint):
 
     @staticmethod
     def weeks_ago(week=1):
-        
+
         weekend = 7 * week
         current_timestamp = int(time.time())
         weekend_ago_time = time.localtime(current_timestamp - 86400 * weekend)
         weekend_ago_time_str = str(weekend_ago_time.tm_year) + "-" + str(weekend_ago_time.tm_mon) + "-" + str(
             weekend_ago_time.tm_mday) + " 00:00:00"
         beginArray = time.strptime(weekend_ago_time_str, "%Y-%m-%d %H:%M:%S")
-        
+
         beginT = int(time.mktime(beginArray))
         return current_timestamp, beginT, weekend
 
@@ -47,7 +50,7 @@ class ProjectSummary(UserEndPoint):
         data['type_summary'] = []
         data['day_num'] = []
         data['level_count'] = []
-        
+
         if not version_id:
             current_project_version = get_project_version(
                 project.id, auth_users)
@@ -57,38 +60,39 @@ class ProjectSummary(UserEndPoint):
         relations = IastAgent.objects.filter(
             user__in=auth_users,
             bind_project_id=project.id,
-            online=1,
             project_version_id=current_project_version.get("version_id", 0)
         ).values("id")
-        
+
         agent_ids = [relation['id'] for relation in relations]
         queryset = IastVulnerabilityModel.objects.filter(
             agent_id__in=agent_ids,
-            status=_('Confirmed')
-        ).values("type", "level_id", "latest_time")
+            status_id=3).values("hook_type_id", "level_id", "latest_time")
+        q = ~Q(hook_type_id=0)
+        queryset = queryset.filter(q)
         typeArr = {}
         typeLevel = {}
         levelCount = {}
         if queryset:
             for one in queryset:
+                hook_type = HookType.objects.filter(
+                    pk=one['hook_type_id']).first()
+                one['type'] = hook_type.name if hook_type else ''
                 typeArr[one['type']] = typeArr.get(one['type'], 0) + 1
                 typeLevel[one['type']] = one['level_id']
-                levelCount[one['level_id']] = levelCount.get(one['level_id'], 0) + 1
+                levelCount[one['level_id']] = levelCount.get(
+                    one['level_id'], 0) + 1
             typeArrKeys = typeArr.keys()
             for item_type in typeArrKeys:
-                data['type_summary'].append(
-                    {
-                        'type_name': item_type,
-                        'type_count': typeArr[item_type],
-                        'type_level': typeLevel[item_type]
-                    }
-                )
-        
+                data['type_summary'].append({
+                    'type_name': item_type,
+                    'type_count': typeArr[item_type],
+                    'type_level': typeLevel[item_type]
+                })
+
         current_timestamp, a_week_ago_timestamp, days = self.weeks_ago(week=1)
-        vulInfo = queryset.filter(
-            latest_time__gt=a_week_ago_timestamp,
-            latest_time__lt=current_timestamp
-        ).values("type", "latest_time")
+        vulInfo = queryset.filter(latest_time__gt=a_week_ago_timestamp,
+                                  latest_time__lt=current_timestamp).values(
+                                      "hook_type_id", "latest_time")
 
         dayNum = {}
         while days >= 0:
@@ -120,5 +124,6 @@ class ProjectSummary(UserEndPoint):
                     'day_label': day_label,
                     'day_num': dayNum[day_label]
                 })
-
+        data['agent_language'] = ProjectSerializer(
+            project).data['agent_language']
         return R.success(data=data)

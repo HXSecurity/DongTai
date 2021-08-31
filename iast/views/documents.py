@@ -9,13 +9,31 @@ from dongtai.endpoint import UserEndPoint
 from iast.serializers.strategy import StrategySerializer
 from django.forms.models import model_to_dict
 from django.db.models import Q
+from rest_framework import serializers
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes
+from rest_framework.serializers import ValidationError
+from iast.utils import extend_schema_with_envcheck
+
+
+
+
+class DocumentArgsSerializer(serializers.Serializer):
+    page_size = serializers.IntegerField(default=1)
+    page = serializers.IntegerField(default=1)
+    language = serializers.CharField(default=None)
 
 
 class DocumentsEndpoint(UserEndPoint):
+    @extend_schema_with_envcheck([DocumentArgsSerializer])
     def get(self, request):
-        page_size = request.GET.get('page_size', 100)
-        page = request.GET.get('page', 1)
-        language = request.GET.get('language', None)
+        ser = DocumentArgsSerializer(data=request.GET)
+        try:
+            if ser.is_valid(True):
+                page_size = ser.validated_data['page_size']
+                page = ser.validated_data['page']
+                language = ser.validated_data['language']
+        except ValidationError as e:
+            return R.failure(data=e.detail)
         if language:
             q = Q(language=language)
         else:

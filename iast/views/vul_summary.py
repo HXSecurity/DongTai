@@ -13,6 +13,8 @@ from dongtai.models.vulnerablity import IastVulnerabilityModel
 from iast.base.agent import get_project_vul_count
 from iast.base.project_version import get_project_version, get_project_version_by_id
 from django.utils.translation import gettext_lazy as _
+from dongtai.models.hook_type import HookType
+from django.db.models import Q
 
 
 class VulSummary(UserEndPoint):
@@ -51,7 +53,7 @@ class VulSummary(UserEndPoint):
             "data": {}
         }
 
-        
+
         auth_users = self.get_auth_users(request.user)
         auth_agents = self.get_auth_agents(auth_users)
         queryset = IastVulnerabilityModel.objects.all()
@@ -72,7 +74,7 @@ class VulSummary(UserEndPoint):
 
         project_id = request.query_params.get('project_id')
         if project_id and project_id != '':
-            
+
             version_id = request.GET.get('version_id', None)
             if not version_id:
                 current_project_version = get_project_version(
@@ -81,7 +83,6 @@ class VulSummary(UserEndPoint):
                 current_project_version = get_project_version_by_id(version_id)
             auth_agents = auth_agents.filter(
                 bind_project_id=project_id,
-                online=1,
                 project_version_id=current_project_version.get("version_id", 0)
             )
 
@@ -89,7 +90,10 @@ class VulSummary(UserEndPoint):
 
         status = request.query_params.get('status')
         if status:
-            queryset = queryset.filter(status=status)
+            queryset = queryset.filter(status__name=status)
+        status_id = request.query_params.get('status_id')
+        if status_id:
+            queryset = queryset.filter(status_id=status_id)
 
         level = request.query_params.get('level')
         if level:
@@ -97,14 +101,20 @@ class VulSummary(UserEndPoint):
 
         vul_type = request.query_params.get('type')
         if vul_type:
-            queryset = queryset.filter(type=vul_type)
+            hook_type = HookType.objects.filter(name=vul_type).first()
+            vul_type_id = hook_type.id if hook_type else 0
+            queryset = queryset.filter(hook_type_id=vul_type_id)
 
         url = request.query_params.get('url')
         if url and url != '':
             queryset = queryset.filter(url__icontains=url)
 
+        q = ~Q(hook_type_id=0)
+        queryset = queryset.filter(q)
+
         level_summary = queryset.values('level').order_by('level').annotate(total=Count('level'))
-        type_summary = queryset.values('type').order_by('type').annotate(total=Count('type'))
+        type_summary = queryset.values('hook_type_id').order_by(
+            'hook_type_id').annotate(total=Count('hook_type_id'))
 
         end['data']['language'] = self.get_languages(queryset.values('agent_id'))
 
@@ -115,13 +125,26 @@ class VulSummary(UserEndPoint):
             'level': _key, 'count': _value, 'level_id': vul_level_metadata[_key]
         } for _key, _value in DEFAULT_LEVEL.items()]
 
-        vul_type_list = [{"type": _['type'], "count": _['total']} for _ in type_summary]
-        end['data']['type'] = sorted(vul_type_list, key=lambda x: x['count'], reverse=True)
-        end['data']['projects'] = get_project_vul_count(users=auth_users, queryset=queryset, auth_agents=auth_agents,
-                                                        project_id=project_id)
+        vul_type_list = [{
+            "type": get_hook_type_name(_),
+            "count": _['total']
+        } for _ in type_summary]
+        end['data']['type'] = sorted(vul_type_list,
+                                     key=lambda x: x['count'],
+                                     reverse=True)
+        end['data']['projects'] = get_project_vul_count(
+            users=auth_users,
+            queryset=queryset,
+            auth_agents=auth_agents,
+            project_id=project_id)
 
         return R.success(data=end['data'], level_data=end['level_data'])
 
     @staticmethod
     def get_level_name(id):
         return IastVulLevel.objects.get(id=id).name_value
+
+
+def get_hook_type_name(obj):
+    hook_type = HookType.objects.filter(pk=obj['hook_type_id']).first()
+    return  hook_type.name if hook_type else ''

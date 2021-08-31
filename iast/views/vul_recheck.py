@@ -51,10 +51,9 @@ class VulReCheck(UserEndPoint):
                     replay_type=const.VUL_REPLAY
                 )
                 success_count = success_count + 1
-
-            vul.status = const.VUL_WAITING
+            vul.status_id = 1 
             vul.latest_time = timestamp
-            vul.save(update_fields=['status', 'latest_time'])
+            vul.save(update_fields=['status_id', 'latest_time'])
         return waiting_count, success_count, re_success_count
 
     @staticmethod
@@ -63,7 +62,7 @@ class VulReCheck(UserEndPoint):
         for vul_model in vul_queryset:
             project_id = vul_model.agent.bind_project_id
             if project_id and IastAgent.objects.values("id").filter(bind_project_id=project_id,
-                                                                    is_running=const.RUNNING,
+                                                                    online=const.RUNNING,
                                                                     is_core_running=const.CORE_IS_RUNNING).exists():
                 checked_vuls.append(vul_model)
             else:

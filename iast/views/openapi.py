@@ -12,7 +12,7 @@ class OpenApiEndpoint(UserEndPoint):
         profilefromini = None
         profiles = list(
             filter(lambda x: x is not None, [profilefromdb, profilefromini]))
-        if profiles == []:
+        if profiles == [] or not profiles[0]:
             return R.failure(msg=_("Get OpenAPI configuration failed"))
         return R.success(data={'url': profiles[0]})
 

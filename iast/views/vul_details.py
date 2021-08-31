@@ -10,7 +10,9 @@ import logging
 from dongtai.models.project import IastProject
 from dongtai.models.project_version import IastProjectVersion
 from dongtai.models.strategy import IastStrategyModel
+from dongtai.models.vulnerablity import IastVulnerabilityStatus
 from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.hook_type import HookType
 
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
@@ -115,7 +117,10 @@ class VulDetail(UserEndPoint):
 
     def get_vul(self, auth_agents):
         vul = IastVulnerabilityModel.objects.filter(id=self.vul_id, agent__in=auth_agents).first()
-
+        hook_type = HookType.objects.filter(pk=vul.hook_type_id).first()
+        vul.type = hook_type.name if hook_type else ''
+        status = IastVulnerabilityStatus.objects.filter(pk=vul.status_id).first()
+        vul.status_ = status.name if status else '' 
         agent = vul.agent
         project_id = agent.bind_project_id
         if project_id is None or project_id == 0:
@@ -160,7 +165,7 @@ class VulDetail(UserEndPoint):
             'graph': self.parse_graphy(vul.full_stack),
             'context_path': vul.context_path,
             'client_ip': vul.client_ip,
-            'status': vul.status,
+            'status': vul.status_,
             'taint_value': vul.taint_value,
             'param_name': json.loads(vul.param_name) if vul.param_name else {},
             'method_pool_id': vul.method_pool_id,

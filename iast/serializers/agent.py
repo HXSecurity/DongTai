@@ -21,11 +21,18 @@ class AgentSerializer(serializers.ModelSerializer):
     server = serializers.SerializerMethodField()
     owner = serializers.SerializerMethodField()
     flow = serializers.SerializerMethodField()
+    report_queue = serializers.SerializerMethodField()
+    method_queue = serializers.SerializerMethodField()
+    replay_queue = serializers.SerializerMethodField()
 
     class Meta:
         model = IastAgent
-        fields = ['id', 'token', 'server', 'running_status', 'system_load', 'owner', 'latest_time', 'project_name',
-                  'is_core_running', 'language', 'flow', 'is_control']
+        fields = [
+            'id', 'token', 'server', 'running_status', 'system_load', 'owner',
+            'latest_time', 'project_name', 'is_core_running', 'language',
+            'flow', 'is_control', 'report_queue', 'method_queue',
+            'replay_queue'
+        ]
 
     def get_latest_heartbeat(self, obj):
         try:
@@ -75,6 +82,21 @@ class AgentSerializer(serializers.ModelSerializer):
     def get_flow(self, obj):
         heartbeat = IastHeartbeat.objects.values('req_count').filter(agent=obj).first()
         return heartbeat['req_count'] if heartbeat else 0
+
+    def get_method_queue(self, obj):
+        heartbeat = IastHeartbeat.objects.values('method_queue').filter(
+            agent_id=obj.id).order_by('-dt').first()
+        return heartbeat['method_queue'] if heartbeat is not None else 0
+
+    def get_report_queue(self, obj):
+        heartbeat = IastHeartbeat.objects.values('report_queue').filter(
+            agent_id=obj.id).order_by('-dt').first()
+        return heartbeat['report_queue'] if heartbeat is not None else 0
+
+    def get_replay_queue(self, obj):
+        heartbeat = IastHeartbeat.objects.values('replay_queue').filter(
+            agent_id=obj.id).order_by('-dt').first()
+        return heartbeat['replay_queue'] if heartbeat is not None else 0
 
 
 class ProjectEngineSerializer(serializers.ModelSerializer):
