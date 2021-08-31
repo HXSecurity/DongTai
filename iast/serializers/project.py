@@ -55,6 +55,6 @@ class ProjectSerializer(serializers.ModelSerializer):
         return self.get_agents(obj).filter(online=const.RUNNING).count()
 
     def get_agent_language(self, obj):
-        res = self.get_agents(obj).filter(online=1).values_list(
+        res = self.get_agents(obj).all().values_list(
             'language', flat=True).distinct()
         return list(res)

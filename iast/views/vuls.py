@@ -15,6 +15,7 @@ from iast.base.project_version import get_project_version, get_project_version_b
 from iast.serializers.vul import VulSerializer
 from django.utils.translation import gettext_lazy as _
 from dongtai.models.hook_type import HookType
+from django.db.models import Q
 
 
 class VulsEndPoint(UserEndPoint):
@@ -76,11 +77,13 @@ class VulsEndPoint(UserEndPoint):
         url = request.query_params.get('url', None)
         if url and url != '':
             queryset = queryset.filter(url__icontains=url)
-
         status = request.query_params.get('status')
         if status:
             queryset = queryset.filter(status__name=status)
 
+        status_id = request.query_params.get('status_id')
+        if status_id:
+            queryset = queryset.filter(status_id=status_id)
         order = request.query_params.get('order')
         if order:
             if order == 'type':
@@ -89,6 +92,8 @@ class VulsEndPoint(UserEndPoint):
         else:
             queryset = queryset.order_by('-latest_time')
 
+        q = ~Q(hook_type_id=0)
+        queryset = queryset.filter(q)
         projects_info = get_user_project_name(auth_users)
         agentArr = get_user_agent_pro(auth_users, projects_info.keys())
         agentPro = agentArr['pidArr']
