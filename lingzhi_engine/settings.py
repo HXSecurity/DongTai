@@ -41,11 +41,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_celery_beat',
+    'modeltranslation',
     'rest_framework',
     'rest_framework.authtoken',
     'dongtai',
     'vuln'
 ]
+
+MODELTRANSLATION_LANGUAGES = ('en', 'zh')
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'zh'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -217,3 +221,10 @@ LOGGING = {
         },
     }
 }
+
+# CONST
+PENDING = 1
+VERIFYING = 2
+CONFIRMED = 3
+IGNORE = 4
+SOLVED = 5
