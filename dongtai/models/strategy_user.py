@@ -1,6 +1,7 @@
 from django.db import models
 
 from dongtai.models import User
+from dongtai.utils.settings import get_managed
 
 
 class IastStrategyUser(models.Model):
@@ -12,5 +13,5 @@ class IastStrategyUser(models.Model):
     created_at = models.DateTimeField(verbose_name="创建时间", auto_now_add=True)
 
     class Meta:
-        managed = False
+        managed = get_managed()
         db_table = 'iast_strategy_user'

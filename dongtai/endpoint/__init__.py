@@ -17,7 +17,7 @@ from dongtai.models.agent import IastAgent
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.views import APIView
 from rest_framework import status, exceptions
-
+from django.core.paginator import PageNotAnInteger, EmptyPage
 from dongtai.permissions import UserPermission, ScopedPermission, SystemAdminPermission, TalentAdminPermission
 from dongtai.utils import const
 
@@ -140,19 +140,29 @@ class EndPoint(APIView):
         pass
 
     @staticmethod
-    def get_paginator(queryset, page=1, page_size=20):
+    def get_paginator(queryset, page: int = 1, page_size: int = 20):
         """
         根据模型集合、页号、每页大小获取分页数据
         :param queryset:
         :param page:
+            It is recommended to set the pagesize below 50,
+            if it exceeds 50, it will be changed to 50
         :param page_size:
         :return:
         """
-        if int(page_size) > 50:
-            page_size = 50
+        page_size = min(50, int(page_size))
+        page = int(page)
         page_info = Paginator(queryset, per_page=page_size)
-        page_summary = {"alltotal": page_info.count, "num_pages": page_info.num_pages, "page_size": page_size}
-        return page_summary, page_info.get_page(page).object_list if page != 0 else []
+        page_summary = {
+            "alltotal": page_info.count,
+            "num_pages": page_info.num_pages,
+            "page_size": page_size
+        }
+        try:
+            page_info.validate_number(page)
+        except (EmptyPage, PageNotAnInteger):
+            return page_summary, []
+        return page_summary, page_info.get_page(page).object_list
 
     @staticmethod
     def get_auth_users(user):
