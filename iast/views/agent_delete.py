@@ -97,7 +97,7 @@ class AgentDeleteEndPoint(UserEndPoint):
             deleted, _rows_count = IastAgentMethodPoolReplay.objects.filter(agent=self.agent).delete()
             logger.error(_('The replay request method pool data was successfully deleted, A total of {} replay requests are deleted').format(deleted))
         except Exception as e:
-            logger.error(_('Failed to delete replay request queue, error message: {}'.format(e)))
+            logger.error(_('Failed to delete replay request method pool data, error message: {}'.format(e)))
 
     def delete_replay_queue(self):
         try:

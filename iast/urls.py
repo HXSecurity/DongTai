@@ -95,10 +95,15 @@ from iast.views.vul_sidebar_index import VulSideBarList
 from iast.views.vul_status import VulStatus
 from iast.views.vul_summary import VulSummary
 from iast.views.vuls import VulsEndPoint
+from iast.views.vulnerability_status import VulnerabilityStatusView
 from iast.views.version_update import MethodPoolVersionUpdate
 from iast.views.demo import Demo
 from i18n.views.setlang import LanguageSetting
-
+from iast.views.api_route_search import ApiRouteSearch
+from iast.views.api_route_related_request import ApiRouteRelationRequest
+from iast.views.api_route_cover_rate import ApiRouteCoverRate
+from iast.views.health import HealthView
+from iast.views.oss_health import OssHealthView
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
     path("talent/<int:pk>", TalentEndPoint.as_view()),
@@ -145,6 +150,7 @@ urlpatterns = [
     path('vuln/status', VulStatus.as_view()),
     path('vuln/delete/<int:id>', VulDelete.as_view()),
     path('vul/recheck', VulReCheck.as_view()),
+    path('vul/status_list', VulnerabilityStatusView.as_view()),
     path('plugin/vuln/list', VulListEndPoint.as_view()),
     path('plugin/vuln/count', VulCountForPluginEndPoint.as_view()),
     path('scas', ScaList.as_view()),
@@ -204,6 +210,11 @@ urlpatterns = [
     path('version_update/K23DiutPrwpoqAddqNbHUk',
          MethodPoolVersionUpdate.as_view()),
     path('i18n/setlang', LanguageSetting.as_view()),
+    path('api_route/search', ApiRouteSearch.as_view()),
+    path('api_route/relationrequest', ApiRouteRelationRequest.as_view()),
+    path('api_route/cover_rate', ApiRouteCoverRate.as_view()),
+    path('health', HealthView.as_view()),
+    path('oss/health', OssHealthView.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口

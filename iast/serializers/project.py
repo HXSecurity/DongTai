@@ -10,7 +10,7 @@ from dongtai.models.agent import IastAgent
 from dongtai.models.project import IastProject
 from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
-
+from dongtai.models.vulnerablity import IastVulnerabilityStatus
 from dongtai.utils import const
 
 
@@ -18,11 +18,15 @@ class ProjectSerializer(serializers.ModelSerializer):
     vul_count = serializers.SerializerMethodField()
     owner = serializers.SerializerMethodField()
     agent_count = serializers.SerializerMethodField()
+    agent_language = serializers.SerializerMethodField()
     USER_MAP = {}
 
     class Meta:
         model = IastProject
-        fields = ['id', 'name', 'mode', 'vul_count', 'agent_count', 'owner', 'latest_time']
+        fields = [
+            'id', 'name', 'mode', 'vul_count', 'agent_count', 'owner',
+            'latest_time', 'agent_language'
+        ]
 
     def get_agents(self, obj):
         try:
@@ -34,8 +38,9 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_vul_count(self, obj):
         agents = self.get_agents(obj)
-        vul_levels = IastVulnerabilityModel.objects.values('level').filter(agent__in=agents, status='已确认').annotate(
-            total=Count('level'))
+        vul_levels = IastVulnerabilityModel.objects.values('level').filter(
+            agent__in=agents,
+            status__name='已确认').annotate(total=Count('level'))
         for vul_level in vul_levels:
             level = IastVulLevel.objects.get(id=vul_level['level'])
             vul_level['name'] = level.name_value
@@ -47,4 +52,9 @@ class ProjectSerializer(serializers.ModelSerializer):
         return self.USER_MAP[obj]
 
     def get_agent_count(self, obj):
-        return self.get_agents(obj).filter(is_running=const.RUNNING).count()
+        return self.get_agents(obj).filter(online=const.RUNNING).count()
+
+    def get_agent_language(self, obj):
+        res = self.get_agents(obj).all().values_list(
+            'language', flat=True).distinct()
+        return list(res)

@@ -13,7 +13,7 @@ from dongtai.models.project import IastProject
 from dongtai.models.server import IastServer
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from django.utils.translation import gettext_lazy as _
-
+from dongtai.models.hook_type import HookType
 
 def get_agents_with_project(project_name, users):
     """
@@ -106,7 +106,8 @@ def change_dict_key(dic, keypair):
 
 
 def get_vul_count_by_agent(agent_ids, vid, user):
-    typeInfo = IastVulnerabilityModel.objects.filter(agent_id__in=agent_ids).values().order_by("level")
+    typeInfo = IastVulnerabilityModel.objects.filter(
+        agent_id__in=agent_ids).values().order_by("level")
     if vid:
         typeInfo = typeInfo.filter(id=vid)
     type_summary = []
@@ -116,6 +117,8 @@ def get_vul_count_by_agent(agent_ids, vid, user):
         typeArr = {}
         typeLevel = {}
         for one in typeInfo:
+            hook_type = HookType.objects.filter(pk=one['hook_type_id']).first()
+            one['type'] = hook_type.name if hook_type else ''
             typeArr[one['type']] = typeArr.get(one['type'], 0) + 1
             typeLevel[one['type']] = one['level_id']
             levelCount[one['level_id']] = levelCount.get(one['level_id'], 0) + 1
