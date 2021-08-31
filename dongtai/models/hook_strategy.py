@@ -8,6 +8,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from dongtai.models.hook_type import HookType
+from dongtai.utils.settings import get_managed
 
 
 class PermissionsMixin(models.Model):
@@ -39,5 +40,5 @@ class HookStrategy(PermissionsMixin):
     enable = models.IntegerField(blank=True, null=False, default=1)
 
     class Meta:
-        managed = False
+        managed = get_managed()
         db_table = 'iast_hook_strategy'

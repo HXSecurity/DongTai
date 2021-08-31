@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 
 from dongtai.models import User
 from dongtai.models.server import IastServer
-
+from dongtai.utils.settings import get_managed
 
 class IastAgent(models.Model):
     token = models.CharField(max_length=255, blank=True, null=True)
@@ -34,5 +34,5 @@ class IastAgent(models.Model):
     language = models.CharField(max_length=10, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = get_managed()
         db_table = 'iast_agent'

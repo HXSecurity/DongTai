@@ -6,6 +6,9 @@
 # project: dongtai-models
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from dongtai.utils.settings import get_managed
+from dongtai.utils.customfields import trans_char_field
+from typing import Any
 
 
 class Talent(models.Model):
@@ -26,14 +29,24 @@ class Talent(models.Model):
         default=True,
         help_text=_(
             'Designates whether this user should be treated as active. '
-            'Unselect this instead of deleting accounts.'
-        ),
+            'Unselect this instead of deleting accounts.'),
     )
 
     class Meta:
         verbose_name = _('talent')
-        managed = False
+        managed = get_managed()
         db_table = 'auth_talent'
 
     def get_talent_name(self):
         return self.talent_name
+
+    @trans_char_field('talent_name', {
+        'zh': {
+            "默认租户": "默认租户"
+        },
+        "en": {
+            '默认租户': "Default Tenant"
+        }
+    })
+    def __getattribute__(self, name) -> Any:
+        return super().__getattribute__(name)
