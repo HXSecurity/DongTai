@@ -15,6 +15,7 @@ from django.utils.translation import gettext_lazy as _
 from dongtai.models.vulnerablity import IastVulnerabilityStatus
 from iast.serializers.project import ProjectSerializer
 from dongtai.models.hook_type import HookType
+from django.db.models import Q
 
 class ProjectSummary(UserEndPoint):
     name = "api-v1-project-summary-<id>"
@@ -66,6 +67,8 @@ class ProjectSummary(UserEndPoint):
         queryset = IastVulnerabilityModel.objects.filter(
             agent_id__in=agent_ids,
             status_id=3).values("hook_type_id", "level_id", "latest_time")
+        q = ~Q(hook_type_id=0)
+        queryset = queryset.filter(q)
         typeArr = {}
         typeLevel = {}
         levelCount = {}
