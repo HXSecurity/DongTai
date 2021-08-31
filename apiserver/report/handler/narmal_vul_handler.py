@@ -14,11 +14,13 @@ import logging
 
 import time
 
+from dongtai.models.hook_type import HookType
 from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.utils import const
 
+from AgentServer import settings
 from apiserver.report.handler.report_handler_interface import IReportHandler
 from apiserver.report.handler.saas_method_pool_handler import SaasMethodPoolHandler
 from apiserver.report.report_handler_factory import ReportHandler
@@ -63,25 +65,30 @@ class BaseVulnHandler(IReportHandler):
         stack = f'{obj["classname"]}.{obj["methodname"]}("{obj["in"]}")'
         return stack
 
-    def get_vul_info(self, agent):
-        vul_level = '待定'
+    def get_vul_info(self):
+        level_id = 0
         vul_type = self.vuln_type
         vul_type_enable = 'disable'
+        hook_type_id = 0
         # 根据用户ID判断获取策略中的漏洞等级
-        strategy = IastStrategyModel.objects.values('vul_type', 'level', 'state').filter(vul_type=vul_type).first()
-        if strategy:
-            vul_level = strategy.get('level', 4)
-            vul_type = strategy.get('vul_type', None)
-            vul_type_enable = strategy.get('state', 'disable')
-        return vul_level, vul_type, vul_type_enable
+        hook_type = HookType.objects.values('id', 'enable').filter(value=vul_type).first()
+        if hook_type:
+            hook_type_id = hook_type.get('id', 0)
+            strategy = IastStrategyModel.objects.values('level_id').filter(hook_type_id=hook_type_id).first()
+            level_id = strategy.get('level_id', 4)
+            vul_type_enable = hook_type.get('enable', 0)
 
-    def get_command(self, envs):
+        return level_id, vul_type, vul_type_enable, hook_type_id
+
+    @staticmethod
+    def get_command(envs):
         for env in envs:
             if 'sun.java.command' in env.lower():
                 return '='.join(env.split('=')[1:])
         return ''
 
-    def get_runtime(self, envs):
+    @staticmethod
+    def get_runtime(envs):
         for env in envs:
             if 'java.runtime.name' in env.lower():
                 return '='.join(env.split('=')[1:])
@@ -121,47 +128,44 @@ class BaseVulnHandler(IReportHandler):
 class NormalVulnHandler(BaseVulnHandler):
     def save(self):
         if self.http_replay:
-            # todo 检查重放请求的漏洞ID，如果存在，则更新状态为已验证；如果不存在，则创建漏洞
-            headers = SaasMethodPoolHandler.parse_headers(self.http_header)
-            logger.info('重放请求无需保存基础漏洞')
+            return
+
+        level_id, vul_type, vul_type_enable, hook_type_id = self.get_vul_info()
+        if vul_type_enable == 0:
+            return
+        iast_vul = IastVulnerabilityModel.objects.filter(
+            hook_type_id=hook_type_id,
+            url=self.http_url,
+            http_method=self.http_method,
+            agent=self.agent
+        ).first()
+
+        if iast_vul:
+            iast_vul.req_header = self.http_header
+            iast_vul.req_params = self.http_query_string
+            iast_vul.counts = iast_vul.counts + 1
+            iast_vul.latest_time = int(time.time())
+            iast_vul.status_id = settings.CONFIRMED
+            iast_vul.save()
         else:
-            vul_level, vul_type, vul_type_enable = self.get_vul_info(self.agent)
-            if vul_type_enable == 'enable':
-                level = IastVulLevel.objects.filter(id=vul_level).first()
-                strategy = IastStrategyModel.objects.filter(vul_type=vul_type).first()
-                if level and strategy:
-                    iast_vul = IastVulnerabilityModel.objects.filter(
-                        type=strategy.vul_name,
-                        url=self.http_url,
-                        http_method=self.http_method,
-                        agent=self.agent
-                    ).first()
-                    if iast_vul:
-                        iast_vul.req_header = self.http_header
-                        iast_vul.req_params = self.http_query_string
-                        iast_vul.counts = iast_vul.counts + 1
-                        iast_vul.latest_time = int(time.time())
-                        iast_vul.status = '已上报'
-                        iast_vul.save()
-                    else:
-                        IastVulnerabilityModel.objects.create(
-                            type=strategy.vul_name,
-                            level=level,
-                            url=self.http_url,
-                            uri=self.http_uri,
-                            http_method=self.http_method,
-                            http_scheme=self.http_scheme,
-                            http_protocol=self.http_protocol,
-                            req_header=self.http_header,
-                            req_params=self.http_query_string,
-                            req_data=self.http_req_data,
-                            res_header=self.http_res_header,
-                            res_body=self.http_res_body,
-                            agent=self.agent,
-                            context_path=self.app_name,
-                            counts=1,
-                            status='已上报',
-                            first_time=int(time.time()),
-                            latest_time=int(time.time()),
-                            client_ip=self.client_ip
-                        )
+            IastVulnerabilityModel.objects.create(
+                hook_type_id=hook_type_id,
+                level_id=level_id,
+                url=self.http_url,
+                uri=self.http_uri,
+                http_method=self.http_method,
+                http_scheme=self.http_scheme,
+                http_protocol=self.http_protocol,
+                req_header=self.http_header,
+                req_params=self.http_query_string,
+                req_data=self.http_req_data,
+                res_header=self.http_res_header,
+                res_body=self.http_res_body,
+                agent=self.agent,
+                context_path=self.app_name,
+                counts=1,
+                status_id=settings.CONFIRMED,
+                first_time=int(time.time()),
+                latest_time=int(time.time()),
+                client_ip=self.client_ip
+            )
