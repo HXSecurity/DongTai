@@ -59,17 +59,17 @@ check_port(){
 	echo '''version: "2"
 services:
   dongtai-mysql:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:1.0.2
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:1.0.3
     restart: always
     volumes:
       - ./data:/var/lib/mysql
 
   dongtai-redis:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:1.0.2
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:1.0.3
     restart: always
 
   dongtai-webapi:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:1.0.2
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:1.0.3
     restart: always
     volumes:
       - $PWD/config-tutorial.ini:/opt/dongtai/webapi/conf/config.ini
@@ -78,7 +78,7 @@ services:
       - dongtai-redis
 
   dongtai-web:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-web:1.0.2
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-web:1.0.3
     restart: always
     ports:
       - "'''$WEB_SERVICE_PORT''':80"
@@ -88,7 +88,7 @@ services:
       - dongtai-webapi
 
   dongtai-openapi:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:1.0.2
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:1.0.3
     restart: always
     volumes:
        - $PWD/config-tutorial.ini:/opt/dongtai/openapi/conf/config.ini
@@ -99,7 +99,7 @@ services:
       - dongtai-redis
 
   dongtai-engine:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:1.0.2
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:1.0.3
     restart: always
     volumes:
       - $PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini
@@ -108,7 +108,7 @@ services:
       - dongtai-redis
 
   dongtai-engine-task:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:1.0.2
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:1.0.3
     restart: always
     command: ["/opt/dongtai/engine/docker/entrypoint.sh", "task"]
     volumes:
