@@ -71,7 +71,10 @@ def build_request_header(req_method, raw_req_header, uri, query_params, http_pro
 
 STATUSMAP = {True: 1, False: 0}
 
+
 def checkossstatus():
+    from apiserver.views.agent_download import JavaAgentDownload, PythonAgentDownload
+    from apiserver.views.engine_download import EngineDownloadEndPoint
     try:
         auth = oss2.Auth(settings.ACCESS_KEY, settings.ACCESS_KEY_SECRET)
         bucket = oss2.Bucket(auth,
@@ -79,6 +82,20 @@ def checkossstatus():
                              settings.BUCKET_NAME,
                              connect_timeout=2)
         bucket.list_objects()
+        OssDownloader.download_file(
+            JavaAgentDownload.REMOTE_AGENT_FILE,
+            local_file=JavaAgentDownload.LOCAL_AGENT_FILE)
+        OssDownloader.download_file(JavaAgentDownload.REMOTE_AGENT_FILE,
+                                    JavaAgentDownload.LOCAL_AGENT_FILE)
+        for package_name in ('iast-core', 'iast-inject', 'dongtai-servlet'):
+            OssDownloader.download_file(
+                EngineDownloadEndPoint.REMOTE_AGENT_FILE.format(
+                    package_name=package_name),
+                EngineDownloadEndPoint.LOCAL_AGENT_FILE.format(
+                    package_name=package_name))
+        downloadstatus = JavaAgentDownload.download_agent(
+        ) and PythonAgentDownload.download_agent()
+        return downloadstatus, None
     except RequestError:
         return False, None
     except Exception as e:

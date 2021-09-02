@@ -35,9 +35,10 @@ class HeartBeatHandler(IReportHandler):
         self.network = self.detail.get('network')
         self.disk = self.detail.get('disk')
         self.req_count = self.detail.get('req_count')
-        self.report_queue = self.detail.get('report_queue')
-        self.method_queue = self.detail.get('method_queue')
-        self.replay_queue = self.detail.get('replay_queue')
+        self.report_queue = self.detail.get('report_queue', 0)
+        self.method_queue = self.detail.get('method_queue', 0)
+        self.replay_queue = self.detail.get('replay_queue', 0)
+
     def save_heartbeat(self):
         # update agent state
         self.agent.is_running = 1

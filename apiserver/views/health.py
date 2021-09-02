@@ -19,20 +19,6 @@ from apiserver.utils import checkossstatus
 logger = logging.getLogger("dongtai.openapi")
 
 
-def checkossstatus():
-    try:
-        auth = oss2.Auth(settings.ACCESS_KEY, settings.ACCESS_KEY_SECRET)
-        bucket = oss2.Bucket(auth,
-                             settings.BUCKET_URL,
-                             settings.BUCKET_NAME,
-                             connect_timeout=2)
-        bucket.list_objects()
-    except RequestError:
-        return False, None
-    except Exception as e:
-        logger.info("HealthView_checkossstatus:{}".format(e))
-        return False, None
-    return True, None
 
 
 def _checkenginestatus():
