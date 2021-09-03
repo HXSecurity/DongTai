@@ -137,7 +137,7 @@ def checkopenapistatus(openapiurl, token):
     try:
         resp = requests.get(
             openapiurl,
-            timeout=5,
+            timeout=10,
             headers={'Authorization': "Token {}".format(token)})
         resp = json.loads(resp.content)
         resp = resp.get("data", None)
