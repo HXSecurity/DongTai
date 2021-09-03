@@ -18,7 +18,7 @@ from iast.utils import extend_schema_with_envcheck
 
 
 class DocumentArgsSerializer(serializers.Serializer):
-    page_size = serializers.IntegerField(default=1)
+    page_size = serializers.IntegerField(default=20)
     page = serializers.IntegerField(default=1)
     language = serializers.CharField(default=None)
 
