@@ -14,6 +14,8 @@ class ProfileEndpoint(UserEndPoint):
         return R.success(data={key: profile})
 
     def put(self, request, key):
+        if not request.user.is_talent_admin():
+            return R.failure(msg=_("Current users have no permission to modify"))
         fields = get_model_field(IastProfile, exclude=['id'])
         data = {k: v for k, v in request.data.items() if k in fields}
         profile = IastProfile.objects.filter(key=key).first()
