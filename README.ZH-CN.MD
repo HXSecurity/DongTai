@@ -54,7 +54,7 @@ DongTai是一款开源的被动式交互式安全测试(IAST)产品，通过动�
 
 #### docker-compose部署
 ```shell script
-$ git clone https://github.com/HXSecurity/DongTai.git
+$ git clone git@github.com:HXSecurity/DongTai.git
 $ cd DongTai
 $ chmod u+x build_with_docker_compose.sh
 $ ./build_with_docker_compose.sh
