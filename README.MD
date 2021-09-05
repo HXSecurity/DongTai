@@ -54,7 +54,7 @@ The usage scenarios of "DongTai IAST" include but not limited to:
 
 #### Docker-compose
 ```shell script
-$ git clone https://github.com/HXSecurity/DongTai.git
+$ git clone git@github.com:HXSecurity/DongTai.git
 $ cd DongTai
 $ chmod u+x build_with_docker_compose.sh
 $ ./build_with_docker_compose.sh
