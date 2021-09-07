@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-26 14:19+0800\n"
+"POT-Creation-Date: 2021-09-07 17:36+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -129,7 +129,7 @@ msgid "Data update succeeded"
 msgstr "数据更新成功"
 
 #: iast/account/user.py:118 iast/views/project_detail.py:43
-#: iast/views/project_report_export.py:76 iast/views/project_summary.py:39
+#: iast/views/project_report_export.py:76 iast/views/project_summary.py:42
 #: iast/views/user_detail.py:32
 msgid "no permission"
 msgstr "no permission"
@@ -162,22 +162,22 @@ msgstr "用户{}创建成功"
 msgid "Department does not exist or no permission to access"
 msgstr "部门不存在或无访问权限"
 
-#: iast/base/agent.py:127
+#: iast/base/agent.py:130
 #, python-brace-format
 msgid ""
 "We found that there is {1} in the {0} page, attacker can modify the value of "
 "{2} to attack:"
 msgstr "我们发现在{0}页面中存在{1}，攻击者可以改变{2}的值进行攻击："
 
-#: iast/base/agent.py:142
+#: iast/base/agent.py:145
 msgid "{} Line"
 msgstr "的{}行"
 
-#: iast/base/agent.py:158
+#: iast/base/agent.py:161
 msgid "In {} {} call {}. {} (), Incoming parameters {}"
 msgstr "在{}{}调用{}.{}(),传入参数{}"
 
-#: iast/base/agent.py:161
+#: iast/base/agent.py:164
 msgid "{} Appears in {} {}"
 msgstr "{}出现在{}的{}"
 
@@ -194,7 +194,7 @@ msgstr "参数错误"
 msgid "Repeated version name"
 msgstr "版本名称重复"
 
-#: iast/base/project_version.py:42 iast/views/project_version_current.py:48
+#: iast/base/project_version.py:42 iast/views/project_version_current.py:49
 #: iast/views/project_version_delete.py:32
 msgid "Version does not exist"
 msgstr "版本不存在"
@@ -239,8 +239,8 @@ msgstr "用户名不能为空"
 msgid "Password should not be blank"
 msgstr "密码不能为空"
 
-#: iast/serializers/sca.py:36 iast/views/vul_details.py:150
-#: iast/views/vuls.py:111
+#: iast/serializers/sca.py:36 iast/views/vul_details.py:156
+#: iast/views/vuls.py:120
 msgid "The application has not been binded"
 msgstr "暂未绑定项目"
 
@@ -328,7 +328,7 @@ msgstr "找不到对应部署文档"
 msgid "Agent deployment document"
 msgstr "Agent部署文档"
 
-#: iast/views/agent_deploy_doc.py:38 iast/views/vuls.py:34
+#: iast/views/agent_deploy_doc.py:38 iast/views/vuls.py:36
 msgid "No data"
 msgstr "暂无数据"
 
@@ -489,7 +489,7 @@ msgstr "策略不存在"
 msgid "Strategy operation success, total {}"
 msgstr "策略操作成功，共{}条"
 
-#: iast/views/engine_hook_rule_status.py:86 iast/views/vul_status.py:28
+#: iast/views/engine_hook_rule_status.py:86 iast/views/vul_status.py:33
 msgid "Incorrect parameter"
 msgstr "参数不正确"
 
@@ -559,7 +559,7 @@ msgstr "method_pool does not exist"
 msgid "method_pool has no permission"
 msgstr "method_pool has no permission"
 
-#: iast/views/engine_method_pool_search.py:97
+#: iast/views/engine_method_pool_search.py:98
 msgid "The regular expression format is wrong, please use REGEX POSIX 1003.2"
 msgstr "正则表达式格式错误，请使用REGEX POSIX 1003.2"
 
@@ -567,11 +567,9 @@ msgstr "正则表达式格式错误，请使用REGEX POSIX 1003.2"
 msgid "Get OpenAPI configuration failed"
 msgstr "获取openapi配置失败"
 
-#: iast/views/health.py:34 iast/views/oss_health.py:25
-#, fuzzy
-#| msgid "Get OpenAPI configuration failed"
-msgid "OpenAPI configuration error"
-msgstr "获取openapi配置失败"
+#: iast/views/health.py:34
+msgid "OpenAPI service is down, Please check it."
+msgstr ""
 
 #: iast/views/log_clear.py:14
 msgid "Log clear"
@@ -597,7 +595,7 @@ msgstr "导出失败，原因：日志ID不能为空"
 msgid "Log list"
 msgstr "日志列表"
 
-#: iast/views/logs.py:48 iast/views/vul_recheck.py:118
+#: iast/views/logs.py:48 iast/views/vul_recheck.py:117
 msgid "No permission to access"
 msgstr "无权限访问"
 
@@ -621,7 +619,7 @@ msgstr "数据不存在或无权限访问"
 msgid "Page and PageSize can only be numeric"
 msgstr "page和pageSize只能为数字"
 
-#: iast/views/openapi.py:22
+#: iast/views/openapi.py:22 iast/views/profile.py:18
 msgid "Current users have no permission to modify"
 msgstr "当前用户无权修改"
 
@@ -630,11 +628,17 @@ msgstr "当前用户无权修改"
 msgid "Created success"
 msgstr "创建成功"
 
+#: iast/views/oss_health.py:25
+#, fuzzy
+#| msgid "Get OpenAPI configuration failed"
+msgid "OpenAPI configuration error"
+msgstr "获取openapi配置失败"
+
 #: iast/views/profile.py:13
 msgid "Failed to get {} configuration"
 msgstr "获取{}配置失败"
 
-#: iast/views/profile.py:25
+#: iast/views/profile.py:27
 msgid "Update {} failed"
 msgstr "更新{}失败"
 
@@ -762,13 +766,9 @@ msgstr "漏洞url"
 msgid "Vulnerability description"
 msgstr "漏洞描述"
 
-#: iast/views/project_summary.py:19
+#: iast/views/project_summary.py:22
 msgid "Item details - Summary"
 msgstr "查看项目详情-概括"
-
-#: iast/views/project_summary.py:67
-msgid "Confirmed"
-msgstr "已确认"
 
 #: iast/views/project_version_add.py:19
 msgid "New application version information"
@@ -778,11 +778,11 @@ msgstr "新增项目版本信息"
 msgid "Set to the current application version"
 msgstr "设置为当前项目版本"
 
-#: iast/views/project_version_current.py:46
+#: iast/views/project_version_current.py:47
 msgid "Version setting success"
 msgstr "版本设置成功"
 
-#: iast/views/project_version_current.py:51
+#: iast/views/project_version_current.py:52
 msgid "Version setting failed"
 msgstr "版本设置失败"
 
@@ -968,65 +968,77 @@ msgstr "删除漏洞"
 msgid "Failed to delete, error message: Vulnerability does not exist"
 msgstr "删除失败，原因：漏洞不存在"
 
-#: iast/views/vul_details.py:76
+#: iast/views/vul_details.py:79
 msgid "Source method"
 msgstr "污点来源方法"
 
-#: iast/views/vul_details.py:78
+#: iast/views/vul_details.py:81
 msgid "Hazardous method"
 msgstr "危险方法"
 
-#: iast/views/vul_details.py:80
+#: iast/views/vul_details.py:83
 msgid "Propagation method"
 msgstr "传播方法"
 
-#: iast/views/vul_details.py:97
+#: iast/views/vul_details.py:100
 msgid "Analysis of errovence analysis of stain call diagram: {}"
 msgstr "[{}] 污点调用图解析出错，原因：{}"
 
-#: iast/views/vul_details.py:107
+#: iast/views/vul_details.py:110
 msgid "Error analysis of Header, error message: {}"
 msgstr "header解析出错，错误原因：{}"
 
-#: iast/views/vul_details.py:138 iast/views/vul_details.py:202
+#: iast/views/vul_details.py:144 iast/views/vul_details.py:214
 msgid "[{}] Vulnerability information parsing error, error message: {}"
 msgstr "[{}] 漏洞信息解析出错，原因：{}"
 
-#: iast/views/vul_details.py:203
+#: iast/views/vul_details.py:194
+#, fuzzy
+#| msgid "2.3 Vulnerability details"
+msgid "Vulnerability details query "
+msgstr "2.3  漏洞详情"
+
+#: iast/views/vul_details.py:196
+msgid ""
+"Use the corresponding id of the vulnerability to query the details of the "
+"vulnerability"
+msgstr "使用漏洞对应的id来获取漏洞详情信息"
+
+#: iast/views/vul_details.py:215
 msgid "Vulnerability data query error"
 msgstr "漏洞数据查询出错"
 
-#: iast/views/vul_recheck.py:82
+#: iast/views/vul_recheck.py:81
 msgid "IDS should not be empty"
 msgstr "ids不能为空"
 
-#: iast/views/vul_recheck.py:86
+#: iast/views/vul_recheck.py:85
 msgid "IDS must be: Vulnerability ID, Vulnerability ID Format"
 msgstr "ids必须为：漏洞ID,漏洞ID 格式"
 
-#: iast/views/vul_recheck.py:99 iast/views/vul_recheck.py:140
+#: iast/views/vul_recheck.py:98 iast/views/vul_recheck.py:139
 msgid "Handle success"
 msgstr "处理成功"
 
-#: iast/views/vul_recheck.py:103 iast/views/vul_request_replay.py:230
+#: iast/views/vul_recheck.py:102 iast/views/vul_request_replay.py:229
 msgid "Vulnerability replay error"
 msgstr "漏洞重放出错"
 
-#: iast/views/vul_recheck.py:116
+#: iast/views/vul_recheck.py:115
 msgid ""
 "Current application has not been associated with probes and cannot be "
 "reproduced."
 msgstr "当前项目尚未关联探针，无法进行漏洞重放"
 
-#: iast/views/vul_recheck.py:121 iast/views/vul_recheck.py:160
+#: iast/views/vul_recheck.py:120 iast/views/vul_recheck.py:159
 msgid "Batch playback error"
 msgstr "批量重放出错"
 
-#: iast/views/vul_recheck.py:155
+#: iast/views/vul_recheck.py:154
 msgid "Item ID should not be empty"
 msgstr "项目ID不能为空"
 
-#: iast/views/vul_recheck.py:156
+#: iast/views/vul_recheck.py:155
 msgid "Incorrect format parameter"
 msgstr "参数格式不正确"
 
@@ -1034,50 +1046,53 @@ msgstr "参数格式不正确"
 msgid "HTTP request parsing error, error message: {}"
 msgstr "HTTP请求解析出错，原因：{}"
 
-#: iast/views/vul_request_replay.py:190
+#: iast/views/vul_request_replay.py:191
 msgid "Stain pool data does not exist or no permission to access"
 msgstr "污点池数据不存在或无权操作"
 
-#: iast/views/vul_request_replay.py:206
+#: iast/views/vul_request_replay.py:205
 msgid ""
 "The probe has been destroyed or suspended, please check the probe status"
 msgstr "探针已销毁或暂停运行，请选检查探针状态"
 
-#: iast/views/vul_request_replay.py:212
+#: iast/views/vul_request_replay.py:211
 msgid "Replay request is illegal"
 msgstr "重放请求不合法"
 
-#: iast/views/vul_request_replay.py:225
+#: iast/views/vul_request_replay.py:224
 msgid "Relay request success"
 msgstr "请求重返成功"
 
-#: iast/views/vul_request_replay.py:244
+#: iast/views/vul_request_replay.py:243
 msgid "Response header analysis error, error message: {}"
 msgstr "Response Header解析出错，错误原因：{}"
 
-#: iast/views/vul_request_replay.py:264
+#: iast/views/vul_request_replay.py:263
 msgid "Replay request does not exist or no permission to access"
 msgstr "重放请求不存在或无操作权限"
 
-#: iast/views/vul_request_replay.py:267
+#: iast/views/vul_request_replay.py:266
 msgid "Replay request processing"
 msgstr "重放请求处理中"
 
-#: iast/views/vul_request_replay.py:281
+#: iast/views/vul_request_replay.py:280
 msgid "Replay failed"
 msgstr "重放失败"
 
-#: iast/views/vul_status.py:16
+#: iast/views/vul_status.py:17
 msgid "Modify the vulnerability status"
 msgstr "修改漏洞状态"
 
-#: iast/views/vul_status.py:26
+#: iast/views/vul_status.py:31
 msgid "Vulnerability status is modified to {}"
 msgstr "漏洞状态修改为{}"
 
-#: iast/views/vul_summary.py:20
+#: iast/views/vul_summary.py:22
 msgid "Applied vulnerability overview"
 msgstr "应用漏洞概览"
+
+#~ msgid "Confirmed"
+#~ msgstr "已确认"
 
 #~ msgid ""
 #~ "Deletion failed, please forcely delete all the users belong to the "
