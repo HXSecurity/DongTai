@@ -51,7 +51,7 @@ def extend_schema_with_envcheck(querys: list = [], request_body: list = []):
                 request={'application/json': OpenApiTypes.OBJECT},
             )
             funcw = deco(func)
-            funcw.querys = parameters
+            funcw.querys = querys
             funcw.request_body = request_body
             return funcw
         return func

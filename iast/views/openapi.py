@@ -3,6 +3,7 @@ from dongtai.endpoint import UserEndPoint
 from webapi.settings import config
 from dongtai.models.profile import IastProfile
 from django.utils.translation import gettext_lazy as _
+from iast.utils import extend_schema_with_envcheck
 
 
 class OpenApiEndpoint(UserEndPoint):
@@ -17,6 +18,7 @@ class OpenApiEndpoint(UserEndPoint):
         return R.success(data={'url': profiles[0]})
 
 
+    @extend_schema_with_envcheck([], {'value': 'str'})
     def post(self, request):
         if not request.user.is_talent_admin():
             return R.failure(msg=_("Current users have no permission to modify"))

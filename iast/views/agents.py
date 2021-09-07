@@ -14,6 +14,7 @@ from dongtai.models.agent import IastAgent
 from functools import reduce
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
+from iast.utils import extend_schema_with_envcheck
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -22,6 +23,36 @@ class AgentList(UserEndPoint):
     name = "api-v1-agents"
     description = _("Agent list")
 
+    @extend_schema_with_envcheck([
+        {
+            'name': "page",
+            'type': int,
+            'default': 1,
+            'required': False,
+        },
+        {
+            'name': "pageSize",
+            'type': int,
+            'default': 1,
+            'required': False,
+        },
+        {
+            'name': "state",
+            'type': int,
+            'default': 1,
+            'required': False,
+        },
+        {
+            'name': "token",
+            'type': str,
+            'required': False,
+        },
+        {
+            'name': "project_name",
+            'type': str,
+            'required': False,
+        },
+    ])
     def get(self, request):
         try:
             page = int(request.query_params.get('page', 1))

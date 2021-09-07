@@ -8,9 +8,32 @@ from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.models.hook_type import HookType
+from iast.utils import extend_schema_with_envcheck
 
 
 class VulSideBarList(UserEndPoint):
+    @extend_schema_with_envcheck([
+        {
+            'name': "language",
+            'type': str,
+        },
+        {
+            'name': "type",
+            'type': str,
+        },
+        {
+            'name': "level",
+            'type': str,
+        },
+        {
+            'name': "url",
+            'type': str,
+        },
+        {
+            'name': "order",
+            'type': str,
+        },
+    ])
     def get(self, request):
         """
         :param request:

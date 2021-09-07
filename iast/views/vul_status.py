@@ -10,12 +10,20 @@ from dongtai.models.vulnerablity import IastVulnerabilityStatus
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from django.utils.translation import gettext_lazy as _
+from iast.utils import extend_schema_with_envcheck
 
 
 class VulStatus(UserEndPoint):
     name = "api-v1-vuln-status"
     description = _("Modify the vulnerability status")
 
+    @extend_schema_with_envcheck([{
+        'name': 'project_id',
+        'type': int
+    }, {
+        'name': 'version_id',
+        'type': str
+    }])
     def post(self, request):
         vul_id = request.data.get('id')
         status = request.data.get('status')

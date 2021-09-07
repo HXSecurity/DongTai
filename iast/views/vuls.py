@@ -16,10 +16,69 @@ from iast.serializers.vul import VulSerializer
 from django.utils.translation import gettext_lazy as _
 from dongtai.models.hook_type import HookType
 from django.db.models import Q
+from iast.utils import extend_schema_with_envcheck
 
 
 class VulsEndPoint(UserEndPoint):
 
+    @extend_schema_with_envcheck([
+        {
+            'name': "page",
+            'type': int,
+            'default': 1,
+            'required': False,
+        },
+        {
+            'name': "pageSize",
+            'type': int,
+            'default': 20,
+            'required': False,
+        },
+        {
+            'name': "language",
+            'type': str,
+        },
+        {
+            'name': "type",
+            'type': str,
+        },
+        {
+            'name': "project_name",
+            'type': str,
+            'deprecated': True,
+        },
+        {
+            'name': "level",
+            'type': str,
+        },
+        {
+            'name': "project_id",
+            'type': int,
+        },
+        {
+            'name': "version_id",
+            'type': int,
+            'description':
+            "The default is the current version id of the project."
+        },
+        {
+            'name': "status",
+            'type': str,
+            'deprecated': True
+        },
+        {
+            'name': "status_id",
+            'type': int,
+        },
+        {
+            'name': "url",
+            'type': str,
+        },
+        {
+            'name': "order",
+            'type': str,
+        },
+    ])
     def get(self, request):
         """
         :param request:
@@ -71,7 +130,8 @@ class VulsEndPoint(UserEndPoint):
                 current_project_version = get_project_version_by_id(version_id)
             agents = auth_agents.filter(
                 bind_project_id=project_id,
-                project_version_id=current_project_version.get("version_id", 0))
+                project_version_id=current_project_version.get(
+                    "version_id", 0))
             queryset = queryset.filter(agent_id__in=agents)
 
         url = request.query_params.get('url', None)
