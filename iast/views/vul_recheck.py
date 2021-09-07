@@ -11,6 +11,7 @@ from dongtai.models.project import IastProject
 from dongtai.models.replay_queue import IastReplayQueue
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.utils.validate import Validate
+from iast.utils import extend_schema_with_envcheck
 
 from dongtai.endpoint import R
 from dongtai.utils import const
@@ -51,7 +52,7 @@ class VulReCheck(UserEndPoint):
                     replay_type=const.VUL_REPLAY
                 )
                 success_count = success_count + 1
-            vul.status_id = 1 
+            vul.status_id = 1
             vul.latest_time = timestamp
             vul.save(update_fields=['status_id', 'latest_time'])
         return waiting_count, success_count, re_success_count
@@ -85,17 +86,18 @@ class VulReCheck(UserEndPoint):
                 return R.failure(_('IDS must be: Vulnerability ID, Vulnerability ID Format'))
 
             auth_agents = self.get_auth_agents_with_user(user=request.user)
-            vul_queryset = IastVulnerabilityModel.objects.filter(id__in=vul_ids, agent__in=auth_agents)
-            no_agent, waiting_count, success_count, re_success_count = self.vul_check_for_queryset(vul_queryset)
+            vul_queryset = IastVulnerabilityModel.objects.filter(
+                id__in=vul_ids, agent__in=auth_agents)
+            no_agent, waiting_count, success_count, re_success_count = self.vul_check_for_queryset(
+                vul_queryset)
 
-            return R.success(
-                data={
-                    "no_agent": no_agent,
-                    "pending": waiting_count,
-                    "recheck": re_success_count,
-                    "checking": success_count
-                },
-                msg=_('Handle success'))
+            return R.success(data={
+                "no_agent": no_agent,
+                "pending": waiting_count,
+                "recheck": re_success_count,
+                "checking": success_count
+            },
+                             msg=_('Handle success'))
 
         except Exception as e:
             logger.error(f' msg:{e}')
@@ -103,24 +105,38 @@ class VulReCheck(UserEndPoint):
 
     def vul_check_for_project(self, project_id, auth_users):
         try:
-            project_exist = IastProject.objects.values("id").filter(id=project_id, user__in=auth_users).exists()
+            project_exist = IastProject.objects.values("id").filter(
+                id=project_id, user__in=auth_users).exists()
             if project_exist:
-                agent_queryset = IastAgent.objects.values("id").filter(bind_project_id=project_id)
+                agent_queryset = IastAgent.objects.values("id").filter(
+                    bind_project_id=project_id)
                 if agent_queryset:
                     agent_ids = agent_queryset.values()
-                    vul_queryset = IastVulnerabilityModel.objects.filter(agent_id__in=agent_ids)
-                    waiting_count, success_count, re_success_count = self.recheck(vul_queryset)
+                    vul_queryset = IastVulnerabilityModel.objects.filter(
+                        agent_id__in=agent_ids)
+                    waiting_count, success_count, re_success_count = self.recheck(
+                        vul_queryset)
                     return True, waiting_count, re_success_count, success_count, None
                 else:
-                    return False, 0, 0, 0, _('Current application has not been associated with probes and cannot be reproduced.')
+                    return False, 0, 0, 0, _(
+                        'Current application has not been associated with probes and cannot be reproduced.'
+                    )
             else:
                 return False, 0, 0, 0, _('No permission to access')
         except Exception as e:
             logger.error(f' msg:{e}')
             return False, 0, 0, 0, _('Batch playback error')
 
+    @extend_schema_with_envcheck([{
+        'name':
+        'type',
+        'type':
+        str,
+        'description':
+        'available options are ("all","project")'
+    }])
     def get(self, request):
-        
+
         try:
             check_type = request.query_params.get('type')
 

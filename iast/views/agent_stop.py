@@ -8,11 +8,26 @@ from dongtai.endpoint import UserEndPoint, R
 
 from dongtai.models.agent import IastAgent
 from django.utils.translation import gettext_lazy as _
+from iast.utils import extend_schema_with_envcheck
 
 class AgentStop(UserEndPoint):
     name = "api-v1-agent-stop"
     description = _("Suspend Agent")
 
+    @extend_schema_with_envcheck([
+        {
+            'name': "id",
+            'type': int,
+            'default': 1,
+            'required': False,
+        },
+        {
+            'name': "ids",
+            'type': str,
+            'required': False,
+            'description': 'id splitwith "," such as "1,2,3,4,5"',
+        },
+    ], [])
     def post(self, request):
         agent_id = request.data.get('id', None)
         agent_ids = request.data.get('ids', None)
