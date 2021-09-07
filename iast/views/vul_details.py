@@ -18,6 +18,7 @@ from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from iast.serializers.vul import VulSerializer
 from django.utils.translation import gettext_lazy as _
+from iast.utils import extend_schema_with_envcheck
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -120,7 +121,7 @@ class VulDetail(UserEndPoint):
         hook_type = HookType.objects.filter(pk=vul.hook_type_id).first()
         vul.type = hook_type.name if hook_type else ''
         status = IastVulnerabilityStatus.objects.filter(pk=vul.status_id).first()
-        vul.status_ = status.name if status else '' 
+        vul.status_ = status.name if status else ''
         agent = vul.agent
         project_id = agent.bind_project_id
         if project_id is None or project_id == 0:
@@ -173,7 +174,7 @@ class VulDetail(UserEndPoint):
         }
 
     def get_strategy(self):
-        
+
         strategy = IastStrategyModel.objects.filter(vul_name=self.vul_name).first()
         if strategy:
             return {
@@ -188,6 +189,12 @@ class VulDetail(UserEndPoint):
                 'repair_suggestion': ''
             }
 
+
+    @extend_schema_with_envcheck(
+        summary=_('Vulnerability details query '),
+        description=
+        _('Use the corresponding id of the vulnerability to query the details of the vulnerability'
+          ))
     def get(self, request, id):
         """
         :param request:
