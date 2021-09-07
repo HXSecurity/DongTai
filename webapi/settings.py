@@ -111,6 +111,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'iast.utils.MethodOverrideMiddleware',
 ]
 
 XFF_TRUSTED_PROXY_DEPTH = 5
@@ -155,6 +156,7 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'csrf-token',
     'x-requested-with',
+    'HTTP_X_HTTP_METHOD_OVERRIDE'
 ]
 
 ROOT_URLCONF = 'webapi.urls'
