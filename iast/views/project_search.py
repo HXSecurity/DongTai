@@ -5,12 +5,17 @@ from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from dongtai.models.project import IastProject
 from django.utils.translation import gettext_lazy as _
+from iast.utils import extend_schema_with_envcheck
 
 logger = logging.getLogger("django")
 
 
 class ProjectSearch(UserEndPoint):
 
+    @extend_schema_with_envcheck([{
+        'name': "name",
+        'type': str,
+    }])
     def get(self, request):
         name = request.query_params.get('name', '')
         users = self.get_auth_users(request.user)

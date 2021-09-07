@@ -11,9 +11,55 @@ from iast.base.agent import get_agents_with_project
 from iast.base.project_version import get_project_version, get_project_version_by_id
 from iast.serializers.sca import ScaSerializer
 from django.utils.translation import gettext_lazy as _
+from iast.utils import extend_schema_with_envcheck
 
 
 class ScaList(UserEndPoint):
+    @extend_schema_with_envcheck([
+        {
+            'name': "page",
+            'type': int,
+            'default': 1,
+            'required': False,
+        },
+        {
+            'name': "pageSize",
+            'type': int,
+            'default': 20,
+            'required': False,
+        },
+        {
+            'name': "language",
+            'type': str,
+        },
+        {
+            'name': "project_name",
+            'type': str,
+            'deprecated': True,
+        },
+        {
+            'name': "level",
+            'type': str,
+        },
+        {
+            'name': "project_id",
+            'type': int,
+        },
+        {
+            'name': "version_id",
+            'type': int,
+            'description':
+            "The default is the current version id of the project."
+        },
+        {
+            'name': "keyword",
+            'type': str,
+        },
+        {
+            'name': "order",
+            'type': str,
+        },
+    ])
     def get(self, request):
         """
         :param request:

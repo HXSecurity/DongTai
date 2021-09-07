@@ -17,6 +17,7 @@ from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from django.utils.translation import gettext_lazy as _
 from collections import namedtuple
+from iast.utils import extend_schema_with_envcheck
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -164,6 +165,13 @@ class RequestReplayEndPoint(UserEndPoint):
             )
         return replay_queue.id
 
+    @extend_schema_with_envcheck(
+        [], {
+            'methodPoolId': 'int',
+            'replayRequest': 'str',
+            'agent_id': 'int',
+            'replay_type': 'int'
+        })
     def post(self, request):
         """
         :param request:{
@@ -244,6 +252,19 @@ class RequestReplayEndPoint(UserEndPoint):
                     e)))
         return '{header}\n\n{body}'.format(header=_data, body=body)
 
+    @extend_schema_with_envcheck([
+        {
+            'name': "replayid",
+            'type': int,
+            'required': True,
+        },
+        {
+            'name': "replay_type",
+            'type': int,
+            'required': False,
+            'description': "available options are (2,3)",
+        },
+    ])
     def get(self, request):
         replay_id = request.query_params.get('replayId')
         auth_agents = self.get_auth_agents_with_user(request.user)

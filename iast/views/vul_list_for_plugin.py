@@ -9,9 +9,40 @@ from dongtai.endpoint import R
 from dongtai.endpoint import MixinAuthEndPoint
 from iast.serializers.vul import VulForPluginSerializer
 from django.utils.translation import gettext_lazy as _
+from iast.utils import extend_schema_with_envcheck
 
 
 class VulListEndPoint(MixinAuthEndPoint):
+    @extend_schema_with_envcheck([
+        {
+            'name': "page",
+            'type': int,
+            'default': 1,
+            'required': False,
+        },
+        {
+            'name': "pageSize",
+            'type': int,
+            'default': 20,
+            'required': False,
+        },
+        {
+            'name': "name",
+            'type': str,
+        },
+        {
+            'name': "level",
+            'type': str,
+        },
+        {
+            'name': "url",
+            'type': str,
+        },
+        {
+            'name': "order",
+            'type': str,
+        },
+    ])
     def get(self, request):
         agent_name = request.query_params.get('name')
         if not agent_name:
