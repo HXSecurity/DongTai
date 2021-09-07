@@ -7,9 +7,28 @@ from django.db.models import Q
 
 from dongtai.endpoint import R, UserEndPoint
 from dongtai.models.asset import Asset
+from iast.utils import extend_schema_with_envcheck
 
 
 class ScaSidebarList(UserEndPoint):
+    @extend_schema_with_envcheck([
+        {
+            'name': "language",
+            'type': str,
+        },
+        {
+            'name': "level",
+            'type': str,
+        },
+        {
+            'name': "app",
+            'type': str,
+        },
+        {
+            'name': "order",
+            'type': str,
+        },
+    ])
     def get(self, request):
         """
         :param request:

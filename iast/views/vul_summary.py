@@ -15,6 +15,7 @@ from iast.base.project_version import get_project_version, get_project_version_b
 from django.utils.translation import gettext_lazy as _
 from dongtai.models.hook_type import HookType
 from django.db.models import Q
+from iast.utils import extend_schema_with_envcheck
 
 
 class VulSummary(UserEndPoint):
@@ -40,6 +41,52 @@ class VulSummary(UserEndPoint):
             default_language[language_agents[agent_id]] = count + default_language[language_agents[agent_id]]
         return [{'language': _key, 'count': _value} for _key, _value in default_language.items()]
 
+    @extend_schema_with_envcheck([
+        {
+            'name': "language",
+            'type': str,
+        },
+        {
+            'name': "type",
+            'type': str,
+        },
+        {
+            'name': "project_name",
+            'type': str,
+            'deprecated': True,
+        },
+        {
+            'name': "level",
+            'type': str,
+        },
+        {
+            'name': "project_id",
+            'type': int,
+        },
+        {
+            'name': "version_id",
+            'type': int,
+            'description':
+            "The default is the current version id of the project."
+        },
+        {
+            'name': "status",
+            'type': str,
+            'deprecated': True
+        },
+        {
+            'name': "status_id",
+            'type': int,
+        },
+        {
+            'name': "url",
+            'type': str,
+        },
+        {
+            'name': "order",
+            'type': str,
+        },
+    ])
     def get(self, request):
         """
         :param request:
