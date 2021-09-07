@@ -42,10 +42,10 @@ def assemble_query(condictions: dict,
 from rest_framework.serializers import SerializerMetaclass
 from django.utils.translation import get_language
 
-def extend_schema_with_envcheck(summary: str = None,
-                                description: str = None,
-                                querys: list = [],
-                                request_body: list = []):
+def extend_schema_with_envcheck(querys: list = [],
+                                request_body: list = [],
+                                summary: str = None,
+                                description: str = None):
     def myextend_schema(func):
         import os
         if os.getenv('environment', None) == 'TEST':
