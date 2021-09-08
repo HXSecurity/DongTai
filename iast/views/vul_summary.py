@@ -41,52 +41,61 @@ class VulSummary(UserEndPoint):
             default_language[language_agents[agent_id]] = count + default_language[language_agents[agent_id]]
         return [{'language': _key, 'count': _value} for _key, _value in default_language.items()]
 
-    @extend_schema_with_envcheck([
-        {
-            'name': "language",
-            'type': str,
-        },
-        {
-            'name': "type",
-            'type': str,
-        },
-        {
-            'name': "project_name",
-            'type': str,
-            'deprecated': True,
-        },
-        {
-            'name': "level",
-            'type': str,
-        },
-        {
-            'name': "project_id",
-            'type': int,
-        },
-        {
-            'name': "version_id",
-            'type': int,
-            'description':
-            "The default is the current version id of the project."
-        },
-        {
-            'name': "status",
-            'type': str,
-            'deprecated': True
-        },
-        {
-            'name': "status_id",
-            'type': int,
-        },
-        {
-            'name': "url",
-            'type': str,
-        },
-        {
-            'name': "order",
-            'type': str,
-        },
-    ])
+    @extend_schema_with_envcheck(
+        [
+            {
+                'name': "language",
+                'type': str,
+            },
+            {
+                'name': "type",
+                'type': str,
+            },
+            {
+                'name': "project_name",
+                'type': str,
+                'deprecated': True,
+            },
+            {
+                'name': "level",
+                'type': str,
+            },
+            {
+                'name': "project_id",
+                'type': int,
+            },
+            {
+                'name':
+                "version_id",
+                'type':
+                int,
+                'description':
+                "The default is the current version id of the project."
+            },
+            {
+                'name': "status",
+                'type': str,
+                'deprecated': True
+            },
+            {
+                'name': "status_id",
+                'type': int,
+            },
+            {
+                'name': "url",
+                'type': str,
+            },
+            {
+                'name': "order",
+                'type': str,
+            },
+        ],
+        tags=[_('Vulnerability')],
+        summary=_('Vulnerability Summary'),
+        description=
+        _('Use the following conditions to view the statistics of the number of vulnerabilities in the project.'
+          ),
+    )
     def get(self, request):
         """
         :param request:

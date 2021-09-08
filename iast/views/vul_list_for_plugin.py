@@ -13,54 +13,60 @@ from iast.utils import extend_schema_with_envcheck
 
 
 class VulListEndPoint(MixinAuthEndPoint):
-    @extend_schema_with_envcheck([
-        {
-            'name': "page",
-            'type': int,
-            'default': 1,
-            'required': False,
-        },
-        {
-            'name': "pageSize",
-            'type': int,
-            'default': 20,
-            'required': False,
-        },
-        {
-            'name': "name",
-            'type': str,
-        },
-        {
-            'name': "level",
-            'type': str,
-        },
-        {
-            'name': "url",
-            'type': str,
-        },
-        {
-            'name': "order",
-            'type': str,
-        },
-    ])
+    @extend_schema_with_envcheck(
+        [
+            {
+                'name': "page",
+                'type': int,
+                'default': 1,
+                'required': False,
+            },
+            {
+                'name': "pageSize",
+                'type': int,
+                'default': 20,
+                'required': False,
+            },
+            {
+                'name': "name",
+                'type': str,
+            },
+            {
+                'name': "level",
+                'type': str,
+            },
+            {
+                'name': "url",
+                'type': str,
+            },
+            {
+                'name': "order",
+                'type': str,
+            },
+        ],
+        tags=[_('Vulnerability')],
+        summary=_("Vulnerability List (with agent name)"),
+        description=
+        _("Use the agent name to get the corresponding list of vulnerabilities"
+          ),
+    )
     def get(self, request):
-        agent_name = request.query_params.get('name')
+        agent_name = request.query_params.get('name', None)
         if not agent_name:
             return R.failure(msg=_("Please input agent name."))
 
-        agent = IastAgent.objects.filter(
-            token=agent_name,
-            id__in=self.get_auth_agents_with_user(request.user)
-        ).first()
+        agent = IastAgent.objects.filter(token=agent_name,
+                                         id__in=self.get_auth_agents_with_user(
+                                             request.user)).first()
         if not agent:
             return R.failure(msg=_("agent_name not found"))
 
-        queryset = IastVulnerabilityModel.objects.values('id', 'hook_type_id', 'url', 'http_method', 'top_stack',
-                                                         'bottom_stack').filter(
-            agent=agent)
+        queryset = IastVulnerabilityModel.objects.values(
+            'id', 'hook_type_id', 'url', 'http_method', 'top_stack',
+            'bottom_stack').filter(agent=agent)
 
         if queryset:
-            url = request.query_params.get('url')
+            url = request.query_params.get('url', None)
             if url and url != '':
                 queryset = queryset.filter(url__icontains=url)
 

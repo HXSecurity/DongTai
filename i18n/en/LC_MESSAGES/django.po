@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-07 17:36+0800\n"
+"POT-Creation-Date: 2021-09-08 17:56+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -47,7 +47,7 @@ msgstr ""
 "forced deletion"
 
 #: iast/account/department.py:180 iast/views/agents_delete.py:57
-#: iast/views/project_version_delete.py:30 iast/views/vul_delete.py:31
+#: iast/views/project_version_delete.py:30 iast/views/vul_delete.py:38
 msgid "Deleted Successfully"
 msgstr "Deleted Successfully"
 
@@ -246,8 +246,8 @@ msgstr "Username should not be empty"
 msgid "Password should not be blank"
 msgstr "Password should not be blank"
 
-#: iast/serializers/sca.py:36 iast/views/vul_details.py:156
-#: iast/views/vuls.py:120
+#: iast/serializers/sca.py:36 iast/views/vul_details.py:166
+#: iast/views/vuls.py:188
 msgid "The application has not been binded"
 msgstr "No application"
 
@@ -337,7 +337,7 @@ msgstr "Corresponding deployment document could not be found"
 msgid "Agent deployment document"
 msgstr "Agent deployment document"
 
-#: iast/views/agent_deploy_doc.py:38 iast/views/vuls.py:36
+#: iast/views/agent_deploy_doc.py:38 iast/views/vuls.py:103
 msgid "No data"
 msgstr "No data"
 
@@ -362,7 +362,7 @@ msgid "The engine is being installed or uninstalled, please try again later"
 msgstr "The engine is being installed or uninstalled, please try again later"
 
 #: iast/views/agent_install.py:30 iast/views/agent_start.py:25
-#: iast/views/agent_stop.py:25 iast/views/agent_uninstall.py:30
+#: iast/views/agent_stop.py:40 iast/views/agent_uninstall.py:30
 msgid "Engine does not exist or no permission to access"
 msgstr "Engine does not exist or no permission to access"
 
@@ -370,7 +370,7 @@ msgstr "Engine does not exist or no permission to access"
 msgid "Start Agent"
 msgstr "Start Agent"
 
-#: iast/views/agent_start.py:27 iast/views/agent_stop.py:27
+#: iast/views/agent_start.py:27 iast/views/agent_stop.py:42
 msgid "Agent is stopping service, please try again later"
 msgstr "Agent is stopping service, please try again later"
 
@@ -382,11 +382,11 @@ msgstr "Starting…"
 msgid "Engine status was updated successfully."
 msgstr "Engine status was updated successfully."
 
-#: iast/views/agent_stop.py:14
+#: iast/views/agent_stop.py:15
 msgid "Suspend Agent"
 msgstr "Suspend Agent"
 
-#: iast/views/agent_stop.py:46
+#: iast/views/agent_stop.py:61
 msgid "Suspending ..."
 msgstr "Suspending ..."
 
@@ -430,19 +430,19 @@ msgstr ""
 "Token verification failed, please confirm your input address and token are "
 "correct"
 
-#: iast/views/agents.py:23
+#: iast/views/agents.py:24
 msgid "Agent list"
 msgstr "Agent list"
 
-#: iast/views/agents.py:57
+#: iast/views/agents.py:88
 msgid "Incorrect format parameter, please check again"
 msgstr "Incorrect format parameter, please check again"
 
-#: iast/views/agents.py:60 iast/views/project_version_update.py:30
+#: iast/views/agents.py:91 iast/views/project_version_update.py:30
 msgid "Program error"
 msgstr "Program error"
 
-#: iast/views/agents_delete.py:59 iast/views/vul_delete.py:36
+#: iast/views/agents_delete.py:59 iast/views/vul_delete.py:43
 msgid "Deletion failed"
 msgstr "Deletion failed"
 
@@ -455,6 +455,32 @@ msgstr "Successfully deleted {} strips, failed to deleted {} strips"
 #| msgid "Agent and related data deleted successfully"
 msgid "API coverage rate obtained successfully"
 msgstr "Agent and related data deleted successfully"
+
+#: iast/views/documents.py:24
+#, fuzzy
+#| msgid "Number of Agent"
+msgid "Number per page"
+msgstr "Number of Agent"
+
+#: iast/views/documents.py:25
+msgid "Page index"
+msgstr ""
+
+#: iast/views/documents.py:27
+msgid "Document's corresponding programming language"
+msgstr ""
+
+#: iast/views/documents.py:32
+msgid "Get documents"
+msgstr ""
+
+#: iast/views/documents.py:33
+msgid "Get help documentation."
+msgstr ""
+
+#: iast/views/documents.py:34
+msgid "Documents"
+msgstr ""
 
 #: iast/views/engine_hook_rule_add.py:58
 #: iast/views/engine_hook_rule_modify.py:35
@@ -500,7 +526,7 @@ msgstr "Strategy does not exist"
 msgid "Strategy operation success, total {}"
 msgstr "Strategy operation success, total {}"
 
-#: iast/views/engine_hook_rule_status.py:86 iast/views/vul_status.py:33
+#: iast/views/engine_hook_rule_status.py:86 iast/views/vul_status.py:63
 msgid "Incorrect parameter"
 msgstr "Incorrect parameter"
 
@@ -558,15 +584,15 @@ msgstr "Temporary search"
 msgid "Searching, current {} page"
 msgstr "Searching, current {} page"
 
-#: iast/views/engine_method_pool_sca.py:18
+#: iast/views/engine_method_pool_sca.py:24
 msgid "method_pool_id is empty"
 msgstr "method_pool_id is empty"
 
-#: iast/views/engine_method_pool_sca.py:22
+#: iast/views/engine_method_pool_sca.py:29
 msgid "method_pool does not exist"
 msgstr "method_pool does not exist"
 
-#: iast/views/engine_method_pool_sca.py:27
+#: iast/views/engine_method_pool_sca.py:35
 msgid "method_pool has no permission"
 msgstr "method_pool has no permission"
 
@@ -574,7 +600,7 @@ msgstr "method_pool has no permission"
 msgid "The regular expression format is wrong, please use REGEX POSIX 1003.2"
 msgstr "The regular expression format is wrong, please use REGEX POSIX 1003.2"
 
-#: iast/views/health.py:32 iast/views/openapi.py:16 iast/views/oss_health.py:23
+#: iast/views/health.py:32 iast/views/openapi.py:17 iast/views/oss_health.py:23
 msgid "Get OpenAPI configuration failed"
 msgstr "Get OpenAPI configuration failed"
 
@@ -606,7 +632,7 @@ msgstr "Export failed, error message: Log id should not be empty"
 msgid "Log list"
 msgstr "Log list"
 
-#: iast/views/logs.py:48 iast/views/vul_recheck.py:117
+#: iast/views/logs.py:48 iast/views/vul_recheck.py:125
 msgid "No permission to access"
 msgstr "No permission to access"
 
@@ -630,11 +656,11 @@ msgstr "Data does not exist or no permission to access"
 msgid "Page and PageSize can only be numeric"
 msgstr "Page and PageSize can only be numeric"
 
-#: iast/views/openapi.py:22 iast/views/profile.py:18
+#: iast/views/openapi.py:24 iast/views/profile.py:18
 msgid "Current users have no permission to modify"
 msgstr "Current users have no permission to modify"
 
-#: iast/views/openapi.py:29 iast/views/openapi.py:32
+#: iast/views/openapi.py:31 iast/views/openapi.py:34
 #: iast/views/project_add.py:111 iast/views/project_version_add.py:27
 msgid "Created success"
 msgstr "Created success"
@@ -817,7 +843,7 @@ msgstr "Update application version information"
 msgid "Update completed"
 msgstr "Update completed"
 
-#: iast/views/projects.py:20
+#: iast/views/projects.py:21
 msgid "View item list"
 msgstr "View item list"
 
@@ -833,7 +859,7 @@ msgstr "Current version stopped for maintenance or it is not a secure version"
 msgid "Component information query failed"
 msgstr "Component information query failed"
 
-#: iast/views/sca_summary.py:19
+#: iast/views/sca_summary.py:20
 msgid "Three-party components overview"
 msgstr "Three-party components overview"
 
@@ -963,19 +989,49 @@ msgstr "Get OpenAPI token"
 msgid "Updated is currently not allowed"
 msgstr "Updated is currently not allowed"
 
-#: iast/views/vul_count_for_plugin.py:17 iast/views/vul_list_for_plugin.py:18
+#: iast/views/vul_count_for_plugin.py:22 iast/views/vul_delete.py:24
+#: iast/views/vul_details.py:219 iast/views/vul_list_for_plugin.py:47
+#: iast/views/vul_recheck.py:148 iast/views/vul_sidebar_index.py:43
+#: iast/views/vul_status.py:29 iast/views/vul_summary.py:93
+#: iast/views/vulnerability_status.py:21 iast/views/vuls.py:85
+#, fuzzy
+#| msgid "Vulnerability URL"
+msgid "Vulnerability"
+msgstr "Vulnerability URL"
+
+#: iast/views/vul_count_for_plugin.py:23
+#, fuzzy
+#| msgid "Vulnerability type name"
+msgid "Vulnerability Count (with agent name)"
+msgstr "Vulnerability type name"
+
+#: iast/views/vul_count_for_plugin.py:25
+msgid "Get the number of vulnerabilities corresponding to the Agent."
+msgstr ""
+
+#: iast/views/vul_count_for_plugin.py:30 iast/views/vul_list_for_plugin.py:56
 msgid "Please input agent name."
 msgstr "Please input agent name."
 
-#: iast/views/vul_count_for_plugin.py:24 iast/views/vul_list_for_plugin.py:25
+#: iast/views/vul_count_for_plugin.py:36 iast/views/vul_list_for_plugin.py:62
 msgid "agent_name not found"
 msgstr "agent_name not found"
 
-#: iast/views/vul_delete.py:19
+#: iast/views/vul_delete.py:20
 msgid "Delete vulnerability"
 msgstr "Delete vulnerability"
 
-#: iast/views/vul_delete.py:33
+#: iast/views/vul_delete.py:23
+#, fuzzy
+#| msgid "Vulnerability URL"
+msgid "Vulnerability Delete"
+msgstr "Vulnerability URL"
+
+#: iast/views/vul_delete.py:26
+msgid "Delete the corresponding vulnerability by specifying the id"
+msgstr ""
+
+#: iast/views/vul_delete.py:40
 msgid "Failed to delete, error message: Vulnerability does not exist"
 msgstr "Failed to delete, error message: Vulnerability does not exist"
 
@@ -999,43 +1055,53 @@ msgstr "Analysis of errovence analysis of stain call diagram: {}"
 msgid "Error analysis of Header, error message: {}"
 msgstr "Error analysis of Header, error message: {}"
 
-#: iast/views/vul_details.py:144 iast/views/vul_details.py:214
+#: iast/views/vul_details.py:144 iast/views/vul_details.py:236
 msgid "[{}] Vulnerability information parsing error, error message: {}"
 msgstr "[{}] Vulnerability information parsing error, error message: {}"
 
-#: iast/views/vul_details.py:194
+#: iast/views/vul_details.py:215
 #, fuzzy
 #| msgid "2.3 Vulnerability details"
 msgid "Vulnerability details query "
 msgstr "2.3 Vulnerability details"
 
-#: iast/views/vul_details.py:196
+#: iast/views/vul_details.py:217
 msgid ""
 "Use the corresponding id of the vulnerability to query the details of the "
 "vulnerability"
 msgstr ""
 
-#: iast/views/vul_details.py:215
+#: iast/views/vul_details.py:237
 msgid "Vulnerability data query error"
 msgstr "Vulnerability data query error"
 
-#: iast/views/vul_recheck.py:81
+#: iast/views/vul_list_for_plugin.py:48
+#, fuzzy
+#| msgid "Vulnerability type name"
+msgid "Vulnerability List (with agent name)"
+msgstr "Vulnerability type name"
+
+#: iast/views/vul_list_for_plugin.py:50
+msgid "Use the agent name to get the corresponding list of vulnerabilities"
+msgstr ""
+
+#: iast/views/vul_recheck.py:82
 msgid "IDS should not be empty"
 msgstr "IDS should not be empty"
 
-#: iast/views/vul_recheck.py:85
+#: iast/views/vul_recheck.py:86
 msgid "IDS must be: Vulnerability ID, Vulnerability ID Format"
 msgstr "IDS must be: Vulnerability ID, Vulnerability ID Format"
 
-#: iast/views/vul_recheck.py:98 iast/views/vul_recheck.py:139
+#: iast/views/vul_recheck.py:100 iast/views/vul_recheck.py:170
 msgid "Handle success"
 msgstr "Handle success"
 
-#: iast/views/vul_recheck.py:102 iast/views/vul_request_replay.py:229
+#: iast/views/vul_recheck.py:104 iast/views/vul_request_replay.py:237
 msgid "Vulnerability replay error"
 msgstr "Vulnerability replay error"
 
-#: iast/views/vul_recheck.py:115
+#: iast/views/vul_recheck.py:122
 msgid ""
 "Current application has not been associated with probes and cannot be "
 "reproduced."
@@ -1043,67 +1109,184 @@ msgstr ""
 "Current application has not been associated with probes and cannot be "
 "reproduced."
 
-#: iast/views/vul_recheck.py:120 iast/views/vul_recheck.py:159
+#: iast/views/vul_recheck.py:128 iast/views/vul_recheck.py:190
 msgid "Batch playback error"
 msgstr "Batch playback error"
 
-#: iast/views/vul_recheck.py:154
+#: iast/views/vul_recheck.py:137
+msgid ""
+"available options are (\"all\",\"project\").\n"
+"                Corresponding to all or specific project respectively."
+msgstr ""
+
+#: iast/views/vul_recheck.py:149
+#, fuzzy
+#| msgid "Vulnerability description"
+msgid "Vulnerability verification"
+msgstr "Vulnerability description"
+
+#: iast/views/vul_recheck.py:150
+msgid ""
+"Verify the user's corresponding vulnerabilities.\n"
+"            Need to specify the type"
+msgstr ""
+
+#: iast/views/vul_recheck.py:185
 msgid "Item ID should not be empty"
 msgstr "Item ID should not be empty"
 
-#: iast/views/vul_recheck.py:155
+#: iast/views/vul_recheck.py:186
 msgid "Incorrect format parameter"
 msgstr "Incorrect format parameter"
 
-#: iast/views/vul_request_replay.py:75
+#: iast/views/vul_request_replay.py:76
 msgid "HTTP request parsing error, error message: {}"
 msgstr "HTTP request parsing error, error message: {}"
 
-#: iast/views/vul_request_replay.py:191
+#: iast/views/vul_request_replay.py:199
 msgid "Stain pool data does not exist or no permission to access"
 msgstr "Stain pool data does not exist or no permission to access"
 
-#: iast/views/vul_request_replay.py:205
+#: iast/views/vul_request_replay.py:213
 msgid ""
 "The probe has been destroyed or suspended, please check the probe status"
 msgstr ""
 "The probe has been destroyed or suspended, please check the probe status"
 
-#: iast/views/vul_request_replay.py:211
+#: iast/views/vul_request_replay.py:219
 msgid "Replay request is illegal"
 msgstr "Replay request is illegal"
 
-#: iast/views/vul_request_replay.py:224
+#: iast/views/vul_request_replay.py:232
 msgid "Relay request success"
 msgstr "Relay request success"
 
-#: iast/views/vul_request_replay.py:243
+#: iast/views/vul_request_replay.py:251
 msgid "Response header analysis error, error message: {}"
 msgstr "Response header analysis error, error message: {}"
 
-#: iast/views/vul_request_replay.py:263
+#: iast/views/vul_request_replay.py:284
 msgid "Replay request does not exist or no permission to access"
 msgstr "Replay request does not exist or no permission to access"
 
-#: iast/views/vul_request_replay.py:266
+#: iast/views/vul_request_replay.py:287
 msgid "Replay request processing"
 msgstr "Replay request processing"
 
-#: iast/views/vul_request_replay.py:280
+#: iast/views/vul_request_replay.py:301
 msgid "Replay failed"
 msgstr "Replay failed"
 
-#: iast/views/vul_status.py:17
+#: iast/views/vul_sidebar_index.py:20
+#, fuzzy
+#| msgid "Development language"
+msgid "programming language"
+msgstr "Development language"
+
+#: iast/views/vul_sidebar_index.py:25
+#, fuzzy
+#| msgid "Number of Vulnerability"
+msgid "Type of vulnerability"
+msgstr "Number of Vulnerability"
+
+#: iast/views/vul_sidebar_index.py:29
+#, fuzzy
+#| msgid "Modify the vulnerability status"
+msgid "ID of the vulnerability type"
+msgstr "Modify the vulnerability status"
+
+#: iast/views/vul_sidebar_index.py:33
+#, fuzzy
+#| msgid "Delete vulnerability"
+msgid "Level of vulnerability"
+msgstr "Delete vulnerability"
+
+#: iast/views/vul_sidebar_index.py:37
+msgid "The URL corresponding to the vulnerability"
+msgstr ""
+
+#: iast/views/vul_sidebar_index.py:41
+msgid "Sorted index"
+msgstr ""
+
+#: iast/views/vul_sidebar_index.py:44
+#, fuzzy
+#| msgid "Vulnerability URL"
+msgid "Vulnerability List"
+msgstr "Vulnerability URL"
+
+#: iast/views/vul_sidebar_index.py:46
+msgid "Get the list of vulnerabilities corresponding to the user."
+msgstr ""
+
+#: iast/views/vul_status.py:20
 msgid "Modify the vulnerability status"
 msgstr "Modify the vulnerability status"
 
+#: iast/views/vul_status.py:30
+#, fuzzy
+#| msgid "Vulnerability status is modified to {}"
+msgid "Vulnerability Status Modify"
+msgstr "Vulnerability status is modified to {}"
+
 #: iast/views/vul_status.py:31
+msgid ""
+"Modify the vulnerability status of the specified id. \n"
+"        The status is specified by the following two parameters. \n"
+"        Status corresponds to the status noun and status_id corresponds to "
+"the status id. \n"
+"        Both can be obtained from the vulnerability status list API, and "
+"status_id is preferred."
+msgstr ""
+
+#: iast/views/vul_status.py:58
 msgid "Vulnerability status is modified to {}"
 msgstr "Vulnerability status is modified to {}"
 
-#: iast/views/vul_summary.py:22
+#: iast/views/vul_summary.py:23
 msgid "Applied vulnerability overview"
 msgstr "Applied vulnerability overview"
+
+#: iast/views/vul_summary.py:94
+#, fuzzy
+#| msgid "Vulnerability URL"
+msgid "Vulnerability Summary"
+msgstr "Vulnerability URL"
+
+#: iast/views/vul_summary.py:96
+msgid ""
+"Use the following conditions to view the statistics of the number of "
+"vulnerabilities in the project."
+msgstr ""
+
+#: iast/views/vulnerability_status.py:22
+#, fuzzy
+#| msgid "Vulnerability status is modified to {}"
+msgid "Vulnerability Status List"
+msgstr "Vulnerability status is modified to {}"
+
+#: iast/views/vulnerability_status.py:24
+msgid ""
+"Vulnerability status list, which contains the optional status of "
+"vulnerabilities. \n"
+"            When calling the vulnerability status modification API, please "
+"obtain the vulnerability status data from this API first."
+msgstr ""
+
+#: iast/views/vuls.py:86
+#, fuzzy
+#| msgid "Vulnerability type name"
+msgid "Vulnerability List (with project)"
+msgstr "Vulnerability type name"
+
+#: iast/views/vuls.py:88
+msgid "Get the list of vulnerabilities corresponding to the project"
+msgstr ""
+
+#, fuzzy
+#~| msgid "Vulnerability description"
+#~ msgid "Vulnerability Aggregation"
+#~ msgstr "Vulnerability description"
 
 #~ msgid "Confirmed"
 #~ msgstr "Confirmed"

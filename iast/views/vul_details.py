@@ -145,37 +145,63 @@ class VulDetail(UserEndPoint):
             self.server = {}
         self.vul_name = vul.type
         return {
-            'url': vul.url,
-            'uri': vul.uri,
-            'agent_name': agent.token,
-            'http_method': vul.http_method,
-            'type': vul.type,
-            'taint_position': vul.taint_position,
-            'first_time': vul.first_time,
-            'latest_time': vul.latest_time,
-            'project_name': project['name'] if project else _('The application has not been binded'),
-            'project_version': project_version_name,
-            'language': agent.language,
-            'level': vul.level.name_value,
-            'level_type': vul.level.id,
-            'counts': vul.counts,
-            'req_header': self.parse_request(vul.http_method, vul.uri, vul.req_params, vul.http_protocol,
-                                             vul.req_header,
-                                             vul.req_data),
-            'response': self.parse_response(vul.res_header, vul.res_body),
-            'graph': self.parse_graphy(vul.full_stack),
-            'context_path': vul.context_path,
-            'client_ip': vul.client_ip,
-            'status': vul.status_,
-            'taint_value': vul.taint_value,
-            'param_name': json.loads(vul.param_name) if vul.param_name else {},
-            'method_pool_id': vul.method_pool_id,
-            'project_id': project_id
+            'url':
+            vul.url,
+            'uri':
+            vul.uri,
+            'agent_name':
+            agent.token,
+            'http_method':
+            vul.http_method,
+            'type':
+            vul.type,
+            'taint_position':
+            vul.taint_position,
+            'first_time':
+            vul.first_time,
+            'latest_time':
+            vul.latest_time,
+            'project_name':
+            project['name']
+            if project else _('The application has not been binded'),
+            'project_version':
+            project_version_name,
+            'language':
+            agent.language,
+            'level':
+            vul.level.name_value,
+            'level_type':
+            vul.level.id,
+            'counts':
+            vul.counts,
+            'req_header':
+            self.parse_request(vul.http_method, vul.uri, vul.req_params,
+                               vul.http_protocol, vul.req_header,
+                               vul.req_data),
+            'response':
+            self.parse_response(vul.res_header, vul.res_body),
+            'graph':
+            self.parse_graphy(vul.full_stack),
+            'context_path':
+            vul.context_path,
+            'client_ip':
+            vul.client_ip,
+            'status':
+            vul.status_,
+            'taint_value':
+            vul.taint_value,
+            'param_name':
+            json.loads(vul.param_name) if vul.param_name else {},
+            'method_pool_id':
+            vul.method_pool_id,
+            'project_id':
+            project_id
         }
 
     def get_strategy(self):
 
-        strategy = IastStrategyModel.objects.filter(vul_name=self.vul_name).first()
+        strategy = IastStrategyModel.objects.filter(
+            vul_name=self.vul_name).first()
         if strategy:
             return {
                 'desc': strategy.vul_desc,
@@ -183,18 +209,14 @@ class VulDetail(UserEndPoint):
                 'repair_suggestion': strategy.vul_fix
             }
         else:
-            return {
-                'desc': "",
-                'sample_code': '',
-                'repair_suggestion': ''
-            }
-
+            return {'desc': "", 'sample_code': '', 'repair_suggestion': ''}
 
     @extend_schema_with_envcheck(
         summary=_('Vulnerability details query '),
         description=
         _('Use the corresponding id of the vulnerability to query the details of the vulnerability'
-          ))
+          ),
+        tags=[_('Vulnerability')])
     def get(self, request, id):
         """
         :param request:

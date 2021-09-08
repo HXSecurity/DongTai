@@ -13,18 +13,25 @@ from rest_framework import serializers
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes
 from rest_framework.serializers import ValidationError
 from iast.utils import extend_schema_with_envcheck
+from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes
 
 
 
 
 class DocumentArgsSerializer(serializers.Serializer):
-    page_size = serializers.IntegerField(default=20)
-    page = serializers.IntegerField(default=1)
-    language = serializers.CharField(default=None)
+    page_size = serializers.IntegerField(default=20,
+                                         help_text=_('Number per page'))
+    page = serializers.IntegerField(default=1, help_text=_('Page index'))
+    language = serializers.CharField(
+        default=None, help_text=_("Document's corresponding programming language"))
 
 
 class DocumentsEndpoint(UserEndPoint):
-    @extend_schema_with_envcheck([DocumentArgsSerializer])
+    @extend_schema_with_envcheck([DocumentArgsSerializer],
+                                 summary=_('Get documents'),
+                                 description=_("Get help documentation."),
+                                 tags=[_('Documents')])
     def get(self, request):
         ser = DocumentArgsSerializer(data=request.GET)
         try:

@@ -41,26 +41,24 @@ def assemble_query(condictions: dict,
 
 from rest_framework.serializers import SerializerMetaclass
 from django.utils.translation import get_language
+from django.utils.text import format_lazy
 
 def extend_schema_with_envcheck(querys: list = [],
-                                request_body: list = [],
-                                summary: str = None,
-                                description: str = None):
+                                request_body=None,
+                                **kwargs):
     def myextend_schema(func):
         import os
         if os.getenv('environment', None) == 'TEST':
             from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes
             parameters = list(filter(lambda x: x, map(_filter_query, querys)))
             deco = extend_schema(
-                summary=summary,
-                description=description,
                 parameters=parameters,
                 examples=[OpenApiExample('Example1', value=request_body)],
                 request={'application/json': OpenApiTypes.OBJECT},
-            )
+                **kwargs)
             funcw = deco(func)
             funcw.querys = querys
-            funcw.request_body = request_body
+            funcw.request_body = request_body if request_body else []
             return funcw
         return func
     return myextend_schema
