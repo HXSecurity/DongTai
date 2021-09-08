@@ -25,6 +25,26 @@ check_docker(){
 	fi
 }
 
+# check_docker_environment 
+check_docker_environment(){
+        echo "\n\033[33m[+] check docker environment configure status\033[0m"
+
+        # clean useless network
+        bash -c 'echo -e "y\n"| docker network prune'
+        # default network pools 10.55.0.1/24
+        read -p "[+] please input docker network pools, default [10.55.0.1/24]:" DOCKER_POOLS_IPS
+        if [ -z $DOCKER_POOLS_IPS ];then
+                DOCKER_POOLS_IPS="10.55.0.1/16"
+                echo -e "{\n  \"default-address-pools\": [\n    {\n      \"base\": \"$DOCKER_POOLS_IPS\",\n      \"size\": 24\n    }\n  ]\n}" > /etc/docker/daemon.json
+                # restart docker service
+                systemctl restart docker
+        else
+                echo -e "{\n  \"default-address-pools\": [\n    {\n      \"base\": \"$DOCKER_POOLS_IPS\",\n      \"size\": 24\n    }\n  ]\n}" > /etc/docker/daemon.json
+                # restart docker service
+                systemctl restart docker
+        fi
+}
+
 # 检查端口是否被占用，如果占用，发出提示并告知如何修改端口
 check_port(){
 	echo "\n\033[33m[+] check port status\033[0m"
