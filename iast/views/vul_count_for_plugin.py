@@ -12,12 +12,18 @@ from iast.utils import extend_schema_with_envcheck
 
 
 class VulCountForPluginEndPoint(MixinAuthEndPoint):
-    @extend_schema_with_envcheck([
-        {
-            'name': "name",
-            'type': str,
-        },
-    ])
+    @extend_schema_with_envcheck(
+        [
+            {
+                'name': "name",
+                'type': str,
+            },
+        ],
+        tags=[_('Vulnerability')],
+        summary=_("Vulnerability Count (with agent name)"),
+        description=_(
+            "Get the number of vulnerabilities corresponding to the Agent."),
+    )
     def get(self, request):
         agent_name = request.query_params.get('name')
         if not agent_name:

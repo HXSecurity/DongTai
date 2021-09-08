@@ -10,6 +10,7 @@ from dongtai.endpoint import UserEndPoint
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from django.utils.translation import gettext_lazy as _
 import logging
+from iast.utils import extend_schema_with_envcheck
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -18,6 +19,12 @@ class VulDelete(UserEndPoint):
     name = 'api-v1-vul-delete-<id>'
     description = _('Delete vulnerability')
 
+    @extend_schema_with_envcheck(
+        summary=_('Vulnerability Delete'),
+        tags=[_('Vulnerability')],
+        description=_(
+            "Delete the corresponding vulnerability by specifying the id"),
+    )
     def post(self, request, id):
         """
         :param request:

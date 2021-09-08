@@ -21,64 +21,72 @@ from iast.utils import extend_schema_with_envcheck
 
 class VulsEndPoint(UserEndPoint):
 
-    @extend_schema_with_envcheck([
-        {
-            'name': "page",
-            'type': int,
-            'default': 1,
-            'required': False,
-        },
-        {
-            'name': "pageSize",
-            'type': int,
-            'default': 20,
-            'required': False,
-        },
-        {
-            'name': "language",
-            'type': str,
-        },
-        {
-            'name': "type",
-            'type': str,
-        },
-        {
-            'name': "project_name",
-            'type': str,
-            'deprecated': True,
-        },
-        {
-            'name': "level",
-            'type': str,
-        },
-        {
-            'name': "project_id",
-            'type': int,
-        },
-        {
-            'name': "version_id",
-            'type': int,
-            'description':
-            "The default is the current version id of the project."
-        },
-        {
-            'name': "status",
-            'type': str,
-            'deprecated': True
-        },
-        {
-            'name': "status_id",
-            'type': int,
-        },
-        {
-            'name': "url",
-            'type': str,
-        },
-        {
-            'name': "order",
-            'type': str,
-        },
-    ])
+    @extend_schema_with_envcheck(
+        [
+            {
+                'name': "page",
+                'type': int,
+                'default': 1,
+                'required': False,
+            },
+            {
+                'name': "pageSize",
+                'type': int,
+                'default': 20,
+                'required': False,
+            },
+            {
+                'name': "language",
+                'type': str,
+            },
+            {
+                'name': "type",
+                'type': str,
+            },
+            {
+                'name': "project_name",
+                'type': str,
+                'deprecated': True,
+            },
+            {
+                'name': "level",
+                'type': str,
+            },
+            {
+                'name': "project_id",
+                'type': int,
+            },
+            {
+                'name':
+                "version_id",
+                'type':
+                int,
+                'description':
+                "The default is the current version id of the project."
+            },
+            {
+                'name': "status",
+                'type': str,
+                'deprecated': True
+            },
+            {
+                'name': "status_id",
+                'type': int,
+            },
+            {
+                'name': "url",
+                'type': str,
+            },
+            {
+                'name': "order",
+                'type': str,
+            },
+        ],
+        tags=[_('Vulnerability')],
+        summary=_("Vulnerability List (with project)"),
+        description=_(
+            "Get the list of vulnerabilities corresponding to the project"),
+    )
     def get(self, request):
         """
         :param request:

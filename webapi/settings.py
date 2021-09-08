@@ -290,7 +290,14 @@ CSRF_COOKIE_DOMAIN = None
 if os.getenv('environment', 'PROD') == 'TEST':
     INSTALLED_APPS.append('drf_spectacular')
     SPECTACULAR_SETTINGS = {
-        'TITLE': 'DongTai webapi',
+        'TITLE':
+        'DongTai WebApi Doc',
+        'VERSION':
+        "1.0.3",
+        'PREPROCESSING_HOOKS':
+        ['drf_spectacular.hooks.preprocess_exclude_path_format'],
+        'URL_FORMAT_OVERRIDE':
+        None
     }
     REST_FRAMEWORK[
         'DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'
