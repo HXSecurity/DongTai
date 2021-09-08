@@ -62,7 +62,7 @@ services:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest
     restart: always
     volumes:
-      - ./data:/var/lib/mysql
+      - ./data:/var/lib/mysql:rw
 
   dongtai-redis:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:latest
