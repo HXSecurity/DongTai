@@ -25,7 +25,8 @@ check_docker(){
 	fi
 }
 
-# check_docker_environment 
+# check docker environment 
+# Avoid conflicts between the LAN IP and docker0/docker-compose LAN IP
 check_docker_environment(){
         echo "\n\033[33m[+] check docker environment configure status\033[0m"
 
