@@ -33,7 +33,7 @@ The usage scenarios of "DongTai IAST" include but not limited to:
 - Security testing before release, etc.
 
 ## Quick start
-`DongTai IAST` supports **SaaS Service** and **Localized Deployment**. Please refer to [**Deployment Document**](https://github.com/HXSecurity/ dongtai-deploy) for localized deployment.
+`DongTai IAST` supports **SaaS Service** and **Localized Deployment**. Please refer to [**Deployment Document**](https://github.com/HXSecurity/dongtai-deploy) for localized deployment.
 
 ### 1. SaaS Version
   - Fill out the [Online Form](https://jinshuju.net/f/I9PNmf) to register an account.
