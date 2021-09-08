@@ -153,5 +153,6 @@ build_dongtai_iast(){
 
 downloa_deploy_repo
 check_docker
+check_docker_environment
 check_port
 build_dongtai_iast
