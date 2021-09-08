@@ -66,4 +66,4 @@ $ docker run -d -p 8000:8000 --restart=always --name dongtai-webapi huoxian/dong
 
 ### More resources
 - [Documentation](https://hxsecurity.github.io/DongTai-Doc/#/)
-- [DongTai WebSite](http://aws.iast.huoxian.cn:8000/login)
+- [DongTai WebSite](http://iast.io)
