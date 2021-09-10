@@ -43,22 +43,35 @@ from rest_framework.serializers import SerializerMetaclass
 from django.utils.translation import get_language
 from django.utils.text import format_lazy
 
+
 def extend_schema_with_envcheck(querys: list = [],
-                                request_body=None,
+                                request_bodys: list = [],
+                                response_bodys: list = [],
                                 **kwargs):
     def myextend_schema(func):
         import os
         if os.getenv('environment', None) == 'TEST':
             from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes
+            from drf_spectacular.utils import OpenApiResponse
             parameters = list(filter(lambda x: x, map(_filter_query, querys)))
+            request_examples = list(
+                filter(lambda x: x, map(_filter_request_body, request_bodys)))
+            response_examples = list(
+                filter(lambda x: x, map(_filter_response_body,
+                                        response_bodys)))
+            examples = request_examples + response_examples
             deco = extend_schema(
                 parameters=parameters,
-                examples=[OpenApiExample('Example1', value=request_body)],
-                request={'application/json': OpenApiTypes.OBJECT},
+                examples=examples if examples else None,
+                request={'application/json': OpenApiTypes.OBJECT}
+                if request_examples else None,
+                responses={
+                    200: OpenApiResponse(description='', response=['???'])
+                } if response_examples else None ,
                 **kwargs)
             funcw = deco(func)
             funcw.querys = querys
-            funcw.request_body = request_body if request_body else []
+            funcw.request_body = request_bodys if request_bodys else []
             return funcw
         return func
     return myextend_schema
@@ -70,6 +83,20 @@ def _filter_query(item):
         return item
     elif isinstance(item, dict):
         return OpenApiParameter(**item)
+
+
+def _filter_request_body(item):
+    from drf_spectacular.utils import OpenApiExample
+    if isinstance(item, dict):
+        item['request_only'] = True
+        return OpenApiExample(**item)
+
+
+def _filter_response_body(item):
+    from drf_spectacular.utils import OpenApiExample
+    if isinstance(item, dict):
+        item['response_only'] = True
+        return OpenApiExample(**item)
 
 
 def batch_queryset(queryset, batch_size=1):

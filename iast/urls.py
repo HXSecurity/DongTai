@@ -145,7 +145,7 @@ urlpatterns = [
     path('project/version/check', UpdateProjectVersion.as_view()),
     path('vulns', VulsEndPoint.as_view()),
     path('vuln/summary', VulSummary.as_view()),
-    path('vuln/list', VulSideBarList.as_view()),
+#    path('vuln/list', VulSideBarList.as_view()), Departured
     path('vuln/<int:id>', VulDetail.as_view()),
     path('vuln/status', VulStatus.as_view()),
     path('vuln/delete/<int:id>', VulDelete.as_view()),
@@ -155,7 +155,7 @@ urlpatterns = [
     path('plugin/vuln/count', VulCountForPluginEndPoint.as_view()),
     path('scas', ScaList.as_view()),
     path('sca/summary', ScaSummary.as_view()),
-    path('sca/list', ScaSidebarList.as_view()),
+#    path('sca/list', ScaSidebarList.as_view()), Departured
     path('sca/<int:id>', ScaDetailView.as_view()),
     path('strategys', StrategyEndpoint.as_view()),
     path('strategy/<int:id>/enable', StrategyEnableEndpoint.as_view()),
@@ -217,7 +217,7 @@ urlpatterns = [
     path('oss/health', OssHealthView.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
-    # demo接口
+    # demo
     urlpatterns.extend([path('demo', Demo.as_view())])
 
 

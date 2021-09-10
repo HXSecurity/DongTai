@@ -71,6 +71,29 @@ class VulReCheck(UserEndPoint):
         waiting_count, success_count, re_success_count = VulReCheck.recheck(vul_queryset)
         return no_agent, waiting_count, success_count, re_success_count
 
+    @extend_schema_with_envcheck(
+        [{
+            'name':
+            'type',
+            'type':
+            str,
+            'description':
+            _('''available options are ("all","project").
+                Corresponding to all or specific project respectively.''')
+        }, {
+            'name':
+            "projectId",
+            'type':
+            int,
+            'description':
+            _("""The corresponding id of the Project.
+            Only If the type is project, the projectId here will be used.""")
+        }],
+        tags=[_('Vulnerability')],
+        summary=_("Vulnerability verification"),
+        description=_("""Verify the user's corresponding vulnerabilities.
+            Need to specify the type"""),
+    )
     def post(self, request):
         """
         :param request:
@@ -142,8 +165,8 @@ class VulReCheck(UserEndPoint):
             'type':
             int,
             'description':
-            """The corresponding id of the Project.
-            Only If the type is project, the projectId here will be used."""
+            _("""The corresponding id of the Project.
+            Only If the type is project, the projectId here will be used.""")
         }],
         tags=[_('Vulnerability')],
         summary=_("Vulnerability verification"),

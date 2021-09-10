@@ -18,6 +18,8 @@ from dongtai.models.hook_type import HookType
 from django.db.models import Q
 from iast.utils import extend_schema_with_envcheck
 
+from django.utils.text import format_lazy
+
 
 class VulsEndPoint(UserEndPoint):
 
@@ -28,33 +30,43 @@ class VulsEndPoint(UserEndPoint):
                 'type': int,
                 'default': 1,
                 'required': False,
+                'description': _('Page index'),
             },
             {
                 'name': "pageSize",
                 'type': int,
                 'default': 20,
                 'required': False,
+                'description': _('Number per page'),
             },
             {
                 'name': "language",
                 'type': str,
+                'description': _("programming language")
             },
             {
                 'name': "type",
                 'type': str,
+                'description': _('Type of vulnerability'),
             },
             {
                 'name': "project_name",
                 'type': str,
                 'deprecated': True,
+                'description': _('Name of Project'),
             },
             {
-                'name': "level",
-                'type': str,
+                'name':
+                "level",
+                'type':
+                str,
+                'description':
+                format_lazy("{} : {}", _('Level of vulnerability'), "1,2,3,4")
             },
             {
                 'name': "project_id",
                 'type': int,
+                'description': _('Id of Project'),
             },
             {
                 'name':
@@ -62,26 +74,78 @@ class VulsEndPoint(UserEndPoint):
                 'type':
                 int,
                 'description':
-                "The default is the current version id of the project."
+                _("The default is the current version id of the project.")
             },
             {
                 'name': "status",
                 'type': str,
-                'deprecated': True
+                'deprecated': True,
+                'description': _('Name of status'),
             },
             {
                 'name': "status_id",
                 'type': int,
+                'description': _('Id of status'),
             },
             {
                 'name': "url",
                 'type': str,
+                'description': _('The URL corresponding to the vulnerability'),
             },
             {
-                'name': "order",
-                'type': str,
+                'name':
+                "order",
+                'type':
+                str,
+                'description':
+                format_lazy(
+                    "{} : {}", _('Sorted index'), ",".join(
+                        ['type', 'level', 'first_time', 'latest_time', 'url']))
             },
         ],
+        [],
+        [{
+            'name':
+            _('Get data sample'),
+            'description':
+            _("The aggregation results are programming language, risk level, vulnerability type, project"
+              ),
+            'value': {
+                "status":
+                201,
+                "msg":
+                "success",
+                "data": [{
+                    "id": 12024,
+                    "type": "Weak Random Number Generation",
+                    "hook_type_id": 45,
+                    "url": "http://localhost:81/captcha/captchaImage",
+                    "uri": "/captcha/captchaImage",
+                    "agent_id": 820,
+                    "level_id": 3,
+                    "http_method": "GET",
+                    "top_stack": None,
+                    "bottom_stack": None,
+                    "taint_position": None,
+                    "latest_time": 1631092302,
+                    "first_time": 1631092263,
+                    "language": "JAVA",
+                    "status": "Confirmed",
+                    "index": 0,
+                    "project_name": "demo",
+                    "project_id": 71,
+                    "server_name": "Apache Tomcat/9.0.41",
+                    "server_type": "apache tomcat",
+                    "level_type": 3,
+                    "level": "LOW"
+                }],
+                "page": {
+                    "alltotal": 1,
+                    "num_pages": 1,
+                    "page_size": 20
+                }
+            }
+        }],
         tags=[_('Vulnerability')],
         summary=_("Vulnerability List (with project)"),
         description=_(
@@ -117,7 +181,12 @@ class VulsEndPoint(UserEndPoint):
             queryset = queryset.filter(level=level)
 
         type_ = request.query_params.get('type')
-        if type_:
+        type_id = request.query_params.get('hook_type_id')
+        if type_id:
+            hook_type = HookType.objects.filter(pk=type_id).first()
+            hook_type_id = hook_type.id if hook_type else 0
+            queryset = queryset.filter(hook_type_id=hook_type_id)
+        elif type_:
             hook_type = HookType.objects.filter(name=type_).first()
             hook_type_id = hook_type.id if hook_type else 0
             queryset = queryset.filter(hook_type_id=hook_type_id)
