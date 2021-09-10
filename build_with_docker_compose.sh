@@ -43,7 +43,7 @@ check_port(){
 		exit
 	fi
 
-	read -p "[+] please input web service port, default [8000]:" OPENAPI_SERVICE_PORT
+	read -p "[+] please input openAPI service port, default [8000]:" OPENAPI_SERVICE_PORT
 	if [ -z $OPENAPI_SERVICE_PORT ];then
 		OPENAPI_SERVICE_PORT=8000
 	fi
