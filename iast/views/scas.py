@@ -12,54 +12,117 @@ from iast.base.project_version import get_project_version, get_project_version_b
 from iast.serializers.sca import ScaSerializer
 from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck
+from django.utils.text import format_lazy
 
 
 class ScaList(UserEndPoint):
-    @extend_schema_with_envcheck([
-        {
-            'name': "page",
-            'type': int,
-            'default': 1,
-            'required': False,
-        },
-        {
-            'name': "pageSize",
-            'type': int,
-            'default': 20,
-            'required': False,
-        },
-        {
-            'name': "language",
-            'type': str,
-        },
-        {
-            'name': "project_name",
-            'type': str,
-            'deprecated': True,
-        },
-        {
-            'name': "level",
-            'type': str,
-        },
-        {
-            'name': "project_id",
-            'type': int,
-        },
-        {
-            'name': "version_id",
-            'type': int,
-            'description':
-            "The default is the current version id of the project."
-        },
-        {
-            'name': "keyword",
-            'type': str,
-        },
-        {
-            'name': "order",
-            'type': str,
-        },
-    ])
+    @extend_schema_with_envcheck(
+        [
+            {
+                'name': "page",
+                'type': int,
+                'default': 1,
+                'required': False,
+                'description': _('Page index'),
+            },
+            {
+                'name': "pageSize",
+                'type': int,
+                'default': 20,
+                'required': False,
+                'description': _('Number per page'),
+            },
+            {
+                'name': "language",
+                'type': str,
+                'description': _("programming language"),
+            },
+            {
+                'name': "project_name",
+                'type': str,
+                'deprecated': True,
+                'description': _('Name of Project'),
+            },
+            {
+                'name': "level",
+                'type': str,
+                'description': _('Level of vulnerability'),
+            },
+            {
+                'name': "project_id",
+                'type': int,
+                'description': _('Id of Project'),
+            },
+            {
+                'name':
+                "version_id",
+                'type':
+                int,
+                'description':
+                _("The default is the current version id of the project.")
+            },
+            {
+                'name': "keyword",
+                'type': str,
+                'description':
+                _("Fuzzy keyword search field for package_name.")
+            },
+            {
+                'name':
+                "order",
+                'type':
+                str,
+                'description':
+                format_lazy(
+                    "{} : {}", _('Sorted index'), ",".join([
+                        'version', 'level', 'vul_count', 'language',
+                        'package_name'
+                    ]))
+            },
+        ], [], [
+            {
+                'name':
+                _('Get data sample'),
+                'description':
+                _("The aggregation results are programming language, risk level, vulnerability type, project"
+                  ),
+                'value': {
+                    "status":
+                    201,
+                    "msg":
+                    "success",
+                    "data": [
+                        {
+                            "id": 13293,
+                            "package_name": "message-business-7.1.0.Final.jar",
+                            "version": "7.1.0.Final",
+                            "project_name": "No application",
+                            "project_id": 0,
+                            "project_version": "No application version",
+                            "language": "JAVA",
+                            "agent_name":
+                            "Mac OS X-bogon-v1.0.0-0c864ba2a60b48aaa1a8b49a53a6749b",
+                            "signature_value":
+                            "f744df92326c4bea7682fd16004bec184148db07",
+                            "level": "INFO",
+                            "level_type": 4,
+                            "vul_count": 0,
+                            "dt": 1631189450
+                        }
+                    ],
+                    "page": {
+                        "alltotal": 795,
+                        "num_pages": 795,
+                        "page_size": 1
+                    }
+                }
+            }
+        ],
+        tags=[_('Component')],
+        summary=_("Component List (with project)"),
+        description=
+        _("use the specified project information to obtain the corresponding component."
+          ))
     def get(self, request):
         """
         :param request:
@@ -82,6 +145,7 @@ class ScaList(UserEndPoint):
         package_kw = request.query_params.get('keyword', None)
 
         project_id = request.query_params.get('project_id', None)
+        project_name = request.query_params.get('project_name')
         if project_id and project_id != '':
 
             version_id = request.GET.get('version_id', None)
@@ -92,11 +156,11 @@ class ScaList(UserEndPoint):
                 current_project_version = get_project_version_by_id(version_id)
             agents = self.get_auth_agents(auth_users).filter(
                 bind_project_id=project_id,
-                project_version_id=current_project_version.get("version_id", 0)
-            )
+                project_version_id=current_project_version.get(
+                    "version_id", 0))
             queryset = queryset.filter(agent__in=agents)
-        project_name = request.query_params.get('project_name')
-        if project_name and project_name != '':
+
+        elif project_name and project_name != '':
             agent_ids = get_agents_with_project(project_name, auth_users)
             if agent_ids:
                 queryset = queryset.filter(agent_id__in=agent_ids)

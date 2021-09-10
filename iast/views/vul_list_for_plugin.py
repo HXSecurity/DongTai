@@ -10,6 +10,7 @@ from dongtai.endpoint import MixinAuthEndPoint
 from iast.serializers.vul import VulForPluginSerializer
 from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck
+from django.utils.text import format_lazy
 
 
 class VulListEndPoint(MixinAuthEndPoint):
@@ -20,28 +21,44 @@ class VulListEndPoint(MixinAuthEndPoint):
                 'type': int,
                 'default': 1,
                 'required': False,
+                'description': _('Page index'),
             },
             {
                 'name': "pageSize",
                 'type': int,
                 'default': 20,
                 'required': False,
+                'description': _('Number per page'),
             },
             {
                 'name': "name",
                 'type': str,
+                'description': _('Name of agent'),
             },
             {
-                'name': "level",
-                'type': str,
+                'name':
+                "level",
+                'type':
+                str,
+                'description':
+                format_lazy("{} : {}", _('Level of vulnerability'), "1,2,3,4")
             },
             {
                 'name': "url",
                 'type': str,
+                'description': _('The URL corresponding to the vulnerability'),
             },
             {
-                'name': "order",
-                'type': str,
+                'name':
+                "order",
+                'type':
+                str,
+                'description':
+                format_lazy(
+                    "{} : {}", _('Sorted index'), ",".join([
+                        'id', 'hook_type_id', 'url', 'http_method',
+                        'top_stack', 'bottom_stack'
+                    ])),
             },
         ],
         tags=[_('Vulnerability')],

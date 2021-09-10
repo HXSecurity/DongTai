@@ -21,11 +21,37 @@ class VulStatus(UserEndPoint):
 
     @extend_schema_with_envcheck(
         [],
-        {
-            'id': 1,
-            'status': 'status',
-            'status_id': 1
-        },
+        [
+            {
+                'name': _("Update with status_id"),
+                "description":
+                _("Update vulnerability status with status id."),
+                'value': {
+                    'id': 1,
+                    'status_id': 1
+                },
+            },
+            {
+                'name': _("Update with status name(Not recommended)"),
+                "description":
+                _("Update vulnerability status with status name."),
+                'value': {
+                    'id': 1,
+                    'status': "str"
+                },
+            },
+        ],
+        [{
+            'name':
+            _('Get data sample'),
+            'description':
+            _("The aggregation results are programming language, risk level, vulnerability type, project"
+              ),
+            'value': {
+                "status": 201,
+                "msg": "Vulnerability status is modified to Confirmed"
+            }
+        }],
         tags=[_('Vulnerability')],
         summary=_("Vulnerability Status Modify"),
         description=_("""Modify the vulnerability status of the specified id. 

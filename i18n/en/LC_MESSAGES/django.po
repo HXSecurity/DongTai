@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-08 17:56+0800\n"
+"POT-Creation-Date: 2021-09-09 20:14+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -247,7 +247,7 @@ msgid "Password should not be blank"
 msgstr "Password should not be blank"
 
 #: iast/serializers/sca.py:36 iast/views/vul_details.py:166
-#: iast/views/vuls.py:188
+#: iast/views/vuls.py:214
 msgid "The application has not been binded"
 msgstr "No application"
 
@@ -337,7 +337,7 @@ msgstr "Corresponding deployment document could not be found"
 msgid "Agent deployment document"
 msgstr "Agent deployment document"
 
-#: iast/views/agent_deploy_doc.py:38 iast/views/vuls.py:103
+#: iast/views/agent_deploy_doc.py:38 iast/views/vuls.py:124
 msgid "No data"
 msgstr "No data"
 
@@ -456,13 +456,17 @@ msgstr "Successfully deleted {} strips, failed to deleted {} strips"
 msgid "API coverage rate obtained successfully"
 msgstr "Agent and related data deleted successfully"
 
-#: iast/views/documents.py:24
+#: iast/views/documents.py:24 iast/views/sca_summary.py:37
+#: iast/views/scas.py:33 iast/views/vul_list_for_plugin.py:31
+#: iast/views/vul_sidebar_index.py:37 iast/views/vuls.py:40
 #, fuzzy
 #| msgid "Number of Agent"
 msgid "Number per page"
 msgstr "Number of Agent"
 
-#: iast/views/documents.py:25
+#: iast/views/documents.py:25 iast/views/sca_summary.py:30
+#: iast/views/scas.py:26 iast/views/vul_list_for_plugin.py:24
+#: iast/views/vul_sidebar_index.py:31 iast/views/vuls.py:33
 msgid "Page index"
 msgstr ""
 
@@ -526,7 +530,7 @@ msgstr "Strategy does not exist"
 msgid "Strategy operation success, total {}"
 msgstr "Strategy operation success, total {}"
 
-#: iast/views/engine_hook_rule_status.py:86 iast/views/vul_status.py:63
+#: iast/views/engine_hook_rule_status.py:86 iast/views/vul_status.py:78
 msgid "Incorrect parameter"
 msgstr "Incorrect parameter"
 
@@ -847,21 +851,115 @@ msgstr "Update completed"
 msgid "View item list"
 msgstr "View item list"
 
-#: iast/views/sca_details.py:32
+#: iast/views/sca_details.py:26 iast/views/sca_sidebar_index.py:44
+#: iast/views/sca_summary.py:85 iast/views/scas.py:83
+msgid "Component"
+msgstr ""
+
+#: iast/views/sca_details.py:27
+#, fuzzy
+#| msgid "Vulnerability type name"
+msgid "Component Detail"
+msgstr "Vulnerability type name"
+
+#: iast/views/sca_details.py:29
+msgid "Get the details of the corresponding component by specifying the id."
+msgstr ""
+
+#: iast/views/sca_details.py:40
 msgid "Components do not exist or no permission to access"
 msgstr "Components do not exist or no permission to access"
 
-#: iast/views/sca_details.py:47
+#: iast/views/sca_details.py:55
 msgid "Current version stopped for maintenance or it is not a secure version"
 msgstr "Current version stopped for maintenance or it is not a secure version"
 
-#: iast/views/sca_details.py:59
+#: iast/views/sca_details.py:67
 msgid "Component information query failed"
 msgstr "Component information query failed"
 
-#: iast/views/sca_summary.py:20
+#: iast/views/sca_sidebar_index.py:21 iast/views/sca_summary.py:42
+#: iast/views/scas.py:38 iast/views/vul_sidebar_index.py:41
+#: iast/views/vul_summary.py:56 iast/views/vuls.py:45
+#, fuzzy
+#| msgid "Development language"
+msgid "programming language"
+msgstr "Development language"
+
+#: iast/views/sca_sidebar_index.py:26 iast/views/sca_summary.py:58
+#: iast/views/scas.py:49 iast/views/vul_list_for_plugin.py:44
+#: iast/views/vul_sidebar_index.py:57 iast/views/vul_summary.py:75
+#: iast/views/vuls.py:64
+#, fuzzy
+#| msgid "Delete vulnerability"
+msgid "Level of vulnerability"
+msgstr "Delete vulnerability"
+
+#: iast/views/sca_sidebar_index.py:39 iast/views/sca_summary.py:79
+#: iast/views/scas.py:77 iast/views/vul_list_for_plugin.py:58
+#: iast/views/vul_sidebar_index.py:68 iast/views/vul_summary.py:113
+#: iast/views/vuls.py:102
+msgid "Sorted index"
+msgstr ""
+
+#: iast/views/sca_sidebar_index.py:45
+#, fuzzy
+#| msgid "Vulnerability type name"
+msgid "Component List"
+msgstr "Vulnerability type name"
+
+#: iast/views/sca_sidebar_index.py:47
+msgid ""
+"Use the specified project information to obtain the corresponding component."
+msgstr ""
+
+#: iast/views/sca_summary.py:21
 msgid "Three-party components overview"
 msgstr "Three-party components overview"
+
+#: iast/views/sca_summary.py:48 iast/views/scas.py:44
+#: iast/views/vul_summary.py:67 iast/views/vuls.py:56
+#, fuzzy
+#| msgid "Number of Agent"
+msgid "Name of Project"
+msgstr "Number of Agent"
+
+#: iast/views/sca_summary.py:53 iast/views/scas.py:54
+#: iast/views/vul_summary.py:80 iast/views/vuls.py:69
+msgid "Id of Project"
+msgstr ""
+
+#: iast/views/sca_summary.py:66 iast/views/scas.py:62
+#: iast/views/vul_summary.py:88 iast/views/vuls.py:77
+msgid "The default is the current version id of the project."
+msgstr ""
+
+#: iast/views/sca_summary.py:72 iast/views/scas.py:68
+msgid "Fuzzy keyword search field for package_name."
+msgstr ""
+
+#: iast/views/sca_summary.py:86
+#, fuzzy
+#| msgid "Vulnerability type name"
+msgid "Component Summary (with project)"
+msgstr "Vulnerability type name"
+
+#: iast/views/sca_summary.py:88
+msgid ""
+"Use the specified project information to get the corresponding component "
+"summary"
+msgstr ""
+
+#: iast/views/scas.py:84
+#, fuzzy
+#| msgid "Vulnerability type name"
+msgid "Component List (with project)"
+msgstr "Vulnerability type name"
+
+#: iast/views/scas.py:86
+msgid ""
+"use the specified project information to obtain the corresponding component."
+msgstr ""
 
 #: iast/views/strategy_delete.py:22
 msgid "This strategy does not exist"
@@ -990,10 +1088,10 @@ msgid "Updated is currently not allowed"
 msgstr "Updated is currently not allowed"
 
 #: iast/views/vul_count_for_plugin.py:22 iast/views/vul_delete.py:24
-#: iast/views/vul_details.py:219 iast/views/vul_list_for_plugin.py:47
-#: iast/views/vul_recheck.py:148 iast/views/vul_sidebar_index.py:43
-#: iast/views/vul_status.py:29 iast/views/vul_summary.py:93
-#: iast/views/vulnerability_status.py:21 iast/views/vuls.py:85
+#: iast/views/vul_details.py:219 iast/views/vul_list_for_plugin.py:64
+#: iast/views/vul_recheck.py:148 iast/views/vul_sidebar_index.py:70
+#: iast/views/vul_status.py:44 iast/views/vul_summary.py:202
+#: iast/views/vulnerability_status.py:21 iast/views/vuls.py:106
 #, fuzzy
 #| msgid "Vulnerability URL"
 msgid "Vulnerability"
@@ -1009,11 +1107,11 @@ msgstr "Vulnerability type name"
 msgid "Get the number of vulnerabilities corresponding to the Agent."
 msgstr ""
 
-#: iast/views/vul_count_for_plugin.py:30 iast/views/vul_list_for_plugin.py:56
+#: iast/views/vul_count_for_plugin.py:30 iast/views/vul_list_for_plugin.py:73
 msgid "Please input agent name."
 msgstr "Please input agent name."
 
-#: iast/views/vul_count_for_plugin.py:36 iast/views/vul_list_for_plugin.py:62
+#: iast/views/vul_count_for_plugin.py:36 iast/views/vul_list_for_plugin.py:79
 msgid "agent_name not found"
 msgstr "agent_name not found"
 
@@ -1075,13 +1173,24 @@ msgstr ""
 msgid "Vulnerability data query error"
 msgstr "Vulnerability data query error"
 
-#: iast/views/vul_list_for_plugin.py:48
+#: iast/views/vul_list_for_plugin.py:36
+#, fuzzy
+#| msgid "Number of Agent"
+msgid "Name of agent"
+msgstr "Number of Agent"
+
+#: iast/views/vul_list_for_plugin.py:49 iast/views/vul_sidebar_index.py:61
+#: iast/views/vul_summary.py:104 iast/views/vuls.py:93
+msgid "The URL corresponding to the vulnerability"
+msgstr ""
+
+#: iast/views/vul_list_for_plugin.py:65
 #, fuzzy
 #| msgid "Vulnerability type name"
 msgid "Vulnerability List (with agent name)"
 msgstr "Vulnerability type name"
 
-#: iast/views/vul_list_for_plugin.py:50
+#: iast/views/vul_list_for_plugin.py:67
 msgid "Use the agent name to get the corresponding list of vulnerabilities"
 msgstr ""
 
@@ -1117,6 +1226,12 @@ msgstr "Batch playback error"
 msgid ""
 "available options are (\"all\",\"project\").\n"
 "                Corresponding to all or specific project respectively."
+msgstr ""
+
+#: iast/views/vul_recheck.py:145
+msgid ""
+"The corresponding id of the Project.\n"
+"            Only If the type is project, the projectId here will be used."
 msgstr ""
 
 #: iast/views/vul_recheck.py:149
@@ -1177,45 +1292,26 @@ msgstr "Replay request processing"
 msgid "Replay failed"
 msgstr "Replay failed"
 
-#: iast/views/vul_sidebar_index.py:20
-#, fuzzy
-#| msgid "Development language"
-msgid "programming language"
-msgstr "Development language"
-
-#: iast/views/vul_sidebar_index.py:25
+#: iast/views/vul_sidebar_index.py:46 iast/views/vul_summary.py:61
+#: iast/views/vuls.py:50
 #, fuzzy
 #| msgid "Number of Vulnerability"
 msgid "Type of vulnerability"
 msgstr "Number of Vulnerability"
 
-#: iast/views/vul_sidebar_index.py:29
+#: iast/views/vul_sidebar_index.py:50
 #, fuzzy
 #| msgid "Modify the vulnerability status"
 msgid "ID of the vulnerability type"
 msgstr "Modify the vulnerability status"
 
-#: iast/views/vul_sidebar_index.py:33
-#, fuzzy
-#| msgid "Delete vulnerability"
-msgid "Level of vulnerability"
-msgstr "Delete vulnerability"
-
-#: iast/views/vul_sidebar_index.py:37
-msgid "The URL corresponding to the vulnerability"
-msgstr ""
-
-#: iast/views/vul_sidebar_index.py:41
-msgid "Sorted index"
-msgstr ""
-
-#: iast/views/vul_sidebar_index.py:44
+#: iast/views/vul_sidebar_index.py:71
 #, fuzzy
 #| msgid "Vulnerability URL"
 msgid "Vulnerability List"
 msgstr "Vulnerability URL"
 
-#: iast/views/vul_sidebar_index.py:46
+#: iast/views/vul_sidebar_index.py:73
 msgid "Get the list of vulnerabilities corresponding to the user."
 msgstr ""
 
@@ -1223,13 +1319,33 @@ msgstr ""
 msgid "Modify the vulnerability status"
 msgstr "Modify the vulnerability status"
 
-#: iast/views/vul_status.py:30
+#: iast/views/vul_status.py:26
+msgid "Update with status_id"
+msgstr ""
+
+#: iast/views/vul_status.py:28
+#, fuzzy
+#| msgid "Modify the vulnerability status"
+msgid "Update vulnerability status with status id."
+msgstr "Modify the vulnerability status"
+
+#: iast/views/vul_status.py:35
+msgid "Update with status name(Not recommended)"
+msgstr ""
+
+#: iast/views/vul_status.py:37
+#, fuzzy
+#| msgid "Vulnerability type name"
+msgid "Update vulnerability status with status name."
+msgstr "Vulnerability type name"
+
+#: iast/views/vul_status.py:45
 #, fuzzy
 #| msgid "Vulnerability status is modified to {}"
 msgid "Vulnerability Status Modify"
 msgstr "Vulnerability status is modified to {}"
 
-#: iast/views/vul_status.py:31
+#: iast/views/vul_status.py:46
 msgid ""
 "Modify the vulnerability status of the specified id. \n"
 "        The status is specified by the following two parameters. \n"
@@ -1239,21 +1355,39 @@ msgid ""
 "status_id is preferred."
 msgstr ""
 
-#: iast/views/vul_status.py:58
+#: iast/views/vul_status.py:73
 msgid "Vulnerability status is modified to {}"
 msgstr "Vulnerability status is modified to {}"
 
-#: iast/views/vul_summary.py:23
+#: iast/views/vul_summary.py:24
 msgid "Applied vulnerability overview"
 msgstr "Applied vulnerability overview"
 
-#: iast/views/vul_summary.py:94
+#: iast/views/vul_summary.py:94 iast/views/vuls.py:83
+msgid "Name of status"
+msgstr ""
+
+#: iast/views/vul_summary.py:99 iast/views/vuls.py:88
+msgid "Id of status"
+msgstr ""
+
+#: iast/views/vul_summary.py:120
+msgid "Get data sample"
+msgstr ""
+
+#: iast/views/vul_summary.py:122
+msgid ""
+"The aggregation results are programming language, risk level, vulnerability "
+"type, project"
+msgstr ""
+
+#: iast/views/vul_summary.py:203
 #, fuzzy
 #| msgid "Vulnerability URL"
 msgid "Vulnerability Summary"
 msgstr "Vulnerability URL"
 
-#: iast/views/vul_summary.py:96
+#: iast/views/vul_summary.py:205
 msgid ""
 "Use the following conditions to view the statistics of the number of "
 "vulnerabilities in the project."
@@ -1273,15 +1407,20 @@ msgid ""
 "obtain the vulnerability status data from this API first."
 msgstr ""
 
-#: iast/views/vuls.py:86
+#: iast/views/vuls.py:107
 #, fuzzy
 #| msgid "Vulnerability type name"
 msgid "Vulnerability List (with project)"
 msgstr "Vulnerability type name"
 
-#: iast/views/vuls.py:88
+#: iast/views/vuls.py:109
 msgid "Get the list of vulnerabilities corresponding to the project"
 msgstr ""
+
+#, fuzzy
+#~| msgid "Vulnerability type name"
+#~ msgid "component"
+#~ msgstr "Vulnerability type name"
 
 #, fuzzy
 #~| msgid "Vulnerability description"

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-08 17:56+0800\n"
+"POT-Creation-Date: 2021-09-09 20:14+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -213,11 +213,11 @@ msgstr "Maven官方爬虫"
 
 #: iast/serializers/agent.py:47
 msgid "Online"
-msgstr ""
+msgstr "运行中"
 
 #: iast/serializers/agent.py:47
 msgid "Offline"
-msgstr ""
+msgstr "已下线"
 
 #: iast/serializers/agent.py:59
 msgid "Load data is not uploaded"
@@ -236,7 +236,7 @@ msgid "Password should not be blank"
 msgstr "密码不能为空"
 
 #: iast/serializers/sca.py:36 iast/views/vul_details.py:166
-#: iast/views/vuls.py:188
+#: iast/views/vuls.py:214
 msgid "The application has not been binded"
 msgstr "暂未绑定项目"
 
@@ -324,7 +324,7 @@ msgstr "找不到对应部署文档"
 msgid "Agent deployment document"
 msgstr "Agent部署文档"
 
-#: iast/views/agent_deploy_doc.py:38 iast/views/vuls.py:103
+#: iast/views/agent_deploy_doc.py:38 iast/views/vuls.py:124
 msgid "No data"
 msgstr "暂无数据"
 
@@ -439,11 +439,15 @@ msgstr "成功删除{}条，删除失败{}条"
 msgid "API coverage rate obtained successfully"
 msgstr "API覆盖率获取成功"
 
-#: iast/views/documents.py:24
+#: iast/views/documents.py:24 iast/views/sca_summary.py:37
+#: iast/views/scas.py:33 iast/views/vul_list_for_plugin.py:31
+#: iast/views/vul_sidebar_index.py:37 iast/views/vuls.py:40
 msgid "Number per page"
 msgstr "每页数量"
 
-#: iast/views/documents.py:25
+#: iast/views/documents.py:25 iast/views/sca_summary.py:30
+#: iast/views/scas.py:26 iast/views/vul_list_for_plugin.py:24
+#: iast/views/vul_sidebar_index.py:31 iast/views/vuls.py:33
 msgid "Page index"
 msgstr "对应页码"
 
@@ -507,7 +511,7 @@ msgstr "策略不存在"
 msgid "Strategy operation success, total {}"
 msgstr "策略操作成功，共{}条"
 
-#: iast/views/engine_hook_rule_status.py:86 iast/views/vul_status.py:63
+#: iast/views/engine_hook_rule_status.py:86 iast/views/vul_status.py:78
 msgid "Incorrect parameter"
 msgstr "参数不正确"
 
@@ -587,7 +591,7 @@ msgstr "获取openapi配置失败"
 
 #: iast/views/health.py:34
 msgid "OpenAPI service is down, Please check it."
-msgstr ""
+msgstr "OpenAPI服务异常，请检查"
 
 #: iast/views/log_clear.py:14
 msgid "Log clear"
@@ -826,21 +830,101 @@ msgstr "更新成功"
 msgid "View item list"
 msgstr "查看项目列表"
 
-#: iast/views/sca_details.py:32
+#: iast/views/sca_details.py:26 iast/views/sca_sidebar_index.py:44
+#: iast/views/sca_summary.py:85 iast/views/scas.py:83
+msgid "Component"
+msgstr "组件"
+
+#: iast/views/sca_details.py:27
+msgid "Component Detail"
+msgstr "组件详情"
+
+#: iast/views/sca_details.py:29
+msgid "Get the details of the corresponding component by specifying the id."
+msgstr "通过指定id来获取对应组件的详情"
+
+#: iast/views/sca_details.py:40
 msgid "Components do not exist or no permission to access"
 msgstr "组件不存在或无权限访问"
 
-#: iast/views/sca_details.py:47
+#: iast/views/sca_details.py:55
 msgid "Current version stopped for maintenance or it is not a secure version"
 msgstr "当前版本已停止维护或暂无安全版本"
 
-#: iast/views/sca_details.py:59
+#: iast/views/sca_details.py:67
 msgid "Component information query failed"
 msgstr "组件信息查询失败"
 
-#: iast/views/sca_summary.py:20
+#: iast/views/sca_sidebar_index.py:21 iast/views/sca_summary.py:42
+#: iast/views/scas.py:38 iast/views/vul_sidebar_index.py:41
+#: iast/views/vul_summary.py:56 iast/views/vuls.py:45
+msgid "programming language"
+msgstr "编程语言"
+
+#: iast/views/sca_sidebar_index.py:26 iast/views/sca_summary.py:58
+#: iast/views/scas.py:49 iast/views/vul_list_for_plugin.py:44
+#: iast/views/vul_sidebar_index.py:57 iast/views/vul_summary.py:75
+#: iast/views/vuls.py:64
+msgid "Level of vulnerability"
+msgstr "漏洞等级"
+
+#: iast/views/sca_sidebar_index.py:39 iast/views/sca_summary.py:79
+#: iast/views/scas.py:77 iast/views/vul_list_for_plugin.py:58
+#: iast/views/vul_sidebar_index.py:68 iast/views/vul_summary.py:113
+#: iast/views/vuls.py:102
+msgid "Sorted index"
+msgstr "排序指标"
+
+#: iast/views/sca_sidebar_index.py:45
+msgid "Component List"
+msgstr "组件列表"
+
+#: iast/views/sca_sidebar_index.py:47
+msgid ""
+"Use the specified project information to obtain the corresponding component."
+msgstr "使用指定项目信息获取对应的组件。"
+
+#: iast/views/sca_summary.py:21
 msgid "Three-party components overview"
 msgstr "三方组件概览"
+
+#: iast/views/sca_summary.py:48 iast/views/scas.py:44
+#: iast/views/vul_summary.py:67 iast/views/vuls.py:56
+msgid "Name of Project"
+msgstr "项目名"
+
+#: iast/views/sca_summary.py:53 iast/views/scas.py:54
+#: iast/views/vul_summary.py:80 iast/views/vuls.py:69
+msgid "Id of Project"
+msgstr "项目ID"
+
+#: iast/views/sca_summary.py:66 iast/views/scas.py:62
+#: iast/views/vul_summary.py:88 iast/views/vuls.py:77
+msgid "The default is the current version id of the project."
+msgstr "默认值为项目的当前版本。"
+
+#: iast/views/sca_summary.py:72 iast/views/scas.py:68
+msgid "Fuzzy keyword search field for package_name."
+msgstr "模糊搜索关键词，针对package_name字段"
+
+#: iast/views/sca_summary.py:86
+msgid "Component Summary (with project)"
+msgstr "组件概况（项目相关）"
+
+#: iast/views/sca_summary.py:88
+msgid ""
+"Use the specified project information to get the corresponding component "
+"summary"
+msgstr "使用指定项目信息获取对应的组件概况。"
+
+#: iast/views/scas.py:84
+msgid "Component List (with project)"
+msgstr "组件列表（项目相关）"
+
+#: iast/views/scas.py:86
+msgid ""
+"use the specified project information to obtain the corresponding component."
+msgstr "使用指定项目信息获取对应的组件。"
 
 #: iast/views/strategy_delete.py:22
 msgid "This strategy does not exist"
@@ -872,7 +956,7 @@ msgstr "用户登录"
 
 #: iast/views/user_login.py:34
 msgid "Captcha timed out"
-msgstr ""
+msgstr "验证码超时"
 
 #: iast/views/user_login.py:41
 msgid "Login successful"
@@ -969,10 +1053,10 @@ msgid "Updated is currently not allowed"
 msgstr "当前不允许更新"
 
 #: iast/views/vul_count_for_plugin.py:22 iast/views/vul_delete.py:24
-#: iast/views/vul_details.py:219 iast/views/vul_list_for_plugin.py:47
-#: iast/views/vul_recheck.py:148 iast/views/vul_sidebar_index.py:43
-#: iast/views/vul_status.py:29 iast/views/vul_summary.py:93
-#: iast/views/vulnerability_status.py:21 iast/views/vuls.py:85
+#: iast/views/vul_details.py:219 iast/views/vul_list_for_plugin.py:64
+#: iast/views/vul_recheck.py:148 iast/views/vul_sidebar_index.py:70
+#: iast/views/vul_status.py:44 iast/views/vul_summary.py:202
+#: iast/views/vulnerability_status.py:21 iast/views/vuls.py:106
 msgid "Vulnerability"
 msgstr "漏洞"
 
@@ -984,11 +1068,11 @@ msgstr "漏洞总数（Agent相关）"
 msgid "Get the number of vulnerabilities corresponding to the Agent."
 msgstr "获取用户对应的漏洞列表"
 
-#: iast/views/vul_count_for_plugin.py:30 iast/views/vul_list_for_plugin.py:56
+#: iast/views/vul_count_for_plugin.py:30 iast/views/vul_list_for_plugin.py:73
 msgid "Please input agent name."
 msgstr "please input agent name."
 
-#: iast/views/vul_count_for_plugin.py:36 iast/views/vul_list_for_plugin.py:62
+#: iast/views/vul_count_for_plugin.py:36 iast/views/vul_list_for_plugin.py:79
 msgid "agent_name not found"
 msgstr "Not found agent_name!"
 
@@ -1046,11 +1130,20 @@ msgstr "使用漏洞对应的id来获取漏洞详情信息"
 msgid "Vulnerability data query error"
 msgstr "漏洞数据查询出错"
 
-#: iast/views/vul_list_for_plugin.py:48
+#: iast/views/vul_list_for_plugin.py:36
+msgid "Name of agent"
+msgstr "Agent名称"
+
+#: iast/views/vul_list_for_plugin.py:49 iast/views/vul_sidebar_index.py:61
+#: iast/views/vul_summary.py:104 iast/views/vuls.py:93
+msgid "The URL corresponding to the vulnerability"
+msgstr "漏洞的对应url"
+
+#: iast/views/vul_list_for_plugin.py:65
 msgid "Vulnerability List (with agent name)"
 msgstr "漏洞列表（Agent相关）"
 
-#: iast/views/vul_list_for_plugin.py:50
+#: iast/views/vul_list_for_plugin.py:67
 msgid "Use the agent name to get the corresponding list of vulnerabilities"
 msgstr "使用agent名获取对应的漏洞列表"
 
@@ -1085,6 +1178,12 @@ msgid ""
 "available options are (\"all\",\"project\").\n"
 "                Corresponding to all or specific project respectively."
 msgstr "可选项有('all','project')。对应全部漏洞和指定项目的漏洞。"
+
+#: iast/views/vul_recheck.py:145
+msgid ""
+"The corresponding id of the Project.\n"
+"            Only If the type is project, the projectId here will be used."
+msgstr "项目的对应id.只有在type参数为project时，该参数才会被使用"
 
 #: iast/views/vul_recheck.py:149
 msgid "Vulnerability verification"
@@ -1141,35 +1240,20 @@ msgstr "重放请求处理中"
 msgid "Replay failed"
 msgstr "重放失败"
 
-#: iast/views/vul_sidebar_index.py:20
-msgid "programming language"
-msgstr "编程语言"
-
-#: iast/views/vul_sidebar_index.py:25
+#: iast/views/vul_sidebar_index.py:46 iast/views/vul_summary.py:61
+#: iast/views/vuls.py:50
 msgid "Type of vulnerability"
 msgstr "漏洞类型"
 
-#: iast/views/vul_sidebar_index.py:29
+#: iast/views/vul_sidebar_index.py:50
 msgid "ID of the vulnerability type"
 msgstr "漏洞类型的对应id"
 
-#: iast/views/vul_sidebar_index.py:33
-msgid "Level of vulnerability"
-msgstr "漏洞等级"
-
-#: iast/views/vul_sidebar_index.py:37
-msgid "The URL corresponding to the vulnerability"
-msgstr "漏洞的对应url"
-
-#: iast/views/vul_sidebar_index.py:41
-msgid "Sorted index"
-msgstr "排序指标"
-
-#: iast/views/vul_sidebar_index.py:44
+#: iast/views/vul_sidebar_index.py:71
 msgid "Vulnerability List"
 msgstr "漏洞列表"
 
-#: iast/views/vul_sidebar_index.py:46
+#: iast/views/vul_sidebar_index.py:73
 msgid "Get the list of vulnerabilities corresponding to the user."
 msgstr "获取用户对应的漏洞列表"
 
@@ -1177,11 +1261,31 @@ msgstr "获取用户对应的漏洞列表"
 msgid "Modify the vulnerability status"
 msgstr "修改漏洞状态"
 
-#: iast/views/vul_status.py:30
+#: iast/views/vul_status.py:26
+msgid "Update with status_id"
+msgstr ""
+
+#: iast/views/vul_status.py:28
+#, fuzzy
+#| msgid "Modify the vulnerability status"
+msgid "Update vulnerability status with status id."
+msgstr "修改漏洞状态"
+
+#: iast/views/vul_status.py:35
+msgid "Update with status name(Not recommended)"
+msgstr ""
+
+#: iast/views/vul_status.py:37
+#, fuzzy
+#| msgid "Vulnerability List (with agent name)"
+msgid "Update vulnerability status with status name."
+msgstr "漏洞列表（Agent相关）"
+
+#: iast/views/vul_status.py:45
 msgid "Vulnerability Status Modify"
 msgstr "漏洞状态修改"
 
-#: iast/views/vul_status.py:31
+#: iast/views/vul_status.py:46
 msgid ""
 "Modify the vulnerability status of the specified id. \n"
 "        The status is specified by the following two parameters. \n"
@@ -1193,19 +1297,37 @@ msgstr ""
 "修改指定id的漏洞状态，状态由以下两个参数指定，status对应状态名词，status_id对"
 "应状态的id，均可由漏洞状态列表API获得，优先使用status_id"
 
-#: iast/views/vul_status.py:58
+#: iast/views/vul_status.py:73
 msgid "Vulnerability status is modified to {}"
 msgstr "漏洞状态修改为{}"
 
-#: iast/views/vul_summary.py:23
+#: iast/views/vul_summary.py:24
 msgid "Applied vulnerability overview"
 msgstr "应用漏洞概览"
 
-#: iast/views/vul_summary.py:94
+#: iast/views/vul_summary.py:94 iast/views/vuls.py:83
+msgid "Name of status"
+msgstr "状态名"
+
+#: iast/views/vul_summary.py:99 iast/views/vuls.py:88
+msgid "Id of status"
+msgstr "状态ID"
+
+#: iast/views/vul_summary.py:120
+msgid "Get data sample"
+msgstr "获取数据样例"
+
+#: iast/views/vul_summary.py:122
+msgid ""
+"The aggregation results are programming language, risk level, vulnerability "
+"type, project"
+msgstr "聚合结果分别为编程语言，风险等级，漏洞类型，项目。"
+
+#: iast/views/vul_summary.py:203
 msgid "Vulnerability Summary"
 msgstr "漏洞概览"
 
-#: iast/views/vul_summary.py:96
+#: iast/views/vul_summary.py:205
 msgid ""
 "Use the following conditions to view the statistics of the number of "
 "vulnerabilities in the project."
@@ -1225,11 +1347,11 @@ msgstr ""
 "漏洞状态列表，里面包含了漏洞的可选状态，调用漏洞状态修改api时请先从此API获取"
 "漏洞状态数据。"
 
-#: iast/views/vuls.py:86
+#: iast/views/vuls.py:107
 msgid "Vulnerability List (with project)"
 msgstr "漏洞列表（项目相关）"
 
-#: iast/views/vuls.py:88
+#: iast/views/vuls.py:109
 msgid "Get the list of vulnerabilities corresponding to the project"
 msgstr "获取项目对应的漏洞列表"
 
