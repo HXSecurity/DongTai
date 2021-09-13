@@ -1,4 +1,4 @@
-# 拉取代码
+# download source code
 downloa_deploy_repo(){
 	echo "\033[33m[+] check Repo[deploy] status\033[0m"
 	git submodule status doc|grep "(" 1>/dev/null
@@ -12,7 +12,7 @@ downloa_deploy_repo(){
 	git submodule update deploy
 }
 
-# 检查docker容器是否启动
+# Check if the Docker service is turned on
 check_docker(){
 	echo "\n\033[33m[+] check docker servie status\033[0m"
 	docker ps 1>/dev/null 2>/dev/null
@@ -25,7 +25,7 @@ check_docker(){
 	fi
 }
 
-# 检查端口是否被占用，如果占用，发出提示并告知如何修改端口
+# Specify the port of Web, OpenAPI service and check whether it is available
 check_port(){
 	echo "\n\033[33m[+] check port status\033[0m"
 
