@@ -23,7 +23,7 @@ logger = logging.getLogger("dongtai.openapi")
 
 def _checkenginestatus():
     try:
-        resp = requests.get(settings.HEALTH_ENGINE_URL, timeout=1)
+        resp = requests.get(settings.HEALTH_ENGINE_URL, timeout=4)
         resp = json.loads(resp.content)
         resp = resp.get("data", None)
     except (ConnectionError, ConnectTimeout):

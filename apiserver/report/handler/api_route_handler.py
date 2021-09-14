@@ -34,7 +34,6 @@ class ApiRouteHandler(IReportHandler):
             for api_route in self.api_routes:
                 http_methods = []
                 with transaction.atomic():
-                    sid = transaction.savepoint()
                     try:
                         for http_method in api_route['method']:
                             http_method, __ = HttpMethod.objects.get_or_create(
@@ -65,8 +64,8 @@ class ApiRouteHandler(IReportHandler):
                             {'return_type': api_route['return_type']},
                             api_route_model)
                         IastApiResponse.objects.create(**response_obj)
-                    except:
-                        transaction.savepoint_rollback(sid)
+                    except Exception as e:
+                        print(e)
                 logger.info(_('API导航日志记录成功'))
         except Exception as e:
             logger.info(_('API导航日志失败，原因:{}').format(e))
