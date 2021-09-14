@@ -2,7 +2,7 @@
 
 [![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
 [![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://huoxianclub.github.io/LingZhi/)
-[![DongTai--openapi](https://img.shields.io/badge/DongTai--openapi-v1.0.0-lightgrey)](https://huoxianclub.github.io/LingZhi/#/doc/tutorial/quickstart)
+[![DongTai--openapi](https://img.shields.io/badge/DongTai--openapi-v1.0.3-lightgrey)](https://huoxianclub.github.io/LingZhi/#/doc/tutorial/quickstart)
 
 [![Deploy DongTai OpenAPI To AWS Test](https://github.com/HXSecurity/DongTai-openapi/actions/workflows/deploy_openapi_to_aws_test.yml/badge.svg)](https://github.com/HXSecurity/DongTai-openapi/actions/workflows/deploy_openapi_to_aws_test.yml)
 [![Deploy DongTai OpenAPI To AWS](https://github.com/HXSecurity/DongTai-openapi/actions/workflows/deploy_openapi_to_aws.yml/badge.svg)](https://github.com/HXSecurity/DongTai-openapi/actions/workflows/deploy_openapi_to_aws.yml)
@@ -36,7 +36,7 @@ DongTai-OpenAPI用于处理DongTai探针的相关请求，包括：
 
 1. 拉取官方镜像
 ```shell script
-$ docker pull registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:1.0.0
+$ docker pull registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:latest
 ```
 
 2. 创建配置文件：`/etc/dongtai/config.ini`，内容如下：
@@ -77,14 +77,14 @@ access_key_secret = access_key
 
 3. 启动`dongtai-openapi`容器并映射配置文件
 ```shell script
-$ docker run -d --name dongtai-openapi -p 8000:8000 -v /etc/dongtai/config.ini:/opt/dongtai/openapi/conf/config.ini --restart=always huoxian_pub/dongtai-openapi:1.0.0
+$ docker run -d --name dongtai-openapi -p 8000:8000 -v /etc/dongtai/config.ini:/opt/dongtai/openapi/conf/config.ini --restart=always huoxian_pub/dongtai-openapi:latest
 ```
 
 ### 构建镜像部署
 
 1. 构建镜像
 ```shell script
-$ docker build -t huoxian_pub/dongtai-openapi:1.0.0 .
+$ docker build -t huoxian_pub/dongtai-openapi:latest .
 ```
 
 2. 创建配置文件：`/etc/dongtai/config.ini`，内容如下：
@@ -125,10 +125,10 @@ access_key_secret = access_key
 
 3. 启动`dongtai-openapi`容器并映射配置文件
 ```shell script
-$ docker run -d --name dongtai-openapi -p 8000:8000 -v /etc/dongtai/config.ini:/opt/dongtai/openapi/conf/config.ini --restart=always huoxian_pub/dongtai-openapi:1.0.0
+$ docker run -d --name dongtai-openapi -p 8000:8000 -v /etc/dongtai/config.ini:/opt/dongtai/openapi/conf/config.ini --restart=always huoxian_pub/dongtai-openapi:latest
 ```
 
 
 ### 文档
 - [官方文档](https://huoxianclub.github.io/LingZhi/#/)
-- [快速体验](http://aws.iast.huoxian.cn:8000/login)
+- [快速体验](https://iast.io)

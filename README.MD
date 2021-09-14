@@ -2,7 +2,7 @@
 
 [![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
 [![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://huoxianclub.github.io/LingZhi/)
-[![DongTai--openapi](https://img.shields.io/badge/DongTai--openapi-v1.0.0-lightgrey)](https://huoxianclub.github.io/LingZhi/#/doc/tutorial/quickstart)
+[![DongTai--openapi](https://img.shields.io/badge/DongTai--openapi-v1.0.3-lightgrey)](https://huoxianclub.github.io/LingZhi/#/doc/tutorial/quickstart)
 
 [![Deploy DongTai OpenAPI To AWS Test](https://github.com/HXSecurity/DongTai-openapi/actions/workflows/deploy_openapi_to_aws_test.yml/badge.svg)](https://github.com/HXSecurity/DongTai-openapi/actions/workflows/deploy_openapi_to_aws_test.yml)
 [![Deploy DongTai OpenAPI To AWS](https://github.com/HXSecurity/DongTai-openapi/actions/workflows/deploy_openapi_to_aws.yml/badge.svg)](https://github.com/HXSecurity/DongTai-openapi/actions/workflows/deploy_openapi_to_aws.yml)
@@ -37,7 +37,7 @@ The basic service configuration is as follows：
 
 1. Pull image
 ```shell script
-$ docker pull registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:1.0.0
+$ docker pull registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:latest
 ```
 
 2. Create a configuration file：`/etc/dongtai/config.ini`，The content is as follows：
@@ -78,14 +78,14 @@ access_key_secret = access_key
 
 3. Start the `dongtai-openapi` container and map the configuration file
 ```shell script
-$ docker run -d --name dongtai-openapi -p 8000:8000 -v /etc/dongtai/config.ini:/opt/dongtai/openapi/conf/config.ini --restart=always huoxian_pub/dongtai-openapi:1.0.0
+$ docker run -d --name dongtai-openapi -p 8000:8000 -v /etc/dongtai/config.ini:/opt/dongtai/openapi/conf/config.ini --restart=always huoxian_pub/dongtai-openapi:latest
 ```
 
 ### Build custom image
 
 1. Build image
 ```shell script
-$ docker build -t huoxian_pub/dongtai-openapi:1.0.0 .
+$ docker build -t huoxian_pub/dongtai-openapi:latest .
 ```
 
 2. Create a configuration file：`/etc/dongtai/config.ini`，The content is as follows：
@@ -126,7 +126,7 @@ access_key_secret = access_key
 
 3. Start the `dongtai-openapi` container and map the configuration file
 ```shell script
-$ docker run -d --name dongtai-openapi -p 8000:8000 -v /etc/dongtai/config.ini:/opt/dongtai/openapi/conf/config.ini --restart=always huoxian_pub/dongtai-openapi:1.0.0
+$ docker run -d --name dongtai-openapi -p 8000:8000 -v /etc/dongtai/config.ini:/opt/dongtai/openapi/conf/config.ini --restart=always huoxian_pub/dongtai-openapi:latest
 ```
 
 ### Contributing
@@ -136,4 +136,5 @@ Any questions? Let's discuss in [#DongTai discussions](https://github.com/HXSecu
 
 ### More resources
 - [Documentation](https://hxsecurity.github.io/DongTai-Doc/#/)
-- [DongTai WebSite](https://iast.huoxian.cn/)
+- [DongTai WebSite](https://iast.io)
+
