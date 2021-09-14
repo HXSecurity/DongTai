@@ -1,17 +1,3 @@
-# 拉取代码
-downloa_deploy_repo(){
-	echo "\033[33m[+] check Repo[deploy] status\033[0m"
-	git submodule status doc|grep "(" 1>/dev/null
-	if [ $? -ne 0 ]; then
-		echo "\033[31m[-] Repo[deploy] initialing...\033[0m"
-		git submodule init deploy
-	else
-		echo "\033[32m[*]\033[0m Repo[deploy] is initialized."
-	fi
-
-	git submodule update deploy
-}
-
 # 检查docker容器是否启动
 check_docker(){
 	echo "\n\033[33m[+] check docker servie status\033[0m"
@@ -62,7 +48,7 @@ services:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:1.0.3
     restart: always
     volumes:
-      - ./data:/var/lib/mysql
+      - ./data:/var/lib/mysql:rw
 
   dongtai-redis:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:1.0.3
@@ -130,7 +116,6 @@ build_dongtai_iast(){
 	echo "\n\033[32m[*] start DongTai IAST service, please wait 30s\033[0m"
 }
 
-downloa_deploy_repo
 check_docker
 check_port
 build_dongtai_iast
