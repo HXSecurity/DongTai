@@ -1,0 +1,344 @@
+---
+# 创建配置文件
+apiVersion: v1
+data:
+  config.ini: |-
+    [mysql]
+    host = dongtai-mysql
+    port = 3306
+    name = dongtai_webapi
+    user = root
+    password = dongtai-iast
+
+    [redis]
+    host = dongtai-redis
+    port = 6379
+    password = 123456
+    db = 0
+
+    [engine]
+    url = http://dongtai-engine-svc:80
+
+
+    [smtp]
+    server = smtp_server
+    user = smtp_user
+    password = smtp_password
+    from_addr = from_addr
+    ssl = False
+    cc_addr = cc_addr
+
+    [aliyun_oss]
+    access_key = LTAI5t7pu9WUT2DcbknfNiaD
+    access_key_secret = ZoEOSi7KfayQ7JalvJVHa37fdZ4XFY
+kind: ConfigMap
+metadata:
+  name: dongtai-iast-config.ini
+  namespace: CHANGE_THIS_NAMESPACE
+---
+# dongtai-webapi服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-webapi
+  namespace: CHANGE_THIS_NAMESPACE
+  annotations:
+    kubesphere.io/description: dongtai-webapi接口
+  labels:
+    app: dongtai-webapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dongtai-webapi
+  template:
+    metadata:
+      labels:
+        app: dongtai-webapi
+    spec:
+      containers:
+        - name: dongtai-webapi-container
+          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:latest
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/dongtai/webapi/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-iast-config.ini
+      imagePullSecrets:
+        - name: dongtai-iast-image-registry-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dongtai-webapi-svc
+  namespace: CHANGE_THIS_NAMESPACE
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    app: dongtai-webapi
+  type: ClusterIP
+---
+# dongtai-openapi服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-openapi
+  namespace: CHANGE_THIS_NAMESPACE
+  annotations:
+    kubesphere.io/description: dongtai-openapi
+  labels:
+    app: dongtai-openapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dongtai-openapi
+  template:
+    metadata:
+      labels:
+        app: dongtai-openapi
+    spec:
+      containers:
+        - name: dongtai-openapi-container
+          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:latest
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/dongtai/openapi/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-iast-config.ini
+      imagePullSecrets:
+        - name: dongtai-iast-image-registry-secret
+---
+# dongtai-web服务
+apiVersion: v1
+kind: Service
+metadata:
+  name: dongtai-openapi-svc
+  namespace: CHANGE_THIS_NAMESPACE
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    app: dongtai-openapi
+  type: ClusterIP
+---
+# 创建nginx.conf配置
+apiVersion: v1
+data:
+  nginx.conf: |-
+    #user  nobody;
+     worker_processes  1;
+     events {
+         worker_connections  1024;
+     }
+     http {
+         include       mime.types;
+         default_type  application/octet-stream;
+         sendfile        on;
+         keepalive_timeout  65;
+
+         #gzip  on;
+         gzip on;
+         gzip_min_length  5k;
+         gzip_buffers     4 16k;
+         #gzip_http_version 1.0;
+         gzip_comp_level 3;
+         gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png;
+         gzip_vary on;
+
+         server {
+             listen  80;
+             server_name 127.0.0.1;
+             client_max_body_size 100M;
+             location / {
+                 root /usr/share/nginx/html;   #站点目录
+                 index index.html index.htm;   #添加属性。
+                 try_files $uri $uri/ /index.html;
+             }
+
+               location /api/ {
+                 proxy_read_timeout 60;
+                 proxy_pass http://dongtai-webapi-svc:80/api/;
+               }
+
+               location /upload/ {
+                 proxy_pass http://dongtai-webapi-svc:80/upload/;
+               }
+
+             location = /50x.html {
+                 root   /usr/share/nginx/html;
+             }
+         }
+     }
+kind: ConfigMap
+metadata:
+  name: dongtai-web-nginx-conf
+  namespace: CHANGE_THIS_NAMESPACE
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-web
+  namespace: CHANGE_THIS_NAMESPACE
+  annotations:
+    kubesphere.io/description: dongtai前端项目
+  labels:
+    app: dongtai-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dongtai-web
+  template:
+    metadata:
+      labels:
+        app: dongtai-web
+    spec:
+      containers:
+        - name: dongtai-web-container
+          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-web:latest
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: configfile
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-web-nginx-conf
+      imagePullSecrets:
+        - name: dongtai-iast-image-registry-secret
+---
+# dongtai-engine服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-engine
+  namespace: CHANGE_THIS_NAMESPACE
+  annotations:
+    kubesphere.io/description: dongtai-engine
+  labels:
+    app: dongtai-engine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dongtai-engine
+  template:
+    metadata:
+      labels:
+        app: dongtai-engine
+    spec:
+      containers:
+        - name: dongtai-engine-container
+          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/dongtai/engine/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-iast-config.ini
+      imagePullSecrets:
+        - name: dongtai-iast-image-registry-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dongtai-engine-svc
+  namespace: CHANGE_THIS_NAMESPACE
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    app: dongtai-engine
+  type: ClusterIP
+---
+#dongtai-engine-task服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-engine-task
+  namespace: CHANGE_THIS_NAMESPACE
+  annotations:
+    kubesphere.io/description: dongtai-engine-task
+  labels:
+    app: dongtai-engine-task
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dongtai-engine-task
+  template:
+    metadata:
+      labels:
+        app: dongtai-engine-task
+    spec:
+      containers:
+        - name: dongtai-engine-task-container
+          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
+          command: [ "/bin/bash","/opt/dongtai/engine/docker/entrypoint.sh" ]
+          args: [ "task" ]
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/dongtai/engine/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-iast-config.ini
+      imagePullSecrets:
+        - name: dongtai-iast-image-registry-secret

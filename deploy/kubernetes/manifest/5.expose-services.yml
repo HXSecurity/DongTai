@@ -1,0 +1,36 @@
+---
+# 使用NodePort方式暴露dongtai-web服务
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: dongtai-web
+  name: dongtai-web-pub-svc
+  namespace: CHANGE_THIS_NAMESPACE
+spec:
+  ports:
+    - port: 8009
+      protocol: TCP
+      targetPort: 80
+      nodePort: 32758
+  selector:
+    app: dongtai-web
+  type: NodePort
+---
+# 使用NodePort方式暴露dongtai-engine服务
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: dongtai-engine
+  name: dongtai-engine-pub-svc
+  namespace: CHANGE_THIS_NAMESPACE
+spec:
+  ports:
+    - port: 8000
+      protocol: TCP
+      targetPort: 8000
+      nodePort: 32759
+  selector:
+    app: dongtai-engine
+  type: NodePort
