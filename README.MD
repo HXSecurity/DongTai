@@ -1,6 +1,6 @@
 # DongTai
 [![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
-[![license GPL-3.0](https://img.shields.io/github/license/HXSecurity/DongTai-agent-java)](https://github.com/HXSecurity/DongTai-agent-java/blob/main/LICENSE)
+[![license Apache-2.0](https://img.shields.io/github/license/HXSecurity/DongTai-agent-java)](https://github.com/HXSecurity/DongTai-agent-java/blob/main/LICENSE)
 [![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://github.com/HXSecurity/DongTai)
 
 [![DongTai--webapi](https://img.shields.io/badge/DongTai--webapi-v1.0.0-lightgrey)](https://github.com/HXSecurity/DongTai-webapi)
@@ -33,7 +33,7 @@ The usage scenarios of "DongTai IAST" include but not limited to:
 - Security testing before release, etc.
 
 ## Quick start
-`DongTai IAST` supports **SaaS Service** and **Localized Deployment**. Please refer to [**Deployment Document**](https://github.com/HXSecurity/dongtai-deploy) for localized deployment.
+`DongTai IAST` supports **SaaS Service** and **Localized Deployment**. Please refer to [**Deployment Document**](./deploy) for localized deployment.
 
 ### 1. SaaS Version
   - Fill out the [Online Form](https://jinshuju.net/f/I9PNmf) to register an account.
@@ -44,13 +44,13 @@ The usage scenarios of "DongTai IAST" include but not limited to:
 
 > Please follow the instructions bellow to apply the localized deployment version 
 
-`DongTai IAST` supports a variety of deployment schemes which refer to [Deployment Document](https://github.com/HXSecurity/dongtai-deploy):
+`DongTai IAST` supports a variety of deployment schemes which refer to [Deployment Document](./deploy):
 
 - Stand-alone Deployment
-  - [x] [Docker-compose](https://github.com/HXSecurity/dongtai-deploy/tree/main/docker-compose)
+  - [x] [Docker-compose](./deploy/docker-compose)
   - [ ] docker - pending upgrade
 - Cluster Deployment
-  - [x] [Kubernetes](https://github.com/HXSecurity/dongtai-deploy/tree/main/kubernetes)
+  - [x] [Kubernetes](./deploy/kubernetes)
 
 #### Docker-compose
 ```shell script
