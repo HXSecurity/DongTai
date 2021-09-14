@@ -1,0 +1,61 @@
+version: "2"
+services:
+  dongtai-mysql:
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:1.0.3
+    restart: always
+    volumes:
+      - ./data:/var/lib/mysql:rw
+
+  dongtai-redis:
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:1.0.3
+    restart: always
+
+  dongtai-webapi:
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:1.0.3
+    restart: always
+    volumes:
+      - $PWD/config-tutorial.ini:/opt/dongtai/webapi/conf/config.ini:ro
+    depends_on:
+      - dongtai-mysql
+      - dongtai-redis
+
+  dongtai-web:
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-web:1.0.3
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - $PWD/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - dongtai-webapi
+
+  dongtai-openapi:
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:1.0.3
+    restart: always
+    volumes:
+       - $PWD/config-tutorial.ini:/opt/dongtai/openapi/conf/config.ini:ro
+    ports:
+      - "8000:8000"
+    depends_on:
+      - dongtai-mysql
+      - dongtai-redis
+
+  dongtai-engine:
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:1.0.3
+    restart: always
+    volumes:
+      - $PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini:ro
+    depends_on:
+      - dongtai-mysql
+      - dongtai-redis
+
+  dongtai-engine-task:
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:1.0.3
+    command: ["/opt/iast/engine/docker/entrypoint.sh", "task"]
+    restart: always
+    volumes:
+      - $PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini:ro
+    depends_on:
+      - dongtai-mysql
+      - dongtai-redis
+      - dongtai-engine

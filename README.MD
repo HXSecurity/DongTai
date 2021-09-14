@@ -1,6 +1,6 @@
 # DongTai
 [![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
-[![license GPL-3.0](https://img.shields.io/github/license/HXSecurity/DongTai-agent-java)](https://github.com/HXSecurity/DongTai-agent-java/blob/main/LICENSE)
+[![license Apache-2.0](https://img.shields.io/github/license/HXSecurity/DongTai-agent-java)](https://github.com/HXSecurity/DongTai-agent-java/blob/main/LICENSE)
 [![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://github.com/HXSecurity/DongTai)
 
 [![DongTai--webapi](https://img.shields.io/badge/DongTai--webapi-v1.0.0-lightgrey)](https://github.com/HXSecurity/DongTai-webapi)
@@ -21,7 +21,6 @@
 - `DongTai-openapi` is used to process the registration/heartbeat/call method/third-party component/error log data reported by `agent`, issue hook strategy, issue probe control commands, etc.
 - `DongTai-engine` analyzes whether there are vulnerabilities in HTTP/HTTPS/RPC requests according to the calling method data and taint tracking algorithm, and is also responsible for other related timing tasks.
 - `agent` is a probe module of DongTai, including data collection terminals in different programming languages, used to collect data during application runtime and report to the `DongTai-OpenAPI` service.
-- `DongTai-deploy` is used for the deployment of DongTai IAST, including docker-compose single-node deployment, Kubernetes cluster deployment, etc. If you want a deployment plan, you can add features or contribute to the deployment plan.
 - `DongTai-Base-Image` contains the basic services that DongTai depends on runtime, including MySql, Redis.
 - `DongTai-Plugin-IDEA` is the IDEA plug-in corresponding to the Java probe. You can run the Java probe directly through the plug-in and detect the vulnerabilities directly in IDEA.
 
@@ -33,7 +32,7 @@ The usage scenarios of "DongTai IAST" include but not limited to:
 - Security testing before release, etc.
 
 ## Quick start
-`DongTai IAST` supports **SaaS Service** and **Localized Deployment**. Please refer to [**Deployment Document**](https://github.com/HXSecurity/ dongtai-deploy) for localized deployment.
+`DongTai IAST` supports **SaaS Service** and **Localized Deployment**. Please refer to [**Deployment Document**](./deploy) for localized deployment.
 
 ### 1. SaaS Version
   - Fill out the [Online Form](https://jinshuju.net/f/I9PNmf) to register an account.
@@ -44,13 +43,13 @@ The usage scenarios of "DongTai IAST" include but not limited to:
 
 > Please follow the instructions bellow to apply the localized deployment version 
 
-`DongTai IAST` supports a variety of deployment schemes which refer to [Deployment Document](https://github.com/HXSecurity/dongtai-deploy):
+`DongTai IAST` supports a variety of deployment schemes which refer to [Deployment Document](./deploy):
 
 - Stand-alone Deployment
-  - [x] [Docker-compose](https://github.com/HXSecurity/dongtai-deploy/tree/main/docker-compose)
+  - [x] [Docker-compose](./deploy/docker-compose)
   - [ ] docker - pending upgrade
 - Cluster Deployment
-  - [x] [Kubernetes](https://github.com/HXSecurity/dongtai-deploy/tree/main/kubernetes)
+  - [x] [Kubernetes](./deploy/kubernetes)
 
 #### Docker-compose
 ```shell script
@@ -70,4 +69,4 @@ Any questions? Let's discuss in [#DongTai discussions](https://github.com/HXSecu
 
 ## Futher Resources
 - [Documentation](https://hxsecurity.github.io/DongTai-Doc)
-- [DongTai WebSite](https://iast.huoxian.cn)
+- [DongTai WebSite](https://iast.io)

@@ -1,6 +1,6 @@
 # DongTai
 [![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
-[![license GPL-3.0](https://img.shields.io/github/license/HXSecurity/DongTai-agent-java)](https://github.com/HXSecurity/DongTai-agent-java/blob/main/LICENSE)
+[![license Apache-2.0](https://img.shields.io/github/license/HXSecurity/DongTai-agent-java)](https://github.com/HXSecurity/DongTai-agent-java/blob/main/LICENSE)
 [![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://github.com/HXSecurity/DongTai)
 <br>
 [![DongTai--webapi](https://img.shields.io/badge/DongTai--webapi-v1.0.0-lightgrey)](https://github.com/HXSecurity/DongTai-webapi)
@@ -21,7 +21,6 @@ DongTai是一款开源的被动式交互式安全测试(IAST)产品，通过动�
 - `DongTai-openapi`用于处理`agent`上报的注册/心跳/调用方法/第三方组件/错误日志等数据，下发hook策略，下发探针控制指令等
 - `DongTai-engine`根据调用方法数据和污点跟踪算法分析HTTP/HTTPS/RPC请求中是否存在漏洞，同时负责其它相关的定时任务
 - `agent`是DongTai的探针模块，包含不同编程语言的数据采集端，用于采集应用运行时的数据并上报至`DongTai-OpenAPI`服务
-- `DongTai-deploy`用于洞态IAST的部署，包括docker-compose单节点部署、Kubernetes集群部署等，如果想要更多部署方案，可以提feature申请或贡献部署方案
 - `DongTai-Base-Image`包含洞态运行时依赖的基础服务，包括：MySql、Redis
 - `DongTai-Plugin-IDEA`是Java探针对应的IDEA插件，可通过插件直接运行Java探针，直接在IDEA中检测漏洞
 
@@ -33,7 +32,7 @@ DongTai是一款开源的被动式交互式安全测试(IAST)产品，通过动�
 - 上线前安全测试等
 
 ## 快速开始
-`洞态IAST`支持**SaaS服务**和**本地化部署**，本地化部署的详细部署方案见[**部署文档**](https://github.com/HXSecurity/dongtai-deploy)
+`洞态IAST`支持**SaaS服务**和**本地化部署**，本地化部署的详细部署方案见[**部署文档**](./deploy)
 
 ### 1. SaaS版本
   - 填写[在线问卷](https://jinshuju.net/f/I9PNmf)注册账号
@@ -44,13 +43,13 @@ DongTai是一款开源的被动式交互式安全测试(IAST)产品，通过动�
 
 > 本地化部署版本需要自行申请，申请方式见下文
 
-**洞态IAST**支持多种部署方案，可通过[部署文档](https://github.com/HXSecurity/dongtai-deploy)了解部署方案详情，方案如下：
+**洞态IAST**支持多种部署方案，可通过[部署文档](./deploy)了解部署方案详情，方案如下：
 
 - 单机版部署
-  - [x] [docker-compose部署](https://github.com/HXSecurity/dongtai-deploy/tree/main/docker-compose)
+  - [x] [docker-compose部署](./deploy/docker-compose)
   - [ ] docker部署方案 - 待更新
 - 集群版部署
-  - [x] [Kubernetes集群部署](https://github.com/HXSecurity/dongtai-deploy/tree/main/kubernetes)
+  - [x] [Kubernetes集群部署](./deploy/kubernetes)
 
 #### docker-compose部署
 ```shell script
@@ -69,4 +68,4 @@ $ ./build_with_docker_compose.sh
 
 ## 文档
 - [官方文档](https://hxsecurity.github.io/DongTai-Doc)
-- [官方网站](https://iast.huoxian.cn)
+- [官方网站](https://iast.io)
