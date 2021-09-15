@@ -8,16 +8,32 @@ import logging
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 
-from iast.base.project_version import version_modify
+from iast.base.project_version import version_modify, VersionModifySerializer
 from django.utils.translation import gettext_lazy as _
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
 
 logger = logging.getLogger("django")
+
+_ResponseSerializer = get_response_serializer(status_msg_keypair=(
+    ((202, _('Parameter error')), ''),
+    ((201, _('Created success')), ''),
+))
 
 
 class ProjectVersionAdd(UserEndPoint):
     name = "api-v1-project-version-add"
     description = _("New application version information")
 
+    @extend_schema_with_envcheck(
+        request=VersionModifySerializer,
+        tags=[_('Project')],
+        summary=_('Projects Delete'),
+        description=_(
+            """Create a new project according to the given conditions;
+            when specifying the APIViewroject id, update the item corresponding to the id according to the given condition."""
+        ),
+        response_schema=_ResponseSerializer,
+    )
     def post(self, request):
         try:
             result = version_modify(request.user, request.data)
