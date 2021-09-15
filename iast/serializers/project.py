@@ -15,10 +15,13 @@ from dongtai.utils import const
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    vul_count = serializers.SerializerMethodField()
-    owner = serializers.SerializerMethodField()
-    agent_count = serializers.SerializerMethodField()
-    agent_language = serializers.SerializerMethodField()
+    vul_count = serializers.SerializerMethodField(
+        help_text="Vulnerability Count")
+    owner = serializers.SerializerMethodField(help_text="Project owner")
+    agent_count = serializers.SerializerMethodField(
+        help_text="Project current surviving agent")
+    agent_language = serializers.SerializerMethodField(
+        help_text="Agent language currently included in the project")
     USER_MAP = {}
 
     class Meta:

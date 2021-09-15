@@ -2,6 +2,8 @@ import time
 from django.db.models import Q
 from dongtai.models.project_version import IastProjectVersion
 from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+
 
 
 def version_modify(user, versionData=None):
@@ -94,3 +96,13 @@ def get_project_version_by_id(version_id):
             "description": "",
         }
     return current_project_version
+
+
+
+class ProjectsVersionDataSerializer(serializers.Serializer):
+    description = serializers.CharField(
+        help_text=_("Description of the project"))
+    version_id = serializers.CharField(
+        help_text=_("The version id of the project"))
+    version_name = serializers.CharField(
+        help_text=_("The version name of the project"))

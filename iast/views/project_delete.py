@@ -4,25 +4,52 @@
 # software: PyCharm
 # project: lingzhi-webapi
 
+import logging
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from dongtai.models.agent import IastAgent
 from dongtai.models.project import IastProject
 from django.utils.translation import gettext_lazy as _
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from rest_framework import serializers
+
+class _ProjectsDelBodyArgsSerializer(serializers.Serializer):
+    id = serializers.IntegerField(help_text=_("The id of the project"))
+
+logger = logging.getLogger("django")
+_ResponseSerializer = get_response_serializer(status_msg_keypair=(
+    ((201, _('Application has been deleted successfully')), ''),
+    ((202, _('Failed to delete the project.')), ''),
+))
 
 
 class ProjectDel(UserEndPoint):
     name = "api-v1-project-del"
     description = _("Delete application")
 
+    @extend_schema_with_envcheck(
+        [],
+        request=_ProjectsDelBodyArgsSerializer,
+        tags=[_('Project')],
+        summary=_('Projects Delete'),
+        description=_(
+            """Create a new project according to the given conditions;
+            when specifying the APIViewroject id, update the item corresponding to the id according to the given condition."""
+        ),
+        response_schema=_ResponseSerializer,
+    )
     def post(self, request):
         try:
-            project_id = request.data['id']
+            project_id = request.data('id', None)
             if project_id:
                 auth_users = self.get_auth_users(request.user)
-                IastAgent.objects.filter(bind_project_id=project_id, user__in=auth_users).update(bind_project_id=0)
-                IastProject.objects.filter(id=project_id, user__in=auth_users).delete()
+                IastAgent.objects.filter(
+                    bind_project_id=project_id,
+                    user__in=auth_users).update(bind_project_id=0)
+                IastProject.objects.filter(id=project_id,
+                                           user__in=auth_users).delete()
 
             return R.success(msg=_('Application has been deleted successfully'))
         except Exception as e:
-            return R.failure(msg=e)
+            logger.error(e)
+            return R.failure(msg=_('Failed to delete the project.'))
