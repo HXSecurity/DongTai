@@ -4,6 +4,16 @@ from dongtai.models.project_version import IastProjectVersion
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
+class VersionModifySerializer(serializers.Serializer):
+    version_id = serializers.CharField(
+        help_text=_("The version id of the project"))
+    version_name = serializers.CharField(
+        help_text=_("The version name of the project"))
+    description = serializers.CharField(
+        help_text=_("Description of the project versoin"))
+    project_id = serializers.IntegerField(help_text=_("The id of the project"))
+    current_version = serializers.IntegerField(help_text=_(
+        "Whether it is the current version, 1 means yes, 0 means no."))
 
 
 def version_modify(user, versionData=None):
@@ -60,6 +70,7 @@ def version_modify(user, versionData=None):
             "description": description
         }
     }
+
 
 
 def get_project_version(project_id, auth_users):
