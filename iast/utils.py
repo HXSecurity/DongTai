@@ -35,7 +35,7 @@ def assemble_query(condictions: dict,
             map(
                 lambda kv_pair: {
                     '__'.join(filter(lambda x: x, [kv_pair[0], lookuptype])):
-                        kv_pair[1]
+                    kv_pair[1]
                 }, condictions)), base_query)
 
 
@@ -47,6 +47,7 @@ from django.utils.text import format_lazy
 def extend_schema_with_envcheck(querys: list = [],
                                 request_bodys: list = [],
                                 response_bodys: list = [],
+                                response_schema=None,
                                 **kwargs):
     def myextend_schema(func):
         import os
@@ -60,21 +61,65 @@ def extend_schema_with_envcheck(querys: list = [],
                 filter(lambda x: x, map(_filter_response_body,
                                         response_bodys)))
             examples = request_examples + response_examples
-            deco = extend_schema(
-                parameters=parameters,
-                examples=examples if examples else None,
-                request={'application/json': OpenApiTypes.OBJECT}
-                if request_examples else None,
-                responses={
-                    200: OpenApiResponse(description='', response=['???'])
-                } if response_examples else None ,
-                **kwargs)
+            if kwargs.get('request', None) and request_examples:
+                kwargs['request'] = {'application/json': OpenApiTypes.OBJECT}
+            elif isinstance(kwargs.get('request', None),
+                                SerializerMetaclass):
+                kwargs['request'] = {'application/json': kwargs['request']}
+            deco = extend_schema(parameters=parameters,
+                                 examples=examples if examples else None,
+                                 responses={
+                                     200:
+                                     OpenApiResponse(description='???',
+                                                     response=response_schema)
+                                 },
+                                 **kwargs)
             funcw = deco(func)
             funcw.querys = querys
             funcw.request_body = request_bodys if request_bodys else []
             return funcw
         return func
+
     return myextend_schema
+
+
+from rest_framework import serializers
+from django.utils.translation import gettext_lazy as _
+import uuid
+
+
+
+
+def get_response_serializer(data_serializer=None,
+                            msg_list=None,
+                            status_msg_keypair=None):
+    status_msg_keypair = (
+        ((201, 'success'),
+         'success'), ) if status_msg_keypair is None else status_msg_keypair
+    msg_list = list(
+        set(map(lambda x: x[1], map(lambda x: x[0], status_msg_keypair))))
+    status_list = list(
+        set(map(lambda x: x[0], map(lambda x: x[0], status_msg_keypair))))
+    msg_list = ['success'] if msg_list is None else msg_list
+    status_list = [201] if status_list is None else status_list
+    newclass = type(
+        str(uuid.uuid1()), (serializers.Serializer, ), {
+            'status':
+            serializers.IntegerField(default=201,
+                                     help_text=format_lazy(
+                                         "{} :" + "{} ; " * len(status_list),
+                                         *([_("status code")] + status_list))),
+            'msg':
+            serializers.CharField(
+                default='success',
+                help_text=format_lazy(
+                    "{} :" + "{} ; " * len(msg_list),
+                    *([_("human readable message")] + msg_list))),
+            'data':
+            data_serializer
+        })
+    return newclass
+
 
 
 def _filter_query(item):
@@ -97,6 +142,18 @@ def _filter_response_body(item):
     if isinstance(item, dict):
         item['response_only'] = True
         return OpenApiExample(**item)
+
+
+def _map_response_description(item):
+    """
+    struct like {(1,2):'3'}
+    """
+    key, value = item
+    return "{} : {} : {}".format(key[0], key[1], value)
+
+
+def _reduce_response_description(itema, itemb):
+    return "{} \n{} ".format(itema, itemb)
 
 
 def batch_queryset(queryset, batch_size=1):

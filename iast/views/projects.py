@@ -11,19 +11,37 @@ from dongtai.endpoint import UserEndPoint
 from dongtai.models.project import IastProject
 from iast.serializers.project import ProjectSerializer
 from django.utils.translation import gettext_lazy as _
-from iast.utils import extend_schema_with_envcheck
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from rest_framework import serializers
 
 logger = logging.getLogger("django")
+
+class _ProjectsArgsSerializer(serializers.Serializer):
+    page_size = serializers.IntegerField(default=20,
+                                         help_text=_('Number per page'))
+    page = serializers.IntegerField(default=1, help_text=_('Page index'))
+    name = serializers.CharField(
+        default=None,
+        help_text=_(
+            "The name of the item to be searched, supports fuzzy search."))
+
+
+_SuccessSerializer = get_response_serializer(ProjectSerializer(many=True))
 
 
 class Projects(UserEndPoint):
     name = "api-v1-projects"
     description = _("View item list")
 
-    @extend_schema_with_envcheck([{
-        'name': "name",
-        'type': str,
-    }])
+    @extend_schema_with_envcheck(
+        [_ProjectsArgsSerializer],
+        tags=[_('Project')],
+        summary=_('Projects List'),
+        description=
+        _("Get the item corresponding to the user, support fuzzy search based on name."
+          ),
+        response_schema=_SuccessSerializer,
+    )
     def get(self, request):
         page = request.query_params.get('page', 1)
         page_size = request.query_params.get('pageSize', 20)

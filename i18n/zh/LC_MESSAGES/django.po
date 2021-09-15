@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-09 20:14+0800\n"
+"POT-Creation-Date: 2021-09-14 20:27+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -178,7 +178,8 @@ msgid "{} Appears in {} {}"
 msgstr "{}出现在{}的{}"
 
 #: iast/base/project_version.py:11 iast/base/project_version.py:21
-#: iast/views/project_add.py:34 iast/views/project_add.py:73
+#: iast/views/project_add.py:36 iast/views/project_add.py:64
+#: iast/views/project_add.py:103 iast/views/project_add.py:144
 #: iast/views/project_report_export.py:59 iast/views/project_version_add.py:25
 #: iast/views/project_version_current.py:27
 #: iast/views/project_version_delete.py:24
@@ -236,13 +237,21 @@ msgid "Password should not be blank"
 msgstr "密码不能为空"
 
 #: iast/serializers/sca.py:36 iast/views/vul_details.py:166
-#: iast/views/vuls.py:214
+#: iast/views/vuls.py:257
 msgid "The application has not been binded"
 msgstr "暂未绑定项目"
 
 #: iast/serializers/sca.py:59
 msgid "No application version has been created"
 msgstr "暂未创建项目版本"
+
+#: iast/utils.py:102
+msgid "status_code"
+msgstr ""
+
+#: iast/utils.py:105
+msgid "human readable message"
+msgstr ""
 
 #: iast/views/agent.py:24
 msgid "Can't find relevant data"
@@ -324,7 +333,7 @@ msgstr "找不到对应部署文档"
 msgid "Agent deployment document"
 msgstr "Agent部署文档"
 
-#: iast/views/agent_deploy_doc.py:38 iast/views/vuls.py:124
+#: iast/views/agent_deploy_doc.py:38 iast/views/vuls.py:167
 msgid "No data"
 msgstr "暂无数据"
 
@@ -439,31 +448,33 @@ msgstr "成功删除{}条，删除失败{}条"
 msgid "API coverage rate obtained successfully"
 msgstr "API覆盖率获取成功"
 
-#: iast/views/documents.py:24 iast/views/sca_summary.py:37
-#: iast/views/scas.py:33 iast/views/vul_list_for_plugin.py:31
-#: iast/views/vul_sidebar_index.py:37 iast/views/vuls.py:40
+#: iast/views/documents.py:20 iast/views/projects.py:21
+#: iast/views/sca_summary.py:37 iast/views/scas.py:33
+#: iast/views/vul_list_for_plugin.py:31 iast/views/vul_sidebar_index.py:37
+#: iast/views/vuls.py:40
 msgid "Number per page"
 msgstr "每页数量"
 
-#: iast/views/documents.py:25 iast/views/sca_summary.py:30
-#: iast/views/scas.py:26 iast/views/vul_list_for_plugin.py:24
-#: iast/views/vul_sidebar_index.py:31 iast/views/vuls.py:33
+#: iast/views/documents.py:21 iast/views/projects.py:22
+#: iast/views/sca_summary.py:30 iast/views/scas.py:26
+#: iast/views/vul_list_for_plugin.py:24 iast/views/vul_sidebar_index.py:31
+#: iast/views/vuls.py:33
 msgid "Page index"
 msgstr "对应页码"
 
-#: iast/views/documents.py:27
+#: iast/views/documents.py:24
 msgid "Document's corresponding programming language"
 msgstr "文档对应的编程语言"
 
-#: iast/views/documents.py:32
+#: iast/views/documents.py:43
 msgid "Get documents"
 msgstr "获取文档"
 
-#: iast/views/documents.py:33
+#: iast/views/documents.py:44
 msgid "Get help documentation."
 msgstr "获取对应帮助文档."
 
-#: iast/views/documents.py:34
+#: iast/views/documents.py:45
 msgid "Documents"
 msgstr "文档"
 
@@ -511,7 +522,7 @@ msgstr "策略不存在"
 msgid "Strategy operation success, total {}"
 msgstr "策略操作成功，共{}条"
 
-#: iast/views/engine_hook_rule_status.py:86 iast/views/vul_status.py:78
+#: iast/views/engine_hook_rule_status.py:86 iast/views/vul_status.py:89
 msgid "Incorrect parameter"
 msgstr "参数不正确"
 
@@ -617,7 +628,7 @@ msgstr "导出失败，原因：日志ID不能为空"
 msgid "Log list"
 msgstr "日志列表"
 
-#: iast/views/logs.py:48 iast/views/vul_recheck.py:125
+#: iast/views/logs.py:48 iast/views/vul_recheck.py:148
 msgid "No permission to access"
 msgstr "无权限访问"
 
@@ -646,7 +657,8 @@ msgid "Current users have no permission to modify"
 msgstr "当前用户无权修改"
 
 #: iast/views/openapi.py:31 iast/views/openapi.py:34
-#: iast/views/project_add.py:111 iast/views/project_version_add.py:27
+#: iast/views/project_add.py:37 iast/views/project_add.py:141
+#: iast/views/project_version_add.py:27
 msgid "Created success"
 msgstr "创建成功"
 
@@ -662,17 +674,31 @@ msgstr "获取{}配置失败"
 msgid "Update {} failed"
 msgstr "更新{}失败"
 
-#: iast/views/project_add.py:25
-msgid "New application"
-msgstr "新增项目"
+#: iast/views/project_add.py:38 iast/views/project_add.py:114
+msgid "Agent has been bound by other application"
+msgstr "agent已被其他项目绑定"
 
-#: iast/views/project_add.py:58
+#: iast/views/project_add.py:39 iast/views/project_add.py:88
 msgid "Failed to create, the application name already exists"
 msgstr "创建失败，项目名称已存在"
 
-#: iast/views/project_add.py:84
-msgid "Agent has been bound by other application"
-msgstr "agent已被其他项目绑定"
+#: iast/views/project_add.py:45
+msgid "New application"
+msgstr "新增项目"
+
+#: iast/views/project_add.py:50 iast/views/projects.py:38
+#, fuzzy
+#| msgid "Id of Project"
+msgid "Project"
+msgstr "项目ID"
+
+#: iast/views/project_add.py:51
+msgid "Projects Add"
+msgstr ""
+
+#: iast/views/project_add.py:53
+msgid "12333"
+msgstr ""
 
 #: iast/views/project_delete.py:16
 msgid "Delete application"
@@ -826,32 +852,61 @@ msgstr "更新项目版本信息"
 msgid "Update completed"
 msgstr "更新成功"
 
-#: iast/views/projects.py:21
+#: iast/views/projects.py:26
+msgid "The name of the item to be searched, supports fuzzy search."
+msgstr ""
+
+#: iast/views/projects.py:34
 msgid "View item list"
 msgstr "查看项目列表"
 
-#: iast/views/sca_details.py:26 iast/views/sca_sidebar_index.py:44
-#: iast/views/sca_summary.py:85 iast/views/scas.py:83
+#: iast/views/projects.py:39
+msgid "Projects List"
+msgstr ""
+
+#: iast/views/projects.py:41
+msgid ""
+"Get the item corresponding to the user, support fuzzy search based on name."
+msgstr ""
+
+#: iast/views/sca_details.py:30 iast/views/sca_summary.py:90
+#: iast/views/scas.py:85 iast/views/vul_details.py:216
+#: iast/views/vul_status.py:46 iast/views/vul_summary.py:120
+#: iast/views/vulnerability_status.py:25 iast/views/vuls.py:109
+msgid "Get data sample"
+msgstr "获取数据样例"
+
+#: iast/views/sca_details.py:32 iast/views/sca_summary.py:92
+#: iast/views/scas.py:87 iast/views/vul_details.py:218
+#: iast/views/vul_status.py:48 iast/views/vul_summary.py:122
+#: iast/views/vulnerability_status.py:27 iast/views/vuls.py:111
+msgid ""
+"The aggregation results are programming language, risk level, vulnerability "
+"type, project"
+msgstr "聚合结果分别为编程语言，风险等级，漏洞类型，项目。"
+
+#: iast/views/sca_details.py:57 iast/views/sca_sidebar_index.py:44
+#: iast/views/sca_summary.py:130 iast/views/scas.py:121
 msgid "Component"
 msgstr "组件"
 
-#: iast/views/sca_details.py:27
+#: iast/views/sca_details.py:58
 msgid "Component Detail"
 msgstr "组件详情"
 
-#: iast/views/sca_details.py:29
+#: iast/views/sca_details.py:60
 msgid "Get the details of the corresponding component by specifying the id."
 msgstr "通过指定id来获取对应组件的详情"
 
-#: iast/views/sca_details.py:40
+#: iast/views/sca_details.py:72
 msgid "Components do not exist or no permission to access"
 msgstr "组件不存在或无权限访问"
 
-#: iast/views/sca_details.py:55
+#: iast/views/sca_details.py:88
 msgid "Current version stopped for maintenance or it is not a secure version"
 msgstr "当前版本已停止维护或暂无安全版本"
 
-#: iast/views/sca_details.py:67
+#: iast/views/sca_details.py:100
 msgid "Component information query failed"
 msgstr "组件信息查询失败"
 
@@ -868,7 +923,7 @@ msgstr "编程语言"
 msgid "Level of vulnerability"
 msgstr "漏洞等级"
 
-#: iast/views/sca_sidebar_index.py:39 iast/views/sca_summary.py:79
+#: iast/views/sca_sidebar_index.py:39 iast/views/sca_summary.py:81
 #: iast/views/scas.py:77 iast/views/vul_list_for_plugin.py:58
 #: iast/views/vul_sidebar_index.py:68 iast/views/vul_summary.py:113
 #: iast/views/vuls.py:102
@@ -907,21 +962,21 @@ msgstr "默认值为项目的当前版本。"
 msgid "Fuzzy keyword search field for package_name."
 msgstr "模糊搜索关键词，针对package_name字段"
 
-#: iast/views/sca_summary.py:86
+#: iast/views/sca_summary.py:131
 msgid "Component Summary (with project)"
 msgstr "组件概况（项目相关）"
 
-#: iast/views/sca_summary.py:88
+#: iast/views/sca_summary.py:133
 msgid ""
 "Use the specified project information to get the corresponding component "
 "summary"
 msgstr "使用指定项目信息获取对应的组件概况。"
 
-#: iast/views/scas.py:84
+#: iast/views/scas.py:122
 msgid "Component List (with project)"
 msgstr "组件列表（项目相关）"
 
-#: iast/views/scas.py:86
+#: iast/views/scas.py:124
 msgid ""
 "use the specified project information to obtain the corresponding component."
 msgstr "使用指定项目信息获取对应的组件。"
@@ -1053,10 +1108,11 @@ msgid "Updated is currently not allowed"
 msgstr "当前不允许更新"
 
 #: iast/views/vul_count_for_plugin.py:22 iast/views/vul_delete.py:24
-#: iast/views/vul_details.py:219 iast/views/vul_list_for_plugin.py:64
-#: iast/views/vul_recheck.py:148 iast/views/vul_sidebar_index.py:70
-#: iast/views/vul_status.py:44 iast/views/vul_summary.py:202
-#: iast/views/vulnerability_status.py:21 iast/views/vuls.py:106
+#: iast/views/vul_details.py:279 iast/views/vul_list_for_plugin.py:64
+#: iast/views/vul_recheck.py:92 iast/views/vul_recheck.py:171
+#: iast/views/vul_sidebar_index.py:70 iast/views/vul_status.py:55
+#: iast/views/vul_summary.py:202 iast/views/vulnerability_status.py:62
+#: iast/views/vuls.py:149
 msgid "Vulnerability"
 msgstr "漏洞"
 
@@ -1112,21 +1168,21 @@ msgstr "[{}] 污点调用图解析出错，原因：{}"
 msgid "Error analysis of Header, error message: {}"
 msgstr "header解析出错，错误原因：{}"
 
-#: iast/views/vul_details.py:144 iast/views/vul_details.py:236
+#: iast/views/vul_details.py:144 iast/views/vul_details.py:296
 msgid "[{}] Vulnerability information parsing error, error message: {}"
 msgstr "[{}] 漏洞信息解析出错，原因：{}"
 
-#: iast/views/vul_details.py:215
+#: iast/views/vul_details.py:275
 msgid "Vulnerability details query "
 msgstr "漏洞详情查询"
 
-#: iast/views/vul_details.py:217
+#: iast/views/vul_details.py:277
 msgid ""
 "Use the corresponding id of the vulnerability to query the details of the "
 "vulnerability"
 msgstr "使用漏洞对应的id来获取漏洞详情信息"
 
-#: iast/views/vul_details.py:237
+#: iast/views/vul_details.py:297
 msgid "Vulnerability data query error"
 msgstr "漏洞数据查询出错"
 
@@ -1147,59 +1203,59 @@ msgstr "漏洞列表（Agent相关）"
 msgid "Use the agent name to get the corresponding list of vulnerabilities"
 msgstr "使用agent名获取对应的漏洞列表"
 
-#: iast/views/vul_recheck.py:82
-msgid "IDS should not be empty"
-msgstr "ids不能为空"
-
-#: iast/views/vul_recheck.py:86
-msgid "IDS must be: Vulnerability ID, Vulnerability ID Format"
-msgstr "ids必须为：漏洞ID,漏洞ID 格式"
-
-#: iast/views/vul_recheck.py:100 iast/views/vul_recheck.py:170
-msgid "Handle success"
-msgstr "处理成功"
-
-#: iast/views/vul_recheck.py:104 iast/views/vul_request_replay.py:237
-msgid "Vulnerability replay error"
-msgstr "漏洞重放出错"
-
-#: iast/views/vul_recheck.py:122
-msgid ""
-"Current application has not been associated with probes and cannot be "
-"reproduced."
-msgstr "当前项目尚未关联探针，无法进行漏洞重放"
-
-#: iast/views/vul_recheck.py:128 iast/views/vul_recheck.py:190
-msgid "Batch playback error"
-msgstr "批量重放出错"
-
-#: iast/views/vul_recheck.py:137
+#: iast/views/vul_recheck.py:81 iast/views/vul_recheck.py:160
 msgid ""
 "available options are (\"all\",\"project\").\n"
 "                Corresponding to all or specific project respectively."
 msgstr "可选项有('all','project')。对应全部漏洞和指定项目的漏洞。"
 
-#: iast/views/vul_recheck.py:145
+#: iast/views/vul_recheck.py:89 iast/views/vul_recheck.py:168
 msgid ""
 "The corresponding id of the Project.\n"
 "            Only If the type is project, the projectId here will be used."
 msgstr "项目的对应id.只有在type参数为project时，该参数才会被使用"
 
-#: iast/views/vul_recheck.py:149
+#: iast/views/vul_recheck.py:93 iast/views/vul_recheck.py:172
 msgid "Vulnerability verification"
 msgstr "漏洞验证"
 
-#: iast/views/vul_recheck.py:150
+#: iast/views/vul_recheck.py:94 iast/views/vul_recheck.py:173
 msgid ""
 "Verify the user's corresponding vulnerabilities.\n"
 "            Need to specify the type"
 msgstr "验证用户对应的漏洞.需要指定验证行为的类型"
 
-#: iast/views/vul_recheck.py:185
+#: iast/views/vul_recheck.py:105
+msgid "IDS should not be empty"
+msgstr "ids不能为空"
+
+#: iast/views/vul_recheck.py:109
+msgid "IDS must be: Vulnerability ID, Vulnerability ID Format"
+msgstr "ids必须为：漏洞ID,漏洞ID 格式"
+
+#: iast/views/vul_recheck.py:123 iast/views/vul_recheck.py:193
+msgid "Handle success"
+msgstr "处理成功"
+
+#: iast/views/vul_recheck.py:127 iast/views/vul_request_replay.py:237
+msgid "Vulnerability replay error"
+msgstr "漏洞重放出错"
+
+#: iast/views/vul_recheck.py:145
+msgid ""
+"Current application has not been associated with probes and cannot be "
+"reproduced."
+msgstr "当前项目尚未关联探针，无法进行漏洞重放"
+
+#: iast/views/vul_recheck.py:151 iast/views/vul_recheck.py:213
+msgid "Batch playback error"
+msgstr "批量重放出错"
+
+#: iast/views/vul_recheck.py:208
 msgid "Item ID should not be empty"
 msgstr "项目ID不能为空"
 
-#: iast/views/vul_recheck.py:186
+#: iast/views/vul_recheck.py:209
 msgid "Incorrect format parameter"
 msgstr "参数格式不正确"
 
@@ -1281,11 +1337,11 @@ msgstr ""
 msgid "Update vulnerability status with status name."
 msgstr "漏洞列表（Agent相关）"
 
-#: iast/views/vul_status.py:45
+#: iast/views/vul_status.py:56
 msgid "Vulnerability Status Modify"
 msgstr "漏洞状态修改"
 
-#: iast/views/vul_status.py:46
+#: iast/views/vul_status.py:57
 msgid ""
 "Modify the vulnerability status of the specified id. \n"
 "        The status is specified by the following two parameters. \n"
@@ -1297,7 +1353,7 @@ msgstr ""
 "修改指定id的漏洞状态，状态由以下两个参数指定，status对应状态名词，status_id对"
 "应状态的id，均可由漏洞状态列表API获得，优先使用status_id"
 
-#: iast/views/vul_status.py:73
+#: iast/views/vul_status.py:84
 msgid "Vulnerability status is modified to {}"
 msgstr "漏洞状态修改为{}"
 
@@ -1313,16 +1369,6 @@ msgstr "状态名"
 msgid "Id of status"
 msgstr "状态ID"
 
-#: iast/views/vul_summary.py:120
-msgid "Get data sample"
-msgstr "获取数据样例"
-
-#: iast/views/vul_summary.py:122
-msgid ""
-"The aggregation results are programming language, risk level, vulnerability "
-"type, project"
-msgstr "聚合结果分别为编程语言，风险等级，漏洞类型，项目。"
-
 #: iast/views/vul_summary.py:203
 msgid "Vulnerability Summary"
 msgstr "漏洞概览"
@@ -1333,11 +1379,11 @@ msgid ""
 "vulnerabilities in the project."
 msgstr "使用下列条件来查看项目的漏洞数量统计"
 
-#: iast/views/vulnerability_status.py:22
+#: iast/views/vulnerability_status.py:63
 msgid "Vulnerability Status List"
 msgstr "漏洞状态列表"
 
-#: iast/views/vulnerability_status.py:24
+#: iast/views/vulnerability_status.py:65
 msgid ""
 "Vulnerability status list, which contains the optional status of "
 "vulnerabilities. \n"
@@ -1347,11 +1393,11 @@ msgstr ""
 "漏洞状态列表，里面包含了漏洞的可选状态，调用漏洞状态修改api时请先从此API获取"
 "漏洞状态数据。"
 
-#: iast/views/vuls.py:107
+#: iast/views/vuls.py:150
 msgid "Vulnerability List (with project)"
 msgstr "漏洞列表（项目相关）"
 
-#: iast/views/vuls.py:109
+#: iast/views/vuls.py:152
 msgid "Get the list of vulnerabilities corresponding to the project"
 msgstr "获取项目对应的漏洞列表"
 
