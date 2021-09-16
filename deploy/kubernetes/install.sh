@@ -131,10 +131,10 @@ start_deploy(){
 
 expose_services(){
   if [ "$ACCESS_TYPE" == "NodePort" ];then
-     kubectl expose deployments/dongtai-web --name=dongtai-web-pub-svc  --port=80 --target-port=80 -n "$NAMESPACE" --type=NodePort
+     kubectl expose deployments/dongtai-web --name=dongtai-web-pub-svc  --port=8000 --target-port=80 -n "$NAMESPACE" --type=NodePort
      kubectl expose deployments/dongtai-openapi --name=dongtai-openapi-pub-svc  --port=8000 --target-port=8000 -n "$NAMESPACE" --type=NodePort
   elif [ "$ACCESS_TYPE" == "LoadBalancer" ]; then
-     kubectl expose deployments/dongtai-web --name=dongtai-web-pub-svc  --port=80 --target-port=80 -n d"$NAMESPACE" --type=LoadBalancer
+     kubectl expose deployments/dongtai-web --name=dongtai-web-pub-svc  --port=8000 --target-port=80 -n "$NAMESPACE" --type=LoadBalancer
      kubectl expose deployments/dongtai-openapi --name=dongtai-openapi-pub-svc  --port=8000 --target-port=8000 -n "$NAMESPACE" --type=LoadBalancer
   fi
 }
