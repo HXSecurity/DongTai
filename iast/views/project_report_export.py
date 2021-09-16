@@ -19,7 +19,15 @@ from dongtai.models.project import IastProject
 from dongtai.models.vul_level import IastVulLevel
 from webapi.settings import MEDIA_ROOT
 from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
 
+class _ProjectReportExportQuerySerializer(serializers.Serializer):
+    vid = serializers.CharField(
+        help_text=_("The version id of the project"))
+    pname = serializers.CharField(
+        help_text=_("The name of the project"))
+    pid = serializers.IntegerField(help_text=_("The id of the project"))
 
 class ProjectReportExport(UserEndPoint):
     name = 'api-v1-word-maker'
@@ -45,6 +53,14 @@ class ProjectReportExport(UserEndPoint):
     def create_report():
         pass
 
+    @extend_schema_with_envcheck(
+        [_ProjectReportExportQuerySerializer],
+        tags=[_('Project')],
+        summary=_('Projects Report Export'),
+        description=
+        _("According to the conditions, export the report of the specified project or the project of the specified vulnerability."
+          ),
+    )
     def get(self, request):
         timestamp = time.time()
         try:
@@ -105,12 +121,12 @@ class ProjectReportExport(UserEndPoint):
             document.styles.add_style('TitleThree', WD_STYLE_TYPE.PARAGRAPH).font.name = 'Arial'
             document.styles.add_style('TitleFour', WD_STYLE_TYPE.PARAGRAPH).font.name = 'Arial'
 
-            
+
             document.add_heading(u'%s' % project.name, 0)
 
-            
+
             document.add_heading(u'%s' % project.mode, 2)
-            
+
             timeArray = time.localtime(project.latest_time)
             otherStyleTime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
 
@@ -129,15 +145,15 @@ class ProjectReportExport(UserEndPoint):
 
             document.add_page_break()
 
-            
+
             oneTitle = document.add_paragraph()
             oneTitle.add_run(_(u'First, project information')).font.name = 'Arial'
             oneTitle.style = "TitleOne"
-            
+
             table = document.add_table(rows=1, cols=2, style='Table Grid')
-            
+
             hdr_cells = table.rows[0].cells
-            
+
             new_cells = table.add_row().cells
             new_cells[0].text = _('Application name')
             new_cells[1].text = project.name
@@ -156,7 +172,7 @@ class ProjectReportExport(UserEndPoint):
             new_cells = table.add_row().cells
             new_cells[0].text = _('Latest time')
             new_cells[1].text = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
-            
+
             levelInfo = IastVulLevel.objects.all()
 
             levelNameArr = {}
@@ -165,16 +181,16 @@ class ProjectReportExport(UserEndPoint):
                 for level_item in levelInfo:
                     levelNameArr[level_item.name_value] = level_item.id
                     levelIdArr[level_item.id] = level_item.name_value
-            
+
             count_result = get_vul_count_by_agent(agent_ids, vid, user)
-            
-            
+
+
             type_summary = count_result['type_summary']
-            
+
             levelCount = count_result['levelCount']
-            
+
             vulDetail = count_result['vulDetail']
-            
+
             oneTitle = document.add_paragraph()
             oneTitle.add_run(_(u'Second, the result analysis'))
             oneTitle.style = "TitleOne"
@@ -192,26 +208,26 @@ class ProjectReportExport(UserEndPoint):
             twoTitle = document.add_paragraph()
             twoTitle.add_run(_(u'2.2 Distribution of Vulnerability'))
             twoTitle.style = "TitleTwo"
-            
+
             table = document.add_table(rows=1, cols=3, style='Table Grid')
-            
+
             hdr_cells = table.rows[0].cells
-            
-            
+
+
             hdr_cells[0].text = _('Severity levels')
             hdr_cells[1].text = _('Vulnerability type name')
             hdr_cells[2].text = _('Number')
             if type_summary:
                 for type_item in type_summary:
-                    
+
                     new_cells = table.add_row().cells
                     new_cells[0].text = levelIdArr[type_item['type_level']]
                     new_cells[1].text = type_item['type_name']
                     new_cells[2].text = str(type_item['type_count'])
 
-            
+
             document.add_page_break()
-            
+
             twoTitle = document.add_paragraph()
             twoTitle.add_run(_(u'2.3 Vulnerability details'))
             twoTitle.style = "TitleTwo"
@@ -221,11 +237,11 @@ class ProjectReportExport(UserEndPoint):
             # rn.font.name = 'Arial'
             # rn.font.size = Pt(10)
 
-            
+
             if vulDetail:
                 type_ind = 1
                 for vul in vulDetail.keys():
-                    
+
                     threeTitle = document.add_paragraph()
                     threeTitle.add_run(u'%s(%s)' % ("2.3." + str(type_ind) + "  " + vul, len(vulDetail[vul])))
                     threeTitle.style = "TitleThree"
@@ -237,7 +253,7 @@ class ProjectReportExport(UserEndPoint):
                             p.style = "TitleFour"
                             ind = ind + 1
                             document.add_heading(_(u'Summary'), level=4)
-                            
+
                             table = document.add_table(rows=1, cols=2, style='Table Grid')
                             new_cells = table.add_row().cells
                             new_cells[0].text = _("Severity level")
@@ -263,7 +279,7 @@ class ProjectReportExport(UserEndPoint):
                                 for item in one['detail_data']:
                                     document.add_paragraph(u'%s' % item)
                     type_ind = type_ind + 1
-            
+
             document.styles['TitleOne'].font.size = Pt(20)
             document.styles['TitleOne'].font.name = "Arial"
             document.styles['TitleTwo'].font.size = Pt(18)
