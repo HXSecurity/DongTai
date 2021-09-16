@@ -1,18 +1,6 @@
-# 拉取代码
-downloa_deploy_repo(){
-	echo "\033[33m[+] check Repo[deploy] status\033[0m"
-	git submodule status doc|grep "(" 1>/dev/null
-	if [ $? -ne 0 ]; then
-		echo "\033[31m[-] Repo[deploy] initialing...\033[0m"
-		git submodule init deploy
-	else
-		echo "\033[32m[*]\033[0m Repo[deploy] is initialized."
-	fi
+# download source code
 
-	git submodule update deploy
-}
-
-# 检查docker容器是否启动
+# Check if the Docker service is turned on
 check_docker(){
 	echo "\n\033[33m[+] check docker servie status\033[0m"
 	docker ps 1>/dev/null 2>/dev/null
@@ -25,7 +13,7 @@ check_docker(){
 	fi
 }
 
-# 检查端口是否被占用，如果占用，发出提示并告知如何修改端口
+# Specify the port of Web, OpenAPI service and check whether it is available
 check_port(){
 	echo "\n\033[33m[+] check port status\033[0m"
 
@@ -43,7 +31,7 @@ check_port(){
 		exit
 	fi
 
-	read -p "[+] please input web service port, default [8000]:" OPENAPI_SERVICE_PORT
+	read -p "[+] please input openAPI service port, default [8000]:" OPENAPI_SERVICE_PORT
 	if [ -z $OPENAPI_SERVICE_PORT ];then
 		OPENAPI_SERVICE_PORT=8000
 	fi
@@ -130,7 +118,6 @@ build_dongtai_iast(){
 	echo "\n\033[32m[*] start DongTai IAST service, please wait 30s\033[0m"
 }
 
-downloa_deploy_repo
 check_docker
 check_port
 build_dongtai_iast

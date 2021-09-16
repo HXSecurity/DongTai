@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: CHANGE_THIS_NAMESPACE
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest
+          name: mysql-container
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3306
+              name: mysql
+      imagePullSecrets:
+        - name: dongtai-iast-image-registry-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dongtai-mysql
+  namespace: CHANGE_THIS_NAMESPACE
+  labels:
+    app: mysql
+spec:
+  selector:
+    app: mysql
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
