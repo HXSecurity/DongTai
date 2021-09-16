@@ -27,11 +27,11 @@ class ProjectVersionAdd(UserEndPoint):
     @extend_schema_with_envcheck(
         request=VersionModifySerializer,
         tags=[_('Project')],
-        summary=_('Projects Delete'),
-        description=_(
-            """Create a new project according to the given conditions;
-            when specifying the APIViewroject id, update the item corresponding to the id according to the given condition."""
-        ),
+        summary=_('Projects Version Add'),
+        description=
+        _("""Add project version information according to the given conditions;
+            if the version id is specified, the corresponding version information is updated according to the given conditions."""
+          ),
         response_schema=_ResponseSerializer,
     )
     def post(self, request):
