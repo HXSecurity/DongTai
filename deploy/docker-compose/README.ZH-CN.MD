@@ -6,11 +6,16 @@
 
 ### 部署流程
 
-执行`install.sh`启动环境安装。用法: `./install.sh`, 例如：
+#### 自定义配置(可选)
+如需修改mysql和redis的配置，需要手动修改 `config-tutorial.ini`文件内的`[mysql]`和`[redis]`部分配置。
+修改完成后,在下述的部署过程选择skip相应的组件.
 
-    ```shell script
-       ./install.sh
-    ```
+#### 部署
 
-环境启动成功后，通过80端口访问即可。
+```
+./install.sh  -s mysql
+```
+s: 跳过的资源(skip)，可选： `mysql` `redis`  `mysql,redis`，默认：不跳过
+
+环境启动成功后，通过安装过程中指定的`web service port`访问即可。
 
