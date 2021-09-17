@@ -66,6 +66,8 @@ INSTALLED_APPS = [
     'iast',
     'modeltranslation',
 ]
+
+
 MODELTRANSLATION_LANGUAGES = ('en', 'zh')
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'zh'
 REST_FRAMEWORK = {
@@ -132,7 +134,8 @@ AGENT_UPGRADE_URL = "https://www.huoxian.cn"
 
 
 CORS_ORIGIN_REGEX_WHITELIST = [
-    r"^https://\w+\.huoxian.cn:(\:\d+)?$"
+    r"^https://\w+\.huoxian.cn:(\:\d+)?$",
+    r"^https://\w+\.dongtai.io:(\:\d+)?$",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
