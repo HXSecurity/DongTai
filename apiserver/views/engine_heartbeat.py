@@ -9,6 +9,7 @@ import logging
 from dongtai.models.engine_heartbeat import IastEngineHeartbeat
 
 from dongtai.endpoint import OpenApiEndPoint, R
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("dongtai.openapi")
 
@@ -42,10 +43,10 @@ class EngineHeartBeatEndPoint(OpenApiEndPoint):
                 methodpoolcount=data['methodPoolCount'],
                 timestamp=data['timestamp'],
             )
-            logger.info(f'【{client_ip}】心跳数据处理成功')
+            logger.info(_('[{}] Heartbeat data is successful').format(client_ip))
             return R.success(data=data)
         except Exception as e:
-            logger.error(f'心跳数据处理失败，错误原因：{e}')
+            logger.error(_('Heartbeat data failed, error reason: {}').format(e))
             return R.failure()
 
     @staticmethod
@@ -58,5 +59,6 @@ class EngineHeartBeatEndPoint(OpenApiEndPoint):
                 ip = request.META['REMOTE_ADDR']
             return ip
         except Exception as e:
-            logger.error(f'客户端IP获取失败，原因：{e}')
+            logger.error(
+                _('Client IP acquisition failed, reasons: {}').format(e))
             return ''

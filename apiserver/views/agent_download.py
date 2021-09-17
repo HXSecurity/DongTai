@@ -11,6 +11,7 @@ import uuid, logging
 from django.http import FileResponse
 from dongtai.endpoint import OpenApiEndPoint, R
 from rest_framework.authtoken.models import Token
+from django.utils.translation import gettext_lazy as _
 
 from apiserver.utils import OssDownloader
 
@@ -44,7 +45,7 @@ class JavaAgentDownload():
                 )
             return True
         except Exception as e:
-            logger.error(f'agent配置文件创建失败，原因：{e}')
+            logger.error(_('Agent configuration file creation failed, reason: {E}').format(e))
             return False
 
     @staticmethod
@@ -190,5 +191,7 @@ class AgentDownload(OpenApiEndPoint):
             else:
                 return R.failure(msg="agent file not exit.")
         except Exception as e:
-            logger.error(f'agent下载失败，用户: {request.user.get_username()}，错误详情：{e}')
+            logger.error(
+                _('Agent download failed, user: {}, error details: {}').format(
+                    request.user.get_username()), e)
             return R.failure(msg="agent file not exit.")

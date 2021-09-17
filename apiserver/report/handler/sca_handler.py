@@ -14,6 +14,7 @@ from dongtai.models.sca_maven_db import ScaMavenDb
 from dongtai.models.sca_vul_db import ScaVulDb
 from dongtai.models.vul_level import IastVulLevel
 from dongtai.utils import const
+from django.utils.translation import gettext_lazy as _
 
 from apiserver.report.handler.report_handler_interface import IReportHandler
 from apiserver.report.report_handler_factory import ReportHandler
@@ -33,7 +34,7 @@ class ScaHandler(IReportHandler):
     def save(self):
         if all([self.agent_id, self.package_path, self.package_name, self.package_signature,
                 self.package_algorithm]) is False:
-            logger.warning(f"数据不完整，数据：{json.dumps(self.report)}")
+            logger.warning(_("Data is incomplete, data: {}").format(json.dumps(self.report)))
         else:
             if self.agent:
                 smd = ScaMavenDb.objects.filter(sha_1=self.package_signature).values("version", "aql").first()
@@ -81,4 +82,4 @@ class ScaHandler(IReportHandler):
                             agent=self.agent
                         )
                 except Exception as e:
-                    logger.error(f'sca数据解析失败，原因：{e}')
+                    logger.error(_('SCA data resolution failed, reasons: {}').format(e))
