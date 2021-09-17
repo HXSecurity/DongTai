@@ -170,7 +170,8 @@ LOGGING = {
             'filename': os.path.join(BASE_DIR, 'logs/openapi.log'),
             'backupCount': 5,
             'maxBytes': 1024 * 1024 * 10,
-            'formatter': 'verbose'
+            'formatter': 'verbose',
+            'encoding':'utf8',
         },
     },
     'loggers': {

@@ -13,6 +13,7 @@ from dongtai.utils import const
 
 from apiserver.report.handler.report_handler_interface import IReportHandler
 from apiserver.report.report_handler_factory import ReportHandler
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -34,6 +35,6 @@ class ErrorLogHandler(IReportHandler):
                 state='已上报',
                 dt=int(time.time())
             )
-            logger.info('错误日志报告保存成功')
+            logger.info(_('Error log report saving success'))
         except Exception as e:
-            logger.info('错误日志报告保存失败，原因：%s', e)
+            logger.info(_('Error log report saves failed, why: {}').format(e))

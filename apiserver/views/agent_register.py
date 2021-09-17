@@ -13,6 +13,7 @@ from dongtai.models.project import IastProject
 from dongtai.models.project_version import IastProjectVersion
 from dongtai.models.server import IastServer
 from rest_framework.request import Request
+from django.utils.translation import gettext_lazy as _
 
 from dongtai.endpoint import OpenApiEndPoint, R
 from apiserver.decrypter import parse_data
@@ -113,7 +114,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         try:
             port = int(server_port)
         except Exception as e:
-            logger.error(f'服务器端口不存在，已设置为默认值：0')
+            logger.error(_('The server port does not exist, has been set to the default: 0'))
             port = 0
 
         server_id = agent.server_id
@@ -149,7 +150,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             )
             agent.server_id = server.id
             agent.save(update_fields=['server_id'])
-            logger.info(f'服务器记录创建成功')
+            logger.info(_('Server record creation success'))
 
     def post(self, request: Request):
         """

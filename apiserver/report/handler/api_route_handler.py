@@ -66,9 +66,9 @@ class ApiRouteHandler(IReportHandler):
                         IastApiResponse.objects.create(**response_obj)
                     except Exception as e:
                         print(e)
-                logger.info(_('API导航日志记录成功'))
+                logger.info(_('API navigation log record successfully'))
         except Exception as e:
-            logger.info(_('API导航日志失败，原因:{}').format(e))
+            logger.info(_('API navigation log failed, why: {}').format(e))
 
 
 def _data_dump(item):

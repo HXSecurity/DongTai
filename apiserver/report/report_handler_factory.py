@@ -5,6 +5,7 @@
 # software: PyCharm
 # project: webapi
 import logging
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -25,7 +26,7 @@ class ReportHandler:
             report_type = reports.get('type')
             class_of_handler = ReportHandler.HANDLERS.get(report_type)
             if class_of_handler is None:
-                logger.error(f'报告类型{report_type}的处理程序不存在')
+                logger.error(_('Report type {} handler does not exist').format(report_type))
                 return None
             return class_of_handler().handle(reports, user)
         except Exception as e:
@@ -35,7 +36,8 @@ class ReportHandler:
     @classmethod
     def register(cls, handler_name):
         def wrapper(handler):
-            logger.info(f'注册报告类型{handler_name}的处理程序{handler.__name__}')
+            logger.info(
+                _('Registration report type {} handler {}').format(handler_name, handler.__name__))
             if handler_name not in cls.HANDLERS:
                 cls.HANDLERS[handler_name] = handler
             return handler
