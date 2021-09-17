@@ -103,3 +103,11 @@ class ProjectEngineSerializer(serializers.ModelSerializer):
     class Meta:
         model = IastAgent
         fields = ['id', 'token', 'is_core_running']
+
+
+
+class AgentToggleArgsSerializer(serializers.Serializer):
+    id = serializers.CharField(help_text=_(
+        'The id corresponding to the agent.'))
+    ids = serializers.CharField(help_text=_(
+        'The id corresponding to the agent, use"," for segmentation.'))
