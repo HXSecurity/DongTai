@@ -1,23 +1,18 @@
 version: "2"
 services:
-  dongtai-mysql:
+  dongtai-mysql: 
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest
     restart: always
     volumes:
       - ./data:/var/lib/mysql:rw
-
   dongtai-redis:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:latest
     restart: always
-
   dongtai-webapi:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:latest
     restart: always
     volumes:
       - $PWD/config-tutorial.ini:/opt/dongtai/webapi/conf/config.ini
-    depends_on:
-      - dongtai-mysql
-      - dongtai-redis
 
   dongtai-web:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-web:latest
@@ -36,18 +31,13 @@ services:
        - $PWD/config-tutorial.ini:/opt/dongtai/openapi/conf/config.ini
     ports:
       - "8000:8000"
-    depends_on:
-      - dongtai-mysql
-      - dongtai-redis
 
   dongtai-engine:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
     restart: always
     volumes:
       - $PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini
-    depends_on:
-      - dongtai-mysql
-      - dongtai-redis
+
 
   dongtai-engine-task:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
@@ -56,6 +46,4 @@ services:
     volumes:
       - $PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini
     depends_on:
-      - dongtai-mysql
-      - dongtai-redis
       - dongtai-engine
