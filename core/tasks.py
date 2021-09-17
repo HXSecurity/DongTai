@@ -438,7 +438,10 @@ def update_sca():
 
 
 def is_alive(agent_id, timestamp):
-    return IastHeartbeat.objects.values('id').filter(agent__id=agent_id, dt__gt=(timestamp - 60 * 20)).exists()
+    """
+    Whether the probe is alive or not, the judgment condition: there is a heartbeat log within 2 minutes
+    """
+    return IastHeartbeat.objects.values('id').filter(agent__id=agent_id, dt__gt=(timestamp - 60 * 2)).exists()
 
 
 @shared_task(queue='dongtai-periodic-task')
@@ -450,7 +453,7 @@ def update_agent_status():
     logger.info(f'检测引擎状态更新开始')
     timestamp = int(time.time())
     try:
-        running_agents = IastAgent.objects.values("id").filter(is_running=1)
+        running_agents = IastAgent.objects.values("id").filter(online=1)
         is_stopped_agents = list()
         for agent in running_agents:
             agent_id = agent['id']
