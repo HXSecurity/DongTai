@@ -10,10 +10,7 @@ from dongtai.models.agent import IastAgent
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
-
-class AgentInstallArgsSerializer(serializers.Serializer):
-    id = serializers.CharField(help_text=_(
-        'The id corresponding to the agent.'))
+from iast.serializers.agent import AgentInstallArgsSerializer
 
 
 _ResponseSerializer = get_response_serializer(status_msg_keypair=(

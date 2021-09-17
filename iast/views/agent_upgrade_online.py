@@ -15,8 +15,11 @@ from iast.utils import extend_schema_with_envcheck, get_response_serializer
 
 
 class AgentUpgradeArgsSerializer(serializers.Serializer):
-    url = serializers.CharField(required=False)
-    token = serializers.CharField(required=False)
+    url = serializers.CharField(
+        help_text=_('The resource link corresponding to the Agent.'))
+    token = serializers.CharField(help_text=_(
+        'The Token corresponding to the user is the same as when connecting to openapi.'
+    ))
 
 
 _ResponseSerializer = get_response_serializer(status_msg_keypair=(
@@ -36,7 +39,7 @@ class AgentUpgradeOnline(TalentAdminEndPoint):
     @extend_schema_with_envcheck(request=AgentUpgradeArgsSerializer,
                                  tags=[_('Agent')],
                                  summary=_('Agent Upgrade Online'),
-                                 description=_(""),
+                                 description=_("Agent upgrade"),
                                  response_schema=_ResponseSerializer)
     def post(self, request):
         url = request.data['url']
