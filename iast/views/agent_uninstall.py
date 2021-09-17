@@ -8,12 +8,27 @@ import time
 from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.agent import IastAgent
 from django.utils.translation import gettext_lazy as _
+from iast.serializers.agent import AgentInstallArgsSerializer
+from rest_framework import serializers
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
 
+_ResponseSerializer = get_response_serializer(status_msg_keypair=(
+    ((201, _('Uninstalling ...')), ''),
+    ((202, _('The engine is being installed or uninstalled, please try again later')), ''),
+    ((202, _('Engine does not exist or no permission to access')),
+     ''),
+))
 
 class AgentUninstall(UserEndPoint):
     name = "api-v1-agent-uninstall"
     description = _("Uninstall Agent")
 
+    @extend_schema_with_envcheck(
+        request=AgentInstallArgsSerializer,
+        tags=[_('Agent')],
+        summary=_('Agent Uninstall'),
+        description=_("Uninstall the running agent by specifying the id."),
+        response_schema=_ResponseSerializer)
     def post(self, request):
         agent_id = request.data.get('id')
         agent = IastAgent.objects.filter(user=request.user, id=agent_id).first()
