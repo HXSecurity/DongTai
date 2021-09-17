@@ -18,14 +18,33 @@ from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.models.agent import IastAgent
 from dongtai.models.agent_method_pool import MethodPool
 from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
 
 logger = logging.getLogger('dongtai-webapi')
+class AgentDeleteQuerysSerializer(serializers.Serializer):
+    ids = serializers.CharField(help_text=_(
+        'The id corresponding to the agent, use"," for segmentation.'))
+
+
+_ResponseSerializer = get_response_serializer(status_msg_keypair=(
+    ((201, _('Deleted Successfully')), ''),
+    ((201, _('Deletion failed')), ''),
+    ((201, _('Successfully deleted {} strips, failed to deleted {} strips')),
+     ''),
+))
 
 
 class AgentsDeleteEndPoint(UserEndPoint):
     name = "api-v1-agent-<pk>-delete"
     description = _("Delete Agent")
 
+    @extend_schema_with_envcheck(
+        [AgentDeleteQuerysSerializer],
+        tags=[_('Agent')],
+        summary=_('Agent Delete batch'),
+        description=_("Stop the running agent by specifying the id."),
+        response_schema=_ResponseSerializer)
     def get(self, request):
         agent_ids = request.GET.get('ids')
         agent_ids = agent_ids.split(',')
@@ -117,7 +136,7 @@ class AgentsDeleteEndPoint(UserEndPoint):
 
 
 if __name__ == '__main__':
-    
+
     MethodPool.objects.count()
     IastErrorlog.objects.count()
     IastHeartbeat.objects.count()

@@ -8,12 +8,31 @@ import time
 from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.agent import IastAgent
 from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
 
+class AgentInstallArgsSerializer(serializers.Serializer):
+    id = serializers.CharField(help_text=_(
+        'The id corresponding to the agent.'))
+
+
+_ResponseSerializer = get_response_serializer(status_msg_keypair=(
+    ((201, _('The installation is complete')), ''),
+    ((202, _('The engine is being installed or uninstalled, please try again later')), ''),
+    ((202, _('Engine does not exist or no permission to access')),
+     ''),
+))
 
 class AgentInstall(UserEndPoint):
     name = "api-v1-agent-install"
     description = _("Installing an Agent")
 
+    @extend_schema_with_envcheck(
+        request=AgentInstallArgsSerializer,
+        tags=[_('Agent')],
+        summary=_('Agent Install'),
+        description=_("Install the running agent by specifying the id."),
+        response_schema=_ResponseSerializer)
     def post(self, request):
         agent_id = request.data.get('id')
         agent = IastAgent.objects.filter(user=request.user, id=agent_id).first()
