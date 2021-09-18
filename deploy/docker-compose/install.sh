@@ -1,5 +1,6 @@
 #!/bin/bash
-OUT="$(uname -s)"
+SKIP_MYSQL=false
+SKIP_REDIS=false
 
 Info(){
   echo -e "[Info] $1"
@@ -17,10 +18,41 @@ Notice(){
   echo -e "\033[33m[Important] $1 \033[0m"
 }
 
+
+while getopts ":m:s:n:h" optname
+do
+    case "$optname" in
+      "s")
+        SKIP=$OPTARG
+        array=(${SKIP//,/ })
+        for var in "${array[@]}"
+          do
+            if [ "$var" == "mysql" ]; then
+              SKIP_MYSQL=true
+            elif [ "$var" == "redis" ]; then
+              SKIP_REDIS=true
+            fi
+          done
+        ;;
+      "h")
+        Info "Usage: ./install.sh -s mysql"
+        exit 1
+        ;;
+      ":")
+        Error "No argument value for option $OPTARG"
+        ;;
+      "?")
+        Error "Unknown option $OPTARG"
+        ;;
+      *)
+        Error "Unknown error while processing options"
+        ;;
+    esac
+done
+
+OUT="$(uname -s)"
 CURRENT_PATH=$(cd "$(dirname "$0")" || exit;pwd)
-
 cd "$CURRENT_PATH" || exit
-
 
 # Check if the Docker service is turned on
 check_docker(){
@@ -87,35 +119,51 @@ check_port(){
     Error "port $OPENAPI_SERVICE_PORT is already in use. please change default port."
     exit
   fi
+}
 
-  echo '''version: "2"
-services:
-  dongtai-mysql:
+create_docker_compose_file(){
+MYSQL_STR=""
+REDIS_STR=""
+if [ $SKIP_MYSQL == false ]; then
+  export MYSQL_STR=`cat <<EOF;
+dongtai-mysql: 
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest
     restart: always
     volumes:
       - ./data:/var/lib/mysql:rw
 
-  dongtai-redis:
+EOF
+`
+fi
+
+if [ $SKIP_REDIS == false ]; then
+  export REDIS_STR=`cat <<EOF;
+dongtai-redis:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:latest
     restart: always
 
+EOF
+`
+fi
+
+cat > docker-compose.yml <<EOF
+version: "2"
+services:
+  $MYSQL_STR
+  $REDIS_STR
   dongtai-webapi:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:latest
     restart: always
     volumes:
-      - $PWD/config-tutorial.ini:/opt/dongtai/webapi/conf/config.ini
-    depends_on:
-      - dongtai-mysql
-      - dongtai-redis
+      - \$PWD/config-tutorial.ini:/opt/dongtai/webapi/conf/config.ini
 
   dongtai-web:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-web:latest
     restart: always
     ports:
-      - "'''$WEB_SERVICE_PORT''':80"
+      - "$WEB_SERVICE_PORT:80"
     volumes:
-      - $PWD/nginx.conf:/etc/nginx/nginx.conf
+      - \$PWD/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - dongtai-webapi
 
@@ -123,41 +171,33 @@ services:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:latest
     restart: always
     volumes:
-       - $PWD/config-tutorial.ini:/opt/dongtai/openapi/conf/config.ini
+       - \$PWD/config-tutorial.ini:/opt/dongtai/openapi/conf/config.ini
     ports:
-      - "'''$OPENAPI_SERVICE_PORT''':8000"
-    depends_on:
-      - dongtai-mysql
-      - dongtai-redis
+      - "$OPENAPI_SERVICE_PORT:8000"
 
   dongtai-engine:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
     restart: always
     volumes:
-      - $PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini
-    depends_on:
-      - dongtai-mysql
-      - dongtai-redis
+      - \$PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini
+
 
   dongtai-engine-task:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
     restart: always
     command: ["/opt/dongtai/engine/docker/entrypoint.sh", "task"]
     volumes:
-      - $PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini
+      - \$PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini
     depends_on:
-      - dongtai-mysql
-      - dongtai-redis
-      - dongtai-engine''' > docker-compose.yml
+      - dongtai-engine
+EOF
 }
 
 check_docker
 check_docker_compose
 login_dongtai_repo
 check_port
+create_docker_compose_file
 start_docker_compose
 
 Notice "Installation success!"
-
-
-
