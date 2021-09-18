@@ -88,6 +88,8 @@ class VulsEndPoint(UserEndPoint):
         if order:
             if order == 'type':
                 order = 'hook_type_id'
+            if order == '-type':
+                order = '-hook_type_id'
             queryset = queryset.order_by(order)
         else:
             queryset = queryset.order_by('-latest_time')
