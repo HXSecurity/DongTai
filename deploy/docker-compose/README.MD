@@ -9,11 +9,16 @@
 
 ### Deployment
 
-run the shell script `install.sh` to install DongTai IAST, eg：
+#### Custom Configuration(Optional)
+If you want to modify the configuration of mysql and redis, you need to modify section `[mysql]` and section`[redis]` of the file `config-tutorial.ini` manually.
+After modification, `skip` the relevant component in your deploy step.
 
-    ```shell script
-       ./install.sh
-    ```
+#### Deploy
 
-After the environment is successfully started, access port 80.
+```
+./install.sh  -s mysql
+```
+s: skip specified component，optional： `mysql` `redis`  `mysql,redis`，default：don't skip
 
+
+After installation, access it with your specified `web service port`.
