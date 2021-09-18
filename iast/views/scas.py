@@ -29,9 +29,12 @@ class ScaList(UserEndPoint):
         queryset = Asset.objects.filter(agent__in=auth_agents)
 
         order = request.query_params.get('order', None)
-        order = order if order in [
-            'level', 'package_name', 'vul_count', 'version'
-        ] else None
+        order_fields = [
+            'level', 'package_name', 'vul_count', 'version', 'language', 'dt',
+            'project_name'
+        ]
+        order = order if order in order_fields + list(
+            map(lambda x: ''.join(['-', x]), order_fields)) else None
 
         package_kw = request.query_params.get('keyword', None)
 
