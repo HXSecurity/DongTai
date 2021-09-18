@@ -16,7 +16,7 @@ spec:
         app: mysql
     spec:
       containers:
-        - image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest
+        - image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:1.0.4
           name: mysql-container
           imagePullPolicy: Always
           ports:

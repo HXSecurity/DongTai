@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
         - command: [ "/bin/sh","-c","exec redis-server /data/middleware-data/redis/conf/redis.conf" ]
-          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:latest
+          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:1.0.4
           imagePullPolicy: IfNotPresent
           name: redis
           ports:
