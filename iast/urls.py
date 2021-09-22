@@ -176,7 +176,7 @@ urlpatterns = [
     path('agent/install', AgentInstall.as_view()),
     path('agent/uninstall', AgentUninstall.as_view()),
     path('agent/upgrade/online', AgentUpgradeOnline.as_view()),
-    path('agent/upgrade/offline', AgentUpgradeOffline.as_view()),
+#    path('agent/upgrade/offline', AgentUpgradeOffline.as_view()),
     path('agent/download', AgentDownload.as_view()),
     path('agent/status/update', AgentStatusUpdate.as_view()),
     path('agent/start', AgentStart.as_view()),

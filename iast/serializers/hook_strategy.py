@@ -6,6 +6,15 @@
 from dongtai.models import User
 from dongtai.models.hook_strategy import HookStrategy
 from rest_framework import serializers
+from django.utils.translation import gettext_lazy as _
+from django.utils.text import format_lazy
+
+SINK_POSITION_HELP_TEXT = _("""
+Examples in a single case: O, P<1,2,3,4,...>, R
+Combination situation: O&R, O&P1, etc.
+O represents the object itself; R represents the return value; P represents the parameter, and the number represents the position of the parameter
+""")
+
 
 
 class SinkSerialize(serializers.ModelSerializer):
@@ -14,11 +23,47 @@ class SinkSerialize(serializers.ModelSerializer):
         fields = ['value']
 
 
-class HookRuleSerialize(serializers.ModelSerializer):
+class HookRuleSerializer(serializers.ModelSerializer):
     USER = dict()
-    rule_type = serializers.SerializerMethodField()
-    rule_type_id = serializers.SerializerMethodField()
-    user = serializers.SerializerMethodField()
+    rule_type = serializers.SerializerMethodField(
+        help_text=_('The name of hook rule type.'))
+    rule_type_id = serializers.SerializerMethodField(
+        help_text=_('The id of hook rule type.'))
+    user = serializers.SerializerMethodField(
+        help_text=_('The user who created the hook rule type.'))
+    id = serializers.IntegerField(help_text=_('The id of strategy'))
+    value = serializers.CharField(
+        help_text=_('The value of strategy'),
+        max_length=255,
+    )
+    source = serializers.CharField(
+        help_text=format_lazy("{}\n{}", _("Source of taint"),
+                              SINK_POSITION_HELP_TEXT),
+        max_length=255,
+    )
+    target = serializers.CharField(
+        help_text=format_lazy("{}\n{}", _("Target of taint"),
+                              SINK_POSITION_HELP_TEXT),
+        max_length=255,
+    )
+    inherit = serializers.CharField(
+        help_text=
+        _('Inheritance type, false-only detect current class, true-inspect subclasses, all-check current class and subclasses'
+          ),
+        max_length=255,
+    )
+    track = serializers.CharField(
+        help_text=
+        _("Indicates whether taint tracking is required, true-required, false-not required."
+          ),
+        max_length=5,
+    )
+    update_time = serializers.IntegerField(
+        help_text=_("The update time of hook strategy"), )
+    enable = serializers.IntegerField(help_text=_(
+        "The enabled state of the hook strategy: 0-disabled, 1-enabled, -1-deleted"
+    ),
+                                      default=1)
 
     class Meta:
         model = HookStrategy
