@@ -104,6 +104,8 @@ from iast.views.api_route_related_request import ApiRouteRelationRequest
 from iast.views.api_route_cover_rate import ApiRouteCoverRate
 from iast.views.health import HealthView
 from iast.views.oss_health import OssHealthView
+from iast.views.github_contributors import GithubContributorsView
+
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
     path("talent/<int:pk>", TalentEndPoint.as_view()),
@@ -217,8 +219,10 @@ urlpatterns = [
     path('oss/health', OssHealthView.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
-    # demo
-    urlpatterns.extend([path('demo', Demo.as_view())])
+    # demo接口
+    urlpatterns.extend([path('demo', Demo.as_view()),
+    path('github_contributors', GithubContributorsView.as_view()),
+        ])
 
 
 urlpatterns = format_suffix_patterns(urlpatterns)
