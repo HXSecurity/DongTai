@@ -10,8 +10,17 @@ from dongtai.models.hook_strategy import HookStrategy
 from dongtai.models.hook_type import HookType
 from dongtai.utils import const
 
-from iast.serializers.hook_strategy import HookRuleSerialize
+from iast.serializers.hook_strategy import HookRuleSerializer
 from django.utils.translation import gettext_lazy as _
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+
+from rest_framework import serializers
+
+
+
+
+_ResponseSerializer = get_response_serializer(
+    data_serializer=HookRuleSerializer(many=True), )
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -41,6 +50,14 @@ class EngineHookRulesEndPoint(UserEndPoint):
             logger.error(_("Parameter parsing failed, error message: {}").format(e))
             return None, None, None
 
+    @extend_schema_with_envcheck(
+        tags=[_('Hook Rule')],
+        summary=_('Hook Rule List'),
+        description=_(
+            "Get the list of hook strategies"
+        ),
+        response_schema=_ResponseSerializer,
+    )
     def get(self, request):
         rule_type, page, page_size, strategy_type = self.parse_args(request)
         if rule_type is None:
@@ -57,7 +74,7 @@ class EngineHookRulesEndPoint(UserEndPoint):
                                                              type=rule_type)
             rule_queryset = HookStrategy.objects.filter(type__in=rule_type_queryset, created_by=user_id)
             page_summary, queryset = self.get_paginator(rule_queryset, page=page, page_size=page_size)
-            data = HookRuleSerialize(queryset, many=True).data
+            data = HookRuleSerializer(queryset, many=True).data
             return R.success(data=data, page=page_summary)
         except Exception as e:
             logger.error(_("Rule read error, error message: {}").format(e))
