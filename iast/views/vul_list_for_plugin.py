@@ -9,6 +9,7 @@ from dongtai.endpoint import R
 from dongtai.endpoint import MixinAuthEndPoint
 from iast.serializers.vul import VulForPluginSerializer
 from django.utils.translation import gettext_lazy as _
+from iast.utils import get_model_order_options
 
 
 class VulListEndPoint(MixinAuthEndPoint):
@@ -34,7 +35,7 @@ class VulListEndPoint(MixinAuthEndPoint):
                 queryset = queryset.filter(url__icontains=url)
 
             order = request.query_params.get('order', '-latest_time')
-            if order:
+            if order and order in get_model_order_options(IastVulnerabilityModel):
                 queryset = queryset.order_by(order)
 
             page = request.query_params.get('page', 1)
