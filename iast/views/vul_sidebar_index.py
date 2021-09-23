@@ -8,7 +8,7 @@ from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.models.hook_type import HookType
-
+from iast.utils import get_model_order_options
 
 class VulSideBarList(UserEndPoint):
     def get(self, request):
@@ -47,7 +47,7 @@ class VulSideBarList(UserEndPoint):
             queryset = queryset.filter(url=url)
 
         order = request.query_params.get('order')
-        if order:
+        if order and order in get_model_order_options(IastVulnerabilityModel):
             queryset = queryset.order_by(order)
         else:
             queryset = queryset.order_by('-latest_time')

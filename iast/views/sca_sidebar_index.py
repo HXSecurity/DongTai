@@ -7,7 +7,7 @@ from django.db.models import Q
 
 from dongtai.endpoint import R, UserEndPoint
 from dongtai.models.asset import Asset
-
+from iast.utils import get_model_order_options
 
 class ScaSidebarList(UserEndPoint):
     def get(self, request):
@@ -28,7 +28,7 @@ class ScaSidebarList(UserEndPoint):
         if app_name:
             condition = condition & Q(app_name=app_name)
 
-        if order:
+        if order and order in get_model_order_options(Asset):
             queryset = Asset.objects.values(
                 'package_name',
                 'version',
