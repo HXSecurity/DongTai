@@ -16,7 +16,15 @@ from iast.utils import extend_schema_with_envcheck, get_response_serializer
 
 from rest_framework import serializers
 
-
+class _EngineHookRulesQuerySerializer(serializers.Serializer):
+    type = serializers.IntegerField(help_text=_(
+        "type of hook rule \n 1 represents the propagation method, 2 represents the source method, 3 represents the filter method, and 4 represents the taint method"
+    ))
+    page_size = serializers.IntegerField(default=20,
+                                         help_text=_('number per page'))
+    page = serializers.IntegerField(default=1, help_text=_('page index'))
+    strategy_type = serializers.IntegerField(
+        help_text=_("The id of hook_type"), required=False)
 
 
 _ResponseSerializer = get_response_serializer(
@@ -43,7 +51,7 @@ class EngineHookRulesEndPoint(UserEndPoint):
             if page_size > const.MAX_PAGE_SIZE:
                 page_size = const.MAX_PAGE_SIZE
 
-            
+
             strategy_type = request.query_params.get('strategy_type')
             return rule_type, page, page_size, strategy_type
         except Exception as e:
@@ -51,11 +59,10 @@ class EngineHookRulesEndPoint(UserEndPoint):
             return None, None, None
 
     @extend_schema_with_envcheck(
+        querys=[_EngineHookRulesQuerySerializer],
         tags=[_('Hook Rule')],
         summary=_('Hook Rule List'),
-        description=_(
-            "Get the list of hook strategies"
-        ),
+        description=_("Get the list of hook strategies"),
         response_schema=_ResponseSerializer,
     )
     def get(self, request):

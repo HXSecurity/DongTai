@@ -30,7 +30,7 @@ if os.getenv('environment', None) in ('TEST', 'PROD'):
         _update()
         asyncio.run(timer(60 * 60, _update))
 
-    t1 = threading.Thread(target=corotheard)
+    t1 = threading.Thread(target=corotheard, daemon=True)
     t1.start()
 
 

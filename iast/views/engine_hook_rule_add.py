@@ -16,20 +16,20 @@ from iast.serializers.hook_strategy import SINK_POSITION_HELP_TEXT
 from rest_framework import serializers
 
 class _HookRuleAddBodyargsSerializer(serializers.Serializer):
-    rule_type = serializers.SerializerMethodField(
+    rule_type = serializers.IntegerField(
         help_text=_('The id of hook rule type.'))
     rule_value = serializers.CharField(
         help_text=_('The value of strategy'),
         max_length=255,
     )
     rule_source = serializers.CharField(
-#        help_text=format_lazy("{}\n{}", _("Source of taint"),
-#                              SINK_POSITION_HELP_TEXT),
+        help_text=format_lazy("{}\n{}", _("Source of taint"),
+                              SINK_POSITION_HELP_TEXT),
         max_length=255,
     )
     rule_target = serializers.CharField(
-#        help_text=format_lazy("{}\n{}", _("Target of taint"),
-#                              SINK_POSITION_HELP_TEXT),
+        help_text=format_lazy("{}\n{}", _("Target of taint"),
+                              SINK_POSITION_HELP_TEXT),
         max_length=255,
     )
     inherit = serializers.CharField(
@@ -93,16 +93,16 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
         except Exception as e:
             return None
 
-#    @extend_schema_with_envcheck(
-#        
-#        request=_HookRuleAddBodyargsSerializer,
-#        tags=[_('Hook Rule')],
-#        summary=_('Hook Rule Add'),
-#        description=_(
-#            "Generate corresponding strategy group according to the strategy selected by the user."
-#        ),
-#        response_schema=_ResponseSerializer,
-#    )
+    @extend_schema_with_envcheck(
+        
+        request=_HookRuleAddBodyargsSerializer,
+        tags=[_('Hook Rule')],
+        summary=_('Hook Rule Add'),
+        description=_(
+            "Generate corresponding strategy group according to the strategy selected by the user."
+        ),
+        response_schema=_ResponseSerializer,
+    )
     def post(self, request):
         rule_type, rule_value, rule_source, rule_target, inherit, is_track = self.parse_args(request)
         if all((rule_type, rule_value, rule_source, inherit, is_track)) is False:
