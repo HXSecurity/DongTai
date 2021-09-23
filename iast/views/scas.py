@@ -13,6 +13,7 @@ from iast.serializers.sca import ScaSerializer
 from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck
 from django.utils.text import format_lazy
+from iast.utils import get_model_order_options
 
 
 class ScaList(UserEndPoint):
@@ -175,7 +176,7 @@ class ScaList(UserEndPoint):
         if package_kw and package_kw.strip() != '':
             queryset = queryset.filter(package_name__icontains=package_kw)
 
-        if order:
+        if order and order in get_model_order_options(Asset):
             queryset = queryset.order_by(order)
         else:
             queryset = queryset.order_by('-dt')

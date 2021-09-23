@@ -24,6 +24,11 @@ def get_model_field(model, exclude=[], include=[]):
     return list(set(fields) - set(exclude))
 
 
+def get_model_order_options(*args, **kwargs):
+    order_fields = get_model_field(*args, **kwargs)
+    return order_fields + list(map(lambda x: ''.join(['-', x]), order_fields))
+
+
 def assemble_query(condictions: dict,
                    lookuptype='',
                    base_query=Q(),
