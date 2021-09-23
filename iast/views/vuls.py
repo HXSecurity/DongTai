@@ -20,6 +20,7 @@ from iast.utils import extend_schema_with_envcheck
 
 from django.utils.text import format_lazy
 
+from iast.utils import get_model_order_options
 
 class VulsEndPoint(UserEndPoint):
 
@@ -222,7 +223,8 @@ class VulsEndPoint(UserEndPoint):
         if status_id:
             queryset = queryset.filter(status_id=status_id)
         order = request.query_params.get('order')
-        if order:
+        if order and order in get_model_order_options(
+                IastVulnerabilityModel) + ['type', '-type']:
             if order == 'type':
                 order = 'hook_type_id'
             if order == '-type':

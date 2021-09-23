@@ -11,6 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck
 from django.utils.text import format_lazy
 
+from iast.utils import get_model_order_options
 
 class ScaSidebarList(UserEndPoint):
     @extend_schema_with_envcheck(
@@ -65,7 +66,7 @@ class ScaSidebarList(UserEndPoint):
         if app_name:
             condition = condition & Q(app_name=app_name)
 
-        if order:
+        if order and order in get_model_order_options(Asset):
             queryset = Asset.objects.values(
                 'package_name',
                 'version',

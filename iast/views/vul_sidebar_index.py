@@ -20,6 +20,7 @@ VALUES = [
     'uri',
 ]
 
+from iast.utils import get_model_order_options
 
 class VulSideBarList(UserEndPoint):
     @extend_schema_with_envcheck(
@@ -105,8 +106,8 @@ class VulSideBarList(UserEndPoint):
         if url:
             queryset = queryset.filter(url=url)
 
-        order = request.query_params.get('order', None)
-        if order:
+        order = request.query_params.get('order')
+        if order and order in get_model_order_options(IastVulnerabilityModel):
             queryset = queryset.order_by(order)
         else:
             queryset = queryset.order_by('-latest_time')
