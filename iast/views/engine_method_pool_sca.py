@@ -8,15 +8,24 @@ from dongtai.models.asset import Asset
 
 from iast.serializers.sca import ScaSerializer
 from django.utils.translation import gettext_lazy as _
-from iast.utils import extend_schema_with_envcheck
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+
+_ResponseSerializer = get_response_serializer(
+    data_serializer=ScaSerializer(many=True), )
 
 
 class EngineMethodPoolSca(AnonymousAndUserEndPoint):
-    @extend_schema_with_envcheck([{
-        'name': "method_pool_id",
-        'type': int,
-        'required': True
-    }])
+    @extend_schema_with_envcheck(
+        [{
+            'name': "method_pool_id",
+            'type': int,
+            'required': True
+        }],
+        tags=[_('Method Pool')],
+        summary=_('Method Pool Component'),
+        description=_("Get the component information list of the tainted call chain."),
+        response_schema=_ResponseSerializer,
+    )
     def get(self, request):
         method_pool_id = request.query_params.get('method_pool_id')
 
@@ -39,7 +48,6 @@ class EngineMethodPoolSca(AnonymousAndUserEndPoint):
         project_id = project_data['bind_project_id']
         project_version_id = project_data['project_version_id']
 
-        #
         queryset = Asset.objects.filter(agent_id=agent_id)
 
         return R.success(data=ScaSerializer(queryset, many=True).data)

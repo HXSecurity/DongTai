@@ -8,6 +8,8 @@ from dongtai.models.hook_strategy import HookStrategy
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import format_lazy
+from dongtai.utils import const
+
 
 SINK_POSITION_HELP_TEXT = _("""
 Examples in a single case: O, P<1,2,3,4,...>, R
@@ -15,6 +17,8 @@ Combination situation: O&R, O&P1, etc.
 O represents the object itself; R represents the return value; P represents the parameter, and the number represents the position of the parameter
 """)
 
+HOOK_TYPE_CHOICE = (const.RULE_SOURCE, const.RULE_ENTRY_POINT,
+                    const.RULE_PROPAGATOR, const.RULE_FILTER, const.RULE_SINK)
 
 
 class SinkSerialize(serializers.ModelSerializer):
