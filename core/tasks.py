@@ -45,7 +45,7 @@ def queryset_to_iterator(queryset):
     page_size = 10
     page = 1
     while True:
-        temp_queryset = queryset[(page - 1) * page_size:page * page_size - 1]
+        temp_queryset = queryset[(page - 1) * page_size:page * page_size]
         page += 1
         if len(temp_queryset) > 0:
             yield temp_queryset
