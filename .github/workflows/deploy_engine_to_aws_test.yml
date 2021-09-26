@@ -21,12 +21,6 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: start-build
-        uses: joelwmale/webhook-action@master
-        with:
-          url:  ${{ secrets.DONGTAI_WEBHOOK_URL }}
-          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "状态：项目${{github.repository}}构建开始\n分支：${{github.ref}}\n流程：${{github.workflow}}\n构建编号：${{github.run_number}}\n触发事件：${{github.event_name}}\n提交人：${{github.actor}}\nSHA-1：${{github.sha}}\n","tag": "lark_md"}}]}}'
-
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Set up Python 3.7
         uses: actions/checkout@v1
@@ -91,8 +85,3 @@ jobs:
           args: |
             find deploy/deploy-eks-iast-saas-engine-task-test.yml -type f -exec sed -i 's/VERSION/0.1.${{github.run_number}}/g' {} \;
             ls deploy/deploy-eks-iast-saas-engine-task-test.yml | xargs -I {} kubectl apply -f {}
-      - name: finish build
-        uses: joelwmale/webhook-action@master
-        with:
-          url: ${{ secrets.WEBHOOK_URL }}
-          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "状态：项目${{github.repository}}构建成功\n分支：${{github.ref}}\n流程：${{github.workflow}}\n构建编号：${{github.run_number}}\n触发事件：${{github.event_name}}\n提交人：${{github.actor}}\nSHA-1：${{github.sha}}\n","tag": "lark_md"}}]}}'
