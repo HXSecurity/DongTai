@@ -11,23 +11,39 @@ from dongtai.models.agent_method_pool import MethodPool
 from iast.base.project_version import get_project_version, get_project_version_by_id
 from dongtai.endpoint import R, UserEndPoint
 from dongtai.models.agent import IastAgent
+from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
 from django.forms.models import model_to_dict
 from iast.utils import sha1
-from iast.utils import extend_schema_with_envcheck
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from rest_framework import serializers
 
+class ApiRouteCoverRelationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MethodPool
+        fields = serializers.ALL_FIELDS
+
+_GetResponseSerializer = get_response_serializer(ApiRouteCoverRelationSerializer())
 
 class ApiRouteRelationRequest(UserEndPoint):
-    @extend_schema_with_envcheck([{
-        'name': 'api_route_id',
-        'type': int
-    }, {
-        'name': 'project_id',
-        'type': int
-    }, {
-        'name': 'version_id',
-        'type': int
-    }])
+    @extend_schema_with_envcheck(
+        [{
+            'name': 'api_route_id',
+            'type': int
+        }, {
+            'name': 'project_id',
+            'type': int
+        }, {
+            'name': 'version_id',
+            'type': int
+        }],
+        tags=[_('Api Route')],
+        summary=_('Api Route Relation Request'),
+        description=
+        _("Get the coverrate of the project corresponding to the specified id."
+          ),
+        response_schema=_GetResponseSerializer,
+    )
     def get(self, request):
         page_size = int(request.query_params.get('page_size', 1))
         page_index = int(request.query_params.get('page_index', 1))

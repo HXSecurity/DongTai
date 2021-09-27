@@ -16,11 +16,36 @@ from iast.serializers.vul import VulSerializer
 from django.utils.translation import gettext_lazy as _
 from dongtai.models.hook_type import HookType
 from django.db.models import Q
-from iast.utils import extend_schema_with_envcheck
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
 
 from django.utils.text import format_lazy
 
 from iast.utils import get_model_order_options
+from rest_framework import serializers
+
+class _VulsEndPointResponseSerializer(VulSerializer):
+    index = serializers.IntegerField()
+    project_name = serializers.CharField(
+        help_text=_('name of project'),
+        default=_("The application has not been binded"))
+    project_id = serializers.IntegerField(help_text=_('Id of Project'),
+                                          default=0)
+    server_name = serializers.CharField(default="JavaApplication")
+    server_type = serializers.CharField()
+    level_type = serializers.IntegerField()
+    level = serializers.CharField()
+
+    class Meta:
+        model = VulSerializer.Meta.model
+        fields = VulSerializer.Meta.fields + [
+            'index', 'project_name', 'project_id', 'server_name',
+            'server_type', 'level_type', 'level'
+        ]
+
+
+_ResponseSerializer = get_response_serializer(
+    _VulsEndPointResponseSerializer(many=True))
+
 
 class VulsEndPoint(UserEndPoint):
 
@@ -54,7 +79,7 @@ class VulsEndPoint(UserEndPoint):
                 'name': "project_name",
                 'type': str,
                 'deprecated': True,
-                'description': _('Name of Project'),
+                'description': _('name of project'),
             },
             {
                 'name':
@@ -149,6 +174,7 @@ class VulsEndPoint(UserEndPoint):
         }],
         tags=[_('Vulnerability')],
         summary=_("Vulnerability List (with project)"),
+        response_schema=_ResponseSerializer,
         description=_(
             "Get the list of vulnerabilities corresponding to the project"),
     )

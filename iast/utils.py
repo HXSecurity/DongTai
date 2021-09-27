@@ -47,6 +47,7 @@ def assemble_query(condictions: dict,
 from rest_framework.serializers import SerializerMetaclass
 from django.utils.translation import get_language
 from django.utils.text import format_lazy
+from django.utils.translation import gettext_lazy as _
 
 
 def extend_schema_with_envcheck(querys: list = [],
@@ -75,7 +76,7 @@ def extend_schema_with_envcheck(querys: list = [],
                                  examples=examples if examples else None,
                                  responses={
                                      200:
-                                     OpenApiResponse(description='???',
+                                     OpenApiResponse(description=_('The http status codes are both 200, please use the status and msg field returned by the response data to troubleshoot'),
                                                      response=response_schema)
                                  },
                                  **kwargs)
@@ -89,7 +90,6 @@ def extend_schema_with_envcheck(querys: list = [],
 
 
 from rest_framework import serializers
-from django.utils.translation import gettext_lazy as _
 import uuid
 
 

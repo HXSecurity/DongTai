@@ -9,9 +9,12 @@ from dongtai.endpoint import R
 from dongtai.endpoint import MixinAuthEndPoint
 from iast.serializers.vul import VulForPluginSerializer
 from django.utils.translation import gettext_lazy as _
-from iast.utils import extend_schema_with_envcheck
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.text import format_lazy
 from iast.utils import get_model_order_options
+
+_ResponseSerializer = get_response_serializer(
+    VulForPluginSerializer(many=True))
 
 
 class VulListEndPoint(MixinAuthEndPoint):
@@ -67,6 +70,7 @@ class VulListEndPoint(MixinAuthEndPoint):
         description=
         _("Use the agent name to get the corresponding list of vulnerabilities"
           ),
+        response_schema=_ResponseSerializer
     )
     def get(self, request):
         agent_name = request.query_params.get('name', None)

@@ -13,9 +13,32 @@ from dongtai.models.sca_maven_artifact import ScaMavenArtifact
 
 from iast.serializers.sca import ScaSerializer
 from django.utils.translation import gettext_lazy as _
-from iast.utils import extend_schema_with_envcheck
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from rest_framework import serializers
 
 logger = logging.getLogger('dongtai-webapi')
+
+
+class ScaDetailResponseDataVulsSerializers(serializers.Serializer):
+    safe_version = serializers.CharField()
+    vulcve = serializers.CharField()
+    vulcwe = serializers.CharField()
+    vulname = serializers.CharField()
+    overview = serializers.CharField()
+    teardown = serializers.CharField()
+    reference = serializers.CharField()
+    level = serializers.CharField()
+
+
+class ScaDetailResponseDataSerializers(ScaSerializer):
+    vuls = ScaDetailResponseDataVulsSerializers(many=True)
+
+    class Meta:
+        model = ScaSerializer.Meta.model
+        fields = ScaSerializer.Meta.fields + ['vuls']
+
+_ResponseSerializer = get_response_serializer(
+    ScaDetailResponseDataSerializers())
 
 
 class ScaDetailView(UserEndPoint):
@@ -59,6 +82,7 @@ class ScaDetailView(UserEndPoint):
         description=
         _("Get the details of the corresponding component by specifying the id."
           ),
+        response_schema=_ResponseSerializer
     )
     def get(self, request, id):
         user = request.user

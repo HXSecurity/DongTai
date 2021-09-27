@@ -11,7 +11,8 @@ from dongtai.models.project import IastProject
 from dongtai.models.replay_queue import IastReplayQueue
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.utils.validate import Validate
-from iast.utils import extend_schema_with_envcheck
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from rest_framework import serializers
 
 from dongtai.endpoint import R
 from dongtai.utils import const
@@ -19,6 +20,37 @@ from dongtai.endpoint import UserEndPoint
 from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('dongtai-webapi')
+
+
+class VulReCheckDataSerializer(serializers.Serializer):
+    no_agent = serializers.BooleanField(
+        help_text=_('Whether the project does not exist agent'))
+    pending = serializers.IntegerField(
+        help_text=_('Waiting queue length for replay'))
+    recheck = serializers.IntegerField(
+        help_text=_('Success queue length for replay'))
+    checking = serializers.IntegerField(
+        help_text=_('Checking queue length for replay'))
+
+
+_ResponseGetSerializer = get_response_serializer(
+    VulReCheckDataSerializer(),
+    status_msg_keypair=(
+        ((201, _('Handle success')), ''),
+        ((202, _('Item ID should not be empty')), ''),
+        ((202, _('Incorrect format parameter')), ''),
+        ((202, _('Batch playback error')), ''),
+        ((202, _('Current application has not been associated with probes and cannot be reproduced.')), ''),
+        ((202, _('No permission to access')), ''),
+    ))
+_ResponsePostSerializer = get_response_serializer(
+    VulReCheckDataSerializer(),
+    status_msg_keypair=(
+        ((201, _('Handle success')), ''),
+        ((202, _('IDS should not be empty')), ''),
+        ((202, _('IDS must be: Vulnerability ID, Vulnerability ID Format')), ''),
+        ((202, _('Vulnerability replay error')), ''),
+    ))
 
 
 class VulReCheck(UserEndPoint):
@@ -93,6 +125,7 @@ class VulReCheck(UserEndPoint):
         summary=_("Vulnerability verification"),
         description=_("""Verify the user's corresponding vulnerabilities.
             Need to specify the type"""),
+        response_schema=_ResponsePostSerializer
     )
     def post(self, request):
         """
@@ -172,6 +205,7 @@ class VulReCheck(UserEndPoint):
         summary=_("Vulnerability verification"),
         description=_("""Verify the user's corresponding vulnerabilities.
             Need to specify the type"""),
+        response_schema=_ResponsePostSerializer
     )
     def get(self, request):
 

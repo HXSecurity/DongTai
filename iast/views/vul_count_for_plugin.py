@@ -8,7 +8,11 @@ from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.endpoint import R
 from dongtai.endpoint import MixinAuthEndPoint
 from django.utils.translation import gettext_lazy as _
-from iast.utils import extend_schema_with_envcheck
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from rest_framework import serializers
+
+_ResponseSerializer = get_response_serializer(
+    data_serializer=serializers.IntegerField(), )
 
 
 class VulCountForPluginEndPoint(MixinAuthEndPoint):
@@ -23,6 +27,7 @@ class VulCountForPluginEndPoint(MixinAuthEndPoint):
         summary=_("Vulnerability Count (with agent name)"),
         description=_(
             "Get the number of vulnerabilities corresponding to the Agent."),
+        response_schema=_ResponseSerializer,
     )
     def get(self, request):
         agent_name = request.query_params.get('name')

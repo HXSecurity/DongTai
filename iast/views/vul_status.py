@@ -10,10 +10,15 @@ from dongtai.models.vulnerablity import IastVulnerabilityStatus
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from django.utils.translation import gettext_lazy as _
-from iast.utils import extend_schema_with_envcheck
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
 import logging
 
 logger = logging.getLogger('dongtai-webapi')
+
+_ResponseSerializer = get_response_serializer(status_msg_keypair=(
+    ((201, _('Vulnerability status is modified to {}')), ''),
+    ((202, _('Incorrect parameter')), ''),
+))
 
 class VulStatus(UserEndPoint):
     name = "api-v1-vuln-status"
@@ -59,6 +64,7 @@ class VulStatus(UserEndPoint):
         Status corresponds to the status noun and status_id corresponds to the status id. 
         Both can be obtained from the vulnerability status list API, and status_id is preferred."""
                       ),
+        response_schema=_ResponseSerializer,
     )
     def post(self, request):
         vul_id = request.data.get('id')

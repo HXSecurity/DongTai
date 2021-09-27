@@ -9,31 +9,131 @@ from dongtai.models.user import User
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.models.hook_type import HookType
 
-from iast.utils import get_model_field, assemble_query, extend_schema_with_envcheck
+from iast.utils import get_model_field, assemble_query
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.translation import gettext_lazy
 from django.db.utils import OperationalError
 import re
 import operator
 import time
+from rest_framework import serializers
+from django.utils.translation import gettext_lazy as _
+
+
+class MethodPoolSearchProxySer(serializers.Serializer):
+    page_size = serializers.IntegerField(help_text=_("number per page"))
+    highlight = serializers.IntegerField(
+        default=1,
+        help_text=
+        _("Whether to enable highlighting, the text where the regular expression matches will be highlighted"
+          ))
+    exclude_ids = serializers.CharField(help_text=_("Exclude the method_pool entry with the following id, this field is used to obtain the data of the entire project in batches."),required=False)
+    time_range = serializers.CharField(help_text=_(
+        "Time range, the default is the current time to the previous seven days, separated by',', format such as 1,1628190947242"
+    ),
+                                       required=False)
+    url = serializers.CharField(
+        help_text=_("The url of the method pool, search using regular syntax"),
+        required=False)
+    res_header = serializers.CharField(help_text=_(
+        "The response header of the method pood, search using regular syntax"),
+                                       required=False)
+    res_body = serializers.CharField(help_text=_(
+        "The response body of the calling chain, search using regular syntax"),
+                                     required=False)
+    req_header_fs = serializers.CharField(help_text=_(
+        "The request header of the calling chain, search using regular syntax"
+    ),
+                                          required=False)
+    req_data = serializers.CharField(help_text=_(
+        "The request data of the calling chain, search using regular syntax"),
+                                     required=False)
+    sinkvalues = serializers.CharField(help_text=_(
+        "The sinkvalues of the calling chain, search using regular syntax"),
+                                       required=False)
+    signature = serializers.CharField(help_text=_(
+        "The signature of the calling chain, search using regular syntax"),
+                                      required=False)
+    update_time = serializers.CharField(help_text=_(
+        "The filter field will return the method call chain with the update time after this time, which can be combined with the exclude_ids field to handle paging"
+    ),
+                                        required=False)
+
+
+class MethodPoolSearchResponseRelationVulnerablitySer(serializers.Serializer):
+    vulnerablity_type = serializers.CharField()
+    vulnerablity_hook_type_id = serializers.IntegerField()
+    vulnerablity_id = serializers.IntegerField()
+    level_id = serializers.IntegerField()
+
+
+class MethodPoolSearchResponseMethodPoolSer(serializers.Serializer):
+    id = serializers.IntegerField()
+    agent_id = serializers.IntegerField()
+    url = serializers.CharField()
+    uri = serializers.CharField()
+    http_method = serializers.CharField()
+    http_scheme = serializers.CharField()
+    http_protocol = serializers.CharField()
+    req_header = serializers.CharField()
+    req_header_fs = serializers.CharField()
+    req_params = serializers.CharField()
+    req_data = serializers.CharField()
+    res_header = serializers.CharField()
+    res_body = serializers.CharField()
+    context_path = serializers.CharField()
+    method_pool = serializers.CharField()
+    pool_sign = serializers.CharField()
+    client_ip = serializers.CharField()
+    update_time = serializers.IntegerField()
+    create_time = serializers.IntegerField()
+    uri_sha1 = serializers.CharField()
+    uri_highlight = serializers.CharField()
+    res_header_highlight = serializers.CharField()
+    res_body_highlight = serializers.CharField()
+    req_header_fs_highlight = serializers.CharField()
+    req_data_highlight = serializers.CharField()
+
+
+class MethodPoolSearchResponseRelationSer(serializers.Serializer):
+    method_pool_id = serializers.IntegerField()
+    agent_id = serializers.IntegerField()
+    agent_name = serializers.CharField()
+    agent_is_running = serializers.IntegerField()
+    project_name = serializers.CharField()
+    user_id = serializers.IntegerField()
+    user_name = serializers.CharField()
+    vulnerablities = MethodPoolSearchResponseRelationVulnerablitySer(many=True)
+
+
+class MethodPoolSearchResponseAggregationSer(serializers.Serializer):
+    method_pool_id = serializers.IntegerField()
+    count = serializers.IntegerField()
+
+
+class MethodPoolSearchResponseAfterkeySer(serializers.Serializer):
+    update_time = serializers.IntegerField()
+
+
+class MethodPoolSearchResponseSer(serializers.Serializer):
+    method_pools = MethodPoolSearchResponseMethodPoolSer(many=True)
+    relations = MethodPoolSearchResponseRelationSer(many=True)
+    aggregation = MethodPoolSearchResponseAggregationSer(many=True)
+    afterkeys = MethodPoolSearchResponseAfterkeySer(many=True)
+
+
+_GetResponseSerializer = get_response_serializer(MethodPoolSearchResponseSer())
+
 
 class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
     @extend_schema_with_envcheck(
-        [{
-            'name': "page_size",
-            "type": int,
-        }, {
-            'name': "page_index",
-            "type": int,
-        }, {
-            'name': "highlight",
-            "type": int
-        }, {
-            "name": "exclude_ids",
-            "type": str
-        }, {
-            'name': "time_range",
-            "type": str
-        }],[])
+        [MethodPoolSearchProxySer],
+        tags=[_('Method Pool')],
+        summary=_('Method Pool Component'),
+        description=_(
+            "Get the component information list of the tainted call chain."),
+        response_schema=_GetResponseSerializer,
+    )
     def get(self, request):
         page_size = int(request.query_params.get('page_size', 1))
         page = request.query_params.get('page_index', 1)
