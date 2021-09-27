@@ -15,8 +15,21 @@ from iast.base.project_version import get_project_version, get_project_version_b
 from django.utils.translation import gettext_lazy as _
 from dongtai.models.hook_type import HookType
 from django.db.models import Q
-from iast.utils import extend_schema_with_envcheck
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.text import format_lazy
+from rest_framework import serializers
+from iast.serializers.vul import VulSummaryTypeSerializer, VulSummaryProjectSerializer, VulSummaryLevelSerializer, VulSummaryLanguageSerializer
+
+
+class VulSummaryResponseDataSerializer(serializers.Serializer):
+    language = VulSummaryLanguageSerializer(many=True)
+    level = VulSummaryLevelSerializer(many=True)
+    type = VulSummaryTypeSerializer(many=True)
+    projects = VulSummaryProjectSerializer(many=True)
+
+
+_ResponseSerializer = get_response_serializer(
+    VulSummaryResponseDataSerializer())
 
 
 class VulSummary(UserEndPoint):
@@ -204,6 +217,7 @@ class VulSummary(UserEndPoint):
         description=
         _('Use the following conditions to view the statistics of the number of vulnerabilities in the project.'
           ),
+        response_schema=_ResponseSerializer
     )
     def get(self, request):
         """

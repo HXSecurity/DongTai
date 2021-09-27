@@ -11,10 +11,11 @@ from iast.base.agent import get_agents_with_project
 from iast.base.project_version import get_project_version, get_project_version_by_id
 from iast.serializers.sca import ScaSerializer
 from django.utils.translation import gettext_lazy as _
-from iast.utils import extend_schema_with_envcheck
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.text import format_lazy
 from iast.utils import get_model_order_options
 
+_ResponseSerializer = get_response_serializer(ScaSerializer(many=True))
 
 class ScaList(UserEndPoint):
     @extend_schema_with_envcheck(
@@ -123,7 +124,8 @@ class ScaList(UserEndPoint):
         summary=_("Component List (with project)"),
         description=
         _("use the specified project information to obtain the corresponding component."
-          ))
+          ),
+        response_schema=_ResponseSerializer)
     def get(self, request):
         """
         :param request:

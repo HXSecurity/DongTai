@@ -18,10 +18,65 @@ from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from iast.serializers.vul import VulSerializer
 from django.utils.translation import gettext_lazy as _
-from iast.utils import extend_schema_with_envcheck
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from rest_framework import serializers
 
 logger = logging.getLogger('dongtai-webapi')
 
+
+class _VulDetailResponseDataServerSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    hostname = serializers.CharField()
+    ip = serializers.CharField()
+    port = serializers.CharField()
+    container = serializers.CharField()
+    server_type = serializers.CharField()
+    container_path = serializers.CharField()
+    runtime = serializers.CharField()
+    environment = serializers.CharField()
+    command = serializers.CharField()
+
+class _VulDetailResponseDataStrategySerializer(serializers.Serializer):
+    desc = serializers.CharField()
+    sample_code = serializers.CharField()
+    repair_suggestion = serializers.CharField()
+
+class _VulDetailResponseDataVulSerializer(serializers.Serializer):
+    url = serializers.CharField()
+    uri = serializers.CharField()
+    agent_name = serializers.CharField()
+    http_method = serializers.CharField()
+    type = serializers.CharField()
+    taint_position = serializers.CharField()
+    first_time = serializers.IntegerField()
+    latest_time = serializers.IntegerField()
+    project_name = serializers.CharField(help_text=_('The name of project'))
+    project_version = serializers.CharField(
+        help_text=_("The version name of the project"))
+    language = serializers.CharField(
+        default=None,
+        help_text=_("programming language"))
+    level = serializers.CharField(help_text=_("The name of vulnerablity level"))
+    level_type = serializers.IntegerField(help_text=_("The id of vulnerablity level"))
+    counts = serializers.IntegerField()
+    request_header = serializers.CharField()
+    response = serializers.CharField()
+    graph = serializers.CharField()
+    context_path = serializers.CharField()
+    client_ip = serializers.CharField()
+    status = serializers.CharField()
+    taint_value = serializers.CharField()
+    param_name = serializers.CharField()
+    method_pool_id = serializers.IntegerField()
+    project_id = serializers.IntegerField(help_text=_("The id of the project"))
+
+
+class _VulDetailResponseDataSerializer(serializers.Serializer):
+    vul = _VulDetailResponseDataVulSerializer()
+    server = _VulDetailResponseDataServerSerializer()
+    strategy = _VulDetailResponseDataStrategySerializer()
+
+_ResponseSerializer = get_response_serializer(_VulDetailResponseDataSerializer())
 
 class VulDetail(UserEndPoint):
 
@@ -272,11 +327,12 @@ class VulDetail(UserEndPoint):
             }
         }
     }],
-                                 summary=_('Vulnerability details query '),
+                                 summary=_('Vulnerability details'),
                                  description=
                                  _('Use the corresponding id of the vulnerability to query the details of the vulnerability'
                                    ),
-                                 tags=[_('Vulnerability')])
+                                 tags=[_('Vulnerability')],
+                                 response_schema=_ResponseSerializer)
     def get(self, request, id):
         """
         :param request:

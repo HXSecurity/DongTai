@@ -32,10 +32,7 @@ class ProjectDel(UserEndPoint):
         request=_ProjectsDelBodyArgsSerializer,
         tags=[_('Project')],
         summary=_('Projects Delete'),
-        description=_(
-            """Create a new project according to the given conditions;
-            when specifying the APIViewroject id, update the item corresponding to the id according to the given condition."""
-        ),
+        description=_("Delete the agent by specifying the id."),
         response_schema=_ResponseSerializer,
     )
     def post(self, request):

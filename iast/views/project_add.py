@@ -25,7 +25,7 @@ logger = logging.getLogger("django")
 class _ProjectsAddBodyArgsSerializer(serializers.Serializer):
     name = serializers.CharField(help_text=_('The name of project'))
     agent_ids = serializers.CharField(help_text=_(
-        'The id corresponding to the agent, use; for segmentation.'))
+        'The id corresponding to the agent, use, for segmentation.'))
     mode = serializers.ChoiceField(['插桩模式'],
                                    help_text=_('The mode of project'))
     scan_id = serializers.IntegerField(
