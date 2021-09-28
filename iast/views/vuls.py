@@ -16,10 +16,168 @@ from iast.serializers.vul import VulSerializer
 from django.utils.translation import gettext_lazy as _
 from dongtai.models.hook_type import HookType
 from django.db.models import Q
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+
+from django.utils.text import format_lazy
+
 from iast.utils import get_model_order_options
+from rest_framework import serializers
+
+class _VulsEndPointResponseSerializer(VulSerializer):
+    index = serializers.IntegerField()
+    project_name = serializers.CharField(
+        help_text=_('name of project'),
+        default=_("The application has not been binded"))
+    project_id = serializers.IntegerField(help_text=_('Id of Project'),
+                                          default=0)
+    server_name = serializers.CharField(default="JavaApplication")
+    server_type = serializers.CharField()
+    level_type = serializers.IntegerField()
+    level = serializers.CharField()
+
+    class Meta:
+        model = VulSerializer.Meta.model
+        fields = VulSerializer.Meta.fields + [
+            'index', 'project_name', 'project_id', 'server_name',
+            'server_type', 'level_type', 'level'
+        ]
+
+
+_ResponseSerializer = get_response_serializer(
+    _VulsEndPointResponseSerializer(many=True))
+
 
 class VulsEndPoint(UserEndPoint):
 
+    @extend_schema_with_envcheck(
+        [
+            {
+                'name': "page",
+                'type': int,
+                'default': 1,
+                'required': False,
+                'description': _('Page index'),
+            },
+            {
+                'name': "pageSize",
+                'type': int,
+                'default': 20,
+                'required': False,
+                'description': _('Number per page'),
+            },
+            {
+                'name': "language",
+                'type': str,
+                'description': _("programming language")
+            },
+            {
+                'name': "type",
+                'type': str,
+                'description': _('Type of vulnerability'),
+            },
+            {
+                'name': "project_name",
+                'type': str,
+                'deprecated': True,
+                'description': _('name of project'),
+            },
+            {
+                'name':
+                "level",
+                'type':
+                str,
+                'description':
+                format_lazy("{} : {}", _('Level of vulnerability'), "1,2,3,4")
+            },
+            {
+                'name': "project_id",
+                'type': int,
+                'description': _('Id of Project'),
+            },
+            {
+                'name':
+                "version_id",
+                'type':
+                int,
+                'description':
+                _("The default is the current version id of the project.")
+            },
+            {
+                'name': "status",
+                'type': str,
+                'deprecated': True,
+                'description': _('Name of status'),
+            },
+            {
+                'name': "status_id",
+                'type': int,
+                'description': _('Id of status'),
+            },
+            {
+                'name': "url",
+                'type': str,
+                'description': _('The URL corresponding to the vulnerability'),
+            },
+            {
+                'name':
+                "order",
+                'type':
+                str,
+                'description':
+                format_lazy(
+                    "{} : {}", _('Sorted index'), ",".join(
+                        ['type', 'level', 'first_time', 'latest_time', 'url']))
+            },
+        ],
+        [],
+        [{
+            'name':
+            _('Get data sample'),
+            'description':
+            _("The aggregation results are programming language, risk level, vulnerability type, project"
+              ),
+            'value': {
+                "status":
+                201,
+                "msg":
+                "success",
+                "data": [{
+                    "id": 12024,
+                    "type": "Weak Random Number Generation",
+                    "hook_type_id": 45,
+                    "url": "http://localhost:81/captcha/captchaImage",
+                    "uri": "/captcha/captchaImage",
+                    "agent_id": 820,
+                    "level_id": 3,
+                    "http_method": "GET",
+                    "top_stack": None,
+                    "bottom_stack": None,
+                    "taint_position": None,
+                    "latest_time": 1631092302,
+                    "first_time": 1631092263,
+                    "language": "JAVA",
+                    "status": "Confirmed",
+                    "index": 0,
+                    "project_name": "demo",
+                    "project_id": 71,
+                    "server_name": "Apache Tomcat/9.0.41",
+                    "server_type": "apache tomcat",
+                    "level_type": 3,
+                    "level": "LOW"
+                }],
+                "page": {
+                    "alltotal": 1,
+                    "num_pages": 1,
+                    "page_size": 20
+                }
+            }
+        }],
+        tags=[_('Vulnerability')],
+        summary=_("Vulnerability List (with project)"),
+        response_schema=_ResponseSerializer,
+        description=_(
+            "Get the list of vulnerabilities corresponding to the project"),
+    )
     def get(self, request):
         """
         :param request:
@@ -50,7 +208,12 @@ class VulsEndPoint(UserEndPoint):
             queryset = queryset.filter(level=level)
 
         type_ = request.query_params.get('type')
-        if type_:
+        type_id = request.query_params.get('hook_type_id')
+        if type_id:
+            hook_type = HookType.objects.filter(pk=type_id).first()
+            hook_type_id = hook_type.id if hook_type else 0
+            queryset = queryset.filter(hook_type_id=hook_type_id)
+        elif type_:
             hook_type = HookType.objects.filter(name=type_).first()
             hook_type_id = hook_type.id if hook_type else 0
             queryset = queryset.filter(hook_type_id=hook_type_id)
@@ -71,7 +234,8 @@ class VulsEndPoint(UserEndPoint):
                 current_project_version = get_project_version_by_id(version_id)
             agents = auth_agents.filter(
                 bind_project_id=project_id,
-                project_version_id=current_project_version.get("version_id", 0))
+                project_version_id=current_project_version.get(
+                    "version_id", 0))
             queryset = queryset.filter(agent_id__in=agents)
 
         url = request.query_params.get('url', None)

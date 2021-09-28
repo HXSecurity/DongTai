@@ -6,11 +6,34 @@ from dongtai.endpoint import R, AnonymousAndUserEndPoint
 from dongtai.models.agent import IastAgent
 from dongtai.models.heartbeat import IastHeartbeat
 from dongtai.models.server import IastServer
+from rest_framework import serializers
+from django.utils.translation import gettext_lazy as _
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
 
 from iast.utils import get_model_field
 
+class _AgentSearchQuerysSerializer(serializers.Serializer):
+    page_size = serializers.IntegerField(default=20,
+                                         help_text=_('Number per page'))
+    page = serializers.IntegerField(default=1, help_text=_('Page index'))
+    token = serializers.CharField(help_text=_('The name of agent'))
+    project_name = serializers.CharField(help_text=_(
+        "Project name, used to start the agent first and then create the project"
+    ))
+
+_ResponseSerializer = get_response_serializer(
+    status_msg_keypair=(((201, _('Suspending ...')), ''), ))
 
 class AgentSearch(AnonymousAndUserEndPoint):
+    @extend_schema_with_envcheck(
+        [_AgentSearchQuerysSerializer],
+        tags=[_('Agent')],
+        summary=_('Agent Search'),
+        description=_(
+            ""
+        ),
+        response_schema=_ResponseSerializer,
+    )
     def get(self, request):
         page_size = int(request.query_params.get('page_size', 10))
         page = int(request.query_params.get('page', 1))
@@ -29,6 +52,8 @@ class AgentSearch(AnonymousAndUserEndPoint):
                     lambda kv_pair:
                     {'__'.join([kv_pair[0], 'icontains']): kv_pair[1]},
                     searchfields_.items())), Q())
+        agents = self.get_auth_and_anonymous_agents(request.user)
+        q = q & Q(agent_id__in=[_['id'] for _ in agents])
         queryset = IastAgent.objects.filter(q).order_by('-latest_time').all()
         summary, agents = self.get_paginator(queryset, page, page_size)
         paginator = Paginator(queryset, page_size)

@@ -7,7 +7,20 @@ from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.hook_strategy import HookStrategy
 from dongtai.utils import const
 from django.utils.translation import gettext_lazy as _
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from rest_framework import serializers
 
+
+class EngineHookRuleTypeEnableSerializer(serializers.Serializer):
+    rule_id = serializers.IntegerField(help_text=_("The id of hook type"),
+                                       default=const.RULE_PROPAGATOR)
+
+
+_GetResponseSerializer = get_response_serializer(status_msg_keypair=(
+    ((201, _('Forbidden success')), ''),
+    ((202, _('Strategy type does not exist')), ''),
+    ((202, _('Strategy does not exist')), ''),
+))
 
 class EngineHookRuleTypeDisableEndPoint(UserEndPoint):
     def parse_args(self, request):
@@ -16,9 +29,18 @@ class EngineHookRuleTypeDisableEndPoint(UserEndPoint):
             rule_type = int(rule_id)
             return rule_type
         except Exception as e:
-            
+
             return None
 
+    @extend_schema_with_envcheck(
+        [EngineHookRuleTypeEnableSerializer],
+        tags=[_('Hook Rule')],
+        summary=_('Hook Rule Status Disable'),
+        description=_(
+            "Disable the status of the rule corresponding to the specified id."
+        ),
+        response_schema=_GetResponseSerializer,
+    )
     def get(self, request):
         rule_id = self.parse_args(request)
         if rule_id is None:

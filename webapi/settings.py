@@ -103,6 +103,7 @@ USE_I18N = True
 USE_L10N = True
 MODELTRANSLATION_FALLBACK_LANGUAGES = ('zh', 'en')
 MIDDLEWARE = [
+    'iast.utils.MethodOverrideMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -158,6 +159,7 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'csrf-token',
     'x-requested-with',
+    'x_http_method_override'
 ]
 
 ROOT_URLCONF = 'webapi.urls'
@@ -291,7 +293,14 @@ CSRF_COOKIE_DOMAIN = None
 if os.getenv('environment', 'PROD') == 'TEST':
     INSTALLED_APPS.append('drf_spectacular')
     SPECTACULAR_SETTINGS = {
-        'TITLE': 'DongTai webapi',
+        'TITLE':
+        'DongTai WebApi Doc',
+        'VERSION':
+        "1.0.3",
+        'PREPROCESSING_HOOKS':
+        ['drf_spectacular.hooks.preprocess_exclude_path_format'],
+        'URL_FORMAT_OVERRIDE':
+        None
     }
     REST_FRAMEWORK[
         'DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'

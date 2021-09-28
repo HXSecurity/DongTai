@@ -18,9 +18,65 @@ from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from iast.serializers.vul import VulSerializer
 from django.utils.translation import gettext_lazy as _
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from rest_framework import serializers
 
 logger = logging.getLogger('dongtai-webapi')
 
+
+class _VulDetailResponseDataServerSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    hostname = serializers.CharField()
+    ip = serializers.CharField()
+    port = serializers.CharField()
+    container = serializers.CharField()
+    server_type = serializers.CharField()
+    container_path = serializers.CharField()
+    runtime = serializers.CharField()
+    environment = serializers.CharField()
+    command = serializers.CharField()
+
+class _VulDetailResponseDataStrategySerializer(serializers.Serializer):
+    desc = serializers.CharField()
+    sample_code = serializers.CharField()
+    repair_suggestion = serializers.CharField()
+
+class _VulDetailResponseDataVulSerializer(serializers.Serializer):
+    url = serializers.CharField()
+    uri = serializers.CharField()
+    agent_name = serializers.CharField()
+    http_method = serializers.CharField()
+    type = serializers.CharField()
+    taint_position = serializers.CharField()
+    first_time = serializers.IntegerField()
+    latest_time = serializers.IntegerField()
+    project_name = serializers.CharField(help_text=_('The name of project'))
+    project_version = serializers.CharField(
+        help_text=_("The version name of the project"))
+    language = serializers.CharField(
+        default=None,
+        help_text=_("programming language"))
+    level = serializers.CharField(help_text=_("The name of vulnerablity level"))
+    level_type = serializers.IntegerField(help_text=_("The id of vulnerablity level"))
+    counts = serializers.IntegerField()
+    request_header = serializers.CharField()
+    response = serializers.CharField()
+    graph = serializers.CharField()
+    context_path = serializers.CharField()
+    client_ip = serializers.CharField()
+    status = serializers.CharField()
+    taint_value = serializers.CharField()
+    param_name = serializers.CharField()
+    method_pool_id = serializers.IntegerField()
+    project_id = serializers.IntegerField(help_text=_("The id of the project"))
+
+
+class _VulDetailResponseDataSerializer(serializers.Serializer):
+    vul = _VulDetailResponseDataVulSerializer()
+    server = _VulDetailResponseDataServerSerializer()
+    strategy = _VulDetailResponseDataStrategySerializer()
+
+_ResponseSerializer = get_response_serializer(_VulDetailResponseDataSerializer())
 
 class VulDetail(UserEndPoint):
 
@@ -120,7 +176,7 @@ class VulDetail(UserEndPoint):
         hook_type = HookType.objects.filter(pk=vul.hook_type_id).first()
         vul.type = hook_type.name if hook_type else ''
         status = IastVulnerabilityStatus.objects.filter(pk=vul.status_id).first()
-        vul.status_ = status.name if status else '' 
+        vul.status_ = status.name if status else ''
         agent = vul.agent
         project_id = agent.bind_project_id
         if project_id is None or project_id == 0:
@@ -144,37 +200,63 @@ class VulDetail(UserEndPoint):
             self.server = {}
         self.vul_name = vul.type
         return {
-            'url': vul.url,
-            'uri': vul.uri,
-            'agent_name': agent.token,
-            'http_method': vul.http_method,
-            'type': vul.type,
-            'taint_position': vul.taint_position,
-            'first_time': vul.first_time,
-            'latest_time': vul.latest_time,
-            'project_name': project['name'] if project else _('The application has not been binded'),
-            'project_version': project_version_name,
-            'language': agent.language,
-            'level': vul.level.name_value,
-            'level_type': vul.level.id,
-            'counts': vul.counts,
-            'req_header': self.parse_request(vul.http_method, vul.uri, vul.req_params, vul.http_protocol,
-                                             vul.req_header,
-                                             vul.req_data),
-            'response': self.parse_response(vul.res_header, vul.res_body),
-            'graph': self.parse_graphy(vul.full_stack),
-            'context_path': vul.context_path,
-            'client_ip': vul.client_ip,
-            'status': vul.status_,
-            'taint_value': vul.taint_value,
-            'param_name': json.loads(vul.param_name) if vul.param_name else {},
-            'method_pool_id': vul.method_pool_id,
-            'project_id': project_id
+            'url':
+            vul.url,
+            'uri':
+            vul.uri,
+            'agent_name':
+            agent.token,
+            'http_method':
+            vul.http_method,
+            'type':
+            vul.type,
+            'taint_position':
+            vul.taint_position,
+            'first_time':
+            vul.first_time,
+            'latest_time':
+            vul.latest_time,
+            'project_name':
+            project['name']
+            if project else _('The application has not been binded'),
+            'project_version':
+            project_version_name,
+            'language':
+            agent.language,
+            'level':
+            vul.level.name_value,
+            'level_type':
+            vul.level.id,
+            'counts':
+            vul.counts,
+            'req_header':
+            self.parse_request(vul.http_method, vul.uri, vul.req_params,
+                               vul.http_protocol, vul.req_header,
+                               vul.req_data),
+            'response':
+            self.parse_response(vul.res_header, vul.res_body),
+            'graph':
+            self.parse_graphy(vul.full_stack),
+            'context_path':
+            vul.context_path,
+            'client_ip':
+            vul.client_ip,
+            'status':
+            vul.status_,
+            'taint_value':
+            vul.taint_value,
+            'param_name':
+            json.loads(vul.param_name) if vul.param_name else {},
+            'method_pool_id':
+            vul.method_pool_id,
+            'project_id':
+            project_id
         }
 
     def get_strategy(self):
-        
-        strategy = IastStrategyModel.objects.filter(vul_name=self.vul_name).first()
+
+        strategy = IastStrategyModel.objects.filter(
+            vul_name=self.vul_name).first()
         if strategy:
             return {
                 'desc': strategy.vul_desc,
@@ -182,12 +264,75 @@ class VulDetail(UserEndPoint):
                 'repair_suggestion': strategy.vul_fix
             }
         else:
-            return {
-                'desc': "",
-                'sample_code': '',
-                'repair_suggestion': ''
-            }
+            return {'desc': "", 'sample_code': '', 'repair_suggestion': ''}
 
+    @extend_schema_with_envcheck(response_bodys=[{
+        'name':
+        _('Get data sample'),
+        'description':
+        _("The aggregation results are programming language, risk level, vulnerability type, project"
+          ),
+        'value': {
+            "status": 201,
+            "msg": "success",
+            "data": {
+                "vul": {
+                    "url": "http://localhost:81/captcha/captchaImage",
+                    "uri": "/captcha/captchaImage",
+                    "agent_name":
+                    "Mac OS X-localhost-v1.0.0-d24bf703ca62499ebdd12770708296f5",
+                    "http_method": "GET",
+                    "type": "Weak Random Number Generation",
+                    "taint_position": None,
+                    "first_time": 1631089870,
+                    "latest_time": 1631089961,
+                    "project_name": "demo-4.6.1",
+                    "project_version": "V1.0",
+                    "language": "JAVA",
+                    "level": "LOW",
+                    "level_type": 3,
+                    "counts": 6,
+                    "req_header":
+                    "GET /captcha/captchaImage?type=math HTTP/1.1\nhost:localhost:81\nconnection:keep-alive\nsec-ch-ua:\"Google Chrome\";v=\"93\", \" Not;A Brand\";v=\"99\", \"Chromium\";v=\"93\"\nsec-ch-ua-mobile:?0\nuser-agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36\nsec-ch-ua-platform:\"macOS\"\naccept:image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8\nsec-fetch-site:same-origin\nsec-fetch-mode:no-cors\nsec-fetch-dest:image\nreferer:http://localhost:81/login\naccept-encoding:gzip, deflate, br\naccept-language:zh-CN,zh;q=0.9\ncookie:JSESSIONID=4bada2e5-d848-4218-8e24-3b28f765b986\n",
+                    "response": "None\n\nNone",
+                    "graph": None,
+                    "context_path": "127.0.0.1",
+                    "client_ip": "127.0.0.1",
+                    "status": "Confirmed",
+                    "taint_value": None,
+                    "param_name": {},
+                    "method_pool_id": None,
+                    "project_id": 69
+                },
+                "server": {
+                    "name": "server.name",
+                    "hostname": "localhost",
+                    "ip": "localhost",
+                    "port": 81,
+                    "container": "Apache Tomcat/9.0.41",
+                    "server_type": "apache tomcat",
+                    "container_path":
+                    "/Users/erzhuangniu/workspace/vul/demo-4.6.1",
+                    "runtime": "OpenJDK Runtime Environment",
+                    "environment":
+                    "java.runtime.name=OpenJDK Runtime Environment, spring.output.ansi.enabled=always, project.name=demo-4.6.1, sun.boot.library.path=/Users/erzhuangniu/Library/Java/JavaVirtualMachines/corretto-1.8.0_292/Contents/Home/jre/lib, java.vm.version=25.292-b10, gop",
+                    "command": "com.ruoyi.demoApplication"
+                },
+                "strategy": {
+                    "desc":
+                    "Verifies that weak sources of entropy are not used.",
+                    "sample_code": "",
+                    "repair_suggestion": None
+                }
+            }
+        }
+    }],
+                                 summary=_('Vulnerability details'),
+                                 description=
+                                 _('Use the corresponding id of the vulnerability to query the details of the vulnerability'
+                                   ),
+                                 tags=[_('Vulnerability')],
+                                 response_schema=_ResponseSerializer)
     def get(self, request, id):
         """
         :param request:
