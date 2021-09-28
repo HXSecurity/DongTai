@@ -37,8 +37,8 @@ jobs:
           key-secret: ${{ secrets.OSS_KEY_SECRET }}
           region: oss-cn-beijing
           bucket: huoqi-public
-          asset-path: ./dist/dongtai-1.0.5.tar.gz
-          target-path: /iast/dongtai-test-1.0.5.tar.gz
+          assets: |
+            ./dist/dongtai-1.0.5.tar.gz:/iast/dongtai-test-1.0.5.tar.gz
 
       - name: Upload to oss latest
         id: upload_to_oss_latest
@@ -48,8 +48,8 @@ jobs:
           key-secret: ${{ secrets.OSS_KEY_SECRET }}
           region: oss-cn-beijing
           bucket: huoqi-public
-          asset-path: ./dist/dongtai-1.0.5.tar.gz
-          target-path: /iast/dongtai-test-latest.tar.gz
+          assets: |
+            ./dist/dongtai-1.0.5.tar.gz:/iast/dongtai-test-latest.tar.gz
 
       - name: finish build
         uses: joelwmale/webhook-action@master
