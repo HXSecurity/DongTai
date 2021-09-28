@@ -9,28 +9,86 @@ from dongtai.endpoint import R
 from dongtai.endpoint import MixinAuthEndPoint
 from iast.serializers.vul import VulForPluginSerializer
 from django.utils.translation import gettext_lazy as _
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from django.utils.text import format_lazy
 from iast.utils import get_model_order_options
+
+_ResponseSerializer = get_response_serializer(
+    VulForPluginSerializer(many=True))
 
 
 class VulListEndPoint(MixinAuthEndPoint):
+    @extend_schema_with_envcheck(
+        [
+            {
+                'name': "page",
+                'type': int,
+                'default': 1,
+                'required': False,
+                'description': _('Page index'),
+            },
+            {
+                'name': "pageSize",
+                'type': int,
+                'default': 20,
+                'required': False,
+                'description': _('Number per page'),
+            },
+            {
+                'name': "name",
+                'type': str,
+                'description': _('Name of agent'),
+            },
+            {
+                'name':
+                "level",
+                'type':
+                str,
+                'description':
+                format_lazy("{} : {}", _('Level of vulnerability'), "1,2,3,4")
+            },
+            {
+                'name': "url",
+                'type': str,
+                'description': _('The URL corresponding to the vulnerability'),
+            },
+            {
+                'name':
+                "order",
+                'type':
+                str,
+                'description':
+                format_lazy(
+                    "{} : {}", _('Sorted index'), ",".join([
+                        'id', 'hook_type_id', 'url', 'http_method',
+                        'top_stack', 'bottom_stack'
+                    ])),
+            },
+        ],
+        tags=[_('Vulnerability')],
+        summary=_("Vulnerability List (with agent name)"),
+        description=
+        _("Use the agent name to get the corresponding list of vulnerabilities"
+          ),
+        response_schema=_ResponseSerializer
+    )
     def get(self, request):
-        agent_name = request.query_params.get('name')
+        agent_name = request.query_params.get('name', None)
         if not agent_name:
             return R.failure(msg=_("Please input agent name."))
 
-        agent = IastAgent.objects.filter(
-            token=agent_name,
-            id__in=self.get_auth_agents_with_user(request.user)
-        ).first()
+        agent = IastAgent.objects.filter(token=agent_name,
+                                         id__in=self.get_auth_agents_with_user(
+                                             request.user)).first()
         if not agent:
             return R.failure(msg=_("agent_name not found"))
 
-        queryset = IastVulnerabilityModel.objects.values('id', 'hook_type_id', 'url', 'http_method', 'top_stack',
-                                                         'bottom_stack').filter(
-            agent=agent)
+        queryset = IastVulnerabilityModel.objects.values(
+            'id', 'hook_type_id', 'url', 'http_method', 'top_stack',
+            'bottom_stack').filter(agent=agent)
 
         if queryset:
-            url = request.query_params.get('url')
+            url = request.query_params.get('url', None)
             if url and url != '':
                 queryset = queryset.filter(url__icontains=url)
 

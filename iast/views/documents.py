@@ -6,27 +6,45 @@ from dongtai.models.document import IastDocument
 from dongtai.endpoint import R
 from dongtai.utils import const
 from dongtai.endpoint import UserEndPoint
-from iast.serializers.strategy import StrategySerializer
 from django.forms.models import model_to_dict
 from django.db.models import Q
 from rest_framework import serializers
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes
 from rest_framework.serializers import ValidationError
-from iast.utils import extend_schema_with_envcheck
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from django.utils.translation import gettext_lazy as _
 
 
+class _DocumentArgsSerializer(serializers.Serializer):
+    page_size = serializers.IntegerField(default=20,
+                                         help_text=_('Number per page'))
+    page = serializers.IntegerField(default=1, help_text=_('Page index'))
+    language = serializers.CharField(
+        default=None,
+        help_text=_("Document's corresponding programming language"))
 
 
-class DocumentArgsSerializer(serializers.Serializer):
-    page_size = serializers.IntegerField(default=20)
-    page = serializers.IntegerField(default=1)
-    language = serializers.CharField(default=None)
+class DocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IastDocument
+        fields = ['id', 'title', 'url', 'language', 'weight']
+
+
+class ResponseDataSerializer(serializers.Serializer):
+    documents = DocumentSerializer(many=True)
+
+
+_SuccessSerializer = get_response_serializer(ResponseDataSerializer())
 
 
 class DocumentsEndpoint(UserEndPoint):
-    @extend_schema_with_envcheck([DocumentArgsSerializer])
+    @extend_schema_with_envcheck([_DocumentArgsSerializer],
+                                 response_schema=_SuccessSerializer,
+                                 summary=_('Get documents'),
+                                 description=_("Get help documentation."),
+                                 tags=[_('Documents')])
     def get(self, request):
-        ser = DocumentArgsSerializer(data=request.GET)
+        ser = _DocumentArgsSerializer(data=request.GET)
         try:
             if ser.is_valid(True):
                 page_size = ser.validated_data['page_size']

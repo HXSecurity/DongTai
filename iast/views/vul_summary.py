@@ -15,6 +15,21 @@ from iast.base.project_version import get_project_version, get_project_version_b
 from django.utils.translation import gettext_lazy as _
 from dongtai.models.hook_type import HookType
 from django.db.models import Q
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from django.utils.text import format_lazy
+from rest_framework import serializers
+from iast.serializers.vul import VulSummaryTypeSerializer, VulSummaryProjectSerializer, VulSummaryLevelSerializer, VulSummaryLanguageSerializer
+
+
+class VulSummaryResponseDataSerializer(serializers.Serializer):
+    language = VulSummaryLanguageSerializer(many=True)
+    level = VulSummaryLevelSerializer(many=True)
+    type = VulSummaryTypeSerializer(many=True)
+    projects = VulSummaryProjectSerializer(many=True)
+
+
+_ResponseSerializer = get_response_serializer(
+    VulSummaryResponseDataSerializer())
 
 
 class VulSummary(UserEndPoint):
@@ -32,14 +47,178 @@ class VulSummary(UserEndPoint):
             agent_ids[agent_id] = agent_ids[agent_id] + 1
 
         language_agents = dict()
-        language_items = IastAgent.objects.filter(id__in=agent_ids.keys()).values('id', 'language')
+        language_items = IastAgent.objects.filter(
+            id__in=agent_ids.keys()).values('id', 'language')
         for language_item in language_items:
             language_agents[language_item['id']] = language_item['language']
 
         for agent_id, count in agent_ids.items():
-            default_language[language_agents[agent_id]] = count + default_language[language_agents[agent_id]]
-        return [{'language': _key, 'count': _value} for _key, _value in default_language.items()]
+            default_language[
+                language_agents[agent_id]] = count + default_language[
+                    language_agents[agent_id]]
+        return [{
+            'language': _key,
+            'count': _value
+        } for _key, _value in default_language.items()]
 
+    @extend_schema_with_envcheck(
+        [
+            {
+                'name': "language",
+                'type': str,
+                'description': _("programming language")
+            },
+            {
+                'name': "type",
+                'type': str,
+                'description': _('Type of vulnerability'),
+            },
+            {
+                'name': "project_name",
+                'type': str,
+                'deprecated': True,
+                'description': _('Name of Project'),
+            },
+            {
+                'name':
+                "level",
+                'type':
+                str,
+                'description':
+                format_lazy("{} : {}", _('Level of vulnerability'), "1,2,3,4")
+            },
+            {
+                'name': "project_id",
+                'type': int,
+                'description': _('Id of Project'),
+            },
+            {
+                'name':
+                "version_id",
+                'type':
+                int,
+                'description':
+                _("The default is the current version id of the project.")
+            },
+            {
+                'name': "status",
+                'type': str,
+                'deprecated': True,
+                'description': _('Name of status'),
+            },
+            {
+                'name': "status_id",
+                'type': int,
+                'description': _('Id of status'),
+            },
+            {
+                'name': "url",
+                'type': str,
+                'description': _('The URL corresponding to the vulnerability'),
+            },
+            {
+                'name':
+                "order",
+                'type':
+                str,
+                'description':
+                format_lazy(
+                    "{} : {}", _('Sorted index'), ",".join(
+                        ['type', 'type', 'first_time', 'latest_time', 'url']))
+            },
+        ],
+        [],
+        [{
+            'name':
+            _('Get data sample'),
+            'description':
+            _("The aggregation results are programming language, risk level, vulnerability type, project"
+              ),
+            'value': {
+                "status": 201,
+                "msg": "success",
+                "data": {
+                    "language": [{
+                        "language": "JAVA",
+                        "count": 136
+                    }, {
+                        "language": "PYTHON",
+                        "count": 0
+                    }],
+                    "level": [{
+                        "level": "HIGH",
+                        "count": 116,
+                        "level_id": 1
+                    }, {
+                        "level": "MEDIUM",
+                        "count": 16,
+                        "level_id": 2
+                    }, {
+                        "level": "LOW",
+                        "count": 4,
+                        "level_id": 3
+                    }, {
+                        "level": "INFO",
+                        "count": 0,
+                        "level_id": 4
+                    }],
+                    "type": [{
+                        "type": "Path Traversal",
+                        "count": 79
+                    }, {
+                        "type": "OS Command Injection",
+                        "count": 26
+                    }, {
+                        "type": "Cross-Site Scripting",
+                        "count": 16
+                    }, {
+                        "type": "SQL Injection",
+                        "count": 9
+                    }, {
+                        "type": "Weak Random Number Generation",
+                        "count": 2
+                    }, {
+                        "type": "Hibernate Injection",
+                        "count": 2
+                    }, {
+                        "type": "Insecure Hash Algorithms",
+                        "count": 1
+                    }, {
+                        "type": "Arbitrary Server Side Forwards",
+                        "count": 1
+                    }],
+                    "projects": [{
+                        "project_name": "demo1",
+                        "count": 23,
+                        "id": 58
+                    }, {
+                        "project_name": "demo3",
+                        "count": 4,
+                        "id": 63
+                    }, {
+                        "project_name": "demo",
+                        "count": 2,
+                        "id": 67
+                    }, {
+                        "project_name": "demo4",
+                        "count": 2,
+                        "id": 69
+                    }, {
+                        "project_name": "demo5",
+                        "count": 1,
+                        "id": 71
+                    }]
+                },
+                "level_data": []
+            }
+        }],
+        tags=[_('Vulnerability')],
+        summary=_('Vulnerability Summary'),
+        description=
+        _('Use the following conditions to view the statistics of the number of vulnerabilities in the project.'
+          ),
+        response_schema=_ResponseSerializer
+    )
     def get(self, request):
         """
         :param request:

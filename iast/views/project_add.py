@@ -14,16 +14,51 @@ from dongtai.models.agent import IastAgent
 from dongtai.models.project_version import IastProjectVersion
 from dongtai.models.project import IastProject
 from dongtai.models.strategy_user import IastStrategyUser
-from iast.base.project_version import version_modify
+from iast.base.project_version import version_modify, ProjectsVersionDataSerializer
 from django.utils.translation import gettext_lazy as _
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from rest_framework import serializers
 
 logger = logging.getLogger("django")
+
+
+class _ProjectsAddBodyArgsSerializer(serializers.Serializer):
+    name = serializers.CharField(help_text=_('The name of project'))
+    agent_ids = serializers.CharField(help_text=_(
+        'The id corresponding to the agent, use, for segmentation.'))
+    mode = serializers.ChoiceField(['插桩模式'],
+                                   help_text=_('The mode of project'))
+    scan_id = serializers.IntegerField(
+        help_text=_("The id corresponding to the scanning strategy."))
+    version_name = serializers.CharField(
+        help_text=_("The version name of the project"))
+    pid = serializers.IntegerField(help_text=_("The id of the project"))
+    description = serializers.CharField(
+        help_text=_("Description of the project"))
+
+
+_ResponseSerializer = get_response_serializer(status_msg_keypair=(
+    ((202, _('Parameter error')), ''),
+    ((201, _('Created success')), ''),
+    ((202, _('Agent has been bound by other application')), ''),
+    ((203, _('Failed to create, the application name already exists')), ''),
+))
 
 
 class ProjectAdd(UserEndPoint):
     name = "api-v1-project-add"
     description = _("New application")
 
+    @extend_schema_with_envcheck(
+        request=_ProjectsAddBodyArgsSerializer,
+        tags=[_('Project')],
+        summary=_('Projects Add'),
+        description=_(
+            """Create a new project according to the given conditions;
+            when specifying the project id, update the item corresponding to the id according to the given condition."""
+        ),
+        response_schema=_ResponseSerializer,
+    )
     def post(self, request):
         try:
             name = request.data.get("name")
@@ -46,11 +81,11 @@ class ProjectAdd(UserEndPoint):
             pid = request.data.get("pid", 0)
 
             if pid:
-                
+
                 project = IastProject.objects.filter(id=pid, user=request.user).first()
                 project.name = name
             else:
-                
+
                 project = IastProject.objects.filter(name=name, user=request.user).first()
                 if not project:
                     project = IastProject.objects.create(name=name, user=request.user)
@@ -73,7 +108,7 @@ class ProjectAdd(UserEndPoint):
                 return R.failure(status=202, msg=_("Parameter error"))
             else:
                 project_version_id = result.get("data", {}).get("version_id", 0)
-            
+
             if agent_ids:
                 haveBind = IastAgent.objects.filter(
                     ~Q(bind_project_id=project.id),
@@ -88,7 +123,7 @@ class ProjectAdd(UserEndPoint):
             project.agent_count = len(agents)
             project.user = request.user
             project.latest_time = int(time.time())
-            
+
             if agents:
                 IastAgent.objects.filter(user__in=auth_users, bind_project_id=project.id).update(bind_project_id=0, online=0)
                 project.agent_count = IastAgent.objects.filter(
@@ -110,5 +145,5 @@ class ProjectAdd(UserEndPoint):
 
             return R.success(msg=_('Created success'))
         except Exception as e:
-            print(e)
-            return R.failure(status=202, msg=e)
+            logger.error(e)
+            return R.failure(status=202, msg=_("Parameter error"))
