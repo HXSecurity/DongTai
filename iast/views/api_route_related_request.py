@@ -25,6 +25,7 @@ class ApiRouteCoverRelationSerializer(serializers.ModelSerializer):
 
 _GetResponseSerializer = get_response_serializer(ApiRouteCoverRelationSerializer())
 
+
 class ApiRouteRelationRequest(UserEndPoint):
     @extend_schema_with_envcheck(
         [{
@@ -37,8 +38,8 @@ class ApiRouteRelationRequest(UserEndPoint):
             'name': 'version_id',
             'type': int
         }],
-        tags=[_('Api Route')],
-        summary=_('Api Route Relation Request'),
+        tags=[_('API Route')],
+        summary=_('API Route Relation Request'),
         description=
         _("Get the coverrate of the project corresponding to the specified id."
           ),

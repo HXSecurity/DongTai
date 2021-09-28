@@ -105,7 +105,7 @@ from iast.views.api_route_cover_rate import ApiRouteCoverRate
 from iast.views.health import HealthView
 from iast.views.oss_health import OssHealthView
 from iast.views.github_contributors import GithubContributorsView
-
+from iast.views.program_language import ProgrammingLanguageList
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
     path("talent/<int:pk>", TalentEndPoint.as_view()),
@@ -178,7 +178,7 @@ urlpatterns = [
     path('agent/install', AgentInstall.as_view()),
     path('agent/uninstall', AgentUninstall.as_view()),
     path('agent/upgrade/online', AgentUpgradeOnline.as_view()),
-#    path('agent/upgrade/offline', AgentUpgradeOffline.as_view()),
+    #    path('agent/upgrade/offline', AgentUpgradeOffline.as_view()),
     path('agent/download', AgentDownload.as_view()),
     path('agent/status/update', AgentStatusUpdate.as_view()),
     path('agent/start', AgentStart.as_view()),
@@ -217,6 +217,7 @@ urlpatterns = [
     path('api_route/cover_rate', ApiRouteCoverRate.as_view()),
     path('health', HealthView.as_view()),
     path('oss/health', OssHealthView.as_view()),
+    path('program_language', ProgrammingLanguageList.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口

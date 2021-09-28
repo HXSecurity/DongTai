@@ -30,7 +30,7 @@ class AgentSearch(AnonymousAndUserEndPoint):
         tags=[_('Agent')],
         summary=_('Agent Search'),
         description=_(
-            ""
+            "Search for the agent corresponding to the user according to the following parameters"
         ),
         response_schema=_ResponseSerializer,
     )
