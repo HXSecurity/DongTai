@@ -127,17 +127,17 @@ class ApiRouteSearch(UserEndPoint):
           ),
         response_schema=_GetResponseSerializer,
     )
-    def get(self, request):
-        page_size = int(request.query_params.get('page_size', 1))
-        page_index = int(request.query_params.get('page_index', 1))
-        uri = request.query_params.get('uri', None)
-        http_method = request.query_params.get('http_method', None)
-        project_id = request.query_params.get('project_id', None)
-        version_id = request.query_params.get('version_id', None)
-        exclude_id = request.query_params.get('exclude_ids', None)
+    def post(self, request):
+        page_size = int(request.data.get('page_size', 1))
+        page_index = int(request.data.get('page_index', 1))
+        uri = request.data.get('uri', None)
+        http_method = request.data.get('http_method', None)
+        project_id = request.data.get('project_id', None)
+        version_id = request.data.get('version_id', None)
+        exclude_id = request.data.get('exclude_ids', None)
         exclude_id = [int(i)
                       for i in exclude_id.split(',')] if exclude_id else None
-        is_cover = request.query_params.get('is_cover', None)
+        is_cover = request.data.get('is_cover', None)
         is_cover_dict = {1: True, 0: False}
         is_cover = is_cover_dict[int(is_cover)] if is_cover is not None and is_cover != '' else None
         auth_users = self.get_auth_users(request.user)

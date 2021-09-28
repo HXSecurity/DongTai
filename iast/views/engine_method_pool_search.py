@@ -127,17 +127,17 @@ _GetResponseSerializer = get_response_serializer(MethodPoolSearchResponseSer())
 
 class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
     @extend_schema_with_envcheck(
-        [MethodPoolSearchProxySer],
+        request=MethodPoolSearchProxySer,
         tags=[_('Method Pool')],
         summary=_('Method Pool Component'),
         description=_(
             "Get the component information list of the tainted call chain."),
         response_schema=_GetResponseSerializer,
     )
-    def get(self, request):
-        page_size = int(request.query_params.get('page_size', 1))
-        page = request.query_params.get('page_index', 1)
-        highlight = request.query_params.get('highlight', 1)
+    def post(self, request):
+        page_size = int(request.data.get('page_size', 1))
+        page = request.data.get('page_index', 1)
+        highlight = request.data.get('highlight', 1)
         fields = ['url', 'res_body']
         model_fields = [
             'url', 'res_header', 'res_body', 'req_header_fs', 'req_data'
@@ -148,10 +148,10 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         )
         fields.extend(['sinkvalues', 'signature'])
         search_after_keys = ['update_time']
-        ids = request.query_params.get('exclude_ids', None)
-        time_range = request.query_params.get('time_range', None)
+        ids = request.data.get('exclude_ids', None)
+        time_range = request.data.get('time_range', None)
         search_fields = dict(
-            filter(lambda k: k[0] in fields, request.query_params.items()))
+            filter(lambda k: k[0] in fields, request.data.items()))
         search_fields_ = []
         for k, v in search_fields.items():
             if k == 'sinkvalues':
@@ -173,10 +173,10 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                 map(
                     lambda x: (x[0].replace('search_after_', ''), x[1]),
                     filter(lambda x: x[0].startswith('search_after_'),
-                           request.query_params.items()))))
+                           request.data.items()))))
         q = assemble_query(search_after_fields, 'lte', q, operator.and_)
-        if 'id' in request.query_params.keys():
-            q = q & Q(pk=request.query_params['id'])
+        if 'id' in request.data.keys():
+            q = q & Q(pk=request.data['id'])
         q = q & Q(agent_id__in=[
             item['id'] for item in list(
                 self.get_auth_agents_with_user(request.user).values('id'))
