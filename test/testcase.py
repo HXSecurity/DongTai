@@ -63,11 +63,6 @@ class DocumentsEndpointTests(APITestCase):
     def test_documents_retrive2(self, value):
         response = self.client.get(self.url, value)
         self.assertEqual(response.status_code, 200)
-#    @data(*fuzz_test_data(DocumentsEndpoint, 'get'))
-#    def test_autogen(self, args):
-#        key = [k for k, v in self.httpmethod.querys[0]().get_fields().items()]
-#        response = self.client.get(self.url, dict(zip(key, args)))
-#        self.assertEqual(response.status_code, 200)
 
     def test_edge_case(self):
         data = {}
@@ -84,28 +79,15 @@ class DocumentsEndpointTests(APITestCase):
     def test_documents_retrive22(self):
         response = self.client.get(self.url, {'language': 'python'})
         self.assertEqual(response.status_code, 200)
+from django.urls import resolve
 
-from iast.views.api_route_cover_rate import ApiRouteCoverRate
-
-
-#def datagen(keylist,argslist):
-#    return list(product())
-
-
-#@ddt
-#class DocumentsEndpointTests(APITestCase):
-#    def setUp(self):
-#        self.url = '/api/v1/api_route/cover_rate'
-#        self.view = DocumentsEndpoint
-#        self.method = list(
-#            filter(lambda x: x in ['get', 'post'], dir(ApiRouteCoverRate)))
-#        self.httpmethod = getattr(ApiRouteCoverRate, self.method[0])
-#        user_model = get_user_model()
-#        self.client.force_login(user_model.objects.first())
-#
-#    @data(*fuzz_test_data(ApiRouteCoverRate, 'get'))
-#    def test_autogen(self, args):
-#        print(self.httpmethod.querys)
-#        key = [k['name'] for k in self.httpmethod.querys]
-#        response = self.client.get(self.url, dict(zip(key, args)))
-#        self.assertEqual(response.status_code, 200)
+class DocumentsEndpointTests(APITestCase):
+    def setUp(self):
+        self.urls = ['/api/v1/documents', '/api/v1/api_route/search']
+        url = '/api/v1/documents'
+        view = resolve(url).func.view_class
+        self.method = list(
+            filter(lambda x: x in ['get', 'post'], dir(view)))
+        self.httpmethod = getattr(DocumentsEndpoint, self.method[0])
+        user_model = get_user_model()
+        self.client.force_login(user_model.objects.first())

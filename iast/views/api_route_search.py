@@ -34,7 +34,7 @@ class ApiRouteSearchRequestBodySerializer(serializers.Serializer):
     http_method = serializers.CharField(
         help_text=_("The http method of the api route"), required=False)
     project_id = serializers.CharField(help_text=_("The id of the project"), )
-    version_id = serializers.CharField(
+    version_id = serializers.IntegerField(
         help_text=_("The version id of the project"), required=False)
     exclude_ids = serializers.CharField(help_text=_(
         "Exclude the api route entry with the following id, this field is used to obtain the data of the entire project in batches."
