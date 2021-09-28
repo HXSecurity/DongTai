@@ -6,7 +6,7 @@
 # project: dongtai-models
 from django.db import models
 from dongtai.utils.settings import get_managed
-
+from dongtai.models.program_language import IastProgramLanguage
 
 class HookType(models.Model):
     type = models.IntegerField(blank=True, null=True)
@@ -16,6 +16,11 @@ class HookType(models.Model):
     create_time = models.IntegerField(blank=True, null=True)
     update_time = models.IntegerField(blank=True, null=True)
     created_by = models.IntegerField(blank=True, null=True)
+    language = models.ForeignKey(IastProgramLanguage,
+                                 blank=True,
+                                 default='',
+                                 on_delete=models.DO_NOTHING,
+                                 db_constraint=False)
 
     class Meta:
         managed = get_managed()
