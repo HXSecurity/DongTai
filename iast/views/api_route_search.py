@@ -120,10 +120,10 @@ _GetResponseSerializer = get_response_serializer(
 class ApiRouteSearch(UserEndPoint):
     @extend_schema_with_envcheck(
         request=ApiRouteSearchRequestBodySerializer,
-        tags=[_('Api Route')],
-        summary=_('Api Route Search'),
+        tags=[_('API Route')],
+        summary=_('API Route Search'),
         description=
-        _("Get the api list corresponding to the project according to the following parameters. By default, there is no sorting. Please use the exclude_ids field for pagination."
+        _("Get the API list corresponding to the project according to the following parameters. By default, there is no sorting. Please use the exclude_ids field for pagination."
           ),
         response_schema=_GetResponseSerializer,
     )

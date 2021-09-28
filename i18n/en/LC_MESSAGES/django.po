@@ -3,11 +3,10 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#: iast/views/agent_search.py:33
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-26 19:25+0800\n"
+"POT-Creation-Date: 2021-09-28 19:11+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -225,6 +224,7 @@ msgid "Whether it is the current version, 1 means yes, 0 means no."
 msgstr ""
 
 #: iast/base/project_version.py:23 iast/base/project_version.py:33
+#: iast/views/engine_hook_rule_summary.py:47 iast/views/engine_hook_rules.py:89
 #: iast/views/project_add.py:41 iast/views/project_add.py:69
 #: iast/views/project_add.py:108 iast/views/project_add.py:149
 #: iast/views/project_report_export.py:75 iast/views/project_version_add.py:18
@@ -695,6 +695,12 @@ msgstr "Suspending ..."
 msgid "Agent Search"
 msgstr ""
 
+#: iast/views/agent_search.py:33
+msgid ""
+"Search for the agent corresponding to the user according to the following "
+"parameters"
+msgstr ""
+
 #: iast/views/agent_start.py:26
 msgid "Start Agent"
 msgstr "Start Agent"
@@ -848,18 +854,18 @@ msgid "The api cover_rate of the project"
 msgstr ""
 
 #: iast/views/api_route_cover_rate.py:37
-#: iast/views/api_route_related_request.py:40
+#: iast/views/api_route_related_request.py:41
 #: iast/views/api_route_search.py:123
-msgid "Api Route"
+msgid "API Route"
 msgstr ""
 
 #: iast/views/api_route_cover_rate.py:38
-msgid "Api Route Coverrate"
+msgid "API Route Coverrate"
 msgstr ""
 
 #: iast/views/api_route_cover_rate.py:40
-#: iast/views/api_route_related_request.py:43
-msgid "Get the coverrate of the project corresponding to the specified id."
+msgid ""
+"Get the API route coverrate of the project corresponding to the specified id."
 msgstr ""
 
 #: iast/views/api_route_cover_rate.py:72
@@ -868,11 +874,15 @@ msgstr ""
 msgid "API coverage rate obtained successfully"
 msgstr "Agent and related data deleted successfully"
 
-#: iast/views/api_route_related_request.py:41
-msgid "Api Route Relation Request"
+#: iast/views/api_route_related_request.py:42
+msgid "API Route Relation Request"
 msgstr ""
 
-#: iast/views/api_route_search.py:29 iast/views/engine_hook_rules.py:24
+#: iast/views/api_route_related_request.py:44
+msgid "Get the coverrate of the project corresponding to the specified id."
+msgstr ""
+
+#: iast/views/api_route_search.py:29 iast/views/engine_hook_rules.py:28
 #: iast/views/engine_method_pool_search.py:24
 #, fuzzy
 #| msgid "Number of Agent"
@@ -1016,12 +1026,14 @@ msgid "The id of the agent reported the api route"
 msgstr "Number of Agent"
 
 #: iast/views/api_route_search.py:124
-msgid "Api Route Search"
-msgstr ""
+#, fuzzy
+#| msgid "Number of Agent"
+msgid "API Route Search"
+msgstr "Number of Agent"
 
 #: iast/views/api_route_search.py:126
 msgid ""
-"Get the api list corresponding to the project according to the following "
+"Get the API list corresponding to the project according to the following "
 "parameters. By default, there is no sorting. Please use the exclude_ids "
 "field for pagination."
 msgstr ""
@@ -1059,11 +1071,11 @@ msgstr "Failed to create strategy"
 #: iast/views/engine_hook_rule_modify.py:78
 #: iast/views/engine_hook_rule_status.py:80
 #: iast/views/engine_hook_rule_status.py:110
-#: iast/views/engine_hook_rule_summary.py:29
-#: iast/views/engine_hook_rule_type_add.py:66
+#: iast/views/engine_hook_rule_summary.py:37
+#: iast/views/engine_hook_rule_type_add.py:84
 #: iast/views/engine_hook_rule_type_disable.py:37
 #: iast/views/engine_hook_rule_type_enable.py:43
-#: iast/views/engine_hook_rule_types.py:63 iast/views/engine_hook_rules.py:63
+#: iast/views/engine_hook_rule_types.py:74 iast/views/engine_hook_rules.py:77
 msgid "Hook Rule"
 msgstr ""
 
@@ -1176,61 +1188,74 @@ msgstr ""
 msgid "Strategy operation success, total {}"
 msgstr "Strategy operation success, total {}"
 
-#: iast/views/engine_hook_rule_summary.py:17
+#: iast/views/engine_hook_rule_summary.py:18
 msgid "Total number of rule types"
 msgstr ""
 
-#: iast/views/engine_hook_rule_summary.py:18
+#: iast/views/engine_hook_rule_summary.py:19
 msgid "Total number of rules"
 msgstr ""
 
-#: iast/views/engine_hook_rule_summary.py:20
+#: iast/views/engine_hook_rule_summary.py:21
 msgid "Total number of sink type rules"
 msgstr ""
 
-#: iast/views/engine_hook_rule_summary.py:30
+#: iast/views/engine_hook_rule_summary.py:26
+#: iast/views/engine_hook_rule_type_add.py:43
+#: iast/views/engine_hook_rule_types.py:33 iast/views/engine_hook_rules.py:34
+#, fuzzy
+#| msgid "Development language"
+msgid "The id of programming language"
+msgstr "Development language"
+
+#: iast/views/engine_hook_rule_summary.py:38
 msgid "Hook Rule Summary"
 msgstr ""
 
-#: iast/views/engine_hook_rule_summary.py:31
+#: iast/views/engine_hook_rule_summary.py:39
 msgid "Statistics on the number of hook rules"
 msgstr ""
 
-#: iast/views/engine_hook_rule_type_add.py:23
-#: iast/views/engine_hook_rule_types.py:29 iast/views/engine_hook_rules.py:21
+#: iast/views/engine_hook_rule_type_add.py:26
+#: iast/views/engine_hook_rule_types.py:29 iast/views/engine_hook_rules.py:25
 msgid ""
 "type of hook rule \n"
 " 1 represents the propagation method, 2 represents the source method, 3 "
 "represents the filter method, and 4 represents the taint method"
 msgstr ""
 
-#: iast/views/engine_hook_rule_type_add.py:28
+#: iast/views/engine_hook_rule_type_add.py:32
 msgid "The enabled state of the hook strategy: 0-disabled, 1-enabled"
 msgstr ""
 
-#: iast/views/engine_hook_rule_type_add.py:29
+#: iast/views/engine_hook_rule_type_add.py:34
 msgid "The name of hook type"
 msgstr ""
 
-#: iast/views/engine_hook_rule_type_add.py:32
+#: iast/views/engine_hook_rule_type_add.py:38
 msgid "The short name of hook type"
 msgstr ""
 
-#: iast/views/engine_hook_rule_type_add.py:36
-#: iast/views/engine_hook_rule_type_add.py:79
+#: iast/views/engine_hook_rule_type_add.py:47
+#: iast/views/engine_hook_rule_type_add.py:104
 msgid "Rule type successfully saved"
 msgstr "Rule type successfully saved"
 
-#: iast/views/engine_hook_rule_type_add.py:37
-#: iast/views/engine_hook_rule_type_add.py:74
+#: iast/views/engine_hook_rule_type_add.py:48
+#: iast/views/engine_hook_rule_type_add.py:93
 msgid "Incomplete data"
 msgstr "Incomplete data"
 
-#: iast/views/engine_hook_rule_type_add.py:67
+#: iast/views/engine_hook_rule_type_add.py:79
+#: iast/views/engine_hook_rule_types.py:67 iast/views/engine_hook_rules.py:72
+msgid "Parameter parsing failed, error message: {}"
+msgstr "Parameter parsing failed, error message: {}"
+
+#: iast/views/engine_hook_rule_type_add.py:85
 msgid "Hook Rule Type Add"
 msgstr ""
 
-#: iast/views/engine_hook_rule_type_add.py:68
+#: iast/views/engine_hook_rule_type_add.py:86
 msgid "Create hook rule type based on incoming parameters"
 msgstr ""
 
@@ -1243,7 +1268,7 @@ msgstr "Forbidden success"
 #: iast/views/engine_hook_rule_type_disable.py:56
 #: iast/views/engine_hook_rule_type_enable.py:26
 #: iast/views/engine_hook_rule_type_enable.py:62
-#: iast/views/engine_hook_rule_types.py:67 iast/views/engine_hook_rules.py:71
+#: iast/views/engine_hook_rule_types.py:82 iast/views/engine_hook_rules.py:91
 msgid "Strategy type does not exist"
 msgstr "Strategy type does not exist"
 
@@ -1272,35 +1297,31 @@ msgstr ""
 msgid "Enable the status of the rule corresponding to the specified id."
 msgstr ""
 
-#: iast/views/engine_hook_rule_types.py:56 iast/views/engine_hook_rules.py:58
-msgid "Parameter parsing failed, error message: {}"
-msgstr "Parameter parsing failed, error message: {}"
-
-#: iast/views/engine_hook_rule_types.py:61
+#: iast/views/engine_hook_rule_types.py:72
 msgid "Hook Types List"
 msgstr ""
 
-#: iast/views/engine_hook_rule_types.py:62
+#: iast/views/engine_hook_rule_types.py:73
 msgid "Get Hook Types List"
 msgstr ""
 
-#: iast/views/engine_hook_rules.py:25
+#: iast/views/engine_hook_rules.py:29
 msgid "page index"
 msgstr ""
 
-#: iast/views/engine_hook_rules.py:27
+#: iast/views/engine_hook_rules.py:31
 msgid "The id of hook_type"
 msgstr ""
 
-#: iast/views/engine_hook_rules.py:64
+#: iast/views/engine_hook_rules.py:78
 msgid "Hook Rule List"
 msgstr ""
 
-#: iast/views/engine_hook_rules.py:65
+#: iast/views/engine_hook_rules.py:79
 msgid "Get the list of hook strategies"
 msgstr ""
 
-#: iast/views/engine_hook_rules.py:87
+#: iast/views/engine_hook_rules.py:111
 msgid "Rule read error, error message: {}"
 msgstr "Rule read error, error message: {}"
 
@@ -1490,6 +1511,36 @@ msgstr "Failed to get {} configuration"
 #: iast/views/profile.py:27
 msgid "Update {} failed"
 msgstr "Update {} failed"
+
+#: iast/views/program_language.py:19
+#, fuzzy
+#| msgid "Development language"
+msgid "The id of program language"
+msgstr "Development language"
+
+#: iast/views/program_language.py:20
+#, fuzzy
+#| msgid "Number of Agent"
+msgid "The name of program language"
+msgstr "Number of Agent"
+
+#: iast/views/program_language.py:33
+#, fuzzy
+#| msgid "Development language"
+msgid "Program Language"
+msgstr "Development language"
+
+#: iast/views/program_language.py:34
+#, fuzzy
+#| msgid "Development language"
+msgid "Program Language List"
+msgstr "Development language"
+
+#: iast/views/program_language.py:35
+#, fuzzy
+#| msgid "Development language"
+msgid "Get a list of program language."
+msgstr "Development language"
 
 #: iast/views/project_add.py:26 iast/views/project_detail.py:20
 #: iast/views/project_search.py:19 iast/views/project_summary.py:52

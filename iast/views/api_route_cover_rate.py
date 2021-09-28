@@ -34,10 +34,10 @@ class ApiRouteCoverRate(UserEndPoint):
             'name': 'version_id',
             'type': int
         }],
-        tags=[_('Api Route')],
-        summary=_('Api Route Coverrate'),
+        tags=[_('API Route')],
+        summary=_('API Route Coverrate'),
         description=_(
-            "Get the coverrate of the project corresponding to the specified id."
+            "Get the API route coverrate of the project corresponding to the specified id."
         ),
         response_schema=_GetResponseSerializer,
 
