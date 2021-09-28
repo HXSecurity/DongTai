@@ -40,14 +40,6 @@ class VulListEndPoint(MixinAuthEndPoint):
                 'description': _('Name of agent'),
             },
             {
-                'name':
-                "level",
-                'type':
-                str,
-                'description':
-                format_lazy("{} : {}", _('Level of vulnerability'), "1,2,3,4")
-            },
-            {
                 'name': "url",
                 'type': str,
                 'description': _('The URL corresponding to the vulnerability'),
@@ -85,7 +77,7 @@ class VulListEndPoint(MixinAuthEndPoint):
 
         queryset = IastVulnerabilityModel.objects.values(
             'id', 'hook_type_id', 'url', 'http_method', 'top_stack',
-            'bottom_stack').filter(agent=agent)
+            'bottom_stack', 'level_id').filter(agent=agent)
 
         if queryset:
             url = request.query_params.get('url', None)
