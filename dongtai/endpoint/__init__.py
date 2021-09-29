@@ -159,15 +159,13 @@ class EndPoint(APIView):
                 "num_pages": page_info.num_pages,
                 "page_size": page_size
             }
-        except ZeroDivisionError:
+        except:
             page_summary = {
                 "alltotal": 0,
                 "num_pages": 0,
                 "page_size": page_size
             }
         try:
-            if page <= 0:
-                return page_summary, []
             page_info.validate_number(page)
             page_list = page_info.get_page(page).object_list
         except:
