@@ -168,7 +168,7 @@ class EndPoint(APIView):
         try:
             page_info.validate_number(page)
             page_list = page_info.get_page(page).object_list
-        except (EmptyPage, PageNotAnInteger, AssertionError):
+        except (EmptyPage, PageNotAnInteger, AssertionError, ZeroDivisionError):
             return page_summary, []
         return page_summary, page_list
 
