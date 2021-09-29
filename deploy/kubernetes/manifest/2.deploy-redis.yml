@@ -53,7 +53,7 @@ spec:
       dnsPolicy: ClusterFirst
       initContainers:
         - command: [ "/bin/sh","-c","mkdir -p /data/middleware-data/redis/log/  /data/middleware-data/redis/conf/ /data/middleware-data/redis/data/" ]
-          image: busybox:1.0.0
+          image: busybox
           imagePullPolicy: Always
           name: init-redis
           volumeMounts:
