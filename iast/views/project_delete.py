@@ -28,7 +28,6 @@ class ProjectDel(UserEndPoint):
     description = _("Delete application")
 
     @extend_schema_with_envcheck(
-        [],
         request=_ProjectsDelBodyArgsSerializer,
         tags=[_('Project')],
         summary=_('Projects Delete'),
@@ -37,7 +36,7 @@ class ProjectDel(UserEndPoint):
     )
     def post(self, request):
         try:
-            project_id = request.data('id', None)
+            project_id = request.data.get('id', None)
             if project_id:
                 auth_users = self.get_auth_users(request.user)
                 IastAgent.objects.filter(
