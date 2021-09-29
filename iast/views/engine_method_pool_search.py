@@ -18,6 +18,7 @@ import operator
 import time
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy
 
 
 class MethodPoolSearchProxySer(serializers.Serializer):
@@ -129,9 +130,9 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
     @extend_schema_with_envcheck(
         request=MethodPoolSearchProxySer,
         tags=[_('Method Pool')],
-        summary=_('Method Pool Component'),
+        summary=_('Method Pool Search'),
         description=_(
-            "Get the component information list of the tainted call chain."),
+            "Search for the method pool information according to the following conditions, the default is regular expression input, regular specifications refer to REGEX POSIX 1003.2"),
         response_schema=_GetResponseSerializer,
     )
     def post(self, request):
@@ -148,8 +149,18 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         )
         fields.extend(['sinkvalues', 'signature'])
         search_after_keys = ['update_time']
-        ids = request.data.get('exclude_ids', None)
+        exclude_ids = request.data.get('exclude_ids', None)
         time_range = request.data.get('time_range', None)
+        try:
+            [start_time, end_time
+             ] = [int(i)
+                  for i in time_range.split(',')] if time_range is not None else [
+                      int(time.time()) -
+                      86400 * 7, int(time.time())
+                  ]
+            ids = exclude_ids.split(',')
+        except:
+            return R.failure(gettext_lazy("Parameter error"))
         search_fields = dict(
             filter(lambda k: k[0] in fields, request.data.items()))
         search_fields_ = []
@@ -181,15 +192,9 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             item['id'] for item in list(
                 self.get_auth_agents_with_user(request.user).values('id'))
         ])
-        [start_time, end_time
-         ] = [int(i)
-              for i in time_range.split(',')] if time_range is not None else [
-                  int(time.time()) -
-                  86400 * 7, int(time.time())
-              ]
         q = (q &
              (Q(update_time__gte=start_time) & Q(update_time__lte=end_time)))
-        q = (q & (~Q(pk__in=ids.split(',')))) if ids is not None and ids != '' else q
+        q = (q & (~Q(pk__in=ids))) if ids is not None and ids != [] else q
         queryset = MethodPool.objects.filter(q).order_by(
             '-update_time')[:page_size]
         try:
@@ -212,7 +217,6 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                                             for _ in agents]).values(
                                                 'id', 'username')
         vulnerablities = list(vulnerablity)
-        print(vulnerablities)
         relations = []
         [agents, projects, users] = _transform([agents, projects, users], 'id')
         for method_pool in method_pools:

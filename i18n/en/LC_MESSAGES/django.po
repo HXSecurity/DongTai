@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-28 19:11+0800\n"
+"POT-Creation-Date: 2021-09-29 14:39+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -208,7 +208,7 @@ msgstr ""
 msgid "Description of the project versoin"
 msgstr ""
 
-#: iast/base/project_version.py:14 iast/serializers/vul.py:97
+#: iast/base/project_version.py:14 iast/serializers/vul.py:101
 #: iast/views/api_route_search.py:36 iast/views/project_add.py:35
 #: iast/views/project_delete.py:17 iast/views/project_detail.py:29
 #: iast/views/project_report_export.py:30 iast/views/project_search.py:18
@@ -224,11 +224,14 @@ msgid "Whether it is the current version, 1 means yes, 0 means no."
 msgstr ""
 
 #: iast/base/project_version.py:23 iast/base/project_version.py:33
-#: iast/views/engine_hook_rule_summary.py:47 iast/views/engine_hook_rules.py:89
-#: iast/views/project_add.py:41 iast/views/project_add.py:69
-#: iast/views/project_add.py:108 iast/views/project_add.py:149
-#: iast/views/project_report_export.py:75 iast/views/project_version_add.py:18
-#: iast/views/project_version_add.py:41 iast/views/project_version_add.py:47
+#: iast/views/engine_hook_rule_summary.py:47
+#: iast/views/engine_hook_rule_types.py:80 iast/views/engine_hook_rules.py:89
+#: iast/views/engine_method_pool_search.py:163 iast/views/openapi.py:13
+#: iast/views/openapi.py:67 iast/views/project_add.py:41
+#: iast/views/project_add.py:69 iast/views/project_add.py:108
+#: iast/views/project_add.py:149 iast/views/project_report_export.py:75
+#: iast/views/project_version_add.py:18 iast/views/project_version_add.py:41
+#: iast/views/project_version_add.py:47
 #: iast/views/project_version_current.py:50
 #: iast/views/project_version_delete.py:23
 #: iast/views/project_version_delete.py:47
@@ -385,7 +388,13 @@ msgstr "No application"
 msgid "No application version has been created"
 msgstr "No application version"
 
-#: iast/serializers/vul.py:73 iast/views/sca_sidebar_index.py:22
+#: iast/serializers/vul.py:59
+#, fuzzy
+#| msgid "Delete vulnerability"
+msgid "The level name of vulnerablity"
+msgstr "Delete vulnerability"
+
+#: iast/serializers/vul.py:77 iast/views/sca_sidebar_index.py:22
 #: iast/views/sca_summary.py:52 iast/views/scas.py:40
 #: iast/views/vul_details.py:58 iast/views/vul_sidebar_index.py:42
 #: iast/views/vul_summary.py:69 iast/views/vuls.py:71
@@ -394,43 +403,43 @@ msgstr "No application version"
 msgid "programming language"
 msgstr "Development language"
 
-#: iast/serializers/vul.py:75
+#: iast/serializers/vul.py:79
 msgid "The number of vulnerabilities corresponding to the programming language"
 msgstr ""
 
-#: iast/serializers/vul.py:80 iast/views/vul_details.py:59
+#: iast/serializers/vul.py:84 iast/views/vul_details.py:59
 #, fuzzy
 #| msgid "Number of Vulnerability"
 msgid "The name of vulnerablity level"
 msgstr "Number of Vulnerability"
 
-#: iast/serializers/vul.py:81 iast/views/project_summary.py:48
+#: iast/serializers/vul.py:85 iast/views/project_summary.py:48
 msgid "The number of vulnerabilities corresponding to the level"
 msgstr ""
 
-#: iast/serializers/vul.py:82 iast/views/vul_details.py:60
+#: iast/serializers/vul.py:86 iast/views/vul_details.py:60
 #, fuzzy
 #| msgid "Number of Vulnerability"
 msgid "The id of vulnerablity level"
 msgstr "Number of Vulnerability"
 
-#: iast/serializers/vul.py:86
+#: iast/serializers/vul.py:90
 #, fuzzy
 #| msgid "Modify the vulnerability status"
 msgid "The name of vulnerablity type"
 msgstr "Modify the vulnerability status"
 
-#: iast/serializers/vul.py:88
+#: iast/serializers/vul.py:92
 msgid "The number of vulnerabilities corresponding to the vulnerablity type"
 msgstr ""
 
-#: iast/serializers/vul.py:94 iast/views/project_report_export.py:29
+#: iast/serializers/vul.py:98 iast/views/project_report_export.py:29
 #, fuzzy
 #| msgid "Number of Agent"
 msgid "The name of the project"
 msgstr "Number of Agent"
 
-#: iast/serializers/vul.py:96
+#: iast/serializers/vul.py:100
 msgid "The number of vulnerabilities corresponding to the project"
 msgstr ""
 
@@ -883,7 +892,7 @@ msgid "Get the coverrate of the project corresponding to the specified id."
 msgstr ""
 
 #: iast/views/api_route_search.py:29 iast/views/engine_hook_rules.py:28
-#: iast/views/engine_method_pool_search.py:24
+#: iast/views/engine_method_pool_search.py:25
 #, fuzzy
 #| msgid "Number of Agent"
 msgid "number per page"
@@ -1346,19 +1355,17 @@ msgid "Searching, current {} page"
 msgstr "Searching, current {} page"
 
 #: iast/views/engine_method_pool_sca.py:24
-#: iast/views/engine_method_pool_search.py:131
+#: iast/views/engine_method_pool_search.py:132
 msgid "Method Pool"
 msgstr ""
 
 #: iast/views/engine_method_pool_sca.py:25
-#: iast/views/engine_method_pool_search.py:132
 #, fuzzy
 #| msgid "Method pool ID is empty"
 msgid "Method Pool Component"
 msgstr "Method pool ID is empty"
 
 #: iast/views/engine_method_pool_sca.py:26
-#: iast/views/engine_method_pool_search.py:134
 msgid "Get the component information list of the tainted call chain."
 msgstr ""
 
@@ -1374,64 +1381,78 @@ msgstr "method_pool does not exist"
 msgid "method_pool has no permission"
 msgstr "method_pool has no permission"
 
-#: iast/views/engine_method_pool_search.py:28
+#: iast/views/engine_method_pool_search.py:29
 msgid ""
 "Whether to enable highlighting, the text where the regular expression "
 "matches will be highlighted"
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:30
+#: iast/views/engine_method_pool_search.py:31
 msgid ""
 "Exclude the method_pool entry with the following id, this field is used to "
 "obtain the data of the entire project in batches."
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:32
+#: iast/views/engine_method_pool_search.py:33
 msgid ""
 "Time range, the default is the current time to the previous seven days, "
 "separated by',', format such as 1,1628190947242"
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:36
+#: iast/views/engine_method_pool_search.py:37
 msgid "The url of the method pool, search using regular syntax"
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:39
+#: iast/views/engine_method_pool_search.py:40
 msgid "The response header of the method pood, search using regular syntax"
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:42
+#: iast/views/engine_method_pool_search.py:43
 msgid "The response body of the calling chain, search using regular syntax"
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:45
+#: iast/views/engine_method_pool_search.py:46
 msgid "The request header of the calling chain, search using regular syntax"
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:49
+#: iast/views/engine_method_pool_search.py:50
 msgid "The request data of the calling chain, search using regular syntax"
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:52
+#: iast/views/engine_method_pool_search.py:53
 msgid "The sinkvalues of the calling chain, search using regular syntax"
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:55
+#: iast/views/engine_method_pool_search.py:56
 msgid "The signature of the calling chain, search using regular syntax"
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:58
+#: iast/views/engine_method_pool_search.py:59
 msgid ""
 "The filter field will return the method call chain with the update time "
 "after this time, which can be combined with the exclude_ids field to handle "
 "paging"
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:198
+#: iast/views/engine_method_pool_search.py:133
+#, fuzzy
+#| msgid "Method pool ID is empty"
+msgid "Method Pool Search"
+msgstr "Method pool ID is empty"
+
+#: iast/views/engine_method_pool_search.py:135
+msgid ""
+"Search for the method pool information according to the following "
+"conditions, the default is regular expression input, regular specifications "
+"refer to REGEX POSIX 1003.2"
+msgstr ""
+
+#: iast/views/engine_method_pool_search.py:203
 msgid "The regular expression format is wrong, please use REGEX POSIX 1003.2"
 msgstr "The regular expression format is wrong, please use REGEX POSIX 1003.2"
 
-#: iast/views/health.py:32 iast/views/openapi.py:17 iast/views/oss_health.py:23
+#: iast/views/health.py:32 iast/views/openapi.py:29 iast/views/openapi.py:47
+#: iast/views/oss_health.py:23
 msgid "Get OpenAPI configuration failed"
 msgstr "Get OpenAPI configuration failed"
 
@@ -1447,7 +1468,8 @@ msgstr "Log clear"
 msgid "Log delete"
 msgstr "Log delete"
 
-#: iast/views/log_delete.py:27 iast/views/project_detail.py:35
+#: iast/views/log_delete.py:27 iast/views/openapi.py:28
+#: iast/views/project_detail.py:35
 msgid "success"
 msgstr "success"
 
@@ -1488,15 +1510,36 @@ msgstr "Data does not exist or no permission to access"
 msgid "Page and PageSize can only be numeric"
 msgstr "Page and PageSize can only be numeric"
 
-#: iast/views/openapi.py:24 iast/views/profile.py:18
-msgid "Current users have no permission to modify"
-msgstr "Current users have no permission to modify"
-
-#: iast/views/openapi.py:31 iast/views/openapi.py:34
+#: iast/views/openapi.py:11 iast/views/openapi.py:72 iast/views/openapi.py:76
 #: iast/views/project_add.py:42 iast/views/project_add.py:146
 #: iast/views/project_version_add.py:19 iast/views/project_version_add.py:43
 msgid "Created success"
 msgstr "Created success"
+
+#: iast/views/openapi.py:12 iast/views/openapi.py:62 iast/views/profile.py:18
+msgid "Current users have no permission to modify"
+msgstr "Current users have no permission to modify"
+
+#: iast/views/openapi.py:35 iast/views/openapi.py:52
+msgid "Profile"
+msgstr ""
+
+#: iast/views/openapi.py:36
+msgid "Profile DongTai-OpenApi Retrieve"
+msgstr ""
+
+#: iast/views/openapi.py:37
+msgid "Get the uri of DongTai-OpenApi"
+msgstr ""
+
+#: iast/views/openapi.py:53
+msgid "Profile DongTai-OpenApi Modify"
+msgstr ""
+
+#: iast/views/openapi.py:55
+msgid ""
+"To set the url address of DongTai-OpenApi, administrator rights are required"
+msgstr ""
 
 #: iast/views/oss_health.py:25
 #, fuzzy
@@ -1803,8 +1846,8 @@ msgstr "Modify the vulnerability status"
 
 #: iast/views/project_summary.py:33 iast/views/sca_sidebar_index.py:27
 #: iast/views/sca_summary.py:68 iast/views/scas.py:51
-#: iast/views/vul_list_for_plugin.py:48 iast/views/vul_sidebar_index.py:58
-#: iast/views/vul_summary.py:88 iast/views/vuls.py:90
+#: iast/views/vul_sidebar_index.py:58 iast/views/vul_summary.py:88
+#: iast/views/vuls.py:90
 #, fuzzy
 #| msgid "Delete vulnerability"
 msgid "Level of vulnerability"
@@ -1987,7 +2030,7 @@ msgid "Component information query failed"
 msgstr "Component information query failed"
 
 #: iast/views/sca_sidebar_index.py:40 iast/views/sca_summary.py:91
-#: iast/views/scas.py:79 iast/views/vul_list_for_plugin.py:62
+#: iast/views/scas.py:79 iast/views/vul_list_for_plugin.py:54
 #: iast/views/vul_sidebar_index.py:69 iast/views/vul_summary.py:126
 #: iast/views/vuls.py:128
 msgid "Sorted index"
@@ -2288,7 +2331,7 @@ msgid "Updated is currently not allowed"
 msgstr "Updated is currently not allowed"
 
 #: iast/views/vul_count_for_plugin.py:26 iast/views/vul_delete.py:29
-#: iast/views/vul_details.py:334 iast/views/vul_list_for_plugin.py:68
+#: iast/views/vul_details.py:334 iast/views/vul_list_for_plugin.py:60
 #: iast/views/vul_recheck.py:124 iast/views/vul_recheck.py:204
 #: iast/views/vul_sidebar_index.py:71 iast/views/vul_status.py:60
 #: iast/views/vul_summary.py:215 iast/views/vulnerability_status.py:78
@@ -2308,11 +2351,11 @@ msgstr "Vulnerability type name"
 msgid "Get the number of vulnerabilities corresponding to the Agent."
 msgstr ""
 
-#: iast/views/vul_count_for_plugin.py:35 iast/views/vul_list_for_plugin.py:78
+#: iast/views/vul_count_for_plugin.py:35 iast/views/vul_list_for_plugin.py:70
 msgid "Please input agent name."
 msgstr "Please input agent name."
 
-#: iast/views/vul_count_for_plugin.py:41 iast/views/vul_list_for_plugin.py:84
+#: iast/views/vul_count_for_plugin.py:41 iast/views/vul_list_for_plugin.py:76
 msgid "agent_name not found"
 msgstr "agent_name not found"
 
@@ -2380,18 +2423,18 @@ msgstr "Vulnerability data query error"
 msgid "Name of agent"
 msgstr "Number of Agent"
 
-#: iast/views/vul_list_for_plugin.py:53 iast/views/vul_sidebar_index.py:62
+#: iast/views/vul_list_for_plugin.py:45 iast/views/vul_sidebar_index.py:62
 #: iast/views/vul_summary.py:117 iast/views/vuls.py:119
 msgid "The URL corresponding to the vulnerability"
 msgstr ""
 
-#: iast/views/vul_list_for_plugin.py:69
+#: iast/views/vul_list_for_plugin.py:61
 #, fuzzy
 #| msgid "Vulnerability type name"
 msgid "Vulnerability List (with agent name)"
 msgstr "Vulnerability type name"
 
-#: iast/views/vul_list_for_plugin.py:71
+#: iast/views/vul_list_for_plugin.py:63
 msgid "Use the agent name to get the corresponding list of vulnerabilities"
 msgstr ""
 
