@@ -166,6 +166,8 @@ class EndPoint(APIView):
                 "page_size": page_size
             }
         try:
+            if page <= 0:
+                return page_summary, []
             page_info.validate_number(page)
             page_list = page_info.get_page(page).object_list
         except:
