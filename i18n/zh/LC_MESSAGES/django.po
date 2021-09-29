@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-28 19:11+0800\n"
+"POT-Creation-Date: 2021-09-29 14:39+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -197,7 +197,7 @@ msgstr "项目的版本名。"
 msgid "Description of the project versoin"
 msgstr "项目版本的描述"
 
-#: iast/base/project_version.py:14 iast/serializers/vul.py:97
+#: iast/base/project_version.py:14 iast/serializers/vul.py:101
 #: iast/views/api_route_search.py:36 iast/views/project_add.py:35
 #: iast/views/project_delete.py:17 iast/views/project_detail.py:29
 #: iast/views/project_report_export.py:30 iast/views/project_search.py:18
@@ -211,11 +211,14 @@ msgid "Whether it is the current version, 1 means yes, 0 means no."
 msgstr "表示是否为当前版本，1代表是，0代表否"
 
 #: iast/base/project_version.py:23 iast/base/project_version.py:33
-#: iast/views/engine_hook_rule_summary.py:47 iast/views/engine_hook_rules.py:89
-#: iast/views/project_add.py:41 iast/views/project_add.py:69
-#: iast/views/project_add.py:108 iast/views/project_add.py:149
-#: iast/views/project_report_export.py:75 iast/views/project_version_add.py:18
-#: iast/views/project_version_add.py:41 iast/views/project_version_add.py:47
+#: iast/views/engine_hook_rule_summary.py:47
+#: iast/views/engine_hook_rule_types.py:80 iast/views/engine_hook_rules.py:89
+#: iast/views/engine_method_pool_search.py:163 iast/views/openapi.py:13
+#: iast/views/openapi.py:67 iast/views/project_add.py:41
+#: iast/views/project_add.py:69 iast/views/project_add.py:108
+#: iast/views/project_add.py:149 iast/views/project_report_export.py:75
+#: iast/views/project_version_add.py:18 iast/views/project_version_add.py:41
+#: iast/views/project_version_add.py:47
 #: iast/views/project_version_current.py:50
 #: iast/views/project_version_delete.py:23
 #: iast/views/project_version_delete.py:47
@@ -370,42 +373,48 @@ msgstr "暂未绑定项目"
 msgid "No application version has been created"
 msgstr "暂未创建项目版本"
 
-#: iast/serializers/vul.py:73 iast/views/sca_sidebar_index.py:22
+#: iast/serializers/vul.py:59
+#, fuzzy
+#| msgid "Level name of vulnerability"
+msgid "The level name of vulnerablity"
+msgstr "漏洞等级名称"
+
+#: iast/serializers/vul.py:77 iast/views/sca_sidebar_index.py:22
 #: iast/views/sca_summary.py:52 iast/views/scas.py:40
 #: iast/views/vul_details.py:58 iast/views/vul_sidebar_index.py:42
 #: iast/views/vul_summary.py:69 iast/views/vuls.py:71
 msgid "programming language"
 msgstr "编程语言"
 
-#: iast/serializers/vul.py:75
+#: iast/serializers/vul.py:79
 msgid "The number of vulnerabilities corresponding to the programming language"
 msgstr "编程语言对应的漏洞数量"
 
-#: iast/serializers/vul.py:80 iast/views/vul_details.py:59
+#: iast/serializers/vul.py:84 iast/views/vul_details.py:59
 msgid "The name of vulnerablity level"
 msgstr "漏洞类型名称"
 
-#: iast/serializers/vul.py:81 iast/views/project_summary.py:48
+#: iast/serializers/vul.py:85 iast/views/project_summary.py:48
 msgid "The number of vulnerabilities corresponding to the level"
 msgstr "漏洞级别对应的漏洞数量"
 
-#: iast/serializers/vul.py:82 iast/views/vul_details.py:60
+#: iast/serializers/vul.py:86 iast/views/vul_details.py:60
 msgid "The id of vulnerablity level"
 msgstr "漏洞类型id"
 
-#: iast/serializers/vul.py:86
+#: iast/serializers/vul.py:90
 msgid "The name of vulnerablity type"
 msgstr "漏洞类型的对应名称"
 
-#: iast/serializers/vul.py:88
+#: iast/serializers/vul.py:92
 msgid "The number of vulnerabilities corresponding to the vulnerablity type"
 msgstr "漏洞类型对应的漏洞数量"
 
-#: iast/serializers/vul.py:94 iast/views/project_report_export.py:29
+#: iast/serializers/vul.py:98 iast/views/project_report_export.py:29
 msgid "The name of the project"
 msgstr "项目名"
 
-#: iast/serializers/vul.py:96
+#: iast/serializers/vul.py:100
 msgid "The number of vulnerabilities corresponding to the project"
 msgstr "项目对应的漏洞数量"
 
@@ -806,12 +815,10 @@ msgid "API Route"
 msgstr "API 导航"
 
 #: iast/views/api_route_cover_rate.py:38
-#| msgid "Api Route Coverrate"
 msgid "API Route Coverrate"
 msgstr "API导航覆盖率"
 
 #: iast/views/api_route_cover_rate.py:40
-#| msgid "Get the coverrate of the project corresponding to the specified id."
 msgid ""
 "Get the API route coverrate of the project corresponding to the specified id."
 msgstr "通过指定id来获取对应项目的API覆盖率"
@@ -821,7 +828,6 @@ msgid "API coverage rate obtained successfully"
 msgstr "API覆盖率获取成功"
 
 #: iast/views/api_route_related_request.py:42
-#| msgid "Api Route Relation Request"
 msgid "API Route Relation Request"
 msgstr "API导航相关的请求"
 
@@ -830,7 +836,7 @@ msgid "Get the coverrate of the project corresponding to the specified id."
 msgstr "通过指定id来获取对应项目的覆盖率"
 
 #: iast/views/api_route_search.py:29 iast/views/engine_hook_rules.py:28
-#: iast/views/engine_method_pool_search.py:24
+#: iast/views/engine_method_pool_search.py:25
 msgid "number per page"
 msgstr "每页数量"
 
@@ -935,21 +941,15 @@ msgid "The id of the agent reported the api route"
 msgstr "上报该api的探针的id"
 
 #: iast/views/api_route_search.py:124
-#| msgid "Api Route Search"
 msgid "API Route Search"
 msgstr "API 导航搜索"
 
 #: iast/views/api_route_search.py:126
-#| msgid ""
-#| "Get the api list corresponding to the project according to the following "
-#| "parameters. By default, there is no sorting. Please use the exclude_ids "
-#| "field for pagination."
 msgid ""
 "Get the API list corresponding to the project according to the following "
 "parameters. By default, there is no sorting. Please use the exclude_ids "
 "field for pagination."
-msgstr ""
-"根据以下参数搜索用户对应的agent"
+msgstr "根据以下参数搜索用户对应的agent"
 
 #: iast/views/documents.py:24
 msgid "Document's corresponding programming language"
@@ -1112,7 +1112,6 @@ msgstr "污点类型规则的同属"
 #: iast/views/engine_hook_rule_summary.py:26
 #: iast/views/engine_hook_rule_type_add.py:43
 #: iast/views/engine_hook_rule_types.py:33 iast/views/engine_hook_rules.py:34
-#| msgid "programming language"
 msgid "The id of programming language"
 msgstr "编程语言的id"
 
@@ -1256,17 +1255,15 @@ msgid "Searching, current {} page"
 msgstr "正在搜索，当前第{}页"
 
 #: iast/views/engine_method_pool_sca.py:24
-#: iast/views/engine_method_pool_search.py:131
+#: iast/views/engine_method_pool_search.py:132
 msgid "Method Pool"
 msgstr "方法调用链"
 
 #: iast/views/engine_method_pool_sca.py:25
-#: iast/views/engine_method_pool_search.py:132
 msgid "Method Pool Component"
 msgstr "方法调用链相关组件"
 
 #: iast/views/engine_method_pool_sca.py:26
-#: iast/views/engine_method_pool_search.py:134
 msgid "Get the component information list of the tainted call chain."
 msgstr "获取方法调用链相关的组件信息列表"
 
@@ -1282,53 +1279,53 @@ msgstr "method_pool 不存在"
 msgid "method_pool has no permission"
 msgstr "method_pool无权访问"
 
-#: iast/views/engine_method_pool_search.py:28
+#: iast/views/engine_method_pool_search.py:29
 msgid ""
 "Whether to enable highlighting, the text where the regular expression "
 "matches will be highlighted"
 msgstr "是否启用高亮，会对正则表达式匹配处的文本进行高亮"
 
-#: iast/views/engine_method_pool_search.py:30
+#: iast/views/engine_method_pool_search.py:31
 msgid ""
 "Exclude the method_pool entry with the following id, this field is used to "
 "obtain the data of the entire project in batches."
 msgstr "排除以下id的方法调用链，该字段用于分批获取整个项目的数据。"
 
-#: iast/views/engine_method_pool_search.py:32
+#: iast/views/engine_method_pool_search.py:33
 msgid ""
 "Time range, the default is the current time to the previous seven days, "
 "separated by',', format such as 1,1628190947242"
 msgstr "时间范围,默认为当前时刻到前七天，使用','分割，格式如，1,1628190947242"
 
-#: iast/views/engine_method_pool_search.py:36
+#: iast/views/engine_method_pool_search.py:37
 msgid "The url of the method pool, search using regular syntax"
 msgstr "调用链的url，使用正则语法进行搜索"
 
-#: iast/views/engine_method_pool_search.py:39
+#: iast/views/engine_method_pool_search.py:40
 msgid "The response header of the method pood, search using regular syntax"
 msgstr "调用链的响应头，使用正则语法进行搜索"
 
-#: iast/views/engine_method_pool_search.py:42
+#: iast/views/engine_method_pool_search.py:43
 msgid "The response body of the calling chain, search using regular syntax"
 msgstr "调用链的响应体，使用正则语法进行搜索"
 
-#: iast/views/engine_method_pool_search.py:45
+#: iast/views/engine_method_pool_search.py:46
 msgid "The request header of the calling chain, search using regular syntax"
 msgstr "调用链的请求头，使用正则语法进行搜索"
 
-#: iast/views/engine_method_pool_search.py:49
+#: iast/views/engine_method_pool_search.py:50
 msgid "The request data of the calling chain, search using regular syntax"
 msgstr "调用链的请求体，使用正则语法进行搜索"
 
-#: iast/views/engine_method_pool_search.py:52
+#: iast/views/engine_method_pool_search.py:53
 msgid "The sinkvalues of the calling chain, search using regular syntax"
 msgstr "调用链的污点值，使用正则语法进行搜索"
 
-#: iast/views/engine_method_pool_search.py:55
+#: iast/views/engine_method_pool_search.py:56
 msgid "The signature of the calling chain, search using regular syntax"
 msgstr "调用链的方法签名，使用正则语法进行搜索"
 
-#: iast/views/engine_method_pool_search.py:58
+#: iast/views/engine_method_pool_search.py:59
 msgid ""
 "The filter field will return the method call chain with the update time "
 "after this time, which can be combined with the exclude_ids field to handle "
@@ -1337,11 +1334,23 @@ msgstr ""
 "过滤字段，会返回更新时间在这时间之后的方法调用链，可结合exclude_ids字段来处理"
 "分页"
 
-#: iast/views/engine_method_pool_search.py:198
+#: iast/views/engine_method_pool_search.py:133
+msgid "Method Pool Search"
+msgstr "方法调用链搜索"
+
+#: iast/views/engine_method_pool_search.py:135
+msgid ""
+"Search for the method pool information according to the following "
+"conditions, the default is regular expression input, regular specifications "
+"refer to REGEX POSIX 1003.2"
+msgstr "根据以下条件搜索调用链信息，默认为正则表达式输入，正则规范参照REGEX POSIX 1003.2"
+
+#: iast/views/engine_method_pool_search.py:203
 msgid "The regular expression format is wrong, please use REGEX POSIX 1003.2"
 msgstr "正则表达式格式错误，请使用REGEX POSIX 1003.2"
 
-#: iast/views/health.py:32 iast/views/openapi.py:17 iast/views/oss_health.py:23
+#: iast/views/health.py:32 iast/views/openapi.py:29 iast/views/openapi.py:47
+#: iast/views/oss_health.py:23
 msgid "Get OpenAPI configuration failed"
 msgstr "获取openapi配置失败"
 
@@ -1357,7 +1366,8 @@ msgstr "日志清空"
 msgid "Log delete"
 msgstr "日志删除"
 
-#: iast/views/log_delete.py:27 iast/views/project_detail.py:35
+#: iast/views/log_delete.py:27 iast/views/openapi.py:28
+#: iast/views/project_detail.py:35
 msgid "success"
 msgstr "success"
 
@@ -1398,15 +1408,36 @@ msgstr "数据不存在或无权限访问"
 msgid "Page and PageSize can only be numeric"
 msgstr "page和pageSize只能为数字"
 
-#: iast/views/openapi.py:24 iast/views/profile.py:18
-msgid "Current users have no permission to modify"
-msgstr "当前用户无权修改"
-
-#: iast/views/openapi.py:31 iast/views/openapi.py:34
+#: iast/views/openapi.py:11 iast/views/openapi.py:72 iast/views/openapi.py:76
 #: iast/views/project_add.py:42 iast/views/project_add.py:146
 #: iast/views/project_version_add.py:19 iast/views/project_version_add.py:43
 msgid "Created success"
 msgstr "创建成功"
+
+#: iast/views/openapi.py:12 iast/views/openapi.py:62 iast/views/profile.py:18
+msgid "Current users have no permission to modify"
+msgstr "当前用户无权修改"
+
+#: iast/views/openapi.py:35 iast/views/openapi.py:52
+msgid "Profile"
+msgstr "配置文档"
+
+#: iast/views/openapi.py:36
+msgid "Profile DongTai-OpenApi Retrieve"
+msgstr "获取配置中的DongTai-OpenApi地址"
+
+#: iast/views/openapi.py:37
+msgid "Get the uri of DongTai-OpenApi"
+msgstr "获取 DongTai-OpenApi 的URI"
+
+#: iast/views/openapi.py:53
+msgid "Profile DongTai-OpenApi Modify"
+msgstr "修改配置中的DongTai-OpenApi地址"
+
+#: iast/views/openapi.py:55
+msgid ""
+"To set the url address of DongTai-OpenApi, administrator rights are required"
+msgstr "设置DongTai-OpenApi的url地址，需要管理员权限"
 
 #: iast/views/oss_health.py:25
 msgid "OpenAPI configuration error"
@@ -1679,8 +1710,8 @@ msgstr "漏洞类型的个数"
 
 #: iast/views/project_summary.py:33 iast/views/sca_sidebar_index.py:27
 #: iast/views/sca_summary.py:68 iast/views/scas.py:51
-#: iast/views/vul_list_for_plugin.py:48 iast/views/vul_sidebar_index.py:58
-#: iast/views/vul_summary.py:88 iast/views/vuls.py:90
+#: iast/views/vul_sidebar_index.py:58 iast/views/vul_summary.py:88
+#: iast/views/vuls.py:90
 msgid "Level of vulnerability"
 msgstr "漏洞等级"
 
@@ -1856,7 +1887,7 @@ msgid "Component information query failed"
 msgstr "组件信息查询失败"
 
 #: iast/views/sca_sidebar_index.py:40 iast/views/sca_summary.py:91
-#: iast/views/scas.py:79 iast/views/vul_list_for_plugin.py:62
+#: iast/views/scas.py:79 iast/views/vul_list_for_plugin.py:54
 #: iast/views/vul_sidebar_index.py:69 iast/views/vul_summary.py:126
 #: iast/views/vuls.py:128
 msgid "Sorted index"
@@ -2130,7 +2161,7 @@ msgid "Updated is currently not allowed"
 msgstr "当前不允许更新"
 
 #: iast/views/vul_count_for_plugin.py:26 iast/views/vul_delete.py:29
-#: iast/views/vul_details.py:334 iast/views/vul_list_for_plugin.py:68
+#: iast/views/vul_details.py:334 iast/views/vul_list_for_plugin.py:60
 #: iast/views/vul_recheck.py:124 iast/views/vul_recheck.py:204
 #: iast/views/vul_sidebar_index.py:71 iast/views/vul_status.py:60
 #: iast/views/vul_summary.py:215 iast/views/vulnerability_status.py:78
@@ -2146,11 +2177,11 @@ msgstr "漏洞总数（Agent相关）"
 msgid "Get the number of vulnerabilities corresponding to the Agent."
 msgstr "获取用户对应的漏洞列表"
 
-#: iast/views/vul_count_for_plugin.py:35 iast/views/vul_list_for_plugin.py:78
+#: iast/views/vul_count_for_plugin.py:35 iast/views/vul_list_for_plugin.py:70
 msgid "Please input agent name."
 msgstr "please input agent name."
 
-#: iast/views/vul_count_for_plugin.py:41 iast/views/vul_list_for_plugin.py:84
+#: iast/views/vul_count_for_plugin.py:41 iast/views/vul_list_for_plugin.py:76
 msgid "agent_name not found"
 msgstr "Not found agent_name!"
 
@@ -2212,16 +2243,16 @@ msgstr "漏洞数据查询出错"
 msgid "Name of agent"
 msgstr "Agent名称"
 
-#: iast/views/vul_list_for_plugin.py:53 iast/views/vul_sidebar_index.py:62
+#: iast/views/vul_list_for_plugin.py:45 iast/views/vul_sidebar_index.py:62
 #: iast/views/vul_summary.py:117 iast/views/vuls.py:119
 msgid "The URL corresponding to the vulnerability"
 msgstr "漏洞的对应url"
 
-#: iast/views/vul_list_for_plugin.py:69
+#: iast/views/vul_list_for_plugin.py:61
 msgid "Vulnerability List (with agent name)"
 msgstr "漏洞列表（Agent相关）"
 
-#: iast/views/vul_list_for_plugin.py:71
+#: iast/views/vul_list_for_plugin.py:63
 msgid "Use the agent name to get the corresponding list of vulnerabilities"
 msgstr "使用agent名获取对应的漏洞列表"
 
