@@ -181,8 +181,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'webapi.wsgi.application'
 
-if  len(sys.argv) > 1 and sys.argv[1] in ('test', 'makemigrations',
-                                         'sqlmigrate','migrate'):
+if len(sys.argv) > 1 and sys.argv[1] in ('test', 'makemigrations',
+                                         'sqlmigrate', 'migrate'):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -193,16 +193,15 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'OPTIONS': {
-                'charset': 'utf8mb4'
-            },
             'USER': config.get("mysql", 'user'),
             'NAME': config.get("mysql", 'name'),
             'PASSWORD': config.get("mysql", 'password'),
             'HOST': config.get("mysql", 'host'),
             'PORT': config.get("mysql", 'port'),
             'OPTIONS': {
-                'init_command': 'SET max_execution_time=20000'
+                'init_command': 'SET max_execution_time=20000;SET NAMES utf8mb4;SET collation_server=utf8mb4_general_ci;SET collation_database=utf8mb4_general_ci; ',
+                'charset': 'utf8',
+                'use_unicode': True,
             },
         }
     }

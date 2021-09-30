@@ -47,8 +47,8 @@ class ScaList(UserEndPoint):
             },
             {
                 'name': "level",
-                'type': str,
-                'description': _('Level of vulnerability'),
+                'type': int,
+                'description': _('The id of level of vulnerability'),
             },
             {
                 'name': "project_id",
@@ -173,6 +173,10 @@ class ScaList(UserEndPoint):
 
         level = request.query_params.get('level')
         if level:
+            try:
+                level = int(level)
+            except:
+                return R.failure(_("Parameter error")) 
             queryset = queryset.filter(level=level)
 
         if package_kw and package_kw.strip() != '':

@@ -83,7 +83,7 @@ class VulSummary(UserEndPoint):
                 'name':
                 "level",
                 'type':
-                str,
+                int,
                 'description':
                 format_lazy("{} : {}", _('Level of vulnerability'), "1,2,3,4")
             },
@@ -276,6 +276,10 @@ class VulSummary(UserEndPoint):
 
         level = request.query_params.get('level')
         if level:
+            try:
+                level = int(level)
+            except:
+                return R.failure(_("Parameter error")) 
             queryset = queryset.filter(level=level)
 
         vul_type = request.query_params.get('type')
