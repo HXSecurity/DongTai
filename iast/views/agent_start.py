@@ -12,7 +12,7 @@ from rest_framework import serializers
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from iast.serializers.agent import AgentToggleArgsSerializer
 class _AgentStopBodyArgsSerializer(serializers.Serializer):
-    id = serializers.CharField(help_text=_(
+    id = serializers.IntegerField(help_text=_(
         'The id corresponding to the agent.'))
     ids = serializers.CharField(help_text=_(
         'The id corresponding to the agent, use"," for segmentation.'))
@@ -37,7 +37,10 @@ class AgentStart(UserEndPoint):
         agent_id = request.data.get('id')
         agent_ids = request.data.get('ids', None)
         if agent_ids:
-            agent_ids = agent_ids.split(',')
+            try:
+                agent_ids = [int(i) for i in agent_ids.split(',')]
+            except:
+                return R.failure(_("Parameter error")) 
         if agent_id:
             agent = IastAgent.objects.filter(user=request.user, id=agent_id).first()
             if agent is None:

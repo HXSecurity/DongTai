@@ -64,8 +64,8 @@ class ScaSummary(UserEndPoint):
             },
             {
                 'name': "level",
-                'type': str,
-                'description': _('Level of vulnerability'),
+                'type': int,
+                'description': _('The id level of vulnerability'),
             },
             {
                 'name':
@@ -185,6 +185,10 @@ class ScaSummary(UserEndPoint):
 
         level = request.query_params.get('level', None)
         if level:
+            try:
+                level = int(level)
+            except:
+                return R.failure(_("Parameter error")) 
             queryset = queryset.filter(level=level)
 
         package_kw = request.query_params.get('keyword', None)
