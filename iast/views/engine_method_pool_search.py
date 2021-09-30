@@ -160,7 +160,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                       int(time.time()) -
                       86400 * 7, int(time.time())
                   ]
-            ids =  [int(i) for i in exclude_ids.split(',')]
+            ids = [int(i) for i in exclude_ids.split(',')] if exclude_ids else []
         except:
             return R.failure(gettext_lazy("Parameter error"))
         search_fields = dict(
