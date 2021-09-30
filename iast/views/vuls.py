@@ -85,9 +85,20 @@ class VulsEndPoint(UserEndPoint):
                 'name':
                 "level",
                 'type':
-                str,
+                int,
+                'deprecated':
+                True,
                 'description':
                 format_lazy("{} : {}", _('Level of vulnerability'), "1,2,3,4")
+            },
+            {
+                'name':
+                "level",
+                'type':
+                int,
+                'description':
+                format_lazy("{} : {}", _('The id Level of vulnerability'),
+                            "1,2,3,4")
             },
             {
                 'name': "project_id",
@@ -205,6 +216,10 @@ class VulsEndPoint(UserEndPoint):
 
         level = request.query_params.get('level')
         if level:
+            try:
+                level = int(level)
+            except:
+                return R.failure(_("Parameter error")) 
             queryset = queryset.filter(level=level)
 
         type_ = request.query_params.get('type')

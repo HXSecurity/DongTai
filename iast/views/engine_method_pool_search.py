@@ -152,13 +152,15 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         exclude_ids = request.data.get('exclude_ids', None)
         time_range = request.data.get('time_range', None)
         try:
+            if page_size <= 0:
+                return R.failure(gettext_lazy("Parameter error"))
             [start_time, end_time
              ] = [int(i)
                   for i in time_range.split(',')] if time_range is not None else [
                       int(time.time()) -
                       86400 * 7, int(time.time())
                   ]
-            ids = (int(i) for i in exclude_ids.split(',')) if exclude_ids else []
+            ids = [int(i) for i in exclude_ids.split(',')] if exclude_ids else []
         except:
             return R.failure(gettext_lazy("Parameter error"))
         search_fields = dict(

@@ -107,12 +107,12 @@ class ProjectEngineSerializer(serializers.ModelSerializer):
 
 
 class AgentToggleArgsSerializer(serializers.Serializer):
-    id = serializers.CharField(help_text=_(
+    id = serializers.IntegerField(help_text=_(
         'The id corresponding to the agent.'))
     ids = serializers.CharField(help_text=_(
         'The id corresponding to the agent, use"," for segmentation.'))
 
 
 class AgentInstallArgsSerializer(serializers.Serializer):
-    id = serializers.CharField(help_text=_(
+    id = serializers.IntegerField(help_text=_(
         'The id corresponding to the agent.'))

@@ -183,7 +183,7 @@ urlpatterns = [
     path('agent/status/update', AgentStatusUpdate.as_view()),
     path('agent/start', AgentStart.as_view()),
     path('agent/stop', AgentStop.as_view()),
-    path('agents/search', AgentSearch.as_view()),
+    #    path('agents/search', AgentSearch.as_view()),
     path('agents/delete', AgentsDeleteEndPoint.as_view()),
     path('openapi', OpenApiEndpoint.as_view()),
     path('profile/<str:key>', ProfileEndpoint.as_view()),
