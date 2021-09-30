@@ -125,7 +125,6 @@ class ProjectAdd(UserEndPoint):
             project.latest_time = int(time.time())
 
             if agents:
-                IastAgent.objects.filter(user__in=auth_users, bind_project_id=project.id).update(bind_project_id=0, online=0)
                 project.agent_count = IastAgent.objects.filter(
                     Q(id__in=agents) | Q(project_name=name),
                     user__in=auth_users,
@@ -133,10 +132,6 @@ class ProjectAdd(UserEndPoint):
                     project_version_id=0
                 ).update(bind_project_id=project.id, project_version_id=project_version_id, online=1)
             else:
-                project.agent_count = IastAgent.objects.filter(
-                    user__in=auth_users,
-                    bind_project_id=project.id
-                ).update(bind_project_id=0, online=0)
                 project.agent_count = IastAgent.objects.filter(
                     project_name=name, user__in=auth_users).update(
                         bind_project_id=project.id,

@@ -61,8 +61,8 @@ class OpenApiEndpoint(UserEndPoint):
             return R.failure(
                 msg=_("Current users have no permission to modify"))
         value = request.data.get('value', '')
-        parse_re = urlparse(value, scheme='http')
-        if parse_re.scheme not in ('http', 'https') and parse_re.hostname in (
+        parse_re = urlparse(value)
+        if parse_re.scheme not in ('http', 'https') or parse_re.hostname in (
                 '127.0.0.1', 'localhost'):
             return R.failure(msg=_("Parameter error"))
         profilefromdb = IastProfile.objects.filter(key='apiserver').first()
