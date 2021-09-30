@@ -33,7 +33,7 @@ class ApiRouteSearchRequestBodySerializer(serializers.Serializer):
                                 required=False)
     http_method = serializers.CharField(
         help_text=_("The http method of the api route"), required=False)
-    project_id = serializers.CharField(help_text=_("The id of the project"), )
+    project_id = serializers.IntegerField(help_text=_("The id of the project"), )
     version_id = serializers.IntegerField(
         help_text=_("The version id of the project"), required=False)
     exclude_ids = serializers.CharField(help_text=_(
@@ -128,18 +128,21 @@ class ApiRouteSearch(UserEndPoint):
         response_schema=_GetResponseSerializer,
     )
     def post(self, request):
-        page_size = int(request.data.get('page_size', 1))
-        page_index = int(request.data.get('page_index', 1))
-        uri = request.data.get('uri', None)
-        http_method = request.data.get('http_method', None)
-        project_id = request.data.get('project_id', None)
-        version_id = request.data.get('version_id', None)
-        exclude_id = request.data.get('exclude_ids', None)
-        exclude_id = [int(i)
-                      for i in exclude_id.split(',')] if exclude_id else None
-        is_cover = request.data.get('is_cover', None)
-        is_cover_dict = {1: True, 0: False}
-        is_cover = is_cover_dict[int(is_cover)] if is_cover is not None and is_cover != '' else None
+        try:
+            page_size = int(request.data.get('page_size', 1))
+            page_index = int(request.data.get('page_index', 1))
+            uri = request.data.get('uri', None)
+            http_method = request.data.get('http_method', None)
+            project_id = int(request.data.get('project_id', None))
+            version_id = int(request.data.get('version_id', None))
+            exclude_id = request.data.get('exclude_ids', None)
+            exclude_id = [int(i)
+                          for i in exclude_id.split(',')] if exclude_id else None
+            is_cover = request.data.get('is_cover', None)
+            is_cover_dict = {1: True, 0: False}
+            is_cover = is_cover_dict[int(is_cover)] if is_cover is not None and is_cover != '' else None
+        except:
+            return R.failure(_("Parameter error"))
         auth_users = self.get_auth_users(request.user)
 
         if http_method:
@@ -169,12 +172,13 @@ class ApiRouteSearch(UserEndPoint):
         api_routes = IastApiRoute.objects.filter(q).order_by('id').all()
         distinct_fields = ["path", "method_id"]
         distinct_exist_list = [] if not exclude_id else list(
-            set([
-                distinct_key(
-                    IastApiRoute.objects.filter(pk=i).values(
-                        "path", "method_id").first(), distinct_fields)
-                for i in exclude_id
-            ]))
+            set(
+                filter(lambda x: x != '', [
+                    distinct_key(
+                        IastApiRoute.objects.filter(pk=i).values(
+                            "path", "method_id").first(), distinct_fields)
+                    for i in exclude_id
+                ])))
         _filter_and_label_partial = partial(
             _filter_and_label,
             distinct=True,
@@ -221,6 +225,8 @@ def _filter_and_label(api_routes,
 
 
 def distinct_key(objects, fields):
+    if objects is None:
+        return ''
     sequence = [objects.get(field, 'None') for field in fields]
     sequence = [
         item if isinstance(item, str) else str(item) for item in sequence

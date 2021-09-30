@@ -46,13 +46,18 @@ class ApiRouteRelationRequest(UserEndPoint):
         response_schema=_GetResponseSerializer,
     )
     def get(self, request):
-        page_size = int(request.query_params.get('page_size', 1))
-        page_index = int(request.query_params.get('page_index', 1))
-        api_route_id = int(request.query_params.get('api_route_id', 1))
-        api_route = IastApiRoute.objects.filter(pk=api_route_id).first()
-        project_id = request.query_params.get('project_id', None)
-        auth_users = self.get_auth_users(request.user)
-        version_id = request.query_params.get('version_id', None)
+        try:
+            page_size = int(request.query_params.get('page_size', 1))
+            page_index = int(request.query_params.get('page_index', 1))
+            api_route_id = int(request.query_params.get('api_route_id', 1))
+            api_route = IastApiRoute.objects.filter(pk=api_route_id).first()
+            if api_route is None:
+                return R.failure(msg=_("API not Fould"))
+            project_id = int(request.query_params.get('project_id', None))
+            auth_users = self.get_auth_users(request.user)
+            version_id = int(request.query_params.get('version_id', None))
+        except:
+            return R.failure(_("Parameter error"))
         if project_id:
             if not version_id:
                 current_project_version = get_project_version(

@@ -33,7 +33,10 @@ class AgentStop(UserEndPoint):
         agent_id = request.data.get('id', None)
         agent_ids = request.data.get('ids', None)
         if agent_ids:
-            agent_ids = agent_ids.split(',')
+            try:
+                agent_ids = [int(i) for i in agent_ids.split(',')]
+            except:
+                return R.failure(_("Parameter error")) 
         if agent_id:
             agent = IastAgent.objects.filter(user=request.user,
                                              id=agent_id).first()

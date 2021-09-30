@@ -15,12 +15,15 @@ from rest_framework import serializers
 logger = logging.getLogger('dongtai-webapi')
 
 OP_CHOICES = ('enable', 'disable', 'delete')
-
+#SCOPE_CHOICES = ('all',)
 
 class EngineHookRuleStatusGetQuerySerializer(serializers.Serializer):
-    rule_id = serializers.IntegerField(help_text=_("The id of hook type"))
+    rule_id = serializers.IntegerField(help_text=_("The id of hook rule"))
+    #    rule_type = serializers.IntegerField(help_text=_("The id of hook rule type"))
     op = serializers.ChoiceField(OP_CHOICES,
                                  help_text=_("The state of the hook rule"))
+#    scope = serializers.ChoiceField(SCOPE_CHOICES,
+#                                 help_text=_("The scope of the hook rule"))
 
 
 class EngineHookRuleStatusPostBodySerializer(serializers.Serializer):
@@ -84,6 +87,10 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
     )
     def get(self, request):
         rule_id, rule_type, scope, op = self.parse_args(request)
+        try:
+            rule_id = int(rule_id)
+        except:
+            return R.failure(_("Parameter error"))
         user_id = request.user.id
         status = False
 
@@ -119,7 +126,10 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
             return R.failure(msg=_('Operation type does not exist'))
 
         strategy_ids = request.data.get('ids')
-        strategy_ids = strategy_ids.split(',')
+        try:
+            strategy_ids = [int(i) for i in strategy_ids.split(',')]
+        except:
+            return R.failure(_("Parameter error"))
         if strategy_ids:
             count = self.set_strategy_status(strategy_id=None, strategy_ids=strategy_ids, user_id=request.user.id,
                                              enable_status=op)
