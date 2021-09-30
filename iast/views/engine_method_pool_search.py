@@ -255,13 +255,13 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         if highlight:
             for method_pool in method_pools:
                 for field in model_fields:
-                    if field in search_fields.keys() and request.GET.get(
+                    if field in search_fields.keys() and request.data.get(
                             field, None):
                         if method_pool[field] is None:
                             continue
                         method_pool['_'.join([field, 'highlight'
                                               ])] = highlight_matches(
-                                                  request.GET[field],
+                                                  request.data[field],
                                                   method_pool[field],
                                                   "<em>{0}</em>")
                     elif field in fields:

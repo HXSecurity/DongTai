@@ -22,7 +22,9 @@ from dongtai.models.hook_type import HookType
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
+import logging
 
+logger = logging.getLogger('dongtai-webapi')
 
 class ApiRouteSearchRequestBodySerializer(serializers.Serializer):
     page_size = serializers.IntegerField(
@@ -133,15 +135,18 @@ class ApiRouteSearch(UserEndPoint):
             page_index = int(request.data.get('page_index', 1))
             uri = request.data.get('uri', None)
             http_method = request.data.get('http_method', None)
-            project_id = int(request.data.get('project_id', None))
-            version_id = int(request.data.get('version_id', None))
+            project_id = request.data.get('project_id', None)
+            project_id = int(project_id) if project_id else None
+            version_id = request.data.get('version_id', None)
+            version_id = int(version_id) if version_id else None
             exclude_id = request.data.get('exclude_ids', None)
             exclude_id = [int(i)
                           for i in exclude_id.split(',')] if exclude_id else None
             is_cover = request.data.get('is_cover', None)
             is_cover_dict = {1: True, 0: False}
             is_cover = is_cover_dict[int(is_cover)] if is_cover is not None and is_cover != '' else None
-        except:
+        except Exception as e:
+            logger.error(e)
             return R.failure(_("Parameter error"))
         auth_users = self.get_auth_users(request.user)
 
