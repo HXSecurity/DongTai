@@ -230,8 +230,8 @@ USE_I18N = True
 USE_L10N = True
 
 STATIC_URL = '/static/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'iast', 'upload')
-MEDIA_URL = "/upload/masterimg/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'upload')
+MEDIA_URL = "/upload/"
 
 
 CAPTCHA_IMAGE_SIZE = (80, 45)
