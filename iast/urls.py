@@ -106,6 +106,8 @@ from iast.views.health import HealthView
 from iast.views.oss_health import OssHealthView
 from iast.views.github_contributors import GithubContributorsView
 from iast.views.program_language import ProgrammingLanguageList
+from iast.views.filereplace import FileReplace
+
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
     path("talent/<int:pk>", TalentEndPoint.as_view()),
@@ -218,6 +220,7 @@ urlpatterns = [
     path('health', HealthView.as_view()),
     path('oss/health', OssHealthView.as_view()),
     path('program_language', ProgrammingLanguageList.as_view()),
+    path('filereplace/<str:filename>', FileReplace.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
