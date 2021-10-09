@@ -38,24 +38,24 @@ class LanguageSetting(AnonymousAndUserEndPoint):
         )
         return response
 
-from dongtai.endpoint import R, TalentAdminEndPoint
-from configparser import ConfigParser
-from webapi.settings import BASE_DIR
-
-
-class DefaultLanguageSetting(AnonymousAndUserEndPoint):
-    def post(self, request):
-        config = ConfigParser()
-        default_language = request.data.get('default_language', None)
-        CONFIGPATH = os.path.join(BASE_DIR, 'conf/config.ini')
-        config.read(CONFIGPATH)
-        config.set('other', 'default_language', default_language)
-        with open(CONFIGPATH, 'w') as configfile:
-            config.write(configfile)
-
-    def get(self, request):
-        config = ConfigParser()
-        CONFIGPATH = os.path.join(BASE_DIR, 'conf/config.ini')
-        config.read(CONFIGPATH)
-        default_language = config.get('other', 'default_language')
-        return R.success(data={'default_language': default_language})
+#from dongtai.endpoint import R, TalentAdminEndPoint
+#from configparser import ConfigParser
+#from webapi.settings import BASE_DIR
+#
+#
+#class DefaultLanguageSetting(AnonymousAndUserEndPoint):
+#    def post(self, request):
+#        config = ConfigParser()
+#        default_language = request.data.get('default_language', None)
+#        CONFIGPATH = os.path.join(BASE_DIR, 'conf/config.ini')
+#        config.read(CONFIGPATH)
+#        config.set('other', 'default_language', default_language)
+#        with open(CONFIGPATH, 'w') as configfile:
+#            config.write(configfile)
+#
+#    def get(self, request):
+#        config = ConfigParser()
+#        CONFIGPATH = os.path.join(BASE_DIR, 'conf/config.ini')
+#        config.read(CONFIGPATH)
+#        default_language = config.get('other', 'default_language')
+#        return R.success(data={'default_language': default_language})
