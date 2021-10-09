@@ -14,15 +14,34 @@ from django.utils.translation import gettext_lazy as _
 from iast.utils import checkcover, batch_queryset
 from iast.utils import extend_schema_with_envcheck
 from dongtai.models.api_route import IastApiRoute
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from rest_framework import serializers
+
+
+class ApiRouteCoverRateResponseSerializer(serializers.Serializer):
+    cover_rate = serializers.IntegerField(
+        help_text=_("The api cover_rate of the project"), )
+
+_GetResponseSerializer = get_response_serializer(ApiRouteCoverRateResponseSerializer())
+
 
 class ApiRouteCoverRate(UserEndPoint):
-    @extend_schema_with_envcheck([{
-        'name': 'project_id',
-        'type': int
-    }, {
-        'name': 'version_id',
-        'type': int
-    }])
+    @extend_schema_with_envcheck(
+        [{
+            'name': 'project_id',
+            'type': int
+        }, {
+            'name': 'version_id',
+            'type': int
+        }],
+        tags=[_('API Route')],
+        summary=_('API Route Coverrate'),
+        description=_(
+            "Get the API route coverrate of the project corresponding to the specified id."
+        ),
+        response_schema=_GetResponseSerializer,
+
+        )
     def get(self, request):
         project_id = request.query_params.get('project_id', None)
         version_id = request.query_params.get('version_id', None)

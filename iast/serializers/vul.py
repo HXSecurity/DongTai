@@ -10,6 +10,8 @@ from rest_framework import serializers
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.models.vulnerablity import IastVulnerabilityStatus
 from dongtai.models.hook_type import HookType
+from django.utils.translation import gettext_lazy as _
+from dongtai.models.vul_level import IastVulLevel
 
 
 class VulSerializer(serializers.ModelSerializer):
@@ -54,14 +56,46 @@ class VulSerializer(serializers.ModelSerializer):
 
 class VulForPluginSerializer(serializers.ModelSerializer):
     type = serializers.SerializerMethodField()
-
+    level = serializers.SerializerMethodField(help_text=_("The level name of vulnerablity"))
     class Meta:
         model = IastVulnerabilityModel
         fields = [
-            'id', 'type', 'level', 'url', 'http_method', 'top_stack',
-            'bottom_stack', 'hook_type_id'
+            'id', 'type', 'level_id', 'url', 'http_method', 'top_stack',
+            'bottom_stack', 'hook_type_id', 'level'
         ]
 
     def get_type(self, obj):
         hook_type = HookType.objects.filter(pk=obj['hook_type_id']).first()
         return hook_type.name if hook_type else ''
+
+    def get_level(self, obj):
+        level = IastVulLevel.objects.filter(pk=obj['level_id']).first()
+        return level.name_value if level else ''
+
+
+class VulSummaryLanguageSerializer(serializers.Serializer):
+    language = serializers.CharField(help_text=_("programming language"))
+    count = serializers.IntegerField(help_text=_(
+        "The number of vulnerabilities corresponding to the programming language"
+    ))
+
+
+class VulSummaryLevelSerializer(serializers.Serializer):
+    level = serializers.CharField(help_text=_("The name of vulnerablity level"))
+    count = serializers.IntegerField(help_text=_("The number of vulnerabilities corresponding to the level"))
+    level_id = serializers.IntegerField(help_text=_("The id of vulnerablity level"))
+
+
+class VulSummaryTypeSerializer(serializers.Serializer):
+    type = serializers.CharField(help_text=_("The name of vulnerablity type"))
+    count = serializers.IntegerField(help_text=_(
+        "The number of vulnerabilities corresponding to the vulnerablity type")
+                                     )
+
+
+class VulSummaryProjectSerializer(serializers.Serializer):
+    project_name = serializers.CharField(
+        help_text=_("The name of the project"))
+    count = serializers.IntegerField(help_text=_(
+        "The number of vulnerabilities corresponding to the project"))
+    id = serializers.IntegerField(help_text=_("The id of the project"))

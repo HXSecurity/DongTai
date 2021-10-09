@@ -80,7 +80,6 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',
     ],
     'DEFAULT_THROTTLE_CLASSES': ('rest_framework.throttling.AnonRateThrottle',
                                  'rest_framework.throttling.UserRateThrottle'),
@@ -115,7 +114,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-XFF_TRUSTED_PROXY_DEPTH = 5
+XFF_TRUSTED_PROXY_DEPTH = 20
 
 CSRF_COOKIE_NAME = "DTCsrfToken"
 CSRF_HEADER_NAME = "HTTP_CSRF_TOKEN"
@@ -158,6 +157,7 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'csrf-token',
     'x-requested-with',
+    'x_http_method_override'
 ]
 
 ROOT_URLCONF = 'webapi.urls'
@@ -180,8 +180,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'webapi.wsgi.application'
 
-if  len(sys.argv) > 1 and sys.argv[1] in ('test', 'makemigrations',
-                                         'sqlmigrate','migrate'):
+if len(sys.argv) > 1 and sys.argv[1] in ('test', 'makemigrations',
+                                         'sqlmigrate', 'migrate') or os.getenv('database', None) == 'sqlite':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -192,16 +192,15 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'OPTIONS': {
-                'charset': 'utf8mb4'
-            },
             'USER': config.get("mysql", 'user'),
             'NAME': config.get("mysql", 'name'),
             'PASSWORD': config.get("mysql", 'password'),
             'HOST': config.get("mysql", 'host'),
             'PORT': config.get("mysql", 'port'),
             'OPTIONS': {
-                'init_command': 'SET max_execution_time=20000'
+                'init_command': 'SET max_execution_time=20000;SET NAMES utf8mb4;SET collation_server=utf8mb4_general_ci;SET collation_database=utf8mb4_general_ci; ',
+                'charset': 'utf8',
+                'use_unicode': True,
             },
         }
     }
@@ -231,8 +230,8 @@ USE_I18N = True
 USE_L10N = True
 
 STATIC_URL = '/static/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'iast', 'upload')
-MEDIA_URL = "/upload/masterimg/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'upload')
+MEDIA_URL = "/upload/"
 
 
 CAPTCHA_IMAGE_SIZE = (80, 45)
@@ -288,10 +287,24 @@ ENABLE_SSL = config.get('smtp', 'ssl') == 'True'
 ADMIN_EMAIL = config.get('smtp', 'cc_addr')
 SESSION_COOKIE_DOMAIN = None
 CSRF_COOKIE_DOMAIN = None
-if os.getenv('environment', 'PROD') == 'TEST':
+if os.getenv('environment', 'PROD') in ('TEST', 'DOC'):
+    from django.utils.translation import gettext_lazy as _
     INSTALLED_APPS.append('drf_spectacular')
     SPECTACULAR_SETTINGS = {
-        'TITLE': 'DongTai webapi',
+        'TITLE':
+        'DongTai WebApi Doc',
+        'VERSION':
+        "1.0.3",
+        'PREPROCESSING_HOOKS':
+        ['drf_spectacular.hooks.preprocess_exclude_path_format'],
+        'URL_FORMAT_OVERRIDE':
+        None,
+        'DESCRIPTION': _("""Here is the API documentation in webapi. The corresponding management part API can be found through the relevant tag.
+
+There are two authentication methods. You can obtain csrf_token and sessionid through the login process, or access the corresponding API through the user's corresponding Token.
+
+The Token method is recommended here, and users can find it in the Agent installation interface such as -H
+  'Authorization: Token {token}', here is the token corresponding to the user, the token method also requires a token like this on the request header."""),
     }
     REST_FRAMEWORK[
         'DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'
