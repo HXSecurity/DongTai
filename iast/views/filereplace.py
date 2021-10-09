@@ -32,9 +32,9 @@ FILES_FORMAT = {
 }
 
 FILES_CONTENT_TYPE = {
-    "logo.png": 'image/png',
-    "favicon.ico": 'image/x-icon',
-    "logo_en.png": 'image/png',
+    "logo.png": ['image/png'],
+    "favicon.ico": ['image/vnd.microsoft.icon', 'image/x-icon'],
+    "logo_en.png": ['image/png'],
 }
 
 
@@ -51,7 +51,7 @@ class FileReplace(TalentAdminEndPoint):
             uploadfile = request.data['file']
             if uploadfile.name.endswith(
                     file_format
-            ) and uploadfile.size <= file_size and uploadfile.content_type == file_content_type:
+            ) and uploadfile.size <= file_size and uploadfile.content_type in file_content_type:
                 pass
             else:
                 return R.failure(msg=_("upload error"))
