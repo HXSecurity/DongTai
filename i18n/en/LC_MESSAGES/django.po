@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-08 14:47+0800\n"
+"POT-Creation-Date: 2021-10-09 15:41+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -16,6 +16,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Application-Id-Version: \n"
 "X-Generator: Poedit 2.2.2\n"
+
+#: i18n/views/setlang.py:29
+#, fuzzy
+#| msgid "{} files not supported"
+msgid "this language not supported now"
+msgstr "{} files not supported"
 
 #: iast/account/department.py:96 iast/account/department.py:135
 msgid "Department {} already exists"
@@ -2274,19 +2280,19 @@ msgstr "User login"
 msgid "Captcha timed out"
 msgstr "Captcha timed out"
 
-#: iast/views/user_login.py:41
+#: iast/views/user_login.py:42
 msgid "Login successful"
 msgstr "Login successful"
 
-#: iast/views/user_login.py:45
+#: iast/views/user_login.py:47
 msgid "Login failed"
 msgstr "Login failed"
 
-#: iast/views/user_login.py:47
+#: iast/views/user_login.py:49
 msgid "Verification code error"
 msgstr "Verification code error"
 
-#: iast/views/user_login.py:49
+#: iast/views/user_login.py:51
 msgid "verification code should not be empty"
 msgstr "verification code should not be empty"
 
@@ -2720,6 +2726,22 @@ msgstr "Vulnerability type name"
 
 #: iast/views/vuls.py:190
 msgid "Get the list of vulnerabilities corresponding to the project"
+msgstr ""
+
+#: webapi/settings.py:302
+#, python-brace-format
+msgid ""
+"Here is the API documentation in webapi. The corresponding management part "
+"API can be found through the relevant tag.\n"
+"\n"
+"There are two authentication methods. You can obtain csrf_token and "
+"sessionid through the login process, or access the corresponding API through "
+"the user's corresponding Token.\n"
+"\n"
+"The Token method is recommended here, and users can find it in the Agent "
+"installation interface such as -H\n"
+"  'Authorization: Token {token}', here is the token corresponding to the "
+"user, the token method also requires a token like this on the request header."
 msgstr ""
 
 #, fuzzy

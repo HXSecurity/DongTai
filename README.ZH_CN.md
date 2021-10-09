@@ -1,7 +1,7 @@
 # DongTai-webapi
 [![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
 [![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://huoxianclub.github.io/LingZhi/)
-[![DongTai--webapi](https://img.shields.io/badge/DongTai--webapi-v1.0.0-lightgrey)](https://huoxianclub.github.io/LingZhi/#/doc/tutorial/quickstart)
+[![DongTai--webapi](https://img.shields.io/badge/DongTai--webapi-v1.0.5-lightgrey)](https://huoxianclub.github.io/LingZhi/#/doc/tutorial/quickstart)
 [![Deploy DongTai WebApi To AWS](https://github.com/HXSecurity/DongTai-webapi/actions/workflows/deploy_webapi_to_aws.yml/badge.svg)](https://github.com/HXSecurity/DongTai-webapi/actions/workflows/deploy_webapi_to_aws.yml)
 
 [English](README.MD)
@@ -64,5 +64,29 @@ $ docker run -d -p 8000:8000 --restart=always --name dongtai-webapi huoxian/dong
 ```
 
 ### 文档
-- [官方文档](https://huoxianclub.github.io/LingZhi/#/)
-- [快速体验](http://aws.iast.huoxian.cn:8000/login)
+
+- 项目内置的API文档
+
+1. 启动容器时加上文档相关的参数:
+```
+$ docker run -d -p 8000:8000 --restart=always -e environment=DOC --name dongtai-webapi huoxian/dongtai-webapi:latest
+```
+此处需要启动对应的mysql数据库，如果仅希望单独启动webapi项目查看文档，则需额外加上以下参数 `-e database=sqlite`（仅为单独启动webapi项目查看文档，不保证在sqlite下的兼容性),完整命令为:
+```
+$ docker run -d -p 8000:8000 --restart=always -e environment=DOC -e database=sqlite --name dongtai-webapi huoxian/dongtai-webapi:latest
+```
+
+2. 访问容器中对应的API:
+
+Swagger-ui地址为 `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/swagger-ui/#/`
+
+Redoc地址为 `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/redoc/`
+
+若需要单独需要导出swagger.json
+地址为 `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/`
+
+3. 具体的API鉴权模式已包含在API文档中，可在web的安装agent界面找到对应的token。
+
+
+- [官方文档](https://hxsecurity.github.io/DongTai-Doc/#/)
+- [快速体验](http://iast.io)
