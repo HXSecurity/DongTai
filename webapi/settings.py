@@ -114,7 +114,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-XFF_TRUSTED_PROXY_DEPTH = 5
+XFF_TRUSTED_PROXY_DEPTH = 20
 
 CSRF_COOKIE_NAME = "DTCsrfToken"
 CSRF_HEADER_NAME = "HTTP_CSRF_TOKEN"
@@ -181,7 +181,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'webapi.wsgi.application'
 
 if len(sys.argv) > 1 and sys.argv[1] in ('test', 'makemigrations',
-                                         'sqlmigrate', 'migrate'):
+                                         'sqlmigrate', 'migrate') or os.getenv('database', None) == 'sqlite':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -287,7 +287,8 @@ ENABLE_SSL = config.get('smtp', 'ssl') == 'True'
 ADMIN_EMAIL = config.get('smtp', 'cc_addr')
 SESSION_COOKIE_DOMAIN = None
 CSRF_COOKIE_DOMAIN = None
-if os.getenv('environment', 'PROD') == 'TEST':
+if os.getenv('environment', 'PROD') in ('TEST', 'DOC'):
+    from django.utils.translation import gettext_lazy as _
     INSTALLED_APPS.append('drf_spectacular')
     SPECTACULAR_SETTINGS = {
         'TITLE':
@@ -297,7 +298,13 @@ if os.getenv('environment', 'PROD') == 'TEST':
         'PREPROCESSING_HOOKS':
         ['drf_spectacular.hooks.preprocess_exclude_path_format'],
         'URL_FORMAT_OVERRIDE':
-        None
+        None,
+        'DESCRIPTION': _("""Here is the API documentation in webapi. The corresponding management part API can be found through the relevant tag.
+
+There are two authentication methods. You can obtain csrf_token and sessionid through the login process, or access the corresponding API through the user's corresponding Token.
+
+The Token method is recommended here, and users can find it in the Agent installation interface such as -H
+  'Authorization: Token {token}', here is the token corresponding to the user, the token method also requires a token like this on the request header."""),
     }
     REST_FRAMEWORK[
         'DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'
