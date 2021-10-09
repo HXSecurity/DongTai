@@ -1,7 +1,7 @@
 # DongTai-webapi
 [![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
 [![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://huoxianclub.github.io/LingZhi/)
-[![DongTai--webapi](https://img.shields.io/badge/DongTai--webapi-v1.0.0-lightgrey)](https://huoxianclub.github.io/LingZhi/#/doc/tutorial/quickstart)
+[![DongTai--webapi](https://img.shields.io/badge/DongTai--webapi-v1.0.5-lightgrey)](https://huoxianclub.github.io/LingZhi/#/doc/tutorial/quickstart)
 [![Deploy DongTai WebApi To AWS](https://github.com/HXSecurity/DongTai-webapi/actions/workflows/deploy_webapi_to_aws.yml/badge.svg)](https://github.com/HXSecurity/DongTai-webapi/actions/workflows/deploy_webapi_to_aws.yml)
 
 [中文版本(Chinese version)](README.ZH_CN.md)
@@ -63,7 +63,30 @@ $ docker build -t huoxian/dongtai-webapi:latest .
 ```
 $ docker run -d -p 8000:8000 --restart=always --name dongtai-webapi huoxian/dongtai-webapi:latest
 ```
+### Document
+
+- API documentation corresponding to the project 
+
+1. Add document-related parameters when starting the container :
+```
+$ docker run -d -p 8000:8000 --restart=always -e environment=DOC --name dongtai-webapi huoxian/dongtai-webapi:latest
+```
+Here you need to start the corresponding mysql database. If you only want to start the webapi project to view the document, you need to add the following parameter `-e database=sqlite` (only start the webapi project to view the document, and does not guarantee the compatibility under sqlite ), the complete command is:
+```
+$ docker run -d -p 8000:8000 --restart=always -e environment=DOC -e database=sqlite --name dongtai-webapi huoxian/dongtai-webapi:latest
+```
+
+2. Access the corresponding API in the container:
+
+Swagger-ui address is `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/swagger-ui/#/`
+
+The Redoc address is `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/redoc/`
+
+If you need to separately export swagger.json
+The address is `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/`
+
+3. The specific API authentication mode has been included in the API document, and the corresponding token can be found on the installation agent part of the web.
 
 ### More resources
-- [Documentation](https://hxsecurity.github.io/DongTai-Doc/#/)
+- [Documentation](https://hxsecurity.github.io/DongTai-Doc/#/en-us/)
 - [DongTai WebSite](http://iast.io)

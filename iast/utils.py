@@ -57,7 +57,7 @@ def extend_schema_with_envcheck(querys: list = [],
                                 **kwargs):
     def myextend_schema(func):
         import os
-        if os.getenv('environment', None) == 'TEST':
+        if os.getenv('environment', None) in ('TEST', 'DOC'):
             from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes
             from drf_spectacular.utils import OpenApiResponse
             parameters = list(filter(lambda x: x, map(_filter_query, querys)))
