@@ -24,12 +24,11 @@ urlpatterns = [
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-if os.getenv('environment', 'PROD') == 'TEST':
-    from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
-
+if os.getenv('environment', 'PROD') in ('TEST', 'DOC'):
+    from drf_spectacular.views import SpectacularJSONAPIView, SpectacularRedocView, SpectacularSwaggerView
     urlpatterns.extend([
         path('api/XZPcGFKoxYXScwGjQtJx8u/schema/',
-             SpectacularAPIView.as_view(),
+             SpectacularJSONAPIView.as_view(),
              name='schema'),
         path('api/XZPcGFKoxYXScwGjQtJx8u/schema/swagger-ui/',
              SpectacularSwaggerView.as_view(url_name='schema'),

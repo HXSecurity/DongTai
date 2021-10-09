@@ -38,7 +38,9 @@ class UserLogin(UserEndPoint):
                 user = authenticate(username=username, password=password)
                 if user is not None and user.is_active:
                     login(request, user)
-                    return R.success(msg=_('Login successful'))
+                    return R.success(
+                        msg=_('Login successful'),
+                        data={'default_language': user.default_language})
                 else:
                     logger.warn(
                         f"user [{username}] login failure, rease: {'user not exist' if user is None else 'user is disable'}")

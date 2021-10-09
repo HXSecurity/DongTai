@@ -10,11 +10,37 @@ from dongtai.endpoint import TalentAdminEndPoint, R
 from dongtai.models import User
 from django.utils.translation import gettext_lazy as _
 
+from rest_framework import serializers
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+
+
+class AgentUpgradeArgsSerializer(serializers.Serializer):
+    url = serializers.CharField(
+        help_text=_('The resource link corresponding to the Agent.'))
+    token = serializers.CharField(help_text=_(
+        'The Token corresponding to the user is the same as when connecting to openapi.'
+    ))
+
+
+_ResponseSerializer = get_response_serializer(status_msg_keypair=(
+    ((201, _('Online upgrade successful')), ''),
+    ((202,
+      _('Token verification failed, please confirm your input address and token are correct'
+        )), ''),
+))
+
 
 class AgentUpgradeOnline(TalentAdminEndPoint):
     name = "api-v1-agent-install"
     description = _("Online Upgrade Agent")
 
+
+
+    @extend_schema_with_envcheck(request=AgentUpgradeArgsSerializer,
+                                 tags=[_('Agent')],
+                                 summary=_('Agent Upgrade Online'),
+                                 description=_("Agent upgrade"),
+                                 response_schema=_ResponseSerializer)
     def post(self, request):
         url = request.data['url']
         token = request.data['token']

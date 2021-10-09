@@ -105,6 +105,8 @@ from iast.views.api_route_cover_rate import ApiRouteCoverRate
 from iast.views.health import HealthView
 from iast.views.oss_health import OssHealthView
 from iast.views.github_contributors import GithubContributorsView
+from iast.views.program_language import ProgrammingLanguageList
+from iast.views.filereplace import FileReplace
 
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
@@ -147,7 +149,7 @@ urlpatterns = [
     path('project/version/check', UpdateProjectVersion.as_view()),
     path('vulns', VulsEndPoint.as_view()),
     path('vuln/summary', VulSummary.as_view()),
-    path('vuln/list', VulSideBarList.as_view()),
+    #    path('vuln/list', VulSideBarList.as_view()), Departured
     path('vuln/<int:id>', VulDetail.as_view()),
     path('vuln/status', VulStatus.as_view()),
     path('vuln/delete/<int:id>', VulDelete.as_view()),
@@ -157,7 +159,7 @@ urlpatterns = [
     path('plugin/vuln/count', VulCountForPluginEndPoint.as_view()),
     path('scas', ScaList.as_view()),
     path('sca/summary', ScaSummary.as_view()),
-    path('sca/list', ScaSidebarList.as_view()),
+    #    path('sca/list', ScaSidebarList.as_view()), Departured
     path('sca/<int:id>', ScaDetailView.as_view()),
     path('strategys', StrategyEndpoint.as_view()),
     path('strategy/<int:id>/enable', StrategyEnableEndpoint.as_view()),
@@ -169,21 +171,21 @@ urlpatterns = [
     path('strategy/user/list', StrategyList.as_view()),
     path('agent/<int:id_>', Agent.as_view()),
     path('agent/deploy/', AgentDeploy.as_view()),
-    path('agent/deploy/doc', AgentDeployDesc.as_view()),
-    path('agent/deploy/info', AgentDeployInfo.as_view()),
-    path('agent/deploy/submit', AgentDeploySave.as_view()),
+    #    path('agent/deploy/doc', AgentDeployDesc.as_view()), Departured
+    #    path('agent/deploy/info', AgentDeployInfo.as_view()),
+    #    path('agent/deploy/submit', AgentDeploySave.as_view()),
     path('agents', AgentList.as_view()),
     path('agent/<int:pk>/delete', AgentDeleteEndPoint.as_view()),
     path('agents/user', UserAgentList.as_view()),
     path('agent/install', AgentInstall.as_view()),
     path('agent/uninstall', AgentUninstall.as_view()),
     path('agent/upgrade/online', AgentUpgradeOnline.as_view()),
-    path('agent/upgrade/offline', AgentUpgradeOffline.as_view()),
+    #    path('agent/upgrade/offline', AgentUpgradeOffline.as_view()),
     path('agent/download', AgentDownload.as_view()),
     path('agent/status/update', AgentStatusUpdate.as_view()),
     path('agent/start', AgentStart.as_view()),
     path('agent/stop', AgentStop.as_view()),
-    path('agents/search', AgentSearch.as_view()),
+    #    path('agents/search', AgentSearch.as_view()),
     path('agents/delete', AgentsDeleteEndPoint.as_view()),
     path('openapi', OpenApiEndpoint.as_view()),
     path('profile/<str:key>', ProfileEndpoint.as_view()),
@@ -217,6 +219,8 @@ urlpatterns = [
     path('api_route/cover_rate', ApiRouteCoverRate.as_view()),
     path('health', HealthView.as_view()),
     path('oss/health', OssHealthView.as_view()),
+    path('program_language', ProgrammingLanguageList.as_view()),
+    path('filereplace/<str:filename>', FileReplace.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口

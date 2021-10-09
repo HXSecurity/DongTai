@@ -9,9 +9,41 @@ from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.hook_strategy import HookStrategy
 from dongtai.utils import const
 from django.utils.translation import gettext_lazy as _
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from rest_framework import serializers
 
 logger = logging.getLogger('dongtai-webapi')
 
+OP_CHOICES = ('enable', 'disable', 'delete')
+#SCOPE_CHOICES = ('all',)
+
+class EngineHookRuleStatusGetQuerySerializer(serializers.Serializer):
+    rule_id = serializers.IntegerField(help_text=_("The id of hook rule"))
+    #    rule_type = serializers.IntegerField(help_text=_("The id of hook rule type"))
+    op = serializers.ChoiceField(OP_CHOICES,
+                                 help_text=_("The state of the hook rule"))
+#    scope = serializers.ChoiceField(SCOPE_CHOICES,
+#                                 help_text=_("The scope of the hook rule"))
+
+
+class EngineHookRuleStatusPostBodySerializer(serializers.Serializer):
+    ids = serializers.CharField(help_text=_(
+        'The id corresponding to the hook type, use"," for segmentation.'))
+    op = serializers.ChoiceField(OP_CHOICES,
+                                 help_text=_("The state of the hook rule"))
+
+
+_GetResponseSerializer = get_response_serializer(status_msg_keypair=(
+    ((201, _('Operation success')), ''),
+    ((202, _('Operation type does not exist')), ''),
+    ((202, _('Strategy does not exist')), ''),
+))
+
+_PostResponseSerializer = get_response_serializer(status_msg_keypair=(
+    ((201, _('Operation success')), ''),
+    ((202, _('Operation type does not exist')), ''),
+    ((202, _('Incorrect parameter')), ''),
+))
 
 class EngineHookRuleEnableEndPoint(UserEndPoint):
     def parse_args(self, request):
@@ -46,8 +78,19 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
             op = None
         return op
 
+    @extend_schema_with_envcheck(
+        [EngineHookRuleStatusGetQuerySerializer],
+        tags=[_('Hook Rule')],
+        summary=_('Hook Rule Status Modify'),
+        description=_("Modify the status of the rule corresponding to the specified id."),
+        response_schema=_GetResponseSerializer,
+    )
     def get(self, request):
         rule_id, rule_type, scope, op = self.parse_args(request)
+        try:
+            rule_id = int(rule_id)
+        except:
+            return R.failure(_("Parameter error"))
         user_id = request.user.id
         status = False
 
@@ -69,6 +112,13 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
         else:
             return R.failure(msg=_('Strategy does not exist'))
 
+    @extend_schema_with_envcheck(
+        request=EngineHookRuleStatusPostBodySerializer,
+        tags=[_('Hook Rule')],
+        summary=_('Hook Rule Status Modify (Batch)'),
+        description=_("Batch modify the status of the rule corresponding to the specified id"),
+        response_schema=_PostResponseSerializer,
+    )
     def post(self, request):
         op = request.data.get('op')
         op = self.check_op(op)
@@ -76,7 +126,10 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
             return R.failure(msg=_('Operation type does not exist'))
 
         strategy_ids = request.data.get('ids')
-        strategy_ids = strategy_ids.split(',')
+        try:
+            strategy_ids = [int(i) for i in strategy_ids.split(',')]
+        except:
+            return R.failure(_("Parameter error"))
         if strategy_ids:
             count = self.set_strategy_status(strategy_id=None, strategy_ids=strategy_ids, user_id=request.user.id,
                                              enable_status=op)

@@ -8,14 +8,37 @@ from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from dongtai.models.project_version import IastProjectVersion
 from django.utils.translation import gettext_lazy as _
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from rest_framework import serializers
 
 logger = logging.getLogger("django")
+
+
+class _ProjectVersionDeleteSerializer(serializers.Serializer):
+    version_id = serializers.CharField(
+        help_text=_("The version id of the project"))
+    project_id = serializers.IntegerField(help_text=_("The id of the project"))
+
+_ResponseSerializer = get_response_serializer(status_msg_keypair=(
+    ((202, _('Parameter error')), ''),
+    ((201, _('Version does not exist')), ''),
+    ((201, _('Deleted Successfully')), ''),
+))
 
 
 class ProjectVersionDelete(UserEndPoint):
     name = "api-v1-project-version-delete"
     description = _("Delete application version information")
 
+    @extend_schema_with_envcheck(
+        request=_ProjectVersionDeleteSerializer,
+        tags=[_('Project')],
+        summary=_('Projects Version Delete'),
+        description=_(
+            "Delete the specified project version according to the conditions."
+        ),
+        response_schema=_ResponseSerializer,
+    )
     def post(self, request):
         try:
             version_id = request.data.get("version_id", 0)
@@ -32,4 +55,5 @@ class ProjectVersionDelete(UserEndPoint):
                 return R.failure(status=202, msg=_('Version does not exist'))
 
         except Exception as e:
-            return R.failure(status=202, msg=e)
+            logger.error(e)
+            return R.failure(status=202, msg=_('Parameter error'))

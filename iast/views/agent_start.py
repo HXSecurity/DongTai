@@ -8,17 +8,39 @@ from dongtai.endpoint import UserEndPoint, R
 
 from dongtai.models.agent import IastAgent
 from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from iast.serializers.agent import AgentToggleArgsSerializer
+class _AgentStopBodyArgsSerializer(serializers.Serializer):
+    id = serializers.IntegerField(help_text=_(
+        'The id corresponding to the agent.'))
+    ids = serializers.CharField(help_text=_(
+        'The id corresponding to the agent, use"," for segmentation.'))
 
+
+_ResponseSerializer = get_response_serializer(
+    status_msg_keypair=(((201, _('Suspending ...')), ''), ))
 
 class AgentStart(UserEndPoint):
     name = "api-v1-agent-start"
     description = _("Start Agent")
 
+    @extend_schema_with_envcheck(
+        request=AgentToggleArgsSerializer,
+        tags=[_('Agent')],
+        summary=_('Agent Start'),
+        description=_(
+            "Start the stopped agent by specifying the id."
+        ),
+        response_schema=_ResponseSerializer)
     def post(self, request):
         agent_id = request.data.get('id')
         agent_ids = request.data.get('ids', None)
         if agent_ids:
-            agent_ids = agent_ids.split(',')
+            try:
+                agent_ids = [int(i) for i in agent_ids.split(',')]
+            except:
+                return R.failure(_("Parameter error")) 
         if agent_id:
             agent = IastAgent.objects.filter(user=request.user, id=agent_id).first()
             if agent is None:

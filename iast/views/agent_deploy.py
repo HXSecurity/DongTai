@@ -13,10 +13,10 @@ from rest_framework.authtoken.models import Token
 from iast.utils import get_model_field
 from django.forms.models import model_to_dict
 from django.utils.translation import gettext_lazy as _
-from iast.utils import extend_schema_with_envcheck
 from rest_framework.serializers import ValidationError
 
 from rest_framework import serializers
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
 
 
 
@@ -24,9 +24,15 @@ class AgentDeployArgsSerializer(serializers.Serializer):
     middleware = serializers.CharField(required=False)
     language = serializers.CharField(required=False)
 
+_ResponseSerializer = get_response_serializer(
+    status_msg_keypair=(((201, _("Corresponding deployment document could not be found")), ''), ))
 
 class AgentDeploy(UserEndPoint):
-    @extend_schema_with_envcheck([AgentDeployArgsSerializer])
+    @extend_schema_with_envcheck([AgentDeployArgsSerializer],
+                                 tags=[_('Documents')],
+                                 summary=_('Document of Agent Deploy'),
+                                 description=_("Document of Agent Deploy"),
+                                 response_schema=_ResponseSerializer)
     def get(self, request):
         ser = AgentDeployArgsSerializer(data=request.GET)
         try:

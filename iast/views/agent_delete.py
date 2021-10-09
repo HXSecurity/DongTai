@@ -19,14 +19,28 @@ from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.models.agent import IastAgent
 from dongtai.models.agent_method_pool import MethodPool
 from django.utils.translation import gettext_lazy as _
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
 
 logger = logging.getLogger('dongtai-webapi')
+
+_ResponseSerializer = get_response_serializer(status_msg_keypair=(
+    ((201, _('Agent and related data deleted successfully')), ''),
+    ((202, _('Agent does not exist or no permission to access')), ''),
+    ((202, _('Error while deleting, please try again later')), ''),
+))
 
 
 class AgentDeleteEndPoint(UserEndPoint):
     name = "api-v1-agent-<pk>-delete"
     description = _("Delete Agent")
 
+    @extend_schema_with_envcheck(
+        tags=[_('Agent')],
+        summary=_('Agent Delete'),
+        description=_(
+            "Delete the agent by specifying the id."
+        ),
+        response_schema=_ResponseSerializer)
     def get(self, request, pk=None):
         try:
             user = request.user
@@ -108,7 +122,7 @@ class AgentDeleteEndPoint(UserEndPoint):
 
 
 if __name__ == '__main__':
-    
+
     MethodPool.objects.count()
     IastErrorlog.objects.count()
     IastHeartbeat.objects.count()
