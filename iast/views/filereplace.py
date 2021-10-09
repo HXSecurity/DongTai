@@ -33,7 +33,10 @@ FILES_FORMAT = {
 
 FILES_CONTENT_TYPE = {
     "logo.png": ['image/png'],
-    "favicon.ico": ['image/vnd.microsoft.icon', 'image/x-icon'],
+    "favicon.ico": [
+        'image/vnd.microsoft.icon', 'image/x-icon', 'image/ico', 'image/icon',
+        'text/ico', 'application/ico'
+    ],
     "logo_en.png": ['image/png'],
 }
 
