@@ -114,7 +114,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-XFF_TRUSTED_PROXY_DEPTH = 5
+XFF_TRUSTED_PROXY_DEPTH = 20
 
 CSRF_COOKIE_NAME = "DTCsrfToken"
 CSRF_HEADER_NAME = "HTTP_CSRF_TOKEN"
