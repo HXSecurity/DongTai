@@ -1,4 +1,4 @@
-# DongTai-webapi
+# DongTai-webap2
 [![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
 [![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://huoxianclub.github.io/LingZhi/)
 [![DongTai--webapi](https://img.shields.io/badge/DongTai--webapi-v1.0.5-lightgrey)](https://huoxianclub.github.io/LingZhi/#/doc/tutorial/quickstart)
@@ -27,16 +27,32 @@ DongTai-WebAPI is used to user resource management ,including:
 
 **Source code deployment**
 
-1.Initialize the database
+1.Install the required dependencies
+
+```
+python -m pip install -r requirements-test.txt
+```
+
+2.Initialize the database
 
 - Install MySql 5.7, create the database `DongTai-webapi`, and run the database file `conf/db.sql`
 - Enter the `webapi` directory and run the `python manage.py createsuperuser` command to create an administrator
 
-2.Modify the configuration file
+OR use docker way to host a database
+
+- Pull the corresponding database images and run it
+```
+docker pull  registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest 
+docker run -itd --name dongtai-mysql -p 3306:3306 registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest 
+```
+
+
+
+3.Modify the configuration file
 
 - Copy the configuration file `conf/config.ini.example` to `conf/config.ini` and change the configuration; the url corresponding to `engine` is the service address of` DongTai-engine`, and the url corresponding to `apiserver` is the service address of `DongTai-openapi`
 
-3.Run the service
+4.Run the service
 
 - Run `python manage.py runserver` to start the service
 
@@ -45,8 +61,12 @@ DongTai-WebAPI is used to user resource management ,including:
 
 1.Initialize the database
 
-- Install MySql 5.7, create the database `DongTai-webapi`, and run the database file `conf/db.sql`
-- Enter the `webapi` directory and run the `python manage.py createsuperuser` command to create an administrator
+- Pull the corresponding database images and run it
+
+```
+docker pull  registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest 
+docker run -itd --name dongtai-mysql -p 3306:3306 registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest 
+```
 
 2. Modify the configuration file
 
