@@ -27,16 +27,30 @@ DongTai-WebAPI 用于处理DongTai用户资源管理的相关请求，包括：
 
 **源码部署**
 
-1.初始化数据库
+1.安装所需的依赖
+
+```
+python -m pip install -r requirements-test.txt
+```
+
+2.初始化数据库
 
 - 安装MySql 5.7，创建数据库`DongTai-webapi`，运行数据库文件`conf/db.sql`
 - 进入`webapi`目录，运行`python manage.py createsuperuser`命令创建管理员
 
-2.修改配置文件
+或采用docker部署数据库
+- 拉取版本对应的数据库镜像并启动镜像
+```
+docker pull  registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest 
+docker run -itd --name dongtai-mysql -p 3306:3306 registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest 
+```
+
+
+3.修改配置文件
 
 - 复制配置文件`conf/config.ini.example`为`conf/config.ini`并需改其中的配置；其中，`engine`对应的url为`DongTai-engine`的服务地址，`apiserver`对应的url为`DongTai-openapi`的服务地址
 
-3.运行服务
+4.运行服务
 
 - 运行`python manage.py runserver`启动服务
 
@@ -44,8 +58,12 @@ DongTai-WebAPI 用于处理DongTai用户资源管理的相关请求，包括：
 
 1.初始化数据库
 
-- 安装MySql 5.7，创建数据库`DongTai-webapi`，运行数据库文件`conf/db.sql`
-- 进入`webapi`目录，运行`python manage.py createsuperuser`命令创建管理员
+- 拉取版本对应的数据库镜像
+```
+docker pull  registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest 
+docker run -itd --name dongtai-mysql -p 3306:3306 registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest 
+```
+
 
 2.修改配置文件
 
