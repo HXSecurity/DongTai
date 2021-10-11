@@ -1,4 +1,4 @@
-# DongTai-webap2
+# DongTai-webapi
 [![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
 [![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://huoxianclub.github.io/LingZhi/)
 [![DongTai--webapi](https://img.shields.io/badge/DongTai--webapi-v1.0.5-lightgrey)](https://huoxianclub.github.io/LingZhi/#/doc/tutorial/quickstart)
