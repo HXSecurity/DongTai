@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
         - command: [ "/bin/sh","-c","exec redis-server /data/middleware-data/redis/conf/redis.conf" ]
-          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:latest
+          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:CHANGE_THIS_VERSION
           imagePullPolicy: IfNotPresent
           name: redis
           ports:
@@ -53,7 +53,7 @@ spec:
       dnsPolicy: ClusterFirst
       initContainers:
         - command: [ "/bin/sh","-c","mkdir -p /data/middleware-data/redis/log/  /data/middleware-data/redis/conf/ /data/middleware-data/redis/data/" ]
-          image: busybox:1.0.0
+          image: busybox:latest
           imagePullPolicy: Always
           name: init-redis
           volumeMounts:
