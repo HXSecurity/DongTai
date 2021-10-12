@@ -58,7 +58,7 @@ spec:
     spec:
       containers:
         - name: dongtai-webapi-container
-          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:latest
+          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:1.0.5
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: configfile
@@ -114,7 +114,7 @@ spec:
     spec:
       containers:
         - name: dongtai-openapi-container
-          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:latest
+          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:1.0.5
           imagePullPolicy: Always
           volumeMounts:
             - name: configfile
@@ -223,7 +223,7 @@ spec:
     spec:
       containers:
         - name: dongtai-web-container
-          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-web:latest
+          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-web:1.0.5
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: configfile
@@ -265,7 +265,7 @@ spec:
     spec:
       containers:
         - name: dongtai-engine-container
-          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
+          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:1.0.5
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: configfile
@@ -321,7 +321,7 @@ spec:
     spec:
       containers:
         - name: dongtai-engine-task-container
-          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
+          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:1.0.5
           command: [ "/bin/bash","/opt/dongtai/engine/docker/entrypoint.sh" ]
           args: [ "task" ]
           imagePullPolicy: Always

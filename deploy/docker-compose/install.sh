@@ -127,7 +127,7 @@ REDIS_STR=""
 if [ $SKIP_MYSQL == false ]; then
   export MYSQL_STR=`cat <<EOF;
 dongtai-mysql: 
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:1.0.5
     restart: always
     volumes:
       - ./data:/var/lib/mysql:rw
@@ -139,7 +139,7 @@ fi
 if [ $SKIP_REDIS == false ]; then
   export REDIS_STR=`cat <<EOF;
 dongtai-redis:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:latest
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:1.0.5
     restart: always
 
 EOF
@@ -152,13 +152,13 @@ services:
   $MYSQL_STR
   $REDIS_STR
   dongtai-webapi:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:latest
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:1.0.5
     restart: always
     volumes:
       - \$PWD/config-tutorial.ini:/opt/dongtai/webapi/conf/config.ini
 
   dongtai-web:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-web:latest
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-web:1.0.5
     restart: always
     ports:
       - "$WEB_SERVICE_PORT:80"
@@ -168,7 +168,7 @@ services:
       - dongtai-webapi
 
   dongtai-openapi:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:latest
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:1.0.5
     restart: always
     volumes:
        - \$PWD/config-tutorial.ini:/opt/dongtai/openapi/conf/config.ini
@@ -176,14 +176,14 @@ services:
       - "$OPENAPI_SERVICE_PORT:8000"
 
   dongtai-engine:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:1.0.5
     restart: always
     volumes:
       - \$PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini
 
 
   dongtai-engine-task:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:1.0.5
     restart: always
     command: ["/opt/dongtai/engine/docker/entrypoint.sh", "task"]
     volumes:
