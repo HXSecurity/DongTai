@@ -152,17 +152,25 @@ class EndPoint(APIView):
         """
         page_size = min(50, int(page_size))
         page = int(page)
-        page_info = Paginator(queryset, per_page=page_size)
-        page_summary = {
-            "alltotal": page_info.count,
-            "num_pages": page_info.num_pages,
-            "page_size": page_size
-        }
+        try:
+            page_info = Paginator(queryset, per_page=page_size)
+            page_summary = {
+                "alltotal": page_info.count,
+                "num_pages": page_info.num_pages,
+                "page_size": page_size
+            }
+        except:
+            page_summary = {
+                "alltotal": 0,
+                "num_pages": 0,
+                "page_size": page_size
+            }
         try:
             page_info.validate_number(page)
-        except (EmptyPage, PageNotAnInteger):
+            page_list = page_info.get_page(page).object_list
+        except:
             return page_summary, []
-        return page_summary, page_info.get_page(page).object_list
+        return page_summary, page_list
 
     @staticmethod
     def get_auth_users(user):
