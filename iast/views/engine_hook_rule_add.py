@@ -16,7 +16,7 @@ from iast.serializers.hook_strategy import SINK_POSITION_HELP_TEXT
 from rest_framework import serializers
 
 class _HookRuleAddBodyargsSerializer(serializers.Serializer):
-    rule_type = serializers.IntegerField(
+    rule_type_id = serializers.IntegerField(
         help_text=_('The id of hook rule type.'))
     rule_value = serializers.CharField(
         help_text=_('The value of strategy'),
@@ -38,7 +38,7 @@ class _HookRuleAddBodyargsSerializer(serializers.Serializer):
           ),
         max_length=255,
     )
-    is_track = serializers.CharField(
+    track = serializers.CharField(
         help_text=
         _("Indicates whether taint tracking is required, true-required, false-not required."
           ),
