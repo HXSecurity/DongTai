@@ -29,6 +29,11 @@ jobs:
         run: |
           python setup.py sdist
 
+      - id: release
+        run: |
+          VERSION=`cat setup.cfg | grep version | sed 's/version = //'`
+          echo "::set-output name=version::$VERSION"
+
       - name: Upload to oss
         id: upload_to_oss
         uses: tvrcgo/upload-to-oss@master
@@ -38,7 +43,7 @@ jobs:
           region: oss-cn-beijing
           bucket: huoqi-public
           assets: |
-            ./dist/dongtai-1.0.5.tar.gz:/iast/dongtai-test-1.0.5.tar.gz
+            ./dist/dongtai-${{ steps.release.outputs.version }}.tar.gz:/iast/dongtai-test-${{ steps.release.outputs.version }}.tar.gz
 
       - name: Upload to oss latest
         id: upload_to_oss_latest
@@ -49,7 +54,7 @@ jobs:
           region: oss-cn-beijing
           bucket: huoqi-public
           assets: |
-            ./dist/dongtai-1.0.5.tar.gz:/iast/dongtai-test-latest.tar.gz
+            ./dist/dongtai-${{ steps.release.outputs.version }}.tar.gz:/iast/dongtai-test-latest.tar.gz
 
       - name: finish build
         uses: joelwmale/webhook-action@master
