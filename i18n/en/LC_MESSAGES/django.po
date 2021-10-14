@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-09 15:41+0800\n"
+"POT-Creation-Date: 2021-10-14 15:18+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -635,7 +635,7 @@ msgstr "Failed to delete replay request queue, error message: {}"
 msgid "Corresponding deployment document could not be found"
 msgstr "Corresponding deployment document could not be found"
 
-#: iast/views/agent_deploy.py:32 iast/views/documents.py:45
+#: iast/views/agent_deploy.py:32 iast/views/documents.py:44
 msgid "Documents"
 msgstr ""
 
@@ -690,8 +690,9 @@ msgstr "Agent list"
 msgid "Install the running agent by specifying the id."
 msgstr ""
 
-#: iast/views/agent_search.py:18 iast/views/documents.py:20
-#: iast/views/engine_hook_rule_types.py:24 iast/views/projects.py:21
+#: iast/views/agent_search.py:18 iast/views/documents.py:19
+#: iast/views/engine_hook_rule_types.py:24 iast/views/messages_list.py:24
+#: iast/views/messages_list.py:40 iast/views/projects.py:21
 #: iast/views/sca_summary.py:47 iast/views/scas.py:35
 #: iast/views/vul_list_for_plugin.py:35 iast/views/vul_sidebar_index.py:38
 #: iast/views/vuls.py:66
@@ -700,9 +701,9 @@ msgstr ""
 msgid "Number per page"
 msgstr "Number of Agent"
 
-#: iast/views/agent_search.py:19 iast/views/documents.py:21
-#: iast/views/engine_hook_rule_types.py:25 iast/views/projects.py:22
-#: iast/views/sca_summary.py:40 iast/views/scas.py:28
+#: iast/views/agent_search.py:19 iast/views/documents.py:20
+#: iast/views/engine_hook_rule_types.py:25 iast/views/messages_list.py:25
+#: iast/views/projects.py:22 iast/views/sca_summary.py:40 iast/views/scas.py:28
 #: iast/views/vul_list_for_plugin.py:28 iast/views/vul_sidebar_index.py:32
 #: iast/views/vuls.py:59
 msgid "Page index"
@@ -1064,15 +1065,15 @@ msgid ""
 "field for pagination."
 msgstr ""
 
-#: iast/views/documents.py:24
+#: iast/views/documents.py:23
 msgid "Document's corresponding programming language"
 msgstr ""
 
-#: iast/views/documents.py:43
+#: iast/views/documents.py:42
 msgid "Get documents"
 msgstr ""
 
-#: iast/views/documents.py:44
+#: iast/views/documents.py:43
 msgid "Get help documentation."
 msgstr ""
 
@@ -1468,19 +1469,25 @@ msgstr ""
 msgid "The regular expression format is wrong, please use REGEX POSIX 1003.2"
 msgstr "The regular expression format is wrong, please use REGEX POSIX 1003.2"
 
-#: iast/views/filereplace.py:28
+#: iast/views/filereplace.py:48
 msgid ""
 "this file is disallowed to modifyupload failed,this file is disallowed to "
 "modify."
 msgstr ""
 
-#: iast/views/filereplace.py:35
+#: iast/views/filereplace.py:60
+#, fuzzy
+#| msgid "Program error"
+msgid "upload error"
+msgstr "Program error"
+
+#: iast/views/filereplace.py:65
 #, fuzzy
 #| msgid "Upload successful"
 msgid "upload sussess"
 msgstr "Upload successful"
 
-#: iast/views/filereplace.py:44
+#: iast/views/filereplace.py:74
 msgid "upload error, fail back to default"
 msgstr ""
 
@@ -1526,6 +1533,61 @@ msgstr "No permission to access"
 #: iast/views/logs.py:51
 msgid "failure"
 msgstr "failure"
+
+#: iast/views/messages_del.py:28
+#, fuzzy
+#| msgid "Number of Agent"
+msgid "The id of Message"
+msgstr "Number of Agent"
+
+#: iast/views/messages_del.py:32
+msgid "delete all messages when all is True"
+msgstr ""
+
+#: iast/views/messages_del.py:38
+#, fuzzy
+#| msgid "Agent list"
+msgid "Messages Delete"
+msgstr "Agent list"
+
+#: iast/views/messages_del.py:39
+msgid "Used by the user to delete the corresponding message"
+msgstr ""
+
+#: iast/views/messages_del.py:40 iast/views/messages_list.py:55
+#: iast/views/messages_new.py:34
+msgid "Messages"
+msgstr ""
+
+#: iast/views/messages_list.py:38
+msgid "total_number"
+msgstr ""
+
+#: iast/views/messages_list.py:39
+#, fuzzy
+#| msgid "Number of Agent"
+msgid "the number of pages"
+msgstr "Number of Agent"
+
+#: iast/views/messages_list.py:52
+msgid "Get Messages List"
+msgstr ""
+
+#: iast/views/messages_list.py:54
+msgid "Used to get the message list corresponding to the user"
+msgstr ""
+
+#: iast/views/messages_new.py:26
+msgid "total number of new messages"
+msgstr ""
+
+#: iast/views/messages_new.py:32
+msgid "New Messages Count"
+msgstr ""
+
+#: iast/views/messages_new.py:33
+msgid "Used to get the number of new messages corresponding to the user"
+msgstr ""
 
 #: iast/views/method_graph.py:35
 msgid "Method pool ID is empty"
