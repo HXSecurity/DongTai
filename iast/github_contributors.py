@@ -14,7 +14,7 @@ from rest_framework import serializers
 import logging
 from functools import partial
 import time
-
+from django.core.cache import cache
 
 
 URL_LIST = [
@@ -55,10 +55,12 @@ def _get_github_user(url_list=URL_LIST, suffix='pulls?state=all'):
 
     total_users = {}
     user_count = {}
+    is_over_limit = False
     for url in url_list:
         resp = requests.get(urljoin(url, suffix))
         if resp.status_code == 403:
-            return {}
+            is_over_limit = True
+            break
         res = json.loads(resp.content)
         repo_users = list(map(lambda x: x['user'], res))
         repo_users_dic = {_['id']: _ for _ in repo_users}
@@ -74,7 +76,7 @@ def _get_github_user(url_list=URL_LIST, suffix='pulls?state=all'):
     user_list = []
     for user in sorted_user_list:
         user_list.append(total_users[user[0]])
-    return user_list
+    return user_list, is_over_limit
 
 
 
@@ -82,10 +84,13 @@ _get_github_issues = partial(_get_github_user, suffix='issues?state=all')
 _get_github_prs = partial(_get_github_user, suffix='pulls?state=all')
 
 
-
 def get_github_contributors(dic={}, update=False):
     if update:
-        dic['issues'] = _get_github_issues()
-        dic['prs'] = _get_github_prs()
-        dic['time'] = int(time.time())
-    return dic
+        dic1 = {}
+        dic1['issues'], is_over_limit_pr = _get_github_issues()
+        dic1['prs'], is_over_limit_issue = _get_github_prs()
+        dic1['time'] = int(time.time())
+        if cache.get('github_contributors') is None or not any(
+            [is_over_limit_pr, is_over_limit_issue]):
+            cache.set('github_contributors', dic1, 60 * 180)
+    return cache.get('github_contributors', default={})
