@@ -107,6 +107,10 @@ from iast.views.oss_health import OssHealthView
 from iast.views.github_contributors import GithubContributorsView
 from iast.views.program_language import ProgrammingLanguageList
 from iast.views.filereplace import FileReplace
+from iast.views.messages_list import MessagesEndpoint
+from iast.views.messages_new import MessagesNewEndpoint
+from iast.views.messages_del import MessagesDelEndpoint
+from iast.views.messages_send import MessagesSendEndpoint
 
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
@@ -221,12 +225,20 @@ urlpatterns = [
     path('oss/health', OssHealthView.as_view()),
     path('program_language', ProgrammingLanguageList.as_view()),
     path('filereplace/<str:filename>', FileReplace.as_view()),
+    path('message/list', MessagesEndpoint.as_view()),
+    path('message/unread_count', MessagesNewEndpoint.as_view()),
+    path('message/delete', MessagesDelEndpoint.as_view()),
+#    path('message/send', MessagesSendEndpoint.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
-    urlpatterns.extend([path('demo', Demo.as_view()),
-    path('github_contributors', GithubContributorsView.as_view()),
-        ])
+    urlpatterns.extend([
+        path('demo', Demo.as_view()),
+    ])
+if os.getenv('githubcount', None) in ('true', ):
+    urlpatterns.extend([
+        path('github_contributors', GithubContributorsView.as_view()),
+    ])
 
 
 urlpatterns = format_suffix_patterns(urlpatterns)

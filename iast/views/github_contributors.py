@@ -13,7 +13,7 @@ import asyncio
 from functools import partial
 import os
 
-if os.getenv('environment', None) in ('TEST', 'PROD'):
+if os.getenv('github_count', None) in ('true', ):
 
     async def delay(time):
         await asyncio.sleep(time)
