@@ -2,9 +2,9 @@
 CURRENT_PATH=$(cd "$(dirname "$0")" || exit;pwd)
 SKIP_MYSQL=false
 SKIP_REDIS=false
-ACCESS_TYPE=NodePort
+ACCESS_TYPE=ClusterIP
 NAMESPACE=dongtai-iast
-
+REALEASE_VERSION=1.0.5
 Info(){
   echo -e "[Info] $1"
 }
@@ -43,7 +43,7 @@ do
           done
         ;;
       "h")
-        Info "Usage: ./install.sh -m NodePort -s mysql -n dongtai-iast"
+        Info "Usage: ./install.sh -m ClusterIP -s mysql -n dongtai-iast"
         exit 1
         ;;
       ":")
@@ -103,8 +103,10 @@ deploy(){
   Info "Copying temporary file $NEW_FILENAME ..."
   if [ "${machine}" == "Mac" ]; then
     sed -i "" "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
+    sed -i "" "s/CHANGE_THIS_VERSION/$REALEASE_VERSION/g" "$NEW_FILENAME" >/dev/null
   elif [ "${machine}" == "Linux" ]; then
     sed -i "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
+    sed -i "s/CHANGE_THIS_VERSION/$REALEASE_VERSION/g" "$NEW_FILENAME" >/dev/null
   else
     Error "Unsupported shell version."
     rm "$NEW_FILENAME"
@@ -117,7 +119,7 @@ deploy(){
 }
 
 start_deploy(){
-  Notice "NAMESPACE: $NAMESPACE, ACCESS_TYPE:$ACCESS_TYPE, SKIP_MYSQL:$SKIP_MYSQL, SKIP_REDIS:$SKIP_REDIS"
+  Notice "IMAGE_VERSION: $REALEASE_VERSION, NAMESPACE: $NAMESPACE, ACCESS_TYPE:$ACCESS_TYPE, SKIP_MYSQL:$SKIP_MYSQL, SKIP_REDIS:$SKIP_REDIS"
   Info "Starting deploy to kubernetes ..."
   deploy "1.create-namespace.yml" "$NAMESPACE"
   if [ $SKIP_REDIS == false ]; then
@@ -128,15 +130,15 @@ start_deploy(){
   fi
     deploy "4.deploy-iast-server.yml" "$NAMESPACE"
 }
-
-expose_services(){
-  if [ "$ACCESS_TYPE" == "NodePort" ];then
-     kubectl expose deployments/dongtai-web --name=dongtai-web-pub-svc  --port=8000 --target-port=80 -n "$NAMESPACE" --type=NodePort
-     kubectl expose deployments/dongtai-openapi --name=dongtai-openapi-pub-svc  --port=8000 --target-port=8000 -n "$NAMESPACE" --type=NodePort
-  elif [ "$ACCESS_TYPE" == "LoadBalancer" ]; then
-     kubectl expose deployments/dongtai-web --name=dongtai-web-pub-svc  --port=8000 --target-port=80 -n "$NAMESPACE" --type=LoadBalancer
-     kubectl expose deployments/dongtai-openapi --name=dongtai-openapi-pub-svc  --port=8000 --target-port=8000 -n "$NAMESPACE" --type=LoadBalancer
-  fi
+SERVICE_TYPES="NodePort LoadBalancer ClusterIP"
+expose_services(){      
+    if [[ "$SERVICE_TYPES" =~ "$ACCESS_TYPE" ]]
+    then
+      kubectl expose deployments/dongtai-web --name=dongtai-web-pub-svc  --port=8000 --target-port=80 -n "$NAMESPACE" --type="$ACCESS_TYPE"
+      kubectl expose deployments/dongtai-openapi --name=dongtai-openapi-pub-svc  --port=8000 --target-port=8000 -n "$NAMESPACE" --type="$ACCESS_TYPE"
+    else
+      Error "-m option: $SERVICE_TYPES"
+    fi
 }
 
 check_env
@@ -155,4 +157,6 @@ if [ "$ACCESS_TYPE" == "NodePort" ]; then
 
 elif [ "$ACCESS_TYPE" == "LoadBalancer"  ]; then
     Todo "Get EXTERNAL-IP ip or dns by: kubectl get svc dongtai-web-pub-svc dongtai-openapi-pub-svc -n $NAMESPACE"
+else 
+  Todo "Your should expose your service [dongtai-web-pub-svc] and [dongtai-openapi-pub-svc] manually."
 fi
