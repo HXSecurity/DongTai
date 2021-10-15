@@ -130,7 +130,9 @@ CSRF_TRUSTED_ORIGINS = (
 CSRF_COOKIE_AGE = 60 * 60 * 24
 
 AGENT_UPGRADE_URL = "https://www.huoxian.cn"
-
+CORS_ALLOWED_ORIGINS = [
+        'https://dongtai.io',
+]
 
 CORS_ORIGIN_REGEX_WHITELIST = [
     r"^https://\w+\.huoxian.cn:(\:\d+)?$",
