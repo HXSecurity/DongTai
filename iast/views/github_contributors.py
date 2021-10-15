@@ -24,6 +24,7 @@ async def timer(time, function):
 
 _update = partial(get_github_contributors, update=True)
 
+
 def corotheard():
     _update()
     asyncio.run(timer(60 * 90, _update))
