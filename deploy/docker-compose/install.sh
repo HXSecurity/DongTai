@@ -1,7 +1,7 @@
 #!/bin/bash
 SKIP_MYSQL=false
 SKIP_REDIS=false
-
+CHANGE_THIS_VERSION=1.0.5
 Info(){
   echo -e "[Info] $1"
 }
@@ -127,7 +127,7 @@ REDIS_STR=""
 if [ $SKIP_MYSQL == false ]; then
   export MYSQL_STR=`cat <<EOF;
 dongtai-mysql: 
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest
+    image: dongtai/dongtai-mysql:$CHANGE_THIS_VERSION
     restart: always
     volumes:
       - ./data:/var/lib/mysql:rw
@@ -139,7 +139,7 @@ fi
 if [ $SKIP_REDIS == false ]; then
   export REDIS_STR=`cat <<EOF;
 dongtai-redis:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:latest
+    image: dongtai/dongtai-redis:$CHANGE_THIS_VERSION
     restart: always
 
 EOF
@@ -152,42 +152,42 @@ services:
   $MYSQL_STR
   $REDIS_STR
   dongtai-webapi:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:latest
+    image: "dongtai/dongtai-webapi:$CHANGE_THIS_VERSION"
     restart: always
     volumes:
-      - \$PWD/config-tutorial.ini:/opt/dongtai/webapi/conf/config.ini
+      - "$PWD/config-tutorial.ini:/opt/dongtai/webapi/conf/config.ini"
 
   dongtai-web:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-web:latest
+    image: "dongtai/dongtai-web:$CHANGE_THIS_VERSION"
     restart: always
     ports:
       - "$WEB_SERVICE_PORT:80"
     volumes:
-      - \$PWD/nginx.conf:/etc/nginx/nginx.conf
+      - "$PWD/nginx.conf:/etc/nginx/nginx.conf"
     depends_on:
       - dongtai-webapi
 
   dongtai-openapi:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:latest
+    image: "dongtai/dongtai-openapi:$CHANGE_THIS_VERSION"
     restart: always
     volumes:
-       - \$PWD/config-tutorial.ini:/opt/dongtai/openapi/conf/config.ini
+       - "$PWD/config-tutorial.ini:/opt/dongtai/openapi/conf/config.ini"
     ports:
       - "$OPENAPI_SERVICE_PORT:8000"
 
   dongtai-engine:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
+    image: "dongtai/dongtai-engine:$CHANGE_THIS_VERSION"
     restart: always
     volumes:
-      - \$PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini
+      - "$PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini"
 
 
   dongtai-engine-task:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
+    image: "dongtai/dongtai-engine:$CHANGE_THIS_VERSION"
     restart: always
     command: ["/opt/dongtai/engine/docker/entrypoint.sh", "task"]
     volumes:
-      - \$PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini
+      - "$PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini"
     depends_on:
       - dongtai-engine
 EOF
