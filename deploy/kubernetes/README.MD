@@ -1,4 +1,4 @@
-# Rapid deployment of Kubnernetes environment
+# Setup in Kubnernetes
 
 [中文版本(Chinese version)](README.ZH-CN.MD)
 
@@ -13,9 +13,10 @@
     - create namespaces
     - create StatefulSet
     - create Service
- 
 
 ## Deployment
+
+### Setup with shell
 
 Usage:  
 ```
@@ -28,15 +29,15 @@ s: skipped resources(skip), optional: `mysql` `redis`  `mysql,redis`, default: d
 
 n: specify the namespace, default: `dongtai-iast`
 
-## custom configuration
+### Custom configuration
 
 If you want to modify the configuration of mysql and Redis, manually modify the configuration `manifest/4.deploy-iast-server.yml` The top part of `[mysql]` and `redis`.
 
 > Note: Assuming that `mysql` and `redis` can be configured for production, this deployment scheme can be used for production deployment.
 
-## Access
+###Access
 
-### NodePort 
+####NodePort 
 
 #### Obtain an available Node IP address
 
@@ -57,7 +58,7 @@ kubectl get svc dongtai-engine-pub-svc -n dongtai-iast -o=jsonpath='{.spec.ports
 http://${NodeIP}:${PORT}
 ```
 
-### LoadBalancer
+#### LoadBalancer
 
 #### Obtain the available LoadBalancer IP address or DNS
 
@@ -65,10 +66,26 @@ http://${NodeIP}:${PORT}
 kubectl get svc dongtai-web-pub-svc dongtai-engine-pub-svc -n dongtai-iast
 ```
 
-## Uninstall
+#### Uninstall
 
 ```shell script
 kubectl delete namespace ${YourNamespace}
 ```
 
+### Setup with helm
+
+Before install, you have to make sure the helm is available. Follow [this guide](https://helm.sh/docs/intro/install/) to install helm.
+
+1. Add and update helm chart repo for `Dongtai Iast`
+
+   ```
+   helm repo add dongtai https://charts.dongtai.io/iast
+   helm repo update
+   ```
+
+2. Install
+
+   ```
+   helm install --create-namespace -n dongtai  dongtai-iast dongtai/dongtai-iast
+   ```
 

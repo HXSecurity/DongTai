@@ -1,0 +1,40 @@
+{{- if not .Values.skipMysql -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: {{.Release.Namespace}}
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - image: dongtai/dongtai-mysql:{{ .Chart.AppVersion}}
+          name: mysql-container
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3306
+              name: mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dongtai-mysql
+  namespace: {{.Release.Namespace}}
+  labels:
+    app: mysql
+spec:
+  selector:
+    app: mysql
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+{{- end -}}
