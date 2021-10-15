@@ -104,7 +104,6 @@ from iast.views.api_route_related_request import ApiRouteRelationRequest
 from iast.views.api_route_cover_rate import ApiRouteCoverRate
 from iast.views.health import HealthView
 from iast.views.oss_health import OssHealthView
-from iast.views.github_contributors import GithubContributorsView
 from iast.views.program_language import ProgrammingLanguageList
 from iast.views.filereplace import FileReplace
 from iast.views.messages_list import MessagesEndpoint
@@ -235,7 +234,8 @@ if os.getenv('environment', None) in ('TEST', 'PROD'):
     urlpatterns.extend([
         path('demo', Demo.as_view()),
     ])
-if os.getenv('githubcount', None) in ('true', ):
+if os.getenv('githubcount', None) in ('true', ) or os.getenv('environment', None) in ('PROD',):
+    from iast.views.github_contributors import GithubContributorsView
     urlpatterns.extend([
         path('github_contributors', GithubContributorsView.as_view()),
     ])
