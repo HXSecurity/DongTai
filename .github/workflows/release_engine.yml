@@ -53,12 +53,18 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Login to DockerHub
+      - name: Login to AliyunRegistry
         uses: docker/login-action@v1
         with:
           registry: ${{ secrets.ALIYUN_REGISTRY }}
           username: ${{ secrets.ALIYUN_DOCKERHUB_USER }}
           password: ${{ secrets.ALIYUN_DOCKERHUB_PASSWORD }}
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DONGTAI_DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DONGTAI_DOCKERHUB_TOKEN }}
 
       - id: release
         run: |
@@ -70,7 +76,11 @@ jobs:
         with:
           context: .
           push: true
-          tags: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest，registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:${{ steps.release.outputs.version }},"
+          tags: | 
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:${{ steps.release.outputs.version }}
+            dongtai/dongtai-engine:latest
+            dongtai/dongtai-engine:${{ steps.release.outputs.version }}
 
       - name: finish build
         uses: joelwmale/webhook-action@master
