@@ -59,13 +59,9 @@ jobs:
       - name: Setup Ossutil
         uses: manyuanrong/setup-ossutil@v2.0
         with:
-          endpoint: "oss.aliyuncs.com"
-          access-key-id: "your_key_id"
-          access-key-secret: "your_key_secret"
-        # with:
-        #   endpoint: ${{ secrets.ALIYUN_OSS_ENDPOINT }}
-        #   access-key-id: ${{ secrets.ALIYUN_OSS_KEY_ID }}
-        #   access-key-secret: ${{ secrets.ALIYUN_OSS_KEY_SECRET }}
+          endpoint: ${{ secrets.ALIYUN_OSS_ENDPOINT }}
+          access-key-id: ${{ secrets.ALIYUN_OSS_KEY_ID }}
+          access-key-secret: ${{ secrets.ALIYUN_OSS_KEY_SECRET }}
       - run: |
           ossutil cp oss://dongtai/agent/java/iast-agent.jar iast-agent.jar
           ossutil cp oss://dongtai/agent/java/iast-core.jar iast-core.jar
@@ -85,7 +81,9 @@ jobs:
         with:
           context: .
           push: true
-          tags: "registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi:0.1.0,registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi:1.0.${{github.run_number}}"
+          tags: | 
+            registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi:0.1.0
+            registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi:1.0.${{github.run_number}}
 
       - name: deploy to cluster
         uses: wahyd4/kubectl-helm-action@master
