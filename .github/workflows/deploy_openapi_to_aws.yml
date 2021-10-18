@@ -131,7 +131,7 @@ jobs:
       
       - name: Setup Ossutil
         uses: manyuanrong/setup-ossutil@v2.0
-        with: 
+        with:
           endpoint: ${{ secrets.ALIYUN_OSS_ENDPOINT }}
           access-key-id: ${{ secrets.ALIYUN_OSS_KEY_ID }}
           access-key-secret: ${{ secrets.ALIYUN_OSS_KEY_SECRET }}
