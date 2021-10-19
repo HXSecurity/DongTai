@@ -1,0 +1,36 @@
+Welcom to use Dongtai IAST !
+
+AccessType is {{ .Values.accessType -}}.
+
+{{ if eq .Values.accessType "NodePort" -}}
+Available node ip:
+{{- $nodes := (lookup "v1" "Node" "" "") }}
+{{ if $nodes }}
+{{ range $index, $val := $nodes.items }}
+    {{- range $key,$address := $val.status.addresses }}
+      {{- if eq $address.type "ExternalIP" }}
+        {{- print $address.address }}
+      {{- end }}
+    {{- end }}
+{{ end }}
+{{- end }}
+
+Get `dongtai-web service port`:
+
+  $ kubectl get service dongtai-web-pub-svc -n {{.Values.appNamespace}} -o=jsonpath='{.spec.ports[0].nodePort}'
+
+Get `dongtai-openapi service port`: 
+
+  $ kubectl get service dongtai-openapi-pub-svc -n {{.Values.appNamespace}} -o=jsonpath='{.spec.ports[0].nodePort}'
+
+{{ else if eq .Values.accessType "LoadBalancer" }}
+
+Get EXTERNAL-IP ip or DNS:
+
+  $ kubectl get service dongtai-web-pub-svc dongtai-openapi-pub-svc -n {{.Values.appNamespace}}
+
+{{ else if eq .Values.accessType "ClusterIP" }}
+
+	Your should expose your service [dongtai-web-pub-svc] and [dongtai-openapi-pub-svc] manually.
+
+{{ end }}

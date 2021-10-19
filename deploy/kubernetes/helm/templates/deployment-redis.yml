@@ -1,0 +1,87 @@
+{{- if not .Values.skipRedis -}}
+apiVersion: v1
+data:
+  redis.conf: |
+    bind 0.0.0.0
+    port 6379
+    requirepass 123456
+    pidfile .pid
+    appendonly yes
+    cluster-config-file nodes-6379.conf
+    pidfile /data/middleware-data/redis/log/redis-6379.pid
+    cluster-config-file /data/middleware-data/redis/conf/redis.conf
+    dir /data/middleware-data/redis/data/
+    logfile "/data/middleware-data/redis/log/redis-6379.log"
+    cluster-node-timeout 5000
+    protected-mode no
+kind: ConfigMap
+metadata:
+  name: redis-conf
+  namespace: {{.Release.Namespace}}
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis
+  namespace: {{.Release.Namespace}}
+spec:
+  selector:
+    matchLabels:
+      app: redis
+  serviceName: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - command: [ "/bin/sh","-c","exec redis-server /data/middleware-data/redis/conf/redis.conf" ]
+          image: dongtai/dongtai-redis:{{ .Values.imageVersion }}
+          imagePullPolicy: Always
+          name: redis
+          ports:
+            - containerPort: 6379
+              name: redis
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /data/middleware-data/redis/conf/
+              name: redis-config
+            - mountPath: /data/middleware-data/redis/
+              name: data
+      dnsPolicy: ClusterFirst
+      initContainers:
+        - command: [ "/bin/sh","-c","mkdir -p /data/middleware-data/redis/log/  /data/middleware-data/redis/conf/ /data/middleware-data/redis/data/" ]
+          image: busybox:latest
+          imagePullPolicy: Always
+          name: init-redis
+          volumeMounts:
+            - mountPath: /data/middleware-data/redis/
+              name: data
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: redis-conf
+          name: redis-config
+        - hostPath:
+            path: /data/middleware-data/redis/
+            type: ""
+          name: data
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: redis
+    statefulset.kubernetes.io/pod-name: redis-0
+  name: dongtai-redis
+  namespace: {{.Release.Namespace}}
+spec:
+  ports:
+    - port: 6379
+      protocol: TCP
+      targetPort: 6379
+  selector:
+    app: redis
+    statefulset.kubernetes.io/pod-name: redis-0
+{{- end -}}

@@ -1,4 +1,4 @@
-# Rapid deployment of Kubnernetes environment
+# Setup in Kubnernetes
 
 [中文版本(Chinese version)](README.ZH-CN.MD)
 
@@ -13,9 +13,10 @@
     - create namespaces
     - create StatefulSet
     - create Service
- 
 
 ## Deployment
+
+### Setup with shell
 
 Usage:  
 ```
@@ -28,47 +29,108 @@ s: skipped resources(skip), optional: `mysql` `redis`  `mysql,redis`, default: d
 
 n: specify the namespace, default: `dongtai-iast`
 
-## custom configuration
+#### Custom configuration
 
 If you want to modify the configuration of mysql and Redis, manually modify the configuration `manifest/4.deploy-iast-server.yml` The top part of `[mysql]` and `redis`.
 
 > Note: Assuming that `mysql` and `redis` can be configured for production, this deployment scheme can be used for production deployment.
 
-## Access
+####  Access
 
-### NodePort 
+##### NodePort 
 
-#### Obtain an available Node IP address
+##### Obtain an available Node IP address
 
 ```shell script
 kubectl get nodes -o wide |  awk {'print $1" " $2 " " $7'} | column -t
 ```
 
-#### Obtain an available NodePort
+##### Obtain an available NodePort
 
 ```shell script
 kubectl get svc dongtai-web-pub-svc -n dongtai-iast -o=jsonpath='{.spec.ports[0].nodePort}'
 kubectl get svc dongtai-engine-pub-svc -n dongtai-iast -o=jsonpath='{.spec.ports[0].nodePort}')
 ```
 
-#### Access Link:
+##### Access Link:
 
 ```shell script
 http://${NodeIP}:${PORT}
 ```
 
-### LoadBalancer
+##### LoadBalancer
 
-#### Obtain the available LoadBalancer IP address or DNS
+##### Obtain the available LoadBalancer IP address or DNS
 
 ```shell script
 kubectl get svc dongtai-web-pub-svc dongtai-engine-pub-svc -n dongtai-iast
 ```
 
-## Uninstall
+#### Uninstall
 
 ```shell script
 kubectl delete namespace ${YourNamespace}
 ```
 
+### Setup with helm
+
+Before install, you have to make sure the helm is available. Follow [this guide](https://helm.sh/docs/intro/install/) to install helm.
+
+1. Add and update helm chart repo for `Dongtai Iast`
+
+   ```
+   helm repo add dongtai https://charts.dongtai.io/iast
+   helm repo update
+   ```
+
+2. Install
+
+   ```
+   helm install --create-namespace -n dongtai  dongtai-iast dongtai/dongtai-iast
+   ```
+   
+   This command will deploy dongtai servers in dongtai namespace and expose service with `ClusterIP`.
+
+#### Custom configuration
+
+If you want to modify the configuration of mysql and Redis,you can overwrite the values by your own file,Suppose you have a file in `/tmp/my-values.yml` with values as follow:
+
+``` yaml
+mysql:
+  host: my-dongtai-mysql
+  port: 3306
+  name: my-dongtai_webapi
+  user: root
+  password: my-dongtai-iast
+
+redis:
+  host: my-dongtai-redis
+  port: 6379
+  password: 123456
+  db: 0
+```
+
+``` shell script
+ helm install --create-namespace -n dongtai --values /tmp/my-values.yaml dongtai-iast dongtai/dongtai-iast
+```
+
+You can also pass in a single value using **`--set`**, for example, you can switch defalut access type `ClusterIP` to `NodePort` 
+
+```shell
+helm install --create-namespace -n dongtai-test --set accessType=NodePort dongtai-iast dongtai/dongtai-iast
+```
+
+Avaliable values:
+
+**skipMysql**:  false (default)
+**skipRedis**: false (default)
+
+**accessType**: ClusterIP(default), Options: ClusterIP,NodePort,LoadBalancer
+
+**imageVersion**: latest (default)
+
+#### Uninstall
+```
+helm uninstall dongtai-iast -n dongtai
+```
 
