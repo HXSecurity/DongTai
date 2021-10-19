@@ -1,0 +1,34 @@
+{{- if or (eq .Values.accessType "NodePort") (eq .Values.accessType "LoadBalancer") (eq .Values.accessType "ClusterIP")  -}}
+# Expose dongtai-web svc with {{ .Values.accessType }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: dongtai-web
+  name: dongtai-web-pub-svc
+  namespace: {{ .Release.Namespace }}
+spec:
+  ports:
+    - port: 8000
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: dongtai-web
+  type: {{ .Values.accessType }}
+---
+# Expose dongtai-openapi svc with {{ .Values.accessType }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: dongtai-openapi
+  name: dongtai-openapi-pub-svc
+spec:
+  ports:
+    - port: 8000
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    app: dongtai-openapi
+  type: {{ .Values.accessType }}
+{{- end -}}
