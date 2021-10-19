@@ -8,7 +8,8 @@ replicaCount: 1
 # appNamespace: dongtai-iast
 skipMysql: false 
 skipRedis: false
-accessType: ClusterIP
+accessType: ClusterIP 
+imageVersion: latest
 
 mysql:
   host: dongtai-mysql
