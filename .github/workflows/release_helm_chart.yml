@@ -1,0 +1,39 @@
+name: Release helm chart
+on:
+  push:
+    branches:
+      - release-*
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        appVersion: 1.0.6
+        version: 0.0.2
+
+    steps:
+      - name: 
+        uses: actions/checkout@v2
+      
+      - uses: azure/setup-helm@v1
+        with:
+          version: 'latest' # default is latest stable
+        id: install
+
+      - name: Helm Package
+        run: |
+          helm package deploy/kubernetes/helm  -d /root/helm/repo --app-version ${{ matrix.appVersion }} --version ${{ matrix.version }}
+          helm repo index /root/helm/repo --url ${{ secrets.DONGTAI_IAST_CHART_REPO_URL }}
+
+      - name: Setup Ossutil
+        uses: manyuanrong/setup-ossutil@v2.0
+        with:
+          endpoint: ${{ secrets.CHART_OSS_ENDPOINT }}
+          access-key-id: ${{ secrets.CHART_OSS_ACCESS_KEY_ID }}
+          access-key-secret: ${{ secrets.CHART_OSS_ACCESS_KEY_SECRET }}
+      - run: |
+          ossutil cp /root/helm/repo/dongtai-iast-${{ matrix.version }}.tgz  oss://dongtai-helm-charts/iast/
+          ossutil cp /root/helm/repo/index.yaml  oss://dongtai-helm-charts/iast/
+
+          
