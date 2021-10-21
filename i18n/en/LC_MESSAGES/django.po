@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-14 15:18+0800\n"
+"POT-Creation-Date: 2021-10-20 12:02+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -142,7 +142,7 @@ msgid "Data update succeeded"
 msgstr "Data update succeeded"
 
 #: iast/account/user.py:118 iast/views/project_detail.py:36
-#: iast/views/project_detail.py:74 iast/views/project_report_export.py:92
+#: iast/views/project_detail.py:74 iast/views/project_report_export.py:96
 #: iast/views/project_summary.py:105 iast/views/user_detail.py:32
 msgid "no permission"
 msgstr "no permission"
@@ -197,7 +197,7 @@ msgid "{} Appears in {} {}"
 msgstr "{} Appears in {} {}"
 
 #: iast/base/project_version.py:9 iast/base/project_version.py:117
-#: iast/views/api_route_search.py:40 iast/views/project_report_export.py:27
+#: iast/views/api_route_search.py:40 iast/views/project_report_export.py:29
 #: iast/views/project_summary.py:25 iast/views/project_version_current.py:21
 #: iast/views/project_version_delete.py:19
 #: iast/views/project_version_list.py:19
@@ -217,7 +217,7 @@ msgstr ""
 #: iast/base/project_version.py:14 iast/serializers/vul.py:101
 #: iast/views/api_route_search.py:38 iast/views/project_add.py:35
 #: iast/views/project_delete.py:17 iast/views/project_detail.py:29
-#: iast/views/project_report_export.py:30 iast/views/project_search.py:18
+#: iast/views/project_report_export.py:32 iast/views/project_search.py:18
 #: iast/views/project_summary.py:55 iast/views/project_version_current.py:22
 #: iast/views/project_version_delete.py:20 iast/views/vul_details.py:71
 #, fuzzy
@@ -240,7 +240,7 @@ msgstr ""
 #: iast/views/engine_method_pool_search.py:165 iast/views/openapi.py:13
 #: iast/views/openapi.py:67 iast/views/project_add.py:41
 #: iast/views/project_add.py:69 iast/views/project_add.py:108
-#: iast/views/project_add.py:144 iast/views/project_report_export.py:75
+#: iast/views/project_add.py:144 iast/views/project_report_export.py:77
 #: iast/views/project_version_add.py:18 iast/views/project_version_add.py:41
 #: iast/views/project_version_add.py:47
 #: iast/views/project_version_current.py:50
@@ -287,28 +287,28 @@ msgstr "Detection failed"
 msgid "Maven official crawler"
 msgstr "Maven official crawler"
 
-#: iast/serializers/agent.py:47
+#: iast/serializers/agent.py:48
 msgid "Online"
 msgstr "Online"
 
-#: iast/serializers/agent.py:47
+#: iast/serializers/agent.py:48
 msgid "Offline"
 msgstr "Offline"
 
-#: iast/serializers/agent.py:59
+#: iast/serializers/agent.py:60
 msgid "Load data is not uploaded"
 msgstr "Load data is not uploaded"
 
-#: iast/serializers/agent.py:67 iast/serializers/agent.py:72
+#: iast/serializers/agent.py:68 iast/serializers/agent.py:73
 msgid "No flow is detected by the probe"
 msgstr "No flow is detected by the probe"
 
-#: iast/serializers/agent.py:111 iast/serializers/agent.py:118
-#: iast/views/agent_start.py:16
+#: iast/serializers/agent.py:123 iast/serializers/agent.py:130
+#: iast/views/agent_alias_modified.py:18 iast/views/agent_start.py:16
 msgid "The id corresponding to the agent."
 msgstr ""
 
-#: iast/serializers/agent.py:113 iast/views/agent_start.py:18
+#: iast/serializers/agent.py:125 iast/views/agent_start.py:18
 #: iast/views/agents_delete.py:27
 msgid "The id corresponding to the agent, use\",\" for segmentation."
 msgstr ""
@@ -446,7 +446,7 @@ msgstr "Modify the vulnerability status"
 msgid "The number of vulnerabilities corresponding to the vulnerablity type"
 msgstr ""
 
-#: iast/serializers/vul.py:98 iast/views/project_report_export.py:29
+#: iast/serializers/vul.py:98 iast/views/project_report_export.py:31
 #, fuzzy
 #| msgid "Number of Agent"
 msgid "The name of the project"
@@ -526,12 +526,12 @@ msgstr ""
 msgid "Agent language currently included in the project"
 msgstr ""
 
-#: iast/views/agent.py:69 iast/views/agent_delete.py:38
-#: iast/views/agent_install.py:29 iast/views/agent_search.py:31
-#: iast/views/agent_start.py:30 iast/views/agent_stop.py:26
-#: iast/views/agent_uninstall.py:28 iast/views/agent_upgrade_online.py:40
-#: iast/views/agents.py:60 iast/views/agents_delete.py:44
-#: iast/views/agents_user.py:23
+#: iast/views/agent.py:69 iast/views/agent_alias_modified.py:31
+#: iast/views/agent_delete.py:38 iast/views/agent_install.py:29
+#: iast/views/agent_search.py:31 iast/views/agent_start.py:30
+#: iast/views/agent_stop.py:26 iast/views/agent_uninstall.py:28
+#: iast/views/agent_upgrade_online.py:40 iast/views/agents.py:60
+#: iast/views/agents_delete.py:44 iast/views/agents_user.py:23
 #, fuzzy
 #| msgid "Agent list"
 msgid "Agent"
@@ -551,17 +551,41 @@ msgstr ""
 msgid "Can't find relevant data"
 msgstr "Can't find relevant data"
 
-#: iast/views/agent_delete.py:27 iast/views/agent_delete.py:60
-msgid "Agent and related data deleted successfully"
-msgstr "Agent and related data deleted successfully"
+#: iast/views/agent_alias_modified.py:20
+#, fuzzy
+#| msgid "Number of Agent"
+msgid "The alias corresponding to the agent."
+msgstr "Number of Agent"
 
-#: iast/views/agent_delete.py:28 iast/views/agent_delete.py:62
+#: iast/views/agent_alias_modified.py:24 iast/views/agent_alias_modified.py:46
+#, fuzzy
+#| msgid "Login successful"
+msgid "modified successfully"
+msgstr "Login successful"
+
+#: iast/views/agent_alias_modified.py:25 iast/views/agent_delete.py:28
+#: iast/views/agent_delete.py:62
 msgid "Agent does not exist or no permission to access"
 msgstr "Agent does not exist or no permission to access"
 
-#: iast/views/agent_delete.py:29 iast/views/agent_delete.py:65
+#: iast/views/agent_alias_modified.py:26 iast/views/agent_delete.py:29
+#: iast/views/agent_delete.py:65
 msgid "Error while deleting, please try again later"
 msgstr "Error while deleting, please try again later"
+
+#: iast/views/agent_alias_modified.py:33
+#, fuzzy
+#| msgid "Agent list"
+msgid "Agent Alias Modified"
+msgstr "Agent list"
+
+#: iast/views/agent_alias_modified.py:34
+msgid "Modified the agent alias"
+msgstr ""
+
+#: iast/views/agent_delete.py:27 iast/views/agent_delete.py:60
+msgid "Agent and related data deleted successfully"
+msgstr "Agent and related data deleted successfully"
 
 #: iast/views/agent_delete.py:35 iast/views/agents_delete.py:40
 msgid "Delete Agent"
@@ -1555,7 +1579,7 @@ msgid "Used by the user to delete the corresponding message"
 msgstr ""
 
 #: iast/views/messages_del.py:40 iast/views/messages_list.py:55
-#: iast/views/messages_new.py:34
+#: iast/views/messages_new.py:34 iast/views/messages_send.py:41
 msgid "Messages"
 msgstr ""
 
@@ -1573,7 +1597,7 @@ msgstr "Number of Agent"
 msgid "Get Messages List"
 msgstr ""
 
-#: iast/views/messages_list.py:54
+#: iast/views/messages_list.py:54 iast/views/messages_send.py:40
 msgid "Used to get the message list corresponding to the user"
 msgstr ""
 
@@ -1588,6 +1612,12 @@ msgstr ""
 #: iast/views/messages_new.py:33
 msgid "Used to get the number of new messages corresponding to the user"
 msgstr ""
+
+#: iast/views/messages_send.py:38
+#, fuzzy
+#| msgid "Number of Agent"
+msgid "Send Message"
+msgstr "Number of Agent"
 
 #: iast/views/method_graph.py:35
 msgid "Method pool ID is empty"
@@ -1611,11 +1641,12 @@ msgstr "Page and PageSize can only be numeric"
 msgid "Created success"
 msgstr "Created success"
 
-#: iast/views/openapi.py:12 iast/views/openapi.py:62 iast/views/profile.py:18
+#: iast/views/openapi.py:12 iast/views/openapi.py:62 iast/views/profile.py:32
 msgid "Current users have no permission to modify"
 msgstr "Current users have no permission to modify"
 
-#: iast/views/openapi.py:35 iast/views/openapi.py:52
+#: iast/views/openapi.py:35 iast/views/openapi.py:52 iast/views/profile.py:16
+#: iast/views/profile.py:28
 msgid "Profile"
 msgstr ""
 
@@ -1642,11 +1673,31 @@ msgstr ""
 msgid "OpenAPI configuration error"
 msgstr "Get OpenAPI configuration failed"
 
-#: iast/views/profile.py:13
+#: iast/views/profile.py:11
+msgid "profile value"
+msgstr ""
+
+#: iast/views/profile.py:14
+msgid "Get Profile"
+msgstr ""
+
+#: iast/views/profile.py:15
+msgid "Get Profile with key"
+msgstr ""
+
+#: iast/views/profile.py:22
 msgid "Failed to get {} configuration"
 msgstr "Failed to get {} configuration"
 
+#: iast/views/profile.py:25
+msgid "Profile modify"
+msgstr ""
+
 #: iast/views/profile.py:27
+msgid "Modifiy Profile with key"
+msgstr ""
+
+#: iast/views/profile.py:40
 msgid "Update {} failed"
 msgstr "Update {} failed"
 
@@ -1717,7 +1768,7 @@ msgstr "New application"
 
 #: iast/views/project_add.py:54 iast/views/project_delete.py:32
 #: iast/views/project_detail.py:45 iast/views/project_engines.py:37
-#: iast/views/project_report_export.py:58 iast/views/project_search.py:34
+#: iast/views/project_report_export.py:60 iast/views/project_search.py:34
 #: iast/views/project_summary.py:93 iast/views/project_version_add.py:29
 #: iast/views/project_version_current.py:38
 #: iast/views/project_version_delete.py:35
@@ -1805,109 +1856,109 @@ msgstr "Number of Agent"
 msgid "Get the agent list corresponding to the project id."
 msgstr ""
 
-#: iast/views/project_report_export.py:34
+#: iast/views/project_report_export.py:36
 msgid "Vulnerability Report Generate - Word"
 msgstr "Vulnerability Report Generate - Word"
 
-#: iast/views/project_report_export.py:59
+#: iast/views/project_report_export.py:61
 msgid "Projects Report Export"
 msgstr ""
 
-#: iast/views/project_report_export.py:61
+#: iast/views/project_report_export.py:63
 msgid ""
 "According to the conditions, export the report of the specified project or "
 "the project of the specified vulnerability."
 msgstr ""
 
-#: iast/views/project_report_export.py:84
+#: iast/views/project_report_export.py:86
 msgid "Vulnerability Report - {}. {}"
 msgstr "Vulnerability Report - {}. {}"
 
-#: iast/views/project_report_export.py:137
+#: iast/views/project_report_export.py:141
 msgid "Security Testing Report"
 msgstr "Security Testing Report"
 
-#: iast/views/project_report_export.py:150
+#: iast/views/project_report_export.py:154
 msgid "First, project information"
 msgstr "First, project information"
 
-#: iast/views/project_report_export.py:158
+#: iast/views/project_report_export.py:162
 msgid "Application name"
 msgstr "Application name"
 
-#: iast/views/project_report_export.py:161
+#: iast/views/project_report_export.py:165
 msgid "Author"
 msgstr "Author"
 
-#: iast/views/project_report_export.py:164
+#: iast/views/project_report_export.py:168
 msgid "Application type"
 msgstr "Application type"
 
-#: iast/views/project_report_export.py:167
+#: iast/views/project_report_export.py:171
 msgid "Number of Vulnerability"
 msgstr "Number of Vulnerability"
 
-#: iast/views/project_report_export.py:170
+#: iast/views/project_report_export.py:174
 msgid "Number of Agent"
 msgstr "Number of Agent"
 
-#: iast/views/project_report_export.py:173
+#: iast/views/project_report_export.py:177
 msgid "Latest time"
 msgstr "Latest time"
 
-#: iast/views/project_report_export.py:195
+#: iast/views/project_report_export.py:199
 msgid "Second, the result analysis"
 msgstr "Second, the result analysis"
 
-#: iast/views/project_report_export.py:199
+#: iast/views/project_report_export.py:203
 msgid "2.1 Vulnerability Severity Levels Distribution"
 msgstr "2.1 Vulnerability Severity Levels Distribution"
 
-#: iast/views/project_report_export.py:209
+#: iast/views/project_report_export.py:213
 msgid "2.2 Distribution of Vulnerability"
 msgstr "2.2 Distribution of Vulnerability"
 
-#: iast/views/project_report_export.py:217
+#: iast/views/project_report_export.py:221
 msgid "Severity levels"
 msgstr "Severity levels"
 
-#: iast/views/project_report_export.py:218
+#: iast/views/project_report_export.py:222
 msgid "Vulnerability type name"
 msgstr "Vulnerability type name"
 
-#: iast/views/project_report_export.py:219
+#: iast/views/project_report_export.py:223
 msgid "Number"
 msgstr "Number"
 
-#: iast/views/project_report_export.py:232
+#: iast/views/project_report_export.py:236
 msgid "2.3 Vulnerability details"
 msgstr "2.3 Vulnerability details"
 
-#: iast/views/project_report_export.py:255
+#: iast/views/project_report_export.py:259
 msgid "Summary"
 msgstr "Summary"
 
-#: iast/views/project_report_export.py:259
+#: iast/views/project_report_export.py:263
 msgid "Severity level"
 msgstr "Severity level"
 
-#: iast/views/project_report_export.py:263
+#: iast/views/project_report_export.py:267
 msgid "First scan time"
 msgstr "First scan time"
 
-#: iast/views/project_report_export.py:267
+#: iast/views/project_report_export.py:271
 msgid "Last scan time"
 msgstr "Last scan time"
 
-#: iast/views/project_report_export.py:271
+#: iast/views/project_report_export.py:275
 msgid "Development language"
 msgstr "Development language"
 
-#: iast/views/project_report_export.py:275
+#: iast/views/project_report_export.py:279
 msgid "Vulnerability URL"
 msgstr "Vulnerability URL"
 
-#: iast/views/project_report_export.py:277
+#: iast/views/project_report_export.py:281
 msgid "Vulnerability description"
 msgstr "Vulnerability description"
 
@@ -2790,7 +2841,7 @@ msgstr "Vulnerability type name"
 msgid "Get the list of vulnerabilities corresponding to the project"
 msgstr ""
 
-#: webapi/settings.py:302
+#: webapi/settings.py:304
 #, python-brace-format
 msgid ""
 "Here is the API documentation in webapi. The corresponding management part "
