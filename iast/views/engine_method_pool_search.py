@@ -9,7 +9,7 @@ from dongtai.models.user import User
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.models.hook_type import HookType
 
-from iast.utils import get_model_field, assemble_query
+from iast.utils import get_model_field, assemble_query,assemble_query_2
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.translation import gettext_lazy
 from django.db.utils import OperationalError
@@ -197,11 +197,10 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     map(lambda x: ('method_pool', x.format(v)), templates))
             elif k in fields:
                 search_fields_.append((k, v))
-        q = assemble_query(search_fields_, 'regex', Q(), operator.or_)
         if search_mode == 1:
-            q = q
+            q = assemble_query(search_fields_, 'regex', Q(), operator.or_)
         elif search_mode == 2:
-            q = ~q
+            q = assemble_query_2(search_fields_, 'regex', Q(), operator.and_)
         search_after_fields = list(
             filter(
                 lambda x: x[0] in search_after_keys,
@@ -219,6 +218,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         q = (q &
              (Q(update_time__gte=start_time) & Q(update_time__lte=end_time)))
         q = (q & (~Q(pk__in=ids))) if ids is not None and ids != [] else q
+        print(q)
         queryset = MethodPool.objects.filter(q).order_by(
             '-update_time')[:page_size]
         try:

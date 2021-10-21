@@ -44,6 +44,21 @@ def assemble_query(condictions: dict,
                 }, condictions)), base_query)
 
 
+def assemble_query_2(condictions: dict,
+                     lookuptype='',
+                     base_query=Q(),
+                     operator_=operator.or_):
+    return reduce(
+        operator_,
+        map(
+            lambda x: ~Q(**x),
+            map(
+                lambda kv_pair: {
+                    '__'.join(filter(lambda x: x, [kv_pair[0], lookuptype])):
+                    kv_pair[1]
+                }, condictions)), base_query)
+
+
 from rest_framework.serializers import SerializerMetaclass
 from django.utils.translation import get_language
 from django.utils.text import format_lazy
