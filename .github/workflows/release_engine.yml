@@ -25,25 +25,6 @@ jobs:
           url: ${{ secrets.WEBHOOK_URL }}
           body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "状态：项目${{github.repository}}构建开始\n分支：${{github.ref}}\n流程：${{github.workflow}}\n构建编号：${{github.run_number}}\n触发事件：${{github.event_name}}\n提交人：${{github.actor}}\nSHA-1：${{github.sha}}\n","tag": "lark_md"}}]}}'
 
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Set up Python 3.7
-        uses: actions/checkout@v1
-        with:
-          python-version: 3.7
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements-prod.txt
-
-      - name: Lint with flake8
-        run: |
-          pip install flake8
-          # stop the build if there are Python syntax errors or undefined names
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -52,13 +33,6 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-
-      - name: Login to AliyunRegistry
-        uses: docker/login-action@v1
-        with:
-          registry: ${{ secrets.ALIYUN_REGISTRY }}
-          username: ${{ secrets.ALIYUN_DOCKERHUB_USER }}
-          password: ${{ secrets.ALIYUN_DOCKERHUB_PASSWORD }}
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
@@ -76,11 +50,27 @@ jobs:
         with:
           context: .
           push: true
-          tags: | 
-            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
-            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:${{ steps.release.outputs.version }}
+          tags: |
             dongtai/dongtai-engine:latest
             dongtai/dongtai-engine:${{ steps.release.outputs.version }}
+
+      - name: deploy Engine to PROD
+        uses: wahyd4/kubectl-helm-action@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+          args: |
+            find deploy/deploy-eks-iast-saas-engine-prod.yml -type f -exec sed -i 's/VERSION/${{ steps.release.outputs.version }}/g' {} \;
+            ls deploy/deploy-eks-iast-saas-engine-prod.yml | xargs -I {} kubectl apply -f {}
+
+      - name: deploy Engine Task to cluster
+        uses: wahyd4/kubectl-helm-action@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+          args: |
+            find deploy/deploy-eks-iast-saas-engine-task-prod.yml -type f -exec sed -i 's/VERSION/${{ steps.release.outputs.version }}/g' {} \;
+            ls deploy/deploy-eks-iast-saas-engine-task-prod.yml | xargs -I {} kubectl apply -f {}
 
       - name: finish build
         uses: joelwmale/webhook-action@master

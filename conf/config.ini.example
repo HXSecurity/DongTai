@@ -1,15 +1,15 @@
 [mysql]
-host = mysql-server
-port = mysql-port
-name = database_name
-user = username
-password = password
+host = 127.0.0.1
+port = 3306
+name = dongtai_webapi
+user = root
+password = dongtai-iast
 
 [redis]
-host = redis-server
-port = redis-port
-password = password
-db = <celery broker db>
+host = localhost
+port = 3306
+password = 123456
+db = 0
 
 [engine]
 url = engine-url

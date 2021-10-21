@@ -1,33 +1,45 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Deploy DongTai Engine To AWS
+name: Deploy DongTai Engine To TEST
 
 on:
   pull_request:
     branches: [ main ]
+  push:
+    branches: [ main ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  Run-DongTai-Engine-UnitTest:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: dongtai/dongtai-mysql:latest
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping --silent"
+          --health-interval 10s
+          --health-timeout 180s
+          --health-retries 10
+      redis:
+        image: dongtai/dongtai-redis:latest
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     strategy:
       max-parallel: 4
       matrix:
         python-version: [3.7]
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: start-build
-        uses: joelwmale/webhook-action@master
-        with:
-          url: ${{ secrets.WEBHOOK_URL }}
-          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "状态：项目${{github.repository}}构建开始\n分支：${{github.ref}}\n流程：${{github.workflow}}\n构建编号：${{github.run_number}}\n触发事件：${{github.event_name}}\n提交人：${{github.actor}}\nSHA-1：${{github.sha}}\n","tag": "lark_md"}}]}}'
-
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Set up Python 3.7
-        uses: actions/checkout@v1
+      - name: Checkout
+        uses: actions/checkout@v2
         with:
           python-version: 3.7
 
@@ -44,14 +56,36 @@ jobs:
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-      - name: Django Testing project
+      - name: Waiting For MySql Init
+        run: sleep 120
+
+      - name: Run UnitTest
         run: |
           cp conf/config.ini.example conf/config.ini
-          python3 manage.py migrate
           python3 manage.py test
+
+  Deploy-DongTai-Engine-To-TEST:
+    # The type of runner that the job will run on
+    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+    needs: [Run-DongTai-Engine-UnitTest]
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.7]
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: start-build
+        uses: joelwmale/webhook-action@master
+        with:
+          url: ${{ secrets.WEBHOOK_URL }}
+          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "状态：项目${{github.repository}}构建开始\n分支：${{github.ref}}\n流程：${{github.workflow}}\n构建编号：${{github.run_number}}\n触发事件：${{github.event_name}}\n提交人：${{github.actor}}\nSHA-1：${{github.sha}}\n","tag": "lark_md"}}]}}'
 
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          python-version: 3.7
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -62,36 +96,36 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
-          registry: ${{ secrets.ALIYUN_REGISTRY }}
-          username: ${{ secrets.ALIYUN_DOCKERHUB_USER }}
-          password: ${{ secrets.ALIYUN_DOCKERHUB_PASSWORD }}
+          registry: ${{secrets.ALIYUN_REGISTRY}}
+          username: ${{secrets.ALIYUN_DOCKERHUB_USER}}
+          password: ${{secrets.ALIYUN_DOCKERHUB_PASSWORD}}
+          logout: true
 
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: .
+          file: DockerfileTest
           push: true
-          tags: "registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine:latest,registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine:1.0.${{github.run_number}},"
+          tags: "registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine-test:0.1.${{github.run_number}},"
 
-      - uses: actions/checkout@master
       - name: deploy Engine to cluster
         uses: wahyd4/kubectl-helm-action@master
         env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_TEST_DATA }}
         with:
           args: |
-            find deploy/deploy-eks-iast-saas-engine-prod.yml -type f -exec sed -i 's/VERSION/1.0.${{github.run_number}}/g' {} \;
-            ls deploy/deploy-eks-iast-saas-engine-prod.yml | xargs -I {} kubectl apply -f {}
+            find deploy/deploy-eks-iast-saas-engine-test.yml -type f -exec sed -i 's/VERSION/0.1.${{github.run_number}}/g' {} \;
+            ls deploy/deploy-eks-iast-saas-engine-test.yml | xargs -I {} kubectl apply -f {}
 
-      - uses: actions/checkout@master
       - name: deploy Engine Task to cluster
         uses: wahyd4/kubectl-helm-action@master
         env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_TEST_DATA }}
         with:
           args: |
-            find deploy/deploy-eks-iast-saas-engine-task-prod.yml -type f -exec sed -i 's/VERSION/1.0.${{github.run_number}}/g' {} \;
-            ls deploy/deploy-eks-iast-saas-engine-task-prod.yml | xargs -I {} kubectl apply -f {}
+            find deploy/deploy-eks-iast-saas-engine-task-test.yml -type f -exec sed -i 's/VERSION/0.1.${{github.run_number}}/g' {} \;
+            ls deploy/deploy-eks-iast-saas-engine-task-test.yml | xargs -I {} kubectl apply -f {}
 
       - name: finish build
         uses: joelwmale/webhook-action@master

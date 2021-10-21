@@ -50,7 +50,7 @@ def create_vul_data_from_model(vul):
     """
     agent = vul.agent
     vul_data = {}
-    vul_data['vul_type'] = vul.type
+    vul_data['vul_type'] = vul.hook_type.name
     vul_data['vul_level'] = vul.level.name_value
     vul_data['http_url'] = vul.url
     vul_data['http_uri'] = vul.uri
