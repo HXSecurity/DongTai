@@ -29,10 +29,14 @@ class MethodPoolSearchProxySer(serializers.Serializer):
         _("Whether to enable highlighting, the text where the regular expression matches will be highlighted"
           ))
     exclude_ids = serializers.CharField(help_text=_("Exclude the method_pool entry with the following id, this field is used to obtain the data of the entire project in batches."),required=False)
-    time_range = serializers.CharField(help_text=_(
-        "Time range, the default is the current time to the previous seven days, separated by',', format such as 1,1628190947242"
-    ),
-                                       required=False)
+    time_range = serializers.ListField(
+        child=serializers.IntegerField(
+            min_value=1, help_text=_('time  format such as 1,1628190947242')),
+        min_length=2,
+        max_length=2,
+        help_text=
+        _("Time range, the default is the current time to the previous seven days, separated by',', format such as 1,1628190947242"
+          ))
     url = serializers.CharField(
         help_text=_("The url of the method pool, search using regular syntax"),
         required=False)
@@ -59,6 +63,10 @@ class MethodPoolSearchProxySer(serializers.Serializer):
         "The filter field will return the method call chain with the update time after this time, which can be combined with the exclude_ids field to handle paging"
     ),
                                         required=False)
+    search_mode = serializers.IntegerField(
+        help_text=_("the search_mode , 1-regex match ,2-regex not match "),
+        default=1,
+        required=False)
 
 
 class MethodPoolSearchResponseRelationVulnerablitySer(serializers.Serializer):
@@ -151,6 +159,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         search_after_keys = ['update_time']
         exclude_ids = request.data.get('exclude_ids', None)
         time_range = request.data.get('time_range', None)
+        search_mode = request.data.get('search_mode', 1)
         try:
             if page_size <= 0:
                 return R.failure(gettext_lazy("Parameter error"))
@@ -180,6 +189,10 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             elif k in fields:
                 search_fields_.append((k, v))
         q = assemble_query(search_fields_, 'regex', Q(), operator.or_)
+        if search_mode == 1:
+            q = q
+        elif search_mode == 2:
+            q = ~q
         search_after_fields = list(
             filter(
                 lambda x: x[0] in search_after_keys,
@@ -256,7 +269,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             for method_pool in method_pools:
                 for field in model_fields:
                     if field in search_fields.keys() and request.data.get(
-                            field, None):
+                            field, None) and search_mode == 1:
                         if method_pool[field] is None:
                             continue
                         method_pool['_'.join([field, 'highlight'
