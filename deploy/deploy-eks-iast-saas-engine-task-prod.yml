@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: dongtai-engine-task-container
-          image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine:VERSION
+          image: dongtai/dongtai-engine:VERSION
           command: ["/bin/bash","/opt/dongtai/engine/docker/entrypoint.sh"]
           args: ["task"]
           imagePullPolicy: Always
