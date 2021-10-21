@@ -22,13 +22,19 @@ from django.utils.translation import gettext_lazy
 
 
 class MethodPoolSearchProxySer(serializers.Serializer):
-    page_size = serializers.IntegerField(help_text=_("number per page"))
+    page_size = serializers.IntegerField(min_value=1,
+                                         help_text=_("number per page"))
     highlight = serializers.IntegerField(
         default=1,
         help_text=
         _("Whether to enable highlighting, the text where the regular expression matches will be highlighted"
           ))
-    exclude_ids = serializers.CharField(help_text=_("Exclude the method_pool entry with the following id, this field is used to obtain the data of the entire project in batches."),required=False)
+    exclude_ids = serializers.ListField(
+        child=serializers.IntegerField(),
+        help_text=
+        _("Exclude the method_pool entry with the following id, this field is used to obtain the data of the entire project in batches."
+          ),
+        required=False)
     time_range = serializers.ListField(
         child=serializers.IntegerField(
             min_value=1, help_text=_('time  format such as 1,1628190947242')),
@@ -139,8 +145,9 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         request=MethodPoolSearchProxySer,
         tags=[_('Method Pool')],
         summary=_('Method Pool Search'),
-        description=_(
-            "Search for the method pool information according to the following conditions, the default is regular expression input, regular specifications refer to REGEX POSIX 1003.2"),
+        description=
+        _("Search for the method pool information according to the following conditions, the default is regular expression input, regular specifications refer to REGEX POSIX 1003.2"
+          ),
         response_schema=_GetResponseSerializer,
     )
     def post(self, request):
@@ -163,13 +170,15 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         try:
             if page_size <= 0:
                 return R.failure(gettext_lazy("Parameter error"))
-            [start_time, end_time
-             ] = [int(i)
-                  for i in time_range.split(',')] if time_range is not None else [
-                      int(time.time()) -
-                      86400 * 7, int(time.time())
-                  ]
-            ids = [int(i) for i in exclude_ids.split(',')] if exclude_ids else []
+            [start_time,
+             end_time] = time_range if time_range is not None and len(
+                 time_range) == 2 and 0 < time_range[1] - time_range[
+                     0] <= 60 * 60 * 24 * 7 else [
+                         int(time.time()) - 60 * 60 * 24 * 7,
+                         int(time.time())
+                     ]
+            ids = exclude_ids if isinstance(exclude_ids, list) and all(
+                map(lambda x: isinstance(x, int), exclude_ids)) else []
         except:
             return R.failure(gettext_lazy("Parameter error"))
         search_fields = dict(
@@ -278,6 +287,12 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                                                   method_pool[field],
                                                   "<em>{0}</em>")
                     elif field in fields:
+                        if method_pool[field] is None:
+                            continue
+                        method_pool['_'.join([field, 'highlight'
+                                              ])] = method_pool[field].replace(
+                                                  '<', '&lt;')
+                    else:
                         if method_pool[field] is None:
                             continue
                         method_pool['_'.join([field, 'highlight'

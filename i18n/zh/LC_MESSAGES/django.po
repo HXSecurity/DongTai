@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-20 12:02+0800\n"
+"POT-Creation-Date: 2021-10-21 19:40+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -221,8 +221,8 @@ msgstr "表示是否为当前版本，1代表是，0代表否"
 #: iast/views/engine_hook_rule_status.py:132
 #: iast/views/engine_hook_rule_summary.py:47
 #: iast/views/engine_hook_rule_types.py:80 iast/views/engine_hook_rules.py:89
-#: iast/views/engine_method_pool_search.py:156
-#: iast/views/engine_method_pool_search.py:165 iast/views/openapi.py:13
+#: iast/views/engine_method_pool_search.py:171
+#: iast/views/engine_method_pool_search.py:182 iast/views/openapi.py:13
 #: iast/views/openapi.py:67 iast/views/project_add.py:41
 #: iast/views/project_add.py:69 iast/views/project_add.py:108
 #: iast/views/project_add.py:144 iast/views/project_report_export.py:77
@@ -272,28 +272,28 @@ msgstr "检测失败"
 msgid "Maven official crawler"
 msgstr "Maven官方爬虫"
 
-#: iast/serializers/agent.py:48
+#: iast/serializers/agent.py:49
 msgid "Online"
 msgstr "运行中"
 
-#: iast/serializers/agent.py:48
+#: iast/serializers/agent.py:49
 msgid "Offline"
 msgstr "已下线"
 
-#: iast/serializers/agent.py:60
+#: iast/serializers/agent.py:61
 msgid "Load data is not uploaded"
 msgstr "负载数据暂未上传"
 
-#: iast/serializers/agent.py:68 iast/serializers/agent.py:73
+#: iast/serializers/agent.py:70 iast/serializers/agent.py:75
 msgid "No flow is detected by the probe"
 msgstr "探针暂未检测到流量"
 
-#: iast/serializers/agent.py:123 iast/serializers/agent.py:130
+#: iast/serializers/agent.py:125 iast/serializers/agent.py:132
 #: iast/views/agent_alias_modified.py:18 iast/views/agent_start.py:16
 msgid "The id corresponding to the agent."
 msgstr "探针的对应id"
 
-#: iast/serializers/agent.py:125 iast/views/agent_start.py:18
+#: iast/serializers/agent.py:127 iast/views/agent_start.py:18
 #: iast/views/agents_delete.py:27
 msgid "The id corresponding to the agent, use\",\" for segmentation."
 msgstr "agent对应的id，使用\",\"进行切分。"
@@ -870,7 +870,7 @@ msgid "API not Fould"
 msgstr ""
 
 #: iast/views/api_route_search.py:31 iast/views/engine_hook_rules.py:28
-#: iast/views/engine_method_pool_search.py:25
+#: iast/views/engine_method_pool_search.py:26
 msgid "number per page"
 msgstr "每页数量"
 
@@ -1289,7 +1289,8 @@ msgid "Searching, current {} page"
 msgstr "正在搜索，当前第{}页"
 
 #: iast/views/engine_method_pool_sca.py:24
-#: iast/views/engine_method_pool_search.py:132
+#: iast/views/engine_method_pool_search.py:146
+#: iast/views/engine_method_pool_time_range.py:38
 msgid "Method Pool"
 msgstr "方法调用链"
 
@@ -1313,53 +1314,57 @@ msgstr "method_pool 不存在"
 msgid "method_pool has no permission"
 msgstr "method_pool无权访问"
 
-#: iast/views/engine_method_pool_search.py:29
+#: iast/views/engine_method_pool_search.py:30
 msgid ""
 "Whether to enable highlighting, the text where the regular expression "
 "matches will be highlighted"
 msgstr "是否启用高亮，会对正则表达式匹配处的文本进行高亮"
 
-#: iast/views/engine_method_pool_search.py:31
+#: iast/views/engine_method_pool_search.py:35
 msgid ""
 "Exclude the method_pool entry with the following id, this field is used to "
 "obtain the data of the entire project in batches."
 msgstr "排除以下id的方法调用链，该字段用于分批获取整个项目的数据。"
 
-#: iast/views/engine_method_pool_search.py:33
+#: iast/views/engine_method_pool_search.py:40
+msgid "time  format such as 1,1628190947242"
+msgstr ""
+
+#: iast/views/engine_method_pool_search.py:44
 msgid ""
 "Time range, the default is the current time to the previous seven days, "
 "separated by',', format such as 1,1628190947242"
 msgstr "时间范围,默认为当前时刻到前七天，使用','分割，格式如，1,1628190947242"
 
-#: iast/views/engine_method_pool_search.py:37
+#: iast/views/engine_method_pool_search.py:47
 msgid "The url of the method pool, search using regular syntax"
 msgstr "调用链的url，使用正则语法进行搜索"
 
-#: iast/views/engine_method_pool_search.py:40
+#: iast/views/engine_method_pool_search.py:50
 msgid "The response header of the method pood, search using regular syntax"
 msgstr "调用链的响应头，使用正则语法进行搜索"
 
-#: iast/views/engine_method_pool_search.py:43
+#: iast/views/engine_method_pool_search.py:53
 msgid "The response body of the calling chain, search using regular syntax"
 msgstr "调用链的响应体，使用正则语法进行搜索"
 
-#: iast/views/engine_method_pool_search.py:46
+#: iast/views/engine_method_pool_search.py:56
 msgid "The request header of the calling chain, search using regular syntax"
 msgstr "调用链的请求头，使用正则语法进行搜索"
 
-#: iast/views/engine_method_pool_search.py:50
+#: iast/views/engine_method_pool_search.py:60
 msgid "The request data of the calling chain, search using regular syntax"
 msgstr "调用链的请求体，使用正则语法进行搜索"
 
-#: iast/views/engine_method_pool_search.py:53
+#: iast/views/engine_method_pool_search.py:63
 msgid "The sinkvalues of the calling chain, search using regular syntax"
 msgstr "调用链的污点值，使用正则语法进行搜索"
 
-#: iast/views/engine_method_pool_search.py:56
+#: iast/views/engine_method_pool_search.py:66
 msgid "The signature of the calling chain, search using regular syntax"
 msgstr "调用链的方法签名，使用正则语法进行搜索"
 
-#: iast/views/engine_method_pool_search.py:59
+#: iast/views/engine_method_pool_search.py:69
 msgid ""
 "The filter field will return the method call chain with the update time "
 "after this time, which can be combined with the exclude_ids field to handle "
@@ -1368,11 +1373,15 @@ msgstr ""
 "过滤字段，会返回更新时间在这时间之后的方法调用链，可结合exclude_ids字段来处理"
 "分页"
 
-#: iast/views/engine_method_pool_search.py:133
+#: iast/views/engine_method_pool_search.py:73
+msgid "the search_mode , 1-regex match ,2-regex not match "
+msgstr ""
+
+#: iast/views/engine_method_pool_search.py:147
 msgid "Method Pool Search"
 msgstr "方法调用链搜索"
 
-#: iast/views/engine_method_pool_search.py:135
+#: iast/views/engine_method_pool_search.py:149
 msgid ""
 "Search for the method pool information according to the following "
 "conditions, the default is regular expression input, regular specifications "
@@ -1381,9 +1390,21 @@ msgstr ""
 "根据以下条件搜索调用链信息，默认为正则表达式输入，正则规范参照REGEX POSIX "
 "1003.2"
 
-#: iast/views/engine_method_pool_search.py:205
+#: iast/views/engine_method_pool_search.py:226
 msgid "The regular expression format is wrong, please use REGEX POSIX 1003.2"
 msgstr "正则表达式格式错误，请使用REGEX POSIX 1003.2"
+
+#: iast/views/engine_method_pool_time_range.py:34
+msgid "the eariest time of method_pool"
+msgstr ""
+
+#: iast/views/engine_method_pool_time_range.py:39
+msgid "Method Pool Time Range"
+msgstr "方法调用链时间范围"
+
+#: iast/views/engine_method_pool_time_range.py:40
+msgid "get method_pool eariest time"
+msgstr "获取方法调用链的最早时间"
 
 #: iast/views/filereplace.py:48
 msgid ""
@@ -1521,12 +1542,13 @@ msgstr "page和pageSize只能为数字"
 msgid "Created success"
 msgstr "创建成功"
 
-#: iast/views/openapi.py:12 iast/views/openapi.py:62 iast/views/profile.py:32
+#: iast/views/openapi.py:12 iast/views/openapi.py:62 iast/views/profile.py:34
+#: iast/views/profile.py:82
 msgid "Current users have no permission to modify"
 msgstr "当前用户无权修改"
 
-#: iast/views/openapi.py:35 iast/views/openapi.py:52 iast/views/profile.py:16
-#: iast/views/profile.py:28
+#: iast/views/openapi.py:35 iast/views/openapi.py:52 iast/views/profile.py:18
+#: iast/views/profile.py:30 iast/views/profile.py:59 iast/views/profile.py:78
 msgid "Profile"
 msgstr "系统配置"
 
@@ -1551,33 +1573,53 @@ msgstr "设置DongTai-OpenApi的url地址，需要管理员权限"
 msgid "OpenAPI configuration error"
 msgstr "获取openapi配置失败"
 
-#: iast/views/profile.py:11
+#: iast/views/profile.py:13 iast/views/profile.py:70
 msgid "profile value"
 msgstr "配置值"
 
-#: iast/views/profile.py:14
+#: iast/views/profile.py:16
 msgid "Get Profile"
 msgstr "获取配置"
 
-#: iast/views/profile.py:15
+#: iast/views/profile.py:17
 msgid "Get Profile with key"
 msgstr "根据key获取配置"
 
-#: iast/views/profile.py:22
+#: iast/views/profile.py:24
 msgid "Failed to get {} configuration"
 msgstr "获取{}配置失败"
 
-#: iast/views/profile.py:25
+#: iast/views/profile.py:27 iast/views/profile.py:75
 msgid "Profile modify"
 msgstr "配置修改"
 
-#: iast/views/profile.py:27
+#: iast/views/profile.py:29 iast/views/profile.py:77
 msgid "Modifiy Profile with key"
 msgstr "修改对应key的配置值"
 
-#: iast/views/profile.py:40
+#: iast/views/profile.py:49
 msgid "Update {} failed"
 msgstr "更新{}失败"
+
+#: iast/views/profile.py:53 iast/views/profile.py:71
+msgid "profile key"
+msgstr "配置key"
+
+#: iast/views/profile.py:56
+msgid "GetProfileBatch"
+msgstr "批量获取配置"
+
+#: iast/views/profile.py:58
+msgid "Get Profile with key batch"
+msgstr "根据key批量获取配置"
+
+#: iast/views/profile.py:65
+msgid "Failed to get configuration"
+msgstr "获取配置失败"
+
+#: iast/views/profile.py:95
+msgid "Update configuration failed"
+msgstr "更新配置失败"
 
 #: iast/views/program_language.py:19
 msgid "The id of program language"
