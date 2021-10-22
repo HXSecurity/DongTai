@@ -10,9 +10,11 @@ import uuid, logging
 
 from django.http import FileResponse
 from dongtai.endpoint import OpenApiEndPoint, R
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from rest_framework.authtoken.models import Token
 from django.utils.translation import gettext_lazy as _
 
+from apiserver.api_schema import DongTaiParameter, DongTaiAuth
 from apiserver.utils import OssDownloader
 
 logger = logging.getLogger('dongtai.openapi')
@@ -168,6 +170,16 @@ class AgentDownload(OpenApiEndPoint):
         'java': JavaAgentDownload(),
     }
 
+    @extend_schema(
+        parameters=[
+            DongTaiParameter.OPENAPI_URL,
+            DongTaiParameter.PROJECT_NAME,
+            DongTaiParameter.LANGUAGE
+        ],
+        auth=[DongTaiAuth.TOKEN],
+        responses=[FileResponse],
+        methods=['GET']
+    )
     def get(self, request):
         try:
             base_url = request.query_params.get('url', 'https://www.huoxian.cn')
