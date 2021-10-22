@@ -63,7 +63,7 @@ jobs:
           python3 manage.py test
   Deploy-to-test:
     # The type of runner that the job will run on
-    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+    if: github.event_name == 'push'
     needs: [Run-UnitTest]
     runs-on: ubuntu-latest
     strategy:
