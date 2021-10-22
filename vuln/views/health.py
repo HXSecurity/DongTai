@@ -21,12 +21,12 @@ class HealthEndPoint(AnonymousAndUserEndPoint):
             "engine_monitoring_indicators": [
                 {
                     "key": "dongtai-replay-vul-scan",
-                    "value": 11,
+                    "value": 0,
                     "name": "dongtai-replay-vul-scan"
                 },
                 {
                     "key": "dongtai_method_pool_scan",
-                    "value": 11,
+                    "value": 0,
                     "name": "dongtai-method-pool-scan"
                 },
             ],
