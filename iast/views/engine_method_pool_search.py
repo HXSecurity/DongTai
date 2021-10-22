@@ -165,9 +165,9 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         fields.extend(['sinkvalues', 'signature'])
         search_after_keys = ['update_time']
         exclude_ids = request.data.get('exclude_ids', None)
-        time_range = request.data.get('time_range', None)
-        search_mode = request.data.get('search_mode', 1)
+        time_range = request.data.get('time_range', None) 
         try:
+            search_mode = int(request.data.get('search_mode', 1))
             if page_size <= 0:
                 return R.failure(gettext_lazy("Parameter error"))
             [start_time,
