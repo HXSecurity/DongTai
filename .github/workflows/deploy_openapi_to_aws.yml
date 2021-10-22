@@ -5,36 +5,37 @@ name: Deploy DongTai OpenAPI To AWS
 on:
   pull_request:
     branches: [ main ]
-
+  push:
+    branches: [ main ]
 jobs:
-  # Notify-For-Build:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: joelwmale/webhook-action@master
-  #       with:
-  #         url: ${{ secrets.DONGTAI_WEBHOOK_URL }}
-  #         body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "状态：构建开始\n项目：${{github.repository}}\n分支：${{github.ref}}\n流程：${{github.workflow}}\n构建编号：${{github.run_number}}\n触发事件：${{github.event_name}}\n提交人：${{github.actor}}\nSHA-1：${{github.sha}}\n","tag": "lark_md"}}]}}'
-
-  Dump-Context:
+  Run-UnitTest:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-
-  Build-For-PORD:
-    if: github.event.action == 'closed' && github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
-    # needs: [Notify-For-Build]
+    services:
+      mysql:
+        image: dongtai/dongtai-mysql:latest
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping --silent"
+          --health-interval 10s
+          --health-timeout 180s
+          --health-retries 10
+      redis:
+        image: dongtai/dongtai-redis:latest
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     strategy:
       max-parallel: 4
       matrix:
         python-version: [3.7]
 
     steps:
-      - name: Set up Python 3.7
+      - name: Checkout
         uses: actions/checkout@v2
         with:
           python-version: 3.7
@@ -43,62 +44,25 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-prod.txt
-
       - name: Lint with flake8
         run: |
           pip install flake8
+          # stop the build if there are Python syntax errors or undefined names
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Waiting For MySql Init
+        run: sleep 120
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+      - name: Run UnitTest
+        run: |
+          cp conf/config.ini.example conf/config.ini
+          python3 manage.py test
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Setup Ossutil
-        uses: manyuanrong/setup-ossutil@v2.0
-        with:
-          endpoint: "oss.aliyuncs.com"
-          access-key-id: "your_key_id"
-          access-key-secret: "your_key_secret"
-        # with:
-        #   endpoint: ${{ secrets.ALIYUN_OSS_ENDPOINT }}
-        #   access-key-id: ${{ secrets.ALIYUN_OSS_KEY_ID }}
-        #   access-key-secret: ${{ secrets.ALIYUN_OSS_KEY_SECRET }}
-      - run: |
-          ossutil cp oss://dongtai/agent/java/iast-agent.jar iast-agent.jar
-          ossutil cp oss://dongtai/agent/java/iast-core.jar iast-core.jar
-          ossutil cp oss://dongtai/agent/java/iast-inject.jar iast-inject.jar
-          ossutil cp oss://dongtai/agent/java/dongtai-servlet.jar dongtai-servlet.jar
-          ls -l
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          registry: ${{ secrets.ALIYUN_REGISTRY }}
-          username: ${{ secrets.ALIYUN_DOCKERHUB_USER }}
-          password: ${{ secrets.ALIYUN_DOCKERHUB_PASSWORD }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push: true
-          tags: "registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi:0.1.0,registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi:1.0.${{github.run_number}}"
-
-      - name: deploy to cluster
-        uses: wahyd4/kubectl-helm-action@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-        with:
-          args: |
-            find deploy/deploy-eks-iast-saas-openapi-prod.yml -type f -exec sed -i 's/VERSION/1.0.${{github.run_number}}/g' {} \;
-            ls deploy/deploy-eks-iast-saas-openapi-prod.yml | xargs -I {} kubectl apply -f {}
-
-  Build-For-TEST:
+  Deploy-To-TEST:
     # The type of runner that the job will run on
-    if: github.event.action == 'opened' || github.event.action == 'synchronize'
+    if: github.event_name == 'push'
+    needs: [Run-DongTai-Engine-UnitTest]
     runs-on: ubuntu-latest
     # needs: [Notify-For-Build]
     strategy:
@@ -133,7 +97,7 @@ jobs:
       
       - name: Setup Ossutil
         uses: manyuanrong/setup-ossutil@v2.0
-        with: 
+        with:
           endpoint: ${{ secrets.ALIYUN_OSS_ENDPOINT }}
           access-key-id: ${{ secrets.ALIYUN_OSS_KEY_ID }}
           access-key-secret: ${{ secrets.ALIYUN_OSS_KEY_SECRET }}
@@ -158,7 +122,9 @@ jobs:
           context: .
           file: DockerfileTest
           push: true
-          tags: "registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi-test:latest,registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi-test:0.1.${{github.run_number}},"
+          tags: |
+            registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi-test:latest
+            registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi-test:0.1.${{github.run_number}}
 
       - uses: actions/checkout@master
       - name: deploy to cluster
@@ -170,11 +136,9 @@ jobs:
             find deploy/deploy-eks-iast-saas-openapi-test.yml -type f -exec sed -i 's/VERSION/0.1.${{github.run_number}}/g' {} \;
             ls deploy/deploy-eks-iast-saas-openapi-test.yml | xargs -I {} kubectl apply -f {}
 
-  Notify-For-Success:
-    needs: [Build-For-PORD, Build-For-TEST]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: joelwmale/webhook-action@master
+      - name: Notify
+        uses: joelwmale/webhook-action@master
         with:
           url: ${{ secrets.DONGTAI_WEBHOOK_URL }}
           body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "状态：${{ github.event.workflow_run.conclusion }}\n项目：${{github.repository}}\n分支：${{github.ref}}\n流程：${{github.workflow}}\n构建编号：${{github.run_number}}\n触发事件：${{github.event_name}}\n提交人：${{github.actor}}\nSHA-1：${{github.sha}}\n","tag": "lark_md"}}]}}'
+          
