@@ -31,6 +31,8 @@ from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.utils import const
 
+from core.plugins.strategy_headers import check_response_header
+from core.plugins.strategy_sensitive import check_response_content
 from core.replay import Replay
 from lingzhi_engine import settings
 from signals import vul_found
@@ -234,6 +236,9 @@ def search_vul_from_method_pool(method_pool_id):
         if method_pool_model is None:
             logger.warn(f'漏洞检测终止，方法池 {method_pool_id} 不存在')
             return
+        check_response_header(method_pool_model)
+        check_response_content(method_pool_model)
+
         strategies = load_sink_strategy(method_pool_model.agent.user)
         engine = VulEngine()
 
@@ -289,7 +294,6 @@ def search_vul_from_strategy(strategy_id):
             if sub_queryset:
                 for method_pool_model in sub_queryset:
                     method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
-                    # todo 对数据做预处理，避免无效的计算
                     search_and_save_vul(engine, method_pool_model, method_pool, strategy_value)
         logger.info(f'漏洞检测成功')
     except Exception as e:
