@@ -15,6 +15,11 @@ class AgentDownloadTestCase(DongTaiTestCase):
         download_handler = PythonAgentDownload()
         download_handler.replace_config()
 
+    def test_java_agent_download(self):
+        from apiserver.views.agent_download import JavaAgentDownload
+        download_handler = JavaAgentDownload()
+        download_handler.download_agent()
+
 
 if __name__ == '__main__':
     unittest.main()
