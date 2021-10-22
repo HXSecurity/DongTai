@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: dongtai-webapi-container
-          image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-webapi:VERSION
+          image: dongtai/dongtai-webapi:VERSION
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: configfile
@@ -39,8 +39,6 @@ spec:
         - name: configfile
           configMap:
             name: dongtai-iast-config-prod.ini
-      imagePullSecrets:
-        - name: aliyun-registry-secret
 ---
 apiVersion: v1
 kind: Service
