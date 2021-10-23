@@ -38,24 +38,20 @@ class SaasMethodPoolHandler(IReportHandler):
         return headers
 
     def parse(self):
-        self.http_uri = self.detail.get('http_uri')
-        self.http_url = self.detail.get('http_url')
-        self.http_query_string = self.detail.get('http_query_string')
-        self.http_req_data = self.detail.get('http_body')
-        self.http_req_header = self.detail.get('http_req_header')
-        self.http_method = self.detail.get('http_method')
-        self.http_scheme = self.detail.get('http_scheme')
-        self.http_secure = self.detail.get('http_secure')
-        self.http_protocol = self.detail.get('http_protocol')
-        self.http_replay = self.detail.get('http_replay_request')
-        self.http_res_header = self.detail.get('http_res_header')
-        self.http_res_body = self.detail.get('http_res_body')
-        self.context_path = self.detail.get('context_path')
-        self.vuln_type = self.detail.get('vuln_type')
-        self.taint_value = self.detail.get('taint_value')
-        self.taint_position = self.detail.get('taint_position')
-        self.client_ip = self.detail.get('http_client_ip')
-        self.param_name = self.detail.get('param_name')
+        self.http_uri = self.detail.get('uri')
+        self.http_url = self.detail.get('url')
+        self.http_query_string = self.detail.get('queryString')
+        self.http_req_data = self.detail.get('reqBody')
+        self.http_req_header = self.detail.get('reqHeader')
+        self.http_method = self.detail.get('method')
+        self.http_scheme = self.detail.get('scheme')
+        self.http_secure = self.detail.get('secure')
+        self.http_protocol = self.detail.get('protocol')
+        self.http_replay = self.detail.get('replayRequest')
+        self.http_res_header = self.detail.get('resHeader')
+        self.http_res_body = self.detail.get('resBody')
+        self.context_path = self.detail.get('contextPath')
+        self.client_ip = self.detail.get('clientIp')
         self.method_pool = self.report.get('detail', {}).get('pool', None)
         if self.method_pool:
             self.method_pool = sorted(self.method_pool,
@@ -207,7 +203,8 @@ class SaasMethodPoolHandler(IReportHandler):
     def send_to_engine(method_pool_id, update_record=False, model=None):
         try:
             if model is None:
-                logger.info(f'[+] send method_pool [{method_pool_id}] to engine for {"update" if update_record else "new record"}')
+                logger.info(
+                    f'[+] send method_pool [{method_pool_id}] to engine for {"update" if update_record else "new record"}')
                 requests.get(url=settings.BASE_ENGINE_URL.format(id=method_pool_id))
             else:
                 logger.info(

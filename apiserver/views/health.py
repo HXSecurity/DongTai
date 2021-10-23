@@ -8,6 +8,8 @@
 
 import logging
 from dongtai.endpoint import OpenApiEndPoint, R
+from drf_spectacular.utils import extend_schema
+
 from apiserver.utils import OssDownloader
 from AgentServer import settings
 import oss2
@@ -16,9 +18,8 @@ import requests
 from requests.exceptions import ConnectionError, ConnectTimeout
 import json
 from apiserver.utils import checkossstatus
+
 logger = logging.getLogger("dongtai.openapi")
-
-
 
 
 def _checkenginestatus():
@@ -35,6 +36,11 @@ def _checkenginestatus():
 
 
 class HealthView(OpenApiEndPoint):
+    @extend_schema(
+        description='Check OpenAPI Service Status',
+        responses=R,
+        methods=['GET']
+    )
     def get(self, request):
         oss_status, _ = checkossstatus()
         statusmap = {True: 1, False: 0}
