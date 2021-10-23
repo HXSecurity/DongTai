@@ -112,6 +112,13 @@ class AgentSerializer(serializers.ModelSerializer):
             return obj.token
         return obj.alias
 
+    def get_latest_time(self, obj):
+        latest_heartbeat = obj.heartbeats.values_list(
+            'dt', flat=True).order_by('-dt').first()
+        if latest_heartbeat:
+            return latest_heartbeat
+        return obj.latest_time
+
 
 class ProjectEngineSerializer(serializers.ModelSerializer):
     class Meta:
