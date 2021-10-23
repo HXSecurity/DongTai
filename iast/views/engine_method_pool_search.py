@@ -9,7 +9,7 @@ from dongtai.models.user import User
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.models.hook_type import HookType
 
-from iast.utils import get_model_field, assemble_query
+from iast.utils import get_model_field, assemble_query,assemble_query_2
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.translation import gettext_lazy
 from django.db.utils import OperationalError
@@ -22,17 +22,27 @@ from django.utils.translation import gettext_lazy
 
 
 class MethodPoolSearchProxySer(serializers.Serializer):
-    page_size = serializers.IntegerField(help_text=_("number per page"))
+    page_size = serializers.IntegerField(min_value=1,
+                                         help_text=_("number per page"))
     highlight = serializers.IntegerField(
         default=1,
         help_text=
         _("Whether to enable highlighting, the text where the regular expression matches will be highlighted"
           ))
-    exclude_ids = serializers.CharField(help_text=_("Exclude the method_pool entry with the following id, this field is used to obtain the data of the entire project in batches."),required=False)
-    time_range = serializers.CharField(help_text=_(
-        "Time range, the default is the current time to the previous seven days, separated by',', format such as 1,1628190947242"
-    ),
-                                       required=False)
+    exclude_ids = serializers.ListField(
+        child=serializers.IntegerField(),
+        help_text=
+        _("Exclude the method_pool entry with the following id, this field is used to obtain the data of the entire project in batches."
+          ),
+        required=False)
+    time_range = serializers.ListField(
+        child=serializers.IntegerField(
+            min_value=1, help_text=_('time  format such as 1,1628190947242')),
+        min_length=2,
+        max_length=2,
+        help_text=
+        _("Time range, the default is the current time to the previous seven days, separated by',', format such as 1,1628190947242"
+          ))
     url = serializers.CharField(
         help_text=_("The url of the method pool, search using regular syntax"),
         required=False)
@@ -59,6 +69,10 @@ class MethodPoolSearchProxySer(serializers.Serializer):
         "The filter field will return the method call chain with the update time after this time, which can be combined with the exclude_ids field to handle paging"
     ),
                                         required=False)
+    search_mode = serializers.IntegerField(
+        help_text=_("the search_mode , 1-regex match ,2-regex not match "),
+        default=1,
+        required=False)
 
 
 class MethodPoolSearchResponseRelationVulnerablitySer(serializers.Serializer):
@@ -131,8 +145,9 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         request=MethodPoolSearchProxySer,
         tags=[_('Method Pool')],
         summary=_('Method Pool Search'),
-        description=_(
-            "Search for the method pool information according to the following conditions, the default is regular expression input, regular specifications refer to REGEX POSIX 1003.2"),
+        description=
+        _("Search for the method pool information according to the following conditions, the default is regular expression input, regular specifications refer to REGEX POSIX 1003.2"
+          ),
         response_schema=_GetResponseSerializer,
     )
     def post(self, request):
@@ -150,17 +165,20 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         fields.extend(['sinkvalues', 'signature'])
         search_after_keys = ['update_time']
         exclude_ids = request.data.get('exclude_ids', None)
-        time_range = request.data.get('time_range', None)
+        time_range = request.data.get('time_range', None) 
         try:
+            search_mode = int(request.data.get('search_mode', 1))
             if page_size <= 0:
                 return R.failure(gettext_lazy("Parameter error"))
-            [start_time, end_time
-             ] = [int(i)
-                  for i in time_range.split(',')] if time_range is not None else [
-                      int(time.time()) -
-                      86400 * 7, int(time.time())
-                  ]
-            ids = [int(i) for i in exclude_ids.split(',')] if exclude_ids else []
+            [start_time,
+             end_time] = time_range if time_range is not None and len(
+                 time_range) == 2 and 0 < time_range[1] - time_range[
+                     0] <= 60 * 60 * 24 * 7 else [
+                         int(time.time()) - 60 * 60 * 24 * 7,
+                         int(time.time())
+                     ]
+            ids = exclude_ids if isinstance(exclude_ids, list) and all(
+                map(lambda x: isinstance(x, int), exclude_ids)) else []
         except:
             return R.failure(gettext_lazy("Parameter error"))
         search_fields = dict(
@@ -179,7 +197,10 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     map(lambda x: ('method_pool', x.format(v)), templates))
             elif k in fields:
                 search_fields_.append((k, v))
-        q = assemble_query(search_fields_, 'regex', Q(), operator.or_)
+        if search_mode == 1:
+            q = assemble_query(search_fields_, 'regex', Q(), operator.or_)
+        elif search_mode == 2:
+            q = assemble_query_2(search_fields_, 'regex', Q(), operator.and_)
         search_after_fields = list(
             filter(
                 lambda x: x[0] in search_after_keys,
@@ -197,6 +218,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         q = (q &
              (Q(update_time__gte=start_time) & Q(update_time__lte=end_time)))
         q = (q & (~Q(pk__in=ids))) if ids is not None and ids != [] else q
+        print(q)
         queryset = MethodPool.objects.filter(q).order_by(
             '-update_time')[:page_size]
         try:
@@ -256,7 +278,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             for method_pool in method_pools:
                 for field in model_fields:
                     if field in search_fields.keys() and request.data.get(
-                            field, None):
+                            field, None) and search_mode == 1:
                         if method_pool[field] is None:
                             continue
                         method_pool['_'.join([field, 'highlight'
@@ -265,6 +287,12 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                                                   method_pool[field],
                                                   "<em>{0}</em>")
                     elif field in fields:
+                        if method_pool[field] is None:
+                            continue
+                        method_pool['_'.join([field, 'highlight'
+                                              ])] = method_pool[field].replace(
+                                                  '<', '&lt;')
+                    else:
                         if method_pool[field] is None:
                             continue
                         method_pool['_'.join([field, 'highlight'

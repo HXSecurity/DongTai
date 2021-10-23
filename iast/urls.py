@@ -111,7 +111,7 @@ from iast.views.messages_new import MessagesNewEndpoint
 from iast.views.messages_del import MessagesDelEndpoint
 from iast.views.messages_send import MessagesSendEndpoint
 from iast.views.agent_alias_modified import AgentAliasModified
-
+from iast.views.engine_method_pool_time_range import MethodPoolTimeRangeProxy
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
     path("talent/<int:pk>", TalentEndPoint.as_view()),
@@ -203,6 +203,7 @@ urlpatterns = [
     path('log/clear', LogClear.as_view()),
     path('engine/method_pool/search', MethodPoolSearchProxy.as_view()),
     path('engine/method_pool/detail', MethodPoolDetailProxy.as_view()),
+    path('engine/method_pool/timerange', MethodPoolTimeRangeProxy.as_view()),
     path('engine/method_pool/sca', EngineMethodPoolSca.as_view()),
     path('engine/graph', MethodGraph.as_view()),
     path('engine/request/replay', RequestReplayEndPoint.as_view()),
