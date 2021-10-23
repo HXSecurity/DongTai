@@ -13,25 +13,24 @@ import asyncio
 from functools import partial
 import os
 
-if os.getenv('environment', None) in ('TEST', 'PROD'):
+async def delay(time):
+    await asyncio.sleep(time)
 
-    async def delay(time):
-        await asyncio.sleep(time)
+async def timer(time, function):
+    while True:
+        future = asyncio.ensure_future(delay(time))
+        future.add_done_callback(function)
+        await future
 
-    async def timer(time, function):
-        while True:
-            future = asyncio.ensure_future(delay(time))
-            future.add_done_callback(function)
-            await future
+_update = partial(get_github_contributors, update=True)
 
-    _update = partial(get_github_contributors, update=True)
 
-    def corotheard():
-        _update()
-        asyncio.run(timer(60 * 90, _update))
+def corotheard():
+    _update()
+    asyncio.run(timer(60 * 90, _update))
 
-    t1 = threading.Thread(target=corotheard, daemon=True)
-    t1.start()
+t1 = threading.Thread(target=corotheard, daemon=True)
+t1.start()
 
 
 class GithubContributorsView(AnonymousAndUserEndPoint):

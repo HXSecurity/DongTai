@@ -9,7 +9,6 @@ from dongtai.endpoint import UserEndPoint
 from django.forms.models import model_to_dict
 from django.db.models import Q
 from rest_framework import serializers
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes
 from rest_framework.serializers import ValidationError
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.translation import gettext_lazy as _

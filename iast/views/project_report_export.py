@@ -21,6 +21,8 @@ from webapi.settings import MEDIA_ROOT
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from io import BytesIO
+
 
 class _ProjectReportExportQuerySerializer(serializers.Serializer):
     vid = serializers.CharField(
@@ -74,16 +76,18 @@ class ProjectReportExport(UserEndPoint):
         if (pid == 0 and pname == ''):
             return R.failure(status=202, msg=_('Parameter error'))
         auth_users = self.get_auth_users(request.user)
-        word_file_name = self.generate_word_report(pid, pname, vid, auth_users,
+        word_file_name, file_stream = self.generate_word_report(pid, pname, vid, auth_users,
                                                    request.user, timestamp)
         if word_file_name:
             report_file_path = word_file_name
             report_type = request.query_params.get('type', 'docx')
             if report_type == 'pdf':
                 report_file_path = self.generate_pdf_report(word_file_name)
-            report_filename = _('Vulnerability Report - {}. {}').format(timestamp,report_type)
-
-            response = FileResponse(open(report_file_path, "rb"))
+            report_filename = _('Vulnerability Report - {}. {}').format(
+                timestamp, report_type)
+            file_stream.seek(0)
+            from wsgiref.util import FileWrapper
+            response = FileResponse(FileWrapper(file_stream))
             response['content_type'] = 'application/octet-stream'
             response[
                 'Content-Disposition'] = f"attachment; filename={report_filename}"
@@ -287,8 +291,9 @@ class ProjectReportExport(UserEndPoint):
             document.styles['TitleThree'].font.size = Pt(16)
             document.styles['TitleFour'].font.size = Pt(14)
             filename = f"{MEDIA_ROOT}/reports/vul-report-{user.id}-{timestamp}.docx"
-            document.save(filename)
-            return filename
+            file_stream = BytesIO()
+            document.save(file_stream)
+            return filename, file_stream
 
         return None
 
