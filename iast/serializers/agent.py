@@ -25,7 +25,7 @@ class AgentSerializer(serializers.ModelSerializer):
     method_queue = serializers.SerializerMethodField()
     replay_queue = serializers.SerializerMethodField()
     alias = serializers.SerializerMethodField()
-    startup_time = serializers.SerializerMethodField()
+    register_time = serializers.SerializerMethodField()
 
     class Meta:
         model = IastAgent
@@ -33,7 +33,7 @@ class AgentSerializer(serializers.ModelSerializer):
             'id', 'token', 'server', 'running_status', 'system_load', 'owner',
             'latest_time', 'project_name', 'is_core_running', 'language',
             'flow', 'is_control', 'report_queue', 'method_queue',
-            'replay_queue', 'alias', 'startup_time'
+            'replay_queue', 'alias', 'register_time', 'startup_time'
         ]
 
     def get_latest_heartbeat(self, obj):
@@ -102,15 +102,22 @@ class AgentSerializer(serializers.ModelSerializer):
             agent_id=obj.id).order_by('-dt').first()
         return heartbeat['replay_queue'] if heartbeat is not None else 0
 
-    def get_startup_time(self, obj):
-        if obj.startup_time == 0:
+    def get_register_time(self, obj):
+        if obj.register_time == 0:
             return obj.latest_time
-        return obj.startup_time
+        return obj.register_time
 
     def get_alias(self, obj):
         if obj.alias == '':
             return obj.token
         return obj.alias
+
+    def get_latest_time(self, obj):
+        latest_heartbeat = obj.heartbeats.values_list(
+            'dt', flat=True).order_by('-dt').first()
+        if latest_heartbeat:
+            return latest_heartbeat
+        return obj.latest_time
 
 
 class ProjectEngineSerializer(serializers.ModelSerializer):

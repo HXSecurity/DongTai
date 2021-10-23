@@ -136,7 +136,7 @@ class ProjectAdd(UserEndPoint):
                     project_name=name, user__in=auth_users).update(
                         bind_project_id=project.id,
                         project_version_id=project_version_id)
-            project.save(update_fields=['scan_id', 'mode', 'agent_count', 'user_id', 'latest_time'])
+            project.save(update_fields=['name','scan_id', 'mode', 'agent_count', 'user_id', 'latest_time'])
 
             return R.success(msg=_('Created success'))
         except Exception as e:

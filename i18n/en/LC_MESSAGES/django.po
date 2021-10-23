@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-20 12:02+0800\n"
+"POT-Creation-Date: 2021-10-21 19:40+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -236,8 +236,8 @@ msgstr ""
 #: iast/views/engine_hook_rule_status.py:132
 #: iast/views/engine_hook_rule_summary.py:47
 #: iast/views/engine_hook_rule_types.py:80 iast/views/engine_hook_rules.py:89
-#: iast/views/engine_method_pool_search.py:156
-#: iast/views/engine_method_pool_search.py:165 iast/views/openapi.py:13
+#: iast/views/engine_method_pool_search.py:171
+#: iast/views/engine_method_pool_search.py:182 iast/views/openapi.py:13
 #: iast/views/openapi.py:67 iast/views/project_add.py:41
 #: iast/views/project_add.py:69 iast/views/project_add.py:108
 #: iast/views/project_add.py:144 iast/views/project_report_export.py:77
@@ -287,28 +287,28 @@ msgstr "Detection failed"
 msgid "Maven official crawler"
 msgstr "Maven official crawler"
 
-#: iast/serializers/agent.py:48
+#: iast/serializers/agent.py:49
 msgid "Online"
 msgstr "Online"
 
-#: iast/serializers/agent.py:48
+#: iast/serializers/agent.py:49
 msgid "Offline"
 msgstr "Offline"
 
-#: iast/serializers/agent.py:60
+#: iast/serializers/agent.py:61
 msgid "Load data is not uploaded"
 msgstr "Load data is not uploaded"
 
-#: iast/serializers/agent.py:68 iast/serializers/agent.py:73
+#: iast/serializers/agent.py:70 iast/serializers/agent.py:75
 msgid "No flow is detected by the probe"
 msgstr "No flow is detected by the probe"
 
-#: iast/serializers/agent.py:123 iast/serializers/agent.py:130
+#: iast/serializers/agent.py:125 iast/serializers/agent.py:132
 #: iast/views/agent_alias_modified.py:18 iast/views/agent_start.py:16
 msgid "The id corresponding to the agent."
 msgstr ""
 
-#: iast/serializers/agent.py:125 iast/views/agent_start.py:18
+#: iast/serializers/agent.py:127 iast/views/agent_start.py:18
 #: iast/views/agents_delete.py:27
 msgid "The id corresponding to the agent, use\",\" for segmentation."
 msgstr ""
@@ -934,7 +934,7 @@ msgid "API not Fould"
 msgstr ""
 
 #: iast/views/api_route_search.py:31 iast/views/engine_hook_rules.py:28
-#: iast/views/engine_method_pool_search.py:25
+#: iast/views/engine_method_pool_search.py:26
 #, fuzzy
 #| msgid "Number of Agent"
 msgid "number per page"
@@ -1397,7 +1397,8 @@ msgid "Searching, current {} page"
 msgstr "Searching, current {} page"
 
 #: iast/views/engine_method_pool_sca.py:24
-#: iast/views/engine_method_pool_search.py:132
+#: iast/views/engine_method_pool_search.py:146
+#: iast/views/engine_method_pool_time_range.py:38
 msgid "Method Pool"
 msgstr ""
 
@@ -1423,75 +1424,99 @@ msgstr "method_pool does not exist"
 msgid "method_pool has no permission"
 msgstr "method_pool has no permission"
 
-#: iast/views/engine_method_pool_search.py:29
+#: iast/views/engine_method_pool_search.py:30
 msgid ""
 "Whether to enable highlighting, the text where the regular expression "
 "matches will be highlighted"
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:31
+#: iast/views/engine_method_pool_search.py:35
 msgid ""
 "Exclude the method_pool entry with the following id, this field is used to "
 "obtain the data of the entire project in batches."
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:33
+#: iast/views/engine_method_pool_search.py:40
+msgid "time  format such as 1,1628190947242"
+msgstr ""
+
+#: iast/views/engine_method_pool_search.py:44
 msgid ""
 "Time range, the default is the current time to the previous seven days, "
 "separated by',', format such as 1,1628190947242"
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:37
+#: iast/views/engine_method_pool_search.py:47
 msgid "The url of the method pool, search using regular syntax"
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:40
+#: iast/views/engine_method_pool_search.py:50
 msgid "The response header of the method pood, search using regular syntax"
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:43
+#: iast/views/engine_method_pool_search.py:53
 msgid "The response body of the calling chain, search using regular syntax"
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:46
+#: iast/views/engine_method_pool_search.py:56
 msgid "The request header of the calling chain, search using regular syntax"
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:50
+#: iast/views/engine_method_pool_search.py:60
 msgid "The request data of the calling chain, search using regular syntax"
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:53
+#: iast/views/engine_method_pool_search.py:63
 msgid "The sinkvalues of the calling chain, search using regular syntax"
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:56
+#: iast/views/engine_method_pool_search.py:66
 msgid "The signature of the calling chain, search using regular syntax"
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:59
+#: iast/views/engine_method_pool_search.py:69
 msgid ""
 "The filter field will return the method call chain with the update time "
 "after this time, which can be combined with the exclude_ids field to handle "
 "paging"
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:133
+#: iast/views/engine_method_pool_search.py:73
+msgid "the search_mode , 1-regex match ,2-regex not match "
+msgstr ""
+
+#: iast/views/engine_method_pool_search.py:147
 #, fuzzy
 #| msgid "Method pool ID is empty"
 msgid "Method Pool Search"
 msgstr "Method pool ID is empty"
 
-#: iast/views/engine_method_pool_search.py:135
+#: iast/views/engine_method_pool_search.py:149
 msgid ""
 "Search for the method pool information according to the following "
 "conditions, the default is regular expression input, regular specifications "
 "refer to REGEX POSIX 1003.2"
 msgstr ""
 
-#: iast/views/engine_method_pool_search.py:205
+#: iast/views/engine_method_pool_search.py:226
 msgid "The regular expression format is wrong, please use REGEX POSIX 1003.2"
 msgstr "The regular expression format is wrong, please use REGEX POSIX 1003.2"
+
+#: iast/views/engine_method_pool_time_range.py:34
+msgid "the eariest time of method_pool"
+msgstr ""
+
+#: iast/views/engine_method_pool_time_range.py:39
+#, fuzzy
+#| msgid "Method pool ID is empty"
+msgid "Method Pool Time Range"
+msgstr "Method pool ID is empty"
+
+#: iast/views/engine_method_pool_time_range.py:40
+#, fuzzy
+#| msgid "method_pool does not exist"
+msgid "get method_pool eariest time"
+msgstr "method_pool does not exist"
 
 #: iast/views/filereplace.py:48
 msgid ""
@@ -1641,12 +1666,13 @@ msgstr "Page and PageSize can only be numeric"
 msgid "Created success"
 msgstr "Created success"
 
-#: iast/views/openapi.py:12 iast/views/openapi.py:62 iast/views/profile.py:32
+#: iast/views/openapi.py:12 iast/views/openapi.py:62 iast/views/profile.py:34
+#: iast/views/profile.py:82
 msgid "Current users have no permission to modify"
 msgstr "Current users have no permission to modify"
 
-#: iast/views/openapi.py:35 iast/views/openapi.py:52 iast/views/profile.py:16
-#: iast/views/profile.py:28
+#: iast/views/openapi.py:35 iast/views/openapi.py:52 iast/views/profile.py:18
+#: iast/views/profile.py:30 iast/views/profile.py:59 iast/views/profile.py:78
 msgid "Profile"
 msgstr ""
 
@@ -1673,33 +1699,57 @@ msgstr ""
 msgid "OpenAPI configuration error"
 msgstr "Get OpenAPI configuration failed"
 
-#: iast/views/profile.py:11
+#: iast/views/profile.py:13 iast/views/profile.py:70
 msgid "profile value"
 msgstr ""
 
-#: iast/views/profile.py:14
+#: iast/views/profile.py:16
 msgid "Get Profile"
 msgstr ""
 
-#: iast/views/profile.py:15
+#: iast/views/profile.py:17
 msgid "Get Profile with key"
 msgstr ""
 
-#: iast/views/profile.py:22
+#: iast/views/profile.py:24
 msgid "Failed to get {} configuration"
 msgstr "Failed to get {} configuration"
 
-#: iast/views/profile.py:25
+#: iast/views/profile.py:27 iast/views/profile.py:75
 msgid "Profile modify"
 msgstr ""
 
-#: iast/views/profile.py:27
+#: iast/views/profile.py:29 iast/views/profile.py:77
 msgid "Modifiy Profile with key"
 msgstr ""
 
-#: iast/views/profile.py:40
+#: iast/views/profile.py:49
 msgid "Update {} failed"
 msgstr "Update {} failed"
+
+#: iast/views/profile.py:53 iast/views/profile.py:71
+msgid "profile key"
+msgstr ""
+
+#: iast/views/profile.py:56
+msgid "GetProfileBatch"
+msgstr ""
+
+#: iast/views/profile.py:58
+msgid "Get Profile with key batch"
+msgstr ""
+
+#: iast/views/profile.py:65
+#, fuzzy
+#| msgid "Failed to get {} configuration"
+msgid "Failed to get configuration"
+msgstr "Failed to get {} configuration"
+
+#: iast/views/profile.py:95
+#, fuzzy
+#| msgid "Get OpenAPI configuration failed"
+msgid "Update configuration failed"
+msgstr "Get OpenAPI configuration failed"
 
 #: iast/views/program_language.py:19
 #, fuzzy
