@@ -92,7 +92,7 @@ class PythonAgentDownload():
                 },
                 "service": {
                     "report": {
-                        "interval": 60000
+                        "interval": 60
                     },
                     "replay": {
                         "interval": 300000
@@ -101,7 +101,7 @@ class PythonAgentDownload():
                 "dump": {
                     "class": {
                         "enable": False,
-                        "path": "/tmp/iast-class-dump/"
+                        "path": "./iast-class-dump/"
                     }
                 },
                 "engine": {
@@ -126,7 +126,7 @@ class PythonAgentDownload():
                 "name": "DongTai"
             },
             "log": {
-                "log_path": "/tmp/dongtai_py_agent_log.txt"
+                "log_path": "./dongtai_py_agent_log.txt"
             }
         }
         try:
@@ -188,7 +188,6 @@ class AgentDownload(OpenApiEndPoint):
             language = request.query_params.get('language')
 
             handler = self.DOWNLOAD_HANDLER[language]
-
             if handler.download_agent() is False:
                 return R.failure(msg="agent file download failure. please contact official staff for help.")
 
