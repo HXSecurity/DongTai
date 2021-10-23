@@ -20,9 +20,13 @@ from apiserver.views.properties import PropertiesEndPoint
 from apiserver.views.report_upload import ReportUploadEndPoint
 from apiserver.views.health import HealthView
 from apiserver.views.health_oss import OSSHealthView
+from apiserver.views.agent_limit import LimitView
+from apiserver.views.startuptime import StartupTimeEndPoint
 
 urlpatterns = [
     path('agent/download', AgentDownload.as_view()),
+    path('agent/limit', LimitView.as_view()),
+    path('agent/startuptime', StartupTimeEndPoint.as_view()),
     path('deploy/auto', AutoDeployEndPoint.as_view()),
     path('engine/heartbeat', EngineHeartBeatEndPoint.as_view()),
     path('engine/download', EngineDownloadEndPoint.as_view()),
