@@ -50,7 +50,7 @@ from iast.views.log_export import LogExport
 from iast.views.logs import LogsEndpoint
 from iast.views.method_graph import MethodGraph
 from iast.views.openapi import OpenApiEndpoint
-from iast.views.profile import ProfileEndpoint
+from iast.views.profile import ProfileEndpoint, ProfileBatchGetEndpoint, ProfileBatchModifiedEndpoint
 from iast.views.project_add import ProjectAdd
 from iast.views.project_delete import ProjectDel
 from iast.views.project_detail import ProjectDetail
@@ -104,10 +104,14 @@ from iast.views.api_route_related_request import ApiRouteRelationRequest
 from iast.views.api_route_cover_rate import ApiRouteCoverRate
 from iast.views.health import HealthView
 from iast.views.oss_health import OssHealthView
-from iast.views.github_contributors import GithubContributorsView
 from iast.views.program_language import ProgrammingLanguageList
 from iast.views.filereplace import FileReplace
-
+from iast.views.messages_list import MessagesEndpoint
+from iast.views.messages_new import MessagesNewEndpoint
+from iast.views.messages_del import MessagesDelEndpoint
+from iast.views.messages_send import MessagesSendEndpoint
+from iast.views.agent_alias_modified import AgentAliasModified
+from iast.views.engine_method_pool_time_range import MethodPoolTimeRangeProxy
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
     path("talent/<int:pk>", TalentEndPoint.as_view()),
@@ -187,8 +191,11 @@ urlpatterns = [
     path('agent/stop', AgentStop.as_view()),
     #    path('agents/search', AgentSearch.as_view()),
     path('agents/delete', AgentsDeleteEndPoint.as_view()),
+    path('agent/alias/modified', AgentAliasModified.as_view()),
     path('openapi', OpenApiEndpoint.as_view()),
     path('profile/<str:key>', ProfileEndpoint.as_view()),
+    path('profile/batch/get', ProfileBatchGetEndpoint.as_view()),
+    path('profile/batch/modified', ProfileBatchModifiedEndpoint.as_view()),
     path('system/info', SystemInfo.as_view()),
     path('logs', LogsEndpoint.as_view()),
     path('log/export', LogExport.as_view()),
@@ -196,6 +203,7 @@ urlpatterns = [
     path('log/clear', LogClear.as_view()),
     path('engine/method_pool/search', MethodPoolSearchProxy.as_view()),
     path('engine/method_pool/detail', MethodPoolDetailProxy.as_view()),
+    path('engine/method_pool/timerange', MethodPoolTimeRangeProxy.as_view()),
     path('engine/method_pool/sca', EngineMethodPoolSca.as_view()),
     path('engine/graph', MethodGraph.as_view()),
     path('engine/request/replay', RequestReplayEndPoint.as_view()),
@@ -221,12 +229,21 @@ urlpatterns = [
     path('oss/health', OssHealthView.as_view()),
     path('program_language', ProgrammingLanguageList.as_view()),
     path('filereplace/<str:filename>', FileReplace.as_view()),
+    path('message/list', MessagesEndpoint.as_view()),
+    path('message/unread_count', MessagesNewEndpoint.as_view()),
+    path('message/delete', MessagesDelEndpoint.as_view()),
+    #    path('message/send', MessagesSendEndpoint.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
-    urlpatterns.extend([path('demo', Demo.as_view()),
-    path('github_contributors', GithubContributorsView.as_view()),
-        ])
+    urlpatterns.extend([
+        path('demo', Demo.as_view()),
+    ])
+if os.getenv('githubcount', None) in ('true', ) or os.getenv('environment', None) in ('PROD',):
+    from iast.views.github_contributors import GithubContributorsView
+    urlpatterns.extend([
+        path('github_contributors', GithubContributorsView.as_view()),
+    ])
 
 
 urlpatterns = format_suffix_patterns(urlpatterns)
