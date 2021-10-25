@@ -16,6 +16,7 @@ from django.utils.translation import gettext_lazy as _
 
 from apiserver.api_schema import DongTaiParameter, DongTaiAuth
 from apiserver.utils import OssDownloader
+from AgentServer.settings import BUCKET_NAME_BASE_URL
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -23,7 +24,7 @@ logger = logging.getLogger('dongtai.openapi')
 class JavaAgentDownload():
     LOCAL_AGENT_PATH = '/tmp/iast_cache/package'
     LOCAL_AGENT_FILE = '/tmp/iast_cache/package/iast-agent.jar'
-    REMOTE_AGENT_FILE = 'agent/java/iast-agent.jar'
+    REMOTE_AGENT_FILE = BUCKET_NAME_BASE_URL + 'java/iast-agent.jar'
 
     @staticmethod
     def download_agent():
@@ -60,7 +61,7 @@ class JavaAgentDownload():
 class PythonAgentDownload():
     LOCAL_AGENT_FILE = '/tmp/dongtai_agent_python.tar.gz'
     LOCAL_AGENT_DIR = '/tmp/dongtai_agent_python'
-    REMOTE_AGENT_FILE = 'agent/python/dongtai_agent_python.tar.gz'
+    REMOTE_AGENT_FILE = BUCKET_NAME_BASE_URL + 'python/dongtai_agent_python.tar.gz'
 
     def __init__(self):
         import tarfile
@@ -91,7 +92,7 @@ class PythonAgentDownload():
                 },
                 "service": {
                     "report": {
-                        "interval": 60000
+                        "interval": 60
                     },
                     "replay": {
                         "interval": 300000
@@ -100,7 +101,7 @@ class PythonAgentDownload():
                 "dump": {
                     "class": {
                         "enable": False,
-                        "path": "/tmp/iast-class-dump/"
+                        "path": "./iast-class-dump/"
                     }
                 },
                 "engine": {
@@ -125,7 +126,7 @@ class PythonAgentDownload():
                 "name": "DongTai"
             },
             "log": {
-                "log_path": "/tmp/dongtai_py_agent_log.txt"
+                "log_path": "./dongtai_py_agent_log.txt"
             }
         }
         try:
@@ -187,7 +188,6 @@ class AgentDownload(OpenApiEndPoint):
             language = request.query_params.get('language')
 
             handler = self.DOWNLOAD_HANDLER[language]
-
             if handler.download_agent() is False:
                 return R.failure(msg="agent file download failure. please contact official staff for help.")
 

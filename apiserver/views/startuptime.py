@@ -34,4 +34,5 @@ class StartupTimeEndPoint(OpenApiEndPoint):
             agent.startup_time = startup_time
             agent.save(update_fields=['startup_time'])
             return R.success(data=None)
+        logger.error('agent not found')
         return R.failure(data=None)

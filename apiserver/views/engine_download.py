@@ -17,7 +17,7 @@ from dongtai.endpoint import OpenApiEndPoint, R
 
 from apiserver.api_schema import DongTaiParameter
 from apiserver.utils import OssDownloader
-
+from AgentServer.settings import BUCKET_NAME_BASE_URL
 logger = logging.getLogger("dongtai.openapi")
 
 PACKAGE_NAME_LIST = ('iast-core', 'iast-inject', 'dongtai-servlet-api',
@@ -29,7 +29,7 @@ class EngineDownloadEndPoint(OpenApiEndPoint):
     description = "iast agent-下载IAST依赖的core、inject jar包"
     LOCAL_AGENT_PATH = '/tmp/iast_cache/package'
     LOCAL_AGENT_FILE = '/tmp/iast_cache/package/{package_name}.jar'
-    REMOTE_AGENT_FILE = 'agent/java/{package_name}.jar'
+    REMOTE_AGENT_FILE = BUCKET_NAME_BASE_URL + 'java/{package_name}.jar'
 
     @extend_schema(
         description='Agent Engine Download',

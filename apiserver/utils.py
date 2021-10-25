@@ -83,7 +83,6 @@ def updateossstatus():
         #status_, _ = checkossstatus()
         #if status_ == False:
         #    return False, None
-        print(JavaAgentDownload.REMOTE_AGENT_FILE)
         OssDownloader.download_file(
             JavaAgentDownload.REMOTE_AGENT_FILE,
             local_file=JavaAgentDownload.LOCAL_AGENT_FILE)
@@ -91,7 +90,7 @@ def updateossstatus():
             object_name=PythonAgentDownload.REMOTE_AGENT_FILE,
             local_file=PythonAgentDownload.LOCAL_AGENT_FILE)
         for package_name in PACKAGE_NAME_LIST:
-            OssDownloader.download_file(
+            EngineDownloadEndPoint.download_agent_jar(
                 EngineDownloadEndPoint.REMOTE_AGENT_FILE.format(
                     package_name=package_name),
                 EngineDownloadEndPoint.LOCAL_AGENT_FILE.format(
@@ -110,6 +109,7 @@ def updateossstatus():
 def checkossstatus():
     from apiserver.views.agent_download import JavaAgentDownload, PythonAgentDownload
     from apiserver.views.engine_download import EngineDownloadEndPoint
+    from oss2.exceptions import AccessDenied
     try:
         bucket = oss2.Bucket(oss2.AnonymousAuth(),
                              settings.BUCKET_URL,
@@ -119,6 +119,8 @@ def checkossstatus():
         return True, None
     except RequestError:
         return False, None
+    except AccessDenied:
+        return True, None
     except Exception as e:
         logger.info("Health check oss status:{}".format(e))
         return False, None
