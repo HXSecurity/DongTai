@@ -126,7 +126,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: "registry.cn-beijing.aliyuncs.com/secnium/iast-saas-webapi:latest,registry.cn-beijing.aliyuncs.com/secnium/iast-saas-webapi:1.0.${{github.run_number}},registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:0.1.0,"
+          tags: "registry.cn-beijing.aliyuncs.com/secnium/iast-saas-webapi-test:latest,registry.cn-beijing.aliyuncs.com/secnium/iast-saas-webapi-test:1.0.${{github.run_number}},registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi-test:0.1.0,"
 
       - uses: actions/checkout@master
       - name: deploy to cluster
