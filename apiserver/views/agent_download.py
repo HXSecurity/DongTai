@@ -119,7 +119,7 @@ class PythonAgentDownload():
                 "name": project_name
             },
             "engine": {
-                "version": "v0.1",
+                "version": "v1.0.6",
                 "name": agent_token
             },
             "app": {
