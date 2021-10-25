@@ -1,13 +1,14 @@
 # DongTai
 [![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
 [![license Apache-2.0](https://img.shields.io/github/license/HXSecurity/DongTai-agent-java)](https://github.com/HXSecurity/DongTai-agent-java/blob/main/LICENSE)
-[![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://github.com/HXSecurity/DongTai)
+![GitHub release (release name instead of tag name)](https://img.shields.io/github/v/release/HXSecurity/DongTai?include_prereleases&label=DongTai)
 
-[![DongTai--webapi](https://img.shields.io/badge/DongTai--webapi-v1.0.0-lightgrey)](https://github.com/HXSecurity/DongTai-webapi)
-[![DongTai--openapi](https://img.shields.io/badge/DongTai--openapi-v1.0.0-lightgrey)](https://github.com/HXSecurity/DongTai-openapi)
-[![DongTai--engine](https://img.shields.io/badge/DongTai--engine-v1.0.0-lightgrey)](https://github.com/HXSecurity/DongTai-engine)
-[![DongTai--web](https://img.shields.io/badge/DongTai--web-v1.0.0-lightgrey)](https://github.com/HXSecurity/DongTai-web)
-[![DongTai--agent--java](https://img.shields.io/badge/DongTai----agent--java-v1.0.0-lightgrey)](https://github.com/HXSecurity/DongTai-agent-java)
+[![GitHub release](https://img.shields.io/github/v/release/HXSecurity/Dongtai-webapi?include_prereleases&label=Dongtai-webapi)](https://github.com/HXSecurity/DongTai-webapi/releases)
+[![GitHub release](https://img.shields.io/github/v/release/HXSecurity/Dongtai-openapi?include_prereleases&label=Dongtai-openapi)](https://github.com/HXSecurity/DongTai-openapi/releases)
+[![GitHub release](https://img.shields.io/github/v/release/HXSecurity/Dongtai-engine?include_prereleases&label=Dongtai-engine)](https://github.com/HXSecurity/DongTai-engine/releases)
+[![GitHub release](https://img.shields.io/github/v/release/HXSecurity/Dongtai-web?include_prereleases&label=Dongtai-web)](https://github.com/HXSecurity/DongTai-web/releases)
+[![GitHub release](https://img.shields.io/github/v/release/HXSecurity/DongTai-agent-java?include_prereleases&label=DongTai-agent-java)](https://github.com/HXSecurity/DongTai-agent-java/releases)
+
 
 [中文版本(Chinese version)](README.ZH-CN.MD)
 
