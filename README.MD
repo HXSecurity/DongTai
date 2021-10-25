@@ -1,13 +1,13 @@
 # DongTai
 [![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
 [![license Apache-2.0](https://img.shields.io/github/license/HXSecurity/DongTai-agent-java)](https://github.com/HXSecurity/DongTai-agent-java/blob/main/LICENSE)
-![GitHub release (release name instead of tag name)](https://img.shields.io/github/v/release/HXSecurity/DongTai?include_prereleases&label=DongTai)
+[![GitHub release](https://img.shields.io/github/v/release/HXSecurity/DongTai?label=DongTai)](https://github.com/HXSecurity/DongTai/releases)
 
-[![GitHub release](https://img.shields.io/github/v/release/HXSecurity/Dongtai-webapi?include_prereleases&label=Dongtai-webapi)](https://github.com/HXSecurity/DongTai-webapi/releases)
-[![GitHub release](https://img.shields.io/github/v/release/HXSecurity/Dongtai-openapi?include_prereleases&label=Dongtai-openapi)](https://github.com/HXSecurity/DongTai-openapi/releases)
-[![GitHub release](https://img.shields.io/github/v/release/HXSecurity/Dongtai-engine?include_prereleases&label=Dongtai-engine)](https://github.com/HXSecurity/DongTai-engine/releases)
-[![GitHub release](https://img.shields.io/github/v/release/HXSecurity/Dongtai-web?include_prereleases&label=Dongtai-web)](https://github.com/HXSecurity/DongTai-web/releases)
-[![GitHub release](https://img.shields.io/github/v/release/HXSecurity/DongTai-agent-java?include_prereleases&label=DongTai-agent-java)](https://github.com/HXSecurity/DongTai-agent-java/releases)
+[![GitHub release](https://img.shields.io/github/v/release/HXSecurity/Dongtai-webapi?label=Dongtai-webapi)](https://github.com/HXSecurity/DongTai-webapi/releases)
+[![GitHub release](https://img.shields.io/github/v/release/HXSecurity/Dongtai-openapi?label=Dongtai-openapi)](https://github.com/HXSecurity/DongTai-openapi/releases)
+[![GitHub release](https://img.shields.io/github/v/release/HXSecurity/Dongtai-engine?label=Dongtai-engine)](https://github.com/HXSecurity/DongTai-engine/releases)
+[![GitHub release](https://img.shields.io/github/v/release/HXSecurity/Dongtai-web?label=Dongtai-web)](https://github.com/HXSecurity/DongTai-web/releases)
+[![GitHub release](https://img.shields.io/github/v/release/HXSecurity/DongTai-agent-java?label=DongTai-agent-java)](https://github.com/HXSecurity/DongTai-agent-java/releases)
 
 
 [中文版本(Chinese version)](README.ZH-CN.MD)
