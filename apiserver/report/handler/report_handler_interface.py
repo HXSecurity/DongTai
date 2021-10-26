@@ -48,7 +48,7 @@ class IReportHandler:
 
     def common_header(self):
         self.detail = self.report.get('detail')
-        self.agent_id = self.detail.get('agent_id')
+        self.agent_id = self.detail.get('agentId')
 
     def has_permission(self):
         self.agent = self.get_agent(agent_id=self.agent_id)
@@ -72,13 +72,14 @@ class IReportHandler:
             self.parse()
             self.save()
             logger.info(
-                _('[{self .__ class __.__ name__}] Report Analysis Completed').format(
-                    self.__class__.__name__))
+                _('[{classname}] Report Analysis Completed').format(
+                    classname=self.__class__.__name__))
             return self.get_result()
         else:
             logger.info(
-                _('[{self .__}] report resolution failed, Agent does not exist or no right to access, report data: {}').
-                format(self.__class__.__name__, self.report))
+                _(
+                    '[{classname}] report resolution failed, Agent does not exist or no right to access, report data: {report}').
+                    format(classname=self.__class__.__name__, report=self.report))
             return 'no permission'
 
     def get_project_agents(self, agent):

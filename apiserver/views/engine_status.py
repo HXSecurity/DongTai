@@ -10,6 +10,9 @@ import time
 from dongtai.models.agent import IastAgent
 
 from dongtai.endpoint import OpenApiEndPoint, R
+from drf_spectacular.utils import extend_schema
+
+from apiserver.api_schema import DongTaiParameter
 
 logger = logging.getLogger("django")
 
@@ -52,13 +55,16 @@ class EngineStopStart(OpenApiEndPoint):
     name = "iast_engine_update_status_edit"
     description = "IAST 检测引擎更新状态修改接口"
 
+    @extend_schema(
+        description='Check Agent Engine Control Code',
+        parameters=[
+            DongTaiParameter.AGENT_NAME,
+        ],
+        responses=R,
+        methods=['GET']
+    )
     def get(self, request):
-        """
-        IAST 检测引擎 agent接口
-        :param request:
-        :return:
-        """
-        agent_name = request.query_params.get('agent_name')
+        agent_name = request.query_params.get('name')
         agent = IastAgent.objects.filter(user=request.user, token=agent_name, is_running=1).first()
         if not agent:
             return R.failure("agent不存在或无权限访问")

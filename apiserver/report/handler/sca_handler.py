@@ -26,10 +26,10 @@ logger = logging.getLogger('dongtai.openapi')
 class ScaHandler(IReportHandler):
 
     def parse(self):
-        self.package_path = self.detail.get('package_path')
-        self.package_signature = self.detail.get('package_signature')
-        self.package_name = self.detail.get('package_name')
-        self.package_algorithm = self.detail.get('package_algorithm')
+        self.package_path = self.detail.get('packagePath')
+        self.package_signature = self.detail.get('packageSignature')
+        self.package_name = self.detail.get('packageName')
+        self.package_algorithm = self.detail.get('packageAlgorithm')
 
     def save(self):
         if all([self.agent_id, self.package_path, self.package_name, self.package_signature,
