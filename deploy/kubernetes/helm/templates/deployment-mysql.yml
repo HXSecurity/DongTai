@@ -1,9 +1,9 @@
----
+{{- if not .Values.skipMysql -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql
-  namespace: CHANGE_THIS_NAMESPACE
+  namespace: {{.Release.Namespace}}
 spec:
   selector:
     matchLabels:
@@ -16,20 +16,18 @@ spec:
         app: mysql
     spec:
       containers:
-        - image: dongtai/dongtai-mysql:CHANGE_THIS_VERSION
+        - image: dongtai/dongtai-mysql:{{ .Chart.AppVersion}}
           name: mysql-container
           imagePullPolicy: Always
           ports:
             - containerPort: 3306
               name: mysql
-      imagePullSecrets:
-        - name: dongtai-iast-image-registry-secret
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: dongtai-mysql
-  namespace: CHANGE_THIS_NAMESPACE
+  namespace: {{.Release.Namespace}}
   labels:
     app: mysql
 spec:
@@ -39,3 +37,4 @@ spec:
     - protocol: TCP
       port: 3306
       targetPort: 3306
+{{- end -}}

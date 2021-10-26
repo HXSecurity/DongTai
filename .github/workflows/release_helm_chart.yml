@@ -1,0 +1,40 @@
+name: Release helm chart
+on:
+  push:
+    tags:
+      - "v*"
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      
+      - uses: azure/setup-helm@v1
+        with:
+          version: 'latest' # default is latest stable
+        id: install
+
+      - name: Get the release version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+
+      - name: Create helm package
+        run: |
+          helm package deploy/kubernetes/helm  -d ~/helm/repo --app-version ${{ steps.get_version.outputs.VERSION }} --version ${{ steps.get_version.outputs.VERSION }}
+          helm repo index ~/helm/repo --url ${{ secrets.DONGTAI_IAST_CHART_REPO_URL }}
+
+      - name: Setup ossutil
+        uses: manyuanrong/setup-ossutil@v2.0
+        with:
+          endpoint: ${{ secrets.CHART_OSS_ENDPOINT }}
+          access-key-id: ${{ secrets.CHART_OSS_ACCESS_KEY_ID }}
+          access-key-secret: ${{ secrets.CHART_OSS_ACCESS_KEY_SECRET }}
+          
+      - name: Push helm chart to repo
+        run: |
+          ossutil cp -rf ~/helm/repo/dongtai-iast-${{ steps.get_version.outputs.VERSION }}.tgz  oss://dongtai-helm-charts/iast/
+          ossutil cp -rf ~/helm/repo/index.yaml  oss://dongtai-helm-charts/iast/
+          
