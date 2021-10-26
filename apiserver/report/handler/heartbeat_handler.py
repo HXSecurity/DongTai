@@ -28,17 +28,17 @@ class HeartBeatHandler(IReportHandler):
         self.cpu = None
         self.memory = None
         self.network = None
-        self.disk = None
+        self.report_queue = None
+        self.method_queue = None
+        self.replay_queue = None
 
     def parse(self):
         self.cpu = self.detail.get('cpu')
         self.memory = self.detail.get('memory')
-        self.network = self.detail.get('network')
-        self.disk = self.detail.get('disk')
-        self.req_count = self.detail.get('req_count')
-        self.report_queue = self.detail.get('report_queue', 0)
-        self.method_queue = self.detail.get('method_queue', 0)
-        self.replay_queue = self.detail.get('replay_queue', 0)
+        self.req_count = self.detail.get('reqCount')
+        self.report_queue = self.detail.get('reportQueue', 0)
+        self.method_queue = self.detail.get('methodQueue', 0)
+        self.replay_queue = self.detail.get('replayQueue', 0)
 
     def save_heartbeat(self):
         # update agent state
@@ -51,21 +51,18 @@ class HeartBeatHandler(IReportHandler):
             heartbeat = queryset.first()
             heartbeat.memory = self.memory
             heartbeat.cpu = self.cpu
-            heartbeat.disk = self.disk
             heartbeat.req_count = self.req_count
             heartbeat.report_queue = self.report_queue
             heartbeat.method_queue = self.method_queue
             heartbeat.replay_queue = self.replay_queue
             heartbeat.dt = int(time.time())
             heartbeat.save(update_fields=[
-                'memory', 'cpu', 'disk', 'req_count', 'dt', 'report_queue',
-                'method_queue', 'replay_queue'
+                'memory', 'cpu', 'req_count', 'dt', 'report_queue', 'method_queue', 'replay_queue'
             ])
         else:
             queryset.delete()
             IastHeartbeat.objects.create(memory=self.memory,
                                          cpu=self.cpu,
-                                         disk=self.disk,
                                          req_count=self.req_count,
                                          report_queue=self.replay_queue,
                                          method_queue=self.method_queue,
