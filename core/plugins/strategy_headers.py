@@ -64,17 +64,20 @@ def check_x_content_type_options(response):
 
 
 def check_response_header(method_pool):
-    response = parse_response(method_pool.res_header.strip() + '\n\n' + method_pool.res_body.strip())
-    if check_csp(response):
-        save_vul('Response Without Content-Security-Policy Header', method_pool)
-    if check_x_xss_protection(response):
-        save_vul('Response With X-XSS-Protection Disabled', method_pool)
-    if check_strict_transport_security(response):
-        save_vul('Response With Insecurely Configured Strict-Transport-Security Header', method_pool)
-    if check_x_frame_options(response):
-        save_vul('Pages Without Anti-Clickjacking Controls', method_pool)
-    if check_x_content_type_options(response):
-        save_vul('Response Without X-Content-Type-Options Header', method_pool)
+    try:
+        response = parse_response(method_pool.res_header.strip() + '\n\n' + method_pool.res_body.strip())
+        if check_csp(response):
+            save_vul('Response Without Content-Security-Policy Header', method_pool)
+        if check_x_xss_protection(response):
+            save_vul('Response With X-XSS-Protection Disabled', method_pool)
+        if check_strict_transport_security(response):
+            save_vul('Response With Insecurely Configured Strict-Transport-Security Header', method_pool)
+        if check_x_frame_options(response):
+            save_vul('Pages Without Anti-Clickjacking Controls', method_pool)
+        if check_x_content_type_options(response):
+            save_vul('Response Without X-Content-Type-Options Header', method_pool)
+    except Exception as e:
+        logger.error("check_response_header failed, reason: " + str(e))
 
 
 def save_vul(vul_type, method_pool):
