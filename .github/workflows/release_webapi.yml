@@ -81,8 +81,8 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
           args: |
-            find deploy/deploy-dongtai-webapi-test.yml -type f -exec sed -i 's/VERSION/${{ steps.release.outputs.version }}/g' {} \;
-            ls deploy/deploy-dongtai-webapi-test.yml | xargs -I {} kubectl apply -f {}
+            find deploy/deploy-dongtai-webapi-prod.yml -type f -exec sed -i 's/VERSION/${{ steps.release.outputs.version }}/g' {} \;
+            ls deploy/deploy-dongtai-webapi-prod.yml | xargs -I {} kubectl apply -f {}
       
             
       - name: finish build
