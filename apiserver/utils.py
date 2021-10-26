@@ -80,9 +80,11 @@ def updateossstatus():
     from apiserver.views.agent_download import JavaAgentDownload, PythonAgentDownload
     from apiserver.views.engine_download import EngineDownloadEndPoint, PACKAGE_NAME_LIST
     try:
-        #status_, _ = checkossstatus()
-        #if status_ == False:
-        #    return False, None
+        status_, _ = checkossstatus()
+        if status_ == False:
+            return False, None
+        import shutil
+        shutil.rmtree('/tmp')
         OssDownloader.download_file(
             JavaAgentDownload.REMOTE_AGENT_FILE,
             local_file=JavaAgentDownload.LOCAL_AGENT_FILE)
