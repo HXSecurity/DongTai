@@ -9,13 +9,19 @@ import logging
 import os
 
 from django.http import FileResponse
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.request import Request
 
 from dongtai.endpoint import OpenApiEndPoint, R
-from apiserver.utils import OssDownloader
 
+from apiserver.api_schema import DongTaiParameter
+from apiserver.utils import OssDownloader
+from AgentServer.settings import BUCKET_NAME_BASE_URL
 logger = logging.getLogger("dongtai.openapi")
+
+PACKAGE_NAME_LIST = ('iast-core', 'iast-inject', 'dongtai-servlet-api',
+                     'dongtai-jakarta-api')
 
 
 class EngineDownloadEndPoint(OpenApiEndPoint):
@@ -23,22 +29,32 @@ class EngineDownloadEndPoint(OpenApiEndPoint):
     description = "iast agent-下载IAST依赖的core、inject jar包"
     LOCAL_AGENT_PATH = '/tmp/iast_cache/package'
     LOCAL_AGENT_FILE = '/tmp/iast_cache/package/{package_name}.jar'
-    REMOTE_AGENT_FILE = 'agent/java/{package_name}.jar'
+    REMOTE_AGENT_FILE = BUCKET_NAME_BASE_URL + 'java/{package_name}.jar'
 
+    @extend_schema(
+        description='Agent Engine Download',
+        parameters=[
+            DongTaiParameter.ENGINE_NAME,
+        ],
+        responses=R,
+        methods=['GET']
+    )
     def get(self, request: Request):
-        """
-        IAST下载 agent接口
-        :param request:
-        :return:
-        """
-        package_name = request.query_params.get('package_name')
-        jdk = request.query_params.get('jdk.version')
-        if package_name not in ('iast-core', 'iast-inject', 'dongtai-servlet'):
+        package_name = request.query_params.get('engineName')
+        try:
+            jakarta = int(request.query_params.get('jakarta', 0))
+        except:
+            jakarta = 0
+        if package_name not in ('iast-core', 'iast-inject', 'dongtai-api'):
             return R.failure({
                 "status": -1,
                 "msg": "bad gay."
             })
-
+        if package_name == 'dongtai-api':
+            if jakarta == 0:
+                package_name = 'dongtai-servlet-api'
+            elif jakarta == 1:
+                package_name = 'dongtai-jakarta-api'
         local_file_name = EngineDownloadEndPoint.LOCAL_AGENT_FILE.format(package_name=package_name)
         remote_file_name = EngineDownloadEndPoint.REMOTE_AGENT_FILE.format(package_name=package_name)
         logger.debug(f'download file from oss or local cache, file: {local_file_name}')

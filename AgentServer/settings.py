@@ -45,7 +45,16 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'dongtai',
     'apiserver',
+    'drf_spectacular'
 ]
+
+#
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Your Project API',
+    'DESCRIPTION': 'Your project description',
+    'VERSION': '1.0.0',
+    # OTHER SETTINGS
+}
 
 REST_FRAMEWORK = {
     'PAGE_SIZE': 20,
@@ -57,6 +66,8 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
+    # swagger setting
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 MIDDLEWARE = [
@@ -197,7 +208,8 @@ ACCESS_KEY = config.get('aliyun_oss', 'access_key')
 ACCESS_KEY_SECRET = config.get('aliyun_oss', 'access_key_secret')
 BUCKET_URL = 'https://oss-cn-beijing.aliyuncs.com'
 BUCKET_NAME = 'dongtai'
-
+BUCKET_NAME_BASE_URL = 'agent/' if os.getenv('active.profile',
+                                             None) != 'TEST' else 'agent_test/'
 # CONST
 PENDING = 1
 VERIFYING = 2

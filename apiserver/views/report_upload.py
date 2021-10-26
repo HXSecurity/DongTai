@@ -6,6 +6,9 @@
 # project: lingzhi-agent-server
 
 from dongtai.endpoint import OpenApiEndPoint, R
+from drf_spectacular.utils import extend_schema
+
+from apiserver.api_schema import DongTaiParameter
 from apiserver.decrypter import parse_data
 from apiserver.report.report_handler_factory import ReportHandler
 
@@ -13,12 +16,15 @@ class ReportUploadEndPoint(OpenApiEndPoint):
     name = "api-v1-report-upload"
     description = "agent上传报告"
 
+    @extend_schema(
+        description='Pull Agent Engine Hook Rule',
+        parameters=[
+            DongTaiParameter.LANGUAGE,
+        ],
+        responses=R,
+        methods=['GET']
+    )
     def post(self, request):
-        """
-        探针上传报告
-        :param request:
-        :return:
-        """
         try:
 
             report = parse_data(request.read())
