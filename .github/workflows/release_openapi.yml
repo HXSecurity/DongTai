@@ -61,10 +61,8 @@ jobs:
           # AccessKeySceret
           access-key-secret: ${{ secrets.ALIYUN_OSS_KEY_SECRET }}
       - run: |
-          ossutil cp oss://dongtai/agent/java/iast-agent.jar iast-agent.jar
-          ossutil cp oss://dongtai/agent/java/iast-core.jar iast-core.jar
-          ossutil cp oss://dongtai/agent/java/iast-inject.jar iast-inject.jar
-          ossutil cp oss://dongtai/agent/java/dongtai-servlet.jar dongtai-servlet.jar
+          ossutil cp oss://dongtai/agent/java/ ./ --include "*.jar" -r
+          ossutil cp oss://dongtai/agent/python/ ./  --include "*.tar.gz" -r
           ls -l
 
       - name: Login to DockerHub
