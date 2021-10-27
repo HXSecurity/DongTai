@@ -76,8 +76,11 @@ class ProjectReportExport(UserEndPoint):
         if (pid == 0 and pname == ''):
             return R.failure(status=202, msg=_('Parameter error'))
         auth_users = self.get_auth_users(request.user)
-        word_file_name, file_stream = self.generate_word_report(pid, pname, vid, auth_users,
+        res = self.generate_word_report(pid, pname, vid, auth_users,
                                                    request.user, timestamp)
+        if res is None:
+            return R.failure(status=202, msg=_('Parameter error'))
+        word_file_name, file_stream = res
         if word_file_name:
             report_file_path = word_file_name
             report_type = request.query_params.get('type', 'docx')

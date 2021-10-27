@@ -155,6 +155,8 @@ class ApiRouteSearch(UserEndPoint):
             if http_method_obj:
                 api_methods = IastApiMethod.objects.filter(
                     http_method__id=http_method_obj[0].id).all().values('id')
+            else:
+                api_methods = []
         else:
             api_methods = []
 
