@@ -208,7 +208,8 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     lambda x: (x[0].replace('search_after_', ''), x[1]),
                     filter(lambda x: x[0].startswith('search_after_'),
                            request.data.items()))))
-        q = assemble_query(search_after_fields, 'lte', q, operator.and_)
+        q = q if 'q' in vars() else Q()
+        q = assemble_query(search_after_fields, 'lte', q, operator.and_)  
         if 'id' in request.data.keys():
             q = q & Q(pk=request.data['id'])
         q = q & Q(agent_id__in=[
