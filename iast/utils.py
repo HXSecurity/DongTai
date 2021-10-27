@@ -87,6 +87,8 @@ def extend_schema_with_envcheck(querys: list = [],
             elif isinstance(kwargs.get('request', None),
                                 SerializerMetaclass):
                 kwargs['request'] = {'application/json': kwargs['request']}
+            elif kwargs.get('request', None):
+                kwargs['request'] = {'application/json': kwargs['request']}
             deco = extend_schema(parameters=parameters,
                                  examples=examples if examples else None,
                                  responses={

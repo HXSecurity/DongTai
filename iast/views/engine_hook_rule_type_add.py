@@ -38,9 +38,13 @@ class _EngineHookRuleTypeAddSerializer(serializers.Serializer):
         help_text=_("The short name of hook type"),
         max_length=255,
         required=True)
-    language_id = serializers.IntegerField(
+    language_id = serializers.ChoiceField(
+        (1, 2, 3, 4),
         default=1,
-        help_text=_('The id of programming language'),)
+        help_text=
+        _('The id of programming language,find it in the programming language api'
+          ),
+    )
 
 
 _ResponseSerializer = get_response_serializer(status_msg_keypair=(
