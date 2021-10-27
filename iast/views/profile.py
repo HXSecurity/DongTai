@@ -52,11 +52,20 @@ class ProfileEndpoint(UserEndPoint):
 class ProfileBatchGetArgsSer(serializers.Serializer):
     keys = serializers.ListField(help_text=_('profile key'))
 
+
+class ProfileBatchGetResSer(serializers.Serializer):
+    id = serializers.IntegerField(help_text=_('profile id'))
+    key = serializers.CharField(help_text=_('profile key'))
+    value = serializers.CharField(help_text=_('profile value'))
+
+
 class ProfileBatchGetEndpoint(UserEndPoint):
-    @extend_schema_with_envcheck(summary=_('GetProfileBatch'),
-                                 request=ProfileBatchGetArgsSer,
-                                 description=_("Get Profile with key batch"),
-                                 tags=[_('Profile')])
+    @extend_schema_with_envcheck(
+        summary=_('GetProfileBatch'),
+        request=ProfileBatchGetArgsSer,
+        description=_("Get Profile with key batch"),
+        response_schema=ProfileBatchGetResSer(many=True),
+        tags=[_('Profile')])
     def post(self, request):
         keys = request.data.get('keys', None)
         profiles = IastProfile.objects.filter(key__in=keys).all()
@@ -75,6 +84,7 @@ class ProfileBatchModifiedEndpoint(UserEndPoint):
     @extend_schema_with_envcheck(summary=_('Profile modify'),
                                  request=ProfileBatchPostArgsSer(many=True),
                                  description=_("Modifiy Profile with key"),
+                                 response_schema=ProfileBatchPostArgsSer,
                                  tags=[_('Profile')])
     def post(self, request):
         if not request.user.is_talent_admin():
