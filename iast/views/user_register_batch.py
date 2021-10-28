@@ -30,6 +30,7 @@ class UserRegisterEndPoint(SystemAdminEndPoint):
             self.email = Email()
             self.email.login_server(server=settings.EMAIL_SERVER,
                                     username=settings.EMAIL_USER,
+                                    port=settings.EMAIL_PORT,
                                     pwd=settings.EMAIL_PASSWORD,
                                     ssl=settings.ENABLE_SSL)
         except Exception as e:
