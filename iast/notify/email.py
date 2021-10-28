@@ -14,8 +14,12 @@ class Email:
     def __init__(self):
         pass
 
-    def login_server(self, server, username, pwd, ssl=True):
-        self.smtp = SMTP_SSL(server) if ssl else SMTP(server)
+    def login_server(self, server, port, username, pwd, ssl=True):
+        if port:
+            self.smtp = SMTP_SSL(server, port=port) if ssl else SMTP(server,
+                                                                     port=port)
+        else:
+            self.smtp = SMTP_SSL(server) if ssl else SMTP(server)
         self.smtp.login(username, pwd)
 
     def logout_server(self):
