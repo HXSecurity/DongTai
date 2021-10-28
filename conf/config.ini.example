@@ -22,6 +22,7 @@ server = smtp_server
 user = smtp_user
 password = smtp_password
 from_addr = from_addr
+port = 25
 ssl = False
 cc_addr = cc_addr
 
