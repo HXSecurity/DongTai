@@ -286,6 +286,7 @@ EMAIL_SERVER = config.get('smtp', 'server')
 EMAIL_USER = config.get('smtp', 'user')
 EMAIL_PASSWORD = config.get('smtp', 'password')
 EMAIL_FROM_ADDR = config.get('smtp', 'from_addr')
+EMAIL_PORT = config.get('smtp', 'port')
 ENABLE_SSL = config.get('smtp', 'ssl') == 'True'
 ADMIN_EMAIL = config.get('smtp', 'cc_addr')
 SESSION_COOKIE_DOMAIN = None
