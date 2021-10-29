@@ -1,0 +1,2658 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-29 10:52+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: i18n/views/setlang.py:29
+msgid "this language not supported now"
+msgstr ""
+
+#: iast/account/department.py:96 iast/account/department.py:135
+msgid "Department {} already exists"
+msgstr ""
+
+#: iast/account/department.py:106
+msgid "Department name has been modified to {}"
+msgstr ""
+
+#: iast/account/department.py:111 iast/account/department.py:158
+#: iast/account/user.py:189
+msgid "Department does not exist"
+msgstr ""
+
+#: iast/account/department.py:147
+msgid "Department {} has been created successfully"
+msgstr ""
+
+#: iast/account/department.py:153
+msgid "Access Denied"
+msgstr ""
+
+#: iast/account/department.py:173
+msgid ""
+"Delete failed, existence of users under department {}, please implement "
+"forced deletion"
+msgstr ""
+
+#: iast/account/department.py:180 iast/views/agents_delete.py:31
+#: iast/views/agents_delete.py:76 iast/views/project_version_delete.py:25
+#: iast/views/project_version_delete.py:53 iast/views/vul_delete.py:18
+#: iast/views/vul_delete.py:43
+msgid "Deleted Successfully"
+msgstr ""
+
+#: iast/account/talent.py:25
+msgid "Tenant management"
+msgstr ""
+
+#: iast/account/talent.py:83
+msgid "Tenant has been deactivated"
+msgstr ""
+
+#: iast/account/talent.py:83
+msgid "Tenant does not exist"
+msgstr ""
+
+#: iast/account/talent.py:94
+msgid "Tenant name or email is not specified"
+msgstr ""
+
+#: iast/account/talent.py:97
+msgid "Tenant {} has been created successfully"
+msgstr ""
+
+#: iast/account/talent.py:98
+msgid "Tenant {} creation failed, error message:{}"
+msgstr ""
+
+#: iast/account/talent.py:106
+msgid "Tenant: {} Delete successfully"
+msgstr ""
+
+#: iast/account/talent.py:121
+msgid "Query if the default tenant information exists"
+msgstr ""
+
+#: iast/account/talent.py:125
+msgid ""
+"Tenant information already exists, please delete tenant information first"
+msgstr ""
+
+#: iast/account/talent.py:126
+msgid ""
+"The tenant information already existed, please delete the existing "
+"information first"
+msgstr ""
+
+#: iast/account/talent.py:128
+msgid "Started creating a tenant"
+msgstr ""
+
+#: iast/account/talent.py:134
+msgid "Finished creating tenant, start to create tenant default department"
+msgstr ""
+
+#: iast/account/talent.py:135
+msgid "Default department"
+msgstr ""
+
+#: iast/account/talent.py:140
+msgid "Finished creating department, start to create default user"
+msgstr ""
+
+#: iast/account/talent.py:153
+msgid "Finsihed creating and initializing tenant"
+msgstr ""
+
+#: iast/account/talent.py:156
+msgid "Failed to created a tenant, error message:{}"
+msgstr ""
+
+#: iast/account/user.py:79
+msgid "The format of  ‘page’ and ‘pageSize’ only can be numberic"
+msgstr ""
+
+#: iast/account/user.py:113
+msgid "Data update succeeded"
+msgstr ""
+
+#: iast/account/user.py:118 iast/views/project_detail.py:36
+#: iast/views/project_detail.py:74 iast/views/project_report_export.py:99
+#: iast/views/project_summary.py:105 iast/views/user_detail.py:32
+msgid "no permission"
+msgstr ""
+
+#: iast/account/user.py:153
+msgid "Failed to delete User {}"
+msgstr ""
+
+#: iast/account/user.py:158
+msgid "User {} successfully deleted"
+msgstr ""
+
+#: iast/account/user.py:171
+msgid "Consistent"
+msgstr ""
+
+#: iast/account/user.py:180
+msgid "Username already exists"
+msgstr ""
+
+#: iast/account/user.py:221 iast/account/user.py:236
+msgid "User creation failed"
+msgstr ""
+
+#: iast/account/user.py:226 iast/views/user_register_batch.py:72
+msgid "User {} has been created successfully"
+msgstr ""
+
+#: iast/account/user.py:231
+msgid "Department does not exist or no permission to access"
+msgstr ""
+
+#: iast/base/agent.py:130
+#, python-brace-format
+msgid ""
+"We found that there is {1} in the {0} page, attacker can modify the value of "
+"{2} to attack:"
+msgstr ""
+
+#: iast/base/agent.py:145
+msgid "{} Line"
+msgstr ""
+
+#: iast/base/agent.py:161
+msgid "In {} {} call {}. {} (), Incoming parameters {}"
+msgstr ""
+
+#: iast/base/agent.py:164
+msgid "{} Appears in {} {}"
+msgstr ""
+
+#: iast/base/project_version.py:9 iast/base/project_version.py:117
+#: iast/views/api_route_search.py:40 iast/views/project_report_export.py:29
+#: iast/views/project_summary.py:25 iast/views/project_version_current.py:21
+#: iast/views/project_version_delete.py:19
+#: iast/views/project_version_list.py:19
+msgid "The version id of the project"
+msgstr ""
+
+#: iast/base/project_version.py:11 iast/base/project_version.py:119
+#: iast/views/project_add.py:34 iast/views/project_version_list.py:21
+#: iast/views/vul_details.py:55
+msgid "The version name of the project"
+msgstr ""
+
+#: iast/base/project_version.py:13 iast/views/project_version_list.py:23
+msgid "Description of the project versoin"
+msgstr ""
+
+#: iast/base/project_version.py:14 iast/serializers/vul.py:101
+#: iast/views/api_route_search.py:38 iast/views/project_add.py:35
+#: iast/views/project_delete.py:17 iast/views/project_detail.py:29
+#: iast/views/project_report_export.py:32 iast/views/project_search.py:18
+#: iast/views/project_summary.py:55 iast/views/project_version_current.py:22
+#: iast/views/project_version_delete.py:20 iast/views/vul_details.py:71
+msgid "The id of the project"
+msgstr ""
+
+#: iast/base/project_version.py:16 iast/views/project_version_list.py:25
+msgid "Whether it is the current version, 1 means yes, 0 means no."
+msgstr ""
+
+#: iast/base/project_version.py:23 iast/base/project_version.py:33
+#: iast/views/agent_start.py:43 iast/views/agent_stop.py:39
+#: iast/views/api_route_related_request.py:60
+#: iast/views/api_route_search.py:150 iast/views/engine_hook_rule_status.py:93
+#: iast/views/engine_hook_rule_status.py:132
+#: iast/views/engine_hook_rule_summary.py:47
+#: iast/views/engine_hook_rule_types.py:80 iast/views/engine_hook_rules.py:89
+#: iast/views/engine_method_pool_search.py:172
+#: iast/views/engine_method_pool_search.py:183 iast/views/openapi.py:13
+#: iast/views/openapi.py:67 iast/views/project_add.py:41
+#: iast/views/project_add.py:69 iast/views/project_add.py:108
+#: iast/views/project_add.py:144 iast/views/project_report_export.py:77
+#: iast/views/project_report_export.py:82 iast/views/project_version_add.py:18
+#: iast/views/project_version_add.py:41 iast/views/project_version_add.py:47
+#: iast/views/project_version_current.py:50
+#: iast/views/project_version_delete.py:23
+#: iast/views/project_version_delete.py:47
+#: iast/views/project_version_delete.py:59
+#: iast/views/project_version_list.py:60
+#: iast/views/project_version_update.py:17
+#: iast/views/project_version_update.py:39
+#: iast/views/project_version_update.py:45 iast/views/sca_summary.py:191
+#: iast/views/scas.py:179 iast/views/strategys_add.py:49
+#: iast/views/vul_summary.py:282 iast/views/vuls.py:222
+msgid "Parameter error"
+msgstr ""
+
+#: iast/base/project_version.py:47
+msgid "Repeated version name"
+msgstr ""
+
+#: iast/base/project_version.py:54 iast/views/project_version_current.py:26
+#: iast/views/project_version_current.py:72
+#: iast/views/project_version_delete.py:24
+#: iast/views/project_version_delete.py:55
+msgid "Version does not exist"
+msgstr ""
+
+#: iast/base/project_version.py:115 iast/views/project_add.py:37
+msgid "Description of the project"
+msgstr ""
+
+#: iast/base/update_project_version.py:18
+msgid "Detects and associates application version information"
+msgstr ""
+
+#: iast/base/update_project_version.py:43
+msgid "Detection finished"
+msgstr ""
+
+#: iast/base/update_project_version.py:45
+msgid "Detection failed"
+msgstr ""
+
+#: iast/notify/feishu.py:12
+msgid "Maven official crawler"
+msgstr ""
+
+#: iast/serializers/agent.py:49
+msgid "Online"
+msgstr ""
+
+#: iast/serializers/agent.py:49
+msgid "Offline"
+msgstr ""
+
+#: iast/serializers/agent.py:61
+msgid "Load data is not uploaded"
+msgstr ""
+
+#: iast/serializers/agent.py:70 iast/serializers/agent.py:75
+msgid "No flow is detected by the probe"
+msgstr ""
+
+#: iast/serializers/agent.py:132 iast/serializers/agent.py:139
+#: iast/views/agent_alias_modified.py:18 iast/views/agent_start.py:16
+msgid "The id corresponding to the agent."
+msgstr ""
+
+#: iast/serializers/agent.py:134 iast/views/agent_start.py:18
+#: iast/views/agents_delete.py:27
+msgid "The id corresponding to the agent, use\",\" for segmentation."
+msgstr ""
+
+#: iast/serializers/hook_strategy.py:14
+msgid ""
+"\n"
+"Examples in a single case: O, P<1,2,3,4,...>, R\n"
+"Combination situation: O&R, O&P1, etc.\n"
+"O represents the object itself; R represents the return value; P represents "
+"the parameter, and the number represents the position of the parameter\n"
+msgstr ""
+
+#: iast/serializers/hook_strategy.py:33
+msgid "The name of hook rule type."
+msgstr ""
+
+#: iast/serializers/hook_strategy.py:35 iast/views/engine_hook_rule_add.py:20
+#: iast/views/engine_hook_rule_modify.py:28
+msgid "The id of hook rule type."
+msgstr ""
+
+#: iast/serializers/hook_strategy.py:37
+msgid "The user who created the hook rule type."
+msgstr ""
+
+#: iast/serializers/hook_strategy.py:38 iast/views/strategy_delete.py:20
+#: iast/views/strategys_add.py:17 iast/views/strategys_type.py:18
+msgid "The id of strategy"
+msgstr ""
+
+#: iast/serializers/hook_strategy.py:40 iast/views/engine_hook_rule_add.py:22
+#: iast/views/engine_hook_rule_modify.py:30
+msgid "The value of strategy"
+msgstr ""
+
+#: iast/serializers/hook_strategy.py:44 iast/views/engine_hook_rule_add.py:26
+#: iast/views/engine_hook_rule_modify.py:34
+msgid "Source of taint"
+msgstr ""
+
+#: iast/serializers/hook_strategy.py:49 iast/views/engine_hook_rule_add.py:31
+#: iast/views/engine_hook_rule_modify.py:39
+msgid "Target of taint"
+msgstr ""
+
+#: iast/serializers/hook_strategy.py:55 iast/views/engine_hook_rule_add.py:37
+#: iast/views/engine_hook_rule_modify.py:45
+msgid ""
+"Inheritance type, false-only detect current class, true-inspect subclasses, "
+"all-check current class and subclasses"
+msgstr ""
+
+#: iast/serializers/hook_strategy.py:61 iast/views/engine_hook_rule_add.py:43
+#: iast/views/engine_hook_rule_modify.py:51
+msgid ""
+"Indicates whether taint tracking is required, true-required, false-not "
+"required."
+msgstr ""
+
+#: iast/serializers/hook_strategy.py:66
+msgid "The update time of hook strategy"
+msgstr ""
+
+#: iast/serializers/hook_strategy.py:68
+msgid ""
+"The enabled state of the hook strategy: 0-disabled, 1-enabled, -1-deleted"
+msgstr ""
+
+#: iast/serializers/login.py:15
+msgid "Username should not be empty"
+msgstr ""
+
+#: iast/serializers/login.py:22
+msgid "Password should not be blank"
+msgstr ""
+
+#: iast/serializers/sca.py:36 iast/views/vul_details.py:221
+#: iast/views/vuls.py:30 iast/views/vuls.py:302
+msgid "The application has not been binded"
+msgstr ""
+
+#: iast/serializers/sca.py:59
+msgid "No application version has been created"
+msgstr ""
+
+#: iast/serializers/vul.py:59
+msgid "The level name of vulnerablity"
+msgstr ""
+
+#: iast/serializers/vul.py:77 iast/views/sca_sidebar_index.py:22
+#: iast/views/sca_summary.py:52 iast/views/scas.py:40
+#: iast/views/vul_details.py:58 iast/views/vul_sidebar_index.py:42
+#: iast/views/vul_summary.py:69 iast/views/vuls.py:71
+msgid "programming language"
+msgstr ""
+
+#: iast/serializers/vul.py:79
+msgid "The number of vulnerabilities corresponding to the programming language"
+msgstr ""
+
+#: iast/serializers/vul.py:84 iast/views/vul_details.py:59
+msgid "The name of vulnerablity level"
+msgstr ""
+
+#: iast/serializers/vul.py:85 iast/views/project_summary.py:48
+msgid "The number of vulnerabilities corresponding to the level"
+msgstr ""
+
+#: iast/serializers/vul.py:86 iast/views/vul_details.py:60
+msgid "The id of vulnerablity level"
+msgstr ""
+
+#: iast/serializers/vul.py:90
+msgid "The name of vulnerablity type"
+msgstr ""
+
+#: iast/serializers/vul.py:92
+msgid "The number of vulnerabilities corresponding to the vulnerablity type"
+msgstr ""
+
+#: iast/serializers/vul.py:98 iast/views/project_report_export.py:31
+msgid "The name of the project"
+msgstr ""
+
+#: iast/serializers/vul.py:100
+msgid "The number of vulnerabilities corresponding to the project"
+msgstr ""
+
+#: iast/utils.py:96
+msgid ""
+"The http status codes are both 200, please use the status and msg field "
+"returned by the response data to troubleshoot"
+msgstr ""
+
+#: iast/utils.py:133
+msgid "status code"
+msgstr ""
+
+#: iast/utils.py:139
+msgid "human readable message"
+msgstr ""
+
+#: iast/views/agent.py:22 iast/views/agent_search.py:20
+#: iast/views/agents_user.py:13 iast/views/project_engines.py:19
+msgid "The name of agent"
+msgstr ""
+
+#: iast/views/agent.py:23 iast/views/agents_user.py:14
+#: iast/views/strategys.py:20 iast/views/strategys_list.py:15
+msgid "The id of agent"
+msgstr ""
+
+#: iast/views/agent.py:24
+msgid "The version of agent"
+msgstr ""
+
+#: iast/views/agent.py:26
+msgid "The latest update time of agent"
+msgstr ""
+
+#: iast/views/agent.py:28 iast/views/agent.py:30
+msgid "The running status of agent"
+msgstr ""
+
+#: iast/views/agent.py:32
+msgid "agent control bit, 1-install, 2-uninstall, 0-no control"
+msgstr ""
+
+#: iast/views/agent.py:34
+msgid "Whether it is in control, 0-No, 1-Yes"
+msgstr ""
+
+#: iast/views/agent.py:36
+msgid "Bundled project ID, if it exists, it will be bundled."
+msgstr ""
+
+#: iast/views/agent.py:39 iast/views/agent_search.py:22
+msgid "Project name, used to start the agent first and then create the project"
+msgstr ""
+
+#: iast/views/agent.py:42
+msgid "1 is running online, 0 is not running, same token, only one online"
+msgstr ""
+
+#: iast/views/agent.py:44
+msgid "Bundled project version ID, if it exists, it will be bundled"
+msgstr ""
+
+#: iast/views/agent.py:47 iast/views/project_summary.py:64
+msgid "Agent language currently included in the project"
+msgstr ""
+
+#: iast/views/agent.py:69 iast/views/agent_alias_modified.py:31
+#: iast/views/agent_delete.py:38 iast/views/agent_install.py:29
+#: iast/views/agent_search.py:31 iast/views/agent_start.py:30
+#: iast/views/agent_stop.py:26 iast/views/agent_uninstall.py:28
+#: iast/views/agent_upgrade_online.py:40 iast/views/agents.py:60
+#: iast/views/agents_delete.py:44 iast/views/agents_user.py:23
+msgid "Agent"
+msgstr ""
+
+#: iast/views/agent.py:70
+msgid "Agent Detail"
+msgstr ""
+
+#: iast/views/agent.py:72 iast/views/project_version_delete.py:38
+msgid "Delete the specified project version according to the conditions."
+msgstr ""
+
+#: iast/views/agent.py:80
+msgid "Can't find relevant data"
+msgstr ""
+
+#: iast/views/agent_alias_modified.py:20
+msgid "The alias corresponding to the agent."
+msgstr ""
+
+#: iast/views/agent_alias_modified.py:24 iast/views/agent_alias_modified.py:46
+msgid "modified successfully"
+msgstr ""
+
+#: iast/views/agent_alias_modified.py:25 iast/views/agent_delete.py:28
+#: iast/views/agent_delete.py:62
+msgid "Agent does not exist or no permission to access"
+msgstr ""
+
+#: iast/views/agent_alias_modified.py:26 iast/views/agent_delete.py:29
+#: iast/views/agent_delete.py:65
+msgid "Error while deleting, please try again later"
+msgstr ""
+
+#: iast/views/agent_alias_modified.py:33
+msgid "Agent Alias Modified"
+msgstr ""
+
+#: iast/views/agent_alias_modified.py:34
+msgid "Modified the agent alias"
+msgstr ""
+
+#: iast/views/agent_delete.py:27 iast/views/agent_delete.py:60
+msgid "Agent and related data deleted successfully"
+msgstr ""
+
+#: iast/views/agent_delete.py:35 iast/views/agents_delete.py:40
+msgid "Delete Agent"
+msgstr ""
+
+#: iast/views/agent_delete.py:39
+msgid "Agent Delete"
+msgstr ""
+
+#: iast/views/agent_delete.py:41 iast/views/project_delete.py:34
+msgid "Delete the agent by specifying the id."
+msgstr ""
+
+#: iast/views/agent_delete.py:70 iast/views/agents_delete.py:84
+msgid "Error logs deleted successfully, Deletion Amount: {}"
+msgstr ""
+
+#: iast/views/agent_delete.py:72 iast/views/agents_delete.py:86
+msgid "Failed to delete error logs, probe ID: {}, error message: {}"
+msgstr ""
+
+#: iast/views/agent_delete.py:77 iast/views/agent_delete.py:84
+#: iast/views/agent_delete.py:91 iast/views/agent_delete.py:98
+#: iast/views/agent_delete.py:105 iast/views/agent_delete.py:112
+#: iast/views/agents_delete.py:91 iast/views/agents_delete.py:98
+#: iast/views/agents_delete.py:105 iast/views/agents_delete.py:112
+#: iast/views/agents_delete.py:119 iast/views/agents_delete.py:126
+msgid ""
+"The replay request method pool data was successfully deleted, A total of {} "
+"replay requests are deleted"
+msgstr ""
+
+#: iast/views/agent_delete.py:79 iast/views/agents_delete.py:93
+msgid "Failed to delete heartbeat data, error message: {}"
+msgstr ""
+
+#: iast/views/agent_delete.py:86 iast/views/agents_delete.py:100
+msgid "Failed to delete unauthorized data, error message: {}"
+msgstr ""
+
+#: iast/views/agent_delete.py:93 iast/views/agents_delete.py:107
+msgid "Failed to delete vulnerability data, error message: {}"
+msgstr ""
+
+#: iast/views/agent_delete.py:100 iast/views/agents_delete.py:114
+msgid "Failed to delete third-party component data, error message: {}"
+msgstr ""
+
+#: iast/views/agent_delete.py:107 iast/views/agents_delete.py:121
+msgid "Failed to delete method pool data, error message: {}"
+msgstr ""
+
+#: iast/views/agent_delete.py:114
+msgid "Failed to delete replay request method pool data, error message: {}"
+msgstr ""
+
+#: iast/views/agent_delete.py:119 iast/views/agents_delete.py:133
+msgid "Replay request queue deleted successfully, Deletion amount: {}"
+msgstr ""
+
+#: iast/views/agent_delete.py:121 iast/views/agents_delete.py:128
+#: iast/views/agents_delete.py:135
+msgid "Failed to delete replay request queue, error message: {}"
+msgstr ""
+
+#: iast/views/agent_deploy.py:28 iast/views/agent_deploy.py:46
+msgid "Corresponding deployment document could not be found"
+msgstr ""
+
+#: iast/views/agent_deploy.py:32 iast/views/documents.py:44
+msgid "Documents"
+msgstr ""
+
+#: iast/views/agent_deploy.py:33 iast/views/agent_deploy.py:34
+msgid "Document of Agent Deploy"
+msgstr ""
+
+#: iast/views/agent_deploy_doc.py:14 iast/views/agent_deploy_info.py:14
+msgid "Agent deployment document"
+msgstr ""
+
+#: iast/views/agent_deploy_doc.py:38 iast/views/vuls.py:205
+msgid "No data"
+msgstr ""
+
+#: iast/views/agent_deploy_submit.py:18
+msgid "Uploading Agent configuration"
+msgstr ""
+
+#: iast/views/agent_download.py:22
+msgid "Downloading DongTai Agent"
+msgstr ""
+
+#: iast/views/agent_install.py:17 iast/views/agent_install.py:42
+msgid "The installation is complete"
+msgstr ""
+
+#: iast/views/agent_install.py:18 iast/views/agent_install.py:44
+#: iast/views/agent_uninstall.py:17
+msgid "The engine is being installed or uninstalled, please try again later"
+msgstr ""
+
+#: iast/views/agent_install.py:19 iast/views/agent_install.py:46
+#: iast/views/agent_start.py:47 iast/views/agent_stop.py:44
+#: iast/views/agent_uninstall.py:18 iast/views/agent_uninstall.py:45
+msgid "Engine does not exist or no permission to access"
+msgstr ""
+
+#: iast/views/agent_install.py:25
+msgid "Installing an Agent"
+msgstr ""
+
+#: iast/views/agent_install.py:30
+msgid "Agent Install"
+msgstr ""
+
+#: iast/views/agent_install.py:31
+msgid "Install the running agent by specifying the id."
+msgstr ""
+
+#: iast/views/agent_search.py:18 iast/views/documents.py:19
+#: iast/views/engine_hook_rule_types.py:24 iast/views/messages_list.py:24
+#: iast/views/messages_list.py:40 iast/views/projects.py:21
+#: iast/views/sca_summary.py:47 iast/views/scas.py:35
+#: iast/views/vul_list_for_plugin.py:35 iast/views/vul_sidebar_index.py:38
+#: iast/views/vuls.py:66
+msgid "Number per page"
+msgstr ""
+
+#: iast/views/agent_search.py:19 iast/views/documents.py:20
+#: iast/views/engine_hook_rule_types.py:25 iast/views/messages_list.py:25
+#: iast/views/projects.py:22 iast/views/sca_summary.py:40 iast/views/scas.py:28
+#: iast/views/vul_list_for_plugin.py:28 iast/views/vul_sidebar_index.py:32
+#: iast/views/vuls.py:59
+msgid "Page index"
+msgstr ""
+
+#: iast/views/agent_search.py:26 iast/views/agent_start.py:22
+#: iast/views/agent_stop.py:18 iast/views/agent_stop.py:65
+msgid "Suspending ..."
+msgstr ""
+
+#: iast/views/agent_search.py:32
+msgid "Agent Search"
+msgstr ""
+
+#: iast/views/agent_search.py:34
+msgid ""
+"Search for the agent corresponding to the user according to the following "
+"parameters"
+msgstr ""
+
+#: iast/views/agent_start.py:26
+msgid "Start Agent"
+msgstr ""
+
+#: iast/views/agent_start.py:31
+msgid "Agent Start"
+msgstr ""
+
+#: iast/views/agent_start.py:33
+msgid "Start the stopped agent by specifying the id."
+msgstr ""
+
+#: iast/views/agent_start.py:49 iast/views/agent_stop.py:46
+msgid "Agent is stopping service, please try again later"
+msgstr ""
+
+#: iast/views/agent_start.py:65
+msgid "Starting…"
+msgstr ""
+
+#: iast/views/agent_status_update.py:17 iast/views/agent_status_update.py:32
+msgid "Engine status was updated successfully."
+msgstr ""
+
+#: iast/views/agent_stop.py:22
+msgid "Suspend Agent"
+msgstr ""
+
+#: iast/views/agent_stop.py:27
+msgid "Agent Stop"
+msgstr ""
+
+#: iast/views/agent_stop.py:29 iast/views/agents_delete.py:46
+#: iast/views/agents_user.py:25
+msgid "Stop the running agent by specifying the id."
+msgstr ""
+
+#: iast/views/agent_uninstall.py:16 iast/views/agent_uninstall.py:41
+msgid "Uninstalling ..."
+msgstr ""
+
+#: iast/views/agent_uninstall.py:24
+msgid "Uninstall Agent"
+msgstr ""
+
+#: iast/views/agent_uninstall.py:29
+msgid "Agent Uninstall"
+msgstr ""
+
+#: iast/views/agent_uninstall.py:30
+msgid "Uninstall the running agent by specifying the id."
+msgstr ""
+
+#: iast/views/agent_uninstall.py:43
+msgid "Agent is being installed or uninstalled, please try again later"
+msgstr ""
+
+#: iast/views/agent_upgrade_offline.py:12
+msgid "Offline Upgrade Agent"
+msgstr ""
+
+#: iast/views/agent_upgrade_offline.py:19
+msgid "Upload successful"
+msgstr ""
+
+#: iast/views/agent_upgrade_offline.py:20
+msgid "{} files not supported"
+msgstr ""
+
+#: iast/views/agent_upgrade_online.py:19
+msgid "The resource link corresponding to the Agent."
+msgstr ""
+
+#: iast/views/agent_upgrade_online.py:21
+msgid ""
+"The Token corresponding to the user is the same as when connecting to "
+"openapi."
+msgstr ""
+
+#: iast/views/agent_upgrade_online.py:26 iast/views/agent_upgrade_online.py:50
+msgid "Online upgrade successful"
+msgstr ""
+
+#: iast/views/agent_upgrade_online.py:28 iast/views/agent_upgrade_online.py:52
+msgid ""
+"Token verification failed, please confirm your input address and token are "
+"correct"
+msgstr ""
+
+#: iast/views/agent_upgrade_online.py:35
+msgid "Online Upgrade Agent"
+msgstr ""
+
+#: iast/views/agent_upgrade_online.py:41
+msgid "Agent Upgrade Online"
+msgstr ""
+
+#: iast/views/agent_upgrade_online.py:42
+msgid "Agent upgrade"
+msgstr ""
+
+#: iast/views/agents.py:27
+msgid "Agent list"
+msgstr ""
+
+#: iast/views/agents.py:61
+msgid "Agent List"
+msgstr ""
+
+#: iast/views/agents.py:63
+msgid "Get a list containing Agent information according to conditions."
+msgstr ""
+
+#: iast/views/agents.py:99
+msgid "Incorrect format parameter, please check again"
+msgstr ""
+
+#: iast/views/agents.py:102
+msgid "Program error"
+msgstr ""
+
+#: iast/views/agents_delete.py:32 iast/views/agents_delete.py:78
+#: iast/views/vul_delete.py:19 iast/views/vul_delete.py:48
+msgid "Deletion failed"
+msgstr ""
+
+#: iast/views/agents_delete.py:33 iast/views/agents_delete.py:79
+msgid "Successfully deleted {} strips, failed to deleted {} strips"
+msgstr ""
+
+#: iast/views/agents_delete.py:45
+msgid "Agent Delete batch"
+msgstr ""
+
+#: iast/views/agents_user.py:24
+msgid "Agent (with user)"
+msgstr ""
+
+#: iast/views/api_route_cover_rate.py:23
+msgid "The api cover_rate of the project"
+msgstr ""
+
+#: iast/views/api_route_cover_rate.py:37
+#: iast/views/api_route_related_request.py:41
+#: iast/views/api_route_search.py:125
+msgid "API Route"
+msgstr ""
+
+#: iast/views/api_route_cover_rate.py:38
+msgid "API Route Coverrate"
+msgstr ""
+
+#: iast/views/api_route_cover_rate.py:40
+msgid ""
+"Get the API route coverrate of the project corresponding to the specified id."
+msgstr ""
+
+#: iast/views/api_route_cover_rate.py:72
+msgid "API coverage rate obtained successfully"
+msgstr ""
+
+#: iast/views/api_route_related_request.py:42
+msgid "API Route Relation Request"
+msgstr ""
+
+#: iast/views/api_route_related_request.py:44
+msgid "Get the coverrate of the project corresponding to the specified id."
+msgstr ""
+
+#: iast/views/api_route_related_request.py:55
+msgid "API not Fould"
+msgstr ""
+
+#: iast/views/api_route_search.py:31 iast/views/engine_hook_rules.py:28
+#: iast/views/engine_method_pool_search.py:26
+msgid "number per page"
+msgstr ""
+
+#: iast/views/api_route_search.py:34
+msgid "The uri of the api route"
+msgstr ""
+
+#: iast/views/api_route_search.py:37
+msgid "The http method of the api route"
+msgstr ""
+
+#: iast/views/api_route_search.py:42
+msgid ""
+"Exclude the api route entry with the following id, this field is used to "
+"obtain the data of the entire project in batches."
+msgstr ""
+
+#: iast/views/api_route_search.py:48 iast/views/api_route_search.py:108
+msgid ""
+"Whether the api is covered by detection, that is, there is associated "
+"request data in the record."
+msgstr ""
+
+#: iast/views/api_route_search.py:59
+msgid "The method bound to this API"
+msgstr ""
+
+#: iast/views/api_route_search.py:61
+msgid "The method bound to this API, in array form"
+msgstr ""
+
+#: iast/views/api_route_search.py:65 iast/views/api_route_search.py:94
+msgid "The id of api route"
+msgstr ""
+
+#: iast/views/api_route_search.py:66
+msgid "The name of api route"
+msgstr ""
+
+#: iast/views/api_route_search.py:68
+msgid "The type of the parameter"
+msgstr ""
+
+#: iast/views/api_route_search.py:70
+msgid "The shortcut of the parameter_type,e.g. java.lang.String -> String"
+msgstr ""
+
+#: iast/views/api_route_search.py:72
+msgid "The annotaion of the parameter"
+msgstr ""
+
+#: iast/views/api_route_search.py:73
+msgid "The route id of parameter"
+msgstr ""
+
+#: iast/views/api_route_search.py:77
+msgid "The id of api response"
+msgstr ""
+
+#: iast/views/api_route_search.py:79
+msgid "The return type of api route"
+msgstr ""
+
+#: iast/views/api_route_search.py:81
+msgid "The route id of api response"
+msgstr ""
+
+#: iast/views/api_route_search.py:83
+msgid "The shortcut of return_type"
+msgstr ""
+
+#: iast/views/api_route_search.py:88
+msgid "The vulnerablity level id "
+msgstr ""
+
+#: iast/views/api_route_search.py:90
+msgid "The vulnerablity type name"
+msgstr ""
+
+#: iast/views/api_route_search.py:95
+msgid "The uri of api route"
+msgstr ""
+
+#: iast/views/api_route_search.py:96
+msgid "The class of api route"
+msgstr ""
+
+#: iast/views/api_route_search.py:98
+msgid "The description of the api route"
+msgstr ""
+
+#: iast/views/api_route_search.py:100
+msgid "The code file of the api route"
+msgstr ""
+
+#: iast/views/api_route_search.py:102
+msgid "The controller of the api route"
+msgstr ""
+
+#: iast/views/api_route_search.py:104
+msgid "The id of the agent reported the api route"
+msgstr ""
+
+#: iast/views/api_route_search.py:126
+msgid "API Route Search"
+msgstr ""
+
+#: iast/views/api_route_search.py:128
+msgid ""
+"Get the API list corresponding to the project according to the following "
+"parameters. By default, there is no sorting. Please use the exclude_ids "
+"field for pagination."
+msgstr ""
+
+#: iast/views/documents.py:23
+msgid "Document's corresponding programming language"
+msgstr ""
+
+#: iast/views/documents.py:42
+msgid "Get documents"
+msgstr ""
+
+#: iast/views/documents.py:43
+msgid "Get help documentation."
+msgstr ""
+
+#: iast/views/engine_hook_rule_add.py:50 iast/views/strategy_enable.py:17
+#: iast/views/strategy_enable.py:39
+msgid "Policy enabled success, total {} hook rules"
+msgstr ""
+
+#: iast/views/engine_hook_rule_add.py:51 iast/views/engine_hook_rule_add.py:109
+#: iast/views/engine_hook_rule_modify.py:19
+#: iast/views/engine_hook_rule_modify.py:86
+msgid "Incomplete parameter, please check again"
+msgstr ""
+
+#: iast/views/engine_hook_rule_add.py:52 iast/views/engine_hook_rule_add.py:120
+#: iast/views/engine_hook_rule_modify.py:20
+#: iast/views/engine_hook_rule_modify.py:100
+msgid "Failed to create strategy"
+msgstr ""
+
+#: iast/views/engine_hook_rule_add.py:99
+#: iast/views/engine_hook_rule_modify.py:78
+#: iast/views/engine_hook_rule_status.py:83
+#: iast/views/engine_hook_rule_status.py:117
+#: iast/views/engine_hook_rule_summary.py:37
+#: iast/views/engine_hook_rule_type_add.py:88
+#: iast/views/engine_hook_rule_type_disable.py:37
+#: iast/views/engine_hook_rule_type_enable.py:43
+#: iast/views/engine_hook_rule_types.py:74 iast/views/engine_hook_rules.py:77
+msgid "Hook Rule"
+msgstr ""
+
+#: iast/views/engine_hook_rule_add.py:100
+msgid "Hook Rule Add"
+msgstr ""
+
+#: iast/views/engine_hook_rule_add.py:102 iast/views/strategys_add.py:38
+msgid ""
+"Generate corresponding strategy group according to the strategy selected by "
+"the user."
+msgstr ""
+
+#: iast/views/engine_hook_rule_add.py:119
+msgid "Strategy has been created successfully"
+msgstr ""
+
+#: iast/views/engine_hook_rule_modify.py:18
+#: iast/views/engine_hook_rule_modify.py:99
+msgid "strategy has been created successfully"
+msgstr ""
+
+#: iast/views/engine_hook_rule_modify.py:26
+#: iast/views/engine_hook_rule_status.py:21
+msgid "The id of hook rule"
+msgstr ""
+
+#: iast/views/engine_hook_rule_modify.py:79
+msgid "Hook Rule Modify"
+msgstr ""
+
+#: iast/views/engine_hook_rule_modify.py:80
+msgid "Modify the rule corresponding to the specified id"
+msgstr ""
+
+#: iast/views/engine_hook_rule_status.py:24
+#: iast/views/engine_hook_rule_status.py:33
+msgid "The state of the hook rule"
+msgstr ""
+
+#: iast/views/engine_hook_rule_status.py:31
+msgid "The id corresponding to the hook type, use\",\" for segmentation."
+msgstr ""
+
+#: iast/views/engine_hook_rule_status.py:37
+#: iast/views/engine_hook_rule_status.py:43
+#: iast/views/engine_hook_rule_status.py:111
+#: iast/views/engine_hook_rule_status.py:137
+msgid "Operation success"
+msgstr ""
+
+#: iast/views/engine_hook_rule_status.py:38
+#: iast/views/engine_hook_rule_status.py:44
+#: iast/views/engine_hook_rule_status.py:99
+#: iast/views/engine_hook_rule_status.py:126
+#: iast/views/engine_hook_rule_type_enable.py:25
+msgid "Operation type does not exist"
+msgstr ""
+
+#: iast/views/engine_hook_rule_status.py:39
+#: iast/views/engine_hook_rule_status.py:113
+#: iast/views/engine_hook_rule_type_disable.py:22
+#: iast/views/engine_hook_rule_type_disable.py:47
+#: iast/views/engine_hook_rule_type_enable.py:53
+#: iast/views/strategy_disable.py:17 iast/views/strategy_disable.py:40
+#: iast/views/strategy_enable.py:18 iast/views/strategy_enable.py:41
+msgid "Strategy does not exist"
+msgstr ""
+
+#: iast/views/engine_hook_rule_status.py:45
+#: iast/views/engine_hook_rule_status.py:139 iast/views/vul_status.py:20
+#: iast/views/vul_status.py:95
+msgid "Incorrect parameter"
+msgstr ""
+
+#: iast/views/engine_hook_rule_status.py:84
+msgid "Hook Rule Status Modify"
+msgstr ""
+
+#: iast/views/engine_hook_rule_status.py:85
+msgid "Modify the status of the rule corresponding to the specified id."
+msgstr ""
+
+#: iast/views/engine_hook_rule_status.py:103
+msgid "Policy type {} operation success, total of {} Policy types"
+msgstr ""
+
+#: iast/views/engine_hook_rule_status.py:108
+msgid "Policy {} succeed"
+msgstr ""
+
+#: iast/views/engine_hook_rule_status.py:118
+msgid "Hook Rule Status Modify (Batch)"
+msgstr ""
+
+#: iast/views/engine_hook_rule_status.py:119
+msgid "Batch modify the status of the rule corresponding to the specified id"
+msgstr ""
+
+#: iast/views/engine_hook_rule_status.py:136
+msgid "Strategy operation success, total {}"
+msgstr ""
+
+#: iast/views/engine_hook_rule_summary.py:18
+msgid "Total number of rule types"
+msgstr ""
+
+#: iast/views/engine_hook_rule_summary.py:19
+msgid "Total number of rules"
+msgstr ""
+
+#: iast/views/engine_hook_rule_summary.py:21
+msgid "Total number of sink type rules"
+msgstr ""
+
+#: iast/views/engine_hook_rule_summary.py:26
+#: iast/views/engine_hook_rule_types.py:33 iast/views/engine_hook_rules.py:34
+msgid "The id of programming language"
+msgstr ""
+
+#: iast/views/engine_hook_rule_summary.py:38
+msgid "Hook Rule Summary"
+msgstr ""
+
+#: iast/views/engine_hook_rule_summary.py:39
+msgid "Statistics on the number of hook rules"
+msgstr ""
+
+#: iast/views/engine_hook_rule_type_add.py:26
+#: iast/views/engine_hook_rule_types.py:29 iast/views/engine_hook_rules.py:25
+msgid ""
+"type of hook rule \n"
+" 1 represents the propagation method, 2 represents the source method, 3 "
+"represents the filter method, and 4 represents the taint method"
+msgstr ""
+
+#: iast/views/engine_hook_rule_type_add.py:32
+msgid "The enabled state of the hook strategy: 0-disabled, 1-enabled"
+msgstr ""
+
+#: iast/views/engine_hook_rule_type_add.py:34
+msgid "The name of hook type"
+msgstr ""
+
+#: iast/views/engine_hook_rule_type_add.py:38
+msgid "The short name of hook type"
+msgstr ""
+
+#: iast/views/engine_hook_rule_type_add.py:45
+msgid "The id of programming language,find it in the programming language api"
+msgstr ""
+
+#: iast/views/engine_hook_rule_type_add.py:51
+#: iast/views/engine_hook_rule_type_add.py:108
+msgid "Rule type successfully saved"
+msgstr ""
+
+#: iast/views/engine_hook_rule_type_add.py:52
+#: iast/views/engine_hook_rule_type_add.py:97
+msgid "Incomplete data"
+msgstr ""
+
+#: iast/views/engine_hook_rule_type_add.py:83
+#: iast/views/engine_hook_rule_types.py:67 iast/views/engine_hook_rules.py:72
+msgid "Parameter parsing failed, error message: {}"
+msgstr ""
+
+#: iast/views/engine_hook_rule_type_add.py:89
+msgid "Hook Rule Type Add"
+msgstr ""
+
+#: iast/views/engine_hook_rule_type_add.py:90
+msgid "Create hook rule type based on incoming parameters"
+msgstr ""
+
+#: iast/views/engine_hook_rule_type_disable.py:15
+#: iast/views/engine_hook_rule_type_enable.py:19
+msgid "The id of hook type"
+msgstr ""
+
+#: iast/views/engine_hook_rule_type_disable.py:20
+#: iast/views/engine_hook_rule_type_disable.py:55
+msgid "Forbidden success"
+msgstr ""
+
+#: iast/views/engine_hook_rule_type_disable.py:21
+#: iast/views/engine_hook_rule_type_disable.py:56
+#: iast/views/engine_hook_rule_type_enable.py:26
+#: iast/views/engine_hook_rule_type_enable.py:62
+#: iast/views/engine_hook_rule_types.py:82 iast/views/engine_hook_rules.py:91
+msgid "Strategy type does not exist"
+msgstr ""
+
+#: iast/views/engine_hook_rule_type_disable.py:38
+msgid "Hook Rule Status Disable"
+msgstr ""
+
+#: iast/views/engine_hook_rule_type_disable.py:40
+msgid "Disable the status of the rule corresponding to the specified id."
+msgstr ""
+
+#: iast/views/engine_hook_rule_type_enable.py:24
+#: iast/views/engine_hook_rule_type_enable.py:61
+msgid "Enable successfully"
+msgstr ""
+
+#: iast/views/engine_hook_rule_type_enable.py:38
+msgid "Parameter processing failed, error message: {}"
+msgstr ""
+
+#: iast/views/engine_hook_rule_type_enable.py:44
+msgid "Hook Rule Status Enable"
+msgstr ""
+
+#: iast/views/engine_hook_rule_type_enable.py:46
+msgid "Enable the status of the rule corresponding to the specified id."
+msgstr ""
+
+#: iast/views/engine_hook_rule_types.py:72
+msgid "Hook Types List"
+msgstr ""
+
+#: iast/views/engine_hook_rule_types.py:73
+msgid "Get Hook Types List"
+msgstr ""
+
+#: iast/views/engine_hook_rules.py:29
+msgid "page index"
+msgstr ""
+
+#: iast/views/engine_hook_rules.py:31
+msgid "The id of hook_type"
+msgstr ""
+
+#: iast/views/engine_hook_rules.py:78
+msgid "Hook Rule List"
+msgstr ""
+
+#: iast/views/engine_hook_rules.py:79
+msgid "Get the list of hook strategies"
+msgstr ""
+
+#: iast/views/engine_hook_rules.py:111
+msgid "Rule read error, error message: {}"
+msgstr ""
+
+#: iast/views/engine_method_pool_detail.py:22
+msgid "Engine - search data according to policy"
+msgstr ""
+
+#: iast/views/engine_method_pool_detail.py:48
+msgid "Not queried"
+msgstr ""
+
+#: iast/views/engine_method_pool_detail.py:55
+msgid "Acquisition fail"
+msgstr ""
+
+#: iast/views/engine_method_pool_detail.py:68
+msgid "Temporary search"
+msgstr ""
+
+#: iast/views/engine_method_pool_detail.py:94
+msgid "Searching, current {} page"
+msgstr ""
+
+#: iast/views/engine_method_pool_sca.py:24
+#: iast/views/engine_method_pool_search.py:146
+#: iast/views/engine_method_pool_time_range.py:38
+msgid "Method Pool"
+msgstr ""
+
+#: iast/views/engine_method_pool_sca.py:25
+msgid "Method Pool Component"
+msgstr ""
+
+#: iast/views/engine_method_pool_sca.py:26
+msgid "Get the component information list of the tainted call chain."
+msgstr ""
+
+#: iast/views/engine_method_pool_sca.py:33
+msgid "method_pool_id is empty"
+msgstr ""
+
+#: iast/views/engine_method_pool_sca.py:38
+msgid "method_pool does not exist"
+msgstr ""
+
+#: iast/views/engine_method_pool_sca.py:44
+msgid "method_pool has no permission"
+msgstr ""
+
+#: iast/views/engine_method_pool_search.py:30
+msgid ""
+"Whether to enable highlighting, the text where the regular expression "
+"matches will be highlighted"
+msgstr ""
+
+#: iast/views/engine_method_pool_search.py:35
+msgid ""
+"Exclude the method_pool entry with the following id, this field is used to "
+"obtain the data of the entire project in batches."
+msgstr ""
+
+#: iast/views/engine_method_pool_search.py:40
+msgid "time  format such as 1,1628190947242"
+msgstr ""
+
+#: iast/views/engine_method_pool_search.py:44
+msgid ""
+"Time range, the default is the current time to the previous seven days, "
+"separated by',', format such as 1,1628190947242"
+msgstr ""
+
+#: iast/views/engine_method_pool_search.py:47
+msgid "The url of the method pool, search using regular syntax"
+msgstr ""
+
+#: iast/views/engine_method_pool_search.py:50
+msgid "The response header of the method pood, search using regular syntax"
+msgstr ""
+
+#: iast/views/engine_method_pool_search.py:53
+msgid "The response body of the calling chain, search using regular syntax"
+msgstr ""
+
+#: iast/views/engine_method_pool_search.py:56
+msgid "The request header of the calling chain, search using regular syntax"
+msgstr ""
+
+#: iast/views/engine_method_pool_search.py:60
+msgid "The request data of the calling chain, search using regular syntax"
+msgstr ""
+
+#: iast/views/engine_method_pool_search.py:63
+msgid "The sinkvalues of the calling chain, search using regular syntax"
+msgstr ""
+
+#: iast/views/engine_method_pool_search.py:66
+msgid "The signature of the calling chain, search using regular syntax"
+msgstr ""
+
+#: iast/views/engine_method_pool_search.py:69
+msgid ""
+"The filter field will return the method call chain with the update time "
+"after this time, which can be combined with the exclude_ids field to handle "
+"paging"
+msgstr ""
+
+#: iast/views/engine_method_pool_search.py:73
+msgid "the search_mode , 1-regex match ,2-regex not match "
+msgstr ""
+
+#: iast/views/engine_method_pool_search.py:147
+msgid "Method Pool Search"
+msgstr ""
+
+#: iast/views/engine_method_pool_search.py:149
+msgid ""
+"Search for the method pool information according to the following "
+"conditions, the default is regular expression input, regular specifications "
+"refer to REGEX POSIX 1003.2"
+msgstr ""
+
+#: iast/views/engine_method_pool_search.py:228
+msgid "The regular expression format is wrong, please use REGEX POSIX 1003.2"
+msgstr ""
+
+#: iast/views/engine_method_pool_time_range.py:34
+msgid "the eariest time of method_pool"
+msgstr ""
+
+#: iast/views/engine_method_pool_time_range.py:39
+msgid "Method Pool Time Range"
+msgstr ""
+
+#: iast/views/engine_method_pool_time_range.py:40
+msgid "get method_pool eariest time"
+msgstr ""
+
+#: iast/views/filereplace.py:48
+msgid ""
+"this file is disallowed to modifyupload failed,this file is disallowed to "
+"modify."
+msgstr ""
+
+#: iast/views/filereplace.py:60
+msgid "upload error"
+msgstr ""
+
+#: iast/views/filereplace.py:65
+msgid "upload sussess"
+msgstr ""
+
+#: iast/views/filereplace.py:74
+msgid "upload error, fail back to default"
+msgstr ""
+
+#: iast/views/health.py:32 iast/views/openapi.py:29 iast/views/openapi.py:47
+#: iast/views/oss_health.py:23
+msgid "Get OpenAPI configuration failed"
+msgstr ""
+
+#: iast/views/health.py:34
+msgid "OpenAPI service is down, Please check it."
+msgstr ""
+
+#: iast/views/log_clear.py:14
+msgid "Log clear"
+msgstr ""
+
+#: iast/views/log_delete.py:14
+msgid "Log delete"
+msgstr ""
+
+#: iast/views/log_delete.py:27 iast/views/openapi.py:28
+#: iast/views/project_detail.py:35
+msgid "success"
+msgstr ""
+
+#: iast/views/log_delete.py:29
+msgid "The data to be deleted should not be empty"
+msgstr ""
+
+#: iast/views/log_export.py:58
+msgid "Export failed, error message: Log id should not be empty"
+msgstr ""
+
+#: iast/views/logs.py:17
+msgid "Log list"
+msgstr ""
+
+#: iast/views/logs.py:48 iast/views/vul_recheck.py:44
+#: iast/views/vul_recheck.py:181
+msgid "No permission to access"
+msgstr ""
+
+#: iast/views/logs.py:51
+msgid "failure"
+msgstr ""
+
+#: iast/views/messages_del.py:28
+msgid "The id of Message"
+msgstr ""
+
+#: iast/views/messages_del.py:32
+msgid "delete all messages when all is True"
+msgstr ""
+
+#: iast/views/messages_del.py:38
+msgid "Messages Delete"
+msgstr ""
+
+#: iast/views/messages_del.py:39
+msgid "Used by the user to delete the corresponding message"
+msgstr ""
+
+#: iast/views/messages_del.py:40 iast/views/messages_list.py:55
+#: iast/views/messages_new.py:38 iast/views/messages_send.py:41
+msgid "Messages"
+msgstr ""
+
+#: iast/views/messages_list.py:38
+msgid "total_number"
+msgstr ""
+
+#: iast/views/messages_list.py:39
+msgid "the number of pages"
+msgstr ""
+
+#: iast/views/messages_list.py:52
+msgid "Get Messages List"
+msgstr ""
+
+#: iast/views/messages_list.py:54 iast/views/messages_send.py:40
+msgid "Used to get the message list corresponding to the user"
+msgstr ""
+
+#: iast/views/messages_new.py:26
+msgid "total number of new messages"
+msgstr ""
+
+#: iast/views/messages_new.py:35
+msgid "Messages Count"
+msgstr ""
+
+#: iast/views/messages_new.py:37
+msgid "Used to get the number of messages corresponding to the user"
+msgstr ""
+
+#: iast/views/messages_send.py:38
+msgid "Send Message"
+msgstr ""
+
+#: iast/views/method_graph.py:35
+msgid "Method pool ID is empty"
+msgstr ""
+
+#: iast/views/method_graph.py:57
+msgid "Stain call map type does not exist"
+msgstr ""
+
+#: iast/views/method_graph.py:60
+msgid "Data does not exist or no permission to access"
+msgstr ""
+
+#: iast/views/method_graph.py:66
+msgid "Page and PageSize can only be numeric"
+msgstr ""
+
+#: iast/views/openapi.py:11 iast/views/openapi.py:72 iast/views/openapi.py:76
+#: iast/views/project_add.py:42 iast/views/project_add.py:141
+#: iast/views/project_version_add.py:19 iast/views/project_version_add.py:43
+msgid "Created success"
+msgstr ""
+
+#: iast/views/openapi.py:12 iast/views/openapi.py:62 iast/views/profile.py:34
+#: iast/views/profile.py:92
+msgid "Current users have no permission to modify"
+msgstr ""
+
+#: iast/views/openapi.py:35 iast/views/openapi.py:52 iast/views/profile.py:18
+#: iast/views/profile.py:30 iast/views/profile.py:68 iast/views/profile.py:88
+msgid "Profile"
+msgstr ""
+
+#: iast/views/openapi.py:36
+msgid "Profile DongTai-OpenApi Retrieve"
+msgstr ""
+
+#: iast/views/openapi.py:37
+msgid "Get the uri of DongTai-OpenApi"
+msgstr ""
+
+#: iast/views/openapi.py:53
+msgid "Profile DongTai-OpenApi Modify"
+msgstr ""
+
+#: iast/views/openapi.py:55
+msgid ""
+"To set the url address of DongTai-OpenApi, administrator rights are required"
+msgstr ""
+
+#: iast/views/oss_health.py:25
+msgid "OpenAPI configuration error"
+msgstr ""
+
+#: iast/views/profile.py:13 iast/views/profile.py:59 iast/views/profile.py:79
+msgid "profile value"
+msgstr ""
+
+#: iast/views/profile.py:16
+msgid "Get Profile"
+msgstr ""
+
+#: iast/views/profile.py:17
+msgid "Get Profile with key"
+msgstr ""
+
+#: iast/views/profile.py:24
+msgid "Failed to get {} configuration"
+msgstr ""
+
+#: iast/views/profile.py:27 iast/views/profile.py:84
+msgid "Profile modify"
+msgstr ""
+
+#: iast/views/profile.py:29 iast/views/profile.py:86
+msgid "Modifiy Profile with key"
+msgstr ""
+
+#: iast/views/profile.py:49
+msgid "Update {} failed"
+msgstr ""
+
+#: iast/views/profile.py:53 iast/views/profile.py:58 iast/views/profile.py:80
+msgid "profile key"
+msgstr ""
+
+#: iast/views/profile.py:57
+msgid "profile id"
+msgstr ""
+
+#: iast/views/profile.py:64
+msgid "GetProfileBatch"
+msgstr ""
+
+#: iast/views/profile.py:66
+msgid "Get Profile with key batch"
+msgstr ""
+
+#: iast/views/profile.py:74
+msgid "Failed to get configuration"
+msgstr ""
+
+#: iast/views/profile.py:105
+msgid "Update configuration failed"
+msgstr ""
+
+#: iast/views/program_language.py:19
+msgid "The id of program language"
+msgstr ""
+
+#: iast/views/program_language.py:20
+msgid "The name of program language"
+msgstr ""
+
+#: iast/views/program_language.py:33
+msgid "Program Language"
+msgstr ""
+
+#: iast/views/program_language.py:34
+msgid "Program Language List"
+msgstr ""
+
+#: iast/views/program_language.py:35
+msgid "Get a list of program language."
+msgstr ""
+
+#: iast/views/project_add.py:26 iast/views/project_detail.py:20
+#: iast/views/project_search.py:19 iast/views/project_summary.py:52
+#: iast/views/vul_details.py:53
+msgid "The name of project"
+msgstr ""
+
+#: iast/views/project_add.py:28 iast/views/project_detail.py:22
+msgid "The id corresponding to the agent, use, for segmentation."
+msgstr ""
+
+#: iast/views/project_add.py:30 iast/views/project_detail.py:24
+#: iast/views/project_summary.py:54
+msgid "The mode of project"
+msgstr ""
+
+#: iast/views/project_add.py:32 iast/views/project_detail.py:26
+msgid "The id corresponding to the scanning strategy."
+msgstr ""
+
+#: iast/views/project_add.py:43 iast/views/project_add.py:119
+msgid "Agent has been bound by other application"
+msgstr ""
+
+#: iast/views/project_add.py:44 iast/views/project_add.py:93
+msgid "Failed to create, the application name already exists"
+msgstr ""
+
+#: iast/views/project_add.py:50
+msgid "New application"
+msgstr ""
+
+#: iast/views/project_add.py:54 iast/views/project_delete.py:32
+#: iast/views/project_detail.py:45 iast/views/project_engines.py:37
+#: iast/views/project_report_export.py:60 iast/views/project_search.py:34
+#: iast/views/project_summary.py:93 iast/views/project_version_add.py:29
+#: iast/views/project_version_current.py:38
+#: iast/views/project_version_delete.py:35
+#: iast/views/project_version_list.py:39
+#: iast/views/project_version_update.py:28 iast/views/projects.py:38
+msgid "Project"
+msgstr ""
+
+#: iast/views/project_add.py:55
+msgid "Projects Add"
+msgstr ""
+
+#: iast/views/project_add.py:57
+msgid ""
+"Create a new project according to the given conditions;\n"
+"            when specifying the project id, update the item corresponding to "
+"the id according to the given condition."
+msgstr ""
+
+#: iast/views/project_delete.py:21 iast/views/project_delete.py:48
+msgid "Application has been deleted successfully"
+msgstr ""
+
+#: iast/views/project_delete.py:22 iast/views/project_delete.py:51
+msgid "Failed to delete the project."
+msgstr ""
+
+#: iast/views/project_delete.py:28
+msgid "Delete application"
+msgstr ""
+
+#: iast/views/project_delete.py:33
+msgid "Projects Delete"
+msgstr ""
+
+#: iast/views/project_detail.py:28 iast/views/project_summary.py:58
+msgid "Version information about the project"
+msgstr ""
+
+#: iast/views/project_detail.py:42
+msgid "View item details"
+msgstr ""
+
+#: iast/views/project_detail.py:46
+msgid "Projects Detail"
+msgstr ""
+
+#: iast/views/project_detail.py:48
+msgid ""
+"Get project information by project id, including the current version "
+"information of the project."
+msgstr ""
+
+#: iast/views/project_engines.py:18
+msgid "The id of the agent"
+msgstr ""
+
+#: iast/views/project_engines.py:21
+msgid "The short name of the agent"
+msgstr ""
+
+#: iast/views/project_engines.py:34
+msgid "View engine list"
+msgstr ""
+
+#: iast/views/project_engines.py:38
+msgid "Projects Agents"
+msgstr ""
+
+#: iast/views/project_engines.py:39
+msgid "Get the agent list corresponding to the project id."
+msgstr ""
+
+#: iast/views/project_report_export.py:36
+msgid "Vulnerability Report Generate - Word"
+msgstr ""
+
+#: iast/views/project_report_export.py:61
+msgid "Projects Report Export"
+msgstr ""
+
+#: iast/views/project_report_export.py:63
+msgid ""
+"According to the conditions, export the report of the specified project or "
+"the project of the specified vulnerability."
+msgstr ""
+
+#: iast/views/project_report_export.py:89
+msgid "Vulnerability Report - {}. {}"
+msgstr ""
+
+#: iast/views/project_report_export.py:144
+msgid "Security Testing Report"
+msgstr ""
+
+#: iast/views/project_report_export.py:157
+msgid "First, project information"
+msgstr ""
+
+#: iast/views/project_report_export.py:165
+msgid "Application name"
+msgstr ""
+
+#: iast/views/project_report_export.py:168
+msgid "Author"
+msgstr ""
+
+#: iast/views/project_report_export.py:171
+msgid "Application type"
+msgstr ""
+
+#: iast/views/project_report_export.py:174
+msgid "Number of Vulnerability"
+msgstr ""
+
+#: iast/views/project_report_export.py:177
+msgid "Number of Agent"
+msgstr ""
+
+#: iast/views/project_report_export.py:180
+msgid "Latest time"
+msgstr ""
+
+#: iast/views/project_report_export.py:202
+msgid "Second, the result analysis"
+msgstr ""
+
+#: iast/views/project_report_export.py:206
+msgid "2.1 Vulnerability Severity Levels Distribution"
+msgstr ""
+
+#: iast/views/project_report_export.py:216
+msgid "2.2 Distribution of Vulnerability"
+msgstr ""
+
+#: iast/views/project_report_export.py:224
+msgid "Severity levels"
+msgstr ""
+
+#: iast/views/project_report_export.py:225
+msgid "Vulnerability type name"
+msgstr ""
+
+#: iast/views/project_report_export.py:226
+msgid "Number"
+msgstr ""
+
+#: iast/views/project_report_export.py:239
+msgid "2.3 Vulnerability details"
+msgstr ""
+
+#: iast/views/project_report_export.py:262
+msgid "Summary"
+msgstr ""
+
+#: iast/views/project_report_export.py:266
+msgid "Severity level"
+msgstr ""
+
+#: iast/views/project_report_export.py:270
+msgid "First scan time"
+msgstr ""
+
+#: iast/views/project_report_export.py:274
+msgid "Last scan time"
+msgstr ""
+
+#: iast/views/project_report_export.py:278
+msgid "Development language"
+msgstr ""
+
+#: iast/views/project_report_export.py:282
+msgid "Vulnerability URL"
+msgstr ""
+
+#: iast/views/project_report_export.py:284
+msgid "Vulnerability description"
+msgstr ""
+
+#: iast/views/project_search.py:16
+msgid "Project name, support fuzzy search."
+msgstr ""
+
+#: iast/views/project_search.py:35 iast/views/project_summary.py:94
+msgid "Projects Search"
+msgstr ""
+
+#: iast/views/project_search.py:37 iast/views/project_summary.py:96
+msgid ""
+"Get the id and name of the item according to the search keyword matching the "
+"item name, in descending order of time."
+msgstr ""
+
+#: iast/views/project_summary.py:29
+msgid "Name of vulnerability"
+msgstr ""
+
+#: iast/views/project_summary.py:31
+msgid "Count of thi vulnerablity type"
+msgstr ""
+
+#: iast/views/project_summary.py:33 iast/views/sca_sidebar_index.py:27
+#: iast/views/vul_sidebar_index.py:58 iast/views/vul_summary.py:88
+#: iast/views/vuls.py:92
+msgid "Level of vulnerability"
+msgstr ""
+
+#: iast/views/project_summary.py:37
+msgid "Timestamp, format %M-%d"
+msgstr ""
+
+#: iast/views/project_summary.py:39
+msgid "The number of vulnerabilities corresponding to the time"
+msgstr ""
+
+#: iast/views/project_summary.py:44 iast/views/strategys_type.py:28
+msgid "Level name of vulnerability"
+msgstr ""
+
+#: iast/views/project_summary.py:46 iast/views/strategys_type.py:26
+msgid "Level id of vulnerability"
+msgstr ""
+
+#: iast/views/project_summary.py:56
+msgid "The latest update time of the project"
+msgstr ""
+
+#: iast/views/project_summary.py:61
+msgid "Statistics on the number of types of vulnerabilities"
+msgstr ""
+
+#: iast/views/project_summary.py:68
+msgid "Statistics on the number of danger levels of vulnerabilities"
+msgstr ""
+
+#: iast/views/project_summary.py:77
+msgid "Item details - Summary"
+msgstr ""
+
+#: iast/views/project_version_add.py:25
+msgid "New application version information"
+msgstr ""
+
+#: iast/views/project_version_add.py:30
+msgid "Projects Version Add"
+msgstr ""
+
+#: iast/views/project_version_add.py:32
+msgid ""
+"Add project version information according to the given conditions;\n"
+"            if the version id is specified, the corresponding version "
+"information is updated according to the given conditions."
+msgstr ""
+
+#: iast/views/project_version_current.py:27
+#: iast/views/project_version_current.py:76
+msgid "Version setting failed"
+msgstr ""
+
+#: iast/views/project_version_current.py:28
+#: iast/views/project_version_current.py:70
+msgid "Version setting success"
+msgstr ""
+
+#: iast/views/project_version_current.py:34
+msgid "Set to the current application version"
+msgstr ""
+
+#: iast/views/project_version_current.py:39
+msgid "Projects Version Current"
+msgstr ""
+
+#: iast/views/project_version_current.py:41
+msgid ""
+"Specify the selected version as the current version of the project according "
+"to the given conditions."
+msgstr ""
+
+#: iast/views/project_version_delete.py:31
+msgid "Delete application version information"
+msgstr ""
+
+#: iast/views/project_version_delete.py:36
+msgid "Projects Version Delete"
+msgstr ""
+
+#: iast/views/project_version_list.py:36
+msgid "View application version list"
+msgstr ""
+
+#: iast/views/project_version_list.py:40
+msgid "Projects Version List"
+msgstr ""
+
+#: iast/views/project_version_list.py:41
+msgid "Get the version information list of the item corresponding to the id"
+msgstr ""
+
+#: iast/views/project_version_list.py:57
+msgid "Search successful"
+msgstr ""
+
+#: iast/views/project_version_update.py:18
+#: iast/views/project_version_update.py:41 iast/views/version_update.py:49
+msgid "Update completed"
+msgstr ""
+
+#: iast/views/project_version_update.py:24
+msgid "Update application version information"
+msgstr ""
+
+#: iast/views/project_version_update.py:29
+msgid "Projects Version Update"
+msgstr ""
+
+#: iast/views/project_version_update.py:31
+msgid "Update the version information of the corresponding version id."
+msgstr ""
+
+#: iast/views/projects.py:26
+msgid "The name of the item to be searched, supports fuzzy search."
+msgstr ""
+
+#: iast/views/projects.py:34
+msgid "View item list"
+msgstr ""
+
+#: iast/views/projects.py:39
+msgid "Projects List"
+msgstr ""
+
+#: iast/views/projects.py:41
+msgid ""
+"Get the item corresponding to the user, support fuzzy search based on name."
+msgstr ""
+
+#: iast/views/sca_details.py:53 iast/views/sca_summary.py:99
+#: iast/views/scas.py:87 iast/views/vul_details.py:271
+#: iast/views/vul_status.py:51 iast/views/vul_summary.py:133
+#: iast/views/vulnerability_status.py:41 iast/views/vuls.py:146
+msgid "Get data sample"
+msgstr ""
+
+#: iast/views/sca_details.py:55 iast/views/sca_summary.py:101
+#: iast/views/scas.py:89 iast/views/vul_details.py:273
+#: iast/views/vul_status.py:53 iast/views/vul_summary.py:135
+#: iast/views/vulnerability_status.py:43 iast/views/vuls.py:148
+msgid ""
+"The aggregation results are programming language, risk level, vulnerability "
+"type, project"
+msgstr ""
+
+#: iast/views/sca_details.py:80 iast/views/sca_sidebar_index.py:45
+#: iast/views/sca_summary.py:146 iast/views/scas.py:123
+msgid "Component"
+msgstr ""
+
+#: iast/views/sca_details.py:81
+msgid "Component Detail"
+msgstr ""
+
+#: iast/views/sca_details.py:83
+msgid "Get the details of the corresponding component by specifying the id."
+msgstr ""
+
+#: iast/views/sca_details.py:96
+msgid "Components do not exist or no permission to access"
+msgstr ""
+
+#: iast/views/sca_details.py:112
+msgid "Current version stopped for maintenance or it is not a secure version"
+msgstr ""
+
+#: iast/views/sca_details.py:124
+msgid "Component information query failed"
+msgstr ""
+
+#: iast/views/sca_sidebar_index.py:40 iast/views/sca_summary.py:91
+#: iast/views/scas.py:79 iast/views/vul_list_for_plugin.py:54
+#: iast/views/vul_sidebar_index.py:69 iast/views/vul_summary.py:126
+#: iast/views/vuls.py:139
+msgid "Sorted index"
+msgstr ""
+
+#: iast/views/sca_sidebar_index.py:46
+msgid "Component List"
+msgstr ""
+
+#: iast/views/sca_sidebar_index.py:48
+msgid ""
+"Use the specified project information to obtain the corresponding component."
+msgstr ""
+
+#: iast/views/sca_summary.py:31
+msgid "Three-party components overview"
+msgstr ""
+
+#: iast/views/sca_summary.py:58 iast/views/scas.py:46
+#: iast/views/vul_summary.py:80
+msgid "Name of Project"
+msgstr ""
+
+#: iast/views/sca_summary.py:63 iast/views/scas.py:56
+#: iast/views/vul_summary.py:93 iast/views/vuls.py:31 iast/views/vuls.py:106
+msgid "Id of Project"
+msgstr ""
+
+#: iast/views/sca_summary.py:68
+msgid "The id level of vulnerability"
+msgstr ""
+
+#: iast/views/sca_summary.py:76 iast/views/scas.py:64
+#: iast/views/vul_summary.py:101 iast/views/vuls.py:114
+msgid "The default is the current version id of the project."
+msgstr ""
+
+#: iast/views/sca_summary.py:82 iast/views/scas.py:70
+msgid "Fuzzy keyword search field for package_name."
+msgstr ""
+
+#: iast/views/sca_summary.py:147
+msgid "Component Summary (with project)"
+msgstr ""
+
+#: iast/views/sca_summary.py:149
+msgid ""
+"Use the specified project information to get the corresponding component "
+"summary"
+msgstr ""
+
+#: iast/views/scas.py:51
+msgid "The id of level of vulnerability"
+msgstr ""
+
+#: iast/views/scas.py:124
+msgid "Component List (with project)"
+msgstr ""
+
+#: iast/views/scas.py:126
+msgid ""
+"use the specified project information to obtain the corresponding component."
+msgstr ""
+
+#: iast/views/strategy_delete.py:27 iast/views/strategy_disable.py:23
+#: iast/views/strategy_enable.py:24 iast/views/strategys.py:42
+#: iast/views/strategys_add.py:35 iast/views/strategys_list.py:27
+#: iast/views/strategys_type.py:40
+msgid "Strategy"
+msgstr ""
+
+#: iast/views/strategy_delete.py:28
+msgid "Strategy Delete"
+msgstr ""
+
+#: iast/views/strategy_delete.py:30
+msgid "Delete the corresponding strategy according to id"
+msgstr ""
+
+#: iast/views/strategy_delete.py:37
+msgid "This strategy does not exist"
+msgstr ""
+
+#: iast/views/strategy_disable.py:16 iast/views/strategy_disable.py:38
+msgid "Strategy is disabled, total {} hook rules"
+msgstr ""
+
+#: iast/views/strategy_disable.py:24
+msgid "Strategy Disable"
+msgstr ""
+
+#: iast/views/strategy_disable.py:26
+msgid "Disable the corresponding strategy according to id"
+msgstr ""
+
+#: iast/views/strategy_enable.py:25
+msgid "Strategy Enbale"
+msgstr ""
+
+#: iast/views/strategy_enable.py:27
+msgid "Enable the corresponding strategy according to id"
+msgstr ""
+
+#: iast/views/strategys.py:21 iast/views/strategys_type.py:19
+msgid "The name of the vulnerability type targeted by the strategy"
+msgstr ""
+
+#: iast/views/strategys.py:22
+msgid "Types of vulnerabilities targeted by the strategy"
+msgstr ""
+
+#: iast/views/strategys.py:23
+msgid "This field indicates whether the vulnerability is enabled, 1 or 0"
+msgstr ""
+
+#: iast/views/strategys.py:24
+msgid "Description of the corresponding vulnerabilities of the strategy"
+msgstr ""
+
+#: iast/views/strategys.py:26 iast/views/strategys_type.py:21
+msgid "The strategy corresponds to the level of vulnerability"
+msgstr ""
+
+#: iast/views/strategys.py:28
+msgid "Strategy update time"
+msgstr ""
+
+#: iast/views/strategys.py:30
+msgid "Suggestions for repairing vulnerabilities corresponding to the strategy"
+msgstr ""
+
+#: iast/views/strategys.py:43
+msgid "Strategy List"
+msgstr ""
+
+#: iast/views/strategys.py:45 iast/views/strategys_list.py:30
+msgid "Get a list of strategies."
+msgstr ""
+
+#: iast/views/strategys.py:88
+msgid "No strategy"
+msgstr ""
+
+#: iast/views/strategys_add.py:20
+msgid "The id corresponding to the strategys, use\",\" for segmentation."
+msgstr ""
+
+#: iast/views/strategys_add.py:21
+msgid "The name of strategy"
+msgstr ""
+
+#: iast/views/strategys_add.py:36
+msgid "Strategy Add"
+msgstr ""
+
+#: iast/views/strategys_list.py:16
+msgid "The name of the strategy"
+msgstr ""
+
+#: iast/views/strategys_list.py:28
+msgid "Strategy List (with user)"
+msgstr ""
+
+#: iast/views/strategys_type.py:41
+msgid "Strategy Type"
+msgstr ""
+
+#: iast/views/strategys_type.py:43
+msgid "Get a list of strategy types."
+msgstr ""
+
+#: iast/views/system_info.py:14
+msgid "API - System Information Page"
+msgstr ""
+
+#: iast/views/user_info.py:20
+msgid "User Info"
+msgstr ""
+
+#: iast/views/user_login.py:20
+msgid "User login"
+msgstr ""
+
+#: iast/views/user_login.py:34
+msgid "Captcha timed out"
+msgstr ""
+
+#: iast/views/user_login.py:42
+msgid "Login successful"
+msgstr ""
+
+#: iast/views/user_login.py:47
+msgid "Login failed"
+msgstr ""
+
+#: iast/views/user_login.py:49
+msgid "Verification code error"
+msgstr ""
+
+#: iast/views/user_login.py:51
+msgid "verification code should not be empty"
+msgstr ""
+
+#: iast/views/user_logout.py:21
+msgid "Sign out"
+msgstr ""
+
+#: iast/views/user_logout.py:28
+msgid "Sign out successfully"
+msgstr ""
+
+#: iast/views/user_passwrd.py:16
+msgid "Change Password"
+msgstr ""
+
+#: iast/views/user_passwrd.py:22
+msgid "Password should not be empty"
+msgstr ""
+
+#: iast/views/user_passwrd.py:30
+msgid "Password has been changed successfully"
+msgstr ""
+
+#: iast/views/user_passwrd.py:32
+msgid "Incorrect old password"
+msgstr ""
+
+#: iast/views/user_passwrd_reset.py:19
+msgid "Reset Password"
+msgstr ""
+
+#: iast/views/user_passwrd_reset.py:30
+msgid "User {} password reset success"
+msgstr ""
+
+#: iast/views/user_passwrd_reset.py:33
+msgid "User does not exist"
+msgstr ""
+
+#: iast/views/user_passwrd_reset.py:37 iast/views/user_passwrd_reset.py:38
+msgid "UserID is empty"
+msgstr ""
+
+#: iast/views/user_passwrd_reset.py:41
+msgid "UserID must be a numeric"
+msgstr ""
+
+#: iast/views/user_passwrd_reset.py:44
+#, python-brace-format
+msgid "Password reset failed, reasons: {E}"
+msgstr ""
+
+#: iast/views/user_register_batch.py:43
+msgid "Account has been created successfully"
+msgstr ""
+
+#: iast/views/user_register_batch.py:69
+msgid "User {} already exists"
+msgstr ""
+
+#: iast/views/user_register_batch.py:74
+msgid "Failed to create user, error message: token is incorrect"
+msgstr ""
+
+#: iast/views/user_register_batch.py:75
+msgid "Account registration successful"
+msgstr ""
+
+#: iast/views/user_register_batch.py:90
+msgid "User account file read error"
+msgstr ""
+
+#: iast/views/user_token.py:19
+msgid "Get OpenAPI token"
+msgstr ""
+
+#: iast/views/version_update.py:20
+msgid "Updated is currently not allowed"
+msgstr ""
+
+#: iast/views/vul_count_for_plugin.py:26 iast/views/vul_delete.py:29
+#: iast/views/vul_details.py:334 iast/views/vul_list_for_plugin.py:60
+#: iast/views/vul_recheck.py:124 iast/views/vul_recheck.py:204
+#: iast/views/vul_sidebar_index.py:71 iast/views/vul_status.py:60
+#: iast/views/vul_summary.py:215 iast/views/vulnerability_status.py:78
+#: iast/views/vuls.py:186
+msgid "Vulnerability"
+msgstr ""
+
+#: iast/views/vul_count_for_plugin.py:27
+msgid "Vulnerability Count (with agent name)"
+msgstr ""
+
+#: iast/views/vul_count_for_plugin.py:29
+msgid "Get the number of vulnerabilities corresponding to the Agent."
+msgstr ""
+
+#: iast/views/vul_count_for_plugin.py:35 iast/views/vul_list_for_plugin.py:70
+msgid "Please input agent name."
+msgstr ""
+
+#: iast/views/vul_count_for_plugin.py:41 iast/views/vul_list_for_plugin.py:76
+msgid "agent_name not found"
+msgstr ""
+
+#: iast/views/vul_delete.py:25
+msgid "Delete vulnerability"
+msgstr ""
+
+#: iast/views/vul_delete.py:28
+msgid "Vulnerability Delete"
+msgstr ""
+
+#: iast/views/vul_delete.py:31
+msgid "Delete the corresponding vulnerability by specifying the id"
+msgstr ""
+
+#: iast/views/vul_delete.py:45
+msgid "Failed to delete, error message: Vulnerability does not exist"
+msgstr ""
+
+#: iast/views/vul_details.py:134
+msgid "Source method"
+msgstr ""
+
+#: iast/views/vul_details.py:136
+msgid "Hazardous method"
+msgstr ""
+
+#: iast/views/vul_details.py:138
+msgid "Propagation method"
+msgstr ""
+
+#: iast/views/vul_details.py:155
+msgid "Analysis of errovence analysis of stain call diagram: {}"
+msgstr ""
+
+#: iast/views/vul_details.py:165
+msgid "Error analysis of Header, error message: {}"
+msgstr ""
+
+#: iast/views/vul_details.py:199 iast/views/vul_details.py:352
+msgid "[{}] Vulnerability information parsing error, error message: {}"
+msgstr ""
+
+#: iast/views/vul_details.py:330
+msgid "Vulnerability details"
+msgstr ""
+
+#: iast/views/vul_details.py:332
+msgid ""
+"Use the corresponding id of the vulnerability to query the details of the "
+"vulnerability"
+msgstr ""
+
+#: iast/views/vul_details.py:353
+msgid "Vulnerability data query error"
+msgstr ""
+
+#: iast/views/vul_list_for_plugin.py:40
+msgid "Name of agent"
+msgstr ""
+
+#: iast/views/vul_list_for_plugin.py:45 iast/views/vul_sidebar_index.py:62
+#: iast/views/vul_summary.py:117 iast/views/vuls.py:130
+msgid "The URL corresponding to the vulnerability"
+msgstr ""
+
+#: iast/views/vul_list_for_plugin.py:61
+msgid "Vulnerability List (with agent name)"
+msgstr ""
+
+#: iast/views/vul_list_for_plugin.py:63
+msgid "Use the agent name to get the corresponding list of vulnerabilities"
+msgstr ""
+
+#: iast/views/vul_recheck.py:27
+msgid "Whether the project does not exist agent"
+msgstr ""
+
+#: iast/views/vul_recheck.py:29
+msgid "Waiting queue length for replay"
+msgstr ""
+
+#: iast/views/vul_recheck.py:31
+msgid "Success queue length for replay"
+msgstr ""
+
+#: iast/views/vul_recheck.py:33
+msgid "Checking queue length for replay"
+msgstr ""
+
+#: iast/views/vul_recheck.py:39 iast/views/vul_recheck.py:49
+#: iast/views/vul_recheck.py:156 iast/views/vul_recheck.py:227
+msgid "Handle success"
+msgstr ""
+
+#: iast/views/vul_recheck.py:40 iast/views/vul_recheck.py:242
+msgid "Item ID should not be empty"
+msgstr ""
+
+#: iast/views/vul_recheck.py:41 iast/views/vul_recheck.py:243
+msgid "Incorrect format parameter"
+msgstr ""
+
+#: iast/views/vul_recheck.py:42 iast/views/vul_recheck.py:184
+#: iast/views/vul_recheck.py:247
+msgid "Batch playback error"
+msgstr ""
+
+#: iast/views/vul_recheck.py:43 iast/views/vul_recheck.py:178
+msgid ""
+"Current application has not been associated with probes and cannot be "
+"reproduced."
+msgstr ""
+
+#: iast/views/vul_recheck.py:50 iast/views/vul_recheck.py:138
+msgid "IDS should not be empty"
+msgstr ""
+
+#: iast/views/vul_recheck.py:51 iast/views/vul_recheck.py:142
+msgid "IDS must be: Vulnerability ID, Vulnerability ID Format"
+msgstr ""
+
+#: iast/views/vul_recheck.py:52 iast/views/vul_recheck.py:160
+#: iast/views/vul_request_replay.py:237
+msgid "Vulnerability replay error"
+msgstr ""
+
+#: iast/views/vul_recheck.py:113 iast/views/vul_recheck.py:193
+msgid ""
+"available options are (\"all\",\"project\").\n"
+"                Corresponding to all or specific project respectively."
+msgstr ""
+
+#: iast/views/vul_recheck.py:121 iast/views/vul_recheck.py:201
+msgid ""
+"The corresponding id of the Project.\n"
+"            Only If the type is project, the projectId here will be used."
+msgstr ""
+
+#: iast/views/vul_recheck.py:125 iast/views/vul_recheck.py:205
+msgid "Vulnerability verification"
+msgstr ""
+
+#: iast/views/vul_recheck.py:126 iast/views/vul_recheck.py:206
+msgid ""
+"Verify the user's corresponding vulnerabilities.\n"
+"            Need to specify the type"
+msgstr ""
+
+#: iast/views/vul_request_replay.py:76
+msgid "HTTP request parsing error, error message: {}"
+msgstr ""
+
+#: iast/views/vul_request_replay.py:199
+msgid "Stain pool data does not exist or no permission to access"
+msgstr ""
+
+#: iast/views/vul_request_replay.py:213
+msgid ""
+"The probe has been destroyed or suspended, please check the probe status"
+msgstr ""
+
+#: iast/views/vul_request_replay.py:219
+msgid "Replay request is illegal"
+msgstr ""
+
+#: iast/views/vul_request_replay.py:232
+msgid "Relay request success"
+msgstr ""
+
+#: iast/views/vul_request_replay.py:251
+msgid "Response header analysis error, error message: {}"
+msgstr ""
+
+#: iast/views/vul_request_replay.py:284
+msgid "Replay request does not exist or no permission to access"
+msgstr ""
+
+#: iast/views/vul_request_replay.py:287
+msgid "Replay request processing"
+msgstr ""
+
+#: iast/views/vul_request_replay.py:301
+msgid "Replay failed"
+msgstr ""
+
+#: iast/views/vul_sidebar_index.py:47 iast/views/vul_summary.py:74
+#: iast/views/vuls.py:76
+msgid "Type of vulnerability"
+msgstr ""
+
+#: iast/views/vul_sidebar_index.py:51
+msgid "ID of the vulnerability type"
+msgstr ""
+
+#: iast/views/vul_sidebar_index.py:72
+msgid "Vulnerability List"
+msgstr ""
+
+#: iast/views/vul_sidebar_index.py:74
+msgid "Get the list of vulnerabilities corresponding to the user."
+msgstr ""
+
+#: iast/views/vul_status.py:19 iast/views/vul_status.py:90
+msgid "Vulnerability status is modified to {}"
+msgstr ""
+
+#: iast/views/vul_status.py:25
+msgid "Modify the vulnerability status"
+msgstr ""
+
+#: iast/views/vul_status.py:31
+msgid "Update with status_id"
+msgstr ""
+
+#: iast/views/vul_status.py:33
+msgid "Update vulnerability status with status id."
+msgstr ""
+
+#: iast/views/vul_status.py:40
+msgid "Update with status name(Not recommended)"
+msgstr ""
+
+#: iast/views/vul_status.py:42
+msgid "Update vulnerability status with status name."
+msgstr ""
+
+#: iast/views/vul_status.py:61
+msgid "Vulnerability Status Modify"
+msgstr ""
+
+#: iast/views/vul_status.py:62
+msgid ""
+"Modify the vulnerability status of the specified id. \n"
+"        The status is specified by the following two parameters. \n"
+"        Status corresponds to the status noun and status_id corresponds to "
+"the status id. \n"
+"        Both can be obtained from the vulnerability status list API, and "
+"status_id is preferred."
+msgstr ""
+
+#: iast/views/vul_summary.py:37
+msgid "Applied vulnerability overview"
+msgstr ""
+
+#: iast/views/vul_summary.py:107 iast/views/vuls.py:120
+msgid "Name of status"
+msgstr ""
+
+#: iast/views/vul_summary.py:112 iast/views/vuls.py:125
+msgid "Id of status"
+msgstr ""
+
+#: iast/views/vul_summary.py:216
+msgid "Vulnerability Summary"
+msgstr ""
+
+#: iast/views/vul_summary.py:218
+msgid ""
+"Use the following conditions to view the statistics of the number of "
+"vulnerabilities in the project."
+msgstr ""
+
+#: iast/views/vulnerability_status.py:79
+msgid "Vulnerability Status List"
+msgstr ""
+
+#: iast/views/vulnerability_status.py:81
+msgid ""
+"Vulnerability status list, which contains the optional status of "
+"vulnerabilities. \n"
+"            When calling the vulnerability status modification API, please "
+"obtain the vulnerability status data from this API first."
+msgstr ""
+
+#: iast/views/vuls.py:29 iast/views/vuls.py:82
+msgid "name of project"
+msgstr ""
+
+#: iast/views/vuls.py:100
+msgid "The id Level of vulnerability"
+msgstr ""
+
+#: iast/views/vuls.py:187
+msgid "Vulnerability List (with project)"
+msgstr ""
+
+#: iast/views/vuls.py:190
+msgid "Get the list of vulnerabilities corresponding to the project"
+msgstr ""
+
+#: webapi/settings.py:306
+#, python-brace-format
+msgid ""
+"Here is the API documentation in webapi. The corresponding management part "
+"API can be found through the relevant tag.\n"
+"\n"
+"There are two authentication methods. You can obtain csrf_token and "
+"sessionid through the login process, or access the corresponding API through "
+"the user's corresponding Token.\n"
+"\n"
+"The Token method is recommended here, and users can find it in the Agent "
+"installation interface such as -H\n"
+"  'Authorization: Token {token}', here is the token corresponding to the "
+"user, the token method also requires a token like this on the request header."
+msgstr ""
