@@ -33,6 +33,8 @@ class _EngineHookRulesQuerySerializer(serializers.Serializer):
         default=1,
         help_text=_('The id of programming language'),
         required=False)
+    keyword = serializers.CharField(help_text=_('The keyword for search'),
+                                     required=False)
 
 
 _ResponseSerializer = get_response_serializer(
@@ -64,13 +66,13 @@ class EngineHookRulesEndPoint(UserEndPoint):
             if page_size > const.MAX_PAGE_SIZE:
                 page_size = const.MAX_PAGE_SIZE
             language_id = ser.validated_data.get('language_id', 1)
-
+            keyword = ser.validated_data.get('keyword', None)
 
             strategy_type = ser.validated_data.get('strategy_type')
-            return rule_type, page, page_size, strategy_type, language_id
+            return rule_type, page, page_size, strategy_type, language_id, keyword
         except Exception as e:
             logger.error(_("Parameter parsing failed, error message: {}").format(e))
-            return None, None, None, None, None
+            return None
 
     @extend_schema_with_envcheck(
         querys=[_EngineHookRulesQuerySerializer],
@@ -80,8 +82,10 @@ class EngineHookRulesEndPoint(UserEndPoint):
         response_schema=_ResponseSerializer,
     )
     def get(self, request):
-        rule_type, page, page_size, strategy_type, language_id = self.parse_args(
-            request)
+        res = self.parse_args(request)
+        if res is None:
+            return R.failure(msg=_('Parameter error'))
+        rule_type, page, page_size, strategy_type, language_id, keyword = res
         if all(
                 map(lambda x: x is not None,
                     [rule_type, page, page_size,  language_id
@@ -103,7 +107,10 @@ class EngineHookRulesEndPoint(UserEndPoint):
                     created_by__in=(user_id, const.SYSTEM_USER_ID),
                     type=rule_type,
                     language_id=language_id)
-            rule_queryset = HookStrategy.objects.filter(type__in=rule_type_queryset, created_by=user_id)
+            q = Q(type__in=rule_type_queryset) & Q(created_by=user_id)
+            if keyword:
+                q = Q(name_istartwith=keyword) & q
+            rule_queryset = HookStrategy.objects.filter(q)
             page_summary, queryset = self.get_paginator(rule_queryset, page=page, page_size=page_size)
             data = HookRuleSerializer(queryset, many=True).data
             return R.success(data=data, page=page_summary)
