@@ -110,7 +110,7 @@ class EngineHookRulesEndPoint(UserEndPoint):
                     language_id=language_id)
             q = Q(type__in=rule_type_queryset) & Q(created_by=user_id)
             if keyword:
-                q = Q(name_istartwith=keyword) & q
+                q = Q(value__icontains=keyword) & q
             rule_queryset = HookStrategy.objects.filter(q)
             page_summary, queryset = self.get_paginator(rule_queryset, page=page, page_size=page_size)
             data = HookRuleSerializer(queryset, many=True).data
