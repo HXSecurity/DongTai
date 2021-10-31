@@ -24,6 +24,23 @@ from dongtai.models.strategy_user import IastStrategyUser
 from dongtai.models.system import IastSystem
 from iast.serializers.user import UserSerializer
 from django.utils.translation import gettext_lazy  as _
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from rest_framework import serializers
+
+
+class DepartmentSer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField()
+
+
+class UserAddSer(serializers.Serializer):
+    password = serializers.CharField()
+    re_password = serializers.CharField()
+    username = serializers.CharField()
+    email = serializers.CharField()
+    phone = serializers.CharField()
+    role = serializers.IntegerField()
+    department = DepartmentSer()
 
 
 class UserEndPoint(TalentAdminEndPoint):
@@ -77,6 +94,7 @@ class UserEndPoint(TalentAdminEndPoint):
             })
         except ValueError as arg_invalid_error:
             return R.failure(msg=_('The format of  ‘page’ and ‘pageSize’ only can be numberic'))
+
 
     def post(self, request, user_id):
         try:
@@ -158,6 +176,10 @@ class UserEndPoint(TalentAdminEndPoint):
             "msg": _("User {} successfully deleted").format(username)
         })
 
+    @extend_schema_with_envcheck(request=UserAddSer,
+                                 summary=_('用户'),
+                                 description=_("增加用户"),
+                                 tags=[_('管理')])
     @transaction.atomic
     def put(self, request):
         try:
@@ -189,7 +211,7 @@ class UserEndPoint(TalentAdminEndPoint):
                     "msg": _('Department does not exist')
                 })
 
-            _department = talent.departments.filter(id=department_id).first()
+            _department = talent.departments.filter(pk=department_id).first()
             if _department:
                 email = request.data.get('email')
                 role = request.data.get('role')
