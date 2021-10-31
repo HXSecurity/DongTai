@@ -13,12 +13,20 @@ from dongtai.endpoint import TalentAdminEndPoint
 from dongtai.models.department import Department
 from dongtai.models.talent import Talent
 from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+from rest_framework.serializers import ValidationError
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+
+
+class DepartmentPutArgSer(serializers.Serializer):
+    name = serializers.CharField()
+    parent = serializers.IntegerField()
+    principal_id = serializers.IntegerField(required=False, default=0)
 
 
 class DepartmentEndPoint(TalentAdminEndPoint):
-
     @staticmethod
-    def get_department_tree(talent_name, queryset):
+    def get_department_tree(talent_id, talent_name, queryset):
         queryset = queryset.values('id', 'name', 'parent_id')
 
         department_tree = {
@@ -45,9 +53,13 @@ class DepartmentEndPoint(TalentAdminEndPoint):
                 else:
                     for children in data['children']:
                         q.put(children)
-
+        department_tree['id'] = -talent_id
         return department_tree
 
+    @extend_schema_with_envcheck(request=DepartmentPutArgSer,
+                                 summary=_('部门'),
+                                 description=_("部门获取"),
+                                 tags=[_('管理')])
     def get(self, request):
         """
         :param request:
@@ -66,7 +78,7 @@ class DepartmentEndPoint(TalentAdminEndPoint):
             queryset = talent.departments.all()
             if name:
                 queryset = queryset.filter(name__icontains=name)
-            data.append(self.get_department_tree(talent_name=talent_name, queryset=queryset))
+            data.append(self.get_department_tree(talent_id=talent.id, talent_name=talent_name, queryset=queryset))
 
         return JsonResponse({
             'status': 201,
@@ -120,6 +132,10 @@ class DepartmentEndPoint(TalentAdminEndPoint):
             parent_exist = talent.departments.filter(id=department_id).first()
         return parent_exist
 
+    @extend_schema_with_envcheck(request=DepartmentPutArgSer,
+                                 summary=_('部门'),
+                                 description=_("增加部门"),
+                                 tags=[_('管理')])
     @transaction.atomic
     def put(self, request):
         """
@@ -128,6 +144,7 @@ class DepartmentEndPoint(TalentAdminEndPoint):
         """
         name = request.data.get('name')
         parent = request.data.get('parent')
+        talent = request.data.get('talent', None)
         if name and parent and int(parent) != 0:
             if self.exist(name):
                 return JsonResponse({
@@ -137,10 +154,20 @@ class DepartmentEndPoint(TalentAdminEndPoint):
             else:
                 if parent == -1 or self.has_department_permission(request.user, parent):
                     timestamp = int(time.time())
-                    department = Department(name=name, create_time=timestamp, update_time=timestamp,
-                                            created_by=request.user.id, parent_id=int(parent))
+                    department = Department(name=name,
+                                            create_time=timestamp,
+                                            update_time=timestamp,
+                                            created_by=request.user.id,
+                                            parent_id=int(parent))
                     department.save()
-                    talent = request.user.get_talent()
+                    talent_ = Talent.objects.filter(pk=talent).first()
+                    if talent_ is None:
+                        return JsonResponse({
+                            'status': 202,
+                            'msg': _('Talent does not exist')
+                        }) 
+                    talent = talent_ if talent and talent_ else request.user.get_talent(
+                    )
                     talent.departments.add(department)
                     return JsonResponse({
                         'status': 201,
@@ -162,7 +189,7 @@ class DepartmentEndPoint(TalentAdminEndPoint):
     def delete(self, request, pk):
         department = self.has_department_permission(request.user, pk)
         user_count = department.users.count()
-        force = bool(request.data.get('force', 'false'))
+        force = bool(request.query_params.get('force', 'false'))
         if user_count > 0:
             if force:
                 department.users.delete()
