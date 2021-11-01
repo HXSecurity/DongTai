@@ -55,6 +55,9 @@ body:
       - DongTai-OpenAPI
       - DongTai-Engine
       - DongTai-Core
+      - DongTai-agent-python
+      - DongTai-agent-java
+      - DongTai-agent-php
     multiple: true
   validations:
     required: true
