@@ -193,8 +193,20 @@ WSGI_APPLICATION = 'webapi.wsgi.application'
 #    }
 #else:
 DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'USER': config.get("mysql", 'user'),
+        'NAME': config.get("mysql", 'name'),
+        'PASSWORD': config.get("mysql", 'password'),
+        'HOST': config.get("mysql", 'host'),
+        'PORT': config.get("mysql", 'port'),
+        'OPTIONS': {
+            'init_command':
+            'SET max_execution_time=20000;SET NAMES utf8mb4;SET collation_server=utf8mb4_general_ci;SET collation_database=utf8mb4_general_ci; ',
+            'charset': 'utf8mb4',
+            'use_unicode': True,
+        },
+        'TEST': {
             'USER': config.get("mysql", 'user'),
             'NAME': config.get("mysql", 'name'),
             'PASSWORD': config.get("mysql", 'password'),
@@ -206,7 +218,8 @@ DATABASES = {
                 'use_unicode': True,
             },
         }
-    }
+    }    
+}
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
