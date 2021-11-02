@@ -89,9 +89,11 @@ class AgentList(UserEndPoint):
             q = q & Q(user__in=self.get_auth_users(request.user))
             queryset = IastAgent.objects.filter(q).order_by('-latest_time').all()
             summery, queryset = self.get_paginator(queryset, page=page, page_size=page_size)
-
+            data = AgentSerializer(queryset, many=True).data
+            if not request.user.is_talent_admin():
+                data = list(map(lambda x:removestartup(x),data))
             return R.success(
-                data=AgentSerializer(queryset, many=True).data,
+                data=data,
                 page=summery
             )
         except ValueError as e:
@@ -100,3 +102,7 @@ class AgentList(UserEndPoint):
         except Exception as e:
             logger.error(e)
             return R.failure(msg=_('Program error'))
+
+def removestartup(dic):
+    del dic['startup_time']
+    return dic

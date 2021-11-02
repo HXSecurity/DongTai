@@ -101,14 +101,16 @@ class UserEndPoint(TalentAdminEndPoint):
             user = User.objects.get(id=user_id)
             talent = user.get_talent()
             if self.check_permission_with_talent(request.user, user):
-                department = request.data.get('department')
-                department_name = department.get('name', None)
-                if department_name and department_name != user.department.get().get_department_name():
-                    department = talent.departments.filter(name=department_name).first()
-                    if department:
-                        user.department.set(department)
+                department_id = request.data.get('department')
+                department = Department.objects.filter(pk=department_id).first()
+                print(department)
+                if department and department.name and department.name != user.department.get().get_department_name():
+                    #department = talent.departments.filter(name=department.name).first()
+                    user.department.set([department])
+                    user.save()
 
                 role = int(request.data.get("role", 0))
+                
                 if role and role != user.is_superuser and role in [0, 2]:
                     user.is_superuser = role
 
@@ -203,8 +205,7 @@ class UserEndPoint(TalentAdminEndPoint):
                     })
 
             talent = request.user.get_talent()
-            department = request.data.get('department')
-            department_id = department.get('id')
+            department_id = request.data.get('department')
             if department_id is None:
                 return JsonResponse({
                     "status": 204,
