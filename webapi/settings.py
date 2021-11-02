@@ -112,6 +112,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'dongtai_agent_python.middlewares.django_middleware.FireMiddleware',
 ]
 
 XFF_TRUSTED_PROXY_DEPTH = 20
