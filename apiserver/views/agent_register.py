@@ -33,15 +33,21 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
     description = "引擎注册"
 
     @staticmethod
-    def register_agent(token, version, language, project_name, user):
-        project = IastProject.objects.values('id').filter(name=project_name, user=user).first()
+    def register_agent(token, version, language, project_name, user,
+                       project_version):
+        project = IastProject.objects.values('id').filter(name=project_name,
+                                                          user=user).first()
         if project:
-            project_current_version = IastProjectVersion.objects.filter(
-                project_id=project['id'],
-                current_version=1,
-                status=1
-            ).values("id").first()
-            agent_id = AgentRegisterEndPoint.get_agent_id(token, project_name, user, project_current_version['id'])
+            if project_version:
+                project_current_version = project_version
+            else:
+                project_current_version = IastProjectVersion.objects.filter(
+                    project_id=project['id'],
+                    current_version=1,
+                    status=1
+                ).first()
+            agent_id = AgentRegisterEndPoint.get_agent_id(
+                token, project_name, user, project_current_version.id)
             if agent_id == -1:
                 agent_id = AgentRegisterEndPoint.__register_agent(
                     exist_project=True,
@@ -50,7 +56,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                     version=version,
                     project_id=project['id'],
                     project_name=project_name,
-                    project_version_id=project_current_version['id'],
+                    project_version_id=project_current_version.id,
                     language=language,
                 )
         else:
@@ -181,6 +187,9 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
     def post(self, request: Request):
         try:
             param = parse_data(request.read())
+            print('-'*100)
+            print(param)
+            print('-'*100)
             token = param.get('name')
             language = param.get('language')
             version = param.get('version')
@@ -199,9 +208,11 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             pid = param.get('pid')
             auto_create_project = param.get('autoCreateProject', 0)
             user = request.user
-            if auto_create_project:
+            version_created = False
+            if True:
+                version_name = param.get('projectVersion', 'V1.0')
                 with transaction.atomic():
-                    obj, created = IastProject.objects.get_or_create(
+                    obj, project_created = IastProject.objects.get_or_create(
                         name=project_name,
                         user=request.user,
                         defaults={
@@ -210,19 +221,43 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                             'mode': '插桩模式',
                             'latest_time': int(time.time())
                         })
-                    if created:
-                        IastProjectVersion.objects.create(project_id=obj.id,
-                                                          user=request.user,
-                                                          version_name='V1.0',
-                                                          status=1,
-                                                          description='',
-                                                          current_version=1)
-                logger.info(_('auto create project {}').format(obj.id))
-            agent_id = self.register_agent(token=token,
-                                           version=version,
-                                           project_name=project_name,
-                                           language=language,
-                                           user=user)
+                    project_version, version_created = IastProjectVersion.objects.get_or_create(
+                        project_id=obj.id,
+                        version_name=version_name,
+                        defaults={
+                            'user': request.user,
+                            'version_name': version_name,
+                            'status': 1,
+                            'description': '',
+                            'current_version': 0,
+                        })
+                    if version_created:
+                        count = IastProjectVersion.objects.filter(
+                            project_id=obj.id).count()
+                        if count == 1:
+                            project_version.current_version = 1
+                            project_version.save()
+                if project_created:
+                    logger.info(_('auto create project {}').format(obj.id))
+                if version_created:
+                    logger.info(
+                        _('auto create project version {}').format(
+                            project_version.id))
+
+            if version_created:
+                agent_id = self.register_agent(token=token,
+                                               project_name=project_name,
+                                               language=language,
+                                               version=version,
+                                               project_version=project_version,
+                                               user=user)
+            else:
+                agent_id = self.register_agent(token=token,
+                                               project_name=project_name,
+                                               language=language,
+                                               version=version,
+                                               user=user,
+                                               project_version=None)
 
             self.register_server(
                 agent_id=agent_id,
@@ -262,7 +297,6 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
     def __register_agent(exist_project, token, user, version, project_id, project_name, project_version_id, language):
         if exist_project:
             IastAgent.objects.filter(token=token, online=1, user=user).update(online=0)
-
         agent = IastAgent.objects.create(
             token=token,
             version=version,
