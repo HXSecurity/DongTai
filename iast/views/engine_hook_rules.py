@@ -108,7 +108,7 @@ class EngineHookRulesEndPoint(UserEndPoint):
                     created_by__in=(user_id, const.SYSTEM_USER_ID),
                     type=rule_type,
                     language_id=language_id)
-            q = Q(type__in=rule_type_queryset) & Q(created_by=user_id)
+            q = Q(type__in=rule_type_queryset) & Q(created_by=user_id) & Q(enable__in=(const.ENABLE,const.DISABLE))
             if keyword:
                 q = Q(value__icontains=keyword) & q
             rule_queryset = HookStrategy.objects.filter(q)
