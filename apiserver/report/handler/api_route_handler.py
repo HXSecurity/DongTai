@@ -22,8 +22,8 @@ logger = logging.getLogger('dongtai.openapi')
 @ReportHandler.register(const.REPORT_API_ROUTE)
 class ApiRouteHandler(IReportHandler):
     def parse(self):
-        self.api_data = self.detail.get('api_data')
-        self.api_routes = map(lambda x: _data_dump(x),self.api_data)
+        self.api_data = self.detail.get('apiData')
+        self.api_routes = map(lambda x: _data_dump(x), self.api_data)
 
     def save(self):
         try:
@@ -61,7 +61,7 @@ class ApiRouteHandler(IReportHandler):
                                                        api_route_model)
                             IastApiParameter.objects.create(**parameter_obj)
                         response_obj = _response_dump(
-                            {'return_type': api_route['return_type']},
+                            {'return_type': api_route['returnType']},
                             api_route_model)
                         IastApiResponse.objects.create(**response_obj)
                     except Exception as e:
