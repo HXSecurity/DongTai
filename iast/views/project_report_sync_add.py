@@ -43,7 +43,7 @@ class ProjectReportSyncAdd(UserEndPoint):
             if ser.is_valid(True):
                 pid = int(request.data.get("pid", 0))
                 vid = int(request.data.get("vid", 0))
-                type = request.data.get("type", "doc")
+                type = request.data.get("type", "docx")
         except ValidationError as e:
             return R.failure(data=e.detail)
 
@@ -52,7 +52,7 @@ class ProjectReportSyncAdd(UserEndPoint):
         project = IastProject.objects.filter(pk=pid, user=request.user).first()
         if not project:
             return R.failure(status=202, msg=_('Project not exist'))
-        if type not in ['doc', 'pdf', 'xlsx']:
+        if type not in ['docx', 'pdf', 'xlsx']:
             return R.failure(status=202, msg=_('Report type error'))
         ProjectReport.objects.create(
             user=request.user, project=project, vul_id=vid,
