@@ -38,7 +38,7 @@
   }
 
   .text {
-    margin: 5px 0;
+    margin: 5px 5px;
     letter-spacing: 1px;
     text-indent: 2em;
     color: #111;
@@ -393,36 +393,42 @@
     font-size: 18px;
   }
 
-
-
-
+  .center_font {
+    font-size: 18px;
+    text-align: center;
+    margin-top:5px;
+    margin-bottom:5px;
+  }
     </style>
 </head>
 <body>
 <div class="main-container">
 
-    <h2 style="margin-top: 310px" align="center">{{ project.name }}</h2>
-    <p align="center">{{user.username}}  {{ time_str }}</p>
+    <div style="height: 300px"></div>
+    <h2 align="center">{{ project.name }}</h2>
 
-    <!--中间内容 开始-->
+    <div style="height: 600px"></div>
+
+    <p class="center_font"> {{ time_str }}</p>
+    <p class="center_font">{{ i18n.security_testing_report }}</p>
     <div style="margin: 0px 20px;">
         <h2 style="page-break-before: always;margin-top: 0px">{{ i18n.first_project_information }}</h2>
         <table class="tablelist" style="width: 100%" cellspacing="0">
             <tbody>
             <tr class=" tale-item table-item-td">
-                <td class="left" style="width: 40%">项目名称</td>
+                <td class="left" style="width: 40%">{{ i18n.application_name }}</td>
                 <td class="right" style="width: 60%">{{ project.name }}</td>
             </tr>
             <tr class=" tale-item table-item-td">
-                <td class="left" style="width: 40%">创建人员</td>
+                <td class="left" style="width: 40%">{{ i18n.author }}</td>
                 <td class="right" style="width: 60%">{{user.username}}</td>
             </tr>
             <tr class=" tale-item table-item-td">
-                <td class="left" style="width: 40%">漏洞数量</td>
+                <td class="left" style="width: 40%">{{ i18n.number_of_vulnerability }}</td>
                 <td class="right" style="width: 60%">{{project.vul_count}}</td>
             </tr>
             <tr class=" tale-item table-item-td">
-                <td class="left" style="width: 40%">Agent数量</td>
+                <td class="left" style="width: 40%">{{ i18n.number_of_agent }}</td>
                 <td class="right" style="width: 60%">{{project.agent_count}}</td>
             </tr>
             </tbody>
@@ -437,16 +443,16 @@
 
         <table class="tablelist" style="width: 100%" cellspacing="0">
             <tbody>
-            <tr class=" tale-item table-item-tr" style="background-color: #eee;padding: 0;margin: 0">
+            <tr class="tale-item table-item-td">
                 <th class="left" style="text-align: left;width: 60%">{{ i18n.severity_levels }}</th>
                 <th class="right" style="width: 20%">{{ i18n.vulnerability_type_name }}</th>
                 <th class="right" style="width: 20%">{{ i18n.number }}</th>
             </tr>
             {% for vulTypeTableBodyRow in vulTypeTableBodyRows %}
-                <tr class=" tale-item table-item-tr" style="background-color: #eee;padding: 0;margin: 0">
-                    <th class="left" style="text-align: left;width: 60%">{{ vulTypeTableBodyRow.type_level }}</th>
-                    <th class="right" style="width: 20%">{{ vulTypeTableBodyRow.type_name }}</th>
-                    <th class="right" style="width: 20%">{{ vulTypeTableBodyRow.type_count }}</th>
+                <tr class=" tale-item table-item-td">
+                    <td class="left" style="text-align: left;width: 60%">{{ vulTypeTableBodyRow.type_level }}</td>
+                    <td class="right" style="width: 20%">{{ vulTypeTableBodyRow.type_name }}</td>
+                    <td class="right" style="width: 20%">{{ vulTypeTableBodyRow.type_count }}</td>
                 </tr>
             {% endfor %}
             </tbody>
