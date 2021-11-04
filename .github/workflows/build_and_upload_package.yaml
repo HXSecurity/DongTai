@@ -2,10 +2,12 @@ name: Build DongTai Core Package and push to Ali OSS
 
 on:
   pull_request:
-    branches: [ develop ]
-
+    branches: [ main ]
+  push:
+    branches: [ main ]
 jobs:
   build:
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
