@@ -74,6 +74,12 @@ class Agent(UserEndPoint):
         response_schema=_ResponseSerializer,
     )
     def get(self, request, id_):
+        try:
+            a = int(id_) > 0 
+            if not a:
+                return R.failure(msg=_("Can't find relevant data"))
+        except:
+            return R.failure(msg=_("Can't find relevant data"))
         agent = IastAgent.objects.filter(pk=id_).first()
         if agent:
             return R.success(data={'agent': model_to_dict(agent)})
