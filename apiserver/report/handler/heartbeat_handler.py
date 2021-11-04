@@ -40,6 +40,10 @@ class HeartBeatHandler(IReportHandler):
         self.method_queue = self.detail.get('methodQueue', 0)
         self.replay_queue = self.detail.get('replayQueue', 0)
 
+    def has_permission(self):
+        self.agent = IastAgent.objects.filter(id=self.agent_id, user=self.user_id).first()
+        return self.agent
+
     def save_heartbeat(self):
         # update agent state
         self.agent.is_running = 1
