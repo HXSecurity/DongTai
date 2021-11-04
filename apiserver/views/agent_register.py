@@ -208,41 +208,39 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             pid = param.get('pid')
             auto_create_project = param.get('autoCreateProject', 0)
             user = request.user
-            version_created = False
-            if True:
-                version_name = param.get('projectVersion', 'V1.0')
-                with transaction.atomic():
-                    obj, project_created = IastProject.objects.get_or_create(
-                        name=project_name,
-                        user=request.user,
-                        defaults={
-                            'scan_id': 5,
-                            'agent_count': 0,
-                            'mode': '插桩模式',
-                            'latest_time': int(time.time())
-                        })
-                    project_version, version_created = IastProjectVersion.objects.get_or_create(
-                        project_id=obj.id,
-                        version_name=version_name,
-                        defaults={
-                            'user': request.user,
-                            'version_name': version_name,
-                            'status': 1,
-                            'description': '',
-                            'current_version': 0,
-                        })
-                    if version_created:
-                        count = IastProjectVersion.objects.filter(
-                            project_id=obj.id).count()
-                        if count == 1:
-                            project_version.current_version = 1
-                            project_version.save()
-                if project_created:
-                    logger.info(_('auto create project {}').format(obj.id))
+            version_name = param.get('projectVersion', 'V1.0')
+            with transaction.atomic():
+                obj, project_created = IastProject.objects.get_or_create(
+                    name=project_name,
+                    user=request.user,
+                    defaults={
+                        'scan_id': 5,
+                        'agent_count': 0,
+                        'mode': '插桩模式',
+                        'latest_time': int(time.time())
+                    })
+                project_version, version_created = IastProjectVersion.objects.get_or_create(
+                    project_id=obj.id,
+                    version_name=version_name,
+                    defaults={
+                        'user': request.user,
+                        'version_name': version_name,
+                        'status': 1,
+                        'description': '',
+                        'current_version': 0,
+                    })
                 if version_created:
-                    logger.info(
-                        _('auto create project version {}').format(
-                            project_version.id))
+                    count = IastProjectVersion.objects.filter(
+                        project_id=obj.id).count()
+                    if count == 1:
+                        project_version.current_version = 1
+                        project_version.save()
+            if project_created:
+                logger.info(_('auto create project {}').format(obj.id))
+            if version_created:
+                logger.info(
+                    _('auto create project version {}').format(
+                        project_version.id))
 
             if version_created:
                 agent_id = self.register_agent(token=token,
