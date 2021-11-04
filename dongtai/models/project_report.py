@@ -18,6 +18,7 @@ class ProjectReport(models.Model):
     project = models.ForeignKey(IastProject, models.DO_NOTHING, blank=True, null=True)
     vul_id = models.IntegerField(blank=True, null=True, default=0)
     type = models.CharField(max_length=10, blank=True, null=True)
+    language = models.CharField(max_length=10, blank=True, null=True)
     status = models.IntegerField(default=0, null=False)
     path = models.CharField(default='', max_length=255, blank=True, null=True)
     file = models.BinaryField(blank=True, null=True)
