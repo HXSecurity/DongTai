@@ -19,11 +19,10 @@ from dongtai.models.message import IastMessage, IastMessageType
 from docx import Document
 from docx.enum.style import WD_STYLE_TYPE
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
-# from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt
 from lingzhi_engine.settings import MEDIA_ROOT
-from io import BytesIO
 from django.utils.translation import gettext as _
+from django.utils.translation import activate
 
 import os
 
@@ -153,6 +152,11 @@ class ExportPort():
         return agent_ids
 
     def generate_report(self, report):
+
+        if report.language:
+            activate(report.language)
+        else:
+            activate("zh")
         type = report.type
         pid = 0
         if report.project:
@@ -185,11 +189,7 @@ class ExportPort():
             count_result = get_vul_count_by_agent(agent_ids, vid, user)
 
             levelInfo = IastVulLevel.objects.all()
-            from django.utils.translation import activate
-            if report.language:
-                activate(report.language)
-            else:
-                activate("zh")
+
             file_path = ""
             if type == 'docx':
                 file_path = self.generate_word_report(user, project, vul, count_result, levelInfo, timestamp)
@@ -291,7 +291,7 @@ class ExportPort():
         levelCountArr = []
         if levelCount:
             for ind in levelCount.keys():
-                levelCountArr.append(str(levelIdArr[ind]) + str(levelCount[ind]))
+                levelCountArr.append(str(levelIdArr[ind]) + " " + str(levelCount[ind]))
         levelCountStr = ",".join(levelCountArr)
         document.add_paragraph(levelCountStr)
 
@@ -392,12 +392,11 @@ class ExportPort():
         levelCountArr = []
         if levelCount:
             for ind in levelCount.keys():
-                levelCountArr.append(str(levelIdArr[ind]) + str(levelCount[ind]))
+                levelCountArr.append(str(levelIdArr[ind]) + " " + str(levelCount[ind]))
         levelCountStr = ",".join(levelCountArr)
 
         vulTypeTableBodyRows = []
 
-        new_cells = []
         if type_summary:
             for type_item in type_summary:
                 vulTypeTableBodyRow = {
@@ -415,7 +414,6 @@ class ExportPort():
                     "title": u'%s(%s)' % ("2.3." + str(type_ind) + "  " + vul, len(vulDetail[vul])),
                     "vuls": []
                 }
-                vulTypeDetailArray.append(vulTypeDetail)
                 if vulDetail[vul]:
                     ind = 1
                     for one in vulDetail[vul]:
@@ -437,13 +435,14 @@ class ExportPort():
                             "description": _(u'Vulnerability description'),
                             "detail": "",
                         }
-                        vulTypeDetail.vuls.append(
+                        vulTypeDetail['vuls'].append(
                             oneVul
                         )
                         ind = ind + 1
                         if one['detail_data']:
                             for item in one['detail_data']:
-                                oneVul.detail += u'%s' % item
+                                oneVul['detail'] += u'%s' % item
+                vulTypeDetailArray.append(vulTypeDetail)
                 type_ind = type_ind + 1
 
         pdf_filename = f"{MEDIA_ROOT}/reports/vul-report-{user.id}-{timestamp}.pdf"
@@ -457,15 +456,16 @@ class ExportPort():
                 "vul": vul,
                 "count_result": count_result,
                 "level_info": levelInfo,
-                "time_str": time.strftime('%Y-%m-%d %H:%M:%s', time.localtime(timestamp)),
+                "time_str": time.strftime('%Y-%m-%d %H:%M', time.localtime(timestamp)),
                 "levelCountStr": levelCountStr,
+                "vulTypeDetailArray": vulTypeDetailArray,
                 "vulTypeTableBodyRows": vulTypeTableBodyRows,
                 "i18n": {
                     "application_name": _("Application name"),
                     "author": _("Author"),
                     "number_of_vulnerability": _("Number of Vulnerability"),
                     "number_of_agent": _("Number of Agent"),
-                    
+
                     "first_project_information": _("First, project information"),
                     "second_the_result_analysis": _("Second, the result analysis"),
                     "vulnerability_severity_levels_distribution": _("Vulnerability Severity Levels Distribution"),
@@ -474,15 +474,18 @@ class ExportPort():
                     "vulnerability_type_name": _("Vulnerability type name"),
                     "number": _("Number"),
                     "vulnerability_details": _("Vulnerability details"),
+                    "security_testing_report": _(u'Security Testing Report')
                 }
             }
         )
         f = open(html_filename, 'w')
         f.write(rendered)
         f.close()
-        os.system("cat {} | /usr/local/bin/wkhtmltopdf - {}".format(
+        os.system("cat {} | /usr/local/bin/wkhtmltopdf --header-html {} --footer-html {} - {} ".format(
             html_filename,
-            pdf_filename
+            "file:///Users/luzhongyang/Code/DongTai/DongTai-engine/templates/herader.html",
+            "file:///Users/luzhongyang/Code/DongTai/DongTai-engine/templates/footer.html",
+            pdf_filename,
         ))
         delete_old_files(f"{MEDIA_ROOT}/reports/")
         return pdf_filename
@@ -504,7 +507,7 @@ class ExportPort():
         levelCountArr = []
         if levelCount:
             for ind in levelCount.keys():
-                levelCountArr.append(str(levelIdArr[ind]) + str(levelCount[ind]))
+                levelCountArr.append(str(levelIdArr[ind]) + " " + str(levelCount[ind]))
         levelCountStr = ",".join(levelCountArr)
 
         vulTypeTableBodyRows = []
@@ -524,7 +527,7 @@ class ExportPort():
             type_ind = 1
             for vul in vulDetail.keys():
                 vulTypeDetail = {
-                    "title": u'%s' % ("2.3." + str(type_ind) + "  " + vul),
+                    "title": vul,
                     "vuls": []
                 }
                 vulTypeDetailArray.append(vulTypeDetail)
@@ -540,7 +543,7 @@ class ExportPort():
                             "first_scan_time": _("First scan time"),
                             "first_time": one['first_time'],
                             "last_scan_time": _("Last scan time"),
-                            "latest_time": one['last_time'],
+                            "latest_time": one['latest_time'],
                             "development_language": _("Development language"),
                             "language": one['language'],
                             "vulnerability_url": _("Vulnerability URL"),
@@ -549,13 +552,13 @@ class ExportPort():
                             "description": _(u'Vulnerability description'),
                             "detail": "",
                         }
-                        vulTypeDetail.vuls.append(
+                        vulTypeDetail['vuls'].append(
                             oneVul
                         )
                         ind = ind + 1
                         if one['detail_data']:
                             for item in one['detail_data']:
-                                oneVul.detail += u'%s' % item
+                                oneVul['detail'] += u'%s' % item
                 type_ind = type_ind + 1
         from openpyxl import Workbook
         wb = Workbook()
@@ -569,14 +572,28 @@ class ExportPort():
         sheet1['E1'] = str(_("Development language"))
         sheet1['F1'] = str(_("Vulnerability URL"))
         sheet1['G1'] = str(_('Vulnerability description'))
+
         line = 0
         for vulTypeDetail in vulTypeDetailArray:
             line += 1
-            sheet1.write(line, 0, vulTypeDetail.title)
-            for oneVul in vulTypeDetail.vuls:
+            for oneVul in vulTypeDetail['vuls']:
                 sheet1.append(
-                    [vulTypeDetail.title, oneVul.level_id, oneVul.first_time, oneVul.latest_time, oneVul.language,
-                     oneVul.url, oneVul.detail])
+                    [vulTypeDetail['title'], oneVul['level_id'], oneVul['first_time'], oneVul['latest_time'],
+                     oneVul['language'],
+                     oneVul['url'], oneVul['detail']])
+
+        for col in sheet1.columns:
+            max_length = 0
+            column = col[0].column_letter
+            for cell in col:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(str(cell.value))
+                except:
+                    pass
+            adjusted_width = (max_length + 2) * 1.2
+            sheet1.column_dimensions[column].width = adjusted_width
+
         wb.save(xlsx_filename)
         delete_old_files(f"{MEDIA_ROOT}/reports/")
         return xlsx_filename

@@ -70,8 +70,8 @@ msgid "Second, the result analysis"
 msgstr "二、结果分析"
 
 #: core/plugins/export_report.py:285 templates/pdf.html:432
-msgid "2.1 Vulnerability Severity Levels Distribution"
-msgstr "2.1  漏洞等级分布"
+msgid "Vulnerability Severity Levels Distribution"
+msgstr "漏洞等级分布"
 
 #: core/plugins/export_report.py:295 templates/pdf.html:436
 msgid "Distribution of Vulnerability"
