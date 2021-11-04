@@ -23,6 +23,7 @@ class IastAgent(models.Model):
         related_query_name='agent',
         verbose_name=_('server'),
     )
+    is_audit = models.IntegerField(blank=True, null=True)
     is_running = models.IntegerField(blank=True, null=True)
     is_core_running = models.IntegerField(blank=True, null=True)
     control = models.IntegerField(blank=True, null=True)
