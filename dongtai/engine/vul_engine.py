@@ -35,6 +35,7 @@ class VulEngine(object):
         self.taint_link_size = 0
         self.edge_code = 1
         self.taint_value = ''
+        self.vul_type = None
 
     @property
     def method_pool(self):
@@ -103,7 +104,8 @@ class VulEngine(object):
             signatures.add(f"{method.get('className').replace('/', '.')}.{method.get('methodName')}")
         return signatures
 
-    def search(self, method_pool, vul_method_signature):
+    def search(self, method_pool, vul_method_signature, vul_type=None):
+        self.vul_type = vul_type
         self.prepare(method_pool, vul_method_signature)
         size = len(self.method_pool)
         for index in range(size):
@@ -122,6 +124,35 @@ class VulEngine(object):
             logger.info(f'==> current taint hash: {self.pool_value}')
             if self.loop(index, size, current_link):
                 break
+        self.vul_filter()
+
+    def vul_filter(self):
+        # 分析是否存在过滤条件，排除误报
+        # 根据漏洞类型，查询filter方法
+        # 检查vul_
+        if self.vul_source_signature:
+            # mark there has a vul
+            # if vul_type has filter, do escape
+            stack_count = len(self.vul_stack)
+            for index in range(0, stack_count):
+                stack = self.vul_stack[index]
+                for item in stack:
+                    if 'java.net.URL.<init>' == item["signature"]:
+                        url = item['sourceValues']
+                        origin_source = stack[0]['targetValues']
+                        from urllib.parse import urlparse
+                        o = urlparse(url)
+                        if origin_source not in f'{o.scheme}://{o.netloc}{o.path}':
+                            print(origin_source, url)
+                            self.vul_stack[index] = []
+                            break
+            vul_source_signature = self.vul_source_signature
+            self.vul_source_signature = None
+            for index in range(0, stack_count):
+                if self.vul_stack[index]:
+                    self.vul_source_signature = vul_source_signature
+                else:
+                    continue
 
     @staticmethod
     def copy_method(method_detail, sink=False, source=False, propagator=False, filter=False):
