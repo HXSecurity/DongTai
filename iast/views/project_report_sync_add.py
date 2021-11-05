@@ -51,7 +51,8 @@ class ProjectReportSyncAdd(UserEndPoint):
 
         if (pid == 0 and pname == ''):
             return R.failure(status=202, msg=_('Parameter error'))
-        project = IastProject.objects.filter(pk=pid, user=request.user).first()
+        auth_users = self.get_auth_users(request.user)
+        project = IastProject.objects.filter(pk=pid, user__in=auth_users).first()
         if not project:
             return R.failure(status=202, msg=_('Project not exist'))
         if type not in ['docx', 'pdf', 'xlsx']:
