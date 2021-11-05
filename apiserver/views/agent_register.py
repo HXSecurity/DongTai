@@ -37,8 +37,8 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                        project_version):
         project = IastProject.objects.values('id').filter(name=project_name,
                                                           user=user).first()
-
         is_audit = AgentRegisterEndPoint.get_is_audit()
+
         if project:
             if project_version:
                 project_current_version = project_version
