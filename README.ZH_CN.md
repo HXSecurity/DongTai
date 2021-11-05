@@ -1,7 +1,7 @@
 # DongTai-webapi
 [![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
-[![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://huoxianclub.github.io/LingZhi/)
-[![DongTai--webapi](https://img.shields.io/badge/DongTai--webapi-v1.0.5-lightgrey)](https://huoxianclub.github.io/LingZhi/#/doc/tutorial/quickstart)
+[![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://https://github.com/HXSecurity/DongTai)
+[![DongTai-webapi](https://img.shields.io/github/v/release/HXSecurity/Dongtai-webapi?label=Dongtai-webapi)](https://github.com/HXSecurity/DongTai-webapi/releases)
 [![Deploy DongTai WebApi To AWS](https://github.com/HXSecurity/DongTai-webapi/actions/workflows/deploy_webapi_to_aws.yml/badge.svg)](https://github.com/HXSecurity/DongTai-webapi/actions/workflows/deploy_webapi_to_aws.yml)
 
 [English](README.MD)
@@ -107,4 +107,4 @@ Redoc地址为 `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/redo
 
 
 - [官方文档](https://hxsecurity.github.io/DongTai-Doc/#/)
-- [快速体验](http://iast.io)
+- [快速体验](https://iast.io)
