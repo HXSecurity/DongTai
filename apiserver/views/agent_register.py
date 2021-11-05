@@ -37,6 +37,8 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                        project_version):
         project = IastProject.objects.values('id').filter(name=project_name,
                                                           user=user).first()
+
+        is_audit = AgentRegisterEndPoint.get_is_audit()
         if project:
             if project_version:
                 project_current_version = project_version
@@ -58,6 +60,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                     project_name=project_name,
                     project_version_id=project_current_version.id,
                     language=language,
+                    is_audit=is_audit,
                 )
         else:
             agent_id = AgentRegisterEndPoint.get_agent_id(token=token, project_name=project_name, user=user,
@@ -72,8 +75,13 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                     project_name=project_name,
                     project_version_id=0,
                     language=language,
+                    is_audit=is_audit,
                 )
         return agent_id
+
+    @staticmethod
+    def get_is_audit():
+        return 1
 
     @staticmethod
     def get_command(envs):
@@ -272,7 +280,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             if agent_id != -1:
                 IastAgent.objects.filter(pk=agent_id).update(
                     register_time=int(time.time()))
-            return R.success(data={'id': agent_id})
+            return R.success(data={'id': agent_id, 'coreAutoStart': 1})
         except Exception as e:
             logger.error(e)
             return R.failure(msg="探针注册失败，原因：{reason}".format(reason=e))
@@ -292,7 +300,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         return -1
 
     @staticmethod
-    def __register_agent(exist_project, token, user, version, project_id, project_name, project_version_id, language):
+    def __register_agent(exist_project, token, user, version, project_id, project_name, project_version_id, language, is_audit):
         if exist_project:
             IastAgent.objects.filter(token=token, online=1, user=user).update(online=0)
         agent = IastAgent.objects.create(
@@ -308,6 +316,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             is_core_running=1,
             online=1,
             project_version_id=project_version_id,
-            language=language
+            language=language,
+            is_audit=is_audit
         )
         return agent.id
