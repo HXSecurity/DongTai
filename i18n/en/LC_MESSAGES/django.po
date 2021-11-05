@@ -1,0 +1,133 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-21 19:40+0800\n"
+"PO-Revision-Date: 2021-08-09 12:55+0800\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Application-Id-Version: \n"
+"X-Generator: Poedit 2.2.2\n"
+
+#: core/plugins/export_report.py:86
+msgid "{} Line"
+msgstr "{} Line"
+
+#: core/plugins/export_report.py:102
+msgid "In {} {} call {}. {} (), Incoming parameters {}"
+msgstr "In {} {} call {}. {} (), Incoming parameters {}"
+
+#: core/plugins/export_report.py:105
+msgid "{} Appears in {} {}"
+msgstr "{} Appears in {} {}"
+
+#: core/plugins/export_report.py:204
+msgid "Report export success"
+msgstr "Report export success"
+
+#: core/plugins/export_report.py:229
+msgid "Security Testing Report"
+msgstr "Security Testing Report"
+
+#: core/plugins/export_report.py:241 templates/pdf.html:409
+msgid "First, project information"
+msgstr "First, project information"
+
+#: core/plugins/export_report.py:249
+msgid "Application name"
+msgstr "Application name"
+
+#: core/plugins/export_report.py:252
+msgid "Author"
+msgstr "Author"
+
+#: core/plugins/export_report.py:255
+msgid "Application type"
+msgstr "Application type"
+
+#: core/plugins/export_report.py:258
+msgid "Number of Vulnerability"
+msgstr "Number of Vulnerability"
+
+#: core/plugins/export_report.py:261
+msgid "Number of Agent"
+msgstr "Number of Agent"
+
+#: core/plugins/export_report.py:264
+msgid "Latest time"
+msgstr "Latest time"
+
+#: core/plugins/export_report.py:281 templates/pdf.html:431
+msgid "Second, the result analysis"
+msgstr "Second, the result analysis"
+
+#: core/plugins/export_report.py:285 templates/pdf.html:432
+msgid "Vulnerability Severity Levels Distribution"
+msgstr "Vulnerability Severity Levels Distribution"
+
+#: core/plugins/export_report.py:295 templates/pdf.html:436
+msgid "Distribution of Vulnerability"
+msgstr "Distribution of Vulnerability"
+
+#: core/plugins/export_report.py:302 core/plugins/export_report.py:547
+#: templates/pdf.html:441
+msgid "Severity levels"
+msgstr "Severity levels"
+
+#: core/plugins/export_report.py:303 core/plugins/export_report.py:546
+#: templates/pdf.html:442
+msgid "Vulnerability type name"
+msgstr "Vulnerability type name"
+
+#: core/plugins/export_report.py:304 templates/pdf.html:443
+msgid "Number"
+msgstr "Number"
+
+#: core/plugins/export_report.py:315 templates/pdf.html:455
+msgid "Vulnerability details"
+msgstr "Vulnerability details"
+
+#: core/plugins/export_report.py:332 core/plugins/export_report.py:420
+#: core/plugins/export_report.py:517
+msgid "Summary"
+msgstr "Summary"
+
+#: core/plugins/export_report.py:336 core/plugins/export_report.py:422
+#: core/plugins/export_report.py:519
+msgid "Severity level"
+msgstr "Severity level"
+
+#: core/plugins/export_report.py:340 core/plugins/export_report.py:424
+#: core/plugins/export_report.py:426 core/plugins/export_report.py:521
+#: core/plugins/export_report.py:548
+msgid "First scan time"
+msgstr "First scan time"
+
+#: core/plugins/export_report.py:344 core/plugins/export_report.py:523
+#: core/plugins/export_report.py:549
+msgid "Last scan time"
+msgstr "Last scan time"
+
+#: core/plugins/export_report.py:348 core/plugins/export_report.py:428
+#: core/plugins/export_report.py:525 core/plugins/export_report.py:550
+msgid "Development language"
+msgstr "Development language"
+
+#: core/plugins/export_report.py:352 core/plugins/export_report.py:430
+#: core/plugins/export_report.py:527 core/plugins/export_report.py:551
+msgid "Vulnerability URL"
+msgstr "Vulnerability URL"
+
+#: core/plugins/export_report.py:354 core/plugins/export_report.py:433
+#: core/plugins/export_report.py:530 core/plugins/export_report.py:552
+msgid "Vulnerability description"
+msgstr "Vulnerability description"
+

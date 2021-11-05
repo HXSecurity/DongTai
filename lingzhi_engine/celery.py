@@ -41,6 +41,7 @@ configs["CELERY_ROUTES"] = {
     "core.tasks.update_agent_status": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
     "core.tasks.heartbeat": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
     "core.tasks.clear_error_log": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
+    "core.tasks.export_report": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
     "core.tasks.vul_recheck": {'exchange': 'dongtai-replay-task', 'routing_key': 'dongtai-replay-task'},
 }
 configs["CELERY_ENABLE_UTC"] = False
