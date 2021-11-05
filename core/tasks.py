@@ -36,6 +36,8 @@ from core.plugins.strategy_sensitive import check_response_content
 from core.replay import Replay
 from lingzhi_engine import settings
 from signals import vul_found
+from core.plugins.export_report import ExportPort
+from dongtai.models.project_report import ProjectReport
 
 
 def queryset_to_iterator(queryset):
@@ -529,6 +531,19 @@ def clear_error_log():
     except Exception as e:
         logger.error(f'日志清理失败，错误详情：{e}')
 
+@shared_task(queue='dongtai-periodic-task')
+def export_report():
+    """
+    导出报告
+    :return:
+    """
+    logger.info(f'日志导出报告')
+    try:
+        report = ProjectReport.objects.filter(status=0).first()
+        export_port = ExportPort()
+        export_port.export(report)
+    except Exception as e:
+        logger.error(f'日志清理失败，错误详情：{e}')
 
 @shared_task(queue='dongtai-replay-task')
 def vul_recheck():
