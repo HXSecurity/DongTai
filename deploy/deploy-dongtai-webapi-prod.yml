@@ -20,7 +20,7 @@ spec:
       containers:
         - name: dongtai-webapi-container
           image: dongtai/dongtai-webapi:VERSION
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           volumeMounts:
             - name: configfile
               mountPath: /opt/dongtai/webapi/conf/config.ini
