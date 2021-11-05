@@ -39,6 +39,8 @@ def get_model_field(model, exclude=[], include=[]):
 
 def delete_old_files(path, save_seconds=10):
     for f in os.listdir(path):
+        if f == ".gitignore":
+            continue
         if os.stat(os.path.join(path, f)).st_mtime < time.time() - save_seconds:
             os.remove(os.path.join(path, f))
 
@@ -73,7 +75,7 @@ def get_vul_count_by_agent(agent_ids, vid, user):
                 one['req_params'] = str(one['req_params'])
             except Exception as e:
                 one['req_params'] = ""
-            detailStr2 = one['http_method'] + " " + one['uri'] + "?" + one['req_params'] + one['http_protocol']
+            detailStr2 = str(one['http_method']) + " " + str(one['uri']) + "?" + str(one['req_params']) + str(one['http_protocol'])
             try:
                 fileData = one['full_stack'][-1].get("stack", "")
                 pattern = r'.*?\((.*?)\).*?'
@@ -110,7 +112,7 @@ def get_vul_count_by_agent(agent_ids, vid, user):
                 "first_time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(one['first_time'])),
                 "latest_time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(one['latest_time'])),
                 "language": one['language'],
-                "url": one['url'],
+                "url": one['url'] if one['url'] else "",
                 "detail_data": [detailStr1, detailStr2, detailStr3],
             })
         typeArrKeys = typeArr.keys()
@@ -481,12 +483,13 @@ class ExportPort():
         f = open(html_filename, 'w')
         f.write(rendered)
         f.close()
-        os.system("cat {} | /usr/local/bin/wkhtmltopdf --header-html {} --footer-html {} - {} ".format(
+        os.system("cat {} | /opt/dongtai/engine/bin/wkhtmltopdf --header-html {} --footer-html {} - {} ".format(
             html_filename,
-            "file:///Users/luzhongyang/Code/DongTai/DongTai-engine/templates/herader.html",
-            "file:///Users/luzhongyang/Code/DongTai/DongTai-engine/templates/footer.html",
+            "file:///opt/dongtai/engine/templates/header.html",
+            "file:///opt/dongtai/engine/templates/footer.html",
             pdf_filename,
         ))
+
         delete_old_files(f"{MEDIA_ROOT}/reports/")
         return pdf_filename
 
