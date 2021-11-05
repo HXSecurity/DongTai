@@ -1,7 +1,7 @@
 # DongTai-webapi
 [![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
-[![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://huoxianclub.github.io/LingZhi/)
-[![DongTai--webapi](https://img.shields.io/badge/DongTai--webapi-v1.0.5-lightgrey)](https://huoxianclub.github.io/LingZhi/#/doc/tutorial/quickstart)
+[![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://https://github.com/HXSecurity/DongTai)
+[![DongTai-webapi](https://img.shields.io/github/v/release/HXSecurity/Dongtai-webapi?label=Dongtai-webapi)](https://github.com/HXSecurity/DongTai-webapi/releases)
 [![Deploy DongTai WebApi To AWS](https://github.com/HXSecurity/DongTai-webapi/actions/workflows/deploy_webapi_to_aws.yml/badge.svg)](https://github.com/HXSecurity/DongTai-webapi/actions/workflows/deploy_webapi_to_aws.yml)
 
 [中文版本(Chinese version)](README.ZH_CN.md)
@@ -109,4 +109,4 @@ The address is `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/`
 
 ### More resources
 - [Documentation](https://hxsecurity.github.io/DongTai-Doc/#/en-us/)
-- [DongTai WebSite](http://iast.io)
+- [DongTai WebSite](https://iast.io)
