@@ -26,6 +26,7 @@ class AgentSerializer(serializers.ModelSerializer):
     replay_queue = serializers.SerializerMethodField()
     alias = serializers.SerializerMethodField()
     register_time = serializers.SerializerMethodField()
+    latest_time = serializers.SerializerMethodField()
 
     class Meta:
         model = IastAgent
