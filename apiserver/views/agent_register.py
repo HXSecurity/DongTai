@@ -195,9 +195,6 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
     def post(self, request: Request):
         try:
             param = parse_data(request.read())
-            print('-'*100)
-            print(param)
-            print('-'*100)
             token = param.get('name')
             language = param.get('language')
             version = param.get('version')
@@ -249,8 +246,8 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 logger.info(
                     _('auto create project version {}').format(
                         project_version.id))
-
-            if version_created:
+            if param.get('projectName', None) and param.get(
+                    'projectVersion', None):
                 agent_id = self.register_agent(token=token,
                                                project_name=project_name,
                                                language=language,
