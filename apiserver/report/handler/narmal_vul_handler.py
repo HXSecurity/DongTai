@@ -77,10 +77,17 @@ class BaseVulnHandler(IReportHandler):
         return ''
 
     def parse(self):
-        self.app_name = self.detail.get('contextPath')
+
+        self.server_name = self.detail.get('serverName')
+        self.server_port = self.detail.get('serverPort')
+        self.server_env = self.detail.get('serverEnv')
+        self.hostname = self.detail.get('hostname')
+        self.agent_version = self.detail.get('agentVersion')
+        self.app_name = self.detail.get('appName')
+        self.app_path = self.detail.get('contextPath')
         self.http_uri = self.detail.get('uri')
         self.http_url = self.detail.get('url')
-        self.http_query_string = self.detail.get('httpQueryString')
+        self.http_query_string = self.detail.get('queryString')
         self.http_header = self.detail.get('reqHeader')
         self.http_req_data = self.detail.get('reqBody')
         self.http_method = self.detail.get('method')
@@ -90,7 +97,11 @@ class BaseVulnHandler(IReportHandler):
         self.vuln_type = self.detail.get('vulnType')
         self.app_caller = self.detail.get('appCaller')
         self.taint_value = self.detail.get('taintValue')
+        self.taint_position = self.detail.get('taintPosition')
         self.client_ip = self.detail.get('clientIp')
+        self.param_name = self.detail.get('paramName')
+        self.container = self.detail.get('container')
+        self.container_path = self.detail.get('containerPath')
         self.http_replay = self.detail.get('replayRequest')
         self.http_res_header = self.detail.get('resHeader')
         self.http_res_body = self.detail.get('resBody')
@@ -139,7 +150,7 @@ class NormalVulnHandler(BaseVulnHandler):
                 res_header=self.http_res_header,
                 res_body=self.http_res_body,
                 agent=self.agent,
-                context_path=self.app_name,
+                context_path=self.app_path,
                 counts=1,
                 status_id=settings.CONFIRMED,
                 first_time=int(time.time()),
