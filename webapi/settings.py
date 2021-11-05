@@ -311,7 +311,7 @@ if os.getenv('environment', 'PROD') in ('TEST', 'DOC'):
         'TITLE':
         'DongTai WebApi Doc',
         'VERSION':
-        "1.0.3",
+        "1.1.0",
         'PREPROCESSING_HOOKS':
         ['drf_spectacular.hooks.preprocess_exclude_path_format'],
         'URL_FORMAT_OVERRIDE':
