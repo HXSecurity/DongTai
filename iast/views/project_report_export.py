@@ -72,7 +72,8 @@ class ProjectReportExport(UserEndPoint):
         except:
             pid = 0
             vid = 0
-            pname = ''
+            pname = ""
+
         if (pid == 0 and pname == ''):
             return R.failure(status=202, msg=_('Parameter error'))
         auth_users = self.get_auth_users(request.user)
