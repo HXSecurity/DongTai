@@ -16,7 +16,9 @@ from configparser import ConfigParser
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'i18n'),
+)
 config = ConfigParser()
 config.read(os.path.join(BASE_DIR, 'conf/config.ini'))
 
@@ -28,7 +30,6 @@ SECRET_KEY = '*v@usk8t!=grz+p4yf+h(ulv^en!nm_#6zjfp35(o8c5@z##b+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = ('true' == os.getenv('debug', 'false'))
-
 ALLOWED_HOSTS = ['*']
 
 # Application definition
@@ -53,6 +54,7 @@ MODELTRANSLATION_DEFAULT_LANGUAGE = 'zh'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -62,11 +64,11 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'lingzhi_engine.urls'
-
+MEDIA_ROOT = os.path.join(BASE_DIR, 'upload')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -127,8 +129,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
+LANGUAGE_CODE = 'zh'
+LANGUAGES = (
+    ('en', 'English'),
+    ('zh', '简体中文'),
+)
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
@@ -136,6 +141,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+MODELTRANSLATION_FALLBACK_LANGUAGES = ('zh', 'en')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
