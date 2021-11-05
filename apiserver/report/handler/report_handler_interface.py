@@ -85,8 +85,11 @@ class IReportHandler:
     def get_project_agents(self, agent):
         if agent.bind_project_id != 0:
             agents = IastAgent.objects.filter(
-                Q(project_name=self.project_name) | Q(bind_project_id=agent.bind_project_id), online=1,
-                user=self.user_id)
+                Q(project_name=self.project_name)
+                | Q(bind_project_id=agent.bind_project_id),
+                online=1,
+                user=self.user_id,
+                project_version_id=agent.project_version_id)
         else:
             agents = IastAgent.objects.filter(project_name=agent.project_name, user=self.user_id)
         return agents
