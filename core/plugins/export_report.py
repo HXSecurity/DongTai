@@ -37,7 +37,7 @@ def get_model_field(model, exclude=[], include=[]):
     return list(set(fields) - set(exclude))
 
 
-def delete_old_files(path, save_seconds=10):
+def delete_old_files(path, save_seconds=3600):
     for f in os.listdir(path):
         if f == ".gitignore":
             continue
