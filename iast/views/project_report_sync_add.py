@@ -38,28 +38,18 @@ class ProjectReportSyncAdd(UserEndPoint):
     def post(self, request):
         timestamp = time.time()
         pid = vid = 0
-<<<<<<< HEAD
-=======
         pname = type = ""
->>>>>>> main
         ser = _ProjectReportExportQuerySerializer(data=request.data)
         try:
             if ser.is_valid(True):
                 pid = int(request.data.get("pid", 0))
-<<<<<<< HEAD
-=======
                 pname = request.data.get('pname')
->>>>>>> main
                 vid = int(request.data.get("vid", 0))
                 type = request.data.get("type", "docx")
         except ValidationError as e:
             return R.failure(data=e.detail)
 
-<<<<<<< HEAD
-        if (pid == 0):
-=======
         if (pid == 0 and pname == ''):
->>>>>>> main
             return R.failure(status=202, msg=_('Parameter error'))
         project = IastProject.objects.filter(pk=pid, user=request.user).first()
         if not project:
