@@ -77,7 +77,7 @@ class ProjectReportExport(UserEndPoint):
         if (pid == 0 and pname == ''):
             return R.failure(status=202, msg=_('Parameter error'))
         auth_users = self.get_auth_users(request.user)
-        res = self.generate_word_report(pid, pid, vid, auth_users,
+        res = self.generate_word_report(pid, pname, vid, auth_users,
                                                    request.user, timestamp)
         if res is None:
             return R.failure(status=202, msg=_('Parameter error'))
