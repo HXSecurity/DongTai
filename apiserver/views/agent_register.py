@@ -274,10 +274,6 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 server_env=server_env,
                 pid=pid,
             )
-            print(agent_id)
-            print('-'*100)
-            print('-'*100)
-            print('-'*100)
             if agent_id != -1:
                 IastAgent.objects.filter(pk=agent_id).update(
                     register_time=int(time.time()))
