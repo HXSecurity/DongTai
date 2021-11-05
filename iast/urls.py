@@ -64,6 +64,12 @@ from iast.views.project_version_delete import ProjectVersionDelete
 from iast.views.project_version_list import ProjectVersionList
 from iast.views.project_version_update import ProjectVersionUpdate
 from iast.views.projects import Projects
+
+from iast.views.project_report_sync_add import ProjectReportSyncAdd
+from iast.views.project_report_list import ProjectReportList
+from iast.views.project_report_download import ProjectReportDownload
+from iast.views.project_report_delete import ProjectReportDelete
+
 from iast.views.sca_details import ScaDetailView
 from iast.views.sca_sidebar_index import ScaSidebarList
 from iast.views.sca_summary import ScaSummary
@@ -140,6 +146,12 @@ urlpatterns = [
     path('projects', Projects.as_view()),
     path('projects/summary/<int:id>', ProjectSummary.as_view()),
     path('project/engines/<int:pid>', ProjectEngines.as_view()),
+
+    path('project/report/async_add', ProjectReportSyncAdd.as_view()),
+    path('project/report/list', ProjectReportList.as_view()),
+    path('project/report/download', ProjectReportDownload.as_view()),
+    path('project/report/delete', ProjectReportDelete.as_view()),
+
     path('project/export', ProjectReportExport.as_view()),
     path('project/search', ProjectSearch.as_view()),
     path('project/version/add', ProjectVersionAdd.as_view()),
