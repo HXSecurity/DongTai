@@ -58,7 +58,7 @@ class ProjectReportSyncAdd(UserEndPoint):
             return R.failure(status=202, msg=_('Report type error'))
         ProjectReport.objects.create(
             user=request.user, project=project, vul_id=vid,
-            status=1, type=type, create_time=timestamp, language=get_language()
+            status=0, type=type, create_time=timestamp, language=get_language()
         )
 
         return R.success(msg=_('Created success'))
