@@ -19,7 +19,7 @@ from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.text import format_lazy
 from rest_framework import serializers
 from iast.serializers.vul import VulSummaryTypeSerializer, VulSummaryProjectSerializer, VulSummaryLevelSerializer, VulSummaryLanguageSerializer
-
+from dongtai.models.program_language import IastProgramLanguage
 
 class VulSummaryResponseDataSerializer(serializers.Serializer):
     language = VulSummaryLanguageSerializer(many=True)
@@ -32,13 +32,22 @@ _ResponseSerializer = get_response_serializer(
     VulSummaryResponseDataSerializer())
 
 
+def initlanguage():
+    program_language_list = IastProgramLanguage.objects.values_list(
+        'name', flat=True).all()
+    return {
+        program_language.upper(): 0
+        for program_language in program_language_list
+    }
+
+
 class VulSummary(UserEndPoint):
     name = "rest-api-vulnerability-summary"
     description = _("Applied vulnerability overview")
 
     @staticmethod
     def get_languages(agent_items):
-        default_language = {"JAVA": 0, "PYTHON": 0}
+        default_language = initlanguage()
         agent_ids = dict()
         for agent_item in agent_items:
             agent_id = agent_item['agent_id']
@@ -279,7 +288,7 @@ class VulSummary(UserEndPoint):
             try:
                 level = int(level)
             except:
-                return R.failure(_("Parameter error")) 
+                return R.failure(_("Parameter error"))
             queryset = queryset.filter(level=level)
 
         vul_type = request.query_params.get('type')
