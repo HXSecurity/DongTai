@@ -207,8 +207,8 @@ class ExportPort():
                 report.status = 1
                 report.save()
                 IastMessage.objects.create(
-                    message=_("Report export success"),
-                    relative_url="/dede",
+                    message= str(project.name) + " " + _("Report export success"),
+                    relative_url="/api/v1/project/report/download?id=" + str(report.id),
                     create_time=time.time(),
                     message_type=IastMessageType.objects.filter(pk=1).first(),
                     to_user_id=report.user.id,
