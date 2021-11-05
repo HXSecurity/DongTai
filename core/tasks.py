@@ -538,13 +538,15 @@ def export_report():
     :return:
     """
     logger.info(f'导出报告')
+    report = ProjectReport.objects.filter(status=0).first()
     try:
-        report = ProjectReport.objects.filter(status=0).first()
-        export_port = ExportPort()
-        export_port.export(report)
         report.status = 1
         report.save()
+        export_port = ExportPort()
+        export_port.export(report)
     except Exception as e:
+        report.status = 0
+        report.save()
         logger.error(f'导出报告，错误详情：{e}')
 
 @shared_task(queue='dongtai-replay-task')
