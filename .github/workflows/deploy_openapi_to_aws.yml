@@ -98,11 +98,8 @@ jobs:
           
       - name: Download Agent
         run: |
-          ossutil cp oss://dongtai/agent/java/iast-agent.jar iast-agent.jar
-          ossutil cp oss://dongtai/agent/java/iast-core.jar iast-core.jar
-          ossutil cp oss://dongtai/agent/java/iast-inject.jar iast-inject.jar
-          ossutil cp oss://dongtai/agent/java/dongtai-servlet.jar dongtai-servlet.jar
-
+          ossutil cp oss://dongtai/agent/java/ ./ --include "*.jar" -r
+          ossutil cp oss://dongtai/agent/python/ ./  --include "*.tar.gz" -r
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:

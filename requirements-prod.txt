@@ -4,4 +4,4 @@ djangorestframework==3.12.4
 mysqlclient
 uwsgi==2.0.19.1
 requests==2.25.1
-https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/dongtai-1.0.3.tar.gz
+https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/dongtai-latest.tar.gz
