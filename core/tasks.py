@@ -542,6 +542,8 @@ def export_report():
         report = ProjectReport.objects.filter(status=0).first()
         export_port = ExportPort()
         export_port.export(report)
+        report.status = 1
+        report.save()
     except Exception as e:
         logger.error(f'导出报告，错误详情：{e}')
 
