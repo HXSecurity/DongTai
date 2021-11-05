@@ -151,7 +151,7 @@ class TalentEndPoint(SystemAdminEndPoint):
 
             default_department.users.add(default_user)
             logger.info(_('Finsihed creating and initializing tenant'))
-            return True
+            return True, 'success'
         except Exception as e:
             logger.error(_('Failed to created a tenant, error message:{}').format(e))
             return False, str(e)
