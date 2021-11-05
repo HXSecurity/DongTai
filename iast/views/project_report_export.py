@@ -72,6 +72,7 @@ class ProjectReportExport(UserEndPoint):
         except:
             pid = 0
             vid = 0
+            pname = ""
 
         if (pid == 0 and pname == ''):
             return R.failure(status=202, msg=_('Parameter error'))
