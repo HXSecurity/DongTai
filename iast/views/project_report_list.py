@@ -40,7 +40,9 @@ class ProjectReportList(UserEndPoint):
         pid = request.query_params.get('pid', 0)
         page_size = request.query_params.get('page_size', 20)
         ser = _ProjectReportSearchQuerysSerializer(data=request.data)
-        project = IastProject.objects.filter(pk=pid, user=request.user).first()
+
+        auth_users = self.get_auth_users(request.user)
+        project = IastProject.objects.filter(pk=pid, user__in=auth_users).first()
         try:
             if ser.is_valid(True):
                 page = ser.validated_data['page']
@@ -48,7 +50,7 @@ class ProjectReportList(UserEndPoint):
         except ValidationError as e:
             return R.failure(data=e.detail)
         queryset = ProjectReport.objects.filter(
-            user=request.user,
+            user__in=auth_users,
             project=project
         ).order_by('-create_time')
 
