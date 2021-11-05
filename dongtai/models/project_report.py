@@ -21,7 +21,7 @@ class ProjectReport(models.Model):
     language = models.CharField(max_length=10, blank=True, null=True)
     status = models.IntegerField(default=0, null=False)
     path = models.CharField(default='', max_length=255, blank=True, null=True)
-    file = models.CharField(blank=True, null=True)
+    file = models.BinaryField(blank=True, null=True)
     create_time = models.IntegerField(default=0, null=False)
 
     class Meta:
