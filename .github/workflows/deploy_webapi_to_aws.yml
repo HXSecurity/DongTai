@@ -43,6 +43,14 @@ jobs:
         with:
           python-version: 3.7
       
+      - name: Setup Ossutil
+        uses: manyuanrong/setup-ossutil@v2.0
+        with:
+          access-key-id: ${{ secrets.DONGTAI_OSS_ACCESS_KEY_ID }}
+          access-key-secret: ${{ secrets.DONGTAI_OSS_ACCESS_KEY_SECRET }}
+          endpoint: ${{ secrets.DONGTAI_OSS_ENDPOINT   }}
+      - run: ossutil cp oss://dongtai/iast_core_buss/dongtai-test-latest.tar.gz dongtai-test-latest.tar.gz
+      
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
