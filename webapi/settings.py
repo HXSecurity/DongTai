@@ -304,6 +304,10 @@ ENABLE_SSL = config.get('smtp', 'ssl') == 'True'
 ADMIN_EMAIL = config.get('smtp', 'cc_addr')
 SESSION_COOKIE_DOMAIN = None
 CSRF_COOKIE_DOMAIN = None
+if os.getenv('environment', None) == 'TEST' or os.getenv('PYTHONAGENT', None) == 'TRUE':
+    MIDDLEWARE.append('dongtai_agent_python.middlewares.django_middleware.FireMiddleware')
+if os.getenv('environment', None) == 'TEST' or os.getenv('SAVEEYE', None) == 'TRUE':
+    CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null',)
 if os.getenv('environment', 'PROD') in ('TEST', 'DOC'):
     from django.utils.translation import gettext_lazy as _
     INSTALLED_APPS.append('drf_spectacular')
