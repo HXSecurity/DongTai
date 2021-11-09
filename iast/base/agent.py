@@ -14,6 +14,7 @@ from dongtai.models.server import IastServer
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from django.utils.translation import gettext_lazy as _
 from dongtai.models.hook_type import HookType
+from iast.base.project_version import get_project_version
 
 def get_agents_with_project(project_name, users):
     """
@@ -74,15 +75,16 @@ def get_project_vul_count(users, queryset, auth_agents, project_id=None):
     project_queryset = IastProject.objects.filter(user__in=users)
     if project_queryset.values('id').exists() is False:
         return result
-
     if project_id:
         project_queryset = project_queryset.filter(id=project_id)
 
     project_queryset = project_queryset.values('name', 'id')
     for project in project_queryset:
         project_id = project['id']
-
-        agent_queryset = auth_agents.filter(bind_project_id=project_id)
+        current_version = get_project_version(project_id, users)
+        version_id = current_version.get("version_id", 0)
+        agent_queryset = auth_agents.filter(project_version_id=version_id,
+                                            bind_project_id=project_id)
         if agent_queryset.values('id').exists() is False:
             result.append({
                 "project_name": project['name'],
