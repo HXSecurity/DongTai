@@ -12,7 +12,7 @@ import hashlib
 from dongtai.models.api_route import IastApiRoute, IastApiMethod, IastApiRoute, HttpMethod, IastApiResponse, IastApiMethodHttpMethodRelation
 from dongtai.models.agent_method_pool import MethodPool
 from rest_framework.serializers import Serializer
-
+from webapi.settings import OPENAPI
 
 def get_model_field(model, exclude=[], include=[]):
     fields = [field.name for field in model._meta.fields]
@@ -214,15 +214,18 @@ def apiroute_cachekey(api_route, agents, http_method=None):
 def sha1(string, encoding='utf-8'):
     return hashlib.sha1(string.encode(encoding)).hexdigest()
 from dongtai.models.profile import IastProfile
+
+
 def get_openapi():
-    profilefromdb = IastProfile.objects.filter(
-        key='apiserver').values_list('value', flat=True).first()
-    profilefromini = None
+    profilefromdb = IastProfile.objects.filter(key='apiserver').values_list(
+        'value', flat=True).first()
+    profilefromini = OPENAPI 
     profiles = list(
-        filter(lambda x: x is not None, [profilefromdb, profilefromini]))
+        filter(lambda x: x is not None, [profilefromini, profilefromdb]))
     if profiles == []:
         return None
     return profiles[0]
+
 
 from urllib.parse import urlparse
 
