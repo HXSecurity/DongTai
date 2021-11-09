@@ -1,0 +1,83 @@
+name: 🐛 Bug report
+description: Report a bug to help us improve DongTai
+title: "[Bug]: "
+labels: [bug]
+assignees:
+  - exexute
+body:
+- type: markdown
+  attributes:
+    value: |
+      Thank you for submitting a bug report!
+
+      Please fill out the template below to make it easier to debug your problem.
+
+      If you are not sure if it is a bug or not, you can contact us via the available [support channels](https://github.com/HXSecurity/DongTai/issues/new/choose).
+- type: checkboxes
+  attributes:
+    label: Preflight Checklist
+    description: Please ensure you've completed all of the following.
+    options:
+      - label: I agree to follow the [Code of Conduct](https://github.com/HXSecurity/DongTai/blob/main/.github/CODE_OF_CONDUCT.md) that this project adheres to.
+        required: true
+      - label: I have searched the [issue tracker](https://www.github.com/HXSecurity/DongTai/issues) for an issue that matches the one I want to file, without success.
+        required: true
+      - label: I am not looking for support or already pursued the available [support channels](https://github.com/HXSecurity/DongTai/issues/new/choose) without success.
+        required: true
+- type: input
+  attributes:
+    label: Version
+    description: What version of DongTai are you running?
+    placeholder: 1.0.0
+  validations:
+    required: true
+- type: dropdown
+  attributes:
+    label: Installation Type
+    description: How did you install DongTai?
+    options:
+      - Official SaaS Service
+      - Official Kubernetes
+      - Official Docker Compose
+      - Other (specify below)
+  validations:
+    required: true
+- type: dropdown
+  attributes:
+    label: Service Name
+    description: Which service do you want to report the bug?
+    options:
+      - Doc(DongTai-Doc)
+      - Docker(DongTai-Base-Image)
+      - Deploy(DongTai-deploy)
+      - DongTai-Web
+      - DongTai-WebAPI
+      - DongTai-OpenAPI
+      - DongTai-Engine
+      - DongTai-Core
+      - DongTai-agent-python
+      - DongTai-agent-java
+      - DongTai-agent-php
+    multiple: true
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Describe the details of the bug and the steps to reproduce it
+    description: Steps to reproduce the behavior if it is not self-explanatory.
+    placeholder: |
+      1. In this environment...
+      2. With this config...
+      3. Do something...
+      4. See error...
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Additional Information
+    description: Links? References? Anything that will give us more context about the issue that you are encountering!
+- type: textarea
+  attributes:
+    label: Logs
+    description: Dex application logs (if relevant).
+    render: shell

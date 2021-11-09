@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from urllib.parse import urlparse
 from rest_framework import serializers
+from iast.utils import get_openapi
 
 _PostResponseSerializer = get_response_serializer(status_msg_keypair=(
     ((201, _('Created success')), ''),
@@ -42,10 +43,10 @@ class OpenApiEndpoint(UserEndPoint):
             key='apiserver').values_list('value', flat=True).first()
         profilefromini = None
         profiles = list(
-            filter(lambda x: x is not None, [profilefromdb, profilefromini]))
+            filter(lambda x: x is not None, [profilefromini, profilefromdb]))
         if profiles == [] or not profiles[0]:
             return R.failure(msg=_("Get OpenAPI configuration failed"))
-        return R.success(data={'url': profiles[0]})
+        return R.success(data={'url': get_openapi()})
 
     @extend_schema_with_envcheck(
         request=OpenApiEndpointSerializer,
