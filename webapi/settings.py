@@ -218,7 +218,7 @@ DATABASES = {
                 'use_unicode': True,
             },
         }
-    }    
+    }
 }
 CACHES = {
     'default': {
@@ -293,6 +293,7 @@ REST_PROXY = {
     'HOST': config.get("engine", 'url'),
 }
 
+OPENAPI = config.get("apiserver", "url")
 
 # notify
 EMAIL_SERVER = config.get('smtp', 'server')
