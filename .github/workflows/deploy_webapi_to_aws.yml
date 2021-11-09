@@ -46,8 +46,6 @@ jobs:
       
       - name: Install dependencies
         run: |
-          curl -X GET "${{ secrets.DONGTAI_TEST_URL }}" -H '${{ secrets.DONGTAI_TEST_HEADER }}' -o dongtai-agent-python.tar.gz -k
-          ls
           python -m pip install --upgrade pip
           pip install -r requirements-test.txt
       - name: Lint with flake8
