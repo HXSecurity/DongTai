@@ -1,7 +1,7 @@
 #!/bin/bash
 SKIP_MYSQL=false
 SKIP_REDIS=false
-CHANGE_THIS_VERSION=1.0.6
+CHANGE_THIS_VERSION=1.1.0
 Info(){
   echo -e "[Info] $1"
 }
