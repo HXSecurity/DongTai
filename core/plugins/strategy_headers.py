@@ -67,20 +67,21 @@ def check_response_header(method_pool):
     try:
         response = parse_response(method_pool.res_header.strip() + '\n\n' + method_pool.res_body.strip())
         if check_csp(response):
-            save_vul('Response Without Content-Security-Policy Header', method_pool)
+            save_vul('Response Without Content-Security-Policy Header', method_pool, position='HTTP Response Header')
         if check_x_xss_protection(response):
             save_vul('Response With X-XSS-Protection Disabled', method_pool)
         if check_strict_transport_security(response):
-            save_vul('Response With Insecurely Configured Strict-Transport-Security Header', method_pool)
+            save_vul('Response With Insecurely Configured Strict-Transport-Security Header', method_pool,
+                     position='HTTP Response Header')
         if check_x_frame_options(response):
-            save_vul('Pages Without Anti-Clickjacking Controls', method_pool)
+            save_vul('Pages Without Anti-Clickjacking Controls', method_pool, position='HTTP Response Header')
         if check_x_content_type_options(response):
-            save_vul('Response Without X-Content-Type-Options Header', method_pool)
+            save_vul('Response Without X-Content-Type-Options Header', method_pool, position='HTTP Response Header')
     except Exception as e:
         logger.error("check_response_header failed, reason: " + str(e))
 
 
-def save_vul(vul_type, method_pool):
+def save_vul(vul_type, method_pool, position=None, data=None):
     hook_type_model = HookType.objects.values('id').filter(
         value=vul_type,
         enable=const.ENABLE,
@@ -99,21 +100,17 @@ def save_vul(vul_type, method_pool):
         vul.req_data = method_pool.req_data
         vul.res_header = method_pool.res_header
         vul.res_body = method_pool.res_body
-        vul.taint_value = None
-        vul.taint_position = None
+        vul.taint_value = data
+        vul.taint_position = position
         vul.context_path = method_pool.context_path
         vul.client_ip = method_pool.clent_ip
-        vul.top_stack = None
-        vul.bottom_stack = None
         vul.counts = vul.counts + 1
         vul.latest_time = timestamp
         vul.method_pool_id = method_pool.id
-        vul.full_stack = None
         vul.status_id = const.VUL_CONFIRMED
         vul.save(update_fields=[
             'req_header', 'req_params', 'req_data', 'res_header', 'res_body', 'taint_value', 'taint_position',
-            'method_pool_id', 'context_path', 'client_ip', 'top_stack', 'bottom_stack', 'full_stack', 'counts',
-            'latest_time', 'status_id'
+            'context_path', 'client_ip', 'counts', 'latest_time', 'method_pool_id', 'status_id'
         ])
     else:
         vul_strategy = IastStrategyModel.objects.values('level_id').filter(
@@ -139,8 +136,8 @@ def save_vul(vul_type, method_pool):
             full_stack=None,
             top_stack=None,
             bottom_stack=None,
-            taint_value=None,
-            taint_position=None,
+            taint_value=data,
+            taint_position=position,
             agent=method_pool.agent,
             context_path=method_pool.context_path,
             counts=1,
