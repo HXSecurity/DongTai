@@ -115,5 +115,4 @@ class EngineHookRuleTypeAddEndPoint(UserEndPoint):
                                                 vul_desc="",
                                                 vul_fix="",
                                                 hook_type=hook_type)
-        hook_type.save()
         return R.success(msg=_('Rule type successfully saved'))
