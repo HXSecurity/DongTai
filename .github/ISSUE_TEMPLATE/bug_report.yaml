@@ -3,7 +3,8 @@ description: Report a bug to help us improve DongTai
 title: "[Bug]: "
 labels: [bug]
 assignees:
-  - exexute
+  - Bidaya0
+  - luzhongyang
 body:
 - type: markdown
   attributes:
