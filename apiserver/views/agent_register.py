@@ -38,7 +38,6 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         project = IastProject.objects.values('id').filter(name=project_name,
                                                           user=user).first()
         is_audit = AgentRegisterEndPoint.get_is_audit()
-
         if project:
             if project_version:
                 project_current_version = project_version
@@ -277,7 +276,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             if agent_id != -1:
                 IastAgent.objects.filter(pk=agent_id).update(
                     register_time=int(time.time()))
-            return R.success(data={'id': agent_id, 'coreAutoStart': 1})
+            return R.success(data={'id': agent_id, 'coreAutoRegisterStart': 1})
         except Exception as e:
             logger.error(e)
             return R.failure(msg="探针注册失败，原因：{reason}".format(reason=e))
