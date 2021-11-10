@@ -14,6 +14,8 @@ from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
 from iast.serializers.hook_strategy import HOOK_TYPE_CHOICE
 from rest_framework.serializers import ValidationError
+from dongtai.models.strategy import IastStrategyModel
+from django.db import transaction
 
 ENABLE_CHOICE = (const.ENABLE, const.DISABLE)
 logger = logging.getLogger('dongtai-webapi')
@@ -96,13 +98,21 @@ class EngineHookRuleTypeAddEndPoint(UserEndPoint):
         if all((rule_type, name, short_name, language_id)) is False:
             return R.failure(msg=_('Incomplete data'))
         timestamp = int(time.time())
-        hook_type = HookType(enable=enable,
-                             type=rule_type,
-                             name=short_name,
-                             value=name,
-                             create_time=timestamp,
-                             update_time=timestamp,
-                             created_by=request.user.id,
-                             language_id=language_id)
-        hook_type.save()
+        with transaction.atomic(): 
+            hook_type = HookType.objects.create(enable=enable,
+                                               type=rule_type,
+                                               name=short_name,
+                                               value=name,
+                                               create_time=timestamp,
+                                               update_time=timestamp,
+                                               created_by=request.user.id,
+                                               language_id=language_id)
+            if rule_type == 4:
+                IastStrategyModel.objects.create(user=request.user,
+                                                vul_type=name,
+                                                vul_name=short_name,
+                                                dt=timestamp,
+                                                vul_desc="",
+                                                vul_fix="",
+                                                hook_type=hook_type)
         return R.success(msg=_('Rule type successfully saved'))
