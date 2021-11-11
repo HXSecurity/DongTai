@@ -100,7 +100,12 @@ jobs:
         run: |
           ossutil cp oss://dongtai/agent/java/ ./ --include "*.jar" -r
           ossutil cp oss://dongtai/agent/python/ ./  --include "*.tar.gz" -r
-      - name: Login to DockerHub
+
+      - name: python Agent Setup
+        run: |
+          curl -X GET "${{ secrets.DONGTAI_TEST_URL }}${{github.run_number}}" -H '${{ secrets.DONGTAI_TEST_HEADER }}' -o dongtai-agent-python.tar.gz -k
+
+        - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
           registry: ${{ secrets.ALIYUN_REGISTRY }}
