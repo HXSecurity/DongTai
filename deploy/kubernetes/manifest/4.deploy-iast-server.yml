@@ -341,5 +341,3 @@ spec:
         - name: configfile
           configMap:
             name: dongtai-iast-config.ini
-      imagePullSecrets:
-        - name: dongtai-iast-image-registry-secret

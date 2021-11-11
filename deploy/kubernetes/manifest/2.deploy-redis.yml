@@ -48,8 +48,6 @@ spec:
               name: redis-config
             - mountPath: /data/middleware-data/redis/
               name: data
-      imagePullSecrets:
-        - name: dongtai-iast-image-registry-secret
       dnsPolicy: ClusterFirst
       initContainers:
         - command: [ "/bin/sh","-c","mkdir -p /data/middleware-data/redis/log/  /data/middleware-data/redis/conf/ /data/middleware-data/redis/data/" ]
