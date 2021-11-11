@@ -149,7 +149,7 @@ class VulDetail(UserEndPoint):
                     'target_value': method.get('targetValues', None),
                     'node': f'{class_name}.{method_name}()',
                     'tag': method.get('tag', None),
-                    'code': method.get('code', None),
+                    'code': htmlescape(method.get('code', None)),
                 })
         except Exception as e:
             logger.error(_('Analysis of errovence analysis of stain call diagram: {}').format(__name__,e))
@@ -230,11 +230,11 @@ class VulDetail(UserEndPoint):
             'counts':
             vul.counts,
             'req_header':
-            self.parse_request(vul.http_method, vul.uri, vul.req_params,
+            htmlescape(self.parse_request(vul.http_method, vul.uri, vul.req_params,
                                vul.http_protocol, vul.req_header,
-                               vul.req_data),
+                               vul.req_data)),
             'response':
-            self.parse_response(vul.res_header, vul.res_body),
+            htmlescape(self.parse_response(vul.res_header, vul.res_body)),
             'graph':
             self.parse_graphy(vul.full_stack),
             'context_path':
@@ -351,6 +351,17 @@ class VulDetail(UserEndPoint):
         except Exception as e:
             logger.error(_('[{}] Vulnerability information parsing error, error message: {}').format(__name__,e))
             return R.failure(msg=_('Vulnerability data query error'))
+
+
+def htmlescape(string):
+    return string.replace(
+        '<em>', "6350be97a65823fc42ddd9dc78e17ddf13ff693b").replace(
+            '</em>', "4d415116bf74985fbdb232cd954cd40392fbcd69").replace(
+                '<',
+                '&lt;').replace("4d415116bf74985fbdb232cd954cd40392fbcd69",
+                                "</em>").replace(
+                                    "6350be97a65823fc42ddd9dc78e17ddf13ff693b",
+                                    "<em>")
 
 
 if __name__ == '__main__':
