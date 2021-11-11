@@ -64,8 +64,8 @@ class EngineAction(OpenApiEndPoint):
         methods=['GET']
     )
     def get(self, request):
-        agent_name = request.query_params.get('name')
-        agent = IastAgent.objects.filter(user=request.user, token=agent_name, is_running=1).first()
+        agent_id = request.query_params.get('agentId')
+        agent = IastAgent.objects.filter(user=request.user, pk=agent_id, is_running=1).first()
         if not agent:
             return R.failure("agent不存在或无权限访问")
 
@@ -78,7 +78,7 @@ class EngineAction(OpenApiEndPoint):
             agent.is_core_running = 1
             agent.latest_time = int(time.time())
             agent.save(update_fields=['is_control', 'is_core_running', 'latest_time'])
-            return R.success(data="coreStart", msg=str(agent.is_running) + agent.token)
+            return R.success(data="coreRegisterStart", msg=str(agent.is_running) + agent.token)
 
         # coreStart
         if agent.control == 3:
