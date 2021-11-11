@@ -51,7 +51,7 @@ class EngineUpdateEndPoint(OpenApiEndPoint):
                 return R.failure(msg="不需要更新或正在更新中")
 
 
-class EngineStopStart(OpenApiEndPoint):
+class EngineAction(OpenApiEndPoint):
     name = "iast_engine_update_status_edit"
     description = "IAST 检测引擎更新状态修改接口"
 
@@ -72,17 +72,27 @@ class EngineStopStart(OpenApiEndPoint):
         if agent.is_control == 0:
             return R.failure(msg="暂无命令", data="notcmd")
 
+        # coreRegisterStart
+        if agent.control == 2:
+            agent.is_control = 0
+            agent.is_core_running = 1
+            agent.latest_time = int(time.time())
+            agent.save(update_fields=['is_control', 'is_core_running', 'latest_time'])
+            return R.success(data="coreStart", msg=str(agent.is_running) + agent.token)
+
+        # coreStart
         if agent.control == 3:
             agent.is_control = 0
             agent.is_core_running = 1
             agent.latest_time = int(time.time())
             agent.save(update_fields=['is_control', 'is_core_running', 'latest_time'])
-            return R.success(data="start", msg=str(agent.is_running) + agent.token)
+            return R.success(data="coreStart", msg=str(agent.is_running) + agent.token)
 
+        # coreStop
         if agent.control == 4:
             agent.is_control = 0
             agent.is_core_running = 0
             agent.latest_time = int(time.time())
             agent.save(update_fields=['is_control', 'is_core_running', 'latest_time'])
-            return R.success(data="stop")
+            return R.success(data="coreStop")
         return R.success(data="notcmd")
