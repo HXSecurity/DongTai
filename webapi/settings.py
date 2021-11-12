@@ -119,14 +119,28 @@ XFF_TRUSTED_PROXY_DEPTH = 20
 CSRF_COOKIE_NAME = "DTCsrfToken"
 CSRF_HEADER_NAME = "HTTP_CSRF_TOKEN"
 # CSRF_COOKIE_DOMAIN = ".huoxian.cn"
-CSRF_TRUSTED_ORIGINS = (
-    ".huoxian.cn:8000",
-    ".huoxian.cn:8001",
-    ".huoxian.cn",
-    ".secnium.xyz"
-    ".secnium.xyz:8000"
-    ".secnium.xyz:8001"
-)
+#CSRF_TRUSTED_ORIGINS = (
+#    ".huoxian.cn:8000",
+#    ".huoxian.cn:8001",
+#    ".huoxian.cn",
+#    ".huoxian.club",
+#    ".secnium.xyz",
+#    ".secnium.xyz:8000",
+#    ".secnium.xyz:8001",
+#)
+def safe_execute(default, exception, function, *args):
+    try:
+        return function(*args)
+    except exception:
+        return default
+
+
+CSRF_TRUSTED_ORIGINS = tuple(
+    filter(
+        lambda x: x != "",
+        safe_execute("", BaseException, config.get, "security",
+                     "csrf_trust_origins").split(",")))
+print(CSRF_TRUSTED_ORIGINS)
 CSRF_COOKIE_AGE = 60 * 60 * 24
 
 AGENT_UPGRADE_URL = "https://www.huoxian.cn"
