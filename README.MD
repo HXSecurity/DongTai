@@ -8,6 +8,8 @@
 [![GitHub release](https://img.shields.io/github/v/release/HXSecurity/Dongtai-engine?label=Dongtai-engine)](https://github.com/HXSecurity/DongTai-engine/releases)
 [![GitHub release](https://img.shields.io/github/v/release/HXSecurity/Dongtai-web?label=Dongtai-web)](https://github.com/HXSecurity/DongTai-web/releases)
 [![GitHub release](https://img.shields.io/github/v/release/HXSecurity/DongTai-agent-java?label=DongTai-agent-java)](https://github.com/HXSecurity/DongTai-agent-java/releases)
+[![GitHub release](https://img.shields.io/github/v/release/HXSecurity/DongTai-agent-python?label=DongTai-agent-python)](https://github.com/HXSecurity/DongTai-agent-python/releases)
+
 
 
 [中文版本(Chinese version)](README.ZH-CN.MD)
