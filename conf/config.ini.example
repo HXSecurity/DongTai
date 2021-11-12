@@ -30,6 +30,9 @@ cc_addr = cc_addr
 access_key = LTAI5t7pu9WUT2DcbknfNiaD
 access_key_secret = ZoEOSi7KfayQ7JalvJVHa37fdZ4XFY
 
+
+[security]
+csrf_trust_origins = .huoxian.cn,.secnium.xyz
 [other]
 domain = http://localhost.domain/
 demo_session_cookie_domain = .huoxian.cn
