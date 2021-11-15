@@ -123,7 +123,9 @@ jobs:
             registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi-test:0.1.${{github.run_number}}
 
       - uses: actions/checkout@master
-        name: deploy to test cluster
+        name: Checkout
+
+      - name: deploy to test cluster
         uses: wahyd4/kubectl-helm-action@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_TEST_DATA }}
@@ -131,10 +133,8 @@ jobs:
           args: |
             find deploy/deploy-eks-iast-saas-openapi-test.yml -type f -exec sed -i 's/VERSION/0.1.${{github.run_number}}/g' {} \;
             ls deploy/deploy-eks-iast-saas-openapi-test.yml | xargs -I {} kubectl apply -f {}
-
-
-      - uses: actions/checkout@master
-        name: deploy to dev cluster
+            
+      - name: deploy to dev cluster
         uses: wahyd4/kubectl-helm-action@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_TEST_DATA }}
