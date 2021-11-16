@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: dongtai-openapi-container
-          image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi-test:VERSION
+          image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi-dev:VERSION
           imagePullPolicy: Always
           volumeMounts:
             - name: configfile
@@ -37,7 +37,7 @@ spec:
               value: "TEST"
       volumes:
         - name: configfile
-          configMap:
-            name: dongtai-iast-config.ini
+          secret:
+            secretName: dongtai-iast-config.ini
       imagePullSecrets:
         - name: aliyun-registry-secret
