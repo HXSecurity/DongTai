@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: dongtai-engine-container
-          image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine-test:VERSION
+          image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine-dev:VERSION
           imagePullPolicy: Always
           volumeMounts:
             - name: configfile
