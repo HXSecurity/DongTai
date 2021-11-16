@@ -137,7 +137,7 @@ jobs:
       - name: deploy to dev cluster
         uses: wahyd4/kubectl-helm-action@master
         env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_TEST_DATA }}
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DEV_DATA }}
         with:
           args: |
             find deploy/deploy-eks-iast-saas-openapi-dev.yml -type f -exec sed -i 's/VERSION/0.1.${{github.run_number}}/g' {} \;
