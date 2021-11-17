@@ -127,7 +127,7 @@ REDIS_STR=""
 if [ $SKIP_MYSQL == false ]; then
   export MYSQL_STR=`cat <<EOF;
 dongtai-mysql: 
-    image: dongtai/dongtai-mysql:$CHANGE_THIS_VERSION
+    image: dongtai.docker.scarf.sh/dongtai/dongtai-mysql:$CHANGE_THIS_VERSION
     restart: always
     volumes:
       - ./data:/var/lib/mysql:rw
@@ -139,7 +139,7 @@ fi
 if [ $SKIP_REDIS == false ]; then
   export REDIS_STR=`cat <<EOF;
 dongtai-redis:
-    image: dongtai/dongtai-redis:$CHANGE_THIS_VERSION
+    image: dongtai.docker.scarf.sh/dongtai/dongtai-redis:$CHANGE_THIS_VERSION
     restart: always
 
 EOF
@@ -152,13 +152,13 @@ services:
   $MYSQL_STR
   $REDIS_STR
   dongtai-webapi:
-    image: "dongtai/dongtai-webapi:$CHANGE_THIS_VERSION"
+    image: "dongtai.docker.scarf.sh/dongtai/dongtai-webapi:$CHANGE_THIS_VERSION"
     restart: always
     volumes:
       - "$PWD/config-tutorial.ini:/opt/dongtai/webapi/conf/config.ini"
 
   dongtai-web:
-    image: "dongtai/dongtai-web:$CHANGE_THIS_VERSION"
+    image: "dongtai.docker.scarf.sh/dongtai/dongtai-web:$CHANGE_THIS_VERSION"
     restart: always
     ports:
       - "$WEB_SERVICE_PORT:80"
@@ -168,7 +168,7 @@ services:
       - dongtai-webapi
 
   dongtai-openapi:
-    image: "dongtai/dongtai-openapi:$CHANGE_THIS_VERSION"
+    image: "dongtai.docker.scarf.sh/dongtai/dongtai-openapi:$CHANGE_THIS_VERSION"
     restart: always
     volumes:
        - "$PWD/config-tutorial.ini:/opt/dongtai/openapi/conf/config.ini"
@@ -176,14 +176,14 @@ services:
       - "$OPENAPI_SERVICE_PORT:8000"
 
   dongtai-engine:
-    image: "dongtai/dongtai-engine:$CHANGE_THIS_VERSION"
+    image: "dongtai.docker.scarf.sh/dongtai/dongtai-engine:$CHANGE_THIS_VERSION"
     restart: always
     volumes:
       - "$PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini"
 
 
   dongtai-engine-task:
-    image: "dongtai/dongtai-engine:$CHANGE_THIS_VERSION"
+    image: "dongtai.docker.scarf.sh/dongtai/dongtai-engine:$CHANGE_THIS_VERSION"
     restart: always
     command: ["/opt/dongtai/engine/docker/entrypoint.sh", "task"]
     volumes:

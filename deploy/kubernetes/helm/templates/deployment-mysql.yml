@@ -16,7 +16,7 @@ spec:
         app: mysql
     spec:
       containers:
-        - image: dongtai/dongtai-mysql:{{ .Values.imageVersion }}
+        - image: dongtai.docker.scarf.sh/dongtai/dongtai-mysql:{{ .Values.imageVersion }}
           name: mysql-container
           imagePullPolicy: Always
           ports:
