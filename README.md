@@ -110,3 +110,5 @@ The address is `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/`
 ### More resources
 - [Documentation](https://hxsecurity.github.io/DongTai-Doc/#/en-us/)
 - [DongTai WebSite](https://iast.io)
+
+<img src="https://static.scarf.sh/a.png?x-pxid=44779bf0-9262-4801-bb88-4a36ee0fdcfe" />
