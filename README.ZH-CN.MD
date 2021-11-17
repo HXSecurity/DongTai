@@ -132,3 +132,5 @@ $ docker run -d --name dongtai-openapi -p 8000:8000 -v /etc/dongtai/config.ini:/
 ### 文档
 - [官方文档](https://huoxianclub.github.io/LingZhi/#/)
 - [快速体验](https://iast.io)
+
+<img src="https://static.scarf.sh/a.png?x-pxid=693e2057-a509-4ebc-8322-e084ab861861" />
