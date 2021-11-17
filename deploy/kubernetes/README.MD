@@ -134,3 +134,4 @@ Avaliable values:
 helm uninstall dongtai-iast -n dongtai
 ```
 
+<img src="https://static.scarf.sh/a.png?x-pxid=a7858f70-7435-420a-bc4e-0b71a7727c99" />

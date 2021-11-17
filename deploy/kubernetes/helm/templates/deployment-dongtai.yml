@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: dongtai-webapi-container
-          image: dongtai/dongtai-webapi:{{ .Values.imageVersion }}
+          image: dongtai.docker.scarf.sh/dongtai/dongtai-webapi:{{ .Values.imageVersion }}
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: configfile
@@ -72,7 +72,7 @@ spec:
     spec:
       containers:
         - name: dongtai-openapi-container
-          image: dongtai/dongtai-openapi:{{ .Values.imageVersion }}
+          image: dongtai.docker.scarf.sh/dongtai/dongtai-openapi:{{ .Values.imageVersion }}
           imagePullPolicy: Always
           volumeMounts:
             - name: configfile
@@ -178,7 +178,7 @@ spec:
     spec:
       containers:
         - name: dongtai-web-container
-          image: dongtai/dongtai-web:{{ .Values.imageVersion }}
+          image: dongtai.docker.scarf.sh/dongtai/dongtai-web:{{ .Values.imageVersion }}
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: configfile
@@ -217,7 +217,7 @@ spec:
     spec:
       containers:
         - name: dongtai-engine-container
-          image: dongtai/dongtai-engine:{{ .Values.imageVersion }}
+          image: dongtai.docker.scarf.sh/dongtai/dongtai-engine:{{ .Values.imageVersion }}
           imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: configfile
@@ -270,7 +270,7 @@ spec:
     spec:
       containers:
         - name: dongtai-engine-task-container
-          image: dongtai/dongtai-engine:{{ .Values.imageVersion }}
+          image: dongtai.docker.scarf.sh/dongtai/dongtai-engine:{{ .Values.imageVersion }}
           command: [ "/bin/bash","/opt/dongtai/engine/docker/entrypoint.sh" ]
           args: [ "task" ]
           imagePullPolicy: Always
