@@ -108,5 +108,3 @@ Redoc地址为 `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/redo
 
 - [官方文档](https://hxsecurity.github.io/DongTai-Doc/#/)
 - [快速体验](https://iast.io)
-
-<img src="https://static.scarf.sh/a.png?x-pxid=44779bf0-9262-4801-bb88-4a36ee0fdcfe" />
