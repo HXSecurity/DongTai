@@ -106,7 +106,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
         if name:
             queryset = queryset.filter(name__icontains=name)
         page_summary, page_data = self.get_paginator(queryset, page, page_size)
-        return R.success(SensitiveInfoRuleSerializer(page_data,many=True).data,page=page_summary)
+        return R.success(data=SensitiveInfoRuleSerializer(page_data,many=True).data,page=page_summary)
     
     @extend_schema_with_envcheck(
         request=SensitiveInfoRuleCreateSerializer,
@@ -153,7 +153,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
         except ValidationError as e:
             return R.failure(data=e.detail)
         obj = IastSensitiveInfoRule.objects.filter(pk=pk).update(**ser.validated_data,latest_time=time.time())
-        return R.success(msg='update success')
+        return R.success(msg='update success',data=SensitiveInfoRuleSerializer(obj).data)
     @extend_schema_with_envcheck(
         tags=[_('SensitiveInfoRule')],
         summary=_('SensitiveInfoRule delete'),
@@ -174,7 +174,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
     )
     def retrieve(self, request, pk):
         obj = IastSensitiveInfoRule.objects.filter(pk=pk).first()
-        return R.success(SensitiveInfoRuleSerializer(obj).data)
+        return R.success(data=SensitiveInfoRuleSerializer(obj).data)
 class SensitiveInfoPatternTypeView(UserEndPoint):
 
     @extend_schema_with_envcheck(
