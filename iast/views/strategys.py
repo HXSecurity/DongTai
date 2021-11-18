@@ -16,7 +16,8 @@ from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from dongtai.models.hook_type import HookType
 from rest_framework import serializers
-
+from dongtai.models.program_language import IastProgramLanguage
+import time 
 class _StrategyResponseDataStrategySerializer(serializers.Serializer):
     id = serializers.CharField(help_text=_('The id of agent'))
     vul_name = serializers.CharField(help_text=_('The name of the vulnerability type targeted by the strategy'))
@@ -37,7 +38,7 @@ class StrategyCreateSerializer(serializers.Serializer):
     vul_type = serializers.CharField(help_text=_('Types of vulnerabilities targeted by the strategy'))
     state = serializers.CharField(help_text=_('This field indicates whether the vulnerability is enabled, 1 or 0'))
     vul_desc = serializers.CharField(help_text=_('Description of the corresponding vulnerabilities of the strategy'))
-    level = serializers.IntegerField(
+    level_id = serializers.IntegerField(
         help_text=_('The strategy corresponds to the level of vulnerability'))
     vul_fix = serializers.CharField(help_text=_(
         "Suggestions for repairing vulnerabilities corresponding to the strategy"
@@ -125,11 +126,21 @@ class StrategyEndpoint(UserEndPoint):
         response_schema=_ResponseSerializer,
     )
     def post(self, request):
-        ser = _DocumentArgsSerializer(data=request.data)
+        ser = StrategyCreateSerializer(data=request.data)
         try:
             if ser.is_valid(True):
                 pass
         except ValidationError as e:
             return R.failure(data=e.detail)
-        HookType.objects.create() 
-        IastStrategyModel.objects.create(**ser.validated_data,user=request.user,dt=time.time()) 
+        strategy = IastStrategyModel.objects.create(**ser.validated_data,
+                user=request.user,dt=time.time()) 
+        for language in IastProgramLanguage.objects.all(): 
+            HookType.objects.create(type=3,name=ser.validated_data['vul_name'],
+                value=ser.validated_data['vul_type'],enable=1,
+                create_time=time.time(),update_time=time.time(),
+                created_by=request.user.id,language=language,strategy=strategy)
+            HookType.objects.create(type=4,name=ser.validated_data['vul_name'],
+                value=ser.validated_data['vul_type'],enable=1,
+                create_time=time.time(),update_time=time.time(),
+                created_by=request.user.id,language=language,strategy=strategy)
+        return R.success(data=StrategySerializer(strategy).data)
