@@ -118,6 +118,8 @@ from iast.views.messages_del import MessagesDelEndpoint
 from iast.views.messages_send import MessagesSendEndpoint
 from iast.views.agent_alias_modified import AgentAliasModified
 from iast.views.engine_method_pool_time_range import MethodPoolTimeRangeProxy
+from iast.views.sensitive_info_rule import (SensitiveInfoRuleViewSet,SensitiveInfoPatternTypeView,SensitiveInfoPatternValidationView)
+
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
     path("talent/<int:pk>", TalentEndPoint.as_view()),
@@ -243,6 +245,10 @@ urlpatterns = [
     path('message/unread_count', MessagesNewEndpoint.as_view()),
     path('message/delete', MessagesDelEndpoint.as_view()),
     #    path('message/send', MessagesSendEndpoint.as_view()),
+    path('sensitive_info_rule',SensitiveInfoRuleViewSet.as_view({'get':'list','post':'create'})),
+    path('sensitive_info_rule/<int:pk>',SensitiveInfoRuleViewSet.as_view({'get':'retrieve','put':'update','delete':'destory'})),
+    path('sensitive_info_rule/pattern_type',SensitiveInfoPatternTypeView.as_view()),
+    path('sensitive_info_rule/regex_validation',SensitiveInfoPatternValidationView.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
