@@ -6,8 +6,16 @@ from dongtai.models.strategy import IastStrategyModel
 
 class StrategyModified(UserEndPoint):
 
+    @extend_schema_with_envcheck(
+        tags=[_('Strategy')],
+        summary=_('Strategy modified'),
+        description=_(
+            "Get a list of strategies."
+        ),
+        response_schema=_ResponseSerializer,
+    )
     def put(self, request, id_):
-        fields = ['name', 'vul_desc', 'vul_fix', 'enable']
+        fields = ['name', 'vul_desc', 'vul_fix', 'enable','level']
         data = {k: v for k, v in request.data.items() if k in fields}
         hook_type = HookType.objects.filter(pk=id_).first()
         _update(hook_type, data)

@@ -14,8 +14,9 @@ from dongtai.endpoint import UserEndPoint
 from iast.serializers.strategy import StrategySerializer
 from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
-
+from dongtai.models.hook_type import HookType
 from rest_framework import serializers
+
 class _StrategyResponseDataStrategySerializer(serializers.Serializer):
     id = serializers.CharField(help_text=_('The id of agent'))
     vul_name = serializers.CharField(help_text=_('The name of the vulnerability type targeted by the strategy'))
@@ -31,12 +32,32 @@ class _StrategyResponseDataStrategySerializer(serializers.Serializer):
     ))
 
 
+class StrategyCreateSerializer(serializers.Serializer):
+    vul_name = serializers.CharField(help_text=_('The name of the vulnerability type targeted by the strategy'))
+    vul_type = serializers.CharField(help_text=_('Types of vulnerabilities targeted by the strategy'))
+    state = serializers.CharField(help_text=_('This field indicates whether the vulnerability is enabled, 1 or 0'))
+    vul_desc = serializers.CharField(help_text=_('Description of the corresponding vulnerabilities of the strategy'))
+    level = serializers.IntegerField(
+        help_text=_('The strategy corresponds to the level of vulnerability'))
+    vul_fix = serializers.CharField(help_text=_(
+        "Suggestions for repairing vulnerabilities corresponding to the strategy"
+    ))
 
 
 _ResponseSerializer = get_response_serializer(
     data_serializer=_StrategyResponseDataStrategySerializer(many=True), )
 
 
+class _StrategyArgsSerializer(serializers.Serializer):
+    page_size = serializers.IntegerField(default=20,
+                                         help_text=_('Number per page'))
+    page = serializers.IntegerField(default=1, help_text=_('Page index'))
+    name = serializers.CharField(
+        default=None,
+        help_text=_(
+            "The name of the item to be searched, supports fuzzy search."))
+
+STATUS_DELETE = 'delete'
 class StrategyEndpoint(UserEndPoint):
     @extend_schema_with_envcheck(
         tags=[_('Strategy')],
@@ -47,6 +68,14 @@ class StrategyEndpoint(UserEndPoint):
         response_schema=_ResponseSerializer,
     )
     def get(self, request):
+        q = ~Q(status=STATUS_DELETE)
+        if name:
+            q = q & Q(vul_name__icontains=name)
+        queryset = IastStrategyModel.objects.filter(q).all()
+        page_summary, page_data = self.get_paginator(queryset, page, page_size)
+        return R.success(data=StrategySerializer(page_data, many=True).data,
+                         page=page_summary)
+        
         strategy_models = HookType.objects.values(
             'id', 'name', 'value',
             'enable').filter(type=const.RULE_SINK).exclude(enable=const.DELETE)
@@ -86,3 +115,21 @@ class StrategyEndpoint(UserEndPoint):
             return R.success(data=list(models.values()))
         else:
             return R.success(msg=_('No strategy'))
+    @extend_schema_with_envcheck(
+        request=StrategyCreateSerializer,
+        tags=[_('Strategy')],
+        summary=_('Strategy Add'),
+        description=_(
+            "Generate corresponding strategy group according to the strategy selected by the user."
+        ),
+        response_schema=_ResponseSerializer,
+    )
+    def post(self, request):
+        ser = _DocumentArgsSerializer(data=request.data)
+        try:
+            if ser.is_valid(True):
+                pass
+        except ValidationError as e:
+            return R.failure(data=e.detail)
+        HookType.objects.create() 
+        IastStrategyModel.objects.create(**ser.validated_data,user=request.user,dt=time.time()) 
