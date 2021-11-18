@@ -47,12 +47,22 @@ class IastSensitiveInfoRule(models.Model):
         db_table = 'iast_sensitive_info_rule'
 class SensitiveInfoRuleSerializer(serializers.ModelSerializer):
     strategy_name = serializers.SerializerMethodField()
+    strategy_id = serializers.SerializerMethodField()
+    pattern_type_id = serializers.SerializerMethodField()
+    pattern_type_name = serializers.SerializerMethodField()
     class Meta:
         model = IastSensitiveInfoRule
-        fields = ['id', 'strategy_name','pattern_type','pattern','status','latest_time']
+        fields = ['id', 'strategy_name','strategy_id','pattern_type_id','pattern_type_name','pattern','status','latest_time']
     
     def get_strategy_name(self,obj):
         return obj.strategy.vul_name
+
+    def get_strategy_id(self,obj):
+        return obj.strategy.id
+    def get_pattern_type_id(self,obj):
+        return obj.pattern_type.id
+    def get_pattern_type_name(self,obj):
+        return obj.pattern_type.name
 class SensitiveInfoPatternTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = IastPatternType
