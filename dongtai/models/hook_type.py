@@ -25,6 +25,7 @@ class HookType(models.Model):
                                  blank=True,
                                  default='',
                                  on_delete=models.DO_NOTHING,
+                                 db_column='strategy_id',
                                  db_constraint=False,)
     class Meta:
         managed = get_managed()
