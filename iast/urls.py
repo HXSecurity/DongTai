@@ -248,7 +248,7 @@ urlpatterns = [
     path('sensitive_info_rule',SensitiveInfoRuleViewSet.as_view({'get':'list','post':'create'})),
     path('sensitive_info_rule/<int:pk>',SensitiveInfoRuleViewSet.as_view({'get':'retrieve','put':'update','delete':'destory'})),
     path('sensitive_info_rule/pattern_type',SensitiveInfoPatternTypeView.as_view()),
-    path('sensitive_info_rule/regex_validation',SensitiveInfoPatternValidationView.as_view()),
+    path('sensitive_info_rule/<str:pattern_type>_validation',SensitiveInfoPatternValidationView.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
