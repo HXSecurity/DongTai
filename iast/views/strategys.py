@@ -150,9 +150,9 @@ class StrategyEndpoint(UserEndPoint):
             HookType.objects.create(type=3,name=ser.validated_data['vul_name'],
                 value=ser.validated_data['vul_type'],enable=1,
                 create_time=time.time(),update_time=time.time(),
-                created_by=request.user.id,language=language,strategy=strategy)
+                created_by=request.user.id,language=language,vul_strategy=strategy)
             HookType.objects.create(type=4,name=ser.validated_data['vul_name'],
                 value=ser.validated_data['vul_type'],enable=1,
                 create_time=time.time(),update_time=time.time(),
-                created_by=request.user.id,language=language,strategy=strategy)
+                created_by=request.user.id,language=language,vul_strategy=strategy)
         return R.success(data=StrategySerializer(strategy).data)
