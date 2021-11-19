@@ -6,6 +6,7 @@
 from dongtai.models.hook_type import HookType
 from dongtai.models.hook_strategy import HookStrategy
 from dongtai.utils import const
+from dongtai.models.strategy import IastStrategyModel
 
 from dongtai.endpoint import R
 from dongtai.endpoint import TalentAdminEndPoint
