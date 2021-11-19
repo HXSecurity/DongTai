@@ -55,16 +55,32 @@ class HeartBeatHandler(IReportHandler):
         heartbeat_count = queryset.values('id').count()
         if heartbeat_count == 1:
             heartbeat = queryset.first()
-            heartbeat.memory = self.memory
-            heartbeat.cpu = self.cpu
-            heartbeat.req_count = self.req_count
-            heartbeat.report_queue = self.report_queue
-            heartbeat.method_queue = self.method_queue
-            heartbeat.replay_queue = self.replay_queue
-            heartbeat.dt = int(time.time())
-            heartbeat.save(update_fields=[
-                'memory', 'cpu', 'req_count', 'dt', 'report_queue', 'method_queue', 'replay_queue'
-            ])
+            if self.replay_queue == 1:
+                heartbeat.req_count = self.req_count
+                heartbeat.report_queue = self.report_queue
+                heartbeat.method_queue = self.method_queue
+                heartbeat.replay_queue = self.replay_queue
+                heartbeat.dt = int(time.time())
+                heartbeat.save(update_fields=[
+                    'req_count', 'dt', 'report_queue', 'method_queue', 'replay_queue'
+                ])
+            elif self.replay_queue == 0:
+                heartbeat.memory = self.memory
+                heartbeat.cpu = self.cpu
+                heartbeat.save(update_fields=[
+                    'req_count', 'dt', 'report_queue', 'method_queue', 'replay_queue'
+                ])
+            else:
+                heartbeat.memory = self.memory
+                heartbeat.cpu = self.cpu
+                heartbeat.req_count = self.req_count
+                heartbeat.report_queue = self.report_queue
+                heartbeat.method_queue = self.method_queue
+                heartbeat.replay_queue = self.replay_queue
+                heartbeat.dt = int(time.time())
+                heartbeat.save(update_fields=[
+                    'memory', 'cpu', 'req_count', 'dt', 'report_queue', 'method_queue', 'replay_queue'
+                ])
         else:
             queryset.delete()
             IastHeartbeat.objects.create(memory=self.memory,
@@ -115,5 +131,4 @@ class HeartBeatHandler(IReportHandler):
         return list()
 
     def save(self):
-        if self.return_queue == 0 and self.return_queue is None:
-            self.save_heartbeat()
+        self.save_heartbeat()
