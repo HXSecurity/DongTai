@@ -29,10 +29,11 @@ _ResponseSerializer = get_response_serializer(
 
 class StrategyAdd(UserEndPoint):
 
-    @extend_schema_with_envcheck( 
+    @extend_schema_with_envcheck(
+        
         request=_StrategyAddBodyargsSerializer,
         tags=[_('Strategy')],
-        summary=_('Sacn Strategy Add'),
+        summary=_('Strategy Add'),
         description=_(
             "Generate corresponding strategy group according to the strategy selected by the user."
         ),

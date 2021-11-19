@@ -15,11 +15,12 @@ from dongtai.endpoint import UserEndPoint
 from iast.serializers.strategy import StrategySerializer
 from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
-from dongtai.models.hook_type import HookType
+
 from rest_framework import serializers
 from dongtai.models.program_language import IastProgramLanguage
 import time 
 from rest_framework.serializers import ValidationError
+
 
 class _StrategyResponseDataStrategySerializer(serializers.Serializer):
     id = serializers.CharField(help_text=_('The id of agent'))
@@ -36,32 +37,12 @@ class _StrategyResponseDataStrategySerializer(serializers.Serializer):
     ))
 
 
-class StrategyCreateSerializer(serializers.Serializer):
-    vul_name = serializers.CharField(help_text=_('The name of the vulnerability type targeted by the strategy'))
-    vul_type = serializers.CharField(help_text=_('Types of vulnerabilities targeted by the strategy'))
-    state = serializers.CharField(help_text=_('This field indicates whether the vulnerability is enabled, 1 or 0'))
-    vul_desc = serializers.CharField(help_text=_('Description of the corresponding vulnerabilities of the strategy'))
-    level_id = serializers.IntegerField(
-        help_text=_('The strategy corresponds to the level of vulnerability'))
-    vul_fix = serializers.CharField(help_text=_(
-        "Suggestions for repairing vulnerabilities corresponding to the strategy"
-    ))
 
 
 _ResponseSerializer = get_response_serializer(
     data_serializer=_StrategyResponseDataStrategySerializer(many=True), )
 
 
-class _StrategyArgsSerializer(serializers.Serializer):
-    page_size = serializers.IntegerField(default=20,
-                                         help_text=_('Number per page'))
-    page = serializers.IntegerField(default=1, help_text=_('Page index'))
-    name = serializers.CharField(
-        default=None,
-        help_text=_(
-            "The name of the item to be searched, supports fuzzy search."))
-
-STATUS_DELETE = 'delete'
 class StrategyEndpoint(UserEndPoint):
     @extend_schema_with_envcheck(
         [_StrategyArgsSerializer],
@@ -89,6 +70,7 @@ class StrategyEndpoint(UserEndPoint):
         return R.success(data=StrategySerializer(page_data, many=True).data,
                          page=page_summary)
         
+
         strategy_models = HookType.objects.values(
             'id', 'name', 'value',
             'enable').filter(type=const.RULE_SINK).exclude(enable=const.DELETE)
