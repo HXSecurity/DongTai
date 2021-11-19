@@ -131,10 +131,12 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
             return R.failure(data=e.detail)
         strategy = IastStrategyModel.objects.filter(pk=strategy_id).first()
         pattern_type = IastPatternType.objects.filter(pk=pattern_type_id).first()
-        pattern_test_dict = {1:regextest,2:jsontest}
+        pattern_test_dict = {1:regexcompile,2:jqcompile}
         test = pattern_test_dict.get(pattern_type_id,None)
-        status,data = test('[1,2,3]','pattern')
-        if strategy and pattern_type and test and status:
+        if not test:
+            return R.failure()
+        status_ = test(pattern)
+        if strategy and pattern_type and status_:
             obj = IastSensitiveInfoRule.objects.create(strategy=strategy,
                     pattern_type=pattern_type,
                     pattern=pattern,
@@ -221,16 +223,33 @@ class SensitiveInfoPatternValidationView(UserEndPoint):
         test = pattern_test_dict[pattern_type]
         data, status = test(test_data,pattern)
         return R.success(data={'status':status,'data':data})
+def regexcompile(pattern):
+    try:
+        regex = re.compile(pattern)
+    except Exception as e:
+        print(e)
+        return False
+    return True
+
+def jqcompile(pattern):
+    try:
+        regex = jq.compile(pattern)
+    except Exception as e:
+        print(e)
+        return False
+    return True
+
 def regextest(test_data,pattern):
     try:
-        ret = re.match(pattern,test_data)
-        data = ret.group()
-        status = 1
+        regex = re.compile(pattern)
     except Exception as e:
         print(e)
         data = ''
         status = 0
-    return data,status 
+        return data,status 
+    ret = regex.match(test_data)
+    data = ret.group() if ret else ''
+    return data,1
 def jsontest(test_data,pattern):
     try:
         data = jq.compile(pattern).input(text=test_data).text()
