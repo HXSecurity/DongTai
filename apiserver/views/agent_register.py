@@ -276,7 +276,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             if agent_id != -1:
                 IastAgent.objects.filter(pk=agent_id).update(
                     register_time=int(time.time()))
-            return R.success(data={'id': agent_id, 'coreAutoRegisterStart': 1})
+            return R.success(data={'id': agent_id, 'coreAutoStart': 1})
         except Exception as e:
             logger.error(e)
             return R.failure(msg="探针注册失败，原因：{reason}".format(reason=e))
