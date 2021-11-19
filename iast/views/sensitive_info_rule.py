@@ -50,9 +50,14 @@ class SensitiveInfoRuleSerializer(serializers.ModelSerializer):
     def get_pattern_type_name(self,obj):
         return obj.pattern_type.name
 class SensitiveInfoPatternTypeSerializer(serializers.ModelSerializer):
+    url = serializers.SerializerMethodField()
     class Meta:
         model = IastPatternType
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'url']
+
+    def get_url(self,obj):
+        url_dict = {1:'regex',2:'json'} 
+        return url_dict.get(obj.id,'')
     
 
 class SensitiveInfoRuleCreateSerializer(serializers.Serializer):
@@ -74,7 +79,7 @@ class _SensitiveInfoArgsSerializer(serializers.Serializer):
 class _RegexPatternValidationSerializer(serializers.Serializer):
     pattern = serializers.CharField(help_text=_('regex pattern'))
     test_data = serializers.CharField(help_text=_('the data for test regex'))
-
+  
 class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
     @extend_schema_with_envcheck(
         [_SensitiveInfoArgsSerializer],
@@ -210,11 +215,12 @@ class SensitiveInfoPatternValidationView(UserEndPoint):
         return R.success(data={'status':status,'data':data})
 def regextest(test_data,pattern):
     try:
-        with connection.cursor(prepared=True) as cur:        
+        with connection.cursor() as cur:        
             cur.execute("SELECT * FROM (SELECT %s as test_data FROM DUAL) as test_table WHERE test_data REGEXP %s",(test_data,pattern),)
             data = cur.fetchone()
             status = 1
-    except:
+    except Exception as e:
+        print(e)
         data = ''
         status = 0
     return data,status 
