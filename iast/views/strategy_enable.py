@@ -7,6 +7,7 @@
 from dongtai.models.hook_type import HookType
 from dongtai.models.hook_strategy import HookStrategy
 from dongtai.utils import const
+from dongtai.models.strategy import IastStrategyModel
 
 from dongtai.endpoint import R
 from dongtai.endpoint import TalentAdminEndPoint
@@ -18,6 +19,7 @@ _ResponseSerializer = get_response_serializer(status_msg_keypair=(
     ((202, _('Strategy does not exist')), ''),
 ))
 
+ENABLE = 'enable'
 
 class StrategyEnableEndpoint(TalentAdminEndPoint):
     @extend_schema_with_envcheck(
@@ -29,18 +31,22 @@ class StrategyEnableEndpoint(TalentAdminEndPoint):
         response_schema=_ResponseSerializer,
     )
     def get(self, request, id):
-        strategy_model = HookType.objects.filter(id=id).first()
-        if strategy_model:
-            counts = strategy_model.strategies.filter(enable=const.HOOK_TYPE_DISABLE).update(
-                enable=const.HOOK_TYPE_ENABLE)
-            strategy_model.enable = const.HOOK_TYPE_ENABLE
-            strategy_model.save(update_fields=['enable'])
-
-            return R.success(msg=_('Policy enabled success, total {} hook rules').format(counts))
+        strategy = IastStrategyModel.objects.filter(id=id).first()
+        strategy_models = HookType.objects.filter(vul_strategy=strategy).first()
+        if strategy :
+            strategy.state = ENABLE
+            strategy.save()
+            total_counts = 0
+            for strategy_model in strategy_models:
+                counts = strategy_model.strategies.filter(enable=const.HOOK_TYPE_DISABLE).update(
+                    enable=const.HOOK_TYPE_ENABLE)
+                strategy_model.enable = const.HOOK_TYPE_ENABLE
+                strategy_model.save(update_fields=['enable'])
+                total_counts += counts 
+            return R.success(msg=_('Policy enabled success, total {} hook rules').format(total_counts))
         else:
             return R.failure(msg=_('Strategy does not exist'))
 
 
-if __name__ == '__main__':
-    
+if __name__ == '__main__': 
     HookStrategy.objects.values("id").count()
