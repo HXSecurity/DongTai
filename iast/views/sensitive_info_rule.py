@@ -30,6 +30,7 @@ from dongtai.models.user import User
 import time
 from django.db.models import Q
 from dongtai.models.sensitive_info import IastPatternType,IastSensitiveInfoRule
+import jq
 class SensitiveInfoRuleSerializer(serializers.ModelSerializer):
     strategy_name = serializers.SerializerMethodField()
     strategy_id = serializers.SerializerMethodField()
@@ -193,19 +194,58 @@ class SensitiveInfoPatternValidationView(UserEndPoint):
         _("Get the item corresponding to the user, support fuzzy search based on name."
           ),
     )
+    def post(self,request,pattern_type):
+        pattern_test_dict = {'regex':regextest,'json':jsontest}
+        ser = _RegexPatternValidationSerializer(data=request.data)
+        try:
+            if ser.is_valid(True):
+                test_data = ser.validated_data['test_data']
+                pattern = ser.validated_data['pattern']
+            if pattern_type not in pattern_test_dict.keys():
+                return R.failure()
+        except ValidationError as e:
+            return R.failure(data=e.detail)
+        test = pattern_test_dict[pattern_type]
+        data, status = test(test_data,pattern)
+        return R.success(data={'status':status,'data':data})
+class SensitiveInfoPatternValidationJsonView(UserEndPoint):
+    @extend_schema_with_envcheck(
+        request=_RegexPatternValidationSerializer,
+        tags=[_('SensitiveInfoRule')],
+        summary=_('SensitiveInfoRule validated regex_pattern'),
+        description=
+        _("Get the item corresponding to the user, support fuzzy search based on name."
+          ),
+    )
     def post(self,request):
         ser = _RegexPatternValidationSerializer(data=request.data)
         try:
             if ser.is_valid(True):
                 test_data = ser.validated_data['test_data']
                 pattern = ser.validated_data['pattern']
+                pattern_type_id = ser.validated_data['pattern_type_id']
+                
         except ValidationError as e:
             return R.failure(data=e.detail)
-        with connection.cursor() as cur:        
-            cur.execute("SELECT * FROM (SELECT %s as test_data FROM DUAL) as test_table WHERE test_data REGEXP %s",(test_data,pattern))
-            data = cur.fetchone()
-        if data:
-            status = 1
-        else:
-            status = 0
+        test = pattern_test_dict.get(2)
+        data, status = test(test_data,pattern)
         return R.success(data={'status':status,'data':data})
+def regextest(test_data,pattern):
+    try:
+        with connection.cursor(prepared=True) as cur:        
+            cur.execute("SELECT * FROM (SELECT %s as test_data FROM DUAL) as test_table WHERE test_data REGEXP %s",(test_data,pattern),)
+            data = cur.fetchone()
+            status = 1
+    except:
+        data = ''
+        status = 0
+    return data,status 
+def jsontest(test_data,pattern):
+    try:
+        data = jq.compile(pattern).input(text=test_data).text()
+        status = 1
+    except Exception as e:
+        print(e)
+        data = ''
+        status = 0
+    return data, status 
