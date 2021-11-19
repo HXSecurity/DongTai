@@ -47,6 +47,7 @@ class SensitiveInfoRuleSerializer(serializers.ModelSerializer):
 
     def get_strategy_id(self,obj):
         return obj.strategy.id
+    
     def get_pattern_type_id(self,obj):
         return obj.pattern_type.id
     def get_pattern_type_name(self,obj):
@@ -112,7 +113,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
         return R.success(data=SensitiveInfoRuleSerializer(page_data,many=True).data,page=page_summary)
     
     @extend_schema_with_envcheck(
-        request=SensitiveInfoRuleCreateSerializer,
+            request=SensitiveInfoRuleCreateSerializer,
         tags=[_('SensitiveInfoRule')],
         summary=_('SensitiveInfoRule Create'),
         description=
@@ -164,7 +165,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
         except ValidationError as e:
             return R.failure(data=e.detail)
         obj = IastSensitiveInfoRule.objects.filter(pk=pk).update(**ser.validated_data,latest_time=time.time())
-        return R.success(msg='update success',data=SensitiveInfoRuleSerializer(obj).data)
+        return R.success(msg='update success')
     @extend_schema_with_envcheck(
         tags=[_('SensitiveInfoRule')],
         summary=_('SensitiveInfoRule delete'),

@@ -34,7 +34,7 @@ class StrategyDelete(UserEndPoint):
         response_schema=_ResponseSerializer,
     )
     def delete(self, request, id_):
-        strategy = IastStrategyModel.objects.filter(id=id).first()
+        strategy = IastStrategyModel.objects.filter(id=id_).first()
         hook_types = HookType.objects.filter(vul_strategy=strategy).all()
         if not strategy:
             return R.failure(msg=_('This strategy does not exist'))
