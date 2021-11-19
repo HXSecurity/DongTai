@@ -24,7 +24,7 @@ class ReportUploadEndPoint(OpenApiEndPoint):
         responses=R,
         methods=['GET']
     )
-    def get(self, request):
+    def post(self, request):
         try:
             
             report = parse_data(request.read())
