@@ -19,6 +19,8 @@ from dongtai.models.hook_type import HookType
 from rest_framework import serializers
 from dongtai.models.program_language import IastProgramLanguage
 import time 
+from rest_framework.serializers import ValidationError
+
 class _StrategyResponseDataStrategySerializer(serializers.Serializer):
     id = serializers.CharField(help_text=_('The id of agent'))
     vul_name = serializers.CharField(help_text=_('The name of the vulnerability type targeted by the strategy'))
@@ -62,6 +64,7 @@ class _StrategyArgsSerializer(serializers.Serializer):
 STATUS_DELETE = 'delete'
 class StrategyEndpoint(UserEndPoint):
     @extend_schema_with_envcheck(
+        [_StrategyArgsSerializer],
         tags=[_('Strategy')],
         summary=_('Strategy List'),
         description=_(
@@ -78,7 +81,7 @@ class StrategyEndpoint(UserEndPoint):
                 name = ser.validated_data['name']
         except ValidationError as e:
             return R.failure(data=e.detail)
-        q = ~Q(status=STATUS_DELETE)
+        q = ~Q(state=STATUS_DELETE)
         if name:
             q = q & Q(vul_name__icontains=name)
         queryset = IastStrategyModel.objects.filter(q).all()
