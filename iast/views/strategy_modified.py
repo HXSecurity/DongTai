@@ -5,6 +5,7 @@ from dongtai.models.strategy import IastStrategyModel
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
+from dongtai.endpoint import TalentAdminEndPoint
 
 _ResponseSerializer = get_response_serializer()
 
@@ -19,7 +20,7 @@ class StrategyCreateSerializer(serializers.Serializer):
         "Suggestions for repairing vulnerabilities corresponding to the strategy"
     ))
 
-class StrategyModified(UserEndPoint):
+class StrategyModified(TalentAdminEndPoint):
 
     @extend_schema_with_envcheck(
         request=StrategyCreateSerializer,
