@@ -21,6 +21,8 @@ class _StrategyResponseDataStrategySerializer(serializers.Serializer):
 
 _ResponseSerializer = get_response_serializer(
     data_serializer=_StrategyResponseDataStrategySerializer(many=True), )
+
+DELETE = 'delete'
 class StrategyDelete(UserEndPoint):
 
     @extend_schema_with_envcheck(
@@ -32,13 +34,17 @@ class StrategyDelete(UserEndPoint):
         response_schema=_ResponseSerializer,
     )
     def delete(self, request, id_):
-        hook_type = HookType.objects.filter(pk=id_).first()
-        if not hook_type:
+        strategy = IastStrategyModel.objects.filter(id=id).first()
+        hook_types = HookType.objects.filter(vul_strategy=strategy).all()
+        if not strategy:
             return R.failure(msg=_('This strategy does not exist'))
-        hook_strategies = hook_type.strategies.all()
-        for hook_strategy in hook_strategies:
-            hook_strategy.enable = const.DELETE
-            hook_strategy.save()
-        hook_type.enable = const.DELETE
-        hook_type.save()
+        strategy.state = DELETE
+        strategy.save()
+        for hook_type in hook_types:
+            hook_strategies = hook_type.strategies.all()
+            for hook_strategy in hook_strategies:
+                hook_strategy.enable = const.DELETE
+                hook_strategy.save()
+            hook_type.enable = const.DELETE
+            hook_type.save()
         return R.success(data={"id": id_})
