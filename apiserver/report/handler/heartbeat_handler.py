@@ -52,15 +52,15 @@ class HeartBeatHandler(IReportHandler):
         self.agent.online = 1
         self.agent.save(update_fields=['is_running', 'online'])
         queryset = IastHeartbeat.objects.filter(agent=self.agent)
-        heartbeat_count = queryset.values('id').count()
-        if heartbeat_count == 1:
-            heartbeat = queryset.first()
+        heartbeat = queryset.order_by('-id').first()
+        if heartbeat:
+            queryset.exclude(pk=heartbeat.id).delete()
+            heartbeat.dt = int(time.time())
             if self.replay_queue == 1:
                 heartbeat.req_count = self.req_count
                 heartbeat.report_queue = self.report_queue
                 heartbeat.method_queue = self.method_queue
                 heartbeat.replay_queue = self.replay_queue
-                heartbeat.dt = int(time.time())
                 heartbeat.save(update_fields=[
                     'req_count', 'dt', 'report_queue', 'method_queue', 'replay_queue'
                 ])
@@ -68,7 +68,7 @@ class HeartBeatHandler(IReportHandler):
                 heartbeat.memory = self.memory
                 heartbeat.cpu = self.cpu
                 heartbeat.save(update_fields=[
-                    'req_count', 'dt', 'report_queue', 'method_queue', 'replay_queue'
+                    'memory','cpu', 'dt'
                 ])
             else:
                 heartbeat.memory = self.memory
@@ -77,12 +77,10 @@ class HeartBeatHandler(IReportHandler):
                 heartbeat.report_queue = self.report_queue
                 heartbeat.method_queue = self.method_queue
                 heartbeat.replay_queue = self.replay_queue
-                heartbeat.dt = int(time.time())
                 heartbeat.save(update_fields=[
                     'memory', 'cpu', 'req_count', 'dt', 'report_queue', 'method_queue', 'replay_queue'
                 ])
         else:
-            queryset.delete()
             IastHeartbeat.objects.create(memory=self.memory,
                                          cpu=self.cpu,
                                          req_count=self.req_count,
