@@ -215,11 +215,12 @@ class SensitiveInfoPatternValidationView(UserEndPoint):
         return R.success(data={'status':status,'data':data})
 def regextest(test_data,pattern):
     try:
-        with connection.cursor(prepared=True) as cur:        
+        with connection.cursor() as cur:        
             cur.execute("SELECT * FROM (SELECT %s as test_data FROM DUAL) as test_table WHERE test_data REGEXP %s",(test_data,pattern),)
             data = cur.fetchone()
             status = 1
-    except:
+    except Exception as e:
+        print(e)
         data = ''
         status = 0
     return data,status 
