@@ -540,6 +540,9 @@ def export_report():
     """
     logger.info(f'导出报告')
     report = ProjectReport.objects.filter(status=0).first()
+    if not report:
+        logger.error("暂无需要导出的报告")
+        return 
     try:
         report.status = 1
         report.save()
