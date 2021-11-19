@@ -208,28 +208,6 @@ class SensitiveInfoPatternValidationView(UserEndPoint):
         test = pattern_test_dict[pattern_type]
         data, status = test(test_data,pattern)
         return R.success(data={'status':status,'data':data})
-class SensitiveInfoPatternValidationJsonView(UserEndPoint):
-    @extend_schema_with_envcheck(
-        request=_RegexPatternValidationSerializer,
-        tags=[_('SensitiveInfoRule')],
-        summary=_('SensitiveInfoRule validated regex_pattern'),
-        description=
-        _("Get the item corresponding to the user, support fuzzy search based on name."
-          ),
-    )
-    def post(self,request):
-        ser = _RegexPatternValidationSerializer(data=request.data)
-        try:
-            if ser.is_valid(True):
-                test_data = ser.validated_data['test_data']
-                pattern = ser.validated_data['pattern']
-                pattern_type_id = ser.validated_data['pattern_type_id']
-                
-        except ValidationError as e:
-            return R.failure(data=e.detail)
-        test = pattern_test_dict.get(2)
-        data, status = test(test_data,pattern)
-        return R.success(data={'status':status,'data':data})
 def regextest(test_data,pattern):
     try:
         with connection.cursor(prepared=True) as cur:        
