@@ -7,11 +7,10 @@ import time
 from http.client import HTTPResponse
 from io import BytesIO
 
-from dongtai.models.hook_type import HookType
+from celery.apps.worker import logger
 from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.utils import const
-from celery.apps.worker import logger
 
 
 class FakeSocket():
@@ -82,13 +81,16 @@ def check_response_header(method_pool):
 
 
 def save_vul(vul_type, method_pool, position=None, data=None):
-    hook_type_model = HookType.objects.values('id').filter(
-        value=vul_type,
-        enable=const.ENABLE,
-        created_by__in=(1, method_pool.agent.user.id)
+    vul_strategy = IastStrategyModel.objects.filter(
+        vul_type=vul_type,
+        state=const.STRATEGY_ENABLE,
+        user_id__in=(1, method_pool.agent.user.id)
     ).first()
+    if vul_strategy is None:
+        logger.error(f'There is no corresponding strategy for the current vulnerability: {vul_type}')
+
     vul = IastVulnerabilityModel.objects.filter(
-        hook_type_id=hook_type_model['id'],
+        hook_type=vul_strategy.hook_type,
         uri=method_pool.uri,
         http_method=method_pool.http_method,
         method_pool_id=method_pool.id
@@ -107,22 +109,14 @@ def save_vul(vul_type, method_pool, position=None, data=None):
         vul.counts = vul.counts + 1
         vul.latest_time = timestamp
         vul.method_pool_id = method_pool.id
-        vul.status_id = const.VUL_CONFIRMED
         vul.save(update_fields=[
             'req_header', 'req_params', 'req_data', 'res_header', 'res_body', 'taint_value', 'taint_position',
-            'context_path', 'client_ip', 'counts', 'latest_time', 'method_pool_id', 'status_id'
+            'context_path', 'client_ip', 'counts', 'latest_time', 'method_pool_id'
         ])
     else:
-        vul_strategy = IastStrategyModel.objects.values('level_id').filter(
-            hook_type_id=hook_type_model['id'],
-            state=const.STRATEGY_ENABLE,
-            user_id__in=(1, method_pool.agent.user.id)
-        ).first()
-        if vul_strategy is None:
-            logger.error(f'There is no corresponding strategy for the current vulnerability: {vul_type}')
         IastVulnerabilityModel.objects.create(
-            hook_type_id=hook_type_model['id'],
-            level_id=vul_strategy['level_id'],
+            hook_type=vul_strategy.hook_type,
+            level=vul_strategy.level,
             url=method_pool.url,
             uri=method_pool.uri,
             http_method=method_pool.http_method,

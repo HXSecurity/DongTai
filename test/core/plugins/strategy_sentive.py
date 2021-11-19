@@ -7,14 +7,6 @@ class MyTestCase(DongTaiTestCase):
     def test_something(self):
         self.assertEqual(True, True)
 
-    def test_search_phone_number_leak(self):
-        id = 45789
-        from dongtai.models.agent_method_pool import MethodPool
-        method_pool = MethodPool.objects.get(id=id)
-        if method_pool:
-            from core.plugins.strategy_sensitive import search_phone_number_leak
-            search_phone_number_leak(method_pool)
-
     def test_search_id_card_leak(self):
         id = 45789
         from dongtai.models.agent_method_pool import MethodPool
