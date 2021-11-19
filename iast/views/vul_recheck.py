@@ -68,7 +68,7 @@ class VulReCheck(UserEndPoint):
                     waiting_count = waiting_count + 1
                     continue
                 else:
-                    history_replay_queryset.state = const.PENDING
+                    history_replay_queryset.state = const.WAITING
                     history_replay_queryset.count = history_replay_queryset.count + 1
                     history_replay_queryset.update_time = timestamp
                     history_replay_queryset.save(update_fields=['state', 'count', 'update_time', ])
@@ -77,7 +77,7 @@ class VulReCheck(UserEndPoint):
                 IastReplayQueue.objects.create(
                     agent=vul.agent,
                     relation_id=vul.id,
-                    state=const.PENDING,
+                    state=const.WAITING,
                     count=1,
                     create_time=timestamp,
                     update_time=timestamp,
