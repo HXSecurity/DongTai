@@ -32,6 +32,7 @@ from django.db.models import Q
 from dongtai.models.sensitive_info import IastPatternType,IastSensitiveInfoRule
 import jq
 import re
+from dongtai.permissions import TalentAdminPermission
 
 class SensitiveInfoRuleSerializer(serializers.ModelSerializer):
     strategy_name = serializers.SerializerMethodField()
@@ -84,6 +85,17 @@ class _RegexPatternValidationSerializer(serializers.Serializer):
     test_data = serializers.CharField(help_text=_('the data for test regex'))
   
 class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
+    
+    permission_classes_by_action = {'create':(TalentAdminPermission,),
+                                'update':(TalentAdminPermission,),
+                                'destory':(TalentAdminPermission,),}
+
+    def get_permissions(self):
+      try:
+        return [permission() for permission in self.permission_classes_by_action[self.action]]
+      except KeyError:
+        return [permission() for permission in self.permission_classes]
+
     @extend_schema_with_envcheck(
         [_SensitiveInfoArgsSerializer],
         tags=[_('SensitiveInfoRule')],

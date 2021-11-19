@@ -20,6 +20,7 @@ from rest_framework import serializers
 from dongtai.models.program_language import IastProgramLanguage
 import time 
 from rest_framework.serializers import ValidationError
+from dongtai.permissions import TalentAdminPermission
 
 class _StrategyResponseDataStrategySerializer(serializers.Serializer):
     id = serializers.CharField(help_text=_('The id of agent'))
@@ -62,6 +63,14 @@ class _StrategyArgsSerializer(serializers.Serializer):
 
 STATUS_DELETE = 'delete'
 class StrategyEndpoint(UserEndPoint):
+    permission_classes_by_action = {'post':(TalentAdminPermission,),}
+
+    def get_permissions(self):
+      try:
+        return [permission() for permission in self.permission_classes_by_action[self.action]]
+      except KeyError:
+        return [permission() for permission in self.permission_classes]
+    
     @extend_schema_with_envcheck(
         [_StrategyArgsSerializer],
         tags=[_('Strategy')],

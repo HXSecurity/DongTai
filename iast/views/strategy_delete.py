@@ -14,6 +14,7 @@ from dongtai.models.hook_strategy import HookStrategy
 from dongtai.utils import const
 from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from dongtai.endpoint import TalentAdminEndPoint
 
 from rest_framework import serializers
 class _StrategyResponseDataStrategySerializer(serializers.Serializer):
@@ -23,7 +24,7 @@ _ResponseSerializer = get_response_serializer(
     data_serializer=_StrategyResponseDataStrategySerializer(many=True), )
 
 DELETE = 'delete'
-class StrategyDelete(UserEndPoint):
+class StrategyDelete(TalentAdminEndPoint):
 
     @extend_schema_with_envcheck(
         tags=[_('Strategy')],
