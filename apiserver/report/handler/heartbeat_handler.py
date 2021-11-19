@@ -40,7 +40,7 @@ class HeartBeatHandler(IReportHandler):
         self.report_queue = self.detail.get('reportQueue', 0)
         self.method_queue = self.detail.get('methodQueue', 0)
         self.replay_queue = self.detail.get('replayQueue', 0)
-        self.return_queue = self.detail.get('returnQueue', 1)
+        self.return_queue = self.detail.get('returnQueue', None)
 
     def has_permission(self):
         self.agent = IastAgent.objects.filter(id=self.agent_id, user=self.user_id).first()
@@ -77,7 +77,7 @@ class HeartBeatHandler(IReportHandler):
                                          agent=self.agent)
 
     def get_result(self, msg=None):
-        if self.return_queue == 1:
+        if self.return_queue is None and self.return_queue == 1:
             try:
                 project_agents = IastAgent.objects.values('id').filter(bind_project_id=self.agent.bind_project_id)
                 if project_agents is None:
@@ -109,10 +109,11 @@ class HeartBeatHandler(IReportHandler):
                 IastVulnerabilityModel.objects.filter(id__in=failure_vul_ids).update(latest_time=timestamp, status_id=1)
                 logger.info(_('Reproduction request issued successfully'))
 
-                return replay_requests
+                return replay_requests 
             except Exception as e:
                 logger.info(_('Replay request query failed, reason: {}').format(e))
         return list()
 
     def save(self):
-        self.save_heartbeat()
+        if self.return_queue == 0 and self.return_queue is None:
+            self.save_heartbeat()
