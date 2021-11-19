@@ -8,6 +8,7 @@ from dongtai.utils import const
 from dongtai.models.hook_type import HookType
 from dongtai.models.strategy import IastStrategyModel
 
+from django.db.models import Q
 from dongtai.endpoint import R
 from dongtai.utils import const
 from dongtai.endpoint import UserEndPoint
@@ -69,6 +70,14 @@ class StrategyEndpoint(UserEndPoint):
         response_schema=_ResponseSerializer,
     )
     def get(self, request):
+        ser = _StrategyArgsSerializer(data=request.GET)
+        try:
+            if ser.is_valid(True):
+                page_size = ser.validated_data['page_size']
+                page = ser.validated_data['page']
+                name = ser.validated_data['name']
+        except ValidationError as e:
+            return R.failure(data=e.detail)
         q = ~Q(status=STATUS_DELETE)
         if name:
             q = q & Q(vul_name__icontains=name)
