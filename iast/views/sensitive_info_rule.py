@@ -131,12 +131,18 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
             return R.failure(data=e.detail)
         strategy = IastStrategyModel.objects.filter(pk=strategy_id).first()
         pattern_type = IastPatternType.objects.filter(pk=pattern_type_id).first()
-        obj = IastSensitiveInfoRule.objects.create(strategy=strategy,
-                pattern_type=pattern_type,
-                pattern=pattern,
-                status=status,
-                user=request.user) 
-        return R.success(msg='create success',data=SensitiveInfoRuleSerializer(obj).data)
+        pattern_test_dict = {1:regextest,2:jsontest}
+        test = pattern_test_dict.get(pattern_type_id,None)
+        status,data = test('[1,2,3]','pattern')
+        if strategy and pattern_type and test and status:
+            obj = IastSensitiveInfoRule.objects.create(strategy=strategy,
+                    pattern_type=pattern_type,
+                    pattern=pattern,
+                    status=status,
+                    user=request.user) 
+            return R.success(msg='create success',data=SensitiveInfoRuleSerializer(obj).data)
+        else:
+            return R.failure()
     @extend_schema_with_envcheck(
         request=SensitiveInfoRuleCreateSerializer,
         tags=[_('SensitiveInfoRule')],
