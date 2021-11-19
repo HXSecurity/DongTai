@@ -10,3 +10,4 @@ python-docx==0.8.10
 openpyxl==3.0.9
 https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/dongtai-test-latest.tar.gz
 id-validator==1.0.20
+jq==1.2.1
