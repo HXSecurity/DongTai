@@ -118,6 +118,7 @@ from iast.views.messages_del import MessagesDelEndpoint
 from iast.views.messages_send import MessagesSendEndpoint
 from iast.views.agent_alias_modified import AgentAliasModified
 from iast.views.engine_method_pool_time_range import MethodPoolTimeRangeProxy
+from iast.views.vul_levels import VulLevelList  
 from iast.views.sensitive_info_rule import (SensitiveInfoRuleViewSet,SensitiveInfoPatternTypeView,SensitiveInfoPatternValidationView)
 
 urlpatterns = [
@@ -244,6 +245,7 @@ urlpatterns = [
     path('message/list', MessagesEndpoint.as_view()),
     path('message/unread_count', MessagesNewEndpoint.as_view()),
     path('message/delete', MessagesDelEndpoint.as_view()),
+    path('vul_levels', VulLevelList.as_view()),
     #    path('message/send', MessagesSendEndpoint.as_view()),
     path('sensitive_info_rule',SensitiveInfoRuleViewSet.as_view({'get':'list','post':'create'})),
     path('sensitive_info_rule/<int:pk>',SensitiveInfoRuleViewSet.as_view({'get':'retrieve','put':'update','delete':'destory'})),
