@@ -32,7 +32,7 @@ class StrategyDisableEndpoint(TalentAdminEndPoint):
         strategy = IastStrategyModel.objects.filter(id=id).first()
         strategy_models = HookType.objects.filter(vul_strategy=strategy).first()
         if strategy:
-            strategy.state = disable
+            strategy.state = DISABLE
             strategy.save()
             total_counts = 0
             for strategy_model in strategy_models:
