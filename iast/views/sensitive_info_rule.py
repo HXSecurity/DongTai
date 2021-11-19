@@ -29,22 +29,7 @@ from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.user import User
 import time
 from django.db.models import Q
-class IastPatternType(models.Model):
-    name = models.CharField(blank=True,default=None)
-    
-    class Meta:
-        db_table = 'iast_pattern_type'
-    
-class IastSensitiveInfoRule(models.Model):
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
-    strategy = models.ForeignKey(IastStrategyModel, models.DO_NOTHING, blank=True, null=True)
-    pattern_type = models.ForeignKey(IastPatternType,models.DO_NOTHING,blank=True,default=None)
-    pattern = models.CharField(blank=True,default=None)
-    status = models.IntegerField(blank=True,default=None)
-    latest_time = models.IntegerField(default=time.time(),blank=True, null=True)
-    
-    class Meta:
-        db_table = 'iast_sensitive_info_rule'
+from dongtai.models.sensitive_info import IastPatternType,IastSensitiveInfoRule
 class SensitiveInfoRuleSerializer(serializers.ModelSerializer):
     strategy_name = serializers.SerializerMethodField()
     strategy_id = serializers.SerializerMethodField()
