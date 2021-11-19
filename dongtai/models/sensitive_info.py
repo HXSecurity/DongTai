@@ -13,7 +13,7 @@ import time
 
 
 class IastPatternType(models.Model):
-    name = models.CharField(blank=True,default=None)
+    name = models.CharField(blank=True,default=None,max_length=255)
     
     class Meta:
         db_table = 'iast_pattern_type'
@@ -22,7 +22,7 @@ class IastSensitiveInfoRule(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
     strategy = models.ForeignKey(IastStrategyModel, models.DO_NOTHING, blank=True, null=True)
     pattern_type = models.ForeignKey(IastPatternType,models.DO_NOTHING,blank=True,default=None)
-    pattern = models.CharField(blank=True,default=None)
+    pattern = models.CharField(blank=True,default=None,max_length=255)
     status = models.IntegerField(blank=True,default=None)
     latest_time = models.IntegerField(default=time.time(),blank=True, null=True)
     
