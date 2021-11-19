@@ -24,10 +24,11 @@ class ReportUploadEndPoint(OpenApiEndPoint):
         responses=R,
         methods=['GET']
     )
-    def post(self, request):
+    def get(self, request):
         try:
-
-            report = parse_data(request.read())
+            
+            #report = parse_data(request.read())
+            report = {"detail":{"agentId":2690,"disk":"{}","memory":"{\"total\":\"2GB\",\"rate\":0,\"use\":\"124.115MB\"}","returnQueue":0,"cpu":"{\"rate\":53}"},"type":1}
             data = ReportHandler.handler(report, request.user)
 
             return R.success(msg="report upload success.", data=data)
