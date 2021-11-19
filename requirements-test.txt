@@ -25,3 +25,4 @@ uwsgi==2.0.19.1
 https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/dongtai-test-latest.tar.gz
 ddt
 faker
+jq

@@ -6,6 +6,7 @@
 from dongtai.models.hook_type import HookType
 from dongtai.models.hook_strategy import HookStrategy
 from dongtai.utils import const
+from dongtai.models.strategy import IastStrategyModel
 
 from dongtai.endpoint import R
 from dongtai.endpoint import TalentAdminEndPoint
@@ -17,7 +18,7 @@ _ResponseSerializer = get_response_serializer(status_msg_keypair=(
     ((202, _('Strategy does not exist')), ''),
 ))
 
-
+DISABLE = 'disable'
 class StrategyDisableEndpoint(TalentAdminEndPoint):
     @extend_schema_with_envcheck(
         tags=[_('Strategy')],
@@ -28,14 +29,19 @@ class StrategyDisableEndpoint(TalentAdminEndPoint):
         response_schema=_ResponseSerializer,
     )
     def get(self, request, id):
-        strategy_model = HookType.objects.filter(id=id).first()
-        if strategy_model:
-            counts = strategy_model.strategies.filter(enable=const.HOOK_TYPE_ENABLE).update(
-                enable=const.HOOK_TYPE_DISABLE)
-            strategy_model.enable = const.HOOK_TYPE_DISABLE
-            strategy_model.save(update_fields=['enable'])
-
-            return R.success(msg=_('Strategy is disabled, total {} hook rules').format(counts))
+        strategy = IastStrategyModel.objects.filter(id=id).first()
+        strategy_models = HookType.objects.filter(vul_strategy=strategy).first()
+        if strategy:
+            strategy.state = DISABLE
+            strategy.save()
+            total_counts = 0
+            for strategy_model in strategy_models:
+                counts = strategy_model.strategies.filter(enable=const.HOOK_TYPE_ENABLE).update(
+                    enable=const.HOOK_TYPE_DISABLE)
+                strategy_model.enable = const.HOOK_TYPE_DISABLE
+                strategy_model.save(update_fields=['enable'])
+                total_counts += counts 
+            return R.success(msg=_('Strategy is disabled, total {} hook rules').format(total_counts))
         else:
             return R.failure(status=202, msg=_('Strategy does not exist'))
 
