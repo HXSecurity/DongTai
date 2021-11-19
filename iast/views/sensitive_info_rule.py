@@ -31,6 +31,8 @@ import time
 from django.db.models import Q
 from dongtai.models.sensitive_info import IastPatternType,IastSensitiveInfoRule
 import jq
+import re
+
 class SensitiveInfoRuleSerializer(serializers.ModelSerializer):
     strategy_name = serializers.SerializerMethodField()
     strategy_id = serializers.SerializerMethodField()
@@ -215,10 +217,9 @@ class SensitiveInfoPatternValidationView(UserEndPoint):
         return R.success(data={'status':status,'data':data})
 def regextest(test_data,pattern):
     try:
-        with connection.cursor() as cur:        
-            cur.execute("SELECT * FROM (SELECT %s as test_data FROM DUAL) as test_table WHERE test_data REGEXP %s",(test_data,pattern),)
-            data = cur.fetchone()
-            status = 1
+        ret = re.match(pattern,test_data)
+        data = ret.group()
+        status = 1
     except Exception as e:
         print(e)
         data = ''
