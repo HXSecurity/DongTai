@@ -83,7 +83,7 @@ class StrategyEndpoint(UserEndPoint):
         q = ~Q(state=STATUS_DELETE)
         if name:
             q = q & Q(vul_name__icontains=name)
-        queryset = IastStrategyModel.objects.filter(q).all()
+        queryset = IastStrategyModel.objects.filter(q).order_by('-id'),all()
         if page and page_size:
             page_summary, page_data = self.get_paginator(queryset, page, page_size)
             return R.success(data=StrategySerializer(page_data, many=True).data,
