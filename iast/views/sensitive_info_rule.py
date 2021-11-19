@@ -248,8 +248,8 @@ def regextest(test_data,pattern):
         data = ''
         status = 0
         return data,status 
-    ret = regex.match(test_data)
-    data = ret.group() if ret else ''
+    ret = regex.findall(test_data)
+    data = ret[0] if ret else ['']
     return data,1
 def jsontest(test_data,pattern):
     try:
