@@ -36,8 +36,8 @@ class StrategyModified(TalentAdminEndPoint):
         data = {k: v for k, v in request.data.items() if k in fields}
         strategy = IastStrategyModel.objects.filter(
             pk=id_).first()
-        HookType.objects.filter(strategy=strategy,type=4).update(name=data['vul_name'])
-        HookType.objects.filter(strategy=strategy,type=3).update(name=data['vul_name']+'filter')
+        HookType.objects.filter(vul_strategy=strategy,type=4).update(name=data['vul_name'])
+        HookType.objects.filter(vul_strategy=strategy,type=3).update(name=data['vul_name'])
         return R.success(data={'id':id_})
         hook_type = HookType.objects.filter(pk=id_).first()
         _update(hook_type, data)
