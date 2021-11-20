@@ -258,7 +258,8 @@ def _get_vuls(uri, agents):
     vuls = IastVulnerabilityModel.objects.filter(
         uri=uri, agent_id__in=[_['id'] for _ in agents
                                ]).distinct().values('hook_type_id',
-                                                    'level_id').all()
+                                                    'level_id',
+                                                    'strategy_id').all()
     return [_get_hook_type(vul) for vul in vuls]
 
 
