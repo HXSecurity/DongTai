@@ -8,6 +8,7 @@ from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.strategy import IastStrategyModel
 
 from iast.base.agent import get_agents_with_project, get_user_project_name, \
     get_user_agent_pro, get_all_server
