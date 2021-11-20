@@ -157,6 +157,7 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
 
     queryset = IastStrategyModel.objects.filter(vul_type=strategy['type'])
     if queryset.values('id').exists() is False:
+        logger.error(f'current method pool hit rule {strategy.get("type")}, but no vul strategy.')
         return
 
     hook_type = HookType.objects.values('id').filter(value=strategy.get("type")).first()
