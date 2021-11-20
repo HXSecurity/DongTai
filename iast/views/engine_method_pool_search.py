@@ -8,6 +8,7 @@ from dongtai.models.project import IastProject
 from dongtai.models.user import User
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.models.hook_type import HookType
+from dongtai.models.strategy import IastStrategyModel
 
 from iast.utils import get_model_field, assemble_query,assemble_query_2
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
@@ -267,7 +268,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                 _ = {}
                 hook_type = HookType.objects.filter(pk=vulnerablity['hook_type_id']).first()
                 hook_type_name = hook_type.name if hook_type else None
-                strategy = IastStrategyModel.objects.filter(pk=obj['strategy_id']).first()
+                strategy = IastStrategyModel.objects.filter(pk=vulnerablity['strategy_id']).first()
                 strategy_name = strategy.vul_name if strategy else None
                 type_ = list(
                     filter(lambda x: x is not None, [strategy_name, hook_type_name]))

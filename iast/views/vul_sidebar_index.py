@@ -11,6 +11,7 @@ from dongtai.models.hook_type import HookType
 from iast.utils import extend_schema_with_envcheck
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import format_lazy
+from dongtai.models.strategy import IastStrategyModel
 
 VALUES = [
     'level',
