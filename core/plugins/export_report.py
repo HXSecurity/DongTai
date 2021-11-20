@@ -77,7 +77,7 @@ def get_vul_count_by_agent(agent_ids, vid, user):
                 one['req_params'] = ""
             detailStr2 = str(one['http_method']) + " " + str(one['uri']) + "?" + str(one['req_params']) + str(one['http_protocol'])
             try:
-                fileData = one['full_stack'][-1].get("stack", "")
+                fileData = one['full_stack'][-1][-1].get("stack", "")
                 pattern = r'.*?\((.*?)\).*?'
                 resMatch = re.match(pattern, fileData)
                 uriArr = resMatch.group(1).split(":")
@@ -89,19 +89,44 @@ def get_vul_count_by_agent(agent_ids, vid, user):
             except Exception as e:
                 fileName = ""
                 rowStr = ""
-            classname = ""
-            methodname = ""
+
+            param = one['param_name']
+            taintStrStack = []
+            sourceStr = ""
+            sinkStr = ""
+            detailStr3 = ""
             if one['full_stack']:
-                try:
+                # try:
                     full_stack_arr = json.loads(one['full_stack'])
-                    full_stack = full_stack_arr[-1]
-                    classname = str(full_stack.get("classname", ""))
-                    methodname = str(full_stack.get("methodname", ""))
-                except Exception as e:
-                    print("======")
-            detailStr3 = _("In {} {} call {}. {} (), Incoming parameters {}").format(
-                str(fileName), rowStr, classname, methodname,
-                str(one['taint_value']))
+                    if len(full_stack_arr) > 0 and isinstance(full_stack_arr[0], list):
+                        for stack in full_stack_arr[0]:
+                            caller = f"{stack['callerClass']}.{stack['callerMethod']}()"
+                            class_name = stack['originClassName'] if 'originClassName' in stack else stack['className']
+                            method_name = stack['methodName']
+                            node = f'{class_name}.{method_name}()'
+                            if stack['tag'] == 'source':
+                                sourceStr = "恶意参数{}通过文件{} {}行的函数{}传入".format(
+                                    param,
+                                    stack['callerClass'],
+                                    stack['callerLineNumber'],
+                                    node
+                                )
+                            if stack['tag'] == 'propagator':
+                                taintStrStack.append(
+                                    "文件{} {}行的函数{}".format(
+                                        stack['callerClass'],
+                                        stack['callerLineNumber'],
+                                        node
+                                    )
+                                )
+                            if stack['tag'] == 'sink':
+                                sinkStr = "最终在文件{}{}行的{}执行敏感操作".format(
+                                    stack['callerClass'],
+                                    stack['callerLineNumber'],
+                                    node
+                                )
+                        taintStr = "\n；".join(taintStrStack)
+                        detailStr3 = "\n\n漏洞触发过程如下：\n{},经{}传播,\n {}".format(sourceStr, taintStr, sinkStr)
             cur_tile = _("{} Appears in {} {}").format(one['type'], str(one['uri']), str(one['taint_position']))
             if one['param_name']:
                 cur_tile = cur_tile + "\"" + str(one['param_name']) + "\""
@@ -170,7 +195,6 @@ class ExportPort():
         project = IastProject.objects.filter(Q(id=pid)).first()
 
         vul = IastVulnerabilityModel.objects.filter(pk=vid).first()
-
         if project or vul:
             if not project:
                 Project = namedtuple(
@@ -191,7 +215,6 @@ class ExportPort():
             count_result = get_vul_count_by_agent(agent_ids, vid, user)
 
             levelInfo = IastVulLevel.objects.all()
-
             file_path = ""
             if type == 'docx':
                 file_path = self.generate_word_report(user, project, vul, count_result, levelInfo, timestamp)
@@ -436,20 +459,25 @@ class ExportPort():
 
                             "description": _(u'Vulnerability description'),
                             "detail": "",
+                            "detail_data1": "",
+                            "detail_data2": "",
+                            "detail_data3": "",
                         }
                         vulTypeDetail['vuls'].append(
                             oneVul
                         )
                         ind = ind + 1
                         if one['detail_data']:
-                            for item in one['detail_data']:
-                                oneVul['detail'] += u'%s' % item
+                            oneVul['detail_data1'] = one['detail_data'][0]
+                            oneVul['detail_data2'] = one['detail_data'][1]
+                            oneVul['detail_data3'] = one['detail_data'][2]
+                            # for item in one['detail_data']:
+                            #     oneVul['detail'] += u'%s' % item
                 vulTypeDetailArray.append(vulTypeDetail)
                 type_ind = type_ind + 1
 
         pdf_filename = f"{MEDIA_ROOT}/reports/vul-report-{user.id}-{timestamp}.pdf"
         html_filename = f"{MEDIA_ROOT}/reports/vul-report-{user.id}-{timestamp}.html"
-
         rendered = render_to_string(
             './pdf.html',
             {
