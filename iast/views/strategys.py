@@ -62,7 +62,24 @@ class _StrategyArgsSerializer(serializers.Serializer):
             "The name of the item to be searched, supports fuzzy search."))
 
 STATUS_DELETE = 'delete'
+
 class StrategyEndpoint(UserEndPoint):
+    
+    @extend_schema_with_envcheck(
+        tags=[_('Strategy')],
+        summary=_('Strategy retrieve'),
+        description=_(
+            "Get a strategiey by id."
+        ),
+        response_schema=_ResponseSerializer,
+    )
+    def get(self, request, pk):
+        q = ~Q(state=STATUS_DELETE)
+        q = q & Q(pk=pk)
+        queryset = IastStrategyModel.objects.filter(q).first()
+        return R.success(data=StrategySerializer(queryset).data,)
+
+class StrategysEndpoint(UserEndPoint):
     permission_classes_by_action = {'POST':(TalentAdminPermission,)}
 
     def get_permissions(self):
