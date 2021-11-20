@@ -11,4 +11,4 @@ from dongtai.models.strategy import IastStrategyModel
 class StrategySerializer(serializers.ModelSerializer):
     class Meta:
         model = IastStrategyModel
-        fields = ['id', 'vul_type', 'level', 'state', 'vul_name', 'vul_desc', 'dt']
+        fields = ['id', 'vul_type', 'level_id', 'state', 'vul_name', 'vul_desc', 'dt']
