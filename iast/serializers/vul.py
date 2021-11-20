@@ -47,11 +47,11 @@ class VulSerializer(serializers.ModelSerializer):
 
     def get_type(self, obj):
         hook_type = HookType.objects.filter(pk=obj['hook_type_id']).first()
-        hook_type_name = hook_type.name if hook_type else none
-        strategy = iaststrategymodel.objects.filter(pk=obj['strategy_id']).first()
-        strategy_name = strategy.vul_name if strategy else none
+        hook_type_name = hook_type.name if hook_type else None
+        strategy = IastStrategyModel.objects.filter(pk=obj['strategy_id']).first()
+        strategy_name = strategy.vul_name if strategy else None
         type_ = list(
-            filter(lambda x: x is not none, [strategy_name, hook_type_name]))
+            filter(lambda x: x is not None, [strategy_name, hook_type_name]))
         return type_[0] if type_ else ''
 
     def get_status(self, obj):
