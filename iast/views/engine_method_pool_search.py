@@ -266,7 +266,12 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                            vulnerablities)):
                 _ = {}
                 hook_type = HookType.objects.filter(pk=vulnerablity['hook_type_id']).first()
-                _['vulnerablity_type'] = hook_type.name if hook_type else ''
+                hook_type_name = hook_type.name if hook_type else None
+                strategy = IastStrategyModel.objects.filter(pk=obj['strategy_id']).first()
+                strategy_name = strategy.vul_name if strategy else None
+                type_ = list(
+                    filter(lambda x: x is not None, [strategy_name, hook_type_name]))
+                _['vulnerablity_type'] = type_[0] if type_ else ''
                 _['vulnerablity_id'] = vulnerablity['id']
                 _['vulnerablity_hook_type_id'] = vulnerablity['hook_type_id']
                 _['level_id'] = vulnerablity['level_id']

@@ -11,6 +11,7 @@ from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.models.vulnerablity import IastVulnerabilityStatus
 from dongtai.models.hook_type import HookType
 from django.utils.translation import gettext_lazy as _
+from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.vul_level import IastVulLevel
 
 
@@ -46,7 +47,12 @@ class VulSerializer(serializers.ModelSerializer):
 
     def get_type(self, obj):
         hook_type = HookType.objects.filter(pk=obj['hook_type_id']).first()
-        return hook_type.name if hook_type else ''
+        hook_type_name = hook_type.name if hook_type else none
+        strategy = iaststrategymodel.objects.filter(pk=obj['strategy_id']).first()
+        strategy_name = strategy.vul_name if strategy else none
+        type_ = list(
+            filter(lambda x: x is not none, [strategy_name, hook_type_name]))
+        return type_[0] if type_ else ''
 
     def get_status(self, obj):
         status = IastVulnerabilityStatus.objects.filter(
@@ -66,7 +72,12 @@ class VulForPluginSerializer(serializers.ModelSerializer):
 
     def get_type(self, obj):
         hook_type = HookType.objects.filter(pk=obj['hook_type_id']).first()
-        return hook_type.name if hook_type else ''
+        hook_type_name = hook_type.name if hook_type else None
+        strategy = IastStrategyModel.objects.filter(pk=obj['strategy_id']).first()
+        strategy_name = strategy.vul_name if strategy else None
+        type_ = list(
+            filter(lambda x: x is not None, [strategy_name, hook_type_name]))
+        return type_[0] if type_ else ''
 
     def get_level(self, obj):
         level = IastVulLevel.objects.filter(pk=obj['level_id']).first()
