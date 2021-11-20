@@ -294,9 +294,10 @@ class VulSummary(UserEndPoint):
 
         vul_type = request.query_params.get('type')
         if vul_type:
-            hook_type = HookType.objects.filter(name=vul_type).first()
-            vul_type_id = hook_type.id if hook_type else 0
-            queryset = queryset.filter(hook_type_id=vul_type_id)
+            hook_types = HookType.objects.filter(name=vul_type).all()
+            strategys = IastStrategyModel.objects.filter(name=vul_type).all() 
+            q = Q(hook_type__in=hook_types) | Q(strategys__in=strategys)
+            queryset = queryset.filter(q)
 
         url = request.query_params.get('url')
         if url and url != '':
@@ -306,7 +307,7 @@ class VulSummary(UserEndPoint):
         queryset = queryset.filter(q)
 
         level_summary = queryset.values('level').order_by('level').annotate(total=Count('level'))
-        type_summary = queryset.values('hook_type_id').order_by(
+        type_summary = queryset.values('hook_type_id','strategy_id').order_by(
             'hook_type_id').annotate(total=Count('hook_type_id'))
 
         end['data']['language'] = self.get_languages(queryset.values('agent_id'))

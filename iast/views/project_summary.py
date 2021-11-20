@@ -130,7 +130,7 @@ class ProjectSummary(UserEndPoint):
         agent_ids = [relation['id'] for relation in relations]
         queryset = IastVulnerabilityModel.objects.filter(
             agent_id__in=agent_ids,
-            status_id=3).values("hook_type_id", "level_id", "latest_time")
+            status_id=3).values("hook_type_id", 'strategy_id',"level_id", "latest_time")
         q = ~Q(hook_type_id=0)
         queryset = queryset.filter(q)
         typeArr = {}
