@@ -8,6 +8,7 @@ from http.client import HTTPResponse
 from io import BytesIO
 
 from celery.apps.worker import logger
+from django.db.models import Q
 from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.utils import const
@@ -90,7 +91,7 @@ def save_vul(vul_type, method_pool, position=None, data=None):
         logger.error(f'There is no corresponding strategy for the current vulnerability: {vul_type}')
 
     vul = IastVulnerabilityModel.objects.filter(
-        hook_type=vul_strategy.hook_type,
+        Q(strategy=vul_strategy) | Q(hook_type=vul_strategy.hook_type),
         uri=method_pool.uri,
         http_method=method_pool.http_method,
         method_pool_id=method_pool.id
@@ -115,7 +116,7 @@ def save_vul(vul_type, method_pool, position=None, data=None):
         ])
     else:
         IastVulnerabilityModel.objects.create(
-            hook_type=vul_strategy.hook_type,
+            strategy=vul_strategy,
             level=vul_strategy.level,
             url=method_pool.url,
             uri=method_pool.uri,
