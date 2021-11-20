@@ -8,6 +8,7 @@ from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.strategy import IastStrategyModel
 
 from iast.base.agent import get_agents_with_project, get_user_project_name, \
     get_user_agent_pro, get_all_server
@@ -229,9 +230,10 @@ class VulsEndPoint(UserEndPoint):
             hook_type_id = hook_type.id if hook_type else 0
             queryset = queryset.filter(hook_type_id=hook_type_id)
         elif type_:
-            hook_type = HookType.objects.filter(name=type_).first()
-            hook_type_id = hook_type.id if hook_type else 0
-            queryset = queryset.filter(hook_type_id=hook_type_id)
+            hook_types = HookType.objects.filter(name=type_).all()
+            strategys = IastStrategyModel.objects.filter(vul_name=type_).all() 
+            q = Q(hook_type__in=hook_types,strategy_id=0) | Q(strategy__in=strategys)
+            queryset = queryset.filter(q)
 
         project_name = request.query_params.get('project_name')
         if project_name:

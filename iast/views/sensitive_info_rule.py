@@ -114,7 +114,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
         except ValidationError as e:
             return R.failure(data=e.detail)
         users = self.get_auth_users(request.user)
-        q = Q(user__in=users)
+        q = Q(user__in=users) & ~Q(status=-1)
         if name:
             strategys = IastStrategyModel.objects.filter(name__icontains=name).all()
             q = Q(strategy=strategys) & q
