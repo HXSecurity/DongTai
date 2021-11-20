@@ -86,9 +86,7 @@ class _RegexPatternValidationSerializer(serializers.Serializer):
   
 class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
     
-    permission_classes_by_action = {'create':(TalentAdminPermission,),
-                                'update':(TalentAdminPermission,),
-                                'destory':(TalentAdminPermission,),}
+    permission_classes_by_action = {'destory':(TalentAdminPermission,),}
 
     def get_permissions(self):
       try:
@@ -197,7 +195,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
           ),
     )
     def retrieve(self, request, pk):
-        obj = IastSensitiveInfoRule.objects.filter(pk=pk).first()
+        obj = IastSensitiveInfoRule.objects.filter(pk=pk,user=request.user).first()
         return R.success(data=SensitiveInfoRuleSerializer(obj).data)
 class SensitiveInfoPatternTypeView(UserEndPoint):
 
