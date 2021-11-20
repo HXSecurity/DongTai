@@ -9,6 +9,7 @@ from dongtai.endpoint import UserEndPoint
 from dongtai.models.agent import IastAgent
 from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.strategy import IastStrategyModel
 
 from iast.base.agent import get_project_vul_count
 from iast.base.project_version import get_project_version, get_project_version_by_id
@@ -339,4 +340,9 @@ class VulSummary(UserEndPoint):
 
 def get_hook_type_name(obj):
     hook_type = HookType.objects.filter(pk=obj['hook_type_id']).first()
-    return  hook_type.name if hook_type else ''
+    hook_type_name = hook_type.name if hook_type else None
+    strategy = IastStrategyModel.objects.filter(pk=obj['strategy_id']).first()
+    strategy_name = strategy.vul_name if strategy else None
+    type_ = list(
+        filter(lambda x: x is not None, [strategy_name, hook_type_name]))
+    return type_[0] if type_ else ''
