@@ -264,8 +264,14 @@ def _get_vuls(uri, agents):
 def _get_hook_type(vul):
 
     hook_type = HookType.objects.filter(pk=vul['hook_type_id']).first()
+    hook_type_name = hook_type.name if hook_type else None
+    strategy = IastStrategyModel.objects.filter(pk=obj['strategy_id']).first()
+    strategy_name = strategy.vul_name if strategy else None
+    type_ = list(
+        filter(lambda x: x is not None, [strategy_name, hook_type_name]))
+    type_name = type_[0] if type_ else ''
     if hook_type:
-        return {'hook_type_name': hook_type.name, 'level_id': vul['level_id']}
+        return {'hook_type_name': type_name, 'level_id': vul['level_id']}
 
 
 def _get_parameters(api_route):
