@@ -76,7 +76,7 @@ from iast.views.sca_summary import ScaSummary
 from iast.views.scas import ScaList
 from iast.views.strategy_disable import StrategyDisableEndpoint
 from iast.views.strategy_enable import StrategyEnableEndpoint
-from iast.views.strategys import StrategyEndpoint
+from iast.views.strategys import StrategysEndpoint, StrategyEndpoint
 from iast.views.strategys_add import StrategyAdd
 from iast.views.strategys_list import StrategyList
 from iast.views.strategys_type import StrategyType
@@ -178,7 +178,8 @@ urlpatterns = [
     path('sca/summary', ScaSummary.as_view()),
     #    path('sca/list', ScaSidebarList.as_view()), Departured
     path('sca/<int:id>', ScaDetailView.as_view()),
-    path('strategys', StrategyEndpoint.as_view()),
+    path('strategys', StrategysEndpoint.as_view()),
+    path('strategy/<int:pk>', StrategyEndpoint.as_view()),
     path('strategy/<int:id>/enable', StrategyEnableEndpoint.as_view()),
     path('strategy/<int:id>/disable', StrategyDisableEndpoint.as_view()),
     path('strategy/<int:id_>/delete', StrategyDelete.as_view()),
