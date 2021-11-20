@@ -261,8 +261,12 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
             'latest_time'
         ])
     else:
+        from dongtai.models.hook_type import HookType
+        hook_type = HookType.objects.filter(vul_strategy_id=strategy_id).first()
         vul = IastVulnerabilityModel.objects.create(
             strategy_id=strategy_id,
+            # fixme: delete field hook_type
+            hook_type=hook_type if hook_type else HookType.objects.first(),
             level_id=vul_level,
             url=vul_meta.url,
             uri=vul_meta.uri,
