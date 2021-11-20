@@ -174,7 +174,12 @@ class VulDetail(UserEndPoint):
     def get_vul(self, auth_agents):
         vul = IastVulnerabilityModel.objects.filter(id=self.vul_id, agent__in=auth_agents).first()
         hook_type = HookType.objects.filter(pk=vul.hook_type_id).first() if vul is not None else None
-        vul.type = hook_type.name if hook_type else ''
+        hook_type_name = hook_type.name if hook_type else None
+        strategy = IastStrategyModel.objects.filter(pk=vul.strategy_id).first()
+        strategy_name = strategy.vul_name if strategy else None
+        type_ = list(
+            filter(lambda x: x is not None, [strategy_name, hook_type_name]))
+        vul.type = type_[0] if type_ else ''
         status = IastVulnerabilityStatus.objects.filter(pk=vul.status_id).first()
         vul.status_ = status.name if status else ''
         agent = vul.agent
