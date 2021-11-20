@@ -113,9 +113,9 @@ def get_vul_count_by_agent(agent_ids, vid, user):
                                     node
                                 )
                         taintStr = "\n; ".join(taintStrStack)
-                        detailStr3 = _("\n\nCode call chain: \n{0}, and then {1},\n {2}").format(sourceStr, taintStr, sinkStr)
+                        detailStr3 = _("Code call chain: \n{0}, and then {1},\n {2}").format(sourceStr, taintStr, sinkStr)
                     else:
-                        detailStr3 = _("\n\nCode call chain: call {1} at {0}").format(one['top_stack'], one['bottom_stack'])
+                        detailStr3 = _("Code call chain: call {1} at {0}").format(one['top_stack'], one['bottom_stack'])
 
             cur_tile = _("{} Appears in {} {}").format(one['type'], str(one['uri']), str(one['taint_position']))
             if one['param_name']:

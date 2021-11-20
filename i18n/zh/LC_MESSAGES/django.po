@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-20 10:36+0000\n"
+"POT-Creation-Date: 2021-11-20 15:06+0000\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -25,7 +25,7 @@ msgid ""
 msgstr "我们发现在{0}页面中存在{1}，攻击者可以改变{2}的值进行攻击："
 
 #: core/plugins/export_report.py:95
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "call {3} at line {2} of file {1}, incoming parameters {0}"
 msgstr "在文件{1} {2}行，调用{3},传入恶意参数{0}"
 
@@ -41,29 +41,25 @@ msgstr "最终在文件{0}{1}行的{2}执行敏感操作"
 
 #: core/plugins/export_report.py:116
 #, python-brace-format
+#| msgid ""
+#| "Code call chain: \n"
+#| "{0}, and then {1},\n"
+#| " {2}"
 msgid ""
-"\n"
-"\n"
 "Code call chain: \n"
 "{0}, and then {1},\n"
 " {2}"
 msgstr ""
-"\n"
-"\n"
 "漏洞触发过程如下：\n"
 "{0},经{1}传播,\n"
 " {2}"
 
 #: core/plugins/export_report.py:118
 #, python-brace-format
+#| msgid "Code call chain: call {1} at {0}"
 msgid ""
-"\n"
-"\n"
 "Code call chain: call {1} at {0}"
-msgstr ""
-"\n"
-"\n"
-"漏洞触发过程如下：在{0}调用{1}"
+msgstr "漏洞触发过程如下：在{0}调用{1}"
 
 #: core/plugins/export_report.py:120
 msgid "{} Appears in {} {}"
@@ -110,16 +106,12 @@ msgid "Second, the result analysis"
 msgstr "二、结果分析"
 
 #: core/plugins/export_report.py:304
-#, fuzzy
-#| msgid "Vulnerability Severity Levels Distribution"
 msgid "2.1 Vulnerability Severity Levels Distribution"
-msgstr "漏洞等级分布"
+msgstr "2.1 漏洞等级分布"
 
 #: core/plugins/export_report.py:314
-#, fuzzy
-#| msgid "Distribution of Vulnerability"
 msgid "2.2 Distribution of Vulnerability"
-msgstr "漏洞类型分布"
+msgstr "2.2 漏洞类型分布"
 
 #: core/plugins/export_report.py:321 core/plugins/export_report.py:493
 #: core/plugins/export_report.py:588
@@ -136,10 +128,8 @@ msgid "Number"
 msgstr "数量"
 
 #: core/plugins/export_report.py:334
-#, fuzzy
-#| msgid "Vulnerability details"
 msgid "2.3 Vulnerability details"
-msgstr "漏洞详情"
+msgstr "2.3 漏洞详情"
 
 #: core/plugins/export_report.py:351 core/plugins/export_report.py:437
 #: core/plugins/export_report.py:558
