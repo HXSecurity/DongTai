@@ -295,7 +295,7 @@ class VulSummary(UserEndPoint):
         vul_type = request.query_params.get('type')
         if vul_type:
             hook_types = HookType.objects.filter(name=vul_type).all()
-            strategys = IastStrategyModel.objects.filter(name=vul_type).all() 
+            strategys = IastStrategyModel.objects.filter(vul_name=vul_type).all() 
             q = Q(hook_type__in=hook_types) | Q(strategys__in=strategys)
             queryset = queryset.filter(q)
 
