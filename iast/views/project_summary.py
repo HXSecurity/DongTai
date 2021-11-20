@@ -18,6 +18,7 @@ from dongtai.models.hook_type import HookType
 from django.db.models import Q
 from rest_framework import serializers
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from dongtai.models.strategy import IastStrategyModel
 
 
 class ProjectSummaryQuerySerializer(serializers.Serializer):
@@ -139,7 +140,12 @@ class ProjectSummary(UserEndPoint):
             for one in queryset:
                 hook_type = HookType.objects.filter(
                     pk=one['hook_type_id']).first()
-                one['type'] = hook_type.name if hook_type else ''
+                hook_type_name = hook_type.name if hook_type else None
+                strategy = IastStrategyModel.objects.filter(pk=one['strategy_id']).first()
+                strategy_name = strategy.vul_name if strategy else None
+                type_ = list(
+                    filter(lambda x: x is not None, [strategy_name, hook_type_name]))
+                one['type']= type_[0] if type_ else ''
                 typeArr[one['type']] = typeArr.get(one['type'], 0) + 1
                 typeLevel[one['type']] = one['level_id']
                 levelCount[one['level_id']] = levelCount.get(
