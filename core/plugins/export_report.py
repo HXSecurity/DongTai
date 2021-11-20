@@ -76,19 +76,6 @@ def get_vul_count_by_agent(agent_ids, vid, user):
             except Exception as e:
                 one['req_params'] = ""
             detailStr2 = str(one['http_method']) + " " + str(one['uri']) + "?" + str(one['req_params']) + str(one['http_protocol'])
-            try:
-                fileData = one['full_stack'][-1][-1].get("stack", "")
-                pattern = r'.*?\((.*?)\).*?'
-                resMatch = re.match(pattern, fileData)
-                uriArr = resMatch.group(1).split(":")
-                fileName = uriArr[0]
-                if len(uriArr) > 1:
-                    rowStr = _("{} Line").format(str(uriArr[1]))
-                else:
-                    rowStr = ""
-            except Exception as e:
-                fileName = ""
-                rowStr = ""
 
             param = one['param_name']
             taintStrStack = []
@@ -105,7 +92,7 @@ def get_vul_count_by_agent(agent_ids, vid, user):
                             method_name = stack['methodName']
                             node = f'{class_name}.{method_name}()'
                             if stack['tag'] == 'source':
-                                sourceStr = "恶意参数{}通过文件{} {}行的函数{}传入".format(
+                                sourceStr = _("call {3} at line {2} of file {1}, incoming parameters {0}").format(
                                     param,
                                     stack['callerClass'],
                                     stack['callerLineNumber'],
@@ -113,20 +100,23 @@ def get_vul_count_by_agent(agent_ids, vid, user):
                                 )
                             if stack['tag'] == 'propagator':
                                 taintStrStack.append(
-                                    "文件{} {}行的函数{}".format(
+                                    _("call function {2} at line {1} of {0}").format(
                                         stack['callerClass'],
                                         stack['callerLineNumber'],
                                         node
                                     )
                                 )
                             if stack['tag'] == 'sink':
-                                sinkStr = "最终在文件{}{}行的{}执行敏感操作".format(
+                                sinkStr = _("run sink function {2} at line {1} of file {0}").format(
                                     stack['callerClass'],
                                     stack['callerLineNumber'],
                                     node
                                 )
-                        taintStr = "\n；".join(taintStrStack)
-                        detailStr3 = "\n\n漏洞触发过程如下：\n{},经{}传播,\n {}".format(sourceStr, taintStr, sinkStr)
+                        taintStr = "\n; ".join(taintStrStack)
+                        detailStr3 = _("\n\nCode call chain: \n{0}, and then {1},\n {2}").format(sourceStr, taintStr, sinkStr)
+                    else:
+                        detailStr3 = _("\n\nCode call chain: call {1} at {0}").format(one['top_stack'], one['bottom_stack'])
+
             cur_tile = _("{} Appears in {} {}").format(one['type'], str(one['uri']), str(one['taint_position']))
             if one['param_name']:
                 cur_tile = cur_tile + "\"" + str(one['param_name']) + "\""
