@@ -211,7 +211,7 @@ class VulsEndPoint(UserEndPoint):
         queryset = IastVulnerabilityModel.objects.values(
             'id', 'hook_type_id', 'url', 'uri', 'agent_id', 'level_id',
             'http_method', 'top_stack', 'bottom_stack', 'taint_position',
-            'latest_time', 'first_time',
+            'latest_time', 'first_time','strategy_id',
             'status_id').filter(agent__in=auth_agents)
 
         level = request.query_params.get('level')
