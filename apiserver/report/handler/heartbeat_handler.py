@@ -56,7 +56,7 @@ class HeartBeatHandler(IReportHandler):
         if heartbeat:
             queryset.exclude(pk=heartbeat.id).delete()
             heartbeat.dt = int(time.time())
-            if self.replay_queue == 1:
+            if self.return_queue == 1:
                 heartbeat.req_count = self.req_count
                 heartbeat.report_queue = self.report_queue
                 heartbeat.method_queue = self.method_queue
@@ -64,7 +64,7 @@ class HeartBeatHandler(IReportHandler):
                 heartbeat.save(update_fields=[
                     'req_count', 'dt', 'report_queue', 'method_queue', 'replay_queue'
                 ])
-            elif self.replay_queue == 0:
+            elif self.return_queue == 0:
                 heartbeat.memory = self.memory
                 heartbeat.cpu = self.cpu
                 heartbeat.save(update_fields=[
