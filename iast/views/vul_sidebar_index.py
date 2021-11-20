@@ -11,6 +11,7 @@ from dongtai.models.hook_type import HookType
 from iast.utils import extend_schema_with_envcheck
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import format_lazy
+from dongtai.models.strategy import IastStrategyModel
 
 VALUES = [
     'level',
@@ -119,7 +120,12 @@ class VulSideBarList(UserEndPoint):
                                                     page_size=page_size)
         for obj in queryset:
             hook_type = HookType.objects.filter(pk=obj['hook_type_id']).first()
-            obj['type'] = hook_type.name if hook_type else ''
+            hook_type_name = hook_type.name if hook_type else None
+            strategy = IastStrategyModel.objects.filter(pk=obj['strategy_id']).first()
+            strategy_name = strategy.vul_name if strategy else None
+            type_ = list(
+                filter(lambda x: x is not None, [strategy_name, hook_type_name]))
+            obj['type'] = type_[0] if type_ else ''
         return R.success(page=page_summary,
                          total=page_summary['alltotal'],
                          data=[obj for obj in queryset])
