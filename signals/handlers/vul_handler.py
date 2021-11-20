@@ -218,9 +218,9 @@ def parse_taint_position(source_method, vul_meta, taint_value):
     return param_names
 
 
-def save_vul(vul_meta, vul_level, hook_type_id, vul_stack, top_stack, bottom_stack, **kwargs):
+def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs):
     logger.info(
-        f'save vul, type: {hook_type_id}, from: {"normal" if "replay_id" not in kwargs else "replay"}, id: {vul_meta.id}')
+        f'save vul, strategy id: {strategy_id}, from: {"normal" if "replay_id" not in kwargs else "replay"}, id: {vul_meta.id}')
     # 如果是重放请求，且重放请求类型为漏洞验证，更新漏洞状态为
     taint_value = kwargs['taint_value']
     timestamp = int(time.time())
@@ -233,7 +233,7 @@ def save_vul(vul_meta, vul_level, hook_type_id, vul_stack, top_stack, bottom_sta
         taint_position = ''
 
     vul = IastVulnerabilityModel.objects.filter(
-        hook_type_id=hook_type_id,
+        strategy_id=strategy_id,
         uri=vul_meta.uri,
         http_method=vul_meta.http_method,
         agent=vul_meta.agent,
@@ -255,16 +255,14 @@ def save_vul(vul_meta, vul_level, hook_type_id, vul_stack, top_stack, bottom_sta
         vul.latest_time = timestamp
         vul.method_pool_id = vul_meta.id
         vul.full_stack = json.dumps(vul_stack, ensure_ascii=False)
-        vul.status_id = settings.PENDING
         vul.save(update_fields=[
             'req_header', 'req_params', 'req_data', 'res_header', 'res_body', 'taint_value', 'taint_position',
             'method_pool_id', 'context_path', 'client_ip', 'top_stack', 'bottom_stack', 'full_stack', 'counts',
-            'latest_time', 'status_id'
+            'latest_time'
         ])
     else:
         vul = IastVulnerabilityModel.objects.create(
-            # type=vul_name,
-            hook_type_id=hook_type_id,
+            strategy_id=strategy_id,
             level_id=vul_level,
             url=vul_meta.url,
             uri=vul_meta.uri,
@@ -316,11 +314,11 @@ def create_vul_recheck_task(vul_id, agent, timestamp):
         )
 
 
-def handler_replay_vul(vul_meta, vul_level, hook_type_id, vul_stack, top_stack, bottom_stack, **kwargs):
+def handler_replay_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs):
     timestamp = int(time.time())
     vul = IastVulnerabilityModel.objects.filter(id=kwargs['relation_id']).first()
-    logger.info(f'handle vul replay, current hook_type:{vul.hook_type_id}, target hook_type:{hook_type_id}')
-    if vul and vul.hook_type_id == hook_type_id:
+    logger.info(f'handle vul replay, current strategy:{vul.strategy_id}, target hook_type:{strategy_id}')
+    if vul and vul.strategy_id == strategy_id:
         vul.status_id = settings.CONFIRMED
         vul.latest_time = timestamp
         vul.save(update_fields=['status_id', 'latest_time'])
@@ -332,13 +330,13 @@ def handler_replay_vul(vul_meta, vul_level, hook_type_id, vul_stack, top_stack, 
             update_time=timestamp
         )
     else:
-        vul = save_vul(vul_meta, vul_level, hook_type_id, vul_stack, top_stack, bottom_stack, **kwargs)
+        vul = save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs)
         create_vul_recheck_task(vul_id=vul.id, agent=vul.agent, timestamp=timestamp)
     return vul
 
 
 @receiver(vul_found)
-def handler_vul(vul_meta, vul_level, hook_type_id, vul_stack, top_stack, bottom_stack, **kwargs):
+def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs):
     """
     保存漏洞数据
     :param vul_meta:
@@ -359,15 +357,15 @@ def handler_vul(vul_meta, vul_level, hook_type_id, vul_stack, top_stack, bottom_
         if replay_type == const.VUL_REPLAY:
             kwargs['relation_id'] = relation_id
             kwargs['replay_id'] = replay_id
-            vul = handler_replay_vul(vul_meta, vul_level, hook_type_id, vul_stack, top_stack, bottom_stack, **kwargs)
+            vul = handler_replay_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs)
         elif replay_type == const.REQUEST_REPLAY:
             # 数据包调试数据暂不检测漏洞
             vul = None
         else:
-            vul = save_vul(vul_meta, vul_level, hook_type_id, vul_stack, top_stack, bottom_stack, **kwargs)
+            vul = save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs)
             create_vul_recheck_task(vul_id=vul.id, agent=vul.agent, timestamp=timestamp)
     except Exception as e:
-        vul = save_vul(vul_meta, vul_level, hook_type_id, vul_stack, top_stack, bottom_stack, **kwargs)
+        vul = save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs)
         create_vul_recheck_task(vul_id=vul.id, agent=vul.agent, timestamp=timestamp)
 
     if vul:
