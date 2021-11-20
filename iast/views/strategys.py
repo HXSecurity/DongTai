@@ -63,13 +63,14 @@ class _StrategyArgsSerializer(serializers.Serializer):
 
 STATUS_DELETE = 'delete'
 class StrategyEndpoint(UserEndPoint):
-    #permission_classes_by_action = {'post':(TalentAdminPermission,),}
+    permission_classes_by_action = {'POST':(TalentAdminPermission,)}
 
-    #def get_permissions(self):
-    #  try:
-    #    return [permission() for permission in self.permission_classes_by_action[self.action]]
-    #  except KeyError:
-    #    return [permission() for permission in self.permission_classes]
+    def get_permissions(self):
+      try:
+        return [permission() for permission in self.permission_classes_by_action[self.request.method]]
+      except KeyError:
+        return [permission() for permission in self.permission_classes]
+    
     @extend_schema_with_envcheck(
         [_StrategyArgsSerializer],
         tags=[_('Strategy')],
@@ -147,7 +148,6 @@ class StrategyEndpoint(UserEndPoint):
         ),
         response_schema=_ResponseSerializer,
     )
-    @permission_classes((TalentAdminPermission,))
     def post(self, request):
         ser = StrategyCreateSerializer(data=request.data)
         try:
