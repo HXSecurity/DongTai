@@ -21,7 +21,7 @@ from dongtai.models.program_language import IastProgramLanguage
 import time 
 from rest_framework.serializers import ValidationError
 from dongtai.permissions import TalentAdminPermission
-
+from rest_framework.decorators import permission_classes
 class _StrategyResponseDataStrategySerializer(serializers.Serializer):
     id = serializers.CharField(help_text=_('The id of agent'))
     vul_name = serializers.CharField(help_text=_('The name of the vulnerability type targeted by the strategy'))
@@ -63,14 +63,13 @@ class _StrategyArgsSerializer(serializers.Serializer):
 
 STATUS_DELETE = 'delete'
 class StrategyEndpoint(UserEndPoint):
-    permission_classes_by_action = {'post':(TalentAdminPermission,),}
+    #permission_classes_by_action = {'post':(TalentAdminPermission,),}
 
-    def get_permissions(self):
-      try:
-        return [permission() for permission in self.permission_classes_by_action[self.action]]
-      except KeyError:
-        return [permission() for permission in self.permission_classes]
-    
+    #def get_permissions(self):
+    #  try:
+    #    return [permission() for permission in self.permission_classes_by_action[self.action]]
+    #  except KeyError:
+    #    return [permission() for permission in self.permission_classes]
     @extend_schema_with_envcheck(
         [_StrategyArgsSerializer],
         tags=[_('Strategy')],
@@ -92,7 +91,7 @@ class StrategyEndpoint(UserEndPoint):
         q = ~Q(state=STATUS_DELETE)
         if name:
             q = q & Q(vul_name__icontains=name)
-        queryset = IastStrategyModel.objects.filter(q).order_by('-id'),all()
+        queryset = IastStrategyModel.objects.filter(q).order_by('-id').all()
         if page and page_size:
             page_summary, page_data = self.get_paginator(queryset, page, page_size)
             return R.success(data=StrategySerializer(page_data, many=True).data,
@@ -148,6 +147,7 @@ class StrategyEndpoint(UserEndPoint):
         ),
         response_schema=_ResponseSerializer,
     )
+    @permission_classes((TalentAdminPermission,))
     def post(self, request):
         ser = StrategyCreateSerializer(data=request.data)
         try:
