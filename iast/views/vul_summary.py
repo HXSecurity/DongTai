@@ -323,6 +323,13 @@ class VulSummary(UserEndPoint):
             "type": get_hook_type_name(_),
             "count": _['total']
         } for _ in type_summary]
+        tempdic = {}
+        for vul_type in vul_type_list:
+            if tempdic.get(vul_type['type'],None):
+                tempdic[vul_type['type']]['count'] += vul_type['count']
+            else:
+                tempdic[vul_type['type']] = vul_type
+        vul_type_list = tempdic.values()
         end['data']['type'] = sorted(vul_type_list,
                                      key=lambda x: x['count'],
                                      reverse=True)
