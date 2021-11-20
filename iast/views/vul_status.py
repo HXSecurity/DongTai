@@ -71,10 +71,11 @@ class VulStatus(UserEndPoint):
         status = request.data.get('status', None)
         status_id = request.data.get('status_id', None)
         if vul_id and (status or status_id):
+            auth_users = self.get_auth_users(request.user)
+            auth_agents = self.get_auth_agents(auth_users)
             vul_model = IastVulnerabilityModel.objects.filter(
                 id=vul_id,
-                agent__in=self.get_auth_agents_with_user(
-                    request.user)).first()
+                agent__in=auth_agents).first()
             if status_id:
                 try:
                     status_ = IastVulnerabilityStatus.objects.get(status_id)
@@ -86,11 +87,12 @@ class VulStatus(UserEndPoint):
                     name=status)
             try:
                 vul_model.status_id = status_.id
-                vul_model.save()
+                vul_model.save(update_fields=['status_id'])
                 msg = _('Vulnerability status is modified to {}').format(
                     status)
                 return R.success(msg=msg)
-            except:
+            except Exception as e:
+                print(e)
                 pass
         msg = _('Incorrect parameter')
         return R.failure(msg=msg)
