@@ -1,7 +1,7 @@
 #!/bin/bash
 SKIP_MYSQL=false
 SKIP_REDIS=false
-CHANGE_THIS_VERSION=1.1.0
+CHANGE_THIS_VERSION=1.0.5
 Info(){
   echo -e "[Info] $1"
 }
@@ -127,6 +127,7 @@ REDIS_STR=""
 if [ $SKIP_MYSQL == false ]; then
   export MYSQL_STR=`cat <<EOF;
 dongtai-mysql: 
+    container_name: dongtai-iast-dongtai-mysql-1
     image: dongtai.docker.scarf.sh/dongtai/dongtai-mysql:$CHANGE_THIS_VERSION
     restart: always
     volumes:
@@ -139,6 +140,7 @@ fi
 if [ $SKIP_REDIS == false ]; then
   export REDIS_STR=`cat <<EOF;
 dongtai-redis:
+    container_name: dongtai-iast-dongtai-redis-1
     image: dongtai.docker.scarf.sh/dongtai/dongtai-redis:$CHANGE_THIS_VERSION
     restart: always
 
@@ -152,12 +154,14 @@ services:
   $MYSQL_STR
   $REDIS_STR
   dongtai-webapi:
+    container_name: dongtai-iast-dongtai-webapi-1
     image: "dongtai.docker.scarf.sh/dongtai/dongtai-webapi:$CHANGE_THIS_VERSION"
     restart: always
     volumes:
       - "$PWD/config-tutorial.ini:/opt/dongtai/webapi/conf/config.ini"
 
   dongtai-web:
+    container_name: dongtai-iast-dongtai-web-1
     image: "dongtai.docker.scarf.sh/dongtai/dongtai-web:$CHANGE_THIS_VERSION"
     restart: always
     ports:
@@ -168,6 +172,7 @@ services:
       - dongtai-webapi
 
   dongtai-openapi:
+    container_name: dongtai-iast-dongtai-openapi-1
     image: "dongtai.docker.scarf.sh/dongtai/dongtai-openapi:$CHANGE_THIS_VERSION"
     restart: always
     volumes:
@@ -176,6 +181,7 @@ services:
       - "$OPENAPI_SERVICE_PORT:8000"
 
   dongtai-engine:
+    container_name: dongtai-iast-dongtai-engine-1
     image: "dongtai.docker.scarf.sh/dongtai/dongtai-engine:$CHANGE_THIS_VERSION"
     restart: always
     volumes:
@@ -183,6 +189,7 @@ services:
 
 
   dongtai-engine-task:
+    container_name: dongtai-iast-dongtai-engine-task-1
     image: "dongtai.docker.scarf.sh/dongtai/dongtai-engine:$CHANGE_THIS_VERSION"
     restart: always
     command: ["/opt/dongtai/engine/docker/entrypoint.sh", "task"]
