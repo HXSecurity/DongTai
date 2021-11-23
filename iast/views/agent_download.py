@@ -11,7 +11,7 @@ from dongtai.endpoint import UserEndPoint, R
 from rest_framework.authtoken.models import Token
 from django.utils.translation import gettext_lazy as _
 from dongtai.models.profile import IastProfile
-
+from iast.utils import get_openapi
 
 
 logger = logging.getLogger('dongtai-webapi')
@@ -55,9 +55,7 @@ class AgentDownload(UserEndPoint):
         project_name = request.query_params.get('projectName', 'Demo Project')
         token, success = Token.objects.values('key').get_or_create(user=request.user)
         AGENT_SERVER_PROXY={'HOST':''}
-        APISERVER = IastProfile.objects.filter(key='apiserver').values_list('value',
-                                                            flat=True).first()       
-        AGENT_SERVER_PROXY['HOST'] = APISERVER if APISERVER is not None else ''
+        AGENT_SERVER_PROXY['HOST'] = get_openapi()
         resp = requests.get(
             url=f'{AGENT_SERVER_PROXY["HOST"]}/api/v1/agent/download?url={base_url}&language={language}&projectName={project_name}',
             headers={
