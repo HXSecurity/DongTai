@@ -91,7 +91,7 @@ class HeartBeatHandler(IReportHandler):
                                          agent=self.agent)
 
     def get_result(self, msg=None):
-        if self.return_queue is None and self.return_queue == 1:
+        if self.return_queue is None or self.return_queue == 1:
             try:
                 project_agents = IastAgent.objects.values('id').filter(bind_project_id=self.agent.bind_project_id)
                 if project_agents is None:
