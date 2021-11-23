@@ -106,19 +106,6 @@ check_port(){
     Error "port $WEB_SERVICE_PORT is already in use. please change default port."
     exit
   fi
-
-  read -p "[+] please input openAPI service port, default [8000]:" OPENAPI_SERVICE_PORT
-  if [ -z $OPENAPI_SERVICE_PORT ];then
-    OPENAPI_SERVICE_PORT=8000
-  fi
-  lsof -i:$OPENAPI_SERVICE_PORT | grep "LISTEN" 2>/dev/null
-
-  if [ $? -ne 0 ]; then
-    Info "port $OPENAPI_SERVICE_PORT is ok."
-  else
-    Error "port $OPENAPI_SERVICE_PORT is already in use. please change default port."
-    exit
-  fi
 }
 
 create_docker_compose_file(){
