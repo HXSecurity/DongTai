@@ -20,7 +20,7 @@ spec:
       containers:
         - name: dongtai-webapi-container
           image: dongtai.docker.scarf.sh/dongtai/dongtai-webapi:{{ .Values.imageVersion }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           volumeMounts:
             - name: configfile
               mountPath: /opt/dongtai/webapi/conf/config.ini
@@ -138,16 +138,25 @@ data:
                  try_files $uri $uri/ /index.html;
              }
 
-               location /api/ {
+              location /api/ {
                  proxy_read_timeout 60;
                  proxy_pass http://dongtai-webapi-svc:80/api/;
                }
 
-               location /upload/ {
+              location /upload/ {
                  proxy_pass http://dongtai-webapi-svc:80/upload/;
                }
 
-             location = /50x.html {
+              location /openapi/ {
+                proxy_set_header X-real-ip $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header User-Agent $http_user_agent;
+                proxy_set_header X-Host $http_x_forwarded_host;
+                proxy_read_timeout 60;
+                proxy_pass http://dongtai-openapi-svc:80/;
+               }
+
+              location = /50x.html {
                  root   /usr/share/nginx/html;
              }
          }
@@ -179,7 +188,7 @@ spec:
       containers:
         - name: dongtai-web-container
           image: dongtai.docker.scarf.sh/dongtai/dongtai-web:{{ .Values.imageVersion }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           volumeMounts:
             - name: configfile
               mountPath: /etc/nginx/nginx.conf
@@ -218,7 +227,7 @@ spec:
       containers:
         - name: dongtai-engine-container
           image: dongtai.docker.scarf.sh/dongtai/dongtai-engine:{{ .Values.imageVersion }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           volumeMounts:
             - name: configfile
               mountPath: /opt/dongtai/engine/conf/config.ini
