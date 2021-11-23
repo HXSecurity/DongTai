@@ -1,7 +1,7 @@
 #!/bin/bash
 SKIP_MYSQL=false
 SKIP_REDIS=false
-CHANGE_THIS_VERSION=1.1.1
+CHANGE_THIS_VERSION=1.1.2
 Info(){
   echo -e "[Info] $1"
 }
@@ -162,8 +162,6 @@ services:
     restart: always
     volumes:
        - "$PWD/config-tutorial.ini:/opt/dongtai/openapi/conf/config.ini"
-    ports:
-      - "$OPENAPI_SERVICE_PORT:8000"
 
   dongtai-engine:
     image: "dongtai.docker.scarf.sh/dongtai/dongtai-engine:$CHANGE_THIS_VERSION"
