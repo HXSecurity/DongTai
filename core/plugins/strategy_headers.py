@@ -13,6 +13,8 @@ from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.utils import const
 
+from core.plugins import is_strategy_enable
+
 
 class FakeSocket():
     def __init__(self, response_str):
@@ -82,6 +84,8 @@ def check_response_header(method_pool):
 
 
 def save_vul(vul_type, method_pool, position=None, data=None):
+    if is_strategy_enable(vul_type, method_pool) is False:
+        return None
     vul_strategy = IastStrategyModel.objects.filter(
         vul_type=vul_type,
         state=const.STRATEGY_ENABLE,
