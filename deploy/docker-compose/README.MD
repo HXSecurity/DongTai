@@ -22,3 +22,15 @@ s: skip specified component，optional： `mysql` `redis`  `mysql,redis`，defau
 
 
 After installation, access it with your specified `web service port`.
+
+
+
+
+### Upgrade
+
+```
+./upgrade.sh -f 1.0.5 -t 1.1.2
+```
+
+f: from version
+t: to version 
