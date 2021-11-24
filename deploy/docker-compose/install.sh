@@ -1,7 +1,7 @@
 #!/bin/bash
 SKIP_MYSQL=false
 SKIP_REDIS=false
-CHANGE_THIS_VERSION=1.0.5
+CHANGE_THIS_VERSION=1.1.2
 Info(){
   echo -e "[Info] $1"
 }
@@ -106,19 +106,6 @@ check_port(){
     Error "port $WEB_SERVICE_PORT is already in use. please change default port."
     exit
   fi
-
-  read -p "[+] please input openAPI service port, default [8000]:" OPENAPI_SERVICE_PORT
-  if [ -z $OPENAPI_SERVICE_PORT ];then
-    OPENAPI_SERVICE_PORT=8000
-  fi
-  lsof -i:$OPENAPI_SERVICE_PORT | grep "LISTEN" 2>/dev/null
-
-  if [ $? -ne 0 ]; then
-    Info "port $OPENAPI_SERVICE_PORT is ok."
-  else
-    Error "port $OPENAPI_SERVICE_PORT is already in use. please change default port."
-    exit
-  fi
 }
 
 create_docker_compose_file(){
@@ -154,7 +141,6 @@ services:
   $MYSQL_STR
   $REDIS_STR
   dongtai-webapi:
-    container_name: dongtai-iast-dongtai-webapi-1
     image: "dongtai.docker.scarf.sh/dongtai/dongtai-webapi:$CHANGE_THIS_VERSION"
     restart: always
     volumes:
@@ -172,16 +158,12 @@ services:
       - dongtai-webapi
 
   dongtai-openapi:
-    container_name: dongtai-iast-dongtai-openapi-1
     image: "dongtai.docker.scarf.sh/dongtai/dongtai-openapi:$CHANGE_THIS_VERSION"
     restart: always
     volumes:
        - "$PWD/config-tutorial.ini:/opt/dongtai/openapi/conf/config.ini"
-    ports:
-      - "$OPENAPI_SERVICE_PORT:8000"
 
   dongtai-engine:
-    container_name: dongtai-iast-dongtai-engine-1
     image: "dongtai.docker.scarf.sh/dongtai/dongtai-engine:$CHANGE_THIS_VERSION"
     restart: always
     volumes:
@@ -189,7 +171,6 @@ services:
 
 
   dongtai-engine-task:
-    container_name: dongtai-iast-dongtai-engine-task-1
     image: "dongtai.docker.scarf.sh/dongtai/dongtai-engine:$CHANGE_THIS_VERSION"
     restart: always
     command: ["/opt/dongtai/engine/docker/entrypoint.sh", "task"]
