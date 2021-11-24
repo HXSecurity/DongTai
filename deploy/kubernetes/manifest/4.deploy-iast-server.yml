@@ -19,6 +19,11 @@ data:
     [engine]
     url = http://dongtai-engine-svc:80
 
+    [apiserver]
+    url = http://dongtai-openapi-svc:80
+    
+    [security]
+    csrf_trust_origins = .example.com
 
     [smtp]
     server = smtp_server
@@ -60,7 +65,7 @@ spec:
       containers:
         - name: dongtai-webapi-container
           image: dongtai.docker.scarf.sh/dongtai/dongtai-webapi:CHANGE_THIS_VERSION
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           volumeMounts:
             - name: configfile
               mountPath: /opt/dongtai/webapi/conf/config.ini
@@ -193,6 +198,15 @@ data:
                  proxy_pass http://dongtai-webapi-svc:80/upload/;
                }
 
+               location /openapi/ {
+                proxy_set_header X-real-ip $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header User-Agent $http_user_agent;
+                proxy_set_header X-Host $http_x_forwarded_host;
+                proxy_read_timeout 60;
+                proxy_pass http://dongtai-openapi-svc:80/;
+               }
+
              location = /50x.html {
                  root   /usr/share/nginx/html;
              }
@@ -225,7 +239,7 @@ spec:
       containers:
         - name: dongtai-web-container
           image: dongtai.docker.scarf.sh/dongtai/dongtai-web:CHANGE_THIS_VERSION
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           volumeMounts:
             - name: configfile
               mountPath: /etc/nginx/nginx.conf
@@ -267,7 +281,7 @@ spec:
       containers:
         - name: dongtai-engine-container
           image: dongtai.docker.scarf.sh/dongtai/dongtai-engine:CHANGE_THIS_VERSION
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           volumeMounts:
             - name: configfile
               mountPath: /opt/dongtai/engine/conf/config.ini
