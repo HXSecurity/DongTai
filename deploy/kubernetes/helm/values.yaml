@@ -26,6 +26,10 @@ redis:
 
 enginUrl: http://dongtai-engine-svc:80
 
+apiServer: http://dongtai-openapi-svc:80
+
+csrfTrustOrigins: .example.com
+
 smtp:
   server: smtp_server
   user: smtp_user

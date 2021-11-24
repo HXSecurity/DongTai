@@ -4,7 +4,7 @@ SKIP_MYSQL=false
 SKIP_REDIS=false
 ACCESS_TYPE=ClusterIP
 NAMESPACE=dongtai-iast
-REALEASE_VERSION=1.1.0
+REALEASE_VERSION=1.1.2
 Info(){
   echo -e "[Info] $1"
 }
@@ -135,7 +135,7 @@ expose_services(){
     if [[ "$SERVICE_TYPES" =~ "$ACCESS_TYPE" ]]
     then
       kubectl expose deployments/dongtai-web --name=dongtai-web-pub-svc  --port=8000 --target-port=80 -n "$NAMESPACE" --type="$ACCESS_TYPE"
-      kubectl expose deployments/dongtai-openapi --name=dongtai-openapi-pub-svc  --port=8000 --target-port=8000 -n "$NAMESPACE" --type="$ACCESS_TYPE"
+      # kubectl expose deployments/dongtai-openapi --name=dongtai-openapi-pub-svc  --port=8000 --target-port=8000 -n "$NAMESPACE" --type="$ACCESS_TYPE"
     else
       Error "-m option: $SERVICE_TYPES"
     fi
@@ -153,10 +153,10 @@ if [ "$ACCESS_TYPE" == "NodePort" ]; then
     Info "Available node ip:"
     kubectl get nodes -o wide |  awk {'print $7'} | column -t
     Info "dongtai-web service port:] $(kubectl get svc dongtai-web-pub-svc -n "$NAMESPACE" -o=jsonpath='{.spec.ports[0].nodePort}')"
-    Info "dongtai-openapi service port:] $(kubectl get svc dongtai-openapi-pub-svc -n "$NAMESPACE" -o=jsonpath='{.spec.ports[0].nodePort}')"
+    # Info "dongtai-openapi service port:] $(kubectl get svc dongtai-openapi-pub-svc -n "$NAMESPACE" -o=jsonpath='{.spec.ports[0].nodePort}')"
 
 elif [ "$ACCESS_TYPE" == "LoadBalancer"  ]; then
-    Todo "Get EXTERNAL-IP ip or dns by: kubectl get svc dongtai-web-pub-svc dongtai-openapi-pub-svc -n $NAMESPACE"
+    Todo "Get EXTERNAL-IP ip or dns by: kubectl get svc dongtai-web-pub-svc -n $NAMESPACE"
 else 
-  Todo "Your should expose your service [dongtai-web-pub-svc] and [dongtai-openapi-pub-svc] manually."
+  Todo "Your should expose your service [dongtai-web-pub-svc] manually."
 fi
