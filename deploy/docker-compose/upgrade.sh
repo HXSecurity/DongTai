@@ -103,10 +103,15 @@ fi
 UPGRADE_DIR=~/dongtai_iast_upgrade
 now=$(date '+%Y-%m-%d-%H-%M-%S')
 backup_filename=$UPGRADE_DIR/dongtai_iast-$now.sql
+
+MYSQL_CONTAINER_ID=$(docker ps | grep 'dongtai-mysql:' | awk '{print $1}')
+WEB_CONTAINER_ID=$(docker ps | grep 'dongtai-web:' | awk '{print $1}')
+
+
 function backup_mysql(){
   mkdir -p $UPGRADE_DIR
   Info "Start to backup exist data..."
-  retval=$(echo "dongtai-iast" |  docker exec -i  dongtai-iast-dongtai-mysql-1  mysqldump -u root -d dongtai_webapi -p >$backup_filename )
+  retval=$(echo "dongtai-iast" |  docker exec -i  $MYSQL_CONTAINER_ID  mysqldump -u root -d dongtai_webapi -p >$backup_filename )
   Info "Finished backup exist data..."
 
 }
@@ -121,7 +126,7 @@ fi
 
 function current_hash(){
   retval=""
-  retval=$(echo "dongtai-iast" |  docker exec -i  dongtai-iast-dongtai-mysql-1  mysqldump -u root -d dongtai_webapi --ignore-table=dongtai_webapi.mysql_version_control -p --skip-comments   --skip-opt | sed 's/ AUTO_INCREMENT=[0-9]*//g' | sed 's/\/\*!*.*//g' | $sha |awk '{print $1}')
+  retval=$(echo "dongtai-iast" |  docker exec -i  $MYSQL_CONTAINER_ID  mysqldump -u root -d dongtai_webapi --ignore-table=dongtai_webapi.mysql_version_control -p --skip-comments   --skip-opt | sed 's/ AUTO_INCREMENT=[0-9]*//g' | sed 's/\/\*!*.*//g' | $sha |awk '{print $1}')
   echo "$retval" 
 }
 
@@ -172,7 +177,7 @@ function execute_update(){
   do 
     Info "Start to load sql:[$UPGRADE_DIR/$SQL]"
     Info $SQL
-    docker exec -i dongtai-iast-dongtai-mysql-1 mysql -uroot -p"dongtai-iast" dongtai_webapi < $UPGRADE_DIR/$SQL
+    docker exec -i $MYSQL_CONTAINER_ID mysql -uroot -p"dongtai-iast" dongtai_webapi < $UPGRADE_DIR/$SQL
   done
 }
 
@@ -196,8 +201,7 @@ function check_after_execute(){
 
 function upgrade_docker_image(){
 CHANGE_THIS_VERSION=$TO_VERSION
-
-WEB_PORT=$(docker inspect --format='{{range $p, $conf := .NetworkSettings.Ports}} {{(index $conf 0).HostPort}} {{end}}' dongtai-iast-dongtai-web-1)
+WEB_PORT=$(docker inspect --format='{{range $p, $conf := .NetworkSettings.Ports}} {{(index $conf 0).HostPort}} {{end}}' $WEB_CONTAINER_ID)
 WEB_PORT=$(trim $WEB_PORT)
 
 
