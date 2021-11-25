@@ -27,8 +27,11 @@ class ScaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Asset
-        fields = ['id', 'package_name', 'version', 'project_name', 'project_id', 'project_version', 'language',
-                  'agent_name', 'signature_value', 'level', 'level_type', 'vul_count', 'dt']
+        fields = [
+            'id', 'package_name', 'version', 'project_name', 'project_id',
+            'project_version', 'language', 'package_path', 'agent_name',
+            'signature_value', 'level', 'level_type', 'vul_count', 'dt'
+        ]
 
     def get_project_name(self, obj):
         project_id = obj.agent.bind_project_id
