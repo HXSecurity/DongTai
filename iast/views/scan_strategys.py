@@ -12,7 +12,7 @@ from rest_framework import viewsets
 from django.db import connection
 
 from django.db import models
-from dongtai.models.strategy import IastStrategyUser
+from dongtai.models.strategy_user import IastStrategyUser
 from dongtai.models.user import User
 import time
 from django.db.models import Q
