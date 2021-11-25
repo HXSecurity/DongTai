@@ -9,7 +9,6 @@ from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.text import format_lazy
 from rest_framework.serializers import ValidationError
 from rest_framework import viewsets
-from django.db import connection
 
 from django.db import models
 from dongtai.models.strategy_user import IastStrategyUser
@@ -18,7 +17,7 @@ import time
 from django.db.models import Q
 from dongtai.permissions import TalentAdminPermission
 from dongtai.models.project import IastProject
-from dongtai.serializers.project import ProjectSerializer
+from iast.serializers.project import ProjectSerializer
 
 logger = logging.getLogger('dongtai-webapi')
 
