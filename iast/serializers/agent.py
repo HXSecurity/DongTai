@@ -47,7 +47,7 @@ class AgentSerializer(serializers.ModelSerializer):
 
     def get_running_status(self, obj):
         mapping = defaultdict(str)
-        mapping.update({1: _("Online"), 2: _("Offline")})
+        mapping.update({1: _("Online"), 0: _("Offline")})
         return mapping[obj.online]
 
     def get_system_load(self, obj):
