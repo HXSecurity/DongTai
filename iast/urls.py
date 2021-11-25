@@ -118,8 +118,12 @@ from iast.views.messages_del import MessagesDelEndpoint
 from iast.views.messages_send import MessagesSendEndpoint
 from iast.views.agent_alias_modified import AgentAliasModified
 from iast.views.engine_method_pool_time_range import MethodPoolTimeRangeProxy
-from iast.views.vul_levels import VulLevelList  
-from iast.views.sensitive_info_rule import (SensitiveInfoRuleViewSet,SensitiveInfoPatternTypeView,SensitiveInfoPatternValidationView)
+from iast.views.vul_levels import VulLevelList
+from iast.views.sensitive_info_rule import (SensitiveInfoRuleViewSet,
+                                            SensitiveInfoPatternTypeView,
+                                            SensitiveInfoPatternValidationView)
+from iast.views.scan_strategys import (ScanStrategyViewSet,
+                                       ScanStrategyRelationProject)
 
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
@@ -149,12 +153,10 @@ urlpatterns = [
     path('projects', Projects.as_view()),
     path('projects/summary/<int:id>', ProjectSummary.as_view()),
     path('project/engines/<int:pid>', ProjectEngines.as_view()),
-
     path('project/report/async_add', ProjectReportSyncAdd.as_view()),
     path('project/report/list', ProjectReportList.as_view()),
     path('project/report/download', ProjectReportDownload.as_view()),
     path('project/report/delete', ProjectReportDelete.as_view()),
-
     path('project/export', ProjectReportExport.as_view()),
     path('project/search', ProjectSearch.as_view()),
     path('project/version/add', ProjectVersionAdd.as_view()),
@@ -248,10 +250,36 @@ urlpatterns = [
     path('message/delete', MessagesDelEndpoint.as_view()),
     path('vul_levels', VulLevelList.as_view()),
     #    path('message/send', MessagesSendEndpoint.as_view()),
-    path('sensitive_info_rule',SensitiveInfoRuleViewSet.as_view({'get':'list','post':'create'})),
-    path('sensitive_info_rule/<int:pk>',SensitiveInfoRuleViewSet.as_view({'get':'retrieve','put':'update','delete':'destory'})),
-    path('sensitive_info_rule/pattern_type',SensitiveInfoPatternTypeView.as_view()),
-    path('sensitive_info_rule/<str:pattern_type>_validation',SensitiveInfoPatternValidationView.as_view()),
+    path('sensitive_info_rule',
+         SensitiveInfoRuleViewSet.as_view({
+             'get': 'list',
+             'post': 'create'
+         })),
+    path(
+        'sensitive_info_rule/<int:pk>',
+        SensitiveInfoRuleViewSet.as_view({
+            'get': 'retrieve',
+            'put': 'update',
+            'delete': 'destory'
+        })),
+    path('sensitive_info_rule/pattern_type',
+         SensitiveInfoPatternTypeView.as_view()),
+    path('sensitive_info_rule/<str:pattern_type>_validation',
+         SensitiveInfoPatternValidationView.as_view()),
+    path('scan_strategy',
+         ScanStrategyViewSet.as_view({
+             'get': 'list',
+             'post': 'create'
+         })),
+    path(
+        'scan_strategy/<int:pk>',
+        ScanStrategyViewSet.as_view({
+            'get': 'retrieve',
+            'put': 'update',
+            'delete': 'destory'
+        })),
+    path('scan_strategy/<int:pk>/relationprojects',
+         ScanStrategyRelationProject.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
