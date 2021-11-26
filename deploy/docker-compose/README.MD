@@ -35,3 +35,11 @@ After installation, access it with your specified `web service port`.
 
 f: from version
 t: to version 
+
+
+### Uninstall
+
+```
+./dtctl rm -d
+```
+d : remove server and data
