@@ -19,6 +19,7 @@ After modification, `skip` the relevant component in your deploy step.
 ./dtctl install -v 1.0.5 -s mysql
 ```
 s: skip specified component，optional： `mysql` `redis`  `mysql,redis`，default：don't skip
+
 v: the version you want to install
 
 
