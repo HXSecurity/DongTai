@@ -16,7 +16,8 @@
 ./dtctl install -v 1.0.5 -s mysql
 ```
 s: 跳过的资源(skip)，可选： `mysql` `redis`  `mysql,redis`，默认：不跳过
-t: 需要被安装的版本
+
+v: 需要被安装的版本
 
 环境启动成功后，通过安装过程中指定的`web service port`访问即可。
 
