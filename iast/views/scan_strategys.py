@@ -23,10 +23,16 @@ logger = logging.getLogger('dongtai-webapi')
 
 
 class ScanStrategySerializer(serializers.ModelSerializer):
+    content = serializers.SerializerMethodField()
     class Meta:
         model = IastStrategyUser
         fields = ['id', 'name', 'content', 'user', 'status', 'created_at']
-
+    def get_content(self, obj):
+        try:
+            return [int(i) for i in obj.content.split(',')]
+        except Exception as e:
+            print(e)
+            return []
 
 class _ScanStrategyArgsSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=20,
@@ -146,7 +152,7 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
         except ValidationError as e:
             return R.failure(data=e.detail)
         try:
-            ser.validated_data['content'] = ','.join(content)
+            ser.validated_data['content'] = ','.join([str(i) for i in content])
             obj = IastStrategyUser.objects.create(**ser.validated_data,
                                                   user=request.user)
             return R.success(msg='create success',
@@ -172,7 +178,7 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
                 status = ser.validated_data['status']
         except ValidationError as e:
             return R.failure(data=e.detail)
-        ser.validated_data['content'] = ','.join(content)
+        ser.validated_data['content'] = ','.join([str(i) for i in content])
         obj = IastStrategyUser.objects.filter(
             pk=pk).update(**ser.validated_data, latest_time=time.time())
         return R.success(msg='update success')
