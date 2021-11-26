@@ -170,17 +170,17 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
           ),
     )
     def update(self, request, pk):
-        ser = ScanCreateSerializer(data=request.data)
+        ser = ScanCreateSerializer(data=request.data,partial=True)
         try:
             if ser.is_valid(True):
-                name = ser.validated_data['name']
-                content = ser.validated_data['content']
-                status = ser.validated_data['status']
+                pass
         except ValidationError as e:
             return R.failure(data=e.detail)
-        ser.validated_data['content'] = ','.join([str(i) for i in content])
+        if ser.validated_data.get('content',None):
+            ser.validated_data['content'] = ','.join([str(i) for i in ser.validated_data['content']])
+        users = self.get_auth_users(request.user)
         obj = IastStrategyUser.objects.filter(
-            pk=pk).update(**ser.validated_data, latest_time=time.time())
+            pk=pk,user__in=users).update(**ser.validated_data)
         return R.success(msg='update success')
 
     @extend_schema_with_envcheck(
@@ -191,7 +191,7 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
           ),
     )
     def destory(self, request, pk):
-        scan = IastStrategyUser.objects.filter(pk=pk).first()
+        scan = IastStrategyUser.objects.filter(pk=pk, user__in=self.get_auth_users(request.user)).first()
         if not scan:
             return R.failure(msg='No scan strategy found')
         if checkusing(scan):
@@ -209,7 +209,7 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
         description=_("Get the item with pk"),
     )
     def retrieve(self, request, pk):
-        obj = IastStrategyUser.objects.filter(pk=pk, user=request.user).first()
+        obj = IastStrategyUser.objects.filter(pk=pk, user__in=self.get_auth_users(request.user)).first()
         return R.success(data=ScanStrategySerializer(obj).data)
 
 
