@@ -29,3 +29,12 @@ t: 需要被安装的版本
 
 f: from version
 t: to version 
+
+
+
+### 卸载
+
+```
+./dtctl rm -d
+```
+d : 改选项会让数据和服务一起被删除
