@@ -82,8 +82,8 @@ class ScaHandler(IReportHandler):
                             vul_count=vul_count,
                             agent=self.agent
                         )
-                project = IastProject.objects.filter(pk=self.agent.bind_project_id).first()
-                if project:
-                     project.update_latest()
+                    project = IastProject.objects.filter(pk=self.agent.bind_project_id).first()
+                    if project:
+                        project.update_latest()
                 except Exception as e:
                     logger.error(_('SCA data resolution failed, reasons: {}').format(e))
