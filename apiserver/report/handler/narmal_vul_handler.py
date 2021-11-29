@@ -11,6 +11,7 @@ import time
 from dongtai.models.hook_type import HookType
 from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.project import IastProject
 from dongtai.utils import const
 
 from AgentServer import settings
@@ -122,7 +123,9 @@ class NormalVulnHandler(BaseVulnHandler):
             http_method=self.http_method,
             agent=self.agent
         ).first()
-
+        project = IastProject.objects.filter(pk=self.agent.bind_project_id).first()
+        if project:
+            project.update_latest()
         if iast_vul:
             iast_vul.req_header = self.http_header
             iast_vul.req_params = self.http_query_string
