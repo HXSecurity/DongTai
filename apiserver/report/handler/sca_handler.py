@@ -15,6 +15,7 @@ from dongtai.models.sca_vul_db import ScaVulDb
 from dongtai.models.vul_level import IastVulLevel
 from dongtai.utils import const
 from django.utils.translation import gettext_lazy as _
+from dongtai.models.project import IastProject
 
 from apiserver.report.handler.report_handler_interface import IReportHandler
 from apiserver.report.report_handler_factory import ReportHandler
@@ -81,5 +82,8 @@ class ScaHandler(IReportHandler):
                             vul_count=vul_count,
                             agent=self.agent
                         )
+                project = IastProject.objects.filter(pk=self.agent.bind_project_id).first()
+                if project:
+                     project.update_latest()
                 except Exception as e:
                     logger.error(_('SCA data resolution failed, reasons: {}').format(e))
