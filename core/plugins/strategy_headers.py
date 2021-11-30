@@ -9,6 +9,7 @@ from io import BytesIO
 
 from celery.apps.worker import logger
 from django.db.models import Q
+from dongtai.models.project import IastProject
 from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.utils import const
@@ -101,6 +102,7 @@ def save_vul(vul_type, method_pool, position=None, data=None):
         method_pool_id=method_pool.id
     ).first()
     timestamp = int(time.time())
+    IastProject.objects.filter(id=method_pool.agent.bind_project_id).update(latest_time=timestamp)
     if vul:
         vul.req_header = method_pool.req_header
         vul.req_params = method_pool.req_params
