@@ -9,6 +9,7 @@ import time
 import requests
 from celery.apps.worker import logger
 from django.dispatch import receiver
+from dongtai.models.project import IastProject
 from dongtai.models.replay_queue import IastReplayQueue
 
 from dongtai.models.notify_config import IastNotifyConfig
@@ -239,6 +240,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
         agent=vul_meta.agent,
         method_pool_id=vul_meta.id
     ).first()
+    IastProject.objects.filter(id=vul_meta.agent.bind_project_id).update(latest_time=timestamp)
     if vul:
         vul.req_header = vul_meta.req_header
         vul.req_params = vul_meta.req_params
@@ -326,6 +328,8 @@ def handler_replay_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, b
         vul.status_id = settings.CONFIRMED
         vul.latest_time = timestamp
         vul.save(update_fields=['status_id', 'latest_time'])
+
+        IastProject.objects.filter(id=vul_meta.agent.bind_project_id).update(latest_time=timestamp)
 
         IastReplayQueue.objects.filter(id=kwargs['replay_id']).update(
             state=const.SOLVED,
