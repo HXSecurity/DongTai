@@ -11,6 +11,14 @@ from dongtai.models.strategy_user import IastStrategyUser
 from dongtai.utils.settings import get_managed
 import time
 
+
+class VulValidation(models.IntegerChoices):
+    FOLLOW_GLOBAL = 0
+    ENABLE = 1
+    DISABLE = 2
+    __empty__ = 0
+
+
 class IastProject(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
     mode = models.CharField(max_length=255, blank=True, null=True)
@@ -23,6 +31,12 @@ class IastProject(models.Model):
                              models.DO_NOTHING,
                              blank=True,
                              null=True)
+
+
+    vul_validation = models.IntegerField(default=0,
+                                         blank=True,
+                                         null=False,
+                                         choices=VulValidation.choices)
 
     class Meta:
         managed = get_managed()
