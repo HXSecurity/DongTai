@@ -117,7 +117,6 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
             taint_value=taint_value
         )
     else:
-        # 更新漏洞状态为已忽略/误报
         try:
             if isinstance(method_pool_model, MethodPool):
                 return
@@ -140,6 +139,7 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
                 verify_time=timestamp,
                 update_time=timestamp
             )
+            IastProject.objects.filter(id=method_pool.agent.bind_project_id).update(latest_time=timestamp)
         except Exception as e:
             logger.info(f'漏洞数据处理出错，原因：{e}')
 
