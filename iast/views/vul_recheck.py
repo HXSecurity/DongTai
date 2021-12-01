@@ -167,7 +167,7 @@ class VulReCheck(UserEndPoint):
                 agent_queryset = IastAgent.objects.values("id").filter(
                     bind_project_id=project_id)
                 if agent_queryset:
-                    agent_ids = agent_queryset.values()
+                    agent_ids = agent_queryset.values_list('id',flat=True)
                     vul_queryset = IastVulnerabilityModel.objects.filter(
                         agent_id__in=agent_ids)
                     waiting_count, success_count, re_success_count = self.recheck(
@@ -211,7 +211,6 @@ class VulReCheck(UserEndPoint):
 
         try:
             check_type = request.query_params.get('type')
-
             if check_type == 'all':
                 vul_queryset = IastVulnerabilityModel.objects.filter(
                     agent__in=self.get_auth_agents_with_user(request.user))
@@ -238,7 +237,7 @@ class VulReCheck(UserEndPoint):
                             "recheck": recheck,
                             "checking": checking
                         },
-                        msg=_(msg))
+                        msg=_("Handle success"))
                 return R.failure(msg=_("Item ID should not be empty"))
             return R.failure(msg=_("Incorrect format parameter"))
 
