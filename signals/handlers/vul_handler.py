@@ -9,7 +9,7 @@ import time
 import requests
 from celery.apps.worker import logger
 from django.dispatch import receiver
-from dongtai.models.project import IastProject
+from dongtai.models.project import IastProject, VulValidation
 from dongtai.models.replay_queue import IastReplayQueue
 
 from dongtai.models.notify_config import IastNotifyConfig
@@ -18,6 +18,7 @@ from dongtai.utils import const
 
 from lingzhi_engine import settings
 from signals import vul_found
+from dongtai.utils.systemsettings import get_vul_validate
 
 
 def create_vul_data_from_model(vul):
@@ -299,6 +300,18 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
 
 
 def create_vul_recheck_task(vul_id, agent, timestamp):
+    project = IastProject.objects.filter(id=agent.bind_project_id).first()
+    if project and project.vul_validation == VulValidation.DISABLE:
+        return
+    enable_validate = False
+    if project is None or (project and project.vul_validation == VulValidation.FOLLOW_GLOBAL):
+        enable_validate = get_vul_validate()
+    if project and project.vul_validation == VulValidation.ENABLE:
+        enable_validate = True
+
+    if enable_validate is False:
+        return
+
     replay_model = IastReplayQueue.objects.filter(replay_type=const.VUL_REPLAY, relation_id=vul_id).first()
     if replay_model:
         if replay_model.state in [const.PENDING, const.WAITING, const.SOLVING]:
