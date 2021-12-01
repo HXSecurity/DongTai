@@ -6,12 +6,14 @@
 import time
 
 from dongtai.endpoint import UserEndPoint, R
+from dongtai.utils import const
 from dongtai.models.hook_strategy import HookStrategy
 from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
 from django.utils.text import format_lazy
 from iast.serializers.hook_strategy import SINK_POSITION_HELP_TEXT
+from dongtai.models.hook_type import HookType
 
 
 _PostResponseSerializer = get_response_serializer(status_msg_keypair=(
@@ -82,12 +84,18 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
     )
     def post(self, request):
         rule_id, rule_type, rule_value, rule_source, rule_target, inherit, is_track = self.parse_args(request)
-        if all((rule_id, rule_type, rule_value, rule_source, inherit, is_track)) is False:
+        hook_type = HookType.objects.filter(
+                id=rule_type,
+                created_by__in=(request.user.id, const.SYSTEM_USER_ID)
+            ).first()
+        if all((rule_id, rule_type, rule_value, rule_source, inherit, is_track, hook_type)) is False:
             return R.failure(msg=_('Incomplete parameter, please check again'))
 
         strategy = HookStrategy.objects.filter(id=rule_id, created_by=request.user.id).first()
-
         if strategy:
+            if hook_type:
+                strategy.type.get(strategy=strategy).strategies.remove(strategy)
+                hook_type.strategies.add(strategy)
             strategy.value = rule_value
             strategy.source = rule_source
             strategy.target = rule_target
