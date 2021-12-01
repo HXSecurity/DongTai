@@ -116,7 +116,7 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
         ser = _ScanStrategyArgsSerializer(data=request.data)
         try:
             if ser.is_valid(True):
-                name = ser.validated_data['name']
+                name = ser.validated_data.get('name', None)
                 page = ser.validated_data['page']
                 page_size = ser.validated_data['page_size']
         except ValidationError as e:
