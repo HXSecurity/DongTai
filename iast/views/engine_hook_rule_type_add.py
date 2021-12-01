@@ -64,8 +64,10 @@ class EngineHookRuleTypeAddEndPoint(UserEndPoint):
             rule_type = ser.validated_data.get('type')
             rule_type = int(rule_type)
             if rule_type not in (
-                    const.RULE_SOURCE, const.RULE_ENTRY_POINT, const.RULE_PROPAGATOR, const.RULE_FILTER,
-                    const.RULE_SINK):
+                    const.RULE_SOURCE,
+                    const.RULE_ENTRY_POINT,
+                    const.RULE_PROPAGATOR,
+            ):
                 rule_type = None
 
             name = ser.validated_data.get('name')
@@ -103,6 +105,7 @@ class EngineHookRuleTypeAddEndPoint(UserEndPoint):
                              create_time=timestamp,
                              update_time=timestamp,
                              created_by=request.user.id,
-                             language_id=language_id)
+                             language_id=language_id,
+                             vul_strategy_id=-1,)
         hook_type.save()
         return R.success(msg=_('Rule type successfully saved'))
