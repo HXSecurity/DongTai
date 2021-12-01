@@ -7,12 +7,12 @@ from django.db.models import Count
 from rest_framework import serializers
 
 from dongtai.models.agent import IastAgent
-from dongtai.models.project import IastProject
+from dongtai.models.project import (IastProject, VulValidation)
 from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.models.vulnerablity import IastVulnerabilityStatus
 from dongtai.utils import const
-
+from dongtai.utils.systemsettings import get_vul_validate
 
 class ProjectSerializer(serializers.ModelSerializer):
     vul_count = serializers.SerializerMethodField(
@@ -23,12 +23,13 @@ class ProjectSerializer(serializers.ModelSerializer):
     agent_language = serializers.SerializerMethodField(
         help_text="Agent language currently included in the project")
     USER_MAP = {}
+    vul_validation = serializers.SerializerMethodField(help_text="vul validation switch")
 
     class Meta:
         model = IastProject
         fields = [
             'id', 'name', 'mode', 'vul_count', 'agent_count', 'owner',
-            'latest_time', 'agent_language'
+            'latest_time', 'agent_language', 'vul_validation'
         ]
 
     def get_agents(self, obj):
@@ -61,3 +62,8 @@ class ProjectSerializer(serializers.ModelSerializer):
         res = self.get_agents(obj).all().values_list(
             'language', flat=True).distinct()
         return list(res)
+
+    def get_vul_validation(self, obj):
+        return get_vul_validate(
+        ) if obj.vul_validation == VulValidation.FOLLOW_GLOBAL else (
+            True if obj.vul_validation == VulValidation.ENABLE else False)
