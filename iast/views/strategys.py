@@ -18,7 +18,7 @@ from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from dongtai.models.hook_type import HookType
 from rest_framework import serializers
 from dongtai.models.program_language import IastProgramLanguage
-import time 
+import time
 from rest_framework.serializers import ValidationError
 from dongtai.permissions import TalentAdminPermission
 from rest_framework.decorators import permission_classes
@@ -44,9 +44,11 @@ class StrategyCreateSerializer(serializers.Serializer):
     vul_desc = serializers.CharField(help_text=_('Description of the corresponding vulnerabilities of the strategy'))
     level_id = serializers.IntegerField(
         help_text=_('The strategy corresponds to the level of vulnerability'))
-    vul_fix = serializers.CharField(help_text=_(
-        "Suggestions for repairing vulnerabilities corresponding to the strategy"
-    ))
+    vul_fix = serializers.CharField(
+        allow_blank=True,
+        help_text=
+        _("Suggestions for repairing vulnerabilities corresponding to the strategy"
+          ))
 
 
 _ResponseSerializer = get_response_serializer(
@@ -64,7 +66,7 @@ class _StrategyArgsSerializer(serializers.Serializer):
 STATUS_DELETE = 'delete'
 
 class StrategyEndpoint(UserEndPoint):
-    
+
     @extend_schema_with_envcheck(
         tags=[_('Strategy')],
         summary=_('Strategy retrieve'),
@@ -83,11 +85,11 @@ class StrategysEndpoint(UserEndPoint):
     permission_classes_by_action = {'POST':(TalentAdminPermission,)}
 
     def get_permissions(self):
-      try:
-        return [permission() for permission in self.permission_classes_by_action[self.request.method]]
-      except KeyError:
-        return [permission() for permission in self.permission_classes]
-    
+        try:
+            return [permission() for permission in self.permission_classes_by_action[self.request.method]]
+        except KeyError:
+            return [permission() for permission in self.permission_classes]
+
     @extend_schema_with_envcheck(
         [_StrategyArgsSerializer],
         tags=[_('Strategy')],
@@ -116,7 +118,7 @@ class StrategysEndpoint(UserEndPoint):
                          page=page_summary)
         else:
             return R.success(data=StrategySerializer(queryset, many=True).data,)
-        
+
         strategy_models = HookType.objects.values(
             'id', 'name', 'value',
             'enable').filter(type=const.RULE_SINK).exclude(enable=const.DELETE)
@@ -173,8 +175,8 @@ class StrategysEndpoint(UserEndPoint):
         except ValidationError as e:
             return R.failure(data=e.detail)
         strategy = IastStrategyModel.objects.create(**ser.validated_data,
-                user=request.user,dt=time.time()) 
-        for language in IastProgramLanguage.objects.all(): 
+                user=request.user,dt=time.time())
+        for language in IastProgramLanguage.objects.all():
             HookType.objects.create(type=3,name=ser.validated_data['vul_name'],
                 value=ser.validated_data['vul_type'],enable=1,
                 create_time=time.time(),update_time=time.time(),
