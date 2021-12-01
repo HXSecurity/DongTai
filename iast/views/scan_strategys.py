@@ -39,7 +39,6 @@ class _ScanStrategyArgsSerializer(serializers.Serializer):
                                          help_text=_('Number per page'))
     page = serializers.IntegerField(default=1, help_text=_('Page index'))
     name = serializers.CharField(
-        default=None,
         required=False,
         help_text=_(
             "The name of the item to be searched, supports fuzzy search."))
@@ -85,9 +84,9 @@ class ScanStrategyRelationProject(UserEndPoint):
         user = self.get_auth_users(request.user)
         scan_strategy = IastStrategyUser.objects.filter(pk=pk,
                                                         user__in=user).first()
-        projects = IastProject.filter(
+        projects = IastProject.objects.filter(
             scan=scan_strategy).order_by('-latest_time')[::size]
-        return R.success(data=_ProjectSerializer(projects).data)
+        return R.success(data=_ProjectSerializer(projects, many=True).data)
 
 
 class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
@@ -214,4 +213,4 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
 
 
 def checkusing(scanstrategy):
-    return IastProject.filter(scan=scanstrategy).exists()
+    return IastProject.objects.filter(scan=scanstrategy).exists()
