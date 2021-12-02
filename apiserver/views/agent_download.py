@@ -77,58 +77,6 @@ class PythonAgentDownload():
             )
 
     def create_config(self, base_url, agent_token, auth_token, project_name):
-        raw_config = {
-            "debug": False,
-            "iast": {
-                "proxy": {
-                    "port": 80,
-                    "host": "",
-                    "enable": False
-                },
-                "server": {
-                    "mode": "remote",
-                    "token": auth_token,
-                    "url": base_url
-                },
-                "service": {
-                    "report": {
-                        "interval": 60
-                    },
-                    "replay": {
-                        "interval": 300000
-                    }
-                },
-                "dump": {
-                    "class": {
-                        "enable": False,
-                        "path": "./iast-class-dump/"
-                    }
-                },
-                "engine": {
-                    "delay": {
-                        "time": 10
-                    }
-                },
-                "allhook": {
-                    "enable": False
-                },
-                "name": "lingzhi-Enterprise 1.0.0",
-                "mode": "normal"
-            },
-            "project": {
-                "name": project_name
-            },
-            "engine": {
-                "version": "v1.0.6",
-                "name": agent_token
-            },
-            "app": {
-                "name": "DongTai"
-            },
-            "log": {
-                "log_path": "./dongtai_py_agent_log.txt"
-            }
-        }
         try:
             agent_file = self.tarfile.open(PythonAgentDownload.LOCAL_AGENT_FILE)
             agent_file.extractall(path="/tmp/")
@@ -141,10 +89,17 @@ class PythonAgentDownload():
                     config_path = item
                     break
 
+            with open("/tmp/" + config_path, "r") as config_file:
+                config = json.load(config_file)
+                config['iast']['server']['token'] = auth_token
+                config['iast']['server']['url'] = base_url
+                config['project']['name'] = project_name
+                config['engine']['name'] = agent_token
             with open("/tmp/" + config_path, "w+") as config_file:
-                json.dump(raw_config, config_file)
+                json.dump(config, config_file)
             return True
         except Exception as e:
+            print(type(e))
             print(e)
             return False
 
