@@ -31,6 +31,7 @@ class HeartBeatHandler(IReportHandler):
         self.report_queue = None
         self.method_queue = None
         self.replay_queue = None
+        self.return_queue = None
 
     def parse(self):
         self.cpu = self.detail.get('cpu')
@@ -39,6 +40,11 @@ class HeartBeatHandler(IReportHandler):
         self.report_queue = self.detail.get('reportQueue', 0)
         self.method_queue = self.detail.get('methodQueue', 0)
         self.replay_queue = self.detail.get('replayQueue', 0)
+        self.return_queue = self.detail.get('returnQueue', None)
+
+    def has_permission(self):
+        self.agent = IastAgent.objects.filter(id=self.agent_id, user=self.user_id).first()
+        return self.agent
 
     def has_permission(self):
         self.agent = IastAgent.objects.filter(id=self.agent_id, user=self.user_id).first()
@@ -50,21 +56,35 @@ class HeartBeatHandler(IReportHandler):
         self.agent.online = 1
         self.agent.save(update_fields=['is_running', 'online'])
         queryset = IastHeartbeat.objects.filter(agent=self.agent)
-        heartbeat_count = queryset.values('id').count()
-        if heartbeat_count == 1:
-            heartbeat = queryset.first()
-            heartbeat.memory = self.memory
-            heartbeat.cpu = self.cpu
-            heartbeat.req_count = self.req_count
-            heartbeat.report_queue = self.report_queue
-            heartbeat.method_queue = self.method_queue
-            heartbeat.replay_queue = self.replay_queue
+        heartbeat = queryset.order_by('-id').first()
+        if heartbeat:
+            queryset.exclude(pk=heartbeat.id).delete()
             heartbeat.dt = int(time.time())
-            heartbeat.save(update_fields=[
-                'memory', 'cpu', 'req_count', 'dt', 'report_queue', 'method_queue', 'replay_queue'
-            ])
+            if self.return_queue == 1:
+                heartbeat.req_count = self.req_count
+                heartbeat.report_queue = self.report_queue
+                heartbeat.method_queue = self.method_queue
+                heartbeat.replay_queue = self.replay_queue
+                heartbeat.save(update_fields=[
+                    'req_count', 'dt', 'report_queue', 'method_queue', 'replay_queue'
+                ])
+            elif self.return_queue == 0:
+                heartbeat.memory = self.memory
+                heartbeat.cpu = self.cpu
+                heartbeat.save(update_fields=[
+                    'memory','cpu', 'dt'
+                ])
+            else:
+                heartbeat.memory = self.memory
+                heartbeat.cpu = self.cpu
+                heartbeat.req_count = self.req_count
+                heartbeat.report_queue = self.report_queue
+                heartbeat.method_queue = self.method_queue
+                heartbeat.replay_queue = self.replay_queue
+                heartbeat.save(update_fields=[
+                    'memory', 'cpu', 'req_count', 'dt', 'report_queue', 'method_queue', 'replay_queue'
+                ])
         else:
-            queryset.delete()
             IastHeartbeat.objects.create(memory=self.memory,
                                          cpu=self.cpu,
                                          req_count=self.req_count,
@@ -75,40 +95,41 @@ class HeartBeatHandler(IReportHandler):
                                          agent=self.agent)
 
     def get_result(self, msg=None):
-        try:
-            project_agents = IastAgent.objects.values('id').filter(bind_project_id=self.agent.bind_project_id)
-            if project_agents is None:
-                logger.info(_('There is no probe under the project'))
+        if self.return_queue is None or self.return_queue == 1:
+            try:
+                project_agents = IastAgent.objects.values('id').filter(bind_project_id=self.agent.bind_project_id)
+                if project_agents is None:
+                    logger.info(_('There is no probe under the project'))
 
-            replay_queryset = IastReplayQueue.objects.values(
-                'id', 'relation_id', 'uri', 'method', 'scheme', 'header', 'params', 'body', 'replay_type'
-            ).filter(agent_id__in=project_agents, state=const.WAITING)[:10]
-            if len(replay_queryset) == 0:
-                logger.info(_('Replay request does not exist'))
+                replay_queryset = IastReplayQueue.objects.values(
+                    'id', 'relation_id', 'uri', 'method', 'scheme', 'header', 'params', 'body', 'replay_type'
+                ).filter(agent_id__in=project_agents, state=const.WAITING)[:10]
+                if len(replay_queryset) == 0:
+                    logger.info(_('Replay request does not exist'))
 
-            success_ids, success_vul_ids, failure_ids, failure_vul_ids, replay_requests = [], [], [], [], []
-            for replay_request in replay_queryset:
-                if replay_request['uri']:
-                    replay_requests.append(replay_request)
-                    success_ids.append(replay_request['id'])
-                    if replay_request['replay_type'] == const.VUL_REPLAY:
-                        success_vul_ids.append(replay_request['relation_id'])
-                else:
-                    failure_ids.append(replay_request['id'])
-                    if replay_request['replay_type'] == const.VUL_REPLAY:
-                        failure_vul_ids.append(replay_request['relation_id'])
+                success_ids, success_vul_ids, failure_ids, failure_vul_ids, replay_requests = [], [], [], [], []
+                for replay_request in replay_queryset:
+                    if replay_request['uri']:
+                        replay_requests.append(replay_request)
+                        success_ids.append(replay_request['id'])
+                        if replay_request['replay_type'] == const.VUL_REPLAY:
+                            success_vul_ids.append(replay_request['relation_id'])
+                    else:
+                        failure_ids.append(replay_request['id'])
+                        if replay_request['replay_type'] == const.VUL_REPLAY:
+                            failure_vul_ids.append(replay_request['relation_id'])
 
-            timestamp = int(time.time())
-            IastReplayQueue.objects.filter(id__in=success_ids).update(update_time=timestamp, state=const.SOLVING)
-            IastReplayQueue.objects.filter(id__in=failure_ids).update(update_time=timestamp, state=const.SOLVED)
+                timestamp = int(time.time())
+                IastReplayQueue.objects.filter(id__in=success_ids).update(update_time=timestamp, state=const.SOLVING)
+                IastReplayQueue.objects.filter(id__in=failure_ids).update(update_time=timestamp, state=const.SOLVED)
 
-            IastVulnerabilityModel.objects.filter(id__in=success_vul_ids).update(latest_time=timestamp, status_id=2)
-            IastVulnerabilityModel.objects.filter(id__in=failure_vul_ids).update(latest_time=timestamp, status_id=1)
-            logger.info(_('Reproduction request issued successfully'))
+                IastVulnerabilityModel.objects.filter(id__in=success_vul_ids).update(latest_time=timestamp, status_id=2)
+                IastVulnerabilityModel.objects.filter(id__in=failure_vul_ids).update(latest_time=timestamp, status_id=1)
+                logger.info(_('Reproduction request issued successfully'))
 
-            return replay_requests
-        except Exception as e:
-            logger.info(_('Replay request query failed, reason: {}').format(e))
+                return replay_requests 
+            except Exception as e:
+                logger.info(_('Replay request query failed, reason: {}').format(e))
         return list()
 
     def save(self):
