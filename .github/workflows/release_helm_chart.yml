@@ -29,12 +29,9 @@ jobs:
 
       - name: Generate version file
         run: |
-          files=('README.md') && \
           cd ${{ github.workspace }} && \
-          for FILE in ${files[@]};do FILE_HASH=`sha256sum ${FILE} | awk '{print $1}'`; echo "DongTai,${FILE},${FILE_HASH}" >> version.txt; done && \
           echo "${{ github.event.repository.name }},version,${{ env.VELA_VERSION }}" >> version.txt && \
-          echo "${{ github.event.repository.name }},commit_hash,${GITHUB_SHA}" >> version.txt && \
-          echo "${{ github.event.repository.name }},file_hash,${PACKAGE_HASH}" >> version.txt \
+          echo "${{ github.event.repository.name }},commit_hash,${GITHUB_SHA}" >> version.txt \
 
       - name: Upload version file
         uses: actions/upload-release-asset@v1.0.2
@@ -49,23 +46,16 @@ jobs:
       - name: Create helm package
         run: |
           helm package deploy/kubernetes/helm  -d ~/helm/repo --app-version ${{ steps.get_version.outputs.VERSION }} --version ${{ steps.get_version.outputs.VERSION }}
+          helm repo index ~/helm/repo --url ${{ secrets.DONGTAI_IAST_CHART_REPO_URL }}
 
-      - name: Test Upload oss file1
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      - name: Setup ossutil
+        uses: manyuanrong/setup-ossutil@v2.0
         with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: /home/runner/helm/repo/dongtai-iast-${{ steps.get_version.outputs.VERSION }}.tgz
-          asset_name: /home/runner/helm/repo/dongtai-iast-${{ steps.get_version.outputs.VERSION }}.tgz
-          asset_content_type: text/plain
+          endpoint: ${{ secrets.CHART_OSS_ENDPOINT }}
+          access-key-id: ${{ secrets.CHART_OSS_ACCESS_KEY_ID }}
+          access-key-secret: ${{ secrets.CHART_OSS_ACCESS_KEY_SECRET }}
 
-      - name: Test Upload oss file2
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: /home/runner/helm/repo/index.yaml
-          asset_name: /home/runner/helm/repo/index.yaml
-          asset_content_type: text/plain
+      - name: Push helm chart to repo
+        run: |
+          ossutil cp -rf ~/helm/repo/dongtai-iast-${{ steps.get_version.outputs.VERSION }}.tgz  oss://dongtai-helm-charts/iast/
+          ossutil cp -rf ~/helm/repo/index.yaml  oss://dongtai-helm-charts/iast/
