@@ -33,7 +33,8 @@ jobs:
           cd ${{ github.workspace }} && \
           for FILE in ${files[@]} \
           do \
-            FILE_HASH=`sha256sum README.md` && echo "${{ github.event.repository.name }},${FILE},${FILE_HASH}" >> version.txt; \
+            FILE_HASH=`sha256sum README.md`; \
+            echo "${{ github.event.repository.name }},${FILE},${FILE_HASH}" >> version.txt; \
           done && \
           echo "${{ github.event.repository.name }},version,${{ env.VELA_VERSION }}" >> version.txt && \
           echo "${{ github.event.repository.name }},commit_hash,${GITHUB_SHA}" >> version.txt && \
