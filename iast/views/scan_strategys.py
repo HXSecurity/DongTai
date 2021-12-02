@@ -169,17 +169,18 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
           ),
     )
     def update(self, request, pk):
-        ser = ScanCreateSerializer(data=request.data,partial=True)
+        ser = ScanCreateSerializer(data=request.data, partial=True)
         try:
             if ser.is_valid(True):
                 pass
         except ValidationError as e:
             return R.failure(data=e.detail)
-        if ser.validated_data.get('content',None):
-            ser.validated_data['content'] = ','.join([str(i) for i in ser.validated_data['content']])
+        if ser.validated_data.get('content', None):
+            ser.validated_data['content'] = ','.join(
+                [str(i) for i in ser.validated_data['content']])
         users = self.get_auth_users(request.user)
         obj = IastStrategyUser.objects.filter(
-            pk=pk,user__in=users).update(**ser.validated_data)
+            pk=pk, user__in=users).update(**ser.validated_data)
         return R.success(msg='update success')
 
     @extend_schema_with_envcheck(
@@ -196,7 +197,9 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
         if checkusing(scan):
             return R.failure(msg='someproject is using this scan strategy')
         try:
-            IastStrategyUser.objects.filter(pk=pk).update(status=-1)
+            IastStrategyUser.objects.filter(
+                pk=pk,
+                user__in=self.get_auth_users(request.user)).update(status=-1)
             return R.success(msg='delete success')
         except Exception as e:
             logger.error(e)
