@@ -4,25 +4,18 @@
 # datetime: 2021/4/27 下午2:48
 # project: dongtai-openapi
 
-# !/usr/bin/env python
-# -*- coding:utf-8 -*-
-# author:owefsad
-# datetime:2020/10/23 11:55
-# software: PyCharm
-# project: webapi
+import json
 import logging
-
 import time
 
 from dongtai.models.hook_type import HookType
 from dongtai.models.strategy import IastStrategyModel
-from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai.models.project import IastProject
 from dongtai.utils import const
 
 from AgentServer import settings
 from apiserver.report.handler.report_handler_interface import IReportHandler
-from apiserver.report.handler.saas_method_pool_handler import SaasMethodPoolHandler
 from apiserver.report.report_handler_factory import ReportHandler
 
 logger = logging.getLogger('dongtai.openapi')
@@ -31,13 +24,7 @@ logger = logging.getLogger('dongtai.openapi')
 class BaseVulnHandler(IReportHandler):
     def __init__(self):
         super().__init__()
-        self.server_name = None
-        self.server_port = None
-        self.server_env = None
-        self.hostname = None
-        self.agent_version = None
         self.app_name = None
-        self.app_path = None
         self.http_uri = None
         self.http_url = None
         self.http_query_string = None
@@ -49,11 +36,7 @@ class BaseVulnHandler(IReportHandler):
         self.vuln_type = None
         self.app_caller = None
         self.taint_value = None
-        self.taint_position = None
         self.client_ip = None
-        self.param_name = None
-        self.container = None
-        self.container_path = None
 
     @staticmethod
     def create_top_stack(obj):
@@ -95,33 +78,34 @@ class BaseVulnHandler(IReportHandler):
         return ''
 
     def parse(self):
+
         self.server_name = self.detail.get('serverName')
         self.server_port = self.detail.get('serverPort')
         self.server_env = self.detail.get('serverEnv')
         self.hostname = self.detail.get('hostname')
         self.agent_version = self.detail.get('agentVersion')
         self.app_name = self.detail.get('appName')
-        self.app_path = self.detail.get('appPath')
-        self.http_uri = self.detail.get('httpUri')
-        self.http_url = self.detail.get('httpUrl')
-        self.http_query_string = self.detail.get('httpQueryString')
-        self.http_header = self.detail.get('httpReqHeader')
-        self.http_req_data = self.detail.get('httpBody')
-        self.http_method = self.detail.get('httpMethod')
-        self.http_scheme = self.detail.get('httpScheme')
-        self.http_secure = self.detail.get('httpSecure')
-        self.http_protocol = self.detail.get('httpProtocol')
+        self.app_path = self.detail.get('contextPath')
+        self.http_uri = self.detail.get('uri')
+        self.http_url = self.detail.get('url')
+        self.http_query_string = self.detail.get('queryString')
+        self.http_header = self.detail.get('reqHeader')
+        self.http_req_data = self.detail.get('reqBody')
+        self.http_method = self.detail.get('method')
+        self.http_scheme = self.detail.get('scheme')
+        self.http_secure = self.detail.get('secure')
+        self.http_protocol = self.detail.get('protocol')
         self.vuln_type = self.detail.get('vulnType')
         self.app_caller = self.detail.get('appCaller')
         self.taint_value = self.detail.get('taintValue')
         self.taint_position = self.detail.get('taintPosition')
-        self.client_ip = self.detail.get('httpClientIp')
+        self.client_ip = self.detail.get('clientIp')
         self.param_name = self.detail.get('paramName')
         self.container = self.detail.get('container')
         self.container_path = self.detail.get('containerPath')
-        self.http_replay = self.detail.get('httpReplayRequest')
-        self.http_res_header = self.detail.get('httpResHeader')
-        self.http_res_body = self.detail.get('httpResBody')
+        self.http_replay = self.detail.get('replayRequest')
+        self.http_res_header = self.detail.get('resHeader')
+        self.http_res_body = self.detail.get('resBody')
 
 
 @ReportHandler.register(const.REPORT_VULN_NORNAL)
@@ -139,10 +123,17 @@ class NormalVulnHandler(BaseVulnHandler):
             http_method=self.http_method,
             agent=self.agent
         ).first()
-
+        project = IastProject.objects.filter(pk=self.agent.bind_project_id).first()
+        if project:
+            project.update_latest()
         if iast_vul:
             iast_vul.req_header = self.http_header
             iast_vul.req_params = self.http_query_string
+            iast_vul.res_header = self.http_res_header
+            iast_vul.res_body = self.http_res_body
+            iast_vul.full_stack = json.dumps(self.app_caller)
+            iast_vul.top_stack = self.app_caller[1]
+            iast_vul.bottom_stack = self.app_caller[0]
             iast_vul.counts = iast_vul.counts + 1
             iast_vul.latest_time = int(time.time())
             iast_vul.status_id = settings.CONFIRMED
@@ -162,10 +153,13 @@ class NormalVulnHandler(BaseVulnHandler):
                 res_header=self.http_res_header,
                 res_body=self.http_res_body,
                 agent=self.agent,
-                context_path=self.app_name,
+                context_path=self.app_path,
                 counts=1,
                 status_id=settings.CONFIRMED,
                 first_time=int(time.time()),
                 latest_time=int(time.time()),
-                client_ip=self.client_ip
+                client_ip=self.client_ip,
+                full_stack=json.dumps(self.app_caller),
+                top_stack=self.app_caller[0],
+                bottom_stack=self.app_caller[-1]
             )
