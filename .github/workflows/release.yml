@@ -31,6 +31,12 @@ jobs:
           V=`echo ${{ steps.release.outputs.VERSION }} | sed -e's/v//g' | sed -e's/V//g'`; \
           echo ::set-output name=VERSION::${V}
 
+      - name: Generate version file
+        run: |
+          cd ${{ github.workspace }} && \
+          echo "${{ github.event.repository.name }},version,${{ steps.get_release_version.outputs.VERSION }}" >> version.txt && \
+          echo "${{ github.event.repository.name }},commit_hash,${GITHUB_SHA}" >> version.txt \
+
       - name: Replace setup cfg
         run: |
           sed -i -e 's/version = .*$/version = ${{ steps.get_release_version.outputs.VERSION }}/g' setup.cfg
