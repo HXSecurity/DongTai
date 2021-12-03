@@ -3,7 +3,7 @@
 # @file        : sensitive_info_rule
 # @created     : 星期三 11月 17, 2021 16:15:57 CST
 #
-# @description : 
+# @description :
 ######################################################################
 
 
@@ -33,6 +33,10 @@ from dongtai.models.sensitive_info import IastPatternType,IastSensitiveInfoRule
 import jq
 import re
 from dongtai.permissions import TalentAdminPermission
+from iast.views.utils.commonview import (
+    BatchStatusUpdateSerializerView,
+    AllStatusUpdateSerializerView,
+)
 
 class SensitiveInfoRuleSerializer(serializers.ModelSerializer):
     strategy_name = serializers.SerializerMethodField()
@@ -42,17 +46,18 @@ class SensitiveInfoRuleSerializer(serializers.ModelSerializer):
     class Meta:
         model = IastSensitiveInfoRule
         fields = ['id', 'strategy_name','strategy_id','pattern_type_id','pattern_type_name','pattern','status','latest_time']
-    
+
     def get_strategy_name(self,obj):
         return obj.strategy.vul_name
 
     def get_strategy_id(self,obj):
         return obj.strategy.id
-    
+
     def get_pattern_type_id(self,obj):
         return obj.pattern_type.id
     def get_pattern_type_name(self,obj):
         return obj.pattern_type.name
+
 class SensitiveInfoPatternTypeSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField()
     class Meta:
@@ -60,9 +65,9 @@ class SensitiveInfoPatternTypeSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'url']
 
     def get_url(self,obj):
-        url_dict = {1:'regex',2:'json'} 
+        url_dict = {1:'regex',2:'json'}
         return url_dict.get(obj.id,'')
-    
+
 
 class SensitiveInfoRuleCreateSerializer(serializers.Serializer):
     strategy_id = serializers.IntegerField(required=True)
@@ -83,16 +88,16 @@ class _SensitiveInfoArgsSerializer(serializers.Serializer):
 class _RegexPatternValidationSerializer(serializers.Serializer):
     pattern = serializers.CharField(help_text=_('regex pattern'))
     test_data = serializers.CharField(help_text=_('the data for test regex'))
-  
+
 class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
-    
+
     permission_classes_by_action = {'destory':(TalentAdminPermission,),}
 
     def get_permissions(self):
-      try:
-        return [permission() for permission in self.permission_classes_by_action[self.action]]
-      except KeyError:
-        return [permission() for permission in self.permission_classes]
+        try:
+            return [permission() for permission in self.permission_classes_by_action[self.action]]
+        except KeyError:
+            return [permission() for permission in self.permission_classes]
 
     @extend_schema_with_envcheck(
         [_SensitiveInfoArgsSerializer],
@@ -102,7 +107,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
         _("Get the item corresponding to the user, support fuzzy search based on name."
           ),
     )
-    def list(self,request): 
+    def list(self,request):
         ser = _SensitiveInfoArgsSerializer(data=request.data)
         try:
             if ser.is_valid(True):
@@ -121,7 +126,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
             queryset = queryset.filter(name__icontains=name)
         page_summary, page_data = self.get_paginator(queryset, page, page_size)
         return R.success(data=SensitiveInfoRuleSerializer(page_data,many=True).data,page=page_summary)
-    
+
     @extend_schema_with_envcheck(
             request=SensitiveInfoRuleCreateSerializer,
         tags=[_('SensitiveInfoRule')],
@@ -152,7 +157,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
                     pattern_type=pattern_type,
                     pattern=pattern,
                     status=status,
-                    user=request.user) 
+                    user=request.user)
             return R.success(msg='create success',data=SensitiveInfoRuleSerializer(obj).data)
         else:
             return R.failure()
@@ -257,7 +262,7 @@ def regextest(test_data,pattern):
         print(e)
         data = ''
         status = 0
-        return data,status 
+        return data,status
     ret = regex.findall(test_data)
     data = ret[0] if ret else ['']
     return data,1
@@ -269,4 +274,37 @@ def jsontest(test_data,pattern):
         print(e)
         data = ''
         status = 0
-    return data, status 
+    return data, status
+
+
+
+
+class SensitiveInfoRuleBatchView(BatchStatusUpdateSerializerView):
+    status_field = 'status'
+    model = IastSensitiveInfoRule
+
+    @extend_schema_with_envcheck(
+        request=BatchStatusUpdateSerializerView.serializer,
+        tags=[_('SensitiveInfoRule')],
+        summary=_('SensitiveInfoRule batch status'),
+        description=_("batch update status."),
+    )
+    def post(self, request):
+        data = self.get_params(request.data)
+        self.update_model(request, data)
+        return R.success(msg='update success')
+
+class SensitiveInfoRuleAllView(AllStatusUpdateSerializerView):
+    status_field = 'status'
+    model = IastSensitiveInfoRule
+
+    @extend_schema_with_envcheck(
+        request=AllStatusUpdateSerializerView.serializer,
+        tags=[_('SensitiveInfoRule')],
+        summary=_('SensitiveInfoRule all status'),
+        description=_("all update status."),
+    )
+    def post(self, request):
+        data = self.get_params(request.data)
+        self.update_model(request, data)
+        return R.success(msg='update success')
