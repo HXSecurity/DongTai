@@ -86,8 +86,8 @@ jobs:
         id: upload_version_file_to_oss
         uses: tvrcgo/upload-to-oss@master
         with:
-          key-id: ${{ secrets.OSS_KEY_ID }}
-          key-secret: ${{ secrets.OSS_KEY_SECRET }}
+          key-id: ${{ secrets.ALIYUN_OSS_KEY_ID }}
+          key-secret: ${{ secrets.ALIYUN_OSS_KEY_SECRET }}
           region: oss-cn-beijing
           bucket: huoqi-public
           assets: |
