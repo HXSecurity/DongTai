@@ -56,7 +56,7 @@ class _ProjectSerializer(ProjectSerializer):
 
 class ScanCreateSerializer(serializers.Serializer):
     name = serializers.CharField(required=True)
-    status = serializers.ChoiceField((-1, 0, 2), required=True)
+    status = serializers.ChoiceField((-1, 0, 1), required=True)
     content = serializers.ListField(child=serializers.IntegerField(),
                                     required=True)
 
