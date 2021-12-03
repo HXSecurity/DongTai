@@ -51,7 +51,7 @@ class EngineHookRulesEndPoint(UserEndPoint):
             try:
                 ser.is_valid(True)
             except ValidationError as e:
-                return None, None, None, None, None
+                return None, None, None, None, None, None
             rule_type = ser.validated_data.get('type', const.RULE_PROPAGATOR)
             rule_type = int(rule_type)
             if rule_type not in (
@@ -73,7 +73,7 @@ class EngineHookRulesEndPoint(UserEndPoint):
             return rule_type, page, page_size, strategy_type, language_id, keyword
         except Exception as e:
             logger.error(_("Parameter parsing failed, error message: {}").format(e))
-            return None
+            return None, None, None, None, None, None
 
     @extend_schema_with_envcheck(
         querys=[_EngineHookRulesQuerySerializer],
