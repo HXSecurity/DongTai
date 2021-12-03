@@ -17,6 +17,7 @@ from django.utils.translation import gettext_lazy as _
 from apiserver.api_schema import DongTaiParameter, DongTaiAuth
 from apiserver.utils import OssDownloader
 from AgentServer.settings import BUCKET_NAME_BASE_URL
+from configparser import ConfigParser
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -88,7 +89,6 @@ class PythonAgentDownload():
                 if res is not None:
                     config_path = item
                     break
-
             with open("/tmp/" + config_path, "r") as config_file:
                 config = json.load(config_file)
                 config['iast']['server']['token'] = auth_token
@@ -110,9 +110,65 @@ class PythonAgentDownload():
                         arcname=os.path.basename(PythonAgentDownload.LOCAL_AGENT_DIR))
             return True
         except Exception as e:
-            print(e)
+            logger.error(f'replace config error: {e}')
             return False
-        # os.system(f'cd /tmp;tar -uvf {JavaAgentDownload.LOCAL_AGENT_FILE} iast.properties')
+
+
+class PhpAgentDownload():
+    LOCAL_AGENT_FILE = '/tmp/iast_cache/php-agent.tar.gz'
+    LOCAL_AGENT_DIR = '/tmp/php'
+    REMOTE_AGENT_FILE = BUCKET_NAME_BASE_URL + 'php/php-agent.tar.gz'
+
+    def __init__(self):
+        import tarfile
+        self.tarfile = tarfile
+
+    @staticmethod
+    def download_agent():
+        if os.path.exists(PhpAgentDownload.LOCAL_AGENT_FILE):
+            return True
+        else:
+            return OssDownloader.download_file(
+                object_name=PhpAgentDownload.REMOTE_AGENT_FILE, local_file=PhpAgentDownload.LOCAL_AGENT_FILE
+            )
+
+    def create_config(self, base_url, agent_token, auth_token, project_name):
+        try:
+            agent_file = self.tarfile.open(PhpAgentDownload.LOCAL_AGENT_FILE)
+            agent_file.extractall(path="/tmp/php")
+            config_lines = []
+            config_path = "dongtai-php-property.ini"
+            with open(os.path.join(PhpAgentDownload.LOCAL_AGENT_DIR, config_path), 'rb') as fp:
+                for line in fp.readlines():
+                    try:
+                        key, value = line.decode().split('=')
+                    except ValueError as e:
+                        continue
+                    if key == 'iast.server.url':
+                        print(base_url)
+                        value = base_url
+                    if key == 'iast.server.token':
+                        value = auth_token
+                    if key == 'engine.name':
+                        value = agent_token
+                    if key == 'project.name':
+                        value = project_name
+                    config_lines.append("=".join([key, value + '\n']))
+            with open(os.path.join(PhpAgentDownload.LOCAL_AGENT_DIR, config_path), 'w+') as fp:
+                fp.writelines(config_lines)
+            return True
+        except Exception as e:
+            logger.error(f'create config error: {e}')
+            return False
+
+    def replace_config(self):
+        try:
+            with self.tarfile.open(PhpAgentDownload.LOCAL_AGENT_FILE, "w:gz") as tar:
+                tar.add(PhpAgentDownload.LOCAL_AGENT_DIR, arcname=os.path.basename(PhpAgentDownload.LOCAL_AGENT_DIR))
+            return True
+        except Exception as e:
+            logger.error(f'replace config error: {e}')
+            return False
 
 
 class AgentDownload(OpenApiEndPoint):
@@ -124,6 +180,7 @@ class AgentDownload(OpenApiEndPoint):
     DOWNLOAD_HANDLER = {
         'python': PythonAgentDownload(),
         'java': JavaAgentDownload(),
+        'php': PhpAgentDownload(),
     }
 
     @extend_schema(
@@ -151,6 +208,7 @@ class AgentDownload(OpenApiEndPoint):
             if handler.create_config(base_url=base_url, agent_token=agent_token, auth_token=token.key,
                                      project_name=project_name):
                 handler.replace_config()
+                print(handler.LOCAL_AGENT_FILE)
                 response = FileResponse(open(handler.LOCAL_AGENT_FILE, "rb"))
                 response['content_type'] = 'application/octet-stream'
                 response['Content-Disposition'] = "attachment; filename=agent.jar"
@@ -158,6 +216,7 @@ class AgentDownload(OpenApiEndPoint):
             else:
                 return R.failure(msg="agent file not exit.")
         except Exception as e:
+            raise e
             logger.error(
                 _('Agent download failed, user: {}, error details: {}').format(
                     request.user.get_username()), e)
