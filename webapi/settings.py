@@ -320,8 +320,7 @@ ADMIN_EMAIL = config.get('smtp', 'cc_addr')
 SESSION_COOKIE_DOMAIN = None
 CSRF_COOKIE_DOMAIN = None
 if os.getenv('environment', None) == 'TEST' or os.getenv('PYTHONAGENT', None) == 'TRUE':
-    pass
-    #MIDDLEWARE.append('dongtai_agent_python.middlewares.django_middleware.FireMiddleware')
+    MIDDLEWARE.append('dongtai_agent_python.middlewares.django_middleware.FireMiddleware')
 if os.getenv('environment', None) == 'TEST' or os.getenv('SAVEEYE', None) == 'TRUE':
     CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null',)
 if os.getenv('environment', 'PROD') in ('TEST', 'DOC'):
