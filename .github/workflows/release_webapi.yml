@@ -63,12 +63,6 @@ jobs:
           VERSION=`echo ${GITHUB_REF##*/} | awk -F'-' '{print $2}'`
           echo "::set-output name=version::$VERSION"
 
-      - name: Get release
-        id: get_release
-        uses: bruceadams/get-release@v1.2.2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
       - name: Generate version file
         run: |
           cd ${{ github.workspace }} && \
