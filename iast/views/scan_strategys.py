@@ -117,7 +117,7 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
           ),
     )
     def list(self, request):
-        ser = _ScanStrategyArgsSerializer(data=request.data)
+        ser = _ScanStrategyArgsSerializer(data=request.GET)
         try:
             if ser.is_valid(True):
                 name = ser.validated_data.get('name', None)
