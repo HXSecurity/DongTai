@@ -14,7 +14,8 @@ import os
 import sys
 from configparser import ConfigParser
 from urllib.parse import urljoin
-
+import random
+import string
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -25,7 +26,7 @@ config.read(os.path.join(BASE_DIR, 'conf/config.ini'))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'u2^jmdc^l#=uz&r765fb4nyo)k*)0%tk3%yp*xf#i8b%(+-&vj'
+SECRET_KEY = random.choices(string.ascii_letters + string.digits, k=50)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("debug", 'false') == 'true'
