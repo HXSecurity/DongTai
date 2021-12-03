@@ -54,5 +54,5 @@ jobs:
       
       - name: Upload to oss
         run: |
-          ossutil cp ./dist/dongtai-${{ steps.get_release_version.outputs.VERSION }}.tar.gz oss://huoqi-public/iast/dongtai-${{ steps.get_release_version.outputs.VERSION }}.tar.gz --meta x-oss-object-acl:public-read
-          ossutil cp ./dist/dongtai-${{ steps.get_release_version.outputs.VERSION }}.tar.gz oss://huoqi-public/iast/dongtai-latest.tar.gz --meta x-oss-object-acl:public-read
+          ossutil cp -rf ./dist/dongtai-${{ steps.get_release_version.outputs.VERSION }}.tar.gz oss://huoqi-public/iast/dongtai-${{ steps.get_release_version.outputs.VERSION }}.tar.gz --meta x-oss-object-acl:public-read
+          ossutil cp -rf ./dist/dongtai-${{ steps.get_release_version.outputs.VERSION }}.tar.gz oss://huoqi-public/iast/dongtai-latest.tar.gz --meta x-oss-object-acl:public-read
