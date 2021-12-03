@@ -33,6 +33,10 @@ from dongtai.models.sensitive_info import IastPatternType,IastSensitiveInfoRule
 import jq
 import re
 from dongtai.permissions import TalentAdminPermission
+from iast.views.utils.commonview import (
+    BatchStatusUpdateSerializerView,
+    AllStatusUpdateSerializerView,
+)
 
 class SensitiveInfoRuleSerializer(serializers.ModelSerializer):
     strategy_name = serializers.SerializerMethodField()
@@ -53,6 +57,7 @@ class SensitiveInfoRuleSerializer(serializers.ModelSerializer):
         return obj.pattern_type.id
     def get_pattern_type_name(self,obj):
         return obj.pattern_type.name
+
 class SensitiveInfoPatternTypeSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField()
     class Meta:
@@ -279,3 +284,36 @@ def jsontest(test_data,pattern):
         data = ''
         status = 0
     return data, status
+
+
+
+
+class SensitiveInfoRuleBatchView(BatchStatusUpdateSerializerView):
+    status_field = 'status'
+    model = IastSensitiveInfoRule
+
+    @extend_schema_with_envcheck(
+        request=BatchStatusUpdateSerializerView.serializer,
+        tags=[_('SensitiveInfoRule')],
+        summary=_('SensitiveInfoRule batch status'),
+        description=_("batch update status."),
+    )
+    def post(self, request):
+        data = self.get_params(request.data)
+        self.update_model(request, data)
+        return R.success(msg='update success')
+
+class SensitiveInfoRuleAllView(AllStatusUpdateSerializerView):
+    status_field = 'status'
+    model = IastSensitiveInfoRule
+
+    @extend_schema_with_envcheck(
+        request=AllStatusUpdateSerializerView.serializer,
+        tags=[_('SensitiveInfoRule')],
+        summary=_('SensitiveInfoRule all status'),
+        description=_("all update status."),
+    )
+    def post(self, request):
+        data = self.get_params(request.data)
+        self.update_model(request, data)
+        return R.success(msg='update success')

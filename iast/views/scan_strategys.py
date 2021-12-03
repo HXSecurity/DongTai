@@ -18,6 +18,10 @@ from django.db.models import Q
 from dongtai.permissions import TalentAdminPermission
 from dongtai.models.project import IastProject
 from iast.serializers.project import ProjectSerializer
+from iast.views.utils.commonview import (
+    BatchStatusUpdateSerializerView,
+    AllStatusUpdateSerializerView,
+)
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -52,7 +56,7 @@ class _ProjectSerializer(ProjectSerializer):
 
 class ScanCreateSerializer(serializers.Serializer):
     name = serializers.CharField(required=True)
-    status = serializers.IntegerField(required=True)
+    status = serializers.ChoiceField((-1, 0, 2), required=True)
     content = serializers.ListField(child=serializers.IntegerField(),
                                     required=True)
 
@@ -213,6 +217,56 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
     def retrieve(self, request, pk):
         obj = IastStrategyUser.objects.filter(pk=pk, user__in=self.get_auth_users(request.user)).first()
         return R.success(data=ScanStrategySerializer(obj).data)
+
+class ScanStrategyBatchView(BatchStatusUpdateSerializerView):
+    status_field = 'status'
+    model = IastStrategyUser
+
+    @extend_schema_with_envcheck(
+        request=BatchStatusUpdateSerializerView.serializer,
+        tags=[_('ScanStrategy')],
+        summary=_('ScanStrategy batch status'),
+        description=_("batch update status."),
+    )
+    def post(self, request):
+        data = self.get_params(request.data)
+        user = request.user
+        data['ids'] = filter_using(data['ids'], [user])
+        self.update_model(request, data)
+        return R.success(msg='update success')
+
+class ScanStrategyAllView(AllStatusUpdateSerializerView):
+    status_field = 'status'
+    model = IastStrategyUser
+
+    @extend_schema_with_envcheck(
+        request=BatchStatusUpdateSerializerView.serializer,
+        tags=[_('ScanStrategy')],
+        summary=_('ScanStrategy all status'),
+        description=_("all update status."),
+    )
+    def post(self, request):
+        data = self.get_params(request.data)
+        self.update_model(request, data)
+        return R.success(msg='update success')
+
+    def update_model(self, request, validated_data):
+        ids = self.model.objects.values_list('id', flat=True).all()
+        filter_ids = filter_using(ids, request.user)
+        self.model.objects.filter(pk__in=filter_ids,
+                                  user__in=[request.user]).update(**{
+                                      self.status_field:
+                                      validated_data['status']
+                                  })
+
+
+def filter_using(ids, users):
+    after_filter_ids = []
+    for obj in IastStrategyUser.objects.filter(pk__in=ids, user__in=[users]).all():
+        if checkusing(obj):
+            continue
+        after_filter_ids.append(obj.id)
+    return after_filter_ids
 
 
 def checkusing(scanstrategy):
