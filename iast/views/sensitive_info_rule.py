@@ -179,8 +179,12 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
                 status = ser.validated_data['status']
         except ValidationError as e:
             return R.failure(data=e.detail)
-        obj = IastSensitiveInfoRule.objects.filter(pk=pk).update(**ser.validated_data,latest_time=time.time())
+        users = self.get_auth_users(request.user)
+        obj = IastSensitiveInfoRule.objects.filter(
+            pk=pk, user__in=users).update(**ser.validated_data,
+                                          latest_time=time.time())
         return R.success(msg='update success')
+
     @extend_schema_with_envcheck(
         tags=[_('SensitiveInfoRule')],
         summary=_('SensitiveInfoRule delete'),
@@ -189,7 +193,9 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
           ),
     )
     def destory(self, request, pk):
-        IastSensitiveInfoRule.objects.filter(pk=pk).update(status=-1)
+        users = self.get_auth_users(request.user)
+        IastSensitiveInfoRule.objects.filter(pk=pk,
+                                             user__in=users).update(status=-1)
         return R.success(msg='delete success')
 
     @extend_schema_with_envcheck(
@@ -200,8 +206,11 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
           ),
     )
     def retrieve(self, request, pk):
-        obj = IastSensitiveInfoRule.objects.filter(pk=pk,user=request.user).first()
+        users = self.get_auth_users(request.user)
+        obj = IastSensitiveInfoRule.objects.filter(pk=pk, user=users).first()
         return R.success(data=SensitiveInfoRuleSerializer(obj).data)
+
+
 class SensitiveInfoPatternTypeView(UserEndPoint):
 
     @extend_schema_with_envcheck(
