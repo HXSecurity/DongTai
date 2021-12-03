@@ -37,6 +37,9 @@ from iast.views.utils.commonview import (
     BatchStatusUpdateSerializerView,
     AllStatusUpdateSerializerView,
 )
+from django.core.exceptions import (
+    ObjectDoesNotExist, )
+
 
 class SensitiveInfoRuleSerializer(serializers.ModelSerializer):
     strategy_name = serializers.SerializerMethodField()
@@ -48,15 +51,31 @@ class SensitiveInfoRuleSerializer(serializers.ModelSerializer):
         fields = ['id', 'strategy_name','strategy_id','pattern_type_id','pattern_type_name','pattern','status','latest_time']
 
     def get_strategy_name(self,obj):
-        return obj.strategy.vul_name
+        try:
+            return obj.strategy.vul_name 
+        except ObjectDoesNotExist as e:
+            print(e)
+            return ''
 
     def get_strategy_id(self,obj):
-        return obj.strategy.id
+        try:
+            return obj.strategy.id    
+        except ObjectDoesNotExist as e:
+            print(e)
+            return 0
 
     def get_pattern_type_id(self,obj):
-        return obj.pattern_type.id
+        try:
+            return obj.pattern_type.id
+        except ObjectDoesNotExist as e:
+            print(e)
+            return 0
     def get_pattern_type_name(self,obj):
-        return obj.pattern_type.name
+        try:
+            return obj.pattern_type.name 
+        except ObjectDoesNotExist as e:
+            print(e)
+            return ''
 
 class SensitiveInfoPatternTypeSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField()
@@ -64,9 +83,9 @@ class SensitiveInfoPatternTypeSerializer(serializers.ModelSerializer):
         model = IastPatternType
         fields = ['id', 'name', 'url']
 
-    def get_url(self,obj):
-        url_dict = {1:'regex',2:'json'}
-        return url_dict.get(obj.id,'')
+    def get_url(self, obj):
+        url_dict = {1: 'regex', 2: 'json'}
+        return url_dict.get(obj.id, '')
 
 
 class SensitiveInfoRuleCreateSerializer(serializers.Serializer):
@@ -207,7 +226,10 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
     )
     def retrieve(self, request, pk):
         users = self.get_auth_users(request.user)
-        obj = IastSensitiveInfoRule.objects.filter(pk=pk, user=users).first()
+        obj = IastSensitiveInfoRule.objects.filter(pk=pk,
+                                                   user__in=users).first()
+        if not obj:
+            return R.failure()
         return R.success(data=SensitiveInfoRuleSerializer(obj).data)
 
 
