@@ -78,7 +78,7 @@ jobs:
           region: oss-cn-beijing
           bucket: huoqi-public
           assets: |
-            ./dist/version.txt:/iast/release-version/${{ github.event.repository.name }}/${{ steps.release.outputs.version }}/version.txt
+            ./version.txt:/iast/release-version/${{ github.event.repository.name }}/${{ steps.release.outputs.version }}/version.txt
 
       - name: Build and push
         uses: docker/build-push-action@v2
