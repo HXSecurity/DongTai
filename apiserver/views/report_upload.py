@@ -26,7 +26,7 @@ class ReportUploadEndPoint(OpenApiEndPoint):
     )
     def post(self, request):
         try:
-
+            
             report = parse_data(request.read())
             data = ReportHandler.handler(report, request.user)
 
