@@ -24,7 +24,7 @@ urlpatterns = [
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-if os.getenv('environment', 'PROD') in ('TEST', 'DOC'):
+if os.getenv('environment', 'PROD') in ('TEST', 'DOC') or os.getenv('DOC', None) == 'TRUE':
     from drf_spectacular.views import SpectacularJSONAPIView, SpectacularRedocView, SpectacularSwaggerView
     urlpatterns.extend([
         path('api/XZPcGFKoxYXScwGjQtJx8u/schema/',

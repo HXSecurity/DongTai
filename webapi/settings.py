@@ -323,7 +323,7 @@ if os.getenv('environment', None) == 'TEST' or os.getenv('PYTHONAGENT', None) ==
     MIDDLEWARE.append('dongtai_agent_python.middlewares.django_middleware.FireMiddleware')
 if os.getenv('environment', None) == 'TEST' or os.getenv('SAVEEYE', None) == 'TRUE':
     CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null',)
-if os.getenv('environment', 'PROD') in ('TEST', 'DOC'):
+if os.getenv('environment', 'PROD') in ('TEST', 'DOC') or os.getenv('DOC', None) == 'TRUE':
     from django.utils.translation import gettext_lazy as _
     INSTALLED_APPS.append('drf_spectacular')
     SPECTACULAR_SETTINGS = {
