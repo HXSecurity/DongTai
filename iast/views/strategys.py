@@ -22,6 +22,8 @@ import time
 from rest_framework.serializers import ValidationError
 from dongtai.permissions import TalentAdminPermission
 from rest_framework.decorators import permission_classes
+from dongtai.models.vul_level import IastVulLevel
+
 class _StrategyResponseDataStrategySerializer(serializers.Serializer):
     id = serializers.CharField(help_text=_('The id of agent'))
     vul_name = serializers.CharField(help_text=_('The name of the vulnerability type targeted by the strategy'))
@@ -51,14 +53,20 @@ class StrategyCreateSerializer(serializers.Serializer):
         _("Suggestions for repairing vulnerabilities corresponding to the strategy"
           ))
 
+    def validate_level_id(self, value):
+        if not IastVulLevel.objects.filter(pk=value).exists():
+            raise serializers.ValidationError("this vul level not exist")
+        return value
+
 
 _ResponseSerializer = get_response_serializer(
     data_serializer=_StrategyResponseDataStrategySerializer(many=True), )
 
 
 class _StrategyArgsSerializer(serializers.Serializer):
-    page_size = serializers.IntegerField(default=None,help_text=_('Number per page'))
-    page = serializers.IntegerField(default=None,help_text=_('Page index'))
+    page_size = serializers.IntegerField(default=None,
+                                         help_text=_('Number per page'))
+    page = serializers.IntegerField(default=None, help_text=_('Page index'))
     name = serializers.CharField(
         default=None,
         help_text=_(
@@ -175,15 +183,28 @@ class StrategysEndpoint(UserEndPoint):
                 pass
         except ValidationError as e:
             return R.failure(data=e.detail)
+        print(ser.validated_data)
         strategy = IastStrategyModel.objects.create(**ser.validated_data,
-                user=request.user,dt=time.time())
+                                                    user=request.user,
+                                                    dt=time.time())
+        strategy.save()
         for language in IastProgramLanguage.objects.all():
-            HookType.objects.create(type=3,name=ser.validated_data['vul_name'],
-                value=ser.validated_data['vul_type'],enable=1,
-                create_time=time.time(),update_time=time.time(),
-                created_by=request.user.id,language=language,vul_strategy=strategy)
-            HookType.objects.create(type=4,name=ser.validated_data['vul_name'],
-                value=ser.validated_data['vul_type'],enable=1,
-                create_time=time.time(),update_time=time.time(),
-                created_by=request.user.id,language=language,vul_strategy=strategy)
+            HookType.objects.create(type=3,
+                                    name=ser.validated_data['vul_name'],
+                                    value=ser.validated_data['vul_type'],
+                                    enable=1,
+                                    create_time=time.time(),
+                                    update_time=time.time(),
+                                    created_by=request.user.id,
+                                    language=language,
+                                    vul_strategy=strategy)
+            HookType.objects.create(type=4,
+                                    name=ser.validated_data['vul_name'],
+                                    value=ser.validated_data['vul_type'],
+                                    enable=1,
+                                    create_time=time.time(),
+                                    update_time=time.time(),
+                                    created_by=request.user.id,
+                                    language=language,
+                                    vul_strategy=strategy)
         return R.success(data=StrategySerializer(strategy).data)
