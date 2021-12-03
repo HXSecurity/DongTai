@@ -23,7 +23,6 @@ class ProjectSerializer(serializers.ModelSerializer):
     agent_language = serializers.SerializerMethodField(
         help_text="Agent language currently included in the project")
     USER_MAP = {}
-    vul_validation = serializers.SerializerMethodField(help_text="vul validation switch")
 
     class Meta:
         model = IastProject
@@ -63,7 +62,3 @@ class ProjectSerializer(serializers.ModelSerializer):
             'language', flat=True).distinct()
         return list(res)
 
-    def get_vul_validation(self, obj):
-        return get_vul_validate(
-        ) if obj.vul_validation == VulValidation.FOLLOW_GLOBAL else (
-            True if obj.vul_validation == VulValidation.ENABLE else False)
