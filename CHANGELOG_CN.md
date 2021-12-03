@@ -1,6 +1,6 @@
 # 升级日志
 
-## [1.1.3](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.3) - 2021-12-03
+## [1.1.3](https://github.com/HXSecurity/DongTai-webapi/releases/tag/v1.1.3) - 2021-12-03
 
 * 功能
   * 项目现在根据获取组件和漏洞信息时间排序
