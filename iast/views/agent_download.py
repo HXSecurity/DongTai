@@ -12,7 +12,7 @@ from rest_framework.authtoken.models import Token
 from django.utils.translation import gettext_lazy as _
 from dongtai.models.profile import IastProfile
 from iast.utils import get_openapi
-
+from requests.exceptions import ConnectionError
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -60,12 +60,18 @@ class AgentDownload(UserEndPoint):
         token, success = Token.objects.values('key').get_or_create(user=request.user)
         AGENT_SERVER_PROXY={'HOST':''}
         AGENT_SERVER_PROXY['HOST'] = get_openapi()
-        resp = requests.get(
+        try:
+            resp = requests.get(
             url=f'{AGENT_SERVER_PROXY["HOST"]}/api/v1/agent/download?url={base_url}&language={language}&projectName={project_name}',
             headers={
                 'Authorization': f'Token {token["key"]}'
             })
-        
+        except ConnectionError as e:
+            return R.failure(msg='conncet error,please check config.ini')
+        except Exception as e:
+            logger.error(e)
+            return R.failure(msg='download error,please check deployment')
+
         response = self.res_by_language(language, token, resp)
 
         return response
