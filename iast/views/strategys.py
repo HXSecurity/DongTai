@@ -43,6 +43,7 @@ class StrategyCreateSerializer(serializers.Serializer):
     state = serializers.CharField(help_text=_('This field indicates whether the vulnerability is enabled, 1 or 0'))
     vul_desc = serializers.CharField(help_text=_('Description of the corresponding vulnerabilities of the strategy'))
     level_id = serializers.IntegerField(
+        min_value=1,
         help_text=_('The strategy corresponds to the level of vulnerability'))
     vul_fix = serializers.CharField(
         allow_blank=True,
