@@ -21,27 +21,22 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
 
-      - name: Get release
-        id: get_release
-        uses: bruceadams/get-release@v1.2.2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
       - name: Generate version file
         run: |
           cd ${{ github.workspace }} && \
-          echo "${{ github.event.repository.name }},version,${{ env.VELA_VERSION }}" >> version.txt && \
-          echo "${{ github.event.repository.name }},commit_hash,${GITHUB_SHA}" >> version.txt \
+          echo "${{ github.event.repository.name }},version,${{ steps.get_version.outputs.VERSION }}" >> version.txt && \
+          echo "${{ github.event.repository.name }},commit_hash,${GITHUB_SHA}" >> version.txt
 
-      - name: Upload version file
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      - name: Upload version file to oss
+        id: upload_version_file_to_oss
+        uses: tvrcgo/upload-to-oss@master
         with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: version.txt
-          asset_name: version.txt
-          asset_content_type: text/plain
+          key-id: ${{ secrets.OSS_KEY_ID }}
+          key-secret: ${{ secrets.OSS_KEY_SECRET }}
+          region: oss-cn-beijing
+          bucket: huoqi-public
+          assets: |
+            ./version.txt:/iast/release-version/${{ github.event.repository.name }}/${{ steps.get_version.outputs.VERSION }}/version.txt
 
       - name: Create helm package
         run: |
@@ -59,3 +54,4 @@ jobs:
         run: |
           ossutil cp -rf ~/helm/repo/dongtai-iast-${{ steps.get_version.outputs.VERSION }}.tgz  oss://dongtai-helm-charts/iast/
           ossutil cp -rf ~/helm/repo/index.yaml  oss://dongtai-helm-charts/iast/
+
