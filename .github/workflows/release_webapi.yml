@@ -75,15 +75,16 @@ jobs:
           echo "${{ github.event.repository.name }},version,${{ steps.release.outputs.version }}" >> version.txt && \
           echo "${{ github.event.repository.name }},commit_hash,${GITHUB_SHA}" >> version.txt \
 
-      - name: Upload version file
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      - name: Upload version file to oss
+        id: upload_version_file_to_oss
+        uses: tvrcgo/upload-to-oss@master
         with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: version.txt
-          asset_name: version.txt
-          asset_content_type: text/plain
+          key-id: ${{ secrets.OSS_KEY_ID }}
+          key-secret: ${{ secrets.OSS_KEY_SECRET }}
+          region: oss-cn-beijing
+          bucket: huoqi-public
+          assets: |
+            ./dist/version.txt:/iast/release-version/${{ github.event.repository.name }}/${{ steps.release.outputs.version }}/version.txt
 
       - name: Build and push
         uses: docker/build-push-action@v2
