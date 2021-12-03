@@ -25,7 +25,7 @@ class _EngineHookRulesQuerySerializer(serializers.Serializer):
         help_text=
         _("type of hook rule \n 1 represents the propagation method, 2 represents the source method, 3 represents the filter method, and 4 represents the taint method"
           ))
-    page_size = serializers.IntegerField(default=20,
+    pageSize = serializers.IntegerField(default=20,
                                          help_text=_('number per page'))
     page = serializers.IntegerField(default=1, help_text=_('page index'))
     strategy_type = serializers.IntegerField(
