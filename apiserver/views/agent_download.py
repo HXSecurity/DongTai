@@ -115,8 +115,8 @@ class PythonAgentDownload():
 
 
 class PhpAgentDownload():
-    LOCAL_AGENT_FILE = '/tmp/iast_cache/php-agent.tar.gz'
-    LOCAL_AGENT_DIR = '/tmp/php'
+    LOCAL_AGENT_FILE = '/tmp/php-agent.tar.gz'
+    LOCAL_AGENT_DIR = '/tmp/php-agent'
     REMOTE_AGENT_FILE = BUCKET_NAME_BASE_URL + 'php/php-agent.tar.gz'
 
     def __init__(self):
@@ -135,7 +135,7 @@ class PhpAgentDownload():
     def create_config(self, base_url, agent_token, auth_token, project_name):
         try:
             agent_file = self.tarfile.open(PhpAgentDownload.LOCAL_AGENT_FILE)
-            agent_file.extractall(path="/tmp/php")
+            agent_file.extractall(path="/tmp/")
             config_lines = []
             config_path = "dongtai-php-property.ini"
             with open(os.path.join(PhpAgentDownload.LOCAL_AGENT_DIR, config_path), 'rb') as fp:
