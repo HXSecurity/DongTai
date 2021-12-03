@@ -7,7 +7,8 @@
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
 from dongtai.models.agent import IastAgent
-from dongtai.models.project import IastProject
+from dongtai.models.project import (IastProject, VulValidation)
+from dongtai.utils.systemsettings import get_vul_validate
 from dongtai.utils import const
 from django.utils.translation import gettext_lazy as _
 
@@ -27,6 +28,7 @@ class ProjectsResponseDataSerializer(serializers.Serializer):
     versionData = ProjectsVersionDataSerializer(
         help_text=_('Version information about the project'))
     id = serializers.IntegerField(help_text=_("The id of the project"))
+    vul_validation = serializers.SerializerMethodField(help_text="vul validation switch")
 
 
 _ResponseSerializer = get_response_serializer(
@@ -69,6 +71,12 @@ class ProjectDetail(UserEndPoint):
                 "scan_id": scan_id,
                 "agents": agents,
                 "versionData": current_project_version,
+                "vul_validation": get_vul_validation(project)
             })
         else:
             return R.failure(status=203, msg=_('no permission'))
+
+def get_vul_validation(obj):
+    return get_vul_validate(
+    ) if obj.vul_validation == VulValidation.FOLLOW_GLOBAL else (
+        True if obj.vul_validation == VulValidation.ENABLE else False)
