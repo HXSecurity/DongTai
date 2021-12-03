@@ -41,7 +41,7 @@ class JavaAgentDownload():
     @staticmethod
     def create_config(base_url, agent_token, auth_token, project_name):
         try:
-            data = "iast.name=DongTai-Enterprise 1.0.0\niast.version=1.0.0\niast.response.name=DongTai Iast\niast.response.value=1.0.0\niast.server.url={url}\niast.server.token={token}\niast.allhook.enable=false\niast.dump.class.enable=false\niast.dump.class.path=/tmp/iast-class-dump/\niast.service.report.interval=30000\napp.name=DongTai\nengine.status=start\nengine.name={agent_token}\njdk.version={jdk_level}\nproject.name={project_name}\niast.proxy.enable=false\niast.proxy.host=\niast.proxy.port=\n"
+            data = "iast.response.name=DongTai Iast\niast.server.url={url}\niast.server.token={token}\niast.allhook.enable=false\niast.dump.class.enable=false\niast.dump.class.path=/tmp/iast-class-dump/\niast.service.report.interval=30000\napp.name=DongTai\nengine.status=start\nengine.name={agent_token}\njdk.version={jdk_level}\nproject.name={project_name}\niast.proxy.enable=false\niast.proxy.host=\niast.proxy.port=\niast.server.mode=local\n"
             with open('/tmp/iast.properties', 'w') as config_file:
                 config_file.write(
                     data.format(url=base_url, token=auth_token, agent_token=agent_token, jdk_level=1,
@@ -110,15 +110,14 @@ class PythonAgentDownload():
                         arcname=os.path.basename(PythonAgentDownload.LOCAL_AGENT_DIR))
             return True
         except Exception as e:
-            print(e)
+            logger.error(f'replace config error: {e}')
             return False
-        # os.system(f'cd /tmp;tar -uvf {JavaAgentDownload.LOCAL_AGENT_FILE} iast.properties')
+
 
 class PhpAgentDownload():
     LOCAL_AGENT_FILE = '/tmp/iast_cache/php-agent.tar.gz'
-    LOCAL_AGENT_DIR = '/tmp/iast_cache/dongtai_agent_php'
+    LOCAL_AGENT_DIR = '/tmp/php'
     REMOTE_AGENT_FILE = BUCKET_NAME_BASE_URL + 'php/php-agent.tar.gz'
-    
 
     def __init__(self):
         import tarfile
@@ -135,14 +134,11 @@ class PhpAgentDownload():
 
     def create_config(self, base_url, agent_token, auth_token, project_name):
         try:
-            print(PhpAgentDownload.LOCAL_AGENT_FILE)
-            os.system(f"cd /tmp/iast_cache/;tar -zxvf {PhpAgentDownload.LOCAL_AGENT_FILE};")
-            #agent_file = self.tarfile.open(PhpAgentDownload.LOCAL_AGENT_FILE)
-            #agent_file.extractall(path="/tmp/php")
-            #names = agent_file.getnames()
-            PhpAgentDownload.LOCAL_AGENT_DIR = "/tmp/php"
+            agent_file = self.tarfile.open(PhpAgentDownload.LOCAL_AGENT_FILE)
+            agent_file.extractall(path="/tmp/php")
             config_lines = []
-            with open("/tmp/iast_cache/dongtai-php-property.ini", 'rb') as fp:
+            config_path = "dongtai-php-property.ini"
+            with open(os.path.join(PhpAgentDownload.LOCAL_AGENT_DIR, config_path), 'rb') as fp:
                 for line in fp.readlines():
                     try:
                         key, value = line.decode().split('=')
@@ -157,24 +153,23 @@ class PhpAgentDownload():
                         value = agent_token
                     if key == 'project.name':
                         value = project_name
-                    config_lines.append("=".join([key, value+'\n']))
-            with open("/tmp/iast_cache/dongtai-php-property.ini", 'w+') as fp:
+                    config_lines.append("=".join([key, value + '\n']))
+            with open(os.path.join(PhpAgentDownload.LOCAL_AGENT_DIR, config_path), 'w+') as fp:
                 fp.writelines(config_lines)
             return True
         except Exception as e:
-            print(e)
+            logger.error(f'create config error: {e}')
             return False
+
     def replace_config(self):
         try:
-            os.system('cd /tmp/iast_cache;tar -zcvf php-agent.tar.gz agent.jar dongtai-php-property.ini')
-            #agent_dir = PhpAgentDownload.LOCAL_AGENT_DIR
-            #print(PhpAgentDownload.LOCAL_AGENT_DIR, PhpAgentDownload.LOCAL_AGENT_FILE)
-            #with self.tarfile.open(PhpAgentDownload.LOCAL_AGENT_FILE, "w:gz") as tar:
-            #    tar.add(agent_dir,arcname=os.path.basename(agent_dir))
+            with self.tarfile.open(PhpAgentDownload.LOCAL_AGENT_FILE, "w:gz") as tar:
+                tar.add(PhpAgentDownload.LOCAL_AGENT_DIR, arcname=os.path.basename(PhpAgentDownload.LOCAL_AGENT_DIR))
             return True
         except Exception as e:
-            print(e)
+            logger.error(f'replace config error: {e}')
             return False
+
 
 class AgentDownload(OpenApiEndPoint):
     """
