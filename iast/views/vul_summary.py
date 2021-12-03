@@ -320,7 +320,7 @@ class VulSummary(UserEndPoint):
         } for _key, _value in DEFAULT_LEVEL.items()]
 
         vul_type_list = [{
-            "type": get_hook_type_name(_),
+            "type": get_hook_type_name(_).lower().strip(),
             "count": _['total']
         } for _ in type_summary]
         tempdic = {}
