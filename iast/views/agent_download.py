@@ -31,6 +31,10 @@ class AgentDownload(UserEndPoint):
             "python": {
                 "extension": "tar.gz",
                 "filename": "dongtai-agent-python.tar.gz"
+            },
+            "php": {
+                "extension": "tar.gz",
+                "filename": "php-agent.tar.gz"
             }
         }
 
