@@ -52,14 +52,14 @@ class SensitiveInfoRuleSerializer(serializers.ModelSerializer):
 
     def get_strategy_name(self,obj):
         try:
-            return obj.strategy.vul_name 
+            return obj.strategy.vul_name
         except ObjectDoesNotExist as e:
             print(e)
             return ''
 
     def get_strategy_id(self,obj):
         try:
-            return obj.strategy.id    
+            return obj.strategy.id
         except ObjectDoesNotExist as e:
             print(e)
             return 0
@@ -72,7 +72,7 @@ class SensitiveInfoRuleSerializer(serializers.ModelSerializer):
             return 0
     def get_pattern_type_name(self,obj):
         try:
-            return obj.pattern_type.name 
+            return obj.pattern_type.name
         except ObjectDoesNotExist as e:
             print(e)
             return ''
@@ -89,8 +89,8 @@ class SensitiveInfoPatternTypeSerializer(serializers.ModelSerializer):
 
 
 class SensitiveInfoRuleCreateSerializer(serializers.Serializer):
-    strategy_id = serializers.IntegerField(required=True)
-    pattern_type_id = serializers.IntegerField(required=True)
+    strategy_id = serializers.IntegerField(min_value=1, required=True)
+    pattern_type_id = serializers.IntegerField(min_value=1, required=True)
     pattern = serializers.CharField(required=True)
     status = serializers.IntegerField(required=True)
 
