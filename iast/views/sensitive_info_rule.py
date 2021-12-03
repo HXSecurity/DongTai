@@ -110,7 +110,7 @@ class _RegexPatternValidationSerializer(serializers.Serializer):
 
 class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
 
-    #permission_classes_by_action = {'destory':(TalentAdminPermission,),}
+    permission_classes_by_action = {}
 
     def get_permissions(self):
         try:
