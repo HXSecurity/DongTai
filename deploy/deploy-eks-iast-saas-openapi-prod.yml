@@ -39,17 +39,3 @@ spec:
         - name: configfile
           configMap:
             name: dongtai-iast-config-prod.ini
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: dongtai-openapi-svc
-  namespace: iast-prod
-spec:
-  ports:
-    - port: 80
-      protocol: TCP
-      targetPort: 8000
-  selector:
-    app: dongtai-openapi
-  type: ClusterIP

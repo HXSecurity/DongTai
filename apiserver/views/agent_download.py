@@ -179,6 +179,7 @@ class PhpAgentDownload():
             agent_file = tarfile.open(user_file)
             agent_file.extractall(path=self.target_path)
             agent_file.close()
+
             config_lines = []
             config_path = "dongtai-php-property.ini"
             with open(os.path.join(self.target_source_path, config_path), 'rb') as fp:
