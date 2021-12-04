@@ -17,32 +17,46 @@ from django.utils.translation import gettext_lazy as _
 from apiserver.api_schema import DongTaiParameter, DongTaiAuth
 from apiserver.utils import OssDownloader
 from AgentServer.settings import BUCKET_NAME_BASE_URL
-from configparser import ConfigParser
+
+import shutil
+import tarfile, os
+import threading
+import time
 
 logger = logging.getLogger('dongtai.openapi')
 
-
 class JavaAgentDownload():
-    LOCAL_AGENT_PATH = '/tmp/iast_cache/package'
-    LOCAL_AGENT_FILE = '/tmp/iast_cache/package/iast-agent.jar'
-    REMOTE_AGENT_FILE = BUCKET_NAME_BASE_URL + 'java/iast-agent.jar'
 
-    @staticmethod
-    def download_agent():
-        if not os.path.exists(JavaAgentDownload.LOCAL_AGENT_PATH):
-            os.makedirs(JavaAgentDownload.LOCAL_AGENT_PATH)
-        if os.path.exists(JavaAgentDownload.LOCAL_AGENT_FILE):
+    def __init__(self, user_id):
+        t = threading.currentThread()
+        self.user_id = user_id
+        self.agent_file = "iast-agent.jar"
+        self.original_agent_path = f'/tmp/iast_cache/package'
+        self.original_agent_file = f'/tmp/iast_cache/package/{self.agent_file}'
+        self.user_path = f'/tmp/{os.getpid()}-{t.ident}-{user_id}'
+        self.target_path = f'/tmp/{os.getpid()}-{t.ident}-{user_id}/iast_cache/package'
+        self.remote_agent_file = BUCKET_NAME_BASE_URL + 'java/iast-agent.jar'
+        if not os.path.exists(self.target_path):
+            os.makedirs(self.target_path)
+        if not os.path.exists(self.original_agent_path):
+            os.makedirs(self.original_agent_path)
+
+    def download_agent(self):
+        if os.path.exists(self.original_agent_file):
             return True
         else:
             return OssDownloader.download_file(
-                object_name=JavaAgentDownload.REMOTE_AGENT_FILE, local_file=JavaAgentDownload.LOCAL_AGENT_FILE
+                object_name=self.remote_agent_file, local_file=f"{self.original_agent_file}"
             )
 
-    @staticmethod
-    def create_config(base_url, agent_token, auth_token, project_name):
+    def create_config(self, base_url, agent_token, auth_token, project_name):
         try:
+            user_file = f"{self.target_path}/{self.agent_file}"
+            if not os.path.exists(user_file):
+                shutil.copyfile(self.original_agent_file, user_file)
+
             data = "iast.response.name=DongTai Iast\niast.server.url={url}\niast.server.token={token}\niast.allhook.enable=false\niast.dump.class.enable=false\niast.dump.class.path=/tmp/iast-class-dump/\niast.service.report.interval=30000\napp.name=DongTai\nengine.status=start\nengine.name={agent_token}\njdk.version={jdk_level}\nproject.name={project_name}\niast.proxy.enable=false\niast.proxy.host=\niast.proxy.port=\niast.server.mode=local\n"
-            with open('/tmp/iast.properties', 'w') as config_file:
+            with open(f'{self.user_path}/iast.properties', 'w') as config_file:
                 config_file.write(
                     data.format(url=base_url, token=auth_token, agent_token=agent_token, jdk_level=1,
                                 project_name=project_name)
@@ -52,50 +66,64 @@ class JavaAgentDownload():
             logger.error(_('Agent configuration file creation failed, reason: {E}').format(e))
             return False
 
-    @staticmethod
-    def replace_config():
+    def replace_config(self):
+        user_file = f"{self.target_path}/{self.agent_file}"
         # 执行jar -uvf {JavaAgentDownload.LOCAL_AGENT_FILE} iast.properties更新jar包的文件
         import os
-        os.system(f'cd /tmp;jar -uvf {JavaAgentDownload.LOCAL_AGENT_FILE} iast.properties')
+        os.system(f'cd {self.user_path};jar -uvf {user_file} iast.properties')
 
 
 class PythonAgentDownload():
-    LOCAL_AGENT_FILE = '/tmp/dongtai_agent_python.tar.gz'
-    LOCAL_AGENT_DIR = '/tmp/dongtai_agent_python'
-    REMOTE_AGENT_FILE = BUCKET_NAME_BASE_URL + 'python/dongtai_agent_python.tar.gz'
 
-    def __init__(self):
-        import tarfile
-        self.tarfile = tarfile
+    def __init__(self, user_id):
+        t = threading.currentThread()
+        self.user_id = user_id
+        self.agent_file = "dongtai_agent_python.tar.gz"
+        self.original_agent_file = f'/tmp/{self.agent_file}'
+        self.target_path = f'/tmp/{os.getpid()}-{t.ident}-{user_id}'
+        self.target_source_path = f'/tmp/{os.getpid()}-{t.ident}-{user_id}/dongtai_agent_python'
+        self.remote_agent_file = BUCKET_NAME_BASE_URL + 'python/dongtai_agent_python.tar.gz'
+        if not os.path.exists(self.target_path):
+            os.makedirs(self.target_path)
+        if not os.path.exists(self.target_source_path):
+            os.makedirs(self.target_source_path)
 
-    @staticmethod
-    def download_agent():
-        if os.path.exists(PythonAgentDownload.LOCAL_AGENT_FILE):
+    def download_agent(self):
+        if os.path.exists(self.original_agent_file):
             return True
         else:
             return OssDownloader.download_file(
-                object_name=PythonAgentDownload.REMOTE_AGENT_FILE, local_file=PythonAgentDownload.LOCAL_AGENT_FILE
+                object_name=self.remote_agent_file, local_file=f"{self.original_agent_file}"
             )
 
     def create_config(self, base_url, agent_token, auth_token, project_name):
         try:
-            agent_file = self.tarfile.open(PythonAgentDownload.LOCAL_AGENT_FILE)
-            agent_file.extractall(path="/tmp/")
+            user_file = f"{self.target_path}/{self.agent_file}"
+            if not AgentDownload.is_tar_file(self.original_agent_file):
+                shutil.rmtree(self.original_agent_file)
+                return False
+
+            if not os.path.exists(user_file):
+                shutil.copyfile(self.original_agent_file, user_file)
+                shutil.copyfile(self.original_agent_file, f"{user_file}.bak")
+
+            agent_file = tarfile.open(user_file)
+            agent_file.extractall(path=self.target_path)
             names = agent_file.getnames()
-            PythonAgentDownload.LOCAL_AGENT_DIR = "/tmp/" + names[0]
+            self.target_source_path = f"{self.target_path}/{names[0]}"
             config_path = ""
             for item in names:
                 res = re.search("config.json", item)
                 if res is not None:
                     config_path = item
                     break
-            with open("/tmp/" + config_path, "r") as config_file:
+            with open(f"{self.target_path}/{config_path}", "r") as config_file:
                 config = json.load(config_file)
                 config['iast']['server']['token'] = auth_token
                 config['iast']['server']['url'] = base_url
                 config['project']['name'] = project_name
                 config['engine']['name'] = agent_token
-            with open("/tmp/" + config_path, "w+") as config_file:
+            with open(f"{self.target_path}/{config_path}", "w+") as config_file:
                 json.dump(config, config_file)
             return True
         except Exception as e:
@@ -104,10 +132,10 @@ class PythonAgentDownload():
             return False
 
     def replace_config(self):
+        user_file = f"{self.target_path}/{self.agent_file}"
         try:
-            with self.tarfile.open(PythonAgentDownload.LOCAL_AGENT_FILE, "w:gz") as tar:
-                tar.add(PythonAgentDownload.LOCAL_AGENT_DIR,
-                        arcname=os.path.basename(PythonAgentDownload.LOCAL_AGENT_DIR))
+            with tarfile.open(user_file, "w:gz") as tar:
+                tar.add(self.target_source_path, arcname=os.path.basename(self.target_source_path))
             return True
         except Exception as e:
             logger.error(f'replace config error: {e}')
@@ -115,30 +143,45 @@ class PythonAgentDownload():
 
 
 class PhpAgentDownload():
-    LOCAL_AGENT_FILE = '/tmp/php-agent.tar.gz'
-    LOCAL_AGENT_DIR = '/tmp/php-agent'
-    REMOTE_AGENT_FILE = BUCKET_NAME_BASE_URL + 'php/php-agent.tar.gz'
 
-    def __init__(self):
-        import tarfile
-        self.tarfile = tarfile
+    def __init__(self, user_id):
+        t = threading.currentThread()
+        self.user_id = user_id
+        self.agent_file = "php-agent.tar.gz"
+        self.original_agent_file = f'/tmp/{self.agent_file}'
+        self.target_path = f'/tmp/{os.getpid()}-{t.ident}-{user_id}'
+        self.target_source_path = f'/tmp/{os.getpid()}-{t.ident}-{user_id}/php-agent'
+        self.remote_agent_file = BUCKET_NAME_BASE_URL + 'php/php-agent.tar.gz'
+        if not os.path.exists(self.target_path):
+            os.makedirs(self.target_path)
+        if not os.path.exists(self.target_source_path):
+            os.makedirs(self.target_source_path)
 
-    @staticmethod
-    def download_agent():
-        if os.path.exists(PhpAgentDownload.LOCAL_AGENT_FILE):
+    def download_agent(self):
+        if os.path.exists(self.original_agent_file):
             return True
         else:
             return OssDownloader.download_file(
-                object_name=PhpAgentDownload.REMOTE_AGENT_FILE, local_file=PhpAgentDownload.LOCAL_AGENT_FILE
+                object_name=self.remote_agent_file, local_file=f"{self.original_agent_file}"
             )
 
     def create_config(self, base_url, agent_token, auth_token, project_name):
         try:
-            agent_file = self.tarfile.open(PhpAgentDownload.LOCAL_AGENT_FILE)
-            agent_file.extractall(path="/tmp/")
+            user_file = f"{self.target_path}/{self.agent_file}"
+            if not AgentDownload.is_tar_file(self.original_agent_file):
+                shutil.rmtree(self.original_agent_file)
+                return False
+
+            if not os.path.exists(user_file):
+                shutil.copyfile(self.original_agent_file, user_file)
+                shutil.copyfile(self.original_agent_file, f"{user_file}.bak")
+
+            agent_file = tarfile.open(user_file)
+            agent_file.extractall(path=self.target_path)
+            agent_file.close()
             config_lines = []
             config_path = "dongtai-php-property.ini"
-            with open(os.path.join(PhpAgentDownload.LOCAL_AGENT_DIR, config_path), 'rb') as fp:
+            with open(os.path.join(self.target_source_path, config_path), 'rb') as fp:
                 for line in fp.readlines():
                     try:
                         key, value = line.decode().split('=')
@@ -154,7 +197,7 @@ class PhpAgentDownload():
                     if key == 'project.name':
                         value = project_name
                     config_lines.append("=".join([key, value + '\n']))
-            with open(os.path.join(PhpAgentDownload.LOCAL_AGENT_DIR, config_path), 'w+') as fp:
+            with open(os.path.join(self.target_source_path, config_path), 'w+') as fp:
                 fp.writelines(config_lines)
             return True
         except Exception as e:
@@ -162,9 +205,10 @@ class PhpAgentDownload():
             return False
 
     def replace_config(self):
+        user_file = f"{self.target_path}/{self.agent_file}"
         try:
-            with self.tarfile.open(PhpAgentDownload.LOCAL_AGENT_FILE, "w:gz") as tar:
-                tar.add(PhpAgentDownload.LOCAL_AGENT_DIR, arcname=os.path.basename(PhpAgentDownload.LOCAL_AGENT_DIR))
+            with tarfile.open(user_file, "w:gz") as tar:
+                tar.add(self.target_source_path, arcname=os.path.basename(self.target_source_path))
             return True
         except Exception as e:
             logger.error(f'replace config error: {e}')
@@ -177,11 +221,29 @@ class AgentDownload(OpenApiEndPoint):
     """
     name = "download_iast_agent"
     description = "下载洞态Agent"
-    DOWNLOAD_HANDLER = {
-        'python': PythonAgentDownload(),
-        'java': JavaAgentDownload(),
-        'php': PhpAgentDownload(),
-    }
+
+    @staticmethod
+    def is_tar_file(file):
+        tmp_path = f"/tmp/.dongtai_agent_test/{time.time_ns()}"
+        try:
+            agent_file = tarfile.open(file)
+            agent_file.extractall(path=tmp_path)
+        except tarfile.ReadError:
+            return False
+        except Exception as e:
+            raise e
+        finally:
+            shutil.rmtree(tmp_path)
+        return True
+
+    def make_download_handler(self, language, user_id):
+        if language == 'python':
+            return PythonAgentDownload(user_id)
+        if language == 'java':
+            return JavaAgentDownload(user_id)
+        if language == 'php':
+            return PhpAgentDownload(user_id)
+        return
 
     @extend_schema(
         parameters=[
@@ -199,17 +261,18 @@ class AgentDownload(OpenApiEndPoint):
             project_name = request.query_params.get('projectName', 'Demo Project')
             language = request.query_params.get('language')
 
-            handler = self.DOWNLOAD_HANDLER[language]
+            token, success = Token.objects.get_or_create(user=request.user)
+            agent_token = ''.join(str(uuid.uuid4()).split('-'))
+
+            handler = self.make_download_handler(language, request.user.id)
+
             if handler.download_agent() is False:
                 return R.failure(msg="agent file download failure. please contact official staff for help.")
 
-            token, success = Token.objects.get_or_create(user=request.user)
-            agent_token = ''.join(str(uuid.uuid4()).split('-'))
             if handler.create_config(base_url=base_url, agent_token=agent_token, auth_token=token.key,
                                      project_name=project_name):
                 handler.replace_config()
-                print(handler.LOCAL_AGENT_FILE)
-                response = FileResponse(open(handler.LOCAL_AGENT_FILE, "rb"))
+                response = FileResponse(open(f"{handler.target_path}/{handler.agent_file}", "rb"))
                 response['content_type'] = 'application/octet-stream'
                 response['Content-Disposition'] = "attachment; filename=agent.jar"
                 return response
@@ -221,3 +284,6 @@ class AgentDownload(OpenApiEndPoint):
                 _('Agent download failed, user: {}, error details: {}').format(
                     request.user.get_username()), e)
             return R.failure(msg="agent file not exit.")
+        finally:
+            pass
+            # shutil.rmtree(f"{handler.target_path}")
