@@ -285,5 +285,4 @@ class AgentDownload(OpenApiEndPoint):
                     request.user.get_username()), e)
             return R.failure(msg="agent file not exit.")
         finally:
-            pass
-            # shutil.rmtree(f"{handler.target_path}")
+            shutil.rmtree(f"{handler.target_path}")
