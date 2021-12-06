@@ -4,6 +4,8 @@ sleep 2
 
 echo $1
 
+rm /tmp/dongtai-engine.pid || true
+
 if [ -z $1 ]; then
   echo '启动Celery Worker服务'
   celery -A lingzhi_engine worker -l info -E --pidfile=/tmp/dongtai-engine.pid
