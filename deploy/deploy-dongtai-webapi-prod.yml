@@ -35,21 +35,11 @@ spec:
           env:
             - name: "environment"
               value: "PROD"
+            - name: aliyun_logs_iast_server_project
+              value: k8s-log-c541e7d8ffff2434a8b7b4fd7d8645d2a
+            - name: aliyun_logs_iast_server
+              value: stdout
       volumes:
         - name: configfile
           configMap:
             name: dongtai-iast-config-prod.ini
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: dongtai-webapi-svc
-  namespace: iast-prod
-spec:
-  ports:
-    - port: 80
-      protocol: TCP
-      targetPort: 8000
-  selector:
-    app: dongtai-webapi
-  type: ClusterIP
