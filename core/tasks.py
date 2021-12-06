@@ -85,66 +85,6 @@ def load_sink_strategy(user=None):
     return strategies
 
 
-def save_vul(vul_meta, vul_level, vul_name, vul_stack, top_stack, bottom_stack):
-    """
-    保存漏洞数据
-    :param vul_meta:
-    :param vul_level:
-    :param vul_name:
-    :param vul_stack:
-    :param top_stack:
-    :param bottom_stack:
-    :return:
-    """
-    vul = IastVulnerabilityModel.objects.filter(
-        type=vul_name,  # 指定漏洞类型
-        url=vul_meta.url,
-        http_method=vul_meta.http_method,
-        taint_position='',  # 或许补充相关数据
-        agent=vul_meta.agent
-    ).first()
-    if vul:
-        vul.req_header = vul_meta.req_header
-        vul.req_params = vul_meta.req_params
-        vul.counts = vul.counts + 1
-        vul.latest_time = int(time.time())
-        vul.status_id = settings.PENDING
-        vul.full_stack = json.dumps(vul_stack, ensure_ascii=False)
-        vul.method_pool_id = vul_meta.id
-        vul.save(update_fields=[
-            'req_header', 'req_params', 'counts', 'latest_time', 'full_stack', 'method_pool_id', 'status_id'
-        ])
-    else:
-        IastVulnerabilityModel.objects.create(
-            type=vul_name,
-            level=vul_level,
-            url=vul_meta.url,
-            uri=vul_meta.uri,
-            http_method=vul_meta.http_method,
-            http_scheme=vul_meta.http_scheme,
-            http_protocol=vul_meta.http_protocol,
-            req_header=vul_meta.req_header,
-            req_params=vul_meta.req_params,
-            req_data=vul_meta.req_data,
-            res_header=vul_meta.res_header,
-            res_body=vul_meta.res_body,
-            full_stack=json.dumps(vul_stack, ensure_ascii=False),
-            top_stack=top_stack,
-            bottom_stack=bottom_stack,
-            taint_value='',  # fixme: 污点数据，后续补充
-            taint_position='',  # fixme 增加污点位置
-            agent=vul_meta.agent,
-            context_path=vul_meta.context_path,
-            counts=1,
-            status_id=settings.PENDING,
-            first_time=vul_meta.create_time,
-            latest_time=int(time.time()),
-            client_ip=vul_meta.clent_ip,
-            param_name='',
-            method_pool_id=vul_meta.id
-        )
-
-
 def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
     """
     搜索方法池是否存在满足策略的数据，如果存在，保存相关数据为漏洞
@@ -155,34 +95,28 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
     """
     logger.info(f'current sink rule is {strategy.get("type")}')
 
+    # fixme: only search enable strategy
     queryset = IastStrategyModel.objects.filter(vul_type=strategy['type'])
     if queryset.values('id').exists() is False:
+        logger.error(f'current method pool hit rule {strategy.get("type")}, but no vul strategy.')
         return
 
-    hook_type = HookType.objects.values('id').filter(value=strategy.get("type")).first()
-    if hook_type is None:
-        logger.error(f'current sink rule is {strategy.get("type")}, hook type is not exists.')
-        return
-
-    hook_type_id = hook_type['id']
-
-    vul_strategy = queryset.values("level", "vul_name").first()
     engine.search(method_pool=method_pool, vul_method_signature=strategy.get('value'))
     status, stack, source_sign, sink_sign, taint_value = engine.result()
 
     if status:
+        vul_strategy = queryset.values("level", "vul_name", "id").first()
         vul_found.send(
             sender="tasks.search_and_save_vul",
             vul_meta=method_pool_model,
             vul_level=vul_strategy['level'],
-            hook_type_id=hook_type_id,
+            strategy_id=vul_strategy['id'],
             vul_stack=stack,
             top_stack=source_sign,
             bottom_stack=sink_sign,
             taint_value=taint_value
         )
     else:
-        # 更新漏洞状态为已忽略/误报
         try:
             if isinstance(method_pool_model, MethodPool):
                 return
@@ -205,6 +139,7 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
                 verify_time=timestamp,
                 update_time=timestamp
             )
+            IastProject.objects.filter(id=method_pool.agent.bind_project_id).update(latest_time=timestamp)
         except Exception as e:
             logger.info(f'漏洞数据处理出错，原因：{e}')
 
@@ -531,6 +466,7 @@ def clear_error_log():
     except Exception as e:
         logger.error(f'日志清理失败，错误详情：{e}')
 
+
 @shared_task(queue='dongtai-periodic-task')
 def export_report():
     """
@@ -541,7 +477,7 @@ def export_report():
     report = ProjectReport.objects.filter(status=0).first()
     if not report:
         logger.error("暂无需要导出的报告")
-        return 
+        return
     try:
         report.status = 1
         report.save()
@@ -551,6 +487,7 @@ def export_report():
         report.status = 0
         report.save()
         logger.error(f'导出报告，错误详情：{e}')
+
 
 @shared_task(queue='dongtai-replay-task')
 def vul_recheck():

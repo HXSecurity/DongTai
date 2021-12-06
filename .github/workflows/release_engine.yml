@@ -45,6 +45,23 @@ jobs:
           VERSION=`echo ${GITHUB_REF##*/} | awk -F'-' '{print $2}'`
           echo "::set-output name=version::$VERSION"
 
+      - name: Generate version file
+        run: |
+          cd ${{ github.workspace }} && \
+          echo "${{ github.event.repository.name }},version,${{ steps.release.outputs.version }}" >> version.txt && \
+          echo "${{ github.event.repository.name }},commit_hash,${GITHUB_SHA}" >> version.txt \
+
+      - name: Upload version file to oss
+        id: upload_version_file_to_oss
+        uses: tvrcgo/upload-to-oss@master
+        with:
+          key-id: ${{ secrets.OSS_KEY_ID }}
+          key-secret: ${{ secrets.OSS_KEY_SECRET }}
+          region: oss-cn-beijing
+          bucket: huoqi-public
+          assets: |
+            ./version.txt:/iast/release-version/${{ github.event.repository.name }}/${{ steps.release.outputs.version }}/version.txt
+
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
@@ -53,6 +70,8 @@ jobs:
           tags: |
             dongtai/dongtai-engine:latest
             dongtai/dongtai-engine:${{ steps.release.outputs.version }}
+
+
 
       - name: deploy Engine to PROD
         uses: wahyd4/kubectl-helm-action@master
