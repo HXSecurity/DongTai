@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-05 18:00+0000\n"
+"POT-Creation-Date: 2021-11-20 15:06+0000\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -24,134 +24,160 @@ msgid ""
 "{2} to attack:"
 msgstr "我们发现在{0}页面中存在{1}，攻击者可以改变{2}的值进行攻击："
 
-#: core/plugins/export_report.py:86
-msgid "{} Line"
-msgstr "的{}行"
+#: core/plugins/export_report.py:95
+#, python-brace-format
+msgid "call {3} at line {2} of file {1}, incoming parameters {0}"
+msgstr "在文件{1} {2}行，调用{3},传入恶意参数{0}"
 
-#: core/plugins/export_report.py:102
-msgid "In {} {} call {}. {} (), Incoming parameters {}"
-msgstr "在{}{}调用{}.{}(),传入参数{}"
+#: core/plugins/export_report.py:103
+#, python-brace-format
+msgid "call function {2} at line {1} of {0}"
+msgstr "文件{0} {1}行的函数{2}"
 
-#: core/plugins/export_report.py:105
+#: core/plugins/export_report.py:110
+#, python-brace-format
+msgid "run sink function {2} at line {1} of file {0}"
+msgstr "最终在文件{0}{1}行的{2}执行敏感操作"
+
+#: core/plugins/export_report.py:116
+#, python-brace-format
+#| msgid ""
+#| "Code call chain: \n"
+#| "{0}, and then {1},\n"
+#| " {2}"
+msgid ""
+"Code call chain: \n"
+"{0}, and then {1},\n"
+" {2}"
+msgstr ""
+"漏洞触发过程如下：\n"
+"{0},经{1}传播,\n"
+" {2}"
+
+#: core/plugins/export_report.py:118
+#, python-brace-format
+#| msgid "Code call chain: call {1} at {0}"
+msgid ""
+"Code call chain: call {1} at {0}"
+msgstr "漏洞触发过程如下：在{0}调用{1}"
+
+#: core/plugins/export_report.py:120
 msgid "{} Appears in {} {}"
 msgstr "{}出现在{}的{}"
 
-#: core/plugins/export_report.py:210
+#: core/plugins/export_report.py:223
 msgid "Report export success"
 msgstr "导出报告成功"
 
-#: core/plugins/export_report.py:235 core/plugins/export_report.py:479
+#: core/plugins/export_report.py:248 core/plugins/export_report.py:497
 msgid "Security Testing Report"
 msgstr "安全测试报告"
 
-#: core/plugins/export_report.py:247 core/plugins/export_report.py:471
+#: core/plugins/export_report.py:260 core/plugins/export_report.py:489
 msgid "First, project information"
 msgstr "一 、项目基础信息"
 
-#: core/plugins/export_report.py:255 core/plugins/export_report.py:466
+#: core/plugins/export_report.py:268 core/plugins/export_report.py:484
 msgid "Application name"
 msgstr "项目名称"
 
-#: core/plugins/export_report.py:258 core/plugins/export_report.py:467
+#: core/plugins/export_report.py:271 core/plugins/export_report.py:485
 msgid "Author"
 msgstr "创建人员"
 
-#: core/plugins/export_report.py:261
+#: core/plugins/export_report.py:274
 msgid "Application type"
 msgstr "项目类型"
 
-#: core/plugins/export_report.py:264 core/plugins/export_report.py:468
+#: core/plugins/export_report.py:277 core/plugins/export_report.py:486
 msgid "Number of Vulnerability"
 msgstr "漏洞数量"
 
-#: core/plugins/export_report.py:267 core/plugins/export_report.py:469
+#: core/plugins/export_report.py:280 core/plugins/export_report.py:487
 msgid "Number of Agent"
 msgstr "Agent数量"
 
-#: core/plugins/export_report.py:270
+#: core/plugins/export_report.py:283
 msgid "Latest time"
 msgstr "最新时间"
 
-#: core/plugins/export_report.py:287 core/plugins/export_report.py:472
+#: core/plugins/export_report.py:300 core/plugins/export_report.py:490
 msgid "Second, the result analysis"
 msgstr "二、结果分析"
 
-#: core/plugins/export_report.py:291
-#, fuzzy
-#| msgid "Vulnerability Severity Levels Distribution"
+#: core/plugins/export_report.py:304
 msgid "2.1 Vulnerability Severity Levels Distribution"
-msgstr "漏洞等级分布"
+msgstr "2.1 漏洞等级分布"
 
-#: core/plugins/export_report.py:301
-#, fuzzy
-#| msgid "Distribution of Vulnerability"
+#: core/plugins/export_report.py:314
 msgid "2.2 Distribution of Vulnerability"
-msgstr "漏洞类型分布"
+msgstr "2.2 漏洞类型分布"
 
-#: core/plugins/export_report.py:308 core/plugins/export_report.py:475
-#: core/plugins/export_report.py:572
+#: core/plugins/export_report.py:321 core/plugins/export_report.py:493
+#: core/plugins/export_report.py:588
 msgid "Severity levels"
 msgstr "漏洞等级"
 
-#: core/plugins/export_report.py:309 core/plugins/export_report.py:476
-#: core/plugins/export_report.py:571
+#: core/plugins/export_report.py:322 core/plugins/export_report.py:494
+#: core/plugins/export_report.py:587
 msgid "Vulnerability type name"
 msgstr "漏洞类型名称"
 
-#: core/plugins/export_report.py:310 core/plugins/export_report.py:477
+#: core/plugins/export_report.py:323 core/plugins/export_report.py:495
 msgid "Number"
 msgstr "数量"
 
-#: core/plugins/export_report.py:321
-#, fuzzy
-#| msgid "Vulnerability details"
+#: core/plugins/export_report.py:334
 msgid "2.3 Vulnerability details"
-msgstr "漏洞详情"
+msgstr "2.3 漏洞详情"
 
-#: core/plugins/export_report.py:338 core/plugins/export_report.py:424
-#: core/plugins/export_report.py:542
+#: core/plugins/export_report.py:351 core/plugins/export_report.py:437
+#: core/plugins/export_report.py:558
 msgid "Summary"
 msgstr "概要信息"
 
-#: core/plugins/export_report.py:342 core/plugins/export_report.py:426
-#: core/plugins/export_report.py:544
+#: core/plugins/export_report.py:355 core/plugins/export_report.py:439
+#: core/plugins/export_report.py:560
 msgid "Severity level"
 msgstr "危害等级"
 
-#: core/plugins/export_report.py:346 core/plugins/export_report.py:428
-#: core/plugins/export_report.py:430 core/plugins/export_report.py:546
-#: core/plugins/export_report.py:573
+#: core/plugins/export_report.py:359 core/plugins/export_report.py:441
+#: core/plugins/export_report.py:443 core/plugins/export_report.py:562
+#: core/plugins/export_report.py:589
 msgid "First scan time"
 msgstr "首次检测时间"
 
-#: core/plugins/export_report.py:350 core/plugins/export_report.py:548
-#: core/plugins/export_report.py:574
+#: core/plugins/export_report.py:363 core/plugins/export_report.py:564
+#: core/plugins/export_report.py:590
 msgid "Last scan time"
 msgstr "最近检测时间"
 
-#: core/plugins/export_report.py:354 core/plugins/export_report.py:432
-#: core/plugins/export_report.py:550 core/plugins/export_report.py:575
+#: core/plugins/export_report.py:367 core/plugins/export_report.py:445
+#: core/plugins/export_report.py:566 core/plugins/export_report.py:591
 msgid "Development language"
 msgstr "开发语言"
 
-#: core/plugins/export_report.py:358 core/plugins/export_report.py:434
-#: core/plugins/export_report.py:552 core/plugins/export_report.py:576
+#: core/plugins/export_report.py:371 core/plugins/export_report.py:447
+#: core/plugins/export_report.py:568 core/plugins/export_report.py:592
 msgid "Vulnerability URL"
 msgstr "漏洞url"
 
-#: core/plugins/export_report.py:360 core/plugins/export_report.py:437
-#: core/plugins/export_report.py:555 core/plugins/export_report.py:577
+#: core/plugins/export_report.py:373 core/plugins/export_report.py:450
+#: core/plugins/export_report.py:571 core/plugins/export_report.py:593
 msgid "Vulnerability description"
 msgstr "漏洞描述"
 
-#: core/plugins/export_report.py:473
+#: core/plugins/export_report.py:491
 msgid "Vulnerability Severity Levels Distribution"
 msgstr "漏洞等级分布"
 
-#: core/plugins/export_report.py:474
+#: core/plugins/export_report.py:492
 msgid "Distribution of Vulnerability"
 msgstr "漏洞类型分布"
 
-#: core/plugins/export_report.py:478
+#: core/plugins/export_report.py:496
 msgid "Vulnerability details"
 msgstr "漏洞详情"
+
+#~ msgid "{} Line"
+#~ msgstr "的{}行"
