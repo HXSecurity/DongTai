@@ -307,5 +307,6 @@ if os.getenv('githubcount', None) in ('true', ) or os.getenv('environment', None
         path('github_contributors', GithubContributorsView.as_view()),
     ])
 
-
+urlpatterns = [path('api/v1/', include(urlpatterns))]
+#print(urlpatterns)
 urlpatterns = format_suffix_patterns(urlpatterns)
