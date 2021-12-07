@@ -20,7 +20,7 @@ from webapi import settings
 from django.views.decorators.csrf import csrf_exempt
 
 urlpatterns = [
-    path('api/v1/', include('iast.urls')),
+    path('', include('{}.urls'.format(app))) for app in settings.CUSTOM_APPS
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

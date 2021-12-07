@@ -63,9 +63,24 @@ INSTALLED_APPS = [
     'corsheaders',
     'captcha',
     'dongtai',
-    'iast',
     'modeltranslation',
 ]
+def get_installed_apps():
+    from os import walk, chdir, getcwd
+    previous_path = getcwd()
+    master = []
+    APPS_ROOT_PATH = BASE_DIR
+    chdir(APPS_ROOT_PATH)
+    for root, directories, files in walk(top=getcwd(), topdown=False):
+        for file_ in files:
+            if 'apps.py' in file_:
+                app_path = f"{root.replace(BASE_DIR + '/', '').replace('/', '.')}"
+                master.append(app_path)
+    chdir(previous_path)
+    return master
+CUSTOM_APPS = get_installed_apps()
+INSTALLED_APPS.extend(CUSTOM_APPS)
+
 
 
 MODELTRANSLATION_LANGUAGES = ('en', 'zh')
