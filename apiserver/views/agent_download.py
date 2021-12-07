@@ -33,10 +33,11 @@ class JavaAgentDownload():
         self.agent_file = "iast-agent.jar"
         self.original_agent_path = f'/tmp/iast_cache/package'
         self.original_agent_file = f'/tmp/iast_cache/package/{self.agent_file}'
-        self.target_path = f'/tmp/{os.getpid()}-{t.ident}-{user_id}'
+        self.user_target_path = f'/tmp/{os.getpid()}-{t.ident}-{user_id}'
+        self.target_path = f'/tmp/{os.getpid()}-{t.ident}-{user_id}/iast_cache/package'
         self.remote_agent_file = BUCKET_NAME_BASE_URL + 'java/iast-agent.jar'
-        if not os.path.exists(f"{self.target_path}/iast_cache/package"):
-            os.makedirs(f"{self.target_path}/iast_cache/package")
+        if not os.path.exists(f"{self.target_path}"):
+            os.makedirs(f"{self.target_path}")
         if not os.path.exists(self.original_agent_path):
             os.makedirs(self.original_agent_path)
 
@@ -50,12 +51,12 @@ class JavaAgentDownload():
 
     def create_config(self, base_url, agent_token, auth_token, project_name):
         try:
-            user_file = f"{self.target_path}/iast_cache/package/{self.agent_file}"
+            user_file = f"{self.target_path}/{self.agent_file}"
             if not os.path.exists(user_file):
                 shutil.copyfile(self.original_agent_file, user_file)
 
             data = "iast.response.name=DongTai Iast\niast.server.url={url}\niast.server.token={token}\niast.allhook.enable=false\niast.dump.class.enable=false\niast.dump.class.path=/tmp/iast-class-dump/\niast.service.report.interval=30000\napp.name=DongTai\nengine.status=start\nengine.name={agent_token}\njdk.version={jdk_level}\nproject.name={project_name}\niast.proxy.enable=false\niast.proxy.host=\niast.proxy.port=\niast.server.mode=local\n"
-            with open(f'{self.target_path}/iast.properties', 'w') as config_file:
+            with open(f'{self.user_target_path}/iast.properties', 'w') as config_file:
                 config_file.write(
                     data.format(url=base_url, token=auth_token, agent_token=agent_token, jdk_level=1,
                                 project_name=project_name)
@@ -66,10 +67,10 @@ class JavaAgentDownload():
             return False
 
     def replace_config(self):
-        user_file = f"{self.target_path}/iast_cache/package/{self.agent_file}"
+        user_file = f"{self.target_path}/{self.agent_file}"
         # 执行jar -uvf {JavaAgentDownload.LOCAL_AGENT_FILE} iast.properties更新jar包的文件
         import os
-        os.system(f'cd {self.target_path};jar -uvf {user_file} iast.properties')
+        os.system(f'cd {self.user_target_path};jar -uvf {user_file} iast.properties')
 
 
 class PythonAgentDownload():
