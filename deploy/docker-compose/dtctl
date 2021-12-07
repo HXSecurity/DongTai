@@ -8,8 +8,9 @@ SKIP_MYSQL=false
 SKIP_REDIS=false
 CHANGE_THIS_VERSION=""
 DOCKER_COMPOSE_FILE=""
-
+UPGRADE_DIR=~/dongtai_iast_upgrade
 DESTORY_DATA=false
+all_sql_exists=true
 
 Info(){
   echo -e "[Info] $1"
@@ -53,18 +54,26 @@ cd "$CURRENT_PATH" || exit
 
 
 trim(){
-          local trimmed="$1"
-          # Strip leading spaces.
-          while [[ $trimmed == ' '* ]]; do
-             trimmed="${trimmed## }"
-          done
-          # Strip trailing spaces.
-          while [[ $trimmed == *' ' ]]; do
-              trimmed="${trimmed%% }"
-          done
-          echo "$trimmed"
+    local trimmed="$1"
+    # Strip leading spaces.
+    while [[ $trimmed == ' '* ]]; do
+       trimmed="${trimmed## }"
+    done
+    # Strip trailing spaces.
+    while [[ $trimmed == *' ' ]]; do
+        trimmed="${trimmed%% }"
+    done
+    echo "$trimmed"
       }
 
+function realpath() {
+    [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
+}
+
+shell_path=$(realpath "$0")
+shell_dir=$(dirname "$shell_path")
+
+echo "shell_dir:$shell_dir"
 
 create_docker_compose_file(){
 if [ ! -z "$1" ] && [ "$1" == "rm" ]
@@ -333,7 +342,6 @@ check_port(){
             TO_VERSION=""
             FROM_VERSION=""
             SHA_FILE=updaterecord.txt
-            UPGRADE_DIR=~/dongtai_iast_upgrade
             now=$(date '+%Y-%m-%d-%H-%M-%S')
             backup_filename=$UPGRADE_DIR/dongtai_iast-$now.sql
 
@@ -384,26 +392,31 @@ check_port(){
               Info "Database schema correct ..."
             }
 
+            # check whether sql all exist
+            function check_sql_all_exist(){
+              SQL_NAMES=$(cat updaterecord.txt| awk "/$TO_VERSION/,/$FROM_VERSION/ {print \$2}" | grep -v "$FROM_VERSION" | awk "{array[NR]=\$0} END { for(i=NR;i>0;i--) {print array[i];} }" )
+              # whether sql files exist 
+              for SQL in $SQL_NAMES
+              do
+                if test -f "$UPGRADE_DIR/$SQL"; then
+                  Info "$UPGRADE_DIR/$SQL exists."
+                else
+                  Info "$UPGRADE_DIR/$SQL not exists."
+                  all_sql_exists=false
+                  return
+                fi
+              done
+            }
+
 
             function execute_update(){
               # extract sql name and reverse list 
               SQL_NAMES=$(cat updaterecord.txt| awk "/$TO_VERSION/,/$FROM_VERSION/ {print \$2}" | grep -v "$FROM_VERSION" | awk "{array[NR]=\$0} END { for(i=NR;i>0;i--) {print array[i];} }" )
 
-            # whether sql files exist 
-
-            all_exists=true
-
-            for SQL in $SQL_NAMES
-            do
-              if test -f "$UPGRADE_DIR/$SQL"; then
-                Info "$UPGRADE_DIR/$SQL exists."
-              else
-                  Info "$UPGRADE_DIR/$SQL not exists."
-                  all_exists=false
-              fi
-            done
-
-            # fetch sql from aliyun OSS
+            
+            if [ $all_sql_exists == false ]
+            then
+              # fetch sql from aliyun OSS
               for SQL in $SQL_NAMES
               do 
                 Info "Start to download sql:[$SQL]"
@@ -416,7 +429,7 @@ check_port(){
               done
 
               Info "Success downloaded ${#SQL_NAMES[@]} sqls."
-
+            fi
 
               # sql downloaded,start to execute sql
               for SQL in $SQL_NAMES
@@ -425,6 +438,7 @@ check_port(){
                 Info $SQL
                 docker exec -i $MYSQL_CONTAINER_ID mysql -uroot -p"dongtai-iast" dongtai_webapi < $UPGRADE_DIR/$SQL
               done
+            
             }
 
             function check_after_execute(){
