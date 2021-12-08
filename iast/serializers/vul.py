@@ -30,7 +30,8 @@ class VulSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def split_container_name(name):
-        result = ""
+        if name is None:
+            return ""
         if '/' in name:
             result = name.split('/')[0].lower().strip()
         elif ' ' in name:
