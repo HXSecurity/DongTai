@@ -35,7 +35,7 @@ def ranstr(num):
 SECRET_KEY = ranstr(50)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('environment', None) in ('TEST',) or os.environ.get("debug", 'false') == 'true'
+DEBUG = os.environ.get("debug", 'false') == 'true' or os.getenv('environment', None) in ('TEST',)
 
 # READ CONFIG FILE
 config = ConfigParser()
@@ -335,7 +335,8 @@ ADMIN_EMAIL = config.get('smtp', 'cc_addr')
 SESSION_COOKIE_DOMAIN = None
 CSRF_COOKIE_DOMAIN = None
 if os.getenv('environment', None) == 'TEST' or os.getenv('PYTHONAGENT', None) == 'TRUE':
-    MIDDLEWARE.append('dongtai_agent_python.middlewares.django_middleware.FireMiddleware')
+    #MIDDLEWARE.append('dongtai_agent_python.middlewares.django_middleware.FireMiddleware')
+    pass
 if os.getenv('environment', None) == 'TEST' or os.getenv('SAVEEYE', None) == 'TRUE':
     CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null',)
 if os.getenv('environment', 'PROD') in ('TEST', 'DOC') or os.getenv('DOC', None) == 'TRUE':
