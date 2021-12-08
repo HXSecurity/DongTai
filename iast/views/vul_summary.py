@@ -55,7 +55,6 @@ class VulSummary(UserEndPoint):
             if agent_id not in agent_ids:
                 agent_ids[agent_id] = 0
             agent_ids[agent_id] = agent_ids[agent_id] + 1
-
         language_agents = dict()
         language_items = IastAgent.objects.filter(
             id__in=agent_ids.keys()).values('id', 'language')
