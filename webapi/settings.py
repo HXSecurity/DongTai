@@ -35,7 +35,7 @@ def ranstr(num):
 SECRET_KEY = ranstr(50)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("debug", 'false') == 'true' or os.getenv('environment', None) in ('TEST',)
+DEBUG = os.environ.get("debug", 'false') == 'true' #or os.getenv('environment', None) in ('TEST',)
 
 # READ CONFIG FILE
 config = ConfigParser()
