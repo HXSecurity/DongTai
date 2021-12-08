@@ -319,6 +319,11 @@ ENABLE_SSL = config.get('smtp', 'ssl') == 'True'
 ADMIN_EMAIL = config.get('smtp', 'cc_addr')
 SESSION_COOKIE_DOMAIN = None
 CSRF_COOKIE_DOMAIN = None
+
+TEST_RUNNER = 'test.NoDbTestRunner'
+
+
+
 if os.getenv('environment', None) == 'TEST' or os.getenv('PYTHONAGENT', None) == 'TRUE':
     pass
     #MIDDLEWARE.append('dongtai_agent_python.middlewares.django_middleware.FireMiddleware')
