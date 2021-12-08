@@ -34,7 +34,7 @@ class _ProjectsAddBodyArgsSerializer(serializers.Serializer):
     pid = serializers.IntegerField(help_text=_("The id of the project"))
     description = serializers.CharField(
         help_text=_("Description of the project"))
-    vul_validation = serializers.BooleanField(
+    vul_validation = serializers.IntegerField(
         help_text="vul validation switch")
 
 
@@ -87,9 +87,9 @@ class ProjectAdd(UserEndPoint):
                     version_name = "V1.0"
                 pid = request.data.get("pid", 0)
                 vul_validation = request.data.get("vul_validation", None)
-                vul_validation = vul_validation if vul_validation is None else (
-                    VulValidation.ENABLE
-                    if vul_validation == True else VulValidation.DISABLE)
+                #vul_validation = vul_validation if vul_validation is None else (
+                #    VulValidation.ENABLE
+                #    if vul_validation == True else VulValidation.DISABLE)
                 if pid:
                     project = IastProject.objects.filter(id=pid, user=request.user).first()
                     project.name = name

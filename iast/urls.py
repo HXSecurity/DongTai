@@ -119,11 +119,20 @@ from iast.views.messages_send import MessagesSendEndpoint
 from iast.views.agent_alias_modified import AgentAliasModified
 from iast.views.engine_method_pool_time_range import MethodPoolTimeRangeProxy
 from iast.views.vul_levels import VulLevelList
-from iast.views.sensitive_info_rule import (SensitiveInfoRuleViewSet,
-                                            SensitiveInfoPatternTypeView,
-                                            SensitiveInfoPatternValidationView)
-from iast.views.scan_strategys import (ScanStrategyViewSet,
-                                       ScanStrategyRelationProject)
+from iast.views.sensitive_info_rule import (
+    SensitiveInfoRuleViewSet,
+    SensitiveInfoPatternTypeView,
+    SensitiveInfoPatternValidationView,
+    SensitiveInfoRuleBatchView,
+    SensitiveInfoRuleAllView,
+)
+from iast.views.scan_strategys import (
+    ScanStrategyViewSet,
+    ScanStrategyRelationProject,
+    ScanStrategyBatchView,
+    ScanStrategyAllView,
+)
+
 
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
@@ -280,6 +289,10 @@ urlpatterns = [
         })),
     path('scan_strategy/<int:pk>/relationprojects',
          ScanStrategyRelationProject.as_view()),
+    path('sensitive_info_rule/batch_update',
+         SensitiveInfoRuleBatchView.as_view()),
+    path('sensitive_info_rule/all', SensitiveInfoRuleAllView.as_view()),
+    path('scan_strategy/all', ScanStrategyAllView.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
@@ -294,5 +307,6 @@ if os.getenv('githubcount', None) in ('true', ) or os.getenv('environment', None
         path('github_contributors', GithubContributorsView.as_view()),
     ])
 
-
+urlpatterns = [path('api/v1/', include(urlpatterns))]
+#print(urlpatterns)
 urlpatterns = format_suffix_patterns(urlpatterns)
