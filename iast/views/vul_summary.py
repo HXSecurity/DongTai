@@ -55,7 +55,6 @@ class VulSummary(UserEndPoint):
             if agent_id not in agent_ids:
                 agent_ids[agent_id] = 0
             agent_ids[agent_id] = agent_ids[agent_id] + 1
-
         language_agents = dict()
         language_items = IastAgent.objects.filter(
             id__in=agent_ids.keys()).values('id', 'language')
@@ -63,9 +62,13 @@ class VulSummary(UserEndPoint):
             language_agents[language_item['id']] = language_item['language']
 
         for agent_id, count in agent_ids.items():
-            default_language[
-                language_agents[agent_id]] = count + default_language[
-                    language_agents[agent_id]]
+            if default_language.get(language_agents[agent_id],None):
+                default_language[
+                    language_agents[agent_id]] = count + default_language[
+                        language_agents[agent_id]]
+            else:
+                default_language[
+                    language_agents[agent_id]] = count
         return [{
             'language': _key,
             'count': _value
