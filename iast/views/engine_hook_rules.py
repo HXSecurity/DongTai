@@ -25,7 +25,7 @@ class _EngineHookRulesQuerySerializer(serializers.Serializer):
         help_text=
         _("type of hook rule \n 1 represents the propagation method, 2 represents the source method, 3 represents the filter method, and 4 represents the taint method"
           ))
-    page_size = serializers.IntegerField(default=20,
+    pageSize = serializers.IntegerField(default=20,
                                          help_text=_('number per page'))
     page = serializers.IntegerField(default=1, help_text=_('page index'))
     strategy_type = serializers.IntegerField(
@@ -51,7 +51,7 @@ class EngineHookRulesEndPoint(UserEndPoint):
             try:
                 ser.is_valid(True)
             except ValidationError as e:
-                return None, None, None, None, None
+                return None, None, None, None, None, None
             rule_type = ser.validated_data.get('type', const.RULE_PROPAGATOR)
             rule_type = int(rule_type)
             if rule_type not in (
@@ -73,7 +73,7 @@ class EngineHookRulesEndPoint(UserEndPoint):
             return rule_type, page, page_size, strategy_type, language_id, keyword
         except Exception as e:
             logger.error(_("Parameter parsing failed, error message: {}").format(e))
-            return None
+            return None, None, None, None, None, None
 
     @extend_schema_with_envcheck(
         querys=[_EngineHookRulesQuerySerializer],

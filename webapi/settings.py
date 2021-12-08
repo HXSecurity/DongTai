@@ -35,7 +35,7 @@ def ranstr(num):
 SECRET_KEY = ranstr(50)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('environment', None) in ('TEST',) or os.environ.get("debug", 'false') == 'true'
+DEBUG = os.environ.get("debug", 'false') == 'true' #or os.getenv('environment', None) in ('TEST',)
 
 # READ CONFIG FILE
 config = ConfigParser()
@@ -63,9 +63,24 @@ INSTALLED_APPS = [
     'corsheaders',
     'captcha',
     'dongtai',
-    'iast',
     'modeltranslation',
 ]
+def get_installed_apps():
+    from os import walk, chdir, getcwd
+    previous_path = getcwd()
+    master = []
+    APPS_ROOT_PATH = BASE_DIR
+    chdir(APPS_ROOT_PATH)
+    for root, directories, files in walk(top=getcwd(), topdown=False):
+        for file_ in files:
+            if 'apps.py' in file_:
+                app_path = f"{root.replace(BASE_DIR + '/', '').replace('/', '.')}"
+                master.append(app_path)
+    chdir(previous_path)
+    return master
+CUSTOM_APPS = get_installed_apps()
+INSTALLED_APPS.extend(CUSTOM_APPS)
+
 
 
 MODELTRANSLATION_LANGUAGES = ('en', 'zh')
@@ -325,11 +340,11 @@ TEST_RUNNER = 'test.NoDbTestRunner'
 
 
 if os.getenv('environment', None) == 'TEST' or os.getenv('PYTHONAGENT', None) == 'TRUE':
-    pass
     #MIDDLEWARE.append('dongtai_agent_python.middlewares.django_middleware.FireMiddleware')
+    pass
 if os.getenv('environment', None) == 'TEST' or os.getenv('SAVEEYE', None) == 'TRUE':
     CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null',)
-if os.getenv('environment', 'PROD') in ('TEST', 'DOC'):
+if os.getenv('environment', 'PROD') in ('TEST', 'DOC') or os.getenv('DOC', None) == 'TRUE':
     from django.utils.translation import gettext_lazy as _
     INSTALLED_APPS.append('drf_spectacular')
     SPECTACULAR_SETTINGS = {
