@@ -62,9 +62,13 @@ class VulSummary(UserEndPoint):
             language_agents[language_item['id']] = language_item['language']
 
         for agent_id, count in agent_ids.items():
-            default_language[
-                language_agents[agent_id]] = count + default_language[
-                    language_agents[agent_id]]
+            if default_language.get(language_agents[agent_id],None):
+                default_language[
+                    language_agents[agent_id]] = count + default_language[
+                        language_agents[agent_id]]
+            else:
+                default_language[
+                    language_agents[agent_id]] = count
         return [{
             'language': _key,
             'count': _value
