@@ -10,7 +10,6 @@ CHANGE_THIS_VERSION=""
 DOCKER_COMPOSE_FILE=""
 UPGRADE_DIR=~/dongtai_iast_upgrade
 DESTORY_DATA=false
-all_sql_exists=true
 
 Info() {
   echo -e "[Info] $1"
@@ -106,8 +105,11 @@ function get_web_service_port() {
 
 # get mysql container id
 function get_mysql_container_id() {
-
+  mysql_container_id=""
   mysql_container_id=$(docker ps | grep 'dongtai-mysql:' | awk '{print $1}')
+  if [ -z $mysql_container_id ]; then
+    exit 1
+  fi
   echo "$mysql_container_id"
 
 }
@@ -122,6 +124,11 @@ function current_hash() {
 }
 
 function get_database_data_dir() {
+  mysql_id=$(get_mysql_container_id)
+  if [ -z $mysql_id ]; then
+    Notice "Mysql instance is not running"
+    exit
+  fi
   dir=$(docker inspect --format='{{range .Mounts}} {{.Source}} {{end}}' $(get_mysql_container_id))
   echo "$dir"
 }
@@ -235,14 +242,14 @@ if [ ! 0 == $# ]; then # If options provided then
   shift # Get subcommand and shift to next option
   case "$subcommand" in
   "debug")
-    result=$(current_hash)
+    result=$(get_database_data_dir)
     echo ""
     echo "result:$result"
     ;;
   "version")
     cur_ver=$(current_image_version)
     echo ""
-    Notice "current database hash: $cur_ver"
+    Notice "current image version: $cur_ver"
     ;;
   "dbhash")
     cur_hash=$(current_hash)
@@ -349,7 +356,7 @@ if [ ! 0 == $# ]; then # If options provided then
       fi
     }
 
-    DATA_DIR="$shell_dir"
+    DATA_DIR="$shell_dir/data"
     if [ ! 0 == $# ]; then # if options provided
       while getopts ":d:m:s:v:h:" optname; do
         case "$optname" in
@@ -395,7 +402,7 @@ if [ ! 0 == $# ]; then # If options provided then
     check_docker
     check_docker_compose
     check_port
-    start_docker_compose "$DATA_DIR/data"
+    start_docker_compose "$DATA_DIR"
 
     if [ $? -ne 0 ]; then
       Error "Installation failed,Something wrong!"
@@ -431,7 +438,7 @@ if [ ! 0 == $# ]; then # If options provided then
       data_dir=$(get_database_data_dir)
       Notice "Data dir:[$data_dir] will be deleted."
       docker-compose -p dongtai-iast -f <(echo "$docker_compose_file") down -v
-      rm -rf $data_dir/data
+      rm -rf $data_dir
     else
       docker-compose -p dongtai-iast -f <(echo "$docker_compose_file") down
     fi
@@ -458,7 +465,7 @@ if [ ! 0 == $# ]; then # If options provided then
 
     function check_update_record_file() {
       if [ ! -f "$SHA_FILE" ]; then
-        Error "updaterecord.txt does not exists!"
+        Error "$SHA_FILE does not exists!"
         exit
       fi
     }
@@ -481,21 +488,6 @@ if [ ! 0 == $# ]; then # If options provided then
       fi
 
       Info "Database schema correct ..."
-    }
-
-    # check whether sql all exist
-    function check_sql_all_exist() {
-      SQL_NAMES=$(cat updaterecord.txt | awk "/$TO_VERSION/,/$FROM_VERSION/ {print \$2}" | grep -v "$FROM_VERSION" | awk "{array[NR]=\$0} END { for(i=NR;i>0;i--) {print array[i];} }")
-      # whether sql files exist
-      for SQL in $SQL_NAMES; do
-        if test -f "$UPGRADE_DIR/$SQL"; then
-          Info "$UPGRADE_DIR/$SQL exists."
-        else
-          Info "$UPGRADE_DIR/$SQL not exists."
-          all_sql_exists=false
-          return
-        fi
-      done
     }
 
     function execute_update() {
@@ -544,7 +536,7 @@ if [ ! 0 == $# ]; then # If options provided then
       WEB_PORT=$(trim $WEB_PORT)
 
       # 创建 DOCKER_COMPOSE_FILE
-      docker_compose_file=$(create_docker_compose_file $TO_VERSION $(get_web_service_port))
+      docker_compose_file=$(create_docker_compose_file $TO_VERSION $(get_web_service_port) $(get_database_data_dir))
 
       Info "Start to pull new images with tag $TO_VERSION"
       docker-compose -p dongtai-iast -f <(echo "$docker_compose_file") pull
