@@ -280,6 +280,13 @@ if [ ! 0 == $# ]; then # If options provided then
     echo "$compose_file" >$file_path | exit 1
     Info "File location:$file_path"
     ;;
+
+  "logs")
+    shift $((OPTIND - 1))
+    op=$1
+    shift
+    docker logs -f --tail=100 $(docker ps | grep "dongtai-$op:" | awk '{print $1}') || exit 1
+    ;;
   "install") # install iast server
     #unset OPTIND
     # Check if the Docker service is turned on
