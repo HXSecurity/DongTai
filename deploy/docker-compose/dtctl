@@ -451,7 +451,7 @@ if [ ! 0 == $# ]; then # If options provided then
     function backup_mysql() {
       mkdir -p $UPGRADE_DIR
       Info "Start to backup exist data..."
-      retval=$(echo "dongtai-iast" | docker exec -i $(get_mysql_container_id) mysqldump -u root -d dongtai_webapi -p >$backup_filename)
+      retval=$(echo "dongtai-iast" | docker exec -i $(get_mysql_container_id) mysqldump -u root -d dongtai_webapi -p >$backup_filename) || exit 1
       Info "Finished backup exist data..."
 
     }
@@ -546,8 +546,8 @@ if [ ! 0 == $# ]; then # If options provided then
       # 创建 DOCKER_COMPOSE_FILE
       docker_compose_file=$(create_docker_compose_file $TO_VERSION $(get_web_service_port))
 
-      # Info "Start to pull new images with tag $TO_VERSION"
-      # docker-compose -p dongtai-iast -f <(echo "$docker_compose_file") pull
+      Info "Start to pull new images with tag $TO_VERSION"
+      docker-compose -p dongtai-iast -f <(echo "$docker_compose_file") pull
 
       Info "Start new containers with tag $TO_VERSION "
       docker-compose -p dongtai-iast -f <(echo "$docker_compose_file") up -d
