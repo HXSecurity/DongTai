@@ -33,11 +33,11 @@ class VulSerializer(serializers.ModelSerializer):
         if name is None:
             return ""
         if '/' in name:
-            result = name.split('/')[0].lower().strip()
+            return name.split('/')[0].lower().strip()
         elif ' ' in name:
             names = name.split(' ')[:-1]
-            result = ' '.join(names).lower().strip()
-        return result
+            return ' '.join(names).lower().strip()
+        return name
 
     def get_language(self, obj):
         if obj['agent_id'] not in self.AGENT_LANGUAGE_MAP:
