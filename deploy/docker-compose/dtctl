@@ -42,6 +42,8 @@ usage() {
   Usage "\t$_filename version                             Get image version"
   Usage "\t$_filename dbschema                            Export database schema"
   Usage "\t$_filename file                                Export docker-compose.yml "
+  Usage "\t$_filename logs webapi|web|mysql|openapi       Extract tail logs"
+
 }
 
 OUT="$(uname -s)"
