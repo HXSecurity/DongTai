@@ -394,7 +394,7 @@ check_port(){
 
             # check whether sql all exist
             function check_sql_all_exist(){
-              SQL_NAMES=$(cat updaterecord.txt| awk "/$TO_VERSION/,/$FROM_VERSION/ {print \$2}" | grep -v "$FROM_VERSION" | awk "{array[NR]=\$0} END { for(i=NR;i>0;i--) {print array[i];} }" )
+              SQL_NAMES=$(cat updaterecord.txt| awk "/$TO_VERSION/,/$FROM_VERSION/ {print \$2}" | grep -vF "$FROM_VERSION" | awk "{array[NR]=\$0} END { for(i=NR;i>0;i--) {print array[i];} }" )
               # whether sql files exist 
               for SQL in $SQL_NAMES
               do
@@ -411,9 +411,8 @@ check_port(){
 
             function execute_update(){
               # extract sql name and reverse list 
-              SQL_NAMES=$(cat updaterecord.txt| awk "/$TO_VERSION/,/$FROM_VERSION/ {print \$2}" | grep -v "$FROM_VERSION" | awk "{array[NR]=\$0} END { for(i=NR;i>0;i--) {print array[i];} }" )
-
-            
+              SQL_NAMES=$(cat updaterecord.txt| awk "/$TO_VERSION/,/$FROM_VERSION/ {print \$2}" | grep -vF "$FROM_VERSION" | awk "{array[NR]=\$0} END { for(i=NR;i>0;i--) {print array[i];} }" )
+            check_sql_all_exist
             if [ $all_sql_exists == false ]
             then
               # fetch sql from aliyun OSS
