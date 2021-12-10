@@ -405,6 +405,7 @@ class AgentTestCase(APITestCase):
             "type": 1
         }
         heartbeatdata.update(kwargs)
+        data = gzipdata(heartbeatdata)
         response = self.client.post(
             'http://testserver/api/v1/report/upload',
             data=heartbeatdata,
@@ -416,7 +417,7 @@ class AgentTestCase(APITestCase):
         method_pool_data = METHODPOOL_JSON
         method_pool_data['detail']['agentId'] = self.agent_id
         method_pool_data['detail'].update(kwargs)
-        data = gzipdata(REGISTER_JSON)
+        data = gzipdata(method_pool_data)
         response = self.client.post(
             'http://testserver/api/v1/report/upload',
             data=data,

@@ -1,9 +1,9 @@
 [mysql]
-host = mysql-server
-port = mysql-port
-name = database_name
-user = username
-password = password
+host = 127.0.0.1
+port = 3306
+name = dongtai_webapi
+user = root
+password = dongtai-iast
 
 [redis]
 host = redis-server
@@ -22,6 +22,3 @@ from_addr = from_add
 ssl = ssl
 cc_addr = cc_addr
 
-[aliyun_oss]
-access_key = LTAI5t7pu9WUT2DcbknfNiaD
-access_key_secret = ZoEOSi7KfayQ7JalvJVHa37fdZ4XFY
