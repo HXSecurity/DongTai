@@ -457,8 +457,8 @@ if [ ! 0 == $# ]; then # If options provided then
 
     function backup_mysql() {
       mkdir -p $UPGRADE_DIR
-      Info "Start to backup exist data..."
-      retval=$(echo "dongtai-iast" | docker exec -i $(get_mysql_container_id) mysqldump -u root -d dongtai_webapi -p >$backup_filename) || exit 1
+      Notice "Start to backup exist data,his will take a few minutes, don’t interrupt."
+      docker exec -i $(get_mysql_container_id) /bin/bash -c "mysqldump -uroot -pdongtai-iast --single-transaction -R -E --databases 'dongtai_webapi' " > $backup_filename || exit 1
       Info "Finished backup exist data..."
 
     }
