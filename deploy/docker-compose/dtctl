@@ -33,16 +33,17 @@ Usage() {
 
 # Display usage message function
 usage() {
-  Usage "\t$_filename -h                                  Display usage message"
-  Usage "\t$_filename install -s mysql,redis  -v 1.0.5    Install iast server"
-  Usage "\t$_filename remove|rm [-d]                      Uninstall iast server"
-  Usage "\t$_filename upgrade -t 1.1.2                    Upgrade iast server"
-  Usage "\t$_filename dbhash                              Get database schema hash"
-  Usage "\t$_filename version                             Get image version"
-  Usage "\t$_filename dbschema                            Export database schema"
-  Usage "\t$_filename file                                Export docker-compose.yml "
-  Usage "\t$_filename logs webapi|web|mysql|openapi       Extract tail logs"
-
+  Usage "\t$_filename -h                                          Display usage message"
+  Usage "\t$_filename install -s mysql,redis  -v 1.0.5            Install iast server"
+  Usage "\t$_filename remove|rm [-d]                              Uninstall iast server"
+  Usage "\t$_filename upgrade -t 1.1.2                            Upgrade iast server"
+  Usage "\t$_filename version                                     Get image version"
+  Usage "\t$_filename dbhash                                      Get database schema hash"
+  Usage "\t$_filename dbschema                                    Export database schema"
+  Usage "\t$_filename dbrestore -f FILEPATH                       Restore mysql database"
+  Usage "\t$_filename dbbackup  -d FILEPATH                       Backup mysql database"
+  Usage "\t$_filename file                                        Export docker-compose.yml "
+  Usage "\t$_filename logs webapi|openapi|web|mysql|web|engine    Extract tail logs"
 }
 
 OUT="$(uname -s)"
@@ -131,6 +132,33 @@ function get_database_data_dir() {
   fi
   dir=$(docker inspect --format='{{range .Mounts}} {{.Source}} {{end}}' $(get_mysql_container_id))
   echo "$dir"
+}
+
+now=$(date '+%Y-%m-%d-%H-%M-%S')
+function backup_mysql() {
+  backup_dir=$UPGRADE_DIR
+  if [ ! -z $1 ]; then
+    backup_dir=$1
+  fi
+  backup_filename=$backup_dir/dongtai_iast-$now.sql
+  mkdir -p $backup_dir
+  Notice "Start to backup exist data,his will take a few minutes, don’t interrupt."
+  docker exec -i $(get_mysql_container_id) /bin/bash -c "mysqldump -uroot -pdongtai-iast --single-transaction -R -E --default-character-set=utf8mb4 --databases 'dongtai_webapi' " >$backup_filename || exit 1
+  Info "Finished backup exist data..."
+}
+
+function restore_mysql() {
+  if [ -z $1 ]; then
+    Error "Input data filepath."
+    exit 1
+  fi
+  # before restore,backup current data
+  backup_mysql
+  Info "Start to restore data, data filepath: $1"
+  docker exec -i $(get_mysql_container_id) /bin/bash -c "mysql -uroot -pdongtai-iast --default-character-set=utf8mb4 dongtai_webapi " <$1 || exit 1
+
+  Notice "Database restore finished."
+
 }
 
 # create docker compose file
@@ -283,7 +311,64 @@ if [ ! 0 == $# ]; then # If options provided then
     Notice "Exported database schema to: $output_location"
     ;;
 
-  "file")
+  "dbbackup")
+    if [ ! 0 == $# ]; then # if options provided
+      while getopts ":d:h" opt; do
+        case "$opt" in
+        "d")
+          data_location=$OPTARG
+          ;;
+        "h")
+          Usage "\t$_filename dbbackup -d FILEPATH                         Backup mysql database"
+          exit 1
+          ;;
+        ?) # Invalid option
+          Error "Invalid option: -${OPTARG}"
+          usage
+          exit 1 # Exit with erro
+          ;;
+        esac
+      done
+    fi
+    if [ -z "$data_location" ]; then
+      backup_mysql
+    else
+      backup_mysql $data_location
+    fi
+
+    ;;
+
+  \
+    "dbrestore")
+    if [ ! 0 == $# ]; then # if options provided
+      while getopts ":f:h" opt; do
+        case "$opt" in
+        "f")
+          data_location=$OPTARG
+          ;;
+        "h")
+          Usage "\t$_filename restore -f FILEPATH                         Restore mysql database"
+          exit 1
+          ;;
+        ?) # Invalid option
+          Error "Invalid option: -${OPTARG}"
+          usage
+          exit 1 # Exit with erro
+          ;;
+        esac
+      done
+    fi
+    if [ -z "$data_location" ]; then
+      Error "Data filepath required."
+      exit 1
+    else
+      restore_mysql $data_location
+    fi
+
+    ;;
+
+  \
+    "file")
     compose_file=$(create_docker_compose_file $(current_image_version) $(get_web_service_port) $(get_database_data_dir))
     file_path="$shell_dir/docker-compose.yml"
     echo "$compose_file" >$file_path | exit 1
@@ -449,19 +534,8 @@ if [ ! 0 == $# ]; then # If options provided then
     TO_VERSION=""
     FROM_VERSION=""
     SHA_FILE=updaterecord.txt
-    now=$(date '+%Y-%m-%d-%H-%M-%S')
-    backup_filename=$UPGRADE_DIR/dongtai_iast-$now.sql
-
     # MYSQL_CONTAINER_ID=$(docker ps | grep 'dongtai-mysql:' | awk '{print $1}')
     WEB_CONTAINER_ID=$(docker ps | grep 'dongtai-web:' | awk '{print $1}')
-
-    function backup_mysql() {
-      mkdir -p $UPGRADE_DIR
-      Notice "Start to backup exist data,his will take a few minutes, don’t interrupt."
-      docker exec -i $(get_mysql_container_id) /bin/bash -c "mysqldump -uroot -pdongtai-iast --single-transaction -R -E --databases 'dongtai_webapi' " > $backup_filename || exit 1
-      Info "Finished backup exist data..."
-
-    }
 
     function check_update_record_file() {
       if [ ! -f "$SHA_FILE" ]; then
