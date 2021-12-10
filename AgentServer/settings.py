@@ -218,8 +218,8 @@ LOGGING = {
 TEST_RUNNER = 'test.NoDbTestRunner'
 
 # 配置阿里云OSS访问凭证
-ACCESS_KEY = config.get('aliyun_oss', 'access_key')
-ACCESS_KEY_SECRET = config.get('aliyun_oss', 'access_key_secret')
+#ACCESS_KEY = config.get('aliyun_oss', 'access_key')
+#ACCESS_KEY_SECRET = config.get('aliyun_oss', 'access_key_secret')
 BUCKET_URL = 'https://oss-cn-beijing.aliyuncs.com'
 BUCKET_NAME = 'dongtai'
 BUCKET_NAME_BASE_URL = 'agent/' if os.getenv('active.profile',
