@@ -29,8 +29,6 @@ class VulDetailTestCase(APITestCase):
             port=22,
             container=None)
 
-    def tearDown(self):
-        IastServer.objects.filter(pk=self.server.id).delete()
 
     def test_get_server(self):
         obj = VulDetail()
