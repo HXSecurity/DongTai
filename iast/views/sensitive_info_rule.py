@@ -48,7 +48,10 @@ class SensitiveInfoRuleSerializer(serializers.ModelSerializer):
     pattern_type_name = serializers.SerializerMethodField()
     class Meta:
         model = IastSensitiveInfoRule
-        fields = ['id', 'strategy_name','strategy_id','pattern_type_id','pattern_type_name','pattern','status','latest_time']
+        fields = [
+            'id', 'strategy_name', 'strategy_id', 'pattern_type_id',
+            'pattern_type_name', 'pattern', 'status', 'latest_time'
+        ]
 
     def get_strategy_name(self,obj):
         try:
@@ -89,10 +92,15 @@ class SensitiveInfoPatternTypeSerializer(serializers.ModelSerializer):
 
 
 class SensitiveInfoRuleCreateSerializer(serializers.Serializer):
-    strategy_id = serializers.IntegerField(min_value=1, required=True)
-    pattern_type_id = serializers.IntegerField(min_value=1, required=True)
+    strategy_id = serializers.IntegerField(min_value=1,
+                                           max_value=2147483646,
+                                           required=True)
+    pattern_type_id = serializers.IntegerField(min_value=1,
+                                               max_value=2147483646,
+                                               required=True)
     pattern = serializers.CharField(required=True)
-    status = serializers.IntegerField(required=True)
+    status = serializers.ChoiceField(choices=(0, 1), required=True)
+
 
 class _SensitiveInfoArgsSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=20,

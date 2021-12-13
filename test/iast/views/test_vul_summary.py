@@ -67,5 +67,3 @@ class ScanStrategyTestCase(APITestCase):
         response = self.client.get('/api/v1/vuln/summary')
         assert response.status_code == 200
 
-    def tearDown(self):
-        IastAgent.objects.filter(token='testtoken').delete()
