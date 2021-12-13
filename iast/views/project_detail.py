@@ -60,8 +60,10 @@ class ProjectDetail(UserEndPoint):
             agents = [{"id": relation.id, "name": relation.token} for relation in relations]
             if project.scan:
                 scan_id = project.scan.id
+                scan_name = project.scan.name
             else:
                 scan_id = 0
+                scan_name = ''                
 
             current_project_version = get_project_version(project.id, auth_users)
             return R.success(data={
@@ -69,6 +71,7 @@ class ProjectDetail(UserEndPoint):
                 "id": project.id,
                 "mode": project.mode,
                 "scan_id": scan_id,
+                "scan_name": scan_name,
                 "agents": agents,
                 "versionData": current_project_version,
                 "vul_validation": project.vul_validation
