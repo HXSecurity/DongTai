@@ -26,8 +26,8 @@ class OssDownloader(object):
                               bucket_name,
                               object_name,
                               local_file,
-                              access_key,
-                              access_key_secret,
+                              access_key='',
+                              access_key_secret='',
                               anonymous=True):
         """
 
