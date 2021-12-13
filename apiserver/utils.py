@@ -22,7 +22,12 @@ class OssDownloader(object):
     BUCKET_NAME = 'dongtai'
 
     @staticmethod
-    def download_file_to_path(access_key, access_key_secret, bucket_url, bucket_name, object_name, local_file,
+    def download_file_to_path(bucket_url,
+                              bucket_name,
+                              object_name,
+                              local_file,
+                              access_key,
+                              access_key_secret,
                               anonymous=True):
         """
 
