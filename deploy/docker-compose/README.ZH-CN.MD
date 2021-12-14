@@ -17,7 +17,7 @@
 ```
 s: 跳过的资源(skip)，可选： `mysql` `redis`  `mysql,redis`，默认：不跳过
 
-v: 需要被安装的版本
+v: 需要被安装的版本,默认为最新的发布版本
 
 环境启动成功后，通过安装过程中指定的`web service port`访问即可。
 
@@ -25,10 +25,16 @@ v: 需要被安装的版本
 ### 升级
 
 ```
-./dtctl upgrade -f 1.0.5 -t 1.1.2
+./dtctl upgrade 
 ```
+更新成最新发布版本
 
-f: from version
+
+```
+./dtctl upgrade  -t 1.1.3
+```
+更新到执行的版本
+
 t: to version 
 
 
