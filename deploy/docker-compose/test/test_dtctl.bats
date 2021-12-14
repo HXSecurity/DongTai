@@ -3,10 +3,11 @@
 setup_file() {
  # Initializing install 1.1.2 with schema hash 2a6c08ac348ac0f7f336588587eb05d5397ec84a
 
- run ./dtctl install -v 1.1.2 <<< "8088"
+ run ./dtctl install -v 1.1.2 <<< 8088
 
  while :; do
-    run ./dtctl dbhash
+    echo "output:$output" >&3
+    run ./dtctl dbhash    
     if [[ "${output}" =~ "2a6c08ac348ac0f7f336588587eb05d5397ec84a" ]]; then
       echo "mysql instance ready!" >&3
       break
@@ -18,7 +19,7 @@ setup_file() {
 
 teardown_file() { 
    echo "Start to clean test playground..." >&3
-   run ./dtctl rm -d
+   run ./dtctl rm
 }
 
 @test "Print image version by: ./dtctl version" {
@@ -43,7 +44,7 @@ teardown_file() {
 
 @test "Export dbhash by: ./dtctl dbhash" {
     run ./dtctl dbhash
-    [[ "${lines[0]}" =~ "current image version" ]]
+    [[ "${lines[0]}" =~ "current db hash" ]]
 }
 
 @test "Ugrade server by: ./dtctl upgrade -v 1.1.3" {
