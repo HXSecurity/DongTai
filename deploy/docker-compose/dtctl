@@ -282,7 +282,7 @@ if [ ! 0 == $# ]; then # If options provided then
     ;;
   "dbhash")
     cur_hash=$(current_hash)
-    Notice "current image version: $cur_hash"
+    Notice "current db hash: $cur_hash"
     ;;
   "dbschema")
     outout_filename="export_db_schema.txt"
