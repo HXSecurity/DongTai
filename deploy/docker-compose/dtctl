@@ -339,8 +339,7 @@ if [ ! 0 == $# ]; then # If options provided then
 
     ;;
 
-  \
-    "dbrestore")
+  "dbrestore")
     if [ ! 0 == $# ]; then # if options provided
       while getopts ":f:h" opt; do
         case "$opt" in
@@ -368,8 +367,7 @@ if [ ! 0 == $# ]; then # If options provided then
 
     ;;
 
-  \
-    "file")
+  "file")
     compose_file=$(create_docker_compose_file $(current_image_version) $(get_web_service_port) $(get_database_data_dir))
     file_path="$shell_dir/docker-compose.yml"
     echo "$compose_file" >$file_path | exit 1
@@ -434,9 +432,8 @@ if [ ! 0 == $# ]; then # If options provided then
         WEB_SERVICE_PORT=80
       fi
 
-
-      if ! [ -x "$(command -v lsof )" ]; then
-        netstat -tunlp | grep $WEB_SERVICE_PORT  | grep "LISTEN" 2>/dev/null
+      if ! [ -x "$(command -v lsof)" ]; then
+        netstat -tunlp | grep $WEB_SERVICE_PORT | grep "LISTEN" 2>/dev/null
         if [ ! $? -ne 0 ]; then
           is_port_inuse=true
         fi
@@ -454,9 +451,6 @@ if [ ! 0 == $# ]; then # If options provided then
         Info "port $WEB_SERVICE_PORT is ok."
       fi
 
-
-
-     
     }
 
     DATA_DIR="$shell_dir/data"
