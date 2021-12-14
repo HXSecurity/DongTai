@@ -5,7 +5,7 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [macos-latest, ubuntu-18.04]
@@ -20,4 +20,5 @@ jobs:
         uses: actions/checkout@v1
 
       - name: UnitTest
-        run: bats deploy/docker-compose/test/test_dtctl.bats 
+        working-directory: deploy/docker-compose
+        run: bats test/test_dtctl.bats 
