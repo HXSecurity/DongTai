@@ -13,6 +13,7 @@
 If you want to modify the configuration of mysql and redis, you need to modify section `[mysql]` and section`[redis]` of the file `config-tutorial.ini` manually.
 After modification, `skip` the relevant component in your deploy step.
 
+
 #### Deploy
 
 ```
@@ -20,7 +21,7 @@ After modification, `skip` the relevant component in your deploy step.
 ```
 s: skip specified component，optional： `mysql` `redis`  `mysql,redis`，default：don't skip
 
-v: the version you want to install
+v: the version you want to install, default: latest release version
 
 
 After installation, access it with your specified `web service port`.
@@ -31,11 +32,19 @@ After installation, access it with your specified `web service port`.
 ### Upgrade
 
 ```
-./dtctl upgrade -f 1.0.5 -t 1.1.2
+./dtctl upgrade
 ```
 
-f: from version
+upgrade to the latest release version
+
+```
+./dtctl upgrade -t 1.1.3
+```
+
+upgrade to the specified version
+
 t: to version 
+
 
 
 ### Uninstall
