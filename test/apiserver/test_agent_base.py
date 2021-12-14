@@ -438,7 +438,8 @@ class AgentTestCase(APITestCase):
         return json.loads(response.content)['data']
 
     def tearDown(self):
-        IastAgent.objects.filter(pk=self.agent_id).delete()
+        pass
+        #    IastAgent.objects.filter(pk=self.agent_id).delete()
 
 
 def gzipdata(data):
