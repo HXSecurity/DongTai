@@ -4,7 +4,8 @@ SKIP_MYSQL=false
 SKIP_REDIS=false
 ACCESS_TYPE=ClusterIP
 NAMESPACE=dongtai-iast
-REALEASE_VERSION=1.1.2
+latest_version="`wget -qO- -t1 -T2 "https://api.github.com/repos/HXSecurity/DongTai/releases/latest" | jq -r '.tag_name'`"
+REALEASE_VERSION=${latest_version:1}
 Info(){
   echo -e "[Info] $1"
 }
