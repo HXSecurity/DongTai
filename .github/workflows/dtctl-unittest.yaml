@@ -1,0 +1,33 @@
+name: dtctl-unitest
+on:
+  push:
+    branches: [ main ]
+jobs:
+  build:
+    name: Build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-20.04 ,ubuntu-18.04, ]
+    steps:
+      - name: Setup docker environments
+        run: |
+          sudo curl -fsSL get.docker.com | sh
+
+      - name: Setup BATS
+        uses: mig4/setup-bats@v1
+        with:
+          bats-version: 1.5.0
+  
+      - name: Checkout code
+        uses: actions/checkout@v1
+
+      - name: Download mysql data
+        run: |
+          wget https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/sql/data.zip -P ./deploy/docker-compose
+          unzip ./deploy/docker-compose/data.zip -d ./deploy/docker-compose
+
+      - name: Do unittest
+        working-directory: ./deploy/docker-compose
+        run: | 
+          bats test/test_dtctl.bats 
