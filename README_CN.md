@@ -130,7 +130,7 @@ $ docker run -d --name dongtai-engine-task -v /etc/dongtai/config.ini:/opt/dongt
 ```
 
 ### 文档
-- [官方文档](https://hxsecurity.github.io/DongTai-Doc/#/)
+- [官方文档](https://doc.dongtai.io/)
 - [洞态官网](https://iast.huoxian.cn/)
 
 <img src="https://static.scarf.sh/a.png?x-pxid=da98c4b7-4ef2-4e73-a05b-3b3aa43d5f2b" />

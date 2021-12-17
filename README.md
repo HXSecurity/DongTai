@@ -136,7 +136,7 @@ Contributions are welcomed and greatly appreciated. See [CONTRIBUTING.md](https:
 Any questions? Let's discuss in [#DongTai discussions](https://github.com/HXSecurity/DongTai/discussions)
 
 ### More resources
-- [Documentation](https://hxsecurity.github.io/DongTai-Doc/#/)
+- [Documentation](https://doc.dongtai.io/)
 - [DongTai WebSite](https://iast.huoxian.cn/)
 
 <img src="https://static.scarf.sh/a.png?x-pxid=da98c4b7-4ef2-4e73-a05b-3b3aa43d5f2b" />
