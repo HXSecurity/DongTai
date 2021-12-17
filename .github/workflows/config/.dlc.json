@@ -2,6 +2,9 @@
     "ignorePatterns": [
       {
         "pattern": "^http://localhost"
+      },
+      {
+        "pattern": "http://engine_url$"
       }
     ],
     "timeout": "10s",
