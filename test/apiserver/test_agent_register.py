@@ -28,6 +28,6 @@ class AgentRegisterTestCase(AgentTestCase):
         ]
         assert data1.content == data2.content
 
-    def tearDown(self):
-        super().tearDown()
-        IastAgent.objects.filter(pk__in=self.test_agent_id).delete()
+    def test_register(self):
+        assert not IastAgent.objects.filter(pk=self.agent_id,
+                                            project_version_id=0).exists()
