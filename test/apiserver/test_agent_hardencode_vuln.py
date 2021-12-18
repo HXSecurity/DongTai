@@ -34,6 +34,6 @@ class AgentHardencodeTestCase(AgentTestCase):
         assert res.status_code == 200
         strategy = IastStrategyModel.objects.filter(user_id=1,
                                                     vul_type='硬编码').first()
-        if strategy or strategy.state != 'enable':
+        if strategy and strategy.state == 'enable':
             assert IastVulnerabilityModel.objects.filter(
                 strategy=strategy).exists()
