@@ -425,6 +425,19 @@ class AgentTestCase(APITestCase):
             content_type='application/json',
         )
         return response
+    
+    def agent_report(self, json, **kwargs):
+        reportjson1 = json
+        reportjson1['detail']['agentId'] = self.agent_id
+        reportjson1['detail'].update(kwargs)
+        data = gzipdata(reportjson1)
+        response = self.client.post(
+            'http://testserver/api/v1/report/upload',
+            data=data,
+            HTTP_CONTENT_ENCODING='gzip',
+            content_type='application/json',
+        )
+        return response
 
     def register_agent(self, **kwargs):
         register_data = REGISTER_JSON
