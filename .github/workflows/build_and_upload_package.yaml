@@ -3,8 +3,26 @@ name: Build DongTai Core Package and push to Ali OSS
 on:
   pull_request:
     branches: [ main ]
+    paths-ignore:
+      - '.github/**'
+      - 'changes/**'
+      - 'deploy/**'
+      - '**.md'
+      - '**.yml'
+      - '**.xml'
+      - 'LICENSE'
+      - '.gitignore'
   push:
     branches: [ main ]
+    paths-ignore:
+      - '.github/**'
+      - 'changes/**'
+      - 'deploy/**'
+      - '**.md'
+      - '**.yml'
+      - '**.xml'
+      - 'LICENSE'
+      - '.gitignore'
 jobs:
   build:
     if: ${{ github.event_name == 'push' }}
