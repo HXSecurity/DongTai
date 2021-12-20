@@ -57,7 +57,10 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
       - name: Waiting For MySql Init
-        run: sleep 600
+        run: |
+          netstat -ano
+          docker ps -a
+          sleep 600
 
       - name: Run UnitTest
         run: |
