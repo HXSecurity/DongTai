@@ -1,4 +1,4 @@
-name: Release DongTai Engine
+name: Release DongTai-Engine
 
 on:
   release:
@@ -7,10 +7,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
     permissions:
       contents: write
-    
     strategy:
       max-parallel: 4
       matrix:
