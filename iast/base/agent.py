@@ -15,6 +15,7 @@ from dongtai.models.vulnerablity import IastVulnerabilityModel
 from django.utils.translation import gettext_lazy as _
 from dongtai.models.hook_type import HookType
 from iast.base.project_version import get_project_version
+from dongtai.models.strategy import IastStrategyModel
 
 def get_agents_with_project(project_name, users):
     """
@@ -108,19 +109,39 @@ def change_dict_key(dic, keypair):
 
 
 def get_vul_count_by_agent(agent_ids, vid, user):
-    typeInfo = IastVulnerabilityModel.objects.filter(
-        agent_id__in=agent_ids).values().order_by("level")
+    queryset = IastVulnerabilityModel.objects.filter(
+        agent_id__in=agent_ids)
+    typeInfo = queryset.values().order_by("level")
     if vid:
         typeInfo = typeInfo.filter(id=vid)
     type_summary = []
     levelCount = {}
     vulDetail = {}
+    strategy_ids = queryset.values_list('strategy_id',
+                                        flat=True).distinct()
+    strategys = {
+        strategy['id']: strategy
+        for strategy in IastStrategyModel.objects.filter(
+            pk__in=strategy_ids).values('id', 'vul_name').all()
+    }
+    hook_type_ids = queryset.values_list('hook_type_id',
+                                         flat=True).distinct()
+    hooktypes = {
+        hooktype['id']: hooktype
+        for hooktype in HookType.objects.filter(
+            pk__in=hook_type_ids).values('id', 'name').all()
+    }
     if typeInfo:
         typeArr = {}
         typeLevel = {}
         for one in typeInfo:
-            hook_type = HookType.objects.filter(pk=one['hook_type_id']).first()
-            one['type'] = hook_type.name if hook_type else ''
+            hook_type = hooktypes.get('hook_type_id', None)
+            hook_type_name = hook_type['name'] if hook_type else None
+            strategy = strategys.get('strategy_id', None)
+            strategy_name = strategy['vul_name'] if strategy else None
+            type_ = list(
+                filter(lambda x: x is not None, [strategy_name, hook_type_name]))
+            one['type']= type_[0] if type_ else ''
             typeArr[one['type']] = typeArr.get(one['type'], 0) + 1
             typeLevel[one['type']] = one['level_id']
             levelCount[one['level_id']] = levelCount.get(one['level_id'], 0) + 1
