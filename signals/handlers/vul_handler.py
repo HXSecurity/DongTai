@@ -234,12 +234,14 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
         param_name = ''
         taint_position = ''
 
+    from dongtai.models.agent import IastAgent
+    project_agents = IastAgent.objects.filter(project_version_id=vul_meta.agent.project_version_id)
+    # 获取 相同项目版本下的数据
     vul = IastVulnerabilityModel.objects.filter(
         strategy_id=strategy_id,
         uri=vul_meta.uri,
         http_method=vul_meta.http_method,
-        agent=vul_meta.agent,
-        method_pool_id=vul_meta.id
+        agent__in=project_agents,
     ).first()
     IastProject.objects.filter(id=vul_meta.agent.bind_project_id).update(latest_time=timestamp)
     if vul:

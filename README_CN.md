@@ -1,9 +1,13 @@
 # DongTai-engine
+[![license Apache-2.0](https://img.shields.io/github/license/HXSecurity/DongTai-engine)](https://github.com/HXSecurity/DongTai-engine/blob/main/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/HXSecurity/DongTai-engine.svg?label=Stars&logo=github)](https://github.com/HXSecurity/DongTai-engine)
+[![GitHub forks](https://img.shields.io/github/forks/HXSecurity/DongTai-engine?label=Forks&logo=github)](https://github.com/HXSecurity/DongTai-engine)
+[![GitHub Contributors](https://img.shields.io/github/contributors-anon/HXSecurity/DongTai-engine?label=Contributors&logo=github)](https://github.com/HXSecurity/DongTai-engine)
+
 [![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
-[![DongTai-project](https://img.shields.io/badge/DongTai%20versions-beta-green)](https://huoxianclub.github.io/DongTai-Doc/)
-[![DongTai-engine](https://img.shields.io/badge/DongTai--engine-latest-lightgrey)](https://huoxianclub.github.io/DongTai-Doc/)
-[![Deploy DongTai Engine To AWS Test](https://github.com/HXSecurity/DongTai-engine/actions/workflows/deploy_engine_to_aws_test.yml/badge.svg)](https://github.com/HXSecurity/DongTai-engine/actions/workflows/deploy_engine_to_aws_test.yml)
-[![Deploy DongTai Engine To AWS](https://github.com/HXSecurity/DongTai-engine/actions/workflows/deploy_engine_to_aws.yml/badge.svg)](https://github.com/HXSecurity/DongTai-engine/actions/workflows/deploy_engine_to_aws.yml)
+[![Release DongTai Engine](https://github.com/HXSecurity/DongTai-engine/actions/workflows/release_engine.yml/badge.svg)](https://github.com/HXSecurity/DongTai-engine/actions/workflows/release_engine.yml)
+[![Github Version](https://img.shields.io/github/v/release/HXSecurity/DongTai-engine?display_name=tag&include_prereleases&sort=semver)](https://github.com/HXSecurity/DongTai-engine/releases)
+[![Release downloads](https://shields.io/github/downloads/HXSecurity/DongTai-engine/total)](https://github.com/HXSecurity/DongTai-engine/releases)
 
 [English](README.md)
 
@@ -126,7 +130,7 @@ $ docker run -d --name dongtai-engine-task -v /etc/dongtai/config.ini:/opt/dongt
 ```
 
 ### 文档
-- [官方文档](https://hxsecurity.github.io/DongTai-Doc/#/)
+- [官方文档](https://doc.dongtai.io/)
 - [洞态官网](https://iast.huoxian.cn/)
 
 <img src="https://static.scarf.sh/a.png?x-pxid=da98c4b7-4ef2-4e73-a05b-3b3aa43d5f2b" />
