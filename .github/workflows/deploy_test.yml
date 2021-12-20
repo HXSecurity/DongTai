@@ -58,9 +58,9 @@ jobs:
 
       - name: Waiting For MySql Init
         run: |
-          netstat -ano
-          docker ps -a
-          sleep 600
+          container_id=$(docker ps -a|grep "dongtai-mysql"|awk '{print $1}')
+          docker logs $container_id
+          #sleep 600
 
       - name: Run UnitTest
         run: |
