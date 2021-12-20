@@ -1,0 +1,58 @@
+name: Build DongTai Core Package and push to Ali OSS
+
+on:
+  push:
+    branches: [ "release-*" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.7]
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          python-version: 3.7
+
+      - id: release
+        run: |
+          VERSION=`echo ${GITHUB_REF##*/} | awk -F'-' '{print $2}'`
+          echo "::set-output name=VERSION::$VERSION"
+      
+      - name: Get release version
+        id: get_release_version
+        run: |
+          V=`echo ${{ steps.release.outputs.VERSION }} | sed -e's/v//g' | sed -e's/V//g'`; \
+          echo ::set-output name=VERSION::${V}
+
+      - name: Generate version file
+        run: |
+          cd ${{ github.workspace }} && \
+          echo "${{ github.event.repository.name }},version,${{ steps.get_release_version.outputs.VERSION }}" >> version.txt && \
+          echo "${{ github.event.repository.name }},commit_hash,${GITHUB_SHA}" >> version.txt \
+
+      - name: Replace setup cfg
+        run: |
+          sed -i -e 's/version = .*$/version = ${{ steps.get_release_version.outputs.VERSION }}/g' setup.cfg
+          cat setup.cfg
+
+      - name: Build DongTai Core Package
+        run: |
+          python setup.py sdist
+          
+      - uses: manyuanrong/setup-ossutil@v2.0
+        with:
+          endpoint: "oss-cn-beijing.aliyuncs.com"
+          access-key-id: ${{ secrets.OSS_KEY_ID }}
+          access-key-secret: ${{ secrets.OSS_KEY_SECRET }}
+      
+      - name: Upload to oss
+        run: |
+          ossutil cp -rf ./dist/dongtai-${{ steps.get_release_version.outputs.VERSION }}.tar.gz oss://huoqi-public/iast/dongtai-${{ steps.get_release_version.outputs.VERSION }}.tar.gz --meta x-oss-object-acl:public-read
+          ossutil cp -rf ./dist/dongtai-${{ steps.get_release_version.outputs.VERSION }}.tar.gz oss://huoqi-public/iast/dongtai-latest.tar.gz --meta x-oss-object-acl:public-read

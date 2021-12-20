@@ -27,7 +27,7 @@ class MethodPool(models.Model):
     req_params = models.CharField(max_length=2000, blank=True, null=True)
     req_data = models.CharField(max_length=4000, blank=True, null=True)
     res_header = models.CharField(max_length=1000, blank=True, null=True)
-    res_body = models.CharField(max_length=1000, blank=True, null=True)
+    res_body = models.TextField( blank=True, null=True)
     req_header_fs = models.TextField(blank=True,
                                      null=True,
                                      db_column='req_header_for_search')
