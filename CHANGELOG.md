@@ -4,6 +4,7 @@
    * Split and add hooks to accommodate plugin development
 * Function
    * Increase hard-coded vulnerabilities
+   * Increase SCA handler
 
 
 
