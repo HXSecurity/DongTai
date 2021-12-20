@@ -108,7 +108,7 @@ The address is `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/`
 3. The specific API authentication mode has been included in the API document, and the corresponding token can be found on the installation agent part of the web.
 
 ### More resources
-- [Documentation](https://hxsecurity.github.io/DongTai-Doc/#/en-us/)
+- [Documentation](https://doc.dongtai.io/)
 - [DongTai WebSite](https://iast.io)
 
 <img src="https://static.scarf.sh/a.png?x-pxid=44779bf0-9262-4801-bb88-4a36ee0fdcfe" />
