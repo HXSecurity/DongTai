@@ -4,7 +4,7 @@
 [![DongTai-webapi](https://img.shields.io/github/v/release/HXSecurity/Dongtai-webapi?label=Dongtai-webapi)](https://github.com/HXSecurity/DongTai-webapi/releases)
 [![Release DongTai WebApi](https://github.com/HXSecurity/DongTai-webapi/actions/workflows/release_webapi.yml/badge.svg)](https://github.com/HXSecurity/DongTai-webapi/actions/workflows/release_webapi.yml)
 
-[English](README.MD)
+[English](README.md)
 
 ## 项目介绍
 DongTai-WebAPI 用于处理DongTai用户资源管理的相关请求，包括：
