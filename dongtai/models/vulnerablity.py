@@ -3,6 +3,7 @@ from django.db import models
 from dongtai.models.agent import IastAgent
 from dongtai.models.vul_level import IastVulLevel
 from dongtai.utils.settings import get_managed
+from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.hook_type import HookType
 class IastVulnerabilityStatus(models.Model):
     name = models.CharField(max_length=100, blank=True, default='')
@@ -36,6 +37,10 @@ class IastVulnerabilityModel(models.Model):
     client_ip = models.CharField(max_length=255, blank=True, null=True)
     param_name = models.CharField(max_length=255, blank=True, null=True)
     method_pool_id = models.IntegerField(max_length=11, blank=True, null=True)
+    strategy = models.ForeignKey(IastStrategyModel,
+                                  on_delete=models.DO_NOTHING,
+                                  db_constraint=False,
+                                  db_column='strategy_id')
     hook_type = models.ForeignKey(HookType,
                                   on_delete=models.DO_NOTHING,
                                   db_constraint=False,
