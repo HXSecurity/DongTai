@@ -38,7 +38,7 @@ jobs:
           username: ${{ secrets.DONGTAI_DOCKERHUB_USERNAME }}
           password: ${{ secrets.DONGTAI_DOCKERHUB_TOKEN }}
 
-     - id: release
+      - id: release
         run: |
           TAG_NAME=${{ github.event.release.tag_name }}
           ID=`echo ${TAG_NAME##v}`
