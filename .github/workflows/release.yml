@@ -1,12 +1,14 @@
 name: Build DongTai Core Package and push to Ali OSS
 
 on:
-  push:
-    branches: [ "release-*" ]
+  release:
+    types: [ created, edited ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     strategy:
       max-parallel: 4
@@ -22,25 +24,26 @@ jobs:
 
       - id: release
         run: |
-          VERSION=`echo ${GITHUB_REF##*/} | awk -F'-' '{print $2}'`
-          echo "::set-output name=VERSION::$VERSION"
-      
-      - name: Get release version
-        id: get_release_version
-        run: |
-          V=`echo ${{ steps.release.outputs.VERSION }} | sed -e's/v//g' | sed -e's/V//g'`; \
-          echo ::set-output name=VERSION::${V}
+          TAG_NAME=${{ github.event.release.tag_name }}
+          ID=`echo ${TAG_NAME##v}`
+          echo "::set-output name=VERSION::$ID"
 
       - name: Generate version file
         run: |
           cd ${{ github.workspace }} && \
-          echo "${{ github.event.repository.name }},version,${{ steps.get_release_version.outputs.VERSION }}" >> version.txt && \
+          echo "${{ github.event.repository.name }},version,${{ steps.release.outputs.VERSION }}" >> version.txt && \
           echo "${{ github.event.repository.name }},commit_hash,${GITHUB_SHA}" >> version.txt \
 
       - name: Replace setup cfg
         run: |
-          sed -i -e 's/version = .*$/version = ${{ steps.get_release_version.outputs.VERSION }}/g' setup.cfg
+          git config --global user.name 'exexute'
+          git config --global user.email '1528360120@qq.com'
+          git checkout -b "release-${{ steps.release.outputs.VERSION }}"
+          sed -i -e 's/version = .*$/version = ${{ steps.release.outputs.VERSION }}/g' setup.cfg
           cat setup.cfg
+          git add .
+          git commit -m "Update: change version to $NEW_VERSION"
+          git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" HEAD:"release-$NEW_VERSION"
 
       - name: Build DongTai Core Package
         run: |
