@@ -57,7 +57,10 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
       - name: Waiting For MySql Init
-        run: sleep 600
+        run: |
+          container_id=$(docker ps -a|grep "dongtai-mysql"|awk '{print $1}')
+          docker logs $container_id
+          #sleep 600
 
       - name: Run UnitTest
         run: |
