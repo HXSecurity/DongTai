@@ -106,5 +106,5 @@ Redoc地址为 `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/redo
 3. 具体的API鉴权模式已包含在API文档中，可在web的安装agent界面找到对应的token。
 
 
-- [官方文档](https://hxsecurity.github.io/DongTai-Doc/#/)
+- [官方文档](https://doc.dongtai.io/)
 - [快速体验](https://iast.io)
