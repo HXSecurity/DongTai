@@ -2,8 +2,8 @@ NEW_VERSION=$1
 
 echo "curent path: $(pwd), change version to $NEW_VERSION"
 
-git config --global user.name 'exexute'
-git config --global user.email '1528360120@qq.com'
+git config --global user.name "$GITHUB_ACTOR"
+git config --global user.email "$GITHUB_ACTOR@bot.noreplay.dongtai.io"
 git checkout -b "release-$NEW_VERSION"
 
 sed -i "" "s/:latest/:$NEW_VERSION/g" README.MD
