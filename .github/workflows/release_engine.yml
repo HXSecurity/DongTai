@@ -44,6 +44,7 @@ jobs:
 
       - name: Generate version file
         run: |
+          bash .github/workflows/version_update.sh "${{ steps.release.outputs.VERSION }}"
           cd ${{ github.workspace }} && \
           echo "${{ github.event.repository.name }},version,${{ steps.release.outputs.VERSION }}" >> version.txt && \
           echo "${{ github.event.repository.name }},commit_hash,${GITHUB_SHA}" >> version.txt \
