@@ -39,6 +39,13 @@ from signals import vul_found
 from core.plugins.export_report import ExportPort
 from dongtai.models.project_report import ProjectReport
 
+LANGUAGE_MAP = {
+    "JAVA": 1,
+    "PYTHON": 2,
+    "PHP": 3,
+    "GO": 4
+}
+
 
 def queryset_to_iterator(queryset):
     """
@@ -57,22 +64,30 @@ def queryset_to_iterator(queryset):
             break
 
 
-def load_sink_strategy(user=None):
+def load_sink_strategy(user=None, language=None):
     """
     加载用户user有权限方法的策略
     :param user:
     :return:
     """
-    # todo 增加语言筛选
     strategies = list()
-    strategy_models = HookStrategy.objects.filter(type__in=HookType.objects.filter(type=4),
-                                                  created_by__in=[user.id, 1] if user else [1])
+    language_id = 0
+    if language and language in LANGUAGE_MAP:
+        language_id = LANGUAGE_MAP[language]
+    strategy_models = HookStrategy.objects.filter(
+        type__in=HookType.objects.filter(type=4,
+                                         language_id=language_id) if language_id != 0 else HookType.objects.filter(
+            type=4),
+        created_by__in=[user.id, 1] if user else [1]
+    )
     sub_method_signatures = set()
     for sub_queryset in queryset_to_iterator(strategy_models):
         if sub_queryset is None:
             break
         for strategy in sub_queryset:
-            sub_method_signature = strategy.value.split('(')[0]
+            strategy_value = strategy.value
+            sub_method_signature = strategy_value[:strategy_value.rfind('(')] if strategy_value.rfind(
+                '(') > 0 else strategy_value
             if sub_method_signature in sub_method_signatures:
                 continue
 
@@ -95,8 +110,7 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
     """
     logger.info(f'current sink rule is {strategy.get("type")}')
 
-    # fixme: only search enable strategy
-    queryset = IastStrategyModel.objects.filter(vul_type=strategy['type'])
+    queryset = IastStrategyModel.objects.filter(vul_type=strategy['type'], state=const.STRATEGY_ENABLE)
     if queryset.values('id').exists() is False:
         logger.error(f'current method pool hit rule {strategy.get("type")}, but no vul strategy.')
         return
@@ -176,7 +190,7 @@ def search_vul_from_method_pool(method_pool_id):
         check_response_header(method_pool_model)
         check_response_content(method_pool_model)
 
-        strategies = load_sink_strategy(method_pool_model.agent.user)
+        strategies = load_sink_strategy(method_pool_model.agent.user, method_pool_model.agent.language)
         engine = VulEngine()
 
         method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
@@ -197,7 +211,7 @@ def search_vul_from_replay_method_pool(method_pool_id):
         method_pool_model = IastAgentMethodPoolReplay.objects.filter(id=method_pool_id).first()
         if method_pool_model is None:
             logger.warn(f'重放数据漏洞检测终止，方法池 {method_pool_id} 不存在')
-        strategies = load_sink_strategy(method_pool_model.agent.user)
+        strategies = load_sink_strategy(method_pool_model.agent.user, method_pool_model.agent.language)
         engine = VulEngine()
 
         method_pool = json.loads(method_pool_model.method_pool)
@@ -250,7 +264,7 @@ def search_sink_from_method_pool(method_pool_id):
         if method_pool_model is None:
             logger.warn(f'sink规则扫描终止，方法池 [{method_pool_id}] 不存在')
             return
-        strategies = load_sink_strategy(method_pool_model.agent.user)
+        strategies = load_sink_strategy(method_pool_model.agent.user, method_pool_model.agent.language)
         engine = VulEngine()
 
         for strategy in strategies:

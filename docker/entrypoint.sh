@@ -8,8 +8,8 @@ rm /tmp/dongtai-engine.pid || true
 
 if [ -z $1 ]; then
   echo '启动Celery Worker服务'
-  celery -A lingzhi_engine worker -l info -E --pidfile=/tmp/dongtai-engine.pid
+  celery -A lingzhi_engine worker -l info -E --pidfile=
 else
   echo '启动Celery Beat服务'
-  celery -A lingzhi_engine beat -l info --pidfile=/tmp/dongtai-engine.pid --scheduler django_celery_beat.schedulers:DatabaseScheduler
+  celery -A lingzhi_engine beat -l info --pidfile= --scheduler django_celery_beat.schedulers:DatabaseScheduler
 fi
