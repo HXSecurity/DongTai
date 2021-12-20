@@ -42,8 +42,8 @@ jobs:
           sed -i -e 's/version = .*$/version = ${{ steps.release.outputs.VERSION }}/g' setup.cfg
           cat setup.cfg
           git add .
-          git commit -m "Update: change version to $NEW_VERSION"
-          git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" HEAD:"release-$NEW_VERSION"
+          git commit -m "Update: change version to ${{ steps.release.outputs.VERSION }}"
+          git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" HEAD:"release-${{ steps.release.outputs.VERSION }}"
 
       - name: Build DongTai Core Package
         run: |
@@ -57,5 +57,5 @@ jobs:
       
       - name: Upload to oss
         run: |
-          ossutil cp -rf ./dist/dongtai-${{ steps.get_release_version.outputs.VERSION }}.tar.gz oss://huoqi-public/iast/dongtai-${{ steps.get_release_version.outputs.VERSION }}.tar.gz --meta x-oss-object-acl:public-read
-          ossutil cp -rf ./dist/dongtai-${{ steps.get_release_version.outputs.VERSION }}.tar.gz oss://huoqi-public/iast/dongtai-latest.tar.gz --meta x-oss-object-acl:public-read
+          ossutil cp -rf ./dist/dongtai-${{ steps.release.outputs.VERSION }}.tar.gz oss://huoqi-public/iast/dongtai-${{ steps.release.outputs.VERSION }}.tar.gz --meta x-oss-object-acl:public-read
+          ossutil cp -rf ./dist/dongtai-${{ steps.release.outputs.VERSION }}.tar.gz oss://huoqi-public/iast/dongtai-latest.tar.gz --meta x-oss-object-acl:public-read
