@@ -1,5 +1,16 @@
 # Change log
 
+## [1.1.4](https://github.com/HXSecurity/DongTai-webapi/releases/tag/v1.1.4)-2021-12-18
+* Improve
+   * Split and add hooks to accommodate plugin development
+* Fix
+   * Fixed VulDetail when container is None , argument of type 'NoneType' is not iterable
+   * Fixed VulSummary Inappropriate sql query causes API timeout 
+   * Fixed The name of the scanning strategy is not brought back when returning
+   * Fixed /api/v1/vulns local variable 'result' referenced before assignment
+   * Fixed /api/v1/sensitive_info_rule/ fields No indication of range
+
+
 ## [1.1.3](https://github.com/HXSecurity/DongTai-webapi/releases/tag/v1.1.3)-2021-12-03
 
 * Function
