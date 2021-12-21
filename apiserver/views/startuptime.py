@@ -19,6 +19,10 @@ from apiserver.serializers.agent_properties import AgentPropertiesSerialize
 import time
 from apiserver.api_schema import DongTaiParameter, DongTaiAuth
 from drf_spectacular.utils import extend_schema
+from apiserver.decrypter import parse_data
+from django.http.request import QueryDict
+
+
 logger = logging.getLogger("django")
 
 
@@ -36,3 +40,12 @@ class StartupTimeEndPoint(OpenApiEndPoint):
             return R.success(data=None)
         logger.error('agent not found')
         return R.failure(data=None)
+
+class StartupTimeGzipEndPoint(StartupTimeEndPoint):
+    name = "api-v1-startuptime"
+
+    @extend_schema(description='Agent Limit', auth=[DongTaiAuth.TOKEN])
+    def post(self, request: Request):
+        param = parse_data(request.read())
+        request._full_data = param
+        return super().post(request)
