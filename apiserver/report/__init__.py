@@ -8,8 +8,9 @@ from apiserver.report.handler.error_log_handler import ErrorLogHandler
 from apiserver.report.handler.heartbeat_handler import HeartBeatHandler
 from apiserver.report.handler.narmal_vul_handler import NormalVulnHandler
 from apiserver.report.handler.saas_method_pool_handler import SaasMethodPoolHandler
-from apiserver.report.handler.sca_handler import ScaHandler
+from apiserver.report.handler.sca_handler import (ScaHandler, ScaBulkHandler)
 from apiserver.report.handler.api_route_handler import ApiRouteHandler
+from apiserver.report.handler.hardencode_vul_handler import HardEncodeVulHandler
 
 if __name__ == '__main__':
     ErrorLogHandler()
@@ -18,3 +19,5 @@ if __name__ == '__main__':
     NormalVulnHandler()
     SaasMethodPoolHandler()
     ApiRouteHandler()
+    HardEncodeVulHandler()
+    ScaBulkHandler()

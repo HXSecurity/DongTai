@@ -15,3 +15,14 @@ class DongTaiTestCase(unittest.TestCase):
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "AgentServer.settings")
         os.environ.setdefault("debug", "true")
         django.setup()
+
+
+from django.test.runner import DiscoverRunner
+
+class NoDbTestRunner(DiscoverRunner):
+
+    def setup_databases(self, **kwargs):
+        pass
+
+    def teardown_databases(self, old_config, **kwargs):
+        pass

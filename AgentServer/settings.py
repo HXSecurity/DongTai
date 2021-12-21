@@ -14,7 +14,8 @@ import os
 import sys
 from configparser import ConfigParser
 from urllib.parse import urljoin
-
+import random
+import string
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -25,7 +26,7 @@ config.read(os.path.join(BASE_DIR, 'conf/config.ini'))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'u2^jmdc^l#=uz&r765fb4nyo)k*)0%tk3%yp*xf#i8b%(+-&vj'
+SECRET_KEY = random.choices(string.ascii_letters + string.digits, k=50)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("debug", 'false') == 'true'
@@ -100,18 +101,29 @@ WSGI_APPLICATION = 'AgentServer.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-if len(sys.argv) > 1 and sys.argv[1] == 'test':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'OPTIONS': {'charset': 'utf8mb4'},
+#if len(sys.argv) > 1 and sys.argv[1] == 'test':
+#    DATABASES = {
+#        'default': {
+#            'ENGINE': 'django.db.backends.sqlite3',
+#            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#        }
+#    }
+#else:
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS': {
+            'charset': 'utf8mb4'
+        },
+        'USER': config.get("mysql", 'user'),
+        'NAME': config.get("mysql", 'name'),
+        'PASSWORD': config.get("mysql", 'password'),
+        'HOST': config.get("mysql", 'host'),
+        'PORT': config.get("mysql", 'port'),
+        'TEST': {
+            'OPTIONS': {
+                'charset': 'utf8mb4'
+            },
             'USER': config.get("mysql", 'user'),
             'NAME': config.get("mysql", 'name'),
             'PASSWORD': config.get("mysql", 'password'),
@@ -119,6 +131,7 @@ else:
             'PORT': config.get("mysql", 'port'),
         }
     }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -202,9 +215,11 @@ LOGGING = {
     }
 }
 
+TEST_RUNNER = 'test.NoDbTestRunner'
+
 # 配置阿里云OSS访问凭证
-ACCESS_KEY = config.get('aliyun_oss', 'access_key')
-ACCESS_KEY_SECRET = config.get('aliyun_oss', 'access_key_secret')
+#ACCESS_KEY = config.get('aliyun_oss', 'access_key')
+#ACCESS_KEY_SECRET = config.get('aliyun_oss', 'access_key_secret')
 BUCKET_URL = 'https://oss-cn-beijing.aliyuncs.com'
 BUCKET_NAME = 'dongtai'
 BUCKET_NAME_BASE_URL = 'agent/' if os.getenv('active.profile',

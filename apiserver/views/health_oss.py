@@ -11,7 +11,7 @@ from drf_spectacular.utils import extend_schema
 from oss2.exceptions import RequestError
 from AgentServer import settings
 import logging
-from apiserver.utils import updateossstatus, STATUSMAP
+from apiserver.utils import checkossstatus, STATUSMAP
 from dongtai.endpoint import OpenApiEndPoint, R
 
 logger = logging.getLogger("dongtai.openapi")
@@ -24,6 +24,6 @@ class OSSHealthView(OpenApiEndPoint):
         methods=['GET']
     )
     def get(self, request):
-        oss_status, _ = updateossstatus()
+        oss_status, _ = checkossstatus()
         data = {"oss": {"status": STATUSMAP[oss_status]}}
         return R.success(data=data)
