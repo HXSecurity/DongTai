@@ -46,6 +46,33 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Checkout
         uses: actions/checkout@v2
+      
+      - id: release
+        run: |
+          TAG_NAME=${{ github.event.release.tag_name }}
+          ID=`echo ${TAG_NAME##v}`
+          echo "::set-output name=version::$ID"
+
+      - name: Push Version Branch
+        run: |
+          bash .github/workflows/version_update.sh "${{ steps.release.outputs.version }}"
+
+      - name: Push version file
+        run: |
+          cd ${{ github.workspace }} && \
+          echo "${{ github.event.repository.name }},version,${{ steps.release.outputs.version }}" >> version.txt && \
+          echo "${{ github.event.repository.name }},commit_hash,${GITHUB_SHA}" >> version.txt \
+
+      - name: Upload version file to oss
+        id: upload_version_file_to_oss
+        uses: tvrcgo/upload-to-oss@master
+        with:
+          key-id: ${{ secrets.ALIYUN_OSS_KEY_ID }}
+          key-secret: ${{ secrets.ALIYUN_OSS_KEY_SECRET }}
+          region: oss-cn-beijing
+          bucket: huoqi-public
+          assets: |
+            ./version.txt:/iast/release-version/${{ github.event.repository.name }}/${{ steps.release.outputs.version }}/version.txt
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -65,6 +92,7 @@ jobs:
       - run: |
           ossutil cp oss://dongtai/agent/java/ ./ --include "*.jar" -r
           ossutil cp oss://dongtai/agent/python/ ./  --include "*.tar.gz" -r
+          ossutil cp oss://dongtai/agent/php/ ./  --include "*.tar.gz" -r
           ls -l
 
       - name: Login to DockerHub
@@ -72,33 +100,6 @@ jobs:
         with:
           username: ${{ secrets.DONGTAI_DOCKERHUB_USERNAME }}
           password: ${{ secrets.DONGTAI_DOCKERHUB_TOKEN }}
-
-      - id: release
-        run: |
-          TAG_NAME=${{ github.event.release.tag_name }}
-          ID=`echo ${TAG_NAME##v}`
-          echo "::set-output name=version::$ID"
-
-      - name: Push Version Branch
-        run: |
-          bash .github/workflows/version_update.sh "${{ steps.release.outputs.version }}"
-
-      - name: Generate version file
-        run: |
-          cd ${{ github.workspace }} && \
-          echo "${{ github.event.repository.name }},version,${{ steps.release.outputs.version }}" >> version.txt && \
-          echo "${{ github.event.repository.name }},commit_hash,${GITHUB_SHA}" >> version.txt \
-
-      - name: Upload version file to oss
-        id: upload_version_file_to_oss
-        uses: tvrcgo/upload-to-oss@master
-        with:
-          key-id: ${{ secrets.ALIYUN_OSS_KEY_ID }}
-          key-secret: ${{ secrets.ALIYUN_OSS_KEY_SECRET }}
-          region: oss-cn-beijing
-          bucket: huoqi-public
-          assets: |
-            ./version.txt:/iast/release-version/${{ github.event.repository.name }}/${{ steps.release.outputs.version }}/version.txt
 
       - name: Build and push
         uses: docker/build-push-action@v2
