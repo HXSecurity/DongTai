@@ -3,8 +3,8 @@
 name: Release DongTai OpenAPI
 
 on:
-  push:
-    branches: [ "release-*" ]
+  release:
+    types: [ created, edited ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -12,6 +12,8 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     strategy:
       max-parallel: 4
       matrix:
@@ -73,8 +75,13 @@ jobs:
 
       - id: release
         run: |
-          VERSION=`echo ${GITHUB_REF##*/} | awk -F'-' '{print $2}'`
-          echo "::set-output name=version::$VERSION"
+          TAG_NAME=${{ github.event.release.tag_name }}
+          ID=`echo ${TAG_NAME##v}`
+          echo "::set-output name=version::$ID"
+
+      - name: Push Version Branch
+        run: |
+          bash .github/workflows/version_update.sh "${{ steps.release.outputs.version }}"
 
       - name: Generate version file
         run: |
