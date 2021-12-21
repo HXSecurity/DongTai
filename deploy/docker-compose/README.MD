@@ -23,7 +23,7 @@ After modification, `skip` the relevant component in your deploy step.
 install the latest release version
 
 ```
-./dtctl install -v <version_id>
+./dtctl install -v 1.1.4
 ```
 
 s: skip specified component，optional： `mysql` `redis`  `mysql,redis`，default：don't skip
@@ -45,7 +45,7 @@ After installation, access it with your specified `web service port`.
 upgrade to the latest release version
 
 ```
-./dtctl upgrade -t <version_id>
+./dtctl upgrade -t 1.1.4
 ```
 
 upgrade to the specified version
