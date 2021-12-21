@@ -14,6 +14,7 @@ on:
       - '**.xml'
       - 'LICENSE'
       - '.gitignore'
+      - '.dockerignore'
   push:
     branches: [ main ]
     paths-ignore:
@@ -25,6 +26,7 @@ on:
       - '**.xml'
       - 'LICENSE'
       - '.gitignore'
+      - '.dockerignore'
 jobs:
   Run-UnitTest:
     runs-on: ubuntu-latest
