@@ -64,7 +64,7 @@ spec:
     spec:
       containers:
         - name: dongtai-webapi-container
-          image: dongtai.docker.scarf.sh/dongtai/dongtai-webapi:CHANGE_THIS_VERSION
+          image: dongtai/dongtai-webapi:CHANGE_THIS_VERSION
           imagePullPolicy: Always
           volumeMounts:
             - name: configfile
@@ -120,7 +120,7 @@ spec:
     spec:
       containers:
         - name: dongtai-openapi-container
-          image: dongtai.docker.scarf.sh/dongtai/dongtai-openapi:CHANGE_THIS_VERSION
+          image: dongtai/dongtai-openapi:CHANGE_THIS_VERSION
           imagePullPolicy: Always
           volumeMounts:
             - name: configfile
@@ -238,7 +238,7 @@ spec:
     spec:
       containers:
         - name: dongtai-web-container
-          image: dongtai.docker.scarf.sh/dongtai/dongtai-web:CHANGE_THIS_VERSION
+          image: dongtai/dongtai-web:CHANGE_THIS_VERSION
           imagePullPolicy: Always
           volumeMounts:
             - name: configfile
@@ -280,7 +280,7 @@ spec:
     spec:
       containers:
         - name: dongtai-engine-container
-          image: dongtai.docker.scarf.sh/dongtai/dongtai-engine:CHANGE_THIS_VERSION
+          image: dongtai/dongtai-engine:CHANGE_THIS_VERSION
           imagePullPolicy: Always
           volumeMounts:
             - name: configfile
@@ -336,7 +336,7 @@ spec:
     spec:
       containers:
         - name: dongtai-engine-task-container
-          image: dongtai.docker.scarf.sh/dongtai/dongtai-engine:CHANGE_THIS_VERSION
+          image: dongtai/dongtai-engine:CHANGE_THIS_VERSION
           command: [ "/bin/bash","/opt/dongtai/engine/docker/entrypoint.sh" ]
           args: [ "task" ]
           imagePullPolicy: Always
