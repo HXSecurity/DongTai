@@ -377,7 +377,7 @@ def parse_param_name(param_name):
         res = json.loads(param_name)
         return res
     except:
-        return res
+        return {}
 
 if __name__ == '__main__':
     vul = VulDetail()
