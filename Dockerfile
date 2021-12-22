@@ -14,7 +14,7 @@ RUN pip3 install -r /opt/dongtai/openapi/requirements.txt && mkdir -p /tmp/iast_
 
 
 COPY . /opt/dongtai/openapi
-RUN mv ./*.jar /tmp/iast_cache/package/ && mv ./*.tar.gz /tmp/ 
+RUN mv *.jar /tmp/iast_cache/package/ && mv *.tar.gz /tmp/
 
 WORKDIR /opt/dongtai/openapi
 
