@@ -189,6 +189,10 @@ dongtai-mysql:
     restart: always
     volumes:
       - "$DATA_DIR:/var/lib/mysql:rw"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
 EOF
     )
   fi
@@ -199,6 +203,10 @@ EOF
 dongtai-redis:
     image: dongtai.docker.scarf.sh/dongtai/dongtai-redis:$CHANGE_THIS_VERSION
     restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
 
 EOF
     )
@@ -214,6 +222,10 @@ services:
     restart: always
     volumes:
       - "$PWD/config-tutorial.ini:/opt/dongtai/webapi/conf/config.ini"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
 
   dongtai-web:
     image: "dongtai.docker.scarf.sh/dongtai/dongtai-web:$CHANGE_THIS_VERSION"
@@ -224,18 +236,30 @@ services:
       - "$PWD/nginx.conf:/etc/nginx/nginx.conf"
     depends_on:
       - dongtai-webapi
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
 
   dongtai-openapi:
     image: "dongtai.docker.scarf.sh/dongtai/dongtai-openapi:$CHANGE_THIS_VERSION"
     restart: always
     volumes:
        - "$PWD/config-tutorial.ini:/opt/dongtai/openapi/conf/config.ini"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
 
   dongtai-engine:
     image: "dongtai.docker.scarf.sh/dongtai/dongtai-engine:$CHANGE_THIS_VERSION"
     restart: always
     volumes:
       - "$PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
 
 
   dongtai-engine-task:
@@ -246,6 +270,11 @@ services:
       - "$PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini"
     depends_on:
       - dongtai-engine
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+
 EOM
 
   echo "$DOCKER_COMPOSE_FILE"

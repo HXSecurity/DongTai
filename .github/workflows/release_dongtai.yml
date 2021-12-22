@@ -1,0 +1,42 @@
+name: Release DongTai-Engine
+
+on:
+  release:
+    types: [ created, edited ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.7]
+
+    steps:
+      - name: start-build
+        uses: joelwmale/webhook-action@master
+        with:
+          url: ${{ secrets.DONGTAI_WEBHOOK_URL }}
+          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "状态：项目${{github.repository}}构建开始\n分支：${{github.ref}}\n流程：${{github.workflow}}\n构建编号：${{github.run_number}}\n触发事件：${{github.event_name}}\n提交人：${{github.actor}}\nSHA-1：${{github.sha}}\n","tag": "lark_md"}}]}}'
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - id: release
+        run: |
+          TAG_NAME=${{ github.event.release.tag_name }}
+          ID=`echo ${TAG_NAME##v}`
+          echo "::set-output name=VERSION::$ID"
+
+      - name: Generate version file
+        run: |
+          bash .github/workflows/version_update.sh "${{ steps.release.outputs.VERSION }}"
+
+      - name: finish build
+        uses: joelwmale/webhook-action@master
+        with:
+          url: ${{ secrets.DONGTAI_WEBHOOK_URL }}
+          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "状态：项目${{github.repository}}构建成功\n分支：${{github.ref}}\n流程：${{github.workflow}}\n构建编号：${{github.run_number}}\n触发事件：${{github.event_name}}\n提交人：${{github.actor}}\nSHA-1：${{github.sha}}\n","tag": "lark_md"}}]}}'
