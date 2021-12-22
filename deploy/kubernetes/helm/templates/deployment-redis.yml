@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
         - command: [ "/bin/sh","-c","exec redis-server /data/middleware-data/redis/conf/redis.conf" ]
-          image: dongtai.docker.scarf.sh/dongtai/dongtai-redis:{{ .Values.imageVersion }}
+          image: dongtai/dongtai-redis:{{ .Values.imageVersion }}
           imagePullPolicy: Always
           name: redis
           ports:
