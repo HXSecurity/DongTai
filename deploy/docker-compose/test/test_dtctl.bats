@@ -47,13 +47,13 @@ teardown_file() {
     [[ "${lines[0]}" =~ "current db hash" ]]
 }
 
-@test "Ugrade server by: ./dtctl upgrade -v 1.1.3" {
+@test "Ugrade server by: ./dtctl upgrade -t 1.1.3" {
     run ./dtctl dbhash
     if [[ ! "${output}" =~ "2a6c08ac348ac0f7f336588587eb05d5397ec84a" ]]; then
       skip "Current db is not 1.1.2"
     fi
 
-    ./dtctl upgrade -v 1.1.3
+    ./dtctl upgrade -t 1.1.3
     if [ ! -f "~/dongtai_iast_upgrade/dongtai_iast*" ]; then
       echo "mysql backup error!"
     fi
