@@ -21,5 +21,3 @@ logs/*.log
 build_docker.sh
 iast-package
 config.ini
-*.jar
-*.tar.gz
