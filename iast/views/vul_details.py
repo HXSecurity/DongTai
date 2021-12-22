@@ -374,7 +374,7 @@ def is_need_http_detail(name):
 
 def parse_param_name(param_name):
     try:
-        res = json.dumps(param_name)
+        res = json.loads(param_name)
         return res
     except:
         return {}
