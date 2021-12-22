@@ -17,7 +17,7 @@ COPY requirements-test.txt /opt/dongtai/openapi/requirements.txt
 RUN pip3 install -r /opt/dongtai/openapi/requirements.txt && mkdir -p /tmp/iast_cache/package
 
 COPY . /opt/dongtai/openapi
-COPY ./*.jar /tmp/iast_cache/package/
+COPY RUN mv *.jar /tmp/iast_cache/package/ && mv *.tar.gz /tmp/ 
 
 WORKDIR /opt/dongtai/openapi
 
