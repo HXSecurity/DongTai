@@ -101,6 +101,13 @@ jobs:
           username: ${{ secrets.DONGTAI_DOCKERHUB_USERNAME }}
           password: ${{ secrets.DONGTAI_DOCKERHUB_TOKEN }}
 
+      - name: Login to AliyunRegistry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.ALIYUN_REGISTRY }}
+          username: ${{ secrets.ALIYUN_DOCKERHUB_USER }}
+          password: ${{ secrets.ALIYUN_DOCKERHUB_PASSWORD }}
+
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
@@ -109,16 +116,9 @@ jobs:
           tags: |
             dongtai/dongtai-openapi:${{ steps.release.outputs.version }}
             dongtai/dongtai-openapi:latest
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:${{ steps.release.outputs.version }}
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:latest
 
-      - uses: actions/checkout@master
-      - name: deploy to cluster
-        uses: wahyd4/kubectl-helm-action@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-        with:
-          args: |
-            find deploy/deploy-eks-iast-saas-openapi-prod.yml -type f -exec sed -i 's/VERSION/${{ steps.release.outputs.version }}/g' {} \;
-            ls deploy/deploy-eks-iast-saas-openapi-prod.yml | xargs -I {} kubectl apply -f {}
 
       - name: finish build
         uses: joelwmale/webhook-action@master
