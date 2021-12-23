@@ -37,6 +37,14 @@ jobs:
           username: ${{ secrets.DONGTAI_DOCKERHUB_USERNAME }}
           password: ${{ secrets.DONGTAI_DOCKERHUB_TOKEN }}
 
+      - name: Login to AliyunRegistry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{secrets.ALIYUN_REGISTRY}}
+          username: ${{secrets.ALIYUN_DOCKERHUB_USER}}
+          password: ${{secrets.ALIYUN_DOCKERHUB_PASSWORD}}
+          logout: true
+
       - id: release
         run: |
           TAG_NAME=${{ github.event.release.tag_name }}
@@ -68,25 +76,9 @@ jobs:
           push: true
           tags: |
             dongtai/dongtai-engine:latest
-            dongtai/dongtai-engine:${{ steps.release.outputs.VERSION }}
-
-      - name: deploy Engine to PROD
-        uses: wahyd4/kubectl-helm-action@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-        with:
-          args: |
-            find deploy/deploy-eks-iast-saas-engine-prod.yml -type f -exec sed -i 's/VERSION/${{ steps.release.outputs.VERSION }}/g' {} \;
-            ls deploy/deploy-eks-iast-saas-engine-prod.yml | xargs -I {} kubectl apply -f {}
-
-      - name: deploy Engine Task to cluster
-        uses: wahyd4/kubectl-helm-action@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-        with:
-          args: |
-            find deploy/deploy-eks-iast-saas-engine-task-prod.yml -type f -exec sed -i 's/VERSION/${{ steps.release.outputs.VERSION }}/g' {} \;
-            ls deploy/deploy-eks-iast-saas-engine-task-prod.yml | xargs -I {} kubectl apply -f {}
+            dongtai/dongtai-engine:${{ steps.release.outputs.version }}
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:${{ steps.release.outputs.version }}
 
       - name: finish build
         uses: joelwmale/webhook-action@master
