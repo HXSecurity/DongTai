@@ -58,6 +58,13 @@ jobs:
           username: ${{ secrets.DONGTAI_DOCKERHUB_USERNAME }}
           password: ${{ secrets.DONGTAI_DOCKERHUB_TOKEN }}
 
+      - name: Login to AliyunRegistry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.ALIYUN_REGISTRY }}
+          username: ${{ secrets.ALIYUN_DOCKERHUB_USER }}
+          password: ${{ secrets.ALIYUN_DOCKERHUB_PASSWORD }}
+
       - id: release
         run: |
           VERSION=`echo ${GITHUB_REF##*/} | awk -F'-' '{print $2}'`
@@ -88,16 +95,8 @@ jobs:
           tags: |
             dongtai/dongtai-webapi:latest
             dongtai/dongtai-webapi:${{ steps.release.outputs.version }}
-
-      - name: deploy Webapi to PROD
-        uses: wahyd4/kubectl-helm-action@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-        with:
-          args: |
-            find deploy/deploy-dongtai-webapi-prod.yml -type f -exec sed -i 's/VERSION/${{ steps.release.outputs.version }}/g' {} \;
-            ls deploy/deploy-dongtai-webapi-prod.yml | xargs -I {} kubectl apply -f {}
-
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:latest
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:${{ steps.release.outputs.version }}
 
       - name: finish build
         uses: joelwmale/webhook-action@master
