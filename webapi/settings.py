@@ -340,8 +340,7 @@ TEST_RUNNER = 'test.NoDbTestRunner'
 
 
 if os.getenv('environment', None) == 'TEST' or os.getenv('PYTHONAGENT', None) == 'TRUE':
-    #MIDDLEWARE.append('dongtai_agent_python.middlewares.django_middleware.FireMiddleware')
-    pass
+    MIDDLEWARE.append('dongtai_agent_python.middlewares.django_middleware.FireMiddleware')
 if os.getenv('environment', None) == 'TEST' or os.getenv('SAVEEYE', None) == 'TRUE':
     CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null',)
 if os.getenv('environment', 'PROD') in ('TEST', 'DOC') or os.getenv('DOC', None) == 'TRUE':
