@@ -35,6 +35,8 @@ spec:
           env:
             - name: "active.profile"
               value: "TEST"
+            - name: "environment"
+              value: "DEV"
       volumes:
         - name: configfile
           secret:
