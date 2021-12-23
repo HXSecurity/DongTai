@@ -231,4 +231,5 @@ CONFIRMED = 3
 IGNORE = 4
 SOLVED = 5
 if os.getenv('active.profile', None) == 'TEST' or os.getenv('PYTHONAGENT', None) == 'TRUE':
-    MIDDLEWARE.append('dongtai_agent_python.middlewares.django_middleware.FireMiddleware')
+    #MIDDLEWARE.append('dongtai_agent_python.middlewares.django_middleware.FireMiddleware')
+    pass
