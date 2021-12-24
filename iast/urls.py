@@ -132,6 +132,7 @@ from iast.views.scan_strategys import (
     ScanStrategyBatchView,
     ScanStrategyAllView,
 )
+from iast.views.sca_export import ScaExport
 
 
 urlpatterns = [
@@ -293,6 +294,7 @@ urlpatterns = [
          SensitiveInfoRuleBatchView.as_view()),
     path('sensitive_info_rule/all', SensitiveInfoRuleAllView.as_view()),
     path('scan_strategy/all', ScanStrategyAllView.as_view()),
+    path('sca_export', ScaExport.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
