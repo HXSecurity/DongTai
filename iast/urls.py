@@ -132,7 +132,8 @@ from iast.views.scan_strategys import (
     ScanStrategyBatchView,
     ScanStrategyAllView,
 )
-
+from iast.views.details_id import (AgentListWithid, ProjectListWithid,
+                                   ScaListWithid, VulsListWithid)
 
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
@@ -293,6 +294,10 @@ urlpatterns = [
          SensitiveInfoRuleBatchView.as_view()),
     path('sensitive_info_rule/all', SensitiveInfoRuleAllView.as_view()),
     path('scan_strategy/all', ScanStrategyAllView.as_view()),
+    path('agent/list/ids', AgentListWithid.as_view()),
+    path('vul/list/ids', VulsListWithid.as_view()),
+    path('sca/list/ids', ScaListWithid.as_view()),
+    path('project/list/ids', ProjectListWithid.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
