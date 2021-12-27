@@ -27,11 +27,11 @@ spec:
               subPath: config.ini
           resources:
             limits:
-              cpu: "500m"
-              memory: 1000Mi
+              cpu: "1000m"
+              memory: 2000Mi
             requests:
-              cpu: "500m"
-              memory: 1000Mi
+              cpu: "1000m"
+              memory: 2000Mi
           env:
             - name: "environment"
               value: "TEST"
