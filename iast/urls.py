@@ -132,13 +132,10 @@ from iast.views.scan_strategys import (
     ScanStrategyBatchView,
     ScanStrategyAllView,
 )
-<<<<<<< HEAD
 from iast.views.sca_export import ScaExport
 
-=======
 from iast.views.details_id import (AgentListWithid, ProjectListWithid,
                                    ScaListWithid, VulsListWithid)
->>>>>>> main
 
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
