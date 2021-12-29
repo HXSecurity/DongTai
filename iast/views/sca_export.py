@@ -30,7 +30,6 @@ class ScaExport(UserEndPoint):
         project_name = request.query_params.get('project_name')
         queryset = Asset.objects.filter(agent__in=auth_agents)
         if project_id and project_id != '':
-
             version_id = request.GET.get('version_id', None)
             if not version_id:
                 current_project_version = get_project_version(
@@ -42,25 +41,32 @@ class ScaExport(UserEndPoint):
                 project_version_id=current_project_version.get(
                     "version_id", 0))
             queryset = queryset.filter(agent__in=agents)
-
         elif project_name and project_name != '':
             agent_ids = get_agents_with_project(project_name, auth_users)
             if agent_ids:
                 queryset = queryset.filter(agent_id__in=agent_ids)
         sca_data = ScaSerializer(queryset, many=True).data
+        rows = []
         headers = ScaSerializer.Meta.fields + [
             'vul_safe_version', 'vulcve', 'vulcwe', 'vulname', 'vul_overview',
             'vul_teardown', 'vul_reference', 'vul_level'
         ]
-        rows = []
+        signatures = [i['signature_value']for i in sca_data]
+        smas_total = ScaMavenArtifact.objects.filter(
+            signature__in=signatures).values_list("signature", "aid",
+                                                  "safe_version").all()
+        dic = {}
+        for i in smas_total:
+            if dic.get(i[0], None):
+                dic[i[0]].append((i[1:3]))
+            else:
+                dic[i[0]] = [(i[1:3])]
         for data in sca_data:
-            smas = ScaMavenArtifact.objects.filter(
-                signature=data['signature_value']).values(
-                    "aid", "safe_version")
+            smas = dic.get(data['signature_value'], [])
             datas = []
             for sma in smas:
                 data_ = copy.deepcopy(data)
-                svds = ScaArtifactDb.objects.filter(id=sma['aid']).values(
+                svds = ScaArtifactDb.objects.filter(id=sma[0]).values(
                     'cve_id', 'cwe_id', 'title', 'overview', 'teardown',
                     'reference', 'level')
                 if len(svds) == 0:
@@ -69,7 +75,7 @@ class ScaExport(UserEndPoint):
                 svd = svds[0]
                 data_.update({
                     'vul_safe_version':
-                    sma['safe_version'] if sma['safe_version'] else
+                    sma[1] if sma[1] else
                     _('Current version stopped for maintenance or it is not a secure version'
                       ),
                     'vulcve':
@@ -92,6 +98,11 @@ class ScaExport(UserEndPoint):
                 data_row = []
                 for header in headers:
                     data_row.append(data_1.get(header, None))
+                rows.append(data_row)
+            if datas == []:
+                data_row = []
+                for header in headers:
+                    data_row.append(data.get(header, None))
                 rows.append(data_row)
         fileuuid = uuid.uuid1()
         with open(f'/tmp/{fileuuid}.csv', 'w') as csv_file:
