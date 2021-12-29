@@ -95,7 +95,7 @@ def get_project_vul_count(users, queryset, auth_agents, project_id=None):
         else:
             result.append({
                 "project_name": project['name'],
-                "count": queryset.filter(agent__in=agent_queryset).values('id').count(),
+                "count": queryset.filter(agent__in=agent_queryset).values('id').count()
                 "id": project_id
             })
     result = sorted(result, key=lambda item: item['count'], reverse=True)[:5]
