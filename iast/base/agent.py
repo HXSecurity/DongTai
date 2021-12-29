@@ -93,7 +93,7 @@ def get_project_vul_count(users, queryset, auth_agents, project_id=None):
         version_id = versions_map.get(project_id, 0)
         agent_queryset = auth_agents.filter(project_version_id=version_id,
                                             bind_project_id=project_id)
-        count = queryset.filter(agent__in=agent_queryset).values('id').count(),
+        count = queryset.filter(agent__in=agent_queryset).values('id').count()
         if count is False:
             result.append({
                 "project_name": project['name'],

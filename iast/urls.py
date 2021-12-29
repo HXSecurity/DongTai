@@ -132,8 +132,13 @@ from iast.views.scan_strategys import (
     ScanStrategyBatchView,
     ScanStrategyAllView,
 )
+<<<<<<< HEAD
+from iast.views.sca_export import ScaExport
+
+=======
 from iast.views.details_id import (AgentListWithid, ProjectListWithid,
                                    ScaListWithid, VulsListWithid)
+>>>>>>> main
 
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
@@ -294,6 +299,7 @@ urlpatterns = [
          SensitiveInfoRuleBatchView.as_view()),
     path('sensitive_info_rule/all', SensitiveInfoRuleAllView.as_view()),
     path('scan_strategy/all', ScanStrategyAllView.as_view()),
+    path('sca_export', ScaExport.as_view()),
     path('agent/list/ids', AgentListWithid.as_view()),
     path('vul/list/ids', VulsListWithid.as_view()),
     path('sca/list/ids', ScaListWithid.as_view()),
