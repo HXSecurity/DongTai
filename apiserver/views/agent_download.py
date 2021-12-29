@@ -215,6 +215,35 @@ class PhpAgentDownload():
             logger.error(f'replace config error: {e}')
             return False
 
+class GoAgentDownload():
+
+    def __init__(self, user_id):
+        t = threading.currentThread()
+        self.user_id = user_id
+        self.agent_file = "dongtai-go-agent-config.yaml"
+        self.original_agent_file = f'/tmp/{self.agent_file}'
+        self.target_path = f'/tmp/{os.getpid()}-{t.ident}-{user_id}'
+        self.target_source_path = f'/tmp/{os.getpid()}-{t.ident}-{user_id}/php-agent'
+        self.remote_agent_file = BUCKET_NAME_BASE_URL + 'php/php-agent.tar.gz'
+        if not os.path.exists(self.target_path):
+            os.makedirs(self.target_path)
+        if not os.path.exists(self.target_source_path):
+            os.makedirs(self.target_source_path)
+
+    def download_agent(self):
+        return True
+
+    def create_config(self, base_url, agent_token, auth_token, project_name):
+        with open(f"{self.target_path}/{self.agent_file}", "w") as fp:
+            configs = [
+                f'DongtaiGoOpenapi: "{base_url}"',
+                f'DongtaiGoToken: "{auth_token}"'
+            ]
+            fp.writelines([config + "\n" for config in configs])
+        return True
+    def replace_config(self):
+        return True
+
 
 class AgentDownload(OpenApiEndPoint):
     """
@@ -244,6 +273,8 @@ class AgentDownload(OpenApiEndPoint):
             return JavaAgentDownload(user_id)
         if language == 'php':
             return PhpAgentDownload(user_id)
+        if language == 'go':
+            return GoAgentDownload(user_id)
         return
 
     @extend_schema(
@@ -273,9 +304,11 @@ class AgentDownload(OpenApiEndPoint):
             if handler.create_config(base_url=base_url, agent_token=agent_token, auth_token=token.key,
                                      project_name=project_name):
                 handler.replace_config()
-                response = FileResponse(open(f"{handler.target_path}/{handler.agent_file}", "rb"))
+                response = FileResponse(
+                    open(f"{handler.target_path}/{handler.agent_file}", "rb"))
                 response['content_type'] = 'application/octet-stream'
-                response['Content-Disposition'] = "attachment; filename=agent.jar"
+                response[
+                    'Content-Disposition'] = f"attachment; filename={handler.agent_file}"
                 return response
             else:
                 return R.failure(msg="agent file not exit.")
