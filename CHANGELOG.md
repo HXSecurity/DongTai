@@ -1,5 +1,18 @@
 # Change log
 
+## [1.2.0](https://github.com/HXSecurity/DongTai-webapi/releases/tag/v1.2.0)-2021-12-18
+* Features
+   * Added license display of components
+   * Added a set of interfaces to get the overview list by id
+   * Added custom rule batch processing interface
+   * Added component export function
+* Improve
+   * Improved the query speed of the component overview interface
+* Fix
+   * Fixed a bug that caused vulnerabilities to be undetected by modifying the strategy
+   * Fixed the bug that failed to obtain data from the /api/v1/sensitive_info_rule/ page
+   * Fixed the bug that the regular check is inconsistent with the engine
+
 ## [1.1.4](https://github.com/HXSecurity/DongTai-webapi/releases/tag/v1.1.4)-2021-12-18
 * Improve
    * Split and add hooks to accommodate plugin development
@@ -23,6 +36,6 @@
    * Improved the original data verification to adapt to the boundary value
    * The agent name now gives priority to the alias when binding the agent
 * Fix
-   * Fix the error that may be caused by agentid when the project is created
+   * Fixed the error that may be caused by agentid when the project is created
    * Fixed a non-atomic error when the project was created
-   * Fix permission errors when deleting data
+   * Fixed permission errors when deleting data
