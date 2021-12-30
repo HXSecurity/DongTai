@@ -165,7 +165,6 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
           ),
     )
     def create(self,request):
-        ser = SensitiveInfoRuleCreateSerializer(data=request.data)
         try:
             if ser.is_valid(True):
                 strategy_id = ser.validated_data['strategy_id']
@@ -306,7 +305,7 @@ def regextest(test_data,pattern):
         return data,status
     result = regex.search(test_data)
     if result and result.groups():
-        return result.group(1), 1
+        return result.group(0), 1
     return '', 1
 
 def jsontest(test_data,pattern):
