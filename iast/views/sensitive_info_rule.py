@@ -135,7 +135,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
           ),
     )
     def list(self,request):
-        ser = _SensitiveInfoArgsSerializer(data=request.data)
+        ser = _SensitiveInfoArgsSerializer(data=request.GET)
         try:
             if ser.is_valid(True):
                 name = ser.validated_data['name']
@@ -146,13 +146,15 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
         users = self.get_auth_users(request.user)
         q = Q(user__in=users) & ~Q(status=-1)
         if name:
-            strategys = IastStrategyModel.objects.filter(name__icontains=name).all()
+            strategys = IastStrategyModel.objects.filter(
+                vul_name__icontains=name).all()
             q = Q(strategy=strategys) & q
-        queryset = IastSensitiveInfoRule.objects.filter(q).order_by('-latest_time')
-        if name:
-            queryset = queryset.filter(name__icontains=name)
+        queryset = IastSensitiveInfoRule.objects.filter(q).order_by(
+            '-latest_time')
         page_summary, page_data = self.get_paginator(queryset, page, page_size)
-        return R.success(data=SensitiveInfoRuleSerializer(page_data,many=True).data,page=page_summary)
+        return R.success(data=SensitiveInfoRuleSerializer(page_data,
+                                                          many=True).data,
+                         page=page_summary)
 
     @extend_schema_with_envcheck(
             request=SensitiveInfoRuleCreateSerializer,
@@ -296,15 +298,17 @@ def jqcompile(pattern):
 
 def regextest(test_data,pattern):
     try:
-        regex = re.compile(pattern)
+        regex = re.compile(pattern, re.M)
     except Exception as e:
         print(e)
         data = ''
         status = 0
         return data,status
-    ret = regex.findall(test_data)
-    data = ret[0] if ret else ['']
-    return data,1
+    result = regex.search(test_data)
+    if result and result.groups():
+        return result.group(0), 1
+    return '', 1
+
 def jsontest(test_data,pattern):
     try:
         data = jq.compile(pattern).input(text=test_data).text()

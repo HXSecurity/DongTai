@@ -35,10 +35,14 @@ class AgentDownload(UserEndPoint):
             "php": {
                 "extension": "tar.gz",
                 "filename": "php-agent.tar.gz"
+            },
+            "go": {
+                "extension": ".yaml",
+                "filename": "dongtai-go-agent-config.yaml"
             }
         }
 
-    def res_by_language(self,language, token, resp):
+    def res_by_language(self, language, token, resp):
         temp_filename = f'temp/dongtai-agent-{language}-{token["key"]}.{self.common_info[language]["extension"]}'
         with open(temp_filename, 'wb') as f:
             f.write(resp.content)

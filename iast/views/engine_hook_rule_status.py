@@ -11,19 +11,28 @@ from dongtai.utils import const
 from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
+from dongtai.models.hook_type import HookType
 
 logger = logging.getLogger('dongtai-webapi')
 
 OP_CHOICES = ('enable', 'disable', 'delete')
-#SCOPE_CHOICES = ('all',)
+SCOPE_CHOICES = ('all',)
 
 class EngineHookRuleStatusGetQuerySerializer(serializers.Serializer):
-    rule_id = serializers.IntegerField(help_text=_("The id of hook rule"))
-    #    rule_type = serializers.IntegerField(help_text=_("The id of hook rule type"))
+    rule_id = serializers.IntegerField(required=False,
+                                       help_text=_("The id of hook rule"))
+    type = serializers.IntegerField(
+        required=False, help_text=_("The id of hook rule type"))
     op = serializers.ChoiceField(OP_CHOICES,
+                                 required=False,
                                  help_text=_("The state of the hook rule"))
-#    scope = serializers.ChoiceField(SCOPE_CHOICES,
-#                                 help_text=_("The scope of the hook rule"))
+    scope = serializers.ChoiceField(SCOPE_CHOICES,
+                                    required=False,
+                                    help_text=_("The scope of the hook rule"))
+    language_id = serializers.IntegerField(required=False,
+                                           help_text=_("The language_id"))
+    hook_rule_type = serializers.IntegerField(
+        required=False, help_text=_("The type of hook rule"))
 
 
 class EngineHookRuleStatusPostBodySerializer(serializers.Serializer):
@@ -51,7 +60,8 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
         rule_type = request.query_params.get('type')
         scope = request.query_params.get('scope')
         op = request.query_params.get('op')
-        return rule_id, rule_type, scope, op
+        return rule_id, rule_type, scope, op, request.query_params.get(
+            'language_id'), request.query_params.get('hook_rule_type')
 
     @staticmethod
     def set_strategy_status(strategy_id, strategy_ids, user_id, enable_status):
@@ -86,9 +96,13 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
         response_schema=_GetResponseSerializer,
     )
     def get(self, request):
-        rule_id, rule_type, scope, op = self.parse_args(request)
+        rule_id, rule_type, scope, op, language_id, hook_rule_type = self.parse_args(
+            request)
         try:
-            rule_id = int(rule_id)
+            if rule_id:
+                rule_id = int(rule_id)
+            if rule_type:
+                rule_type = int(rule_type)
         except:
             return R.failure(_("Parameter error"))
         user_id = request.user.id
@@ -97,10 +111,20 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
         op = self.check_op(op)
         if op is None:
             return R.failure(msg=_('Operation type does not exist'))
-
         if rule_type is not None and scope == 'all':
             count = HookStrategy.objects.filter(type__id=rule_type, created_by=user_id).update(enable=op)
             logger.info(_('Policy type {} operation success, total of {} Policy types').format(rule_type, count))
+            status = True
+        if hook_rule_type is not None and language_id is not None and scope == 'all':
+            users = self.get_auth_users(request.user)
+            user_ids = (user.id for user in users)
+            hook_type_ids = HookType.objects.filter(
+                language_id=language_id,
+                type=hook_rule_type).values_list('id', flat=True).all()
+            count = HookStrategy.objects.filter(
+                type__id__in=hook_type_ids,
+                created_by__in=user_ids).update(enable=op)
+            logger.info(_('total of {} Policy types').format(count))
             status = True
         elif rule_id is not None:
             status = self.set_strategy_status(strategy_id=rule_id, strategy_ids=None, user_id=user_id,

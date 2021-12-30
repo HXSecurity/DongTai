@@ -16,6 +16,8 @@ from django.utils.translation import gettext_lazy as _
 from dongtai.models.hook_type import HookType
 from iast.base.project_version import get_project_version
 from dongtai.models.strategy import IastStrategyModel
+from dongtai.models.project_version import IastProjectVersion
+
 
 def get_agents_with_project(project_name, users):
     """
@@ -74,19 +76,25 @@ def get_all_server(ids):
 def get_project_vul_count(users, queryset, auth_agents, project_id=None):
     result = list()
     project_queryset = IastProject.objects.filter(user__in=users)
-    if project_queryset.values('id').exists() is False:
+    project_queryset = project_queryset.values('name', 'id')
+    if not project_queryset:
         return result
     if project_id:
         project_queryset = project_queryset.filter(id=project_id)
 
-    project_queryset = project_queryset.values('name', 'id')
+    versions = IastProjectVersion.objects.filter(
+        project_id__in=[project['id'] for project in project_queryset],
+        status=1,
+        current_version=1,
+        user__in=users).values_list('id', 'project_id').all()
+    versions_map = {version[1]: version[0] for version in versions}
     for project in project_queryset:
         project_id = project['id']
-        current_version = get_project_version(project_id, users)
-        version_id = current_version.get("version_id", 0)
+        version_id = versions_map.get(project_id, 0)
         agent_queryset = auth_agents.filter(project_version_id=version_id,
                                             bind_project_id=project_id)
-        if agent_queryset.values('id').exists() is False:
+        count = queryset.filter(agent__in=agent_queryset).values('id').count()
+        if count is False:
             result.append({
                 "project_name": project['name'],
                 "count": 0,
@@ -95,7 +103,7 @@ def get_project_vul_count(users, queryset, auth_agents, project_id=None):
         else:
             result.append({
                 "project_name": project['name'],
-                "count": queryset.filter(agent__in=agent_queryset).values('id').count(),
+                "count": count,
                 "id": project_id
             })
     result = sorted(result, key=lambda item: item['count'], reverse=True)[:5]
