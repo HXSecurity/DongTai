@@ -146,13 +146,17 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
         users = self.get_auth_users(request.user)
         q = Q(user__in=users) & ~Q(status=-1)
         if name:
-            strategys = IastStrategyModel.objects.filter(name__icontains=name).all()
+            strategys = IastStrategyModel.objects.filter(
+                vul_name__icontains=name).all()
             q = Q(strategy=strategys) & q
-        queryset = IastSensitiveInfoRule.objects.filter(q).order_by('-latest_time')
+        queryset = IastSensitiveInfoRule.objects.filter(q).order_by(
+            '-latest_time')
         if name:
             queryset = queryset.filter(name__icontains=name)
         page_summary, page_data = self.get_paginator(queryset, page, page_size)
-        return R.success(data=SensitiveInfoRuleSerializer(page_data,many=True).data,page=page_summary)
+        return R.success(data=SensitiveInfoRuleSerializer(page_data,
+                                                          many=True).data,
+                         page=page_summary)
 
     @extend_schema_with_envcheck(
             request=SensitiveInfoRuleCreateSerializer,
