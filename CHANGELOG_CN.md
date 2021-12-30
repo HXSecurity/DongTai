@@ -1,6 +1,6 @@
 # 升级日志
 
-## [1.2.0](https://github.com/HXSecurity/DongTai-webapi/releases/tag/v1.1.4)-2021-12-18
+## [1.2.0](https://github.com/HXSecurity/DongTai-webapi/releases/tag/v1.2.0)-2021-12-18
 * 功能
   * 增加了组件的license展示
   * 增加了一组通过id获取概况列表的接口
