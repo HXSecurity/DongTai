@@ -48,7 +48,7 @@ def check_response_content(method_pool):
                                 vul_type=rule.strategy.vul_type,
                                 method_pool=method_pool,
                                 position=key,
-                                data=result.group(1)
+                                data=result.group(0)
                             )
                     except Exception as e:
                         logger.error(
