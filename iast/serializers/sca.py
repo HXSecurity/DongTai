@@ -10,7 +10,7 @@ from rest_framework import serializers
 from dongtai.models.asset import Asset
 from dongtai.models.project import IastProject
 from django.utils.translation import gettext_lazy as _
-
+from dongtai.models.sca_maven_db import ScaMavenDb
 
 class ScaSerializer(serializers.ModelSerializer):
     project_name = serializers.SerializerMethodField()
@@ -20,7 +20,7 @@ class ScaSerializer(serializers.ModelSerializer):
     level_type = serializers.SerializerMethodField()
     agent_name = serializers.SerializerMethodField()
     language = serializers.SerializerMethodField()
-
+    license = serializers.SerializerMethodField()
     project_cache = dict()
     project_version_cache = dict()
     AGENT_LANGUAGE_MAP = {}
@@ -30,7 +30,7 @@ class ScaSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'package_name', 'version', 'project_name', 'project_id',
             'project_version', 'language', 'package_path', 'agent_name',
-            'signature_value', 'level', 'level_type', 'vul_count', 'dt'
+            'signature_value', 'level', 'level_type', 'vul_count', 'dt','license'
         ]
 
     def get_project_name(self, obj):
@@ -76,3 +76,11 @@ class ScaSerializer(serializers.ModelSerializer):
             if agent_model:
                 self.AGENT_LANGUAGE_MAP[obj.agent_id] = agent_model.language
         return self.AGENT_LANGUAGE_MAP[obj.agent_id]
+
+    def get_license(self,obj):
+        try:
+            sca_maven = ScaMavenDb.objects.filter(sha_1=obj.signature_value).first()
+            return sca_maven.license
+        except:
+            return ''
+
