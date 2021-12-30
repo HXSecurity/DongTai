@@ -1,6 +1,6 @@
 # Change log
 
-## [1.2.0](https://github.com/HXSecurity/DongTai-core/releases/tag/v1.2.0)-2021-12-18
+## [1.2.0](https://github.com/HXSecurity/DongTai-core/releases/tag/v1.2.0)-2021-12-31
 * Function
    * Increase license in ScaMaven
 * Improve
