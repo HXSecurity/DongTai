@@ -42,8 +42,8 @@ OR use docker way to host a database
 
 - Pull the corresponding database images and run it
 ```
-docker pull  registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest 
-docker run -itd --name dongtai-mysql -p 3306:3306 registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest 
+docker pull  dongtai/dongtai-mysql:latest 
+docker run -itd --name dongtai-mysql -p 3306:3306 dongtai/dongtai-mysql:latest 
 ```
 
 
