@@ -298,15 +298,17 @@ def jqcompile(pattern):
 
 def regextest(test_data,pattern):
     try:
-        regex = re.compile(pattern)
+        regex = re.compile(pattern, re.M)
     except Exception as e:
         print(e)
         data = ''
         status = 0
         return data,status
-    ret = regex.findall(test_data)
-    data = ret[0] if ret else ['']
-    return data,1
+    result = regex.search(test_data)
+    if result and result.groups():
+        return result.group(1), 1
+    return '', 1
+
 def jsontest(test_data,pattern):
     try:
         data = jq.compile(pattern).input(text=test_data).text()
