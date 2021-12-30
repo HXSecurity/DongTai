@@ -19,7 +19,7 @@
 
 
 ```
-./dtctl install -v <version_id>
+./dtctl install -v 1.2.0
 ```
 s: 跳过的资源(skip)，可选： `mysql` `redis`  `mysql,redis`，默认：不跳过
 
@@ -37,7 +37,7 @@ v: 需要被安装的版本,默认为最新的发布版本
 
 
 ```
-./dtctl upgrade  -t <version_id>
+./dtctl upgrade  -t 1.2.0
 ```
 更新到执行的版本
 
