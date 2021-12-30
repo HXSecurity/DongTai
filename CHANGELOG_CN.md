@@ -1,5 +1,20 @@
 # 升级日志
 
+## [1.2.0](https://github.com/HXSecurity/DongTai-webapi/releases/tag/v1.1.4)-2021-12-18
+* 功能
+  * 增加了组件的license展示
+  * 增加了一组通过id获取概况列表的接口
+  * 增加了自定义规则批量处理接口
+  * 增加组件导出功能
+* 改善
+  * 改善了组件概况接口的查询速度
+* 修复
+  * 修复了修改策略导致漏洞无法检出的bug
+  * 修复了/api/v1/sensitive_info_rule/分页数据获取失败的bug
+  * 修复正则校验与engine不一致的bug
+
+
+
 ## [1.1.4](https://github.com/HXSecurity/DongTai-webapi/releases/tag/v1.1.4)-2021-12-18
 * 提升
   * 拆分和添加钩子以适应插件开发
