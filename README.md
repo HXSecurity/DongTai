@@ -141,7 +141,7 @@ If you need to create or modify the database table, please refer to the [DongTai
 
 - Development related environment variables
 
-`PYTHONAGENT=TRUE` Open pythonagent, need to be installed manually, refer to [Python Agent IOnstallation](http://doc.dongtai.io/02_start/03_agent.html#python-agent)
+`PYTHONAGENT=TRUE` Open pythonagent, need to be installed manually, refer to [Python Agent Installation](http://doc.dongtai.io/02_start/03_agent.html#python-agent)
 
 `DOC=TRUE` Open swagger path is `/api/XZPcGFKoxYXScwGjQtJx8u/schema/swagger-ui/`
 
