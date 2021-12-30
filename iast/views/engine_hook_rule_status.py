@@ -96,7 +96,7 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
         response_schema=_GetResponseSerializer,
     )
     def get(self, request):
-        rule_id, rule_type, scope, op, hook_rule_type, language_id = self.parse_args(
+        rule_id, rule_type, scope, op, language_id, hook_rule_type = self.parse_args(
             request)
         try:
             if rule_id:
