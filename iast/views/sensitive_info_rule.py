@@ -151,8 +151,6 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
             q = Q(strategy=strategys) & q
         queryset = IastSensitiveInfoRule.objects.filter(q).order_by(
             '-latest_time')
-        if name:
-            queryset = queryset.filter(name__icontains=name)
         page_summary, page_data = self.get_paginator(queryset, page, page_size)
         return R.success(data=SensitiveInfoRuleSerializer(page_data,
                                                           many=True).data,
