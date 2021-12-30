@@ -125,7 +125,7 @@ docker pull  dongtai/dongtai-mysql:latest
 docker run -itd --name dongtai-mysql -p 3306:3306 dongtai/dongtai-mysql:latest
 ```
 
-若需要创建或修改数据库表，请参照DongTai-Base-Image仓库规范，并提交相关更改的.sql文件
+若需要创建或修改数据库表，请参照[DongTai-Base-Image](https://github.com/HXSecurity/Dongtai-Base-Image)仓库规范，并提交相关更改的.sql文件
 
 
 3.修改配置文件
