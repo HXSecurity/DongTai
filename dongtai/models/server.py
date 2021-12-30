@@ -17,7 +17,7 @@ class IastServer(models.Model):
     status = models.CharField(max_length=255, blank=True, null=True)
     container = models.CharField(max_length=255, blank=True, null=True)
     container_path = models.CharField(max_length=255, blank=True, null=True)
-    command = models.CharField(max_length=255, blank=True, null=True)
+    command = models.TextField(blank=True, null=True)
     env = models.CharField(max_length=255, blank=True, null=True)
     runtime = models.CharField(max_length=255, blank=True, null=True)
     create_time = models.IntegerField(blank=True, null=True)
