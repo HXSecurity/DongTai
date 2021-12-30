@@ -22,6 +22,23 @@ from django.http import FileResponse
 import uuid
 import copy
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import get_language
+class ScaExportSer(ScaSerializer):
+    class Meta:
+        model = Asset
+        fields = [
+            'package_name',
+            'version',
+            'project_name',
+            'project_version',
+            'language',
+            'package_path',
+            'agent_name',
+            'level',
+            'signature_value',
+        ]
+
+
 class ScaExport(UserEndPoint):
     def get(self, request):
         auth_users = self.get_auth_users(request.user)
@@ -45,16 +62,21 @@ class ScaExport(UserEndPoint):
             agent_ids = get_agents_with_project(project_name, auth_users)
             if agent_ids:
                 queryset = queryset.filter(agent_id__in=agent_ids)
-        sca_data = ScaSerializer(queryset, many=True).data
+        sca_data = ScaExportSer(queryset, many=True).data
         rows = []
-        headers = ScaSerializer.Meta.fields + [
-            'vul_safe_version', 'vulcve', 'vulcwe', 'vulname', 'vul_overview',
-            'vul_teardown', 'vul_reference', 'vul_level'
-        ]
         signatures = [i['signature_value']for i in sca_data]
         smas_total = ScaMavenArtifact.objects.filter(
             signature__in=signatures).values_list("signature", "aid",
                                                   "safe_version").all()
+        headers = [
+            'package_name', 'version', 'vul_name', 'level', 'package_path',
+            'vulcve', 'vulcwe', 'project_name', 'project_version', 'language',
+            'agent_name'
+        ]
+        zh_headers = [
+            '组件名称', '组件版本', '漏洞名称', '风险等级', '组路径', 'CVE 编号', 'CWE 编号', '项目名称',
+            '项目版本', '语言', 'Agent 名称'
+        ]
         dic = {}
         for i in smas_total:
             if dic.get(i[0], None):
@@ -74,24 +96,12 @@ class ScaExport(UserEndPoint):
 
                 svd = svds[0]
                 data_.update({
-                    'vul_safe_version':
-                    sma[1] if sma[1] else
-                    _('Current version stopped for maintenance or it is not a secure version'
-                      ),
                     'vulcve':
-                    svd['cve_id'],
+                    get_cve(svd['cve_id']),
                     'vulcwe':
-                    svd['cwe_id'],
+                    get_cwe(svd['cwe_id']),
                     'vulname':
                     svd['title'],
-                    'vul_overview':
-                    svd['overview'],
-                    'vul_teardown':
-                    svd['teardown'],
-                    'vul_reference':
-                    svd['reference'],
-                    'vul_level':
-                    svd['level'],
                 })
                 datas.append(data_)
             for data_1 in datas:
@@ -105,11 +115,23 @@ class ScaExport(UserEndPoint):
                     data_row.append(data.get(header, None))
                 rows.append(data_row)
         fileuuid = uuid.uuid1()
+        i18n_headers = zh_headers if get_language() == 'zh' else headers
         with open(f'/tmp/{fileuuid}.csv', 'w') as csv_file:
             writer = csv.writer(csv_file, delimiter=',')
-            writer.writerow(headers)
+            writer.writerow(i18n_headers)
             for row in rows:
                 writer.writerow(row)
         response = FileResponse(open(f'/tmp/{fileuuid}.csv', 'rb'),
                                 filename='sca.csv')
         return response
+
+
+def get_cve(cve_id):
+    return 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=' + cve_id
+
+
+def get_cwe(cwe_id):
+    if cwe_id in (None, 'NVD-CWE-Other', 'NVD-CWE-noinfo', ''):
+        return cwe_id
+    else:
+        return f"https://cwe.mitre.org/data/definitions/{cwe_id.replace('CWE-','')}.html"
