@@ -174,9 +174,9 @@ function create_docker_compose_file() {
   fi
 
   if [ ! -z "$3" ]; then
-    DATA_DIR=$3
+    _DATA_DIR=$3
   else
-    DATA_DIR=$PWD
+    _DATA_DIR="mysql-vol"
   fi
 
   MYSQL_STR=""
@@ -185,10 +185,11 @@ function create_docker_compose_file() {
     export MYSQL_STR=$(
       cat <<EOF
 dongtai-mysql: 
-    image: dongtai/dongtai-mysql:$CHANGE_THIS_VERSION
+    # image: dongtai/dongtai-mysql:$CHANGE_THIS_VERSION
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:20211230-5
     restart: always
     volumes:
-      - "$DATA_DIR:/var/lib/mysql:rw"
+      - "$_DATA_DIR:/var/lib/mysql:rw"
     logging:
       driver: "json-file"
       options:
@@ -274,6 +275,8 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
+volumes:
+  mysql-vol:
 
 EOM
 
@@ -300,7 +303,7 @@ if [ ! 0 == $# ]; then # If options provided then
   shift # Get subcommand and shift to next option
   case "$subcommand" in
   "debug")
-    result=$(get_database_data_dir)
+    result=$(create_docker_compose_file 1.1.2 8000 /root/abc)
     echo ""
     echo "result:$result"
     ;;
@@ -528,7 +531,8 @@ if [ ! 0 == $# ]; then # If options provided then
     check_docker
     check_docker_compose
     check_port
-    start_docker_compose "$DATA_DIR"
+    #start_docker_compose "$DATA_DIR"
+    start_docker_compose
 
     if [ $? -ne 0 ]; then
       Error "Installation failed,Something wrong!"
@@ -562,9 +566,9 @@ if [ ! 0 == $# ]; then # If options provided then
 
     if [ "$DESTORY_DATA" == true ]; then
       data_dir=$(get_database_data_dir)
-      Notice "Data dir:[$data_dir] will be deleted."
+      Notice "Data volume will be deleted."
       docker-compose -p dongtai-iast -f <(echo "$docker_compose_file") down -v
-      rm -rf $data_dir
+      # rm -rf $data_dir
     else
       docker-compose -p dongtai-iast -f <(echo "$docker_compose_file") down
     fi
