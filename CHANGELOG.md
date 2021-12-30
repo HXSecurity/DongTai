@@ -1,5 +1,11 @@
 # Change log
 
+## [1.2.0](https://github.com/HXSecurity/DongTai-core/releases/tag/v1.2.0)-2021-12-31
+* Function
+   * Increase license in ScaMaven
+* Improve
+   * Change command to TextField 
+
 ## [1.1.4](https://github.com/HXSecurity/DongTai-core/releases/tag/v1.1.4)-2021-12-18
 * Function
    * Increase hard-coded vulnerabilities
