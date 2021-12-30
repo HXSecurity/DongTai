@@ -23,6 +23,9 @@ import uuid
 import copy
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import get_language
+from dongtai.models.project import IastProject
+from dongtai.models.project_version import IastProjectVersion
+
 class ScaExportSer(ScaSerializer):
     class Meta:
         model = Asset
@@ -74,7 +77,7 @@ class ScaExport(UserEndPoint):
             'agent_name'
         ]
         zh_headers = [
-            '组件名称', '组件版本', '漏洞名称', '风险等级', '组路径', 'CVE 编号', 'CWE 编号', '项目名称',
+            '组件名称', '组件版本', '漏洞名称', '风险等级', '组件路径', 'CVE 编号', 'CWE 编号', '项目名称',
             '项目版本', '语言', 'Agent 名称'
         ]
         dic = {}
@@ -100,7 +103,7 @@ class ScaExport(UserEndPoint):
                     get_cve(svd['cve_id']),
                     'vulcwe':
                     get_cwe(svd['cwe_id']),
-                    'vulname':
+                    'vul_name':
                     svd['title'],
                 })
                 datas.append(data_)
@@ -116,13 +119,21 @@ class ScaExport(UserEndPoint):
                 rows.append(data_row)
         fileuuid = uuid.uuid1()
         i18n_headers = zh_headers if get_language() == 'zh' else headers
+        filename = '组件报告' if get_language() == 'zh' else 'SCA REPORT'
         with open(f'/tmp/{fileuuid}.csv', 'w') as csv_file:
             writer = csv.writer(csv_file, delimiter=',')
             writer.writerow(i18n_headers)
             for row in rows:
                 writer.writerow(row)
+        project_name = project_name if project_name else IastProject.objects.filter(
+            pk=project_id).values_list('name', flat=True).first()
+        project_version_id = current_project_version.get("version_id", 0)
+        project_version_name = IastProjectVersion.objects.filter(
+            pk=project_version_id).values_list(
+                'version_name',
+                flat=True).first() if project_version_id else ''
         response = FileResponse(open(f'/tmp/{fileuuid}.csv', 'rb'),
-                                filename='sca.csv')
+                                filename=f'{filename}-{project_name}-{project_version_name}.csv')
         return response
 
 
