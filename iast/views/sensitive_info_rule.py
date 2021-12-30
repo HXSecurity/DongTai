@@ -135,7 +135,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
           ),
     )
     def list(self,request):
-        ser = _SensitiveInfoArgsSerializer(data=request.data)
+        ser = _SensitiveInfoArgsSerializer(data=request.GET)
         try:
             if ser.is_valid(True):
                 name = ser.validated_data['name']
