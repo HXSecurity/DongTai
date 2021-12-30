@@ -165,6 +165,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
           ),
     )
     def create(self,request):
+        ser = SensitiveInfoRuleCreateSerializer(data=request.data)
         try:
             if ser.is_valid(True):
                 strategy_id = ser.validated_data['strategy_id']
