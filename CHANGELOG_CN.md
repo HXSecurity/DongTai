@@ -1,5 +1,10 @@
 # 升级日志
 
+## [1.2.0](https://github.com/HXSecurity/DongTai-openapi/releases/tag/v1.2.0) - 2021-12-31
+* 功能
+  * 增加Go Agent下载
+  * 增加Gzip
+
 ## [1.1.4](https://github.com/HXSecurity/DongTai-openapi/releases/tag/v1.1.4) - 2021-12-18
 * 功能
   * 增加批量上传组件接口
