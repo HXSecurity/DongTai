@@ -30,7 +30,7 @@ DongTai-WebAPI 用于处理DongTai用户资源管理的相关请求，包括：
 1.安装所需的依赖
 
 ```
-python -m pip install -r requirements-test.txt
+python -m pip install -r requirements-prod.txt
 ```
 
 2.初始化数据库
@@ -41,8 +41,8 @@ python -m pip install -r requirements-test.txt
 或采用docker部署数据库
 - 拉取版本对应的数据库镜像并启动镜像
 ```
-docker pull  registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest 
-docker run -itd --name dongtai-mysql -p 3306:3306 registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest 
+docker pull  dongtai/dongtai-mysql:latest 
+docker run -itd --name dongtai-mysql -p 3306:3306 dongtai/dongtai-mysql:latest
 ```
 
 
@@ -104,6 +104,43 @@ Redoc地址为 `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/redo
 地址为 `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/`
 
 3. 具体的API鉴权模式已包含在API文档中，可在web的安装agent界面找到对应的token。
+
+### 开发
+
+1.安装所需的依赖
+
+```
+python -m pip install -r requirements-test.txt
+```
+
+注释:windows下无法安装jq，jq用于处理敏感信息的json解析，若非开发相关功能可忽略，或是在windows下采用WSL进行开发
+
+
+2.初始化数据库
+
+
+- 拉取版本对应的数据库镜像并启动镜像
+```
+docker pull  dongtai/dongtai-mysql:latest 
+docker run -itd --name dongtai-mysql -p 3306:3306 dongtai/dongtai-mysql:latest
+```
+
+若需要创建或修改数据库表，请参照[DongTai-Base-Image](https://github.com/HXSecurity/Dongtai-Base-Image)仓库规范，并提交相关更改的.sql文件
+
+
+3.修改配置文件
+
+- 复制配置文件`conf/config.ini.example`为`conf/config.ini`并需改其中的配置；其中，`engine`对应的url为`DongTai-engine`的服务地址，`apiserver`对应的url为`DongTai-openapi`的服务地址
+- 只开发webapi相关的功能时可以不填engine和apiserver
+
+4.运行服务调试
+
+开发相关的环境变量
+PYTHONAGENT=TRUE 开启pythonagent，需要手动安装，参照[PythonAgent安装](http://doc.dongtai.io/02_start/03_agent.html#python-agent)
+DOC=TRUE 开启swagger 路径为 `/api/XZPcGFKoxYXScwGjQtJx8u/schema/swagger-ui/`
+debug=true 开启debug模式
+
+- 运行`python manage.py runserver`启动服务
 
 
 - [官方文档](https://doc.dongtai.io/)
