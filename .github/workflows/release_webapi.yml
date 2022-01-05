@@ -67,10 +67,11 @@ jobs:
           username: ${{ secrets.ALIYUN_DOCKERHUB_USER }}
           password: ${{ secrets.ALIYUN_DOCKERHUB_PASSWORD }}
 
-      - id: release
+      - name: Get the release version
+        id: release
         run: |
-          VERSION=`echo ${GITHUB_REF##*/} | awk -F'-' '{print $2}'`
-          echo "::set-output name=version::$VERSION"
+          id=$(echo ${GITHUB_REF#refs/tags/}| cut -b 2-)
+          echo "::set-output name=version::$id"
 
       - name: Generate version file
         run: |
@@ -107,9 +108,9 @@ jobs:
       - name: Setup Ossutil
         uses: manyuanrong/setup-ossutil@v2.0
         with:
-          endpoint: ${{ secrets.ALIYUN_OSS_ENDPOINT }}
-          access-key-id: ${{ secrets.ALIYUN_OSS_KEY_ID }}
-          access-key-secret: ${{ secrets.ALIYUN_OSS_KEY_SECRET }}
+          endpoint: ${{ secrets.OSS_ENDPOINT }}
+          access-key-id: ${{ secrets.OSS_KEY_ID }}
+          access-key-secret: ${{ secrets.OSS_KEY_SECRET }}
 
       - name: Upload images to oss
         run: |
