@@ -90,12 +90,11 @@ jobs:
           assets: |
             ./version.txt:/iast/release-version/${{ github.event.repository.name }}/${{ steps.release.outputs.version }}/version.txt
 
-      - name: Build and push
+      - name: Build to local
         uses: docker/build-push-action@v2
         with:
           context: .
           load: true
-          push: true
           tags: |
             dongtai/dongtai-webapi:latest
             dongtai/dongtai-webapi:${{ steps.release.outputs.version }}
@@ -108,6 +107,17 @@ jobs:
           docker images
           docker save  dongtai/dongtai-webapi:${{ steps.release.outputs.version }} | gzip > /tmp/dongtai-engine-${{ steps.release.outputs.version }}.tar.gz
 
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: |
+            dongtai/dongtai-webapi:latest
+            dongtai/dongtai-webapi:${{ steps.release.outputs.version }}
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:latest
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:${{ steps.release.outputs.version }}
+            
       - name: Setup Ossutil
         uses: manyuanrong/setup-ossutil@v2.0
         with:
