@@ -104,6 +104,7 @@ jobs:
       - name: Save image to tar file
         run: |
           docker version
+          docker images
           docker save  dongtai/dongtai-webapi:${{ steps.release.outputs.version }} | gzip > /tmp/dongtai-engine-${{ steps.release.outputs.version }}.tar.gz
 
       - name: Setup Ossutil
