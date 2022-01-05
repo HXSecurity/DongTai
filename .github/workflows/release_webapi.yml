@@ -94,6 +94,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
+          load: true
           push: true
           tags: |
             dongtai/dongtai-webapi:latest
