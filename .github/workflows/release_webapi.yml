@@ -6,8 +6,6 @@ on:
   push:
     branches:
       - "release-*"
-    tags:
-      - "v*"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -103,9 +101,7 @@ jobs:
 
       - name: Save image to tar file
         run: |
-          docker version
-          docker images
-          docker save  dongtai/dongtai-webapi:${{ steps.release.outputs.version }} | gzip > /tmp/dongtai-engine-${{ steps.release.outputs.version }}.tar.gz
+          docker save dongtai/dongtai-webapi:${{ steps.release.outputs.version }} | gzip > /tmp/dongtai-engine-${{ steps.release.outputs.version }}.tar.gz
 
       - name: Build and push
         uses: docker/build-push-action@v2
@@ -128,6 +124,26 @@ jobs:
       - name: Upload images to oss
         run: |
           ossutil cp /tmp/dongtai-engine-${{ steps.release.outputs.version }}.tar.gz oss://huoqi-public/iast/server-package/ttt/
+
+      - name: Setup Ossutil
+        uses: manyuanrong/setup-ossutil@v2.0
+        with:
+          endpoint: ${{ secrets.OSS_ENDPOINT }}
+          access-key-id: ${{ secrets.OSS_KEY_ID }}
+          access-key-secret: ${{ secrets.OSS_KEY_SECRET }}
+
+      - name: Upload images to oss
+        run: |
+          ossutil cp /tmp/dongtai-engine-${{ steps.release.outputs.version }}.tar.gz oss://huoqi-public/iast/server-package/${{ steps.release.outputs.version }}/
+
+      - name: Deploy Webapi to Staging
+        uses: wahyd4/kubectl-helm-action@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+          args: |
+            find deploy/deploy-dongtai-webapi-prod.yml -type f -exec sed -i 's/VERSION/${{ steps.release.outputs.version }}/g' {} \;
+            ls deploy/deploy-dongtai-webapi-prod.yml | xargs -I {} kubectl apply -f {}
 
       - name: finish build
         uses: joelwmale/webhook-action@master
