@@ -6,11 +6,11 @@ on:
   pull_request:
     branches: [ main ]
     paths-ignore:
-      - '.github/**'
+#      - '.github/**'
       - 'changes/**'
       - 'deploy/**'
       - '**.md'
-      - '**.yml'
+ #     - '**.yml'
       - '**.xml'
       - 'LICENSE'
       - '.gitignore'
@@ -18,11 +18,11 @@ on:
   push:
     branches: [ main ]
     paths-ignore:
-      - '.github/**'
+ #     - '.github/**'
       - 'changes/**'
       - 'deploy/**'
       - '**.md'
-      - '**.yml'
+ #     - '**.yml'
       - '**.xml'
       - 'LICENSE'
       - '.gitignore'
@@ -71,10 +71,13 @@ jobs:
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-      - name: Run UnitTest
-        run: |
-          cp conf/config.ini.example conf/config.ini
-          python3 manage.py test
+#      - name: Waiting For MySql Init
+#        run: sleep 90
+        
+#      - name: Run UnitTest
+#        run: |
+#          cp conf/config.ini.example conf/config.ini
+#          python3 manage.py test
 
   Deploy-To-TEST:
     if: ${{ github.event_name == 'push' && github.repository_owner == 'HXSecurity' }}
