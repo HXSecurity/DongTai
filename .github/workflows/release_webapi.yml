@@ -65,11 +65,10 @@ jobs:
           username: ${{ secrets.ALIYUN_DOCKERHUB_USER }}
           password: ${{ secrets.ALIYUN_DOCKERHUB_PASSWORD }}
 
-      - name: Get the release version
-        id: release
+      - id: release
         run: |
-          id=$(echo ${GITHUB_REF#refs/tags/}| cut -b 2-)
-          echo "::set-output name=version::$id"
+          VERSION=`echo ${GITHUB_REF##*/} | awk -F'-' '{print $2}'`
+          echo "::set-output name=version::$VERSION"
 
       - name: Generate version file
         run: |
@@ -114,17 +113,6 @@ jobs:
             registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:latest
             registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:${{ steps.release.outputs.version }}
             
-      - name: Setup Ossutil
-        uses: manyuanrong/setup-ossutil@v2.0
-        with:
-          endpoint: ${{ secrets.OSS_ENDPOINT }}
-          access-key-id: ${{ secrets.OSS_KEY_ID }}
-          access-key-secret: ${{ secrets.OSS_KEY_SECRET }}
-
-      - name: Upload images to oss
-        run: |
-          ossutil cp /tmp/dongtai-engine-${{ steps.release.outputs.version }}.tar.gz oss://huoqi-public/iast/server-package/ttt/
-
       - name: Setup Ossutil
         uses: manyuanrong/setup-ossutil@v2.0
         with:
