@@ -2,7 +2,7 @@
 
 name: Release DongTai WebApi
 
-on
+on: 
   push:
     branches:
       - "release-*"
