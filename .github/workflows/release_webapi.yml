@@ -98,6 +98,21 @@ jobs:
             registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:latest
             registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:${{ steps.release.outputs.version }}
 
+      - name: Save image to tar file
+        run: |
+          docker save  dongtai/dongtai-webapi:${{ steps.release.outputs.version }} | gzip > /tmp/dongtai-engine-${{ steps.release.outputs.version }}.tar.gz
+
+      - name: Setup Ossutil
+        uses: manyuanrong/setup-ossutil@v2.0
+        with:
+          endpoint: ${{ secrets.ALIYUN_OSS_ENDPOINT }}
+          access-key-id: ${{ secrets.ALIYUN_OSS_KEY_ID }}
+          access-key-secret: ${{ secrets.ALIYUN_OSS_KEY_SECRET }}
+
+      - name: Upload images to oss
+        run: |
+          ossutil cp /tmp/dongtai-engine-${{ steps.release.outputs.version }}.tar.gz oss://huoqi-public/iast/server-package/ttt/
+
       - name: finish build
         uses: joelwmale/webhook-action@master
         with:
