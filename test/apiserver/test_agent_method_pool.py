@@ -1038,9 +1038,11 @@ class AgentMethodPoolTestCase(AgentTestCase):
         data['detail']['agentId'] = self.agent_id
         testdata = '11231231321331232131231312233hwqeqqwe'
         data['detail'][
-            'reqHeader'] = "Q29udGVudC1UeXBlPWFwcGxpY2F0aW9uL2pzb24KWC1GcmFtZS1PcHRpb25zPURFTlkKQ29udGVudC1MZW5ndGg9NjYKQ29udGVudC1lbmNvZGluZz1nemlwClgtQ29udGVudC1UeXBlLU9wdGlvbnM9bm9zbmlmZgpSZWZlcnJlci1Qb2xpY3k9c2FtZS1vcmlnaW4="
+            'resHeader'] = "Q29udGVudC1UeXBlOmFwcGxpY2F0aW9uL2pzb24KWC1GcmFtZS1PcHRpb25zOkRFTlkKQ29udGVudC1MZW5ndGg6NjYKQ29udGVudC1lbmNvZGluZzpnemlwClgtQ29udGVudC1UeXBlLU9wdGlvbnM6bm9zbmlmZgpSZWZlcnJlci1Qb2xpY3k6c2FtZS1vcmlnaW4="
         data['version'] = 'v2'
-        data['detail']['resBody'] = gzip_test_data = base64.b64encode(gzip.compress(bytes(testdata, encoding='utf-8'))).decode('raw_unicode_escape')
+        data['detail']['resBody'] = gzip_test_data = base64.b64encode(
+            gzip.compress(bytes(
+                testdata, encoding='utf-8'))).decode('raw_unicode_escape')
         data = gzipdata(data)
         response = self.client.post(
             'http://testserver/api/v1/report/upload',
@@ -1056,12 +1058,8 @@ class AgentMethodPoolTestCase(AgentTestCase):
             url="http://localhost:9999/sqli123132123313132321123231test",
             agent_id=self.agent_id,
             res_body=gzip_test_data).exists()
-        
-        #print(MethodPool.objects.filter(
-        #    url="http://localhost:9999/sqli123132123313132321123231test",
-        #    agent_id=self.agent_id,
-        #    res_body=testdata).values('res_body',flat=True).all()
-        #assert MethodPool.objects.filter(
-        #    url="http://localhost:9999/sqli123132123313132321123231test",
-        #    agent_id=self.agent_id,
-        #    res_body=testdata).exists()
+
+        assert MethodPool.objects.filter(
+            url="http://localhost:9999/sqli123132123313132321123231test",
+            agent_id=self.agent_id,
+            res_body=testdata).exists()
