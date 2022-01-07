@@ -26,10 +26,13 @@ from io import BytesIO
 
 class _ProjectReportExportQuerySerializer(serializers.Serializer):
     vid = serializers.CharField(
-        help_text=_("The version id of the project"))
+        help_text=_("The version id of the project"),
+        required=False)
     pname = serializers.CharField(
-        help_text=_("The name of the project"))
-    pid = serializers.IntegerField(help_text=_("The id of the project"))
+        help_text=_("The name of the project"),
+        required=False)
+    pid = serializers.IntegerField(help_text=_("The id of the project"),
+        required=False)
 
 class ProjectReportExport(UserEndPoint):
     name = 'api-v1-word-maker'
@@ -46,9 +49,9 @@ class ProjectReportExport(UserEndPoint):
         :param auth_users:
         :return:
         """
-        relations = IastAgent.objects.filter(bind_project_id=pid,
-                                             user__in=auth_users).values("id")
-        agent_ids = [relation['id'] for relation in relations]
+        agent_ids = IastAgent.objects.filter(bind_project_id=pid,
+                                             user__in=auth_users).values_list(
+                                                 "id", flat=True).all()
         return agent_ids
 
     @staticmethod
