@@ -27,15 +27,15 @@ def get_agents_with_project(project_name, users):
     """
     agent_ids = []
     if project_name and project_name != '':
-        project_queryset = IastProject.objects.filter(user__in=users, name__icontains=project_name).values("id")
-        project_ids = []
+        project_ids = IastProject.objects.filter(
+            user__in=users,
+            name__icontains=project_name).values_list("id", flat=True).all()
 
-        if project_queryset:
-            for pro_item in project_queryset:
-                project_ids.append(pro_item['id'])
+        if project_ids:
 
-            relations = IastAgent.objects.filter(bind_project_id__in=project_ids).values("id")
-            agent_ids = [relation['id'] for relation in relations]
+            agent_ids = IastAgent.objects.filter(
+                bind_project_id__in=project_ids).values_list("id",
+                                                             flat=True).all()
 
     return agent_ids
 
@@ -143,9 +143,9 @@ def get_vul_count_by_agent(agent_ids, vid, user):
         typeArr = {}
         typeLevel = {}
         for one in typeInfo:
-            hook_type = hooktypes.get('hook_type_id', None)
+            hook_type = hooktypes.get(one['hook_type_id'], None)
             hook_type_name = hook_type['name'] if hook_type else None
-            strategy = strategys.get('strategy_id', None)
+            strategy = strategys.get(one['strategy_id'], None)
             strategy_name = strategy['vul_name'] if strategy else None
             type_ = list(
                 filter(lambda x: x is not None, [strategy_name, hook_type_name]))
