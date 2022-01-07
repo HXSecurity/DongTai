@@ -154,7 +154,7 @@ class SaasMethodPoolHandler(IReportHandler):
             method_pool.res_header = utils.base64_decode(self.http_res_header)
             method_pool.res_body = decode_content(
                 get_res_body(self.http_res_body, self.version),
-                get_content_encoding(self.http_req_header),self.version)
+                get_content_encoding(self.http_res_header),self.version)
             method_pool.uri_sha1 = self.sha1(self.http_uri)
             method_pool.save(update_fields=[
                 'update_time',
@@ -193,7 +193,7 @@ class SaasMethodPoolHandler(IReportHandler):
                 res_header=utils.base64_decode(self.http_res_header),
                 res_body = decode_content(
                 get_res_body(self.http_res_body, self.version),
-                get_content_encoding(self.http_req_header),self.version),
+                get_content_encoding(self.http_res_header),self.version),
                 context_path=self.context_path,
                 method_pool=json.dumps(self.method_pool),
                 pool_sign=pool_sign,
@@ -232,14 +232,15 @@ class SaasMethodPoolHandler(IReportHandler):
         return h.hexdigest()
 
 
-def decode_content(body, content_type, version):
+def decode_content(body, content_encoding, version):
     if version == 'v1':
         return body
-    if content_type == 'gzip':
+    if content_encoding == 'gzip':
         try:
-            return gzip.decompress(body)
+            return gzip.decompress(body).decode('utf-8')
         except:
             logger.error('not gzip type but using gzip as content_encoding')
+    logger.info('not found content_encoding :{}'.format(content_encoding))
     try:
         return body.decode('utf-8')
     except:
@@ -247,13 +248,16 @@ def decode_content(body, content_type, version):
         logger.info('utf-8 decode failed, use raw ')
         return body.decode('raw_unicode_escape')
 
-def get_content_encoding(header):
-    headers = SaasMethodPoolHandler.parse_headers(header)
-    for header in headers:
+
+def get_content_encoding(b64_res_headers):
+    res_headers = utils.base64_decode(b64_res_headers)
+    for header in res_headers.split('\n'):
         try:
-            k, v = header.strip().split(':')
-            if k.lower() == 'content-encoding':
-                return v
+            k, v = [i.strip().lower() for i in header.split(':')]
+            if k == "content-encoding":
+                if 'gzip' in v:
+                    return 'gzip'
+                break
         except:
             pass
     return ''
