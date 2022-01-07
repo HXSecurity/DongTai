@@ -154,7 +154,7 @@ class SaasMethodPoolHandler(IReportHandler):
             method_pool.res_header = utils.base64_decode(self.http_res_header)
             method_pool.res_body = decode_content(
                 get_res_body(self.http_res_body, self.version),
-                get_content_encoding(self.http_req_header))
+                get_content_encoding(self.http_req_header),self.version)
             method_pool.uri_sha1 = self.sha1(self.http_uri)
             method_pool.save(update_fields=[
                 'update_time',
@@ -193,7 +193,7 @@ class SaasMethodPoolHandler(IReportHandler):
                 res_header=utils.base64_decode(self.http_res_header),
                 res_body = decode_content(
                 get_res_body(self.http_res_body, self.version),
-                get_content_encoding(self.http_req_header))
+                get_content_encoding(self.http_req_header),self.version),
                 context_path=self.context_path,
                 method_pool=json.dumps(self.method_pool),
                 pool_sign=pool_sign,
@@ -232,10 +232,12 @@ class SaasMethodPoolHandler(IReportHandler):
         return h.hexdigest()
 
 
-def decode_content(body, content_type):
+def decode_content(body, content_type, version):
+    if version == 'v1':
+        return body
     if content_type == 'gzip':
         try:
-            return gzip.decompress(bytes(body, encoding='utf-8'))
+            return gzip.decompress(body)
         except:
             logger.error('not gzip type but using gzip as content_encoding')
     try:
@@ -259,8 +261,8 @@ def get_content_encoding(header):
 
 def get_res_body(res_body, version):
     if version == 'v1':
-        return res_body
+        return res_body #bytes
     elif version == 'v2':
-        return base64.b64decode(res_body)
+        return base64.b64decode(res_body) #bytes
     logger.info('no match version now version: {}'.format(version))
     return res_body
