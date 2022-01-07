@@ -11,7 +11,7 @@ from test.apiserver.test_agent_base import AgentTestCase,gzipdata
 from dongtai.models.agent import IastAgent
 from dongtai.models.agent_method_pool import MethodPool
 import gzip
-
+import base64
 
 class AgentMethodPoolTestCase(AgentTestCase):
 
@@ -1039,8 +1039,8 @@ class AgentMethodPoolTestCase(AgentTestCase):
         testdata = '11231231321331232131231312233hwqeqqwe'
         data['detail'][
             'reqHeader'] = "Q29udGVudC1UeXBlPWFwcGxpY2F0aW9uL2pzb24KWC1GcmFtZS1PcHRpb25zPURFTlkKQ29udGVudC1MZW5ndGg9NjYKQ29udGVudC1lbmNvZGluZz1nemlwClgtQ29udGVudC1UeXBlLU9wdGlvbnM9bm9zbmlmZgpSZWZlcnJlci1Qb2xpY3k9c2FtZS1vcmlnaW4="
-        data['detail']['resBody'] = gzip_test_data = str(
-            gzip.compress(bytes(testdata, encoding='utf-8')))
+        data['version'] = 'v2'
+        data['detail']['resBody'] = gzip_test_data = base64.b64encode(gzip.compress(bytes(testdata, encoding='utf-8'))).decode('raw_unicode_escape')
         data = gzipdata(data)
         response = self.client.post(
             'http://testserver/api/v1/report/upload',
@@ -1052,11 +1052,16 @@ class AgentMethodPoolTestCase(AgentTestCase):
         assert MethodPool.objects.filter(
             url="http://localhost:9999/sqli123132123313132321123231test",
             agent_id=self.agent_id).exists()
-        assert MethodPool.objects.filter(
-            url="http://localhost:9999/sqli123132123313132321123231test",
-            agent_id=self.agent_id,
-            res_body=gzip_test_data).exists()
         assert not MethodPool.objects.filter(
             url="http://localhost:9999/sqli123132123313132321123231test",
             agent_id=self.agent_id,
-            res_body=testdata).exists()
+            res_body=gzip_test_data).exists()
+        
+        #print(MethodPool.objects.filter(
+        #    url="http://localhost:9999/sqli123132123313132321123231test",
+        #    agent_id=self.agent_id,
+        #    res_body=testdata).values('res_body',flat=True).all()
+        #assert MethodPool.objects.filter(
+        #    url="http://localhost:9999/sqli123132123313132321123231test",
+        #    agent_id=self.agent_id,
+        #    res_body=testdata).exists()
