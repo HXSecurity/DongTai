@@ -1,0 +1,21 @@
+FROM python:3.7-slim
+ARG VERSION
+ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG=en_US.UTF-8
+ENV TZ=Asia/Shanghai
+ENV debug=true
+
+RUN apt-get update -y \
+		&& apt install -y  gcc make cmake libmariadb-dev
+
+
+COPY requirements-test.txt /opt/dongtai/webapi/requirements.txt
+RUN pip3 install --upgrade pip  &&  pip3 install -r /opt/dongtai/webapi/requirements.txt
+
+COPY dongtai-agent-python.tar.gz /tmp/dongtai-agent-python.tar.gz
+RUN pip3 install /tmp/dongtai-agent-python.tar.gz
+
+COPY . /opt/dongtai/webapi
+WORKDIR /opt/dongtai/webapi
+
+CMD ["/usr/local/bin/uwsgi","--ini", "/opt/dongtai/webapi/conf/uwsgi.ini"]
