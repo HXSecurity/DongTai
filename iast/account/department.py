@@ -165,7 +165,7 @@ class DepartmentEndPoint(TalentAdminEndPoint):
                         return JsonResponse({
                             'status': 202,
                             'msg': _('Talent does not exist')
-                        }) 
+                        })
                     talent = talent_ if talent and talent_ else request.user.get_talent(
                     )
                     talent.departments.add(department)
@@ -189,7 +189,7 @@ class DepartmentEndPoint(TalentAdminEndPoint):
     def delete(self, request, pk):
         department = self.has_department_permission(request.user, pk)
         user_count = department.users.count()
-        force = bool(request.query_params.get('force', 'false'))
+        force = bool(request.query_params.get('force', ''))
         if user_count > 0:
             if force:
                 department.users.delete()
