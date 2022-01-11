@@ -1,5 +1,5 @@
 [mysql]
-host = 127.0.0.1
+host = dongtai-mysql 
 port = 3306
 name = dongtai_webapi
 user = root
@@ -12,10 +12,10 @@ password = redis_password
 db = broker_db
 
 [engine]
-url = http://engine_url
+url = http://dongtai-engine:8000
 
 [apiserver]
-url = http://api_server_url
+url = http://dongtai-openapi:8000
 
 [smtp]
 server = smtp_server
@@ -32,7 +32,8 @@ access_key_secret = ZoEOSi7KfayQ7JalvJVHa37fdZ4XFY
 
 
 [security]
-csrf_trust_origins = .huoxian.cn,.secnium.xyz
+csrf_trust_origins = localhost,.huoxian.cn,.secnium.xyz
+
 [other]
 domain = http://localhost.domain/
 demo_session_cookie_domain = .huoxian.cn
