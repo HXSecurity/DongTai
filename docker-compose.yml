@@ -2,6 +2,8 @@ version: "2"
 services:
   dongtai-mysql: 
     image: dongtai/dongtai-mysql:latest
+    ports:
+      - "33060:3306"
     restart: always
   
   dongtai-redis:
