@@ -22,6 +22,7 @@ six==1.15.0
 urllib3==1.26.2
 xlwt==1.3.0
 uwsgi==2.0.19.1
+pyre2~=0.3.6
 https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/dongtai-test-latest.tar.gz
 ddt
 faker
