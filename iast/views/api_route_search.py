@@ -197,7 +197,7 @@ class ApiRouteSearch(UserEndPoint):
             is_cover) if is_cover is not None else _filter_and_label_partial(
                 api_routes, page_size, agents, http_method)
         return R.success(
-            data=[api_serialize(api_route, agents) for api_route in api_routes])
+            data=[_serialize(api_route, agents) for api_route in api_routes])
 
 
 def _filter_and_label(api_routes,
@@ -242,7 +242,7 @@ def distinct_key(objects, fields):
     return '_'.join(sequence)
 
 
-def api_serialize(api_route, agents):
+def _serialize(api_route, agents):
     item = model_to_dict(api_route)
     is_cover_dict = {1: True, 0: False}
     is_cover_dict = _inverse_dict(is_cover_dict)
