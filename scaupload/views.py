@@ -2,6 +2,7 @@ from django.shortcuts import render
 from dongtai.endpoint import UserEndPoint
 from django.db.models import Q
 from dongtai.models.sca_maven_db import ScaMavenDb
+from dongtai.models.sca_artifact_db import ScaArtifactDb
 from rest_framework import serializers
 from rest_framework import generics
 from rest_framework.serializers import ValidationError
@@ -10,6 +11,9 @@ from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.translation import gettext_lazy as _
 from dongtai.endpoint import R
 import csv
+from django.http import FileResponse
+from webapi.settings import BASE_DIR
+import os
 # Create your views here.
 
 
@@ -28,11 +32,15 @@ class ScaMavenDbSerializer(serializers.ModelSerializer):
 
 class ScaMavenDbUploadSerializer(serializers.Serializer):
     group_id = serializers.CharField()
-    artifact_id = serializers.CharField()
+    atrifact_id = serializers.CharField()
     version = serializers.CharField()
     sha_1 = serializers.CharField()
     package_name = serializers.CharField()
-    license = serializers.CharField(required=False)
+    license = serializers.CharField(default='', required=False)
+
+
+class ScaDeleteSerializer(serializers.Serializer):
+    ids = serializers.ListField(child=serializers.IntegerField())
 
 
 class SCADBMavenBulkViewSet(UserEndPoint, viewsets.ViewSet):
@@ -62,20 +70,26 @@ class SCADBMavenBulkViewSet(UserEndPoint, viewsets.ViewSet):
                                  description=_("Get sca list"),
                                  tags=[_('SCA DB')])
     def create(self, request):
-        decode_files = request.FILES['file'].read().decode('utf-8').splitlines()
-        reader =  csv.DictReader(decoded_file)
-
-        ser = ScaDBSerializer(data=reader, many=True)
+        stream = request.FILES['file'].read().replace(b'\xEF\xBB\xBF', b'')
+        decoded_files = stream.decode('utf-8').splitlines()
+        reader = csv.DictReader(decoded_files)
+        datas = [dict(row) for row in reader]
+        ser = ScaMavenDbUploadSerializer(data=datas, many=True)
         try:
             if ser.is_valid(True):
                 pass
         except ValidationError as e:
             return R.failure(data=e.detail)
         objs = [ScaMavenDb(**i) for i in ser.validated_data]
-        ScaMavenDb.objects.create(objs, ignore_conflicts=True)
+        ScaMavenDb.objects.bulk_create(objs, ignore_conflicts=True)
         return R.success()
 
-    def destory(self, request):
+class SCADBMavenBulkDeleteView(UserEndPoint):
+    @extend_schema_with_envcheck(request=ScaDeleteSerializer,
+                                 summary=_('Get sca db bulk'),
+                                 description=_("Get sca list"),
+                                 tags=[_('SCA DB')])
+    def post(self, request):
         ids = request.data.get('ids')
         ScaMavenDb.objects.filter(pk__in=ids).delete()
         return R.success()
@@ -90,12 +104,12 @@ class SCADBMavenViewSet(UserEndPoint, viewsets.ViewSet):
         data = ScaMavenDb.objects.filter(q).first()
         return R.success(data=ScaDBSerializer(data).data)
 
-    @extend_schema_with_envcheck([ScaDBSerializer],
+    @extend_schema_with_envcheck(request=ScaMavenDbUploadSerializer,
                                  summary=_('Get sca db'),
                                  description=_("Get sca list"),
                                  tags=[_('SCA DB')])
     def create(self, request):
-        ser = ScaDBSerializer(data=request.data)
+        ser = ScaMavenDbUploadSerializer(data=request.data)
         try:
             if ser.is_valid(True):
                 pass
@@ -104,13 +118,20 @@ class SCADBMavenViewSet(UserEndPoint, viewsets.ViewSet):
         ScaMavenDb.objects.create(**ser.data)
         return R.success()
 
+    @extend_schema_with_envcheck(summary=_('Get sca db'),
+                                 description=_("Get sca list"),
+                                 tags=[_('SCA DB')])
     def destory(self, request, pk):
         q = Q(pk=pk)
         data = ScaMavenDb.objects.filter(q).delete()
         return R.success()
 
+    @extend_schema_with_envcheck(request=ScaMavenDbUploadSerializer,
+                                 summary=_('Get sca db'),
+                                 description=_("Get sca list"),
+                                 tags=[_('SCA DB')])
     def update(self, request, pk):
-        ser = ScaDBSerializer(data=request.data)
+        ser = ScaMavenDbUploadSerializer(data=request.data)
         try:
             if ser.is_valid(True):
                 pass
@@ -148,5 +169,29 @@ LICENSE_LIST = [
 
 
 class SCALicenseViewSet(UserEndPoint):
+    @extend_schema_with_envcheck(summary=_('Get sca license list'),
+                                 description=_("Get sca list"),
+                                 tags=[_('SCA DB')])
     def get(self, request):
         return R.success(data=LICENSE_LIST)
+class SCATemplateViewSet(UserEndPoint):
+    @extend_schema_with_envcheck(summary=_('Get sca license list'),
+                                 description=_("Get sca list"),
+                                 tags=[_('SCA DB')])
+    def get(self, request):
+        return FileResponse(open(
+            os.path.join(BASE_DIR, 'upload/assets/template/maven_sca.csv'),
+            'rb'),
+                            filename='maven_sca.csv')
+
+
+class SCAStatViewSet(UserEndPoint):
+    @extend_schema_with_envcheck(summary=_('Get sca stat '),
+                                 description=_("Get sca list"),
+                                 tags=[_('SCA DB')])
+    def get(self, request):
+        return R.success(
+            data={
+                'sca_count': ScaMavenDb.objects.count(),
+                'vuln_count': ScaArtifactDb.objects.count()
+            })

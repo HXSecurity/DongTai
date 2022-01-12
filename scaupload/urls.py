@@ -19,6 +19,9 @@ from scaupload.views import (
     SCADBMavenViewSet,
     SCADBMavenBulkViewSet,
     SCALicenseViewSet,
+    SCAStatViewSet,
+    SCADBMavenBulkDeleteView,
+    SCATemplateViewSet
 )
 import os
 
@@ -26,11 +29,20 @@ urlpatterns = [
     path('maven/bulk',
          SCADBMavenBulkViewSet.as_view({
              'get': 'list',
-             'post': 'create'
+             'post': 'create',
          })),
-    path('maven/<int:pk>', SCADBMavenViewSet.as_view({'get': 'retrieve'})),
+    path('maven/bulk/delete', SCADBMavenBulkDeleteView.as_view()),
+    path(
+        'maven/<int:pk>',
+        SCADBMavenViewSet.as_view({
+            'get': 'retrieve',
+            'put': 'update',
+            'delete': 'destory'
+        })),
     path('maven', SCADBMavenViewSet.as_view({'post': 'create'})),
     path('license_list', SCALicenseViewSet.as_view()),
+    path('maven/stat', SCAStatViewSet.as_view()),
+    path('maven/template/maven_sca', SCATemplateViewSet.as_view()),
 ]
 
 
