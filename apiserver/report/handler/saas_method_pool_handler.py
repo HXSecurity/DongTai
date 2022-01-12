@@ -14,7 +14,10 @@ from dongtai.models.agent_method_pool import MethodPool
 from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai.models.replay_queue import IastReplayQueue
 from dongtai.utils import const
-from dongtai.models.res_header import ProjectResHeader
+from dongtai.models.res_header import (
+    ProjectSaasMethodPoolHeader,
+    HeaderType,
+)
 from AgentServer import settings
 from apiserver import utils
 from apiserver.report.handler.report_handler_interface import IReportHandler
@@ -68,10 +71,12 @@ class SaasMethodPoolHandler(IReportHandler):
             # 保存数据至重放请求池
             headers = SaasMethodPoolHandler.parse_headers(self.http_req_header)
             objs = [
-                ProjectResHeader(key=key, agent_id=self.agent_id)
+                ProjectSaasMethodPoolHeader(key=key,
+                                            agent_id=self.agent_id,
+                                            header_type=HeaderType.REQUEST)
                 for key in headers.keys()
             ]
-            ProjectResHeader.objects.bulk_create(objs, ignore_conflicts=True)
+            ProjectSaasMethodPoolHeader.objects.bulk_create(objs, ignore_conflicts=True)
             replay_id = headers.get('dongtai-replay-id')
             replay_type = headers.get('dongtai-replay-type')
             relation_id = headers.get('dongtai-relation-id')
