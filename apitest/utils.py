@@ -10,18 +10,12 @@ import json
 from tempfile import NamedTemporaryFile
 import os
 import yaml
+import copy
 
-
-#with open("webapi.json") as fp:
-#    result = json.load(fp)
-#
-#data = result['data']
-#schema = {}
 parameter_type_swagger_type_manreadable_dict = {
     'string': ['java.lang.String'],
-    'int': [],
-    'boolean': [],
-    'number': [],
+    'integer': ['java.lang.Integer', 'java.lang.Long', 'java.lang.Long;'],
+    'boolean': ['java.lang.Boolean', 'boolean'],
 }
 
 
@@ -36,9 +30,10 @@ def cover_dict(dic):
 def cover_parameter(parameter, parameter_type_dict):
     swagger_parameter = {"schema": {}}
     swagger_parameter['schema']['type'] = parameter_type_dict.get(
-        parameter['parameter_type'], None)
+        parameter['parameter_type'], 'string')
     swagger_parameter['name'] = parameter['name']
     swagger_parameter['in'] = swagger_in(parameter)
+    swagger_parameter['required'] = True
     return swagger_parameter
 
 
@@ -53,7 +48,8 @@ def swagger_in(parameter):
 def swagger_trans(data):
     parameter_type_dict = cover_dict(
         parameter_type_swagger_type_manreadable_dict)
-    for api in [data[0]]:
+    schema = {}
+    for api_id, api in enumerate(data):
         obj = {}
         covered_parameter = map(
             lambda x: cover_parameter(x, parameter_type_dict),
@@ -78,10 +74,12 @@ def swagger_trans(data):
                     }
                 }
             }
-        for method in api['method']['httpmethods']:
+        for method_id, method in enumerate(api['method']['httpmethods']):
             _method = method.lower()
-            obj[_method] = context
-            obj[_method]['operationId'] = api['path'] + _method
+            context_ = copy.deepcopy(context)
+            obj[_method] = context_
+            obj[_method][
+                'operationId'] = str(method_id) + api['path'] + _method + str(api_id)
             obj[_method]['responses'] = {
                 "200": {
                     "content": {
@@ -117,14 +115,16 @@ def swagger_trans(data):
     return swagger
 
 
-def runtest(swagger, headers):
+def runtest(swagger, headers, base_url):
     with NamedTemporaryFile(delete=False) as swaggerjson, NamedTemporaryFile(
             delete=False) as headers_yml:
-        headers = {'all': {'Authorization': 'Token 21312331223132'}}
+        default_headers = {'X-DongTai-From': 'dongtai-webapi'}
+        default_headers.update(headers)
+        headers = {'all': default_headers}
         with open(swaggerjson.name, 'w') as fp:
             json.dump(swagger, fp)
         with open(headers_yml.name, 'w') as fp:
             yaml.dump(headers, fp)
         os.system(
-            f'./cats-linux --contract={swaggerjson.name} --headers={headers_yml.name} --server=http://localhost:8000 --fuzzers=HappyFuzzer  --reportFormat=HTML_ONLY &'
+            f'cd /tmp && cats --contract={swaggerjson.name} --headers={headers_yml.name} --server={base_url} --fuzzers=HappyFuzzer  --reportFormat=HTML_ONLY &'
         )
