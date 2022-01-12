@@ -9,8 +9,6 @@ services:
   dongtai-redis:
     image: dongtai/dongtai-redis:latest
     restart: always
-    deploy:
-      replicas: 0
   dongtai-webapi:
     build: 
       context: .
@@ -19,7 +17,7 @@ services:
     ports:
       - "8000:8000"
     environment: 
-      #      - PYTHONAGENT=TRUE
+      - PYTHONAGENT=TRUE
       - DOC=TRUE
       - debug=true
       - SAVEEYE=TRUE
