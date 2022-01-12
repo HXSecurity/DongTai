@@ -120,7 +120,9 @@ class ScaExport(UserEndPoint):
         fileuuid = uuid.uuid1()
         i18n_headers = zh_headers if get_language() == 'zh' else headers
         filename = '组件报告' if get_language() == 'zh' else 'SCA REPORT'
-        with open(f'/tmp/{fileuuid}.csv', 'w') as csv_file:
+        with open(f'/tmp/{fileuuid}.csv', 'wb') as csv_file:
+            csv_file.write(b'\xEF\xBB\xBF')
+        with open(f'/tmp/{fileuuid}.csv', 'a') as csv_file:
             writer = csv.writer(csv_file, delimiter=',')
             writer.writerow(i18n_headers)
             for row in rows:
