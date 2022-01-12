@@ -9,6 +9,7 @@ from rest_framework import viewsets
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.translation import gettext_lazy as _
 from dongtai.endpoint import R
+import csv
 # Create your views here.
 
 
@@ -73,6 +74,12 @@ class SCADBMavenBulkViewSet(UserEndPoint, viewsets.ViewSet):
         objs = [ScaMavenDb(**i) for i in ser.validated_data]
         ScaMavenDb.objects.create(objs, ignore_conflicts=True)
         return R.success()
+
+    def destory(self, request):
+        ids = request.data.get('ids')
+        ScaMavenDb.objects.filter(pk__in=ids).delete()
+        return R.success()
+
 
 class SCADBMavenViewSet(UserEndPoint, viewsets.ViewSet):
     @extend_schema_with_envcheck(summary=_('Get sca db'),
