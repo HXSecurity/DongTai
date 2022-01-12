@@ -36,6 +36,9 @@ class _ProjectsAddBodyArgsSerializer(serializers.Serializer):
         help_text=_("Description of the project"))
     vul_validation = serializers.IntegerField(
         help_text="vul validation switch")
+    base_url = serializers.CharField()
+    test_req_header_key = serializers.CharField()
+    test_req_header_value = serializers.CharField()
 
 
 
@@ -71,6 +74,11 @@ class ProjectAdd(UserEndPoint):
                 auth_users = self.get_auth_users(request.user)
                 scan = IastStrategyUser.objects.filter(id=scan_id, user=request.user).first()
                 agent_ids = request.data.get("agent_ids", None)
+                base_url = request.data.get('base_url', None)
+                test_req_header_key = request.data.get('test_req_header_key',
+                                                       None)
+                test_req_header_value = request.data.get(
+                    'test_req_header_value', None)
                 if agent_ids:
                     try:
                         agents = [int(i) for i in agent_ids.split(',')]
@@ -146,9 +154,16 @@ class ProjectAdd(UserEndPoint):
                         project_name=name, user__in=auth_users).update(
                             bind_project_id=project.id,
                             project_version_id=project_version_id)
+                if base_url:
+                    project.base_url = base_url
+                if test_req_header_key:
+                    project.test_req_header_key = test_req_header_key
+                if test_req_header_value:
+                    project.test_req_header_value = test_req_header_value
                 project.save(update_fields=[
                     'name', 'scan_id', 'mode', 'agent_count', 'user_id',
-                    'latest_time', 'vul_validation'
+                    'latest_time', 'vul_validation', 'base_url',
+                    'test_req_header_key', 'test_req_header_value'
                 ])
 
                 return R.success(

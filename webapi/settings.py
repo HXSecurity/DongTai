@@ -73,14 +73,16 @@ def get_installed_apps():
     chdir(APPS_ROOT_PATH)
     for root, directories, files in walk(top=getcwd(), topdown=False):
         for file_ in files:
-            if 'apps.py' in file_:
+            if 'apps.py' in file_ and len(
+                    list(
+                        filter(lambda x: x != '',
+                               root.replace(getcwd(), '').split('/')))) == 1:
                 app_path = f"{root.replace(BASE_DIR + '/', '').replace('/', '.')}"
                 master.append(app_path)
     chdir(previous_path)
     return master
 CUSTOM_APPS = get_installed_apps()
 INSTALLED_APPS.extend(CUSTOM_APPS)
-
 
 
 MODELTRANSLATION_LANGUAGES = ('en', 'zh')

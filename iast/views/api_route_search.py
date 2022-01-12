@@ -254,6 +254,13 @@ def _serialize(api_route, agents):
     return item
 
 
+def serialize(api_route):
+    item = model_to_dict(api_route)
+    item['parameters'] = _get_parameters(api_route)
+    item['responses'] = _get_responses(api_route)
+    item['method'] = _get_api_method(item['method'])
+    return item
+
 def _get_vuls(uri, agents):
     vuls = IastVulnerabilityModel.objects.filter(
         uri=uri, agent_id__in=[_['id'] for _ in agents
