@@ -72,13 +72,14 @@ class ProjectAdd(UserEndPoint):
                 scan_id = request.data.get("scan_id")
 
                 auth_users = self.get_auth_users(request.user)
-                scan = IastStrategyUser.objects.filter(id=scan_id, user=request.user).first()
+                scan = IastStrategyUser.objects.filter(id=scan_id, user__in=auth_users).first()
                 agent_ids = request.data.get("agent_ids", None)
                 base_url = request.data.get('base_url', None)
                 test_req_header_key = request.data.get('test_req_header_key',
                                                        None)
                 test_req_header_value = request.data.get(
                     'test_req_header_value', None)
+                description = request.data.get('description', None)
                 if agent_ids:
                     try:
                         agents = [int(i) for i in agent_ids.split(',')]
@@ -99,7 +100,7 @@ class ProjectAdd(UserEndPoint):
                 #    VulValidation.ENABLE
                 #    if vul_validation == True else VulValidation.DISABLE)
                 if pid:
-                    project = IastProject.objects.filter(id=pid, user=request.user).first()
+                    project = IastProject.objects.filter(id=pid, user__in=auth_users).first()
                     project.name = name
                 else:
 
@@ -108,7 +109,10 @@ class ProjectAdd(UserEndPoint):
                         project = IastProject.objects.create(name=name, user=request.user)
                     else:
                         return R.failure(status=203, msg=_('Failed to create, the application name already exists'))
-                versionInfo = IastProjectVersion.objects.filter(project_id=project.id, user=request.user, current_version=1, status=1).first()
+                versionInfo = IastProjectVersion.objects.filter(
+                    project_id=project.id,
+                    current_version=1,
+                    status=1).first()
                 if versionInfo:
                     project_version_id = versionInfo.id
                 else:
@@ -120,11 +124,17 @@ class ProjectAdd(UserEndPoint):
                     "description": request.data.get("description", ""),
                     "current_version": 1
                 }
-                result = version_modify(request.user, current_project_version)
-                if result.get("status", "202") == "202":
-                    return R.failure(status=202, msg=_("Parameter error"))
-                else:
-                    project_version_id = result.get("data", {}).get("version_id", 0)
+                if not (versionInfo.version_name == version_name and
+                        (versionInfo.description == description
+                         or not description)):
+                    result = version_modify(project.user,
+                                            current_project_version)
+                    if result.get("status", "202") == "202":
+                        return R.failure(status=202,
+                                         msg=result.get('msg',
+                                                        _("Parameter error")))
+                    else:
+                        project_version_id = result.get("data", {}).get("version_id", 0)
 
                 if agent_ids:
                     haveBind = IastAgent.objects.filter(
@@ -171,4 +181,4 @@ class ProjectAdd(UserEndPoint):
                         msg=_('Created success'))
             except Exception as e:
                 logger.error(e)
-                return R.failure(status=202, msg=_("Parameter error"))
+                return R.failure(status=202, msg=_('Parameter error'))
