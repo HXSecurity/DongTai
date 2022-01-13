@@ -19,6 +19,9 @@ from dongtai.models.project import IastProject
 
 from apiserver.report.handler.report_handler_interface import IReportHandler
 from apiserver.report.report_handler_factory import ReportHandler
+import requests
+from AgentServer import settings
+
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -33,34 +36,52 @@ class ScaHandler(IReportHandler):
         self.package_algorithm = self.detail.get('packageAlgorithm')
 
     def save(self):
-        if all([self.agent_id, self.package_path, self.package_name, self.package_signature,
-                self.package_algorithm]) is False:
+        if all([self.agent_id, self.package_path, self.package_name]) is False:
             logger.warning(_("Data is incomplete, data: {}").format(json.dumps(self.report)))
         else:
-            if self.agent:
-                smd = ScaMavenDb.objects.filter(sha_1=self.package_signature).values("version", "aql").first()
-                _version = self.package_name.split('/')[-1].replace('.jar', '').split('-')[-1]
-                version = smd.get('version', _version) if smd else _version
-                package_name = smd.get('aql', self.package_name) if smd else self.package_name
-                aids = ScaMavenArtifact.objects.filter(signature=self.package_signature).values("aid")
-                if len(aids) > 0:
-                    aids = [_['aid'] for _ in aids]
-                vul_count = len(aids)
-                levels = ScaVulDb.objects.filter(id__in=aids).values('vul_level')
-
+            search_query = ""
+            if self.agent.language == "JAVA":
+                version = self.package_name.split('/')[-1].replace('.jar', '').split('-')[-1]
+                search_query = "hash=" + self.package_signature
+            elif self.agent.language == "PYTHON":
+                # @todo agent上报版本 or 捕获全量pip库
+                version = self.package_name.split('/')[-1].split('-')[-1]
+                name = self.package_name.replace("-" + version, "")
+                search_query = "ecosystem={}&name={}&version={}".format("PyPI", name, version)
+            if search_query != "":
+                package_name = self.package_name
                 level = 'info'
-                if len(levels) > 0:
-                    levels = [_['vul_level'] for _ in levels]
-                    if 'high' in levels:
-                        level = 'high'
-                    elif 'high' in levels:
-                        level = 'high'
-                    elif 'medium' in levels:
-                        level = 'medium'
-                    elif 'low' in levels:
-                        level = 'low'
-                    else:
-                        level = 'info'
+                try:
+                    url = settings.SCA_URL + "/api/package_vul/?" + search_query
+                    resp = requests.get(url=url)
+                    resp = json.loads(resp.content)
+                    maven_model = resp.get("data", {}).get("package", {})
+                    if maven_model is None:
+                        maven_model = {}
+                    vul_list = resp.get("data", {}).get("vul_list", {})
+                    package_name = maven_model.get('aql', self.package_name)
+                    version = maven_model.get('version', version)
+                    vul_count = len(vul_list)
+                    levels = []
+                    for vul in vul_list:
+                        _level = vul.get("vul_package", {}).get("severity", "none")
+                        if _level and _level not in levels:
+                            levels.append(_level)
+                    if len(levels) > 0:
+                        levels = [_['vul_level'] for _ in levels]
+                        if 'high' in levels:
+                            level = 'high'
+                        elif 'high' in levels:
+                            level = 'high'
+                        elif 'medium' in levels:
+                            level = 'medium'
+                        elif 'low' in levels:
+                            level = 'low'
+                        else:
+                            level = 'info'
+
+                except Exception as e:
+                    logger.info("get package_vul failed:{}".format(e))
 
                 try:
                     level = IastVulLevel.objects.get(name=level)
@@ -87,7 +108,6 @@ class ScaHandler(IReportHandler):
                         project.update_latest()
                 except Exception as e:
                     logger.error(_('SCA data resolution failed, reasons: {}').format(e))
-
 
 @ReportHandler.register(const.REPORT_SCA + 1)
 class ScaBulkHandler(ScaHandler):
