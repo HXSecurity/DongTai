@@ -371,6 +371,9 @@ The Token method is recommended here, and users can find it in the Agent install
     }
     REST_FRAMEWORK[
         'DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'
+
+SCA_URL = config.get('sca', 'url')
+
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     SESSION_COOKIE_DOMAIN = config.get('other',
                                             'demo_session_cookie_domain')
