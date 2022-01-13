@@ -36,7 +36,7 @@ DongTai-OpenAPI用于处理DongTai探针的相关请求，包括：
 
 1. 拉取官方镜像
 ```shell script
-$ docker pull registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:1.0.5
+$ docker pull registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:latest
 ```
 
 2. 创建配置文件：`/etc/dongtai/config.ini`，内容如下：
@@ -77,14 +77,14 @@ access_key_secret = access_key
 
 3. 启动`dongtai-openapi`容器并映射配置文件
 ```shell script
-$ docker run -d --name dongtai-openapi -p 8000:8000 -v /etc/dongtai/config.ini:/opt/dongtai/openapi/conf/config.ini --restart=always huoxian_pub/dongtai-openapi:1.0.5
+$ docker run -d --name dongtai-openapi -p 8000:8000 -v /etc/dongtai/config.ini:/opt/dongtai/openapi/conf/config.ini --restart=always huoxian_pub/dongtai-openapi:latest
 ```
 
 ### 构建镜像部署
 
 1. 构建镜像
 ```shell script
-$ docker build -t huoxian_pub/dongtai-openapi:1.0.5 .
+$ docker build -t huoxian_pub/dongtai-openapi:latest .
 ```
 
 2. 创建配置文件：`/etc/dongtai/config.ini`，内容如下：
@@ -125,7 +125,7 @@ access_key_secret = access_key
 
 3. 启动`dongtai-openapi`容器并映射配置文件
 ```shell script
-$ docker run -d --name dongtai-openapi -p 8000:8000 -v /etc/dongtai/config.ini:/opt/dongtai/openapi/conf/config.ini --restart=always huoxian_pub/dongtai-openapi:1.0.5
+$ docker run -d --name dongtai-openapi -p 8000:8000 -v /etc/dongtai/config.ini:/opt/dongtai/openapi/conf/config.ini --restart=always huoxian_pub/dongtai-openapi:latest
 ```
 
 

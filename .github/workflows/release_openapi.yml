@@ -3,8 +3,8 @@
 name: Release DongTai OpenAPI
 
 on:
-  push:
-    branches: [ "release-*" ]
+  release:
+    types: [ created, edited ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -12,6 +12,8 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     strategy:
       max-parallel: 4
       matrix:
@@ -44,13 +46,40 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Checkout
         uses: actions/checkout@v2
+      
+      - id: release
+        run: |
+          TAG_NAME=${{ github.event.release.tag_name }}
+          ID=`echo ${TAG_NAME##v}`
+          echo "::set-output name=version::$ID"
+
+      - name: Push Version Branch
+        run: |
+          bash .github/workflows/version_update.sh "${{ steps.release.outputs.version }}"
+
+      - name: Push version file
+        run: |
+          cd ${{ github.workspace }} && \
+          echo "${{ github.event.repository.name }},version,${{ steps.release.outputs.version }}" >> version.txt && \
+          echo "${{ github.event.repository.name }},commit_hash,${GITHUB_SHA}" >> version.txt \
+
+      - name: Upload version file to oss
+        id: upload_version_file_to_oss
+        uses: tvrcgo/upload-to-oss@master
+        with:
+          key-id: ${{ secrets.ALIYUN_OSS_KEY_ID }}
+          key-secret: ${{ secrets.ALIYUN_OSS_KEY_SECRET }}
+          region: oss-cn-beijing
+          bucket: huoqi-public
+          assets: |
+            ./version.txt:/iast/release-version/${{ github.event.repository.name }}/${{ steps.release.outputs.version }}/version.txt
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-        
+
       - name: Setup Ossutil
         uses: manyuanrong/setup-ossutil@v2.0
         with:
@@ -63,6 +92,7 @@ jobs:
       - run: |
           ossutil cp oss://dongtai/agent/java/ ./ --include "*.jar" -r
           ossutil cp oss://dongtai/agent/python/ ./  --include "*.tar.gz" -r
+          ossutil cp oss://dongtai/agent/php/ ./  --include "*.tar.gz" -r
           ls -l
 
       - name: Login to DockerHub
@@ -71,20 +101,15 @@ jobs:
           username: ${{ secrets.DONGTAI_DOCKERHUB_USERNAME }}
           password: ${{ secrets.DONGTAI_DOCKERHUB_TOKEN }}
 
-      - id: release
-        run: |
-          VERSION=`echo ${GITHUB_REF##*/} | awk -F'-' '{print $2}'`
-          echo "::set-output name=version::$VERSION"
-
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
-          tags: | 
+          tags: |
             dongtai/dongtai-openapi:${{ steps.release.outputs.version }}
             dongtai/dongtai-openapi:latest
-      
+
       - uses: actions/checkout@master
       - name: deploy to cluster
         uses: wahyd4/kubectl-helm-action@master

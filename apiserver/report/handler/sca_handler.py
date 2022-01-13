@@ -87,3 +87,21 @@ class ScaHandler(IReportHandler):
                         project.update_latest()
                 except Exception as e:
                     logger.error(_('SCA data resolution failed, reasons: {}').format(e))
+
+
+@ReportHandler.register(const.REPORT_SCA + 1)
+class ScaBulkHandler(ScaHandler):
+    def parse(self):
+        self.packages = self.detail.get('packages')
+        self.package_path = self.detail.get('packagePath')
+        self.package_signature = self.detail.get('packageSignature')
+        self.package_name = self.detail.get('packageName')
+        self.package_algorithm = self.detail.get('packageAlgorithm')
+
+    def save(self):
+        for package in self.packages:
+            self.package_path = package.get('packagePath', None)
+            self.package_signature = package.get('packageSignature', None)
+            self.package_name = package.get('packageName', None)
+            self.package_algorithm = package.get('packageAlgorithm', None)
+            super().save()
