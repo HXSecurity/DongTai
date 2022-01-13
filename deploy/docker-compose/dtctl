@@ -193,7 +193,7 @@ if [ ! -z "$(get_mysql_container_id)" ]; then
   MOUNT_TYPE=$(docker inspect --format='{{range .Mounts}} {{.Type}} {{end}}' $(get_mysql_container_id))
 fi
 
-Info "Mount Type:$MOUNT_TYPE"
+# Info "Mount Type:$MOUNT_TYPE"
 
 # create docker compose file
 # Usage: create_docker_compose_file $VERSION $WEB_SERVICE_PORT $MYSQL_DATA_LOCATION
@@ -502,13 +502,11 @@ if [ ! 0 == $# ]; then # If options provided then
       fi
 
       if ! [ -x "$(command -v lsof)" ]; then
-        netstat -tunlp | grep $WEB_SERVICE_PORT | grep "LISTEN" 2>/dev/null
-        if [ ! $? -ne 0 ]; then
+        if [ $(netstat -tunlp | grep $WEB_SERVICE_PORT | grep "LISTEN" | wc -l || true ) -gt 0 ]; then
           is_port_inuse=true
         fi
       else
-        lsof -i:$WEB_SERVICE_PORT | grep "LISTEN" 2>/dev/null
-        if [ ! $? -ne 0 ]; then
+        if [ $(lsof -i:$WEB_SERVICE_PORT | grep "LISTEN" | wc -l || true ) -gt 0 ]; then
           is_port_inuse=true
         fi
       fi
