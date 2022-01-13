@@ -14,12 +14,16 @@ from dongtai.models.agent_method_pool import MethodPool
 from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai.models.replay_queue import IastReplayQueue
 from dongtai.utils import const
-
+from dongtai.models.res_header import (
+    ProjectSaasMethodPoolHeader,
+    HeaderType,
+)
 from AgentServer import settings
 from apiserver import utils
 from apiserver.report.handler.report_handler_interface import IReportHandler
 from apiserver.report.report_handler_factory import ReportHandler
-
+import gzip
+import base64
 logger = logging.getLogger('dongtai.openapi')
 
 
@@ -28,7 +32,6 @@ class SaasMethodPoolHandler(IReportHandler):
     @staticmethod
     def parse_headers(headers_raw):
         headers = dict()
-        import base64
         header_raw = base64.b64decode(headers_raw).decode('utf-8').split('\n')
         item_length = len(header_raw)
         for index in range(item_length):
@@ -38,6 +41,7 @@ class SaasMethodPoolHandler(IReportHandler):
         return headers
 
     def parse(self):
+        self.version = self.report.get('version', 'v1')
         self.http_uri = self.detail.get('uri')
         self.http_url = self.detail.get('url')
         self.http_query_string = self.detail.get('queryString')
@@ -66,6 +70,13 @@ class SaasMethodPoolHandler(IReportHandler):
         if self.http_replay:
             # 保存数据至重放请求池
             headers = SaasMethodPoolHandler.parse_headers(self.http_req_header)
+            objs = [
+                ProjectSaasMethodPoolHeader(key=key,
+                                            agent_id=self.agent_id,
+                                            header_type=HeaderType.REQUEST)
+                for key in headers.keys()
+            ]
+            ProjectSaasMethodPoolHeader.objects.bulk_create(objs, ignore_conflicts=True)
             replay_id = headers.get('dongtai-replay-id')
             replay_type = headers.get('dongtai-replay-type')
             relation_id = headers.get('dongtai-relation-id')
@@ -151,7 +162,9 @@ class SaasMethodPoolHandler(IReportHandler):
                 query_params=self.http_query_string,
                 http_protocol=self.http_protocol)
             method_pool.res_header = utils.base64_decode(self.http_res_header)
-            method_pool.res_body = self.http_res_body
+            method_pool.res_body = decode_content(
+                get_res_body(self.http_res_body, self.version),
+                get_content_encoding(self.http_res_header),self.version)
             method_pool.uri_sha1 = self.sha1(self.http_uri)
             method_pool.save(update_fields=[
                 'update_time',
@@ -188,7 +201,9 @@ class SaasMethodPoolHandler(IReportHandler):
                     query_params=self.http_query_string,
                     http_protocol=self.http_protocol),
                 res_header=utils.base64_decode(self.http_res_header),
-                res_body=self.http_res_body,
+                res_body = decode_content(
+                get_res_body(self.http_res_body, self.version),
+                get_content_encoding(self.http_res_header),self.version),
                 context_path=self.context_path,
                 method_pool=json.dumps(self.method_pool),
                 pool_sign=pool_sign,
@@ -225,3 +240,43 @@ class SaasMethodPoolHandler(IReportHandler):
         h = sha1()
         h.update(raw.encode('utf-8'))
         return h.hexdigest()
+
+
+def decode_content(body, content_encoding, version):
+    if version == 'v1':
+        return body
+    if content_encoding == 'gzip':
+        try:
+            return gzip.decompress(body).decode('utf-8')
+        except:
+            logger.error('not gzip type but using gzip as content_encoding')
+    logger.info('not found content_encoding :{}'.format(content_encoding))
+    try:
+        return body.decode('utf-8')
+    except:
+        logger.info('decode_content, {}'.format(body))
+        logger.info('utf-8 decode failed, use raw ')
+        return body.decode('raw_unicode_escape')
+
+
+def get_content_encoding(b64_res_headers):
+    res_headers = utils.base64_decode(b64_res_headers)
+    for header in res_headers.split('\n'):
+        try:
+            k, v = [i.strip().lower() for i in header.split(':')]
+            if k == "content-encoding":
+                if 'gzip' in v:
+                    return 'gzip'
+                break
+        except:
+            pass
+    return ''
+
+
+def get_res_body(res_body, version):
+    if version == 'v1':
+        return res_body #bytes
+    elif version == 'v2':
+        return base64.b64decode(res_body) #bytes
+    logger.info('no match version now version: {}'.format(version))
+    return res_body

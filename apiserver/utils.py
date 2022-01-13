@@ -22,7 +22,12 @@ class OssDownloader(object):
     BUCKET_NAME = 'dongtai'
 
     @staticmethod
-    def download_file_to_path(access_key, access_key_secret, bucket_url, bucket_name, object_name, local_file,
+    def download_file_to_path(bucket_url,
+                              bucket_name,
+                              object_name,
+                              local_file,
+                              access_key='',
+                              access_key_secret='',
                               anonymous=True):
         """
 
@@ -52,12 +57,12 @@ class OssDownloader(object):
 
     @staticmethod
     def download_file(object_name, local_file):
-        return OssDownloader.download_file_to_path(access_key=settings.ACCESS_KEY,
-                                                   access_key_secret=settings.ACCESS_KEY_SECRET,
-                                                   bucket_url=OssDownloader.BUCKET_URL,
-                                                   bucket_name=OssDownloader.BUCKET_NAME,
-                                                   object_name=object_name,
-                                                   local_file=local_file)
+        return OssDownloader.download_file_to_path(  #access_key=settings.ACCESS_KEY,
+            #access_key_secret=settings.ACCESS_KEY_SECRET,
+            bucket_url=OssDownloader.BUCKET_URL,
+            bucket_name=OssDownloader.BUCKET_NAME,
+            object_name=object_name,
+            local_file=local_file)
 
 
 def base64_decode(raw):
