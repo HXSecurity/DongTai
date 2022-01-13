@@ -35,8 +35,7 @@ def version_modify(user, versionData=None):
     baseVersion = IastProjectVersion.objects.filter(
         project_id=project_id,
         version_name=version_name,
-        user=user,
-        status=1
+        status=1,
     )
     if version_id:
         baseVersion = baseVersion.filter(~Q(id=version_id))
@@ -47,7 +46,9 @@ def version_modify(user, versionData=None):
             "msg": _("Repeated version name")
         }
     if version_id:
-        version = IastProjectVersion.objects.filter(id=version_id, project_id=project_id, user=user, status=1).first()
+        version = IastProjectVersion.objects.filter(id=version_id,
+                                                    project_id=project_id,
+                                                    status=1).first()
         if not version:
             return {
                 "status": "202",
