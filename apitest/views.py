@@ -54,6 +54,6 @@ class ApiTestHeaderEndpoint(UserEndPoint):
         agents = IastAgent.objects.filter(user__in=auth_users,
                                           bind_project_id=pk).values("id")
         q = Q(agent__in=agents)
-        headers = ProjectSaasMethodPoolHeader.objects.filter(q).values_list(
-            'key').distinct().all()
+        headers = list(ProjectSaasMethodPoolHeader.objects.filter(q).values_list(
+            'key').distinct().all())
         return R.success(data=headers)
