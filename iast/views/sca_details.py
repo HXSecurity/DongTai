@@ -15,6 +15,9 @@ from iast.serializers.sca import ScaSerializer
 from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
+from webapi import settings
+import requests
+import json
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -97,27 +100,39 @@ class ScaDetailView(UserEndPoint):
             data = ScaSerializer(asset).data
             data['vuls'] = list()
 
-            smas = ScaMavenArtifact.objects.filter(
-                signature=data['signature_value']).values(
-                    "aid", "safe_version")
-            for sma in smas:
-                svds = ScaArtifactDb.objects.filter(id=sma['aid']).values(
-                    'cve_id', 'cwe_id', 'title', 'overview', 'teardown', 'reference', 'level'
-                )
-                if len(svds) == 0:
-                    continue
+            search_query = ""
+            if asset.agent.language == "JAVA":
+                search_query = "hash=" + asset.signature_value
+            elif asset.agent.language == "PYTHON":
+                version = asset.version
+                name = asset.package_name.replace("-" + version, "")
+                search_query = "ecosystem={}&name={}&version={}".format("PyPI", name, version)
+            if search_query != "":
+                try:
+                    url = settings.SCA_URL + "/api/package_vul/?" + search_query
+                    resp = requests.get(url=url)
+                    resp = json.loads(resp.content)
+                    maven_model = resp.get("data", {}).get("package", {})
+                    if maven_model is None:
+                        maven_model = {}
+                    vul_list = resp.get("data", {}).get("vul_list", [])
 
-                svd = svds[0]
-                data['vuls'].append({
-                    'safe_version': sma['safe_version'] if sma['safe_version'] else _('Current version stopped for maintenance or it is not a secure version'),
-                    'vulcve': svd['cve_id'],
-                    'vulcwe': svd['cwe_id'],
-                    'vulname': svd['title'],
-                    'overview': svd['overview'],
-                    'teardown': svd['teardown'],
-                    'reference': svd['reference'],
-                    'level': svd['level'],
-                })
+                    for vul in vul_list:
+                        _level = vul.get("vul_package", {}).get("severity", "none")
+                        data['vuls'].append({
+                            'safe_version': vul.get("fixed_versions").join(",") if vul.get("fixed_versions", []) else _(
+                                'Current version stopped for maintenance or it is not a secure version'),
+                            'vulcve': vul.get('vul', {}).get('aliases', [])[0] if len(vul.get('vul', {}).get('aliases', [])) > 0 else "",
+                            'vulcwe': vul.get('vul_package', {}).get('cwe_ids', [])[0] if len(vul.get('vul', {}).get('cwe_ids', [])) > 0 else "",
+                            'vulname': vul.get('vul', {}).get("summary", ""),
+                            'overview': vul.get('vul', {}).get("summary", ""),
+                            'teardown': vul.get('vul', {}).get("details", ""),
+                            'reference': vul.get('references', []),
+                            'level': vul.get('vul_package', {}).get('severity', None),
+                        })
+
+                except Exception as e:
+                    logger.info("get package_vul failed:{}".format(e))
             return R.success(data=data)
         except Exception as e:
             logger.error(e)
