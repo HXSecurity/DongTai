@@ -17,7 +17,7 @@ services:
     ports:
       - "8000:8000"
     environment: 
-      - PYTHONAGENT=TRUE
+      #      - PYTHONAGENT=TRUE
       - DOC=TRUE
       - debug=true
       - SAVEEYE=TRUE
