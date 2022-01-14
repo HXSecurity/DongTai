@@ -15,10 +15,14 @@ from webapi import settings
 from apitest.views import (
     ApiTestHeaderEndpoint,
     ApiTestTriggerEndpoint,
+    ApiTestOpenapiSpecEndpoint
 )
 
 urlpatterns = [
-    path('project/<int:pk>/api_test/req_headers', ApiTestHeaderEndpoint.as_view()),
+    path('project/<int:pk>/api_test/req_headers',
+         ApiTestHeaderEndpoint.as_view()),
     path('project/<int:pk>/api_test', ApiTestTriggerEndpoint.as_view()),
+    path('project/<int:pk>/api_test/openapi_spec',
+         ApiTestOpenapiSpecEndpoint.as_view()),
 ]
 urlpatterns = [path('api/v1/', include(urlpatterns))]
