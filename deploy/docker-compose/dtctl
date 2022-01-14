@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 set -o pipefail
-#echo "hello"
+# set -x
 _filename=$0
 
 SKIP_MYSQL=false
@@ -103,6 +103,26 @@ function first_gt_second() {
   fi
 }
 
+
+# check if dongtai iast server is Running
+function is_server_running() {
+  if [ $(docker ps | grep "dongtai-web:"| wc -l) -gt 0 ]; then
+    echo true
+    return 
+  fi
+  echo false
+  return
+}
+
+# exit when server is not running
+function exit_not_running() {
+   if [ $(is_server_running) != true ];then
+    Error "Server is not running!"
+    exit 1
+  fi
+}
+
+
 # get docker-compose project_name
 get_project_name() {
   retval=$(docker inspect --format='{{ index .Config.Labels "com.docker.compose.project" }}' $( docker ps | grep "dongtai-web:" | awk '{print $1}'))
@@ -136,24 +156,6 @@ function get_mysql_container_id() {
   mysql_container_id=$(docker ps | grep "$PROJECT_NAME" | grep 'mysql' | awk '{print $1}')
   echo "$mysql_container_id"
 
-}
-
-# check if dongtai iast server is Running
-function is_server_running() {
-  if [ $(docker ps | grep "dongtai-web:"| wc -l) -gt 0 ]; then
-    echo true
-    return 
-  fi
-  echo false
-  return
-}
-
-# exit when server is not running
-function exit_not_running() {
-   if [ $(is_server_running) != true ];then
-    Error "Server is not running!"
-    exit 1
-  fi
 }
 
 # check if image registry is in China.
@@ -220,8 +222,10 @@ function restore_mysql() {
 
 }
 
-if [ ! -z "$(get_mysql_container_id)" ]; then
-  MOUNT_TYPE=$(docker inspect --format='{{range .Mounts}} {{.Type}} {{end}}' $(get_mysql_container_id))
+if [ $(is_server_running) == true ];then
+  if [ ! -z "$(get_mysql_container_id)" ]; then
+    MOUNT_TYPE=$(docker inspect --format='{{range .Mounts}} {{.Type}} {{end}}' $(get_mysql_container_id))
+  fi
 fi
 
 # Info "Mount Type:$MOUNT_TYPE"
@@ -682,7 +686,6 @@ if [ ! 0 == $# ]; then # If options provided then
     function check_schema_hash() {
       Info "Check database schema ..."
 
-      # set -x
       # cat updaterecord.txt | awk "{ if($1==$FROM_VERSION) print $4}"
 
       FROM_DB_HASH=$(cat updaterecord.txt | awk -v FROM_VERSION=$FROM_VERSION '{ if($1==FROM_VERSION) print $4}')
