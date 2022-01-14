@@ -2,7 +2,7 @@
 
 setup_file() {
  # Initializing install 1.1.2 with schema hash 2a6c08ac348ac0f7f336588587eb05d5397ec84a
-
+ echo "Start to install server..." >&3
  run ./dtctl install -v 1.1.2 -r 0 <<< 8088
 
  while :; do
