@@ -105,7 +105,7 @@ function first_gt_second() {
 
 # get docker-compose project_name
 get_project_name() {
-  retval=$(docker-compose ls -q | grep dongtai)
+  retval=$(docker inspect --format='{{ index .Config.Labels "com.docker.compose.project" }}' $( docker ps | grep "dongtai-web:" | awk '{print $1}'))
   echo "$retval"
 }
 function current_image_version() {
@@ -380,7 +380,7 @@ if [ ! 0 == $# ]; then # If options provided then
   shift # Get subcommand and shift to next option
   case "$subcommand" in
   "debug")
-    result=$(create_docker_compose_file 1.1.2 8000 /root/abc)
+    result=$(get_project_name)
     echo ""
     echo "result:$result"
     ;;
