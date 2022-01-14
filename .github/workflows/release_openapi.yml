@@ -101,6 +101,40 @@ jobs:
           username: ${{ secrets.DONGTAI_DOCKERHUB_USERNAME }}
           password: ${{ secrets.DONGTAI_DOCKERHUB_TOKEN }}
 
+      - name: Login to AliyunRegistry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.ALIYUN_REGISTRY }}
+          username: ${{ secrets.ALIYUN_DOCKERHUB_USER }}
+          password: ${{ secrets.ALIYUN_DOCKERHUB_PASSWORD }}
+
+
+      - name: Build to local
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          load: true
+          tags: |
+            dongtai/dongtai-openapi:${{ steps.release.outputs.version }}
+            dongtai/dongtai-openapi:latest
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:${{ steps.release.outputs.version }}
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:latest
+
+      - name: Save image to tar file
+        run: |
+          docker save dongtai/dongtai-openapi:${{ steps.release.outputs.version }} | gzip > /tmp/dongtai-openapi-${{ steps.release.outputs.version }}.tar.gz
+
+      - name: Setup Ossutil
+        uses: manyuanrong/setup-ossutil@v2.0
+        with:
+          endpoint: ${{ secrets.ALIYUN_OSS_ENDPOINT }}
+          access-key-id: ${{ secrets.ALIYUN_OSS_KEY_ID }}
+          access-key-secret: ${{ secrets.ALIYUN_OSS_KEY_SECRET }}
+
+      - name: Upload images to oss
+        run: |
+          ossutil cp /tmp/dongtai-openapi-${{ steps.release.outputs.version }}.tar.gz oss://huoqi-public/iast/server-package/${{ steps.release.outputs.version }}/
+
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
@@ -109,9 +143,10 @@ jobs:
           tags: |
             dongtai/dongtai-openapi:${{ steps.release.outputs.version }}
             dongtai/dongtai-openapi:latest
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:${{ steps.release.outputs.version }}
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:latest
 
-      - uses: actions/checkout@master
-      - name: deploy to cluster
+      - name: Deploy to staging
         uses: wahyd4/kubectl-helm-action@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
