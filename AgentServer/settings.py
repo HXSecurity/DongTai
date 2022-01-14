@@ -235,8 +235,5 @@ CONFIRMED = 3
 IGNORE = 4
 SOLVED = 5
 
-# SCA_URL
-SCA_URL = config.get("sca", 'url')
-
 if os.getenv('environment', None) == 'DEV' or os.getenv('PYTHONAGENT', None) == 'TRUE':
     MIDDLEWARE.append('dongtai_agent_python.middlewares.django_middleware.FireMiddleware')
