@@ -37,13 +37,13 @@ class IastProject(models.Model):
                                          blank=True,
                                          null=False,
                                          choices=VulValidation.choices)
-    base_url = models.CharField(max_length=255, blank=True, null=True)
+    base_url = models.CharField(max_length=255, blank=True, default='')
     test_req_header_key = models.CharField(max_length=511,
                                            blank=True,
-                                           null=True)
+                                           default='')
     test_req_header_value = models.CharField(max_length=511,
                                              blank=True,
-                                             null=True)
+                                             default='')
 
     class Meta:
         managed = get_managed()
