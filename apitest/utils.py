@@ -118,7 +118,7 @@ def swagger_trans(data):
 def runtest(swagger, headers, base_url):
     with NamedTemporaryFile(delete=False) as swaggerjson, NamedTemporaryFile(
             delete=False) as headers_yml:
-        default_headers = {'X-DongTai-From': 'dongtai-webapi'}
+        default_headers = {'X-DongTai-PayLoad-From': 'dongtai-webapi'}
         default_headers.update(headers)
         headers = {'all': default_headers}
         with open(swaggerjson.name, 'w') as fp:

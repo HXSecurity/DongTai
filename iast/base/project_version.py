@@ -30,7 +30,7 @@ def version_modify(user, versionData=None):
     if not version_name or not project_id:
         return {
             "status": "202",
-            "msg": _("Parameter error")
+            "msg": _("version_name need")
         }
     baseVersion = IastProjectVersion.objects.filter(
         project_id=project_id,
