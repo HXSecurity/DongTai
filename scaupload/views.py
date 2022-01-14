@@ -1,7 +1,10 @@
 from django.shortcuts import render
 from dongtai.endpoint import UserEndPoint
 from django.db.models import Q
-from dongtai.models.sca_maven_db import ScaMavenDb
+from dongtai.models.sca_maven_db import (
+    ScaMavenDb,
+    ImportFrom,
+)
 from dongtai.models.sca_artifact_db import ScaArtifactDb
 from rest_framework import serializers
 from rest_framework import generics
@@ -14,6 +17,10 @@ import csv
 from django.http import FileResponse
 from webapi.settings import BASE_DIR
 import os
+from scaupload.utils import (
+    get_packge_from_sca_lib,
+    ScaLibError,
+)
 # Create your views here.
 
 
@@ -55,7 +62,7 @@ class SCADBMavenBulkViewSet(UserEndPoint, viewsets.ViewSet):
                 pass
         except ValidationError as e:
             return R.failure(data=e.detail)
-        q = Q()
+        q = Q(import_from=ImportFrom.USER)
         if ser.validated_data.get('name'):
             q = Q(package_name__icontains=ser.validated_data['name'])
         queryset = ScaMavenDb.objects.filter(q)
@@ -190,8 +197,16 @@ class SCAStatViewSet(UserEndPoint):
                                  description=_("Get sca list"),
                                  tags=[_('SCA DB')])
     def get(self, request):
-        return R.success(
-            data={
-                'sca_count': ScaMavenDb.objects.count(),
-                'vuln_count': ScaArtifactDb.objects.count()
-            })
+        sca_count = ScaMavenDb.objects.filter(
+            import_from=ImportFrom.USER).count()
+        vuln_count = ScaArtifactDb.objects.filter(
+            import_from=ImportFrom.USER).count()
+        try:
+            res = get_packge_from_sca_lib(page_size=1)
+            sca_count = sca_count + res['page']['alltotal']
+        except ScaLibError as e:
+            pass
+        return R.success(data={
+            'sca_count': sca_count,
+            'vuln_count': vuln_count,
+        })
