@@ -346,7 +346,10 @@ def sca_scan_asset(asset):
     agent = asset.agent
     version = None
     vul_count = 0
+    user_upload_package = None
     if agent.language == "JAVA" and asset.signature_value:
+        # 用户上传的组件
+        user_upload_package = ScaMavenDb.objects.filter(sha_1=asset.signature_value).first()
         search_query = "hash=" + asset.signature_value
 
     elif agent.language == "PYTHON":
@@ -361,6 +364,7 @@ def sca_scan_asset(asset):
         package_name = asset.package_name
 
         try:
+
             url = settings.SCA_BASE_URL + "/package_vul/?" + search_query
             logger.info(f'sca url: {url}')
             resp = requests.get(url=url)
@@ -369,11 +373,25 @@ def sca_scan_asset(asset):
             if maven_model is None:
                 maven_model = {}
             vul_list = resp.get("data", {}).get("vul_list", {})
+
             package_name = maven_model.get('aql', package_name)
             version = maven_model.get('version', version)
+            if user_upload_package is not None:
+                package_name = user_upload_package.aql
+                version = user_upload_package.version
+
             vul_count = len(vul_list)
             levels = []
             update_fields = list()
+
+            if asset.package_name != package_name:
+                asset.package_name = package_name
+                update_fields.append('package_name')
+
+            if asset.version != version:
+                asset.version = version
+                update_fields.append('version')
+
             for vul in vul_list:
                 _level = vul.get("vul_package", {}).get("severity", "none")
                 if _level and _level not in levels:
@@ -436,24 +454,23 @@ def update_one_sca(agent_id, package_path, package_signature, package_name, pack
                                                         version=version,
                                                         agent__in=current_version_agents).count()
 
-    # if asset_count == 0:
-    new_level = IastVulLevel.objects.get(name="info")
-    asset = Asset.objects.create(
-        package_name=package_name,
-        package_path=package_path,
-        signature_algorithm=package_algorithm,
-        signature_value=package_signature,
-        dt=time.time(),
-        version=version,
-        level=new_level,
-        vul_count=0,
-        agent=agent
-    )
-    sca_scan_asset(asset)
-
-    # else:
-    #     logger.info(
-    #         f'SCA检测开始 [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm}] 组件已存在')
+    if asset_count == 0:
+        new_level = IastVulLevel.objects.get(name="info")
+        asset = Asset.objects.create(
+            package_name=package_name,
+            package_path=package_path,
+            signature_algorithm=package_algorithm,
+            signature_value=package_signature,
+            dt=time.time(),
+            version=version,
+            level=new_level,
+            vul_count=0,
+            agent=agent
+        )
+        sca_scan_asset(asset)
+    else:
+        logger.info(
+            f'SCA检测开始 [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm}] 组件已存在')
 
 @shared_task(queue='dongtai-periodic-task')
 def update_all_sca():
