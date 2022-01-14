@@ -142,7 +142,7 @@ jobs:
           push: true
           tags: |
             registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi-test:latest
-            registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi-test:0.1.${{github.run_number}}
+            registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi-test:0.1.${{github.run_number}}.${{ github.run_attempt }}
 
       - uses: actions/checkout@master
         name: Checkout
@@ -153,7 +153,7 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_TEST_DATA }}
         with:
           args: |
-            find deploy/deploy-eks-iast-saas-openapi-test.yml -type f -exec sed -i 's/VERSION/0.1.${{github.run_number}}/g' {} \;
+            find deploy/deploy-eks-iast-saas-openapi-test.yml -type f -exec sed -i 's/VERSION/0.1.${{github.run_number}}.${{ github.run_attempt }}/g' {} \;
             ls deploy/deploy-eks-iast-saas-openapi-test.yml | xargs -I {} kubectl apply -f {}
 
       - name: Notify
