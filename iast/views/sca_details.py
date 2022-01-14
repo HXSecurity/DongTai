@@ -130,7 +130,7 @@ class ScaDetailView(UserEndPoint):
                             'overview': _vul.get("summary", ""),
                             'teardown': _vul.get("details", ""),
                             'reference': _vul.get('references', []),
-                            'level': _vul.get('vul_package', {}).get('severity', None),
+                            'level': _level
                         })
 
                 except Exception as e:
