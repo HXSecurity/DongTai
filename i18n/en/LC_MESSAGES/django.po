@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-14 15:25+0800\n"
+"POT-Creation-Date: 2022-01-14 17:10+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -99,23 +99,23 @@ msgstr "Tenant does not exist"
 msgid "Tenant name or email is not specified"
 msgstr "Tenant name or email is not specified"
 
-#: iast/account/talent.py:97
+#: iast/account/talent.py:98
 msgid "Tenant {} has been created successfully"
 msgstr "Tenant {} has been created successfully"
 
-#: iast/account/talent.py:98
+#: iast/account/talent.py:99
 msgid "Tenant {} creation failed, error message:{}"
 msgstr "Tenant {} creation failed, error message:{}"
 
-#: iast/account/talent.py:106
+#: iast/account/talent.py:108
 msgid "Tenant: {} Delete successfully"
 msgstr "Tenant: {} Delete successfully"
 
-#: iast/account/talent.py:121
+#: iast/account/talent.py:123
 msgid "Query if the default tenant information exists"
 msgstr "Query if the default tenant information exists"
 
-#: iast/account/talent.py:125
+#: iast/account/talent.py:127
 #, fuzzy
 #| msgid ""
 #| "The tenant information already existed, please delete the existing "
@@ -125,7 +125,7 @@ msgid ""
 msgstr ""
 "Tenant information already exists, please delete tenant information first"
 
-#: iast/account/talent.py:126
+#: iast/account/talent.py:128
 msgid ""
 "The tenant information already existed, please delete the existing "
 "information first"
@@ -133,27 +133,27 @@ msgstr ""
 "The tenant information already existed, please delete the existing "
 "information first"
 
-#: iast/account/talent.py:128
+#: iast/account/talent.py:130
 msgid "Started creating a tenant"
 msgstr "Started creating a tenant"
 
-#: iast/account/talent.py:134
+#: iast/account/talent.py:136
 msgid "Finished creating tenant, start to create tenant default department"
 msgstr "Finished creating tenant, start to create tenant default department"
 
-#: iast/account/talent.py:135
+#: iast/account/talent.py:137
 msgid "Default department"
 msgstr "Default department"
 
-#: iast/account/talent.py:140
+#: iast/account/talent.py:142
 msgid "Finished creating department, start to create default user"
 msgstr "Finished creating department, start to create default user"
 
-#: iast/account/talent.py:153
+#: iast/account/talent.py:155
 msgid "Finsihed creating and initializing tenant"
 msgstr "Finsihed creating and initializing tenant"
 
-#: iast/account/talent.py:156
+#: iast/account/talent.py:158
 msgid "Failed to created a tenant, error message:{}"
 msgstr "Failed to created a tenant, error message:{}"
 
