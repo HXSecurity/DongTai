@@ -57,7 +57,7 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
       - name: Waiting For MySql Init
-        run: sleep 50
+        run: sleep 70
 
       - name: Run UnitTest
         run: |
