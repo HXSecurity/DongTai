@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'dongtai',
     'apiserver',
+    'sca',
     'drf_spectacular'
 ]
 
@@ -167,6 +168,9 @@ PUBLIC_KEY = os.path.join(BASE_DIR, 'config', 'rsa_keys/public_key.pem')
 ENGINE_URL = config.get("engine", "url")
 HEALTH_ENGINE_URL = urljoin(ENGINE_URL, "/api/engine/health")
 BASE_ENGINE_URL = config.get("engine", "url") + '/api/engine/run?method_pool_id={id}'
+SCA_ENGINE_URL = config.get("engine","url") + '/api/engine/sca?agent_id={agent_id}' \
+                            + '&package_path={package_path}&package_signature={package_signature}' \
+                            + '&package_name={package_name}&package_algorithm={package_algorithm}'
 REPLAY_ENGINE_URL = config.get("engine", "url") + '/api/engine/run?method_pool_id={id}&model=replay'
 
 LOGGING = {
@@ -194,7 +198,7 @@ LOGGING = {
             'backupCount': 5,
             'maxBytes': 1024 * 1024 * 10,
             'formatter': 'verbose',
-            'encoding':'utf8',
+            'encoding': 'utf8',
         },
     },
     'loggers': {
@@ -236,4 +240,3 @@ SCA_URL = config.get("sca", 'url')
 
 if os.getenv('environment', None) == 'DEV' or os.getenv('PYTHONAGENT', None) == 'TRUE':
     MIDDLEWARE.append('dongtai_agent_python.middlewares.django_middleware.FireMiddleware')
-
