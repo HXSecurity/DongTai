@@ -10,7 +10,8 @@ from dongtai.endpoint import R, UserEndPoint
 from dongtai.models.asset import Asset
 from dongtai.models.sca_artifact_db import ScaArtifactDb
 from dongtai.models.sca_maven_artifact import ScaMavenArtifact
-
+from dongtai.models.vul_level import IastVulLevel
+from django.utils.translation import get_language
 from iast.serializers.sca import ScaSerializer
 from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
@@ -117,20 +118,30 @@ class ScaDetailView(UserEndPoint):
                         maven_model = {}
                     vul_list = resp.get("data", {}).get("vul_list", [])
 
+                    levels = IastVulLevel.objects.all()
+                    level_dict = {}
+                    language = get_language()
+                    for level in levels:
+                        if language == "zh":
+                            level_dict[level.name] = level.name_type_zh
+                        if language == "en":
+                            level_dict[level.name] = level.name_type_en
+
                     for vul in vul_list:
                         _level = vul.get("vul_package", {}).get("severity", "none")
                         _vul = vul.get("vul", {})
                         _fixed_versions = vul.get("fixed_versions", [])
+                        cwe_ids = vul.get('vul_package', {}).get('cwe_ids', [])
                         data['vuls'].append({
                             'safe_version': ",".join(_fixed_versions) if len(_fixed_versions) > 0 else _(
                                 'Current version stopped for maintenance or it is not a secure version'),
                             'vulcve': _vul.get('aliases', [])[0] if len(_vul.get('aliases', [])) > 0 else "",
-                            'vulcwe': _vul.get('vul_package', {}).get('cwe_ids', [])[0] if len(_vul.get('cwe_ids', [])) > 0 else "",
+                            'vulcwe': ",".join(cwe_ids),
                             'vulname': _vul.get("summary", ""),
                             'overview': _vul.get("summary", ""),
                             'teardown': _vul.get("details", ""),
                             'reference': _vul.get('references', []),
-                            'level': _level
+                            'level': level_dict.get(_level, _level)
                         })
 
                 except Exception as e:
