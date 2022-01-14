@@ -74,7 +74,10 @@ class ProjectDetail(UserEndPoint):
                 "scan_name": scan_name,
                 "agents": agents,
                 "versionData": current_project_version,
-                "vul_validation": project.vul_validation
+                "vul_validation": project.vul_validation,
+                'base_url':project.base_url,
+                "test_req_header_key":project.test_req_header_key,
+                "test_req_header_value":project.test_req_header_values,
             })
         else:
             return R.failure(status=203, msg=_('no permission'))
