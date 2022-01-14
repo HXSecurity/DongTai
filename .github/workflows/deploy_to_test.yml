@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mysql:
-        image: dongtai/dongtai-mysql:latest
+        image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest
         ports:
           - 3306:3306
         options: >-
