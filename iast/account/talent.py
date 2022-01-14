@@ -68,7 +68,7 @@ class TalentEndPoint(SystemAdminEndPoint):
                 talent.talent_name = talent_name
 
             is_active = request.data.get('is_active')
-            if is_active:
+            if is_active is not None:
                 talent.is_active = bool(is_active)
 
             talent.save()
