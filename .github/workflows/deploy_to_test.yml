@@ -57,7 +57,7 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
       - name: Waiting For MySql Init
-        run: sleep 90
+        run: sleep 50
 
       - name: Run UnitTest
         run: |
@@ -72,6 +72,7 @@ jobs:
           pip install schemathesis
           export DOC=TRUE
           python3 manage.py runserver 0.0.0.0:8000 &
+          sleep 15
           schemathesis run --base-url "http://localhost:8000/"  -H 'Authorization: Token 67aebd78e700ad36a82a152276196b5f49fafeb0' http://localhost:8000/api/XZPcGFKoxYXScwGjQtJx8u/schema/  --hypothesis-suppress-health-check=data_too_large,filter_too_much,too_slow,return_value,large_base_example,not_a_test_method,function_scoped_fixture --hypothesis-verbosity verbose
 
  
