@@ -109,7 +109,7 @@ class ScaDetailView(UserEndPoint):
                 search_query = "ecosystem={}&name={}&version={}".format("PyPI", name, version)
             if search_query != "":
                 try:
-                    url = settings.SCA_URL + "/api/package_vul/?" + search_query
+                    url = settings.SCA_BASE_URL + "/package_vul/?" + search_query
                     resp = requests.get(url=url)
                     resp = json.loads(resp.content)
                     maven_model = resp.get("data", {}).get("package", {})
@@ -119,16 +119,18 @@ class ScaDetailView(UserEndPoint):
 
                     for vul in vul_list:
                         _level = vul.get("vul_package", {}).get("severity", "none")
+                        _vul = vul.get("vul", {})
+                        _fixed_versions = vul.get("fixed_versions", [])
                         data['vuls'].append({
-                            'safe_version': vul.get("fixed_versions").join(",") if vul.get("fixed_versions", []) else _(
+                            'safe_version': ",".join(_fixed_versions) if len(_fixed_versions) > 0 else _(
                                 'Current version stopped for maintenance or it is not a secure version'),
-                            'vulcve': vul.get('vul', {}).get('aliases', [])[0] if len(vul.get('vul', {}).get('aliases', [])) > 0 else "",
-                            'vulcwe': vul.get('vul_package', {}).get('cwe_ids', [])[0] if len(vul.get('vul', {}).get('cwe_ids', [])) > 0 else "",
-                            'vulname': vul.get('vul', {}).get("summary", ""),
-                            'overview': vul.get('vul', {}).get("summary", ""),
-                            'teardown': vul.get('vul', {}).get("details", ""),
-                            'reference': vul.get('references', []),
-                            'level': vul.get('vul_package', {}).get('severity', None),
+                            'vulcve': _vul.get('aliases', [])[0] if len(_vul.get('aliases', [])) > 0 else "",
+                            'vulcwe': _vul.get('vul_package', {}).get('cwe_ids', [])[0] if len(_vul.get('cwe_ids', [])) > 0 else "",
+                            'vulname': _vul.get("summary", ""),
+                            'overview': _vul.get("summary", ""),
+                            'teardown': _vul.get("details", ""),
+                            'reference': _vul.get('references', []),
+                            'level': _vul.get('vul_package', {}).get('severity', None),
                         })
 
                 except Exception as e:
