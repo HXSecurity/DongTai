@@ -1,9 +1,10 @@
 [mysql]
-host = localhost
+host = 127.0.0.1
 port = 3306
-name = dongtai-webapi
+name = dongtai_webapi
 user = root
 password = dongtai-iast
+
 
 [redis]
 host = redis_server
@@ -28,6 +29,9 @@ cc_addr = cc_addr
 [aliyun_oss]
 access_key = LTAI5t7pu9WUT2DcbknfNiaD
 access_key_secret = ZoEOSi7KfayQ7JalvJVHa37fdZ4XFY
+
+[sca]
+base_url = http://52.80.75.225:8000
 
 [other]
 domain = http://localhost.domain/
