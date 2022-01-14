@@ -109,7 +109,7 @@ class ScaDetailView(UserEndPoint):
                 search_query = "ecosystem={}&name={}&version={}".format("PyPI", name, version)
             if search_query != "":
                 try:
-                    url = settings.SCA_URL + "/api/package_vul/?" + search_query
+                    url = settings.SCA_BASE_URL + "/package_vul/?" + search_query
                     resp = requests.get(url=url)
                     resp = json.loads(resp.content)
                     maven_model = resp.get("data", {}).get("package", {})
@@ -120,8 +120,9 @@ class ScaDetailView(UserEndPoint):
                     for vul in vul_list:
                         _level = vul.get("vul_package", {}).get("severity", "none")
                         _vul = vul.get("vul", {})
+                        _fixed_versions = vul.get("fixed_versions", [])
                         data['vuls'].append({
-                            'safe_version': _vul.get("fixed_versions").join(",") if _vul.get("fixed_versions", []) else _(
+                            'safe_version': ",".join(_fixed_versions) if len(_fixed_versions) > 0 else _(
                                 'Current version stopped for maintenance or it is not a secure version'),
                             'vulcve': _vul.get('aliases', [])[0] if len(_vul.get('aliases', [])) > 0 else "",
                             'vulcwe': _vul.get('vul_package', {}).get('cwe_ids', [])[0] if len(_vul.get('cwe_ids', [])) > 0 else "",
