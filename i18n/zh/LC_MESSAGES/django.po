@@ -105,54 +105,54 @@ msgstr "租户不存在"
 msgid "Tenant name or email is not specified"
 msgstr "租户名称或联系邮箱未指定"
 
-#: iast/account/talent.py:97
+#: iast/account/talent.py:98
 msgid "Tenant {} has been created successfully"
 msgstr "租户{}创建成功"
 
-#: iast/account/talent.py:98
+#: iast/account/talent.py:99
 msgid "Tenant {} creation failed, error message:{}"
-msgstr "租户创建失败，原因：{}"
+msgstr "租户{} 创建失败，原因：{}"
 
-#: iast/account/talent.py:106
+#: iast/account/talent.py:108
 msgid "Tenant: {} Delete successfully"
 msgstr "租户：{} 删除成功"
 
-#: iast/account/talent.py:121
+#: iast/account/talent.py:123
 msgid "Query if the default tenant information exists"
 msgstr "查询默认租户信息是否存在"
 
-#: iast/account/talent.py:125
+#: iast/account/talent.py:127
 msgid ""
 "Tenant information already exists, please delete tenant information first"
 msgstr "租户信息已存在，请先删除原有租户信息"
 
-#: iast/account/talent.py:126
+#: iast/account/talent.py:128
 msgid ""
 "The tenant information already existed, please delete the existing "
 "information first"
 msgstr "租户信息已存在，请先删除原有租户信息"
 
-#: iast/account/talent.py:128
+#: iast/account/talent.py:130
 msgid "Started creating a tenant"
 msgstr "开始创建租户"
 
-#: iast/account/talent.py:134
+#: iast/account/talent.py:136
 msgid "Finished creating tenant, start to create tenant default department"
 msgstr "租户创建完成，开始创建默认部门"
 
-#: iast/account/talent.py:135
+#: iast/account/talent.py:137
 msgid "Default department"
 msgstr "默认部门"
 
-#: iast/account/talent.py:140
+#: iast/account/talent.py:142
 msgid "Finished creating department, start to create default user"
 msgstr "部门创建完成，开始创建默认用户"
 
-#: iast/account/talent.py:153
+#: iast/account/talent.py:155
 msgid "Finsihed creating and initializing tenant"
 msgstr "租户创建及初始化完成"
 
-#: iast/account/talent.py:156
+#: iast/account/talent.py:158
 msgid "Failed to created a tenant, error message:{}"
 msgstr "创建租户失败，错误原因：{}"
 
