@@ -22,6 +22,3 @@ from_addr = from_add
 ssl = ssl
 cc_addr = cc_addr
 
-[sca]
-url = http://52.80.75.225:8000
-
