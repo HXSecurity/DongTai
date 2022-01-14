@@ -68,7 +68,7 @@ class TalentEndPoint(SystemAdminEndPoint):
                 talent.talent_name = talent_name
 
             is_active = request.data.get('is_active')
-            if is_active:
+            if is_active is not None:
                 talent.is_active = bool(is_active)
 
             talent.save()
@@ -94,8 +94,10 @@ class TalentEndPoint(SystemAdminEndPoint):
             return R.failure(msg=_('Tenant name or email is not specified'))
         status, msg = self.init_talent(talent_name, talent_email, request.user.id, request.user.get_username())
         if status:
-            return R.success(msg=_('Tenant {} has been created successfully').format(talent_name))
-        return R.failure(msg=_('Tenant {} creation failed, error message:{}').format(msg=msg))
+            return R.success(msg=_(
+                'Tenant {} has been created successfully').format(talent_name))
+        return R.failure(msg=_('Tenant {} creation failed, error message:{}').
+                         format(talent_name, msg))
 
     def delete(self, request, pk):
         """
