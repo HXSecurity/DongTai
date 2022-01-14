@@ -19,7 +19,10 @@ from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
 from django.db import transaction
-
+from urllib.parse import urlparse, urlunparse
+import ipaddress
+import requests
+from dongtai.models.server import IastServer
 logger = logging.getLogger("django")
 
 
@@ -65,8 +68,8 @@ class ProjectAdd(UserEndPoint):
         response_schema=_ResponseSerializer,
     )
     def post(self, request):
-        with transaction.atomic():
-            try:
+        try:
+            with transaction.atomic():
                 name = request.data.get("name")
                 mode = "插桩模式"
                 scan_id = request.data.get("scan_id")
@@ -80,21 +83,37 @@ class ProjectAdd(UserEndPoint):
                 test_req_header_value = request.data.get(
                     'test_req_header_value', None)
                 description = request.data.get('description', None)
+                pid = request.data.get("pid", 0)
+                accessable_ips = []
+                if pid and base_url:
+                    ips = filter(lambda x: ip_validate(x), [
+                        i[0] for i in IastServer.objects.filter(
+                            pid=pid).values_list('ip').distinct().all()
+                    ])
+                    accessable_ips = _accessable_ips(base_url, ips)
+                if accessable_ips:
+                    parsed_url = urlparse(base_url)
+                    if parsed_url.netloc not in parsed_url:
+                        return R.failure(status=202,
+                                         msg=_('base_url validate failed'))
+                if base_url and not url_validate(base_url):
+                    return R.failure(status=202,
+                                     msg=_('base_url validate failed'))
                 if agent_ids:
                     try:
                         agents = [int(i) for i in agent_ids.split(',')]
                     except Exception as e:
                         print(e)
-                        return R.failure(status=202, msg=_('Parameter error'))
+                        return R.failure(status=202, msg=_('Agent parse error'))
                 else:
                     agents = []
                 if not scan_id or not name or not mode:
-                    return R.failure(status=202, msg=_('Parameter error'))
+                    logger.error('require base scan_id and name')
+                    return R.failure(status=202, msg=_('Required scan strategy and name'))
 
                 version_name = request.data.get("version_name", "")
                 if not version_name:
                     version_name = "V1.0"
-                pid = request.data.get("pid", 0)
                 vul_validation = request.data.get("vul_validation", None)
                 #vul_validation = vul_validation if vul_validation is None else (
                 #    VulValidation.ENABLE
@@ -124,15 +143,17 @@ class ProjectAdd(UserEndPoint):
                     "description": request.data.get("description", ""),
                     "current_version": 1
                 }
-                if not (versionInfo.version_name == version_name and
-                        (versionInfo.description == description
-                         or not description)):
+                if not versionInfo or not (
+                        versionInfo.version_name == version_name and
+                    (versionInfo.description == description
+                     or not description)):
                     result = version_modify(project.user,
                                             current_project_version)
                     if result.get("status", "202") == "202":
+                        logger.error('version update failure')
                         return R.failure(status=202,
                                          msg=result.get('msg',
-                                                        _("Parameter error")))
+                                                        _("Version Update Error")))
                     else:
                         project_version_id = result.get("data", {}).get("version_id", 0)
 
@@ -165,7 +186,7 @@ class ProjectAdd(UserEndPoint):
                             bind_project_id=project.id,
                             project_version_id=project_version_id)
                 if base_url:
-                    project.base_url = base_url
+                    project.base_url = replace_ending(base_url, '/', '')
                 if test_req_header_key:
                     project.test_req_header_key = test_req_header_key
                 if test_req_header_value:
@@ -179,6 +200,56 @@ class ProjectAdd(UserEndPoint):
                 return R.success(
                     msg=_('Updated success')) if pid else R.success(
                         msg=_('Created success'))
-            except Exception as e:
-                logger.error(e)
-                return R.failure(status=202, msg=_('Parameter error'))
+        except Exception as e:
+            logger.error(e)
+            return R.failure(status=202, msg=_('Parameter error'))
+
+
+def _accessable_ips(url, ips):
+    parse_re = urlparse(url)
+    return list(
+        filter(
+            lambda x: url_accessable(urlunparse(parse_re._replace(netloc=x))),
+            ips))
+
+
+def url_accessable(url):
+    try:
+        requests.get(url, timeout=2)
+    except Exception as e:
+        return False
+    return True
+
+
+def url_validate(url):
+    parse_re = urlparse(url)
+    if parse_re.scheme not in ('http',
+                               'https') or parse_re.hostname in ('127.0.0.1',
+                                                                 'localhost'):
+        return False
+    return ip_validate(parse_re.hostname) if is_ip(parse_re.hostname) else True
+
+
+
+def ip_validate(ip):
+    try:
+        ipaddress = ipaddress.IPv4Address(ip)
+        if int(ipaddress.IPv4Address('127.0.0.1')) < int(ipaddress) < int(
+                ipaddress.IPv4Address('127.255.255.255')):
+            logger.error('127.x.x.x address not allowed')
+            return False
+        if int(ipaddress.IPv4Address('10.0.0.1')) < int(ipaddress) < int(
+                ipaddress.IPv4Address('10.255.255.255')):
+            logger.error('10.x.x.x address not allowed')
+            return False
+    except (ipaddress.AddressValueError) as e:
+        pass
+    return True
+
+def is_ip(address):
+    return not address.split('.')[-1].isalpha()
+
+def replace_ending(sentence, old, new):
+    if sentence.endswith(old):
+        return sentence[:-len(old)] + new
+    return sentence
