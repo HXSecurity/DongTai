@@ -129,7 +129,8 @@ class ScaExport(UserEndPoint):
                 writer.writerow(row)
         project_name = project_name if project_name else IastProject.objects.filter(
             pk=project_id).values_list('name', flat=True).first()
-        project_version_id = current_project_version.get("version_id", 0)
+        project_version_id = current_project_version.get(
+            "version_id", 0) if project_id else None
         project_version_name = IastProjectVersion.objects.filter(
             pk=project_version_id).values_list(
                 'version_name',
