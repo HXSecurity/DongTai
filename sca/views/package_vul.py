@@ -2,8 +2,9 @@ from sca.models import Package, VulPackageVersion, VulPackage, VulPackageRange, 
 from django.http import JsonResponse
 from rest_framework import views
 from django.forms.models import model_to_dict
+from dongtai.endpoint import R, AnonymousAndUserEndPoint
 
-class OnePackageVulList(views.APIView):
+class OnePackageVulList(AnonymousAndUserEndPoint):
 
     # 查找单个漏洞下，所有的修复的高版本
     def find_fixed_versions(self, vul_package_id, ecosystem, name, version):
