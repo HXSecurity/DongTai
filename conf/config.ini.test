@@ -5,26 +5,27 @@ name = dongtai_webapi
 user = root
 password = dongtai-iast
 
-
 [redis]
-host = redis_server
-port = redis_port
-password = redis_password
-db = broker_db
+host = dongtai-redis
+port = 6379
+password = 123456 
+db = 0
 
 [engine]
-url = http://engine_url
+url = http://dongtai-engine:8000
 
 [apiserver]
-url = http://api_server_url
+url = http://dongtai-openapi:8000
 
 [smtp]
 server = smtp_server
 user = smtp_user
 password = smtp_password
 from_addr = from_addr
+port = 25
 ssl = False
 cc_addr = cc_addr
+
 
 [aliyun_oss]
 access_key = LTAI5t7pu9WUT2DcbknfNiaD
