@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-30 16:16+0800\n"
+"POT-Creation-Date: 2022-01-14 17:10+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -69,7 +69,7 @@ msgstr "父部门无访问权限"
 msgid ""
 "Delete failed, existence of users under department {}, please implement "
 "forced deletion"
-msgstr ""
+msgstr "删除失败，该部门 {} 存在用户  "
 
 #: iast/account/department.py:207 iast/views/agents_delete.py:31
 #: iast/views/agents_delete.py:76 iast/views/project_report_delete.py:52
@@ -95,54 +95,54 @@ msgstr "租户不存在"
 msgid "Tenant name or email is not specified"
 msgstr "租户名称或联系邮箱未指定"
 
-#: iast/account/talent.py:97
+#: iast/account/talent.py:98
 msgid "Tenant {} has been created successfully"
 msgstr "租户{}创建成功"
 
-#: iast/account/talent.py:98
+#: iast/account/talent.py:99
 msgid "Tenant {} creation failed, error message:{}"
-msgstr "租户创建失败，原因：{}"
+msgstr "租户{} 创建失败，原因：{}"
 
-#: iast/account/talent.py:106
+#: iast/account/talent.py:108
 msgid "Tenant: {} Delete successfully"
 msgstr "租户：{} 删除成功"
 
-#: iast/account/talent.py:121
+#: iast/account/talent.py:123
 msgid "Query if the default tenant information exists"
 msgstr "查询默认租户信息是否存在"
 
-#: iast/account/talent.py:125
+#: iast/account/talent.py:127
 msgid ""
 "Tenant information already exists, please delete tenant information first"
 msgstr "租户信息已存在，请先删除原有租户信息"
 
-#: iast/account/talent.py:126
+#: iast/account/talent.py:128
 msgid ""
 "The tenant information already existed, please delete the existing "
 "information first"
 msgstr "租户信息已存在，请先删除原有租户信息"
 
-#: iast/account/talent.py:128
+#: iast/account/talent.py:130
 msgid "Started creating a tenant"
 msgstr "开始创建租户"
 
-#: iast/account/talent.py:134
+#: iast/account/talent.py:136
 msgid "Finished creating tenant, start to create tenant default department"
 msgstr "租户创建完成，开始创建默认部门"
 
-#: iast/account/talent.py:135
+#: iast/account/talent.py:137
 msgid "Default department"
 msgstr "默认部门"
 
-#: iast/account/talent.py:140
+#: iast/account/talent.py:142
 msgid "Finished creating department, start to create default user"
 msgstr "部门创建完成，开始创建默认用户"
 
-#: iast/account/talent.py:153
+#: iast/account/talent.py:155
 msgid "Finsihed creating and initializing tenant"
 msgstr "租户创建及初始化完成"
 
-#: iast/account/talent.py:156
+#: iast/account/talent.py:158
 msgid "Failed to created a tenant, error message:{}"
 msgstr "创建租户失败，错误原因：{}"
 
@@ -155,7 +155,7 @@ msgid "Data update succeeded"
 msgstr "数据更新成功"
 
 #: iast/account/user.py:138 iast/views/project_detail.py:38
-#: iast/views/project_detail.py:80 iast/views/project_report_export.py:100
+#: iast/views/project_detail.py:83 iast/views/project_report_export.py:103
 #: iast/views/project_summary.py:106 iast/views/user_detail.py:32
 msgid "no permission"
 msgstr "no permission"
@@ -188,7 +188,7 @@ msgstr "用户名已存在"
 msgid "User creation failed"
 msgstr "用户创建失败"
 
-#: iast/account/user.py:249 iast/views/user_register_batch.py:72
+#: iast/account/user.py:249 iast/views/user_register_batch.py:73
 msgid "User {} has been created successfully"
 msgstr "用户{}创建成功"
 
@@ -215,7 +215,7 @@ msgstr "在{}{}调用{}.{}(),传入参数{}"
 msgid "{} Appears in {} {}"
 msgstr "{}出现在{}的{}"
 
-#: iast/base/project_version.py:9 iast/base/project_version.py:117
+#: iast/base/project_version.py:9 iast/base/project_version.py:118
 #: iast/views/api_route_search.py:41 iast/views/project_report_export.py:29
 #: iast/views/project_summary.py:26 iast/views/project_version_current.py:21
 #: iast/views/project_version_delete.py:19
@@ -223,7 +223,7 @@ msgstr "{}出现在{}的{}"
 msgid "The version id of the project"
 msgstr "项目的版本id"
 
-#: iast/base/project_version.py:11 iast/base/project_version.py:119
+#: iast/base/project_version.py:11 iast/base/project_version.py:120
 #: iast/views/project_add.py:33 iast/views/project_version_list.py:21
 #: iast/views/vul_details.py:55
 msgid "The version name of the project"
@@ -236,7 +236,7 @@ msgstr "项目版本的描述"
 #: iast/base/project_version.py:14 iast/serializers/vul.py:113
 #: iast/views/api_route_search.py:39 iast/views/project_add.py:34
 #: iast/views/project_delete.py:17 iast/views/project_detail.py:30
-#: iast/views/project_report_export.py:32
+#: iast/views/project_report_export.py:34
 #: iast/views/project_report_sync_add.py:21 iast/views/project_search.py:18
 #: iast/views/project_summary.py:56 iast/views/project_version_current.py:22
 #: iast/views/project_version_delete.py:20 iast/views/vul_details.py:71
@@ -257,11 +257,11 @@ msgstr "表示是否为当前版本，1代表是，0代表否"
 #: iast/views/engine_hook_rules.py:94
 #: iast/views/engine_method_pool_search.py:173
 #: iast/views/engine_method_pool_search.py:184 iast/views/openapi.py:14
-#: iast/views/openapi.py:68 iast/views/project_add.py:43
-#: iast/views/project_add.py:79 iast/views/project_add.py:83
-#: iast/views/project_add.py:117 iast/views/project_add.py:159
-#: iast/views/project_report_export.py:78
-#: iast/views/project_report_export.py:83
+#: iast/views/openapi.py:68 iast/views/project_add.py:46
+#: iast/views/project_add.py:88 iast/views/project_add.py:92
+#: iast/views/project_add.py:135 iast/views/project_add.py:184
+#: iast/views/project_report_export.py:81
+#: iast/views/project_report_export.py:86
 #: iast/views/project_report_sync_add.py:53
 #: iast/views/project_version_add.py:18 iast/views/project_version_add.py:41
 #: iast/views/project_version_add.py:47
@@ -278,18 +278,18 @@ msgstr "表示是否为当前版本，1代表是，0代表否"
 msgid "Parameter error"
 msgstr "参数错误"
 
-#: iast/base/project_version.py:47
+#: iast/base/project_version.py:46
 msgid "Repeated version name"
 msgstr "版本名称重复"
 
-#: iast/base/project_version.py:54 iast/views/project_version_current.py:26
+#: iast/base/project_version.py:55 iast/views/project_version_current.py:26
 #: iast/views/project_version_current.py:72
 #: iast/views/project_version_delete.py:24
 #: iast/views/project_version_delete.py:55
 msgid "Version does not exist"
 msgstr "版本不存在"
 
-#: iast/base/project_version.py:115 iast/views/project_add.py:36
+#: iast/base/project_version.py:116 iast/views/project_add.py:36
 msgid "Description of the project"
 msgstr "项目的描述信息"
 
@@ -458,7 +458,7 @@ msgstr "漏洞类型的对应名称"
 msgid "The number of vulnerabilities corresponding to the vulnerablity type"
 msgstr "漏洞类型对应的漏洞数量"
 
-#: iast/serializers/vul.py:110 iast/views/project_report_export.py:31
+#: iast/serializers/vul.py:110 iast/views/project_report_export.py:32
 #: iast/views/project_report_sync_add.py:20
 msgid "The name of the project"
 msgstr "项目名"
@@ -712,6 +712,7 @@ msgstr "通过指定id来安装运行中的探针"
 #: iast/views/scas.py:35 iast/views/sensitive_info_rule.py:107
 #: iast/views/strategys.py:68 iast/views/vul_list_for_plugin.py:35
 #: iast/views/vul_sidebar_index.py:39 iast/views/vuls.py:67
+#: scaupload/views.py:23
 msgid "Number per page"
 msgstr "每页数量"
 
@@ -722,6 +723,7 @@ msgstr "每页数量"
 #: iast/views/scas.py:28 iast/views/sensitive_info_rule.py:108
 #: iast/views/strategys.py:69 iast/views/vul_list_for_plugin.py:28
 #: iast/views/vul_sidebar_index.py:33 iast/views/vuls.py:60
+#: scaupload/views.py:24
 msgid "Page index"
 msgstr "对应页码"
 
@@ -1039,18 +1041,18 @@ msgstr "探针列表"
 #: iast/views/details_id.py:115 iast/views/details_id.py:137
 #: iast/views/projects.py:41 iast/views/scan_strategys.py:114
 #: iast/views/scan_strategys.py:170 iast/views/scan_strategys.py:192
-#: iast/views/sensitive_info_rule.py:134 iast/views/sensitive_info_rule.py:162
-#: iast/views/sensitive_info_rule.py:196 iast/views/sensitive_info_rule.py:219
-#: iast/views/sensitive_info_rule.py:232 iast/views/sensitive_info_rule.py:264
+#: iast/views/sensitive_info_rule.py:134 iast/views/sensitive_info_rule.py:164
+#: iast/views/sensitive_info_rule.py:198 iast/views/sensitive_info_rule.py:221
+#: iast/views/sensitive_info_rule.py:234 iast/views/sensitive_info_rule.py:266
 msgid ""
 "Get the item corresponding to the user, support fuzzy search based on name."
 msgstr "项目对应的用户，支持模糊匹配"
 
-#: iast/views/details_id.py:91 iast/views/project_add.py:56
+#: iast/views/details_id.py:91 iast/views/project_add.py:59
 #: iast/views/project_delete.py:32 iast/views/project_detail.py:47
 #: iast/views/project_engines.py:37 iast/views/project_report_delete.py:27
 #: iast/views/project_report_download.py:27
-#: iast/views/project_report_export.py:60 iast/views/project_report_list.py:32
+#: iast/views/project_report_export.py:63 iast/views/project_report_list.py:32
 #: iast/views/project_report_sync_add.py:32 iast/views/project_search.py:34
 #: iast/views/project_summary.py:94 iast/views/project_version_add.py:29
 #: iast/views/project_version_current.py:38
@@ -1066,7 +1068,7 @@ msgstr "项目"
 msgid "Project List with id"
 msgstr "项目列表"
 
-#: iast/views/details_id.py:112 iast/views/sca_details.py:80
+#: iast/views/details_id.py:112 iast/views/sca_details.py:83
 #: iast/views/sca_sidebar_index.py:45 iast/views/sca_summary.py:146
 #: iast/views/scas.py:123
 msgid "Component"
@@ -1689,7 +1691,7 @@ msgid "Page and PageSize can only be numeric"
 msgstr "page和pageSize只能为数字"
 
 #: iast/views/openapi.py:12 iast/views/openapi.py:73 iast/views/openapi.py:77
-#: iast/views/project_add.py:44 iast/views/project_add.py:156
+#: iast/views/project_add.py:47 iast/views/project_add.py:181
 #: iast/views/project_report_sync_add.py:65
 #: iast/views/project_version_add.py:19 iast/views/project_version_add.py:43
 msgid "Created success"
@@ -1814,23 +1816,23 @@ msgstr "agent对应的id，使用\",\"进行切分。"
 msgid "The id corresponding to the scanning strategy."
 msgstr "扫描策略的对于id"
 
-#: iast/views/project_add.py:45 iast/views/project_add.py:128
+#: iast/views/project_add.py:48 iast/views/project_add.py:146
 msgid "Agent has been bound by other application"
 msgstr "agent已被其他项目绑定"
 
-#: iast/views/project_add.py:46 iast/views/project_add.py:102
+#: iast/views/project_add.py:49 iast/views/project_add.py:111
 msgid "Failed to create, the application name already exists"
 msgstr "创建失败，项目名称已存在"
 
-#: iast/views/project_add.py:52
+#: iast/views/project_add.py:55
 msgid "New application"
 msgstr "新增项目"
 
-#: iast/views/project_add.py:57
+#: iast/views/project_add.py:60
 msgid "Projects Add"
 msgstr "项目新建"
 
-#: iast/views/project_add.py:59
+#: iast/views/project_add.py:62
 msgid ""
 "Create a new project according to the given conditions;\n"
 "            when specifying the project id, update the item corresponding to "
@@ -1839,7 +1841,7 @@ msgstr ""
 "根据所给条件新建项目;\n"
 "            当指定项目id是, 根据所给条件更新对应项目"
 
-#: iast/views/project_add.py:155
+#: iast/views/project_add.py:180
 #, fuzzy
 #| msgid "Created success"
 msgid "Updated success"
@@ -1917,7 +1919,7 @@ msgid "Delete Vulnerability Report"
 msgstr "删除漏洞"
 
 #: iast/views/project_report_delete.py:28
-#: iast/views/project_report_export.py:61
+#: iast/views/project_report_export.py:64
 msgid "Projects Report Export"
 msgstr "项目报告导出"
 
@@ -1944,7 +1946,7 @@ msgid "Projects Report Download"
 msgstr "项目报告导出"
 
 #: iast/views/project_report_download.py:30
-#: iast/views/project_report_export.py:63
+#: iast/views/project_report_export.py:66
 msgid ""
 "According to the conditions, export the report of the specified project or "
 "the project of the specified vulnerability."
@@ -1958,99 +1960,99 @@ msgstr ""
 msgid "{}.{}"
 msgstr ""
 
-#: iast/views/project_report_export.py:36
+#: iast/views/project_report_export.py:39
 msgid "Vulnerability Report Generate - Word"
 msgstr "漏洞word报告生成"
 
-#: iast/views/project_report_export.py:90
+#: iast/views/project_report_export.py:93
 msgid "Vulnerability Report - {}. {}"
 msgstr "漏洞报告-{}.{}"
 
-#: iast/views/project_report_export.py:145
+#: iast/views/project_report_export.py:148
 msgid "Security Testing Report"
 msgstr "安全测试报告"
 
-#: iast/views/project_report_export.py:158
+#: iast/views/project_report_export.py:161
 msgid "First, project information"
 msgstr "一 、项目基础信息"
 
-#: iast/views/project_report_export.py:166
+#: iast/views/project_report_export.py:169
 msgid "Application name"
 msgstr "项目名称"
 
-#: iast/views/project_report_export.py:169
+#: iast/views/project_report_export.py:172
 msgid "Author"
 msgstr "创建人员"
 
-#: iast/views/project_report_export.py:172
+#: iast/views/project_report_export.py:175
 msgid "Application type"
 msgstr "项目类型"
 
-#: iast/views/project_report_export.py:175
+#: iast/views/project_report_export.py:178
 msgid "Number of Vulnerability"
 msgstr "漏洞数量"
 
-#: iast/views/project_report_export.py:178
+#: iast/views/project_report_export.py:181
 msgid "Number of Agent"
 msgstr "Agent数量"
 
-#: iast/views/project_report_export.py:181
+#: iast/views/project_report_export.py:184
 msgid "Latest time"
 msgstr "最新时间"
 
-#: iast/views/project_report_export.py:203
+#: iast/views/project_report_export.py:206
 msgid "Second, the result analysis"
 msgstr "二、结果分析"
 
-#: iast/views/project_report_export.py:207
+#: iast/views/project_report_export.py:210
 msgid "2.1 Vulnerability Severity Levels Distribution"
 msgstr "2.1  漏洞等级分布"
 
-#: iast/views/project_report_export.py:217
+#: iast/views/project_report_export.py:220
 msgid "2.2 Distribution of Vulnerability"
 msgstr "2.2  漏洞类型分布"
 
-#: iast/views/project_report_export.py:225
+#: iast/views/project_report_export.py:228
 msgid "Severity levels"
 msgstr "漏洞等级"
 
-#: iast/views/project_report_export.py:226
+#: iast/views/project_report_export.py:229
 msgid "Vulnerability type name"
 msgstr "漏洞类型名称"
 
-#: iast/views/project_report_export.py:227
+#: iast/views/project_report_export.py:230
 msgid "Number"
 msgstr "数量"
 
-#: iast/views/project_report_export.py:240
+#: iast/views/project_report_export.py:243
 msgid "2.3 Vulnerability details"
 msgstr "2.3  漏洞详情"
 
-#: iast/views/project_report_export.py:263
+#: iast/views/project_report_export.py:266
 msgid "Summary"
 msgstr "概要信息"
 
-#: iast/views/project_report_export.py:267
+#: iast/views/project_report_export.py:270
 msgid "Severity level"
 msgstr "危害等级"
 
-#: iast/views/project_report_export.py:271
+#: iast/views/project_report_export.py:274
 msgid "First scan time"
 msgstr "首次检测时间"
 
-#: iast/views/project_report_export.py:275
+#: iast/views/project_report_export.py:278
 msgid "Last scan time"
 msgstr "最近检测时间"
 
-#: iast/views/project_report_export.py:279
+#: iast/views/project_report_export.py:282
 msgid "Development language"
 msgstr "开发语言"
 
-#: iast/views/project_report_export.py:283
+#: iast/views/project_report_export.py:286
 msgid "Vulnerability URL"
 msgstr "漏洞url"
 
-#: iast/views/project_report_export.py:285
+#: iast/views/project_report_export.py:288
 msgid "Vulnerability description"
 msgstr "漏洞描述"
 
@@ -2275,14 +2277,14 @@ msgstr "查看项目列表"
 msgid "Projects List"
 msgstr "项目列表"
 
-#: iast/views/sca_details.py:53 iast/views/sca_summary.py:99
+#: iast/views/sca_details.py:56 iast/views/sca_summary.py:99
 #: iast/views/scas.py:87 iast/views/vul_details.py:277
 #: iast/views/vul_status.py:51 iast/views/vul_summary.py:146
 #: iast/views/vulnerability_status.py:41 iast/views/vuls.py:147
 msgid "Get data sample"
 msgstr "获取数据样例"
 
-#: iast/views/sca_details.py:55 iast/views/sca_summary.py:101
+#: iast/views/sca_details.py:58 iast/views/sca_summary.py:101
 #: iast/views/scas.py:89 iast/views/vul_details.py:279
 #: iast/views/vul_status.py:53 iast/views/vul_summary.py:148
 #: iast/views/vulnerability_status.py:43 iast/views/vuls.py:149
@@ -2291,23 +2293,23 @@ msgid ""
 "type, project"
 msgstr "聚合结果分别为编程语言，风险等级，漏洞类型，项目。"
 
-#: iast/views/sca_details.py:81
+#: iast/views/sca_details.py:84
 msgid "Component Detail"
 msgstr "组件详情"
 
-#: iast/views/sca_details.py:83
+#: iast/views/sca_details.py:86
 msgid "Get the details of the corresponding component by specifying the id."
 msgstr "通过指定id来获取对应组件的详情"
 
-#: iast/views/sca_details.py:96
+#: iast/views/sca_details.py:99
 msgid "Components do not exist or no permission to access"
 msgstr "组件不存在或无权限访问"
 
-#: iast/views/sca_details.py:112
+#: iast/views/sca_details.py:124
 msgid "Current version stopped for maintenance or it is not a secure version"
 msgstr "当前版本已停止维护或暂无安全版本"
 
-#: iast/views/sca_details.py:124
+#: iast/views/sca_details.py:139
 msgid "Component information query failed"
 msgstr "组件信息查询失败"
 
@@ -2427,7 +2429,7 @@ msgstr "根据key获取配置"
 msgid "ScanStrategy batch status"
 msgstr ""
 
-#: iast/views/scan_strategys.py:227 iast/views/sensitive_info_rule.py:329
+#: iast/views/scan_strategys.py:227 iast/views/sensitive_info_rule.py:333
 msgid "batch update status."
 msgstr ""
 
@@ -2437,7 +2439,7 @@ msgstr ""
 msgid "ScanStrategy all status"
 msgstr "策略列表"
 
-#: iast/views/scan_strategys.py:244 iast/views/sensitive_info_rule.py:344
+#: iast/views/scan_strategys.py:244 iast/views/sensitive_info_rule.py:348
 #, fuzzy
 #| msgid "Update with status_id"
 msgid "all update status."
@@ -2466,11 +2468,11 @@ msgstr ""
 msgid "the data for test regex"
 msgstr ""
 
-#: iast/views/sensitive_info_rule.py:131 iast/views/sensitive_info_rule.py:159
-#: iast/views/sensitive_info_rule.py:193 iast/views/sensitive_info_rule.py:216
-#: iast/views/sensitive_info_rule.py:229 iast/views/sensitive_info_rule.py:247
-#: iast/views/sensitive_info_rule.py:261 iast/views/sensitive_info_rule.py:327
-#: iast/views/sensitive_info_rule.py:342
+#: iast/views/sensitive_info_rule.py:131 iast/views/sensitive_info_rule.py:161
+#: iast/views/sensitive_info_rule.py:195 iast/views/sensitive_info_rule.py:218
+#: iast/views/sensitive_info_rule.py:231 iast/views/sensitive_info_rule.py:249
+#: iast/views/sensitive_info_rule.py:263 iast/views/sensitive_info_rule.py:331
+#: iast/views/sensitive_info_rule.py:346
 msgid "SensitiveInfoRule"
 msgstr ""
 
@@ -2478,41 +2480,41 @@ msgstr ""
 msgid "SensitiveInfoRule List"
 msgstr ""
 
-#: iast/views/sensitive_info_rule.py:160
+#: iast/views/sensitive_info_rule.py:162
 msgid "SensitiveInfoRule Create"
 msgstr ""
 
-#: iast/views/sensitive_info_rule.py:194
+#: iast/views/sensitive_info_rule.py:196
 msgid "SensitiveInfoRule Update"
 msgstr ""
 
-#: iast/views/sensitive_info_rule.py:217
+#: iast/views/sensitive_info_rule.py:219
 msgid "SensitiveInfoRule delete"
 msgstr ""
 
-#: iast/views/sensitive_info_rule.py:230
+#: iast/views/sensitive_info_rule.py:232
 msgid "SensitiveInfoRule get"
 msgstr ""
 
-#: iast/views/sensitive_info_rule.py:248
+#: iast/views/sensitive_info_rule.py:250
 msgid "SensitiveInfoRule Pattern Type List"
 msgstr ""
 
-#: iast/views/sensitive_info_rule.py:250
+#: iast/views/sensitive_info_rule.py:252
 #, fuzzy
 #| msgid "Get the list of vulnerabilities corresponding to the user."
 msgid "Get the item corresponding to the user."
 msgstr "获取用户对应的漏洞列表"
 
-#: iast/views/sensitive_info_rule.py:262
+#: iast/views/sensitive_info_rule.py:264
 msgid "SensitiveInfoRule validated_data"
 msgstr ""
 
-#: iast/views/sensitive_info_rule.py:328
+#: iast/views/sensitive_info_rule.py:332
 msgid "SensitiveInfoRule batch status"
 msgstr ""
 
-#: iast/views/sensitive_info_rule.py:343
+#: iast/views/sensitive_info_rule.py:347
 msgid "SensitiveInfoRule all status"
 msgstr ""
 
@@ -2742,23 +2744,23 @@ msgstr "userId必须为数字"
 msgid "Password reset failed, reasons: {E}"
 msgstr "密码重置失败，原因：{e}"
 
-#: iast/views/user_register_batch.py:43
+#: iast/views/user_register_batch.py:44
 msgid "Account has been created successfully"
 msgstr "账号创建成功"
 
-#: iast/views/user_register_batch.py:69
+#: iast/views/user_register_batch.py:70
 msgid "User {} already exists"
 msgstr "用户{}已存在"
 
-#: iast/views/user_register_batch.py:74
+#: iast/views/user_register_batch.py:75
 msgid "Failed to create user, error message: token is incorrect"
 msgstr "用户创建失败，原因：token不正确"
 
-#: iast/views/user_register_batch.py:75
+#: iast/views/user_register_batch.py:76
 msgid "Account registration successful"
 msgstr "账号注册成功"
 
-#: iast/views/user_register_batch.py:90
+#: iast/views/user_register_batch.py:91
 msgid "User account file read error"
 msgstr "用户账号文件读取错误"
 
@@ -3097,7 +3099,44 @@ msgstr "漏洞列表（项目相关）"
 msgid "Get the list of vulnerabilities corresponding to the project"
 msgstr "获取项目对应的漏洞列表"
 
-#: webapi/settings.py:358
+#: scaupload/views.py:48 scaupload/views.py:69 scaupload/views.py:89
+msgid "Get sca db bulk"
+msgstr ""
+
+#: scaupload/views.py:49 scaupload/views.py:70 scaupload/views.py:90
+#: scaupload/views.py:100 scaupload/views.py:109 scaupload/views.py:122
+#: scaupload/views.py:131 scaupload/views.py:173 scaupload/views.py:179
+#: scaupload/views.py:190
+#, fuzzy
+#| msgid "Get Messages List"
+msgid "Get sca list"
+msgstr "获取消息列表"
+
+#: scaupload/views.py:50 scaupload/views.py:71 scaupload/views.py:91
+#: scaupload/views.py:101 scaupload/views.py:110 scaupload/views.py:123
+#: scaupload/views.py:132 scaupload/views.py:174 scaupload/views.py:180
+#: scaupload/views.py:191
+msgid "SCA DB"
+msgstr ""
+
+#: scaupload/views.py:99 scaupload/views.py:108 scaupload/views.py:121
+#: scaupload/views.py:130
+msgid "Get sca db"
+msgstr ""
+
+#: scaupload/views.py:172 scaupload/views.py:178
+#, fuzzy
+#| msgid "Get Messages List"
+msgid "Get sca license list"
+msgstr "获取消息列表"
+
+#: scaupload/views.py:189
+#, fuzzy
+#| msgid "Get a list of strategies."
+msgid "Get sca stat "
+msgstr "获取策略列表"
+
+#: webapi/settings.py:365
 #, python-brace-format
 msgid ""
 "Here is the API documentation in webapi. The corresponding management part "
