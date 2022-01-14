@@ -22,6 +22,8 @@ services:
       - DOC=TRUE
       - debug=true
       - SAVEEYE=TRUE
+      - PROJECT_NAME=LocalWEBAPI
+      - LOG_PATH=/tmp/dongtai-agent-python.log
     volumes:
       - .:/opt/dongtai/webapi/
 
