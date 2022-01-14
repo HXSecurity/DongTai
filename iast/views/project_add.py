@@ -233,12 +233,12 @@ def url_validate(url):
 
 def ip_validate(ip):
     try:
-        ipaddress = ipaddress.IPv4Address(ip)
-        if int(ipaddress.IPv4Address('127.0.0.1')) < int(ipaddress) < int(
+        ipadrs = ipaddress.IPv4Address(ip)
+        if int(ipaddress.IPv4Address('127.0.0.1')) < int(ipadrs) < int(
                 ipaddress.IPv4Address('127.255.255.255')):
             logger.error('127.x.x.x address not allowed')
             return False
-        if int(ipaddress.IPv4Address('10.0.0.1')) < int(ipaddress) < int(
+        if int(ipaddress.IPv4Address('10.0.0.1')) < int(ipadrs) < int(
                 ipaddress.IPv4Address('10.255.255.255')):
             logger.error('10.x.x.x address not allowed')
             return False
