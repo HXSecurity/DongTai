@@ -13,3 +13,6 @@ db = 0
 
 [engine]
 url = engine-url
+
+[sca]
+base_url = http://dongtai-openapi-svc:8000/sca/v1
