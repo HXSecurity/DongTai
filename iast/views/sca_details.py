@@ -119,16 +119,17 @@ class ScaDetailView(UserEndPoint):
 
                     for vul in vul_list:
                         _level = vul.get("vul_package", {}).get("severity", "none")
+                        _vul = vul.get("vul", {})
                         data['vuls'].append({
-                            'safe_version': vul.get("fixed_versions").join(",") if vul.get("fixed_versions", []) else _(
+                            'safe_version': _vul.get("fixed_versions").join(",") if _vul.get("fixed_versions", []) else _(
                                 'Current version stopped for maintenance or it is not a secure version'),
-                            'vulcve': vul.get('vul', {}).get('aliases', [])[0] if len(vul.get('vul', {}).get('aliases', [])) > 0 else "",
-                            'vulcwe': vul.get('vul_package', {}).get('cwe_ids', [])[0] if len(vul.get('vul', {}).get('cwe_ids', [])) > 0 else "",
-                            'vulname': vul.get('vul', {}).get("summary", ""),
-                            'overview': vul.get('vul', {}).get("summary", ""),
-                            'teardown': vul.get('vul', {}).get("details", ""),
-                            'reference': vul.get('references', []),
-                            'level': vul.get('vul_package', {}).get('severity', None),
+                            'vulcve': _vul.get('aliases', [])[0] if len(_vul.get('aliases', [])) > 0 else "",
+                            'vulcwe': _vul.get('vul_package', {}).get('cwe_ids', [])[0] if len(_vul.get('cwe_ids', [])) > 0 else "",
+                            'vulname': _vul.get("summary", ""),
+                            'overview': _vul.get("summary", ""),
+                            'teardown': _vul.get("details", ""),
+                            'reference': _vul.get('references', []),
+                            'level': _vul.get('vul_package', {}).get('severity', None),
                         })
 
                 except Exception as e:
