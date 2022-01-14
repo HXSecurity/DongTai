@@ -3,8 +3,8 @@
 name: Release DongTai WebApi
 
 on:
-  push:
-    branches: [ "release-*" ]
+  release:
+    types: [ created, edited ]
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -62,6 +62,9 @@ jobs:
         run: |
           VERSION=`echo ${GITHUB_REF##*/} | awk -F'-' '{print $2}'`
           echo "::set-output name=version::$VERSION"
+
+      - name: Release DongTai-WebAPI
+        run: bash .github/workflows/scripts/release_version.sh "${{ steps.release.outputs.version }}"
 
       - name: Generate version file
         run: |
