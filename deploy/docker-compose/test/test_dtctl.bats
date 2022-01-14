@@ -3,7 +3,7 @@
 setup_file() {
  # Initializing install 1.1.2 with schema hash 2a6c08ac348ac0f7f336588587eb05d5397ec84a
 
- run ./dtctl install -v 1.1.2 <<< 8088
+ run ./dtctl install -v 1.1.2 -r 0 <<< 8088
 
  while :; do
     echo "output:$output" >&3
