@@ -61,7 +61,7 @@ jobs:
 
       - name: Run UnitTest
         run: |
-          cp conf/config.ini.example conf/config.ini
+          cp conf/config.ini.test conf/config.ini
           python3 manage.py test
       
       - name: Django Api Testing
