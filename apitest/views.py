@@ -22,7 +22,10 @@ from dongtai.models.project import IastProject
 from dongtai.models.res_header import ProjectSaasMethodPoolHeader
 from django.utils.translation import gettext_lazy as _
 from iast.views.project_add import url_validate
-# Create your views here.
+from io import BytesIO
+import json
+from wsgiref.util import FileWrapper
+from django.http import FileResponse
 
 
 class ApiTestTriggerEndpoint(UserEndPoint):
@@ -52,6 +55,33 @@ class ApiTestTriggerEndpoint(UserEndPoint):
             }
         runtest(swaggerdatas, header_dict, project.base_url)
         return R.success(msg=_('Starting API Test'))
+
+
+class ApiTestOpenapiSpecEndpoint(UserEndPoint):
+    def get(self, request, pk):
+        auth_users = self.get_auth_users(request.user)
+        users = self.get_auth_users(request.user)
+        project = IastProject.objects.filter(
+            user__in=users, pk=pk).order_by('-latest_time').first()
+        if not project:
+            return R.failure(msg='no project found')
+        agents = IastAgent.objects.filter(user__in=auth_users,
+                                          bind_project_id=pk).values("id")
+        q = Q(agent__in=agents)
+        if not IastApiRoute.objects.filter(q).exists():
+            return R.failure(msg='No API collected')
+        api_routes = IastApiRoute.objects.filter(q).all()
+        datas = [serialize(api_route) for api_route in api_routes]
+        swaggerdatas = swagger_trans(datas)
+        swaggerfile = BytesIO()
+        swaggerfile.write(json.dumps(swaggerdatas).encode())
+        swaggerfile.seek(0)
+        response =  FileResponse(
+            FileWrapper(swaggerfile),
+            filename=f'{project.name}-openapi.json',
+        )
+        response['Content-Type'] = 'application/json;charset=utf-8'
+        return response
 
 
 class ApiTestHeaderEndpoint(UserEndPoint):
