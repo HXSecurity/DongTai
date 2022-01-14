@@ -16,6 +16,7 @@ services:
     restart: always
     ports:
       - "8000:8000"
+      - "8010:8010"
     environment: 
       #      - PYTHONAGENT=TRUE
       - DOC=TRUE

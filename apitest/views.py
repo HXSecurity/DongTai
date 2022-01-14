@@ -20,32 +20,68 @@ from apitest.utils import (
 )
 from dongtai.models.project import IastProject
 from dongtai.models.res_header import ProjectSaasMethodPoolHeader
-# Create your views here.
+from django.utils.translation import gettext_lazy as _
+from iast.views.project_add import url_validate
+from io import BytesIO
+import json
+from wsgiref.util import FileWrapper
+from django.http import FileResponse
 
 
 class ApiTestTriggerEndpoint(UserEndPoint):
     def get(self, request, pk):
         auth_users = self.get_auth_users(request.user)
         users = self.get_auth_users(request.user)
-        project = IastProject.objects.filter(user__in=users,
-                                             pk=pk).order_by('-latest_time').first()
+        project = IastProject.objects.filter(
+            user__in=users, pk=pk).order_by('-latest_time').first()
         if not project:
             return R.failure(msg='no project found')
-        if (project.test_req_header_key == ''
-                or project.test_req_header_value == ''
-                or project.base_url == ''):
-            return R.failure(
-                msg='Please enter the parameters required for the test first')
+        if not project.base_url:
+            return R.failure(msg=_(
+                'Please enter the parameters required for the test first'))
         agents = IastAgent.objects.filter(user__in=auth_users,
                                           bind_project_id=pk).values("id")
         q = Q(agent__in=agents)
+        if not IastApiRoute.objects.filter(q).exists():
+            return R.failure(msg='No API collected')
         api_routes = IastApiRoute.objects.filter(q).all()
         datas = [serialize(api_route) for api_route in api_routes]
         swaggerdatas = swagger_trans(datas)
-        runtest(swaggerdatas,
-                {project.test_req_header_key: project.test_req_header_value},
-                project.base_url)
-        return R.success()
+        if project.test_req_header_key == '' or project.test_req_header_value == '':
+            header_dict = {}
+        else:
+            header_dict = {
+                project.test_req_header_key: project.test_req_header_value
+            }
+        runtest(swaggerdatas, header_dict, project.base_url)
+        return R.success(msg=_('Starting API Test'))
+
+
+class ApiTestOpenapiSpecEndpoint(UserEndPoint):
+    def get(self, request, pk):
+        auth_users = self.get_auth_users(request.user)
+        users = self.get_auth_users(request.user)
+        project = IastProject.objects.filter(
+            user__in=users, pk=pk).order_by('-latest_time').first()
+        if not project:
+            return R.failure(msg='no project found')
+        agents = IastAgent.objects.filter(user__in=auth_users,
+                                          bind_project_id=pk).values("id")
+        q = Q(agent__in=agents)
+        if not IastApiRoute.objects.filter(q).exists():
+            return R.failure(msg='No API collected')
+        api_routes = IastApiRoute.objects.filter(q).all()
+        datas = [serialize(api_route) for api_route in api_routes]
+        swaggerdatas = swagger_trans(datas)
+        swaggerfile = BytesIO()
+        swaggerfile.write(json.dumps(swaggerdatas).encode())
+        swaggerfile.seek(0)
+        response =  FileResponse(
+            FileWrapper(swaggerfile),
+            filename=f'{project.name}-openapi.json',
+        )
+        response['Content-Type'] = 'application/json;charset=utf-8'
+        return response
 
 
 class ApiTestHeaderEndpoint(UserEndPoint):
@@ -54,6 +90,7 @@ class ApiTestHeaderEndpoint(UserEndPoint):
         agents = IastAgent.objects.filter(user__in=auth_users,
                                           bind_project_id=pk).values("id")
         q = Q(agent__in=agents)
-        headers = list(ProjectSaasMethodPoolHeader.objects.filter(q).values_list(
-            'key').distinct().all())
+        headers = list(
+            ProjectSaasMethodPoolHeader.objects.filter(q).values_list(
+                'key').distinct().all())
         return R.success(data=headers)
