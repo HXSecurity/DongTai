@@ -77,7 +77,7 @@ class ProjectDetail(UserEndPoint):
                 "vul_validation": project.vul_validation,
                 'base_url':project.base_url,
                 "test_req_header_key":project.test_req_header_key,
-                "test_req_header_value":project.test_req_header_values,
+                "test_req_header_value":project.test_req_header_value,
             })
         else:
             return R.failure(status=203, msg=_('no permission'))
