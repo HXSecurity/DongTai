@@ -21,6 +21,7 @@ from AgentServer import settings
 
 urlpatterns = [
     path('api/v1/', include('apiserver.urls'), name='OpenAPI'),
+    path('sca/v1/', include('sca.urls'), name='ScaAPI'),
 ]
 
 if settings.DEBUG:
