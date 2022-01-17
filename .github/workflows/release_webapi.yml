@@ -2,6 +2,7 @@
 
 name: Release DongTai WebApi
 
+
 on:
   release:
     types: [ created, edited ]
@@ -58,11 +59,19 @@ jobs:
           username: ${{ secrets.DONGTAI_DOCKERHUB_USERNAME }}
           password: ${{ secrets.DONGTAI_DOCKERHUB_TOKEN }}
 
+      - name: Login to AliyunRegistry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.ALIYUN_REGISTRY }}
+          username: ${{ secrets.ALIYUN_DOCKERHUB_USER }}
+          password: ${{ secrets.ALIYUN_DOCKERHUB_PASSWORD }}
+
       - id: release
         run: |
-          VERSION=`echo ${GITHUB_REF##*/} | awk -F'-' '{print $2}'`
-          echo "::set-output name=version::$VERSION"
-
+          TAG_NAME=${{ github.event.release.tag_name }}
+          ID=`echo ${TAG_NAME##v}`
+          echo "::set-output name=version::$ID"
+          
       - name: Release DongTai-WebAPI
         run: bash .github/workflows/scripts/release_version.sh "${{ steps.release.outputs.version }}"
 
@@ -83,6 +92,33 @@ jobs:
           assets: |
             ./version.txt:/iast/release-version/${{ github.event.repository.name }}/${{ steps.release.outputs.version }}/version.txt
 
+      - name: Build to local
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          load: true
+          tags: |
+            dongtai/dongtai-webapi:latest
+            dongtai/dongtai-webapi:${{ steps.release.outputs.version }}
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:latest
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:${{ steps.release.outputs.version }}
+
+      - name: Save image to tar file
+        run: |
+          docker save dongtai/dongtai-webapi:${{ steps.release.outputs.version }} | gzip > /tmp/dongtai-webapi-${{ steps.release.outputs.version }}.tar.gz
+
+
+      - name: Setup Ossutil
+        uses: manyuanrong/setup-ossutil@v2.0
+        with:
+          endpoint: ${{ secrets.OSS_ENDPOINT }}
+          access-key-id: ${{ secrets.OSS_KEY_ID }}
+          access-key-secret: ${{ secrets.OSS_KEY_SECRET }}
+
+      - name: Upload images to oss
+        run: |
+          ossutil cp /tmp/dongtai-webapi-${{ steps.release.outputs.version }}.tar.gz oss://huoqi-public/iast/server-package/${{ steps.release.outputs.version }}/
+
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
@@ -91,8 +127,10 @@ jobs:
           tags: |
             dongtai/dongtai-webapi:latest
             dongtai/dongtai-webapi:${{ steps.release.outputs.version }}
-
-      - name: deploy Webapi to PROD
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:latest
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:${{ steps.release.outputs.version }}
+            
+      - name: Deploy Webapi
         uses: wahyd4/kubectl-helm-action@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
@@ -100,7 +138,6 @@ jobs:
           args: |
             find deploy/deploy-dongtai-webapi-prod.yml -type f -exec sed -i 's/VERSION/${{ steps.release.outputs.version }}/g' {} \;
             ls deploy/deploy-dongtai-webapi-prod.yml | xargs -I {} kubectl apply -f {}
-
 
       - name: finish build
         uses: joelwmale/webhook-action@master
