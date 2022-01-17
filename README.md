@@ -20,69 +20,6 @@ DongTai-WebAPI is used to user resource management ,including:
 - Deployment document retrieval
 
 
-
-## Deploy
-- Source code deployment
-- Docker deployment
-
-**Source code deployment**
-
-1.Install the required dependencies
-
-```
-python -m pip install -r requirements-prod.txt
-```
-
-2.Initialize the database
-
-- Install MySql 5.7, create the database `DongTai-webapi`, and run the database file `conf/db.sql`
-- Enter the `webapi` directory and run the `python manage.py createsuperuser` command to create an administrator
-
-OR use docker way to host a database
-
-- Pull the corresponding database images and run it
-```
-docker pull  dongtai/dongtai-mysql:latest 
-docker run -itd --name dongtai-mysql -p 3306:3306 dongtai/dongtai-mysql:latest 
-```
-
-
-
-3.Modify the configuration file
-
-- Copy the configuration file `conf/config.ini.example` to `conf/config.ini` and change the configuration; the url corresponding to `engine` is the service address of` DongTai-engine`, and the url corresponding to `apiserver` is the service address of `DongTai-openapi`
-
-4.Run the service
-
-- Run `python manage.py runserver` to start the service
-
-
-**Container deployment**
-
-1.Initialize the database
-
-- Pull the corresponding database images and run it
-
-```
-docker pull  registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest 
-docker run -itd --name dongtai-mysql -p 3306:3306 registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest 
-```
-
-2. Modify the configuration file
-
-Copy the configuration file `conf/config.ini.example` to `conf/config.ini` and change the configuration; among them:
-- The URL corresponding to the `engine` is the service address of `DongTai-engine`
-- The url corresponding to `apiserver` is the service address of `DongTai-openapi`
-
-3.Build the image
-```
-$ docker build -t huoxian/dongtai-webapi:latest .
-```
-
-4.Start the container
-```
-$ docker run -d -p 8000:8000 --restart=always --name dongtai-webapi huoxian/dongtai-webapi:latest
-```
 ### Document
 
 - API documentation corresponding to the project 
@@ -107,9 +44,58 @@ The address is `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/`
 
 3. The specific API authentication mode has been included in the API document, and the corresponding token can be found on the installation agent part of the web.
 
-
-
 ### Development
+
+#### Develop with docker-compose(recommend)
+
+1. Initialize the environment
+````
+cp config.ini.example config.ini
+````
+
+2. Start the project with docker-compose
+
+````
+docker-compose -p dongtai-iast-dev up -d
+````
+This command will build the webapi image in the current directory and pull the minimum required image in the hole state IAST. In addition to the `dongtai-webapi` built based on the current directory, it also includes `dongtai-openapi`, `dongtai-web`, `dongtai-mysql`, `dongtai-redis` images.
+
+If full service is required, use the following command
+
+```
+docker-compose -p dongtai-iast-dev up -d --scale dongtai-engine=1  --scale dongtai-engine-task=1
+```
+
+Among them, `dongtai-mysql` exposes port 33060 to facilitate developers to link mysql from the outside, while `dongtai-webapi` additionally exposes port 8010, which is convenient for developers to debug using methods other than uwsgi startup, such as `python manage.py runserver 0.0.0.0:8000`.
+
+3. After modifying the code
+Use the following command to restart the webapi service, the service will start with the modified code
+````
+docker-compose -p dongtai-iast-dev restart dongtai-webapi
+````
+
+If you have modified deployment-related content, please use the following command to rebuild the image
+````
+docker-compose -p dongtai-iast-dev up -d --build
+````
+
+4. Extra
+
+If you want to use [python-agent](https://github.com/HXSecurity/DongTai-agent-python) for security detection during development, this has been reserved in docker-compose and code.
+
+a. Apply for an account at [DongTai IAST-Account Registration](https://jinshuju.net/f/I9PNmf?from=webapi)
+
+b. Download the dongtai-python-agent.tar.gz it belongs to and place it in the current directory of webapi
+
+c. Execute the following command and cancel `- PYTHONAGENT=TRUE` in docker-compose.yml
+
+````
+docker exec -it dongtai-iast-dev_dongtai-webapi_1 pip install dongtai-agent-python.tar.gz
+````
+
+d. Use the command in 3. to restart the service
+
+#### Develop without docker-compose
 
 1. Install the required dependencies
 
@@ -148,6 +134,74 @@ If you need to create or modify the database table, please refer to the [DongTai
 `debug=true` enable debug mode
 
 - Run `python manage.py runserver` to start the service 
+
+
+## Deploy
+
+- Use the tools provided in [DongTai](https://github.com/HXSecurity/DongTai) (recommended)
+- Docker deployment
+- Source code deployment
+
+**Container deployment**
+
+1.Initialize the database
+
+- Pull the corresponding database images and run it
+
+```
+docker pull  registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest 
+docker run -itd --name dongtai-mysql -p 3306:3306 registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest 
+```
+
+2. Modify the configuration file
+
+Copy the configuration file `conf/config.ini.example` to `conf/config.ini` and change the configuration; among them:
+- The URL corresponding to the `engine` is the service address of `DongTai-engine`
+- The url corresponding to `apiserver` is the service address of `DongTai-openapi`
+
+3.Build the image
+```
+$ docker build -t huoxian/dongtai-webapi:latest .
+```
+
+4.Start the container
+```
+$ docker run -d -p 8000:8000 --restart=always --name dongtai-webapi huoxian/dongtai-webapi:latest
+```
+
+
+**Source code deployment**
+
+1.Install the required dependencies
+
+```
+python -m pip install -r requirements-prod.txt
+```
+
+2.Initialize the database
+
+- Install MySql 5.7, create the database `DongTai-webapi`, and run the database file `conf/db.sql`
+- Enter the `webapi` directory and run the `python manage.py createsuperuser` command to create an administrator
+
+OR use docker way to host a database
+
+- Pull the corresponding database images and run it
+```
+docker pull  dongtai/dongtai-mysql:latest 
+docker run -itd --name dongtai-mysql -p 3306:3306 dongtai/dongtai-mysql:latest 
+```
+
+
+
+3.Modify the configuration file
+
+- Copy the configuration file `conf/config.ini.example` to `conf/config.ini` and change the configuration; the url corresponding to `engine` is the service address of` DongTai-engine`, and the url corresponding to `apiserver` is the service address of `DongTai-openapi`
+
+4.Run the service
+
+- Run `python manage.py runserver` to start the service
+
+
 
 ### More resources
 - [Documentation](https://doc.dongtai.io/)
