@@ -5,10 +5,10 @@
    * Added the function of calling remote component library
    * Added function for user to import component library
    * Added the function of API automatic testing
-* improve
+* Improve
    * Improve the query speed of the vulnerability export interface
    * Improve the problem of missing hints in some content
-* fix
+* Fix
    * Fixed re-dos issue in regex validation
    * Fixed component export csv not correctly carrying UTF-8 BOM
    * Fixed the problem that the prompt information is inconsistent when the project information is modified
