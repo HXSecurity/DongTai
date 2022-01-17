@@ -13,6 +13,10 @@ DESTORY_DATA=false
 PROJECT_NAME=dongtai
 REGISRTY=1
 
+DONGTAI_API="iast.huoxian.cn"
+# DONGTAI_API="google.com"
+DONGTAI_API_ACCESSABLE=true
+
 Info() {
   echo -e "[Info] $1" >&2
 }
@@ -103,12 +107,11 @@ function first_gt_second() {
   fi
 }
 
-
 # check if dongtai iast server is Running
 function is_server_running() {
-  if [ $(docker ps | grep "dongtai-web:"| wc -l) -gt 0 ]; then
+  if [ $(docker ps | grep "dongtai-web:" | wc -l) -gt 0 ]; then
     echo true
-    return 
+    return
   fi
   echo false
   return
@@ -116,16 +119,15 @@ function is_server_running() {
 
 # exit when server is not running
 function exit_not_running() {
-   if [ $(is_server_running) != true ];then
+  if [ $(is_server_running) != true ]; then
     Error "Server is not running!"
     exit 1
   fi
 }
 
-
 # get docker-compose project_name
 get_project_name() {
-  retval=$(docker inspect --format='{{ index .Config.Labels "com.docker.compose.project" }}' $( docker ps | grep "dongtai-web:" | awk '{print $1}'))
+  retval=$(docker inspect --format='{{ index .Config.Labels "com.docker.compose.project" }}' $(docker ps | grep "dongtai-web:" | awk '{print $1}'))
   echo "$retval"
 }
 function current_image_version() {
@@ -170,6 +172,37 @@ function get_image_registry() {
   echo "$registry_url"
 }
 
+# checkout network
+function network() {
+  local timeout=3
+  local target=$DONGTAI_API
+  local ret_code=$(curl -I -s --connect-timeout ${timeout} ${target} -w %{http_code} | tail -n1)
+  if [ "$ret_code" == "200" ]; then
+    echo true
+    return
+  else
+    echo false
+    return
+  fi
+  echo false
+  return
+}
+
+declare -a EXCLUDED_TABLES=(
+  "dongtai_webapi.sca2_package"
+  "dongtai_webapi.sca2_vul"
+  "dongtai_webapi.sca2_vul_package"
+  "dongtai_webapi.sca2_vul_package_range"
+  "dongtai_webapi.sca2_vul_package_version"
+  "dongtai_webapi.mysql_version_control"
+)
+
+IGNORED_TABLES_STRING=""
+for TABLE in "${EXCLUDED_TABLES[@]}"; do
+  :
+  IGNORED_TABLES_STRING+=" --ignore-table=${TABLE} "
+done
+
 get_database_schema() {
   _mysql_container_id=$(get_mysql_container_id)
   if [ -z $_mysql_container_id ]; then
@@ -177,7 +210,7 @@ get_database_schema() {
     exit 1
   fi
 
-  echo "dongtai-iast" | docker exec -i $_mysql_container_id /bin/bash -c "mysqldump -u root -d dongtai_webapi --ignore-table=dongtai_webapi.mysql_version_control -p --skip-comments --skip-opt | sed 's/ AUTO_INCREMENT=[0-9]*//g' | sed 's/\/\*!*.*//g' "
+  echo "dongtai-iast" | docker exec -i $_mysql_container_id /bin/bash -c "mysqldump -u root -d dongtai_webapi ${IGNORED_TABLES_STRING} -p --skip-set-charset --skip-comments --skip-opt | sed 's/ AUTO_INCREMENT=[0-9]*//g' | sed 's/\/\*!*.*//g' "
 }
 
 function current_hash() {
@@ -222,11 +255,26 @@ function restore_mysql() {
 
 }
 
-if [ $(is_server_running) == true ];then
+if [ $(is_server_running) == true ]; then
   if [ ! -z "$(get_mysql_container_id)" ]; then
     MOUNT_TYPE=$(docker inspect --format='{{range .Mounts}} {{.Type}} {{end}}' $(get_mysql_container_id))
   fi
 fi
+
+# check  network and modify config.ini
+function check_network() {
+  if [ $(network) == true ]; then
+    Info "Dongtai Online API accessable!"
+  else
+    DONGTAI_API_ACCESSABLE=false
+    if [ "$machine"=="Mac" ]; then
+      sed -i '' 's/^base_url = https\:\/\/iast\.huoxian\.cn\/openapi\/sca\/v1/base_url = http:\/\/dongtai-openapi:8000\/sca\/v1/' config-tutorial.ini
+    else
+      sed -i 's/^base_url = https\:\/\/iast\.huoxian\.cn\/openapi\/sca\/v1/base_url = http:\/\/dongtai-openapi:8000\/sca\/v1/' config-tutorial.ini
+    fi
+    Info "Dongtai Online API unaccessable!"
+  fi
+}
 
 # Info "Mount Type:$MOUNT_TYPE"
 
@@ -251,8 +299,8 @@ function create_docker_compose_file() {
   MYSQL_STR=""
   REDIS_STR=""
 
-  if [ "$3" == "install" ];then
-    if [ "$REGISRTY" == 1 ];then
+  if [ "$3" == "install" ]; then
+    if [ "$REGISRTY" == 1 ]; then
       registry=$(get_image_registry 1)
     else
       registry=$(get_image_registry 0)
@@ -261,12 +309,19 @@ function create_docker_compose_file() {
     registry=$(get_image_registry 2)
   fi
 
+  MYSQL_IMAGE_NAME="dongtai-mysql"
+  if [ $DONGTAI_API_ACCESSABLE == false ]; then
+    if [[ $(first_gt_second $CHANGE_THIS_VERSION 1.2.0) == true ]]; then
+      MYSQL_IMAGE_NAME="dongtai-mysql-sca"
+    fi
+  fi
+
+
   if [ $SKIP_MYSQL == false ]; then
     export MYSQL_STR=$(
       cat <<EOF
 dongtai-mysql: 
-    # image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:1.2.0.1
-    image: $registry/dongtai-mysql:$CHANGE_THIS_VERSION
+    image: $registry/$MYSQL_IMAGE_NAME:$CHANGE_THIS_VERSION
     restart: always
     volumes:
       - "$_DATA_DIR:/var/lib/mysql:rw"
@@ -554,11 +609,11 @@ if [ ! 0 == $# ]; then # If options provided then
       fi
 
       if ! [ -x "$(command -v lsof)" ]; then
-        if [ $(netstat -tunlp | grep $WEB_SERVICE_PORT | grep "LISTEN" | wc -l || true ) -gt 0 ]; then
+        if [ $(netstat -tunlp | grep $WEB_SERVICE_PORT | grep "LISTEN" | wc -l || true) -gt 0 ]; then
           is_port_inuse=true
         fi
       else
-        if [ $(lsof -i:$WEB_SERVICE_PORT | grep "LISTEN" | wc -l || true ) -gt 0 ]; then
+        if [ $(lsof -i:$WEB_SERVICE_PORT | grep "LISTEN" | wc -l || true) -gt 0 ]; then
           is_port_inuse=true
         fi
       fi
@@ -618,6 +673,7 @@ if [ ! 0 == $# ]; then # If options provided then
       CHANGE_THIS_VERSION=$(get_latest_release_version)
     fi
 
+    check_network
     check_docker
     check_docker_compose
     check_port
@@ -653,7 +709,7 @@ if [ ! 0 == $# ]; then # If options provided then
       done
     fi
 
-    docker_compose_file=$(create_docker_compose_file $(current_image_version) $(get_web_service_port) "rm") 
+    docker_compose_file=$(create_docker_compose_file $(current_image_version) $(get_web_service_port) "rm")
 
     PROJECT_NAME=$(get_project_name)
     if [ "$DESTORY_DATA" == true ]; then
@@ -759,7 +815,7 @@ if [ ! 0 == $# ]; then # If options provided then
       WEB_PORT=$(trim $WEB_PORT)
 
       # 创建 DOCKER_COMPOSE_FILE
-      docker_compose_file=$(create_docker_compose_file $TO_VERSION $(get_web_service_port) $(get_database_data_dir) "upgrade") 
+      docker_compose_file=$(create_docker_compose_file $TO_VERSION $(get_web_service_port) $(get_database_data_dir) "upgrade")
 
       Info "Start to pull new images with tag $TO_VERSION"
       docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") pull
@@ -815,6 +871,7 @@ if [ ! 0 == $# ]; then # If options provided then
       exit 1
     fi
 
+    check_network
     # backup_mysql
     check_update_record_file
     check_schema_hash
