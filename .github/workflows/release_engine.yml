@@ -37,6 +37,14 @@ jobs:
           username: ${{ secrets.DONGTAI_DOCKERHUB_USERNAME }}
           password: ${{ secrets.DONGTAI_DOCKERHUB_TOKEN }}
 
+      - name: Login to AliyunRegistry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{secrets.ALIYUN_REGISTRY}}
+          username: ${{secrets.ALIYUN_DOCKERHUB_USER}}
+          password: ${{secrets.ALIYUN_DOCKERHUB_PASSWORD}}
+          logout: true
+
       - id: release
         run: |
           TAG_NAME=${{ github.event.release.tag_name }}
@@ -61,6 +69,21 @@ jobs:
           assets: |
             ./version.txt:/iast/release-version/${{ github.event.repository.name }}/${{ steps.release.outputs.VERSION }}/version.txt
 
+      - name: Build to local
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          load: true
+          tags: |
+            dongtai/dongtai-engine:latest
+            dongtai/dongtai-engine:${{ steps.release.outputs.version }}
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:${{ steps.release.outputs.version }}
+
+      - name: Save image to tar file
+        run: |
+          docker save dongtai/dongtai-engine:${{ steps.release.outputs.version }} | gzip > /tmp/dongtai-engine-${{ steps.release.outputs.version }}.tar.gz
+
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
@@ -68,9 +91,23 @@ jobs:
           push: true
           tags: |
             dongtai/dongtai-engine:latest
-            dongtai/dongtai-engine:${{ steps.release.outputs.VERSION }}
+            dongtai/dongtai-engine:${{ steps.release.outputs.version }}
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:${{ steps.release.outputs.version }}
 
-      - name: deploy Engine to PROD
+      - name: Setup Ossutil
+        uses: manyuanrong/setup-ossutil@v2.0
+        with:
+          endpoint: ${{ secrets.OSS_ENDPOINT }}
+          access-key-id: ${{ secrets.OSS_KEY_ID }}
+          access-key-secret: ${{ secrets.OSS_KEY_SECRET }}
+
+      - name: Upload images to oss
+        run: |
+          ossutil cp /tmp/dongtai-engine-${{ steps.release.outputs.version }}.tar.gz oss://huoqi-public/iast/server-package/${{ steps.release.outputs.version }}/
+
+
+      - name: Deploy Engine to staging
         uses: wahyd4/kubectl-helm-action@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
@@ -78,8 +115,8 @@ jobs:
           args: |
             find deploy/deploy-eks-iast-saas-engine-prod.yml -type f -exec sed -i 's/VERSION/${{ steps.release.outputs.VERSION }}/g' {} \;
             ls deploy/deploy-eks-iast-saas-engine-prod.yml | xargs -I {} kubectl apply -f {}
-
-      - name: deploy Engine Task to cluster
+     
+      - name: Deploy engine Task to staging
         uses: wahyd4/kubectl-helm-action@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
@@ -87,6 +124,7 @@ jobs:
           args: |
             find deploy/deploy-eks-iast-saas-engine-task-prod.yml -type f -exec sed -i 's/VERSION/${{ steps.release.outputs.VERSION }}/g' {} \;
             ls deploy/deploy-eks-iast-saas-engine-task-prod.yml | xargs -I {} kubectl apply -f {}
+
 
       - name: finish build
         uses: joelwmale/webhook-action@master
