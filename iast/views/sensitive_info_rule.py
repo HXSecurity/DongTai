@@ -31,7 +31,7 @@ import time
 from django.db.models import Q
 from dongtai.models.sensitive_info import IastPatternType,IastSensitiveInfoRule
 import jq
-import re
+import re2 as re
 from dongtai.permissions import TalentAdminPermission
 from iast.views.utils.commonview import (
     BatchStatusUpdateSerializerView,

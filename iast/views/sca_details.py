@@ -10,11 +10,15 @@ from dongtai.endpoint import R, UserEndPoint
 from dongtai.models.asset import Asset
 from dongtai.models.sca_artifact_db import ScaArtifactDb
 from dongtai.models.sca_maven_artifact import ScaMavenArtifact
-
+from dongtai.models.vul_level import IastVulLevel
+from django.utils.translation import get_language
 from iast.serializers.sca import ScaSerializer
 from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
+from webapi import settings
+import requests
+import json
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -97,27 +101,51 @@ class ScaDetailView(UserEndPoint):
             data = ScaSerializer(asset).data
             data['vuls'] = list()
 
-            smas = ScaMavenArtifact.objects.filter(
-                signature=data['signature_value']).values(
-                    "aid", "safe_version")
-            for sma in smas:
-                svds = ScaArtifactDb.objects.filter(id=sma['aid']).values(
-                    'cve_id', 'cwe_id', 'title', 'overview', 'teardown', 'reference', 'level'
-                )
-                if len(svds) == 0:
-                    continue
+            search_query = ""
+            if asset.agent.language == "JAVA":
+                search_query = "hash=" + asset.signature_value
+            elif asset.agent.language == "PYTHON":
+                version = asset.version
+                name = asset.package_name.replace("-" + version, "")
+                search_query = "ecosystem={}&name={}&version={}".format("PyPI", name, version)
+            if search_query != "":
+                try:
+                    url = settings.SCA_BASE_URL + "/package_vul/?" + search_query
+                    resp = requests.get(url=url)
+                    resp = json.loads(resp.content)
+                    maven_model = resp.get("data", {}).get("package", {})
+                    if maven_model is None:
+                        maven_model = {}
+                    vul_list = resp.get("data", {}).get("vul_list", [])
 
-                svd = svds[0]
-                data['vuls'].append({
-                    'safe_version': sma['safe_version'] if sma['safe_version'] else _('Current version stopped for maintenance or it is not a secure version'),
-                    'vulcve': svd['cve_id'],
-                    'vulcwe': svd['cwe_id'],
-                    'vulname': svd['title'],
-                    'overview': svd['overview'],
-                    'teardown': svd['teardown'],
-                    'reference': svd['reference'],
-                    'level': svd['level'],
-                })
+                    levels = IastVulLevel.objects.all()
+                    level_dict = {}
+                    language = get_language()
+                    for level in levels:
+                        if language == "zh":
+                            level_dict[level.name] = level.name_value_zh
+                        if language == "en":
+                            level_dict[level.name] = level.name_value_en
+
+                    for vul in vul_list:
+                        _level = vul.get("vul_package", {}).get("severity", "none")
+                        _vul = vul.get("vul", {})
+                        _fixed_versions = vul.get("fixed_versions", [])
+                        cwe_ids = vul.get('vul_package', {}).get('cwe_ids', [])
+                        data['vuls'].append({
+                            'safe_version': ",".join(_fixed_versions) if len(_fixed_versions) > 0 else _(
+                                'Current version stopped for maintenance or it is not a secure version'),
+                            'vulcve': _vul.get('aliases', [])[0] if len(_vul.get('aliases', [])) > 0 else "",
+                            'vulcwe': ",".join(cwe_ids),
+                            'vulname': _vul.get("summary", ""),
+                            'overview': _vul.get("summary", ""),
+                            'teardown': _vul.get("details", ""),
+                            'reference': _vul.get('references', []),
+                            'level': level_dict.get(_level, _level)
+                        })
+
+                except Exception as e:
+                    logger.info("get package_vul failed:{}".format(e))
             return R.success(data=data)
         except Exception as e:
             logger.error(e)
