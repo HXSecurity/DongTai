@@ -43,9 +43,7 @@ The usage scenarios of "DongTai IAST" include but not limited to:
   - Log in to the [DongTai IAST] (https://iast.io).
   - Have a quick start with [Online Guideline](https://doc.dongtai.io/en/02_start/index.html).
 
-### 2. Localized Deployment Version [Open Source for Jointly Partnership]
-
-> Please follow the instructions bellow to apply the localized deployment version 
+### 2. Localized Deployment Version
 
 `DongTai IAST` supports a variety of deployment schemes which refer to [Deployment Document](./deploy):
 
@@ -62,9 +60,6 @@ $ cd DongTai
 $ chmod u+x build_with_docker_compose.sh
 $ ./build_with_docker_compose.sh
 ```
-
-#### How To Apply
-`DongTai IAST` Jointly Partnership Program, [registration address](https://jinshuju.net/f/PKPl99)
 
 ## Contributing
 Contributions are welcomed and greatly appreciated. Further reading — [CONTRIBUTING.md](https://github.com/HXSecurity/DongTai/blob/main/CONTRIBUTING.md) for details on submitting patches and contribution workflow.
