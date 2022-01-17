@@ -60,9 +60,10 @@ jobs:
 
       - id: release
         run: |
-          VERSION=`echo ${GITHUB_REF##*/} | awk -F'-' '{print $2}'`
-          echo "::set-output name=version::$VERSION"
-
+          TAG_NAME=${{ github.event.release.tag_name }}
+          ID=`echo ${TAG_NAME##v}`
+          echo "::set-output name=version::$ID"
+          
       - name: Release DongTai-WebAPI
         run: bash .github/workflows/scripts/release_version.sh "${{ steps.release.outputs.version }}"
 
