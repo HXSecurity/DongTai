@@ -1,5 +1,21 @@
 # Change log
 
+##[1.3.0](https://github.com/HXSecurity/DongTai-webapi/releases/tag/v1.3.0)-2021-1-15
+* Features
+   * Added the function of calling remote component library
+   * Added function for user to import component library
+   * Added the function of API automatic testing
+* Improve
+   * Improve the query speed of the vulnerability export interface
+   * Improve the problem of missing hints in some content
+* Fix
+   * Fixed re-dos issue in regex validation
+   * Fixed component export csv not correctly carrying UTF-8 BOM
+   * Fixed the problem that the prompt information is inconsistent when the project information is modified
+   * Fixed some content missing i18n part
+   * Fixed the problem of component vulnerability display
+
+
 ## [1.2.0](https://github.com/HXSecurity/DongTai-webapi/releases/tag/v1.2.0)-2021-12-18
 * Features
    * Added license display of components
