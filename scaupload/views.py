@@ -12,6 +12,7 @@ from rest_framework.serializers import ValidationError
 from rest_framework import viewsets
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.translation import gettext_lazy as _
+from dongtai.permissions import TalentAdminPermission
 from dongtai.endpoint import R
 import csv
 from django.http import FileResponse
@@ -51,6 +52,22 @@ class ScaDeleteSerializer(serializers.Serializer):
 
 
 class SCADBMavenBulkViewSet(UserEndPoint, viewsets.ViewSet):
+    
+    permission_classes_by_action = {
+        'POST': (TalentAdminPermission, ),
+        'DELETE': (TalentAdminPermission,),
+        'PUT': (TalentAdminPermission,),
+    }
+
+    def get_permissions(self):
+        try:
+            return [permission() for permission in self.permission_classes_by_action[self.request.method]]
+        except KeyError:
+            return [permission() for permission in self.permission_classes]
+
+
+
+
     @extend_schema_with_envcheck([ScaDBSerializer],
                                  summary=_('Get sca db bulk'),
                                  description=_("Get sca list"),
@@ -92,6 +109,20 @@ class SCADBMavenBulkViewSet(UserEndPoint, viewsets.ViewSet):
         return R.success()
 
 class SCADBMavenBulkDeleteView(UserEndPoint):
+    
+    permission_classes_by_action = {
+        'POST': (TalentAdminPermission, ),
+        'DELETE': (TalentAdminPermission,),
+        'PUT': (TalentAdminPermission,),
+    }
+
+    def get_permissions(self):
+        try:
+            return [permission() for permission in self.permission_classes_by_action[self.request.method]]
+        except KeyError:
+            return [permission() for permission in self.permission_classes]
+
+
     @extend_schema_with_envcheck(request=ScaDeleteSerializer,
                                  summary=_('Get sca db bulk'),
                                  description=_("Get sca list"),
@@ -103,6 +134,21 @@ class SCADBMavenBulkDeleteView(UserEndPoint):
 
 
 class SCADBMavenViewSet(UserEndPoint, viewsets.ViewSet):
+
+    permission_classes_by_action = {
+        'POST': (TalentAdminPermission, ),
+        'DELETE': (TalentAdminPermission,),
+        'PUT': (TalentAdminPermission,),
+    }
+
+    def get_permissions(self):
+        try:
+            return [permission() for permission in self.permission_classes_by_action[self.request.method]]
+        except KeyError:
+            return [permission() for permission in self.permission_classes]
+
+
+
     @extend_schema_with_envcheck(summary=_('Get sca db'),
                                  description=_("Get sca list"),
                                  tags=[_('SCA DB')])
