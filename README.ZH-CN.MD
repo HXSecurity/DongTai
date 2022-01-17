@@ -41,9 +41,7 @@ DongTai是一款开源的被动式交互式安全测试(IAST)产品，通过动�
   - 登录[洞态IAST](https://iast.io)系统
   - 根据[在线文档](https://doc.dongtai.io/zh/02_start/index.html)进行快速体验
 
-### 2. 本地化部署版本【针对联合共建的企业进行开源】
-
-> 本地化部署版本需要自行申请，申请方式见下文
+### 2. 本地化部署版本
 
 **洞态IAST**支持多种部署方案，可通过[部署文档](./deploy)了解部署方案详情，方案如下：
 
@@ -60,9 +58,6 @@ $ cd DongTai
 $ chmod u+x build_with_docker_compose.sh
 $ ./build_with_docker_compose.sh
 ```
-
-#### 申请方式
-洞态IAST合作伙伴计划—整体开源联合开发，[报名地址](https://jinshuju.net/f/PKPl99)
 
 ## 贡献
 欢迎并非常感谢您的贡献, 请参阅[contribution.md](https://github.com/HXSecurity/DongTai/blob/main/CONTRIBUTING.md)了解如何向项目贡献
