@@ -59,8 +59,13 @@ cp config.ini.example config.ini
 docker-compose -p dongtai-iast-dev up -d
 ```
 该命令会构建当前目录下的webapi镜像,并拉取洞态IAST中最少的所需镜像。其中除了基于当前目录构建的`dongtai-webapi`以外，还包括`dongtai-openapi`、`dongtai-web`、`dongtai-mysql`、`dongtai-redis`这几个镜像。
+如果需要完整的服务，使用以下命令
 
-其中的`dongtai-mysql`暴露了33060端口以方便开发者从外部链接mysql，而`dongtai-webapi`会额外暴露8010端口，方便开发者使用除uwsgi启动外的方式调试，如`python manage.py runserver 0.0.0.0:8000`。
+```
+docker-compose -p dongtai-iast-dev up -d --scale dongtai-engine=1  --scale dongtai-engine-task=1
+```
+
+其中的`dongtai-mysql`暴露了33060端口以方便开发者从外部链接mysql，而`dongtai-webapi`会额外暴露8010端口，方便开发者使用除uwsgi启动外的方式调试，如`python manage.py runserver 0.0.0.0:8010`。
 
 3. 当修改代码后
 使用一下命令重启webapi服务，服务将会以修改后的代码启动
