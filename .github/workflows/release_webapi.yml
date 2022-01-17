@@ -130,7 +130,7 @@ jobs:
             registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:latest
             registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:${{ steps.release.outputs.version }}
             
-            - name: Deploy Webapi to Staging
+      - name: Deploy Webapi
         uses: wahyd4/kubectl-helm-action@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
