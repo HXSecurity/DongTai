@@ -20,67 +20,6 @@ DongTai-WebAPI 用于处理DongTai用户资源管理的相关请求，包括：
 - 部署文档检索
 
 
-
-### 部署方案
-- 源码部署
-- 容器部署
-
-**源码部署**
-
-1.安装所需的依赖
-
-```
-python -m pip install -r requirements-prod.txt
-```
-
-2.初始化数据库
-
-- 安装MySql 5.7，创建数据库`DongTai-webapi`，运行数据库文件`conf/db.sql`
-- 进入`webapi`目录，运行`python manage.py createsuperuser`命令创建管理员
-
-或采用docker部署数据库
-- 拉取版本对应的数据库镜像并启动镜像
-```
-docker pull  dongtai/dongtai-mysql:latest 
-docker run -itd --name dongtai-mysql -p 3306:3306 dongtai/dongtai-mysql:latest
-```
-
-
-3.修改配置文件
-
-- 复制配置文件`conf/config.ini.example`为`conf/config.ini`并需改其中的配置；其中，`engine`对应的url为`DongTai-engine`的服务地址，`apiserver`对应的url为`DongTai-openapi`的服务地址
-
-4.运行服务
-
-- 运行`python manage.py runserver`启动服务
-
-**容器部署**
-
-1.初始化数据库
-
-- 拉取版本对应的数据库镜像
-```
-docker pull  registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest 
-docker run -itd --name dongtai-mysql -p 3306:3306 registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest 
-```
-
-
-2.修改配置文件
-
-复制配置文件`conf/config.ini.example`为`conf/config.ini`并需改其中的配置；其中：
-- `engine`对应的url为`DongTai-engine`的服务地址
-- `apiserver`对应的url为`DongTai-openapi`的服务地址
-
-3.构建镜像
-```
-$ docker build -t huoxian/dongtai-webapi:latest .
-```
-
-4.启动容器
-```
-$ docker run -d -p 8000:8000 --restart=always --name dongtai-webapi huoxian/dongtai-webapi:latest
-```
-
 ### 文档
 
 - 项目内置的API文档
@@ -107,6 +46,51 @@ Redoc地址为 `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/redo
 
 ### 开发
 
+#### 使用docker-compose (推荐)
+
+1. 初始化环境
+```
+cp config.ini.example config.ini
+```
+
+2. 使用docker-compose启动项目
+
+```
+docker-compose -p dongtai-iast-dev up -d
+```
+该命令会构建当前目录下的webapi镜像,并拉取洞态IAST中最少的所需镜像。其中除了基于当前目录构建的`dongtai-webapi`以外，还包括`dongtai-openapi`、`dongtai-web`、`dongtai-mysql`、`dongtai-redis`这几个镜像。
+
+其中的`dongtai-mysql`暴露了33060端口以方便开发者从外部链接mysql，而`dongtai-webapi`会额外暴露8010端口，方便开发者使用除uwsgi启动外的方式调试，如`python manage.py runserver 0.0.0.0:8000`。
+
+3. 当修改代码后
+使用一下命令重启webapi服务，服务将会以修改后的代码启动
+```
+docker-compose -p dongtai-iast-dev restart dongtai-webapi
+```
+
+如果修改了部署相关的内容，请使用一下命令重新build镜像
+```
+docker-compose -p dongtai-iast-dev up -d --build
+```
+
+4. 额外
+
+如果你希望使用在开发过程中使用[python-agent](https://github.com/HXSecurity/DongTai-agent-python)进行安全检测，这已经在docker-compose与代码里预留了设置。
+
+a.在[洞态IAST-帐号注册](https://jinshuju.net/f/I9PNmf?from=webapi)申请帐号
+
+b.下载所属的dongtai-python-agent.tar.gz并放置在webapi的当前目录下
+
+c.执行以下命令并取消docker-compose.yml中`- PYTHONAGENT=TRUE`
+
+```
+docker exec -it dongtai-iast-dev_dongtai-webapi_1 pip install dongtai-agent-python.tar.gz
+```
+
+d.使用3.中的命令重启服务
+
+
+#### 不使用docker-compose
 1.安装所需的依赖
 
 ```
@@ -139,6 +123,71 @@ docker run -itd --name dongtai-mysql -p 3306:3306 dongtai/dongtai-mysql:latest
 PYTHONAGENT=TRUE 开启pythonagent，需要手动安装，参照[PythonAgent安装](http://doc.dongtai.io/02_start/03_agent.html#python-agent)
 DOC=TRUE 开启swagger 路径为 `/api/XZPcGFKoxYXScwGjQtJx8u/schema/swagger-ui/`
 debug=true 开启debug模式
+
+- 运行`python manage.py runserver`启动服务
+
+
+### 部署方案
+
+- 使用[DongTai](https://github.com/HXSecurity/DongTai) 中提供的工具进行(推荐)
+- 源码部署
+- 容器部署
+
+
+**容器部署** 
+
+1.初始化数据库
+
+- 拉取版本对应的数据库镜像
+```
+docker pull  registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest 
+docker run -itd --name dongtai-mysql -p 3306:3306 registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest 
+```
+
+
+2.修改配置文件
+
+复制配置文件`conf/config.ini.example`为`conf/config.ini`并需改其中的配置；其中：
+- `engine`对应的url为`DongTai-engine`的服务地址
+- `apiserver`对应的url为`DongTai-openapi`的服务地址
+
+3.构建镜像
+```
+$ docker build -t huoxian/dongtai-webapi:latest .
+```
+
+4.启动容器
+```
+$ docker run -d -p 8000:8000 --restart=always --name dongtai-webapi huoxian/dongtai-webapi:latest
+```
+
+
+**源码部署**
+
+1.安装所需的依赖
+
+```
+python -m pip install -r requirements-prod.txt
+```
+
+2.初始化数据库
+
+- 安装MySql 5.7，创建数据库`DongTai-webapi`，运行数据库文件`conf/db.sql`
+- 进入`webapi`目录，运行`python manage.py createsuperuser`命令创建管理员
+
+或采用docker部署数据库
+- 拉取版本对应的数据库镜像并启动镜像
+```
+docker pull  dongtai/dongtai-mysql:latest 
+docker run -itd --name dongtai-mysql -p 3306:3306 dongtai/dongtai-mysql:latest
+```
+
+
+3.修改配置文件
+
+- 复制配置文件`conf/config.ini.example`为`conf/config.ini`并需改其中的配置；其中，`engine`对应的url为`DongTai-engine`的服务地址，`apiserver`对应的url为`DongTai-openapi`的服务地址
+
+4.运行服务
 
 - 运行`python manage.py runserver`启动服务
 
