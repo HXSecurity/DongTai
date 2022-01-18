@@ -1,7 +1,10 @@
 from django.shortcuts import render
 from dongtai.endpoint import UserEndPoint
 from django.db.models import Q
-from dongtai.models.sca_maven_db import ScaMavenDb
+from dongtai.models.sca_maven_db import (
+    ScaMavenDb,
+    ImportFrom,
+)
 from dongtai.models.sca_artifact_db import ScaArtifactDb
 from rest_framework import serializers
 from rest_framework import generics
@@ -9,11 +12,16 @@ from rest_framework.serializers import ValidationError
 from rest_framework import viewsets
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.translation import gettext_lazy as _
+from dongtai.permissions import TalentAdminPermission
 from dongtai.endpoint import R
 import csv
 from django.http import FileResponse
 from webapi.settings import BASE_DIR
 import os
+from scaupload.utils import (
+    get_packge_from_sca_lib,
+    ScaLibError,
+)
 # Create your views here.
 
 
@@ -44,6 +52,22 @@ class ScaDeleteSerializer(serializers.Serializer):
 
 
 class SCADBMavenBulkViewSet(UserEndPoint, viewsets.ViewSet):
+    
+    permission_classes_by_action = {
+        'POST': (TalentAdminPermission, ),
+        'DELETE': (TalentAdminPermission,),
+        'PUT': (TalentAdminPermission,),
+    }
+
+    def get_permissions(self):
+        try:
+            return [permission() for permission in self.permission_classes_by_action[self.request.method]]
+        except KeyError:
+            return [permission() for permission in self.permission_classes]
+
+
+
+
     @extend_schema_with_envcheck([ScaDBSerializer],
                                  summary=_('Get sca db bulk'),
                                  description=_("Get sca list"),
@@ -55,7 +79,7 @@ class SCADBMavenBulkViewSet(UserEndPoint, viewsets.ViewSet):
                 pass
         except ValidationError as e:
             return R.failure(data=e.detail)
-        q = Q()
+        q = Q(import_from=ImportFrom.USER)
         if ser.validated_data.get('name'):
             q = Q(package_name__icontains=ser.validated_data['name'])
         queryset = ScaMavenDb.objects.filter(q)
@@ -85,6 +109,20 @@ class SCADBMavenBulkViewSet(UserEndPoint, viewsets.ViewSet):
         return R.success()
 
 class SCADBMavenBulkDeleteView(UserEndPoint):
+    
+    permission_classes_by_action = {
+        'POST': (TalentAdminPermission, ),
+        'DELETE': (TalentAdminPermission,),
+        'PUT': (TalentAdminPermission,),
+    }
+
+    def get_permissions(self):
+        try:
+            return [permission() for permission in self.permission_classes_by_action[self.request.method]]
+        except KeyError:
+            return [permission() for permission in self.permission_classes]
+
+
     @extend_schema_with_envcheck(request=ScaDeleteSerializer,
                                  summary=_('Get sca db bulk'),
                                  description=_("Get sca list"),
@@ -96,6 +134,21 @@ class SCADBMavenBulkDeleteView(UserEndPoint):
 
 
 class SCADBMavenViewSet(UserEndPoint, viewsets.ViewSet):
+
+    permission_classes_by_action = {
+        'POST': (TalentAdminPermission, ),
+        'DELETE': (TalentAdminPermission,),
+        'PUT': (TalentAdminPermission,),
+    }
+
+    def get_permissions(self):
+        try:
+            return [permission() for permission in self.permission_classes_by_action[self.request.method]]
+        except KeyError:
+            return [permission() for permission in self.permission_classes]
+
+
+
     @extend_schema_with_envcheck(summary=_('Get sca db'),
                                  description=_("Get sca list"),
                                  tags=[_('SCA DB')])
@@ -190,8 +243,15 @@ class SCAStatViewSet(UserEndPoint):
                                  description=_("Get sca list"),
                                  tags=[_('SCA DB')])
     def get(self, request):
-        return R.success(
-            data={
-                'sca_count': ScaMavenDb.objects.count(),
-                'vuln_count': ScaArtifactDb.objects.count()
-            })
+        sca_count = ScaMavenDb.objects.filter(
+            import_from=ImportFrom.USER).count()
+        vuln_count = ScaArtifactDb.objects.count()
+        try:
+            res = get_packge_from_sca_lib(page_size=1)
+            sca_count = sca_count + res['page']['alltotal']
+        except ScaLibError as e:
+            pass
+        return R.success(data={
+            'sca_count': sca_count,
+            'vuln_count': vuln_count,
+        })
