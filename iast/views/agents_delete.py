@@ -47,7 +47,10 @@ class AgentsDeleteEndPoint(UserEndPoint):
         response_schema=_ResponseSerializer)
     def get(self, request):
         agent_ids = request.GET.get('ids')
-        agent_ids = agent_ids.split(',')
+        try:
+            agent_ids = [int(i) for i in agent_ids.split(',')]
+        except Exception as e:
+            return R.failure('agent_ids should able to numeric')
         result = []
         for pk in agent_ids:
             try:

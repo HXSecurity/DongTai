@@ -123,9 +123,9 @@ class ScaDetailView(UserEndPoint):
                     language = get_language()
                     for level in levels:
                         if language == "zh":
-                            level_dict[level.name] = level.name_type_zh
+                            level_dict[level.name] = level.name_value_zh
                         if language == "en":
-                            level_dict[level.name] = level.name_type_en
+                            level_dict[level.name] = level.name_value_en
 
                     for vul in vul_list:
                         _level = vul.get("vul_package", {}).get("severity", "none")
