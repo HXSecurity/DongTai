@@ -1,5 +1,21 @@
 # 升级日志
 
+## [1.3.0](https://github.com/HXSecurity/DongTai-webapi/releases/tag/v1.3.0)-2021-1-15
+* 功能
+  * 增加了调用远程组件库的功能
+  * 增加了用户导入组件库的功能
+  * 增加了API自动测试的功能
+* 改善
+  * 改善了漏洞导出接口的查询速度
+  * 改善了部分内容缺少提示的问题
+* 修复
+  * 修复了正则表达式验证中的re-dos问题
+  * 修复了组件导出csv没有正确携带UTF-8 BOM的问题
+  * 修复项目信息修改时提示信息不一致的问题
+  * 修复了部分内容缺少i18n部分的问题
+  * 修复了组件漏洞展示的问题
+
+
 ## [1.2.0](https://github.com/HXSecurity/DongTai-webapi/releases/tag/v1.2.0)-2021-12-18
 * 功能
   * 增加了组件的license展示
