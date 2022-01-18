@@ -1,9 +1,7 @@
 # Change log
 
-##[1.3.0](https://github.com/HXSecurity/DongTai-webapi/releases/tag/v1.3.0)-2021-1-15
+## [1.3.0](https://github.com/HXSecurity/DongTai-webapi/releases/tag/v1.3.0)-2021-1-15
 * Features
-   * Added the function of calling remote component library
-   * Added function for user to import component library
    * Added the function of API automatic testing
 * Improve
    * Improve the query speed of the vulnerability export interface

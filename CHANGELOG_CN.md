@@ -2,8 +2,6 @@
 
 ## [1.3.0](https://github.com/HXSecurity/DongTai-webapi/releases/tag/v1.3.0)-2021-1-15
 * 功能
-  * 增加了调用远程组件库的功能
-  * 增加了用户导入组件库的功能
   * 增加了API自动测试的功能
 * 改善
   * 改善了漏洞导出接口的查询速度
