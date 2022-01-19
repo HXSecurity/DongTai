@@ -22,6 +22,7 @@ from scaupload.utils import (
     get_packge_from_sca_lib,
     ScaLibError,
 )
+from django.db.utils import IntegrityError
 # Create your views here.
 
 
@@ -52,7 +53,7 @@ class ScaDeleteSerializer(serializers.Serializer):
 
 
 class SCADBMavenBulkViewSet(UserEndPoint, viewsets.ViewSet):
-    
+
     permission_classes_by_action = {
         'POST': (TalentAdminPermission, ),
         'DELETE': (TalentAdminPermission,),
@@ -94,6 +95,8 @@ class SCADBMavenBulkViewSet(UserEndPoint, viewsets.ViewSet):
                                  description=_("Get sca list"),
                                  tags=[_('SCA DB')])
     def create(self, request):
+        if not request.FILES.get('file'):
+            return R.failure(msg='file required')
         stream = request.FILES['file'].read().replace(b'\xEF\xBB\xBF', b'')
         decoded_files = stream.decode('utf-8').splitlines()
         reader = csv.DictReader(decoded_files)
@@ -109,7 +112,7 @@ class SCADBMavenBulkViewSet(UserEndPoint, viewsets.ViewSet):
         return R.success()
 
 class SCADBMavenBulkDeleteView(UserEndPoint):
-    
+
     permission_classes_by_action = {
         'POST': (TalentAdminPermission, ),
         'DELETE': (TalentAdminPermission,),
@@ -168,7 +171,10 @@ class SCADBMavenViewSet(UserEndPoint, viewsets.ViewSet):
                 pass
         except ValidationError as e:
             return R.failure(data=e.detail)
-        ScaMavenDb.objects.create(**ser.data)
+        try:
+            ScaMavenDb.objects.create(**ser.data)
+        except IntegrityError as e:
+            return R.failure(msg='same sha_1 component exists')
         return R.success()
 
     @extend_schema_with_envcheck(summary=_('Get sca db'),
