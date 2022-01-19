@@ -38,6 +38,7 @@ from lingzhi_engine import settings
 from signals import vul_found
 from core.plugins.export_report import ExportPort
 from dongtai.models.project_report import ProjectReport
+import requests
 
 LANGUAGE_MAP = {
     "JAVA": 1,
@@ -327,8 +328,152 @@ def load_methods_from_strategy(strategy_id):
     return strategy_value, method_pool_queryset
 
 
+def get_project_agents(agent):
+    agents = IastAgent.objects.filter(
+        bind_project_id=agent.bind_project_id,
+        project_version_id=agent.project_version_id,
+        user=agent.user
+    )
+    return agents
+
+def sca_scan_asset(asset):
+
+    """
+    根据SCA数据库，更新SCA记录信息
+    :return:
+    """
+    search_query = ""
+    agent = asset.agent
+    version = None
+    vul_count = 0
+    user_upload_package = None
+    if agent.language == "JAVA" and asset.signature_value:
+        # 用户上传的组件
+        user_upload_package = ScaMavenDb.objects.filter(sha_1=asset.signature_value).first()
+        search_query = "hash=" + asset.signature_value
+
+    elif agent.language == "PYTHON":
+        # @todo agent上报版本 or 捕获全量pip库
+        version = asset.version
+        name = asset.package_name.replace("-" + version, "")
+        search_query = "ecosystem={}&name={}&version={}".format("PyPI", name, version)
+
+    if search_query == "":
+        logger.info(f'search_query empty can not search vuls')
+    else:
+        package_name = asset.package_name
+
+        try:
+
+            url = settings.SCA_BASE_URL + "/package_vul/?" + search_query
+            logger.info(f'sca url: {url}')
+            resp = requests.get(url=url)
+            resp = json.loads(resp.content)
+            maven_model = resp.get("data", {}).get("package", {})
+            if maven_model is None:
+                maven_model = {}
+            vul_list = resp.get("data", {}).get("vul_list", {})
+
+            package_name = maven_model.get('aql', package_name)
+            version = maven_model.get('version', version)
+            if user_upload_package is not None:
+                package_name = user_upload_package.aql
+                version = user_upload_package.version
+
+            vul_count = len(vul_list)
+            levels = []
+            update_fields = list()
+
+            if asset.package_name != package_name:
+                asset.package_name = package_name
+                update_fields.append('package_name')
+
+            if asset.version != version:
+                asset.version = version
+                update_fields.append('version')
+
+            for vul in vul_list:
+                _level = vul.get("vul_package", {}).get("severity", "none")
+                if _level and _level not in levels:
+                    levels.append(_level)
+
+            if len(levels) > 0:
+
+                if 'high' in levels:
+                    level = 'high'
+                elif 'high' in levels:
+                    level = 'high'
+                elif 'medium' in levels:
+                    level = 'medium'
+                elif 'low' in levels:
+                    level = 'low'
+                else:
+                    level = 'info'
+
+            new_level = IastVulLevel.objects.get(name=level)
+            if asset.level != new_level:
+                asset.level = IastVulLevel.objects.get(name=level)
+                update_fields.append('level')
+
+            if asset.vul_count != vul_count:
+                asset.vul_count = vul_count
+                update_fields.append('vul_count')
+
+            if len(update_fields) > 0:
+                logger.info(f'update dependency fields: {update_fields}')
+                asset.save(update_fields=update_fields)
+
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            logger.info("get package_vul failed:{}".format(e))
+
+
+@shared_task(queue='dongtai-sca-task')
+def update_one_sca(agent_id, package_path, package_signature, package_name, package_algorithm):
+
+    """
+    根据SCA数据库，更新SCA记录信息
+    :return:
+    """
+    logger.info(f'SCA检测开始 [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm}]')
+    agent = IastAgent.objects.filter(id=agent_id).first()
+    version = None
+    if agent.language == "JAVA":
+        version = package_name.split('/')[-1].replace('.jar', '').split('-')[-1]
+    elif agent.language == "PYTHON":
+        # @todo agent上报版本 or 捕获全量pip库
+        version = package_name.split('/')[-1].split('-')[-1]
+
+    current_version_agents = get_project_agents(agent)
+    if package_signature:
+        asset_count = Asset.objects.values("id").filter(signature_value=package_signature,
+                                                        agent__in=current_version_agents).count()
+    else:
+        asset_count = Asset.objects.values("id").filter(package_name=package_name,
+                                                        version=version,
+                                                        agent__in=current_version_agents).count()
+
+    if asset_count == 0:
+        new_level = IastVulLevel.objects.get(name="info")
+        asset = Asset.objects.create(
+            package_name=package_name,
+            package_path=package_path,
+            signature_algorithm=package_algorithm,
+            signature_value=package_signature,
+            dt=time.time(),
+            version=version,
+            level=new_level,
+            vul_count=0,
+            agent=agent
+        )
+        sca_scan_asset(asset)
+    else:
+        logger.info(
+            f'SCA检测开始 [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm}] 组件已存在')
+
 @shared_task(queue='dongtai-periodic-task')
-def update_sca():
+def update_all_sca():
     """
     根据SCA数据库，更新SCA记录信息
     :return:
@@ -348,44 +493,7 @@ def update_sca():
                 break
 
             for asset in asset_steps:
-                update_fields = list()
-                signature = asset.signature_value
-                maven_model = ScaMavenDb.objects.filter(sha_1=signature).values('aql').first()
-                if maven_model is not None and asset.package_name != maven_model['aql']:
-                    logger.info('update dependency name')
-                    asset.package_name = maven_model['aql']
-                    update_fields.append('package_name')
-
-                aids = ScaMavenArtifact.objects.filter(signature=signature).values("aid")
-                vul_count = len(aids)
-                levels = ScaVulDb.objects.filter(id__in=aids).values('vul_level')
-
-                level = 'info'
-                if len(levels) > 0:
-                    levels = [_['vul_level'] for _ in levels]
-                    if 'high' in levels:
-                        level = 'high'
-                    elif 'high' in levels:
-                        level = 'high'
-                    elif 'medium' in levels:
-                        level = 'medium'
-                    elif 'low' in levels:
-                        level = 'low'
-                    else:
-                        level = 'info'
-
-                new_level = IastVulLevel.objects.get(name=level)
-                if asset.level != new_level:
-                    asset.level = IastVulLevel.objects.get(name=level)
-                    update_fields.append('level')
-
-                if asset.vul_count != vul_count:
-                    asset.vul_count = vul_count
-                    update_fields.append('vul_count')
-
-                if len(update_fields) > 0:
-                    logger.info(f'update dependency fields: {update_fields}')
-                    asset.save(update_fields=update_fields)
+                sca_scan_asset(asset)
             start = start + 1
         logger.info('SCA离线检测完成')
     except Exception as e:
@@ -455,7 +563,6 @@ def heartbeat():
     }
     try:
         logger.info('[core.tasks.heartbeat] send heartbeat data to OpenApi Service.')
-        import requests
         resp = requests.post(url='http://openapi.iast.huoxian.cn:8000/api/v1/engine/heartbeat', json=heartbeat_raw)
         if resp.status_code == 200:
             logger.info('[core.tasks.heartbeat] send heartbeat data to OpenApi Service Successful.')
