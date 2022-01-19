@@ -228,3 +228,6 @@ VERIFYING = 2
 CONFIRMED = 3
 IGNORE = 4
 SOLVED = 5
+
+# SCA_URL
+SCA_BASE_URL = config.get("sca", 'base_url')

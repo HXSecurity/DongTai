@@ -31,6 +31,7 @@ configs["CELERY_QUEUES"] = [
     Queue("dongtai-search-scan", Exchange("dongtai-search-scan"), routing_key="dongtai-search-scan"),
     Queue("dongtai-periodic-task", Exchange("dongtai-periodic-task"), routing_key="dongtai-periodic-task"),
     Queue("dongtai-replay-task", Exchange("dongtai-replay-task"), routing_key="dongtai-replay-task"),
+    Queue("dongtai-sca-task", Exchange("dongtai-sca-task"), routing_key="dongtai-sca-task"),
 ]
 configs["CELERY_ROUTES"] = {
     "core.tasks.search_vul_from_method_pool": {'exchange': 'dongtai-method-pool-scan', 'routing_key': 'dongtai-method-pool-scan'},

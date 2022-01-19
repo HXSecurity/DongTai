@@ -26,9 +26,12 @@ def check_response_content(method_pool):
     rules = IastSensitiveInfoRule.objects.filter(status=const.HOOK_TYPE_ENABLE)
     needed_check_data = {}
     if rules.values("id").count() > 0:
-        needed_check_data['HTTP Response Body'] = method_pool.res_body
-        needed_check_data['HTTP Request Params'] = method_pool.req_params
-        needed_check_data['HTTP Request Data'] = method_pool.req_data
+        if method_pool.res_body:
+            needed_check_data['HTTP Response Body'] = method_pool.res_body
+        if method_pool.req_params:
+            needed_check_data['HTTP Request Params'] = method_pool.req_params
+        if method_pool.req_data:
+            needed_check_data['HTTP Request Data'] = method_pool.req_data
     else:
         return
 
@@ -45,7 +48,7 @@ def check_response_content(method_pool):
                                 vul_type=rule.strategy.vul_type,
                                 method_pool=method_pool,
                                 position=key,
-                                data=result.group(1)
+                                data=result.group(0)
                             )
                     except Exception as e:
                         logger.error(
