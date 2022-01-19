@@ -39,6 +39,7 @@ from signals import vul_found
 from core.plugins.export_report import ExportPort
 from dongtai.models.project_report import ProjectReport
 import requests
+from hashlib import sha1
 
 LANGUAGE_MAP = {
     "JAVA": 1,
@@ -399,7 +400,7 @@ def sca_scan_asset(asset):
 
             if len(levels) > 0:
 
-                if 'high' in levels:
+                if 'critical' in levels:
                     level = 'high'
                 elif 'high' in levels:
                     level = 'high'
@@ -409,7 +410,8 @@ def sca_scan_asset(asset):
                     level = 'low'
                 else:
                     level = 'info'
-
+            else:
+                level = 'info'
             new_level = IastVulLevel.objects.get(name=level)
             if asset.level != new_level:
                 asset.level = IastVulLevel.objects.get(name=level)
@@ -450,6 +452,7 @@ def update_one_sca(agent_id, package_path, package_signature, package_name, pack
         asset_count = Asset.objects.values("id").filter(signature_value=package_signature,
                                                         agent__in=current_version_agents).count()
     else:
+        package_signature = sha_1('-'.join([package_name, version]))
         asset_count = Asset.objects.values("id").filter(package_name=package_name,
                                                         version=version,
                                                         agent__in=current_version_agents).count()
@@ -499,6 +502,10 @@ def update_all_sca():
     except Exception as e:
         logger.error(f'SCA离线检测出错，错误原因：{e}')
 
+def sha_1(raw):
+    h = sha1()
+    h.update(raw.encode('utf-8'))
+    return h.hexdigest()
 
 def is_alive(agent_id, timestamp):
     """
