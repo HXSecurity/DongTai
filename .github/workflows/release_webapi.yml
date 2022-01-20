@@ -77,20 +77,7 @@ jobs:
 
       - name: Generate version file
         run: |
-          cd ${{ github.workspace }} && \
-          echo "${{ github.event.repository.name }},version,${{ steps.release.outputs.version }}" >> version.txt && \
-          echo "${{ github.event.repository.name }},commit_hash,${GITHUB_SHA}" >> version.txt \
-
-      - name: Upload version file to oss
-        id: upload_version_file_to_oss
-        uses: tvrcgo/upload-to-oss@master
-        with:
-          key-id: ${{ secrets.OSS_KEY_ID }}
-          key-secret: ${{ secrets.OSS_KEY_SECRET }}
-          region: oss-cn-beijing
-          bucket: huoqi-public
-          assets: |
-            ./version.txt:/iast/release-version/${{ github.event.repository.name }}/${{ steps.release.outputs.version }}/version.txt
+          echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('${{ steps.release.outputs.version }}', '${{ github.event.repository.name }}', '${GITHUB_SHA}');" >> ./docker/version.sql
 
       - name: Build to local
         uses: docker/build-push-action@v2
