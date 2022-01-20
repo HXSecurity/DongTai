@@ -871,7 +871,7 @@ if [ ! 0 == $# ]; then # If options provided then
     fi
 
     check_network
-    # backup_mysql
+    backup_mysql
     check_update_record_file
     check_schema_hash
     upgrade_docker_image
