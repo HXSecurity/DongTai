@@ -9,7 +9,6 @@
 scaapi/cron/logs/sca.log
 *.docx
 db/*
-docker/
 #Dockerfile
 doc/*
 doc/example.json
