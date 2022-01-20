@@ -27,6 +27,8 @@ on:
       - 'LICENSE'
       - '.gitignore'
       - '.dockerignore'
+  workflow_dispatch:
+  
 jobs:
   Run-UnitTest:
     runs-on: ubuntu-latest
