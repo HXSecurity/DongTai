@@ -78,6 +78,7 @@ jobs:
       - name: Generate version file
         run: |
           echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('${{ steps.release.outputs.version }}', '${{ github.event.repository.name }}', '${GITHUB_SHA}');" >> ./docker/version.sql
+          echo "REPLACE INTO project_version_control (version, component_name) VALUES('${{ steps.release.outputs.version }}', 'DongTai');" >> ./docker/version.sql
 
       - name: Build to local
         uses: docker/build-push-action@v2
