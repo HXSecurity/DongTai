@@ -93,7 +93,21 @@ jobs:
           ossutil cp oss://dongtai/agent/java/ ./ --include "*.jar" -r
           ossutil cp oss://dongtai/agent/python/ ./  --include "*.tar.gz" -r
           ossutil cp oss://dongtai/agent/php/ ./  --include "*.tar.gz" -r
-          ls -l
+          ossutil cp oss://huoqi-public/iast/release-version/DongTai-agent-python/${{ steps.release.outputs.VERSION }}/version.txt DongTai-agent-python.version.txt || true
+          ossutil cp oss://huoqi-public/iast/release-version/DongTai-agent-java/${{ steps.release.outputs.VERSION }}/version.txt DongTai-agent-java.version.txt || true
+          ossutil cp oss://huoqi-public/iast/release-version/DongTai-agent-php/${{ steps.release.outputs.VERSION }}/version.txt DongTai-agent-php.version.txt || true
+          DONGTAI_JAVA_AGENT_REPONAME=`cat DongTai-agent-java.version.txt | awk '{split($0,a,",");print a[1]}' | sed -n "1p"`
+          DONGTAI_JAVA_AGENT_VERSION=`cat DongTai-agent-java.version.txt | awk '{split($0,a,",");print a[3]}' | sed -n "1p"`
+          DONGTAI_JAVA_AGENT_HASH=`cat DongTai-agent-java.version.txt | awk '{split($0,a,",");print a[3]}' | sed -n "2p"`
+          DONGTAI_JAVA_AGENT_CORE_NAME=`cat DongTai-agent-java.version.txt | awk '{split($0,a,",");print a[2]}' | sed -n "3p"`
+          DONGTAI_JAVA_AGENT_CORE_HASH=`cat DongTai-agent-java.version.txt | awk '{split($0,a,",");print a[3]}' | sed -n "3p"`
+          DONGTAI_JAVA_AGENT_EXTENAL='{\"${{ DONGTAI_JAVA_AGENT_CORE_NAME }}\":\"${{ DONGTAI_JAVA_AGENT_CORE_HASH }}\"}'
+          DONGTAI_PYTHON_AGENT_REPONAME=`cat DongTai-agent-python.version.txt | awk '{split($0,a,",");print a[1]}' | sed -n "1p"`
+          DONGTAI_PYTHON_AGENT_VERSION=`cat DongTai-agent-python.version.txt | awk '{split($0,a,",");print a[3]}' | sed -n "1p"`
+          DONGTAI_PYTHON_AGENT_HASH=`cat DongTai-agent-python.version.txt | awk '{split($0,a,",");print a[3]}' | sed -n "2p"`
+          echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('${{ steps.release.outputs.version }}', '${{ github.event.repository.name }}', '${GITHUB_SHA}');" >> ./docker/version.sql
+          echo "REPLACE INTO project_version_control (version, component_name, component_version_hash,additional) VALUES('${{ DONGTAI_JAVA_AGENT_VERSION }}', '${{ DONGTAI_JAVA_AGENT_REPONAME }}', '${DONGTAI_JAVA_AGENT_HASH}', '${DONGTAI_JAVA_AGENT_EXTENAL}');" >> ./docker/version.sql
+          echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('${{ DONGTAI_PYTHON_AGENT_VERSION }}', '${{ DONGTAI_PYTHON_AGENT_REPONAME }}', '${DONGTAI_PYTHON_AGENT_HASH}');" >> ./docker/version.sql
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
