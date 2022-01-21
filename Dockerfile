@@ -18,4 +18,4 @@ RUN mv /opt/dongtai/openapi/*.jar /tmp/iast_cache/package/ && mv /opt/dongtai/op
 
 WORKDIR /opt/dongtai/openapi
 
-ENTRYPOINT ["/bin/bash","/opt/dongtai/webapi/docker/entrypoint.sh"]
+ENTRYPOINT ["/bin/bash","/opt/dongtai/openapi/docker/entrypoint.sh"]
