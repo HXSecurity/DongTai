@@ -17,6 +17,6 @@
 #
 #mysql --host=$MYSQL_HOST -u$MYSQL_USER -P$MYSQL_PORT -p$MYSQL_PASSWORD -D $MYSQL_NAME < /opt/dongtai/webapi/docker/version.sql || true 
 
-python /opt/dongtai/webapi/docker/version_update.py || true
+python /opt/dongtai/openapi/docker/version_update.py || true
 
-/usr/local/bin/uwsgi --ini /opt/dongtai/webapi/conf/uwsgi.ini
+/usr/local/bin/uwsgi --ini /opt/dongtai/openapi/conf/uwsgi.ini
