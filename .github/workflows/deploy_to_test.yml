@@ -130,7 +130,7 @@ jobs:
       
       - name: Generate version file
         run: |
-          MAIN_STREAM_VERSION=`echo ${{ github.run_number }}.0.0 | awk '{split($0,a,".");printf "%d.%d.x",a[1],a[2];}`
+          export MAIN_STREAM_VERSION=`echo ${{ github.run_number }}.0.0 | awk '{split($0,a,".");printf "%d.%d.x",a[1],a[2];}`
           echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('${{ github.run_number }}.0.0', '${{ github.event.repository.name }}', '${GITHUB_SHA}');" >> ./docker/version.sql
           echo "REPLACE INTO project_version_control (version, component_name) VALUES('${{ MAIN_STREAM_VERSION }}', 'DongTai');" >> ./docker/version.sql
         
