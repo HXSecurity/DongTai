@@ -27,3 +27,4 @@ https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/dongtai-test-latest.tar.gz
 ddt
 faker
 jq
+django-cprofile-middleware
