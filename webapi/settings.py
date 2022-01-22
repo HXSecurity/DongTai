@@ -373,6 +373,13 @@ The Token method is recommended here, and users can find it in the Agent install
     REST_FRAMEWORK[
         'DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'
 
+
+if os.getenv('environment', None) == 'TEST' or os.getenv('CPROFILE',
+                                                         None) == 'TRUE':
+    DJANGO_CPROFILE_MIDDLEWARE_REQUIRE_STAFF = False
+    MIDDLEWARE.append(
+        'django_cprofile_middleware.middleware.ProfilerMiddleware')
+
 SCA_BASE_URL = config.get('sca', 'base_url')
 
 if os.getenv('environment', None) in ('TEST', 'PROD'):
