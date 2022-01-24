@@ -239,8 +239,9 @@ class GoAgentDownload():
                 f'DongtaiGoOpenapi: "{base_url}"',
                 f'DongtaiGoToken: "{auth_token}"',
                 f'DongtaiGoProjectName: "{project_name}"',
-                f'DongtaiGoProjectName: "0.1.0"',
-                f'DongtaiGoProjectName: true',
+                'DongtaiGoProjectVersion: "0.1.0"',
+                'DongtaiGoProjectCreate: true',
+                f'DongtaiGoAgentToken: "{agent_token}"',
             ]
             fp.writelines([config + "\n" for config in configs])
         return True
