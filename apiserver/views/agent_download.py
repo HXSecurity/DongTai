@@ -237,7 +237,11 @@ class GoAgentDownload():
         with open(f"{self.target_path}/{self.agent_file}", "w") as fp:
             configs = [
                 f'DongtaiGoOpenapi: "{base_url}"',
-                f'DongtaiGoToken: "{auth_token}"'
+                f'DongtaiGoToken: "{auth_token}"',
+                f'DongtaiGoProjectName: "{project_name}"',
+                'DongtaiGoProjectVersion: "0.1.0"',
+                'DongtaiGoProjectCreate: true',
+                f'DongtaiGoAgentToken: "{agent_token}"',
             ]
             fp.writelines([config + "\n" for config in configs])
         return True
