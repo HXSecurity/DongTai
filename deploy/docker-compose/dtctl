@@ -815,7 +815,7 @@ if [ ! 0 == $# ]; then # If options provided then
 
       # 创建 DOCKER_COMPOSE_FILE
       docker_compose_file=$(create_docker_compose_file $TO_VERSION $(get_web_service_port) $(get_database_data_dir) "upgrade")
-
+      PROJECT_NAME=$(get_project_name)
       Info "Start to pull new images with tag $TO_VERSION"
       docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") pull
 
