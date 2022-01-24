@@ -82,7 +82,7 @@ jobs:
 #          python3 manage.py test
 
   Deploy-To-TEST:
-    if: ${{ github.event_name == 'push' && github.repository_owner == 'HXSecurity' }}
+    if: ${{ ( github.event_name == 'push' || github.event_name == 'workflow_dispatch' ) && github.repository_owner == 'HXSecurity' }}
     needs: [Run-UnitTest]
     runs-on: ubuntu-latest
     strategy:
