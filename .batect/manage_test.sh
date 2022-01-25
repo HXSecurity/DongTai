@@ -8,8 +8,4 @@
 # @description : 
 ######################################################################
 
-if [ "$PYTHONAGENT" = "TRUE" ]; then
-	curl -X GET "${DONGTAI_IAST_BASE_URL}/api/v1/agent/download?url=${DONGTAI_IAST_BASE_URL}&language=python&projectName=${PROJECT_NAME}" -H "Authorization: Token ${DONGTAI_AGNET_TOKEN}" -o dongtai-agent-python.tar.gz -k
-	pip install dongtai-agent-python.tar.gz
-fi
 python manage.py test 
