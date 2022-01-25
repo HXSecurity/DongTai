@@ -124,7 +124,8 @@ WEBAPI_PYTHON_AGENT=TRUE ./batect serve-with-db
 [Batect入门](https://batect.dev/docs/getting-started/tutorial)
 
 
-#### 不使用docker-compose
+#### 使用本地环境
+
 1.安装所需的依赖
 
 ```
