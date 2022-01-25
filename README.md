@@ -19,32 +19,15 @@ DongTai-WebAPI is used to user resource management ,including:
 - Tenant management
 - Deployment document retrieval
 
-
-### Document
-
-- API documentation corresponding to the project 
-
-1. Add document-related parameters when starting the container :
-```
-$ docker run -d -p 8000:8000 --restart=always -e environment=DOC --name dongtai-webapi huoxian/dongtai-webapi:latest
-```
-Here you need to start the corresponding mysql database. If you only want to start the webapi project to view the document, you need to add the following parameter `-e database=sqlite` (only start the webapi project to view the document, and does not guarantee the compatibility under sqlite ), the complete command is:
-```
-$ docker run -d -p 8000:8000 --restart=always -e environment=DOC -e database=sqlite --name dongtai-webapi huoxian/dongtai-webapi:latest
-```
-
-2. Access the corresponding API in the container:
-
-Swagger-ui address is `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/swagger-ui/#/`
-
-The Redoc address is `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/redoc/`
-
-If you need to separately export swagger.json
-The address is `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/`
-
-3. The specific API authentication mode has been included in the API document, and the corresponding token can be found on the installation agent part of the web.
+## How to contribute code？
 
 ### Development
+
+- Use docker-compose (recommended)
+- Use batect (in the experimental stage, it will be recommended after the jdk dependency is removed)
+- Use local environment
+
+Tip: Avoid using methods other than the first two, which can not only reduce the time to configure the local development environment, but also reduce test errors, compatibility errors, etc. caused by the difference between the development environment and the distribution environment.
 
 #### Develop with docker-compose(recommend)
 
@@ -95,7 +78,53 @@ docker exec -it dongtai-iast-dev_dongtai-webapi_1 pip install dongtai-agent-pyth
 
 d. Use the command in 3. to restart the service
 
-#### Develop without docker-compose
+#### Use batect
+
+1. Run `./batect` to check whether the dependencies are satisfied, and initialize the batect.
+
+2. Run `./batect --list-tasks` to view the existing tasks, as follows:
+
+```
+integration:
+- integration-test-all: integration with all components
+- integration-test-web: integration with web front-end
+
+serve:
+- serve: Serve the webapi application standingalone
+- serve-with-db: Serve the webapi application with db
+
+test:
+- test: run webapi unittest
+```
+
+For example:
+Running the following command will build webapi container and db container.
+```
+./batect serve-with-db
+```
+The following environment variables can be used.
+
+- DOC: ${WEBAPI_DOC:-TRUE}
+- debug: ${WEBAPI_debug:-true}
+- SAVEEYE: ${WEBAPI_SAVEEYE:-TRUE}
+- CPROFILE: ${WEBAPI_CPROFILE:-TRUE}
+- PYTHONAGENT: ${WEBAPI_PYTHON_AGENT:-FALSE}
+- PROJECT_NAME: ${WEBAPI_PROJECT_NAME:-LocalWEBAPI}
+- PROJECT_VERSION: ${WEBAPI_PROJECT_VERSION:-v1.0}
+- LOG_PATH: ${WEBAPI_LOG_PATH:-/tmp/dongtai-agent-python.log}
+- DONGTAI_IAST_BASE_URL: ${DONGTAI_IAST_BASE_URL:-https://iast.io/openapi}
+- DONGTAI_AGNET_TOKEN: ${DONGTAI_AGNET_TOKEN:-79798299b48839c84886d728958a8f708e119868}
+
+example:
+Use the host environment variable to override the default, enabling PYTHONAGENT:
+```
+WEBAPI_PYTHON_AGENT=TRUE ./batect serve-with-db
+```
+
+[Batect Installation](https://batect.dev/docs/getting-started/installation)
+[Batect Tutorial](https://batect.dev/docs/getting-started/tutorial)
+
+#### Use local environment
 
 1. Install the required dependencies
 
@@ -134,6 +163,31 @@ If you need to create or modify the database table, please refer to the [DongTai
 `debug=true` enable debug mode
 
 - Run `python manage.py runserver` to start the service 
+
+
+### Document
+
+- API documentation corresponding to the project 
+
+1. Add document-related parameters when starting the container :
+```
+$ docker run -d -p 8000:8000 --restart=always -e environment=DOC --name dongtai-webapi huoxian/dongtai-webapi:latest
+```
+Here you need to start the corresponding mysql database. If you only want to start the webapi project to view the document, you need to add the following parameter `-e database=sqlite` (only start the webapi project to view the document, and does not guarantee the compatibility under sqlite ), the complete command is:
+```
+$ docker run -d -p 8000:8000 --restart=always -e environment=DOC -e database=sqlite --name dongtai-webapi huoxian/dongtai-webapi:latest
+```
+
+2. Access the corresponding API in the container:
+
+Swagger-ui address is `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/swagger-ui/#/`
+
+The Redoc address is `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/redoc/`
+
+If you need to separately export swagger.json
+The address is `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/`
+
+3. The specific API authentication mode has been included in the API document, and the corresponding token can be found on the installation agent part of the web.
 
 
 ## Deploy
