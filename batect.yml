@@ -1,0 +1,100 @@
+containers:
+  dongtai-mysql: 
+    image: dongtai/dongtai-mysql:latest
+    ports:
+      - "33060:3306"
+  
+  dongtai-redis:
+    image: dongtai/dongtai-redis:latest
+  dongtai-webapi:
+    build_directory: .
+    dockerfile: ./DockerfileDev
+    ports:
+      - "8000:8000"
+    environment: 
+      DOC: ${WEBAPI_DOC:-TRUE}
+      debug: ${WEBAPI_debug:-true}
+      SAVEEYE: ${WEBAPI_SAVEEYE:-TRUE}
+      CPROFILE: ${WEBAPI_CPROFILE:-TRUE}
+      PYTHONAGENT: ${WEBAPI_PYTHON_AGENT:-FALSE}
+      PROJECT_NAME: ${WEBAPI_PROJECT_NAME:-LocalWEBAPI}
+      PROJECT_VERSION: ${WEBAPI_PROJECT_VERSION:-v1.0}
+      LOG_PATH: ${WEBAPI_LOG_PATH:-/tmp/dongtai-agent-python.log}
+      DONGTAI_IAST_BASE_URL: ${DONGTAI_IAST_BASE_URL:-https://iast.io/openapi}
+      DONGTAI_AGNET_TOKEN: ${DONGTAI_AGNET_TOKEN:-79798299b48839c84886d728958a8f708e119868}
+    volumes:
+      - .:/opt/dongtai/webapi/
+
+  dongtai-web:
+    image: dongtai/dongtai-web:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+
+  dongtai-openapi:
+    image: dongtai/dongtai-openapi:latest
+    volumes:
+      - ./conf/config.ini:/opt/dongtai/openapi/conf/config.ini
+
+  dongtai-engine:
+    image: dongtai/dongtai-engine:latest
+    volumes:
+      - ./conf/config.ini:/opt/dongtai/engine/conf/config.ini
+
+
+  dongtai-engine-task:
+    image: dongtai/dongtai-engine:latest
+    command: /opt/dongtai/engine/docker/entrypoint.sh task
+    volumes:
+      - ./conf/config.ini:/opt/dongtai/engine/conf/config.ini
+    dependencies:
+      - dongtai-engine
+
+tasks:
+  serve:
+    description: Serve the webapi application standingalone 
+    run:
+      container: dongtai-webapi        
+      entrypoint: /opt/dongtai/webapi/.batect/manage_run_server.sh
+    group: serve
+
+
+  serve-with-db:
+    description: Serve the webapi application with db
+    run:
+      container: dongtai-webapi        
+      entrypoint: /opt/dongtai/webapi/.batect/manage_run_server.sh
+    dependencies:
+      - dongtai-mysql
+    group: serve
+
+  test:
+    description: run webapi unittest 
+    run:
+      container: dongtai-webapi
+      entrypoint: /opt/dongtai/webapi/.batect/manage_test.sh
+    group: test
+
+  integration-test-web:
+    description: integration with web front-end 
+    run:
+      container: dongtai-webapi
+    dependencies:
+      - dongtai-mysql
+      - dongtai-webapi
+      - dongtai-web
+      - dongtai-openapi
+    group: integration
+  integration-test-all:
+    description: integration with all components
+    run:
+      container: dongtai-webapi
+    dependencies:
+      - dongtai-mysql
+      - dongtai-web
+      - dongtai-openapi
+      - dongtai-redis
+      - dongtai-engine
+      - dongtai-engine-task
+    group: integration

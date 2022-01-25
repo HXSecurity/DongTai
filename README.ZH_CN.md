@@ -19,32 +19,15 @@ DongTai-WebAPI 用于处理DongTai用户资源管理的相关请求，包括：
 - 租户管理
 - 部署文档检索
 
-
-### 文档
-
-- 项目内置的API文档
-
-1. 启动容器时加上文档相关的参数:
-```
-$ docker run -d -p 8000:8000 --restart=always -e environment=DOC --name dongtai-webapi huoxian/dongtai-webapi:latest
-```
-此处需要启动对应的mysql数据库，如果仅希望单独启动webapi项目查看文档，则需额外加上以下参数 `-e database=sqlite`（仅为单独启动webapi项目查看文档，不保证在sqlite下的兼容性),完整命令为:
-```
-$ docker run -d -p 8000:8000 --restart=always -e environment=DOC -e database=sqlite --name dongtai-webapi huoxian/dongtai-webapi:latest
-```
-
-2. 访问容器中对应的API:
-
-Swagger-ui地址为 `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/swagger-ui/#/`
-
-Redoc地址为 `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/redoc/`
-
-若需要单独需要导出swagger.json
-地址为 `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/`
-
-3. 具体的API鉴权模式已包含在API文档中，可在web的安装agent界面找到对应的token。
+## 如何贡献代码
 
 ### 开发
+
+- 使用docker-compose (推荐)
+- 使用batect(试验阶段，在官方移除jdk依赖后转为推荐)
+- 不使用docker-compose
+
+提示：避免使用前两种之外的方式，这不仅能减少配置本地开发环境的时间，同时也能够减少开发环境与分发环境相异导致的测试错误、兼容性错误等等问题。
 
 #### 使用docker-compose (推荐)
 
@@ -94,8 +77,55 @@ docker exec -it dongtai-iast-dev_dongtai-webapi_1 pip install dongtai-agent-pyth
 
 d.使用3.中的命令重启服务
 
+#### 使用batect
 
-#### 不使用docker-compose
+1. 运行`./batect` 检测依赖是否满足，以及初始化batect。
+
+2. 运行`./batect --list-tasks` 查看现有的task，如下：
+
+```
+integration:
+- integration-test-all: integration with all components
+- integration-test-web: integration with web front-end
+
+serve:
+- serve: Serve the webapi application standingalone
+- serve-with-db: Serve the webapi application with db
+
+test:
+- test: run webapi unittest
+```
+
+例如：
+运行以下命令，将构建单独的webapi容器和db容器。
+```
+./batect serve-with-db
+```
+其中可使用如下环境变量。
+
+- DOC: ${WEBAPI_DOC:-TRUE}
+- debug: ${WEBAPI_debug:-true}
+- SAVEEYE: ${WEBAPI_SAVEEYE:-TRUE}
+- CPROFILE: ${WEBAPI_CPROFILE:-TRUE}
+- PYTHONAGENT: ${WEBAPI_PYTHON_AGENT:-FALSE}
+- PROJECT_NAME: ${WEBAPI_PROJECT_NAME:-LocalWEBAPI}
+- PROJECT_VERSION: ${WEBAPI_PROJECT_VERSION:-v1.0}
+- LOG_PATH: ${WEBAPI_LOG_PATH:-/tmp/dongtai-agent-python.log}
+- DONGTAI_IAST_BASE_URL: ${DONGTAI_IAST_BASE_URL:-https://iast.io/openapi}
+- DONGTAI_AGNET_TOKEN: ${DONGTAI_AGNET_TOKEN:-79798299b48839c84886d728958a8f708e119868}
+
+例：
+使用主机环境变量覆盖默认值，启用PYTHONAGENT:
+```
+WEBAPI_PYTHON_AGENT=TRUE ./batect serve-with-db
+```
+
+[Batect安装](https://batect.dev/docs/getting-started/installation)
+[Batect入门](https://batect.dev/docs/getting-started/tutorial)
+
+
+#### 使用本地环境
+
 1.安装所需的依赖
 
 ```
@@ -131,6 +161,31 @@ debug=true 开启debug模式
 
 - 运行`python manage.py runserver`启动服务
 
+### 文档
+
+- 项目内置的API文档
+
+1. 启动容器时加上文档相关的参数:
+```
+$ docker run -d -p 8000:8000 --restart=always -e environment=DOC --name dongtai-webapi huoxian/dongtai-webapi:latest
+```
+此处需要启动对应的mysql数据库，如果仅希望单独启动webapi项目查看文档，则需额外加上以下参数 `-e database=sqlite`（仅为单独启动webapi项目查看文档，不保证在sqlite下的兼容性),完整命令为:
+```
+$ docker run -d -p 8000:8000 --restart=always -e environment=DOC -e database=sqlite --name dongtai-webapi huoxian/dongtai-webapi:latest
+```
+
+2. 访问容器中对应的API:
+
+Swagger-ui地址为 `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/swagger-ui/#/`
+
+Redoc地址为 `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/redoc/`
+
+若需要单独需要导出swagger.json
+地址为 `http://<containerip:port>/api/XZPcGFKoxYXScwGjQtJx8u/schema/`
+
+3. 具体的API鉴权模式已包含在API文档中，可在web的安装agent界面找到对应的token。
+
+## 部署
 
 ### 部署方案
 
