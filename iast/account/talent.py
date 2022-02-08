@@ -59,7 +59,7 @@ class TalentEndPoint(SystemAdminEndPoint):
         :return:
         """
         talent = Talent.objects.filter(id=pk).first()
-        if talent and talent.is_active:
+        if talent:
             talent.created_by = request.user.id
             talent.update_time = int(time.time())
 
