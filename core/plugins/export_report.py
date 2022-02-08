@@ -73,13 +73,13 @@ def get_vul_count_by_agent(agent_ids, vid, user):
         typeArr = {}
         typeLevel = {}
         for one in typeInfo:
-            hook_type = hooktypes.get('hook_type_id', None)
+            hook_type = hooktypes.get(one['hook_type_id'], None)
             hook_type_name = hook_type['name'] if hook_type else None
-            strategy = strategys.get('strategy_id', None)
+            strategy = strategys.get(one['strategy_id'], None)
             strategy_name = strategy['vul_name'] if strategy else None
             type_ = list(
                 filter(lambda x: x is not None, [strategy_name, hook_type_name]))
-            one['type']= type_[0] if type_ else ''
+            one['type'] = type_[0] if type_ else ''
             typeArr[one['type']] = typeArr.get(one['type'], 0) + 1
             typeLevel[one['type']] = one['level_id']
             levelCount[one['level_id']] = levelCount.get(one['level_id'], 0) + 1
