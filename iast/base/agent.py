@@ -7,6 +7,7 @@
 import json
 import re
 import time
+from django.db.models import Count
 
 from dongtai.models.agent import IastAgent
 from dongtai.models.project import IastProject
@@ -17,7 +18,7 @@ from dongtai.models.hook_type import HookType
 from iast.base.project_version import get_project_version
 from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.project_version import IastProjectVersion
-
+from functools import reduce
 
 def get_agents_with_project(project_name, users):
     """
@@ -88,23 +89,35 @@ def get_project_vul_count(users, queryset, auth_agents, project_id=None):
         current_version=1,
         user__in=users).values_list('id', 'project_id').all()
     versions_map = {version[1]: version[0] for version in versions}
+    qss = []
+    project_pair = {}
     for project in project_queryset:
         project_id = project['id']
         version_id = versions_map.get(project_id, 0)
         agent_queryset = auth_agents.filter(project_version_id=version_id,
                                             bind_project_id=project_id)
-        count = queryset.filter(agent__in=agent_queryset).values('id').count()
-        if count is False:
+        qs = queryset.filter(agent__in=agent_queryset).extra({
+            "project_id":
+            project_id,
+        }).annotate(count=Count('id')).values('project_id',
+                                              'count')
+        project_pair[project_id] = project['name']
+        qss.append(qs)
+    if len(qss) > 1:
+        unionqs = qss[0].union(*qss[1::])
+    elif len(qss) == 1:
+        unionqs = qss[0]
+    else:
+        unionqs = None
+    if unionqs:
+        for project_result in unionqs:
             result.append({
-                "project_name": project['name'],
-                "count": 0,
-                "id": project_id
-            })
-        else:
-            result.append({
-                "project_name": project['name'],
-                "count": count,
-                "id": project_id
+                "project_name":
+                project_pair[project_result['project_id']],
+                "count":
+                project_result['count'],
+                "project_id":
+                project_result['project_id'],
             })
     result = sorted(result, key=lambda item: item['count'], reverse=True)[:5]
     return result
