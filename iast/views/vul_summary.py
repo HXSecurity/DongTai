@@ -298,7 +298,7 @@ class VulSummary(UserEndPoint):
         vul_type = request.query_params.get('type')
         if vul_type:
             hook_types = HookType.objects.filter(name=vul_type).all()
-            strategys = IastStrategyModel.objects.filter(vul_name=vul_type).all() 
+            strategys = IastStrategyModel.objects.filter(vul_name=vul_type).all()
             q = Q(hook_type__in=hook_types,strategy_id=0) | Q(strategy__in=strategys)
             queryset = queryset.filter(q)
 
@@ -310,8 +310,10 @@ class VulSummary(UserEndPoint):
         queryset = queryset.filter(q)
 
         level_summary = queryset.values('level').order_by('level').annotate(total=Count('level'))
-        type_summary = queryset.values('hook_type_id','strategy_id').order_by(
-            'hook_type_id').annotate(total=Count('hook_type_id'))
+        type_summary = queryset.values(
+            'hook_type_id', 'strategy_id', 'hook_type__name',
+            'strategy__vul_name').order_by('hook_type_id').annotate(
+                total=Count('hook_type_id'))
 
         end['data']['language'] = self.get_languages(queryset.values('agent_id'))
 
@@ -350,10 +352,15 @@ class VulSummary(UserEndPoint):
 
 
 def get_hook_type_name(obj):
-    hook_type = HookType.objects.filter(pk=obj['hook_type_id']).first()
-    hook_type_name = hook_type.name if hook_type else None
-    strategy = IastStrategyModel.objects.filter(pk=obj['strategy_id']).first()
-    strategy_name = strategy.vul_name if strategy else None
+    #hook_type = HookType.objects.filter(pk=obj['hook_type_id']).first()
+    #hook_type_name = hook_type.name if hook_type else None
+    #strategy = IastStrategyModel.objects.filter(pk=obj['strategy_id']).first()
+    #strategy_name = strategy.vul_name if strategy else None
+    #type_ = list(
+    #    filter(lambda x: x is not None, [strategy_name, hook_type_name]))
     type_ = list(
-        filter(lambda x: x is not None, [strategy_name, hook_type_name]))
+        filter(lambda x: x is not None, [
+            obj.get('strategy__vul_name', None),
+            obj.get('hook_type__name', None)
+        ]))
     return type_[0] if type_ else ''
