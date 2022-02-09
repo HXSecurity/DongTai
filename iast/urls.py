@@ -100,6 +100,7 @@ from iast.views.vul_request_replay import RequestReplayEndPoint
 from iast.views.vul_sidebar_index import VulSideBarList
 from iast.views.vul_status import VulStatus
 from iast.views.vul_summary import VulSummary
+from iast.views.vul_summary_type import VulSummaryType
 from iast.views.vuls import VulsEndPoint
 from iast.views.vulnerability_status import VulnerabilityStatusView
 from iast.views.version_update import MethodPoolVersionUpdate
@@ -180,6 +181,7 @@ urlpatterns = [
     path('project/version/check', UpdateProjectVersion.as_view()),
     path('vulns', VulsEndPoint.as_view()),
     path('vuln/summary', VulSummary.as_view()),
+    path('vuln/summary_type', VulSummaryType.as_view()),
     #    path('vuln/list', VulSideBarList.as_view()), Departured
     path('vuln/<int:id>', VulDetail.as_view()),
     path('vuln/status', VulStatus.as_view()),

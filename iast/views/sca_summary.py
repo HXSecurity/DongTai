@@ -205,13 +205,14 @@ class ScaSummary(UserEndPoint):
                 DEFAULT_LEVEL[level_item.name_value] = 0
                 levelNameArr[level_item.name_value] = level_item.id
                 levelIdArr[level_item.id] = level_item.name_value
-
-        end['data']['language'] = VulSummary.get_languages(queryset.values('agent_id'))
+        agent_count = queryset.values('agent_id').annotate(count=Count('agent_id'))
+        end['data']['language'] = VulSummary.get_languages(agent_count)
         _temp_data = {levelIdArr[_['level']]: _['total'] for _ in level_summary}
         DEFAULT_LEVEL.update(_temp_data)
         end['data']['level'] = [{
             'level': _key, 'count': _value, 'level_id': levelNameArr[_key]
         } for _key, _value in DEFAULT_LEVEL.items()]
-        end['data']['projects'] = get_project_vul_count(auth_users, queryset, auth_agents.values('id'), project_id)
+
+        end['data']['projects'] = get_project_vul_count(auth_users, agent_count, auth_agents.values('id'), project_id)
 
         return R.success(data=end['data'])

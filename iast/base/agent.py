@@ -17,7 +17,7 @@ from dongtai.models.hook_type import HookType
 from iast.base.project_version import get_project_version
 from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.project_version import IastProjectVersion
-
+from django.db.models import Count
 
 def get_agents_with_project(project_name, users):
     """
@@ -72,7 +72,50 @@ def get_all_server(ids):
             result[item['id']] = item['container']
     return result
 
+# todo del edit by song
+def get_project_vul_count_back(users, queryset, auth_agents, project_id=None):
+    result = list()
+    project_queryset = IastProject.objects.filter(user__in=users)
+    project_queryset = project_queryset.values('name', 'id')
+    if not project_queryset:
+        return result
+    if project_id:
+        project_queryset = project_queryset.filter(id=project_id)
 
+    versions = IastProjectVersion.objects.filter(
+        project_id__in=[project['id'] for project in project_queryset],
+        status=1,
+        current_version=1,
+        user__in=users).values_list('id', 'project_id').all()
+    versions_map = {version[1]: version[0] for version in versions}
+    # 需要 查询 指定项目 当前版本 绑定的agent 所对应的漏洞数量
+
+    for project in project_queryset:
+        project_id = project['id']
+        version_id = versions_map.get(project_id, 0)
+        agent_queryset = auth_agents.filter(project_version_id=version_id,
+                                            bind_project_id=project_id)
+
+        count = queryset.filter(agent__in=agent_queryset).count()
+
+        if count is False:
+            result.append({
+                "project_name": project['name'],
+                "count": 0,
+                "id": project_id
+            })
+        else:
+            result.append({
+                "project_name": project['name'],
+                "count": count,
+                "id": project_id
+            })
+
+    result = sorted(result, key=lambda item: item['count'], reverse=True)[:5]
+    return result
+
+
+# add by song
 def get_project_vul_count(users, queryset, auth_agents, project_id=None):
     result = list()
     project_queryset = IastProject.objects.filter(user__in=users)
@@ -88,24 +131,31 @@ def get_project_vul_count(users, queryset, auth_agents, project_id=None):
         current_version=1,
         user__in=users).values_list('id', 'project_id').all()
     versions_map = {version[1]: version[0] for version in versions}
+    # agent_summary = queryset.values('agent_id').annotate(agent_vul_num=Count("agent_id"))
+    agentIdArr = {}
+    for item in queryset:
+        agentIdArr[item["agent_id"]] = item["count"]
+    auth_agent_arr = auth_agents.values("project_version_id","bind_project_id","id")
+    agent_list = {}
+    for auth in auth_agent_arr:
+        version_id = versions_map.get(auth['bind_project_id'], 0)
+        if version_id == auth['project_version_id']:
+            if agent_list.get(auth['bind_project_id'], None) is None:
+                agent_list[auth['bind_project_id']] = []
+            agent_list[auth['bind_project_id']].append(auth['id'])
+
+    # 需要 查询 指定项目 当前版本 绑定的agent 所对应的漏洞数量
     for project in project_queryset:
         project_id = project['id']
-        version_id = versions_map.get(project_id, 0)
-        agent_queryset = auth_agents.filter(project_version_id=version_id,
-                                            bind_project_id=project_id)
-        count = queryset.filter(agent__in=agent_queryset).values('id').count()
-        if count is False:
-            result.append({
-                "project_name": project['name'],
-                "count": 0,
-                "id": project_id
-            })
-        else:
-            result.append({
-                "project_name": project['name'],
-                "count": count,
-                "id": project_id
-            })
+        count = 0
+        for agent_id in agent_list.get(project_id, []):
+            count = count + int(agentIdArr.get(agent_id,0))
+        result.append({
+            "project_name": project['name'],
+            "count": count,
+            "id": project_id
+        })
+
     result = sorted(result, key=lambda item: item['count'], reverse=True)[:5]
     return result
 
