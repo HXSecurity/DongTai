@@ -96,7 +96,7 @@ class VulReCheckv2(UserEndPoint):
                 "id").distinct().all()
         no_agent = vul_queryset.filter(~Q(
             agent_id__in=active_agent_ids)).count()
-        waiting_count, success_count, re_success_count = VulReCheck.recheck(
+        waiting_count, success_count, re_success_count = VulReCheckv2.recheck(
             vul_queryset)
         return no_agent, waiting_count, success_count, re_success_count
 
