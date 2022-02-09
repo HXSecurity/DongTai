@@ -6,23 +6,24 @@
 from django.db.models import Count
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
-from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.models.strategy import IastStrategyModel
 
-from iast.base.agent import get_project_vul_count,get_hook_type_name
+from iast.base.agent import get_project_vul_count,get_hook_type_name,get_agent_languages
 from iast.base.project_version import get_project_version, get_project_version_by_id
 from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from iast.serializers.vul import VulSummaryResponseDataSerializer
 from django.utils.text import format_lazy
+
 from dongtai.models.hook_type import HookType
 from django.db.models import Q
 _ResponseSerializer = get_response_serializer(VulSummaryResponseDataSerializer())
 
 
-class VulSummaryType(UserEndPoint):
-    name = "rest-api-vulnerability-summary-type"
+
+class VulSummaryProject(UserEndPoint):
+    name = "rest-api-vulnerability-summary-project"
     description = _("Applied vulnerability overview")
 
     @extend_schema_with_envcheck(
@@ -102,24 +103,21 @@ class VulSummaryType(UserEndPoint):
                 "status": 201,
                 "msg": "success",
                 "data": {
-                    "level": [{
-                        "level": "HIGH",
-                        "count": 116,
-                        "level_id": 1
+                    "language": [{
+                        "language": "JAVA",
+                        "count": 136
                     }, {
-                        "level": "INFO",
-                        "count": 0,
-                        "level_id": 4
+                        "language": "PYTHON",
+                        "count": 0
                     }],
-                    "type": [{
-                        "type": "Path Traversal",
-                        "count": 79
-                    },  {
-                        "type": "Insecure Hash Algorithms",
-                        "count": 1
-                    }, {
-                        "type": "Arbitrary Server Side Forwards",
-                        "count": 1
+                    "projects": [{
+                        "project_name": "demo1",
+                        "count": 23,
+                        "id": 58
+                    },{
+                        "project_name": "demo5",
+                        "count": 1,
+                        "id": 71
                     }]
                 },
                 "level_data": []
@@ -188,7 +186,7 @@ class VulSummaryType(UserEndPoint):
         if vul_type:
             hook_types = HookType.objects.filter(name=vul_type).all()
             strategys = IastStrategyModel.objects.filter(vul_name=vul_type).all()
-            q = Q(hook_type__in=hook_types,strategy_id=0) | Q(strategy__in=strategys)
+            q = Q(hook_type__in=hook_types, strategy_id=0) | Q(strategy__in=strategys)
             queryset = queryset.filter(q)
 
         url = request.query_params.get('url')
@@ -198,43 +196,13 @@ class VulSummaryType(UserEndPoint):
         q = ~Q(hook_type_id=0)
         queryset = queryset.filter(q)
 
-        # 汇总 level
-        vul_level = IastVulLevel.objects.all()
-        vul_level_metadata = {}
-        levelIdArr = {}
-        DEFAULT_LEVEL = {}
-        if vul_level:
-            for level_item in vul_level:
-                DEFAULT_LEVEL[level_item.name_value] = 0
-                vul_level_metadata[level_item.name_value] = level_item.id
-                levelIdArr[level_item.id] = level_item.name_value
-        level_summary = queryset.values('level').order_by('level').annotate(total=Count('level'))
-        for temp in level_summary:
-            DEFAULT_LEVEL[levelIdArr[temp['level']]] = temp['total']
-        end['data']['level'] = [{
-            'level': _key, 'count': _value, 'level_id': vul_level_metadata[_key]
-        } for _key, _value in DEFAULT_LEVEL.items()]
-
-        # 汇总 type
-        type_summary = queryset.values(
-            'hook_type_id', 'strategy_id', 'hook_type__name',
-            'strategy__vul_name').order_by('hook_type_id').annotate(
-            total=Count('hook_type_id'))
-        type_summary = list(type_summary)
-
-        vul_type_list = [{
-            "type": get_hook_type_name(_).lower().strip(),
-            "count": _['total']
-        } for _ in type_summary]
-
-        tempdic = {}
-        for vul_type in vul_type_list:
-            if tempdic.get(vul_type['type'], None):
-                tempdic[vul_type['type']]['count'] += vul_type['count']
-            else:
-                tempdic[vul_type['type']] = vul_type
-        vul_type_list = tempdic.values()
-        end['data']['type'] = sorted(vul_type_list, key=lambda x: x['count'], reverse=True)
+        agent_count = queryset.values('agent_id').annotate(count=Count('agent_id'))
+        end['data']['language'] = get_agent_languages(agent_count)
+        end['data']['projects'] = get_project_vul_count(
+            users=auth_users,
+            queryset=agent_count,
+            auth_agents=auth_agents,
+            project_id=project_id)
 
         return R.success(data=end['data'], level_data=end['level_data'])
 

@@ -8,7 +8,7 @@ from dongtai.endpoint import R, UserEndPoint
 from dongtai.models.asset import Asset
 from dongtai.models.vul_level import IastVulLevel
 
-from iast.base.agent import get_project_vul_count
+from iast.base.agent import get_project_vul_count,get_agent_languages
 from iast.base.project_version import get_project_version, get_project_version_by_id
 from iast.views.vul_summary import VulSummary
 from django.utils.translation import gettext_lazy as _
@@ -206,7 +206,7 @@ class ScaSummary(UserEndPoint):
                 levelNameArr[level_item.name_value] = level_item.id
                 levelIdArr[level_item.id] = level_item.name_value
         agent_count = queryset.values('agent_id').annotate(count=Count('agent_id'))
-        end['data']['language'] = VulSummary.get_languages(agent_count)
+        end['data']['language'] = get_agent_languages(agent_count)
         _temp_data = {levelIdArr[_['level']]: _['total'] for _ in level_summary}
         DEFAULT_LEVEL.update(_temp_data)
         end['data']['level'] = [{
