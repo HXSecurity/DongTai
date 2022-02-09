@@ -18,6 +18,9 @@ from dongtai.endpoint import R
 from dongtai.utils import const
 from dongtai.endpoint import UserEndPoint
 from django.utils.translation import gettext_lazy as _
+from django.db.models import F
+from django.db.models import Q
+import threading
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -60,47 +63,52 @@ class VulReCheck(UserEndPoint):
         waiting_count = 0
         success_count = 0
         re_success_count = 0
-        for vul in vul_queryset:
-            history_replay_queryset = IastReplayQueue.objects.filter(relation_id=vul.id,
-                                                                     replay_type=const.VUL_REPLAY).first()
-            if history_replay_queryset:
-                if history_replay_queryset.state in [const.PENDING, const.WAITING]:
-                    waiting_count = waiting_count + 1
-                    continue
-                else:
-                    history_replay_queryset.state = const.WAITING
-                    history_replay_queryset.count = history_replay_queryset.count + 1
-                    history_replay_queryset.update_time = timestamp
-                    history_replay_queryset.save(update_fields=['state', 'count', 'update_time', ])
-                    re_success_count = re_success_count + 1
-            else:
-                IastReplayQueue.objects.create(
-                    agent=vul.agent,
-                    relation_id=vul.id,
-                    state=const.WAITING,
-                    count=1,
-                    create_time=timestamp,
-                    update_time=timestamp,
-                    replay_type=const.VUL_REPLAY
-                )
-                success_count = success_count + 1
-            vul.status_id = 1
-            vul.latest_time = timestamp
-            vul.save(update_fields=['status_id', 'latest_time'])
+        opt_vul_queryset = vul_queryset.only('agent__id', 'id')
+        vul_ids = [i.id for i in opt_vul_queryset]
+        vul_id_agentmap = {i.id:i.agent_id for i in opt_vul_queryset}
+        history_replay_vul_ids = IastReplayQueue.objects.filter(
+            relation_id__in=vul_ids,
+            replay_type=const.VUL_REPLAY).order_by('relation_id').values_list(
+                'relation_id', flat=True).distinct()
+        waiting_count = IastReplayQueue.objects.filter(
+            Q(relation_id__in=vul_ids)
+            & Q(replay_type=const.VUL_REPLAY)
+            & Q(state__in=(const.PENDING, const.WAITING))).count()
+        re_success_count = IastReplayQueue.objects.filter(
+            Q(relation_id__in=[i.id for i in opt_vul_queryset])
+            & Q(replay_type=const.VUL_REPLAY)
+            & ~Q(state__in=(const.PENDING, const.WAITING))).update(
+                state=const.WAITING,
+                count=F('count') + 1,
+                update_time=timestamp)
+        vuls_not_exist = set(vul_ids) - set(history_replay_vul_ids)
+        success_count = len(vuls_not_exist)
+        IastReplayQueue.objects.bulk_create(
+            [
+                IastReplayQueue(agent_id=vul_id_agentmap[vul_id],
+                                relation_id=vul_id,
+                                state=const.WAITING,
+                                count=1,
+                                create_time=timestamp,
+                                update_time=timestamp,
+                                replay_type=const.VUL_REPLAY)
+                for vul_id in vuls_not_exist
+            ],
+            ignore_conflicts=True)
+        vul_queryset.update(status_id=1, latest_time=timestamp)
         return waiting_count, success_count, re_success_count
 
     @staticmethod
     def vul_check_for_queryset(vul_queryset):
-        no_agent, checked_vuls = 0, list()
-        for vul_model in vul_queryset:
-            project_id = vul_model.agent.bind_project_id
-            if project_id and IastAgent.objects.values("id").filter(bind_project_id=project_id,
-                                                                    online=const.RUNNING,
-                                                                    is_core_running=const.CORE_IS_RUNNING).exists():
-                checked_vuls.append(vul_model)
-            else:
-                no_agent = no_agent + 1
-        waiting_count, success_count, re_success_count = VulReCheck.recheck(vul_queryset)
+        active_agent_ids = IastAgent.objects.filter(
+            id__in=vul_queryset.values('agent_id'),
+            online=const.RUNNING,
+            is_core_running=const.CORE_IS_RUNNING).values(
+                "id").distinct().all()
+        no_agent = vul_queryset.filter(~Q(
+            agent_id__in=active_agent_ids)).count()
+        waiting_count, success_count, re_success_count = VulReCheck.recheck(
+            vul_queryset)
         return no_agent, waiting_count, success_count, re_success_count
 
     @extend_schema_with_envcheck(
@@ -180,7 +188,7 @@ class VulReCheck(UserEndPoint):
             else:
                 return False, 0, 0, 0, _('No permission to access')
         except Exception as e:
-            logger.error(f' msg:{e}')
+            logger.error(f' msg:{e}',exc_info=True)
             return False, 0, 0, 0, _('Batch playback error')
 
     @extend_schema_with_envcheck(
@@ -211,36 +219,29 @@ class VulReCheck(UserEndPoint):
 
         try:
             check_type = request.query_params.get('type')
+            project_id = request.query_params.get('projectId')
+            if check_type == 'project' and not project_id:
+                return R.failure(msg=_("Item ID should not be empty"))
             if check_type == 'all':
                 vul_queryset = IastVulnerabilityModel.objects.filter(
                     agent__in=self.get_auth_agents_with_user(request.user))
-                no_agent, pending, recheck, checking = self.vul_check_for_queryset(vul_queryset)
 
-                return R.success(
-                    data={
-                        "no_agent": no_agent,
-                        "pending": pending,
-                        "recheck": recheck,
-                        "checking": checking
-                    },
-                    msg=_('Handle success'))
+                def vul_check_thread():
+                    self.vul_check_for_queryset(vul_queryset)
+
+                return R.success(msg=_('Handle success'))
             elif check_type == 'project':
-                project_id = request.query_params.get('projectId')
                 auth_users = self.get_auth_users(request.user)
-                if project_id:
-                    status, pending, recheck, checking, msg = self.vul_check_for_project(project_id,
-                                                                                         auth_users=auth_users)
-                    return R.success(
-                        data={
-                            "no_agent": 0,
-                            "pending": pending,
-                            "recheck": recheck,
-                            "checking": checking
-                        },
-                        msg=_("Handle success"))
-                return R.failure(msg=_("Item ID should not be empty"))
+
+                def vul_check_thread():
+                    self.vul_check_for_project(project_id,
+                                               auth_users=auth_users)
+
+                return R.success(msg=_("Handle success"))
+            t1 = threading.Thread(target=vul_check_thread, daemon=True)
+            t1.start()
             return R.failure(msg=_("Incorrect format parameter"))
 
         except Exception as e:
-            logger.error(f'user_id:{request.user.id} msg:{e}')
+            logger.error(f'user_id:{request.user.id} msg:{e}', exc_info=True)
             return R.failure(msg=_('Batch playback error'))
