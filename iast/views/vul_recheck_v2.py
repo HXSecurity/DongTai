@@ -25,19 +25,9 @@ import threading
 logger = logging.getLogger('dongtai-webapi')
 
 
-class VulReCheckDataSerializer(serializers.Serializer):
-    no_agent = serializers.BooleanField(
-        help_text=_('Whether the project does not exist agent'))
-    pending = serializers.IntegerField(
-        help_text=_('Waiting queue length for replay'))
-    recheck = serializers.IntegerField(
-        help_text=_('Success queue length for replay'))
-    checking = serializers.IntegerField(
-        help_text=_('Checking queue length for replay'))
 
 
 _ResponseGetSerializer = get_response_serializer(
-    VulReCheckDataSerializer(),
     status_msg_keypair=(
         ((201, _('Handle success')), ''),
         ((202, _('Item ID should not be empty')), ''),
@@ -47,7 +37,6 @@ _ResponseGetSerializer = get_response_serializer(
         ((202, _('No permission to access')), ''),
     ))
 _ResponsePostSerializer = get_response_serializer(
-    VulReCheckDataSerializer(),
     status_msg_keypair=(
         ((201, _('Handle success')), ''),
         ((202, _('IDS should not be empty')), ''),
@@ -56,7 +45,7 @@ _ResponsePostSerializer = get_response_serializer(
     ))
 
 
-class VulReCheck(UserEndPoint):
+class VulReCheckv2(UserEndPoint):
     @staticmethod
     def recheck(vul_queryset):
         timestamp = int(time.time())
@@ -225,20 +214,21 @@ class VulReCheck(UserEndPoint):
             if check_type == 'all':
                 vul_queryset = IastVulnerabilityModel.objects.filter(
                     agent__in=self.get_auth_agents_with_user(request.user))
-                no_agent, pending, recheck, checking = self.vul_check_for_queryset(
-                    vul_queryset)
 
+                def vul_check_thread():
+                    self.vul_check_for_queryset(vul_queryset)
+
+                return R.success(msg=_('Handle success'))
             elif check_type == 'project':
                 auth_users = self.get_auth_users(request.user)
-                status, pending, recheck, checking, msg = self.vul_check_for_project(
-                    project_id, auth_users=auth_users)
-            return R.success(data={
-                "no_agent": 0 if not no_agent else no_agent,
-                "pending": pending,
-                "recheck": recheck,
-                "checking": checking
-            },
-                             msg=_("Handle success"))
+
+                def vul_check_thread():
+                    self.vul_check_for_project(project_id,
+                                               auth_users=auth_users)
+
+                return R.success(msg=_("Handle success"))
+            t1 = threading.Thread(target=vul_check_thread, daemon=True)
+            t1.start()
             return R.failure(msg=_("Incorrect format parameter"))
 
         except Exception as e:

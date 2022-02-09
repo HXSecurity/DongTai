@@ -136,6 +136,8 @@ from iast.views.sca_export import ScaExport
 
 from iast.views.details_id import (AgentListWithid, ProjectListWithid,
                                    ScaListWithid, VulsListWithid)
+from iast.views.vul_recheck_v2 import VulReCheckv2
+
 
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
@@ -316,5 +318,5 @@ if os.getenv('githubcount', None) in ('true', ) or os.getenv('environment', None
     ])
 
 urlpatterns = [path('api/v1/', include(urlpatterns))]
-#print(urlpatterns)
+urlpatterns.extend([path('api/v2/vul/recheck', VulReCheckv2.as_view())])
 urlpatterns = format_suffix_patterns(urlpatterns)
