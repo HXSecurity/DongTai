@@ -6,67 +6,30 @@
 from django.db.models import Count
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
-from dongtai.models.agent import IastAgent
 from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.models.strategy import IastStrategyModel
 
-from iast.base.agent import get_project_vul_count
+from iast.base.agent import get_project_vul_count,get_hook_type_name, get_agent_languages
 from iast.base.project_version import get_project_version, get_project_version_by_id
 from django.utils.translation import gettext_lazy as _
 from dongtai.models.hook_type import HookType
 from django.db.models import Q
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.text import format_lazy
-from rest_framework import serializers
-from iast.serializers.vul import VulSummaryTypeSerializer, VulSummaryProjectSerializer, VulSummaryLevelSerializer, VulSummaryLanguageSerializer
-from dongtai.models.program_language import IastProgramLanguage
+
+from iast.serializers.vul import VulSummaryResponseDataSerializer
+
 import copy,time
 
-class VulSummaryResponseDataSerializer(serializers.Serializer):
-    language = VulSummaryLanguageSerializer(many=True)
-    level = VulSummaryLevelSerializer(many=True)
-    type = VulSummaryTypeSerializer(many=True)
-    projects = VulSummaryProjectSerializer(many=True)
 
-
-_ResponseSerializer = get_response_serializer(
-    VulSummaryResponseDataSerializer())
-
-
-def initlanguage():
-    program_language_list = IastProgramLanguage.objects.values_list(
-        'name', flat=True).all()
-    return {
-        program_language.upper(): 0
-        for program_language in program_language_list
-    }
+_ResponseSerializer = get_response_serializer(VulSummaryResponseDataSerializer())
 
 
 class VulSummary(UserEndPoint):
     name = "rest-api-vulnerability-summary"
     description = _("Applied vulnerability overview")
 
-    @staticmethod
-    def get_languages(agent_items):
-        default_language = initlanguage()
-        language_agents = dict()
-        language_items = IastAgent.objects.filter().values('id', 'language')
-        for language_item in language_items:
-            language_agents[language_item['id']] = language_item['language']
-
-        for item in agent_items :
-            agent_id = item['agent_id']
-            count = item['count']
-            if default_language.get(language_agents[agent_id], None):
-                default_language[language_agents[agent_id]] = count + default_language[language_agents[agent_id]]
-            else:
-                default_language[
-                    language_agents[agent_id]] = count
-        return [{
-            'language': _key,
-            'count': _value
-        } for _key, _value in default_language.items()]
 
     @extend_schema_with_envcheck(
         [
@@ -157,14 +120,6 @@ class VulSummary(UserEndPoint):
                         "count": 116,
                         "level_id": 1
                     }, {
-                        "level": "MEDIUM",
-                        "count": 16,
-                        "level_id": 2
-                    }, {
-                        "level": "LOW",
-                        "count": 4,
-                        "level_id": 3
-                    }, {
                         "level": "INFO",
                         "count": 0,
                         "level_id": 4
@@ -173,24 +128,6 @@ class VulSummary(UserEndPoint):
                         "type": "Path Traversal",
                         "count": 79
                     }, {
-                        "type": "OS Command Injection",
-                        "count": 26
-                    }, {
-                        "type": "Cross-Site Scripting",
-                        "count": 16
-                    }, {
-                        "type": "SQL Injection",
-                        "count": 9
-                    }, {
-                        "type": "Weak Random Number Generation",
-                        "count": 2
-                    }, {
-                        "type": "Hibernate Injection",
-                        "count": 2
-                    }, {
-                        "type": "Insecure Hash Algorithms",
-                        "count": 1
-                    }, {
                         "type": "Arbitrary Server Side Forwards",
                         "count": 1
                     }],
@@ -198,15 +135,7 @@ class VulSummary(UserEndPoint):
                         "project_name": "demo1",
                         "count": 23,
                         "id": 58
-                    }, {
-                        "project_name": "demo3",
-                        "count": 4,
-                        "id": 63
-                    }, {
-                        "project_name": "demo",
-                        "count": 2,
-                        "id": 67
-                    }, {
+                    },  {
                         "project_name": "demo4",
                         "count": 2,
                         "id": 69
@@ -293,18 +222,53 @@ class VulSummary(UserEndPoint):
         queryset = queryset.filter(q)
 
         agent_count = queryset.values('agent_id').annotate(count=Count('agent_id'))
-        end['data']['language'] = self.get_languages(agent_count)
+        end['data']['language'] = get_agent_languages(agent_count)
         end['data']['projects'] = get_project_vul_count(
             users=auth_users,
             queryset=agent_count,
             auth_agents=auth_agents,
             project_id=project_id)
 
+        # 汇总 level
+        vul_level = IastVulLevel.objects.all()
+        vul_level_metadata = {}
+        levelIdArr = {}
+        DEFAULT_LEVEL = {}
+        if vul_level:
+            for level_item in vul_level:
+                DEFAULT_LEVEL[level_item.name_value] = 0
+                vul_level_metadata[level_item.name_value] = level_item.id
+                levelIdArr[level_item.id] = level_item.name_value
+        level_summary = queryset.values('level').order_by('level').annotate(total=Count('level'))
+        for temp in level_summary:
+            DEFAULT_LEVEL[levelIdArr[temp['level']]] = temp['total']
+        end['data']['level'] = [{
+            'level': _key, 'count': _value, 'level_id': vul_level_metadata[_key]
+        } for _key, _value in DEFAULT_LEVEL.items()]
+
+        # 汇总 type
+        type_summary = queryset.values(
+            'hook_type_id', 'strategy_id', 'hook_type__name',
+            'strategy__vul_name').order_by('hook_type_id').annotate(
+            total=Count('hook_type_id'))
+        type_summary = list(type_summary)
+
+        vul_type_list = [{
+            "type": get_hook_type_name(_).lower().strip(),
+            "count": _['total']
+        } for _ in type_summary]
+
+        tempdic = {}
+        for vul_type in vul_type_list:
+            if tempdic.get(vul_type['type'], None):
+                tempdic[vul_type['type']]['count'] += vul_type['count']
+            else:
+                tempdic[vul_type['type']] = vul_type
+        vul_type_list = tempdic.values()
+        end['data']['type'] = sorted(vul_type_list, key=lambda x: x['count'], reverse=True)
         return R.success(data=end['data'], level_data=end['level_data'])
 
-    @staticmethod
-    def get_level_name(id):
-        return IastVulLevel.objects.get(id=id).name_value
+
 
 
 

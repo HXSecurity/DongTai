@@ -9,6 +9,7 @@ import re
 import time
 
 from dongtai.models.agent import IastAgent
+from dongtai.models.program_language import IastProgramLanguage
 from dongtai.models.project import IastProject
 from dongtai.models.server import IastServer
 from dongtai.models.vulnerablity import IastVulnerabilityModel
@@ -269,3 +270,48 @@ def get_vul_count_by_agent(agent_ids, vid, user):
         'levelCount': levelCount,
         'vulDetail': vulDetail
     }
+
+
+def get_hook_type_name(obj):
+    #hook_type = HookType.objects.filter(pk=obj['hook_type_id']).first()
+    #hook_type_name = hook_type.name if hook_type else None
+    #strategy = IastStrategyModel.objects.filter(pk=obj['strategy_id']).first()
+    #strategy_name = strategy.vul_name if strategy else None
+    #type_ = list(
+    #    filter(lambda x: x is not None, [strategy_name, hook_type_name]))
+    type_ = list(
+        filter(lambda x: x is not None, [
+            obj.get('strategy__vul_name', None),
+            obj.get('hook_type__name', None)
+        ]))
+    return type_[0] if type_ else ''
+
+
+def initlanguage():
+    program_language_list = IastProgramLanguage.objects.values_list(
+        'name', flat=True).all()
+    return {
+        program_language.upper(): 0
+        for program_language in program_language_list
+    }
+
+
+def get_agent_languages(agent_items):
+        default_language = initlanguage()
+        language_agents = dict()
+        language_items = IastAgent.objects.filter().values('id', 'language')
+        for language_item in language_items:
+            language_agents[language_item['id']] = language_item['language']
+
+        for item in agent_items :
+            agent_id = item['agent_id']
+            count = item['count']
+            if default_language.get(language_agents[agent_id], None):
+                default_language[language_agents[agent_id]] = count + default_language[language_agents[agent_id]]
+            else:
+                default_language[
+                    language_agents[agent_id]] = count
+        return [{
+            'language': _key,
+            'count': _value
+        } for _key, _value in default_language.items()]
