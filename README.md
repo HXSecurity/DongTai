@@ -35,7 +35,7 @@ The basic service configuration is as follows：
 
 1. Pull image
 ```shell script
-$ docker pull registry.cn-beijing.aliyuncs.com/secnium/iast-saas-engine:latest
+$ docker pull registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-engine:latest
 ```
 
 2. Create a configuration file：`/etc/dongtai/config.ini`，The content is as follows：
