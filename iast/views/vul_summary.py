@@ -21,6 +21,7 @@ from django.utils.text import format_lazy
 from rest_framework import serializers
 from iast.serializers.vul import VulSummaryTypeSerializer, VulSummaryProjectSerializer, VulSummaryLevelSerializer, VulSummaryLanguageSerializer
 from dongtai.models.program_language import IastProgramLanguage
+import copy,time
 
 class VulSummaryResponseDataSerializer(serializers.Serializer):
     language = VulSummaryLanguageSerializer(many=True)
@@ -49,23 +50,16 @@ class VulSummary(UserEndPoint):
     @staticmethod
     def get_languages(agent_items):
         default_language = initlanguage()
-        agent_ids = dict()
-        for agent_item in agent_items:
-            agent_id = agent_item['agent_id']
-            if agent_id not in agent_ids:
-                agent_ids[agent_id] = 0
-            agent_ids[agent_id] = agent_ids[agent_id] + 1
         language_agents = dict()
-        language_items = IastAgent.objects.filter(
-            id__in=agent_ids.keys()).values('id', 'language')
+        language_items = IastAgent.objects.filter().values('id', 'language')
         for language_item in language_items:
             language_agents[language_item['id']] = language_item['language']
 
-        for agent_id, count in agent_ids.items():
-            if default_language.get(language_agents[agent_id],None):
-                default_language[
-                    language_agents[agent_id]] = count + default_language[
-                        language_agents[agent_id]]
+        for item in agent_items :
+            agent_id = item['agent_id']
+            count = item['count']
+            if default_language.get(language_agents[agent_id], None):
+                default_language[language_agents[agent_id]] = count + default_language[language_agents[agent_id]]
             else:
                 default_language[
                     language_agents[agent_id]] = count
@@ -245,20 +239,9 @@ class VulSummary(UserEndPoint):
             "data": {}
         }
 
-
         auth_users = self.get_auth_users(request.user)
         auth_agents = self.get_auth_agents(auth_users)
-        queryset = IastVulnerabilityModel.objects.all()
-
-        vul_level = IastVulLevel.objects.all()
-        vul_level_metadata = {}
-        levelIdArr = {}
-        DEFAULT_LEVEL = {}
-        if vul_level:
-            for level_item in vul_level:
-                DEFAULT_LEVEL[level_item.name_value] = 0
-                vul_level_metadata[level_item.name_value] = level_item.id
-                levelIdArr[level_item.id] = level_item.name_value
+        queryset = IastVulnerabilityModel.objects.filter()
 
         language = request.query_params.get('language')
         if language:
@@ -309,38 +292,11 @@ class VulSummary(UserEndPoint):
         q = ~Q(hook_type_id=0)
         queryset = queryset.filter(q)
 
-        level_summary = queryset.values('level').order_by('level').annotate(total=Count('level'))
-        type_summary = queryset.values(
-            'hook_type_id', 'strategy_id', 'hook_type__name',
-            'strategy__vul_name').order_by('hook_type_id').annotate(
-                total=Count('hook_type_id'))
-
-        end['data']['language'] = self.get_languages(queryset.values('agent_id'))
-
-        _temp_data = {levelIdArr[_['level']]: _['total'] for _ in level_summary}
-
-        DEFAULT_LEVEL.update(_temp_data)
-        end['data']['level'] = [{
-            'level': _key, 'count': _value, 'level_id': vul_level_metadata[_key]
-        } for _key, _value in DEFAULT_LEVEL.items()]
-
-        vul_type_list = [{
-            "type": get_hook_type_name(_).lower().strip(),
-            "count": _['total']
-        } for _ in type_summary]
-        tempdic = {}
-        for vul_type in vul_type_list:
-            if tempdic.get(vul_type['type'],None):
-                tempdic[vul_type['type']]['count'] += vul_type['count']
-            else:
-                tempdic[vul_type['type']] = vul_type
-        vul_type_list = tempdic.values()
-        end['data']['type'] = sorted(vul_type_list,
-                                     key=lambda x: x['count'],
-                                     reverse=True)
+        agent_count = queryset.values('agent_id').annotate(count=Count('agent_id'))
+        end['data']['language'] = self.get_languages(agent_count)
         end['data']['projects'] = get_project_vul_count(
             users=auth_users,
-            queryset=queryset,
+            queryset=agent_count,
             auth_agents=auth_agents,
             project_id=project_id)
 
@@ -351,16 +307,4 @@ class VulSummary(UserEndPoint):
         return IastVulLevel.objects.get(id=id).name_value
 
 
-def get_hook_type_name(obj):
-    #hook_type = HookType.objects.filter(pk=obj['hook_type_id']).first()
-    #hook_type_name = hook_type.name if hook_type else None
-    #strategy = IastStrategyModel.objects.filter(pk=obj['strategy_id']).first()
-    #strategy_name = strategy.vul_name if strategy else None
-    #type_ = list(
-    #    filter(lambda x: x is not None, [strategy_name, hook_type_name]))
-    type_ = list(
-        filter(lambda x: x is not None, [
-            obj.get('strategy__vul_name', None),
-            obj.get('hook_type__name', None)
-        ]))
-    return type_[0] if type_ else ''
+
