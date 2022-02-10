@@ -10,26 +10,20 @@ from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.models.strategy import IastStrategyModel
 
-from iast.base.agent import get_project_vul_count,get_hook_type_name, get_agent_languages
+from iast.base.agent import get_project_vul_count,get_hook_type_name
 from iast.base.project_version import get_project_version, get_project_version_by_id
 from django.utils.translation import gettext_lazy as _
+from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from iast.serializers.vul import VulSummaryResponseDataSerializer
+from django.utils.text import format_lazy
 from dongtai.models.hook_type import HookType
 from django.db.models import Q
-from iast.utils import extend_schema_with_envcheck, get_response_serializer
-from django.utils.text import format_lazy
-
-from iast.serializers.vul import VulSummaryResponseDataSerializer
-
-import copy,time
-
-
 _ResponseSerializer = get_response_serializer(VulSummaryResponseDataSerializer())
 
 
-class VulSummary(UserEndPoint):
-    name = "rest-api-vulnerability-summary"
+class VulSummaryType(UserEndPoint):
+    name = "rest-api-vulnerability-summary-type"
     description = _("Applied vulnerability overview")
-
 
     @extend_schema_with_envcheck(
         [
@@ -51,11 +45,11 @@ class VulSummary(UserEndPoint):
             },
             {
                 'name':
-                "level",
+                    "level",
                 'type':
-                int,
+                    int,
                 'description':
-                format_lazy("{} : {}", _('Level of vulnerability'), "1,2,3,4")
+                    format_lazy("{} : {}", _('Level of vulnerability'), "1,2,3,4")
             },
             {
                 'name': "project_id",
@@ -64,11 +58,11 @@ class VulSummary(UserEndPoint):
             },
             {
                 'name':
-                "version_id",
+                    "version_id",
                 'type':
-                int,
+                    int,
                 'description':
-                _("The default is the current version id of the project.")
+                    _("The default is the current version id of the project.")
             },
             {
                 'name': "status",
@@ -88,33 +82,26 @@ class VulSummary(UserEndPoint):
             },
             {
                 'name':
-                "order",
+                    "order",
                 'type':
-                str,
+                    str,
                 'description':
-                format_lazy(
-                    "{} : {}", _('Sorted index'), ",".join(
-                        ['type', 'type', 'first_time', 'latest_time', 'url']))
+                    format_lazy(
+                        "{} : {}", _('Sorted index'), ",".join(
+                            ['type', 'type', 'first_time', 'latest_time', 'url']))
             },
         ],
         [],
         [{
             'name':
-            _('Get data sample'),
+                _('Get data sample'),
             'description':
-            _("The aggregation results are programming language, risk level, vulnerability type, project"
-              ),
+                _("The aggregation results are programming language, risk level, vulnerability type, project"
+                  ),
             'value': {
                 "status": 201,
                 "msg": "success",
                 "data": {
-                    "language": [{
-                        "language": "JAVA",
-                        "count": 136
-                    }, {
-                        "language": "PYTHON",
-                        "count": 0
-                    }],
                     "level": [{
                         "level": "HIGH",
                         "count": 116,
@@ -127,22 +114,12 @@ class VulSummary(UserEndPoint):
                     "type": [{
                         "type": "Path Traversal",
                         "count": 79
+                    },  {
+                        "type": "Insecure Hash Algorithms",
+                        "count": 1
                     }, {
                         "type": "Arbitrary Server Side Forwards",
                         "count": 1
-                    }],
-                    "projects": [{
-                        "project_name": "demo1",
-                        "count": 23,
-                        "id": 58
-                    },  {
-                        "project_name": "demo4",
-                        "count": 2,
-                        "id": 69
-                    }, {
-                        "project_name": "demo5",
-                        "count": 1,
-                        "id": 71
                     }]
                 },
                 "level_data": []
@@ -221,14 +198,6 @@ class VulSummary(UserEndPoint):
         q = ~Q(hook_type_id=0)
         queryset = queryset.filter(q)
 
-        agent_count = queryset.values('agent_id').annotate(count=Count('agent_id'))
-        end['data']['language'] = get_agent_languages(agent_count)
-        end['data']['projects'] = get_project_vul_count(
-            users=auth_users,
-            queryset=agent_count,
-            auth_agents=auth_agents,
-            project_id=project_id)
-
         # 汇总 level
         vul_level = IastVulLevel.objects.all()
         vul_level_metadata = {}
@@ -266,9 +235,7 @@ class VulSummary(UserEndPoint):
                 tempdic[vul_type['type']] = vul_type
         vul_type_list = tempdic.values()
         end['data']['type'] = sorted(vul_type_list, key=lambda x: x['count'], reverse=True)
+
         return R.success(data=end['data'], level_data=end['level_data'])
-
-
-
 
 
