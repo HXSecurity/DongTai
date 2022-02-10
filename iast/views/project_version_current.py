@@ -56,13 +56,9 @@ class ProjectVersionCurrent(UserEndPoint):
                 version.current_version = 1
                 version.update_time = int(time.time())
                 version.save(update_fields=["current_version", "update_time"])
-                IastAgent.objects.filter(user=version.user, bind_project_id=project_id, project_version_id=version.id).update(online=1)
-
-                IastAgent.objects.filter(~Q(project_version_id=version.id), user=version.user, bind_project_id=project_id).update(online=0)
                 IastProjectVersion.objects.filter(
                     ~Q(id=version_id),
                     project_id=project_id,
-                    user=version.user,
                     current_version=1,
                     status=1
                 ).update(current_version=0, update_time=int(time.time()))
