@@ -2,7 +2,7 @@ asgiref~=3.3.1
 certifi==2020.11.8
 cffi==1.14.4
 chardet==3.0.4
-Django==3.2.11
+Django==3.2.12
 django-cors-headers==3.7.0
 django-filter==2.4.0
 django-ranged-response==0.2.0
