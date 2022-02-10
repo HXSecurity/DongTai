@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-14 20:56+0800\n"
+"POT-Creation-Date: 2022-02-10 11:08+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -17,11 +17,11 @@ msgstr ""
 "Application-Id-Version: \n"
 "X-Generator: Poedit 2.2.2\n"
 
-#: apitest/views.py:38
+#: apitest/views.py:41
 msgid "Please enter the parameters required for the test first"
 msgstr ""
 
-#: apitest/views.py:54
+#: apitest/views.py:57
 #, fuzzy
 #| msgid "Start Agent"
 msgid "Starting API Test"
@@ -86,7 +86,7 @@ msgstr ""
 "forced deletion"
 
 #: iast/account/department.py:207 iast/views/agents_delete.py:31
-#: iast/views/agents_delete.py:76 iast/views/project_report_delete.py:52
+#: iast/views/agents_delete.py:79 iast/views/project_report_delete.py:52
 #: iast/views/project_version_delete.py:25
 #: iast/views/project_version_delete.py:53 iast/views/vul_delete.py:18
 #: iast/views/vul_delete.py:43
@@ -177,7 +177,7 @@ msgstr "Data update succeeded"
 
 #: iast/account/user.py:138 iast/views/project_detail.py:38
 #: iast/views/project_detail.py:83 iast/views/project_report_export.py:103
-#: iast/views/project_summary.py:106 iast/views/user_detail.py:32
+#: iast/views/project_summary.py:107 iast/views/user_detail.py:32
 msgid "no permission"
 msgstr "no permission"
 
@@ -651,20 +651,20 @@ msgstr "Agent list"
 msgid "Delete the agent by specifying the id."
 msgstr ""
 
-#: iast/views/agent_delete.py:70 iast/views/agents_delete.py:84
+#: iast/views/agent_delete.py:70 iast/views/agents_delete.py:87
 msgid "Error logs deleted successfully, Deletion Amount: {}"
 msgstr "Error logs deleted successfully, Deletion Amount: {}"
 
-#: iast/views/agent_delete.py:72 iast/views/agents_delete.py:86
+#: iast/views/agent_delete.py:72 iast/views/agents_delete.py:89
 msgid "Failed to delete error logs, probe ID: {}, error message: {}"
 msgstr "Failed to delete error logs, probe ID: {}, error message: {}"
 
 #: iast/views/agent_delete.py:77 iast/views/agent_delete.py:84
 #: iast/views/agent_delete.py:91 iast/views/agent_delete.py:98
 #: iast/views/agent_delete.py:105 iast/views/agent_delete.py:112
-#: iast/views/agents_delete.py:91 iast/views/agents_delete.py:98
-#: iast/views/agents_delete.py:105 iast/views/agents_delete.py:112
-#: iast/views/agents_delete.py:119 iast/views/agents_delete.py:126
+#: iast/views/agents_delete.py:94 iast/views/agents_delete.py:101
+#: iast/views/agents_delete.py:108 iast/views/agents_delete.py:115
+#: iast/views/agents_delete.py:122 iast/views/agents_delete.py:129
 msgid ""
 "The replay request method pool data was successfully deleted, A total of {} "
 "replay requests are deleted"
@@ -672,23 +672,23 @@ msgstr ""
 "The replay request method pool data was successfully deleted, A total of {} "
 "replay requests are deleted"
 
-#: iast/views/agent_delete.py:79 iast/views/agents_delete.py:93
+#: iast/views/agent_delete.py:79 iast/views/agents_delete.py:96
 msgid "Failed to delete heartbeat data, error message: {}"
 msgstr "Failed to delete heartbeat data, error message: {}"
 
-#: iast/views/agent_delete.py:86 iast/views/agents_delete.py:100
+#: iast/views/agent_delete.py:86 iast/views/agents_delete.py:103
 msgid "Failed to delete unauthorized data, error message: {}"
 msgstr "Failed to delete unauthorized data, error message: {}"
 
-#: iast/views/agent_delete.py:93 iast/views/agents_delete.py:107
+#: iast/views/agent_delete.py:93 iast/views/agents_delete.py:110
 msgid "Failed to delete vulnerability data, error message: {}"
 msgstr "Failed to delete vulnerability data, error message: {}"
 
-#: iast/views/agent_delete.py:100 iast/views/agents_delete.py:114
+#: iast/views/agent_delete.py:100 iast/views/agents_delete.py:117
 msgid "Failed to delete third-party component data, error message: {}"
 msgstr "Failed to delete third-party component data, error message: {}"
 
-#: iast/views/agent_delete.py:107 iast/views/agents_delete.py:121
+#: iast/views/agent_delete.py:107 iast/views/agents_delete.py:124
 msgid "Failed to delete method pool data, error message: {}"
 msgstr "Failed to delete method pool data, error message: {}"
 
@@ -696,12 +696,12 @@ msgstr "Failed to delete method pool data, error message: {}"
 msgid "Failed to delete replay request method pool data, error message: {}"
 msgstr "Failed to delete replay request method pool data, error message: {}"
 
-#: iast/views/agent_delete.py:119 iast/views/agents_delete.py:133
+#: iast/views/agent_delete.py:119 iast/views/agents_delete.py:136
 msgid "Replay request queue deleted successfully, Deletion amount: {}"
 msgstr "Replay request queue deleted successfully, Deletion amount: {}"
 
-#: iast/views/agent_delete.py:121 iast/views/agents_delete.py:128
-#: iast/views/agents_delete.py:135
+#: iast/views/agent_delete.py:121 iast/views/agents_delete.py:131
+#: iast/views/agents_delete.py:138
 msgid "Failed to delete replay request queue, error message: {}"
 msgstr "Failed to delete replay request queue, error message: {}"
 
@@ -773,7 +773,7 @@ msgstr ""
 #: iast/views/scas.py:35 iast/views/sensitive_info_rule.py:107
 #: iast/views/strategys.py:68 iast/views/vul_list_for_plugin.py:35
 #: iast/views/vul_sidebar_index.py:39 iast/views/vuls.py:67
-#: scaupload/views.py:23
+#: scaupload/views.py:32
 #, fuzzy
 #| msgid "Number of Agent"
 msgid "Number per page"
@@ -786,7 +786,7 @@ msgstr "Number of Agent"
 #: iast/views/scas.py:28 iast/views/sensitive_info_rule.py:108
 #: iast/views/strategys.py:69 iast/views/vul_list_for_plugin.py:28
 #: iast/views/vul_sidebar_index.py:33 iast/views/vuls.py:60
-#: scaupload/views.py:24
+#: scaupload/views.py:33
 msgid "Page index"
 msgstr ""
 
@@ -936,12 +936,12 @@ msgstr "Incorrect format parameter, please check again"
 msgid "Program error"
 msgstr "Program error"
 
-#: iast/views/agents_delete.py:32 iast/views/agents_delete.py:78
+#: iast/views/agents_delete.py:32 iast/views/agents_delete.py:81
 #: iast/views/vul_delete.py:19 iast/views/vul_delete.py:48
 msgid "Deletion failed"
 msgstr "Deletion failed"
 
-#: iast/views/agents_delete.py:33 iast/views/agents_delete.py:79
+#: iast/views/agents_delete.py:33 iast/views/agents_delete.py:82
 msgid "Successfully deleted {} strips, failed to deleted {} strips"
 msgstr "Successfully deleted {} strips, failed to deleted {} strips"
 
@@ -1185,7 +1185,7 @@ msgstr "Number of Agent"
 msgid "Project List with id"
 msgstr "Vulnerability type name"
 
-#: iast/views/details_id.py:112 iast/views/sca_details.py:83
+#: iast/views/details_id.py:112 iast/views/sca_details.py:84
 #: iast/views/sca_sidebar_index.py:45 iast/views/sca_summary.py:146
 #: iast/views/scas.py:123
 msgid "Component"
@@ -1199,8 +1199,9 @@ msgstr "Vulnerability type name"
 
 #: iast/views/details_id.py:134 iast/views/vul_count_for_plugin.py:26
 #: iast/views/vul_delete.py:29 iast/views/vul_details.py:340
-#: iast/views/vul_list_for_plugin.py:60 iast/views/vul_recheck.py:124
-#: iast/views/vul_recheck.py:204 iast/views/vul_sidebar_index.py:72
+#: iast/views/vul_list_for_plugin.py:60 iast/views/vul_recheck.py:132
+#: iast/views/vul_recheck.py:212 iast/views/vul_recheck_v2.py:121
+#: iast/views/vul_recheck_v2.py:201 iast/views/vul_sidebar_index.py:72
 #: iast/views/vul_status.py:60 iast/views/vul_summary.py:228
 #: iast/views/vulnerability_status.py:78 iast/views/vuls.py:187
 #, fuzzy
@@ -1737,8 +1738,9 @@ msgstr "Export failed, error message: Log id should not be empty"
 msgid "Log list"
 msgstr "Log list"
 
-#: iast/views/logs.py:48 iast/views/vul_recheck.py:44
-#: iast/views/vul_recheck.py:181
+#: iast/views/logs.py:48 iast/views/vul_recheck.py:47
+#: iast/views/vul_recheck.py:189 iast/views/vul_recheck_v2.py:37
+#: iast/views/vul_recheck_v2.py:178
 msgid "No permission to access"
 msgstr "No permission to access"
 
@@ -2013,14 +2015,6 @@ msgstr "Verification code error"
 #| msgid "Created success"
 msgid "Updated success"
 msgstr "Created success"
-
-#: iast/views/project_add.py:239
-msgid "127.x.x.x address not allowed"
-msgstr ""
-
-#: iast/views/project_add.py:243
-msgid "10.x.x.x address not allowed"
-msgstr ""
 
 #: iast/views/project_delete.py:21 iast/views/project_delete.py:48
 msgid "Application has been deleted successfully"
@@ -2465,14 +2459,14 @@ msgstr "View item list"
 msgid "Projects List"
 msgstr ""
 
-#: iast/views/sca_details.py:56 iast/views/sca_summary.py:99
+#: iast/views/sca_details.py:57 iast/views/sca_summary.py:99
 #: iast/views/scas.py:87 iast/views/vul_details.py:277
 #: iast/views/vul_status.py:51 iast/views/vul_summary.py:146
 #: iast/views/vulnerability_status.py:41 iast/views/vuls.py:147
 msgid "Get data sample"
 msgstr ""
 
-#: iast/views/sca_details.py:58 iast/views/sca_summary.py:101
+#: iast/views/sca_details.py:59 iast/views/sca_summary.py:101
 #: iast/views/scas.py:89 iast/views/vul_details.py:279
 #: iast/views/vul_status.py:53 iast/views/vul_summary.py:148
 #: iast/views/vulnerability_status.py:43 iast/views/vuls.py:149
@@ -2481,25 +2475,25 @@ msgid ""
 "type, project"
 msgstr ""
 
-#: iast/views/sca_details.py:84
+#: iast/views/sca_details.py:85
 #, fuzzy
 #| msgid "Vulnerability type name"
 msgid "Component Detail"
 msgstr "Vulnerability type name"
 
-#: iast/views/sca_details.py:86
+#: iast/views/sca_details.py:87
 msgid "Get the details of the corresponding component by specifying the id."
 msgstr ""
 
-#: iast/views/sca_details.py:99
+#: iast/views/sca_details.py:100
 msgid "Components do not exist or no permission to access"
 msgstr "Components do not exist or no permission to access"
 
-#: iast/views/sca_details.py:124
+#: iast/views/sca_details.py:137
 msgid "Current version stopped for maintenance or it is not a secure version"
 msgstr "Current version stopped for maintenance or it is not a secure version"
 
-#: iast/views/sca_details.py:139
+#: iast/views/sca_details.py:152
 msgid "Component information query failed"
 msgstr "Component information query failed"
 
@@ -3098,44 +3092,49 @@ msgstr "Vulnerability type name"
 msgid "Use the agent name to get the corresponding list of vulnerabilities"
 msgstr ""
 
-#: iast/views/vul_recheck.py:27
+#: iast/views/vul_recheck.py:30
 #, fuzzy
 #| msgid "Strategy type does not exist"
 msgid "Whether the project does not exist agent"
 msgstr "Strategy type does not exist"
 
-#: iast/views/vul_recheck.py:29
+#: iast/views/vul_recheck.py:32
 msgid "Waiting queue length for replay"
 msgstr ""
 
-#: iast/views/vul_recheck.py:31
+#: iast/views/vul_recheck.py:34
 msgid "Success queue length for replay"
 msgstr ""
 
-#: iast/views/vul_recheck.py:33
+#: iast/views/vul_recheck.py:36
 msgid "Checking queue length for replay"
 msgstr ""
 
-#: iast/views/vul_recheck.py:39 iast/views/vul_recheck.py:49
-#: iast/views/vul_recheck.py:156 iast/views/vul_recheck.py:226
-#: iast/views/vul_recheck.py:240
+#: iast/views/vul_recheck.py:42 iast/views/vul_recheck.py:52
+#: iast/views/vul_recheck.py:164 iast/views/vul_recheck.py:241
+#: iast/views/vul_recheck_v2.py:32 iast/views/vul_recheck_v2.py:41
+#: iast/views/vul_recheck_v2.py:153
 msgid "Handle success"
 msgstr "Handle success"
 
-#: iast/views/vul_recheck.py:40 iast/views/vul_recheck.py:241
+#: iast/views/vul_recheck.py:43 iast/views/vul_recheck.py:224
+#: iast/views/vul_recheck_v2.py:33 iast/views/vul_recheck_v2.py:213
 msgid "Item ID should not be empty"
 msgstr "Item ID should not be empty"
 
-#: iast/views/vul_recheck.py:41 iast/views/vul_recheck.py:242
+#: iast/views/vul_recheck.py:44 iast/views/vul_recheck.py:242
+#: iast/views/vul_recheck_v2.py:34 iast/views/vul_recheck_v2.py:232
 msgid "Incorrect format parameter"
 msgstr "Incorrect format parameter"
 
-#: iast/views/vul_recheck.py:42 iast/views/vul_recheck.py:184
-#: iast/views/vul_recheck.py:246
+#: iast/views/vul_recheck.py:45 iast/views/vul_recheck.py:192
+#: iast/views/vul_recheck.py:246 iast/views/vul_recheck_v2.py:35
+#: iast/views/vul_recheck_v2.py:181 iast/views/vul_recheck_v2.py:236
 msgid "Batch playback error"
 msgstr "Batch playback error"
 
-#: iast/views/vul_recheck.py:43 iast/views/vul_recheck.py:178
+#: iast/views/vul_recheck.py:46 iast/views/vul_recheck.py:186
+#: iast/views/vul_recheck_v2.py:36 iast/views/vul_recheck_v2.py:175
 msgid ""
 "Current application has not been associated with probes and cannot be "
 "reproduced."
@@ -3143,42 +3142,55 @@ msgstr ""
 "Current application has not been associated with probes and cannot be "
 "reproduced."
 
-#: iast/views/vul_recheck.py:50 iast/views/vul_recheck.py:138
+#: iast/views/vul_recheck.py:53 iast/views/vul_recheck.py:146
+#: iast/views/vul_recheck_v2.py:42 iast/views/vul_recheck_v2.py:135
 msgid "IDS should not be empty"
 msgstr "IDS should not be empty"
 
-#: iast/views/vul_recheck.py:51 iast/views/vul_recheck.py:142
+#: iast/views/vul_recheck.py:54 iast/views/vul_recheck.py:150
+#: iast/views/vul_recheck_v2.py:43 iast/views/vul_recheck_v2.py:139
 msgid "IDS must be: Vulnerability ID, Vulnerability ID Format"
 msgstr "IDS must be: Vulnerability ID, Vulnerability ID Format"
 
-#: iast/views/vul_recheck.py:52 iast/views/vul_recheck.py:160
+#: iast/views/vul_recheck.py:55 iast/views/vul_recheck.py:168
+#: iast/views/vul_recheck_v2.py:44 iast/views/vul_recheck_v2.py:157
 #: iast/views/vul_request_replay.py:237
 msgid "Vulnerability replay error"
 msgstr "Vulnerability replay error"
 
-#: iast/views/vul_recheck.py:113 iast/views/vul_recheck.py:193
+#: iast/views/vul_recheck.py:121 iast/views/vul_recheck.py:201
+#: iast/views/vul_recheck_v2.py:110 iast/views/vul_recheck_v2.py:190
 msgid ""
 "available options are (\"all\",\"project\").\n"
 "                Corresponding to all or specific project respectively."
 msgstr ""
 
-#: iast/views/vul_recheck.py:121 iast/views/vul_recheck.py:201
+#: iast/views/vul_recheck.py:129 iast/views/vul_recheck.py:209
+#: iast/views/vul_recheck_v2.py:118 iast/views/vul_recheck_v2.py:198
 msgid ""
 "The corresponding id of the Project.\n"
 "            Only If the type is project, the projectId here will be used."
 msgstr ""
 
-#: iast/views/vul_recheck.py:125 iast/views/vul_recheck.py:205
+#: iast/views/vul_recheck.py:133 iast/views/vul_recheck.py:213
+#: iast/views/vul_recheck_v2.py:122 iast/views/vul_recheck_v2.py:202
 #, fuzzy
 #| msgid "Vulnerability description"
 msgid "Vulnerability verification"
 msgstr "Vulnerability description"
 
-#: iast/views/vul_recheck.py:126 iast/views/vul_recheck.py:206
+#: iast/views/vul_recheck.py:134 iast/views/vul_recheck.py:214
+#: iast/views/vul_recheck_v2.py:123 iast/views/vul_recheck_v2.py:203
 msgid ""
 "Verify the user's corresponding vulnerabilities.\n"
 "            Need to specify the type"
 msgstr ""
+
+#: iast/views/vul_recheck_v2.py:221 iast/views/vul_recheck_v2.py:229
+#, fuzzy
+#| msgid "Verification code error"
+msgid "Verification in progress"
+msgstr "Verification code error"
 
 #: iast/views/vul_request_replay.py:76
 msgid "HTTP request parsing error, error message: {}"
@@ -3345,40 +3357,40 @@ msgstr "Vulnerability type name"
 msgid "Get the list of vulnerabilities corresponding to the project"
 msgstr ""
 
-#: scaupload/views.py:48 scaupload/views.py:69 scaupload/views.py:89
+#: scaupload/views.py:73 scaupload/views.py:94 scaupload/views.py:130
 msgid "Get sca db bulk"
 msgstr ""
 
-#: scaupload/views.py:49 scaupload/views.py:70 scaupload/views.py:90
-#: scaupload/views.py:100 scaupload/views.py:109 scaupload/views.py:122
-#: scaupload/views.py:131 scaupload/views.py:173 scaupload/views.py:179
-#: scaupload/views.py:190
+#: scaupload/views.py:74 scaupload/views.py:95 scaupload/views.py:131
+#: scaupload/views.py:156 scaupload/views.py:165 scaupload/views.py:181
+#: scaupload/views.py:190 scaupload/views.py:232 scaupload/views.py:238
+#: scaupload/views.py:249
 #, fuzzy
 #| msgid "Agent list"
 msgid "Get sca list"
 msgstr "Agent list"
 
-#: scaupload/views.py:50 scaupload/views.py:71 scaupload/views.py:91
-#: scaupload/views.py:101 scaupload/views.py:110 scaupload/views.py:123
-#: scaupload/views.py:132 scaupload/views.py:174 scaupload/views.py:180
-#: scaupload/views.py:191
+#: scaupload/views.py:75 scaupload/views.py:96 scaupload/views.py:132
+#: scaupload/views.py:157 scaupload/views.py:166 scaupload/views.py:182
+#: scaupload/views.py:191 scaupload/views.py:233 scaupload/views.py:239
+#: scaupload/views.py:250
 msgid "SCA DB"
 msgstr ""
 
-#: scaupload/views.py:99 scaupload/views.py:108 scaupload/views.py:121
-#: scaupload/views.py:130
+#: scaupload/views.py:155 scaupload/views.py:164 scaupload/views.py:180
+#: scaupload/views.py:189
 msgid "Get sca db"
 msgstr ""
 
-#: scaupload/views.py:172 scaupload/views.py:178
+#: scaupload/views.py:231 scaupload/views.py:237
 msgid "Get sca license list"
 msgstr ""
 
-#: scaupload/views.py:189
+#: scaupload/views.py:248
 msgid "Get sca stat "
 msgstr ""
 
-#: webapi/settings.py:365
+#: webapi/settings.py:366
 #, python-brace-format
 msgid ""
 "Here is the API documentation in webapi. The corresponding management part "
