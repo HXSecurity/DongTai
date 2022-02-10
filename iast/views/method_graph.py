@@ -35,24 +35,21 @@ class MethodGraph(AnonymousAndUserEndPoint):
                 return R.failure(msg=_('Method pool ID is empty'))
 
             auth_agents = self.get_auth_and_anonymous_agents(request.user).values('id')
-            auth_agent_ids = [agent['id'] for agent in auth_agents]
-            if method_pool_type == 'normal':
+            auth_agent_ids = auth_agents.values('id')
+            if method_pool_type == 'normal' and MethodPool.objects.filter(
+                    agent_id__in=auth_agent_ids, id=method_pool_id).exists():
                 method_pool = MethodPool.objects.filter(
+                    id=method_pool_id).first()
+            elif method_pool_type == 'replay' and replay_id:
+                method_pool = IastAgentMethodPoolReplay.objects.filter(
+                    id=replay_id, replay_type=replay_type).first()
+            elif method_pool_type == 'replay' and MethodPool.objects.filter(
                     agent_id__in=auth_agent_ids,
-                    id=method_pool_id
-                ).first()
-            elif method_pool_type == 'replay':
-                if replay_id:
-                    method_pool = IastAgentMethodPoolReplay.objects.filter(
-                        id=replay_id,
-                        replay_type=replay_type
-                    ).first()
-                else:
-                    method_pool = IastAgentMethodPoolReplay.objects.filter(
-                        agent_id__in=auth_agent_ids,
-                        relation_id=method_pool_id,
-                        replay_type=replay_type
-                    ).first()
+                    relation_id=method_pool_id,
+                    replay_type=replay_type).exists():
+                method_pool = IastAgentMethodPoolReplay.objects.filter(
+                    relation_id=method_pool_id,
+                    replay_type=replay_type).first()
             else:
                 return R.failure(msg=_('Stain call map type does not exist'))
 
