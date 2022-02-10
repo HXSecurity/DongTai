@@ -111,3 +111,10 @@ class VulSummaryProjectSerializer(serializers.Serializer):
     count = serializers.IntegerField(help_text=_(
         "The number of vulnerabilities corresponding to the project"))
     id = serializers.IntegerField(help_text=_("The id of the project"))
+
+
+class VulSummaryResponseDataSerializer(serializers.Serializer):
+    language = VulSummaryLanguageSerializer(many=True)
+    level = VulSummaryLevelSerializer(many=True)
+    type = VulSummaryTypeSerializer(many=True)
+    projects = VulSummaryProjectSerializer(many=True)
