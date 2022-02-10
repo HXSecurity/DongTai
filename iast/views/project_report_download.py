@@ -31,7 +31,6 @@ class ProjectReportDownload(UserEndPoint):
           ),
     )
     def get(self, request):
-        timestamp = time.time()
         id = 0
         ser = _ProjectReportSearchQuerysSerializer(data=request.query_params)
         try:
@@ -40,11 +39,11 @@ class ProjectReportDownload(UserEndPoint):
         except ValidationError as e:
             return R.failure(data=e.detail)
 
-        record = ProjectReport.objects.filter(
-            id=id,
-            user=request.user,
-            status=1
-        ).first()
+        record = ProjectReport.objects.filter(id=id,
+                                              user=request.user,
+                                              status=1).only(
+                                                  'file',
+                                                  'project__name').first()
 
         if not record:
             return R.failure(msg=_('No data'))
@@ -52,7 +51,7 @@ class ProjectReportDownload(UserEndPoint):
         if record.status != 1:
             return R.failure(msg=_('Record is not ready'))
 
-        report_filename = _('{}.{}').format(timestamp, record.type)
+        report_filename = '{}.{}'.format(record.project.name, record.type)
 
         response = HttpResponse(record.file)
         response['Content-Disposition'] = f'attachment; filename="{report_filename}"'
