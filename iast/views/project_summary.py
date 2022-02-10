@@ -100,7 +100,8 @@ class ProjectSummary(UserEndPoint):
     )
     def get(self, request, id):
         auth_users = self.get_auth_users(request.user)
-        project = IastProject.objects.filter(user__in=auth_users, id=id).first()
+        project = IastProject.objects.filter(user__in=auth_users,
+                                             id=id).first()
 
         if not project:
             return R.failure(status=203, msg=_('no permission'))
@@ -129,8 +130,7 @@ class ProjectSummary(UserEndPoint):
 
         agent_ids = [relation['id'] for relation in relations]
         queryset = IastVulnerabilityModel.objects.filter(
-            agent_id__in=agent_ids,
-            status_id=3).values("hook_type_id", 'strategy_id', "level_id",
+            agent_id__in=agent_ids).values("hook_type_id", 'strategy_id', "level_id",
                                 "latest_time")
         q = ~Q(hook_type_id=0)
         queryset = queryset.filter(q)
