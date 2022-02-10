@@ -218,7 +218,7 @@ class VulReCheckv2(UserEndPoint):
                 def vul_check_thread():
                     self.vul_check_for_queryset(vul_queryset)
 
-                return R.success(msg=_('Handle success'))
+                return R.success(msg=_('Verification in progress'))
             elif check_type == 'project':
                 auth_users = self.get_auth_users(request.user)
 
@@ -226,7 +226,7 @@ class VulReCheckv2(UserEndPoint):
                     self.vul_check_for_project(project_id,
                                                auth_users=auth_users)
 
-                return R.success(msg=_("Handle success"))
+                return R.success(msg=_("Verification in progress"))
             t1 = threading.Thread(target=vul_check_thread, daemon=True)
             t1.start()
             return R.failure(msg=_("Incorrect format parameter"))

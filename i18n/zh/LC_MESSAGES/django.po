@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-14 20:56+0800\n"
+"POT-Creation-Date: 2022-02-10 11:08+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -17,15 +17,14 @@ msgstr ""
 "Application-Id-Version: \n"
 "X-Generator: Poedit 2.2.2\n"
 
-#: apitest/views.py:38
+#: apitest/views.py:41
 msgid "Please enter the parameters required for the test first"
 msgstr ""
 
-#: apitest/views.py:54
-#, fuzzy
+#: apitest/views.py:57
 #| msgid "Start Agent"
 msgid "Starting API Test"
-msgstr "启动agent"
+msgstr "启动API测试"
 
 #: i18n/views/setlang.py:29
 msgid "this language not supported now"
@@ -62,8 +61,6 @@ msgid "增加部门"
 msgstr ""
 
 #: iast/account/department.py:167
-#, fuzzy
-#| msgid "Tenant does not exist"
 msgid "Talent does not exist"
 msgstr "租户不存在"
 
@@ -82,7 +79,7 @@ msgid ""
 msgstr "删除失败，该部门 {} 存在用户  "
 
 #: iast/account/department.py:207 iast/views/agents_delete.py:31
-#: iast/views/agents_delete.py:76 iast/views/project_report_delete.py:52
+#: iast/views/agents_delete.py:79 iast/views/project_report_delete.py:52
 #: iast/views/project_version_delete.py:25
 #: iast/views/project_version_delete.py:53 iast/views/vul_delete.py:18
 #: iast/views/vul_delete.py:43
@@ -166,7 +163,7 @@ msgstr "数据更新成功"
 
 #: iast/account/user.py:138 iast/views/project_detail.py:38
 #: iast/views/project_detail.py:83 iast/views/project_report_export.py:103
-#: iast/views/project_summary.py:106 iast/views/user_detail.py:32
+#: iast/views/project_summary.py:107 iast/views/user_detail.py:32
 msgid "no permission"
 msgstr "no permission"
 
@@ -433,8 +430,6 @@ msgid "No application version has been created"
 msgstr "暂未创建项目版本"
 
 #: iast/serializers/vul.py:66
-#, fuzzy
-#| msgid "Level name of vulnerability"
 msgid "The level name of vulnerablity"
 msgstr "漏洞等级名称"
 
@@ -607,42 +602,42 @@ msgstr "删除探针"
 msgid "Delete the agent by specifying the id."
 msgstr "使用探针对应的id来删除探针"
 
-#: iast/views/agent_delete.py:70 iast/views/agents_delete.py:84
+#: iast/views/agent_delete.py:70 iast/views/agents_delete.py:87
 msgid "Error logs deleted successfully, Deletion Amount: {}"
 msgstr "错误日志删除成功，共删除：{}条"
 
-#: iast/views/agent_delete.py:72 iast/views/agents_delete.py:86
+#: iast/views/agent_delete.py:72 iast/views/agents_delete.py:89
 msgid "Failed to delete error logs, probe ID: {}, error message: {}"
 msgstr "错误日志删除失败，探针ID: {}，原因：{}"
 
 #: iast/views/agent_delete.py:77 iast/views/agent_delete.py:84
 #: iast/views/agent_delete.py:91 iast/views/agent_delete.py:98
 #: iast/views/agent_delete.py:105 iast/views/agent_delete.py:112
-#: iast/views/agents_delete.py:91 iast/views/agents_delete.py:98
-#: iast/views/agents_delete.py:105 iast/views/agents_delete.py:112
-#: iast/views/agents_delete.py:119 iast/views/agents_delete.py:126
+#: iast/views/agents_delete.py:94 iast/views/agents_delete.py:101
+#: iast/views/agents_delete.py:108 iast/views/agents_delete.py:115
+#: iast/views/agents_delete.py:122 iast/views/agents_delete.py:129
 msgid ""
 "The replay request method pool data was successfully deleted, A total of {} "
 "replay requests are deleted"
 msgstr "重放请求方法池数据删除成功，共删除：{}条"
 
-#: iast/views/agent_delete.py:79 iast/views/agents_delete.py:93
+#: iast/views/agent_delete.py:79 iast/views/agents_delete.py:96
 msgid "Failed to delete heartbeat data, error message: {}"
 msgstr "心跳数据删除失败，原因：{}"
 
-#: iast/views/agent_delete.py:86 iast/views/agents_delete.py:100
+#: iast/views/agent_delete.py:86 iast/views/agents_delete.py:103
 msgid "Failed to delete unauthorized data, error message: {}"
 msgstr "越权相关数据删除失败，原因：{}"
 
-#: iast/views/agent_delete.py:93 iast/views/agents_delete.py:107
+#: iast/views/agent_delete.py:93 iast/views/agents_delete.py:110
 msgid "Failed to delete vulnerability data, error message: {}"
 msgstr "漏洞数据删除失败，原因：{}"
 
-#: iast/views/agent_delete.py:100 iast/views/agents_delete.py:114
+#: iast/views/agent_delete.py:100 iast/views/agents_delete.py:117
 msgid "Failed to delete third-party component data, error message: {}"
 msgstr "第三方组件数据删除失败，原因：{}"
 
-#: iast/views/agent_delete.py:107 iast/views/agents_delete.py:121
+#: iast/views/agent_delete.py:107 iast/views/agents_delete.py:124
 msgid "Failed to delete method pool data, error message: {}"
 msgstr "方法池数据删除失败，原因：{}"
 
@@ -650,12 +645,12 @@ msgstr "方法池数据删除失败，原因：{}"
 msgid "Failed to delete replay request method pool data, error message: {}"
 msgstr "重放请求方法池数据删除失败，原因：{}"
 
-#: iast/views/agent_delete.py:119 iast/views/agents_delete.py:133
+#: iast/views/agent_delete.py:119 iast/views/agents_delete.py:136
 msgid "Replay request queue deleted successfully, Deletion amount: {}"
 msgstr "重放请求队列删除成功，共删除：{}条"
 
-#: iast/views/agent_delete.py:121 iast/views/agents_delete.py:128
-#: iast/views/agents_delete.py:135
+#: iast/views/agent_delete.py:121 iast/views/agents_delete.py:131
+#: iast/views/agents_delete.py:138
 msgid "Failed to delete replay request queue, error message: {}"
 msgstr "重放请求队列删除失败，原因：{}"
 
@@ -723,7 +718,7 @@ msgstr "通过指定id来安装运行中的探针"
 #: iast/views/scas.py:35 iast/views/sensitive_info_rule.py:107
 #: iast/views/strategys.py:68 iast/views/vul_list_for_plugin.py:35
 #: iast/views/vul_sidebar_index.py:39 iast/views/vuls.py:67
-#: scaupload/views.py:23
+#: scaupload/views.py:32
 msgid "Number per page"
 msgstr "每页数量"
 
@@ -734,7 +729,7 @@ msgstr "每页数量"
 #: iast/views/scas.py:28 iast/views/sensitive_info_rule.py:108
 #: iast/views/strategys.py:69 iast/views/vul_list_for_plugin.py:28
 #: iast/views/vul_sidebar_index.py:33 iast/views/vuls.py:60
-#: scaupload/views.py:24
+#: scaupload/views.py:33
 msgid "Page index"
 msgstr "对应页码"
 
@@ -874,12 +869,12 @@ msgstr "参数格式不正确，请检查。"
 msgid "Program error"
 msgstr "程序错误"
 
-#: iast/views/agents_delete.py:32 iast/views/agents_delete.py:78
+#: iast/views/agents_delete.py:32 iast/views/agents_delete.py:81
 #: iast/views/vul_delete.py:19 iast/views/vul_delete.py:48
 msgid "Deletion failed"
 msgstr "删除失败"
 
-#: iast/views/agents_delete.py:33 iast/views/agents_delete.py:79
+#: iast/views/agents_delete.py:33 iast/views/agents_delete.py:82
 msgid "Successfully deleted {} strips, failed to deleted {} strips"
 msgstr "成功删除{}条，删除失败{}条"
 
@@ -1043,8 +1038,6 @@ msgid ""
 msgstr "根据以下参数搜索用户对应的agent"
 
 #: iast/views/details_id.py:71
-#, fuzzy
-#| msgid "Agent List"
 msgid "Agent List with id"
 msgstr "探针列表"
 
@@ -1074,35 +1067,30 @@ msgid "Project"
 msgstr "项目"
 
 #: iast/views/details_id.py:92
-#, fuzzy
-#| msgid "Projects List"
 msgid "Project List with id"
 msgstr "项目列表"
 
-#: iast/views/details_id.py:112 iast/views/sca_details.py:83
+#: iast/views/details_id.py:112 iast/views/sca_details.py:84
 #: iast/views/sca_sidebar_index.py:45 iast/views/sca_summary.py:146
 #: iast/views/scas.py:123
 msgid "Component"
 msgstr "组件"
 
 #: iast/views/details_id.py:113
-#, fuzzy
-#| msgid "Component List (with project)"
 msgid "Component List with id"
 msgstr "组件列表（项目相关）"
 
 #: iast/views/details_id.py:134 iast/views/vul_count_for_plugin.py:26
 #: iast/views/vul_delete.py:29 iast/views/vul_details.py:340
-#: iast/views/vul_list_for_plugin.py:60 iast/views/vul_recheck.py:124
-#: iast/views/vul_recheck.py:204 iast/views/vul_sidebar_index.py:72
+#: iast/views/vul_list_for_plugin.py:60 iast/views/vul_recheck.py:132
+#: iast/views/vul_recheck.py:212 iast/views/vul_recheck_v2.py:121
+#: iast/views/vul_recheck_v2.py:201 iast/views/vul_sidebar_index.py:72
 #: iast/views/vul_status.py:60 iast/views/vul_summary.py:228
 #: iast/views/vulnerability_status.py:78 iast/views/vuls.py:187
 msgid "Vulnerability"
 msgstr "漏洞"
 
 #: iast/views/details_id.py:135
-#, fuzzy
-#| msgid "Vulnerability List"
 msgid "Vulnerability List with id"
 msgstr "漏洞列表"
 
@@ -1181,10 +1169,8 @@ msgid "Modify the rule corresponding to the specified id"
 msgstr "通过指定id来获取对应hook规则"
 
 #: iast/views/engine_hook_rule_status.py:25
-#, fuzzy
-#| msgid "The id of hook rule type."
 msgid "The id of hook rule type"
-msgstr "Hook规则类型名称"
+msgstr "Hook规则类型ID"
 
 #: iast/views/engine_hook_rule_status.py:28
 #: iast/views/engine_hook_rule_status.py:42
@@ -1192,8 +1178,6 @@ msgid "The state of the hook rule"
 msgstr "Hook规则的状态"
 
 #: iast/views/engine_hook_rule_status.py:31
-#, fuzzy
-#| msgid "The state of the hook rule"
 msgid "The scope of the hook rule"
 msgstr "Hook规则的状态"
 
@@ -1202,10 +1186,8 @@ msgid "The language_id"
 msgstr ""
 
 #: iast/views/engine_hook_rule_status.py:35
-#, fuzzy
-#| msgid "The id of hook rule"
 msgid "The type of hook rule"
-msgstr "Hook规则的id"
+msgstr "Hook规则类型"
 
 #: iast/views/engine_hook_rule_status.py:40
 msgid "The id corresponding to the hook type, use\",\" for segmentation."
@@ -1255,8 +1237,6 @@ msgid "Policy type {} operation success, total of {} Policy types"
 msgstr "策略类型{}操作成功，共{}条"
 
 #: iast/views/engine_hook_rule_status.py:127
-#, fuzzy
-#| msgid "Total number of rule types"
 msgid "total of {} Policy types"
 msgstr "规则类型的总数"
 
@@ -1324,8 +1304,6 @@ msgid "The short name of hook type"
 msgstr "Hook类型的简称"
 
 #: iast/views/engine_hook_rule_type_add.py:45
-#, fuzzy
-#| msgid "The id of programming language"
 msgid "The id of programming language,find it in the programming language api"
 msgstr "编程语言的id"
 
@@ -1412,10 +1390,8 @@ msgid "The id of hook_type"
 msgstr "Hook 类型id"
 
 #: iast/views/engine_hook_rules.py:37
-#, fuzzy
-#| msgid "Temporary search"
 msgid "The keyword for search"
-msgstr "临时搜索"
+msgstr "关键词搜索"
 
 #: iast/views/engine_hook_rules.py:81
 msgid "Hook Rule List"
@@ -1619,8 +1595,9 @@ msgstr "导出失败，原因：日志ID不能为空"
 msgid "Log list"
 msgstr "日志列表"
 
-#: iast/views/logs.py:48 iast/views/vul_recheck.py:44
-#: iast/views/vul_recheck.py:181
+#: iast/views/logs.py:48 iast/views/vul_recheck.py:47
+#: iast/views/vul_recheck.py:189 iast/views/vul_recheck_v2.py:37
+#: iast/views/vul_recheck_v2.py:178
 msgid "No permission to access"
 msgstr "无权限访问"
 
@@ -1670,14 +1647,10 @@ msgid "total number of new messages"
 msgstr "消息的总数"
 
 #: iast/views/messages_new.py:35
-#, fuzzy
-#| msgid "New Messages Count"
 msgid "Messages Count"
 msgstr "新消息的总数"
 
 #: iast/views/messages_new.py:37
-#, fuzzy
-#| msgid "Used to get the number of new messages corresponding to the user"
 msgid "Used to get the number of messages corresponding to the user"
 msgstr "用于获取用户对应的新消息的数量"
 
@@ -1772,8 +1745,6 @@ msgid "profile key"
 msgstr "配置key"
 
 #: iast/views/profile.py:57
-#, fuzzy
-#| msgid "profile key"
 msgid "profile id"
 msgstr "配置key"
 
@@ -1857,8 +1828,6 @@ msgid "base_url validate failed"
 msgstr "测试url校验失败"
 
 #: iast/views/project_add.py:107
-#, fuzzy
-#| msgid "Agent upgrade"
 msgid "Agent parse error"
 msgstr "探针升级"
 
@@ -1867,24 +1836,12 @@ msgid "Required scan strategy and name"
 msgstr "需要扫描策略和项目名"
 
 #: iast/views/project_add.py:156
-#, fuzzy
-#| msgid "Projects Version Update"
 msgid "Version Update Error"
 msgstr "项目版本更新"
 
 #: iast/views/project_add.py:201
-#, fuzzy
-#| msgid "Created success"
 msgid "Updated success"
 msgstr "创建成功"
-
-#: iast/views/project_add.py:239
-msgid "127.x.x.x address not allowed"
-msgstr ""
-
-#: iast/views/project_add.py:243
-msgid "10.x.x.x address not allowed"
-msgstr ""
 
 #: iast/views/project_delete.py:21 iast/views/project_delete.py:48
 msgid "Application has been deleted successfully"
@@ -1946,16 +1903,12 @@ msgstr "获取项目对应的探针列表"
 
 #: iast/views/project_report_delete.py:15
 #: iast/views/project_report_download.py:18
-#, fuzzy
-#| msgid "The id of the project"
 msgid "The id of the project report"
 msgstr "项目ID"
 
 #: iast/views/project_report_delete.py:23
-#, fuzzy
-#| msgid "Delete vulnerability"
 msgid "Delete Vulnerability Report"
-msgstr "删除漏洞"
+msgstr "删除漏洞报告"
 
 #: iast/views/project_report_delete.py:28
 #: iast/views/project_report_export.py:64
@@ -1963,7 +1916,6 @@ msgid "Projects Report Export"
 msgstr "项目报告导出"
 
 #: iast/views/project_report_delete.py:30
-#, fuzzy
 #| msgid ""
 #| "According to the conditions, export the report of the specified project "
 #| "or the project of the specified vulnerability."
@@ -1973,13 +1925,11 @@ msgid ""
 msgstr "基于以下条件，导出指定版本的报告或是特定漏洞的报告"
 
 #: iast/views/project_report_download.py:23
-#, fuzzy
 #| msgid "Vulnerability Report Generate - Word"
 msgid "Vulnerability Report Download"
-msgstr "漏洞word报告生成"
+msgstr "漏洞word报告下载"
 
 #: iast/views/project_report_download.py:28
-#, fuzzy
 #| msgid "Projects Report Export"
 msgid "Projects Report Download"
 msgstr "项目报告导出"
@@ -2096,22 +2046,19 @@ msgid "Vulnerability description"
 msgstr "漏洞描述"
 
 #: iast/views/project_report_list.py:17
-#, fuzzy
 #| msgid "Project"
 msgid "Project id"
-msgstr "项目"
+msgstr "项目id"
 
 #: iast/views/project_report_list.py:28
-#, fuzzy
 #| msgid "Vulnerability List"
 msgid "Vulnerability Report List"
-msgstr "漏洞列表"
+msgstr "漏洞报告列表"
 
 #: iast/views/project_report_list.py:33
-#, fuzzy
 #| msgid "Projects Report Export"
 msgid "Projects Report List"
-msgstr "项目报告导出"
+msgstr "项目报告列表"
 
 #: iast/views/project_report_list.py:35
 #, fuzzy
@@ -2124,26 +2071,22 @@ msgid ""
 msgstr "基于以下条件，导出指定版本的报告或是特定漏洞的报告"
 
 #: iast/views/project_report_sync_add.py:18
-#, fuzzy
 #| msgid "The version id of the project"
 msgid "The vulnerability id of the project"
-msgstr "项目的版本id"
+msgstr "项目的漏洞id"
 
 #: iast/views/project_report_sync_add.py:23
-#, fuzzy
 #| msgid "Type of vulnerability"
 msgid "The type of the vulnerability report"
-msgstr "漏洞类型"
+msgstr "漏洞报告类型"
 
 #: iast/views/project_report_sync_add.py:28
 #: iast/views/project_report_sync_add.py:33
-#, fuzzy
 #| msgid "Vulnerability Report Generate - Word"
 msgid "Vulnerability Report Async Export"
-msgstr "漏洞word报告生成"
+msgstr "漏洞报告生成"
 
 #: iast/views/project_report_sync_add.py:35
-#, fuzzy
 #| msgid ""
 #| "According to the conditions, export the report of the specified project "
 #| "or the project of the specified vulnerability."
@@ -2153,10 +2096,9 @@ msgid ""
 msgstr "基于以下条件，导出指定版本的报告或是特定漏洞的报告"
 
 #: iast/views/project_report_sync_add.py:57
-#, fuzzy
 #| msgid "Projects List"
 msgid "Project not exist"
-msgstr "项目列表"
+msgstr "项目不存在"
 
 #: iast/views/project_report_sync_add.py:59
 msgid "Report type error"
@@ -2316,14 +2258,14 @@ msgstr "查看项目列表"
 msgid "Projects List"
 msgstr "项目列表"
 
-#: iast/views/sca_details.py:56 iast/views/sca_summary.py:99
+#: iast/views/sca_details.py:57 iast/views/sca_summary.py:99
 #: iast/views/scas.py:87 iast/views/vul_details.py:277
 #: iast/views/vul_status.py:51 iast/views/vul_summary.py:146
 #: iast/views/vulnerability_status.py:41 iast/views/vuls.py:147
 msgid "Get data sample"
 msgstr "获取数据样例"
 
-#: iast/views/sca_details.py:58 iast/views/sca_summary.py:101
+#: iast/views/sca_details.py:59 iast/views/sca_summary.py:101
 #: iast/views/scas.py:89 iast/views/vul_details.py:279
 #: iast/views/vul_status.py:53 iast/views/vul_summary.py:148
 #: iast/views/vulnerability_status.py:43 iast/views/vuls.py:149
@@ -2332,23 +2274,23 @@ msgid ""
 "type, project"
 msgstr "聚合结果分别为编程语言，风险等级，漏洞类型，项目。"
 
-#: iast/views/sca_details.py:84
+#: iast/views/sca_details.py:85
 msgid "Component Detail"
 msgstr "组件详情"
 
-#: iast/views/sca_details.py:86
+#: iast/views/sca_details.py:87
 msgid "Get the details of the corresponding component by specifying the id."
 msgstr "通过指定id来获取对应组件的详情"
 
-#: iast/views/sca_details.py:99
+#: iast/views/sca_details.py:100
 msgid "Components do not exist or no permission to access"
 msgstr "组件不存在或无权限访问"
 
-#: iast/views/sca_details.py:124
+#: iast/views/sca_details.py:137
 msgid "Current version stopped for maintenance or it is not a secure version"
 msgstr "当前版本已停止维护或暂无安全版本"
 
-#: iast/views/sca_details.py:139
+#: iast/views/sca_details.py:152
 msgid "Component information query failed"
 msgstr "组件信息查询失败"
 
@@ -2383,10 +2325,9 @@ msgid "Id of Project"
 msgstr "项目ID"
 
 #: iast/views/sca_summary.py:68
-#, fuzzy
 #| msgid "Level name of vulnerability"
 msgid "The id level of vulnerability"
-msgstr "漏洞等级名称"
+msgstr "漏洞等级id"
 
 #: iast/views/sca_summary.py:76 iast/views/scas.py:64
 #: iast/views/vul_summary.py:114 iast/views/vuls.py:115
@@ -2473,22 +2414,19 @@ msgid "batch update status."
 msgstr ""
 
 #: iast/views/scan_strategys.py:243
-#, fuzzy
 #| msgid "Strategy List"
 msgid "ScanStrategy all status"
 msgstr "策略列表"
 
 #: iast/views/scan_strategys.py:244 iast/views/sensitive_info_rule.py:348
-#, fuzzy
 #| msgid "Update with status_id"
 msgid "all update status."
 msgstr "通过状态id更新"
 
 #: iast/views/scas.py:51
-#, fuzzy
 #| msgid "Level name of vulnerability"
 msgid "The id of level of vulnerability"
-msgstr "漏洞等级名称"
+msgstr "漏洞等级id"
 
 #: iast/views/scas.py:124
 msgid "Component List (with project)"
@@ -2649,10 +2587,9 @@ msgid "Strategy retrieve"
 msgstr "策略删除"
 
 #: iast/views/strategys.py:83
-#, fuzzy
 #| msgid "Get a list of strategies."
 msgid "Get a strategiey by id."
-msgstr "获取策略列表"
+msgstr "根据id获取策略"
 
 #: iast/views/strategys.py:105
 msgid "Strategy List"
@@ -2675,10 +2612,9 @@ msgid "The name of strategy"
 msgstr "策略名"
 
 #: iast/views/strategys_add.py:35
-#, fuzzy
 #| msgid "Strategy Add"
 msgid "Sacn Strategy Add"
-msgstr "策略添加"
+msgstr "扫描策略添加"
 
 #: iast/views/strategys_list.py:16
 msgid "The name of the strategy"
@@ -2888,16 +2824,14 @@ msgid "Vul level list"
 msgstr "查看引擎列表"
 
 #: iast/views/vul_levels.py:28
-#, fuzzy
 #| msgid "Vulnerability List"
 msgid "Vul level List"
-msgstr "漏洞列表"
+msgstr "漏洞等级列表"
 
 #: iast/views/vul_levels.py:29
-#, fuzzy
 #| msgid "Get a list of strategies."
 msgid "Get a list of vul level."
-msgstr "获取策略列表"
+msgstr "获取策略等级列表"
 
 #: iast/views/vul_list_for_plugin.py:40
 msgid "Name of agent"
@@ -2916,81 +2850,98 @@ msgstr "漏洞列表（Agent相关）"
 msgid "Use the agent name to get the corresponding list of vulnerabilities"
 msgstr "使用agent名获取对应的漏洞列表"
 
-#: iast/views/vul_recheck.py:27
+#: iast/views/vul_recheck.py:30
 msgid "Whether the project does not exist agent"
 msgstr "项目是否存在探针"
 
-#: iast/views/vul_recheck.py:29
+#: iast/views/vul_recheck.py:32
 msgid "Waiting queue length for replay"
 msgstr "重放的等待队列长度"
 
-#: iast/views/vul_recheck.py:31
+#: iast/views/vul_recheck.py:34
 msgid "Success queue length for replay"
 msgstr "重放的成功队列长度"
 
-#: iast/views/vul_recheck.py:33
+#: iast/views/vul_recheck.py:36
 msgid "Checking queue length for replay"
 msgstr "重放的检测队列长度"
 
-#: iast/views/vul_recheck.py:39 iast/views/vul_recheck.py:49
-#: iast/views/vul_recheck.py:156 iast/views/vul_recheck.py:226
-#: iast/views/vul_recheck.py:240
+#: iast/views/vul_recheck.py:42 iast/views/vul_recheck.py:52
+#: iast/views/vul_recheck.py:164 iast/views/vul_recheck.py:241
+#: iast/views/vul_recheck_v2.py:32 iast/views/vul_recheck_v2.py:41
+#: iast/views/vul_recheck_v2.py:153
 msgid "Handle success"
 msgstr "处理成功"
 
-#: iast/views/vul_recheck.py:40 iast/views/vul_recheck.py:241
+#: iast/views/vul_recheck.py:43 iast/views/vul_recheck.py:224
+#: iast/views/vul_recheck_v2.py:33 iast/views/vul_recheck_v2.py:213
 msgid "Item ID should not be empty"
 msgstr "项目ID不能为空"
 
-#: iast/views/vul_recheck.py:41 iast/views/vul_recheck.py:242
+#: iast/views/vul_recheck.py:44 iast/views/vul_recheck.py:242
+#: iast/views/vul_recheck_v2.py:34 iast/views/vul_recheck_v2.py:232
 msgid "Incorrect format parameter"
 msgstr "参数格式不正确"
 
-#: iast/views/vul_recheck.py:42 iast/views/vul_recheck.py:184
-#: iast/views/vul_recheck.py:246
+#: iast/views/vul_recheck.py:45 iast/views/vul_recheck.py:192
+#: iast/views/vul_recheck.py:246 iast/views/vul_recheck_v2.py:35
+#: iast/views/vul_recheck_v2.py:181 iast/views/vul_recheck_v2.py:236
 msgid "Batch playback error"
 msgstr "批量重放出错"
 
-#: iast/views/vul_recheck.py:43 iast/views/vul_recheck.py:178
+#: iast/views/vul_recheck.py:46 iast/views/vul_recheck.py:186
+#: iast/views/vul_recheck_v2.py:36 iast/views/vul_recheck_v2.py:175
 msgid ""
 "Current application has not been associated with probes and cannot be "
 "reproduced."
 msgstr "当前项目尚未关联探针，无法进行漏洞重放"
 
-#: iast/views/vul_recheck.py:50 iast/views/vul_recheck.py:138
+#: iast/views/vul_recheck.py:53 iast/views/vul_recheck.py:146
+#: iast/views/vul_recheck_v2.py:42 iast/views/vul_recheck_v2.py:135
 msgid "IDS should not be empty"
 msgstr "ids不能为空"
 
-#: iast/views/vul_recheck.py:51 iast/views/vul_recheck.py:142
+#: iast/views/vul_recheck.py:54 iast/views/vul_recheck.py:150
+#: iast/views/vul_recheck_v2.py:43 iast/views/vul_recheck_v2.py:139
 msgid "IDS must be: Vulnerability ID, Vulnerability ID Format"
 msgstr "ids必须为：漏洞ID,漏洞ID 格式"
 
-#: iast/views/vul_recheck.py:52 iast/views/vul_recheck.py:160
+#: iast/views/vul_recheck.py:55 iast/views/vul_recheck.py:168
+#: iast/views/vul_recheck_v2.py:44 iast/views/vul_recheck_v2.py:157
 #: iast/views/vul_request_replay.py:237
 msgid "Vulnerability replay error"
 msgstr "漏洞重放出错"
 
-#: iast/views/vul_recheck.py:113 iast/views/vul_recheck.py:193
+#: iast/views/vul_recheck.py:121 iast/views/vul_recheck.py:201
+#: iast/views/vul_recheck_v2.py:110 iast/views/vul_recheck_v2.py:190
 msgid ""
 "available options are (\"all\",\"project\").\n"
 "                Corresponding to all or specific project respectively."
 msgstr "可选项有('all','project')。对应全部漏洞和指定项目的漏洞。"
 
-#: iast/views/vul_recheck.py:121 iast/views/vul_recheck.py:201
+#: iast/views/vul_recheck.py:129 iast/views/vul_recheck.py:209
+#: iast/views/vul_recheck_v2.py:118 iast/views/vul_recheck_v2.py:198
 msgid ""
 "The corresponding id of the Project.\n"
 "            Only If the type is project, the projectId here will be used."
 msgstr "项目的对应id.只有在type参数为project时，该参数才会被使用"
 
-#: iast/views/vul_recheck.py:125 iast/views/vul_recheck.py:205
+#: iast/views/vul_recheck.py:133 iast/views/vul_recheck.py:213
+#: iast/views/vul_recheck_v2.py:122 iast/views/vul_recheck_v2.py:202
 msgid "Vulnerability verification"
 msgstr "漏洞验证"
 
-#: iast/views/vul_recheck.py:126 iast/views/vul_recheck.py:206
+#: iast/views/vul_recheck.py:134 iast/views/vul_recheck.py:214
+#: iast/views/vul_recheck_v2.py:123 iast/views/vul_recheck_v2.py:203
 msgid ""
 "Verify the user's corresponding vulnerabilities.\n"
 "            Need to specify the type"
 msgstr "验证用户对应的漏洞.需要指定验证行为的类型"
+
+#: iast/views/vul_recheck_v2.py:221 iast/views/vul_recheck_v2.py:229
+#| msgid "Verification code error"
+msgid "Verification in progress"
+msgstr "验证中"
 
 #: iast/views/vul_request_replay.py:76
 msgid "HTTP request parsing error, error message: {}"
@@ -3138,44 +3089,41 @@ msgstr "漏洞列表（项目相关）"
 msgid "Get the list of vulnerabilities corresponding to the project"
 msgstr "获取项目对应的漏洞列表"
 
-#: scaupload/views.py:48 scaupload/views.py:69 scaupload/views.py:89
+#: scaupload/views.py:73 scaupload/views.py:94 scaupload/views.py:130
 msgid "Get sca db bulk"
 msgstr ""
 
-#: scaupload/views.py:49 scaupload/views.py:70 scaupload/views.py:90
-#: scaupload/views.py:100 scaupload/views.py:109 scaupload/views.py:122
-#: scaupload/views.py:131 scaupload/views.py:173 scaupload/views.py:179
-#: scaupload/views.py:190
-#, fuzzy
+#: scaupload/views.py:74 scaupload/views.py:95 scaupload/views.py:131
+#: scaupload/views.py:156 scaupload/views.py:165 scaupload/views.py:181
+#: scaupload/views.py:190 scaupload/views.py:232 scaupload/views.py:238
+#: scaupload/views.py:249
 #| msgid "Get Messages List"
 msgid "Get sca list"
-msgstr "获取消息列表"
+msgstr "获取组件列表"
 
-#: scaupload/views.py:50 scaupload/views.py:71 scaupload/views.py:91
-#: scaupload/views.py:101 scaupload/views.py:110 scaupload/views.py:123
-#: scaupload/views.py:132 scaupload/views.py:174 scaupload/views.py:180
-#: scaupload/views.py:191
+#: scaupload/views.py:75 scaupload/views.py:96 scaupload/views.py:132
+#: scaupload/views.py:157 scaupload/views.py:166 scaupload/views.py:182
+#: scaupload/views.py:191 scaupload/views.py:233 scaupload/views.py:239
+#: scaupload/views.py:250
 msgid "SCA DB"
-msgstr ""
+msgstr "组件库"
 
-#: scaupload/views.py:99 scaupload/views.py:108 scaupload/views.py:121
-#: scaupload/views.py:130
+#: scaupload/views.py:155 scaupload/views.py:164 scaupload/views.py:180
+#: scaupload/views.py:189
 msgid "Get sca db"
-msgstr ""
+msgstr "获取组件库"
 
-#: scaupload/views.py:172 scaupload/views.py:178
-#, fuzzy
+#: scaupload/views.py:231 scaupload/views.py:237
 #| msgid "Get Messages List"
 msgid "Get sca license list"
-msgstr "获取消息列表"
+msgstr "获取组件license列表"
 
-#: scaupload/views.py:189
-#, fuzzy
+#: scaupload/views.py:248
 #| msgid "Get a list of strategies."
 msgid "Get sca stat "
-msgstr "获取策略列表"
+msgstr "获取组件库数据统计"
 
-#: webapi/settings.py:365
+#: webapi/settings.py:366
 #, python-brace-format
 msgid ""
 "Here is the API documentation in webapi. The corresponding management part "
