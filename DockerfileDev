@@ -1,0 +1,21 @@
+FROM python:3.7-slim
+ARG VERSION
+ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG=en_US.UTF-8
+ENV TZ=Asia/Shanghai
+ENV debug=true
+
+RUN apt-get update -y \
+		&& apt install -y  gcc make cmake libmariadb-dev curl
+		
+
+
+COPY requirements-test.txt /opt/dongtai/openapi/requirements.txt
+RUN pip3 install -r /opt/dongtai/openapi/requirements.txt && mkdir -p /tmp/iast_cache/package
+
+#COPY . /opt/dongtai/openapi
+#RUN mv /opt/dongtai/openapi/*.jar /tmp/iast_cache/package/ && mv /opt/dongtai/openapi/*.tar.gz /tmp/ 
+
+WORKDIR /opt/dongtai/openapi
+
+CMD ["/usr/local/bin/uwsgi","--ini", "/opt/dongtai/openapi/conf/uwsgi.ini"]
