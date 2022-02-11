@@ -1,0 +1,105 @@
+containers:
+  dongtai-mysql: 
+    image: dongtai/dongtai-mysql:latest
+    image_pull_policy: Always
+  dongtai-redis:
+    image: dongtai/dongtai-redis:latest
+    image_pull_policy: Always
+  dongtai-webapi:
+    image: dongtai/dongtai-webapi:latest
+    image_pull_policy: Always
+
+  dongtai-web:
+    image: dongtai/dongtai-web:latest
+    image_pull_policy: Always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+
+  dongtai-openapi:
+    dockerfile: ./DockerfileDev
+    build_directory: .
+    volumes:
+      - .:/opt/dongtai/openapi/
+    environment: 
+      debug: ${OPENAPI_debug:-true}
+      PYTHONAGENT: ${OPENAPI_PYTHON_AGENT:-FALSE}
+      PROJECT_NAME: ${OPENAPI_PROJECT_NAME:-LocalOPENAPI}
+      PROJECT_VERSION: ${OPENAPI_PROJECT_VERSION:-v1.0}
+      LOG_PATH: ${OPENAPI_LOG_PATH:-/tmp/dongtai-agent-python.log}
+      DONGTAI_IAST_BASE_URL: ${DONGTAI_IAST_BASE_URL:-https://iast.io/openapi}
+      DONGTAI_AGNET_TOKEN: ${DONGTAI_AGNET_TOKEN:-79798299b48839c84886d728958a8f708e119868}
+
+  dongtai-engine:
+    image: dongtai/dongtai-engine:latest
+    image_pull_policy: Always
+    volumes:
+      - ./conf/config.ini:/opt/dongtai/engine/conf/config.ini
+
+
+  dongtai-engine-task:
+    image: dongtai/dongtai-engine:latest
+    image_pull_policy: Always
+    command: /opt/dongtai/engine/docker/entrypoint.sh task
+    volumes:
+      - ./conf/config.ini:/opt/dongtai/engine/conf/config.ini
+    dependencies:
+      - dongtai-engine
+
+tasks:
+  serve:
+    description: Serve the openapi application standingalone 
+    run:
+      container: dongtai-openapi        
+      entrypoint: /opt/dongtai/openapi/.batect/agent_deco.sh /opt/dongtai/openapi/.batect/manage_run_server.sh
+      ports:
+        - "8000:8000"
+    group: serve
+
+
+  serve-with-db:
+    description: Serve the openapi application with db
+    run:
+      container: dongtai-openapi        
+      entrypoint: /opt/dongtai/openapi/.batect/agent_deco.sh /opt/dongtai/openapi/.batect/manage_run_server.sh
+      ports:
+        - "8000:8000"
+    dependencies:
+      - dongtai-mysql
+    customise:
+      dongtai-mysql:
+        ports:
+          - "33060:3306"
+    group: serve
+
+  test:
+    description: run openapi unittest 
+    run:
+      container: dongtai-openapi
+      entrypoint: /opt/dongtai/openapi/.batect/agent_deco.sh /opt/dongtai/openapi/.batect/manage_test.sh
+    dependencies:
+      - dongtai-mysql
+    group: test
+
+  integration-test-web:
+    description: integration with web front-end 
+    run:
+      container: dongtai-web
+    dependencies:
+      - dongtai-mysql
+      - dongtai-webapi
+      - dongtai-openapi
+    group: integration
+  integration-test-all:
+    description: integration with all components
+    run:
+      container: dongtai-web
+    dependencies:
+      - dongtai-mysql
+      - dongtai-webapi
+      - dongtai-openapi
+      - dongtai-redis
+      - dongtai-engine
+      - dongtai-engine-task
+    group: integration
