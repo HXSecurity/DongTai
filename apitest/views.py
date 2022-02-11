@@ -92,5 +92,5 @@ class ApiTestHeaderEndpoint(UserEndPoint):
         q = Q(agent__in=agents)
         headers = list(
             ProjectSaasMethodPoolHeader.objects.filter(q).values_list(
-                'key').distinct().all())
+                'key', flat=True).distinct().all())
         return R.success(data=headers)
