@@ -67,16 +67,16 @@ class SaasMethodPoolHandler(IReportHandler):
         如果agent存在，保存数据
         :return:
         """
+        headers = SaasMethodPoolHandler.parse_headers(self.http_req_header)
+        objs = [
+            ProjectSaasMethodPoolHeader(key=key,
+                                        agent_id=self.agent_id,
+                                        header_type=HeaderType.REQUEST)
+            for key in headers.keys()
+        ]
+        ProjectSaasMethodPoolHeader.objects.bulk_create(objs, ignore_conflicts=True)
         if self.http_replay:
             # 保存数据至重放请求池
-            headers = SaasMethodPoolHandler.parse_headers(self.http_req_header)
-            objs = [
-                ProjectSaasMethodPoolHeader(key=key,
-                                            agent_id=self.agent_id,
-                                            header_type=HeaderType.REQUEST)
-                for key in headers.keys()
-            ]
-            ProjectSaasMethodPoolHeader.objects.bulk_create(objs, ignore_conflicts=True)
             replay_id = headers.get('dongtai-replay-id')
             replay_type = headers.get('dongtai-replay-type')
             relation_id = headers.get('dongtai-relation-id')
