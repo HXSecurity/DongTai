@@ -90,7 +90,7 @@ def search_id_card_leak(method_pool):
                 save_vul(vul_type='ID Number Leak', method_pool=method_pool, position=key, data=card)
         except Exception as e:
             logger.error(
-                f'check_response_content error, rule name: ID Number Leak, reason: {e}')
+                f'check_response_content error, rule name: ID Number Leak, Method Pool ID: {method_pool.id}, reason: {e}')
 
 
 def check_id_card(id_card):
