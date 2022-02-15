@@ -1,7 +1,7 @@
 #!/bin/bash
-# set -e
+set -e
 set -o pipefail
-#echo "hello"
+# set -x
 _filename=$0
 
 SKIP_MYSQL=false
@@ -10,25 +10,35 @@ CHANGE_THIS_VERSION=""
 DOCKER_COMPOSE_FILE=""
 UPGRADE_DIR=~/dongtai_iast_upgrade
 DESTORY_DATA=false
+PROJECT_NAME=dongtai
+REGISRTY=1
+
+DONGTAI_API="iast.huoxian.cn"
+# DONGTAI_API="google.com"
+DONGTAI_API_ACCESSABLE=true
 
 Info() {
-  echo -e "[Info] $1"
+  echo -e "[Info] $1" >&2
 }
 
 Error() {
-  echo -e "\033[31m[Error] $1 \033[0m"
+  echo -e "\033[31m[Error] $1 \033[0m" >&2
 }
 
 Todo() {
-  echo -e "\033[36m[Todo] $1 \033[0m"
+  echo -e "\033[36m[Todo] $1 \033[0m" >&2
 }
 
 Notice() {
-  echo -e "\033[33m[Important] $1 \033[0m"
+  echo -e "\033[33m[Important] $1 \033[0m" >&2
 }
 
 Usage() {
-  echo -e "\033[33m[Usage] $1 \033[0m"
+  echo -e "\033[33m[Usage] $1 \033[0m" >&2
+}
+
+function print() {
+  echo Print:$1 >&2
 }
 
 # Display usage message function
@@ -57,7 +67,6 @@ MINGW*) machine=MinGw ;;
 esac
 CURRENT_PATH=$(
   cd "$(dirname "$0")" || exit
-  pwd
 )
 cd "$CURRENT_PATH" || exit
 
@@ -86,8 +95,43 @@ function realpath() {
 shell_path=$(realpath "$0")
 shell_dir=$(dirname "$shell_path")
 
+# compare version
+function first_gt_second() {
+  first=${1//./}
+  second=${2//./}
+  if (($(echo "$first > $second" | bc -l))); then
+    echo true
+  else
+    echo false
+  fi
+}
+
+# check if dongtai iast server is Running
+function is_server_running() {
+  if [ $(docker ps | grep "dongtai-web:" | wc -l) -gt 0 ]; then
+    echo true
+    return
+  fi
+  echo false
+  return
+}
+
+# exit when server is not running
+function exit_not_running() {
+  if [ $(is_server_running) != true ]; then
+    Error "Server is not running!"
+    exit 1
+  fi
+}
+
+# get docker-compose project_name
+get_project_name() {
+  retval=$(docker inspect --format='{{ index .Config.Labels "com.docker.compose.project" }}' $(docker ps | grep "dongtai-web:" | awk '{print $1}'))
+  echo "$retval"
+}
 function current_image_version() {
-  ver=$(docker ps | grep "dongtai-webapi:" | awk '{split($2,a,":");print a[2]}')
+  PROJECT_NAME=$(get_project_name)
+  ver=$(docker ps | grep $PROJECT_NAME | grep "dongtai-webapi:" | awk '{split($2,a,":");print a[2]}')
   echo "$ver"
 }
 
@@ -97,7 +141,8 @@ function get_latest_release_version() {
 }
 
 function get_web_service_port() {
-  WEB_CONTAINER_ID=$(docker ps | grep 'dongtai-web:' | awk '{print $1}')
+  PROJECT_NAME=$(get_project_name)
+  WEB_CONTAINER_ID=$(docker ps | grep $PROJECT_NAME | grep 'dongtai-web:' | awk '{print $1}')
   WEB_SERVICE_PORT=$(docker inspect --format='{{range $p, $conf := .NetworkSettings.Ports}} {{(index $conf 0).HostPort}} {{end}}' $WEB_CONTAINER_ID)
   WEB_SERVICE_PORT=$(trim $WEB_SERVICE_PORT)
 
@@ -108,16 +153,63 @@ function get_web_service_port() {
 # get mysql container id
 function get_mysql_container_id() {
   mysql_container_id=""
-  mysql_container_id=$(docker ps | grep 'dongtai-mysql:' | awk '{print $1}')
-  if [ -z $mysql_container_id ]; then
-    exit 1
-  fi
+  PROJECT_NAME=$(get_project_name)
+  mysql_container_id=$(docker ps | grep "$PROJECT_NAME" | grep 'mysql' | awk '{print $1}')
   echo "$mysql_container_id"
 
 }
 
+# check if image registry is in China.
+function get_image_registry() {
+  if [ "$1" == 0 ]; then
+    registry_url="dongtai"
+  elif [ "$1" == 1 ]; then
+    registry_url="registry.cn-beijing.aliyuncs.com/huoxian_pub"
+  else
+    registry_url=$(docker ps | grep "dongtai-web:" | awk 'i=index($2,"dongtai-web:") {print substr($2,0,i-2)}')
+  fi
+  echo "$registry_url"
+}
+
+# checkout network
+function network() {
+  local timeout=3
+  local target=$DONGTAI_API
+  local ret_code=$(curl -I -s --connect-timeout ${timeout} ${target} -w %{http_code} | tail -n1)
+  if [ "$ret_code" == "200" ]; then
+    echo true
+    return
+  else
+    echo false
+    return
+  fi
+  echo false
+  return
+}
+
+declare -a EXCLUDED_TABLES=(
+  "dongtai_webapi.sca2_package"
+  "dongtai_webapi.sca2_vul"
+  "dongtai_webapi.sca2_vul_package"
+  "dongtai_webapi.sca2_vul_package_range"
+  "dongtai_webapi.sca2_vul_package_version"
+  "dongtai_webapi.mysql_version_control"
+)
+
+IGNORED_TABLES_STRING=""
+for TABLE in "${EXCLUDED_TABLES[@]}"; do
+  :
+  IGNORED_TABLES_STRING+=" --ignore-table=${TABLE} "
+done
+
 get_database_schema() {
-  echo "dongtai-iast" | docker exec -i $(get_mysql_container_id) mysqldump -u root -d dongtai_webapi --ignore-table=dongtai_webapi.mysql_version_control -p --skip-comments --skip-opt | sed 's/ AUTO_INCREMENT=[0-9]*//g' | sed 's/\/\*!*.*//g'
+  _mysql_container_id=$(get_mysql_container_id)
+  if [ -z $_mysql_container_id ]; then
+    Error "get_database_schema:mysql_container_id not exist"
+    exit 1
+  fi
+
+  echo "dongtai-iast" | docker exec -i $_mysql_container_id /bin/bash -c "mysqldump -u root -d dongtai_webapi ${IGNORED_TABLES_STRING} -p --skip-set-charset --skip-comments --skip-opt | sed 's/ AUTO_INCREMENT=[0-9]*//g' | sed 's/\/\*!*.*//g' "
 }
 
 function current_hash() {
@@ -162,9 +254,33 @@ function restore_mysql() {
 
 }
 
+if [ $(is_server_running) == true ]; then
+  if [ ! -z "$(get_mysql_container_id)" ]; then
+    MOUNT_TYPE=$(docker inspect --format='{{range .Mounts}} {{.Type}} {{end}}' $(get_mysql_container_id))
+  fi
+fi
+
+# check  network and modify config.ini
+function check_network() {
+  if [ $(network) == true ]; then
+    Info "Dongtai Online API accessable!"
+  else
+    DONGTAI_API_ACCESSABLE=false
+    if [ "$machine" == "Mac" ]; then
+      sed -i '' 's/^base_url = https\:\/\/iast\.huoxian\.cn\/openapi\/sca\/v1/base_url = http:\/\/dongtai-openapi:8000\/sca\/v1/' config-tutorial.ini
+    else
+      sed -i 's/^base_url = https\:\/\/iast\.huoxian\.cn\/openapi\/sca\/v1/base_url = http:\/\/dongtai-openapi:8000\/sca\/v1/' config-tutorial.ini
+    fi
+    Info "Dongtai Online API unaccessable!"
+  fi
+}
+
+# Info "Mount Type:$MOUNT_TYPE"
+
 # create docker compose file
 # Usage: create_docker_compose_file $VERSION $WEB_SERVICE_PORT $MYSQL_DATA_LOCATION
 function create_docker_compose_file() {
+
   if [ ! -z "$1" ]; then
     CHANGE_THIS_VERSION=$1
   fi
@@ -173,22 +289,42 @@ function create_docker_compose_file() {
     WEB_SERVICE_PORT=$2
   fi
 
-  if [ ! -z "$3" ]; then
-    DATA_DIR=$3
+  if [ ! -z "$4" ] && [ $MOUNT_TYPE == "bind" ]; then
+    _DATA_DIR=$3
   else
-    DATA_DIR=$PWD
+    _DATA_DIR="mysql-vol"
   fi
-
+  Info "Data dir:$_DATA_DIR"
   MYSQL_STR=""
   REDIS_STR=""
+
+  if [ "$3" == "install" ]; then
+    if [ "$REGISRTY" == 1 ]; then
+      registry=$(get_image_registry 1)
+    else
+      registry=$(get_image_registry 0)
+    fi
+  else
+    registry=$(get_image_registry 2)
+  fi
+
+  MYSQL_IMAGE_NAME="dongtai-mysql"
+  if [ $DONGTAI_API_ACCESSABLE == false ]; then
+    if [[ $(first_gt_second $CHANGE_THIS_VERSION 1.2.0) == true ]]; then
+      MYSQL_IMAGE_NAME="dongtai-mysql-sca"
+    fi
+  fi
+
+
   if [ $SKIP_MYSQL == false ]; then
     export MYSQL_STR=$(
       cat <<EOF
 dongtai-mysql: 
-    image: dongtai/dongtai-mysql:$CHANGE_THIS_VERSION
+    image: $registry/$MYSQL_IMAGE_NAME:$CHANGE_THIS_VERSION
     restart: always
     volumes:
-      - "$DATA_DIR:/var/lib/mysql:rw"
+      - "$_DATA_DIR:/var/lib/mysql:rw"
+      #- "/var/lib/mysql"
     logging:
       driver: "json-file"
       options:
@@ -201,7 +337,7 @@ EOF
     export REDIS_STR=$(
       cat <<EOF
 dongtai-redis:
-    image: dongtai/dongtai-redis:$CHANGE_THIS_VERSION
+    image: $registry/dongtai-redis:$CHANGE_THIS_VERSION
     restart: always
     logging:
       driver: "json-file"
@@ -218,7 +354,7 @@ services:
   $MYSQL_STR
   $REDIS_STR
   dongtai-webapi:
-    image: "dongtai/dongtai-webapi:$CHANGE_THIS_VERSION"
+    image: "$registry/dongtai-webapi:$CHANGE_THIS_VERSION"
     restart: always
     volumes:
       - "$PWD/config-tutorial.ini:/opt/dongtai/webapi/conf/config.ini"
@@ -228,7 +364,7 @@ services:
         max-size: "10m"
 
   dongtai-web:
-    image: "dongtai/dongtai-web:$CHANGE_THIS_VERSION"
+    image: "$registry/dongtai-web:$CHANGE_THIS_VERSION"
     restart: always
     ports:
       - "$WEB_SERVICE_PORT:80"
@@ -242,7 +378,7 @@ services:
         max-size: "10m"
 
   dongtai-openapi:
-    image: "dongtai/dongtai-openapi:$CHANGE_THIS_VERSION"
+    image: "$registry/dongtai-openapi:$CHANGE_THIS_VERSION"
     restart: always
     volumes:
        - "$PWD/config-tutorial.ini:/opt/dongtai/openapi/conf/config.ini"
@@ -252,7 +388,7 @@ services:
         max-size: "10m"
 
   dongtai-engine:
-    image: "dongtai/dongtai-engine:$CHANGE_THIS_VERSION"
+    image: "$registry/dongtai-engine:$CHANGE_THIS_VERSION"
     restart: always
     volumes:
       - "$PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini"
@@ -263,7 +399,7 @@ services:
 
 
   dongtai-engine-task:
-    image: "dongtai/dongtai-engine:$CHANGE_THIS_VERSION"
+    image: "$registry/dongtai-engine:$CHANGE_THIS_VERSION"
     restart: always
     command: ["/opt/dongtai/engine/docker/entrypoint.sh", "task"]
     volumes:
@@ -274,6 +410,8 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
+volumes:
+  mysql-vol:
 
 EOM
 
@@ -300,20 +438,24 @@ if [ ! 0 == $# ]; then # If options provided then
   shift # Get subcommand and shift to next option
   case "$subcommand" in
   "debug")
-    result=$(get_database_data_dir)
+    result=$(get_project_name)
     echo ""
     echo "result:$result"
     ;;
   "version")
+    exit_not_running
     cur_ver=$(current_image_version)
     echo ""
     Notice "current image version: $cur_ver"
     ;;
   "dbhash")
+    exit_not_running
     cur_hash=$(current_hash)
+
     Notice "current db hash: $cur_hash"
     ;;
   "dbschema")
+    exit_not_running
     outout_filename="export_db_schema.txt"
     output_location="$shell_dir/$outout_filename"
     if [ ! 0 == $# ]; then # if options provided
@@ -342,6 +484,7 @@ if [ ! 0 == $# ]; then # If options provided then
     ;;
 
   "dbbackup")
+    exit_not_running
     if [ ! 0 == $# ]; then # if options provided
       while getopts ":d:h" opt; do
         case "$opt" in
@@ -397,6 +540,7 @@ if [ ! 0 == $# ]; then # If options provided then
     ;;
 
   "file")
+    exit_not_running
     compose_file=$(create_docker_compose_file $(current_image_version) $(get_web_service_port) $(get_database_data_dir))
     file_path="$shell_dir/docker-compose.yml"
     echo "$compose_file" >$file_path | exit 1
@@ -404,10 +548,12 @@ if [ ! 0 == $# ]; then # If options provided then
     ;;
 
   "logs")
+    exit_not_running
     shift $((OPTIND - 1))
     op=$1
     shift
-    docker logs -f --tail=100 $(docker ps | grep "dongtai-$op:" | awk '{print $1}') || exit 1
+    PROJECT_NAME=$(get_project_name)
+    docker logs -f --tail=200 $(docker ps | grep $PROJECT_NAME | grep "dongtai-$op:" | awk '{print $1}') || exit 1
     ;;
   "install") # install iast server
     #unset OPTIND
@@ -437,9 +583,9 @@ if [ ! 0 == $# ]; then # If options provided then
       Info "Starting docker compose ..."
 
       if [ ! -z "$1" ]; then
-        docker_compose_file=$(create_docker_compose_file $CHANGE_THIS_VERSION $WEB_SERVICE_PORT $1)
+        docker_compose_file=$(create_docker_compose_file $CHANGE_THIS_VERSION $WEB_SERVICE_PORT "install" $1)
       else
-        docker_compose_file=$(create_docker_compose_file $CHANGE_THIS_VERSION $WEB_SERVICE_PORT)
+        docker_compose_file=$(create_docker_compose_file $CHANGE_THIS_VERSION $WEB_SERVICE_PORT "install")
       fi
 
       if [ "$docker_compose_file" = "" ]; then
@@ -447,7 +593,7 @@ if [ ! 0 == $# ]; then # If options provided then
         exit 1
       fi
 
-      docker-compose -p dongtai-iast -f <(echo "$docker_compose_file") up -d
+      docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") up -d
     }
 
     # Specify the port of Web, OpenAPI service and check whether it is available
@@ -462,13 +608,11 @@ if [ ! 0 == $# ]; then # If options provided then
       fi
 
       if ! [ -x "$(command -v lsof)" ]; then
-        netstat -tunlp | grep $WEB_SERVICE_PORT | grep "LISTEN" 2>/dev/null
-        if [ ! $? -ne 0 ]; then
+        if [ $(netstat -tunlp | grep $WEB_SERVICE_PORT | grep "LISTEN" | wc -l || true) -gt 0 ]; then
           is_port_inuse=true
         fi
       else
-        lsof -i:$WEB_SERVICE_PORT | grep "LISTEN" 2>/dev/null
-        if [ ! $? -ne 0 ]; then
+        if [ $(lsof -i:$WEB_SERVICE_PORT | grep "LISTEN" | wc -l || true) -gt 0 ]; then
           is_port_inuse=true
         fi
       fi
@@ -484,7 +628,7 @@ if [ ! 0 == $# ]; then # If options provided then
 
     DATA_DIR="$shell_dir/data"
     if [ ! 0 == $# ]; then # if options provided
-      while getopts ":d:m:s:v:h:" optname; do
+      while getopts ":d:m:s:v:r:h:" optname; do
         case "$optname" in
         "d")
           DATA_DIR=$OPTARG
@@ -502,6 +646,9 @@ if [ ! 0 == $# ]; then # If options provided then
           ;;
         "v")
           CHANGE_THIS_VERSION=$OPTARG
+          ;;
+        "r")
+          REGISRTY=$OPTARG
           ;;
         "h")
           usage
@@ -525,10 +672,12 @@ if [ ! 0 == $# ]; then # If options provided then
       CHANGE_THIS_VERSION=$(get_latest_release_version)
     fi
 
+    check_network
     check_docker
     check_docker_compose
     check_port
-    start_docker_compose "$DATA_DIR"
+    #start_docker_compose "$DATA_DIR"
+    start_docker_compose
 
     if [ $? -ne 0 ]; then
       Error "Installation failed,Something wrong!"
@@ -539,6 +688,7 @@ if [ ! 0 == $# ]; then # If options provided then
 
     ;;
   "remove" | "rm")
+    exit_not_running
     if [ ! 0 == $# ]; then # if options provided
       while getopts ":d:h:" opt; do
         case ${1} in
@@ -558,25 +708,28 @@ if [ ! 0 == $# ]; then # If options provided then
       done
     fi
 
-    docker_compose_file=$(create_docker_compose_file $(current_image_version) $(get_web_service_port))
+    docker_compose_file=$(create_docker_compose_file $(current_image_version) $(get_web_service_port) "rm")
 
+    PROJECT_NAME=$(get_project_name)
     if [ "$DESTORY_DATA" == true ]; then
       data_dir=$(get_database_data_dir)
-      Notice "Data dir:[$data_dir] will be deleted."
-      docker-compose -p dongtai-iast -f <(echo "$docker_compose_file") down -v
-      rm -rf $data_dir
+      Notice "Data volume will be deleted."
+      docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") down -v
+      if [ "$MOUNT_TYPE" == "bind" ]; then
+        Notice "Data will be deleted in $data_dir"
+        rm -rf $data_dir
+      fi
     else
-      docker-compose -p dongtai-iast -f <(echo "$docker_compose_file") down
+      docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") down
     fi
     ;;
 
   "upgrade")
-
+    exit_not_running
     TO_VERSION=""
     FROM_VERSION=""
     SHA_FILE=updaterecord.txt
-    # MYSQL_CONTAINER_ID=$(docker ps | grep 'dongtai-mysql:' | awk '{print $1}')
-    WEB_CONTAINER_ID=$(docker ps | grep 'dongtai-web:' | awk '{print $1}')
+    WEB_CONTAINER_ID=$(docker ps | grep $PROJECT_NAME | grep 'dongtai-web:' | awk '{print $1}')
 
     function check_update_record_file() {
       if [ ! -f "$SHA_FILE" ]; then
@@ -588,7 +741,6 @@ if [ ! 0 == $# ]; then # If options provided then
     function check_schema_hash() {
       Info "Check database schema ..."
 
-      # set -x
       # cat updaterecord.txt | awk "{ if($1==$FROM_VERSION) print $4}"
 
       FROM_DB_HASH=$(cat updaterecord.txt | awk -v FROM_VERSION=$FROM_VERSION '{ if($1==FROM_VERSION) print $4}')
@@ -607,13 +759,14 @@ if [ ! 0 == $# ]; then # If options provided then
 
     function execute_update() {
       # extract sql name and reverse list
-      SQL_NAMES=$(cat updaterecord.txt | awk "/$TO_VERSION/,/$FROM_VERSION/ {print \$2}" | grep -vF "$FROM_VERSION" | awk "{array[NR]=\$0} END { for(i=NR;i>0;i--) {print array[i];} }")
+
+      SQL_NAMES=$(cat updaterecord.txt | awk "/${TO_VERSION//./\\.}/,/${FROM_VERSION//./\\.}/ {print \$2}" | grep -vF "$FROM_VERSION" | awk "{array[NR]=\$0} END { for(i=NR;i>0;i--) {print array[i];} }")
 
       mysql_container_id=$(get_mysql_container_id)
       # check whether mysql is ready
       while :; do
         Info "start to check mysql status ..."
-        tables=$(docker exec -i $mysql_container_id /bin/bash -c "mysql -uroot -p'dongtai-iast'  --execute \"SHOW DATABASES;\"")
+        tables=$(docker exec -i $mysql_container_id /bin/bash -c "mysql -uroot -p'dongtai-iast'  --execute \"SHOW DATABASES;\"" || true)
         if [[ ${tables["mysql"]} ]]; then
           Notice "mysql instance ready!"
           break
@@ -621,10 +774,20 @@ if [ ! 0 == $# ]; then # If options provided then
         sleep 2
       done
 
+      # change sql store directory from /docker-entrypoint-initdb.d to /sql
+      # from 1.3.0
+      sql_dir="/docker-entrypoint-initdb.d"
+      if [[ $(first_gt_second $TO_VERSION 1.2.0) == true ]]; then
+        sql_dir="/sql"
+      fi
+
+      Info "Sql store directory: $sql_dir"
+
       # sql downloaded,start to execute sql
+      Info $SQL_NAMES
       for SQL in $SQL_NAMES; do
         Info "Start to load sql:[$SQL]"
-        docker exec -i $mysql_container_id /bin/bash -c "mysql -uroot -p'dongtai-iast' dongtai_webapi < /docker-entrypoint-initdb.d/$SQL"
+        docker exec -i $mysql_container_id /bin/bash -c "mysql -uroot -p'dongtai-iast' dongtai_webapi < $sql_dir/$SQL"
       done
 
     }
@@ -651,13 +814,13 @@ if [ ! 0 == $# ]; then # If options provided then
       WEB_PORT=$(trim $WEB_PORT)
 
       # 创建 DOCKER_COMPOSE_FILE
-      docker_compose_file=$(create_docker_compose_file $TO_VERSION $(get_web_service_port) $(get_database_data_dir))
-
+      docker_compose_file=$(create_docker_compose_file $TO_VERSION $(get_web_service_port) $(get_database_data_dir) "upgrade")
+      PROJECT_NAME=$(get_project_name)
       Info "Start to pull new images with tag $TO_VERSION"
-      docker-compose -p dongtai-iast -f <(echo "$docker_compose_file") pull
+      docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") pull
 
       Info "Start new containers with tag $TO_VERSION "
-      docker-compose -p dongtai-iast -f <(echo "$docker_compose_file") up -d
+      docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") up -d
 
     }
 
@@ -687,6 +850,7 @@ if [ ! 0 == $# ]; then # If options provided then
 
         "?")
           Error "Unknown option $OPTARG"
+          exit 1
           ;;
         esac
       done
@@ -697,8 +861,16 @@ if [ ! 0 == $# ]; then # If options provided then
       TO_VERSION=$(get_latest_release_version)
     fi
 
-    echo "FROM_VERSION:$FROM_VERSION,TO_VERSION:$TO_VERSION"
+    Info "Upgrade: $FROM_VERSION -> $TO_VERSION"
 
+    f_gt_t=$(first_gt_second $FROM_VERSION $TO_VERSION)
+
+    if [[ $f_gt_t == true ]]; then
+      Error "Your current verison is $FROM_VERSION, you can upgrade to later version. $TO_VERSION is invalid."
+      exit 1
+    fi
+
+    check_network
     backup_mysql
     check_update_record_file
     check_schema_hash
