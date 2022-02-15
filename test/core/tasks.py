@@ -17,7 +17,7 @@ class MyTestCase(DongTaiTestCase):
         search_vul_from_replay_method_pool(method_id)
 
     def test_search_vul_from_method_pool(self):
-        method_pool_id = 68871
+        method_pool_id = 2473688
         from core.tasks import search_vul_from_method_pool
         search_vul_from_method_pool(method_pool_id)
 
@@ -45,6 +45,58 @@ class MyTestCase(DongTaiTestCase):
     def test_update_sca(self):
         from core.tasks import update_sca
         update_sca()
+
+    def test_http_header(self):
+        from dongtai.models.agent import IastAgent
+        agents = IastAgent.objects.filter(bind_project_id=1252).values('id')
+        from dongtai.models.agent_method_pool import MethodPool
+        method_pools = MethodPool.objects.filter(agent_id__in=agents).values('req_header_fs')
+
+        from http.server import BaseHTTPRequestHandler
+        class HttpRequest(BaseHTTPRequestHandler):
+            def __init__(self, raw_request):
+                self.body = None
+                self.uri = None
+                self.params = None
+                from io import BytesIO
+                self.rfile = BytesIO(raw_request.encode())
+                self.raw_requestline = self.rfile.readline()
+                self.error_code = self.error_message = None
+                self.parse_request()
+                self.parse_path()
+                self.parse_body()
+                self._cookie_keys = set()
+
+            @property
+            def cookie_keys(self):
+                return self._cookie_keys
+
+            def init_cookie_keys(self):
+                cookies = self.headers.get('cookies').split(';')
+                for cookie in cookies:
+                    self._cookie_keys.add(cookie.strip().split('=')[0])
+
+            def parse_body(self):
+                if self.body is None:
+                    self.body = self.rfile.read().decode('utf-8')
+                return self.body
+
+            def parse_path(self):
+                items = self.path.split('?')
+                self.uri = items[0]
+                self.params = '?'.join(items[1:])
+
+        project_headers = set()
+        project_cookies = set()
+        for method_pool in method_pools:
+            try:
+                request = HttpRequest(method_pool['req_header_fs'])
+                project_headers = project_headers | set(request.headers.keys())
+                # project_cookies = project_cookies | request.cookie_keys
+            except:
+                pass
+        print(project_headers)
+        print(project_cookies)
 
 
 if __name__ == '__main__':
