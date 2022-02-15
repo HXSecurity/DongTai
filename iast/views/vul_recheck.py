@@ -232,8 +232,9 @@ class VulReCheck(UserEndPoint):
                 auth_users = self.get_auth_users(request.user)
                 status, pending, recheck, checking, msg = self.vul_check_for_project(
                     project_id, auth_users=auth_users)
+                no_agent = None
             return R.success(data={
-                "no_agent": 0 if not no_agent else no_agent,
+                "no_agent": no_agent if no_agent else 0,
                 "pending": pending,
                 "recheck": recheck,
                 "checking": checking
