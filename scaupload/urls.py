@@ -41,7 +41,7 @@ urlpatterns = [
         })),
     path('maven', SCADBMavenViewSet.as_view({'post': 'create'})),
     path('license_list', SCALicenseViewSet.as_view()),
-    path('maven/stat', SCAStatViewSet.as_view()),
+#    path('maven/stat', SCAStatViewSet.as_view()),
     path('maven/template/maven_sca', SCATemplateViewSet.as_view()),
 ]
 
