@@ -604,7 +604,7 @@ def export_report():
     logger.info(f'导出报告')
     report = ProjectReport.objects.filter(status=0).first()
     if not report:
-        logger.error("暂无需要导出的报告")
+        logger.info("暂无需要导出的报告")
         return
     try:
         report.status = 1
@@ -648,12 +648,13 @@ def vul_recheck():
             continue
 
         param_name_value = vulnerability['param_name']
-        try:
-            params = json.loads(param_name_value)
-        except JSONDecodeError as e:
-            logger.error(f'污点数据解析出错，原因：{e}')
-            Replay.replay_failed(replay=replay, timestamp=timestamp)
-            continue
+        if param_name_value is not None:
+            try:
+                params = json.loads(param_name_value)
+            except JSONDecodeError as e:
+                logger.error(f'污点数据解析出错，原因：{e}')
+                Replay.replay_failed(replay=replay, timestamp=timestamp)
+                continue
 
         uri = vulnerability['uri']
         param_value = vulnerability['req_params'] if vulnerability['req_params'] else ''
