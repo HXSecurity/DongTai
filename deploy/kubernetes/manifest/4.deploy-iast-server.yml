@@ -37,6 +37,10 @@ data:
     [aliyun_oss]
     access_key = LTAI5t7pu9WUT2DcbknfNiaD
     access_key_secret = ZoEOSi7KfayQ7JalvJVHa37fdZ4XFY
+
+    [sca]
+    base_url = https://iast.huoxian.cn/openapi/sca/v1
+    
 kind: ConfigMap
 metadata:
   name: dongtai-iast-config.ini
