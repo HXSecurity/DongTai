@@ -209,11 +209,7 @@ class VulsEndPoint(UserEndPoint):
         if language:
             auth_agents = auth_agents.filter(language=language)
 
-        queryset = IastVulnerabilityModel.objects.values(
-            'id', 'hook_type_id', 'url', 'uri', 'agent_id', 'level_id',
-            'http_method', 'top_stack', 'bottom_stack', 'taint_position',
-            'latest_time', 'first_time','strategy_id',
-            'status_id').filter(agent__in=auth_agents)
+        queryset = IastVulnerabilityModel.objects.filter(agent__in=auth_agents)
 
         level = request.query_params.get('level')
         if level:
@@ -292,8 +288,15 @@ class VulsEndPoint(UserEndPoint):
 
         page = request.query_params.get('page', 1)
         page_size = request.query_params.get("pageSize", 20)
-        page_summary, page_data = self.get_paginator(queryset, page, page_size)
-        datas = VulSerializer(page_data, many=True).data
+        page_summary, page_data = self.get_paginator(queryset.only('id'), page, page_size)
+        vul_ids = [i.id for i in page_data]
+        datas = VulSerializer(IastVulnerabilityModel.objects.filter(pk__in=vul_ids).values(
+            'id', 'hook_type_id', 'url', 'uri', 'agent_id', 'level_id',
+            'http_method', 'top_stack', 'bottom_stack', 'taint_position',
+            'latest_time', 'first_time','strategy_id',
+            'status_id','strategy__vul_name','hook_type__name','status__name',
+            'agent__language'
+            ), many=True).data
         pro_length = len(datas)
         if pro_length > 0:
             for index in range(pro_length):

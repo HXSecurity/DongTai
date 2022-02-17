@@ -40,26 +40,16 @@ class VulSerializer(serializers.ModelSerializer):
         return name
 
     def get_language(self, obj):
-        if obj['agent_id'] not in self.AGENT_LANGUAGE_MAP:
-            agent_model = IastAgent.objects.filter(id=obj['agent_id']).first()
-            if agent_model:
-                self.AGENT_LANGUAGE_MAP[obj['agent_id']] = agent_model.language
-        return self.AGENT_LANGUAGE_MAP[obj['agent_id']]
+        return obj['agent__language']
 
     def get_type(self, obj):
-        hook_type = HookType.objects.filter(pk=obj['hook_type_id']).first()
-        hook_type_name = hook_type.name if hook_type else None
-        strategy = IastStrategyModel.objects.filter(pk=obj['strategy_id']).first()
-        strategy_name = strategy.vul_name if strategy else None
         type_ = list(
-            filter(lambda x: x is not None, [strategy_name, hook_type_name]))
+            filter(lambda x: x is not None, [obj['strategy__vul_name'], obj['hook_type__name']]))
         return type_[0] if type_ else ''
 
     def get_status(self, obj):
-        status = IastVulnerabilityStatus.objects.filter(
-            pk=obj['status_id']).first()
-        return status.name if status else ''
-
+        status__name = obj.get('status__name',None)
+        return status__name if status__name else ''
 
 class VulForPluginSerializer(serializers.ModelSerializer):
     type = serializers.SerializerMethodField()

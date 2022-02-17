@@ -126,7 +126,13 @@ class VulsListWithid(DetailListWithid):
         auth_users = self.get_auth_users(request.user)
         auth_agents = self.get_auth_agents(auth_users)
         vuls = IastVulnerabilityModel.objects.filter(
-            pk__in=ids, agent__in=auth_agents).values().all()
+            pk__in=ids, agent__in=auth_agents).values(
+            'id', 'hook_type_id', 'url', 'uri', 'agent_id', 'level_id',
+            'http_method', 'top_stack', 'bottom_stack', 'taint_position',
+            'latest_time', 'first_time','strategy_id',
+            'status_id','strategy__vul_name','hook_type__name','status__name',
+            'agent__language'
+            ).all()
         return vuls
 
     @extend_schema_with_envcheck(
