@@ -79,7 +79,7 @@ class ScaSerializer(serializers.ModelSerializer):
 
     def get_license(self,obj):
         try:
-            if not self.context.get('license_dict',None):
+            if not self.context.has_key('license_dict'):
                 sca_maven = ScaMavenDb.objects.filter(sha_1=obj.signature_value).first()
                 return sca_maven.license
             return self.context['license_dict'].get(obj.signature_value,'')
