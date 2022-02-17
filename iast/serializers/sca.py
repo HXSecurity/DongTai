@@ -79,8 +79,10 @@ class ScaSerializer(serializers.ModelSerializer):
 
     def get_license(self,obj):
         try:
-            sca_maven = ScaMavenDb.objects.filter(sha_1=obj.signature_value).first()
-            return sca_maven.license
-        except:
+            if not self.context.get('license_dict',None):
+                sca_maven = ScaMavenDb.objects.filter(sha_1=obj.signature_value).first()
+                return sca_maven.license
+            return self.context['license_dict'].get(obj.signature_value,'')
+        except Exception as e:
             return ''
 
