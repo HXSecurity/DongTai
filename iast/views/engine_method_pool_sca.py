@@ -9,6 +9,7 @@ from dongtai.models.asset import Asset
 from iast.serializers.sca import ScaSerializer
 from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from dongtai.models.sca_maven_db import ScaMavenDb
 
 _ResponseSerializer = get_response_serializer(
     data_serializer=ScaSerializer(many=True), )
@@ -49,5 +50,14 @@ class EngineMethodPoolSca(AnonymousAndUserEndPoint):
         project_version_id = project_data['project_version_id']
 
         queryset = Asset.objects.filter(agent_id=agent_id)
-
-        return R.success(data=ScaSerializer(queryset, many=True).data)
+        license_dict = {
+            i['sha_1']: i['license']
+            for i in ScaMavenDb.objects.filter(sha_1__in=queryset.values(
+                'signature_value')).values('license', 'sha_1')
+        }
+        return R.success(
+            data=ScaSerializer(queryset.select_related('level', 'agent'),
+                               context={
+                                   'license_dict': license_dict
+                               },
+                               many=True).data)
