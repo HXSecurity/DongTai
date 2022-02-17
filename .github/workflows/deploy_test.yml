@@ -127,7 +127,7 @@ jobs:
 
       - name: python Agent Setup
         run: |
-          curl -X GET "${{ secrets.DONGTAI_TEST_URL }}${{github.run_number}}" -H '${{ secrets.DONGTAI_TEST_HEADER }}' -o /tmp/dongtai-agent-python-from-iast-io.tar.gz -k
+          curl -X GET "${{ secrets.DONGTAI_TEST_URL }}${{github.run_number}}" -H '${{ secrets.DONGTAI_TEST_HEADER }}' -o dongtai-agent-python-from-iast-io.tar.gz -k
 
       - name: Generate version file
         run: |
