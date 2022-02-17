@@ -14,6 +14,7 @@ from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.text import format_lazy
 from iast.utils import get_model_order_options
+from dongtai.models.sca_maven_db import ScaMavenDb
 
 _ResponseSerializer = get_response_serializer(ScaSerializer(many=True))
 
@@ -188,5 +189,14 @@ class ScaList(UserEndPoint):
             queryset = queryset.order_by('-dt')
         page = request.query_params.get('page', 1)
         page_size = request.query_params.get('pageSize', 20)
-        page_summary, page_data = self.get_paginator(queryset, page, page_size)
-        return R.success(data=ScaSerializer(page_data, many=True).data, page=page_summary)
+        page_summary, page_data = self.get_paginator(queryset.values('id','signature_value'), page, page_size)
+        sca_ids = [i['id'] for i in  page_data]
+        sca_sha1s = [i['signature_value'] for i in  page_data]
+        license_dict = {
+            i['sha_1']: i['license']
+            for i in ScaMavenDb.objects.filter(sha_1__in=sca_sha1s).values('license', 'sha_1')
+        }
+        return R.success(data=ScaSerializer(Asset.objects.filter(pk__in=sca_ids).select_related('level', 'agent'),
+                               context={
+                                   'license_dict': license_dict
+                               },many=True).data, page=page_summary)
