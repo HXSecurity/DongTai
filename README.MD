@@ -35,7 +35,7 @@ The basic service configuration is as follows：
 
 1. Pull image
 ```shell script
-$ docker pull registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:1.3.0
+$ docker pull registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:latest
 ```
 
 2. Create a configuration file：`/etc/dongtai/config.ini`，The content is as follows：
@@ -76,14 +76,14 @@ access_key_secret = access_key
 
 3. Start the `dongtai-openapi` container and map the configuration file
 ```shell script
-$ docker run -d --name dongtai-openapi -p 8000:8000 -v /etc/dongtai/config.ini:/opt/dongtai/openapi/conf/config.ini --restart=always huoxian_pub/dongtai-openapi:1.3.0
+$ docker run -d --name dongtai-openapi -p 8000:8000 -v /etc/dongtai/config.ini:/opt/dongtai/openapi/conf/config.ini --restart=always huoxian_pub/dongtai-openapi:latest
 ```
 
 ### Build custom image
 
 1. Build image
 ```shell script
-$ docker build -t huoxian_pub/dongtai-openapi:1.3.0 .
+$ docker build -t huoxian_pub/dongtai-openapi:latest .
 ```
 
 2. Create a configuration file：`/etc/dongtai/config.ini`，The content is as follows：
@@ -124,7 +124,7 @@ access_key_secret = access_key
 
 3. Start the `dongtai-openapi` container and map the configuration file
 ```shell script
-$ docker run -d --name dongtai-openapi -p 8000:8000 -v /etc/dongtai/config.ini:/opt/dongtai/openapi/conf/config.ini --restart=always huoxian_pub/dongtai-openapi:1.3.0
+$ docker run -d --name dongtai-openapi -p 8000:8000 -v /etc/dongtai/config.ini:/opt/dongtai/openapi/conf/config.ini --restart=always huoxian_pub/dongtai-openapi:latest
 ```
 
 ### Contributing
