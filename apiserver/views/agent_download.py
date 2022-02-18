@@ -16,7 +16,7 @@ from django.utils.translation import gettext_lazy as _
 
 from apiserver.api_schema import DongTaiParameter, DongTaiAuth
 from apiserver.utils import OssDownloader
-from AgentServer.settings import BUCKET_NAME_BASE_URL
+from AgentServer.settings import BUCKET_NAME_BASE_URL, VERSION
 
 import shutil
 import tarfile, os
@@ -30,12 +30,12 @@ class JavaAgentDownload():
     def __init__(self, user_id):
         t = threading.currentThread()
         self.user_id = user_id
-        self.agent_file = "iast-agent.jar"
+        self.agent_file = "dongtai-agent.jar"
         self.original_agent_path = f'/tmp/iast_cache/package'
         self.original_agent_file = f'/tmp/iast_cache/package/{self.agent_file}'
         self.user_target_path = f'/tmp/{os.getpid()}-{t.ident}-{user_id}'
         self.target_path = f'/tmp/{os.getpid()}-{t.ident}-{user_id}/iast_cache/package'
-        self.remote_agent_file = BUCKET_NAME_BASE_URL + 'java/iast-agent.jar'
+        self.remote_agent_file = BUCKET_NAME_BASE_URL + 'java/'+ VERSION +'/dongtai-agent.jar'
         if not os.path.exists(f"{self.target_path}"):
             os.makedirs(f"{self.target_path}")
         if not os.path.exists(self.original_agent_path):

@@ -32,7 +32,7 @@ SECRET_KEY = random.choices(string.ascii_letters + string.digits, k=50)
 DEBUG = os.environ.get("debug", 'false') == 'true'
 
 ALLOWED_HOSTS = ['*']
-
+VERSION = '1.3.1' if os.getenv('active.profile', None) != 'TEST' else 'latest'
 # Application definition
 
 INSTALLED_APPS = [
