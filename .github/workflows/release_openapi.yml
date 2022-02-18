@@ -90,7 +90,7 @@ jobs:
           # AccessKeySceret
           access-key-secret: ${{ secrets.ALIYUN_OSS_KEY_SECRET }}
       - run: |
-          ossutil cp oss://dongtai/agent/java/ ./ --include "*.jar" -r
+          ossutil cp oss://dongtai/agent/java/${{ steps.release.outputs.version }}/ ./ --include "*.jar" -r
           ossutil cp oss://dongtai/agent/python/ ./  --include "*.tar.gz" -r
           ossutil cp oss://dongtai/agent/php/ ./  --include "*.tar.gz" -r
           ossutil cp oss://huoqi-public/iast/release-version/DongTai-agent-python/${{ steps.release.outputs.VERSION }}/version.txt DongTai-agent-python.version.txt || true

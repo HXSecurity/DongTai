@@ -122,7 +122,7 @@ jobs:
           
       - name: Download Agent
         run: |
-          ossutil cp oss://dongtai/agent_test/java/ ./ --include "*.jar" -r
+          ossutil cp oss://dongtai/agent_test/java/latest/ ./ --include "*.jar" -r
           ossutil cp oss://dongtai/agent_test/python/ ./  --include "*.tar.gz" -r
 
       - name: python Agent Setup
