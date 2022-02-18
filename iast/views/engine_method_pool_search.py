@@ -220,7 +220,6 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         q = (q &
              (Q(update_time__gte=start_time) & Q(update_time__lte=end_time)))
         q = (q & (~Q(pk__in=ids))) if ids is not None and ids != [] else q
-        print(q)
         queryset = MethodPool.objects.filter(q).order_by(
             '-update_time')[:page_size]
         try:
@@ -238,7 +237,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     for i in agents]).values('id', 'name', 'user_id')
         vulnerablity = IastVulnerabilityModel.objects.filter(
             method_pool_id__in=[i['id'] for i in method_pools]).all().values(
-                'id', 'hook_type_id', 'strategy_id','method_pool_id', 'level_id').distinct()
+                'id', 'hook_type_id','hook_type__name', 'strategy__vul_name','strategy_id','method_pool_id', 'level_id').distinct()
         users = User.objects.filter(pk__in=[_['user_id']
                                             for _ in agents]).values(
                                                 'id', 'username')
@@ -266,12 +265,8 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     filter(lambda _: _['method_pool_id'] == method_pool['id'],
                            vulnerablities)):
                 _ = {}
-                hook_type = HookType.objects.filter(pk=vulnerablity['hook_type_id']).first()
-                hook_type_name = hook_type.name if hook_type else None
-                strategy = IastStrategyModel.objects.filter(pk=vulnerablity['strategy_id']).first()
-                strategy_name = strategy.vul_name if strategy else None
                 type_ = list(
-                    filter(lambda x: x is not None, [strategy_name, hook_type_name]))
+                    filter(lambda x: x is not None, [vulnerablity['strategy__vul_name'], vulnerablity['hook_type__name']]))
                 _['vulnerablity_type'] = type_[0] if type_ else ''
                 _['vulnerablity_id'] = vulnerablity['id']
                 _['vulnerablity_hook_type_id'] = vulnerablity['hook_type_id']
