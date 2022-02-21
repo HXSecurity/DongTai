@@ -3,7 +3,7 @@ from os import walk, chdir, getcwd
 from os.path import join
 from importlib import import_module
 from inspect import getmembers
-
+from functools import wraps
 PLUGIN_DICT = {}
 
 
@@ -24,7 +24,9 @@ class DongTaiPlugin:
         target_class = getattr(self.target_class_name, module)
         origin_func = getattr(target_class, self.target_func_name)
         setattr(target_class, f'_origin_{self.target_func_name}', origin_func)
+        self.target_class = target_class
 
+        @warps(origin_func)
         def patched_function(*args, **kwargs):
             DongTaiPlugin.before_patch_function(args, kwargs)
             res = getattr(self, f'_origin_{self.target_func_name}')(*args,
