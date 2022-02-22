@@ -2,7 +2,7 @@ from AgentServer.settings import BASE_DIR
 from os import walk, chdir, getcwd
 from os.path import join
 from importlib import import_module
-from inspect import getmembers
+from inspect import getmembers,isclass
 from functools import wraps
 PLUGIN_DICT = {}
 
@@ -21,21 +21,20 @@ class DongTaiPlugin:
 
     def _monkey_patch(self):
         module = import_module(self.target_module_name)
-        target_class = getattr(self.target_class_name, module)
+        target_class = getattr(module, self.target_class_name)
         origin_func = getattr(target_class, self.target_func_name)
         setattr(target_class, f'_origin_{self.target_func_name}', origin_func)
         self.target_class = target_class
 
-        @warps(origin_func)
+        @wraps(origin_func)
         def patched_function(*args, **kwargs):
-            DongTaiPlugin.before_patch_function(args, kwargs)
-            res = getattr(self, f'_origin_{self.target_func_name}')(*args,
-                                                                    **kwargs)
-            final_res = DongTaiPlugin.after_patch_function(args, kwargs, res)
+            self.before_patch_function(args, kwargs)
+            res = origin_func(*args, **kwargs)
+            final_res = self.after_patch_function(args, kwargs, res)
             return final_res
 
-        setattr(SaasMethodPoolHandler, target_func_name,
-                DongTaiPlugin.patched_function)
+        setattr(target_class, self.target_func_name,
+                patched_function)
 
     def monkey_patch(self, appname):
         if self.appname == appname:
@@ -43,20 +42,9 @@ class DongTaiPlugin:
 
 
 def monkey_patch(appname):
-    '''
-    Register your monkeypatch here.
-    Here is a sample.
-    ============================================================
-    if appname == 'iast':
-        from iast.views.engine_method_pool_search import MethodPoolSearchProxy
-        from dongtai.endpoint import R
-        def cuspost(self, request):
-            return R.success(msg='patched')
-        MethodPoolSearchProxy.post = cuspost
-    '''
     plugin_dict = get_plugin_dict()
     for plugin in plugin_dict.get(appname, []):
-        plugin.monkey_patch(appname)
+        plugin().monkey_patch(appname)
 
 
 def get_plugin_dict():
@@ -67,19 +55,19 @@ def get_plugin_dict():
     for root, directories, files in walk(top=getcwd(), topdown=False):
         for file_ in files:
             if file_.startswith('plug_') and file_.endswith('.py'):
-                mod = import_module(
-                    root.replace(BASE_DIR, '').replace('/',
-                                                       '.').replace('.py', ''))
+                packname = '.'.join([root.replace(BASE_DIR+'/', '').replace('/',
+                                                       '.'),file_.replace('.py','')])
+                mod = import_module(packname)
                 plugin_classes = filter(lambda x: _plug_class_filter(x),
-                                        inspect.getmembers(mod))
+                                        getmembers(mod))
                 for name, plug_class in plugin_classes:
                     if PLUGIN_DICT.get(plug_class.appname):
-                        PLUGIN_DICT[plug_class.appname] = [plug_class]
-                    else:
                         PLUGIN_DICT[plug_class.appname] += [plug_class]
+                    else:
+                        PLUGIN_DICT[plug_class.appname] = [plug_class]
     chdir(previous_path)
-
+    return PLUGIN_DICT
 
 def _plug_class_filter(tup):
-    return tup[0].startswith('Plug') and inspect.isclass(
+    return tup[0].startswith('Plug') and isclass(
         tup[1]) and issubclass(tup[1], DongTaiPlugin)
