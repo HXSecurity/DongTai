@@ -1,6 +1,6 @@
 containers:
   dongtai-mysql: 
-    image: dongtai/dongtai-mysql:latest
+    image: dongtai/dongtai-mysql-unittest:latest
     image_pull_policy: Always
   dongtai-redis:
     image: dongtai/dongtai-redis:latest
