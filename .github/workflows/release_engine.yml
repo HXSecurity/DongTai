@@ -51,6 +51,7 @@ jobs:
           ID=`echo ${TAG_NAME##v}`
           echo "::set-output name=VERSION::$ID"
       - id: version
+        run: |
           MAIN_STREAM_VERSION=`echo ${{ steps.release.outputs.version }} | awk '{split($0,a,".");printf "%d.%d.x",a[1],a[2];}'`
           echo "::set-output name=main_stream_version::$MAIN_STREAM_VERSION"
 
