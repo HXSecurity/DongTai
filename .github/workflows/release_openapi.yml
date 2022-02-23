@@ -101,7 +101,7 @@ jobs:
           DONGTAI_JAVA_AGENT_HASH=`cat DongTai-agent-java.version.txt | awk '{split($0,a,",");print a[3]}' | sed -n "2p"`
           DONGTAI_JAVA_AGENT_CORE_NAME=`cat DongTai-agent-java.version.txt | awk '{split($0,a,",");print a[2]}' | sed -n "3p"`
           DONGTAI_JAVA_AGENT_CORE_HASH=`cat DongTai-agent-java.version.txt | awk '{split($0,a,",");print a[3]}' | sed -n "3p"`
-          DONGTAI_JAVA_AGENT_EXTENAL='{\"$DONGTAI_JAVA_AGENT_CORE_NAME\":\"$DONGTAI_JAVA_AGENT_CORE_HASH\"}'
+          DONGTAI_JAVA_AGENT_EXTENAL="{\"$DONGTAI_JAVA_AGENT_CORE_NAME\":\"$DONGTAI_JAVA_AGENT_CORE_HASH\"}"
           DONGTAI_PYTHON_AGENT_REPONAME=`cat DongTai-agent-python.version.txt | awk '{split($0,a,",");print a[1]}' | sed -n "1p"`
           DONGTAI_PYTHON_AGENT_VERSION=`cat DongTai-agent-python.version.txt | awk '{split($0,a,",");print a[3]}' | sed -n "1p"`
           DONGTAI_PYTHON_AGENT_HASH=`cat DongTai-agent-python.version.txt | awk '{split($0,a,",");print a[3]}' | sed -n "2p"`
