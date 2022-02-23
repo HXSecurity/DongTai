@@ -23,6 +23,8 @@ class RequestLogMiddleware:
         # Only logging "*/api/*" patterns
         if "/api/" in str(request.get_full_path()):
             apiurl = str(request.get_full_path())
+        else:
+            apiurl = ''
         response = self.get_response(request)
         timenow = time.time() - start_time
         api_info = REQUEST_DICT.get(

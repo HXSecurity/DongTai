@@ -14,6 +14,7 @@ from dongtai.models.sca_maven_db import ScaMavenDb
 
 class ScaSerializer(serializers.ModelSerializer):
     project_name = serializers.SerializerMethodField()
+    package_name = serializers.SerializerMethodField()
     project_id = serializers.SerializerMethodField()
     project_version = serializers.SerializerMethodField()
     level = serializers.SerializerMethodField()
@@ -85,4 +86,7 @@ class ScaSerializer(serializers.ModelSerializer):
             return self.context['license_dict'].get(obj.signature_value,'')
         except Exception as e:
             return ''
-
+    def get_package_name(self,obj):
+        if obj.package_name.startswith('maven:') and obj.package_name.endswith(':'):
+            return obj.package_name.replace('maven:','',1)[:-1]
+        return obj.package_name
