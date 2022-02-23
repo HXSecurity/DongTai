@@ -95,6 +95,16 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+        
+      - id: version
+        run: | 
+          MAIN_STREAM_VERSION=`echo ${{ github.run_number }}.0.0 | awk '{split($0,a,".");printf "%d.%d.x",a[1],a[2];}'`
+          echo "::set-output name=main_stream_version::$MAIN_STREAM_VERSION"
+          
+      - name: Generate version file
+        run: |
+          echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('${{ github.run_number }}.0.0', '${{ github.event.repository.name }}', '${GITHUB_SHA}');" >> ./docker/version.sql
+          echo "REPLACE INTO project_version_control (version, component_name) VALUES('${{ steps.version.outputs.main_stream_version }}', 'DongTai');" >> ./docker/version.sql
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
