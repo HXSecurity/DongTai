@@ -19,5 +19,4 @@ RUN pip3 install -r /opt/dongtai/webapi/requirements.txt
 COPY . /opt/dongtai/webapi
 WORKDIR /opt/dongtai/webapi
 
-
-CMD ["/usr/local/bin/uwsgi","--ini", "/opt/dongtai/webapi/conf/uwsgi.ini"]
+ENTRYPOINT ["/bin/bash","/opt/dongtai/webapi/docker/entrypoint.sh"]
