@@ -195,7 +195,7 @@ class VulSummaryType(UserEndPoint):
         if url and url != '':
             queryset = queryset.filter(url__icontains=url)
 
-        q = ~Q(hook_type_id=0)
+        q = Q()
         queryset = queryset.filter(q)
 
         # 汇总 level

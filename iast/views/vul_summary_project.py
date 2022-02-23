@@ -193,7 +193,7 @@ class VulSummaryProject(UserEndPoint):
         if url and url != '':
             queryset = queryset.filter(url__icontains=url)
 
-        q = ~Q(hook_type_id=0)
+        q = Q()
         queryset = queryset.filter(q)
 
         agent_count = queryset.values('agent_id').annotate(count=Count('agent_id'))
