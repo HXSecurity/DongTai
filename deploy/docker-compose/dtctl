@@ -99,7 +99,8 @@ shell_dir=$(dirname "$shell_path")
 function first_gt_second() {
   first=${1//./}
   second=${2//./}
-  if (($(echo "$first > $second" | bc -l))); then
+  aa=$(( first - second ))
+  if [ $aa -gt 0 ]; then
     echo true
   else
     echo false
@@ -363,8 +364,6 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
-    depends_on:
-      - dongtai-mysql
 
   dongtai-web:
     image: "$registry/dongtai-web:$CHANGE_THIS_VERSION"
@@ -389,8 +388,6 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
-    depends_on:
-      - dongtai-mysql
 
   dongtai-engine:
     image: "$registry/dongtai-engine:$CHANGE_THIS_VERSION"
@@ -401,8 +398,7 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
-    depends_on:
-      - dongtai-mysql
+
 
   dongtai-engine-task:
     image: "$registry/dongtai-engine:$CHANGE_THIS_VERSION"
@@ -412,7 +408,6 @@ services:
       - "$PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini"
     depends_on:
       - dongtai-engine
-      - dongtai-mysql
     logging:
       driver: "json-file"
       options:
@@ -445,7 +440,7 @@ if [ ! 0 == $# ]; then # If options provided then
   shift # Get subcommand and shift to next option
   case "$subcommand" in
   "debug")
-    result=$(get_project_name)
+    result=$(first_gt_second 1.1.0 1.2.0)
     echo ""
     echo "result:$result"
     ;;
