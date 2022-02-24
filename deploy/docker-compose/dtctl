@@ -194,6 +194,7 @@ declare -a EXCLUDED_TABLES=(
   "dongtai_webapi.sca2_vul_package_range"
   "dongtai_webapi.sca2_vul_package_version"
   "dongtai_webapi.mysql_version_control"
+  "dongtai_webapi.project_version_control"
 )
 
 IGNORED_TABLES_STRING=""
