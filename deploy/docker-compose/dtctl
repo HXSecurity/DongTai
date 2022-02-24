@@ -237,7 +237,7 @@ function backup_mysql() {
   fi
   backup_filename=$backup_dir/dongtai_iast-$now.sql
   mkdir -p $backup_dir
-  Notice "Start to backup exist data,his will take a few minutes, don’t interrupt."
+  Notice "Start to backup exist data,this will take a few minutes, don’t interrupt."
   docker exec -i $(get_mysql_container_id) /bin/bash -c "mysqldump -uroot -pdongtai-iast --single-transaction -R -E --default-character-set=utf8mb4 --databases 'dongtai_webapi' " >$backup_filename || exit 1
   Info "Finished backup exist data..."
 }
