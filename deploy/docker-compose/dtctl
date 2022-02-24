@@ -194,6 +194,7 @@ declare -a EXCLUDED_TABLES=(
   "dongtai_webapi.sca2_vul_package_range"
   "dongtai_webapi.sca2_vul_package_version"
   "dongtai_webapi.mysql_version_control"
+  "dongtai_webapi.project_version_control"
 )
 
 IGNORED_TABLES_STRING=""
@@ -362,6 +363,8 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
+    depends_on:
+      - dongtai-mysql
 
   dongtai-web:
     image: "$registry/dongtai-web:$CHANGE_THIS_VERSION"
@@ -386,6 +389,8 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
+    depends_on:
+      - dongtai-mysql
 
   dongtai-engine:
     image: "$registry/dongtai-engine:$CHANGE_THIS_VERSION"
@@ -396,7 +401,8 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
-
+    depends_on:
+      - dongtai-mysql
 
   dongtai-engine-task:
     image: "$registry/dongtai-engine:$CHANGE_THIS_VERSION"
@@ -406,6 +412,7 @@ services:
       - "$PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini"
     depends_on:
       - dongtai-engine
+      - dongtai-mysql
     logging:
       driver: "json-file"
       options:
