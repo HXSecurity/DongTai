@@ -103,7 +103,7 @@ jobs:
           DONGTAI_PYTHON_AGENT_VERSION=`cat DongTai-agent-python.version.txt | awk '{split($0,a,",");print a[3]}' | sed -n "1p"`
           DONGTAI_PYTHON_AGENT_HASH=`cat DongTai-agent-python.version.txt | awk '{split($0,a,",");print a[3]}' | sed -n "2p"`
           echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('${{ steps.release.outputs.version }}', '${{ github.event.repository.name }}', '${GITHUB_SHA}');" >> ./docker/version.sql
-          echo "REPLACE INTO project_version_control (version, component_name, component_version_hash,additional) VALUES('$DONGTAI_JAVA_AGENT_VERSION', '$DONGTAI_JAVA_AGENT_REPONAME', '$DONGTAI_JAVA_AGENT_HASH');" >> ./docker/version.sql
+          echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('$DONGTAI_JAVA_AGENT_VERSION', '$DONGTAI_JAVA_AGENT_REPONAME', '$DONGTAI_JAVA_AGENT_HASH');" >> ./docker/version.sql
           echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('$DONGTAI_PYTHON_AGENT_VERSION', '$DONGTAI_PYTHON_AGENT_REPONAME', '$DONGTAI_PYTHON_AGENT_HASH');" >> ./docker/version.sql
 
       - name: Login to DockerHub
