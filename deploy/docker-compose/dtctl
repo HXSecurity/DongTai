@@ -155,7 +155,7 @@ function get_web_service_port() {
 function get_mysql_container_id() {
   mysql_container_id=""
   PROJECT_NAME=$(get_project_name)
-  mysql_container_id=$(docker ps | grep "$PROJECT_NAME" | grep 'mysql' | awk '{print $1}')
+  mysql_container_id=$(docker ps --filter="name=$(docker-compose -p $PROJECT_NAME  ps | grep mysql | awk '{print $1}')" | grep -v "CONTAINER" | awk '{print $1}')
   echo "$mysql_container_id"
 
 }
