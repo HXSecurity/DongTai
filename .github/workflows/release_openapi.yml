@@ -1,4 +1,4 @@
-jj# This is a basic workflow to help you get started with Actions
+# This is a basic workflow to help you get started with Actions
 
 name: Release DongTai OpenAPI
 
@@ -107,3 +107,64 @@ jobs:
           echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('$DONGTAI_PYTHON_AGENT_VERSION', '$DONGTAI_PYTHON_AGENT_REPONAME', '$DONGTAI_PYTHON_AGENT_HASH');" >> ./docker/version.sql
 
       - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DONGTAI_DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DONGTAI_DOCKERHUB_TOKEN }}
+
+      - name: Login to AliyunRegistry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.ALIYUN_REGISTRY }}
+          username: ${{ secrets.ALIYUN_DOCKERHUB_USER }}
+          password: ${{ secrets.ALIYUN_DOCKERHUB_PASSWORD }}
+
+
+      - name: Build to local
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          load: true
+          tags: |
+            dongtai/dongtai-openapi:${{ steps.release.outputs.version }}
+            dongtai/dongtai-openapi:latest
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:${{ steps.release.outputs.version }}
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:latest
+      - name: Save image to tar file
+        run: |
+          docker save dongtai/dongtai-openapi:${{ steps.release.outputs.version }} | gzip > /tmp/dongtai-openapi-${{ steps.release.outputs.version }}.tar.gz
+      - name: Setup Ossutil
+        uses: manyuanrong/setup-ossutil@v2.0
+        with:
+          endpoint: ${{ secrets.ALIYUN_OSS_ENDPOINT }}
+          access-key-id: ${{ secrets.ALIYUN_OSS_KEY_ID }}
+          access-key-secret: ${{ secrets.ALIYUN_OSS_KEY_SECRET }}
+
+      - name: Upload images to oss
+        run: |
+          ossutil cp /tmp/dongtai-openapi-${{ steps.release.outputs.version }}.tar.gz oss://huoqi-public/iast/server-package/${{ steps.release.outputs.version }}/
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: |
+            dongtai/dongtai-openapi:${{ steps.release.outputs.version }}
+            dongtai/dongtai-openapi:latest
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:${{ steps.release.outputs.version }}
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-openapi:latest
+      - name: Deploy to staging
+        uses: wahyd4/kubectl-helm-action@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+          args: |
+            find deploy/deploy-eks-iast-saas-openapi-prod.yml -type f -exec sed -i 's/VERSION/${{ steps.release.outputs.version }}/g' {} \;
+            ls deploy/deploy-eks-iast-saas-openapi-prod.yml | xargs -I {} kubectl apply -f {}
+      - name: finish build
+        uses: joelwmale/webhook-action@master
+        with:
+          url: ${{ secrets.DONGTAI_WEBHOOK_URL }}
+          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "状态：构建完成\n项目：${{github.repository}}\n分支：${{github.ref}}\n流程：${{github.workflow}}\n构建编号：${{github.run_number}}\n触发事件：${{github.event_name}}\n提交人：${{github.actor}}\nSHA-1：${{github.sha}}\n","tag": "lark_md"}}]}}'
+        
+        
