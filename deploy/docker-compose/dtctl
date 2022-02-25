@@ -55,6 +55,8 @@ usage() {
   Usage "\t$_filename dbbackup  -d FILEPATH                       Backup mysql database"
   Usage "\t$_filename file                                        Export docker-compose.yml "
   Usage "\t$_filename logs webapi|openapi|web|mysql|web|engine    Extract tail logs"
+  Usage "\t$_filename start [PROJECT]                             Start all container,default project: dongtai"
+
 }
 
 OUT="$(uname -s)"
@@ -132,7 +134,7 @@ get_project_name() {
 }
 function current_image_version() {
   PROJECT_NAME=$(get_project_name)
-  ver=$(docker ps | grep $PROJECT_NAME | grep "dongtai-webapi:" | awk '{split($2,a,":");print a[2]}')
+  ver=$(docker ps  --filter "label=com.docker.compose.project=$PROJECT_NAME" | grep "dongtai-webapi:" | awk '{split($2,a,":");print a[2]}')
   echo "$ver"
 }
 
@@ -143,7 +145,7 @@ function get_latest_release_version() {
 
 function get_web_service_port() {
   PROJECT_NAME=$(get_project_name)
-  WEB_CONTAINER_ID=$(docker ps | grep $PROJECT_NAME | grep 'dongtai-web:' | awk '{print $1}')
+  WEB_CONTAINER_ID=$(docker ps  --filter "label=com.docker.compose.project=$PROJECT_NAME" | grep 'dongtai-web:' | awk '{print $1}')
   WEB_SERVICE_PORT=$(docker inspect --format='{{range $p, $conf := .NetworkSettings.Ports}} {{(index $conf 0).HostPort}} {{end}}' $WEB_CONTAINER_ID)
   WEB_SERVICE_PORT=$(trim $WEB_SERVICE_PORT)
 
@@ -155,19 +157,19 @@ function get_web_service_port() {
 function get_mysql_container_id() {
   mysql_container_id=""
   PROJECT_NAME=$(get_project_name)
-  mysql_container_id=$(docker ps --filter="name=$(docker-compose -p $PROJECT_NAME  ps | grep mysql | awk '{print $1}')" | grep -v "CONTAINER" | awk '{print $1}')
+  mysql_container_id=$(docker ps -a  --filter "label=com.docker.compose.project=$PROJECT_NAME" | grep "mysql" | awk '{print $1}')
   echo "$mysql_container_id"
 
 }
 
-# check if image registry is in China.
+# check if image registry is in China
 function get_image_registry() {
   if [ "$1" == 0 ]; then
     registry_url="dongtai"
   elif [ "$1" == 1 ]; then
     registry_url="registry.cn-beijing.aliyuncs.com/huoxian_pub"
   else
-    registry_url=$(docker ps | grep "dongtai-web:" | awk 'i=index($2,"dongtai-web:") {print substr($2,0,i-2)}')
+    registry_url=$(docker ps  --filter "label=com.docker.compose.project=$PROJECT_NAME" | grep "dongtai-web:" | awk 'i=index($2,"dongtai-web:") {print substr($2,0,i-2)}')
   fi
   echo "$registry_url"
 }
@@ -455,6 +457,27 @@ if [ ! 0 == $# ]; then # If options provided then
     cur_ver=$(current_image_version)
     echo ""
     Notice "current image version: $cur_ver"
+    ;;
+
+  "start")
+    shift $((OPTIND - 1))
+    op=$1
+    _project_name="dongtai"
+    if [ ! -z $op ]; then
+      _project_name=$op
+    fi
+    containers=$(docker ps -aq  --filter "label=com.docker.compose.project=$_project_name")
+    Info $_project_name
+    if [[ ! -n $containers ]]; then
+      Notice "No containers found in project:$_project_name".
+      exit
+    else
+      docker start $containers
+      another_containers=$(docker ps -aq  --filter "label=com.docker.compose.project=dongtai-iast")
+       if [[ -n $another_containers ]]; then
+        docker start $another_containers
+      fi
+    fi
     ;;
   "dbhash")
     exit_not_running
@@ -809,7 +832,8 @@ if [ ! 0 == $# ]; then # If options provided then
       Info "CURRENT_DATABASE_HASH:$CURRENT_DATABASE_HASH"
 
       if [ ! $CURRENT_DATABASE_HASH == $TO_DB_HASH ]; then
-        Error "Your current database hash value  not equals to the verison $TO_DB_HASH, please check."
+        Error "Your current database hash value not equals to the target:$TO_DB_HASH."
+        Error "Did you change the database schema manually?"
         exit
       fi
 
