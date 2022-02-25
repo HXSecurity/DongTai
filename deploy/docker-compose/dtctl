@@ -99,7 +99,8 @@ shell_dir=$(dirname "$shell_path")
 function first_gt_second() {
   first=${1//./}
   second=${2//./}
-  if (($(echo "$first > $second" | bc -l))); then
+  aa=$(( first - second ))
+  if [ $aa -gt 0 ]; then
     echo true
   else
     echo false
@@ -194,6 +195,7 @@ declare -a EXCLUDED_TABLES=(
   "dongtai_webapi.sca2_vul_package_range"
   "dongtai_webapi.sca2_vul_package_version"
   "dongtai_webapi.mysql_version_control"
+  "dongtai_webapi.project_version_control"
 )
 
 IGNORED_TABLES_STRING=""
@@ -235,7 +237,7 @@ function backup_mysql() {
   fi
   backup_filename=$backup_dir/dongtai_iast-$now.sql
   mkdir -p $backup_dir
-  Notice "Start to backup exist data,his will take a few minutes, don’t interrupt."
+  Notice "Start to backup exist data,this will take a few minutes, don’t interrupt."
   docker exec -i $(get_mysql_container_id) /bin/bash -c "mysqldump -uroot -pdongtai-iast --single-transaction -R -E --default-character-set=utf8mb4 --databases 'dongtai_webapi' " >$backup_filename || exit 1
   Info "Finished backup exist data..."
 }
@@ -362,6 +364,8 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
+    depends_on:
+      - dongtai-mysql
 
   dongtai-web:
     image: "$registry/dongtai-web:$CHANGE_THIS_VERSION"
@@ -386,6 +390,8 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
+    depends_on:
+      - dongtai-mysql
 
   dongtai-engine:
     image: "$registry/dongtai-engine:$CHANGE_THIS_VERSION"
@@ -396,7 +402,8 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
-
+    depends_on:
+      - dongtai-mysql
 
   dongtai-engine-task:
     image: "$registry/dongtai-engine:$CHANGE_THIS_VERSION"
@@ -406,6 +413,7 @@ services:
       - "$PWD/config-tutorial.ini:/opt/dongtai/engine/conf/config.ini"
     depends_on:
       - dongtai-engine
+      - dongtai-mysql
     logging:
       driver: "json-file"
       options:
@@ -438,7 +446,7 @@ if [ ! 0 == $# ]; then # If options provided then
   shift # Get subcommand and shift to next option
   case "$subcommand" in
   "debug")
-    result=$(get_project_name)
+    result=$(first_gt_second 1.1.0 1.2.0)
     echo ""
     echo "result:$result"
     ;;
