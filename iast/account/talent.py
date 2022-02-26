@@ -9,7 +9,7 @@ import time
 from django.contrib.auth.models import Group
 from django.db import transaction
 from django.http import JsonResponse
-from dongtai.endpoint import SystemAdminEndPoint, R
+from dongtai.endpoint import SystemAdminEndPoint, R, TalentAdminEndPoint
 from dongtai.models import User
 from dongtai.models.department import Department
 from dongtai.models.talent import Talent
@@ -20,7 +20,7 @@ from django.utils.translation import gettext_lazy as _
 logger = logging.getLogger('dongtai-webapi')
 
 
-class TalentEndPoint(SystemAdminEndPoint):
+class TalentEndPoint(TalentAdminEndPoint):
     name = 'api-v1-talent'
     description = _('Tenant management')
 
