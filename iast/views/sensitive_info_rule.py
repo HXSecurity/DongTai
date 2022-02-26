@@ -148,7 +148,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
         if name:
             strategys = IastStrategyModel.objects.filter(
                 vul_name__icontains=name).all()
-            q = Q(strategy=strategys) & q
+            q = Q(strategy__in=strategys) & q
         queryset = IastSensitiveInfoRule.objects.filter(q).order_by(
             '-latest_time')
         page_summary, page_data = self.get_paginator(queryset, page, page_size)

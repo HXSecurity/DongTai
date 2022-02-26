@@ -4,7 +4,7 @@ from dongtai.models.project_version import IastProjectVersion
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from dongtai.models.project import IastProject
-
+from django.db import transaction
 
 class VersionModifySerializer(serializers.Serializer):
     version_id = serializers.CharField(
@@ -17,7 +17,7 @@ class VersionModifySerializer(serializers.Serializer):
     current_version = serializers.IntegerField(help_text=_(
         "Whether it is the current version, 1 means yes, 0 means no."))
 
-
+@transaction.atomic
 def version_modify(user, auth_users, versionData=None):
     version_id = versionData.get("version_id", 0)
     project_id = versionData.get("project_id", 0)
@@ -56,14 +56,17 @@ def version_modify(user, auth_users, versionData=None):
             }
         else:
             version.update_time = int(time.time())
+            version.version_name = version_name
+            version.description = description
+            version.save()
     else:
-        version = IastProjectVersion.objects.create(
+        version,created = IastProjectVersion.objects.get_or_create(
             project_id=project.id,
             user=project.user,
-            status=1,
-            current_version=current_version)
-    version.version_name = version_name
-    version.description = description
+            current_version=current_version,
+            version_name=version_name,
+            description = description)
+    version.status=1
     version.save()
     return {
         "status": "201",
