@@ -1679,7 +1679,7 @@ msgstr "page和pageSize只能为数字"
 #: iast/views/project_report_sync_add.py:65
 #: iast/views/project_version_add.py:19 iast/views/project_version_add.py:43
 msgid "Created success"
-msgstr "创建成功"
+msgstr "操作成功"
 
 #: iast/views/openapi.py:13 iast/views/openapi.py:63 iast/views/profile.py:34
 #: iast/views/profile.py:92
