@@ -285,7 +285,7 @@ class ExportPort():
 
         hdr_cells = table.rows[0].cells
         project_vul_count = sum([i['type_count'] for i in count_result['type_summary']])
-
+        project_agent_count = len(self.get_agents_with_project_id(project.id))
         new_cells = table.add_row().cells
         new_cells[0].text = _('Application name')
         new_cells[1].text = project.name
@@ -300,7 +300,7 @@ class ExportPort():
         new_cells[1].text = str(project_vul_count)
         new_cells = table.add_row().cells
         new_cells[0].text = _('Number of Agent')
-        new_cells[1].text = str(project.agent_count)
+        new_cells[1].text = str(project_agent_count)
         new_cells = table.add_row().cells
         new_cells[0].text = _('Latest time')
         new_cells[1].text = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
