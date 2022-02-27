@@ -37,12 +37,14 @@ class ApiTestTriggerEndpoint(UserEndPoint):
         if not project:
             return R.failure(msg='no project found')
         if not project.base_url:
+            return R.failure(msg='请先在项目设置项目地址')
             return R.failure(msg=_(
                 'Please enter the parameters required for the test first'))
         agents = IastAgent.objects.filter(user__in=auth_users,
                                           bind_project_id=pk).values("id")
         q = Q(agent__in=agents)
         if not IastApiRoute.objects.filter(q).exists():
+            return R.failure(msg='暂无收集到的api')
             return R.failure(msg='No API collected')
         api_routes = IastApiRoute.objects.filter(q).all()
         datas = [serialize(api_route) for api_route in api_routes]
