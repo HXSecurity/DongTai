@@ -183,6 +183,7 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
         users = self.get_auth_users(request.user)
         obj = IastStrategyUser.objects.filter(
             pk=pk, user__in=users).update(**ser.validated_data)
+        return R.success(msg='更新成功')
         return R.success(msg='update success')
 
     @extend_schema_with_envcheck(
@@ -202,6 +203,7 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
             IastStrategyUser.objects.filter(
                 pk=pk,
                 user__in=self.get_auth_users(request.user)).update(status=-1)
+            return R.success(msg='删除成功')
             return R.success(msg='delete success')
         except Exception as e:
             logger.error(e)
@@ -231,6 +233,7 @@ class ScanStrategyBatchView(BatchStatusUpdateSerializerView):
         user = request.user
         data['ids'] = filter_using(data['ids'], [user])
         self.update_model(request, data)
+        return R.success(msg='操作成功')
         return R.success(msg='update success')
 
 class ScanStrategyAllView(AllStatusUpdateSerializerView):
@@ -246,6 +249,7 @@ class ScanStrategyAllView(AllStatusUpdateSerializerView):
     def post(self, request):
         data = self.get_params(request.data)
         self.update_model(request, data)
+        return R.success(msg='update success')
         return R.success(msg='update success')
 
     def update_model(self, request, validated_data):

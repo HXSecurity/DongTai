@@ -195,9 +195,10 @@ class ProjectAdd(UserEndPoint):
                     'test_req_header_key', 'test_req_header_value'
                 ])
 
-                return R.success(
-                    msg=_('Updated success')) if pid else R.success(
-                        msg=_('Created success'))
+                #return R.success(
+                #    msg=_('Updated success')) if pid else R.success(
+                #        msg=_('Created success'))
+                return R.success(msg='操作成功')
         except Exception as e:
             logger.error(e)
             return R.failure(status=202, msg=_('Parameter error'))
