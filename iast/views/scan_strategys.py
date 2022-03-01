@@ -156,7 +156,7 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
             ser.validated_data['content'] = ','.join([str(i) for i in content])
             obj = IastStrategyUser.objects.create(**ser.validated_data,
                                                   user=request.user)
-            return R.success(msg='create success',
+            return R.success(msg=_('create success'),
                              data=ScanStrategySerializer(obj).data)
         except Exception as e:
             logger.error(e)
@@ -183,7 +183,7 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
         users = self.get_auth_users(request.user)
         obj = IastStrategyUser.objects.filter(
             pk=pk, user__in=users).update(**ser.validated_data)
-        return R.success(msg='update success')
+        return R.success(msg=_('update success'))
 
     @extend_schema_with_envcheck(
         tags=[_('ScanStrategy')],
@@ -202,7 +202,7 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
             IastStrategyUser.objects.filter(
                 pk=pk,
                 user__in=self.get_auth_users(request.user)).update(status=-1)
-            return R.success(msg='delete success')
+            return R.success(msg=_('delete success'))
         except Exception as e:
             logger.error(e)
             return R.failure()
@@ -231,7 +231,7 @@ class ScanStrategyBatchView(BatchStatusUpdateSerializerView):
         user = request.user
         data['ids'] = filter_using(data['ids'], [user])
         self.update_model(request, data)
-        return R.success(msg='update success')
+        return R.success(msg=_('update success'))
 
 class ScanStrategyAllView(AllStatusUpdateSerializerView):
     status_field = 'status'
@@ -246,7 +246,7 @@ class ScanStrategyAllView(AllStatusUpdateSerializerView):
     def post(self, request):
         data = self.get_params(request.data)
         self.update_model(request, data)
-        return R.success(msg='update success')
+        return R.success(msg=_('update success'))
 
     def update_model(self, request, validated_data):
         ids = self.model.objects.values_list('id', flat=True).all()

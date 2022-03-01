@@ -6,7 +6,7 @@ ENV TZ=Asia/Shanghai
 ENV debug=true
 
 RUN apt-get update -y \
-		&& apt install -y  gcc make cmake libmariadb-dev curl
+		&& apt install -y gettext gcc make cmake libmariadb-dev curl
 		
 RUN curl -L https://github.com/Endava/cats/releases/download/cats-7.0.1/cats-linux -o  /usr/local/bin/cats \
 	&& chmod +x /usr/local/bin/cats \
@@ -18,5 +18,7 @@ RUN pip3 install --upgrade pip  &&  pip3 install -r /opt/dongtai/webapi/requirem
 
 COPY . /opt/dongtai/webapi
 WORKDIR /opt/dongtai/webapi
+
+RUN python manage.py compilemessages --all 
 
 CMD ["/usr/local/bin/uwsgi","--ini", "/opt/dongtai/webapi/conf/uwsgi.ini"]
