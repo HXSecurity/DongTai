@@ -63,6 +63,14 @@ tasks:
         - "8000:8000"
     group: serve
 
+  makemessages:
+    description: makemessages about i18n 
+    run:
+      container: dongtai-webapi        
+      entrypoint: python manage.py makemessages -l zh -l en 
+      ports:
+        - "8000:8000"
+    group: tool
 
   serve-with-db:
     description: Serve the webapi application with db
