@@ -187,7 +187,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
                     pattern=pattern,
                     status=status,
                     user=request.user)
-            return R.success(msg=_('create success'),data=SensitiveInfoRuleSerializer(obj).data))
+            return R.success(msg=_('create success'),data=SensitiveInfoRuleSerializer(obj).data)
         else:
             return R.failure()
     @extend_schema_with_envcheck(
