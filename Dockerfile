@@ -19,4 +19,6 @@ RUN pip3 install -r /opt/dongtai/webapi/requirements.txt
 COPY . /opt/dongtai/webapi
 WORKDIR /opt/dongtai/webapi
 
+RUN python manage.py compilemessages --all 
+
 ENTRYPOINT ["/bin/bash","/opt/dongtai/webapi/docker/entrypoint.sh"]
