@@ -35,7 +35,7 @@ class ApiTestTriggerEndpoint(UserEndPoint):
         project = IastProject.objects.filter(
             user__in=users, pk=pk).order_by('-latest_time').first()
         if not project:
-            return R.failure(msg='no project found')
+            return R.failure(msg=_('no project found'))
         if not project.base_url:
             return R.failure(msg=_(
                 'Please enter the parameters required for the test first'))
@@ -43,7 +43,7 @@ class ApiTestTriggerEndpoint(UserEndPoint):
                                           bind_project_id=pk).values("id")
         q = Q(agent__in=agents)
         if not IastApiRoute.objects.filter(q).exists():
-            return R.failure(msg='No API collected')
+            return R.failure(msg=_('No API collected'))
         api_routes = IastApiRoute.objects.filter(q).all()
         datas = [serialize(api_route) for api_route in api_routes]
         swaggerdatas = swagger_trans(datas)
@@ -69,7 +69,7 @@ class ApiTestOpenapiSpecEndpoint(UserEndPoint):
                                           bind_project_id=pk).values("id")
         q = Q(agent__in=agents)
         if not IastApiRoute.objects.filter(q).exists():
-            return R.failure(msg='No API collected')
+            return R.failure(msg=_('No API collected'))
         api_routes = IastApiRoute.objects.filter(q).all()
         datas = [serialize(api_route) for api_route in api_routes]
         swaggerdatas = swagger_trans(datas)

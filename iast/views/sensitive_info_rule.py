@@ -148,7 +148,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
         if name:
             strategys = IastStrategyModel.objects.filter(
                 vul_name__icontains=name).all()
-            q = Q(strategy=strategys) & q
+            q = Q(strategy__in=strategys) & q
         queryset = IastSensitiveInfoRule.objects.filter(q).order_by(
             '-latest_time')
         page_summary, page_data = self.get_paginator(queryset, page, page_size)
@@ -187,7 +187,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
                     pattern=pattern,
                     status=status,
                     user=request.user)
-            return R.success(msg='create success',data=SensitiveInfoRuleSerializer(obj).data)
+            return R.success(msg=_('create success'),data=SensitiveInfoRuleSerializer(obj).data)
         else:
             return R.failure()
     @extend_schema_with_envcheck(
@@ -212,7 +212,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
         obj = IastSensitiveInfoRule.objects.filter(
             pk=pk, user__in=users).update(**ser.validated_data,
                                           latest_time=time.time())
-        return R.success(msg='update success')
+        return R.success(msg=_('update success'))
 
     @extend_schema_with_envcheck(
         tags=[_('SensitiveInfoRule')],
@@ -225,7 +225,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
         users = self.get_auth_users(request.user)
         IastSensitiveInfoRule.objects.filter(pk=pk,
                                              user__in=users).update(status=-1)
-        return R.success(msg='delete success')
+        return R.success(msg=_('delete success'))
 
     @extend_schema_with_envcheck(
         tags=[_('SensitiveInfoRule')],
@@ -335,7 +335,8 @@ class SensitiveInfoRuleBatchView(BatchStatusUpdateSerializerView):
     def post(self, request):
         data = self.get_params(request.data)
         self.update_model(request, data)
-        return R.success(msg='update success')
+        return R.success(msg='操作成功')
+        return R.success(msg=_('update success'))
 
 class SensitiveInfoRuleAllView(AllStatusUpdateSerializerView):
     status_field = 'status'
@@ -350,4 +351,5 @@ class SensitiveInfoRuleAllView(AllStatusUpdateSerializerView):
     def post(self, request):
         data = self.get_params(request.data)
         self.update_model(request, data)
-        return R.success(msg='update success')
+        return R.success(msg='操作成功')
+        return R.success(msg=_('update success'))

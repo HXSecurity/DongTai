@@ -177,13 +177,11 @@ class ProjectAdd(UserEndPoint):
                     project.agent_count = IastAgent.objects.filter(
                         Q(id__in=agents) | Q(project_name=name),
                         user__in=auth_users,
-                        bind_project_id=0,
-                        project_version_id=0
-                    ).update(bind_project_id=project.id, project_version_id=project_version_id, online=1)
+                    ).update(bind_project_id=project.id, project_version_id=project_version_id)
                 else:
                     project.agent_count = IastAgent.objects.filter(
                         project_name=name, user__in=auth_users).update(
-                            bind_project_id=project.id,
+                            bind_project_id=0,
                             project_version_id=project_version_id)
                 if base_url:
                     project.base_url = replace_ending(base_url, '/', '')
@@ -197,9 +195,10 @@ class ProjectAdd(UserEndPoint):
                     'test_req_header_key', 'test_req_header_value'
                 ])
 
-                return R.success(
-                    msg=_('Updated success')) if pid else R.success(
-                        msg=_('Created success'))
+                #return R.success(
+                #    msg=_('Updated success')) if pid else R.success(
+                #        msg=_('Created success'))
+                return R.success(msg='操作成功')
         except Exception as e:
             logger.error(e)
             return R.failure(status=202, msg=_('Parameter error'))
