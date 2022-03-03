@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql
+  name: dongtai-mysql
   namespace: CHANGE_THIS_NAMESPACE
 spec:
   selector:
