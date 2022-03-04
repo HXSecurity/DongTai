@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-openapi
+  namespace: iast-test
+  annotations:
+    kubesphere.io/description: dongtai-openapi
+  labels:
+    app: dongtai-openapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dongtai-openapi
+  template:
+    metadata:
+      labels:
+        app: dongtai-openapi
+    spec:
+      containers:
+        - name: dongtai-openapi-container
+          image: registry.cn-beijing.aliyuncs.com/secnium/iast-saas-openapi-test:VERSION
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/dongtai/openapi/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+          env:
+            - name: "active.profile"
+              value: "TEST"
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-test-config.ini
+      imagePullSecrets:
+        - name: aliyun-registry-secret

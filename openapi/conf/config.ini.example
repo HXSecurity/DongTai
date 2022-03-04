@@ -1,0 +1,24 @@
+[mysql]
+host = 127.0.0.1
+port = 3306
+name = dongtai_webapi
+user = root
+password = dongtai-iast
+
+[redis]
+host = redis-server
+port = redis-port
+password = password
+db = <celery broker db>
+
+[engine]
+url = engine-url
+
+[smtp]
+server = server
+user = user
+password = password
+from_addr = from_add
+ssl = ssl
+cc_addr = cc_addr
+
