@@ -9,3 +9,4 @@ urlpatterns = [
     path('package_vul/', OnePackageVulList.as_view()),
 ]
 
+urlpatterns = [path('sca/v1/', include(urlpatterns), name='ScaAPI'), ]
