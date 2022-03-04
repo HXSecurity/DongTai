@@ -12,6 +12,9 @@
   * 修复项目信息修改时提示信息不一致的问题
   * 修复了部分内容缺少i18n部分的问题
   * 修复了组件漏洞展示的问题
+## [1.3.0](https://github.com/HXSecurity/DongTai-openapi/releases/tag/v1.3.0) - 2022-01-18
+* 功能
+  * 增加SCA API，本地可通过调用SCA API查询组件是否存在漏洞
 
 
 ## [1.2.0](https://github.com/HXSecurity/DongTai-webapi/releases/tag/v1.2.0)-2021-12-18
@@ -26,6 +29,15 @@
   * 修复了修改策略导致漏洞无法检出的bug
   * 修复了/api/v1/sensitive_info_rule/分页数据获取失败的bug
   * 修复正则校验与engine不一致的bug
+## [1.2.0](https://github.com/HXSecurity/DongTai-core/releases/tag/v1.2.0)-2021-12-31
+* 功能
+   * 在ScaMaven增加license
+* 改进
+   * 将commandTextField 
+## [1.2.0](https://github.com/HXSecurity/DongTai-openapi/releases/tag/v1.2.0) - 2021-12-31
+* 功能
+  * 增加Go Agent下载
+  * 增加Gzip
 
 
 
@@ -38,6 +50,16 @@
   * 修复返回时缺失扫描策略名称的的问题
   * 修正/api/v1/vulns 局部变量'result' 赋值前引用的问题
   * 修正 /api/v1/sensitive_info_rule/ 字段 没有范围指示
+## [1.1.4](https://github.com/HXSecurity/DongTai-core/releases/tag/v1.1.4) - 2021-12-18
+* 功能
+  * 增加硬编码漏洞
+## [1.1.4](https://github.com/HXSecurity/DongTai-openapi/releases/tag/v1.1.4) - 2021-12-18
+* 功能
+  * 增加批量上传组件接口
+* 改进
+  * 拆分和添加钩子以适应插件开发
+* 功能
+  * 增加硬编码漏洞上报规则
 
 
 ## [1.1.3](https://github.com/HXSecurity/DongTai-webapi/releases/tag/v1.1.3) - 2021-12-03
@@ -55,3 +77,11 @@
   * 修复项目创建时agentid可能导致的错误
   * 修复了项目创建时非原子性错误
   * 修复删除数据时存在的权限错误
+## [1.1.3](https://github.com/HXSecurity/dongtai-core/releases/tag/v1.1.3)-2021-12-03
+
+* 功能
+  * 增加漏洞主动验证开关（包括全局与项目级）
+## [1.1.3](https://github.com/HXSecurity/DongTai-openapi/releases/tag/v1.1.3) - 2021-12-03
+
+* 功能
+  * 增加漏洞主动验证开关（包括全局与项目级）

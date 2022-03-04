@@ -26,7 +26,22 @@
    * Fixed a bug that caused vulnerabilities to be undetected by modifying the strategy
    * Fixed the bug that failed to obtain data from the /api/v1/sensitive_info_rule/ page
    * Fixed the bug that the regular check is inconsistent with the engine
+## [1.2.0](https://github.com/HXSecurity/DongTai-core/releases/tag/v1.2.0)-2021-12-31
+* Function
+   * Increase license in ScaMaven
+* Improve
+   * Change command to TextField 
+## [1.2.0](https://github.com/HXSecurity/DongTai-openapi/releases/tag/v1.2.0) - 2021-12-31
+* Function
+  * Add Go Agent download
+  * Add Gzip
 
+## [1.1.4](https://github.com/HXSecurity/DongTai-openapi/releases/tag/v1.1.4)-2021-12-18
+* Improve
+   * Split and add hooks to accommodate plugin development
+* Function
+   * Increase hard-coded vulnerabilities
+   * Increase SCA handler
 ## [1.1.4](https://github.com/HXSecurity/DongTai-webapi/releases/tag/v1.1.4)-2021-12-18
 * Improve
    * Split and add hooks to accommodate plugin development
@@ -36,8 +51,18 @@
    * Fixed The name of the scanning strategy is not brought back when returning
    * Fixed /api/v1/vulns local variable 'result' referenced before assignment
    * Fixed /api/v1/sensitive_info_rule/ fields No indication of range
+## [1.1.4](https://github.com/HXSecurity/DongTai-core/releases/tag/v1.1.4)-2021-12-18
+* Function
+   * Increase hard-coded vulnerabilities
 
+## [1.1.3](https://github.com/HXSecurity/DongTai-openapi/releases/tag/v1.1.3)-2021-12-03
 
+* Function
+   * Projects are now sorted according to the time of obtaining component and vulnerability information
+## [1.1.3](https://github.com/HXSecurity/dongtai-core/releases/tag/v1.1.3)-2021-12-03
+
+* Function
+   * Increase the vulnerability active verification switch (including global and project level)
 ## [1.1.3](https://github.com/HXSecurity/DongTai-webapi/releases/tag/v1.1.3)-2021-12-03
 
 * Function
