@@ -106,9 +106,6 @@ REST_FRAMEWORK = {
 }
 
 basedir = os.path.dirname(os.path.realpath(__file__))
-LOCALE_PATHS = (
-    os.path.join(BASE_DIR, 'i18n'),
-)
 LANGUAGE_CODE = 'zh'
 LANGUAGES = (
     ('en', 'English'),
@@ -136,16 +133,6 @@ XFF_TRUSTED_PROXY_DEPTH = 20
 
 CSRF_COOKIE_NAME = "DTCsrfToken"
 CSRF_HEADER_NAME = "HTTP_CSRF_TOKEN"
-# CSRF_COOKIE_DOMAIN = ".huoxian.cn"
-#CSRF_TRUSTED_ORIGINS = (
-#    ".huoxian.cn:8000",
-#    ".huoxian.cn:8001",
-#    ".huoxian.cn",
-#    ".huoxian.club",
-#    ".secnium.xyz",
-#    ".secnium.xyz:8000",
-#    ".secnium.xyz:8001",
-#)
 def safe_execute(default, exception, function, *args):
     try:
         return function(*args)
@@ -158,7 +145,6 @@ CSRF_TRUSTED_ORIGINS = tuple(
         lambda x: x != "",
         safe_execute("", BaseException, config.get, "security",
                      "csrf_trust_origins").split(",")))
-print(CSRF_TRUSTED_ORIGINS)
 CSRF_COOKIE_AGE = 60 * 60 * 24
 
 AGENT_UPGRADE_URL = "https://www.huoxian.cn"
@@ -214,16 +200,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'webapi.wsgi.application'
 
-#if len(sys.argv) > 1 and sys.argv[1] in ('makemigrations', 'sqlmigrate',
-#                                         'migrate') or os.getenv(
-#                                             'database', None) == 'sqlite':
-#    DATABASES = {
-#        'default': {
-#            'ENGINE': 'django.db.backends.sqlite3',
-#            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#        }
-#    }
-#else:
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -390,4 +366,24 @@ if os.getenv('environment', None) in ('TEST', 'PROD'):
                                             'demo_session_cookie_domain')
     CSRF_COOKIE_DOMAIN = SESSION_COOKIE_DOMAIN
     DOMAIN = config.get('other', 'domain')
-    
+
+
+#OPENAPI
+BUCKET_URL = 'https://oss-cn-beijing.aliyuncs.com'
+BUCKET_NAME = 'dongtai'
+BUCKET_NAME_BASE_URL = 'agent/' if os.getenv('active.profile',
+                                             None) != 'TEST' else 'agent_test/'
+# CONST
+PENDING = 1
+VERIFYING = 2
+CONFIRMED = 3
+IGNORE = 4
+SOLVED = 5
+ENGINE_URL = config.get("engine", "url")
+HEALTH_ENGINE_URL = urljoin(ENGINE_URL, "/api/engine/health")
+BASE_ENGINE_URL = config.get("engine", "url") + '/api/engine/run?method_pool_id={id}'
+SCA_ENGINE_URL = config.get("engine","url") + '/api/engine/sca?agent_id={agent_id}' \
+                            + '&package_path={package_path}&package_signature={package_signature}' \
+                            + '&package_name={package_name}&package_algorithm={package_algorithm}'
+REPLAY_ENGINE_URL = config.get("engine", "url") + '/api/engine/run?method_pool_id={id}&model=replay'
+
