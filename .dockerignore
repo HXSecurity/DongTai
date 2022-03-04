@@ -39,3 +39,7 @@ logs/*.log
 build_docker.sh
 iast-package
 config.ini
+/venv
+/*.docx
+.git
+.idea
