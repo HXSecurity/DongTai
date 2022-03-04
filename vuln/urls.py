@@ -5,7 +5,7 @@
 # software: PyCharm
 # project: lingzhi-engine
 
-from django.urls import path
+from django.urls import include, path
 
 from vuln.views.health import HealthEndPoint
 from vuln.views.proxy import ProxyEndPoint
@@ -18,3 +18,4 @@ urlpatterns = [
     path('sca', ScaEndPoint.as_view()),
     path('proxy', ProxyEndPoint.as_view()),
 ]
+urlpatterns = [path('api/engine/', include(urlpatterns), name='ScaAPI'), ]

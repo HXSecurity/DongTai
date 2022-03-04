@@ -6,7 +6,7 @@
 # project: lingzhi-agent-server
 
 # 报告接口：上传报告
-from django.urls import path
+from django.urls import include, path
 
 from apiserver.views.agent_download import AgentDownload
 from apiserver.views.agent_register import AgentRegisterEndPoint
@@ -43,3 +43,5 @@ urlpatterns = [
     path('health', HealthView.as_view()),
     path('oss/health', OSSHealthView.as_view()),
 ]
+
+urlpatterns = [path('api/v1/', include(urlpatterns), name='OpenAPI'), ]
