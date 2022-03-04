@@ -1,0 +1,139 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Release DongTai WebApi
+
+
+on:
+  release:
+    types: [ created, edited ]
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.7]
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: start-build
+        uses: joelwmale/webhook-action@master
+        with:
+          url: ${{ secrets.WEBHOOK_URL }}
+          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "状态：构建开始\n项目：${{github.repository}}\n分支：${{github.ref}}\n流程：${{github.workflow}}\n构建编号：${{github.run_number}}\n触发事件：${{github.event_name}}\n提交人：${{github.actor}}\nSHA-1：${{github.sha}}\n","tag": "lark_md"}}]}}'
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Set up Python 3.7
+        uses: actions/checkout@v1
+        with:
+          python-version: 3.7
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-prod.txt
+      - name: Lint with flake8
+        run: |
+          pip install flake8
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DONGTAI_DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DONGTAI_DOCKERHUB_TOKEN }}
+
+      - name: Login to AliyunRegistry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.ALIYUN_REGISTRY }}
+          username: ${{ secrets.ALIYUN_DOCKERHUB_USER }}
+          password: ${{ secrets.ALIYUN_DOCKERHUB_PASSWORD }}
+
+      - id: release
+        run: |
+          TAG_NAME=${{ github.event.release.tag_name }}
+          ID=`echo ${TAG_NAME##v}`
+          echo "::set-output name=version::$ID"
+          
+      - id: version
+        run: |
+          MAIN_STREAM_VERSION=`echo ${{ steps.release.outputs.version }} | awk '{split($0,a,".");printf "%d.%d.x",a[1],a[2];}'`
+          echo "::set-output name=main_stream_version::$MAIN_STREAM_VERSION"
+          
+      - name: Release DongTai-WebAPI
+        run: bash .github/workflows/scripts/release_version.sh "${{ steps.release.outputs.version }}"
+
+      - name: Generate version file
+        run: |
+          echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('${{ steps.release.outputs.version }}', '${{ github.event.repository.name }}', '${GITHUB_SHA}');" >> ./docker/version.sql
+          echo "REPLACE INTO project_version_control (version, component_name) VALUES('${{ steps.version.outputs.main_stream_version }}', 'DongTai');" >> ./docker/version.sql
+
+      - name: Build to local
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          load: true
+          tags: |
+            dongtai/dongtai-webapi:latest
+            dongtai/dongtai-webapi:${{ steps.release.outputs.version }}
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:latest
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:${{ steps.release.outputs.version }}
+
+      - name: Save image to tar file
+        run: |
+          docker save dongtai/dongtai-webapi:${{ steps.release.outputs.version }} | gzip > /tmp/dongtai-webapi-${{ steps.release.outputs.version }}.tar.gz
+
+
+      - name: Setup Ossutil
+        uses: manyuanrong/setup-ossutil@v2.0
+        with:
+          endpoint: ${{ secrets.OSS_ENDPOINT }}
+          access-key-id: ${{ secrets.OSS_KEY_ID }}
+          access-key-secret: ${{ secrets.OSS_KEY_SECRET }}
+
+      - name: Upload images to oss
+        run: |
+          ossutil cp /tmp/dongtai-webapi-${{ steps.release.outputs.version }}.tar.gz oss://huoqi-public/iast/server-package/${{ steps.release.outputs.version }}/
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: |
+            dongtai/dongtai-webapi:latest
+            dongtai/dongtai-webapi:${{ steps.release.outputs.version }}
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:latest
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi:${{ steps.release.outputs.version }}
+            
+      - name: Deploy Webapi
+        uses: wahyd4/kubectl-helm-action@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+          args: |
+            find deploy/deploy-dongtai-webapi-prod.yml -type f -exec sed -i 's/VERSION/${{ steps.release.outputs.version }}/g' {} \;
+            ls deploy/deploy-dongtai-webapi-prod.yml | xargs -I {} kubectl apply -f {}
+
+      - name: finish build
+        uses: joelwmale/webhook-action@master
+        with:
+          url: ${{ secrets.WEBHOOK_URL }}
+          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "状态：构建完成\n项目：${{github.repository}}\n分支：${{github.ref}}\n流程：${{github.workflow}}\n构建编号：${{github.run_number}}\n触发事件：${{github.event_name}}\n提交人：${{github.actor}}\nSHA-1：${{github.sha}}\n","tag": "lark_md"}}]}}'
