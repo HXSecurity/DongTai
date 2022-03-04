@@ -1,0 +1,121 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-09-14 03:32+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: apiserver/report/handler/api_route_handler.py:32
+msgid "No such agent"
+msgstr "No such agent"
+
+#: apiserver/report/handler/api_route_handler.py:69
+msgid "API navigation log record successfully"
+msgstr "API navigation log record successfully"
+
+#: apiserver/report/handler/api_route_handler.py:71
+msgid "API navigation log failed, why: {}"
+msgstr "API navigation log failed, why: {}"
+
+#: apiserver/report/handler/error_log_handler.py:38
+msgid "Error log report saving success"
+msgstr "Error log report saving success"
+
+#: apiserver/report/handler/error_log_handler.py:40
+msgid "Error log report saves failed, why: e"
+msgstr "Error log report saves failed, why: e"
+
+#: apiserver/report/handler/heartbeat_handler.py:80
+msgid "There is no probe under the project"
+msgstr "There is no probe under the project"
+
+#: apiserver/report/handler/heartbeat_handler.py:86
+msgid "Replay request does not exist"
+msgstr "Replay request does not exist"
+
+#: apiserver/report/handler/heartbeat_handler.py:106
+msgid "Reproduction request issued successfully"
+msgstr "Reproduction request issued successfully"
+
+#: apiserver/report/handler/heartbeat_handler.py:110
+msgid "Replay request query failed, reason: {}"
+msgstr "Replay request query failed, reason: {}"
+
+#: apiserver/report/handler/report_handler_interface.py:67
+msgid "[{}] Report resolution start"
+msgstr "[{}] Report resolution start"
+
+#: apiserver/report/handler/report_handler_interface.py:75
+#, python-brace-format
+msgid "[{self .__ class __.__ name__}] Report Analysis Completed"
+msgstr "[{self .__ class __.__ name__}] Report Analysis Completed"
+
+#: apiserver/report/handler/report_handler_interface.py:80
+msgid ""
+"[{self .__}] report resolution failed, Agent does not exist or no right to "
+"access, report data: {}"
+msgstr ""
+"[{self .__}] report resolution failed, Agent does not exist or no right to "
+"access, report data: {}"
+
+#: apiserver/report/handler/sca_handler.py:37
+msgid "Data is incomplete, data: {}"
+msgstr "Data is incomplete, data: {}"
+
+#: apiserver/report/handler/sca_handler.py:85
+msgid "SCA data resolution failed, reasons: {}"
+msgstr "SCA data resolution failed, reasons: {}"
+
+#: apiserver/report/report_handler_factory.py:29
+msgid "Report type {} handler does not exist"
+msgstr "Report type {} handler does not exist"
+
+#: apiserver/report/report_handler_factory.py:40
+msgid "Registration report type {} handler {}"
+msgstr "Registration report type {} handler {}"
+
+#: apiserver/views/agent_download.py:48
+#, python-brace-format
+msgid "Agent configuration file creation failed, reason: {E}"
+msgstr "Agent configuration file creation failed, reason: {E}"
+
+#: apiserver/views/agent_download.py:195
+msgid "Agent download failed, user: {}, error details: {}"
+msgstr "Agent download failed, user: {}, error details: {}"
+
+#: apiserver/views/agent_register.py:117
+msgid "The server port does not exist, has been set to the default: 0"
+msgstr "The server port does not exist, has been set to the default: 0"
+
+#: apiserver/views/agent_register.py:153
+msgid "Server record creation success"
+msgstr "Server record creation success"
+
+#: apiserver/views/engine_heartbeat.py:29
+msgid "Start processing heartbeat data"
+msgstr "Start processing heartbeat data"
+
+#: apiserver/views/engine_heartbeat.py:46
+msgid "[{}] Heartbeat data is successful"
+msgstr "[{}] Heartbeat data is successful"
+
+#: apiserver/views/engine_heartbeat.py:49
+msgid "Heartbeat data failed, error reason: {}"
+msgstr "Heartbeat data failed, error reason: {}"
+
+#: apiserver/views/engine_heartbeat.py:62
+msgid "Client IP acquisition failed, reasons: {}"
+msgstr "Client IP acquisition failed, reasons: {}"

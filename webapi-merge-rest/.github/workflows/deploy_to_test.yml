@@ -1,0 +1,173 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Deploy DongTai WebApi To AWS
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  Run-UnitTest:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping --silent"
+          --health-interval 10s
+          --health-timeout 180s
+          --health-retries 10
+      redis:
+        image: dongtai/dongtai-redis:latest
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.7]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          python-version: 3.7
+      
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-test.txt
+      - name: Lint with flake8
+        run: |
+          pip install flake8
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+      - name: Waiting For MySql Init
+        run: sleep 70
+
+      - name: Run UnitTest
+        run: |
+          cp conf/config.ini.test conf/config.ini
+          python3 manage.py test
+      
+      - name: Django Api Testing
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          mysql --host=127.0.0.1 -uroot -p'dongtai-iast' -D dongtai_webapi < /home/runner/work/DongTai-webapi/DongTai-webapi/test/init.sql
+          pip install schemathesis
+          export DOC=TRUE
+          python3 ./docker/version_update.py || true
+          python3 manage.py runserver 0.0.0.0:8000 &
+          sleep 15
+          schemathesis run --base-url "http://localhost:8000/"  -H 'Authorization: Token 67aebd78e700ad36a82a152276196b5f49fafeb0' http://localhost:8000/api/XZPcGFKoxYXScwGjQtJx8u/schema/  --hypothesis-suppress-health-check=data_too_large,filter_too_much,too_slow,return_value,large_base_example,not_a_test_method,function_scoped_fixture --hypothesis-verbosity verbose
+
+ 
+  Deploy-to-test:
+    # The type of runner that the job will run on
+    if: ${{ github.event_name == 'push' && github.repository_owner == 'HXSecurity' }}
+    needs: [Run-UnitTest]
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.7]
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: start-build
+        uses: joelwmale/webhook-action@master
+        with:
+          url: ${{ secrets.WEBHOOK_URL }}
+          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "状态：构建开始\n项目：${{github.repository}}\n分支：${{github.ref}}\n流程：${{github.workflow}}\n构建编号：${{github.run_number}}\n触发事件：${{github.event_name}}\n提交人：${{github.actor}}\nSHA-1：${{github.sha}}\n","tag": "lark_md"}}]}}'
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Set up Python 3.7
+        uses: actions/checkout@v1
+        with:
+          python-version: 3.7
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-test.txt
+
+      - name: Lint with flake8
+        run: |
+          pip install flake8
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: python Agent Setup
+        run: |
+          curl -X GET "${{ secrets.DONGTAI_TEST_URL }}${{github.run_number}}" -H '${{ secrets.DONGTAI_TEST_HEADER }}' -o dongtai-agent-python.tar.gz -k
+ 
+ 
+      - id: version
+        run: | 
+          MAIN_STREAM_VERSION=`echo ${{ github.run_number }}.0.0 | awk '{split($0,a,".");printf "%d.%d.x",a[1],a[2];}'`
+          echo "::set-output name=main_stream_version::$MAIN_STREAM_VERSION"
+      - name: Generate version file
+        run: |
+          echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('${{ github.run_number }}.0.0', '${{ github.event.repository.name }}', '${GITHUB_SHA}');" >> ./docker/version.sql
+          echo "REPLACE INTO project_version_control (version, component_name) VALUES('${{ steps.version.main_stream_version }}', 'DongTai');" >> ./docker/version.sql
+        
+      - name: Login to Aliyun Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.ALIYUN_REGISTRY }}
+          username: ${{ secrets.ALIYUN_DOCKERHUB_USER }}
+          password: ${{ secrets.ALIYUN_DOCKERHUB_PASSWORD }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          file: DockerfileTest
+          context: .
+          push: true
+          tags: | 
+            registry.cn-beijing.aliyuncs.com/secnium/iast-saas-webapi-test:latest
+            registry.cn-beijing.aliyuncs.com/secnium/iast-saas-webapi-test:1.0.${{github.run_number}}
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-webapi-test:0.1.0
+
+      - uses: actions/checkout@master
+      - name: deploy to cluster
+        uses: wahyd4/kubectl-helm-action@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_TEST_DATA }}
+        with:
+          args: |
+            find deploy/deploy-dongtai-webapi-test.yml -type f -exec sed -i 's/VERSION/1.0.${{github.run_number}}/g' {} \;
+            ls deploy/deploy-dongtai-webapi-test.yml | xargs -I {} kubectl apply -f {}
+
+      - name: finish build
+        uses: joelwmale/webhook-action@master
+        with:
+          url: ${{ secrets.WEBHOOK_URL }}
+          body: '{"msg_type": "interactive","card": {"config": {"wide_screen_mode": true,"enable_forward": true},"elements": [{"tag": "div","text": {"content": "状态：构建完成\n项目：${{github.repository}}\n分支：${{github.ref}}\n流程：${{github.workflow}}\n构建编号：${{github.run_number}}\n触发事件：${{github.event_name}}\n提交人：${{github.actor}}\nSHA-1：${{github.sha}}\n","tag": "lark_md"}}]}}'

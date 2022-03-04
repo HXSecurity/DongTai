@@ -1,0 +1,17 @@
+*.DS_Store
+/venv
+*/__pycache__/*
+*/migrations/*
+*.pyc
+.idea/
+scaapi/cron/logs/sca.log
+iast/upload/reports/*
+db/*
+conf/config.ini
+#Dockerfile
+doc
+doc/example.json
+logs/*.log
+build_docker.sh
+iast-package
+config.ini

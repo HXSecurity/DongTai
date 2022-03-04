@@ -1,0 +1,77 @@
+
+name: "ApiTest"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [main]
+  schedule:
+    - cron: '0 0 * * *'
+    
+jobs:
+  # This workflow contains a single job called "build"
+  Run-API-TEST:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:latest
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping --silent"
+          --health-interval 10s
+          --health-timeout 180s
+          --health-retries 10
+      redis:
+        image: dongtai/dongtai-redis:latest
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.7]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          python-version: 3.7
+      
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-test.txt
+      - name: Lint with flake8
+        run: |
+          pip install flake8
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Waiting For MySql Init
+        run: sleep 70
+
+      - name: Run UnitTest
+        run: |
+          cp conf/config.ini.test conf/config.ini
+          python3 manage.py test
+      
+      - name: Django Api Testing
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          mysql --host=127.0.0.1 -uroot -p'dongtai-iast' -D dongtai_webapi < /home/runner/work/DongTai-webapi/DongTai-webapi/test/init.sql
+          pip install schemathesis
+          export DOC=TRUE
+          python3 ./docker/version_update.py || true
+          python3 manage.py runserver 0.0.0.0:8000 &
+          sleep 15
+          schemathesis run --base-url "http://localhost:8000/"  -H 'Authorization: Token 67aebd78e700ad36a82a152276196b5f49fafeb0' http://localhost:8000/api/XZPcGFKoxYXScwGjQtJx8u/schema/  --hypothesis-suppress-health-check=data_too_large,filter_too_much,too_slow,return_value,large_base_example,not_a_test_method,function_scoped_fixture --hypothesis-verbosity verbose

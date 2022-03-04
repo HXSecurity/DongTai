@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-webapi
+  namespace: iast-prod
+  annotations:
+    kubesphere.io/description: dongtai-webapi接口
+  labels:
+    app: dongtai-webapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dongtai-webapi
+  template:
+    metadata:
+      labels:
+        app: dongtai-webapi
+    spec:
+      containers:
+        - name: dongtai-webapi-container
+          image: dongtai/dongtai-webapi:VERSION
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/dongtai/webapi/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+          env:
+            - name: "environment"
+              value: "PROD"
+            - name: aliyun_logs_iast_server_project
+              value: k8s-log-c541e7d8ffff2434a8b7b4fd7d8645d2a
+            - name: aliyun_logs_iast_server
+              value: stdout
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-iast-config-prod.ini
