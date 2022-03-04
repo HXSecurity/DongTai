@@ -26,7 +26,12 @@ uwsgi==2.0.19.1
 pyre2~=0.3.6
 ddt
 faker
-jq
+celery==4.4.2
+redis==3.5.3
+python-docx==0.8.10
+openpyxl==3.0.9
+id-validator==1.0.20
+jq==1.2.1
 django-cprofile-middleware
 drf_spectacular
 django-modeltranslation
