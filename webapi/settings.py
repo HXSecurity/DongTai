@@ -368,6 +368,7 @@ if os.getenv('environment', None) in ('TEST', 'PROD'):
     DOMAIN = config.get('other', 'domain')
 
 
+from urllib.parse import urljoin
 #OPENAPI
 BUCKET_URL = 'https://oss-cn-beijing.aliyuncs.com'
 BUCKET_NAME = 'dongtai'
