@@ -1,0 +1,24 @@
+FROM python:3.7-slim
+ARG VERSION
+ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG=en_US.UTF-8
+ENV TZ=Asia/Shanghai
+ENV debug=true
+
+RUN apt-get update -y \
+		&& apt install -y gettext gcc make cmake libmariadb-dev curl
+		
+RUN curl -L https://github.com/Endava/cats/releases/download/cats-7.0.1/cats-linux -o  /usr/local/bin/cats \
+	&& chmod +x /usr/local/bin/cats \
+	&& ln -s /usr/local/bin/cats /usr/bin/cats
+
+
+COPY requirements-test.txt /opt/dongtai/webapi/requirements.txt
+RUN pip3 install --upgrade pip  &&  pip3 install -r /opt/dongtai/webapi/requirements.txt
+
+COPY . /opt/dongtai/webapi
+WORKDIR /opt/dongtai/webapi
+
+RUN python manage.py compilemessages --all 
+
+CMD ["/usr/local/bin/uwsgi","--ini", "/opt/dongtai/webapi/conf/uwsgi.ini"]
