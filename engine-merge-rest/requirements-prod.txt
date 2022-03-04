@@ -1,0 +1,13 @@
+Django==3.0.3
+djangorestframework==3.11.0
+mysqlclient
+celery==4.4.2
+redis==3.5.3
+uwsgi==2.0.19.1
+django-celery-beat==2.2.0
+requests==2.25.1
+python-docx==0.8.10
+openpyxl==3.0.9
+https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/dongtai-latest.tar.gz
+id-validator==1.0.20
+jq==1.2.1

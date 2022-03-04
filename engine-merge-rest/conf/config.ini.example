@@ -1,0 +1,18 @@
+[mysql]
+host = 127.0.0.1
+port = 3306
+name = dongtai_webapi
+user = root
+password = dongtai-iast
+
+[redis]
+host = localhost
+port = 3306
+password = 123456
+db = 0
+
+[engine]
+url = engine-url
+
+[sca]
+base_url = http://dongtai-openapi-svc:8000/sca/v1

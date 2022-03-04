@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-engine
+  namespace: iast-prod
+  annotations:
+    kubesphere.io/description: dongtai-engine
+  labels:
+    app: dongtai-engine
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: dongtai-engine
+  template:
+    metadata:
+      labels:
+        app: dongtai-engine
+    spec:
+      containers:
+        - name: dongtai-engine-container
+          image: dongtai/dongtai-engine:VERSION
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/dongtai/engine/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+          env:
+            - name: "active.profile"
+              value: "PROD"
+            - name: aliyun_logs_iast_server_project
+              value: k8s-log-c541e7d8ffff2434a8b7b4fd7d8645d2a
+            - name: aliyun_logs_iast_server
+              value: stdout
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-iast-config-prod.ini
+      imagePullSecrets:
+        - name: aliyun-registry-secret
