@@ -6,22 +6,8 @@ containers:
     image: dongtai/dongtai-redis:latest
     image_pull_policy: Always
   dongtai-webapi:
-    build_directory: .
-    dockerfile: ./DockerfileDev
-    environment: 
-      DOC: ${WEBAPI_DOC:-TRUE}
-      debug: ${WEBAPI_debug:-true}
-      SAVEEYE: ${WEBAPI_SAVEEYE:-TRUE}
-      REQUESTLOG: ${WEBAPI_REQUESTLOG:-TRUE}
-      CPROFILE: ${WEBAPI_CPROFILE:-TRUE}
-      PYTHONAGENT: ${WEBAPI_PYTHON_AGENT:-FALSE}
-      PROJECT_NAME: ${WEBAPI_PROJECT_NAME:-LocalWEBAPI}
-      PROJECT_VERSION: ${WEBAPI_PROJECT_VERSION:-v1.0}
-      LOG_PATH: ${WEBAPI_LOG_PATH:-/tmp/dongtai-agent-python.log}
-      DONGTAI_IAST_BASE_URL: ${DONGTAI_IAST_BASE_URL:-https://iast.io/openapi}
-      DONGTAI_AGNET_TOKEN: ${DONGTAI_AGNET_TOKEN:-79798299b48839c84886d728958a8f708e119868}
-    volumes:
-      - .:/opt/dongtai/webapi/
+    image: dongtai/dongtai-webapi:latest
+    image_pull_policy: Always
 
   dongtai-web:
     image: dongtai/dongtai-web:latest
@@ -58,6 +44,22 @@ tasks:
     description: Serve the webapi application standingalone 
     run:
       container: dongtai-webapi        
+      build_directory: .
+      dockerfile: ./DockerfileDev
+      environment: 
+        DOC: ${WEBAPI_DOC:-TRUE}
+        debug: ${WEBAPI_debug:-true}
+        SAVEEYE: ${WEBAPI_SAVEEYE:-TRUE}
+        REQUESTLOG: ${WEBAPI_REQUESTLOG:-TRUE}
+        CPROFILE: ${WEBAPI_CPROFILE:-TRUE}
+        PYTHONAGENT: ${WEBAPI_PYTHON_AGENT:-FALSE}
+        PROJECT_NAME: ${WEBAPI_PROJECT_NAME:-LocalWEBAPI}
+        PROJECT_VERSION: ${WEBAPI_PROJECT_VERSION:-v1.0}
+        LOG_PATH: ${WEBAPI_LOG_PATH:-/tmp/dongtai-agent-python.log}
+        DONGTAI_IAST_BASE_URL: ${DONGTAI_IAST_BASE_URL:-https://iast.io/openapi}
+        DONGTAI_AGNET_TOKEN: ${DONGTAI_AGNET_TOKEN:-79798299b48839c84886d728958a8f708e119868}
+      volumes:
+        - .:/opt/dongtai/webapi/
       entrypoint: /opt/dongtai/webapi/.batect/agent_deco.sh /opt/dongtai/webapi/.batect/manage_run_server.sh
       ports:
         - "8000:8000"
