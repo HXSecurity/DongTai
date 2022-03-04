@@ -1,8 +1,12 @@
-FROM python:3.7.7
+FROM python:3.7-slim
 ARG VERSION
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US.UTF-8
 ENV TZ=Asia/Shanghai
+ENV debug=true
 
 RUN curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add - \
     && apt-key fingerprint ABF5BD827BD9BF62 \
