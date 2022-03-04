@@ -1,0 +1,72 @@
+name: Build DongTai Core Package and push to Ali OSS
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+      - '.github/**'
+      - 'changes/**'
+      - 'deploy/**'
+      - '**.md'
+      - '**.yml'
+      - '**.xml'
+      - 'LICENSE'
+      - '.gitignore'
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - '.github/**'
+      - 'changes/**'
+      - 'deploy/**'
+      - '**.md'
+      - '**.yml'
+      - '**.xml'
+      - 'LICENSE'
+      - '.gitignore'
+jobs:
+  build:
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Build DongTai Core Package
+        run: |
+          python setup.py sdist
+
+      - id: release
+        run: |
+          VERSION=`cat setup.cfg | grep version | sed 's/version = //'`
+          echo "::set-output name=version::$VERSION"
+
+      - name: Upload to oss
+        id: upload_to_oss
+        uses: tvrcgo/upload-to-oss@master
+        with:
+          key-id: ${{ secrets.OSS_KEY_ID }}
+          key-secret: ${{ secrets.OSS_KEY_SECRET }}
+          region: oss-cn-beijing
+          bucket: huoqi-public
+          assets: |
+            ./dist/dongtai-${{ steps.release.outputs.version }}.tar.gz:/iast/dongtai-test-${{ steps.release.outputs.version }}.tar.gz
+
+      - name: Upload to oss latest
+        id: upload_to_oss_latest
+        uses: tvrcgo/upload-to-oss@master
+        with:
+          key-id: ${{ secrets.OSS_KEY_ID }}
+          key-secret: ${{ secrets.OSS_KEY_SECRET }}
+          region: oss-cn-beijing
+          bucket: huoqi-public
+          assets: |
+            ./dist/dongtai-${{ steps.release.outputs.version }}.tar.gz:/iast/dongtai-test-latest.tar.gz
