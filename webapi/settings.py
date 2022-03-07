@@ -264,24 +264,43 @@ CAPTCHA_TIMEOUT = 1
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
     'formatters': {
         'verbose': {
-            'format': '{levelname} {asctime} [{module}.{funcName}:{lineno}] {message}',
+            'format': u'{levelname} {asctime} [{module}.{funcName}:{lineno}] {message}',
             'style': '{',
         },
     },
     'handlers': {
         'console': {
-            'class': 'logging.StreamHandler',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/tmp/console.log',
+            'encoding':'utf-8',
             'formatter': 'verbose'
         },
         'dongtai-webapi': {
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs/dongtai-webapi.log'),
+            'filename': '/tmp/webapi.log',
             'backupCount': 5,
             'maxBytes': 1024 * 1024 * 10,
-            'formatter': 'verbose'
+            'formatter': 'verbose',
+            'encoding':'utf-8',
+        },
+        'dongtai.openapi': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/tmp/openapi.log',
+            'backupCount': 5,
+            'maxBytes': 1024 * 1024 * 10,
+            'formatter': 'verbose',
+            'encoding': 'utf-8',
+        },
+        'dongtai-core': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/tmp/core.log',
+            'backupCount': 5,
+            'maxBytes': 1024 * 1024 * 10,
+            'formatter': 'verbose',
+            'encoding': 'utf-8',
         },
     },
     'loggers': {
@@ -294,9 +313,23 @@ LOGGING = {
             'propagate': True,
             'level': 'INFO',
         },
+        'dongtai-core': {
+            'handlers': ['console', 'dongtai-webapi'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'django': {
+            'handlers': ['console', 'dongtai-webapi'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'dongtai-engine': {
+            'handlers': ['console', 'dongtai-webapi'],
+            'propagate': True,
+            'level': 'INFO',
+        },
     }
 }
-
 REST_PROXY = {
     'HOST': config.get("engine", 'url'),
 }
@@ -321,9 +354,9 @@ X_FRAME_OPTIONS = 'DENY'
 TEST_RUNNER = 'test.NoDbTestRunner'
 
 
-if os.getenv('environment', None) == 'TEST' or os.getenv('REQUESTLOG',
-                                                         None) == 'TRUE':
-    MIDDLEWARE.insert(0, 'apitimelog.middleware.RequestLogMiddleware')
+#if os.getenv('environment', None) == 'TEST' or os.getenv('REQUESTLOG',
+#                                                         None) == 'TRUE':
+#    MIDDLEWARE.insert(0, 'apitimelog.middleware.RequestLogMiddleware')
     
 
 if os.getenv('environment', None) == 'TEST' or os.getenv('PYTHONAGENT', None) == 'TRUE':
@@ -387,4 +420,27 @@ SCA_ENGINE_URL = config.get("engine","url") + '/api/engine/sca?agent_id={agent_i
                             + '&package_path={package_path}&package_signature={package_signature}' \
                             + '&package_name={package_name}&package_algorithm={package_algorithm}'
 REPLAY_ENGINE_URL = config.get("engine", "url") + '/api/engine/run?method_pool_id={id}&model=replay'
+
+CELERY_BROKER_URL = 'redis://:%(password)s@%(host)s:%(port)s/%(db)s' % {
+    'password': config.get("redis", 'password'),
+    'host': config.get("redis", 'host'),
+    'port': config.get("redis", 'port'),
+    'db': config.get("redis", 'db'),
+}
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_RESULT_EXPIRES = 600
+# CELERY_WORKER_LOG_FORMAT = '%(asctime)s [%(module)s %(levelname)s] %(message)s'
+# CELERY_WORKER_LOG_FORMAT = '%(message)s'
+# CELERY_WORKER_TASK_LOG_FORMAT = '%(task_id)s %(task_name)s %(message)s'
+CELERY_WORKER_TASK_LOG_FORMAT = '%(message)s'
+# CELERY_WORKER_LOG_FORMAT = '%(asctime)s [%(module)s %(levelname)s] %(message)s'
+CELERY_WORKER_LOG_FORMAT = '%(message)s'
+CELERY_TASK_EAGER_PROPAGATES = True
+CELERY_WORKER_REDIRECT_STDOUTS = True
+CELERY_WORKER_REDIRECT_STDOUTS_LEVEL = "INFO"
+# CELERY_WORKER_HIJACK_ROOT_LOGGER = True
+# CELERY_WORKER_MAX_TASKS_PER_CHILD = 40
+CELERY_TASK_SOFT_TIME_LIMIT = 3600
 
