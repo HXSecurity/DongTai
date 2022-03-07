@@ -93,7 +93,7 @@ class EndPoint(APIView):
             response = handler(request, *args, **kwargs)
 
         except Exception as exc:
-            logger.error(f'url: {self.request.path}出错，原因：{exc}')
+            logger.error(f'url: {self.request.path},exc:{exc}',exc_info=True)
             response = self.handle_exception(exc)
 
         self.response = self.finalize_response(request, response, *args, **kwargs)
