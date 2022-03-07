@@ -19,6 +19,6 @@ RUN pip3 install --upgrade pip  &&  pip3 install -r /opt/dongtai/webapi/requirem
 COPY . /opt/dongtai/webapi
 WORKDIR /opt/dongtai/webapi
 
-RUN python manage.py compilemessages --all 
+RUN python manage.py compilemessages 
 
 CMD ["/usr/local/bin/uwsgi","--ini", "/opt/dongtai/webapi/conf/uwsgi.ini"]

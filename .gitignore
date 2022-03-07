@@ -68,3 +68,4 @@ doc
 *.log.*
 conf/config.ini
 celerybeat.pid
+*.mo
