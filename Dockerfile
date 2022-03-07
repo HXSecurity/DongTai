@@ -25,6 +25,6 @@ WORKDIR /opt/dongtai/webapi
 
 RUN mkdir -p /tmp/iast_cache/package && mv /opt/dongtai/webapi/*.jar /tmp/iast_cache/package/ && mv /opt/dongtai/webapi/*.tar.gz /tmp/
 
-RUN python manage.py compilemessages --all 
+RUN python manage.py compilemessages  
 
 ENTRYPOINT ["/bin/bash","/opt/dongtai/webapi/docker/entrypoint.sh"]
