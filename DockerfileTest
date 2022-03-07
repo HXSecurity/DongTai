@@ -24,6 +24,6 @@ RUN pip3 install --upgrade pip  &&  pip3 install -r /opt/dongtai/webapi/requirem
 COPY . /opt/dongtai/webapi
 WORKDIR /opt/dongtai/webapi
 
-RUN python manage.py compilemessages --all 
+RUN python manage.py compilemessages 
 
 ENTRYPOINT ["/bin/bash","/opt/dongtai/webapi/docker/entrypoint.sh"]
