@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-04 18:58+0800\n"
+"POT-Creation-Date: 2022-03-07 16:53+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,13 +18,10 @@ msgstr ""
 "X-Generator: Poedit 2.2.2\n"
 
 #: apiserver/report/handler/api_route_handler.py:33
-#, fuzzy
-#| msgid "Name of agent"
 msgid "No such agent"
-msgstr "Agent名称"
+msgstr "没有找到对应agent"
 
 #: apiserver/report/handler/api_route_handler.py:70
-#, fuzzy
 #| msgid "API coverage rate obtained successfully"
 msgid "API navigation log record successfully"
 msgstr "API覆盖率获取成功"
@@ -34,7 +31,6 @@ msgid "API navigation log failed, why: {}"
 msgstr ""
 
 #: apiserver/report/handler/error_log_handler.py:38
-#, fuzzy
 #| msgid "Report export success"
 msgid "Error log report saving success"
 msgstr "导出报告成功"
@@ -52,13 +48,11 @@ msgid "field"
 msgstr ""
 
 #: apiserver/report/handler/heartbeat_handler.py:102
-#, fuzzy
 #| msgid "The id of the project"
 msgid "There is no probe under the project"
-msgstr "项目ID"
+msgstr "没有探针在项目中"
 
 #: apiserver/report/handler/heartbeat_handler.py:108
-#, fuzzy
 #| msgid "Department does not exist"
 msgid "Replay request does not exist"
 msgstr "部门不存在"
@@ -327,13 +321,11 @@ msgid "Vulnerability description"
 msgstr "漏洞描述"
 
 #: core/plugins/export_report.py:513
-#, fuzzy
 #| msgid "2.1 Vulnerability Severity Levels Distribution"
 msgid "Vulnerability Severity Levels Distribution"
 msgstr "2.1  漏洞等级分布"
 
 #: core/plugins/export_report.py:514
-#, fuzzy
 #| msgid "2.2 Distribution of Vulnerability"
 msgid "Distribution of Vulnerability"
 msgstr "2.2  漏洞类型分布"
@@ -351,7 +343,6 @@ msgid "sinks"
 msgstr ""
 
 #: dongtai/models/asset.py:30 dongtai/models/heartbeat.py:39
-#, fuzzy
 #| msgid "Agent"
 msgid "agent"
 msgstr "探针"
@@ -372,19 +363,16 @@ msgid "name"
 msgstr ""
 
 #: dongtai/models/department.py:49
-#, fuzzy
 #| msgid "Failed to create, the application name already exists"
 msgid "A department with that department name already exists."
 msgstr "创建失败，项目名称已存在"
 
 #: dongtai/models/department.py:52 dongtai/models/project_version.py:20
-#, fuzzy
 #| msgid "Latest time"
 msgid "create time"
 msgstr "最新时间"
 
 #: dongtai/models/department.py:53 dongtai/models/project_version.py:21
-#, fuzzy
 #| msgid "Latest time"
 msgid "update time"
 msgstr "最新时间"
@@ -394,7 +382,6 @@ msgid "created by"
 msgstr ""
 
 #: dongtai/models/department.py:55
-#, fuzzy
 #| msgid "Project id"
 msgid "parent id"
 msgstr "项目id"
@@ -410,7 +397,6 @@ msgid ""
 msgstr ""
 
 #: dongtai/models/talent.py:21
-#, fuzzy
 #| msgid "Failed to create, the application name already exists"
 msgid "A talent with that talent name already exists."
 msgstr "创建失败，项目名称已存在"
@@ -570,7 +556,7 @@ msgstr "数据更新成功"
 #: iast/views/project_detail.py:83 iast/views/project_report_export.py:103
 #: iast/views/project_summary.py:107 iast/views/user_detail.py:32
 msgid "no permission"
-msgstr "no permission"
+msgstr "无权访问"
 
 #: iast/account/user.py:173
 msgid "Failed to delete User {}"
@@ -2379,7 +2365,7 @@ msgstr "项目不存在"
 
 #: iast/views/project_report_sync_add.py:59
 msgid "Report type error"
-msgstr ""
+msgstr "报告类型错误"
 
 #: iast/views/project_search.py:16
 msgid "Project name, support fuzzy search."
@@ -2759,7 +2745,6 @@ msgid "SensitiveInfoRule Pattern Type List"
 msgstr ""
 
 #: iast/views/sensitive_info_rule.py:252
-#, fuzzy
 #| msgid "Get the list of vulnerabilities corresponding to the user."
 msgid "Get the item corresponding to the user."
 msgstr "获取用户对应的漏洞列表"
@@ -2988,7 +2973,6 @@ msgid "UserID must be a numeric"
 msgstr "userId必须为数字"
 
 #: iast/views/user_passwrd_reset.py:44
-#, fuzzy, python-brace-format
 #| msgid "Password reset failed, reasons: {E}"
 msgid "Password reset failed, reasons: {E}"
 msgstr "密码重置失败，原因：{e}"
@@ -3392,7 +3376,7 @@ msgstr "获取组件license列表"
 msgid "Get sca stat "
 msgstr "获取组件库数据统计"
 
-#: webapi/settings.py:345
+#: webapi/settings.py:376
 #, python-brace-format
 msgid ""
 "Here is the API documentation in webapi. The corresponding management part "

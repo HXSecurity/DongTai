@@ -112,6 +112,9 @@ LANGUAGES = (
     ('zh', '简体中文'),
 )
 USE_I18N = True
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
 USE_L10N = True
 MODELTRANSLATION_FALLBACK_LANGUAGES = ('zh', 'en')
 MIDDLEWARE = [
@@ -273,9 +276,7 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/tmp/console.log',
-            'encoding':'utf-8',
+            'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         },
         'dongtai-webapi': {
@@ -443,4 +444,3 @@ CELERY_WORKER_REDIRECT_STDOUTS_LEVEL = "INFO"
 # CELERY_WORKER_HIJACK_ROOT_LOGGER = True
 # CELERY_WORKER_MAX_TASKS_PER_CHILD = 40
 CELERY_TASK_SOFT_TIME_LIMIT = 3600
-

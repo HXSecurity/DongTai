@@ -69,6 +69,15 @@ tasks:
       ports:
         - "8000:8000"
     group: serve
+  
+  shell:
+    description: Serve the webapi application standingalone 
+    run:
+      container: dongtai-webapi        
+      entrypoint: /bin/bash 
+      ports:
+        - "8000:8000"
+    group: serve
 
   makemessages:
     description: makemessages about i18n 
