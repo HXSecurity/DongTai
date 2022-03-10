@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'captcha',
     'modeltranslation',
+    'django_celery_beat',
 ]
 def get_installed_apps():
     from os import walk, chdir, getcwd
