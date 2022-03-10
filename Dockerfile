@@ -21,7 +21,7 @@ RUN pip3 install -r /opt/dongtai/webapi/requirements.txt
 COPY . /opt/dongtai/webapi
 WORKDIR /opt/dongtai/webapi
 
-RUN mkdir -p /tmp/iast_cache/package && mv /opt/dongtai/webapi/*.jar /tmp/iast_cache/package/ && mv /opt/dongtai/webapi/*.tar.gz /tmp/
+# RUN mkdir -p /tmp/iast_cache/package && mv /opt/dongtai/webapi/*.jar /tmp/iast_cache/package/ && mv /opt/dongtai/webapi/*.tar.gz /tmp/
 
 
 ENTRYPOINT ["/bin/bash","/opt/dongtai/webapi/docker/entrypoint.sh"]
