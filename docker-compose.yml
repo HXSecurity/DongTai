@@ -22,7 +22,7 @@ services:
   dongtai-engine:
     image: dongtai/dongtai-server:latest
     restart: always
-    command: ["/opt/dongtai/engine/docker/entrypoint.sh", "worker"]
+    command: ["/opt/dongtai/webapi/docker/entrypoint.sh", "worker"]
     volumes:
       - ./conf/config.ini:/opt/dongtai/webapi/conf/config.ini
   dongtai-server:
@@ -33,6 +33,6 @@ services:
   dongtai-engine-task:
     image: dongtai/dongtai-server:latest
     restart: always
-    command: ["/opt/dongtai/engine/docker/entrypoint.sh", "beat"]
+    command: ["/opt/dongtai/webapi/docker/entrypoint.sh", "beat"]
     volumes:
       - ./conf/config.ini:/opt/dongtai/webapi/conf/config.ini
