@@ -1,15 +1,10 @@
 #!/bin/bash
-
+set -x
 build_dongtai_iast(){
-	echo -e "\n\033[33m[+] install DongTai IAST service, openapi service addr is $1\033[0m"
+	echo -e "Start to install DongTai IAST service"
 	chmod u+x deploy/docker-compose/dtctl
-
-	if [ $? -ne 0 ]; then
-		./deploy/docker-compose/dtctl install
-	else
-		./deploy/docker-compose/dtctl install
-	fi
-	echo -e "\n\033[32m[*] start DongTai IAST service, please wait 30s\033[0m"
+	cd deploy/docker-compose/
+	./dtctl install
 }
 
 build_dongtai_iast

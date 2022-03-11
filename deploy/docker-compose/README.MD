@@ -16,6 +16,14 @@ After modification, `skip` the relevant component in your deploy step.
 
 #### Deploy
 
+get the latest code
+
+```
+git pull
+```
+
+install
+
 ```
 ./dtctl install
 ```
@@ -37,6 +45,14 @@ After installation, access it with your specified `web service port`.
 
 
 ### Upgrade
+
+download latest `dtctl`
+
+```
+git pull
+```
+
+upgrade
 
 ```
 ./dtctl upgrade
