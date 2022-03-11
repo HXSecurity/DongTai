@@ -1,0 +1,38 @@
+version: "2"
+services:
+  dongtai-mysql: 
+    image: dongtai/dongtai-mysql:latest
+    ports:
+      - "33060:3306"
+    restart: always
+  
+  dongtai-redis:
+    image: dongtai/dongtai-redis:latest
+    restart: always
+  dongtai-web:
+    image: dongtai/dongtai-web:latest
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - dongtai-server
+
+  dongtai-engine:
+    image: dongtai/dongtai-server:latest
+    restart: always
+    command: ["/opt/dongtai/webapi/docker/entrypoint.sh", "worker"]
+    volumes:
+      - ./conf/config.ini:/opt/dongtai/webapi/conf/config.ini
+  dongtai-server:
+    image: dongtai/dongtai-server:latest
+    restart: always
+    volumes:
+      - ./conf/config.ini:/opt/dongtai/webapi/conf/config.ini
+  dongtai-engine-task:
+    image: dongtai/dongtai-server:latest
+    restart: always
+    command: ["/opt/dongtai/webapi/docker/entrypoint.sh", "beat"]
+    volumes:
+      - ./conf/config.ini:/opt/dongtai/webapi/conf/config.ini
