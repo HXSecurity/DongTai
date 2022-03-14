@@ -135,10 +135,10 @@ from iast.views.scan_strategys import (
     ScanStrategyAllView,
 )
 from iast.views.sca_export import ScaExport
-
 from iast.views.details_id import (AgentListWithid, ProjectListWithid,
                                    ScaListWithid, VulsListWithid)
 from iast.views.vul_recheck_v2 import VulReCheckv2
+from iast.threshold.config_setting import AgentThresholdConfig
 
 
 urlpatterns = [
@@ -307,6 +307,7 @@ urlpatterns = [
     path('vul/list/ids', VulsListWithid.as_view()),
     path('sca/list/ids', ScaListWithid.as_view()),
     path('project/list/ids', ProjectListWithid.as_view()),
+    path('threshold/settings', AgentThresholdConfig.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
