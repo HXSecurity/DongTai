@@ -11,9 +11,10 @@ class IastAgentConfig(models.Model):
     ip = models.CharField(max_length=100, blank=True, null=True)
     port = models.IntegerField(blank=True, null=True)
     cluster_name = models.CharField(max_length=255, blank=True, null=True)
-    cluster_version = models.CharField(max_length=255, blank=True, null=True)
+    cluster_version = models.CharField(max_length=100, blank=True, null=True)
     priority = models.IntegerField(blank=True, null=True)
+    create_time = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_agentconfig'
+        db_table = 'iast_agent_config'
