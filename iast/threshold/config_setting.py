@@ -9,10 +9,9 @@ import time
 from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.agent_config import IastAgentConfig
 from django.utils.translation import gettext_lazy as _
-from rest_framework import serializers
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from iast.serializers.agent_config import AgentConfigSettingSerializer
-
+from rest_framework.serializers import ValidationError
 
 _ResponseSerializer = get_response_serializer(status_msg_keypair=(
     ((201, _('The installation is complete')), ''),
@@ -25,23 +24,6 @@ _ResponseSerializer = get_response_serializer(status_msg_keypair=(
 class AgentThresholdConfig(UserEndPoint):
     name = "api-v1-agent-threshold-config-setting"
     description = _("config Agent")
-
-    def parse_args(self, request):
-        """
-        :param request:
-        :return:
-        """
-        try:
-            details = request.data.get('details')
-            hostname = request.data.get('hostname').strip()
-            ip = request.data.get('ip').strip()
-            port = request.data.get('port')
-            cluster_name = request.data.get('cluster_name').strip()
-            cluster_version = request.data.get('cluster_version')
-            priority = request.data.get('priority')
-            return details, hostname, ip, port, cluster_name, cluster_version, priority
-        except Exception as e:
-            return None, None, None, None, None, None, None
 
     def create_agent_config(self,user, details, hostname, ip, port, cluster_name, cluster_version, priority):
         try:
@@ -64,16 +46,26 @@ class AgentThresholdConfig(UserEndPoint):
             return None
 
     @extend_schema_with_envcheck(
-        request=AgentConfigSettingSerializer,
         tags=[_('Agent')],
         summary=_('Agent Config'),
         description=_("Install the running agent by specifying the id."),
         response_schema=_ResponseSerializer)
     def post(self, request):
+        ser = AgentConfigSettingSerializer(data=request.POST)
         user = request.user
-        details, hostname, ip, port, cluster_name, cluster_version, priority = self.parse_args(request)
-        if all((details, hostname, ip, port, cluster_name, cluster_version, priority)) is False:
-            return R.failure(msg=_('Incomplete parameter, please check again'))
+        try:
+            if ser.is_valid(False):
+                details = ser.validated_data.get('details')
+                hostname = ser.validated_data.get('hostname', "").strip()
+                ip = ser.validated_data.get('ip', "").strip()
+                port = ser.validated_data.get('port', 0)
+                cluster_name = ser.validated_data.get('cluster_name', "").strip()
+                cluster_version = ser.validated_data.get('cluster_version', "")
+                priority = ser.validated_data.get('priority', 0)
+            else:
+                return R.failure(msg=_('Incomplete parameter, please check again'))
+        except ValidationError as e:
+            return R.failure(data=e.detail)
         config = self.create_agent_config(user, details, hostname, ip, port, cluster_name, cluster_version, priority)
         if config:
             return R.success(msg=_('Config has been created successfully'))
