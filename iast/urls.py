@@ -307,7 +307,10 @@ urlpatterns = [
     path('vul/list/ids', VulsListWithid.as_view()),
     path('sca/list/ids', ScaListWithid.as_view()),
     path('project/list/ids', ProjectListWithid.as_view()),
+    # user settings disaster recovery strategy
     path('threshold/settings', AgentThresholdConfig.as_view()),
+    # user webhook setting agent upload report
+
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
