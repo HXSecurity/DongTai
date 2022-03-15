@@ -6,7 +6,6 @@ ENV LC_ALL=en_US.UTF-8
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US.UTF-8
 ENV TZ=Asia/Shanghai
-ENV debug=true
 
 RUN apt-get update -y \
 		&& apt install -y gettext gcc make cmake libmariadb-dev curl libc6-dev unzip cron  openjdk-11-jdk fonts-wqy-microhei
