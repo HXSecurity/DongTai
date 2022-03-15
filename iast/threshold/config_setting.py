@@ -14,10 +14,8 @@ from iast.serializers.agent_config import AgentConfigSettingSerializer
 from rest_framework.serializers import ValidationError
 
 _ResponseSerializer = get_response_serializer(status_msg_keypair=(
-    ((201, _('The installation is complete')), ''),
-    ((202, _('The engine is being installed or uninstalled, please try again later')), ''),
-    ((202, _('Engine does not exist or no permission to access')),
-     ''),
+    ((201, _('The setting is complete')), ''),
+    ((202, _('Incomplete parameter, please try again later')), '')
 ))
 
 
@@ -47,8 +45,8 @@ class AgentThresholdConfig(UserEndPoint):
 
     @extend_schema_with_envcheck(
         tags=[_('Agent')],
-        summary=_('Agent Config'),
-        description=_("Install the running agent by specifying the id."),
+        summary=_('Agent threshold Config'),
+        description=_("Configure agent disaster recovery strategy"),
         response_schema=_ResponseSerializer)
     def post(self, request):
         ser = AgentConfigSettingSerializer(data=request.POST)
@@ -57,8 +55,8 @@ class AgentThresholdConfig(UserEndPoint):
             if ser.is_valid(False):
                 details = ser.validated_data.get('details')
                 hostname = ser.validated_data.get('hostname', "").strip()
-                ip = ser.validated_data.get('ip', "").strip()
-                port = ser.validated_data.get('port', 0)
+                ip = ser.validated_data.get('ip', "")
+                port = ser.validated_data.get('port', "")
                 cluster_name = ser.validated_data.get('cluster_name', "").strip()
                 cluster_version = ser.validated_data.get('cluster_version', "")
                 priority = ser.validated_data.get('priority', 0)

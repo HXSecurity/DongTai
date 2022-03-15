@@ -11,6 +11,7 @@ from dongtai.models import User
 from dongtai.models.server import IastServer
 from dongtai.utils.settings import get_managed
 
+
 class IastAgent(models.Model):
     token = models.CharField(max_length=255, blank=True, null=True)
     version = models.CharField(max_length=255, blank=True, null=True)
@@ -36,6 +37,7 @@ class IastAgent(models.Model):
     alias = models.CharField(default='', max_length=255, blank=True, null=True)
     startup_time = models.IntegerField(default=0, null=False)
     register_time = models.IntegerField(default=0, null=False)
+
 
     class Meta:
         managed = get_managed()
