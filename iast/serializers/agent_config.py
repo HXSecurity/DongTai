@@ -21,6 +21,6 @@ class AgentConfigSettingSerializer(serializers.Serializer):
 
 class AgentWebHookSettingSerializer(serializers.Serializer):
 
-    type_id = serializers.IntegerField(help_text=_('The port of the agent.'), allow_null=True)
-    url = serializers.CharField(help_text=_('The cluster_name of the agent.'), max_length=255)
+    type_id = serializers.IntegerField(help_text=_('The port of the agent.'), required=True)
+    url = serializers.CharField(help_text=_('The cluster_name of the agent.'), max_length=255, required=True)
 
