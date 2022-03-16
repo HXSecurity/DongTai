@@ -25,7 +25,9 @@ class ReportHandler:
         """
         try:
             report_type = reports.get('type')
+            # todo 拦截心跳数据 更改agent core 状态 若没有执行成功 is_control 1 ， 更新 is_core_running
             # 根据消息类型，转发上报到指定地址
+
             print(report_type)
             print(reports)
             typeData = IastAgentUploadTypeUrl.objects.filter(user=user, type_id=report_type).order_by("-create_time").first()
