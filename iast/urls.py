@@ -139,6 +139,8 @@ from iast.views.details_id import (AgentListWithid, ProjectListWithid,
                                    ScaListWithid, VulsListWithid)
 from iast.views.vul_recheck_v2 import VulReCheckv2
 from iast.threshold.config_setting import AgentThresholdConfig
+from iast.threshold.webhook_setting import AgentWebHookConfig
+from iast.threshold.webhook_type import AgentWebHookTypeList
 
 
 urlpatterns = [
@@ -310,6 +312,8 @@ urlpatterns = [
     # user settings disaster recovery strategy
     path('threshold/settings', AgentThresholdConfig.as_view()),
     # user webhook setting agent upload report
+    path('webhook/settings', AgentWebHookConfig.as_view()),
+    path('webhook/type/list', AgentWebHookTypeList.as_view()),
 
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
