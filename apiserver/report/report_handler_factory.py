@@ -31,15 +31,15 @@ class ReportHandler:
                 isCoreInstalled = reports.get("detail",{}).get("isCoreInstalled", 0)
                 isCoreRunning = reports.get("detail",{}).get("isCoreRunning", 0)
                 agentId = reports.get("detail",{}).get("agentId", 0)
-                # is_running 0 未运行，1运行中，2已卸载
-                if isCoreInstalled == 1:
-                    is_running = 2
+                # is_core_running 0 未运行，1运行中，2已卸载
+                if isCoreInstalled == 0:
+                    is_core_running = 2
                 else:
                     if isCoreRunning == 1:
-                        is_running = 1
+                        is_core_running = 1
                     else:
-                        is_running = 0
-                IastAgent.objects.filter(user=user,id=agentId).update(is_running=is_running)
+                        is_core_running = 0
+                IastAgent.objects.filter(user=user,id=agentId).update(is_core_running=is_core_running)
 
             typeData = IastAgentUploadTypeUrl.objects.filter(user=user, type_id=report_type).order_by("-create_time").first()
             if typeData and typeData.url:
