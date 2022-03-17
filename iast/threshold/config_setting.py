@@ -27,20 +27,31 @@ class AgentThresholdConfig(UserEndPoint):
         try:
 
             timestamp = int(time.time())
-            strategy = IastAgentConfig(
-                user=user,
-                details=details,
-                hostname=hostname,
-                ip=ip,
-                port=port,
-                cluster_name=cluster_name,
-                cluster_version=cluster_version,
-                priority=priority,
-                create_time=timestamp
-            )
+            strategy = IastAgentConfig.objects.filter(user=user).order_by("-create_time").first()
+            if strategy:
+                strategy.details = details
+                strategy.hostname = hostname
+                strategy.ip = ip
+                strategy.port = port
+                strategy.cluster_name = cluster_name
+                strategy.cluster_version = cluster_version
+                strategy.priority = priority
+            else:
+                strategy = IastAgentConfig(
+                    user=user,
+                    details=details,
+                    hostname=hostname,
+                    ip=ip,
+                    port=port,
+                    cluster_name=cluster_name,
+                    cluster_version=cluster_version,
+                    priority=priority,
+                    create_time=timestamp
+                )
             strategy.save()
             return strategy
         except Exception as e:
+
             return None
 
     @extend_schema_with_envcheck(
@@ -49,23 +60,25 @@ class AgentThresholdConfig(UserEndPoint):
         description=_("Configure agent disaster recovery strategy"),
         response_schema=_ResponseSerializer)
     def post(self, request):
-        ser = AgentConfigSettingSerializer(data=request.POST)
+
+        ser = AgentConfigSettingSerializer(data=request.data)
         user = request.user
         try:
-            if ser.is_valid(False):
-                details = ser.validated_data.get('details')
+            if ser.is_valid(True):
+                details = ser.validated_data.get('details', {})
                 hostname = ser.validated_data.get('hostname', "").strip()
                 ip = ser.validated_data.get('ip', "")
                 port = ser.validated_data.get('port', "")
                 cluster_name = ser.validated_data.get('cluster_name', "").strip()
                 cluster_version = ser.validated_data.get('cluster_version', "")
                 priority = ser.validated_data.get('priority', 0)
-            else:
-                return R.failure(msg=_('Incomplete parameter, please check again'))
+
         except ValidationError as e:
+
             return R.failure(data=e.detail)
+
         config = self.create_agent_config(user, details, hostname, ip, port, cluster_name, cluster_version, priority)
         if config:
             return R.success(msg=_('Config has been created successfully'))
         else:
-            R.failure(msg=_('Failed to create config'))
+            return R.failure(msg=_('Failed to create config'))

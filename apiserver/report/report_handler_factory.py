@@ -7,7 +7,7 @@
 import logging, requests, json
 from django.utils.translation import gettext_lazy as _
 from dongtai.models.agent_webhook_setting import IastAgentUploadTypeUrl
-
+from dongtai.models.agent import IastAgent
 logger = logging.getLogger('dongtai.openapi')
 
 
@@ -25,11 +25,22 @@ class ReportHandler:
         """
         try:
             report_type = reports.get('type')
-            # todo 拦截心跳数据 更改agent core 状态 若没有执行成功 is_control 1 ， 更新 is_core_running
-            # 根据消息类型，转发上报到指定地址
 
-            print(report_type)
-            print(reports)
+            # 根据消息类型，转发上报到指定地址
+            if report_type == 1:
+                isCoreInstalled = reports.get("detail",{}).get("isCoreInstalled", 0)
+                isCoreRunning = reports.get("detail",{}).get("isCoreRunning", 0)
+                agentId = reports.get("detail",{}).get("agentId", 0)
+                # is_running 0 未运行，1运行中，2已卸载
+                if isCoreInstalled == 1:
+                    is_running = 2
+                else:
+                    if isCoreRunning == 1:
+                        is_running = 1
+                    else:
+                        is_running = 0
+                IastAgent.objects.filter(user=user,id=agentId).update(is_running=is_running)
+
             typeData = IastAgentUploadTypeUrl.objects.filter(user=user, type_id=report_type).order_by("-create_time").first()
             if typeData and typeData.url:
                 if typeData.headers:
@@ -40,7 +51,7 @@ class ReportHandler:
                 #
                 if req.status_code == 200:
                     data = json.loads(req.text)
-                    print(data)
+
                     if data.get("code", 0) == 200:
                         typeData.send_num = typeData.send_num+1
                         typeData.save()

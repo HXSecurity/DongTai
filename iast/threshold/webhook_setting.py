@@ -23,15 +23,24 @@ class AgentWebHookConfig(UserEndPoint):
     name = "api-v1-agent-webHook-config-setting"
     description = _("config webHook Agent")
 
-    def create_webHook_config(self, user, type_id, url):
+    def create_webHook_config(self, user, type_id, url, headers, id):
         try:
-            timestamp = int(time.time())
-            setting = IastAgentUploadTypeUrl(
-                user=user,
-                type_id=type_id,
-                url=url,
-                create_time=timestamp
-            )
+            setting = {}
+            if id is not None:
+                setting = IastAgentUploadTypeUrl.objects.filter(user=user, id=id).first()
+            if setting:
+                setting.type_id = type_id
+                setting.url = url
+                setting.headers = headers
+            else:
+                timestamp = int(time.time())
+                setting = IastAgentUploadTypeUrl(
+                    user=user,
+                    type_id=type_id,
+                    url=url,
+                    headers=headers,
+                    create_time=timestamp
+                )
             setting.save()
             return setting
         except Exception as e:
@@ -43,15 +52,17 @@ class AgentWebHookConfig(UserEndPoint):
         description=_("Agent traffic reporting data forwarding address configuration"),
         response_schema=_ResponseSerializer)
     def post(self, request):
-        ser = AgentWebHookSettingSerializer(data=request.POST)
+        ser = AgentWebHookSettingSerializer(data=request.data)
         user = request.user
         if ser.is_valid(False):
+            id = ser.validated_data.get('id', None)
             type_id = ser.validated_data.get('type_id', None)
+            headers = ser.validated_data.get('headers', {})
             url = ser.validated_data.get('url', "").strip()
         else:
             return R.failure(msg=_('Incomplete parameter, please check again'))
-        config = self.create_webHook_config(user, type_id, url)
+        config = self.create_webHook_config(user, type_id, url, headers, id)
         if config:
-            return R.success(msg=_('Config has been created successfully'))
+            return R.success(msg=_('Config has been created successfully'),data={"id":config.id})
         else:
             R.failure(msg=_('Failed to create config'))

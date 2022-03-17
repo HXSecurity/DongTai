@@ -12,6 +12,7 @@ from iast.account.department import DepartmentEndPoint
 from iast.account.talent import TalentEndPoint
 from iast.account.user import UserEndPoint
 from iast.base.update_project_version import UpdateProjectVersion
+from iast.threshold.del_webhook_setting import DelAgentWebHookConfig
 from iast.views.agent_delete import AgentDeleteEndPoint
 from iast.views.agent_deploy import AgentDeploy
 from iast.views.agent_deploy_doc import AgentDeployDesc
@@ -140,8 +141,10 @@ from iast.views.details_id import (AgentListWithid, ProjectListWithid,
 from iast.views.vul_recheck_v2 import VulReCheckv2
 from iast.threshold.config_setting import AgentThresholdConfig
 from iast.threshold.webhook_setting import AgentWebHookConfig
+from iast.threshold.get_webhook_setting import GetAgentWebHookConfig
 from iast.threshold.webhook_type import AgentWebHookTypeList
-
+from iast.threshold.get_config_setting import GetAgentThresholdConfig
+from iast.threshold.agent_core_status import AgentCoreStatusUpdate
 
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
@@ -311,9 +314,16 @@ urlpatterns = [
     path('project/list/ids', ProjectListWithid.as_view()),
     # user settings disaster recovery strategy
     path('threshold/settings', AgentThresholdConfig.as_view()),
-    # user webhook setting agent upload report
+    # get user settings disaster recovery strategy GetAgentThresholdConfig
+    path('threshold/settings/get', GetAgentThresholdConfig.as_view()),
+    # user webhook setting agent upload report  forward
     path('webhook/settings', AgentWebHookConfig.as_view()),
     path('webhook/type/list', AgentWebHookTypeList.as_view()),
+    path('webhook/type/del', DelAgentWebHookConfig.as_view()),
+
+    # get webHook setting
+    path('webhook/settings/get', GetAgentWebHookConfig.as_view()),
+    path('agent/core/update', AgentCoreStatusUpdate.as_view()),
 
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
