@@ -20,6 +20,7 @@ _ResponseSerializer = get_response_serializer(status_msg_keypair=(
      ''),
 ))
 
+
 class AgentInstall(UserEndPoint):
     name = "api-v1-agent-install"
     description = _("Installing an Agent")

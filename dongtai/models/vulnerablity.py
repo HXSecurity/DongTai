@@ -36,7 +36,7 @@ class IastVulnerabilityModel(models.Model):
     latest_time = models.IntegerField(blank=True, null=True)
     client_ip = models.CharField(max_length=255, blank=True, null=True)
     param_name = models.CharField(max_length=255, blank=True, null=True)
-    method_pool_id = models.IntegerField(max_length=11, blank=True, null=True)
+    method_pool_id = models.IntegerField( blank=True, null=True)
     strategy = models.ForeignKey(IastStrategyModel,
                                   on_delete=models.DO_NOTHING,
                                   db_constraint=False,

@@ -68,31 +68,49 @@ class EngineAction(OpenApiEndPoint):
         agent = IastAgent.objects.filter(user=request.user, pk=agent_id, is_running=1).first()
         if not agent:
             return R.failure("agent不存在或无权限访问")
-
+        agent_status = {
+            0: {
+                "key": "无下发指令",
+                "value": "notcmd",
+            },
+            2: {
+                "key": "注册启动引擎",
+                "value": "coreRegisterStart",
+            },
+            3: {
+                "key": "开启引擎核心",
+                "value": "coreStart",
+            },
+            4: {
+                "key": "关闭引擎核心",
+                "value": "coreStop",
+            },
+            5: {
+                "key": "卸载引擎核心",
+                "value": "coreUninstall",
+            },
+            6: {
+                "key": "强制开启引擎核心性能熔断",
+                "value": "corePerformanceForceOpen",
+            },
+            7: {
+                "key": "强制关闭引擎核心性能熔断",
+                "value": "corePerformanceForceClose",
+            }
+        }
         if agent.is_control == 0:
             return R.failure(msg="暂无命令", data="notcmd")
-
-        # coreRegisterStart
-        if agent.control == 2:
+        else:
             agent.is_control = 0
-            agent.is_core_running = 1
             agent.latest_time = int(time.time())
+            if agent.control in [4, 5, 6]:
+                agent.is_core_running = 0
+            else:
+                agent.is_core_running = 1
             agent.save(update_fields=['is_control', 'is_core_running', 'latest_time'])
-            return R.success(data="coreRegisterStart", msg=str(agent.is_running) + agent.token)
-
-        # coreStart
-        if agent.control == 3:
-            agent.is_control = 0
-            agent.is_core_running = 1
-            agent.latest_time = int(time.time())
-            agent.save(update_fields=['is_control', 'is_core_running', 'latest_time'])
-            return R.success(data="coreStart", msg=str(agent.is_running) + agent.token)
-
-        # coreStop
-        if agent.control == 4:
-            agent.is_control = 0
-            agent.is_core_running = 0
-            agent.latest_time = int(time.time())
-            agent.save(update_fields=['is_control', 'is_core_running', 'latest_time'])
-            return R.success(data="coreStop")
-        return R.success(data="notcmd")
+            result_cmd = agent_status.get(agent.control, {
+                "key": "无下发指令",
+                "value": "notcmd"
+            }).get("value")
+            # print(result_cmd)
+            return R.success(data=result_cmd)
