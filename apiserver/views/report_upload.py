@@ -12,6 +12,7 @@ from apiserver.api_schema import DongTaiParameter
 from apiserver.decrypter import parse_data
 from apiserver.report.report_handler_factory import ReportHandler
 
+
 class ReportUploadEndPoint(OpenApiEndPoint):
     name = "api-v1-report-upload"
     description = "agent上传报告"
@@ -26,9 +27,12 @@ class ReportUploadEndPoint(OpenApiEndPoint):
     )
     def post(self, request):
         try:
-            
             report = parse_data(request.read())
+            # print("=====")
+            print(report)
             data = ReportHandler.handler(report, request.user)
+            # print("----")
+            # print(ReportHandler.HANDLERS)
             return R.success(msg="report upload success.", data=data)
         except Exception as e:
             return R.failure(msg=f"report upload failed, reason: {e}")

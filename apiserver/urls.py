@@ -23,12 +23,15 @@ from apiserver.views.health_oss import OSSHealthView
 from apiserver.views.agent_limit import LimitView
 from apiserver.views.startuptime import (StartupTimeEndPoint,
                                          StartupTimeGzipEndPoint)
+from apiserver.views.agent_config import AgentConfigView
 
 urlpatterns = [
     path('agent/download', AgentDownload.as_view()),
     path('agent/limit', LimitView.as_view()),
     path('agent/startuptime', StartupTimeEndPoint.as_view()),
     path('agent/gzipstartuptime', StartupTimeGzipEndPoint.as_view()),
+    # agent get destroy strategy
+    path('agent/threshold', AgentConfigView.as_view()),
     path('deploy/auto', AutoDeployEndPoint.as_view()),
     path('engine/heartbeat', EngineHeartBeatEndPoint.as_view()),
     path('engine/download', EngineDownloadEndPoint.as_view()),
@@ -42,6 +45,7 @@ urlpatterns = [
     # todo 增加重放请求获取接口，用于后续逻辑漏洞/漏洞验证等功能，暂时先不实现
     path('health', HealthView.as_view()),
     path('oss/health', OSSHealthView.as_view()),
+
 ]
 
 urlpatterns = [path('api/v1/', include(urlpatterns), name='OpenAPI'), ]

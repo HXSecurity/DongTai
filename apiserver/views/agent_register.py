@@ -97,7 +97,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         return ''
 
     @staticmethod
-    def register_server(agent_id, hostname, network, container_name, container_version, server_addr, server_port,
+    def register_server(agent_id, hostname, network, container_name, container_version, server_addr, server_port, cluster_name,cluster_version,
                         server_path, server_env, pid):
         """
         注册server，并关联server至agent
@@ -159,6 +159,8 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 status='online',
                 container=container_name,
                 container_path=server_path,
+                cluster_name=cluster_name,
+                cluster_version=cluster_version,
                 command=command,
                 runtime=AgentRegisterEndPoint.get_runtime(envs),
                 create_time=int(time.time()),
@@ -209,6 +211,10 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             server_port = param.get('serverPort')
             server_path = param.get('serverPath')
             server_env = param.get('serverEnv')
+            # add by song
+            cluster_name = param.get('clusterName', "")
+            cluster_version = param.get('clusterVersion', "")
+            # end by song
             pid = param.get('pid')
             auto_create_project = param.get('autoCreateProject', 0)
             user = request.user
@@ -270,6 +276,8 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 server_addr=server_addr,
                 server_port=server_port,
                 server_path=server_path,
+                cluster_name=cluster_name,
+                cluster_version=cluster_version,
                 server_env=server_env,
                 pid=pid,
             )

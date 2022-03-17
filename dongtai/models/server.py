@@ -17,6 +17,8 @@ class IastServer(models.Model):
     status = models.CharField(max_length=255, blank=True, null=True)
     container = models.CharField(max_length=255, blank=True, null=True)
     container_path = models.CharField(max_length=255, blank=True, null=True)
+    cluster_name = models.CharField(max_length=255, blank=True, null=True)
+    cluster_version = models.CharField(max_length=100, blank=True, null=True)
     command = models.TextField(blank=True, null=True)
     env = models.CharField(max_length=255, blank=True, null=True)
     runtime = models.CharField(max_length=255, blank=True, null=True)
