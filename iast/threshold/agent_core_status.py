@@ -20,7 +20,7 @@ class AgentCoreStatusSerializer(serializers.Serializer):
 
     id = serializers.IntegerField(help_text=_('The id of the webHook.'), required=False)
     core_status = serializers.IntegerField(help_text=_('The type of the webHook.'), required=True)
-    agent_ids = serializers.CharField(help_text=_('The cluster_name of the agent.'), max_length=255, required=True)
+    agent_ids = serializers.CharField(help_text=_('The cluster_name of the agent.'), max_length=255, required=False)
 
 
 class AgentCoreStatusUpdate(UserEndPoint):
@@ -34,7 +34,8 @@ class AgentCoreStatusUpdate(UserEndPoint):
         description=_("Control the running agent by specifying the id."  ),
         response_schema=_ResponseSerializer)
     def post(self, request):
-        ser = AgentCoreStatusSerializer(request.data)
+        print(request.data)
+        ser = AgentCoreStatusSerializer(data=request.data)
         if ser.is_valid(False):
             agent_id = ser.validated_data.get('id', None)
             core_status = ser.validated_data.get('core_status', None)
@@ -62,7 +63,7 @@ class AgentCoreStatusUpdate(UserEndPoint):
                     continue
                 if agent.is_control == 1 and agent.control != 3 and agent.control != 4:
                     continue
-                agent.control = control_status
+                agent.control = core_status
                 agent.is_control = 1
                 agent.latest_time = int(time.time())
                 agent.save(update_fields=['latest_time', 'control', 'is_control'])
