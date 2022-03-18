@@ -42,6 +42,7 @@ class ReportHandler:
                 IastAgent.objects.filter(user=user,id=agentId).update(is_core_running=is_core_running)
 
             typeData = IastAgentUploadTypeUrl.objects.filter(user=user, type_id=report_type).order_by("-create_time").first()
+            print(report_type)
             if typeData and typeData.url:
                 if typeData.headers:
                     headers = typeData.headers
@@ -49,6 +50,7 @@ class ReportHandler:
                     headers = {}
                 req = requests.post(typeData.url, json=reports, headers=headers)
                 #
+                print(req.text)
                 if req.status_code == 200:
                     data = json.loads(req.text)
 
