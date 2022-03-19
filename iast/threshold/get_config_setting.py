@@ -29,11 +29,13 @@ class GetAgentThresholdConfig(UserEndPoint):
         response_schema=_ResponseSerializer)
     def get(self, request):
         user = request.user
-        configData = IastAgentConfig.objects.filter(user=user).order_by("-create_time").first()
+        configData = IastAgentConfig.objects.filter(user=user)
+        result = []
         if configData:
-            data = model_to_dict(configData)
-            del data['user']
-            del data['id']
+            for item in configData:
+                data = model_to_dict(item)
+                del data['user']
+                result.append(data)
         else:
-            data = {}
-        return R.success(msg=_('Successfully'), data=data)
+            result = []
+        return R.success(msg=_('Successfully'), data={"result":result})
