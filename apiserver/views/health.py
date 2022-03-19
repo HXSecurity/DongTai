@@ -7,7 +7,7 @@
 ######################################################################
 
 import logging
-from dongtai.endpoint import OpenApiEndPoint, R
+from dongtai.endpoint import UserEndPoint, R
 from drf_spectacular.utils import extend_schema
 
 from apiserver.utils import OssDownloader
@@ -35,7 +35,7 @@ def _checkenginestatus():
     return True, resp
 
 
-class HealthView(OpenApiEndPoint):
+class HealthView(UserEndPoint):
     @extend_schema(
         description='Check OpenAPI Service Status',
         responses=R,
