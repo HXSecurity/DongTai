@@ -56,8 +56,12 @@ class ReportHandler:
                         if data.get("code", 0) == 200:
                             typeData.send_num = typeData.send_num+1
                             typeData.save()
+
+                    # logger.info()
             except Exception as e:
-                pass
+                logger.error("Forward for url failed")
+                logger.error(e)
+
             class_of_handler = ReportHandler.HANDLERS.get(report_type)
             if class_of_handler is None:
                 logger.error(_('Report type {} handler does not exist').format(report_type))

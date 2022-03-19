@@ -23,11 +23,14 @@ class AgentThresholdConfig(UserEndPoint):
     name = "api-v1-agent-threshold-config-setting"
     description = _("config Agent")
 
-    def create_agent_config(self,user, details, hostname, ip, port, cluster_name, cluster_version, priority):
+    def create_agent_config(self,user, details, hostname, ip, port, cluster_name, cluster_version, priority,id):
         try:
 
             timestamp = int(time.time())
-            strategy = IastAgentConfig.objects.filter(user=user).order_by("-create_time").first()
+            if id:
+                strategy = IastAgentConfig.objects.filter(user=user,id=id).order_by("-create_time").first()
+            else:
+                strategy = IastAgentConfig.objects.filter(user=user, id=id).order_by("-create_time").first()
             if strategy:
                 strategy.details = details
                 strategy.hostname = hostname
@@ -68,6 +71,7 @@ class AgentThresholdConfig(UserEndPoint):
                 details = ser.validated_data.get('details', {})
                 hostname = ser.validated_data.get('hostname', "").strip()
                 ip = ser.validated_data.get('ip', "")
+                id = ser.validated_data.get('id', "")
                 port = ser.validated_data.get('port', 80)
                 cluster_name = ser.validated_data.get('cluster_name', "").strip()
                 cluster_version = ser.validated_data.get('cluster_version', "")
@@ -77,7 +81,7 @@ class AgentThresholdConfig(UserEndPoint):
 
             return R.failure(data=e.detail)
 
-        config = self.create_agent_config(user, details, hostname, ip, port, cluster_name, cluster_version, priority)
+        config = self.create_agent_config(user, details, hostname, ip, port, cluster_name, cluster_version, priority,id)
         if config:
             return R.success(msg=_('Config has been created successfully'))
         else:

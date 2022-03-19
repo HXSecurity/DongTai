@@ -29,7 +29,7 @@ class ReportUploadEndPoint(OpenApiEndPoint):
         try:
             report = parse_data(request.read())
             # print("=====")
-            print(report)
+            #print(report)
             data = ReportHandler.handler(report, request.user)
             # print("----")
             # print(ReportHandler.HANDLERS)
