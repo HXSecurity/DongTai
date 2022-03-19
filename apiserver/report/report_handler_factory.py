@@ -50,14 +50,15 @@ class ReportHandler:
                     else:
                         headers = {}
                     req = requests.post(typeData.url, json=reports, headers=headers, timeout=30)
+                    reports_data = json.dumps(reports)
+                    logger.info("Forward for url response status {} -".format(str(req.status_code)))
+                    logger.info("Forward for url request= {} ; response={} ;".format(reports_data, req.content))
                     if req.status_code == 200:
                         data = json.loads(req.text)
-
                         if data.get("code", 0) == 200:
                             typeData.send_num = typeData.send_num+1
                             typeData.save()
 
-                    # logger.info()
             except Exception as e:
                 logger.error("Forward for url failed")
                 logger.error(e)
