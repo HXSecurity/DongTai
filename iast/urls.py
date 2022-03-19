@@ -265,7 +265,7 @@ urlpatterns = [
     path('api_route/search', ApiRouteSearch.as_view()),
     path('api_route/relationrequest', ApiRouteRelationRequest.as_view()),
     path('api_route/cover_rate', ApiRouteCoverRate.as_view()),
-    path('health', HealthView.as_view()),
+#    path('health', HealthView.as_view()),
     path('oss/health', OssHealthView.as_view()),
     path('program_language', ProgrammingLanguageList.as_view()),
     path('filereplace/<str:filename>', FileReplace.as_view()),
