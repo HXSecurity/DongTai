@@ -68,7 +68,7 @@ class AgentThresholdConfig(UserEndPoint):
                 details = ser.validated_data.get('details', {})
                 hostname = ser.validated_data.get('hostname', "").strip()
                 ip = ser.validated_data.get('ip', "")
-                port = ser.validated_data.get('port', "")
+                port = ser.validated_data.get('port', 80)
                 cluster_name = ser.validated_data.get('cluster_name', "").strip()
                 cluster_version = ser.validated_data.get('cluster_version', "")
                 priority = ser.validated_data.get('priority', 0)
