@@ -10,7 +10,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   Deploy-to-dev:
-    if: github.event_name == 'push'
+    if: ${{ github.event_name == 'push' && github.repository_owner == 'HXSecurity' }}
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
