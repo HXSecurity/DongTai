@@ -97,7 +97,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         return ''
 
     @staticmethod
-    def register_server(agent_id, hostname, network, container_name, container_version, server_addr, server_port, cluster_name,cluster_version,
+    def register_server(agent_id, hostname, network, container_name, server_addr, server_port, cluster_name,cluster_version,
                         server_path, server_env, pid):
         """
         注册server，并关联server至agent
@@ -105,7 +105,6 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         :param hostname:
         :param network:
         :param container_name:
-        :param container_version:
         :param server_addr:
         :param server_port:
         :param server_path:
@@ -144,9 +143,11 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             server.port = port
             server.pid = pid
             server.env = env
+            server.cluster_name = cluster_name
+            server.cluster_version = cluster_version
             server.status = 'online'
             server.update_time = int(time.time())
-            server.save(update_fields=['hostname', 'command', 'ip', 'port', 'env', 'status', 'update_time'])
+            server.save(update_fields=['hostname', 'command', 'ip', 'port', 'env', 'status', 'update_time', 'cluster_name', 'cluster_version'])
         else:
             server = IastServer.objects.create(
                 hostname=hostname,
@@ -180,7 +181,6 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             DongTaiParameter.HOSTNAME,
             DongTaiParameter.NETWORK,
             DongTaiParameter.CONTAINER_NAME,
-            DongTaiParameter.CONTAINER_VERSION,
             DongTaiParameter.SERVER_ADDR,
             DongTaiParameter.SERVER_PORT,
             DongTaiParameter.SERVER_PATH,
@@ -206,7 +206,6 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             hostname = param.get('hostname')
             network = param.get('network')
             container_name = param.get('containerName')
-            container_version = param.get('containerVersion')
             server_addr = param.get('serverAddr')
             server_port = param.get('serverPort')
             server_path = param.get('serverPath')
@@ -272,7 +271,6 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 hostname=hostname,
                 network=network,
                 container_name=container_name,
-                container_version=container_version,
                 server_addr=server_addr,
                 server_port=server_port,
                 server_path=server_path,
