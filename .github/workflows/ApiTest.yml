@@ -48,13 +48,14 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-test.txt
+          pip install schemathesis
           
       - name: Django Api Testing
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           mysql --host=127.0.0.1 -uroot -p'dongtai-iast' -D dongtai_webapi < /home/runner/work/DongTai/DongTai/test/init.sql
-          pip install schemathesis
+          cp conf/config.ini.test conf/config.ini
           export DOC=TRUE
           python3 ./docker/version_update.py || true
           python3 manage.py runserver 0.0.0.0:8000 &
