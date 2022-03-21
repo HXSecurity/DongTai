@@ -6,8 +6,9 @@
 # project: webapi
 import logging, requests, json
 from django.utils.translation import gettext_lazy as _
-from dongtai.models.agent_webhook_setting import IastAgentUploadTypeUrl
+
 from dongtai.models.agent import IastAgent
+# from core.web_hook import forward_for_upload
 logger = logging.getLogger('dongtai.openapi')
 
 
@@ -39,29 +40,13 @@ class ReportHandler:
                         is_core_running = 1
                     else:
                         is_core_running = 0
+
                 IastAgent.objects.filter(user=user,id=agentId).update(is_core_running=is_core_running)
-
-            typeData = IastAgentUploadTypeUrl.objects.filter(user=user, type_id=report_type).order_by("-create_time").first()
-            # print(report_type)
-            try:
-                if typeData and typeData.url:
-                    if typeData.headers:
-                        headers = typeData.headers
-                    else:
-                        headers = {}
-                    req = requests.post(typeData.url, json=reports, headers=headers, timeout=30)
-                    reports_data = json.dumps(reports)
-                    logger.info("Forward for url response status {} -".format(str(req.status_code)))
-                    logger.info("Forward for url request= {} ; response={} ;".format(reports_data, req.content))
-                    if req.status_code == 200:
-                        data = json.loads(req.text)
-                        if data.get("code", 0) == 200:
-                            typeData.send_num = typeData.send_num+1
-                            typeData.save()
-
-            except Exception as e:
-                logger.error("Forward for url failed")
-                logger.error(e)
+            # web hook
+            # print("[[[[[[[[[[")
+            # logger.info(f'[+] web hook 正在下发上报任务')
+            # forward_for_upload.delay(user.id, reports, report_type)
+            # logger.info(f'[+] web hook 上报任务下发完成')
 
             class_of_handler = ReportHandler.HANDLERS.get(report_type)
             if class_of_handler is None:
@@ -69,6 +54,8 @@ class ReportHandler:
                 return None
             return class_of_handler().handle(reports, user)
         except Exception as e:
+            print("=====")
+            print(e)
             logger.error(e)
         return None
 
