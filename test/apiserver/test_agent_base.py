@@ -22,7 +22,7 @@ REGISTER_JSON = {
     "containerVersion": "9.0.46.0",
     "pid": "1416",
     "language": "JAVA",
-    "serverPort": "",
+    "serverPort": "0",
     "version": "v1.1.3",
     "network": "{\"name\":\"en0\",\"ip\":\"192.168.2.143\"}",
     "serverEnv":
