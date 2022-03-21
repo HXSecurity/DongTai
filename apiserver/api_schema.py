@@ -121,19 +121,6 @@ class DongTaiParameter:
         ],
     )
 
-    CONTAINER_VERSION = OpenApiParameter(
-        name='containerVersion',
-        type=str,
-        description='The development language of the project that needs to install the Agent',
-        required=True,
-        examples=[
-            OpenApiExample(
-                'example language',
-                summary='java or python',
-                value='java',
-            ),
-        ],
-    )
 
     SERVER_ADDR = OpenApiParameter(
         name='serverAddr',

@@ -28,9 +28,7 @@ class ReportUploadEndPoint(OpenApiEndPoint):
     def post(self, request):
         try:
             report = parse_data(request.read())
-    
             data = ReportHandler.handler(report, request.user)
-
             return R.success(msg="report upload success.", data=data)
         except Exception as e:
             return R.failure(msg=f"report upload failed, reason: {e}")
