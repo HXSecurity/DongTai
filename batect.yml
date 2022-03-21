@@ -72,6 +72,8 @@ tasks:
       entrypoint: /bin/bash 
       ports:
         - "8000:8000"
+    dependencies:
+      - dongtai-mysql
     group: serve
 
   makemessages:
