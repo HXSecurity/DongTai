@@ -318,7 +318,7 @@ urlpatterns = [
     path('threshold/settings', AgentThresholdConfig.as_view()),
     # get user settings disaster recovery strategy GetAgentThresholdConfig
     path('threshold/settings/get', GetAgentThresholdConfig.as_view()),
-    path('threshold/settings/<int:pk>', GetAgentThresholdConfigDetail.as_view()),
+    path('threshold/settings/get/<int:pk>', GetAgentThresholdConfigDetail.as_view()),
     path('threshold/settings/del', DelAgentThresholdConfig.as_view()),
     # user webhook setting agent upload report  forward
     path('webhook/settings', AgentWebHookConfig.as_view()),

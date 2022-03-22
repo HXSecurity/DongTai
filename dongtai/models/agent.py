@@ -8,6 +8,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from dongtai.models import User
+
 from dongtai.models.server import IastServer
 from dongtai.utils.settings import get_managed
 
@@ -21,6 +22,7 @@ class IastAgent(models.Model):
         to=IastServer,
         on_delete=models.DO_NOTHING,
         related_name='agents',
+        null=True,
         related_query_name='agent',
         verbose_name=_('server'),
     )
