@@ -13,13 +13,13 @@ from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 
 _ResponseSerializer = get_response_serializer(status_msg_keypair=(
-    ((201, _('Get success')), ''),
+    ((201, _('Get detail success')), ''),
     ((202, _('Incomplete parameter, please try again later')), '')
 ))
 
 
-class GetAgentThresholdConfig(UserEndPoint):
-    name = "api-v1-agent-threshold-config-get"
+class GetAgentThresholdConfigDetail(UserEndPoint):
+    name = "api-v1-agent-threshold-config-get-detail"
     description = _("config Agent")
 
     @extend_schema_with_envcheck(
@@ -27,16 +27,11 @@ class GetAgentThresholdConfig(UserEndPoint):
         summary=_('Agent threshold Config'),
         description=_("Configure agent disaster recovery strategy"),
         response_schema=_ResponseSerializer)
-    def get(self, request):
+    def get(self, request, pk):
         user = request.user
-        configData = IastAgentConfig.objects.filter(user=user)
-        result = []
+        configData = IastAgentConfig.objects.filter(user=user, pk=pk).first()
+        result = {}
         if configData:
-            for item in configData:
-                data = model_to_dict(item)
-                del data['user']
-                del data['detail']
-                result.append(data)
-        else:
-            result = []
+            result = model_to_dict(configData)
+
         return R.success(msg=_('Successfully'), data={"result": result})
