@@ -15,7 +15,7 @@ db = 0
 url = http://dongtai-engine:8000
 
 [apiserver]
-url = http://dongtai-openapi:8000
+url = http://dongtai-server:8000
 
 [smtp]
 server = smtp_server
