@@ -34,8 +34,17 @@ class GetAgentThresholdConfig(UserEndPoint):
         if configData:
             for item in configData:
                 data = model_to_dict(item)
+                data_detail = {}
+                if data['details']:
+                    data_detail = data['details']
                 del data['user']
-                del data['detail']
+                del data['details']
+                data['enableAutoFallback'] = data_detail.get("enableAutoFallback", None)
+                data['hookLimitTokenPerSecond'] = data_detail.get("hookLimitTokenPerSecond", None)
+                data['heavyTrafficLimitTokenPerSecond'] = data_detail.get("heavyTrafficLimitTokenPerSecond", None)
+                data['cpuUsagePercentage'] = data_detail.get("performanceLimitMaxThreshold", {}).get("cpuUsage", {}).get("cpuUsagePercentage",None)
+                data['memUsagePercentage'] = data_detail.get("performanceLimitMaxThreshold", {}).get("memoryUsage", {}).get("memUsagePercentage",None)
+
                 result.append(data)
         else:
             result = []
