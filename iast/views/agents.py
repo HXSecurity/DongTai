@@ -152,10 +152,15 @@ class AgentList(UserEndPoint):
             # data = AgentSerializer(queryset, many=True).data
             # if not request.user.is_talent_admin():
             #     data = list(map(lambda x:removestartup(x),data))
-
+            page_info = {
+                "alltotal": total,
+                "num_pages": page,
+                "page_size": page_size
+            }
             return R.success(
                 msg="success",
-                data=end
+                data=end,
+                page=page_info
             )
         except ValueError as e:
             logger.error(e)
