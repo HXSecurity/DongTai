@@ -11,6 +11,7 @@ import time
 from dongtai.models.agent_method_pool import MethodPool
 from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai.models.replay_queue import IastReplayQueue
+from dongtai.models.user import User
 from dongtai.utils import const
 from dongtai.models.agent import IastAgent
 from dongtai.endpoint import R
@@ -267,23 +268,33 @@ class RequestReplayEndPoint(UserEndPoint):
     ])
     def get(self, request):
         replay_id = request.query_params.get('replayId')
-        auth_agents = self.get_auth_agents_with_user(request.user)
+        # auth_agents = self.get_auth_agents_with_user(request.user)
         replay_type = request.query_params.get('replay_type', None)
         if replay_type is not None and int(replay_type) not in [
                 const.API_REPLAY, const.REQUEST_REPLAY
         ]:
             return R.failure(msg="replay_type error")
-        replay_type = const.REQUEST_REPLAY if replay_type is None else int(
-            replay_type)
-        replay_data = IastReplayQueue.objects.filter(
-            id=replay_id, agent__in=auth_agents).values('state').first()
+        replay_type = const.REQUEST_REPLAY if replay_type is None else int(replay_type)
+        replay_data = IastReplayQueue.objects.filter(id=replay_id).first()
+
+        if request.user.is_superuser == 1 or replay_data.agent.user_id == request.user.id:
+            pass
+        elif request.user.is_superuser == 2 and replay_data.agent.user_id != request.user.id:
+            # 部门鉴权
+            talent = request.user.get_talent()
+            departments = talent.departments.all()
+            if replay_data.agent.user.get_department() not in departments:
+                replay_data = {}
+        elif replay_data.agent.user_id != request.user.id:
+            replay_data = {}
+
         if not replay_data:
             return R.failure(
                 status=203,
                 msg=_(
                     'Replay request does not exist or no permission to access')
             )
-        if replay_data['state'] != const.SOLVED:
+        if replay_data.state != const.SOLVED:
             return R.failure(msg=_('Replay request processing'))
         replay_data = IastAgentMethodPoolReplay.objects.filter(
             replay_id=replay_id,
