@@ -12,7 +12,7 @@
 
 
 
-[中文版本(Chinese version)](README.ZH-CN.MD)
+[中文版本(Chinese version)](README-zh.md)
 
 ## About DongTai IAST
 `DongTai IAST` is an open-source passive interactive security testing (IAST) product. It uses dynamic hooks and taint tracking algorithms to achieve **universal vulnerability detection** and **multiples request associated with vulnerability detection (including but not limited to unauthorized vulnerabilities, overpower vulnerabilities)**, **Third-party component vulnerability detection**, etc. Currently, applications in Java and Python are supported for vulnerability detection.

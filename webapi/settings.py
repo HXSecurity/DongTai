@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'captcha',
     'modeltranslation',
+    'django_celery_beat',
 ]
 def get_installed_apps():
     from os import walk, chdir, getcwd
@@ -444,3 +445,4 @@ CELERY_WORKER_REDIRECT_STDOUTS_LEVEL = "INFO"
 # CELERY_WORKER_HIJACK_ROOT_LOGGER = True
 # CELERY_WORKER_MAX_TASKS_PER_CHILD = 40
 CELERY_TASK_SOFT_TIME_LIMIT = 3600
+DJANGO_CELERY_BEAT_TZ_AWARE = False

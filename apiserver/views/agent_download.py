@@ -9,7 +9,7 @@ import os, re
 import uuid, logging
 
 from django.http import FileResponse
-from dongtai.endpoint import OpenApiEndPoint, R
+from dongtai.endpoint import UserEndPoint, R
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from rest_framework.authtoken.models import Token
 from django.utils.translation import gettext_lazy as _
@@ -249,7 +249,7 @@ class GoAgentDownload():
         return True
 
 
-class AgentDownload(OpenApiEndPoint):
+class AgentDownload(UserEndPoint):
     """
     当前用户详情
     """
