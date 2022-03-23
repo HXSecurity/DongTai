@@ -9,25 +9,6 @@ services:
   dongtai-redis:
     image: dongtai/dongtai-redis:latest
     restart: always
-  dongtai-webapi:
-    build: 
-      context: .
-      dockerfile: ./DockerfileDev
-    restart: always
-    ports:
-      - "8000:8000"
-      - "8010:8010"
-    environment: 
-      #      - PYTHONAGENT=TRUE
-      - DOC=TRUE
-      - debug=true
-      - SAVEEYE=TRUE
-      - PROJECT_NAME=LocalWEBAPI
-      - LOG_PATH=/tmp/dongtai-agent-python.log
-      - CPROFILE=TRUE
-    volumes:
-      - .:/opt/dongtai/webapi/
-
   dongtai-web:
     image: dongtai/dongtai-web:latest
     restart: always
@@ -36,30 +17,22 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
-      - dongtai-webapi
-
-  dongtai-openapi:
-    image: dongtai/dongtai-openapi:latest
-    restart: always
-    volumes:
-      - ./conf/config.ini:/opt/dongtai/openapi/conf/config.ini
+      - dongtai-server
 
   dongtai-engine:
-    image: dongtai/dongtai-engine:latest
-    deploy:
-      replicas: 0
+    image: dongtai/dongtai-server:latest
+    restart: always
+    command: ["/opt/dongtai/webapi/docker/entrypoint.sh", "worker"]
+    volumes:
+      - ./conf/config.ini:/opt/dongtai/webapi/conf/config.ini
+  dongtai-server:
+    image: dongtai/dongtai-server:latest
     restart: always
     volumes:
-      - ./conf/config.ini:/opt/dongtai/engine/conf/config.ini
-
-
+      - ./conf/config.ini:/opt/dongtai/webapi/conf/config.ini
   dongtai-engine-task:
-    image: dongtai/dongtai-engine:latest
-    deploy:
-      replicas: 0
+    image: dongtai/dongtai-server:latest
     restart: always
-    command: ["/opt/dongtai/engine/docker/entrypoint.sh", "task"]
+    command: ["/opt/dongtai/webapi/docker/entrypoint.sh", "beat"]
     volumes:
-      - ./conf/config.ini:/opt/dongtai/engine/conf/config.ini
-    depends_on:
-      - dongtai-engine
+      - ./conf/config.ini:/opt/dongtai/webapi/conf/config.ini

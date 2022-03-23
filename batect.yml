@@ -5,21 +5,21 @@ containers:
   dongtai-redis:
     image: dongtai/dongtai-redis:latest
     image_pull_policy: Always
-  dongtai-webapi:
+  dongtai-server:
     build_directory: .
-    dockerfile: ./DockerfileDev
-    environment: 
-      DOC: ${WEBAPI_DOC:-TRUE}
-      debug: ${WEBAPI_debug:-true}
-      SAVEEYE: ${WEBAPI_SAVEEYE:-TRUE}
-      REQUESTLOG: ${WEBAPI_REQUESTLOG:-TRUE}
-      CPROFILE: ${WEBAPI_CPROFILE:-TRUE}
-      PYTHONAGENT: ${WEBAPI_PYTHON_AGENT:-FALSE}
-      PROJECT_NAME: ${WEBAPI_PROJECT_NAME:-LocalWEBAPI}
-      PROJECT_VERSION: ${WEBAPI_PROJECT_VERSION:-v1.0}
-      LOG_PATH: ${WEBAPI_LOG_PATH:-/tmp/dongtai-agent-python.log}
-      DONGTAI_IAST_BASE_URL: ${DONGTAI_IAST_BASE_URL:-https://iast.io/openapi}
-      DONGTAI_AGNET_TOKEN: ${DONGTAI_AGNET_TOKEN:-79798299b48839c84886d728958a8f708e119868}
+    dockerfile: ./Dockerfile
+      #    environment: 
+      #      DOC: ${WEBAPI_DOC:-TRUE}
+      #      debug: ${WEBAPI_debug:-true}
+      #      SAVEEYE: ${WEBAPI_SAVEEYE:-TRUE}
+      #      REQUESTLOG: ${WEBAPI_REQUESTLOG:-TRUE}
+      #      CPROFILE: ${WEBAPI_CPROFILE:-TRUE}
+      #      PYTHONAGENT: ${WEBAPI_PYTHON_AGENT:-FALSE}
+      #      PROJECT_NAME: ${WEBAPI_PROJECT_NAME:-LocalWEBAPI}
+      #      PROJECT_VERSION: ${WEBAPI_PROJECT_VERSION:-v1.0}
+      #      LOG_PATH: ${WEBAPI_LOG_PATH:-/tmp/dongtai-agent-python.log}
+      #      DONGTAI_IAST_BASE_URL: ${DONGTAI_IAST_BASE_URL:-https://iast.io/openapi}
+      #      DONGTAI_AGNET_TOKEN: ${DONGTAI_AGNET_TOKEN:-79798299b48839c84886d728958a8f708e119868}
     volumes:
       - .:/opt/dongtai/webapi/
 
@@ -31,25 +31,20 @@ containers:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
 
-  dongtai-openapi:
-    image: dongtai/dongtai-openapi:latest
-    image_pull_policy: Always
-    volumes:
-      - ./conf/config.ini:/opt/dongtai/openapi/conf/config.ini
-
   dongtai-engine:
-    image: dongtai/dongtai-engine:latest
-    image_pull_policy: Always
+    build_directory: .
+    dockerfile: ./Dockerfile
+    command: /opt/dongtai/engine/docker/entrypoint.sh worker
     volumes:
-      - ./conf/config.ini:/opt/dongtai/engine/conf/config.ini
+      - .:/opt/dongtai/webapi/
 
 
   dongtai-engine-task:
-    image: dongtai/dongtai-engine:latest
-    image_pull_policy: Always
-    command: /opt/dongtai/engine/docker/entrypoint.sh task
+    build_directory: .
+    dockerfile: ./Dockerfile
+    command: /opt/dongtai/engine/docker/entrypoint.sh beat
     volumes:
-      - ./conf/config.ini:/opt/dongtai/engine/conf/config.ini
+      - ./conf/config.ini:/opt/dongtai/webapi/conf/config.ini
     dependencies:
       - dongtai-engine
 
@@ -57,7 +52,7 @@ tasks:
   serve:
     description: Serve the webapi application standingalone 
     run:
-      container: dongtai-webapi        
+      container: dongtai-server        
       entrypoint: /opt/dongtai/webapi/.batect/agent_deco.sh /opt/dongtai/webapi/.batect/manage_run_server.sh
       ports:
         - "8000:8000"
@@ -65,7 +60,7 @@ tasks:
   serve-uwsgi:
     description: Serve the webapi application standingalone 
     run:
-      container: dongtai-webapi        
+      container: dongtai-server        
       ports:
         - "8000:8000"
     group: serve
@@ -73,16 +68,18 @@ tasks:
   shell:
     description: Serve the webapi application standingalone 
     run:
-      container: dongtai-webapi        
+      container: dongtai-server        
       entrypoint: /bin/bash 
       ports:
         - "8000:8000"
+    dependencies:
+      - dongtai-mysql
     group: serve
 
   makemessages:
     description: makemessages about i18n 
     run:
-      container: dongtai-webapi        
+      container: dongtai-server        
       entrypoint: python manage.py makemessages -l zh -l en 
       ports:
         - "8000:8000"
@@ -91,7 +88,7 @@ tasks:
   serve-with-db:
     description: Serve the webapi application with db
     run:
-      container: dongtai-webapi        
+      container: dongtai-server        
         #      entrypoint: /opt/dongtai/webapi/.batect/agent_deco.sh /opt/dongtai/webapi/.batect/manage_run_server.sh
       ports:
         - "8000:8000"
@@ -106,7 +103,7 @@ tasks:
   test:
     description: run webapi unittest 
     run:
-      container: dongtai-webapi
+      container: dongtai-server
       entrypoint: /opt/dongtai/webapi/.batect/agent_deco.sh /opt/dongtai/webapi/.batect/manage_test.sh
     dependencies:
       - dongtai-mysql
@@ -118,8 +115,7 @@ tasks:
       container: dongtai-web
     dependencies:
       - dongtai-mysql
-      - dongtai-webapi
-      - dongtai-openapi
+      - dongtai-server
     group: integration
   integration-test-all:
     description: integration with all components
@@ -127,8 +123,7 @@ tasks:
       container: dongtai-web
     dependencies:
       - dongtai-mysql
-      - dongtai-webapi
-      - dongtai-openapi
+      - dongtai-server
       - dongtai-redis
       - dongtai-engine
       - dongtai-engine-task

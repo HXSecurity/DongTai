@@ -7,7 +7,7 @@
 import json
 import logging
 import time
-from hashlib import sha1
+from hashlib import sha256,sha1
 
 import requests
 from dongtai.models.agent_method_pool import MethodPool
@@ -229,15 +229,25 @@ class SaasMethodPoolHandler(IReportHandler):
             logger.info(f'[-] Failure: send method_pool [{method_pool_id}], Error: {e}')
 
     def calc_hash(self):
-        sign_raw = self.http_uri
+        sign_raw = '-'.join(
+            filter(lambda x: x, [
+                getattr(self, i, '')
+                for i in ('http_uri','http_method', 'req_header', 'req_params', 'req_data')
+            ]))
         for method in self.method_pool:
             sign_raw += f"{method.get('className')}.{method.get('methodName')}()->"
-        sign_sha1 = self.sha1(sign_raw)
-        return sign_sha1
+        sign_sha256 = self.sha256(sign_raw)
+        return sign_sha256
 
     @staticmethod
     def sha1(raw):
         h = sha1()
+        h.update(raw.encode('utf-8'))
+        return h.hexdigest()
+    
+    @staticmethod
+    def sha256(raw):
+        h = sha256()
         h.update(raw.encode('utf-8'))
         return h.hexdigest()
 
