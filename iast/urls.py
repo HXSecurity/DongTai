@@ -14,6 +14,7 @@ from iast.account.user import UserEndPoint
 from iast.base.update_project_version import UpdateProjectVersion
 from iast.threshold.del_threshold_setting import DelAgentThresholdConfig
 from iast.threshold.del_webhook_setting import DelAgentWebHookConfig
+from iast.threshold.get_config_setting_detail import GetAgentThresholdConfigDetail
 from iast.views.agent_delete import AgentDeleteEndPoint
 from iast.views.agent_deploy import AgentDeploy
 from iast.views.agent_deploy_doc import AgentDeployDesc
@@ -317,6 +318,7 @@ urlpatterns = [
     path('threshold/settings', AgentThresholdConfig.as_view()),
     # get user settings disaster recovery strategy GetAgentThresholdConfig
     path('threshold/settings/get', GetAgentThresholdConfig.as_view()),
+    path('threshold/settings/get/<int:pk>', GetAgentThresholdConfigDetail.as_view()),
     path('threshold/settings/del', DelAgentThresholdConfig.as_view()),
     # user webhook setting agent upload report  forward
     path('webhook/settings', AgentWebHookConfig.as_view()),
