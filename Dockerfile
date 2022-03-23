@@ -6,12 +6,9 @@ ENV LC_ALL=en_US.UTF-8
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US.UTF-8
 ENV TZ=Asia/Shanghai
-ENV debug=true
 
-RUN curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add - \
-    && apt-key fingerprint ABF5BD827BD9BF62 \
-    && apt-get update -y \
-    && apt install -y gettext libc6-dev unzip curl vim cron swig openjdk-11-jdk fonts-wqy-microhei
+RUN apt-get update -y \
+		&& apt install -y gettext gcc make cmake libmariadb-dev curl libc6-dev unzip cron  openjdk-11-jdk fonts-wqy-microhei
     
 RUN curl -L https://github.com/Endava/cats/releases/download/cats-7.0.1/cats-linux -o  /usr/local/bin/cats \
 	&& chmod +x /usr/local/bin/cats \
@@ -25,6 +22,5 @@ WORKDIR /opt/dongtai/webapi
 
 RUN mkdir -p /tmp/iast_cache/package && mv /opt/dongtai/webapi/*.jar /tmp/iast_cache/package/ && mv /opt/dongtai/webapi/*.tar.gz /tmp/
 
-RUN python manage.py compilemessages  
 
 ENTRYPOINT ["/bin/bash","/opt/dongtai/webapi/docker/entrypoint.sh"]
