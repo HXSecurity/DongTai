@@ -1,4 +1,4 @@
-#python /opt/dongtai/engine/docker/version_update.py || true
+#!/bin/bash
 echo '启动uwsgi服务'
 python manage.py compilemessages  
 sleep 2
