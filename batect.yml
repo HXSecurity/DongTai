@@ -2,6 +2,9 @@ containers:
   dongtai-mysql: 
     image: dongtai/dongtai-mysql-unittest:latest
     image_pull_policy: Always
+    ports:
+      - "33060:3306"
+  
   dongtai-redis:
     image: dongtai/dongtai-redis:latest
     image_pull_policy: Always
