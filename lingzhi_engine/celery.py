@@ -12,11 +12,11 @@ from celery import Celery
 # set the default Django settings module for the 'celery' program.
 from kombu import Queue, Exchange
 
-from lingzhi_engine import settings
+from webapi import settings
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lingzhi_engine.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'webapi.settings')
 
-app = Celery('lingzhi-engine')
+app = Celery('dongtai')
 
 configs = {k: v for k, v in settings.__dict__.items() if k.startswith('CELERY')}
 # Using a string here means the worker doesn't have to serialize
