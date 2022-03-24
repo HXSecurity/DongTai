@@ -22,7 +22,6 @@ from drf_spectacular.utils import extend_schema
 from apiserver.decrypter import parse_data
 from django.http.request import QueryDict
 
-
 logger = logging.getLogger("django")
 
 
@@ -41,11 +40,16 @@ class StartupTimeEndPoint(OpenApiEndPoint):
         logger.error('agent not found')
         return R.failure(data=None)
 
+
 class StartupTimeGzipEndPoint(StartupTimeEndPoint):
     name = "api-v1-startuptime"
 
     @extend_schema(description='Agent Limit', auth=[DongTaiAuth.TOKEN])
     def post(self, request: Request):
-        param = parse_data(request.read())
-        request._full_data = param
-        return super().post(request)
+        try:
+            param = parse_data(request.read())
+            request._full_data = param
+            return super().post(request)
+        except Exception as e:
+            logger.info(e)
+            return R.failure(data=None)
