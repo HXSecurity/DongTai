@@ -83,6 +83,6 @@ class AgentThresholdConfig(UserEndPoint):
 
         config = self.create_agent_config(user, details, hostname, ip, port, cluster_name, cluster_version, priority,id)
         if config:
-            return R.success(msg=_('Config has been created successfully'))
+            return R.success(msg=_('保存成功'))
         else:
-            return R.failure(msg=_('Failed to create config'))
+            return R.failure(msg=_('保存失败'))

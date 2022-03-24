@@ -39,12 +39,20 @@ class GetAgentThresholdConfig(UserEndPoint):
                     data_detail = data['details']
                 del data['user']
                 del data['details']
-                data['enableAutoFallback'] = data_detail.get("enableAutoFallback", None)
-                data['hookLimitTokenPerSecond'] = data_detail.get("hookLimitTokenPerSecond", None)
-                data['heavyTrafficLimitTokenPerSecond'] = data_detail.get("heavyTrafficLimitTokenPerSecond", None)
-                data['cpuUsagePercentage'] = data_detail.get("performanceLimitMaxThreshold", {}).get("cpuUsage", {}).get("cpuUsagePercentage",None)
-                data['memUsagePercentage'] = data_detail.get("performanceLimitMaxThreshold", {}).get("memoryUsage", {}).get("memUsagePercentage",None)
 
+                if type(data_detail) == dict:
+
+                    data['enableAutoFallback'] = data_detail.get("enableAutoFallback", None)
+                    data['hookLimitTokenPerSecond'] = data_detail.get("hookLimitTokenPerSecond", None)
+                    data['heavyTrafficLimitTokenPerSecond'] = data_detail.get("heavyTrafficLimitTokenPerSecond", None)
+                    data['cpuUsagePercentage'] = data_detail.get("performanceLimitMaxThreshold", {}).get("cpuUsage", {}).get("cpuUsagePercentage",None)
+                    data['memUsagePercentage'] = data_detail.get("performanceLimitMaxThreshold", {}).get("memoryUsage", {}).get("memUsagePercentage",None)
+                else:
+                    data['enableAutoFallback'] = ""
+                    data['hookLimitTokenPerSecond'] = ""
+                    data['heavyTrafficLimitTokenPerSecond'] = ""
+                    data['cpuUsagePercentage'] = ""
+                    data['memUsagePercentage'] = ""
                 result.append(data)
         else:
             result = []

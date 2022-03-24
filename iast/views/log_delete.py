@@ -19,8 +19,13 @@ class LogDelete(UserEndPoint):
             ids = [int(id.strip()) for id in ids.split(',')]
 
             user = request.user
-            if user.is_talent_admin():
+
+            if user.is_superuser == 1:
                 LogEntry.objects.filter(id__in=ids).delete()
+            elif user.is_superuser == 2:
+                users = self.get_auth_users(user)
+                user_ids = list(users.values_list('id', flat=True))
+                LogEntry.objects.filter(id__in=ids, user_id__in=user_ids).delete()
             else:
                 LogEntry.objects.filter(id__in=ids, user=user).delete()
 
