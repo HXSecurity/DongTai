@@ -5,9 +5,12 @@
 # software: PyCharm
 # project: webapi
 
+import logging
 from dongtai.endpoint import OpenApiEndPoint
 from django.http import StreamingHttpResponse
 from rest_framework.authtoken.models import Token
+
+logger = logging.getLogger("django")
 
 TEMPLAGE_DATA = """#/bin/bash
 PID=''
@@ -92,7 +95,12 @@ class AutoDeployEndPoint(OpenApiEndPoint):
         :param request:
         :return:
         """
-        url = request.query_params['url']
-        token, success = Token.objects.get_or_create(user=request.user)
-        data = TEMPLAGE_DATA.replace("{url}", url).replace("{token}", token.key)
-        return StreamingHttpResponse(data)
+        try:
+            url = request.query_params['url']
+            token, success = Token.objects.get_or_create(user=request.user)
+            data = TEMPLAGE_DATA.replace("{url}", url).replace("{token}", token.key)
+            return StreamingHttpResponse(data)
+        except Exception as e:
+            logger.info(e)
+            return StreamingHttpResponse(TEMPLAGE_DATA)
+            
