@@ -45,7 +45,7 @@ class StrategyType(UserEndPoint):
         response_schema=_ResponseSerializer,
     )
     def get(self, request):
-        queryset = IastStrategyModel.objects.all()
+        queryset = IastStrategyModel.objects.filter(state="enable")
         allType = IastVulLevel.objects.all().order_by("id")
         result = []
         curTyp = {}
