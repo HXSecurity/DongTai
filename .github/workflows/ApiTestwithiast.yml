@@ -2,11 +2,6 @@
 name: "ApiTest-withIAST"
 
 on:
-  push:
-    branches: [main,develop]
-  pull_request:
-    # The branches below must be a subset of the branches above
-    branches: [main,develop]
   schedule:
     - cron: '0 0 * * *'
     
@@ -43,7 +38,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           python-version: 3.7
-      
+          ref: develop
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
