@@ -68,11 +68,11 @@ class HookProfilesEndPoint(OpenApiEndPoint):
 
         return R.success(data=profiles)
 
-    def put(self, request):
-        pass
-
-    def post(self):
-        pass
+#    def put(self, request):
+#        pass
+#
+#    def post(self):
+#        pass
 
 
 if __name__ == '__main__':
