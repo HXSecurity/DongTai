@@ -51,5 +51,5 @@ class StartupTimeGzipEndPoint(StartupTimeEndPoint):
             request._full_data = param
             return super().post(request)
         except Exception as e:
-            logger.info(e, exec_info=True)
+            logger.info(e)
             return R.failure(data=None)
