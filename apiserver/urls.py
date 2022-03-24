@@ -10,6 +10,7 @@ from django.urls import include, path
 
 from apiserver.views.agent_download import AgentDownload
 from apiserver.views.agent_register import AgentRegisterEndPoint
+from apiserver.views.agent_update import AgentUpdateEndPoint
 from apiserver.views.engine_auto_deploy import AutoDeployEndPoint
 from apiserver.views.engine_download import EngineDownloadEndPoint
 from apiserver.views.engine_heartbeat import EngineHeartBeatEndPoint
@@ -36,6 +37,7 @@ urlpatterns = [
     path('engine/heartbeat', EngineHeartBeatEndPoint.as_view()),
     path('engine/download', EngineDownloadEndPoint.as_view()),
     path('agent/register', AgentRegisterEndPoint.as_view()),
+    path('agent/update', AgentUpdateEndPoint.as_view()),
     path('engine/update', EngineUpdateEndPoint.as_view()),
     path('engine/update/<int:status>', EngineUpdateEndPoint.as_view()),
     path('profiles', HookProfilesEndPoint.as_view()),
