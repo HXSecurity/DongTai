@@ -471,6 +471,8 @@ def send_to_wechat(vul):
     todo 发送漏洞通知到企业微信
     :return:
     """
+    return
+
     wechat = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxx"
     header = {
         "Content-Type": "application/json",

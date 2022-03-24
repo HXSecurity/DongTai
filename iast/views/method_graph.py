@@ -21,7 +21,7 @@ logger = logging.getLogger('dongtai-webapi')
 class MethodGraph(AnonymousAndUserEndPoint):
     def get(self, request):
         try:
-            method_pool_id = request.query_params.get('method_pool_id')
+            method_pool_id = int(request.query_params.get('method_pool_id'))
             method_pool_type = request.query_params.get('method_pool_type')
             replay_id = request.query_params.get('method_pool_replay_id', None)
             replay_type = request.query_params.get('replay_type', None)
@@ -35,18 +35,22 @@ class MethodGraph(AnonymousAndUserEndPoint):
                 return R.failure(msg=_('Method pool ID is empty'))
 
             auth_agents = self.get_auth_and_anonymous_agents(request.user).values('id')
-            auth_agent_ids = auth_agents.values('id')
+            auth_agent_ids = auth_agents.values_list('id', flat=True)
+
+            cur_ids = []
+            for item in auth_agent_ids:
+                cur_ids.append(int(item))
+
             if method_pool_type == 'normal' and MethodPool.objects.filter(
-                    agent_id__in=auth_agent_ids, id=method_pool_id).exists():
+                    agent_id__in=cur_ids, id=method_pool_id).exists():
                 method_pool = MethodPool.objects.filter(
                     id=method_pool_id).first()
             elif method_pool_type == 'replay' and replay_id:
                 method_pool = IastAgentMethodPoolReplay.objects.filter(
                     id=replay_id, replay_type=replay_type).first()
             elif method_pool_type == 'replay' and MethodPool.objects.filter(
-                    agent_id__in=auth_agent_ids,
-                    relation_id=method_pool_id,
-                    replay_type=replay_type).exists():
+                    agent_id__in=cur_ids,
+                    id=method_pool_id).exists():
                 method_pool = IastAgentMethodPoolReplay.objects.filter(
                     relation_id=method_pool_id,
                     replay_type=replay_type).first()
@@ -59,7 +63,7 @@ class MethodGraph(AnonymousAndUserEndPoint):
             data, link_count, method_count = self.search_all_links(method_pool.method_pool)
             return R.success(data=data)
 
-        except ValueError as e:
+        except Exception as e:
             return R.failure(msg=_('Page and PageSize can only be numeric'))
 
     def get_method_pool(self, user, method_pool_id):
