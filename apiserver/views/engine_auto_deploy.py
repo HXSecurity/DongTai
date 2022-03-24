@@ -5,6 +5,7 @@
 # software: PyCharm
 # project: webapi
 
+import logging
 from dongtai.endpoint import OpenApiEndPoint
 from django.http import StreamingHttpResponse
 from rest_framework.authtoken.models import Token
