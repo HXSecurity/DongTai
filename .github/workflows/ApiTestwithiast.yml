@@ -50,9 +50,9 @@ jobs:
           pip install -r requirements-test.txt
           pip install schemathesis
       
-      - name: Install DongTai-IAST
+      - name: Install dependencies
         run: |
-          curl -X GET "https://iast.io/openapi/api/v1/agent/download?url=https://iast.io/openapi&language=python&projectName=WEBAPI${{ github.repository_owner }}.${{github.run_number}}" -H "Authorization: Token a303ab4bedc93f96808335d023d7ac4d2ba00773" -o dongtai-agent-python.tar.gz -k
+	  curl -X GET "https://iast.io/openapi/api/v1/agent/download?url=https://iast.io/openapi&language=python&projectName=WEBAPI${{ github.repository_owner }}.${{github.run_number}}" -H "Authorization: Token a303ab4bedc93f96808335d023d7ac4d2ba00773" -o dongtai-agent-python.tar.gz -k
 	  pip install dongtai-agent-python.tar.gz
 
       
