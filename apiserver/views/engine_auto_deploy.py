@@ -101,6 +101,6 @@ class AutoDeployEndPoint(OpenApiEndPoint):
             data = TEMPLAGE_DATA.replace("{url}", url).replace("{token}", token.key)
             return StreamingHttpResponse(data)
         except Exception as e:
-            logger.info(e,exec_info=True)
-            return StreamingHttpResponse(data)
+            logger.info(e)
+            return StreamingHttpResponse(TEMPLAGE_DATA)
             
