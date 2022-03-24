@@ -23,16 +23,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-def ranstr(num):
-    H = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()`-{}|:?><>?'
-    salt = ''
-    for i in range(num):
-        salt += random.choice(H)
-    return salt
-
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ranstr(50)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("debug", 'false') == 'true' #or os.getenv('environment', None) in ('TEST',)
@@ -44,6 +34,19 @@ if len(status) == 0:
     print("config file not exist. stop running")
     exit(0)
 
+def ranstr(num):
+    H = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()`-{}|:?><>?'
+    salt = ''
+    for i in range(num):
+        salt += random.choice(H)
+    return salt
+
+
+# SECURITY WARNING: keep the secret key used in production secret!
+try:
+    SECRET_KEY = config.get('security', 'secret_key')
+except Exception as e:
+    SECRET_KEY = ranstr(50)
 # DEBUG = True
 ALLOWED_HOSTS = ['*']
 
@@ -359,7 +362,7 @@ TEST_RUNNER = 'test.NoDbTestRunner'
 #if os.getenv('environment', None) == 'TEST' or os.getenv('REQUESTLOG',
 #                                                         None) == 'TRUE':
 #    MIDDLEWARE.insert(0, 'apitimelog.middleware.RequestLogMiddleware')
-    
+
 
 if os.getenv('environment', None) == 'TEST' or os.getenv('PYTHONAGENT', None) == 'TRUE':
     MIDDLEWARE.insert(0, 'dongtai_agent_python.middlewares.django_middleware.FireMiddleware')
