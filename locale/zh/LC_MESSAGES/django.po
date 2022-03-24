@@ -708,7 +708,7 @@ msgstr "负载数据暂未上传"
 
 #: iast/serializers/agent.py:71 iast/serializers/agent.py:76
 msgid "No flow is detected by the probe"
-msgstr "探针暂未检测到流量"
+msgstr "未探测到服务器地址"
 
 #: iast/serializers/agent.py:133 iast/serializers/agent.py:140
 #: iast/views/agent_alias_modified.py:18 iast/views/agent_start.py:16

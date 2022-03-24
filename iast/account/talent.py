@@ -121,9 +121,11 @@ class TalentEndPoint(SystemAdminEndPoint):
     def init_talent(talent_name, talent_email, created_by, default_username):
         try:
             logger.info(_('Query if the default tenant information exists'))
-            suffix_email = talent_email.split('@')[-1]
-            email = f'{default_username}@{suffix_email}'
-            if User.objects.filter(username=email).exists():
+
+            # suffix_email = talent_email.split('@')[-1]
+            # email = f'{default_username}@{suffix_email}'
+            email = talent_email
+            if User.objects.filter(username=talent_name).exists():
                 logger.error(_('Tenant information already exists, please delete tenant information first'))
                 return False, _('The tenant information already existed, please delete the existing information first')
 
@@ -134,7 +136,7 @@ class TalentEndPoint(SystemAdminEndPoint):
             talent.save()
 
             logger.info(_('Finished creating tenant, start to create tenant default department'))
-            default_department = Department(name=_('Default department'), create_time=timestamp, update_time=timestamp,
+            default_department = Department(name=talent_name, create_time=timestamp, update_time=timestamp,
                                             created_by=created_by)
             default_department.save()
             talent.departments.add(default_department)
@@ -142,7 +144,7 @@ class TalentEndPoint(SystemAdminEndPoint):
             logger.info(_('Finished creating department, start to create default user'))
 
             password = '123456'
-            default_user = User.objects.create_talent_user(username=email, password=password, email=email,
+            default_user = User.objects.create_talent_user(username=talent_name, password=password, email=email,
                                                            phone='11111111111')
             default_user.is_active = True
             default_user.save()
