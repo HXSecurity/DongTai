@@ -109,7 +109,7 @@ msgstr "租户{} 创建失败，原因：{}"
 
 #: apiserver/views/agent_download.py:322
 msgid "Agent download failed, user: {}, error details: {}"
-msgstr ""
+msgstr "Agent 下载失败，用户:{},详细信息:{}"
 
 #: apiserver/views/agent_register.py:133
 msgid "The server port does not exist, has been set to the default: 0"
