@@ -78,11 +78,14 @@ class _VulDetailResponseDataSerializer(serializers.Serializer):
 
 _ResponseSerializer = get_response_serializer(_VulDetailResponseDataSerializer())
 
+
 class VulDetail(UserEndPoint):
 
     def get_server(self):
         server = self.server
         if server:
+            if not server.ip:
+                server.ip = "Unknown"
             return {
                 'name': 'server.name',
                 'hostname': server.hostname,
@@ -99,7 +102,7 @@ class VulDetail(UserEndPoint):
             return {
                 'name': "",
                 'hostname': "",
-                'ip': "",
+                'ip': "Unknown",
                 'port': "",
                 'container': "JavaApplication",
                 'server_type': "",

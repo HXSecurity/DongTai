@@ -260,6 +260,7 @@ class EngineApiEndPoint(EndPoint):
 
 class SystemAdminEndPoint(EndPoint):
     authentication_classes = (SessionAuthentication,)
+    # authentication_classes = (TokenAuthentication,)
     permission_classes = (SystemAdminPermission,)
 
 

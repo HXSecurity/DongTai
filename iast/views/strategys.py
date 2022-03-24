@@ -128,9 +128,14 @@ class StrategysEndpoint(UserEndPoint):
         else:
             return R.success(data=StrategySerializer(queryset, many=True).data,)
 
-        strategy_models = HookType.objects.values(
-            'id', 'name', 'value',
-            'enable').filter(type=const.RULE_SINK).exclude(enable=const.DELETE)
+        strategy_models = HookType.objects.filter(
+            type=const.RULE_SINK
+        ).values(
+            'id',
+            'name',
+            'value',
+            'enable'
+        ).exclude(enable=const.DELETE)
         if strategy_models:
             models = dict()
             for strategy_model in strategy_models:

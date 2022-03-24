@@ -35,6 +35,7 @@ class HeartBeatHandler(IReportHandler):
 
 
     def parse(self):
+        print(self.detail)
         self.cpu = self.detail.get('cpu')
         self.memory = self.detail.get('memory')
         self.req_count = self.detail.get('reqCount')
@@ -96,6 +97,7 @@ class HeartBeatHandler(IReportHandler):
                                          agent=self.agent)
 
     def get_result(self, msg=None):
+
         if self.return_queue is None or self.return_queue == 1:
             try:
                 project_agents = IastAgent.objects.values('id').filter(bind_project_id=self.agent.bind_project_id)
@@ -104,7 +106,7 @@ class HeartBeatHandler(IReportHandler):
 
                 replay_queryset = IastReplayQueue.objects.values(
                     'id', 'relation_id', 'uri', 'method', 'scheme', 'header', 'params', 'body', 'replay_type'
-                ).filter(agent_id__in=project_agents, state=const.WAITING)[:10]
+                ).filter(agent_id__in=project_agents, state__in=[const.WAITING, const.SOLVING])[:200]
                 if len(replay_queryset) == 0:
                     logger.info(_('Replay request does not exist'))
 
