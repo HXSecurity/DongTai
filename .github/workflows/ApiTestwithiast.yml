@@ -60,6 +60,8 @@ jobs:
         run: |
           mysql --host=127.0.0.1 -uroot -p'dongtai-iast' -D dongtai_webapi < /home/runner/work/DongTai/DongTai/test/init.sql
           cp conf/config.ini.test conf/config.ini
+          export PROJECT_NAME=DONGTAI-SERVER.${{ github.repository_owner }}
+          export PROJECT_VERSION=${{github.run_number}}
           export DOC=TRUE
           export PYTHONAGENT=TRUE
           python3 ./docker/version_update.py || true
