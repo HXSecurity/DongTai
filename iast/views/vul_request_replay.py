@@ -276,6 +276,12 @@ class RequestReplayEndPoint(UserEndPoint):
             return R.failure(msg="replay_type error")
         replay_type = const.REQUEST_REPLAY if replay_type is None else int(replay_type)
         replay_data = IastReplayQueue.objects.filter(id=replay_id).first()
+        if not replay_data:
+            return R.failure(
+                status=203,
+                msg=_(
+                    'Replay request does not exist or no permission to access')
+            )
 
         if request.user.is_superuser == 1 or replay_data.agent.user_id == request.user.id:
             pass
