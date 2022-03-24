@@ -317,7 +317,6 @@ class AgentDownload(UserEndPoint):
             else:
                 return R.failure(msg="agent file not exit.")
         except Exception as e:
-            raise e
             logger.error(
                 _('Agent download failed, user: {}, error details: {}').format(
                     request.user.get_username()), e)
