@@ -35,6 +35,7 @@ base_url = http://52.80.75.225:8000
 
 [security]
 csrf_trust_origins = localhost,.huoxian.cn,.secnium.xyz
+secret_key = vbjlvbxfvazjfprywuxgyclmvhtmselddsefxxlcixovmqfpgy
 
 [other]
 domain = http://localhost.domain/
