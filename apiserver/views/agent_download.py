@@ -319,7 +319,7 @@ class AgentDownload(UserEndPoint):
         except Exception as e:
             logger.error(
                 _('Agent download failed, user: {}, error details: {}').format(
-                    request.user.get_username()), e)
+                    request.user.get_username(), e))
             return R.failure(msg="agent file not exit.")
         finally:
             try:
