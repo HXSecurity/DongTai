@@ -46,7 +46,7 @@ jobs:
         run: |
           ossutil cp oss://dongtai/agent_test/java/latest/ ./ --include "*.jar" -r
           ossutil cp oss://dongtai/agent_test/python/ ./  --include "*.tar.gz" -r
-          
+
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
@@ -56,7 +56,11 @@ jobs:
           tags: | 
             registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:latest
             registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:1.0.${{github.run_number}}
-
+            
+      - name: Generate version file
+        run: |
+          echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('${{ github.run_number }}.0.0', '${{ github.event.repository.name }}', '${GITHUB_SHA}');" >> ./docker/version.sql
+        
       - uses: actions/checkout@master
       - name: deploy to cluster
         uses: wahyd4/kubectl-helm-action@master
