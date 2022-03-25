@@ -17,17 +17,13 @@ Available node ip:
 
 Get `dongtai-web service port`:
 
-  $ kubectl get service dongtai-web-pub-svc -n {{.Values.appNamespace}} -o=jsonpath='{.spec.ports[0].nodePort}'
-
-Get `dongtai-openapi service port`: 
-
-  $ kubectl get service dongtai-openapi-pub-svc -n {{.Values.appNamespace}} -o=jsonpath='{.spec.ports[0].nodePort}'
+  $ kubectl get service dongtai-web-pub-svc -n {{ .Release.Namespace }} -o=jsonpath='{.spec.ports[0].nodePort}'
 
 {{ else if eq .Values.accessType "LoadBalancer" }}
 
 Get EXTERNAL-IP ip or DNS:
 
-  $ kubectl get service dongtai-web-pub-svc dongtai-openapi-pub-svc -n {{.Values.appNamespace}}
+  $ kubectl get service dongtai-web-pub-svc dongtai-openapi-pub-svc -n {{ .Release.Namespace }}
 
 {{ else if eq .Values.accessType "ClusterIP" }}
 
