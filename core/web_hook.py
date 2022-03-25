@@ -13,7 +13,9 @@ def forward_for_upload(id, reports, report_type):
     agent 流量转发 web hook
     :return:
     """
+    # print("........")
     typeData = IastAgentUploadTypeUrl.objects.filter(user_id=id, type_id=report_type).order_by("-create_time").first()
+    # print(report_type)
 
     try:
         if typeData and typeData.url:
@@ -23,7 +25,7 @@ def forward_for_upload(id, reports, report_type):
                 headers = {}
         else:
             return None
-        logger.info(f'agent report upload forward begin [{report_type}]')
+        logger.info(f'agent report upload forward begin [{str(report_type)}]')
         req = requests.post(typeData.url, json=reports, headers=headers, timeout=60)
         reports_data = json.dumps(reports)
         logger.info("Forward for url response status {} -".format(str(req.status_code)))
