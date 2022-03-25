@@ -172,6 +172,8 @@ SCA_ENGINE_URL = config.get("engine","url") + '/api/engine/sca?agent_id={agent_i
                             + '&package_path={package_path}&package_signature={package_signature}' \
                             + '&package_name={package_name}&package_algorithm={package_algorithm}'
 REPLAY_ENGINE_URL = config.get("engine", "url") + '/api/engine/run?method_pool_id={id}&model=replay'
+AGENT_ENGINE_URL = config.get("engine", "url") + '/api/engine/agent?user_id={user_id}&report_type={report_type}'
+
 
 LOGGING = {
     'version': 1,
