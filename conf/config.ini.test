@@ -31,6 +31,10 @@ cc_addr = cc_addr
 access_key = LTAI5t7pu9WUT2DcbknfNiaD
 access_key_secret = ZoEOSi7KfayQ7JalvJVHa37fdZ4XFY
 
+[security]
+csrf_trust_origins = localhost,.huoxian.cn,.secnium.xyz
+secret_key = vbjlvbxfvazjfprywuxgyclmvhtmselddsefxxlcixovmqfpgy
+
 [sca]
 base_url = http://52.80.75.225:8000
 
