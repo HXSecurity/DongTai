@@ -53,7 +53,7 @@ class HealthView(UserEndPoint):
                 "status": statusmap[oss_status]
             }
         }
-        if engine_status:
+        if engine_status and engine_resp is not None:
             data.update(engine_resp)
         else:
             data.update({
