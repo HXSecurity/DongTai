@@ -19,9 +19,12 @@ class AgentUpdateEndPoint(OpenApiEndPoint):
         ],
         methods=['POST'])
     def post(self, request):
-        param = parse_data(request.read())
-        agent_id = param.get('agentId')
-        server_addr = param.get('serverAddr')
+        try:
+            param = parse_data(request.read())
+            agent_id = param.get('agentId', None)
+            server_addr = param.get('serverAddr', None)
+        except Exception as e:
+            return R.failure(msg="参数错误")
         user = request.user
         # server_port = param.get('serverPort')
         # server_path = param.get('serverPath')
