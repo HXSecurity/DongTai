@@ -6,16 +6,9 @@
 # project: webapi
 import json
 import logging
-import time
 
-from dongtai.models.asset import Asset
-from dongtai.models.sca_maven_artifact import ScaMavenArtifact
-from dongtai.models.sca_maven_db import ScaMavenDb
-from dongtai.models.sca_vul_db import ScaVulDb
-from dongtai.models.vul_level import IastVulLevel
 from dongtai.utils import const
 from django.utils.translation import gettext_lazy as _
-from dongtai.models.project import IastProject
 
 from apiserver.report.handler.report_handler_interface import IReportHandler
 from apiserver.report.report_handler_factory import ReportHandler

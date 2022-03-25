@@ -78,10 +78,8 @@ class ProjectAdd(UserEndPoint):
                 scan = IastStrategyUser.objects.filter(id=scan_id, user__in=auth_users).first()
                 agent_ids = request.data.get("agent_ids", None)
                 base_url = request.data.get('base_url', None)
-                test_req_header_key = request.data.get('test_req_header_key',
-                                                       None)
-                test_req_header_value = request.data.get(
-                    'test_req_header_value', None)
+                test_req_header_key = request.data.get('test_req_header_key',None)
+                test_req_header_value = request.data.get('test_req_header_value', None)
                 description = request.data.get('description', None)
                 pid = request.data.get("pid", 0)
                 accessable_ips = []
@@ -94,11 +92,9 @@ class ProjectAdd(UserEndPoint):
                 if accessable_ips:
                     parsed_url = urlparse(base_url)
                     if parsed_url.netloc not in parsed_url:
-                        return R.failure(status=202,
-                                         msg=_('base_url validate failed'))
+                        return R.failure(status=202, msg=_('base_url validate failed'))
                 if base_url and not url_validate(base_url):
-                    return R.failure(status=202,
-                                     msg=_('base_url validate failed'))
+                    return R.failure(status=202, msg=_('base_url validate failed'))
                 if agent_ids:
                     try:
                         agents = [int(i) for i in agent_ids.split(',')]
@@ -115,9 +111,7 @@ class ProjectAdd(UserEndPoint):
                 if not version_name:
                     version_name = "V1.0"
                 vul_validation = request.data.get("vul_validation", None)
-                #vul_validation = vul_validation if vul_validation is None else (
-                #    VulValidation.ENABLE
-                #    if vul_validation == True else VulValidation.DISABLE)
+
                 if pid:
                     project = IastProject.objects.filter(id=pid, user__in=auth_users).first()
                     project.name = name
@@ -145,8 +139,7 @@ class ProjectAdd(UserEndPoint):
                 }
                 if not versionInfo or not (
                         versionInfo.version_name == version_name and
-                    (versionInfo.description == description
-                     or not description)):
+                    (versionInfo.description == description or not description)):
                     result = version_modify(project.user,auth_users,
                                             current_project_version)
                     if result.get("status", "202") == "202":
@@ -169,7 +162,7 @@ class ProjectAdd(UserEndPoint):
                 project.scan = scan
                 project.mode = mode
                 project.agent_count = len(agents)
-                project.user = request.user
+                # project.user = request.user
                 project.latest_time = int(time.time())
                 if vul_validation is not None:
                     project.vul_validation = vul_validation
@@ -190,14 +183,10 @@ class ProjectAdd(UserEndPoint):
                 if test_req_header_value:
                     project.test_req_header_value = test_req_header_value
                 project.save(update_fields=[
-                    'name', 'scan_id', 'mode', 'agent_count', 'user_id',
+                    'name', 'scan_id', 'mode', 'agent_count',
                     'latest_time', 'vul_validation', 'base_url',
                     'test_req_header_key', 'test_req_header_value'
                 ])
-
-                #return R.success(
-                #    msg=_('Updated success')) if pid else R.success(
-                #        msg=_('Created success'))
                 return R.success(msg='操作成功')
         except Exception as e:
             logger.error(e)
