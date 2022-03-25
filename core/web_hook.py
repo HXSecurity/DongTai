@@ -14,13 +14,15 @@ def forward_for_upload(id, reports, report_type):
     :return:
     """
     typeData = IastAgentUploadTypeUrl.objects.filter(user_id=id, type_id=report_type).order_by("-create_time").first()
-    # print(report_type)
+
     try:
         if typeData and typeData.url:
             if typeData.headers:
                 headers = typeData.headers
             else:
                 headers = {}
+        else:
+            return None
         logger.info(f'agent report upload forward begin [{report_type}]')
         req = requests.post(typeData.url, json=reports, headers=headers, timeout=60)
         reports_data = json.dumps(reports)

@@ -56,16 +56,29 @@ class AgentCoreStatusUpdate(UserEndPoint):
             control_status = statusData.get("value",None)
             if control_status is None:
                 return R.failure(msg=_('Incomplete parameter, please check again'))
+            user = request.user
+            # 普通用户
+            if user.is_anonymous:
+                queryset = IastAgent.objects.filter(user=user)
+            # 超级管理员
+            elif user.is_system_admin():
+                queryset = IastAgent.objects.all()
+            # 租户管理员
+            elif user.is_superuser == 2:
+                users = self.get_auth_users(user)
+                user_ids = list(users.values_list('id', flat=True))
+                queryset = IastAgent.objects.filter(user_id__in=user_ids)
+            queryset.filter(id__in=agent_ids).update(control=core_status,is_control=1,latest_time=int(time.time())).save(update_fields=['latest_time', 'control', 'is_control'])
+            # for agent_id in agent_ids:
+            #     agent = IastAgent.objects.filter(user=request.user, id=agent_id).first()
+            #     if agent is None:
+            #         continue
+            #     # edit by song
+            #     # if agent.is_control == 1 and agent.control != 3 and agent.control != 4:
+            #     #     continue
+            #     agent.control = core_status
+            #     agent.is_control = 1
+            #     agent.latest_time = int(time.time())
+            #     agent.save(update_fields=['latest_time', 'control', 'is_control'])
 
-            for agent_id in agent_ids:
-                agent = IastAgent.objects.filter(user=request.user, id=agent_id).first()
-                if agent is None:
-                    continue
-                if agent.is_control == 1 and agent.control != 3 and agent.control != 4:
-                    continue
-                agent.control = core_status
-                agent.is_control = 1
-                agent.latest_time = int(time.time())
-                agent.save(update_fields=['latest_time', 'control', 'is_control'])
-
-        return R.success(msg=_('Suspending ...'))
+        return R.success(msg=_('状态已下发'))
