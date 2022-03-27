@@ -8,7 +8,6 @@ import logging, requests, json
 from django.utils.translation import gettext_lazy as _
 from AgentServer import settings
 from dongtai.models.agent import IastAgent
-from core.web_hook import forward_for_upload
 logger = logging.getLogger('dongtai.openapi')
 
 

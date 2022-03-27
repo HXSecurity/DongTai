@@ -107,10 +107,11 @@ class AgentList(UserEndPoint):
                         {'__'.join([kv_pair[0], 'icontains']): kv_pair[1]},
                         searchfields_.items())), Q())
             q = q & Q(online=running_state)
-            if request.user.is_anonymous:
-                q = q & Q(user_id=request.user.id)
+
             if request.user.is_system_admin() != 1:
                 q = q & Q(user__in=self.get_auth_users(request.user))
+            else:
+                q = q & Q(user_id=request.user.id)
 
             total = IastAgent.objects.filter(q).count()
             if page > 1:
