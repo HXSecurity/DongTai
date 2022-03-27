@@ -1,4 +1,4 @@
-name: Release DongTai-Engine
+name: Release DongTai-Server
 
 on:
   release:
@@ -34,6 +34,51 @@ jobs:
       - name: Generate version file
         run: |
           bash .github/workflows/version_update.sh "${{ steps.release.outputs.VERSION }}"
+
+      - name: Setup Ossutil
+        uses: manyuanrong/setup-ossutil@v2.0
+        with:
+          # 填写Bucket所在地域的域名信息，可参考访问域名和数据中心。
+          endpoint: ${{ secrets.ALIYUN_OSS_ENDPOINT }}
+          # AccessKeyID
+          access-key-id: ${{ secrets.ALIYUN_OSS_KEY_ID }}
+          # AccessKeySceret
+          access-key-secret: ${{ secrets.ALIYUN_OSS_KEY_SECRET }}
+      - run: |
+          ossutil cp oss://dongtai/agent/java/${{ steps.release.outputs.VERSION }}/ ./ --include "*.jar" -r
+          ossutil cp oss://dongtai/agent/python/ ./  --include "*.tar.gz" -r
+          ossutil cp oss://dongtai/agent/php/ ./  --include "*.tar.gz" -r
+          ossutil cp oss://huoqi-public/iast/release-version/DongTai-agent-python/${{ steps.release.outputs.VERSION }}/version.txt DongTai-agent-python.version.txt || true
+          ossutil cp oss://huoqi-public/iast/release-version/DongTai-agent-java/${{ steps.release.outputs.VERSION }}/version.txt DongTai-agent-java.version.txt || true
+          ossutil cp oss://huoqi-public/iast/release-version/DongTai-agent-php/${{ steps.release.outputs.VERSION }}/version.txt DongTai-agent-php.version.txt || true
+          DONGTAI_JAVA_AGENT_REPONAME=`cat DongTai-agent-java.version.txt | awk '{split($0,a,",");print a[1]}' | sed -n "1p"`
+          DONGTAI_JAVA_AGENT_VERSION=`cat DongTai-agent-java.version.txt | awk '{split($0,a,",");print a[3]}' | sed -n "1p"`
+          DONGTAI_JAVA_AGENT_HASH=`cat DongTai-agent-java.version.txt | awk '{split($0,a,",");print a[3]}' | sed -n "2p"`
+          DONGTAI_PYTHON_AGENT_REPONAME=`cat DongTai-agent-python.version.txt | awk '{split($0,a,",");print a[1]}' | sed -n "1p"`
+          DONGTAI_PYTHON_AGENT_VERSION=`cat DongTai-agent-python.version.txt | awk '{split($0,a,",");print a[3]}' | sed -n "1p"`
+          DONGTAI_PYTHON_AGENT_HASH=`cat DongTai-agent-python.version.txt | awk '{split($0,a,",");print a[3]}' | sed -n "2p"`
+          echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('${{ steps.release.outputs.version }}', '${{ github.event.repository.name }}', '${GITHUB_SHA}');" >> ./docker/version.sql
+          echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('$DONGTAI_JAVA_AGENT_VERSION', '$DONGTAI_JAVA_AGENT_REPONAME', '$DONGTAI_JAVA_AGENT_HASH');" >> ./docker/version.sql
+          echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('$DONGTAI_PYTHON_AGENT_VERSION', '$DONGTAI_PYTHON_AGENT_REPONAME', '$DONGTAI_PYTHON_AGENT_HASH');" >> ./docker/version.sql
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          file: Dockerfile
+          context: .
+          push: true
+          tags: | 
+            registry.cn-beijing.aliyuncs.com/secnium/dongtai-server:latest
+            registry.cn-beijing.aliyuncs.com/secnium/dongtai-server:${{ steps.release.outputs.version }}
+      - uses: actions/checkout@master
+      - name: deploy to cluster
+        uses: wahyd4/kubectl-helm-action@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+          args: |
+            find .github/deploy/deploy-dongtai-server-prod.yml -type f -exec sed -i 's/VERSION/1.0.${{github.run_number}}/g' {} \;
+            ls .github/deploy/deploy-dongtai-server-prod.yml | xargs -I {} kubectl apply -f {}
 
       - name: finish build
         uses: joelwmale/webhook-action@master
