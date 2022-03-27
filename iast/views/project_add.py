@@ -73,9 +73,8 @@ class ProjectAdd(UserEndPoint):
                 name = request.data.get("name")
                 mode = "插桩模式"
                 scan_id = request.data.get("scan_id")
-
                 auth_users = self.get_auth_users(request.user)
-                scan = IastStrategyUser.objects.filter(id=scan_id, user__in=auth_users).first()
+                scan = IastStrategyUser.objects.filter(id__in=[scan_id, 5], user__in=auth_users).first()
                 agent_ids = request.data.get("agent_ids", None)
                 base_url = request.data.get('base_url', None)
                 test_req_header_key = request.data.get('test_req_header_key',None)
@@ -150,7 +149,7 @@ class ProjectAdd(UserEndPoint):
                     else:
                         project_version_id = result.get("data", {}).get("version_id", 0)
 
-                if agent_ids:
+                if agents:
                     haveBind = IastAgent.objects.filter(
                         ~Q(bind_project_id=project.id),
                         id__in=agents,
@@ -173,7 +172,7 @@ class ProjectAdd(UserEndPoint):
                     ).update(bind_project_id=project.id, project_version_id=project_version_id)
                 else:
                     project.agent_count = IastAgent.objects.filter(
-                        project_name=name, user__in=auth_users).update(
+                        project_name=name, user=request.user).update(
                             bind_project_id=0,
                             project_version_id=project_version_id)
                 if base_url:
