@@ -57,18 +57,19 @@ class AgentCoreStatusUpdate(UserEndPoint):
             if control_status is None:
                 return R.failure(msg=_('Incomplete parameter, please check again'))
             user = request.user
-            # 普通用户
-            if user.is_anonymous:
-                queryset = IastAgent.objects.filter(user=user)
+
             # 超级管理员
-            elif user.is_system_admin():
+            if user.is_system_admin():
                 queryset = IastAgent.objects.all()
             # 租户管理员
             elif user.is_superuser == 2:
                 users = self.get_auth_users(user)
                 user_ids = list(users.values_list('id', flat=True))
                 queryset = IastAgent.objects.filter(user_id__in=user_ids)
-            queryset.filter(id__in=agent_ids).update(control=core_status,is_control=1,latest_time=int(time.time()))
+            else:
+                # 普通用户
+                queryset = IastAgent.objects.filter(user=user)
+            queryset.filter(id__in=agent_ids).update(control=core_status, is_control=1, latest_time=int(time.time()))
             # for agent_id in agent_ids:
             #     agent = IastAgent.objects.filter(user=request.user, id=agent_id).first()
             #     if agent is None:

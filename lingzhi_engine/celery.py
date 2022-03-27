@@ -32,6 +32,7 @@ configs["CELERY_QUEUES"] = [
     Queue("dongtai-periodic-task", Exchange("dongtai-periodic-task"), routing_key="dongtai-periodic-task"),
     Queue("dongtai-replay-task", Exchange("dongtai-replay-task"), routing_key="dongtai-replay-task"),
     Queue("dongtai-sca-task", Exchange("dongtai-sca-task"), routing_key="dongtai-sca-task"),
+    Queue("dongtai-report-task", Exchange("dongtai-report-task"), routing_key="dongtai-report-task"),
 ]
 configs["CELERY_ROUTES"] = {
     "core.tasks.search_vul_from_method_pool": {'exchange': 'dongtai-method-pool-scan', 'routing_key': 'dongtai-method-pool-scan'},
@@ -44,6 +45,7 @@ configs["CELERY_ROUTES"] = {
     "core.tasks.clear_error_log": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
     "core.tasks.export_report": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
     "core.tasks.vul_recheck": {'exchange': 'dongtai-replay-task', 'routing_key': 'dongtai-replay-task'},
+    "core.web_hook.forward_for_upload": {'exchange': 'dongtai-report-task', 'routing_key': 'dongtai-report-task'},
 }
 configs["CELERY_ENABLE_UTC"] = False
 configs["CELERY_TIMEZONE"] = settings.TIME_ZONE
