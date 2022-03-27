@@ -27,7 +27,7 @@ class LogsEndpoint(UserEndPoint):
 
     def set_query_cache(self, queryset):
         total = queryset.values('id').count()
-        max_id = queryset.values_list('id', flat=True).order_by('-action_time')[0]
+        max_id = queryset.values_list('id', flat=True).order_by('-id')[0]
         cache.set(self.cache_key, total, 60 * 60)
         cache.set(self.cache_key_max_id, max_id, 60 * 60)
         return total, max_id
@@ -59,12 +59,12 @@ class LogsEndpoint(UserEndPoint):
                 if not total or not max_id:
                     total, max_id = self.set_query_cache(queryset)
             # only read log_id
-            cur_data = queryset.filter(id__lte=max_id).values_list('id', flat=True).order_by('-action_time')[(page-1)*page_size: page*page_size]
+            cur_data = queryset.filter(id__lte=max_id).values_list('id', flat=True).order_by('-id')[(page-1)*page_size: page*page_size]
             cur_ids = []
             for item in cur_data:
                 cur_ids.append(item)
             # read log detail
-            page_data = LogEntry.objects.filter(id__in=cur_ids).order_by('-action_time').select_related('content_type', 'user')
+            page_data = LogEntry.objects.filter(id__in=cur_ids).order_by('-id').select_related('content_type', 'user')
             if page_data:
                 data = []
                 for item in page_data:
