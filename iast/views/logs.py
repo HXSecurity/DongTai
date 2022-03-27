@@ -41,14 +41,15 @@ class LogsEndpoint(UserEndPoint):
     def get(self, request):
         try:
             page, page_size, user = self.parse_args(request)
-            if request.user.is_anonymous:
-                queryset = LogEntry.objects.filter(user=user)
-            elif user.is_system_admin():
+
+            if user.is_system_admin():
                 queryset = LogEntry.objects.all()
             elif user.is_talent_admin():
                 users = self.get_auth_users(user)
                 user_ids = list(users.values_list('id', flat=True))
                 queryset = LogEntry.objects.filter(user_id__in=user_ids)
+            else:
+                queryset = LogEntry.objects.filter(user=user)
             # set cache key
             self.make_key(request)
             if page == 1:
