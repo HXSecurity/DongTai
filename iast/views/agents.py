@@ -17,7 +17,8 @@ from functools import reduce
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
-
+from iast.base.paginator import ListPageMaker
+from django.core.cache import cache
 logger = logging.getLogger('dongtai-webapi')
 
 _ResponseSerializer = get_response_serializer(
@@ -85,6 +86,28 @@ class AgentList(UserEndPoint):
             return get_server_addr()
         return _('No flow is detected by the probe')
 
+    def make_key(self, request):
+        self.cache_key = f"{request.user.id}_total_agent_id"
+        self.cache_key_max_id = f"{request.user.id}_max_agent_id"
+
+    def get_query_cache(self):
+        total = cache.get(self.cache_key)
+        max_id = cache.get(self.cache_key_max_id)
+        return total, max_id
+
+    def set_query_cache(self, q):
+        total = IastAgent.objects.filter(q).count()
+        max_id = IastAgent.objects.filter(q).values_list('id', flat=True).order_by('-id')[0]
+        cache.set(self.cache_key, total, 60 * 60)
+        cache.set(self.cache_key_max_id, max_id, 60 * 60)
+        return total, max_id
+
+    def parse_args(self, request):
+        page = int(request.query_params.get('page', 1))
+        page_size = int(request.query_params.get('pageSize', 20))
+        page_size = page_size if page_size < 50 else 50
+        return page, page_size, request.user
+
     def get(self, request):
         try:
             page = int(request.query_params.get('page', 1))
@@ -107,20 +130,35 @@ class AgentList(UserEndPoint):
                         {'__'.join([kv_pair[0], 'icontains']): kv_pair[1]},
                         searchfields_.items())), Q())
             q = q & Q(online=running_state)
-
-            if request.user.is_system_admin() != 1:
+            # return self.is_superuser == 2 or self.is_superuser == 1
+            if request.user.is_superuser == 1:
+                pass
+            elif request.user.is_superuser == 2:
                 q = q & Q(user__in=self.get_auth_users(request.user))
             else:
                 q = q & Q(user_id=request.user.id)
 
-            total = IastAgent.objects.filter(q).count()
+
+            self.make_key(request)
+            if page == 1:
+                total, max_id = self.set_query_cache(q)
+            else:
+                total, max_id = self.get_query_cache()
+                if not total or not max_id:
+                    total, max_id = self.set_query_cache(q)
+
             if page > 1:
                 before_id = page * page_size
                 q = q & Q(id__gt=before_id)
+            baseQuery = IastAgent.objects.filter(q)
+            cur_data = baseQuery.filter(id__lte=max_id).values_list('id', flat=True).order_by('-id')[(page - 1) * page_size: page * page_size]
+            cur_ids = []
+            for item in cur_data:
+                cur_ids.append(item)
 
-            queryset = IastAgent.objects.filter(q).order_by('-latest_time').select_related("server","user").prefetch_related(
+            queryset = IastAgent.objects.filter(id__in=cur_ids).order_by('-id').select_related("server","user").prefetch_related(
                 "heartbeats"
-            )[:page_size]
+            )
             end = []
             for item in queryset:
                 one = model_to_dict(item)
