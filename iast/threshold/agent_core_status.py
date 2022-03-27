@@ -68,7 +68,7 @@ class AgentCoreStatusUpdate(UserEndPoint):
                 users = self.get_auth_users(user)
                 user_ids = list(users.values_list('id', flat=True))
                 queryset = IastAgent.objects.filter(user_id__in=user_ids)
-            queryset.filter(id__in=agent_ids).update(control=core_status,is_control=1,latest_time=int(time.time())).save(update_fields=['latest_time', 'control', 'is_control'])
+            queryset.filter(id__in=agent_ids).update(control=core_status,is_control=1,latest_time=int(time.time()))
             # for agent_id in agent_ids:
             #     agent = IastAgent.objects.filter(user=request.user, id=agent_id).first()
             #     if agent is None:
