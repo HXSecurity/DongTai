@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <style scoped lang="css">
+  @charset "UTF-8";
+  * {
+    margin: 0;
+    padding: 0;
+    font-family: SimSun, Roboto, 'Segoe UI',Arial,'Microsoft Yahei',sans-serif;
+  }
+
+  .black {
+    color: #000;
+  }
+
+  .bold {
+    font-weight: 600;
+  }
+
+  h2 {
+    margin: 25px 0;
+    font-weight: bold;
+    font-size: 8.4mm;
+  }
+
+  h3 {
+    margin: 10px auto;
+    font-size: 6.3mm;
+    font-weight: normal;
+  }
+
+  h4 {
+    margin: 10px auto;
+    font-size: 5.8mm;
+    font-weight: normal;
+  }
+
+  .text {
+    margin: 5px 5px;
+    letter-spacing: 1px;
+    text-indent: 2em;
+    color: #111;
+    font-size: 5mm;
+    line-height: 14.5mm;
+  }
+
+  .highlevel {
+    color: #d5000a;
+  }
+
+  .middlelevel {
+    color: #fabc05;
+  }
+
+  .lowlevel {
+    color: #4385f5;
+  }
+
+  .nonelevel {
+    color: #34a853;
+  }
+
+  a {
+    color: #2684ff;
+  }
+
+  p {
+    font-size: 16px;
+  }
+
+  .echartitem {
+    margin: 30px auto;
+    box-shadow: 0px 10px 8px -3px rgba(100, 100, 100, 0.05), 0px -10px 8px -3px rgba(100, 100, 100, 0.05);
+  }
+
+  table tr {
+    max-width: 200mm;
+  }
+
+  .tablelist tr {
+    margin: 0 !important;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+  }
+
+  .tablelist tr td, .tablelist tr th {
+
+  }
+
+  table.tablelist {font-family: verdana,arial,sans-serif;color:#333333;border-width: 1px;border-color: #666666;border-collapse: collapse;}
+
+    table.tablelist th {border-width: 1px;padding: 8px;border-style: solid;border-color: #666666;background-color: #dedede;}
+
+    table.tablelist td {border-width: 1px;padding: 8px;border-style: solid;border-color: #666666;background-color: #ffffff;}
+
+
+  .echardheader {
+    height: 50px;
+    background-color: white;
+    margin: 5px 0;
+    line-height: 50px;
+    /*text-indent: 2em;*/
+    font-size: 24px;
+  }
+
+  .ui-table {
+    text-align: left;
+  }
+
+  .ui-table tr {
+    margin: 2mm 0;
+    display: block;
+  }
+
+  .ui-table tr th:nth-child(1) {
+    color: #111;
+    font-size: 4.62mm;
+    font-weight: bold;
+    /*min-width: 30mm;*/
+  }
+
+  .ui-table tr td {
+    color: #111;
+    font-size: 4.62mm;
+    word-wrap: break-word;
+    word-break: break-all;
+  }
+
+  .ui-table tr td a {
+    max-width: 190mm;
+    display: block;
+  }
+
+  .ui-table tr .bugdesc {
+    padding: 5mm 5mm;
+    min-width: 192mm;
+    background-color: #eee;
+    border-radius: 5px;
+  }
+
+  .ui-table tr .bugdesc p {
+    letter-spacing: 0;
+    font-size: 4.62mm;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 12;
+    overflow: hidden;
+  }
+
+  .ui-table tr .code {
+    padding: 5mm;
+    border-radius: 3mm;
+    background-color: #eeeeee;
+  }
+
+  body {
+    background-color: #fff;
+  }
+
+  @media print {
+    #test {
+      page-break-inside: avoid;
+    }
+    .ui-table {
+      page-break-inside: avoid;
+    }
+    tr {
+      page-break-inside: avoid;
+    }
+    th {
+      page-break-inside: avoid;
+    }
+    h2, h3 {
+      page-break-inside: avoid;
+    }
+    .pagebreak {
+      page-break-inside: avoid;
+    }
+    /*table {page-break-before:always;}*/
+  }
+
+  .index {
+    width: 210mm;
+    height: 250mm;
+    background-color: #1b1b1b;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .index .logo {
+    position: absolute;
+    top: 10mm;
+    right: 10mm;
+    width: 25mm;
+  }
+
+  .index .title {
+    width: 120mm;
+    top: 224px;
+    margin: 0 auto;
+    margin-top: 224px;
+  }
+
+  .index .title img {
+    width: 120mm;
+  }
+
+  .index p {
+    text-align: center;
+    color: #ddd;
+    font-size: 7mm;
+    font-family: "Times New Roman";
+  }
+
+  .index .main-u2 {
+    width: 150mm;
+    position: absolute;
+    left: 30mm;
+    bottom: 36px;
+  }
+
+  .index-text {
+    width: 210mm;
+    height: 40mm;
+    border-top: 1px solid #000;
+    overflow: hidden;
+  }
+
+  .index-text p {
+    font-weight: 600;
+    letter-spacing: .1em;
+    font-size: 6mm;
+    font-family: 宋体;
+    text-align: center;
+  }
+
+  .main-container {
+    width: 210mm;
+    margin: 0 auto;
+    background-color: #fff;
+    page-break-inside: avoid !important;
+    /*风险值详情图开始*/
+    /*风险值详情图end*/
+  }
+
+  .main-container .bugsinfo .header {
+    height: 50px;
+    border-bottom: 2px solid #ccc;
+  }
+
+  .main-container .bugsinfo .header > div {
+    height: 50px;
+    font-size: 20px;
+    line-height: 50px;
+    text-indent: 2em;
+  }
+
+  .main-container .bugsinfo .header .right {
+    padding: 10px;
+  }
+
+  .main-container .bugsinfo .header .right p {
+    text-align: right;
+    position: relative;
+    right: 2em;
+    line-height: 30px;
+  }
+
+  .main-container .bugsinfo .main .top {
+    margin-top: 20px;
+    height: 50px;
+    text-align: center;
+    color: #f76324;
+    font-size: 12.24mm;
+    font-weight: bold;
+    font-family: 'Source Han Sans CN';
+  }
+
+  .main-container .bugsinfo .main .middle {
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    font-size: 4.62mm;
+    color: #999999;
+    margin-bottom: 25px;
+    font-weight: 600;
+  }
+
+  .main-container .bugsinfo .main .bottom {
+    height: 150px;
+    display: flex;
+    display: -webkit-box;
+    justify-content: space-around;
+  }
+
+  .main-container .bugsinfo .main .bottom .item {
+    width: 22%;
+  }
+
+  .main-container .bugsinfo .main .bottom .item > div {
+    height: 80px;
+    border-radius: 5px;
+    line-height: 80px;
+    color: white;
+    font-size: 8.4mm;
+    text-align: center;
+  }
+
+  .main-container .bugsinfo .main .bottom .item p {
+    height: 70px;
+    line-height: 70px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .main-container .bugslist table tr {
+    border-bottom: 1px solid #eee;
+  }
+
+  .main-container .bugslist table tr th {
+    font-size: 4.62mm;
+    text-align: left;
+    text-indent: 2em;
+  }
+
+  .main-container .bugslist table tr td {
+    font-size: 4.62mm;
+    font-family: "Times New Roman";
+    text-align: left;
+    text-indent: 2em;
+  }
+
+  .main-container .bugslist .item {
+    width: 25%;
+    height: 100%;
+    display: flex;
+  }
+
+  .main-container .bugslist .item .rect {
+    position: relative;
+    top: 18px;
+  }
+
+  .main-container .bugslist .table-item-tr {
+    color: #888;
+  }
+
+  .main-container .bugslist .tale-item {
+    line-height: 12mm;
+    height: 12mm;
+    margin: 1mm 0;
+    width: 100%;
+    background-color: white;
+    display: flex;
+  }
+
+  .main-container .bugslist .tale-item > div {
+    line-height: 12mm;
+  }
+
+  .main-container .bugslist .tale-item .left {
+    text-indent: 2em;
+    width: 50%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .main-container .bugslist .tale-item .middle {
+    width: 25%;
+    font-size: 4.62mm;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .main-container .bugslist .tale-item .right {
+    font-size: 4.62mm;
+    width: 25%;
+  }
+
+  .main-container .bugslist21 .item .rect {
+    width: 14px;
+    height: 14px;
+    background-color: #e94335;
+  }
+
+  .main-container .bugslist21 .item .risk {
+    font-size: 18px;
+  }
+
+  .center_font {
+    font-size: 18px;
+    text-align: center;
+    margin-top:5px;
+    margin-bottom:5px;
+  }
+
+    table, tr, td, th, tbody, thead, tfoot {
+        page-break-inside: avoid !important;
+    }
+    table, p {
+        word-wrap: break-word;
+    }
+    table td {
+        word-break: break-all;
+    }
+    </style>
+</head>
+<body>
+<div class="main-container">
+
+    <div style="height: 300px"></div>
+    <h2 align="center">{{ project.name }}</h2>
+
+    <div style="height: 600px"></div>
+
+    <p class="center_font"> {{ time_str }}</p>
+    <p class="center_font">{{ i18n.security_testing_report }}</p>
+    <div style="margin: 0px 20px;max-width:1180px">
+        <h2 style="page-break-before: always;margin-top: 0px">{{ i18n.first_project_information }}</h2>
+        <table class="tablelist" style="width: 100%" cellspacing="0">
+            <tbody>
+            <tr class=" tale-item table-item-td">
+                <td class="left" style="width: 40%">{{ i18n.application_name }}</td>
+                <td class="right" style="width: 60%">{{ project.name }}</td>
+            </tr>
+            <tr class=" tale-item table-item-td">
+                <td class="left" style="width: 40%">{{ i18n.author }}</td>
+                <td class="right" style="width: 60%">{{user.username}}</td>
+            </tr>
+            <tr class=" tale-item table-item-td">
+                <td class="left" style="width: 40%">{{ i18n.number_of_vulnerability }}</td>
+                <td class="right" style="width: 60%">{{project.vul_count}}</td>
+            </tr>
+            <tr class=" tale-item table-item-td">
+                <td class="left" style="width: 40%">{{ i18n.number_of_agent }}</td>
+                <td class="right" style="width: 60%">{{project.agent_count}}</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h2 style="margin-top: 12px">{{ i18n.second_the_result_analysis }}</h2>
+        <h3>2.1 {{ i18n.vulnerability_severity_levels_distribution }}</h3>
+        <p class="text">
+            {{ levelCountStr }}
+        </p>
+        <h3>2.2 {{ i18n.distribution_of_vulnerability }}</h3>
+
+        <table class="tablelist" style="width: 100%" cellspacing="0">
+            <tbody>
+            <tr class="tale-item table-item-td" style="width:100px">
+                <th class="left" style="text-align: left;width: 100px">{{ i18n.severity_levels }}</th>
+                <th class="right" style="width: 20%">{{ i18n.vulnerability_type_name }}</th>
+                <th class="right" style="width: 20%">{{ i18n.number }}</th>
+            </tr>
+            {% for vulTypeTableBodyRow in vulTypeTableBodyRows %}
+                <tr class=" tale-item table-item-td">
+                    <td class="left" style="text-align: left;width: 60%">{{ vulTypeTableBodyRow.type_level }}</td>
+                    <td class="right" style="width: 20%">{{ vulTypeTableBodyRow.type_name }}</td>
+                    <td class="right" style="width: 20%">{{ vulTypeTableBodyRow.type_count }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <h3>2.3 {{ i18n.vulnerability_details }}</h3>
+
+        {% for vulTypeDetail in vulTypeDetailArray %}
+        <h4>{{ vulTypeDetail.title }}</h4>
+
+            {% for oneVul in vulTypeDetail.vuls %}
+            <p style="font-size:18px">{{ oneVul.title }}</p>
+            <br/>
+            <p style="font-style:italic;font-size:16px">{{ oneVul.summary }}</p>
+            <br/>
+            <!--漏洞列表图start-->
+            <table class="tablelist" style="width: 100%" cellspacing="0">
+                <tbody>
+                <tr class=" tale-item table-item-td">
+                    <td class="left" style="width: 50%">{{ oneVul.severity_level }}</td>
+                    <td class="right" style="width: 50%">{{ oneVul.level_id }}</td>
+                </tr>
+
+                <tr class=" tale-item table-item-td">
+                    <td class="left" style="width: 50%">{{ oneVul.first_scan_time }}</td>
+                    <td class="right" style="width: 50%">{{ oneVul.first_time }}</td>
+                </tr>
+
+                <tr class=" tale-item table-item-td">
+                    <td class="left" style="width: 50%">{{ oneVul.last_scan_time }}</td>
+                    <td class="right" style="width: 50%">{{ oneVul.latest_time }}</td>
+                </tr>
+
+                <tr class=" tale-item table-item-td">
+                    <td class="left" style="width: 50%">{{ oneVul.development_language }}</td>
+                    <td class="right" style="width: 50%">{{ oneVul.language }}</td>
+                </tr>
+
+                <tr class=" tale-item table-item-td">
+                    <td class="left" style="width: 50%">{{oneVul.vulnerability_url}}</td>
+                    <td class="right" style="width: 50%">{{oneVul.url}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <br/>
+            <p style="font-style:italic">{{oneVul.description}}</p>
+            <br/>
+            <p style="line-height:20px">
+                {{oneVul.detail_data1}}
+            </p>
+            <p style="line-height:20px">
+                {{oneVul.detail_data2}}
+            </p>
+            <p style="line-height:20px">
+                {{oneVul.detail_data3}}
+            </p>
+            <br/>
+            {% endfor %}
+
+        {% endfor %}
+    </div>
+</div>
+
+
+</body>
+</html>
