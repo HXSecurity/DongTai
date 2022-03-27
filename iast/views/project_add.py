@@ -72,9 +72,12 @@ class ProjectAdd(UserEndPoint):
             with transaction.atomic():
                 name = request.data.get("name")
                 mode = "插桩模式"
-                scan_id = request.data.get("scan_id")
+                scan_id = int(request.data.get("scan_id",0))
                 auth_users = self.get_auth_users(request.user)
-                scan = IastStrategyUser.objects.filter(id__in=[scan_id, 5], user__in=auth_users).first()
+                if scan_id == 5:
+                    scan = IastStrategyUser.objects.filter(id=scan_id).first()
+                else:
+                    scan = IastStrategyUser.objects.filter(id=scan_id, user__in=auth_users).first()
                 agent_ids = request.data.get("agent_ids", None)
                 base_url = request.data.get('base_url', None)
                 test_req_header_key = request.data.get('test_req_header_key',None)
