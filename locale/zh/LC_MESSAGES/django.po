@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-07 16:53+0800\n"
+"POT-Creation-Date: 2022-03-27 21:46+0800\n"
 "PO-Revision-Date: 2021-08-09 12:55+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -22,7 +22,6 @@ msgid "No such agent"
 msgstr "没有找到对应agent"
 
 #: apiserver/report/handler/api_route_handler.py:70
-#| msgid "API coverage rate obtained successfully"
 msgid "API navigation log record successfully"
 msgstr "API覆盖率获取成功"
 
@@ -31,7 +30,6 @@ msgid "API navigation log failed, why: {}"
 msgstr ""
 
 #: apiserver/report/handler/error_log_handler.py:38
-#| msgid "Report export success"
 msgid "Error log report saving success"
 msgstr "导出报告成功"
 
@@ -47,23 +45,21 @@ msgstr ""
 msgid "field"
 msgstr ""
 
-#: apiserver/report/handler/heartbeat_handler.py:102
-#| msgid "The id of the project"
+#: apiserver/report/handler/heartbeat_handler.py:105
 msgid "There is no probe under the project"
 msgstr "没有探针在项目中"
 
-#: apiserver/report/handler/heartbeat_handler.py:108
-#| msgid "Department does not exist"
+#: apiserver/report/handler/heartbeat_handler.py:111
 msgid "Replay request does not exist"
 msgstr "部门不存在"
 
-#: apiserver/report/handler/heartbeat_handler.py:128
+#: apiserver/report/handler/heartbeat_handler.py:131
 #, fuzzy
 #| msgid "modified successfully"
 msgid "Reproduction request issued successfully"
 msgstr "修改成功"
 
-#: apiserver/report/handler/heartbeat_handler.py:132
+#: apiserver/report/handler/heartbeat_handler.py:135
 #, fuzzy
 #| msgid "Password reset failed, reasons: {E}"
 msgid "Replay request query failed, reason: {}"
@@ -85,19 +81,19 @@ msgid ""
 "access, report data: {report}"
 msgstr ""
 
-#: apiserver/report/handler/sca_handler.py:56
+#: apiserver/report/handler/sca_handler.py:49
 #, fuzzy
 #| msgid "Incomplete data"
 msgid "Data is incomplete, data: {}"
 msgstr "数据不完整"
 
-#: apiserver/report/report_handler_factory.py:29
+#: apiserver/report/report_handler_factory.py:52
 #, fuzzy
 #| msgid "Operation type does not exist"
 msgid "Report type {} handler does not exist"
 msgstr "操作类型不存在"
 
-#: apiserver/report/report_handler_factory.py:40
+#: apiserver/report/report_handler_factory.py:63
 msgid "Registration report type {} handler {}"
 msgstr ""
 
@@ -107,29 +103,35 @@ msgstr ""
 msgid "Agent configuration file creation failed, reason: {E}"
 msgstr "租户{} 创建失败，原因：{}"
 
-#: apiserver/views/agent_download.py:322
+#: apiserver/views/agent_download.py:321
 msgid "Agent download failed, user: {}, error details: {}"
 msgstr "Agent 下载失败，用户:{},详细信息:{}"
 
-#: apiserver/views/agent_register.py:133
+#: apiserver/views/agent_register.py:132
 msgid "The server port does not exist, has been set to the default: 0"
 msgstr ""
 
-#: apiserver/views/agent_register.py:169
+#: apiserver/views/agent_register.py:172
 #, fuzzy
 #| msgid "Operation success"
 msgid "Server record creation success"
 msgstr "操作成功"
 
-#: apiserver/views/agent_register.py:243
+#: apiserver/views/agent_register.py:248
 msgid "auto create project {}"
 msgstr ""
 
-#: apiserver/views/agent_register.py:246
+#: apiserver/views/agent_register.py:251
 #, fuzzy
 #| msgid "Description of the project versoin"
 msgid "auto create project version {}"
 msgstr "项目版本的描述"
+
+#: apiserver/views/agent_update.py:48
+#, fuzzy
+#| msgid "Operation success"
+msgid "Server record update success"
+msgstr "操作成功"
 
 #: apiserver/views/engine_heartbeat.py:46
 #, fuzzy
@@ -321,20 +323,27 @@ msgid "Vulnerability description"
 msgstr "漏洞描述"
 
 #: core/plugins/export_report.py:513
-#| msgid "2.1 Vulnerability Severity Levels Distribution"
 msgid "Vulnerability Severity Levels Distribution"
 msgstr "2.1  漏洞等级分布"
 
 #: core/plugins/export_report.py:514
-#| msgid "2.2 Distribution of Vulnerability"
 msgid "Distribution of Vulnerability"
 msgstr "2.2  漏洞类型分布"
 
-#: core/plugins/export_report.py:518 iast/views/vul_details.py:336
+#: core/plugins/export_report.py:518 iast/views/vul_details.py:339
 msgid "Vulnerability details"
 msgstr "漏洞详情"
 
-#: dongtai/models/agent.py:24
+#: dongtai/endpoint/__init__.py:275 iast/views/log_delete.py:32
+#: iast/views/openapi.py:29 iast/views/project_detail.py:37
+msgid "success"
+msgstr "操作成功"
+
+#: dongtai/endpoint/__init__.py:288 iast/views/logs.py:87
+msgid "failure"
+msgstr "操作失败"
+
+#: dongtai/models/agent.py:27
 msgid "server"
 msgstr ""
 
@@ -343,7 +352,6 @@ msgid "sinks"
 msgstr ""
 
 #: dongtai/models/asset.py:30 dongtai/models/heartbeat.py:39
-#| msgid "Agent"
 msgid "agent"
 msgstr "探针"
 
@@ -363,17 +371,14 @@ msgid "name"
 msgstr ""
 
 #: dongtai/models/department.py:49
-#| msgid "Failed to create, the application name already exists"
 msgid "A department with that department name already exists."
 msgstr "创建失败，项目名称已存在"
 
 #: dongtai/models/department.py:52 dongtai/models/project_version.py:20
-#| msgid "Latest time"
 msgid "create time"
 msgstr "最新时间"
 
 #: dongtai/models/department.py:53 dongtai/models/project_version.py:21
-#| msgid "Latest time"
 msgid "update time"
 msgstr "最新时间"
 
@@ -382,7 +387,6 @@ msgid "created by"
 msgstr ""
 
 #: dongtai/models/department.py:55
-#| msgid "Project id"
 msgid "parent id"
 msgstr "项目id"
 
@@ -397,7 +401,6 @@ msgid ""
 msgstr ""
 
 #: dongtai/models/talent.py:21
-#| msgid "Failed to create, the application name already exists"
 msgid "A talent with that talent name already exists."
 msgstr "创建失败，项目名称已存在"
 
@@ -509,38 +512,34 @@ msgstr "租户：{} 删除成功"
 msgid "Query if the default tenant information exists"
 msgstr "查询默认租户信息是否存在"
 
-#: iast/account/talent.py:127
+#: iast/account/talent.py:129
 msgid ""
 "Tenant information already exists, please delete tenant information first"
 msgstr "租户信息已存在，请先删除原有租户信息"
 
-#: iast/account/talent.py:128
+#: iast/account/talent.py:130
 msgid ""
 "The tenant information already existed, please delete the existing "
 "information first"
 msgstr "租户信息已存在，请先删除原有租户信息"
 
-#: iast/account/talent.py:130
+#: iast/account/talent.py:132
 msgid "Started creating a tenant"
 msgstr "开始创建租户"
 
-#: iast/account/talent.py:136
+#: iast/account/talent.py:138
 msgid "Finished creating tenant, start to create tenant default department"
 msgstr "租户创建完成，开始创建默认部门"
 
-#: iast/account/talent.py:137
-msgid "Default department"
-msgstr "默认部门"
-
-#: iast/account/talent.py:142
+#: iast/account/talent.py:144
 msgid "Finished creating department, start to create default user"
 msgstr "部门创建完成，开始创建默认用户"
 
-#: iast/account/talent.py:155
+#: iast/account/talent.py:157
 msgid "Finsihed creating and initializing tenant"
 msgstr "租户创建及初始化完成"
 
-#: iast/account/talent.py:158
+#: iast/account/talent.py:160
 msgid "Failed to created a tenant, error message:{}"
 msgstr "创建租户失败，错误原因：{}"
 
@@ -634,8 +633,9 @@ msgstr "项目ID"
 msgid "Whether it is the current version, 1 means yes, 0 means no."
 msgstr "表示是否为当前版本，1代表是，0代表否"
 
-#: iast/base/project_version.py:33 iast/views/agent_start.py:43
-#: iast/views/agent_stop.py:39 iast/views/api_route_related_request.py:60
+#: iast/base/project_version.py:33 iast/threshold/agent_core_status.py:50
+#: iast/views/agent_start.py:43 iast/views/agent_stop.py:39
+#: iast/views/api_route_related_request.py:60
 #: iast/views/api_route_search.py:151 iast/views/engine_hook_rule_status.py:107
 #: iast/views/engine_hook_rule_status.py:156
 #: iast/views/engine_hook_rule_summary.py:47
@@ -644,7 +644,7 @@ msgstr "表示是否为当前版本，1代表是，0代表否"
 #: iast/views/engine_method_pool_search.py:173
 #: iast/views/engine_method_pool_search.py:184 iast/views/openapi.py:14
 #: iast/views/openapi.py:68 iast/views/project_add.py:49
-#: iast/views/project_add.py:204 iast/views/project_report_export.py:81
+#: iast/views/project_add.py:195 iast/views/project_report_export.py:81
 #: iast/views/project_report_export.py:86
 #: iast/views/project_report_sync_add.py:53
 #: iast/views/project_version_add.py:18 iast/views/project_version_add.py:43
@@ -694,19 +694,20 @@ msgstr "检测失败"
 msgid "Maven official crawler"
 msgstr "Maven官方爬虫"
 
-#: iast/serializers/agent.py:50
+#: iast/serializers/agent.py:50 iast/views/agents.py:72
 msgid "Online"
 msgstr "运行中"
 
-#: iast/serializers/agent.py:50
+#: iast/serializers/agent.py:50 iast/views/agents.py:72
 msgid "Offline"
 msgstr "已下线"
 
-#: iast/serializers/agent.py:62
+#: iast/serializers/agent.py:62 iast/views/agents.py:184
 msgid "Load data is not uploaded"
 msgstr "负载数据暂未上传"
 
 #: iast/serializers/agent.py:71 iast/serializers/agent.py:76
+#: iast/views/agents.py:82 iast/views/agents.py:87
 msgid "No flow is detected by the probe"
 msgstr "未探测到服务器地址"
 
@@ -719,6 +720,62 @@ msgstr "探针的对应id"
 #: iast/views/agents_delete.py:27
 msgid "The id corresponding to the agent, use\",\" for segmentation."
 msgstr "agent对应的id，使用\",\"进行切分。"
+
+#: iast/serializers/agent_config.py:13 iast/serializers/agent_config.py:27
+#, fuzzy
+#| msgid "The alias corresponding to the agent."
+msgid "The details config to the agent."
+msgstr "探针的别名"
+
+#: iast/serializers/agent_config.py:14
+#, fuzzy
+#| msgid "The short name of the agent"
+msgid "The hostname of the agent."
+msgstr "探针简称"
+
+#: iast/serializers/agent_config.py:15
+#, fuzzy
+#| msgid "The id of the agent"
+msgid "The ip of the agent."
+msgstr "探针id"
+
+#: iast/serializers/agent_config.py:16 iast/serializers/agent_config.py:17
+#, fuzzy
+#| msgid "The id of the agent"
+msgid "The port of the agent."
+msgstr "探针id"
+
+#: iast/serializers/agent_config.py:18 iast/serializers/agent_config.py:28
+#: iast/threshold/agent_core_status.py:23
+#, fuzzy
+#| msgid "The short name of the agent"
+msgid "The cluster_name of the agent."
+msgstr "探针简称"
+
+#: iast/serializers/agent_config.py:19
+#, fuzzy
+#| msgid "The version of agent"
+msgid "The cluster_version of the agent."
+msgstr "探针版本"
+
+#: iast/serializers/agent_config.py:20
+#, fuzzy
+#| msgid "The id of the agent"
+msgid "The priority of the agent."
+msgstr "探针id"
+
+#: iast/serializers/agent_config.py:25 iast/serializers/agent_config.py:33
+#: iast/threshold/agent_core_status.py:21
+#, fuzzy
+#| msgid "The id of the agent"
+msgid "The id of the webHook."
+msgstr "探针id"
+
+#: iast/serializers/agent_config.py:26 iast/threshold/agent_core_status.py:22
+#, fuzzy
+#| msgid "The type of hook rule"
+msgid "The type of the webHook."
+msgstr "Hook规则类型"
 
 #: iast/serializers/hook_strategy.py:14
 msgid ""
@@ -797,7 +854,7 @@ msgstr "用户名不能为空"
 msgid "Password should not be blank"
 msgstr "密码不能为空"
 
-#: iast/serializers/sca.py:40 iast/views/vul_details.py:226
+#: iast/serializers/sca.py:40 iast/views/vul_details.py:229
 #: iast/views/vuls.py:31 iast/views/vuls.py:304
 msgid "The application has not been binded"
 msgstr "暂未绑定项目"
@@ -850,6 +907,219 @@ msgstr "项目名"
 #: iast/serializers/vul.py:112
 msgid "The number of vulnerabilities corresponding to the project"
 msgstr "项目对应的漏洞数量"
+
+#: iast/threshold/agent_core_status.py:16 iast/views/agent_search.py:26
+#: iast/views/agent_start.py:22 iast/views/agent_stop.py:18
+#: iast/views/agent_stop.py:65
+msgid "Suspending ..."
+msgstr "正在暂停..."
+
+#: iast/threshold/agent_core_status.py:28 iast/views/agent_stop.py:22
+msgid "Suspend Agent"
+msgstr "暂停agent"
+
+#: iast/threshold/agent_core_status.py:32 iast/threshold/config_setting.py:61
+#: iast/threshold/del_threshold_setting.py:27
+#: iast/threshold/del_webhook_setting.py:27
+#: iast/threshold/get_config_setting.py:26
+#: iast/threshold/get_config_setting_detail.py:26
+#: iast/threshold/webhook_setting.py:50 iast/views/agent.py:69
+#: iast/views/agent_alias_modified.py:31 iast/views/agent_delete.py:38
+#: iast/views/agent_install.py:30 iast/views/agent_search.py:31
+#: iast/views/agent_start.py:30 iast/views/agent_stop.py:26
+#: iast/views/agent_uninstall.py:28 iast/views/agent_upgrade_online.py:40
+#: iast/views/agents.py:63 iast/views/agents_delete.py:44
+#: iast/views/agents_user.py:23 iast/views/details_id.py:70
+msgid "Agent"
+msgstr "探针"
+
+#: iast/threshold/agent_core_status.py:33
+#, fuzzy
+#| msgid "Agent Start"
+msgid "Agent Status Update"
+msgstr "探针启动"
+
+#: iast/threshold/agent_core_status.py:34
+#, fuzzy
+#| msgid "Stop the running agent by specifying the id."
+msgid "Control the running agent by specifying the id."
+msgstr "使用探针对应的id来停止探针"
+
+#: iast/threshold/agent_core_status.py:44
+#: iast/threshold/agent_core_status.py:58
+#: iast/threshold/del_threshold_setting.py:37
+#: iast/threshold/del_webhook_setting.py:37
+#: iast/threshold/webhook_setting.py:63 iast/views/engine_hook_rule_add.py:51
+#: iast/views/engine_hook_rule_add.py:109
+#: iast/views/engine_hook_rule_modify.py:21
+#: iast/views/engine_hook_rule_modify.py:92
+msgid "Incomplete parameter, please check again"
+msgstr "参数不完整，请检查"
+
+#: iast/threshold/agent_core_status.py:85
+msgid "状态已下发"
+msgstr ""
+
+#: iast/threshold/config_setting.py:17
+#: iast/threshold/del_threshold_setting.py:17
+#: iast/threshold/del_webhook_setting.py:17
+#: iast/threshold/webhook_setting.py:17
+#, fuzzy
+#| msgid "The installation is complete"
+msgid "The setting is complete"
+msgstr "安装完成"
+
+#: iast/threshold/config_setting.py:18
+#: iast/threshold/del_threshold_setting.py:18
+#: iast/threshold/del_webhook_setting.py:18
+#: iast/threshold/get_config_setting.py:17
+#: iast/threshold/get_config_setting_detail.py:17
+#: iast/threshold/get_webhook_setting.py:19
+#: iast/threshold/webhook_setting.py:18 iast/threshold/webhook_type.py:15
+#, fuzzy
+#| msgid "Incomplete parameter, please check again"
+msgid "Incomplete parameter, please try again later"
+msgstr "参数不完整，请检查"
+
+#: iast/threshold/config_setting.py:24 iast/threshold/get_config_setting.py:23
+#: iast/threshold/get_config_setting_detail.py:23
+#: iast/threshold/get_webhook_setting.py:25
+msgid "config Agent"
+msgstr ""
+
+#: iast/threshold/config_setting.py:62 iast/threshold/get_config_setting.py:27
+#: iast/threshold/get_config_setting_detail.py:27
+msgid "Agent threshold Config"
+msgstr ""
+
+#: iast/threshold/config_setting.py:63 iast/threshold/get_config_setting.py:28
+#: iast/threshold/get_config_setting_detail.py:28
+msgid "Configure agent disaster recovery strategy"
+msgstr ""
+
+#: iast/threshold/config_setting.py:86
+msgid "保存成功"
+msgstr ""
+
+#: iast/threshold/config_setting.py:88
+msgid "保存失败"
+msgstr ""
+
+#: iast/threshold/del_threshold_setting.py:24
+#: iast/threshold/del_webhook_setting.py:24
+#, fuzzy
+#| msgid "Delete Agent"
+msgid "del webHook Agent"
+msgstr "删除探针"
+
+#: iast/threshold/del_threshold_setting.py:28
+#: iast/threshold/del_webhook_setting.py:28
+#, fuzzy
+#| msgid "Agent Delete"
+msgid "Agent webHook delete"
+msgstr "删除探针"
+
+#: iast/threshold/del_threshold_setting.py:29
+#: iast/threshold/del_webhook_setting.py:29
+msgid "Delete agent traffic reporting data forwarding address configuration"
+msgstr ""
+
+#: iast/threshold/del_threshold_setting.py:40
+#: iast/threshold/del_webhook_setting.py:40
+#, fuzzy
+#| msgid "Application has been deleted successfully"
+msgid "Config has been deleted successfully"
+msgstr "项目删除成功"
+
+#: iast/threshold/del_threshold_setting.py:42
+#: iast/threshold/del_webhook_setting.py:42
+#, fuzzy
+#| msgid "Failed to get configuration"
+msgid "Failed to delete config"
+msgstr "获取配置失败"
+
+#: iast/threshold/get_config_setting.py:16
+#: iast/threshold/get_webhook_setting.py:18
+#, fuzzy
+#| msgid "create success"
+msgid "Get success"
+msgstr "创建成功"
+
+#: iast/threshold/get_config_setting.py:59
+#: iast/threshold/get_config_setting_detail.py:37
+#: iast/threshold/get_webhook_setting.py:42
+#, fuzzy
+#| msgid "Deleted Successfully"
+msgid "Successfully"
+msgstr "删除成功"
+
+#: iast/threshold/get_config_setting_detail.py:16
+#, fuzzy
+#| msgid "create success"
+msgid "Get detail success"
+msgstr "创建成功"
+
+#: iast/threshold/get_webhook_setting.py:28 iast/threshold/webhook_type.py:24
+msgid "WebHook"
+msgstr ""
+
+#: iast/threshold/get_webhook_setting.py:29
+msgid "WebHook threshold Config get"
+msgstr ""
+
+#: iast/threshold/get_webhook_setting.py:30
+msgid "WebHook threshold list"
+msgstr ""
+
+#: iast/threshold/webhook_setting.py:24
+msgid "config webHook Agent"
+msgstr ""
+
+#: iast/threshold/webhook_setting.py:51
+msgid "Agent webHook Config"
+msgstr ""
+
+#: iast/threshold/webhook_setting.py:52
+msgid "Agent traffic reporting data forwarding address configuration"
+msgstr ""
+
+#: iast/threshold/webhook_setting.py:66
+#, fuzzy
+#| msgid "Account has been created successfully"
+msgid "Config has been created successfully"
+msgstr "账号创建成功"
+
+#: iast/threshold/webhook_setting.py:68
+#, fuzzy
+#| msgid "Failed to get configuration"
+msgid "Failed to create config"
+msgstr "获取配置失败"
+
+#: iast/threshold/webhook_type.py:14
+#, fuzzy
+#| msgid "The type of the parameter"
+msgid "The type is return"
+msgstr "参数类型"
+
+#: iast/threshold/webhook_type.py:21
+msgid "get webhook all type "
+msgstr ""
+
+#: iast/threshold/webhook_type.py:25
+#, fuzzy
+#| msgid "Agent Delete"
+msgid "Agent webHook type"
+msgstr "删除探针"
+
+#: iast/threshold/webhook_type.py:26
+msgid "type list of agent webHook"
+msgstr ""
+
+#: iast/threshold/webhook_type.py:75
+#, fuzzy
+#| msgid "Rule type successfully saved"
+msgid "Get type list successfully"
+msgstr "规则类型保存成功"
 
 #: iast/utils.py:96
 msgid ""
@@ -915,16 +1185,6 @@ msgstr "绑定项目的版本id，若果存在，则探针被绑定"
 #: iast/views/agent.py:47 iast/views/project_summary.py:65
 msgid "Agent language currently included in the project"
 msgstr "项目中所涉及的探针对应的语言"
-
-#: iast/views/agent.py:69 iast/views/agent_alias_modified.py:31
-#: iast/views/agent_delete.py:38 iast/views/agent_install.py:29
-#: iast/views/agent_search.py:31 iast/views/agent_start.py:30
-#: iast/views/agent_stop.py:26 iast/views/agent_uninstall.py:28
-#: iast/views/agent_upgrade_online.py:40 iast/views/agents.py:60
-#: iast/views/agents_delete.py:44 iast/views/agents_user.py:23
-#: iast/views/details_id.py:70
-msgid "Agent"
-msgstr "探针"
 
 #: iast/views/agent.py:70
 msgid "Agent Detail"
@@ -1061,30 +1321,30 @@ msgstr "上传Agent配置"
 msgid "Downloading DongTai Agent"
 msgstr "下载洞态Agent"
 
-#: iast/views/agent_install.py:17 iast/views/agent_install.py:42
+#: iast/views/agent_install.py:17 iast/views/agent_install.py:43
 msgid "The installation is complete"
 msgstr "安装完成"
 
-#: iast/views/agent_install.py:18 iast/views/agent_install.py:44
+#: iast/views/agent_install.py:18 iast/views/agent_install.py:45
 #: iast/views/agent_uninstall.py:17
 msgid "The engine is being installed or uninstalled, please try again later"
 msgstr "引擎正在被安装或卸载，请稍后再试"
 
-#: iast/views/agent_install.py:19 iast/views/agent_install.py:46
+#: iast/views/agent_install.py:19 iast/views/agent_install.py:47
 #: iast/views/agent_start.py:47 iast/views/agent_stop.py:44
 #: iast/views/agent_uninstall.py:18 iast/views/agent_uninstall.py:45
 msgid "Engine does not exist or no permission to access"
 msgstr "引擎不存在或无权操作"
 
-#: iast/views/agent_install.py:25
+#: iast/views/agent_install.py:26
 msgid "Installing an Agent"
 msgstr "安装agent"
 
-#: iast/views/agent_install.py:30
+#: iast/views/agent_install.py:31
 msgid "Agent Install"
 msgstr "探针安装"
 
-#: iast/views/agent_install.py:31
+#: iast/views/agent_install.py:32
 msgid "Install the running agent by specifying the id."
 msgstr "通过指定id来安装运行中的探针"
 
@@ -1110,11 +1370,6 @@ msgstr "每页数量"
 #: scaupload/views.py:33
 msgid "Page index"
 msgstr "对应页码"
-
-#: iast/views/agent_search.py:26 iast/views/agent_start.py:22
-#: iast/views/agent_stop.py:18 iast/views/agent_stop.py:65
-msgid "Suspending ..."
-msgstr "正在暂停..."
 
 #: iast/views/agent_search.py:32
 msgid "Agent Search"
@@ -1149,10 +1404,6 @@ msgstr "正在启动..."
 #: iast/views/agent_status_update.py:17 iast/views/agent_status_update.py:32
 msgid "Engine status was updated successfully."
 msgstr "引擎状态更新成功"
-
-#: iast/views/agent_stop.py:22
-msgid "Suspend Agent"
-msgstr "暂停agent"
 
 #: iast/views/agent_stop.py:27
 msgid "Agent Stop"
@@ -1227,23 +1478,23 @@ msgstr "探针在线升级"
 msgid "Agent upgrade"
 msgstr "探针升级"
 
-#: iast/views/agents.py:27
+#: iast/views/agents.py:30
 msgid "Agent list"
 msgstr "探针列表"
 
-#: iast/views/agents.py:61
+#: iast/views/agents.py:64
 msgid "Agent List"
 msgstr "探针列表"
 
-#: iast/views/agents.py:63
+#: iast/views/agents.py:66
 msgid "Get a list containing Agent information according to conditions."
 msgstr "基于所给条件获取探针信息列表"
 
-#: iast/views/agents.py:101
+#: iast/views/agents.py:206
 msgid "Incorrect format parameter, please check again"
 msgstr "参数格式不正确，请检查。"
 
-#: iast/views/agents.py:104
+#: iast/views/agents.py:209
 msgid "Program error"
 msgstr "程序错误"
 
@@ -1459,7 +1710,7 @@ msgid "Component List with id"
 msgstr "组件列表（项目相关）"
 
 #: iast/views/details_id.py:134 iast/views/vul_count_for_plugin.py:26
-#: iast/views/vul_delete.py:29 iast/views/vul_details.py:340
+#: iast/views/vul_delete.py:29 iast/views/vul_details.py:343
 #: iast/views/vul_list_for_plugin.py:60 iast/views/vul_recheck.py:132
 #: iast/views/vul_recheck.py:212 iast/views/vul_recheck_v2.py:121
 #: iast/views/vul_recheck_v2.py:201 iast/views/vul_sidebar_index.py:72
@@ -1490,12 +1741,6 @@ msgstr "获取对应帮助文档."
 msgid "Policy enabled success, total {} hook rules"
 msgstr "策略启用成功，共{}条hook规则"
 
-#: iast/views/engine_hook_rule_add.py:51 iast/views/engine_hook_rule_add.py:109
-#: iast/views/engine_hook_rule_modify.py:21
-#: iast/views/engine_hook_rule_modify.py:92
-msgid "Incomplete parameter, please check again"
-msgstr "参数不完整，请检查"
-
 #: iast/views/engine_hook_rule_add.py:52 iast/views/engine_hook_rule_add.py:120
 #: iast/views/engine_hook_rule_modify.py:22
 #: iast/views/engine_hook_rule_modify.py:108
@@ -1518,7 +1763,7 @@ msgstr "Hook 规则"
 msgid "Hook Rule Add"
 msgstr "Hook规则添加"
 
-#: iast/views/engine_hook_rule_add.py:102 iast/views/strategys.py:175
+#: iast/views/engine_hook_rule_add.py:102 iast/views/strategys.py:180
 #: iast/views/strategys_add.py:37
 msgid ""
 "Generate corresponding strategy group according to the strategy selected by "
@@ -1957,12 +2202,7 @@ msgstr "日志清空"
 msgid "Log delete"
 msgstr "日志删除"
 
-#: iast/views/log_delete.py:27 iast/views/openapi.py:29
-#: iast/views/project_detail.py:37
-msgid "success"
-msgstr "success"
-
-#: iast/views/log_delete.py:29
+#: iast/views/log_delete.py:34
 msgid "The data to be deleted should not be empty"
 msgstr "待删除的数据不能为空"
 
@@ -1974,15 +2214,11 @@ msgstr "导出失败，原因：日志ID不能为空"
 msgid "Log list"
 msgstr "日志列表"
 
-#: iast/views/logs.py:48 iast/views/vul_recheck.py:47
+#: iast/views/logs.py:84 iast/views/vul_recheck.py:47
 #: iast/views/vul_recheck.py:189 iast/views/vul_recheck_v2.py:37
 #: iast/views/vul_recheck_v2.py:178
 msgid "No permission to access"
 msgstr "无权限访问"
-
-#: iast/views/logs.py:51
-msgid "failure"
-msgstr "failure"
 
 #: iast/views/messages_del.py:28
 msgid "The id of Message"
@@ -2041,15 +2277,15 @@ msgstr "发送消息"
 msgid "Method pool ID is empty"
 msgstr "方法池ID为空"
 
-#: iast/views/method_graph.py:54
+#: iast/views/method_graph.py:58
 msgid "Stain call map type does not exist"
 msgstr "污点调用图类型不存在"
 
-#: iast/views/method_graph.py:57
+#: iast/views/method_graph.py:61
 msgid "Data does not exist or no permission to access"
 msgstr "数据不存在或无权限访问"
 
-#: iast/views/method_graph.py:63
+#: iast/views/method_graph.py:67
 msgid "Page and PageSize can only be numeric"
 msgstr "page和pageSize只能为数字"
 
@@ -2176,11 +2412,11 @@ msgstr "agent对应的id，使用\",\"进行切分。"
 msgid "The id corresponding to the scanning strategy."
 msgstr "扫描策略的对于id"
 
-#: iast/views/project_add.py:51 iast/views/project_add.py:167
+#: iast/views/project_add.py:51 iast/views/project_add.py:162
 msgid "Agent has been bound by other application"
 msgstr "agent已被其他项目绑定"
 
-#: iast/views/project_add.py:52 iast/views/project_add.py:130
+#: iast/views/project_add.py:52 iast/views/project_add.py:126
 msgid "Failed to create, the application name already exists"
 msgstr "创建失败，项目名称已存在"
 
@@ -2201,19 +2437,19 @@ msgstr ""
 "根据所给条件新建项目;\n"
 "            当指定项目id是, 根据所给条件更新对应项目"
 
-#: iast/views/project_add.py:98 iast/views/project_add.py:101
+#: iast/views/project_add.py:97 iast/views/project_add.py:99
 msgid "base_url validate failed"
 msgstr "测试url校验失败"
 
-#: iast/views/project_add.py:107
+#: iast/views/project_add.py:105
 msgid "Agent parse error"
 msgstr "探针升级"
 
-#: iast/views/project_add.py:112
+#: iast/views/project_add.py:110
 msgid "Required scan strategy and name"
 msgstr "需要扫描策略和项目名"
 
-#: iast/views/project_add.py:156
+#: iast/views/project_add.py:151
 msgid "Version Update Error"
 msgstr "项目版本更新"
 
@@ -2523,7 +2759,7 @@ msgid "Projects List"
 msgstr "项目列表"
 
 #: iast/views/sca_details.py:57 iast/views/sca_summary.py:99
-#: iast/views/scas.py:88 iast/views/vul_details.py:277
+#: iast/views/scas.py:88 iast/views/vul_details.py:280
 #: iast/views/vul_status.py:51 iast/views/vul_summary.py:103
 #: iast/views/vul_summary_project.py:98 iast/views/vul_summary_type.py:97
 #: iast/views/vulnerability_status.py:41 iast/views/vuls.py:147
@@ -2531,7 +2767,7 @@ msgid "Get data sample"
 msgstr "获取数据样例"
 
 #: iast/views/sca_details.py:59 iast/views/sca_summary.py:101
-#: iast/views/scas.py:90 iast/views/vul_details.py:279
+#: iast/views/scas.py:90 iast/views/vul_details.py:282
 #: iast/views/vul_status.py:53 iast/views/vul_summary.py:105
 #: iast/views/vul_summary_project.py:100 iast/views/vul_summary_type.py:99
 #: iast/views/vulnerability_status.py:43 iast/views/vuls.py:149
@@ -2745,7 +2981,6 @@ msgid "SensitiveInfoRule Pattern Type List"
 msgstr ""
 
 #: iast/views/sensitive_info_rule.py:252
-#| msgid "Get the list of vulnerabilities corresponding to the user."
 msgid "Get the item corresponding to the user."
 msgstr "获取用户对应的漏洞列表"
 
@@ -2764,7 +2999,7 @@ msgstr ""
 #: iast/views/strategy_delete.py:30 iast/views/strategy_disable.py:24
 #: iast/views/strategy_enable.py:26 iast/views/strategy_modified.py:27
 #: iast/views/strategys.py:80 iast/views/strategys.py:104
-#: iast/views/strategys.py:172 iast/views/strategys_add.py:34
+#: iast/views/strategys.py:177 iast/views/strategys_add.py:34
 #: iast/views/strategys_list.py:27 iast/views/strategys_type.py:40
 msgid "Strategy"
 msgstr "策略"
@@ -2856,11 +3091,11 @@ msgstr "根据id获取策略"
 msgid "Strategy List"
 msgstr "策略列表"
 
-#: iast/views/strategys.py:169
+#: iast/views/strategys.py:174
 msgid "No strategy"
 msgstr "暂无策略"
 
-#: iast/views/strategys.py:173
+#: iast/views/strategys.py:178
 msgid "Strategy Add"
 msgstr "策略添加"
 
@@ -2973,6 +3208,7 @@ msgid "UserID must be a numeric"
 msgstr "userId必须为数字"
 
 #: iast/views/user_passwrd_reset.py:44
+#, fuzzy, python-brace-format
 #| msgid "Password reset failed, reasons: {E}"
 msgid "Password reset failed, reasons: {E}"
 msgstr "密码重置失败，原因：{e}"
@@ -3037,37 +3273,37 @@ msgstr "使用漏洞对应的id来删除漏洞"
 msgid "Failed to delete, error message: Vulnerability does not exist"
 msgstr "删除失败，原因：漏洞不存在"
 
-#: iast/views/vul_details.py:134
+#: iast/views/vul_details.py:137
 msgid "Source method"
 msgstr "污点来源方法"
 
-#: iast/views/vul_details.py:136
+#: iast/views/vul_details.py:139
 msgid "Hazardous method"
 msgstr "危险方法"
 
-#: iast/views/vul_details.py:138
+#: iast/views/vul_details.py:141
 msgid "Propagation method"
 msgstr "传播方法"
 
-#: iast/views/vul_details.py:155
+#: iast/views/vul_details.py:158
 msgid "Analysis of errovence analysis of stain call diagram: {}"
 msgstr "[{}] 污点调用图解析出错，原因：{}"
 
-#: iast/views/vul_details.py:165
+#: iast/views/vul_details.py:168
 msgid "Error analysis of Header, error message: {}"
 msgstr "header解析出错，错误原因：{}"
 
-#: iast/views/vul_details.py:204 iast/views/vul_details.py:358
+#: iast/views/vul_details.py:207 iast/views/vul_details.py:361
 msgid "[{}] Vulnerability information parsing error, error message: {}"
 msgstr "[{}] 漏洞信息解析出错，原因：{}"
 
-#: iast/views/vul_details.py:338
+#: iast/views/vul_details.py:341
 msgid ""
 "Use the corresponding id of the vulnerability to query the details of the "
 "vulnerability"
 msgstr "使用漏洞对应的id来获取漏洞详情信息"
 
-#: iast/views/vul_details.py:359
+#: iast/views/vul_details.py:362
 msgid "Vulnerability data query error"
 msgstr "漏洞数据查询出错"
 
@@ -3159,7 +3395,7 @@ msgstr "ids必须为：漏洞ID,漏洞ID 格式"
 
 #: iast/views/vul_recheck.py:55 iast/views/vul_recheck.py:168
 #: iast/views/vul_recheck_v2.py:44 iast/views/vul_recheck_v2.py:157
-#: iast/views/vul_request_replay.py:237
+#: iast/views/vul_request_replay.py:238
 msgid "Vulnerability replay error"
 msgstr "漏洞重放出错"
 
@@ -3193,40 +3429,40 @@ msgstr "验证用户对应的漏洞.需要指定验证行为的类型"
 msgid "Verification in progress"
 msgstr "验证中"
 
-#: iast/views/vul_request_replay.py:76
+#: iast/views/vul_request_replay.py:77
 msgid "HTTP request parsing error, error message: {}"
 msgstr "HTTP请求解析出错，原因：{}"
 
-#: iast/views/vul_request_replay.py:199
+#: iast/views/vul_request_replay.py:200
 msgid "Stain pool data does not exist or no permission to access"
 msgstr "污点池数据不存在或无权操作"
 
-#: iast/views/vul_request_replay.py:213
+#: iast/views/vul_request_replay.py:214
 msgid ""
 "The probe has been destroyed or suspended, please check the probe status"
 msgstr "探针已销毁或暂停运行，请选检查探针状态"
 
-#: iast/views/vul_request_replay.py:219
+#: iast/views/vul_request_replay.py:220
 msgid "Replay request is illegal"
 msgstr "重放请求不合法"
 
-#: iast/views/vul_request_replay.py:232
+#: iast/views/vul_request_replay.py:233
 msgid "Relay request success"
 msgstr "请求重返成功"
 
-#: iast/views/vul_request_replay.py:251
+#: iast/views/vul_request_replay.py:252
 msgid "Response header analysis error, error message: {}"
 msgstr "Response Header解析出错，错误原因：{}"
 
-#: iast/views/vul_request_replay.py:284
+#: iast/views/vul_request_replay.py:283 iast/views/vul_request_replay.py:301
 msgid "Replay request does not exist or no permission to access"
 msgstr "重放请求不存在或无操作权限"
 
-#: iast/views/vul_request_replay.py:287
+#: iast/views/vul_request_replay.py:304
 msgid "Replay request processing"
 msgstr "重放请求处理中"
 
-#: iast/views/vul_request_replay.py:301
+#: iast/views/vul_request_replay.py:318
 msgid "Replay failed"
 msgstr "重放失败"
 
@@ -3376,7 +3612,7 @@ msgstr "获取组件license列表"
 msgid "Get sca stat "
 msgstr "获取组件库数据统计"
 
-#: webapi/settings.py:376
+#: webapi/settings.py:383
 #, python-brace-format
 msgid ""
 "Here is the API documentation in webapi. The corresponding management part "
@@ -3399,6 +3635,9 @@ msgstr ""
 "推荐使用Token方式，用户可在安装Agent界面找到如  -H 'Authorization: Token "
 "{token}' ，此处为用户对应的token，token方式同样需要在请求头上带上一个这样的"
 "token。 "
+
+#~ msgid "Default department"
+#~ msgstr "默认部门"
 
 #~ msgid "version_name need"
 #~ msgstr "需要版本名"
