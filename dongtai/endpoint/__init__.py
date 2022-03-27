@@ -20,6 +20,7 @@ from rest_framework import status, exceptions
 from django.core.paginator import PageNotAnInteger, EmptyPage
 from dongtai.permissions import UserPermission, ScopedPermission, SystemAdminPermission, TalentAdminPermission
 from dongtai.utils import const
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('dongtai-core')
 
@@ -271,7 +272,7 @@ class TalentAdminEndPoint(EndPoint):
 
 class R:
     @staticmethod
-    def success(status=201, data=None, msg="success", page=None, **kwargs):
+    def success(status=201, data=None, msg=_("success"), page=None, **kwargs):
         resp_data = {"status": status, "msg": msg}
         if data is not None:
             resp_data['data'] = data
@@ -284,7 +285,7 @@ class R:
         return JsonResponse(resp_data)
 
     @staticmethod
-    def failure(status=202, data=None, msg="failure"):
+    def failure(status=202, data=None, msg=_("failure")):
         resp_data = {"status": status, "msg": msg}
         if data:
             resp_data['data'] = data
