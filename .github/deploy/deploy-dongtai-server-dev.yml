@@ -1,0 +1,159 @@
+---
+# dongtai-server服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-server
+  namespace: iast-dev
+  annotations:
+    kubesphere.io/description: dongtai-server
+  labels:
+    app: dongtai-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dongtai-server
+  template:
+    metadata:
+      labels:
+        app: dongtai-server
+    spec:
+      containers:
+        - name: dongtai-server-container
+          image: registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-dev:VERSION
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/dongtai/webapi/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-iast-config.ini
+      imagePullSecrets:
+        - name: aliyun-registry-secret
+---
+# dongtai-web服务
+apiVersion: v1
+kind: Service
+metadata:
+  name: dongtai-server-svc
+  namespace: iast-dev
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    app: dongtai-server
+  type: ClusterIP
+---
+# dongtai-engine服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-engine
+  namespace: iast-dev
+  annotations:
+    kubesphere.io/description: dongtai-engine
+  labels:
+    app: dongtai-engine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dongtai-engine
+  template:
+    metadata:
+      labels:
+        app: dongtai-engine
+    spec:
+      containers:
+        - name: dongtai-engine-container
+          image: registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-dev:VERSION
+          command: [ "/bin/sh","/opt/dongtai/webapi/docker/entrypoint.sh" ]
+          args: [ "worker" ]
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/dongtai/webapi/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-iast-config.ini
+      imagePullSecrets:
+        - name: aliyun-registry-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dongtai-engine-svc
+  namespace: iast-dev
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    app: dongtai-engine
+  type: ClusterIP
+---
+#dongtai-engine-task服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-engine-task
+  namespace: iast-dev
+  annotations:
+    kubesphere.io/description: dongtai-engine-task
+  labels:
+    app: dongtai-engine-task
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dongtai-engine-task
+  template:
+    metadata:
+      labels:
+        app: dongtai-engine-task
+    spec:
+      containers:
+        - name: dongtai-engine-task-container
+          image: registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-dev:VERSION
+          command: [ "/bin/bash","/opt/dongtai/webapi/docker/entrypoint.sh" ]
+          args: [ "beat" ]
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/dongtai/webapi/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-iast-config.ini
+      imagePullSecrets:
+        - name: aliyun-registry-secret
