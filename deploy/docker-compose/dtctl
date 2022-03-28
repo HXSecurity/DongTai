@@ -352,7 +352,8 @@ EOF
     )
   fi
 
-  read -r -d '' DOCKER_COMPOSE_FILE <<EOM
+  if [[ $(first_gt_second $CHANGE_THIS_VERSION 1.3.1) == true ]]; then
+     read -r -d '' DOCKER_COMPOSE_FILE <<EOM
 version: "2"
 services:
   $MYSQL_STR
@@ -424,6 +425,78 @@ volumes:
   mysql-vol:
 
 EOM
+  else
+  read -r -d '' DOCKER_COMPOSE_FILE <<EOM
+version: "2"
+services:
+  $MYSQL_STR
+  $REDIS_STR
+  dongtai-webapi:
+    image: "$registry/dongtai-webapi:$CHANGE_THIS_VERSION"
+    restart: always
+    volumes:
+      - "$PWD/config-tutorial.ini-legacy:/opt/dongtai/webapi/conf/config.ini"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+    depends_on:
+      - dongtai-mysql
+  dongtai-web:
+    image: "$registry/dongtai-web:$CHANGE_THIS_VERSION"
+    restart: always
+    ports:
+      - "$WEB_SERVICE_PORT:80"
+    volumes:
+      - "$PWD/nginx.conf-legacy:/etc/nginx/nginx.conf"
+    depends_on:
+      - dongtai-webapi
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-openapi:
+    image: "$registry/dongtai-openapi:$CHANGE_THIS_VERSION"
+    restart: always
+    volumes:
+       - "$PWD/config-tutorial.ini-legacy:/opt/dongtai/openapi/conf/config.ini"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+    depends_on:
+      - dongtai-mysql
+  dongtai-engine:
+    image: "$registry/dongtai-engine:$CHANGE_THIS_VERSION"
+    restart: always
+    volumes:
+      - "$PWD/config-tutorial.ini-legacy:/opt/dongtai/engine/conf/config.ini"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+    depends_on:
+      - dongtai-mysql
+  dongtai-engine-task:
+    image: "$registry/dongtai-engine:$CHANGE_THIS_VERSION"
+    restart: always
+    command: ["/opt/dongtai/engine/docker/entrypoint.sh", "task"]
+    volumes:
+      - "$PWD/config-tutorial.ini-legacy:/opt/dongtai/engine/conf/config.ini"
+    depends_on:
+      - dongtai-engine
+      - dongtai-mysql
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+volumes:
+  mysql-vol:
+EOM
+
+  fi
+
+  
 
   echo "$DOCKER_COMPOSE_FILE"
 
