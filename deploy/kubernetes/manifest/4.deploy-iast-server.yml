@@ -24,7 +24,6 @@ data:
     
     [security]
     csrf_trust_origins = .example.com
-    secret_key = vbjlvbxfvazjfprywuxgyclmvhtmselddsefxxlcixovmqfpgy
 
     [smtp]
     server = smtp_server
