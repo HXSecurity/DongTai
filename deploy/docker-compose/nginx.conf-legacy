@@ -1,0 +1,51 @@
+#user  nobody;
+ worker_processes  1;
+ events {
+     worker_connections  1024;
+ }
+ http {
+     include       mime.types;
+     default_type  application/octet-stream;
+     sendfile        on;
+     keepalive_timeout  65;
+
+     #gzip  on;
+     gzip on;
+     gzip_min_length  5k;
+     gzip_buffers     4 16k;
+     #gzip_http_version 1.0;
+     gzip_comp_level 3;
+     gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png;
+     gzip_vary on;
+
+     server {
+         listen  80;
+         server_name 0.0.0.0;
+         client_max_body_size 100M;
+         location / {
+             root /usr/share/nginx/html;   #站点目录
+             index index.html index.htm;   #添加属性。
+             try_files $uri $uri/ /index.html;
+         }
+
+           location /api/ {
+             proxy_read_timeout 60;
+             proxy_pass http://dongtai-webapi:8000/api/;
+           }
+
+           location /upload/ {
+             proxy_pass http://dongtai-webapi:8000/upload/;
+           }
+           location /openapi/ {
+            proxy_set_header X-real-ip $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header User-Agent $http_user_agent;
+            proxy_set_header X-Host $http_x_forwarded_host;
+            proxy_read_timeout 60;
+            proxy_pass http://dongtai-openapi:8000/;
+           }
+         location = /50x.html {
+             root   /usr/share/nginx/html;
+         }
+     }
+ }
