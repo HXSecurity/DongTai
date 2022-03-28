@@ -81,8 +81,8 @@ jobs:
           context: .
           push: true
           tags: | 
-            registry.cn-beijing.aliyuncs.com/secnium/dongtai-server:latest
-            registry.cn-beijing.aliyuncs.com/secnium/dongtai-server:${{ steps.release.outputs.version }}
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:latest
+            registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:${{ steps.release.outputs.version }}
             dongtai/dongtai-server:latest
             dongtai/dongtai-server:${{ steps.release.outputs.version }}
       - uses: actions/checkout@master
