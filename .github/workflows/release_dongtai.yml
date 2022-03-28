@@ -70,6 +70,8 @@ jobs:
           tags: | 
             registry.cn-beijing.aliyuncs.com/secnium/dongtai-server:latest
             registry.cn-beijing.aliyuncs.com/secnium/dongtai-server:${{ steps.release.outputs.version }}
+            dongtai/dongtai-server:latest
+            dongtai/dongtai-server:${{ steps.release.outputs.version }}
       - uses: actions/checkout@master
       - name: deploy to cluster
         uses: wahyd4/kubectl-helm-action@master
