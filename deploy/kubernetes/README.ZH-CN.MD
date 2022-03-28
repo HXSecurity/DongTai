@@ -116,15 +116,13 @@ redis:
 你也可以使用 `--set`来覆盖单个值, 例如: 你可以使用 `--set` 将 `ClusterIP` 切换成 `NodePort` 
 
 ```shell
-helm install --create-namespace -n dongtai-test --set accessType=NodePort dongtai-iast dongtai/dongtai-iast
+helm install --create-namespace -n dongtai-test --set accessType=NodePort --set imageVersion=1.3.1  dongtai-iast dongtai/dongtai-iast
 ```
 可用值:
 
 **skipMysql**:  false (default)
 **skipRedis**: false (default)
-
 **accessType**: ClusterIP(default), Options: ClusterIP,NodePort,LoadBalancer
-
 **imageVersion**: latest (default)
 
 #### 卸载
