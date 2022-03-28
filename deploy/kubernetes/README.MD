@@ -117,15 +117,16 @@ redis:
 You can also pass in a single value using **`--set`**, for example, you can switch defalut access type `ClusterIP` to `NodePort` 
 
 ```shell
-helm install --create-namespace -n dongtai-test --set accessType=NodePort --set imageVersion=1.3.1  dongtai-iast dongtai/dongtai-iast
-
+helm install --create-namespace -n dongtai-test --set accessType=NodePort dongtai-iast dongtai/dongtai-iast
 ```
 
 Avaliable values:
 
 **skipMysql**:  false (default)
 **skipRedis**: false (default)
+
 **accessType**: ClusterIP(default), Options: ClusterIP,NodePort,LoadBalancer
+
 **imageVersion**: latest (default)
 
 #### Uninstall

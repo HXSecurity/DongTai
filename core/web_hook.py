@@ -13,7 +13,7 @@ def forward_for_upload(id, reports, report_type):
     agent 流量转发 web hook
     :return:
     """
-    # print("........")
+    print("search agent forward for url time {}, type_id:{}".format(str(int(time.time())), str(report_type)))
     typeData = IastAgentUploadTypeUrl.objects.filter(user_id=id, type_id=report_type).order_by("-create_time").first()
     # print(report_type)
 

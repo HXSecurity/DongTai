@@ -35,6 +35,12 @@ jobs:
         run: |
           bash .github/workflows/version_update.sh "${{ steps.release.outputs.VERSION }}"
 
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DONGTAI_DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DONGTAI_DOCKERHUB_TOKEN }}
+
       - name: Login to Aliyun Registry
         uses: docker/login-action@v1
         with:
