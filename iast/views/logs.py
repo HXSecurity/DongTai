@@ -27,7 +27,10 @@ class LogsEndpoint(UserEndPoint):
 
     def set_query_cache(self, queryset):
         total = queryset.values('id').count()
-        max_id = queryset.values_list('id', flat=True).order_by('-id')[0]
+        if total > 0:
+            max_id = queryset.values_list('id', flat=True).order_by('-id')[0]
+        else:
+            max_id = 0
         cache.set(self.cache_key, total, 60 * 60)
         cache.set(self.cache_key_max_id, max_id, 60 * 60)
         return total, max_id
