@@ -1,0 +1,35 @@
+[mysql]
+host = dongtai-mysql
+port = 3306
+name = dongtai_webapi
+user = root
+password = dongtai-iast
+
+[redis]
+host = dongtai-redis
+port = 6379
+password = 123456
+db = 0
+
+[engine]
+url = http://dongtai-engine:8000
+
+[apiserver]
+url = http://dongtai-openapi:8000
+
+[security]
+csrf_trust_origins = .example.com
+
+[smtp]
+server = smtp_server
+user = smtp_user
+password = smtp_password
+from_addr = from_addr
+ssl = False
+cc_addr = cc_addr
+port = 25
+
+
+[sca]
+#https://iast.huoxian.cn/openapi/sca/v1
+base_url = https://iast.huoxian.cn/openapi/sca/v1

@@ -6,7 +6,7 @@ git config --global user.name "$GITHUB_ACTOR-bot"
 git config --global user.email "$GITHUB_ACTOR-bot@dongtai.io"
 git checkout -b "release-$NEW_VERSION"
 
-sed -i "s/<version_id>/$NEW_VERSION/g" ./deploy/docker-compose/README.MD
+sed -i "s/<version_id>/$NEW_VERSION/g" ./deploy/docker-compose/README.md
 sed -i "s/<version_id>/$NEW_VERSION/g" ./deploy/docker-compose/README.ZH-CN.MD
 
 git add .
