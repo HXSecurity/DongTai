@@ -9,11 +9,13 @@ services:
   dongtai-redis:
     image: dongtai/dongtai-redis:latest
     restart: always
+    ports:
+      - "6379:6379"
   dongtai-web:
     image: dongtai/dongtai-web:latest
     restart: always
     ports:
-      - "80:80"
+      - "83:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:

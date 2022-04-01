@@ -53,15 +53,18 @@ class BaseVulnHandler(IReportHandler):
         vul_type = self.vuln_type
         vul_type_enable = 'disable'
         hook_type_id = 0
+        strategy_id = 0
         # 根据用户ID判断获取策略中的漏洞等级
         hook_type = HookType.objects.values('id', 'enable').filter(value=vul_type).first()
         if hook_type:
             hook_type_id = hook_type.get('id', 0)
-            strategy = IastStrategyModel.objects.values('level_id').filter(hook_type_id=hook_type_id).first()
-            level_id = strategy.get('level_id', 4)
             vul_type_enable = hook_type.get('enable', 0)
+            strategy = IastStrategyModel.objects.values('level_id','id').filter(hook_type_id=hook_type_id).first()
+            if strategy:
+                level_id = strategy.get('level_id', 4)
+                strategy_id = strategy.get('id',0)
 
-        return level_id, vul_type, vul_type_enable, hook_type_id
+        return level_id, vul_type, vul_type_enable, hook_type_id, strategy_id
 
     @staticmethod
     def get_command(envs):
@@ -114,7 +117,7 @@ class NormalVulnHandler(BaseVulnHandler):
         if self.http_replay:
             return
 
-        level_id, vul_type, vul_type_enable, hook_type_id = self.get_vul_info()
+        level_id, vul_type, vul_type_enable, hook_type_id, strategy_id = self.get_vul_info()
         if vul_type_enable == 0:
             return
         iast_vul = IastVulnerabilityModel.objects.filter(
@@ -140,6 +143,7 @@ class NormalVulnHandler(BaseVulnHandler):
             iast_vul.save()
         else:
             IastVulnerabilityModel.objects.create(
+                strategy_id=strategy_id,
                 hook_type_id=hook_type_id,
                 level_id=level_id,
                 url=self.http_url,
