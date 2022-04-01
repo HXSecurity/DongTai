@@ -18,8 +18,10 @@ class AgentSummary(UserEndPoint):
         data = get_summary_by_agent_ids([agent.id])
         data['ip'] = agent.server.ip
         data['middleware'] = agent.server.container
-        data['project_name'] = project_version.project.name
-        data['version_name'] = project_version.version_name
+        data[
+            'project_name'] = project_version.project.name if project_version else ''
+        data[
+            'version_name'] = project_version.version_name if project_version else ''
         data['token'] = agent.token
         data['language'] = agent.language
         return R.success(data=data)
