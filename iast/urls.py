@@ -33,6 +33,7 @@ from iast.views.agent import Agent
 from iast.views.agent_search import AgentSearch
 from iast.views.agents import AgentList
 from iast.views.agents_user import UserAgentList
+from iast.views.agent_summary import AgentSummary
 from iast.views.captcha_create import CaptchaCreate
 from iast.views.documents import DocumentsEndpoint
 from iast.views.engine_hook_rule_add import EngineHookRuleAddEndPoint
@@ -326,7 +327,7 @@ urlpatterns = [
     # get webHook setting
     path('webhook/settings/get', GetAgentWebHookConfig.as_view()),
     path('agent/core/update', AgentCoreStatusUpdate.as_view()),
-
+    path('agent/summary/<int:pk>', AgentSummary.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
