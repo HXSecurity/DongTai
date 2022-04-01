@@ -276,8 +276,6 @@ class VulsEndPoint(UserEndPoint):
         else:
             queryset = queryset.order_by('-latest_time')
 
-        q = ~Q(hook_type_id=0)
-        queryset = queryset.filter(q)
         projects_info = get_user_project_name(auth_users)
         agentArr = get_user_agent_pro(auth_users, projects_info.keys())
         agentPro = agentArr['pidArr']
