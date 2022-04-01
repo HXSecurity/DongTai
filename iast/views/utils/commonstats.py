@@ -3,9 +3,11 @@ from collections.abc import Iterable
 from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.models.hook_type import HookType
-from django.db.models import Q
+from django.db.models import (Q, Count, Value)
 from dongtai.models.vul_level import IastVulLevel
 import time
+from django.db.models.query import QuerySet
+
 
 def weeks_ago(week: int = 1):
 
@@ -22,7 +24,6 @@ def weeks_ago(week: int = 1):
 def get_summary_by_agent_ids(agent_ids: Iterable):
     data = {}
     data['type_summary'] = []
-    data['day_num'] = []
     data['level_count'] = []
     queryset = IastVulnerabilityModel.objects.filter(
         agent_id__in=agent_ids).values("hook_type_id", 'strategy_id',
@@ -70,22 +71,44 @@ def get_summary_by_agent_ids(agent_ids: Iterable):
 
     current_timestamp, a_week_ago_timestamp, days = weeks_ago(
         week=1)
-    vulInfo = queryset.filter(latest_time__gt=a_week_ago_timestamp,
-                              latest_time__lt=current_timestamp).values(
-                                  "hook_type_id", "latest_time")
-
-    dayNum = {}
+    daylist = []
     while days >= 0:
-        wDay = time.localtime(current_timestamp - 86400 * days)
+        wtimestamp = current_timestamp - 86400 * days
+        wDay = time.localtime(wtimestamp)
         wkey = str(wDay.tm_mon) + "-" + str(wDay.tm_mday)
-        dayNum[wkey] = 0
+        daylist.append([wtimestamp, wkey])
         days = days - 1
-
-    if vulInfo:
-        for vul in vulInfo:
-            timeArr = time.localtime(vul['latest_time'])
-            timeKey = str(timeArr.tm_mon) + "-" + str(timeArr.tm_mday)
-            dayNum[timeKey] = dayNum.get(timeKey, 0) + 1
+    timestamp_gt = current_timestamp
+    queryset_list = []
+    queryset_ = IastVulnerabilityModel.objects.filter(
+        agent_id__gt=0)
+    for timestamp, _ in daylist:
+        queryset_list.append(
+            geneatre_vul_timerange_count_queryset(queryset_, timestamp_gt,
+                                                  timestamp, wkey))
+        timestamp_gt = timestamp
+    if len(queryset_list) > 1:
+        start_query_set = queryset_list[0]
+        final_query_set = start_query_set.union(*queryset_list[1:], all=True)
+    day_num_dict = {}
+    for i in final_query_set:
+        if i['day_label'] in day_num_dict.keys():
+            day_num_dict[i['day_label']].append(i)
+        else:
+            day_num_dict[i['day_label']] = [i]
+    day_num_data = []
+    for _, day_label in daylist:
+        obj = {'day_label': day_label, 'day_num': 0}
+        for i in range(1, 5 + 1):
+            obj['day_num_level_' + str(i)] = 0
+        if day_label in day_num_dict.keys():
+            count = 0
+            for i in day_num_dict[day_label]:
+                obj['day_num_level_' + str(i['level_id'])] = i['count']
+                count += i['count']
+            obj['day_num'] = count
+        day_num_data.append(obj)
+    data['day_num'] = day_num_data
     levelInfo = IastVulLevel.objects.all()
     levelIdArr = {}
     levelNum = []
@@ -98,10 +121,18 @@ def get_summary_by_agent_ids(agent_ids: Iterable):
                 "num": levelCount.get(level_item.id, 0)
             })
     data['level_count'] = levelNum
-    if dayNum:
-        for day_label in dayNum.keys():
-            data['day_num'].append({
-                'day_label': day_label,
-                'day_num': dayNum[day_label]
-            })
     return data
+
+
+def geneatre_vul_timerange_count_queryset(
+    vul_queryset: QuerySet,
+    time_gt: int,
+    time_lt: int,
+    day_label: str,
+):
+    vul_stat = vul_queryset.filter(
+        latest_time__gt=time_gt,
+        latest_time__lt=time_lt).values("level_id").annotate(
+            count=Count('level_id'),
+            day_label=Value(day_label)).order_by('level_id').all()
+    return vul_stat
