@@ -20,6 +20,7 @@ from rest_framework import serializers
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from dongtai.models.strategy import IastStrategyModel
 from iast.views.utils.commonstats import get_summary_by_agent_ids
+from dongtai.utils import const
 
 class ProjectSummaryQuerySerializer(serializers.Serializer):
     version_id = serializers.CharField(
@@ -136,5 +137,6 @@ class ProjectSummary(UserEndPoint):
         data.update(data_stat)
         data['agent_language'] = ProjectSerializer(
             project).data['agent_language']
+        data['agent_alive'] = IastAgent.objects.filter(
+            bind_project_id=project.id, online=const.RUNNING).count()
         return R.success(data=data)
-
