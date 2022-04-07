@@ -220,7 +220,7 @@ class VulsEndPoint(UserEndPoint):
             try:
                 level = int(level)
             except:
-                return R.failure(_("Parameter error")) 
+                return R.failure(_("Parameter error"))
             queryset = queryset.filter(level=level)
 
         type_ = request.query_params.get('type')
@@ -231,7 +231,7 @@ class VulsEndPoint(UserEndPoint):
             queryset = queryset.filter(hook_type_id=hook_type_id)
         elif type_:
             hook_types = HookType.objects.filter(name=type_).all()
-            strategys = IastStrategyModel.objects.filter(vul_name=type_).all() 
+            strategys = IastStrategyModel.objects.filter(vul_name=type_).all()
             q = Q(hook_type__in=hook_types,strategy_id=0) | Q(strategy__in=strategys)
             queryset = queryset.filter(q)
 
@@ -254,6 +254,10 @@ class VulsEndPoint(UserEndPoint):
                 project_version_id=current_project_version.get(
                     "version_id", 0))
             queryset = queryset.filter(agent_id__in=agents)
+
+        agent_id = request.query_params.get('agent_id')
+        if agent_id:
+            queryset = queryset.filter(agent_id=agent_id)
 
         url = request.query_params.get('url', None)
         if url and url != '':
