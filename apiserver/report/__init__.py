@@ -12,6 +12,7 @@ from apiserver.report.handler.sca_handler import (ScaHandler, ScaBulkHandler)
 from apiserver.report.handler.api_route_handler import ApiRouteHandler
 from apiserver.report.handler.hardencode_vul_handler import HardEncodeVulHandler
 from apiserver.report.handler.agent_third_service_handler import ThirdPartyServiceHandler
+from apiserver.report.handler.agent_filepath_handler import FilePathHandler
 
 if __name__ == '__main__':
     ErrorLogHandler()
@@ -23,3 +24,4 @@ if __name__ == '__main__':
     HardEncodeVulHandler()
     ScaBulkHandler()
     ThirdPartyServiceHandler()
+    FilePathHandler()
