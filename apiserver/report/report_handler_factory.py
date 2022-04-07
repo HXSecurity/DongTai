@@ -8,6 +8,7 @@ import logging, requests, json
 from django.utils.translation import gettext_lazy as _
 from AgentServer import settings
 from dongtai.models.agent import IastAgent
+
 logger = logging.getLogger('dongtai.openapi')
 
 
@@ -46,12 +47,12 @@ class ReportHandler:
             #     settings.AGENT_ENGINE_URL.format(user_id=user.id, report_type=report_type),
             #     json=reports,
             #     timeout=60)
-
             class_of_handler = ReportHandler.HANDLERS.get(report_type)
             if class_of_handler is None:
-                logger.error(_('Report type {} handler does not exist').format(report_type))
+                # logger.error(_('Report type {} handler does not exist').format(report_type))
                 return None
-            return class_of_handler().handle(reports, user)
+            result = class_of_handler().handle(reports, user)
+            return result
         except Exception as e:
             logger.error(e)
         return None
