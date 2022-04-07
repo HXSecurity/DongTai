@@ -9,9 +9,15 @@ class AgentSummary(UserEndPoint):
     description = _("Item details - Summary")
 
     def get(self, request, pk):
+        try:
+            pk = int(pk)
+        except Exception as e:
+            return R.failure()
         agent = IastAgent.objects.filter(pk=pk).only(
             'server__ip', 'server__container', 'bind_project_id',
             'project_version_id', 'language', 'token').first()
+        if not agent:
+            return R.failure()
         project_version = IastProjectVersion.objects.filter(
             project_id=agent.project_version_id,
             current_version=1).only('project__name', 'version_name').first()
