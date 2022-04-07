@@ -130,3 +130,11 @@ helm install --create-namespace -n dongtai-test --set accessType=NodePort --set 
 helm uninstall dongtai-iast -n dongtai
 ```
 
+
+### 扩缩容
+
+使用 `kubectl scale` 命令可以把 `dongtai` 服务扩容成你期望的数量。
+
+```
+kubectl scale deployments ${deployment-names} --replicas=${count} -n ${your-namespace}
+```
