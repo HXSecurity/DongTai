@@ -44,7 +44,7 @@ if len(status) == 0:
     print("config file not exist. stop running")
     exit(0)
 
-# DEBUG = True
+DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 # Application definition
