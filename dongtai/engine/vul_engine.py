@@ -78,6 +78,7 @@ class VulEngine(object):
         self.method_counts = len(self.method_pool)
 
     def hit_vul_method(self, method):
+        # print(self.vul_method_signature)
         if f"{method.get('className')}.{method.get('methodName')}" == self.vul_method_signature:
             self.hit_vul = True
             return True
@@ -100,6 +101,7 @@ class VulEngine(object):
     @cached_property
     def method_pool_signatures(self):
         signatures = set()
+
         for method in self.method_pool:
             signatures.add(f"{method.get('className').replace('/', '.')}.{method.get('methodName')}")
         return signatures
@@ -117,6 +119,7 @@ class VulEngine(object):
                 self.taint_value = method['sourceValues']
             # 找到sink点所在索引后，开始向后递归
             current_link = list()
+
             vul_method_detail = self.copy_method(method_detail=method, sink=True)
             current_link.append(vul_method_detail)
             self.pool_value = set(method.get('sourceHash'))
