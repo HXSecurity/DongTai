@@ -48,7 +48,6 @@ kubectl get nodes -o wide |  awk {'print $1" " $2 " " $7'} | column -t
 
 ```shell script
 kubectl get svc dongtai-web-pub-svc -n dongtai-iast -o=jsonpath='{.spec.ports[0].nodePort}'
-kubectl get svc dongtai-engine-pub-svc -n dongtai-iast -o=jsonpath='{.spec.ports[0].nodePort}')
 ```
 
 ##### 访问地址:
