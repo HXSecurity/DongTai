@@ -182,6 +182,7 @@ class RequestReplayEndPoint(UserEndPoint):
         :return:
         """
         try:
+
             method_pool_id = request.data.get('methodPoolId')
             replay_request = request.data.get('replayRequest')
             agent_id = request.data.get('agent_id', None)
@@ -234,6 +235,7 @@ class RequestReplayEndPoint(UserEndPoint):
                              data={'replayId': replay_id})
 
         except Exception as e:
+            print(e)
             logger.error(f'user_id:{request.user.id} msg:{e}')
             return R.failure(msg=_('Vulnerability replay error'))
 
