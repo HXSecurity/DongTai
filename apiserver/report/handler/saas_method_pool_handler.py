@@ -232,7 +232,8 @@ class SaasMethodPoolHandler(IReportHandler):
         sign_raw = '-'.join(
             filter(lambda x: x, [
                 getattr(self, i, '')
-                for i in ('http_uri','http_method', 'req_header', 'req_params', 'req_data')
+                for i in ('http_uri', 'http_method', 'http_req_header',
+                          'http_req_params', 'http_req_data')
             ]))
         for method in self.method_pool:
             sign_raw += f"{method.get('className')}.{method.get('methodName')}()->"
@@ -244,7 +245,7 @@ class SaasMethodPoolHandler(IReportHandler):
         h = sha1()
         h.update(raw.encode('utf-8'))
         return h.hexdigest()
-    
+
     @staticmethod
     def sha256(raw):
         h = sha256()
