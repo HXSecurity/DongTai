@@ -134,3 +134,12 @@ helm uninstall dongtai-iast -n dongtai
 ```
 
 <img src="https://static.scarf.sh/a.png?x-pxid=a7858f70-7435-420a-bc4e-0b71a7727c99" />
+
+
+### Scale
+
+With `kubectl scale` command, you can scale `dongtai` deployment to your desire count.
+
+```
+kubectl scale deployments ${deployment-names} --replicas=${count} -n ${your-namespace}
+```

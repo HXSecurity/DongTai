@@ -677,7 +677,7 @@ if [ ! 0 == $# ]; then # If options provided then
         exit 1
       fi
 
-      docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") up -d
+      docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") up -d --remove-orphans
     }
 
     # Specify the port of Web, OpenAPI service and check whether it is available
@@ -905,7 +905,7 @@ if [ ! 0 == $# ]; then # If options provided then
       docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") pull
 
       Info "Start new containers with tag $TO_VERSION "
-      docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") up -d
+      docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") up -d --remove-orphans
 
     }
 

@@ -21,10 +21,14 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
 
+      - name: Download existed repo files
+        run: |
+          ossutil cp -rf  oss://dongtai-helm-charts/iast/ ~/helm/repo/  --include dongtai-iast-*.tgz --exclude "index.yaml"
+
       - name: Create helm package
         run: |
           helm package deploy/kubernetes/helm  -d ~/helm/repo --app-version ${{ steps.get_version.outputs.VERSION }} --version ${{ steps.get_version.outputs.VERSION }}
-          helm repo index ~/helm/repo --url ${{ secrets.DONGTAI_IAST_CHART_REPO_URL }}
+          helm repo index ~/helm/repo/ --url ${{ secrets.DONGTAI_IAST_CHART_REPO_URL }}
 
       - name: Setup ossutil
         uses: manyuanrong/setup-ossutil@v2.0
