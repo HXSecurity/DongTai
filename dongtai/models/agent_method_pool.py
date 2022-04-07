@@ -11,7 +11,7 @@ from dongtai.models.agent import IastAgent
 from dongtai.models.hook_strategy import HookStrategy
 from dongtai.utils.settings import get_managed
 
-
+# 'id', 'agent', 'uri', 'http_method', 'http_scheme', 'req_header', 'req_params', 'req_data', 'taint_value','param_name'
 class MethodPool(models.Model):
     agent = models.ForeignKey(IastAgent,
                               models.DO_NOTHING,

@@ -42,7 +42,7 @@ from core.plugins.export_report import ExportPort
 from dongtai.models.project_report import ProjectReport
 import requests
 from hashlib import sha1
-
+from core.task_base import replay_payload_data
 LANGUAGE_MAP = {
     "JAVA": 1,
     "PYTHON": 2,
@@ -633,63 +633,65 @@ def vul_recheck():
     """
     logger.info('开始处理漏洞重放数据')
 
-    relay_queue_queryset = IastReplayQueue.objects.filter(replay_type=const.VUL_REPLAY, state=const.PENDING)
+    relay_queue_queryset = IastReplayQueue.objects.filter(replay_type=const.VUL_REPLAY, state=const.PENDING).order_by("-id")
     if relay_queue_queryset is None:
         logger.info('暂无需要处理的漏洞重放数据')
         return
 
     timestamp = int(time.time())
-    sub_replay_queue = relay_queue_queryset[:50]
+    sub_replay_queue = relay_queue_queryset[:100]
+    vul_ids = []
+    pool_ids = []
+    for item in sub_replay_queue:
+        if item.relation_id is None:
+            logger.info('重放请求数据格式不正确，relation id不能为空')
+            Replay.replay_failed(timestamp=timestamp, replay=item)
+            continue
+        # 漏洞重放
+        if item.replay_type == 1:
+            vul_ids.append(item.relation_id)
+        # 流量重放
+        elif item.replay_type == 2:
+            pool_ids.append(item.relation_id)
+    if not vul_ids and not pool_ids:
+        logger.info('暂无需要处理的漏洞重放数据')
+        return
+    vul_data = replay_payload_data(vul_ids, 1)
+    pool_data = replay_payload_data(pool_ids, 2)
+    # print(vul_ids)
+    # print(pool_ids)
     for replay in sub_replay_queue:
         # 构造重放请求包
         vul_id = replay.relation_id
-        if vul_id is None:
-            logger.info('重放请求数据格式不正确，relation id不能为空')
+
+        if replay.replay_type == 1:
+            vulnerability = vul_data.get(vul_id, {})
+        else:
+            vulnerability = pool_data.get(vul_id, {})
+        if not vulnerability:
             Replay.replay_failed(timestamp=timestamp, replay=replay)
             continue
-
-        vulnerability = IastVulnerabilityModel.objects.values(
-            'id', 'agent', 'uri', 'http_method', 'http_scheme', 'req_header', 'req_params', 'req_data', 'taint_value',
-            'param_name'
-        ).filter(id=vul_id).first()
-        if vulnerability is None:
-            Replay.replay_failed(timestamp=timestamp, replay=replay)
-            continue
-
-        param_name_value = vulnerability['param_name']
-        if param_name_value is not None:
-            try:
-                params = json.loads(param_name_value)
-            except JSONDecodeError as e:
-                logger.error(f'污点数据解析出错，原因：{e}')
-                Replay.replay_failed(replay=replay, timestamp=timestamp)
-                continue
-
         uri = vulnerability['uri']
         param_value = vulnerability['req_params'] if vulnerability['req_params'] else ''
         headers = vulnerability['req_header']
         body = vulnerability['req_data']
-        taint_value = vulnerability['taint_value']
-
-        # 构造带payload的重放请求
-        for position, param_name in params.items():
-            if position == 'GET':
-                _param_items = param_value.split('&')
-                item_length = len(_param_items)
-                for index in range(item_length):
-                    _params = _param_items[index].split('=')
-                    _param_name = _params[0]
-                    if _param_name == param_name:
-                        _param_items[index] = f'{_param_name}=.%2F..%2F%60dongtai'
-                        break
-                param_value = '&'.join(_param_items)
-            elif position == 'POST':
+        if replay.replay_type == 1:
+            # 漏洞重放 sink点追加参数
+            con = 2
+            if vulnerability.get("param_name", ""):
                 try:
-                    post_body = json.loads(body)
-                    if param_name in post_body:
-                        post_body[param_name] = '.%2F..%2F%60dongtai'
-                        body = json.dumps(post_body)
-                    else:
+                    params = json.loads(vulnerability['param_name'])
+                except JSONDecodeError as e:
+                    logger.error(f'污点数据解析出错，原因：{e}')
+                    Replay.replay_failed(replay=replay, timestamp=timestamp)
+                    con = 1
+            else:
+                con = 1
+            taint_value = vulnerability['taint_value']
+            # 构造带payload的重放请求
+            if con == 2:
+                for position, param_name in params.items():
+                    if position == 'GET':
                         _param_items = param_value.split('&')
                         item_length = len(_param_items)
                         for index in range(item_length):
@@ -699,67 +701,83 @@ def vul_recheck():
                                 _param_items[index] = f'{_param_name}=.%2F..%2F%60dongtai'
                                 break
                         param_value = '&'.join(_param_items)
-                except:
-                    _param_items = param_value.split('&')
-                    item_length = len(_param_items)
-                    for index in range(item_length):
-                        _params = _param_items[index].split('=')
-                        _param_name = _params[0]
-                        if _param_name == param_name:
-                            _param_items[index] = f'{_param_name}=.%2F..%2F%60dongtai'
-                            break
-                    param_value = '&'.join(_param_items)
-            elif position == 'HEADER':
-                import base64
-                header_raw = base64.b64decode(headers).decode('utf-8').split('\n')
-                item_length = len(header_raw)
-                for index in range(item_length):
-                    _header_list = header_raw[index].split(':')
-                    _header_name = _header_list[0]
-                    if _header_name == param_name:
-                        header_raw[index] = f'{_header_name}:.%2F..%2F%60dongtai'
-                        break
-                try:
-                    headers = base64.b64encode('\n'.join(header_raw))
-                except Exception as e:
-                    logger.error(f'请求头解析失败，漏洞ID: {vulnerability["id"]}')
-            elif position == 'COOKIE':
-                import base64
-                header_raw = base64.b64decode(headers).decode('utf-8').split('\n')
-                item_length = len(header_raw)
-                cookie_index = 0
-                cookie_raw = None
-                for index in range(item_length):
-                    _header_list = header_raw[index].split(':')
-                    _header_name = _header_list[0]
-                    if _header_name == 'cookie' or _header_name == 'Cookie':
-                        cookie_index = index
-                        cookie_raw = ':'.join(_header_list[1:])
-                        break
-                if cookie_index > 0:
-                    cookie_raw_items = cookie_raw.split(';')
-                    item_length = len(cookie_raw_items)
-                    for index in range(item_length):
-                        cookie_item = cookie_raw_items[index].split('=')
-                        if cookie_item[0] == param_name:
-                            cookie_raw_items[index] = f'{param_name}=.%2F..%2F%60dongtai'
-                            break
-                    cookie_raw = ';'.join(cookie_raw_items)
-                    header_raw[cookie_index] = cookie_raw
-                try:
-                    headers = base64.b64encode('\n'.join(header_raw))
-                except Exception as e:
-                    logger.error(f'请求头解析失败，漏洞ID: {vulnerability["id"]}')
+                    elif position == 'POST':
+                        try:
+                            post_body = json.loads(body)
+                            if param_name in post_body:
+                                post_body[param_name] = '.%2F..%2F%60dongtai'
+                                body = json.dumps(post_body)
+                            else:
+                                _param_items = param_value.split('&')
+                                item_length = len(_param_items)
+                                for index in range(item_length):
+                                    _params = _param_items[index].split('=')
+                                    _param_name = _params[0]
+                                    if _param_name == param_name:
+                                        _param_items[index] = f'{_param_name}=.%2F..%2F%60dongtai'
+                                        break
+                                param_value = '&'.join(_param_items)
+                        except:
+                            _param_items = param_value.split('&')
+                            item_length = len(_param_items)
+                            for index in range(item_length):
+                                _params = _param_items[index].split('=')
+                                _param_name = _params[0]
+                                if _param_name == param_name:
+                                    _param_items[index] = f'{_param_name}=.%2F..%2F%60dongtai'
+                                    break
+                            param_value = '&'.join(_param_items)
+                    elif position == 'HEADER':
+                        import base64
+                        header_raw = base64.b64decode(headers).decode('utf-8').split('\n')
+                        item_length = len(header_raw)
+                        for index in range(item_length):
+                            _header_list = header_raw[index].split(':')
+                            _header_name = _header_list[0]
+                            if _header_name == param_name:
+                                header_raw[index] = f'{_header_name}:.%2F..%2F%60dongtai'
+                                break
+                        try:
+                            headers = base64.b64encode('\n'.join(header_raw))
+                        except Exception as e:
+                            logger.error(f'请求头解析失败，漏洞ID: {vulnerability["id"]}')
+                    elif position == 'COOKIE':
+                        import base64
+                        header_raw = base64.b64decode(headers).decode('utf-8').split('\n')
+                        item_length = len(header_raw)
+                        cookie_index = 0
+                        cookie_raw = None
+                        for index in range(item_length):
+                            _header_list = header_raw[index].split(':')
+                            _header_name = _header_list[0]
+                            if _header_name == 'cookie' or _header_name == 'Cookie':
+                                cookie_index = index
+                                cookie_raw = ':'.join(_header_list[1:])
+                                break
+                        if cookie_index > 0:
+                            cookie_raw_items = cookie_raw.split(';')
+                            item_length = len(cookie_raw_items)
+                            for index in range(item_length):
+                                cookie_item = cookie_raw_items[index].split('=')
+                                if cookie_item[0] == param_name:
+                                    cookie_raw_items[index] = f'{param_name}=.%2F..%2F%60dongtai'
+                                    break
+                            cookie_raw = ';'.join(cookie_raw_items)
+                            header_raw[cookie_index] = cookie_raw
+                        try:
+                            headers = base64.b64encode('\n'.join(header_raw))
+                        except Exception as e:
+                            logger.error(f'请求头解析失败，漏洞ID: {vulnerability["id"]}')
 
-            elif position == 'PATH':
-                # 检查path，替换
-                path_items = uri.split('/')
-                item_length = len(path_items)
-                for index in range(item_length):
-                    if taint_value == path_items[index]:
-                        path_items[index] = 'dongtai'
-                        break
-                uri = '/'.join(path_items)
+                    elif position == 'PATH' and taint_value:
+                        # 检查path，替换
+                        path_items = uri.split('/')
+                        item_length = len(path_items)
+                        for index in range(item_length):
+                            if taint_value == path_items[index]:
+                                path_items[index] = 'dongtai'
+                                break
+                        uri = '/'.join(path_items)
 
         replay.uri = uri
         replay.method = vulnerability['http_method']
@@ -770,8 +788,11 @@ def vul_recheck():
         replay.update_time = timestamp
         replay.state = const.WAITING
         replay.agent_id = vulnerability['agent']
+        # print(replay.id)
+        # print("okkkkkto======update")
         replay.save(
             update_fields=['uri', 'method', 'scheme', 'header', 'params', 'body', 'update_time', 'state', 'agent_id']
         )
 
-        logger.info('漏洞重放数据处理完成')
+    # IastReplayQueue.objects.bulk_update(relay_queue_queryset, ['uri', 'method', 'scheme', 'header', 'params', 'body', 'update_time', 'state', 'agent_id'])
+    logger.info('漏洞重放数据处理完成')
