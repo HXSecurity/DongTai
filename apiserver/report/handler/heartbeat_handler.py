@@ -13,9 +13,10 @@ from dongtai.models.replay_queue import IastReplayQueue
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.utils import const
 from django.utils.translation import gettext_lazy as _
-
+from dongtai.models.server import IastServer
 from apiserver.report.handler.report_handler_interface import IReportHandler
 from apiserver.report.report_handler_factory import ReportHandler
+from django.db.models import (QuerySet, Q, F)
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -100,17 +101,27 @@ class HeartBeatHandler(IReportHandler):
 
         if self.return_queue is None or self.return_queue == 1:
             try:
-                project_agents = IastAgent.objects.values('id').filter(bind_project_id=self.agent.bind_project_id)
+                project_agents = IastAgent.objects.values('id').filter(
+                    bind_project_id=self.agent.bind_project_id)
                 if project_agents is None:
                     logger.info(_('There is no probe under the project'))
-
+                project_agents = project_agents.union([
+                    addtional_agenti_ids_query_filepath_simhash(
+                        self.agent.filepathsimhash),
+                    addtional_agent_ids_query_deployway_and_path(
+                        self.agent.servicetype, self.agent.server.path,
+                        self.agent.server.hostname)
+                ])
                 replay_queryset = IastReplayQueue.objects.values(
-                    'id', 'relation_id', 'uri', 'method', 'scheme', 'header', 'params', 'body', 'replay_type'
-                ).filter(agent_id__in=project_agents, state__in=[const.WAITING, const.SOLVING])[:200]
+                    'id', 'relation_id', 'uri', 'method', 'scheme', 'header',
+                    'params', 'body', 'replay_type').filter(
+                        agent_id__in=project_agents,
+                        state__in=[const.WAITING, const.SOLVING])[:200]
                 if len(replay_queryset) == 0:
                     logger.info(_('Replay request does not exist'))
 
-                success_ids, success_vul_ids, failure_ids, failure_vul_ids, replay_requests = [], [], [], [], []
+                (success_ids, success_vul_ids, failure_ids, failure_vul_ids,
+                 replay_requests) = ([], [], [], [], [])
                 for replay_request in replay_queryset:
                     if replay_request['uri']:
                         replay_requests.append(replay_request)
@@ -130,10 +141,36 @@ class HeartBeatHandler(IReportHandler):
                 IastVulnerabilityModel.objects.filter(id__in=failure_vul_ids).update(latest_time=timestamp, status_id=1)
                 logger.info(_('Reproduction request issued successfully'))
 
-                return replay_requests 
+                return replay_requests
             except Exception as e:
                 logger.info(_('Replay request query failed, reason: {}').format(e))
         return list()
 
     def save(self):
         self.save_heartbeat()
+
+
+def get_k8s_deployment_id(hostname: str) -> str:
+    return hostname[hostname.rindex('-')]
+
+
+def addtional_agent_ids_query_deployway_and_path(deployway: str, path: str,
+                                                 hostname: str) -> QuerySet:
+    if deployway == 'k8s':
+        deployment_id = get_k8s_deployment_id(hostname)
+        server_q = Q(hostname__startswith=deployment_id) & Q(path=path) & Q(
+            path='') & (~Q(hostname=''))
+    elif deployway == 'docker':
+        server_q = Q(path=path) & (~Q(path=''))
+    else:
+        server_q = Q(path=path) & Q(
+            hostname=hostname) & (~Q(path='')) & (~Q(hostname=''))
+    final_q = server_q & Q(agent__id__gt=0)
+    return IastServer.objects.filter(final_q).annotate(
+        id=F('agent__id')).values('id').distinct()
+
+
+def addtional_agenti_ids_query_filepath_simhash(
+        filepathsimhash: str) -> QuerySet:
+    return IastAgent.objects.filter(
+        filepathsimhash=filepathsimhash).values('id')
