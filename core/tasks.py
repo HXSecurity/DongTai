@@ -11,6 +11,8 @@ from json import JSONDecodeError
 from celery import shared_task
 from celery.apps.worker import logger
 from django.db.models import Sum
+from django.forms import model_to_dict
+
 from dongtai.engine.vul_engine import VulEngine
 from dongtai.models import User
 from dongtai.models.agent import IastAgent
@@ -55,7 +57,7 @@ def queryset_to_iterator(queryset):
     :param queryset:
     :return:
     """
-    page_size = 10
+    page_size = 200
     page = 1
     while True:
         temp_queryset = queryset[(page - 1) * page_size:page * page_size]
@@ -69,36 +71,37 @@ def queryset_to_iterator(queryset):
 def load_sink_strategy(user=None, language=None):
     """
     加载用户user有权限方法的策略
-    :param user:
+    :param user: edit by song
     :return:
     """
     strategies = list()
     language_id = 0
     if language and language in LANGUAGE_MAP:
         language_id = LANGUAGE_MAP[language]
-    strategy_models = HookStrategy.objects.filter(
-        type__in=HookType.objects.filter(type=4,
-                                         language_id=language_id) if language_id != 0 else HookType.objects.filter(
-            type=4),
-        created_by__in=[user.id, 1] if user else [1]
-    )
-    sub_method_signatures = set()
-    for sub_queryset in queryset_to_iterator(strategy_models):
-        if sub_queryset is None:
-            break
-        for strategy in sub_queryset:
-            strategy_value = strategy.value
-            sub_method_signature = strategy_value[:strategy_value.rfind('(')] if strategy_value.rfind(
-                '(') > 0 else strategy_value
-            if sub_method_signature in sub_method_signatures:
-                continue
+    type_query = HookType.objects.filter(type=4)
+    if language_id != 0:
+        type_query = type_query.filter(language_id=language_id)
 
-            sub_method_signatures.add(sub_method_signature)
-            strategies.append({
-                'strategy': strategy,
-                'type': strategy.type.first().value,
-                'value': sub_method_signature
-            })
+    strategy_models = HookStrategy.objects.filter(
+        type__in=type_query,
+        created_by__in=[user.id, 1] if user else [1]
+    ).values('id','value','type__value')
+    sub_method_signatures = set()
+    for strategy in strategy_models:
+        # for strategy in sub_queryset:
+        strategy_value = strategy.get("value","")
+        sub_method_signature = strategy_value[:strategy_value.rfind('(')] if strategy_value.rfind(
+            '(') > 0 else strategy_value
+        if sub_method_signature in sub_method_signatures:
+            continue
+        sub_method_signatures.add(sub_method_signature)
+        # print("==-------strategy_id.....")
+        # print(strategy.type.first().value)
+        strategies.append({
+            'strategy': strategy.get("id",""),
+            'type': strategy.get("type__value",""),
+            'value': sub_method_signature
+        })
     return strategies
 
 
@@ -111,7 +114,7 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
     :return: None
     """
     logger.info(f'current sink rule is {strategy.get("type")}')
-
+    print(f'current sink rule is {strategy.get("type")}')
     queryset = IastStrategyModel.objects.filter(vul_type=strategy['type'], state=const.STRATEGY_ENABLE)
     if queryset.values('id').exists() is False:
         logger.error(f'current method pool hit rule {strategy.get("type")}, but no vul strategy.')
@@ -183,6 +186,7 @@ def search_and_save_sink(engine, method_pool_model, strategy):
 
 @shared_task(queue='dongtai-method-pool-scan')
 def search_vul_from_method_pool(method_pool_id):
+
     logger.info(f'漏洞检测开始，方法池 {method_pool_id}')
     try:
         method_pool_model = MethodPool.objects.filter(id=method_pool_id).first()
@@ -191,14 +195,19 @@ def search_vul_from_method_pool(method_pool_id):
             return
         check_response_header(method_pool_model)
         check_response_content(method_pool_model)
-
+        # print(method_pool_model.agent.user.id)
+        # print("=====3333333333333=")
+        # print(method_pool_model.id)
         strategies = load_sink_strategy(method_pool_model.agent.user, method_pool_model.agent.language)
         engine = VulEngine()
-
         method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
         engine.method_pool = method_pool
         if method_pool:
+            # print(engine.method_pool_signatures)
             for strategy in strategies:
+                # print("lllllllll")
+                # print(strategy.get('value'))
+                # print("========")
                 if strategy.get('value') in engine.method_pool_signatures:
                     search_and_save_vul(engine, method_pool_model, method_pool, strategy)
         logger.info(f'漏洞检测成功')
