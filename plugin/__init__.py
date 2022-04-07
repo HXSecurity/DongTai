@@ -4,6 +4,8 @@ from os.path import join
 from importlib import import_module
 from inspect import getmembers,isclass
 from functools import wraps
+import logging
+logger = logging.getLogger('dongtai.openapi')
 PLUGIN_DICT = {}
 
 
@@ -38,8 +40,13 @@ class DongTaiPlugin:
 
     def monkey_patch(self, appname):
         if self.appname == appname:
-            self._monkey_patch()
-
+            try:
+                self._monkey_patch()
+                logger.info(
+                    f"app: {appname} module: {self.target_module_name} class: {self.target_class_name} func : {self.target_func_name} is patched by {type(self).__name__}"
+                )
+            except Exception as e:
+                logger.error(f"monkey_patch failed: {e}", exc_info=True)
 
 def monkey_patch(appname):
     plugin_dict = get_plugin_dict()
@@ -52,11 +59,13 @@ def get_plugin_dict():
         return PLUGIN_DICT
     previous_path = getcwd()
     PLUGIN_ROOT_PATH = join(BASE_DIR, 'plugin')
-    for root, directories, files in walk(top=getcwd(), topdown=False):
+    for root, directories, files in walk(top=PLUGIN_ROOT_PATH, topdown=False):
         for file_ in files:
             if file_.startswith('plug_') and file_.endswith('.py'):
-                packname = '.'.join([root.replace(BASE_DIR+'/', '').replace('/',
-                                                       '.'),file_.replace('.py','')])
+                packname = '.'.join([
+                    root.replace(BASE_DIR + '/', '').replace('/', '.'),
+                    file_.replace('.py', '')
+                ])
                 mod = import_module(packname)
                 plugin_classes = filter(lambda x: _plug_class_filter(x),
                                         getmembers(mod))
