@@ -141,7 +141,7 @@ class SaasMethodPoolHandler(IReportHandler):
                     self.send_to_engine(method_pool_id=method_pool.id,
                                         update_record=update_record)
                 except Exception as e:
-                    pass
+                    logger.info(e, exc_info=True)
 
 
 
