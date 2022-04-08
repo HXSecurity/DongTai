@@ -14,7 +14,6 @@ doc/*
 doc/example.json
 conf/config.ini
 logs/*.log
-upload/reports/
 build_docker.sh
 dongtai_py_agent.log
 dongtai-agent-python.tar.gz
