@@ -23,6 +23,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
+BUCKET_URL = 'https://oss-cn-beijing.aliyuncs.com'
+BUCKET_NAME = 'dongtai'
+BUCKET_NAME_BASE_URL = 'agent/' if os.getenv('active.profile',
+                                             None) != 'TEST' else 'agent_test/'
+VERSION = 'latest'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("debug", 'false') == 'true' #or os.getenv('environment', None) in ('TEST',)

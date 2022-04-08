@@ -17,10 +17,11 @@ from dongtai.endpoint import OpenApiEndPoint, R
 
 from apiserver.api_schema import DongTaiParameter
 from apiserver.utils import OssDownloader
-from AgentServer.settings import BUCKET_NAME_BASE_URL, VERSION
+from webapi.settings import BUCKET_NAME_BASE_URL, VERSION
 logger = logging.getLogger("dongtai.openapi")
 
-PACKAGE_NAME_LIST = ('dongtai-core', 'dongtai-spy', 'dongtai-api')
+PACKAGE_NAME_LIST = ('dongtai-core', 'dongtai-spy', 'dongtai-api',
+                     'dongtai-grpc', 'dongtai-log', 'dongtai-spring-api')
 
 
 class EngineDownloadEndPoint(OpenApiEndPoint):
@@ -54,8 +55,10 @@ class EngineDownloadEndPoint(OpenApiEndPoint):
                 response['content_type'] = 'application/octet-stream'
                 response['Content-Disposition'] = f"attachment; filename={package_name}.jar"
                 return response
-            except:
-                return R.failure(msg="file not exit.", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            except Exception as e:
+                logger.error(e, exc_info=True)
+                return R.failure(msg="file not exit.",
+                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return R.failure(msg="file not exit.", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
