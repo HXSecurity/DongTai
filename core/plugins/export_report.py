@@ -227,14 +227,16 @@ class ExportPort():
 
             levelInfo = IastVulLevel.objects.all()
             file_path = ""
-            print(type)
-            if type == 'docx':
-                file_path = self.generate_word_report(user, project, vul, count_result, levelInfo, timestamp)
-            elif type == 'pdf':
-                file_path = self.generate_pdf_report(user, project, vul, count_result, levelInfo, timestamp)
-            elif type == 'xlsx':
-                file_path = self.generate_xlsx_report(user, project, vul, count_result, levelInfo, timestamp)
-
+            # print(type)
+            try:
+                if type == 'docx':
+                    file_path = self.generate_word_report(user, project, vul, count_result, levelInfo, timestamp)
+                elif type == 'pdf':
+                    file_path = self.generate_pdf_report(user, project, vul, count_result, levelInfo, timestamp)
+                elif type == 'xlsx':
+                    file_path = self.generate_xlsx_report(user, project, vul, count_result, levelInfo, timestamp)
+            except Exception as e:
+                print(e)
             if file_path != "":
                 bin_file = open(file_path, "rb")
                 file_data = bin_file.read()
@@ -249,6 +251,10 @@ class ExportPort():
                     message_type=IastMessageType.objects.filter(pk=1).first(),
                     to_user_id=report.user.id,
                 )
+            else:
+                # 导出失败
+                report.status = 2
+                report.save()
 
     def generate_word_report(self, user, project, vul, count_result, levelInfo, timestamp):
         document = Document()
