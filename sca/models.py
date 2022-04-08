@@ -55,7 +55,7 @@ class VulPackage(models.Model):
 
 
 class VulPackageRange(models.Model):
-    vul_package_id = models.IntegerField(max_length=11, blank=True, null=True)
+    vul_package_id = models.IntegerField( blank=True, null=True)
     ecosystem = models.CharField(max_length=255, blank=True, null=True)
     name = models.CharField(max_length=255, blank=True, null=True)
     type = models.CharField(max_length=50, blank=True, null=True)
@@ -70,7 +70,7 @@ class VulPackageRange(models.Model):
 
 
 class VulPackageVersion(models.Model):
-    vul_package_id = models.IntegerField(max_length=11, blank=True, null=True)
+    vul_package_id = models.IntegerField(blank=True, null=True)
     ecosystem = models.CharField(max_length=255, blank=True, null=True)
     name = models.CharField(max_length=255, blank=True, null=True)
     version = models.CharField(max_length=255, blank=True, null=True)
