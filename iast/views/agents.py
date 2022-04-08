@@ -118,6 +118,9 @@ class AgentList(UserEndPoint):
             running_state = request.query_params.get('state', None)
             if running_state:
                 running_state = int(running_state)
+            project_id = request.query_params.get('project_id', None)
+            if project_id:
+                project_id = int(project_id)
 
             fields = get_model_field(
                 IastAgent,
@@ -143,7 +146,8 @@ class AgentList(UserEndPoint):
                 q = q & Q(user__in=self.get_auth_users(request.user))
             else:
                 q = q & Q(user_id=request.user.id)
-
+            if project_id:
+                q = q & Q(bind_project_id=project_id)
 
             self.make_key(request)
             if page == 1:
@@ -208,10 +212,10 @@ class AgentList(UserEndPoint):
                 page=page_info
             )
         except ValueError as e:
-            logger.error(e)
+            logger.error(e,exc_info=True)
             return R.failure(msg=_('Incorrect format parameter, please check again'))
         except Exception as e:
-            logger.error(e)
+            logger.error(e,exc_info=True)
             return R.failure(msg=_('Program error'))
 
 
