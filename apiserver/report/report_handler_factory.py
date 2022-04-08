@@ -49,7 +49,7 @@ class ReportHandler:
             #     timeout=60)
             class_of_handler = ReportHandler.HANDLERS.get(report_type)
             if class_of_handler is None:
-                # logger.error(_('Report type {} handler does not exist').format(report_type))
+                logger.error(_('Report type {} handler does not exist').format(report_type))
                 return None
             result = class_of_handler().handle(reports, user)
             return result
