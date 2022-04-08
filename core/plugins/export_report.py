@@ -235,26 +235,30 @@ class ExportPort():
                     file_path = self.generate_pdf_report(user, project, vul, count_result, levelInfo, timestamp)
                 elif type == 'xlsx':
                     file_path = self.generate_xlsx_report(user, project, vul, count_result, levelInfo, timestamp)
+                if file_path != "":
+                    bin_file = open(file_path, "rb")
+                    file_data = bin_file.read()
+                    bin_file.close()
+                    report.file = file_data
+                    report.status = 1
+                    report.save()
+                    IastMessage.objects.create(
+                        message=str(project.name) + " " + _("Report export success"),
+                        relative_url="/api/v1/project/report/download?id=" + str(report.id),
+                        create_time=time.time(),
+                        message_type=IastMessageType.objects.filter(pk=1).first(),
+                        to_user_id=report.user.id,
+                    )
+                else:
+                    # 导出失败
+                    report.status = 2
+                    report.save()
             except Exception as e:
                 print(e)
-            if file_path != "":
-                bin_file = open(file_path, "rb")
-                file_data = bin_file.read()
-                bin_file.close()
-                report.file = file_data
-                report.status = 1
-                report.save()
-                IastMessage.objects.create(
-                    message= str(project.name) + " " + _("Report export success"),
-                    relative_url="/api/v1/project/report/download?id=" + str(report.id),
-                    create_time=time.time(),
-                    message_type=IastMessageType.objects.filter(pk=1).first(),
-                    to_user_id=report.user.id,
-                )
-            else:
                 # 导出失败
                 report.status = 2
                 report.save()
+
 
     def generate_word_report(self, user, project, vul, count_result, levelInfo, timestamp):
         document = Document()
