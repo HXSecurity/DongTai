@@ -6,6 +6,7 @@
 from django.db import models
 
 from dongtai.models.agent import IastAgent
+from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.utils.settings import get_managed
 
 

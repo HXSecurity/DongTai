@@ -10,6 +10,8 @@ import time
 from hashlib import sha256,sha1
 
 import requests
+from django.db import transaction
+
 from dongtai.models.agent_method_pool import MethodPool
 from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai.models.replay_queue import IastReplayQueue
@@ -67,6 +69,7 @@ class SaasMethodPoolHandler(IReportHandler):
         如果agent存在，保存数据
         :return:
         """
+
         headers = SaasMethodPoolHandler.parse_headers(self.http_req_header)
         objs = [
             ProjectSaasMethodPoolHeader(key=key,
@@ -131,10 +134,16 @@ class SaasMethodPoolHandler(IReportHandler):
         else:
             pool_sign = self.calc_hash()
             current_version_agents = self.get_project_agents(self.agent)
-            update_record, method_pool = self.save_method_call(
-                pool_sign, current_version_agents)
-            self.send_to_engine(method_pool_id=method_pool.id,
-                                update_record=update_record)
+            with transaction.atomic():
+                try:
+                    update_record, method_pool = self.save_method_call(
+                        pool_sign, current_version_agents)
+                    self.send_to_engine(method_pool_id=method_pool.id,
+                                        update_record=update_record)
+                except Exception as e:
+                    pass
+
+
 
     def save_method_call(self, pool_sign, current_version_agents):
         """
@@ -184,7 +193,8 @@ class SaasMethodPoolHandler(IReportHandler):
             # 获取agent
             update_record = False
             timestamp = int(time.time())
-            method_pool = MethodPool.objects.create(
+            method_pool = MethodPool.objects.update_or_create(
+                defaults={'pool_sign': pool_sign, 'agent_id': self.agent_id},
                 agent=self.agent,
                 url=self.http_url,
                 uri=self.http_uri,
@@ -261,7 +271,9 @@ def decode_content(body, content_encoding, version):
             return gzip.decompress(body).decode('utf-8')
         except:
             logger.error('not gzip type but using gzip as content_encoding')
-    logger.info('not found content_encoding :{}'.format(content_encoding))
+    # TODO not content_encoding
+    if content_encoding:
+        logger.info('not found content_encoding :{}'.format(content_encoding))
     try:
         return body.decode('utf-8')
     except:
