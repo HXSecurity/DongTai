@@ -106,6 +106,7 @@ def get_vul_count_by_agent(agent_ids, vid, user):
             if one['full_stack']:
                 # try:
                     full_stack_arr = json.loads(one['full_stack'])
+                    print(full_stack_arr)
                     if len(full_stack_arr) > 0 and isinstance(full_stack_arr[0], list):
                         for stack in full_stack_arr[0]:
                             caller = f"{stack['callerClass']}.{stack['callerMethod']}()"
@@ -228,36 +229,30 @@ class ExportPort():
             levelInfo = IastVulLevel.objects.all()
             file_path = ""
             # print(type)
-            try:
-                if type == 'docx':
-                    file_path = self.generate_word_report(user, project, vul, count_result, levelInfo, timestamp)
-                elif type == 'pdf':
-                    file_path = self.generate_pdf_report(user, project, vul, count_result, levelInfo, timestamp)
-                elif type == 'xlsx':
-                    file_path = self.generate_xlsx_report(user, project, vul, count_result, levelInfo, timestamp)
-                if file_path != "":
-                    bin_file = open(file_path, "rb")
-                    file_data = bin_file.read()
-                    bin_file.close()
-                    report.file = file_data
-                    report.status = 1
-                    report.save()
-                    IastMessage.objects.create(
-                        message=str(project.name) + " " + _("Report export success"),
-                        relative_url="/api/v1/project/report/download?id=" + str(report.id),
-                        create_time=time.time(),
-                        message_type=IastMessageType.objects.filter(pk=1).first(),
-                        to_user_id=report.user.id,
-                    )
-                else:
-                    # 导出失败
-                    report.status = 2
-                    report.save()
-            except Exception as e:
-                print(e)
-                # 导出失败
-                report.status = 2
+
+            if type == 'docx':
+                file_path = self.generate_word_report(user, project, vul, count_result, levelInfo, timestamp)
+            elif type == 'pdf':
+                file_path = self.generate_pdf_report(user, project, vul, count_result, levelInfo, timestamp)
+            elif type == 'xlsx':
+                file_path = self.generate_xlsx_report(user, project, vul, count_result, levelInfo, timestamp)
+            if file_path != "":
+                bin_file = open(file_path, "rb")
+                file_data = bin_file.read()
+                bin_file.close()
+                report.file = file_data
+                report.status = 1
                 report.save()
+                IastMessage.objects.create(
+                    message=str(project.name) + " " + _("Report export success"),
+                    relative_url="/api/v1/project/report/download?id=" + str(report.id),
+                    create_time=time.time(),
+                    message_type=IastMessageType.objects.filter(pk=1).first(),
+                    to_user_id=report.user.id,
+                )
+
+
+
 
 
     def generate_word_report(self, user, project, vul, count_result, levelInfo, timestamp):
