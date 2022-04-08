@@ -617,12 +617,12 @@ def export_report():
         logger.info("暂无需要导出的报告")
         return
     try:
-        # report.status = 1
-        # report.save()
+        report.status = 2
+        report.save()
         export_port = ExportPort()
         export_port.export(report)
     except Exception as e:
-        report.status = 0
+        report.status = 2
         report.save()
         logger.error(f'导出报告，错误详情：{e}')
 
