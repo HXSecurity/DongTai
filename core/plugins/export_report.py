@@ -227,12 +227,14 @@ class ExportPort():
 
             levelInfo = IastVulLevel.objects.all()
             file_path = ""
+            print(type)
             if type == 'docx':
                 file_path = self.generate_word_report(user, project, vul, count_result, levelInfo, timestamp)
             elif type == 'pdf':
                 file_path = self.generate_pdf_report(user, project, vul, count_result, levelInfo, timestamp)
             elif type == 'xlsx':
                 file_path = self.generate_xlsx_report(user, project, vul, count_result, levelInfo, timestamp)
+
             if file_path != "":
                 bin_file = open(file_path, "rb")
                 file_data = bin_file.read()
@@ -491,7 +493,7 @@ class ExportPort():
         pdf_filename = f"{MEDIA_ROOT}/reports/vul-report-{user.id}-{timestamp}.pdf"
         html_filename = f"{MEDIA_ROOT}/reports/vul-report-{user.id}-{timestamp}.html"
         rendered = render_to_string(
-            './pdf.html',
+            "./pdf.html",
             {
                 "user": user,
                 "project": project,
@@ -527,7 +529,6 @@ class ExportPort():
             html_filename,
             pdf_filename,
         ))
-
         delete_old_files(f"{MEDIA_ROOT}/reports/")
         return pdf_filename
 
