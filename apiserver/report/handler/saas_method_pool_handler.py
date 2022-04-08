@@ -26,6 +26,7 @@ from apiserver.report.handler.report_handler_interface import IReportHandler
 from apiserver.report.report_handler_factory import ReportHandler
 import gzip
 import base64
+from typing import Tuple
 logger = logging.getLogger('dongtai.openapi')
 
 
@@ -145,7 +146,8 @@ class SaasMethodPoolHandler(IReportHandler):
 
 
 
-    def save_method_call(self, pool_sign, current_version_agents):
+    def save_method_call(self, pool_sign: str,
+                         current_version_agents) -> Tuple[bool, MethodPool]:
         """
         保存方法池数据
         :param pool_sign:
@@ -193,7 +195,7 @@ class SaasMethodPoolHandler(IReportHandler):
             # 获取agent
             update_record = False
             timestamp = int(time.time())
-            method_pool = MethodPool.objects.update_or_create(
+            method_pool, iscreated = MethodPool.objects.update_or_create(
                 defaults={'pool_sign': pool_sign, 'agent_id': self.agent_id},
                 agent=self.agent,
                 url=self.http_url,
