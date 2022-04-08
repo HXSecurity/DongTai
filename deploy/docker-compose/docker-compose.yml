@@ -1,6 +1,6 @@
 version: "2"
 services:
-  dongtai-mysql: 
+  dongtai-mysql:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:1.4.0
     restart: always
     ports:
