@@ -11,13 +11,17 @@ class MyTestCase(DongTaiTestCase):
         from core.tasks import vul_recheck
         vul_recheck()
 
+    def test_report(self):
+        from core.tasks import export_report
+        export_report()
+
     def test_search_vul_from_replay_method_pool(self):
         from core.tasks import search_vul_from_replay_method_pool
         method_id = 110
         search_vul_from_replay_method_pool(method_id)
 
     def test_search_vul_from_method_pool(self):
-        method_pool_id = 645777
+        method_pool_id = 646082
         print("----")
         from core.tasks import search_vul_from_method_pool
         search_vul_from_method_pool(method_pool_id)
