@@ -26,8 +26,8 @@ class ReportHandler:
         """
         try:
             report_type = reports.get('type')
-            print("------")
-            print(reports)
+            # print("------")
+            # print(reports)
             # 根据消息类型，转发上报到指定地址
             if report_type == 1:
                 isCoreInstalled = reports.get("detail",{}).get("isCoreInstalled", 0)
