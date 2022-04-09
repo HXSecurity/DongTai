@@ -612,7 +612,7 @@ def export_report():
     """
     logger.info(f'导出报告')
     report = ProjectReport.objects.filter(status=0).first()
-    report = ProjectReport.objects.filter(id=237).first()
+    # report = ProjectReport.objects.filter(id=237).first()
 
     if not report:
         logger.info("暂无需要导出的报告")
