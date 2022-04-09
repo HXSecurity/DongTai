@@ -106,8 +106,8 @@ def get_vul_count_by_agent(agent_ids, vid, user):
             if one['full_stack']:
                 # try:
                     full_stack_arr = json.loads(one['full_stack'])
-                    print(full_stack_arr)
-                    if len(full_stack_arr) > 0 and isinstance(full_stack_arr[0], list):
+
+                    if len(full_stack_arr) > 0 and isinstance(full_stack_arr, list):
                         for stack in full_stack_arr[0]:
                             caller = f"{stack['callerClass']}.{stack['callerMethod']}()"
                             class_name = stack['originClassName'] if 'originClassName' in stack else stack['className']
@@ -229,7 +229,7 @@ class ExportPort():
             levelInfo = IastVulLevel.objects.all()
             file_path = ""
             # print(type)
-
+            print("--------")
             if type == 'docx':
                 file_path = self.generate_word_report(user, project, vul, count_result, levelInfo, timestamp)
             elif type == 'pdf':
