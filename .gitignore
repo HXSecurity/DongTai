@@ -60,7 +60,10 @@ build
 scaapi/cron/logs/sca.log
 iast/upload/reports/*
 db/*
-
+upload/reports/*.html
+upload/reports/*.pdf
+upload/reports/*.xlsx
+upload/reports/*.docx
 #Dockerfile
 doc
 *.log
