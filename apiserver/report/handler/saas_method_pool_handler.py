@@ -79,6 +79,7 @@ class SaasMethodPoolHandler(IReportHandler):
             for key in headers.keys()
         ]
         ProjectSaasMethodPoolHeader.objects.bulk_create(objs, ignore_conflicts=True)
+
         if self.http_replay:
             # 保存数据至重放请求池
             replay_id = headers.get('dongtai-replay-id')

@@ -103,13 +103,16 @@ def get_vul_count_by_agent(agent_ids, vid, user):
             sourceStr = ""
             sinkStr = ""
             detailStr3 = ""
-            if one['full_stack']:
+            if one.get("full_stack",""):
                 # try:
-                    full_stack_arr = json.loads(one['full_stack'])
+                full_stack_arr = json.loads(one['full_stack'])
 
-                    if len(full_stack_arr) > 0 and isinstance(full_stack_arr, list):
-                        for stack in full_stack_arr[0]:
-                            caller = f"{stack['callerClass']}.{stack['callerMethod']}()"
+                if len(full_stack_arr) > 0 and isinstance(full_stack_arr, list):
+                    for stack in full_stack_arr[0]:
+                        # caller = f"{stack['callerClass']}.{stack['callerMethod']}()"
+                        try:
+                            if not isinstance(stack,dict):
+                                continue
                             class_name = stack['originClassName'] if 'originClassName' in stack else stack['className']
                             method_name = stack['methodName']
                             node = f'{class_name}.{method_name}()'
@@ -134,10 +137,13 @@ def get_vul_count_by_agent(agent_ids, vid, user):
                                     stack['callerLineNumber'],
                                     node
                                 )
-                        taintStr = "\n; ".join(taintStrStack)
-                        detailStr3 = _("Code call chain: \n{0}, and then {1},\n {2}").format(sourceStr, taintStr, sinkStr)
-                    else:
-                        detailStr3 = _("Code call chain: call {1} at {0}").format(one['top_stack'], one['bottom_stack'])
+                        except Exception as e:
+                            print(e)
+                            continue
+                    taintStr = "\n; ".join(taintStrStack)
+                    detailStr3 = _("Code call chain: \n{0}, and then {1},\n {2}").format(sourceStr, taintStr, sinkStr)
+                else:
+                    detailStr3 = _("Code call chain: call {1} at {0}").format(one['top_stack'], one['bottom_stack'])
 
             cur_tile = _("{} Appears in {} {}").format(one['type'], str(one['uri']), str(one['taint_position']))
             if one['param_name']:
