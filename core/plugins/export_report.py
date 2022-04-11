@@ -103,12 +103,16 @@ def get_vul_count_by_agent(agent_ids, vid, user):
             sourceStr = ""
             sinkStr = ""
             detailStr3 = ""
-            if one['full_stack']:
+            if one.get("full_stack",""):
                 # try:
-                    full_stack_arr = json.loads(one['full_stack'])
-                    if len(full_stack_arr) > 0 and isinstance(full_stack_arr[0], list):
-                        for stack in full_stack_arr[0]:
-                            caller = f"{stack['callerClass']}.{stack['callerMethod']}()"
+                full_stack_arr = json.loads(one['full_stack'])
+
+                if len(full_stack_arr) > 0 and isinstance(full_stack_arr, list):
+                    for stack in full_stack_arr[0]:
+                        # caller = f"{stack['callerClass']}.{stack['callerMethod']}()"
+                        try:
+                            if not isinstance(stack,dict):
+                                continue
                             class_name = stack['originClassName'] if 'originClassName' in stack else stack['className']
                             method_name = stack['methodName']
                             node = f'{class_name}.{method_name}()'
@@ -133,10 +137,13 @@ def get_vul_count_by_agent(agent_ids, vid, user):
                                     stack['callerLineNumber'],
                                     node
                                 )
-                        taintStr = "\n; ".join(taintStrStack)
-                        detailStr3 = _("Code call chain: \n{0}, and then {1},\n {2}").format(sourceStr, taintStr, sinkStr)
-                    else:
-                        detailStr3 = _("Code call chain: call {1} at {0}").format(one['top_stack'], one['bottom_stack'])
+                        except Exception as e:
+                            print(e)
+                            continue
+                    taintStr = "\n; ".join(taintStrStack)
+                    detailStr3 = _("Code call chain: \n{0}, and then {1},\n {2}").format(sourceStr, taintStr, sinkStr)
+                else:
+                    detailStr3 = _("Code call chain: call {1} at {0}").format(one['top_stack'], one['bottom_stack'])
 
             cur_tile = _("{} Appears in {} {}").format(one['type'], str(one['uri']), str(one['taint_position']))
             if one['param_name']:
@@ -227,6 +234,8 @@ class ExportPort():
 
             levelInfo = IastVulLevel.objects.all()
             file_path = ""
+            # print(type)
+            print("--------")
             if type == 'docx':
                 file_path = self.generate_word_report(user, project, vul, count_result, levelInfo, timestamp)
             elif type == 'pdf':
@@ -241,12 +250,16 @@ class ExportPort():
                 report.status = 1
                 report.save()
                 IastMessage.objects.create(
-                    message= str(project.name) + " " + _("Report export success"),
+                    message=str(project.name) + " " + _("Report export success"),
                     relative_url="/api/v1/project/report/download?id=" + str(report.id),
                     create_time=time.time(),
                     message_type=IastMessageType.objects.filter(pk=1).first(),
                     to_user_id=report.user.id,
                 )
+
+
+
+
 
     def generate_word_report(self, user, project, vul, count_result, levelInfo, timestamp):
         document = Document()
@@ -491,7 +504,7 @@ class ExportPort():
         pdf_filename = f"{MEDIA_ROOT}/reports/vul-report-{user.id}-{timestamp}.pdf"
         html_filename = f"{MEDIA_ROOT}/reports/vul-report-{user.id}-{timestamp}.html"
         rendered = render_to_string(
-            './pdf.html',
+            "./pdf.html",
             {
                 "user": user,
                 "project": project,
@@ -527,7 +540,6 @@ class ExportPort():
             html_filename,
             pdf_filename,
         ))
-
         delete_old_files(f"{MEDIA_ROOT}/reports/")
         return pdf_filename
 
