@@ -23,6 +23,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
+BUCKET_URL = 'https://oss-cn-beijing.aliyuncs.com'
+BUCKET_NAME = 'dongtai'
+BUCKET_NAME_BASE_URL = 'agent/' if os.getenv('active.profile',
+                                             None) != 'TEST' else 'agent_test/'
+VERSION = 'latest'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("debug", 'false') == 'true' #or os.getenv('environment', None) in ('TEST',)
@@ -68,6 +73,7 @@ INSTALLED_APPS = [
     'modeltranslation',
     'django_celery_beat',
 ]
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 def get_installed_apps():
     from os import walk, chdir, getcwd
     previous_path = getcwd()
@@ -192,7 +198,7 @@ ROOT_URLCONF = 'webapi.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -204,6 +210,22 @@ TEMPLATES = [
         },
     },
 ]
+
+# TEMPLATES = [
+#     {
+#         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+#         'DIRS': [],
+#         'APP_DIRS': True,
+#         'OPTIONS': {
+#             'context_processors': [
+#                 'django.template.context_processors.debug',
+#                 'django.template.context_processors.request',
+#                 'django.contrib.auth.context_processors.auth',
+#                 'django.contrib.messages.context_processors.messages',
+#             ],
+#         },
+#     },
+# ]
 
 WSGI_APPLICATION = 'webapi.wsgi.application'
 

@@ -10,6 +10,8 @@ import time
 from hashlib import sha256,sha1
 
 import requests
+from django.db import transaction
+
 from dongtai.models.agent_method_pool import MethodPool
 from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai.models.replay_queue import IastReplayQueue
@@ -24,6 +26,7 @@ from apiserver.report.handler.report_handler_interface import IReportHandler
 from apiserver.report.report_handler_factory import ReportHandler
 import gzip
 import base64
+from typing import Tuple
 logger = logging.getLogger('dongtai.openapi')
 
 
@@ -67,6 +70,7 @@ class SaasMethodPoolHandler(IReportHandler):
         如果agent存在，保存数据
         :return:
         """
+
         headers = SaasMethodPoolHandler.parse_headers(self.http_req_header)
         objs = [
             ProjectSaasMethodPoolHeader(key=key,
@@ -75,6 +79,7 @@ class SaasMethodPoolHandler(IReportHandler):
             for key in headers.keys()
         ]
         ProjectSaasMethodPoolHeader.objects.bulk_create(objs, ignore_conflicts=True)
+
         if self.http_replay:
             # 保存数据至重放请求池
             replay_id = headers.get('dongtai-replay-id')
@@ -131,12 +136,19 @@ class SaasMethodPoolHandler(IReportHandler):
         else:
             pool_sign = self.calc_hash()
             current_version_agents = self.get_project_agents(self.agent)
-            update_record, method_pool = self.save_method_call(
-                pool_sign, current_version_agents)
-            self.send_to_engine(method_pool_id=method_pool.id,
-                                update_record=update_record)
+            with transaction.atomic():
+                try:
+                    update_record, method_pool = self.save_method_call(
+                        pool_sign, current_version_agents)
+                    self.send_to_engine(method_pool_id=method_pool.id,
+                                        update_record=update_record)
+                except Exception as e:
+                    logger.info(e, exc_info=True)
 
-    def save_method_call(self, pool_sign, current_version_agents):
+
+
+    def save_method_call(self, pool_sign: str,
+                         current_version_agents) -> Tuple[bool, MethodPool]:
         """
         保存方法池数据
         :param pool_sign:
@@ -184,7 +196,8 @@ class SaasMethodPoolHandler(IReportHandler):
             # 获取agent
             update_record = False
             timestamp = int(time.time())
-            method_pool = MethodPool.objects.create(
+            method_pool, iscreated = MethodPool.objects.update_or_create(
+                defaults={'pool_sign': pool_sign, 'agent_id': self.agent_id},
                 agent=self.agent,
                 url=self.http_url,
                 uri=self.http_uri,
@@ -232,7 +245,8 @@ class SaasMethodPoolHandler(IReportHandler):
         sign_raw = '-'.join(
             filter(lambda x: x, [
                 getattr(self, i, '')
-                for i in ('http_uri','http_method', 'req_header', 'req_params', 'req_data')
+                for i in ('http_uri', 'http_method', 'http_req_header',
+                          'http_req_params', 'http_req_data')
             ]))
         for method in self.method_pool:
             sign_raw += f"{method.get('className')}.{method.get('methodName')}()->"
@@ -244,7 +258,7 @@ class SaasMethodPoolHandler(IReportHandler):
         h = sha1()
         h.update(raw.encode('utf-8'))
         return h.hexdigest()
-    
+
     @staticmethod
     def sha256(raw):
         h = sha256()
@@ -260,7 +274,9 @@ def decode_content(body, content_encoding, version):
             return gzip.decompress(body).decode('utf-8')
         except:
             logger.error('not gzip type but using gzip as content_encoding')
-    logger.info('not found content_encoding :{}'.format(content_encoding))
+    # TODO not content_encoding
+    if content_encoding:
+        logger.info('not found content_encoding :{}'.format(content_encoding))
     try:
         return body.decode('utf-8')
     except:
