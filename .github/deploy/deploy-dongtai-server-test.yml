@@ -88,11 +88,11 @@ spec:
               subPath: config.ini
           resources:
             limits:
-              cpu: "500m"
-              memory: 1000Mi
+              cpu: "2000m"
+              memory: 4000Mi
             requests:
-              cpu: "500m"
-              memory: 1000Mi
+              cpu: "2000m"
+              memory: 4000Mi
       volumes:
         - name: configfile
           configMap:
