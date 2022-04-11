@@ -43,7 +43,6 @@ config.ini
 scaapi/cron/logs/sca.log
 *.docx
 db/*
-docker/
 #Dockerfile
 doc/*
 doc/example.json
@@ -61,7 +60,10 @@ build
 scaapi/cron/logs/sca.log
 iast/upload/reports/*
 db/*
-
+upload/reports/*.html
+upload/reports/*.pdf
+upload/reports/*.xlsx
+upload/reports/*.docx
 #Dockerfile
 doc
 *.log
