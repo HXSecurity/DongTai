@@ -13,12 +13,12 @@ teardown_file() {
 
 @test "Print image version by: ./dtctl version" {
     run ./dtctl version
-    [[ "${lines[0]}" =~ "1.3.1" ]]
+    [[ "${lines[1]}" =~ "1.3.1" ]]
 }
 
 @test "Print usage by: ./dtctl -h" {
     run ./dtctl -h
-    [[ "${lines[0]}" == "[Info] Usage:" ]]
+    [[ "${lines[1]}" == "[Info] Usage:" ]]
  }
 
 @test "Export docker-compose.yaml by: ./dtctl file" {
@@ -33,7 +33,7 @@ teardown_file() {
 
 @test "Export dbhash by: ./dtctl dbhash" {
     run ./dtctl dbhash
-    [[ "${lines[0]}" =~ "current db hash" ]]
+    [[ "${lines[1]}" =~ "current db hash" ]]
 }
 
 # @test "Ugrade server by: ./dtctl upgrade -t 1.3.1" {
