@@ -211,22 +211,6 @@ TEMPLATES = [
     },
 ]
 
-# TEMPLATES = [
-#     {
-#         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-#         'DIRS': [],
-#         'APP_DIRS': True,
-#         'OPTIONS': {
-#             'context_processors': [
-#                 'django.template.context_processors.debug',
-#                 'django.template.context_processors.request',
-#                 'django.contrib.auth.context_processors.auth',
-#                 'django.contrib.messages.context_processors.messages',
-#             ],
-#         },
-#     },
-# ]
-
 WSGI_APPLICATION = 'webapi.wsgi.application'
 
 DATABASES = {
@@ -468,6 +452,7 @@ CELERY_TASK_EAGER_PROPAGATES = True
 CELERY_WORKER_REDIRECT_STDOUTS = True
 CELERY_WORKER_REDIRECT_STDOUTS_LEVEL = "INFO"
 # CELERY_WORKER_HIJACK_ROOT_LOGGER = True
-# CELERY_WORKER_MAX_TASKS_PER_CHILD = 40
+CELERY_WORKER_MAX_TASKS_PER_CHILD = 40
+CELERY_WORKER_CONCURRENCY = 32
 CELERY_TASK_SOFT_TIME_LIMIT = 3600
 DJANGO_CELERY_BEAT_TZ_AWARE = False
