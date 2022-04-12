@@ -28,6 +28,7 @@ iast/upload/reports/*
 db/*
 conf/config.ini
 #Dockerfile
+/deploy/docker-compose/docker-compose.yml
 doc
 doc/example.json
 logs/*.log

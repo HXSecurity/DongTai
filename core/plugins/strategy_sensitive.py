@@ -81,6 +81,8 @@ def search_id_card_leak(method_pool):
 
     for key, value in needed_check_data.items():
         try:
+            if value is None:
+                continue
             result = pattern.search(value)
             if result is None:
                 continue
