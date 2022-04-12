@@ -17,6 +17,12 @@ DONGTAI_API="iast.huoxian.cn"
 # DONGTAI_API="google.com"
 DONGTAI_API_ACCESSABLE=true
 
+
+DONGTAI_WEB_VER=""
+DONGTAI_SERVER_VER=""
+DONGTAI_REDIS_VER=""
+DONGTAI_MYSQL_VER=""
+
 Info() {
   echo -e "[Info] $1" >&2
 }
@@ -134,7 +140,11 @@ get_project_name() {
 }
 function current_image_version() {
   PROJECT_NAME=$(get_project_name)
-  ver=$(docker ps  --filter "label=com.docker.compose.project=$PROJECT_NAME" | grep "dongtai-web:" | awk '{split($2,a,":");print a[2]}')
+  if [ -z $1 ]; then
+    ver=$(docker ps  --filter "label=com.docker.compose.project=$PROJECT_NAME" | grep "dongtai-web:" | awk '{split($2,a,":");print a[2]}' | tail -n 1 )
+  else
+    ver=$(docker ps  --filter "label=com.docker.compose.project=$PROJECT_NAME" | grep "$1:" | awk '{split($2,a,":");print a[2]}'| tail -n 1 )
+  fi
   echo "$ver"
 }
 
@@ -190,6 +200,27 @@ function network() {
   return
 }
 
+ if [ ! $(network) == true ]; then
+    Error "Internet unavailable."
+    exit 1
+  fi
+# start to fetch the latest dtctl
+git pull
+
+# get the latest docker image tag from
+
+get_latest_image_tag_from_dockerhub() {
+  image="$1"
+  Info "start to get latest tag of $image"
+  tags=`wget -q https://registry.hub.docker.com/v1/repositories/${image}/tags -O -  | sed -e 's/[][]//g' -e 's/"//g' -e 's/ //g' | tr '}' '\n'  | awk -F: '{print $3}'`
+
+  if [ -n "$2" ]
+  then
+      tags=` echo "${tags}" | grep "$2" `
+  fi
+  echo "${tags}" | grep -E '^([0-9]+\.){0,2}(\*|[0-9]+)$' | tail -n 1
+}
+
 declare -a EXCLUDED_TABLES=(
   "dongtai_webapi.sca2_package"
   "dongtai_webapi.sca2_vul"
@@ -242,6 +273,7 @@ function backup_mysql() {
   Notice "Start to backup exist data,this will take a few minutes, don’t interrupt."
   docker exec -i $(get_mysql_container_id) /bin/bash -c "mysqldump -uroot -pdongtai-iast --single-transaction -R -E --default-character-set=utf8mb4 --databases 'dongtai_webapi' " >$backup_filename || exit 1
   Info "Finished backup exist data..."
+  Info "$backup_filename"
 }
 
 function restore_mysql() {
@@ -312,6 +344,15 @@ function create_docker_compose_file() {
     registry=$(get_image_registry 2)
   fi
 
+  if [ "$3" == "load_file" ]; then
+    DONGTAI_WEB_VER=$(current_image_version dongtai-web)
+    DONGTAI_SERVER_VER=$(current_image_version dongtai-server)
+    DONGTAI_REDIS_VER=$(current_image_version dongtai-redis)
+    DONGTAI_MYSQL_VER=$(current_image_version dongtai-mysql)
+  fi
+
+
+
   MYSQL_IMAGE_NAME="dongtai-mysql"
   if [ $DONGTAI_API_ACCESSABLE == false ]; then
     if [[ $(first_gt_second $CHANGE_THIS_VERSION 1.2.0) == true ]]; then
@@ -324,7 +365,7 @@ function create_docker_compose_file() {
     export MYSQL_STR=$(
       cat <<EOF
 dongtai-mysql: 
-    image: $registry/$MYSQL_IMAGE_NAME:$CHANGE_THIS_VERSION
+    image: $registry/$MYSQL_IMAGE_NAME:$DONGTAI_MYSQL_VER
     restart: always
     volumes:
       - "$_DATA_DIR:/var/lib/mysql:rw"
@@ -341,7 +382,7 @@ EOF
     export REDIS_STR=$(
       cat <<EOF
 dongtai-redis:
-    image: $registry/dongtai-redis:$CHANGE_THIS_VERSION
+    image: $registry/dongtai-redis:$DONGTAI_REDIS_VER
     restart: always
     logging:
       driver: "json-file"
@@ -352,6 +393,7 @@ EOF
     )
   fi
 
+
   if [[ $(first_gt_second $CHANGE_THIS_VERSION 1.3.1) == true ]]; then
      read -r -d '' DOCKER_COMPOSE_FILE <<EOM
 version: "2"
@@ -359,7 +401,7 @@ services:
   $MYSQL_STR
   $REDIS_STR
   dongtai-web:
-    image: $registry/dongtai-web:$CHANGE_THIS_VERSION
+    image: $registry/dongtai-web:$DONGTAI_WEB_VER
     restart: always
     ports:
       - "$WEB_SERVICE_PORT:80"
@@ -373,7 +415,7 @@ services:
         max-size: "10m"
 
   dongtai-engine:
-    image: "$registry/dongtai-server:$CHANGE_THIS_VERSION"
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     entrypoint: ["/opt/dongtai/webapi/docker/entrypoint.sh", "worker"]
     volumes:
@@ -383,7 +425,7 @@ services:
       options:
         max-size: "10m"
   dongtai-server:
-    image: "$registry/dongtai-server:$CHANGE_THIS_VERSION"
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     volumes:
       - $PWD/config-tutorial.ini:/opt/dongtai/webapi/conf/config.ini
@@ -392,7 +434,7 @@ services:
       options:
         max-size: "10m"
   dongtai-engine-task:
-    image: "$registry/dongtai-server:$CHANGE_THIS_VERSION"
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     entrypoint: ["/opt/dongtai/webapi/docker/entrypoint.sh", "beat"]
     volumes:
@@ -476,8 +518,6 @@ EOM
 
   fi
 
-  
-
   echo "$DOCKER_COMPOSE_FILE"
 
 }
@@ -501,7 +541,7 @@ if [ ! 0 == $# ]; then # If options provided then
   shift # Get subcommand and shift to next option
   case "$subcommand" in
   "debug")
-    result=$(first_gt_second 1.1.0 1.2.0)
+    result=$(get_latest_image_tag_from_dockerhub dongtai/dongtai-server)
     echo ""
     echo "result:$result"
     ;;
@@ -625,10 +665,10 @@ if [ ! 0 == $# ]; then # If options provided then
 
   "file")
     exit_not_running
-    compose_file=$(create_docker_compose_file $(current_image_version) $(get_web_service_port) $(get_database_data_dir))
+    compose_file=$(create_docker_compose_file $(current_image_version) $(get_web_service_port) load_file $(get_database_data_dir) ) 
     file_path="$shell_dir/docker-compose.yml"
-    echo "$compose_file" >$file_path | exit 1
     Info "File location:$file_path"
+    echo "$compose_file" >$file_path | exit 1
     ;;
 
   "logs")
@@ -753,8 +793,21 @@ if [ ! 0 == $# ]; then # If options provided then
     fi
 
     if [ -z "$CHANGE_THIS_VERSION" ] || [ "$CHANGE_THIS_VERSION" == "" ]; then
-      CHANGE_THIS_VERSION=$(get_latest_release_version)
+      # CHANGE_THIS_VERSION=$(get_latest_release_version)
+        Info $CHANGE_THIS_VERSION
+        DONGTAI_WEB_VER=$(get_latest_image_tag_from_dockerhub dongtai/dongtai-web)
+        DONGTAI_SERVER_VER=$(get_latest_image_tag_from_dockerhub dongtai/dongtai-server)
+        DONGTAI_REDIS_VER=$(get_latest_image_tag_from_dockerhub dongtai/dongtai-redis)
+        DONGTAI_MYSQL_VER=$(get_latest_image_tag_from_dockerhub dongtai/dongtai-mysql)
+        CHANGE_THIS_VERSION=$DONGTAI_MYSQL_VER
+    else
+      DONGTAI_WEB_VER=$CHANGE_THIS_VERSION
+      DONGTAI_SERVER_VER=$CHANGE_THIS_VERSION
+      DONGTAI_REDIS_VER=$CHANGE_THIS_VERSION
+      DONGTAI_MYSQL_VER=$CHANGE_THIS_VERSION
     fi
+
+
 
     check_network
     check_docker
@@ -942,11 +995,22 @@ if [ ! 0 == $# ]; then # If options provided then
     fi
 
     FROM_VERSION=$(current_image_version)
+    UPGRADE_TO_VERSION=$TO_VERSION
     if [ -z "$TO_VERSION" ]; then
       TO_VERSION=$(get_latest_release_version)
+      UPGRADE_TO_VERSION="latest"
+      DONGTAI_WEB_VER=$(get_latest_image_tag_from_dockerhub dongtai/dongtai-web)
+      DONGTAI_SERVER_VER=$(get_latest_image_tag_from_dockerhub dongtai/dongtai-server)
+      DONGTAI_REDIS_VER=$(get_latest_image_tag_from_dockerhub dongtai/dongtai-redis)
+      DONGTAI_MYSQL_VER=$(get_latest_image_tag_from_dockerhub dongtai/dongtai-mysql)
+    else
+      DONGTAI_WEB_VER=$TO_VERSION
+      DONGTAI_SERVER_VER=$TO_VERSION
+      DONGTAI_REDIS_VER=$TO_VERSION
+      DONGTAI_MYSQL_VER=$TO_VERSION
     fi
 
-    Info "Upgrade: $FROM_VERSION -> $TO_VERSION"
+    Info "Upgrade: $FROM_VERSION -> $UPGRADE_TO_VERSION"
 
     f_gt_t=$(first_gt_second $FROM_VERSION $TO_VERSION)
 
