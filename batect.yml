@@ -37,7 +37,7 @@ containers:
   dongtai-engine:
     build_directory: .
     dockerfile: ./Dockerfile
-    command: /opt/dongtai/engine/docker/entrypoint.sh worker
+    command:  worker
     volumes:
       - .:/opt/dongtai/webapi/
 
@@ -45,7 +45,7 @@ containers:
   dongtai-engine-task:
     build_directory: .
     dockerfile: ./Dockerfile
-    command: /opt/dongtai/engine/docker/entrypoint.sh beat
+    command:  beat
     volumes:
       - ./conf/config.ini:/opt/dongtai/webapi/conf/config.ini
     dependencies:
