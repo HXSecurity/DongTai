@@ -74,6 +74,7 @@ def load_sink_strategy(user=None, language=None):
     :param user: edit by song
     :return:
     """
+    logger.info('start load sink_strategy')
     strategies = list()
     language_id = 0
     if language and language in LANGUAGE_MAP:
