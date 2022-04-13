@@ -60,7 +60,7 @@ usage() {
   Usage "\t$_filename dbrestore -f FILEPATH                       Restore mysql database"
   Usage "\t$_filename dbbackup  -d FILEPATH                       Backup mysql database"
   Usage "\t$_filename file                                        Export docker-compose.yml "
-  Usage "\t$_filename logs webapi|openapi|web|mysql|web|engine    Extract tail logs"
+  Usage "\t$_filename logs server|web|mysql|engine    Extract tail logs"
   Usage "\t$_filename start [PROJECT]                             Start all container,default project: dongtai"
 
 }
@@ -344,7 +344,7 @@ function create_docker_compose_file() {
     registry=$(get_image_registry 2)
   fi
 
-  if [ "$3" == "load_file" ]; then
+  if [ "$3" == "load_file" -o "$3" == "rm" ]; then
     DONGTAI_WEB_VER=$(current_image_version dongtai-web)
     DONGTAI_SERVER_VER=$(current_image_version dongtai-server)
     DONGTAI_REDIS_VER=$(current_image_version dongtai-redis)
