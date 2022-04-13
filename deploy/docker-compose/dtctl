@@ -205,7 +205,7 @@ function network() {
     exit 1
   fi
 # start to fetch the latest dtctl
-git pull
+# git pull
 
 # get the latest docker image tag from
 
