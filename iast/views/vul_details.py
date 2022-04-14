@@ -392,6 +392,7 @@ class VulDetailV2(VulDetail):
                     "agent_name": data['vul']["agent_name"],
                     "taint_value": data['vul']["taint_value"],
                     "param_name": data['vul']["param_name"],
+                    "url": data['vul']['url'],
                 }
             }]
             return R.success(data=data)
