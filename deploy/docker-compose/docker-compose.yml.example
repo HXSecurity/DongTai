@@ -21,7 +21,7 @@ services:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-web:{ChangeThisVersion}
     restart: always
     ports:
-      - "8088:80"
+      - "80:80"
     volumes:
       - "./nginx.conf:/etc/nginx/nginx.conf"
     depends_on:
