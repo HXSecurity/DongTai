@@ -362,6 +362,48 @@ class VulDetail(UserEndPoint):
             return R.failure(msg=_('Vulnerability data query error'))
 
 
+class VulDetailV2(VulDetail):
+
+    def get(self, request, id):
+        self.vul_id = id
+        auth_agents = self.get_auth_agents_with_user(request.user)
+        try:
+            data = {
+                'vul': self.get_vul(auth_agents),
+                'server': self.get_server(),
+                'strategy': self.get_strategy()
+            }
+            data['headers'] = {
+                0: {
+                    "agent_name": data['vul']['agent_name'],
+                    "req_header": data['vul']['req_header'],
+                    "response": data['vul']["response"]
+                }
+            }
+            data["graphs"] = [{
+                'graph': data['vul']['graph'],
+                "meta": {
+                    "client_ip": data['vul']['client_ip'],
+                    "server_ip": data['server']['ip'],
+                    "middreware": data['server']['container'],
+                    "language": data['vul']['language'],
+                    "project_name": data["vul"]['project_name'],
+                    "project_version": data["vul"]["project_version"],
+                    "agent_name": data['vul']["agent_name"],
+                    "taint_value": data['vul']["taint_value"],
+                    "param_name": data['vul']["param_name"],
+                }
+            }]
+            return R.success(data=data)
+        except Exception as e:
+            logger.error(
+                _('[{}] Vulnerability information parsing error, error message: {}'
+                  ).format(__name__, e))
+            return R.failure(msg=_('Vulnerability data query error'))
+
+
+
+
 def htmlescape(string):
     return string.replace(
         '<em>', "6350be97a65823fc42ddd9dc78e17ddf13ff693b").replace(
