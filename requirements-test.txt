@@ -39,3 +39,4 @@ ddt
 faker
 pycryptodomex
 simhash==2.1.2
+gevent

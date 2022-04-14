@@ -51,7 +51,11 @@ class IReportHandler:
         self.agent_id = self.detail.get('agentId')
 
     def has_permission(self):
+        # print("==--=-=-=-=-=")
+        # print(self.agent_id)
+        # self.agent_id = 21
         self.agent = self.get_agent(agent_id=self.agent_id)
+        # print(self.agent)
         return self.agent
 
     def parse(self):
@@ -66,6 +70,7 @@ class IReportHandler:
     def handle(self, report, user):
         logger.info(_('[{}] Report resolution start').format(self.__class__.__name__))
         self.report = report
+        # print(self._user_id)
         self.user_id = user
         self.common_header()
         if self.has_permission():
