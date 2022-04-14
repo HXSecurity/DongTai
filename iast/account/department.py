@@ -190,6 +190,8 @@ class DepartmentEndPoint(TalentAdminEndPoint):
         department = self.has_department_permission(request.user, pk)
         user_count = department.users.count()
         force = bool(request.query_params.get('force', ''))
+        if not is_delete_able(department.id):
+            return JsonResponse({"status": 202, "msg": "该部门存在子部门，无法删除"})
         if user_count > 0:
             if force:
                 department.users.delete()
@@ -206,3 +208,7 @@ class DepartmentEndPoint(TalentAdminEndPoint):
             'status': 201,
             'msg': _('Deleted Successfully')
         })
+
+
+def is_delete_able(department_id):
+    return Department.objects.filter(parent_id=department_id).exists()
