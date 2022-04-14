@@ -97,7 +97,10 @@ from iast.views.user_register_batch import UserRegisterEndPoint
 from iast.views.user_token import UserToken
 from iast.views.vul_count_for_plugin import VulCountForPluginEndPoint
 from iast.views.vul_delete import VulDelete
-from iast.views.vul_details import VulDetail
+from iast.views.vul_details import (
+    VulDetail,
+    VulDetailV2,
+)
 from iast.views.vul_list_for_plugin import VulListEndPoint
 from iast.views.vul_recheck import VulReCheck
 from iast.views.vul_request_replay import RequestReplayEndPoint
@@ -343,5 +346,8 @@ if os.getenv('githubcount', None) in ('true', ) or os.getenv('environment', None
     ])
 
 urlpatterns = [path('api/v1/', include(urlpatterns))]
-urlpatterns.extend([path('api/v2/vul/recheck', VulReCheckv2.as_view())])
+urlpatterns.extend([
+    path('api/v2/vul/recheck', VulReCheckv2.as_view()),
+    path('api/v2/vuln/<int:id>', VulDetailV2.as_view()),
+])
 urlpatterns = format_suffix_patterns(urlpatterns)
