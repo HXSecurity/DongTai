@@ -54,17 +54,17 @@ class ApiRouteHandler(IReportHandler):
                         api_route_dict = _dictfilter(api_route, fields)
                         api_route_obj = _route_dump(api_route_dict, api_method,
                                                     agent)
-                        api_route_model = IastApiRoute.objects.create(
+                        api_route_model, is_create = IastApiRoute.objects.get_or_create(
                             **api_route_obj)
                         parameters = api_route['parameters']
                         for parameter in parameters:
                             parameter_obj = _para_dump(parameter,
                                                        api_route_model)
-                            IastApiParameter.objects.create(**parameter_obj)
+                            IastApiParameter.objects.get_or_create(**parameter_obj)
                         response_obj = _response_dump(
                             {'return_type': api_route['returnType']},
                             api_route_model)
-                        IastApiResponse.objects.create(**response_obj)
+                        IastApiResponse.objects.get_or_create(**response_obj)
                     except Exception as e:
                         print(e)
                 logger.info(_('API navigation log record successfully'))
