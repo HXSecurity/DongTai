@@ -10,17 +10,17 @@ from dongtai.models.hook_strategy import HookStrategy
 from dongtai.models.hook_type import HookType
 from drf_spectacular.utils import extend_schema
 from rest_framework.request import Request
-
+from dongtai.models.strategy import IastStrategyModel
 from dongtai.utils import const
 from dongtai.endpoint import OpenApiEndPoint, R
-
+from django.db.models import (Prefetch, OuterRef, Subquery)
 # note: 当前依赖必须保留，否则无法通过hooktype反向查找策略
 from apiserver.api_schema import DongTaiParameter
 
 logger = logging.getLogger("django")
 JAVA = 1
-LANGUAGE_DICT= {'JAVA':1,'PYTHON':2,'PHP':3,'G0':4}
-                
+LANGUAGE_DICT = {'JAVA': 1, 'PYTHON': 2, 'PHP': 3, 'G0': 4}
+
 class HookProfilesEndPoint(OpenApiEndPoint):
     name = "api-v1-profiles"
     description = "获取HOOK策略"
@@ -28,9 +28,18 @@ class HookProfilesEndPoint(OpenApiEndPoint):
     @staticmethod
     def get_profiles(user=None, language_id=JAVA):
         profiles = list()
-        hook_types = HookType.objects.filter(language_id=language_id).all()
-        for hook_type in hook_types:
+        hook_types = HookType.objects.filter(vul_strategy__state='enable',
+                                             vul_strategy__user_id__in=set(
+                                                 [1, user.id]),
+                                             language_id=language_id,
+                                             enable=const.HOOK_TYPE_ENABLE,
+                                             type__in=(3, 4))
+        hook_types_a = HookType.objects.filter(language_id=language_id,
+                                               enable=const.HOOK_TYPE_ENABLE,
+                                               type__in=(1, 2))
+        for hook_type in list(hook_types) + list(hook_types_a):
             strategy_details = list()
+            print("=========")
             profiles.append({
                 'type': hook_type.type,
                 'enable': hook_type.enable,
@@ -62,7 +71,8 @@ class HookProfilesEndPoint(OpenApiEndPoint):
         user = request.user
 
         language = request.query_params.get('language')
-        language_id = LANGUAGE_DICT.get(language,None) if language is not None else None
+        language_id = LANGUAGE_DICT.get(language,
+                                        None) if language is not None else None
         language_id = JAVA if language_id is None and language is None else language_id
         profiles = self.get_profiles(user, language_id)
 

@@ -4,7 +4,7 @@
 # datetime:2020/10/23 12:00
 # software: PyCharm
 # project: webapi
-import logging, requests, json
+import logging, requests, json, time
 from django.utils.translation import gettext_lazy as _
 from AgentServer import settings
 from dongtai.models.agent import IastAgent
@@ -26,8 +26,9 @@ class ReportHandler:
         """
         try:
             report_type = reports.get('type')
-            # print("------")
-            # print(reports)
+            if report_type == 97:
+                print("------")
+                print(reports)
             # 根据消息类型，转发上报到指定地址
             if report_type == 1:
                 isCoreInstalled = reports.get("detail",{}).get("isCoreInstalled", 0)
@@ -53,7 +54,9 @@ class ReportHandler:
                 if report_type in [1, 81, 33, 36, 17, 18, 97, 37]:
                     logger.error(_('Report type {} handler does not exist').format(report_type))
                 return None
+            # print(class_of_handler)
             result = class_of_handler().handle(reports, user)
+
             return result
         except Exception as e:
             logger.error(e)
