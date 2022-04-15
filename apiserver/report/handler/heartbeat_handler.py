@@ -144,7 +144,6 @@ class HeartBeatHandler(IReportHandler):
         return list()
 
     def save(self):
-        print("00000000")
         self.save_heartbeat()
 
 
