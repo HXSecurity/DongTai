@@ -8,7 +8,7 @@ ENV LANGUAGE=en_US.UTF-8
 ENV TZ=Asia/Shanghai
 
 RUN apt-get update -y \
-		&& apt install -y gettext gcc make cmake libmariadb-dev curl libc6-dev unzip cron  openjdk-11-jdk fonts-wqy-microhei
+		&& apt install -y gettext gcc make cmake libmariadb-dev curl libc6-dev unzip cron  openjdk-11-jdk fonts-wqy-microhei vim
     
 RUN curl -L https://github.com/Endava/cats/releases/download/cats-7.0.1/cats-linux -o  /usr/local/bin/cats \
 	&& chmod +x /usr/local/bin/cats \

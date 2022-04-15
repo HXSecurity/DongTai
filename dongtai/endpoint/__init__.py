@@ -33,6 +33,7 @@ class EndPoint(APIView):
     description = "ApiServer接口"
 
     def __init__(self, **kwargs):
+
         """
         Constructor. Called in the URLconf; can contain helpful extra
         keyword arguments, and other things.
@@ -90,15 +91,14 @@ class EndPoint(APIView):
                                   self.http_method_not_allowed)
             else:
                 handler = self.http_method_not_allowed
-
             response = handler(request, *args, **kwargs)
-
         except Exception as exc:
             logger.error(f'url: {self.request.path},exc:{exc}',exc_info=True)
             response = self.handle_exception(exc)
+            return self.finalize_response(request, response, *args, **kwargs)
 
         self.response = self.finalize_response(request, response, *args, **kwargs)
-        if self.request.user is not None and self.request.user.is_active:
+        if self.request.user is not None and self.request.user.is_active and handler.__module__.startswith('iast'):
             self.log_manager.log_action(
                 user_id=self.request.user.id,
                 content_type_id=ContentType.objects.get_or_create(app_label=self.request.content_type)[0].id,
