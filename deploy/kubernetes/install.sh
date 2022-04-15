@@ -4,10 +4,10 @@ SKIP_MYSQL=false
 SKIP_REDIS=false
 ACCESS_TYPE=ClusterIP
 NAMESPACE=dongtai-iast
-latest_version="`wget -qO- -t1 -T2 "https://api.github.com/repos/HXSecurity/DongTai/releases/latest" | jq -r '.tag_name'`"
-REALEASE_VERSION=${latest_version:1}
+# latest_version="`wget -qO- -t1 -T2 "https://api.github.com/repos/HXSecurity/DongTai/releases/latest" | jq -r '.tag_name'`"
+# REALEASE_VERSION=${latest_version:1}
 Info(){
-  echo -e "[Info] $1"
+  echo -e "[Info] $1"  2>&1
 }
 
 Error(){
@@ -94,25 +94,74 @@ check_permission(){
   done
 }
 
+get_latest_image_tag_from_dockerhub() {
+  image="$1"
+  # Info "start to get latest tag of $image"
+  tags=`wget -q https://registry.hub.docker.com/v1/repositories/dongtai/${image}/tags -O -  | sed -e 's/[][]//g' -e 's/"//g' -e 's/ //g' | tr '}' '\n'  | awk -F: '{print $3}'`
+
+  if [ -n "$2" ]
+  then
+      tags=` echo "${tags}" | grep "$2" `
+  fi
+  echo "${tags}" | grep -E '^([0-9]+\.){0,2}(\*|[0-9]+)$' | tail -n 1
+}
+
+
 deploy(){
   cd "$CURRENT_PATH" || exit
-
+  ORIG=$1
   FILENAME="$CURRENT_PATH/manifest/$1"
   NEW_FILENAME="$FILENAME.temp"
   NEW_NAMESPACE=$2
   cp "$FILENAME" "$NEW_FILENAME"
   Info "Copying temporary file $NEW_FILENAME ..."
+
   if [ "${machine}" == "Mac" ]; then
-    sed -i "" "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
-    sed -i "" "s/CHANGE_THIS_VERSION/$REALEASE_VERSION/g" "$NEW_FILENAME" >/dev/null
+    case $ORIG in
+        "2.deploy-redis.yml")
+            TAG=$(get_latest_image_tag_from_dockerhub dongtai-redis)
+            sed -i "" "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
+            sed -i "" "s/CHANGE_THIS_VERSION/$TAG/g" "$NEW_FILENAME" >/dev/null
+            ;;
+        "3.deploy-mysql.yml")
+            MYSQL_TAG=$(get_latest_image_tag_from_dockerhub dongtai-mysql)
+            sed -i "" "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
+            sed -i "" "s/CHANGE_THIS_VERSION/$MYSQL_TAG/g" "$NEW_FILENAME" >/dev/null
+            ;;
+        "4.deploy-iast-server.yml")
+            WEB_TAG=$(get_latest_image_tag_from_dockerhub dongtai-web)
+            SERVER_TAG=$(get_latest_image_tag_from_dockerhub dongtai-server)
+            sed -i "" "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
+            sed -i "" "s/dongtai-web:CHANGE_THIS_VERSION/dongtai-web:$WEB_TAG/g" "$NEW_FILENAME" >/dev/null
+            sed -i "" "s/dongtai-server:CHANGE_THIS_VERSION/dongtai-server:$SERVER_TAG/g" "$NEW_FILENAME" >/dev/null
+            ;;
+        *)
+              sed -i "" "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
+    esac
   elif [ "${machine}" == "Linux" ]; then
-    sed -i "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
-    sed -i "s/CHANGE_THIS_VERSION/$REALEASE_VERSION/g" "$NEW_FILENAME" >/dev/null
+    case $FILENAME in
+        "2.deploy-redis.yml")
+            sed -i  "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
+            sed -i  "s/CHANGE_THIS_VERSION/$(get_latest_image_tag_from_dockerhub dongtai-redis)/g" "$NEW_FILENAME" >/dev/null
+            ;;
+        "3.deploy-mysql.yml")
+            sed -i  "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
+            sed -i  "s/CHANGE_THIS_VERSION/$(get_latest_image_tag_from_dockerhub dongtai-mysql)/g" "$NEW_FILENAME" >/dev/null
+            ;;
+        "4.deploy-iast-server.yml")
+            sed -i  "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
+            sed -i  "s/dongtai-web/$(get_latest_image_tag_from_dockerhub dongtai-web)/g" "$NEW_FILENAME" >/dev/null
+            sed -i  "s/dongtai-server /$(get_latest_image_tag_from_dockerhub dongtai-server)/g" "$NEW_FILENAME" >/dev/null
+            ;;
+        *)
+            sed -i  "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
+    esac
   else
     Error "Unsupported shell version."
     rm "$NEW_FILENAME"
     exit 1
   fi
+
   kubectl apply -f "$NEW_FILENAME"
 
   Info "Cleaning temporary file $NEW_FILENAME ..."
@@ -120,7 +169,7 @@ deploy(){
 }
 
 start_deploy(){
-  Notice "IMAGE_VERSION: $REALEASE_VERSION, NAMESPACE: $NAMESPACE, ACCESS_TYPE:$ACCESS_TYPE, SKIP_MYSQL:$SKIP_MYSQL, SKIP_REDIS:$SKIP_REDIS"
+  Notice "NAMESPACE: $NAMESPACE, ACCESS_TYPE:$ACCESS_TYPE, SKIP_MYSQL:$SKIP_MYSQL, SKIP_REDIS:$SKIP_REDIS"
   Info "Starting deploy to kubernetes ..."
   deploy "1.create-namespace.yml" "$NAMESPACE"
   if [ $SKIP_REDIS == false ]; then
