@@ -36,7 +36,6 @@ class HeartBeatHandler(IReportHandler):
 
 
     def parse(self):
-        print(self.detail)
         self.cpu = self.detail.get('cpu')
         self.memory = self.detail.get('memory')
         self.req_count = self.detail.get('reqCount')
@@ -49,12 +48,7 @@ class HeartBeatHandler(IReportHandler):
         self.agent = IastAgent.objects.filter(id=self.agent_id, user=self.user_id).first()
         return self.agent
 
-    def has_permission(self):
-        self.agent = IastAgent.objects.filter(id=self.agent_id, user=self.user_id).first()
-        return self.agent
-
     def save_heartbeat(self):
-        # update agent state
         self.agent.is_running = 1
         self.agent.online = 1
         self.agent.save(update_fields=['is_running', 'online'])

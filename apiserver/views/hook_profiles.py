@@ -39,6 +39,7 @@ class HookProfilesEndPoint(OpenApiEndPoint):
                                                type__in=(1, 2))
         for hook_type in list(hook_types) + list(hook_types_a):
             strategy_details = list()
+
             profiles.append({
                 'type': hook_type.type,
                 'enable': hook_type.enable,
@@ -47,14 +48,14 @@ class HookProfilesEndPoint(OpenApiEndPoint):
             })
             strategies = hook_type.strategies.filter(
                 created_by__in=[1, user.id] if user else [1],
-                enable=const.HOOK_TYPE_ENABLE)
+                enable=const.HOOK_TYPE_ENABLE).values()
             for strategy in strategies:
                 strategy_details.append({
-                    "source": strategy.source,
-                    "track": strategy.track,
-                    "target": strategy.target,
-                    "value": strategy.value,
-                    "inherit": strategy.inherit
+                    "source": strategy.get("source"),
+                    "track": strategy.get("track"),
+                    "target": strategy.get("target"),
+                    "value": strategy.get("value"),
+                    "inherit": strategy.get("inherit")
                 })
         return profiles
 

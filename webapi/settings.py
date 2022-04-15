@@ -110,8 +110,8 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_CLASSES': ('rest_framework.throttling.AnonRateThrottle',
                                  'rest_framework.throttling.UserRateThrottle'),
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '1000/min',
-        'user': '5000/min'
+        'anon': '6000000/min',
+        'user': '6000000/min'
     },
 }
 
@@ -453,6 +453,6 @@ CELERY_WORKER_REDIRECT_STDOUTS = True
 CELERY_WORKER_REDIRECT_STDOUTS_LEVEL = "INFO"
 # CELERY_WORKER_HIJACK_ROOT_LOGGER = True
 CELERY_WORKER_MAX_TASKS_PER_CHILD = 40
-CELERY_WORKER_CONCURRENCY = 32
+CELERY_WORKER_CONCURRENCY = config.get("celery", "worker")
 CELERY_TASK_SOFT_TIME_LIMIT = 3600
 DJANGO_CELERY_BEAT_TZ_AWARE = False

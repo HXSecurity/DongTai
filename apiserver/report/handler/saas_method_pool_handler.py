@@ -6,6 +6,7 @@
 # project: lingzhi-webapi
 import json
 import logging
+import random
 import time
 from hashlib import sha256,sha1
 
@@ -157,6 +158,8 @@ class SaasMethodPoolHandler(IReportHandler):
         :param current_version_agents:
         :return:
         """
+        # todo need to del
+        # pool_sign = random.sample('zyxwvutsrqmlkjihgfedcba',5)
         method_pool = MethodPool.objects.filter(
             pool_sign=pool_sign, agent__in=current_version_agents).first()
         update_record = True
@@ -235,7 +238,6 @@ class SaasMethodPoolHandler(IReportHandler):
             if model is None:
                 logger.info(
                     f'[+] send method_pool [{method_pool_id}] to engine for {"update" if update_record else "new record"}')
-                #requests.get(url=settings.BASE_ENGINE_URL.format(id=method_pool_id))
                 search_vul_from_method_pool.delay(method_pool_id)
                 search_sink_from_method_pool.delay(method_pool_id)
             else:
