@@ -6,7 +6,7 @@ python /opt/dongtai/webapi/docker/version_update.py || true
 echo $1
 
 if [ "$1" = "worker" ]; then
-	nohup /usr/local/bin/uwsgi --ini /opt/dongtai/webapi/conf/uwsgi.ini  &
+	nohup /usr/local/bin/uwsgi --ini /opt/dongtai/webapi/conf/uwsgi.ini &
 	celery -A lingzhi_engine worker -l info -E --pidfile=
 elif [ "$1" = "beat" ]; then
 	nohup /usr/local/bin/uwsgi --ini /opt/dongtai/webapi/conf/uwsgi.ini  &
