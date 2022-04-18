@@ -312,22 +312,27 @@ LOGGING = {
         'dongtai-webapi': {
             'handlers': ['console', 'dongtai-webapi'],
             'propagate': True,
-            'level': 'INFO',
+            'level': 'ERROR',
+        },
+        'dongtai.openapi': {
+            'handlers': ['console', 'dongtai.openapi'],
+            'propagate': True,
+            'level': 'ERROR',
         },
         'dongtai-core': {
             'handlers': ['console', 'dongtai-webapi'],
             'propagate': True,
-            'level': 'INFO',
+            'level': 'ERROR',
         },
         'django': {
             'handlers': ['console', 'dongtai-webapi'],
             'propagate': True,
-            'level': 'INFO',
+            'level': 'ERROR',
         },
         'dongtai-engine': {
             'handlers': ['console', 'dongtai-webapi'],
             'propagate': True,
-            'level': 'INFO',
+            'level': 'ERROR',
         },
     }
 }
