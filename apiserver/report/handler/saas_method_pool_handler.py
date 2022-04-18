@@ -75,13 +75,14 @@ class SaasMethodPoolHandler(IReportHandler):
         """
 
         headers = SaasMethodPoolHandler.parse_headers(self.http_req_header)
-        objs = [
-            ProjectSaasMethodPoolHeader(key=key,
-                                        agent_id=self.agent_id,
-                                        header_type=HeaderType.REQUEST)
-            for key in headers.keys()
-        ]
-        ProjectSaasMethodPoolHeader.objects.bulk_create(objs, ignore_conflicts=True)
+        # todo need to fix
+        # objs = [
+        #     ProjectSaasMethodPoolHeader(key=key,
+        #                                 agent_id=self.agent_id,
+        #                                 header_type=HeaderType.REQUEST)
+        #     for key in headers.keys()
+        # ]
+        # ProjectSaasMethodPoolHeader.objects.bulk_create(objs, ignore_conflicts=True)
 
         if self.http_replay:
             # 保存数据至重放请求池
@@ -159,7 +160,7 @@ class SaasMethodPoolHandler(IReportHandler):
         :return:
         """
         # todo need to del
-        # pool_sign = random.sample('zyxwvutsrqmlkjihgfedcba',5)
+        pool_sign = random.sample('zyxwvutsrqmlkjihgfedcba',5)
         method_pool = MethodPool.objects.filter(
             pool_sign=pool_sign, agent__in=current_version_agents).first()
         update_record = True
