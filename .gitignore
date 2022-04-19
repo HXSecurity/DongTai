@@ -71,5 +71,3 @@ doc
 conf/config.ini
 celerybeat.pid
 *.mo
-docker-compose.yml
-docker-compose.yaml

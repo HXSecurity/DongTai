@@ -1,0 +1,19 @@
+version: "2"
+services:
+  dongtai-server:
+    image: "dongtai/dongtai-server:{{ DONGTAI_IMAGE_VERSION }}"
+    restart: always
+    volumes:
+      - "../config-tutorial.ini:/opt/dongtai/webapi/conf/config.ini"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  nginx:
+    image: "nginx:1.21.6-alpine"
+    volumes:
+      - "./lb.conf:/etc/nginx/nginx.conf"
+    depends_on:
+      - dongtai-server
+    ports:
+      - "80:80"
