@@ -1,0 +1,34 @@
+version: "2"
+services:
+  dongtai-engine:
+    image: "dongtai/dongtai-server:{{ DONGTAI_IMAGE_VERSION }}"
+    restart: always
+    entrypoint: [ "/opt/dongtai/webapi/docker/entrypoint.sh", "worker" ]
+    volumes:
+      - "../config-tutorial.ini:/opt/dongtai/webapi/conf/config.ini"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+
+  dongtai-engine-task:
+    image: "dongtai/dongtai-server:{{ DONGTAI_IMAGE_VERSION }}"
+    restart: always
+    entrypoint: [ "/opt/dongtai/webapi/docker/entrypoint.sh", "beat" ]
+    volumes:
+      - "../config-tutorial.ini:/opt/dongtai/webapi/conf/config.ini"
+    depends_on:
+      - dongtai-engine
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+
+  nginx:
+    image: "nginx:1.21.6-alpine"
+    volumes:
+      - "./lb.conf:/etc/nginx/nginx.conf"
+    depends_on:
+      - dongtai-engine
+    ports:
+      - "80:80"
