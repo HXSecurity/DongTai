@@ -1,4 +1,104 @@
 ---
+# 创建配置文件
+apiVersion: v1
+data:
+  config.ini: |-
+    [mysql]
+    host = {{dongtai-mysql}}
+    port = {{3306}}
+    name = {{dongtai_webapi}}
+    user = {{root}}
+    password = {{dongtai-iast}}
+
+    [redis]
+    host = {{dongtai-redis}}
+    port = {{6379}}
+    password = {{123456}} 
+    db = 0
+
+    [engine]
+    url = http://dongtai-engine-svc:80
+
+    [apiserver]
+    url = http://dongtai-server-svc:80
+
+    [security]
+    csrf_trust_origins = .example.com
+    secret_key = vbjlvbxfvazjfprywuxgyclmvhtmselddsefxxlcixovmqfpgy
+
+    [smtp]
+    server = smtp_server
+    user = smtp_user
+    password = smtp_password
+    from_addr = from_addr
+    ssl = False
+    cc_addr = cc_addr
+    port = 25
+
+    [sca]
+    base_url = https://iast.huoxian.cn/openapi/sca/v1
+
+kind: ConfigMap
+metadata:
+  name: dongtai-iast-config.ini
+  namespace: { { CHANGE_THIS_NAMESPACE } }
+---
+# dongtai-server服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-server
+  namespace: { { CHANGE_THIS_NAMESPACE } }
+  annotations:
+    kubesphere.io/description: dongtai-server
+  labels:
+    app: dongtai-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dongtai-server
+  template:
+    metadata:
+      labels:
+        app: dongtai-server
+    spec:
+      containers:
+        - name: dongtai-server-container
+          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:{{CHANGE_THIS_VERSION}}
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/dongtai/webapi/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-iast-config.ini
+---
+# dongtai-web服务
+apiVersion: v1
+kind: Service
+metadata:
+  name: dongtai-server-svc
+  namespace: { { CHANGE_THIS_NAMESPACE } }
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    app: dongtai-server
+  type: ClusterIP
+---
+# 创建nginx.conf配置
 apiVersion: v1
 data:
   nginx.conf: |-
@@ -32,16 +132,16 @@ data:
                  try_files $uri $uri/ /index.html;
              }
 
-              location /api/ {
+               location /api/ {
                  proxy_read_timeout 60;
                  proxy_pass http://dongtai-server-svc:80/api/;
                }
 
-              location /upload/ {
+               location /upload/ {
                  proxy_pass http://dongtai-server-svc:80/upload/;
                }
 
-              location /openapi/ {
+               location /openapi/ {
                 proxy_set_header X-real-ip $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
                 proxy_set_header User-Agent $http_user_agent;
@@ -50,7 +150,7 @@ data:
                 proxy_pass http://dongtai-server-svc:80/;
                }
 
-              location = /50x.html {
+             location = /50x.html {
                  root   /usr/share/nginx/html;
              }
          }
@@ -58,68 +158,13 @@ data:
 kind: ConfigMap
 metadata:
   name: dongtai-web-nginx-conf
-  namespace: {{.Release.Namespace}}
----
-# dongtai-server服务
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: dongtai-server
-  namespace: {{.Release.Namespace}}
-  annotations:
-    kubesphere.io/description: dongtai-server
-  labels:
-    app: dongtai-server
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: dongtai-server
-  template:
-    metadata:
-      labels:
-        app: dongtai-server
-    spec:
-      containers:
-        - name: dongtai-server-container
-          image: dongtai/dongtai-server:{{ .Values.imageVersion }}
-          imagePullPolicy: Always
-          volumeMounts:
-            - name: configfile
-              mountPath: /opt/dongtai/webapi/conf/config.ini
-              subPath: config.ini
-          resources:
-            limits:
-              cpu: "500m"
-              memory: 1000Mi
-            requests:
-              cpu: "500m"
-              memory: 1000Mi
-      volumes:
-        - name: configfile
-          configMap:
-            name: dongtai-iast-config.ini
----
-# dongtai-web服务
-apiVersion: v1
-kind: Service
-metadata:
-  name: dongtai-server-svc
-  namespace: {{.Release.Namespace}}
-spec:
-  ports:
-    - port: 80
-      protocol: TCP
-      targetPort: 8000
-  selector:
-    app: dongtai-server
-  type: ClusterIP
+  namespace: { { CHANGE_THIS_NAMESPACE } }
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dongtai-web
-  namespace: {{.Release.Namespace}}
+  namespace: { { CHANGE_THIS_NAMESPACE } }
   annotations:
     kubesphere.io/description: dongtai前端项目
   labels:
@@ -136,7 +181,7 @@ spec:
     spec:
       containers:
         - name: dongtai-web-container
-          image: dongtai/dongtai-web:{{ .Values.imageVersion }}
+          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-web:{{CHANGE_THIS_VERSION}}
           imagePullPolicy: Always
           volumeMounts:
             - name: configfile
@@ -154,11 +199,12 @@ spec:
           configMap:
             name: dongtai-web-nginx-conf
 ---
+# dongtai-engine服务
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dongtai-engine
-  namespace: {{.Release.Namespace}}
+  namespace: { { CHANGE_THIS_NAMESPACE } }
   annotations:
     kubesphere.io/description: dongtai-engine
   labels:
@@ -175,9 +221,9 @@ spec:
     spec:
       containers:
         - name: dongtai-engine-container
-          image: dongtai/dongtai-server:{{ .Values.imageVersion }}
-          command: [ "/bin/bash","/opt/dongtai/webapi/docker/entrypoint.sh" ]
-          args: [ "worker" ]
+          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:{{CHANGE_THIS_VERSION}}
+          command: ["/bin/sh", "/opt/dongtai/webapi/docker/entrypoint.sh"]
+          args: ["worker"]
           imagePullPolicy: Always
           volumeMounts:
             - name: configfile
@@ -199,7 +245,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: dongtai-engine-svc
-  namespace: {{.Release.Namespace}}
+  namespace: { { CHANGE_THIS_NAMESPACE } }
 spec:
   ports:
     - port: 80
@@ -209,11 +255,12 @@ spec:
     app: dongtai-engine
   type: ClusterIP
 ---
+#dongtai-engine-task服务
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dongtai-engine-task
-  namespace: {{.Release.Namespace}}
+  namespace: { { CHANGE_THIS_NAMESPACE } }
   annotations:
     kubesphere.io/description: dongtai-engine-task
   labels:
@@ -230,9 +277,9 @@ spec:
     spec:
       containers:
         - name: dongtai-engine-task-container
-          image: dongtai/dongtai-server:{{ .Values.imageVersion }}
-          command: [ "/bin/bash","/opt/dongtai/webapi/docker/entrypoint.sh" ]
-          args: [ "beat" ]
+          image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:{{CHANGE_THIS_VERSION}}
+          command: ["/bin/bash", "/opt/dongtai/webapi/docker/entrypoint.sh"]
+          args: ["beat"]
           imagePullPolicy: Always
           volumeMounts:
             - name: configfile
@@ -249,6 +296,3 @@ spec:
         - name: configfile
           configMap:
             name: dongtai-iast-config.ini
-
-
-
