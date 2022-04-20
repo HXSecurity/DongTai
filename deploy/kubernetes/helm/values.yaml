@@ -6,9 +6,9 @@ replicaCount: 1
 
 # dongtai config
 # appNamespace: dongtai-iast
-skipMysql: false 
+skipMysql: false
 skipRedis: false
-accessType: ClusterIP 
+accessType: ClusterIP
 imageVersion: latest
 
 mysql:
@@ -26,7 +26,7 @@ redis:
 
 enginUrl: http://dongtai-engine-svc:80
 
-apiServer: http://dongtai-openapi-svc:80
+apiServer: http://dongtai-server-svc:80
 
 csrfTrustOrigins: .example.com
 secretKey: vbjlvbxfvazjfprywuxgyclmvhtmselddsefxxlcixovmqfpgy
@@ -37,7 +37,6 @@ smtp:
   from_addr: from_addr
   ssl: False
   cc_addr: cc_addr
-
 
 sca:
   base_url: https://iast.huoxian.cn/openapi/sca/v1
