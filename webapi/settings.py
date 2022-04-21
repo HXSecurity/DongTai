@@ -23,11 +23,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-BUCKET_URL = 'https://oss-cn-beijing.aliyuncs.com'
-BUCKET_NAME = 'dongtai'
-BUCKET_NAME_BASE_URL = 'agent/' if os.getenv('active.profile',
-                                             None) != 'TEST' else 'agent_test/'
-VERSION = 'latest'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("debug", 'false') == 'true' #or os.getenv('environment', None) in ('TEST',)
@@ -293,7 +288,7 @@ CAPTCHA_TIMEOUT = 1
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
             'format': u'{levelname} {asctime} [{module}.{funcName}:{lineno}] {message}',
@@ -329,6 +324,13 @@ LOGGING = {
             'formatter': 'verbose',
             'encoding': 'utf-8',
         },
+        'celery.apps.worker': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/tmp/worker.log',
+            'backupCount': 5,
+            'maxBytes': 1024 * 1024 * 10,
+            'formatter': 'verbose'
+        },
     },
     'loggers': {
         'django.db.backends': {
@@ -352,6 +354,11 @@ LOGGING = {
         },
         'dongtai-engine': {
             'handlers': ['console', 'dongtai-webapi'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'celery.apps.worker': {
+            'handlers': ['console', 'celery.apps.worker'],
             'propagate': True,
             'level': 'INFO',
         },
@@ -434,6 +441,7 @@ BUCKET_URL = 'https://oss-cn-beijing.aliyuncs.com'
 BUCKET_NAME = 'dongtai'
 BUCKET_NAME_BASE_URL = 'agent/' if os.getenv('active.profile',
                                              None) != 'TEST' else 'agent_test/'
+VERSION = 'latest'
 # CONST
 PENDING = 1
 VERIFYING = 2
