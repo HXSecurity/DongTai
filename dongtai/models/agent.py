@@ -11,7 +11,7 @@ from dongtai.models import User
 
 from dongtai.models.server import IastServer
 from dongtai.utils.settings import get_managed
-
+from dongtai.models.project import IastProject
 
 class IastAgent(models.Model):
     token = models.CharField(max_length=255, blank=True, null=True)
@@ -31,7 +31,11 @@ class IastAgent(models.Model):
     is_core_running = models.IntegerField(blank=True, null=True)
     control = models.IntegerField(blank=True, null=True)
     is_control = models.IntegerField(blank=True, null=True)
-    bind_project_id = models.IntegerField(blank=True, null=True, default=0)
+    bind_project = models.ForeignKey(IastProject,
+                                     on_delete=models.DO_NOTHING,
+                                     blank=True,
+                                     null=True,
+                                     default=0)
     project_name = models.CharField(max_length=255, blank=True, null=True)
     online = models.PositiveSmallIntegerField(blank=True, default=0)
     project_version_id = models.IntegerField(blank=True, null=True, default=0)
