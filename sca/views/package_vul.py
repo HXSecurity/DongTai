@@ -40,11 +40,18 @@ class OnePackageVulList(AnonymousAndUserEndPoint):
             name = package.name
             version = package.version
 
+        version_code = ""
+        version_list = version.split('.')[0:4]
+        while len(version_list) != 5:
+            version_list.append("0")
+        for _version in version_list:
+            version_code += _version.zfill(5)
+
         vul_list = []
         vul_package_ids = []
         vul_package_ranges = VulPackageRange.objects.filter(
-            ecosystem=ecosystem, name=name, type="SEMVER",
-            introduced__gte=version, fixed__lte=version
+            ecosystem=ecosystem, name=name,
+            introduced_vcode__lte=version_code, fixed_vcode__gt=version_code
         ).all()[0:1000]
 
         for vul_package_range in vul_package_ranges:
