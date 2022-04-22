@@ -90,7 +90,11 @@ class AgentCoreStatusUpdateALL(UserEndPoint):
     description = _("Suspend Agent")
 
     def post(self, request):
-        core_status = request.data.get("core_status")
+        ser = AgentCoreStatusSerializer(data=request.data)
+        if ser.is_valid(False):
+            core_status = ser.validated_data.get('core_status', None)
+        else:
+            return R.failure(msg=_('Incomplete parameter, please check again'))
         user = request.user
         # 超级管理员
         if user.is_system_admin():
