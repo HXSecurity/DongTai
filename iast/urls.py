@@ -344,10 +344,13 @@ if os.getenv('githubcount', None) in ('true', ) or os.getenv('environment', None
     urlpatterns.extend([
         path('github_contributors', GithubContributorsView.as_view()),
     ])
-
+from iast.views.agents_v2 import AgentListv2
 urlpatterns = [path('api/v1/', include(urlpatterns))]
 urlpatterns.extend([
     path('api/v2/vul/recheck', VulReCheckv2.as_view()),
     path('api/v2/vuln/<int:id>', VulDetailV2.as_view()),
+    path('api/v2/agents', AgentListv2.as_view({"get": "pagenation_list"})),
+    path('api/v2/agents/summary', AgentListv2.as_view({"get": "summary"})),
+    path('api/v2/agents/stat', AgentListv2.as_view({"get": "agent_stat"})),
 ])
 urlpatterns = format_suffix_patterns(urlpatterns)
