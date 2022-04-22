@@ -1,4 +1,3 @@
-
 import logging
 import time
 
@@ -21,18 +20,14 @@ class AgentUpdateEndPoint(OpenApiEndPoint):
     def post(self, request):
         try:
             param = parse_data(request.read())
-            print("======")
-            print(param)
             agent_id = int(param.get('agentId', None))
             server_addr = param.get('serverAddr', None)
             server_port = int(param.get('serverPort', None))
+            protocol = param.get('protocol', '')
         except Exception as e:
-            print(e)
+            logger.info(e, exc_info=True)
             return R.failure(msg="参数错误")
         user = request.user
-        # server_port = param.get('serverPort')
-        # server_path = param.get('serverPath')
-        # server_env = param.get('serverEnv')
         agent = IastAgent.objects.filter(id=agent_id, user=user).first()
         if not agent:
             return R.failure(msg="agent no register")
@@ -41,9 +36,13 @@ class AgentUpdateEndPoint(OpenApiEndPoint):
             if not server:
                 return R.failure(msg="agent no register")
             else:
+                update_fields = ['ip', "port", 'update_time']
+                if protocol:
+                    server.protocol = protocol
+                    update_fields.append('protocol')
                 server.ip = server_addr
                 server.port = server_port
                 server.update_time = int(time.time())
-                server.save(update_fields=['ip', "port", 'update_time'])
+                server.save(update_fields=update_fields)
         logger.info(_('Server record update success'))
         return R.success(msg="success update")
