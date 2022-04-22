@@ -19,6 +19,7 @@ from rest_framework import serializers
 from webapi import settings
 import requests
 import json
+from sca.models import VulCveRelation
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -132,7 +133,7 @@ class ScaDetailView(UserEndPoint):
                         _vul = vul.get("vul", {})
                         _fixed_versions = vul.get("fixed_versions", [])
                         cwe_ids = vul.get('vul_package', {}).get('cwe_ids', [])
-                        data['vuls'].append({
+                        vul = {
                             'safe_version': ",".join(_fixed_versions) if len(_fixed_versions) > 0 else _(
                                 'Current version stopped for maintenance or it is not a secure version'),
                             'vulcve': _vul.get('aliases', [])[0] if len(_vul.get('aliases', [])) > 0 else "",
@@ -142,7 +143,21 @@ class ScaDetailView(UserEndPoint):
                             'teardown': _vul.get("details", ""),
                             'reference': _vul.get('references', []),
                             'level': level_dict.get(_level, _level)
-                        })
+                        }
+                        cverelation = VulCveRelation.objects.filter(
+                            cve=vul['vulcve']).first()
+                        vul['vulcve_url'] = f"https://cve.mitre.org/cgi-bin/cvename.cgi?name={vul['vulcve']}" if vul[
+                            'vulcve'] else ""
+                        vul['vulcnnvd_url'] = ""
+                        vul['vulcnvd_url'] = ""
+                        vul['vulcnnvd'] = ""
+                        vul['vulcnvd'] = ""
+                        if cverelation:
+                            vul['vulcnnvd_url'] = f"http://www.cnnvd.org.cn/web/xxk/ldxqById.tag?CNNVD={cverelation.cnnvd}" if cverelation.cnnvd else ""
+                            vul['vulcnvd_url'] = f"https://www.cnvd.org.cn/flaw/show/{cverelation.cnvd}" if cverelation.cnvd else ""
+                            vul['vulcnnvd'] = cverelation.cnnvd if cverelation.cnnvd else ""
+                            vul['vulcnvd'] = cverelation.cnvd if cverelation.cnvd else ""
+                        data['vuls'].append(vul)
 
                 except Exception as e:
                     logger.info("get package_vul failed:{}".format(e))
