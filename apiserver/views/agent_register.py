@@ -18,7 +18,7 @@ from django.utils.translation import gettext_lazy as _
 from django.db import transaction
 import time
 from dongtai.endpoint import OpenApiEndPoint, R
-
+import json
 from apiserver.api_schema import DongTaiAuth, DongTaiParameter
 from apiserver.decrypter import parse_data
 
@@ -271,7 +271,8 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 hostname=hostname,
                 network=network,
                 container_name=container_name,
-                server_addr=server_addr,
+                server_addr=get_ipaddress(network)
+                if get_ipaddress(network) else server_addr,
                 server_port=server_port,
                 server_path=server_path,
                 cluster_name=cluster_name,
@@ -322,3 +323,19 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             is_audit=is_audit
         )
         return agent.id
+
+
+def get_ipaddress(network: str):
+    try:
+        dic = json.loads(network)
+        res = dic[0]['ip']
+        for i in dic:
+            if i['name'].startswith('en'):
+                res = i['ip']
+            if i.get("isAddress", 0):
+                res = i['ip']
+                break
+        return res
+    except Exception as e:
+        logger.error(e, exc_info=True)
+        return ''
