@@ -5,6 +5,8 @@ from dongtai.models.agent_config import IastAgentConfig
 from django.db.models import Q
 from drf_spectacular.utils import extend_schema
 import logging
+from dongtai.utils.systemsettings import get_circuit_break
+from django.utils.translation import gettext_lazy as _
 logger = logging.getLogger('dongtai.openapi')
 
 
@@ -25,7 +27,8 @@ class AgentConfigView(OpenApiEndPoint):
         except Exception as e:
             logger.error(e)
             return R.failure(msg="agentId is None")
-
+        if not get_circuit_break():
+            return R.success(msg=_('Successfully'), data={})
         user = request.user
         agent = IastAgent.objects.filter(pk=agent_id).first()
         data = {}
