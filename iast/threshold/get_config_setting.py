@@ -11,6 +11,7 @@ from dongtai.endpoint import UserEndPoint, R
 from dongtai.models.agent_config import IastAgentConfig
 from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
+from dongtai.utils.systemsettings import get_circuit_break
 
 _ResponseSerializer = get_response_serializer(status_msg_keypair=(
     ((201, _('Get success')), ''),
@@ -31,6 +32,8 @@ class GetAgentThresholdConfig(UserEndPoint):
         user = request.user
         configData = IastAgentConfig.objects.filter(user=user)
         result = []
+        if not get_circuit_break():
+            return R.success(msg=_('Successfully'), data={"result": []})
         if configData:
             for item in configData:
                 data = model_to_dict(item)
