@@ -9,7 +9,7 @@ from dongtai.models.agent import IastAgent
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
-from iast.serializers.agent import AgentToggleArgsSerializer 
+from iast.serializers.agent import AgentToggleArgsSerializer
 from iast.views import AGENT_STATUS
 
 _ResponseSerializer = get_response_serializer(
@@ -82,4 +82,32 @@ class AgentCoreStatusUpdate(UserEndPoint):
             #     agent.latest_time = int(time.time())
             #     agent.save(update_fields=['latest_time', 'control', 'is_control'])
 
+        return R.success(msg=_('状态已下发'))
+
+
+class AgentCoreStatusUpdateALL(UserEndPoint):
+    name = "api-v1-agent-core-status-update"
+    description = _("Suspend Agent")
+
+    def post(self, request):
+        ser = AgentCoreStatusSerializer(data=request.data)
+        if ser.is_valid(False):
+            core_status = ser.validated_data.get('core_status', None)
+        else:
+            return R.failure(msg=_('Incomplete parameter, please check again'))
+        user = request.user
+        # 超级管理员
+        if user.is_system_admin():
+            queryset = IastAgent.objects.all()
+        # 租户管理员
+        elif user.is_superuser == 2:
+            users = self.get_auth_users(user)
+            user_ids = list(users.values_list('id', flat=True))
+            queryset = IastAgent.objects.filter(user_id__in=user_ids)
+        else:
+            # 普通用户
+            queryset = IastAgent.objects.filter(user=user)
+        queryset.filter(online=1).update(control=core_status,
+                                         is_control=1,
+                                         latest_time=int(time.time()))
         return R.success(msg=_('状态已下发'))
