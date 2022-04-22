@@ -150,7 +150,8 @@ from iast.threshold.webhook_setting import AgentWebHookConfig
 from iast.threshold.get_webhook_setting import GetAgentWebHookConfig
 from iast.threshold.webhook_type import AgentWebHookTypeList
 from iast.threshold.get_config_setting import GetAgentThresholdConfig
-from iast.threshold.agent_core_status import AgentCoreStatusUpdate
+from iast.threshold.agent_core_status import (AgentCoreStatusUpdate,
+                                              AgentCoreStatusUpdateALL)
 
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
@@ -330,6 +331,7 @@ urlpatterns = [
     # get webHook setting
     path('webhook/settings/get', GetAgentWebHookConfig.as_view()),
     path('agent/core/update', AgentCoreStatusUpdate.as_view()),
+    path('agent/core/update/all', AgentCoreStatusUpdateALL.as_view()),
     path('agent/summary/<int:pk>', AgentSummary.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):

@@ -113,6 +113,7 @@ class HeartBeatHandler(IReportHandler):
                             self.agent.server.hostname)))
                 if project_agents is None:
                     logger.info(_('There is no probe under the project'))
+                logger.info(f"project_agent_ids : {project_agents}")
                 replay_queryset = IastReplayQueue.objects.values(
                     'id', 'relation_id', 'uri', 'method', 'scheme', 'header',
                     'params', 'body', 'replay_type').filter(
