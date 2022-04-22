@@ -33,5 +33,3 @@ upload/reports/*.docx
 *.log.*
 celerybeat.pid
 *.mo
-docker-compose.yml
-docker-compose.yaml

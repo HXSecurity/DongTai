@@ -372,7 +372,9 @@ def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_s
     """
     # 如果是重放请求，且重放请求类型为漏洞验证，更新漏洞状态为
     timestamp = int(time.time())
-    try:
+    from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
+    from dongtai.models.agent_method_pool import MethodPool
+    if isinstance(vul_meta, IastAgentMethodPoolReplay):
         replay_id = vul_meta.replay_id
         replay_type = vul_meta.replay_type
         relation_id = vul_meta.relation_id
@@ -387,7 +389,7 @@ def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_s
         else:
             vul = save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs)
             create_vul_recheck_task(vul_id=vul.id, agent=vul.agent, timestamp=timestamp)
-    except Exception as e:
+    elif isinstance(vul_meta, MethodPool):
         vul = save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs)
         create_vul_recheck_task(vul_id=vul.id, agent=vul.agent, timestamp=timestamp)
 

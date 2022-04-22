@@ -60,7 +60,9 @@ class VulPackageRange(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
     type = models.CharField(max_length=50, blank=True, null=True)
     introduced = models.CharField(max_length=50, blank=True, null=True)
+    introduced_vcode = models.CharField(max_length=50, blank=True, null=True)
     fixed = models.CharField(max_length=50, blank=True, null=True)
+    fixed_vcode = models.CharField(max_length=50, blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
@@ -80,3 +82,14 @@ class VulPackageVersion(models.Model):
 
     class Meta:
         db_table = 'sca2_vul_package_version'
+
+class VulCveRelation(models.Model):
+    cve = models.CharField(max_length=255)
+    cwe = models.CharField(max_length=255)
+    cnnvd = models.CharField(max_length=255)
+    cnvd = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+    class Meta:
+        db_table = 'sca2_cve_relation'

@@ -39,13 +39,15 @@ class ScaArtifactDb(models.Model):
                 "无风险": "无风险",
                 "低危": "低危",
                 "中危": "中危",
-                "高危": "高危"
+                "高危": "高危",
+                "严重": "严重",
             },
             'en': {
                 "无风险": "No risk",
                 "低危": "Low",
                 "中危": "Medium",
-                "高危": "High"
+                "高危": "High",
+                "严重": "Critical"
             },
         })
     def __getattribute__(self, name) -> Any:
