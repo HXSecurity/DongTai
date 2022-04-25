@@ -160,7 +160,7 @@ class SaasMethodPoolHandler(IReportHandler):
         :return:
         """
         # todo need to del
-        pool_sign = random.sample('zyxwvutsrqmlkjihgfedcba',5)
+        # pool_sign = random.sample('zyxwvutsrqmlkjihgfedcba',5)
         method_pool = MethodPool.objects.filter(
             pool_sign=pool_sign, agent__in=current_version_agents).first()
         update_record = True
