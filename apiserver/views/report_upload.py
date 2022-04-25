@@ -18,21 +18,18 @@ class ReportUploadEndPoint(APIView):
     name = "api-v1-report-upload"
     description = "agent上传报告"
 
-    # @extend_schema(
-    #     description='Pull Agent Engine Hook Rule',
-    #     parameters=[
-    #         DongTaiParameter.LANGUAGE,
-    #     ],
-    #     responses=R,
-    #     methods=['GET']
-    # )
+    @extend_schema(
+        description='Pull Agent Engine Hook Rule',
+        parameters=[
+            DongTaiParameter.LANGUAGE,
+        ],
+        responses=R,
+        methods=['GET']
+    )
     def post(self, request):
-        # try:
-            # result = {"result": 0, "msg": "success"}
-            # return JsonResponse(result)
-            # return R.success(msg="report upload success.", data={})
-        report = parse_data(request.read())
-        data = ReportHandler.handler(report, request.user)
-        return R.success(msg="report upload success.", data=data)
-        # except Exception as e:
-        #     return R.failure(msg=f"report upload failed, reason: {e}")
+        try:
+            report = parse_data(request.read())
+            data = ReportHandler.handler(report, request.user)
+            return R.success(msg="report upload success.", data=data)
+        except Exception as e:
+            return R.failure(msg=f"report upload failed, reason: {e}")
