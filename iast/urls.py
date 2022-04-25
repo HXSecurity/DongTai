@@ -150,7 +150,8 @@ from iast.threshold.webhook_setting import AgentWebHookConfig
 from iast.threshold.get_webhook_setting import GetAgentWebHookConfig
 from iast.threshold.webhook_type import AgentWebHookTypeList
 from iast.threshold.get_config_setting import GetAgentThresholdConfig
-from iast.threshold.agent_core_status import AgentCoreStatusUpdate
+from iast.threshold.agent_core_status import (AgentCoreStatusUpdate,
+                                              AgentCoreStatusUpdateALL)
 
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
@@ -330,6 +331,7 @@ urlpatterns = [
     # get webHook setting
     path('webhook/settings/get', GetAgentWebHookConfig.as_view()),
     path('agent/core/update', AgentCoreStatusUpdate.as_view()),
+    path('agent/core/update/all', AgentCoreStatusUpdateALL.as_view()),
     path('agent/summary/<int:pk>', AgentSummary.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
@@ -344,10 +346,13 @@ if os.getenv('githubcount', None) in ('true', ) or os.getenv('environment', None
     urlpatterns.extend([
         path('github_contributors', GithubContributorsView.as_view()),
     ])
-
+from iast.views.agents_v2 import AgentListv2
 urlpatterns = [path('api/v1/', include(urlpatterns))]
 urlpatterns.extend([
     path('api/v2/vul/recheck', VulReCheckv2.as_view()),
     path('api/v2/vuln/<int:id>', VulDetailV2.as_view()),
+    path('api/v2/agents', AgentListv2.as_view({"get": "pagenation_list"})),
+    path('api/v2/agents/summary', AgentListv2.as_view({"get": "summary"})),
+    path('api/v2/agents/stat', AgentListv2.as_view({"get": "agent_stat"})),
 ])
 urlpatterns = format_suffix_patterns(urlpatterns)

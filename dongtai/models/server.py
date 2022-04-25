@@ -25,6 +25,10 @@ class IastServer(models.Model):
     create_time = models.IntegerField(blank=True, null=True)
     update_time = models.IntegerField(blank=True, null=True)
     network = models.CharField(max_length=255, blank=True, null=True)
+    protocol = models.CharField(max_length=255,
+                                blank=True,
+                                null=True,
+                                default='')
     pid = models.IntegerField(blank=True, null=True)
 
     class Meta:

@@ -92,20 +92,23 @@ class HeartBeatHandler(IReportHandler):
                                          agent=self.agent)
 
     def get_result(self, msg=None):
-
+        logger.info('return_queue: {}'.format(self.return_queue))
         if self.return_queue is None or self.return_queue == 1:
             try:
                 project_agents = IastAgent.objects.values('id').filter(
                     bind_project_id=self.agent.bind_project_id)
+                project_agents = list(
+                    set(
+                        IastAgent.objects.values_list('id', flat=True).filter(
+                            bind_project_id=self.agent.bind_project_id)
+                        | addtional_agenti_ids_query_filepath_simhash(
+                            self.agent.filepathsimhash)
+                        | addtional_agent_ids_query_deployway_and_path(
+                            self.agent.servicetype, self.agent.server.path,
+                            self.agent.server.hostname)))
                 if project_agents is None:
                     logger.info(_('There is no probe under the project'))
-                project_agents = project_agents.union([
-                    addtional_agenti_ids_query_filepath_simhash(
-                        self.agent.filepathsimhash),
-                    addtional_agent_ids_query_deployway_and_path(
-                        self.agent.servicetype, self.agent.server.path,
-                        self.agent.server.hostname)
-                ])
+                logger.info(f"project_agent_ids : {project_agents}")
                 replay_queryset = IastReplayQueue.objects.values(
                     'id', 'relation_id', 'uri', 'method', 'scheme', 'header',
                     'params', 'body', 'replay_type').filter(
@@ -137,7 +140,10 @@ class HeartBeatHandler(IReportHandler):
 
                 return replay_requests
             except Exception as e:
-                logger.info(_('Replay request query failed, reason: {}').format(e))
+                logger.info(
+                    _('Replay request query failed, reason: {}').format(e),
+                    exc_info=True)
+
         return list()
 
     def save(self):
@@ -152,19 +158,19 @@ def addtional_agent_ids_query_deployway_and_path(deployway: str, path: str,
                                                  hostname: str) -> QuerySet:
     if deployway == 'k8s':
         deployment_id = get_k8s_deployment_id(hostname)
-        server_q = Q(hostname__startswith=deployment_id) & Q(path=path) & Q(
-            path='') & (~Q(hostname=''))
+        logger.info(f'deployment_id : {deployment_id}')
+        server_q = Q(server__hostname__startswith=deployment_id) & Q(server__path=path) & Q(
+            server__path='') & ~Q(server__hostname='')
     elif deployway == 'docker':
-        server_q = Q(path=path) & (~Q(path=''))
+        server_q = Q(server__path=path) & ~Q(server__path='')
     else:
-        server_q = Q(path=path) & Q(
-            hostname=hostname) & (~Q(path='')) & (~Q(hostname=''))
-    final_q = server_q & Q(agent__id__gt=0)
-    return IastServer.objects.filter(final_q).annotate(
-        id=F('agent__id')).values('id').distinct()
+        server_q = Q(server__path=str(path)) & Q(server__hostname=str(
+            hostname)) & ~Q(server__path='') & ~Q(server__hostname='')
+    final_q = server_q
+    return IastAgent.objects.filter(final_q).values_list('id',flat=True)
 
 
 def addtional_agenti_ids_query_filepath_simhash(
         filepathsimhash: str) -> QuerySet:
-    return IastAgent.objects.filter(
-        filepathsimhash=filepathsimhash).values('id')
+    return IastAgent.objects.filter(filepathsimhash=filepathsimhash).values_list(
+        'id', flat=True)
