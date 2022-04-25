@@ -316,6 +316,11 @@ LOGGING = {
             'propagate': True,
             'level': 'INFO',
         },
+        'dongtai.openapi': {
+            'handlers': ['console', 'dongtai.openapi'],
+            'propagate': True,
+            'level': 'INFO',
+        },
         'dongtai-core': {
             'handlers': ['console', 'dongtai-webapi'],
             'propagate': True,
