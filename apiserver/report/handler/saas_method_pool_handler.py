@@ -202,8 +202,7 @@ class SaasMethodPoolHandler(IReportHandler):
             # 获取agent
             update_record = False
             timestamp = int(time.time())
-            method_pool, iscreated = MethodPool.objects.update_or_create(
-                defaults={'pool_sign': pool_sign, 'agent_id': self.agent_id},
+            method_pool = MethodPool.objects.create(
                 agent=self.agent,
                 url=self.http_url,
                 uri=self.http_uri,
