@@ -14,7 +14,8 @@ from apiserver.report.report_handler_factory import ReportHandler
 from rest_framework.views import APIView
 from django.http import JsonResponse
 
-class ReportUploadEndPoint(APIView):
+
+class ReportUploadEndPoint(OpenApiEndPoint):
     name = "api-v1-report-upload"
     description = "agent上传报告"
 
