@@ -237,14 +237,17 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     from dongtai.models.agent import IastAgent
     project_agents = IastAgent.objects.filter(project_version_id=vul_meta.agent.project_version_id)
     # 获取 相同项目版本下的数据
+    print("=======")
     vul = IastVulnerabilityModel.objects.filter(
         strategy_id=strategy_id,
         uri=vul_meta.uri,
         http_method=vul_meta.http_method,
         agent__in=project_agents,
     ).first()
+
     IastProject.objects.filter(id=vul_meta.agent.bind_project_id).update(latest_time=timestamp)
     if vul:
+        # print("llllll")
         vul.req_header = vul_meta.req_header
         vul.req_params = vul_meta.req_params
         vul.req_data = vul_meta.req_data
@@ -266,6 +269,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
             'latest_time'
         ])
     else:
+        # print("insert-------")
         from dongtai.models.hook_type import HookType
         hook_type = HookType.objects.filter(vul_strategy_id=strategy_id).first()
         vul = IastVulnerabilityModel.objects.create(
@@ -394,7 +398,7 @@ def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_s
         create_vul_recheck_task(vul_id=vul.id, agent=vul.agent, timestamp=timestamp)
 
     if vul:
-        send_to_wechat(vul)
+        # send_to_wechat(vul)
         send_vul_notify(vul)
 
 

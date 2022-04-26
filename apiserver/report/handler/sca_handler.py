@@ -9,7 +9,7 @@ import logging
 
 from dongtai.utils import const
 from django.utils.translation import gettext_lazy as _
-
+from core.tasks import update_one_sca
 from apiserver.report.handler.report_handler_interface import IReportHandler
 from apiserver.report.report_handler_factory import ReportHandler
 import requests
@@ -31,16 +31,12 @@ class ScaHandler(IReportHandler):
     @staticmethod
     def send_to_engine(agent_id, package_path, package_signature, package_name, package_algorithm):
         try:
-            logger.info(f'[+] send sca package [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm}] to engine')
-            requests.get(
-                url=settings.SCA_ENGINE_URL.format(
-                    agent_id=agent_id,
-                    package_path=package_path,
-                    package_signature=package_signature,
-                    package_name=package_name,
-                    package_algorithm=package_algorithm,
-                )
-            )
+
+            logger.info(
+                f'[+] 处理SCA请求[{agent_id}, {package_path}, {package_signature}, {package_name}, {package_algorithm}]正在下发扫描任务')
+            update_one_sca.delay(agent_id, package_path, package_signature, package_name, package_algorithm)
+            logger.info(
+                f'[+] 处理SCA请求[{agent_id}, {package_path}, {package_signature}, {package_name}, {package_algorithm}]任务下发完成')
         except Exception as e:
             logger.info(f'[-] Failure: sca package [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm}], Error: {e}')
 

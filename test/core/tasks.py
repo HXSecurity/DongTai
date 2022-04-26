@@ -21,8 +21,8 @@ class MyTestCase(DongTaiTestCase):
         search_vul_from_replay_method_pool(method_id)
 
     def test_search_vul_from_method_pool(self):
-        method_pool_id = 646561
-        print("----")
+        method_pool_id = 657160
+
         from core.tasks import search_vul_from_method_pool
         search_vul_from_method_pool(method_pool_id)
 
