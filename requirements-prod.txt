@@ -15,7 +15,7 @@ django-simple-captcha==0.5.14
 django-import-export==2.5.0
 oss2==2.13.1
 idna==2.10
-lxml==4.6.2
+lxml==4.6.5
 mysqlclient
 python-docx==0.8.10
 requests==2.25.1
