@@ -105,8 +105,8 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_CLASSES': ('rest_framework.throttling.AnonRateThrottle',
                                  'rest_framework.throttling.UserRateThrottle'),
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '1000/min',
-        'user': '5000/min'
+        'anon': '6000000/min',
+        'user': '6000000/min'
     },
 }
 
@@ -206,22 +206,6 @@ TEMPLATES = [
     },
 ]
 
-# TEMPLATES = [
-#     {
-#         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-#         'DIRS': [],
-#         'APP_DIRS': True,
-#         'OPTIONS': {
-#             'context_processors': [
-#                 'django.template.context_processors.debug',
-#                 'django.template.context_processors.request',
-#                 'django.contrib.auth.context_processors.auth',
-#                 'django.contrib.messages.context_processors.messages',
-#             ],
-#         },
-#     },
-# ]
-
 WSGI_APPLICATION = 'webapi.wsgi.application'
 
 DATABASES = {
@@ -268,20 +252,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 AUTH_USER_MODEL = 'dongtai.User'
-
-LANGUAGE_CODE = 'zh'
-
 TIME_ZONE = "Asia/Shanghai"
-
-USE_I18N = True
-
-USE_L10N = True
-
 STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'upload')
 MEDIA_URL = "/upload/"
-
-
 CAPTCHA_IMAGE_SIZE = (80, 45)
 CAPTCHA_LENGTH = 4
 CAPTCHA_TIMEOUT = 1
@@ -339,6 +313,11 @@ LOGGING = {
         },
         'dongtai-webapi': {
             'handlers': ['console', 'dongtai-webapi'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'dongtai.openapi': {
+            'handlers': ['console', 'dongtai.openapi'],
             'propagate': True,
             'level': 'INFO',
         },
@@ -476,6 +455,7 @@ CELERY_TASK_EAGER_PROPAGATES = True
 CELERY_WORKER_REDIRECT_STDOUTS = True
 CELERY_WORKER_REDIRECT_STDOUTS_LEVEL = "INFO"
 # CELERY_WORKER_HIJACK_ROOT_LOGGER = True
-# CELERY_WORKER_MAX_TASKS_PER_CHILD = 40
+CELERY_WORKER_MAX_TASKS_PER_CHILD = 40
+
 CELERY_TASK_SOFT_TIME_LIMIT = 3600
 DJANGO_CELERY_BEAT_TZ_AWARE = False

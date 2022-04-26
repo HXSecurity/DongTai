@@ -48,12 +48,7 @@ class HeartBeatHandler(IReportHandler):
         self.agent = IastAgent.objects.filter(id=self.agent_id, user=self.user_id).first()
         return self.agent
 
-    def has_permission(self):
-        self.agent = IastAgent.objects.filter(id=self.agent_id, user=self.user_id).first()
-        return self.agent
-
     def save_heartbeat(self):
-        # update agent state
         self.agent.is_running = 1
         self.agent.online = 1
         self.agent.save(update_fields=['is_running', 'online'])

@@ -4,7 +4,7 @@
 # datetime:2020/10/23 12:00
 # software: PyCharm
 # project: webapi
-import logging, requests, json
+import logging, requests, json, time
 from django.utils.translation import gettext_lazy as _
 from AgentServer import settings
 from dongtai.models.agent import IastAgent
@@ -26,8 +26,6 @@ class ReportHandler:
         """
         try:
             report_type = reports.get('type')
-            # print("------")
-            # print(reports)
             # 根据消息类型，转发上报到指定地址
             if report_type == 1:
                 isCoreInstalled = reports.get("detail",{}).get("isCoreInstalled", 0)

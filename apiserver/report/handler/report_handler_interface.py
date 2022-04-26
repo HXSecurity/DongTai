@@ -66,6 +66,7 @@ class IReportHandler:
     def handle(self, report, user):
         logger.info(_('[{}] Report resolution start').format(self.__class__.__name__))
         self.report = report
+        # print(self._user_id)
         self.user_id = user
         self.common_header()
         if self.has_permission():

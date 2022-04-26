@@ -258,9 +258,6 @@ class ExportPort():
                 )
 
 
-
-
-
     def generate_word_report(self, user, project, vul, count_result, levelInfo, timestamp):
         document = Document()
         document.styles.add_style('TitleOne', WD_STYLE_TYPE.PARAGRAPH).font.name = 'Arial'
