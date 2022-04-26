@@ -11,6 +11,8 @@ import time,logging
 from apiserver.api_schema import DongTaiParameter
 from apiserver.decrypter import parse_data
 from apiserver.report.report_handler_factory import ReportHandler
+from rest_framework.views import APIView
+from django.http import JsonResponse
 
 
 class ReportUploadEndPoint(OpenApiEndPoint):
