@@ -17,7 +17,7 @@ logs/*.log
 build_docker.sh
 dongtai_py_agent.log
 dongtai-agent-python.tar.gz
-iast/upload/reports/*
+
 /deploy/docker-compose/docker-compose.yml
 doc
 iast-package
@@ -25,10 +25,6 @@ config.ini
 dist
 dongtai.egg-info
 build
-upload/reports/*.html
-upload/reports/*.pdf
-upload/reports/*.xlsx
-upload/reports/*.docx
 *.log
 *.log.*
 celerybeat.pid
