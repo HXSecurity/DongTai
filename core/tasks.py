@@ -196,9 +196,6 @@ def search_vul_from_method_pool(method_pool_id):
             return
         check_response_header(method_pool_model)
         check_response_content(method_pool_model)
-        # print(method_pool_model.agent.user.id)
-        # print("=====3333333333333=")
-        # print(method_pool_model.id)
         strategies = load_sink_strategy(method_pool_model.agent.user, method_pool_model.agent.language)
         engine = VulEngine()
         method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
@@ -206,9 +203,6 @@ def search_vul_from_method_pool(method_pool_id):
         if method_pool:
             # print(engine.method_pool_signatures)
             for strategy in strategies:
-                # print("lllllllll")
-                # print(strategy.get('value'))
-                # print("========")
                 if strategy.get('value') in engine.method_pool_signatures:
                     search_and_save_vul(engine, method_pool_model, method_pool, strategy)
         logger.info(f'漏洞检测成功')
@@ -218,6 +212,7 @@ def search_vul_from_method_pool(method_pool_id):
 
 @shared_task(queue='dongtai-replay-vul-scan')
 def search_vul_from_replay_method_pool(method_pool_id):
+
     logger.info(f'重放数据漏洞检测开始，方法池 {method_pool_id}')
     try:
         method_pool_model = IastAgentMethodPoolReplay.objects.filter(id=method_pool_id).first()
