@@ -142,13 +142,13 @@ class SaasMethodPoolHandler(IReportHandler):
             current_version_agents = self.get_project_agents(self.agent)
             with transaction.atomic():
                 try:
+                    # @TODO: send to log service
                     update_record, method_pool = self.save_method_call(
                         pool_sign, current_version_agents)
-                    self.send_to_engine(method_pool_id=method_pool.id,
+                    self.send_to_engine(self.agent_id, method_pool_sign=pool_sign,
                                         update_record=update_record)
                 except Exception as e:
                     logger.info(e, exc_info=True)
-
 
 
     def save_method_call(self, pool_sign: str,
@@ -233,25 +233,22 @@ class SaasMethodPoolHandler(IReportHandler):
         return update_record, method_pool
 
     @staticmethod
-    def send_to_engine(method_pool_id, update_record=False, model=None):
-        """
-        @TODO: use method pool sign for task
-        """
+    def send_to_engine(agent_id, method_pool_id="", method_pool_sign="", update_record=False, model=None):
+        retryable = settings.config.getboolean('task', 'retryable', fallback=False)
         try:
             if model is None:
                 logger.info(
-                    f'[+] send method_pool [{method_pool_id}] to engine for {"update" if update_record else "new record"}')
-                retryable = settings.config.getboolean('task', 'retryable', fallback=False)
-                search_vul_from_method_pool.delay(method_pool_id, retryable=retryable)
-                search_sink_from_method_pool.delay(method_pool_id, retryable=retryable)
+                    f'[+] send method_pool [{method_pool_sign}] to engine for {"update" if update_record else "new record"}')
+                search_vul_from_method_pool.delay(method_pool_sign, agent_id, retryable=retryable)
+                search_sink_from_method_pool.delay(method_pool_sign, agent_id, retryable=retryable)
             else:
                 logger.info(
-                    f'[+] send method_pool [{method_pool_id}] to engine for {model if model else ""}'
+                    f'[+] send method_pool [{method_pool_sign}] to engine for {model if model else ""}'
                 )
                 search_vul_from_replay_method_pool.delay(method_pool_id)
                 #requests.get(url=settings.REPLAY_ENGINE_URL.format(id=method_pool_id))
         except Exception as e:
-            logger.info(f'[-] Failure: send method_pool [{method_pool_id}], Error: {e}')
+            logger.info(f'[-] Failure: send method_pool [{method_pool_id}{method_pool_sign}], Error: {e}')
 
     def calc_hash(self):
         sign_raw = '-'.join(
