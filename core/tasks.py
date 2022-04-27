@@ -194,20 +194,20 @@ def search_and_save_sink(engine, method_pool_model, strategy):
 
 @shared_task(bind=True, queue='dongtai-method-pool-scan',
              max_retries=settings.config.getint('task', 'max_retries', fallback=3))
-def search_vul_from_method_pool(self, method_pool_id, retryable=False):
+def search_vul_from_method_pool(self, method_pool_sign, agent_id, retryable=False):
 
-    logger.info(f'漏洞检测开始，方法池 {method_pool_id}')
+    logger.info(f'漏洞检测开始，方法池 {method_pool_sign}')
     try:
-        method_pool_model = MethodPool.objects.filter(id=method_pool_id).first()
+        method_pool_model = MethodPool.objects.filter(pool_sign=method_pool_sign, agent_id=agent_id).first()
         if method_pool_model is None:
             if retryable:
                 if self.request.retries < self.max_retries:
                     tries = self.request.retries + 1
-                    raise RetryableException(f'漏洞检测方法池 {method_pool_id} 不存在，重试第 {tries} 次')
+                    raise RetryableException(f'漏洞检测方法池 {method_pool_sign} 不存在，重试第 {tries} 次')
                 else:
-                    logger.error(f'漏洞检测超过最大重试次数 {self.max_retries}，方法池 {method_pool_id} 不存在')
+                    logger.error(f'漏洞检测超过最大重试次数 {self.max_retries}，方法池 {method_pool_sign} 不存在')
             else:
-                logger.warning(f'漏洞检测终止，方法池 {method_pool_id} 不存在')
+                logger.warning(f'漏洞检测终止，方法池 {method_pool_sign} 不存在')
             return
         check_response_header(method_pool_model)
         check_response_content(method_pool_model)
@@ -228,7 +228,7 @@ def search_vul_from_method_pool(self, method_pool_id, retryable=False):
         else:
             logger.error(f'漏洞检测超过最大重试次数，错误原因：{e}')
     except Exception as e:
-        logger.error(f'漏洞检测出错，方法池 {method_pool_id}. 错误原因：{e}')
+        logger.error(f'漏洞检测出错，方法池 {method_pool_sign}. 错误原因：{e}')
 
 
 @shared_task(queue='dongtai-replay-vul-scan')
@@ -281,26 +281,27 @@ def search_vul_from_strategy(strategy_id):
 
 @shared_task(bind=True, queue='dongtai-search-scan',
              max_retries=settings.config.getint('task', 'max_retries', fallback=3))
-def search_sink_from_method_pool(self, method_pool_id, retryable=False):
+def search_sink_from_method_pool(self, method_pool_sign, agent_id, retryable=False):
     """
     根据方法池ID搜索方法池中是否匹配到策略库中的sink方法
     :param self: celery task
-    :param method_pool_id: 方法池ID
+    :param method_pool_sign: 方法池 sign
+    :param agent_id: Agent ID
     :param retryable: 可重试
     :return: None
     """
-    logger.info(f'sink规则扫描开始，方法池ID[{method_pool_id}]')
+    logger.info(f'sink规则扫描开始，方法池[{method_pool_sign}]')
     try:
-        method_pool_model = MethodPool.objects.filter(id=method_pool_id).first()
+        method_pool_model = MethodPool.objects.filter(pool_sign=method_pool_sign, agent_id=agent_id).first()
         if method_pool_model is None:
             if retryable:
                 if self.request.retries < self.max_retries:
                     tries = self.request.retries + 1
-                    raise RetryableException(f'sink规则扫描方法池 {method_pool_id} 不存在，重试第 {tries} 次')
+                    raise RetryableException(f'sink规则扫描方法池 {method_pool_sign} 不存在，重试第 {tries} 次')
                 else:
-                    logger.error(f'sink规则扫描超过最大重试次数 {self.max_retries}，方法池 {method_pool_id} 不存在')
+                    logger.error(f'sink规则扫描超过最大重试次数 {self.max_retries}，方法池 {method_pool_sign} 不存在')
             else:
-                logger.warn(f'sink规则扫描终止，方法池 [{method_pool_id}] 不存在')
+                logger.warn(f'sink规则扫描终止，方法池 [{method_pool_sign}] 不存在')
             return
         strategies = load_sink_strategy(method_pool_model.agent.user, method_pool_model.agent.language)
         engine = VulEngine()
