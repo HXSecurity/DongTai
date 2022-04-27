@@ -38,6 +38,10 @@ secret_key = vbjlvbxfvazjfprywuxgyclmvhtmselddsefxxlcixovmqfpgy
 [sca]
 base_url = http://52.80.75.225:8000
 
+[task]
+retryable = False
+max_retries = 3
+
 [other]
 domain = http://localhost.domain/
 demo_session_cookie_domain = .huoxian.cn

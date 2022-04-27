@@ -234,12 +234,16 @@ class SaasMethodPoolHandler(IReportHandler):
 
     @staticmethod
     def send_to_engine(method_pool_id, update_record=False, model=None):
+        """
+        @TODO: use method pool sign for task
+        """
         try:
             if model is None:
                 logger.info(
                     f'[+] send method_pool [{method_pool_id}] to engine for {"update" if update_record else "new record"}')
-                search_vul_from_method_pool.delay(method_pool_id)
-                search_sink_from_method_pool.delay(method_pool_id)
+                retryable = settings.config.getboolean('task', 'retryable', fallback=False)
+                search_vul_from_method_pool.delay(method_pool_id, retryable=retryable)
+                search_sink_from_method_pool.delay(method_pool_id, retryable=retryable)
             else:
                 logger.info(
                     f'[+] send method_pool [{method_pool_id}] to engine for {model if model else ""}'
