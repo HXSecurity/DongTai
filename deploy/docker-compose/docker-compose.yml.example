@@ -61,7 +61,7 @@ services:
       options:
         max-size: "10m"
   dongtai-logrotate:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/logrotate:v1
+    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/logrotate:{ChangeThisVersion}"
     restart: always
     user: root
     environment:
@@ -75,7 +75,7 @@ services:
         max-size: "10m"
     privileged: true
   dongtai-logstash:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/logstash:7.9.2-v1
+    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/logstash:7.9.2-{ChangeThisVersion}"
     restart: always
     user: root
     environment:
