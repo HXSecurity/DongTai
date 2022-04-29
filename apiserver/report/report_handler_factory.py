@@ -7,6 +7,7 @@
 import logging, requests, json, time
 from django.utils.translation import gettext_lazy as _
 from AgentServer import settings
+from apiserver.report.log_service import LogService
 from dongtai.models.agent import IastAgent
 
 logger = logging.getLogger('dongtai.openapi')
@@ -14,6 +15,8 @@ logger = logging.getLogger('dongtai.openapi')
 
 class ReportHandler:
     HANDLERS = {}
+    log_service = None
+    log_service_disabled = False
 
     # 注册handler到当前命名空间，后续进行异步处理数据
     @staticmethod
@@ -60,6 +63,19 @@ class ReportHandler:
     @classmethod
     def register(cls, handler_name):
         def wrapper(handler):
+            async_send = settings.config.getboolean('task', 'async_send', fallback=False)
+            if not async_send:
+                cls.log_service_disabled = True
+            if cls.log_service is None and not cls.log_service_disabled:
+                host = settings.config.get('log_service', 'host')
+                port = settings.config.getint('log_service', 'port')
+                if not host or not port:
+                    logger.error('log service must config host and post')
+                    cls.log_service_disabled = True
+                srv = LogService(host, port)
+                if srv.create_socket():
+                    cls.log_service = srv
+
             logger.info(
                 _('Registration report type {} handler {}').format(handler_name, handler.__name__))
             if handler_name not in cls.HANDLERS:
