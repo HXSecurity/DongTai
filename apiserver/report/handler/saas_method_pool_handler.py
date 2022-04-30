@@ -300,7 +300,7 @@ class SaasMethodPoolHandler(IReportHandler):
                 search_sink_from_method_pool.apply_async(kwargs=kwargs, countdown=delay)
             else:
                 logger.info(
-                    f'[+] send method_pool [{method_pool_sign}] to engine for {model if model else ""}'
+                    f'[+] send method_pool [{method_pool_id}] to engine for {model if model else ""}'
                 )
                 search_vul_from_replay_method_pool.delay(method_pool_id)
                 #requests.get(url=settings.REPLAY_ENGINE_URL.format(id=method_pool_id))
