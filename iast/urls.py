@@ -153,6 +153,9 @@ from iast.threshold.get_config_setting import GetAgentThresholdConfig
 from iast.threshold.agent_core_status import (AgentCoreStatusUpdate,
                                               AgentCoreStatusUpdateALL)
 
+from iast.threshold.config_setting import (
+    AgentThresholdConfigV2, )
+
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
     path("talent/<int:pk>", TalentEndPoint.as_view()),
@@ -321,7 +324,8 @@ urlpatterns = [
     path('threshold/settings', AgentThresholdConfig.as_view()),
     # get user settings disaster recovery strategy GetAgentThresholdConfig
     path('threshold/settings/get', GetAgentThresholdConfig.as_view()),
-    path('threshold/settings/get/<int:pk>', GetAgentThresholdConfigDetail.as_view()),
+    path('threshold/settings/get/<int:pk>',
+         GetAgentThresholdConfigDetail.as_view()),
     path('threshold/settings/del', DelAgentThresholdConfig.as_view()),
     # user webhook setting agent upload report  forward
     path('webhook/settings', AgentWebHookConfig.as_view()),
@@ -333,6 +337,17 @@ urlpatterns = [
     path('agent/core/update', AgentCoreStatusUpdate.as_view()),
     path('agent/core/update/all', AgentCoreStatusUpdateALL.as_view()),
     path('agent/summary/<int:pk>', AgentSummary.as_view()),
+    path('circuit_config',
+         AgentThresholdConfigV2.as_view({
+             "post": "create",
+             "get": "list"
+         })),
+    path('circuit_config/<int:pk>',
+         AgentThresholdConfigV2.as_view({
+             "put": "update",
+             "delete": "delete",
+             "get": "retrieve"
+         })),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
