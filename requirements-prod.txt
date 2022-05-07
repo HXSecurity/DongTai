@@ -37,4 +37,6 @@ drf_spectacular
 django-modeltranslation
 pycryptodomex
 simhash==2.1.2
+result~=0.8.0
 uwsgitop
+
