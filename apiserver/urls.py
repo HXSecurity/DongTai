@@ -24,7 +24,10 @@ from apiserver.views.health_oss import OSSHealthView
 from apiserver.views.agent_limit import LimitView
 from apiserver.views.startuptime import (StartupTimeEndPoint,
                                          StartupTimeGzipEndPoint)
-from apiserver.views.agent_config import AgentConfigView
+from apiserver.views.agent_config import (
+    AgentConfigView,
+    AgentConfigv2View,
+)
 
 urlpatterns = [
     path('agent/download', AgentDownload.as_view()),
@@ -33,6 +36,7 @@ urlpatterns = [
     path('agent/gzipstartuptime', StartupTimeGzipEndPoint.as_view()),
     # agent get destroy strategy
     path('agent/threshold', AgentConfigView.as_view()),
+    path('agent/thresholdv2', AgentConfigv2View.as_view()),
     path('deploy/auto', AutoDeployEndPoint.as_view()),
     path('engine/heartbeat', EngineHeartBeatEndPoint.as_view()),
     path('engine/download', EngineDownloadEndPoint.as_view()),
