@@ -156,7 +156,7 @@ def config_create(data, user):
     targets = get_targets(data['targets'])
     obj = IastCircuitConfig.objects.create(**filted_data,
                                            metric_types=metric_types,
-                                           targets=targets,
+                                           target_types=targets,
                                            user=user)
     for i in data['targets']:
         create_target(i, obj)
