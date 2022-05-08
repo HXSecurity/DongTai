@@ -208,6 +208,22 @@ def get_targets(targets):
 def get_data_from_dict_by_key(dic: dict, fields: Iterable) -> dict:
     return {i: dic[i] for i in fields}
 
+from django.db.models import F
+
+
+def set_config_top(config_id):
+    config = IastCircuitConfig.objects.filter(pk=config_id).first()
+    IastCircuitConfig.objects.filter(priority__gt=config.priority).update(
+        priority=F('priority') - 1)
+    config.priority = get_priority_now()
+    config.save()
+
+def set_config_top(config_id,):
+    config = IastCircuitConfig.objects.filter(pk=config_id).first()
+    IastCircuitConfig.objects.filter(priority__gt=config.priority).update(
+        priority=F('priority') - 1)
+    config.priority = get_priority_now()
+    config.save()
 
 class AgentThresholdConfigV2(UserEndPoint, viewsets.ViewSet):
     name = "api-v1-agent-threshold-config-setting-v2"
@@ -260,7 +276,12 @@ class AgentThresholdConfigV2(UserEndPoint, viewsets.ViewSet):
         return R.success()
 
     def reset(self, request, pk):
-        return R.success()
+        if IastCircuitConfig.objects.filter(pk=pk, system_type=1).exists():
+            config_update(ser.data, pk)
+            return R.success()
+
+    def top(self, request, pk):
+        set_config_top(pk)
 
     def delete(self, request, pk):
         IastCircuitConfig.objects.filter(pk=pk).update(is_deleted=1)
@@ -268,13 +289,21 @@ class AgentThresholdConfigV2(UserEndPoint, viewsets.ViewSet):
 
     def enum(self, request, enumname):
         able_to_search = (MetricType, MetricGroup, TargetOperator,
-                          MetricOperator)
+                          MetricOperator, DealType)
         able_to_search_dict = {
             underscore(item.__name__): item
             for item in able_to_search
         }
         return R.success(data=convert_choices_to_value_dict(
             able_to_search_dict.get(enumname)))
+    def enumall(self, request):
+        able_to_search = (MetricType, MetricGroup, TargetOperator,
+                          MetricOperator, DealType)
+        res = {
+            underscore(item.__name__): convert_choices_to_value_dict(item)
+            for item in able_to_search
+        }
+        return R.success(data=res)
 
 
 def convert_choices_to_dict(choices):
