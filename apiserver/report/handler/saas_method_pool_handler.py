@@ -43,7 +43,7 @@ class SaasMethodPoolHandler(IReportHandler):
         self.async_send_delay = settings.config.getint('task', 'async_send_delay', fallback=2)
         self.retryable = settings.config.getboolean('task', 'retryable', fallback=False)
 
-        if ReportHandler.log_service_disabled or ReportHandler.log_service is None:
+        if self.async_send and (ReportHandler.log_service_disabled or ReportHandler.log_service is None):
             logger.error('log service disabled or failed to connect, disable async send method pool')
             self.async_send = False
         else:
