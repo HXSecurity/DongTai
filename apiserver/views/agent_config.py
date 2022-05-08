@@ -145,8 +145,8 @@ def get_agent_config(agent_id: int) -> Result:
         for metric in IastCircuitMetric.objects.filter(
                 circuit_config_id=config.id).all():
             metric_list.append(convert_metric(metric))
-        data[mg.label.lower()] = metric_list
-        data[mg.label.lower() +
+        data[mg.name.lower()] = metric_list
+        data[mg.name.lower() +
              "IsUninstall"] = True if config.deal == DealType.UNLOAD else False
         interval_list.append(config.interval)
     data["performanceLimitRiskMaxMetricsCount"] = min(interval_list)
