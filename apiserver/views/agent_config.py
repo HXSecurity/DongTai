@@ -53,10 +53,11 @@ from dongtai.models.agent_config import (
     IastCircuitConfig,
     IastCircuitMetric,
     TargetType,
-    Operator,
+    TargetOperator,
     DealType,
     MetricType,
     MetricGroup,
+    MetricOperator,
 )
 
 class AgentConfigv2View(OpenApiEndPoint):
@@ -101,7 +102,7 @@ def get_agent_filter_details(agent_id):
 def get_agent_config_by_scan(agent_id: int, mg: MetricGroup) -> Result:
     agent_detail = get_agent_filter_details(agent_id)
     queryset = IastCircuitConfig.objects.filter(
-        is_deleted=0).order_by('-priority').only('id')
+        is_deleted=0, metric_group=mg).order_by('-priority').only('id')
     for i in queryset:
         result_list = []
         for target in IastCircuitTarget.objects.filter(
@@ -109,17 +110,17 @@ def get_agent_config_by_scan(agent_id: int, mg: MetricGroup) -> Result:
             result_list.append(get_filter_by_target(target)(agent_detail))
         if all(result_list):
             return Ok(i.id)
-    return Err()
+    return Err("config not found")
 
 
-def get_function(opt: Operator):
-    if opt == Operator.EQUAL:
+def get_function(opt: TargetOperator):
+    if opt == TargetOperator.EQUAL:
         return lambda x, y: x == y
-    if opt == Operator.NOT_EQUAL:
+    if opt == TargetOperator.NOT_EQUAL:
         return lambda x, y: x != y
-    if opt == Operator.CONTAIN:
+    if opt == TargetOperator.CONTAIN:
         return lambda x, y: x in y
-    if opt == Operator.NOT_CONTAIN:
+    if opt == TargetOperator.NOT_CONTAIN:
         return lambda x, y: x not in y
 
 def get_filter_by_target(target):
@@ -156,6 +157,6 @@ def get_agent_config(agent_id: int) -> Result:
 def convert_metric(metric):
     return {
         "fallbackName": MetricType(metric.metric_type).name,
-        "conditions": Operator(metric.opt).name.lower(),
+        "conditions": MetricOperator(metric.opt).name.lower(),
         "value": metric.value
     }
