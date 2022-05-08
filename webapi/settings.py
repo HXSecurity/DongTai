@@ -463,91 +463,93 @@ CELERY_TASK_REJECT_ON_WORKER_LOST = True
 CELERY_ACKS_ON_FAILURE_OR_TIMEOUT = False
 DJANGO_CELERY_BEAT_TZ_AWARE = False
 
-DEFAULT_CIRCUITCONFIG_SYSTEM = {
-    "name":
-    "系统配置",
-    "metric_group":
-    1,
-    "interval":
-    1,
-    "deal":
-    1,
-    "is_enable":
-    1,
-    "is_deleted":
-    0,
-    "targets": [],
-    "metrics": [{
-        "metric_type": 1,
-        "opt": 5,
-        "value": 100
-    }, {
-        "metric_type": 2,
-        "opt": 5,
-        "value": 100
-    }, {
-        "metric_type": 3,
-        "opt": 5,
-        "value": 1000000000
-    }]
-}
-DEFAULT_CIRCUITCONFIG_JVM = {
-    "name":
-    "JVM",
-    "metric_group":
-    2,
-    "interval":
-    1,
-    "deal":
-    1,
-    "is_enable":
-    1,
-    "is_deleted":
-    0,
-    "targets": [],
-    "metrics": [{
-        "metric_type": 4,
-        "opt": 5,
-        "value": 100
-    }, {
-        "metric_type": 5,
-        "opt": 5,
-        "value": 1000000000
-    }, {
-        "metric_type": 6,
-        "opt": 5,
-        "value": 1000000
-    }, {
-        "metric_type": 7,
-        "opt": 5,
-        "value": 1000000
-    }, {
-        "metric_type": 8,
-        "opt": 5,
-        "value": 1000000
-    }]
-}
-DEFAULT_CIRCUITCONFIG_APPLICATION = {
-    "name":
-    "应用配置",
-    "metric_group":
-    3,
-    "interval":
-    1,
-    "deal":
-    1,
-    "is_enable":
-    1,
-    "is_deleted":
-    0,
-    "targets": [],
-    "metrics": [{
-        "metric_type": 9,
-        "opt": 5,
-        "value": 10000
-    }, {
-        "metric_type": 10,
-        "opt": 5,
-        "value": 100000000
-    }]
+DEFAULT_CIRCUITCONFIG = {
+    'SYSTEM': {
+        "name":
+        "系统配置",
+        "metric_group":
+        1,
+        "interval":
+        1,
+        "deal":
+        1,
+        "is_enable":
+        1,
+        "is_deleted":
+        0,
+        "targets": [],
+        "metrics": [{
+            "metric_type": 1,
+            "opt": 5,
+            "value": 100
+        }, {
+            "metric_type": 2,
+            "opt": 5,
+            "value": 100
+        }, {
+            "metric_type": 3,
+            "opt": 5,
+            "value": 1000000000
+        }]
+    },
+    'JVM': {
+        "name":
+        "JVM",
+        "metric_group":
+        2,
+        "interval":
+        1,
+        "deal":
+        1,
+        "is_enable":
+        1,
+        "is_deleted":
+        0,
+        "targets": [],
+        "metrics": [{
+            "metric_type": 4,
+            "opt": 5,
+            "value": 100
+        }, {
+            "metric_type": 5,
+            "opt": 5,
+            "value": 1000000000
+        }, {
+            "metric_type": 6,
+            "opt": 5,
+            "value": 1000000
+        }, {
+            "metric_type": 7,
+            "opt": 5,
+            "value": 1000000
+        }, {
+            "metric_type": 8,
+            "opt": 5,
+            "value": 1000000
+        }]
+    },
+    'APPLICATION': {
+        "name":
+        "应用配置",
+        "metric_group":
+        3,
+        "interval":
+        1,
+        "deal":
+        1,
+        "is_enable":
+        1,
+        "is_deleted":
+        0,
+        "targets": [],
+        "metrics": [{
+            "metric_type": 9,
+            "opt": 5,
+            "value": 10000
+        }, {
+            "metric_type": 10,
+            "opt": 5,
+            "value": 100000000
+        }]
+    }
 }
