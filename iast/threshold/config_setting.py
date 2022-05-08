@@ -135,12 +135,16 @@ class AgentConfigSettingV2Serializer(serializers.Serializer):
     is_enable = serializers.ChoiceField(DealType.choices)
 
 
-from django.db.models import Max
+from django.db.models import Max,Min
 
 
-def get_priority_now() -> int:
+def get_priority_max_now() -> int:
     res = IastCircuitConfig.objects.all().aggregate(Max("priority"))
     return res["priority__max"] + 1
+
+def get_priority_min_now() -> int:
+    res = IastCircuitConfig.objects.all().aggregate(Min("priority"))
+    return res["priority__min"] + 1
 
 def config_create(data, user):
     fields = ('name', 'metric_group', 'is_enable', 'deal',
@@ -213,17 +217,40 @@ from django.db.models import F
 
 def set_config_top(config_id):
     config = IastCircuitConfig.objects.filter(pk=config_id).first()
-    IastCircuitConfig.objects.filter(priority__gt=config.priority).update(
-        priority=F('priority') - 1)
-    config.priority = get_priority_now()
+    IastCircuitConfig.objects.filter(priority__lt=config.priority).update(
+        priority=F('priority') + 1)
+    config.priority = get_priority_min_now()
     config.save()
 
-def set_config_top(config_id,):
+
+#when target_priority < config.priorty
+def set_config_top(config_id, target_priority: int):
+    config = IastCircuitConfig.objects.filter(pk=config_id).first()
+    IastCircuitConfig.objects.filter(priority__lt=config.priority).update(
+        priority=F('priority') + 1)
+    config.priority = target_priority 
+    config.save()
+
+def set_config_bottom(config_id, target_priority: int):
     config = IastCircuitConfig.objects.filter(pk=config_id).first()
     IastCircuitConfig.objects.filter(priority__gt=config.priority).update(
         priority=F('priority') - 1)
-    config.priority = get_priority_now()
+    config.priority = target_priority
     config.save()
+
+
+#when target_priority > config.priorty
+def set_config_bottom(config_id):
+    config = IastCircuitConfig.objects.filter(pk=config_id).first()
+    IastCircuitConfig.objects.filter(priority__gt=config.priority).update(
+        priority=F('priority') - 1)
+    config.priority = get_priority_max_now()
+    config.save()
+
+def set_config_change_proprity(config_id, priority_range:list):
+    config = IastCircuitConfig.objects.filter(pk=config_id).first()
+    if config.priority > max(priority_range):
+        pass 
 
 class AgentThresholdConfigV2(UserEndPoint, viewsets.ViewSet):
     name = "api-v1-agent-threshold-config-setting-v2"
@@ -261,7 +288,7 @@ class AgentThresholdConfigV2(UserEndPoint, viewsets.ViewSet):
         page = request.query_params.get('page', 1)
         page_size = request.query_params.get("page_size", 10)
         queryset = IastCircuitConfig.objects.filter(
-            is_deleted=0).order_by('-priority').values()
+            is_deleted=0).order_by('priority').values()
         page_summary, page_data = self.get_paginator(queryset, page, page_size)
         return R.success(page=page_summary, data=list(page_data))
 
@@ -288,7 +315,7 @@ class AgentThresholdConfigV2(UserEndPoint, viewsets.ViewSet):
         return R.success()
 
     def enum(self, request, enumname):
-        able_to_search = (MetricType, MetricGroup, TargetOperator,
+        able_to_search = (TargetType, MetricType, MetricGroup, TargetOperator,
                           MetricOperator, DealType)
         able_to_search_dict = {
             underscore(item.__name__): item
@@ -296,8 +323,9 @@ class AgentThresholdConfigV2(UserEndPoint, viewsets.ViewSet):
         }
         return R.success(data=convert_choices_to_value_dict(
             able_to_search_dict.get(enumname)))
+
     def enumall(self, request):
-        able_to_search = (MetricType, MetricGroup, TargetOperator,
+        able_to_search = (TargetType, MetricType, MetricGroup, TargetOperator,
                           MetricOperator, DealType)
         res = {
             underscore(item.__name__): convert_choices_to_value_dict(item)
