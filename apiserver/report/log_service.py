@@ -42,6 +42,7 @@ class LogService:
                 return True
         except Exception as e:
             logger.error('failed to send message to log service', exc_info=e)
-            self.socket.close()
+            if self.socket:
+                self.socket.close()
             self.socket = None
             return False
