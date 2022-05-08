@@ -83,7 +83,7 @@ class IastCircuitConfig(models.Model):
                                       default=int(time()))
 
     class Meta:
-        #        managed = get_managed()
+        managed = get_managed()
         db_table = 'iast_circuit_configs'
 
 
@@ -95,7 +95,7 @@ class IastCircuitTarget(models.Model):
     value = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
-        #        managed = get_managed()
+        managed = get_managed()
         db_table = 'iast_circuit_targets'
 
 
@@ -104,8 +104,8 @@ class IastCircuitMetric(models.Model):
                                        on_delete=models.CASCADE)
     metric_type = models.IntegerField(blank=True, null=True)
     opt = models.IntegerField(blank=True, null=True)
-    value = models.IntegerField(blank=True, null=True)
+    value = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
-        #        managed = get_managed()
+        managed = get_managed()
         db_table = 'iast_circuit_metrics'
