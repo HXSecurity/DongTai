@@ -146,7 +146,8 @@ def get_priority_max_now() -> int:
 
 def get_priority_min_now() -> int:
     res = IastCircuitConfig.objects.all().aggregate(Min("priority"))
-    return res["priority__min"] + 1
+    print(res)
+    return res["priority__min"] - 1
 
 def config_create(data, user):
     fields = ('name', 'metric_group', 'is_enable', 'deal',
@@ -157,6 +158,7 @@ def config_create(data, user):
     obj = IastCircuitConfig.objects.create(**filted_data,
                                            metric_types=metric_types,
                                            target_types=targets,
+                                           priority=get_priority_max_now(),
                                            user=user)
     for i in data['targets']:
         create_target(i, obj)
@@ -259,7 +261,7 @@ def set_config_change_proprity(config_id, priority_range: list):
         set_config_change_gt(config.id, max(priority_range))
     if min(priority_range) > config.priority:
         set_config_change_lt(config.id, min(priority_range))
-
+from webapi.settings import DEFAULT_CIRCUITCONFIG
 
 
 class AgentThresholdConfigV2(UserEndPoint, viewsets.ViewSet):
@@ -320,20 +322,27 @@ class AgentThresholdConfigV2(UserEndPoint, viewsets.ViewSet):
         return R.success()
 
     def reset(self, request, pk):
-        if IastCircuitConfig.objects.filter(pk=pk, system_type=1).exists():
-            config_update(ser.data, pk)
+        if IastCircuitConfig.objects.filter(pk=pk).exists():
+            config = IastCircuitConfig.objects.filter(pk=pk, ).first()
+            mg = MetricGroup(config.metric_group)
+            data = DEFAULT_CIRCUITCONFIG[mg.name]
+            config_update(data, pk)
             return R.success()
+        return R.failure
 
-    def top(self, request, pk):
+    def change_priority(self, request, pk):
         type_ = request.data.get('type')
         priority_range = request.data.get('priority_range')
         if IastCircuitConfig.objects.filter(pk=pk).exists():
             if type_ == 1:
                 set_config_top(pk)
+                return R.success()
             if type_ == 2 and priority_range:
                 set_config_change_proprity(pk, priority_range)
+                return R.success()
             if type_ == 3:
                 set_config_bottom(pk)
+                return R.success()
         return R.failure()
 
     def delete(self, request, pk):
