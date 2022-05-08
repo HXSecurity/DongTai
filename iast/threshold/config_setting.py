@@ -96,24 +96,31 @@ from dongtai.models.agent_config import (
     IastCircuitConfig,
     IastCircuitMetric,
     TargetType,
-    Operator,
+    TargetOperator,
     DealType,
     MetricType,
     MetricGroup,
+    MetricOperator,
 )
 from collections.abc import Iterable
+from inflection import underscore
 
+def intable_validate(value):
+    try:
+        a = int(value)
+    except ValueError as e:
+        raise serializers.ValidationError('This field must be an intable.')
 
 class AgentConfigSettingV2TargetSerializer(serializers.Serializer):
     target_type = serializers.ChoiceField(TargetType.choices)
-    opt = serializers.ChoiceField(Operator.choices)
+    opt = serializers.ChoiceField(TargetOperator.choices)
     value = serializers.CharField()
 
 
 class AgentConfigSettingV2MetricSerializer(serializers.Serializer):
     metric_type = serializers.ChoiceField(MetricType.choices)
-    opt = serializers.ChoiceField(Operator.choices)
-    value = serializers.CharField()
+    opt = serializers.ChoiceField(MetricOperator.choices)
+    value = serializers.CharField(validators=[intable_validate])
 
 
 class AgentConfigSettingV2Serializer(serializers.Serializer):
@@ -182,24 +189,20 @@ def create_target(target: dict, circuit_config: IastCircuitConfig):
     IastCircuitTarget.objects.create(circuit_config=circuit_config, **target)
 
 
-METRIC_READABLE_DICT = {}
-TARGET_READABLE_DICT = {}
 
 
 def get_metric_types(metrics):
-    metric_type_str = ""
-    return metric_type_str
+    str_list = []
     for metric in metrics:
-        metric_type_str += METRIC_READABLE_DICT[metric['name']]
-    return metric_type_str
+        str_list.append(str(MetricType(metric['metric_type']).label))
+    return str(_("、")).join(str_list)
 
 
 def get_targets(targets):
-    target_type_str = ""
-    return target_type_str
+    str_list = []
     for target in targets:
-        target_type_str += TARGET_READABLE_DICT[target['target_type']]
-    return target_type_str
+        str_list.append(str(TargetType(target['target_type']).label))
+    return str(_("、")).join(str_list)
 
 
 def get_data_from_dict_by_key(dic: dict, fields: Iterable) -> dict:
@@ -262,3 +265,29 @@ class AgentThresholdConfigV2(UserEndPoint, viewsets.ViewSet):
     def delete(self, request, pk):
         IastCircuitConfig.objects.filter(pk=pk).update(is_deleted=1)
         return R.success()
+
+    def enum(self, request, enumname):
+        able_to_search = (MetricType, MetricGroup, TargetOperator,
+                          MetricOperator)
+        able_to_search_dict = {
+            underscore(item.__name__): item
+            for item in able_to_search
+        }
+        return R.success(data=convert_choices_to_value_dict(
+            able_to_search_dict.get(enumname)))
+
+
+def convert_choices_to_dict(choices):
+    fields = ['value', 'name', 'label']
+    return [{field: getattr(choice, field)
+             for field in fields}
+            for choice in choices]
+
+
+def convert_choices_to_value_dict(choices):
+    fields = ['name', 'label']
+    return {
+        choice.value: {field: getattr(choice, field)
+                       for field in fields}
+        for choice in choices
+    }
