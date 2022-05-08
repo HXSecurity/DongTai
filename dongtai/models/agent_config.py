@@ -62,7 +62,7 @@ class MetricType(IntegerChoices):
     daemonThreadCount = 7, _("守护线程数阈值")
     dongTaiThreadCount = 8, _("洞态IAST线程数阈值")
     hookLimitTokenPerSecond = 9, _("单请求HOOK限流")
-    heavyTrafficLimitTokenPerSecond = 10, _("高频HOOK限流")
+    heavyTrafficLimitTokenPerSecond = 10, _("每秒限制处理请求数量（QPS）")
 
 class IastCircuitConfig(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING)

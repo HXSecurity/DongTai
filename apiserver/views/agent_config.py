@@ -42,7 +42,7 @@ class AgentConfigView(OpenApiEndPoint):
                     cluster_name__in=('', server.cluster_name),
                     cluster_version__in=('', server.cluster_version),
                     hostname__in=('', server.hostname),
-                    ip__in=('', server.ip)).order_by('-priority').first()
+                    ip__in=('', server.ip)).order_by('priority').first()
                 if config:
                     data = config.details
 
