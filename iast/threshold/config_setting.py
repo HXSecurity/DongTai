@@ -146,7 +146,6 @@ def get_priority_max_now() -> int:
 
 def get_priority_min_now() -> int:
     res = IastCircuitConfig.objects.all().aggregate(Min("priority"))
-    print(res)
     return res["priority__min"] - 1
 
 def config_create(data, user):
