@@ -104,6 +104,7 @@ from dongtai.models.agent_config import (
 )
 from collections.abc import Iterable
 from inflection import underscore
+from functools import partial
 
 def intable_validate(value):
     try:
@@ -135,7 +136,8 @@ class AgentConfigSettingV2Serializer(serializers.Serializer):
     is_enable = serializers.ChoiceField(DealType.choices)
 
 
-from django.db.models import Max,Min
+from django.db.models import Max, Min
+from django.forms.models import model_to_dict
 
 
 def get_priority_max_now() -> int:
@@ -193,8 +195,6 @@ def create_target(target: dict, circuit_config: IastCircuitConfig):
     IastCircuitTarget.objects.create(circuit_config=circuit_config, **target)
 
 
-
-
 def get_metric_types(metrics):
     str_list = []
     for metric in metrics:
@@ -206,7 +206,9 @@ def get_targets(targets):
     str_list = []
     for target in targets:
         str_list.append(str(TargetType(target['target_type']).label))
-    return str(_("、")).join(str_list)
+    res = str(_("、")).join(str_list)
+    if not res:
+        return
 
 
 def get_data_from_dict_by_key(dic: dict, fields: Iterable) -> dict:
@@ -224,14 +226,21 @@ def set_config_top(config_id):
 
 
 #when target_priority < config.priorty
-def set_config_top(config_id, target_priority: int):
+def set_config_change_lt(config_id, target_priority: int):
     config = IastCircuitConfig.objects.filter(pk=config_id).first()
     IastCircuitConfig.objects.filter(priority__lt=config.priority).update(
         priority=F('priority') + 1)
-    config.priority = target_priority 
+    config.priority = target_priority
     config.save()
 
-def set_config_bottom(config_id, target_priority: int):
+
+def set_config_top(config_id):
+    return set_config_change_lt(config_id,
+                                target_priority=get_priority_min_now())
+
+
+#when target_priority > config.priorty
+def set_config_change_gt(config_id, target_priority: int):
     config = IastCircuitConfig.objects.filter(pk=config_id).first()
     IastCircuitConfig.objects.filter(priority__gt=config.priority).update(
         priority=F('priority') - 1)
@@ -239,18 +248,18 @@ def set_config_bottom(config_id, target_priority: int):
     config.save()
 
 
-#when target_priority > config.priorty
 def set_config_bottom(config_id):
-    config = IastCircuitConfig.objects.filter(pk=config_id).first()
-    IastCircuitConfig.objects.filter(priority__gt=config.priority).update(
-        priority=F('priority') - 1)
-    config.priority = get_priority_max_now()
-    config.save()
+    set_config_change_gt(config_id, target_priority=get_priority_max_now())
 
-def set_config_change_proprity(config_id, priority_range:list):
+
+def set_config_change_proprity(config_id, priority_range: list):
     config = IastCircuitConfig.objects.filter(pk=config_id).first()
-    if config.priority > max(priority_range):
-        pass 
+    if max(priority_range) > config.priority:
+        set_config_change_gt(config.id, max(priority_range))
+    if min(priority_range) > config.priority:
+        set_config_change_lt(config.id, min(priority_range))
+
+
 
 class AgentThresholdConfigV2(UserEndPoint, viewsets.ViewSet):
     name = "api-v1-agent-threshold-config-setting-v2"
@@ -288,9 +297,16 @@ class AgentThresholdConfigV2(UserEndPoint, viewsets.ViewSet):
         page = request.query_params.get('page', 1)
         page_size = request.query_params.get("page_size", 10)
         queryset = IastCircuitConfig.objects.filter(
-            is_deleted=0).order_by('priority').values()
+            is_deleted=0).order_by('priority').prefetch_related(
+                'iastcircuittarget_set', 'iastcircuitmetric_set').all()
         page_summary, page_data = self.get_paginator(queryset, page, page_size)
-        return R.success(page=page_summary, data=list(page_data))
+        obj_list = []
+        for data in page_data:
+            obj = model_to_dict(data)
+            obj['targets'] = list(data.iastcircuittarget_set.values().all())
+            obj['metrics'] = list(data.iastcircuitmetric_set.values().all())
+            obj_list.append(obj)
+        return R.success(page=page_summary, data=obj_list)
 
     def update(self, request, pk):
         ser = AgentConfigSettingV2Serializer(data=request.data)
@@ -308,7 +324,16 @@ class AgentThresholdConfigV2(UserEndPoint, viewsets.ViewSet):
             return R.success()
 
     def top(self, request, pk):
-        set_config_top(pk)
+        type_ = request.data.get('type')
+        priority_range = request.data.get('priority_range')
+        if IastCircuitConfig.objects.filter(pk=pk).exists():
+            if type_ == 1:
+                set_config_top(pk)
+            if type_ == 2 and priority_range:
+                set_config_change_proprity(pk, priority_range)
+            if type_ == 3:
+                set_config_bottom(pk)
+        return R.failure()
 
     def delete(self, request, pk):
         IastCircuitConfig.objects.filter(pk=pk).update(is_deleted=1)
