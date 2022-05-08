@@ -133,7 +133,7 @@ class AgentConfigSettingV2Serializer(serializers.Serializer):
         child=AgentConfigSettingV2MetricSerializer())
     interval = serializers.IntegerField()
     deal = serializers.ChoiceField(DealType.choices)
-    is_enable = serializers.ChoiceField(DealType.choices)
+    is_enable = serializers.IntegerField()
 
 
 from django.db.models import Max, Min
@@ -174,7 +174,7 @@ def config_update(data, config_id):
     IastCircuitConfig.objects.filter(
         pk=config_id).update(**filted_data,
                              metric_types=metric_types,
-                             targets=targets)
+                             target_types=targets)
     IastCircuitTarget.objects.filter(
             circuit_config_id=config_id).delete()
     IastCircuitMetric.objects.filter(
@@ -208,7 +208,8 @@ def get_targets(targets):
         str_list.append(str(TargetType(target['target_type']).label))
     res = str(_("、")).join(str_list)
     if not res:
-        return
+        return str(_("全部"))
+    return res
 
 
 def get_data_from_dict_by_key(dic: dict, fields: Iterable) -> dict:
