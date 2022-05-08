@@ -230,8 +230,9 @@ def set_config_top(config_id):
 #when target_priority < config.priorty
 def set_config_change_lt(config_id, target_priority: int):
     config = IastCircuitConfig.objects.filter(pk=config_id).first()
-    IastCircuitConfig.objects.filter(priority__lt=config.priority).update(
-        priority=F('priority') + 1)
+    IastCircuitConfig.objects.filter(
+        priority__gte=target_priority,
+        priority__lt=config.priority).update(priority=F('priority') + 1)
     config.priority = target_priority
     config.save()
 
@@ -244,8 +245,9 @@ def set_config_top(config_id):
 #when target_priority > config.priorty
 def set_config_change_gt(config_id, target_priority: int):
     config = IastCircuitConfig.objects.filter(pk=config_id).first()
-    IastCircuitConfig.objects.filter(priority__gt=config.priority).update(
-        priority=F('priority') - 1)
+    IastCircuitConfig.objects.filter(
+        priority__lte=target_priority,
+        priority__gt=config.priority).update(priority=F('priority') - 1)
     config.priority = target_priority
     config.save()
 
@@ -256,10 +258,10 @@ def set_config_bottom(config_id):
 
 def set_config_change_proprity(config_id, priority_range: list):
     config = IastCircuitConfig.objects.filter(pk=config_id).first()
-    if max(priority_range) > config.priority:
-        set_config_change_gt(config.id, max(priority_range))
     if min(priority_range) > config.priority:
-        set_config_change_lt(config.id, min(priority_range))
+        set_config_change_gt(config.id, min(priority_range))
+    if max(priority_range) < config.priority:
+        set_config_change_lt(config.id, max(priority_range))
 from webapi.settings import DEFAULT_CIRCUITCONFIG
 
 
