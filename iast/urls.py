@@ -342,6 +342,10 @@ urlpatterns = [
              "post": "create",
              "get": "list"
          })),
+    path('circuit_config/enum/<str:enumname>',
+         AgentThresholdConfigV2.as_view({
+             "get": "enum"
+         })),
     path('circuit_config/<int:pk>',
          AgentThresholdConfigV2.as_view({
              "put": "update",
