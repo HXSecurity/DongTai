@@ -7,7 +7,9 @@
 import json
 import logging
 import random
+import socket
 import time
+import uuid
 from hashlib import sha256,sha1
 
 import requests
@@ -35,6 +37,18 @@ logger = logging.getLogger('dongtai.openapi')
 
 @ReportHandler.register(const.REPORT_VULN_SAAS_POOL)
 class SaasMethodPoolHandler(IReportHandler):
+    def __init__(self):
+        super(SaasMethodPoolHandler, self).__init__()
+        self.async_send = settings.config.getboolean('task', 'async_send', fallback=False)
+        self.async_send_delay = settings.config.getint('task', 'async_send_delay', fallback=2)
+        self.retryable = settings.config.getboolean('task', 'retryable', fallback=False)
+
+        if self.async_send and (ReportHandler.log_service_disabled or ReportHandler.log_service is None):
+            logger.error('log service disabled or failed to connect, disable async send method pool')
+            self.async_send = False
+        else:
+            self.log_service = ReportHandler.log_service
+
     @staticmethod
     def parse_headers(headers_raw):
         headers = dict()
@@ -138,18 +152,55 @@ class SaasMethodPoolHandler(IReportHandler):
                 self.send_to_engine(method_pool_id=method_pool_id,
                                     model='replay')
         else:
-            pool_sign = self.calc_hash()
-            current_version_agents = self.get_project_agents(self.agent)
-            with transaction.atomic():
+            pool_sign = uuid.uuid4().hex
+            if self.async_send:
                 try:
-                    update_record, method_pool = self.save_method_call(
-                        pool_sign, current_version_agents)
-                    self.send_to_engine(method_pool_id=method_pool.id,
-                                        update_record=update_record)
+                    method_pool = self.to_json(pool_sign)
+                    ok = self.log_service.send(method_pool)
+                    if ok:
+                        self.send_to_engine(self.agent_id, method_pool_sign=pool_sign)
                 except Exception as e:
-                    logger.info(e, exc_info=True)
+                    logger.error(e, exc_info=True)
+            else:
+                current_version_agents = self.get_project_agents(self.agent)
+                with transaction.atomic():
+                    try:
+                        update_record, method_pool = self.save_method_call(
+                            pool_sign, current_version_agents)
+                        self.send_to_engine(self.agent_id, method_pool_sign=pool_sign,
+                                            update_record=update_record)
+                    except Exception as e:
+                        logger.error(e, exc_info=True)
 
-
+    def to_json(self, pool_sign: str):
+        timestamp = int(time.time())
+        pool = {
+            'agent_id': self.agent_id,
+            'url': self.http_url,
+            'uri': self.http_uri,
+            'http_method': self.http_method,
+            'http_scheme': self.http_scheme,
+            'http_protocol': self.http_protocol,
+            'req_header': self.http_req_header,
+            'req_params': self.http_query_string,
+            'req_data': self.http_req_data,
+            'req_header_for_search': utils.build_request_header(req_method=self.http_method,
+                                                                raw_req_header=self.http_req_header,
+                                                                uri=self.http_uri,
+                                                                query_params=self.http_query_string,
+                                                                http_protocol=self.http_protocol),
+            'res_header': utils.base64_decode(self.http_res_header),
+            'res_body': decode_content(get_res_body(self.http_res_body, self.version),
+                                       get_content_encoding(self.http_res_header), self.version),
+            'context_path': self.context_path,
+            'method_pool': json.dumps(self.method_pool),
+            'pool_sign': pool_sign,
+            'clent_ip': self.client_ip,
+            'create_time': timestamp,
+            'update_time': timestamp,
+            'uri_sha1': self.sha1(self.http_uri),
+        }
+        return json.dumps(pool)
 
     def save_method_call(self, pool_sign: str,
                          current_version_agents) -> Tuple[bool, MethodPool]:
@@ -232,14 +283,21 @@ class SaasMethodPoolHandler(IReportHandler):
             )
         return update_record, method_pool
 
-    @staticmethod
-    def send_to_engine(method_pool_id, update_record=False, model=None):
+    def send_to_engine(self, agent_id, method_pool_id="", method_pool_sign="", update_record=False, model=None):
         try:
             if model is None:
                 logger.info(
-                    f'[+] send method_pool [{method_pool_id}] to engine for {"update" if update_record else "new record"}')
-                search_vul_from_method_pool.delay(method_pool_id)
-                search_sink_from_method_pool.delay(method_pool_id)
+                    f'[+] send method_pool [{method_pool_sign}] to engine for {"update" if update_record else "new record"}')
+                delay = 0
+                if self.async_send:
+                    delay = self.async_send_delay
+                kwargs = {
+                    'method_pool_sign': method_pool_sign,
+                    'agent_id': agent_id,
+                    'retryable': self.retryable,
+                }
+                search_vul_from_method_pool.apply_async(kwargs=kwargs, countdown=delay)
+                search_sink_from_method_pool.apply_async(kwargs=kwargs, countdown=delay)
             else:
                 logger.info(
                     f'[+] send method_pool [{method_pool_id}] to engine for {model if model else ""}'
@@ -247,7 +305,7 @@ class SaasMethodPoolHandler(IReportHandler):
                 search_vul_from_replay_method_pool.delay(method_pool_id)
                 #requests.get(url=settings.REPLAY_ENGINE_URL.format(id=method_pool_id))
         except Exception as e:
-            logger.info(f'[-] Failure: send method_pool [{method_pool_id}], Error: {e}')
+            logger.error(f'[-] Failure: send method_pool [{method_pool_id}{method_pool_sign}], Error: {e}')
 
     def calc_hash(self):
         sign_raw = '-'.join(
