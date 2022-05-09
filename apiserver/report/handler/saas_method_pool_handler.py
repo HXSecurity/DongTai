@@ -158,7 +158,7 @@ class SaasMethodPoolHandler(IReportHandler):
                     method_pool = self.to_json(pool_sign)
                     ok = self.log_service.send(method_pool)
                     if ok:
-                        self.send_to_engine(self.agent_id, method_pool_sign=pool_sign)
+                        self.send_to_engine(method_pool_sign=pool_sign)
                 except Exception as e:
                     logger.error(e, exc_info=True)
             else:
@@ -167,7 +167,7 @@ class SaasMethodPoolHandler(IReportHandler):
                     try:
                         update_record, method_pool = self.save_method_call(
                             pool_sign, current_version_agents)
-                        self.send_to_engine(self.agent_id, method_pool_sign=pool_sign,
+                        self.send_to_engine(method_pool_sign=pool_sign,
                                             update_record=update_record)
                     except Exception as e:
                         logger.error(e, exc_info=True)
@@ -283,7 +283,7 @@ class SaasMethodPoolHandler(IReportHandler):
             )
         return update_record, method_pool
 
-    def send_to_engine(self, agent_id, method_pool_id="", method_pool_sign="", update_record=False, model=None):
+    def send_to_engine(self, method_pool_id="", method_pool_sign="", update_record=False, model=None):
         try:
             if model is None:
                 logger.info(
@@ -293,7 +293,7 @@ class SaasMethodPoolHandler(IReportHandler):
                     delay = self.async_send_delay
                 kwargs = {
                     'method_pool_sign': method_pool_sign,
-                    'agent_id': agent_id,
+                    'agent_id': self.agent_id,
                     'retryable': self.retryable,
                 }
                 search_vul_from_method_pool.apply_async(kwargs=kwargs, countdown=delay)
