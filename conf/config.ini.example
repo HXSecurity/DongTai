@@ -33,6 +33,16 @@ access_key_secret = ZoEOSi7KfayQ7JalvJVHa37fdZ4XFY
 [sca]
 base_url = http://52.80.75.225:8000
 
+[task]
+retryable = false
+max_retries = 3
+async_send = false
+async_send_delay = 2
+
+[log_service]
+host = localhost
+port = 8082
+
 [security]
 csrf_trust_origins = localhost,.huoxian.cn,.secnium.xyz
 secret_key = vbjlvbxfvazjfprywuxgyclmvhtmselddsefxxlcixovmqfpgy

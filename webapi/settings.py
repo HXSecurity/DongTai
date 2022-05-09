@@ -210,6 +210,7 @@ WSGI_APPLICATION = 'webapi.wsgi.application'
 
 DATABASES = {
     'default': {
+        'CONN_MAX_AGE': 900,
         'ENGINE': 'django.db.backends.mysql',
         'USER': config.get("mysql", 'user'),
         'NAME': config.get("mysql", 'name'),
@@ -309,37 +310,37 @@ LOGGING = {
     'loggers': {
         'django.db.backends': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'ERROR',
         },
         'dongtai-webapi': {
             'handlers': ['console', 'dongtai-webapi'],
             'propagate': True,
-            'level': 'INFO',
+            'level': 'ERROR',
         },
         'dongtai.openapi': {
             'handlers': ['console', 'dongtai.openapi'],
             'propagate': True,
-            'level': 'INFO',
+            'level': 'ERROR',
         },
         'dongtai-core': {
             'handlers': ['console', 'dongtai-webapi'],
             'propagate': True,
-            'level': 'INFO',
+            'level': 'ERROR',
         },
         'django': {
             'handlers': ['console', 'dongtai-webapi'],
             'propagate': True,
-            'level': 'INFO',
+            'level': 'ERROR',
         },
         'dongtai-engine': {
             'handlers': ['console', 'dongtai-webapi'],
             'propagate': True,
-            'level': 'INFO',
+            'level': 'ERROR',
         },
         'celery.apps.worker': {
             'handlers': ['console', 'celery.apps.worker'],
             'propagate': True,
-            'level': 'INFO',
+            'level': 'ERROR',
         },
     }
 }
@@ -453,9 +454,11 @@ CELERY_WORKER_TASK_LOG_FORMAT = '%(message)s'
 CELERY_WORKER_LOG_FORMAT = '%(message)s'
 CELERY_TASK_EAGER_PROPAGATES = True
 CELERY_WORKER_REDIRECT_STDOUTS = True
-CELERY_WORKER_REDIRECT_STDOUTS_LEVEL = "INFO"
+CELERY_WORKER_REDIRECT_STDOUTS_LEVEL = "ERROR"
 # CELERY_WORKER_HIJACK_ROOT_LOGGER = True
-CELERY_WORKER_MAX_TASKS_PER_CHILD = 40
+CELERY_WORKER_MAX_TASKS_PER_CHILD = 5000
+# CELERYD_CONCURRENCY = 8
+CELERY_IGNORE_RESULT = True
 
 CELERY_TASK_SOFT_TIME_LIMIT = 3600
 DJANGO_CELERY_BEAT_TZ_AWARE = False
