@@ -64,7 +64,6 @@ class AgentConfigv2View(OpenApiEndPoint):
 
     def post(self, request):
         try:
-            # agent_id = request.data.get('agentId', None)
             param = parse_data(request.read())
             agent_id = int(param.get('agentId', None))
             if agent_id is None:
@@ -76,7 +75,7 @@ class AgentConfigv2View(OpenApiEndPoint):
             return R.success(msg=_('Successfully'), data={})
         res = get_agent_config(agent_id)
         if isinstance(res, Err):
-            return R.success(msg=_(Err.value), data={})
+            return R.success(msg=_(res.value), data={})
         agent_config = res.value
         return R.success(msg=_('Successfully'), data=agent_config)
 
@@ -150,6 +149,10 @@ def get_agent_config(agent_id: int) -> Result:
         data[mg.name.lower() +
              "IsUninstall"] = True if config.deal == DealType.UNLOAD else False
         interval_list.append(config.interval)
+    # if interval_list is [], there is mean no config found here. 
+    # because interval is required in create config.
+    if not interval_list:
+        return Err('No config found')
     data["performanceLimitRiskMaxMetricsCount"] = min(interval_list)
     return Ok(data)
 
