@@ -42,7 +42,7 @@ class AgentConfigView(OpenApiEndPoint):
                     cluster_name__in=('', server.cluster_name),
                     cluster_version__in=('', server.cluster_version),
                     hostname__in=('', server.hostname),
-                    ip__in=('', server.ip)).order_by('-priority').first()
+                    ip__in=('', server.ip)).order_by('priority').first()
                 if config:
                     data = config.details
 
@@ -64,7 +64,6 @@ class AgentConfigv2View(OpenApiEndPoint):
 
     def post(self, request):
         try:
-            # agent_id = request.data.get('agentId', None)
             param = parse_data(request.read())
             agent_id = int(param.get('agentId', None))
             if agent_id is None:
@@ -76,7 +75,7 @@ class AgentConfigv2View(OpenApiEndPoint):
             return R.success(msg=_('Successfully'), data={})
         res = get_agent_config(agent_id)
         if isinstance(res, Err):
-            return R.success(msg=_(Err.value), data={})
+            return R.success(msg=_(res.value), data={})
         agent_config = res.value
         return R.success(msg=_('Successfully'), data=agent_config)
 
@@ -102,7 +101,8 @@ def get_agent_filter_details(agent_id):
 def get_agent_config_by_scan(agent_id: int, mg: MetricGroup) -> Result:
     agent_detail = get_agent_filter_details(agent_id)
     queryset = IastCircuitConfig.objects.filter(
-        is_deleted=0, metric_group=mg).order_by('-priority').only('id')
+        is_deleted=0, metric_group=mg,
+        is_enable=1).order_by('-priority').only('id')
     for i in queryset:
         result_list = []
         for target in IastCircuitTarget.objects.filter(
@@ -149,6 +149,10 @@ def get_agent_config(agent_id: int) -> Result:
         data[mg.name.lower() +
              "IsUninstall"] = True if config.deal == DealType.UNLOAD else False
         interval_list.append(config.interval)
+    # if interval_list is [], there is mean no config found here. 
+    # because interval is required in create config.
+    if not interval_list:
+        return Err('No config found')
     data["performanceLimitRiskMaxMetricsCount"] = min(interval_list)
     return Ok(data)
 

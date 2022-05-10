@@ -62,13 +62,16 @@ class MetricType(IntegerChoices):
     daemonThreadCount = 7, _("守护线程数阈值")
     dongTaiThreadCount = 8, _("洞态IAST线程数阈值")
     hookLimitTokenPerSecond = 9, _("单请求HOOK限流")
-    heavyTrafficLimitTokenPerSecond = 10, _("高频HOOK限流")
+    heavyTrafficLimitTokenPerSecond = 10, _("每秒限制处理请求数量（QPS）")
 
 class IastCircuitConfig(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING)
     name = models.CharField(max_length=200, blank=True, null=True)
     metric_types = models.CharField(max_length=2000, blank=True, null=True)
-    targets = models.CharField(max_length=2000, blank=True, null=True)
+    target_types = models.CharField(max_length=2000,
+                                    blank=True,
+                                    null=True,
+                                    db_column='targets')
     system_type = models.IntegerField(blank=True, null=True)
     is_enable = models.IntegerField(blank=True, null=True)
     is_deleted = models.IntegerField(default=0, blank=True, null=True)
