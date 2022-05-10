@@ -104,6 +104,7 @@ from dongtai.models.agent_config import (
 )
 from collections.abc import Iterable
 from inflection import underscore
+from functools import partial
 
 def intable_validate(value):
     try:
@@ -132,15 +133,20 @@ class AgentConfigSettingV2Serializer(serializers.Serializer):
         child=AgentConfigSettingV2MetricSerializer())
     interval = serializers.IntegerField()
     deal = serializers.ChoiceField(DealType.choices)
-    is_enable = serializers.ChoiceField(DealType.choices)
+    is_enable = serializers.IntegerField()
 
 
-from django.db.models import Max
+from django.db.models import Max, Min
+from django.forms.models import model_to_dict
 
 
-def get_priority_now() -> int:
+def get_priority_max_now() -> int:
     res = IastCircuitConfig.objects.all().aggregate(Max("priority"))
     return res["priority__max"] + 1
+
+def get_priority_min_now() -> int:
+    res = IastCircuitConfig.objects.all().aggregate(Min("priority"))
+    return res["priority__min"] - 1
 
 def config_create(data, user):
     fields = ('name', 'metric_group', 'is_enable', 'deal',
@@ -150,7 +156,8 @@ def config_create(data, user):
     targets = get_targets(data['targets'])
     obj = IastCircuitConfig.objects.create(**filted_data,
                                            metric_types=metric_types,
-                                           targets=targets,
+                                           target_types=targets,
+                                           priority=get_priority_max_now(),
                                            user=user)
     for i in data['targets']:
         create_target(i, obj)
@@ -168,7 +175,7 @@ def config_update(data, config_id):
     IastCircuitConfig.objects.filter(
         pk=config_id).update(**filted_data,
                              metric_types=metric_types,
-                             targets=targets)
+                             target_types=targets)
     IastCircuitTarget.objects.filter(
             circuit_config_id=config_id).delete()
     IastCircuitMetric.objects.filter(
@@ -189,8 +196,6 @@ def create_target(target: dict, circuit_config: IastCircuitConfig):
     IastCircuitTarget.objects.create(circuit_config=circuit_config, **target)
 
 
-
-
 def get_metric_types(metrics):
     str_list = []
     for metric in metrics:
@@ -202,11 +207,62 @@ def get_targets(targets):
     str_list = []
     for target in targets:
         str_list.append(str(TargetType(target['target_type']).label))
-    return str(_("、")).join(str_list)
+    res = str(_("、")).join(str_list)
+    if not res:
+        return str(_("全部"))
+    return res
 
 
 def get_data_from_dict_by_key(dic: dict, fields: Iterable) -> dict:
     return {i: dic[i] for i in fields}
+
+from django.db.models import F
+
+
+def set_config_top(config_id):
+    config = IastCircuitConfig.objects.filter(pk=config_id).first()
+    IastCircuitConfig.objects.filter(priority__lt=config.priority).update(
+        priority=F('priority') + 1)
+    config.priority = get_priority_min_now()
+    config.save()
+
+
+#when target_priority < config.priorty
+def set_config_change_lt(config_id, target_priority: int):
+    config = IastCircuitConfig.objects.filter(pk=config_id).first()
+    IastCircuitConfig.objects.filter(
+        priority__gte=target_priority,
+        priority__lt=config.priority).update(priority=F('priority') + 1)
+    config.priority = target_priority
+    config.save()
+
+
+def set_config_top(config_id):
+    return set_config_change_lt(config_id,
+                                target_priority=get_priority_min_now())
+
+
+#when target_priority > config.priorty
+def set_config_change_gt(config_id, target_priority: int):
+    config = IastCircuitConfig.objects.filter(pk=config_id).first()
+    IastCircuitConfig.objects.filter(
+        priority__lte=target_priority,
+        priority__gt=config.priority).update(priority=F('priority') - 1)
+    config.priority = target_priority
+    config.save()
+
+
+def set_config_bottom(config_id):
+    set_config_change_gt(config_id, target_priority=get_priority_max_now())
+
+
+def set_config_change_proprity(config_id, priority_range: list):
+    config = IastCircuitConfig.objects.filter(pk=config_id).first()
+    if min(priority_range) > config.priority:
+        set_config_change_gt(config.id, min(priority_range))
+    if max(priority_range) < config.priority:
+        set_config_change_lt(config.id, max(priority_range))
+from webapi.settings import DEFAULT_CIRCUITCONFIG
 
 
 class AgentThresholdConfigV2(UserEndPoint, viewsets.ViewSet):
@@ -245,9 +301,16 @@ class AgentThresholdConfigV2(UserEndPoint, viewsets.ViewSet):
         page = request.query_params.get('page', 1)
         page_size = request.query_params.get("page_size", 10)
         queryset = IastCircuitConfig.objects.filter(
-            is_deleted=0).order_by('-priority').values()
+            is_deleted=0).order_by('priority').prefetch_related(
+                'iastcircuittarget_set', 'iastcircuitmetric_set').all()
         page_summary, page_data = self.get_paginator(queryset, page, page_size)
-        return R.success(page=page_summary, data=list(page_data))
+        obj_list = []
+        for data in page_data:
+            obj = model_to_dict(data)
+            obj['targets'] = list(data.iastcircuittarget_set.values().all())
+            obj['metrics'] = list(data.iastcircuitmetric_set.values().all())
+            obj_list.append(obj)
+        return R.success(page=page_summary, data=obj_list)
 
     def update(self, request, pk):
         ser = AgentConfigSettingV2Serializer(data=request.data)
@@ -260,21 +323,51 @@ class AgentThresholdConfigV2(UserEndPoint, viewsets.ViewSet):
         return R.success()
 
     def reset(self, request, pk):
-        return R.success()
+        if IastCircuitConfig.objects.filter(pk=pk).exists():
+            config = IastCircuitConfig.objects.filter(pk=pk, ).first()
+            mg = MetricGroup(config.metric_group)
+            data = DEFAULT_CIRCUITCONFIG[mg.name]
+            config_update(data, pk)
+            return R.success()
+        return R.failure
+
+    def change_priority(self, request, pk):
+        type_ = request.data.get('type')
+        priority_range = request.data.get('priority_range')
+        if IastCircuitConfig.objects.filter(pk=pk).exists():
+            if type_ == 1:
+                set_config_top(pk)
+                return R.success()
+            if type_ == 2 and priority_range:
+                set_config_change_proprity(pk, priority_range)
+                return R.success()
+            if type_ == 3:
+                set_config_bottom(pk)
+                return R.success()
+        return R.failure()
 
     def delete(self, request, pk):
         IastCircuitConfig.objects.filter(pk=pk).update(is_deleted=1)
         return R.success()
 
     def enum(self, request, enumname):
-        able_to_search = (MetricType, MetricGroup, TargetOperator,
-                          MetricOperator)
+        able_to_search = (TargetType, MetricType, MetricGroup, TargetOperator,
+                          MetricOperator, DealType)
         able_to_search_dict = {
             underscore(item.__name__): item
             for item in able_to_search
         }
         return R.success(data=convert_choices_to_value_dict(
             able_to_search_dict.get(enumname)))
+
+    def enumall(self, request):
+        able_to_search = (TargetType, MetricType, MetricGroup, TargetOperator,
+                          MetricOperator, DealType)
+        res = {
+            underscore(item.__name__): convert_choices_to_value_dict(item)
+            for item in able_to_search
+        }
+        return R.success(data=res)
 
 
 def convert_choices_to_dict(choices):

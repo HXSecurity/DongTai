@@ -342,6 +342,18 @@ urlpatterns = [
              "post": "create",
              "get": "list"
          })),
+    path('circuit_config/enum/all',
+         AgentThresholdConfigV2.as_view({
+             "get": "enumall"
+         })),
+    path('circuit_config/<int:pk>/priority',
+         AgentThresholdConfigV2.as_view({
+             "put": "change_priority"
+         })),
+    path('circuit_config/<int:pk>/reset',
+         AgentThresholdConfigV2.as_view({
+             "put": "reset"
+         })),
     path('circuit_config/enum/<str:enumname>',
          AgentThresholdConfigV2.as_view({
              "get": "enum"
