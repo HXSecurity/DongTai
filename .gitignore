@@ -18,7 +18,7 @@ build_docker.sh
 dongtai_py_agent.log
 dongtai-agent-python.tar.gz
 
-/deploy/docker-compose/docker-compose.yml
+deploy/docker-compose/docker-compose.yml
 doc
 iast-package
 config.ini
