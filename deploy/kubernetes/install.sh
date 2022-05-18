@@ -139,7 +139,7 @@ deploy(){
               sed -i "" "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
     esac
   elif [ "${machine}" == "Linux" ]; then
-    case $FILENAME in
+    case $ORIG in
         "2.deploy-redis.yml")
             sed -i  "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
             sed -i  "s/CHANGE_THIS_VERSION/$(get_latest_image_tag_from_dockerhub dongtai-redis)/g" "$NEW_FILENAME" >/dev/null
@@ -149,9 +149,11 @@ deploy(){
             sed -i  "s/CHANGE_THIS_VERSION/$(get_latest_image_tag_from_dockerhub dongtai-mysql)/g" "$NEW_FILENAME" >/dev/null
             ;;
         "4.deploy-iast-server.yml")
-            sed -i  "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
-            sed -i  "s/dongtai-web/$(get_latest_image_tag_from_dockerhub dongtai-web)/g" "$NEW_FILENAME" >/dev/null
-            sed -i  "s/dongtai-server /$(get_latest_image_tag_from_dockerhub dongtai-server)/g" "$NEW_FILENAME" >/dev/null
+            WEB_TAG=$(get_latest_image_tag_from_dockerhub dongtai-web)
+            SERVER_TAG=$(get_latest_image_tag_from_dockerhub dongtai-server)
+            sed -i "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
+            sed -i "s/dongtai-web:CHANGE_THIS_VERSION/dongtai-web:$WEB_TAG/g" "$NEW_FILENAME" >/dev/null
+            sed -i "s/dongtai-server:CHANGE_THIS_VERSION/dongtai-server:$SERVER_TAG/g" "$NEW_FILENAME" >/dev/null
             ;;
         *)
             sed -i  "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
