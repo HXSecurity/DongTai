@@ -1,0 +1,10 @@
+/tmp/logstash/agent/*/*.log {
+  size 100M
+  rotate 12
+  copytruncate
+  compress
+  delaycompress
+  missingok
+  notifempty
+  nodateext
+}

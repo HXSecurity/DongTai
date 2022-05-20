@@ -60,5 +60,36 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
+  dongtai-logrotate:
+    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/logrotate:{ChangeThisVersion}"
+    restart: always
+    user: root
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - ./log/:/tmp/logstash/
+      - ./logrotate:/etc/logrotate.d/logrotate
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+    privileged: true
+  dongtai-logstash:
+    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/logstash:7.9.2-{ChangeThisVersion}"
+    restart: always
+    user: root
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - "8083:5044"
+      - "8082:5045"
+    volumes:
+      - ./log/:/tmp/logstash/
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+    privileged: true
 volumes:
   mysql-vol:
