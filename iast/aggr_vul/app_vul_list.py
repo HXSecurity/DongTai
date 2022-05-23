@@ -6,7 +6,6 @@ from iast.aggregation.aggregation_common import turnIntListOfStr,auth_user_list_
 from iast.serializers.vul import VulSerializer
 from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
-from dongtai.models.integration import IastVulInegration
 from dongtai.models.vulnerablity import IastVulnerabilityStatus
 import pymysql
 from iast.serializers.aggregation import AggregationArgsSerializer
@@ -110,32 +109,12 @@ class GetAppVulsList(UserEndPoint):
                 item['level_name'] = APP_LEVEL_RISK.get(str(item['level_id']),"")
                 item['server_type'] = VulSerializer.split_container_name(item['agent__server__container'])
                 end['data'].append(item)
-        query_vul_inetration = IastVulInegration.objects.filter(
-            vul_id__in=[i['id'] for i in end['data']], user_id=request.user.id).all()
-        vul_inetration_dict = {i.vul_id: i for i in list(query_vul_inetration)}
 
         # all Iast Vulnerability Status
         status = IastVulnerabilityStatus.objects.all()
         status_obj = {}
         for tmp_status in status:
             status_obj[tmp_status.id] = tmp_status.name
-
-        for i in end['data']:
-            i['jira_url'] = ""
-            i['gitlab_url'] = ""
-            i["zendao_url"] = ""
-            i["gitlab_id"] = ""
-            i["jira_id"] = ""
-            i["zendao_id"] = ""
-            i['status__name'] = status_obj.get(i['status_id'], "")
-            integration = vul_inetration_dict.get(i['id'], None)
-            if integration:
-                i['jira_url'] = integration.jira_url
-                i['gitlab_url'] = integration.gitlab_url
-                i['zendao_url'] = integration.zendao_url
-                i['jira_id'] = integration.jira_id
-                i['zendao_id'] = integration.zendao_id
-                i['gitlab_id'] = integration.gitlab_id
 
         return R.success(data={
             'messages': end['data'],

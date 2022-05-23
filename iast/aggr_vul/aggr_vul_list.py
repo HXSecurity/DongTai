@@ -3,7 +3,6 @@ import json,time,logging
 from dongtai.endpoint import R
 from django.forms import model_to_dict
 from dongtai.endpoint import UserEndPoint
-from dongtai.models.integration import IastVulInegration
 
 from iast.utils import extend_schema_with_envcheck
 from iast.serializers.aggregation import AggregationArgsSerializer
@@ -177,33 +176,6 @@ class GetAggregationVulList(UserEndPoint):
                     type_arr[item['asset_vul_id']] = [item['asset_vul_type__name']]
                 elif item['asset_vul_type__name'] not in type_arr[item['asset_vul_id']]:
                     type_arr[item['asset_vul_id']].append(item['asset_vul_type__name'])
-            query_vul_inetration = IastVulInegration.objects.filter(
-                asset_vul_id__in=[i for i in vul_ids], user_id=request.user.id).all()
-            vul_inetration_dict = {i.asset_vul_id: i for i in list(query_vul_inetration)}
-            # all Iast Vulnerability Status
-            # status = IastVulnerabilityStatus.objects.all()
-            # status_obj = {}
-            # for tmp_status in status:
-            #     status_obj[tmp_status.id] = tmp_status.name
-            for row in content_list:
-                row["pro_info"] = pro_arr.get(row['id'],[])
-                row['type_name'] = ",".join(type_arr.get(row['id'],[]))
-                i = row
-                i['jira_url'] = ""
-                i['gitlab_url'] = ""
-                i["zendao_url"] = ""
-                i["gitlab_id"] = ""
-                i["jira_id"] = ""
-                i["zendao_id"] = ""
-                # i['status__name'] = status_obj.get(i['status_id'], "")
-                integration = vul_inetration_dict.get(i['id'], None)
-                if integration:
-                    i['jira_url'] = integration.jira_url
-                    i['gitlab_url'] = integration.gitlab_url
-                    i['zendao_url'] = integration.zendao_url
-                    i['jira_id'] = integration.jira_id
-                    i['zendao_id'] = integration.zendao_id
-                    i['gitlab_id'] = integration.gitlab_id
         return R.success(data={
             'messages': content_list,
             'page': {

@@ -40,4 +40,3 @@ pycryptodomex
 simhash==2.1.2
 pymysql
 django-redis==5.2.0
-result~=0.8.0

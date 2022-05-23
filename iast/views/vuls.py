@@ -312,23 +312,4 @@ class VulsEndPoint(UserEndPoint):
                 item['level'] = allTypeArr.get(item['level_id'], "")
                 end['data'].append(item)
         end['page'] = page_summary
-        from dongtai.models.integration import IastVulInegration
-        query_vul_inetration = IastVulInegration.objects.filter(
-            vul_id__in=[i['id'] for i in end['data']], user_id=request.user.id).all()
-        vul_inetration_dict = {i.vul_id: i for i in list(query_vul_inetration)}
-        for i in end['data']:
-            i['jira_url'] = ""
-            i['gitlab_url'] = ""
-            i["zendao_url"] = ""
-            i["gitlab_id"] = ""
-            i["jira_id"] = ""
-            i["zendao_id"] = ""
-            integration = vul_inetration_dict.get(i['id'], None)
-            if integration:
-                i['jira_url'] = integration.jira_url
-                i['gitlab_url'] = integration.gitlab_url
-                i['zendao_url'] = integration.zendao_url
-                i['jira_id'] = integration.jira_id
-                i['zendao_id'] = integration.zendao_id
-                i['gitlab_id'] = integration.gitlab_id
         return R.success(page=page_summary, data=end['data'])
