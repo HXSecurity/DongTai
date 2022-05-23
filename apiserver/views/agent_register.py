@@ -12,12 +12,14 @@ from dongtai.models.agent import IastAgent
 from dongtai.models.project import IastProject
 from dongtai.models.project_version import IastProjectVersion
 from dongtai.models.server import IastServer
+from dongtai.models.profile import IastProfile
 from drf_spectacular.utils import extend_schema
 from rest_framework.request import Request
 from django.utils.translation import gettext_lazy as _
 from django.db import transaction
 import time
 from dongtai.endpoint import OpenApiEndPoint, R
+
 import json
 from apiserver.api_schema import DongTaiAuth, DongTaiParameter
 from apiserver.decrypter import parse_data
@@ -59,7 +61,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                     project_name=project_name,
                     project_version_id=project_current_version.id,
                     language=language,
-                    is_audit=is_audit,
+                    is_audit=is_audit
                 )
         else:
             agent_id = AgentRegisterEndPoint.get_agent_id(token=token, project_name=project_name, user=user,
@@ -74,7 +76,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                     project_name=project_name,
                     project_version_id=0,
                     language=language,
-                    is_audit=is_audit,
+                    is_audit=is_audit
                 )
         return agent_id
 
@@ -196,13 +198,13 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
     def post(self, request: Request):
         try:
             param = parse_data(request.read())
+            # param = request.data
             token = param.get('name')
             language = param.get('language')
             version = param.get('version')
             project_name = param.get('projectName', 'Demo Project').strip()
             if not token or not version or not project_name:
                 return R.failure(msg="参数错误")
-
             hostname = param.get('hostname')
             network = param.get('network')
             container_name = param.get('containerName')
@@ -280,10 +282,17 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 server_env=server_env,
                 pid=pid,
             )
+
+            core_auto_start = 0
             if agent_id != -1:
+                agent = IastAgent.objects.filter(pk=agent_id).first()
+                agent.register_time = int(time.time())
                 IastAgent.objects.filter(pk=agent_id).update(
                     register_time=int(time.time()))
-            return R.success(data={'id': agent_id, 'coreAutoStart': 1})
+                agent.save()
+                core_auto_start = agent.is_audit
+
+            return R.success(data={'id': agent_id, 'coreAutoStart': core_auto_start})
         except Exception as e:
             logger.error(e)
             return R.failure(msg="探针注册失败，原因：{reason}".format(reason=e))
@@ -336,6 +345,8 @@ def get_ipaddress(network: str):
                 res = i['ip']
                 break
         return res
+    except KeyError as e:
+        return ''
     except Exception as e:
         logger.error(e, exc_info=True)
         return ''

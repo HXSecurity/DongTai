@@ -6,8 +6,8 @@
 
 import json
 import logging
+import random
 import time
-
 from dongtai.models.hook_type import HookType
 from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
@@ -17,6 +17,7 @@ from dongtai.utils import const
 from AgentServer import settings
 from apiserver.report.handler.report_handler_interface import IReportHandler
 from apiserver.report.report_handler_factory import ReportHandler
+from iast.vul_log.vul_log import log_vul_found
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -114,10 +115,19 @@ class BaseVulnHandler(IReportHandler):
 @ReportHandler.register(const.REPORT_VULN_NORNAL)
 class NormalVulnHandler(BaseVulnHandler):
     def save(self):
+        logger.info("NormalVulnHandler start")
+        logger.info(
+            f"vuln_type: {self.vuln_type} vuln_type: {self.http_uri} agent_id: {self.agent_id}"
+        )
         if self.http_replay:
             return
 
-        level_id, vul_type, vul_type_enable, hook_type_id, strategy_id = self.get_vul_info()
+        level_id, vul_type, vul_type_enable, hook_type_id, strategy_id = self.get_vul_info(
+        )
+        logger.info("get_vul_info start")
+        logger.info(
+            f"{level_id} {vul_type} {vul_type_enable} {hook_type_id} {strategy_id}"
+        )
         if vul_type_enable == 0:
             return
         iast_vul = IastVulnerabilityModel.objects.filter(
@@ -142,7 +152,7 @@ class NormalVulnHandler(BaseVulnHandler):
             iast_vul.status_id = settings.CONFIRMED
             iast_vul.save()
         else:
-            IastVulnerabilityModel.objects.create(
+            vul = IastVulnerabilityModel.objects.create(
                 strategy_id=strategy_id,
                 hook_type_id=hook_type_id,
                 level_id=level_id,
@@ -167,3 +177,5 @@ class NormalVulnHandler(BaseVulnHandler):
                 top_stack=self.app_caller[0],
                 bottom_stack=self.app_caller[-1]
             )
+            log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
+                          vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)

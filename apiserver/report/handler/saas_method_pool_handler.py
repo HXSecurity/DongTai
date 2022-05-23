@@ -7,7 +7,6 @@
 import json
 import logging
 import random
-import socket
 import time
 import uuid
 from hashlib import sha256,sha1
@@ -32,6 +31,7 @@ from apiserver.report.report_handler_factory import ReportHandler
 import gzip
 import base64
 from typing import Tuple
+from django.core.cache import cache
 logger = logging.getLogger('dongtai.openapi')
 
 
@@ -81,23 +81,18 @@ class SaasMethodPoolHandler(IReportHandler):
             self.method_pool = sorted(self.method_pool,
                                       key=lambda e: e.__getitem__('invokeId'),
                                       reverse=True)
+        logger.info(
+            f"start record method_pool : {self.agent_id} {self.http_uri} {self.http_method}"
+        )
 
     def save(self):
         """
         如果agent存在，保存数据
         :return:
         """
-
         headers = SaasMethodPoolHandler.parse_headers(self.http_req_header)
-        # todo need to fix
-        objs = [
-            ProjectSaasMethodPoolHeader(key=key,
-                                        agent_id=self.agent_id,
-                                        header_type=HeaderType.REQUEST)
-            for key in headers.keys()
-        ]
-        ProjectSaasMethodPoolHeader.objects.bulk_create(objs, ignore_conflicts=True)
-
+        save_project_header(headers.keys(), self.agent_id)
+        add_new_api_route(self.agent_id, self.http_uri, self.http_method)
         if self.http_replay:
             # 保存数据至重放请求池
             replay_id = headers.get('dongtai-replay-id')
@@ -111,17 +106,21 @@ class SaasMethodPoolHandler(IReportHandler):
             if query_set.exists():
                 # 更新
                 replay_model = query_set.first()
-                replay_model.update(url=self.http_url,
-                                    uri=self.http_uri,
-                                    req_header=self.http_req_header,
-                                    req_params=self.http_query_string,
-                                    req_data=self.http_req_data,
-                                    res_header=self.http_res_header,
-                                    res_body=self.http_res_body,
-                                    context_path=self.context_path,
-                                    method_pool=json.dumps(self.method_pool),
-                                    clent_ip=self.client_ip,
-                                    update_time=timestamp)
+                replay_model.update(
+                    url=self.http_url,
+                    uri=self.http_uri,
+                    req_header=self.http_req_header,
+                    req_params=self.http_query_string,
+                    req_data=self.http_req_data,
+                    res_header=self.http_res_header,
+                    res_body=decode_content(
+                        get_res_body(self.http_res_body, self.version),
+                        get_content_encoding(self.http_res_header),
+                        self.version),
+                    context_path=self.context_path,
+                    method_pool=json.dumps(self.method_pool),
+                    clent_ip=self.client_ip,
+                    update_time=timestamp)
                 method_pool_id = replay_model['id']
             else:
                 # 新增
@@ -136,7 +135,10 @@ class SaasMethodPoolHandler(IReportHandler):
                     req_params=self.http_query_string,
                     req_data=self.http_req_data,
                     res_header=self.http_res_header,
-                    res_body=self.http_res_body,
+                    res_body=decode_content(
+                        get_res_body(self.http_res_body, self.version),
+                        get_content_encoding(self.http_res_header),
+                        self.version),
                     context_path=self.context_path,
                     method_pool=json.dumps(self.method_pool),
                     clent_ip=self.client_ip,
@@ -149,6 +151,7 @@ class SaasMethodPoolHandler(IReportHandler):
             IastReplayQueue.objects.filter(id=replay_id).update(
                 state=const.SOLVED)
             if method_pool_id:
+                logger.info(f"send replay method pool {self.agent_id} {self.http_uri} {method_pool_id} to celery ")
                 self.send_to_engine(method_pool_id=method_pool_id,
                                     model='replay')
         else:
@@ -167,10 +170,17 @@ class SaasMethodPoolHandler(IReportHandler):
                     try:
                         update_record, method_pool = self.save_method_call(
                             pool_sign, current_version_agents)
-                        self.send_to_engine(method_pool_sign=pool_sign,
-                                            update_record=update_record)
                     except Exception as e:
+                        logger.info(
+                            f"record method failed : {self.agent_id} {self.http_uri} {self.http_method}"
+                        )
                         logger.error(e, exc_info=True)
+                try:
+                    logger.info(f"send normal method pool {self.agent_id} {self.http_uri} {pool_sign} to celery ")
+                    self.send_to_engine(method_pool_sign=pool_sign,
+                                        update_record=update_record)
+                except Exception as e:
+                    logger.error(e, exc_info=True)
 
     def to_json(self, pool_sign: str):
         timestamp = int(time.time())
@@ -233,7 +243,7 @@ class SaasMethodPoolHandler(IReportHandler):
             method_pool.res_header = utils.base64_decode(self.http_res_header)
             method_pool.res_body = decode_content(
                 get_res_body(self.http_res_body, self.version),
-                get_content_encoding(self.http_res_header),self.version)
+                get_content_encoding(self.http_res_header), self.version)
             method_pool.uri_sha1 = self.sha1(self.http_uri)
             method_pool.save(update_fields=[
                 'update_time',
@@ -296,13 +306,20 @@ class SaasMethodPoolHandler(IReportHandler):
                     'agent_id': self.agent_id,
                     'retryable': self.retryable,
                 }
-                search_vul_from_method_pool.apply_async(kwargs=kwargs, countdown=delay)
-                search_sink_from_method_pool.apply_async(kwargs=kwargs, countdown=delay)
+                res = search_vul_from_method_pool.apply_async(kwargs=kwargs, countdown=delay)
+                logger.info(
+                        f'[+] send method_pool [{method_pool_sign}] to engine for task search_vul_from_method_pool id: {res.task_id}')
+                res = search_sink_from_method_pool.apply_async(kwargs=kwargs, countdown=delay)
+                logger.info(
+                        f'[+] send method_pool [{method_pool_sign}] to engine for task search_sink_from_strategy id: {res.task_id}')
             else:
                 logger.info(
                     f'[+] send method_pool [{method_pool_id}] to engine for {model if model else ""}'
                 )
-                search_vul_from_replay_method_pool.delay(method_pool_id)
+                res = search_vul_from_replay_method_pool.delay(method_pool_id)
+                logger.info(
+                    f'[+] send method_pool [{method_pool_id}] to engine for task search_vul_from_replay_method_pool id: {res.task_id}'
+                )
                 #requests.get(url=settings.REPLAY_ENGINE_URL.format(id=method_pool_id))
         except Exception as e:
             logger.error(f'[-] Failure: send method_pool [{method_pool_id}{method_pool_sign}], Error: {e}')
@@ -331,6 +348,51 @@ class SaasMethodPoolHandler(IReportHandler):
         h.update(raw.encode('utf-8'))
         return h.hexdigest()
 
+
+from dongtai.models.api_route import (IastApiRoute, IastApiMethod,
+                                      FromWhereChoices)
+from django.db.utils import IntegrityError
+
+
+def save_project_header(keys: list, agent_id: int):
+    uuid_key = uuid.uuid4().hex
+    keys = list(
+        filter(
+            lambda key: uuid_key == cache.get_or_set(
+                f'project_header-{agent_id}-{key}', uuid_key, 60 * 5), keys))
+    objs = [
+        ProjectSaasMethodPoolHeader(key=key,
+                                    agent_id=agent_id,
+                                    header_type=HeaderType.REQUEST)
+        for key in keys
+    ]
+    if not keys:
+        return
+    ProjectSaasMethodPoolHeader.objects.bulk_create(objs,
+                                                    ignore_conflicts=True)
+
+
+def add_new_api_route(agent_id, path, method):
+    logger.info(f"{agent_id}, {path}, {method}")
+    uuid_key = uuid.uuid4().hex
+    is_api_cached = uuid_key != cache.get_or_set(
+        f'api_route-{agent_id}-{path}-{method}', uuid_key, 60 * 5)
+    if is_api_cached:
+        logger.info(
+            f"found cache api_route-{agent_id}-{path}-{method} ,skip its insert"
+        )
+        return
+    try:
+        api_method, is_create = IastApiMethod.objects.get_or_create(
+            method=method.upper())
+        api_route, is_create = IastApiRoute.objects.get_or_create(
+            from_where=FromWhereChoices.FROM_METHOD_POOL,
+            method_id=api_method.id,
+            path=path,
+            agent_id=agent_id)
+
+    except IntegrityError as e:
+        logger.error(e)
 
 def decode_content(body, content_encoding, version):
     if version == 'v1':
@@ -367,8 +429,8 @@ def get_content_encoding(b64_res_headers):
 
 def get_res_body(res_body, version):
     if version == 'v1':
-        return res_body #bytes
+        return res_body  #bytes
     elif version == 'v2':
-        return base64.b64decode(res_body) #bytes
+        return base64.b64decode(res_body)  #bytes
     logger.info('no match version now version: {}'.format(version))
     return res_body
