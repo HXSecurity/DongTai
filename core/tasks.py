@@ -10,7 +10,7 @@ from json import JSONDecodeError
 
 from celery import shared_task
 from celery.apps.worker import logger
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.forms import model_to_dict
 
 from dongtai.engine.vul_engine import VulEngine
@@ -37,12 +37,15 @@ from core.plugins.strategy_headers import check_response_header
 from core.plugins.strategy_sensitive import check_response_content
 from core.replay import Replay
 from lingzhi_engine import settings
+from sca.models import Package, VulPackageRange, VulPackage, Vul
+from sca.utils import get_dependency_graph, sca_scan_asset
 from signals import vul_found
 from core.plugins.export_report import ExportPort
 from dongtai.models.project_report import ProjectReport
 import requests
 from hashlib import sha1
 from core.task_base import replay_payload_data
+
 LANGUAGE_MAP = {
     "JAVA": 1,
     "PYTHON": 2,
@@ -93,47 +96,46 @@ def load_sink_strategy(user=None, language=None):
     strategy_models = HookStrategy.objects.filter(
         type__in=type_query,
         created_by__in=[user.id, 1] if user else [1]
-    ).values('id','value','type__value')
+    ).values('id', 'value', 'type__value')
     sub_method_signatures = set()
     for strategy in strategy_models:
         # for strategy in sub_queryset:
-        strategy_value = strategy.get("value","")
+        strategy_value = strategy.get("value", "")
         sub_method_signature = strategy_value[:strategy_value.rfind('(')] if strategy_value.rfind(
             '(') > 0 else strategy_value
         if sub_method_signature in sub_method_signatures:
             continue
         sub_method_signatures.add(sub_method_signature)
-        # print("==-------strategy_id.....")
-        # print(strategy.type.first().value)
+
         strategies.append({
-            'strategy': strategy.get("id",""),
-            'type': strategy.get("type__value",""),
+            'strategy': strategy.get("id", ""),
+            'type': strategy.get("type__value", ""),
             'value': sub_method_signature
         })
     return strategies
 
 
+from signals.handlers.vul_handler import handler_vul
+
+
 def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
     """
     搜索方法池是否存在满足策略的数据，如果存在，保存相关数据为漏洞
-    :param engine: 云端检测引擎
     :param method_pool_model: 方法池实例化对象
     :param strategy: 策略数据
     :return: None
     """
     logger.info(f'current sink rule is {strategy.get("type")}')
-    print(f'current sink rule is {strategy.get("type")}')
     queryset = IastStrategyModel.objects.filter(vul_type=strategy['type'], state=const.STRATEGY_ENABLE)
     if queryset.values('id').exists() is False:
         logger.error(f'current method pool hit rule {strategy.get("type")}, but no vul strategy.')
         return
-
     engine.search(method_pool=method_pool, vul_method_signature=strategy.get('value'))
     status, stack, source_sign, sink_sign, taint_value = engine.result()
-
     if status:
+        logger.info(f'vul_found {method_pool_model.agent_id}  {method_pool_model.url} {sink_sign}')
         vul_strategy = queryset.values("level", "vul_name", "id").first()
-        vul_found.send(
+        handler_vul(
             sender="tasks.search_and_save_vul",
             vul_meta=method_pool_model,
             vul_level=vul_strategy['level'],
@@ -147,7 +149,6 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
         try:
             if isinstance(method_pool_model, MethodPool):
                 return
-
             replay_type = method_pool_model.replay_type
             if replay_type != const.VUL_REPLAY:
                 return
@@ -155,7 +156,6 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
             replay_id = method_pool_model.replay_id
             relation_id = method_pool_model.relation_id
             timestamp = int(time.time())
-
             IastVulnerabilityModel.objects.filter(id=relation_id).update(
                 status_id=settings.IGNORE,
                 latest_time=timestamp
@@ -191,11 +191,9 @@ def search_and_save_sink(engine, method_pool_model, strategy):
     logger.info(f'发现sink点{strategy.get("type")}')
     method_pool_model.sinks.add(strategy.get('strategy'))
 
-
 @shared_task(bind=True, queue='dongtai-method-pool-scan',
              max_retries=settings.config.getint('task', 'max_retries', fallback=3))
 def search_vul_from_method_pool(self, method_pool_sign, agent_id, retryable=False):
-
     logger.info(f'漏洞检测开始，方法池 {method_pool_sign}')
     try:
         method_pool_model = MethodPool.objects.filter(pool_sign=method_pool_sign, agent_id=agent_id).first()
@@ -209,8 +207,12 @@ def search_vul_from_method_pool(self, method_pool_sign, agent_id, retryable=Fals
             else:
                 logger.warning(f'漏洞检测终止，方法池 {method_pool_sign} 不存在')
             return
+        logger.info(
+            f"search vul from method_pool found,  agent_id: {method_pool_model.agent_id} , uri: {method_pool_model.uri}"
+        )
         check_response_header(method_pool_model)
         check_response_content(method_pool_model)
+
         strategies = load_sink_strategy(method_pool_model.agent.user, method_pool_model.agent.language)
         engine = VulEngine()
         method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
@@ -228,12 +230,12 @@ def search_vul_from_method_pool(self, method_pool_sign, agent_id, retryable=Fals
         else:
             logger.error(f'漏洞检测超过最大重试次数，错误原因：{e}')
     except Exception as e:
+        logger.error(e, exc_info=True)
         logger.error(f'漏洞检测出错，方法池 {method_pool_sign}. 错误原因：{e}')
 
 
 @shared_task(queue='dongtai-replay-vul-scan')
 def search_vul_from_replay_method_pool(method_pool_id):
-
     logger.info(f'重放数据漏洞检测开始，方法池 {method_pool_id}')
     try:
         method_pool_model = IastAgentMethodPoolReplay.objects.filter(id=method_pool_id).first()
@@ -241,16 +243,13 @@ def search_vul_from_replay_method_pool(method_pool_id):
             logger.warn(f'重放数据漏洞检测终止，方法池 {method_pool_id} 不存在')
         strategies = load_sink_strategy(method_pool_model.agent.user, method_pool_model.agent.language)
         engine = VulEngine()
-
         method_pool = json.loads(method_pool_model.method_pool)
         if method_pool is None or len(method_pool) == 0:
             return
-
         engine.method_pool = method_pool
         for strategy in strategies:
             if strategy.get('value') not in engine.method_pool_signatures:
                 continue
-
             search_and_save_vul(engine, method_pool_model, method_pool, strategy)
         logger.info(f'重放数据漏洞检测成功')
     except Exception as e:
@@ -284,13 +283,10 @@ def search_vul_from_strategy(strategy_id):
 def search_sink_from_method_pool(self, method_pool_sign, agent_id, retryable=False):
     """
     根据方法池ID搜索方法池中是否匹配到策略库中的sink方法
-    :param self: celery task
-    :param method_pool_sign: 方法池 sign
-    :param agent_id: Agent ID
-    :param retryable: 可重试
+    :param method_pool_id: 方法池ID
     :return: None
     """
-    logger.info(f'sink规则扫描开始，方法池[{method_pool_sign}]')
+    logger.info(f'sink规则扫描开始，方法池ID[{method_pool_sign}]')
     try:
         method_pool_model = MethodPool.objects.filter(pool_sign=method_pool_sign, agent_id=agent_id).first()
         if method_pool_model is None:
@@ -303,6 +299,9 @@ def search_sink_from_method_pool(self, method_pool_sign, agent_id, retryable=Fal
             else:
                 logger.warn(f'sink规则扫描终止，方法池 [{method_pool_sign}] 不存在')
             return
+        logger.info(
+            f"search_sink from method_pool found,  agent_id: {method_pool_model.agent_id} , uri: {method_pool_model.uri}"
+        )
         strategies = load_sink_strategy(method_pool_model.agent.user, method_pool_model.agent.language)
         engine = VulEngine()
 
@@ -377,103 +376,9 @@ def get_project_agents(agent):
     )
     return agents
 
-def sca_scan_asset(asset):
-
-    """
-    根据SCA数据库，更新SCA记录信息
-    :return:
-    """
-    search_query = ""
-    agent = asset.agent
-    version = None
-    vul_count = 0
-    user_upload_package = None
-    if agent.language == "JAVA" and asset.signature_value:
-        # 用户上传的组件
-        user_upload_package = ScaMavenDb.objects.filter(sha_1=asset.signature_value).first()
-        search_query = "hash=" + asset.signature_value
-
-    elif agent.language == "PYTHON":
-        # @todo agent上报版本 or 捕获全量pip库
-        version = asset.version
-        name = asset.package_name.replace("-" + version, "")
-        search_query = "ecosystem={}&name={}&version={}".format("PyPI", name, version)
-
-    if search_query == "":
-        logger.info(f'search_query empty can not search vuls')
-    else:
-        package_name = asset.package_name
-
-        try:
-
-            url = settings.SCA_BASE_URL + "/package_vul/?" + search_query
-            logger.info(f'sca url: {url}')
-            resp = requests.get(url=url)
-            resp = json.loads(resp.content)
-            maven_model = resp.get("data", {}).get("package", {})
-            if maven_model is None:
-                maven_model = {}
-            vul_list = resp.get("data", {}).get("vul_list", {})
-
-            package_name = maven_model.get('aql', package_name)
-            version = maven_model.get('version', version)
-            if user_upload_package is not None:
-                package_name = user_upload_package.aql
-                version = user_upload_package.version
-
-            vul_count = len(vul_list)
-            levels = []
-            update_fields = list()
-
-            if asset.package_name != package_name:
-                asset.package_name = package_name
-                update_fields.append('package_name')
-
-            if asset.version != version:
-                asset.version = version
-                update_fields.append('version')
-
-            for vul in vul_list:
-                _level = vul.get("vul_package", {}).get("severity", "none")
-                if _level and _level not in levels:
-                    levels.append(_level)
-
-            if len(levels) > 0:
-
-                if 'critical' in levels:
-                    level = 'high'
-                elif 'high' in levels:
-                    level = 'high'
-                elif 'medium' in levels:
-                    level = 'medium'
-                elif 'low' in levels:
-                    level = 'low'
-                else:
-                    level = 'info'
-            else:
-                level = 'info'
-            new_level = IastVulLevel.objects.get(name=level)
-            if asset.level != new_level:
-                asset.level = IastVulLevel.objects.get(name=level)
-                update_fields.append('level')
-
-            if asset.vul_count != vul_count:
-                asset.vul_count = vul_count
-                update_fields.append('vul_count')
-
-            if len(update_fields) > 0:
-                logger.info(f'update dependency fields: {update_fields}')
-                asset.save(update_fields=update_fields)
-
-        except Exception as e:
-            import traceback
-            traceback.print_exc()
-            logger.info("get package_vul failed:{}".format(e))
-
 
 @shared_task(queue='dongtai-sca-task')
 def update_one_sca(agent_id, package_path, package_signature, package_name, package_algorithm):
-
     """
     根据SCA数据库，更新SCA记录信息
     :return:
@@ -499,21 +404,35 @@ def update_one_sca(agent_id, package_path, package_signature, package_name, pack
 
     if asset_count == 0:
         new_level = IastVulLevel.objects.get(name="info")
-        asset = Asset.objects.create(
-            package_name=package_name,
-            package_path=package_path,
-            signature_algorithm=package_algorithm,
-            signature_value=package_signature,
-            dt=time.time(),
-            version=version,
-            level=new_level,
-            vul_count=0,
-            agent=agent
-        )
+        asset = Asset()
+        asset.package_name = package_name
+        asset.package_path = package_path
+        asset.signature_value = package_signature
+        asset.signature_algorithm = package_algorithm
+        asset.version = version
+        asset.level_id = new_level.id
+        asset.vul_count = 0
+        asset.language = asset.language
+        if agent:
+            asset.agent = agent
+            asset.project_version_id = agent.project_version_id if agent.project_version_id else 0
+            asset.project_name = agent.project_name
+            asset.language = agent.language
+            asset.project_id = -1
+            if agent.bind_project_id:
+                asset.project_id = agent.bind_project_id
+            asset.user_id = -1
+            if agent.user_id:
+                asset.user_id = agent.user_id
+
+        asset.license = ''
+        asset.dt = int(time.time())
+        asset.save()
         sca_scan_asset(asset)
     else:
         logger.info(
             f'SCA检测开始 [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm}] 组件已存在')
+
 
 @shared_task(queue='dongtai-periodic-task')
 def update_all_sca():
@@ -542,10 +461,12 @@ def update_all_sca():
     except Exception as e:
         logger.error(f'SCA离线检测出错，错误原因：{e}')
 
+
 def sha_1(raw):
     h = sha1()
     h.update(raw.encode('utf-8'))
     return h.hexdigest()
+
 
 def is_alive(agent_id, timestamp):
     """
@@ -636,14 +557,16 @@ def clear_error_log():
 
 
 @shared_task(queue='dongtai-periodic-task')
-def export_report():
+def export_report(r_id=None):
     """
     导出报告
     :return:
     """
     logger.info(f'导出报告')
-    report = ProjectReport.objects.filter(status=0).first()
-    # report = ProjectReport.objects.filter(id=237).first()
+    if r_id is None:
+        report = ProjectReport.objects.filter(status=0).first()
+    else:
+        report = ProjectReport.objects.filter(id=r_id).first()
 
     if not report:
         logger.info("暂无需要导出的报告")
@@ -667,7 +590,8 @@ def vul_recheck():
     """
     logger.info('开始处理漏洞重放数据')
 
-    relay_queue_queryset = IastReplayQueue.objects.filter(replay_type=const.VUL_REPLAY, state=const.PENDING).order_by("-id")
+    relay_queue_queryset = IastReplayQueue.objects.filter(replay_type=const.VUL_REPLAY, state=const.PENDING).order_by(
+        "-id")
     if relay_queue_queryset is None:
         logger.info('暂无需要处理的漏洞重放数据')
         return
@@ -697,7 +621,10 @@ def vul_recheck():
     for replay in sub_replay_queue:
         # 构造重放请求包
         vul_id = replay.relation_id
-
+        recheck_payload = replay.payload.value if replay.payload_id != -1 else '.%2F..%2F%60dongtai'
+        logger.info(
+            f"generating payload recheck_payload:{recheck_payload}  vul_id:{vul_id} replay_id:{replay.id}"
+        )
         if replay.replay_type == 1:
             vulnerability = vul_data.get(vul_id, {})
         else:
@@ -709,6 +636,9 @@ def vul_recheck():
         param_value = vulnerability['req_params'] if vulnerability['req_params'] else ''
         headers = vulnerability['req_header']
         body = vulnerability['req_data']
+        logger.info(
+            f"generating payload by param_name : {vulnerability['param_name']}"
+        )
         if replay.replay_type == 1:
             # 漏洞重放 sink点追加参数
             con = 2
@@ -732,35 +662,37 @@ def vul_recheck():
                             _params = _param_items[index].split('=')
                             _param_name = _params[0]
                             if _param_name == param_name:
-                                _param_items[index] = f'{_param_name}=.%2F..%2F%60dongtai'
+                                _param_items[index] = f'{_param_name}={recheck_payload}'
                                 break
                         param_value = '&'.join(_param_items)
                     elif position == 'POST':
                         try:
+                            # Content-Type: application/json
                             post_body = json.loads(body)
                             if param_name in post_body:
-                                post_body[param_name] = '.%2F..%2F%60dongtai'
+                                post_body[param_name] = recheck_payload
                                 body = json.dumps(post_body)
-                            else:
-                                _param_items = param_value.split('&')
+                            else: #? it looks weird
+                                _param_items = body.split('&')
                                 item_length = len(_param_items)
                                 for index in range(item_length):
                                     _params = _param_items[index].split('=')
                                     _param_name = _params[0]
                                     if _param_name == param_name:
-                                        _param_items[index] = f'{_param_name}=.%2F..%2F%60dongtai'
+                                        _param_items[index] = f'{_param_name}={recheck_payload}'
                                         break
-                                param_value = '&'.join(_param_items)
+                                body = '&'.join(_param_items)
                         except:
-                            _param_items = param_value.split('&')
+                            # Content-Type: multipart/form-data 
+                            _param_items = body.split('&')
                             item_length = len(_param_items)
                             for index in range(item_length):
                                 _params = _param_items[index].split('=')
                                 _param_name = _params[0]
                                 if _param_name == param_name:
-                                    _param_items[index] = f'{_param_name}=.%2F..%2F%60dongtai'
+                                    _param_items[index] = f'{_param_name}={recheck_payload}'
                                     break
-                            param_value = '&'.join(_param_items)
+                            body = '&'.join(_param_items)
                     elif position == 'HEADER':
                         import base64
                         header_raw = base64.b64decode(headers).decode('utf-8').split('\n')
@@ -769,7 +701,7 @@ def vul_recheck():
                             _header_list = header_raw[index].split(':')
                             _header_name = _header_list[0]
                             if _header_name == param_name:
-                                header_raw[index] = f'{_header_name}:.%2F..%2F%60dongtai'
+                                header_raw[index] = f'{_header_name}:{recheck_payload}'
                                 break
                         try:
                             headers = base64.b64encode('\n'.join(header_raw))
@@ -794,7 +726,7 @@ def vul_recheck():
                             for index in range(item_length):
                                 cookie_item = cookie_raw_items[index].split('=')
                                 if cookie_item[0] == param_name:
-                                    cookie_raw_items[index] = f'{param_name}=.%2F..%2F%60dongtai'
+                                    cookie_raw_items[index] = f'{param_name}={recheck_payload}'
                                     break
                             cookie_raw = ';'.join(cookie_raw_items)
                             header_raw[cookie_index] = cookie_raw
