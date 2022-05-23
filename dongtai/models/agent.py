@@ -12,6 +12,7 @@ from dongtai.models import User
 from dongtai.models.server import IastServer
 from dongtai.utils.settings import get_managed
 from dongtai.models.project import IastProject
+from dongtai.models.project_version import IastProjectVersion
 
 class IastAgent(models.Model):
     token = models.CharField(max_length=255, blank=True, null=True)
@@ -35,10 +36,14 @@ class IastAgent(models.Model):
                                      on_delete=models.DO_NOTHING,
                                      blank=True,
                                      null=True,
-                                     default=0)
+                                     default=-1)
+    project_version = models.ForeignKey(IastProjectVersion,
+                                     on_delete=models.DO_NOTHING,
+                                     blank=True,
+                                     null=True,
+                                     default=-1)
     project_name = models.CharField(max_length=255, blank=True, null=True)
     online = models.PositiveSmallIntegerField(blank=True, default=0)
-    project_version_id = models.IntegerField(blank=True, null=True, default=0)
     language = models.CharField(max_length=10, blank=True, null=True)
     filepathsimhash = models.CharField(max_length=255,
                                        default='',

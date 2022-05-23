@@ -43,6 +43,9 @@ class IastApiMethodHttpMethodRelation(models.Model):
         managed = get_managed()
         db_table = 'iast_http_method_relation'
         unique_together = ['api_method_id', 'http_method_id']
+class FromWhereChoices(models.IntegerChoices):
+    FROM_AGENT = 1
+    FROM_METHOD_POOL = 2
 
 
 class IastApiRoute(models.Model):
@@ -65,7 +68,8 @@ class IastApiRoute(models.Model):
                               db_constraint=False,
                               db_index=True,
                               db_column='agent_id')
-
+    from_where = models.IntegerField(default=FromWhereChoices.FROM_AGENT,
+                                     choices=FromWhereChoices.choices)
     class Meta:
         managed = get_managed()
         db_table = 'iast_api_route'
