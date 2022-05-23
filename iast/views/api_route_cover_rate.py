@@ -13,7 +13,7 @@ from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from iast.utils import batch_queryset, checkcover_batch
 from iast.utils import extend_schema_with_envcheck
-from dongtai.models.api_route import IastApiRoute
+from dongtai.models.api_route import IastApiRoute, FromWhereChoices
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
 
@@ -56,10 +56,10 @@ class ApiRouteCoverRate(UserEndPoint):
             bind_project_id=project_id,
             project_version_id=current_project_version.get("version_id",
                                                            0)).values("id")
-        q = Q(agent__in=agents)
+        q = Q(agent__in=agents) & Q(from_where=FromWhereChoices.FROM_AGENT)
         queryset = IastApiRoute.objects.filter(q)
         total = queryset.count()
-        cover_count = checkcover_batch(queryset,agents) 
+        cover_count = checkcover_batch(queryset, agents)
         try:
             cover_rate = "{:.2%}".format(cover_count / total)
         except ZeroDivisionError as e:

@@ -1,11 +1,20 @@
-from sca.models import Package, VulPackageVersion, VulPackage, VulPackageRange, Vul
+from dongtai.models import User
+from dongtai.models.asset import Asset
+from dongtai.models.asset_aggr import AssetAggr
+from dongtai.models.asset_vul import IastAssetVul, IastAssetVulTypeRelation, IastVulAssetRelation
+from sca.models import Package, VulPackageVersion, VulPackage, VulPackageRange, Vul, VulCveRelation, PackageLicenseInfo, \
+    PackageLicenseLevel
 from django.http import JsonResponse
 from rest_framework import views
 from django.forms.models import model_to_dict
-from dongtai.endpoint import R, AnonymousAndUserEndPoint
+from dongtai.endpoint import R, AnonymousAndUserEndPoint, UserEndPoint
+from django.utils.translation import gettext_lazy as _
+from sca.common.sca_vul import GetScaVulData
+
+LEVEL_MAP = {'critical': '严重', 'high': '高危', 'medium': '中危', 'low': '低危'}
+
 
 class OnePackageVulList(AnonymousAndUserEndPoint):
-
     # 查找单个漏洞下，所有的修复的高版本
     def find_fixed_versions(self, vul_package_id, ecosystem, name, version):
         vul_package_ranges = VulPackageRange.objects.filter(
@@ -13,7 +22,7 @@ class OnePackageVulList(AnonymousAndUserEndPoint):
             ecosystem=ecosystem, name=name,
             type__in=['ECOSYSTEM', 'SEMVER'],
             # introduced__lte=version,
-            fixed__gte=version
+            fixed_vcode__gte=version
         ).all()
         fixed_versions = []
         for vul_package_range in vul_package_ranges:
@@ -74,7 +83,7 @@ class OnePackageVulList(AnonymousAndUserEndPoint):
                         vul_package_id,
                         ecosystem,
                         name,
-                        version
+                        version_code
                     )
                 }
             )
@@ -90,3 +99,66 @@ class OnePackageVulList(AnonymousAndUserEndPoint):
             'status': 201
         }
         return JsonResponse(result)
+
+
+class AssetPackageVulList(UserEndPoint):
+    name = "api-v1-sca-package-vuls"
+    description = ""
+
+    def get(self, request, aggr_id):
+        auth_users = self.get_auth_users(request.user)
+        asset_queryset = self.get_auth_assets(auth_users)
+        asset_aggr = AssetAggr.objects.filter(id=aggr_id).first()
+        if not asset_aggr:
+            return R.failure(msg=_('Components do not exist or no permission to access'))
+
+        asset_queryset_exist = asset_queryset.filter(signature_value=asset_aggr.signature_value,
+                                                     version=asset_aggr.version, dependency_level__gt=0).exists()
+        if not asset_queryset_exist:
+            return R.failure(msg=_('Components do not exist or no permission to access'))
+
+        vul_list = []
+        auth_asset_vuls = self.get_auth_asset_vuls(asset_queryset)
+        asset_vuls = IastAssetVul.objects.filter(package_name=asset_aggr.package_name,
+                                                 package_hash=asset_aggr.signature_value,
+                                                 package_version=asset_aggr.version).all()
+        for a_vul in asset_vuls:
+            if a_vul.id in auth_asset_vuls:
+                vul_type_relation = IastAssetVulTypeRelation.objects.filter(asset_vul_id=a_vul.id)
+                vul_type_str = ""
+                if vul_type_relation:
+                    vul_types = [_i.asset_vul_type.name for _i in vul_type_relation]
+                    vul_type_str = ','.join(vul_types)
+
+                vul_list.append({
+                    "asset_vul_id": a_vul.id,
+                    "vul_title": a_vul.vul_name,
+                    "cve_id": a_vul.cve_code,
+                    "vul_type": vul_type_str,
+                    "level_id": a_vul.level.id,
+                    "level": a_vul.level.name_value,
+                })
+
+        return R.success(data=vul_list)
+
+
+class AssetPackageVulDetail(UserEndPoint):
+    name = "api-v1-sca-package-vul-detail"
+    description = ""
+
+    def get(self, request, vul_id):
+        # 组件漏洞基础 数据读取
+        asset_vul = IastAssetVul.objects.filter(id=vul_id).first()
+        # 用户鉴权
+        auth_users = self.get_auth_users(request.user)
+        asset_queryset = self.get_auth_assets(auth_users)
+        auth_asset_vuls = self.get_auth_asset_vuls(asset_queryset)
+
+        # 判断是否有权限
+        if not asset_vul or vul_id not in auth_asset_vuls:
+            return R.failure(msg=_('Vul do not exist or no permission to access'))
+
+        data = GetScaVulData(asset_vul,asset_queryset)
+
+
+        return R.success(data=data)

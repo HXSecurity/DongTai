@@ -6,7 +6,7 @@
 # agent threshold setting
 import time
 
-from dongtai.endpoint import UserEndPoint, R
+from dongtai.endpoint import UserEndPoint, R, TalentAdminEndPoint
 from dongtai.models.agent_config import IastAgentConfig
 from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
@@ -101,6 +101,10 @@ from dongtai.models.agent_config import (
     MetricType,
     MetricGroup,
     MetricOperator,
+    SystemMetricType,
+    JVMMetricType,
+    ApplicationMetricType,
+    UNIT_DICT,
 )
 from collections.abc import Iterable
 from inflection import underscore
@@ -265,7 +269,7 @@ def set_config_change_proprity(config_id, priority_range: list):
 from webapi.settings import DEFAULT_CIRCUITCONFIG
 
 
-class AgentThresholdConfigV2(UserEndPoint, viewsets.ViewSet):
+class AgentThresholdConfigV2(TalentAdminEndPoint, viewsets.ViewSet):
     name = "api-v1-agent-threshold-config-setting-v2"
     description = _("config Agent V2")
 
@@ -352,7 +356,8 @@ class AgentThresholdConfigV2(UserEndPoint, viewsets.ViewSet):
 
     def enum(self, request, enumname):
         able_to_search = (TargetType, MetricType, MetricGroup, TargetOperator,
-                          MetricOperator, DealType)
+                          MetricOperator, DealType, SystemMetricType,
+                          JVMMetricType, ApplicationMetricType)
         able_to_search_dict = {
             underscore(item.__name__): item
             for item in able_to_search
@@ -362,11 +367,13 @@ class AgentThresholdConfigV2(UserEndPoint, viewsets.ViewSet):
 
     def enumall(self, request):
         able_to_search = (TargetType, MetricType, MetricGroup, TargetOperator,
-                          MetricOperator, DealType)
+                          MetricOperator, DealType, SystemMetricType,
+                          JVMMetricType, ApplicationMetricType)
         res = {
             underscore(item.__name__): convert_choices_to_value_dict(item)
             for item in able_to_search
         }
+        res['UNIT_DICT'] = UNIT_DICT
         return R.success(data=res)
 
 

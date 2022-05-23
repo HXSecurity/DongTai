@@ -51,3 +51,6 @@ port = 8082
 [other]
 domain = http://localhost.domain/
 demo_session_cookie_domain = .huoxian.cn
+logging_level = INFO
+cache_preheat = True
+

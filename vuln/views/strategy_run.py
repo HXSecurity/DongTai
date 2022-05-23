@@ -8,7 +8,7 @@
 import logging
 
 from core.tasks import search_vul_from_strategy, search_vul_from_method_pool, search_sink_from_method_pool, \
-    search_sink_from_strategy, search_vul_from_replay_method_pool
+    search_sink_from_strategy, search_vul_from_replay_method_pool 
 from dongtai.endpoint import R, UserEndPoint
 
 logger = logging.getLogger('dongtai-engine')
@@ -58,6 +58,7 @@ class StrategyRunEndPoint(UserEndPoint):
         logger.info(f'[+] 扫描任务 [{method_pool_id}]正在下发')
         search_vul_from_method_pool.delay(method_pool_id)
         search_sink_from_method_pool.delay(method_pool_id)
+        judge_propagator.delay(method_pool_id)
         logger.info(f'扫描任务 [{method_pool_id}] 下发完成')
 
     @staticmethod

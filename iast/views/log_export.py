@@ -9,7 +9,7 @@ from django.utils.encoding import escape_uri_path
 from import_export import resources
 from rest_framework.generics import GenericAPIView
 from django.utils.translation import gettext_lazy as _
-
+from dongtai.endpoint import UserEndPoint
 from dongtai.endpoint import R
 
 
@@ -46,11 +46,13 @@ class ExportMixin(object):
         if ids:
             ids = [int(id.strip()) for id in ids.split(',')]
             user = request.user
-            if user.is_talent_admin():
+            if user.is_system_admin():
                 queryset = LogEntry.objects.filter(id__in=ids).filter()
+            elif user.is_talent_admin():
+                auth_users = UserEndPoint.get_auth_users(user)
+                queryset = LogEntry.objects.filter(id__in=ids, user__in=auth_users).filter()
             else:
-                queryset = LogEntry.objects.filter(id__in=ids, user=user).filter()
-
+                return R.failure(msg=_('no permission'))
             resources = self.resource_class()
             export_data = resources.export(queryset, False)
             return ExportMixin.attachment_response(getattr(export_data, 'xls'), filename='用户操作日志.xls')

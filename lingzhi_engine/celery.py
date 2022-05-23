@@ -33,6 +33,7 @@ configs["CELERY_QUEUES"] = [
     Queue("dongtai-replay-task", Exchange("dongtai-replay-task"), routing_key="dongtai-replay-task"),
     Queue("dongtai-sca-task", Exchange("dongtai-sca-task"), routing_key="dongtai-sca-task"),
     Queue("dongtai-report-task", Exchange("dongtai-report-task"), routing_key="dongtai-report-task"),
+    Queue("dongtai-function-flush-data", Exchange("dongtai-function-flush-data"), routing_key="dongtai-function-flush-data"),
 ]
 configs["CELERY_ROUTES"] = {
     "core.tasks.search_vul_from_method_pool": {'exchange': 'dongtai-method-pool-scan', 'routing_key': 'dongtai-method-pool-scan'},
@@ -46,6 +47,8 @@ configs["CELERY_ROUTES"] = {
     "core.tasks.export_report": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
     "core.tasks.vul_recheck": {'exchange': 'dongtai-replay-task', 'routing_key': 'dongtai-replay-task'},
     "core.web_hook.forward_for_upload": {'exchange': 'dongtai-report-task', 'routing_key': 'dongtai-report-task'},
+    "core.preheat.function_flush": {'exchange': 'dongtai-function-flush-data', 'routing_key': 'dongtai-function-flush-data'},
+    "core.preheat.function_preheat": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
 }
 configs["CELERY_ENABLE_UTC"] = False
 configs["CELERY_TIMEZONE"] = settings.TIME_ZONE
@@ -57,3 +60,35 @@ app.conf.update(configs)
 
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
+from webapi.settings import DONGTAI_CELERY_CACHE_PREHEAT
+
+def ready(self):
+    super().ready()
+    checkout_preheat_online(DONGTAI_CELERY_CACHE_PREHEAT)
+
+
+app.ready = ready
+print(f"preheat settings now : {DONGTAI_CELERY_CACHE_PREHEAT}")
+def checkout_preheat_online(status):
+    from django_celery_beat.models import (
+        CrontabSchedule,
+        PeriodicTask,
+        IntervalSchedule,
+
+    )
+    import json
+    from datetime import datetime, timedelta
+    if not status:
+        PeriodicTask.objects.delete(name='preheat functions')
+    else:
+        schedule, _ = IntervalSchedule.objects.get_or_create(
+            every=10, period=IntervalSchedule.MINUTES)
+        task = PeriodicTask.objects.get_or_create(
+            name='preheat functions',  # simply describes this periodic task.
+            defaults={
+                'interval': schedule,  # we created this above.
+                'task': 'core.preheat.function_preheat',  # name of task.
+                'args': json.dumps([]),
+                'kwargs': json.dumps({}),
+            })
+        print(task)

@@ -14,7 +14,6 @@ from dongtai.utils.settings import get_managed
 from dongtai.utils.customfields import trans_char_field
 from typing import Any
 
-
 class IastDepartment(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
 
@@ -53,6 +52,7 @@ class Department(PermissionsMixin):
     update_time = models.IntegerField(_('update time'), default=int(time.time()), blank=True)
     created_by = models.IntegerField(_('created by'), blank=True)
     parent_id = models.IntegerField(_('parent id'), blank=True)
+    principal_id = models.IntegerField(default=0, blank=True)
 
     class Meta:
         managed = get_managed()
@@ -60,6 +60,7 @@ class Department(PermissionsMixin):
 
     def get_department_name(self):
         return self.name
+
 
     @trans_char_field('name', {
         'zh': {

@@ -20,6 +20,7 @@ from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.project_version import IastProjectVersion
 from django.db.models import Count
 
+
 def get_agents_with_project(project_name, users):
     """
     :param project_name:
@@ -33,7 +34,6 @@ def get_agents_with_project(project_name, users):
             name__icontains=project_name).values_list("id", flat=True).all()
 
         if project_ids:
-
             agent_ids = IastAgent.objects.filter(
                 bind_project_id__in=project_ids).values_list("id",
                                                              flat=True).all()
@@ -72,6 +72,7 @@ def get_all_server(ids):
         for item in alls:
             result[item['id']] = item['container']
     return result
+
 
 # todo del edit by song
 def get_project_vul_count_back(users, queryset, auth_agents, project_id=None):
@@ -136,7 +137,7 @@ def get_project_vul_count(users, queryset, auth_agents, project_id=None):
     agentIdArr = {}
     for item in queryset:
         agentIdArr[item["agent_id"]] = item["count"]
-    auth_agent_arr = auth_agents.values("project_version_id","bind_project_id","id")
+    auth_agent_arr = auth_agents.values("project_version_id", "bind_project_id", "id")
     agent_list = {}
     for auth in auth_agent_arr:
         version_id = versions_map.get(auth['bind_project_id'], 0)
@@ -150,7 +151,7 @@ def get_project_vul_count(users, queryset, auth_agents, project_id=None):
         project_id = project['id']
         count = 0
         for agent_id in agent_list.get(project_id, []):
-            count = count + int(agentIdArr.get(agent_id,0))
+            count = count + int(agentIdArr.get(agent_id, 0))
         result.append({
             "project_name": project['name'],
             "count": count,
@@ -200,7 +201,7 @@ def get_vul_count_by_agent(agent_ids, vid, user):
             strategy_name = strategy['vul_name'] if strategy else None
             type_ = list(
                 filter(lambda x: x is not None, [strategy_name, hook_type_name]))
-            one['type']= type_[0] if type_ else ''
+            one['type'] = type_[0] if type_ else ''
             typeArr[one['type']] = typeArr.get(one['type'], 0) + 1
             typeLevel[one['type']] = one['level_id']
             levelCount[one['level_id']] = levelCount.get(one['level_id'], 0) + 1
@@ -209,7 +210,8 @@ def get_vul_count_by_agent(agent_ids, vid, user):
             one['language'] = language if language is not None else ''
             if one['type'] not in vulDetail.keys():
                 vulDetail[one['type']] = []
-            detailStr1 = _("We found that there is {1} in the {0} page, attacker can modify the value of {2} to attack:").format(
+            detailStr1 = _(
+                "We found that there is {1} in the {0} page, attacker can modify the value of {2} to attack:").format(
                 one['uri'], one['type'], one['taint_position'])
 
             try:
@@ -243,7 +245,7 @@ def get_vul_count_by_agent(agent_ids, vid, user):
             detailStr3 = _("In {} {} call {}. {} (), Incoming parameters {}").format(
                 str(fileName), rowStr, classname, methodname,
                 str(one['taint_value']))
-            cur_tile = _("{} Appears in {} {}").format(one['type'],str(one['uri']),str(one['taint_position']))
+            cur_tile = _("{} Appears in {} {}").format(one['type'], str(one['uri']), str(one['taint_position']))
             if one['param_name']:
                 cur_tile = cur_tile + "\"" + str(one['param_name']) + "\""
             vulDetail[one['type']].append({
@@ -273,11 +275,11 @@ def get_vul_count_by_agent(agent_ids, vid, user):
 
 
 def get_hook_type_name(obj):
-    #hook_type = HookType.objects.filter(pk=obj['hook_type_id']).first()
-    #hook_type_name = hook_type.name if hook_type else None
-    #strategy = IastStrategyModel.objects.filter(pk=obj['strategy_id']).first()
-    #strategy_name = strategy.vul_name if strategy else None
-    #type_ = list(
+    # hook_type = HookType.objects.filter(pk=obj['hook_type_id']).first()
+    # hook_type_name = hook_type.name if hook_type else None
+    # strategy = IastStrategyModel.objects.filter(pk=obj['strategy_id']).first()
+    # strategy_name = strategy.vul_name if strategy else None
+    # type_ = list(
     #    filter(lambda x: x is not None, [strategy_name, hook_type_name]))
     type_ = list(
         filter(lambda x: x is not None, [
@@ -296,22 +298,32 @@ def initlanguage():
     }
 
 
-def get_agent_languages(agent_items):
-        default_language = initlanguage()
-        language_agents = dict()
-        language_items = IastAgent.objects.filter().values('id', 'language')
-        for language_item in language_items:
-            language_agents[language_item['id']] = language_item['language']
+# todo 默认开源许可证
+# def init_license():
+#     license_list = IastProgramLanguage.objects.all()
+#     license_dic = {
+#         license.name: 0
+#         for license in license_list
+#     }
+#     return license_dic
 
-        for item in agent_items :
-            agent_id = item['agent_id']
-            count = item['count']
-            if default_language.get(language_agents[agent_id], None):
-                default_language[language_agents[agent_id]] = count + default_language[language_agents[agent_id]]
-            else:
-                default_language[
-                    language_agents[agent_id]] = count
-        return [{
-            'language': _key,
-            'count': _value
-        } for _key, _value in default_language.items()]
+
+def get_agent_languages(agent_items):
+    default_language = initlanguage()
+    language_agents = dict()
+    language_items = IastAgent.objects.filter().values('id', 'language')
+    for language_item in language_items:
+        language_agents[language_item['id']] = language_item['language']
+
+    for item in agent_items:
+        agent_id = item['agent_id']
+        count = item['count']
+        if default_language.get(language_agents[agent_id], None):
+            default_language[language_agents[agent_id]] = count + default_language[language_agents[agent_id]]
+        else:
+            default_language[
+                language_agents[agent_id]] = count
+    return [{
+        'language': _key,
+        'count': _value
+    } for _key, _value in default_language.items()]

@@ -9,12 +9,12 @@ from django.urls import include, path
 
 from vuln.views.health import HealthEndPoint
 from vuln.views.proxy import ProxyEndPoint
-from vuln.views.strategy_run import StrategyRunEndPoint
+#from vuln.views.strategy_run import StrategyRunEndPoint
 from vuln.views.sca import ScaEndPoint
 from vuln.views.agent import AgentEndPoint
 
 urlpatterns = [
-    path('run', StrategyRunEndPoint.as_view()),
+#    path('run', StrategyRunEndPoint.as_view()),
     path('health', HealthEndPoint.as_view()),
     path('sca', ScaEndPoint.as_view()),
     path('proxy', ProxyEndPoint.as_view()),
