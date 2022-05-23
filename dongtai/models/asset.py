@@ -8,9 +8,14 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from dongtai.models import User
 from dongtai.models.agent import IastAgent
+from dongtai.models.project import IastProject
+from dongtai.models.project_version import IastProjectVersion
 from dongtai.models.vul_level import IastVulLevel
 from dongtai.utils.settings import get_managed
+from dongtai.models.department import Department
+from dongtai.models.talent import Talent
 
 
 class Asset(models.Model):
@@ -20,8 +25,15 @@ class Asset(models.Model):
     signature_value = models.CharField(max_length=255, blank=True, null=True)
     dt = models.IntegerField(blank=True, null=True)
     version = models.CharField(max_length=255, blank=True, null=True)
-    level = models.ForeignKey(IastVulLevel, models.DO_NOTHING, blank=True, null=True)
+    safe_version = models.CharField(max_length=255, blank=True, null=False, default='')
+    last_version = models.CharField(max_length=255, blank=True, null=False, default='')
+    level = models.ForeignKey(IastVulLevel, models.DO_NOTHING, blank=True, null=True, default=4)
     vul_count = models.IntegerField(blank=True, null=True)
+    vul_critical_count = models.IntegerField(default=0, blank=True, null=False)
+    vul_high_count = models.IntegerField(default=0, blank=True, null=False)
+    vul_medium_count = models.IntegerField(default=0, blank=True, null=False)
+    vul_low_count = models.IntegerField(default=0, blank=True, null=False)
+    vul_info_count = models.IntegerField(default=0, blank=True, null=False)
     agent = models.ForeignKey(
         to=IastAgent,
         on_delete=models.DO_NOTHING,
@@ -29,8 +41,24 @@ class Asset(models.Model):
         related_query_name='asset',
         verbose_name=_('agent'),
         blank=True,
-        null=True
+        null=True,
+        default=-1
     )
+    project = models.ForeignKey(IastProject, on_delete=models.DO_NOTHING, blank=True, null=False, default=-1)
+    project_version = models.ForeignKey(IastProjectVersion, on_delete=models.DO_NOTHING, blank=True, null=False,
+                                        default=-1)
+    user = models.ForeignKey(User, models.DO_NOTHING, null=False, default=-1)
+    project_name = models.CharField(max_length=255, blank=True, null=False, default='')
+    language = models.CharField(max_length=32, blank=True, null=False, default='')
+    license = models.CharField(max_length=64, blank=True, null=False, default='')
+    dependency_level = models.IntegerField(null=False, default=0)
+    parent_dependency_id = models.IntegerField(blank=True, null=False, default=0)
+    is_del = models.SmallIntegerField(blank=True, null=False, default=0)
+
+    # 部门id
+    department = models.ForeignKey(Department, models.DO_NOTHING, blank=True, null=True, default=-1)
+    # 租户id
+    talent = models.ForeignKey(Talent, models.DO_NOTHING, blank=True, null=True, default=-1)
 
     class Meta:
         managed = get_managed()

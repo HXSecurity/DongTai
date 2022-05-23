@@ -9,6 +9,7 @@
 
 import json
 import logging
+import random
 import time
 
 from dongtai.models.hook_type import HookType
@@ -16,13 +17,13 @@ from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.models.project import IastProject
 from dongtai.utils import const
-
 from AgentServer import settings
 from apiserver.report.handler.report_handler_interface import IReportHandler
 from apiserver.report.report_handler_factory import ReportHandler
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import ValidationError
+from iast.vul_log.vul_log import log_vul_found
 
 
 logger = logging.getLogger('dongtai.openapi')
@@ -61,7 +62,7 @@ class HardEncodeVulHandler(IReportHandler):
                                                     vul_type='硬编码').first()
         if not strategy or strategy.state != 'enable':
             return
-        IastVulnerabilityModel.objects.create(
+        vul = IastVulnerabilityModel.objects.create(
             hook_type_id=-1,
             strategy_id=strategy.id,
             uri=self.detail.get('file', ''),
@@ -88,3 +89,5 @@ class HardEncodeVulHandler(IReportHandler):
             method_pool_id=-1,
             bottom_stack="硬编码值:{}".format(self.value),
             agent=self.agent)
+        log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
+                      vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)

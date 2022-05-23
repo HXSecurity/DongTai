@@ -31,12 +31,12 @@ openpyxl==3.0.9
 id-validator==1.0.20
 jq==1.2.1
 django-celery-beat==2.2.0
-django-modeltranslation
 django-cprofile-middleware
 drf_spectacular
-django-modeltranslation
+django-modeltranslation==0.17.7
 ddt
 faker
 pycryptodomex
 simhash==2.1.2
-result
+pymysql
+django-redis==5.2.0

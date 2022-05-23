@@ -1,9 +1,18 @@
+import logging
+
+from dongtai.models import User
 from sca.models import Package
 from django.http import JsonResponse
 from rest_framework import views
 from django.core.paginator import Paginator
 from django.forms.models import model_to_dict
-from dongtai.endpoint import R, AnonymousAndUserEndPoint
+from dongtai.endpoint import R, AnonymousAndUserEndPoint, UserEndPoint
+from django.utils.translation import gettext_lazy as _
+
+from sca.utils import get_asset_id_by_aggr_id
+
+logger = logging.getLogger(__name__)
+
 
 class PackageList(AnonymousAndUserEndPoint):
 
@@ -38,3 +47,23 @@ class PackageList(AnonymousAndUserEndPoint):
                 result['data'].append(model_to_dict(row))
 
         return JsonResponse(result)
+
+
+class AssetAggrDetailAssetIds(UserEndPoint):
+    name = "api-v1-sca-aggr-assets"
+    description = ""
+
+    def get(self, request, aggr_id):
+        try:
+            auth_users = self.get_auth_users(request.user)
+            asset_queryset = self.get_auth_assets(auth_users)
+
+            asset_ids = []
+            for asset in asset_queryset:
+                asset_ids.append(asset.id)
+            asset_ids = get_asset_id_by_aggr_id(aggr_id, asset_ids)
+
+            return R.success(data=asset_ids)
+        except Exception as e:
+            logger.error(e)
+            return R.failure(msg=_('Component asset id query failed'))

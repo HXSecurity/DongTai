@@ -18,9 +18,14 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from rest_framework.views import APIView
 from rest_framework import status, exceptions
 from django.core.paginator import PageNotAnInteger, EmptyPage
+
+from dongtai.models.asset import Asset
+from dongtai.models.asset_aggr import AssetAggr
+from dongtai.models.asset_vul import IastVulAssetRelation, IastAssetVul
 from dongtai.permissions import UserPermission, ScopedPermission, SystemAdminPermission, TalentAdminPermission
 from dongtai.utils import const
 from django.utils.translation import gettext_lazy as _
+from django.db.models import Q, Count
 
 logger = logging.getLogger('dongtai-core')
 
@@ -93,12 +98,12 @@ class EndPoint(APIView):
                 handler = self.http_method_not_allowed
             response = handler(request, *args, **kwargs)
         except Exception as exc:
-            logger.error(f'url: {self.request.path},exc:{exc}',exc_info=True)
+            logger.error(f'url: {self.request.path},exc:{exc}', exc_info=True)
             response = self.handle_exception(exc)
             return self.finalize_response(request, response, *args, **kwargs)
 
         self.response = self.finalize_response(request, response, *args, **kwargs)
-        if self.request.user is not None and self.request.user.is_active and handler.__module__.startswith('iast'):
+        if self.request.user is not None and self.request.user.is_active and handler.__module__.startswith('iast') and self.description is not None:
             self.log_manager.log_action(
                 user_id=self.request.user.id,
                 content_type_id=ContentType.objects.get_or_create(app_label=self.request.content_type)[0].id,
@@ -189,7 +194,8 @@ class EndPoint(APIView):
             departments = talent.departments.all()
             users = User.objects.filter(department__in=departments)
         else:
-            users = [user]
+            users = User.objects.filter(id=user.id).all()
+
         return users
 
     @staticmethod
@@ -209,10 +215,52 @@ class EndPoint(APIView):
         :return:
         """
         return IastAgent.objects.filter(user__in=users)
-        #if isinstance(users, QuerySet):
+        # if isinstance(users, QuerySet):
         #    return IastAgent.objects.filter(user__in=users)
-        #else:
+        # else:
         #    return IastAgent.objects.filter(user=users)
+
+    @staticmethod
+    def get_auth_assets(users):
+        """
+        通过用户列表查询有访问权限的asset列表
+        :param users:
+        :return:
+        """
+        return Asset.objects.filter(user__in=users, is_del=0)
+
+    @staticmethod
+    def get_auth_asset_aggrs(auth_assets):
+        """
+        通过用户列表查询有访问权限的asset aggr列表
+        :param users:
+        :return:
+        """
+        auth_assets = auth_assets.values('signature_value').annotate(total=Count('signature_value'))
+        auth_hash = []
+        for asset in auth_assets:
+            auth_hash.append(asset['signature_value'])
+        auth_hash = list(set(auth_hash))
+        queryset = AssetAggr.objects.filter(signature_value__in=auth_hash, is_del=0)
+        return queryset
+
+    @staticmethod
+    def get_auth_asset_vuls(assets):
+        """
+        通过用户列表查询有访问权限的asset vul列表
+        :param users:
+        :return:
+        """
+        permission_assets = assets.filter(dependency_level__gt=0).values('id').all()
+        auth_assets = [_i['id'] for _i in permission_assets]
+
+        vul_asset_ids = IastVulAssetRelation.objects.filter(asset_id__in=auth_assets, is_del=0).values(
+            'asset_vul_id').all()
+        perm_vul_ids = []
+        if vul_asset_ids:
+            perm_vul_ids = [_i['asset_vul_id'] for _i in vul_asset_ids]
+
+        return perm_vul_ids
 
     @staticmethod
     def get_auth_and_anonymous_agents(user):
@@ -260,13 +308,13 @@ class EngineApiEndPoint(EndPoint):
 
 
 class SystemAdminEndPoint(EndPoint):
-    authentication_classes = (SessionAuthentication,)
+    authentication_classes = (SessionAuthentication, TokenAuthentication)
     # authentication_classes = (TokenAuthentication,)
     permission_classes = (SystemAdminPermission,)
 
 
 class TalentAdminEndPoint(EndPoint):
-    authentication_classes = (SessionAuthentication,)
+    authentication_classes = (SessionAuthentication, TokenAuthentication)
     permission_classes = (TalentAdminPermission,)
 
 

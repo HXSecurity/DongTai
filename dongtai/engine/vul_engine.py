@@ -129,6 +129,7 @@ class VulEngine(object):
                 break
         self.vul_filter()
 
+
     def vul_filter(self):
         # 分析是否存在过滤条件，排除误报
         # 根据漏洞类型，查询filter方法
@@ -186,7 +187,11 @@ class VulEngine(object):
         for sub_index in range(index + 1, size):
             sub_method = self.method_pool[sub_index]
             sub_target_hash = set(sub_method.get('targetHash'))
-            if sub_target_hash and sub_target_hash & self.pool_value:
+            sub_target_rpc_hash = set(sub_method.get('targetHashForRpc',[]))
+            if ((sub_target_hash and sub_target_hash & self.pool_value) or
+                (sub_target_rpc_hash and sub_target_rpc_hash & self.pool_value)
+                ) and check_service_propagate_method_state(sub_method):
+                logger.info("stisfied {sub_method}")
                 if sub_method.get('source'):
                     current_link.append(self.copy_method(sub_method, source=True))
                     self.vul_source_signature = f"{sub_method.get('className')}.{sub_method.get('methodName')}"
@@ -201,6 +206,8 @@ class VulEngine(object):
                         return True
                     self.pool_value = old_pool_value
                     current_link.pop()
+            else:
+                logger.debug("not stisfied {sub_method}")
 
     def search_sink(self, method_pool, vul_method_signature):
         self.prepare(method_pool, vul_method_signature)
@@ -260,3 +267,11 @@ class VulEngine(object):
 
     def get_taint_links(self):
         return self.graph_data, self.taint_link_size, self.method_counts
+
+
+def check_service_propagate_method_state(method):
+    if method.get("traceId", "") and not method.get(
+            "servicePropagateMethodState", False) and not method.get(
+                'source', False):
+        return False
+    return True

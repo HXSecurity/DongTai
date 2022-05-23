@@ -291,7 +291,6 @@ class VulsEndPoint(UserEndPoint):
         if allType:
             for item in allType:
                 allTypeArr[item.id] = item.name_value
-
         page = request.query_params.get('page', 1)
         page_size = request.query_params.get("pageSize", 20)
         page_summary, page_data = self.get_paginator(queryset, page, page_size)
@@ -309,7 +308,6 @@ class VulsEndPoint(UserEndPoint):
                     agentServer.get(item['agent_id'], 0), "JavaApplication")
                 item['server_type'] = VulSerializer.split_container_name(
                     item['server_name'])
-
                 item['level_type'] = item['level_id']
                 item['level'] = allTypeArr.get(item['level_id'], "")
                 end['data'].append(item)

@@ -26,6 +26,6 @@ class UserInfoEndpoint(UserEndPoint):
         return R.success(data={
             'userid': user.id if not user.is_anonymous else -1 ,
             'username': user.get_username(),
-            'role': 2 if group.name == 'talent_admin' else 1 if group.name == 'system_admin' else 0,
-            'role_name': group.name
+            'role': 3 if group is None else 2 if group.name == 'talent_admin' else 1 if group.name == 'system_admin' else 0,
+            'role_name': '' if group is None else group.name
         })

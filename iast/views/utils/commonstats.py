@@ -81,7 +81,7 @@ def get_summary_by_agent_ids(agent_ids: Iterable):
     timestamp_gt = current_timestamp
     queryset_list = []
     queryset_ = IastVulnerabilityModel.objects.filter(
-        agent_id__gt=0)
+        agent_id__in=agent_ids)
     for timestamp, _ in daylist:
         queryset_list.append(
             geneatre_vul_timerange_count_queryset(queryset_, timestamp_gt,

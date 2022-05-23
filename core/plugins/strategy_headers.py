@@ -3,6 +3,7 @@
 # author: owefsad@huoxian.cn
 # datetime: 2021/10/22 下午2:26
 # project: DongTai-engine
+import random
 import time
 from http.client import HTTPResponse
 from io import BytesIO
@@ -15,7 +16,7 @@ from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.utils import const
 
 from core.plugins import is_strategy_enable
-
+from iast.vul_log.vul_log import log_vul_found, log_recheck_vul
 
 class FakeSocket():
     def __init__(self, response_str):
@@ -118,12 +119,12 @@ def save_vul(vul_type, method_pool, position=None, data=None):
         vul.method_pool_id = method_pool.id
         vul.save(update_fields=[
             'req_header', 'req_params', 'req_data', 'res_header', 'res_body', 'taint_value', 'taint_position',
-            'context_path', 'client_ip', 'counts', 'latest_time', 'method_pool_id'
+            'context_path', 'client_ip', 'counts', 'latest_time', 'method_pool_id','latest_time_desc'
         ])
     else:
         from dongtai.models.hook_type import HookType
         hook_type = HookType.objects.filter(vul_strategy_id=vul_strategy.id).first()
-        IastVulnerabilityModel.objects.create(
+        vul = IastVulnerabilityModel.objects.create(
             strategy=vul_strategy,
             # fixme: remove field
             hook_type=hook_type if hook_type else HookType.objects.first(),
@@ -153,3 +154,5 @@ def save_vul(vul_type, method_pool, position=None, data=None):
             param_name=None,
             method_pool_id=method_pool.id
         )
+        log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
+                      vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)

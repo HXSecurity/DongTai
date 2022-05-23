@@ -3,79 +3,20 @@
 # author: owefsad@huoxian.cn
 # datetime: 2021/4/30 下午3:00
 # project: dongtai-engine
-import json
+import json,random
 import time
-
 import requests
 from celery.apps.worker import logger
 from django.dispatch import receiver
 from dongtai.models.project import IastProject, VulValidation
 from dongtai.models.replay_queue import IastReplayQueue
-
-from dongtai.models.notify_config import IastNotifyConfig
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.utils import const
-
 from lingzhi_engine import settings
 from signals import vul_found
 from dongtai.utils.systemsettings import get_vul_validate
-
-
-def create_vul_data_from_model(vul):
-    """
-
-    :param vul:
-    :return:{
-        http_url: 漏洞所在url
-        http_uri: 漏洞所在uri
-        context_path: HTTP请求上下文
-        http_method: HTTP请求方法
-        http_scheme: HTTP请求协议
-        http_protocol: HTTP请求协议
-        req_header: HTTP请求头
-        req_data: HTTP请求体
-        res_header: HTTP响应头
-        res_body: HTTP响应体
-        vul_type: 漏洞类型
-        vul_level: 漏洞等级
-        full_stack: 漏洞对应的调用链数据
-        top_stack: 漏洞对应污点调用链的链首
-        bottom_stack: 漏洞对应污点调用链的链尾
-        taint_value: 污点值
-        taint_position: 污点所在位置
-        agent_token: Agent的token
-        project: 所在的项目
-        counts: 漏洞出现次数
-        client_ip: 客户端IP
-        username: 漏洞所在用户的用户名
-    }
-    """
-    agent = vul.agent
-    vul_data = {}
-    vul_data['vul_type'] = vul.hook_type.name
-    vul_data['vul_level'] = vul.level.name_value
-    vul_data['http_url'] = vul.url
-    vul_data['http_uri'] = vul.uri
-    vul_data['http_method'] = vul.http_method
-    vul_data['http_scheme'] = vul.http_scheme
-    vul_data['http_protocol'] = vul.http_protocol
-    vul_data['req_header'] = vul.req_header
-    vul_data['req_data'] = vul.req_data
-    vul_data['res_header'] = vul.res_header
-    vul_data['res_body'] = vul.res_body
-    vul_data['full_stack'] = vul.full_stack
-    vul_data['top_stack'] = vul.top_stack
-    vul_data['bottom_stack'] = vul.bottom_stack
-    vul_data['taint_value'] = vul.taint_value
-    vul_data['taint_position'] = vul.taint_position
-    vul_data['agent_token'] = agent.token
-    vul_data['project'] = agent.project_name
-    vul_data['context_path'] = vul.context_path
-    vul_data['counts'] = vul.counts
-    vul_data['client_ip'] = vul.client_ip
-    vul_data['username'] = vul.agent.user.get_username()
-    return vul_data
-
+from iast.vul_log.vul_log import log_vul_found, log_recheck_vul
+from django.db.models import Q
 
 def equals(source, target):
     if source == target or source in target or target in source:
@@ -237,17 +178,14 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     from dongtai.models.agent import IastAgent
     project_agents = IastAgent.objects.filter(project_version_id=vul_meta.agent.project_version_id)
     # 获取 相同项目版本下的数据
-    print("=======")
     vul = IastVulnerabilityModel.objects.filter(
         strategy_id=strategy_id,
         uri=vul_meta.uri,
         http_method=vul_meta.http_method,
         agent__in=project_agents,
     ).first()
-
     IastProject.objects.filter(id=vul_meta.agent.bind_project_id).update(latest_time=timestamp)
     if vul:
-        # print("llllll")
         vul.req_header = vul_meta.req_header
         vul.req_params = vul_meta.req_params
         vul.req_data = vul_meta.req_data
@@ -266,10 +204,9 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
         vul.save(update_fields=[
             'req_header', 'req_params', 'req_data', 'res_header', 'res_body', 'taint_value', 'taint_position',
             'method_pool_id', 'context_path', 'client_ip', 'top_stack', 'bottom_stack', 'full_stack', 'counts',
-            'latest_time'
+            'latest_time','latest_time_desc'
         ])
     else:
-        # print("insert-------")
         from dongtai.models.hook_type import HookType
         hook_type = HookType.objects.filter(vul_strategy_id=strategy_id).first()
         vul = IastVulnerabilityModel.objects.create(
@@ -302,8 +239,13 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
             param_name=param_name,
             method_pool_id=vul_meta.id
         )
+        log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
+                      vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)
+
+    logger.info(f"vul_found {vul.id}")
     return vul
 
+from dongtai.models.vul_recheck_payload import IastVulRecheckPayload
 
 def create_vul_recheck_task(vul_id, agent, timestamp):
     project = IastProject.objects.filter(id=agent.bind_project_id).first()
@@ -328,15 +270,31 @@ def create_vul_recheck_task(vul_id, agent, timestamp):
         replay_model.count = replay_model.count + 1
         replay_model.save(update_fields=['state', 'update_time', 'count'])
     else:
-        IastReplayQueue.objects.create(
-            agent=agent,
-            relation_id=vul_id,
-            state=const.PENDING,
-            count=1,
-            create_time=timestamp,
-            update_time=timestamp,
-            replay_type=const.VUL_REPLAY
-        )
+        vul = IastVulnerabilityModel.objects.filter(
+            pk=vul_id).only('strategy_id').first()
+        queue = [
+            IastReplayQueue(agent=agent,
+                            relation_id=vul_id,
+                            state=const.PENDING,
+                            count=1,
+                            create_time=timestamp,
+                            update_time=timestamp,
+                            replay_type=const.VUL_REPLAY,
+                            payload_id=payload_id)
+            for payload_id in IastVulRecheckPayload.objects.filter(
+                strategy_id=vul.strategy_id,
+                user__in=[1, agent.user_id]).values_list('pk', flat=True)
+        ]
+        if queue:
+            IastReplayQueue.objects.bulk_create(queue, ignore_conflicts=True)
+        else:
+            IastReplayQueue.objects.create(agent=agent,
+                                           relation_id=vul_id,
+                                           state=const.PENDING,
+                                           count=1,
+                                           create_time=timestamp,
+                                           update_time=timestamp,
+                                           replay_type=const.VUL_REPLAY)
 
 
 def handler_replay_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs):
@@ -346,16 +304,22 @@ def handler_replay_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, b
     if vul and vul.strategy_id == strategy_id:
         vul.status_id = settings.CONFIRMED
         vul.latest_time = timestamp
-        vul.save(update_fields=['status_id', 'latest_time'])
-
+        vul.save(update_fields=['status_id', 'latest_time','latest_time_desc'])
         IastProject.objects.filter(id=vul_meta.agent.bind_project_id).update(latest_time=timestamp)
 
         IastReplayQueue.objects.filter(id=kwargs['replay_id']).update(
             state=const.SOLVED,
             result=const.RECHECK_TRUE,
             verify_time=timestamp,
-            update_time=timestamp
-        )
+            update_time=timestamp)
+        IastReplayQueue.objects.filter(vul_id=vul.id).exclude(
+            Q(id=kwargs['replay_id']) | Q(state=const.SOLVED)).update(
+                state=const.DISCARD,
+                result=const.RECHECK_DISCARD,
+                verify_time=timestamp,
+                update_time=timestamp)
+        log_recheck_vul(vul.agent.user.id, vul.agent.user.username, [vul.id],
+                        '已确认')
     else:
         vul = save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs)
         create_vul_recheck_task(vul_id=vul.id, agent=vul.agent, timestamp=timestamp)
@@ -378,6 +342,7 @@ def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_s
     timestamp = int(time.time())
     from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
     from dongtai.models.agent_method_pool import MethodPool
+
     if isinstance(vul_meta, IastAgentMethodPoolReplay):
         replay_id = vul_meta.replay_id
         replay_type = vul_meta.replay_type
@@ -391,109 +356,14 @@ def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_s
             # 数据包调试数据暂不检测漏洞
             vul = None
         else:
-            vul = save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs)
-            create_vul_recheck_task(vul_id=vul.id, agent=vul.agent, timestamp=timestamp)
+            vul = save_vul(vul_meta, vul_level, strategy_id, vul_stack,
+                           top_stack, bottom_stack, **kwargs)
+            create_vul_recheck_task(vul_id=vul.id,
+                                    agent=vul.agent,
+                                    timestamp=timestamp)
     elif isinstance(vul_meta, MethodPool):
-        vul = save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs)
-        create_vul_recheck_task(vul_id=vul.id, agent=vul.agent, timestamp=timestamp)
-
-    if vul:
-        # send_to_wechat(vul)
-        send_vul_notify(vul)
-
-
-def read_notify_config(user):
-    # 从云端读取通知信息
-    notify_config_models = IastNotifyConfig.objects.values('notify_type', 'notify_metadata').filter(user=user)
-    return (True, notify_config_models) if notify_config_models else (False, None)
-
-
-def send_vul_notify(vul):
-    """
-    :param vul_data:
-    :return:
-    """
-    support_notify, notify_configs = read_notify_config(vul.agent.user)
-    if support_notify:
-        vul_data = create_vul_data_from_model(vul=vul)
-        for notify_config in notify_configs:
-            notify_type = notify_config.get('notify_type')
-            if notify_type == IastNotifyConfig.WEB_HOOK:
-                metadata = json.loads(notify_config.get('notify_metadata'))
-                send_to_web_hook(vul_data=vul_data, web_hook_url=metadata['url'], template=metadata['template'])
-            elif notify_type == IastNotifyConfig.JIRA:
-                # todo 补充JIRA的通知
-                pass
-            elif notify_type == IastNotifyConfig.DING_DING:
-                # todo 补充钉钉通知
-                pass
-            elif notify_type == IastNotifyConfig.EMAIL:
-                # todo 补充邮件通知
-                pass
-            else:
-                pass
-    
-
-def send_to_web_hook(web_hook_url, template, vul_data):
-    """
-    发送漏洞通知到webhook
-    """
-    notify_text = template \
-        .replace("{{url}}", vul_data['http_url']) \
-        .replace("{{uri}}", vul_data['http_uri']) \
-        .replace("{{context_path}}", vul_data['context_path']) \
-        .replace("{{http_method}}", vul_data['http_method']) \
-        .replace("{{http_scheme}}", vul_data['http_scheme']) \
-        .replace("{{http_protocol}}", vul_data['http_protocol']) \
-        .replace("{{req_header}}", vul_data['req_header']) \
-        .replace("{{vul_type}}", vul_data['vul_type']) \
-        .replace("{{vul_level}}", vul_data['vul_level']) \
-        .replace("{{full_stack}}", vul_data['full_stack']) \
-        .replace("{{top_stack}}", vul_data['top_stack']) \
-        .replace("{{bottom_stack}}", vul_data['bottom_stack']) \
-        .replace('{{taint_value}}', vul_data['taint_value']) \
-        .replace('{{taint_position}}', vul_data['taint_position']) \
-        .replace('{{agent_token}}', vul_data['agent_token']) \
-        .replace('{{project}}', vul_data['project']) \
-        .replace('{{counts}}', str(vul_data['counts'])) \
-        .replace('{{client_ip}}', vul_data['client_ip']) \
-        .replace('{{username}}', vul_data['username'])
-
-    resp = requests.post(url=web_hook_url, json=json.loads(notify_text))
-    if resp.status_code == 200:
-        pass
-
-
-def send_to_dingding():
-    """
-    todo 发送漏洞通知到钉钉
-    :return:
-    """
-    pass
-
-
-def send_to_wechat(vul):
-    """
-    todo 发送漏洞通知到企业微信
-    :return:
-    """
-    return
-
-    wechat = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxx"
-    header = {
-        "Content-Type": "application/json",
-        "Charset": "UTF-8"
-    }
-
-    message = {
-        "msgtype": "text",
-        "text": {
-            "content": "IAST漏洞扫描告警通知，请相关同事及时处理！！！\n漏洞类型：{}\n危害等级：{}\n漏洞URL：{}\n业务线名称：{}\n探针agent：{}".format(vul.strategy.vul_type, vul.level.name_value, vul.url, vul.agent.project_name, vul.agent.token),
-            "mentioned_list":["@all"],
-            "mentioned_mobile_list":["@all"]
-        },
-    }
-    
-    resp = requests.post(url=wechat, headers=header, data=json.dumps(message))
-    if resp.status_code == 200:
-        pass
+        vul = save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
+                       bottom_stack, **kwargs)
+        create_vul_recheck_task(vul_id=vul.id,
+                                agent=vul.agent,
+                                timestamp=timestamp)
