@@ -11,6 +11,7 @@ from dongtai.models.project import IastProject
 from dongtai.models.replay_queue import IastReplayQueue
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.utils.validate import Validate
+from iast.aggregation.aggregation_common import turnIntListOfStr
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
 
@@ -21,10 +22,8 @@ from django.utils.translation import gettext_lazy as _
 from django.db.models import F
 from django.db.models import Q
 import threading
-
+from dongtai.models.vul_recheck_payload import IastVulRecheckPayload
 logger = logging.getLogger('dongtai-webapi')
-
-
 
 
 _ResponseGetSerializer = get_response_serializer(
@@ -54,11 +53,12 @@ class VulReCheckv2(UserEndPoint):
         re_success_count = 0
         opt_vul_queryset = vul_queryset.only('agent__id', 'id')
         vul_ids = [i.id for i in opt_vul_queryset]
-        vul_id_agentmap = {i.id:i.agent_id for i in opt_vul_queryset}
+        vul_id_agentmap = {i.id: i.agent_id for i in opt_vul_queryset}
         history_replay_vul_ids = IastReplayQueue.objects.filter(
             relation_id__in=vul_ids,
             replay_type=const.VUL_REPLAY).order_by('relation_id').values_list(
                 'relation_id', flat=True).distinct()
+
         waiting_count = IastReplayQueue.objects.filter(
             Q(relation_id__in=vul_ids)
             & Q(replay_type=const.VUL_REPLAY)
@@ -70,21 +70,40 @@ class VulReCheckv2(UserEndPoint):
                 state=const.WAITING,
                 count=F('count') + 1,
                 update_time=timestamp)
-        vuls_not_exist = set(vul_ids) - set(history_replay_vul_ids)
+        vuls_not_exist = set(vul_ids) # - set(history_replay_vul_ids)
         success_count = len(vuls_not_exist)
-        IastReplayQueue.objects.bulk_create(
-            [
+        vul_payload_dict = {}
+        for vul_id in vuls_not_exist:
+            vul_payload_dict[vul_id] = IastVulRecheckPayload.objects.filter(
+                strategy__iastvulnerabilitymodel__id=vul_id).values_list(
+                    'pk', flat=True).all()
+        replay_queue = []
+        for key, value in vul_payload_dict.items():
+            item = [
                 IastReplayQueue(agent_id=vul_id_agentmap[vul_id],
                                 relation_id=vul_id,
                                 state=const.WAITING,
                                 count=1,
                                 create_time=timestamp,
                                 update_time=timestamp,
-                                replay_type=const.VUL_REPLAY)
-                for vul_id in vuls_not_exist
-            ],
-            ignore_conflicts=True)
+                                replay_type=const.VUL_REPLAY,
+                                payload_id=payload_id) for payload_id in value
+            ]
+            if not item:
+                item = [
+                    IastReplayQueue(agent_id=vul_id_agentmap[vul_id],
+                                    relation_id=vul_id,
+                                    state=const.WAITING,
+                                    count=1,
+                                    create_time=timestamp,
+                                    update_time=timestamp,
+                                    replay_type=const.VUL_REPLAY)
+                ]
+            replay_queue += item
+        IastReplayQueue.objects.bulk_create(replay_queue,
+                                            ignore_conflicts=True)
         vul_queryset.update(status_id=1, latest_time=timestamp)
+
         return waiting_count, success_count, re_success_count
 
     @staticmethod
@@ -130,17 +149,25 @@ class VulReCheckv2(UserEndPoint):
         :return:
         """
         try:
-            vul_ids = request.data.get('ids')
-            if vul_ids is None or vul_ids == '':
-                return R.failure(_("IDS should not be empty"))
 
-            vul_ids = vul_ids.split(',')
-            if Validate.is_number(vul_ids) is False:
-                return R.failure(_('IDS must be: Vulnerability ID, Vulnerability ID Format'))
+            vul_ids = request.data.get("ids", "")
 
-            auth_agents = self.get_auth_agents_with_user(user=request.user)
-            vul_queryset = IastVulnerabilityModel.objects.filter(
-                id__in=vul_ids, agent__in=auth_agents)
+            user = request.user
+            # 超级管理员
+            if user.is_system_admin():
+                queryset = IastVulnerabilityModel.objects.filter(is_del=0)
+            # 租户管理员 or 部门管理员
+            elif user.is_talent_admin() or user.is_department_admin:
+                users = self.get_auth_users(user)
+                user_ids = list(users.values_list('id', flat=True))
+                queryset = IastVulnerabilityModel.objects.filter(is_del=0, agent__user_id__in=user_ids)
+            else:
+                # 普通用户
+                queryset = IastVulnerabilityModel.objects.filter(is_del=0, agent__user_id=user.id)
+            ids_list = turnIntListOfStr(vul_ids)
+
+            vul_queryset = queryset.filter(id__in=ids_list)
+
             no_agent, waiting_count, success_count, re_success_count = self.vul_check_for_queryset(
                 vul_queryset)
 
@@ -149,8 +176,7 @@ class VulReCheckv2(UserEndPoint):
                 "pending": waiting_count,
                 "recheck": re_success_count,
                 "checking": success_count
-            },
-                             msg=_('Handle success'))
+            },msg=_('Handle success'))
 
         except Exception as e:
             logger.error(f' msg:{e}')

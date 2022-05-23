@@ -11,7 +11,9 @@ from rest_framework import serializers
 from iast.utils import extend_schema_with_envcheck
 from rest_framework.serializers import ValidationError
 from django.utils.translation import get_language
-
+from core.tasks import export_report
+import logging
+logger = logging.getLogger("django")
 
 class _ProjectReportExportQuerySerializer(serializers.Serializer):
     vid = serializers.IntegerField(
@@ -57,9 +59,12 @@ class ProjectReportSyncAdd(UserEndPoint):
             return R.failure(status=202, msg=_('Project not exist'))
         if type not in ['docx', 'pdf', 'xlsx']:
             return R.failure(status=202, msg=_('Report type error'))
-        ProjectReport.objects.create(
+        report_result = ProjectReport.objects.create(
             user=request.user, project=project, vul_id=vid,
             status=0, type=type, create_time=timestamp, language=get_language()
         )
+        if report_result:
+            logger.info(f"export report - {report_result.id}")
+            export_report.delay(r_id=report_result.id)
 
         return R.success(msg=_('Created success'))

@@ -59,7 +59,6 @@ from iast.views.project_add import ProjectAdd
 from iast.views.project_delete import ProjectDel
 from iast.views.project_detail import ProjectDetail
 from iast.views.project_engines import ProjectEngines
-from iast.views.project_report_export import ProjectReportExport
 from iast.views.project_summary import ProjectSummary
 from iast.views.project_search import ProjectSearch
 from iast.views.project_version_add import ProjectVersionAdd
@@ -67,6 +66,7 @@ from iast.views.project_version_current import ProjectVersionCurrent
 from iast.views.project_version_delete import ProjectVersionDelete
 from iast.views.project_version_list import ProjectVersionList
 from iast.views.project_version_update import ProjectVersionUpdate
+from iast.views.project_report_export import ProjectReportExport
 from iast.views.projects import Projects
 
 from iast.views.project_report_sync_add import ProjectReportSyncAdd
@@ -118,7 +118,7 @@ from iast.views.api_route_search import ApiRouteSearch
 from iast.views.api_route_related_request import ApiRouteRelationRequest
 from iast.views.api_route_cover_rate import ApiRouteCoverRate
 from iast.views.health import HealthView
-from iast.views.oss_health import OssHealthView
+
 from iast.views.program_language import ProgrammingLanguageList
 from iast.views.filereplace import FileReplace
 from iast.views.messages_list import MessagesEndpoint
@@ -127,6 +127,7 @@ from iast.views.messages_del import MessagesDelEndpoint
 from iast.views.messages_send import MessagesSendEndpoint
 from iast.views.agent_alias_modified import AgentAliasModified
 from iast.views.engine_method_pool_time_range import MethodPoolTimeRangeProxy
+
 from iast.views.vul_levels import VulLevelList
 from iast.views.sensitive_info_rule import (
     SensitiveInfoRuleViewSet,
@@ -150,11 +151,16 @@ from iast.threshold.webhook_setting import AgentWebHookConfig
 from iast.threshold.get_webhook_setting import GetAgentWebHookConfig
 from iast.threshold.webhook_type import AgentWebHookTypeList
 from iast.threshold.get_config_setting import GetAgentThresholdConfig
+from iast.views.log_download import AgentLogDownload
+
 from iast.threshold.agent_core_status import (AgentCoreStatusUpdate,
                                               AgentCoreStatusUpdateALL)
+from iast.aggregation.aggregation_del import DelVulMany
 
 from iast.threshold.config_setting import (
     AgentThresholdConfigV2, )
+from iast.vul_log.vul_log_view import VulLogViewSet
+from iast.vul_recheck_payload.vul_recheck_payload import VulReCheckPayloadViewSet
 
 urlpatterns = [
     path("talents", TalentEndPoint.as_view()),
@@ -273,7 +279,6 @@ urlpatterns = [
     path('api_route/search', ApiRouteSearch.as_view()),
     path('api_route/relationrequest', ApiRouteRelationRequest.as_view()),
     path('api_route/cover_rate', ApiRouteCoverRate.as_view()),
-    path('oss/health', OssHealthView.as_view()),
     path('program_language', ProgrammingLanguageList.as_view()),
     path('filereplace/<str:filename>', FileReplace.as_view()),
     path('message/list', MessagesEndpoint.as_view()),
@@ -337,32 +342,48 @@ urlpatterns = [
     path('agent/core/update', AgentCoreStatusUpdate.as_view()),
     path('agent/core/update/all', AgentCoreStatusUpdateALL.as_view()),
     path('agent/summary/<int:pk>', AgentSummary.as_view()),
+
+    # 消息通知规则配置
+    path('agent/log/<int:pk>', AgentLogDownload.as_view()),
+
+    # vul list page of sca and common vul
+    path('vul_list_delete', DelVulMany.as_view()),
     path('circuit_config',
          AgentThresholdConfigV2.as_view({
              "post": "create",
              "get": "list"
          })),
     path('circuit_config/enum/all',
-         AgentThresholdConfigV2.as_view({
-             "get": "enumall"
-         })),
+         AgentThresholdConfigV2.as_view({"get": "enumall"})),
     path('circuit_config/<int:pk>/priority',
-         AgentThresholdConfigV2.as_view({
-             "put": "change_priority"
-         })),
+         AgentThresholdConfigV2.as_view({"put": "change_priority"})),
     path('circuit_config/<int:pk>/reset',
-         AgentThresholdConfigV2.as_view({
-             "put": "reset"
-         })),
+         AgentThresholdConfigV2.as_view({"put": "reset"})),
     path('circuit_config/enum/<str:enumname>',
-         AgentThresholdConfigV2.as_view({
-             "get": "enum"
+         AgentThresholdConfigV2.as_view({"get": "enum"})),
+    path(
+        'circuit_config/<int:pk>',
+        AgentThresholdConfigV2.as_view({
+            "put": "update",
+            "delete": "delete",
+            "get": "retrieve"
+        })),
+    path("vullog/<int:vul_id>", VulLogViewSet.as_view({"get": "list"})),
+    path(
+        'vul_recheck_payload/<int:pk>',
+        VulReCheckPayloadViewSet.as_view({
+            'get': "retrieve",
+            'put': 'update',
+            'delete': 'delete'
+        })),
+    path('vul_recheck_payload',
+         VulReCheckPayloadViewSet.as_view({
+             'get': "list",
+             'post': "create",
          })),
-    path('circuit_config/<int:pk>',
-         AgentThresholdConfigV2.as_view({
-             "put": "update",
-             "delete": "delete",
-             "get": "retrieve"
+    path('vul_recheck_payload/status',
+         VulReCheckPayloadViewSet.as_view({
+             'put': "status_change",
          })),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
@@ -378,6 +399,11 @@ if os.getenv('githubcount', None) in ('true', ) or os.getenv('environment', None
         path('github_contributors', GithubContributorsView.as_view()),
     ])
 from iast.views.agents_v2 import AgentListv2
+from iast.aggr_vul.aggr_vul_list import GetAggregationVulList
+from iast.aggr_vul.aggr_vul_summary import GetScaSummary
+from iast.aggr_vul.app_vul_list import GetAppVulsList
+from iast.aggr_vul.app_vul_summary import GetAppVulsSummary
+
 urlpatterns = [path('api/v1/', include(urlpatterns))]
 urlpatterns.extend([
     path('api/v2/vul/recheck', VulReCheckv2.as_view()),
@@ -385,5 +411,11 @@ urlpatterns.extend([
     path('api/v2/agents', AgentListv2.as_view({"get": "pagenation_list"})),
     path('api/v2/agents/summary', AgentListv2.as_view({"get": "summary"})),
     path('api/v2/agents/stat', AgentListv2.as_view({"get": "agent_stat"})),
+    #  组件漏洞 列表
+    path('api/v2/sca_vul_list_content', GetAggregationVulList.as_view()),
+    # 组件漏洞 汇总
+    path('api/v2/sca_vul_summary', GetScaSummary.as_view()),
+    path('api/v2/app_vul_list_content', GetAppVulsList.as_view()),
+    path('api/v2/app_vul_summary', GetAppVulsSummary.as_view()),
 ])
 urlpatterns = format_suffix_patterns(urlpatterns)

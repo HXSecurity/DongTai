@@ -41,7 +41,7 @@ class ProjectDel(UserEndPoint):
                 auth_users = self.get_auth_users(request.user)
                 IastAgent.objects.filter(
                     bind_project_id=project_id,
-                    user__in=auth_users).update(bind_project_id=0)
+                    user__in=auth_users).update(bind_project_id=-1)
                 IastProject.objects.filter(id=project_id,
                                            user__in=auth_users).delete()
 

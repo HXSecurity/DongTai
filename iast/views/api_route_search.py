@@ -8,7 +8,16 @@
 
 from django.db.models import Q
 from dongtai.endpoint import R, UserEndPoint
-from dongtai.models.api_route import IastApiRoute, IastApiMethod, IastApiRoute, HttpMethod, IastApiResponse, IastApiMethodHttpMethodRelation, IastApiParameter
+from dongtai.models.api_route import (
+    IastApiRoute,
+    IastApiMethod,
+    IastApiRoute,
+    HttpMethod,
+    IastApiResponse,
+    IastApiMethodHttpMethodRelation,
+    IastApiParameter,
+    FromWhereChoices,
+)
 from dongtai.models.agent import IastAgent
 from iast.base.project_version import get_project_version, get_project_version_by_id
 from dongtai.models.vulnerablity import IastVulnerabilityModel
@@ -171,7 +180,8 @@ class ApiRouteSearch(UserEndPoint):
             bind_project_id=project_id,
             project_version_id=current_project_version.get("version_id",
                                                            0)).values("id")
-        q = Q(agent_id__in=[_['id'] for _ in agents])
+        q = Q(agent_id__in=[_['id'] for _ in agents]) & Q(
+            from_where=FromWhereChoices.FROM_AGENT)
         q = q & Q(
             method_id__in=[_['id']
                            for _ in api_methods]) if api_methods != [] else q

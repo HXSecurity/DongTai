@@ -15,11 +15,11 @@ class AgentSummary(UserEndPoint):
             return R.failure()
         agent = IastAgent.objects.filter(pk=pk).only(
             'server__ip', 'server__container', 'bind_project_id',
-            'project_version_id', 'language', 'token').first()
+            'language', 'token').first()
         if not agent:
             return R.failure()
         project_version = IastProjectVersion.objects.filter(
-            project_id=agent.project_version_id,
+            project_id=agent.bind_project_id,
             current_version=1).only('project__name', 'version_name').first()
         data = get_summary_by_agent_ids([agent.id])
         data['ip'] = agent.server.ip

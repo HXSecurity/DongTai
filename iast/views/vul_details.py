@@ -81,6 +81,11 @@ _ResponseSerializer = get_response_serializer(_VulDetailResponseDataSerializer()
 
 class VulDetail(UserEndPoint):
 
+    def __init__(self, server=None, vul_id=None):
+        super().__init__()
+        self.server = server
+        self.vul_id = vul_id
+
     def get_server(self):
         server = self.server
         if server:
@@ -119,13 +124,17 @@ class VulDetail(UserEndPoint):
         :return:
         """
         import json
-
         results = []
         try:
+            if graphy is None:
+                return results
             method_note_pool = json.loads(graphy)[0]
             method_counts = len(method_note_pool)
             for i in range(method_counts):
                 method = method_note_pool[i]
+                if not isinstance(method, dict):
+                    # 有错误数据情况，跳过 fix me
+                    continue
                 class_name = method['originClassName'] if 'originClassName' in method else method['className']
                 method_name = method['methodName']
                 source = ', '.join([str(_hash) for _hash in method['sourceHash']])
@@ -139,8 +148,10 @@ class VulDetail(UserEndPoint):
                     data_type = _('Hazardous method')
                 else:
                     data_type = _('Propagation method')
-                results.append({
-                    'type': data_type,
+                # data_type 有 lazy 方法，需要转str，否则无法json.dumps
+                final_res = method.copy()
+                final_res.update({
+                    'type': str(data_type),
                     'file': filename,
                     'caller': _item,
                     'line_number': line_number,
@@ -154,9 +165,9 @@ class VulDetail(UserEndPoint):
                     'tag': method.get('tag', None),
                     'code': htmlescape(method.get('code', None)),
                 })
+                results.append(final_res)
         except Exception as e:
-            logger.error(_('Analysis of errovence analysis of stain call diagram: {}').format(__name__,e))
-            results = None
+            logger.error(_('Analysis of errovence analysis of stain call diagram: {}').format(__name__,e),exc_info=True)
         return results
 
     @staticmethod
@@ -175,7 +186,7 @@ class VulDetail(UserEndPoint):
         return '{header}\n\n{body}'.format(header=header, body=body)
 
     def get_vul(self, auth_agents):
-        vul = IastVulnerabilityModel.objects.filter(id=self.vul_id, agent__in=auth_agents).first()
+        vul = IastVulnerabilityModel.objects.filter(id=self.vul_id).first()
         hook_type = HookType.objects.filter(pk=vul.hook_type_id).first() if vul is not None else None
         hook_type_name = hook_type.name if hook_type else None
         strategy = IastStrategyModel.objects.filter(pk=vul.strategy_id).first()
@@ -207,6 +218,7 @@ class VulDetail(UserEndPoint):
             logger.error(_('[{}] Vulnerability information parsing error, error message: {}').format(__name__,e))
             self.server = {}
         self.vul_name = vul.type
+
         return {
             'url':
             vul.url,
@@ -348,11 +360,11 @@ class VulDetail(UserEndPoint):
         :return:
         """
         self.vul_id = id
-        auth_agents = self.get_auth_agents_with_user(request.user)
+        self.auth_agents = self.get_auth_agents_with_user(request.user)
         try:
             return R.success(
                 data={
-                    'vul': self.get_vul(auth_agents),
+                    'vul': self.get_vul(self.auth_agents),
                     'server': self.get_server(),
                     'strategy': self.get_strategy()
                 }
@@ -364,12 +376,38 @@ class VulDetail(UserEndPoint):
 
 class VulDetailV2(VulDetail):
 
+    def get_graph_and_headers(self, data):
+        res = {}
+        res['headers'] = {
+            0: {
+                "agent_name": data['vul']['agent_name'],
+                "req_header": data['vul']['req_header'],
+                "response": data['vul']["response"]
+            }
+        }
+        res["graphs"] = [{
+            'graph': data['vul']['graph'],
+            "meta": {
+                "client_ip": data['vul']['client_ip'],
+                "server_ip": data['server']['ip'],
+                "middreware": data['server']['container'],
+                "language": data['vul']['language'],
+                "project_name": data["vul"]['project_name'],
+                "project_version": data["vul"]["project_version"],
+                "agent_name": data['vul']["agent_name"],
+                "taint_value": data['vul']["taint_value"],
+                "param_name": data['vul']["param_name"],
+                "url": data['vul']['url'],
+            }
+        }]
+        return res
+
     def get(self, request, id):
         self.vul_id = id
-        auth_agents = self.get_auth_agents_with_user(request.user)
+        self.auth_agents = self.get_auth_agents_with_user(request.user)
         try:
             data = {
-                'vul': self.get_vul(auth_agents),
+                'vul': self.get_vul(self.auth_agents),
                 'server': self.get_server(),
                 'strategy': self.get_strategy()
             }
@@ -395,11 +433,12 @@ class VulDetailV2(VulDetail):
                     "url": data['vul']['url'],
                 }
             }]
+            data.update(self.get_graph_and_headers(data))
             return R.success(data=data)
         except Exception as e:
             logger.error(
                 _('[{}] Vulnerability information parsing error, error message: {}'
-                  ).format(__name__, e))
+                  ).format(__name__, e),exc_info=True)
             return R.failure(msg=_('Vulnerability data query error'))
 
 
