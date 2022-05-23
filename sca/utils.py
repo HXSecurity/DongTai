@@ -23,7 +23,6 @@ from dongtai.models.vul_level import IastVulLevel
 from iast.vul_log.vul_log import log_asset_vul_found
 from sca.models import Package, VulPackageRange, VulPackageVersion, VulPackage, PackageRepoDependency, Vul, \
     VulCveRelation, PackageLicenseLevel
-from signals.handlers.notify_controler import send_asset_vul_notify
 
 logger = logging.getLogger(__name__)
 
@@ -338,11 +337,6 @@ def _add_vul_data(vul_info, asset, asset_package, cve_relation):
             log_project_id = asset.project_id if asset.project_id else 0
             log_user_id = asset.user_id if asset.user_id else 0
             log_asset_vul_found(log_user_id, log_project_name, log_project_id, asset_vul.id, asset_vul.vul_name)
-            # 增加组件消息推送
-            # send_asset_vul_notify(asset_vul.id,log_project_id,log_user_id)
-            send_asset_vul_notify.apply_async(
-                kwargs={'asset_vul_id': asset_vul.id, 'project_id': log_project_id, 'user_id': log_user_id
-                        }, countdown=random.randint(1, 120))
         else:
             asset_vul.update_time = timestamp
             asset_vul.update_time_desc = -timestamp
@@ -353,10 +347,6 @@ def _add_vul_data(vul_info, asset, asset_package, cve_relation):
             log_user_id = asset.user_id if asset.user_id else 0
             log_asset_vul_found(log_user_id, log_project_name, log_project_id, asset_vul.id, asset_vul.vul_name)
             _add_asset_vul_relation(asset_vul)
-            # 增加组件消息推送
-            send_asset_vul_notify.apply_async(
-                kwargs={'asset_vul_id': asset_vul.id, 'project_id': log_project_id, 'user_id': log_user_id
-                        }, countdown=random.randint(1, 120))
 
     except Exception as e:
         # import traceback

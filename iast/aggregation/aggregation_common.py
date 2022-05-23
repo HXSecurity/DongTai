@@ -5,7 +5,6 @@ from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.models.agent import IastAgent
 from dongtai.models.hook_type import HookType
 from dongtai.models import LICENSE_RISK,SCA_AVAILABILITY_DICT
-from dongtai.models.integration import IastVulInegration
 from iast.serializers.vul import VulSerializer
 from dongtai.models import User
 from dongtai.endpoint import UserEndPoint
@@ -133,18 +132,6 @@ def getHookTypeName(ids=None):
             type_arr[type_id] = item
     return type_arr
 
-# 应用漏洞推送
-def appVulShareConfig(app_vul_ids,user_id):
-
-    query_vul_inetration = IastVulInegration.objects.filter(
-        vul_id__in=app_vul_ids, user_id=user_id).values(
-        "vul_id","jira_url","jira_id","gitlab_url","gitlab_id","zendao_url","zendao_id")
-    config_dict = {}
-    if query_vul_inetration:
-        for item in query_vul_inetration:
-            vul_id = item['vul_id']
-            config_dict[vul_id] = item
-    return config_dict
 
 # 鉴权  IastVulAssetRelation
 def getAuthUserInfo(user,base_query):
