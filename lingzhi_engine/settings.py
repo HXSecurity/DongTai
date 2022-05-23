@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'dongtai',
+
     'vuln'
 ]
 
@@ -80,7 +81,7 @@ TEMPLATES = [
         },
     },
 ]
-
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 WSGI_APPLICATION = 'lingzhi_engine.wsgi.application'
 
 REST_FRAMEWORK = {
@@ -173,8 +174,8 @@ CELERY_WORKER_REDIRECT_STDOUTS = True
 CELERY_WORKER_REDIRECT_STDOUTS_LEVEL = "INFO"
 # CELERY_WORKER_HIJACK_ROOT_LOGGER = True
 # CELERY_WORKER_MAX_TASKS_PER_CHILD = 40
-# CELERY_WORKER_CONCURRENCY = 64
 CELERY_TASK_SOFT_TIME_LIMIT = 3600
+DJANGO_CELERY_BEAT_TZ_AWARE = False
 
 LOGGING = {
     'version': 1,
