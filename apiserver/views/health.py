@@ -18,13 +18,14 @@ import requests
 from requests.exceptions import ConnectionError, ConnectTimeout
 import json
 from apiserver.utils import checkossstatus
+from vuln.views.health import checkenginestaus
 
 logger = logging.getLogger("dongtai.openapi")
 
 
 def _checkenginestatus():
     try:
-        resp = requests.get(settings.HEALTH_ENGINE_URL, timeout=4)
+        resp = checkenginestaus()
         resp = json.loads(resp.content)
         resp = resp.get("data", None)
     except (ConnectionError, ConnectTimeout):
@@ -33,7 +34,6 @@ def _checkenginestatus():
         logger.info("HealthView_checkenginestatus:{}".format(e))
         return False, None
     return True, resp
-
 
 class HealthView(UserEndPoint):
     @extend_schema(

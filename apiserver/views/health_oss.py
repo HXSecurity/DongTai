@@ -12,12 +12,12 @@ from oss2.exceptions import RequestError
 from AgentServer import settings
 import logging
 from apiserver.utils import checkossstatus, STATUSMAP
-from dongtai.endpoint import OpenApiEndPoint, R
+from dongtai.endpoint import OpenApiEndPoint, R, UserEndPoint
 
 logger = logging.getLogger("dongtai.openapi")
 
 
-class OSSHealthView(OpenApiEndPoint):
+class OSSHealthView(UserEndPoint):
     @extend_schema(
         description='Check OSS Health',
         responses=R,
@@ -25,5 +25,6 @@ class OSSHealthView(OpenApiEndPoint):
     )
     def get(self, request):
         oss_status, _ = checkossstatus()
-        data = {"oss": {"status": STATUSMAP[oss_status]}}
+        data = {"oss": {"status": 1}}
+        #data = {"oss": {"status": STATUSMAP[oss_status]}}
         return R.success(data=data)

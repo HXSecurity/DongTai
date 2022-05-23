@@ -11,7 +11,7 @@ from apiserver.report.log_service import LogService
 from dongtai.models.agent import IastAgent
 
 logger = logging.getLogger('dongtai.openapi')
-
+jsonlogger = logging.getLogger('jsonlogger')
 
 class ReportHandler:
     HANDLERS = {}
@@ -54,14 +54,17 @@ class ReportHandler:
                 if report_type in [1, 81, 33, 36, 17, 18, 97, 37]:
                     logger.error(_('Report type {} handler does not exist').format(report_type))
                 return None
+            if report_type == 36:
+                jsonlogger.error('report', extra=reports)
             result = class_of_handler().handle(reports, user)
             return result
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
         return None
 
     @classmethod
     def register(cls, handler_name):
+
         def wrapper(handler):
             async_send = settings.config.getboolean('task', 'async_send', fallback=False)
             if not async_send:
@@ -77,7 +80,8 @@ class ReportHandler:
                     cls.log_service = srv
 
             logger.info(
-                _('Registration report type {} handler {}').format(handler_name, handler.__name__))
+                _('Registration report type {} handler {}').format(
+                    handler_name, handler.__name__))
             if handler_name not in cls.HANDLERS:
                 cls.HANDLERS[handler_name] = handler
             return handler

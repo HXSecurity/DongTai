@@ -52,6 +52,9 @@ class IReportHandler:
 
     def has_permission(self):
         self.agent = self.get_agent(agent_id=self.agent_id)
+        logger.info(
+            f"report_type : {self.report.get('type',0)} agent_id: {self.agent_id} has_permission: {'YES' if self.agent else 'No'}"
+        )
         return self.agent
 
     def parse(self):
