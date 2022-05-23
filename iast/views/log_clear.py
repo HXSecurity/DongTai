@@ -15,9 +15,9 @@ class LogClear(UserEndPoint):
 
     def get(self, request):
         user = request.user
-        if user.is_talent_admin():
+        if user.is_system_admin():
             LogEntry.objects.all().delete()
-        else:
-            LogEntry.objects.filter(user=request.user).delete()
+        # else:
+        #     LogEntry.objects.filter(user=request.user).delete()
 
         return R.success()

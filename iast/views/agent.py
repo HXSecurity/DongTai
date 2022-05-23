@@ -42,17 +42,18 @@ class _AgentResponseDataAgentSerializer(serializers.ModelSerializer):
         "1 is running online, 0 is not running, same token, only one online"))
     project_version_id = serializers.IntegerField(help_text=_(
         "Bundled project version ID, if it exists, it will be bundled"),
-                                                  default=0)
+        default=0)
     language = serializers.CharField(
         help_text=_("Agent language currently included in the project"))
-
+    is_audit = serializers.IntegerField(
+        help_text=_("Agent audit status"))
 
     class Meta:
         model = IastAgent
         fields = [
             'id', 'token', 'version', 'latest_time', 'is_running',
             'is_core_running', 'control', 'is_control', 'bind_project_id',
-            'project_name', 'online', 'project_version_id', 'language'
+            'project_name', 'online', 'project_version_id', 'language', 'is_audit'
         ]
 
 

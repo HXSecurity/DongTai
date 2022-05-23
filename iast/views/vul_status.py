@@ -12,6 +12,7 @@ from dongtai.endpoint import UserEndPoint
 from django.utils.translation import gettext_lazy as _
 from iast.utils import extend_schema_with_envcheck, get_response_serializer
 import logging
+from iast.vul_log.vul_log import log_change_status
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -67,32 +68,34 @@ class VulStatus(UserEndPoint):
         response_schema=_ResponseSerializer,
     )
     def post(self, request):
-        vul_id = request.data.get('id')
-        status = request.data.get('status', None)
-        status_id = request.data.get('status_id', None)
-        if vul_id and (status or status_id):
-            auth_users = self.get_auth_users(request.user)
-            auth_agents = self.get_auth_agents(auth_users)
-            vul_model = IastVulnerabilityModel.objects.filter(
-                id=vul_id,
-                agent__in=auth_agents).first()
-            if status_id:
-                try:
-                    status_ = IastVulnerabilityStatus.objects.get(status_id)
-                except Exception as e:
-                    logger.error(e)
-                    print(e)
-            else:
-                status_, iscreate = IastVulnerabilityStatus.objects.get_or_create(
-                    name=status)
-            try:
-                vul_model.status_id = status_.id
-                vul_model.save(update_fields=['status_id'])
-                msg = _('Vulnerability status is modified to {}').format(
-                    status)
-                return R.success(msg=msg)
-            except Exception as e:
-                print(e)
-                pass
-        msg = _('Incorrect parameter')
-        return R.failure(msg=msg)
+        vul_id = request.data.get('vul_id')
+        vul_ids = request.data.get('vul_ids')
+        status_id = request.data.get('status_id')
+        user = request.user
+        user_id = user.id
+        # 超级管理员
+        if not (isinstance(vul_id, int) or isinstance(vul_ids, list)):
+            return R.failure()
+        if not vul_ids:
+            vul_ids = [vul_id]
+        if user.is_system_admin():
+            queryset = IastVulnerabilityModel.objects.filter(is_del=0)
+        # 租户管理员 or 部门管理员
+        elif user.is_talent_admin() or user.is_department_admin:
+            users = self.get_auth_users(user)
+            user_ids = list(users.values_list('id', flat=True))
+            queryset = IastVulnerabilityModel.objects.filter(
+                is_del=0, agent__user_id__in=user_ids)
+        else:
+            # 普通用户
+            queryset = IastVulnerabilityModel.objects.filter(
+                is_del=0, agent__user_id=user_id)
+        vul_status = IastVulnerabilityStatus.objects.filter(
+            pk=status_id).first()
+        if vul_status:
+            queryset.filter(id__in=vul_ids).update(status_id=status_id)
+            ids = list(
+                queryset.filter(id__in=vul_ids).values_list('id', flat=True))
+            log_change_status(user_id, request.user.username, ids,
+                              vul_status.name)
+        return R.success()

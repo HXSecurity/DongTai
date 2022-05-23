@@ -217,8 +217,9 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             item['id'] for item in list(
                 self.get_auth_agents_with_user(request.user).values('id'))
         ])
-        q = (q &
-             (Q(update_time__gte=start_time) & Q(update_time__lte=end_time)))
+        if time_range:
+            q = (q &
+                 (Q(update_time__gte=start_time) & Q(update_time__lte=end_time)))
         q = (q & (~Q(pk__in=ids))) if ids is not None and ids != [] else q
         queryset = MethodPool.objects.filter(q).order_by(
             '-update_time')[:page_size]

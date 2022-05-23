@@ -1,5 +1,7 @@
 # Create your tests here.
 from django.test import TestCase
+from iast.views.agents_v2 import query_agent
+from iast.views.log_download import (file_newest_N_file_under_path,getzipfilesinmemorty,)
 from iast.views.agents_v2 import (
     query_agent, )
 
@@ -23,6 +25,16 @@ class DashboardTestCase(TestCase):
         res = query_agent()
         print(res)
 
+
+class DashboardTestCase(TestCase):
+
+    def test_findnewest_file(self):
+        res = file_newest_N_file_under_path('./iast', 2)
+        print(res)
+
+    def test_getzipfilesinmemorty(self):
+        res = getzipfilesinmemorty(['./README.md', './lingzhi.sh'])
+        print(res)
 
 class ChoiceConvertTestCase(TestCase):
     def test_choice_convert(self):
@@ -56,3 +68,5 @@ class ChoiceConvertTestCase(TestCase):
         }]
         res = get_metric_types(metrics)
         print(res)
+
+

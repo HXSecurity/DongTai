@@ -176,8 +176,9 @@ class ProjectAdd(UserEndPoint):
                 else:
                     project.agent_count = IastAgent.objects.filter(
                         project_name=name, user=request.user).update(
-                            bind_project_id=0,
+                            bind_project_id=-1,
                             project_version_id=project_version_id)
+
                 if base_url:
                     project.base_url = replace_ending(base_url, '/', '')
                 if test_req_header_key:

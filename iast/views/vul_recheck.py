@@ -22,6 +22,8 @@ from django.db.models import F
 from django.db.models import Q
 import threading
 
+from iast.vul_log.vul_log import log_recheck_vul
+
 logger = logging.getLogger('dongtai-webapi')
 
 
@@ -154,14 +156,16 @@ class VulReCheck(UserEndPoint):
                 id__in=vul_ids, agent__in=auth_agents)
             no_agent, waiting_count, success_count, re_success_count = self.vul_check_for_queryset(
                 vul_queryset)
+            # 加重放日志 vul_ids
+            log_recheck_vul(request.user.id,request.user.username,vul_ids,"待验证")
 
+            # def log_recheck_vul(user_id: int, user_name: str, vul_id: list,  vul_status: str):
             return R.success(data={
                 "no_agent": no_agent,
                 "pending": waiting_count,
                 "recheck": re_success_count,
                 "checking": success_count
-            },
-                             msg=_('Handle success'))
+            },msg=_('Handle success'))
 
         except Exception as e:
             logger.error(f' msg:{e}')
