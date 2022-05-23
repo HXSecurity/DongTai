@@ -135,6 +135,7 @@ MIDDLEWARE = [
     'xff.middleware.XForwardedForMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 XFF_TRUSTED_PROXY_DEPTH = 20
@@ -170,6 +171,8 @@ CORS_ALLOW_METHODS = [
     'GET',
     'OPTIONS',
     'POST',
+    'PUT',
+    'DELETE'
 ]
 
 CORS_ALLOW_HEADERS = [
@@ -229,11 +232,6 @@ DATABASES = {
             'PASSWORD': config.get("mysql", 'password'),
             'HOST': config.get("mysql", 'host'),
             'PORT': config.get("mysql", 'port'),
-            'OPTIONS': {
-                'init_command': 'SET max_execution_time=20000;SET NAMES utf8mb4;SET collation_server=utf8mb4_general_ci;SET collation_database=utf8mb4_general_ci; ',
-                'charset': 'utf8mb4',
-                'use_unicode': True,
-            },
         }
     }
 }
@@ -243,6 +241,22 @@ CACHES = {
         'LOCATION': '/var/tmp/django_cache',
     }
 }
+REDIS_URL = 'redis://:%(password)s@%(host)s:%(port)s/%(db)s' % {
+    'password': config.get("redis", 'password'),
+    'host': config.get("redis", 'host'),
+    'port': config.get("redis", 'port'),
+    'db': config.get("redis", 'db'),
+}
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_URL,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME':
@@ -260,14 +274,22 @@ MEDIA_URL = "/upload/"
 CAPTCHA_IMAGE_SIZE = (80, 45)
 CAPTCHA_LENGTH = 4
 CAPTCHA_TIMEOUT = 1
-
+LOGGING_LEVEL = 'DEBUG' if DEBUG else 'ERROR'
+if os.getenv('environment', None) == 'TEST':
+    LOGGING_LEVEL = 'INFO'
+LOGGING_LEVEL = safe_execute(LOGGING_LEVEL, BaseException, config.get, "other",
+                             "logging_level")
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': u'{levelname} {asctime} [{module}.{funcName}:{lineno}] {message}',
+            'format':
+            u'{levelname} {asctime} [{module}.{funcName}:{lineno}] {message}',
             'style': '{',
+        },
+        "json": {
+            "()": "pythonjsonlogger.jsonlogger.JsonFormatter"
         },
     },
     'handlers': {
@@ -278,69 +300,71 @@ LOGGING = {
         'dongtai-webapi': {
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': '/tmp/webapi.log',
-            'backupCount': 5,
-            'maxBytes': 1024 * 1024 * 10,
             'formatter': 'verbose',
-            'encoding':'utf-8',
+            'encoding': 'utf-8',
         },
         'dongtai.openapi': {
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': '/tmp/openapi.log',
-            'backupCount': 5,
-            'maxBytes': 1024 * 1024 * 10,
             'formatter': 'verbose',
             'encoding': 'utf-8',
         },
         'dongtai-core': {
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': '/tmp/core.log',
-            'backupCount': 5,
-            'maxBytes': 1024 * 1024 * 10,
             'formatter': 'verbose',
             'encoding': 'utf-8',
         },
         'celery.apps.worker': {
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': '/tmp/worker.log',
-            'backupCount': 5,
-            'maxBytes': 1024 * 1024 * 10,
             'formatter': 'verbose'
         },
+        'jsonlog': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/tmp/logstash/server.log',
+            'formatter': 'json'
+        }
     },
     'loggers': {
         'django.db.backends': {
             'handlers': ['console'],
-            'level': 'ERROR',
+            'level': LOGGING_LEVEL,
         },
         'dongtai-webapi': {
             'handlers': ['console', 'dongtai-webapi'],
             'propagate': True,
-            'level': 'ERROR',
+            'level': LOGGING_LEVEL,
         },
         'dongtai.openapi': {
             'handlers': ['console', 'dongtai.openapi'],
             'propagate': True,
-            'level': 'ERROR',
+            'level': LOGGING_LEVEL,
         },
         'dongtai-core': {
             'handlers': ['console', 'dongtai-webapi'],
             'propagate': True,
-            'level': 'ERROR',
+            'level': LOGGING_LEVEL,
         },
         'django': {
             'handlers': ['console', 'dongtai-webapi'],
             'propagate': True,
-            'level': 'ERROR',
+            'level': LOGGING_LEVEL,
         },
         'dongtai-engine': {
             'handlers': ['console', 'dongtai-webapi'],
             'propagate': True,
-            'level': 'ERROR',
+            'level': LOGGING_LEVEL,
         },
         'celery.apps.worker': {
             'handlers': ['console', 'celery.apps.worker'],
             'propagate': True,
-            'level': 'ERROR',
+            'level': LOGGING_LEVEL,
+        },
+        'jsonlogger': { # it use to logging to local logstash file
+            'handlers': ['jsonlog'],
+            'propagate': True,
+            'level': 'DEBUG',
         },
     }
 }
@@ -373,11 +397,13 @@ TEST_RUNNER = 'test.NoDbTestRunner'
 #    MIDDLEWARE.insert(0, 'apitimelog.middleware.RequestLogMiddleware')
 
 
-if os.getenv('environment', None) == 'TEST' or os.getenv('PYTHONAGENT', None) == 'TRUE':
-    MIDDLEWARE.insert(0, 'dongtai_agent_python.middlewares.django_middleware.FireMiddleware')
-if os.getenv('environment', None) == 'TEST' or os.getenv('SAVEEYE', None) == 'TRUE':
-    CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null',)
-if os.getenv('environment', 'PROD') in ('TEST', 'DOC') or os.getenv('DOC', None) == 'TRUE':
+#if os.getenv('environment', None) == 'TEST' or os.getenv('PYTHONAGENT', None) == 'TRUE':
+#    MIDDLEWARE.insert(0, 'dongtai_agent_python.middlewares.django_middleware.FireMiddleware')
+if os.getenv('environment', None) == 'TEST' or os.getenv('SAVEEYE',
+                                                         None) == 'TRUE':
+    CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null', )
+if os.getenv('environment', 'PROD') in ('TEST', 'DOC') or os.getenv(
+        'DOC', None) == 'TRUE':
     from django.utils.translation import gettext_lazy as _
     INSTALLED_APPS.append('drf_spectacular')
     SPECTACULAR_SETTINGS = {
@@ -389,12 +415,14 @@ if os.getenv('environment', 'PROD') in ('TEST', 'DOC') or os.getenv('DOC', None)
         ['drf_spectacular.hooks.preprocess_exclude_path_format'],
         'URL_FORMAT_OVERRIDE':
         None,
-        'DESCRIPTION': _("""Here is the API documentation in webapi. The corresponding management part API can be found through the relevant tag.
+        'DESCRIPTION':
+        _("""Here is the API documentation in webapi. The corresponding management part API can be found through the relevant tag.
 
 There are two authentication methods. You can obtain csrf_token and sessionid through the login process, or access the corresponding API through the user's corresponding Token.
 
 The Token method is recommended here, and users can find it in the Agent installation interface such as -H
-  'Authorization: Token {token}', here is the token corresponding to the user, the token method also requires a token like this on the request header."""),
+  'Authorization: Token {token}', here is the token corresponding to the user, the token method also requires a token like this on the request header."""
+          ),
     }
     REST_FRAMEWORK[
         'DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'
@@ -414,6 +442,10 @@ if os.getenv('environment', None) in ('TEST', 'PROD'):
     CSRF_COOKIE_DOMAIN = SESSION_COOKIE_DOMAIN
     DOMAIN = config.get('other', 'domain')
 
+try:
+    DOMAIN_VUL = config.get('other', 'domain_vul')
+except Exception as e:
+    DOMAIN_VUL = "localhost"
 
 from urllib.parse import urljoin
 #OPENAPI
@@ -465,7 +497,11 @@ CELERY_ACKS_LATE = True
 CELERY_TASK_REJECT_ON_WORKER_LOST = True
 CELERY_ACKS_ON_FAILURE_OR_TIMEOUT = False
 DJANGO_CELERY_BEAT_TZ_AWARE = False
+from ast import literal_eval
 
+DONGTAI_CELERY_CACHE_PREHEAT = safe_execute(
+    True, BaseException, lambda x, y: literal_eval(config.get(x, y)), "other",
+    "cache_preheat")
 DEFAULT_CIRCUITCONFIG = {
     'SYSTEM': {
         "name":
