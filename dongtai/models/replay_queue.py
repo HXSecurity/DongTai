@@ -8,7 +8,7 @@ from django.db import models
 from dongtai.models.agent import IastAgent
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.utils.settings import get_managed
-
+from dongtai.models.vul_recheck_payload import IastVulRecheckPayload
 
 class IastReplayQueue(models.Model):
     agent = models.ForeignKey(IastAgent, models.DO_NOTHING, blank=True, null=True)
@@ -26,6 +26,11 @@ class IastReplayQueue(models.Model):
     params = models.CharField(max_length=2000, blank=True, null=True)
     body = models.CharField(max_length=4000, blank=True, null=True)
     replay_type = models.IntegerField(blank=True, null=True)
+    payload = models.ForeignKey(IastVulRecheckPayload,
+                                models.DO_NOTHING,
+                                blank=True,
+                                null=True,
+                                default=-1)
 
     class Meta:
         managed = get_managed()

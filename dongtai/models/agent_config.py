@@ -63,6 +63,42 @@ class MetricType(IntegerChoices):
     dongTaiThreadCount = 8, _("洞态IAST线程数阈值")
     hookLimitTokenPerSecond = 9, _("单请求HOOK限流")
     heavyTrafficLimitTokenPerSecond = 10, _("每秒限制处理请求数量（QPS）")
+    apiResponseTime  = 11, _("请求响应时间阈值")
+
+
+UNIT_DICT = {
+    1: "%",
+    2: "%",
+    3: "kb",
+    4: "%",
+    5: "kb",
+    6: "个",
+    6: "个",
+    7: "个",
+    8: "个",
+    9: "次",
+    10: '次',
+    11: 'ms',
+}
+
+class SystemMetricType(IntegerChoices):
+    cpuUsagePercentage = 1, _("系统CPU使用率阈值")
+    sysMemUsagePercentage = 2, _("系统内存使用率阈值")
+    sysMemUsageUsed = 3, _("系统内存使用值阈值")
+
+
+class JVMMetricType(IntegerChoices):
+    jvmMemUsagePercentage = 4, _("JVM内存使用率阈值")
+    jvmMemUsageUsed = 5, _("JVM内存使用值阈值")
+    threadCount = 6, _("总线程数阈值")
+    daemonThreadCount = 7, _("守护线程数阈值")
+    dongTaiThreadCount = 8, _("洞态IAST线程数阈值")
+
+
+class ApplicationMetricType(IntegerChoices):
+    hookLimitTokenPerSecond = 9, _("单请求HOOK限流")
+    heavyTrafficLimitTokenPerSecond = 10, _("每秒限制处理请求数量（QPS）")
+    apiResponseTime = 11, _("请求响应时间阈值")
 
 class IastCircuitConfig(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING)
