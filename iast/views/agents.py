@@ -116,7 +116,7 @@ class AgentList(UserEndPoint):
             page = int(request.query_params.get('page', 1))
             page_size = int(request.query_params.get('pageSize', 20))
             running_state = request.query_params.get('state', None)
-            if running_state:
+            if running_state is not None:
                 running_state = int(running_state)
             project_id = request.query_params.get('project_id', None)
             if project_id:
@@ -137,7 +137,7 @@ class AgentList(UserEndPoint):
                         lambda kv_pair:
                         {'__'.join([kv_pair[0], 'icontains']): kv_pair[1]},
                         searchfields_.items())), Q())
-            if running_state:
+            if running_state is not None:
                 q = q & Q(online=running_state)
             # return self.is_superuser == 2 or self.is_superuser == 1
             if request.user.is_superuser == 1:
