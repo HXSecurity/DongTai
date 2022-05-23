@@ -52,7 +52,7 @@ def check_response_content(method_pool):
                             )
                     except Exception as e:
                         logger.error(
-                            f'check_response_content error, rule: {rule.id}, rule name: {rule.strategy.vul_type}, reason: {e}')
+                            f'check_response_content error, rule: {rule.id}, rule name: {rule.strategy.vul_type}, reason: {e}', exc_info=True)
             elif json_response and rule.pattern_type.id == 2:
                 pattern = jq.compile(rule.pattern)
                 result = pattern.input(json_response).all()
@@ -65,7 +65,7 @@ def check_response_content(method_pool):
                     )
         except Exception as e:
             logger.error(
-                f'check_response_content error, rule: {rule.id}, rule name: {rule.strategy.vul_type}, reason: {e}')
+                f'check_response_content error, rule: {rule.id}, rule name: {rule.strategy.vul_type}, reason: {e}', exc_info=True)
 
     search_id_card_leak(method_pool)
 
