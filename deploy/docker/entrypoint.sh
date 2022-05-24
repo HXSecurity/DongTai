@@ -2,7 +2,7 @@
 echo '启动uwsgi服务'
 python manage.py compilemessages  
 sleep 2
-python /opt/dongtai/webapi/docker/version_update.py || true
+python /opt/dongtai/webapi/deploy/docker/version_update.py || true
 echo $1
 
 if [ "$1" = "worker" ]; then
