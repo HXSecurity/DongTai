@@ -533,7 +533,7 @@ class ExportPort():
         f = open(html_filename, 'w')
         f.write(rendered)
         f.close()
-        os.system("cat {} | /opt/dongtai/webapi/bin/wkhtmltopdf --margin-top 10 --margin-bottom 10 - {} ".format(
+        os.system("cat {} | wkhtmltopdf --margin-top 10 --margin-bottom 10 - {} ".format(
             html_filename,
             pdf_filename,
         ))

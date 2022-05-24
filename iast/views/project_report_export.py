@@ -235,7 +235,7 @@ class ProjectReportExport(UserEndPoint):
         f = open(html_filename, 'w')
         f.write(rendered)
         f.close()
-        os.system("cat {} | /usr/local/bin/wkhtmltopdf - {}".format(
+        os.system("cat {} | wkhtmltopdf - {}".format(
             html_filename,
             pdf_filename
         ))
