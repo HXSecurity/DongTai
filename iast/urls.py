@@ -8,9 +8,6 @@ import os
 from django.urls import path, include
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from iast.account.department import DepartmentEndPoint
-from iast.account.talent import TalentEndPoint
-from iast.account.user import UserEndPoint
 from iast.base.update_project_version import UpdateProjectVersion
 from iast.threshold.del_threshold_setting import DelAgentThresholdConfig
 from iast.threshold.del_webhook_setting import DelAgentWebHookConfig
@@ -163,18 +160,6 @@ from iast.vul_log.vul_log_view import VulLogViewSet
 from iast.vul_recheck_payload.vul_recheck_payload import VulReCheckPayloadViewSet
 
 urlpatterns = [
-    path("talents", TalentEndPoint.as_view()),
-    path("talent/<int:pk>", TalentEndPoint.as_view()),
-    path("talent/add", TalentEndPoint.as_view()),
-    path("talent/<int:pk>/delete", TalentEndPoint.as_view()),
-    path('departments', DepartmentEndPoint.as_view()),
-    path('department/<int:pk>', DepartmentEndPoint.as_view()),
-    path('department/add', DepartmentEndPoint.as_view()),
-    path('department/<int:pk>/delete', DepartmentEndPoint.as_view()),
-    path('users', UserEndPoint.as_view()),
-    path('user/add', UserEndPoint.as_view()),
-    path('user/<int:user_id>/delete', UserEndPoint.as_view()),
-    path('user/<int:user_id>', UserEndPoint.as_view()),
     path('user/<int:user_id>', UserDetailEndPoint.as_view()),
     path('user/changePassword', UserPassword.as_view()),
     path('user/login', UserLogin.as_view()),
