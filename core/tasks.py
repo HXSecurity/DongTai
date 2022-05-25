@@ -40,7 +40,6 @@ from lingzhi_engine import settings
 from sca.models import Package, VulPackageRange, VulPackage, Vul
 from sca.utils import get_dependency_graph, sca_scan_asset
 from signals import vul_found
-from core.plugins.export_report import ExportPort
 from dongtai.models.project_report import ProjectReport
 import requests
 from hashlib import sha1
@@ -556,31 +555,6 @@ def clear_error_log():
         logger.error(f'日志清理失败，错误详情：{e}')
 
 
-@shared_task(queue='dongtai-periodic-task')
-def export_report(r_id=None):
-    """
-    导出报告
-    :return:
-    """
-    logger.info(f'导出报告')
-    if r_id is None:
-        report = ProjectReport.objects.filter(status=0).first()
-    else:
-        report = ProjectReport.objects.filter(id=r_id).first()
-
-    if not report:
-        logger.info("暂无需要导出的报告")
-        return
-    # print(report.id)
-    try:
-        report.status = 2
-        report.save()
-        export_port = ExportPort()
-        export_port.export(report)
-    except Exception as e:
-        report.status = 2
-        report.save()
-        logger.error(f'导出报告，错误详情：{e}')
 
 
 @shared_task(queue='dongtai-replay-task')
