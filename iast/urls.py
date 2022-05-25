@@ -63,13 +63,8 @@ from iast.views.project_version_current import ProjectVersionCurrent
 from iast.views.project_version_delete import ProjectVersionDelete
 from iast.views.project_version_list import ProjectVersionList
 from iast.views.project_version_update import ProjectVersionUpdate
-from iast.views.project_report_export import ProjectReportExport
 from iast.views.projects import Projects
 
-from iast.views.project_report_sync_add import ProjectReportSyncAdd
-from iast.views.project_report_list import ProjectReportList
-from iast.views.project_report_download import ProjectReportDownload
-from iast.views.project_report_delete import ProjectReportDelete
 
 from iast.views.sca_details import ScaDetailView
 from iast.views.sca_sidebar_index import ScaSidebarList
@@ -139,7 +134,6 @@ from iast.views.scan_strategys import (
     ScanStrategyBatchView,
     ScanStrategyAllView,
 )
-from iast.views.sca_export import ScaExport
 from iast.views.details_id import (AgentListWithid, ProjectListWithid,
                                    ScaListWithid, VulsListWithid)
 from iast.views.vul_recheck_v2 import VulReCheckv2
@@ -175,11 +169,6 @@ urlpatterns = [
     path('projects', Projects.as_view()),
     path('projects/summary/<int:id>', ProjectSummary.as_view()),
     path('project/engines/<int:pid>', ProjectEngines.as_view()),
-    path('project/report/async_add', ProjectReportSyncAdd.as_view()),
-    path('project/report/list', ProjectReportList.as_view()),
-    path('project/report/download', ProjectReportDownload.as_view()),
-    path('project/report/delete', ProjectReportDelete.as_view()),
-    path('project/export', ProjectReportExport.as_view()),
     path('project/search', ProjectSearch.as_view()),
     path('project/version/add', ProjectVersionAdd.as_view()),
     path('project/version/update', ProjectVersionUpdate.as_view()),
@@ -305,7 +294,6 @@ urlpatterns = [
          SensitiveInfoRuleBatchView.as_view()),
     path('sensitive_info_rule/all', SensitiveInfoRuleAllView.as_view()),
     path('scan_strategy/all', ScanStrategyAllView.as_view()),
-    path('sca_export', ScaExport.as_view()),
     path('agent/list/ids', AgentListWithid.as_view()),
     path('vul/list/ids', VulsListWithid.as_view()),
     path('sca/list/ids', ScaListWithid.as_view()),
