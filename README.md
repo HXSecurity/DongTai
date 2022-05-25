@@ -17,6 +17,25 @@
 
 `DongTai IAST` is an open-source passive interactive security testing (IAST) product. It uses dynamic hooks and taint tracking algorithms to achieve **universal vulnerability detection** and **multiples request associated with vulnerability detection (including but not limited to unauthorized vulnerabilities, overpower vulnerabilities)**, **Third-party component vulnerability detection**, etc. Currently, applications in Java and Python are supported for vulnerability detection.
 
+
+## Project structure
+```
+.
+├── apiserver protocols for interaction between dongtai-server and agent
+├── conf configuration file
+├── core vulnerability detection and vulnerability processing part
+├── deploy deployment file
+├── dongtai Model classes shared 
+├── i18n internationalization files
+├── iast API for interacting with the web
+├── plugin Plugin System Dir
+├── sca component detection file
+├── test testcases
+├── upload static files
+├── utils public methods
+└── webapi project settings
+```
+
 ## Architecture
 
 `DongTai IAST` has multiple basic services, including `DongTai-web`, `DongTai-webapi`, `DongTai-openapi`, `DongTai-engine`, `agent`, `DongTai-deploy`, `DongTai-Base-Image` and `DongTai-Plugin-IDEA`:
