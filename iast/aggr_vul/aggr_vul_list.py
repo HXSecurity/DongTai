@@ -176,6 +176,9 @@ class GetAggregationVulList(UserEndPoint):
                     type_arr[item['asset_vul_id']] = [item['asset_vul_type__name']]
                 elif item['asset_vul_type__name'] not in type_arr[item['asset_vul_id']]:
                     type_arr[item['asset_vul_id']].append(item['asset_vul_type__name'])
+            for row in content_list:
+                row["pro_info"] = pro_arr.get(row['id'], [])
+                row['type_name'] = ",".join(type_arr.get(row['id'], []))
         return R.success(data={
             'messages': content_list,
             'page': {

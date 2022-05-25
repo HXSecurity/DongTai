@@ -10,7 +10,7 @@ from dongtai.models.vul_level import IastVulLevel
 from rest_framework.serializers import ValidationError
 from django.db import connection
 from utils import cached_decorator
-
+from dongtai.models import APP_LEVEL_RISK
 
 def get_annotate_sca_common_data(user_id: int, pro_condition: str):
     return get_annotate_sca_base_data(user_id,pro_condition)
@@ -48,20 +48,26 @@ def get_annotate_sca_base_data(user_id: int,pro_condition: str):
     query_condition = " where rel.is_del=0 " + user_auth_info.get("user_condition_str") + pro_condition
     base_join = "left JOIN iast_asset_vul_relation as rel on rel.asset_vul_id=vul.id  " \
                 "left JOIN iast_asset as asset on rel.asset_id=asset.id "
-    level_join = "left JOIN iast_vul_level as level on level.id=vul.level_id "
-    count_level_query = "SELECT level.id, vul.level_id,count( DISTINCT(vul.id )) AS count_vul_num,level.name_value as level_name  from iast_asset_vul as vul  " \
-                        + base_join + level_join + query_condition + " group by vul.level_id  "
-    result_summary = base_summary
-    level_summary = IastVulLevel.objects.raw(count_level_query)
-    if level_summary:
-        for item in level_summary:
-            result_summary['level'].append({
-                "name": item.level_name,
-                "num": item.count_vul_num,
-                "id": item.level_id
-            })
+    # level_join = "left JOIN iast_vul_level as level on level.id=vul.level_id "
+
 
     with connection.cursor() as cursor:
+        count_level_query = "SELECT  vul.level_id,count( DISTINCT(vul.id ))  from iast_asset_vul as vul  " \
+                            + base_join + query_condition + " group by vul.level_id  "
+        result_summary = base_summary
+
+        # level_summary = IastVulLevel.objects.raw(count_level_query)
+        cursor.execute(count_level_query)
+        level_summary = cursor.fetchall()
+        if level_summary:
+            for item in level_summary:
+                level_id , count = item
+                result_summary['level'].append({
+                    "name": APP_LEVEL_RISK.get(str(level_id), "None"),
+                    "num": count,
+                    "id": level_id
+                })
+
         # 存在利用代码
         count_poc_query = "SELECT count(DISTINCT( vul.id )) as have_poc_count from iast_asset_vul as vul  " \
                           + base_join + query_condition + " and  vul.have_poc=1 "
