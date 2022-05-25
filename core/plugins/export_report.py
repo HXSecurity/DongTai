@@ -20,7 +20,7 @@ from docx import Document
 from docx.enum.style import WD_STYLE_TYPE
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx.shared import Pt
-from lingzhi_engine.settings import MEDIA_ROOT
+from webapi.settings import MEDIA_ROOT
 from django.utils.translation import gettext as _
 from django.utils.translation import activate
 from dongtai.models.strategy import IastStrategyModel

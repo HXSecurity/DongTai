@@ -36,7 +36,7 @@ from dongtai.utils import const
 from core.plugins.strategy_headers import check_response_header
 from core.plugins.strategy_sensitive import check_response_content
 from core.replay import Replay
-from lingzhi_engine import settings
+from webapi import settings
 from sca.models import Package, VulPackageRange, VulPackage, Vul
 from sca.utils import get_dependency_graph, sca_scan_asset
 from signals import vul_found

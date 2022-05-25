@@ -24,7 +24,7 @@ from dongtai.models.res_header import (
 )
 from core.tasks import search_vul_from_strategy, search_vul_from_method_pool, search_sink_from_method_pool, \
     search_sink_from_strategy, search_vul_from_replay_method_pool
-from AgentServer import settings
+from webapi import settings
 from apiserver import utils
 from apiserver.report.handler.report_handler_interface import IReportHandler
 from apiserver.report.report_handler_factory import ReportHandler

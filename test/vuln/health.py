@@ -30,7 +30,7 @@ class MyTestCase(DongTaiTestCase):
         from dongtai.models.engine_monitoring_indicators import IastEnginMonitoringIndicators
         monitor_models = IastEnginMonitoringIndicators.objects.all()
         if monitor_models.values('id').count() > 0:
-            from lingzhi_engine import settings
+            from webapi import settings
             redis_cli = redis.StrictRedis(
                 host=settings.config.get("redis", 'host'),
                 password=settings.config.get("redis", 'password'),

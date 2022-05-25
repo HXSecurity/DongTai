@@ -58,7 +58,7 @@ class MyTestCase(DongTaiTestCase):
 
     def test_heart_beat(self):
         import os
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "lingzhi_engine.settings")
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "webapi.settings")
         os.environ.setdefault("debug", "true")
         import django
         django.setup()

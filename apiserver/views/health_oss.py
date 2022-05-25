@@ -9,7 +9,6 @@
 import oss2
 from drf_spectacular.utils import extend_schema
 from oss2.exceptions import RequestError
-from AgentServer import settings
 import logging
 from apiserver.utils import checkossstatus, STATUSMAP
 from dongtai.endpoint import OpenApiEndPoint, R, UserEndPoint

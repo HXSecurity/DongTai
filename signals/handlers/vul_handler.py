@@ -12,7 +12,7 @@ from dongtai.models.project import IastProject, VulValidation
 from dongtai.models.replay_queue import IastReplayQueue
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.utils import const
-from lingzhi_engine import settings
+from webapi import settings
 from signals import vul_found
 from dongtai.utils.systemsettings import get_vul_validate
 from iast.vul_log.vul_log import log_vul_found, log_recheck_vul
