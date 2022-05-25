@@ -6,7 +6,7 @@
 # project: webapi
 import logging, requests, json, time
 from django.utils.translation import gettext_lazy as _
-from AgentServer import settings
+from webapi import settings
 from apiserver.report.log_service import LogService
 from dongtai.models.agent import IastAgent
 

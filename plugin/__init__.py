@@ -1,4 +1,4 @@
-from AgentServer.settings import BASE_DIR
+from webapi.settings import BASE_DIR
 from os import walk, chdir, getcwd
 from os.path import join
 from importlib import import_module

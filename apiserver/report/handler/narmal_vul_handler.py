@@ -14,7 +14,7 @@ from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.models.project import IastProject
 from dongtai.utils import const
 
-from AgentServer import settings
+from webapi import settings
 from apiserver.report.handler.report_handler_interface import IReportHandler
 from apiserver.report.report_handler_factory import ReportHandler
 from iast.vul_log.vul_log import log_vul_found

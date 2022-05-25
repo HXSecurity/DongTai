@@ -13,7 +13,7 @@ from core.tasks import update_one_sca
 from apiserver.report.handler.report_handler_interface import IReportHandler
 from apiserver.report.report_handler_factory import ReportHandler
 import requests
-from AgentServer import settings
+from webapi import settings
 
 
 logger = logging.getLogger('dongtai.openapi')

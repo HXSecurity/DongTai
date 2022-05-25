@@ -11,7 +11,6 @@ from dongtai.endpoint import UserEndPoint, R
 from drf_spectacular.utils import extend_schema
 
 from apiserver.utils import OssDownloader
-from AgentServer import settings
 import oss2
 from oss2.exceptions import RequestError
 import requests
