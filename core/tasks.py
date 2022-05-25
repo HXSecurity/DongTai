@@ -39,7 +39,7 @@ from core.replay import Replay
 from webapi import settings
 from sca.models import Package, VulPackageRange, VulPackage, Vul
 from sca.utils import get_dependency_graph, sca_scan_asset
-from signals import vul_found
+from core.signals import vul_found
 from dongtai.models.project_report import ProjectReport
 import requests
 from hashlib import sha1
@@ -114,7 +114,7 @@ def load_sink_strategy(user=None, language=None):
     return strategies
 
 
-from signals.handlers.vul_handler import handler_vul
+from core.signals.handlers.vul_handler import handler_vul
 
 
 def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
