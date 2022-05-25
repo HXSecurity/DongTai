@@ -13,7 +13,7 @@ from dongtai.models.replay_queue import IastReplayQueue
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.utils import const
 from webapi import settings
-from signals import vul_found
+from core.signals import vul_found
 from dongtai.utils.systemsettings import get_vul_validate
 from iast.vul_log.vul_log import log_vul_found, log_recheck_vul
 from django.db.models import Q
