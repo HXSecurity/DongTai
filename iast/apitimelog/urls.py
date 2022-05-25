@@ -12,17 +12,15 @@ from django.conf.urls.static import static
 from django.urls import include, path
 import os
 from webapi import settings
-from apitest.views import (
-    ApiTestHeaderEndpoint,
-    ApiTestTriggerEndpoint,
-    ApiTestOpenapiSpecEndpoint
-)
 
 urlpatterns = [
-    path('project/<int:pk>/api_test/req_headers',
-         ApiTestHeaderEndpoint.as_view()),
-    path('project/<int:pk>/api_test', ApiTestTriggerEndpoint.as_view()),
-    path('project/<int:pk>/api_test/openapi_spec',
-         ApiTestOpenapiSpecEndpoint.as_view()),
 ]
+
+if os.getenv('REQUESTLOG', None) == 'TRUE' or os.getenv('environment',
+                                                        None) in ('TEST', ):
+    from iast.apitimelog.views import ApiTimeLogView
+    urlpatterns.extend([
+        path('apitimelog', ApiTimeLogView.as_view()),
+    ])
+
 urlpatterns = [path('api/v1/', include(urlpatterns))]

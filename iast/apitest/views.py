@@ -14,7 +14,7 @@ from dongtai.models.api_route import (
 )
 from iast.views.api_route_search import serialize
 from django.db.models import Q
-from apitest.utils import (
+from iast.apitest.utils import (
     swagger_trans,
     runtest,
 )
