@@ -20,9 +20,10 @@ COPY requirements-prod.txt /opt/dongtai/webapi/requirements.txt
 RUN pip3 install -r /opt/dongtai/webapi/requirements.txt
 
 # debug performance ...
+RUN mkdir -p /opt/dongtai/webapi/bin 			&& curl -L https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/wkhtmltopdf -o /usr/local/bin/wkhtmltopdf  			&& chmod +x /usr/local/bin/wkhtmltopdf 			&& ln -s  /usr/local/bin/wkhtmltopdf /usr/bin/wkhtmltopdf
+
 COPY . /opt/dongtai/webapi
 WORKDIR /opt/dongtai/webapi
 
 RUN mkdir -p /tmp/logstash && mkdir -p /tmp/iast_cache/package && mv /opt/dongtai/webapi/*.jar /tmp/iast_cache/package/ || true && mv /opt/dongtai/webapi/*.tar.gz /tmp/ || true 
-RUN mkdir -p /opt/dongtai/webapi/bin 			&& curl -L https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/wkhtmltopdf -o /usr/local/bin/wkhtmltopdf  			&& chmod +x /usr/local/bin/wkhtmltopdf 			&& ln -s  /usr/local/bin/wkhtmltopdf /usr/bin/wkhtmltopdf
 ENTRYPOINT ["/bin/bash","/opt/dongtai/webapi/deploy/docker/entrypoint.sh"]
