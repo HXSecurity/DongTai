@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls.static import static
 from django.urls import include, path
-from scaupload.views import (
+from iast.scaupload.views import (
     SCADBMavenViewSet,
     SCADBMavenBulkViewSet,
     SCALicenseViewSet,

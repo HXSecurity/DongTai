@@ -18,7 +18,7 @@ import csv
 from django.http import FileResponse
 from webapi.settings import BASE_DIR
 import os
-from scaupload.utils import (
+from iast.scaupload.utils import (
     get_packge_from_sca_lib,
     ScaLibError,
 )
