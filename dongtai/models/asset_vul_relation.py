@@ -13,7 +13,7 @@ from dongtai.models.user import User
 from dongtai.models.talent import Talent
 from dongtai.models.department import Department
 from dongtai.utils.settings import get_managed
-from dongtai_sca.models import VulPackage
+from dongtai_web.dongtai_sca.models import VulPackage
 from dongtai.models.aql_info import AqlInfo
 
 
