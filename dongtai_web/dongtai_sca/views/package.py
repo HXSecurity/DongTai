@@ -1,7 +1,7 @@
 import logging
 
 from dongtai_common.models import User
-from dongtai_web.dongtai_sca import Package
+from dongtai_web.dongtai_sca.models import Package
 from django.http import JsonResponse
 from rest_framework import views
 from django.core.paginator import Paginator
@@ -9,7 +9,7 @@ from django.forms.models import model_to_dict
 from dongtai_common.endpoint import R, AnonymousAndUserEndPoint, UserEndPoint
 from django.utils.translation import gettext_lazy as _
 
-from dongtai_web.dongtai_sca import get_asset_id_by_aggr_id
+from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 
 logger = logging.getLogger(__name__)
 
