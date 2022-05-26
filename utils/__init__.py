@@ -58,7 +58,7 @@ def cached(function,
 
     """
     import random
-    from core.preheat import function_flush
+    from dongtai_engine.preheat import function_flush
 
     @wraps(function)
     def get_cache_or_call(*args, **kwargs):

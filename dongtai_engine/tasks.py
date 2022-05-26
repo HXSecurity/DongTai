@@ -33,17 +33,17 @@ from dongtai.models.vul_level import IastVulLevel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.utils import const
 
-from core.plugins.strategy_headers import check_response_header
-from core.plugins.strategy_sensitive import check_response_content
-from core.replay import Replay
+from dongtai_engine.plugins.strategy_headers import check_response_header
+from dongtai_engine.plugins.strategy_sensitive import check_response_content
+from dongtai_engine.replay import Replay
 from webapi import settings
 from sca.models import Package, VulPackageRange, VulPackage, Vul
 from sca.utils import get_dependency_graph, sca_scan_asset
-from core.signals import vul_found
+from dongtai_engine.signals import vul_found
 from dongtai.models.project_report import ProjectReport
 import requests
 from hashlib import sha1
-from core.task_base import replay_payload_data
+from dongtai_engine.task_base import replay_payload_data
 
 LANGUAGE_MAP = {
     "JAVA": 1,
@@ -114,7 +114,7 @@ def load_sink_strategy(user=None, language=None):
     return strategies
 
 
-from core.signals.handlers.vul_handler import handler_vul
+from dongtai_engine.signals.handlers.vul_handler import handler_vul
 
 
 def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
@@ -507,7 +507,7 @@ def heartbeat():
     """
     # 查询agent数量
 
-    logger.info('core.tasks.heartbeat is running')
+    logger.info('dongtai_engine.tasks.heartbeat is running')
     agents = IastAgent.objects.all()
     agent_enable = agents.values('id').filter(is_running=1).count()
     agent_counts = agents.values('id').count()
@@ -529,14 +529,14 @@ def heartbeat():
         "timestamp": int(time.time())
     }
     try:
-        logger.info('[core.tasks.heartbeat] send heartbeat data to OpenApi Service.')
+        logger.info('[dongtai_engine.tasks.heartbeat] send heartbeat data to OpenApi Service.')
         resp = requests.post(url='http://openapi.iast.huoxian.cn:8000/api/v1/engine/heartbeat', json=heartbeat_raw)
         if resp.status_code == 200:
-            logger.info('[core.tasks.heartbeat] send heartbeat data to OpenApi Service Successful.')
+            logger.info('[dongtai_engine.tasks.heartbeat] send heartbeat data to OpenApi Service Successful.')
             pass
-        logger.info('[core.tasks.heartbeat] send heartbeat data to OpenApi Service Failure.')
+        logger.info('[dongtai_engine.tasks.heartbeat] send heartbeat data to OpenApi Service Failure.')
     except Exception as e:
-        logger.info(f'[core.tasks.heartbeat] send heartbeat data to OpenApi Service Error. reason is {e}')
+        logger.info(f'[dongtai_engine.tasks.heartbeat] send heartbeat data to OpenApi Service Error. reason is {e}')
 
 
 @shared_task(queue='dongtai-periodic-task')

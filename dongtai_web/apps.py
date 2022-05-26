@@ -11,7 +11,7 @@ class IastConfig(DongTaiAppConfigPatch, AppConfig):
 
 
 def register_preheat():
-    from core.preheat import PreHeatRegister
+    from dongtai_engine.preheat import PreHeatRegister
 
     from dongtai_web.aggr_vul.app_vul_summary import get_annotate_cache_data
 
