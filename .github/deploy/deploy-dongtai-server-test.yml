@@ -25,7 +25,7 @@ spec:
           imagePullPolicy: Always
           volumeMounts:
             - name: configfile
-              mountPath: /opt/dongtai/webapi/conf/config.ini
+              mountPath: /opt/dongtai/webapi/dongtai_conf/conf/config.ini
               subPath: config.ini
           resources:
             limits:
@@ -79,12 +79,12 @@ spec:
       containers:
         - name: dongtai-engine-container
           image: registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:VERSION
-          command: [ "/bin/sh","/opt/dongtai/webapi/docker/entrypoint.sh" ]
+          command: [ "/bin/sh","/opt/dongtai/webapi/deploy/docker/entrypoint.sh" ]
           args: [ "worker" ]
           imagePullPolicy: Always
           volumeMounts:
             - name: configfile
-              mountPath: /opt/dongtai/webapi/conf/config.ini
+              mountPath: /opt/dongtai/webapi/dongtai_conf/conf/config.ini
               subPath: config.ini
           resources:
             limits:
@@ -137,12 +137,12 @@ spec:
       containers:
         - name: dongtai-engine-task-container
           image: registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:VERSION
-          command: [ "/bin/bash","/opt/dongtai/webapi/docker/entrypoint.sh" ]
+          command: [ "/bin/bash","/opt/dongtai/webapi/deploy/docker/entrypoint.sh" ]
           args: [ "beat" ]
           imagePullPolicy: Always
           volumeMounts:
             - name: configfile
-              mountPath: /opt/dongtai/webapi/conf/config.ini
+              mountPath: /opt/dongtai/webapi/dongtai_conf/conf/config.ini
               subPath: config.ini
           resources:
             limits:
