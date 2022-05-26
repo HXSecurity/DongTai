@@ -29,7 +29,7 @@ DEBUG = os.environ.get("debug", 'false') == 'true' #or os.getenv('environment', 
 
 # READ CONFIG FILE
 config = ConfigParser()
-status = config.read(os.path.join(BASE_DIR, 'conf/config.ini'))
+status = config.read(os.path.join(BASE_DIR, 'webapi/conf/config.ini'))
 if len(status) == 0:
     print("config file not exist. stop running")
     exit(0)
@@ -118,13 +118,13 @@ LANGUAGES = (
 )
 USE_I18N = True
 LOCALE_PATHS = (
-    os.path.join(BASE_DIR, 'i18n'),
+    os.path.join(BASE_DIR, 'upload/i18n'),
 )
 USE_L10N = True
 MODELTRANSLATION_FALLBACK_LANGUAGES = ('zh', 'en')
 MIDDLEWARE = [
     'django.middleware.gzip.GZipMiddleware',
-    'utils.CSPMiddleware',
+    'dongtai.common.utils.CSPMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',

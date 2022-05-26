@@ -14,20 +14,13 @@ from dongtai_web.threshold.del_webhook_setting import DelAgentWebHookConfig
 from dongtai_web.threshold.get_config_setting_detail import GetAgentThresholdConfigDetail
 from dongtai_web.views.agent_delete import AgentDeleteEndPoint
 from dongtai_web.views.agent_deploy import AgentDeploy
-from dongtai_web.views.agent_deploy_doc import AgentDeployDesc
-from dongtai_web.views.agent_deploy_info import AgentDeployInfo
-from dongtai_web.views.agent_deploy_submit import AgentDeploySave
-from dongtai_web.views.agent_download import AgentDownload
 from dongtai_web.views.agent_install import AgentInstall
 from dongtai_web.views.agent_start import AgentStart
 from dongtai_web.views.agent_status_update import AgentStatusUpdate
 from dongtai_web.views.agents_delete import AgentsDeleteEndPoint
 from dongtai_web.views.agent_stop import AgentStop
 from dongtai_web.views.agent_uninstall import AgentUninstall
-from dongtai_web.views.agent_upgrade_offline import AgentUpgradeOffline
-from dongtai_web.views.agent_upgrade_online import AgentUpgradeOnline
 from dongtai_web.views.agent import Agent
-from dongtai_web.views.agent_search import AgentSearch
 from dongtai_web.views.agents import AgentList
 from dongtai_web.views.agents_user import UserAgentList
 from dongtai_web.views.agent_summary import AgentSummary
@@ -67,7 +60,6 @@ from dongtai_web.views.projects import Projects
 
 
 from dongtai_web.views.sca_details import ScaDetailView
-from dongtai_web.views.sca_sidebar_index import ScaSidebarList
 from dongtai_web.views.sca_summary import ScaSummary
 from dongtai_web.views.scas import ScaList
 from dongtai_web.views.strategy_disable import StrategyDisableEndpoint
@@ -96,7 +88,6 @@ from dongtai_web.views.vul_details import (
 from dongtai_web.views.vul_list_for_plugin import VulListEndPoint
 from dongtai_web.views.vul_recheck import VulReCheck
 from dongtai_web.views.vul_request_replay import RequestReplayEndPoint
-from dongtai_web.views.vul_sidebar_index import VulSideBarList
 from dongtai_web.views.vul_status import VulStatus
 from dongtai_web.views.vul_summary import VulSummary
 from dongtai_web.views.vul_summary_type import VulSummaryType
@@ -105,18 +96,16 @@ from dongtai_web.views.vuls import VulsEndPoint
 from dongtai_web.views.vulnerability_status import VulnerabilityStatusView
 from dongtai_web.views.version_update import MethodPoolVersionUpdate
 from dongtai_web.views.demo import Demo
-from i18n.views.setlang import LanguageSetting
+from upload.i18n.views.setlang import LanguageSetting
 from dongtai_web.views.api_route_search import ApiRouteSearch
 from dongtai_web.views.api_route_related_request import ApiRouteRelationRequest
 from dongtai_web.views.api_route_cover_rate import ApiRouteCoverRate
-from dongtai_web.views.health import HealthView
 
 from dongtai_web.views.program_language import ProgrammingLanguageList
 from dongtai_web.views.filereplace import FileReplace
 from dongtai_web.views.messages_list import MessagesEndpoint
 from dongtai_web.views.messages_new import MessagesNewEndpoint
 from dongtai_web.views.messages_del import MessagesDelEndpoint
-from dongtai_web.views.messages_send import MessagesSendEndpoint
 from dongtai_web.views.agent_alias_modified import AgentAliasModified
 from dongtai_web.views.engine_method_pool_time_range import MethodPoolTimeRangeProxy
 
@@ -131,7 +120,6 @@ from dongtai_web.views.sensitive_info_rule import (
 from dongtai_web.views.scan_strategys import (
     ScanStrategyViewSet,
     ScanStrategyRelationProject,
-    ScanStrategyBatchView,
     ScanStrategyAllView,
 )
 from dongtai_web.views.details_id import (AgentListWithid, ProjectListWithid,
