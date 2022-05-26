@@ -118,7 +118,7 @@ LANGUAGES = (
 )
 USE_I18N = True
 LOCALE_PATHS = (
-    os.path.join(BASE_DIR, 'upload/i18n'),
+    os.path.join(BASE_DIR, 'static/i18n'),
 )
 USE_L10N = True
 MODELTRANSLATION_FALLBACK_LANGUAGES = ('zh', 'en')
@@ -196,7 +196,7 @@ ROOT_URLCONF = 'webapi.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, '/upload/templates')],
+        'DIRS': [os.path.join(BASE_DIR, '/static/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -269,8 +269,8 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'dongtai.User'
 TIME_ZONE = "Asia/Shanghai"
 STATIC_URL = '/static/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'upload')
-MEDIA_URL = "/upload/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_URL = "/static/"
 CAPTCHA_IMAGE_SIZE = (80, 45)
 CAPTCHA_LENGTH = 4
 CAPTCHA_TIMEOUT = 1

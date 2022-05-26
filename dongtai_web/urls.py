@@ -96,7 +96,7 @@ from dongtai_web.views.vuls import VulsEndPoint
 from dongtai_web.views.vulnerability_status import VulnerabilityStatusView
 from dongtai_web.views.version_update import MethodPoolVersionUpdate
 from dongtai_web.views.demo import Demo
-from upload.i18n.views.setlang import LanguageSetting
+from static.i18n.views.setlang import LanguageSetting
 from dongtai_web.views.api_route_search import ApiRouteSearch
 from dongtai_web.views.api_route_related_request import ApiRouteRelationRequest
 from dongtai_web.views.api_route_cover_rate import ApiRouteCoverRate
@@ -293,7 +293,7 @@ urlpatterns = [
     path('threshold/settings/get/<int:pk>',
          GetAgentThresholdConfigDetail.as_view()),
     path('threshold/settings/del', DelAgentThresholdConfig.as_view()),
-    # user webhook setting agent upload report  forward
+    # user webhook setting agent static report  forward
     path('webhook/settings', AgentWebHookConfig.as_view()),
     path('webhook/type/list', AgentWebHookTypeList.as_view()),
     path('webhook/type/del', DelAgentWebHookConfig.as_view()),

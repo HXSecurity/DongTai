@@ -3,7 +3,7 @@ from dongtai.models import User
 from dongtai.utils.settings import get_managed
 
 
-# agent report upload forward by type
+# agent report static forward by type
 class IastAgentUploadTypeUrl(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING)
     type_id = models.IntegerField(blank=True, null=True)
