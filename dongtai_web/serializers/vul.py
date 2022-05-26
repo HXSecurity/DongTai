@@ -4,15 +4,15 @@
 # datetime:2020/5/22 18:29
 # software: PyCharm
 # project: webapi
-from dongtai.models.agent import IastAgent
+from dongtai_common.models.agent import IastAgent
 from rest_framework import serializers
 
-from dongtai.models.vulnerablity import IastVulnerabilityModel
-from dongtai.models.vulnerablity import IastVulnerabilityStatus
-from dongtai.models.hook_type import HookType
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
+from dongtai_common.models.hook_type import HookType
 from django.utils.translation import gettext_lazy as _
-from dongtai.models.strategy import IastStrategyModel
-from dongtai.models.vul_level import IastVulLevel
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.vul_level import IastVulLevel
 
 
 class VulSerializer(serializers.ModelSerializer):

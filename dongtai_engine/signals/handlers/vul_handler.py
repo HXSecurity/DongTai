@@ -8,13 +8,13 @@ import time
 import requests
 from celery.apps.worker import logger
 from django.dispatch import receiver
-from dongtai.models.project import IastProject, VulValidation
-from dongtai.models.replay_queue import IastReplayQueue
-from dongtai.models.vulnerablity import IastVulnerabilityModel
-from dongtai.utils import const
+from dongtai_common.models.project import IastProject, VulValidation
+from dongtai_common.models.replay_queue import IastReplayQueue
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.utils import const
 from dongtai_conf import settings
 from dongtai_engine.signals import vul_found
-from dongtai.utils.systemsettings import get_vul_validate
+from dongtai_common.utils.systemsettings import get_vul_validate
 from dongtai_web.vul_log.vul_log import log_vul_found, log_recheck_vul
 from django.db.models import Q
 
@@ -175,7 +175,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
         param_name = ''
         taint_position = ''
 
-    from dongtai.models.agent import IastAgent
+    from dongtai_common.models.agent import IastAgent
     project_agents = IastAgent.objects.filter(project_version_id=vul_meta.agent.project_version_id)
     # 获取 相同项目版本下的数据
     vul = IastVulnerabilityModel.objects.filter(
@@ -207,7 +207,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
             'latest_time','latest_time_desc'
         ])
     else:
-        from dongtai.models.hook_type import HookType
+        from dongtai_common.models.hook_type import HookType
         hook_type = HookType.objects.filter(vul_strategy_id=strategy_id).first()
         vul = IastVulnerabilityModel.objects.create(
             strategy_id=strategy_id,
@@ -245,7 +245,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     logger.info(f"vul_found {vul.id}")
     return vul
 
-from dongtai.models.vul_recheck_payload import IastVulRecheckPayload
+from dongtai_common.models.vul_recheck_payload import IastVulRecheckPayload
 
 def create_vul_recheck_task(vul_id, agent, timestamp):
     project = IastProject.objects.filter(id=agent.bind_project_id).first()
@@ -340,8 +340,8 @@ def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_s
     """
     # 如果是重放请求，且重放请求类型为漏洞验证，更新漏洞状态为
     timestamp = int(time.time())
-    from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
-    from dongtai.models.agent_method_pool import MethodPool
+    from dongtai_common.models.replay_method_pool import IastAgentMethodPoolReplay
+    from dongtai_common.models.agent_method_pool import MethodPool
 
     if isinstance(vul_meta, IastAgentMethodPoolReplay):
         replay_id = vul_meta.replay_id

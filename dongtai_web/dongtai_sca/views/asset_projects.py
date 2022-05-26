@@ -9,13 +9,13 @@ from django.db.models import Count
 from django.forms import model_to_dict
 from django.utils.translation import gettext_lazy as _
 
-from dongtai.endpoint import R, UserEndPoint
-from dongtai.models import User
-from dongtai.models.asset import Asset
-from dongtai.models.asset_aggr import AssetAggr
-from dongtai.models.asset_vul import IastAssetVul
-from dongtai.models.project_version import IastProjectVersion
-from dongtai.models.vul_level import IastVulLevel
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models import User
+from dongtai_common.models.asset import Asset
+from dongtai_common.models.asset_aggr import AssetAggr
+from dongtai_common.models.asset_vul import IastAssetVul
+from dongtai_common.models.project_version import IastProjectVersion
+from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_web.serializers.sca import ScaSerializer
 from dongtai_web.dongtai_sca import AssetProjectSerializer
 

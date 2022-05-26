@@ -4,9 +4,9 @@
 # datetime: 2021/10/22 下午2:26
 # project: DongTai-engine
 
-from dongtai.models.project import IastProject
-from dongtai.models.strategy import IastStrategyModel
-from dongtai.utils import const
+from dongtai_common.models.project import IastProject
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.utils import const
 
 
 def is_strategy_enable(vul_type, method_pool):

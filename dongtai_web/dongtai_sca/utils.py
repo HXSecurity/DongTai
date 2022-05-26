@@ -13,13 +13,13 @@ from django.conf import settings
 from django.db.models import Count
 from django.forms import model_to_dict
 
-from dongtai.models import User
-from dongtai.models.agent import IastAgent
-from dongtai.models.asset import Asset
-from dongtai.models.asset_aggr import AssetAggr
-from dongtai.models.asset_vul import IastAssetVul, IastVulAssetRelation, IastAssetVulType, IastAssetVulTypeRelation
-from dongtai.models.sca_maven_db import ScaMavenDb
-from dongtai.models.vul_level import IastVulLevel
+from dongtai_common.models import User
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.asset import Asset
+from dongtai_common.models.asset_aggr import AssetAggr
+from dongtai_common.models.asset_vul import IastAssetVul, IastVulAssetRelation, IastAssetVulType, IastAssetVulTypeRelation
+from dongtai_common.models.sca_maven_db import ScaMavenDb
+from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_web.vul_log.vul_log import log_asset_vul_found
 from dongtai_web.dongtai_sca import Package, VulPackageRange, VulPackageVersion, VulPackage, PackageRepoDependency, Vul, \
     VulCveRelation, PackageLicenseLevel

@@ -1,14 +1,14 @@
 from dongtai_protocol.decrypter import parse_data
-from dongtai.endpoint import OpenApiEndPoint, R
-from dongtai.models.agent import IastAgent
-from dongtai.models.agent_config import IastAgentConfig
+from dongtai_common.endpoint import OpenApiEndPoint, R
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.agent_config import IastAgentConfig
 from django.db.models import Q
 from drf_spectacular.utils import extend_schema
 import logging
-from dongtai.utils.systemsettings import get_circuit_break
+from dongtai_common.utils.systemsettings import get_circuit_break
 from django.utils.translation import gettext_lazy as _
 from result import Ok, Err, Result
-from dongtai.models.agent_config import MetricGroup
+from dongtai_common.models.agent_config import MetricGroup
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -48,7 +48,7 @@ class AgentConfigView(OpenApiEndPoint):
 
         return R.success(data=data)
 
-from dongtai.models.agent_config import (
+from dongtai_common.models.agent_config import (
     IastCircuitTarget,
     IastCircuitConfig,
     IastCircuitMetric,

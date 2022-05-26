@@ -2,8 +2,8 @@
 import logging
 import time
 
-from dongtai.models.profile import IastProfile
-from dongtai.endpoint import OpenApiEndPoint, R
+from dongtai_common.models.profile import IastProfile
+from dongtai_common.endpoint import OpenApiEndPoint, R
 
 from drf_spectacular.utils import extend_schema
 from dongtai_protocol.api_schema import DongTaiParameter, DongTaiAuth

@@ -1,10 +1,10 @@
 # 批量删除 组件漏洞+应用漏洞
-from dongtai.endpoint import R
-from dongtai.endpoint import UserEndPoint
-from dongtai.models.asset_vul import IastVulAssetRelation
-from dongtai.models.asset_vul_relation import AssetVulRelation
-from dongtai.models.vulnerablity import IastVulnerabilityModel
-from dongtai.models.asset import Asset
+from dongtai_common.endpoint import R
+from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.models.asset_vul import IastVulAssetRelation
+from dongtai_common.models.asset_vul_relation import AssetVulRelation
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.models.asset import Asset
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from django.db import connection

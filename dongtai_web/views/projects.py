@@ -6,9 +6,9 @@
 
 import logging
 
-from dongtai.endpoint import R
-from dongtai.endpoint import UserEndPoint
-from dongtai.models.project import IastProject
+from dongtai_common.endpoint import R
+from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.models.project import IastProject
 from dongtai_web.serializers.project import ProjectSerializer
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer

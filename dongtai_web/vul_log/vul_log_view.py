@@ -1,12 +1,12 @@
-from dongtai.models.iast_vul_log import (IastVulLog, MessageTypeChoices)
-from dongtai.utils import const
-from dongtai.models.hook_type import HookType
-from dongtai.models.strategy import IastStrategyModel
-from dongtai.models.document import IastDocument
+from dongtai_common.models.iast_vul_log import (IastVulLog, MessageTypeChoices)
+from dongtai_common.utils import const
+from dongtai_common.models.hook_type import HookType
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.document import IastDocument
 
-from dongtai.endpoint import R
-from dongtai.utils import const
-from dongtai.endpoint import UserEndPoint
+from dongtai_common.endpoint import R
+from dongtai_common.utils import const
+from dongtai_common.endpoint import UserEndPoint
 from django.forms.models import model_to_dict
 from django.db.models import Q
 from rest_framework import serializers

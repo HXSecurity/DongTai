@@ -3,7 +3,7 @@
 # author:owefsad
 # software: PyCharm
 # project: lingzhi-engine
-from dongtai.models.asset import Asset
+from dongtai_common.models.asset import Asset
 from rest_framework import serializers
 
 

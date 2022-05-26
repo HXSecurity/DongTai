@@ -1,10 +1,10 @@
 from django.shortcuts import render
 
-from dongtai.endpoint import R
-from dongtai.utils import const
-from dongtai.endpoint import UserEndPoint
-from dongtai.models.agent import IastAgent
-from dongtai.models.api_route import (
+from dongtai_common.endpoint import R
+from dongtai_common.utils import const
+from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.api_route import (
     IastApiRoute,
     IastApiMethod,
     HttpMethod,
@@ -18,8 +18,8 @@ from dongtai_web.apitest.utils import (
     swagger_trans,
     runtest,
 )
-from dongtai.models.project import IastProject
-from dongtai.models.res_header import ProjectSaasMethodPoolHeader
+from dongtai_common.models.project import IastProject
+from dongtai_common.models.res_header import ProjectSaasMethodPoolHeader
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.views.project_add import url_validate
 from io import BytesIO

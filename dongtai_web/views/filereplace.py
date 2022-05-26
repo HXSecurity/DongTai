@@ -9,7 +9,7 @@
 
 
 
-from dongtai.endpoint import R, TalentAdminEndPoint
+from dongtai_common.endpoint import R, TalentAdminEndPoint
 import logging
 from django.utils.translation import gettext_lazy as _
 import os

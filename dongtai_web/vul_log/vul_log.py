@@ -1,4 +1,4 @@
-from dongtai.models.iast_vul_log import (IastVulLog, MessageTypeChoices)
+from dongtai_common.models.iast_vul_log import (IastVulLog, MessageTypeChoices)
 
 
 def log_change_status(user_id: int, user_name: str, vul_id: list,

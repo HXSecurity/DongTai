@@ -8,12 +8,12 @@ import time
 
 from django.db.models import Q
 
-from dongtai.endpoint import R
-from dongtai.endpoint import UserEndPoint
-from dongtai.models.agent import IastAgent
-from dongtai.models.project_version import IastProjectVersion
-from dongtai.models.project import (IastProject, VulValidation)
-from dongtai.models.strategy_user import IastStrategyUser
+from dongtai_common.endpoint import R
+from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.project_version import IastProjectVersion
+from dongtai_common.models.project import (IastProject, VulValidation)
+from dongtai_common.models.strategy_user import IastStrategyUser
 from dongtai_web.base.project_version import version_modify, ProjectsVersionDataSerializer
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
@@ -22,7 +22,7 @@ from django.db import transaction
 from urllib.parse import urlparse, urlunparse
 import ipaddress
 import requests
-from dongtai.models.server import IastServer
+from dongtai_common.models.server import IastServer
 logger = logging.getLogger("django")
 
 

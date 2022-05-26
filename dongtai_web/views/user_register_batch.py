@@ -7,11 +7,11 @@ import csv
 import logging
 
 from django.contrib.auth.models import Group
-from dongtai.models import User
-from dongtai.models.department import Department
+from dongtai_common.models import User
+from dongtai_common.models.department import Department
 
-from dongtai.endpoint import R
-from dongtai.endpoint import SystemAdminEndPoint
+from dongtai_common.endpoint import R
+from dongtai_common.endpoint import SystemAdminEndPoint
 from dongtai_web.notify.email import Email
 from dongtai_conf import settings
 from django.utils.translation import gettext_lazy as _

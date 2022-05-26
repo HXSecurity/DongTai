@@ -7,7 +7,7 @@
 import json
 import logging
 
-from dongtai.utils import const
+from dongtai_common.utils import const
 from django.utils.translation import gettext_lazy as _
 from dongtai_engine.tasks import update_one_sca
 from dongtai_protocol.report.handler.report_handler_interface import IReportHandler

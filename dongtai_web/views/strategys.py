@@ -4,25 +4,25 @@
 
 # software: PyCharm
 # project: lingzhi-webapi
-from dongtai.utils import const
-from dongtai.models.hook_type import HookType
-from dongtai.models.strategy import IastStrategyModel
+from dongtai_common.utils import const
+from dongtai_common.models.hook_type import HookType
+from dongtai_common.models.strategy import IastStrategyModel
 
 from django.db.models import Q
-from dongtai.endpoint import R
-from dongtai.utils import const
-from dongtai.endpoint import UserEndPoint
+from dongtai_common.endpoint import R
+from dongtai_common.utils import const
+from dongtai_common.endpoint import UserEndPoint
 from dongtai_web.serializers.strategy import StrategySerializer
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from dongtai.models.hook_type import HookType
+from dongtai_common.models.hook_type import HookType
 from rest_framework import serializers
-from dongtai.models.program_language import IastProgramLanguage
+from dongtai_common.models.program_language import IastProgramLanguage
 import time
 from rest_framework.serializers import ValidationError
-from dongtai.permissions import TalentAdminPermission
+from dongtai_common.permissions import TalentAdminPermission
 from rest_framework.decorators import permission_classes
-from dongtai.models.vul_level import IastVulLevel
+from dongtai_common.models.vul_level import IastVulLevel
 
 class _StrategyResponseDataStrategySerializer(serializers.Serializer):
     id = serializers.CharField(help_text=_('The id of agent'))

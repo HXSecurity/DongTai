@@ -1,5 +1,5 @@
-from dongtai.models.asset import Asset
-from dongtai.models.asset_vul import IastAssetVulTypeRelation
+from dongtai_common.models.asset import Asset
+from dongtai_common.models.asset_vul import IastAssetVulTypeRelation
 from dongtai_web.dongtai_sca import VulCveRelation, PackageLicenseLevel
 
 

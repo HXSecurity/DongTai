@@ -7,7 +7,7 @@
 ######################################################################
 
 import logging
-from dongtai.endpoint import UserEndPoint, R
+from dongtai_common.endpoint import UserEndPoint, R
 from drf_spectacular.utils import extend_schema
 
 from dongtai_protocol.utils import OssDownloader
@@ -40,7 +40,7 @@ def checkenginestaus():
         ],
     }
     # 读取数据库中的redis键，然后查找队列大小
-    from dongtai.models.engine_monitoring_indicators import IastEnginMonitoringIndicators
+    from dongtai_common.models.engine_monitoring_indicators import IastEnginMonitoringIndicators
     try:
         monitor_models = IastEnginMonitoringIndicators.objects.all()
         if monitor_models.values('id').count() > 0:

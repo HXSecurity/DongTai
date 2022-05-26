@@ -31,7 +31,7 @@ class MyTestCase(DongTaiTestCase):
         update_agent_status()
 
     def test_verify_agent_status(self):
-        from dongtai.models.agent import IastAgent
+        from dongtai_common.models.agent import IastAgent
         from dongtai_engine.tasks import is_alive
         import time
 
@@ -52,9 +52,9 @@ class MyTestCase(DongTaiTestCase):
         update_one_sca(2379, "/Users/xxx/spring-boot/2.3.2.RELEASE/org.springframework:spring-beans.jar", "a4bb5ffad5564e4a0e25955e3a40b1c6158385b2", "org.springframework:spring-beans.jar", "SHA-1")
 
     def test_http_header(self):
-        from dongtai.models.agent import IastAgent
+        from dongtai_common.models.agent import IastAgent
         agents = IastAgent.objects.filter(bind_project_id=1252).values('id')
-        from dongtai.models.agent_method_pool import MethodPool
+        from dongtai_common.models.agent_method_pool import MethodPool
         method_pools = MethodPool.objects.filter(agent_id__in=agents).values('req_header_fs')
 
         from http.server import BaseHTTPRequestHandler

@@ -3,7 +3,7 @@
 # author:owefsad
 # software: PyCharm
 # project: lingzhi-engine
-from dongtai.models.hook_type import HookType
+from dongtai_common.models.hook_type import HookType
 from rest_framework import serializers
 
 

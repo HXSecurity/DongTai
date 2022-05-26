@@ -3,7 +3,7 @@
 # author: owefsad@huoxian.cn
 # datetime: 2021/7/16 下午12:17
 # project: dongtai-engine
-from dongtai.utils import const
+from dongtai_common.utils import const
 
 
 class Replay:

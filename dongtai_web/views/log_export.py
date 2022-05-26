@@ -9,8 +9,8 @@ from django.utils.encoding import escape_uri_path
 from import_export import resources
 from rest_framework.generics import GenericAPIView
 from django.utils.translation import gettext_lazy as _
-from dongtai.endpoint import UserEndPoint
-from dongtai.endpoint import R
+from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.endpoint import R
 
 
 class LogResurce(resources.ModelResource):

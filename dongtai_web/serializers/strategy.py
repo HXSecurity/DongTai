@@ -5,7 +5,7 @@
 # project: lingzhi-webapi
 from rest_framework import serializers
 
-from dongtai.models.strategy import IastStrategyModel
+from dongtai_common.models.strategy import IastStrategyModel
 
 
 class StrategySerializer(serializers.ModelSerializer):

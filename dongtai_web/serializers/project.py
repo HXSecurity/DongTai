@@ -6,13 +6,13 @@
 from django.db.models import Count
 from rest_framework import serializers
 
-from dongtai.models.agent import IastAgent
-from dongtai.models.project import (IastProject, VulValidation)
-from dongtai.models.vul_level import IastVulLevel
-from dongtai.models.vulnerablity import IastVulnerabilityModel
-from dongtai.models.vulnerablity import IastVulnerabilityStatus
-from dongtai.utils import const
-from dongtai.utils.systemsettings import get_vul_validate
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.project import (IastProject, VulValidation)
+from dongtai_common.models.vul_level import IastVulLevel
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
+from dongtai_common.utils import const
+from dongtai_common.utils.systemsettings import get_vul_validate
 
 class ProjectSerializer(serializers.ModelSerializer):
     vul_count = serializers.SerializerMethodField(

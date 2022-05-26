@@ -7,9 +7,9 @@ import logging
 
 import pymysql
 from django.db import connection
-from dongtai.endpoint import R, UserEndPoint
+from dongtai_common.endpoint import R, UserEndPoint
 
-from dongtai.models.asset_aggr import AssetAggr
+from dongtai_common.models.asset_aggr import AssetAggr
 
 from dongtai_web.base.project_version import get_project_version, get_project_version_by_id
 from dongtai_web.serializers.sca import ScaAssetSerializer

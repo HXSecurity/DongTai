@@ -1,8 +1,8 @@
 # 按类型获取 组件漏洞 应用漏洞列表
 import json,time,logging
-from dongtai.endpoint import R
+from dongtai_common.endpoint import R
 from django.forms import model_to_dict
-from dongtai.endpoint import UserEndPoint
+from dongtai_common.endpoint import UserEndPoint
 
 from dongtai_web.utils import extend_schema_with_envcheck
 from dongtai_web.serializers.aggregation import AggregationArgsSerializer
@@ -11,8 +11,8 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_web.aggregation.aggregation_common import getAuthUserInfo, turnIntListOfStr, getAuthBaseQuery, auth_user_list_str
 import pymysql
 from dongtai_web.serializers.vul import VulSerializer
-from dongtai.models.asset_vul import IastAssetVul,IastVulAssetRelation,IastAssetVulType,IastAssetVulTypeRelation
-from dongtai.models import AGGREGATION_ORDER, LANGUAGE_ID_DICT, SHARE_CONFIG_DICT, APP_LEVEL_RISK, LICENSE_RISK, \
+from dongtai_common.models.asset_vul import IastAssetVul,IastVulAssetRelation,IastAssetVulType,IastAssetVulTypeRelation
+from dongtai_common.models import AGGREGATION_ORDER, LANGUAGE_ID_DICT, SHARE_CONFIG_DICT, APP_LEVEL_RISK, LICENSE_RISK, \
     SCA_AVAILABILITY_DICT
 
 

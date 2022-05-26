@@ -6,7 +6,7 @@
 # @description :
 ######################################################################
 
-from dongtai.endpoint import R, AnonymousAndUserEndPoint
+from dongtai_common.endpoint import R, AnonymousAndUserEndPoint
 from dongtai_web.github_contributors import get_github_contributors
 import threading
 import asyncio

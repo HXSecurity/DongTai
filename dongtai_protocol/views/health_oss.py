@@ -11,7 +11,7 @@ from drf_spectacular.utils import extend_schema
 from oss2.exceptions import RequestError
 import logging
 from dongtai_protocol.utils import checkossstatus, STATUSMAP
-from dongtai.endpoint import OpenApiEndPoint, R, UserEndPoint
+from dongtai_common.endpoint import OpenApiEndPoint, R, UserEndPoint
 
 logger = logging.getLogger("dongtai.openapi")
 

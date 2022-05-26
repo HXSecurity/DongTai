@@ -9,8 +9,8 @@ from functools import reduce
 from django.db.models import Q
 import operator
 import hashlib
-from dongtai.models.api_route import IastApiRoute, IastApiMethod, IastApiRoute, HttpMethod, IastApiResponse, IastApiMethodHttpMethodRelation
-from dongtai.models.agent_method_pool import MethodPool
+from dongtai_common.models.api_route import IastApiRoute, IastApiMethod, IastApiRoute, HttpMethod, IastApiResponse, IastApiMethodHttpMethodRelation
+from dongtai_common.models.agent_method_pool import MethodPool
 from rest_framework.serializers import Serializer
 from dongtai_conf.settings import OPENAPI
 
@@ -217,7 +217,7 @@ def apiroute_cachekey(api_route, agents, http_method=None):
 
 def sha1(string, encoding='utf-8'):
     return hashlib.sha1(string.encode(encoding)).hexdigest()
-from dongtai.models.profile import IastProfile
+from dongtai_common.models.profile import IastProfile
 
 
 def get_openapi():

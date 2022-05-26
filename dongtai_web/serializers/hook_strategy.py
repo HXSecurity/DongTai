@@ -3,12 +3,12 @@
 # author:owefsad
 # software: PyCharm
 # project: lingzhi-engine
-from dongtai.models import User
-from dongtai.models.hook_strategy import HookStrategy
+from dongtai_common.models import User
+from dongtai_common.models.hook_strategy import HookStrategy
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import format_lazy
-from dongtai.utils import const
+from dongtai_common.utils import const
 
 
 SINK_POSITION_HELP_TEXT = _("""

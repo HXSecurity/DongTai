@@ -5,7 +5,7 @@
 # project: webapi
 import logging
 from django.contrib.admin.models import LogEntry
-from dongtai.endpoint import UserEndPoint, R
+from dongtai_common.endpoint import UserEndPoint, R
 from django.utils.translation import gettext_lazy as _
 from django.core.cache import cache
 

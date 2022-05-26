@@ -2,10 +2,10 @@ from functools import reduce
 
 from django.core.paginator import Paginator
 from django.db.models import Q
-from dongtai.endpoint import R, AnonymousAndUserEndPoint
-from dongtai.models.agent import IastAgent
-from dongtai.models.heartbeat import IastHeartbeat
-from dongtai.models.server import IastServer
+from dongtai_common.endpoint import R, AnonymousAndUserEndPoint
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.heartbeat import IastHeartbeat
+from dongtai_common.models.server import IastServer
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer

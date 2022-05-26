@@ -13,7 +13,7 @@ class MyTestCase(DongTaiTestCase):
 
     def test_check_response_header(self):
         from dongtai_engine.plugins.strategy_headers import check_response_header
-        from dongtai.models.agent_method_pool import MethodPool
+        from dongtai_common.models.agent_method_pool import MethodPool
         check_response_header(MethodPool.objects.first())
 
     def test_check_strict_transport_security(self):

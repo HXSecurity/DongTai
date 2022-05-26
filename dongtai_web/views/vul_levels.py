@@ -7,10 +7,10 @@
 ######################################################################
 
 
-from dongtai.endpoint import R, AnonymousAndUserEndPoint
+from dongtai_common.endpoint import R, AnonymousAndUserEndPoint
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
-from dongtai.models.vul_level import IastVulLevel
+from dongtai_common.models.vul_level import IastVulLevel
 from django.utils.translation import gettext_lazy as _
 
 class IastVulLevelSerializers(serializers.ModelSerializer):

@@ -8,13 +8,13 @@
 
 
 from rest_framework.test import APITestCase
-from dongtai.models.server import IastServer
-from dongtai.models.user import User
+from dongtai_common.models.server import IastServer
+from dongtai_common.models.user import User
 import gzip
 import json
 from rest_framework.test import RequestsClient
 from rest_framework.authtoken.models import Token
-from dongtai.models.agent import IastAgent
+from dongtai_common.models.agent import IastAgent
 from dongtai_protocol.decrypter import parse_data
 
 REGISTER_JSON = {

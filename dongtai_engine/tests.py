@@ -1,11 +1,11 @@
 from test.apiserver.test_agent_base import AgentTestCase,gzipdata
-from dongtai.models.agent import IastAgent
-from dongtai.models.agent_method_pool import MethodPool
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.agent_method_pool import MethodPool
 import gzip
 import base64
 from dongtai_protocol.report.report_handler_factory import ReportHandler
 import json
-from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from django.test import TestCase
 from dongtai_engine.tasks import search_vul_from_method_pool
 from dongtai_protocol.tests import download_if_not_exist

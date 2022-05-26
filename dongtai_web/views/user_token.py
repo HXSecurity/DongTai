@@ -6,8 +6,8 @@
 # project: webapi
 import logging
 
-from dongtai.endpoint import R
-from dongtai.endpoint import UserEndPoint
+from dongtai_common.endpoint import R
+from dongtai_common.endpoint import UserEndPoint
 from rest_framework.authtoken.models import Token
 from django.utils.translation import gettext_lazy as _
 

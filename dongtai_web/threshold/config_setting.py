@@ -6,8 +6,8 @@
 # agent threshold setting
 import time
 
-from dongtai.endpoint import UserEndPoint, R, TalentAdminEndPoint
-from dongtai.models.agent_config import IastAgentConfig
+from dongtai_common.endpoint import UserEndPoint, R, TalentAdminEndPoint
+from dongtai_common.models.agent_config import IastAgentConfig
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from dongtai_web.serializers.agent_config import AgentConfigSettingSerializer
@@ -91,7 +91,7 @@ class AgentThresholdConfig(UserEndPoint):
 from rest_framework import serializers
 from django.db.models import IntegerChoices
 from rest_framework import viewsets
-from dongtai.models.agent_config import (
+from dongtai_common.models.agent_config import (
     IastCircuitTarget,
     IastCircuitConfig,
     IastCircuitMetric,

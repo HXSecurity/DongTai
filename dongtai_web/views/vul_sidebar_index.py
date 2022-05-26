@@ -4,14 +4,14 @@
 # software: idea
 # project: lingzhi-webapi
 
-from dongtai.endpoint import R
-from dongtai.endpoint import UserEndPoint
-from dongtai.models.vulnerablity import IastVulnerabilityModel
-from dongtai.models.hook_type import HookType
+from dongtai_common.endpoint import R
+from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.models.hook_type import HookType
 from dongtai_web.utils import extend_schema_with_envcheck
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import format_lazy
-from dongtai.models.strategy import IastStrategyModel
+from dongtai_common.models.strategy import IastStrategyModel
 
 VALUES = [
     'level',

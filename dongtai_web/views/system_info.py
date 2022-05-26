@@ -4,9 +4,9 @@
 # software: PyCharm
 # project: lingzhi-webapi
 
-from dongtai.endpoint import R
+from dongtai_common.endpoint import R
 from django.utils.translation import gettext_lazy as _
-from dongtai.endpoint import TalentAdminEndPoint
+from dongtai_common.endpoint import TalentAdminEndPoint
 
 
 class SystemInfo(TalentAdminEndPoint):

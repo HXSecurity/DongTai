@@ -6,9 +6,9 @@
 # project: webapi
 import logging
 
-from dongtai.models.engine_heartbeat import IastEngineHeartbeat
+from dongtai_common.models.engine_heartbeat import IastEngineHeartbeat
 
-from dongtai.endpoint import OpenApiEndPoint, R
+from dongtai_common.endpoint import OpenApiEndPoint, R
 from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("dongtai.openapi")

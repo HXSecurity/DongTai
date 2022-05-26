@@ -5,9 +5,9 @@
 import base64
 import logging
 
-from dongtai.endpoint import R, TalentAdminEndPoint
-from dongtai.models.agent_method_pool import MethodPool
-from dongtai.models.profile import IastProfile
+from dongtai_common.endpoint import R, TalentAdminEndPoint
+from dongtai_common.models.agent_method_pool import MethodPool
+from dongtai_common.models.profile import IastProfile
 from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('dongtai-webapi')

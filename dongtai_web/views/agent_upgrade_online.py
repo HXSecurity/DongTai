@@ -6,8 +6,8 @@
 from urllib.parse import urljoin
 
 import requests
-from dongtai.endpoint import TalentAdminEndPoint, R
-from dongtai.models import User
+from dongtai_common.endpoint import TalentAdminEndPoint, R
+from dongtai_common.models import User
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers

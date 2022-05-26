@@ -7,19 +7,19 @@
 import logging
 import time
 
-from dongtai.models.agent import IastAgent
-from dongtai.models.heartbeat import IastHeartbeat
-from dongtai.models.replay_queue import IastReplayQueue
-from dongtai.models.vulnerablity import IastVulnerabilityModel
-from dongtai.utils import const
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.heartbeat import IastHeartbeat
+from dongtai_common.models.replay_queue import IastReplayQueue
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.utils import const
 from django.utils.translation import gettext_lazy as _
-from dongtai.models.server import IastServer
+from dongtai_common.models.server import IastServer
 from dongtai_protocol.report.handler.report_handler_interface import IReportHandler
 from dongtai_protocol.report.report_handler_factory import ReportHandler
 from django.db.models import (QuerySet, Q, F)
-from dongtai.models.project import IastProject, VulValidation
-from dongtai.utils.systemsettings import get_vul_validate
-from dongtai.models.agent import IastAgent
+from dongtai_common.models.project import IastProject, VulValidation
+from dongtai_common.utils.systemsettings import get_vul_validate
+from dongtai_common.models.agent import IastAgent
 
 logger = logging.getLogger('dongtai.openapi')
 

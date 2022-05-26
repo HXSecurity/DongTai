@@ -1,17 +1,17 @@
 from rest_framework.serializers import ValidationError
-from dongtai.endpoint import R
-from dongtai.endpoint import UserEndPoint
-from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.endpoint import R
+from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_web.aggregation.aggregation_common import turnIntListOfStr,auth_user_list_str
 from dongtai_web.serializers.vul import VulSerializer
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from dongtai.models.vulnerablity import IastVulnerabilityStatus
+from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
 import pymysql
 from dongtai_web.serializers.aggregation import AggregationArgsSerializer
-from dongtai.models import AGGREGATION_ORDER,LANGUAGE_ID_DICT,APP_LEVEL_RISK,APP_VUL_ORDER
+from dongtai_common.models import AGGREGATION_ORDER,LANGUAGE_ID_DICT,APP_LEVEL_RISK,APP_VUL_ORDER
 from django.db.models import F
-from dongtai.utils.db import SearchLanguageMode
+from dongtai_common.utils.db import SearchLanguageMode
 
 
 class GetAppVulsList(UserEndPoint):

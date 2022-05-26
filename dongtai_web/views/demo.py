@@ -6,8 +6,8 @@
 # @description :
 ######################################################################
 
-from dongtai.endpoint import R, UserEndPoint
-from dongtai.models.user import User
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.user import User
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect
 from django.conf import settings

@@ -7,8 +7,8 @@
 import logging
 from django.contrib.auth import authenticate
 
-from dongtai.endpoint import R
-from dongtai.endpoint import UserEndPoint
+from dongtai_common.endpoint import R
+from dongtai_common.endpoint import UserEndPoint
 from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("dongtai-webapi")

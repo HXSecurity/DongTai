@@ -1,7 +1,7 @@
 from apitimelog.middleware import REQUEST_DICT
 # Create your views here.
 
-from dongtai.endpoint import UserEndPoint
+from dongtai_common.endpoint import UserEndPoint
 from django.http import JsonResponse
 
 

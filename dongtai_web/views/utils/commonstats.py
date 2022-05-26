@@ -1,10 +1,10 @@
 from typing import Union
 from collections.abc import Iterable
-from dongtai.models.strategy import IastStrategyModel
-from dongtai.models.vulnerablity import IastVulnerabilityModel
-from dongtai.models.hook_type import HookType
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.models.hook_type import HookType
 from django.db.models import (Q, Count, Value)
-from dongtai.models.vul_level import IastVulLevel
+from dongtai_common.models.vul_level import IastVulLevel
 import time
 from django.db.models.query import QuerySet
 

@@ -5,10 +5,10 @@
 # project: lingzhi-webapi
 
 import logging
-from dongtai.endpoint import R
-from dongtai.endpoint import UserEndPoint
-from dongtai.models.agent import IastAgent
-from dongtai.models.project import IastProject
+from dongtai_common.endpoint import R
+from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.project import IastProject
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers

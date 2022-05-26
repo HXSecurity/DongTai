@@ -7,15 +7,15 @@ import base64
 import json
 import logging
 
-from dongtai.models.project import IastProject
-from dongtai.models.project_version import IastProjectVersion
-from dongtai.models.strategy import IastStrategyModel
-from dongtai.models.vulnerablity import IastVulnerabilityStatus
-from dongtai.models.vulnerablity import IastVulnerabilityModel
-from dongtai.models.hook_type import HookType
+from dongtai_common.models.project import IastProject
+from dongtai_common.models.project_version import IastProjectVersion
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.models.hook_type import HookType
 
-from dongtai.endpoint import R
-from dongtai.endpoint import UserEndPoint
+from dongtai_common.endpoint import R
+from dongtai_common.endpoint import UserEndPoint
 from dongtai_web.serializers.vul import VulSerializer
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer

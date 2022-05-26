@@ -7,7 +7,7 @@
 import logging
 
 from django.db.models import Q
-from dongtai.models.agent import IastAgent
+from dongtai_common.models.agent import IastAgent
 from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('dongtai.openapi')

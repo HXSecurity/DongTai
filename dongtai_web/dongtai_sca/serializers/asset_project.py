@@ -5,7 +5,7 @@
 # @time: 2022/5/7  上午7:39
 from rest_framework import serializers
 
-from dongtai.models.asset import Asset
+from dongtai_common.models.asset import Asset
 
 
 class AssetProjectSerializer(serializers.ModelSerializer):

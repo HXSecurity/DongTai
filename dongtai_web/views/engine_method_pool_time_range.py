@@ -11,13 +11,13 @@
 from functools import reduce
 
 from django.db.models import Q
-from dongtai.endpoint import R, AnonymousAndUserEndPoint
-from dongtai.models.agent import IastAgent
-from dongtai.models.agent_method_pool import MethodPool
-from dongtai.models.project import IastProject
-from dongtai.models.user import User
-from dongtai.models.vulnerablity import IastVulnerabilityModel
-from dongtai.models.hook_type import HookType
+from dongtai_common.endpoint import R, AnonymousAndUserEndPoint
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.agent_method_pool import MethodPool
+from dongtai_common.models.project import IastProject
+from dongtai_common.models.user import User
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.models.hook_type import HookType
 
 from dongtai_web.utils import get_model_field, assemble_query
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer

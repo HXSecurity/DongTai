@@ -1,13 +1,13 @@
 import time
 
-from dongtai.endpoint import UserEndPoint, R, TalentAdminEndPoint
-from dongtai.models.agent_config import IastAgentConfig
+from dongtai_common.endpoint import UserEndPoint, R, TalentAdminEndPoint
+from dongtai_common.models.agent_config import IastAgentConfig
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from dongtai_web.serializers.agent_config import AgentConfigSettingSerializer
 from rest_framework.serializers import ValidationError
 from rest_framework import viewsets
-from dongtai.models.vul_recheck_payload import IastVulRecheckPayload
+from dongtai_common.models.vul_recheck_payload import IastVulRecheckPayload
 from rest_framework import serializers
 from django.db.models import Q
 from django.forms.models import model_to_dict

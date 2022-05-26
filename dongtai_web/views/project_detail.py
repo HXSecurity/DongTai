@@ -4,12 +4,12 @@
 # software: PyCharm
 # project: lingzhi-webapi
 
-from dongtai.endpoint import R
-from dongtai.endpoint import UserEndPoint
-from dongtai.models.agent import IastAgent
-from dongtai.models.project import (IastProject, VulValidation)
-from dongtai.utils.systemsettings import get_vul_validate
-from dongtai.utils import const
+from dongtai_common.endpoint import R
+from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.project import (IastProject, VulValidation)
+from dongtai_common.utils.systemsettings import get_vul_validate
+from dongtai_common.utils import const
 from django.utils.translation import gettext_lazy as _
 
 from dongtai_web.base.project_version import get_project_version, ProjectsVersionDataSerializer

@@ -1,11 +1,11 @@
 from test.apiserver.test_agent_base import AgentTestCase,gzipdata
-from dongtai.models.agent import IastAgent
-from dongtai.models.agent_method_pool import MethodPool
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.agent_method_pool import MethodPool
 import gzip
 import base64
 from dongtai_protocol.report.report_handler_factory import ReportHandler
 import json
-from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from result import Ok, Err, Result
 
 class AgentMethodPoolUploadTestCase(AgentTestCase):
@@ -51,8 +51,8 @@ def download_if_not_exist(url: str, path: str) -> Result:
 from dongtai_protocol.report.handler.heartbeat_handler import (
     addtional_agent_ids_query_deployway_and_path,
     addtional_agenti_ids_query_filepath_simhash)
-from dongtai.models.replay_queue import IastReplayQueue
-from dongtai.utils import const
+from dongtai_common.models.replay_queue import IastReplayQueue
+from dongtai_common.utils import const
 from dongtai_protocol.report.handler.heartbeat_handler import HeartBeatHandler
 
 class AgentHeartBeatTestCase(AgentTestCase):

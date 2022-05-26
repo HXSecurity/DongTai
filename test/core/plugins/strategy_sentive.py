@@ -9,7 +9,7 @@ class MyTestCase(DongTaiTestCase):
 
     def test_search_id_card_leak(self):
         id = 45789
-        from dongtai.models.agent_method_pool import MethodPool
+        from dongtai_common.models.agent_method_pool import MethodPool
         method_pool = MethodPool.objects.get(id=id)
         if method_pool:
             from dongtai_engine.plugins.strategy_sensitive import search_id_card_leak
@@ -29,7 +29,7 @@ class MyTestCase(DongTaiTestCase):
 
     def test_check_response_content(self):
         id = 45789
-        from dongtai.models.agent_method_pool import MethodPool
+        from dongtai_common.models.agent_method_pool import MethodPool
         method_pool = MethodPool.objects.get(id=id)
         if method_pool:
             from dongtai_engine.plugins.strategy_sensitive import check_response_content

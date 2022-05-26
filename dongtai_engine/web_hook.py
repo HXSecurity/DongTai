@@ -3,7 +3,7 @@ import time
 import requests
 from celery.apps.worker import logger
 from celery import shared_task
-from dongtai.models.agent_webhook_setting import IastAgentUploadTypeUrl
+from dongtai_common.models.agent_webhook_setting import IastAgentUploadTypeUrl
 
 
 @shared_task(queue='dongtai-report-task')

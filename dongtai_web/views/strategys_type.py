@@ -5,10 +5,10 @@
 # software: PyCharm
 # project: lingzhi-webapi
 
-from dongtai.endpoint import R
-from dongtai.endpoint import UserEndPoint
-from dongtai.models.strategy import IastStrategyModel
-from dongtai.models.vul_level import IastVulLevel
+from dongtai_common.endpoint import R
+from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.vul_level import IastVulLevel
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 

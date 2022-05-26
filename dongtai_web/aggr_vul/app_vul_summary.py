@@ -1,14 +1,14 @@
 from rest_framework.serializers import ValidationError
-from dongtai.endpoint import R
-from dongtai.endpoint import UserEndPoint
-from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.endpoint import R
+from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck
 from dongtai_web.serializers.aggregation import AggregationArgsSerializer
-from dongtai.models import LANGUAGE_DICT
+from dongtai_common.models import LANGUAGE_DICT
 from dongtai_web.aggregation.aggregation_common import auth_user_list_str
 from django.db.models import Count
-from dongtai.common.utils import cached_decorator
+from dongtai_common.common.utils import cached_decorator
 from django.db.models import Q
 
 

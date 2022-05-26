@@ -1,7 +1,7 @@
 import logging
 
-from dongtai.endpoint import UserEndPoint, R
-from dongtai.utils import const
+from dongtai_common.endpoint import UserEndPoint, R
+from dongtai_common.utils import const
 
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -11,12 +11,12 @@ from rest_framework.serializers import ValidationError
 from rest_framework import viewsets
 
 from django.db import models
-from dongtai.models.strategy_user import IastStrategyUser
-from dongtai.models.user import User
+from dongtai_common.models.strategy_user import IastStrategyUser
+from dongtai_common.models.user import User
 import time
 from django.db.models import Q
-from dongtai.permissions import TalentAdminPermission
-from dongtai.models.project import IastProject
+from dongtai_common.permissions import TalentAdminPermission
+from dongtai_common.models.project import IastProject
 from dongtai_web.serializers.project import ProjectSerializer
 from dongtai_web.views.utils.commonview import (
     BatchStatusUpdateSerializerView,
