@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from utils import DongTaiAppConfigPatch
+from dongtai.common.utils import DongTaiAppConfigPatch
 
 
 class ApiserverConfig(DongTaiAppConfigPatch, AppConfig):

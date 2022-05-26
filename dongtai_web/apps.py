@@ -1,4 +1,4 @@
-from utils import DongTaiAppConfigPatch
+from dongtai.common.utils import DongTaiAppConfigPatch
 from django.apps import AppConfig
 
 

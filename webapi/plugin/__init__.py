@@ -58,7 +58,7 @@ def get_plugin_dict():
     if PLUGIN_DICT:
         return PLUGIN_DICT
     previous_path = getcwd()
-    PLUGIN_ROOT_PATH = join(BASE_DIR, 'plugin')
+    PLUGIN_ROOT_PATH = join(BASE_DIR, 'webapi/plugin')
     for root, directories, files in walk(top=PLUGIN_ROOT_PATH, topdown=False):
         for file_ in files:
             if file_.startswith('plug_') and file_.endswith('.py'):

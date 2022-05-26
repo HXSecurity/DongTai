@@ -1,10 +1,9 @@
 from importlib import import_module
 from celery import shared_task
 from celery.apps.worker import logger
-from utils import make_hash
+from dongtai.common.utils import make_hash
 from django.core.cache import cache
 import random
-from dongtai.models.user import User
 from datetime import datetime, timedelta
 from django.db.utils import OperationalError
 from django.db import connection as conn
@@ -20,7 +19,7 @@ def function_preheat(func__module__: str, func__name__: str, *args, **kwargs):
 
 @shared_task(queue='dongtai-replay-task')
 def function_preheat():
-    from django.contrib.admin.models import LogEntryManager, LogEntry, CHANGE
+    from django.contrib.admin.models import LogEntry
     time_threshold = datetime.now() - timedelta(hours=1)
     need_preheat = LogEntry.objects.filter(
         action_time__gt=time_threshold).exists()
