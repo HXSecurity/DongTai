@@ -8,31 +8,31 @@ class MyTestCase(DongTaiTestCase):
         self.assertEqual(True, False)
 
     def test_vul_recheck(self):
-        from core.tasks import vul_recheck
+        from dongtai_engine.tasks import vul_recheck
         vul_recheck()
 
     def test_report(self):
-        from core.tasks import export_report
+        from dongtai_engine.tasks import export_report
         export_report()
 
     def test_search_vul_from_replay_method_pool(self):
-        from core.tasks import search_vul_from_replay_method_pool
+        from dongtai_engine.tasks import search_vul_from_replay_method_pool
         method_id = 110
         search_vul_from_replay_method_pool(method_id)
 
     def test_search_vul_from_method_pool(self):
         method_pool_id = 657160
 
-        from core.tasks import search_vul_from_method_pool
+        from dongtai_engine.tasks import search_vul_from_method_pool
         search_vul_from_method_pool(method_pool_id)
 
     def test_update_agent_status(self):
-        from core.tasks import update_agent_status
+        from dongtai_engine.tasks import update_agent_status
         update_agent_status()
 
     def test_verify_agent_status(self):
         from dongtai.models.agent import IastAgent
-        from core.tasks import is_alive
+        from dongtai_engine.tasks import is_alive
         import time
 
         timestamp = int(time.time())
@@ -48,7 +48,7 @@ class MyTestCase(DongTaiTestCase):
             IastAgent.objects.filter(id__in=is_running_agents).update(is_running=1, is_core_running=1)
 
     def test_update_sca(self):
-        from core.tasks import update_one_sca
+        from dongtai_engine.tasks import update_one_sca
         update_one_sca(2379, "/Users/xxx/spring-boot/2.3.2.RELEASE/org.springframework:spring-beans.jar", "a4bb5ffad5564e4a0e25955e3a40b1c6158385b2", "org.springframework:spring-beans.jar", "SHA-1")
 
     def test_http_header(self):

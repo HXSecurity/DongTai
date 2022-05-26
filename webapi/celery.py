@@ -36,19 +36,19 @@ configs["CELERY_QUEUES"] = [
     Queue("dongtai-function-flush-data", Exchange("dongtai-function-flush-data"), routing_key="dongtai-function-flush-data"),
 ]
 configs["CELERY_ROUTES"] = {
-    "core.tasks.search_vul_from_method_pool": {'exchange': 'dongtai-method-pool-scan', 'routing_key': 'dongtai-method-pool-scan'},
-    "core.tasks.search_vul_from_strategy": {'exchange': 'dongtai-strategy-scan', 'routing_key': 'dongtai-strategy-scan'},
-    "core.tasks.search_vul_from_replay_method_pool": {'exchange': 'dongtai-replay-vul-scan', 'routing_key': 'dongtai-replay-vul-scan'},
-    "core.tasks.search_sink_from_method_pool": {'exchange': 'dongtai-search-scan', 'routing_key': 'dongtai-search-scan'},
-    "core.tasks.update_sca": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
-    "core.tasks.update_agent_status": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
-    "core.tasks.heartbeat": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
-    "core.tasks.clear_error_log": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
-    "core.tasks.export_report": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
-    "core.tasks.vul_recheck": {'exchange': 'dongtai-replay-task', 'routing_key': 'dongtai-replay-task'},
-    "core.web_hook.forward_for_upload": {'exchange': 'dongtai-report-task', 'routing_key': 'dongtai-report-task'},
-    "core.preheat.function_flush": {'exchange': 'dongtai-function-flush-data', 'routing_key': 'dongtai-function-flush-data'},
-    "core.preheat.function_preheat": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
+    "dongtai_engine.tasks.search_vul_from_method_pool": {'exchange': 'dongtai-method-pool-scan', 'routing_key': 'dongtai-method-pool-scan'},
+    "dongtai_engine.tasks.search_vul_from_strategy": {'exchange': 'dongtai-strategy-scan', 'routing_key': 'dongtai-strategy-scan'},
+    "dongtai_engine.tasks.search_vul_from_replay_method_pool": {'exchange': 'dongtai-replay-vul-scan', 'routing_key': 'dongtai-replay-vul-scan'},
+    "dongtai_engine.tasks.search_sink_from_method_pool": {'exchange': 'dongtai-search-scan', 'routing_key': 'dongtai-search-scan'},
+    "dongtai_engine.tasks.update_sca": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
+    "dongtai_engine.tasks.update_agent_status": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
+    "dongtai_engine.tasks.heartbeat": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
+    "dongtai_engine.tasks.clear_error_log": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
+    "dongtai_engine.tasks.export_report": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
+    "dongtai_engine.tasks.vul_recheck": {'exchange': 'dongtai-replay-task', 'routing_key': 'dongtai-replay-task'},
+    "dongtai_engine.web_hook.forward_for_upload": {'exchange': 'dongtai-report-task', 'routing_key': 'dongtai-report-task'},
+    "dongtai_engine.preheat.function_flush": {'exchange': 'dongtai-function-flush-data', 'routing_key': 'dongtai-function-flush-data'},
+    "dongtai_engine.preheat.function_preheat": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
 }
 configs["CELERY_ENABLE_UTC"] = False
 configs["CELERY_TIMEZONE"] = settings.TIME_ZONE
@@ -87,7 +87,7 @@ def checkout_preheat_online(status):
             name='preheat functions',  # simply describes this periodic task.
             defaults={
                 'interval': schedule,  # we created this above.
-                'task': 'core.preheat.function_preheat',  # name of task.
+                'task': 'dongtai_engine.preheat.function_preheat',  # name of task.
                 'args': json.dumps([]),
                 'kwargs': json.dumps({}),
             })

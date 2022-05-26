@@ -11,7 +11,7 @@ from dongtai.models.sensitive_info import IastSensitiveInfoRule
 from dongtai.utils import const
 from celery.apps.worker import logger
 
-from core.plugins.strategy_headers import save_vul
+from dongtai_engine.plugins.strategy_headers import save_vul
 
 
 def parse_json_response(res_body):

@@ -12,7 +12,7 @@ class VulHandlerTest(DongTaiTestCase):
     def test_send_vul_notify(self):
         from dongtai.models.vulnerablity import IastVulnerabilityModel
         vul = IastVulnerabilityModel.objects.filter(id=2208).first()
-        from core.signals.handlers import send_vul_notify
+        from dongtai_engine.signals.handlers import send_vul_notify
         send_vul_notify(vul)
 
     def test_create_notify_config(self):

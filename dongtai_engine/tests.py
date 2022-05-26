@@ -7,7 +7,7 @@ from dongtai_protocol.report.report_handler_factory import ReportHandler
 import json
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from django.test import TestCase
-from core.tasks import search_vul_from_method_pool
+from dongtai_engine.tasks import search_vul_from_method_pool
 from dongtai_protocol.tests import download_if_not_exist
 from django.db import connections
 

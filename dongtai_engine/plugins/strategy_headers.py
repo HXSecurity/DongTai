@@ -15,7 +15,7 @@ from dongtai.models.strategy import IastStrategyModel
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.utils import const
 
-from core.plugins import is_strategy_enable
+from dongtai_engine.plugins import is_strategy_enable
 from dongtai_web.vul_log.vul_log import log_vul_found, log_recheck_vul
 
 class FakeSocket():
