@@ -10,7 +10,7 @@ from dongtai.models.agent import IastAgent
 from dongtai.models.asset import Asset
 from celery.apps.worker import logger
 
-from sca.utils import sca_scan_asset
+from dongtai_sca.utils import sca_scan_asset
 
 
 @shared_task(queue='dongtai-sca-task')

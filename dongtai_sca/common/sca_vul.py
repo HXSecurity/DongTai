@@ -1,6 +1,6 @@
 from dongtai.models.asset import Asset
 from dongtai.models.asset_vul import IastAssetVulTypeRelation
-from sca.models import VulCveRelation, PackageLicenseLevel
+from dongtai_sca.models import VulCveRelation, PackageLicenseLevel
 
 
 # 通过asset_vul获取 组件详情信息

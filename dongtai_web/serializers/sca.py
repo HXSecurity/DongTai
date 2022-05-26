@@ -12,7 +12,7 @@ from dongtai.models.asset import Asset
 from dongtai.models.project import IastProject
 from django.utils.translation import gettext_lazy as _
 from dongtai.models.sca_maven_db import ScaMavenDb
-from sca.models import PackageLicenseLevel, PackageLicenseInfo
+from dongtai_sca.models import PackageLicenseLevel, PackageLicenseInfo
 
 
 class ScaSerializer(serializers.ModelSerializer):
