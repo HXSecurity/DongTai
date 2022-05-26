@@ -8,7 +8,7 @@ class Command(BaseCommand):
         #parser.add_argument('update', nargs='+', type=int)
 
     def handle(self, *args, **options):
-        from sca.tasks import refresh_all_asset_data
+        from dongtai_sca.tasks import refresh_all_asset_data
         refresh_all_asset_data()
         self.stdout.write(
             self.style.SUCCESS('Successfully flash old data  "%s"' %

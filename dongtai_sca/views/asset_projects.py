@@ -17,7 +17,7 @@ from dongtai.models.asset_vul import IastAssetVul
 from dongtai.models.project_version import IastProjectVersion
 from dongtai.models.vul_level import IastVulLevel
 from dongtai_web.serializers.sca import ScaSerializer
-from sca.serializers.asset_project import AssetProjectSerializer
+from dongtai_sca.serializers.asset_project import AssetProjectSerializer
 
 logger = logging.getLogger(__name__)
 

@@ -28,7 +28,7 @@ _ResponseSerializer = get_response_serializer(
 
 
 class ScaSummary(UserEndPoint):
-    name = "rest-api-sca-summary"
+    name = "rest-api-dongtai_sca-summary"
     description = _("Three-party components overview")
 
     @extend_schema_with_envcheck(

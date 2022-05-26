@@ -10,7 +10,7 @@ from dongtai.models.agent import IastAgent
 from dongtai.models.hook_type import HookType
 from dongtai.models.vul_level import IastVulLevel
 from dongtai.utils.settings import get_managed
-from sca.models import VulPackage
+from dongtai_sca.models import VulPackage
 
 
 class AqlInfo(models.Model):

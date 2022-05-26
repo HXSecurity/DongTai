@@ -19,7 +19,7 @@ from rest_framework import serializers
 from webapi import settings
 import requests
 import json
-from sca.models import VulCveRelation
+from dongtai_sca.models import VulCveRelation
 
 logger = logging.getLogger('dongtai-webapi')
 

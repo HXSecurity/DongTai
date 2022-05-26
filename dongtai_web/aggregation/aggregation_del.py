@@ -22,7 +22,7 @@ class DelVulMany(UserEndPoint):
         tags=[_('VulList')],
         summary=_('Vul List delete'),
         description=_(
-            "delete many app vul and sca vul"
+            "delete many app vul and dongtai_sca vul"
         ),
     )
     def post(self, request):

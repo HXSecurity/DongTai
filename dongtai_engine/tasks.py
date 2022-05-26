@@ -37,8 +37,8 @@ from dongtai_engine.plugins.strategy_headers import check_response_header
 from dongtai_engine.plugins.strategy_sensitive import check_response_content
 from dongtai_engine.replay import Replay
 from webapi import settings
-from sca.models import Package, VulPackageRange, VulPackage, Vul
-from sca.utils import get_dependency_graph, sca_scan_asset
+from dongtai_sca.models import Package, VulPackageRange, VulPackage, Vul
+from dongtai_sca.utils import get_dependency_graph, sca_scan_asset
 from dongtai_engine.signals import vul_found
 from dongtai.models.project_report import ProjectReport
 import requests
