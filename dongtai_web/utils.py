@@ -12,7 +12,7 @@ import hashlib
 from dongtai.models.api_route import IastApiRoute, IastApiMethod, IastApiRoute, HttpMethod, IastApiResponse, IastApiMethodHttpMethodRelation
 from dongtai.models.agent_method_pool import MethodPool
 from rest_framework.serializers import Serializer
-from webapi.settings import OPENAPI
+from dongtai_conf.settings import OPENAPI
 
 def get_model_field(model, exclude=[], include=[]):
     fields = [field.name for field in model._meta.fields]
@@ -249,7 +249,7 @@ import logging
 from django.utils.translation import get_language
 from requests.exceptions import ConnectionError, ConnectTimeout
 
-logger = logging.getLogger('dongtai-webapi')
+logger = logging.getLogger('dongtai-dongtai_conf')
 
 
 def checkopenapistatus(openapiurl, token):

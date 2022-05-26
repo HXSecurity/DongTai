@@ -11,7 +11,7 @@ from django.db import connection
 from dongtai_web.aggregation.aggregation_common import turnIntListOfStr
 import logging
 
-logger = logging.getLogger('dongtai-webapi')
+logger = logging.getLogger('dongtai-dongtai_conf')
 
 class DelVulMany(UserEndPoint):
     name = "api-v2-aggregation-list-del"

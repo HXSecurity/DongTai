@@ -17,7 +17,7 @@ from dongtai.endpoint import OpenApiEndPoint, R
 
 from dongtai_protocol.api_schema import DongTaiParameter
 from dongtai_protocol.utils import OssDownloader
-from webapi.settings import BUCKET_NAME_BASE_URL, VERSION
+from dongtai_conf.settings import BUCKET_NAME_BASE_URL, VERSION
 logger = logging.getLogger("dongtai.openapi")
 
 PACKAGE_NAME_LIST = ('dongtai-core', 'dongtai-spy', 'dongtai-api',

@@ -11,7 +11,7 @@ from django.http import JsonResponse
 from dongtai.endpoint import AnonymousAuthEndPoint
 from django.utils.translation import gettext_lazy as _
 
-from webapi import settings
+from dongtai_conf import settings
 
 logger = logging.getLogger("django")
 from datetime import datetime

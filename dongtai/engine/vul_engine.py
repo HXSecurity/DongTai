@@ -8,7 +8,7 @@ import copy
 
 from django.utils.functional import cached_property
 
-logger = logging.getLogger('dongtai-webapi')
+logger = logging.getLogger('dongtai-dongtai_conf')
 
 
 class VulEngine(object):

@@ -13,7 +13,7 @@ from dongtai.endpoint import R, TalentAdminEndPoint
 import logging
 from django.utils.translation import gettext_lazy as _
 import os
-from webapi.settings import MEDIA_ROOT
+from dongtai_conf.settings import MEDIA_ROOT
 from rest_framework.parsers import FileUploadParser
 logger = logging.getLogger('dongtai-webapi')
 

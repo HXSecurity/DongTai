@@ -266,7 +266,7 @@ def set_config_change_proprity(config_id, priority_range: list):
         set_config_change_gt(config.id, min(priority_range))
     if max(priority_range) < config.priority:
         set_config_change_lt(config.id, max(priority_range))
-from webapi.settings import DEFAULT_CIRCUITCONFIG
+from dongtai_conf.settings import DEFAULT_CIRCUITCONFIG
 
 
 class AgentThresholdConfigV2(TalentAdminEndPoint, viewsets.ViewSet):

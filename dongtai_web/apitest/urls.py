@@ -11,7 +11,7 @@
 from django.conf.urls.static import static
 from django.urls import include, path
 import os
-from webapi import settings
+from dongtai_conf import settings
 from dongtai_web.apitest.views import (
     ApiTestHeaderEndpoint,
     ApiTestTriggerEndpoint,

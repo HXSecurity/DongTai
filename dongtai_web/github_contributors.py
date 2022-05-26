@@ -32,7 +32,7 @@ URL_LIST = [
     'https://api.github.com/repos/HXSecurity/Dongtai-Base-Image/',
 ]
 
-logger = logging.getLogger('dongtai-webapi')
+logger = logging.getLogger('dongtai-dongtai_conf')
 def _signed_state(dic: dict, state: int):
     dic['state'] = state
     return dic

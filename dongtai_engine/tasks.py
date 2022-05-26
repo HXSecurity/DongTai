@@ -34,7 +34,7 @@ from dongtai.utils import const
 from dongtai_engine.plugins.strategy_headers import check_response_header
 from dongtai_engine.plugins.strategy_sensitive import check_response_content
 from dongtai_engine.replay import Replay
-from webapi import settings
+from dongtai_conf import settings
 from dongtai_web.dongtai_sca import get_dependency_graph, sca_scan_asset
 from dongtai.models.project_report import ProjectReport
 import requests

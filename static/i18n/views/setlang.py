@@ -10,7 +10,7 @@ from dongtai.endpoint import R, AnonymousAndUserEndPoint
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from dongtai_web.utils import extend_schema_with_envcheck
-from webapi.settings import LANGUAGES
+from dongtai_conf.settings import LANGUAGES
 from django.utils.translation import gettext_lazy as _
 LANGUAGE_QUERY_PARAMETER = 'language'
 
