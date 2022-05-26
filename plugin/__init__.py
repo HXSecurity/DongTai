@@ -13,7 +13,7 @@ class DongTaiPlugin:
     appname = 'appserver'
     target_class_name = 'SaasMethodPoolHandler'
     target_func_name = 'save_method_call'
-    target_module_name = 'apiserver.report.handler.saas_method_pool_handler'
+    target_module_name = 'dongtai_protocol.report.handler.saas_method_pool_handler'
 
     def before_patch_function(self, func_args, func_kwargs):
         pass

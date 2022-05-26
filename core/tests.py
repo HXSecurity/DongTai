@@ -3,12 +3,12 @@ from dongtai.models.agent import IastAgent
 from dongtai.models.agent_method_pool import MethodPool
 import gzip
 import base64
-from apiserver.report.report_handler_factory import ReportHandler
+from dongtai_protocol.report.report_handler_factory import ReportHandler
 import json
 from dongtai.models.vulnerablity import IastVulnerabilityModel
 from django.test import TestCase
 from core.tasks import search_vul_from_method_pool
-from apiserver.tests import download_if_not_exist
+from dongtai_protocol.tests import download_if_not_exist
 from django.db import connections
 
 

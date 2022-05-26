@@ -15,7 +15,7 @@ import json
 from rest_framework.test import RequestsClient
 from rest_framework.authtoken.models import Token
 from dongtai.models.agent import IastAgent
-from apiserver.decrypter import parse_data
+from dongtai_protocol.decrypter import parse_data
 
 REGISTER_JSON = {
     "serverPath": "/Users/erzhuangniu/workspace/vul/SecExample",
