@@ -16,7 +16,7 @@ from dongtai_web.serializers.sca import ScaSerializer
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
-from webapi import settings
+from dongtai_conf import settings
 import requests
 import json
 from dongtai_web.dongtai_sca.models import VulCveRelation

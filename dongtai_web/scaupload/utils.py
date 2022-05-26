@@ -23,7 +23,7 @@ def get_packge_vul_from_sca_lib(**kwargs):
 
 def get_from_sca_lib(url, **kwargs):
     from urllib.parse import urljoin
-    from webapi.settings import SCA_BASE_URL
+    from dongtai_conf.settings import SCA_BASE_URL
     import json
     import requests
     finalurl = urljoin(SCA_BASE_URL, url)

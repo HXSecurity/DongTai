@@ -16,7 +16,7 @@ from django.utils.translation import gettext_lazy as _
 
 from dongtai_protocol.api_schema import DongTaiParameter, DongTaiAuth
 from dongtai_protocol.utils import OssDownloader
-from webapi.settings import BUCKET_NAME_BASE_URL, VERSION
+from dongtai_conf.settings import BUCKET_NAME_BASE_URL, VERSION
 
 import shutil
 import tarfile, os

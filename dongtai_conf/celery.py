@@ -12,9 +12,9 @@ from celery import Celery
 # set the default Django settings module for the 'celery' program.
 from kombu import Queue, Exchange
 
-from webapi import settings
+from dongtai_conf import settings
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'webapi.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dongtai_conf.settings')
 
 app = Celery('dongtai')
 
@@ -60,7 +60,7 @@ app.conf.update(configs)
 
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
-from webapi.settings import DONGTAI_CELERY_CACHE_PREHEAT
+from dongtai_conf.settings import DONGTAI_CELERY_CACHE_PREHEAT
 
 def ready(self):
     super().ready()

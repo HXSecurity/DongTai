@@ -13,7 +13,7 @@ from dongtai.models.department import Department
 from dongtai.endpoint import R
 from dongtai.endpoint import SystemAdminEndPoint
 from dongtai_web.notify.email import Email
-from webapi import settings
+from dongtai_conf import settings
 from django.utils.translation import gettext_lazy as _
 import string
 import random

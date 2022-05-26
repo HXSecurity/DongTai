@@ -16,7 +16,7 @@ from dongtai.permissions import TalentAdminPermission
 from dongtai.endpoint import R
 import csv
 from django.http import FileResponse
-from webapi.settings import BASE_DIR
+from dongtai_conf.settings import BASE_DIR
 import os
 from dongtai_web.scaupload.utils import (
     get_packge_from_sca_lib,

@@ -13,7 +13,7 @@ from dongtai_engine.tasks import update_one_sca
 from dongtai_protocol.report.handler.report_handler_interface import IReportHandler
 from dongtai_protocol.report.report_handler_factory import ReportHandler
 import requests
-from webapi import settings
+from dongtai_conf import settings
 
 
 logger = logging.getLogger('dongtai.openapi')

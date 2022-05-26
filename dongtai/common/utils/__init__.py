@@ -1,7 +1,7 @@
 class DongTaiAppConfigPatch():
     def ready(self):
         try:
-            from webapi.plugin import monkey_patch
+            from dongtai_conf.plugin import monkey_patch
             monkey_patch(self.name)
         except ImportError as e:
             print(e)

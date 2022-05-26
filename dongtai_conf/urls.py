@@ -1,4 +1,4 @@
-"""webapi URL Configuration
+"""dongtai_conf URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.0/topics/http/urls/
@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls.static import static
 from django.urls import include, path
 import os
-from webapi import settings
+from dongtai_conf import settings
 from django.views.decorators.csrf import csrf_exempt
 
 urlpatterns = [

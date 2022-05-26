@@ -12,7 +12,7 @@ import oss2
 from oss2.exceptions import NoSuchKey
 from oss2.exceptions import RequestError
 
-from webapi import settings
+from dongtai_conf import settings
 
 logger = logging.getLogger('dongtai.openapi')
 

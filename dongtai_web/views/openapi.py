@@ -1,6 +1,6 @@
 from dongtai.endpoint import R
 from dongtai.endpoint import UserEndPoint
-from webapi.settings import config
+from dongtai_conf.settings import config
 from dongtai.models.profile import IastProfile
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
