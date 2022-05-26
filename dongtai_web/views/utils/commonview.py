@@ -6,9 +6,9 @@
 # @description :
 ######################################################################
 
-from dongtai.models.sensitive_info import IastPatternType,IastSensitiveInfoRule
+from dongtai_common.models.sensitive_info import IastPatternType,IastSensitiveInfoRule
 from rest_framework import serializers
-from dongtai.endpoint import UserEndPoint, R
+from dongtai_common.endpoint import UserEndPoint, R
 from rest_framework.serializers import ValidationError
 
 

@@ -1,11 +1,11 @@
 import logging
 import time
 
-from dongtai.models.agent import IastAgent
-from dongtai.endpoint import OpenApiEndPoint, R
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.endpoint import OpenApiEndPoint, R
 from dongtai_protocol.decrypter import parse_data
 from drf_spectacular.utils import extend_schema
-from dongtai.models.server import IastServer
+from dongtai_common.models.server import IastServer
 from django.utils.translation import gettext_lazy as _
 from urllib.parse import urlparse, urlunparse
 from dongtai_web.views.project_add import is_ip

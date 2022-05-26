@@ -8,8 +8,8 @@ import logging
 
 import time
 
-from dongtai.models.errorlog import IastErrorlog
-from dongtai.utils import const
+from dongtai_common.models.errorlog import IastErrorlog
+from dongtai_common.utils import const
 
 from dongtai_protocol.report.handler.report_handler_interface import IReportHandler
 from dongtai_protocol.report.report_handler_factory import ReportHandler

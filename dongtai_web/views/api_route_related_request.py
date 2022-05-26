@@ -6,11 +6,11 @@
 # @description :
 ######################################################################
 
-from dongtai.models.api_route import IastApiRoute, IastApiMethod, IastApiRoute, HttpMethod, IastApiResponse, IastApiMethodHttpMethodRelation, IastApiParameter
-from dongtai.models.agent_method_pool import MethodPool
+from dongtai_common.models.api_route import IastApiRoute, IastApiMethod, IastApiRoute, HttpMethod, IastApiResponse, IastApiMethodHttpMethodRelation, IastApiParameter
+from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_web.base.project_version import get_project_version, get_project_version_by_id
-from dongtai.endpoint import R, UserEndPoint
-from dongtai.models.agent import IastAgent
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.agent import IastAgent
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
 from django.forms.models import model_to_dict

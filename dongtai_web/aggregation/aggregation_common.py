@@ -1,14 +1,14 @@
 
-from dongtai.models.asset_vul_relation import AssetVulRelation
-from dongtai.models.aql_info import AqlInfo
-from dongtai.models.vulnerablity import IastVulnerabilityModel
-from dongtai.models.agent import IastAgent
-from dongtai.models.hook_type import HookType
-from dongtai.models import LICENSE_RISK,SCA_AVAILABILITY_DICT
+from dongtai_common.models.asset_vul_relation import AssetVulRelation
+from dongtai_common.models.aql_info import AqlInfo
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.hook_type import HookType
+from dongtai_common.models import LICENSE_RISK,SCA_AVAILABILITY_DICT
 from dongtai_web.serializers.vul import VulSerializer
-from dongtai.models import User
-from dongtai.endpoint import UserEndPoint
-from dongtai.models.asset_aggr import AssetAggr
+from dongtai_common.models import User
+from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.models.asset_aggr import AssetAggr
 from django.db.models import Q
 
 # list id 去重

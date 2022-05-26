@@ -1,5 +1,5 @@
-from dongtai.models.agent_method_pool import MethodPool
-from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.models.agent_method_pool import MethodPool
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 
 
 def replay_payload_data(relation_ids, replay_type):

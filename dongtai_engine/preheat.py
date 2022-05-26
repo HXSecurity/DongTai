@@ -1,7 +1,7 @@
 from importlib import import_module
 from celery import shared_task
 from celery.apps.worker import logger
-from dongtai.common.utils import make_hash
+from dongtai_common.common.utils import make_hash
 from django.core.cache import cache
 import random
 from datetime import datetime, timedelta

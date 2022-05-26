@@ -4,8 +4,8 @@
 # datetime:2020/6/3 11:36
 # software: PyCharm
 # project: webapi
-from dongtai.endpoint import UserEndPoint, R
-from dongtai.models.deploy import IastDeployDesc
+from dongtai_common.endpoint import UserEndPoint, R
+from dongtai_common.models.deploy import IastDeployDesc
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck
 

@@ -1,12 +1,12 @@
 import logging
 from django.db.models import Prefetch
 
-from dongtai.endpoint import UserEndPoint, R
+from dongtai_common.endpoint import UserEndPoint, R
 from django.forms.models import model_to_dict
-from dongtai.utils import const
+from dongtai_common.utils import const
 from dongtai_web.serializers.agent import AgentSerializer
 from dongtai_web.utils import get_model_field
-from dongtai.models.agent import IastAgent
+from dongtai_common.models.agent import IastAgent
 from collections import defaultdict
 from functools import reduce
 from django.db.models import Q
@@ -17,10 +17,10 @@ from django.core.cache import cache
 from enum import IntEnum
 from django.db.models.query import QuerySet
 from rest_framework.viewsets import ViewSet
-from dongtai.models.vulnerablity import IastVulnerabilityModel
-from dongtai.models.api_route import IastApiRoute, FromWhereChoices
-from dongtai.models.asset import Asset
-from dongtai.utils.user import get_auth_users__by_id
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.models.api_route import IastApiRoute, FromWhereChoices
+from dongtai_common.models.asset import Asset
+from dongtai_common.utils.user import get_auth_users__by_id
 import json
 
 logger = logging.getLogger('dongtai-webapi')

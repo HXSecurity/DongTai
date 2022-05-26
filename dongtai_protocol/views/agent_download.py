@@ -9,7 +9,7 @@ import os, re
 import uuid, logging
 
 from django.http import FileResponse
-from dongtai.endpoint import UserEndPoint, R
+from dongtai_common.endpoint import UserEndPoint, R
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from rest_framework.authtoken.models import Token
 from django.utils.translation import gettext_lazy as _

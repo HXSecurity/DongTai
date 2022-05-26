@@ -8,7 +8,7 @@ from dongtai_web.views.agents_v2 import (
 from dongtai_web.threshold.config_setting import (convert_choices_to_dict,
                                                   convert_choices_to_value_dict,
                                                   get_metric_types, get_targets)
-from dongtai.models.agent_config import (
+from dongtai_common.models.agent_config import (
     IastCircuitTarget,
     IastCircuitConfig,
     IastCircuitMetric,

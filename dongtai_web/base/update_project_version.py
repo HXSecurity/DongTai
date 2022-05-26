@@ -4,10 +4,10 @@
 # software: PyCharm
 # project: lingzhi-webapi
 import logging, time
-from dongtai.endpoint import UserEndPoint, R
-from dongtai.models.project_version import IastProjectVersion
-from dongtai.models.project import IastProject
-from dongtai.models.agent import IastAgent
+from dongtai_common.endpoint import UserEndPoint, R
+from dongtai_common.models.project_version import IastProjectVersion
+from dongtai_common.models.project import IastProject
+from dongtai_common.models.agent import IastAgent
 from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("django")

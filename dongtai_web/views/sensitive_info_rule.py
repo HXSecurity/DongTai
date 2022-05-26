@@ -10,9 +10,9 @@
 
 import logging
 
-from dongtai.endpoint import UserEndPoint, R
-from dongtai.models.hook_type import HookType
-from dongtai.utils import const
+from dongtai_common.endpoint import UserEndPoint, R
+from dongtai_common.models.hook_type import HookType
+from dongtai_common.utils import const
 
 from dongtai_web.serializers.hook_type_strategy import HookTypeSerialize
 from django.utils.translation import gettext_lazy as _
@@ -25,14 +25,14 @@ from rest_framework import viewsets
 from django.db import connection
 logger = logging.getLogger('dongtai-webapi')
 from django.db import models
-from dongtai.models.strategy import IastStrategyModel
-from dongtai.models.user import User
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.user import User
 import time
 from django.db.models import Q
-from dongtai.models.sensitive_info import IastPatternType,IastSensitiveInfoRule
+from dongtai_common.models.sensitive_info import IastPatternType,IastSensitiveInfoRule
 import jq
 import re2 as re
-from dongtai.permissions import TalentAdminPermission
+from dongtai_common.permissions import TalentAdminPermission
 from dongtai_web.views.utils.commonview import (
     BatchStatusUpdateSerializerView,
     AllStatusUpdateSerializerView,

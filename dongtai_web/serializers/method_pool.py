@@ -6,9 +6,9 @@
 
 from rest_framework import serializers
 
-from dongtai.models.agent_method_pool import MethodPool
-from dongtai.models.asset import Asset
-from dongtai.utils import http
+from dongtai_common.models.agent_method_pool import MethodPool
+from dongtai_common.models.asset import Asset
+from dongtai_common.utils import http
 
 from dongtai_web.serializers.asset import AssetSerializer
 

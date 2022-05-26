@@ -8,8 +8,8 @@
 
 
 from rest_framework.test import APITestCase
-from dongtai.models.server import IastServer
-from dongtai.models.user import User
+from dongtai_common.models.server import IastServer
+from dongtai_common.models.user import User
 from dongtai_web.views.vul_details import VulDetail
 
 

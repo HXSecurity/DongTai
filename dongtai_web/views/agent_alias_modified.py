@@ -7,9 +7,9 @@
 ######################################################################
 
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from dongtai.endpoint import UserEndPoint, R
+from dongtai_common.endpoint import UserEndPoint, R
 from rest_framework import serializers
-from dongtai.models.agent import IastAgent
+from dongtai_common.models.agent import IastAgent
 from rest_framework.serializers import ValidationError
 from django.utils.translation import gettext_lazy as _
 

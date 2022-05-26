@@ -4,8 +4,8 @@
 # software: PyCharm
 # project: lingzhi-webapi
 import pymysql
-from dongtai.endpoint import R, UserEndPoint
-from dongtai.models.vul_level import IastVulLevel
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.vul_level import IastVulLevel
 from django.db import connection
 from dongtai_web.base.agent import get_project_vul_count, get_agent_languages, initlanguage
 from dongtai_web.base.project_version import get_project_version, get_project_version_by_id

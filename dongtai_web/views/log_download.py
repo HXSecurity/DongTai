@@ -1,15 +1,15 @@
 import time
 
-from dongtai.endpoint import R
-from dongtai.endpoint import UserEndPoint
-from dongtai.models.project_report import ProjectReport
+from dongtai_common.endpoint import R
+from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.models.project_report import ProjectReport
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from dongtai_web.utils import extend_schema_with_envcheck
 from django.http import HttpResponse
 from io import BytesIO, StringIO
 from rest_framework.serializers import ValidationError
-from dongtai.models.agent import IastAgent
+from dongtai_common.models.agent import IastAgent
 import os
 from enum import Enum
 from django.http import FileResponse,JsonResponse
@@ -18,7 +18,7 @@ from result import Ok, Err, Result
 import zipfile
 from functools import partial
 from wsgiref.util import FileWrapper
-from dongtai.utils.user import get_auth_users__by_id
+from dongtai_common.utils.user import get_auth_users__by_id
 import json
 from django.http import HttpResponseNotFound
 

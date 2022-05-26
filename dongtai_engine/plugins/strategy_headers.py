@@ -10,10 +10,10 @@ from io import BytesIO
 
 from celery.apps.worker import logger
 from django.db.models import Q
-from dongtai.models.project import IastProject
-from dongtai.models.strategy import IastStrategyModel
-from dongtai.models.vulnerablity import IastVulnerabilityModel
-from dongtai.utils import const
+from dongtai_common.models.project import IastProject
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.utils import const
 
 from dongtai_engine.plugins import is_strategy_enable
 from dongtai_web.vul_log.vul_log import log_vul_found, log_recheck_vul
@@ -122,7 +122,7 @@ def save_vul(vul_type, method_pool, position=None, data=None):
             'context_path', 'client_ip', 'counts', 'latest_time', 'method_pool_id','latest_time_desc'
         ])
     else:
-        from dongtai.models.hook_type import HookType
+        from dongtai_common.models.hook_type import HookType
         hook_type = HookType.objects.filter(vul_strategy_id=vul_strategy.id).first()
         vul = IastVulnerabilityModel.objects.create(
             strategy=vul_strategy,

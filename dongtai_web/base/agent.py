@@ -8,16 +8,16 @@ import json
 import re
 import time
 
-from dongtai.models.agent import IastAgent
-from dongtai.models.program_language import IastProgramLanguage
-from dongtai.models.project import IastProject
-from dongtai.models.server import IastServer
-from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.program_language import IastProgramLanguage
+from dongtai_common.models.project import IastProject
+from dongtai_common.models.server import IastServer
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from django.utils.translation import gettext_lazy as _
-from dongtai.models.hook_type import HookType
+from dongtai_common.models.hook_type import HookType
 from dongtai_web.base.project_version import get_project_version
-from dongtai.models.strategy import IastStrategyModel
-from dongtai.models.project_version import IastProjectVersion
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.project_version import IastProjectVersion
 from django.db.models import Count
 
 

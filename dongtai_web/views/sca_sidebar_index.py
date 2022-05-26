@@ -5,8 +5,8 @@
 # project: lingzhi-webapi
 from django.db.models import Q
 
-from dongtai.endpoint import R, UserEndPoint
-from dongtai.models.asset import Asset
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.asset import Asset
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck
 from django.utils.text import format_lazy

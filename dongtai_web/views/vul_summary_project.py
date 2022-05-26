@@ -4,10 +4,10 @@
 # software: PyCharm
 # project: lingzhi-webapi
 from django.db.models import Count
-from dongtai.endpoint import R
-from dongtai.endpoint import UserEndPoint
-from dongtai.models.vulnerablity import IastVulnerabilityModel
-from dongtai.models.strategy import IastStrategyModel
+from dongtai_common.endpoint import R
+from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.models.strategy import IastStrategyModel
 
 from dongtai_web.base.agent import get_project_vul_count,get_hook_type_name,get_agent_languages
 from dongtai_web.base.project_version import get_project_version, get_project_version_by_id
@@ -16,7 +16,7 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 from dongtai_web.serializers.vul import VulSummaryResponseDataSerializer
 from django.utils.text import format_lazy
 
-from dongtai.models.hook_type import HookType
+from dongtai_common.models.hook_type import HookType
 from django.db.models import Q
 _ResponseSerializer = get_response_serializer(VulSummaryResponseDataSerializer())
 

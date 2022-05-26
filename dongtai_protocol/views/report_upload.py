@@ -5,7 +5,7 @@
 # software: PyCharm
 # project: lingzhi-agent-server
 
-from dongtai.endpoint import OpenApiEndPoint, R
+from dongtai_common.endpoint import OpenApiEndPoint, R
 from drf_spectacular.utils import extend_schema
 import time,logging
 from dongtai_protocol.api_schema import DongTaiParameter

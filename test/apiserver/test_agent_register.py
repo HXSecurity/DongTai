@@ -8,7 +8,7 @@
 
 
 from test.apiserver.test_agent_base import AgentTestCase
-from dongtai.models.agent import IastAgent
+from dongtai_common.models.agent import IastAgent
 import json
 
 

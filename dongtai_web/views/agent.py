@@ -6,11 +6,11 @@
 # project: lingzhi-webapi
 import logging
 
-from dongtai.endpoint import UserEndPoint, R
+from dongtai_common.endpoint import UserEndPoint, R
 
-from dongtai.utils import const
+from dongtai_common.utils import const
 from dongtai_web.utils import get_model_field
-from dongtai.models.agent import IastAgent
+from dongtai_common.models.agent import IastAgent
 from django.forms.models import model_to_dict
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers

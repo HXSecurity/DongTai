@@ -8,17 +8,17 @@ import base64
 import logging
 import time
 
-from dongtai.models.agent import IastAgent
-from dongtai.models.project import IastProject
-from dongtai.models.project_version import IastProjectVersion
-from dongtai.models.server import IastServer
-from dongtai.models.profile import IastProfile
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.project import IastProject
+from dongtai_common.models.project_version import IastProjectVersion
+from dongtai_common.models.server import IastServer
+from dongtai_common.models.profile import IastProfile
 from drf_spectacular.utils import extend_schema
 from rest_framework.request import Request
 from django.utils.translation import gettext_lazy as _
 from django.db import transaction
 import time
-from dongtai.endpoint import OpenApiEndPoint, R
+from dongtai_common.endpoint import OpenApiEndPoint, R
 
 import json
 from dongtai_protocol.api_schema import DongTaiAuth, DongTaiParameter

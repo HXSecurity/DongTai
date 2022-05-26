@@ -4,13 +4,13 @@
 # software: PyCharm
 # project: lingzhi-webapi
 import time
-from dongtai.models.heartbeat import IastHeartbeat
+from dongtai_common.models.heartbeat import IastHeartbeat
 
 from rest_framework import serializers
 
-from dongtai.models.agent import IastAgent
+from dongtai_common.models.agent import IastAgent
 from django.utils.translation import gettext_lazy as _
-from dongtai.models.agent_method_pool import MethodPool
+from dongtai_common.models.agent_method_pool import MethodPool
 from collections import defaultdict
 
 class AgentSerializer(serializers.ModelSerializer):

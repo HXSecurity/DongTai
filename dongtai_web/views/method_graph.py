@@ -6,13 +6,13 @@
 import json
 import logging
 
-from dongtai.endpoint import R, AnonymousAndUserEndPoint
-from dongtai.engine.vul_engine import VulEngine
-from dongtai.engine.vul_engine_v2 import VulEngineV2
-from dongtai.models.agent_method_pool import MethodPool
-from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
-from dongtai.utils import const
-from dongtai.utils.validate import Validate
+from dongtai_common.endpoint import R, AnonymousAndUserEndPoint
+from dongtai_common.engine.vul_engine import VulEngine
+from dongtai_common.engine.vul_engine_v2 import VulEngineV2
+from dongtai_common.models.agent_method_pool import MethodPool
+from dongtai_common.models.replay_method_pool import IastAgentMethodPoolReplay
+from dongtai_common.utils import const
+from dongtai_common.utils.validate import Validate
 from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('dongtai-webapi')

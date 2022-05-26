@@ -6,9 +6,9 @@
 # project: webapi
 
 import time
-from dongtai.endpoint import UserEndPoint, R
-from dongtai.models.deploy import IastDeployDesc
-from dongtai.models.system import IastSystem
+from dongtai_common.endpoint import UserEndPoint, R
+from dongtai_common.models.deploy import IastDeployDesc
+from dongtai_common.models.system import IastSystem
 from rest_framework.authtoken.models import Token
 from django.utils.translation import gettext_lazy as _
 

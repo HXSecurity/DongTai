@@ -6,23 +6,23 @@
 import logging
 
 import time
-from dongtai.models.agent import IastAgent
-from dongtai.models.project import IastProject
-from dongtai.models.replay_queue import IastReplayQueue
-from dongtai.models.vulnerablity import IastVulnerabilityModel
-from dongtai.utils.validate import Validate
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.project import IastProject
+from dongtai_common.models.replay_queue import IastReplayQueue
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.utils.validate import Validate
 from dongtai_web.aggregation.aggregation_common import turnIntListOfStr
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
 
-from dongtai.endpoint import R
-from dongtai.utils import const
-from dongtai.endpoint import UserEndPoint
+from dongtai_common.endpoint import R
+from dongtai_common.utils import const
+from dongtai_common.endpoint import UserEndPoint
 from django.utils.translation import gettext_lazy as _
 from django.db.models import F
 from django.db.models import Q
 import threading
-from dongtai.models.vul_recheck_payload import IastVulRecheckPayload
+from dongtai_common.models.vul_recheck_payload import IastVulRecheckPayload
 logger = logging.getLogger('dongtai-webapi')
 
 

@@ -12,11 +12,11 @@ import logging
 import random
 import time
 
-from dongtai.models.hook_type import HookType
-from dongtai.models.strategy import IastStrategyModel
-from dongtai.models.vulnerablity import IastVulnerabilityModel
-from dongtai.models.project import IastProject
-from dongtai.utils import const
+from dongtai_common.models.hook_type import HookType
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.models.project import IastProject
+from dongtai_common.utils import const
 from dongtai_conf import settings
 from dongtai_protocol.report.handler.report_handler_interface import IReportHandler
 from dongtai_protocol.report.report_handler_factory import ReportHandler

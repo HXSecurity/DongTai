@@ -5,8 +5,8 @@ import logging
 from captcha.models import CaptchaStore
 from django.contrib.auth import authenticate, login
 from dongtai_web.utils import extend_schema_with_envcheck
-from dongtai.endpoint import R
-from dongtai.endpoint import UserEndPoint
+from dongtai_common.endpoint import R
+from dongtai_common.endpoint import UserEndPoint
 from django.utils.translation import gettext_lazy as _
 import time
 

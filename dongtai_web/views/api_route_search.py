@@ -7,8 +7,8 @@
 ######################################################################
 
 from django.db.models import Q
-from dongtai.endpoint import R, UserEndPoint
-from dongtai.models.api_route import (
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.api_route import (
     IastApiRoute,
     IastApiMethod,
     IastApiRoute,
@@ -18,21 +18,21 @@ from dongtai.models.api_route import (
     IastApiParameter,
     FromWhereChoices,
 )
-from dongtai.models.agent import IastAgent
+from dongtai_common.models.agent import IastAgent
 from dongtai_web.base.project_version import get_project_version, get_project_version_by_id
-from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 import hashlib
-from dongtai.models.agent_method_pool import MethodPool
+from dongtai_common.models.agent_method_pool import MethodPool
 from django.forms.models import model_to_dict
 from dongtai_web.utils import checkcover, batch_queryset
 from django.core.cache import caches
 from functools import partial
-from dongtai.models.hook_type import HookType
+from dongtai_common.models.hook_type import HookType
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 import logging
-from dongtai.models.strategy import IastStrategyModel
+from dongtai_common.models.strategy import IastStrategyModel
 
 logger = logging.getLogger('dongtai-webapi')
 

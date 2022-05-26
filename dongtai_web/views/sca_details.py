@@ -6,11 +6,11 @@
 # project: webapi
 import logging
 
-from dongtai.endpoint import R, UserEndPoint
-from dongtai.models.asset import Asset
-from dongtai.models.sca_artifact_db import ScaArtifactDb
-from dongtai.models.sca_maven_artifact import ScaMavenArtifact
-from dongtai.models.vul_level import IastVulLevel
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.asset import Asset
+from dongtai_common.models.sca_artifact_db import ScaArtifactDb
+from dongtai_common.models.sca_maven_artifact import ScaMavenArtifact
+from dongtai_common.models.vul_level import IastVulLevel
 from django.utils.translation import get_language
 from dongtai_web.serializers.sca import ScaSerializer
 from django.utils.translation import gettext_lazy as _

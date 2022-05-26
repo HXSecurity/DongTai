@@ -6,12 +6,12 @@
 import logging
 from django.db.models import Prefetch
 
-from dongtai.endpoint import UserEndPoint, R
+from dongtai_common.endpoint import UserEndPoint, R
 from django.forms.models import model_to_dict
-from dongtai.utils import const
+from dongtai_common.utils import const
 from dongtai_web.serializers.agent import AgentSerializer
 from dongtai_web.utils import get_model_field
-from dongtai.models.agent import IastAgent
+from dongtai_common.models.agent import IastAgent
 from collections import defaultdict
 from functools import reduce
 from django.db.models import Q

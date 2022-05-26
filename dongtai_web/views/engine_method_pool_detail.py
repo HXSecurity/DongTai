@@ -6,9 +6,9 @@
 import json
 import logging
 
-from dongtai.endpoint import R, AnonymousAndUserEndPoint
-from dongtai.engine.vul_engine import VulEngine
-from dongtai.models.agent_method_pool import MethodPool
+from dongtai_common.endpoint import R, AnonymousAndUserEndPoint
+from dongtai_common.engine.vul_engine import VulEngine
+from dongtai_common.models.agent_method_pool import MethodPool
 
 from dongtai_web.serializers.method_pool import MethodPoolListSerialize
 from django.utils.translation import gettext_lazy as _

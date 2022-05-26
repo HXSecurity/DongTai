@@ -5,9 +5,9 @@
 # @time: 2022/5/9  下午3:45
 from celery import shared_task
 
-from dongtai.models import User
-from dongtai.models.agent import IastAgent
-from dongtai.models.asset import Asset
+from dongtai_common.models import User
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.asset import Asset
 from celery.apps.worker import logger
 
 from dongtai_web.dongtai_sca import sca_scan_asset

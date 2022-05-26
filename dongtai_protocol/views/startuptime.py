@@ -10,11 +10,11 @@
 
 import logging
 
-from dongtai.models.agent import IastAgent
-from dongtai.models.agent_properties import IastAgentProperties
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.agent_properties import IastAgentProperties
 from rest_framework.request import Request
 
-from dongtai.endpoint import OpenApiEndPoint, R
+from dongtai_common.endpoint import OpenApiEndPoint, R
 from dongtai_protocol.serializers.agent_properties import AgentPropertiesSerialize
 import time
 from dongtai_protocol.api_schema import DongTaiParameter, DongTaiAuth

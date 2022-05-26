@@ -7,8 +7,8 @@
 import time
 
 from django.forms import model_to_dict
-from dongtai.endpoint import UserEndPoint, R
-from dongtai.models.agent_config import IastAgentConfig
+from dongtai_common.endpoint import UserEndPoint, R
+from dongtai_common.models.agent_config import IastAgentConfig
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 

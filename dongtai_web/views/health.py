@@ -8,9 +8,9 @@
 
 
 
-from dongtai.endpoint import R
+from dongtai_common.endpoint import R
 from django.utils.translation import gettext_lazy as _
-from dongtai.endpoint import UserEndPoint
+from dongtai_common.endpoint import UserEndPoint
 from dongtai_web.utils import get_openapi, validate_url
 import requests
 from urllib.parse import urljoin

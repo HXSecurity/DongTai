@@ -6,9 +6,9 @@
 # project: lingzhi-webapi
 from rest_framework.request import Request
 
-from dongtai.endpoint import R
-from dongtai.endpoint import UserEndPoint
-from dongtai.models.strategy_user import IastStrategyUser
+from dongtai_common.endpoint import R
+from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.models.strategy_user import IastStrategyUser
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 

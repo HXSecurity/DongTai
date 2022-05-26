@@ -12,31 +12,31 @@ from celery import shared_task
 from celery.apps.worker import logger
 from django.db.models import Sum, Q
 
-from dongtai.engine.vul_engine import VulEngine
-from dongtai.models import User
-from dongtai.models.agent import IastAgent
-from dongtai.models.agent_method_pool import MethodPool
-from dongtai.models.asset import Asset
-from dongtai.models.errorlog import IastErrorlog
-from dongtai.models.heartbeat import IastHeartbeat
-from dongtai.models.hook_strategy import HookStrategy
-from dongtai.models.hook_type import HookType
-from dongtai.models.project import IastProject
-from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
-from dongtai.models.replay_queue import IastReplayQueue
-from dongtai.models.sca_maven_db import ScaMavenDb
-from dongtai.models.sca_vul_db import ScaVulDb
-from dongtai.models.strategy import IastStrategyModel
-from dongtai.models.vul_level import IastVulLevel
-from dongtai.models.vulnerablity import IastVulnerabilityModel
-from dongtai.utils import const
+from dongtai_common.engine.vul_engine import VulEngine
+from dongtai_common.models import User
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.agent_method_pool import MethodPool
+from dongtai_common.models.asset import Asset
+from dongtai_common.models.errorlog import IastErrorlog
+from dongtai_common.models.heartbeat import IastHeartbeat
+from dongtai_common.models.hook_strategy import HookStrategy
+from dongtai_common.models.hook_type import HookType
+from dongtai_common.models.project import IastProject
+from dongtai_common.models.replay_method_pool import IastAgentMethodPoolReplay
+from dongtai_common.models.replay_queue import IastReplayQueue
+from dongtai_common.models.sca_maven_db import ScaMavenDb
+from dongtai_common.models.sca_vul_db import ScaVulDb
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.vul_level import IastVulLevel
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.utils import const
 
 from dongtai_engine.plugins.strategy_headers import check_response_header
 from dongtai_engine.plugins.strategy_sensitive import check_response_content
 from dongtai_engine.replay import Replay
 from dongtai_conf import settings
 from dongtai_web.dongtai_sca import get_dependency_graph, sca_scan_asset
-from dongtai.models.project_report import ProjectReport
+from dongtai_common.models.project_report import ProjectReport
 import requests
 from hashlib import sha1
 from dongtai_engine.task_base import replay_payload_data

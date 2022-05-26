@@ -1,15 +1,15 @@
 
-from dongtai.endpoint import UserEndPoint
+from dongtai_common.endpoint import UserEndPoint
 from dongtai_web.utils import extend_schema_with_envcheck
 from dongtai_web.serializers.aggregation import AggregationArgsSerializer
 from django.utils.translation import gettext_lazy as _
-from dongtai.endpoint import R
+from dongtai_common.endpoint import R
 from dongtai_web.aggregation.aggregation_common import auth_user_list_str
-from dongtai.models import LANGUAGE_DICT
+from dongtai_common.models import LANGUAGE_DICT
 from rest_framework.serializers import ValidationError
 from django.db import connection
-from dongtai.common.utils import cached_decorator
-from dongtai.models import APP_LEVEL_RISK
+from dongtai_common.common.utils import cached_decorator
+from dongtai_common.models import APP_LEVEL_RISK
 
 def get_annotate_sca_common_data(user_id: int, pro_condition: str):
     return get_annotate_sca_base_data(user_id,pro_condition)

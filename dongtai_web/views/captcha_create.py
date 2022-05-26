@@ -5,7 +5,7 @@
 # project: lingzhi-webapi
 from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
-from dongtai.endpoint import R
+from dongtai_common.endpoint import R
 from rest_framework.views import APIView
 
 

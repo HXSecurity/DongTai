@@ -4,9 +4,9 @@
 # software: PyCharm
 # project: lingzhi-webapi
 import logging, time
-from dongtai.endpoint import R
-from dongtai.endpoint import UserEndPoint
-from dongtai.models.project_version import IastProjectVersion
+from dongtai_common.endpoint import R
+from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.models.project_version import IastProjectVersion
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer

@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from dongtai.endpoint import R
-from dongtai.endpoint import UserEndPoint
-from dongtai.models.version_control import VersionControl
+from dongtai_common.endpoint import R
+from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.models.version_control import VersionControl
 import json
 # Create your views here.
 

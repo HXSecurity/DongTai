@@ -8,7 +8,7 @@
 
 
 from rest_framework.test import APITestCase
-from dongtai.models.user import User
+from dongtai_common.models.user import User
 
 class SensitiveInfoRuleTestCase(APITestCase):
     def setUp(self):

@@ -7,17 +7,17 @@
 
 import logging
 
-from dongtai.endpoint import UserEndPoint, R
-from dongtai.models.asset import Asset
-from dongtai.models.errorlog import IastErrorlog
-from dongtai.models.heartbeat import IastHeartbeat
-from dongtai.models.iast_overpower_user import IastOverpowerUserAuth
-from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
-from dongtai.models.replay_queue import IastReplayQueue
-from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.endpoint import UserEndPoint, R
+from dongtai_common.models.asset import Asset
+from dongtai_common.models.errorlog import IastErrorlog
+from dongtai_common.models.heartbeat import IastHeartbeat
+from dongtai_common.models.iast_overpower_user import IastOverpowerUserAuth
+from dongtai_common.models.replay_method_pool import IastAgentMethodPoolReplay
+from dongtai_common.models.replay_queue import IastReplayQueue
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 
-from dongtai.models.agent import IastAgent
-from dongtai.models.agent_method_pool import MethodPool
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.agent_method_pool import MethodPool
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 

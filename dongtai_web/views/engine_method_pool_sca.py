@@ -2,14 +2,14 @@
 # -*- coding:utf-8 -*-
 # author: owefsad@huoxian.cn
 # project: dongtai-webapi
-from dongtai.endpoint import AnonymousAndUserEndPoint, R
-from dongtai.models.agent_method_pool import MethodPool
-from dongtai.models.asset import Asset
+from dongtai_common.endpoint import AnonymousAndUserEndPoint, R
+from dongtai_common.models.agent_method_pool import MethodPool
+from dongtai_common.models.asset import Asset
 
 from dongtai_web.serializers.sca import ScaSerializer
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from dongtai.models.sca_maven_db import ScaMavenDb
+from dongtai_common.models.sca_maven_db import ScaMavenDb
 
 _ResponseSerializer = get_response_serializer(
     data_serializer=ScaSerializer(many=True), )

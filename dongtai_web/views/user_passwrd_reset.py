@@ -5,10 +5,10 @@
 # project: lingzhi-webapi
 import logging
 
-from dongtai.models import User
+from dongtai_common.models import User
 
-from dongtai.endpoint import R
-from dongtai.endpoint import TalentAdminEndPoint
+from dongtai_common.endpoint import R
+from dongtai_common.endpoint import TalentAdminEndPoint
 from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("dongtai-webapi")

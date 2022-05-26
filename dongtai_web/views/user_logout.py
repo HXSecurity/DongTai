@@ -8,7 +8,7 @@ import logging
 
 from django.contrib.auth import logout
 from django.http import JsonResponse
-from dongtai.endpoint import AnonymousAuthEndPoint
+from dongtai_common.endpoint import AnonymousAuthEndPoint
 from django.utils.translation import gettext_lazy as _
 
 from dongtai_conf import settings

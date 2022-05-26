@@ -1,9 +1,9 @@
 import logging
 
 from django.forms.models import model_to_dict
-from dongtai.endpoint import R
-from dongtai.endpoint import UserEndPoint
-from dongtai.models.project import IastProject
+from dongtai_common.endpoint import R
+from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.models.project import IastProject
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers

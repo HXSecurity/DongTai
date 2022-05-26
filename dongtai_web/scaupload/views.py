@@ -1,19 +1,19 @@
 from django.shortcuts import render
-from dongtai.endpoint import UserEndPoint
+from dongtai_common.endpoint import UserEndPoint
 from django.db.models import Q
-from dongtai.models.sca_maven_db import (
+from dongtai_common.models.sca_maven_db import (
     ScaMavenDb,
     ImportFrom,
 )
-from dongtai.models.sca_artifact_db import ScaArtifactDb
+from dongtai_common.models.sca_artifact_db import ScaArtifactDb
 from rest_framework import serializers
 from rest_framework import generics
 from rest_framework.serializers import ValidationError
 from rest_framework import viewsets
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.translation import gettext_lazy as _
-from dongtai.permissions import TalentAdminPermission
-from dongtai.endpoint import R
+from dongtai_common.permissions import TalentAdminPermission
+from dongtai_common.endpoint import R
 import csv
 from django.http import FileResponse
 from dongtai_conf.settings import BASE_DIR

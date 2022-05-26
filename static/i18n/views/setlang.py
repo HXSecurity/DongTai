@@ -6,7 +6,7 @@
 # @description :
 ######################################################################
 
-from dongtai.endpoint import R, AnonymousAndUserEndPoint
+from dongtai_common.endpoint import R, AnonymousAndUserEndPoint
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from dongtai_web.utils import extend_schema_with_envcheck

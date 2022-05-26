@@ -7,8 +7,8 @@
 import re
 
 import jq
-from dongtai.models.sensitive_info import IastSensitiveInfoRule
-from dongtai.utils import const
+from dongtai_common.models.sensitive_info import IastSensitiveInfoRule
+from dongtai_common.utils import const
 from celery.apps.worker import logger
 
 from dongtai_engine.plugins.strategy_headers import save_vul

@@ -14,11 +14,11 @@ from hashlib import sha256,sha1
 import requests
 from django.db import transaction
 
-from dongtai.models.agent_method_pool import MethodPool
-from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
-from dongtai.models.replay_queue import IastReplayQueue
-from dongtai.utils import const
-from dongtai.models.res_header import (
+from dongtai_common.models.agent_method_pool import MethodPool
+from dongtai_common.models.replay_method_pool import IastAgentMethodPoolReplay
+from dongtai_common.models.replay_queue import IastReplayQueue
+from dongtai_common.utils import const
+from dongtai_common.models.res_header import (
     ProjectSaasMethodPoolHeader,
     HeaderType,
 )
@@ -349,8 +349,8 @@ class SaasMethodPoolHandler(IReportHandler):
         return h.hexdigest()
 
 
-from dongtai.models.api_route import (IastApiRoute, IastApiMethod,
-                                      FromWhereChoices)
+from dongtai_common.models.api_route import (IastApiRoute, IastApiMethod,
+                                             FromWhereChoices)
 from django.db.utils import IntegrityError
 
 

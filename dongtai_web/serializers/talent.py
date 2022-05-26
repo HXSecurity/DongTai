@@ -5,8 +5,8 @@
 # project: lingzhi-webapi
 from rest_framework import serializers
 
-from dongtai.models import User
-from dongtai.models.talent import Talent
+from dongtai_common.models import User
+from dongtai_common.models.talent import Talent
 
 
 class TalentSerializer(serializers.ModelSerializer):

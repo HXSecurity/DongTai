@@ -124,7 +124,7 @@ USE_L10N = True
 MODELTRANSLATION_FALLBACK_LANGUAGES = ('zh', 'en')
 MIDDLEWARE = [
     'django.middleware.gzip.GZipMiddleware',
-    'dongtai.common.utils.CSPMiddleware',
+    'dongtai_common.common.utils.CSPMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -163,7 +163,7 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ORIGIN_REGEX_WHITELIST = [
     r"^https://\w+\.huoxian.cn:(\:\d+)?$",
-    r"^https://\w+\.dongtai.io:(\:\d+)?$",
+    r"^https://\w+\.dongtai_common.io:(\:\d+)?$",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -266,7 +266,7 @@ AUTH_PASSWORD_VALIDATORS = [
         }
     },
 ]
-AUTH_USER_MODEL = 'dongtai.User'
+AUTH_USER_MODEL = 'dongtai_common.User'
 TIME_ZONE = "Asia/Shanghai"
 STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static')

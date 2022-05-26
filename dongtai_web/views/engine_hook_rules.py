@@ -5,11 +5,11 @@
 # project: lingzhi-webapi
 import logging
 
-from dongtai.endpoint import UserEndPoint, R
+from dongtai_common.endpoint import UserEndPoint, R
 from django.db.models import Q
-from dongtai.models.hook_strategy import HookStrategy
-from dongtai.models.hook_type import HookType
-from dongtai.utils import const
+from dongtai_common.models.hook_strategy import HookStrategy
+from dongtai_common.models.hook_type import HookType
+from dongtai_common.utils import const
 
 from dongtai_web.serializers.hook_strategy import HookRuleSerializer
 from django.utils.translation import gettext_lazy as _

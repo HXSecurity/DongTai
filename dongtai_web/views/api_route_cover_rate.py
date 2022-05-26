@@ -7,13 +7,13 @@
 ######################################################################
 
 from dongtai_web.base.project_version import get_project_version, get_project_version_by_id
-from dongtai.models.agent import IastAgent
-from dongtai.endpoint import R, UserEndPoint
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.endpoint import R, UserEndPoint
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import batch_queryset, checkcover_batch
 from dongtai_web.utils import extend_schema_with_envcheck
-from dongtai.models.api_route import IastApiRoute, FromWhereChoices
+from dongtai_common.models.api_route import IastApiRoute, FromWhereChoices
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
 

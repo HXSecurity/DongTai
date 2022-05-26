@@ -3,15 +3,15 @@
 # author:owefsad
 # software: PyCharm
 # project: lingzhi-webapi
-from dongtai.models.agent import IastAgent
-from dongtai.models.asset_aggr import AssetAggr
-from dongtai.models.project_version import IastProjectVersion
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.asset_aggr import AssetAggr
+from dongtai_common.models.project_version import IastProjectVersion
 from rest_framework import serializers
 
-from dongtai.models.asset import Asset
-from dongtai.models.project import IastProject
+from dongtai_common.models.asset import Asset
+from dongtai_common.models.project import IastProject
 from django.utils.translation import gettext_lazy as _
-from dongtai.models.sca_maven_db import ScaMavenDb
+from dongtai_common.models.sca_maven_db import ScaMavenDb
 from dongtai_web.dongtai_sca.models import PackageLicenseLevel, PackageLicenseInfo
 
 

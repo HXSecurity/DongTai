@@ -13,7 +13,7 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.request import Request
 
-from dongtai.endpoint import OpenApiEndPoint, R
+from dongtai_common.endpoint import OpenApiEndPoint, R
 
 from dongtai_protocol.api_schema import DongTaiParameter
 from dongtai_protocol.utils import OssDownloader
