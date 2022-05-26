@@ -11,7 +11,6 @@ from json import JSONDecodeError
 from celery import shared_task
 from celery.apps.worker import logger
 from django.db.models import Sum, Q
-from django.forms import model_to_dict
 
 from dongtai.engine.vul_engine import VulEngine
 from dongtai.models import User
@@ -25,7 +24,6 @@ from dongtai.models.hook_type import HookType
 from dongtai.models.project import IastProject
 from dongtai.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai.models.replay_queue import IastReplayQueue
-from dongtai.models.sca_maven_artifact import ScaMavenArtifact
 from dongtai.models.sca_maven_db import ScaMavenDb
 from dongtai.models.sca_vul_db import ScaVulDb
 from dongtai.models.strategy import IastStrategyModel
@@ -37,9 +35,7 @@ from dongtai_engine.plugins.strategy_headers import check_response_header
 from dongtai_engine.plugins.strategy_sensitive import check_response_content
 from dongtai_engine.replay import Replay
 from webapi import settings
-from dongtai_sca.models import Package, VulPackageRange, VulPackage, Vul
-from dongtai_sca.utils import get_dependency_graph, sca_scan_asset
-from dongtai_engine.signals import vul_found
+from dongtai_web.dongtai_sca import get_dependency_graph, sca_scan_asset
 from dongtai.models.project_report import ProjectReport
 import requests
 from hashlib import sha1
