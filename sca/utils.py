@@ -20,7 +20,7 @@ from dongtai.models.asset_aggr import AssetAggr
 from dongtai.models.asset_vul import IastAssetVul, IastVulAssetRelation, IastAssetVulType, IastAssetVulTypeRelation
 from dongtai.models.sca_maven_db import ScaMavenDb
 from dongtai.models.vul_level import IastVulLevel
-from iast.vul_log.vul_log import log_asset_vul_found
+from dongtai_web.vul_log.vul_log import log_asset_vul_found
 from sca.models import Package, VulPackageRange, VulPackageVersion, VulPackage, PackageRepoDependency, Vul, \
     VulCveRelation, PackageLicenseLevel
 

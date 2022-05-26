@@ -8,7 +8,7 @@ from drf_spectacular.utils import extend_schema
 from dongtai.models.server import IastServer
 from django.utils.translation import gettext_lazy as _
 from urllib.parse import urlparse, urlunparse
-from iast.views.project_add import is_ip
+from dongtai_web.views.project_add import is_ip
 logger = logging.getLogger('dongtai.openapi')
 
 

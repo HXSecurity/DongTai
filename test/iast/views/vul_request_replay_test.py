@@ -8,7 +8,7 @@ class MyTestCase(DongTaiTestCase):
         self.assertEqual(True, False)
 
     def test_HttpRequest(self):
-        from iast.views.vul_request_replay import HttpRequest
+        from dongtai_web.views.vul_request_replay import HttpRequest
         raw_request = 'POST /system/role/list HTTP/1.1\n' \
                       'host:localhost\n' \
                       'connection:keep-alive\n' \
@@ -54,7 +54,7 @@ class MyTestCase(DongTaiTestCase):
                       'cookie:JSESSIONID=ec213e6e-ff23-42f6-b8f9-079eeb00d1a8\n\n' \
                       'pageSize=10&pageNum=1&orderByColumn=roleSort&isAsc=asc&roleName=&roleKey=&' \
                       'status=&params[beginTime]=&params[endTime]='
-        from iast.views.vul_request_replay import HttpRequest
+        from dongtai_web.views.vul_request_replay import HttpRequest
         request = HttpRequest(raw_request)
         print(request.command)
         print(request.uri)

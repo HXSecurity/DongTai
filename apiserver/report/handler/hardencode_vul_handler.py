@@ -23,7 +23,7 @@ from apiserver.report.report_handler_factory import ReportHandler
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import ValidationError
-from iast.vul_log.vul_log import log_vul_found
+from dongtai_web.vul_log.vul_log import log_vul_found
 
 
 logger = logging.getLogger('dongtai.openapi')

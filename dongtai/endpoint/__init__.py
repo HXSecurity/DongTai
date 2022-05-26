@@ -103,7 +103,7 @@ class EndPoint(APIView):
             return self.finalize_response(request, response, *args, **kwargs)
 
         self.response = self.finalize_response(request, response, *args, **kwargs)
-        if self.request.user is not None and self.request.user.is_active and handler.__module__.startswith('iast') and self.description is not None:
+        if self.request.user is not None and self.request.user.is_active and handler.__module__.startswith('dongtai_web') and self.description is not None:
             self.log_manager.log_action(
                 user_id=self.request.user.id,
                 content_type_id=ContentType.objects.get_or_create(app_label=self.request.content_type)[0].id,

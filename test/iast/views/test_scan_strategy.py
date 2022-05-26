@@ -10,7 +10,7 @@
 
 from rest_framework.test import APITestCase
 from django.urls import include, path, reverse
-from iast.views.scan_strategys import ScanStrategyViewSet
+from dongtai_web.views.scan_strategys import ScanStrategyViewSet
 from dongtai.models.user import User
 
 
