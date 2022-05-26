@@ -1,8 +1,8 @@
 from django.urls import include, path
 
-from dongtai_web.dongtai_sca.asset_projects import AssetProjects, AssetVulProjects, ProjectsAssets
-from dongtai_web.dongtai_sca.package import PackageList, AssetAggrDetailAssetIds
-from dongtai_web.dongtai_sca.package_vul import OnePackageVulList, AssetPackageVulList, AssetPackageVulDetail
+from dongtai_web.dongtai_sca.views.asset_projects import AssetProjects, AssetVulProjects, ProjectsAssets
+from dongtai_web.dongtai_sca.views.package import PackageList, AssetAggrDetailAssetIds
+from dongtai_web.dongtai_sca.views.package_vul import OnePackageVulList, AssetPackageVulList, AssetPackageVulDetail
 from rest_framework import routers
 
 router = routers.DefaultRouter()
