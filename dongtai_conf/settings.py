@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'captcha',
     'modeltranslation',
     'django_celery_beat',
+    'deploy.commands'
 ]
 DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 def get_installed_apps():

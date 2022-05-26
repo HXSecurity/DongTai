@@ -21,7 +21,7 @@ from dongtai_common.models.asset_vul import IastAssetVul, IastVulAssetRelation, 
 from dongtai_common.models.sca_maven_db import ScaMavenDb
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_web.vul_log.vul_log import log_asset_vul_found
-from dongtai_web.dongtai_sca import Package, VulPackageRange, VulPackageVersion, VulPackage, PackageRepoDependency, Vul, \
+from dongtai_web.dongtai_sca.models import Package, VulPackageRange, VulPackageVersion, VulPackage, PackageRepoDependency, Vul, \
     VulCveRelation, PackageLicenseLevel
 
 logger = logging.getLogger(__name__)
