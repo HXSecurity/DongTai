@@ -15,7 +15,7 @@ from dongtai.utils import const
 from webapi import settings
 from core.signals import vul_found
 from dongtai.utils.systemsettings import get_vul_validate
-from iast.vul_log.vul_log import log_vul_found, log_recheck_vul
+from dongtai_web.vul_log.vul_log import log_vul_found, log_recheck_vul
 from django.db.models import Q
 
 def equals(source, target):

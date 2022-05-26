@@ -15,7 +15,7 @@ from dongtai.models.vulnerablity import IastVulnerabilityModel
 from dongtai.models.hook_type import HookType
 import time
 from ddt import ddt, data, unpack
-from iast.serializers.vul import VulSerializer
+from dongtai_web.serializers.vul import VulSerializer
 
 TEST_DATA = ('', None, 'Django', 'Apache Tomcat/9.0.37', 'Tomcat/8.x',
              'php-fpm', 'WebLogic')

@@ -8,7 +8,7 @@
 
 import django
 from rest_framework.test import APITestCase
-from iast.views.documents import DocumentsEndpoint
+from dongtai_web.views.documents import DocumentsEndpoint
 from django.urls import reverse
 from urllib.parse import urlencode
 from rest_framework.serializers import SerializerMetaclass
