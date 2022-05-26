@@ -17,6 +17,26 @@
 
 DongTai是一款开源的被动式交互式安全测试(IAST)产品，通过动态hook和污点跟踪算法等实现**通用漏洞检测**、**多请求关联漏洞检测(包括但不限于越权漏洞、未授权访问)**、**第三方组件漏洞检测**等，目前支持Java、Python两种语言的应用漏洞检测。
 
+## 项目结构
+
+```
+.
+├── apiserver 与agent交互的相关协议
+├── conf 配置文件
+├── core 漏洞检测以及漏洞处理部分
+├── deploy 部署文件
+├── dongtai 共有的模型类
+├── i18n 国际化文件
+├── iast 与web交互的API
+├── plugin 插件目录
+├── sca 组件检测文件
+├── test 测试文件
+├── upload 静态文件
+├── utils 公共方法
+└── webapi 项目设置
+```
+
+
 ## 技术架构
 
 "火线-洞态IAST"具有多个基础服务，包括：`DongTai-web`、`DongTai-webapi`、`DongTai-openapi`、`DongTai-engine`、`agent`、`DongTai-Base-Image`、`DongTai-Plugin-IDEA`，其中：
