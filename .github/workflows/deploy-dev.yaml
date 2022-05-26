@@ -49,7 +49,7 @@ jobs:
           
       - name: Generate version file
         run: |
-          echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('${{ github.run_number }}.0.0', '${{ github.event.repository.name }}', '${GITHUB_SHA}');" >> ./docker/version.sql
+          echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('${{ github.run_number }}.0.0', '${{ github.event.repository.name }}', '${GITHUB_SHA}');" >> ./deploy/docker/version.sql
         
       - name: Build and push
         uses: docker/build-push-action@v2
