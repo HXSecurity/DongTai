@@ -9,10 +9,10 @@
 
 
 from test.apiserver.test_agent_base import AgentTestCase
-from dongtai.models.agent import IastAgent
-from dongtai.models.agent_method_pool import MethodPool
-from dongtai.models.strategy import IastStrategyModel
-from dongtai.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.agent_method_pool import MethodPool
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 import json
 
 class AgentHardencodeTestCase(AgentTestCase):

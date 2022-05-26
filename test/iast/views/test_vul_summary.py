@@ -9,10 +9,10 @@
 
 from rest_framework.test import APITestCase
 from django.urls import include, path, reverse
-from dongtai.models.user import User
-from dongtai.models.agent import IastAgent
-from dongtai.models.vulnerablity import IastVulnerabilityModel
-from dongtai.models.hook_type import HookType
+from dongtai_common.models.user import User
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.models.hook_type import HookType
 import time
 
 class ScanStrategyTestCase(APITestCase):
