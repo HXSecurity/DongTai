@@ -25,29 +25,25 @@ configs = {k: v for k, v in settings.__dict__.items() if k.startswith('CELERY')}
 #   should have a `CELERY_` prefix.
 
 configs["CELERY_QUEUES"] = [
+    # normal
     Queue("dongtai-method-pool-scan", Exchange("dongtai-method-pool-scan"), routing_key="dongtai-method-pool-scan"),
     Queue("dongtai-replay-vul-scan", Exchange("dongtai-replay-vul-scan"), routing_key="dongtai-replay-vul-scan"),
-    Queue("dongtai-strategy-scan", Exchange("dongtai-strategy-scan"), routing_key="dongtai-strategy-scan"),
-    Queue("dongtai-search-scan", Exchange("dongtai-search-scan"), routing_key="dongtai-search-scan"),
-    Queue("dongtai-periodic-task", Exchange("dongtai-periodic-task"), routing_key="dongtai-periodic-task"),
-    Queue("dongtai-replay-task", Exchange("dongtai-replay-task"), routing_key="dongtai-replay-task"),
     Queue("dongtai-sca-task", Exchange("dongtai-sca-task"), routing_key="dongtai-sca-task"),
-    Queue("dongtai-report-task", Exchange("dongtai-report-task"), routing_key="dongtai-report-task"),
     Queue("dongtai-function-flush-data", Exchange("dongtai-function-flush-data"), routing_key="dongtai-function-flush-data"),
+    # cronjob
+    Queue("dongtai-periodic-task", Exchange("dongtai-periodic-task"), routing_key="dongtai-periodic-task"),
 ]
 configs["CELERY_ROUTES"] = {
+    # normal
     "dongtai_engine.tasks.search_vul_from_method_pool": {'exchange': 'dongtai-method-pool-scan', 'routing_key': 'dongtai-method-pool-scan'},
-    "dongtai_engine.tasks.search_vul_from_strategy": {'exchange': 'dongtai-strategy-scan', 'routing_key': 'dongtai-strategy-scan'},
     "dongtai_engine.tasks.search_vul_from_replay_method_pool": {'exchange': 'dongtai-replay-vul-scan', 'routing_key': 'dongtai-replay-vul-scan'},
-    "dongtai_engine.tasks.search_sink_from_method_pool": {'exchange': 'dongtai-search-scan', 'routing_key': 'dongtai-search-scan'},
-    "dongtai_engine.tasks.update_sca": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
+    "dongtai_engine.tasks.update_one_sca": {'exchange': 'dongtai-sca-task', 'routing_key': 'dongtai-sca-task'},
+    "dongtai_engine.preheat.function_flush": {'exchange': 'dongtai-function-flush-data', 'routing_key': 'dongtai-function-flush-data'},
+    # cronjob
     "dongtai_engine.tasks.update_agent_status": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
     "dongtai_engine.tasks.heartbeat": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
     "dongtai_engine.tasks.clear_error_log": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
-    "dongtai_engine.tasks.export_report": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
-    "dongtai_engine.tasks.vul_recheck": {'exchange': 'dongtai-replay-task', 'routing_key': 'dongtai-replay-task'},
-    "dongtai_engine.web_hook.forward_for_upload": {'exchange': 'dongtai-report-task', 'routing_key': 'dongtai-report-task'},
-    "dongtai_engine.preheat.function_flush": {'exchange': 'dongtai-function-flush-data', 'routing_key': 'dongtai-function-flush-data'},
+    "dongtai_engine.tasks.vul_recheck": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
     "dongtai_engine.preheat.function_preheat": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
 }
 configs["CELERY_ENABLE_UTC"] = False
