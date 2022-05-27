@@ -354,13 +354,14 @@ metadata:
   labels:
     app: dongtai-logstash
 spec:
+  replicas: 0
   selector:
     matchLabels: 
       app: dongtai-logstash
   template:
     metadata:
       annotations:
-        build_number: "6"
+        build_number: "1"
       labels:
         app: dongtai-logstash
     spec:
