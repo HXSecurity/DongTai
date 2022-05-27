@@ -8,6 +8,8 @@ class IastConfig(DongTaiAppConfigPatch, AppConfig):
     def ready(self):
         super().ready()
         register_preheat()
+        from dongtai_conf.celery import app as celery_app
+
 
 
 def register_preheat():
