@@ -37,7 +37,23 @@ data:
 
     [sca]
     base_url = https://iast.huoxian.cn/openapi/sca/v1
-    
+
+    [task]
+    retryable = true
+    max_retries = 3
+    async_send = true
+    async_send_delay = 5
+
+    [log_service]
+    host = dongtai-logstash-svc
+    port = 8083
+
+    [other]
+    domain = http://localhost.domain/
+    demo_session_cookie_domain = .huoxian.cn
+    logging_level = INFO
+    cache_preheat = True
+
 kind: ConfigMap
 metadata:
   name: dongtai-iast-config.ini
@@ -71,6 +87,8 @@ spec:
             - name: configfile
               mountPath: /opt/dongtai/webapi/conf/config.ini
               subPath: config.ini
+            - name: log-path
+              mountPath: /tmp/logstash
           resources:
             limits:
               cpu: "500m"
@@ -82,6 +100,9 @@ spec:
         - name: configfile
           configMap:
             name: dongtai-iast-config.ini
+        - name: log-path
+          persistentVolumeClaim:
+            claimName: app-agent-pvc
       imagePullSecrets:
         - name: dongtai-iast-image-registry-secret
 ---
@@ -151,7 +172,9 @@ data:
                 proxy_read_timeout 60;
                 proxy_pass http://dongtai-server-svc:80/;
                }
-
+               location /log/ {
+                proxy_pass http://dongtai-logstash:8082/;
+               }
              location = /50x.html {
                  root   /usr/share/nginx/html;
              }
@@ -302,3 +325,103 @@ spec:
         - name: configfile
           configMap:
             name: dongtai-iast-config.ini
+---
+#dongtai-logstash服务
+apiVersion: v1
+kind: Service
+metadata:
+  name: dongtai-logstash-svc
+  namespace: CHANGE_THIS_NAMESPACE
+spec:
+  type: ClusterIP
+  ports:
+    - name: agent-http
+      port: 8082
+      targetPort: 8082
+      protocol: TCP
+    - name: log-http
+      port: 8083
+      targetPort: 8083
+      protocol: TCP
+  selector:
+    app: dongtai-logstash
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-logstash
+  namespace: CHANGE_THIS_NAMESPACE
+  labels:
+    app: dongtai-logstash
+spec:
+  replicas: 0
+  selector:
+    matchLabels: 
+      app: dongtai-logstash
+  template:
+    metadata:
+      annotations:
+        build_number: "1"
+      labels:
+        app: dongtai-logstash
+    spec:
+      containers:
+      - image: registry.cn-beijing.aliyuncs.com/huoxian_pub/logrotate:latest
+        name: logrotate
+        securityContext:
+          runAsUser: 0
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: log-path
+          mountPath: /tmp/logstash
+      - image: registry.cn-beijing.aliyuncs.com/huoxian_pub/logstash:7.9.2-latest
+        name: logstash
+        securityContext:
+          runAsUser: 0
+        imagePullPolicy: Always
+        env:
+        - name: DATABASE
+          value: "dongtai-mysql:3306/dongtai_webapi"
+        - name: USERNAME
+          value: "root"
+        - name: PASSWORD
+          value: "dongtai-iast"
+        ports:
+        - containerPort: 8082
+          protocol: TCP
+          name: agent-http
+        - containerPort: 8083
+          protocol: TCP
+          name: log-http
+        resources:
+          requests:
+            cpu: 1500m
+            memory: 2200Mi
+          limits:
+            cpu: 2000m
+            memory: 3200Mi
+        volumeMounts:
+        - name: log-path
+          mountPath: /tmp/logstash
+      volumes:
+      - name: log-path
+        persistentVolumeClaim:
+          claimName: app-agent-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    pv.kubernetes.io/bind-completed: "yes"
+    pv.kubernetes.io/bound-by-controller: "yes"
+  name: app-agent-pvc
+  namespace: CHANGE_THIS_NAMESPACE
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 2G
+  storageClassName: #storageclassename
+  #volumeMode: Filesystem
+  #volumeName: pv
