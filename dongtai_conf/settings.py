@@ -593,3 +593,6 @@ DEFAULT_CIRCUITCONFIG = {
         }]
     }
 }
+
+
+from dongtai_conf.celery import app as celery_app
