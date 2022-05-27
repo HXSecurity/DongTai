@@ -3,7 +3,6 @@
 # @author:zhaoyanwei
 # @file: tasks.py
 # @time: 2022/5/9  下午3:45
-from celery import shared_task
 
 from dongtai_common.models import User
 from dongtai_common.models.agent import IastAgent
@@ -13,7 +12,6 @@ from celery.apps.worker import logger
 from dongtai_web.dongtai_sca.utils import sca_scan_asset
 
 
-@shared_task(queue='dongtai-sca-task')
 def refresh_all_asset_data():
     """
     todo 一次性任务，更新组件数据

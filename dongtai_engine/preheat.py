@@ -17,7 +17,7 @@ def function_preheat(func__module__: str, func__name__: str, *args, **kwargs):
         logger.error(e, exc_info=True)
 
 
-@shared_task(queue='dongtai-replay-task')
+@shared_task(queue='dongtai-periodic-task')
 def function_preheat():
     from django.contrib.admin.models import LogEntry
     time_threshold = datetime.now() - timedelta(hours=1)
