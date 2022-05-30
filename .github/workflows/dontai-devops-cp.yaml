@@ -1,0 +1,17 @@
+name: dontai-devops-cp
+on:
+  push:
+    branches:    
+      - 'main'
+jobs:
+  run_if:
+    if: ${{ github.event_name == 'push' && github.repository_owner == 'HXSecurity' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v1
+      - name: Generate version file
+        run: |
+           git checkout -b pr@main@${{github.run_number}}
+           git remote set-url origin --push --add '${{ secrets.DONGTAI_GITHUB_TOKEN_ALL }}'
+           git push --set-upstream origin pr@main@${{github.run_number}}
