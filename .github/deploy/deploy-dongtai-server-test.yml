@@ -165,31 +165,31 @@ spec:
 
 
 
-# dongtai-worker-chain服务
+# dongtai-worker-beat服务
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dongtai-worker-chain
+  name: dongtai-worker-beat
   namespace: iast-test
   annotations:
-    kubesphere.io/description: dongtai-worker-chain
+    kubesphere.io/description: dongtai-worker-beat
   labels:
-    app: dongtai-worker-chain
+    app: dongtai-worker-beat
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: dongtai-worker-chain
+      app: dongtai-worker-beat
   template:
     metadata:
       labels:
-        app: dongtai-worker-chain
+        app: dongtai-worker-beat
     spec:
       containers:
-        - name: dongtai-worker-chain-container
+        - name: dongtai-worker-beat-container
           image: registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:VERSION
           command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
-          args: [ "worker-chain" ]
+          args: [ "worker-beat" ]
           imagePullPolicy: Always
           volumeMounts:
             - name: configfile
@@ -212,7 +212,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: dongtai-worker-chain-svc
+  name: dongtai-worker-beat-svc
   namespace: iast-test
 spec:
   ports:
@@ -220,7 +220,7 @@ spec:
       protocol: TCP
       targetPort: 8000
   selector:
-    app: dongtai-worker-chain
+    app: dongtai-worker-beat
   type: ClusterIP
 ---
 
