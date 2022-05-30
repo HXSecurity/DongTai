@@ -448,7 +448,7 @@ services:
     restart: always
     user: root
     volumes:
-      - ./log/:/tmp/logstash/
+      - $PWD/log/:/tmp/logstash/
     logging:
       driver: "json-file"
       options:
@@ -462,7 +462,7 @@ services:
       - USERNAME=root
       - PASSWORD=dongtai-iast
     volumes:
-      - "./log/:/tmp/logstash/"
+      - "$PWD/log/:/tmp/logstash/"
     logging:
       driver: "json-file"
       options:
