@@ -30,10 +30,10 @@ spec:
           resources:
             limits:
               cpu: "2000m"
-              memory: 4000Mi
+              memory: 2000Mi
             requests:
               cpu: "2000m"
-              memory: 4000Mi
+              memory: 2000Mi
       volumes:
         - name: configfile
           configMap:
@@ -54,64 +54,6 @@ spec:
       targetPort: 8000
   selector:
     app: dongtai-server
-  type: ClusterIP
----
-# dongtai-engine服务
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: dongtai-engine
-  namespace: iast-test
-  annotations:
-    kubesphere.io/description: dongtai-engine
-  labels:
-    app: dongtai-engine
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: dongtai-engine
-  template:
-    metadata:
-      labels:
-        app: dongtai-engine
-    spec:
-      containers:
-        - name: dongtai-engine-container
-          image: registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:VERSION
-          command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
-          args: [ "worker" ]
-          imagePullPolicy: Always
-          volumeMounts:
-            - name: configfile
-              mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
-              subPath: config.ini
-          resources:
-            limits:
-              cpu: "4000m"
-              memory: 4000Mi
-            requests:
-              cpu: "4000m"
-              memory: 4000Mi
-      volumes:
-        - name: configfile
-          configMap:
-            name: dongtai-iast-config.ini
-      imagePullSecrets:
-        - name: aliyun-registry-secret
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: dongtai-engine-svc
-  namespace: iast-test
-spec:
-  ports:
-    - port: 80
-      protocol: TCP
-      targetPort: 8000
-  selector:
-    app: dongtai-engine
   type: ClusterIP
 ---
 #dongtai-engine-task服务
@@ -157,3 +99,190 @@ spec:
             name: dongtai-iast-config.ini
       imagePullSecrets:
         - name: aliyun-registry-secret
+
+
+---
+
+
+# dongtai-worker-high-freq服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-worker-high-freq
+  namespace: iast-test
+  annotations:
+    kubesphere.io/description: dongtai-worker-high-freq
+  labels:
+    app: dongtai-worker-high-freq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dongtai-worker-high-freq
+  template:
+    metadata:
+      labels:
+        app: dongtai-worker-high-freq
+    spec:
+      containers:
+        - name: dongtai-worker-high-freq-container
+          image: registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:VERSION
+          command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
+          args: [ "worker-high-freq" ]
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "2000m"
+              memory: 2000Mi
+            requests:
+              cpu: "2000m"
+              memory: 2000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-iast-config.ini
+      imagePullSecrets:
+        - name: aliyun-registry-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dongtai-worker-high-freq-svc
+  namespace: iast-test
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    app: dongtai-worker-high-freq
+  type: ClusterIP
+---
+
+
+
+# dongtai-worker-chain服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-worker-chain
+  namespace: iast-test
+  annotations:
+    kubesphere.io/description: dongtai-worker-chain
+  labels:
+    app: dongtai-worker-chain
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dongtai-worker-chain
+  template:
+    metadata:
+      labels:
+        app: dongtai-worker-chain
+    spec:
+      containers:
+        - name: dongtai-worker-chain-container
+          image: registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:VERSION
+          command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
+          args: [ "worker-chain" ]
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "2000m"
+              memory: 2000Mi
+            requests:
+              cpu: "2000m"
+              memory: 2000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-iast-config.ini
+      imagePullSecrets:
+        - name: aliyun-registry-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dongtai-worker-chain-svc
+  namespace: iast-test
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    app: dongtai-worker-chain
+  type: ClusterIP
+---
+
+
+
+
+
+# dongtai-worker-other服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-worker-other
+  namespace: iast-test
+  annotations:
+    kubesphere.io/description: dongtai-worker-other
+  labels:
+    app: dongtai-worker-other
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dongtai-worker-other
+  template:
+    metadata:
+      labels:
+        app: dongtai-worker-other
+    spec:
+      containers:
+        - name: dongtai-worker-other-container
+          image: registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:VERSION
+          command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
+          args: [ "worker-other" ]
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "2000m"
+              memory: 2000Mi
+            requests:
+              cpu: "2000m"
+              memory: 2000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-iast-config.ini
+      imagePullSecrets:
+        - name: aliyun-registry-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dongtai-worker-other-svc
+  namespace: iast-test
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    app: dongtai-worker-other
+  type: ClusterIP
+---
