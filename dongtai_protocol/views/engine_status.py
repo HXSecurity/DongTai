@@ -96,7 +96,11 @@ class EngineAction(OpenApiEndPoint):
             7: {
                 "key": "强制关闭引擎核心性能熔断",
                 "value": "corePerformanceForceClose",
-            }
+            },
+            8: {
+                "key": "Agent升级",
+                "value": "update",
+            },
         }
         if agent.is_control == 0:
             return R.failure(msg="暂无命令", data="notcmd")
