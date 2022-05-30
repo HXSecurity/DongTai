@@ -1,0 +1,15 @@
+on: 
+  push:
+  pull_request:
+    #types: [opened]
+
+name: dongtai-devops-pr
+
+jobs:
+  generic_handler:
+    name: pr
+    runs-on: ubuntu-latest
+    steps:
+      - uses: tscuite/action-generic-handler@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.DONGTAI_GITHUB_TOKEN_ALL_CLIENT }}
