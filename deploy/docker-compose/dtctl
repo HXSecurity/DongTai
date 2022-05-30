@@ -443,6 +443,30 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
+  dongtai-logrotate:
+    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/logrotate:latest"
+    restart: always
+    user: root
+    volumes:
+      - ./log/:/tmp/logstash/
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-logstash:
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/logstash:7.9.2-latest
+    restart: always
+    user: root
+    environment:
+      - DATABASE=dongtai-mysql:3306/dongtai_webapi
+      - USERNAME=root
+      - PASSWORD=dongtai-iast
+    volumes:
+      - "./log/:/tmp/logstash/"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
 volumes:
   mysql-vol:
 
