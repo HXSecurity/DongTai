@@ -22,8 +22,7 @@ from dongtai_common.models.res_header import (
     ProjectSaasMethodPoolHeader,
     HeaderType,
 )
-from dongtai_engine.tasks import search_vul_from_strategy, search_vul_from_method_pool, search_sink_from_method_pool, \
-    search_sink_from_strategy, search_vul_from_replay_method_pool
+from dongtai_engine.tasks import search_vul_from_method_pool, search_vul_from_replay_method_pool
 from dongtai_conf import settings
 from dongtai_protocol import utils
 from dongtai_protocol.report.handler.report_handler_interface import IReportHandler

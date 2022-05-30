@@ -251,87 +251,6 @@ def search_vul_from_replay_method_pool(method_pool_id):
         logger.error(f'重放数据漏洞检测出错，方法池 {method_pool_id}. 错误原因：{e}')
 
 
-@shared_task(queue='dongtai-strategy-scan')
-def search_vul_from_strategy(strategy_id):
-    """
-    根据sink方法策略ID搜索已有方法池中的数据是否存在满足条件的数据
-    :param strategy_id: 策略ID
-    :return: None
-    """
-    logger.info(f'漏洞检测开始，策略 {strategy_id}')
-    try:
-        strategy_value, method_pool_queryset = load_methods_from_strategy(strategy_id=strategy_id)
-        engine = VulEngine()
-
-        for sub_queryset in queryset_to_iterator(method_pool_queryset):
-            if sub_queryset:
-                for method_pool_model in sub_queryset:
-                    method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
-                    search_and_save_vul(engine, method_pool_model, method_pool, strategy_value)
-        logger.info(f'漏洞检测成功')
-    except Exception as e:
-        logger.error(f'漏洞检测出错，错误原因：{e}')
-
-
-@shared_task(bind=True, queue='dongtai-search-scan',
-             max_retries=settings.config.getint('task', 'max_retries', fallback=3))
-def search_sink_from_method_pool(self, method_pool_sign, agent_id, retryable=False):
-    """
-    根据方法池ID搜索方法池中是否匹配到策略库中的sink方法
-    :param method_pool_id: 方法池ID
-    :return: None
-    """
-    logger.info(f'sink规则扫描开始，方法池ID[{method_pool_sign}]')
-    try:
-        method_pool_model = MethodPool.objects.filter(pool_sign=method_pool_sign, agent_id=agent_id).first()
-        if method_pool_model is None:
-            if retryable:
-                if self.request.retries < self.max_retries:
-                    tries = self.request.retries + 1
-                    raise RetryableException(f'sink规则扫描方法池 {method_pool_sign} 不存在，重试第 {tries} 次')
-                else:
-                    logger.error(f'sink规则扫描超过最大重试次数 {self.max_retries}，方法池 {method_pool_sign} 不存在')
-            else:
-                logger.warn(f'sink规则扫描终止，方法池 [{method_pool_sign}] 不存在')
-            return
-        logger.info(
-            f"search_sink from method_pool found,  agent_id: {method_pool_model.agent_id} , uri: {method_pool_model.uri}"
-        )
-        strategies = load_sink_strategy(method_pool_model.agent.user, method_pool_model.agent.language)
-        engine = VulEngine()
-
-        for strategy in strategies:
-            search_and_save_sink(engine, method_pool_model, strategy)
-        logger.info(f'sink规则扫描完成')
-    except RetryableException as e:
-        delay = 5 + pow(3, self.request.retries) * 10
-        self.retry(exc=e, countdown=delay)
-    except Exception as e:
-        logger.error(f'sink规则扫描出错，错误原因：{e}')
-
-
-@shared_task(queue='dongtai-search-scan')
-def search_sink_from_strategy(strategy_id):
-    """
-    根据策略ID搜索方法池中是否匹配到当前策略
-    :param strategy_id: 策略ID
-    :return: None
-    """
-    logger.info(f'sink规则扫描开始')
-    try:
-        strategy_value, method_pool_queryset = load_methods_from_strategy(strategy_id=strategy_id)
-
-        engine = VulEngine()
-        for sub_queryset in queryset_to_iterator(method_pool_queryset):
-            if sub_queryset is None:
-                break
-            for method_pool in sub_queryset:
-                search_and_save_sink(engine, method_pool, strategy_value)
-        logger.info(f'sink规则扫描完成')
-    except Exception as e:
-        logger.error(f'sink规则扫描出错，错误原因：{e}')
-
-
 def load_methods_from_strategy(strategy_id):
     """
     根据策略ID加载策略详情、策略对应的方法池数据
@@ -429,34 +348,6 @@ def update_one_sca(agent_id, package_path, package_signature, package_name, pack
             f'SCA检测开始 [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm}] 组件已存在')
 
 
-@shared_task(queue='dongtai-periodic-task')
-def update_all_sca():
-    """
-    根据SCA数据库，更新SCA记录信息
-    :return:
-    """
-    logger.info(f'SCA离线检测开始')
-    try:
-        assets = Asset.objects.all()
-        if assets.values('id').count() == 0:
-            logger.info('dependency is empty')
-            return
-
-        step = 20
-        start = 0
-        while True:
-            asset_steps = assets[start:(start + 1) * step]
-            if len(asset_steps) == 0:
-                break
-
-            for asset in asset_steps:
-                sca_scan_asset(asset)
-            start = start + 1
-        logger.info('SCA离线检测完成')
-    except Exception as e:
-        logger.error(f'SCA离线检测出错，错误原因：{e}')
-
-
 def sha_1(raw):
     h = sha1()
     h.update(raw.encode('utf-8'))
@@ -551,9 +442,7 @@ def clear_error_log():
         logger.error(f'日志清理失败，错误详情：{e}')
 
 
-
-
-@shared_task(queue='dongtai-replay-task')
+@shared_task(queue='dongtai-periodic-task')
 def vul_recheck():
     """
     定时处理漏洞验证
