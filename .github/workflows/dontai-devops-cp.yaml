@@ -5,6 +5,7 @@ on:
       - 'main'
 jobs:
   run_if:
+    if: ${{ github.event_name == 'push' && github.repository_owner == 'HXSecurity' }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out branch
