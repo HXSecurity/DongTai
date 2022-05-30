@@ -34,12 +34,11 @@ class AgentCoreStatusUpdate(UserEndPoint):
         description=_("Control the running agent by specifying the id."  ),
         response_schema=_ResponseSerializer)
     def post(self, request):
-        print(request.data)
         ser = AgentCoreStatusSerializer(data=request.data)
         if ser.is_valid(False):
             agent_id = ser.validated_data.get('id', None)
             core_status = ser.validated_data.get('core_status', None)
-            agent_ids = ser.validated_data.get('ids', "").strip()
+            agent_ids = ser.validated_data.get('agent_ids', "").strip()
         else:
             return R.failure(msg=_('Incomplete parameter, please check again'))
 
