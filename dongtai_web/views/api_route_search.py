@@ -180,8 +180,7 @@ class ApiRouteSearch(UserEndPoint):
             bind_project_id=project_id,
             project_version_id=current_project_version.get("version_id",
                                                            0)).values("id")
-        q = Q(agent_id__in=[_['id'] for _ in agents]) & Q(
-            from_where=FromWhereChoices.FROM_AGENT)
+        q = Q(agent_id__in=[_['id'] for _ in agents]) 
         q = q & Q(
             method_id__in=[_['id']
                            for _ in api_methods]) if api_methods != [] else q
