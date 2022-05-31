@@ -46,6 +46,8 @@ async_send_delay = 5
 host = dongtai-logstash
 port = 8083
 
+[common_file_path]
+tmp_path = /tmp/logstash
 
 [other]
 domain = http://localhost.domain/
