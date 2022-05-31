@@ -116,6 +116,7 @@ class EngineAction(OpenApiEndPoint):
                 if cache.get(f'agent_update_{agent_id}', False):
                     agent.is_control = 0
                     agent.control = 2
+                    cache.delete(f'agent_update_{agent_id}')
                 else:
                     cache.set(f"agent_update_{agent_id}", True, 60 * 5)
                     agent.is_control = 1
