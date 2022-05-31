@@ -36,6 +36,11 @@ class DashboardTestCase(TestCase):
         res = getzipfilesinmemorty(['./README.md', './lingzhi.sh'])
         print(res)
 
+    def test_get_zip_together(self):
+        from dongtai_web.views.log_download import get_zip_together
+        res = get_zip_together([1, 2, 3], 1)
+        print(res)
+
 class ChoiceConvertTestCase(TestCase):
     def test_choice_convert(self):
         able_to_search = (MetricType, MetricGroup,
@@ -68,5 +73,3 @@ class ChoiceConvertTestCase(TestCase):
         }]
         res = get_metric_types(metrics)
         print(res)
-
-
