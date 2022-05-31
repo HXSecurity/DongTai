@@ -305,7 +305,12 @@ urlpatterns = [
     path('agent/summary/<int:pk>', AgentSummary.as_view()),
 
     # 消息通知规则配置
-    path('agent/log/<int:pk>', AgentLogDownload.as_view()),
+    path('agent/log/batch',
+         AgentLogDownload.as_view({'post': 'batch_task_add'})),
+    path('agent/log/<int:pk>', AgentLogDownload.as_view({'get':
+                                                         'get_single'})),
+    path('agent/log/batch/<int:pk>',
+         AgentLogDownload.as_view({'get': 'batch_log_download'})),
 
     # vul list page of sca and common vul
     path('vul_list_delete', DelVulMany.as_view()),
