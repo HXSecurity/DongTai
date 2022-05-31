@@ -23,5 +23,5 @@ RUN pip3 install -r /opt/dongtai/webapi/requirements.txt
 COPY . /opt/dongtai
 WORKDIR /opt/dongtai
 
-RUN mkdir -p /tmp/logstash && mkdir -p /tmp/iast_cache/package && mv /opt/dongtai/*.jar /tmp/iast_cache/package/ || true && mv /opt/dongtai/*.tar.gz /tmp/ || true 
+RUN mkdir /tmp/logstash/report/{img,word,pdf,excel} -p && mkdir -p /tmp/iast_cache/package && mv /opt/dongtai/*.jar /tmp/iast_cache/package/ || true && mv /opt/dongtai/*.tar.gz /tmp/ || true 
 ENTRYPOINT ["/bin/bash","/opt/dongtai/deploy/docker/entrypoint.sh"]
