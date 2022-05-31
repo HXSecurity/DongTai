@@ -9,7 +9,7 @@
 
 from django.db import models
 from dongtai_common.utils.settings import get_managed
-
+from time import time
 
 class IastMessageType(models.Model):
     name = models.CharField(max_length=100, blank=True, null=False, default='')
@@ -28,7 +28,7 @@ class IastMessage(models.Model):
                                     blank=True,
                                     null=False,
                                     default='')
-    create_time = models.IntegerField(blank=True, default=0)
+    create_time = models.IntegerField(blank=True, default=time())
     read_time = models.IntegerField(blank=True, default=0)
     is_read = models.IntegerField(blank=True, null=True, default=0)
     message_type = models.ForeignKey(IastMessageType,
