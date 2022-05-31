@@ -11,6 +11,7 @@ from dongtai_common.models.agent import IastAgent
 
 from dongtai_common.endpoint import OpenApiEndPoint, R
 from drf_spectacular.utils import extend_schema
+from django.core.cache import cache
 
 from dongtai_protocol.api_schema import DongTaiParameter
 
@@ -111,6 +112,15 @@ class EngineAction(OpenApiEndPoint):
                 agent.is_core_running = 0
             else:
                 agent.is_core_running = 1
+            if agent.control == 8:
+                if cache.get(f'agent_update_{agent_id}', False):
+                    agent.is_control = 0
+                    agent.control = 2
+                    cache.delete(f'agent_update_{agent_id}')
+                else:
+                    cache.set(f"agent_update_{agent_id}", True, 60 * 5)
+                    agent.is_control = 1
+                    agent.control = 5
             agent.save(update_fields=['is_control', 'is_core_running', 'latest_time'])
             result_cmd = agent_status.get(agent.control, {
                 "key": "无下发指令",
