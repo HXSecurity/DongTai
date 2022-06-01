@@ -196,6 +196,7 @@ class VulEngine(object):
                     current_link.append(self.copy_method(sub_method, source=True))
                     self.vul_source_signature = f"{sub_method.get('className')}.{sub_method.get('methodName')}"
                     self.vul_stack.append(current_link[::-1])
+                    self.taint_value = sub_method['targetValues']
                     current_link.pop()
                     return True
                 else:

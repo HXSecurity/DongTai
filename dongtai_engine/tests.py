@@ -37,3 +37,12 @@ class CoreScanTestCase(AgentTestCase):
         vul_count_after = IastVulnerabilityModel.objects.all().count()
         assert len(data) == vul_count_after - vul_count_begin
 
+
+class CoreTaskTestCase(AgentTestCase):
+
+    def test_search_method_pool(self):
+        method_pool_id = 500475873
+        method_pool = MethodPool.objects.filter(pk=method_pool_id).first()
+        from dongtai_engine.tasks import search_vul_from_method_pool
+        search_vul_from_method_pool(method_pool.pool_sign, method_pool.agent_id)
+        
