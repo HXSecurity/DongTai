@@ -203,12 +203,6 @@ class ScaList(UserEndPoint):
         if language:
             asset_aggr_where = asset_aggr_where + " and iast_asset_aggr.language in ({})".format(
                 "'" + "','".join(language) + "'")
-        license = request_data.get('license', None)
-        if license:
-            if '未知' in license:
-                license.append("""""")
-            asset_aggr_where = asset_aggr_where + " and iast_asset_aggr.license in ({})".format(
-                "'" + "','".join(license) + "'")
 
         level_ids = request_data.get('level_id', None)
         if level_ids:
