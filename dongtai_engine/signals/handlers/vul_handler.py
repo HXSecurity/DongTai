@@ -50,19 +50,18 @@ def parse_body(body, taint_value):
     except Exception as e:
         return parse_params(body, taint_value)
 
+from dongtai_engine.filters.utils import parse_headers_dict_from_bytes
 
 def parse_header(req_header, taint_value):
     """
     从header头中解析污点的位置
     """
     import base64
-    header_raw = base64.b64decode(req_header).decode('utf-8').split('\n')
-    for header in header_raw:
-        _header_list = header.split(':')
-        _header_name = _header_list[0]
-        _header_value = ':'.join(_header_list[1:])
-        if equals(taint_value, _header_value):
-            return _header_name
+    header_dict = parse_headers_dict_from_bytes(base64.b64decode(req_header))
+    for k, v in header_dict.items():
+        if v == taint_value:
+            return k
+
 
 
 def parse_cookie(req_header, taint_value):
