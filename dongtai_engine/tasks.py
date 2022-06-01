@@ -111,7 +111,7 @@ def load_sink_strategy(user=None, language=None):
 
 
 from dongtai_engine.signals.handlers.vul_handler import handler_vul
-
+from dongtai_engine.filters.main import vul_filter
 
 def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
     """
@@ -127,7 +127,10 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
         return
     engine.search(method_pool=method_pool, vul_method_signature=strategy.get('value'))
     status, stack, source_sign, sink_sign, taint_value = engine.result()
-    if status:
+    filterres = vul_filter(stack, source_sign, sink_sign, taint_value,
+                             queryset.values('vul_type').first()['vul_type'])
+    logger.info(f'vul filter_status : {filterres}')
+    if status and filterres:
         logger.info(f'vul_found {method_pool_model.agent_id}  {method_pool_model.url} {sink_sign}')
         vul_strategy = queryset.values("level", "vul_name", "id").first()
         handler_vul(
@@ -542,7 +545,7 @@ def vul_recheck():
                                         break
                                 body = '&'.join(_param_items)
                         except:
-                            # Content-Type: multipart/form-data 
+                            # Content-Type: multipart/form-data
                             _param_items = body.split('&')
                             item_length = len(_param_items)
                             for index in range(item_length):
