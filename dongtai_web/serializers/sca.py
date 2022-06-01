@@ -100,9 +100,6 @@ class ScaAssetSerializer(serializers.ModelSerializer):
     package_name = serializers.SerializerMethodField()
     level = serializers.SerializerMethodField()
     level_type = serializers.SerializerMethodField()
-    license = serializers.SerializerMethodField()
-    license_level = serializers.SerializerMethodField()
-    license_desc = serializers.SerializerMethodField()
     vul_high_count = serializers.SerializerMethodField()
 
     class Meta:
@@ -110,7 +107,7 @@ class ScaAssetSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'package_name', 'version', 'safe_version', 'last_version', 'language', 'signature_value', 'level',
             'level_type', 'vul_count', 'vul_high_count', 'vul_medium_count', 'vul_low_count', 'vul_info_count',
-            'project_count', 'license', 'license_level', 'license_desc'
+            'project_count'
         ]
 
     def get_level_type(self, obj):
@@ -123,25 +120,6 @@ class ScaAssetSerializer(serializers.ModelSerializer):
         if obj.package_name.startswith('maven:') and obj.package_name.endswith(':'):
             return obj.package_name.replace('maven:', '', 1)[:-1]
         return obj.package_name
-
-    def get_license(self, obj):
-        if not obj.license:
-            obj.license = '未知'
-        return obj.license
-
-    def get_license_level(self, obj):
-        obj.license_level = 0
-        obj.license_desc = "允许商业集成"
-        if obj.license:
-            license_level = PackageLicenseLevel.objects.filter(identifier=obj.license).first()
-            obj.license_level = license_level.level_id if license_level else 0
-            obj.license_desc = license_level.level_desc if license_level else "允许商业集成"
-
-        return obj.license_level
-
-    def get_license_desc(self, obj):
-
-        return obj.license_desc
 
     def get_vul_high_count(self, obj):
         return obj.vul_high_count + obj.vul_critical_count
