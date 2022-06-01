@@ -308,9 +308,6 @@ class SaasMethodPoolHandler(IReportHandler):
                 res = search_vul_from_method_pool.apply_async(kwargs=kwargs, countdown=delay)
                 logger.info(
                         f'[+] send method_pool [{method_pool_sign}] to engine for task search_vul_from_method_pool id: {res.task_id}')
-                res = search_sink_from_method_pool.apply_async(kwargs=kwargs, countdown=delay)
-                logger.info(
-                        f'[+] send method_pool [{method_pool_sign}] to engine for task search_sink_from_strategy id: {res.task_id}')
             else:
                 logger.info(
                     f'[+] send method_pool [{method_pool_id}] to engine for {model if model else ""}'
