@@ -1,5 +1,4 @@
-from parse import parse
-
+from http.client import parse_headers
 #Request{method=GET, url=http://www.baidu.com/, tag=null}
 
 class JavaObjects:
@@ -24,3 +23,11 @@ def parse_java_objects(objects_string: str):
         for attr in objects_attrstring.strip('{}').split(', ')
     ]
     return JavaObjects(objects_classname, objects_attrs)
+
+from io import BytesIO
+from tempfile import TemporaryFile
+def parse_headers_dict_from_bytes(header_bytes: str) -> dict:
+    with TemporaryFile() as fp:
+        fp.write(header_bytes)
+        fp.seek(0)
+        return dict(parse_headers(fp))
