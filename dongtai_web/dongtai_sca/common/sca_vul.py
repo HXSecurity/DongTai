@@ -1,23 +1,15 @@
 from dongtai_common.models.asset import Asset
 from dongtai_common.models.asset_vul import IastAssetVulTypeRelation
-from dongtai_web.dongtai_sca.models import VulCveRelation, PackageLicenseLevel
+from dongtai_web.dongtai_sca.models import VulCveRelation
 
 
 # 通过asset_vul获取 组件详情信息
-def GetScaVulData(asset_vul,asset_queryset):
+def GetScaVulData(asset_vul, asset_queryset):
     data = {'base_info': dict(), 'poc_info': dict()}
     vul_id = asset_vul.id
-    license_level = 0
-    license_desc = "允许商业集成"
-    if asset_vul.license:
-        license_level_info = PackageLicenseLevel.objects.filter(identifier=asset_vul.license).first()
-        license_level = license_level_info.level_id if license_level_info else 0
-        license_desc = license_level_info.level_desc if license_level_info else "允许商业集成"
 
     data['base_info'] = {'package_name': asset_vul.package_name, 'version': asset_vul.package_version,
-                         'safe_version': asset_vul.package_safe_version, 'language': asset_vul.package_language,
-                         'license': asset_vul.license, 'license_level': license_level,
-                         'license_desc': license_desc}
+                         'safe_version': asset_vul.package_safe_version, 'language': asset_vul.package_language}
 
     data['base_info']['first_time'] = asset_vul.create_time
     data['base_info']['last_time'] = asset_vul.update_time
@@ -49,7 +41,7 @@ def GetScaVulData(asset_vul,asset_queryset):
 
     asset_queryset = asset_queryset.filter(
         signature_value=asset_vul.package_hash, version=asset_vul.package_version, project_id__gt=0
-    ).values('project_id','id').all()
+    ).values('project_id', 'id').all()
     if asset_queryset:
         _temp_data = {_a['project_id']: _a['id'] for _a in asset_queryset}
         asset_ids = [_temp_data[p_id] for p_id in _temp_data]
@@ -65,8 +57,6 @@ def GetScaVulData(asset_vul,asset_queryset):
 
     if cve_relation:
         data['poc_info']['poc_list'] = cve_relation.poc if cve_relation.poc else []
-        data['poc_info']['fix_plan'] = cve_relation.fix_plan[0][
-            'Content'] if cve_relation.fix_plan and 'Content' in cve_relation.fix_plan[0] else ""
 
         data['poc_info']['reference_link'] = []
         if cve_relation.references:
