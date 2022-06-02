@@ -13,6 +13,8 @@ def vul_filter(stack, source_sign, sink_sign, taint_value, vul_type):
             res_after_replace = urlparse(afterurl)
         except Exception as e:
             return False
+        if not res.scheme and not res.netloc:
+            return True
         if res.netloc == res_after_replace.netloc:
             return False
         return True
