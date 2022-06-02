@@ -45,7 +45,7 @@ class CoreScanTestCase(AgentTestCase):
 class CoreTaskTestCase(AgentTestCase):
 
     def test_search_method_pool(self):
-        method_pool_id = 500471757 
+        method_pool_id = 4439061 
         method_pool = MethodPool.objects.filter(pk=method_pool_id).first()
         from dongtai_engine.tasks import search_vul_from_method_pool
         search_vul_from_method_pool(method_pool.pool_sign, method_pool.agent_id)
