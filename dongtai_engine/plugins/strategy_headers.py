@@ -100,7 +100,7 @@ def save_vul(vul_type, method_pool, position=None, data=None):
     project_agents = IastAgent.objects.filter(
         project_version_id=method_pool.agent.project_version_id)
     vul = IastVulnerabilityModel.objects.filter(
-        Q(strategy=vul_strategy) | Q(hook_type=vul_strategy.hook_type),
+        strategy_id=vul_strategy.id,
         uri=method_pool.uri,
         http_method=method_pool.http_method,
         agent__in=project_agents,
@@ -163,9 +163,9 @@ def save_vul(vul_type, method_pool, position=None, data=None):
         log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
                       vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)
     IastVulnerabilityModel.objects.filter(
-        Q(strategy=vul_strategy) | Q(hook_type=vul_strategy.hook_type),
+        strategy=vul_strategy.id,
         uri=method_pool.uri,
         http_method=method_pool.http_method,
         agent__in=project_agents,
         latest_time__lt=timestamp,
-    ).order_by('-latest_time').first()
+    ).delete()
