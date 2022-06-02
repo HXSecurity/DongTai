@@ -2,7 +2,8 @@ from dongtai_common.models import User
 from dongtai_common.models.asset import Asset
 from dongtai_common.models.asset_aggr import AssetAggr
 from dongtai_common.models.asset_vul import IastAssetVul, IastAssetVulTypeRelation, IastVulAssetRelation
-from dongtai_web.dongtai_sca.models import Package, VulPackageVersion, VulPackage, VulPackageRange, Vul, VulCveRelation, PackageLicenseInfo, \
+from dongtai_web.dongtai_sca.models import Package, VulPackageVersion, VulPackage, VulPackageRange, Vul, VulCveRelation, \
+    PackageLicenseInfo, \
     PackageLicenseLevel
 from django.http import JsonResponse
 from rest_framework import views
@@ -158,7 +159,6 @@ class AssetPackageVulDetail(UserEndPoint):
         if not asset_vul or vul_id not in auth_asset_vuls:
             return R.failure(msg=_('Vul do not exist or no permission to access'))
 
-        data = GetScaVulData(asset_vul,asset_queryset)
-
+        data = GetScaVulData(asset_vul, asset_queryset)
 
         return R.success(data=data)

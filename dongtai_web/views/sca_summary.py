@@ -12,7 +12,8 @@ from dongtai_web.base.project_version import get_project_version, get_project_ve
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.text import format_lazy
-from dongtai_web.serializers.vul import VulSummaryTypeSerializer, VulSummaryProjectSerializer, VulSummaryLevelSerializer, \
+from dongtai_web.serializers.vul import VulSummaryTypeSerializer, VulSummaryProjectSerializer, \
+    VulSummaryLevelSerializer, \
     VulSummaryLanguageSerializer
 from rest_framework import serializers
 
@@ -239,29 +240,5 @@ class ScaSummary(UserEndPoint):
         end['data']['language'] = [{
             'language': _key, 'count': _value
         } for _key, _value in default_language.items()]
-
-        default_license = dict()
-        license_summary_sql = "SELECT iast_asset_aggr.license,count(DISTINCT(iast_asset_aggr.id)) as total FROM iast_asset_aggr {base_query_sql} {where_sql} GROUP BY iast_asset_aggr.license "
-        license_summary_sql = license_summary_sql.format(base_query_sql=base_query_sql, where_sql=asset_aggr_where)
-        with connection.cursor() as cursor:
-            # 漏洞license汇总
-            if package_kw:
-                cursor.execute(license_summary_sql, [package_kw])
-            else:
-                cursor.execute(license_summary_sql)
-            license_summary = cursor.fetchall()
-            if license_summary:
-                for _l in license_summary:
-                    license, total = _l
-                    if default_license.get(license, None):
-                        default_license[license] = total + default_license[license]
-                    else:
-                        default_license[license] = total
-
-        end['data']['license'] = [{
-            'license': _key, 'count': _value
-        } for _key, _value in default_license.items() if _key]
-        if '' in default_license:
-            end['data']['license'].append({'license': '未知', 'count': default_license['']})
 
         return R.success(data=end['data'])
