@@ -39,7 +39,7 @@ class IastVulnerabilityModel(models.Model):
     latest_time_desc = models.IntegerField(blank=True, null=True, default=0)
     level_id_desc = models.SmallIntegerField(blank=True, null=True, default=0)
     client_ip = models.CharField(max_length=255, blank=True, null=True)
-    param_name = models.CharField(max_length=255, blank=True, null=True)
+    param_name = models.CharField(max_length=255, blank=True, null=True, default='')
     is_del = models.SmallIntegerField(blank=True, null=True,default=0)
     method_pool_id = models.IntegerField(default=-1, blank=True, null=True)
     strategy = models.ForeignKey(IastStrategyModel,

@@ -24,6 +24,7 @@ from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import ValidationError
 from dongtai_web.vul_log.vul_log import log_vul_found
+from dongtai_common.models.agent import IastAgent
 
 
 logger = logging.getLogger('dongtai.openapi')
@@ -62,32 +63,59 @@ class HardEncodeVulHandler(IReportHandler):
                                                     vul_type='硬编码').first()
         if not strategy or strategy.state != 'enable':
             return
-        vul = IastVulnerabilityModel.objects.create(
-            hook_type_id=-1,
+        project_agents = IastAgent.objects.filter(
+            project_version_id=self.agent.project_version_id)
+        iast_vul = IastVulnerabilityModel.objects.filter(
             strategy_id=strategy.id,
             uri=self.detail.get('file', ''),
-            url=self.detail.get('class', ''),
             http_method='',
-            http_scheme='',
-            http_protocol='',
-            req_header='',
-            req_params='',
-            req_data='',
-            res_header='',
-            res_body='',
-            context_path='',
-            counts=1,
-            taint_position=self.field,
-            status_id=settings.CONFIRMED,
-            first_time=int(time.time()),
-            latest_time=int(time.time()),
-            client_ip='',
-            taint_value=self.value,
-            level_id=strategy.level_id,
-            full_stack=json.dumps(self.detail),
-            top_stack="字段:{}".format(self.field),
-            method_pool_id=-1,
-            bottom_stack="硬编码值:{}".format(self.value),
-            agent=self.agent)
-        log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
-                      vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)
+            agent__in=project_agents).order_by('-latest_time').first()
+        timestamp = int(time.time())
+        if iast_vul:
+            iast_vul.uri = self.detail.get('file', ''),
+            iast_vul.url = self.detail.get('class', ''),
+            iast_vul.latest_time = timestamp,
+            iast_vul.taint_position = self.field,
+            iast_vul.taint_value = self.value,
+            iast_vul.level_id = strategy.level_id,
+            iast_vul.full_stack = json.dumps(self.detail),
+            iast_vul.top_stack = "字段:{}".format(self.field),
+            iast_vul.bottom_stack = "硬编码值:{}".format(self.value),
+            iast_vul.save()
+        else:
+            iast_vul = IastVulnerabilityModel.objects.create(
+                hook_type_id=-1,
+                strategy_id=strategy.id,
+                uri=self.detail.get('file', ''),
+                url=self.detail.get('class', ''),
+                http_method='',
+                http_scheme='',
+                http_protocol='',
+                req_header='',
+                req_params='',
+                req_data='',
+                res_header='',
+                res_body='',
+                context_path='',
+                counts=1,
+                taint_position=self.field,
+                status_id=settings.CONFIRMED,
+                first_time=timestamp,
+                latest_time=timestamp,
+                client_ip='',
+                taint_value=self.value,
+                level_id=strategy.level_id,
+                full_stack=json.dumps(self.detail),
+                top_stack="字段:{}".format(self.field),
+                method_pool_id=-1,
+                bottom_stack="硬编码值:{}".format(self.value),
+                agent=self.agent)
+        IastVulnerabilityModel.objects.filter(
+            strategy_id=strategy.id,
+            uri=self.detail.get('file', ''),
+            http_method='',
+            agent__in=project_agents,
+            latest_time__lt=timestamp).delete()
+        log_vul_found(iast_vul.agent.user_id, iast_vul.agent.bind_project.name,
+                      iast_vul.agent.bind_project_id, iast_vul.id,
+                      iast_vul.strategy.vul_name)
