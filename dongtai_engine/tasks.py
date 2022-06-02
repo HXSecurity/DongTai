@@ -127,8 +127,13 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
         return
     engine.search(method_pool=method_pool, vul_method_signature=strategy.get('value'))
     status, stack, source_sign, sink_sign, taint_value = engine.result()
-    filterres = vul_filter(stack, source_sign, sink_sign, taint_value,
-                             queryset.values('vul_type').first()['vul_type'])
+    filterres = vul_filter(
+        stack,
+        source_sign,
+        sink_sign,
+        taint_value,
+        queryset.values('vul_type').first()['vul_type'],
+    )
     logger.info(f'vul filter_status : {filterres}')
     if status and filterres:
         logger.info(f'vul_found {method_pool_model.agent_id}  {method_pool_model.url} {sink_sign}')
