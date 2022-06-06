@@ -426,7 +426,7 @@ def get_params_dict(req_header, req_body, req_params):
     return {
         'header': req_header_keys,
         "cookie": cookie_keys,
-        "body": body_keys,
+        "jsonbody": body_keys,
         "query": query_keys
     }
 
