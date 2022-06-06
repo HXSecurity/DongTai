@@ -443,7 +443,7 @@ def update_api_route_deatil(agent_id, path, method, params_dict):
     api_route = IastApiRoute.objects.filter(agent_id=agent_id,
                                             path=path,
                                             method_id=api_method.id)
-    for key, value in params_dict:
+    for key, value in params_dict.items():
         annotation = annotation_dict[key]
         for param_name in value:
             single_insert(api_route.id, param_name, annotation)
