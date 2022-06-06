@@ -5,7 +5,7 @@ def vul_filter(stack, source_sign, sink_sign, taint_value, vul_type):
     source_signature = stack[0][0]['signature']
     if (vul_type != 'trust-boundary-violation' and source_signature == 'javax.servlet.http.HttpServletRequest.getSession()'):
         return False
-    if vul_type == 'ssrf':
+    if vul_type == 'ssrf' or vul_type == 'unvalidated-redirect':
         try:
             target_url = stack[0][-1]['sourceValues']
             res = urlparse(target_url)
