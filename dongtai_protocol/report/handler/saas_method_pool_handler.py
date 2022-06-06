@@ -463,7 +463,7 @@ def single_insert(api_route_id, param_name, annotation) -> None:
         )
         return
     try:
-        param, _ = IastApiParameter.get_or_create(
+        param, _ = IastApiParameter.objects.get_or_create(
             route_id=api_route_id,
             name=param_name,
             defaults={'annotation': annotation})
