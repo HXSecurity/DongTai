@@ -442,7 +442,7 @@ def update_api_route_deatil(agent_id, path, method, params_dict):
         method=method.upper())
     api_route = IastApiRoute.objects.filter(agent_id=agent_id,
                                             path=path,
-                                            method_id=api_method.id)
+                                            method_id=api_method.id).first()
     for key, value in params_dict.items():
         annotation = annotation_dict[key]
         for param_name in value:
@@ -462,10 +462,13 @@ def single_insert(api_route_id, param_name, annotation) -> None:
             f"found cache api_route_param-{api_route_id}-{param_name}-{annotation} ,skip its insert"
         )
         return
-    param, _ = IastApiParameter.get_or_create(
-        route_id=api_route_id,
-        name=param_name,
-        defaults={'annotation': annotation})
+    try:
+        param, _ = IastApiParameter.get_or_create(
+            route_id=api_route_id,
+            name=param_name,
+            defaults={'annotation': annotation})
+    except IntegrityError as e:
+        logger.info(e)
 
 def decode_content(body, content_encoding, version):
     if version == 'v1':
