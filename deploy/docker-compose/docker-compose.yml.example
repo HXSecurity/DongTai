@@ -3,15 +3,16 @@ services:
   dongtai-mysql: 
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:{ChangeThisVersion}
     restart: always
+    ports:
+      - "3306:3306"
     volumes:
       - "mysql-vol:/var/lib/mysql:rw"
-      #- "/var/lib/mysql"
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
   dongtai-redis:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:{ChangeThisVersion}
+    image: registry.cn-beijing.aliyuncs.com/secnium/dongtai-redis-saas-prod:latest
     restart: always
     logging:
       driver: "json-file"
@@ -30,49 +31,69 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
-
-  dongtai-engine:
-    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:{ChangeThisVersion}"
-    restart: always
-    entrypoint: ["/opt/dongtai/webapi/docker/entrypoint.sh", "worker"]
-    volumes:
-      - ./config-tutorial.ini:/opt/dongtai/webapi/deploy/conf/config.ini
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
   dongtai-server:
     image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:{ChangeThisVersion}"
     restart: always
     volumes:
       - ./log/:/tmp/logstash/
-      - ./config-tutorial.ini:/opt/dongtai/webapi/deploy/conf/config.ini
+      - ./config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
-  dongtai-engine-task:
+  dongtai-worker-task:
     image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:{ChangeThisVersion}"
     restart: always
-    entrypoint: ["/opt/dongtai/webapi/docker/entrypoint.sh", "beat"]
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "beat"]
     volumes:
-      - ./config-tutorial.ini:/opt/dongtai/webapi/deploy/conf/config.ini
+      - ./config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-beat:
+    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:{ChangeThisVersion}"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-beat"]
+    volumes:
+      - ./config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-high-freq:
+    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:{ChangeThisVersion}"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-high-freq"]
+    volumes:
+      - ./config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-chain:
+    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:{ChangeThisVersion}"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-chain"]
+    volumes:
+      - ./config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
   dongtai-logrotate:
-    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/logrotate:latest"
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/logrotate:{ChangeThisVersion}
     restart: always
     user: root
     volumes:
-      - ./log/:/tmp/logstash/
+      - "./log/:/tmp/logstash/"
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
+    privileged: true
   dongtai-logstash:
-    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/logstash:7.9.2-latest
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/logstash:7.9.2-{ChangeThisVersion}
     restart: always
     user: root
     environment:
