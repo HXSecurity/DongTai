@@ -250,7 +250,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
         http_method=vul_meta.http_method,
         agent__in=project_agents,
         param_name=param_name,
-        latest_time__lt=timestamp,
+        pk__lt=vul.id,
     ).delete()
 
     logger.info(f"vul_found {vul.id}")
