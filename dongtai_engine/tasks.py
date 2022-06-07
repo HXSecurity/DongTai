@@ -4,6 +4,7 @@
 # datetime:2021/1/26 下午4:45
 # software: PyCharm
 # project: lingzhi-engine
+import hashlib
 import json
 import time
 from json import JSONDecodeError
@@ -300,66 +301,64 @@ def get_project_agents(agent):
 
 
 @shared_task(queue='dongtai-sca-task')
-def update_one_sca(agent_id, package_path, package_signature, package_name, package_algorithm):
+def update_one_sca(agent_id, package_path, package_signature, package_name, package_algorithm, package_version=''):
     """
     根据SCA数据库，更新SCA记录信息
     :return:
     """
     logger.info(f'SCA检测开始 [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm}]')
     agent = IastAgent.objects.filter(id=agent_id).first()
-    version = None
-    if agent.language == "JAVA":
-        version = package_name.split('/')[-1].replace('.jar', '').split('-')[-1]
-    elif agent.language == "PYTHON":
-        # @todo agent上报版本 or 捕获全量pip库
-        version = package_name.split('/')[-1].split('-')[-1]
+    version = package_version
+    if not version:
+        if agent.language == "JAVA":
+            version = package_name.split('/')[-1].replace('.jar', '').split('-')[-1]
 
-    current_version_agents = get_project_agents(agent)
-    if package_signature:
-        asset_count = Asset.objects.values("id").filter(signature_value=package_signature,
-                                                        agent__in=current_version_agents).count()
-    else:
-        package_signature = sha_1('-'.join([package_name, version]))
-        asset_count = Asset.objects.values("id").filter(package_name=package_name,
-                                                        version=version,
-                                                        agent__in=current_version_agents).count()
+    if version:
+        current_version_agents = get_project_agents(agent)
+        if package_signature:
+            asset_count = Asset.objects.values("id").filter(signature_value=package_signature,
+                                                            agent__in=current_version_agents).count()
+        else:
+            package_signature = sha_1(package_name)
+            asset_count = Asset.objects.values("id").filter(package_name=package_name,
+                                                            version=version,
+                                                            agent__in=current_version_agents).count()
 
-    if asset_count == 0:
-        new_level = IastVulLevel.objects.get(name="info")
-        asset = Asset()
-        asset.package_name = package_name
-        asset.package_path = package_path
-        asset.signature_value = package_signature
-        asset.signature_algorithm = package_algorithm
-        asset.version = version
-        asset.level_id = new_level.id
-        asset.vul_count = 0
-        asset.language = asset.language
-        if agent:
-            asset.agent = agent
-            asset.project_version_id = agent.project_version_id if agent.project_version_id else 0
-            asset.project_name = agent.project_name
-            asset.language = agent.language
-            asset.project_id = -1
-            if agent.bind_project_id:
-                asset.project_id = agent.bind_project_id
-            asset.user_id = -1
-            if agent.user_id:
-                asset.user_id = agent.user_id
+        if asset_count == 0:
+            new_level = IastVulLevel.objects.get(name="info")
+            asset = Asset()
+            asset.package_name = package_name
+            asset.package_path = package_path
+            asset.signature_value = package_signature
+            asset.signature_algorithm = package_algorithm
+            asset.version = version
+            asset.level_id = new_level.id
+            asset.vul_count = 0
+            asset.language = asset.language
+            if agent:
+                asset.agent = agent
+                asset.project_version_id = agent.project_version_id if agent.project_version_id else 0
+                asset.project_name = agent.project_name
+                asset.language = agent.language
+                asset.project_id = -1
+                if agent.bind_project_id:
+                    asset.project_id = agent.bind_project_id
+                asset.user_id = -1
+                if agent.user_id:
+                    asset.user_id = agent.user_id
 
-        asset.license = ''
-        asset.dt = int(time.time())
-        asset.save()
-        sca_scan_asset(asset)
-    else:
-        logger.info(
-            f'SCA检测开始 [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm}] 组件已存在')
+            asset.license = ''
+            asset.dt = int(time.time())
+            asset.save()
+            sca_scan_asset(asset)
+        else:
+            logger.info(
+                f'SCA检测开始 [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm} {version}] 组件已存在')
 
 
 def sha_1(raw):
-    h = sha1()
-    h.update(raw.encode('utf-8'))
-    return h.hexdigest()
+    sha1_str = hashlib.sha1(raw.encode("utf-8")).hexdigest()
+    return sha1_str
 
 
 def is_alive(agent_id, timestamp):

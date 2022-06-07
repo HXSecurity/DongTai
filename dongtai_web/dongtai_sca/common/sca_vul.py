@@ -53,7 +53,7 @@ def GetScaVulData(asset_vul, asset_queryset):
 
         data['base_info']['project_names'] = project_list
 
-    cve_relation = VulCveRelation.objects.filter(cve=data['base_info']['vul_cve_id']).first()
+    cve_relation = VulCveRelation.objects.filter(id=asset_vul.cve_id).first()
 
     if cve_relation:
         data['poc_info']['poc_list'] = cve_relation.poc if cve_relation.poc else []

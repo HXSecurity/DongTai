@@ -27,6 +27,8 @@ class ScaHandler(IReportHandler):
         self.package_signature = self.detail.get('packageSignature')
         self.package_name = self.detail.get('packageName')
         self.package_algorithm = self.detail.get('packageAlgorithm')
+        self.package_version = self.detail.get('packageVersion', '')
+
 
     @staticmethod
     def send_to_engine(agent_id, package_path, package_signature, package_name, package_algorithm):
@@ -55,6 +57,8 @@ class ScaBulkHandler(ScaHandler):
         self.package_signature = self.detail.get('packageSignature')
         self.package_name = self.detail.get('packageName')
         self.package_algorithm = self.detail.get('packageAlgorithm')
+        self.package_version = self.detail.get('packageVersion', '')
+
 
     def save(self):
         for package in self.packages:
@@ -62,4 +66,6 @@ class ScaBulkHandler(ScaHandler):
             self.package_signature = package.get('packageSignature', None)
             self.package_name = package.get('packageName', None)
             self.package_algorithm = package.get('packageAlgorithm', None)
+            self.package_version = package.get('packageVersion', '')
+
             super().save()
