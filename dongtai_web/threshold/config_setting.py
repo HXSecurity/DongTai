@@ -333,7 +333,7 @@ class AgentThresholdConfigV2(TalentAdminEndPoint, viewsets.ViewSet):
             data = DEFAULT_CIRCUITCONFIG[mg.name]
             config_update(data, pk)
             return R.success()
-        return R.failure
+        return R.failure()
 
     def change_priority(self, request, pk):
         type_ = request.data.get('type')
