@@ -22,10 +22,7 @@ from dongtai_common.models.asset_vul import IastAssetVul, IastVulAssetRelation, 
 from dongtai_common.models.sca_maven_db import ScaMavenDb
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_web.vul_log.vul_log import log_asset_vul_found
-from dongtai_web.dongtai_sca.models import Package, VulPackageRange, VulPackageVersion, VulPackage, \
-    PackageRepoDependency, Vul, \
-    VulCveRelation, PackageLicenseLevel, PackageDependency
-from dongtai_engine.signals.handlers.notify_controler import send_asset_vul_notify
+from dongtai_web.dongtai_sca.models import Package, VulPackage, VulCveRelation, PackageLicenseLevel, PackageDependency
 
 logger = logging.getLogger(__name__)
 
@@ -200,7 +197,6 @@ def sca_scan_asset(asset):
                 logger.info(f'update asset {asset.id}  dependency fields: {update_fields}')
                 asset.save(update_fields=update_fields)
 
-            # todo 项目组件依赖层级 java,go和Python，php逻辑有区别
             if asset.dependency_level < 1:
                 # 同一组件，层级是否已经处理过，否则继续处理
                 asset_dependency_exist = Asset.objects.filter(signature_value=asset.signature_value,
@@ -374,11 +370,6 @@ def _add_vul_data(asset, asset_package, cve_relation):
             log_project_id = asset.project_id if asset.project_id else 0
             log_user_id = asset.user_id if asset.user_id else 0
             log_asset_vul_found(log_user_id, log_project_name, log_project_id, asset_vul.id, asset_vul.vul_name)
-            # 增加组件消息推送
-            # send_asset_vul_notify(asset_vul.id,log_project_id,log_user_id)
-            send_asset_vul_notify.apply_async(
-                kwargs={'asset_vul_id': asset_vul.id, 'project_id': log_project_id, 'user_id': log_user_id
-                        }, countdown=random.randint(1, 120))
         else:
             asset_vul.update_time = timestamp
             asset_vul.update_time_desc = -timestamp
@@ -389,10 +380,6 @@ def _add_vul_data(asset, asset_package, cve_relation):
             log_user_id = asset.user_id if asset.user_id else 0
             log_asset_vul_found(log_user_id, log_project_name, log_project_id, asset_vul.id, asset_vul.vul_name)
             _add_asset_vul_relation(asset_vul)
-            # 增加组件消息推送
-            send_asset_vul_notify.apply_async(
-                kwargs={'asset_vul_id': asset_vul.id, 'project_id': log_project_id, 'user_id': log_user_id
-                        }, countdown=random.randint(1, 120))
 
     except Exception as e:
         # import traceback
@@ -488,7 +475,6 @@ def get_dependency_graph(asset_data, package):
                         except Exception as e:
                             # import traceback
                             # traceback.print_exc()
-                            logger.error(f'SCA组件依赖等级处理,新建asset出错，错误原因：{e}')
                             continue
                     else:
                         dependency_asset.parent_dependency_id = parent_dependency_id
@@ -499,7 +485,7 @@ def get_dependency_graph(asset_data, package):
     except Exception as e:
         # import traceback
         # traceback.print_exc()
-        logger.error(f'SCA组件依赖等级处理出错，错误原因：{e}')
+        pass
 
 
 def _get_package_dependency(package):
