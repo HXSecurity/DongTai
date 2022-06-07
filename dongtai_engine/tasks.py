@@ -49,7 +49,6 @@ LANGUAGE_MAP = {
     "GO": 4
 }
 
-
 RETRY_INTERVALS = [10, 30, 90]
 
 
@@ -113,6 +112,7 @@ def load_sink_strategy(user=None, language=None):
 
 from dongtai_engine.signals.handlers.vul_handler import handler_vul
 from dongtai_engine.filters.main import vul_filter
+
 
 def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
     """
@@ -194,6 +194,7 @@ def search_and_save_sink(engine, method_pool_model, strategy):
 
     logger.info(f'发现sink点{strategy.get("type")}')
     method_pool_model.sinks.add(strategy.get('strategy'))
+
 
 @shared_task(bind=True, queue='dongtai-method-pool-scan',
              max_retries=settings.config.getint('task', 'max_retries', fallback=3))
@@ -306,7 +307,8 @@ def update_one_sca(agent_id, package_path, package_signature, package_name, pack
     根据SCA数据库，更新SCA记录信息
     :return:
     """
-    logger.info(f'SCA检测开始 [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm}]')
+    logger.info(
+        f'SCA检测开始 [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm} {package_version}]')
     agent = IastAgent.objects.filter(id=agent_id).first()
     version = package_version
     if not version:
@@ -538,7 +540,7 @@ def vul_recheck():
                             if param_name in post_body:
                                 post_body[param_name] = recheck_payload
                                 body = json.dumps(post_body)
-                            else: #? it looks weird
+                            else:  # ? it looks weird
                                 _param_items = body.split('&')
                                 item_length = len(_param_items)
                                 for index in range(item_length):
