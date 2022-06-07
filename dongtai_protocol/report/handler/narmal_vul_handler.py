@@ -18,6 +18,7 @@ from dongtai_conf import settings
 from dongtai_protocol.report.handler.report_handler_interface import IReportHandler
 from dongtai_protocol.report.report_handler_factory import ReportHandler
 from dongtai_web.vul_log.vul_log import log_vul_found
+from dongtai_common.models.agent import IastAgent
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -114,6 +115,7 @@ class BaseVulnHandler(IReportHandler):
 
 @ReportHandler.register(const.REPORT_VULN_NORNAL)
 class NormalVulnHandler(BaseVulnHandler):
+
     def save(self):
         logger.info("NormalVulnHandler start")
         logger.info(
@@ -130,16 +132,20 @@ class NormalVulnHandler(BaseVulnHandler):
         )
         if vul_type_enable == 0:
             return
+        project_agents = IastAgent.objects.filter(
+            project_version_id=self.agent.project_version_id)
         iast_vul = IastVulnerabilityModel.objects.filter(
-            hook_type_id=hook_type_id,
-            url=self.http_url,
+            strategy_id=strategy_id,
+            uri=self.http_uri,
             http_method=self.http_method,
-            agent=self.agent
-        ).first()
-        project = IastProject.objects.filter(pk=self.agent.bind_project_id).first()
+            agent__in=project_agents).order_by('-latest_time').first()
+        project = IastProject.objects.filter(
+            pk=self.agent.bind_project_id).first()
         if project:
             project.update_latest()
+        timestamp = int(time.time())
         if iast_vul:
+            iast_vul.url = self.http_url
             iast_vul.req_header = self.http_header
             iast_vul.req_params = self.http_query_string
             iast_vul.res_header = self.http_res_header
@@ -148,11 +154,11 @@ class NormalVulnHandler(BaseVulnHandler):
             iast_vul.top_stack = self.app_caller[1]
             iast_vul.bottom_stack = self.app_caller[0]
             iast_vul.counts = iast_vul.counts + 1
-            iast_vul.latest_time = int(time.time())
+            iast_vul.latest_time = timestamp
             iast_vul.status_id = settings.CONFIRMED
             iast_vul.save()
         else:
-            vul = IastVulnerabilityModel.objects.create(
+            iast_vul = IastVulnerabilityModel.objects.create(
                 strategy_id=strategy_id,
                 hook_type_id=hook_type_id,
                 level_id=level_id,
@@ -170,12 +176,19 @@ class NormalVulnHandler(BaseVulnHandler):
                 context_path=self.app_path,
                 counts=1,
                 status_id=settings.CONFIRMED,
-                first_time=int(time.time()),
-                latest_time=int(time.time()),
+                first_time=timestamp,
+                latest_time=timestamp,
                 client_ip=self.client_ip,
                 full_stack=json.dumps(self.app_caller),
                 top_stack=self.app_caller[0],
-                bottom_stack=self.app_caller[-1]
-            )
-            log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
-                          vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)
+                bottom_stack=self.app_caller[-1])
+            log_vul_found(iast_vul.agent.user_id, iast_vul.agent.bind_project.name,
+                          iast_vul.agent.bind_project_id, iast_vul.id,
+                          iast_vul.strategy.vul_name)
+        IastVulnerabilityModel.objects.filter(
+            strategy_id=strategy_id,
+            uri=self.http_uri,
+            http_method=self.http_method,
+            agent__in=project_agents,
+            pk__lt=iast_vul.id,
+        ).delete()

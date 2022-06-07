@@ -21,19 +21,15 @@
 ## Project structure
 ```
 .
-├── apiserver protocols for interaction between dongtai-server and agent
-├── conf configuration file
-├── core vulnerability detection and vulnerability processing part
-├── deploy deployment file
-├── dongtai Model classes shared 
-├── i18n internationalization files
-├── iast API for interacting with the web
-├── plugin Plugin System Dir
-├── sca component detection file
-├── test testcases
-├── upload static files
-├── utils public methods
-└── webapi project settings
+├── deploy
+├── dongtai_common common functions and classes for each service to call
+├── dongtai_conf configuration files
+├── dongtai_engine vulnerability detection and vulnerability processing part
+├── dongtai_protocol protocols for interaction between dongtai-server and agent
+├── dongtai_web api for interacting with the web
+├── static static files
+└── test testcases
+
 ```
 
 ## Architecture

@@ -384,16 +384,14 @@ urlpatterns.extend([
     path('api/v2/app_vul_list_content', GetAppVulsList.as_view()),
     path('api/v2/app_vul_summary', GetAppVulsSummary.as_view()),
 ])
-from dongtai_web.apitest.urls import urlpatterns as apitest_urls
 from dongtai_web.scaupload.urls import urlpatterns as scaupload_urls
 from dongtai_web.apitimelog.urls import urlpatterns as apitimelog_urls
 from dongtai_web.dongtai_sca.urls import urlpatterns as sca_urls
+from dongtai_web.versioncontrol.urls import urlpatterns as versioncontrol_urls
 
-
-urlpatterns.extend(apitest_urls)
 urlpatterns.extend(scaupload_urls)
 urlpatterns.extend(apitimelog_urls)
 urlpatterns.extend(sca_urls)
-
+urlpatterns.extend(versioncontrol_urls)
 
 urlpatterns = format_suffix_patterns(urlpatterns)

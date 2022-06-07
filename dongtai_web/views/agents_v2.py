@@ -168,4 +168,4 @@ def query_agent(filter_condiction=Q()) -> QuerySet:
         'language', 'server__ip', 'server__port', 'server__path',
         'server__hostname', 'heartbeat__memory', 'heartbeat__cpu',
         'heartbeat__disk', 'register_time', 'is_core_running', 'is_control',
-        'online', 'id', 'bind_project__id').order_by('-latest_time')
+        'online', 'id', 'bind_project__id', 'version').order_by('-latest_time')

@@ -30,9 +30,22 @@ class DongTaiPlugin:
 
         @wraps(origin_func)
         def patched_function(*args, **kwargs):
-            self.before_patch_function(args, kwargs)
+            logger.debug(
+                f"{self.target_class_name} {self.target_func_name} args:{args} kwargs:{kwargs}"
+            )
+            try:
+                self.before_patch_function(args, kwargs)
+            except Exception as e:
+                logger.info(f'plugin error:{e} args: {args} kwargs: {kwargs}',
+                            exc_info=True)
             res = origin_func(*args, **kwargs)
-            final_res = self.after_patch_function(args, kwargs, res)
+            try:
+                final_res = self.after_patch_function(args, kwargs, res)
+            except Exception as e:
+                logger.info(f'plugin error:{e} args: {args} kwargs: {kwargs}',
+                            exc_info=True)
+                return res
+
             return final_res
 
         setattr(target_class, self.target_func_name,

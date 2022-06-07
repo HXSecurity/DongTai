@@ -182,9 +182,11 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
         uri=vul_meta.uri,
         http_method=vul_meta.http_method,
         agent__in=project_agents,
-    ).first()
+        param_name=param_name,
+    ).order_by('-latest_time').first()
     IastProject.objects.filter(id=vul_meta.agent.bind_project_id).update(latest_time=timestamp)
     if vul:
+        vul.url = vul_meta.url
         vul.req_header = vul_meta.req_header
         vul.req_params = vul_meta.req_params
         vul.req_data = vul_meta.req_data
@@ -201,9 +203,10 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
         vul.method_pool_id = vul_meta.id
         vul.full_stack = json.dumps(vul_stack, ensure_ascii=False)
         vul.save(update_fields=[
-            'req_header', 'req_params', 'req_data', 'res_header', 'res_body', 'taint_value', 'taint_position',
-            'method_pool_id', 'context_path', 'client_ip', 'top_stack', 'bottom_stack', 'full_stack', 'counts',
-            'latest_time','latest_time_desc'
+            'url', 'req_header', 'req_params', 'req_data', 'res_header',
+            'res_body', 'taint_value', 'taint_position', 'method_pool_id',
+            'context_path', 'client_ip', 'top_stack', 'bottom_stack',
+            'full_stack', 'counts', 'latest_time', 'latest_time_desc'
         ])
     else:
         from dongtai_common.models.hook_type import HookType
@@ -240,6 +243,15 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
         )
         log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
                       vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)
+    #delete if exists more than one
+    IastVulnerabilityModel.objects.filter(
+        strategy_id=strategy_id,
+        uri=vul_meta.uri,
+        http_method=vul_meta.http_method,
+        agent__in=project_agents,
+        param_name=param_name,
+        pk__lt=vul.id,
+    ).delete()
 
     logger.info(f"vul_found {vul.id}")
     return vul

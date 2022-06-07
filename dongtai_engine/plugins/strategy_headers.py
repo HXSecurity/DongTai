@@ -96,15 +96,19 @@ def save_vul(vul_type, method_pool, position=None, data=None):
     if vul_strategy is None:
         logger.error(f'There is no corresponding strategy for the current vulnerability: {vul_type}')
 
+    from dongtai_common.models.agent import IastAgent
+    project_agents = IastAgent.objects.filter(
+        project_version_id=method_pool.agent.project_version_id)
     vul = IastVulnerabilityModel.objects.filter(
-        Q(strategy=vul_strategy) | Q(hook_type=vul_strategy.hook_type),
+        strategy_id=vul_strategy.id,
         uri=method_pool.uri,
         http_method=method_pool.http_method,
-        method_pool_id=method_pool.id
-    ).first()
+        agent__in=project_agents,
+    ).order_by('-latest_time').first()
     timestamp = int(time.time())
     IastProject.objects.filter(id=method_pool.agent.bind_project_id).update(latest_time=timestamp)
     if vul:
+        vul.url = vul.url
         vul.req_header = method_pool.req_header
         vul.req_params = method_pool.req_params
         vul.req_data = method_pool.req_data
@@ -118,8 +122,10 @@ def save_vul(vul_type, method_pool, position=None, data=None):
         vul.latest_time = timestamp
         vul.method_pool_id = method_pool.id
         vul.save(update_fields=[
-            'req_header', 'req_params', 'req_data', 'res_header', 'res_body', 'taint_value', 'taint_position',
-            'context_path', 'client_ip', 'counts', 'latest_time', 'method_pool_id','latest_time_desc'
+            'url', 'req_header', 'req_params', 'req_data', 'res_header',
+            'res_body', 'taint_value', 'taint_position', 'context_path',
+            'client_ip', 'counts', 'latest_time', 'method_pool_id',
+            'latest_time_desc'
         ])
     else:
         from dongtai_common.models.hook_type import HookType
@@ -156,3 +162,10 @@ def save_vul(vul_type, method_pool, position=None, data=None):
         )
         log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
                       vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)
+    IastVulnerabilityModel.objects.filter(
+        strategy=vul_strategy.id,
+        uri=method_pool.uri,
+        http_method=method_pool.http_method,
+        agent__in=project_agents,
+        pk__lt=vul.id,
+    ).delete()

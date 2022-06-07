@@ -80,6 +80,7 @@ class IastApiParameter(models.Model):
     name = models.CharField(max_length=100, blank=True)
     parameter_type = models.CharField(max_length=100,
                                       blank=True,
+                                      default='',
                                       db_column='type')
     annotation = models.CharField(max_length=500, blank=True)
     route = models.ForeignKey(IastApiRoute,
