@@ -11,8 +11,8 @@ def GetScaVulData(asset_vul, asset_queryset):
     data['base_info'] = {'package_name': asset_vul.package_name, 'version': asset_vul.package_version,
                          'safe_version': asset_vul.package_safe_version, 'language': asset_vul.package_language}
 
-    data['base_info']['first_time'] = asset_vul.create_time
-    data['base_info']['last_time'] = asset_vul.update_time
+    data['base_info']['first_time'] = asset_vul.vul_publish_time
+    data['base_info']['last_time'] = asset_vul.vul_update_time
 
     data['base_info']['cwe'] = ''
     data['base_info']['cnvd'] = ''
@@ -61,6 +61,6 @@ def GetScaVulData(asset_vul, asset_queryset):
         data['poc_info']['reference_link'] = []
         if cve_relation.references:
             for lk in cve_relation.references:
-                if lk['Type'] == 'in':
-                    data['poc_info']['reference_link'].append({'url': lk['Content'], 'source': lk['Source']})
+                if lk['type'] == 'in':
+                    data['poc_info']['reference_link'].append({'url': lk['content'], 'source': lk['source']})
     return data
