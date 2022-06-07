@@ -12,7 +12,7 @@ services:
       options:
         max-size: "10m"
   dongtai-redis:
-    image: registry.cn-beijing.aliyuncs.com/secnium/dongtai-redis-saas-prod:latest
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:{ChangeThisVersion}
     restart: always
     logging:
       driver: "json-file"
