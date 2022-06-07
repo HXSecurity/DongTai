@@ -167,5 +167,5 @@ def save_vul(vul_type, method_pool, position=None, data=None):
         uri=method_pool.uri,
         http_method=method_pool.http_method,
         agent__in=project_agents,
-        latest_time__lt=timestamp,
+        pk__lt=vul.id,
     ).delete()
