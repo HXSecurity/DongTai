@@ -115,7 +115,7 @@ class HardEncodeVulHandler(IReportHandler):
             uri=self.detail.get('file', ''),
             http_method='',
             agent__in=project_agents,
-            latest_time__lt=timestamp).delete()
+            pk__lt=iast_vul.id).delete()
         log_vul_found(iast_vul.agent.user_id, iast_vul.agent.bind_project.name,
                       iast_vul.agent.bind_project_id, iast_vul.id,
                       iast_vul.strategy.vul_name)

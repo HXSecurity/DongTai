@@ -158,7 +158,7 @@ class NormalVulnHandler(BaseVulnHandler):
             iast_vul.status_id = settings.CONFIRMED
             iast_vul.save()
         else:
-            vul = IastVulnerabilityModel.objects.create(
+            iast_vul = IastVulnerabilityModel.objects.create(
                 strategy_id=strategy_id,
                 hook_type_id=hook_type_id,
                 level_id=level_id,
@@ -182,13 +182,13 @@ class NormalVulnHandler(BaseVulnHandler):
                 full_stack=json.dumps(self.app_caller),
                 top_stack=self.app_caller[0],
                 bottom_stack=self.app_caller[-1])
-            log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
-                          vul.agent.bind_project_id, vul.id,
-                          vul.strategy.vul_name)
-        iast_vul = IastVulnerabilityModel.objects.filter(
+            log_vul_found(iast_vul.agent.user_id, iast_vul.agent.bind_project.name,
+                          iast_vul.agent.bind_project_id, iast_vul.id,
+                          iast_vul.strategy.vul_name)
+        IastVulnerabilityModel.objects.filter(
             strategy_id=strategy_id,
             uri=self.http_uri,
             http_method=self.http_method,
             agent__in=project_agents,
-            latest_time__lt=timestamp,
-        ).order_by('-latest_time').first()
+            pk__lt=iast_vul.id,
+        ).delete()
