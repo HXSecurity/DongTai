@@ -14,7 +14,7 @@ import sys
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 config = ConfigParser()
-status = config.read(os.path.join(BASE_DIR, 'dongtai_conf/conf/config.ini'))
+status = config.read(os.path.join(BASE_DIR, '../dongtai_conf/conf/config.ini'))
 if len(status) == 0:
     print("config file not exist. stop running")
     sys.exit(0)
@@ -27,7 +27,7 @@ DBCONFIG = {
 }
 db = MySQLdb.connect(**DBCONFIG, use_unicode=True, charset="utf8mb4")
 cursor = db.cursor()
-for line in open(os.path.join(BASE_DIR, 'deploy/docker/version.sql'),
+for line in open(os.path.join(BASE_DIR, 'docker/version.sql'),
                  encoding='utf-8'):
     if not line.strip():
         continue

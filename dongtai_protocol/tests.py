@@ -90,3 +90,18 @@ class AgentHeartBeatTestCase(AgentTestCase):
 
 def get_replay_id_set(replay_list: list) -> set:
     return set([i['id'] for i in replay_list])
+
+import base64
+
+
+class AgentSaasMethodPoolParseApiTestCase(AgentTestCase):
+    def test_api_parse(self):
+        mp = MethodPool.objects.filter(pk=500483715).first()
+        mp.req_header
+        headers_bytes = base64.b64decode(mp.req_header)
+        from dongtai_engine.filters.utils import parse_headers_dict_from_bytes
+        res = parse_headers_dict_from_bytes(headers_bytes)
+        from http.cookies import SimpleCookie
+        cookie = SimpleCookie()
+        cookie.load(res['cookie'])
+        print(cookie.keys())

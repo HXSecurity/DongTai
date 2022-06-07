@@ -80,6 +80,12 @@ class AgentLogDownload(UserEndPoint, viewsets.ViewSet):
         return R.success()
 
     def batch_log_download(self, request, pk):
+        try:
+            a = int(pk) > 0
+            if not a:
+                return nothing_resp()
+        except:
+            return nothing_resp()
         return FileResponse(open(f'/tmp/logstash/batchagent/{pk}.zip', 'rb'),
                             filename='agentlog.zip')
 

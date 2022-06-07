@@ -92,6 +92,12 @@ class SaasMethodPoolHandler(IReportHandler):
         headers = SaasMethodPoolHandler.parse_headers(self.http_req_header)
         save_project_header(headers.keys(), self.agent_id)
         add_new_api_route(self.agent_id, self.http_uri, self.http_method)
+        import base64
+        params_dict = get_params_dict(base64.b64decode(self.http_req_header),
+                                      self.http_req_data,
+                                      self.http_query_string)
+        update_api_route_deatil(self.agent_id, self.http_uri, self.http_method,
+                                params_dict)
         if self.http_replay:
             # 保存数据至重放请求池
             replay_id = headers.get('dongtai-replay-id')
@@ -388,7 +394,81 @@ def add_new_api_route(agent_id, path, method):
             agent_id=agent_id)
 
     except IntegrityError as e:
-        logger.error(e)
+        logger.info(e)
+
+
+from django.http.request import QueryDict
+
+
+def get_params_dict(req_header, req_body, req_params):
+    try:
+        from dongtai_engine.filters.utils import parse_headers_dict_from_bytes
+        res = parse_headers_dict_from_bytes(req_header)
+        req_header_keys = list(
+            filter(lambda x: x.upper() == 'cookie', res.keys()))
+    except:
+        req_header_keys = []
+    try:
+        from http.cookies import SimpleCookie
+        cookie = SimpleCookie()
+        cookie.load(res['cookie'])
+        cookie_keys = list(cookie.keys())
+    except:
+        cookie_keys = []
+    try:
+        body_keys = list(json.loads(req_body).keys())
+    except:
+        body_keys = []
+    try:
+        query_keys = list(QueryDict(req_params).keys())
+    except:
+        query_keys = []
+    return {
+        'header': req_header_keys,
+        "cookie": cookie_keys,
+        "jsonbody": body_keys,
+        "query": query_keys
+    }
+
+
+def update_api_route_deatil(agent_id, path, method, params_dict):
+    annotation_dict = {
+        'query': 'GET请求参数',
+        'cookie': 'Cookie参数',
+        'header': 'Header参数',
+        'jsonbody': 'POST的json参数'
+    }
+    api_method, is_create = IastApiMethod.objects.get_or_create(
+        method=method.upper())
+    api_route = IastApiRoute.objects.filter(agent_id=agent_id,
+                                            path=path,
+                                            method_id=api_method.id).first()
+    for key, value in params_dict.items():
+        annotation = annotation_dict[key]
+        for param_name in value:
+            single_insert(api_route.id, param_name, annotation)
+
+from dongtai_common.models.api_route import IastApiParameter
+
+
+
+def single_insert(api_route_id, param_name, annotation) -> None:
+    logger.info(f"{api_route_id}, {param_name}, {annotation}")
+    uuid_key = uuid.uuid4().hex
+    is_api_cached = uuid_key != cache.get_or_set(
+        f'api_route_param-{api_route_id}-{param_name}', uuid_key, 60 * 5)
+    if is_api_cached:
+        logger.info(
+            f"found cache api_route_param-{api_route_id}-{param_name}-{annotation} ,skip its insert"
+        )
+        return
+    try:
+        param, _ = IastApiParameter.objects.get_or_create(
+            route_id=api_route_id,
+            name=param_name,
+            defaults={'annotation': annotation})
+    except IntegrityError as e:
+        logger.info(e)
 
 def decode_content(body, content_encoding, version):
     if version == 'v1':
