@@ -15,7 +15,6 @@ from dongtai_protocol.report.report_handler_factory import ReportHandler
 import requests
 from dongtai_conf import settings
 
-
 logger = logging.getLogger('dongtai.openapi')
 
 
@@ -29,25 +28,28 @@ class ScaHandler(IReportHandler):
         self.package_algorithm = self.detail.get('packageAlgorithm')
         self.package_version = self.detail.get('packageVersion', '')
 
-
     @staticmethod
-    def send_to_engine(agent_id, package_path, package_signature, package_name, package_algorithm):
+    def send_to_engine(agent_id, package_path, package_signature, package_name, package_algorithm, package_version):
         try:
 
             logger.info(
-                f'[+] 处理SCA请求[{agent_id}, {package_path}, {package_signature}, {package_name}, {package_algorithm}]正在下发扫描任务')
-            update_one_sca.delay(agent_id, package_path, package_signature, package_name, package_algorithm)
+                f'[+] 处理SCA请求[{agent_id}, {package_path}, {package_signature}, {package_name}, {package_algorithm} {package_version}]正在下发扫描任务')
+            update_one_sca.delay(agent_id, package_path, package_signature, package_name, package_algorithm,
+                                 package_version)
             logger.info(
-                f'[+] 处理SCA请求[{agent_id}, {package_path}, {package_signature}, {package_name}, {package_algorithm}]任务下发完成')
+                f'[+] 处理SCA请求[{agent_id}, {package_path}, {package_signature}, {package_name}, {package_algorithm} {package_version}]任务下发完成')
         except Exception as e:
-            logger.info(f'[-] Failure: sca package [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm}], Error: {e}')
+            logger.info(
+                f'[-] Failure: sca package [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm} {package_version}], Error: {e}')
 
     def save(self):
         if all([self.agent_id, self.package_path, self.package_name]) is False:
             logger.warning(_("Data is incomplete, data: {}").format(json.dumps(self.report)))
         else:
             # post to dongtai engine async deal
-            ScaHandler.send_to_engine(self.agent_id, self.package_path, self.package_signature, self.package_name, self.package_algorithm)
+            ScaHandler.send_to_engine(self.agent_id, self.package_path, self.package_signature, self.package_name,
+                                      self.package_algorithm, self.package_version)
+
 
 @ReportHandler.register(const.REPORT_SCA + 1)
 class ScaBulkHandler(ScaHandler):
@@ -58,7 +60,6 @@ class ScaBulkHandler(ScaHandler):
         self.package_name = self.detail.get('packageName')
         self.package_algorithm = self.detail.get('packageAlgorithm')
         self.package_version = self.detail.get('packageVersion', '')
-
 
     def save(self):
         for package in self.packages:
