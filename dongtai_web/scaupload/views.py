@@ -5,7 +5,6 @@ from dongtai_common.models.sca_maven_db import (
     ScaMavenDb,
     ImportFrom,
 )
-from dongtai_common.models.sca_artifact_db import ScaArtifactDb
 from rest_framework import serializers
 from rest_framework import generics
 from rest_framework.serializers import ValidationError
@@ -23,6 +22,8 @@ from dongtai_web.scaupload.utils import (
     ScaLibError,
 )
 from django.db.utils import IntegrityError
+
+
 # Create your views here.
 
 
@@ -53,9 +54,8 @@ class ScaDeleteSerializer(serializers.Serializer):
 
 
 class SCADBMavenBulkViewSet(UserEndPoint, viewsets.ViewSet):
-
     permission_classes_by_action = {
-        'POST': (TalentAdminPermission, ),
+        'POST': (TalentAdminPermission,),
         'DELETE': (TalentAdminPermission,),
         'PUT': (TalentAdminPermission,),
     }
@@ -65,9 +65,6 @@ class SCADBMavenBulkViewSet(UserEndPoint, viewsets.ViewSet):
             return [permission() for permission in self.permission_classes_by_action[self.request.method]]
         except KeyError:
             return [permission() for permission in self.permission_classes]
-
-
-
 
     @extend_schema_with_envcheck([ScaDBSerializer],
                                  summary=_('Get sca db bulk'),
@@ -111,10 +108,10 @@ class SCADBMavenBulkViewSet(UserEndPoint, viewsets.ViewSet):
         ScaMavenDb.objects.bulk_create(objs, ignore_conflicts=True)
         return R.success()
 
-class SCADBMavenBulkDeleteView(UserEndPoint):
 
+class SCADBMavenBulkDeleteView(UserEndPoint):
     permission_classes_by_action = {
-        'POST': (TalentAdminPermission, ),
+        'POST': (TalentAdminPermission,),
         'DELETE': (TalentAdminPermission,),
         'PUT': (TalentAdminPermission,),
     }
@@ -124,7 +121,6 @@ class SCADBMavenBulkDeleteView(UserEndPoint):
             return [permission() for permission in self.permission_classes_by_action[self.request.method]]
         except KeyError:
             return [permission() for permission in self.permission_classes]
-
 
     @extend_schema_with_envcheck(request=ScaDeleteSerializer,
                                  summary=_('Get sca db bulk'),
@@ -137,9 +133,8 @@ class SCADBMavenBulkDeleteView(UserEndPoint):
 
 
 class SCADBMavenViewSet(UserEndPoint, viewsets.ViewSet):
-
     permission_classes_by_action = {
-        'POST': (TalentAdminPermission, ),
+        'POST': (TalentAdminPermission,),
         'DELETE': (TalentAdminPermission,),
         'PUT': (TalentAdminPermission,),
     }
@@ -149,8 +144,6 @@ class SCADBMavenViewSet(UserEndPoint, viewsets.ViewSet):
             return [permission() for permission in self.permission_classes_by_action[self.request.method]]
         except KeyError:
             return [permission() for permission in self.permission_classes]
-
-
 
     @extend_schema_with_envcheck(summary=_('Get sca db'),
                                  description=_("Get sca list"),
@@ -200,6 +193,7 @@ class SCADBMavenViewSet(UserEndPoint, viewsets.ViewSet):
         ScaMavenDb.objects.filter(q).update(**ser.data)
         return R.success()
 
+
 LICENSE_LIST = [
     'Apache-1.0', 'Apache-1.1', 'Apache-2.0', '0BSD', 'BSD-1-Clause',
     'BSD-2-Clause-FreeBSD', 'BSD-2-Clause-NetBSD', 'BSD-2-Clause-Patent',
@@ -226,13 +220,14 @@ LICENSE_LIST = [
 ]
 
 
-
 class SCALicenseViewSet(UserEndPoint):
     @extend_schema_with_envcheck(summary=_('Get sca license list'),
                                  description=_("Get sca list"),
                                  tags=[_('SCA DB')])
     def get(self, request):
         return R.success(data=LICENSE_LIST)
+
+
 class SCATemplateViewSet(UserEndPoint):
     @extend_schema_with_envcheck(summary=_('Get sca license list'),
                                  description=_("Get sca list"),
@@ -241,23 +236,4 @@ class SCATemplateViewSet(UserEndPoint):
         return FileResponse(open(
             os.path.join(BASE_DIR, 'static/assets/template/maven_sca.csv'),
             'rb'),
-                            filename='maven_sca.csv')
-
-
-class SCAStatViewSet(UserEndPoint):
-    @extend_schema_with_envcheck(summary=_('Get sca stat '),
-                                 description=_("Get sca list"),
-                                 tags=[_('SCA DB')])
-    def get(self, request):
-        sca_count = ScaMavenDb.objects.filter(
-            import_from=ImportFrom.USER).count()
-        vuln_count = ScaArtifactDb.objects.count()
-        try:
-            res = get_packge_from_sca_lib(page_size=1)
-            sca_count = sca_count + res['page']['alltotal']
-        except ScaLibError as e:
-            pass
-        return R.success(data={
-            'sca_count': sca_count,
-            'vuln_count': vuln_count,
-        })
+            filename='maven_sca.csv')

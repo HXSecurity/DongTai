@@ -25,8 +25,6 @@ from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai_common.models.replay_queue import IastReplayQueue
-from dongtai_common.models.sca_maven_db import ScaMavenDb
-from dongtai_common.models.sca_vul_db import ScaVulDb
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
