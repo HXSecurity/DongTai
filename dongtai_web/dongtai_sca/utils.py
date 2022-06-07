@@ -10,19 +10,22 @@ import time
 
 import requests
 from django.conf import settings
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.forms import model_to_dict
 
 from dongtai_common.models import User
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.asset import Asset
 from dongtai_common.models.asset_aggr import AssetAggr
-from dongtai_common.models.asset_vul import IastAssetVul, IastVulAssetRelation, IastAssetVulType, IastAssetVulTypeRelation
+from dongtai_common.models.asset_vul import IastAssetVul, IastVulAssetRelation, IastAssetVulType, \
+    IastAssetVulTypeRelation
 from dongtai_common.models.sca_maven_db import ScaMavenDb
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_web.vul_log.vul_log import log_asset_vul_found
-from dongtai_web.dongtai_sca.models import Package, VulPackageRange, VulPackageVersion, VulPackage, PackageRepoDependency, Vul, \
-    VulCveRelation, PackageLicenseLevel
+from dongtai_web.dongtai_sca.models import Package, VulPackageRange, VulPackageVersion, VulPackage, \
+    PackageRepoDependency, Vul, \
+    VulCveRelation, PackageLicenseLevel, PackageDependency
+from dongtai_engine.signals.handlers.notify_controler import send_asset_vul_notify
 
 logger = logging.getLogger(__name__)
 
@@ -35,16 +38,16 @@ def sca_scan_asset(asset):
     agent = asset.agent
     version = asset.version
     asset_package = Package.objects.filter(hash=asset.signature_value, version=version).first()
-    user_upload_package = None
-    if agent.language == "JAVA" and asset.signature_value:
-        # 用户上传的组件
-        user_upload_package = ScaMavenDb.objects.filter(sha_1=asset.signature_value).first()
-
-    elif agent.language == "PYTHON":
-        # @todo agent上报版本 or 捕获全量pip库
-        version = asset.package_name.split('/')[-1].split('-')[-1]
-        name = asset.package_name.replace("-" + version, "")
-        asset_package = Package.objects.filter(ecosystem="PyPI", name=name, version=version).first()
+    # user_upload_package = None
+    # if agent.language == "JAVA" and asset.signature_value:
+    #     # 用户上传的组件
+    #     user_upload_package = ScaMavenDb.objects.filter(sha_1=asset.signature_value).first()
+    #
+    # elif agent.language == "PYTHON":
+    #     # @todo agent上报版本 or 捕获全量pip库
+    #     version = asset.package_name.split('/')[-1].split('-')[-1]
+    #     name = asset.package_name.replace("-" + version, "")
+    #     asset_package = Package.objects.filter(ecosystem="PyPI", name=name, version=version).first()
 
     package_name = asset.package_name
     update_fields = list()
@@ -64,39 +67,41 @@ def sca_scan_asset(asset):
             else:
                 version_code = "0000000000000000000000000"
 
-            vul_package_ids = []
-            vul_package_ranges = VulPackageRange.objects.filter(
-                ecosystem=asset_package.ecosystem, name=asset_package.name,
-                introduced_vcode__lte=version_code, fixed_vcode__gt=version_code
-            ).all()
+            # vul_package_ids = []
+            # vul_package_ranges = VulPackageRange.objects.filter(
+            #     ecosystem=asset_package.ecosystem, name=asset_package.name,
+            #     introduced_vcode__lte=version_code, fixed_vcode__gt=version_code
+            # ).all()
+            #
+            # for vul_package_range in vul_package_ranges:
+            #     vul_package_ids.append(vul_package_range.vul_package_id)
+            #
+            # vul_package_versions = VulPackageVersion.objects.filter(
+            #     ecosystem=asset_package.ecosystem, name=asset_package.name, version=version
+            # ).all()
+            # for vul_package_version in vul_package_versions:
+            #     vul_package_ids.append(vul_package_version.vul_package_id)
 
-            for vul_package_range in vul_package_ranges:
-                vul_package_ids.append(vul_package_range.vul_package_id)
-
-            vul_package_versions = VulPackageVersion.objects.filter(
-                ecosystem=asset_package.ecosystem, name=asset_package.name, version=version
-            ).all()
-            for vul_package_version in vul_package_versions:
-                vul_package_ids.append(vul_package_version.vul_package_id)
-
-            vul_list = VulPackage.objects.filter(id__in=vul_package_ids).all()
+            vul_list = VulPackage.objects.filter(ecosystem=asset_package.ecosystem, name=asset_package.name,
+                                                 introduced_vcode__lte=version_code,
+                                                 final_vcode__gte=version_code).all()
 
             if asset_package.license:
                 asset.license = asset_package.license
                 update_fields.append('license')
-            # 最小修复版本-安全版本
-            package_ranges = VulPackageRange.objects.filter(ecosystem=asset_package.ecosystem,
-                                                            name=asset_package.name,
-                                                            # introduced_vcode__lte=version_code,
-                                                            fixed_vcode__gt=version_code).order_by(
-                "fixed_vcode").first()
-            if package_ranges and asset.safe_version != package_ranges.fixed:
+            # todo 最小修复版本-安全版本
+            package_ranges = VulPackage.objects.filter(ecosystem=asset_package.ecosystem,
+                                                       name=asset_package.name,
+                                                       safe_vcode__gte=version_code).order_by(
+                "safe_vcode").first()
+            if package_ranges and asset.safe_version != package_ranges.safe_version:
                 asset.safe_version = package_ranges.fixed
                 update_fields.append('safe_version')
 
             # 最新版本
-            last_package = Package.objects.filter(ecosystem=asset_package.ecosystem,
-                                                  name=asset_package.name).order_by("-version_publish_time").first()
+            last_package = Package.objects.filter(Q(ecosystem=asset_package.ecosystem) &
+                                                  Q(name=asset_package.name) & ~Q(version="")).order_by(
+                "-version_publish_time").first()
             if last_package:
                 asset.last_version = last_package.version
                 update_fields.append('last_version')
@@ -106,26 +111,22 @@ def sca_scan_asset(asset):
             levels = []
             for vul in vul_list:
                 _level = vul.severity
-                vul_info = Vul.objects.filter(id=vul.vul_id).first()
-                if vul_info:
-                    vul_cve_id = vul_info.aliases[0] if vul_info.aliases else ''
-                    if vul_cve_id:
-                        cve_relation = VulCveRelation.objects.filter(cve=vul_cve_id).first()
-                        if cve_relation:
-                            asset_vul_info = model_to_dict(vul_info)
-                            asset_vul_info['severity'] = _level
-                            asset_vul_info['vul_cve_id'] = vul_cve_id
-                            if _level == 'note':
-                                _level = 'info'
-                            if _level and _level not in levels:
-                                levels.append(_level)
-                            if _level not in levels_dict:
-                                levels_dict[_level] = 1
-                            else:
-                                levels_dict[_level] += 1
-                            vul_count += 1
-                            # 写入IastAssetVul
-                            _add_vul_data(asset_vul_info, asset, asset_package, cve_relation)
+                vul_cve_code = vul.cve
+                if vul_cve_code:
+                    cve_relation = VulCveRelation.objects.filter(
+                        Q(cve=vul_cve_code) | Q(cnvd=vul_cve_code) | Q(cnnvd=vul_cve_code)).first()
+                    if cve_relation:
+                        if _level == 'note':
+                            _level = 'info'
+                        if _level and _level not in levels:
+                            levels.append(_level)
+                        if _level not in levels_dict:
+                            levels_dict[_level] = 1
+                        else:
+                            levels_dict[_level] += 1
+                        vul_count += 1
+                        # 写入IastAssetVul
+                        _add_vul_data(asset, asset_package, cve_relation)
 
             if len(levels) > 0:
                 if 'critical' in levels:
@@ -183,73 +184,106 @@ def sca_scan_asset(asset):
             if asset.vul_count != vul_count:
                 asset.vul_count = vul_count
                 update_fields.append('vul_count')
+            # if user_upload_package is not None:
+            #     package_name = user_upload_package.aql
+            #     version = user_upload_package.version
 
-        if user_upload_package is not None:
-            package_name = user_upload_package.aql
-            version = user_upload_package.version
+            if asset.package_name != package_name:
+                asset.package_name = package_name
+                update_fields.append('package_name')
 
-        if asset.package_name != package_name:
-            asset.package_name = package_name
-            update_fields.append('package_name')
+            if asset.version != version:
+                asset.version = version
+                update_fields.append('version')
 
-        if asset.version != version:
-            asset.version = version
-            update_fields.append('version')
+            if len(update_fields) > 0:
+                logger.info(f'update asset {asset.id}  dependency fields: {update_fields}')
+                asset.save(update_fields=update_fields)
 
-        if len(update_fields) > 0:
-            logger.info(f'update asset {asset.id}  dependency fields: {update_fields}')
-            asset.save(update_fields=update_fields)
+            # todo 项目组件依赖层级 java,go和Python，php逻辑有区别
+            if asset.dependency_level < 1:
+                # 同一组件，层级是否已经处理过，否则继续处理
+                asset_dependency_exist = Asset.objects.filter(signature_value=asset.signature_value,
+                                                              version=asset.version, dependency_level__gt=0,
+                                                              agent_id=asset.agent).first()
+                if not asset_dependency_exist:
+                    if asset_package:
+                        if agent.language.upper() == "JAVA" or agent.language.upper() == "GOLANG":
+                            get_dependency_graph(model_to_dict(asset), model_to_dict(asset_package))
+                        else:
+                            # python和PHP
+                            _update_asset_dependency_level(asset)
+                else:
+                    asset.dependency_level = asset_dependency_exist.dependency_level
+                    asset.parent_dependency_id = asset_dependency_exist.parent_dependency_id
+                    asset.save(update_fields=['dependency_level', 'parent_dependency_id'])
 
-        # todo 项目组件依赖层级
-        if asset.dependency_level < 1:
-            # 同一组件，层级是否已经处理过，否则继续处理
-            asset_dependency_exist = Asset.objects.filter(signature_value=asset.signature_value,
-                                                          version=asset.version, dependency_level__gt=0,
-                                                          agent_id=asset.agent).exists()
-            if not asset_dependency_exist and asset_package and agent.language == "JAVA":
-                get_dependency_graph(model_to_dict(asset), asset_package.aql)
-            else:
-                asset.dependency_level = 1
-                asset.save(update_fields=['dependency_level'])
-
-        if asset_package:
+            # if asset_package:
             update_asset_aggr(asset)
+        else:
+            logger.warning('[sca_scan_asset]检测组件在组件库不存在:{}/{}'.format(asset.id, asset.package_name))
+
     except Exception as e:
         # import traceback
         # traceback.print_exc()
         logger.info("get package_vul failed:{}".format(e))
 
 
+def _update_asset_dependency_level(asset):
+    if asset.dependency_level == 0:
+        asset.dependency_level = 1
+        asset.save(update_fields=['dependency_level'])
+
+    asset_package = Package.objects.filter(hash=asset.signature_value, version=asset.version).first()
+
+    asset_dependency = PackageDependency.objects.filter(package_name=asset_package.name,
+                                                        p_version=asset_package.version,
+                                                        ecosystem=asset_package.ecosystem).all()
+    for dependency in asset_dependency:
+        dependency_package = Package.objects.filter(name=dependency.dependency_package_name,
+                                                    version=dependency.d_version,
+                                                    ecosystem=dependency.ecosystem).first()
+        if dependency_package:
+            dependency_asset = Asset.objects.filter(signature_value=dependency_package.hash,
+                                                    version=dependency_package.version, agent_id=asset.agent_id,
+                                                    dependency_level=0).first()
+            if dependency_asset:
+                dependency_asset.parent_dependency_id = asset.id
+                dependency_asset.dependency_level = asset.dependency_level + 1
+                dependency_asset.save(update_fields=['dependency_level', 'parent_dependency_id'])
+                _update_asset_dependency_level(dependency_asset)
+
+
 # 处理IastAssetVul
-def _add_vul_data(vul_info, asset, asset_package, cve_relation):
+def _add_vul_data(asset, asset_package, cve_relation):
     try:
         level_maps = dict()
-        _level = vul_info['severity']
+        _level = cve_relation.severity
         vul_package_name = asset.package_name
         vul_title = ''
         vul_detail = ''
         vul_have_poc = 0
-        vul_cve_id = vul_info['vul_cve_id']
-        vul_have_article = 1 if vul_info['references'] else 0
+        # vul_have_article = 1 if vul_info['references'] else 0
+        vul_have_article = 0
 
         vul_serial = ''
         vul_reference = dict()
         vul_type_ids = []
-        cve_relation_id = 0
+        # cve_relation_id = 0
         default_cwe_info = {'cwe_id': '', 'name_chinese': '未知'}
 
-        if vul_cve_id and cve_relation:
-            cve_relation_id = cve_relation.id
+        if cve_relation:
+            # cve_relation_id = cve_relation.id
             vul_title = cve_relation.vul_title
             if cve_relation.description:
-                vul_detail = cve_relation.description[0]['Content']
+                vul_detail = cve_relation.description[0]['content']
             vul_have_poc = 1 if cve_relation.poc else 0
             vul_reference = {"cve": cve_relation.cve, "cwe": cve_relation.cwe, "cnnvd": cve_relation.cnnvd,
                              "cnvd": cve_relation.cnvd}
             vul_serial = ' | '.join([vul_reference[_i] for _i in vul_reference])
             vul_serial = vul_title + ' | ' + vul_serial
-            vul_cwe_id = cve_relation.cwe
-            vul_type_cwe = IastAssetVulType.objects.filter(cwe_id=vul_cwe_id).first()
+            vul_cwe_id = cve_relation.cwe.split(',')
+            vul_type_cwe = IastAssetVulType.objects.filter(cwe_id__in=vul_cwe_id).all()
 
             if not vul_type_cwe:
                 if cve_relation.cwe_info:
@@ -263,7 +297,8 @@ def _add_vul_data(vul_info, asset, asset_package, cve_relation):
                             vul_type_id = vul_type_cwe1.id
                         vul_type_ids.append(vul_type_id)
             else:
-                vul_type_ids.append(vul_type_cwe.id)
+                for cwe in vul_type_cwe:
+                    vul_type_ids.append(cwe.id)
 
         if not vul_type_ids:
             vul_type_cwe = IastAssetVulType.objects.filter(cwe_id=default_cwe_info['cwe_id']).first()
@@ -294,11 +329,11 @@ def _add_vul_data(vul_info, asset, asset_package, cve_relation):
                 vul_level = level_obj.id
             else:
                 vul_level = 1  # critical IastVulLevel查不到归到high
-        asset_vul = IastAssetVul.objects.filter(cve_code=vul_cve_id, aql=vul_aql,
+        asset_vul = IastAssetVul.objects.filter(cve_id=cve_relation.id, aql=vul_aql,
                                                 package_hash=vul_package_hash,
                                                 package_version=vul_package_v).first()
         timestamp = int(time.time())
-        if not asset_vul and vul_cve_id:
+        if not asset_vul:
             asset_vul = IastAssetVul.objects.create(
                 package_name=vul_package_name,
                 level_id=vul_level,
@@ -314,10 +349,12 @@ def _add_vul_data(vul_info, asset, asset_package, cve_relation):
                 package_language=vul_package_language,
                 have_article=vul_have_article,
                 have_poc=vul_have_poc,
-                cve_code=vul_cve_id,
-                cve_id=cve_relation_id,
+                cve_id=cve_relation.id,
+                cve_code=cve_relation.cve,
                 vul_cve_nums=vul_reference,
                 vul_serial=vul_serial,
+                vul_publish_time=cve_relation.publish_time,
+                vul_update_time=cve_relation.update_time,
                 update_time=timestamp,
                 update_time_desc=-timestamp,
                 create_time=timestamp
@@ -337,6 +374,11 @@ def _add_vul_data(vul_info, asset, asset_package, cve_relation):
             log_project_id = asset.project_id if asset.project_id else 0
             log_user_id = asset.user_id if asset.user_id else 0
             log_asset_vul_found(log_user_id, log_project_name, log_project_id, asset_vul.id, asset_vul.vul_name)
+            # 增加组件消息推送
+            # send_asset_vul_notify(asset_vul.id,log_project_id,log_user_id)
+            send_asset_vul_notify.apply_async(
+                kwargs={'asset_vul_id': asset_vul.id, 'project_id': log_project_id, 'user_id': log_user_id
+                        }, countdown=random.randint(1, 120))
         else:
             asset_vul.update_time = timestamp
             asset_vul.update_time_desc = -timestamp
@@ -347,6 +389,10 @@ def _add_vul_data(vul_info, asset, asset_package, cve_relation):
             log_user_id = asset.user_id if asset.user_id else 0
             log_asset_vul_found(log_user_id, log_project_name, log_project_id, asset_vul.id, asset_vul.vul_name)
             _add_asset_vul_relation(asset_vul)
+            # 增加组件消息推送
+            send_asset_vul_notify.apply_async(
+                kwargs={'asset_vul_id': asset_vul.id, 'project_id': log_project_id, 'user_id': log_user_id
+                        }, countdown=random.randint(1, 120))
 
     except Exception as e:
         # import traceback
@@ -369,7 +415,7 @@ def _add_asset_vul_relation(asset_vul):
         IastVulAssetRelation.objects.bulk_create(asset_vul_relations)
 
 
-def get_dependency_graph(asset_data, repo_aql):
+def get_dependency_graph(asset_data, package):
     try:
         asset_exist = Asset.objects.filter(signature_value=asset_data['signature_value'],
                                            version=asset_data['version'], dependency_level__gt=0,
@@ -385,8 +431,8 @@ def get_dependency_graph(asset_data, repo_aql):
         parent_dependency_id = parent_asset.id
         dependency_level = parent_asset.dependency_level + 1
 
-        if repo_aql:
-            repo_dependency = _get_package_repo_dependency(repo_aql)
+        if package:
+            repo_dependency = _get_package_dependency(package)
             if repo_dependency:
                 for dependency in repo_dependency:
                     package_name = dependency['aql']
@@ -449,47 +495,35 @@ def get_dependency_graph(asset_data, repo_aql):
                         dependency_asset.dependency_level = dependency_level
                         dependency_asset.save(update_fields=['parent_dependency_id', 'dependency_level'])
 
-                    get_dependency_graph(model_to_dict(dependency_asset), package_name)
+                    get_dependency_graph(model_to_dict(dependency_asset), dependency)
     except Exception as e:
         # import traceback
         # traceback.print_exc()
         logger.error(f'SCA组件依赖等级处理出错，错误原因：{e}')
 
 
-def _get_package_repo_dependency(repo_aql):
-    repo_dependency = []
-
-    if repo_aql:
-        dependency_aqls = _get_repo_dependency_ids(repo_aql)
-        if dependency_aqls:
-            repo_dependency.extend(_get_dependency_repo(dependency_aqls))
-
-    return repo_dependency
-
-
-def _get_dependency_repo(dependency_ids=None):
-    repo_dependency = []
-    if dependency_ids:
-        dependency_repos = Package.objects.filter(aql__in=dependency_ids).values('aql', 'hash', 'version',
-                                                                                 'license').all()
-        for dependency in dependency_repos:
-            repo_dependency.append(
-                {'aql': dependency['aql'], 'hash': dependency['hash'],
-                 'license': dependency['license'] if dependency['license'] else '',
-                 'version': dependency['version']})
-
-    return repo_dependency
-
-
-def _get_repo_dependency_ids(repo_aql):
-    dependency_aqls = []
-    if repo_aql:
-        repo_dependency = PackageRepoDependency.objects.filter(repo_aql=repo_aql).values('dependency_aql').all()
+def _get_package_dependency(package):
+    dependency_data = []
+    if package:
+        repo_dependency = PackageDependency.objects.filter(package_name=package['name'], p_version=package['version'],
+                                                           ecosystem=package['ecosystem']).all()
         for dependency in repo_dependency:
-            if repo_aql != dependency['dependency_aql']:
-                dependency_aqls.append(dependency['dependency_aql'])
+            if package['name'] != dependency['dependency_package_name']:
+                dependency_package = Package.objects.filter(name=dependency['dependency_package_name'],
+                                                            version=dependency['d_version'],
+                                                            ecosystem=dependency['ecosystem']).values('aql', 'hash',
+                                                                                                      'version',
+                                                                                                      'name',
+                                                                                                      'ecosystem',
+                                                                                                      'license').first()
+                if dependency_package:
+                    dependency_data.append(
+                        {'aql': dependency['aql'], 'hash': dependency['hash'], 'ecosystem': dependency['ecosystem'],
+                         'name': dependency['name'],
+                         'license': dependency['license'] if dependency['license'] else '',
+                         'version': dependency['version']})
 
-    return dependency_aqls
+    return dependency_data
 
 
 def update_asset_aggr(asset):
@@ -551,3 +585,17 @@ def get_asset_id_by_aggr_id(aggr_id, asset_ids=None):
             data_ids.append(asset['id'])
 
     return data_ids
+
+
+def get_package_name_by_aql(aql):
+    name = ''
+
+    if aql:
+        aql_split = aql.split(':')
+        if len(aql_split) > 0:
+            del aql_split[-2]
+            del aql_split[-1]
+            del aql_split[0]
+            name = ':'.join(aql_split)
+
+    return name

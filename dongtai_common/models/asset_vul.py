@@ -29,6 +29,8 @@ class IastAssetVul(models.Model):
     have_poc = models.SmallIntegerField(blank=True, null=True)
     cve_code = models.CharField(max_length=64, blank=True, null=True)
     cve_id = models.IntegerField(blank=True, null=True)
+    vul_publish_time = models.DateTimeField(blank=True, null=True)
+    vul_update_time = models.DateTimeField(blank=True, null=True)
     update_time = models.IntegerField(blank=True, null=True)
     update_time_desc = models.IntegerField(blank=True, null=True)
     create_time = models.IntegerField(blank=True, null=True)
