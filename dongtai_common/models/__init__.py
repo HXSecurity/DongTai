@@ -7,9 +7,9 @@
 
 from .user import User
 from . import api_route
-LANGUAGE_DICT = {'JAVA': 1, 'PYTHON': 2, 'PHP': 3, 'G0': 4}
+LANGUAGE_DICT = {'JAVA': 1, 'PYTHON': 2, 'PHP': 3, 'GO': 4}
 ### aggregation
-LANGUAGE_ID_DICT = {"1":"JAVA", "2": "PYTHON", "3": "PHP", "4":"G0"}
+LANGUAGE_ID_DICT = {"1":"JAVA", "2": "PYTHON", "3": "PHP", "4":"GO"}
 AVAILABILITY_DICT = {
     "1": "存在利用代码",
     "2": "存在分析文章",
