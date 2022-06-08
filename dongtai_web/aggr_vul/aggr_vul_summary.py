@@ -44,7 +44,7 @@ def get_annotate_sca_base_data(user_id: int,pro_condition: str):
     }
     # auth_condition = getAuthBaseQuery(user_id=user_id, table_str="asset")
     user_auth_info = auth_user_list_str(user_id=user_id,user_table="asset")
-    query_condition = " where rel.is_del=0 " + user_auth_info.get("user_condition_str") + pro_condition
+    query_condition = " where rel.is_del=0 and asset.project_id>0 " + user_auth_info.get("user_condition_str") + pro_condition
     base_join = "left JOIN iast_asset_vul_relation as rel on rel.asset_vul_id=vul.id  " \
                 "left JOIN iast_asset as asset on rel.asset_id=asset.id "
     # level_join = "left JOIN iast_vul_level as level on level.id=vul.level_id "
