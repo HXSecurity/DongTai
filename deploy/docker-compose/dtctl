@@ -443,6 +443,16 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
+  dongtai-worker-other:
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-other"]
+    volumes:
+      - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
   dongtai-worker-high-freq:
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
