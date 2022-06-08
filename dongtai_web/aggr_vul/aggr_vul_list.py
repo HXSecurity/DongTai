@@ -36,7 +36,7 @@ class GetAggregationVulList(UserEndPoint):
         ser = AggregationArgsSerializer(data=request.data)
         keywords = ""
         join_table = ""
-        query_condition = " where rel.is_del=0 " 
+        query_condition = " where rel.is_del=0 "
         try:
             if ser.is_valid(True):
                 page_size = ser.validated_data['page_size']
