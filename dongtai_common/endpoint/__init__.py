@@ -294,7 +294,7 @@ class AnonymousAndUserEndPoint(MixinAuthEndPoint):
 
 
 class UserEndPoint(MixinAuthEndPoint):
-    permission_classes = (UserPermission,)
+    permission_classes = ()
 
 
 class OpenApiEndPoint(EndPoint):
