@@ -29,7 +29,7 @@ def get_annotate_data(
     user_id: int, bind_project_id=int, project_version_id=int
 ) -> dict:
     auth_user_info = auth_user_list_str(user_id=user_id)
-    cache_q = Q(is_del=0, agent__user_id__in=auth_user_info['user_list'])
+    cache_q = Q(is_del=0,agent__bind_project_id__gt=0, agent__user_id__in=auth_user_info['user_list'])
 
     # 从项目列表进入 绑定项目id
     if bind_project_id:
