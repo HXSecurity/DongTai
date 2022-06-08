@@ -19,7 +19,6 @@ from dongtai_common.models.asset import Asset
 from dongtai_common.models.asset_aggr import AssetAggr
 from dongtai_common.models.asset_vul import IastAssetVul, IastVulAssetRelation, IastAssetVulType, \
     IastAssetVulTypeRelation
-from dongtai_common.models.sca_maven_db import ScaMavenDb
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_web.vul_log.vul_log import log_asset_vul_found
 from dongtai_web.dongtai_sca.models import Package, VulPackage, VulCveRelation, PackageLicenseLevel, PackageDependency
@@ -46,7 +45,6 @@ def sca_scan_asset(asset):
     #     name = asset.package_name.replace("-" + version, "")
     #     asset_package = Package.objects.filter(ecosystem="PyPI", name=name, version=version).first()
 
-    package_name = asset.package_name
     update_fields = list()
     try:
         logger.info('[sca_scan_asset]开始检测组件:{}/{}'.format(asset.id, asset.package_name))
@@ -54,7 +52,12 @@ def sca_scan_asset(asset):
             package_name = asset_package.aql
             version = asset_package.version
 
-            if asset.version:
+            # 修改package_name为aql
+            if asset.package_name != package_name:
+                asset.package_name = package_name
+                update_fields.append('package_name')
+
+            if version:
                 version_code = ""
                 version_list = asset.version.split('.')[0:4]
                 while len(version_list) != 5:
@@ -63,21 +66,6 @@ def sca_scan_asset(asset):
                     version_code += _version.zfill(5)
             else:
                 version_code = "0000000000000000000000000"
-
-            # vul_package_ids = []
-            # vul_package_ranges = VulPackageRange.objects.filter(
-            #     ecosystem=asset_package.ecosystem, name=asset_package.name,
-            #     introduced_vcode__lte=version_code, fixed_vcode__gt=version_code
-            # ).all()
-            #
-            # for vul_package_range in vul_package_ranges:
-            #     vul_package_ids.append(vul_package_range.vul_package_id)
-            #
-            # vul_package_versions = VulPackageVersion.objects.filter(
-            #     ecosystem=asset_package.ecosystem, name=asset_package.name, version=version
-            # ).all()
-            # for vul_package_version in vul_package_versions:
-            #     vul_package_ids.append(vul_package_version.vul_package_id)
 
             vul_list = VulPackage.objects.filter(ecosystem=asset_package.ecosystem, name=asset_package.name,
                                                  introduced_vcode__lte=version_code,
@@ -181,9 +169,6 @@ def sca_scan_asset(asset):
             if asset.vul_count != vul_count:
                 asset.vul_count = vul_count
                 update_fields.append('vul_count')
-            # if user_upload_package is not None:
-            #     package_name = user_upload_package.aql
-            #     version = user_upload_package.version
 
             if asset.package_name != package_name:
                 asset.package_name = package_name
@@ -203,12 +188,12 @@ def sca_scan_asset(asset):
                                                               version=asset.version, dependency_level__gt=0,
                                                               agent_id=asset.agent).first()
                 if not asset_dependency_exist:
-                    if asset_package:
-                        if agent.language.upper() == "JAVA" or agent.language.upper() == "GOLANG":
-                            get_dependency_graph(model_to_dict(asset), model_to_dict(asset_package))
-                        else:
-                            # python和PHP
-                            _update_asset_dependency_level(asset)
+                    if agent.language.upper() == "JAVA" or agent.language.upper() == "GOLANG":
+                        get_dependency_graph(model_to_dict(asset), model_to_dict(asset_package))
+                    else:
+                        # python和PHP
+                        _update_asset_dependency_level(asset)
+
                 else:
                     asset.dependency_level = asset_dependency_exist.dependency_level
                     asset.parent_dependency_id = asset_dependency_exist.parent_dependency_id
