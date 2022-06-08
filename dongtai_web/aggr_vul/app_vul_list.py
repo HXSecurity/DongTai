@@ -38,7 +38,7 @@ class GetAppVulsList(UserEndPoint):
         user = request.user
         # 获取用户权限
         auth_user_info = auth_user_list_str(user=user)
-        queryset = IastVulnerabilityModel.objects.filter(is_del=0,agent__user_id__in=auth_user_info['user_list'])
+        queryset = IastVulnerabilityModel.objects.filter(is_del=0,agent__bind_project_id__gt=0,agent__user_id__in=auth_user_info['user_list'])
 
         try:
             if ser.is_valid(True):
