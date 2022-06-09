@@ -168,7 +168,7 @@ class ScaSummary(UserEndPoint):
 
         auth_user_ids = [str(_i.id) for _i in auth_users]
         auth_user_ids_str = ','.join(auth_user_ids)
-        base_query_sql = " LEFT JOIN iast_asset ON iast_asset.signature_value = iast_asset_aggr.signature_value WHERE iast_asset.user_id in ({}) and iast_asset.is_del=0 ".format(
+        base_query_sql = " LEFT JOIN iast_asset ON iast_asset.signature_value = iast_asset_aggr.signature_value WHERE iast_asset.dependency_level>0 and iast_asset.user_id in ({}) and iast_asset.is_del=0 ".format(
             auth_user_ids_str)
         asset_aggr_where = " and iast_asset_aggr.is_del=0 "
         package_kw = request_data.get('keyword', "")
