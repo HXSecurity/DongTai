@@ -54,8 +54,8 @@ class ReportHandler:
                 if report_type in [1, 81, 33, 36, 17, 18, 97, 37]:
                     logger.error(_('Report type {} handler does not exist').format(report_type))
                 return None
-            if report_type == 36:
-                jsonlogger.error('report', extra=reports)
+            #if report_type == 36:
+            #    jsonlogger.error('report', extra=reports)
             result = class_of_handler().handle(reports, user)
             return result
         except Exception as e:
