@@ -40,3 +40,6 @@ smtp:
 
 sca:
   base_url: https://iast.huoxian.cn/openapi/sca/v1
+
+storageClassName:
+  name: 你的存储类名字

@@ -1,5 +1,33 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    pv.kubernetes.io/bind-completed: "yes"
+    pv.kubernetes.io/bound-by-controller: "yes"
+  name: app-agent-pvc
+  namespace: CHANGE_THIS_NAMESPACE
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 2G
+  storageClassName: #您的存储类名字
+  #volumeMode: Filesystem
+  #volumeName: 您的pv名字
 ---
 # 创建配置文件
+apiVersion: v1
+data:
+  # 您的数据库连接地址/您的数据库名字
+  database: dongtai-mysql:3306/dongtai_webapi
+  username: root
+  password: dongtai-iast
+kind: ConfigMap
+metadata:
+  name: logstash-cm
+  namespace: CHANGE_THIS_NAMESPACE
+---
 apiVersion: v1
 data:
   config.ini: |-
@@ -20,11 +48,11 @@ data:
     url = http://dongtai-engine-svc:80
 
     [apiserver]
-    url = http://dongtai-server-svc:80
-    
+    #url = http://dongtai-openapi-svc:80
+    url = http://dongtai-web-pub-svc:80
+
     [security]
-    csrf_trust_origins = .example.com
-    secret_key = vbjlvbxfvazjfprywuxgyclmvhtmselddsefxxlcixovmqfpgy
+    csrf_trust_origins = .huoxian.cn:1024,.huoxian.cn,.example.com
 
     [smtp]
     server = smtp_server
@@ -33,10 +61,10 @@ data:
     from_addr = from_addr
     ssl = False
     cc_addr = cc_addr
-    port = 25
+    port = 2525
 
     [sca]
-    base_url = https://iast.huoxian.cn/openapi/sca/v1
+    base_url = http://dongtai-server-svc:80/sca/v1
 
     [task]
     retryable = true
@@ -47,6 +75,13 @@ data:
     [log_service]
     host = dongtai-logstash-svc
     port = 8083
+
+    [common_file_path]
+    tmp_path = /tmp/logstash
+    report_img = report/img
+    report_pdf = report/pdf
+    report_word = report/word
+    report_excel = report/excel
 
     [other]
     domain = http://localhost.domain/
@@ -85,7 +120,7 @@ spec:
           imagePullPolicy: Always
           volumeMounts:
             - name: configfile
-              mountPath: /opt/dongtai/webapi/conf/config.ini
+              mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
               subPath: config.ini
             - name: log-path
               mountPath: /tmp/logstash
@@ -103,8 +138,6 @@ spec:
         - name: log-path
           persistentVolumeClaim:
             claimName: app-agent-pvc
-      imagePullSecrets:
-        - name: dongtai-iast-image-registry-secret
 ---
 # dongtai-web服务
 apiVersion: v1
@@ -126,9 +159,9 @@ apiVersion: v1
 data:
   nginx.conf: |-
     #user  nobody;
-     worker_processes  1;
+     worker_processes  auto;
      events {
-         worker_connections  1024;
+         worker_connections  65535;
      }
      http {
          include       mime.types;
@@ -147,34 +180,31 @@ data:
 
          server {
              listen  80;
-             server_name 127.0.0.1;
+             server_name 0.0.0.0;
              client_max_body_size 100M;
              location / {
                  root /usr/share/nginx/html;   #站点目录
                  index index.html index.htm;   #添加属性。
                  try_files $uri $uri/ /index.html;
              }
-
-               location /api/ {
-                 proxy_read_timeout 60;
-                 proxy_pass http://dongtai-server-svc:80/api/;
-               }
-
-               location /upload/ {
-                 proxy_pass http://dongtai-server-svc:80/upload/;
-               }
-
-               location /openapi/ {
-                proxy_set_header X-real-ip $remote_addr;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header User-Agent $http_user_agent;
-                proxy_set_header X-Host $http_x_forwarded_host;
-                proxy_read_timeout 60;
-                proxy_pass http://dongtai-server-svc:80/;
-               }
-               location /log/ {
-                proxy_pass http://dongtai-logstash:8082/;
-               }
+             location /api/ {
+               proxy_read_timeout 60;
+               proxy_pass http://dongtai-server-svc:80/api/;
+             }
+             location /upload/ {
+               proxy_pass http://dongtai-server-svc:80/upload/;
+             }
+             location /openapi/ {
+              proxy_set_header X-real-ip $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header User-Agent $http_user_agent;
+              proxy_set_header X-Host $http_x_forwarded_host;
+              proxy_read_timeout 60;
+              proxy_pass http://dongtai-server-svc:80/;
+             }
+             location /log/ {
+              proxy_pass http://dongtai-logstash-svc:8082/;
+             }
              location = /50x.html {
                  root   /usr/share/nginx/html;
              }
@@ -223,96 +253,36 @@ spec:
         - name: configfile
           configMap:
             name: dongtai-web-nginx-conf
-      imagePullSecrets:
-        - name: dongtai-iast-image-registry-secret
 ---
-# dongtai-engine服务
+#dongtai-worker-task服务
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dongtai-engine
+  name: dongtai-worker-task
   namespace: CHANGE_THIS_NAMESPACE
   annotations:
-    kubesphere.io/description: dongtai-engine
+    kubesphere.io/description: dongtai-worker-task
   labels:
-    app: dongtai-engine
+    app: dongtai-worker-task
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: dongtai-engine
+      app: dongtai-worker-task
   template:
     metadata:
       labels:
-        app: dongtai-engine
+        app: dongtai-worker-task
     spec:
       containers:
-        - name: dongtai-engine-container
+        - name: dongtai-worker-task-container
           image: dongtai/dongtai-server:CHANGE_THIS_VERSION
-          command: [ "/bin/sh","/opt/dongtai/webapi/docker/entrypoint.sh" ]
-          args: [ "worker" ]
-          imagePullPolicy: Always
-          volumeMounts:
-            - name: configfile
-              mountPath: /opt/dongtai/webapi/conf/config.ini
-              subPath: config.ini
-          resources:
-            limits:
-              cpu: "500m"
-              memory: 1000Mi
-            requests:
-              cpu: "500m"
-              memory: 1000Mi
-      volumes:
-        - name: configfile
-          configMap:
-            name: dongtai-iast-config.ini
-      imagePullSecrets:
-        - name: dongtai-iast-image-registry-secret
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: dongtai-engine-svc
-  namespace: CHANGE_THIS_NAMESPACE
-spec:
-  ports:
-    - port: 80
-      protocol: TCP
-      targetPort: 8000
-  selector:
-    app: dongtai-engine
-  type: ClusterIP
----
-#dongtai-engine-task服务
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: dongtai-engine-task
-  namespace: CHANGE_THIS_NAMESPACE
-  annotations:
-    kubesphere.io/description: dongtai-engine-task
-  labels:
-    app: dongtai-engine-task
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: dongtai-engine-task
-  template:
-    metadata:
-      labels:
-        app: dongtai-engine-task
-    spec:
-      containers:
-        - name: dongtai-engine-task-container
-          image: dongtai/dongtai-server:CHANGE_THIS_VERSION
-          command: [ "/bin/bash","/opt/dongtai/webapi/docker/entrypoint.sh" ]
+          command: [ "/bin/bash","/opt/dongtai/deploy/docker/entrypoint.sh" ]
           args: [ "beat" ]
           imagePullPolicy: Always
           volumeMounts:
             - name: configfile
-              mountPath: /opt/dongtai/webapi/conf/config.ini
+              mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
               subPath: config.ini
           resources:
             limits:
@@ -326,6 +296,134 @@ spec:
           configMap:
             name: dongtai-iast-config.ini
 ---
+# dongtai-worker-high-freq服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-worker-high-freq
+  namespace: CHANGE_THIS_NAMESPACE
+  annotations:
+    kubesphere.io/description: dongtai-worker-high-freq
+  labels:
+    app: dongtai-worker-high-freq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dongtai-worker-high-freq
+  template:
+    metadata:
+      labels:
+        app: dongtai-worker-high-freq
+    spec:
+      containers:
+        - name: dongtai-worker-high-freq-container
+          image: dongtai/dongtai-server:CHANGE_THIS_VERSION
+          command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
+          args: [ "worker-high-freq" ]
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-iast-config.ini
+---
+# dongtai-worker-beat服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-worker-beat
+  namespace: CHANGE_THIS_NAMESPACE
+  annotations:
+    kubesphere.io/description: dongtai-worker-beat
+  labels:
+    app: dongtai-worker-beat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dongtai-worker-beat
+  template:
+    metadata:
+      labels:
+        app: dongtai-worker-beat
+    spec:
+      containers:
+        - name: dongtai-worker-beat-container
+          image: dongtai/dongtai-server:CHANGE_THIS_VERSION
+          command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
+          args: [ "worker-beat" ]
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-iast-config.ini
+
+---
+# dongtai-worker-other服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-worker-other
+  namespace: CHANGE_THIS_NAMESPACE
+  annotations:
+    kubesphere.io/description: dongtai-worker-other
+  labels:
+    app: dongtai-worker-other
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dongtai-worker-other
+  template:
+    metadata:
+      labels:
+        app: dongtai-worker-other
+    spec:
+      containers:
+        - name: dongtai-worker-other-container
+          image: dongtai/dongtai-server:CHANGE_THIS_VERSION
+          command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
+          args: [ "worker-other" ]
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-iast-config.ini
+---
+
 #dongtai-logstash服务
 apiVersion: v1
 kind: Service
@@ -354,14 +452,14 @@ metadata:
   labels:
     app: dongtai-logstash
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels: 
       app: dongtai-logstash
   template:
     metadata:
       annotations:
-        build_number: "1"
+        build_number: "dongtai-logstash"
       labels:
         app: dongtai-logstash
     spec:
@@ -381,11 +479,20 @@ spec:
         imagePullPolicy: Always
         env:
         - name: DATABASE
-          value: "dongtai-mysql:3306/dongtai_webapi"
+          valueFrom:
+            configMapKeyRef:
+              key: database
+              name: logstash-cm
         - name: USERNAME
-          value: "root"
+          valueFrom:
+            configMapKeyRef:
+              key: username
+              name: logstash-cm
         - name: PASSWORD
-          value: "dongtai-iast"
+          valueFrom:
+            configMapKeyRef:
+              key: password
+              name: logstash-cm
         ports:
         - containerPort: 8082
           protocol: TCP
@@ -393,6 +500,9 @@ spec:
         - containerPort: 8083
           protocol: TCP
           name: log-http
+        volumeMounts:
+        - name: log-path
+          mountPath: /tmp/logstash
         resources:
           requests:
             cpu: 1500m
@@ -400,28 +510,30 @@ spec:
           limits:
             cpu: 2000m
             memory: 3200Mi
-        volumeMounts:
-        - name: log-path
-          mountPath: /tmp/logstash
+        livenessProbe:
+          failureThreshold: 1
+          periodSeconds: 5
+          successThreshold: 1
+          tcpSocket:
+            port: 9600
+          timeoutSeconds: 1
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          successThreshold: 1
+          tcpSocket:
+            port: 9600
+          timeoutSeconds: 1
+        startupProbe:
+          failureThreshold: 40
+          periodSeconds: 5
+          successThreshold: 1
+          tcpSocket:
+            port: 9600
+          timeoutSeconds: 1
       volumes:
       - name: log-path
         persistentVolumeClaim:
           claimName: app-agent-pvc
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  annotations:
-    pv.kubernetes.io/bind-completed: "yes"
-    pv.kubernetes.io/bound-by-controller: "yes"
-  name: app-agent-pvc
-  namespace: CHANGE_THIS_NAMESPACE
-spec:
-  accessModes:
-  - ReadWriteMany
-  resources:
-    requests:
-      storage: 2G
-  storageClassName: #storageclassename
-  #volumeMode: Filesystem
-  #volumeName: pv
