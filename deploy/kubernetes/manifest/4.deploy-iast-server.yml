@@ -452,7 +452,7 @@ metadata:
   labels:
     app: dongtai-logstash
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels: 
       app: dongtai-logstash

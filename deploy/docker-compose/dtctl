@@ -416,6 +416,8 @@ services:
   dongtai-server:
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
+    sysctls:
+      net.core.somaxconn: 1024
     volumes:
       - isat-vol:/tmp/logstash/
       - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini

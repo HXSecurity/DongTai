@@ -63,7 +63,7 @@ metadata:
 apiVersion: v1
 kind: Service
 metadata:
-  name: dongtai-server-svc
+  name: dongtai-web-svc
   namespace: {{.Release.Namespace}}
 spec:
   ports:
@@ -71,7 +71,7 @@ spec:
       protocol: TCP
       targetPort: 8000
   selector:
-    app: dongtai-server
+    app: dongtai-web
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -370,7 +370,7 @@ metadata:
   labels:
     app: dongtai-logstash
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels: 
       app: dongtai-logstash
