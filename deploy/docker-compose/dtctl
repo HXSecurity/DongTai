@@ -404,7 +404,8 @@ services:
     image: $registry/dongtai-web:$DONGTAI_WEB_VER
     restart: always
     ports:
-      - "$WEB_SERVICE_PORT:80"
+      #- "$WEB_SERVICE_PORT:80"
+      - "8080:80"
     volumes:
       - "$PWD/nginx.conf:/etc/nginx/nginx.conf"
     depends_on:
@@ -997,7 +998,6 @@ if [ ! 0 == $# ]; then # If options provided then
       # extract sql name and reverse list
 
       SQL_NAMES=$(cat updaterecord.txt | awk "/${TO_VERSION//./\\.}/,/${FROM_VERSION//./\\.}/ {print \$2}" | grep -vF "$FROM_VERSION" | awk "{array[NR]=\$0} END { for(i=NR;i>0;i--) {print array[i];} }")
-
       mysql_container_id=$(get_mysql_container_id)
       # check whether mysql is ready
       while :; do
@@ -1121,10 +1121,10 @@ if [ ! 0 == $# ]; then # If options provided then
     check_network
     backup_mysql
     check_update_record_file
-    check_schema_hash
+    #check_schema_hash
     upgrade_docker_image
     execute_update
-    check_after_execute
+    #check_after_execute
     summary
 
     ;;
