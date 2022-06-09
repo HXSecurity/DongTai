@@ -15,7 +15,7 @@ from dongtai_common.models import APP_LEVEL_RISK
 def get_annotate_sca_common_data(user_id: int, pro_condition: str):
     return get_annotate_sca_base_data(user_id,pro_condition)
 
-@cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60), use_celery_update=True)
+#@cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60), use_celery_update=True)
 def get_annotate_sca_cache_data(user_id: int,pro_condition: str):
     return get_annotate_sca_base_data(user_id,pro_condition)
 
