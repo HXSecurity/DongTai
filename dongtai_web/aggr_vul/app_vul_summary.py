@@ -19,8 +19,8 @@ def _annotate_by_query(q, value_fields, count_field):
         .annotate(count=Count(count_field))
     )
 
-@cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60),
-                  use_celery_update=True)
+#@cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60),
+#                  use_celery_update=True)
 def get_annotate_cache_data(user_id: int):
     return get_annotate_data(user_id, 0, 0)
 
