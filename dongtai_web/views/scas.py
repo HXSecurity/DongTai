@@ -8,6 +8,7 @@ import logging
 import pymysql
 from django.db import connection
 from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models import User
 
 from dongtai_common.models.asset_aggr import AssetAggr
 
@@ -35,8 +36,12 @@ def get_order_params(order_fields, order_by):
                 order_type = 'desc'
             else:
                 order_type = 'asc'
-    order = order_by
+        order = order_by
+    else:
+        order = 'vul_count'
+        order_type = 'desc'
     order = "iast_asset_aggr.{}".format(order)
+
     return order, order_type
 
 
@@ -154,6 +159,8 @@ class ScaList(UserEndPoint):
         :param request:
         :return:
         """
+        request.user  =  User.objects.filter(id=1).first()
+
         auth_users = self.get_auth_users(request.user)
         request_data = request.data
         page = request_data.get('page', 1)
@@ -164,11 +171,9 @@ class ScaList(UserEndPoint):
         query_start = (page - 1) * page_size
 
         auth_user_ids = [str(_i.id) for _i in auth_users]
-        auth_user_ids_str = ','.join(auth_user_ids)
-        base_query_sql = " LEFT JOIN iast_asset ON iast_asset.signature_value = iast_asset_aggr.signature_value WHERE iast_asset.dependency_level>0 and iast_asset.user_id in ({}) and iast_asset.is_del=0 ".format(
-            auth_user_ids_str)
-        list_sql_params = []
-        count_sql_params = []
+        base_query_sql = " LEFT JOIN iast_asset ON iast_asset.signature_value = iast_asset_aggr.signature_value WHERE iast_asset.dependency_level>0 and iast_asset.user_id in %s and iast_asset.is_del=0 "
+        list_sql_params = [auth_user_ids]
+        count_sql_params = [auth_user_ids]
 
         asset_aggr_where = " and iast_asset_aggr.id>0 "
 
@@ -187,27 +192,21 @@ class ScaList(UserEndPoint):
             count_sql_params.append(project_id)
             list_sql_params.append(project_version_id)
             count_sql_params.append(project_version_id)
-        total_count_sql = "SELECT count(distinct(iast_asset_aggr.id)) as alltotal FROM iast_asset_aggr {base_query_sql} {where_sql} limit 1 "
+        total_count_sql = "SELECT iast_asset_aggr.id,count(distinct(iast_asset_aggr.id)) as alltotal FROM iast_asset_aggr {base_query_sql} {where_sql} limit 1 "
         list_query_sql = "SELECT iast_asset_aggr.id FROM iast_asset_aggr {base_query_sql} {where_sql} GROUP BY iast_asset_aggr.id {order_sql} {page_sql} "
 
         language = request_data.get('language', None)
         if language:
-            language_str = "'" + "','".join(language) + "'"
-            asset_aggr_where = asset_aggr_where + " and iast_asset_aggr.language in ({})".format(language_str)
-        license_p = request_data.get('license', None)
-        if license_p:
-            if '未知' in license_p:
-                license_p.append("""""")
-
-            license_str = "'" + "','".join(license_p) + "'"
-            asset_aggr_where = asset_aggr_where + " and iast_asset_aggr.license in ({})".format(license_str)
+            asset_aggr_where = asset_aggr_where + " and iast_asset_aggr.language in %s"
+            count_sql_params.append(language)
+            list_sql_params.append(language)
 
         level_ids = request_data.get('level_id', None)
         if level_ids:
             level_ids = [str(x) for x in level_ids]
-            level_str = ','.join(level_ids)
-            level_str = pymysql.converters.escape_string(level_str)
-            asset_aggr_where = asset_aggr_where + " and iast_asset_aggr.level_id in ({})".format(level_str)
+            asset_aggr_where = asset_aggr_where + " and iast_asset_aggr.level_id in %s"
+            count_sql_params.append(level_ids)
+            list_sql_params.append(level_ids)
 
         package_kw = request_data.get('keyword', None)
         if package_kw:
@@ -242,18 +241,15 @@ class ScaList(UserEndPoint):
         total_count = 0
         sca_ids = []
         try:
-            with connection.cursor() as cursor:
-                # 漏洞等级汇总
-                cursor.execute(total_count_sql, count_sql_params)
-                total_count_query = cursor.fetchone()
+            count_aggr_query = AssetAggr.objects.raw(total_count_sql, count_sql_params)
 
-                if total_count_query:
-                    total_count = total_count_query[0]
+            for obj in count_aggr_query:
+                total_count = obj.alltotal
 
-                cursor.execute(list_query_sql, list_sql_params)
-                page_data = cursor.fetchall()
-                if page_data:
-                    sca_ids = [i[0] for i in page_data]
+            list_aggr_query = AssetAggr.objects.raw(list_query_sql, list_sql_params)
+
+            sca_ids = [i.id for i in list_aggr_query]
+
         except Exception as e:
             logger.warning("sca list error:{}".format(e))
 
