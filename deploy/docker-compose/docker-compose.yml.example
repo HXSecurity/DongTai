@@ -34,6 +34,8 @@ services:
   dongtai-server:
     image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:{ChangeThisVersion}"
     restart: always
+    sysctls:
+      net.core.somaxconn: 1024
     volumes:
       - ./log/:/tmp/logstash/
       - ./config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
