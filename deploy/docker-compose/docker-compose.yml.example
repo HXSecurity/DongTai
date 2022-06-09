@@ -71,10 +71,10 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
-  dongtai-worker-chain:
+  dongtai-worker-other:
     image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:{ChangeThisVersion}"
     restart: always
-    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-chain"]
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-other"]
     volumes:
       - ./config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
     logging:
@@ -91,7 +91,6 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
-    privileged: true
   dongtai-logstash:
     image: registry.cn-beijing.aliyuncs.com/huoxian_pub/logstash:7.9.2-{ChangeThisVersion}
     restart: always

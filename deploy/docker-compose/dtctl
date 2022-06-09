@@ -417,7 +417,7 @@ services:
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     volumes:
-      - $PWD/log/:/tmp/logstash/
+      - isat-vol:/tmp/logstash/
       - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
     logging:
       driver: "json-file"
@@ -468,7 +468,7 @@ services:
     restart: always
     user: root
     volumes:
-      - $PWD/log/:/tmp/logstash/
+      - isat-vol:/tmp/logstash/
     logging:
       driver: "json-file"
       options:
@@ -482,13 +482,14 @@ services:
       - USERNAME=root
       - PASSWORD=dongtai-iast
     volumes:
-      - $PWD/log/:/tmp/logstash/
+      - isat-vol:/tmp/logstash/
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
 volumes:
   mysql-vol:
+  isat-vol:
 EOM
   elif [[ $(first_gt_second $CHANGE_THIS_VERSION 1.3.1) == true ]]; then
      read -r -d '' DOCKER_COMPOSE_FILE <<EOM
