@@ -404,10 +404,9 @@ services:
     image: $registry/dongtai-web:$DONGTAI_WEB_VER
     restart: always
     ports:
-      #- "$WEB_SERVICE_PORT:80"
-      - "8080:80"
+      - "$WEB_SERVICE_PORT:80"
     volumes:
-      - "$PWD/nginx.conf:/etc/nginx/nginx.conf"
+      - "$PWD/nginx.conf-1.8.0:/etc/nginx/nginx.conf"
     depends_on:
       - dongtai-server
     logging:
