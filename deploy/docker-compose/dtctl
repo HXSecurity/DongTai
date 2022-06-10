@@ -1024,6 +1024,11 @@ if [ ! 0 == $# ]; then # If options provided then
         Info "Start to load sql:[$SQL]"
         docker exec -i $mysql_container_id /bin/bash -c "mysql -uroot -p'dongtai-iast' dongtai_webapi < $sql_dir/$SQL"
       done
+      if [ $TO_VERSION = 1.8.0 ]; then
+        docker exec -i $mysql_container_id /bin/bash -c "mysql -uroot -p'dongtai-iast' dongtai_webapi < $sql_dir/utf8mb4_general_ci.sql"
+      else
+        Info "mysql character set check completed OK!!"
+      fi
 
     }
 
