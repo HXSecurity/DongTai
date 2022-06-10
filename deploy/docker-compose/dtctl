@@ -173,6 +173,15 @@ function get_mysql_container_id() {
 
 }
 
+# get server container id
+function get_server_container_id() {
+  server_container_id=""
+  PROJECT_NAME=$(get_project_name)
+  server_container_id=$(docker ps -a  --filter "label=com.docker.compose.project=$PROJECT_NAME" | grep "server" | awk '{print $1}')
+  echo "$server_container_id"
+
+}
+
 # check if image registry is in China
 function get_image_registry() {
   if [ "$1" == 0 ]; then
@@ -999,6 +1008,7 @@ if [ ! 0 == $# ]; then # If options provided then
 
       SQL_NAMES=$(cat updaterecord.txt | awk "/${TO_VERSION//./\\.}/,/${FROM_VERSION//./\\.}/ {print \$2}" | grep -vF "$FROM_VERSION" | awk "{array[NR]=\$0} END { for(i=NR;i>0;i--) {print array[i];} }")
       mysql_container_id=$(get_mysql_container_id)
+      server_container_id=$(get_server_container_id)
       # check whether mysql is ready
       while :; do
         Info "start to check mysql status ..."
@@ -1027,10 +1037,10 @@ if [ ! 0 == $# ]; then # If options provided then
       done
       if [ $TO_VERSION = 1.8.0 ]; then
         docker exec -i $mysql_container_id /bin/bash -c "mysql -uroot -p'dongtai-iast' dongtai_webapi < $sql_dir/utf8mb4_general_ci.sql"
+        docker exec -i $server_container_id /bin/bash -c "python manage.py update"
       else
         Info "mysql character set check completed OK!!"
       fi
-
     }
 
     function check_after_execute() {
