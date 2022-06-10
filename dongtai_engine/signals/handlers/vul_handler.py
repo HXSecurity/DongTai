@@ -59,7 +59,7 @@ def parse_header(req_header, taint_value):
     import base64
     header_dict = parse_headers_dict_from_bytes(base64.b64decode(req_header))
     for k, v in header_dict.items():
-        if v == taint_value:
+        if v == taint_value or k == taint_value:
             return k
 
 
@@ -100,62 +100,92 @@ def parse_path(uri, taint_value):
             # fixme 暂时先使用完全匹配，后续考虑解决误报问题
             return True
 
+from dongtai_engine.signals.handlers.parse_param_name import parse_target_values_from_vul_stack
 
-def parse_taint_position(source_method, vul_meta, taint_value):
+
+def parse_taint_position(source_method, vul_meta, taint_value, vul_stack):
     param_names = dict()
-    if 'org.springframework.web.method.support.HandlerMethodArgumentResolver.resolveArgument' == source_method:
-        # 检查get参数
-        if vul_meta.req_params:
-            param_name = parse_params(vul_meta.req_params, taint_value)
-            if param_name:
-                param_names['GET'] = param_name
-                print('污点来自GET参数: ' + param_name)
+    target_values = filter(lambda x:x, parse_target_values_from_vul_stack(vul_stack))
+    for taint_value in target_values:
+        if 'org.springframework.web.method.support.HandlerMethodArgumentResolver.resolveArgument' == source_method:
+            # 检查get参数
+            if vul_meta.req_params:
+                param_name = parse_params(vul_meta.req_params, taint_value)
+                if param_name:
+                    param_names['GET'] = param_name
+                    print('污点来自GET参数: ' + param_name)
 
-        # 检查post参数
-        if vul_meta.req_data:
-            param_name = parse_body(vul_meta.req_data, taint_value)
-            if param_name:
-                param_names['POST'] = param_name
-                print('污点来自POST参数: ' + param_name)
+            # 检查post参数
+            if vul_meta.req_data:
+                param_name = parse_body(vul_meta.req_data, taint_value)
+                if param_name:
+                    param_names['POST'] = param_name
+                    print('污点来自POST参数: ' + param_name)
 
-        # 检查header
-        if vul_meta.req_header:
+            # 检查header
+            if vul_meta.req_header:
+                param_name = parse_header(vul_meta.req_header, taint_value)
+                if param_name:
+                    param_names['HEADER'] = param_name
+                    print('污点来自HEADER头: ' + param_name)
+
+            # 检查path
+            if vul_meta.uri:
+                param_name = parse_path(vul_meta.uri, taint_value)
+                if param_name:
+                    param_names['PATH'] = taint_value
+                    print('污点来自URI[' + vul_meta.uri + ']: ' + taint_value)
+
+            # fixme 按照哪种策略对数据进行分析和处理呢？如何识别单点与多点
+        elif 'javax.servlet.ServletRequest.getParameter' == source_method or 'javax.servlet.ServletRequest.getParameterValues' == source_method:
+            if vul_meta.req_params:
+                param_name = parse_params(vul_meta.req_params, taint_value)
+                if param_name:
+                    param_names['GET'] = param_name
+            else:
+                param_name = parse_params(vul_meta.req_data, taint_value)
+                if param_name:
+                    param_names['POST'] = param_name
+        elif 'javax.servlet.http.HttpServletRequest.getHeader' == source_method:
+            # 分析header头
             param_name = parse_header(vul_meta.req_header, taint_value)
             if param_name:
                 param_names['HEADER'] = param_name
-                print('污点来自HEADER头: ' + param_name)
-
-        # 检查path
-        if vul_meta.uri:
-            param_name = parse_path(vul_meta.uri, taint_value)
-            if param_name:
-                param_names['PATH'] = taint_value
-                print('污点来自URI[' + vul_meta.uri + ']: ' + taint_value)
-
-        # fixme 按照哪种策略对数据进行分析和处理呢？如何识别单点与多点
-        return param_names
-    elif 'javax.servlet.ServletRequest.getParameter' == source_method or 'javax.servlet.ServletRequest.getParameterValues' == source_method:
-        if vul_meta.req_params:
+        elif 'javax.servlet.http.HttpServletRequest.getQueryString' == source_method:
             param_name = parse_params(vul_meta.req_params, taint_value)
             if param_name:
                 param_names['GET'] = param_name
-        else:
-            param_name = parse_params(vul_meta.req_data, taint_value)
+        elif 'javax.servlet.http.HttpServletRequest.getCookies' == source_method:
+            param_name = parse_cookie(vul_meta.req_header, taint_value)
             if param_name:
-                param_names['POST'] = param_name
-    elif 'javax.servlet.http.HttpServletRequest.getHeader' == source_method:
-        # 分析header头
-        param_name = parse_header(vul_meta.req_header, taint_value)
-        if param_name:
-            param_names['HEADER'] = param_name
-    elif 'javax.servlet.http.HttpServletRequest.getQueryString' == source_method:
-        param_name = parse_params(vul_meta.req_params, taint_value)
-        if param_name:
-            param_names['GET'] = param_name
-    elif 'javax.servlet.http.HttpServletRequest.getCookies' == source_method:
-        param_name = parse_cookie(vul_meta.req_header, taint_value)
-        if param_name:
-            param_names['COOKIE'] = param_name
+                param_names['COOKIE'] = param_name
+        else:
+            if vul_meta.req_params:
+                param_name = parse_params(vul_meta.req_params, taint_value)
+                if param_name:
+                    param_names['GET'] = param_name
+                    print('污点来自GET参数: ' + param_name)
+
+            # 检查post参数
+            if vul_meta.req_data:
+                param_name = parse_body(vul_meta.req_data, taint_value)
+                if param_name:
+                    param_names['POST'] = param_name
+                    print('污点来自POST参数: ' + param_name)
+
+            # 检查header
+            if vul_meta.req_header:
+                param_name = parse_header(vul_meta.req_header, taint_value)
+                if param_name:
+                    param_names['HEADER'] = param_name
+                    print('污点来自HEADER头: ' + param_name)
+
+            # 检查path
+            if vul_meta.uri:
+                param_name = parse_path(vul_meta.uri, taint_value)
+                if param_name:
+                    param_names['PATH'] = taint_value
+                    print('污点来自URI[' + vul_meta.uri + ']: ' + taint_value)
 
     return param_names
 
@@ -166,7 +196,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     # 如果是重放请求，且重放请求类型为漏洞验证，更新漏洞状态为
     taint_value = kwargs['taint_value']
     timestamp = int(time.time())
-    param_names = parse_taint_position(source_method=top_stack, vul_meta=vul_meta, taint_value=taint_value)
+    param_names = parse_taint_position(source_method=top_stack, vul_meta=vul_meta, taint_value=taint_value , vul_stack=vul_stack)
     if parse_params:
         param_name = json.dumps(param_names)
         taint_position = '/'.join(param_names.keys())
