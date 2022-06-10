@@ -42,6 +42,9 @@
            proxy_read_timeout 60;
            proxy_pass http://dongtai-server:8000/;
          }
+         location /log/ {
+           proxy_pass http://dongtai-logstash:8082/;
+         }
          location = /50x.html {
             root   /usr/share/nginx/html;
          }
