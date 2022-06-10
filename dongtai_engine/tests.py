@@ -53,8 +53,31 @@ class CoreScanTestCase(AgentTestCase):
         vul_count_without_param_mark_after = IastVulnerabilityModel.objects.filter(param_name='{}',
             level_id__lte=2).all().count()
         res = vul_count_without_param_mark_after - vul_count_without_param_mark_begin
-        print(res)
-        assert res == 0 
+        print([
+            i.uri for i in IastVulnerabilityModel.objects.filter(
+                param_name='{}', level_id__lte=2).all()
+        ])
+        assert res == 0
+    
+    def test_params_single_uri(self):
+        data = MethodPool.objects.filter(uri='/benchmark/cmdi-00/BenchmarkTest00573').all()
+        vul_count_without_param_mark_begin = IastVulnerabilityModel.objects.filter(
+            param_name='{}', level_id__lte=2).all().count()
+        for method_pool in data:
+            method_pool.agent_id = self.agent_id
+            method_pool.save()
+            search_vul_from_method_pool(method_pool.pool_sign,
+                                        method_pool.agent_id)
+            assert IastVulnerabilityModel.objects.filter(
+                url=method_pool.url, agent_id=self.agent_id).exists()
+        vul_count_without_param_mark_after = IastVulnerabilityModel.objects.filter(param_name='{}',
+            level_id__lte=2).all().count()
+        res = vul_count_without_param_mark_after - vul_count_without_param_mark_begin
+        print([
+            i.uri for i in IastVulnerabilityModel.objects.filter(
+                param_name='{}', level_id__lte=2).all()
+        ])
+        assert res == 0
 
 class CoreTaskTestCase(AgentTestCase):
 
