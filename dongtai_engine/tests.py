@@ -54,7 +54,7 @@ class CoreScanTestCase(AgentTestCase):
             level_id__lte=2).all().count()
         res = vul_count_without_param_mark_after - vul_count_without_param_mark_begin
         print(res)
-        assert res == 262
+        assert res == 0 
 
 class CoreTaskTestCase(AgentTestCase):
 
