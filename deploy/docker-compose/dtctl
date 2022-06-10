@@ -951,6 +951,7 @@ if [ ! 0 == $# ]; then # If options provided then
       data_dir=$(get_database_data_dir)
       Notice "Data volume will be deleted."
       docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") down -v
+      docker volume rm dongtai_isat-vol
       if [ "$MOUNT_TYPE" == "bind" ]; then
         Notice "Data will be deleted in $data_dir"
         rm -rf $data_dir
