@@ -1,9 +1,8 @@
 from urllib.parse import urlparse
 
 
-def vul_filter(stack, source_sign, sink_sign, taint_value, vul_type):
+def vul_filter(stack, source_sign, sink_sign, taint_value, vul_type, agent_id):
     source_signature = stack[0][0]['signature']
-    import pdb;pdb.set_trace()
     if (vul_type != 'trust-boundary-violation' and source_signature == 'javax.servlet.http.HttpServletRequest.getSession()'):
         return False
     if vul_type == 'ssrf' or vul_type == 'unvalidated-redirect':
@@ -42,5 +41,17 @@ def vul_filter(stack, source_sign, sink_sign, taint_value, vul_type):
         target_value = stack[0][-1]['sourceValues']
         if target_value.startswith('sun.net.www.protocol'):
             return False
+        return True
+    elif vul_type == 'unsafe-json-deserialize':
+        if stack[0][-1]['signature'].startswith('com.alibaba.fastjson'):
+            from dongtai_common.models.asset import Asset
+            asset = Asset.objects.filter(
+                agent_id=agent_id,
+                package_name__icontains="maven:com.alibaba:fastjson:").values(
+                    'version').first()
+            if asset:
+                from packaging import version
+                if version.parse(asset['version']) > version.parse('1.2.80'):
+                    return False
         return True
     return True
