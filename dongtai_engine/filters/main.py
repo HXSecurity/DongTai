@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 
 def vul_filter(stack, source_sign, sink_sign, taint_value, vul_type):
     source_signature = stack[0][0]['signature']
+    import pdb;pdb.set_trace()
     if (vul_type != 'trust-boundary-violation' and source_signature == 'javax.servlet.http.HttpServletRequest.getSession()'):
         return False
     if vul_type == 'ssrf' or vul_type == 'unvalidated-redirect':
@@ -35,6 +36,11 @@ def vul_filter(stack, source_sign, sink_sign, taint_value, vul_type):
             'org.apache.commons.fileupload.FileUploadBase.parseRequest(org.apache.commons.fileupload.RequestContext)'
         ]
         if target_signature in filter_source_signature:
+            return False
+        return True
+    elif vul_type == 'reflection-injection':
+        target_value = stack[0][-1]['sourceValues']
+        if target_value.startswith('sun.net.www.protocol'):
             return False
         return True
     return True
