@@ -132,6 +132,7 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
         sink_sign,
         taint_value,
         queryset.values('vul_type').first()['vul_type'],
+        agent_id=method_pool_model.agent_id,
     )
     logger.info(f'vul filter_status : {filterres}')
     if status and filterres:
