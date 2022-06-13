@@ -34,17 +34,6 @@ def sca_scan_asset(asset):
     agent = asset.agent
     version = asset.version
     asset_package = Package.objects.filter(hash=asset.signature_value, version=version).first()
-    # user_upload_package = None
-    # if agent.language == "JAVA" and asset.signature_value:
-    #     # 用户上传的组件
-    #     user_upload_package = ScaMavenDb.objects.filter(sha_1=asset.signature_value).first()
-    #
-    # elif agent.language == "PYTHON":
-    #     # @todo agent上报版本 or 捕获全量pip库
-    #     version = asset.package_name.split('/')[-1].split('-')[-1]
-    #     name = asset.package_name.replace("-" + version, "")
-    #     asset_package = Package.objects.filter(ecosystem="PyPI", name=name, version=version).first()
-
     update_fields = list()
     try:
         logger.info('[sca_scan_asset]开始检测组件:{}/{}'.format(asset.id, asset.package_name))
@@ -52,14 +41,9 @@ def sca_scan_asset(asset):
             package_name = asset_package.aql
             version = asset_package.version
 
-            # 修改package_name为aql
-            if asset.package_name != package_name:
-                asset.package_name = package_name
-                update_fields.append('package_name')
-
             if version:
                 version_code = ""
-                version_list = asset.version.split('.')[0:4]
+                version_list = asset_package.version.split('.')[0:4]
                 while len(version_list) != 5:
                     version_list.append("0")
                 for _version in version_list:
@@ -68,17 +52,15 @@ def sca_scan_asset(asset):
                 version_code = "0000000000000000000000000"
 
             vul_list = VulPackage.objects.filter(ecosystem=asset_package.ecosystem, name=asset_package.name,
-                                                 introduced_vcode__lte=version_code,
-                                                 final_vcode__gte=version_code).all()
+                                                 introducede=asset_package.version).all()
 
             if asset_package.license:
                 asset.license = asset_package.license
                 update_fields.append('license')
-            # todo 最小修复版本-安全版本
+            # 最小修复版本-安全版本
             package_ranges = VulPackage.objects.filter(ecosystem=asset_package.ecosystem,
                                                        name=asset_package.name,
-                                                       safe_vcode__gte=version_code).order_by(
-                "safe_vcode").first()
+                                                       safe_vcode__gte=version_code).order_by("safe_vcode").first()
             if package_ranges and asset.safe_version != package_ranges.safe_version:
                 asset.safe_version = package_ranges.fixed
                 update_fields.append('safe_version')
@@ -178,32 +160,15 @@ def sca_scan_asset(asset):
                 asset.version = version
                 update_fields.append('version')
 
+            asset.dependency_level = 1
+            update_fields.append('dependency_level')
+
             if len(update_fields) > 0:
                 logger.info(f'update asset {asset.id}  dependency fields: {update_fields}')
                 asset.save(update_fields=update_fields)
-
-            if asset.dependency_level < 1:
-                # 同一组件，层级是否已经处理过，否则继续处理
-                asset_dependency_exist = Asset.objects.filter(signature_value=asset.signature_value,
-                                                              version=asset.version, dependency_level__gt=0,
-                                                              agent_id=asset.agent).first()
-                if not asset_dependency_exist:
-                    if agent.language.upper() == "JAVA" or agent.language.upper() == "GOLANG":
-                        get_dependency_graph(model_to_dict(asset), model_to_dict(asset_package))
-                    else:
-                        # python和PHP
-                        _update_asset_dependency_level(asset)
-
-                else:
-                    asset.dependency_level = asset_dependency_exist.dependency_level
-                    asset.parent_dependency_id = asset_dependency_exist.parent_dependency_id
-                    asset.save(update_fields=['dependency_level', 'parent_dependency_id'])
-
-            # if asset_package:
-            update_asset_aggr(asset)
         else:
             logger.warning('[sca_scan_asset]检测组件在组件库不存在:{}/{}'.format(asset.id, asset.package_name))
-
+        update_asset_aggr(asset)
     except Exception as e:
         # import traceback
         # traceback.print_exc()
