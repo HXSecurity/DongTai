@@ -13,6 +13,11 @@ DESTORY_DATA=false
 PROJECT_NAME=dongtai
 REGISRTY=1
 
+MYSQL_IP='dongtai-mysql:3306'
+MYSQL_USERNAME='root'
+MYSQL_PASSWORD='dongtai-iast'
+MYSQL_DATABASES='dongtai_webapi'
+
 DONGTAI_API="iast.huoxian.cn"
 # DONGTAI_API="google.com"
 DONGTAI_API_ACCESSABLE=true
@@ -170,6 +175,15 @@ function get_mysql_container_id() {
   PROJECT_NAME=$(get_project_name)
   mysql_container_id=$(docker ps -a  --filter "label=com.docker.compose.project=$PROJECT_NAME" | grep "mysql" | awk '{print $1}')
   echo "$mysql_container_id"
+
+}
+
+# get server container id
+function get_server_container_id() {
+  server_container_id=""
+  PROJECT_NAME=$(get_project_name)
+  server_container_id=$(docker ps -a  --filter "label=com.docker.compose.project=$PROJECT_NAME" | grep "server" | awk '{print $1}')
+  echo "$server_container_id"
 
 }
 
@@ -377,6 +391,11 @@ dongtai-mysql:
         max-size: "10m"
 EOF
     )
+  elif [[ $(first_gt_second $CHANGE_THIS_VERSION 1.7.9) == true ]]; then
+    read -p "请输入您的数据库IP和端口: 如 127.0.0.1:3306:" MYSQL_IP
+    read -p "请输入您的数据库用户: 如 root:" MYSQL_USERNAME
+    read -p "请输入您的数据库密码: 如 123456:" MYSQL_PASSWORD
+    read -p "请输入您创建好的数据库名: 如 dongtai:" MYSQL_DATABASES
   fi
 
   if [ $SKIP_REDIS == false ]; then
@@ -406,7 +425,7 @@ services:
     ports:
       - "$WEB_SERVICE_PORT:80"
     volumes:
-      - "$PWD/nginx.conf:/etc/nginx/nginx.conf"
+      - "$PWD/nginx.conf-1.8.0:/etc/nginx/nginx.conf"
     depends_on:
       - dongtai-server
     logging:
@@ -416,8 +435,10 @@ services:
   dongtai-server:
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
+    sysctls:
+      net.core.somaxconn: 1024
     volumes:
-      - $PWD/log/:/tmp/logstash/
+      - iast-vol:/tmp/logstash/
       - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
     logging:
       driver: "json-file"
@@ -464,31 +485,32 @@ services:
       options:
         max-size: "10m"
   dongtai-logrotate:
-    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/logrotate:$DONGTAI_SERVER_VER"
+    image: "$registry/dongtai-logrotate:$DONGTAI_SERVER_VER"
     restart: always
     user: root
     volumes:
-      - $PWD/log/:/tmp/logstash/
+      - iast-vol:/tmp/logstash/
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
   dongtai-logstash:
-    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/logstash:7.9.2-$DONGTAI_SERVER_VER"
+    image: "$registry/dongtai-logstash:$DONGTAI_SERVER_VER"
     restart: always
     user: root
     environment:
-      - DATABASE=dongtai-mysql:3306/dongtai_webapi
-      - USERNAME=root
-      - PASSWORD=dongtai-iast
+      - DATABASE=${MYSQL_IP}/${MYSQL_DATABASES}
+      - USERNAME=${MYSQL_USERNAME}
+      - PASSWORD=${MYSQL_PASSWORD}
     volumes:
-      - $PWD/log/:/tmp/logstash/
+      - iast-vol:/tmp/logstash/
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
 volumes:
   mysql-vol:
+  iast-vol:
 EOM
   elif [[ $(first_gt_second $CHANGE_THIS_VERSION 1.3.1) == true ]]; then
      read -r -d '' DOCKER_COMPOSE_FILE <<EOM
@@ -948,6 +970,7 @@ if [ ! 0 == $# ]; then # If options provided then
       data_dir=$(get_database_data_dir)
       Notice "Data volume will be deleted."
       docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") down -v
+      docker volume rm dongtai_iast-vol
       if [ "$MOUNT_TYPE" == "bind" ]; then
         Notice "Data will be deleted in $data_dir"
         rm -rf $data_dir
@@ -994,8 +1017,8 @@ if [ ! 0 == $# ]; then # If options provided then
       # extract sql name and reverse list
 
       SQL_NAMES=$(cat updaterecord.txt | awk "/${TO_VERSION//./\\.}/,/${FROM_VERSION//./\\.}/ {print \$2}" | grep -vF "$FROM_VERSION" | awk "{array[NR]=\$0} END { for(i=NR;i>0;i--) {print array[i];} }")
-
       mysql_container_id=$(get_mysql_container_id)
+      server_container_id=$(get_server_container_id)
       # check whether mysql is ready
       while :; do
         Info "start to check mysql status ..."
@@ -1022,7 +1045,12 @@ if [ ! 0 == $# ]; then # If options provided then
         Info "Start to load sql:[$SQL]"
         docker exec -i $mysql_container_id /bin/bash -c "mysql -uroot -p'dongtai-iast' dongtai_webapi < $sql_dir/$SQL"
       done
-
+      if [ $TO_VERSION = 1.8.0 ]; then
+        docker exec -i $mysql_container_id /bin/bash -c "mysql -uroot -p'dongtai-iast' dongtai_webapi < $sql_dir/utf8mb4_general_ci.sql"
+        docker exec -i $server_container_id /bin/bash -c "python manage.py update"
+      else
+        Info "mysql character set check completed OK!!"
+      fi
     }
 
     function check_after_execute() {
@@ -1118,10 +1146,10 @@ if [ ! 0 == $# ]; then # If options provided then
     check_network
     backup_mysql
     check_update_record_file
-    check_schema_hash
+    #check_schema_hash
     upgrade_docker_image
     execute_update
-    check_after_execute
+    #check_after_execute
     summary
 
     ;;

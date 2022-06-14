@@ -34,17 +34,6 @@ def sca_scan_asset(asset):
     agent = asset.agent
     version = asset.version
     asset_package = Package.objects.filter(hash=asset.signature_value, version=version).first()
-    # user_upload_package = None
-    # if agent.language == "JAVA" and asset.signature_value:
-    #     # 用户上传的组件
-    #     user_upload_package = ScaMavenDb.objects.filter(sha_1=asset.signature_value).first()
-    #
-    # elif agent.language == "PYTHON":
-    #     # @todo agent上报版本 or 捕获全量pip库
-    #     version = asset.package_name.split('/')[-1].split('-')[-1]
-    #     name = asset.package_name.replace("-" + version, "")
-    #     asset_package = Package.objects.filter(ecosystem="PyPI", name=name, version=version).first()
-
     update_fields = list()
     try:
         logger.info('[sca_scan_asset]开始检测组件:{}/{}'.format(asset.id, asset.package_name))
@@ -52,14 +41,9 @@ def sca_scan_asset(asset):
             package_name = asset_package.aql
             version = asset_package.version
 
-            # 修改package_name为aql
-            if asset.package_name != package_name:
-                asset.package_name = package_name
-                update_fields.append('package_name')
-
             if version:
                 version_code = ""
-                version_list = asset.version.split('.')[0:4]
+                version_list = asset_package.version.split('.')[0:4]
                 while len(version_list) != 5:
                     version_list.append("0")
                 for _version in version_list:
@@ -68,17 +52,15 @@ def sca_scan_asset(asset):
                 version_code = "0000000000000000000000000"
 
             vul_list = VulPackage.objects.filter(ecosystem=asset_package.ecosystem, name=asset_package.name,
-                                                 introduced_vcode__lte=version_code,
-                                                 final_vcode__gte=version_code).all()
+                                                 introducede=asset_package.version).all()
 
             if asset_package.license:
                 asset.license = asset_package.license
                 update_fields.append('license')
-            # todo 最小修复版本-安全版本
+            # 最小修复版本-安全版本
             package_ranges = VulPackage.objects.filter(ecosystem=asset_package.ecosystem,
                                                        name=asset_package.name,
-                                                       safe_vcode__gte=version_code).order_by(
-                "safe_vcode").first()
+                                                       safe_vcode__gte=version_code).order_by("safe_vcode").first()
             if package_ranges and asset.safe_version != package_ranges.safe_version:
                 asset.safe_version = package_ranges.fixed
                 update_fields.append('safe_version')
@@ -178,61 +160,19 @@ def sca_scan_asset(asset):
                 asset.version = version
                 update_fields.append('version')
 
+            asset.dependency_level = 1
+            update_fields.append('dependency_level')
+
             if len(update_fields) > 0:
                 logger.info(f'update asset {asset.id}  dependency fields: {update_fields}')
                 asset.save(update_fields=update_fields)
-
-            if asset.dependency_level < 1:
-                # 同一组件，层级是否已经处理过，否则继续处理
-                asset_dependency_exist = Asset.objects.filter(signature_value=asset.signature_value,
-                                                              version=asset.version, dependency_level__gt=0,
-                                                              agent_id=asset.agent).first()
-                if not asset_dependency_exist:
-                    if agent.language.upper() == "JAVA" or agent.language.upper() == "GOLANG":
-                        get_dependency_graph(model_to_dict(asset), model_to_dict(asset_package))
-                    else:
-                        # python和PHP
-                        _update_asset_dependency_level(asset)
-
-                else:
-                    asset.dependency_level = asset_dependency_exist.dependency_level
-                    asset.parent_dependency_id = asset_dependency_exist.parent_dependency_id
-                    asset.save(update_fields=['dependency_level', 'parent_dependency_id'])
-
-            # if asset_package:
-            update_asset_aggr(asset)
         else:
             logger.warning('[sca_scan_asset]检测组件在组件库不存在:{}/{}'.format(asset.id, asset.package_name))
-
+        update_asset_aggr(asset)
     except Exception as e:
         # import traceback
         # traceback.print_exc()
         logger.info("get package_vul failed:{}".format(e))
-
-
-def _update_asset_dependency_level(asset):
-    if asset.dependency_level == 0:
-        asset.dependency_level = 1
-        asset.save(update_fields=['dependency_level'])
-
-    asset_package = Package.objects.filter(hash=asset.signature_value, version=asset.version).first()
-
-    asset_dependency = PackageDependency.objects.filter(package_name=asset_package.name,
-                                                        p_version=asset_package.version,
-                                                        ecosystem=asset_package.ecosystem).all()
-    for dependency in asset_dependency:
-        dependency_package = Package.objects.filter(name=dependency.dependency_package_name,
-                                                    version=dependency.d_version,
-                                                    ecosystem=dependency.ecosystem).first()
-        if dependency_package:
-            dependency_asset = Asset.objects.filter(signature_value=dependency_package.hash,
-                                                    version=dependency_package.version, agent_id=asset.agent_id,
-                                                    dependency_level=0).first()
-            if dependency_asset:
-                dependency_asset.parent_dependency_id = asset.id
-                dependency_asset.dependency_level = asset.dependency_level + 1
-                dependency_asset.save(update_fields=['dependency_level', 'parent_dependency_id'])
-                _update_asset_dependency_level(dependency_asset)
 
 
 # 处理IastAssetVul
@@ -385,116 +325,6 @@ def _add_asset_vul_relation(asset_vul):
 
     if asset_vul_relations:
         IastVulAssetRelation.objects.bulk_create(asset_vul_relations)
-
-
-def get_dependency_graph(asset_data, package):
-    try:
-        asset_exist = Asset.objects.filter(signature_value=asset_data['signature_value'],
-                                           version=asset_data['version'], dependency_level__gt=0,
-                                           agent_id=asset_data['agent']).first()
-        if asset_exist:
-            parent_asset = asset_exist
-        else:
-            parent_asset = Asset.objects.filter(id=asset_data['id']).first()
-            if parent_asset.dependency_level == 0:
-                parent_asset.dependency_level = 1
-                parent_asset.save(update_fields=['dependency_level'])
-
-        parent_dependency_id = parent_asset.id
-        dependency_level = parent_asset.dependency_level + 1
-
-        if package:
-            repo_dependency = _get_package_dependency(package)
-            if repo_dependency:
-                for dependency in repo_dependency:
-                    package_name = dependency['aql']
-                    dependency_version = dependency['version']
-                    license = dependency['license']
-                    dependency_package_hash = dependency['hash']
-                    # 如果组件已存在依赖等级则忽略，避免出现套圈依赖
-                    dependency_asset_exist = Asset.objects.filter(signature_value=dependency_package_hash,
-                                                                  version=dependency_version,
-                                                                  dependency_level__gt=0,
-                                                                  agent_id=parent_asset.agent_id).exists()
-                    if dependency_asset_exist:
-                        continue
-
-                    dependency_asset = Asset.objects.filter(signature_value=dependency_package_hash,
-                                                            version=dependency_version, dependency_level=0,
-                                                            agent_id=parent_asset.agent_id).first()
-                    if not dependency_asset:
-                        try:
-                            dependency_asset = Asset()
-                            dependency_asset.package_name = package_name
-                            dependency_asset.signature_value = dependency_package_hash
-                            dependency_asset.signature_algorithm = 'SHA-1'
-                            dependency_asset.version = dependency_version
-                            dependency_asset.level_id = 4
-                            dependency_asset.vul_count = 0
-                            dependency_asset.parent_dependency_id = parent_dependency_id
-                            dependency_asset.language = parent_asset.language
-                            dependency_asset.agent_id = -1
-                            if parent_asset.agent_id and parent_asset.agent:
-                                asset_agent = parent_asset.agent
-                                dependency_asset.agent = parent_asset.agent
-                                dependency_asset.project_version_id = asset_agent.project_version_id if asset_agent.project_version_id else -1
-                                dependency_asset.project_name = asset_agent.project_name
-                                dependency_asset.language = asset_agent.language
-                                dependency_asset.project_id = asset_agent.bind_project_id if asset_agent.bind_project_id else -1
-
-                            user = User.objects.filter(id=parent_asset.user_id).first()
-                            if user:
-                                user_department = user.get_department()
-                                user_talent = user.get_talent()
-                                dependency_asset.department_id = user_department.id if user_department else -1
-                                dependency_asset.talent_id = user_talent.id if user_talent else -1
-                                dependency_asset.user_id = user.id
-
-                            dependency_asset.license = license
-
-                            dependency_asset.dependency_level = dependency_level
-
-                            dependency_asset.dt = int(time.time())
-                            dependency_asset.save()
-                            sca_scan_asset(dependency_asset)
-                        except Exception as e:
-                            # import traceback
-                            # traceback.print_exc()
-                            continue
-                    else:
-                        dependency_asset.parent_dependency_id = parent_dependency_id
-                        dependency_asset.dependency_level = dependency_level
-                        dependency_asset.save(update_fields=['parent_dependency_id', 'dependency_level'])
-
-                    get_dependency_graph(model_to_dict(dependency_asset), dependency)
-    except Exception as e:
-        # import traceback
-        # traceback.print_exc()
-        pass
-
-
-def _get_package_dependency(package):
-    dependency_data = []
-    if package:
-        repo_dependency = PackageDependency.objects.filter(package_name=package['name'], p_version=package['version'],
-                                                           ecosystem=package['ecosystem']).all()
-        for dependency in repo_dependency:
-            if package['name'] != dependency['dependency_package_name']:
-                dependency_package = Package.objects.filter(name=dependency['dependency_package_name'],
-                                                            version=dependency['d_version'],
-                                                            ecosystem=dependency['ecosystem']).values('aql', 'hash',
-                                                                                                      'version',
-                                                                                                      'name',
-                                                                                                      'ecosystem',
-                                                                                                      'license').first()
-                if dependency_package:
-                    dependency_data.append(
-                        {'aql': dependency['aql'], 'hash': dependency['hash'], 'ecosystem': dependency['ecosystem'],
-                         'name': dependency['name'],
-                         'license': dependency['license'] if dependency['license'] else '',
-                         'version': dependency['version']})
-
-    return dependency_data
 
 
 def update_asset_aggr(asset):

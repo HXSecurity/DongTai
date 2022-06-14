@@ -45,7 +45,8 @@ class ScaSerializer(serializers.ModelSerializer):
             if project_id in self.project_cache:
                 return self.project_cache[project_id]
             else:
-                self.project_cache[project_id] = IastProject.objects.filter(id=project_id).first().name
+                project = IastProject.objects.filter(id=project_id).first()
+                self.project_cache[project_id] = project.name if project else ""
                 return self.project_cache[project_id]
 
     def get_project_id(self, obj):

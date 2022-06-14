@@ -32,10 +32,32 @@
       cc_addr = {{.Values.smtp.cc_addr}}
       port = {{.Values.smtp.port}}
 
-
-
       [sca]
       base_url = {{.Values.sca.base_url}}
+
+      [task]
+      retryable = true
+      max_retries = 3
+      async_send = true
+      async_send_delay = 5
+
+      [log_service]
+      host = dongtai-logstash-svc
+      port = 8083
+
+      [common_file_path]
+      tmp_path = /tmp/logstash
+      report_img = report/img
+      report_pdf = report/pdf
+      report_word = report/word
+      report_excel = report/excel
+
+      [other]
+      domain = http://localhost.domain/
+      demo_session_cookie_domain = .huoxian.cn
+      logging_level = INFO
+      cache_preheat = True
+
 
 {{- end -}}
 
@@ -48,3 +70,30 @@ metadata:
 data:
     config.ini: |-
       {{ include "config.ini" . }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    pv.kubernetes.io/bind-completed: "yes"
+    pv.kubernetes.io/bound-by-controller: "yes"
+  name: app-agent-pvc
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 2G
+  storageClassName: {{.Values.storageClassName.name}}
+---
+apiVersion: v1
+data:
+  database: {{.Values.mysql.host}}:{{.Values.mysql.port}}/{{.Values.mysql.name}}
+  username: {{.Values.mysql.user}}
+  password: {{.Values.mysql.password}}
+kind: ConfigMap
+metadata:
+  name: logstash-cm
+  namespace: {{ .Release.Namespace }}
+---
