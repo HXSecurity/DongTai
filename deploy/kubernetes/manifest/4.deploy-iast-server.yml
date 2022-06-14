@@ -464,15 +464,7 @@ spec:
         app: dongtai-logstash
     spec:
       containers:
-      - image: registry.cn-beijing.aliyuncs.com/huoxian_pub/logrotate:latest
-        name: logrotate
-        securityContext:
-          runAsUser: 0
-        imagePullPolicy: Always
-        volumeMounts:
-        - name: log-path
-          mountPath: /tmp/logstash
-      - image: registry.cn-beijing.aliyuncs.com/huoxian_pub/logstash:7.9.2-latest
+      - image: dongtai/dongtai-logstash:CHANGE_THIS_VERSION
         name: logstash
         securityContext:
           runAsUser: 0
@@ -532,6 +524,14 @@ spec:
           tcpSocket:
             port: 9600
           timeoutSeconds: 1
+      - image: dongtai/dongtai-logrotate:CHANGE_THIS_VERSION
+        name: logrotate
+        securityContext:
+          runAsUser: 0
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: log-path
+          mountPath: /tmp/logstash
       volumes:
       - name: log-path
         persistentVolumeClaim:
