@@ -36,9 +36,7 @@ class GetAggregationVulList(UserEndPoint):
         ser = AggregationArgsSerializer(data=request.data)
         keywords = ""
         join_table = ""
-        query_condition = " where rel.is_del=0 and  vul.package_language = 'JAVA' "
-
-        # count_vul_num = 0
+        query_condition = " where rel.is_del=0 "
         try:
             if ser.is_valid(True):
                 page_size = ser.validated_data['page_size']
@@ -63,6 +61,19 @@ class GetAggregationVulList(UserEndPoint):
                 if ser.validated_data.get("project_id_str", ""):
                     project_str = turnIntListOfStr(ser.validated_data.get("project_id_str", ""),"asset.project_id")
                     query_condition = query_condition + project_str
+                # 按语言筛选
+                if ser.validated_data.get("language_str", ""):
+                    language_str = ser.validated_data.get("language_str", "")
+                    type_list = language_str.split(",")
+                    # 安全校验，强制转int
+                    type_list = list(map(int, type_list))
+                    type_int_list = list(map(str, type_list))
+                    lang_str = []
+                    for one_type in type_int_list:
+                        lang_str.append("'"+LANGUAGE_ID_DICT.get(one_type,"")+"'")
+                    type_int_str = ",".join(lang_str)
+                    language_str_change = " and {} in ({}) ".format("vul.package_language", type_int_str)
+                    query_condition = query_condition + language_str_change
                 # 漏洞类型筛选
                 if ser.validated_data.get("hook_type_id_str", ""):
                     vul_type_str = turnIntListOfStr(ser.validated_data.get("hook_type_id_str", ""), "typeR.asset_vul_type_id")
@@ -153,7 +164,7 @@ class GetAggregationVulList(UserEndPoint):
                 content_list.append(cur_data)
             # 追加 用户 权限
             base_relation = IastVulAssetRelation.objects.filter(
-                asset_vul_id__in=vul_ids,is_del=0,asset__user_id__in=user_auth_info['user_list'])
+                asset_vul_id__in=vul_ids,is_del=0,asset__user_id__in=user_auth_info['user_list'],asset__project_id__gt=0)
             # base_relation = getAuthUserInfo(request.user,base_relation)
             pro_info = base_relation.values(
                 "asset_vul_id","asset__project_id","asset__project_name","asset__project_version__version_name","asset__agent__server__container"
