@@ -485,7 +485,7 @@ services:
       options:
         max-size: "10m"
   dongtai-logrotate:
-    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/logrotate:$DONGTAI_SERVER_VER"
+    image: "$registry/dongtai-logrotate:$DONGTAI_SERVER_VER"
     restart: always
     user: root
     volumes:
@@ -495,7 +495,7 @@ services:
       options:
         max-size: "10m"
   dongtai-logstash:
-    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/logstash:7.9.2-$DONGTAI_SERVER_VER"
+    image: "$registry/dongtai-logstash:$DONGTAI_SERVER_VER"
     restart: always
     user: root
     environment:

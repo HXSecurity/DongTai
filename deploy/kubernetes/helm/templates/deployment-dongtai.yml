@@ -382,7 +382,7 @@ spec:
         app: dongtai-logstash
     spec:
       containers:
-      - image: registry.cn-beijing.aliyuncs.com/huoxian_pub/logrotate:{{ .Values.imageVersion }}
+      - image: dongtai/dongtai-logrotate:{{ .Values.imageVersion }}
         name: logrotate
         securityContext:
           runAsUser: 0
@@ -390,7 +390,7 @@ spec:
         volumeMounts:
         - name: log-path
           mountPath: /tmp/logstash
-      - image: registry.cn-beijing.aliyuncs.com/huoxian_pub/logstash:7.9.2-{{ .Values.imageVersion }}
+      - image: dongtai/dongtai-logstash:{{ .Values.imageVersion }}
         name: logstash
         securityContext:
           runAsUser: 0
