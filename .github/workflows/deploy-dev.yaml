@@ -4,7 +4,7 @@ name: Deploy DongTai Server To Dev
 
 on:
   push:
-    branches: [ "main"  ]
+    branches: [ "backup-1.8.0"  ]
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
