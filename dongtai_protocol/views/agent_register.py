@@ -220,6 +220,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             auto_create_project = param.get('autoCreateProject', 0)
             user = request.user
             version_name = param.get('projectVersion', 'V1.0')
+            version_name = version_name if version_name else 'V1.0'
             with transaction.atomic():
                 obj, project_created = IastProject.objects.get_or_create(
                     name=project_name,
