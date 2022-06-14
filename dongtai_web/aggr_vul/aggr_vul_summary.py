@@ -1,3 +1,4 @@
+import copy
 
 from dongtai_common.endpoint import UserEndPoint
 from dongtai_web.utils import extend_schema_with_envcheck
@@ -14,7 +15,7 @@ from dongtai_common.models import APP_LEVEL_RISK
 def get_annotate_sca_common_data(user_id: int, pro_condition: str):
     return get_annotate_sca_base_data(user_id,pro_condition)
 
-@cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60), use_celery_update=True)
+#@cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60), use_celery_update=True)
 def get_annotate_sca_cache_data(user_id: int,pro_condition: str):
     return get_annotate_sca_base_data(user_id,pro_condition)
 
@@ -44,7 +45,7 @@ def get_annotate_sca_base_data(user_id: int,pro_condition: str):
     }
     # auth_condition = getAuthBaseQuery(user_id=user_id, table_str="asset")
     user_auth_info = auth_user_list_str(user_id=user_id,user_table="asset")
-    query_condition = " where rel.is_del=0 " + user_auth_info.get("user_condition_str") + pro_condition
+    query_condition = " where rel.is_del=0 and asset.project_id>0 " + user_auth_info.get("user_condition_str") + pro_condition
     base_join = "left JOIN iast_asset_vul_relation as rel on rel.asset_vul_id=vul.id  " \
                 "left JOIN iast_asset as asset on rel.asset_id=asset.id "
     # level_join = "left JOIN iast_vul_level as level on level.id=vul.level_id "
@@ -93,16 +94,29 @@ def get_annotate_sca_base_data(user_id: int,pro_condition: str):
                                + base_join + query_condition + " group by vul.package_language  "
         cursor.execute(count_language_query)
         language_summary = cursor.fetchall()
+        lang_arr = copy.copy(LANGUAGE_DICT)
+        lang_key = lang_arr.keys()
         if language_summary:
             for item in language_summary:
                 package_language,count_package_language = item
                 result_summary['language'].append({
-                    "id": LANGUAGE_DICT.get(str(package_language)),
+                    "id": lang_arr.get(str(package_language)),
                     "num": count_package_language,
                     "name": package_language
                 })
+                if package_language in lang_key:
+                    del lang_arr[package_language]
+        if lang_arr:
+            for item in lang_arr.keys():
+                result_summary["language"].append(
+                    {
+                        "id": LANGUAGE_DICT.get(item),
+                        "num": 0,
+                        "name": item
+                    }
+                )
 
-                # 漏洞类型 统计
+        # 漏洞类型 统计
         vul_type_join = "left JOIN iast_asset_vul_type_relation as typeR on vul.id=typeR.asset_vul_id " \
                         "left JOIN iast_asset_vul_type as typeInfo on typeInfo.id=typeR.asset_vul_type_id "
         count_vul_type_query = "SELECT  typeR.asset_vul_type_id as vul_type_id, count( DISTINCT(vul.id )) AS count_vul_type, " \
@@ -118,7 +132,7 @@ def get_annotate_sca_base_data(user_id: int,pro_condition: str):
                     "num": count_vul_type,
                     "name": type_name
                 })
-            # 归属项目 统计
+        # 归属项目 统计
         count_project_query = "SELECT asset.project_id, count( DISTINCT(vul.id )), " \
                               " asset.project_name from iast_asset_vul as vul  " \
                               + base_join + query_condition + " and asset.project_id>0 group by asset.project_id,asset.project_name  "

@@ -21,7 +21,9 @@ from dongtai_conf.settings import BUCKET_NAME_BASE_URL, VERSION
 logger = logging.getLogger("dongtai.openapi")
 
 PACKAGE_NAME_LIST = ('dongtai-core', 'dongtai-spy', 'dongtai-api',
-                     'dongtai-grpc', 'dongtai-log', 'dongtai-spring-api')
+                     'dongtai-grpc', 'dongtai-log', 'dongtai-spring-api',
+                     'dongtai-core-jdk6', 'dongtai-api-jdk6',
+                     'dongtai-spy-jdk6')
 
 
 class EngineDownloadEndPoint(OpenApiEndPoint):

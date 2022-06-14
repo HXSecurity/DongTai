@@ -10,7 +10,7 @@ from dongtai_web.aggregation.aggregation_common import auth_user_list_str
 from django.db.models import Count
 from dongtai_common.common.utils import cached_decorator
 from django.db.models import Q
-
+import copy
 
 def _annotate_by_query(q, value_fields, count_field):
     return (
@@ -19,8 +19,8 @@ def _annotate_by_query(q, value_fields, count_field):
         .annotate(count=Count(count_field))
     )
 
-@cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60),
-                  use_celery_update=True)
+#@cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60),
+#                  use_celery_update=True)
 def get_annotate_cache_data(user_id: int):
     return get_annotate_data(user_id, 0, 0)
 
@@ -29,7 +29,7 @@ def get_annotate_data(
     user_id: int, bind_project_id=int, project_version_id=int
 ) -> dict:
     auth_user_info = auth_user_list_str(user_id=user_id)
-    cache_q = Q(is_del=0, agent__user_id__in=auth_user_info['user_list'])
+    cache_q = Q(is_del=0,agent__bind_project_id__gt=0, agent__user_id__in=auth_user_info['user_list'])
 
     # 从项目列表进入 绑定项目id
     if bind_project_id:
@@ -101,14 +101,27 @@ def get_annotate_data(
 
     # # 按语言筛选
     language_info = _annotate_by_query(cache_q, ("agent__language",), "agent__language")
+    lang_arr = copy.copy(LANGUAGE_DICT)
+    lang_key = lang_arr.keys()
     for item in language_info:
         result_summary["language"].append(
             {
                 "name": item["agent__language"],
                 "num": item["count"],
-                "id": LANGUAGE_DICT.get(item["agent__language"]),
+                "id": lang_arr.get(item["agent__language"]),
             }
         )
+        if item["agent__language"] in lang_key:
+            del lang_arr[item["agent__language"]]
+    if lang_arr:
+        for item in lang_arr.keys():
+            result_summary["language"].append(
+                {
+                    "name": item,
+                    "num": 0,
+                    "id": LANGUAGE_DICT.get(item),
+                }
+            )
     return result_summary
 
 
@@ -135,8 +148,8 @@ class GetAppVulsSummary(UserEndPoint):
             if ser.is_valid(True):
                 if ser.validated_data.get("bind_project_id", 0):
                     bind_project_id = ser.validated_data.get("bind_project_id", 0)
-                if ser.validated_data.get("bind_project_id", 0):
-                    bind_project_id = ser.validated_data.get("bind_project_id", 0)
+                if ser.validated_data.get("project_version_id", 0):
+                    project_version_id = ser.validated_data.get("project_version_id", 0)
 
             if bind_project_id or project_version_id:
                 result_summary = get_annotate_data(
