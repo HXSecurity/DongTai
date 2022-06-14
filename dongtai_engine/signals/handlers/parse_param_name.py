@@ -5,6 +5,9 @@ class ParamDict(QueryDict):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.__init_extend_kv_dict()
+
+    def __init_extend_kv_dict(self):
         self.extend_kv_dict = {}
         self.extend_k_map = {}
         for k, v in self.items():
