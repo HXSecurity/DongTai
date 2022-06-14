@@ -84,10 +84,15 @@ class AgentLogDownload(UserEndPoint, viewsets.ViewSet):
             a = int(pk) > 0
             if not a:
                 return nothing_resp()
-        except:
+            return FileResponse(open(f'/tmp/logstash/batchagent/{pk}.zip',
+                                     'rb'),
+                                filename='agentlog.zip')
+        except FileNotFoundError as e:
+            logger.info(e)
             return nothing_resp()
-        return FileResponse(open(f'/tmp/logstash/batchagent/{pk}.zip', 'rb'),
-                            filename='agentlog.zip')
+        except Exception as e:
+            logger.info(e)
+            return nothing_resp()
 
 
 def generate_path(agent_id):

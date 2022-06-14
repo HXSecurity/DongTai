@@ -5,8 +5,8 @@
 # project: lingzhi-webapi
 import pymysql
 from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.asset_aggr import AssetAggr
 from dongtai_common.models.vul_level import IastVulLevel
-from django.db import connection
 from dongtai_web.base.agent import get_project_vul_count, get_agent_languages, initlanguage
 from dongtai_web.base.project_version import get_project_version, get_project_version_by_id
 from django.utils.translation import gettext_lazy as _
@@ -162,14 +162,12 @@ class ScaSummary(UserEndPoint):
             "msg": "success",
             "data": {}
         }
-
         auth_users = self.get_auth_users(request.user)
         request_data = request.data
 
         auth_user_ids = [str(_i.id) for _i in auth_users]
-        auth_user_ids_str = ','.join(auth_user_ids)
-        base_query_sql = " LEFT JOIN iast_asset ON iast_asset.signature_value = iast_asset_aggr.signature_value WHERE iast_asset.dependency_level>0 and iast_asset.user_id in ({}) and iast_asset.is_del=0 ".format(
-            auth_user_ids_str)
+        base_query_sql = " LEFT JOIN iast_asset ON iast_asset.signature_value = iast_asset_aggr.signature_value WHERE iast_asset.dependency_level>0 and iast_asset.user_id in %s and iast_asset.is_del=0 "
+        sql_params = [auth_user_ids]
         asset_aggr_where = " and iast_asset_aggr.is_del=0 "
         package_kw = request_data.get('keyword', "")
         if package_kw:
@@ -178,6 +176,7 @@ class ScaSummary(UserEndPoint):
         if package_kw and package_kw.strip() != '':
             package_kw = '%%{}%%'.format(package_kw)
             asset_aggr_where = asset_aggr_where + " and iast_asset_aggr.package_name like %s"
+            sql_params.append(package_kw)
 
         project_id = request_data.get('project_id', None)
         if project_id and project_id != '':
@@ -186,8 +185,9 @@ class ScaSummary(UserEndPoint):
                 current_project_version = get_project_version(project_id, auth_users)
             else:
                 current_project_version = get_project_version_by_id(version_id)
-            base_query_sql = base_query_sql + " and iast_asset.project_id={} and iast_asset.project_version_id= {}".format(
-                project_id, current_project_version.get("version_id", 0))
+            base_query_sql = base_query_sql + " and iast_asset.project_id=%s and iast_asset.project_version_id=%s "
+            sql_params.append(project_id)
+            sql_params.append(current_project_version.get("version_id", 0))
 
         levelInfo = IastVulLevel.objects.filter(id__lt=5).all()
         levelNameArr = {}
@@ -200,42 +200,36 @@ class ScaSummary(UserEndPoint):
                 levelIdArr[level_item.id] = level_item.name_value
 
         _temp_data = dict()
-        with connection.cursor() as cursor:
-            # 漏洞等级汇总
-            level_summary_sql = "SELECT iast_asset_aggr.level_id,count(DISTINCT(iast_asset_aggr.id)) as total FROM iast_asset_aggr {base_query_sql} {where_sql} GROUP BY iast_asset_aggr.level_id "
-            level_summary_sql = level_summary_sql.format(base_query_sql=base_query_sql, where_sql=asset_aggr_where)
-            if package_kw:
-                cursor.execute(level_summary_sql, [package_kw])
-            else:
-                cursor.execute(level_summary_sql)
-            level_summary = cursor.fetchall()
-            if level_summary:
-                for item in level_summary:
-                    level_id, total = item
-                    _temp_data[levelIdArr[level_id]] = total
+        # 漏洞等级汇总
+        level_summary_sql = "SELECT iast_asset_aggr.id,iast_asset_aggr.level_id,count(DISTINCT(iast_asset_aggr.id)) as total FROM iast_asset_aggr {base_query_sql} {where_sql} GROUP BY iast_asset_aggr.level_id "
+        level_summary_sql = level_summary_sql.format(base_query_sql=base_query_sql, where_sql=asset_aggr_where)
+
+        level_summary = AssetAggr.objects.raw(level_summary_sql, sql_params)
+        if level_summary:
+            for item in level_summary:
+                level_id = item.level_id
+                total = item.total
+                _temp_data[levelIdArr[level_id]] = total
 
         DEFAULT_LEVEL.update(_temp_data)
         end['data']['level'] = [{
             'level': _key, 'count': _value, 'level_id': levelNameArr[_key]
         } for _key, _value in DEFAULT_LEVEL.items()]
-        default_language = initlanguage()
-        language_summary_sql = "SELECT iast_asset_aggr.language,count(DISTINCT(iast_asset_aggr.id)) as total FROM iast_asset_aggr {base_query_sql} {where_sql} GROUP BY iast_asset_aggr.language "
-        language_summary_sql = language_summary_sql.format(base_query_sql=base_query_sql, where_sql=asset_aggr_where)
-        with connection.cursor() as cursor:
-            # 漏洞语言汇总
 
-            if package_kw:
-                cursor.execute(language_summary_sql, [package_kw])
-            else:
-                cursor.execute(language_summary_sql)
-            language_summary = cursor.fetchall()
-            if language_summary:
-                for _l in language_summary:
-                    language, total = _l
-                    if default_language.get(language, None):
-                        default_language[language] = total + default_language[language]
-                    else:
-                        default_language[language] = total
+        default_language = initlanguage()
+        language_summary_sql = "SELECT iast_asset_aggr.id,iast_asset_aggr.language,count(DISTINCT(iast_asset_aggr.id)) as total FROM iast_asset_aggr {base_query_sql} {where_sql} GROUP BY iast_asset_aggr.language "
+        language_summary_sql = language_summary_sql.format(base_query_sql=base_query_sql, where_sql=asset_aggr_where)
+
+        language_summary = AssetAggr.objects.raw(language_summary_sql, sql_params)
+
+        if language_summary:
+            for _l in language_summary:
+                language = _l.language
+                total = _l.total
+                if default_language.get(language, None):
+                    default_language[language] = total + default_language[language]
+                else:
+                    default_language[language] = total
 
         end['data']['language'] = [{
             'language': _key, 'count': _value

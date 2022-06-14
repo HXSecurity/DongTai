@@ -34,7 +34,7 @@ from dongtai_engine.plugins.strategy_headers import check_response_header
 from dongtai_engine.plugins.strategy_sensitive import check_response_content
 from dongtai_engine.replay import Replay
 from dongtai_conf import settings
-from dongtai_web.dongtai_sca.utils import get_dependency_graph, sca_scan_asset
+from dongtai_web.dongtai_sca.utils import sca_scan_asset
 from dongtai_common.models.project_report import ProjectReport
 import requests
 from hashlib import sha1
@@ -132,6 +132,7 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
         sink_sign,
         taint_value,
         queryset.values('vul_type').first()['vul_type'],
+        agent_id=method_pool_model.agent_id,
     )
     logger.info(f'vul filter_status : {filterres}')
     if status and filterres:

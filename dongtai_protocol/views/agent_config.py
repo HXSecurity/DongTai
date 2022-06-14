@@ -102,7 +102,7 @@ def get_agent_config_by_scan(agent_id: int, mg: MetricGroup) -> Result:
     agent_detail = get_agent_filter_details(agent_id)
     queryset = IastCircuitConfig.objects.filter(
         is_deleted=0, metric_group=mg,
-        is_enable=1).order_by('-priority').only('id')
+        is_enable=1).order_by('priority').only('id')
     for i in queryset:
         result_list = []
         for target in IastCircuitTarget.objects.filter(
@@ -140,7 +140,7 @@ def get_agent_config(agent_id: int) -> Result:
             continue
         config_id = res.value
         config = IastCircuitConfig.objects.filter(
-            pk=config_id).order_by('-priority').first()
+            pk=config_id).first()
         metric_list = []
         for metric in IastCircuitMetric.objects.filter(
                 circuit_config_id=config.id).all():
