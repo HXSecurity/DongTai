@@ -438,7 +438,7 @@ services:
     sysctls:
       net.core.somaxconn: 1024
     volumes:
-      - isat-vol:/tmp/logstash/
+      - iast-vol:/tmp/logstash/
       - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
     logging:
       driver: "json-file"
@@ -489,7 +489,7 @@ services:
     restart: always
     user: root
     volumes:
-      - isat-vol:/tmp/logstash/
+      - iast-vol:/tmp/logstash/
     logging:
       driver: "json-file"
       options:
@@ -503,14 +503,14 @@ services:
       - USERNAME=${MYSQL_USERNAME}
       - PASSWORD=${MYSQL_PASSWORD}
     volumes:
-      - isat-vol:/tmp/logstash/
+      - iast-vol:/tmp/logstash/
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
 volumes:
   mysql-vol:
-  isat-vol:
+  iast-vol:
 EOM
   elif [[ $(first_gt_second $CHANGE_THIS_VERSION 1.3.1) == true ]]; then
      read -r -d '' DOCKER_COMPOSE_FILE <<EOM
@@ -970,7 +970,7 @@ if [ ! 0 == $# ]; then # If options provided then
       data_dir=$(get_database_data_dir)
       Notice "Data volume will be deleted."
       docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") down -v
-      docker volume rm dongtai_isat-vol
+      docker volume rm dongtai_iast-vol
       if [ "$MOUNT_TYPE" == "bind" ]; then
         Notice "Data will be deleted in $data_dir"
         rm -rf $data_dir
