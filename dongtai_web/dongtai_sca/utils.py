@@ -52,7 +52,7 @@ def sca_scan_asset(asset):
                 version_code = "0000000000000000000000000"
 
             vul_list = VulPackage.objects.filter(ecosystem=asset_package.ecosystem, name=asset_package.name,
-                                                 introducede=asset_package.version).all()
+                                                 introduced=asset_package.version).all()
 
             if asset_package.license:
                 asset.license = asset_package.license
