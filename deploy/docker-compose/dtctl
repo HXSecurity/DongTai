@@ -13,6 +13,11 @@ DESTORY_DATA=false
 PROJECT_NAME=dongtai
 REGISRTY=1
 
+MYSQL_IP='dongtai-mysql:3306'
+MYSQL_USERNAME='root'
+MYSQL_PASSWORD='dongtai-iast'
+MYSQL_DATABASES='dongtai_webapi'
+
 DONGTAI_API="iast.huoxian.cn"
 # DONGTAI_API="google.com"
 DONGTAI_API_ACCESSABLE=true
@@ -386,6 +391,11 @@ dongtai-mysql:
         max-size: "10m"
 EOF
     )
+  elif [[ $(first_gt_second $CHANGE_THIS_VERSION 1.7.9) == true ]]; then
+    read -p "请输入您的数据库IP和端口: 如 127.0.0.1:3306:" MYSQL_IP
+    read -p "请输入您的数据库用户: 如 root:" MYSQL_USERNAME
+    read -p "请输入您的数据库密码: 如 123456:" MYSQL_PASSWORD
+    read -p "请输入您创建好的数据库名: 如 dongtai:" MYSQL_DATABASES
   fi
 
   if [ $SKIP_REDIS == false ]; then
@@ -489,9 +499,9 @@ services:
     restart: always
     user: root
     environment:
-      - DATABASE=dongtai-mysql:3306/dongtai_webapi
-      - USERNAME=root
-      - PASSWORD=dongtai-iast
+      - DATABASE=${MYSQL_IP}/${MYSQL_DATABASES}
+      - USERNAME=${MYSQL_USERNAME}
+      - PASSWORD=${MYSQL_PASSWORD}
     volumes:
       - isat-vol:/tmp/logstash/
     logging:
