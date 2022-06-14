@@ -28,8 +28,18 @@ def parse_params(param_values, taint_value):
     """
     从param参数中解析污点的位置
     """
+    from urllib.parse import unquote_plus
     param_name = None
     _param_items = ParamDict(param_values)
+    for _param_name, _param_value in _param_items.items():
+        if taint_value == _param_value or taint_value == _param_name:
+            param_name = _param_name
+            break
+    for _param_name, _param_value in _param_items.extend_kv_dict.items():
+        if taint_value == _param_value or taint_value == _param_name:
+            param_name = _param_items.extend_k_map[_param_name]
+            break
+    _param_items = ParamDict(unquote_plus(param_values))
     for _param_name, _param_value in _param_items.items():
         if taint_value == _param_value or taint_value == _param_name:
             param_name = _param_name
@@ -204,7 +214,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     else:
         param_name = ''
         taint_position = ''
-
+    logger.info(f"agent_id: {vul_meta.agent_id} vul_uri: {vul_meta.uri} param_name: {param_name}")
     from dongtai_common.models.agent import IastAgent
     project_agents = IastAgent.objects.filter(project_version_id=vul_meta.agent.project_version_id)
     # 获取 相同项目版本下的数据
