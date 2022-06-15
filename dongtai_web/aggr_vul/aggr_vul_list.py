@@ -149,7 +149,7 @@ class GetAggregationVulList(UserEndPoint):
                     "license_level": item.license_level,
                     "license_risk_name": LICENSE_RISK.get(str(item.license_level),"") ,
                     "vul_cve_nums": item.vul_cve_nums,
-                    "package_name": item.package_name,
+                    "package_name": item.aql,
                     "package_safe_version": item.package_safe_version,
                     "package_latest_version": item.package_latest_version,
                     "package_language": item.package_language,
