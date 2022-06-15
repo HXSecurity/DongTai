@@ -317,7 +317,7 @@ def _add_vul_data(asset, asset_package, cve_relation):
 
 
 def _add_asset_vul_relation(asset_vul):
-    vul_assets = Asset.objects.filter(package_name=asset_vul.aql, version=asset_vul.package_version,
+    vul_assets = Asset.objects.filter(version=asset_vul.package_version,
                                       signature_value=asset_vul.package_hash).values('id').all()
     asset_vul_relations = []
     if vul_assets:
