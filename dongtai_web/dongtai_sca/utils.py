@@ -322,9 +322,10 @@ def _add_asset_vul_relation(asset_vul):
     asset_vul_relations = []
     if vul_assets:
         for asset_vl in vul_assets:
-            relation_exist = IastVulAssetRelation.objects.filter(asset_vul=asset_vul, asset_id=asset_vl['id']).exists()
+            relation_exist = IastVulAssetRelation.objects.filter(asset_vul_id=asset_vul.id,
+                                                                 asset_id=asset_vl['id']).first()
             if not relation_exist:
-                asset_vul_relations.append(IastVulAssetRelation(asset_vul=asset_vul, asset_id=asset_vl['id'],
+                asset_vul_relations.append(IastVulAssetRelation(asset_vul_id=asset_vul.id, asset_id=asset_vl['id'],
                                                                 create_time=int(time.time()), status_id=1))
 
     if asset_vul_relations:
