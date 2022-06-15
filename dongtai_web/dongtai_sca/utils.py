@@ -180,7 +180,6 @@ def _add_vul_data(asset, asset_package, cve_relation):
     try:
         level_maps = dict()
         _level = cve_relation.severity
-        vul_package_name = asset.package_name
         vul_title = ''
         vul_detail = ''
         vul_have_poc = 0
@@ -256,7 +255,7 @@ def _add_vul_data(asset, asset_package, cve_relation):
         timestamp = int(time.time())
         if not asset_vul:
             asset_vul = IastAssetVul.objects.create(
-                package_name=vul_package_name,
+                package_name=asset_package.name,
                 level_id=vul_level,
                 license=vul_license,
                 license_level=vul_license_level,
