@@ -76,7 +76,12 @@ def sca_scan_asset(asset):
             levels_dict = dict()
             vul_count = 0
             levels = []
+            vul_records = []
             for vul in vul_list:
+                if vul.cve in vul_records:
+                    continue
+                vul_records.append(vul.cve)
+
                 _level = vul.severity
                 vul_cve_code = vul.cve
                 if vul_cve_code:
@@ -312,7 +317,7 @@ def _add_vul_data(asset, asset_package, cve_relation):
 
 
 def _add_asset_vul_relation(asset_vul):
-    vul_assets = Asset.objects.filter(package_name=asset_vul.package_name, version=asset_vul.package_version,
+    vul_assets = Asset.objects.filter(package_name=asset_vul.aql, version=asset_vul.package_version,
                                       signature_value=asset_vul.package_hash).values('id').all()
     asset_vul_relations = []
     if vul_assets:
