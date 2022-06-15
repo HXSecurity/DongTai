@@ -160,6 +160,7 @@ def cal_state(agent: dict) -> StateType:
         return StateType.STOP
     elif agent['online'] == 0 and agent['is_core_running'] != 1:
         return StateType.UNINSTALL
+    return StateType.UNINSTALL
 
 
 def query_agent(filter_condiction=Q()) -> QuerySet:
