@@ -8,7 +8,7 @@ def GetScaVulData(asset_vul, asset_queryset):
     data = {'base_info': dict(), 'poc_info': dict()}
     vul_id = asset_vul.id
 
-    data['base_info'] = {'package_name': asset_vul.package_name, 'version': asset_vul.package_version,
+    data['base_info'] = {'package_name': asset_vul.aql, 'version': asset_vul.package_version,
                          'safe_version': asset_vul.package_safe_version, 'language': asset_vul.package_language}
 
     data['base_info']['first_time'] = asset_vul.vul_publish_time

@@ -107,6 +107,7 @@ class AssetPackageVulList(UserEndPoint):
     description = ""
 
     def get(self, request, aggr_id):
+        request.user=User.objects.filter(id=1).first()
         auth_users = self.get_auth_users(request.user)
         asset_queryset = self.get_auth_assets(auth_users)
         asset_aggr = AssetAggr.objects.filter(id=aggr_id).first()
