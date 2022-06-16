@@ -124,7 +124,6 @@ class GetAggregationVulList(UserEndPoint):
         else:
             all_vul = IastAssetVul.objects.raw(query_base + "  order by %s  limit %s,%s;  " % (new_order, begin_num, end_num))
         content_list = []
-        print(all_vul.query)
         if all_vul:
             vul_ids = []
             # print(all_vul.query.__str__())
