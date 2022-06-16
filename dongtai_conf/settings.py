@@ -594,4 +594,9 @@ DEFAULT_CIRCUITCONFIG = {
     }
 }
 
-
+if config.get('elastic_search', 'enable') == 'true':
+    ELASTICSEARCH_DSL = {
+        'default': {
+            'host': config.get('elastic_search', 'host')
+        },
+    }
