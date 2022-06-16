@@ -57,3 +57,64 @@ class MethodPool(models.Model):
         managed = get_managed()
         db_table = 'iast_agent_method_pool'
         indexes = [models.Index(fields=['uri_sha1', 'http_method', 'agent'])]
+
+
+from django_elasticsearch_dsl import Document
+from django_elasticsearch_dsl.registries import registry
+
+
+@registry.register_document
+class MethodPoolDocument(Document):
+
+    class Index:
+        name = 'alias-dongtai-v1-method-pool-dev'
+
+    class Django:
+        model = MethodPool
+
+    # fields = [
+    #     'res_header',
+    #     'uri_sha1',
+    #     'url',
+    #     'update_time',
+    #     'res_header',
+    #     'res_body',
+    #     'req_params',
+    #     'req_header_for_search',
+    #     'req_header',
+    #     'req_data',
+    #     'pool_sign',
+    #     'method_pool',
+    #     'language',
+    #     'id',
+    #     'http_scheme',
+    #     'http_protocol',
+    #     'http_method',
+    #     'create_time',
+    #     'context_path',
+    #     'clent_ip',
+    #     'agent_id',  #'user_id','bind_project_id','project_version_id',
+    # ]
+
+
+def search_generate():
+    from elasticsearch_dsl import Q
+    a = Q('bool',
+          must=[
+              Q('multi_match',
+                query='123',
+                fields=[
+                    "uri", "req_header_for_search", "req_data", "res_body",
+                    "res_header"
+                ]),
+              Q('range', update_time={
+                  'gte': 1640598889,
+                  'lte': 1640598891
+              }),
+              Q('range', update_time={
+                  'lte': 1640598889,
+              }),
+              Q('terms', agent_id=[4631, 4632]),
+          ],
+          must_not=[Q('terms', ids=['350071', '350073'])])
+    return a
