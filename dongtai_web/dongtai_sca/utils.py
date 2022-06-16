@@ -52,7 +52,7 @@ def sca_scan_asset(asset):
                 version_code = "0000000000000000000000000"
 
             vul_list = VulPackage.objects.filter(ecosystem=asset_package.ecosystem, name=asset_package.name,
-                                                 introducede=asset_package.version).all()
+                                                 introduced=asset_package.version).all()
 
             if asset_package.license:
                 asset.license = asset_package.license
@@ -76,7 +76,12 @@ def sca_scan_asset(asset):
             levels_dict = dict()
             vul_count = 0
             levels = []
+            vul_records = []
             for vul in vul_list:
+                if vul.cve in vul_records:
+                    continue
+                vul_records.append(vul.cve)
+
                 _level = vul.severity
                 vul_cve_code = vul.cve
                 if vul_cve_code:
@@ -180,7 +185,6 @@ def _add_vul_data(asset, asset_package, cve_relation):
     try:
         level_maps = dict()
         _level = cve_relation.severity
-        vul_package_name = asset.package_name
         vul_title = ''
         vul_detail = ''
         vul_have_poc = 0
@@ -256,7 +260,7 @@ def _add_vul_data(asset, asset_package, cve_relation):
         timestamp = int(time.time())
         if not asset_vul:
             asset_vul = IastAssetVul.objects.create(
-                package_name=vul_package_name,
+                package_name=asset_package.name,
                 level_id=vul_level,
                 license=vul_license,
                 license_level=vul_license_level,
@@ -313,14 +317,15 @@ def _add_vul_data(asset, asset_package, cve_relation):
 
 
 def _add_asset_vul_relation(asset_vul):
-    vul_assets = Asset.objects.filter(package_name=asset_vul.package_name, version=asset_vul.package_version,
+    vul_assets = Asset.objects.filter(version=asset_vul.package_version,
                                       signature_value=asset_vul.package_hash).values('id').all()
     asset_vul_relations = []
     if vul_assets:
         for asset_vl in vul_assets:
-            relation_exist = IastVulAssetRelation.objects.filter(asset_vul=asset_vul, asset_id=asset_vl['id']).exists()
+            relation_exist = IastVulAssetRelation.objects.filter(asset_vul_id=asset_vul.id,
+                                                                 asset_id=asset_vl['id']).first()
             if not relation_exist:
-                asset_vul_relations.append(IastVulAssetRelation(asset_vul=asset_vul, asset_id=asset_vl['id'],
+                asset_vul_relations.append(IastVulAssetRelation(asset_vul_id=asset_vul.id, asset_id=asset_vl['id'],
                                                                 create_time=int(time.time()), status_id=1))
 
     if asset_vul_relations:
