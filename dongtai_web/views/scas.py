@@ -8,7 +8,6 @@ import logging
 import pymysql
 from django.db import connection
 from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_common.models import User
 
 from dongtai_common.models.asset_aggr import AssetAggr
 
@@ -159,8 +158,6 @@ class ScaList(UserEndPoint):
         :param request:
         :return:
         """
-        request.user  =  User.objects.filter(id=1).first()
-
         auth_users = self.get_auth_users(request.user)
         request_data = request.data
         page = request_data.get('page', 1)
@@ -192,7 +189,7 @@ class ScaList(UserEndPoint):
             count_sql_params.append(project_id)
             list_sql_params.append(project_version_id)
             count_sql_params.append(project_version_id)
-        total_count_sql = "SELECT iast_asset_aggr.id,count(distinct(iast_asset_aggr.id)) as alltotal FROM iast_asset_aggr {base_query_sql} {where_sql} limit 1 "
+        total_count_sql = "SELECT count(distinct(iast_asset_aggr.id)) as alltotal FROM iast_asset_aggr {base_query_sql} {where_sql} limit 1 "
         list_query_sql = "SELECT iast_asset_aggr.id FROM iast_asset_aggr {base_query_sql} {where_sql} GROUP BY iast_asset_aggr.id {order_sql} {page_sql} "
 
         language = request_data.get('language', None)
@@ -241,14 +238,17 @@ class ScaList(UserEndPoint):
         total_count = 0
         sca_ids = []
         try:
-            count_aggr_query = AssetAggr.objects.raw(total_count_sql, count_sql_params)
+            with connection.cursor() as cursor:
+                cursor.execute(total_count_sql, count_sql_params)
+                total_count_query = cursor.fetchone()
+                total_count = total_count_query[0] if total_count_query[0] else 0
 
-            for obj in count_aggr_query:
-                total_count = obj.alltotal
-
-            list_aggr_query = AssetAggr.objects.raw(list_query_sql, list_sql_params)
-
-            sca_ids = [i.id for i in list_aggr_query]
+            with connection.cursor() as cursor:
+                cursor.execute(list_query_sql, list_sql_params)
+                list_query = cursor.fetchall()
+                if list_query:
+                    for _l in list_query:
+                        sca_ids.append(_l[0])
 
         except Exception as e:
             logger.warning("sca list error:{}".format(e))

@@ -120,7 +120,7 @@ class AssetPackageVulList(UserEndPoint):
 
         vul_list = []
         auth_asset_vuls = self.get_auth_asset_vuls(asset_queryset)
-        asset_vuls = IastAssetVul.objects.filter(package_name=asset_aggr.package_name,
+        asset_vuls = IastAssetVul.objects.filter(aql=asset_aggr.package_name,
                                                  package_hash=asset_aggr.signature_value,
                                                  package_version=asset_aggr.version).all()
         for a_vul in asset_vuls:

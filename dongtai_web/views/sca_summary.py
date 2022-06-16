@@ -5,16 +5,15 @@
 # project: lingzhi-webapi
 import pymysql
 from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_common.models.asset_aggr import AssetAggr
 from dongtai_common.models.vul_level import IastVulLevel
+from django.db import connection
 from dongtai_web.base.agent import get_project_vul_count, get_agent_languages, initlanguage
 from dongtai_web.base.project_version import get_project_version, get_project_version_by_id
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.text import format_lazy
 from dongtai_web.serializers.vul import VulSummaryTypeSerializer, VulSummaryProjectSerializer, \
-    VulSummaryLevelSerializer, \
-    VulSummaryLanguageSerializer
+    VulSummaryLevelSerializer, VulSummaryLanguageSerializer
 from rest_framework import serializers
 
 
@@ -201,15 +200,16 @@ class ScaSummary(UserEndPoint):
 
         _temp_data = dict()
         # 漏洞等级汇总
-        level_summary_sql = "SELECT iast_asset_aggr.id,iast_asset_aggr.level_id,count(DISTINCT(iast_asset_aggr.id)) as total FROM iast_asset_aggr {base_query_sql} {where_sql} GROUP BY iast_asset_aggr.level_id "
+        level_summary_sql = "SELECT iast_asset_aggr.level_id,count(DISTINCT(iast_asset_aggr.id)) as total FROM iast_asset_aggr {base_query_sql} {where_sql} GROUP BY iast_asset_aggr.level_id "
         level_summary_sql = level_summary_sql.format(base_query_sql=base_query_sql, where_sql=asset_aggr_where)
 
-        level_summary = AssetAggr.objects.raw(level_summary_sql, sql_params)
-        if level_summary:
-            for item in level_summary:
-                level_id = item.level_id
-                total = item.total
-                _temp_data[levelIdArr[level_id]] = total
+        with connection.cursor() as cursor:
+            cursor.execute(level_summary_sql, sql_params)
+            level_summary = cursor.fetchall()
+            if level_summary:
+                for item in level_summary:
+                    level_id, total = item
+                    _temp_data[levelIdArr[level_id]] = total
 
         DEFAULT_LEVEL.update(_temp_data)
         end['data']['level'] = [{
@@ -217,19 +217,19 @@ class ScaSummary(UserEndPoint):
         } for _key, _value in DEFAULT_LEVEL.items()]
 
         default_language = initlanguage()
-        language_summary_sql = "SELECT iast_asset_aggr.id,iast_asset_aggr.language,count(DISTINCT(iast_asset_aggr.id)) as total FROM iast_asset_aggr {base_query_sql} {where_sql} GROUP BY iast_asset_aggr.language "
+        language_summary_sql = "SELECT iast_asset_aggr.language,count(DISTINCT(iast_asset_aggr.id)) as total FROM iast_asset_aggr {base_query_sql} {where_sql} GROUP BY iast_asset_aggr.language "
         language_summary_sql = language_summary_sql.format(base_query_sql=base_query_sql, where_sql=asset_aggr_where)
 
-        language_summary = AssetAggr.objects.raw(language_summary_sql, sql_params)
-
-        if language_summary:
-            for _l in language_summary:
-                language = _l.language
-                total = _l.total
-                if default_language.get(language, None):
-                    default_language[language] = total + default_language[language]
-                else:
-                    default_language[language] = total
+        with connection.cursor() as cursor:
+            cursor.execute(language_summary_sql, sql_params)
+            language_summary = cursor.fetchall()
+            if language_summary:
+                for _l in language_summary:
+                    language, total = _l
+                    if default_language.get(language, None):
+                        default_language[language] = total + default_language[language]
+                    else:
+                        default_language[language] = total
 
         end['data']['language'] = [{
             'language': _key, 'count': _value
