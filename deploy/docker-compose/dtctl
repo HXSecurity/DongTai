@@ -182,7 +182,7 @@ function get_mysql_container_id() {
 function get_server_container_id() {
   server_container_id=""
   PROJECT_NAME=$(get_project_name)
-  server_container_id=$(docker ps -a  --filter "label=com.docker.compose.project=$PROJECT_NAME" | grep "server" | awk '{print $1}')
+  server_container_id=$(docker ps -a  --filter "label=com.docker.compose.project=dongtai" | grep "server" | awk '{print $NF}' | grep dongtai-server)
   echo "$server_container_id"
 
 }
@@ -970,7 +970,7 @@ if [ ! 0 == $# ]; then # If options provided then
       data_dir=$(get_database_data_dir)
       Notice "Data volume will be deleted."
       docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") down -v
-      docker volume rm dongtai_iast-vol
+      #docker volume rm dongtai_iast-vol
       if [ "$MOUNT_TYPE" == "bind" ]; then
         Notice "Data will be deleted in $data_dir"
         rm -rf $data_dir
@@ -1047,6 +1047,7 @@ if [ ! 0 == $# ]; then # If options provided then
       done
       if [ $TO_VERSION = 1.8.0 ]; then
         docker exec -i $mysql_container_id /bin/bash -c "mysql -uroot -p'dongtai-iast' dongtai_webapi < $sql_dir/utf8mb4_general_ci.sql"
+        Info "Sql character ok!"
         docker exec -i $server_container_id /bin/bash -c "python manage.py update"
       else
         Info "mysql character set check completed OK!!"
