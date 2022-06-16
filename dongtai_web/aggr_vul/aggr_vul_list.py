@@ -100,14 +100,14 @@ class GetAggregationVulList(UserEndPoint):
         query_condition = query_condition + user_auth_info.get("user_condition_str")
 
         if keywords:
-            query_base = "SELECT DISTINCT(vul.id),vul.*, " \
+            query_base = "SELECT DISTINCT(vul.id),vul.*,rel.create_time, " \
                 " MATCH( `vul`.`vul_name`,`vul`.`aql`,`vul`.`vul_serial` ) AGAINST ( %s IN NATURAL LANGUAGE MODE ) AS `score`" \
                 "  from  iast_asset_vul_relation as rel   " \
                 "left JOIN iast_asset_vul as vul on rel.asset_vul_id=vul.id  " \
                 "left JOIN iast_asset as asset on rel.asset_id=asset.id  " + join_table + query_condition
 
         else:
-            query_base = "SELECT DISTINCT(vul.id),vul.* from  iast_asset_vul_relation as rel   " \
+            query_base = "SELECT DISTINCT(vul.id),vul.*,rel.create_time from  iast_asset_vul_relation as rel   " \
                         "left JOIN iast_asset_vul as vul on rel.asset_vul_id=vul.id  " \
                         "left JOIN iast_asset as asset on rel.asset_id=asset.id  " + join_table + query_condition
 
@@ -124,7 +124,7 @@ class GetAggregationVulList(UserEndPoint):
         else:
             all_vul = IastAssetVul.objects.raw(query_base + "  order by %s  limit %s,%s;  " % (new_order, begin_num, end_num))
         content_list = []
-
+        print(all_vul.query)
         if all_vul:
             vul_ids = []
             # print(all_vul.query.__str__())
