@@ -77,3 +77,15 @@ class IastVulnerabilityModel(models.Model):
         super(IastVulnerabilityModel, self).save(*args, **kwargs)
 
 
+from django_elasticsearch_dsl import Document
+from django_elasticsearch_dsl.registries import registry
+
+
+@registry.register_document
+class IastVulnerabilityDocument(Document):
+
+    class Index:
+        name = 'alias-dongtai-v1-vulnerability-dev'
+
+    class Django:
+        model = IastVulnerabilityModel
