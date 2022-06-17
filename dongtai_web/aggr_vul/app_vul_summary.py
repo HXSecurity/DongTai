@@ -166,3 +166,40 @@ class GetAppVulsSummary(UserEndPoint):
                 "messages": result_summary,
             },
         )
+
+def get_annotate_data_es(user_id, bind_project_id, project_version_id):
+    from dongtai_common.models.vulnerablity import IastVulnerabilityDocument
+    from elasticsearch_dsl import Q, Search
+    from elasticsearch import Elasticsearch
+    from elasticsearch_dsl import A
+    user_id_list = [user_id]
+    must_query = [
+        Q('terms', user_id=user_id_list),
+        Q('terms', bind_project_id=[bind_project_id]),
+        Q('terms', project_version_id=[project_version_id])
+    ]
+    search = IastVulnerabilityDocument.search().query(Q('bool', must=must_query))[:0]
+    buckets = {
+        'level_count': A('terms', field='level_id', size=2147483647),
+        'project_count': A('terms', field='bind_project_id', size=2147483647),
+        "strategy_count": A('terms', field='strategy_id', size=2147483647),
+        'status_count': A('terms', field='status_id', size=2147483647),
+        "language_count": A('terms', field='language.keyword', size=2147483647)
+    }
+    for k, v in buckets.items():
+        search.aggs.bucket(k, v)
+    from dongtai_conf import settings
+    res = search.using(Elasticsearch(
+        settings.ELASTICSEARCH_DSL['default']['hosts'])).execute()
+    dic = {}
+    for key in buckets.keys():
+        origin_buckets = res.aggs[key]['buckets']
+        for i in origin_buckets:
+            i['id'] = i['key']
+            del ['key']
+        if key == 'strategy_count':
+            strategy_ids = [i['id'] for i in origin_buckets]
+            strategy = IastStrategyModel.objects.filter(
+                pk__in=strategy_ids).all()
+        dic[key] = origin_buckets
+    return dic
