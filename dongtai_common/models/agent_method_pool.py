@@ -96,25 +96,3 @@ class MethodPoolDocument(Document):
     #     'agent_id',  #'user_id','bind_project_id','project_version_id',
     # ]
 
-
-def search_generate():
-    from elasticsearch_dsl import Q
-    a = Q('bool',
-          must=[
-              Q('multi_match',
-                query='123',
-                fields=[
-                    "uri", "req_header_for_search", "req_data", "res_body",
-                    "res_header"
-                ]),
-              Q('range', update_time={
-                  'gte': 1640598889,
-                  'lte': 1640598891
-              }),
-              Q('range', update_time={
-                  'lte': 1640598889,
-              }),
-              Q('terms', agent_id=[4631, 4632]),
-          ],
-          must_not=[Q('terms', ids=['350071', '350073'])])
-    return a
