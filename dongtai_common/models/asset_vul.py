@@ -86,3 +86,15 @@ class IastAssetVulTypeRelation(models.Model):
         db_table = 'iast_asset_vul_type_relation'
 
     # "iast_asset_vul_type_relation      iast_asset_vul_relation  iast_asset_vul iast_asset "
+from django_elasticsearch_dsl import Document
+from django_elasticsearch_dsl.registries import registry
+
+
+@registry.register_document
+class IastAssetVulnerabilityDocument(Document):
+
+    class Index:
+        name = 'alias-dongtai-v1-asset-vul-dev'
+
+    class Django:
+        model = IastAssetVul
