@@ -175,9 +175,7 @@ class GetAppVulsSummary(UserEndPoint):
             },
         )
 
-
-def dict_transfrom(dic: dict, key: str):
-    return {i[key]: i for i in dic}
+from dongtai_web.utils import dict_transfrom
 
 def get_annotate_data_es(user_id, bind_project_id, project_version_id):
     from dongtai_common.models.vulnerablity import IastVulnerabilityDocument
@@ -222,7 +220,7 @@ def get_annotate_data_es(user_id, bind_project_id, project_version_id):
         for i in origin_buckets:
             i['id'] = i['key']
             del i['key']
-            i['count'] = i['doc_count']
+            i['num'] = i['doc_count']
             del i['doc_count']
         if key == 'strategy':
             strategy_ids = [i['id'] for i in origin_buckets]
@@ -245,10 +243,10 @@ def get_annotate_data_es(user_id, bind_project_id, project_version_id):
             language_names = [i['name'] for i in origin_buckets]
             for i in origin_buckets:
                 i['id'] = LANGUAGE_DICT.get(i['name'])
-            for key in LANGUAGE_DICT.keys():
-                if key not in language_names:
+            for language_key in LANGUAGE_DICT.keys():
+                if language_key not in language_names:
                     origin_buckets.append({
-                        'id': LANGUAGE_DICT[key],
+                        'id': LANGUAGE_DICT[language_key],
                         'name': key,
                         'count': 0
                     })

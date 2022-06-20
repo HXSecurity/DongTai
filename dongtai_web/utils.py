@@ -280,3 +280,6 @@ class MethodOverrideMiddleware:
         if request.method == 'POST' and METHOD_OVERRIDE_HEADER in request.META:
             request.method = request.META[METHOD_OVERRIDE_HEADER]
         return self.get_response(request)
+
+def dict_transfrom(dic: dict, key: str):
+    return {i[key]: i for i in dic}
