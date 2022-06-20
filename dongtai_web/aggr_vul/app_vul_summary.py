@@ -10,7 +10,10 @@ from dongtai_web.aggregation.aggregation_common import auth_user_list_str
 from django.db.models import Count
 from dongtai_common.common.utils import cached_decorator
 from django.db.models import Q
+import logging
+logger = logging.getLogger('dongtai-webapi')
 import copy
+from dongtai_conf.settings import ELASTICSEARCH_STATE
 
 def _annotate_by_query(q, value_fields, count_field):
     return (
@@ -151,7 +154,11 @@ class GetAppVulsSummary(UserEndPoint):
                 if ser.validated_data.get("project_version_id", 0):
                     project_version_id = ser.validated_data.get("project_version_id", 0)
 
-            if bind_project_id or project_version_id:
+            if ELASTICSEARCH_STATE:
+                result_summary = get_annotate_data_es(user_id, bind_project_id,
+                                                      project_version_id)
+
+            elif bind_project_id or project_version_id:
                 result_summary = get_annotate_data(
                     user_id, bind_project_id, project_version_id
                 )
@@ -159,6 +166,7 @@ class GetAppVulsSummary(UserEndPoint):
                 # 全局下走缓存
                 result_summary = get_annotate_cache_data(user_id)
         except ValidationError as e:
+            logger.info(e)
             return R.failure(data=e.detail)
 
         return R.success(
@@ -167,24 +175,41 @@ class GetAppVulsSummary(UserEndPoint):
             },
         )
 
+
+def dict_transfrom(dic: dict, key: str):
+    return {i[key]: i for i in dic}
+
 def get_annotate_data_es(user_id, bind_project_id, project_version_id):
     from dongtai_common.models.vulnerablity import IastVulnerabilityDocument
     from elasticsearch_dsl import Q, Search
     from elasticsearch import Elasticsearch
     from elasticsearch_dsl import A
+    from dongtai_common.models.strategy import IastStrategyModel
+    from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
+    from dongtai_common.models.program_language import IastProgramLanguage
+    from dongtai_common.models.project import IastProject
+    from dongtai_common.models.vul_level import IastVulLevel
+
     user_id_list = [user_id]
+    auth_user_info = auth_user_list_str(user_id=user_id)
+    user_id_list = auth_user_info['user_list']
     must_query = [
         Q('terms', user_id=user_id_list),
-        Q('terms', bind_project_id=[bind_project_id]),
-        Q('terms', project_version_id=[project_version_id])
+        Q('terms', is_del=[0]),
+        Q('range', bind_project_id={'gt': 0}),
+        Q('range', strategy_id={'gt': 0}),
     ]
+    if bind_project_id:
+        must_query.append(Q('terms', bind_project_id=[bind_project_id]))
+    if project_version_id:
+        must_query.append(Q('terms', project_version_id=[project_version_id]))
     search = IastVulnerabilityDocument.search().query(Q('bool', must=must_query))[:0]
     buckets = {
-        'level_count': A('terms', field='level_id', size=2147483647),
-        'project_count': A('terms', field='bind_project_id', size=2147483647),
-        "strategy_count": A('terms', field='strategy_id', size=2147483647),
-        'status_count': A('terms', field='status_id', size=2147483647),
-        "language_count": A('terms', field='language.keyword', size=2147483647)
+        'level': A('terms', field='level_id', size=2147483647),
+        'project': A('terms', field='bind_project_id', size=2147483647),
+        "strategy": A('terms', field='strategy_id', size=2147483647),
+        'status': A('terms', field='status_id', size=2147483647),
+        "language": A('terms', field='language.keyword', size=2147483647)
     }
     for k, v in buckets.items():
         search.aggs.bucket(k, v)
@@ -193,13 +218,53 @@ def get_annotate_data_es(user_id, bind_project_id, project_version_id):
         settings.ELASTICSEARCH_DSL['default']['hosts'])).execute()
     dic = {}
     for key in buckets.keys():
-        origin_buckets = res.aggs[key]['buckets']
+        origin_buckets = res.aggs[key].to_dict()['buckets']
         for i in origin_buckets:
             i['id'] = i['key']
-            del ['key']
-        if key == 'strategy_count':
+            del i['key']
+            i['count'] = i['doc_count']
+            del i['doc_count']
+        if key == 'strategy':
             strategy_ids = [i['id'] for i in origin_buckets]
             strategy = IastStrategyModel.objects.filter(
-                pk__in=strategy_ids).all()
-        dic[key] = origin_buckets
-    return dic
+                pk__in=strategy_ids).values('id', 'vul_name').all()
+            strategy_dic = dict_transfrom(strategy, 'id')
+            for i in origin_buckets:
+                i['name'] = strategy_dic[i['id']]['vul_name']
+        if key == 'status':
+            status_ids = [i['id'] for i in origin_buckets]
+            status = IastVulnerabilityStatus.objects.filter(
+                pk__in=status_ids).values('id', 'name').all()
+            status_dic = dict_transfrom(status, 'id')
+            for i in origin_buckets:
+                i['name'] = status_dic[i['id']]['name']
+        if key == 'language':
+            for i in origin_buckets:
+                i['name'] = i['id']
+                del i['id']
+            language_names = [i['name'] for i in origin_buckets]
+            for i in origin_buckets:
+                i['id'] = LANGUAGE_DICT.get(i['name'])
+            for key in LANGUAGE_DICT.keys():
+                if key not in language_names:
+                    origin_buckets.append({
+                        'id': LANGUAGE_DICT[key],
+                        'name': key,
+                        'count': 0
+                    })
+        if key == 'project':
+            project_ids = [i['id'] for i in origin_buckets]
+            project = IastProject.objects.filter(pk__in=project_ids).values(
+                'id', 'name').all()
+            project_dic = dict_transfrom(project, 'id')
+            for i in origin_buckets:
+                i['name'] = project_dic[i['id']]['name']
+        if key == 'level':
+            level_ids = [i['id'] for i in origin_buckets]
+            level = IastVulLevel.objects.filter(pk__in=level_ids).values(
+                'id', 'name_value').all()
+            level_dic = dict_transfrom(level, 'id')
+            for i in origin_buckets:
+                i['name'] = level_dic[i['id']]['name_value']
+        dic[key] = list(origin_buckets)
+    return dict(dic)
