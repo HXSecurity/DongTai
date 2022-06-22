@@ -247,8 +247,8 @@ def get_annotate_data_es(user_id, bind_project_id, project_version_id):
                 if language_key not in language_names:
                     origin_buckets.append({
                         'id': LANGUAGE_DICT[language_key],
-                        'name': key,
-                        'count': 0
+                        'name': language_key,
+                        'num': 0
                     })
         if key == 'project':
             project_ids = [i['id'] for i in origin_buckets]

@@ -183,7 +183,8 @@ def get_annotate_data_es(user_id, bind_project_id=None, project_version_id=None)
                       size=2147483647)
     }
     for k, v in buckets.items():
-        search.aggs.bucket(k, v)
+        search.aggs.bucket(k, v).bucket("distinct_asset_vul",
+                                        A("cardinality", field="asset_vul_id"))
     search.aggs.bucket('poc', A('terms', field='have_poc',
                                 size=2147483647)).bucket(
                                     'article',
@@ -198,7 +199,8 @@ def get_annotate_data_es(user_id, bind_project_id=None, project_version_id=None)
         for i in origin_buckets:
             i['id'] = i['key']
             del i['key']
-            i['num'] = i['doc_count']
+            i['num'] = i['distinct_asset_vul']["value"]
+            del i['distinct_asset_vul']
             del i['doc_count']
         if key == 'language':
             for i in origin_buckets:
@@ -211,8 +213,8 @@ def get_annotate_data_es(user_id, bind_project_id=None, project_version_id=None)
                 if language_key not in language_names:
                     origin_buckets.append({
                         'id': LANGUAGE_DICT[language_key],
-                        'name': key,
-                        'count': 0
+                        'name': language_key,
+                        'num': 0,
                     })
         if key == 'project':
             project_ids = [i['id'] for i in origin_buckets]

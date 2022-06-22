@@ -14,6 +14,7 @@ from dongtai_web.serializers.vul import VulSerializer
 from dongtai_common.models.asset_vul import IastAssetVul,IastVulAssetRelation,IastAssetVulType,IastAssetVulTypeRelation
 from dongtai_common.models import AGGREGATION_ORDER, LANGUAGE_ID_DICT, SHARE_CONFIG_DICT, APP_LEVEL_RISK, LICENSE_RISK, \
     SCA_AVAILABILITY_DICT
+from dongtai_conf.settings import ELASTICSEARCH_STATE
 
 
 logger = logging.getLogger("django")
@@ -45,12 +46,22 @@ class GetAggregationVulList(UserEndPoint):
                 end_num = page * page_size
 
                 keywords = ser.validated_data.get("keywords", "")
+                es_query = {}
                 if keywords:
                     keywords = pymysql.converters.escape_string(keywords)
                     keywords = "+" + keywords
-
+                    es_query['search_keyword'] = ser.validated_data.get("keywords", "")
                 order_type = AGGREGATION_ORDER.get(str(ser.validated_data['order_type']), "vul.level_id")
-                order_type_desc = "desc" if ser.validated_data['order_type_desc'] else "asc"
+                order_type_desc = "desc" if ser.validated_data[
+                    'order_type_desc'] else "asc"
+                es_dict = {
+                    "1": "level_id",
+                    "2": "create_time",
+                    "3": "vul_update_time"
+                }
+                order_type_es = es_dict.get(
+                    str(ser.validated_data['order_type']), "level_id")
+                es_query['order'] = {order_type_es: {"order": order_type_desc}}
                 # 从项目列表进入 绑定项目id
                 if ser.validated_data.get("bind_project_id", 0):
                     query_condition = query_condition + " and asset.project_id={} ".format(str(ser.validated_data.get("bind_project_id")))
@@ -61,6 +72,8 @@ class GetAggregationVulList(UserEndPoint):
                 if ser.validated_data.get("project_id_str", ""):
                     project_str = turnIntListOfStr(ser.validated_data.get("project_id_str", ""),"asset.project_id")
                     query_condition = query_condition + project_str
+                    es_query['project_ids'] = turnIntListOfStr(
+                        ser.validated_data.get("project_id_str"))
                 # 按语言筛选
                 if ser.validated_data.get("language_str", ""):
                     language_str = ser.validated_data.get("language_str", "")
@@ -74,6 +87,11 @@ class GetAggregationVulList(UserEndPoint):
                     type_int_str = ",".join(lang_str)
                     language_str_change = " and {} in ({}) ".format("vul.package_language", type_int_str)
                     query_condition = query_condition + language_str_change
+                    language_id_list = turnIntListOfStr(ser.validated_data.get("language_str", ""))
+                    language_arr = []
+                    for lang in language_id_list:
+                        language_arr.append(LANGUAGE_ID_DICT.get(str(lang)))
+                    es_query['language_ids'] = language_arr
                 # 漏洞类型筛选
                 if ser.validated_data.get("hook_type_id_str", ""):
                     vul_type_str = turnIntListOfStr(ser.validated_data.get("hook_type_id_str", ""), "typeR.asset_vul_type_id")
@@ -83,9 +101,12 @@ class GetAggregationVulList(UserEndPoint):
                 if ser.validated_data.get("level_id_str", ""):
                     status_str = turnIntListOfStr(ser.validated_data.get("level_id_str", ""), "vul.level_id")
                     query_condition = query_condition + status_str
+                    es_query['level_ids'] = turnIntListOfStr(
+                        ser.validated_data.get("level_id_str"))
                 # 可利用性
                 if ser.validated_data.get("availability_str", ""):
                     availability_arr = turnIntListOfStr(ser.validated_data.get("availability_str", ""))
+                    # there is a bug
                     if 3 in availability_arr:
                         query_condition = query_condition + " and vul.have_article=0 and vul.have_poc=0 "
                     else:
@@ -93,6 +114,8 @@ class GetAggregationVulList(UserEndPoint):
                             query_condition = query_condition + " and vul.have_poc=1 "
                         if 2 in availability_arr:
                             query_condition = query_condition + " and vul.have_article=1 "
+                    es_query['availability_ids'] = turnIntListOfStr(
+                        ser.validated_data.get("availability_str"))
 
         except ValidationError as e:
             return R.failure(data=e.detail)
@@ -123,6 +146,12 @@ class GetAggregationVulList(UserEndPoint):
             all_vul = IastAssetVul.objects.raw(query_base + "  order by score desc, %s limit %s,%s;  " % (new_order,  begin_num, end_num),[keywords])
         else:
             all_vul = IastAssetVul.objects.raw(query_base + "  order by %s  limit %s,%s;  " % (new_order, begin_num, end_num))
+        if ELASTICSEARCH_STATE:
+            all_vul = get_vul_list_from_elastic_search(
+                request.user.id,
+                page_size=ser.validated_data['page_size'],
+                page=ser.validated_data['page'],
+                **es_query)
         content_list = []
         if all_vul:
             vul_ids = []
@@ -196,3 +225,144 @@ class GetAggregationVulList(UserEndPoint):
                 "cur_page":page
             }
         }, )
+from elasticsearch_dsl import Q, Search
+from elasticsearch import Elasticsearch
+from elasticsearch_dsl import A
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
+from dongtai_common.models.program_language import IastProgramLanguage
+from dongtai_common.models.project import IastProject
+from dongtai_common.models.vul_level import IastVulLevel
+from django.core.cache import cache
+from dongtai_conf import settings
+from dongtai_common.common.utils import make_hash
+from dongtai_conf.settings import ELASTICSEARCH_STATE
+from dongtai_common.models.asset_vul import IastAssetVulnerabilityDocument
+
+def get_vul_list_from_elastic_search(user_id,
+                                     project_ids=[],
+                                     project_version_ids=[],
+                                     level_ids=[],
+                                     strategy_ids=[],
+                                     language_ids=[],
+                                     availability_ids=[],
+                                     search_keyword="",
+                                     page=1,
+                                     page_size=10,
+                                     bind_project_id=0,
+                                     project_version_id=0,
+                                     order={}):
+    user_id_list = [user_id]
+    auth_user_info = auth_user_list_str(user_id=user_id)
+    user_id_list = auth_user_info['user_list']
+    must_query = [
+        Q('terms', asset_user_id=user_id_list),
+        Q('terms', asset_vul_relation_is_del=[0]),
+        Q('range', asset_project_id={'gt': 0}),
+    ]
+    order_list = [
+        'update_time', '-asset_vul_relation_id',"asset_vul_id"
+    ]
+    if order:
+        order_list.insert(0, order)
+    if bind_project_id:
+        must_query.append(Q('terms', asset_project_id=[bind_project_id]))
+    if project_version_id:
+        must_query.append(Q('terms', asset_project_version_id=[project_version_id]))
+    if project_ids:
+        must_query.append(Q('terms', asset_project_id=project_ids))
+    if project_version_ids:
+        must_query.append(Q('terms', asset_project_version_id=project_version_ids))
+    if level_ids:
+        must_query.append(Q('terms', level_id=level_ids))
+    if language_ids:
+        must_query.append(
+            Q('terms', **{"package_language.keyword": language_ids}))
+    if availability_ids:
+        sub_bool_query = []
+        for availability in availability_ids:
+            if availability == 3:
+                sub_bool_query.append(Q('terms', have_article=[0]))
+                sub_bool_query.append(Q('terms', have_poc=[0]))
+            elif availability == 1:
+                sub_bool_query.append(Q('terms', have_poc=[1]))
+            elif availability == 2:
+                sub_bool_query.append(Q('terms', have_article=[1]))
+        must_query.append(Q('bool', should=sub_bool_query))
+
+    if search_keyword:
+        must_query.append(
+            Q('multi_match',
+              query=search_keyword,
+              fields=["vul_name", "vul_serial", "aql"]))
+    hashkey = make_hash([
+        user_id, project_ids, project_version_ids,  level_ids,
+        language_ids, search_keyword, page_size, bind_project_id,
+        project_version_id
+    ])
+    if page == 1:
+        cache.delete(hashkey)
+    after_table = cache.get(hashkey, {})
+    after_key = after_table.get(page, None)
+    extra_dict = {}
+    if after_key:
+        sub_after_must_query = []
+        sub_after_should_query = []
+        for info,value in zip(order_list,after_key):
+            field = ''
+            opt = ''
+            if isinstance(info,dict):
+                field = list(info.keys())[0]
+                if info[field]['order'] == 'desc':
+                    opt = 'lt'
+                else:
+                    opt = 'gt'
+            if isinstance(info,str):
+                if info.startswith('-'):
+                    field = info[1::]
+                    opt = 'lt' 
+                else:
+                    field = info
+                    opt = 'gt'
+            if info == "asset_vul_id":
+                sub_after_must_query.append(Q('range', **{field:{opt:value}}))
+            else:
+                sub_after_should_query.append(
+                    Q('range', **{field: {
+                        opt: value
+                    }}))
+        must_query.append(
+            Q('bool', must=sub_after_must_query,
+              should=sub_after_should_query,minimum_should_match=1))
+        #extra_dict['search_after'] = after_key
+    a = Q('bool',
+          must=must_query)
+    res = IastAssetVulnerabilityDocument.search().query(a).extra(
+        collapse={
+            "field": "asset_vul_id"
+        }).extra(**extra_dict).sort(*order_list)[:page_size].using(
+            Elasticsearch(settings.ELASTICSEARCH_DSL['default']['hosts']))
+    resp = res.execute()
+    vuls = [i._d_ for i in list(resp)]
+    if resp.hits:
+        afterkey = resp.hits[-1].meta['sort']
+        after_table[page + 1] = afterkey
+        cache.set(hashkey, after_table)
+    keymaps = {"asset_vul_id": "id"}
+    for i in vuls:
+        for k, v in keymaps.items():
+            i[v] = i[k]
+            del i[k]
+    from collections import namedtuple
+    import json
+    namedtuple_vuls = []
+    if vuls:
+        keys = filter(lambda x:x != '@timestamp',vuls[0].keys())
+        AssetVul = namedtuple('AssetVul', keys)
+        for i in vuls:
+            i['vul_cve_nums'] = json.loads(i['vul_cve_nums'])
+            del i['@timestamp']
+            i['id'] = i['id'][0]
+            asset_vul = AssetVul(**i)
+            namedtuple_vuls.append(asset_vul)
+    return namedtuple_vuls
