@@ -96,7 +96,7 @@ class GetAppVulsList(UserEndPoint):
                     for lang in language_id_list:
                         language_arr.append(LANGUAGE_ID_DICT.get(str(lang)))
                     queryset = queryset.filter(agent__language__in=language_arr)
-                    es_query['language_ids'] = language_id_list
+                    es_query['language_ids'] = language_arr
                 order_list = []
                 fields = ["id", "uri","http_method","top_stack","bottom_stack","level_id",
                             "taint_position","status_id","first_time","latest_time", "strategy__vul_name","agent__language",
@@ -194,13 +194,13 @@ def get_vul_list_from_elastic_search(user_id,
     if status_ids:
         must_query.append(Q('terms', status_id=status_ids))
     if language_ids:
-        must_query.append(Q('terms', language_id=language_ids))
+        must_query.append(Q('terms', **{"language.keyword": language_ids}))
     if strategy_ids:
         must_query.append(Q('terms', strategy_id=strategy_ids))
     if search_keyword:
         must_query.append(
             Q('multi_match',
-              query="命令执行",
+              query=search_keyword,
               fields=[
                   "search_keywords", "uri", "vul_title", "http_protocol",
                   "top_stack", "bottom_stack"
