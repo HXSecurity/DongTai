@@ -115,6 +115,9 @@ class GetAppVulsList(UserEndPoint):
         status_obj = {}
         for tmp_status in status:
             status_obj[tmp_status.id] = tmp_status.name
+        for i in end['data']:
+            i['status__name'] = status_obj.get(i['status_id'], "")
+
 
         return R.success(data={
             'messages': end['data'],
