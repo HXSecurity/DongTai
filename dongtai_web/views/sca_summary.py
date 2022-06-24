@@ -165,9 +165,9 @@ class ScaSummary(UserEndPoint):
         request_data = request.data
 
         auth_user_ids = [str(_i.id) for _i in auth_users]
-        base_query_sql = " LEFT JOIN iast_asset ON iast_asset.signature_value = iast_asset_aggr.signature_value WHERE iast_asset.user_id in %s and iast_asset.is_del=0 "
+        base_query_sql = " LEFT JOIN iast_asset_aggr ON iast_asset.signature_value = iast_asset_aggr.signature_value WHERE iast_asset.user_id in %s and iast_asset.is_del=0 "
         sql_params = [auth_user_ids]
-        asset_aggr_where = " and iast_asset_aggr.is_del=0 "
+        asset_aggr_where = " and iast_asset.is_del=0 "
         package_kw = request_data.get('keyword', "")
         es_query = {}
         if package_kw:
@@ -176,7 +176,7 @@ class ScaSummary(UserEndPoint):
 
         if package_kw and package_kw.strip() != '':
             package_kw = '%%{}%%'.format(package_kw)
-            asset_aggr_where = asset_aggr_where + " and iast_asset_aggr.package_name like %s"
+            asset_aggr_where = asset_aggr_where + " and iast_asset.package_name like %s"
             sql_params.append(package_kw)
         project_id = request_data.get('project_id', None)
         if project_id and project_id != '':
@@ -192,10 +192,10 @@ class ScaSummary(UserEndPoint):
             es_query["bind_project_id"] = project_id
             es_query["project_version_id"] = current_project_version.get("version_id", 0)
 
-        #if ELASTICSEARCH_STATE:
-        #    resp = get_vul_list_from_elastic_search(request.user.id,
-        #                                            **es_query)
-        #    return R.success(data=resp)
+        if ELASTICSEARCH_STATE:
+            resp = get_vul_list_from_elastic_search(request.user.id,
+                                                    **es_query)
+            return R.success(data=resp)
 
         levelInfo = IastVulLevel.objects.filter(id__lt=5).all()
         levelNameArr = {}
@@ -209,15 +209,13 @@ class ScaSummary(UserEndPoint):
 
         _temp_data = dict()
         # 漏洞等级汇总
-        level_summary_sql = "SELECT iast_asset_aggr.level_id,count(DISTINCT(iast_asset_aggr.id)) as total FROM iast_asset_aggr {base_query_sql} {where_sql} GROUP BY iast_asset_aggr.level_id "
+        level_summary_sql = "SELECT iast_asset.level_id,count(DISTINCT(iast_asset.signature_value)) as total FROM iast_asset {base_query_sql} {where_sql} GROUP BY iast_asset.level_id "
         level_summary_sql = level_summary_sql.format(base_query_sql=base_query_sql, where_sql=asset_aggr_where)
 
         with connection.cursor() as cursor:
             cursor.execute(level_summary_sql, sql_params)
-            print(cursor._executed)
             level_summary = cursor.fetchall()
             if level_summary:
-                import pdb;pdb.set_trace()
                 for item in level_summary:
                     level_id, total = item
                     _temp_data[levelIdArr[level_id]] = total
@@ -228,12 +226,11 @@ class ScaSummary(UserEndPoint):
         } for _key, _value in DEFAULT_LEVEL.items()]
 
         default_language = initlanguage()
-        language_summary_sql = "SELECT iast_asset_aggr.language,count(DISTINCT(iast_asset_aggr.id)) as total FROM iast_asset_aggr {base_query_sql} {where_sql} GROUP BY iast_asset_aggr.language "
+        language_summary_sql = "SELECT iast_asset.language,count(DISTINCT(iast_asset.signature_value)) as total FROM iast_asset {base_query_sql} {where_sql} GROUP BY iast_asset.language "
         language_summary_sql = language_summary_sql.format(base_query_sql=base_query_sql, where_sql=asset_aggr_where)
 
         with connection.cursor() as cursor:
             cursor.execute(language_summary_sql, sql_params)
-            print(cursor._executed)
             language_summary = cursor.fetchall()
             if language_summary:
                 for _l in language_summary:
