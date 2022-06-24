@@ -63,3 +63,16 @@ class Asset(models.Model):
     class Meta:
         managed = get_managed()
         db_table = 'iast_asset'
+
+from django_elasticsearch_dsl import Document
+from django_elasticsearch_dsl.registries import registry
+
+
+@registry.register_document
+class IastAssetDocument(Document):
+
+    class Index:
+        name = 'alias-dongtai-v1-asset-dev'
+
+    class Django:
+        model = Asset

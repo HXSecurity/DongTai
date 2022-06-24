@@ -168,7 +168,7 @@ class ScaList(UserEndPoint):
         query_start = (page - 1) * page_size
 
         auth_user_ids = [str(_i.id) for _i in auth_users]
-        base_query_sql = " LEFT JOIN iast_asset ON iast_asset.signature_value = iast_asset_aggr.signature_value WHERE iast_asset.dependency_level>0 and iast_asset.user_id in %s and iast_asset.is_del=0 "
+        base_query_sql = " LEFT JOIN iast_asset ON iast_asset.signature_value = iast_asset_aggr.signature_value WHERE  iast_asset.user_id in %s and iast_asset.is_del=0 "
         list_sql_params = [auth_user_ids]
         count_sql_params = [auth_user_ids]
 
@@ -190,7 +190,7 @@ class ScaList(UserEndPoint):
             list_sql_params.append(project_version_id)
             count_sql_params.append(project_version_id)
         total_count_sql = "SELECT count(distinct(iast_asset_aggr.id)) as alltotal FROM iast_asset_aggr {base_query_sql} {where_sql} limit 1 "
-        list_query_sql = "SELECT iast_asset_aggr.id FROM iast_asset_aggr {base_query_sql} {where_sql} GROUP BY iast_asset_aggr.id {order_sql} {page_sql} "
+        list_query_sql = "SELECT iast_asset_aggr.signature_value FROM iast_asset_aggr {base_query_sql} {where_sql} GROUP BY iast_asset_aggr.id {order_sql} {page_sql} "
 
         language = request_data.get('language', None)
         if language:
@@ -287,7 +287,7 @@ from dongtai_common.models.asset_aggr import AssetAggrDocument
 
 def get_vul_list_from_elastic_search(sca_ids=[], order=None):
     must_query = [
-        Q('terms', **{"id": sca_ids}),
+        Q('terms', **{"signature_value": sca_ids}),
     ]
     a = Q('bool',
           must=must_query)
