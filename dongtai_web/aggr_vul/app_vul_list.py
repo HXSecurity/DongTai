@@ -172,11 +172,15 @@ def get_vul_list_from_elastic_search(user_id,
     user_id_list = [user_id]
     auth_user_info = auth_user_list_str(user_id=user_id)
     user_id_list = auth_user_info['user_list']
+    from dongtai_common.models.strategy import IastStrategyModel
+    strategy_ids = list(IastStrategyModel.objects.all().values_list('id',
+                                                                    flat=True))
     must_query = [
         Q('terms', user_id=user_id_list),
         Q('terms', is_del=[0]),
         Q('range', bind_project_id={'gt': 0}),
-        Q('range', strategy_id={'gt': 0})
+        Q('range', strategy_id={'gt': 0}),
+        Q('terms', strategy_id=strategy_ids),
     ]
     order_list = ['_score', 'level_id', '-latest_time', '-id']
     if order:

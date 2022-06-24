@@ -154,7 +154,7 @@ class GetAppVulsSummary(UserEndPoint):
                 if ser.validated_data.get("project_version_id", 0):
                     project_version_id = ser.validated_data.get("project_version_id", 0)
 
-            if ELASTICSEARCH_STATE:
+            if  ELASTICSEARCH_STATE:
                 result_summary = get_annotate_data_es(user_id, bind_project_id,
                                                       project_version_id)
 
@@ -191,11 +191,15 @@ def get_annotate_data_es(user_id, bind_project_id, project_version_id):
     user_id_list = [user_id]
     auth_user_info = auth_user_list_str(user_id=user_id)
     user_id_list = auth_user_info['user_list']
+    strategy_ids = list(IastStrategyModel.objects.all().values_list('id',
+                                                                    flat=True))
     must_query = [
         Q('terms', user_id=user_id_list),
         Q('terms', is_del=[0]),
+        Q('terms', is_del=[0]),
         Q('range', bind_project_id={'gt': 0}),
         Q('range', strategy_id={'gt': 0}),
+        Q('terms', strategy_id=strategy_ids),
     ]
     if bind_project_id:
         must_query.append(Q('terms', bind_project_id=[bind_project_id]))
