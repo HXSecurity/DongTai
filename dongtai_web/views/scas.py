@@ -249,7 +249,6 @@ class ScaList(UserEndPoint):
                 if list_query:
                     for _l in list_query:
                         sca_ids.append(_l[0])
-
         except Exception as e:
             logger.warning("sca list error:{}".format(e))
 
@@ -259,8 +258,49 @@ class ScaList(UserEndPoint):
             # "order": order,
             # "order_type": order_type
         }
-        query_data = ScaAssetSerializer(
-            AssetAggr.objects.filter(pk__in=sca_ids).order_by(order_by).select_related('level'),
-            many=True).data
+        if ELASTICSEARCH_STATE :
+            query_data = ScaAssetSerializer(get_vul_list_from_elastic_search(
+                sca_ids, order_by),
+                                            many=True).data
+        else:
+            query_data = ScaAssetSerializer(
+                AssetAggr.objects.filter(pk__in=sca_ids).order_by(order_by).select_related('level'),
+                many=True).data
 
         return R.success(data=query_data, page=page_summary)
+
+
+from elasticsearch_dsl import Q, Search
+from elasticsearch import Elasticsearch
+from elasticsearch_dsl import A
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
+from dongtai_common.models.program_language import IastProgramLanguage
+from dongtai_common.models.project import IastProject
+from dongtai_common.models.vul_level import IastVulLevel
+from django.core.cache import cache
+from dongtai_conf import settings
+from dongtai_common.common.utils import make_hash
+from dongtai_conf.settings import ELASTICSEARCH_STATE
+from dongtai_common.models.asset_aggr import AssetAggrDocument
+
+
+def get_vul_list_from_elastic_search(sca_ids=[], order=None):
+    must_query = [
+        Q('terms', **{"id": sca_ids}),
+    ]
+    a = Q('bool',
+          must=must_query)
+    extra_dict = {}
+    order_list = []
+    if order:
+        order_list.insert(0, order)
+    res = AssetAggrDocument.search().query(a).extra(
+        **extra_dict).sort(*order_list)[:len(sca_ids)].using(
+            Elasticsearch(settings.ELASTICSEARCH_DSL['default']['hosts']))
+    resp = res.execute()
+    vuls = [i._d_ for i in list(resp)]
+    for i in vuls:
+        del i['@timestamp']
+    res_vul = [AssetAggr(**i) for i in vuls]
+    return res_vul

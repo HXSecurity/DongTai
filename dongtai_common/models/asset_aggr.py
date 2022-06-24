@@ -30,3 +30,17 @@ class AssetAggr(models.Model):
     class Meta:
         managed = get_managed()
         db_table = 'iast_asset_aggr'
+
+
+from django_elasticsearch_dsl import Document
+from django_elasticsearch_dsl.registries import registry
+
+
+@registry.register_document
+class AssetAggrDocument(Document):
+
+    class Index:
+        name = 'alias-dongtai-v1-asset-aggr-dev'
+
+    class Django:
+        model = AssetAggr
