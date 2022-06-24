@@ -66,13 +66,19 @@ class Asset(models.Model):
 
 from django_elasticsearch_dsl import Document
 from django_elasticsearch_dsl.registries import registry
-
+from dongtai_web.utils import get_model_field 
+from django.db.models.fields.related import ForeignKey
 
 @registry.register_document
 class IastAssetDocument(Document):
+
+    def generate_id(self, object_instance):
+        return object_instance.id
+    
 
     class Index:
         name = 'alias-dongtai-v1-asset-dev'
 
     class Django:
         model = Asset
+        fields = [i.name for i in filter(lambda x: not isinstance(x,ForeignKey), Asset._meta.fields)]

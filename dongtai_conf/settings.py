@@ -67,7 +67,8 @@ INSTALLED_APPS = [
     'captcha',
     'modeltranslation',
     'django_celery_beat',
-    'deploy.commands'
+    'deploy.commands',
+    'django_elasticsearch_dsl',
 ]
 DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 def get_installed_apps():
@@ -601,3 +602,9 @@ if ELASTICSEARCH_STATE:
             'hosts': config.get('elastic_search', 'host')
         },
     }
+else:
+    ELASTICSEARCH_DSL = {
+        'default': {
+        },
+    }
+

@@ -61,38 +61,43 @@ class MethodPool(models.Model):
 
 from django_elasticsearch_dsl import Document
 from django_elasticsearch_dsl.registries import registry
+from django_elasticsearch_dsl import Document, fields
 
 
 @registry.register_document
 class MethodPoolDocument(Document):
+    user_id = fields.IntegerField(attr="agent.user_id") 
+    bind_project_id = fields.IntegerField(attr="agent.bind_project_id") 
+    project_version_id = fields.IntegerField(attr="agent.project_version_id") 
+    req_header_for_search = fields.TextField(attr="req_header_fs")
+    language = fields.TextField(attr="agent.language")
+    agent_id = fields.TextField(attr="agent_id")
 
+    def generate_id(self, object_instance):
+        return object_instance.id
     class Index:
         name = 'alias-dongtai-v1-method-pool-dev'
 
     class Django:
         model = MethodPool
 
-    # fields = [
-    #     'res_header',
-    #     'uri_sha1',
-    #     'url',
-    #     'update_time',
-    #     'res_header',
-    #     'res_body',
-    #     'req_params',
-    #     'req_header_for_search',
-    #     'req_header',
-    #     'req_data',
-    #     'pool_sign',
-    #     'method_pool',
-    #     'language',
-    #     'id',
-    #     'http_scheme',
-    #     'http_protocol',
-    #     'http_method',
-    #     'create_time',
-    #     'context_path',
-    #     'clent_ip',
-    #     'agent_id',  #'user_id','bind_project_id','project_version_id',
-    # ]
+        fields = [
+            'res_header',
+            'uri_sha1',
+            'url',
+            'update_time',
+            'res_body',
+            'req_params',
+            'req_header',
+            'req_data',
+            'pool_sign',
+            'method_pool',
+            'id',
+            'http_scheme',
+            'http_protocol',
+            'http_method',
+            'create_time',
+            'context_path',
+            'clent_ip',
+        ]
 
