@@ -302,19 +302,19 @@ class AgentThresholdConfigV2(TalentAdminEndPoint, viewsets.ViewSet):
         return R.success(data=obj)
 
     def list(self, request):
-        page = request.query_params.get('page', 1)
-        page_size = request.query_params.get("page_size", 10)
+        #        page = request.query_params.get('page', 1)
+        #        page_size = request.query_params.get("page_size", 10)
         queryset = IastCircuitConfig.objects.filter(
             is_deleted=0).order_by('priority').prefetch_related(
                 'iastcircuittarget_set', 'iastcircuitmetric_set').all()
-        page_summary, page_data = self.get_paginator(queryset, page, page_size)
+        #page_summary, page_data = self.get_paginator(queryset, page, page_size)
         obj_list = []
-        for data in page_data:
+        for data in queryset:
             obj = model_to_dict(data)
             obj['targets'] = list(data.iastcircuittarget_set.values().all())
             obj['metrics'] = list(data.iastcircuitmetric_set.values().all())
             obj_list.append(obj)
-        return R.success(page=page_summary, data=obj_list)
+        return R.success(data=obj_list)
 
     def update(self, request, pk):
         ser = AgentConfigSettingV2Serializer(data=request.data)
