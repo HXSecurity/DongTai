@@ -214,6 +214,11 @@ class SaasMethodPoolHandler(IReportHandler):
             'create_time': timestamp,
             'update_time': timestamp,
             'uri_sha1': self.sha1(self.http_uri),
+            'user_id': self.agent.user_id,
+            'bind_project_id': self.agent.bind_project_id,
+            'project_version_id': self.agent.project_version_id,
+            'language': self.agent.language,
+            'agent_id': self.agent.id,
         }
         return json.dumps(pool)
 

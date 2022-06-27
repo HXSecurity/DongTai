@@ -296,11 +296,11 @@ def get_vul_list_from_elastic_search(sca_ids=[], order=None):
     if order:
         order_list.insert(0, order)
     res = AssetAggrDocument.search().query(a).extra(
-        **extra_dict).sort(*order_list)[:len(sca_ids)].using(
-            Elasticsearch(settings.ELASTICSEARCH_DSL['default']['hosts']))
+        **extra_dict).sort(*order_list)[:len(sca_ids)]
     resp = res.execute()
     vuls = [i._d_ for i in list(resp)]
     for i in vuls:
-        del i['@timestamp']
+        if '@timestamp' in i.keys():
+            del i['@timestamp']
     res_vul = [AssetAggr(**i) for i in vuls]
     return res_vul
