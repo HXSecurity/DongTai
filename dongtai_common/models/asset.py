@@ -66,19 +66,38 @@ class Asset(models.Model):
 
 from django_elasticsearch_dsl import Document
 from django_elasticsearch_dsl.registries import registry
-from dongtai_web.utils import get_model_field 
+from dongtai_web.utils import get_model_field
 from django.db.models.fields.related import ForeignKey
+from django_elasticsearch_dsl import Document, fields
+
 
 @registry.register_document
 class IastAssetDocument(Document):
+    user_id = fields.IntegerField(attr="user_id")
+    agent_id = fields.IntegerField(attr="agent_id")
+    level_id = fields.IntegerField(attr="level_id")
+    project_id = fields.IntegerField(attr="project_id")
+    project_version_id = fields.IntegerField(
+        attr="project_version_id")
+    department_id = fields.IntegerField(attr="department_id")
+    talent_id = fields.IntegerField(attr="talent_id")
 
     def generate_id(self, object_instance):
         return object_instance.id
-    
+
 
     class Index:
         name = 'alias-dongtai-v1-asset-dev'
 
     class Django:
         model = Asset
-        fields = [i.name for i in filter(lambda x: not isinstance(x,ForeignKey), Asset._meta.fields)]
+        fields = [
+            'id', 'package_name', 'package_path', 'signature_algorithm',
+            'signature_value', 'dt', 'version', 'safe_version', 'last_version',
+            'vul_count', 'vul_critical_count', 'vul_high_count',
+            'vul_medium_count', 'vul_low_count', 'vul_info_count',
+            'project_name', 'language', 'license', 'dependency_level',
+            'parent_dependency_id', 'is_del'
+        ]
+
+        ignore_signals = False

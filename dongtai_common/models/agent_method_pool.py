@@ -66,15 +66,18 @@ from django_elasticsearch_dsl import Document, fields
 
 @registry.register_document
 class MethodPoolDocument(Document):
-    user_id = fields.IntegerField(attr="agent.user_id") 
-    bind_project_id = fields.IntegerField(attr="agent.bind_project_id") 
-    project_version_id = fields.IntegerField(attr="agent.project_version_id") 
+    user_id = fields.IntegerField(attr="agent.user_id")
+    bind_project_id = fields.IntegerField(attr="agent.bind_project_id")
+    project_version_id = fields.IntegerField(attr="agent.project_version_id")
     req_header_for_search = fields.TextField(attr="req_header_fs")
     language = fields.TextField(attr="agent.language")
     agent_id = fields.TextField(attr="agent_id")
 
     def generate_id(self, object_instance):
-        return object_instance.id
+        return '-'.join(
+            [str(object_instance.agent_id),
+             str(object_instance.pool_sign)])
+
     class Index:
         name = 'alias-dongtai-v1-method-pool-dev'
 
@@ -101,3 +104,4 @@ class MethodPoolDocument(Document):
             'clent_ip',
         ]
 
+        ignore_signals = False
