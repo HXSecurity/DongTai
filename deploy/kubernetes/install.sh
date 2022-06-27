@@ -131,9 +131,13 @@ deploy(){
         "4.deploy-iast-server.yml")
             WEB_TAG=$(get_latest_image_tag_from_dockerhub dongtai-web)
             SERVER_TAG=$(get_latest_image_tag_from_dockerhub dongtai-server)
+            LOGSTASH_TAG=$(get_latest_image_tag_from_dockerhub dongtai-logstash)
+            LOGROTATE_TAG=$(get_latest_image_tag_from_dockerhub dongtai-logrotate)
             sed -i "" "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
             sed -i "" "s/dongtai-web:CHANGE_THIS_VERSION/dongtai-web:$WEB_TAG/g" "$NEW_FILENAME" >/dev/null
             sed -i "" "s/dongtai-server:CHANGE_THIS_VERSION/dongtai-server:$SERVER_TAG/g" "$NEW_FILENAME" >/dev/null
+            sed -i "" "s/dongtai-logstash:CHANGE_THIS_VERSION/dongtai-server:$LOGSTASH_TAG/g" "$NEW_FILENAME" >/dev/null
+            sed -i "" "s/dongtai-logrotate:CHANGE_THIS_VERSION/dongtai-server:$LOGROTATE_TAG/g" "$NEW_FILENAME" >/dev/null
             ;;
         *)
               sed -i "" "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
@@ -151,9 +155,13 @@ deploy(){
         "4.deploy-iast-server.yml")
             WEB_TAG=$(get_latest_image_tag_from_dockerhub dongtai-web)
             SERVER_TAG=$(get_latest_image_tag_from_dockerhub dongtai-server)
+            LOGSTASH_TAG=$(get_latest_image_tag_from_dockerhub dongtai-logstash)
+            LOGROTATE_TAG=$(get_latest_image_tag_from_dockerhub dongtai-logrotate)
             sed -i "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
             sed -i "s/dongtai-web:CHANGE_THIS_VERSION/dongtai-web:$WEB_TAG/g" "$NEW_FILENAME" >/dev/null
             sed -i "s/dongtai-server:CHANGE_THIS_VERSION/dongtai-server:$SERVER_TAG/g" "$NEW_FILENAME" >/dev/null
+            sed -i "" "s/dongtai-logstash:CHANGE_THIS_VERSION/dongtai-server:$LOGSTASH_TAG/g" "$NEW_FILENAME" >/dev/null
+            sed -i "" "s/dongtai-logrotate:CHANGE_THIS_VERSION/dongtai-server:$LOGROTATE_TAG/g" "$NEW_FILENAME" >/dev/null
             ;;
         *)
             sed -i  "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
