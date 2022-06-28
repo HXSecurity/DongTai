@@ -16,7 +16,6 @@ from dongtai_common.models import AGGREGATION_ORDER, LANGUAGE_ID_DICT, SHARE_CON
     SCA_AVAILABILITY_DICT
 from dongtai_conf.settings import ELASTICSEARCH_STATE
 
-
 logger = logging.getLogger("django")
 
 
@@ -123,14 +122,14 @@ class GetAggregationVulList(UserEndPoint):
         query_condition = query_condition + user_auth_info.get("user_condition_str")
 
         if keywords:
-            query_base = "SELECT DISTINCT(vul.id),vul.*,rel.create_time, " \
+            query_base = "SELECT DISTINCT(vul.id),vul.*, " \
                 " MATCH( `vul`.`vul_name`,`vul`.`aql`,`vul`.`vul_serial` ) AGAINST ( %s IN NATURAL LANGUAGE MODE ) AS `score`" \
                 "  from  iast_asset_vul_relation as rel   " \
                 "left JOIN iast_asset_vul as vul on rel.asset_vul_id=vul.id  " \
                 "left JOIN iast_asset as asset on rel.asset_id=asset.id  " + join_table + query_condition
 
         else:
-            query_base = "SELECT DISTINCT(vul.id),vul.*,rel.create_time from  iast_asset_vul_relation as rel   " \
+            query_base = "SELECT DISTINCT(vul.id),vul.* from  iast_asset_vul_relation as rel   " \
                         "left JOIN iast_asset_vul as vul on rel.asset_vul_id=vul.id  " \
                         "left JOIN iast_asset as asset on rel.asset_id=asset.id  " + join_table + query_condition
 
@@ -153,6 +152,7 @@ class GetAggregationVulList(UserEndPoint):
                 page=ser.validated_data['page'],
                 **es_query)
         content_list = []
+
         if all_vul:
             vul_ids = []
             # print(all_vul.query.__str__())
@@ -177,7 +177,7 @@ class GetAggregationVulList(UserEndPoint):
                     "license_level": item.license_level,
                     "license_risk_name": LICENSE_RISK.get(str(item.license_level),"") ,
                     "vul_cve_nums": item.vul_cve_nums,
-                    "package_name": item.aql,
+                    "package_name": item.package_name,
                     "package_safe_version": item.package_safe_version,
                     "package_latest_version": item.package_latest_version,
                     "package_language": item.package_language,
