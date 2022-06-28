@@ -125,8 +125,8 @@ class IastAssetVulnerabilityDocument(Document):
     # from asset
     asset_user_id = fields.IntegerField(attr="asset.user_id")
     asset_agent_id = fields.IntegerField(attr="asset.agent_id")
-    project_id = fields.IntegerField(attr="asset.project_id")
-    project_version_id = fields.IntegerField(attr="asset.project_version_id")
+    asset_project_id = fields.IntegerField(attr="asset.project_id")
+    asset_project_version_id = fields.IntegerField(attr="asset.project_version_id")
 
     def prepare_vul_cve_nums(self, instance):
         import json
