@@ -290,9 +290,9 @@ def get_vul_list_from_elastic_search(user_id,
         Q('terms', is_del=[0]),
     ]
     if bind_project_id:
-        must_query.append(Q('terms', asset_project_id=[bind_project_id]))
+        must_query.append(Q('terms', project_id=[bind_project_id]))
     if project_version_id:
-        must_query.append(Q('terms', asset_project_version_id=[project_version_id]))
+        must_query.append(Q('terms', project_version_id=[project_version_id]))
     if search_keyword:
         must_query.append(
             Q("wildcard",
