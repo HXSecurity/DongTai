@@ -370,6 +370,7 @@ def search_generate(search_fields, time_range, user_ids, search_after_fields, fi
     from elasticsearch_dsl import Q, Search
     from elasticsearch import Elasticsearch
     from dongtai_common.models.agent_method_pool import MethodPoolDocument
+    from copy import deepcopy
     start_time, end_time = time_range
     must_query = [
         Q('range', update_time={
@@ -379,6 +380,11 @@ def search_generate(search_fields, time_range, user_ids, search_after_fields, fi
     ]
     must_not_query = [Q('terms', ids=filter_ids)]
     should_query = []
+    search_fields = dict(search_fields)
+    if 'req_header_fs' in search_fields.keys():
+        search_fields['req_header_for_search'] = search_fields['req_header_fs']
+        del search_fields['req_header_fs']
+    search_fields = [(k, v) for k, v in dict(search_fields).items()]
     if search_mode == 1:
         should_query = [
             Q('match', **(dict([search_field]))) for search_field in search_fields
