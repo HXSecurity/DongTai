@@ -174,6 +174,7 @@ def get_vul_list_from_elastic_search(user_id,
     auth_user_info = auth_user_list_str(user_id=user_id)
     user_id_list = auth_user_info['user_list']
     from dongtai_common.models.strategy import IastStrategyModel
+    from dongtai_common.models.agent import IastAgent
     must_query = [
         Q('terms', user_id=user_id_list),
         Q('terms', is_del=[0]),
@@ -234,7 +235,18 @@ def get_vul_list_from_elastic_search(user_id,
     extra_data_dic = {ex_data['id']: ex_data for ex_data in extra_datas}
     vuls = [i._d_ for i in list(resp)]
     for vul in vuls:
-        vul.update(extra_data_dic[vul['id']])
+        if vul['id'] not in extra_data_dic:
+            strategy_dic = IastStrategyModel.objects.filter(
+                pk=vul['strategy_id']).values('vul_name').first()
+            agent_dic = IastAgent.objects.filter(pk=vul['agent_id']).values(
+                'language', 'project_name', 'server__container',
+                'bind_project_id', 'id').first()
+            for k, v in strategy_dic.items():
+                vul['strategy__' + k] = v
+            for k, v in agent_dic.items():
+                vul['agent__' + k] = v
+        else:
+            vul.update(extra_data_dic[vul['id']])
     if resp.hits:
         afterkey = resp.hits[-1].meta['sort']
         after_table[page + 1] = afterkey
