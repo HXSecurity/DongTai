@@ -62,6 +62,7 @@ class MethodPool(models.Model):
 from django_elasticsearch_dsl import Document
 from django_elasticsearch_dsl.registries import registry
 from django_elasticsearch_dsl import Document, fields
+from dongtai_conf.settings import METHOD_POOL_INDEX 
 
 
 @registry.register_document
@@ -79,7 +80,7 @@ class MethodPoolDocument(Document):
              str(object_instance.pool_sign)])
 
     class Index:
-        name = 'alias-dongtai-v1-method-pool-dev'
+        name = METHOD_POOL_INDEX
 
     class Django:
         model = MethodPool
