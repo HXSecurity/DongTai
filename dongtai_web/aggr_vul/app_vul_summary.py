@@ -269,5 +269,6 @@ def get_annotate_data_es(user_id, bind_project_id, project_version_id):
             level_dic = dict_transfrom(level, 'id')
             for i in origin_buckets:
                 i['name'] = level_dic[i['id']]['name_value']
+            origin_buckets = sorted(origin_buckets, key=lambda x: x['id'])
         dic[key] = list(origin_buckets)
     return dict(dic)
