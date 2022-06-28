@@ -89,7 +89,7 @@ class IastAssetVulTypeRelation(models.Model):
 from django_elasticsearch_dsl import Document
 from django_elasticsearch_dsl.registries import registry
 from django_elasticsearch_dsl import Document, fields
-
+from dongtai_conf.settings import ASSET_VUL_INDEX 
 
 
 @registry.register_document
@@ -136,7 +136,7 @@ class IastAssetVulnerabilityDocument(Document):
         return object_instance.id
 
     class Index:
-        name = 'alias-dongtai-v1-asset-vul-dev'
+        name = ASSET_VUL_INDEX
 
     class Django:
         model = IastVulAssetRelation

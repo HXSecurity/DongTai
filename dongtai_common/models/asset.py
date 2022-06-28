@@ -69,6 +69,7 @@ from django_elasticsearch_dsl.registries import registry
 from dongtai_web.utils import get_model_field
 from django.db.models.fields.related import ForeignKey
 from django_elasticsearch_dsl import Document, fields
+from dongtai_conf.settings import ASSET_INDEX 
 
 
 @registry.register_document
@@ -87,7 +88,7 @@ class IastAssetDocument(Document):
 
 
     class Index:
-        name = 'alias-dongtai-v1-asset-dev'
+        name = ASSET_INDEX
 
     class Django:
         model = Asset

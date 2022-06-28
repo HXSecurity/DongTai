@@ -80,6 +80,7 @@ class IastVulnerabilityModel(models.Model):
 from django_elasticsearch_dsl import Document
 from django_elasticsearch_dsl.registries import registry
 from django_elasticsearch_dsl import Document, fields
+from dongtai_conf.settings import VULNERABILITY_INDEX 
 
 
 @registry.register_document
@@ -98,7 +99,7 @@ class IastVulnerabilityDocument(Document):
     token = fields.IntegerField(attr="agent.token")
 
     class Index:
-        name = 'alias-dongtai-v1-vulnerability-dev'
+        name = VULNERABILITY_INDEX
 
     class Django:
         model = IastVulnerabilityModel

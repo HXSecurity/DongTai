@@ -35,6 +35,7 @@ class AssetAggr(models.Model):
 from django_elasticsearch_dsl import Document
 from django_elasticsearch_dsl.registries import registry
 from django_elasticsearch_dsl import Document, fields
+from dongtai_conf.settings import ASSET_AGGR_INDEX 
 
 
 @registry.register_document
@@ -42,7 +43,7 @@ class AssetAggrDocument(Document):
     level_id = fields.IntegerField(attr="level_id")
 
     class Index:
-        name = 'alias-dongtai-v1-asset-aggr-dev'
+        name = ASSET_AGGR_INDEX
 
     class Django:
         model = AssetAggr
