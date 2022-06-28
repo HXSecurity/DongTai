@@ -67,7 +67,7 @@ INSTALLED_APPS = [
     'captcha',
     'modeltranslation',
     'django_celery_beat',
-    'deploy.commands'
+    'deploy.commands',
 ]
 DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 def get_installed_apps():
@@ -594,4 +594,26 @@ DEFAULT_CIRCUITCONFIG = {
     }
 }
 
-
+ELASTICSEARCH_STATE = config.get('elastic_search', 'enable') == 'true'
+if ELASTICSEARCH_STATE:
+    INSTALLED_APPS.append('django_elasticsearch_dsl')
+    ELASTICSEARCH_DSL = {
+        'default': {
+            'hosts': config.get('elastic_search', 'host')
+        },
+    }
+    ASSET_VUL_INDEX = config.get('elastic_search', 'asset_vul_index')
+    VULNERABILITY_INDEX = config.get('elastic_search', 'vulnerability_index')
+    ASSET_AGGR_INDEX = config.get('elastic_search', 'asset_aggr_index')
+    METHOD_POOL_INDEX = config.get('elastic_search', 'asset_vul_index')
+    ASSET_INDEX = config.get('elastic_search', 'asset_index')
+else:
+    ELASTICSEARCH_DSL = {
+        'default': {
+        },
+    }
+    ASSET_VUL_INDEX = ''
+    VULNERABILITY_INDEX = ''
+    ASSET_AGGR_INDEX = ''
+    METHOD_POOL_INDEX = ''
+    ASSET_INDEX = ''

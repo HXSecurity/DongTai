@@ -168,7 +168,7 @@ class ScaList(UserEndPoint):
         query_start = (page - 1) * page_size
 
         auth_user_ids = [str(_i.id) for _i in auth_users]
-        base_query_sql = " LEFT JOIN iast_asset ON iast_asset.signature_value = iast_asset_aggr.signature_value WHERE iast_asset.dependency_level>0 and iast_asset.user_id in %s and iast_asset.is_del=0 "
+        base_query_sql = " LEFT JOIN iast_asset ON iast_asset.signature_value = iast_asset_aggr.signature_value WHERE  iast_asset.user_id in %s and iast_asset.is_del=0 "
         list_sql_params = [auth_user_ids]
         count_sql_params = [auth_user_ids]
 
@@ -190,13 +190,16 @@ class ScaList(UserEndPoint):
             list_sql_params.append(project_version_id)
             count_sql_params.append(project_version_id)
         total_count_sql = "SELECT count(distinct(iast_asset_aggr.id)) as alltotal FROM iast_asset_aggr {base_query_sql} {where_sql} limit 1 "
-        list_query_sql = "SELECT iast_asset_aggr.id FROM iast_asset_aggr {base_query_sql} {where_sql} GROUP BY iast_asset_aggr.id {order_sql} {page_sql} "
+        list_query_sql = "SELECT iast_asset_aggr.signature_value FROM iast_asset_aggr {base_query_sql} {where_sql} GROUP BY iast_asset_aggr.id {order_sql} {page_sql} "
 
         language = request_data.get('language', None)
         if language:
             asset_aggr_where = asset_aggr_where + " and iast_asset_aggr.language in %s"
             count_sql_params.append(language)
             list_sql_params.append(language)
+
+        asset_aggr_where, count_sql_params, list_sql_params = self.extend_sql(
+            request_data, asset_aggr_where, count_sql_params, list_sql_params)
 
         level_ids = request_data.get('level_id', None)
         if level_ids:
@@ -249,7 +252,6 @@ class ScaList(UserEndPoint):
                 if list_query:
                     for _l in list_query:
                         sca_ids.append(_l[0])
-
         except Exception as e:
             logger.warning("sca list error:{}".format(e))
 
@@ -259,8 +261,52 @@ class ScaList(UserEndPoint):
             # "order": order,
             # "order_type": order_type
         }
-        query_data = ScaAssetSerializer(
-            AssetAggr.objects.filter(pk__in=sca_ids).order_by(order_by).select_related('level'),
-            many=True).data
+        if ELASTICSEARCH_STATE :
+            query_data = ScaAssetSerializer(get_vul_list_from_elastic_search(
+                sca_ids, order_by),
+                                            many=True).data
+        else:
+            query_data = ScaAssetSerializer(
+                AssetAggr.objects.filter(signature_value__in=sca_ids).order_by(order_by).select_related('level'),
+                many=True).data
 
         return R.success(data=query_data, page=page_summary)
+
+    def extend_sql(self, request_data, asset_aggr_where, count_sql_params,
+                   list_sql_params):
+        return asset_aggr_where, count_sql_params, list_sql_params
+
+from elasticsearch_dsl import Q, Search
+from elasticsearch import Elasticsearch
+from elasticsearch_dsl import A
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
+from dongtai_common.models.program_language import IastProgramLanguage
+from dongtai_common.models.project import IastProject
+from dongtai_common.models.vul_level import IastVulLevel
+from django.core.cache import cache
+from dongtai_conf import settings
+from dongtai_common.common.utils import make_hash
+from dongtai_conf.settings import ELASTICSEARCH_STATE
+from dongtai_common.models.asset_aggr import AssetAggrDocument
+
+
+def get_vul_list_from_elastic_search(sca_ids=[], order=None):
+    must_query = [
+        Q('terms', **{"signature_value": sca_ids}),
+    ]
+    a = Q('bool',
+          must=must_query)
+    extra_dict = {}
+    order_list = []
+    if order:
+        order_list.insert(0, order)
+    res = AssetAggrDocument.search().query(a).extra(
+        **extra_dict).sort(*order_list)[:len(sca_ids)]
+    resp = res.execute()
+    vuls = [i._d_ for i in list(resp)]
+    for i in vuls:
+        if '@timestamp' in i.keys():
+            del i['@timestamp']
+    res_vul = [AssetAggr(**i) for i in vuls]
+    return res_vul

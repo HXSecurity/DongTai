@@ -20,7 +20,7 @@ import time
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import gettext_lazy
-
+from dongtai_conf.settings import ELASTICSEARCH_STATE
 
 class MethodPoolSearchProxySer(serializers.Serializer):
     page_size = serializers.IntegerField(min_value=1,
@@ -163,20 +163,23 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             MethodPool,
             include=model_fields,
         )
-        fields.extend(['sinkvalues', 'signature'])
+        #fields.extend(['sinkvalues', 'signature'])
         search_after_keys = ['update_time']
         exclude_ids = request.data.get('exclude_ids', None)
-        time_range = request.data.get('time_range', None) 
+        time_range = request.data.get('time_range', None)
         try:
             search_mode = int(request.data.get('search_mode', 1))
             if page_size <= 0:
                 return R.failure(gettext_lazy("Parameter error"))
             [start_time,
              end_time] = time_range if time_range is not None and len(
-                 time_range) == 2 and 0 < time_range[1] - time_range[
-                     0] <= 60 * 60 * 24 * 7 else [
+                 time_range) == 2 else [
                          int(time.time()) - 60 * 60 * 24 * 7,
                          int(time.time())
+            # and 0 < time_range[1] - time_range[
+            #         0] <= 60 * 60 * 24 * 7 else [
+            #             int(time.time()) - 60 * 60 * 24 * 7,
+            #             int(time.time())
                      ]
             ids = exclude_ids if isinstance(exclude_ids, list) and all(
                 map(lambda x: isinstance(x, int), exclude_ids)) else []
@@ -186,22 +189,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             filter(lambda k: k[0] in fields, request.data.items()))
         search_fields_ = []
         for k, v in search_fields.items():
-            if k == 'sinkvalues':
-                templates = [
-                    r'"targetValues": ".*{}.*"', r'"sourceValues": ".*{}.*"'
-                ]
-                search_fields_.extend(
-                    map(lambda x: ('method_pool', x.format(v)), templates))
-            elif k == 'signature':
-                templates = [r'"signature": ".*{}.*"']
-                search_fields_.extend(
-                    map(lambda x: ('method_pool', x.format(v)), templates))
-            elif k in fields:
-                search_fields_.append((k, v))
-        if search_mode == 1:
-            q = assemble_query(search_fields_, 'regex', Q(), operator.or_)
-        elif search_mode == 2:
-            q = assemble_query_2(search_fields_, 'regex', Q(), operator.and_)
+            search_fields_.append((k, v))
         search_after_fields = list(
             filter(
                 lambda x: x[0] in search_after_keys,
@@ -209,24 +197,66 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     lambda x: (x[0].replace('search_after_', ''), x[1]),
                     filter(lambda x: x[0].startswith('search_after_'),
                            request.data.items()))))
-        q = q if 'q' in vars() else Q()
-        q = assemble_query(search_after_fields, 'lte', q, operator.and_)  
         if 'id' in request.data.keys():
-            q = q & Q(pk=request.data['id'])
-        q = q & Q(agent_id__in=[
-            item['id'] for item in list(
-                self.get_auth_agents_with_user(request.user).values('id'))
-        ])
-        if time_range:
-            q = (q &
-                 (Q(update_time__gte=start_time) & Q(update_time__lte=end_time)))
-        q = (q & (~Q(pk__in=ids))) if ids is not None and ids != [] else q
-        queryset = MethodPool.objects.filter(q).order_by(
-            '-update_time')[:page_size]
-        try:
-            method_pools = list(queryset.values())
-        except OperationalError as e:
-            return R.failure(msg=gettext_lazy("The regular expression format is wrong, please use REGEX POSIX 1003.2"))
+            q = q if 'q' in vars() else Q()
+            q = assemble_query(search_after_fields, 'lte', q, operator.and_)
+            if search_mode == 1:
+                q = assemble_query(search_fields_, 'regex', Q(), operator.or_)
+            elif search_mode == 2:
+                q = assemble_query_2(search_fields_, 'regex', Q(),
+                                     operator.and_)
+            if 'id' in request.data.keys():
+                q = q & Q(pk=request.data['id'])
+            q = q & Q(agent_id__in=[
+                item['id'] for item in list(
+                    self.get_auth_agents_with_user(request.user).values('id'))
+            ])
+            if time_range:
+                q = (q & (Q(update_time__gte=start_time)
+                          & Q(update_time__lte=end_time)))
+            q = (q & (~Q(pk__in=ids))) if ids is not None and ids != [] else q
+            queryset = MethodPool.objects.filter(q).order_by(
+                '-update_time')[:page_size]
+            try:
+                method_pools = list(queryset.values())
+            except OperationalError as e:
+                return R.failure(msg=gettext_lazy(
+                    "The regular expression format is wrong, please use REGEX POSIX 1003.2"
+                ))
+        elif ELASTICSEARCH_STATE:
+            method_pools = search_generate(
+                search_fields_, time_range,
+                self.get_auth_users(request.user).values_list('id', flat=True),
+                search_after_fields, exclude_ids, page_size, search_mode)
+            method_pools = [i._d_ for i in method_pools]
+            for method_pool in method_pools:
+                method_pool['req_header_fs'] = method_pool['req_header_for_search']
+        else:
+            q = q if 'q' in vars() else Q()
+            q = assemble_query(search_after_fields, 'lte', q, operator.and_)
+            if search_mode == 1:
+                q = assemble_query(search_fields_, 'regex', Q(), operator.or_)
+            elif search_mode == 2:
+                q = assemble_query_2(search_fields_, 'regex', Q(),
+                                     operator.and_)
+            if 'id' in request.data.keys():
+                q = q & Q(pk=request.data['id'])
+            q = q & Q(agent_id__in=[
+                item['id'] for item in list(
+                    self.get_auth_agents_with_user(request.user).values('id'))
+            ])
+            if time_range:
+                q = (q & (Q(update_time__gte=start_time)
+                          & Q(update_time__lte=end_time)))
+            q = (q & (~Q(pk__in=ids))) if ids is not None and ids != [] else q
+            queryset = MethodPool.objects.filter(q).order_by(
+                '-update_time')[:page_size]
+            try:
+                method_pools = list(queryset.values())
+            except OperationalError as e:
+                return R.failure(msg=gettext_lazy(
+                    "The regular expression format is wrong, please use REGEX POSIX 1003.2"
+                ))
         afterkeys = {}
         for i in method_pools[-1:]:
             afterkeys['update_time'] = i['update_time']
@@ -333,3 +363,45 @@ def highlight_matches(query, text, html):
     def span_matches(match):
         return html.format(match.group(0))
     return re.sub(query, span_matches, text, flags=re.I)
+
+
+def search_generate(search_fields, time_range, user_ids, search_after_fields, filter_ids,
+                    size, search_mode):
+    from elasticsearch_dsl import Q, Search
+    from elasticsearch import Elasticsearch
+    from dongtai_common.models.agent_method_pool import MethodPoolDocument
+    start_time, end_time = time_range
+    must_query = [
+        Q('range', update_time={
+            'gte': start_time,
+            'lte': end_time
+        }),
+    ]
+    must_not_query = [Q('terms', ids=filter_ids)]
+    should_query = []
+    if search_mode == 1:
+        should_query = [
+            Q('match', **(dict([search_field]))) for search_field in search_fields
+        ]
+    elif search_mode == 2:
+        must_not_query.extend([
+            Q('match', **(dict([search_field])))
+            for search_field in search_fields
+        ])
+    if user_ids:
+        must_query.append(Q('terms', user_id=list(user_ids)))
+    if search_after_fields:
+        must_query.extend(
+            [Q('range', **{k: {
+                'gte': v,
+            }}) for k, v in search_after_fields])
+    a = Q('bool',
+          must=must_query,
+          must_not=must_not_query,
+          should=should_query,
+          minimum_should_match=1)
+    from dongtai_conf import settings
+    return list(MethodPoolDocument.search(
+    ).query(a).sort('-update_time')[:size].using(
+        Elasticsearch(
+            settings.ELASTICSEARCH_DSL['default']['hosts'])))

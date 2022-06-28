@@ -57,3 +57,52 @@ class MethodPool(models.Model):
         managed = get_managed()
         db_table = 'iast_agent_method_pool'
         indexes = [models.Index(fields=['uri_sha1', 'http_method', 'agent'])]
+
+
+from django_elasticsearch_dsl import Document
+from django_elasticsearch_dsl.registries import registry
+from django_elasticsearch_dsl import Document, fields
+from dongtai_conf.settings import METHOD_POOL_INDEX 
+
+
+@registry.register_document
+class MethodPoolDocument(Document):
+    user_id = fields.IntegerField(attr="agent.user_id")
+    bind_project_id = fields.IntegerField(attr="agent.bind_project_id")
+    project_version_id = fields.IntegerField(attr="agent.project_version_id")
+    req_header_for_search = fields.TextField(attr="req_header_fs")
+    language = fields.TextField(attr="agent.language")
+    agent_id = fields.TextField(attr="agent_id")
+
+    def generate_id(self, object_instance):
+        return '-'.join(
+            [str(object_instance.agent_id),
+             str(object_instance.pool_sign)])
+
+    class Index:
+        name = METHOD_POOL_INDEX
+
+    class Django:
+        model = MethodPool
+
+        fields = [
+            'res_header',
+            'uri_sha1',
+            'url',
+            'update_time',
+            'res_body',
+            'req_params',
+            'req_header',
+            'req_data',
+            'pool_sign',
+            'method_pool',
+            'id',
+            'http_scheme',
+            'http_protocol',
+            'http_method',
+            'create_time',
+            'context_path',
+            'clent_ip',
+        ]
+
+        ignore_signals = False

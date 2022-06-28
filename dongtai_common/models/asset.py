@@ -63,3 +63,42 @@ class Asset(models.Model):
     class Meta:
         managed = get_managed()
         db_table = 'iast_asset'
+
+from django_elasticsearch_dsl import Document
+from django_elasticsearch_dsl.registries import registry
+from dongtai_web.utils import get_model_field
+from django.db.models.fields.related import ForeignKey
+from django_elasticsearch_dsl import Document, fields
+from dongtai_conf.settings import ASSET_INDEX 
+
+
+@registry.register_document
+class IastAssetDocument(Document):
+    user_id = fields.IntegerField(attr="user_id")
+    agent_id = fields.IntegerField(attr="agent_id")
+    level_id = fields.IntegerField(attr="level_id")
+    project_id = fields.IntegerField(attr="project_id")
+    project_version_id = fields.IntegerField(
+        attr="project_version_id")
+    department_id = fields.IntegerField(attr="department_id")
+    talent_id = fields.IntegerField(attr="talent_id")
+
+    def generate_id(self, object_instance):
+        return object_instance.id
+
+
+    class Index:
+        name = ASSET_INDEX
+
+    class Django:
+        model = Asset
+        fields = [
+            'id', 'package_name', 'package_path', 'signature_algorithm',
+            'signature_value', 'dt', 'version', 'safe_version', 'last_version',
+            'vul_count', 'vul_critical_count', 'vul_high_count',
+            'vul_medium_count', 'vul_low_count', 'vul_info_count',
+            'project_name', 'language', 'license', 'dependency_level',
+            'parent_dependency_id', 'is_del'
+        ]
+
+        ignore_signals = False
