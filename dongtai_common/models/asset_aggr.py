@@ -30,3 +30,27 @@ class AssetAggr(models.Model):
     class Meta:
         managed = get_managed()
         db_table = 'iast_asset_aggr'
+
+
+from django_elasticsearch_dsl import Document
+from django_elasticsearch_dsl.registries import registry
+from django_elasticsearch_dsl import Document, fields
+from dongtai_conf.settings import ASSET_AGGR_INDEX 
+
+
+@registry.register_document
+class AssetAggrDocument(Document):
+    level_id = fields.IntegerField(attr="level_id")
+
+    class Index:
+        name = ASSET_AGGR_INDEX
+
+    class Django:
+        model = AssetAggr
+
+        fields = [
+            'id', 'package_name', 'signature_value', 'version', 'safe_version',
+            'last_version', 'vul_count', 'vul_critical_count',
+            'vul_high_count', 'vul_medium_count', 'vul_low_count',
+            'vul_info_count', 'project_count', 'language', 'license', 'is_del',
+        ]

@@ -165,18 +165,19 @@ class ScaSummary(UserEndPoint):
         request_data = request.data
 
         auth_user_ids = [str(_i.id) for _i in auth_users]
-        base_query_sql = " LEFT JOIN iast_asset ON iast_asset.signature_value = iast_asset_aggr.signature_value WHERE iast_asset.dependency_level>0 and iast_asset.user_id in %s and iast_asset.is_del=0 "
+        base_query_sql = " LEFT JOIN iast_asset_aggr ON iast_asset.signature_value = iast_asset_aggr.signature_value WHERE iast_asset.user_id in %s and iast_asset.is_del=0 "
         sql_params = [auth_user_ids]
-        asset_aggr_where = " and iast_asset_aggr.is_del=0 "
+        asset_aggr_where = " and iast_asset.is_del=0 "
         package_kw = request_data.get('keyword', "")
+        es_query = {}
         if package_kw:
+            es_query['search_keyword'] = package_kw
             package_kw = pymysql.converters.escape_string(package_kw)
 
         if package_kw and package_kw.strip() != '':
             package_kw = '%%{}%%'.format(package_kw)
-            asset_aggr_where = asset_aggr_where + " and iast_asset_aggr.package_name like %s"
+            asset_aggr_where = asset_aggr_where + " and iast_asset.package_name like %s"
             sql_params.append(package_kw)
-
         project_id = request_data.get('project_id', None)
         if project_id and project_id != '':
             version_id = request.GET.get('version_id', None)
@@ -184,9 +185,16 @@ class ScaSummary(UserEndPoint):
                 current_project_version = get_project_version(project_id, auth_users)
             else:
                 current_project_version = get_project_version_by_id(version_id)
-            base_query_sql = base_query_sql + " and iast_asset.project_id=%s and iast_asset.project_version_id=%s "
+            #base_query_sql = base_query_sql + " and iast_asset.project_id=%s and iast_asset.project_version_id=%s "
+            asset_aggr_where = asset_aggr_where + " and iast_asset.project_id=%s and iast_asset.project_version_id=%s "
             sql_params.append(project_id)
             sql_params.append(current_project_version.get("version_id", 0))
+            es_query["bind_project_id"] = project_id
+            es_query["project_version_id"] = current_project_version.get("version_id", 0)
+
+        if ELASTICSEARCH_STATE:
+            resp, _ = self.get_data_from_es(request.user.id, es_query)
+            return R.success(data=resp)
 
         levelInfo = IastVulLevel.objects.filter(id__lt=5).all()
         levelNameArr = {}
@@ -200,7 +208,7 @@ class ScaSummary(UserEndPoint):
 
         _temp_data = dict()
         # 漏洞等级汇总
-        level_summary_sql = "SELECT iast_asset_aggr.level_id,count(DISTINCT(iast_asset_aggr.id)) as total FROM iast_asset_aggr {base_query_sql} {where_sql} GROUP BY iast_asset_aggr.level_id "
+        level_summary_sql = "SELECT iast_asset.level_id,count(DISTINCT(iast_asset.signature_value)) as total FROM iast_asset {base_query_sql} {where_sql} GROUP BY iast_asset.level_id "
         level_summary_sql = level_summary_sql.format(base_query_sql=base_query_sql, where_sql=asset_aggr_where)
 
         with connection.cursor() as cursor:
@@ -217,7 +225,7 @@ class ScaSummary(UserEndPoint):
         } for _key, _value in DEFAULT_LEVEL.items()]
 
         default_language = initlanguage()
-        language_summary_sql = "SELECT iast_asset_aggr.language,count(DISTINCT(iast_asset_aggr.id)) as total FROM iast_asset_aggr {base_query_sql} {where_sql} GROUP BY iast_asset_aggr.language "
+        language_summary_sql = "SELECT iast_asset.language,count(DISTINCT(iast_asset.signature_value)) as total FROM iast_asset {base_query_sql} {where_sql} GROUP BY iast_asset.language "
         language_summary_sql = language_summary_sql.format(base_query_sql=base_query_sql, where_sql=asset_aggr_where)
 
         with connection.cursor() as cursor:
@@ -235,4 +243,122 @@ class ScaSummary(UserEndPoint):
             'language': _key, 'count': _value
         } for _key, _value in default_language.items()]
 
+        end, base_query_sql, asset_aggr_where, sql_param = self.get_extend_data(
+            end, base_query_sql, asset_aggr_where, sql_params)
+
+
         return R.success(data=end['data'])
+
+    def get_extend_data(self, end: dict, base_query_sql: str,
+                        asset_aggr_where: str, sql_params: tuple):
+        return end, base_query_sql, asset_aggr_where, sql_params
+
+    def get_data_from_es(self, user_id, es_query):
+        resp, origin_resp = get_vul_list_from_elastic_search(
+            user_id, **es_query)
+        return resp, origin_resp
+
+from elasticsearch_dsl import Q, Search
+from elasticsearch import Elasticsearch
+from elasticsearch_dsl import A
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
+from dongtai_common.models.program_language import IastProgramLanguage
+from dongtai_common.models.project import IastProject
+from dongtai_common.models.vul_level import IastVulLevel
+from django.core.cache import cache
+from dongtai_conf import settings
+from dongtai_common.common.utils import make_hash
+from dongtai_conf.settings import ELASTICSEARCH_STATE
+from dongtai_common.models.asset_aggr import AssetAggrDocument
+from dongtai_web.aggregation.aggregation_common import auth_user_list_str
+from dongtai_common.models import LANGUAGE_DICT
+from dongtai_common.models.asset import IastAssetDocument
+from dongtai_web.utils import dict_transfrom
+
+
+def get_vul_list_from_elastic_search(user_id,
+                                     bind_project_id=None,
+                                     project_version_id=None,
+                                     search_keyword="",
+                                     extend_aggs_buckets={}):
+    user_id_list = [user_id]
+    auth_user_info = auth_user_list_str(user_id=user_id)
+    user_id_list = auth_user_info['user_list']
+    must_query = [
+        Q('terms', user_id=user_id_list),
+        Q('terms', is_del=[0]),
+    ]
+    if bind_project_id:
+        must_query.append(Q('terms', asset_project_id=[bind_project_id]))
+    if project_version_id:
+        must_query.append(Q('terms', asset_project_version_id=[project_version_id]))
+    if search_keyword:
+        must_query.append(
+            Q("wildcard",
+              **{"package_name.keyword": {
+                  "value": f"*{search_keyword}*"
+              }}))
+    a = Q('bool',
+          must=must_query)
+    search = IastAssetDocument.search().query(Q('bool', must=must_query))[:0]
+    buckets = {
+        'level': A('terms', field='level_id', size=2147483647),
+        "language": A('terms',
+                      field='language.keyword',
+                      size=2147483647),
+        **extend_aggs_buckets
+    }
+    for k, v in buckets.items():
+        search.aggs.bucket(k, v).bucket(
+            "distinct_signature_value",
+            A("cardinality", field="signature_value.keyword"))
+    res = search.using(
+        Elasticsearch(
+            settings.ELASTICSEARCH_DSL['default']['hosts'])).execute()
+    dic = {}
+    for key in buckets.keys():
+        origin_buckets = res.aggs[key].to_dict()['buckets']
+        for i in origin_buckets:
+            i['id'] = i['key']
+            del i['key']
+            i['count'] = i['distinct_signature_value']["value"]
+            del i['distinct_signature_value']
+            del i['doc_count']
+        if key == 'language':
+            for i in origin_buckets:
+                i['language'] = i['id']
+                del i['id']
+            language_names = [i['language'] for i in origin_buckets]
+            for i in origin_buckets:
+                i['id'] = LANGUAGE_DICT.get(i['language'])
+            for language_key in LANGUAGE_DICT.keys():
+                if language_key not in language_names:
+                    origin_buckets.append({
+                        'id': LANGUAGE_DICT[language_key],
+                        'language': language_key,
+                        'count': 0,
+                    })
+        if key == 'level':
+            for i in origin_buckets:
+                i['level_id'] = i['id']
+                del i['id']
+            level_ids = [i['level_id'] for i in origin_buckets]
+            level = IastVulLevel.objects.values(
+                'id', 'name_value').all()
+            level_dic = dict_transfrom(level, 'id')
+            for i in origin_buckets:
+                i['level'] = level_dic[i['level_id']]['name_value']
+            for level_id in level_dic.keys():
+                if level_id not in level_ids:
+                    origin_buckets.append({
+                        'level_id':
+                        level_id,
+                        'level':
+                        level_dic[level_id]['name_value'],
+                        'count':
+                        0,
+                    })
+
+        dic[key] = list(origin_buckets)
+    return dic, res

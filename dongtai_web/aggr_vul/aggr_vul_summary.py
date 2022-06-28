@@ -149,6 +149,127 @@ def get_annotate_sca_base_data(user_id: int,pro_condition: str):
 
     return result_summary
 
+def get_annotate_data_es(user_id, bind_project_id=None, project_version_id=None):
+    from dongtai_common.models.vulnerablity import IastVulnerabilityDocument
+    from elasticsearch_dsl import Q, Search
+    from elasticsearch import Elasticsearch
+    from elasticsearch_dsl import A
+    from dongtai_common.models.strategy import IastStrategyModel
+    from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
+    from dongtai_common.models.program_language import IastProgramLanguage
+    from dongtai_common.models.project import IastProject
+    from dongtai_common.models.vul_level import IastVulLevel
+    from dongtai_common.models.asset_vul import IastAssetVulnerabilityDocument
+    from dongtai_conf import settings
+    from dongtai_web.utils import dict_transfrom
+    user_id_list = [user_id]
+    auth_user_info = auth_user_list_str(user_id=user_id)
+    user_id_list = auth_user_info['user_list']
+    must_query = [
+        Q('terms', asset_user_id=user_id_list),
+        Q('terms', asset_vul_relation_is_del=[0]),
+        Q('range', asset_project_id={'gt': 0}),
+    ]
+    if bind_project_id:
+        must_query.append(Q('terms', asset_project_id=[bind_project_id]))
+    if project_version_id:
+        must_query.append(Q('terms', asset_project_version_id=[project_version_id]))
+    search = IastAssetVulnerabilityDocument.search().query(Q('bool', must=must_query))[:0]
+    buckets = {
+        'level': A('terms', field='level_id', size=2147483647),
+        'project': A('terms', field='asset_project_id', size=2147483647),
+        "language": A('terms',
+                      field='package_language.keyword',
+                      size=2147483647)
+    }
+    for k, v in buckets.items():
+        search.aggs.bucket(k, v).bucket("distinct_asset_vul",
+                                        A("cardinality", field="asset_vul_id"))
+    search.aggs.bucket('poc', A('terms', field='have_poc',
+                                size=2147483647)).bucket(
+                                    'article',
+                                    A('terms',
+                                      field='have_article',
+                                      size=2147483647))
+    res = search.using(Elasticsearch(
+        settings.ELASTICSEARCH_DSL['default']['hosts'])).execute()
+    dic = {}
+    for key in buckets.keys():
+        origin_buckets = res.aggs[key].to_dict()['buckets']
+        for i in origin_buckets:
+            i['id'] = i['key']
+            del i['key']
+            i['num'] = i['distinct_asset_vul']["value"]
+            del i['distinct_asset_vul']
+            del i['doc_count']
+        if key == 'language':
+            for i in origin_buckets:
+                i['name'] = i['id']
+                del i['id']
+            language_names = [i['name'] for i in origin_buckets]
+            for i in origin_buckets:
+                i['id'] = LANGUAGE_DICT.get(i['name'])
+            for language_key in LANGUAGE_DICT.keys():
+                if language_key not in language_names:
+                    origin_buckets.append({
+                        'id': LANGUAGE_DICT[language_key],
+                        'name': language_key,
+                        'num': 0,
+                    })
+        if key == 'project':
+            project_ids = [i['id'] for i in origin_buckets]
+            project = IastProject.objects.filter(pk__in=project_ids).values(
+                'id', 'name').all()
+            project_dic = dict_transfrom(project, 'id')
+            for i in origin_buckets:
+                if project_dic.get(i['id'], None):
+                    i['name'] = project_dic[i['id']]['name']
+                else:
+                    del i
+        if key == 'level':
+            level_ids = [i['id'] for i in origin_buckets]
+            level = IastVulLevel.objects.filter(pk__in=level_ids).values(
+                'id', 'name_value').all()
+            level_dic = dict_transfrom(level, 'id')
+            for i in origin_buckets:
+                i['name'] = level_dic[i['id']]['name_value']
+        dic[key] = list(origin_buckets)
+    have_article_count = 0
+    have_poc_count = 0
+    no_usable_count = 0
+    for i in res.aggs['poc'].to_dict()['buckets']:
+        if i['key'] == 1:
+            have_poc_count = i['doc_count']
+            for k in i['article']['buckets']:
+                if k['key'] == 1:
+                    have_article_count += k['doc_count']
+        if i['key'] == 0:
+            for k in i['article']['buckets']:
+                if k['key'] == 1:
+                    have_article_count += k['doc_count']
+                if k['key'] == 0:
+                    no_usable_count = k['doc_count']
+
+    dic["availability"] = {
+        "have_poc": {
+            "name": "存在利用代码",
+            "num": have_poc_count,
+            "id": 1
+        },
+        "have_article": {
+            "name": "存在分析文章",
+            "num": have_article_count,
+            "id": 2
+        },
+        "no_availability": {
+            "name": "无利用信息",
+            "num": no_usable_count,
+            "id": 3
+        },
+    }
+    return dic
+
+from dongtai_conf.settings import ELASTICSEARCH_STATE
 
 class GetScaSummary(UserEndPoint):
     name = "api-v1-aggregation-summary"
@@ -178,7 +299,11 @@ class GetScaSummary(UserEndPoint):
         except ValidationError as e:
             return R.failure(data=e.detail)
 
-        if pro_condition:
+        if ELASTICSEARCH_STATE:
+            result_summary = get_annotate_data_es(
+                request.user.id, ser.validated_data.get("bind_project_id", 0),
+                ser.validated_data.get("project_version_id", 0))
+        elif pro_condition:
             # 存在项目筛选条件
             result_summary = get_annotate_sca_common_data(request.user.id,pro_condition)
         else:

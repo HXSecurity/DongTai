@@ -86,3 +86,58 @@ class IastAssetVulTypeRelation(models.Model):
         db_table = 'iast_asset_vul_type_relation'
 
     # "iast_asset_vul_type_relation      iast_asset_vul_relation  iast_asset_vul iast_asset "
+from django_elasticsearch_dsl import Document
+from django_elasticsearch_dsl.registries import registry
+from django_elasticsearch_dsl import Document, fields
+from dongtai_conf.settings import ASSET_VUL_INDEX 
+
+
+@registry.register_document
+class IastAssetVulnerabilityDocument(Document):
+    # from asset_vul table
+    vul_name = fields.TextField(attr="asset_vul.vul_name")
+    vul_detail = fields.TextField(attr="asset_vul.vul_detail")
+    license = fields.TextField(attr="asset_vul.license")
+    license_level = fields.IntegerField(attr="asset_vul.license_level")
+    aql = fields.TextField(attr="asset_vul.aql")
+    package_hash = fields.TextField(attr="asset_vul.package_hash")
+    package_version = fields.TextField(attr="asset_vul.package_version")
+    package_safe_version = fields.TextField(attr="asset_vul.package_safe_version")
+    package_latest_version = fields.TextField(attr="asset_vul.package_latest_version")
+    package_language = fields.TextField(attr="asset_vul.package_language")
+    vul_cve_nums = fields.TextField(attr="asset_vul.vul_cve_nums")
+    vul_serial = fields.TextField(attr="asset_vul.vul_serial")
+    cve_code = fields.TextField(attr="asset_vul.cve_code")
+    have_article = fields.IntegerField(attr="asset_vul.have_article")
+    have_poc = fields.IntegerField(attr="asset_vul.have_poc")
+    cve_id = fields.IntegerField(attr="asset_vul.cve_id")
+    update_time = fields.IntegerField(attr="asset_vul.update_time")
+    create_time = fields.IntegerField(attr="asset_vul.create_time")
+    update_time_desc = fields.IntegerField(attr="asset_vul.update_time_desc")
+    vul_publish_time = fields.DateField(attr="asset_vul.vul_publish_time")
+    vul_update_time = fields.DateField(attr="asset_vul.vul_update_time")
+
+    # from asset_vul_relation
+    asset_vul_relation_id = fields.IntegerField(attr="id")
+    asset_vul_id = fields.IntegerField(attr="asset_vul_id")
+    asset_vul_relation_is_del = fields.IntegerField(attr="is_del")
+
+    # from asset
+    asset_user_id = fields.IntegerField(attr="asset.user_id")
+    asset_agent_id = fields.IntegerField(attr="asset.agent_id")
+    project_id = fields.IntegerField(attr="asset.project_id")
+    project_version_id = fields.IntegerField(attr="asset.project_version_id")
+
+    def prepare_vul_cve_nums(self, instance):
+        import json
+        return json.dumps(instance.asset_vul.vul_cve_nums)
+
+    def generate_id(self, object_instance):
+        return object_instance.id
+
+    class Index:
+        name = ASSET_VUL_INDEX
+
+    class Django:
+        model = IastVulAssetRelation
+        ignore_signals = False

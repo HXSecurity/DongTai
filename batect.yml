@@ -29,6 +29,8 @@ containers:
   dongtai-web:
     image: dongtai/dongtai-web:latest
     image_pull_policy: Always
+    volumes:
+      - ./deploy/docker-compose/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - "80:80"
 
@@ -45,7 +47,7 @@ containers:
     dockerfile: ./Dockerfile
     command:  beat
     volumes:
-      - ./conf/config.ini:/opt/dongtai/webapi/conf/config.ini
+      - .:/opt/dongtai/
     dependencies:
       - dongtai-engine
 
