@@ -607,6 +607,8 @@ if ELASTICSEARCH_STATE:
     ASSET_AGGR_INDEX = config.get('elastic_search', 'asset_aggr_index')
     METHOD_POOL_INDEX = config.get('elastic_search', 'asset_vul_index')
     ASSET_INDEX = config.get('elastic_search', 'asset_index')
+    ELASTICSEARCH_DSL_PARALLEL = True
+    ELASTICSEARCH_DSL_AUTO_REFRESH = False
 else:
     ELASTICSEARCH_DSL = {
         'default': {
