@@ -54,3 +54,11 @@ demo_session_cookie_domain = .huoxian.cn
 logging_level = INFO
 cache_preheat = True
 
+[elastic_search]
+enable = false 
+host = http://dongtai:dongtaies@dongtaies:9200
+vulnerability_index = alias-dongtai-v1-vulnerability-dev
+asset_aggr_index = alias-dongtai-v1-asset-aggr-dev
+asset_index = alias-dongtai-v1-asset-dev
+method_pool_index = alias-dongtai-v1-method-pool-dev
+asset_vul_index = alias-dongtai-v1-asset-vul-dev
