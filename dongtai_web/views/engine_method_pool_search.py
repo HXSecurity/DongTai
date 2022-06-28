@@ -197,7 +197,33 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     lambda x: (x[0].replace('search_after_', ''), x[1]),
                     filter(lambda x: x[0].startswith('search_after_'),
                            request.data.items()))))
-        if ELASTICSEARCH_STATE:
+        if 'id' in request.data.keys():
+            q = q if 'q' in vars() else Q()
+            q = assemble_query(search_after_fields, 'lte', q, operator.and_)
+            if search_mode == 1:
+                q = assemble_query(search_fields_, 'regex', Q(), operator.or_)
+            elif search_mode == 2:
+                q = assemble_query_2(search_fields_, 'regex', Q(),
+                                     operator.and_)
+            if 'id' in request.data.keys():
+                q = q & Q(pk=request.data['id'])
+            q = q & Q(agent_id__in=[
+                item['id'] for item in list(
+                    self.get_auth_agents_with_user(request.user).values('id'))
+            ])
+            if time_range:
+                q = (q & (Q(update_time__gte=start_time)
+                          & Q(update_time__lte=end_time)))
+            q = (q & (~Q(pk__in=ids))) if ids is not None and ids != [] else q
+            queryset = MethodPool.objects.filter(q).order_by(
+                '-update_time')[:page_size]
+            try:
+                method_pools = list(queryset.values())
+            except OperationalError as e:
+                return R.failure(msg=gettext_lazy(
+                    "The regular expression format is wrong, please use REGEX POSIX 1003.2"
+                ))
+        elif ELASTICSEARCH_STATE:
             method_pools = search_generate(
                 search_fields_, time_range,
                 self.get_auth_users(request.user).values_list('id', flat=True),

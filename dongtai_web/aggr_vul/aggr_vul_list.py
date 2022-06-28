@@ -320,7 +320,7 @@ def get_vul_list_from_elastic_search(user_id,
             if isinstance(info,str):
                 if info.startswith('-'):
                     field = info[1::]
-                    opt = 'lt' 
+                    opt = 'lt'
                 else:
                     field = info
                     opt = 'gt'
@@ -357,11 +357,25 @@ def get_vul_list_from_elastic_search(user_id,
     import json
     namedtuple_vuls = []
     if vuls:
-        keys = filter(lambda x:x != '@timestamp',vuls[0].keys())
+        keys = [
+            'vul_cve_nums', 'asset_project_version_id', 'license_level',
+            'cve_code', 'asset_id', 'asset_project_id', 'vul_publish_time',
+            'update_time_desc', 'package_language', 'have_poc', 'search_title',
+            'package_safe_version', 'asset_user_id', 'package_version',
+            'vul_update_time', 'update_time', 'asset_vul_relation_id',
+            'vul_name', 'have_article', 'level_id', 'vul_detail',
+            'asset_agent_id', 'package_name', 'vul_serial', 'create_time',
+            'package_hash', 'license', 'cve_id', 'aql',
+            'package_latest_version', 'asset_vul_relation_is_del', 'id'
+        ]
+#        filter(lambda x: x != '@timestamp', vuls[0].keys())
         AssetVul = namedtuple('AssetVul', keys)
         for i in vuls:
             i['vul_cve_nums'] = json.loads(i['vul_cve_nums'])
             del i['@timestamp']
+            for key in keys:
+                if key not in i.keys():
+                    i[key] = None
             i['id'] = i['id'][0]
             asset_vul = AssetVul(**i)
             namedtuple_vuls.append(asset_vul)

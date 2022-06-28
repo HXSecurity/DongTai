@@ -193,8 +193,7 @@ class ScaSummary(UserEndPoint):
             es_query["project_version_id"] = current_project_version.get("version_id", 0)
 
         if ELASTICSEARCH_STATE:
-            resp = get_vul_list_from_elastic_search(request.user.id,
-                                                    **es_query)
+            resp, _ = self.get_data_from_es(request.user.id, es_query)
             return R.success(data=resp)
 
         levelInfo = IastVulLevel.objects.filter(id__lt=5).all()
@@ -244,7 +243,20 @@ class ScaSummary(UserEndPoint):
             'language': _key, 'count': _value
         } for _key, _value in default_language.items()]
 
+        end, base_query_sql, asset_aggr_where, sql_param = self.get_extend_data(
+            end, base_query_sql, asset_aggr_where, sql_params)
+
+
         return R.success(data=end['data'])
+
+    def get_extend_data(self, end: dict, base_query_sql: str,
+                        asset_aggr_where: str, sql_params: tuple):
+        return end, base_query_sql, asset_aggr_where, sql_params
+
+    def get_data_from_es(self, user_id, es_query):
+        resp, origin_resp = get_vul_list_from_elastic_search(
+            user_id, **es_query)
+        return resp, origin_resp
 
 from elasticsearch_dsl import Q, Search
 from elasticsearch import Elasticsearch
@@ -268,7 +280,8 @@ from dongtai_web.utils import dict_transfrom
 def get_vul_list_from_elastic_search(user_id,
                                      bind_project_id=None,
                                      project_version_id=None,
-                                     search_keyword=""):
+                                     search_keyword="",
+                                     extend_aggs_buckets={}):
     user_id_list = [user_id]
     auth_user_info = auth_user_list_str(user_id=user_id)
     user_id_list = auth_user_info['user_list']
@@ -293,7 +306,8 @@ def get_vul_list_from_elastic_search(user_id,
         'level': A('terms', field='level_id', size=2147483647),
         "language": A('terms',
                       field='language.keyword',
-                      size=2147483647)
+                      size=2147483647),
+        **extend_aggs_buckets
     }
     for k, v in buckets.items():
         search.aggs.bucket(k, v).bucket(
@@ -347,4 +361,4 @@ def get_vul_list_from_elastic_search(user_id,
                     })
 
         dic[key] = list(origin_buckets)
-    return dic
+    return dic, res
