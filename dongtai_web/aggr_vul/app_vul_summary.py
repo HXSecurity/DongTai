@@ -233,6 +233,7 @@ def get_annotate_data_es(user_id, bind_project_id, project_version_id):
             strategy_dic = dict_transfrom(strategy, 'id')
             for i in origin_buckets:
                 i['name'] = strategy_dic[i['id']]['vul_name']
+            key = 'hook_type'
         if key == 'status':
             status_ids = [i['id'] for i in origin_buckets]
             status = IastVulnerabilityStatus.objects.filter(
