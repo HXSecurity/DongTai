@@ -64,9 +64,11 @@ class GetAggregationVulList(UserEndPoint):
                 # 从项目列表进入 绑定项目id
                 if ser.validated_data.get("bind_project_id", 0):
                     query_condition = query_condition + " and asset.project_id={} ".format(str(ser.validated_data.get("bind_project_id")))
+                    es_query['bind_project_id'] = ser.validated_data.get("bind_project_id")
                 # 项目版本号
                 if ser.validated_data.get("project_version_id", 0):
                     query_condition = query_condition + " and asset.project_version_id={} ".format(str(ser.validated_data.get("project_version_id")))
+                    es_query['project_version_id'] = ser.validated_data.get("project_version_id")
                 # 按项目筛选
                 if ser.validated_data.get("project_id_str", ""):
                     project_str = turnIntListOfStr(ser.validated_data.get("project_id_str", ""),"asset.project_id")
@@ -91,7 +93,7 @@ class GetAggregationVulList(UserEndPoint):
                     for lang in language_id_list:
                         language_arr.append(LANGUAGE_ID_DICT.get(str(lang)))
                     es_query['language_ids'] = language_arr
-                # 漏洞类型筛选
+                # 漏洞类型筛选 弃用
                 if ser.validated_data.get("hook_type_id_str", ""):
                     vul_type_str = turnIntListOfStr(ser.validated_data.get("hook_type_id_str", ""), "typeR.asset_vul_type_id")
                     query_condition = query_condition + vul_type_str
@@ -243,7 +245,6 @@ def get_vul_list_from_elastic_search(user_id,
                                      project_ids=[],
                                      project_version_ids=[],
                                      level_ids=[],
-                                     strategy_ids=[],
                                      language_ids=[],
                                      availability_ids=[],
                                      search_keyword="",
