@@ -198,6 +198,9 @@ class ScaList(UserEndPoint):
             count_sql_params.append(language)
             list_sql_params.append(language)
 
+        asset_aggr_where, count_sql_params, list_sql_params = self.extend_sql(
+            request_data, asset_aggr_where, count_sql_params, list_sql_params)
+
         level_ids = request_data.get('level_id', None)
         if level_ids:
             level_ids = [str(x) for x in level_ids]
@@ -264,11 +267,14 @@ class ScaList(UserEndPoint):
                                             many=True).data
         else:
             query_data = ScaAssetSerializer(
-                AssetAggr.objects.filter(pk__in=sca_ids).order_by(order_by).select_related('level'),
+                AssetAggr.objects.filter(signature_value__in=sca_ids).order_by(order_by).select_related('level'),
                 many=True).data
 
         return R.success(data=query_data, page=page_summary)
 
+    def extend_sql(self, request_data, asset_aggr_where, count_sql_params,
+                   list_sql_params):
+        return asset_aggr_where, count_sql_params, list_sql_params
 
 from elasticsearch_dsl import Q, Search
 from elasticsearch import Elasticsearch
