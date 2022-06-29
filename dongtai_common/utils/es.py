@@ -3,10 +3,9 @@ from django.apps import apps
 from django.db import transaction
 from django_elasticsearch_dsl.registries import registry
 from django_elasticsearch_dsl.signals import RealTimeSignalProcessor
-import logging
 
 
-logger = logging.getLogger('dongtai-core')
+from celery.apps.worker import logger
 
 @shared_task
 def handle_save(pk, app_label, model_name):
@@ -22,5 +21,6 @@ class DTCelerySignalProcessor(RealTimeSignalProcessor):
     def handle_save(self, sender, instance, **kwargs):
         app_label = instance._meta.app_label
         model_name = instance._meta.model_name
+        logger.info(f'handle_save to es: {model_name} ')
         transaction.on_commit(
             lambda: handle_save.delay(instance.pk, app_label, model_name))
