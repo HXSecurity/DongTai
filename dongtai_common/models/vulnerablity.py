@@ -94,7 +94,7 @@ class IastVulnerabilityDocument(Document):
     bind_project_id = fields.IntegerField(attr="agent.bind_project_id")
     language = fields.IntegerField(attr="agent.language")
     project_version_id = fields.IntegerField(
-        attr="agent.bind_project_version_id")
+        attr="agent.project_version_id")
     project_name = fields.IntegerField(attr="agent.bind_project.name")
     token = fields.IntegerField(attr="agent.token")
 
