@@ -30,6 +30,7 @@ configs["CELERY_QUEUES"] = [
     Queue("dongtai-replay-vul-scan", Exchange("dongtai-replay-vul-scan"), routing_key="dongtai-replay-vul-scan"),
     Queue("dongtai-sca-task", Exchange("dongtai-sca-task"), routing_key="dongtai-sca-task"),
     Queue("dongtai-function-flush-data", Exchange("dongtai-function-flush-data"), routing_key="dongtai-function-flush-data"),
+    Queue("dongtai-es-save-task", Exchange("dongtai-es-save-task"), routing_key="dongtai-es-save-task"),
     # cronjob
     Queue("dongtai-periodic-task", Exchange("dongtai-periodic-task"), routing_key="dongtai-periodic-task"),
 ]
@@ -39,6 +40,7 @@ configs["CELERY_ROUTES"] = {
     "dongtai_engine.tasks.search_vul_from_replay_method_pool": {'exchange': 'dongtai-replay-vul-scan', 'routing_key': 'dongtai-replay-vul-scan'},
     "dongtai_engine.tasks.update_one_sca": {'exchange': 'dongtai-sca-task', 'routing_key': 'dongtai-sca-task'},
     "dongtai_engine.preheat.function_flush": {'exchange': 'dongtai-function-flush-data', 'routing_key': 'dongtai-function-flush-data'},
+    "dongtai_common.utils.es.handle_save": {'exchange': 'dongtai-es-save-task', 'routing_key': 'dongtai-es-save-task'},
     # cronjob
     "dongtai_engine.tasks.update_agent_status": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
     "dongtai_engine.tasks.heartbeat": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
