@@ -200,6 +200,8 @@ def parse_taint_position(source_method, vul_meta, taint_value, vul_stack):
 
     return param_names
 
+from django.core.cache import cache
+import uuid
 
 def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs):
     logger.info(
@@ -217,12 +219,17 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     logger.info(f"agent_id: {vul_meta.agent_id} vul_uri: {vul_meta.uri} param_name: {param_name}")
     from dongtai_common.models.agent import IastAgent
     project_agents = IastAgent.objects.filter(project_version_id=vul_meta.agent.project_version_id)
+    uuid_key = uuid.uuid4().hex
+    cache_key = f'vul_save-{strategy_id}-{vul_meta.uri}-{vul_meta.http_method}-{vul_meta.agent.project_version_id}-{param_name}'
+    is_api_cached = uuid_key != cache.get_or_set(cache_key, uuid_key)
+    if is_api_cached:
+        return
     # 获取 相同项目版本下的数据
     vul = IastVulnerabilityModel.objects.filter(
         strategy_id=strategy_id,
         uri=vul_meta.uri,
         http_method=vul_meta.http_method,
-        agent__in=project_agents,
+        agent__project_version_id=vul_meta.agent.project_version_id,
         param_name=param_name,
     ).order_by('-latest_time').first()
     IastProject.objects.filter(id=vul_meta.agent.bind_project_id).update(latest_time=timestamp)
@@ -284,15 +291,16 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
         )
         log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
                       vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)
-    #delete if exists more than one
-    IastVulnerabilityModel.objects.filter(
-        strategy_id=strategy_id,
-        uri=vul_meta.uri,
-        http_method=vul_meta.http_method,
-        agent__in=project_agents,
-        param_name=param_name,
-        pk__lt=vul.id,
-    ).delete()
+    cache.delete(cache_key)
+    #delete if exists more than one   departured use redis lock
+    #IastVulnerabilityModel.objects.filter(
+    #    strategy_id=strategy_id,
+    #    uri=vul_meta.uri,
+    #    http_method=vul_meta.http_method,
+    #    agent__in=project_agents,
+    #    param_name=param_name,
+    #    pk__lt=vul.id,
+    #).delete()
 
     logger.info(f"vul_found {vul.id}")
     return vul
