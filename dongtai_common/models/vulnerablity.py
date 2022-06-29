@@ -112,5 +112,7 @@ class IastVulnerabilityDocument(Document):
             'level_id_desc', 'client_ip', 'param_name', 'is_del',
             'method_pool_id'
         ]
+        
+        auto_refresh = True
 
         ignore_signals = False
