@@ -609,6 +609,8 @@ if ELASTICSEARCH_STATE:
     ASSET_INDEX = config.get('elastic_search', 'asset_index')
     ELASTICSEARCH_DSL_PARALLEL = True
     ELASTICSEARCH_DSL_AUTO_REFRESH = False
+    ELASTICSEARCH_DSL_AUTO_REFRESH = False
+    ELASTICSEARCH_DSL_SIGNAL_PROCESSOR = 'dongtai_common.utils.es.DTCelerySignalProcessor'
     from elasticsearch import logger as es_logger
     import elasticsearch
     es_logger.setLevel(elasticsearch.logging.INFO)
