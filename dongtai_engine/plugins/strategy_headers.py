@@ -84,6 +84,8 @@ def check_response_header(method_pool):
     except Exception as e:
         logger.error("check_response_header failed, reason: " + str(e))
 
+from django.core.cache import cache
+import uuid
 
 def save_vul(vul_type, method_pool, position=None, data=None):
     if is_strategy_enable(vul_type, method_pool) is False:
@@ -99,11 +101,16 @@ def save_vul(vul_type, method_pool, position=None, data=None):
     from dongtai_common.models.agent import IastAgent
     project_agents = IastAgent.objects.filter(
         project_version_id=method_pool.agent.project_version_id)
+    uuid_key = uuid.uuid4().hex
+    cache_key = f'vul_save-{vul_strategy.id-{method_pool.uri}-{method_pool.http_method}-{vul_meta.agent.project_version_id}'
+    is_api_cached = uuid_key != cache.get_or_set(cache_key, uuid_key)
+    if is_api_cached:
+        return
     vul = IastVulnerabilityModel.objects.filter(
         strategy_id=vul_strategy.id,
         uri=method_pool.uri,
         http_method=method_pool.http_method,
-        agent__in=project_agents,
+        agent__project_version_id=method_pool.agent.project_version_id,
     ).order_by('-latest_time').first()
     timestamp = int(time.time())
     IastProject.objects.filter(id=method_pool.agent.bind_project_id).update(latest_time=timestamp)
@@ -162,10 +169,12 @@ def save_vul(vul_type, method_pool, position=None, data=None):
         )
         log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
                       vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)
-    IastVulnerabilityModel.objects.filter(
-        strategy=vul_strategy.id,
-        uri=method_pool.uri,
-        http_method=method_pool.http_method,
-        agent__in=project_agents,
-        pk__lt=vul.id,
-    ).delete()
+    cache.delete(cache_key)
+    #delete if exists more than one   departured use redis lock
+    #IastVulnerabilityModel.objects.filter(
+    #    strategy=vul_strategy.id,
+    #    uri=method_pool.uri,
+    #    http_method=method_pool.http_method,
+    #    agent__in=project_agents,
+    #    pk__lt=vul.id,
+    #).delete()
