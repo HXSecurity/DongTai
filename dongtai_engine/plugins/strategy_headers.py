@@ -102,7 +102,7 @@ def save_vul(vul_type, method_pool, position=None, data=None):
     project_agents = IastAgent.objects.filter(
         project_version_id=method_pool.agent.project_version_id)
     uuid_key = uuid.uuid4().hex
-    cache_key = f'vul_save-{vul_strategy.id-{method_pool.uri}-{method_pool.http_method}-{vul_meta.agent.project_version_id}'
+    cache_key = f'vul_save-{vul_strategy.id}-{method_pool.uri}-{method_pool.http_method}-{vul_meta.agent.project_version_id}'
     is_api_cached = uuid_key != cache.get_or_set(cache_key, uuid_key)
     if is_api_cached:
         return
