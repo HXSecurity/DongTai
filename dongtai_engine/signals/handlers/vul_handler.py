@@ -382,6 +382,7 @@ def handler_replay_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, b
                         '已确认')
     else:
         vul = save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs)
+
         create_vul_recheck_task(vul_id=vul.id, agent=vul.agent, timestamp=timestamp)
     return vul
 
