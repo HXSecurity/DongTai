@@ -144,8 +144,9 @@ class IastAssetVulnerabilityDocument(Document):
         to the updating of a lot of items.
         """
         if isinstance(related_instance, IastAgent):
-            return IastVulAssetRelation.objects.filter(
-                asset__agent__id=related_instance.pk).all()
+            if related_instance.bind_project_id < 0:
+                return IastVulAssetRelation.objects.filter(
+                    asset__agent__id=related_instance.pk).all()
 
     @classmethod
     def search(cls, using=None, index=None):

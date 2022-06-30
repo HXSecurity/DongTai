@@ -117,7 +117,8 @@ class IastVulnerabilityDocument(Document):
         to the updating of a lot of items.
         """
         if isinstance(related_instance, IastAgent):
-            return related_instance.iastvulnerabilitymodel_set.all()
+            if related_instance.bind_project_id < 0:
+                return related_instance.iastvulnerabilitymodel_set.all()
 
 
     class Index:
