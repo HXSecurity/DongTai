@@ -69,8 +69,10 @@ from django_elasticsearch_dsl.registries import registry
 from dongtai_web.utils import get_model_field
 from django.db.models.fields.related import ForeignKey
 from django_elasticsearch_dsl import Document, fields
-from dongtai_conf.settings import ASSET_INDEX 
-
+from dongtai_conf.settings import ASSET_INDEX
+from django_elasticsearch_dsl.search import Search
+from django.core.cache import cache
+import uuid
 
 @registry.register_document
 class IastAssetDocument(Document):
@@ -86,6 +88,15 @@ class IastAssetDocument(Document):
     def generate_id(self, object_instance):
         return object_instance.id
 
+    @classmethod
+    def search(cls, using=None, index=None):
+        uuid_key = uuid.uuid4().hex
+        cache_uuid_key = cache.get_or_set(
+            f'es-documents-shards-{cls.__name__}', uuid_key, 60 * 1)
+        return Search(using=cls._get_using(using),
+                      index=cls._default_index(index),
+                      doc_type=[cls],
+                      model=cls.django.model).params(preference=cache_uuid_key)
 
     class Index:
         name = ASSET_INDEX
