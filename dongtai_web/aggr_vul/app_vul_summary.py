@@ -272,6 +272,10 @@ def get_annotate_data_es(user_id, bind_project_id, project_version_id):
                     i['name'] = project_dic[i['id']]['name']
             origin_buckets = filter(lambda x: x['id'] not in missing_ids,
                                     origin_buckets)
+            if missing_ids:
+                logger.info('found data consistency incorrect ')
+                data_correction_interpetor.delay("project_missing")
+
         if key == 'level':
             level_ids = [i['id'] for i in origin_buckets]
             level = IastVulLevel.objects.filter(pk__in=level_ids).values(
