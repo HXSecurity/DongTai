@@ -80,3 +80,4 @@ def add_async_batch_task(app_label, model_name):
     batch_task_count = cache.get(batch_task_count_key)
     if batch_task_count < DONGTAI_MAX_BATCH_TASK_CONCORRENCY:
         cache.incr(batch_task_count_key)
+        handle_batch_save.delay(app_label, model_name)
