@@ -21,7 +21,7 @@ class DTCelerySignalProcessor(RealTimeSignalProcessor):
     def handle_save(self, sender, instance, **kwargs):
         app_label = instance._meta.app_label
         model_name = instance._meta.model_name
-        if instance.__class__ in registry._models:
+        if instance.__class__ in registry._models or instance.__class__ in registry._related_models:
             logger.info(f'handle_save to es: {model_name} ')
             transaction.on_commit(
                 lambda: handle_save.delay(instance.pk, app_label, model_name))
