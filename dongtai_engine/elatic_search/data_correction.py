@@ -10,11 +10,14 @@ from celery.apps.worker import logger
 
 @shared_task
 def data_correction_interpetor(situation: str):
+    logger.info(f"data incorrect detected, situation {situation} is handling")
     if situation == "project_missing":
-        data_correction(-1)
+        data_correction_project(-1)
+    elif situation == "vulnerablity_sync_fail":
+        data_correction_all()
 
 
-def data_correction(project_id):
+def data_correction_project(project_id):
     qs = IastVulnerabilityModel.objects.filter(
         agent__bind_project_id=project_id).all()
     IastVulnerabilityDocument().update(list(qs))
@@ -22,4 +25,13 @@ def data_correction(project_id):
     IastAssetDocument().update(list(qs))
     qs = IastVulAssetRelation.objects.filter(
         asset__agent__bind_project_id=project_id).all()
+    IastAssetVulnerabilityDocument().update(list(qs))
+
+
+def data_correction_all():
+    qs = IastVulnerabilityModel.objects.all()
+    IastVulnerabilityDocument().update(list(qs))
+    qs = Asset.objects.all()
+    IastAssetDocument().update(list(qs))
+    qs = IastVulAssetRelation.objects.all()
     IastAssetVulnerabilityDocument().update(list(qs))
