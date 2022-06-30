@@ -67,6 +67,7 @@ usage() {
   Usage "\t$_filename file                                        Export docker-compose.yml "
   Usage "\t$_filename logs server|web|mysql|engine    Extract tail logs"
   Usage "\t$_filename start [PROJECT]                             Start all container,default project: dongtai"
+  Usage "\t$_filename index                                       Initialize elasticsearch index"
 
 }
 
@@ -1154,6 +1155,1312 @@ if [ ! 0 == $# ]; then # If options provided then
     summary
 
     ;;
+  "index")
+    ES_HOST=""
+    ES_ALIAS="dongtai-iast"
+
+    function dongtai_es() {
+      #read -p "请输入您要创建的 elasticsearch 索引前缀名: 如 dongtai-iast :" ES_ALIA
+      #if [ -z "$ES_ALIA" ]; then
+      #  Info "将使用默认前缀名: $ES_ALIAS"
+      #else
+      #  ES_ALIAS=$(echo $ES_ALIA | tr "[A-Z]" "[a-z]" | sed 's/[^ -z]/x/g')
+      #  Info "索引前缀名已经转换为小写 请记录 $ES_ALIAS"
+      #fi
+      read -p "请输入您的 elasticsearch 地址: 如 http://127.0.0.1:9200   :" ES_IP
+      read -p "请输入您的 elasticsearch 用户: 如 elastic (无密码直接回车):" ES_USERNAME
+      read -p "请输入您的 elasticsearch 密码: 如 123456  (无密码直接回车):" ES_PASSWORD
+      if [ -z "$ES_USERNAME" ]; then
+        ES_HOST=$ES_IP
+      else
+        ES_APP=$(echo $ES_IP | sed "s#//# #g")
+        ARR=($ES_APP)
+        ES_HOST=${ARR[0]}//${ES_USERNAME}:${ES_PASSWORD}@${ARR[1]}
+      fi
+      Info $ES_HOST
+      ES_CODE=`curl -I -m 10 -o /dev/null -s -w %{http_code} ${ES_HOST}`
+      if [ $ES_CODE -eq 200 ]; then
+        Info $ES_CODE
+      else
+         Info "Please check that your elasticsearch configuration is correct !!!"
+        exit 1
+      fi
+    }
+
+    function dongtai_index() {
+      Notice "-----index create-----"
+      Info "index created   $ES_HOST  !!!"
+      #ilm
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/_ilm/policy/${ES_ALIAS}-dongtai-ilm-policy -d '
+      {
+        "policy": {
+          "phases": {
+            "hot": {
+              "min_age": "0ms",
+              "actions": {
+                "rollover": {
+                  "max_age": "90d",
+                  "max_size": "60gb"
+                },
+                "set_priority": {
+                  "priority": 999
+                }
+              }
+            }
+          }
+        }
+      }'
+      #template-dongtai-v1-method-pool
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/_template/${ES_ALIAS}-dongtai-v1-method-pool-template?include_type_name -d '
+      {
+        "order": 1,
+        "index_patterns": [
+          "'${ES_ALIAS}'-dongtai-v1-method-pool-index-*"
+        ],
+        "settings": {
+          "index": {
+            "lifecycle": {
+              "name": "'${ES_ALIAS}'-dongtai-ilm-policy",
+              "rollover_alias": "'${ES_ALIAS}'-alias-dongtai-v1-method-pool"
+            },
+            "highlight": {
+              "max_analyzed_offset": "10000000"
+            },
+            "refresh_interval": "30s",
+            "analysis": {
+              "analyzer": {
+                "ngram_analyzer": {
+                  "tokenizer": "ngram_tokenizer"
+                }
+              },
+              "tokenizer": {
+                "ngram_tokenizer": {
+                  "token_chars": [
+                    "letter",
+                    "digit",
+                    "symbol",
+                    "punctuation"
+                  ],
+                  "min_gram": "1",
+                  "type": "ngram",
+                  "max_gram": "2"
+                }
+              }
+            },
+            "number_of_shards": "4",
+            "number_of_replicas": "1"
+          }
+        },
+        "mappings": {
+          "_doc": {
+            "dynamic": "true",
+            "_meta": {},
+            "_source": {
+              "includes": [],
+              "excludes": []
+            },
+            "dynamic_date_formats": [
+              "strict_date_optional_time",
+              "yyyy/MM/dd HH:mm:ss Z||yyyy/MM/dd Z"
+            ],
+            "dynamic_templates": [],
+            "date_detection": true,
+            "numeric_detection": false,
+            "properties": {
+              "@timestamp": {
+                "type": "date"
+              },
+              "agent_id": {
+                "type": "integer"
+              },
+              "bind_project_id": {
+                "type": "long"
+              },
+              "clent_ip": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "context_path": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "create_time": {
+                "type": "date",
+                "ignore_malformed": false,
+                "format": "strict_date_optional_time||epoch_second"
+              },
+              "http_method": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "http_protocol": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "http_scheme": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "id": {
+                "type": "integer"
+              },
+              "language": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "method_pool": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "pool_sign": {
+                "type": "keyword"
+              },
+              "project_name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "project_version_id": {
+                "type": "long"
+              },
+              "req_data": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "req_header": {
+                "type": "text"
+              },
+              "req_header_for_search": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "req_params": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "res_body": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "res_header": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "token": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "update_time": {
+                "type": "date",
+                "ignore_malformed": false,
+                "format": "strict_date_optional_time||epoch_second"
+              },
+              "uri": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "uri_sha1": {
+                "type": "keyword"
+              },
+              "url": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "user_id": {
+                "type": "long"
+              }
+            }
+          }
+        }
+      }'
+      
+      
+      #template-dongtai-v1-vulnerability
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/_template/${ES_ALIAS}-dongtai-v1-vulnerability-template?include_type_name -d '
+      {
+        "order": 1,
+        "index_patterns": [
+          "'${ES_ALIAS}'-dongtai-v1-vulnerability-index-*"
+        ],
+        "settings": {
+          "index": {
+            "lifecycle": {
+              "name": "'${ES_ALIAS}'-dongtai-ilm-policy",
+              "rollover_alias": "'${ES_ALIAS}'-alias-dongtai-v1-vulnerability"
+            },
+            "highlight": {
+              "max_analyzed_offset": "10000000"
+            },
+            "refresh_interval": "30s",
+            "analysis": {
+              "analyzer": {
+                "ngram_analyzer": {
+                  "tokenizer": "ngram_tokenizer"
+                }
+              },
+              "tokenizer": {
+                "ngram_tokenizer": {
+                  "token_chars": [
+                    "letter",
+                    "digit",
+                    "symbol",
+                    "punctuation"
+                  ],
+                  "min_gram": "1",
+                  "type": "ngram",
+                  "max_gram": "2"
+                }
+              }
+            },
+            "number_of_shards": "4",
+            "number_of_replicas": "1"
+          }
+        },
+        "mappings": {
+          "_doc": {
+            "dynamic": "true",
+            "_meta": {},
+            "_source": {
+              "includes": [],
+              "excludes": []
+            },
+            "dynamic_date_formats": [
+              "strict_date_optional_time",
+              "yyyy/MM/dd HH:mm:ss Z||yyyy/MM/dd Z"
+            ],
+            "dynamic_templates": [],
+            "date_detection": true,
+            "numeric_detection": false,
+            "properties": {
+              "@timestamp": {
+                "type": "date"
+              },
+              "agent_id": {
+                "type": "integer"
+              },
+              "bind_project_id": {
+                "type": "integer"
+              },
+              "bottom_stack": {
+                "type": "text"
+              },
+              "client_ip": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "context_path": {
+                "type": "text"
+              },
+              "counts": {
+                "type": "integer"
+              },
+              "first_time": {
+                "type": "date",
+                "ignore_malformed": false,
+                "format": "strict_date_optional_time||epoch_second"
+              },
+              "full_stack": {
+                "type": "text"
+              },
+              "hook_type_id": {
+                "type": "integer"
+              },
+              "http_method": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "http_protocol": {
+                "type": "text"
+              },
+              "http_scheme": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "id": {
+                "type": "integer"
+              },
+              "is_del": {
+                "type": "integer"
+              },
+              "language": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "latest_time": {
+                "type": "date",
+                "ignore_malformed": false,
+                "format": "strict_date_optional_time||epoch_second"
+              },
+              "latest_time_desc": {
+                "type": "integer"
+              },
+              "level_id": {
+                "type": "integer"
+              },
+              "level_id_desc": {
+                "type": "integer"
+              },
+              "method_pool_id": {
+                "type": "integer"
+              },
+              "param_name": {
+                "type": "text"
+              },
+              "project_name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "project_version_id": {
+                "type": "integer"
+              },
+              "req_data": {
+                "type": "text"
+              },
+              "req_header": {
+                "type": "text"
+              },
+              "req_params": {
+                "type": "text"
+              },
+              "res_body": {
+                "type": "text"
+              },
+              "res_header": {
+                "type": "text"
+              },
+              "search_keywords": {
+                "type": "text"
+              },
+              "status": {
+                "type": "text"
+              },
+              "status_id": {
+                "type": "integer"
+              },
+              "strategy_id": {
+                "type": "integer"
+              },
+              "taint_position": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "taint_value": {
+                "type": "text"
+              },
+              "token": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "top_stack": {
+                "type": "text"
+              },
+              "uri": {
+                "type": "text"
+              },
+              "url": {
+                "type": "text"
+              },
+              "user_id": {
+                "type": "integer"
+              },
+              "vul_title": {
+                "type": "text"
+              }
+            }
+          }
+        }
+      }'
+      
+      #template-dongtai-v1-asset
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/_template/${ES_ALIAS}-dongtai-v1-asset-template?include_type_name -d '
+      {
+        "order": 1,
+        "index_patterns": [
+          "'${ES_ALIAS}'-dongtai-v1-asset-index-*"
+        ],
+        "settings": {
+          "index": {
+            "lifecycle": {
+              "name": "'${ES_ALIAS}'-dongtai-ilm-policy",
+              "rollover_alias": "'${ES_ALIAS}'-alias-dongtai-v1-asset"
+            },
+            "highlight": {
+              "max_analyzed_offset": "10000000"
+            },
+            "refresh_interval": "30s",
+            "analysis": {
+              "analyzer": {
+                "ngram_analyzer": {
+                  "tokenizer": "ngram_tokenizer"
+                }
+              },
+              "tokenizer": {
+                "ngram_tokenizer": {
+                  "token_chars": [
+                    "letter",
+                    "digit",
+                    "symbol",
+                    "punctuation"
+                  ],
+                  "min_gram": "1",
+                  "type": "ngram",
+                  "max_gram": "2"
+                }
+              }
+            },
+            "number_of_shards": "4",
+            "number_of_replicas": "1"
+          }
+        },
+        "mappings": {
+          "_doc": {
+            "dynamic": "true",
+            "_meta": {},
+            "_source": {
+              "includes": [],
+              "excludes": []
+            },
+            "dynamic_date_formats": [
+              "strict_date_optional_time",
+              "yyyy/MM/dd HH:mm:ss Z||yyyy/MM/dd Z"
+            ],
+            "dynamic_templates": [],
+            "date_detection": true,
+            "numeric_detection": false,
+            "properties": {
+              "@timestamp": {
+                "type": "date"
+              },
+              "agent_id": {
+                "type": "long"
+              },
+              "department_id": {
+                "type": "long"
+              },
+              "dependency_level": {
+                "type": "long"
+              },
+              "dt": {
+                "type": "date",
+                "ignore_malformed": false,
+                "format": "strict_date_optional_time||epoch_second"
+              },
+              "id": {
+                "type": "long"
+              },
+              "is_del": {
+                "type": "long"
+              },
+              "language": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "last_version": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "level_id": {
+                "type": "long"
+              },
+              "license": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "package_name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "package_path": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "parent_dependency_id": {
+                "type": "long"
+              },
+              "project_id": {
+                "type": "long"
+              },
+              "project_name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "project_version_id": {
+                "type": "long"
+              },
+              "safe_version": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "signature_algorithm": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "signature_value": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "talent_id": {
+                "type": "long"
+              },
+              "user_id": {
+                "type": "long"
+              },
+              "version": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "vul_count": {
+                "type": "long"
+              },
+              "vul_critical_count": {
+                "type": "long"
+              },
+              "vul_high_count": {
+                "type": "long"
+              },
+              "vul_info_count": {
+                "type": "long"
+              },
+              "vul_low_count": {
+                "type": "long"
+              },
+              "vul_medium_count": {
+                "type": "long"
+              }
+            }
+          }
+        }
+      }'
+      
+      #template-dongtai-v1-asset-vul
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/_template/${ES_ALIAS}-dongtai-v1-asset-vul-template?include_type_name -d '
+      {
+        "order": 1,
+        "index_patterns": [
+          "'${ES_ALIAS}'-dongtai-v1-asset-vul-index-*"
+        ],
+        "settings": {
+          "index": {
+            "lifecycle": {
+              "name": "'${ES_ALIAS}'-dongtai-ilm-policy",
+              "rollover_alias": "'${ES_ALIAS}'-alias-dongtai-v1-asset-vul"
+            },
+            "highlight": {
+              "max_analyzed_offset": "10000000"
+            },
+            "refresh_interval": "30s",
+            "analysis": {
+              "analyzer": {
+                "ngram_analyzer": {
+                  "tokenizer": "ngram_tokenizer"
+                }
+              },
+              "tokenizer": {
+                "ngram_tokenizer": {
+                  "token_chars": [
+                    "letter",
+                    "digit",
+                    "symbol",
+                    "punctuation"
+                  ],
+                  "min_gram": "1",
+                  "type": "ngram",
+                  "max_gram": "2"
+                }
+              }
+            },
+            "number_of_shards": "4",
+            "number_of_replicas": "1"
+          }
+        },
+        "mappings": {
+          "_doc": {
+            "dynamic": "true",
+            "_meta": {},
+            "_source": {
+              "includes": [],
+              "excludes": []
+            },
+            "dynamic_date_formats": [
+              "strict_date_optional_time",
+              "yyyy/MM/dd HH:mm:ss Z||yyyy/MM/dd Z"
+            ],
+            "dynamic_templates": [],
+            "date_detection": true,
+            "numeric_detection": false,
+            "properties": {
+              "@timestamp": {
+                "type": "date"
+              },
+              "agent_id": {
+                "type": "long"
+              },
+              "aql": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "asset_agent_id": {
+                "type": "integer"
+              },
+              "asset_id": {
+                "type": "long"
+              },
+              "asset_project_id": {
+                "type": "integer"
+              },
+              "asset_project_version_id": {
+                "type": "integer"
+              },
+              "asset_user_id": {
+                "type": "integer"
+              },
+              "asset_vul_id": {
+                "type": "integer"
+              },
+              "asset_vul_relation_id": {
+                "type": "integer"
+              },
+              "asset_vul_relation_is_del": {
+                "type": "integer"
+              },
+              "bind_project_id": {
+                "type": "long"
+              },
+              "clent_ip": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "context_path": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "create_time": {
+                "type": "date",
+                "ignore_malformed": false,
+                "format": "strict_date_optional_time||epoch_second"
+              },
+              "cve_code": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "cve_id": {
+                "type": "integer",
+                "ignore_malformed": false,
+                "coerce": true
+              },
+              "have_article": {
+                "type": "integer"
+              },
+              "have_poc": {
+                "type": "integer"
+              },
+              "http_method": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "http_protocol": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "http_scheme": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "id": {
+                "type": "long"
+              },
+              "language": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "level_id": {
+                "type": "integer"
+              },
+              "license": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "license_level": {
+                "type": "integer"
+              },
+              "method_pool": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "package_hash": {
+                "type": "keyword"
+              },
+              "package_language": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "package_latest_version": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "package_name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "package_safe_version": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "package_version": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "pool_sign": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "project_id": {
+                "type": "long"
+              },
+              "project_version_id": {
+                "type": "long"
+              },
+              "req_data": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "req_header": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "req_header_for_search": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "req_params": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "res_body": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "res_header": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "search_title": {
+                "type": "text"
+              },
+              "update_time": {
+                "type": "date",
+                "ignore_malformed": false,
+                "format": "strict_date_optional_time||epoch_second"
+              },
+              "update_time_desc": {
+                "type": "integer",
+                "ignore_malformed": false,
+                "coerce": true
+              },
+              "uri_sha1": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "url": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "user_id": {
+                "type": "long"
+              },
+              "vul_cve_nums": {
+                "type": "text"
+              },
+              "vul_detail": {
+                "type": "text"
+              },
+              "vul_name": {
+                "type": "text"
+              },
+              "vul_publish_time": {
+                "type": "date",
+                "ignore_malformed": false,
+                "format": "strict_date_optional_time||epoch_second"
+              },
+              "vul_serial": {
+                "type": "text"
+              },
+              "vul_update_time": {
+                "type": "date",
+                "ignore_malformed": false,
+                "format": "strict_date_optional_time||epoch_second"
+              }
+            }
+          }
+        }
+      }'
+      
+      
+      #template-dongtai-v1-asset-vul
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/_template/${ES_ALIAS}-dongtai-v1-asset-aggr-template?include_type_name -d '
+      {
+        "order": 1,
+        "index_patterns": [
+          "'${ES_ALIAS}'-dongtai-v1-asset-aggr-index-*"
+        ],
+        "settings": {
+          "index": {
+            "lifecycle": {
+              "name": "'${ES_ALIAS}'-dongtai-ilm-policy",
+              "rollover_alias": "'${ES_ALIAS}'-alias-dongtai-v1-asset-aggr"
+            },
+            "highlight": {
+              "max_analyzed_offset": "10000000"
+            },
+            "refresh_interval": "30s",
+            "analysis": {
+              "analyzer": {
+                "ngram_analyzer": {
+                  "tokenizer": "ngram_tokenizer"
+                }
+              },
+              "tokenizer": {
+                "ngram_tokenizer": {
+                  "token_chars": [
+                    "letter",
+                    "digit",
+                    "symbol",
+                    "punctuation"
+                  ],
+                  "min_gram": "1",
+                  "type": "ngram",
+                  "max_gram": "2"
+                }
+              }
+            },
+            "number_of_shards": "4",
+            "number_of_replicas": "1"
+          }
+        },
+        "mappings": {
+          "_doc": {
+            "dynamic": "true",
+            "_meta": {},
+            "_source": {
+              "includes": [],
+              "excludes": []
+            },
+            "dynamic_date_formats": [
+              "strict_date_optional_time",
+              "yyyy/MM/dd HH:mm:ss Z||yyyy/MM/dd Z"
+            ],
+            "dynamic_templates": [],
+            "date_detection": true,
+            "numeric_detection": false,
+            "properties": {
+              "@timestamp": {
+                "type": "date"
+              },
+              "id": {
+                "type": "integer"
+              },
+              "is_del": {
+                "type": "integer"
+              },
+              "language": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "last_version": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "level_id": {
+                "type": "integer"
+              },
+              "license": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "package_name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "project_count": {
+                "type": "integer"
+              },
+              "safe_version": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "signature_value": {
+                "type": "keyword"
+              },
+              "version": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "vul_count": {
+                "type": "integer"
+              },
+              "vul_critical_count": {
+                "type": "integer"
+              },
+              "vul_high_count": {
+                "type": "integer"
+              },
+              "vul_info_count": {
+                "type": "integer"
+              },
+              "vul_low_count": {
+                "type": "integer"
+              },
+              "vul_medium_count": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      }'
+      
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/${ES_ALIAS}-dongtai-v1-method-pool-index-000001 -d '
+      {
+        "aliases": {
+          "'${ES_ALIAS}'-alias-dongtai-v1-method-pool": {
+            "is_write_index": true
+          }
+        }
+      }'
+      
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/${ES_ALIAS}-dongtai-v1-vulnerability-index-000001 -d '
+      {
+        "aliases": {
+          "'${ES_ALIAS}'-alias-dongtai-v1-vulnerability": {
+            "is_write_index": true
+          }
+        }
+      }'
+      
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/${ES_ALIAS}-dongtai-v1-asset-index-000001 -d '
+      {
+        "aliases": {
+          "'${ES_ALIAS}'-alias-dongtai-v1-asset": {
+            "is_write_index": true
+          }
+        }
+      }'
+      
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/${ES_ALIAS}-dongtai-v1-asset-aggr-index-000001 -d '
+      {
+        "aliases": {
+          "'${ES_ALIAS}'-alias-dongtai-v1-asset-aggr": {
+            "is_write_index": true
+          }
+        }
+      }'
+      
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/${ES_ALIAS}-dongtai-v1-asset-vul-index-000001 -d '
+      {
+        "aliases": {
+          "'${ES_ALIAS}'-alias-dongtai-v1-asset-vul": {
+            "is_write_index": true
+          }
+        }
+      }'
+      Info "index created Ok !!!"
+      Notice "-----index created Ok !!!-----"
+    }
+    
+    dongtai_es
+    dongtai_index
+
+    ;;
+
   *) # Invalid subcommand
     if [ ! -z $subcommand ]; then # Don't show if no subcommand provided
       echo "Invalid subcommand: $subcommand"
