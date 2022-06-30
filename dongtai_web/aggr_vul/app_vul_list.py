@@ -25,7 +25,7 @@ from django.core.cache import cache
 from dongtai_conf import settings
 from dongtai_common.common.utils import make_hash
 from dongtai_conf.settings import ELASTICSEARCH_STATE
-
+from dongtai_engine.elatic_search.data_correction import data_correction_interpetor
 
 class GetAppVulsList(UserEndPoint):
 
@@ -234,8 +234,10 @@ def get_vul_list_from_elastic_search(user_id,
                                        'agent__bind_project_id', 'id')
     extra_data_dic = {ex_data['id']: ex_data for ex_data in extra_datas}
     vuls = [i._d_ for i in list(resp)]
+    vul_incorrect_id = []
     for vul in vuls:
-        if vul['id'] not in extra_data_dic:
+        if vul['id'] not in extra_data_dic.keys():
+            vul_incorrect_id.append(vul['id'])
             strategy_dic = IastStrategyModel.objects.filter(
                 pk=vul['strategy_id']).values('vul_name').first()
             agent_dic = IastAgent.objects.filter(pk=vul['agent_id']).values(
@@ -247,6 +249,8 @@ def get_vul_list_from_elastic_search(user_id,
                 vul['agent__' + k] = v
         else:
             vul.update(extra_data_dic[vul['id']])
+    if vul_incorrect_id:
+        data_correction_interpetor.delay('vulnerablity_sync_fail')
     if resp.hits:
         afterkey = resp.hits[-1].meta['sort']
         after_table[page + 1] = afterkey

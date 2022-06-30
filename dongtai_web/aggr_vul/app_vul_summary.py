@@ -14,6 +14,7 @@ import logging
 logger = logging.getLogger('dongtai-webapi')
 import copy
 from dongtai_conf.settings import ELASTICSEARCH_STATE
+from dongtai_engine.elatic_search.data_correction import data_correction_interpetor
 
 def _annotate_by_query(q, value_fields, count_field):
     return (
@@ -264,12 +265,17 @@ def get_annotate_data_es(user_id, bind_project_id, project_version_id):
             for i in origin_buckets:
                 if i['id'] not in project_dic:
                     logger.info('found data consistency incorrect start ')
+                    data_correction_interpetor.delay("project_missing")
                     missing_ids.append(i['id'])
                     continue
                 else:
                     i['name'] = project_dic[i['id']]['name']
             origin_buckets = filter(lambda x: x['id'] not in missing_ids,
                                     origin_buckets)
+            if missing_ids:
+                logger.info('found data consistency incorrect ')
+                data_correction_interpetor.delay("project_missing")
+
         if key == 'level':
             level_ids = [i['id'] for i in origin_buckets]
             level = IastVulLevel.objects.filter(pk__in=level_ids).values(
