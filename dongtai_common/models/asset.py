@@ -104,7 +104,8 @@ class IastAssetDocument(Document):
         to the updating of a lot of items.
         """
         if isinstance(related_instance, IastAgent):
-            return Asset.objects.filter(agent_id=related_instance.pk).all()
+            if related_instance.bind_project_id < 0:
+                return Asset.objects.filter(agent_id=related_instance.pk).all()
 
     class Index:
         name = ASSET_INDEX
