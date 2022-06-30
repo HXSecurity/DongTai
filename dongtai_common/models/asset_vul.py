@@ -88,9 +88,10 @@ class IastAssetVulTypeRelation(models.Model):
     # "iast_asset_vul_type_relation      iast_asset_vul_relation  iast_asset_vul iast_asset "
 from django_elasticsearch_dsl.registries import registry
 from django_elasticsearch_dsl import Document, fields
-from dongtai_conf.settings import ASSET_VUL_INDEX 
+from dongtai_conf.settings import ASSET_VUL_INDEX
 from django_elasticsearch_dsl.search import Search
 from django.core.cache import cache
+from dongtai_common.models.agent import IastAgent
 import uuid
 
 
@@ -137,6 +138,15 @@ class IastAssetVulnerabilityDocument(Document):
     def generate_id(self, object_instance):
         return object_instance.id
 
+    def get_instances_from_related(self, related_instance):
+        """If related_models is set, define how to retrieve the Car instance(s) from the related model.
+        The related_models option should be used with caution because it can lead in the index
+        to the updating of a lot of items.
+        """
+        if isinstance(related_instance, IastAgent):
+            return IastVulAssetRelation.objects.filter(
+                asset__agent__id=related_instance.pk).all()
+
     @classmethod
     def search(cls, using=None, index=None):
         uuid_key = uuid.uuid4().hex
@@ -146,11 +156,12 @@ class IastAssetVulnerabilityDocument(Document):
                       index=cls._default_index(index),
                       doc_type=[cls],
                       model=cls.django.model).params(preference=cache_uuid_key)
-    
+
     class Index:
         name = ASSET_VUL_INDEX
 
     class Django:
         model = IastVulAssetRelation
+        related_models = [IastAgent]
         ignore_signals = False
         auto_refresh = False
