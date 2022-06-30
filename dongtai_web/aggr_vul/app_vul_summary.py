@@ -260,8 +260,16 @@ def get_annotate_data_es(user_id, bind_project_id, project_version_id):
             project = IastProject.objects.filter(pk__in=project_ids).values(
                 'id', 'name').all()
             project_dic = dict_transfrom(project, 'id')
+            missing_ids = []
             for i in origin_buckets:
-                i['name'] = project_dic[i['id']]['name']
+                if i['id'] not in project_dic:
+                    logger.info('found data consistency incorrect start ')
+                    missing_ids.append(i['id'])
+                    continue
+                else:
+                    i['name'] = project_dic[i['id']]['name']
+            origin_buckets = filter(lambda x: x['id'] not in missing_ids,
+                                    origin_buckets)
         if key == 'level':
             level_ids = [i['id'] for i in origin_buckets]
             level = IastVulLevel.objects.filter(pk__in=level_ids).values(
