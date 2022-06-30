@@ -42,6 +42,7 @@ configs["CELERY_ROUTES"] = {
     "dongtai_engine.preheat.function_flush": {'exchange': 'dongtai-function-flush-data', 'routing_key': 'dongtai-function-flush-data'},
     "dongtai_common.utils.es.handle_save": {'exchange': 'dongtai-es-save-task', 'routing_key': 'dongtai-es-save-task'},
     "dongtai_common.utils.es.handle_batch_save": {'exchange': 'dongtai-es-save-task', 'routing_key': 'dongtai-es-save-task'},
+    "dongtai_engine.elatic_search.data_correction": {'exchange': 'dongtai-es-save-task', 'routing_key': 'dongtai-es-save-task'},
     # cronjob
     "dongtai_engine.tasks.update_agent_status": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
     "dongtai_engine.tasks.heartbeat": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
