@@ -77,10 +77,12 @@ class IastVulnerabilityModel(models.Model):
         super(IastVulnerabilityModel, self).save(*args, **kwargs)
 
 
-from django_elasticsearch_dsl import Document
 from django_elasticsearch_dsl.registries import registry
 from django_elasticsearch_dsl import Document, fields
 from dongtai_conf.settings import VULNERABILITY_INDEX 
+from django_elasticsearch_dsl.search import Search
+from django.core.cache import cache
+import uuid
 
 
 @registry.register_document
@@ -98,6 +100,16 @@ class IastVulnerabilityDocument(Document):
     project_name = fields.IntegerField(attr="agent.bind_project.name")
     token = fields.IntegerField(attr="agent.token")
 
+
+    @classmethod
+    def search(cls, using=None, index=None):
+        uuid_key = uuid.uuid4().hex
+        cache_uuid_key = cache.get_or_set(
+            f'es-documents-shards-{cls.__name__}', uuid_key, 60 * 1)
+        return Search(using=cls._get_using(using),
+                      index=cls._default_index(index),
+                      doc_type=[cls],
+                      model=cls.django.model).params(preference=cache_uuid_key)
     class Index:
         name = VULNERABILITY_INDEX
 
@@ -113,6 +125,6 @@ class IastVulnerabilityDocument(Document):
             'method_pool_id'
         ]
         
-        auto_refresh = True
+        auto_refresh = False
 
         ignore_signals = False
