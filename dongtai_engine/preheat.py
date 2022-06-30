@@ -27,7 +27,7 @@ def function_preheat():
         time_min = datetime.now() - timedelta(hours=72)
         user_ids = list(
             LogEntry.objects.filter(action_time__gt=time_min).values_list(
-                'user_id', flat=True).distinct().order_by('user_id').all())
+                'user__id', flat=True).distinct().order_by('user__id').all())
         logger.info(f"user_ids: {user_ids}")
         for user_id in user_ids:
             for func in PreHeatRegister.functions:
@@ -35,6 +35,7 @@ def function_preheat():
                     func(user_id)
                 except OperationalError as e:
                     logger.error(e, exc_info=True)
+                    logger.error(f'user_id: {user_id}')
                     logger.error(f'function name : {func.__name__}')
                     logger.error(f'latest 5 query:{conn.queries[-5:]}')
                 except Exception as e:
