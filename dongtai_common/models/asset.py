@@ -98,6 +98,14 @@ class IastAssetDocument(Document):
                       doc_type=[cls],
                       model=cls.django.model).params(preference=cache_uuid_key)
 
+    def get_instances_from_related(self, related_instance):
+        """If related_models is set, define how to retrieve the Car instance(s) from the related model.
+        The related_models option should be used with caution because it can lead in the index
+        to the updating of a lot of items.
+        """
+        if isinstance(related_instance, IastAgent):
+            return Asset.objects.filter(agent_id=related_instance.pk).all()
+
     class Index:
         name = ASSET_INDEX
 
@@ -111,5 +119,6 @@ class IastAssetDocument(Document):
             'project_name', 'language', 'license', 'dependency_level',
             'parent_dependency_id', 'is_del'
         ]
+        related_models = [IastAgent]
 
         ignore_signals = False
