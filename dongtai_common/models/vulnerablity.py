@@ -79,7 +79,7 @@ class IastVulnerabilityModel(models.Model):
 
 from django_elasticsearch_dsl.registries import registry
 from django_elasticsearch_dsl import Document, fields
-from dongtai_conf.settings import VULNERABILITY_INDEX 
+from dongtai_conf.settings import VULNERABILITY_INDEX
 from django_elasticsearch_dsl.search import Search
 from django.core.cache import cache
 import uuid
@@ -110,6 +110,16 @@ class IastVulnerabilityDocument(Document):
                       index=cls._default_index(index),
                       doc_type=[cls],
                       model=cls.django.model).params(preference=cache_uuid_key)
+
+    def get_instances_from_related(self, related_instance):
+        """If related_models is set, define how to retrieve the Car instance(s) from the related model.
+        The related_models option should be used with caution because it can lead in the index
+        to the updating of a lot of items.
+        """
+        if isinstance(related_instance, IastAgent):
+            return related_instance.iastvulnerabilitymodel_set.all()
+
+
     class Index:
         name = VULNERABILITY_INDEX
 
@@ -124,7 +134,7 @@ class IastVulnerabilityDocument(Document):
             'level_id_desc', 'client_ip', 'param_name', 'is_del',
             'method_pool_id'
         ]
-        
+        related_models = [IastAgent]
         auto_refresh = False
 
         ignore_signals = False
