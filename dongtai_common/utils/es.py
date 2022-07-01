@@ -57,7 +57,7 @@ class DTCelerySignalProcessor(RealTimeSignalProcessor):
             rate_limit_key = f"batch-save-rate-limit-{app_label}-{model_name}-rate_limit"
             cache.set(rate_limit_key, 0, nx=True)
             rate_limit = cache.incr(rate_limit_key)
-            if rate_limit < DONGTAI_MAX_RATE_LIMIT and instance.__class__ in registry._models:
+            if rate_limit > DONGTAI_MAX_RATE_LIMIT and instance.__class__ in registry._models:
                 logger.info(f'handle_save to es exceed limit : {model_name}')
                 transaction.on_commit(
                     lambda: add_task(instance.pk, app_label, model_name))
