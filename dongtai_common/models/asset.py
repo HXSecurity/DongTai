@@ -120,6 +120,5 @@ class IastAssetDocument(Document):
             'project_name', 'language', 'license', 'dependency_level',
             'parent_dependency_id', 'is_del'
         ]
-        related_models = [IastAgent]
 
         ignore_signals = False

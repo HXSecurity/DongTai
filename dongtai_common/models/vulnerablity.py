@@ -135,7 +135,6 @@ class IastVulnerabilityDocument(Document):
             'level_id_desc', 'client_ip', 'param_name', 'is_del',
             'method_pool_id'
         ]
-        related_models = [IastAgent]
         auto_refresh = False
 
         ignore_signals = False
