@@ -61,8 +61,9 @@ class DTCelerySignalProcessor(RealTimeSignalProcessor):
 
         if instance.__class__ in registry._models or instance.__class__ in registry._related_models:
             rate_limit_key = f"batch-save-rate-limit-{app_label}-{model_name}-rate_limit"
-            cache.set(rate_limit_key, 0, nx=True)
-            rate_limit = cache.incr(rate_limit_key)
+            rate_limit = cache.get_or_set(rate_limit_key, 0)
+            cache.incr(rate_limit_key)
+            logger.info(f"rate_limit_key now: {rate_limit_key} value: {rate_limit}")
             if rate_limit > DONGTAI_MAX_RATE_LIMIT and instance.__class__ in registry._models:
                 logger.info(f'handle_save to es exceed limit : {model_name}')
                 transaction.on_commit(
@@ -82,8 +83,8 @@ def add_task(pk, app_label, model_name):
 
 def add_async_batch_task(app_label, model_name):
     batch_task_count_key = f"batch-save-task-count{app_label}-{model_name}-batch-task-count"
-    cache.set(batch_task_count_key, 0, nx=True)
-    batch_task_count = cache.get(batch_task_count_key)
+    batch_task_count = cache.get_or_set(batch_task_count_key, 0)
+    logger.info(f"rate_limit_key now: {batch_task_count_key} value: {batch_task_count}")
     if batch_task_count < DONGTAI_MAX_BATCH_TASK_CONCORRENCY:
         cache.incr(batch_task_count_key)
         handle_batch_save.delay(app_label, model_name)
