@@ -74,7 +74,7 @@ def task_routings(instance, app_label, model_name):
         add_task(instance.pk, app_label, model_name)
     else:
         logger.info(f'handle_save to es: {model_name} ')
-        handle_save.delay(instance.pk, app_label, model_name
+        handle_save.delay(instance.pk, app_label, model_name)
 
 def add_task(pk, app_label, model_name):
     list_key = f"batch-save-list{app_label}-{model_name}-task"
