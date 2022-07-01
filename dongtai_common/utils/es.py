@@ -32,7 +32,7 @@ def handle_batch_save(app_label, model_name):
     con = get_redis_connection()
     pipe = r.pipeline()
     pipe.multi()
-    model_ids, status = con.lrange(list_key, 0,
+    model_ids, status = pipe.lrange(list_key, 0,
                                    DONGTAI_REDIS_ES_UPDATE_BATCH_SIZE).ltrim(
                                        list_key,
                                        DONGTAI_REDIS_ES_UPDATE_BATCH_SIZE,
