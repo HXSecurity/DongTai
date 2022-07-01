@@ -133,10 +133,10 @@ spec:
               subPath: config.ini
           resources:
             limits:
-              cpu: "500m"
-              memory: 2000Mi
+              cpu: "2000m"
+              memory: 4000Mi
             requests:
-              cpu: "500m"
+              cpu: "1000m"
               memory: 2000Mi
       volumes:
         - name: configfile
