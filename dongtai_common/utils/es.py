@@ -30,7 +30,7 @@ def handle_batch_save(app_label, model_name):
     rate_limit_key = f"batch-save-rate-limit-{app_label}-{model_name}-rate_limit"
     batch_task_count_key = f"batch-save-task-count{app_label}-{model_name}-batch-task-count"
     con = get_redis_connection()
-    pipe = r.pipeline()
+    pipe = con.pipeline()
     pipe.multi()
     model_ids, status = pipe.lrange(list_key, 0,
                                    DONGTAI_REDIS_ES_UPDATE_BATCH_SIZE).ltrim(
@@ -60,19 +60,21 @@ class DTCelerySignalProcessor(RealTimeSignalProcessor):
         model_name = instance._meta.model_name
 
         if instance.__class__ in registry._models or instance.__class__ in registry._related_models:
-            rate_limit_key = f"batch-save-rate-limit-{app_label}-{model_name}-rate_limit"
-            rate_limit = cache.get_or_set(rate_limit_key, 0)
-            cache.incr(rate_limit_key)
-            logger.info(f"rate_limit_key now: {rate_limit_key} value: {rate_limit}")
-            if rate_limit > DONGTAI_MAX_RATE_LIMIT and instance.__class__ in registry._models:
-                logger.info(f'handle_save to es exceed limit : {model_name}')
-                transaction.on_commit(
-                    lambda: add_task(instance.pk, app_label, model_name))
-            else:
-                logger.info(f'handle_save to es: {model_name} ')
-                transaction.on_commit(lambda: handle_save.delay(
-                    instance.pk, app_label, model_name))
+            transaction.on_commit(
+                lambda: task_routings(instance, app_label, model_name))
 
+
+def task_routings(instance, app_label, model_name):
+    rate_limit_key = f"batch-save-rate-limit-{app_label}-{model_name}-rate_limit"
+    rate_limit = cache.get_or_set(rate_limit_key, 0)
+    cache.incr(rate_limit_key)
+    logger.info(f"rate_limit_key now: {rate_limit_key} value: {rate_limit}")
+    if rate_limit > DONGTAI_MAX_RATE_LIMIT and instance.__class__ in registry._models:
+        logger.info(f'handle_save to es exceed limit : {model_name}')
+        add_task(instance.pk, app_label, model_name)
+    else:
+        logger.info(f'handle_save to es: {model_name} ')
+        handle_save.delay(instance.pk, app_label, model_name
 
 def add_task(pk, app_label, model_name):
     list_key = f"batch-save-list{app_label}-{model_name}-task"
