@@ -10,9 +10,11 @@ if [ "$1" = "worker" ]; then
 elif [ "$1" = "worker-beat" ]; then
 	celery -A dongtai_conf worker -l info -Q dongtai-periodic-task -E --pidfile=
 elif [ "$1" = "worker-high-freq" ]; then
-	celery -A dongtai_conf worker -l info -Q dongtai-method-pool-scan,dongtai-replay-vul-scan,dongtai-sca-task -E --pidfile= -P eventlet -c 100
+	celery -A dongtai_conf worker -l info -Q dongtai-method-pool-scan,dongtai-replay-vul-scan,dongtai-sca-task -E --pidfile=
+elif [ "$1" = "worker-es" ]; then
+	celery -A dongtai_conf worker -l info -Q dongtai-es-save-task -E --pidfile=  
 elif [ "$1" = "worker-other" ]; then
-	celery -A dongtai_conf worker -l info -X dongtai-periodic-task,dongtai-method-pool-scan,dongtai-replay-vul-scan,dongtai-sca-task -E --pidfile= -P eventlet -c 100
+	celery -A dongtai_conf worker -l info -X dongtai-periodic-task,dongtai-method-pool-scan,dongtai-replay-vul-scan,dongtai-sca-task -E --pidfile= 
 elif [ "$1" = "beat" ]; then
   celery -A dongtai_conf beat -l info --pidfile= --scheduler django_celery_beat.schedulers:DatabaseScheduler
 else
