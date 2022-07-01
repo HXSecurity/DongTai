@@ -45,3 +45,4 @@ django-redis==5.2.0
 packaging==21.3
 django-elasticsearch-dsl==7.2.2
 gevent
+eventlet
