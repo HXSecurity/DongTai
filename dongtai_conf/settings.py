@@ -608,10 +608,9 @@ if ELASTICSEARCH_STATE:
     ASSET_VUL_INDEX = config.get('elastic_search', 'asset_vul_index')
     VULNERABILITY_INDEX = config.get('elastic_search', 'vulnerability_index')
     ASSET_AGGR_INDEX = config.get('elastic_search', 'asset_aggr_index')
-    METHOD_POOL_INDEX = config.get('elastic_search', 'asset_vul_index')
+    METHOD_POOL_INDEX = config.get('elastic_search', 'method_pool_index')
     ASSET_INDEX = config.get('elastic_search', 'asset_index')
     ELASTICSEARCH_DSL_PARALLEL = True
-    ELASTICSEARCH_DSL_AUTO_REFRESH = False
     ELASTICSEARCH_DSL_AUTO_REFRESH = False
     ELASTICSEARCH_DSL_SIGNAL_PROCESSOR = 'dongtai_common.utils.es.DTCelerySignalProcessor'
     from elasticsearch import logger as es_logger
