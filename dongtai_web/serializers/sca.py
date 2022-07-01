@@ -102,9 +102,9 @@ class ScaAssetSerializer(serializers.ModelSerializer):
     level = serializers.SerializerMethodField()
     level_type = serializers.SerializerMethodField()
     vul_high_count = serializers.SerializerMethodField()
-
+    project_count = serializers.SerializerMethodField()
     class Meta:
-        model = AssetAggr
+        model = Asset
         fields = [
             'id', 'package_name', 'version', 'safe_version', 'last_version', 'language', 'signature_value', 'level',
             'level_type', 'vul_count', 'vul_high_count', 'vul_medium_count', 'vul_low_count', 'vul_info_count',
@@ -124,3 +124,6 @@ class ScaAssetSerializer(serializers.ModelSerializer):
 
     def get_vul_high_count(self, obj):
         return obj.vul_high_count + obj.vul_critical_count
+    
+    def get_project_count(self, obj):
+        return 0

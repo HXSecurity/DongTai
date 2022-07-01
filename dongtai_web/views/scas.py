@@ -16,6 +16,10 @@ from dongtai_web.serializers.sca import ScaAssetSerializer
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.text import format_lazy
+from dongtai_common.models.asset import Asset
+from itertools import chain
+
+WINDOW_SIZE = 5
 
 logger = logging.getLogger(__name__)
 _ResponseSerializer = get_response_serializer(ScaAssetSerializer(many=True))
@@ -39,10 +43,13 @@ def get_order_params(order_fields, order_by):
     else:
         order = 'vul_count'
         order_type = 'desc'
-    order = "iast_asset_aggr.{}".format(order)
 
     return order, order_type
 
+def intersperse(lst, item):
+    result = [item] * (len(lst) * 2 - 1)
+    result[0::2] = lst
+    return result
 
 class ScaList(UserEndPoint):
     @extend_schema_with_envcheck(
@@ -171,12 +178,24 @@ class ScaList(UserEndPoint):
         base_query_sql = " LEFT JOIN iast_asset ON iast_asset.signature_value = iast_asset_aggr.signature_value WHERE  iast_asset.user_id in %s and iast_asset.is_del=0 "
         list_sql_params = [auth_user_ids]
         count_sql_params = [auth_user_ids]
-
+        es_query = {}
+        es_query['page_size'] = page_size
+        es_query['page'] = page
+        es_query['user_id'] = request.user.id
         asset_aggr_where = " and iast_asset_aggr.id>0 "
+        where_conditions = []
+        where_conditions_dict = {}
+        user_ids = [_i.id for _i in auth_users]
+        if len(user_ids) == 1:
+            where_conditions.append('user_id = %(user_ids)s')
+            where_conditions_dict['user_ids'] = user_ids[0]
+        else:
+            where_conditions.append('user_id IN %(user_ids)s')
+            where_conditions_dict['user_ids'] = user_ids
 
         project_id = request_data.get('project_id', None)
         if project_id and project_id != '':
-
+            es_query['bind_project_id'] = project_id
             version_id = request.GET.get('version_id', None)
             if not version_id:
                 current_project_version = get_project_version(project_id, auth_users)
@@ -185,10 +204,16 @@ class ScaList(UserEndPoint):
 
             base_query_sql = base_query_sql + " and iast_asset.project_id=%s and iast_asset.project_version_id=%s "
             project_version_id = current_project_version.get("version_id", 0)
+            es_query['project_version_id'] = project_version_id
             list_sql_params.append(project_id)
             count_sql_params.append(project_id)
             list_sql_params.append(project_version_id)
             count_sql_params.append(project_version_id)
+            where_conditions.append('project_id = %(project_id)s ')
+            where_conditions_dict['project_id'] = project_id
+            where_conditions.append('project_version_id = %(project_version_id)s')
+            where_conditions_dict['project_version_id'] = project_version_id
+
         total_count_sql = "SELECT count(distinct(iast_asset_aggr.id)) as alltotal FROM iast_asset_aggr {base_query_sql} {where_sql} limit 1 "
         list_query_sql = "SELECT iast_asset_aggr.signature_value FROM iast_asset_aggr {base_query_sql} {where_sql} GROUP BY iast_asset_aggr.id {order_sql} {page_sql} "
 
@@ -197,38 +222,61 @@ class ScaList(UserEndPoint):
             asset_aggr_where = asset_aggr_where + " and iast_asset_aggr.language in %s"
             count_sql_params.append(language)
             list_sql_params.append(language)
-
+            es_query['languages'] = language
+            if len(language) == 1:
+                where_conditions.append('language = %(languages)s')
+                where_conditions_dict['languages'] = language[0]
+            else:
+                where_conditions.append('language IN %(languages)s')
+                where_conditions_dict['languages'] = language
         asset_aggr_where, count_sql_params, list_sql_params = self.extend_sql(
             request_data, asset_aggr_where, count_sql_params, list_sql_params)
 
         level_ids = request_data.get('level_id', None)
         if level_ids:
+            es_query['level_ids'] = level_ids
             level_ids = [str(x) for x in level_ids]
             asset_aggr_where = asset_aggr_where + " and iast_asset_aggr.level_id in %s"
             count_sql_params.append(level_ids)
             list_sql_params.append(level_ids)
+            if len(level_ids) == 1:
+                where_conditions.append('level_id = %(level_ids)s')
+                where_conditions_dict['level_ids'] = level_ids[0]
+            else:
+                where_conditions.append('level_id IN %(level_ids)s')
+                where_conditions_dict['level_ids'] = level_ids
 
         package_kw = request_data.get('keyword', None)
         if package_kw:
-            package_kw = pymysql.converters.escape_string(package_kw)
+            es_query['search_keyword'] = package_kw
+    #     package_kw = pymysql.converters.escape_string(package_kw)
         if package_kw and package_kw.strip() != '':
             package_kw = '%%{}%%'.format(package_kw)
             asset_aggr_where = asset_aggr_where + " and iast_asset_aggr.package_name like %s "
             list_sql_params.append(package_kw)
             count_sql_params.append(package_kw)
+            where_conditions.append('package_name LIKE %%(package_kw)s%')
+            where_conditions_dict['package_kw'] = package_kw
 
         order_by = '-vul_count'
         order = request.data.get('order', None)
         if not order or order == "-":
             order = '-vul_count'
-        else:
-            order_by = order
+
         order_fields = [
             'level', 'license', 'vul_count', 'project_count'
         ]
-
         order, order_type = get_order_params(order_fields, order)
+        es_query['order'] = order
+        es_query['order_type'] = order_type
+        if ELASTICSEARCH_STATE:
+            data = get_vul_list_from_elastic_searchv2(**es_query)
+        else:
+            data = mysql_search(where_conditions, where_conditions_dict,
+                                page_size, order_type, order, page)
+        query_data = ScaAssetSerializer(data, many=True).data
 
+        return R.success(data=query_data)
         order_sql = " order by {} {},iast_asset_aggr.id DESC ".format(order, order_type)
         page_sql = " limit %s,%s"
         list_sql_params.append(query_start)
@@ -255,12 +303,6 @@ class ScaList(UserEndPoint):
         except Exception as e:
             logger.warning("sca list error:{}".format(e))
 
-        page_summary = {
-            "alltotal": total_count,
-            "page_size": page_size
-            # "order": order,
-            # "order_type": order_type
-        }
         if ELASTICSEARCH_STATE :
             query_data = ScaAssetSerializer(get_vul_list_from_elastic_search(
                 sca_ids, order_by),
@@ -270,7 +312,7 @@ class ScaList(UserEndPoint):
                 AssetAggr.objects.filter(signature_value__in=sca_ids).order_by(order_by).select_related('level'),
                 many=True).data
 
-        return R.success(data=query_data, page=page_summary)
+        return R.success(data=query_data)
 
     def extend_sql(self, request_data, asset_aggr_where, count_sql_params,
                    list_sql_params):
@@ -310,3 +352,180 @@ def get_vul_list_from_elastic_search(sca_ids=[], order=None):
             del i['@timestamp']
     res_vul = [AssetAggr(**i) for i in vuls]
     return res_vul
+
+from dongtai_web.aggregation.aggregation_common import auth_user_list_str
+from dongtai_common.models.asset import IastAssetDocument
+
+
+def get_vul_list_from_elastic_searchv2(user_id,
+                                       bind_project_id=None,
+                                       project_version_id=None,
+                                       level_ids=[],
+                                       languages=[],
+                                       order="",
+                                       order_type="",
+                                       page=1,
+                                       page_size=10,
+                                       search_keyword="",
+                                       extend_filter={}):
+    user_id_list = [user_id]
+    auth_user_info = auth_user_list_str(user_id=user_id)
+    user_id_list = auth_user_info['user_list']
+    must_query = [
+        Q('terms', user_id=user_id_list),
+        Q('terms', is_del=[0]),
+    ]
+    order_list = ['-id', '-package_name.keyword']
+    if order:
+        order_list.insert(0, {order: {'order': order_type}})
+    if bind_project_id:
+        must_query.append(Q('terms', project_id=[bind_project_id]))
+    if project_version_id:
+        must_query.append(Q('terms', project_version_id=[project_version_id]))
+    if languages:
+        must_query.append(Q('terms', **{"language.keyword": languages}))
+    if level_ids:
+        must_query.append(Q('terms', level_id=level_ids))
+    if search_keyword:
+        must_query.append(
+            Q("wildcard",
+              **{"package_name.keyword": {
+                  "value": f"*{search_keyword}*"
+              }}))
+    hashkey = f"{__name__}_es" + str(
+        make_hash([
+            user_id, level_ids, languages, search_keyword, page_size,
+            bind_project_id, project_version_id
+        ]))
+    after_table = cache.get(hashkey, {})
+    after_key = after_table.get(page, None)
+    print(hashkey)
+    print(after_table)
+    extra_dict = {'collapse': {'field': 'signature_value.keyword'}}
+    after_fields = []
+    for info in order_list:
+        field = ''
+        if isinstance(info, dict):
+            field = list(info.keys())[0]
+        if isinstance(info, str):
+            if info.startswith('-'):
+                field = info[1::]
+            else:
+                field = info
+        if field == 'package_name.keyword':
+            field = 'package_name'
+        after_fields.append(field)
+    if after_key:
+        sub_after_must_query = []
+        sub_after_should_query = []
+        for info, value in zip(order_list, after_key):
+            field = ''
+            opt = ''
+            if isinstance(info, dict):
+                field = list(info.keys())[0]
+                if info[field]['order'] == 'desc':
+                    opt = 'lte'
+                else:
+                    opt = 'gte'
+            if isinstance(info, str):
+                if info.startswith('-'):
+                    field = info[1::]
+                    opt = 'lt'
+                else:
+                    field = info
+                    opt = 'gt'
+            sub_after_should_query.append(Q('range', **{field: {opt: value}}))
+        must_query.append(
+            Q('bool',
+              must=sub_after_must_query,
+              should=sub_after_should_query,
+              minimum_should_match=1))
+    a = Q('bool', must=must_query)
+    search = IastAssetDocument.search().query(Q(
+        'bool',
+        must=must_query)).extra(**extra_dict).sort(*order_list)[:page_size * WINDOW_SIZE]
+    resp = search.execute()
+    vuls = [i._d_ for i in list(resp)]
+    for i in vuls:
+        if '@timestamp' in i.keys():
+            del i['@timestamp']
+        if 'signature_value.keyword' in i.keys():
+            del i['signature_value.keyword']
+    res_vul = [Asset(**i) for i in vuls]
+    for i in range(WINDOW_SIZE):
+        chunk = res_vul[page_size * i:page_size * (i + 1)]
+        if len(chunk) != page_size:
+            break
+        latest_data = chunk[-1]
+        #after_key = [
+        #    getattr(latest_data, order),
+        #    getattr(latest_data, 'id')
+        #]
+        after_key = [getattr(latest_data, after_field)for after_field in after_fields]
+        after_table[page + i + 1] = after_key
+    #if resp.hits:
+    #    afterkey = resp.hits[-1].meta['sort']
+    #    after_table[page + 1] = afterkey
+    cache.set(hashkey, after_table)
+    return res_vul[:page_size]
+
+
+def mysql_search(where_conditions, where_conditions_dict, page_size,
+                 order_type, order, page):
+    hashkey = f"{__name__}_mysql" + str(
+        make_hash([
+            where_conditions, where_conditions_dict, page_size, order_type,
+            order
+        ]))
+    after_table = cache.get(hashkey, {})
+    after_key = after_table.get(page, None)
+    if page != 1 and not after_key:
+        return []
+    if after_key:
+        after_order_value,  after_signature = after_key
+        if order_type == 'desc':
+            where_conditions.append(f"{order} <= %(after_order_value)s ")
+            where_conditions_dict['after_order_value'] = after_order_value
+        else:
+            where_conditions.append(f"{order} >= %(after_order_value)s ")
+
+            where_conditions_dict['after_order_value'] = after_order_value
+        where_conditions.append(f"id < %(after_order_id)s ")
+        where_conditions_dict['after_order_id'] = after_signature
+
+    order_conditions = ["id DESC", ]
+    order_conditions_dict = {"id": 'id',}
+    if order_type == 'desc':
+        order_conditions.insert(0, f"{order} DESC")
+    else:
+        order_conditions.insert(0, f"{order} ASC")
+    order_conditions_dict["field"] = order
+    final_sql = """SELECT ia2.* FROM iast_asset ia2
+        RIGHT JOIN
+        (SELECT signature_value as _1, MAX(dt) as _2 FROM iast_asset ia
+        GROUP BY signature_value ) AS TMP ON
+        ia2.signature_value = TMP._1 
+        WHERE {where_place}
+        ORDER BY {order_place} LIMIT {size} ;""".format(
+        where_place=' AND '.join(where_conditions)
+        if where_conditions else '1 = 1',
+        order_place=' , '.join(order_conditions)
+        if order_conditions else 'NULL',
+        size='%(size)s')
+    base_dict = {'size': page_size * WINDOW_SIZE}
+    base_dict.update(order_conditions_dict)
+    base_dict.update(where_conditions_dict)
+    data = Asset.objects.raw(final_sql, params=base_dict)
+    data = list(data)
+    for i in range(WINDOW_SIZE):
+        chunk = data[page_size * i:page_size * (i + 1)]
+        if len(chunk) != page_size:
+            break
+        latest_data = chunk[-1]
+        after_key = [
+            getattr(latest_data, order),
+            getattr(latest_data, 'id')
+        ]
+        after_table[page + i + 1] = after_key
+    cache.set(hashkey, after_table)
+    return data[:page_size]
