@@ -163,6 +163,5 @@ class IastAssetVulnerabilityDocument(Document):
 
     class Django:
         model = IastVulAssetRelation
-        related_models = [IastAgent]
         ignore_signals = False
         auto_refresh = False
