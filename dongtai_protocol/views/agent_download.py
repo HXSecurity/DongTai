@@ -296,8 +296,12 @@ class AgentDownload(UserEndPoint):
             base_url = request.query_params.get('url', 'https://www.huoxian.cn')
             project_name = request.query_params.get('projectName', 'Demo Project')
             language = request.query_params.get('language')
-
-            token, success = Token.objects.get_or_create(user=request.user)
+            user_token = request.query_params.get('token', None)
+            if not user_token:
+                token, success = Token.objects.get_or_create(user=request.user)
+                final_token = token.key
+            else:
+                final_token = user_token
             agent_token = ''.join(str(uuid.uuid4()).split('-'))
 
             handler = self.make_download_handler(language, request.user.id)
@@ -305,7 +309,7 @@ class AgentDownload(UserEndPoint):
             if handler.download_agent() is False:
                 return R.failure(msg="agent file download failure. please contact official staff for help.")
 
-            if handler.create_config(base_url=base_url, agent_token=agent_token, auth_token=token.key,
+            if handler.create_config(base_url=base_url, agent_token=agent_token, auth_token=final_token,
                                      project_name=project_name):
                 handler.replace_config()
                 response = FileResponse(
