@@ -30,7 +30,13 @@ def handle_batch_save(app_label, model_name):
     rate_limit_key = f"batch-save-rate-limit-{app_label}-{model_name}-rate_limit"
     batch_task_count_key = f"batch-save-task-count{app_label}-{model_name}-batch-task-count"
     con = get_redis_connection()
-    model_ids = con.lpop(list_key, DONGTAI_REDIS_ES_UPDATE_BATCH_SIZE)
+    pipe = r.pipeline()
+    pipe.multi()
+    model_ids, status = pipe.lrange(list_key, 0,
+                                   DONGTAI_REDIS_ES_UPDATE_BATCH_SIZE).ltrim(
+                                       list_key,
+                                       DONGTAI_REDIS_ES_UPDATE_BATCH_SIZE,
+                                       -1).execute()
     logger.info(f'handle batch save to es model_ids size: {len(model_ids)}')
     cache.decr(rate_limit_key, len(model_ids))
     for doc in registry._models[model_name]:
