@@ -133,11 +133,11 @@ spec:
               subPath: config.ini
           resources:
             limits:
-              cpu: "2000m"
-              memory: 4000Mi
-            requests:
               cpu: "1000m"
               memory: 2000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
       volumes:
         - name: configfile
           configMap:
@@ -233,3 +233,90 @@ spec:
       imagePullSecrets:
         - name: aliyun-registry-secret
 ---
+# dongtai-worker-sca服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-worker-sca
+  namespace: iast-test
+  annotations:
+    kubesphere.io/description: dongtai-worker-sca
+  labels:
+    app: dongtai-worker-sca
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dongtai-worker-sca
+  template:
+    metadata:
+      labels:
+        app: dongtai-worker-sca
+    spec:
+      containers:
+        - name: dongtai-worker-sca-container
+          image: registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:VERSION
+          command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
+          args: [ "worker-sca" ]
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "1000m"
+              memory: 2000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-iast-config.ini
+      imagePullSecrets:
+        - name: aliyun-registry-secret
+---
+# dongtai-worker-es服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-worker-es
+  namespace: iast-test
+  annotations:
+    kubesphere.io/description: dongtai-worker-es
+  labels:
+    app: dongtai-worker-es
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dongtai-worker-es
+  template:
+    metadata:
+      labels:
+        app: dongtai-worker-es
+    spec:
+      containers:
+        - name: dongtai-worker-es-container
+          image: registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:VERSION
+          command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
+          args: [ "worker-es" ]
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "1000m"
+              memory: 2000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-iast-config.ini
+      imagePullSecrets:
+        - name: aliyun-registry-secret
