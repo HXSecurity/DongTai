@@ -20,6 +20,5 @@ elif [ "$1" = "worker-other" ]; then
 elif [ "$1" = "beat" ]; then
   celery -A dongtai_conf beat -l info $CONCURRENCY  --pidfile= --scheduler django_celery_beat.schedulers:DatabaseScheduler
 else
-	# /usr/local/bin/uwsgi --ini /opt/dongtai/dongtai_conf/conf/uwsgi.ini --stats :3031 --stats-http
-	/usr/local/bin/uwsgi --ini /opt/dongtai/dongtai_conf/conf/uwsgi.ini
+	/usr/local/bin/uwsgi --ini /opt/dongtai/dongtai_conf/conf/uwsgi.ini $CONCURRENCY
 fi
