@@ -375,11 +375,11 @@ def get_vul_list_from_elastic_searchv2(user_id,
         Q('terms', user_id=user_id_list),
         Q('terms', is_del=[0]),
     ]
-    order_list = ['-id', '-package_name.keyword']
+    order_list = ['-id']
     if order:
         order_list.insert(0, {order: {'order': order_type}})
     if bind_project_id:
-        must_query.append(Q('terms', project_id=[bind_project_id]))
+        must_query.append(Q('terms', project_id=[int(bind_project_id)]))
     if project_version_id:
         must_query.append(Q('terms', project_version_id=[project_version_id]))
     if languages:
@@ -399,8 +399,6 @@ def get_vul_list_from_elastic_searchv2(user_id,
         ]))
     after_table = cache.get(hashkey, {})
     after_key = after_table.get(page, None)
-    print(hashkey)
-    print(after_table)
     extra_dict = {'collapse': {'field': 'signature_value.keyword'}}
     after_fields = []
     for info in order_list:
@@ -434,7 +432,7 @@ def get_vul_list_from_elastic_searchv2(user_id,
                 else:
                     field = info
                     opt = 'gt'
-            sub_after_should_query.append(Q('range', **{field: {opt: value}}))
+            sub_after_must_query.append(Q('range', **{field: {opt: value}}))
         must_query.append(
             Q('bool',
               must=sub_after_must_query,
@@ -444,6 +442,7 @@ def get_vul_list_from_elastic_searchv2(user_id,
     search = IastAssetDocument.search().query(Q(
         'bool',
         must=must_query)).extra(**extra_dict).sort(*order_list)[:page_size * WINDOW_SIZE]
+    logger.debug(f"search_query : {search.to_dict()}")
     resp = search.execute()
     vuls = [i._d_ for i in list(resp)]
     for i in vuls:
