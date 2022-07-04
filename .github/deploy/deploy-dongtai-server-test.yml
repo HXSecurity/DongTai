@@ -89,12 +89,9 @@ spec:
             - name: configfile
               mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
               subPath: config.ini
-          env:
-            - name: CONCURRENCY
-              value: --concurrency=2
           resources:
             limits:
-              cpu: "1"
+              cpu: "500m"
               memory: 1000Mi
             requests:
               cpu: "500m"
