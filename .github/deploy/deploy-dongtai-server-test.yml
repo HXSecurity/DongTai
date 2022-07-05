@@ -28,8 +28,8 @@ spec:
               mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
               subPath: config.ini
           env:
-            - name: CONCURRENCY
-              value: --concurrency=2
+            - name: DONGTAI_CONCURRENCY
+              value: --concurrency=2 --stats :3031 --stats-http
           resources:
             limits:
               cpu: "1"
@@ -135,7 +135,7 @@ spec:
               mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
               subPath: config.ini
           env:
-            - name: CONCURRENCY
+            - name: DONGTAI_CONCURRENCY
               value: --concurrency=2
           resources:
             limits:
@@ -182,7 +182,7 @@ spec:
               mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
               subPath: config.ini
           env:
-            - name: CONCURRENCY
+            - name: DONGTAI_CONCURRENCY
               value: --concurrency=2
           resources:
             limits:
@@ -229,7 +229,7 @@ spec:
               mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
               subPath: config.ini
           env:
-            - name: CONCURRENCY
+            - name: DONGTAI_CONCURRENCY
               value: --concurrency=2
           resources:
             limits:
@@ -276,7 +276,7 @@ spec:
               mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
               subPath: config.ini
           env:
-            - name: CONCURRENCY
+            - name: DONGTAI_CONCURRENCY
               value: --concurrency=2
           resources:
             limits:
@@ -323,7 +323,7 @@ spec:
               mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
               subPath: config.ini
           env:
-            - name: CONCURRENCY
+            - name: DONGTAI_CONCURRENCY
               value: --concurrency=2
           resources:
             limits:
