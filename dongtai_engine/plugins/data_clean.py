@@ -9,7 +9,7 @@ from time import time
 from celery.apps.worker import logger
 
 
-#@shared_task
+@shared_task(queue='dongtai-periodic-task')
 def data_cleanup(days: int):
     delete_time_stamp = int(time()) - 60 * 60 * 24 * days
     MethodPool.objects.filter(update_time__lte=delete_time_stamp).delete()
