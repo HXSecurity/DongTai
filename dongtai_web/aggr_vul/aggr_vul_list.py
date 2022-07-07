@@ -301,8 +301,6 @@ def get_vul_list_from_elastic_search(user_id,
         language_ids, search_keyword, page_size, bind_project_id,
         project_version_id
     ])
-    if page == 1:
-        cache.delete(hashkey)
     after_table = cache.get(hashkey, {})
     after_key = after_table.get(page, None)
     extra_dict = {}
