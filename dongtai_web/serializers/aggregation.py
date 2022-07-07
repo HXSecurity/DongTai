@@ -7,8 +7,12 @@ from rest_framework.serializers import ValidationError
 
 
 class AggregationArgsSerializer(serializers.Serializer):
-    page_size = serializers.IntegerField(default=20, help_text=_('Number per page'))
-    page = serializers.IntegerField(default=1, help_text=_('Page index'))
+    page_size = serializers.IntegerField(default=20,
+                                         min_value=1,
+                                         help_text=_('Number per page'))
+    page = serializers.IntegerField(default=1,
+                                    min_value=1,
+                                    help_text=_('Page index'))
 
     order_type = serializers.IntegerField(default=0, help_text=_('Order by'))
     order_type_desc = serializers.IntegerField(default=0, help_text=_('Order by desc'))
@@ -75,4 +79,3 @@ class AggregationArgsSerializer(serializers.Serializer):
             "status_id_str": _("Length limit exceeded")
         }
     )
-
