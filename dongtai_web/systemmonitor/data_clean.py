@@ -14,13 +14,15 @@ from django_celery_beat.models import (
     CrontabSchedule,
     PeriodicTask,
 )
+from dongtai_engine.plugins.data_clean import data_cleanup
 
-
-class ProfilepostArgsSer(serializers.Serializer):
+class DataCleanSettingsSer(serializers.Serializer):
     clean_time = serializers.TimeField(format="%H:%M:%S")
     days_before = serializers.IntegerField()
     enable = serializers.BooleanField()
 
+class DataCleanDoItNowArgsSer(serializers.Serializer):
+    days_before = serializers.IntegerField()
 
 class DataCleanEndpoint(UserEndPoint):
 
@@ -34,14 +36,15 @@ class DataCleanEndpoint(UserEndPoint):
         if profile is None:
             return R.failure(
                 msg=_("Failed to get {} configuration").format(key))
-        return R.success(data={key: profile})
+        data = json.loads(profile)
+        return R.success(data=data)
 
     @extend_schema_with_envcheck(summary=_('Profile modify'),
-                                 request=ProfilepostArgsSer,
+                                 request=DataCleanSettingsSer,
                                  description=_("Modifiy Profile with key"),
                                  tags=[_('Profile')])
     def post(self, request):
-        ser = ProfilepostArgsSer(data=request.data)
+        ser = DataCleanSettingsSer(data=request.data)
         try:
             if ser.is_valid(True):
                 pass
@@ -79,4 +82,21 @@ class DataCleanEndpoint(UserEndPoint):
                 }, key=key)
         except Exception as e:
             return R.failure(msg=_("Update {} failed").format(key))
-        return R.success(data={key: obj.value})
+        data = json.loads(value)
+        return R.success(data=data)
+
+class DataCleanDoItNowEndpoint(UserEndPoint):
+
+    @extend_schema_with_envcheck(summary=_('Get Profile'),
+                                 request=DataCleanDoItNowArgsSer,
+                                 description=_("Get Profile with key"),
+                                 tags=[_('Profile')])
+    def post(self, request):
+        ser = DataCleanDoItNowArgsSer(data=request.data)
+        try:
+            if ser.is_valid(True):
+                pass
+        except ValidationError as e:
+            return R.failure(data=e.detail)
+        data_cleanup.delay(days=ser.data['days_before'])
+        return R.success()
