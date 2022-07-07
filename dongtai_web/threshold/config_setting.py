@@ -362,6 +362,8 @@ class AgentThresholdConfigV2(TalentAdminEndPoint, viewsets.ViewSet):
             underscore(item.__name__): item
             for item in able_to_search
         }
+        if enumname not in able_to_search_dict.keys():
+            return R.failure()
         return R.success(data=convert_choices_to_value_dict(
             able_to_search_dict.get(enumname)))
 
