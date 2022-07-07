@@ -223,7 +223,7 @@ DATABASES = {
         'PORT': config.get("mysql", 'port'),
         'OPTIONS': {
             'init_command':
-            'SET max_execution_time=20000;SET NAMES utf8mb4;SET collation_server=utf8mb4_general_ci;SET collation_database=utf8mb4_general_ci; ',
+            'SET NAMES utf8mb4;SET collation_server=utf8mb4_general_ci;SET collation_database=utf8mb4_general_ci; ',
             'charset': 'utf8mb4',
             'use_unicode': True,
         },
