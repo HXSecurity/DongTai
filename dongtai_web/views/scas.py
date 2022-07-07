@@ -375,7 +375,7 @@ def get_vul_list_from_elastic_searchv2(user_id,
         Q('terms', user_id=user_id_list),
         Q('terms', is_del=[0]),
     ]
-    order_list = ['-id']
+    order_list = ['-signature_value.keyword']
     if order:
         order_list.insert(0, {order: {'order': order_type}})
     if bind_project_id:
@@ -399,6 +399,8 @@ def get_vul_list_from_elastic_searchv2(user_id,
         ]))
     after_table = cache.get(hashkey, {})
     after_key = after_table.get(page, None)
+    if page != 1 and not after_key:
+        return []
     extra_dict = {'collapse': {'field': 'signature_value.keyword'}}
     after_fields = []
     for info in order_list:
@@ -414,30 +416,36 @@ def get_vul_list_from_elastic_searchv2(user_id,
             field = 'package_name'
         after_fields.append(field)
     if after_key:
-        sub_after_must_query = []
-        sub_after_should_query = []
-        for info, value in zip(order_list, after_key):
-            field = ''
-            opt = ''
-            if isinstance(info, dict):
-                field = list(info.keys())[0]
-                if info[field]['order'] == 'desc':
-                    opt = 'lte'
-                else:
-                    opt = 'gte'
-            if isinstance(info, str):
-                if info.startswith('-'):
-                    field = info[1::]
-                    opt = 'lt'
-                else:
-                    field = info
-                    opt = 'gt'
-            sub_after_must_query.append(Q('range', **{field: {opt: value}}))
+        #sub_after_must_query = []
+        sub_after_must_not_query = []
+        #sub_after_should_query = []
+        sub_after_must_not_query.append(
+            Q('terms', **{"signature_value.keyword": after_key}))
+        #for info, value in zip(order_list, after_key):
+        #    field = ''
+        #    opt = ''
+        #    if isinstance(info, dict):
+        #        field = list(info.keys())[0]
+        #        if info[field]['order'] == 'desc':
+        #            opt = 'lte'
+        #        else:
+        #            opt = 'gte'
+        #    if isinstance(info, str):
+        #        if info.startswith('-'):
+        #            field = info[1::]
+        #            opt = 'lt'
+        #        else:
+        #            field = info
+        #            opt = 'gt'
+        #    sub_after_must_query.append(Q('range', **{field: {opt: value}}))
         must_query.append(
-            Q('bool',
-              must=sub_after_must_query,
-              should=sub_after_should_query,
-              minimum_should_match=1))
+            Q(
+                'bool',
+                must_not=sub_after_must_not_query,
+                #must=sub_after_must_query,
+                #should=sub_after_should_query,
+                #minimum_should_match=1
+            ))
     a = Q('bool', must=must_query)
     search = IastAssetDocument.search().query(Q(
         'bool',
@@ -445,26 +453,30 @@ def get_vul_list_from_elastic_searchv2(user_id,
     logger.debug(f"search_query : {search.to_dict()}")
     resp = search.execute()
     vuls = [i._d_ for i in list(resp)]
+    if not after_key:
+        after_key = []
+    for i in range(WINDOW_SIZE):
+        chunk = vuls[page_size * i:page_size * (i + 1)]
+        if len(chunk) != page_size:
+            break
+        new_after_key = after_key.copy()
+        new_after_key.extend([i['signature_value'] for i in chunk])
+        #latest_data = chunk[-1]
+        #after_key = [
+        #    latest_data.get(after_field) for after_field in after_fields
+        #]
+        after_table[page + i + 1] = new_after_key
+        after_key = new_after_key
     for i in vuls:
         if '@timestamp' in i.keys():
             del i['@timestamp']
         if 'signature_value.keyword' in i.keys():
             del i['signature_value.keyword']
     res_vul = [Asset(**i) for i in vuls]
-    for i in range(WINDOW_SIZE):
-        chunk = res_vul[page_size * i:page_size * (i + 1)]
-        if len(chunk) != page_size:
-            break
-        latest_data = chunk[-1]
-        #after_key = [
-        #    getattr(latest_data, order),
-        #    getattr(latest_data, 'id')
-        #]
-        after_key = [getattr(latest_data, after_field)for after_field in after_fields]
-        after_table[page + i + 1] = after_key
     #if resp.hits:
     #    afterkey = resp.hits[-1].meta['sort']
     #    after_table[page + 1] = afterkey
+    print(after_table)
     cache.set(hashkey, after_table)
     return res_vul[:page_size]
 
