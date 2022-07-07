@@ -388,10 +388,12 @@ from dongtai_web.scaupload.urls import urlpatterns as scaupload_urls
 from dongtai_web.apitimelog.urls import urlpatterns as apitimelog_urls
 from dongtai_web.dongtai_sca.urls import urlpatterns as sca_urls
 from dongtai_web.versioncontrol.urls import urlpatterns as versioncontrol_urls
+from dongtai_web.systemmonitor.urls import urlpatterns as systemmonitor_urls
 
 urlpatterns.extend(scaupload_urls)
 urlpatterns.extend(apitimelog_urls)
 urlpatterns.extend(sca_urls)
 urlpatterns.extend(versioncontrol_urls)
+urlpatterns.extend(systemmonitor_urls)
 
 urlpatterns = format_suffix_patterns(urlpatterns)
