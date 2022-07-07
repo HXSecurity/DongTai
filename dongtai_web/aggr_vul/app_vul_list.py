@@ -235,14 +235,20 @@ def get_vul_list_from_elastic_search(user_id,
     extra_data_dic = {ex_data['id']: ex_data for ex_data in extra_datas}
     vuls = [i._d_ for i in list(resp)]
     vul_incorrect_id = []
+    agent_values = ('language', 'project_name', 'server__container',
+                    'bind_project_id', 'id')
+    strategy_values = ('vul_name', )
     for vul in vuls:
         if vul['id'] not in extra_data_dic.keys():
             vul_incorrect_id.append(vul['id'])
             strategy_dic = IastStrategyModel.objects.filter(
-                pk=vul['strategy_id']).values('vul_name').first()
+                pk=vul['strategy_id']).values(*strategy_values).first()
             agent_dic = IastAgent.objects.filter(pk=vul['agent_id']).values(
-                'language', 'project_name', 'server__container',
-                'bind_project_id', 'id').first()
+                *agent_values).first()
+            if not strategy_dic:
+                strategy_dic = {i: '' for i in strategy_values}
+            if not agent_dic:
+                agent_dic = {i: '' for i in agent_values}
             for k, v in strategy_dic.items():
                 vul['strategy__' + k] = v
             for k, v in agent_dic.items():
