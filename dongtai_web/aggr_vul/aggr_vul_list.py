@@ -373,7 +373,8 @@ def get_vul_list_from_elastic_search(user_id,
         AssetVul = namedtuple('AssetVul', keys)
         for i in vuls:
             i['vul_cve_nums'] = json.loads(i['vul_cve_nums'])
-            del i['@timestamp']
+            if '@timestamp' in i.keys():
+                del i['@timestamp']
             for key in keys:
                 if key not in i.keys():
                     i[key] = None
