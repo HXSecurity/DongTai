@@ -30,7 +30,9 @@ class AssetProjects(UserEndPoint):
         try:
             auth_users = self.get_auth_users(request.user)
             asset_queryset = self.get_auth_assets(auth_users)
-            asset_aggr = Asset.objects.filter(id=aggr_id).first()
+            asset = Asset.objects.filter(id=aggr_id).first()
+            asset_aggr = AssetAggr.objects.filter(
+                signature_value=asset.signature_value).first()
             if not asset_aggr:
                 return R.failure(msg=_('Components do not exist or no permission to access'))
 
