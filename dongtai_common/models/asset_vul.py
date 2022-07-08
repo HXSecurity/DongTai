@@ -119,6 +119,7 @@ class IastAssetVulnerabilityDocument(Document):
     update_time_desc = fields.IntegerField(attr="asset_vul.update_time_desc")
     vul_publish_time = fields.DateField(attr="asset_vul.vul_publish_time")
     vul_update_time = fields.DateField(attr="asset_vul.vul_update_time")
+    level_id = fields.IntegerField(attr="asset_vul.level_id")
 
     # from asset_vul_relation
     asset_vul_relation_id = fields.IntegerField(attr="id")
