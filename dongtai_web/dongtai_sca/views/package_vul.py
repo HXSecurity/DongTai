@@ -109,7 +109,7 @@ class AssetPackageVulList(UserEndPoint):
     def get(self, request, aggr_id):
         auth_users = self.get_auth_users(request.user)
         asset_queryset = self.get_auth_assets(auth_users)
-        asset_aggr = AssetAggr.objects.filter(id=aggr_id).first()
+        asset_aggr = Asset.objects.filter(id=aggr_id).first()
         if not asset_aggr:
             return R.failure(msg=_('Components do not exist or no permission to access'))
 
