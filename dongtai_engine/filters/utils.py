@@ -24,10 +24,13 @@ def parse_java_objects(objects_string: str):
     ]
     return JavaObjects(objects_classname, objects_attrs)
 
+
 from io import BytesIO
-from tempfile import TemporaryFile
+from tempfile import TemporaryFile, SpooledTemporaryFile
+
+
 def parse_headers_dict_from_bytes(header_bytes: str) -> dict:
-    with TemporaryFile() as fp:
+    with SpooledTemporaryFile(max_size=10000) as fp:
         fp.write(header_bytes)
         fp.seek(0)
         return dict(parse_headers(fp))
