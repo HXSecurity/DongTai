@@ -501,10 +501,10 @@ def mysql_search(where_conditions, where_conditions_dict, page_size,
             where_conditions.append(f"{order} >= %(after_order_value)s ")
 
             where_conditions_dict['after_order_value'] = after_order_value
-        where_conditions.append(f"id < %(after_order_id)s ")
+        where_conditions.append(f"signature_value < %(after_order_id)s ")
         where_conditions_dict['after_order_id'] = after_signature
 
-    order_conditions = ["id DESC", ]
+    order_conditions = ["signature_value DESC", ]
     order_conditions_dict = {"id": 'id',}
     if order_type == 'desc':
         order_conditions.insert(0, f"{order} DESC")
@@ -535,7 +535,7 @@ def mysql_search(where_conditions, where_conditions_dict, page_size,
         latest_data = chunk[-1]
         after_key = [
             getattr(latest_data, order),
-            getattr(latest_data, 'id')
+            getattr(latest_data, 'signature_value')
         ]
         after_table[page + i + 1] = after_key
     cache.set(hashkey, after_table)
