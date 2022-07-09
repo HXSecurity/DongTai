@@ -513,9 +513,9 @@ def mysql_search(where_conditions, where_conditions_dict, page_size,
     order_conditions_dict["field"] = order
     final_sql = """SELECT ia2.* FROM iast_asset ia2
         RIGHT JOIN
-        (SELECT signature_value as _1, MAX(dt) as _2 FROM iast_asset ia
+        (SELECT signature_value as _1, MAX(id) as _2 FROM iast_asset ia
         GROUP BY signature_value ) AS TMP ON
-        ia2.signature_value = TMP._1 
+        ia2.signature_value = TMP._1 AND ia2.id = TMP._2 
         WHERE {where_place}
         ORDER BY {order_place} LIMIT {size} ;""".format(
         where_place=' AND '.join(where_conditions)
