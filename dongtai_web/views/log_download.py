@@ -131,7 +131,7 @@ def file_newest_N_file_under_path(path: str, N: int) -> Result[int, str]:
             if os.path.isfile(os.path.join(path, f))
         ]
         paths = [os.path.join(path, basename) for basename in files]
-        return Ok(sorted(paths, key=os.path.getctime)[:N])
+        return Ok(sorted(paths, key=os.path.getctime, reverse=True)[:N])
     except (FileNotFoundError, ValueError) as e:
         return Err('file path error')
     except Exception as e:
