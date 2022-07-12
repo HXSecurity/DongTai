@@ -7,7 +7,7 @@ from dongtai_common.models.asset_vul import IastVulAssetRelation, IastAssetVulne
 from dongtai_common.models.agent_method_pool import MethodPool
 from time import time
 from celery.apps.worker import logger
-from dongtai_conf.setting import ELASTICSEARCH_STATE
+from dongtai_conf.settings import ELASTICSEARCH_STATE
 
 DELETE_BATCH_SIZE = 20000
 
