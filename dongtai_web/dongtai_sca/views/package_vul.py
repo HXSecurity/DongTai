@@ -155,12 +155,17 @@ class AssetPackageVulDetail(UserEndPoint):
         # 用户鉴权
         auth_users = self.get_auth_users(request.user)
         asset_queryset = self.get_auth_assets(auth_users)
-        auth_asset_vuls = self.get_auth_asset_vuls(asset_queryset)
 
         # 判断是否有权限
-        if not asset_vul or vul_id not in auth_asset_vuls:
-            return R.failure(msg=_('Vul do not exist or no permission to access'))
+        if not asset_vul or not permission_to_read_asset_vul(auth_users, vul_id):
+            return R.failure(
+                msg=_('Vul do not exist or no permission to access'))
 
         data = GetScaVulData(asset_vul, asset_queryset)
 
         return R.success(data=data)
+
+
+def permission_to_read_asset_vul(users, asset_vul_id: int):
+    return IastVulAssetRelation.objects.filter(
+        asset__user__in=users, asset_vul_id=asset_vul_id).exists()
