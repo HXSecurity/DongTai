@@ -43,11 +43,14 @@ def GetScaVulData(asset_vul, asset_queryset):
         signature_value=asset_vul.package_hash, version=asset_vul.package_version, project_id__gt=0
     ).values('project_id', 'id').all()
     if asset_queryset:
-        _temp_data = {_a['project_id']: _a['id'] for _a in asset_queryset}
-        asset_ids = [_temp_data[p_id] for p_id in _temp_data]
+        #_temp_data = {_a['project_id']: _a['id'] for _a in asset_queryset}
+        #asset_ids = [_temp_data[p_id] for p_id in _temp_data]
 
         project_list = []
-        projects_data = Asset.objects.filter(pk__in=asset_ids).values('project_name').all()
+        projects_data = Asset.objects.filter(
+            signature_value=asset_vul.package_hash,
+            version=asset_vul.package_version,
+            project_id__gt=0).values('project_name').all()
         for project in projects_data:
             project_list.append(project['project_name'])
 
