@@ -17,6 +17,11 @@ from configparser import ConfigParser
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import random
 
+import pymysql
+
+pymysql.install_as_MySQLdb()
+
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -222,8 +227,8 @@ DATABASES = {
         'HOST': config.get("mysql", 'host'),
         'PORT': config.get("mysql", 'port'),
         'OPTIONS': {
-            'init_command':
-            'SET NAMES utf8mb4;SET collation_server=utf8mb4_general_ci;SET collation_database=utf8mb4_general_ci; ',
+#            'init_command':
+#            'SET NAMES utf8mb4;SET collation_server=utf8mb4_general_ci;SET collation_database=utf8mb4_general_ci; ',
             'charset': 'utf8mb4',
             'use_unicode': True,
         },

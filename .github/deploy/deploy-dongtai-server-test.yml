@@ -136,7 +136,7 @@ spec:
               subPath: config.ini
           env:
             - name: DONGTAI_CONCURRENCY
-              value: --concurrency=16
+              value: -P gevent --concurrency=121
           resources:
             limits:
               cpu: "1"
