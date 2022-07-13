@@ -251,11 +251,11 @@ class ScaList(UserEndPoint):
             es_query['search_keyword'] = package_kw
     #     package_kw = pymysql.converters.escape_string(package_kw)
         if package_kw and package_kw.strip() != '':
-            package_kw = '%%{}%%'.format(package_kw)
+            package_kw = '%{}%'.format(package_kw)
             asset_aggr_where = asset_aggr_where + " and iast_asset_aggr.package_name like %s "
             list_sql_params.append(package_kw)
             count_sql_params.append(package_kw)
-            where_conditions.append('package_name LIKE %%(package_kw)s%')
+            where_conditions.append('package_name LIKE %(package_kw)s')
             where_conditions_dict['package_kw'] = package_kw
 
         order_by = '-vul_count'
