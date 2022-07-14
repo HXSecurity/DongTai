@@ -378,7 +378,7 @@ def get_vul_list_from_elastic_search(user_id,
                     i[key] = None
             i['id'] = i['id'][0]
             dic = {}
-            for k, v in i:
+            for k, v in i.items():
                 if k in keys:
                     dic[k] = v
             asset_vul = AssetVul(**dic)
