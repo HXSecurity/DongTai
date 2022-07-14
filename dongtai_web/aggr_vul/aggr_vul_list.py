@@ -367,7 +367,7 @@ def get_vul_list_from_elastic_search(user_id,
             'package_hash', 'license', 'cve_id', 'aql',
             'package_latest_version', 'asset_vul_relation_is_del', 'id'
         ]
-#        filter(lambda x: x != '@timestamp', vuls[0].keys())
+        #        filter(lambda x: x != '@timestamp', vuls[0].keys())
         AssetVul = namedtuple('AssetVul', keys)
         for i in vuls:
             i['vul_cve_nums'] = json.loads(i['vul_cve_nums'])
@@ -377,6 +377,10 @@ def get_vul_list_from_elastic_search(user_id,
                 if key not in i.keys():
                     i[key] = None
             i['id'] = i['id'][0]
-            asset_vul = AssetVul(**i)
+            dic = {}
+            for k, v in i:
+                if k in keys:
+                    dic[k] = v
+            asset_vul = AssetVul(**dic)
             namedtuple_vuls.append(asset_vul)
     return namedtuple_vuls
