@@ -603,11 +603,16 @@ DONGTAI_REDIS_ES_UPDATE_BATCH_SIZE = 500
 DONGTAI_MAX_BATCH_TASK_CONCORRENCY = 5
 
 ELASTICSEARCH_STATE = config.get('elastic_search', 'enable') == 'true'
+from typing import List
+
+def get_elasticsearch_conf() -> List[str]:
+    hoststr = config.get('elastic_search', 'host')
+    return hoststr.split(',')
 if ELASTICSEARCH_STATE:
     INSTALLED_APPS.append('django_elasticsearch_dsl')
     ELASTICSEARCH_DSL = {
         'default': {
-            'hosts': config.get('elastic_search', 'host')
+            'hosts': get_elasticsearch_conf()
         },
     }
     ASSET_VUL_INDEX = config.get('elastic_search', 'asset_vul_index')
