@@ -423,7 +423,90 @@ spec:
           configMap:
             name: dongtai-iast-config.ini
 ---
-
+# dongtai-worker-sca服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-worker-sca
+  namespace: CHANGE_THIS_NAMESPACE
+  annotations:
+    kubesphere.io/description: dongtai-worker-sca
+  labels:
+    app: dongtai-worker-sca
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dongtai-worker-sca
+  template:
+    metadata:
+      labels:
+        app: dongtai-worker-sca
+    spec:
+      containers:
+        - name: dongtai-worker-sca-container
+          image: dongtai/dongtai-server:CHANGE_THIS_VERSION
+          command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
+          args: [ "worker-sca" ]
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-iast-config.ini
+---
+# dongtai-worker-es服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dongtai-worker-es
+  namespace: CHANGE_THIS_NAMESPACE
+  annotations:
+    kubesphere.io/description: dongtai-worker-es
+  labels:
+    app: dongtai-worker-es
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dongtai-worker-es
+  template:
+    metadata:
+      labels:
+        app: dongtai-worker-es
+    spec:
+      containers:
+        - name: dongtai-worker-es-container
+          image: dongtai/dongtai-server:CHANGE_THIS_VERSION
+          command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
+          args: [ "worker-es" ]
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: configfile
+              mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
+              subPath: config.ini
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 1000Mi
+            requests:
+              cpu: "500m"
+              memory: 1000Mi
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-iast-config.ini
+---
 #dongtai-logstash服务
 apiVersion: v1
 kind: Service
