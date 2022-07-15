@@ -35,10 +35,10 @@ class StrategyDelete(TalentAdminEndPoint):
         response_schema=_ResponseSerializer,
     )
     def delete(self, request, id_):
-        strategy = IastStrategyModel.objects.filter(id=id_).first()
-        hook_types = HookType.objects.filter(vul_strategy=strategy).all()
+        strategy = IastStrategyModel.objects.filter(pk=id_).first()
         if not strategy:
             return R.failure(msg=_('This strategy does not exist'))
+        hook_types = HookType.objects.filter(vul_strategy=strategy).all()
         strategy.state = DELETE
         strategy.save()
         for hook_type in hook_types:
