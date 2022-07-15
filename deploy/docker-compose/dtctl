@@ -414,7 +414,126 @@ EOF
     )
   fi
 
-  if [[ $(first_gt_second $CHANGE_THIS_VERSION 1.7.9) == true ]]; then
+  if [[ $(first_gt_second $CHANGE_THIS_VERSION 1.8.1) == true ]]; then
+     read -r -d '' DOCKER_COMPOSE_FILE <<EOM
+version: "2"
+services:
+  $MYSQL_STR
+  $REDIS_STR
+  dongtai-web:
+    image: $registry/dongtai-web:$DONGTAI_WEB_VER
+    restart: always
+    ports:
+      - "$WEB_SERVICE_PORT:80"
+    volumes:
+      - "$PWD/nginx.conf-1.8.0:/etc/nginx/nginx.conf"
+    depends_on:
+      - dongtai-server
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-server:
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+    restart: always
+    sysctls:
+      net.core.somaxconn: 1024
+    volumes:
+      - iast-vol:/tmp/logstash/
+      - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-task:
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "beat"]
+    volumes:
+      - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-beat:
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-beat"]
+    volumes:
+      - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-other:
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-other"]
+    volumes:
+      - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-high-freq:
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-high-freq"]
+    volumes:
+      - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+    dongtai-worker-sca:
+      image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+      restart: always
+      entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-sca"]
+      volumes:
+        - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+      logging:
+        driver: "json-file"
+        options:
+          max-size: "10m"
+    dongtai-worker-es:
+      image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+      restart: always
+      entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-es"]
+      volumes:
+        - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+      logging:
+        driver: "json-file"
+        options:
+          max-size: "10m"
+  dongtai-logrotate:
+    image: "$registry/dongtai-logrotate:$DONGTAI_SERVER_VER"
+    restart: always
+    user: root
+    volumes:
+      - iast-vol:/tmp/logstash/
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-logstash:
+    image: "$registry/dongtai-logstash:$DONGTAI_SERVER_VER"
+    restart: always
+    user: root
+    environment:
+      - DATABASE=${MYSQL_IP}/${MYSQL_DATABASES}
+      - USERNAME=${MYSQL_USERNAME}
+      - PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - iast-vol:/tmp/logstash/
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+volumes:
+  mysql-vol:
+  iast-vol:
+EOM
+  elif [[ $(first_gt_second $CHANGE_THIS_VERSION 1.7.9) == true ]]; then
      read -r -d '' DOCKER_COMPOSE_FILE <<EOM
 version: "2"
 services:
