@@ -1158,15 +1158,27 @@ if [ ! 0 == $# ]; then # If options provided then
   "index")
     ES_HOST=""
     ES_ALIAS="dongtai-iast"
-
+    if [ ! 0 == $# ]; then # if options provided
+      while getopts ":t" optname; do
+        case "$optname" in
+        "t")
+          read -p "请输入您要创建的 elasticsearch 索引前缀名: 如 dongtai-iast :" ES_ALIA
+          if [ -z "$ES_ALIA" ]; then
+            Info "将使用默认前缀名: $ES_ALIAS"
+          else
+            ES_ALIAS=$(echo $ES_ALIA | tr "[A-Z]" "[a-z]" | sed 's/[^ -z]/x/g')
+            Info "索引前缀名已经转换为小写 请记录 $ES_ALIAS"
+          fi
+          ;;
+        ":") ;;
+        "?")
+          Error "Unknown option $OPTARG"
+          exit 1
+          ;;
+        esac
+      done
+    fi
     function dongtai_es() {
-      #read -p "请输入您要创建的 elasticsearch 索引前缀名: 如 dongtai-iast :" ES_ALIA
-      #if [ -z "$ES_ALIA" ]; then
-      #  Info "将使用默认前缀名: $ES_ALIAS"
-      #else
-      #  ES_ALIAS=$(echo $ES_ALIA | tr "[A-Z]" "[a-z]" | sed 's/[^ -z]/x/g')
-      #  Info "索引前缀名已经转换为小写 请记录 $ES_ALIAS"
-      #fi
       read -p "请输入您的 elasticsearch 地址: 如 http://127.0.0.1:9200   :" ES_IP
       read -p "请输入您的 elasticsearch 用户: 如 elastic (无密码直接回车):" ES_USERNAME
       read -p "请输入您的 elasticsearch 密码: 如 123456  (无密码直接回车):" ES_PASSWORD
