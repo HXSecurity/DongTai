@@ -485,26 +485,26 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
-    dongtai-worker-sca:
-      image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
-      restart: always
-      entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-sca"]
-      volumes:
-        - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
-      logging:
-        driver: "json-file"
-        options:
-          max-size: "10m"
-    dongtai-worker-es:
-      image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
-      restart: always
-      entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-es"]
-      volumes:
-        - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
-      logging:
-        driver: "json-file"
-        options:
-          max-size: "10m"
+  dongtai-worker-sca:
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-sca"]
+    volumes:
+      - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-es:
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-es"]
+    volumes:
+      - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
   dongtai-logrotate:
     image: "$registry/dongtai-logrotate:$DONGTAI_SERVER_VER"
     restart: always
