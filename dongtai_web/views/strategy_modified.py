@@ -38,7 +38,8 @@ class StrategyModified(TalentAdminEndPoint):
         data = {k: v for k, v in request.data.items() if k in fields}
         strategy = IastStrategyModel.objects.filter(
             pk=id_).first()
-        if not HookType.objects.filter(vul_strategy=strategy).exists():
+        if not strategy or not HookType.objects.filter(
+                vul_strategy=strategy).exists():
             del data['vul_type']
         _update(strategy, data)
         HookType.objects.filter(vul_strategy=strategy,
