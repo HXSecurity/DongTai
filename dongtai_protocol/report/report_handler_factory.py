@@ -37,11 +37,20 @@ class ReportHandler:
                 # is_core_running 0 未运行，1运行中，2已卸载
                 if isCoreInstalled == 0:
                     is_core_running = 2
+                    IastAgent.objects.filter(
+                        user=user,
+                        id=agentId).update(actual_running_status=2)
                 else:
                     if isCoreRunning == 1:
                         is_core_running = 1
+                        IastAgent.objects.filter(
+                            user=user,
+                            id=agentId).update(actual_running_status=1)
                     else:
                         is_core_running = 0
+                        IastAgent.objects.filter(
+                            user=user,
+                            id=agentId).update(actual_running_status=2)
 
                 IastAgent.objects.filter(user=user,id=agentId).update(is_core_running=is_core_running)
             # web hook

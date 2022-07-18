@@ -11,6 +11,11 @@ from rest_framework import serializers
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from dongtai_web.serializers.agent import AgentToggleArgsSerializer
 from dongtai_web.views import AGENT_STATUS
+from collections import defaultdict
+
+
+STATUS_MAPPING = defaultdict(lambda: 1, {3: 1, 4: 2})
+
 
 _ResponseSerializer = get_response_serializer(
     status_msg_keypair=(((201, _('Suspending ...')), ''), ))
@@ -51,6 +56,8 @@ class AgentCoreStatusUpdate(UserEndPoint):
             agent_ids = [int(agent_id)]
 
         if agent_ids:
+            except_running_status = STATUS_MAPPING[core_status]
+            #Here could be simply to such as "control_status in statusData.keys()"
             statusData = AGENT_STATUS.get(core_status,{})
             control_status = statusData.get("value",None)
             if control_status is None:
@@ -68,7 +75,11 @@ class AgentCoreStatusUpdate(UserEndPoint):
             else:
                 # 普通用户
                 queryset = IastAgent.objects.filter(user=user)
-            queryset.filter(id__in=agent_ids).update(control=core_status, is_control=1, latest_time=int(time.time()))
+            queryset.filter(id__in=agent_ids).update(
+                except_running_status=except_running_status,
+                control=core_status,
+                is_control=1,
+                latest_time=int(time.time()))
             # for agent_id in agent_ids:
             #     agent = IastAgent.objects.filter(user=request.user, id=agent_id).first()
             #     if agent is None:
@@ -106,7 +117,10 @@ class AgentCoreStatusUpdateALL(UserEndPoint):
         else:
             # 普通用户
             queryset = IastAgent.objects.filter(user=user)
-        queryset.filter(online=1).update(control=core_status,
-                                         is_control=1,
-                                         latest_time=int(time.time()))
+        except_running_status = STATUS_MAPPING[core_status]
+        queryset.filter(online=1).update(
+            except_running_status=except_running_status,
+            control=core_status,
+            is_control=1,
+            latest_time=int(time.time()))
         return R.success(msg=_('状态已下发'))
