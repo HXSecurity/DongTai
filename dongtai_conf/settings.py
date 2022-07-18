@@ -403,8 +403,9 @@ TEST_RUNNER = 'test.NoDbTestRunner'
 #    MIDDLEWARE.insert(0, 'apitimelog.middleware.RequestLogMiddleware')
 
 
-#if os.getenv('environment', None) == 'TEST' or os.getenv('PYTHONAGENT', None) == 'TRUE':
-#    MIDDLEWARE.insert(0, 'dongtai_agent_python.middlewares.django_middleware.FireMiddleware')
+if os.getenv('PYTHONAGENT', None) == 'TRUE':
+    MIDDLEWARE.insert(
+        0, 'dongtai_agent_python.middlewares.django_middleware.FireMiddleware')
 if os.getenv('environment', None) == 'TEST' or os.getenv('SAVEEYE',
                                                          None) == 'TRUE':
     CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null', )
