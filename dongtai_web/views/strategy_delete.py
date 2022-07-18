@@ -34,7 +34,9 @@ class StrategyDelete(TalentAdminEndPoint):
         ),
         response_schema=_ResponseSerializer,
     )
-    def delete(self, request, id_):
+    def delete(self, request, id_: int):
+        if id_ <= 0:
+            return R.failure()
         strategy = IastStrategyModel.objects.filter(pk=id_).first()
         if not strategy:
             return R.failure(msg=_('This strategy does not exist'))
