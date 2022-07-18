@@ -63,6 +63,11 @@ class AgentListv2(UserEndPoint, ViewSet):
                 agent['memory_rate'] = get_memory(agent['heartbeat__memory'])
                 agent['cpu_rate'] = get_cpu(agent['heartbeat__cpu'])
                 agent['disk_rate'] = get_disk(agent['heartbeat__disk'])
+                agent['is_control'] = get_is_control(
+                    agent['actual_running_status'],
+                    agent['except_running_status'],
+                    agent['online'],
+                )
             data = {'agents': queryset, "summary": summary}
         except Exception as e:
             logger.error("agents pagenation_list error:{}".format(e))
@@ -106,12 +111,18 @@ def generate_filter(state: StateType) -> Q:
     if state == StateType.ALL:
         return Q()
     elif state == StateType.RUNNING:
-        return Q(online=1) & Q(is_core_running=1)
+        return Q(online=1) & Q(actual_running_status=1)
     elif state == StateType.STOP:
-        return Q(online=1) & ~Q(is_core_running=1)
+        return Q(online=1) & Q(actual_running_status=2)
     elif state == StateType.UNINSTALL:
         return Q(online=0)
 
+
+def get_is_control(actual_running_status: int, except_running_status: int,
+                   online: int) -> int:
+    if online and actual_running_status != except_running_status:
+        return 1
+    return 0
 
 def get_disk(jsonstr: str) -> str:
     if not jsonstr:
@@ -154,12 +165,12 @@ def get_memory(jsonstr: str) -> str:
 
 
 def cal_state(agent: dict) -> StateType:
-    if agent['online'] == 1 and agent['is_core_running'] == 1:
+    if agent['online'] == 1 and agent['actual_running_status'] == 1:
         return StateType.RUNNING
-    elif agent['online'] == 1 and agent['is_core_running'] != 1:
+    elif agent['online'] == 1 and agent['actual_running_status'] == 2:
         return StateType.STOP
-    elif agent['online'] == 0 and agent['is_core_running'] != 1:
-        return StateType.UNINSTALL
+    #elif agent['online'] == 0:
+    #    return StateType.UNINSTALL
     return StateType.UNINSTALL
 
 
@@ -169,4 +180,5 @@ def query_agent(filter_condiction=Q()) -> QuerySet:
         'language', 'server__ip', 'server__port', 'server__path',
         'server__hostname', 'heartbeat__memory', 'heartbeat__cpu',
         'heartbeat__disk', 'register_time', 'is_core_running', 'is_control',
-        'online', 'id', 'bind_project__id', 'version').order_by('-latest_time')
+        'online', 'id', 'bind_project__id', 'version', 'except_running_status',
+        'actual_running_status', 'state_status').order_by('-latest_time')
