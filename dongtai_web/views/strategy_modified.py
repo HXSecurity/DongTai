@@ -35,6 +35,9 @@ class StrategyModified(TalentAdminEndPoint):
         fields = [
             'vul_type', 'vul_name', 'vul_desc', 'vul_fix', 'state', 'level_id'
         ]
+        # here should refactor with serilizer.
+        if 'level_id' in request.data.keys() and request.data['level_id'] <= 0:
+            return R.failure()
         data = {k: v for k, v in request.data.items() if k in fields}
         strategy = IastStrategyModel.objects.filter(
             pk=id_).first()
