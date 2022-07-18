@@ -107,7 +107,8 @@ class GetAggregationVulList(UserEndPoint):
                 # 可利用性
                 if ser.validated_data.get("availability_str", ""):
                     availability_arr = turnIntListOfStr(ser.validated_data.get("availability_str", ""))
-                    # there is a bug
+                    # there is a bug, and it has been fix in validator.
+                    # in fact, a more reasonable approch is use serializer to handle the cover in prepose.
                     if 3 in availability_arr:
                         query_condition = query_condition + " and vul.have_article=0 and vul.have_poc=0 "
                     else:
