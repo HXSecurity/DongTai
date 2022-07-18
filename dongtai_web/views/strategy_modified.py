@@ -38,8 +38,9 @@ class StrategyModified(TalentAdminEndPoint):
         data = {k: v for k, v in request.data.items() if k in fields}
         strategy = IastStrategyModel.objects.filter(
             pk=id_).first()
-        if not strategy or not HookType.objects.filter(
-                vul_strategy=strategy).exists():
+        if not strategy:
+            return R.failure()
+        if not HookType.objects.filter(vul_strategy=strategy).exists():
             del data['vul_type']
         _update(strategy, data)
         HookType.objects.filter(vul_strategy=strategy,
@@ -47,13 +48,13 @@ class StrategyModified(TalentAdminEndPoint):
         HookType.objects.filter(vul_strategy=strategy,
                                 type=3).update(name=data['vul_name'])
         return R.success(data={'id': id_})
-        hook_type = HookType.objects.filter(pk=id_).first()
-        _update(hook_type, data)
-        strategy = IastStrategyModel.objects.filter(
-            hook_type=hook_type.id).first()
-        if strategy:
-            _update(strategy, data)
-        return R.success(data={"id": id_})
+        #hook_type = HookType.objects.filter(pk=id_).first()
+        #_update(hook_type, data)
+        #strategy = IastStrategyModel.objects.filter(
+        #    hook_type=hook_type.id).first()
+        #if strategy:
+        #    _update(strategy, data)
+        #return R.success(data={"id": id_})
 
 
 def _update(model, dic):
