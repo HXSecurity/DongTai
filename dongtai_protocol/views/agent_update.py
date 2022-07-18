@@ -27,7 +27,7 @@ class AgentUpdateEndPoint(OpenApiEndPoint):
             server_port = int(param.get('serverPort', None))
             protocol = param.get('protocol', '')
         except Exception as e:
-            logger.info(e, exc_info=True)
+            logger.error(e, exc_info=True)
             return R.failure(msg="参数错误")
         logger.info(f"agent_id:{agent_id} update_fields:{param}")
         ip = ''

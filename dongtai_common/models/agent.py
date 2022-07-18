@@ -56,6 +56,9 @@ class IastAgent(models.Model):
     alias = models.CharField(default='', max_length=255, blank=True, null=True)
     startup_time = models.IntegerField(default=0, null=False)
     register_time = models.IntegerField(default=0, null=False)
+    actual_running_status = models.IntegerField(default=1, null=False)
+    except_running_status = models.IntegerField(default=1, null=False)
+    state_status = models.IntegerField(default=1, null=False)
 
 
     class Meta:
