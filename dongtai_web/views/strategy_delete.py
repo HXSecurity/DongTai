@@ -44,6 +44,9 @@ class StrategyDelete(TalentAdminEndPoint):
         strategy.state = DELETE
         strategy.save()
         for hook_type in hook_types:
+            # need to check why language_id show 0
+            if hook_type.language_id == 0:
+                continue
             hook_strategies = hook_type.strategies.all()
             for hook_strategy in hook_strategies:
                 hook_strategy.enable = const.DELETE
