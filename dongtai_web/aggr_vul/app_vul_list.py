@@ -27,6 +27,9 @@ from dongtai_common.common.utils import make_hash
 from dongtai_conf.settings import ELASTICSEARCH_STATE
 from dongtai_engine.elatic_search.data_correction import data_correction_interpetor
 
+
+INT_LIMIT: int = 2**64 -1
+
 class GetAppVulsList(UserEndPoint):
 
     @ extend_schema_with_envcheck(
@@ -128,10 +131,11 @@ class GetAppVulsList(UserEndPoint):
                         page_size=page_size,
                         **es_query)
                 else:
+                    if begin_num > INT_LIMIT or end_num > INT_LIMIT:
+                        return R.failure()
                     vul_data = queryset.values(*tuple(fields)).order_by(*tuple(order_list))[begin_num:end_num]
         except ValidationError as e:
             return R.failure(data=e.detail)
-
         if vul_data:
             for item in vul_data:
                 item['level_name'] = APP_LEVEL_RISK.get(str(item['level_id']),"")
