@@ -295,8 +295,8 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
 
             return R.success(data={'id': agent_id, 'coreAutoStart': core_auto_start})
         except Exception as e:
-            logger.error(e)
-            return R.failure(msg="探针注册失败，原因：{reason}".format(reason=e))
+            logger.error("探针注册失败，原因：{reason}".format(reason=e), exc_info=True)
+            return R.failure(msg="探针注册失败")
 
     @staticmethod
     def get_agent_id(token, project_name, user, current_project_version_id):

@@ -39,8 +39,8 @@ class UserPasswordReset(TalentAdminEndPoint):
                 return R.failure(msg=msg)
         except ValueError as e:
             msg = _('UserID must be a numeric')
-            logger.error(msg)
+            logger.error(msg, exc_info=True)
         except Exception as e:
             msg = _('Password reset failed, reasons: {E}').format(e)
-            logger.error(msg)
-        return R.failure(msg=msg)
+            logger.error(msg, exc_info=True)
+        return R.failure(msg="Password reset failed")
