@@ -14,6 +14,7 @@ from dongtai_protocol.report.report_handler_factory import ReportHandler
 from rest_framework.views import APIView
 from django.http import JsonResponse
 
+logger = logging.getLogger('dongtai.openapi')
 
 class ReportUploadEndPoint(OpenApiEndPoint):
     name = "api-v1-report-upload"
@@ -33,4 +34,5 @@ class ReportUploadEndPoint(OpenApiEndPoint):
             data = ReportHandler.handler(report, request.user)
             return R.success(msg="report upload success.", data=data)
         except Exception as e:
-            return R.failure(msg=f"report upload failed, reason: {e}")
+            logger.error(f"report upload failed, reason: {e}", exc_info=True)
+            return R.failure(msg="report upload failed")

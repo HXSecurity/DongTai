@@ -319,6 +319,11 @@ class TalentAdminEndPoint(EndPoint):
 
 
 class R:
+    """
+    Anyway, to prevent information exposure through an exception ,don't directly return exception message in response .
+    ref: https://cwe.mitre.org/data/definitions/497.html
+    ref: https://cwe.mitre.org/data/definitions/209.html
+    """
     @staticmethod
     def success(status=201, data=None, msg=_("success"), page=None, **kwargs):
         resp_data = {"status": status, "msg": msg}
