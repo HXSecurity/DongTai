@@ -37,7 +37,9 @@ def chunked_queryset(queryset, chunk_size):
         start_pk = end_pk
 
 
-@shared_task(queue='dongtai-periodic-task')
+@shared_task(queue='dongtai-periodic-task',
+             time_limit=60 * 60 * 2,
+             soft_time_limit=60 * 60 * 4)
 def data_cleanup(days: int):
     delete_time_stamp = int(time()) - 60 * 60 * 24 * days
     if ELASTICSEARCH_STATE:
@@ -48,5 +50,8 @@ def data_cleanup(days: int):
     else:
         # use _raw_delete to reduce the delete time and memory usage.
         # it could aviod to load every instance into memory.
-        qs = MethodPool.objects.filter(update_time__lte=delete_time_stamp)
+        latest_id = MethodPool.objects.filter(
+            update_time__lte=delete_time_stamp).order_by('-id').values_list(
+                'id', flat=True).first()
+        qs = MethodPool.objects.filter(pk__lte=latest_id)
         qs._raw_delete(qs.db)
