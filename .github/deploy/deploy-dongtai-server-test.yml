@@ -57,7 +57,7 @@ spec:
     - name: http
       protocol: TCP
       port: 80
-      targetPort: 80
+      targetPort: 8000
   selector:
     app: dongtai-server
   type: ClusterIP
@@ -94,6 +94,8 @@ spec:
             - name: configfile
               mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
               subPath: config.ini
+            - name: log-path
+              mountPath: /tmp/logstash
           resources:
             limits:
               cpu: "500m"
@@ -105,6 +107,9 @@ spec:
         - name: configfile
           configMap:
             name: dongtai-iast-config.ini
+        - name: log-path
+          persistentVolumeClaim:
+            claimName: app-agent-pvc
       imagePullSecrets:
         - name: aliyun-registry-secret
 ---
