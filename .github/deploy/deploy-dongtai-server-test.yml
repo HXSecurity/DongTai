@@ -9,6 +9,7 @@ metadata:
     kubesphere.io/description: dongtai-server
   labels:
     app: dongtai-server
+    version: v1
 spec:
   replicas: 1
   selector:
@@ -18,6 +19,7 @@ spec:
     metadata:
       labels:
         app: dongtai-server
+        version: v1
     spec:
       containers:
         - name: dongtai-server-container
@@ -36,7 +38,7 @@ spec:
               memory: 1000Mi
             requests:
               cpu: "500m"
-              memory: 1000Mi
+              memory: 500Mi
       volumes:
         - name: configfile
           configMap:
@@ -52,9 +54,10 @@ metadata:
   namespace: iast-test
 spec:
   ports:
-    - port: 80
+    - name: http
       protocol: TCP
-      targetPort: 8000
+      port: 80
+      targetPort: 80
   selector:
     app: dongtai-server
   type: ClusterIP
@@ -69,6 +72,7 @@ metadata:
     kubesphere.io/description: dongtai-worker-task
   labels:
     app: dongtai-worker-task
+    version: v1
 spec:
   replicas: 1
   selector:
@@ -78,6 +82,7 @@ spec:
     metadata:
       labels:
         app: dongtai-worker-task
+        version: v1
     spec:
       containers:
         - name: dongtai-worker-task-container
@@ -95,7 +100,7 @@ spec:
               memory: 1000Mi
             requests:
               cpu: "500m"
-              memory: 1000Mi
+              memory: 500Mi
       volumes:
         - name: configfile
           configMap:
@@ -114,6 +119,7 @@ metadata:
     kubesphere.io/description: dongtai-worker-high-freq
   labels:
     app: dongtai-worker-high-freq
+    version: v1
 spec:
   replicas: 1
   selector:
@@ -123,6 +129,7 @@ spec:
     metadata:
       labels:
         app: dongtai-worker-high-freq
+        version: v1
     spec:
       containers:
         - name: dongtai-worker-high-freq-container
@@ -140,10 +147,10 @@ spec:
           resources:
             limits:
               cpu: "1"
-              memory: 2000Mi
+              memory: 1000Mi
             requests:
               cpu: "500m"
-              memory: 1000Mi
+              memory: 500Mi
       volumes:
         - name: configfile
           configMap:
@@ -161,6 +168,7 @@ metadata:
     kubesphere.io/description: dongtai-worker-beat
   labels:
     app: dongtai-worker-beat
+    version: v1
 spec:
   replicas: 1
   selector:
@@ -170,6 +178,7 @@ spec:
     metadata:
       labels:
         app: dongtai-worker-beat
+        version: v1
     spec:
       containers:
         - name: dongtai-worker-beat-container
@@ -190,7 +199,7 @@ spec:
               memory: 1000Mi
             requests:
               cpu: "500m"
-              memory: 1000Mi
+              memory: 500Mi
       volumes:
         - name: configfile
           configMap:
@@ -208,6 +217,7 @@ metadata:
     kubesphere.io/description: dongtai-worker-other
   labels:
     app: dongtai-worker-other
+    version: v1
 spec:
   replicas: 1
   selector:
@@ -217,6 +227,7 @@ spec:
     metadata:
       labels:
         app: dongtai-worker-other
+        version: v1
     spec:
       containers:
         - name: dongtai-worker-other-container
@@ -234,10 +245,10 @@ spec:
           resources:
             limits:
               cpu: "1"
-              memory: 2000Mi
+              memory: 1000Mi
             requests:
               cpu: "500m"
-              memory: 1000Mi
+              memory: 500Mi
       volumes:
         - name: configfile
           configMap:
@@ -255,6 +266,7 @@ metadata:
     kubesphere.io/description: dongtai-worker-sca
   labels:
     app: dongtai-worker-sca
+    version: v1
 spec:
   replicas: 1
   selector:
@@ -264,6 +276,7 @@ spec:
     metadata:
       labels:
         app: dongtai-worker-sca
+        version: v1
     spec:
       containers:
         - name: dongtai-worker-sca-container
@@ -281,10 +294,10 @@ spec:
           resources:
             limits:
               cpu: "1"
-              memory: 2000Mi
+              memory: 1000Mi
             requests:
               cpu: "500m"
-              memory: 1000Mi
+              memory: 500Mi
       volumes:
         - name: configfile
           configMap:
@@ -302,6 +315,7 @@ metadata:
     kubesphere.io/description: dongtai-worker-es
   labels:
     app: dongtai-worker-es
+    version: v1
 spec:
   replicas: 1
   selector:
@@ -311,6 +325,7 @@ spec:
     metadata:
       labels:
         app: dongtai-worker-es
+        version: v1
     spec:
       containers:
         - name: dongtai-worker-es-container
@@ -328,10 +343,10 @@ spec:
           resources:
             limits:
               cpu: "1"
-              memory: 2000Mi
+              memory: 1000Mi
             requests:
               cpu: "500m"
-              memory: 1000Mi
+              memory: 500Mi
       volumes:
         - name: configfile
           configMap:
