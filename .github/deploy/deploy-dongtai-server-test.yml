@@ -34,7 +34,7 @@ spec:
               value: --processes 2 --stats :3031 --stats-http
           resources:
             limits:
-              cpu: "1"
+              cpu: "500m"
               memory: 1000Mi
             requests:
               cpu: "500m"
@@ -151,7 +151,7 @@ spec:
               value: -P gevent --concurrency=121
           resources:
             limits:
-              cpu: "1"
+              cpu: "500m"
               memory: 1000Mi
             requests:
               cpu: "500m"
@@ -200,7 +200,7 @@ spec:
               value: --concurrency=2
           resources:
             limits:
-              cpu: "1"
+              cpu: "500m"
               memory: 1000Mi
             requests:
               cpu: "500m"
@@ -249,7 +249,7 @@ spec:
               value: --concurrency=2
           resources:
             limits:
-              cpu: "1"
+              cpu: "500m"
               memory: 1000Mi
             requests:
               cpu: "500m"
@@ -298,7 +298,7 @@ spec:
               value: --concurrency=2
           resources:
             limits:
-              cpu: "1"
+              cpu: "500m"
               memory: 1000Mi
             requests:
               cpu: "500m"
@@ -347,7 +347,7 @@ spec:
               value: --concurrency=2
           resources:
             limits:
-              cpu: "1"
+              cpu: "500m"
               memory: 1000Mi
             requests:
               cpu: "500m"
