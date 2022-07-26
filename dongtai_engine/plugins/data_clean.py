@@ -59,7 +59,7 @@ def data_cleanup(days: int):
         first_id = MethodPool.objects.filter(
             update_time__lte=delete_time_stamp).order_by('id').values_list(
                 'id', flat=True).first()
-        if not any(latest_id, first_id):
+        if not any([latest_id, first_id]):
             logger.info("no data for clean up")
         batch_clean(latest_id, first_id, 10000)
         #qs = MethodPool.objects.filter(pk__lte=latest_id)
