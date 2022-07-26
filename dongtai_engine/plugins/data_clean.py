@@ -83,6 +83,6 @@ async def loop_main(range_list: List[Tuple[int, int]]):
 
 def batch_clean(upper_id: int, lower_id: int, batch_size: int):
     chunk_range = list(
-        zip(range(lower_id, upper_id, batch_size),
+        zip(range(lower_id + batch_size, upper_id + batch_size, batch_size),
             range(lower_id, upper_id, batch_size)))
     asyncio.run(loop_main(chunk_range))
