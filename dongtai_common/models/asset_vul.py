@@ -55,6 +55,7 @@ class IastVulAssetRelation(models.Model):
                                db_column='status_id')
     is_del = models.SmallIntegerField(blank=True, null=False, default=0)
     create_time = models.IntegerField(blank=True, null=True)
+    vul_dependency_path = models.JSONField(blank=True, null=True, default=[])
 
     class Meta:
         managed = get_managed()
