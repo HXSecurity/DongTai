@@ -38,7 +38,7 @@ configs["CELERY_ROUTES"] = {
     # normal
     "dongtai_engine.tasks.search_vul_from_method_pool": {'exchange': 'dongtai-method-pool-scan', 'routing_key': 'dongtai-method-pool-scan'},
     "dongtai_engine.tasks.search_vul_from_replay_method_pool": {'exchange': 'dongtai-replay-vul-scan', 'routing_key': 'dongtai-replay-vul-scan'},
-    "dongtai_engine.tasks.update_one_sca": {'exchange': 'dongtai-sca-task', 'routing_key': 'dongtai-sca-task'},
+    "dongtai_web.dongtai_sca.scan.utils.update_one_sca": {'exchange': 'dongtai-sca-task', 'routing_key': 'dongtai-sca-task'},
     "dongtai_engine.preheat.function_flush": {'exchange': 'dongtai-function-flush-data', 'routing_key': 'dongtai-function-flush-data'},
     "dongtai_common.utils.es.handle_save": {'exchange': 'dongtai-es-save-task', 'routing_key': 'dongtai-es-save-task'},
     "dongtai_common.utils.es.handle_batch_save": {'exchange': 'dongtai-es-save-task', 'routing_key': 'dongtai-es-save-task'},

@@ -59,6 +59,7 @@ class Asset(models.Model):
     department = models.ForeignKey(Department, models.DO_NOTHING, blank=True, null=True, default=-1)
     # 租户id
     talent = models.ForeignKey(Talent, models.DO_NOTHING, blank=True, null=True, default=-1)
+    safe_version_list = models.JSONField(blank=True, null=True, default=[])
 
     class Meta:
         managed = get_managed()
