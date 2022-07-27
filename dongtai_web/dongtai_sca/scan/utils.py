@@ -89,16 +89,22 @@ def get_package_aql(name: str, ecosystem: str, version: str) -> str:
     return f"{ecosystem}:{name}:{version}"
 
 
+from celery import shared_task
+
+@shared_task(queue='dongtai-sca-task')
 def update_one_sca(agent_id,
                    package_path,
                    package_signature,
                    package_name,
                    package_algorithm,
                    package_version=''):
+    logger.info(
+        f'SCA检测开始 [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm} {package_version}]'
+    )
     agent = IastAgent.objects.filter(id=agent_id).first()
     if agent.language == "JAVA":
         packages = get_package(ecosystem='maven',
-                              package_hash=package_signature)
+                               package_hash=package_signature)
     else:
         packages = get_package_vul(aql=package_name)
     for package in packages:
@@ -144,16 +150,34 @@ def stat_severity(serveritys) -> defaultdict:
     return dic
 
 from dongtai_common.models.asset import Asset
-from packaging.version import Version, parse
+from packaging.version import _BaseVersion
+
+
+class DongTaiScaVersion(_BaseVersion):
+    """
+    Internal Temprorary Version Solution.
+    Use to compare version.
+    """
+
+    def __init__(self, version: str) -> None:
+        version_code = ""
+        version_list = version.split('.')[0:4]
+        while len(version_list) != 5:
+            version_list.append("0")
+        for _version in version_list:
+            version_code += _version.zfill(5)
+        self._key = version_code
+        self._version = version
 
 
 def get_nearest_version(version_str: str, version_str_list: List[str]) -> str:
-    return min(filter(lambda x: x > parse(version_str), map(parse,
-                                                            version_str_list)))._version
+    return min(
+        filter(lambda x: x > DongTaiScaVersion(version_str),
+               map(lambda x: DongTaiScaVersion(x), version_str_list)))._version
 
 
 def get_latest_version(version_str_list: List[str]) -> str:
-    return max(map(parse, version_str_list))._version
+    return max(map(lambda x: DongTaiScaVersion(x), version_str_list))._version
 
 def get_cve_numbers(cve: Optional[str] = "",
                     cwe: Optional[list] = [],
@@ -205,6 +229,7 @@ def get_vul_path(base_aql: str,
 
 from dongtai_common.models.asset_vul import IastAssetVul, IastVulAssetRelation, IastAssetVulType
 
+
 def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                    version: str):
     aql = get_package_aql(package_name, ecosystem, version)
@@ -221,44 +246,61 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
         vul_dependency = get_vul_path(aql, vul['vul_package_path'])
         cve_numbers = get_cve_numbers(vul['cve'], vul['cwe_info'], vul['cnvd'],
                                       vul['cnnvd'])
-        safe_version = get_nearest_version(version, vul['safe_version'])
+        #safe_version = get_nearest_version(version, vul['safe_version'])
         vul_serial = get_vul_serial(vul['vul_title'], vul['cve'],
                                     vul['cwe_info'], vul['cnvd'], vul['cnnvd'])
         vul_level = get_vul_level_dict()[vul['severity']]
 
-        #still need?
-        #fix_version = get_nearest_version(version, vul['fixed'])
-        #latest_version = get_latest_version(vul['safe_version'])
+        #still need , save to asset_vul_relation
+        # nearest_fixed_version = get_nearest_version(version, vul['fixed'])
+        # save to asset latest_version
+        # latest_version = get_latest_version(vul['safe_version'])
 
-        # where to place?
-        #package_safe_version_list=vul['safe_version'],
-        #package_effected_version_list=vul['effected']
-        #package_fixed_version_list=vul['fixed']
+        # where to place? save_version save to asset
+        # package_safe_version_list = vul['safe_version']
+        # effected save to asset_vul_relation
+        package_effected_version_list = vul['effected']
+        package_fixed_version_list = vul['fixed']
+
+        # 兼容
+        #
+        asset_vul = IastAssetVul.objects.filter(
+            sid__in=[vul['cve'], vul['sid']]).first()
+        if asset_vul:
+            asset_vul.sid = vul['sid']
+            asset_vul.save()
         asset_vul = IastAssetVul.objects.create(
-            package_name=vul['name'],
-            level_id=vul_level,
-            vul_name=vul['vul_title'],
-            vul_detail=vul['description'],
-            aql=aql,
-            # package_hash=vul_package_hash, #???
-            package_version=version,
-            package_safe_version=safe_version,
-            #package_latest_version=latest_version,
-            package_language=package_language,
-            have_article=1 if vul['references'] else 0,
-            have_poc=1 if vul['poc'] else 0,
-            #cve_id=cve_relation.id,
-            cve_code=vul['cve'],
-            vul_cve_nums=cve_numbers,
-            vul_serial=vul_serial,
-            vul_publish_time=vul['publish_time'],
-            vul_update_time=vul['vul_change_time'],
-            update_time=timestamp,
-            update_time_desc=-timestamp,
-            create_time=timestamp)
-        asset_vul_relation = IastVulAssetRelation.objects.create(
+            sid=vul['sid'],
+            defaults={
+                "package_name": vul['name'],
+                "level_id": vul_level,
+                "vul_name": vul['vul_title'],
+                "vul_detail": vul['description'],
+                "aql": aql,
+                # package_hash=vul_package_hash, #???
+                "package_version": version,
+                #package_latest_version=latest_version,
+                "package_language": package_language,
+                "have_article": 1 if vul['references'] else 0,
+                "have_poc": 1 if vul['poc'] else 0,
+                #cve_id=cve_relation.id,
+                "vul_cve_nums": cve_numbers,
+                "vul_serial": vul_serial,
+                "vul_publish_time": vul['publish_time'],
+                "vul_update_time": vul['vul_change_time'],
+                "update_time": timestamp,
+                "update_time_desc": -timestamp,
+                "create_time": timestamp
+            },
+        )
+        asset_vul_relation, _ = IastVulAssetRelation.objects.update_or_create(
             asset_vul_id=asset_vul.id,
             asset_id=asset_id,
-            create_time=timestamp,
-            vul_dependency_path=vul_dependency,
-            status_id=1)
+            defaults={
+                "create_time": timestamp,
+                "vul_dependency_path": vul_dependency,
+                "effected_version_list": package_effected_version_list,
+                "fixed_version_list": package_fixed_version_list,
+                "status_id": 1,
+            },
+        )

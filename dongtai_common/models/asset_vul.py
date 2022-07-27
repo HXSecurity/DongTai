@@ -56,6 +56,9 @@ class IastVulAssetRelation(models.Model):
     is_del = models.SmallIntegerField(blank=True, null=False, default=0)
     create_time = models.IntegerField(blank=True, null=True)
     vul_dependency_path = models.JSONField(blank=True, null=True, default=[])
+    effected_version_list = models.JSONField(blank=True, null=True, default=[])
+    fixed_version_list = models.JSONField(blank=True, null=True, default=[])
+    nearest_fixed_version = models.JSONField(blank=True, null=True, default=[])
 
     class Meta:
         managed = get_managed()
