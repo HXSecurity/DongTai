@@ -44,5 +44,5 @@ uwsgitop
 django-redis==5.2.0
 packaging==21.3
 django-elasticsearch-dsl==7.2.2
+asyncio-gevent==0.2.1
 gevent
-eventlet
