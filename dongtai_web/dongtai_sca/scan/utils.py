@@ -3,13 +3,15 @@ from result import Ok, Err, Result
 import logging
 from requests.exceptions import ConnectionError, ConnectTimeout
 from requests.exceptions import RequestException
+
 logger = logging.getLogger("dongtai-webapi")
 import json
 from json.decoder import JSONDecodeError
 from typing import Optional, Callable, Any
 from typing import List, Dict, Tuple
 from requests import Response
-
+from dongtai_conf.settings import SCA_BASE_URL, SCA_TIMEOUT
+from urllib.parse import urljoin
 
 def request_get_res_data_with_exception(data_extract_func: Callable[
     [Response], Any] = lambda x: x,
@@ -42,7 +44,7 @@ def data_transfrom(response: Response) -> Tuple[int, Any]:
 def get_package_vul(aql: Optional[str] = None,
                     ecosystem: Optional[str] = None,
                     package_hash: Optional[str] = None) -> List[Dict]:
-    url = "http://192.168.0.64:8283/openapi/sca/v1/package_vul/"
+    url = urljoin(SCA_BASE_URL, "/openapi/sca/v1/package_vul/")
     if aql is not None:
         querystring = {"aql": aql}
     else:
@@ -53,31 +55,35 @@ def get_package_vul(aql: Optional[str] = None,
                                                    "GET",
                                                    url,
                                                    data=payload,
-                                                   params=querystring)
-    if isinstance(response, Err):
-        return []
-    _ , data = response.value
-    return data['data']
-
-def get_package(aql: Optional[str] = None,
-                ecosystem: Optional[str] = None,
-                package_hash: Optional[str] = None) -> List[Dict]:
-    url = "http://192.168.0.64:8283/openapi/sca/v1/package/"
-    if aql is not None:
-        querystring = {"aql": aql}
-    else:
-        querystring = {"ecosystem": ecosystem, "hash": package_hash}
-
-    payload = ""
-    response = request_get_res_data_with_exception(data_transfrom,
-                                                   "GET",
-                                                   url,
-                                                   data=payload,
-                                                   params=querystring)
+                                                   params=querystring,
+                                                   timeout=SCA_TIMEOUT)
     if isinstance(response, Err):
         return []
     _, data = response.value
     return data['data']
+
+
+def get_package(aql: Optional[str] = None,
+                ecosystem: Optional[str] = None,
+                package_hash: Optional[str] = None) -> List[Dict]:
+    url = urljoin(SCA_BASE_URL, "/openapi/sca/v1/package/")
+    if aql is not None:
+        querystring = {"aql": aql}
+    else:
+        querystring = {"ecosystem": ecosystem, "hash": package_hash}
+
+    payload = ""
+    response = request_get_res_data_with_exception(data_transfrom,
+                                                   "GET",
+                                                   url,
+                                                   data=payload,
+                                                   params=querystring,
+                                                   timeout=SCA_TIMEOUT)
+    if isinstance(response, Err):
+        return []
+    _, data = response.value
+    return data['data']
+
 
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.asset import Asset
@@ -85,11 +91,13 @@ from dongtai_common.models.vul_level import IastVulLevel
 import time
 #from dongtai_web.dongtai_sca.utils import sca_scan_asset
 
+
 def get_package_aql(name: str, ecosystem: str, version: str) -> str:
     return f"{ecosystem}:{name}:{version}"
 
 
 from celery import shared_task
+
 
 @shared_task(queue='dongtai-sca-task')
 def update_one_sca(agent_id,
@@ -110,9 +118,8 @@ def update_one_sca(agent_id,
     for package in packages:
         asset = Asset()
         new_level = IastVulLevel.objects.get(name="info")
-        aql = get_package_aql(package['name'],
-                                             package['ecosystem'],
-                                             package['version'])
+        aql = get_package_aql(package['name'], package['ecosystem'],
+                              package['version'])
         asset.package_name = aql
         asset.package_path = package_path
         asset.signature_value = package['hash']
@@ -139,6 +146,7 @@ def update_one_sca(agent_id,
         sca_scan_asset(asset.id, package['ecosystem'], package['name'],
                        package['version'])
 
+
 from collections import defaultdict
 from dongtai_common.models.asset_vul import IastAssetVul
 
@@ -148,6 +156,7 @@ def stat_severity(serveritys) -> defaultdict:
     for serverity in serveritys:
         dic[serverity] += 1
     return dic
+
 
 from dongtai_common.models.asset import Asset
 from packaging.version import _BaseVersion
@@ -171,6 +180,8 @@ class DongTaiScaVersion(_BaseVersion):
 
 
 def get_nearest_version(version_str: str, version_str_list: List[str]) -> str:
+    if len(version_str_list) == 0:
+        return version_str
     return min(
         filter(lambda x: x > DongTaiScaVersion(version_str),
                map(lambda x: DongTaiScaVersion(x), version_str_list)))._version
@@ -178,6 +189,7 @@ def get_nearest_version(version_str: str, version_str_list: List[str]) -> str:
 
 def get_latest_version(version_str_list: List[str]) -> str:
     return max(map(lambda x: DongTaiScaVersion(x), version_str_list))._version
+
 
 def get_cve_numbers(cve: Optional[str] = "",
                     cwe: Optional[list] = [],
@@ -205,6 +217,7 @@ def get_vul_level_dict() -> defaultdict:
         "low": 3
     })
 
+
 def get_ecosystem_language_dict() -> defaultdict:
     return defaultdict(lambda: 'JAVA', {
         'maven': 'JAVA',
@@ -212,6 +225,7 @@ def get_ecosystem_language_dict() -> defaultdict:
         "composer": 'PHP',
         "golang": 'GO'
     })
+
 
 def get_description(descriptions: List[Dict]) -> str:
     if not descriptions:
@@ -227,7 +241,10 @@ def get_vul_path(base_aql: str,
             vul_package_path)) + [base_aql]
 
 
-from dongtai_common.models.asset_vul import IastAssetVul, IastVulAssetRelation, IastAssetVulType
+from dongtai_common.models.asset_vul import (IastAssetVulTypeRelation,
+                                             IastAssetVul,
+                                             IastVulAssetRelation,
+                                             IastAssetVulType)
 
 
 def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
@@ -242,15 +259,17 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
            for k, v in res.items()})
     Asset.objects.filter(pk=asset_id).update(
         **{"vul_count": sum(res.values())})
+    safe_version = []
     for vul in package_vuls:
         vul_dependency = get_vul_path(aql, vul['vul_package_path'])
         cve_numbers = get_cve_numbers(vul['cve'], vul['cwe_info'], vul['cnvd'],
                                       vul['cnnvd'])
-        #safe_version = get_nearest_version(version, vul['safe_version'])
+        nearest_fixed_version = get_nearest_version(
+            version, [i['version'] for i in vul['fixed']])
         vul_serial = get_vul_serial(vul['vul_title'], vul['cve'],
                                     vul['cwe_info'], vul['cnvd'], vul['cnnvd'])
         vul_level = get_vul_level_dict()[vul['severity']]
-
+        safe_version = vul['safe_version']
         #still need , save to asset_vul_relation
         # nearest_fixed_version = get_nearest_version(version, vul['fixed'])
         # save to asset latest_version
@@ -264,12 +283,12 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
 
         # 兼容
         #
-        asset_vul = IastAssetVul.objects.filter(
-            sid__in=[vul['cve'], vul['sid']]).first()
+        asset_vul = IastAssetVul.objects.filter(sid='',
+                                                cve_code=vul['cve']).first()
         if asset_vul:
             asset_vul.sid = vul['sid']
             asset_vul.save()
-        asset_vul = IastAssetVul.objects.create(
+        asset_vul, _ = IastAssetVul.objects.update_or_create(
             sid=vul['sid'],
             defaults={
                 "package_name": vul['name'],
@@ -301,6 +320,18 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                 "vul_dependency_path": vul_dependency,
                 "effected_version_list": package_effected_version_list,
                 "fixed_version_list": package_fixed_version_list,
+                "nearest_fixed_version": nearest_fixed_version,
                 "status_id": 1,
             },
         )
+        if len(vul['cwe_info']) == 0:
+            vul['cwe_info'].append('')
+        for cwe_id in vul['cwe_info']:
+            type_, _ = IastAssetVulType.objects.get_or_create(cwe_id=cwe_id)
+            IastAssetVulTypeRelation.objects.create(asset_vul_id=asset_vul.id,
+                                                    asset_vul_type_id=type_.id)
+    nearest_safe_version = get_nearest_version(
+        version, [i['version'] for i in safe_version])
+    Asset.objects.filter(pk=asset_id).update(
+        safe_version_list=safe_version,
+        nearest_save_version=nearest_safe_version)
