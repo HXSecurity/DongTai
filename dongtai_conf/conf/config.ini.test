@@ -37,6 +37,7 @@ secret_key = vbjlvbxfvazjfprywuxgyclmvhtmselddsefxxlcixovmqfpgy
 
 [sca]
 base_url = http://52.80.75.225:8000
+timeout = 5
 
 [task]
 retryable = false
