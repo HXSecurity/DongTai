@@ -12,6 +12,7 @@ from typing import List, Dict, Tuple
 from requests import Response
 from dongtai_conf.settings import SCA_BASE_URL, SCA_TIMEOUT
 from urllib.parse import urljoin
+from dongtai_common.common.utils import cached_decorator
 
 def request_get_res_data_with_exception(data_extract_func: Callable[
     [Response], Any] = lambda x: x,
@@ -41,6 +42,7 @@ def data_transfrom(response: Response) -> Tuple[int, Any]:
     return [response.status_code, res_data]
 
 
+@cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60),)
 def get_package_vul(aql: Optional[str] = None,
                     ecosystem: Optional[str] = None,
                     package_hash: Optional[str] = None) -> List[Dict]:
@@ -63,6 +65,7 @@ def get_package_vul(aql: Optional[str] = None,
     return data['data']
 
 
+@cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60),)
 def get_package(aql: Optional[str] = None,
                 ecosystem: Optional[str] = None,
                 package_hash: Optional[str] = None) -> List[Dict]:
