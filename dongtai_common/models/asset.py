@@ -60,7 +60,7 @@ class Asset(models.Model):
     # 租户id
     talent = models.ForeignKey(Talent, models.DO_NOTHING, blank=True, null=True, default=-1)
     safe_version_list = models.JSONField(blank=True, null=True, default=list)
-    nearest_save_version = models.JSONField(blank=True, null=True, default=dict)
+    nearest_safe_version = models.JSONField(blank=True, null=True, default=dict)
 
     class Meta:
         managed = get_managed()
