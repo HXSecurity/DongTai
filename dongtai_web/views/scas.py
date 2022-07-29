@@ -495,17 +495,18 @@ def mysql_search(where_conditions, where_conditions_dict, page_size,
     if after_key:
         after_order_value,  after_signature = after_key
         if order_type == 'desc':
-            where_conditions.append(f"{order} <= %(after_order_value)s ")
-            where_conditions_dict['after_order_value'] = after_order_value
+            where_conditions.append(f"({order}, signature_value) < %(after_order_value)s ")
+            where_conditions_dict['after_order_value'] = (after_order_value, after_signature)
         else:
-            where_conditions.append(f"{order} >= %(after_order_value)s ")
-
-            where_conditions_dict['after_order_value'] = after_order_value
-        where_conditions.append(f"signature_value < %(after_order_id)s ")
-        where_conditions_dict['after_order_id'] = after_signature
+            where_conditions.append(f"({order}, signature_value) > %(after_order_value)s ")
+            where_conditions_dict['after_order_value'] = (after_order_value, after_signature)
+#        where_conditions.append(f"signature_value < %(after_order_id)s ")
+#        where_conditions_dict['after_order_id'] = after_signature
 
     order_conditions = ["signature_value DESC", ]
-    order_conditions_dict = {"id": 'id',}
+    order_conditions_dict = {
+#        "id": 'id',
+    }
     if order_type == 'desc':
         order_conditions.insert(0, f"{order} DESC")
     else:
@@ -515,7 +516,9 @@ def mysql_search(where_conditions, where_conditions_dict, page_size,
         RIGHT JOIN
         (SELECT signature_value as _1, MAX(id) as _2 FROM iast_asset ia
         WHERE {where_place}
-        GROUP BY signature_value ) AS TMP ON
+        GROUP BY signature_value 
+        ORDER BY {order_place}
+        ) AS TMP ON
         ia2.signature_value = TMP._1 AND ia2.id = TMP._2 
         ORDER BY {order_place} LIMIT {size} ;""".format(
         where_place=' AND '.join(where_conditions)
@@ -524,7 +527,7 @@ def mysql_search(where_conditions, where_conditions_dict, page_size,
         if order_conditions else 'NULL',
         size='%(size)s')
     base_dict = {'size': page_size * WINDOW_SIZE}
-    base_dict.update(order_conditions_dict)
+    #base_dict.update(order_conditions_dict)
     base_dict.update(where_conditions_dict)
     data = Asset.objects.raw(final_sql, params=base_dict)
     data = list(data)
