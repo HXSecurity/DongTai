@@ -28,6 +28,7 @@ class IastAssetVul(models.Model):
     have_article = models.SmallIntegerField(blank=True, null=True)
     have_poc = models.SmallIntegerField(blank=True, null=True)
     cve_code = models.CharField(max_length=64, blank=True, null=True)
+    sid = models.CharField(max_length=64, blank=True, null=True)
     cve_id = models.IntegerField(blank=True, null=True)
     vul_publish_time = models.DateTimeField(blank=True, null=True)
     vul_update_time = models.DateTimeField(blank=True, null=True)
@@ -55,6 +56,18 @@ class IastVulAssetRelation(models.Model):
                                db_column='status_id')
     is_del = models.SmallIntegerField(blank=True, null=False, default=0)
     create_time = models.IntegerField(blank=True, null=True)
+    vul_dependency_path = models.JSONField(blank=True,
+                                           null=True,
+                                           default=list)
+    effected_version_list = models.JSONField(blank=True,
+                                             null=True,
+                                             default=list)
+    fixed_version_list = models.JSONField(blank=True,
+                                          null=True,
+                                          default=list)
+    nearest_fixed_version = models.JSONField(blank=True,
+                                             null=True,
+                                             default=dict)
 
     class Meta:
         managed = get_managed()
