@@ -8,8 +8,13 @@ from dongtai_common.models.agent_method_pool import MethodPool
 from time import time
 from celery.apps.worker import logger
 from dongtai_conf.settings import ELASTICSEARCH_STATE
+from asgiref.sync import sync_to_async
+import asyncio
+from typing import List, Tuple
+import asyncio_gevent
 
-DELETE_BATCH_SIZE = 20000
+
+DELETE_BATCH_SIZE = 10000
 
 
 def chunked_queryset(queryset, chunk_size):
@@ -37,7 +42,9 @@ def chunked_queryset(queryset, chunk_size):
         start_pk = end_pk
 
 
-@shared_task(queue='dongtai-periodic-task')
+@shared_task(queue='dongtai-periodic-task',
+             time_limit=60 * 60 * 2,
+             soft_time_limit=60 * 60 * 4)
 def data_cleanup(days: int):
     delete_time_stamp = int(time()) - 60 * 60 * 24 * days
     if ELASTICSEARCH_STATE:
@@ -48,5 +55,37 @@ def data_cleanup(days: int):
     else:
         # use _raw_delete to reduce the delete time and memory usage.
         # it could aviod to load every instance into memory.
-        qs = MethodPool.objects.filter(update_time__lte=delete_time_stamp)
-        qs._raw_delete(qs.db)
+        latest_id = MethodPool.objects.filter(
+            update_time__lte=delete_time_stamp).order_by('-id').values_list(
+                'id', flat=True).first()
+        first_id = MethodPool.objects.filter(
+            update_time__lte=delete_time_stamp).order_by('id').values_list(
+                'id', flat=True).first()
+        if not any([latest_id, first_id]):
+            logger.info("no data for clean up")
+        batch_clean(latest_id, first_id, 10000)
+        #qs = MethodPool.objects.filter(pk__lte=latest_id)
+        #qs._raw_delete(qs.db)
+
+
+@sync_to_async(thread_sensitive=False)
+def data_clean_batch(upper_id: int, lower_id: int):
+    qs = MethodPool.objects.filter(pk__lt=upper_id, pk__gte=lower_id)
+    logger.info(f"data cleaning {upper_id}-{lower_id} ")
+    qs._raw_delete(qs.db)
+
+
+@asyncio_gevent.async_to_sync
+async def loop_main(range_list: List[Tuple[int, int]]):
+    coros = [
+        data_clean_batch(upper_id, lower_id)
+        for upper_id, lower_id in range_list
+    ]
+    await asyncio.gather(*coros)
+
+
+def batch_clean(upper_id: int, lower_id: int, batch_size: int):
+    chunk_range = list(
+        zip(range(lower_id + batch_size, upper_id + batch_size, batch_size),
+            range(lower_id, upper_id, batch_size)))
+    loop_main(chunk_range)

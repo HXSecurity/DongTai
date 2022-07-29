@@ -17,6 +17,7 @@ from dongtai_common.models import AGGREGATION_ORDER, LANGUAGE_ID_DICT, SHARE_CON
 from dongtai_conf.settings import ELASTICSEARCH_STATE
 
 logger = logging.getLogger("django")
+INT_LIMIT: int = 2**64 -1
 
 
 class GetAggregationVulList(UserEndPoint):
@@ -43,7 +44,9 @@ class GetAggregationVulList(UserEndPoint):
                 page = ser.validated_data['page']
                 begin_num = (page - 1) * page_size
                 end_num = page * page_size
-
+                # should refact into serilizer
+                if begin_num > INT_LIMIT or end_num > INT_LIMIT:
+                    return R.failure()
                 keywords = ser.validated_data.get("keywords", "")
                 es_query = {}
                 if keywords:

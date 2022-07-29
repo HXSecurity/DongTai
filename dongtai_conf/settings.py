@@ -639,3 +639,22 @@ else:
     ASSET_AGGR_INDEX = ''
     METHOD_POOL_INDEX = ''
     ASSET_INDEX = ''
+
+def is_gevent_monkey_patched() -> bool:
+    try:
+        from gevent import monkey
+    except ImportError:
+        return False
+    else:
+        return bool(monkey.saved)
+
+def set_asyncio_policy():
+    import asyncio_gevent
+    import asyncio
+    state = is_gevent_monkey_patched()
+    print(f"is in gevent patched : {state}")
+    if state:
+        asyncio.set_event_loop_policy(asyncio_gevent.EventLoopPolicy())
+
+set_asyncio_policy()
+
