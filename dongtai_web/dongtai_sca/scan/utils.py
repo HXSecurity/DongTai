@@ -283,7 +283,7 @@ def get_asset_level(res: dict):
     for k, v in level_map.items():
         if res[k] > 0:
             return v
-    return 5
+    return 4
 def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                    version: str):
     aql = get_package_aql(package_name, ecosystem, version)
