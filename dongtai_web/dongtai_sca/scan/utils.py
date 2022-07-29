@@ -363,4 +363,4 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
         version, [i['version'] for i in safe_version])
     Asset.objects.filter(pk=asset_id).update(
         safe_version_list=safe_version,
-        nearest_save_version=nearest_safe_version)
+        nearest_safe_version=nearest_safe_version)
