@@ -514,7 +514,10 @@ def mysql_search(where_conditions, where_conditions_dict, page_size,
     order_conditions_dict["field"] = order
     final_sql = """SELECT ia2.* FROM iast_asset ia2
         RIGHT JOIN
-        (SELECT signature_value as _1, MAX(id) as _2 FROM iast_asset ia
+        (SELECT signature_value as _1, MAX(id) as _2, ANY_VALUE(vul_count) as vul_count,
+        ANY_VALUE(language) as language , 
+        ANY_VALUE(license) as license , 
+        ANY_VALUE(level_id) as level_id FROM iast_asset ia
         WHERE {where_place}
         GROUP BY signature_value 
         ORDER BY {order_place}
