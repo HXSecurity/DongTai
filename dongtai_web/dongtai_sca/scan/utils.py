@@ -312,12 +312,13 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
 
         # 兼容
         #
-        asset_vul = IastAssetVul.objects.filter(
-            sid__isnull=True,
-            cve_code=vul['cve']).order_by('update_time').first()
-        if asset_vul:
-            asset_vul.sid = vul['sid']
-            asset_vul.save()
+        if not IastAssetVul.objects.filter(sid=vul['sid']).exists():
+            asset_vul = IastAssetVul.objects.filter(
+                sid__isnull=True,
+                cve_code=vul['cve']).order_by('update_time').first()
+            if asset_vul:
+                asset_vul.sid = vul['sid']
+                asset_vul.save()
         asset_vul, _ = IastAssetVul.objects.update_or_create(
             sid=vul['sid'],
             defaults={
