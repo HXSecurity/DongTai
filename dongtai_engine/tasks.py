@@ -300,7 +300,7 @@ def get_project_agents(agent):
     return agents
 
 
-#@shared_task(queue='dongtai-sca-task')
+@shared_task(queue='dongtai-sca-task')
 def update_one_sca(agent_id, package_path, package_signature, package_name, package_algorithm, package_version=''):
     """
     根据SCA数据库，更新SCA记录信息
