@@ -442,6 +442,8 @@ if os.getenv('environment', None) == 'TEST' or os.getenv('CPROFILE',
         'django_cprofile_middleware.middleware.ProfilerMiddleware')
 
 SCA_BASE_URL = config.get('sca', 'base_url')
+SCA_TIMEOUT = config.getint('sca', 'timeout')
+
 
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     SESSION_COOKIE_DOMAIN = config.get('other',
