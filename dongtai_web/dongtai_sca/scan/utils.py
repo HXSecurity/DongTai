@@ -3,7 +3,6 @@ from result import Ok, Err, Result
 import logging
 from requests.exceptions import ConnectionError, ConnectTimeout
 from requests.exceptions import RequestException
-
 logger = logging.getLogger("dongtai-webapi")
 import json
 from json.decoder import JSONDecodeError
@@ -13,16 +12,29 @@ from requests import Response
 from dongtai_conf.settings import SCA_BASE_URL, SCA_TIMEOUT
 from urllib.parse import urljoin
 from dongtai_common.common.utils import cached_decorator
+from dongtai_common.models.profile import IastProfile
+from json.decoder import JSONDecodeError
+from http import HTTPStatus
+
+def get_sca_token() -> str:
+    profilefromdb = IastProfile.objects.filter(key='sca_token').values_list(
+        'value', flat=True).first()
+    if profilefromdb:
+        return profilefromdb
+    return ''
 
 def request_get_res_data_with_exception(data_extract_func: Callable[
-    [Response], Any] = lambda x: x,
+    [Response], Result] = lambda x: x,
                                         *args,
                                         **kwargs) -> Result:
     try:
         response = requests.request(*args, **kwargs)
         logger.debug(f"response content: {response.content}")
         logger.debug(f"response content status_code: {response.status_code}")
-        return Ok(data_extract_func(response))
+        res = data_extract_func(response)
+        if isinstance(res, Err):
+            return Err
+        return Ok(res.value)
     except (ConnectionError, ConnectTimeout):
         return Err("ConnectionError with target server")
     except JSONDecodeError:
@@ -37,10 +49,23 @@ def request_get_res_data_with_exception(data_extract_func: Callable[
         return Err("Exception")
 
 
-def data_transfrom(response: Response) -> Tuple[int, Any]:
-    res_data = json.loads(response.content)
-    return [response.status_code, res_data]
-
+def data_transfrom(response: Response) -> Result[List[Dict], str]:
+    if response.status_code == HTTPStatus.FORBIDDEN:
+        return Err('Rate Limit Exceeded')
+    try:
+        res_data = json.loads(response.content)
+        return Ok(res_data['data'])
+    except JSONDecodeError as e:
+        logger.debug(e, exc_info=True)
+        logger.info(f'JSONDecodeError content: {response.content}')
+        return Err('Failed')
+    except KeyError as e:
+        logger.debug(e, exc_info=True)
+        logger.info(f'content form not match content: {response.content}')
+        return Err('Failed')
+    except Exception as e:
+        logger.error(f"unexcepted Exception : {e}", exc_info=True)
+        return Err('Failed')
 
 @cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60),)
 def get_package_vul(aql: Optional[str] = None,
@@ -51,18 +76,19 @@ def get_package_vul(aql: Optional[str] = None,
         querystring = {"aql": aql}
     else:
         querystring = {"ecosystem": ecosystem, "hash": package_hash}
-
+    headers = {"Token": get_sca_token()}
     payload = ""
-    response = request_get_res_data_with_exception(data_transfrom,
+    res = request_get_res_data_with_exception(data_transfrom,
                                                    "GET",
                                                    url,
                                                    data=payload,
                                                    params=querystring,
+                                                   headers=headers,
                                                    timeout=SCA_TIMEOUT)
-    if isinstance(response, Err):
+    if isinstance(res, Err):
         return []
-    _, data = response.value
-    return data['data']
+    data = res.value
+    return data
 
 
 @cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60),)
@@ -74,19 +100,19 @@ def get_package(aql: Optional[str] = None,
         querystring = {"aql": aql}
     else:
         querystring = {"ecosystem": ecosystem, "hash": package_hash}
-
+    headers = {"Token": get_sca_token()}
     payload = ""
-    response = request_get_res_data_with_exception(data_transfrom,
-                                                   "GET",
-                                                   url,
-                                                   data=payload,
-                                                   params=querystring,
-                                                   timeout=SCA_TIMEOUT)
-    if isinstance(response, Err):
+    res = request_get_res_data_with_exception(data_transfrom,
+                                              "GET",
+                                              url,
+                                              data=payload,
+                                              params=querystring,
+                                              headers=headers,
+                                              timeout=SCA_TIMEOUT)
+    if isinstance(res, Err):
         return []
-    _, data = response.value
-    return data['data']
-
+    data = res.value
+    return data
 
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.asset import Asset
@@ -117,7 +143,7 @@ def update_one_sca(agent_id,
         packages = get_package(ecosystem='maven',
                                package_hash=package_signature)
     else:
-        packages = get_package_vul(aql=package_name)
+        packages = get_package(aql=package_name)
     for package in packages:
         asset = Asset()
         new_level = IastVulLevel.objects.get(name="info")
