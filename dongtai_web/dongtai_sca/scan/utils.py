@@ -149,6 +149,8 @@ def update_one_sca(agent_id,
         new_level = IastVulLevel.objects.get(name="info")
         aql = get_package_aql(package['name'], package['ecosystem'],
                               package['version'])
+        
+        # change to update_or_create 
         asset.package_name = aql
         asset.package_path = package_path
         asset.signature_value = package['hash']
@@ -276,6 +278,12 @@ from dongtai_common.models.asset_vul import (IastAssetVulTypeRelation,
                                              IastAssetVulType)
 
 
+def get_asset_level(res: dict):
+    level_map = {'critical': 1, 'high': 1, 'medium': 2, 'low': 3}
+    for k, v in level_map.items():
+        if res[k] > 0:
+            return v
+    return 5
 def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                    version: str):
     aql = get_package_aql(package_name, ecosystem, version)
@@ -283,6 +291,7 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
     res = stat_severity(map(lambda x: x["severity"], package_vuls))
     timestamp = int(time.time())
     package_language = get_ecosystem_language_dict()[ecosystem]
+    Asset.objects.filter(pk=asset_id).update(level_id=get_asset_level(res))
     Asset.objects.filter(pk=asset_id).update(
         **{f"vul_{k}_count": v
            for k, v in res.items()})
