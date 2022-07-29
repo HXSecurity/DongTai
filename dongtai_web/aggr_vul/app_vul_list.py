@@ -62,6 +62,9 @@ class GetAppVulsList(UserEndPoint):
                 page = ser.validated_data['page']
                 begin_num = (page - 1) * page_size
                 end_num = page * page_size
+                # should refact into serilizer
+                if begin_num > INT_LIMIT or end_num > INT_LIMIT:
+                    return R.failure()
                 keywords = ser.validated_data.get("keywords", "")
                 es_query = {}
                 # 从项目列表进入 绑定项目id
@@ -131,8 +134,6 @@ class GetAppVulsList(UserEndPoint):
                         page_size=page_size,
                         **es_query)
                 else:
-                    if begin_num > INT_LIMIT or end_num > INT_LIMIT:
-                        return R.failure()
                     vul_data = queryset.values(*tuple(fields)).order_by(*tuple(order_list))[begin_num:end_num]
         except ValidationError as e:
             return R.failure(data=e.detail)

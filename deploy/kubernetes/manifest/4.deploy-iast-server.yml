@@ -83,6 +83,15 @@ data:
     report_word = report/word
     report_excel = report/excel
 
+    [elastic_search]
+    enable = false
+    host = http://user:passwd@127.0.0.1:9200
+    vulnerability_index = dongtai-iast-alias-dongtai-v1-vulnerability
+    asset_aggr_index = dongtai-iast-alias-dongtai-v1-asset-aggr
+    asset_index = dongtai-iast-alias-dongtai-v1-asset
+    method_pool_index = dongtai-iast-alias-dongtai-v1-method-pool
+    asset_vul_index = dongtai-iast-alias-dongtai-v1-asset-vul
+
     [other]
     domain = http://localhost.domain/
     demo_session_cookie_domain = .huoxian.cn
@@ -118,6 +127,9 @@ spec:
         - name: dongtai-server-container
           image: dongtai/dongtai-server:CHANGE_THIS_VERSION
           imagePullPolicy: Always
+          env:
+            - name: DONGTAI_CONCURRENCY
+              value: --processes 4
           volumeMounts:
             - name: configfile
               mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
@@ -322,14 +334,17 @@ spec:
           command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
           args: [ "worker-high-freq" ]
           imagePullPolicy: Always
+          env:
+            - name: DONGTAI_CONCURRENCY
+              value: -P gevent --concurrency=121
           volumeMounts:
             - name: configfile
               mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
               subPath: config.ini
           resources:
             limits:
-              cpu: "500m"
-              memory: 1000Mi
+              cpu: "1000m"
+              memory: 2000Mi
             requests:
               cpu: "500m"
               memory: 1000Mi
@@ -364,6 +379,9 @@ spec:
           command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
           args: [ "worker-beat" ]
           imagePullPolicy: Always
+          env:
+            - name: DONGTAI_CONCURRENCY
+              value: --concurrency=12
           volumeMounts:
             - name: configfile
               mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
@@ -406,6 +424,9 @@ spec:
           image: dongtai/dongtai-server:CHANGE_THIS_VERSION
           command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
           args: [ "worker-other" ]
+          env:
+            - name: DONGTAI_CONCURRENCY
+              value: --concurrency=12
           imagePullPolicy: Always
           volumeMounts:
             - name: configfile
@@ -449,6 +470,9 @@ spec:
           command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
           args: [ "worker-sca" ]
           imagePullPolicy: Always
+          env:
+            - name: DONGTAI_CONCURRENCY
+              value: --concurrency=12
           volumeMounts:
             - name: configfile
               mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
@@ -491,6 +515,9 @@ spec:
           command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
           args: [ "worker-es" ]
           imagePullPolicy: Always
+          env:
+            - name: DONGTAI_CONCURRENCY
+              value: --concurrency=12
           volumeMounts:
             - name: configfile
               mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
