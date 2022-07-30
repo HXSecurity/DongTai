@@ -149,8 +149,8 @@ def update_one_sca(agent_id,
         new_level = IastVulLevel.objects.get(name="info")
         aql = get_package_aql(package['name'], package['ecosystem'],
                               package['version'])
-        
-        # change to update_or_create 
+
+        # change to update_or_create
         asset.package_name = aql
         asset.package_path = package_path
         asset.signature_value = package['hash']
@@ -171,7 +171,7 @@ def update_one_sca(agent_id,
             if agent.user_id:
                 asset.user_id = agent.user_id
 
-        asset.license = ''
+        asset.license = package['license']
         asset.dt = int(time.time())
         asset.save()
         sca_scan_asset(asset.id, package['ecosystem'], package['name'],
@@ -372,6 +372,9 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                                                     asset_vul_type_id=type_.id)
     nearest_safe_version = get_nearest_version(
         version, [i['version'] for i in safe_version])
+    latest_safe_version = get_latest_version(
+        version, [i['version'] for i in safe_version])
     Asset.objects.filter(pk=asset_id).update(
         safe_version_list=safe_version,
-        nearest_safe_version=nearest_safe_version)
+        nearest_safe_version=nearest_safe_version,
+        latest_safe_version=latest_safe_version)
