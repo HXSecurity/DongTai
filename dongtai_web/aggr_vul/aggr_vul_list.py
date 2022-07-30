@@ -29,7 +29,7 @@ def convert_cwe(cwe: [List, str]) -> str:
         return ""
     elif isinstance(cwe, str):
         return cwe.replace("CWE-", "")
-    return cwe
+    return ""
 
 
 
