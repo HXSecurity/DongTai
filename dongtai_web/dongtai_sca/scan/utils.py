@@ -131,14 +131,27 @@ from dongtai_web.dongtai_sca.models import PackageLicenseLevel
 
 def get_license_list(license_list_str: str) -> List[Dict]:
     license_list = license_list_str.split(",")
-    return PackageLicenseLevel.objects.filter(
-        identifier__in=license_list).values_list('identifier', 'level_id',
-                                                 'level_desc').all()
-
+    res = list(
+        PackageLicenseLevel.objects.filter(
+            identifier__in=license_list).values_list('identifier', 'level_id',
+                                                     'level_desc').all())
+    if res:
+        return res
+    return [{
+        'identifier': "non-standard",
+        "level_id": 0,
+        "level_desc": "允许商业集成"
+    }]
 
 def get_highest_license(license_list: List[Dict]) -> Dict:
-    return sorted(license_list, key=lambda x: x['level_id'], reverse=True)[0:]
-
+    res = sorted(license_list, key=lambda x: x['level_id'], reverse=True)
+    if res:
+        return res[0]
+    return {
+        'identifier': "non-standard",
+        "level_id": 0,
+        "level_desc": "允许商业集成"
+    }
 
 @shared_task(queue='dongtai-sca-task')
 def update_one_sca(agent_id,
@@ -188,7 +201,6 @@ def update_one_sca(agent_id,
         highest_license = get_highest_license(license_list)
         asset.highest_license = get_highest_license(license_list)
         asset.license = highest_license['identifier']
-        print(asset.license)
         asset.dt = int(time.time())
         asset.save()
         sca_scan_asset(asset.id, package['ecosystem'], package['name'],
@@ -390,7 +402,7 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
     nearest_safe_version = get_nearest_version(
         version, [i['version'] for i in safe_version])
     latest_safe_version = get_latest_version(
-        version, [i['version'] for i in safe_version])
+        [i['version'] for i in safe_version])
     Asset.objects.filter(pk=asset_id).update(
         safe_version_list=safe_version,
         nearest_safe_version=nearest_safe_version,
