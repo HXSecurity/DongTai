@@ -110,7 +110,7 @@ class ScaAssetSerializer(serializers.ModelSerializer):
             'language', 'signature_value', 'level', 'level_type', 'vul_count',
             'vul_high_count', 'vul_medium_count', 'vul_low_count',
             'vul_info_count', 'project_count', 'safe_version_list',
-            'nearest_safe_version', 'license', 'latest_safe_version'
+            'nearest_safe_version', 'license', 'latest_safe_version','license_list','highest_license'
         ]
 
     def get_level_type(self, obj):
