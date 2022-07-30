@@ -15,10 +15,27 @@ from dongtai_common.models.asset_vul import IastAssetVul,IastVulAssetRelation,Ia
 from dongtai_common.models import AGGREGATION_ORDER, LANGUAGE_ID_DICT, SHARE_CONFIG_DICT, APP_LEVEL_RISK, LICENSE_RISK, \
     SCA_AVAILABILITY_DICT
 from dongtai_conf.settings import ELASTICSEARCH_STATE
+from typing import List
+
 
 logger = logging.getLogger("django")
 INT_LIMIT: int = 2**64 -1
 
+
+def convert_cwe(cwe: [List, str]) -> str:
+    if isinstance(cwe, list):
+        if len(cwe) > 0:
+            return cwe[0].replace("CWE-", "")
+        return ""
+    elif isinstance(cwe, str):
+        return cwe.replace("CWE-", "")
+    return ""
+
+
+
+def get_cve_from_cve_nums(cve_nums: dict) -> str:
+    cwe = cve_nums.get("cwe", [])
+    return convert_cwe(cwe)
 
 class GetAggregationVulList(UserEndPoint):
     name = "api-v1-aggregation-vul-list"
@@ -191,7 +208,7 @@ class GetAggregationVulList(UserEndPoint):
                     "availability_str": availability_str,
                     # "type_name": item.type_name,
                 }
-                cwe = cur_data.get("vul_cve_nums",{}).get("cwe","").replace("CWE-","")
+                cwe = get_cve_from_cve_nums(cur_data["vul_cve_nums"])
                 if cwe:
                     cur_data['vul_cve_nums']['cwe_num'] = cwe
                 vul_ids.append(item.id)
