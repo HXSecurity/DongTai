@@ -126,6 +126,18 @@ def get_package_aql(name: str, ecosystem: str, version: str) -> str:
 
 
 from celery import shared_task
+from dongtai_web.dongtai_sca.models import PackageLicenseLevel
+
+
+def get_license_list(license_list_str: str) -> List[Dict]:
+    license_list = license_list_str.split(",")
+    return PackageLicenseLevel.objects.filter(
+        identifier__in=license_list).values_list('identifier', 'level_id',
+                                                 'level_desc').all()
+
+
+def get_highest_license(license_list: List[Dict]) -> Dict:
+    return sorted(license_list, key=lambda x: x['level_id'], reverse=True)[0:]
 
 
 @shared_task(queue='dongtai-sca-task')
@@ -170,8 +182,13 @@ def update_one_sca(agent_id,
             asset.user_id = -1
             if agent.user_id:
                 asset.user_id = agent.user_id
-
-        asset.license = package['license']
+        license_list = get_license_list(
+            package['license'] if package['license'] else "non-standard")
+        asset.license_list = license_list
+        highest_license = get_highest_license(license_list)
+        asset.highest_license = get_highest_license(license_list)
+        asset.license = highest_license['identifier']
+        print(asset.license)
         asset.dt = int(time.time())
         asset.save()
         sca_scan_asset(asset.id, package['ecosystem'], package['name'],
