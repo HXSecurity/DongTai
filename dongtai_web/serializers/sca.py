@@ -106,9 +106,11 @@ class ScaAssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Asset
         fields = [
-            'id', 'package_name', 'version', 'safe_version', 'last_version', 'language', 'signature_value', 'level',
-            'level_type', 'vul_count', 'vul_high_count', 'vul_medium_count', 'vul_low_count', 'vul_info_count',
-            'project_count'
+            'id', 'package_name', 'version', 'safe_version', 'last_version',
+            'language', 'signature_value', 'level', 'level_type', 'vul_count',
+            'vul_high_count', 'vul_medium_count', 'vul_low_count',
+            'vul_info_count', 'project_count', 'safe_version_list',
+            'nearest_safe_version', 'license', 'latest_safe_version'
         ]
 
     def get_level_type(self, obj):
