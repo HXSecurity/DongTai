@@ -248,6 +248,8 @@ def get_nearest_version(version_str: str, version_str_list: List[str]) -> str:
 
 
 def get_latest_version(version_str_list: List[str]) -> str:
+    if len(version_str_list) == 0:
+        return ""
     return max(map(lambda x: DongTaiScaVersion(x), version_str_list))._version
 
 
