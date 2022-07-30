@@ -13,7 +13,7 @@ class ExtenalApiTestCase(TestCase):
     def test_get_package_by_ecosystem_and_hash_java(self):
         res = get_package(
             ecosystem="maven",
-            package_hash="ef9012cf77810f8051d10e616d7ce82f4bd45bb8")
+            package_hash="3490508379d065fe3fcb80042b62f630f7588606")
         assert isinstance(res, list)
 
     def test_get_package_by_ecosystem_and_hash_go(self):
@@ -90,7 +90,7 @@ class AgentHardencodeTestCase(AgentTestCase):
         update_one_sca(
             self.agent_id,
             "/Users/xxx/spring-boot/2.3.2.RELEASE/org.springframework:spring-beans.jar",
-            "a4bb5ffad5564e4a0e25955e3a40b1c6158385b2",
+            "3490508379d065fe3fcb80042b62f630f7588606",
             "org.springframework:spring-beans.jar", "SHA-1")
 
     def test_update_one_sca_golang(self):
