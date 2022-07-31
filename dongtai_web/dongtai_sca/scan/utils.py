@@ -17,11 +17,13 @@ from json.decoder import JSONDecodeError
 from http import HTTPStatus
 
 def get_sca_token() -> str:
-    profilefromdb = IastProfile.objects.filter(key='sca_token').values_list(
-        'value', flat=True).first()
-    if profilefromdb:
-        return profilefromdb
-    return ''
+    #profilefromdb = IastProfile.objects.filter(key='sca_token').values_list(
+    #    'value', flat=True).first()
+    #if profilefromdb:
+    #    return profilefromdb
+    #return ''
+    from dongtai_conf.settings import SCA_TOKEN
+    return SCA_TOKEN
 
 def request_get_res_data_with_exception(data_extract_func: Callable[
     [Response], Result] = lambda x: x,
