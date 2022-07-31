@@ -36,6 +36,8 @@ port = 25
 #https://iast.huoxian.cn/openapi/sca/v1
 base_url = http://dongtai-server:8000/sca/v1
 timeout = 5
+token = 121212121212-1234-1234-1234-123444444444
+
 
 [task]
 retryable = true
