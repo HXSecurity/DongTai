@@ -443,6 +443,7 @@ if os.getenv('environment', None) == 'TEST' or os.getenv('CPROFILE',
 
 SCA_BASE_URL = config.get('sca', 'base_url')
 SCA_TIMEOUT = config.getint('sca', 'timeout')
+SCA_TOKEN = config.get('sca', 'token')
 
 
 if os.getenv('environment', None) in ('TEST', 'PROD'):
