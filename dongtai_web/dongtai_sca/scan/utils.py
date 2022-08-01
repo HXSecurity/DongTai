@@ -245,7 +245,7 @@ def get_nearest_version(version_str: str, version_str_list: List[str]) -> str:
     if len(version_str_list) == 0:
         return version_str
     return min(
-        filter(lambda x: x > DongTaiScaVersion(version_str),
+        filter(lambda x: x >= DongTaiScaVersion(version_str),
                map(lambda x: DongTaiScaVersion(x), version_str_list)))._version
 
 
