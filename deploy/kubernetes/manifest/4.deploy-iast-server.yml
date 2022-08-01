@@ -8,12 +8,12 @@ metadata:
   namespace: CHANGE_THIS_NAMESPACE
 spec:
   accessModes:
-  - ReadWriteMany
+  - ReadWriteOnce
   resources:
     requests:
       storage: 2G
   storageClassName: #您的存储类名字
-  #volumeMode: Filesystem
+  volumeMode: Filesystem
   #volumeName: 您的pv名字
 ---
 # 创建配置文件
@@ -536,7 +536,7 @@ spec:
 ---
 #dongtai-logstash服务
 apiVersion: v1
-kind: Service
+kind: StatefulSet
 metadata:
   name: dongtai-logstash-svc
   namespace: CHANGE_THIS_NAMESPACE
