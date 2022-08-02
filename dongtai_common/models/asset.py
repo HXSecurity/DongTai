@@ -66,6 +66,9 @@ class Asset(models.Model):
     latest_safe_version = models.JSONField(blank=True, null=True, default=str)
     license_list = models.JSONField(blank=True, null=True, default=list)
     highest_license = models.JSONField(blank=True, null=True, default=dict)
+    fix_plan = models.JSONField(blank=True, null=True, default=dict)
+    poc = models.JSONField(blank=True, null=True, default=dict)
+    descriptions = models.JSONField(blank=True, null=True, default=dict)
 
     class Meta:
         managed = get_managed()

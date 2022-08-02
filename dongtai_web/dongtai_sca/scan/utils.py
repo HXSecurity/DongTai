@@ -309,12 +309,20 @@ from dongtai_common.models.asset_vul import (IastAssetVulTypeRelation,
                                              IastAssetVulType)
 
 
-def get_asset_level(res: dict):
+def get_asset_level(res: dict) -> int:
     level_map = {'critical': 1, 'high': 1, 'medium': 2, 'low': 3}
     for k, v in level_map.items():
         if res[k] > 0:
             return v
     return 4
+
+
+def get_detail(res: List[Dict]) -> str:
+    slice_first = sorted(res, key=lambda x: x['language'], reverse=True)[0:]
+    if slice_first:
+        return slice_first[0]["content"]
+    return ""
+
 def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                    version: str):
     aql = get_package_aql(package_name, ecosystem, version)
@@ -339,6 +347,7 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                                     vul['cwe_info'], vul['cnvd'], vul['cnnvd'])
         vul_level = get_vul_level_dict()[vul['severity']]
         safe_version = vul['safe_version']
+        detail = get_detail(vul['description'])
         #still need , save to asset_vul_relation
         # nearest_fixed_version = get_nearest_version(version, vul['fixed'])
         # save to asset latest_version
@@ -365,7 +374,7 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                 "package_name": vul['name'],
                 "level_id": vul_level,
                 "vul_name": vul['vul_title'],
-                "vul_detail": vul['description'],
+                "vul_detail": detail,
                 "aql": aql,
                 # package_hash=vul_package_hash, #???
                 "package_version": version,
@@ -380,7 +389,10 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                 "vul_update_time": vul['vul_change_time'],
                 "update_time": timestamp,
                 "update_time_desc": -timestamp,
-                "create_time": timestamp
+                "create_time": timestamp,
+                "fix_plan": vul['fix_plan'],
+                "poc": vul['poc'],
+                "descriptions": vul['description'],
             },
         )
         asset_vul_relation, _ = IastVulAssetRelation.objects.update_or_create(
