@@ -78,11 +78,22 @@ class DongTaiVersionTestCase(TestCase):
     def test_nearest_version(self):
         version = '5.1.3.RELEASE'
         nrversion = get_nearest_version(version, self.version_list)
-        assert nrversion == '5.1.4.RELEASE'
+        assert nrversion == '5.1.3.RELEASE'
 
     def test_latest_version(self):
         assert '5.3.19' == get_latest_version(self.version_list)
 
+    def test_nearest_version_1(self):
+        version = '0.0.1'
+        nrversion = get_nearest_version(version, self.version_list)
+        assert nrversion == '1.0-rc1'
+    
+    def test_nearest_version_2(self):
+        version = '10.0.1'
+        nrversion = get_nearest_version(version, self.version_list)
+        assert nrversion == ''
+
+from dongtai_common.models.asset import Asset
 
 class AgentHardencodeTestCase(AgentTestCase):
 
@@ -94,8 +105,18 @@ class AgentHardencodeTestCase(AgentTestCase):
             "org.springframework:spring-beans.jar", "SHA-1")
 
     def test_update_one_sca_golang(self):
-        update_one_sca(
-            self.agent_id,
-            "pypi:markupsafe:2.0.1:",
-            "a4bb5ffad5564e4a0e25955e3a40b1c6158385b2",
-            "org.springframework:spring-beans.jar", "SHA-1")
+        update_one_sca(self.agent_id, "pypi:markupsafe:2.0.1:",
+                       "a4bb5ffad5564e4a0e25955e3a40b1c6158385b2",
+                       "org.springframework:spring-beans.jar", "SHA-1")
+
+    def test_get_package_edge_case(self):
+        update_one_sca(self.agent_id, "",
+                       "9b7860a324f4b2f2bc31bcdd99c7ee51fe32e0c8",
+                       " org.springframework:spring-web.jar ", "SHA-1")
+        asset = Asset.objects.filter(
+            agent_id=self.agent_id,
+            signature_value="9b7860a324f4b2f2bc31bcdd99c7ee51fe32e0c8").first(
+            )
+        assert asset.nearest_safe_version == "5.2.3.RELEASE"
+        assert asset.latest_safe_version == "5.3.19"
+
