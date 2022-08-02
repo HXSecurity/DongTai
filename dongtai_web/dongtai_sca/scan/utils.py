@@ -146,6 +146,7 @@ def get_license_list(license_list_str: str) -> List[Dict]:
     }]
 
 def get_highest_license(license_list: List[Dict]) -> Dict:
+    logger.debug(f'license_list : {license_list}')
     res = sorted(license_list, key=lambda x: x['level_id'], reverse=True)
     if res:
         return res[0]
@@ -242,17 +243,14 @@ class DongTaiScaVersion(_BaseVersion):
 
 
 def get_nearest_version(version_str: str, version_str_list: List[str]) -> str:
-    if len(version_str_list) == 0:
-        return version_str
-    return min(
-        filter(lambda x: x >= DongTaiScaVersion(version_str),
-               map(lambda x: DongTaiScaVersion(x), version_str_list)))._version
+    return min(filter(lambda x: x >= DongTaiScaVersion(version_str),
+                      map(lambda x: DongTaiScaVersion(x), version_str_list)),
+               default=DongTaiScaVersion(""))._version
 
 
 def get_latest_version(version_str_list: List[str]) -> str:
-    if len(version_str_list) == 0:
-        return ""
-    return max(map(lambda x: DongTaiScaVersion(x), version_str_list))._version
+    return max(map(lambda x: DongTaiScaVersion(x), version_str_list),
+               default=DongTaiScaVersion(""))._version
 
 
 def get_cve_numbers(cve: Optional[str] = "",
