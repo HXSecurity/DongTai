@@ -108,41 +108,46 @@ class AssetPackageVulList(UserEndPoint):
 
     def get(self, request, aggr_id):
         auth_users = self.get_auth_users(request.user)
-        asset_queryset = self.get_auth_assets(auth_users)
-        asset = Asset.objects.filter(pk=aggr_id).first()
+        #asset_queryset = self.get_auth_assets(auth_users)
+        asset = Asset.objects.filter(pk=aggr_id,
+                                     user__in=auth_users).first()
         if not asset:
             return R.failure(msg=_('Components do not exist or no permission to access'))
-        asset_aggr = AssetAggr.objects.filter(
-            signature_value=asset.signature_value).first()
-        if not asset_aggr:
-            return R.failure(msg=_('Components do not exist or no permission to access'))
+        #asset_aggr = AssetAggr.objects.filter(
+        #    signature_value=asset.signature_value).first()
+        #if not asset_aggr:
+        #    return R.failure(msg=_('Components do not exist or no permission to access'))
 
-        asset_queryset_exist = asset_queryset.filter(signature_value=asset_aggr.signature_value,
-                                                     version=asset_aggr.version, dependency_level__gt=0).exists()
-        if not asset_queryset_exist:
-            return R.failure(msg=_('Components do not exist or no permission to access'))
+        #asset_queryset_exist = asset_queryset.filter(signature_value=asset.signature_value,
+        #                                             version=asset.version, dependency_level__gt=0).exists()
+        #if not asset_queryset_exist:
+        #    return R.failure(msg=_('Components do not exist or no permission to access'))
 
         vul_list = []
-        auth_asset_vuls = self.get_auth_asset_vuls(asset_queryset)
-        asset_vuls = IastAssetVul.objects.filter(aql=asset_aggr.package_name,
-                                                 package_hash=asset_aggr.signature_value,
-                                                 package_version=asset_aggr.version).all()
-        for a_vul in asset_vuls:
-            if a_vul.id in auth_asset_vuls:
-                vul_type_relation = IastAssetVulTypeRelation.objects.filter(asset_vul_id=a_vul.id)
-                vul_type_str = ""
-                if vul_type_relation:
-                    vul_types = [_i.asset_vul_type.name for _i in vul_type_relation]
-                    vul_type_str = ','.join(vul_types)
+        #auth_asset_vuls = self.get_auth_asset_vuls(asset_queryset)
+        #asset_vuls = IastAssetVul.objects.filter(aql=asset_aggr.package_name,
+        #                                         package_hash=asset_aggr.signature_value,
+        #                                         package_version=asset_aggr.version).all()
+        auth_asset_vuls = IastAssetVul.objects.filter(
+            iastvulassetrelation__asset_id=aggr_id).all()
+        for a_vul in auth_asset_vuls:
+            vul_type_relation = IastAssetVulTypeRelation.objects.filter(
+                asset_vul_id=a_vul.id)
+            vul_type_str = ""
+            if vul_type_relation:
+                vul_types = [
+                    _i.asset_vul_type.name for _i in vul_type_relation
+                ]
+                vul_type_str = ','.join(vul_types)
 
-                vul_list.append({
-                    "asset_vul_id": a_vul.id,
-                    "vul_title": a_vul.vul_name,
-                    "cve_id": a_vul.cve_code,
-                    "vul_type": vul_type_str,
-                    "level_id": a_vul.level.id,
-                    "level": a_vul.level.name_value,
-                })
+            vul_list.append({
+                "asset_vul_id": a_vul.id,
+                "vul_title": a_vul.vul_name,
+                "cve_id": a_vul.cve_code,
+                "vul_type": vul_type_str,
+                "level_id": a_vul.level.id,
+                "level": a_vul.level.name_value,
+            })
 
         return R.success(data=vul_list)
 
