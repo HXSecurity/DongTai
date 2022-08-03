@@ -308,6 +308,7 @@ from dongtai_common.models.asset_vul import (IastAssetVulTypeRelation,
                                              IastVulAssetRelation,
                                              IastAssetVulType)
 
+from .cwe import get_cwe_name
 
 def get_asset_level(res: dict) -> int:
     level_map = {'critical': 1, 'high': 1, 'medium': 2, 'low': 3}
@@ -410,7 +411,8 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
         if len(vul['cwe_info']) == 0:
             vul['cwe_info'].append('')
         for cwe_id in vul['cwe_info']:
-            type_, _ = IastAssetVulType.objects.get_or_create(cwe_id=cwe_id)
+            type_, _ = IastAssetVulType.objects.update_or_create(
+                cwe_id=cwe_id, defaults={"name": get_cwe_name(cwe_id)})
             IastAssetVulTypeRelation.objects.create(asset_vul_id=asset_vul.id,
                                                     asset_vul_type_id=type_.id)
     nearest_safe_version = get_nearest_version(
