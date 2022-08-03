@@ -441,9 +441,16 @@ if os.getenv('environment', None) == 'TEST' or os.getenv('CPROFILE',
     MIDDLEWARE.append(
         'django_cprofile_middleware.middleware.ProfilerMiddleware')
 
-SCA_BASE_URL = config.get('sca', 'base_url')
-SCA_TIMEOUT = config.getint('sca', 'timeout')
-SCA_TOKEN = config.get('sca', 'token')
+try:
+    SCA_BASE_URL = config.get('sca', 'base_url')
+    SCA_TIMEOUT = config.getint('sca', 'timeout')
+    SCA_TOKEN = config.get('sca', 'token')
+    SCA_SETUP = True if SCA_TOKEN else False
+except:
+    SCA_BASE_URL = ''
+    SCA_TIMEOUT = 0
+    SCA_TOKEN = ""
+    SCA_SETUP = False
 
 
 if os.getenv('environment', None) in ('TEST', 'PROD'):
@@ -658,4 +665,3 @@ def set_asyncio_policy():
         asyncio.set_event_loop_policy(asyncio_gevent.EventLoopPolicy())
 
 set_asyncio_policy()
-

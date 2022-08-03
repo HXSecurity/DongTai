@@ -11,6 +11,7 @@ from django.contrib.auth.models import Group
 from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint
 from django.utils.translation import gettext_lazy as _
+from dongtai_conf.settings import SCA_SETUP
 
 logger = logging.getLogger("django")
 
@@ -27,5 +28,6 @@ class UserInfoEndpoint(UserEndPoint):
             'userid': user.id if not user.is_anonymous else -1 ,
             'username': user.get_username(),
             'role': 3 if group is None else 2 if group.name == 'talent_admin' else 1 if group.name == 'system_admin' else 0,
-            'role_name': '' if group is None else group.name
+            'role_name': '' if group is None else group.name,
+            'sca_setup': SCA_SETUP,
         })
