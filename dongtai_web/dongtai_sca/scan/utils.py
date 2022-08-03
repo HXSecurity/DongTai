@@ -69,7 +69,7 @@ def data_transfrom(response: Response) -> Result[List[Dict], str]:
         logger.error(f"unexcepted Exception : {e}", exc_info=True)
         return Err('Failed')
 
-#@cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60),)
+@cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60),)
 def get_package_vul(aql: Optional[str] = None,
                     ecosystem: Optional[str] = None,
                     package_hash: Optional[str] = None) -> List[Dict]:
@@ -93,7 +93,7 @@ def get_package_vul(aql: Optional[str] = None,
     return data
 
 
-#@cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60),)
+@cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60),)
 def get_package(aql: Optional[str] = None,
                 ecosystem: Optional[str] = None,
                 package_hash: Optional[str] = None) -> List[Dict]:
