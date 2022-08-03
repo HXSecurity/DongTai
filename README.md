@@ -1,6 +1,6 @@
 # DongTai
 
-[![django-project](https://img.shields.io/badge/django%20versions-3.0.3-blue)](https://www.djangoproject.com/)
+[![django-project](https://img.shields.io/badge/django%20versions-3.2.15-blue)](https://www.djangoproject.com/)
 [![license Apache-2.0](https://img.shields.io/github/license/HXSecurity/DongTai-agent-java)](https://github.com/HXSecurity/DongTai-agent-java/blob/main/LICENSE)
 [![GitHub release](https://img.shields.io/github/v/release/HXSecurity/DongTai?label=DongTai)](https://github.com/HXSecurity/DongTai/releases)
 
