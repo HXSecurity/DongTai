@@ -117,6 +117,17 @@ class AgentHardencodeTestCase(AgentTestCase):
             agent_id=self.agent_id,
             signature_value="9b7860a324f4b2f2bc31bcdd99c7ee51fe32e0c8").first(
             )
-        assert asset.nearest_safe_version == "5.2.3.RELEASE"
+        assert asset.nearest_safe_version == "5.2.8.RELEASE"
         assert asset.latest_safe_version == "5.3.19"
 
+    def test_get_package_edge_case_1(self):
+        update_one_sca(self.agent_id, "",
+                       "07b6bf82cea13570b5290d6ed841283a1fcce170",
+                       " org.springframework:spring-web.jar ", "SHA-1")
+        asset = Asset.objects.filter(
+            agent_id=self.agent_id,
+            signature_value="07b6bf82cea13570b5290d6ed841283a1fcce170").first(
+            )
+        assert asset is not None
+        assert asset.safe_version_list is not None
+        assert asset.iastvulassetrelation_set.all() != []
