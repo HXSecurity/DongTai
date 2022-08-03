@@ -1,6 +1,7 @@
 from dongtai_common.models.asset import Asset
 from dongtai_common.models.asset_vul import IastAssetVulTypeRelation
 from dongtai_web.dongtai_sca.models import VulCveRelation
+from dongtai_common.models.asset_vul import IastAssetVul
 
 
 # 通过asset_vul获取 组件详情信息
@@ -48,9 +49,7 @@ def GetScaVulData(asset_vul, asset_queryset):
 
         project_list = []
         projects_data = Asset.objects.filter(
-            signature_value=asset_vul.package_hash,
-            version=asset_vul.package_version,
-            project_id__gt=0).values('project_name').all()
+            iastvulassetrelation__asset_vul_id=asset_vul.id).all()
         for project in projects_data:
             project_list.append(project['project_name'])
 
