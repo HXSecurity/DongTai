@@ -35,6 +35,9 @@ class IastAssetVul(models.Model):
     update_time = models.IntegerField(blank=True, null=True)
     update_time_desc = models.IntegerField(blank=True, null=True)
     create_time = models.IntegerField(blank=True, null=True)
+    fix_plan = models.JSONField(blank=True, null=True, default=dict)
+    poc = models.JSONField(blank=True, null=True, default=dict)
+    descriptions = models.JSONField(blank=True, null=True, default=dict)
 
     class Meta:
         managed = True
