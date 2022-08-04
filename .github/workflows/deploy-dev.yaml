@@ -37,7 +37,8 @@ jobs:
 
       - name: Generate version file
         run: |
-          bash .github/workflows/config_update.sh "${{ steps.release.outputs.VERSION }}"
+          bash .github/workflows/config_update.sh
+          #bash .github/workflows/config_update.sh "${{ steps.release.outputs.VERSION }}"
 
       - name: Setup Ossutil
         uses: manyuanrong/setup-ossutil@v2.0
