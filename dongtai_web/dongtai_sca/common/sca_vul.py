@@ -4,6 +4,14 @@ from dongtai_web.dongtai_sca.models import VulCveRelation
 from dongtai_common.models.asset_vul import IastAssetVul
 
 
+def get_ref(refs) -> list:
+    if not refs:
+        return []
+    for ref in refs:
+        ref['source_url'] = ref['url']
+        ref['url'] = ref['content']
+    return refs
+
 # 通过asset_vul获取 组件详情信息
 def GetScaVulData(asset_vul, asset_queryset):
     data = {'base_info': dict(), 'poc_info': dict()}
@@ -60,5 +68,6 @@ def GetScaVulData(asset_vul, asset_queryset):
 
     data['poc_info']['poc_list'] = asset_vul.poc if asset_vul.poc else []
 
-    data['poc_info']['reference_link'] = asset_vul.references if asset_vul.references else []
+    references = asset_vul.references if asset_vul.references else []
+    data['poc_info']['reference_link'] = references
     return data
