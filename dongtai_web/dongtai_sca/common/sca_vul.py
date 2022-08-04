@@ -40,20 +40,21 @@ def GetScaVulData(asset_vul, asset_queryset):
         vul_types = [_i.asset_vul_type.name for _i in vul_type_relation]
         data['base_info']['vul_type'] = ','.join(vul_types)
 
-    asset_queryset = asset_queryset.filter(
-        signature_value=asset_vul.package_hash, version=asset_vul.package_version, project_id__gt=0
-    ).values('project_id', 'id').all()
-    if asset_queryset:
-        #_temp_data = {_a['project_id']: _a['id'] for _a in asset_queryset}
-        #asset_ids = [_temp_data[p_id] for p_id in _temp_data]
+    #asset_queryset = asset_queryset.filter(
+    #    signature_value=asset_vul.package_hash, version=asset_vul.package_version, project_id__gt=0
+    #).values('project_id', 'id').all()
+    #if asset_queryset:
+    #_temp_data = {_a['project_id']: _a['id'] for _a in asset_queryset}
+    #asset_ids = [_temp_data[p_id] for p_id in _temp_data]
 
-        project_list = []
-        projects_data = Asset.objects.filter(
-            iastvulassetrelation__asset_vul_id=asset_vul.id).all()
-        for project in projects_data:
-            project_list.append(project['project_name'])
+    project_list = []
+    projects_data = Asset.objects.filter(
+        iastvulassetrelation__asset_vul_id=asset_vul.id).values(
+            'project_name').distinct().all()
+    for project in projects_data:
+        project_list.append(project['project_name'])
 
-        data['base_info']['project_names'] = project_list
+    data['base_info']['project_names'] = project_list
 
     cve_relation = VulCveRelation.objects.filter(id=asset_vul.cve_id).first()
 
