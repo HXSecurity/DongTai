@@ -34,7 +34,7 @@ port = 25
 
 [sca]
 #https://iast.huoxian.cn/openapi/sca/v1
-base_url = http://dongtai-server:8000/sca/v1
+base_url = https://sca.huoxian.cn/
 timeout = 5
 token = 121212121212-1234-1234-1234-123444444444
 
@@ -51,6 +51,10 @@ port = 8083
 
 [common_file_path]
 tmp_path = /tmp/logstash
+report_img = report/img
+report_pdf = report/pdf
+report_word = report/word
+report_excel = report/excel
 
 [other]
 domain = http://localhost.domain/
