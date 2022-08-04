@@ -29,5 +29,5 @@ class UserInfoEndpoint(UserEndPoint):
             'username': user.get_username(),
             'role': 3 if group is None else 2 if group.name == 'talent_admin' else 1 if group.name == 'system_admin' else 0,
             'role_name': '' if group is None else group.name,
-            'sca_setup': SCA_SETUP,
+            'sca_setup': not SCA_SETUP,
         })
