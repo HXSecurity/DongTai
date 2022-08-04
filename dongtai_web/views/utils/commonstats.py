@@ -26,8 +26,8 @@ def get_summary_by_agent_ids(agent_ids: Iterable):
     data['type_summary'] = []
     data['level_count'] = []
     queryset = IastVulnerabilityModel.objects.filter(
-        agent_id__in=agent_ids).values("hook_type_id", 'strategy_id',
-                                       "level_id", "latest_time")
+        agent_id__in=agent_ids, is_del=0).values("hook_type_id", 'strategy_id',
+                                                 "level_id", "latest_time")
     q = ~Q(hook_type_id=0)
     queryset = queryset.filter(q)
     typeArr = {}
@@ -80,8 +80,8 @@ def get_summary_by_agent_ids(agent_ids: Iterable):
         days = days - 1
     timestamp_gt = current_timestamp
     queryset_list = []
-    queryset_ = IastVulnerabilityModel.objects.filter(
-        agent_id__in=agent_ids)
+    queryset_ = IastVulnerabilityModel.objects.filter(agent_id__in=agent_ids,
+                                                      is_del=0)
     for timestamp, _ in daylist:
         queryset_list.append(
             geneatre_vul_timerange_count_queryset(queryset_, timestamp_gt,
