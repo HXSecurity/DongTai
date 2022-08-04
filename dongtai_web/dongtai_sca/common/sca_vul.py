@@ -69,5 +69,5 @@ def GetScaVulData(asset_vul, asset_queryset):
     data['poc_info']['poc_list'] = asset_vul.poc if asset_vul.poc else []
 
     references = asset_vul.references if asset_vul.references else []
-    data['poc_info']['reference_link'] = references
+    data['poc_info']['reference_link'] = get_ref(references)
     return data
