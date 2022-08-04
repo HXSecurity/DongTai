@@ -129,7 +129,7 @@ def get_package_aql(name: str, ecosystem: str, version: str) -> str:
 
 from celery import shared_task
 from dongtai_web.dongtai_sca.models import PackageLicenseLevel
-
+from dongtai_conf.settings import SCA_SETUP
 
 def get_license_list(license_list_str: str) -> List[Dict]:
     license_list = license_list_str.split(",")
@@ -167,11 +167,77 @@ def update_one_sca(agent_id,
         f'SCA检测开始 [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm} {package_version}]'
     )
     agent = IastAgent.objects.filter(id=agent_id).first()
+    if not SCA_SETUP:
+        logger.warning(f"SCA_TOKEN not setup !")
+        asset = Asset()
+        new_level = IastVulLevel.objects.get(name="info")
+
+        # change to update_or_create
+        asset.package_name = package_name
+        asset.package_path = package_path
+        asset.signature_value = package_signature
+        asset.signature_algorithm = 'SHA-1'
+        asset.version = package_version
+        asset.level_id = new_level.id
+        asset.vul_count = 0
+        asset.language = agent.language
+        if agent:
+            asset.agent = agent
+            asset.project_version_id = agent.project_version_id if agent.project_version_id else 0
+            asset.project_name = agent.project_name
+            asset.language = agent.language
+            asset.project_id = -1
+            if agent.bind_project_id:
+                asset.project_id = agent.bind_project_id
+            asset.user_id = -1
+            if agent.user_id:
+                asset.user_id = agent.user_id
+        license_list = get_license_list("non-standard")
+        asset.license_list = license_list
+        highest_license = get_highest_license(license_list)
+        asset.highest_license = get_highest_license(license_list)
+        asset.license = highest_license['identifier']
+        asset.dt = int(time.time())
+        asset.save()
+        return
+
     if agent.language == "JAVA":
         packages = get_package(ecosystem='maven',
                                package_hash=package_signature)
     else:
         packages = get_package(aql=package_name)
+    if not packages:
+        asset = Asset()
+        new_level = IastVulLevel.objects.get(name="info")
+
+        # change to update_or_create
+        asset.package_name = package_name
+        asset.package_path = package_path
+        asset.signature_value = package_signature
+        asset.signature_algorithm = 'SHA-1'
+        asset.version = package_version
+        asset.level_id = new_level.id
+        asset.vul_count = 0
+        asset.language = agent.language
+        if agent:
+            asset.agent = agent
+            asset.project_version_id = agent.project_version_id if agent.project_version_id else 0
+            asset.project_name = agent.project_name
+            asset.language = agent.language
+            asset.project_id = -1
+            if agent.bind_project_id:
+                asset.project_id = agent.bind_project_id
+            asset.user_id = -1
+            if agent.user_id:
+                asset.user_id = agent.user_id
+        license_list = get_license_list("non-standard")
+        asset.license_list = license_list
+        highest_license = get_highest_license(license_list)
+        asset.highest_license = get_highest_license(license_list)
+        asset.license = highest_license['identifier']
+        asset.dt = int(time.time())
+        asset.save()
+
     for package in packages:
         asset = Asset()
         new_level = IastVulLevel.objects.get(name="info")
