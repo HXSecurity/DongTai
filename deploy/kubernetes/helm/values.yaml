@@ -39,7 +39,8 @@ smtp:
   cc_addr: cc_addr
 
 sca:
-  base_url: https://iast.huoxian.cn/openapi/sca/v1
+  #base_url: https://iast.huoxian.cn/openapi/sca/v1
+  base_url = https://sca.huoxian.cn/
 
 storageClassName:
   name: 你的存储类名字
