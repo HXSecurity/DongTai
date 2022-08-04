@@ -394,6 +394,7 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                 "fix_plan": vul['fix_plan'],
                 "poc": vul['poc'],
                 "descriptions": vul['description'],
+                "references": vul['references'],
             },
         )
         asset_vul_relation, _ = IastVulAssetRelation.objects.update_or_create(
@@ -413,8 +414,8 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
         for cwe_id in vul['cwe_info']:
             type_, _ = IastAssetVulType.objects.update_or_create(
                 cwe_id=cwe_id, defaults={"name": get_cwe_name(cwe_id)})
-            IastAssetVulTypeRelation.objects.create(asset_vul_id=asset_vul.id,
-                                                    asset_vul_type_id=type_.id)
+            IastAssetVulTypeRelation.objects.get_or_create(
+                asset_vul_id=asset_vul.id, asset_vul_type_id=type_.id)
     nearest_safe_version = get_nearest_version(
         version, [i['version'] for i in safe_version])
     latest_safe_version = get_latest_version(
