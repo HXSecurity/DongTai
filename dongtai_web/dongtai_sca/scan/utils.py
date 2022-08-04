@@ -324,6 +324,13 @@ def get_detail(res: List[Dict]) -> str:
         return slice_first[0]["content"]
     return ""
 
+
+def get_title(title_zh: str, title_en: str) -> str:
+    title_list = list(filter(lambda x: x != "", [title_zh, title_en]))
+    if title_list:
+        return title_list[0]
+    return ""
+
 def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                    version: str):
     aql = get_package_aql(package_name, ecosystem, version)
@@ -374,7 +381,7 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
             defaults={
                 "package_name": vul['name'],
                 "level_id": vul_level,
-                "vul_name": vul['vul_title'],
+                "vul_name": get_title(vul['vul_title'], vul['vul_title_en']),
                 "vul_detail": detail,
                 "aql": aql,
                 # package_hash=vul_package_hash, #???
