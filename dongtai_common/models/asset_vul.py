@@ -38,6 +38,7 @@ class IastAssetVul(models.Model):
     fix_plan = models.JSONField(blank=True, null=True, default=dict)
     poc = models.JSONField(blank=True, null=True, default=dict)
     descriptions = models.JSONField(blank=True, null=True, default=dict)
+    references = models.JSONField(blank=True, null=True, default=dict)
 
     class Meta:
         managed = True
