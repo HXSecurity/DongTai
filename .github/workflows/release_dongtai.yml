@@ -35,13 +35,6 @@ jobs:
         run: |
           bash .github/workflows/version_update.sh "${{ steps.release.outputs.VERSION }}"
 
-      - name: Upload version file to oss
-        run: |
-          echo "${{ github.event.repository.name }},version,${{ steps.release.outputs.version }}" >> version.txt && \
-          echo "${{ github.event.repository.name }},commit_hash,${GITHUB_SHA}" >> version.txt && \
-          cat version.txt
-          ossutil cp -rf version.txt oss://huoqi-public/iast/release-version/${{ github.event.repository.name }}/${{ steps.release.outputs.version }}/version.txt
-
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
@@ -65,6 +58,10 @@ jobs:
           # AccessKeySceret
           access-key-secret: ${{ secrets.ALIYUN_OSS_KEY_SECRET }}
       - run: |
+          echo "${{ github.event.repository.name }},version,${{ steps.release.outputs.version }}" >> version.txt && \
+          echo "${{ github.event.repository.name }},commit_hash,${GITHUB_SHA}" >> version.txt && \
+          cat version.txt
+          ossutil cp -rf version.txt oss://huoqi-public/iast/release-version/${{ github.event.repository.name }}/${{ steps.release.outputs.version }}/version.txt
           ossutil cp oss://dongtai/agent/java/${{ steps.release.outputs.VERSION }}/ ./ --include "*.jar" -r
           [ ! -f ./dongtai-agent.jar ] && echo "$FILE does not exist."
           [ ! -f ./dongtai-agent.jar ] && ossutil cp oss://dongtai/agent/java/latest/ ./ --include "*.jar" -r
