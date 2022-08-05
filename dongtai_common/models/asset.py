@@ -91,9 +91,29 @@ class IastAssetDocument(Document):
         attr="project_version_id")
     department_id = fields.IntegerField(attr="department_id")
     talent_id = fields.IntegerField(attr="talent_id")
+    safe_version_list = fields.ObjectField()
+    nearest_safe_version = fields.ObjectField()
+    latest_safe_version = fields.ObjectField()
+    license_list = fields.ObjectField()
+    highest_license = fields.ObjectField()
 
     def generate_id(self, object_instance):
         return object_instance.id
+
+    def prepare_safe_version_list(self, object_instance):
+        return object_instance.safe_version_list
+
+    def prepare_nearest_safe_version(self, object_instance):
+        return object_instance.nearest_safe_version
+
+    def prepare_latest_safe_version(self, object_instance):
+        return object_instance.latest_safe_version
+
+    def prepare_license_list(self, object_instance):
+        return object_instance.license_list
+
+    def prepare_highest_license(self, object_instance):
+        return object_instance.highest_license
 
     @classmethod
     def search(cls, using=None, index=None):
