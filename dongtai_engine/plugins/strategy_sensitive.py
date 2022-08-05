@@ -4,7 +4,7 @@
 # datetime: 2021/10/22 下午2:29
 # project: DongTai-engine
 # desc: data rule, response field rule, sql field rule
-import re
+import re2 as re
 
 import jq
 from dongtai_common.models.sensitive_info import IastSensitiveInfoRule
