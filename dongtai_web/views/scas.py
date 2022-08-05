@@ -303,14 +303,14 @@ class ScaList(UserEndPoint):
         except Exception as e:
             logger.warning("sca list error:{}".format(e))
 
-        if ELASTICSEARCH_STATE :
-            query_data = ScaAssetSerializer(get_vul_list_from_elastic_search(
-                sca_ids, order_by),
-                                            many=True).data
-        else:
-            query_data = ScaAssetSerializer(
-                AssetAggr.objects.filter(signature_value__in=sca_ids).order_by(order_by).select_related('level'),
-                many=True).data
+#        if ELASTICSEARCH_STATE :
+#            query_data = ScaAssetSerializer(get_vul_list_from_elastic_search(
+#                sca_ids, order_by),
+#                                            many=True).data
+#        else:
+        query_data = ScaAssetSerializer(
+            AssetAggr.objects.filter(signature_value__in=sca_ids).order_by(order_by).select_related('level'),
+            many=True).data
 
         return R.success(data=query_data)
 
