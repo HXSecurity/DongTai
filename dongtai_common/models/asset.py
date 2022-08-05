@@ -58,13 +58,11 @@ class Asset(models.Model):
     # 部门id
     department = models.ForeignKey(Department, models.DO_NOTHING, blank=True, null=True, default=-1)
     # 租户id
-    talent = models.ForeignKey(Talent,
-                               models.DO_NOTHING,
-                               blank=True,
-                               null=True,
-                               default=-1)
+    talent = models.ForeignKey(Talent, models.DO_NOTHING, blank=True, null=True, default=-1)
     safe_version_list = models.JSONField(blank=True, null=True, default=list)
-    nearest_safe_version = models.JSONField(blank=True, null=True, default=str)
+    nearest_safe_version = models.JSONField(blank=True,
+                                            null=True,
+                                            default=str)
     latest_safe_version = models.JSONField(blank=True, null=True, default=str)
     license_list = models.JSONField(blank=True, null=True, default=list)
     highest_license = models.JSONField(blank=True, null=True, default=dict)
@@ -127,7 +125,7 @@ class IastAssetDocument(Document):
             'vul_count', 'vul_critical_count', 'vul_high_count',
             'vul_medium_count', 'vul_low_count', 'vul_info_count',
             'project_name', 'language', 'license', 'dependency_level',
-            'parent_dependency_id', 'is_del', 'safe_version_list', 'nearest_safe_version', 'latest_safe_version','license_list','highest_license'
+            'parent_dependency_id', 'is_del'
         ]
 
         ignore_signals = False
