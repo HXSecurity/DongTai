@@ -11,6 +11,8 @@ from django.forms.models import model_to_dict
 from dongtai_common.endpoint import R, AnonymousAndUserEndPoint, UserEndPoint
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.dongtai_sca.common.sca_vul import GetScaVulData
+from dongtai_common.models.asset_vul import IastVulAssetRelation
+from dongtai_common.models.asset import Asset
 
 LEVEL_MAP = {'critical': '严重', 'high': '高危', 'medium': '中危', 'low': '低危'}
 
@@ -144,6 +146,8 @@ class AssetPackageVulList(UserEndPoint):
                 "asset_vul_id": a_vul.id,
                 "vul_title": a_vul.vul_name,
                 "cve_id": a_vul.cve_code,
+                "sid": a_vul.sid,
+                "cve_nums": a_vul.vul_cve_nums,
                 "vul_type": vul_type_str,
                 "level_id": a_vul.level.id,
                 "level": a_vul.level.name_value,
