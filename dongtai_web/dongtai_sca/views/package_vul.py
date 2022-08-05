@@ -141,11 +141,15 @@ class AssetPackageVulList(UserEndPoint):
                     _i.asset_vul_type.name for _i in vul_type_relation
                 ]
                 vul_type_str = ','.join(vul_types)
-
+            try:
+                cve_code = a_vul.vul_cve_nums.get('cve')
+            except Exception as e:
+                logger.debug(e)
+                cve_code = ""
             vul_list.append({
                 "asset_vul_id": a_vul.id,
                 "vul_title": a_vul.vul_name,
-                "cve_id": a_vul.cve_code,
+                "cve_id": cve_code,
                 "sid": a_vul.sid,
                 "cve_nums": a_vul.vul_cve_nums,
                 "vul_type": vul_type_str,
