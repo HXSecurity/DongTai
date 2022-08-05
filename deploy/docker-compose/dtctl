@@ -376,6 +376,12 @@ function create_docker_compose_file() {
     fi
   fi
 
+  if [ $DONGTAI_API_ACCESSABLE == false ]; then
+    if [[ $(first_gt_second $CHANGE_THIS_VERSION 1.8.2) == true ]]; then
+      MYSQL_IMAGE_NAME="dongtai-mysql"
+    fi
+  fi
+
 
   if [ $SKIP_MYSQL == false ]; then
     export MYSQL_STR=$(
