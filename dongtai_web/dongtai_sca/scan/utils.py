@@ -131,11 +131,22 @@ from celery import shared_task
 from dongtai_web.dongtai_sca.models import PackageLicenseLevel
 from dongtai_conf.settings import SCA_SETUP
 
+
 def get_license_list(license_list_str: str) -> List[Dict]:
-    license_list = license_list_str.split(",")
+    license_list = list(filter(lambda x: x, license_list_str.split(",")))
     res = list(
-        PackageLicenseLevel.objects.filter(identifier__in=license_list).values(
-            'identifier', 'level_id', 'level_desc').all())
+        PackageLicenseLevel.objects.filter(
+            identifier__in=license_list).values('identifier', 'level_id',
+                                                     'level_desc').all())
+    selected_identifier = list(map(lambda x: x['identifier'], res))
+    for k in license_list:
+        if k not in selected_identifier:
+            res.append({
+                'identifier': k,
+                "level_id": 0,
+                "level_desc": "允许商业集成"
+            })
+
     if res:
         return res
     return [{
