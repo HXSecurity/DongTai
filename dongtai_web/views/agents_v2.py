@@ -128,13 +128,12 @@ def get_disk(jsonstr: str) -> str:
     if not jsonstr:
         return ''
     dic = json.loads(jsonstr)
-    print(dic)
     try:
         dic = json.loads(jsonstr)
         res = dic['info'][0]['rate']
         res.replace("%", '')
     except Exception as e:
-        logger.info(e, exc_info=True)
+        logger.debug(e, exc_info=True)
         return 0
     return res
 
@@ -146,7 +145,7 @@ def get_cpu(jsonstr: str) -> str:
         dic = json.loads(jsonstr)
         res = dic['rate']
     except Exception as e:
-        logger.info(e, exc_info=True)
+        logger.debug(e, exc_info=True)
         return 0
     return res
 
@@ -158,7 +157,7 @@ def get_memory(jsonstr: str) -> str:
         dic = json.loads(jsonstr)
         res = dic['rate']
     except Exception as e:
-        logger.info(e, exc_info=True)
+        logger.debug(e, exc_info=True)
         return 0
     dic = json.loads(jsonstr)
     return res
