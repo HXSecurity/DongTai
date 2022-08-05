@@ -231,6 +231,11 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             method_pools = [i._d_ for i in method_pools]
             for method_pool in method_pools:
                 method_pool['req_header_fs'] = method_pool['req_header_for_search']
+            method_pools = list(
+                MethodPool.objects.filter(
+                    agent_id__in=[i['agent_id'] for i in method_pools],
+                    pool_sign__in=[i['pool_sign'] for i in method_pools
+                                   ]).order_by('-update_time').values().all())
         else:
             q = q if 'q' in vars() else Q()
             q = assemble_query(search_after_fields, 'lte', q, operator.and_)
