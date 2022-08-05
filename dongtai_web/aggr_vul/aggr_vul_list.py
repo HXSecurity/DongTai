@@ -218,8 +218,9 @@ class GetAggregationVulList(UserEndPoint):
                 asset_vul_id__in=vul_ids,is_del=0,asset__user_id__in=user_auth_info['user_list'],asset__project_id__gt=0)
             # base_relation = getAuthUserInfo(request.user,base_relation)
             pro_info = base_relation.values(
-                "asset_vul_id","asset__project_id","asset__project_name","asset__project_version__version_name","asset__agent__server__container"
-            ).order_by("-create_time")
+                "asset_vul_id", "asset__project_id", "asset__project_name",
+                "asset__project_version__version_name",
+                "asset__agent__server__container").distinct()
             pro_arr = {}
             for item in pro_info:
                 vul_id = item['asset_vul_id']
