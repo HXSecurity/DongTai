@@ -269,10 +269,10 @@ class ScaList(UserEndPoint):
         order, order_type = get_order_params(order_fields, order)
         es_query['order'] = order
         es_query['order_type'] = order_type
-        if ELASTICSEARCH_STATE:
-            data = get_vul_list_from_elastic_searchv2(**es_query)
-        else:
-            data = mysql_search(where_conditions, where_conditions_dict,
+#        if ELASTICSEARCH_STATE:
+#            data = get_vul_list_from_elastic_searchv2(**es_query)
+#        else:
+        data = mysql_search(where_conditions, where_conditions_dict,
                                 page_size, order_type, order, page)
         query_data = ScaAssetSerializer(data, many=True).data
 
