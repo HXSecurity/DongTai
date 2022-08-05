@@ -192,10 +192,10 @@ class ScaSummary(UserEndPoint):
             es_query["bind_project_id"] = project_id
             es_query["project_version_id"] = current_project_version.get("version_id", 0)
 
-        if ELASTICSEARCH_STATE:
-            resp, _ = self.get_data_from_es(request.user.id, es_query)
-            return R.success(data=resp)
-
+#        if ELASTICSEARCH_STATE:
+#            resp, _ = self.get_data_from_es(request.user.id, es_query)
+#            return R.success(data=resp)
+#
         levelInfo = IastVulLevel.objects.filter(id__lt=5).all()
         levelNameArr = {}
         levelIdArr = {}
