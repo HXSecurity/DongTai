@@ -134,9 +134,8 @@ from dongtai_conf.settings import SCA_SETUP
 def get_license_list(license_list_str: str) -> List[Dict]:
     license_list = license_list_str.split(",")
     res = list(
-        PackageLicenseLevel.objects.filter(
-            identifier__in=license_list).values_list('identifier', 'level_id',
-                                                     'level_desc').all())
+        PackageLicenseLevel.objects.filter(identifier__in=license_list).values(
+            'identifier', 'level_id', 'level_desc').all())
     if res:
         return res
     return [{
