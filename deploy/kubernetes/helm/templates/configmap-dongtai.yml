@@ -35,7 +35,7 @@
       [sca]
       base_url = {{.Values.sca.base_url}}
       timeout = 5
-      token = 121212121212-1234-1234-1234-123444444444
+      token = 
 
       [task]
       retryable = true
