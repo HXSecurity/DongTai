@@ -43,7 +43,7 @@ class SaasMethodPoolHandler(IReportHandler):
         self.retryable = settings.config.getboolean('task', 'retryable', fallback=False)
 
         if self.async_send and (ReportHandler.log_service_disabled or ReportHandler.log_service is None):
-            logger.error('log service disabled or failed to connect, disable async send method pool')
+            logger.warning('log service disabled or failed to connect, disable async send method pool')
             self.async_send = False
         else:
             self.log_service = ReportHandler.log_service
@@ -168,7 +168,7 @@ class SaasMethodPoolHandler(IReportHandler):
                     if ok:
                         self.send_to_engine(method_pool_sign=pool_sign)
                 except Exception as e:
-                    logger.error(e, exc_info=True)
+                    logger.warning(e, exc_info=True)
             else:
                 current_version_agents = self.get_project_agents(self.agent)
                 with transaction.atomic():
@@ -179,13 +179,13 @@ class SaasMethodPoolHandler(IReportHandler):
                         logger.info(
                             f"record method failed : {self.agent_id} {self.http_uri} {self.http_method}"
                         )
-                        logger.error(e, exc_info=True)
+                        logger.warning(e, exc_info=True)
                 try:
                     logger.info(f"send normal method pool {self.agent_id} {self.http_uri} {pool_sign} to celery ")
                     self.send_to_engine(method_pool_sign=pool_sign,
                                         update_record=update_record)
                 except Exception as e:
-                    logger.error(e, exc_info=True)
+                    logger.warning(e, exc_info=True)
 
     def to_json(self, pool_sign: str):
         timestamp = int(time.time())
@@ -329,7 +329,7 @@ class SaasMethodPoolHandler(IReportHandler):
                 )
                 #requests.get(url=settings.REPLAY_ENGINE_URL.format(id=method_pool_id))
         except Exception as e:
-            logger.error(f'[-] Failure: send method_pool [{method_pool_id}{method_pool_sign}], Error: {e}')
+            logger.warning(f'[-] Failure: send method_pool [{method_pool_id}{method_pool_sign}], Error: {e}')
 
     def calc_hash(self):
         sign_raw = '-'.join(
@@ -482,7 +482,7 @@ def decode_content(body, content_encoding, version):
         try:
             return gzip.decompress(body).decode('utf-8')
         except:
-            logger.error('not gzip type but using gzip as content_encoding')
+            logger.warning('not gzip type but using gzip as content_encoding')
     # TODO not content_encoding
     if content_encoding:
         logger.info('not found content_encoding :{}'.format(content_encoding))
