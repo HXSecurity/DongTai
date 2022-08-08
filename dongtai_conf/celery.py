@@ -24,7 +24,7 @@ configs = {k: v for k, v in settings.__dict__.items() if k.startswith('CELERY')}
 # - namespace='CELERY' means all celery-related configuration keys
 #   should have a `CELERY_` prefix.
 
-configs["CELERY_QUEUES"] = [
+configs["task_queues"] = [
     # normal
     Queue("dongtai-method-pool-scan", Exchange("dongtai-method-pool-scan"), routing_key="dongtai-method-pool-scan"),
     Queue("dongtai-replay-vul-scan", Exchange("dongtai-replay-vul-scan"), routing_key="dongtai-replay-vul-scan"),
@@ -34,7 +34,15 @@ configs["CELERY_QUEUES"] = [
     # cronjob
     Queue("dongtai-periodic-task", Exchange("dongtai-periodic-task"), routing_key="dongtai-periodic-task"),
 ]
-configs["CELERY_ROUTES"] = {
+# celery config
+configs['task_serializer'] = 'json'
+configs['result_serializer'] = 'json'
+configs['accept_content'] = ['json']
+configs['task_ignore_result'] = True
+configs['task_acks_late'] = True
+configs['task_acks_on_failure_or_timeout'] = True
+# configs['worker_concurrency'] = 8
+configs["task_routes"] = {
     # normal
     "dongtai_engine.tasks.search_vul_from_method_pool": {'exchange': 'dongtai-method-pool-scan', 'routing_key': 'dongtai-method-pool-scan'},
     "dongtai_engine.tasks.search_vul_from_replay_method_pool": {'exchange': 'dongtai-replay-vul-scan', 'routing_key': 'dongtai-replay-vul-scan'},
@@ -52,7 +60,7 @@ configs["CELERY_ROUTES"] = {
     "dongtai_engine.plugins.data_clean": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
 }
 configs["CELERY_ENABLE_UTC"] = False
-configs["CELERY_TIMEZONE"] = settings.TIME_ZONE
+configs["timezone"] = settings.TIME_ZONE
 configs["DJANGO_CELERY_BEAT_TZ_AWARE"] = False
 configs["CELERY_BEAT_SCHEDULER"] = 'django_celery_beat.schedulers:DatabaseScheduler'
 
