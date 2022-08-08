@@ -26,6 +26,7 @@ from dongtai_common.models.message import IastMessage
 import threading
 from django.db.models import Q
 from django.db import transaction
+from dongtai_conf.settings import TMP_COMMON_PATH
 from tempfile import NamedTemporaryFile
 logger = logging.getLogger('dongtai-webapi')
 
@@ -84,8 +85,8 @@ class AgentLogDownload(UserEndPoint, viewsets.ViewSet):
             a = int(pk) > 0
             if not a:
                 return nothing_resp()
-            return FileResponse(open(f'/tmp/logstash/batchagent/{pk}.zip',
-                                     'rb'),
+            return FileResponse(open(
+                os.path.join(TMP_COMMON_PATH, f'batchagent/{pk}.zip'), 'rb'),
                                 filename='agentlog.zip')
         except FileNotFoundError as e:
             logger.info(e)
@@ -96,7 +97,7 @@ class AgentLogDownload(UserEndPoint, viewsets.ViewSet):
 
 
 def generate_path(agent_id):
-    return f'/tmp/logstash/agent/{agent_id}/'
+    return os.path.join(TMP_COMMON_PATH, f'agent/{agent_id}/')
 
 
 def get_newest_log_zip(agent_id: int) -> Result:
@@ -145,7 +146,7 @@ file_newest_2_file_under_path = partial(file_newest_N_file_under_path, N=2)
 
 def zip_file_write(msg_id, items):
     from zipfile import ZipFile
-    zipfilepath = f'/tmp/logstash/batchagent/{msg_id}.zip'
+    zipfilepath = os.path.join(TMP_COMMON_PATH, f'batchagent/{msg_id}.zip')
     zip_subdir = "logs"
     with ZipFile(zipfilepath, 'w') as zipObj:
         with NamedTemporaryFile() as tmpfile:
