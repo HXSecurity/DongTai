@@ -202,7 +202,7 @@ ROOT_URLCONF = 'dongtai_conf.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, '/static/templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'static/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -239,12 +239,6 @@ DATABASES = {
             'HOST': config.get("mysql", 'host'),
             'PORT': config.get("mysql", 'port'),
         }
-    }
-}
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': '/var/tmp/django_cache',
     }
 }
 REDIS_URL = 'redis://:%(password)s@%(host)s:%(port)s/%(db)s' % {
@@ -285,6 +279,47 @@ if os.getenv('environment', None) == 'TEST':
     LOGGING_LEVEL = 'INFO'
 LOGGING_LEVEL = safe_execute(LOGGING_LEVEL, BaseException, config.get, "other",
                              "logging_level")
+# 报告存储位置
+try:
+    TMP_COMMON_PATH = config.get('common_file_path', 'tmp_path')
+except Exception as e:
+    TMP_COMMON_PATH = "/tmp/logstash"
+
+# 图片二级存储路径
+try:
+    REPORT_IMG_FILES_PATH = config.get('common_file_path', 'report_img')
+except Exception as e:
+    REPORT_IMG_FILES_PATH = "report/img"
+
+# report html二级存储路径
+try:
+    REPORT_HTML_FILES_PATH = config.get('common_file_path', 'report_html')
+except Exception as e:
+    REPORT_HTML_FILES_PATH = "report/html"
+
+# report pdf二级存储路径
+try:
+    REPORT_PDF_FILES_PATH = config.get('common_file_path', 'report_pdf')
+except Exception as e:
+    REPORT_PDF_FILES_PATH = "report/pdf"
+# report word 二级存储路径
+try:
+    REPORT_WORD_FILES_PATH = config.get('common_file_path', 'report_word')
+except Exception as e:
+    REPORT_WORD_FILES_PATH = "report/word"
+# report excel 二级存储路径
+try:
+    REPORT_EXCEL_FILES_PATH = config.get('common_file_path', 'report_excel')
+except Exception as e:
+    REPORT_EXCEL_FILES_PATH = "report/excel"
+FILES_SIZE_LIMIT = 1024 * 1024 * 50
+# # 报告二级存储路径
+# try:
+#     REPORT_IMG_FILES_PATH = config.get('common_file_path', 'report_img')
+# except Exception as e:
+#     REPORT_IMG_FILES_PATH = "report/img"
+
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -328,7 +363,7 @@ LOGGING = {
         },
         'jsonlog': {
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/tmp/logstash/server.log',
+            'filename': TMP_COMMON_PATH+'/server.log',
             'formatter': 'json'
         }
     },
@@ -462,7 +497,7 @@ if os.getenv('environment', None) in ('TEST', 'PROD'):
 try:
     DOMAIN_VUL = config.get('other', 'domain_vul')
 except Exception as e:
-    DOMAIN_VUL = "localhost"
+    DOMAIN_VUL = "http://localhost"
 
 from urllib.parse import urljoin
 #OPENAPI
