@@ -526,9 +526,6 @@ CELERY_BROKER_URL = 'redis://:%(password)s@%(host)s:%(port)s/%(db)s' % {
     'port': config.get("redis", 'port'),
     'db': config.get("redis", 'db'),
 }
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_ACCEPT_CONTENT = ['json']
 CELERY_RESULT_EXPIRES = 600
 # CELERY_WORKER_LOG_FORMAT = '%(asctime)s [%(module)s %(levelname)s] %(message)s'
 # CELERY_WORKER_LOG_FORMAT = '%(message)s'
@@ -541,13 +538,9 @@ CELERY_WORKER_REDIRECT_STDOUTS = True
 CELERY_WORKER_REDIRECT_STDOUTS_LEVEL = "ERROR"
 # CELERY_WORKER_HIJACK_ROOT_LOGGER = True
 CELERY_WORKER_MAX_TASKS_PER_CHILD = 5000
-# CELERYD_CONCURRENCY = 8
-CELERY_IGNORE_RESULT = True
 
 CELERY_TASK_SOFT_TIME_LIMIT = 3600
-CELERY_ACKS_LATE = True
 CELERY_TASK_REJECT_ON_WORKER_LOST = True
-CELERY_ACKS_ON_FAILURE_OR_TIMEOUT = False
 DJANGO_CELERY_BEAT_TZ_AWARE = False
 from ast import literal_eval
 
