@@ -1,26 +1,17 @@
-import time
-
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
-from dongtai_common.models.project_report import ProjectReport
-from django.utils.translation import gettext_lazy as _
-from rest_framework import serializers
-from dongtai_web.utils import extend_schema_with_envcheck
-from django.http import HttpResponse
-from io import BytesIO, StringIO
-from rest_framework.serializers import ValidationError
-from dongtai_common.models.agent import IastAgent
 import os
+import logging
+import zipfile
+from dongtai_common.endpoint import UserEndPoint
+from io import BytesIO, StringIO
+from dongtai_common.models.agent import IastAgent
 from enum import Enum
 from django.http import FileResponse,JsonResponse
 from rest_framework import viewsets
 import logging
 from result import Ok, Err, Result
-import zipfile
 from functools import partial
 from wsgiref.util import FileWrapper
 from dongtai_common.utils.user import get_auth_users__by_id
-import json
 from django.http import HttpResponseNotFound
 from dongtai_common.models.message import IastMessage
 import threading
@@ -28,6 +19,9 @@ from django.db.models import Q
 from django.db import transaction
 from dongtai_conf.settings import TMP_COMMON_PATH
 from tempfile import NamedTemporaryFile
+from dongtai_conf.settings import TMP_COMMON_PATH
+from dongtai_common.endpoint import R
+
 logger = logging.getLogger('dongtai-webapi')
 
 
@@ -94,6 +88,7 @@ class AgentLogDownload(UserEndPoint, viewsets.ViewSet):
         except Exception as e:
             logger.info(e)
             return nothing_resp()
+
 
 
 def generate_path(agent_id):
