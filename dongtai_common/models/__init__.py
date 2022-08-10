@@ -37,6 +37,14 @@ LICENSE_RISK = {
     "2": "中",
     "3": "低",
     "0": "无风险",
+    "4": "无风险",
+}
+LICENSE_RISK_DESC = {
+    "1": "禁止商业闭源集成",
+    "2": "限制性商业闭源集成",
+    "3": "部分商业闭源集成",
+    "0": "无商业闭源集成",
+    "4": "无商业闭源集成",
 }
 # 漏洞等级
 APP_LEVEL_RISK = {
@@ -45,6 +53,14 @@ APP_LEVEL_RISK = {
     "3": "低危",
     "4": "无风险",
     "5": "提示",
+    "0": "无风险"
+}
+# 图片生成
+PNG_TREND_LEVEL = {
+    "1":"高危漏洞",
+    "2":"中危漏洞",
+    "3":"低危漏洞",
+    "4":"提示信息"
 }
 # 组件漏洞可利用性
 SCA_AVAILABILITY_DICT = {
@@ -77,3 +93,59 @@ WHITE_DOMAIN_NOTIFY = [
     "qyapi.weixin.qq.com",
     "oapi.dingtalk.com"
 ]
+
+VUL_TYPE_CSS = {
+    "1":"sca-height",
+    "2":"sca-middle",
+    "3":"sca-low",
+    "4":"sca-info",
+}
+
+VUL_DEP_CSS = {
+    "1":"height",
+    "2":"middle",
+    "3":"low",
+    "4":"info",
+}
+
+# export report default info
+DEFAULT_EXPORT_REPORT_DICT = {
+        "description": {
+            "user_id":"user_id",
+            "report_name":"report_name",
+            "project_name": "",
+            "version_name": "version_name",
+            "api_vount": "",
+            "vul_level_count":{},
+            "license_level_count":{},
+            "project_create_time": "",
+            "report_create_time": "",
+        },
+        "risk_analysis": {
+            "content": "",
+            "level_png": "",
+            "trend_png": "",
+            "app_vul_type": {
+                "1":{},
+                "2":{},
+                "3":{},
+                "4":{},
+                "5":{},
+            },
+            "sca_vul_type": {
+                "1": {},
+                "2": {},
+                "3": {},
+                "4": {},
+                "5": {},
+            },
+            "license_type": {}
+        },
+        "risk_details": {
+            "app_vul_detail": [],
+            "sca_vul_detail": [],
+            "license_vul_detail": []
+        },
+        "sca_list": {},
+        "api_site_map": {}
+    }
