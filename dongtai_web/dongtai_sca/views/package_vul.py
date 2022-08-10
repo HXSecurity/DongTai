@@ -131,10 +131,13 @@ class AssetPackageVulList(UserEndPoint):
         #                                         package_hash=asset_aggr.signature_value,
         #                                         package_version=asset_aggr.version).all()
         auth_asset_vuls = IastAssetVul.objects.filter(
-            iastvulassetrelation__asset_id=aggr_id).all()
+            iastvulassetrelation__asset_id=aggr_id).select_related(
+                 'level').prefetch_related(
+                    'iastassetvultyperelation_set__asset_vul_type').all()
         for a_vul in auth_asset_vuls:
-            vul_type_relation = IastAssetVulTypeRelation.objects.filter(
-                asset_vul_id=a_vul.id)
+            #vul_type_relation = IastAssetVulTypeRelation.objects.filter(
+            #    asset_vul_id=a_vul.id)
+            vul_type_relation = a_vul.iastassetvultyperelation_set.all()
             vul_type_str = ""
             if vul_type_relation:
                 vul_types = [
