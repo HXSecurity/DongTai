@@ -7,6 +7,7 @@ import logging
 
 import pymysql
 from django.db import connection
+
 from dongtai_common.endpoint import R, UserEndPoint
 
 from dongtai_common.models.asset_aggr import AssetAggr
@@ -292,7 +293,7 @@ class ScaList(UserEndPoint):
             with connection.cursor() as cursor:
                 cursor.execute(total_count_sql, count_sql_params)
                 total_count_query = cursor.fetchone()
-                total_count = total_count_query[0] if total_count_query[0] else 0
+                total_count = total_count_query[0]
 
             with connection.cursor() as cursor:
                 cursor.execute(list_query_sql, list_sql_params)

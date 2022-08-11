@@ -34,8 +34,7 @@ class ScaHandler(IReportHandler):
 
             logger.info(
                 f'[+] 处理SCA请求[{agent_id}, {package_path}, {package_signature}, {package_name}, {package_algorithm} {package_version}]正在下发扫描任务')
-            update_one_sca.delay(agent_id, package_path, package_signature, package_name, package_algorithm,
-                                 package_version)
+            update_one_sca.delay(agent_id, package_path, package_signature, package_name, package_algorithm, package_version)
             logger.info(
                 f'[+] 处理SCA请求[{agent_id}, {package_path}, {package_signature}, {package_name}, {package_algorithm} {package_version}]任务下发完成')
         except Exception as e:
@@ -68,5 +67,4 @@ class ScaBulkHandler(ScaHandler):
             self.package_name = package.get('packageName', None)
             self.package_algorithm = package.get('packageAlgorithm', None)
             self.package_version = package.get('packageVersion', '')
-
             super().save()

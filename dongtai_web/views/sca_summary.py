@@ -12,8 +12,8 @@ from dongtai_web.base.project_version import get_project_version, get_project_ve
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.text import format_lazy
-from dongtai_web.serializers.vul import VulSummaryTypeSerializer, VulSummaryProjectSerializer, \
-    VulSummaryLevelSerializer, VulSummaryLanguageSerializer
+from dongtai_web.serializers.vul import VulSummaryTypeSerializer, VulSummaryProjectSerializer, VulSummaryLevelSerializer, \
+    VulSummaryLanguageSerializer
 from rest_framework import serializers
 
 
@@ -161,6 +161,7 @@ class ScaSummary(UserEndPoint):
             "msg": "success",
             "data": {}
         }
+
         auth_users = self.get_auth_users(request.user)
         request_data = request.data
 

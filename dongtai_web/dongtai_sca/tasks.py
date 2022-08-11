@@ -54,6 +54,7 @@ def refresh_all_asset_data():
                 sca_scan_asset(asset)
 
             except Exception as e:
+                logger.error(f'SCA组件数据更新出错，错误原因：{e}')
                 continue
 
     logger.info('组件更新数据处理完成')
