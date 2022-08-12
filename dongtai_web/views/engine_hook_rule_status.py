@@ -103,7 +103,7 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
                 rule_id = int(rule_id)
             if rule_type:
                 rule_type = int(rule_type)
-        except:
+        except BaseException:
             return R.failure(_("Parameter error"))
         user_id = request.user.id
         status = False
@@ -152,7 +152,7 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
         strategy_ids = request.data.get('ids')
         try:
             strategy_ids = [int(i) for i in strategy_ids.split(',')]
-        except:
+        except BaseException:
             return R.failure(_("Parameter error"))
         if strategy_ids:
             count = self.set_strategy_status(strategy_id=None, strategy_ids=strategy_ids, user_id=request.user.id,

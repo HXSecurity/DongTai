@@ -5,6 +5,18 @@
 # software: Vim8
 # project: webapi
 
+from dongtai_common.models.profile import IastProfile
+from requests.exceptions import ConnectionError, ConnectTimeout
+import logging
+import json
+import requests
+from urllib.parse import urlparse
+import uuid
+from rest_framework import serializers
+from django.utils.translation import gettext_lazy as _
+from django.utils.text import format_lazy
+from django.utils.translation import get_language
+from rest_framework.serializers import SerializerMetaclass
 from functools import reduce
 from django.db.models import Q
 import operator
@@ -13,6 +25,7 @@ from dongtai_common.models.api_route import IastApiRoute, IastApiMethod, IastApi
 from dongtai_common.models.agent_method_pool import MethodPool
 from rest_framework.serializers import Serializer
 from dongtai_conf.settings import OPENAPI
+
 
 def get_model_field(model, exclude=[], include=[]):
     fields = [field.name for field in model._meta.fields]
@@ -59,12 +72,6 @@ def assemble_query_2(condictions: dict,
                 }, condictions)), base_query)
 
 
-from rest_framework.serializers import SerializerMetaclass
-from django.utils.translation import get_language
-from django.utils.text import format_lazy
-from django.utils.translation import gettext_lazy as _
-
-
 def extend_schema_with_envcheck(querys: list = [],
                                 request_bodys: list = [],
                                 response_bodys: list = [],
@@ -72,7 +79,13 @@ def extend_schema_with_envcheck(querys: list = [],
                                 **kwargs):
     def myextend_schema(func):
         import os
-        if os.getenv('environment', None) in ('TEST', 'DOC') or os.getenv('DOC', None) == 'TRUE' :
+        if os.getenv(
+            'environment',
+            None) in (
+            'TEST',
+            'DOC') or os.getenv(
+            'DOC',
+                None) == 'TRUE':
             from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes
             from drf_spectacular.utils import OpenApiResponse
             parameters = list(filter(lambda x: x, map(_filter_query, querys)))
@@ -85,18 +98,18 @@ def extend_schema_with_envcheck(querys: list = [],
             if kwargs.get('request', None) and request_examples:
                 kwargs['request'] = {'application/json': OpenApiTypes.OBJECT}
             elif isinstance(kwargs.get('request', None),
-                                SerializerMetaclass):
+                            SerializerMetaclass):
                 kwargs['request'] = {'application/json': kwargs['request']}
             elif kwargs.get('request', None):
                 kwargs['request'] = {'application/json': kwargs['request']}
-            deco = extend_schema(parameters=parameters,
-                                 examples=examples if examples else None,
-                                 responses={
-                                     200:
-                                     OpenApiResponse(description=_('The http status codes are both 200, please use the status and msg field returned by the response data to troubleshoot'),
-                                                     response=response_schema)
-                                 },
-                                 **kwargs)
+            deco = extend_schema(
+                parameters=parameters,
+                examples=examples if examples else None,
+                responses={
+                    200: OpenApiResponse(
+                        description=_('The http status codes are both 200, please use the status and msg field returned by the response data to troubleshoot'),
+                        response=response_schema)},
+                **kwargs)
             funcw = deco(func)
             funcw.querys = querys
             funcw.request_body = request_bodys if request_bodys else []
@@ -104,12 +117,6 @@ def extend_schema_with_envcheck(querys: list = [],
         return func
 
     return myextend_schema
-
-
-from rest_framework import serializers
-import uuid
-
-
 
 
 def get_response_serializer(data_serializer=None,
@@ -141,7 +148,6 @@ def get_response_serializer(data_serializer=None,
             data_serializer
         })
     return newclass
-
 
 
 def _filter_query(item):
@@ -204,10 +210,15 @@ def checkcover(api_route, agents, http_method=None):
         return True
     return False
 
+
 def checkcover_batch(api_route, agents):
-    uri_hash = [hashlib.sha1(api_route.path.encode('utf-8')).hexdigest() for api_route in api_route.only('path')]
-    cover_count = MethodPool.objects.filter(uri_sha1__in=uri_hash,agent__in=agents).values('uri_sha1').distinct().count()
+    uri_hash = [hashlib.sha1(api_route.path.encode('utf-8')).hexdigest()
+                for api_route in api_route.only('path')]
+    cover_count = MethodPool.objects.filter(
+        uri_sha1__in=uri_hash,
+        agent__in=agents).values('uri_sha1').distinct().count()
     return cover_count
+
 
 def apiroute_cachekey(api_route, agents, http_method=None):
     agent_id = sha1(str([_['id'] for _ in agents]))
@@ -217,13 +228,12 @@ def apiroute_cachekey(api_route, agents, http_method=None):
 
 def sha1(string, encoding='utf-8'):
     return hashlib.sha1(string.encode(encoding)).hexdigest()
-from dongtai_common.models.profile import IastProfile
 
 
 def get_openapi():
     profilefromdb = IastProfile.objects.filter(key='apiserver').values_list(
         'value', flat=True).first()
-    profilefromini = OPENAPI 
+    profilefromini = OPENAPI
     profiles = list(
         filter(lambda x: x is not None, [profilefromini, profilefromdb]))
     if profiles == []:
@@ -231,23 +241,14 @@ def get_openapi():
     return profiles[0]
 
 
-from urllib.parse import urlparse
-
 def validate_url(url):
     try:
         result = urlparse(url)
         return all([result.scheme, result.netloc])
-    except:
+    except BaseException:
         return False
     return True
 
-
-
-import requests
-import json
-import logging
-from django.utils.translation import get_language
-from requests.exceptions import ConnectionError, ConnectTimeout
 
 logger = logging.getLogger('dongtai-dongtai_conf')
 
@@ -268,8 +269,8 @@ def checkopenapistatus(openapiurl, token):
     return True, resp
 
 
-
 METHOD_OVERRIDE_HEADER = 'HTTP_X_HTTP_METHOD_OVERRIDE'
+
 
 class MethodOverrideMiddleware:
 
@@ -280,6 +281,7 @@ class MethodOverrideMiddleware:
         if request.method == 'POST' and METHOD_OVERRIDE_HEADER in request.META:
             request.method = request.META[METHOD_OVERRIDE_HEADER]
         return self.get_response(request)
+
 
 def dict_transfrom(dic: dict, key: str):
     return {i[key]: i for i in dic}

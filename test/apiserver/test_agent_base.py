@@ -362,7 +362,7 @@ METHODPOOL_JSON = {
         "replayRequest":
         False,
         "resBody":
-        "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <title>Java漏洞靶场<\/title>\n    <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css\">\n<\/head>\n<body>\n\n<div style=\"padding: 40px;\n    text-align: center;\n    background: #1abc9c;\n    color: white;\">\n    <h1>Java漏洞演示平台<\/h1>\n    <button class=\"ui inverted secondary basic button\"><a style=\"color: white\" href=\"home\">回到首页<\/a><\/button>\n<\/div>\n\n<div style=\"text-align: center;margin: 0px auto;\n     margin-top: 50px;\">\n    您获取的结果为：<p>{&quot;敏感信息账号&quot;: &quot;suyu&quot;, &quot;敏感信息手机&quot;: &quot;13888888888&quot;，&quot;敏感信息qq&quot;: &quot;10010&quot;, &quot;敏感信息身份证&quot;: &quot;321222222222222222&quot;, &quot;敏感信息地址&quot;: &quot;网商路699号阿里巴巴园区&quot;}<\/p>\n<\/div>\n\n<div>\n    <form action=\"/core3\" method=\"post\">\n        <input type=\"text\" name=\"message\" placeholder=\"请输入敏感信息\">\n        <input type=\"submit\" value=\"提交\">\n    <\/form>\n    <p><\/p>\n    <!--        <p>提示<\/p>-->\n    <!--        <p>\"txf\" and \"1\"=\"1\"<\/p>-->\n    <!--        <p>\"txf\" and \"1\"=\"2\"<\/p>-->\n<\/div>\n\n\n\n<\/body>\n<\/html>\n",
+        "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <title>Java漏洞靶场<\\/title>\n    <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css\">\n<\\/head>\n<body>\n\n<div style=\"padding: 40px;\n    text-align: center;\n    background: #1abc9c;\n    color: white;\">\n    <h1>Java漏洞演示平台<\\/h1>\n    <button class=\"ui inverted secondary basic button\"><a style=\"color: white\" href=\"home\">回到首页<\\/a><\\/button>\n<\\/div>\n\n<div style=\"text-align: center;margin: 0px auto;\n     margin-top: 50px;\">\n    您获取的结果为：<p>{&quot;敏感信息账号&quot;: &quot;suyu&quot;, &quot;敏感信息手机&quot;: &quot;13888888888&quot;，&quot;敏感信息qq&quot;: &quot;10010&quot;, &quot;敏感信息身份证&quot;: &quot;321222222222222222&quot;, &quot;敏感信息地址&quot;: &quot;网商路699号阿里巴巴园区&quot;}<\\/p>\n<\\/div>\n\n<div>\n    <form action=\"/core3\" method=\"post\">\n        <input type=\"text\" name=\"message\" placeholder=\"请输入敏感信息\">\n        <input type=\"submit\" value=\"提交\">\n    <\\/form>\n    <p><\\/p>\n    <!--        <p>提示<\\/p>-->\n    <!--        <p>\"txf\" and \"1\"=\"1\"<\\/p>-->\n    <!--        <p>\"txf\" and \"1\"=\"2\"<\\/p>-->\n<\\/div>\n\n\n\n<\\/body>\n<\\/html>\n",
         "clientIp":
         "127.0.0.1",
         "reqBody":
@@ -425,7 +425,7 @@ class AgentTestCase(APITestCase):
             content_type='application/json',
         )
         return response
-    
+
     def agent_report(self, json, **kwargs):
         reportjson1 = json
         reportjson1['detail']['agentId'] = self.agent_id

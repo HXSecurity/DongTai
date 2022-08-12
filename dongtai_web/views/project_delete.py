@@ -16,6 +16,7 @@ from rest_framework import serializers
 class _ProjectsDelBodyArgsSerializer(serializers.Serializer):
     id = serializers.IntegerField(help_text=_("The id of the project"))
 
+
 logger = logging.getLogger("django")
 _ResponseSerializer = get_response_serializer(status_msg_keypair=(
     ((201, _('Application has been deleted successfully')), ''),

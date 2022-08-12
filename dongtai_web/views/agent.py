@@ -79,7 +79,7 @@ class Agent(UserEndPoint):
             a = int(id_) > 0 
             if not a:
                 return R.failure(msg=_("Can't find relevant data"))
-        except:
+        except BaseException:
             return R.failure(msg=_("Can't find relevant data"))
         agent = IastAgent.objects.filter(pk=id_).first()
         if agent:

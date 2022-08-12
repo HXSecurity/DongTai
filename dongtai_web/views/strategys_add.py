@@ -39,9 +39,9 @@ class StrategyAdd(UserEndPoint):
         response_schema=_ResponseSerializer,
     )
     def post(self, request):
-        
+
         ids = request.data.get("ids", None)
-        
+
         name = request.data.get("name", None)
         user = request.user
         if not ids or not name:

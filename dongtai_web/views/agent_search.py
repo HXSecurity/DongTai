@@ -22,6 +22,7 @@ class _AgentSearchQuerysSerializer(serializers.Serializer):
         "Project name, used to start the agent first and then create the project"
     ))
 
+
 _ResponseSerializer = get_response_serializer(
     status_msg_keypair=(((201, _('Suspending ...')), ''), ))
 

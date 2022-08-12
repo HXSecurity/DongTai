@@ -411,22 +411,22 @@ def get_params_dict(req_header, req_body, req_params):
         res = parse_headers_dict_from_bytes(req_header)
         req_header_keys = list(
             filter(lambda x: x.upper() == 'cookie', res.keys()))
-    except:
+    except BaseException:
         req_header_keys = []
     try:
         from http.cookies import SimpleCookie
         cookie = SimpleCookie()
         cookie.load(res['cookie'])
         cookie_keys = list(cookie.keys())
-    except:
+    except BaseException:
         cookie_keys = []
     try:
         body_keys = list(json.loads(req_body).keys())
-    except:
+    except BaseException:
         body_keys = []
     try:
         query_keys = list(QueryDict(req_params).keys())
-    except:
+    except BaseException:
         query_keys = []
     return {
         'header': req_header_keys,
@@ -452,6 +452,7 @@ def update_api_route_deatil(agent_id, path, method, params_dict):
         annotation = annotation_dict[key]
         for param_name in value:
             single_insert(api_route.id, param_name, annotation)
+
 
 from dongtai_common.models.api_route import IastApiParameter
 
@@ -481,14 +482,14 @@ def decode_content(body, content_encoding, version):
     if content_encoding == 'gzip':
         try:
             return gzip.decompress(body).decode('utf-8')
-        except:
+        except BaseException:
             logger.warning('not gzip type but using gzip as content_encoding')
     # TODO not content_encoding
     if content_encoding:
         logger.info('not found content_encoding :{}'.format(content_encoding))
     try:
         return body.decode('utf-8')
-    except:
+    except BaseException:
         logger.info('decode_content, {}'.format(body))
         logger.info('utf-8 decode failed, use raw ')
         return body.decode('raw_unicode_escape')
@@ -503,15 +504,15 @@ def get_content_encoding(b64_res_headers):
                 if 'gzip' in v:
                     return 'gzip'
                 break
-        except:
+        except BaseException:
             pass
     return ''
 
 
 def get_res_body(res_body, version):
     if version == 'v1':
-        return res_body  #bytes
+        return res_body  # bytes
     elif version == 'v2':
-        return base64.b64decode(res_body)  #bytes
+        return base64.b64decode(res_body)  # bytes
     logger.info('no match version now version: {}'.format(version))
     return res_body

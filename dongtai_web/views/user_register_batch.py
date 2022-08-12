@@ -87,7 +87,7 @@ class UserRegisterEndPoint(SystemAdminEndPoint):
                         header = False
                         continue
                     users.append((row[11].strip(), row[12].strip(), row[13].strip()))
-        except:
+        except BaseException:
             print(_('User account file read error'))
         return users
 

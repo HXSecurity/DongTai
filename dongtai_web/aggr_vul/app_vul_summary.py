@@ -1,3 +1,7 @@
+from dongtai_web.utils import dict_transfrom
+from dongtai_engine.elatic_search.data_correction import data_correction_interpetor
+from dongtai_conf.settings import ELASTICSEARCH_STATE
+import copy
 from rest_framework.serializers import ValidationError
 from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint
@@ -12,9 +16,7 @@ from dongtai_common.common.utils import cached_decorator
 from django.db.models import Q
 import logging
 logger = logging.getLogger('dongtai-webapi')
-import copy
-from dongtai_conf.settings import ELASTICSEARCH_STATE
-from dongtai_engine.elatic_search.data_correction import data_correction_interpetor
+
 
 def _annotate_by_query(q, value_fields, count_field):
     return (
@@ -23,8 +25,10 @@ def _annotate_by_query(q, value_fields, count_field):
         .annotate(count=Count(count_field))
     )
 
-#@cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60),
+# @cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60),
 #                  use_celery_update=True)
+
+
 def get_annotate_cache_data(user_id: int):
     return get_annotate_data(user_id, 0, 0)
 
@@ -33,7 +37,8 @@ def get_annotate_data(
     user_id: int, bind_project_id=int, project_version_id=int
 ) -> dict:
     auth_user_info = auth_user_list_str(user_id=user_id)
-    cache_q = Q(is_del=0,agent__bind_project_id__gt=0, agent__user_id__in=auth_user_info['user_list'])
+    cache_q = Q(is_del=0, agent__bind_project_id__gt=0,
+                agent__user_id__in=auth_user_info['user_list'])
 
     # 从项目列表进入 绑定项目id
     if bind_project_id:
@@ -104,7 +109,8 @@ def get_annotate_data(
         )
 
     # # 按语言筛选
-    language_info = _annotate_by_query(cache_q, ("agent__language",), "agent__language")
+    language_info = _annotate_by_query(
+        cache_q, ("agent__language",), "agent__language")
     lang_arr = copy.copy(LANGUAGE_DICT)
     lang_key = lang_arr.keys()
     for item in language_info:
@@ -151,11 +157,13 @@ class GetAppVulsSummary(UserEndPoint):
         try:
             if ser.is_valid(True):
                 if ser.validated_data.get("bind_project_id", 0):
-                    bind_project_id = ser.validated_data.get("bind_project_id", 0)
+                    bind_project_id = ser.validated_data.get(
+                        "bind_project_id", 0)
                 if ser.validated_data.get("project_version_id", 0):
-                    project_version_id = ser.validated_data.get("project_version_id", 0)
+                    project_version_id = ser.validated_data.get(
+                        "project_version_id", 0)
 
-            if  ELASTICSEARCH_STATE:
+            if ELASTICSEARCH_STATE:
                 result_summary = get_annotate_data_es(user_id, bind_project_id,
                                                       project_version_id)
 
@@ -176,7 +184,6 @@ class GetAppVulsSummary(UserEndPoint):
             },
         )
 
-from dongtai_web.utils import dict_transfrom
 
 def get_annotate_data_es(user_id, bind_project_id, project_version_id):
     from dongtai_common.models.vulnerablity import IastVulnerabilityDocument
@@ -206,7 +213,8 @@ def get_annotate_data_es(user_id, bind_project_id, project_version_id):
         must_query.append(Q('terms', bind_project_id=[bind_project_id]))
     if project_version_id:
         must_query.append(Q('terms', project_version_id=[project_version_id]))
-    search = IastVulnerabilityDocument.search().query(Q('bool', must=must_query))[:0]
+    search = IastVulnerabilityDocument.search().query(
+        Q('bool', must=must_query))[:0]
     buckets = {
         'level': A('terms', field='level_id', size=2147483647),
         'project': A('terms', field='bind_project_id', size=2147483647),

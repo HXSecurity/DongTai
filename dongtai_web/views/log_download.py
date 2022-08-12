@@ -40,7 +40,7 @@ class AgentLogDownload(UserEndPoint, viewsets.ViewSet):
             a = int(pk) > 0
             if not a:
                 return nothing_resp()
-        except:
+        except BaseException:
             return nothing_resp()
         if IastAgent.objects.filter(pk=pk,
                                     user__in=get_auth_users__by_id(

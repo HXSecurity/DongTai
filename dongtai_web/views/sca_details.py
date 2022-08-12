@@ -40,6 +40,7 @@ class ScaDetailResponseDataSerializers(ScaSerializer):
         model = ScaSerializer.Meta.model
         fields = ScaSerializer.Meta.fields + ['vuls']
 
+
 _ResponseSerializer = get_response_serializer(
     ScaDetailResponseDataSerializers())
 

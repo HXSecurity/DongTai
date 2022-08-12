@@ -20,6 +20,7 @@ from rest_framework import serializers
 class _StrategyResponseDataStrategySerializer(serializers.Serializer):
     id = serializers.CharField(help_text=_('The id of strategy'))
 
+
 _ResponseSerializer = get_response_serializer(
     data_serializer=_StrategyResponseDataStrategySerializer(many=True), )
 

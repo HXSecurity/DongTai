@@ -19,6 +19,7 @@ class _ProjectVersionDeleteSerializer(serializers.Serializer):
         help_text=_("The version id of the project"))
     project_id = serializers.IntegerField(help_text=_("The id of the project"))
 
+
 _ResponseSerializer = get_response_serializer(status_msg_keypair=(
     ((202, _('Parameter error')), ''),
     ((201, _('Version does not exist')), ''),

@@ -47,5 +47,5 @@ class StrategyDisableEndpoint(TalentAdminEndPoint):
 
 
 if __name__ == '__main__':
-    
+
     HookStrategy.objects.values("id").count()

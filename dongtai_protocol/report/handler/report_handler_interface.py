@@ -83,7 +83,7 @@ class IReportHandler:
             logger.info(
                 _(
                     '[{classname}] report resolution failed, Agent does not exist or no right to access, report data: {report}').
-                    format(classname=self.__class__.__name__, report=self.report))
+                format(classname=self.__class__.__name__, report=self.report))
             return 'no permission'
 
     def get_project_agents(self, agent):

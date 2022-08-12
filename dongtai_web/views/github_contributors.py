@@ -29,6 +29,7 @@ def corotheard():
     _update()
     asyncio.run(timer(60 * 90, _update))
 
+
 t1 = threading.Thread(target=corotheard, daemon=True)
 t1.start()
 

@@ -33,7 +33,7 @@ class StrategyEnableEndpoint(TalentAdminEndPoint):
     def get(self, request, id):
         strategy = IastStrategyModel.objects.filter(id=id).first()
         strategy_models = HookType.objects.filter(vul_strategy=strategy).all()
-        if strategy :
+        if strategy:
             strategy.state = ENABLE
             strategy.save()
             total_counts = 0

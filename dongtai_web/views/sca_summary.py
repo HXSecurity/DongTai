@@ -259,6 +259,7 @@ class ScaSummary(UserEndPoint):
             user_id, **es_query)
         return resp, origin_resp
 
+
 from elasticsearch_dsl import Q, Search
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import A

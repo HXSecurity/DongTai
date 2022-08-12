@@ -62,7 +62,7 @@ class LogsEndpoint(UserEndPoint):
                 if not total or not max_id:
                     total, max_id = self.set_query_cache(queryset)
             # only read log_id
-            cur_data = queryset.filter(id__lte=max_id).values_list('id', flat=True).order_by('-id')[(page-1)*page_size: page*page_size]
+            cur_data = queryset.filter(id__lte=max_id).values_list('id', flat=True).order_by('-id')[(page -1) *page_size: page *page_size]
             cur_ids = []
             for item in cur_data:
                 cur_ids.append(item)

@@ -68,8 +68,8 @@ def sca_scan_asset(asset):
                 update_fields.append('safe_version')
 
             # 最新版本
-            last_package = Package.objects.filter(Q(ecosystem=asset_package.ecosystem) &
-                                                  Q(name=asset_package.name) & ~Q(version="")).order_by(
+            last_package = Package.objects.filter(Q(ecosystem=asset_package.ecosystem)
+                                                  & Q(name=asset_package.name) & ~Q(version="")).order_by(
                 "-version_publish_time").first()
             if last_package:
                 asset.last_version = last_package.version
