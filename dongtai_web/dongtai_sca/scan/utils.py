@@ -166,6 +166,13 @@ def get_highest_license(license_list: List[Dict]) -> Dict:
         "level_desc": "允许商业集成"
     }
 
+
+from hashlib import sha1
+
+def sha_1(raw):
+    sha1_str = sha1(raw.encode("utf-8")).hexdigest()
+    return sha1_str
+
 @shared_task(queue='dongtai-sca-task')
 def update_one_sca(agent_id,
                    package_path,
@@ -177,6 +184,8 @@ def update_one_sca(agent_id,
         f'SCA检测开始 [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm} {package_version}]'
     )
     agent = IastAgent.objects.filter(id=agent_id).first()
+    if not package_signature:
+        package_signature = sha_1(package_signature)
     if not SCA_SETUP:
         logger.warning(f"SCA_TOKEN not setup !")
         asset = Asset()
