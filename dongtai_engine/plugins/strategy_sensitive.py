@@ -99,5 +99,5 @@ def check_id_card(id_card):
     try:
         from id_validator import validator
         return validator.is_valid(id_card)
-    except:
+    except BaseException:
         return False

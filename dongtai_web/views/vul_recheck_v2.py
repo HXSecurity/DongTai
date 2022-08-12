@@ -70,7 +70,7 @@ class VulReCheckv2(UserEndPoint):
                 state=const.WAITING,
                 count=F('count') + 1,
                 update_time=timestamp)
-        vuls_not_exist = set(vul_ids) # - set(history_replay_vul_ids)
+        vuls_not_exist = set(vul_ids)  # - set(history_replay_vul_ids)
         success_count = len(vuls_not_exist)
         vul_payload_dict = {}
         for vul_id in vuls_not_exist:

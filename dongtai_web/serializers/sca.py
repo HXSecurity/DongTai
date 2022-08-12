@@ -85,7 +85,7 @@ class ScaSerializer(serializers.ModelSerializer):
 
     def get_license(self, obj):
         try:
-            if not self.context.has_key('license_dict'):
+            if 'license_dict' not in self.context:
                 sca_package = Package.objects.filter(hash=obj.signature_value).first()
                 return sca_package.license
             return self.context['license_dict'].get(obj.signature_value, '')

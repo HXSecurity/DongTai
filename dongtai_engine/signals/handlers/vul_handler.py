@@ -22,6 +22,7 @@ def equals(source, target):
     if source == target or source in target or target in source:
         return True
 
+
 from dongtai_engine.signals.handlers.parse_param_name import ParamDict
 
 def parse_params(param_values, taint_value):
@@ -59,6 +60,7 @@ def parse_body(body, taint_value):
                 return key
     except Exception as e:
         return parse_params(body, taint_value)
+
 
 from dongtai_engine.filters.utils import parse_headers_dict_from_bytes
 
@@ -109,6 +111,7 @@ def parse_path(uri, taint_value):
             # if equals(taint_value, item):
             # fixme 暂时先使用完全匹配，后续考虑解决误报问题
             return True
+
 
 from dongtai_engine.signals.handlers.parse_param_name import parse_target_values_from_vul_stack
 
@@ -200,6 +203,7 @@ def parse_taint_position(source_method, vul_meta, taint_value, vul_stack):
 
     return param_names
 
+
 from django.core.cache import cache
 import uuid
 
@@ -209,7 +213,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     # 如果是重放请求，且重放请求类型为漏洞验证，更新漏洞状态为
     taint_value = kwargs['taint_value']
     timestamp = int(time.time())
-    param_names = parse_taint_position(source_method=top_stack, vul_meta=vul_meta, taint_value=taint_value , vul_stack=vul_stack)
+    param_names = parse_taint_position(source_method=top_stack, vul_meta=vul_meta, taint_value=taint_value, vul_stack=vul_stack)
     if parse_params:
         param_name = json.dumps(param_names)
         taint_position = '/'.join(param_names.keys())
@@ -304,6 +308,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
 
     logger.info(f"vul_found {vul.id}")
     return vul
+
 
 from dongtai_common.models.vul_recheck_payload import IastVulRecheckPayload
 

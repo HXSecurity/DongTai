@@ -42,6 +42,8 @@ class PageSerializer(serializers.Serializer):
 
 class ResponseDataSerializer(serializers.Serializer):
     messages = MessageSerializer(many=True)
+
+
 _SuccessSerializer = get_response_serializer(ResponseDataSerializer())
 
 

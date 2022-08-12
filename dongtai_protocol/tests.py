@@ -91,6 +91,7 @@ class AgentHeartBeatTestCase(AgentTestCase):
 def get_replay_id_set(replay_list: list) -> set:
     return set([i['id'] for i in replay_list])
 
+
 import base64
 
 

@@ -2,14 +2,14 @@ from rest_framework.serializers import ValidationError
 from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_web.aggregation.aggregation_common import turnIntListOfStr,auth_user_list_str
+from dongtai_web.aggregation.aggregation_common import turnIntListOfStr, auth_user_list_str
 from dongtai_web.serializers.vul import VulSerializer
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
 import pymysql
 from dongtai_web.serializers.aggregation import AggregationArgsSerializer
-from dongtai_common.models import AGGREGATION_ORDER,LANGUAGE_ID_DICT,APP_LEVEL_RISK,APP_VUL_ORDER
+from dongtai_common.models import AGGREGATION_ORDER, LANGUAGE_ID_DICT, APP_LEVEL_RISK, APP_VUL_ORDER
 from django.db.models import F
 from dongtai_common.utils.db import SearchLanguageMode
 from dongtai_common.models.vulnerablity import IastVulnerabilityDocument
@@ -28,7 +28,8 @@ from dongtai_conf.settings import ELASTICSEARCH_STATE
 from dongtai_engine.elatic_search.data_correction import data_correction_interpetor
 
 
-INT_LIMIT: int = 2**64 -1
+INT_LIMIT: int = 2**64 - 1
+
 
 class GetAppVulsList(UserEndPoint):
 
@@ -54,7 +55,10 @@ class GetAppVulsList(UserEndPoint):
         user = request.user
         # 获取用户权限
         auth_user_info = auth_user_list_str(user=user)
-        queryset = IastVulnerabilityModel.objects.filter(is_del=0,agent__bind_project_id__gt=0,agent__user_id__in=auth_user_info['user_list'])
+        queryset = IastVulnerabilityModel.objects.filter(
+            is_del=0,
+            agent__bind_project_id__gt=0,
+            agent__user_id__in=auth_user_info['user_list'])
 
         try:
             if ser.is_valid(True):
@@ -69,54 +73,88 @@ class GetAppVulsList(UserEndPoint):
                 es_query = {}
                 # 从项目列表进入 绑定项目id
                 if ser.validated_data.get("bind_project_id", 0):
-                    queryset = queryset.filter(agent__bind_project_id=ser.validated_data.get("bind_project_id"))
-                    es_query['bind_project_id'] = ser.validated_data.get("bind_project_id")
+                    queryset = queryset.filter(
+                        agent__bind_project_id=ser.validated_data.get("bind_project_id"))
+                    es_query['bind_project_id'] = ser.validated_data.get(
+                        "bind_project_id")
                 # 项目版本号
                 if ser.validated_data.get("project_version_id", 0):
-                    queryset = queryset.filter(agent__project_version_id=ser.validated_data.get("project_version_id"))
-                    es_query['project_version_id'] = ser.validated_data.get("project_version_id")
+                    queryset = queryset.filter(
+                        agent__project_version_id=ser.validated_data.get("project_version_id"))
+                    es_query['project_version_id'] = ser.validated_data.get(
+                        "project_version_id")
                 # 按项目筛选
                 if ser.validated_data.get("project_id_str", ""):
-                    project_id_list = turnIntListOfStr(ser.validated_data.get("project_id_str", ""))
-                    queryset = queryset.filter(agent__bind_project_id__in=project_id_list)
+                    project_id_list = turnIntListOfStr(
+                        ser.validated_data.get("project_id_str", ""))
+                    queryset = queryset.filter(
+                        agent__bind_project_id__in=project_id_list)
                     es_query['project_ids'] = project_id_list
                 # 漏洞类型筛选
                 if ser.validated_data.get("hook_type_id_str", ""):
-                    vul_type_list = turnIntListOfStr(ser.validated_data.get("hook_type_id_str", ""))
+                    vul_type_list = turnIntListOfStr(
+                        ser.validated_data.get("hook_type_id_str", ""))
                     queryset = queryset.filter(strategy_id__in=vul_type_list)
                     es_query['strategy_ids'] = vul_type_list
                 # 漏洞等级筛选
                 if ser.validated_data.get("level_id_str", ""):
-                    level_id_list = turnIntListOfStr(ser.validated_data.get("level_id_str", ""))
+                    level_id_list = turnIntListOfStr(
+                        ser.validated_data.get("level_id_str", ""))
                     queryset = queryset.filter(level_id__in=level_id_list)
                     es_query['level_ids'] = level_id_list
                 # 按状态筛选
                 if ser.validated_data.get("status_id_str", ""):
-                    status_id_list = turnIntListOfStr(ser.validated_data.get("status_id_str", ""))
+                    status_id_list = turnIntListOfStr(
+                        ser.validated_data.get("status_id_str", ""))
                     queryset = queryset.filter(status_id__in=status_id_list)
                     es_query['status_ids'] = status_id_list
                 # 按语言筛选
                 if ser.validated_data.get("language_str", ""):
-                    language_id_list = turnIntListOfStr(ser.validated_data.get("language_str", ""))
+                    language_id_list = turnIntListOfStr(
+                        ser.validated_data.get("language_str", ""))
                     language_arr = []
                     for lang in language_id_list:
                         language_arr.append(LANGUAGE_ID_DICT.get(str(lang)))
-                    queryset = queryset.filter(agent__language__in=language_arr)
+                    queryset = queryset.filter(
+                        agent__language__in=language_arr)
                     es_query['language_ids'] = language_arr
                 order_list = []
-                fields = ["id", "uri","http_method","top_stack","bottom_stack","level_id",
-                            "taint_position","status_id","first_time","latest_time", "strategy__vul_name","agent__language",
-                            "agent__project_name","agent__server__container","agent__bind_project_id"
-                            ]
+                fields = [
+                    "id",
+                    "uri",
+                    "http_method",
+                    "top_stack",
+                    "bottom_stack",
+                    "level_id",
+                    "taint_position",
+                    "status_id",
+                    "first_time",
+                    "latest_time",
+                    "strategy__vul_name",
+                    "agent__language",
+                    "agent__project_name",
+                    "agent__server__container",
+                    "agent__bind_project_id"]
                 if keywords:
                     es_query['search_keyword'] = keywords
                     keywords = pymysql.converters.escape_string(keywords)
                     order_list = ["-score"]
                     fields.append("score")
 
-                    queryset = queryset.annotate(score=SearchLanguageMode([F('search_keywords'), F('uri'), F('vul_title'), F('http_method'), F('http_protocol'), F('top_stack'), F('bottom_stack')], search_keyword=keywords))
+                    queryset = queryset.annotate(
+                        score=SearchLanguageMode(
+                            [
+                                F('search_keywords'),
+                                F('uri'),
+                                F('vul_title'),
+                                F('http_method'),
+                                F('http_protocol'),
+                                F('top_stack'),
+                                F('bottom_stack')],
+                            search_keyword=keywords))
                 # 排序
-                order_type = APP_VUL_ORDER.get(str(ser.validated_data['order_type']), "level_id")
+                order_type = APP_VUL_ORDER.get(
+                    str(ser.validated_data['order_type']), "level_id")
                 order_type_desc = "-" if ser.validated_data['order_type_desc'] else ""
                 if order_type == "level_id":
                     order_list.append(order_type_desc + order_type)
@@ -134,13 +172,20 @@ class GetAppVulsList(UserEndPoint):
                         page_size=page_size,
                         **es_query)
                 else:
-                    vul_data = queryset.values(*tuple(fields)).order_by(*tuple(order_list))[begin_num:end_num]
+                    vul_data = queryset.values(
+
+                        * tuple(fields)).order_by(
+
+                        * tuple(order_list))[
+                        begin_num:end_num]
         except ValidationError as e:
             return R.failure(data=e.detail)
         if vul_data:
             for item in vul_data:
-                item['level_name'] = APP_LEVEL_RISK.get(str(item['level_id']),"")
-                item['server_type'] = VulSerializer.split_container_name(item['agent__server__container'])
+                item['level_name'] = APP_LEVEL_RISK.get(
+                    str(item['level_id']), "")
+                item['server_type'] = VulSerializer.split_container_name(
+                    item['agent__server__container'])
                 end['data'].append(item)
 
         # all Iast Vulnerability Status
@@ -150,7 +195,6 @@ class GetAppVulsList(UserEndPoint):
             status_obj[tmp_status.id] = tmp_status.name
         for i in end['data']:
             i['status__name'] = status_obj.get(i['status_id'], "")
-
 
         return R.success(data={
             'messages': end['data'],

@@ -165,7 +165,7 @@ class EndPoint(APIView):
                 "num_pages": page_info.num_pages,
                 "page_size": page_size
             }
-        except:
+        except BaseException:
             page_summary = {
                 "alltotal": 0,
                 "num_pages": 0,
@@ -174,7 +174,7 @@ class EndPoint(APIView):
         try:
             page_info.validate_number(page)
             page_list = page_info.get_page(page).object_list
-        except:
+        except BaseException:
             return page_summary, []
         return page_summary, page_list
 

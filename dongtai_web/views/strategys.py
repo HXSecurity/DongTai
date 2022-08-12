@@ -72,6 +72,7 @@ class _StrategyArgsSerializer(serializers.Serializer):
         help_text=_(
             "The name of the item to be searched, supports fuzzy search."))
 
+
 STATUS_DELETE = 'delete'
 
 class StrategyEndpoint(UserEndPoint):

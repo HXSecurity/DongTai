@@ -57,7 +57,7 @@ class OssDownloader(object):
 
     @staticmethod
     def download_file(object_name, local_file):
-        return OssDownloader.download_file_to_path(  #access_key=settings.ACCESS_KEY,
+        return OssDownloader.download_file_to_path(  # access_key=settings.ACCESS_KEY,
             #access_key_secret=settings.ACCESS_KEY_SECRET,
             bucket_url=OssDownloader.BUCKET_URL,
             bucket_name=OssDownloader.BUCKET_NAME,
@@ -86,7 +86,7 @@ def updateossstatus():
     from dongtai_protocol.views.engine_download import EngineDownloadEndPoint, PACKAGE_NAME_LIST
     try:
         status_, _ = checkossstatus()
-        if status_ == False:
+        if not status_:
             return False, None
         import shutil
         shutil.rmtree('/tmp')

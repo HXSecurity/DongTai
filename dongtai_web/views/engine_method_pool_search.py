@@ -180,10 +180,10 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             #         0] <= 60 * 60 * 24 * 7 else [
             #             int(time.time()) - 60 * 60 * 24 * 7,
             #             int(time.time())
-                     ]
+            ]
             ids = exclude_ids if isinstance(exclude_ids, list) and all(
                 map(lambda x: isinstance(x, int), exclude_ids)) else []
-        except:
+        except BaseException:
             return R.failure(gettext_lazy("Parameter error"))
         search_fields = dict(
             filter(lambda k: k[0] in fields, request.data.items()))
@@ -365,6 +365,7 @@ def aggregation_count(list_, primary_key, count_key):
 
 def highlight_matches(query, text, html):
     text = text.replace('<', '&lt;')
+
     def span_matches(match):
         return html.format(match.group(0))
     return re.sub(query, span_matches, text, flags=re.I)

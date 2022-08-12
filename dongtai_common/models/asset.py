@@ -71,6 +71,7 @@ class Asset(models.Model):
         managed = get_managed()
         db_table = 'iast_asset'
 
+
 from django_elasticsearch_dsl import Document
 from django_elasticsearch_dsl.registries import registry
 from dongtai_web.utils import get_model_field

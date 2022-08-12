@@ -102,6 +102,7 @@ class IastAssetVulTypeRelation(models.Model):
         managed = get_managed()
         db_table = 'iast_asset_vul_type_relation'
 
+
     # "iast_asset_vul_type_relation      iast_asset_vul_relation  iast_asset_vul iast_asset "
 from django_elasticsearch_dsl.registries import registry
 from django_elasticsearch_dsl import Document, fields

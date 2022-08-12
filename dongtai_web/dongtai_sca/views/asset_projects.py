@@ -80,7 +80,7 @@ class AssetVulProjects(UserEndPoint):
                     'project_id',
                     'project_name',
                     'project_version_id',
-                ).distinct().all()
+            ).distinct().all()
 
             data = []
             asset_queryset = asset_queryset.order_by('project_id', 'project_version_id')
@@ -112,6 +112,7 @@ class AssetVulProjects(UserEndPoint):
         except Exception as e:
             logger.error(e)
             return R.failure(msg=_('Component vul projects query failed'))
+
 
 from typing import List, Optional,Dict
 

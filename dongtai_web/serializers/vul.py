@@ -25,7 +25,7 @@ class VulSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'type', 'hook_type_id', 'url', 'uri', 'agent_id', 'level_id',
             'http_method', 'top_stack', 'bottom_stack', 'taint_position',
-                'latest_time', 'first_time', 'language', 'status'
+            'latest_time', 'first_time', 'language', 'status'
         ]
 
     @staticmethod

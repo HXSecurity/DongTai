@@ -69,13 +69,13 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
 
             return rule_type, rule_value, rule_source, rule_target, inherit, is_track
         except Exception as e:
-            
+
             return None, None, None, None, None, None
 
     def create_strategy(self, value, source, target, inherit, track, created_by):
         try:
-            
-            
+
+
             timestamp = int(time.time())
             strategy = HookStrategy(
                 value=value,
@@ -94,7 +94,7 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             return None
 
     @extend_schema_with_envcheck(
-        
+
         request=_HookRuleAddBodyargsSerializer,
         tags=[_('Hook Rule')],
         summary=_('Hook Rule Add'),

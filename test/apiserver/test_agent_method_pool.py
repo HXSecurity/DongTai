@@ -1096,4 +1096,4 @@ class AgentMethodPoolTestCase(AgentTestCase):
         }
         data['detail']['agentId'] = self.agent_id
         res = self.agent_report(data, agentId=self.agent_id)
-         
+
