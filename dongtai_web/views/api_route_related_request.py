@@ -23,6 +23,7 @@ class ApiRouteCoverRelationSerializer(serializers.ModelSerializer):
         model = MethodPool
         fields = serializers.ALL_FIELDS
 
+
 _GetResponseSerializer = get_response_serializer(ApiRouteCoverRelationSerializer())
 
 
@@ -56,7 +57,7 @@ class ApiRouteRelationRequest(UserEndPoint):
             project_id = int(request.query_params.get('project_id', None))
             auth_users = self.get_auth_users(request.user)
             version_id = int(request.query_params.get('version_id', None))
-        except:
+        except BaseException:
             return R.failure(_("Parameter error"))
         if project_id:
             if not version_id:

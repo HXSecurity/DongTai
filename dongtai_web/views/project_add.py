@@ -140,8 +140,8 @@ class ProjectAdd(UserEndPoint):
                     "current_version": 1
                 }
                 if not versionInfo or not (
-                        versionInfo.version_name == version_name and
-                    (versionInfo.description == description or not description)):
+                            versionInfo.version_name == version_name
+                        and (versionInfo.description == description or not description)):
                     result = version_modify(project.user,auth_users,
                                             current_project_version)
                     if result.get("status", "202") == "202":

@@ -39,7 +39,7 @@ class AgentStart(UserEndPoint):
         if agent_ids:
             try:
                 agent_ids = [int(i) for i in agent_ids.split(',')]
-            except:
+            except BaseException:
                 return R.failure(_("Parameter error")) 
         if agent_id:
             agent = IastAgent.objects.filter(user=request.user, id=agent_id).first()

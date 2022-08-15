@@ -220,6 +220,7 @@ def get_targets(targets):
 def get_data_from_dict_by_key(dic: dict, fields: Iterable) -> dict:
     return {i: dic[i] for i in fields}
 
+
 from django.db.models import F
 
 
@@ -266,6 +267,8 @@ def set_config_change_proprity(config_id, priority_range: list):
         set_config_change_gt(config.id, min(priority_range))
     if max(priority_range) < config.priority:
         set_config_change_lt(config.id, max(priority_range))
+
+
 from dongtai_conf.settings import DEFAULT_CIRCUITCONFIG
 
 

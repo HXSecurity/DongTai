@@ -36,7 +36,7 @@ class AgentCoreStatusUpdate(UserEndPoint):
         request=AgentToggleArgsSerializer,
         tags=[_('Agent')],
         summary=_('Agent Status Update'),
-        description=_("Control the running agent by specifying the id."  ),
+        description=_("Control the running agent by specifying the id."),
         response_schema=_ResponseSerializer)
     def post(self, request):
         ser = AgentCoreStatusSerializer(data=request.data)
@@ -50,7 +50,7 @@ class AgentCoreStatusUpdate(UserEndPoint):
         if agent_ids:
             try:
                 agent_ids = [int(i) for i in agent_ids.split(',')]
-            except:
+            except BaseException:
                 return R.failure(_("Parameter error"))
         elif agent_id is not None:
             agent_ids = [int(agent_id)]

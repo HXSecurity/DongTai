@@ -35,7 +35,7 @@ def fuzz_test_data(end_point, httpmethod):
             queryfield.append(query['name'])
             if query['type'] == int:
                 data_tuple.append([0, -1, '', '1', '-1', 0, 'alw'])
-    li =  list(product(*data_tuple))
+    li = list(product(*data_tuple))
     return li
 
 

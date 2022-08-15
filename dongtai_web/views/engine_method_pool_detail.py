@@ -27,14 +27,14 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
         :return:
         token: agent-ip-port-path
         """
-        
-        
-        
+
+
+
         try:
             latest_id, page_size, rule_name, rule_msg, rule_level, source_set, sink_set, propagator_set = \
                 self.parse_search_condition(request)
             auth_agents = self.get_auth_and_anonymous_agents(request.user).values('id')
-            
+
             auth_agent_ids = [agent['id'] for agent in auth_agents]
             method_pool_ids = self.get_match_methods(
                 agents=auth_agent_ids,
@@ -88,10 +88,10 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
         if queryset.values('id').exists() is False:
             return None
 
-        
+
         matches = list()
         while True:
-            logger.debug(_('Searching, current {} page').format(index+1))
+            logger.debug(_('Searching, current {} page').format(index +1))
             page = queryset.values('id', 'method_pool')[index * size:(index + 1) * size - 1]
             if page:
                 if len(matches) == page_size:

@@ -28,6 +28,7 @@ class _VersionListDataSerializer(serializers.ModelSerializer):
         model = IastProjectVersion
         fields = ['version_id', 'version_name', 'current_version', 'description']
 
+
 _ProjectVersionListResponseSerializer = get_response_serializer(
     _VersionListDataSerializer(many=True))
 

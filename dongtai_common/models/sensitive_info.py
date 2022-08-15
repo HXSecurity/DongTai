@@ -18,7 +18,7 @@ class IastPatternType(models.Model):
     logi_id = models.BigAutoField(primary_key=True,db_column='id') 
     class Meta:
         db_table = 'iast_pattern_type'
-    
+
 class IastSensitiveInfoRule(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
     strategy = models.ForeignKey(IastStrategyModel, models.DO_NOTHING, blank=True, null=True)
@@ -26,6 +26,6 @@ class IastSensitiveInfoRule(models.Model):
     pattern = models.CharField(blank=True,default=None,max_length=255)
     status = models.IntegerField(blank=True,default=None)
     latest_time = models.IntegerField(default=time.time(),blank=True, null=True)
-    
+
     class Meta:
         db_table = 'iast_sensitive_info_rule'

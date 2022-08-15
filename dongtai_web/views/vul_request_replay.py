@@ -198,7 +198,7 @@ class RequestReplayEndPoint(UserEndPoint):
                 method_pool_id, request.user)
             if check_failure:
                 return R.failure(msg=_(
-                   'Stain pool data does not exist or no permission to access'))
+                    'Stain pool data does not exist or no permission to access'))
             if agent_id:
                 agent = IastAgent.objects.filter(pk=agent_id).first()
                 check_failure = self.check_agent_active(agent)

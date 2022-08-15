@@ -49,5 +49,6 @@ def get_plugin(repo: str,
     _get_plugin(repo,extra)
     _install_plugin(repo)
 
+
 if __name__ == '__main__':
     fire.Fire(get_plugin)

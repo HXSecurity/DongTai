@@ -76,6 +76,7 @@ class _VulDetailResponseDataSerializer(serializers.Serializer):
     server = _VulDetailResponseDataServerSerializer()
     strategy = _VulDetailResponseDataStrategySerializer()
 
+
 _ResponseSerializer = get_response_serializer(_VulDetailResponseDataSerializer())
 
 
@@ -461,8 +462,9 @@ def parse_param_name(param_name):
     try:
         res = json.loads(param_name)
         return res
-    except:
+    except BaseException:
         return {}
+
 
 if __name__ == '__main__':
     vul = VulDetail()

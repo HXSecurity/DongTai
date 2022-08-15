@@ -49,7 +49,7 @@ def check_strict_transport_security(response):
     if response.getheader('Strict-Transport-Security'):
         # parse max-age
         import re
-        result = re.match('max-age=(\d+);.*?', response.getheader('Strict-Transport-Security'))
+        result = re.match('max-age=(\\d+);.*?', response.getheader('Strict-Transport-Security'))
         if result is None:
             return
         max_age = result.group(1)
@@ -83,6 +83,7 @@ def check_response_header(method_pool):
             save_vul('Response Without X-Content-Type-Options Header', method_pool, position='HTTP Response Header')
     except Exception as e:
         logger.error("check_response_header failed, reason: " + str(e))
+
 
 from django.core.cache import cache
 import uuid

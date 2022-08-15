@@ -20,13 +20,13 @@ class UserDetailEndPoint(TalentAdminEndPoint):
             if talent:
                 current_talent = request.user.get_talent()
                 if current_talent == talent:
-                    
+
                     department = user.get_department()
                     return R.success(data={
                         'username': user.get_username(),
                         'department': department.get_department_name(),
                         'talent': talent.get_talent_name()
                     })
-        except:
+        except BaseException:
             pass
         return R.failure(status=203, msg=_('no permission'))

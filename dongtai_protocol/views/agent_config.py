@@ -48,6 +48,7 @@ class AgentConfigView(OpenApiEndPoint):
 
         return R.success(data=data)
 
+
 from dongtai_common.models.agent_config import (
     IastCircuitTarget,
     IastCircuitConfig,
@@ -95,7 +96,7 @@ def get_agent_filter_details(agent_id):
             AGENT_PATH=F("server__path"),
             PORT=F("server__port"),
             AGENT_LANGUAGE=F("language"),
-        ).first()
+    ).first()
 
 
 def get_agent_config_by_scan(agent_id: int, mg: MetricGroup) -> Result:
@@ -146,8 +147,8 @@ def get_agent_config(agent_id: int) -> Result:
                 circuit_config_id=config.id).all():
             metric_list.append(convert_metric(metric))
         data[mg.name.lower()] = metric_list
-        data[mg.name.lower() +
-             "IsUninstall"] = True if config.deal == DealType.UNLOAD else False
+        data[mg.name.lower()
+             + "IsUninstall"] = True if config.deal == DealType.UNLOAD else False
         interval_list.append(config.interval)
     # if interval_list is [], there is mean no config found here. 
     # because interval is required in create config.

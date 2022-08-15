@@ -26,7 +26,7 @@ class UserPassword(UserEndPoint):
                 user_check = authenticate(username=user.username, password=request.data['old_password'])
                 if user_check is not None and user_check.is_active:
                     password = request.data['new_password']
-                    
+
                     user.set_password(password)
                     user.save(update_fields=['password'])
                     return R.success(msg=_('Password has been changed successfully'))
@@ -35,4 +35,4 @@ class UserPassword(UserEndPoint):
         except Exception as e:
             logger.error(e)
             return R.failure(msg=_('Incorrect'))
-            
+

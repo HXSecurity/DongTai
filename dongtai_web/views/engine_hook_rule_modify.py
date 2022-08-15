@@ -87,7 +87,7 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
         hook_type = HookType.objects.filter(
                 id=rule_type,
                 created_by__in=(request.user.id, const.SYSTEM_USER_ID)
-            ).first()
+        ).first()
         if all((rule_id, rule_type, rule_value, rule_source, inherit, is_track, hook_type)) is False:
             return R.failure(msg=_('Incomplete parameter, please check again'))
 

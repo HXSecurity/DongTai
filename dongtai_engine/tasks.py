@@ -549,7 +549,7 @@ def vul_recheck():
                                         _param_items[index] = f'{_param_name}={recheck_payload}'
                                         break
                                 body = '&'.join(_param_items)
-                        except:
+                        except BaseException:
                             # Content-Type: multipart/form-data
                             _param_items = body.split('&')
                             item_length = len(_param_items)
