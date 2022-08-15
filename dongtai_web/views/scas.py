@@ -319,6 +319,7 @@ class ScaList(UserEndPoint):
                    list_sql_params):
         return asset_aggr_where, count_sql_params, list_sql_params
 
+
 from elasticsearch_dsl import Q, Search
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import A
@@ -353,6 +354,7 @@ def get_vul_list_from_elastic_search(sca_ids=[], order=None):
             del i['@timestamp']
     res_vul = [AssetAggr(**i) for i in vuls]
     return res_vul
+
 
 from dongtai_web.aggregation.aggregation_common import auth_user_list_str
 from dongtai_common.models.asset import IastAssetDocument

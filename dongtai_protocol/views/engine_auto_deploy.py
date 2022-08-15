@@ -103,4 +103,4 @@ class AutoDeployEndPoint(OpenApiEndPoint):
         except Exception as e:
             logger.info(e)
             return StreamingHttpResponse(TEMPLAGE_DATA)
-            
+

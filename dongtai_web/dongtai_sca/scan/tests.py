@@ -87,11 +87,12 @@ class DongTaiVersionTestCase(TestCase):
         version = '0.0.1'
         nrversion = get_nearest_version(version, self.version_list)
         assert nrversion == '1.0-rc1'
-    
+
     def test_nearest_version_2(self):
         version = '10.0.1'
         nrversion = get_nearest_version(version, self.version_list)
         assert nrversion == ''
+
 
 from dongtai_common.models.asset import Asset
 
@@ -116,7 +117,7 @@ class AgentHardencodeTestCase(AgentTestCase):
         asset = Asset.objects.filter(
             agent_id=self.agent_id,
             signature_value="9b7860a324f4b2f2bc31bcdd99c7ee51fe32e0c8").first(
-            )
+        )
         assert asset.nearest_safe_version == "5.2.8.RELEASE"
         assert asset.latest_safe_version == "5.3.19"
 
@@ -127,7 +128,7 @@ class AgentHardencodeTestCase(AgentTestCase):
         asset = Asset.objects.filter(
             agent_id=self.agent_id,
             signature_value="07b6bf82cea13570b5290d6ed841283a1fcce170").first(
-            )
+        )
         assert asset is not None
         assert asset.safe_version_list is not None
         assert asset.iastvulassetrelation_set.all() != []

@@ -37,7 +37,7 @@ class DelVulMany(UserEndPoint):
 
         # 超级管理员
         if user.is_system_admin():
-             pass
+            pass
         # 租户管理员 or 部门管理员
         elif user.is_talent_admin() or user.is_department_admin:
             users = self.get_auth_users(user)

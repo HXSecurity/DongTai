@@ -15,7 +15,7 @@ class CaptchaVerify(APIView):
         status = 0
         if hash_key and captcha:
             get_captcha = CaptchaStore.objects.get(hashkey=hash_key)
-            
+
             if get_captcha.response == captcha.lower():
                 status = 1
         return R.success(data={'status': status})

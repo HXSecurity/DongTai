@@ -22,6 +22,7 @@ class ApiRouteCoverRateResponseSerializer(serializers.Serializer):
     cover_rate = serializers.IntegerField(
         help_text=_("The api cover_rate of the project"), )
 
+
 _GetResponseSerializer = get_response_serializer(ApiRouteCoverRateResponseSerializer())
 
 
@@ -41,7 +42,7 @@ class ApiRouteCoverRate(UserEndPoint):
         ),
         response_schema=_GetResponseSerializer,
 
-        )
+    )
     def get(self, request):
         project_id = request.query_params.get('project_id', None)
         version_id = request.query_params.get('version_id', None)

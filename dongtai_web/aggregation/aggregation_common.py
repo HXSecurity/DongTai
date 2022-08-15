@@ -175,7 +175,7 @@ def auth_user_list_str(user=None,user_id=0,user_table=""):
     if user_table:
         result['user_condition_str'] = " and {}.user_id in ({})".format(user_table, user_str)
 
-    return  result
+    return result
 
 
 # 鉴权 后 获取 漏洞信息  auth_condition = getAuthBaseQuery(request.user, "asset")

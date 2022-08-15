@@ -63,7 +63,7 @@ class MetricType(IntegerChoices):
     dongTaiThreadCount = 8, _("洞态IAST线程数阈值")
     hookLimitTokenPerSecond = 9, _("单请求HOOK限流")
     heavyTrafficLimitTokenPerSecond = 10, _("每秒限制处理请求数量（QPS）")
-    apiResponseTime  = 11, _("请求响应时间阈值")
+    apiResponseTime = 11, _("请求响应时间阈值")
 
 
 UNIT_DICT = {

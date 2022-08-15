@@ -1,3 +1,4 @@
+from dongtai_conf.settings import ELASTICSEARCH_STATE
 import copy
 
 from dongtai_common.endpoint import UserEndPoint
@@ -12,14 +13,18 @@ from django.db import connection
 from dongtai_common.common.utils import cached_decorator
 from dongtai_common.models import APP_LEVEL_RISK
 
+
 def get_annotate_sca_common_data(user_id: int, pro_condition: str):
-    return get_annotate_sca_base_data(user_id,pro_condition)
+    return get_annotate_sca_base_data(user_id, pro_condition)
 
-#@cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60), use_celery_update=True)
-def get_annotate_sca_cache_data(user_id: int,pro_condition: str):
-    return get_annotate_sca_base_data(user_id,pro_condition)
+# @cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60), use_celery_update=True)
 
-def get_annotate_sca_base_data(user_id: int,pro_condition: str):
+
+def get_annotate_sca_cache_data(user_id: int, pro_condition: str):
+    return get_annotate_sca_base_data(user_id, pro_condition)
+
+
+def get_annotate_sca_base_data(user_id: int, pro_condition: str):
     base_summary = {
         "level": [],
         "availability": {
@@ -44,12 +49,12 @@ def get_annotate_sca_base_data(user_id: int,pro_condition: str):
         "project": []
     }
     # auth_condition = getAuthBaseQuery(user_id=user_id, table_str="asset")
-    user_auth_info = auth_user_list_str(user_id=user_id,user_table="asset")
-    query_condition = " where rel.is_del=0 and asset.project_id>0 " + user_auth_info.get("user_condition_str") + pro_condition
+    user_auth_info = auth_user_list_str(user_id=user_id, user_table="asset")
+    query_condition = " where rel.is_del=0 and asset.project_id>0 " + \
+        user_auth_info.get("user_condition_str") + pro_condition
     base_join = "left JOIN iast_asset_vul_relation as rel on rel.asset_vul_id=vul.id  " \
                 "left JOIN iast_asset as asset on rel.asset_id=asset.id "
     # level_join = "left JOIN iast_vul_level as level on level.id=vul.level_id "
-
 
     with connection.cursor() as cursor:
         count_level_query = "SELECT  vul.level_id,count( DISTINCT(vul.id ))  from iast_asset_vul as vul  " \
@@ -61,7 +66,7 @@ def get_annotate_sca_base_data(user_id: int,pro_condition: str):
         level_summary = cursor.fetchall()
         if level_summary:
             for item in level_summary:
-                level_id , count = item
+                level_id, count = item
                 result_summary['level'].append({
                     "name": APP_LEVEL_RISK.get(str(level_id), "None"),
                     "num": count,
@@ -98,7 +103,7 @@ def get_annotate_sca_base_data(user_id: int,pro_condition: str):
         lang_key = lang_arr.keys()
         if language_summary:
             for item in language_summary:
-                package_language,count_package_language = item
+                package_language, count_package_language = item
                 result_summary['language'].append({
                     "id": lang_arr.get(str(package_language)),
                     "num": count_package_language,
@@ -126,7 +131,7 @@ def get_annotate_sca_base_data(user_id: int,pro_condition: str):
         type_summary = cursor.fetchall()
         if type_summary:
             for item in type_summary:
-                vul_type_id,count_vul_type,type_name = item
+                vul_type_id, count_vul_type, type_name = item
                 result_summary['hook_type'].append({
                     "id": vul_type_id,
                     "num": count_vul_type,
@@ -140,7 +145,7 @@ def get_annotate_sca_base_data(user_id: int,pro_condition: str):
         project_summary = cursor.fetchall()
         if project_summary:
             for item in project_summary:
-                project_id,count_project,project_name = item
+                project_id, count_project, project_name = item
                 result_summary['project'].append({
                     "id": project_id,
                     "num": count_project,
@@ -149,7 +154,11 @@ def get_annotate_sca_base_data(user_id: int,pro_condition: str):
 
     return result_summary
 
-def get_annotate_data_es(user_id, bind_project_id=None, project_version_id=None):
+
+def get_annotate_data_es(
+        user_id,
+        bind_project_id=None,
+        project_version_id=None):
     from dongtai_common.models.vulnerablity import IastVulnerabilityDocument
     from elasticsearch_dsl import Q, Search
     from elasticsearch import Elasticsearch
@@ -173,8 +182,10 @@ def get_annotate_data_es(user_id, bind_project_id=None, project_version_id=None)
     if bind_project_id:
         must_query.append(Q('terms', asset_project_id=[bind_project_id]))
     if project_version_id:
-        must_query.append(Q('terms', asset_project_version_id=[project_version_id]))
-    search = IastAssetVulnerabilityDocument.search().query(Q('bool', must=must_query))[:0]
+        must_query.append(
+            Q('terms', asset_project_version_id=[project_version_id]))
+    search = IastAssetVulnerabilityDocument.search().query(
+        Q('bool', must=must_query))[:0]
     buckets = {
         'level': A('terms', field='level_id', size=2147483647),
         'project': A('terms', field='asset_project_id', size=2147483647),
@@ -269,7 +280,6 @@ def get_annotate_data_es(user_id, bind_project_id=None, project_version_id=None)
     }
     return dic
 
-from dongtai_conf.settings import ELASTICSEARCH_STATE
 
 class GetScaSummary(UserEndPoint):
     name = "api-v1-aggregation-summary"
@@ -305,10 +315,12 @@ class GetScaSummary(UserEndPoint):
                 ser.validated_data.get("project_version_id", 0))
         elif pro_condition:
             # 存在项目筛选条件
-            result_summary = get_annotate_sca_common_data(request.user.id,pro_condition)
+            result_summary = get_annotate_sca_common_data(
+                request.user.id, pro_condition)
         else:
             # 全局数据，没有项目信息 数据按用户id缓存
-            result_summary = get_annotate_sca_cache_data(request.user.id,pro_condition)
+            result_summary = get_annotate_sca_cache_data(
+                request.user.id, pro_condition)
 
         return R.success(data={
             'messages': result_summary

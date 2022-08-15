@@ -11,7 +11,7 @@ class IastSystem(models.Model):
     middleware = models.CharField(max_length=50, blank=True, null=True)
     system = models.CharField(max_length=50, blank=True, null=True)
     deploy_status = models.IntegerField(blank=True, null=True)
-    created_at = models.DateTimeField( auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(blank=True, null=True)
     user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
 

@@ -203,7 +203,7 @@ class VulSummary(UserEndPoint):
         if level:
             try:
                 level = int(level)
-            except:
+            except BaseException:
                 return R.failure(_("Parameter error"))
             queryset = queryset.filter(level=level)
 

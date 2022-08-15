@@ -16,6 +16,7 @@ class DongTaiTestCase(unittest.TestCase):
         os.environ.setdefault("debug", "true")
         django.setup()
 
+
 from django.test.runner import DiscoverRunner
 
 class NoDbTestRunner(DiscoverRunner):

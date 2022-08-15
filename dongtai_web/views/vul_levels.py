@@ -19,6 +19,7 @@ class IastVulLevelSerializers(serializers.ModelSerializer):
         fields = ['id', 'name_value']        
         model = IastVulLevel
 
+
 _ResponseSerializer = get_response_serializer(
     data_serializer=IastVulLevelSerializers(many=True), )
 

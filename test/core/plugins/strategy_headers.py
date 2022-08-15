@@ -19,7 +19,7 @@ class MyTestCase(DongTaiTestCase):
     def test_check_strict_transport_security(self):
         value = 'max-age=31536000; includeSubDomains'
         import re
-        result = re.match('max-age=(\d+);.*?', value)
+        result = re.match('max-age=(\\d+);.*?', value)
         if result:
             print(result.group(1))
 

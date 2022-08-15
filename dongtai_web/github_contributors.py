@@ -33,9 +33,12 @@ URL_LIST = [
 ]
 
 logger = logging.getLogger('dongtai-dongtai_conf')
+
+
 def _signed_state(dic: dict, state: int):
     dic['state'] = state
     return dic
+
 
 def _change_dict_key(dic: dict, from_field: str, to_field: str):
     dic[to_field] = dic[from_field]
@@ -48,7 +51,6 @@ def key_filiter(dic, keylist):
     for key in keylist:
         new_dic[key] = dic[key]
     return new_dic
-
 
 
 def _get_github_user(url_list=URL_LIST, suffix='pulls?state=all'):
@@ -79,7 +81,6 @@ def _get_github_user(url_list=URL_LIST, suffix='pulls?state=all'):
     return user_list, is_over_limit
 
 
-
 _get_github_issues = partial(_get_github_user, suffix='issues?state=all')
 _get_github_prs = partial(_get_github_user, suffix='pulls?state=all')
 
@@ -91,6 +92,6 @@ def get_github_contributors(dic={}, update=False):
         dic1['prs'], is_over_limit_issue = _get_github_prs()
         dic1['time'] = int(time.time())
         if cache.get('github_contributors') is None or not any(
-            [is_over_limit_pr, is_over_limit_issue]):
+                [is_over_limit_pr, is_over_limit_issue]):
             cache.set('github_contributors', dic1, 60 * 180)
     return cache.get('github_contributors', default={})

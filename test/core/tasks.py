@@ -58,6 +58,7 @@ class MyTestCase(DongTaiTestCase):
         method_pools = MethodPool.objects.filter(agent_id__in=agents).values('req_header_fs')
 
         from http.server import BaseHTTPRequestHandler
+
         class HttpRequest(BaseHTTPRequestHandler):
             def __init__(self, raw_request):
                 self.body = None
@@ -98,7 +99,7 @@ class MyTestCase(DongTaiTestCase):
                 request = HttpRequest(method_pool['req_header_fs'])
                 project_headers = project_headers | set(request.headers.keys())
                 # project_cookies = project_cookies | request.cookie_keys
-            except:
+            except BaseException:
                 pass
         print(project_headers)
         print(project_cookies)

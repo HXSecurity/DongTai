@@ -40,7 +40,7 @@ class GetAgentThresholdConfig(UserEndPoint):
                 del data['user']
                 del data['details']
 
-                if type(data_detail) == dict:
+                if isinstance(data_detail, dict):
 
                     data['enableAutoFallback'] = data_detail.get("enableAutoFallback", None)
                     data['hookLimitTokenPerSecond'] = data_detail.get("hookLimitTokenPerSecond", None)

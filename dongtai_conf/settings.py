@@ -10,6 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
+from typing import List
+from ast import literal_eval
+from urllib.parse import urljoin
 import os
 import sys
 from configparser import ConfigParser
@@ -30,7 +33,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("debug", 'false') == 'true' #or os.getenv('environment', None) in ('TEST',)
+# or os.getenv('environment', None) in ('TEST',)
+DEBUG = os.environ.get("debug", 'false') == 'true'
 
 # READ CONFIG FILE
 config = ConfigParser()
@@ -38,6 +42,7 @@ status = config.read(os.path.join(BASE_DIR, 'dongtai_conf/conf/config.ini'))
 if len(status) == 0:
     print("config file not exist. stop running")
     exit(0)
+
 
 def ranstr(num):
     H = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()`-{}|:?><>?'
@@ -74,7 +79,9 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'deploy.commands',
 ]
-DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+
 def get_installed_apps():
     from os import walk, chdir, getcwd
     previous_path = getcwd()
@@ -91,6 +98,8 @@ def get_installed_apps():
                 master.append(app_path)
     chdir(previous_path)
     return master
+
+
 CUSTOM_APPS = get_installed_apps()
 INSTALLED_APPS.extend(CUSTOM_APPS)
 
@@ -148,6 +157,8 @@ XFF_TRUSTED_PROXY_DEPTH = 20
 
 CSRF_COOKIE_NAME = "DTCsrfToken"
 CSRF_HEADER_NAME = "HTTP_CSRF_TOKEN"
+
+
 def safe_execute(default, exception, function, *args):
     try:
         return function(*args)
@@ -164,7 +175,7 @@ CSRF_COOKIE_AGE = 60 * 60 * 24
 
 AGENT_UPGRADE_URL = "https://www.huoxian.cn"
 CORS_ALLOWED_ORIGINS = [
-        'https://dongtai.io',
+    'https://dongtai.io',
 ]
 
 CORS_ORIGIN_REGEX_WHITELIST = [
@@ -227,8 +238,8 @@ DATABASES = {
         'HOST': config.get("mysql", 'host'),
         'PORT': config.get("mysql", 'port'),
         'OPTIONS': {
-#            'init_command':
-#            'SET NAMES utf8mb4;SET collation_server=utf8mb4_general_ci;SET collation_database=utf8mb4_general_ci; ',
+            #            'init_command':
+            #            'SET NAMES utf8mb4;SET collation_server=utf8mb4_general_ci;SET collation_database=utf8mb4_general_ci; ',
             'charset': 'utf8mb4',
             'use_unicode': True,
         },
@@ -363,7 +374,7 @@ LOGGING = {
         },
         'jsonlog': {
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': TMP_COMMON_PATH+'/server.log',
+            'filename': TMP_COMMON_PATH + '/server.log',
             'formatter': 'json'
         }
     },
@@ -402,7 +413,7 @@ LOGGING = {
             'propagate': True,
             'level': LOGGING_LEVEL,
         },
-        'jsonlogger': { # it use to logging to local logstash file
+        'jsonlogger': {  # it use to logging to local logstash file
             'handlers': ['jsonlog'],
             'propagate': True,
             'level': 'DEBUG',
@@ -433,7 +444,7 @@ X_FRAME_OPTIONS = 'DENY'
 TEST_RUNNER = 'test.NoDbTestRunner'
 
 
-#if os.getenv('environment', None) == 'TEST' or os.getenv('REQUESTLOG',
+# if os.getenv('environment', None) == 'TEST' or os.getenv('REQUESTLOG',
 #                                                         None) == 'TRUE':
 #    MIDDLEWARE.insert(0, 'apitimelog.middleware.RequestLogMiddleware')
 
@@ -481,7 +492,7 @@ try:
     SCA_TIMEOUT = config.getint('sca', 'timeout')
     SCA_TOKEN = config.get('sca', 'token')
     SCA_SETUP = True if SCA_TOKEN else False
-except:
+except BaseException:
     SCA_BASE_URL = ''
     SCA_TIMEOUT = 0
     SCA_TOKEN = ""
@@ -490,7 +501,7 @@ except:
 
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     SESSION_COOKIE_DOMAIN = config.get('other',
-                                            'demo_session_cookie_domain')
+                                       'demo_session_cookie_domain')
     CSRF_COOKIE_DOMAIN = SESSION_COOKIE_DOMAIN
     DOMAIN = config.get('other', 'domain')
 
@@ -499,8 +510,7 @@ try:
 except Exception as e:
     DOMAIN_VUL = "http://localhost"
 
-from urllib.parse import urljoin
-#OPENAPI
+# OPENAPI
 BUCKET_URL = 'https://oss-cn-beijing.aliyuncs.com'
 BUCKET_NAME = 'dongtai'
 BUCKET_NAME_BASE_URL = 'agent/' if os.getenv('active.profile',
@@ -514,11 +524,13 @@ IGNORE = 4
 SOLVED = 5
 ENGINE_URL = config.get("engine", "url")
 HEALTH_ENGINE_URL = urljoin(ENGINE_URL, "/api/engine/health")
-BASE_ENGINE_URL = config.get("engine", "url") + '/api/engine/run?method_pool_id={id}'
-SCA_ENGINE_URL = config.get("engine","url") + '/api/engine/sca?agent_id={agent_id}' \
-                            + '&package_path={package_path}&package_signature={package_signature}' \
-                            + '&package_name={package_name}&package_algorithm={package_algorithm}'
-REPLAY_ENGINE_URL = config.get("engine", "url") + '/api/engine/run?method_pool_id={id}&model=replay'
+BASE_ENGINE_URL = config.get("engine", "url") + \
+    '/api/engine/run?method_pool_id={id}'
+SCA_ENGINE_URL = config.get("engine", "url") + '/api/engine/sca?agent_id={agent_id}' \
+    + '&package_path={package_path}&package_signature={package_signature}' \
+    + '&package_name={package_name}&package_algorithm={package_algorithm}'
+REPLAY_ENGINE_URL = config.get(
+    "engine", "url") + '/api/engine/run?method_pool_id={id}&model=replay'
 
 CELERY_BROKER_URL = 'redis://:%(password)s@%(host)s:%(port)s/%(db)s' % {
     'password': config.get("redis", 'password'),
@@ -542,7 +554,6 @@ CELERY_WORKER_MAX_TASKS_PER_CHILD = 5000
 CELERY_TASK_SOFT_TIME_LIMIT = 3600
 CELERY_TASK_REJECT_ON_WORKER_LOST = True
 DJANGO_CELERY_BEAT_TZ_AWARE = False
-from ast import literal_eval
 
 DONGTAI_CELERY_CACHE_PREHEAT = safe_execute(
     True, BaseException, lambda x, y: literal_eval(config.get(x, y)), "other",
@@ -642,11 +653,13 @@ DONGTAI_REDIS_ES_UPDATE_BATCH_SIZE = 500
 DONGTAI_MAX_BATCH_TASK_CONCORRENCY = 5
 
 ELASTICSEARCH_STATE = config.get('elastic_search', 'enable') == 'true'
-from typing import List
+
 
 def get_elasticsearch_conf() -> List[str]:
     hoststr = config.get('elastic_search', 'host')
     return hoststr.split(',')
+
+
 if ELASTICSEARCH_STATE:
     INSTALLED_APPS.append('django_elasticsearch_dsl')
     ELASTICSEARCH_DSL = {
@@ -676,6 +689,7 @@ else:
     METHOD_POOL_INDEX = ''
     ASSET_INDEX = ''
 
+
 def is_gevent_monkey_patched() -> bool:
     try:
         from gevent import monkey
@@ -684,6 +698,7 @@ def is_gevent_monkey_patched() -> bool:
     else:
         return bool(monkey.saved)
 
+
 def set_asyncio_policy():
     import asyncio_gevent
     import asyncio
@@ -691,5 +706,6 @@ def set_asyncio_policy():
     print(f"is in gevent patched : {state}")
     if state:
         asyncio.set_event_loop_policy(asyncio_gevent.EventLoopPolicy())
+
 
 set_asyncio_policy()
