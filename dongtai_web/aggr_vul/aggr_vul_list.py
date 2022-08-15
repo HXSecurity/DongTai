@@ -130,8 +130,7 @@ class GetAggregationVulList(UserEndPoint):
                             "'"
                             + LANGUAGE_ID_DICT.get(
                                 one_type,
-                                "") +
-                            "'")
+                                "") + "'")
                     type_int_str = ",".join(lang_str)
                     language_str_change = " and {} in ({}) ".format(
                         "vul.package_language", type_int_str)
