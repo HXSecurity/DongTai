@@ -7,7 +7,7 @@ pycodestyle:  # Same as scanner.linter value. Other option is flake8
     ignore:  # Errors and warnings to ignore
         - E501
         - E402
-        - E231,
+        - E231
         - E302
         - E301
         - E303
