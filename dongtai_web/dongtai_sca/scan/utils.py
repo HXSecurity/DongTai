@@ -463,7 +463,7 @@ def get_title(title_zh: str, title_en: str) -> str:
 def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                    version: str):
     aql = get_package_aql(package_name, ecosystem, version)
-    package_vuls, safe_version = get_package_vul(aql)
+    package_vuls, safe_version = get_package_vul_v2(aql)
     res = stat_severity(map(lambda x: x["severity"], package_vuls))
     timestamp = int(time.time())
     package_language = get_ecosystem_language_dict()[ecosystem]
