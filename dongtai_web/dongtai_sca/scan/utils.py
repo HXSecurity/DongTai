@@ -417,6 +417,8 @@ def get_title(title_zh: str, title_en: str) -> str:
         return title_list[0]
     return ""
 
+from django.db import IntegrityError
+
 def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                    version: str):
     aql = get_package_aql(package_name, ecosystem, version)
@@ -505,8 +507,16 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
         if len(vul['cwe_info']) == 0:
             vul['cwe_info'].append('')
         for cwe_id in vul['cwe_info']:
-            type_, _ = IastAssetVulType.objects.update_or_create(
-                cwe_id=cwe_id, defaults={"name": get_cwe_name(cwe_id)})
+            if not IastAssetVulType.objects.filter(cwe_id=cwe_id).exists():
+                try:
+                    IastAssetVulType.objects.create(cwe_id=cwe_id,
+                                                    name=get_cwe_name(cwe_id))
+                except IntegrityError as e:
+                    logger.debug("unique error stack: ", exc_info=True)
+                    logger.info(
+                        "unique error cause by concurrency insert,ignore it")
+            type_: IastAssetVulType = IastAssetVulType.objects.filter(
+                cwe_id=cwe_id).first()
             IastAssetVulTypeRelation.objects.get_or_create(
                 asset_vul_id=asset_vul.id, asset_vul_type_id=type_.id)
     nearest_safe_version = get_nearest_version(
