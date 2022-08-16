@@ -417,7 +417,9 @@ def get_title(title_zh: str, title_en: str) -> str:
         return title_list[0]
     return ""
 
+
 from django.db import IntegrityError
+
 
 def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                    version: str):
