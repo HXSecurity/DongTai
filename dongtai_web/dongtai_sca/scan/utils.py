@@ -3,7 +3,6 @@ from result import Ok, Err, Result
 import logging
 from requests.exceptions import ConnectionError, ConnectTimeout
 from requests.exceptions import RequestException
-logger = logging.getLogger("dongtai-webapi")
 import json
 from json.decoder import JSONDecodeError
 from typing import Optional, Callable, Any
@@ -15,6 +14,8 @@ from dongtai_common.common.utils import cached_decorator
 from dongtai_common.models.profile import IastProfile
 from json.decoder import JSONDecodeError
 from http import HTTPStatus
+
+logger = logging.getLogger("dongtai-webapi")
 
 def get_sca_token() -> str:
     #profilefromdb = IastProfile.objects.filter(key='sca_token').values_list(
@@ -69,6 +70,24 @@ def data_transfrom(response: Response) -> Result[List[Dict], str]:
         logger.error(f"unexcepted Exception : {e}", exc_info=True)
         return Err('Failed')
 
+def data_transfrom_package_vul_v2(response: Response) -> Result[List[Dict], str]:
+    if response.status_code == HTTPStatus.FORBIDDEN:
+        return Err('Rate Limit Exceeded')
+    try:
+        res_data = json.loads(response.content)
+        return Ok(res_data['data'], res_data['safe_version'])
+    except JSONDecodeError as e:
+        logger.debug(e, exc_info=True)
+        logger.info(f'JSONDecodeError content: {response.content}')
+        return Err('Failed')
+    except KeyError as e:
+        logger.debug(e, exc_info=True)
+        logger.info(f'content form not match content: {response.content}')
+        return Err('Failed')
+    except Exception as e:
+        logger.error(f"unexcepted Exception : {e}", exc_info=True)
+        return Err('Failed')
+
 @cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60),)
 def get_package_vul(aql: Optional[str] = None,
                     ecosystem: Optional[str] = None,
@@ -92,6 +111,30 @@ def get_package_vul(aql: Optional[str] = None,
     data = res.value
     return data
 
+
+@cached_decorator(
+    random_range=(2 * 60 * 60, 2 * 60 * 60), )
+def get_package_vul_v2(aql: Optional[str] = None,
+                       ecosystem: Optional[str] = None,
+                       package_hash: Optional[str] = None) -> List[Dict]:
+    url = urljoin(SCA_BASE_URL, "/openapi/sca/v2/package_vul/")
+    if aql is not None:
+        querystring = {"aql": aql}
+    else:
+        querystring = {"ecosystem": ecosystem, "hash": package_hash}
+    headers = {"Token": get_sca_token()}
+    payload = ""
+    res = request_get_res_data_with_exception(data_transfrom_package_vul_v2,
+                                              "GET",
+                                              url,
+                                              data=payload,
+                                              params=querystring,
+                                              headers=headers,
+                                              timeout=SCA_TIMEOUT)
+    if isinstance(res, Err):
+        return [], []
+    data = res.value
+    return data
 
 @cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60),)
 def get_package(aql: Optional[str] = None,
@@ -420,7 +463,7 @@ def get_title(title_zh: str, title_en: str) -> str:
 def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                    version: str):
     aql = get_package_aql(package_name, ecosystem, version)
-    package_vuls = get_package_vul(aql)
+    package_vuls, safe_version = get_package_vul_v2(aql)
     res = stat_severity(map(lambda x: x["severity"], package_vuls))
     timestamp = int(time.time())
     package_language = get_ecosystem_language_dict()[ecosystem]
@@ -430,7 +473,6 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
            for k, v in res.items()})
     Asset.objects.filter(pk=asset_id).update(
         **{"vul_count": sum(res.values())})
-    safe_version = []
     for vul in package_vuls:
         vul_dependency = get_vul_path(aql, vul['vul_package_path'])
         cve_numbers = get_cve_numbers(vul['cve'], vul['cwe_info'], vul['cnvd'],
@@ -440,7 +482,6 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
         vul_serial = get_vul_serial(vul['vul_title'], vul['cve'],
                                     vul['cwe_info'], vul['cnvd'], vul['cnnvd'])
         vul_level = get_vul_level_dict()[vul['severity']]
-        safe_version = vul['safe_version']
         detail = get_detail(vul['description'])
         #still need , save to asset_vul_relation
         # nearest_fixed_version = get_nearest_version(version, vul['fixed'])
