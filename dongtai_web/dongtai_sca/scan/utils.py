@@ -75,7 +75,7 @@ def data_transfrom_package_vul_v2(response: Response) -> Result[List[Dict], str]
         return Err('Rate Limit Exceeded')
     try:
         res_data = json.loads(response.content)
-        return Ok(res_data['data'], res_data['safe_version'])
+        return Ok((res_data['data'], res_data['safe_version']))
     except JSONDecodeError as e:
         logger.debug(e, exc_info=True)
         logger.info(f'JSONDecodeError content: {response.content}')
