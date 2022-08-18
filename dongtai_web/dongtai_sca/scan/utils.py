@@ -27,7 +27,7 @@ def get_sca_token() -> str:
     return SCA_TOKEN
 
 def request_get_res_data_with_exception(data_extract_func: Callable[
-    Response, Result] = lambda x: x,
+    [Response], Result] = lambda x: Ok(x),
                                         *args,
                                         **kwargs) -> Result:
     try:
