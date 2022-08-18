@@ -939,9 +939,24 @@ if [ ! 0 == $# ]; then # If options provided then
     }
 
     check_docker_compose() {
+      Info "check docker-compose servie status."
+      DOCKER_COMPOSE_V2=`docker-compose --version | grep  -E 'version.*v2' | awk '{print $4}'` || true
+      DOCKER_COMPOSE_V3="Please download docker-compose version 2.1.0 or above: https://github.com/docker/compose"
       if ! [ -x "$(command -v docker-compose)" ]; then
         Error 'docker-compose not installed.'
         exit 1
+      else
+        if [ ! -n "$DOCKER_COMPOSE_V2" ]; then
+          Error "$DOCKER_COMPOSE_V3"
+          exit 1
+        else 
+          if [[ $(first_gt_second ${DOCKER_COMPOSE_V2:1} 2.9.0) == true ]]; then
+              Info "docker-compose service is $DOCKER_COMPOSE_V2."
+          else
+              Error "$DOCKER_COMPOSE_V3"
+              exit 1
+          fi
+        fi
       fi
     }
 
