@@ -26,7 +26,7 @@ class DashboardTestCase(TestCase):
         print(res)
 
 
-class DashboardTestCase(TestCase):
+class ZipFileTestCase(TestCase):
 
     def test_findnewest_file(self):
         res = file_newest_N_file_under_path('./dongtai_web', 2)

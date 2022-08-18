@@ -29,7 +29,7 @@ from io import BytesIO
 from tempfile import TemporaryFile, SpooledTemporaryFile
 
 
-def parse_headers_dict_from_bytes(header_bytes: str) -> dict:
+def parse_headers_dict_from_bytes(header_bytes: bytes) -> dict:
     with SpooledTemporaryFile(max_size=10000) as fp:
         fp.write(header_bytes)
         fp.seek(0)
