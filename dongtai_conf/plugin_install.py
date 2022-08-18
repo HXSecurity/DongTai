@@ -4,6 +4,7 @@ from io import BytesIO
 import fire
 import os
 from shutil import copytree
+from typing import Optional
 
 def _get_plugin(repo: str, extra:dict):
     url_schema = 'https://github.com/{repo}/{resofurl}'
@@ -35,10 +36,10 @@ def _install_plugin(repo: str):
 
 
 def get_plugin(repo: str,
-               branch: [str, None] = None,
-               tag: [str, None] = None,
-               commit: [str, None] = None,
-               uri: [str, None] = None):
+               branch: Optional[str] = None,
+               tag: Optional[str] = None,
+               commit: Optional[str] = None,
+               uri: Optional[str] = None):
     extra = {
         key: value
         for key, value in filter(

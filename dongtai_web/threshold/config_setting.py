@@ -224,14 +224,6 @@ def get_data_from_dict_by_key(dic: dict, fields: Iterable) -> dict:
 from django.db.models import F
 
 
-def set_config_top(config_id):
-    config = IastCircuitConfig.objects.filter(pk=config_id).first()
-    IastCircuitConfig.objects.filter(priority__lt=config.priority).update(
-        priority=F('priority') + 1)
-    config.priority = get_priority_min_now()
-    config.save()
-
-
 #when target_priority < config.priorty
 def set_config_change_lt(config_id, target_priority: int):
     config = IastCircuitConfig.objects.filter(pk=config_id).first()
