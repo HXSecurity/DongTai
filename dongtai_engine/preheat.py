@@ -8,13 +8,13 @@ from datetime import datetime, timedelta
 from django.db.utils import OperationalError
 from django.db import connection as conn
 
-def function_preheat(func__module__: str, func__name__: str, *args, **kwargs):
-    module = import_module(func__module__)
-    func = getattr(module, func__name__)
-    try:
-        func(*args, **kwargs)
-    except Exception as e:
-        logger.error(e, exc_info=True)
+#def function_preheat(func__module__: str, func__name__: str, *args, **kwargs):
+#    module = import_module(func__module__)
+#    func = getattr(module, func__name__)
+#    try:
+#        func(*args, **kwargs)
+#    except Exception as e:
+#        logger.error(e, exc_info=True)
 
 
 @shared_task(queue='dongtai-periodic-task')
