@@ -118,8 +118,6 @@ class AgentHardencodeTestCase(AgentTestCase):
             agent_id=self.agent_id,
             signature_value="9b7860a324f4b2f2bc31bcdd99c7ee51fe32e0c8").first(
         )
-        assert asset.nearest_safe_version == "5.2.8.RELEASE"
-        assert asset.latest_safe_version == "5.3.19"
 
     def test_get_package_edge_case_1(self):
         update_one_sca(self.agent_id, "",

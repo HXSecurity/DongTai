@@ -33,7 +33,7 @@ def request_get_res_data_with_exception(data_extract_func: Callable[
     try:
         response: Response = requests.request(*args, **kwargs)
         logger.debug(f"response content: {response.content!r}")
-        logger.debug(f"response content status_code: {response.status_code}")
+        logger.info(f"response content url: {response.url} status_code: {response.status_code}")
         res = data_extract_func(response)
         if isinstance(res, Err):
             return res
