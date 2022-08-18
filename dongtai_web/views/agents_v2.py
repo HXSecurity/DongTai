@@ -116,7 +116,7 @@ def generate_filter(state: StateType) -> Q:
         return Q(online=1) & Q(actual_running_status=2)
     elif state == StateType.UNINSTALL:
         return Q(online=0)
-
+    return Q()
 
 def get_is_control(actual_running_status: int, except_running_status: int,
                    online: int) -> int:
@@ -134,7 +134,7 @@ def get_disk(jsonstr: str) -> str:
         res.replace("%", '')
     except Exception as e:
         logger.debug(e, exc_info=True)
-        return 0
+        return '0'
     return res
 
 
@@ -146,7 +146,7 @@ def get_cpu(jsonstr: str) -> str:
         res = dic['rate']
     except Exception as e:
         logger.debug(e, exc_info=True)
-        return 0
+        return '0'
     return res
 
 
@@ -158,7 +158,7 @@ def get_memory(jsonstr: str) -> str:
         res = dic['rate']
     except Exception as e:
         logger.debug(e, exc_info=True)
-        return 0
+        return '0'
     dic = json.loads(jsonstr)
     return res
 

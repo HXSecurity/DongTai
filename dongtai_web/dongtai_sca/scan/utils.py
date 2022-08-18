@@ -27,21 +27,21 @@ def get_sca_token() -> str:
     return SCA_TOKEN
 
 def request_get_res_data_with_exception(data_extract_func: Callable[
-    [Response], Result] = lambda x: x,
+    [Response], Result] = lambda x: Ok(x),
                                         *args,
                                         **kwargs) -> Result:
     try:
-        response = requests.request(*args, **kwargs)
-        logger.debug(f"response content: {response.content}")
+        response: Response = requests.request(*args, **kwargs)
+        logger.debug(f"response content: {response.content!r}")
         logger.debug(f"response content status_code: {response.status_code}")
         res = data_extract_func(response)
         if isinstance(res, Err):
-            return Err
+            return res
         return Ok(res.value)
     except (ConnectionError, ConnectTimeout):
         return Err("ConnectionError with target server")
     except JSONDecodeError:
-        logger.debug(f"content decode error :{response.content}")
+        logger.debug(f"content decode error :{response.content!r}")
         logger.info(f"content decode error")
         return Err("Content decode error")
     except RequestException as e:
@@ -60,11 +60,11 @@ def data_transfrom(response: Response) -> Result[List[Dict], str]:
         return Ok(res_data['data'])
     except JSONDecodeError as e:
         logger.debug(e, exc_info=True)
-        logger.info(f'JSONDecodeError content: {response.content}')
+        logger.info(f'JSONDecodeError content: {response.content!r}')
         return Err('Failed')
     except KeyError as e:
         logger.debug(e, exc_info=True)
-        logger.info(f'content form not match content: {response.content}')
+        logger.info(f'content form not match content: {response.content!r}')
         return Err('Failed')
     except Exception as e:
         logger.error(f"unexcepted Exception : {e}", exc_info=True)
@@ -78,11 +78,11 @@ def data_transfrom_package_vul_v2(response: Response) -> Result[List[Dict], str]
         return Ok((res_data['data'], res_data['safe_version']))
     except JSONDecodeError as e:
         logger.debug(e, exc_info=True)
-        logger.info(f'JSONDecodeError content: {response.content}')
+        logger.info(f'JSONDecodeError content: {response.content!r}')
         return Err('Failed')
     except KeyError as e:
         logger.debug(e, exc_info=True)
-        logger.info(f'content form not match content: {response.content}')
+        logger.info(f'content form not match content: {response.content!r}')
         return Err('Failed')
     except Exception as e:
         logger.error(f"unexcepted Exception : {e}", exc_info=True)
@@ -116,7 +116,7 @@ def get_package_vul(aql: Optional[str] = None,
     random_range=(2 * 60 * 60, 2 * 60 * 60), )
 def get_package_vul_v2(aql: Optional[str] = None,
                        ecosystem: Optional[str] = None,
-                       package_hash: Optional[str] = None) -> List[Dict]:
+                       package_hash: Optional[str] = None) -> Tuple[List[Dict],List[Dict]]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v2/package_vul/")
     if aql is not None:
         querystring = {"aql": aql}
@@ -382,18 +382,18 @@ def get_latest_version(version_str_list: List[str]) -> str:
                default=DongTaiScaVersion(""))._version
 
 
-def get_cve_numbers(cve: Optional[str] = "",
-                    cwe: Optional[list] = [],
-                    cnvd: Optional[str] = "",
-                    cnnvd: Optional[str] = ""):
+def get_cve_numbers(cve: str = "",
+                    cwe: list = [],
+                    cnvd: str = "",
+                    cnnvd: str = ""):
     return {'cve': cve, 'cwe': cwe, 'cnvd': cnvd, 'cnnvd': cnnvd}
 
 
-def get_vul_serial(title: Optional[str] = "",
-                   cve: Optional[str] = "",
-                   cwe: Optional[list] = [],
-                   cnvd: Optional[str] = "",
-                   cnnvd: Optional[str] = "") -> str:
+def get_vul_serial(title: str = "",
+                   cve: str = "",
+                   cwe: list = [],
+                    cnvd: str = "",
+                   cnnvd: str = "") -> str:
     return "|".join([title, cve, cnvd, cnnvd] + cwe)
 
 
