@@ -7,6 +7,7 @@ from dongtai_protocol.report.report_handler_factory import ReportHandler
 import json
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from result import Ok, Err, Result
+import unittest
 
 class AgentMethodPoolUploadTestCase(AgentTestCase):
 
@@ -95,6 +96,7 @@ def get_replay_id_set(replay_list: list) -> set:
 import base64
 
 
+@unittest.skip("waiting for rebuild mock data")
 class AgentSaasMethodPoolParseApiTestCase(AgentTestCase):
     def test_api_parse(self):
         mp = MethodPool.objects.filter(pk=500483715).first()
