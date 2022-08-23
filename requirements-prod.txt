@@ -47,4 +47,5 @@ docxtpl==0.16.0
 docxcompose==1.3.4
 django-elasticsearch-dsl==7.2.2
 asyncio-gevent==0.2.1
-gevent
+gevent==21.12.0
+ddt==1.6.0
