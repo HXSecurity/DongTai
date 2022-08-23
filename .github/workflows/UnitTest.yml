@@ -1,5 +1,5 @@
 
-name: "ApiTest"
+name: "UnitTest"
 
 on:
   push:
