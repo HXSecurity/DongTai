@@ -12,7 +12,7 @@ on:
     
 jobs:
   # This workflow contains a single job called "build"
-  Run-API-TEST:
+  Run-Unit-TEST:
     runs-on: ubuntu-latest
     services:
       mysql:
