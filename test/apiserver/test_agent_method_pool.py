@@ -349,8 +349,6 @@ class AgentMethodPoolTestCase(AgentTestCase):
         assert response.status_code == 200
         res = MethodPool.objects.filter(agent_id=self.agent_id).all()
         assert len(res) == 1
-        mp = MethodPool.objects.filter(agent_id=self.agent_id).first()
-        assert len(mp.pool_sign) == 64
 
 
     def test_agent_method_pool_from_go_agent(self):
