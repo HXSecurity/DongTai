@@ -22,10 +22,10 @@ def aws_get_secret(base_dir: str):
 
     get_secret_value_response = client.get_secret_value(SecretId=secret_name)
 
-    config = get_secret_value_response['SecretString']['iast-config']
+    config = json.loads(get_secret_value_response['SecretString'])['iast-config']
     raw = config.encode('raw_unicode_escape')
 
-    with open(os.path.join(BASE_DIR, 'dongtai_conf/conf/config.ini'),
+    with open(os.path.join(base_dir, 'dongtai_conf/conf/config.ini.ttt'),
               'w') as fp:
         fp.write(base64.b64decode(raw).decode('utf-8'))
 
