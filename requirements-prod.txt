@@ -49,3 +49,4 @@ django-elasticsearch-dsl==7.2.2
 asyncio-gevent==0.2.1
 gevent==21.12.0
 ddt==1.6.0
+boto3==1.24.59
