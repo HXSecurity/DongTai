@@ -25,7 +25,7 @@ def aws_get_secret(base_dir: str):
     config = json.loads(get_secret_value_response['SecretString'])['iast-config']
     raw = config.encode('raw_unicode_escape')
 
-    with open(os.path.join(base_dir, 'dongtai_conf/conf/config.ini.ttt'),
+    with open(os.path.join(base_dir, 'dongtai_conf/conf/config.ini'),
               'w') as fp:
         fp.write(base64.b64decode(raw).decode('utf-8'))
 
