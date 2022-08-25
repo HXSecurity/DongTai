@@ -33,6 +33,6 @@ def aws_get_secret(base_dir: str):
 
 def get_config(base_dir: str, target_cloud: str):
     if target_cloud == 'AWS':
-        aws_get_secret()
+        aws_get_secret(base_dir)
     else:
         print('use local file')
