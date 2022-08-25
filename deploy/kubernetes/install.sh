@@ -136,8 +136,8 @@ deploy(){
             sed -i "" "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
             sed -i "" "s/dongtai-web:CHANGE_THIS_VERSION/dongtai-web:$WEB_TAG/g" "$NEW_FILENAME" >/dev/null
             sed -i "" "s/dongtai-server:CHANGE_THIS_VERSION/dongtai-server:$SERVER_TAG/g" "$NEW_FILENAME" >/dev/null
-            sed -i "" "s/dongtai-logstash:CHANGE_THIS_VERSION/dongtai-server:$LOGSTASH_TAG/g" "$NEW_FILENAME" >/dev/null
-            sed -i "" "s/dongtai-logrotate:CHANGE_THIS_VERSION/dongtai-server:$LOGROTATE_TAG/g" "$NEW_FILENAME" >/dev/null
+            sed -i "" "s/dongtai-logstash:CHANGE_THIS_VERSION/dongtai-logstash:$LOGSTASH_TAG/g" "$NEW_FILENAME" >/dev/null
+            sed -i "" "s/dongtai-logrotate:CHANGE_THIS_VERSION/dongtai-logrotate:$LOGROTATE_TAG/g" "$NEW_FILENAME" >/dev/null
             ;;
         *)
               sed -i "" "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
@@ -160,8 +160,8 @@ deploy(){
             sed -i "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
             sed -i "s/dongtai-web:CHANGE_THIS_VERSION/dongtai-web:$WEB_TAG/g" "$NEW_FILENAME" >/dev/null
             sed -i "s/dongtai-server:CHANGE_THIS_VERSION/dongtai-server:$SERVER_TAG/g" "$NEW_FILENAME" >/dev/null
-            sed -i "" "s/dongtai-logstash:CHANGE_THIS_VERSION/dongtai-server:$LOGSTASH_TAG/g" "$NEW_FILENAME" >/dev/null
-            sed -i "" "s/dongtai-logrotate:CHANGE_THIS_VERSION/dongtai-server:$LOGROTATE_TAG/g" "$NEW_FILENAME" >/dev/null
+            sed -i "" "s/dongtai-logstash:CHANGE_THIS_VERSION/dongtai-logstash:$LOGSTASH_TAG/g" "$NEW_FILENAME" >/dev/null
+            sed -i "" "s/dongtai-logrotate:CHANGE_THIS_VERSION/dongtai-logrotate:$LOGROTATE_TAG/g" "$NEW_FILENAME" >/dev/null
             ;;
         *)
             sed -i  "s/CHANGE_THIS_NAMESPACE/$NEW_NAMESPACE/g" "$NEW_FILENAME" >/dev/null
