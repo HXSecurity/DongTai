@@ -121,7 +121,9 @@ def parse_path(uri: str, taint_value: str) -> Optional[str]:
             return f"location:{ind}"
     return None
 
+
 from functools import lru_cache
+
 
 @lru_cache(maxsize=128)
 def get_location_data() -> dict:
@@ -231,7 +233,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     pattern_uri: str = pattern_string if pattern_string else get_original_url(
         vul_meta.uri, url_desc)
     logger.info(f"agent_id: {vul_meta.agent_id} vul_uri_pattern: {pattern_uri} vul_uri: {vul_meta.uri} param_name: {param_name}")
-    from dongtai_common.models.agent import IastAgent 
+    from dongtai_common.models.agent import IastAgent
     project_agents = IastAgent.objects.filter(project_version_id=vul_meta.agent.project_version_id)
     uuid_key = uuid.uuid4().hex
     cache_key = f'vul_save-{strategy_id}-{vul_meta.uri}-{vul_meta.http_method}-{vul_meta.agent.project_version_id}-{param_name}'
