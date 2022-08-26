@@ -17,6 +17,10 @@ from dongtai_engine.signals import vul_found
 from dongtai_common.utils.systemsettings import get_vul_validate
 from dongtai_web.vul_log.vul_log import log_vul_found, log_recheck_vul
 from django.db.models import Q
+from dongtai_engine.signals.handlers.parse_param_name import parse_target_values_from_vul_stack
+from typing import List, Optional, Callable
+import json
+from collections import defaultdict
 
 def equals(source, target):
     if source == target or source in target or target in source:
@@ -25,7 +29,8 @@ def equals(source, target):
 
 from dongtai_engine.signals.handlers.parse_param_name import ParamDict
 
-def parse_params(param_values, taint_value):
+
+def parse_params(param_values: str, taint_value: str) -> Optional[str]:
     """
     从param参数中解析污点的位置
     """
@@ -52,7 +57,7 @@ def parse_params(param_values, taint_value):
     return param_name
 
 
-def parse_body(body, taint_value):
+def parse_body(body: str, taint_value: str) -> Optional[str]:
     try:
         post_body = json.loads(body)
         for key, value in post_body.items():
@@ -60,11 +65,12 @@ def parse_body(body, taint_value):
                 return key
     except Exception as e:
         return parse_params(body, taint_value)
-
+    return None
 
 from dongtai_engine.filters.utils import parse_headers_dict_from_bytes
 
-def parse_header(req_header, taint_value):
+
+def parse_header(req_header: str, taint_value: str) -> Optional[str]:
     """
     从header头中解析污点的位置
     """
@@ -73,10 +79,11 @@ def parse_header(req_header, taint_value):
     for k, v in header_dict.items():
         if v == taint_value or k == taint_value:
             return k
+    return None
 
 
 
-def parse_cookie(req_header, taint_value):
+def parse_cookie(req_header: str, taint_value: str) -> Optional[str]:
     """
     从cookie中解析
     """
@@ -98,114 +105,113 @@ def parse_cookie(req_header, taint_value):
             cookie_value = '='.join(cookie_item[1:])
             if taint_value == cookie_value:
                 return cookie_item[0]
+    return None
 
-
-def parse_path(uri, taint_value):
+def parse_path(uri: str, taint_value: str) -> Optional[str]:
     """
     从PathVariable中解析污点位置
     """
     # 根据/拆分uri，然后进行对比
+    # location part
     path_items = uri.split('/')
-    for item in path_items:
+    for ind, item in enumerate(path_items):
         if taint_value == item:
             # if equals(taint_value, item):
             # fixme 暂时先使用完全匹配，后续考虑解决误报问题
-            return True
+            return f"location:{ind}"
+    return None
 
 
-from dongtai_engine.signals.handlers.parse_param_name import parse_target_values_from_vul_stack
+from functools import lru_cache
 
 
-def parse_taint_position(source_method, vul_meta, taint_value, vul_stack):
-    param_names = dict()
-    target_values = filter(lambda x: x,
-                           parse_target_values_from_vul_stack(vul_stack))
+@lru_cache(maxsize=128)
+def get_location_data() -> dict:
+    try:
+        with open('/opt/dongtai/static/data/java_params.json') as fp:
+            data = json.load(fp)
+    except Exception as e:
+        logger.error(e,exc_info=True)
+        data = {}
+    #return defaultdict(lambda: [], data)
+    return defaultdict(lambda: ['GET', 'POST', 'HEADER', 'PATH', 'COOKIE'], data)
+
+
+def get_parser_location(source_method: str) -> List[str]:
+    return get_location_data()[source_method]
+
+
+def get_location_parser(location: str) -> Callable[[str, str], Optional[str]]:
+    data = {
+        "GET": parse_params,
+        "POST": parse_body,
+        "HEADER": parse_header,
+        "PATH": parse_path,
+        "COOKIE": parse_cookie
+    }
+    return defaultdict(lambda: lambda http_locationstr, taint_value: None, data)[location]
+
+
+def parse_taint_params(location: str, http_locationstr: Optional[str],
+                 taint_value: str) -> Optional[str]:
+    if not http_locationstr:
+        return None
+    res = get_location_parser(location)(http_locationstr, taint_value)
+    return res
+
+
+from dongtai_common.models.agent_method_pool import MethodPool
+
+
+def get_http_locationstr(method_pool: MethodPool,
+                         location: str) -> Optional[str]:
+    data: dict = {
+        "GET": "req_params",
+        "POST": "req_data",
+        "HEADER": "req_header",
+        "PATH": "uri",
+        "COOKIE": "req_header",
+    }
+    if location not in data.keys():
+        return None
+    return getattr(method_pool, data[location], None)
+
+
+def parse_taint_position(source_method, vul_meta, taint_value, vul_stack) -> dict:
+    param_names: dict = dict()
+    target_values: List[str] = list(
+        filter(lambda x: x, parse_target_values_from_vul_stack(vul_stack)))
     for taint_value in target_values:
-        if 'org.springframework.web.method.support.HandlerMethodArgumentResolver.resolveArgument' == source_method:
-            # 检查get参数
-            if vul_meta.req_params:
-                param_name = parse_params(vul_meta.req_params, taint_value)
-                if param_name:
-                    param_names['GET'] = param_name
-                    logger.info('污点来自GET参数: ' + param_name)
-
-            # 检查post参数
-            if vul_meta.req_data:
-                param_name = parse_body(vul_meta.req_data, taint_value)
-                if param_name:
-                    param_names['POST'] = param_name
-                    logger.info('污点来自POST参数: ' + param_name)
-
-            # 检查header
-            if vul_meta.req_header:
-                param_name = parse_header(vul_meta.req_header, taint_value)
-                if param_name:
-                    param_names['HEADER'] = param_name
-                    logger.info('污点来自HEADER头: ' + param_name)
-
-            # 检查path
-            if vul_meta.uri:
-                param_name = parse_path(vul_meta.uri, taint_value)
-                if param_name:
-                    param_names['PATH'] = taint_value
-                    logger.info('污点来自URI[' + vul_meta.uri + ']: ' + taint_value)
-
-            # fixme 按照哪种策略对数据进行分析和处理呢？如何识别单点与多点
-        elif 'javax.servlet.ServletRequest.getParameter' == source_method or 'javax.servlet.ServletRequest.getParameterValues' == source_method:
-            if vul_meta.req_params:
-                param_name = parse_params(vul_meta.req_params, taint_value)
-                if param_name:
-                    param_names['GET'] = param_name
-            else:
-                param_name = parse_params(vul_meta.req_data, taint_value)
-                if param_name:
-                    param_names['POST'] = param_name
-        elif 'javax.servlet.http.HttpServletRequest.getHeader' == source_method:
-            # 分析header头
-            param_name = parse_header(vul_meta.req_header, taint_value)
+        locations: List[str] = get_parser_location(source_method)
+        for location in locations:
+            param_name: Optional[str] = parse_taint_params(
+                location, get_http_locationstr(vul_meta, location),
+                taint_value)
             if param_name:
-                param_names['HEADER'] = param_name
-        elif 'javax.servlet.http.HttpServletRequest.getQueryString' == source_method:
-            param_name = parse_params(vul_meta.req_params, taint_value)
-            if param_name:
-                param_names['GET'] = param_name
-        elif 'javax.servlet.http.HttpServletRequest.getCookies' == source_method:
-            param_name = parse_cookie(vul_meta.req_header, taint_value)
-            if param_name:
-                param_names['COOKIE'] = param_name
-        else:
-            if vul_meta.req_params:
-                param_name = parse_params(vul_meta.req_params, taint_value)
-                if param_name:
-                    param_names['GET'] = param_name
-                    logger.info('污点来自GET参数: ' + param_name)
-
-            # 检查post参数
-            if vul_meta.req_data:
-                param_name = parse_body(vul_meta.req_data, taint_value)
-                if param_name:
-                    param_names['POST'] = param_name
-                    logger.info('污点来自POST参数: ' + param_name)
-
-            # 检查header
-            if vul_meta.req_header:
-                param_name = parse_header(vul_meta.req_header, taint_value)
-                if param_name:
-                    param_names['HEADER'] = param_name
-                    logger.info('污点来自HEADER头: ' + param_name)
-
-            # 检查path
-            if vul_meta.uri:
-                param_name = parse_path(vul_meta.uri, taint_value)
-                if param_name:
-                    param_names['PATH'] = taint_value
-                    logger.info('污点来自URI[' + vul_meta.uri + ']: ' + taint_value)
-
+                param_names[location] = param_name
+                logger.info(f'污点来自{location}参数: {param_name}')
     return param_names
 
 
 from django.core.cache import cache
 import uuid
+def get_original_url(uri: str, url_desc: str) -> str:
+    if url_desc.startswith('location'):
+        _, location = url_desc.split(":")
+    else:
+        return uri
+    res = uri.split('/')
+    res[int(location)] = "<placeholder>"
+    return "/".join(res)
+
+
+def get_real_url(method_pools: dict) -> str:
+    for method_pool in method_pools:
+        if method_pool[
+                'signature'] == 'org.springframework.web.util.pattern.PathPattern.getPatternString()':
+            return method_pool['targetValues']
+    return ''
+
 
 def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs):
     logger.info(
@@ -220,7 +226,13 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     else:
         param_name = ''
         taint_position = ''
-    logger.info(f"agent_id: {vul_meta.agent_id} vul_uri: {vul_meta.uri} param_name: {param_name}")
+    url_desc: str = ""
+    if 'PATH' in param_names.keys():
+        url_desc = param_names['PATH']
+    pattern_string: str = get_real_url(vul_meta.method_pool)
+    pattern_uri: str = pattern_string if pattern_string else get_original_url(
+        vul_meta.uri, url_desc)
+    logger.info(f"agent_id: {vul_meta.agent_id} vul_uri_pattern: {pattern_uri} vul_uri: {vul_meta.uri} param_name: {param_name}")
     from dongtai_common.models.agent import IastAgent
     project_agents = IastAgent.objects.filter(project_version_id=vul_meta.agent.project_version_id)
     uuid_key = uuid.uuid4().hex
@@ -231,7 +243,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     # 获取 相同项目版本下的数据
     vul = IastVulnerabilityModel.objects.filter(
         strategy_id=strategy_id,
-        uri=vul_meta.uri,
+        pattern_uri=pattern_uri,
         http_method=vul_meta.http_method,
         agent__project_version_id=vul_meta.agent.project_version_id,
         param_name=param_name,
@@ -239,6 +251,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     IastProject.objects.filter(id=vul_meta.agent.bind_project_id).update(latest_time=timestamp)
     if vul:
         vul.url = vul_meta.url
+        vul.pattern_uri = pattern_uri
         vul.req_header = vul_meta.req_header
         vul.req_params = vul_meta.req_params
         vul.req_data = vul_meta.req_data
@@ -270,6 +283,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
             level_id=vul_level,
             url=vul_meta.url,
             uri=vul_meta.uri,
+            pattern_uri = pattern_url,
             http_method=vul_meta.http_method,
             http_scheme=vul_meta.http_scheme,
             http_protocol=vul_meta.http_protocol,
