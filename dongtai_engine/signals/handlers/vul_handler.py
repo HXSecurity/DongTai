@@ -203,6 +203,14 @@ def get_original_url(uri: str, url_desc: str) -> str:
     return "/".join(res)
 
 
+def get_real_url(method_pools: dict) -> str:
+    for method_pool in method_pools:
+        if method_pool[
+                'signature'] == 'org.springframework.web.util.pattern.PathPattern.getPatternString()':
+            return method_pool['targetValues']
+    return ''
+
+
 def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs):
     logger.info(
         f'save vul, strategy id: {strategy_id}, from: {"normal" if "replay_id" not in kwargs else "replay"}, id: {vul_meta.id}')
@@ -219,10 +227,11 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     url_desc: str = ""
     if 'PATH' in param_names.keys():
         url_desc = param_names['PATH']
-    real_url = get_original_url(vul_meta.uri, url_desc)
-    print(real_url)
-    logger.info(f"agent_id: {vul_meta.agent_id} vul_uri: {vul_meta.uri} param_name: {param_name}")
-    from dongtai_common.models.agent import IastAgent
+    pattern_string: str = get_real_url(vul_meta.method_pool)
+    pattern_uri: str = pattern_string if pattern_string else get_original_url(
+        vul_meta.uri, url_desc)
+    logger.info(f"agent_id: {vul_meta.agent_id} vul_uri_pattern: {pattern_uri} vul_uri: {vul_meta.uri} param_name: {param_name}")
+    from dongtai_common.models.agent import IastAgent 
     project_agents = IastAgent.objects.filter(project_version_id=vul_meta.agent.project_version_id)
     uuid_key = uuid.uuid4().hex
     cache_key = f'vul_save-{strategy_id}-{vul_meta.uri}-{vul_meta.http_method}-{vul_meta.agent.project_version_id}-{param_name}'
@@ -232,7 +241,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     # 获取 相同项目版本下的数据
     vul = IastVulnerabilityModel.objects.filter(
         strategy_id=strategy_id,
-        uri=vul_meta.uri,
+        pattern_uri=pattern_uri,
         http_method=vul_meta.http_method,
         agent__project_version_id=vul_meta.agent.project_version_id,
         param_name=param_name,
@@ -240,6 +249,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     IastProject.objects.filter(id=vul_meta.agent.bind_project_id).update(latest_time=timestamp)
     if vul:
         vul.url = vul_meta.url
+        vul.pattern_uri = pattern_uri
         vul.req_header = vul_meta.req_header
         vul.req_params = vul_meta.req_params
         vul.req_data = vul_meta.req_data
@@ -271,6 +281,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
             level_id=vul_level,
             url=vul_meta.url,
             uri=vul_meta.uri,
+            pattern_uri = pattern_url,
             http_method=vul_meta.http_method,
             http_scheme=vul_meta.http_scheme,
             http_protocol=vul_meta.http_protocol,
