@@ -71,7 +71,8 @@ class IastVulnerabilityModel(models.Model):
             self.strategy.vul_type,
             self.strategy.vul_name,
         ]
-
+        if not self.pattern_uri:
+            self.pattern_uri = self.pattern_uri
         self.search_keywords = " ".join(key_works)
         self.latest_time_desc = -int(self.latest_time)
         self.level_id_desc = -int(self.level_id)
