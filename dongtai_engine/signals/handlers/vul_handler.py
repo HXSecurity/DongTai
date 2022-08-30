@@ -229,7 +229,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     url_desc: str = ""
     if 'PATH' in param_names.keys():
         url_desc = param_names['PATH']
-    pattern_string: str = get_real_url(vul_meta.method_pool)
+    pattern_string: str = get_real_url(json.loads(vul_meta.method_pool))
     pattern_uri: str = pattern_string if pattern_string else get_original_url(
         vul_meta.uri, url_desc)
     logger.info(f"agent_id: {vul_meta.agent_id} vul_uri_pattern: {pattern_uri} vul_uri: {vul_meta.uri} param_name: {param_name}")
@@ -283,7 +283,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
             level_id=vul_level,
             url=vul_meta.url,
             uri=vul_meta.uri,
-            pattern_uri = pattern_url,
+            pattern_uri = pattern_uri,
             http_method=vul_meta.http_method,
             http_scheme=vul_meta.http_scheme,
             http_protocol=vul_meta.http_protocol,
