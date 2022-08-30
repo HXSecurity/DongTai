@@ -55,21 +55,30 @@ jobs:
       - name: Generate version file
         run: |
           echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('${{ github.run_number }}.0.0', '${{ github.event.repository.name }}', '${GITHUB_SHA}');" >> ./deploy/docker/version.sql
-        
-      - name: Build
-        run: |
-          docker build -t registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:latest .
-          docker tag registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:latest registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:1.0.${{github.run_number}}
-            
-      - name: push
-        uses: nick-invision/retry@v2
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
         with:
-          timeout_seconds: 300
-          max_attempts: 10
-          #retry_on: timeout
-          command: |
-            docker push registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:latest
-            docker push registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:1.0.${{github.run_number}}
+          file: Dockerfile
+          context: .
+          push: true
+          tags: | 
+            registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:latest
+            registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:1.0.${{github.run_number}}
+      # - name: Build
+      #   run: |
+      #     docker build -t registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:latest .
+      #     docker tag registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:latest registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:1.0.${{github.run_number}}
+            
+      # - name: push
+      #   uses: nick-invision/retry@v2
+      #   with:
+      #     timeout_seconds: 300
+      #     max_attempts: 10
+      #     #retry_on: timeout
+      #     command: |
+      #       docker push registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:latest
+      #       docker push registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:1.0.${{github.run_number}}
 
       - uses: actions/checkout@master
       - name: deploy to cluster
