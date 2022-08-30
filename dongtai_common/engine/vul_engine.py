@@ -8,7 +8,7 @@ import copy
 
 from django.utils.functional import cached_property
 
-logger = logging.getLogger('dongtai-dongtai_conf')
+logger = logging.getLogger('dongtai-engine')
 
 
 class VulEngine(object):
@@ -127,6 +127,44 @@ class VulEngine(object):
             logger.info(f'==> current taint hash: {self.pool_value}')
             if self.loop(index, size, current_link):
                 break
+        if self.vul_source_signature and 'sourceType' in self.vul_stack[-1][
+                -1].keys():
+            final_stack = self.vul_stack[-1][-1]
+            current_link = list()
+            current_link.append(final_stack)
+            the_second_stack = None
+            for source_type in final_stack['sourceType']:
+                if source_type['type'] == 'HOST':
+                    source_type_hash = source_type['hash']
+                    for ind ,method in enumerate(self.method_pool):
+                        if method['invokeId'] == final_stack['invokeId']:
+                            index = ind
+                    before_stacks = self.method_pool[index:]
+                    for stack in before_stacks:
+                        if 'targetRange' in stack.keys():
+                            target_ranges = dict(
+                                zip([i['hash'] for i in stack['targetRange']],
+                                    stack['targetRange']))
+                            if source_type_hash in target_ranges and target_ranges[
+                                    source_type_hash]['ranges']:
+                                the_second_stack = stack
+                                break
+            self.vul_source_signature = None
+            self.vul_stack = []
+            self.pool_value = set(the_second_stack.get('sourceHash'))
+            if not the_second_stack:
+                return
+            for ind ,method in enumerate(self.method_pool):
+                if method['invokeId'] == the_second_stack['invokeId']:
+                    index = ind
+            if the_second_stack.get('source_type'):
+                current_link.append(self.copy_method(the_second_stack, source=True))
+            else:
+                current_link.append(
+                    self.copy_method(the_second_stack, propagator=True))
+            logger.info(f'==> current taint hash: {self.pool_value}')
+            logger.info('find second')
+            self.loop(index, size, current_link)
         self.vul_filter()
 
 
@@ -188,10 +226,11 @@ class VulEngine(object):
             sub_method = self.method_pool[sub_index]
             sub_target_hash = set(sub_method.get('targetHash'))
             sub_target_rpc_hash = set(sub_method.get('targetHashForRpc',[]))
+    ##        logger.info(sub_method)
             if ((sub_target_hash and sub_target_hash & self.pool_value) or
                 (sub_target_rpc_hash and sub_target_rpc_hash & self.pool_value)
                 ) and check_service_propagate_method_state(sub_method):
-                logger.info("stisfied {sub_method}")
+                logger.info(f"stisfied {sub_method}")
                 if sub_method.get('source'):
                     current_link.append(self.copy_method(sub_method, source=True))
                     self.vul_source_signature = f"{sub_method.get('className')}.{sub_method.get('methodName')}"
