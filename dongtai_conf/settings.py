@@ -21,11 +21,15 @@ from configparser import ConfigParser
 import random
 
 import pymysql
+from dongtai_conf.utils import get_config
+
 
 pymysql.install_as_MySQLdb()
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+get_config(BASE_DIR, os.getenv("TARGET_SECRETSMANAGER", ""))
 
 
 # Quick-start development settings - unsuitable for production

@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: dongtai-server-container
-          image: registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:VERSION
+          image: registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:VERSION
           imagePullPolicy: Always
           volumeMounts:
             - name: configfile
@@ -93,7 +93,7 @@ spec:
     spec:
       containers:
         - name: dongtai-worker-task-container
-          image: registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:VERSION
+          image: registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:VERSION
           command: [ "/bin/bash","/opt/dongtai/deploy/docker/entrypoint.sh" ]
           args: [ "beat" ]
           imagePullPolicy: Always
@@ -140,7 +140,7 @@ spec:
     spec:
       containers:
         - name: dongtai-worker-high-freq-container
-          image: registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:VERSION
+          image: registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:VERSION
           command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
           args: [ "worker-high-freq" ]
           imagePullPolicy: Always
@@ -189,7 +189,7 @@ spec:
     spec:
       containers:
         - name: dongtai-worker-beat-container
-          image: registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:VERSION
+          image: registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:VERSION
           command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
           args: [ "worker-beat" ]
           imagePullPolicy: Always
@@ -238,7 +238,7 @@ spec:
     spec:
       containers:
         - name: dongtai-worker-other-container
-          image: registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:VERSION
+          image: registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:VERSION
           command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
           args: [ "worker-other" ]
           imagePullPolicy: Always
@@ -287,7 +287,7 @@ spec:
     spec:
       containers:
         - name: dongtai-worker-sca-container
-          image: registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:VERSION
+          image: registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:VERSION
           command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
           args: [ "worker-sca" ]
           imagePullPolicy: Always
@@ -336,7 +336,7 @@ spec:
     spec:
       containers:
         - name: dongtai-worker-es-container
-          image: registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:VERSION
+          image: registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:VERSION
           command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
           args: [ "worker-es" ]
           imagePullPolicy: Always
