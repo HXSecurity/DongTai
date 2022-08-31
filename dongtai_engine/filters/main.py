@@ -1,25 +1,25 @@
 from urllib.parse import urlparse
 
 
-def vul_filter(stack, source_sign, sink_sign, taint_value, vul_type, agent_id):
+def vul_filter(stack, source_sign, sink_sign, taint_value: list, vul_type, agent_id):
     source_signature = stack[0][0]['signature']
     if (vul_type != 'trust-boundary-violation' and source_signature == 'javax.servlet.http.HttpServletRequest.getSession()'):
         return False
     #if vul_type == 'ssrf' or vul_type == 'unvalidated-redirect':
-    if vul_type == 'unvalidated-redirect':
-        try:
-            target_url = stack[0][-1]['sourceValues']
-            res = urlparse(target_url)
-            afterurl = target_url.replace(taint_value, '')
-            res_after_replace = urlparse(afterurl)
-        except Exception as e:
-            return False
-        if not res.scheme and not res.netloc:
-            return True
-        if res.netloc == res_after_replace.netloc:
-            return False
-        return True
-    elif vul_type == 'reflected-xss':
+    #if vul_type == 'unvalidated-redirect':
+    #    try:
+    #        target_url = stack[0][-1]['sourceValues']
+    #        res = urlparse(target_url)
+    #        afterurl = target_url.replace(taint_value, '')
+    #        res_after_replace = urlparse(afterurl)
+    #    except Exception as e:
+    #        return False
+    #    if not res.scheme and not res.netloc:
+    #        return True
+    #    if res.netloc == res_after_replace.netloc:
+    #        return False
+    #    return True
+    if vul_type == 'reflected-xss':
         target_signature = stack[0][0]['signature']
         filter_source_signature = [
             'javax.servlet.http.HttpServletRequest.getHeader(java.lang.String)',

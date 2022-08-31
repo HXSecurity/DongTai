@@ -178,7 +178,7 @@ def get_http_locationstr(method_pool: MethodPool,
 
 
 def parse_taint_position(source_method, vul_meta, taint_value, vul_stack) -> dict:
-    param_names: dict = dict()
+    param_names: dict = defaultdict(lambda :[],{})
     target_values: List[str] = list(
         filter(lambda x: x, parse_target_values_from_vul_stack(vul_stack)))
     for taint_value in target_values:
@@ -187,8 +187,8 @@ def parse_taint_position(source_method, vul_meta, taint_value, vul_stack) -> dic
             param_name: Optional[str] = parse_taint_params(
                 location, get_http_locationstr(vul_meta, location),
                 taint_value)
-            if param_name:
-                param_names[location] = param_name
+            if param_name and param_name not in param_names[location]:
+                param_names[location].append(param_name)
                 logger.info(f'污点来自{location}参数: {param_name}')
     return param_names
 
@@ -235,11 +235,11 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     logger.info(f"agent_id: {vul_meta.agent_id} vul_uri_pattern: {pattern_uri} vul_uri: {vul_meta.uri} param_name: {param_name}")
     from dongtai_common.models.agent import IastAgent
     project_agents = IastAgent.objects.filter(project_version_id=vul_meta.agent.project_version_id)
-    uuid_key = uuid.uuid4().hex
-    cache_key = f'vul_save-{strategy_id}-{vul_meta.uri}-{vul_meta.http_method}-{vul_meta.agent.project_version_id}-{param_name}'
-    is_api_cached = uuid_key != cache.get_or_set(cache_key, uuid_key)
-    if is_api_cached:
-        return
+#    uuid_key = uuid.uuid4().hex
+#    cache_key = f'vul_save-{strategy_id}-{vul_meta.uri}-{vul_meta.http_method}-{vul_meta.agent.project_version_id}-{param_name}'
+#    is_api_cached = uuid_key != cache.get_or_set(cache_key, uuid_key)
+#    if is_api_cached:
+#        return
     # 获取 相同项目版本下的数据
     vul = IastVulnerabilityModel.objects.filter(
         strategy_id=strategy_id,
@@ -309,7 +309,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
         )
         log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
                       vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)
-    cache.delete(cache_key)
+#    cache.delete(cache_key)
     #delete if exists more than one   departured use redis lock
     #IastVulnerabilityModel.objects.filter(
     #    strategy_id=strategy_id,
@@ -444,6 +444,8 @@ def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_s
     elif isinstance(vul_meta, MethodPool):
         vul = save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
                        bottom_stack, **kwargs)
+        if not vul:
+            return 
         create_vul_recheck_task(vul_id=vul.id,
                                 agent=vul.agent,
                                 timestamp=timestamp)

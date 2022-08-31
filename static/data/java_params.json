@@ -1,16 +1,16 @@
       {
 						"org.springframework.web.method.support.HandlerMethodArgumentResolver.resolveArgument": [
--                    "GET",
--                    "POST",
--                    "HEADER",
--                    "PATH"
--           ],
-						"org.springframework.web.method.annotation.ServletModelAttributeMethodProcessor.resolveArgument": [
--                    "GET",
--                    "POST",
--                    "HEADER",
--                    "PATH"
--           ],
+                    "GET",
+                    "POST",
+                    "HEADER",
+                    "PATH"
+           ],
+ 					"org.springframework.web.method.annotation.ServletModelAttributeMethodProcessor.resolveArgument": [
+                    "GET",
+                    "POST",
+                    "HEADER",
+                    "PATH"
+           ],
 						"org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.resolveName":["PATH"],
 						"org.springframework.web.bind.annotation.support.HandlerMethodInvoker.resolvePathVariable":["PATH"],
             "javax.servlet.ServletRequest.getParameter": [

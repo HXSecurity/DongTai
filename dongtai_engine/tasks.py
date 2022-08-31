@@ -121,20 +121,21 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
     """
     logger.info(f'current sink rule is {strategy.get("type")}')
     queryset = IastStrategyModel.objects.filter(vul_type=strategy['type'], state=const.STRATEGY_ENABLE)
-    if queryset.values('id').exists() is False:
+    if not queryset.values('id').exists():
         logger.error(f'current method pool hit rule {strategy.get("type")}, but no vul strategy.')
         return
     engine.search(method_pool=method_pool, vul_method_signature=strategy.get('value'))
     status, stack, source_sign, sink_sign, taint_value = engine.result()
-    filterres = vul_filter(
-        stack,
-        source_sign,
-        sink_sign,
-        taint_value,
-        queryset.values('vul_type').first()['vul_type'],
-        agent_id=method_pool_model.agent_id,
-    )
-    logger.info(f'vul filter_status : {filterres}')
+    if status:
+        filterres = vul_filter(
+            stack,
+            source_sign,
+            sink_sign,
+            taint_value,
+            queryset.values('vul_type').first()['vul_type'],
+            agent_id=method_pool_model.agent_id,
+        )
+        logger.info(f'vul filter_status : {filterres}')
     if status and filterres:
         logger.info(f'vul_found {method_pool_model.agent_id}  {method_pool_model.url} {sink_sign}')
         vul_strategy = queryset.values("level", "vul_name", "id").first()
