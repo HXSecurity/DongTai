@@ -7,6 +7,7 @@ import logging
 import copy
 
 from django.utils.functional import cached_property
+from collections import defaultdict
 
 logger = logging.getLogger('dongtai-engine')
 
@@ -53,6 +54,12 @@ class VulEngine(object):
         :return:
         """
         self._method_pool = sorted(method_pool, key=lambda e: e.__getitem__('invokeId'), reverse=True)
+        self._method_pool_invokeid_dict = {mp['invokeId']:ind for ind ,mp in enumerate(self._method_pool)}
+        tempdict = defaultdict(lambda : [],{})
+        for ind, mp in enumerate(self._method_pool):
+            for target_hash in mp['targetHash']:
+                tempdict[target_hash].append(ind)
+        self._method_pool_target_hash_dict = dict(tempdict)
 
     @property
     def vul_method_signature(self):
@@ -125,7 +132,7 @@ class VulEngine(object):
             self.pool_value = set(method.get('sourceHash'))
             self.vul_source_signature = None
             logger.info(f'==> current taint hash: {self.pool_value}')
-            if self.loop(index, size, current_link):
+            if self.loop(index, size, current_link, set(method.get('sourceHash'))):
                 break
         if self.vul_source_signature and 'sourceType' in self.vul_stack[-1][
                 -1].keys():
@@ -164,9 +171,42 @@ class VulEngine(object):
                     self.copy_method(the_second_stack, propagator=True))
             logger.info(f'==> current taint hash: {self.pool_value}')
             logger.info('find second')
-            self.loop(index, size, current_link)
+            self.loop(index, size, current_link,
+                      set(the_second_stack.get('sourceHash')))
+            current_link = current_link[0:2] 
+            extract_stack = self.find_other_branch_v2(index, size, current_link,set(the_second_stack.get('sourceHash')))
+            self.vul_stack[0] = extract_stack[::-1]
         self.vul_filter()
 
+    def find_other_branch_v2(self, index, size, current_link, source_hash):
+        for sub_index in range(index + 1, size):
+            sub_method = self.method_pool[sub_index]
+            sub_target_hash = set(sub_method.get('targetHash'))
+            sub_target_rpc_hash = set(sub_method.get('targetHashForRpc',[]))
+            if ((sub_target_hash and sub_target_hash & source_hash) or
+                (sub_target_rpc_hash and sub_target_rpc_hash & source_hash)
+                ) and check_service_propagate_method_state(sub_method):
+                logger.info(f"stisfied {sub_method}")
+                if False : #sub_method.get('source'):
+                    current_link.append(self.copy_method(sub_method, source=True))
+                    self.vul_source_signature = f"{sub_method.get('className')}.{sub_method.get('methodName')}"
+                    self.vul_stack.append(current_link[::-1])
+                    self.taint_value = sub_method['targetValues']
+                    current_link.pop()
+                    return True
+                else:
+                    current_link.append(
+                        self.copy_method(sub_method, propagator=True))
+                    source_hash = source_hash | set(
+                        sub_method.get('sourceHash'))
+                    #old_pool_value = source_hash
+                    #source_hash = set(sub_method.get('sourceHash'))
+                    #if self.loop(sub_index, size, current_link, source_hash):
+                    #    return True
+                    #current_link.pop()
+            else:
+                logger.debug("not stisfied {sub_method}")
+        return current_link
 
     def vul_filter(self):
         # 分析是否存在过滤条件，排除误报
@@ -221,14 +261,13 @@ class VulEngine(object):
             vul_method_detail['code'] = vul_method_detail["signature"]
         return vul_method_detail
 
-    def loop(self, index, size, current_link):
+    def loop(self, index, size, current_link, source_hash):
         for sub_index in range(index + 1, size):
             sub_method = self.method_pool[sub_index]
             sub_target_hash = set(sub_method.get('targetHash'))
             sub_target_rpc_hash = set(sub_method.get('targetHashForRpc',[]))
-    ##        logger.info(sub_method)
-            if ((sub_target_hash and sub_target_hash & self.pool_value) or
-                (sub_target_rpc_hash and sub_target_rpc_hash & self.pool_value)
+            if ((sub_target_hash and sub_target_hash & source_hash) or
+                (sub_target_rpc_hash and sub_target_rpc_hash & source_hash)
                 ) and check_service_propagate_method_state(sub_method):
                 logger.info(f"stisfied {sub_method}")
                 if sub_method.get('source'):
@@ -240,11 +279,11 @@ class VulEngine(object):
                     return True
                 else:
                     current_link.append(self.copy_method(sub_method, propagator=True))
-                    old_pool_value = self.pool_value
-                    self.pool_value = set(sub_method.get('sourceHash'))
-                    if self.loop(sub_index, size, current_link):
+                    old_pool_value = source_hash
+                    source_hash = set(sub_method.get('sourceHash'))
+                    if self.loop(sub_index, size, current_link, source_hash):
                         return True
-                    self.pool_value = old_pool_value
+                    source_hash = old_pool_value
                     current_link.pop()
             else:
                 logger.debug("not stisfied {sub_method}")
