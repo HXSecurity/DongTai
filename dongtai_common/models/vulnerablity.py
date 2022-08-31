@@ -16,6 +16,7 @@ class IastVulnerabilityModel(models.Model):
     level = models.ForeignKey(IastVulLevel, models.DO_NOTHING, blank=True, null=True)
     url = models.CharField(max_length=2000, blank=True, null=True)
     uri = models.CharField(max_length=255, blank=True, null=True)
+    pattern_uri = models.CharField(max_length=255, blank=True, null=True)
     # 模糊搜索 全文索引 查询
     vul_title = models.CharField(max_length=255, blank=True, null=True,default="")
     http_method = models.CharField(max_length=10, blank=True, null=True)
@@ -70,7 +71,8 @@ class IastVulnerabilityModel(models.Model):
             self.strategy.vul_type,
             self.strategy.vul_name,
         ]
-
+        if not self.pattern_uri:
+            self.pattern_uri = self.pattern_uri
         self.search_keywords = " ".join(key_works)
         self.latest_time_desc = -int(self.latest_time)
         self.level_id_desc = -int(self.level_id)

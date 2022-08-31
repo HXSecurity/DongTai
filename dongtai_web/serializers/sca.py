@@ -152,6 +152,4 @@ class ScaAssetSerializer(serializers.ModelSerializer):
         return obj.vul_high_count + obj.vul_critical_count
 
     def get_project_count(self, obj):
-        asset_aggr = AssetAggr.objects.filter(
-            signature_value=obj.signature_value).first()
-        return asset_aggr.project_count if asset_aggr else 0
+        return Asset.objects.filter(package_name=obj.package_name).values('project_id').count()
