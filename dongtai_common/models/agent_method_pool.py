@@ -13,6 +13,7 @@ from dongtai_common.utils.settings import get_managed
 
 # 'id', 'agent', 'uri', 'http_method', 'http_scheme', 'req_header', 'req_params', 'req_data', 'taint_value','param_name'
 class MethodPool(models.Model):
+    id = models.BigAutoField(primary_key=True)
     agent = models.ForeignKey(IastAgent,
                               models.DO_NOTHING,
                               blank=True,
@@ -62,7 +63,7 @@ class MethodPool(models.Model):
 from django_elasticsearch_dsl import Document
 from django_elasticsearch_dsl.registries import registry
 from django_elasticsearch_dsl import Document, fields
-from dongtai_conf.settings import METHOD_POOL_INDEX 
+from dongtai_conf.settings import METHOD_POOL_INDEX
 
 
 @registry.register_document
