@@ -19,6 +19,7 @@ from dongtai_common.models.talent import Talent
 
 
 class Asset(models.Model):
+    id = models.BigAutoField(primary_key=True)
     package_name = models.CharField(max_length=255, blank=True, null=True)
     package_path = models.CharField(max_length=255, blank=True, null=True)
     signature_algorithm = models.CharField(max_length=255, blank=True, null=True)
