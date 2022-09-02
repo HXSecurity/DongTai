@@ -12,6 +12,7 @@ class IastVulnerabilityStatus(models.Model):
         db_table = 'iast_vulnerability_status'
 
 class IastVulnerabilityModel(models.Model):
+    id = models.BigAutoField(primary_key=True)
     search_keywords = models.CharField(max_length=1000, blank=True, null=True)
     level = models.ForeignKey(IastVulLevel, models.DO_NOTHING, blank=True, null=True)
     url = models.CharField(max_length=2000, blank=True, null=True)

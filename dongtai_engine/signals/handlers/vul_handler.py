@@ -251,6 +251,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     IastProject.objects.filter(id=vul_meta.agent.bind_project_id).update(latest_time=timestamp)
     if vul:
         vul.url = vul_meta.url
+        vul.uri = vul_meta.uri
         vul.pattern_uri = pattern_uri
         vul.req_header = vul_meta.req_header
         vul.req_params = vul_meta.req_params

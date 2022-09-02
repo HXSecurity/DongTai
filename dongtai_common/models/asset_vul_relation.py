@@ -18,6 +18,7 @@ from dongtai_common.models.aql_info import AqlInfo
 
 
 class AssetVulRelation(models.Model):
+    id = models.BigAutoField(primary_key=True)
     hash = models.CharField(max_length=255, blank=True, null=True)
     create_time = models.IntegerField(blank=True, null=True)
     is_del = models.SmallIntegerField(blank=True, null=True)
