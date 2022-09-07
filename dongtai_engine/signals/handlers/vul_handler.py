@@ -235,11 +235,11 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     logger.info(f"agent_id: {vul_meta.agent_id} vul_uri_pattern: {pattern_uri} vul_uri: {vul_meta.uri} param_name: {param_name}")
     from dongtai_common.models.agent import IastAgent
     project_agents = IastAgent.objects.filter(project_version_id=vul_meta.agent.project_version_id)
-#    uuid_key = uuid.uuid4().hex
-#    cache_key = f'vul_save-{strategy_id}-{vul_meta.uri}-{vul_meta.http_method}-{vul_meta.agent.project_version_id}-{param_name}'
-#    is_api_cached = uuid_key != cache.get_or_set(cache_key, uuid_key)
-#    if is_api_cached:
-#        return
+    uuid_key = uuid.uuid4().hex
+    cache_key = f'vul_save-{strategy_id}-{pattern_uri}-{vul_meta.http_method}-{vul_meta.agent.project_version_id}-{param_name}'
+    is_api_cached = uuid_key != cache.get_or_set(cache_key, uuid_key)
+    if is_api_cached:
+        return
     # 获取 相同项目版本下的数据
     vul = IastVulnerabilityModel.objects.filter(
         strategy_id=strategy_id,
@@ -310,7 +310,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
         )
         log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
                       vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)
-#    cache.delete(cache_key)
+    cache.delete(cache_key)
     #delete if exists more than one   departured use redis lock
     #IastVulnerabilityModel.objects.filter(
     #    strategy_id=strategy_id,
