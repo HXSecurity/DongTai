@@ -17,6 +17,8 @@ from dongtai_common.utils import const
 
 from dongtai_engine.plugins import is_strategy_enable
 from dongtai_web.vul_log.vul_log import log_vul_found, log_recheck_vul
+from dongtai_common.models.header_vulnerablity import IastHeaderVulnerability
+from django.db import IntegrityError
 
 class FakeSocket():
     def __init__(self, response_str):
@@ -88,16 +90,18 @@ def check_response_header(method_pool):
 from django.core.cache import cache
 import uuid
 
+
 def save_vul(vul_type, method_pool, position=None, data=None):
     if is_strategy_enable(vul_type, method_pool) is False:
         return None
     vul_strategy = IastStrategyModel.objects.filter(
         vul_type=vul_type,
         state=const.STRATEGY_ENABLE,
-        user_id__in=(1, method_pool.agent.user.id)
-    ).first()
+        user_id__in=(1, method_pool.agent.user.id)).first()
     if vul_strategy is None:
-        logger.error(f'There is no corresponding strategy for the current vulnerability: {vul_type}')
+        logger.error(
+            f'There is no corresponding strategy for the current vulnerability: {vul_type}'
+        )
 
     from dongtai_common.models.agent import IastAgent
     project_agents = IastAgent.objects.filter(
@@ -109,12 +113,13 @@ def save_vul(vul_type, method_pool, position=None, data=None):
         return
     vul = IastVulnerabilityModel.objects.filter(
         strategy_id=vul_strategy.id,
-        uri=method_pool.uri,
+        uri='/',
         http_method=method_pool.http_method,
         agent__project_version_id=method_pool.agent.project_version_id,
     ).order_by('-latest_time').first()
     timestamp = int(time.time())
-    IastProject.objects.filter(id=method_pool.agent.bind_project_id).update(latest_time=timestamp)
+    IastProject.objects.filter(id=method_pool.agent.bind_project_id).update(
+        latest_time=timestamp)
     if vul:
         vul.url = vul.url
         vul.req_header = method_pool.req_header
@@ -137,14 +142,15 @@ def save_vul(vul_type, method_pool, position=None, data=None):
         ])
     else:
         from dongtai_common.models.hook_type import HookType
-        hook_type = HookType.objects.filter(vul_strategy_id=vul_strategy.id).first()
+        hook_type = HookType.objects.filter(
+            vul_strategy_id=vul_strategy.id).first()
         vul = IastVulnerabilityModel.objects.create(
             strategy=vul_strategy,
             # fixme: remove field
             hook_type=hook_type if hook_type else HookType.objects.first(),
             level=vul_strategy.level,
             url=method_pool.url,
-            uri=method_pool.uri,
+            uri='/',
             http_method=method_pool.http_method,
             http_scheme=method_pool.http_scheme,
             http_protocol=method_pool.http_protocol,
@@ -166,11 +172,23 @@ def save_vul(vul_type, method_pool, position=None, data=None):
             latest_time=timestamp,
             client_ip=method_pool.clent_ip,
             param_name=None,
-            method_pool_id=method_pool.id
-        )
+            method_pool_id=method_pool.id)
         log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
                       vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)
     cache.delete(cache_key)
+    try:
+        IastHeaderVulnerability.objects.create(
+            project_id=method_pool.agent.bind_project_id,
+            project_version=method_pool.agent.project_version_id,
+            url=method_pool.uri,
+            agent_id=method_pool.agent_id,
+            method_pool_id=method_pool.id,
+            vul=vul.id,
+            req_header=vul.req_header_fs,
+            res_header=vul.res_header)
+    except IntegrityError as e:
+        logger.debug("unique error stack: ", exc_info=True)
+        logger.info("unique error cause by concurrency insert,ignore it")
     #delete if exists more than one   departured use redis lock
     #IastVulnerabilityModel.objects.filter(
     #    strategy=vul_strategy.id,

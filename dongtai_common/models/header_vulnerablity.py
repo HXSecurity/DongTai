@@ -41,6 +41,11 @@ class IastHeaderVulnerability(models.Model):
                             blank=True,
                             null=True,
                             db_constraint=False)
+    req_header = models.TextField(
+        blank=True,
+        null=True,
+    )
+    res_header = models.TextField(blank=True, null=True)
 
     class Meta:
         managed = get_managed()
