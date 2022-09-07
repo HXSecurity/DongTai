@@ -176,6 +176,15 @@ class VulEngine(object):
             current_link = current_link[0:2] 
             extract_stack = self.find_other_branch_v2(index, size, current_link,set(the_second_stack.get('sourceHash')))
             self.vul_stack[0] = extract_stack[::-1]
+        else:
+            final_stack = self.vul_stack[-1][-1]
+            for ind ,method in enumerate(self.method_pool):
+                if method['invokeId'] == final_stack['invokeId']:
+                    index = ind
+            current_link = current_link[0:1] 
+            extract_stack = self.find_other_branch_v2(index, size, current_link,set(final_stack.get('sourceHash')))
+            self.vul_stack[0] = extract_stack[::-1]
+
         self.vul_filter()
 
     def find_other_branch_v2(self, index, size, current_link, source_hash):
