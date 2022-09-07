@@ -173,15 +173,15 @@ class VulEngine(object):
             logger.info('find second')
             self.loop(index, size, current_link,
                       set(the_second_stack.get('sourceHash')))
-            current_link = current_link[0:2] 
+            current_link = current_link[0:2]
             extract_stack = self.find_other_branch_v2(index, size, current_link,set(the_second_stack.get('sourceHash')))
             self.vul_stack[0] = extract_stack[::-1]
         else:
             final_stack = self.vul_stack[-1][-1]
-            for ind ,method in enumerate(self.method_pool):
+            for ind, method in enumerate(self.method_pool):
                 if method['invokeId'] == final_stack['invokeId']:
                     index = ind
-            current_link = current_link[0:1] 
+            current_link = current_link[0:1]
             extract_stack = self.find_other_branch_v2(index, size, current_link,set(final_stack.get('sourceHash')))
             self.vul_stack[0] = extract_stack[::-1]
 
