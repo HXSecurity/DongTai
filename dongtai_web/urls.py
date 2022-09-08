@@ -140,6 +140,8 @@ from dongtai_web.threshold.config_setting import (
     AgentThresholdConfigV2, )
 from dongtai_web.vul_log.vul_log_view import VulLogViewSet
 from dongtai_web.vul_recheck_payload.vul_recheck_payload import VulReCheckPayloadViewSet
+from dongtai_web.header_vul.base import HeaderVulViewSet
+
 
 urlpatterns = [
     path('user/<int:user_id>', UserDetailEndPoint.as_view()),
@@ -351,6 +353,9 @@ urlpatterns = [
          VulReCheckPayloadViewSet.as_view({
              'put': "status_change",
          })),
+    path('header_vul/', HeaderVulViewSet.as_view({
+        'get': "list",
+    })),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口

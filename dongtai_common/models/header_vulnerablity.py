@@ -26,6 +26,24 @@ class IastHeaderVulnerability(models.Model):
                                         default=-1,
                                         db_constraint=False)
     url = models.CharField(max_length=255, default='', blank=True, null=True)
+    vul = models.ForeignKey(IastVulnerabilityModel,
+                                        on_delete=models.DO_NOTHING,
+                                        blank=True,
+                                        null=True,
+                                        default=-1,
+                                        db_constraint=False)
+
+    class Meta:
+        managed = get_managed()
+        db_table = 'iast_header_vulnerability'
+
+
+class IastHeaderVulnerabilityDetail(models.Model):
+    req_header = models.TextField(
+        blank=True,
+        null=True,
+    )
+    res_header = models.TextField(blank=True, null=True)
     agent = models.ForeignKey(IastAgent,
                               models.DO_NOTHING,
                               blank=True,
@@ -36,17 +54,12 @@ class IastHeaderVulnerability(models.Model):
                                     blank=True,
                                     null=True,
                                     db_constraint=False)
-    vul = models.ForeignKey(IastVulnerabilityModel,
-                            models.DO_NOTHING,
-                            blank=True,
-                            null=True,
-                            db_constraint=False)
-    req_header = models.TextField(
-        blank=True,
-        null=True,
-    )
-    res_header = models.TextField(blank=True, null=True)
+    header_vul = models.ForeignKey(IastHeaderVulnerability,
+                                   models.DO_NOTHING,
+                                   blank=True,
+                                   null=True,
+                                   db_constraint=False)
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_header_vulnerability'
+        db_table = 'iast_header_vulnerability_detail'

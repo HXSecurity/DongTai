@@ -17,7 +17,7 @@ from dongtai_common.utils import const
 
 from dongtai_engine.plugins import is_strategy_enable
 from dongtai_web.vul_log.vul_log import log_vul_found, log_recheck_vul
-from dongtai_common.models.header_vulnerablity import IastHeaderVulnerability
+from dongtai_common.models.header_vulnerablity import IastHeaderVulnerability, IastHeaderVulnerabilityDetail
 from django.db import IntegrityError
 
 class FakeSocket():
@@ -176,19 +176,37 @@ def save_vul(vul_type, method_pool, position=None, data=None):
         log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
                       vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)
     cache.delete(cache_key)
-    try:
-        IastHeaderVulnerability.objects.create(
+    header_vul = None
+    if not IastHeaderVulnerability.objects.filter(
             project_id=method_pool.agent.bind_project_id,
             project_version=method_pool.agent.project_version_id,
             url=method_pool.uri,
-            agent_id=method_pool.agent_id,
-            method_pool_id=method_pool.id,
             vul=vul.id,
-            req_header=vul.req_header_fs,
-            res_header=vul.res_header)
-    except IntegrityError as e:
-        logger.debug("unique error stack: ", exc_info=True)
-        logger.info("unique error cause by concurrency insert,ignore it")
+    ).exists():
+        try:
+            header_vul = IastHeaderVulnerability.objects.create(
+                project_id=method_pool.agent.bind_project_id,
+                project_version_id=method_pool.agent.project_version_id,
+                url=method_pool.uri,
+                vul_id=vul.id,
+            )
+        except IntegrityError as e:
+            logger.debug("unique error stack: ", exc_info=True)
+            logger.info("unique error cause by concurrency insert,ignore it")
+    if header_vul and not IastHeaderVulnerabilityDetail.objects.filter(
+            agent_id=method_pool.agent_id,
+            header_vul_id=header_vul.id,
+    ).exists():
+        try:
+            IastHeaderVulnerabilityDetail.objects.create(
+                agent_id=method_pool.agent_id,
+                method_pool_id=method_pool.id,
+                header_vul_id=header_vul.id,
+                req_header=method_pool.req_header_fs,
+                res_header=method_pool.res_header)
+        except IntegrityError as e:
+            logger.debug("unique error stack: ", exc_info=True)
+            logger.info("unique error cause by concurrency insert,ignore it")
     #delete if exists more than one   departured use redis lock
     #IastVulnerabilityModel.objects.filter(
     #    strategy=vul_strategy.id,
