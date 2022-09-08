@@ -1286,7 +1286,21 @@ if [ ! 0 == $# ]; then # If options provided then
     fi
 
     check_network
-    backup_mysql
+
+    read -r -p "Do you need to backup the database ? [Y/n] " input
+    case $input in
+        [yY][eE][sS]|[yY])
+            Info "start backup"
+            backup_mysql
+            ;;
+        [nN][oO]|[nN])
+            Info "Cancel backup"
+            ;;
+        *)
+            Info "Cancel backup"
+            ;;
+    esac
+
     check_update_record_file
     #check_schema_hash
     upgrade_docker_image
