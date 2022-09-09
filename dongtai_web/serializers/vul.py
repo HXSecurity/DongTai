@@ -15,6 +15,8 @@ from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_web.header_vul.base import HeaderVulSerializer
 from dongtai_common.models.header_vulnerablity import IastHeaderVulnerability
+from typing import Dict
+
 
 class HeaderVulUrlSerializer(HeaderVulSerializer):
 
@@ -22,10 +24,11 @@ class HeaderVulUrlSerializer(HeaderVulSerializer):
         model = HeaderVulSerializer
         fields = ('url', )
 
+
 class VulSerializer(serializers.ModelSerializer):
     language = serializers.SerializerMethodField()
     type = serializers.SerializerMethodField()
-    AGENT_LANGUAGE_MAP = {}
+    AGENT_LANGUAGE_MAP: Dict[int, str] = {}
     status = serializers.SerializerMethodField()
     is_header_vul = serializers.SerializerMethodField()
     header_vul_urls = serializers.SerializerMethodField()
@@ -49,6 +52,21 @@ class VulSerializer(serializers.ModelSerializer):
             return ' '.join(names).lower().strip()
         return name
 
+    @staticmethod
+    def judge_is_header_vul(strategy_id: str):
+        if strategy_id in (28, 29, 30, 31, 32):
+            return True
+        return False
+
+    @staticmethod
+    def find_all_urls(pk: int):
+        """
+        Only for header vulnerablity.
+        """
+        return HeaderVulUrlSerializer(
+            IastHeaderVulnerability.objects.filter(vul_id=pk).all(),
+            many=True).data
+
     def get_language(self, obj):
         if obj['agent_id'] not in self.AGENT_LANGUAGE_MAP:
             agent_model = IastAgent.objects.filter(id=obj['agent_id']).first()
@@ -59,7 +77,8 @@ class VulSerializer(serializers.ModelSerializer):
     def get_type(self, obj):
         hook_type = HookType.objects.filter(pk=obj['hook_type_id']).first()
         hook_type_name = hook_type.name if hook_type else None
-        strategy = IastStrategyModel.objects.filter(pk=obj['strategy_id']).first()
+        strategy = IastStrategyModel.objects.filter(
+            pk=obj['strategy_id']).first()
         strategy_name = strategy.vul_name if strategy else None
         type_ = list(
             filter(lambda x: x is not None, [strategy_name, hook_type_name]))
@@ -71,21 +90,19 @@ class VulSerializer(serializers.ModelSerializer):
         return status.name if status else ''
 
     def get_is_header_vul(self, obj):
-        if obj['strategy_id'] in (28, 29, 30, 31, 32):
-            return True
-        return False
+        return VulSerializer.judge_is_header_vul(obj['strategy_id'])
 
     def get_header_vul_urls(self, obj):
-        if obj['strategy_id'] in (28, 29, 30, 31, 32):
-            return HeaderVulUrlSerializer(
-                IastHeaderVulnerability.objects.filter(vul_id=obj['id']).all(),
-                many=True).data
+        if VulSerializer.judge_is_header_vul(obj['strategy_id']):
+            return VulSerializer.find_all_urls(obj['id'])
         return []
 
 
 class VulForPluginSerializer(serializers.ModelSerializer):
     type = serializers.SerializerMethodField()
-    level = serializers.SerializerMethodField(help_text=_("The level name of vulnerablity"))
+    level = serializers.SerializerMethodField(
+        help_text=_("The level name of vulnerablity"))
+
     class Meta:
         model = IastVulnerabilityModel
         fields = [
@@ -96,7 +113,8 @@ class VulForPluginSerializer(serializers.ModelSerializer):
     def get_type(self, obj):
         hook_type = HookType.objects.filter(pk=obj['hook_type_id']).first()
         hook_type_name = hook_type.name if hook_type else None
-        strategy = IastStrategyModel.objects.filter(pk=obj['strategy_id']).first()
+        strategy = IastStrategyModel.objects.filter(
+            pk=obj['strategy_id']).first()
         strategy_name = strategy.vul_name if strategy else None
         type_ = list(
             filter(lambda x: x is not None, [strategy_name, hook_type_name]))
@@ -115,9 +133,12 @@ class VulSummaryLanguageSerializer(serializers.Serializer):
 
 
 class VulSummaryLevelSerializer(serializers.Serializer):
-    level = serializers.CharField(help_text=_("The name of vulnerablity level"))
-    count = serializers.IntegerField(help_text=_("The number of vulnerabilities corresponding to the level"))
-    level_id = serializers.IntegerField(help_text=_("The id of vulnerablity level"))
+    level = serializers.CharField(
+        help_text=_("The name of vulnerablity level"))
+    count = serializers.IntegerField(help_text=_(
+        "The number of vulnerabilities corresponding to the level"))
+    level_id = serializers.IntegerField(
+        help_text=_("The id of vulnerablity level"))
 
 
 class VulSummaryTypeSerializer(serializers.Serializer):
