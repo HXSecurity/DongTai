@@ -57,6 +57,15 @@ class HeaderVulViewSet(UserEndPoint, viewsets.ViewSet):
         except KeyError:
             return [permission() for permission in self.permission_classes]
 
+
+    @extend_schema_with_envcheck(
+        [HeaderVulArgsSerializer],
+        tags=[_('Header Vul')],
+        summary=_('Header Vul List'),
+        description=
+        _("Get the item corresponding to the user"
+          ),
+    )
     def list(self, request):
         ser = HeaderVulArgsSerializer(data=request.GET)
         try:
@@ -73,6 +82,11 @@ class HeaderVulViewSet(UserEndPoint, viewsets.ViewSet):
         return R.success(data=HeaderVulSerializer(page_data, many=True).data,
                          page=page_summary)
 
+    @extend_schema_with_envcheck(
+        tags=[_('Header Vul')],
+        summary=_('Header Vul delete'),
+        description=_("Get the item corresponding to the user"),
+    )
     def delete(self, request, pk):
         ser = HeaderVulArgsSerializer(data=request.GET)
         users = self.get_auth_users(request.user)
