@@ -26,20 +26,22 @@ class HeaderVulArgsSerializer(serializers.Serializer):
                                          help_text=_('Number per page'))
     page = serializers.IntegerField(default=1, help_text=_('Page index'))
 
+
 class HeaderVulDetailSerializer(serializers.ModelSerializer):
     agent_name = serializers.CharField(source='agent.token')
+
     class Meta:
         model = IastHeaderVulnerabilityDetail
         fields = ('agent_id', 'agent_name', 'req_header', 'res_header')
 
 
 class HeaderVulSerializer(serializers.ModelSerializer):
-    details = HeaderVulDetailSerializer(source='iastheadervulnerabilitydetail_set',many=True)
+    details = HeaderVulDetailSerializer(
+        source='iastheadervulnerabilitydetail_set', many=True)
 
     class Meta:
         model = IastHeaderVulnerability
         fields = ('id', 'url', 'details')
-
 
 
 class HeaderVulViewSet(UserEndPoint, viewsets.ViewSet):

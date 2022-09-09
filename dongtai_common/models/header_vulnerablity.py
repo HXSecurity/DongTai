@@ -27,11 +27,11 @@ class IastHeaderVulnerability(models.Model):
                                         db_constraint=False)
     url = models.CharField(max_length=255, default='', blank=True, null=True)
     vul = models.ForeignKey(IastVulnerabilityModel,
-                                        on_delete=models.DO_NOTHING,
-                                        blank=True,
-                                        null=True,
-                                        default=-1,
-                                        db_constraint=False)
+                            on_delete=models.DO_NOTHING,
+                            blank=True,
+                            null=True,
+                            default=-1,
+                            db_constraint=False)
 
     class Meta:
         managed = get_managed()
