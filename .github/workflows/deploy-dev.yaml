@@ -1,13 +1,9 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Deploy DongTai Server To Dev
 
 on:
   push:
     branches: [ "main"  ]
 
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   Deploy-to-dev:
     if: ${{ github.event_name == 'push' && github.repository_owner == 'HXSecurity' }}
@@ -16,8 +12,6 @@ jobs:
       max-parallel: 4
       matrix:
         python-version: [3.7]
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -65,20 +59,6 @@ jobs:
           tags: | 
             registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:latest
             registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:1.0.${{github.run_number}}
-      # - name: Build
-      #   run: |
-      #     docker build -t registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:latest .
-      #     docker tag registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:latest registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:1.0.${{github.run_number}}
-            
-      # - name: push
-      #   uses: nick-invision/retry@v2
-      #   with:
-      #     timeout_seconds: 300
-      #     max_attempts: 10
-      #     #retry_on: timeout
-      #     command: |
-      #       docker push registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:latest
-      #       docker push registry.cn-beijing.aliyuncs.com/secnium/dongtai-server-test:1.0.${{github.run_number}}
 
       - uses: actions/checkout@master
       - name: deploy to cluster
