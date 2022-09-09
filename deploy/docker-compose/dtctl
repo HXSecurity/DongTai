@@ -228,7 +228,7 @@ function network() {
 get_latest_image_tag_from_dockerhub() {
   image="$1"
   Info "start to get latest tag of $image"
-  tags=`wget -q https://registry.hub.docker.com/v1/repositories/${image}/tags -O -  | sed -e 's/[][]//g' -e 's/"//g' -e 's/ //g' | tr '}' '\n'  | awk -F: '{print $3}'`
+  tags=`curl -s -S "https://registry.hub.docker.com/v2/repositories/dongtai/${image}/tags" | sed -e 's/,/,\n/g' -e 's/\[/\[\n/g' | grep '"name"' | awk -F\" '{print $4;}' | sort -rfu | sed -n '2p'`
 
   if [ -n "$2" ]
   then
