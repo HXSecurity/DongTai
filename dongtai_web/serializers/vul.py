@@ -13,13 +13,23 @@ from dongtai_common.models.hook_type import HookType
 from django.utils.translation import gettext_lazy as _
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.vul_level import IastVulLevel
+from dongtai_web.header_vul.base import HeaderVulSerializer
+from dongtai_common.models.header_vulnerablity import IastHeaderVulnerability
 
+class HeaderVulUrlSerializer(HeaderVulSerializer):
+
+    class Meta:
+        model = HeaderVulSerializer
+        fields = ('url', )
 
 class VulSerializer(serializers.ModelSerializer):
     language = serializers.SerializerMethodField()
     type = serializers.SerializerMethodField()
     AGENT_LANGUAGE_MAP = {}
     status = serializers.SerializerMethodField()
+    is_header_vul = serializers.SerializerMethodField()
+    header_vul_urls = serializers.SerializerMethodField()
+
     class Meta:
         model = IastVulnerabilityModel
         fields = [
@@ -59,6 +69,18 @@ class VulSerializer(serializers.ModelSerializer):
         status = IastVulnerabilityStatus.objects.filter(
             pk=obj['status_id']).first()
         return status.name if status else ''
+
+    def get_is_header_vul(self, obj):
+        if obj['strategy_id'] in (28, 29, 30, 31, 32):
+            return True
+        return False
+
+    def get_header_vul_urls(self, obj):
+        if obj['strategy_id'] in (28, 29, 30, 31, 32):
+            return HeaderVulUrlSerializer(
+                IastHeaderVulnerability.objects.filter(vul_id=obj['id']).all(),
+                many=True).data
+        return []
 
 
 class VulForPluginSerializer(serializers.ModelSerializer):
