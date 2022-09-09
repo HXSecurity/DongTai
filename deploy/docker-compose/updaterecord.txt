@@ -1,4 +1,5 @@
 
+1.8.4 update-20220805-release-1.8.4.sql
 1.8.3 update-20220805-release-1.8.3-2.sql
 1.8.3 update-20220805-release-1.8.3-1.sql
 1.8.2 update-20220607-release-1.8.2-2.sql
