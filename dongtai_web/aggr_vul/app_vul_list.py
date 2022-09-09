@@ -120,21 +120,12 @@ class GetAppVulsList(UserEndPoint):
                     es_query['language_ids'] = language_arr
                 order_list = []
                 fields = [
-                    "id",
-                    "uri",
-                    "http_method",
-                    "top_stack",
-                    "bottom_stack",
-                    "level_id",
-                    "taint_position",
-                    "status_id",
-                    "first_time",
-                    "latest_time",
-                    "strategy__vul_name",
-                    "agent__language",
-                    "agent__project_name",
-                    "agent__server__container",
-                    "agent__bind_project_id"]
+                    "id", "uri", "http_method", "top_stack", "bottom_stack",
+                    "level_id", "taint_position", "status_id", "first_time",
+                    "latest_time", "strategy__vul_name", "agent__language",
+                    "agent__project_name", "agent__server__container",
+                    "agent__bind_project_id", 'strategy_id'
+                ]
                 if keywords:
                     es_query['search_keyword'] = keywords
                     keywords = pymysql.converters.escape_string(keywords)
