@@ -353,8 +353,11 @@ urlpatterns = [
          VulReCheckPayloadViewSet.as_view({
              'put': "status_change",
          })),
-    path('header_vul/', HeaderVulViewSet.as_view({
+    path('header_vul', HeaderVulViewSet.as_view({
         'get': "list",
+    })),
+    path('header_vul/<int:pk>', HeaderVulViewSet.as_view({
+        'delete': "delete",
     })),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
