@@ -38,7 +38,7 @@ class HeaderVulSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IastHeaderVulnerability
-        fields = ('url', 'details')
+        fields = ('id', 'url', 'details')
 
 
 
@@ -70,3 +70,10 @@ class HeaderVulViewSet(UserEndPoint, viewsets.ViewSet):
         page_summary, page_data = self.get_paginator(queryset, page, page_size)
         return R.success(data=HeaderVulSerializer(page_data, many=True).data,
                          page=page_summary)
+
+    def delete(self, request, pk):
+        ser = HeaderVulArgsSerializer(data=request.GET)
+        users = self.get_auth_users(request.user)
+        q = Q(project__user__in=users) & Q(pk=pk)
+        IastHeaderVulnerability.objects.filter(q).delete()
+        return R.success()
