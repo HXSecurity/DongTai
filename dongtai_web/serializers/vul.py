@@ -21,7 +21,7 @@ from typing import Dict
 class HeaderVulUrlSerializer(HeaderVulSerializer):
 
     class Meta:
-        model = HeaderVulSerializer
+        model = IastHeaderVulnerability
         fields = ('url', )
 
 

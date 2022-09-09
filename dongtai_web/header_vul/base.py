@@ -25,6 +25,7 @@ class HeaderVulArgsSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=20,
                                          help_text=_('Number per page'))
     page = serializers.IntegerField(default=1, help_text=_('Page index'))
+    vul_id = serializers.IntegerField(help_text=_('Page index'))
 
 
 class HeaderVulDetailSerializer(serializers.ModelSerializer):
@@ -57,14 +58,11 @@ class HeaderVulViewSet(UserEndPoint, viewsets.ViewSet):
         except KeyError:
             return [permission() for permission in self.permission_classes]
 
-
     @extend_schema_with_envcheck(
         [HeaderVulArgsSerializer],
         tags=[_('Header Vul')],
         summary=_('Header Vul List'),
-        description=
-        _("Get the item corresponding to the user"
-          ),
+        description=_("Get the item corresponding to the user"),
     )
     def list(self, request):
         ser = HeaderVulArgsSerializer(data=request.GET)

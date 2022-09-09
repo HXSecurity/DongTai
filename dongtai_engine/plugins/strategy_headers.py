@@ -107,21 +107,21 @@ def save_vul(vul_type, method_pool, position=None, data=None):
     project_agents = IastAgent.objects.filter(
         project_version_id=method_pool.agent.project_version_id)
     uuid_key = uuid.uuid4().hex
-    cache_key = f'vul_save-{vul_strategy.id}-{method_pool.uri}-{method_pool.http_method}-{method_pool.agent.project_version_id}'
+    cache_key = f'vul_save-{vul_strategy.id}--{method_pool.http_method}-{method_pool.agent.project_version_id}'
     is_api_cached = uuid_key != cache.get_or_set(cache_key, uuid_key)
     if is_api_cached:
         return
     vul = IastVulnerabilityModel.objects.filter(
         strategy_id=vul_strategy.id,
-        uri='/',
-        http_method=method_pool.http_method,
+        uri='',
+        http_method='',
         agent__project_version_id=method_pool.agent.project_version_id,
     ).order_by('-latest_time').first()
     timestamp = int(time.time())
     IastProject.objects.filter(id=method_pool.agent.bind_project_id).update(
         latest_time=timestamp)
     if vul:
-        vul.url = vul.url
+        vul.url = ''
         vul.req_header = method_pool.req_header
         vul.req_params = method_pool.req_params
         vul.req_data = method_pool.req_data
@@ -149,9 +149,9 @@ def save_vul(vul_type, method_pool, position=None, data=None):
             # fixme: remove field
             hook_type=hook_type if hook_type else HookType.objects.first(),
             level=vul_strategy.level,
-            url=method_pool.url,
-            uri='/',
-            http_method=method_pool.http_method,
+            url='',
+            uri='',
+            http_method='',
             http_scheme=method_pool.http_scheme,
             http_protocol=method_pool.http_protocol,
             req_header=method_pool.req_header,
