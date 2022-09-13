@@ -63,8 +63,8 @@ class AgentHardencodeTestCase(AgentTestCase):
                 full_stack=json.dumps(jsondata['detail'])).first()
             assert vul is not None
             if vul:
-                assert vul.uri == jsondata['detail']['file']
-                assert vul.url == jsondata['detail']['class']
+                assert vul.uri == jsondata['detail']['class']
+                assert vul.url == jsondata['detail']['file']
                 assert vul.taint_position == jsondata['detail']['field']
                 assert vul.top_stack == "字段:{}".format(
                     jsondata['detail']['field'])
