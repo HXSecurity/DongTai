@@ -130,13 +130,18 @@ class NormalVulnHandler(BaseVulnHandler):
         logger.info(
             f"{level_id} {vul_type} {vul_type_enable} {hook_type_id} {strategy_id}"
         )
+        index = -1
+        for ind, stack in enumerate(self.app_caller):
+            if stack.startswith("io.dongtai.iast.core.handler.hookpoint.SpyDispatcherImpl.collectMethodPool"):
+                index = ind
+                
         if vul_type_enable == 0:
             return
         project_agents = IastAgent.objects.filter(
             project_version_id=self.agent.project_version_id)
         iast_vul = IastVulnerabilityModel.objects.filter(
             strategy_id=strategy_id,
-            uri=self.http_uri,
+            uri=self.app_caller[index+2],
             http_method=self.http_method,
             agent__in=project_agents).order_by('-latest_time').first()
         project = IastProject.objects.filter(
@@ -145,14 +150,14 @@ class NormalVulnHandler(BaseVulnHandler):
             project.update_latest()
         timestamp = int(time.time())
         if iast_vul:
-            iast_vul.url = self.http_url
+            iast_vul.url = self.app_caller[index+2]
             iast_vul.req_header = self.http_header
             iast_vul.req_params = self.http_query_string
             iast_vul.res_header = self.http_res_header
             iast_vul.res_body = self.http_res_body
-            iast_vul.full_stack = json.dumps(self.app_caller)
-            iast_vul.top_stack = self.app_caller[1]
-            iast_vul.bottom_stack = self.app_caller[0]
+            iast_vul.full_stack = json.dumps(self.app_caller[index+1:])
+            iast_vul.top_stack = self.app_caller[index+1]
+            iast_vul.bottom_stack = self.app_caller[index+2]
             iast_vul.counts = iast_vul.counts + 1
             iast_vul.latest_time = timestamp
             iast_vul.status_id = settings.CONFIRMED
@@ -162,8 +167,8 @@ class NormalVulnHandler(BaseVulnHandler):
                 strategy_id=strategy_id,
                 hook_type_id=hook_type_id,
                 level_id=level_id,
-                url=self.http_url,
-                uri=self.http_uri,
+                url=self.app_caller[index+2],
+                uri=self.app_caller[index+2],
                 http_method=self.http_method,
                 http_scheme=self.http_scheme,
                 http_protocol=self.http_protocol,
@@ -179,9 +184,9 @@ class NormalVulnHandler(BaseVulnHandler):
                 first_time=timestamp,
                 latest_time=timestamp,
                 client_ip=self.client_ip,
-                full_stack=json.dumps(self.app_caller),
-                top_stack=self.app_caller[0],
-                bottom_stack=self.app_caller[-1])
+                full_stack=json.dumps(self.app_caller[index+1:]),
+                top_stack=self.app_caller[index+1],
+                bottom_stack=self.app_caller[index+2])
             log_vul_found(iast_vul.agent.user_id, iast_vul.agent.bind_project.name,
                           iast_vul.agent.bind_project_id, iast_vul.id,
                           iast_vul.strategy.vul_name)
