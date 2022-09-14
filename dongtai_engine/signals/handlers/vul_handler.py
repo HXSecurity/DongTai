@@ -177,8 +177,9 @@ def get_http_locationstr(method_pool: MethodPool,
     return getattr(method_pool, data[location], None)
 
 
-def parse_taint_position(source_method, vul_meta, taint_value, vul_stack) -> dict:
-    param_names: dict = defaultdict(lambda :[],{})
+def parse_taint_position(source_method, vul_meta, taint_value,
+                         vul_stack) -> dict:
+    param_names: dict = defaultdict(lambda: [], {})
     target_values: List[str] = list(
         filter(lambda x: x, parse_target_values_from_vul_stack(vul_stack)))
     for taint_value in target_values:
@@ -446,7 +447,7 @@ def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_s
         vul = save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
                        bottom_stack, **kwargs)
         if not vul:
-            return 
+            return
         create_vul_recheck_task(vul_id=vul.id,
                                 agent=vul.agent,
                                 timestamp=timestamp)
