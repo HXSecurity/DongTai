@@ -17,6 +17,7 @@ from django.db import models
 from dongtai_common.permissions import TalentAdminPermission
 from dongtai_common.models.header_vulnerablity import IastHeaderVulnerability, IastHeaderVulnerabilityDetail
 from django.db.models import Q
+from typing import Dict
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -25,7 +26,7 @@ class HeaderVulArgsSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=20,
                                          help_text=_('Number per page'))
     page = serializers.IntegerField(default=1, help_text=_('Page index'))
-    vul_id = serializers.IntegerField(help_text=_('Page index'))
+    vul_id = serializers.IntegerField(required=True, help_text=_('Page index'))
 
 
 class HeaderVulDetailSerializer(serializers.ModelSerializer):
@@ -47,7 +48,7 @@ class HeaderVulSerializer(serializers.ModelSerializer):
 
 class HeaderVulViewSet(UserEndPoint, viewsets.ViewSet):
 
-    permission_classes_by_action = {}
+    permission_classes_by_action: Dict = {}
 
     def get_permissions(self):
         try:
