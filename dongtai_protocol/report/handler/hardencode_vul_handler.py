@@ -67,7 +67,7 @@ class HardEncodeVulHandler(IReportHandler):
             project_version_id=self.agent.project_version_id)
         iast_vul = IastVulnerabilityModel.objects.filter(
             strategy_id=strategy.id,
-            uri=self.detail.get('file', ''),
+            uri=self.detail.get('class', ''),
             http_method='',
             agent__in=project_agents).order_by('-latest_time').first()
         timestamp = int(time.time())
@@ -86,8 +86,8 @@ class HardEncodeVulHandler(IReportHandler):
             iast_vul = IastVulnerabilityModel.objects.create(
                 hook_type_id=-1,
                 strategy_id=strategy.id,
-                uri=self.detail.get('file', ''),
-                url=self.detail.get('class', ''),
+                uri=self.detail.get('class', ''),
+                url=self.detail.get('file', ''),
                 http_method='',
                 http_scheme='',
                 http_protocol='',
