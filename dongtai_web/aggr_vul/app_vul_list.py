@@ -120,21 +120,12 @@ class GetAppVulsList(UserEndPoint):
                     es_query['language_ids'] = language_arr
                 order_list = []
                 fields = [
-                    "id",
-                    "uri",
-                    "http_method",
-                    "top_stack",
-                    "bottom_stack",
-                    "level_id",
-                    "taint_position",
-                    "status_id",
-                    "first_time",
-                    "latest_time",
-                    "strategy__vul_name",
-                    "agent__language",
-                    "agent__project_name",
-                    "agent__server__container",
-                    "agent__bind_project_id"]
+                    "id", "uri", "http_method", "top_stack", "bottom_stack",
+                    "level_id", "taint_position", "status_id", "first_time",
+                    "latest_time", "strategy__vul_name", "agent__language",
+                    "agent__project_name", "agent__server__container",
+                    "agent__bind_project_id", 'strategy_id'
+                ]
                 if keywords:
                     es_query['search_keyword'] = keywords
                     keywords = pymysql.converters.escape_string(keywords)
@@ -172,12 +163,8 @@ class GetAppVulsList(UserEndPoint):
                         page_size=page_size,
                         **es_query)
                 else:
-                    vul_data = queryset.values(
-
-                        * tuple(fields)).order_by(
-
-                        * tuple(order_list))[
-                        begin_num:end_num]
+                    vul_data = queryset.values(*tuple(fields)).order_by(
+                        *tuple(order_list))[begin_num:end_num]
         except ValidationError as e:
             return R.failure(data=e.detail)
         if vul_data:
@@ -186,6 +173,10 @@ class GetAppVulsList(UserEndPoint):
                     str(item['level_id']), "")
                 item['server_type'] = VulSerializer.split_container_name(
                     item['agent__server__container'])
+                item['is_header_vul'] = VulSerializer.judge_is_header_vul(
+                    item['strategy_id'])
+                item['header_vul_urls'] = VulSerializer.find_all_urls(
+                    item['id']) if item['is_header_vul'] else []
                 end['data'].append(item)
 
         # all Iast Vulnerability Status
