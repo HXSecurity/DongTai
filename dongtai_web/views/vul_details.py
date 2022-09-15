@@ -143,9 +143,9 @@ class VulDetail(UserEndPoint):
                 _item = f"{method['callerClass']}.{method['callerMethod']}()"
                 filename = method['callerClass']
                 line_number = method['callerLineNumber']
-                if i == 0:
+                if method['tag'] == 'source':
                     data_type = _('Source method')
-                elif i == method_counts - 1:
+                elif method['tag'] == 'sink':
                     data_type = _('Hazardous method')
                 else:
                     data_type = _('Propagation method')
