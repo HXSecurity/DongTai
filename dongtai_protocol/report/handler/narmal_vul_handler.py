@@ -19,6 +19,7 @@ from dongtai_protocol.report.handler.report_handler_interface import IReportHand
 from dongtai_protocol.report.report_handler_factory import ReportHandler
 from dongtai_web.vul_log.vul_log import log_vul_found
 from dongtai_common.models.agent import IastAgent
+import re2 as re
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -142,6 +143,68 @@ class NormalVulnHandler(BaseVulnHandler):
 
         if vul_type_enable == 0:
             return
+        caller_message = self.app_caller[index + 2]
+        sink_message = self.app_caller[index + 1]
+        caller_message_location = re.search(
+            '\(.*\)', caller_message).group(0).strip('()').split(':')
+        if len(caller_message_location) == 2:
+            caller_message_file, caller_message_linenumber = caller_message_location
+        else:
+            caller_message_file = caller_message_location[0]
+            caller_message_linenumber = 0
+        full_stack = [[{
+            "args":
+            "",
+            "source":
+            False,
+            "invokeId":
+            1,
+            "className":
+            '.'.join(
+                re.search('.*\(',
+                          sink_message).group(0).strip('()').split('.')[:-1]),
+            "signature":
+            sink_message,
+            "interfaces": [],
+            "methodName":
+            re.search('.*\(',
+                      sink_message).group(0).strip('()').split('.')[-1],
+            "sourceHash": [],
+            "targetHash": [],
+            "callerClass":
+            '.'.join(
+                re.search(
+                    '.*\(',
+                    caller_message).group(0).strip('()').split('.')[:-1]),
+            "targetRange": [],
+            "callerMethod":
+            re.search('.*\(',
+                      caller_message).group(0).strip('()').split('.')[-1],
+            "retClassName":
+            "",
+            "sourceValues":
+            "",
+            "targetValues":
+            "",
+            "originClassName":
+            '.'.join(
+                re.search('.*\(',
+                          sink_message).group(0).strip('()').split('.')[:-1]),
+            "callerLineNumber":
+            caller_message_linenumber,
+            "sourceHashForRpc": [],
+            "targetHashForRpc": [],
+            "sourceIsReference":
+            False,
+            "targetIsReference":
+            False,
+            "projectPropagatorClose":
+            False,
+            "tag":
+            "sink",
+            "code":
+            sink_message,
+        }]]
         project_agents = IastAgent.objects.filter(
             project_version_id=self.agent.project_version_id)
         iast_vul = IastVulnerabilityModel.objects.filter(
@@ -160,7 +223,7 @@ class NormalVulnHandler(BaseVulnHandler):
             iast_vul.req_params = self.http_query_string
             iast_vul.res_header = self.http_res_header
             iast_vul.res_body = self.http_res_body
-            iast_vul.full_stack = json.dumps(self.app_caller[index + 1:])
+            iast_vul.full_stack = full_stack
             iast_vul.top_stack = self.app_caller[index + 1]
             iast_vul.bottom_stack = self.app_caller[index + 2]
             iast_vul.counts = iast_vul.counts + 1
@@ -189,7 +252,7 @@ class NormalVulnHandler(BaseVulnHandler):
                 first_time=timestamp,
                 latest_time=timestamp,
                 client_ip=self.client_ip,
-                full_stack=json.dumps(self.app_caller[index + 1:]),
+                full_stack=full_stack,
                 top_stack=self.app_caller[index + 1],
                 bottom_stack=self.app_caller[index + 2])
             log_vul_found(iast_vul.agent.user_id,
