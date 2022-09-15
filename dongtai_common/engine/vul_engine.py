@@ -206,9 +206,14 @@ class VulEngine(object):
                 (sub_target_rpc_hash and sub_target_rpc_hash & source_hash)
                 ) and check_service_propagate_method_state(sub_method):
                 logger.info(f"stisfied {sub_method}")
-                current_link.append(
-                    self.copy_method(sub_method, propagator=True))
-                source_hash = source_hash | set(sub_method.get('sourceHash'))
+                if sub_method.get('source'):
+                    current_link.append(
+                        self.copy_method(sub_method, source=True))
+                else:
+                    current_link.append(
+                        self.copy_method(sub_method, propagator=True))
+                source_hash = source_hash | set(
+                    sub_method.get('sourceHash'))
             else:
                 logger.debug("not stisfied {sub_method}")
         return current_link
