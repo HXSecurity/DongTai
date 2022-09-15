@@ -143,7 +143,10 @@ class VulDetail(UserEndPoint):
                 _item = f"{method['callerClass']}.{method['callerMethod']}()"
                 filename = method['callerClass']
                 line_number = method['callerLineNumber']
-                if method['tag'] == 'source':
+                # For compatibility with old data 
+                # (method_counts > 1 and i == 0)
+                # it should remove after serval versions
+                if method['tag'] == 'source' or (method_counts > 1 and i == 0):
                     data_type = _('Source method')
                 elif method['tag'] == 'sink':
                     data_type = _('Hazardous method')
