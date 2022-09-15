@@ -1,5 +1,5 @@
 
-name: "MypyCheck"
+name: "Pep8Check"
 
 on:
   push:
@@ -12,7 +12,7 @@ on:
     
 jobs:
   # This workflow contains a single job called "build"
-  Run-MypyCheck:
+  Run-Pep8Check:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
@@ -32,4 +32,4 @@ jobs:
           
       - name: Django Unit Testing
         run: |
-          mypy --show-error-codes --ignore-missing-imports --disable-error-code var-annotated  --disable-error-code union-attr --disable-error-code  dict-item  --disable-error-code  list-item  --disable-error-code attr-defined  --disable-error-code index --disable-error-code arg-type --disable-error-code assignment --disable-error-code misc .
+          pep8  --ignore=E501,E402,E231,E302,E301,E303,E251,E265,W291,E126,W293,W391,W503,E128,E127,E122,E241,E225,E401,E101,E125,E131,E266,E701,W191 --statistics .

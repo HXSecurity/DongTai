@@ -6,27 +6,3 @@ pycodestyle:  # Same as scanner.linter value. Other option is flake8
     max-line-length: 100  # Default is 79 in PEP 8
     ignore:  # Errors and warnings to ignore
         - E501
-        - E402
-        - E231
-        - E302
-        - E301
-        - E303
-        - E251
-        - E265
-        - W291
-        - E126
-        - W293
-        - W391
-        - W503
-        - E128
-        - E127
-        - E122
-        - E241
-        - E225
-        - E401
-        - E101
-        - E125
-        - E131
-        - E266
-        - E701
-        - W191
