@@ -28,10 +28,7 @@ class VulEngine(object):
         self.vul_stack = None
         self.pool_value = None
         self.vul_source_signature = None
-        self.graph_data = {
-            'nodes': [],
-            'edges': []
-        }
+        self.graph_data = {'nodes': [], 'edges': []}
         self.method_counts = 0
         self.taint_link_size = 0
         self.edge_code = 1
@@ -53,9 +50,14 @@ class VulEngine(object):
         :param method_pool:
         :return:
         """
-        self._method_pool = sorted(method_pool, key=lambda e: e.__getitem__('invokeId'), reverse=True)
-        self._method_pool_invokeid_dict = {mp['invokeId']:ind for ind ,mp in enumerate(self._method_pool)}
-        tempdict = defaultdict(lambda : [],{})
+        self._method_pool = sorted(method_pool,
+                                   key=lambda e: e.__getitem__('invokeId'),
+                                   reverse=True)
+        self._method_pool_invokeid_dict = {
+            mp['invokeId']: ind
+            for ind, mp in enumerate(self._method_pool)
+        }
+        tempdict = defaultdict(lambda: [], {})
         for ind, mp in enumerate(self._method_pool):
             for target_hash in mp['targetHash']:
                 tempdict[target_hash].append(ind)
@@ -110,7 +112,9 @@ class VulEngine(object):
         signatures = set()
 
         for method in self.method_pool:
-            signatures.add(f"{method.get('className').replace('/', '.')}.{method.get('methodName')}")
+            signatures.add(
+                f"{method.get('className').replace('/', '.')}.{method.get('methodName')}"
+            )
         return signatures
 
     def search(self, method_pool, vul_method_signature, vul_type=None):
@@ -127,12 +131,14 @@ class VulEngine(object):
             # 找到sink点所在索引后，开始向后递归
             current_link = list()
 
-            vul_method_detail = self.copy_method(method_detail=method, sink=True)
+            vul_method_detail = self.copy_method(method_detail=method,
+                                                 sink=True)
             current_link.append(vul_method_detail)
             self.pool_value = set(method.get('sourceHash'))
             self.vul_source_signature = None
             logger.info(f'==> current taint hash: {self.pool_value}')
-            if self.loop(index, size, current_link, set(method.get('sourceHash'))):
+            if self.loop(index, size, current_link,
+                         set(method.get('sourceHash'))):
                 break
         if self.vul_source_signature and 'sourceType' in self.vul_stack[-1][
                 -1].keys():
@@ -143,7 +149,7 @@ class VulEngine(object):
             for source_type in final_stack['sourceType']:
                 if source_type['type'] == 'HOST':
                     source_type_hash = source_type['hash']
-                    for ind ,method in enumerate(self.method_pool):
+                    for ind, method in enumerate(self.method_pool):
                         if method['invokeId'] == final_stack['invokeId']:
                             index = ind
                     before_stacks = self.method_pool[index:]
@@ -161,11 +167,12 @@ class VulEngine(object):
             self.pool_value = set(the_second_stack.get('sourceHash'))
             if not the_second_stack:
                 return
-            for ind ,method in enumerate(self.method_pool):
+            for ind, method in enumerate(self.method_pool):
                 if method['invokeId'] == the_second_stack['invokeId']:
                     index = ind
             if the_second_stack.get('source_type'):
-                current_link.append(self.copy_method(the_second_stack, source=True))
+                current_link.append(
+                    self.copy_method(the_second_stack, source=True))
             else:
                 current_link.append(
                     self.copy_method(the_second_stack, propagator=True))
@@ -174,7 +181,9 @@ class VulEngine(object):
             self.loop(index, size, current_link,
                       set(the_second_stack.get('sourceHash')))
             current_link = current_link[0:2]
-            extract_stack = self.find_other_branch_v2(index, size, current_link,set(the_second_stack.get('sourceHash')))
+            extract_stack = self.find_other_branch_v2(
+                index, size, current_link,
+                set(the_second_stack.get('sourceHash')))
             self.vul_stack[0] = extract_stack[::-1]
         else:
             final_stack = self.vul_stack[-1][-1]
@@ -182,7 +191,8 @@ class VulEngine(object):
                 if method['invokeId'] == final_stack['invokeId']:
                     index = ind
             current_link = current_link[0:1]
-            extract_stack = self.find_other_branch_v2(index, size, current_link,set(final_stack.get('sourceHash')))
+            extract_stack = self.find_other_branch_v2(
+                index, size, current_link, set(final_stack.get('sourceHash')))
             self.vul_stack[0] = extract_stack[::-1]
 
         self.vul_filter()
@@ -191,32 +201,19 @@ class VulEngine(object):
         for sub_index in range(index + 1, size):
             sub_method = self.method_pool[sub_index]
             sub_target_hash = set(sub_method.get('targetHash'))
-            sub_target_rpc_hash = set(sub_method.get('targetHashForRpc',[]))
+            sub_target_rpc_hash = set(sub_method.get('targetHashForRpc', []))
             if ((sub_target_hash and sub_target_hash & source_hash) or
                 (sub_target_rpc_hash and sub_target_rpc_hash & source_hash)
                 ) and check_service_propagate_method_state(sub_method):
                 logger.info(f"stisfied {sub_method}")
-                if False : #sub_method.get('source'):
-                    current_link.append(self.copy_method(sub_method, source=True))
-                    self.vul_source_signature = f"{sub_method.get('className')}.{sub_method.get('methodName')}"
-                    self.vul_stack.append(current_link[::-1])
-                    self.taint_value = sub_method['targetValues']
-                    current_link.pop()
-                    return True
+                if sub_method.get('source'):
+                    current_link.append(
+                        self.copy_method(sub_method, source=True))
                 else:
-                    if sub_method.get('source'):
-                        current_link.append(
-                            self.copy_method(sub_method, source=True))
-                    else:
-                        current_link.append(
-                            self.copy_method(sub_method, propagator=True))
-                    source_hash = source_hash | set(
-                        sub_method.get('sourceHash'))
-                    #old_pool_value = source_hash
-                    #source_hash = set(sub_method.get('sourceHash'))
-                    #if self.loop(sub_index, size, current_link, source_hash):
-                    #    return True
-                    #current_link.pop()
+                    current_link.append(
+                        self.copy_method(sub_method, propagator=True))
+                source_hash = source_hash | set(
+                    sub_method.get('sourceHash'))
             else:
                 logger.debug("not stisfied {sub_method}")
         return current_link
@@ -250,9 +247,14 @@ class VulEngine(object):
                     continue
 
     @staticmethod
-    def copy_method(method_detail, sink=False, source=False, propagator=False, filter=False):
+    def copy_method(method_detail,
+                    sink=False,
+                    source=False,
+                    propagator=False,
+                    filter=False):
         vul_method_detail = copy.deepcopy(method_detail)
-        vul_method_detail['originClassName'] = vul_method_detail['originClassName'].split('.')[-1]
+        vul_method_detail['originClassName'] = vul_method_detail[
+            'originClassName'].split('.')[-1]
         # todo  根据类型进行拼接
         if source:
             vul_method_detail['tag'] = 'source'
@@ -278,20 +280,22 @@ class VulEngine(object):
         for sub_index in range(index + 1, size):
             sub_method = self.method_pool[sub_index]
             sub_target_hash = set(sub_method.get('targetHash'))
-            sub_target_rpc_hash = set(sub_method.get('targetHashForRpc',[]))
+            sub_target_rpc_hash = set(sub_method.get('targetHashForRpc', []))
             if ((sub_target_hash and sub_target_hash & source_hash) or
                 (sub_target_rpc_hash and sub_target_rpc_hash & source_hash)
                 ) and check_service_propagate_method_state(sub_method):
                 logger.info(f"stisfied {sub_method}")
                 if sub_method.get('source'):
-                    current_link.append(self.copy_method(sub_method, source=True))
+                    current_link.append(
+                        self.copy_method(sub_method, source=True))
                     self.vul_source_signature = f"{sub_method.get('className')}.{sub_method.get('methodName')}"
                     self.vul_stack.append(current_link[::-1])
                     self.taint_value = sub_method['targetValues']
                     current_link.pop()
                     return True
                 else:
-                    current_link.append(self.copy_method(sub_method, propagator=True))
+                    current_link.append(
+                        self.copy_method(sub_method, propagator=True))
                     old_pool_value = source_hash
                     source_hash = set(sub_method.get('sourceHash'))
                     if self.loop(sub_index, size, current_link, source_hash):
@@ -326,7 +330,8 @@ class VulEngine(object):
                     'target': right_node,
                 })
                 self.edge_code = self.edge_code + 1
-                data['sourceHash'] = list(set(data['sourceHash']) - current_hash)
+                data['sourceHash'] = list(
+                    set(data['sourceHash']) - current_hash)
                 self.dfs(set(data['targetHash']), right_node, index)
 
         if not_found:
@@ -341,14 +346,24 @@ class VulEngine(object):
             source = ','.join([str(_) for _ in data['sourceHash']])
             target = ','.join([str(_) for _ in data['targetHash']])
             node = {
-                'id': str(data['invokeId']),
-                'name': f"{data['className'].replace('/', '.').split('.')[-1]}.{data['methodName']}({source}) => {target}",
-                'dataType': 'source' if data['source'] else 'sql',
-                'conf': [
-                    {'label': 'source', 'value': source},
-                    {'label': 'target', 'value': target},
-                    {'label': 'caller', 'value': f"{data['callerClass']}.{data['callerMethod']}()"}
-                ]
+                'id':
+                str(data['invokeId']),
+                'name':
+                f"{data['className'].replace('/', '.').split('.')[-1]}.{data['methodName']}({source}) => {target}",
+                'dataType':
+                'source' if data['source'] else 'sql',
+                'conf': [{
+                    'label': 'source',
+                    'value': source
+                }, {
+                    'label': 'target',
+                    'value': target
+                }, {
+                    'label':
+                    'caller',
+                    'value':
+                    f"{data['callerClass']}.{data['callerMethod']}()"
+                }]
             }
             self.graph_data['nodes'].append(node)
 
