@@ -204,8 +204,12 @@ class VulEngine(object):
                     current_link.pop()
                     return True
                 else:
-                    current_link.append(
-                        self.copy_method(sub_method, propagator=True))
+                    if sub_method.get('source'):
+                        current_link.append(
+                            self.copy_method(sub_method, source=True))
+                    else:
+                        current_link.append(
+                            self.copy_method(sub_method, propagator=True))
                     source_hash = source_hash | set(
                         sub_method.get('sourceHash'))
                     #old_pool_value = source_hash
