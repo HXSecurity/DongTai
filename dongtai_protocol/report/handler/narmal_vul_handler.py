@@ -223,7 +223,7 @@ class NormalVulnHandler(BaseVulnHandler):
             iast_vul.req_params = self.http_query_string
             iast_vul.res_header = self.http_res_header
             iast_vul.res_body = self.http_res_body
-            iast_vul.full_stack = full_stack
+            iast_vul.full_stack = json.dumps(full_stack, ensure_ascii=False)
             iast_vul.top_stack = self.app_caller[index + 1]
             iast_vul.bottom_stack = self.app_caller[index + 2]
             iast_vul.counts = iast_vul.counts + 1
@@ -252,7 +252,7 @@ class NormalVulnHandler(BaseVulnHandler):
                 first_time=timestamp,
                 latest_time=timestamp,
                 client_ip=self.client_ip,
-                full_stack=full_stack,
+                full_stack=json.dumps(full_stack, ensure_ascii=False),
                 top_stack=self.app_caller[index + 1],
                 bottom_stack=self.app_caller[index + 2])
             log_vul_found(iast_vul.agent.user_id,
