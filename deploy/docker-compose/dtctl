@@ -142,9 +142,14 @@ function exit_not_running() {
 
 # get docker-compose project_name
 get_project_name() {
-  retval=$(docker inspect --format='{{ index .Config.Labels "com.docker.compose.project" }}' $(docker ps | grep "dongtai-web:" | awk '{print $1}'))
-  echo "$retval"
+  if [ ! $PROJECT_NAME ];then
+    retval=$(docker inspect --format='{{ index .Config.Labels "com.docker.compose.project" }}' $(docker ps | grep "dongtai-web:" | awk '{print $1}'))
+    echo "$retval"
+  else
+    echo  "$PROJECT_NAME"
+  fi
 }
+
 function current_image_version() {
   PROJECT_NAME=$(get_project_name)
   if [ -z $1 ]; then
