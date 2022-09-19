@@ -190,6 +190,27 @@ class VulEngine(object):
             for ind, method in enumerate(self.method_pool):
                 if method['invokeId'] == final_stack['invokeId']:
                     index = ind
+            before_stacks = self.method_pool[index:]
+            the_second_stack = None
+            has_vul = False
+            for stack in before_stacks:
+                if 'targetRange' in stack.keys():
+                    target_ranges = dict(
+                        zip([i['hash'] for i in stack['targetRange']],
+                            stack['targetRange']))
+                    if set(final_stack['sourceHash']) & set(
+                            target_ranges.keys()):
+                        for k, v in target_ranges.items():
+                            if k in final_stack['sourceHash']:
+                                if v['ranges']:
+                                    has_vul = True
+                        the_second_stack = stack
+                        break
+            if not the_second_stack or not has_vul:
+                self.vul_source_signature = None
+                self.vul_stack = []
+                self.pool_value = ""
+                return
             current_link = current_link[0:1]
             extract_stack = self.find_other_branch_v2(
                 index, size, current_link, set(final_stack.get('sourceHash')))
