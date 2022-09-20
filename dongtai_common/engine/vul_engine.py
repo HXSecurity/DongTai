@@ -199,11 +199,10 @@ class VulEngine(object):
                         zip([i['hash'] for i in stack['targetRange']],
                             stack['targetRange']))
                     if set(final_stack['sourceHash']) & set(
-                            target_ranges.keys()):
+                            stack['targetHash']):
                         for k, v in target_ranges.items():
-                            if k in final_stack['sourceHash']:
-                                if v['ranges']:
-                                    has_vul = True
+                            if v['ranges']:
+                                has_vul = True
                         the_second_stack = stack
                         break
             if not the_second_stack or not has_vul:
