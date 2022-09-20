@@ -197,8 +197,7 @@ def search_and_save_sink(engine, method_pool_model, strategy):
 
 
 @shared_task(bind=True, queue='dongtai-method-pool-scan',
-             max_retries=settings.config.getint('task', 'max_retries', fallback=3),
-             expires=60 * 60 * 6)
+             max_retries=settings.config.getint('task', 'max_retries', fallback=3))
 def search_vul_from_method_pool(self, method_pool_sign, agent_id, retryable=False):
     logger.info(f'漏洞检测开始，方法池 {method_pool_sign}')
     try:
