@@ -95,11 +95,11 @@ imagePullPolicy: Always
 {{- define "deploy.resources" -}}
 resources:
   limits:
-    cpu: "1000m"
-    memory: 1000Mi
+    cpu: {{.Values.cpu}}
+    memory: {{.Values.memory}}
   requests:
-    cpu: "500m"
-    memory: 1000Mi
+    cpu: {{.Values.cpu}}
+    memory: {{.Values.memory}}
 {{- end -}}
 {{- define "deploy.config.vo" -}}
 volumes:
