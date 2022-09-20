@@ -31,6 +31,8 @@ import gzip
 import base64
 from typing import Tuple
 from django.core.cache import cache
+from datetime import datetime, timedelta
+
 logger = logging.getLogger('dongtai.openapi')
 
 
@@ -319,8 +321,8 @@ class SaasMethodPoolHandler(IReportHandler):
                 res = search_vul_from_method_pool.apply_async(
                     kwargs=kwargs,
                     countdown=delay,
-                    expires=datetime.datetime.now() +
-                    timedelta(seconds=60 * 60 * 3),
+                    expires=datetime.now() +
+                    timedelta(hours=3),
                 )
                 logger.info(
                         f'[+] send method_pool [{method_pool_sign}] to engine for task search_vul_from_method_pool id: {res.task_id}')
