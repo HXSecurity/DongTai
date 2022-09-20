@@ -3,6 +3,8 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
+cpu: 1000m
+memory: 1500Mi
 
 # dongtai config
 # appNamespace: dongtai-iast
