@@ -490,6 +490,8 @@ services:
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-high-freq"]
+    environment:
+      - DONGTAI_CONCURRENCY=-P gevent --concurrency=128
     volumes:
       - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
     logging:
@@ -513,7 +515,7 @@ services:
     restart: always
     entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-es"]
     environment:
-      - DONGTAI_CONCURRENCY=-P gevent --concurrency=10
+      - DONGTAI_CONCURRENCY=-P gevent --concurrency=64
     volumes:
       - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
     logging:
