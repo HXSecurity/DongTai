@@ -316,7 +316,12 @@ class SaasMethodPoolHandler(IReportHandler):
                     'agent_id': self.agent_id,
                     'retryable': self.retryable,
                 }
-                res = search_vul_from_method_pool.apply_async(kwargs=kwargs, countdown=delay)
+                res = search_vul_from_method_pool.apply_async(
+                    kwargs=kwargs,
+                    countdown=delay,
+                    expires=datetime.datetime.now() +
+                    timedelta(seconds=60 * 60 * 3),
+                )
                 logger.info(
                         f'[+] send method_pool [{method_pool_sign}] to engine for task search_vul_from_method_pool id: {res.task_id}')
             else:
