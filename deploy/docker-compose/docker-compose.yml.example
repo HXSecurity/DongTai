@@ -73,6 +73,30 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
+  dongtai-worker-sca:
+    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:{ChangeThisVersion}"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-sca"]
+    environment:
+      - DONGTAI_CONCURRENCY=-P gevent --concurrency=10
+    volumes:
+      - ./config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-es:
+    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:{ChangeThisVersion}"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-es"]
+    environment:
+      - DONGTAI_CONCURRENCY=-P gevent --concurrency=10
+    volumes:
+      - ./config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
   dongtai-worker-other:
     image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:{ChangeThisVersion}"
     restart: always

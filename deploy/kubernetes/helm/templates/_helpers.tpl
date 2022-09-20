@@ -173,8 +173,6 @@ Create the name of the service account to use
     method_pool_index = dongtai-iast-alias-dongtai-v1-method-pool
     asset_vul_index = dongtai-iast-alias-dongtai-v1-asset-vul
     [other]
-    domain = http://localhost.domain/
-    demo_session_cookie_domain = .huoxian.cn
     logging_level = INFO
     cache_preheat = True
 {{- end -}}
