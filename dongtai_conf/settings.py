@@ -283,7 +283,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 AUTH_USER_MODEL = 'dongtai_common.User'
 TIME_ZONE = "Asia/Shanghai"
-STATIC_URL = '/static/'
+STATIC_URL = '/static/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = "/static/media/"
 CAPTCHA_IMAGE_SIZE = (80, 45)
