@@ -177,7 +177,7 @@ class GetAggregationVulList(UserEndPoint):
             user_auth_info.get("user_condition_str")
 
         if keywords:
-            query_base = "SELECT DISTINCT(vul.id),vul.id,vul.level_id,vul.update_time_desc,vul.update_time " \
+            query_base = "SELECT DISTINCT(vul.id),vul.id,vul.level_id,vul.update_time_desc,vul.update_time," \
                 " MATCH( `vul`.`vul_name`,`vul`.`aql`,`vul`.`vul_serial` ) AGAINST ( %s IN NATURAL LANGUAGE MODE ) AS `score`" \
                 "  from iast_asset_vul as vul  " \
                 "left JOIN  iast_asset_vul_relation as rel  on rel.asset_vul_id=vul.id  " \
