@@ -31,7 +31,6 @@ from dongtai_common.models import AGGREGATION_ORDER, LANGUAGE_ID_DICT, SHARE_CON
 from dongtai_conf.settings import ELASTICSEARCH_STATE
 from typing import List
 
-
 logger = logging.getLogger("django")
 INT_LIMIT: int = 2**64 - 1
 
@@ -59,9 +58,7 @@ class GetAggregationVulList(UserEndPoint):
         request=AggregationArgsSerializer,
         tags=[_('VulList')],
         summary=_('Vul List Select'),
-        description=_(
-            "select sca vul and app vul by keywords"
-        ),
+        description=_("select sca vul and app vul by keywords"),
     )
     # 组件漏洞 列表
     def post(self, request):
@@ -112,8 +109,8 @@ class GetAggregationVulList(UserEndPoint):
                 # 按项目筛选
                 if ser.validated_data.get("project_id_str", ""):
                     project_str = turnIntListOfStr(
-                        ser.validated_data.get(
-                            "project_id_str", ""), "asset.project_id")
+                        ser.validated_data.get("project_id_str", ""),
+                        "asset.project_id")
                     query_condition = query_condition + project_str
                     es_query['project_ids'] = turnIntListOfStr(
                         ser.validated_data.get("project_id_str"))
@@ -126,11 +123,9 @@ class GetAggregationVulList(UserEndPoint):
                     type_int_list = list(map(str, type_list))
                     lang_str = []
                     for one_type in type_int_list:
-                        lang_str.append(
-                            "'"
-                            + LANGUAGE_ID_DICT.get(
-                                one_type,
-                                "") + "'")
+                        lang_str.append("'" +
+                                        LANGUAGE_ID_DICT.get(one_type, "") +
+                                        "'")
                     type_int_str = ",".join(lang_str)
                     language_str_change = " and {} in ({}) ".format(
                         "vul.package_language", type_int_str)
@@ -143,16 +138,17 @@ class GetAggregationVulList(UserEndPoint):
                     es_query['language_ids'] = language_arr
                 # 漏洞类型筛选 弃用
                 if ser.validated_data.get("hook_type_id_str", ""):
-                    vul_type_str = turnIntListOfStr(ser.validated_data.get(
-                        "hook_type_id_str", ""), "typeR.asset_vul_type_id")
+                    vul_type_str = turnIntListOfStr(
+                        ser.validated_data.get("hook_type_id_str", ""),
+                        "typeR.asset_vul_type_id")
                     query_condition = query_condition + vul_type_str
                     join_table = join_table + \
                         "left JOIN iast_asset_vul_type_relation as typeR on vul.id=typeR.asset_vul_id "
                 # 漏洞等级筛选
                 if ser.validated_data.get("level_id_str", ""):
                     status_str = turnIntListOfStr(
-                        ser.validated_data.get(
-                            "level_id_str", ""), "vul.level_id")
+                        ser.validated_data.get("level_id_str", ""),
+                        "vul.level_id")
                     query_condition = query_condition + status_str
                     es_query['level_ids'] = turnIntListOfStr(
                         ser.validated_data.get("level_id_str"))
@@ -175,20 +171,20 @@ class GetAggregationVulList(UserEndPoint):
 
         except ValidationError as e:
             return R.failure(data=e.detail)
-        user_auth_info = auth_user_list_str(
-            user=request.user, user_table="asset")
+        user_auth_info = auth_user_list_str(user=request.user,
+                                            user_table="asset")
         query_condition = query_condition + \
             user_auth_info.get("user_condition_str")
 
         if keywords:
-            query_base = "SELECT DISTINCT(vul.id),vul.*, " \
+            query_base = "SELECT DISTINCT(vul.id),vul.id,vul.level_id,vul.update_time_desc,rel.create_time,vul.update_time " \
                 " MATCH( `vul`.`vul_name`,`vul`.`aql`,`vul`.`vul_serial` ) AGAINST ( %s IN NATURAL LANGUAGE MODE ) AS `score`" \
                 "  from iast_asset_vul as vul  " \
                 "left JOIN  iast_asset_vul_relation as rel  on rel.asset_vul_id=vul.id  " \
                 "left JOIN iast_asset as asset on rel.asset_id=asset.id  " + join_table + query_condition
 
         else:
-            query_base = "SELECT DISTINCT(vul.id),vul.* from iast_asset_vul as vul " \
+            query_base = "SELECT DISTINCT(vul.id),vul.id,vul.level_id,vul.update_time_desc,rel.create_time,vul.update_time from iast_asset_vul as vul " \
                 "left JOIN iast_asset_vul_relation as rel on rel.asset_vul_id=vul.id  " \
                 "left JOIN iast_asset as asset on rel.asset_id=asset.id  " + join_table + query_condition
 
@@ -208,6 +204,8 @@ class GetAggregationVulList(UserEndPoint):
             all_vul = IastAssetVul.objects.raw(
                 query_base + "  order by %s  limit %s,%s;  " %
                 (new_order, begin_num, end_num))
+        all_vul = IastAssetVul.objects.filter(
+            pk__in=[vul.id for vul in all_vul]).all()
         if ELASTICSEARCH_STATE:
             all_vul = get_vul_list_from_elastic_search(
                 request.user.id,
@@ -231,21 +229,35 @@ class GetAggregationVulList(UserEndPoint):
                     availability_arr.append(SCA_AVAILABILITY_DICT.get("3"))
                 availability_str = ",".join(availability_arr)
                 cur_data = {
-                    "id": item.id,
-                    "vul_name": item.vul_name,
-                    "create_time": item.create_time,
-                    "level_id": item.level_id,
-                    "level_name": APP_LEVEL_RISK.get(str(item.level_id), ""),
-                    "license": item.license,
-                    "license_level": item.license_level,
-                    "license_risk_name": LICENSE_RISK.get(str(item.license_level), ""),
-                    "vul_cve_nums": item.vul_cve_nums,
-                    "package_name": item.package_name,
-                    "package_safe_version": item.package_safe_version,
-                    "package_latest_version": item.package_latest_version,
-                    "package_language": item.package_language,
+                    "id":
+                    item.id,
+                    "vul_name":
+                    item.vul_name,
+                    "create_time":
+                    item.create_time,
+                    "level_id":
+                    item.level_id,
+                    "level_name":
+                    APP_LEVEL_RISK.get(str(item.level_id), ""),
+                    "license":
+                    item.license,
+                    "license_level":
+                    item.license_level,
+                    "license_risk_name":
+                    LICENSE_RISK.get(str(item.license_level), ""),
+                    "vul_cve_nums":
+                    item.vul_cve_nums,
+                    "package_name":
+                    item.package_name,
+                    "package_safe_version":
+                    item.package_safe_version,
+                    "package_latest_version":
+                    item.package_latest_version,
+                    "package_language":
+                    item.package_language,
                     # "type_id": item.type_id,
-                    "availability_str": availability_str,
+                    "availability_str":
+                    availability_str,
                     # "type_name": item.type_name,
                 }
                 cwe = get_cve_from_cve_nums(cur_data["vul_cve_nums"])
@@ -276,14 +288,16 @@ class GetAggregationVulList(UserEndPoint):
                     pro_arr[vul_id] = [item]
             # 根据vul_id获取对应的漏洞类型 一对多
             type_info = IastAssetVulTypeRelation.objects.filter(
-                asset_vul_id__in=vul_ids).values(
-                "asset_vul_id", "asset_vul_type__name")
+                asset_vul_id__in=vul_ids).values("asset_vul_id",
+                                                 "asset_vul_type__name")
             type_arr = {}
             for item in type_info:
                 if not type_arr.get(item['asset_vul_id'], []):
                     type_arr[item['asset_vul_id']] = [
-                        item['asset_vul_type__name']]
-                elif item['asset_vul_type__name'] not in type_arr[item['asset_vul_id']]:
+                        item['asset_vul_type__name']
+                    ]
+                elif item['asset_vul_type__name'] not in type_arr[
+                        item['asset_vul_id']]:
                     type_arr[item['asset_vul_id']].append(
                         item['asset_vul_type__name'])
             for row in content_list:
@@ -318,9 +332,7 @@ def get_vul_list_from_elastic_search(user_id,
         Q('terms', asset_vul_relation_is_del=[0]),
         Q('range', asset_project_id={'gt': 0}),
     ]
-    order_list = [
-        'update_time', '-asset_vul_relation_id', "asset_vul_id"
-    ]
+    order_list = ['update_time', '-asset_vul_relation_id', "asset_vul_id"]
     if order:
         order_list.insert(0, order)
     if bind_project_id:
@@ -356,9 +368,8 @@ def get_vul_list_from_elastic_search(user_id,
               query=search_keyword,
               fields=["vul_name", "vul_serial", "aql"]))
     hashkey = make_hash([
-        user_id, project_ids, project_version_ids, level_ids,
-        language_ids, search_keyword, page_size, bind_project_id,
-        project_version_id
+        user_id, project_ids, project_version_ids, level_ids, language_ids,
+        search_keyword, page_size, bind_project_id, project_version_id
     ])
     after_table = cache.get(hashkey, {})
     after_key = after_table.get(page, None)
@@ -383,19 +394,21 @@ def get_vul_list_from_elastic_search(user_id,
                     field = info
                     opt = 'gt'
             if info == "asset_vul_id":
-                sub_after_must_query.append(
-                    Q('range', **{field: {opt: value}}))
+                sub_after_must_query.append(Q('range', **{field: {
+                    opt: value
+                }}))
             else:
                 sub_after_should_query.append(
                     Q('range', **{field: {
                         opt: value
                     }}))
         must_query.append(
-            Q('bool', must=sub_after_must_query,
-              should=sub_after_should_query, minimum_should_match=1))
+            Q('bool',
+              must=sub_after_must_query,
+              should=sub_after_should_query,
+              minimum_should_match=1))
         #extra_dict['search_after'] = after_key
-    a = Q('bool',
-          must=must_query)
+    a = Q('bool', must=must_query)
     res = IastAssetVulnerabilityDocument.search().query(a).extra(
         collapse={
             "field": "asset_vul_id"
