@@ -175,8 +175,8 @@ class GetAggregationVulList(UserEndPoint):
 
         except ValidationError as e:
             return R.failure(data=e.detail)
-        user_auth_info = auth_user_list_str(
-            user=request.user, user_table="asset")
+        user_auth_info = auth_user_list_str(user=request.user,
+                                            user_table="asset")
         query_condition = query_condition + \
             user_auth_info.get("user_condition_str")
 
@@ -208,7 +208,8 @@ class GetAggregationVulList(UserEndPoint):
             all_vul = IastAssetVul.objects.raw(
                 query_base + "  order by %s  limit %s,%s;  " %
                 (new_order, begin_num, end_num))
-        all_vul = IastAssetVul.objects.filter(pk__in=[vul.id for vul in  all_vul]).all()
+        all_vul = IastAssetVul.objects.filter(
+            pk__in=[vul.id for vul in all_vul]).all()
         if ELASTICSEARCH_STATE:
             all_vul = get_vul_list_from_elastic_search(
                 request.user.id,
