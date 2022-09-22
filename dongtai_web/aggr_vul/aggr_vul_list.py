@@ -183,13 +183,13 @@ class GetAggregationVulList(UserEndPoint):
         if keywords:
             query_base = "SELECT DISTINCT(vul.id),vul.*, " \
                 " MATCH( `vul`.`vul_name`,`vul`.`aql`,`vul`.`vul_serial` ) AGAINST ( %s IN NATURAL LANGUAGE MODE ) AS `score`" \
-                "  from  iast_asset_vul_relation as rel   " \
-                "left JOIN iast_asset_vul as vul on rel.asset_vul_id=vul.id  " \
+                "  from iast_asset_vul as vul  " \
+                "left JOIN  iast_asset_vul_relation as rel  on rel.asset_vul_id=vul.id  " \
                 "left JOIN iast_asset as asset on rel.asset_id=asset.id  " + join_table + query_condition
 
         else:
-            query_base = "SELECT DISTINCT(vul.id),vul.* from  iast_asset_vul_relation as rel   " \
-                "left JOIN iast_asset_vul as vul on rel.asset_vul_id=vul.id  " \
+            query_base = "SELECT DISTINCT(vul.id),vul.* from iast_asset_vul as vul " \
+                "left JOIN iast_asset_vul_relation as rel on rel.asset_vul_id=vul.id  " \
                 "left JOIN iast_asset as asset on rel.asset_id=asset.id  " + join_table + query_condition
 
         # mysql 全文索引下，count不准确，等于全部数量
