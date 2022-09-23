@@ -196,22 +196,23 @@ class GetAggregationVulList(UserEndPoint):
             else:
                 new_order = new_order + ", vul.update_time_desc"
 
-        if keywords:
-            all_vul = IastAssetVul.objects.raw(
-                query_base + "  order by score desc, %s limit %s,%s;  " %
-                (new_order, begin_num, end_num), [keywords])
-        else:
-            all_vul = IastAssetVul.objects.raw(
-                query_base + "  order by %s  limit %s,%s;  " %
-                (new_order, begin_num, end_num))
-        all_vul = IastAssetVul.objects.filter(
-            pk__in=[vul.id for vul in all_vul]).all()
         if ELASTICSEARCH_STATE:
             all_vul = get_vul_list_from_elastic_search(
                 request.user.id,
                 page_size=ser.validated_data['page_size'],
                 page=ser.validated_data['page'],
                 **es_query)
+        else:
+            if keywords:
+                all_vul = IastAssetVul.objects.raw(
+                    query_base + "  order by score desc, %s limit %s,%s;  " %
+                    (new_order, begin_num, end_num), [keywords])
+            else:
+                all_vul = IastAssetVul.objects.raw(
+                    query_base + "  order by %s  limit %s,%s;  " %
+                    (new_order, begin_num, end_num))
+            all_vul = IastAssetVul.objects.filter(
+                pk__in=[vul.id for vul in all_vul]).all()
         content_list = []
 
         if all_vul:
