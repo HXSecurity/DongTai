@@ -21,7 +21,7 @@ SOURCE_TYPE_DICT = {
 }
 AGGREGATION_ORDER = {
     "1":"vul.level_id",
-    "2":"rel.create_time",
+    "2":"vul.create_time",
     "3":"vul.update_time",
 }
 
