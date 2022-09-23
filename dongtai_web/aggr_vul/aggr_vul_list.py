@@ -30,6 +30,9 @@ from dongtai_common.models import AGGREGATION_ORDER, LANGUAGE_ID_DICT, SHARE_CON
     SCA_AVAILABILITY_DICT
 from dongtai_conf.settings import ELASTICSEARCH_STATE
 from typing import List
+from dongtai_common.models.asset import Asset
+from django.db.models import Max
+from dongtai_common.models.asset_vul import IastAssetVul
 
 logger = logging.getLogger("django")
 INT_LIMIT: int = 2**64 - 1
@@ -267,16 +270,24 @@ class GetAggregationVulList(UserEndPoint):
                 vul_ids.append(item.id)
                 content_list.append(cur_data)
             # 追加 用户 权限
-            base_relation = IastVulAssetRelation.objects.filter(
-                asset_vul_id__in=vul_ids,
-                is_del=0,
-                asset__user_id__in=user_auth_info['user_list'],
-                asset__project_id__gt=0)
-            # base_relation = getAuthUserInfo(request.user,base_relation)
-            pro_info = base_relation.values(
-                "asset_vul_id", "asset__project_id", "asset__project_name",
-                "asset__project_version__version_name",
-                "asset__agent__server__container").distinct()
+            afdistset = Asset.objects.filter(
+                iastvulassetrelation__asset_vul_id__in=vul_ids,
+                iastvulassetrelation__is_del=0,
+                user_id__in=user_auth_info['user_list'],
+                project_id__gt=0).values(
+                    'project_id',
+                    'iastvulassetrelation__asset_vul_id').annotate(
+                        aid=Max('id')).all()
+
+            pro_info = IastVulAssetRelation.objects.filter(
+                asset_vul_id__in=[
+                    i['iastvulassetrelation__asset_vul_id'] for i in afdistset
+                ],
+                asset_id__in=[i['aid'] for i in afdistset],
+            ).values("asset_vul_id", "asset__project_id",
+                     "asset__project_name",
+                     "asset__project_version__version_name",
+                     "asset__agent__server__container").distinct()
             pro_arr = {}
             for item in pro_info:
                 vul_id = item['asset_vul_id']
