@@ -39,7 +39,7 @@ class IastAssetVul(models.Model):
     poc = models.JSONField(blank=True, null=True, default=dict)
     descriptions = models.JSONField(blank=True, null=True, default=dict)
     references = models.JSONField(blank=True, null=True, default=dict)
-
+    asset = models.ManyToManyField('IastVulAssetRelation')
     class Meta:
         managed = True
         db_table = 'iast_asset_vul'
