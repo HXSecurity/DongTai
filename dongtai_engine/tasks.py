@@ -124,7 +124,7 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
     if not queryset.values('id').exists():
         logger.error(f'current method pool hit rule {strategy.get("type")}, but no vul strategy.')
         return
-    engine.search(method_pool=method_pool, vul_method_signature=strategy.get('value'))
+    engine.search_aspect(method_pool=method_pool, vul_method_signature=strategy.get('value'))
     status, stack, source_sign, sink_sign, taint_value = engine.result()
     if status:
         filterres = vul_filter(

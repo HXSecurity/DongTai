@@ -117,6 +117,26 @@ class VulEngine(object):
             )
         return signatures
 
+    def search_aspect(self, method_pool, vul_method_signature, vul_type=None):
+        self.vul_type = vul_type
+        self.prepare(method_pool, vul_method_signature)
+        size = len(self.method_pool)
+        for index in range(size):
+            method = self.method_pool[index]
+            if self.hit_vul_method(method) is None:
+                continue
+
+            if 'sourceValues' in method:
+                self.taint_value = method['sourceValues']
+        for sub_method in self.method_pool:
+            if sub_method.get('source'):
+                if set(self.taint_value) & set(sub_method['targetValues']):
+                    self.vul_source_signature = f"{sub_method.get('className')}.{sub_method.get('methodName')}"
+                    self.taint_value = sub_method['targetValues']
+                    current_link.append(
+                        self.copy_method(sub_method, source=True))
+                    return
+
     def search(self, method_pool, vul_method_signature, vul_type=None):
         self.vul_type = vul_type
         self.prepare(method_pool, vul_method_signature)
