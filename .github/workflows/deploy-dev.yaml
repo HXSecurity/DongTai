@@ -3,6 +3,7 @@ name: Deploy DongTai Server To Dev
 on:
   push:
     branches: [ "main"  ]
+  workflow_dispatch:
 
 jobs:
   Deploy-to-dev:
