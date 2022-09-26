@@ -37,14 +37,14 @@ jobs:
       - name: Setup Ossutil
         uses: manyuanrong/setup-ossutil@v2.0
         with:
-          endpoint: ${{ secrets.ALIYUN_OSS_ENDPOINT }}
-          access-key-id: ${{ secrets.ALIYUN_OSS_KEY_ID }}
-          access-key-secret: ${{ secrets.ALIYUN_OSS_KEY_SECRET }}
+          endpoint: ${{ secrets.CHART_OSS_ENDPOINT }}
+          access-key-id: ${{ secrets.CHART_OSS_ACCESS_KEY_ID }}
+          access-key-secret: ${{ secrets.CHART_OSS_ACCESS_KEY_SECRET }}
           
       - name: Download Agent
         run: |
-          ossutil cp oss://dongtai/agent_test/java/latest/ ./ --include "*.jar" -r
-          ossutil cp oss://dongtai/agent_test/python/ ./  --include "*.tar.gz" -r
+          ossutil cp oss://dongtai-helm-charts/agent_test/java/latest/ ./ --include "*.jar" -r
+          ossutil cp oss://dongtai-helm-charts/agent_test/python/ ./  --include "*.tar.gz" -r
           
       - name: Generate version file
         run: |
