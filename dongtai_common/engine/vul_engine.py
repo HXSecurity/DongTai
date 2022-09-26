@@ -121,6 +121,7 @@ class VulEngine(object):
         self.vul_type = vul_type
         self.prepare(method_pool, vul_method_signature)
         size = len(self.method_pool)
+        current_link = list()
         for index in range(size):
             method = self.method_pool[index]
             if self.hit_vul_method(method) is None:
@@ -128,14 +129,19 @@ class VulEngine(object):
 
             if 'sourceValues' in method:
                 self.taint_value = method['sourceValues']
+            vul_method_detail = self.copy_method(method_detail=method,
+                                                 sink=True)
+            current_link.append(vul_method_detail)
+
         for sub_method in self.method_pool:
             if sub_method.get('source'):
-                if set(self.taint_value) & set(sub_method['targetValues']):
+                if self.taint_value == sub_method['targetValues']:
                     self.vul_source_signature = f"{sub_method.get('className')}.{sub_method.get('methodName')}"
                     self.taint_value = sub_method['targetValues']
                     current_link.append(
                         self.copy_method(sub_method, source=True))
-                    return
+                    self.vul_stack.append(current_link[::-1])
+                    break
 
     def search(self, method_pool, vul_method_signature, vul_type=None):
         self.vul_type = vul_type
