@@ -7,7 +7,7 @@ on:
 
 jobs:
   Deploy-to-dev:
-    if: ${{ github.event_name == 'push' && github.repository_owner == 'HXSecurity' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.repository_owner == 'HXSecurity' }}
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
