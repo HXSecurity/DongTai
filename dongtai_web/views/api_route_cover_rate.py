@@ -16,6 +16,9 @@ from dongtai_web.utils import extend_schema_with_envcheck
 from dongtai_common.models.api_route import IastApiRoute, FromWhereChoices
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
+import logging
+
+logger = logging.getLogger("dongtai-webapi")
 
 
 class ApiRouteCoverRateResponseSerializer(serializers.Serializer):
@@ -23,10 +26,12 @@ class ApiRouteCoverRateResponseSerializer(serializers.Serializer):
         help_text=_("The api cover_rate of the project"), )
 
 
-_GetResponseSerializer = get_response_serializer(ApiRouteCoverRateResponseSerializer())
+_GetResponseSerializer = get_response_serializer(
+    ApiRouteCoverRateResponseSerializer())
 
 
 class ApiRouteCoverRate(UserEndPoint):
+
     @extend_schema_with_envcheck(
         [{
             'name': 'project_id',
@@ -37,11 +42,10 @@ class ApiRouteCoverRate(UserEndPoint):
         }],
         tags=[_('API Route')],
         summary=_('API Route Coverrate'),
-        description=_(
-            "Get the API route coverrate of the project corresponding to the specified id."
-        ),
+        description=
+        _("Get the API route coverrate of the project corresponding to the specified id."
+          ),
         response_schema=_GetResponseSerializer,
-
     )
     def get(self, request):
         project_id = request.query_params.get('project_id', None)
@@ -57,14 +61,14 @@ class ApiRouteCoverRate(UserEndPoint):
             bind_project_id=project_id,
             project_version_id=current_project_version.get("version_id",
                                                            0)).values("id")
-        q = Q(agent__in=agents) 
+        q = Q(agent__in=agents)
         queryset = IastApiRoute.objects.filter(q)
-        total = queryset.count()
+        total = queryset.values("path").distinct().count()
         cover_count = checkcover_batch(queryset, agents)
         try:
             cover_rate = "{:.2%}".format(cover_count / total)
         except ZeroDivisionError as e:
-            print(e)
+            logger.info(e, exc_info=True)
             cover_rate = "{:.2%}".format(1.0)
 
         return R.success(msg=_('API coverage rate obtained successfully'),
