@@ -117,10 +117,10 @@ class IastCircuitConfig(models.Model):
     priority = models.IntegerField(blank=True, null=True)
     create_time = models.IntegerField(blank=True,
                                       null=True,
-                                      default=int(time()))
+                                      default=lambda : int(time()))
     update_time = models.IntegerField(blank=True,
                                       null=True,
-                                      default=int(time()))
+                                      default=lambda : int(time()))
 
     class Meta:
         managed = get_managed()

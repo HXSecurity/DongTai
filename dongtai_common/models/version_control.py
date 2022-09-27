@@ -17,7 +17,7 @@ class VersionControl(models.Model):
     component_name = models.CharField(max_length=255, blank=True, null=True)
     component_version_hash = models.CharField(max_length=255, blank=True, null=True)
     additional = models.CharField(max_length=255, blank=True, null=True)
-    update_time = models.IntegerField(default=int(time.time()), blank=True)
+    update_time = models.IntegerField(default=lambda :int(time.time()), blank=True)
 
 
     class Meta:
