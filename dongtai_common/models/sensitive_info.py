@@ -25,7 +25,7 @@ class IastSensitiveInfoRule(models.Model):
     pattern_type = models.ForeignKey(IastPatternType,models.DO_NOTHING,blank=True,default=None)
     pattern = models.CharField(blank=True,default=None,max_length=255)
     status = models.IntegerField(blank=True,default=None)
-    latest_time = models.IntegerField(default=time.time(),blank=True, null=True)
+    latest_time = models.IntegerField(default=lambda : int(time.time()),blank=True, null=True)
 
     class Meta:
         db_table = 'iast_sensitive_info_rule'
