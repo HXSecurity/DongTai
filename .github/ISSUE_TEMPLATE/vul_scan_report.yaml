@@ -1,4 +1,4 @@
-name: "False positives/negatives vulnerability report"
+name: "🔍 False positives/negatives vulnerability report"
 description: "Report a false positives/negatives vulnerability to help us improve DongTai vulnerability detection. "
 title: "[Vulnerability Detect]: "
 labels: [detection]
