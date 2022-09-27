@@ -1,12 +1,12 @@
-name: 🐛 Bug report
-description: Report a bug to help us improve DongTai
-title: "[Bug]: "
-labels: [bug]
+name: "🔍 False positives/negatives vulnerability report"
+description: "Report a false positives/negatives vulnerability to help us improve DongTai vulnerability detection. "
+title: "[Vulnerability Detect]: "
+labels: [detection]
 body:
 - type: markdown
   attributes:
     value: |
-      Thank you for submitting a bug report!
+      Thank you for submitting a vulnerability detection report!
 
       Please fill out the template below to make it easier to debug your problem.
 
@@ -40,34 +40,16 @@ body:
       - Other (specify below)
   validations:
     required: true
-- type: dropdown
-  attributes:
-    label: Service Name
-    description: Which service do you want to report the bug?
-    options:
-      - Doc(DongTai-Doc)
-      - Docker(DongTai-Base-Image)
-      - Deploy(DongTai-deploy)
-      - DongTai-Web
-      - DongTai-WebAPI
-      - DongTai-OpenAPI
-      - DongTai-Engine
-      - DongTai-Core
-      - DongTai-agent-python
-      - DongTai-agent-java
-      - DongTai-agent-php
-    multiple: true
-  validations:
-    required: true
 - type: textarea
   attributes:
     label: Describe the details of the bug and the steps to reproduce it
     description: Steps to reproduce the behavior if it is not self-explanatory.
     placeholder: |
-      1. In this environment...
-      2. With this config...
-      3. Do something...
-      4. See error...
+      1. Detect false positives and false negatives:
+      2. Provide reproducible code (if any)
+      3. Screenshot of IAST code call chain:
+      4. Vulnerability Type:
+      5. Details (details explain the reasons and logic for judging false positives and false negatives):
   validations:
     required: true
 - type: textarea
