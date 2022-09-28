@@ -21,7 +21,7 @@ class IastVulLog(models.Model):
     msg_type = models.IntegerField(blank=True, null=True)
     msg = models.TextField(blank=True, null=True)
     meta_data = models.JSONField(blank=True, null=True)
-    datetime = models.IntegerField(blank=True, null=True, default=time())
+    datetime = models.IntegerField(blank=True, null=True, default=time)
     vul = models.ForeignKey(IastVulnerabilityModel,
                                 models.DO_NOTHING,
                                 default=-1,

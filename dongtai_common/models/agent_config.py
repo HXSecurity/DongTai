@@ -4,6 +4,8 @@ from dongtai_common.utils.settings import get_managed
 from time import time
 from django.db.models import IntegerChoices
 from django.utils.translation import gettext_lazy as _
+
+
 # agent 阀值监控配置
 class IastAgentConfig(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING)
@@ -21,19 +23,23 @@ class IastAgentConfig(models.Model):
         db_table = 'iast_agent_config'
         # agent 阀值监控配置
 
+
 class TargetOperator(IntegerChoices):
     EQUAL = 1, _("等于")
     NOT_EQUAL = 2, _("不等于")
     CONTAIN = 3, _("包含")
     NOT_CONTAIN = 4, _("不包含")
 
+
 class MetricOperator(IntegerChoices):
     GREATER = 5, _("大于")
+
 
 class MetricGroup(IntegerChoices):
     SYSTEM = 1, _("性能指标")
     JVM = 2, _("JVM指标")
     APPLICATION = 3, _("应用指标")
+
 
 class DealType(IntegerChoices):
     UNLOAD = 1, _("完全卸载")
@@ -81,6 +87,7 @@ UNIT_DICT = {
     11: 'ms',
 }
 
+
 class SystemMetricType(IntegerChoices):
     cpuUsagePercentage = 1, _("系统CPU使用率阈值")
     sysMemUsagePercentage = 2, _("系统内存使用率阈值")
@@ -100,6 +107,7 @@ class ApplicationMetricType(IntegerChoices):
     heavyTrafficLimitTokenPerSecond = 10, _("每秒限制处理请求数量（QPS）")
     apiResponseTime = 11, _("请求响应时间阈值")
 
+
 class IastCircuitConfig(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING)
     name = models.CharField(max_length=200, blank=True, null=True)
@@ -117,10 +125,10 @@ class IastCircuitConfig(models.Model):
     priority = models.IntegerField(blank=True, null=True)
     create_time = models.IntegerField(blank=True,
                                       null=True,
-                                      default=int(time()))
+                                      default=lambda: int(time()))
     update_time = models.IntegerField(blank=True,
                                       null=True,
-                                      default=int(time()))
+                                      default=lambda: int(time()))
 
     class Meta:
         managed = get_managed()

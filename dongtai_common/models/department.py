@@ -48,8 +48,12 @@ class Department(PermissionsMixin):
             'unique': _("A department with that department name already exists."),
         },
     )
-    create_time = models.IntegerField(_('create time'), default=int(time.time()), blank=True)
-    update_time = models.IntegerField(_('update time'), default=int(time.time()), blank=True)
+    create_time = models.IntegerField(_('create time'),
+                                      default=lambda: int(time.time()),
+                                      blank=True)
+    update_time = models.IntegerField(_('update time'),
+                                      default=lambda: int(time.time()),
+                                      blank=True)
     created_by = models.IntegerField(_('created by'), blank=True)
     parent_id = models.IntegerField(_('parent id'), blank=True)
     principal_id = models.IntegerField(default=0, blank=True)
