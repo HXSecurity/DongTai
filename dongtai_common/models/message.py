@@ -28,7 +28,7 @@ class IastMessage(models.Model):
                                     blank=True,
                                     null=False,
                                     default='')
-    create_time = models.IntegerField(blank=True, default=time())
+    create_time = models.IntegerField(blank=True, default=lambda: int(time()))
     read_time = models.IntegerField(blank=True, default=0)
     is_read = models.IntegerField(blank=True, null=True, default=0)
     message_type = models.ForeignKey(IastMessageType,
