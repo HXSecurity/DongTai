@@ -130,3 +130,16 @@ class AgentHardencodeTestCase(AgentTestCase):
         assert asset is not None
         assert asset.safe_version_list is not None
         assert asset.iastvulassetrelation_set.all() != []
+    
+    def test_update_one_sca_java(self):
+        update_one_sca(
+            self.agent_id,
+            "/Users/xxx/spring-boot/2.3.2.RELEASE/org.springframework:spring-beans.jar",
+            "3490508379d065fe3fcb80042b62f630f7588606",
+            "org.springframework:spring-beans.jar", "SHA-1")
+        asset = Asset.objects.filter(
+            agent_id=self.agent_id,
+            signature_value="3490508379d065fe3fcb80042b62f630f7588606").first(
+        )
+        for i in asset.iastvulassetrelation_set.all():
+            assert len(i.vul_dependency_path) > 0
