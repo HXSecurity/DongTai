@@ -7,3 +7,6 @@ contact_links:
   - name: 📚 Documentation
     url: https://hxsecurity.github.io/DongTaiDoc
     about: Check the documentation for help
+  - name: "\U0001F440 Agent compatibility issues report"
+    url: https://github.com/HXSecurity/DongTai-agent-java/issues/new?labels=compatibility&projects=1&template=agent_compatibility.yaml
+    about: Report a Agent compatibility issues to help us improve DongTai agent compatibility. 
