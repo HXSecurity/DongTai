@@ -131,7 +131,7 @@ class AgentHardencodeTestCase(AgentTestCase):
         assert asset.safe_version_list is not None
         assert asset.iastvulassetrelation_set.all() != []
     
-    def test_update_one_sca_java(self):
+    def test_update_one_sca_java_result_search(self):
         update_one_sca(
             self.agent_id,
             "/Users/xxx/spring-boot/2.3.2.RELEASE/org.springframework:spring-beans.jar",
