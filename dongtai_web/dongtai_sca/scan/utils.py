@@ -462,7 +462,7 @@ def get_title(title_zh: str, title_en: str) -> str:
 
 
 from django.db import IntegrityError
-
+from dongtai_common.models.asset_vul import IastAssetVulRelationMetaData 
 
 def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                    version: str):
@@ -535,16 +535,25 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                 "references": vul['references'],
             },
         )
+        key: str = asset_vul.sid + aql
+        try:
+            IastAssetVulRelationMetaData.objects.update_or_create(
+                vul_asset_key=key,
+                **{
+                "vul_dependency_path": vul_dependency,
+                "effected_version_list": package_effected_version_list,
+                "fixed_version_list": package_fixed_version_list,
+                "nearest_fixed_version": nearest_fixed_version,
+                })
+        except IntegrityError as e:
+            pass
         asset_vul_relation, _ = IastVulAssetRelation.objects.update_or_create(
             asset_vul_id=asset_vul.id,
             asset_id=asset_id,
             defaults={
                 "create_time": timestamp,
-                "vul_dependency_path": vul_dependency,
-                "effected_version_list": package_effected_version_list,
-                "fixed_version_list": package_fixed_version_list,
-                "nearest_fixed_version": nearest_fixed_version,
                 "status_id": 1,
+                "vul_asset_metadata_id": key,
             },
         )
         if len(vul['cwe_info']) == 0:
