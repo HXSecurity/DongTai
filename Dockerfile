@@ -11,12 +11,10 @@ RUN apt-get update -y \
     && apt install -y gettext gcc make cmake libmariadb-dev curl libc6-dev unzip cron  openjdk-11-jdk fonts-wqy-microhei vim
 #     htop sysstat net-tools iproute2 procps lsof
     
-RUN curl -L https://github.com/Endava/cats/releases/download/cats-7.0.1/cats-linux -o  /usr/local/bin/cats \
-    && chmod +x /usr/local/bin/cats \
-    && ln -s /usr/local/bin/cats /usr/bin/cats \
-    && curl -L https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/wkhtmltopdf -o /usr/local/bin/wkhtmltopdf \
-    && chmod +x /usr/local/bin/wkhtmltopdf \
-    && ln -s  /usr/local/bin/wkhtmltopdf /usr/bin/wkhtmltopdf
+RUN curl -L https://github.com/Endava/cats/releases/download/cats-7.0.1/cats-linux -o  /usr/bin/cats \
+    && chmod +x /usr/bin/cats \
+    && curl -L https://charts.dongtai.io/apk/wkhtmltopdf -o /usr/bin/wkhtmltopdf \
+    && chmod +x /usr/bin/wkhtmltopdf
 
 
 COPY requirements-prod.txt /opt/dongtai/webapi/requirements.txt
