@@ -1,5 +1,5 @@
 
-name: "Pep8Check"
+name: "BuildCheck"
 
 on:
   push:
@@ -22,14 +22,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          python-version: 3.10
       
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements-prod.txt
-          
-      - name: Django Unit Testing
-        run: |
-          pep8  --ignore=E501,E402,E231,E302,E301,E303,E251,E265,W291,E126,W293,W391,W503,E128,E127,E122,E241,E225,E401,E101,E125,E131,E266,E701,W191 --statistics .
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          file: Dockerfile
+          context: .
+          push: false
+          tags: | 
+            registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:latest
+            registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:1.0.${{github.run_number}}

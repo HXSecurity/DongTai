@@ -1,4 +1,4 @@
-FROM python:3.7-slim
+FROM python:3.10-slim
 ARG VERSION
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=en_US.UTF-8
@@ -8,7 +8,7 @@ ENV LANGUAGE=en_US.UTF-8
 ENV TZ=Asia/Shanghai
 
 RUN apt-get update -y \
-    && apt install -y gettext gcc make cmake libmariadb-dev curl libc6-dev unzip cron  openjdk-11-jdk fonts-wqy-microhei vim
+    && apt install -y gettext gcc make cmake libmariadb-dev curl libc6-dev unzip cron  openjdk-11-jdk fonts-wqy-microhei vim build-essential ninja-build cython3 pybind11-dev libre2-dev
 #     htop sysstat net-tools iproute2 procps lsof
     
 RUN curl -L https://github.com/Endava/cats/releases/download/cats-7.0.1/cats-linux -o  /usr/bin/cats \
