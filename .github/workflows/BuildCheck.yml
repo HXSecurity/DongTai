@@ -1,5 +1,5 @@
 
-name: "Pep8Check"
+name: "BuildCheck"
 
 on:
   push:
