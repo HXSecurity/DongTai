@@ -24,16 +24,12 @@ jobs:
         uses: actions/checkout@v2
         with:
           python-version: 3.10
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-          cache: 'pipenv'
-
-      - name: Install pipenv
-        run: pip3 install pipenv 
-      - run: python3 -m pipenv install --system   
       
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-prod.txt
+          
       - name: Django Unit Testing
         run: |
           pep8  --ignore=E501,E402,E231,E302,E301,E303,E251,E265,W291,E126,W293,W391,W503,E128,E127,E122,E241,E225,E401,E101,E125,E131,E266,E701,W191 --statistics .
