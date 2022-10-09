@@ -29,8 +29,9 @@ jobs:
         with:
           python-version: '3.10'
           cache: 'pipenv'
+
       - name: Install pipenv
-        run: curl https://raw.githubusercontent.com/pypa/pipenv/master/get-pipenv.py | python
+        run: pip3 install pipenv 
       - run: pipenv install --system   
       
       - name: Django Unit Testing
