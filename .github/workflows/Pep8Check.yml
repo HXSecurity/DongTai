@@ -32,7 +32,7 @@ jobs:
 
       - name: Install pipenv
         run: pip3 install pipenv 
-      - run: pipenv install --system   
+      - run: python3 -m pipenv install --system   
       
       - name: Django Unit Testing
         run: |
