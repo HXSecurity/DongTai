@@ -399,6 +399,10 @@ def add_new_api_route(agent_id, path, method):
     try:
         api_method, is_create = IastApiMethod.objects.get_or_create(
             method=method.upper())
+        http_method, _ = HttpMethod.objects.get_or_create(
+            method=http_method.upper())
+        IastApiMethodHttpMethodRelation.objects.get_or_create(
+            api_method_id=api_method.id, http_method_id=http_method.id)
         api_route, is_create = IastApiRoute.objects.get_or_create(
             from_where=FromWhereChoices.FROM_METHOD_POOL,
             method_id=api_method.id,
