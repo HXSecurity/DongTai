@@ -18,7 +18,7 @@ RUN curl -L https://github.com/Endava/cats/releases/download/cats-7.0.1/cats-lin
 
 COPY Pipfile .
 COPY Pipfile.lock .
-RUN pip install pipenv && python3 -m pipenv install --system  --deploy --ignore-pipfile
+RUN pip install pipenv && python3 -m pipenv sync --system 
 
 # debug performance ...
 COPY . /opt/dongtai
