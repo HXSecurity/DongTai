@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-asgiref = "~=3.3.1"
+asgiref = "*"
 certifi = "==2020.11.8"
 cffi = "==1.15.1"
 chardet = "==3.0.4"
@@ -66,7 +66,6 @@ types-urllib3 = "==1.26.24"
 boto3-stubs = "==1.24.72"
 botocore-stubs = "==1.27.71"
 pep8 = "==1.7.1"
-pyopenssl = "*"
 
 [dev-packages]
 
