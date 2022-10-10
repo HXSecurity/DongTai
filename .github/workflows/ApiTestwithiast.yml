@@ -31,18 +31,20 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.10]
+        python-version: ["3.10"]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - uses: actions/setup-python@v4
         with:
-          python-version: 3.10
+          python-version: "3.10"
           ref: main
       - name: Install dependencies
         run: |
+          sudo apt-get install build-essential cmake ninja-build python3-dev cython3 pybind11-dev libre2-dev -y
           python -m pip install --upgrade pip
-          pip install -r requirements-prod.txt
+          pip install -r requirements.txt
           pip install schemathesis
           pip install httpx
       
