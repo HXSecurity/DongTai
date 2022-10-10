@@ -31,13 +31,13 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.10]
+        python-version: ["3.10"]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          python-version: 3.10
+          python-version: "3.10"
           ref: main
       - name: Install dependencies
         run: |
