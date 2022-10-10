@@ -16,9 +16,11 @@ RUN curl -L https://github.com/Endava/cats/releases/download/cats-7.0.1/cats-lin
     && curl -L https://charts.dongtai.io/apk/wkhtmltopdf -o /usr/bin/wkhtmltopdf \
     && chmod +x /usr/bin/wkhtmltopdf
 
-COPY Pipfile .
-COPY Pipfile.lock .
-RUN pip install pipenv && python3 -m pipenv sync --system 
+#COPY Pipfile .
+#COPY Pipfile.lock .
+#RUN pip install pipenv && python3 -m pipenv sync --system 
+COPY requirements.txt /opt/dongtai/webapi/requirements.txt
+RUN pip3 install -r /opt/dongtai/webapi/requirements.txt
 
 # debug performance ...
 COPY . /opt/dongtai
