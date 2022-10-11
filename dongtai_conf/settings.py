@@ -337,7 +337,7 @@ FILES_SIZE_LIMIT = 1024 * 1024 * 50
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
     'formatters': {
         'verbose': {
             'format':
@@ -351,7 +351,7 @@ LOGGING = {
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
+            'formatter': 'verbose',
         },
         'dongtai-webapi': {
             'class': 'logging.handlers.RotatingFileHandler',
@@ -386,6 +386,7 @@ LOGGING = {
         'django.db.backends': {
             'handlers': ['console'],
             'level': LOGGING_LEVEL,
+            'encoding': "utf-8",
         },
         'dongtai-webapi': {
             'handlers': ['console', 'dongtai-webapi'],
