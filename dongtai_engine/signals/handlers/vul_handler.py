@@ -393,7 +393,7 @@ def handler_replay_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, b
             result=const.RECHECK_TRUE,
             verify_time=timestamp,
             update_time=timestamp)
-        IastReplayQueue.objects.filter(vul_id=vul.id).exclude(
+        IastReplayQueue.objects.filter(relation_id=vul.id).exclude(
             Q(id=kwargs['replay_id']) | Q(state=const.SOLVED)).update(
                 state=const.DISCARD,
                 result=const.RECHECK_DISCARD,
