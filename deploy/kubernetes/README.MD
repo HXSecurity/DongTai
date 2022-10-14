@@ -38,7 +38,8 @@ Before install, you have to make sure the helm is available. Follow [this guide]
 2. Install
 
    ```
-   helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast --set storage.persistentVolumeClaim=pvc
+   helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast \
+   --set storage.persistentVolumeClaim=pvc
    ```
    
    This command will deploy dongtai servers in dongtai namespace and expose service with `ClusterIP`.
@@ -71,13 +72,18 @@ helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast --va
 You can also pass in a single value using **`--set`**, for example, you can switch defalut access type `ClusterIP` to `NodePort` 
 
 ```shell
-helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast --set storage.persistentVolumeClaim=pvc --set accessType=NodePort --set NodePort=30080 --set tag=1.8.5
+helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast \
+--set storage.persistentVolumeClaim=pvc \
+--set accessType=NodePort --set NodePort=30080 \
+--set tag=1.8.5
 ```
 
 If you need to modify somaxconn (128) 
 
 ```
- helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast --set storage.persistentVolumeClaim=pvc --set somaxconn=1024
+ helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast \
+ --set storage.persistentVolumeClaim=pvc \
+ --set somaxconn=1024
 ```
 
 Avaliable values:
