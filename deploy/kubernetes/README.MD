@@ -48,6 +48,7 @@ Before install, you have to make sure the helm is available. Follow [this guide]
 If you want to modify the configuration of mysql and Redis,you can overwrite the values by your own file,Suppose you have a file in `/tmp/my-values.yml` with values as follow:
 
 ``` yaml
+skipMysql: true
 mysql:
   host: my-dongtai-mysql
   port: 3306
@@ -55,6 +56,7 @@ mysql:
   user: root
   password: my-dongtai-iast
 
+skipRedis: true
 redis:
   host: my-dongtai-redis
   port: 6379
@@ -88,7 +90,7 @@ Avaliable values:
 
 #### Uninstall
 ```
-helm uninstall dongtai -n dongtai
+helm uninstall ProjectName -n dongtai
 ```
 
 <img src="https://static.scarf.sh/a.png?x-pxid=a7858f70-7435-420a-bc4e-0b71a7727c99" />
