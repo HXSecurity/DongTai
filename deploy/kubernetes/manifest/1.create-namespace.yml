@@ -1,9 +1,0 @@
----
-# 创建命名空间
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: CHANGE_THIS_NAMESPACE
-spec:
-  finalizers:
-    - kubernetes
