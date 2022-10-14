@@ -38,7 +38,7 @@ Before install, you have to make sure the helm is available. Follow [this guide]
 2. Install
 
    ```
-   helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast \
+   helm install project --create-namespace -n dongtai dongtai/dongtai-iast \
    --set storage.persistentVolumeClaim=pvc
    ```
    
@@ -66,13 +66,13 @@ redis:
 ```
 
 ``` shell script
-helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast --values /tmp/my-values.yaml
+helm install project --create-namespace -n dongtai dongtai/dongtai-iast --values /tmp/my-values.yaml
 ```
 
 You can also pass in a single value using **`--set`**, for example, you can switch defalut access type `ClusterIP` to `NodePort` 
 
 ```shell
-helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast \
+helm install project --create-namespace -n dongtai dongtai/dongtai-iast \
 --set storage.persistentVolumeClaim=pvc \
 --set accessType=NodePort --set NodePort=30080 \
 --set tag=1.8.5
@@ -81,7 +81,7 @@ helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast \
 If you need to modify somaxconn (128) 
 
 ```
- helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast \
+ helm install project --create-namespace -n dongtai dongtai/dongtai-iast \
  --set storage.persistentVolumeClaim=pvc \
  --set somaxconn=1024
 ```
@@ -96,7 +96,7 @@ Avaliable values:
 
 #### Uninstall
 ```
-helm uninstall ProjectName -n dongtai
+helm uninstall project -n dongtai
 ```
 
 <img src="https://static.scarf.sh/a.png?x-pxid=a7858f70-7435-420a-bc4e-0b71a7727c99" />
@@ -115,6 +115,6 @@ kubectl scale deployments ${deployment-names} --replicas=${count} -n ${your-name
 If you need the yaml file to be deployed directly, please use the following command to export
 
 ```
-helm install --dry-run ProjectName -n default dongtai/dongtai-iast
+helm install --dry-run project -n default dongtai/dongtai-iast
 ```
 
