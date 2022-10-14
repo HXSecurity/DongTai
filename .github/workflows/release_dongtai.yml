@@ -121,6 +121,7 @@ jobs:
 
       - name: Download existed repo files
         run: |
+          sed -i "s#tag: latest#tag: ${{ steps.get_version.outputs.VERSION }}#g" deploy/kubernetes/helm/values.yaml
           ossutil cp -rf  oss://dongtai-helm-charts/iast/ ~/helm/repo/  --include dongtai-iast-*.tgz --exclude "index.yaml"
 
       - name: Create helm package
