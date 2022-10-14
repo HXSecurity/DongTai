@@ -96,6 +96,7 @@ jobs:
 
 
   helm:
+    if: ${{ github.repository_owner == 'HXSecurity' }}
     name: Build
     runs-on: ubuntu-latest
 
