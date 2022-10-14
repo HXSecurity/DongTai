@@ -63,18 +63,24 @@ redis:
 ```
 
 ``` shell script
-helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast --values /tmp/my-values.yaml
+helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast \
+--values /tmp/my-values.yaml
 ```
 
 你也可以使用 `--set`来覆盖单个值, 例如: 你可以使用 `--set` 将 `ClusterIP` 切换成 `NodePort` 
 
 ```shell
-helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast --set storage.persistentVolumeClaim=pvc --set accessType=NodePort --set NodePort=30080 --set tag=1.8.5
+helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast \
+--set storage.persistentVolumeClaim=pvc \
+--set accessType=NodePort --set NodePort=30080 \
+--set tag=1.8.5
 ```
 如果你需要修改 somaxconn (128) 
 
 ```
-helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast --set storage.persistentVolumeClaim=pvc --set somaxconn=1024
+helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast \
+--set storage.persistentVolumeClaim=pvc \
+--set somaxconn=1024
 ```
 
 可用值:
