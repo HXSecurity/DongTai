@@ -37,7 +37,7 @@
 2. 安装
 
    ```
-   helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast --set storage.persistentVolumeClaim=pvc
+   helm install project --create-namespace -n dongtai dongtai/dongtai-iast --set storage.persistentVolumeClaim=pvc
    ```
    
    这个命令将会在dongtai命名空间部署 `Dongtai` 服务,并且使用 `ClusterIP` 方式暴露服务.
@@ -63,14 +63,14 @@ redis:
 ```
 
 ``` shell script
-helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast \
+helm install project --create-namespace -n dongtai dongtai/dongtai-iast \
 --values /tmp/my-values.yaml
 ```
 
 你也可以使用 `--set`来覆盖单个值, 例如: 你可以使用 `--set` 将 `ClusterIP` 切换成 `NodePort` 
 
 ```shell
-helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast \
+helm install project --create-namespace -n dongtai dongtai/dongtai-iast \
 --set storage.persistentVolumeClaim=pvc \
 --set accessType=NodePort --set NodePort=30080 \
 --set tag=1.8.5
@@ -78,7 +78,7 @@ helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast \
 如果你需要修改 somaxconn (128) 
 
 ```
-helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast \
+helm install project --create-namespace -n dongtai dongtai/dongtai-iast \
 --set storage.persistentVolumeClaim=pvc \
 --set somaxconn=1024
 ```
@@ -93,7 +93,7 @@ helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast \
 
 #### 卸载
 ```
-helm uninstall ProjectName -n dongtai
+helm uninstall project -n dongtai
 ```
 
 
@@ -110,6 +110,6 @@ kubectl scale deployments ${deployment-names} --replicas=${count} -n ${your-name
 如果需要yaml文件直接部署，请使用如下命令导出
 
 ```
-helm install --dry-run ProjectName -n default dongtai/dongtai-iast
+helm install --dry-run project -n default dongtai/dongtai-iast
 ```
 
