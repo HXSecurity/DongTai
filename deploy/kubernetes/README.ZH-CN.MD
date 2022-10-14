@@ -87,7 +87,7 @@ helm install ProjectName --create-namespace -n dongtai dongtai/dongtai-iast --se
 
 #### 卸载
 ```
-helm uninstall dongtai -n dongtai
+helm uninstall ProjectName -n dongtai
 ```
 
 
