@@ -88,9 +88,40 @@ volumeMounts:
   - name: {{ template "dongtai.fullname" . }}-log-path
     mountPath: /tmp/logstash
 {{- end -}}
-{{- define "deploy.imagePullPolicy" -}}
-imagePullPolicy: Always
+
+{{- define "deploy.configmax" -}}
+{{ include "deploy.imagePullPolicy" . }}
+resources:
+  limits:
+    cpu: 2000m
+    memory: 4000Mi
+  requests:
+    cpu: "1000m"
+    memory: 2000Mi
+volumeMounts:
+  - name: {{ template "dongtai.fullname" . }}-configfile
+    mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
+    subPath: config.ini
+  - name: {{ template "dongtai.fullname" . }}-log-path
+    mountPath: /tmp/logstash
 {{- end -}}
+{{- define "deploy.imagePullPolicy" -}}
+imagePullPolicy: {{.Values.imagePullPolicy}}
+{{- end -}}
+
+{{- define "deploy.initContainers" -}}
+initContainers:
+  - image: busybox
+    command:
+    - sh
+    - -c
+    - echo {{.Values.somaxconn}} > /proc/sys/net/core/somaxconn
+    imagePullPolicy: Always
+    name: setsysctl
+    securityContext:
+      privileged: true
+{{- end -}}
+
 
 {{- define "deploy.resources" -}}
 resources:
@@ -173,8 +204,9 @@ Create the name of the service account to use
     method_pool_index = dongtai-iast-alias-dongtai-v1-method-pool
     asset_vul_index = dongtai-iast-alias-dongtai-v1-asset-vul
     [other]
-    logging_level = INFO
+    logging_level = {{.Values.logging_level}}
     cache_preheat = True
+    domain_vul = {{.Values.Dongtai_url}}
 {{- end -}}
 
 {{/*
