@@ -64,6 +64,9 @@ spec:
         app: {{ template "dongtai.fullname" . }}-server
         {{- include "dongtai.labels" .  | nindent 8 }}
     spec:
+      {{- if .Values.somaxconn }}
+      {{- include "deploy.initContainers" . | nindent 6 }}
+      {{- end }}
       containers:
         - name: {{ template "dongtai.fullname" . }}-server-container
           image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
@@ -174,39 +177,6 @@ spec:
       {{- include "deploy.config.vo" . | nindent 6 }}
 
 ---
-# dongtai-worker-other服务
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ template "dongtai.fullname" . }}-worker-other
-  namespace: {{.Release.Namespace}}
-  annotations:
-    kubesphere.io/description: {{ template "dongtai.fullname" . }}-worker-other
-  labels:
-    app: {{ template "dongtai.fullname" . }}-worker-other
-    {{- include "dongtai.labels" .  | nindent 4 }}
-spec:
-  replicas: {{.Values.replicaCount}}
-  selector:
-    matchLabels:
-      app: {{ template "dongtai.fullname" . }}-worker-other
-      {{- include "dongtai.labels" .  | nindent 6 }}
-  template:
-    metadata:
-      labels:
-        app: {{ template "dongtai.fullname" . }}-worker-other
-        {{- include "dongtai.labels" .  | nindent 8 }}
-    spec:
-      containers:
-        - name: {{ template "dongtai.fullname" . }}-worker-other-container
-          image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
-          command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
-          args: [ "worker-other" ]
-          env:
-            - name: DONGTAI_CONCURRENCY
-              value: --concurrency=2
-          {{- include "deploy.config" . | nindent 10 }}
-      {{- include "deploy.config.vo" . | nindent 6 }}
 # dongtai-worker-sca服务
 apiVersion: apps/v1
 kind: Deployment
@@ -240,6 +210,110 @@ spec:
               value: -P gevent --concurrency=10
           {{- include "deploy.config" . | nindent 10 }}
       {{- include "deploy.config.vo" . | nindent 6 }}
+---
+{{- if .Values.max }}
+# dongtai-worker-report-only服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "dongtai.fullname" . }}-worker-report-only
+  namespace: {{.Release.Namespace}}
+  annotations:
+    kubesphere.io/description: {{ template "dongtai.fullname" . }}-worker-report-only
+  labels:
+    app: {{ template "dongtai.fullname" . }}-worker-report-only
+    {{- include "dongtai.labels" .  | nindent 4 }}
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{ template "dongtai.fullname" . }}-worker-report-only
+      {{- include "dongtai.labels" .  | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "dongtai.fullname" . }}-worker-report-only
+        {{- include "dongtai.labels" .  | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ template "dongtai.fullname" . }}-worker-report-only-container
+          image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
+          command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
+          args: [ "worker-report-only" ]
+          {{- include "deploy.configmax" . | nindent 10 }}
+      {{- include "deploy.config.vo" . | nindent 6 }}
+---
+# dongtai-worker-chain服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "dongtai.fullname" . }}-worker-chain
+  namespace: {{.Release.Namespace}}
+  annotations:
+    kubesphere.io/description: {{ template "dongtai.fullname" . }}-worker-chain
+  labels:
+    app: {{ template "dongtai.fullname" . }}-worker-chain
+    {{- include "dongtai.labels" .  | nindent 4 }}
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{ template "dongtai.fullname" . }}-worker-chain
+      {{- include "dongtai.labels" .  | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "dongtai.fullname" . }}-worker-chain
+        {{- include "dongtai.labels" .  | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ template "dongtai.fullname" . }}-worker-chain-container
+          image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
+          command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
+          args: [ "worker-chain" ]
+          env:
+            - name: DONGTAI_CONCURRENCY
+              value: --concurrency=12
+          {{- include "deploy.config" . | nindent 10 }}
+      {{- include "deploy.config.vo" . | nindent 6 }}
+---
+{{- end }}
+
+# dongtai-worker-other服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "dongtai.fullname" . }}-worker-other
+  namespace: {{.Release.Namespace}}
+  annotations:
+    kubesphere.io/description: {{ template "dongtai.fullname" . }}-worker-other
+  labels:
+    app: {{ template "dongtai.fullname" . }}-worker-other
+    {{- include "dongtai.labels" .  | nindent 4 }}
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{ template "dongtai.fullname" . }}-worker-other
+      {{- include "dongtai.labels" .  | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "dongtai.fullname" . }}-worker-other
+        {{- include "dongtai.labels" .  | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ template "dongtai.fullname" . }}-worker-other-container
+          image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
+          command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
+          args: [ "worker-other" ]
+          env:
+            - name: DONGTAI_CONCURRENCY
+              value: --concurrency=12
+          {{- include "deploy.config" . | nindent 10 }}
+      {{- include "deploy.config.vo" . | nindent 6 }}
+
+
 ---
 # dongtai-worker-es服务
 apiVersion: apps/v1

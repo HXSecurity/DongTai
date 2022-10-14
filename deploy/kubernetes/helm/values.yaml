@@ -1,20 +1,22 @@
 # Default values for dongtai.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
-replicaCount: 1
-cpu: 1000m
-memory: 1500Mi
-
 # dongtai config
 # appNamespace: dongtai-iast
 skipistio: true
-skipMysql: false
-skipRedis: false
-accessType: ClusterIP
+
 images: registry.cn-beijing.aliyuncs.com/huoxian_pub    # or   dongtai
 tag: latest
+imagePullPolicy: Always
+replicaCount: 1
+cpu: 1000m
+memory: 1500Mi
+accessType: ClusterIP  # NodePort, LoadBalancer, ClusterIP
+NodePort: 30080
+logging_level: INFO # DEBUG, INFO
+somaxconn: null #If system max net.core.somaxconn (128) . Example: somaxconn: 1024
 
+skipMysql: false
 mysql:
   host: dongtai-mysql
   port: 3306
@@ -22,6 +24,7 @@ mysql:
   user: root
   password: dongtai-iast
 
+skipRedis: false
 redis:
   host: dongtai-redis
   port: 6379
