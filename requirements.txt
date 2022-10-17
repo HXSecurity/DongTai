@@ -9,7 +9,7 @@ attrs==22.1.0 ; python_version >= '3.5'
 billiard==3.6.4.0
 boto3==1.24.59
 boto3-stubs==1.24.72
-botocore==1.27.89 ; python_version >= '3.7'
+botocore==1.27.91
 botocore-stubs==1.27.71
 celery==5.2.7
 certifi==2020.11.8
@@ -59,7 +59,7 @@ idna==2.10
 inflection==0.5.1 ; python_version >= '3.5'
 itypes==1.2.0
 jinja2==3.1.2 ; python_version >= '3.7'
-jmespath==0.10.0 ; python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2'
+jmespath==0.10.0 ; python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'
 jq==1.2.1
 jsonlog==4.0.0
 jsonschema==4.16.0 ; python_version >= '3.7'
@@ -86,7 +86,7 @@ pyparsing==3.0.9 ; python_full_version >= '3.6.8'
 pyre2==0.3.6
 pyrsistent==0.18.1 ; python_version >= '3.7'
 python-crontab==2.6.0
-python-dateutil==2.8.2 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2'
+python-dateutil==2.8.2 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 python-docx==0.8.11
 python-json-logger==2.0.4
 pytz==2022.4
@@ -95,7 +95,7 @@ redis==3.5.3
 requests==2.25.1
 result==0.8.0
 s3transfer==0.6.0 ; python_version >= '3.7'
-setuptools==65.4.1 ; python_version >= '3.7'
+setuptools==65.5.0
 simhash==2.1.2
 six==1.15.0
 sqlparse==0.4.3 ; python_version >= '3.5'
