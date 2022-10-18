@@ -7,6 +7,7 @@
 from django.db import models
 from dongtai_common.utils.settings import get_managed
 from dongtai_common.models.program_language import IastProgramLanguage
+from dongtai_common.models.user import User
 
 class HookType(models.Model):
     type = models.IntegerField(blank=True, null=True)
@@ -15,7 +16,11 @@ class HookType(models.Model):
     enable = models.IntegerField(blank=True, null=True)
     create_time = models.IntegerField(blank=True, null=True)
     update_time = models.IntegerField(blank=True, null=True)
-    created_by = models.IntegerField(blank=True, null=True)
+    created_by = models.ForeignKey(User,
+                                   db_column='created_by',
+                                   blank=True,
+                                   null=True,
+                                   on_delete=models.DO_NOTHING)
     language = models.ForeignKey(IastProgramLanguage,
                                  blank=True,
                                  default='',

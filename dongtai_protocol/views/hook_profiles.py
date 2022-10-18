@@ -19,54 +19,79 @@ from dongtai_protocol.api_schema import DongTaiParameter
 
 logger = logging.getLogger("django")
 JAVA = 1
-LANGUAGE_DICT = {'JAVA': 1, 'PYTHON': 2, 'PHP': 3, 'G0': 4}
+LANGUAGE_DICT = {'JAVA': 1, 'PYTHON': 2, 'PHP': 3, 'GO': 4}
+
+STATE_DICT = {"enable": 1, "disable": 0, "delete": -1}
+
+
+def convert_strategy(strategy: IastStrategyModel):
+    strategy.value = strategy.vul_type
+    strategy.name = strategy.vul_name
+    strategy.enable = STATE_DICT[strategy.state]
+    strategy.type = 4
+    return strategy
 
 class HookProfilesEndPoint(OpenApiEndPoint):
     name = "api-v1-profiles"
     description = "获取HOOK策略"
 
     @staticmethod
-    def get_profiles(user=None, language_id=JAVA):
+    def get_profiles(user=None, language_id=JAVA, full=False):
         profiles = list()
-        hook_types = HookType.objects.filter(vul_strategy__state='enable',
-                                             vul_strategy__user_id__in=set(
-                                                 [1, user.id]),
-                                             language_id=language_id,
-                                             enable=const.HOOK_TYPE_ENABLE,
-                                             type__in=(3, 4))
-        hook_types_a = HookType.objects.filter(language_id=language_id,
-                                               enable=const.HOOK_TYPE_ENABLE,
-                                               type__in=(1, 2))
+        hook_types = IastStrategyModel.objects.filter(
+            state='enable',
+            user_id__in=set([1, user.id]) if user else [1],
+        ).order_by('id')
+        hook_types_a = HookType.objects.filter(
+            language_id=language_id,
+            enable=const.HOOK_TYPE_ENABLE,
+            created_by__in=set([1, user.id]) if user else [1],
+            type__in=(1, 2, 3)).order_by('id')
         for hook_type in list(hook_types) + list(hook_types_a):
             strategy_details = list()
-
-            profiles.append({
-                'type': hook_type.type,
-                'enable': hook_type.enable,
-                'value': hook_type.value,
-                'details': strategy_details
-            })
+            if isinstance(hook_type, IastStrategyModel):
+                hook_type = convert_strategy(hook_type)
             strategies = hook_type.strategies.filter(
                 created_by__in=[1, user.id] if user else [1],
-                enable=const.HOOK_TYPE_ENABLE).values()
-            for strategy in strategies:
-                strategy_details.append({
-                    "source": strategy.get("source"),
-                    "track": strategy.get("track"),
-                    "target": strategy.get("target"),
-                    "value": strategy.get("value"),
-                    "inherit": strategy.get("inherit")
+                enable=const.HOOK_TYPE_ENABLE).order_by('id')
+            if full:
+                from django.forms.models import model_to_dict
+                profile = model_to_dict(hook_type,
+                                        exclude=[
+                                            'id', 'vul_strategy',
+                                            'create_time', 'update_time'
+                                        ])
+                profile['details'] = [
+                    model_to_dict(i,
+                                  exclude=[
+                                      "id", "hooktype", "create_time",
+                                      "update_time"
+                                  ]) for i in strategies
+                ]
+                profiles.append(profile)
+            else:
+                profiles.append({
+                    'type': hook_type.type,
+                    'enable': hook_type.enable,
+                    'value': hook_type.value,
+                    'details': strategy_details
                 })
+                for strategy in strategies.values():
+                    strategy_details.append({
+                        "source": strategy.get("source"),
+                        "track": strategy.get("track"),
+                        "target": strategy.get("target"),
+                        "value": strategy.get("value"),
+                        "inherit": strategy.get("inherit")
+                    })
         return profiles
 
-    @extend_schema(
-        description='Pull Agent Engine Hook Rule',
-        parameters=[
-            DongTaiParameter.LANGUAGE,
-        ],
-        responses=R,
-        methods=['GET']
-    )
+    @extend_schema(description='Pull Agent Engine Hook Rule',
+                   parameters=[
+                       DongTaiParameter.LANGUAGE,
+                   ],
+                   responses=R,
+                   methods=['GET'])
     def get(self, request):
         user = request.user
 
@@ -78,12 +103,12 @@ class HookProfilesEndPoint(OpenApiEndPoint):
 
         return R.success(data=profiles)
 
+
 #    def put(self, request):
 #        pass
 #
 #    def post(self):
 #        pass
-
 
 if __name__ == '__main__':
     strategy_count = HookStrategy.objects.count()
