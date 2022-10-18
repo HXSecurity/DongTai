@@ -1,0 +1,616 @@
+[
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "smtp-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "ssrf",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unsafe-xml-decode",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "cmd-injection",
+        "details": [
+            {
+                "source": "P",
+                "track": "true",
+                "target": "",
+                "value": ".system",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "true",
+                "target": "",
+                "value": ".passthru",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "true",
+                "target": "",
+                "value": ".exec",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "true",
+                "target": "",
+                "value": ".shell_exec",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "true",
+                "target": "",
+                "value": ".popen",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "true",
+                "target": "",
+                "value": ".proc_open",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "true",
+                "target": "",
+                "value": ".pcntl_exec",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "sql-injection",
+        "details": [
+            {
+                "source": "P",
+                "track": "true",
+                "target": "",
+                "value": ".mysqli_query",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "true",
+                "target": "",
+                "value": ".mysqli_multi_query",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "ldap-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "xpath-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "path-traversal",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "xxe",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "expression-language-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "redos",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "reflection-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unsafe-json-deserialize",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "hql-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "nosql-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unsafe-readline",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unvalidated-forward",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unvalidated-redirect",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "header-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "dynamic-library-load",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "Response Without Content-Security-Policy Header",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "Response With X-XSS-Protection Disabled",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "Response With Insecurely Configured Strict-Transport-Security Header",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "Pages Without Anti-Clickjacking Controls",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "Response Without X-Content-Type-Options Header",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "smtp-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "ssrf",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unsafe-xml-decode",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "cmd-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "sql-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "ldap-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "xpath-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "path-traversal",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "xxe",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "expression-language-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "redos",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "reflection-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unsafe-json-deserialize",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "hql-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "nosql-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unsafe-readline",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unvalidated-forward",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unvalidated-redirect",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "header-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "dynamic-library-load",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Response Without Content-Security-Policy Header",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Response With X-XSS-Protection Disabled",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Response With Insecurely Configured Strict-Transport-Security Header",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Pages Without Anti-Clickjacking Controls",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Response Without X-Content-Type-Options Header",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "\u8eab\u4efd\u8ba4\u8bc1",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "\u8eab\u4efd\u8ba4\u8bc1",
+        "details": []
+    },
+    {
+        "type": 1,
+        "enable": 1,
+        "value": "general-rules",
+        "details": [
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": ".ZEND_ROPE_END",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "basename",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "dirname",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "explode",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "implode",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "join",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "ltrim",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "mysqli_real_escape_string",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "pathinfo",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "rtrim",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "split",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "sprintf",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "str_ireplace",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "str_pad",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "str_replace",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "stripslashes",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "strstr",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "strtolower",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "strtoupper",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "strval",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "substr",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "trim",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "vsprintf",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": ".ZEND_ASSIGN_CONCAT",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": ".ZEND_CONCAT",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": ".ZEND_INIT_USER_CALL",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": ".ZEND_ECHO",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": ".ZEND_EXIT",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": ".ZEND_INCLUDE_OR_EVAL",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": ".ZEND_RETURN",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 2,
+        "enable": 1,
+        "value": "GET",
+        "details": [
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": ".$_GET",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 1,
+        "enable": 1,
+        "value": "general-rules",
+        "details": []
+    }
+]

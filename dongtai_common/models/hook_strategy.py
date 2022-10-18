@@ -9,26 +9,27 @@ from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.utils.settings import get_managed
+from dongtai_common.models.program_language import IastProgramLanguage
 
 
-class PermissionsMixin(models.Model):
-    type = models.ManyToManyField(
-        HookType,
-        verbose_name=_('type'),
-        blank=True,
-        help_text=_(
-            'The department this user belongs to. A user will get all permissions '
-            'granted to each of their department.'
-        ),
-        related_name="strategies",
-        related_query_name="strategy",
-    )
+#class PermissionsMixin(models.Model):
+#    type = models.ManyToManyField(
+#        HookType,
+#        verbose_name=_('type'),
+#        blank=True,
+#        help_text=_(
+#            'The department this user belongs to. A user will get all permissions '
+#            'granted to each of their department.'
+#        ),
+#        related_name="strategies",
+#        related_query_name="strategy",
+#    )
+#
+#    class Meta:
+#        abstract = True
 
-    class Meta:
-        abstract = True
 
-
-class HookStrategy(PermissionsMixin):
+class HookStrategy(models.Model):
     value = models.CharField(max_length=255, blank=True, null=True)
     source = models.CharField(max_length=255, blank=True, null=True)
     target = models.CharField(max_length=255, blank=True, null=True)
@@ -38,6 +39,35 @@ class HookStrategy(PermissionsMixin):
     update_time = models.IntegerField(blank=True, null=True)
     created_by = models.IntegerField(blank=True, null=True, )
     enable = models.IntegerField(blank=True, null=False, default=1)
+    #    language = models.ForeignKey(IastProgramLanguage,
+    #                                 blank=True,
+    #                                 default='',
+    #                                 on_delete=models.DO_NOTHING,
+    #                                 db_constraint=False)
+    #    type = models.IntegerField(blank=True, null=True)
+
+    hooktype = models.ForeignKey(
+        HookType,
+        verbose_name=_('type'),
+        blank=True,
+        null=True,
+        help_text=_(
+            'The department this user belongs to. A user will get all permissions '
+            'granted to each of their department.'),
+        related_name="strategies",
+        related_query_name="strategy",
+        on_delete=models.DO_NOTHING,
+    )
+    strategy = models.ForeignKey(
+        'dongtai_common.IastStrategyModel',
+        blank=True,
+        default=0,
+        on_delete=models.DO_NOTHING,
+        db_column='strategy_id',
+        db_constraint=False,
+        related_name="strategies",
+        related_query_name="strategy",
+    )
 
     class Meta:
         managed = get_managed()

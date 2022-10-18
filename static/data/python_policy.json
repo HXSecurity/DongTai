@@ -1,0 +1,1131 @@
+[
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "path-traversal",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "sql-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "path-traversal",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "path-traversal",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "sql-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "path-traversal",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "smtp-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "ssrf",
+        "details": [
+            {
+                "source": "P3,url",
+                "track": "true",
+                "target": "",
+                "value": "urllib.request.urlopen",
+                "inherit": "false"
+            },
+            {
+                "source": "P3,url",
+                "track": "true",
+                "target": "",
+                "value": "requests.sessions.Session.request",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unsafe-xml-decode",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "cmd-injection",
+        "details": [
+            {
+                "source": "P1,command",
+                "track": "true",
+                "target": "",
+                "value": "os.system",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,cmd",
+                "track": "true",
+                "target": "",
+                "value": "os.popen",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,args",
+                "track": "true",
+                "target": "",
+                "value": "subprocess.Popen",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "sql-injection",
+        "details": [
+            {
+                "source": "P2",
+                "track": "true",
+                "target": "",
+                "value": "sqlite3.Cursor.execute",
+                "inherit": "false"
+            },
+            {
+                "source": "P2",
+                "track": "true",
+                "target": "",
+                "value": "sqlite3.Cursor.executemany",
+                "inherit": "false"
+            },
+            {
+                "source": "P2",
+                "track": "true",
+                "target": "",
+                "value": "sqlite3.Cursor.executescript",
+                "inherit": "false"
+            },
+            {
+                "source": "P2,query",
+                "track": "true",
+                "target": "",
+                "value": "psycopg2._psycopg.cursor.execute",
+                "inherit": "false"
+            },
+            {
+                "source": "P2,query",
+                "track": "true",
+                "target": "",
+                "value": "psycopg2._psycopg.cursor.executemany",
+                "inherit": "false"
+            },
+            {
+                "source": "P2,operation",
+                "track": "true",
+                "target": "",
+                "value": "mysql.connector.cursor.CursorBase.execute",
+                "inherit": "false"
+            },
+            {
+                "source": "P2,operation",
+                "track": "true",
+                "target": "",
+                "value": "mysql.connector.cursor.CursorBase.executemany",
+                "inherit": "false"
+            },
+            {
+                "source": "P2,query",
+                "track": "true",
+                "target": "",
+                "value": "MySQLdb.cursors.BaseCursor.execute",
+                "inherit": "false"
+            },
+            {
+                "source": "P2,query",
+                "track": "true",
+                "target": "",
+                "value": "MySQLdb.cursors.BaseCursor.executemany",
+                "inherit": "false"
+            },
+            {
+                "source": "P2,query",
+                "track": "true",
+                "target": "",
+                "value": "pymysql.cursors.Cursor.execute",
+                "inherit": "false"
+            },
+            {
+                "source": "P2,query",
+                "track": "true",
+                "target": "",
+                "value": "pymysql.cursors.Cursor.executemany",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "ldap-injection",
+        "details": [
+            {
+                "source": "P3,search_filter",
+                "track": "true",
+                "target": "",
+                "value": "ldap3.core.connection.Connection.search",
+                "inherit": "false"
+            },
+            {
+                "source": "P4,filterstr",
+                "track": "true",
+                "target": "",
+                "value": "ldap.ldapobject.SimpleLDAPObject.search_ext",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "xpath-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "path-traversal",
+        "details": [
+            {
+                "source": "P1,file",
+                "track": "true",
+                "target": "",
+                "value": "builtins.open",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "xxe",
+        "details": [
+            {
+                "source": "P1,text",
+                "track": "true",
+                "target": "",
+                "value": "lxml.etree.fromstring",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,source",
+                "track": "true",
+                "target": "",
+                "value": "lxml.etree.parse",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "expression-language-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "redos",
+        "details": [
+            {
+                "source": "P1,pattern",
+                "track": "true",
+                "target": "",
+                "value": "re.search",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,pattern",
+                "track": "true",
+                "target": "",
+                "value": "re.sub",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,pattern",
+                "track": "true",
+                "target": "",
+                "value": "re.subn",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,pattern",
+                "track": "true",
+                "target": "",
+                "value": "re.split",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,pattern",
+                "track": "true",
+                "target": "",
+                "value": "re.findall",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,pattern",
+                "track": "true",
+                "target": "",
+                "value": "re.finditer",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "reflection-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unsafe-json-deserialize",
+        "details": [
+            {
+                "source": "P2,stream",
+                "track": "true",
+                "target": "",
+                "value": "yaml.loader.FullLoader.__init__",
+                "inherit": "false"
+            },
+            {
+                "source": "P2,stream",
+                "track": "true",
+                "target": "",
+                "value": "yaml.loader.UnsafeLoader.__init__",
+                "inherit": "false"
+            },
+            {
+                "source": "P2,stream",
+                "track": "true",
+                "target": "",
+                "value": "yaml.loader.Loader.__init__",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,stream",
+                "track": "true",
+                "target": "",
+                "value": "yaml.unsafe_load",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,stream",
+                "track": "true",
+                "target": "",
+                "value": "yaml.load",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,file",
+                "track": "true",
+                "target": "",
+                "value": "pickle.load",
+                "inherit": "all"
+            },
+            {
+                "source": "P1,data",
+                "track": "true",
+                "target": "",
+                "value": "pickle.loads",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,stream",
+                "track": "true",
+                "target": "",
+                "value": "yaml.unsafe_load_all",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,stream",
+                "track": "true",
+                "target": "",
+                "value": "yaml.load_all",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "hql-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "nosql-injection",
+        "details": [
+            {
+                "source": "P2,filter",
+                "track": "true",
+                "target": "",
+                "value": "pymongo.collection.Collection.find",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unsafe-readline",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unvalidated-forward",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unvalidated-redirect",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "header-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "dynamic-library-load",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "Response Without Content-Security-Policy Header",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "Response With X-XSS-Protection Disabled",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "Response With Insecurely Configured Strict-Transport-Security Header",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "Pages Without Anti-Clickjacking Controls",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "Response Without X-Content-Type-Options Header",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "xxe",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "ssrf",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "path-traversal",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "sql-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "path-traversal",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "sql-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "smtp-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "ssrf",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unsafe-xml-decode",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "cmd-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "sql-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "ldap-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "xpath-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "path-traversal",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "xxe",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "expression-language-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "redos",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "reflection-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unsafe-json-deserialize",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "hql-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "nosql-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unsafe-readline",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unvalidated-forward",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unvalidated-redirect",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "header-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "dynamic-library-load",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Response Without Content-Security-Policy Header",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Response With X-XSS-Protection Disabled",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Response With Insecurely Configured Strict-Transport-Security Header",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Pages Without Anti-Clickjacking Controls",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Response Without X-Content-Type-Options Header",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "xxe",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "ssrf",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "\u8eab\u4efd\u8ba4\u8bc1",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "\u8eab\u4efd\u8ba4\u8bc1",
+        "details": []
+    },
+    {
+        "type": 2,
+        "enable": 1,
+        "value": "path-traversal",
+        "details": []
+    },
+    {
+        "type": 1,
+        "enable": 1,
+        "value": "path-traversal",
+        "details": []
+    },
+    {
+        "type": 1,
+        "enable": 1,
+        "value": "general-rules",
+        "details": [
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "Crypto.Cipher.Blowfish.new",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "Crypto.Cipher.DES.new",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "Cryptodome.Cipher.Blowfish.new",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "Cryptodome.Cipher.DES.new",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.format",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.join",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.lower",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.ljust",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.rjust",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.split",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.translate",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,s",
+                "track": "false",
+                "target": "R",
+                "value": "json.loads",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,obj",
+                "track": "false",
+                "target": "R",
+                "value": "json.dumps",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "os.path.join",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "flask.jsonify",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "django.template.base.Template.render",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "django.template.base.render_value_in_context",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,string",
+                "track": "false",
+                "target": "R",
+                "value": "urllib.parse.unquote",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.encode",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.fstring",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.cformat",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.bytes.cformat",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.bytearray.cformat",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.bytes.decode",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,source",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.bytearray.__init__",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,source",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.bytes.__new__",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,object",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.__new__",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.bytearray.decode",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.capitalize",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.casefold",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.center",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.concat",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.lstrip",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.partition",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.removeprefix",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.removesuffix",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.repeat",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.rpartition",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.rsplit",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.rstrip",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.splitlines",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.strip",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.swapcase",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.title",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.upper",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.zfill",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,s",
+                "track": "false",
+                "target": "R",
+                "value": "base64.b64encode",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,s",
+                "track": "false",
+                "target": "R",
+                "value": "base64.b64decode",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,data",
+                "track": "false",
+                "target": "R",
+                "value": "yaml.dump",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,documents",
+                "track": "false",
+                "target": "R",
+                "value": "yaml.dump_all",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.replace",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "builtins.str.fstring",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 2,
+        "enable": 1,
+        "value": "general-rules",
+        "details": [
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "django.utils.datastructures.MultiValueDict.get",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "django.utils.datastructures.MultiValueDict.__getitem__",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "django.http.request.HttpRequest.read",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "werkzeug.datastructures.getlist",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "werkzeug.datastructures.TypeConversionDict.get",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "werkzeug.datastructures.MultiDict.__getitem__",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "werkzeug.wrappers.request.Request.get_data",
+                "inherit": "false"
+            },
+            {
+                "source": "P2,path",
+                "track": "false",
+                "target": "R",
+                "value": "django.urls.resolvers.RoutePattern.match",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "werkzeug.wrappers.base_request.BaseRequest.get_data",
+                "inherit": "all"
+            }
+        ]
+    },
+    {
+        "type": 1,
+        "enable": 1,
+        "value": "path-traversal",
+        "details": []
+    },
+    {
+        "type": 2,
+        "enable": 1,
+        "value": "path-traversal",
+        "details": []
+    }
+]

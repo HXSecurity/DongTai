@@ -1,0 +1,971 @@
+[
+    {
+        "type": 4,
+        "name": "SMTP\u6ce8\u5165",
+        "name_en": "SMTP Injection",
+        "name_zh": "SMTP\u6ce8\u5165",
+        "value": "smtp-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "\u670d\u52a1\u5668\u7aef\u8bf7\u6c42\u4f2a\u9020",
+        "name_en": "Server-Side Request Forgery (SSRF)",
+        "name_zh": "\u670d\u52a1\u5668\u7aef\u8bf7\u6c42\u4f2a\u9020",
+        "value": "ssrf",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "\u4e0d\u5b89\u5168\u7684XMl Decode",
+        "name_en": "Unsafe XML Decoding",
+        "name_zh": "\u4e0d\u5b89\u5168\u7684XMl Decode",
+        "value": "unsafe-xml-decode",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "\u547d\u4ee4\u6267\u884c ",
+        "name_en": "OS Command Injection",
+        "name_zh": "\u547d\u4ee4\u6267\u884c ",
+        "value": "cmd-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": [
+            {
+                "value": ".system",
+                "source": "P",
+                "target": "",
+                "inherit": "false",
+                "track": "true",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": ".passthru",
+                "source": "P",
+                "target": "",
+                "inherit": "false",
+                "track": "true",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": ".exec",
+                "source": "P",
+                "target": "",
+                "inherit": "false",
+                "track": "true",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": ".shell_exec",
+                "source": "P",
+                "target": "",
+                "inherit": "false",
+                "track": "true",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": ".popen",
+                "source": "P",
+                "target": "",
+                "inherit": "false",
+                "track": "true",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": ".proc_open",
+                "source": "P",
+                "target": "",
+                "inherit": "false",
+                "track": "true",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": ".pcntl_exec",
+                "source": "P",
+                "target": "",
+                "inherit": "false",
+                "track": "true",
+                "created_by": 1,
+                "enable": 1
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "name": "Sql\u6ce8\u5165",
+        "name_en": "SQL Injection",
+        "name_zh": "Sql\u6ce8\u5165",
+        "value": "sql-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": [
+            {
+                "value": ".mysqli_query",
+                "source": "P",
+                "target": "",
+                "inherit": "false",
+                "track": "true",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": ".mysqli_multi_query",
+                "source": "P",
+                "target": "",
+                "inherit": "false",
+                "track": "true",
+                "created_by": 1,
+                "enable": 1
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "name": "LDAP\u6ce8\u5165",
+        "name_en": "LDAP Injection",
+        "name_zh": "LDAP\u6ce8\u5165",
+        "value": "ldap-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "XPATH\u6ce8\u5165",
+        "name_en": "XPath Injection",
+        "name_zh": "XPATH\u6ce8\u5165",
+        "value": "xpath-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "\u8def\u5f84\u7a7f\u8d8a",
+        "name_en": "Path Traversal",
+        "name_zh": "\u8def\u5f84\u7a7f\u8d8a",
+        "value": "path-traversal",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "XML\u5916\u90e8\u5b9e\u4f53\u6ce8\u5165",
+        "name_en": "XML External Entity Injection (XXE)",
+        "name_zh": "XML\u5916\u90e8\u5b9e\u4f53\u6ce8\u5165",
+        "value": "xxe",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "\u8868\u8fbe\u5f0f\u6ce8\u5165",
+        "name_en": "Expression Language Injection",
+        "name_zh": "\u8868\u8fbe\u5f0f\u6ce8\u5165",
+        "value": "expression-language-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "\u6b63\u5219\u8868\u8fbe\u5f0fDos\u653b\u51fb",
+        "name_en": "Regular Expression DoS",
+        "name_zh": "\u6b63\u5219\u8868\u8fbe\u5f0fDos\u653b\u51fb",
+        "value": "redos",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "\u53cd\u5c04\u6ce8\u5165",
+        "name_en": "Reflection Injection",
+        "name_zh": "\u53cd\u5c04\u6ce8\u5165",
+        "value": "reflection-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "\u4e0d\u5b89\u5168\u7684\u53cd\u5e8f\u5217\u5316",
+        "name_en": "Untrusted Deserialization",
+        "name_zh": "\u4e0d\u5b89\u5168\u7684\u53cd\u5e8f\u5217\u5316",
+        "value": "unsafe-json-deserialize",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "Hql\u6ce8\u5165",
+        "name_en": "Hibernate Injection",
+        "name_zh": "Hql\u6ce8\u5165",
+        "value": "hql-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "NoSql\u6ce8\u5165",
+        "name_en": "NoSQL Injection",
+        "name_zh": "NoSql\u6ce8\u5165",
+        "value": "nosql-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "\u4e0d\u5b89\u5168\u7684readline",
+        "name_en": "Use of readLine on Untrusted Streams",
+        "name_zh": "\u4e0d\u5b89\u5168\u7684readline",
+        "value": "unsafe-readline",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "\u4e0d\u5b89\u5168\u7684\u8f6c\u53d1",
+        "name_en": "Arbitrary Server Side Forwards",
+        "name_zh": "\u4e0d\u5b89\u5168\u7684\u8f6c\u53d1",
+        "value": "unvalidated-forward",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "\u4e0d\u5b89\u5168\u7684\u91cd\u5b9a\u5411",
+        "name_en": "Unvalidated Redirect",
+        "name_zh": "\u4e0d\u5b89\u5168\u7684\u91cd\u5b9a\u5411",
+        "value": "unvalidated-redirect",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "Header\u5934\u6ce8\u5165",
+        "name_en": "Header Injection",
+        "name_zh": "Header\u5934\u6ce8\u5165",
+        "value": "header-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "\u52a8\u6001\u5e93\u52a0\u8f7d",
+        "name_en": "JNI Injection",
+        "name_zh": "\u52a8\u6001\u5e93\u52a0\u8f7d",
+        "value": "dynamic-library-load",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "\u6ca1\u6709Content-Security-Policy\u7684\u54cd\u5e94",
+        "name_en": "Response Without Content-Security-Policy Header",
+        "name_zh": "\u6ca1\u6709Content-Security-Policy\u7684\u54cd\u5e94",
+        "value": "Response Without Content-Security-Policy Header",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "\u7981\u7528 X-XSS-Protection \u7684\u54cd\u5e94",
+        "name_en": "Response With X-XSS-Protection Disabled",
+        "name_zh": "\u7981\u7528 X-XSS-Protection \u7684\u54cd\u5e94",
+        "value": "Response With X-XSS-Protection Disabled",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "\u4f7f\u7528\u4e0d\u5b89\u5168\u914d\u7f6e\u7684 Strict-Transport-Security \u6807\u5934\u8fdb\u884c\u54cd\u5e94",
+        "name_en": "Strict-Transport-Security",
+        "name_zh": "\u4f7f\u7528\u4e0d\u5b89\u5168\u914d\u7f6e\u7684 Strict-Transport-Security \u6807\u5934\u8fdb\u884c\u54cd\u5e94",
+        "value": "Response With Insecurely Configured Strict-Transport-Security Header",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "\u6ca1\u6709\u53cd\u70b9\u51fb\u52ab\u6301\u63a7\u5236\u7684\u9875\u9762",
+        "name_en": "Pages Without Anti-Clickjacking Controls",
+        "name_zh": "\u6ca1\u6709\u53cd\u70b9\u51fb\u52ab\u6301\u63a7\u5236\u7684\u9875\u9762",
+        "value": "Pages Without Anti-Clickjacking Controls",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "\u6ca1\u6709 X-Content-Type-Options \u6807\u5934\u7684\u54cd\u5e94",
+        "name_en": "Response Without X-Content-Type-Options Header",
+        "name_zh": "\u6ca1\u6709 X-Content-Type-Options \u6807\u5934\u7684\u54cd\u5e94",
+        "value": "Response Without X-Content-Type-Options Header",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "SMTP\u6ce8\u5165",
+        "name_en": "SMTP Injection",
+        "name_zh": "SMTP\u6ce8\u5165",
+        "value": "smtp-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "\u670d\u52a1\u5668\u7aef\u8bf7\u6c42\u4f2a\u9020",
+        "name_en": "Server-Side Request Forgery (SSRF)",
+        "name_zh": "\u670d\u52a1\u5668\u7aef\u8bf7\u6c42\u4f2a\u9020",
+        "value": "ssrf",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "\u4e0d\u5b89\u5168\u7684XMl Decode",
+        "name_en": "Unsafe XML Decoding",
+        "name_zh": "\u4e0d\u5b89\u5168\u7684XMl Decode",
+        "value": "unsafe-xml-decode",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "\u547d\u4ee4\u6267\u884c ",
+        "name_en": "OS Command Injection",
+        "name_zh": "\u547d\u4ee4\u6267\u884c ",
+        "value": "cmd-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "Sql\u6ce8\u5165",
+        "name_en": "SQL Injection",
+        "name_zh": "Sql\u6ce8\u5165",
+        "value": "sql-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "LDAP\u6ce8\u5165",
+        "name_en": "LDAP Injection",
+        "name_zh": "LDAP\u6ce8\u5165",
+        "value": "ldap-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "XPATH\u6ce8\u5165",
+        "name_en": "XPath Injection",
+        "name_zh": "XPATH\u6ce8\u5165",
+        "value": "xpath-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "\u8def\u5f84\u7a7f\u8d8a",
+        "name_en": "Path Traversal",
+        "name_zh": "\u8def\u5f84\u7a7f\u8d8a",
+        "value": "path-traversal",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "XML\u5916\u90e8\u5b9e\u4f53\u6ce8\u5165",
+        "name_en": "XML External Entity Injection (XXE)",
+        "name_zh": "XML\u5916\u90e8\u5b9e\u4f53\u6ce8\u5165",
+        "value": "xxe",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "\u8868\u8fbe\u5f0f\u6ce8\u5165",
+        "name_en": "Expression Language Injection",
+        "name_zh": "\u8868\u8fbe\u5f0f\u6ce8\u5165",
+        "value": "expression-language-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "\u6b63\u5219\u8868\u8fbe\u5f0fDos\u653b\u51fb",
+        "name_en": "Regular Expression DoS",
+        "name_zh": "\u6b63\u5219\u8868\u8fbe\u5f0fDos\u653b\u51fb",
+        "value": "redos",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "\u53cd\u5c04\u6ce8\u5165",
+        "name_en": "Reflection Injection",
+        "name_zh": "\u53cd\u5c04\u6ce8\u5165",
+        "value": "reflection-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "\u4e0d\u5b89\u5168\u7684\u53cd\u5e8f\u5217\u5316",
+        "name_en": "Untrusted Deserialization",
+        "name_zh": "\u4e0d\u5b89\u5168\u7684\u53cd\u5e8f\u5217\u5316",
+        "value": "unsafe-json-deserialize",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "Hql\u6ce8\u5165",
+        "name_en": "Hibernate Injection",
+        "name_zh": "Hql\u6ce8\u5165",
+        "value": "hql-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "NoSql\u6ce8\u5165",
+        "name_en": "NoSQL Injection",
+        "name_zh": "NoSql\u6ce8\u5165",
+        "value": "nosql-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "\u4e0d\u5b89\u5168\u7684readline",
+        "name_en": "Use of readLine on Untrusted Streams",
+        "name_zh": "\u4e0d\u5b89\u5168\u7684readline",
+        "value": "unsafe-readline",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "\u4e0d\u5b89\u5168\u7684\u8f6c\u53d1",
+        "name_en": "Arbitrary Server Side Forwards",
+        "name_zh": "\u4e0d\u5b89\u5168\u7684\u8f6c\u53d1",
+        "value": "unvalidated-forward",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "\u4e0d\u5b89\u5168\u7684\u91cd\u5b9a\u5411",
+        "name_en": "Unvalidated Redirect",
+        "name_zh": "\u4e0d\u5b89\u5168\u7684\u91cd\u5b9a\u5411",
+        "value": "unvalidated-redirect",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "Header\u5934\u6ce8\u5165",
+        "name_en": "Header Injection",
+        "name_zh": "Header\u5934\u6ce8\u5165",
+        "value": "header-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "\u52a8\u6001\u5e93\u52a0\u8f7d",
+        "name_en": "JNI Injection",
+        "name_zh": "\u52a8\u6001\u5e93\u52a0\u8f7d",
+        "value": "dynamic-library-load",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "\u6ca1\u6709Content-Security-Policy\u7684\u54cd\u5e94",
+        "name_en": "Response Without Content-Security-Policy Header",
+        "name_zh": "\u6ca1\u6709Content-Security-Policy\u7684\u54cd\u5e94",
+        "value": "Response Without Content-Security-Policy Header",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "\u7981\u7528 X-XSS-Protection \u7684\u54cd\u5e94",
+        "name_en": "Response With X-XSS-Protection Disabled",
+        "name_zh": "\u7981\u7528 X-XSS-Protection \u7684\u54cd\u5e94",
+        "value": "Response With X-XSS-Protection Disabled",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "\u4f7f\u7528\u4e0d\u5b89\u5168\u914d\u7f6e\u7684 Strict-Transport-Security \u6807\u5934\u8fdb\u884c\u54cd\u5e94",
+        "name_en": "Strict-Transport-Security",
+        "name_zh": "\u4f7f\u7528\u4e0d\u5b89\u5168\u914d\u7f6e\u7684 Strict-Transport-Security \u6807\u5934\u8fdb\u884c\u54cd\u5e94",
+        "value": "Response With Insecurely Configured Strict-Transport-Security Header",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "\u6ca1\u6709\u53cd\u70b9\u51fb\u52ab\u6301\u63a7\u5236\u7684\u9875\u9762",
+        "name_en": "Pages Without Anti-Clickjacking Controls",
+        "name_zh": "\u6ca1\u6709\u53cd\u70b9\u51fb\u52ab\u6301\u63a7\u5236\u7684\u9875\u9762",
+        "value": "Pages Without Anti-Clickjacking Controls",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "\u6ca1\u6709 X-Content-Type-Options \u6807\u5934\u7684\u54cd\u5e94",
+        "name_en": "Response Without X-Content-Type-Options Header",
+        "name_zh": "\u6ca1\u6709 X-Content-Type-Options \u6807\u5934\u7684\u54cd\u5e94",
+        "value": "Response Without X-Content-Type-Options Header",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 3,
+        "name": "\u8eab\u4efd\u8ba4\u8bc1",
+        "name_en": null,
+        "name_zh": "\u8eab\u4efd\u8ba4\u8bc1",
+        "value": "\u8eab\u4efd\u8ba4\u8bc1",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 4,
+        "name": "\u8eab\u4efd\u8ba4\u8bc1",
+        "name_en": null,
+        "name_zh": "\u8eab\u4efd\u8ba4\u8bc1",
+        "value": "\u8eab\u4efd\u8ba4\u8bc1",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    },
+    {
+        "type": 1,
+        "name": "general-rules",
+        "name_en": null,
+        "name_zh": "general-rules",
+        "value": "general-rules",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": [
+            {
+                "value": ".ZEND_ROPE_END",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "basename",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "dirname",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "explode",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "implode",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "join",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "ltrim",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "mysqli_real_escape_string",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "pathinfo",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "rtrim",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "split",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "sprintf",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "str_ireplace",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "str_pad",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "str_replace",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "stripslashes",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "strstr",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "strtolower",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "strtoupper",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "strval",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "substr",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "trim",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": "vsprintf",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": ".ZEND_ASSIGN_CONCAT",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": ".ZEND_CONCAT",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": ".ZEND_INIT_USER_CALL",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": ".ZEND_ECHO",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": ".ZEND_EXIT",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": ".ZEND_INCLUDE_OR_EVAL",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            },
+            {
+                "value": ".ZEND_RETURN",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            }
+        ]
+    },
+    {
+        "type": 2,
+        "name": "GET",
+        "name_en": null,
+        "name_zh": "GET",
+        "value": "GET",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": [
+            {
+                "value": ".$_GET",
+                "source": "P1",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1
+            }
+        ]
+    },
+    {
+        "type": 1,
+        "name": "general-rules",
+        "name_en": null,
+        "name_zh": "general-rules",
+        "value": "general-rules",
+        "enable": 1,
+        "created_by": 1,
+        "language": 3,
+        "details": []
+    }
+]

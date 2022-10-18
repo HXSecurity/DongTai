@@ -1,0 +1,414 @@
+[
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "sql-injection",
+        "details": [
+            {
+                "source": "P1,2",
+                "track": "true",
+                "target": "",
+                "value": "gorm.(*DB).Exec()",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "gorm.(*DB).Group()",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,2",
+                "track": "true",
+                "target": "",
+                "value": "gorm.(*DB).Having()",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "gorm.(*DB).Order()",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,2",
+                "track": "true",
+                "target": "",
+                "value": "gorm.(*DB).Pluck()",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,2",
+                "track": "true",
+                "target": "",
+                "value": "gorm.(*DB).Raw()",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,2",
+                "track": "true",
+                "target": "",
+                "value": "gorm.(*DB).Select()",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "R",
+                "value": "sql.(*DB).Query()",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "smtp-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "ssrf",
+        "details": [
+            {
+                "source": "P2",
+                "track": "true",
+                "target": "",
+                "value": "http.(*Client).Do()",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unsafe-xml-decode",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "cmd-injection",
+        "details": [
+            {
+                "source": "O",
+                "track": "true",
+                "target": "",
+                "value": "exec.(*Cmd).Run()",
+                "inherit": "false"
+            },
+            {
+                "source": "O",
+                "track": "true",
+                "target": "",
+                "value": "exec.(*Cmd).Start()",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "sql-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "ldap-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "xpath-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "path-traversal",
+        "details": [
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "os.OpenFile()",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "xxe",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "expression-language-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "redos",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "reflection-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unsafe-json-deserialize",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "hql-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "nosql-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unsafe-readline",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unvalidated-forward",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unvalidated-redirect",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "header-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "dynamic-library-load",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "Response Without Content-Security-Policy Header",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "Response With X-XSS-Protection Disabled",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "Response With Insecurely Configured Strict-Transport-Security Header",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "Pages Without Anti-Clickjacking Controls",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "Response Without X-Content-Type-Options Header",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "sql-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "smtp-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "ssrf",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unsafe-xml-decode",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "cmd-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "sql-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "ldap-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "xpath-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "path-traversal",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "xxe",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "expression-language-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "redos",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "reflection-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unsafe-json-deserialize",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "hql-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "nosql-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unsafe-readline",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unvalidated-forward",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unvalidated-redirect",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "header-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "dynamic-library-load",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Response Without Content-Security-Policy Header",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Response With X-XSS-Protection Disabled",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Response With Insecurely Configured Strict-Transport-Security Header",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Pages Without Anti-Clickjacking Controls",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Response Without X-Content-Type-Options Header",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "\u8eab\u4efd\u8ba4\u8bc1",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "\u8eab\u4efd\u8ba4\u8bc1",
+        "details": []
+    }
+]
