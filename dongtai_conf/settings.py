@@ -350,10 +350,8 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/tmp/console.log',
+            'class': 'logging.StreamHandler',
             'formatter': 'verbose',
-            'encoding': 'utf-8',
         },
         'dongtai-webapi': {
             'class': 'logging.handlers.RotatingFileHandler',
