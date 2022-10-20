@@ -29,6 +29,7 @@ from dongtai_protocol.views.agent_config import (
     AgentConfigv2View,
 )
 from dongtai_protocol.views.except_action import AgentActionV2EndPoint
+from dongtai_protocol.views.hook_profilesv2 import HookProfilesV2EndPoint
 
 urlpatterns = [
     path('agent/download', AgentDownload.as_view()),
@@ -46,6 +47,7 @@ urlpatterns = [
     path('engine/update', EngineUpdateEndPoint.as_view()),
     path('engine/update/<int:status>', EngineUpdateEndPoint.as_view()),
     path('profiles', HookProfilesEndPoint.as_view()),
+    path('profilesv2', HookProfilesV2EndPoint.as_view()),
     path('properties', PropertiesEndPoint.as_view()),
     path('report/upload', ReportUploadEndPoint.as_view()),
     path('engine/action', EngineAction.as_view()),
