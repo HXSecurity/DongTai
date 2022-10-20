@@ -30,12 +30,6 @@
     {
         "type": 4,
         "enable": 1,
-        "value": "smtp-injection",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
         "value": "ssrf",
         "details": [
             {
@@ -53,12 +47,6 @@
                 "inherit": "false"
             }
         ]
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "unsafe-xml-decode",
-        "details": []
     },
     {
         "type": 4,
@@ -168,12 +156,6 @@
     {
         "type": 4,
         "enable": 1,
-        "value": "xpath-injection",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
         "value": "path-traversal",
         "details": [
             {
@@ -184,30 +166,6 @@
                 "inherit": "false"
             }
         ]
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "header-injection",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "hql-injection",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "unsafe-readline",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "expression-language-injection",
-        "details": []
     },
     {
         "type": 4,
@@ -261,12 +219,6 @@
     {
         "type": 4,
         "enable": 1,
-        "value": "reflection-injection",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
         "value": "nosql-injection",
         "details": [
             {
@@ -277,24 +229,6 @@
                 "inherit": "false"
             }
         ]
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "unvalidated-redirect",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "unvalidated-forward",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "dynamic-library-load",
-        "details": []
     },
     {
         "type": 4,
@@ -390,80 +324,23 @@
     {
         "type": 4,
         "enable": 1,
-        "value": "Response Without Content-Security-Policy Header",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "Response With X-XSS-Protection Disabled",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "Response With Insecurely Configured Strict-Transport-Security Header        ",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "Pages Without Anti-Clickjacking Controls",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "Response Without X-Content-Type-Options Header",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
         "value": "code-execution",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "\u624b\u673a\u53f7\u7801\u6cc4\u6f0f",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "\u786c\u7f16\u7801",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "JNDI\u6ce8\u5165",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "\u8eab\u4efd\u8ba4\u8bc1",
-        "details": []
-    },
-    {
-        "type": 2,
-        "enable": 1,
-        "value": "path-traversal",
-        "details": []
-    },
-    {
-        "type": 1,
-        "enable": 1,
-        "value": "path-traversal",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "path-traversal",
-        "details": []
+        "details": [
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "builtins.eval",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "builtins.exec",
+                "inherit": "false"
+            }
+        ]
     },
     {
         "type": 1,
@@ -961,263 +838,5 @@
                 "inherit": "false"
             }
         ]
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "xxe-filter",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "path-traversal",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "sql-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "exec-code",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "exec-command",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "smtp-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "ssrf",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "unsafe-xml-decode",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "cmd-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "sql-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "ldap-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "xpath-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "path-traversal",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "crypto-weak-randomness",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "crypto-bad-mac",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "crypto-bad-ciphers",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "cookie-flags-missing",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "trust-boundary-violation",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "reflected-xss",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "xxe",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "expression-language-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "redos",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "reflection-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "unsafe-json-deserialize",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "hql-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "nosql-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "unsafe-readline",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "unvalidated-forward",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "unvalidated-redirect",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "header-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "dynamic-library-load",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "FileWrite",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "Response Without Content-Security-Policy Header",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "Response With X-XSS-Protection Disabled",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "Response With Insecurely Configured Strict-Transport-Security Header",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "Pages Without Anti-Clickjacking Controls",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "Response Without X-Content-Type-Options Header",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "FileWrite",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "reflected-xss",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "xxe",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "ssrf",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "code-execution",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "\u8eab\u4efd\u8ba4\u8bc1",
-        "details": []
     }
 ]

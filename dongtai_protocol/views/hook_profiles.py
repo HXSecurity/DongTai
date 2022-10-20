@@ -16,6 +16,7 @@ from dongtai_common.endpoint import OpenApiEndPoint, R
 from django.db.models import (Prefetch, OuterRef, Subquery)
 # note: 当前依赖必须保留，否则无法通过hooktype反向查找策略
 from dongtai_protocol.api_schema import DongTaiParameter
+from django.db.models import Q
 
 logger = logging.getLogger("django")
 JAVA = 1
@@ -36,48 +37,46 @@ class HookProfilesEndPoint(OpenApiEndPoint):
     description = "获取HOOK策略"
 
     @staticmethod
-    def get_profiles(user=None, language_id=JAVA, full=False):
+    def get_profiles(user=None, language_id=JAVA, full=False, system_only=False):
         profiles = list()
         hook_types = IastStrategyModel.objects.filter(
-            state='enable',
-            user_id__in=set([1, user.id]) if user else [1],
-        ).order_by('id')
+            Q(state='enable', user_id__in=set([1, user.id]) if user else [1])
+            & (Q(system_type=1) if system_only else Q())).order_by('id')
         hook_types_a = HookType.objects.filter(
-            language_id=language_id,
-            enable=const.HOOK_TYPE_ENABLE,
-            created_by__in=set([1, user.id]) if user else [1],
-            type__in=(1, 2, 3)).order_by('id')
+            Q(language_id=language_id,
+              enable=const.HOOK_TYPE_ENABLE,
+              created_by__in=set([1, user.id]) if user else [1],
+              type__in=(1, 2, 3))
+            & (Q(system_type=1) if system_only else Q())).order_by('id')
         for hook_type in list(hook_types) + list(hook_types_a):
             strategy_details = list()
             if isinstance(hook_type, IastStrategyModel):
                 hook_type = convert_strategy(hook_type)
             strategies = hook_type.strategies.filter(
-                language_id=language_id,
-                type__in=(1, 2, 3) if not isinstance(hook_type, IastStrategyModel) else [4],
-                created_by__in=[1, user.id] if user else [1],
-                enable=const.HOOK_TYPE_ENABLE).order_by('id')
+                Q(language_id=language_id,
+                  type__in=(1, 2, 3)
+                  if not isinstance(hook_type, IastStrategyModel) else [4],
+                  created_by__in=[1, user.id] if user else [1],
+                  enable=const.HOOK_TYPE_ENABLE)
+                & (Q(system_type=1) if system_only else Q())).order_by('id')
             if full:
                 from django.forms.models import model_to_dict
+                if not strategies.count():
+                    continue
                 profile = model_to_dict(hook_type,
                                         exclude=[
                                             'id', 'hook_type','vul_strategy',
-                                            'create_time', 'update_time'
+                                            'create_time', 'update_time','dt'
                                         ])
                 profile['details'] = [
                     model_to_dict(i,
                                   exclude=[
                                       "id", "hooktype", "create_time",
-                                      "update_time"
+                                      "strategy","update_time"
                                   ]) for i in strategies
                 ]
                 profiles.append(profile)
             else:
-                profiles.append({
-                    'type': hook_type.type,
-                    'enable': hook_type.enable,
-                    'value': hook_type.value,
-                    'details': strategy_details
-                })
                 for strategy in strategies.values():
                     strategy_details.append({
                         "source": strategy.get("source"),
@@ -86,6 +85,14 @@ class HookProfilesEndPoint(OpenApiEndPoint):
                         "value": strategy.get("value"),
                         "inherit": strategy.get("inherit")
                     })
+                if not strategy_details:
+                    continue
+                profiles.append({
+                    'type': hook_type.type,
+                    'enable': hook_type.enable,
+                    'value': hook_type.value,
+                    'details': strategy_details
+                })
         return profiles
 
     @extend_schema(description='Pull Agent Engine Hook Rule',

@@ -32,6 +32,7 @@ class HookType(models.Model):
                                  on_delete=models.DO_NOTHING,
                                  db_column='strategy_id',
                                  db_constraint=False,)
+    system_type = models.IntegerField(blank=True, null=True, default=0)
     class Meta:
         managed = get_managed()
         db_table = 'iast_hook_type'
