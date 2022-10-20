@@ -45,6 +45,12 @@ class HookStrategy(models.Model):
     #                                 on_delete=models.DO_NOTHING,
     #                                 db_constraint=False)
     #    type = models.IntegerField(blank=True, null=True)
+    language = models.ForeignKey(IastProgramLanguage,
+                                 blank=True,
+                                 default='',
+                                 on_delete=models.DO_NOTHING,
+                                 db_constraint=False)
+    type = models.IntegerField(blank=True, null=True)
 
     hooktype = models.ForeignKey(
         HookType,

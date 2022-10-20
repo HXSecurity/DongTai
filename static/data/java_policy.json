@@ -2,6 +2,69 @@
     {
         "type": 4,
         "enable": 1,
+        "value": "cmd-injection",
+        "details": [
+            {
+                "source": "P1,2",
+                "track": "true",
+                "target": "",
+                "value": "java.lang.ProcessImpl.start(java.lang.String[],java.util.Map,java.lang.String,java.lang.ProcessBuilder$Redirect[],boolean)",
+                "inherit": "false"
+            },
+            {
+                "source": "O",
+                "track": "true",
+                "target": "",
+                "value": "java.lang.ProcessBuilder.start()",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,2",
+                "track": "true",
+                "target": "",
+                "value": "java.lang.Runtime.exec(java.lang.String[],java.lang.String[])",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "java.lang.Runtime.exec(java.lang.String[])",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "java.lang.Runtime.exec(java.lang.String)",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,2",
+                "track": "true",
+                "target": "",
+                "value": "java.lang.Runtime.exec(java.lang.String[],java.lang.String[],java.io.File)",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,2",
+                "track": "true",
+                "target": "",
+                "value": "java.lang.Runtime.exec(java.lang.String,java.lang.String[],java.io.File)",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,2",
+                "track": "true",
+                "target": "",
+                "value": "java.lang.Runtime.exec(java.lang.String,java.lang.String[])",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
         "value": "smtp-injection",
         "details": [
             {
@@ -199,69 +262,6 @@
                 "target": "",
                 "value": "java.beans.XMLDecoder.<init>(java.io.InputStream,java.lang.Object,java.beans.ExceptionListener)",
                 "inherit": "all"
-            }
-        ]
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "cmd-injection",
-        "details": [
-            {
-                "source": "P1,2",
-                "track": "true",
-                "target": "",
-                "value": "java.lang.ProcessImpl.start(java.lang.String[],java.util.Map,java.lang.String,java.lang.ProcessBuilder$Redirect[],boolean)",
-                "inherit": "false"
-            },
-            {
-                "source": "O",
-                "track": "true",
-                "target": "",
-                "value": "java.lang.ProcessBuilder.start()",
-                "inherit": "false"
-            },
-            {
-                "source": "P1,2",
-                "track": "true",
-                "target": "",
-                "value": "java.lang.Runtime.exec(java.lang.String[],java.lang.String[])",
-                "inherit": "false"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "java.lang.Runtime.exec(java.lang.String[])",
-                "inherit": "false"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "java.lang.Runtime.exec(java.lang.String)",
-                "inherit": "false"
-            },
-            {
-                "source": "P1,2",
-                "track": "true",
-                "target": "",
-                "value": "java.lang.Runtime.exec(java.lang.String[],java.lang.String[],java.io.File)",
-                "inherit": "false"
-            },
-            {
-                "source": "P1,2",
-                "track": "true",
-                "target": "",
-                "value": "java.lang.Runtime.exec(java.lang.String,java.lang.String[],java.io.File)",
-                "inherit": "false"
-            },
-            {
-                "source": "P1,2",
-                "track": "true",
-                "target": "",
-                "value": "java.lang.Runtime.exec(java.lang.String,java.lang.String[])",
-                "inherit": "false"
             }
         ]
     },
@@ -702,210 +702,160 @@
     {
         "type": 4,
         "enable": 1,
-        "value": "xxe",
+        "value": "header-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "hql-injection",
         "details": [
             {
-                "source": "P1",
+                "source": "P2",
                 "track": "true",
                 "target": "",
-                "value": "javax.xml.parsers.DocumentBuilder.parse(java.io.File)",
+                "value": "org.hibernate.Session.createFilter(java.lang.Object,java.lang.String)",
                 "inherit": "true"
             },
             {
                 "source": "P1",
                 "track": "true",
                 "target": "",
-                "value": "javax.xml.parsers.DocumentBuilder.parse(java.io.InputStream)",
+                "value": "org.hibernate.Session.createQuery(java.lang.String)",
                 "inherit": "true"
             },
             {
                 "source": "P1",
                 "track": "true",
                 "target": "",
-                "value": "javax.xml.parsers.DocumentBuilder.parse(java.io.InputStream,java.lang.String)",
+                "value": "org.hibernate.Session.createSQLQuery(java.lang.String,java.lang.String,java.lang.Class)",
                 "inherit": "true"
             },
             {
                 "source": "P1",
                 "track": "true",
                 "target": "",
-                "value": "javax.xml.parsers.DocumentBuilder.parse(java.lang.String)",
+                "value": "org.hibernate.Session.createSQLQuery(java.lang.String,java.lang.String[],java.lang.Class[])",
                 "inherit": "true"
             },
             {
                 "source": "P1",
                 "track": "true",
                 "target": "",
-                "value": "javax.xml.parsers.DocumentBuilder.parse(org.xml.sax.InputSource)",
+                "value": "org.hibernate.Session.createSQLQuery(java.lang.String)",
                 "inherit": "true"
             },
             {
                 "source": "P1",
                 "track": "true",
                 "target": "",
-                "value": "nu.xom.Builder.build(java.io.File)",
+                "value": "org.hibernate.Session.delete(java.lang.String)",
                 "inherit": "true"
             },
             {
                 "source": "P1",
                 "track": "true",
                 "target": "",
-                "value": "nu.xom.Builder.build(java.io.InputStream)",
+                "value": "org.hibernate.Session.delete(java.lang.String,java.lang.Object,org.hibernate.type.Type)",
                 "inherit": "true"
             },
             {
                 "source": "P1",
                 "track": "true",
                 "target": "",
-                "value": "nu.xom.Builder.build(java.io.InputStream,java.lang.String)",
+                "value": "org.hibernate.Session.delete(java.lang.String,java.lang.Object[],org.hibernate.type.Type[])",
+                "inherit": "true"
+            },
+            {
+                "source": "P2",
+                "track": "true",
+                "target": "",
+                "value": "org.hibernate.Session.filter(java.lang.Object,java.lang.String)",
+                "inherit": "true"
+            },
+            {
+                "source": "P2",
+                "track": "true",
+                "target": "",
+                "value": "org.hibernate.Session.filter(java.lang.Object,java.lang.String,java.lang.Object,org.hibernate.type.Type)",
+                "inherit": "true"
+            },
+            {
+                "source": "P2",
+                "track": "true",
+                "target": "",
+                "value": "org.hibernate.Session.filter(java.lang.Object,java.lang.String,java.lang.Object[],org.hibernate.type.Type[])",
                 "inherit": "true"
             },
             {
                 "source": "P1",
                 "track": "true",
                 "target": "",
-                "value": "nu.xom.Builder.build(java.io.Reader)",
+                "value": "org.hibernate.Session.find(java.lang.String)",
                 "inherit": "true"
             },
             {
                 "source": "P1",
                 "track": "true",
                 "target": "",
-                "value": "nu.xom.Builder.build(java.io.Reader,java.lang.String)",
+                "value": "org.hibernate.Session.find(java.lang.String,java.lang.Object,org.hibernate.type.Type)",
                 "inherit": "true"
             },
             {
                 "source": "P1",
                 "track": "true",
                 "target": "",
-                "value": "nu.xom.Builder.build(java.lang.String)",
+                "value": "org.hibernate.Session.find(java.lang.String,java.lang.Object[],org.hibernate.type.Type[])",
                 "inherit": "true"
             },
             {
                 "source": "P1",
                 "track": "true",
                 "target": "",
-                "value": "javax.xml.bind.Unmarshaller.unmarshal(java.io.InputStream)",
+                "value": "org.hibernate.Session.iterate(java.lang.String)",
                 "inherit": "true"
             },
             {
                 "source": "P1",
                 "track": "true",
                 "target": "",
-                "value": "javax.xml.bind.Unmarshaller.unmarshal(java.io.Reader)",
+                "value": "org.hibernate.Session.iterate(java.lang.String,java.lang.Object,org.hibernate.type.Type)",
                 "inherit": "true"
             },
             {
                 "source": "P1",
                 "track": "true",
                 "target": "",
-                "value": "javax.xml.bind.Unmarshaller.unmarshal(javax.xml.transform.Source)",
+                "value": "org.hibernate.Session.iterate(java.lang.String,java.lang.Object[],org.hibernate.type.Type[])",
                 "inherit": "true"
             },
             {
                 "source": "P1",
                 "track": "true",
                 "target": "",
-                "value": "javax.xml.bind.Unmarshaller.unmarshal(javax.xml.transform.Source,java.lang.Class)",
+                "value": "org.hibernate.SharedSessionContract.createQuery(java.lang.String)",
                 "inherit": "true"
             },
             {
                 "source": "P1",
                 "track": "true",
                 "target": "",
-                "value": "javax.xml.bind.Unmarshaller.unmarshal(org.xml.sax.InputSource)",
+                "value": "org.hibernate.SharedSessionContract.createSQLQuery(java.lang.String)",
                 "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "javax.xml.bind.Unmarshaller.unmarshal(javax.xml.stream.XMLStreamReader)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "javax.xml.bind.Unmarshaller.unmarshal(javax.xml.stream.XMLStreamReader,java.lang.Class)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "javax.xml.bind.Unmarshaller.unmarshal(javax.xml.stream.XMLEventReader)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "javax.xml.bind.Unmarshaller.unmarshal(javax.xml.stream.XMLEventReader,java.lang.Class)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "javax.xml.parsers.SAXParser.parse(java.io.InputStream,org.xml.sax.HandlerBase)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "javax.xml.parsers.SAXParser.parse(java.io.InputStream,org.xml.sax.HandlerBase,java.lang.String)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "javax.xml.parsers.SAXParser.parse(java.io.InputStream,org.xml.sax.helpers.DefaultHandler)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "javax.xml.parsers.SAXParser.parse(java.io.InputStream,org.xml.sax.helpers.DefaultHandler,java.lang.String)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "javax.xml.parsers.SAXParser.parse(org.xml.sax.InputSource,org.xml.sax.HandlerBase)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "javax.xml.parsers.SAXParser.parse(org.xml.sax.InputSource,org.xml.sax.helpers.DefaultHandler)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "org.xml.sax.XMLReader.parse(org.xml.sax.InputSource)",
-                "inherit": "true"
-            },
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unsafe-readline",
+        "details": [
             {
                 "source": "O",
                 "track": "true",
                 "target": "",
-                "value": "javax.xml.stream.XMLStreamReader.getElementText()",
+                "value": "java.io.BufferedReader.readLine()",
                 "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "javax.xml.stream.XMLInputFactory.createXMLStreamReader(java.io.Reader)",
-                "inherit": "all"
             }
         ]
     },
@@ -1122,6 +1072,363 @@
     {
         "type": 4,
         "enable": 1,
+        "value": "nosql-injection",
+        "details": [
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "com.mongodb.DB.doEval(java.lang.String,java.lang.Object[])",
+                "inherit": "true"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unvalidated-redirect",
+        "details": [
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "org.glassfish.grizzly.http.server.Response.sendRedirect(java.lang.String)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "play.mvc.Results.redirect(java.lang.String)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.ws.rs.core.Response.temporaryRedirect(java.net.URI)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.servlet.http.HttpServletResponse.sendRedirect(java.lang.String)",
+                "inherit": "true"
+            },
+            {
+                "source": "P2",
+                "track": "true",
+                "target": "",
+                "value": "javax.servlet.http.HttpServletResponse.setHeader(java.lang.String,java.lang.String)",
+                "inherit": "true"
+            },
+            {
+                "source": "P4",
+                "track": "true",
+                "target": "",
+                "value": "io.netty.handler.codec.http.DefaultHttpHeaders.add0(int,int,java.lang.CharSequence,java.lang.CharSequence)",
+                "inherit": "true"
+            },
+            {
+                "source": "P2",
+                "track": "true",
+                "target": "",
+                "value": "javax.servlet.http.HttpServletResponse.addHeader(java.lang.String,java.lang.String)",
+                "inherit": "true"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unvalidated-forward",
+        "details": [
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.servlet.ServletContext.getRequestDispatcher(java.lang.String)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.servlet.jsp.PageContext.forward(java.lang.String)",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "jakarta.servlet.ServletContext.getRequestDispatcher(java.lang.String)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "jakarta.servlet.jsp.PageContext.forward(java.lang.String)",
+                "inherit": "false"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "jakarta.servlet.http.HttpServletResponse.sendRedirect(java.lang.String)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "jakarta.ws.rs.core.Response.temporaryRedirect(java.net.URI)",
+                "inherit": "true"
+            },
+            {
+                "source": "P2",
+                "track": "true",
+                "target": "",
+                "value": "jakarta.servlet.http.HttpServletResponse.setHeader(java.lang.String,java.lang.String)",
+                "inherit": "true"
+            },
+            {
+                "source": "P2",
+                "track": "true",
+                "target": "",
+                "value": "jakarta.servlet.http.HttpServletResponse.addHeader(java.lang.String,java.lang.String)",
+                "inherit": "true"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "dynamic-library-load",
+        "details": [
+            {
+                "source": "P2",
+                "track": "true",
+                "target": "",
+                "value": "java.lang.Runtime.load0(java.lang.Class,java.lang.String)",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "xxe",
+        "details": [
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.parsers.DocumentBuilder.parse(java.io.File)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.parsers.DocumentBuilder.parse(java.io.InputStream)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.parsers.DocumentBuilder.parse(java.io.InputStream,java.lang.String)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.parsers.DocumentBuilder.parse(java.lang.String)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.parsers.DocumentBuilder.parse(org.xml.sax.InputSource)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "nu.xom.Builder.build(java.io.File)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "nu.xom.Builder.build(java.io.InputStream)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "nu.xom.Builder.build(java.io.InputStream,java.lang.String)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "nu.xom.Builder.build(java.io.Reader)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "nu.xom.Builder.build(java.io.Reader,java.lang.String)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "nu.xom.Builder.build(java.lang.String)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(java.io.InputStream)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(java.io.Reader)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(javax.xml.transform.Source)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(javax.xml.transform.Source,java.lang.Class)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(org.xml.sax.InputSource)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(javax.xml.stream.XMLStreamReader)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(javax.xml.stream.XMLStreamReader,java.lang.Class)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(javax.xml.stream.XMLEventReader)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(javax.xml.stream.XMLEventReader,java.lang.Class)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.parsers.SAXParser.parse(java.io.InputStream,org.xml.sax.HandlerBase)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.parsers.SAXParser.parse(java.io.InputStream,org.xml.sax.HandlerBase,java.lang.String)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.parsers.SAXParser.parse(java.io.InputStream,org.xml.sax.helpers.DefaultHandler)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.parsers.SAXParser.parse(java.io.InputStream,org.xml.sax.helpers.DefaultHandler,java.lang.String)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.parsers.SAXParser.parse(org.xml.sax.InputSource,org.xml.sax.HandlerBase)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.parsers.SAXParser.parse(org.xml.sax.InputSource,org.xml.sax.helpers.DefaultHandler)",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "org.xml.sax.XMLReader.parse(org.xml.sax.InputSource)",
+                "inherit": "true"
+            },
+            {
+                "source": "O",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.stream.XMLStreamReader.getElementText()",
+                "inherit": "true"
+            },
+            {
+                "source": "P1",
+                "track": "true",
+                "target": "",
+                "value": "javax.xml.stream.XMLInputFactory.createXMLStreamReader(java.io.Reader)",
+                "inherit": "all"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
         "value": "unsafe-json-deserialize",
         "details": [
             {
@@ -1262,313 +1569,6 @@
     {
         "type": 4,
         "enable": 1,
-        "value": "hql-injection",
-        "details": [
-            {
-                "source": "P2",
-                "track": "true",
-                "target": "",
-                "value": "org.hibernate.Session.createFilter(java.lang.Object,java.lang.String)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "org.hibernate.Session.createQuery(java.lang.String)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "org.hibernate.Session.createSQLQuery(java.lang.String,java.lang.String,java.lang.Class)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "org.hibernate.Session.createSQLQuery(java.lang.String,java.lang.String[],java.lang.Class[])",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "org.hibernate.Session.createSQLQuery(java.lang.String)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "org.hibernate.Session.delete(java.lang.String)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "org.hibernate.Session.delete(java.lang.String,java.lang.Object,org.hibernate.type.Type)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "org.hibernate.Session.delete(java.lang.String,java.lang.Object[],org.hibernate.type.Type[])",
-                "inherit": "true"
-            },
-            {
-                "source": "P2",
-                "track": "true",
-                "target": "",
-                "value": "org.hibernate.Session.filter(java.lang.Object,java.lang.String)",
-                "inherit": "true"
-            },
-            {
-                "source": "P2",
-                "track": "true",
-                "target": "",
-                "value": "org.hibernate.Session.filter(java.lang.Object,java.lang.String,java.lang.Object,org.hibernate.type.Type)",
-                "inherit": "true"
-            },
-            {
-                "source": "P2",
-                "track": "true",
-                "target": "",
-                "value": "org.hibernate.Session.filter(java.lang.Object,java.lang.String,java.lang.Object[],org.hibernate.type.Type[])",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "org.hibernate.Session.find(java.lang.String)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "org.hibernate.Session.find(java.lang.String,java.lang.Object,org.hibernate.type.Type)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "org.hibernate.Session.find(java.lang.String,java.lang.Object[],org.hibernate.type.Type[])",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "org.hibernate.Session.iterate(java.lang.String)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "org.hibernate.Session.iterate(java.lang.String,java.lang.Object,org.hibernate.type.Type)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "org.hibernate.Session.iterate(java.lang.String,java.lang.Object[],org.hibernate.type.Type[])",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "org.hibernate.SharedSessionContract.createQuery(java.lang.String)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "org.hibernate.SharedSessionContract.createSQLQuery(java.lang.String)",
-                "inherit": "true"
-            }
-        ]
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "nosql-injection",
-        "details": [
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "com.mongodb.DB.doEval(java.lang.String,java.lang.Object[])",
-                "inherit": "true"
-            }
-        ]
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "unsafe-readline",
-        "details": [
-            {
-                "source": "O",
-                "track": "true",
-                "target": "",
-                "value": "java.io.BufferedReader.readLine()",
-                "inherit": "true"
-            }
-        ]
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "unvalidated-forward",
-        "details": [
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "javax.servlet.ServletContext.getRequestDispatcher(java.lang.String)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "javax.servlet.jsp.PageContext.forward(java.lang.String)",
-                "inherit": "false"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "jakarta.servlet.ServletContext.getRequestDispatcher(java.lang.String)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "jakarta.servlet.jsp.PageContext.forward(java.lang.String)",
-                "inherit": "false"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "jakarta.servlet.http.HttpServletResponse.sendRedirect(java.lang.String)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "jakarta.ws.rs.core.Response.temporaryRedirect(java.net.URI)",
-                "inherit": "true"
-            },
-            {
-                "source": "P2",
-                "track": "true",
-                "target": "",
-                "value": "jakarta.servlet.http.HttpServletResponse.setHeader(java.lang.String,java.lang.String)",
-                "inherit": "true"
-            },
-            {
-                "source": "P2",
-                "track": "true",
-                "target": "",
-                "value": "jakarta.servlet.http.HttpServletResponse.addHeader(java.lang.String,java.lang.String)",
-                "inherit": "true"
-            }
-        ]
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "unvalidated-redirect",
-        "details": [
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "org.glassfish.grizzly.http.server.Response.sendRedirect(java.lang.String)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "play.mvc.Results.redirect(java.lang.String)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "javax.ws.rs.core.Response.temporaryRedirect(java.net.URI)",
-                "inherit": "true"
-            },
-            {
-                "source": "P1",
-                "track": "true",
-                "target": "",
-                "value": "javax.servlet.http.HttpServletResponse.sendRedirect(java.lang.String)",
-                "inherit": "true"
-            },
-            {
-                "source": "P2",
-                "track": "true",
-                "target": "",
-                "value": "javax.servlet.http.HttpServletResponse.setHeader(java.lang.String,java.lang.String)",
-                "inherit": "true"
-            },
-            {
-                "source": "P4",
-                "track": "true",
-                "target": "",
-                "value": "io.netty.handler.codec.http.DefaultHttpHeaders.add0(int,int,java.lang.CharSequence,java.lang.CharSequence)",
-                "inherit": "true"
-            },
-            {
-                "source": "P2",
-                "track": "true",
-                "target": "",
-                "value": "javax.servlet.http.HttpServletResponse.addHeader(java.lang.String,java.lang.String)",
-                "inherit": "true"
-            }
-        ]
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "header-injection",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "dynamic-library-load",
-        "details": [
-            {
-                "source": "P2",
-                "track": "true",
-                "target": "",
-                "value": "java.lang.Runtime.load0(java.lang.Class,java.lang.String)",
-                "inherit": "false"
-            }
-        ]
-    },
-    {
-        "type": 4,
-        "enable": 1,
         "value": "Response Without Content-Security-Policy Header",
         "details": []
     },
@@ -1581,7 +1581,7 @@
     {
         "type": 4,
         "enable": 1,
-        "value": "Response With Insecurely Configured Strict-Transport-Security Header",
+        "value": "Response With Insecurely Configured Strict-Transport-Security Header        ",
         "details": []
     },
     {
@@ -1597,159 +1597,27 @@
         "details": []
     },
     {
-        "type": 3,
+        "type": 4,
         "enable": 1,
-        "value": "smtp-injection",
+        "value": "code-execution",
         "details": []
     },
     {
-        "type": 3,
+        "type": 4,
         "enable": 1,
-        "value": "ssrf",
+        "value": "\u624b\u673a\u53f7\u7801\u6cc4\u6f0f",
         "details": []
     },
     {
-        "type": 3,
+        "type": 4,
         "enable": 1,
-        "value": "unsafe-xml-decode",
+        "value": "\u786c\u7f16\u7801",
         "details": []
     },
     {
-        "type": 3,
+        "type": 4,
         "enable": 1,
-        "value": "cmd-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "sql-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "ldap-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "xpath-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "path-traversal",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "xxe",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "expression-language-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "redos",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "reflection-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "unsafe-json-deserialize",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "hql-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "nosql-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "unsafe-readline",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "unvalidated-forward",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "unvalidated-redirect",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "header-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "dynamic-library-load",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "Response Without Content-Security-Policy Header",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "Response With X-XSS-Protection Disabled",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "Response With Insecurely Configured Strict-Transport-Security Header",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "Pages Without Anti-Clickjacking Controls",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "Response Without X-Content-Type-Options Header",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "\u8eab\u4efd\u8ba4\u8bc1",
+        "value": "JNDI\u6ce8\u5165",
         "details": []
     },
     {
@@ -3443,6 +3311,55 @@
         ]
     },
     {
+        "type": 3,
+        "enable": 1,
+        "value": "xxe-filter",
+        "details": [
+            {
+                "source": "",
+                "track": "",
+                "target": "",
+                "value": "javax.xml.parsers.DocumentBuilderFactory.setFeature(java.lang.String, boolean)",
+                "inherit": "true"
+            },
+            {
+                "source": "",
+                "track": "",
+                "target": "",
+                "value": "javax.xml.parsers.SAXParserFactory.setFeature(java.lang.String, boolean)",
+                "inherit": "true"
+            },
+            {
+                "source": "",
+                "track": "",
+                "target": "",
+                "value": "org.xml.sax.XMLReader.setFeature(java.lang.String, boolean)",
+                "inherit": "true"
+            },
+            {
+                "source": "",
+                "track": "",
+                "target": "",
+                "value": "javax.xml.transform.TransformerFactory.setFeature(java.lang.String, boolean)",
+                "inherit": "true"
+            },
+            {
+                "source": "",
+                "track": "",
+                "target": "",
+                "value": "com.sun.org.apache.xerces.internal.xni.parser.XMLParserConfiguration.setFeature(java.lang.String, boolean)",
+                "inherit": "true"
+            },
+            {
+                "source": "",
+                "track": "",
+                "target": "",
+                "value": "com.sun.org.apache.xerces.internal.xni.grammars.XMLGrammarLoader.setFeature(java.lang.String, boolean)",
+                "inherit": "true"
+            }
+        ]
+    },
+    {
         "type": 1,
         "enable": 1,
         "value": "Arrays",
@@ -3537,19 +3454,28 @@
         "type": 2,
         "enable": 1,
         "value": "Struts2",
-        "details": []
-    },
-    {
-        "type": 1,
-        "enable": 1,
-        "value": "customT",
-        "details": []
+        "details": [
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "org.apache.struts2.dispatcher.multipart.MultiPartRequest.getParameterValues(java.lang.String)",
+                "inherit": "true"
+            }
+        ]
     },
     {
         "type": 2,
         "enable": 1,
         "value": "javax.servlet.ServletRequest",
         "details": [
+            {
+                "source": "O",
+                "track": "false",
+                "target": "R",
+                "value": "javax.servlet.ServletRequest.getInputStream()",
+                "inherit": "true"
+            },
             {
                 "source": "P1",
                 "track": "false",
@@ -3791,96 +3717,6 @@
         ]
     },
     {
-        "type": 2,
-        "enable": 1,
-        "value": "python-\u4efb\u610f\u6587\u4ef6\u8bfb\u53d6",
-        "details": []
-    },
-    {
-        "type": 2,
-        "enable": 1,
-        "value": "py-get",
-        "details": []
-    },
-    {
-        "type": 2,
-        "enable": 1,
-        "value": "org.springframework.expression.Expression.getValue",
-        "details": []
-    },
-    {
-        "type": 2,
-        "enable": 1,
-        "value": "string",
-        "details": []
-    },
-    {
-        "type": 2,
-        "enable": 1,
-        "value": "\u4e0d\u5b89\u5168\u7684\u53cd\u5e8f\u5217\u5316",
-        "details": []
-    },
-    {
-        "type": 2,
-        "enable": 1,
-        "value": "java.io.ObjectInput.readObject()",
-        "details": []
-    },
-    {
-        "type": 1,
-        "enable": 1,
-        "value": "Propagation:Cipher",
-        "details": []
-    },
-    {
-        "type": 2,
-        "enable": 1,
-        "value": "\"><img src=1 onerror=alert(1)>",
-        "details": []
-    },
-    {
-        "type": 1,
-        "enable": 1,
-        "value": "ff",
-        "details": []
-    },
-    {
-        "type": 1,
-        "enable": 1,
-        "value": "ff",
-        "details": []
-    },
-    {
-        "type": 1,
-        "enable": 1,
-        "value": "ff",
-        "details": []
-    },
-    {
-        "type": 1,
-        "enable": 1,
-        "value": "ff",
-        "details": []
-    },
-    {
-        "type": 1,
-        "enable": 1,
-        "value": "test",
-        "details": []
-    },
-    {
-        "type": 1,
-        "enable": 1,
-        "value": "String",
-        "details": []
-    },
-    {
-        "type": 2,
-        "enable": 1,
-        "value": "\u6d4b\u8bd5\u81ea\u5b9a\u4e49\u89c4\u5219\u7c7b\u578b\u540d\u79f0",
-        "details": []
-    },
-    {
         "type": 1,
         "enable": 1,
         "value": "custom-encrypt",
@@ -3893,18 +3729,6 @@
                 "inherit": "false"
             }
         ]
-    },
-    {
-        "type": 1,
-        "enable": 1,
-        "value": "custom-pro",
-        "details": []
-    },
-    {
-        "type": 1,
-        "enable": 1,
-        "value": "PartFile",
-        "details": []
     },
     {
         "type": 1,
@@ -4087,6 +3911,210 @@
         ]
     },
     {
+        "type": 3,
+        "enable": 1,
+        "value": "smtp-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "ssrf",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unsafe-xml-decode",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "cmd-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "sql-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "ldap-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "xpath-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "path-traversal",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "crypto-weak-randomness",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "crypto-bad-mac",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "crypto-bad-ciphers",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "cookie-flags-missing",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "trust-boundary-violation",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "reflected-xss",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "xxe",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "expression-language-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "redos",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "reflection-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unsafe-json-deserialize",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "hql-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "nosql-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unsafe-readline",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unvalidated-forward",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unvalidated-redirect",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "header-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "dynamic-library-load",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "FileWrite",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Response Without Content-Security-Policy Header",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Response With X-XSS-Protection Disabled",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Response With Insecurely Configured Strict-Transport-Security Header",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Pages Without Anti-Clickjacking Controls",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Response Without X-Content-Type-Options Header",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "FileWrite",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "JNDI\u6ce8\u5165",
+        "details": []
+    },
+    {
         "type": 1,
         "enable": 1,
         "value": "InvalidPropagator",
@@ -4118,7 +4146,15 @@
         "type": 2,
         "enable": 1,
         "value": "Source:GrpcV1",
-        "details": []
+        "details": [
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": "io.grpc.MethodDescriptor.parseRequest(java.io.InputStream)",
+                "inherit": "false"
+            }
+        ]
     },
     {
         "type": 2,
@@ -4216,6 +4252,12 @@
                 "inherit": "all"
             }
         ]
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "\u8eab\u4efd\u8ba4\u8bc1",
+        "details": []
     },
     {
         "type": 1,
