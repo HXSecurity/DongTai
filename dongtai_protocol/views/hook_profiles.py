@@ -52,13 +52,15 @@ class HookProfilesEndPoint(OpenApiEndPoint):
             if isinstance(hook_type, IastStrategyModel):
                 hook_type = convert_strategy(hook_type)
             strategies = hook_type.strategies.filter(
+                language_id=language_id,
+                type__in=(1, 2, 3) if not isinstance(hook_type, IastStrategyModel) else [4],
                 created_by__in=[1, user.id] if user else [1],
                 enable=const.HOOK_TYPE_ENABLE).order_by('id')
             if full:
                 from django.forms.models import model_to_dict
                 profile = model_to_dict(hook_type,
                                         exclude=[
-                                            'id', 'vul_strategy',
+                                            'id', 'hook_type','vul_strategy',
                                             'create_time', 'update_time'
                                         ])
                 profile['details'] = [

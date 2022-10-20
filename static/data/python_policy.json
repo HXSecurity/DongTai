@@ -2,38 +2,30 @@
     {
         "type": 4,
         "enable": 1,
-        "value": "path-traversal",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "sql-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "path-traversal",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "path-traversal",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "sql-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "path-traversal",
-        "details": []
+        "value": "cmd-injection",
+        "details": [
+            {
+                "source": "P1,command",
+                "track": "true",
+                "target": "",
+                "value": "os.system",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,cmd",
+                "track": "true",
+                "target": "",
+                "value": "os.popen",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,args",
+                "track": "true",
+                "target": "",
+                "value": "subprocess.Popen",
+                "inherit": "false"
+            }
+        ]
     },
     {
         "type": 4,
@@ -67,34 +59,6 @@
         "enable": 1,
         "value": "unsafe-xml-decode",
         "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "cmd-injection",
-        "details": [
-            {
-                "source": "P1,command",
-                "track": "true",
-                "target": "",
-                "value": "os.system",
-                "inherit": "false"
-            },
-            {
-                "source": "P1,cmd",
-                "track": "true",
-                "target": "",
-                "value": "os.popen",
-                "inherit": "false"
-            },
-            {
-                "source": "P1,args",
-                "track": "true",
-                "target": "",
-                "value": "subprocess.Popen",
-                "inherit": "false"
-            }
-        ]
     },
     {
         "type": 4,
@@ -224,23 +188,20 @@
     {
         "type": 4,
         "enable": 1,
-        "value": "xxe",
-        "details": [
-            {
-                "source": "P1,text",
-                "track": "true",
-                "target": "",
-                "value": "lxml.etree.fromstring",
-                "inherit": "false"
-            },
-            {
-                "source": "P1,source",
-                "track": "true",
-                "target": "",
-                "value": "lxml.etree.parse",
-                "inherit": "false"
-            }
-        ]
+        "value": "header-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "hql-injection",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unsafe-readline",
+        "details": []
     },
     {
         "type": 4,
@@ -302,6 +263,59 @@
         "enable": 1,
         "value": "reflection-injection",
         "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "nosql-injection",
+        "details": [
+            {
+                "source": "P2,filter",
+                "track": "true",
+                "target": "",
+                "value": "pymongo.collection.Collection.find",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unvalidated-redirect",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unvalidated-forward",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "dynamic-library-load",
+        "details": []
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "xxe",
+        "details": [
+            {
+                "source": "P1,text",
+                "track": "true",
+                "target": "",
+                "value": "lxml.etree.fromstring",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,source",
+                "track": "true",
+                "target": "",
+                "value": "lxml.etree.parse",
+                "inherit": "false"
+            }
+        ]
     },
     {
         "type": 4,
@@ -376,56 +390,6 @@
     {
         "type": 4,
         "enable": 1,
-        "value": "hql-injection",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "nosql-injection",
-        "details": [
-            {
-                "source": "P2,filter",
-                "track": "true",
-                "target": "",
-                "value": "pymongo.collection.Collection.find",
-                "inherit": "false"
-            }
-        ]
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "unsafe-readline",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "unvalidated-forward",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "unvalidated-redirect",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "header-injection",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "dynamic-library-load",
-        "details": []
-    },
-    {
-        "type": 4,
-        "enable": 1,
         "value": "Response Without Content-Security-Policy Header",
         "details": []
     },
@@ -438,7 +402,7 @@
     {
         "type": 4,
         "enable": 1,
-        "value": "Response With Insecurely Configured Strict-Transport-Security Header",
+        "value": "Response With Insecurely Configured Strict-Transport-Security Header        ",
         "details": []
     },
     {
@@ -456,205 +420,25 @@
     {
         "type": 4,
         "enable": 1,
-        "value": "xxe",
+        "value": "code-execution",
         "details": []
     },
     {
         "type": 4,
         "enable": 1,
-        "value": "ssrf",
+        "value": "\u624b\u673a\u53f7\u7801\u6cc4\u6f0f",
         "details": []
     },
     {
-        "type": 3,
+        "type": 4,
         "enable": 1,
-        "value": "path-traversal",
+        "value": "\u786c\u7f16\u7801",
         "details": []
     },
     {
-        "type": 3,
+        "type": 4,
         "enable": 1,
-        "value": "sql-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "path-traversal",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "sql-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "smtp-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "ssrf",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "unsafe-xml-decode",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "cmd-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "sql-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "ldap-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "xpath-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "path-traversal",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "xxe",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "expression-language-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "redos",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "reflection-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "unsafe-json-deserialize",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "hql-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "nosql-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "unsafe-readline",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "unvalidated-forward",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "unvalidated-redirect",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "header-injection",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "dynamic-library-load",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "Response Without Content-Security-Policy Header",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "Response With X-XSS-Protection Disabled",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "Response With Insecurely Configured Strict-Transport-Security Header",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "Pages Without Anti-Clickjacking Controls",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "Response Without X-Content-Type-Options Header",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "xxe",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "ssrf",
-        "details": []
-    },
-    {
-        "type": 3,
-        "enable": 1,
-        "value": "\u8eab\u4efd\u8ba4\u8bc1",
+        "value": "JNDI\u6ce8\u5165",
         "details": []
     },
     {
@@ -671,6 +455,12 @@
     },
     {
         "type": 1,
+        "enable": 1,
+        "value": "path-traversal",
+        "details": []
+    },
+    {
+        "type": 3,
         "enable": 1,
         "value": "path-traversal",
         "details": []
@@ -1117,15 +907,317 @@
         ]
     },
     {
-        "type": 1,
+        "type": 3,
+        "enable": 1,
+        "value": "general-rules",
+        "details": [
+            {
+                "source": "P1,pattern",
+                "track": "false",
+                "target": "R",
+                "value": "re.escape",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,s",
+                "track": "false",
+                "target": "R",
+                "value": "markupsafe.escape",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,s",
+                "track": "false",
+                "target": "R",
+                "value": "markupsafe.escape_silent",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "false",
+                "target": "R",
+                "value": "jinja2.runtime.escape",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,s",
+                "track": "false",
+                "target": "R",
+                "value": "html.escape",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,assertion_value",
+                "track": "false",
+                "target": "R",
+                "value": "ldap.filter.escape_filter_chars",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,text",
+                "track": "false",
+                "target": "R",
+                "value": "ldap3.utils.conv.escape_filter_chars",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "xxe-filter",
+        "details": []
+    },
+    {
+        "type": 3,
         "enable": 1,
         "value": "path-traversal",
         "details": []
     },
     {
-        "type": 2,
+        "type": 3,
+        "enable": 1,
+        "value": "sql-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "exec-code",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "exec-command",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "smtp-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "ssrf",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unsafe-xml-decode",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "cmd-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "sql-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "ldap-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "xpath-injection",
+        "details": []
+    },
+    {
+        "type": 3,
         "enable": 1,
         "value": "path-traversal",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "crypto-weak-randomness",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "crypto-bad-mac",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "crypto-bad-ciphers",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "cookie-flags-missing",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "trust-boundary-violation",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "reflected-xss",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "xxe",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "expression-language-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "redos",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "reflection-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unsafe-json-deserialize",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "hql-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "nosql-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unsafe-readline",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unvalidated-forward",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "unvalidated-redirect",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "header-injection",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "dynamic-library-load",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "FileWrite",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Response Without Content-Security-Policy Header",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Response With X-XSS-Protection Disabled",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Response With Insecurely Configured Strict-Transport-Security Header",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Pages Without Anti-Clickjacking Controls",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "Response Without X-Content-Type-Options Header",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "FileWrite",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "reflected-xss",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "xxe",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "ssrf",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "code-execution",
+        "details": []
+    },
+    {
+        "type": 3,
+        "enable": 1,
+        "value": "\u8eab\u4efd\u8ba4\u8bc1",
         "details": []
     }
 ]
