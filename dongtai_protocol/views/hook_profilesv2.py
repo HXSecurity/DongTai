@@ -40,7 +40,6 @@ class HookProfilesV2EndPoint(HookProfilesEndPoint):
                 profiles.append({
                     'type': hook_type.type,
                     "source": strategy.get("source"),
-                    "track": strategy.get("track"),
                     "target": strategy.get("target"),
                     "value": strategy.get("value"),
                     "inherit": strategy.get("inherit")
