@@ -41,7 +41,7 @@ class HookProfilesV2EndPoint(HookProfilesEndPoint):
                     'type': hook_type.type,
                     "source": strategy.get("source"),
                     "target": strategy.get("target"),
-                    "value": strategy.get("value"),
+                    "signature": strategy.get("value"),
                     "inherit": strategy.get("inherit")
                 })
         return profiles
