@@ -74,6 +74,7 @@ class HookStrategy(models.Model):
         related_name="strategies",
         related_query_name="strategy",
     )
+    system_type = models.IntegerField(blank=True, null=True, default=0)
 
     class Meta:
         managed = get_managed()
