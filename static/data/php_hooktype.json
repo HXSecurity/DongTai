@@ -1,46 +1,46 @@
 [
     {
-        "type": 4,
+        "created_by": 1,
+        "enable": 1,
+        "language": 3,
         "name": "\u547d\u4ee4\u6267\u884c ",
         "name_en": "OS Command Injection",
         "name_zh": "\u547d\u4ee4\u6267\u884c ",
-        "value": "cmd-injection",
-        "enable": 1,
-        "created_by": 1,
-        "language": 3,
-        "system_type": 1
+        "system_type": 1,
+        "type": 4,
+        "value": "cmd-injection"
     },
     {
-        "type": 4,
+        "created_by": 1,
+        "enable": 1,
+        "language": 3,
         "name": "Sql\u6ce8\u5165",
         "name_en": "SQL Injection",
         "name_zh": "Sql\u6ce8\u5165",
-        "value": "sql-injection",
-        "enable": 1,
-        "created_by": 1,
-        "language": 3,
-        "system_type": 1
+        "system_type": 1,
+        "type": 4,
+        "value": "sql-injection"
     },
     {
-        "type": 1,
+        "created_by": 1,
+        "enable": 1,
+        "language": 3,
         "name": "general-rules",
         "name_en": null,
         "name_zh": "general-rules",
-        "value": "general-rules",
-        "enable": 1,
-        "created_by": 1,
-        "language": 3,
-        "system_type": 1
+        "system_type": 1,
+        "type": 1,
+        "value": "general-rules"
     },
     {
-        "type": 2,
+        "created_by": 1,
+        "enable": 1,
+        "language": 3,
         "name": "GET",
         "name_en": null,
         "name_zh": "GET",
-        "value": "GET",
-        "enable": 1,
-        "created_by": 1,
-        "language": 3,
-        "system_type": 1
+        "system_type": 1,
+        "type": 2,
+        "value": "GET"
     }
 ]

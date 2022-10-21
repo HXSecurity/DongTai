@@ -1,310 +1,310 @@
 [
     {
-        "type": 2,
-        "enable": 1,
-        "value": "GET",
         "details": [
             {
+                "inherit": "false",
                 "source": "P1",
-                "track": "false",
                 "target": "R",
-                "value": ".$_GET",
-                "inherit": "false"
+                "track": "false",
+                "value": ".$_GET"
             }
-        ]
+        ],
+        "enable": 1,
+        "type": 2,
+        "value": "GET"
     },
     {
-        "type": 4,
-        "enable": 1,
-        "value": "cmd-injection",
         "details": [
             {
+                "inherit": "false",
                 "source": "P",
-                "track": "true",
                 "target": "",
-                "value": ".system",
-                "inherit": "false"
+                "track": "true",
+                "value": ".system"
             },
             {
+                "inherit": "false",
                 "source": "P",
-                "track": "true",
                 "target": "",
-                "value": ".passthru",
-                "inherit": "false"
+                "track": "true",
+                "value": ".passthru"
             },
             {
+                "inherit": "false",
                 "source": "P",
-                "track": "true",
                 "target": "",
-                "value": ".exec",
-                "inherit": "false"
+                "track": "true",
+                "value": ".exec"
             },
             {
+                "inherit": "false",
                 "source": "P",
-                "track": "true",
                 "target": "",
-                "value": ".shell_exec",
-                "inherit": "false"
+                "track": "true",
+                "value": ".shell_exec"
             },
             {
+                "inherit": "false",
                 "source": "P",
-                "track": "true",
                 "target": "",
-                "value": ".popen",
-                "inherit": "false"
+                "track": "true",
+                "value": ".popen"
             },
             {
+                "inherit": "false",
                 "source": "P",
-                "track": "true",
                 "target": "",
-                "value": ".proc_open",
-                "inherit": "false"
+                "track": "true",
+                "value": ".proc_open"
             },
             {
+                "inherit": "false",
                 "source": "P",
-                "track": "true",
                 "target": "",
-                "value": ".pcntl_exec",
-                "inherit": "false"
+                "track": "true",
+                "value": ".pcntl_exec"
             }
-        ]
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "cmd-injection"
     },
     {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": ".ZEND_ROPE_END"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "basename"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "dirname"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "explode"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "implode"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "join"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "ltrim"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "mysqli_real_escape_string"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "pathinfo"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "rtrim"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "split"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "sprintf"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "str_ireplace"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "str_pad"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "str_replace"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "stripslashes"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "strstr"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "strtolower"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "strtoupper"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "strval"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "substr"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "trim"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "vsprintf"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": ".ZEND_ASSIGN_CONCAT"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": ".ZEND_CONCAT"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": ".ZEND_INIT_USER_CALL"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": ".ZEND_ECHO"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": ".ZEND_EXIT"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": ".ZEND_INCLUDE_OR_EVAL"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": ".ZEND_RETURN"
+            }
+        ],
+        "enable": 1,
         "type": 1,
-        "enable": 1,
-        "value": "general-rules",
-        "details": [
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": ".ZEND_ROPE_END",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "basename",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "dirname",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "explode",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "implode",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "join",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "ltrim",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "mysqli_real_escape_string",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "pathinfo",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "rtrim",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "split",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "sprintf",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "str_ireplace",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "str_pad",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "str_replace",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "stripslashes",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "strstr",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "strtolower",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "strtoupper",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "strval",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "substr",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "trim",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": "vsprintf",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": ".ZEND_ASSIGN_CONCAT",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": ".ZEND_CONCAT",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": ".ZEND_INIT_USER_CALL",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": ".ZEND_ECHO",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": ".ZEND_EXIT",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": ".ZEND_INCLUDE_OR_EVAL",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "false",
-                "target": "R",
-                "value": ".ZEND_RETURN",
-                "inherit": "false"
-            }
-        ]
+        "value": "general-rules"
     },
     {
-        "type": 4,
-        "enable": 1,
-        "value": "sql-injection",
         "details": [
             {
+                "inherit": "false",
                 "source": "P",
-                "track": "true",
                 "target": "",
-                "value": ".mysqli_query",
-                "inherit": "false"
+                "track": "true",
+                "value": ".mysqli_query"
             },
             {
+                "inherit": "false",
                 "source": "P",
-                "track": "true",
                 "target": "",
-                "value": ".mysqli_multi_query",
-                "inherit": "false"
+                "track": "true",
+                "value": ".mysqli_multi_query"
             }
-        ]
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "sql-injection"
     }
 ]
