@@ -21,13 +21,14 @@ def export_strategy() -> list:
     strategies = IastStrategyModel.objects.filter(
         user_id=1, state__in=['enable', 'disable']).order_by('id').all()
 
-    strategies_res = [
+    strategies_res = sorted([
         model_to_dict(i,
                       exclude=[
                           'id', 'hook_type', 'vul_strategy', 'create_time',
                           'update_time', 'dt'
                       ]) for i in strategies
-    ]
+    ],
+                            key=lambda item: item['vul_type'])
     return strategies_res
 
 
@@ -38,13 +39,14 @@ def export_hooktype(language_id: int) -> list:
     strategies = HookType.objects.filter(language_id=language_id,
                                          pk__in=list(qs1)).order_by('id').all()
 
-    strategies_res = [
+    strategies_res = sorted([
         model_to_dict(i,
                       exclude=[
                           'id', 'hook_type', 'vul_strategy', 'create_time',
                           'update_time', 'dt'
                       ]) for i in strategies
-    ]
+    ],
+                            key=lambda item: item['value'])
     return strategies_res
 
 class Command(BaseCommand):

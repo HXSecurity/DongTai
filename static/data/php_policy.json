@@ -20,7 +20,7 @@
                 "source": "P",
                 "target": "",
                 "track": "true",
-                "value": ".system"
+                "value": ".exec"
             },
             {
                 "inherit": "false",
@@ -34,14 +34,7 @@
                 "source": "P",
                 "target": "",
                 "track": "true",
-                "value": ".exec"
-            },
-            {
-                "inherit": "false",
-                "source": "P",
-                "target": "",
-                "track": "true",
-                "value": ".shell_exec"
+                "value": ".pcntl_exec"
             },
             {
                 "inherit": "false",
@@ -62,7 +55,14 @@
                 "source": "P",
                 "target": "",
                 "track": "true",
-                "value": ".pcntl_exec"
+                "value": ".shell_exec"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "",
+                "track": "true",
+                "value": ".system"
             }
         ],
         "enable": 1,
@@ -71,6 +71,55 @@
     },
     {
         "details": [
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": ".ZEND_ASSIGN_CONCAT"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": ".ZEND_CONCAT"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": ".ZEND_ECHO"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": ".ZEND_EXIT"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": ".ZEND_INCLUDE_OR_EVAL"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": ".ZEND_INIT_USER_CALL"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": ".ZEND_RETURN"
+            },
             {
                 "inherit": "false",
                 "source": "P",
@@ -231,55 +280,6 @@
                 "target": "R",
                 "track": "false",
                 "value": "vsprintf"
-            },
-            {
-                "inherit": "false",
-                "source": "P",
-                "target": "R",
-                "track": "false",
-                "value": ".ZEND_ASSIGN_CONCAT"
-            },
-            {
-                "inherit": "false",
-                "source": "P",
-                "target": "R",
-                "track": "false",
-                "value": ".ZEND_CONCAT"
-            },
-            {
-                "inherit": "false",
-                "source": "P",
-                "target": "R",
-                "track": "false",
-                "value": ".ZEND_INIT_USER_CALL"
-            },
-            {
-                "inherit": "false",
-                "source": "P",
-                "target": "R",
-                "track": "false",
-                "value": ".ZEND_ECHO"
-            },
-            {
-                "inherit": "false",
-                "source": "P",
-                "target": "R",
-                "track": "false",
-                "value": ".ZEND_EXIT"
-            },
-            {
-                "inherit": "false",
-                "source": "P",
-                "target": "R",
-                "track": "false",
-                "value": ".ZEND_INCLUDE_OR_EVAL"
-            },
-            {
-                "inherit": "false",
-                "source": "P",
-                "target": "R",
-                "track": "false",
-                "value": ".ZEND_RETURN"
             }
         ],
         "enable": 1,
@@ -293,14 +293,14 @@
                 "source": "P",
                 "target": "",
                 "track": "true",
-                "value": ".mysqli_query"
+                "value": ".mysqli_multi_query"
             },
             {
                 "inherit": "false",
                 "source": "P",
                 "target": "",
                 "track": "true",
-                "value": ".mysqli_multi_query"
+                "value": ".mysqli_query"
             }
         ],
         "enable": 1,

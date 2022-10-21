@@ -44,7 +44,6 @@ class Command(BaseCommand):
                         'id', flat=True)
                 strategy_obj = IastStrategyModel.objects.filter(
                     pk__in=list(qs1.union(qs2))).order_by('id').first()
-                # strategy_obj = IastStrategyModel.objects.filter(vul_type=strategy['vul_type'],system_type=1).first()
                 strategy_dict[strategy['vul_type']] = strategy_obj
                 continue
             if IastStrategyModel.objects.filter(
@@ -73,17 +72,20 @@ class Command(BaseCommand):
             for hook_type in hooktypes:
                 if HookType.objects.filter(value=hook_type['value'],
                                            strategy__id__isnull=False,
+                                           type=hook_type['type'],
                                            system_type=1).exists():
                     #已存在策略类型，不会重建,会将新的规则添加到这上边
                     hooktype_obj = HookType.objects.filter(
                         value=hook_type['value'],
                         language_id=v,
+                        type=hook_type['type'],
                         strategy__id__isnull=False,
                         system_type=1).first()
-                    hooktype_dict[hook_type['value']] = hooktype_obj
+                    hooktype_dict[f"{hook_type['value']}-{hook_type['type']}"] = hooktype_obj
                     continue
                 if HookType.objects.filter(value=hook_type['value'],
                                            strategy__id__isnull=False,
+                                           type=hook_type['type'],
                                            language_id=v,
                                            system_type=0).exists():
                     #存在用户定义的冲突策略,不会修改
@@ -93,7 +95,7 @@ class Command(BaseCommand):
                 hook_type['language_id'] = v
                 hooktype_obj = HookType(**hook_type)
                 hooktype_obj.save()
-                hooktype_dict[hook_type['value']] = hooktype_obj
+                hooktype_dict[f"{hook_type['value']}-{hook_type['type']}"] = hooktype_obj
 
             HookStrategy.objects.filter(language_id=v, system_type=1).delete()
             with open(os.path.join(POLICY_DIR,
@@ -112,7 +114,8 @@ class Command(BaseCommand):
                 else:
                     if policy['value'] not in hooktype_dict.keys():
                         continue
-                    policy_hook_type = hooktype_dict[policy['value']]
+                    policy_hook_type = hooktype_dict[
+                        f"{policy['value']}-{policy['type']}"]
                     for hook_strategy in policy['details']:
                         del hook_strategy['language']
                         hook_strategy['language_id'] = v

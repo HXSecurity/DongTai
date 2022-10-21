@@ -72,16 +72,16 @@ class HookProfilesEndPoint(OpenApiEndPoint):
                     hook_type.enable,
                     'value':
                     hook_type.value,
-                    "details": [
+                    "details":
+                    sorted([
                         model_to_dict(i,
                                       exclude=[
                                           "id", "hooktype", "create_time",
                                           "strategy", "update_time"
                                       ]) for i in strategies
-                    ]
+                    ],
+                           key=lambda item: item['value'])
                 }
-                profile['details'] = sorted(profile['details'],
-                                            key=lambda item: item['value'])
                 profiles.append(profile)
             else:
                 for strategy in strategies.values():
@@ -92,6 +92,8 @@ class HookProfilesEndPoint(OpenApiEndPoint):
                         "value": strategy.get("value"),
                         "inherit": strategy.get("inherit")
                     })
+                strategy_details = sorted(strategy_details,
+                                          key=lambda item: item['value'])
                 if not strategy_details:
                     continue
                 profiles.append({
