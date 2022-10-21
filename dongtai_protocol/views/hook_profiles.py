@@ -65,18 +65,28 @@ class HookProfilesEndPoint(OpenApiEndPoint):
                 from django.forms.models import model_to_dict
                 if not strategies.count():
                     continue
-                profile = model_to_dict(hook_type,
-                                        exclude=[
-                                            'id', 'hook_type','vul_strategy',
-                                            'create_time', 'update_time','dt'
-                                        ])
-                profile['details'] = [
-                    model_to_dict(i,
-                                  exclude=[
-                                      "id", "hooktype", "create_time",
-                                      "strategy","update_time"
-                                  ]) for i in strategies
-                ]
+#                profile = model_to_dict(hook_type,
+#                                        exclude=[
+#                                            'id', 'hook_type','vul_strategy',
+#                                            'create_time', 'update_time','dt'
+#                                        ])
+                profile = {
+                    'type':
+                    hook_type.type,
+                    'enable':
+                    hook_type.enable,
+                    'value':
+                    hook_type.value,
+                    "details": [
+                        model_to_dict(i,
+                                      exclude=[
+                                          "id", "hooktype", "create_time",
+                                          "strategy", "update_time"
+                                      ]) for i in strategies
+                    ]
+                }
+                profile['details'] = sorted(profile['details'],
+                                            key=lambda item: item['value'])
                 profiles.append(profile)
             else:
                 for strategy in strategies.values():
@@ -95,6 +105,8 @@ class HookProfilesEndPoint(OpenApiEndPoint):
                     'value': hook_type.value,
                     'details': strategy_details
                 })
+        profiles = sorted(profiles,
+                          key=lambda item: (item['value'], item['type']))
         return profiles
 
     @extend_schema(description='Pull Agent Engine Hook Rule',

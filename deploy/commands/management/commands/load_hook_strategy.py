@@ -63,7 +63,7 @@ class Command(BaseCommand):
             del strategy['user']
             strategy['level_id'] = strategy['level']
             del strategy['level']
-            print(strategy)     
+            print(strategy)
             strategy_obj = IastStrategyModel.objects.create(**strategy)
             strategy_dict[strategy['vul_type']] = strategy_obj
         for k, v in LANGUAGE_DICT.items():
@@ -94,6 +94,7 @@ class Command(BaseCommand):
                 hooktype_obj.save()
                 hooktype_dict[hook_type['value']] = hooktype_obj
 
+            HookStrategy.objects.filter(system_type=1).delete()
             with open(os.path.join(POLICY_DIR,
                                    f'{k.lower()}_full_policy.json')) as fp:
                 full_policy = json.load(fp)

@@ -12,12 +12,14 @@ from django.forms.models import model_to_dict
 
 
 def export_strategy() -> list:
-    qs1 = IastStrategyModel.objects.filter(
-        strategy__id__isnull=False).values_list('id', flat=True)
-    qs2 = IastStrategyModel.objects.filter(
-        iastsensitiveinforule__id__isnull=False).values_list('id', flat=True)
+    #    qs1 = IastStrategyModel.objects.filter(
+    #        strategy__id__isnull=False).values_list('id', flat=True)
+    #    qs2 = IastStrategyModel.objects.filter(
+    #        iastsensitiveinforule__id__isnull=False).values_list('id', flat=True)
+    #    strategies = IastStrategyModel.objects.filter(
+    #        pk__in=list(qs1.union(qs2))).order_by('id').all()
     strategies = IastStrategyModel.objects.filter(
-        pk__in=list(qs1.union(qs2))).order_by('id').all()
+        user_id=1, state__in=['enable', 'disable']).order_by('id').all()
 
     strategies_res = [
         model_to_dict(i,

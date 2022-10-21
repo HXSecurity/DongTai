@@ -30,300 +30,6 @@
     {
         "type": 4,
         "enable": 1,
-        "value": "ssrf",
-        "details": [
-            {
-                "source": "P3,url",
-                "track": "true",
-                "target": "",
-                "value": "urllib.request.urlopen",
-                "inherit": "false"
-            },
-            {
-                "source": "P3,url",
-                "track": "true",
-                "target": "",
-                "value": "requests.sessions.Session.request",
-                "inherit": "false"
-            }
-        ]
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "sql-injection",
-        "details": [
-            {
-                "source": "P2",
-                "track": "true",
-                "target": "",
-                "value": "sqlite3.Cursor.execute",
-                "inherit": "false"
-            },
-            {
-                "source": "P2",
-                "track": "true",
-                "target": "",
-                "value": "sqlite3.Cursor.executemany",
-                "inherit": "false"
-            },
-            {
-                "source": "P2",
-                "track": "true",
-                "target": "",
-                "value": "sqlite3.Cursor.executescript",
-                "inherit": "false"
-            },
-            {
-                "source": "P2,query",
-                "track": "true",
-                "target": "",
-                "value": "psycopg2._psycopg.cursor.execute",
-                "inherit": "false"
-            },
-            {
-                "source": "P2,query",
-                "track": "true",
-                "target": "",
-                "value": "psycopg2._psycopg.cursor.executemany",
-                "inherit": "false"
-            },
-            {
-                "source": "P2,operation",
-                "track": "true",
-                "target": "",
-                "value": "mysql.connector.cursor.CursorBase.execute",
-                "inherit": "false"
-            },
-            {
-                "source": "P2,operation",
-                "track": "true",
-                "target": "",
-                "value": "mysql.connector.cursor.CursorBase.executemany",
-                "inherit": "false"
-            },
-            {
-                "source": "P2,query",
-                "track": "true",
-                "target": "",
-                "value": "MySQLdb.cursors.BaseCursor.execute",
-                "inherit": "false"
-            },
-            {
-                "source": "P2,query",
-                "track": "true",
-                "target": "",
-                "value": "MySQLdb.cursors.BaseCursor.executemany",
-                "inherit": "false"
-            },
-            {
-                "source": "P2,query",
-                "track": "true",
-                "target": "",
-                "value": "pymysql.cursors.Cursor.execute",
-                "inherit": "false"
-            },
-            {
-                "source": "P2,query",
-                "track": "true",
-                "target": "",
-                "value": "pymysql.cursors.Cursor.executemany",
-                "inherit": "false"
-            }
-        ]
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "ldap-injection",
-        "details": [
-            {
-                "source": "P3,search_filter",
-                "track": "true",
-                "target": "",
-                "value": "ldap3.core.connection.Connection.search",
-                "inherit": "false"
-            },
-            {
-                "source": "P4,filterstr",
-                "track": "true",
-                "target": "",
-                "value": "ldap.ldapobject.SimpleLDAPObject.search_ext",
-                "inherit": "false"
-            }
-        ]
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "path-traversal",
-        "details": [
-            {
-                "source": "P1,file",
-                "track": "true",
-                "target": "",
-                "value": "builtins.open",
-                "inherit": "false"
-            }
-        ]
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "redos",
-        "details": [
-            {
-                "source": "P1,pattern",
-                "track": "true",
-                "target": "",
-                "value": "re.search",
-                "inherit": "false"
-            },
-            {
-                "source": "P1,pattern",
-                "track": "true",
-                "target": "",
-                "value": "re.sub",
-                "inherit": "false"
-            },
-            {
-                "source": "P1,pattern",
-                "track": "true",
-                "target": "",
-                "value": "re.subn",
-                "inherit": "false"
-            },
-            {
-                "source": "P1,pattern",
-                "track": "true",
-                "target": "",
-                "value": "re.split",
-                "inherit": "false"
-            },
-            {
-                "source": "P1,pattern",
-                "track": "true",
-                "target": "",
-                "value": "re.findall",
-                "inherit": "false"
-            },
-            {
-                "source": "P1,pattern",
-                "track": "true",
-                "target": "",
-                "value": "re.finditer",
-                "inherit": "false"
-            }
-        ]
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "nosql-injection",
-        "details": [
-            {
-                "source": "P2,filter",
-                "track": "true",
-                "target": "",
-                "value": "pymongo.collection.Collection.find",
-                "inherit": "false"
-            }
-        ]
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "xxe",
-        "details": [
-            {
-                "source": "P1,text",
-                "track": "true",
-                "target": "",
-                "value": "lxml.etree.fromstring",
-                "inherit": "false"
-            },
-            {
-                "source": "P1,source",
-                "track": "true",
-                "target": "",
-                "value": "lxml.etree.parse",
-                "inherit": "false"
-            }
-        ]
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "unsafe-json-deserialize",
-        "details": [
-            {
-                "source": "P2,stream",
-                "track": "true",
-                "target": "",
-                "value": "yaml.loader.FullLoader.__init__",
-                "inherit": "false"
-            },
-            {
-                "source": "P2,stream",
-                "track": "true",
-                "target": "",
-                "value": "yaml.loader.UnsafeLoader.__init__",
-                "inherit": "false"
-            },
-            {
-                "source": "P2,stream",
-                "track": "true",
-                "target": "",
-                "value": "yaml.loader.Loader.__init__",
-                "inherit": "false"
-            },
-            {
-                "source": "P1,stream",
-                "track": "true",
-                "target": "",
-                "value": "yaml.unsafe_load",
-                "inherit": "false"
-            },
-            {
-                "source": "P1,stream",
-                "track": "true",
-                "target": "",
-                "value": "yaml.load",
-                "inherit": "false"
-            },
-            {
-                "source": "P1,file",
-                "track": "true",
-                "target": "",
-                "value": "pickle.load",
-                "inherit": "all"
-            },
-            {
-                "source": "P1,data",
-                "track": "true",
-                "target": "",
-                "value": "pickle.loads",
-                "inherit": "false"
-            },
-            {
-                "source": "P1,stream",
-                "track": "true",
-                "target": "",
-                "value": "yaml.unsafe_load_all",
-                "inherit": "false"
-            },
-            {
-                "source": "P1,stream",
-                "track": "true",
-                "target": "",
-                "value": "yaml.load_all",
-                "inherit": "false"
-            }
-        ]
-    },
-    {
-        "type": 4,
-        "enable": 1,
         "value": "code-execution",
         "details": [
             {
@@ -835,6 +541,300 @@
                 "track": "false",
                 "target": "R",
                 "value": "ldap3.utils.conv.escape_filter_chars",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "ldap-injection",
+        "details": [
+            {
+                "source": "P3,search_filter",
+                "track": "true",
+                "target": "",
+                "value": "ldap3.core.connection.Connection.search",
+                "inherit": "false"
+            },
+            {
+                "source": "P4,filterstr",
+                "track": "true",
+                "target": "",
+                "value": "ldap.ldapobject.SimpleLDAPObject.search_ext",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "nosql-injection",
+        "details": [
+            {
+                "source": "P2,filter",
+                "track": "true",
+                "target": "",
+                "value": "pymongo.collection.Collection.find",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "path-traversal",
+        "details": [
+            {
+                "source": "P1,file",
+                "track": "true",
+                "target": "",
+                "value": "builtins.open",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "redos",
+        "details": [
+            {
+                "source": "P1,pattern",
+                "track": "true",
+                "target": "",
+                "value": "re.search",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,pattern",
+                "track": "true",
+                "target": "",
+                "value": "re.sub",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,pattern",
+                "track": "true",
+                "target": "",
+                "value": "re.subn",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,pattern",
+                "track": "true",
+                "target": "",
+                "value": "re.split",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,pattern",
+                "track": "true",
+                "target": "",
+                "value": "re.findall",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,pattern",
+                "track": "true",
+                "target": "",
+                "value": "re.finditer",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "sql-injection",
+        "details": [
+            {
+                "source": "P2",
+                "track": "true",
+                "target": "",
+                "value": "sqlite3.Cursor.execute",
+                "inherit": "false"
+            },
+            {
+                "source": "P2",
+                "track": "true",
+                "target": "",
+                "value": "sqlite3.Cursor.executemany",
+                "inherit": "false"
+            },
+            {
+                "source": "P2",
+                "track": "true",
+                "target": "",
+                "value": "sqlite3.Cursor.executescript",
+                "inherit": "false"
+            },
+            {
+                "source": "P2,query",
+                "track": "true",
+                "target": "",
+                "value": "psycopg2._psycopg.cursor.execute",
+                "inherit": "false"
+            },
+            {
+                "source": "P2,query",
+                "track": "true",
+                "target": "",
+                "value": "psycopg2._psycopg.cursor.executemany",
+                "inherit": "false"
+            },
+            {
+                "source": "P2,operation",
+                "track": "true",
+                "target": "",
+                "value": "mysql.connector.cursor.CursorBase.execute",
+                "inherit": "false"
+            },
+            {
+                "source": "P2,operation",
+                "track": "true",
+                "target": "",
+                "value": "mysql.connector.cursor.CursorBase.executemany",
+                "inherit": "false"
+            },
+            {
+                "source": "P2,query",
+                "track": "true",
+                "target": "",
+                "value": "MySQLdb.cursors.BaseCursor.execute",
+                "inherit": "false"
+            },
+            {
+                "source": "P2,query",
+                "track": "true",
+                "target": "",
+                "value": "MySQLdb.cursors.BaseCursor.executemany",
+                "inherit": "false"
+            },
+            {
+                "source": "P2,query",
+                "track": "true",
+                "target": "",
+                "value": "pymysql.cursors.Cursor.execute",
+                "inherit": "false"
+            },
+            {
+                "source": "P2,query",
+                "track": "true",
+                "target": "",
+                "value": "pymysql.cursors.Cursor.executemany",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "ssrf",
+        "details": [
+            {
+                "source": "P3,url",
+                "track": "true",
+                "target": "",
+                "value": "urllib.request.urlopen",
+                "inherit": "false"
+            },
+            {
+                "source": "P3,url",
+                "track": "true",
+                "target": "",
+                "value": "requests.sessions.Session.request",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "unsafe-json-deserialize",
+        "details": [
+            {
+                "source": "P2,stream",
+                "track": "true",
+                "target": "",
+                "value": "yaml.loader.FullLoader.__init__",
+                "inherit": "false"
+            },
+            {
+                "source": "P2,stream",
+                "track": "true",
+                "target": "",
+                "value": "yaml.loader.UnsafeLoader.__init__",
+                "inherit": "false"
+            },
+            {
+                "source": "P2,stream",
+                "track": "true",
+                "target": "",
+                "value": "yaml.loader.Loader.__init__",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,stream",
+                "track": "true",
+                "target": "",
+                "value": "yaml.unsafe_load",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,stream",
+                "track": "true",
+                "target": "",
+                "value": "yaml.load",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,file",
+                "track": "true",
+                "target": "",
+                "value": "pickle.load",
+                "inherit": "all"
+            },
+            {
+                "source": "P1,data",
+                "track": "true",
+                "target": "",
+                "value": "pickle.loads",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,stream",
+                "track": "true",
+                "target": "",
+                "value": "yaml.unsafe_load_all",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,stream",
+                "track": "true",
+                "target": "",
+                "value": "yaml.load_all",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "xxe",
+        "details": [
+            {
+                "source": "P1,text",
+                "track": "true",
+                "target": "",
+                "value": "lxml.etree.fromstring",
+                "inherit": "false"
+            },
+            {
+                "source": "P1,source",
+                "track": "true",
+                "target": "",
+                "value": "lxml.etree.parse",
                 "inherit": "false"
             }
         ]
