@@ -1,114 +1,114 @@
 [
     {
-        "type": 4,
-        "enable": 1,
-        "value": "cmd-injection",
         "details": [
             {
+                "inherit": "false",
                 "source": "O",
-                "track": "true",
                 "target": "",
-                "value": "exec.(*Cmd).Run()",
-                "inherit": "false"
+                "track": "true",
+                "value": "exec.(*Cmd).Run()"
             },
             {
+                "inherit": "false",
                 "source": "O",
-                "track": "true",
                 "target": "",
-                "value": "exec.(*Cmd).Start()",
-                "inherit": "false"
+                "track": "true",
+                "value": "exec.(*Cmd).Start()"
             }
-        ]
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "cmd-injection"
     },
     {
-        "type": 4,
-        "enable": 1,
-        "value": "path-traversal",
         "details": [
             {
+                "inherit": "false",
                 "source": "P1",
-                "track": "true",
                 "target": "",
-                "value": "os.OpenFile()",
-                "inherit": "false"
+                "track": "true",
+                "value": "os.OpenFile()"
             }
-        ]
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "path-traversal"
     },
     {
-        "type": 4,
-        "enable": 1,
-        "value": "sql-injection",
         "details": [
             {
+                "inherit": "false",
                 "source": "P1,2",
-                "track": "true",
                 "target": "",
-                "value": "gorm.(*DB).Exec()",
-                "inherit": "false"
+                "track": "true",
+                "value": "gorm.(*DB).Exec()"
             },
             {
+                "inherit": "false",
                 "source": "P1",
-                "track": "true",
                 "target": "",
-                "value": "gorm.(*DB).Group()",
-                "inherit": "false"
+                "track": "true",
+                "value": "gorm.(*DB).Group()"
             },
             {
+                "inherit": "false",
                 "source": "P1,2",
-                "track": "true",
                 "target": "",
-                "value": "gorm.(*DB).Having()",
-                "inherit": "false"
+                "track": "true",
+                "value": "gorm.(*DB).Having()"
             },
             {
+                "inherit": "false",
                 "source": "P1",
-                "track": "true",
                 "target": "",
-                "value": "gorm.(*DB).Order()",
-                "inherit": "false"
+                "track": "true",
+                "value": "gorm.(*DB).Order()"
             },
             {
+                "inherit": "false",
                 "source": "P1,2",
-                "track": "true",
                 "target": "",
-                "value": "gorm.(*DB).Pluck()",
-                "inherit": "false"
+                "track": "true",
+                "value": "gorm.(*DB).Pluck()"
             },
             {
+                "inherit": "false",
                 "source": "P1,2",
-                "track": "true",
                 "target": "",
-                "value": "gorm.(*DB).Raw()",
-                "inherit": "false"
+                "track": "true",
+                "value": "gorm.(*DB).Raw()"
             },
             {
+                "inherit": "false",
                 "source": "P1,2",
-                "track": "true",
                 "target": "",
-                "value": "gorm.(*DB).Select()",
-                "inherit": "false"
+                "track": "true",
+                "value": "gorm.(*DB).Select()"
             },
             {
+                "inherit": "false",
                 "source": "P1",
-                "track": "true",
                 "target": "R",
-                "value": "sql.(*DB).Query()",
-                "inherit": "false"
+                "track": "true",
+                "value": "sql.(*DB).Query()"
             }
-        ]
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "sql-injection"
     },
     {
-        "type": 4,
-        "enable": 1,
-        "value": "ssrf",
         "details": [
             {
+                "inherit": "false",
                 "source": "P2",
-                "track": "true",
                 "target": "",
-                "value": "http.(*Client).Do()",
-                "inherit": "false"
+                "track": "true",
+                "value": "http.(*Client).Do()"
             }
-        ]
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "ssrf"
     }
 ]

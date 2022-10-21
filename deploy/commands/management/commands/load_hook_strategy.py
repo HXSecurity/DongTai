@@ -94,7 +94,7 @@ class Command(BaseCommand):
                 hooktype_obj.save()
                 hooktype_dict[hook_type['value']] = hooktype_obj
 
-            HookStrategy.objects.filter(system_type=1).delete()
+            HookStrategy.objects.filter(language_id=v, system_type=1).delete()
             with open(os.path.join(POLICY_DIR,
                                    f'{k.lower()}_full_policy.json')) as fp:
                 full_policy = json.load(fp)
@@ -102,9 +102,10 @@ class Command(BaseCommand):
                 if 'type' not in policy.keys():
                     policy['type'] = 4
                 if policy['type'] == 4:
-                    if policy['vul_type'] not in strategy_dict.keys():
+                    if policy['value'] not in strategy_dict.keys():
+                        print(policy)
                         continue
-                    policy_strategy = strategy_dict[policy['vul_type']]
+                    policy_strategy = strategy_dict[policy['value']]
                     for hook_strategy in policy['details']:
                         del hook_strategy['language']
                         hook_strategy['language_id'] = v

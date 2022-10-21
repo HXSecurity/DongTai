@@ -61,7 +61,7 @@ class Command(BaseCommand):
                                                   system_only=True)
             with open(os.path.join(POLICY_DIR, f'{k.lower()}_policy.json'),
                       'w+') as fp:
-                json.dump(c, fp, indent=4)
+                json.dump(c, fp, indent=4, sort_keys=True)
 
             c = HookProfilesEndPoint.get_profiles(language_id=v,
                                                   full=True,
@@ -69,13 +69,15 @@ class Command(BaseCommand):
             with open(
                     os.path.join(POLICY_DIR, f'{k.lower()}_full_policy.json'),
                     'w+') as fp:
-                json.dump(c, fp, indent=4)
-            with open(
-                    os.path.join(POLICY_DIR, f'{k.lower()}_hooktype.json'),
-                    'w+') as fp:
-                json.dump(export_hooktype(language_id=v), fp, indent=4)
+                json.dump(c, fp, indent=4, sort_keys=True)
+            with open(os.path.join(POLICY_DIR, f'{k.lower()}_hooktype.json'),
+                      'w+') as fp:
+                json.dump(export_hooktype(language_id=v),
+                          fp,
+                          indent=4,
+                          sort_keys=True)
         with open(os.path.join(POLICY_DIR, f'vul_strategy.json'), 'w+') as fp:
-            json.dump(export_strategy(), fp, indent=4)
+            json.dump(export_strategy(), fp, indent=4, sort_keys=True)
 
         self.stdout.write(
             self.style.SUCCESS('Successfully export strategy .'))

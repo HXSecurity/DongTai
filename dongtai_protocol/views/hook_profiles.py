@@ -65,11 +65,6 @@ class HookProfilesEndPoint(OpenApiEndPoint):
                 from django.forms.models import model_to_dict
                 if not strategies.count():
                     continue
-#                profile = model_to_dict(hook_type,
-#                                        exclude=[
-#                                            'id', 'hook_type','vul_strategy',
-#                                            'create_time', 'update_time','dt'
-#                                        ])
                 profile = {
                     'type':
                     hook_type.type,

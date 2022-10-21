@@ -1,193 +1,193 @@
 [
     {
-        "type": 4,
-        "enable": 1,
-        "value": "cmd-injection",
         "details": [
             {
-                "value": "exec.(*Cmd).Run()",
-                "source": "O",
-                "target": "",
-                "inherit": "false",
-                "track": "true",
                 "created_by": 1,
                 "enable": 1,
+                "inherit": "false",
                 "language": 4,
+                "source": "O",
+                "system_type": 1,
+                "target": "",
+                "track": "true",
                 "type": 4,
-                "system_type": 1
+                "value": "exec.(*Cmd).Run()"
             },
             {
-                "value": "exec.(*Cmd).Start()",
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 4,
                 "source": "O",
+                "system_type": 1,
                 "target": "",
-                "inherit": "false",
                 "track": "true",
-                "created_by": 1,
-                "enable": 1,
-                "language": 4,
                 "type": 4,
-                "system_type": 1
+                "value": "exec.(*Cmd).Start()"
             }
-        ]
-    },
-    {
-        "type": 4,
+        ],
         "enable": 1,
-        "value": "path-traversal",
-        "details": [
-            {
-                "value": "os.OpenFile()",
-                "source": "P1",
-                "target": "",
-                "inherit": "false",
-                "track": "true",
-                "created_by": 1,
-                "enable": 1,
-                "language": 4,
-                "type": 4,
-                "system_type": 1
-            }
-        ]
+        "type": 4,
+        "value": "cmd-injection"
     },
     {
-        "type": 4,
-        "enable": 0,
-        "value": "reflected-xss",
         "details": [
             {
-                "value": "template.(*Template).ExecuteTemplate()",
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 4,
+                "source": "P1",
+                "system_type": 1,
+                "target": "",
+                "track": "true",
+                "type": 4,
+                "value": "os.OpenFile()"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "path-traversal"
+    },
+    {
+        "details": [
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 4,
                 "source": "P3",
+                "system_type": 1,
                 "target": "",
-                "inherit": "false",
                 "track": "true",
-                "created_by": 1,
-                "enable": 1,
-                "language": 4,
                 "type": 4,
-                "system_type": 1
+                "value": "template.(*Template).ExecuteTemplate()"
             }
-        ]
+        ],
+        "enable": 0,
+        "type": 4,
+        "value": "reflected-xss"
     },
     {
-        "type": 4,
-        "enable": 1,
-        "value": "sql-injection",
         "details": [
             {
-                "value": "gorm.(*DB).Exec()",
-                "source": "P1,2",
-                "target": "",
-                "inherit": "false",
-                "track": "true",
                 "created_by": 1,
                 "enable": 1,
+                "inherit": "false",
                 "language": 4,
+                "source": "P1,2",
+                "system_type": 1,
+                "target": "",
+                "track": "true",
                 "type": 4,
-                "system_type": 1
+                "value": "gorm.(*DB).Exec()"
             },
             {
-                "value": "gorm.(*DB).Group()",
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 4,
                 "source": "P1",
+                "system_type": 1,
                 "target": "",
-                "inherit": "false",
                 "track": "true",
-                "created_by": 1,
-                "enable": 1,
-                "language": 4,
                 "type": 4,
-                "system_type": 1
+                "value": "gorm.(*DB).Group()"
             },
             {
-                "value": "gorm.(*DB).Having()",
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 4,
                 "source": "P1,2",
+                "system_type": 1,
                 "target": "",
-                "inherit": "false",
                 "track": "true",
-                "created_by": 1,
-                "enable": 1,
-                "language": 4,
                 "type": 4,
-                "system_type": 1
+                "value": "gorm.(*DB).Having()"
             },
             {
-                "value": "gorm.(*DB).Order()",
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 4,
                 "source": "P1",
+                "system_type": 1,
                 "target": "",
-                "inherit": "false",
                 "track": "true",
-                "created_by": 1,
-                "enable": 1,
-                "language": 4,
                 "type": 4,
-                "system_type": 1
+                "value": "gorm.(*DB).Order()"
             },
             {
-                "value": "gorm.(*DB).Pluck()",
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 4,
                 "source": "P1,2",
+                "system_type": 1,
                 "target": "",
-                "inherit": "false",
                 "track": "true",
-                "created_by": 1,
-                "enable": 1,
-                "language": 4,
                 "type": 4,
-                "system_type": 1
+                "value": "gorm.(*DB).Pluck()"
             },
             {
-                "value": "gorm.(*DB).Raw()",
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 4,
                 "source": "P1,2",
+                "system_type": 1,
                 "target": "",
-                "inherit": "false",
                 "track": "true",
-                "created_by": 1,
-                "enable": 1,
-                "language": 4,
                 "type": 4,
-                "system_type": 1
+                "value": "gorm.(*DB).Raw()"
             },
             {
-                "value": "gorm.(*DB).Select()",
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 4,
                 "source": "P1,2",
+                "system_type": 1,
                 "target": "",
-                "inherit": "false",
                 "track": "true",
-                "created_by": 1,
-                "enable": 1,
-                "language": 4,
                 "type": 4,
-                "system_type": 1
+                "value": "gorm.(*DB).Select()"
             },
             {
-                "value": "sql.(*DB).Query()",
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 4,
                 "source": "P1",
+                "system_type": 1,
                 "target": "R",
-                "inherit": "false",
                 "track": "true",
-                "created_by": 1,
-                "enable": 1,
-                "language": 4,
                 "type": 4,
-                "system_type": 1
+                "value": "sql.(*DB).Query()"
             }
-        ]
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "sql-injection"
     },
     {
-        "type": 4,
-        "enable": 1,
-        "value": "ssrf",
         "details": [
             {
-                "value": "http.(*Client).Do()",
-                "source": "P2",
-                "target": "",
-                "inherit": "false",
-                "track": "true",
                 "created_by": 1,
                 "enable": 1,
+                "inherit": "false",
                 "language": 4,
+                "source": "P2",
+                "system_type": 1,
+                "target": "",
+                "track": "true",
                 "type": 4,
-                "system_type": 1
+                "value": "http.(*Client).Do()"
             }
-        ]
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "ssrf"
     }
 ]
