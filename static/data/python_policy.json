@@ -3,17 +3,17 @@
         "details": [
             {
                 "inherit": "false",
-                "source": "P1,command",
-                "target": "",
-                "track": "true",
-                "value": "os.system"
-            },
-            {
-                "inherit": "false",
                 "source": "P1,cmd",
                 "target": "",
                 "track": "true",
                 "value": "os.popen"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,command",
+                "target": "",
+                "track": "true",
+                "value": "os.system"
             },
             {
                 "inherit": "false",
@@ -80,129 +80,24 @@
             },
             {
                 "inherit": "false",
-                "source": "P",
+                "source": "P1,s",
                 "target": "R",
                 "track": "false",
-                "value": "builtins.str.format"
-            },
-            {
-                "inherit": "false",
-                "source": "P",
-                "target": "R",
-                "track": "false",
-                "value": "builtins.str.join"
-            },
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "R",
-                "track": "false",
-                "value": "builtins.str.lower"
-            },
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "R",
-                "track": "false",
-                "value": "builtins.str.ljust"
-            },
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "R",
-                "track": "false",
-                "value": "builtins.str.rjust"
-            },
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "R",
-                "track": "false",
-                "value": "builtins.str.split"
-            },
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "R",
-                "track": "false",
-                "value": "builtins.str.translate"
+                "value": "base64.b64decode"
             },
             {
                 "inherit": "false",
                 "source": "P1,s",
                 "target": "R",
                 "track": "false",
-                "value": "json.loads"
+                "value": "base64.b64encode"
             },
             {
                 "inherit": "false",
-                "source": "P1,obj",
+                "source": "P1,source",
                 "target": "R",
                 "track": "false",
-                "value": "json.dumps"
-            },
-            {
-                "inherit": "false",
-                "source": "P",
-                "target": "R",
-                "track": "false",
-                "value": "os.path.join"
-            },
-            {
-                "inherit": "false",
-                "source": "P",
-                "target": "R",
-                "track": "false",
-                "value": "flask.jsonify"
-            },
-            {
-                "inherit": "false",
-                "source": "P",
-                "target": "R",
-                "track": "false",
-                "value": "django.template.base.Template.render"
-            },
-            {
-                "inherit": "false",
-                "source": "P",
-                "target": "R",
-                "track": "false",
-                "value": "django.template.base.render_value_in_context"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,string",
-                "target": "R",
-                "track": "false",
-                "value": "urllib.parse.unquote"
-            },
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "R",
-                "track": "false",
-                "value": "builtins.str.encode"
-            },
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "R",
-                "track": "false",
-                "value": "builtins.str.fstring"
-            },
-            {
-                "inherit": "false",
-                "source": "P",
-                "target": "R",
-                "track": "false",
-                "value": "builtins.str.cformat"
-            },
-            {
-                "inherit": "false",
-                "source": "P",
-                "target": "R",
-                "track": "false",
-                "value": "builtins.bytes.cformat"
+                "value": "builtins.bytearray.__init__"
             },
             {
                 "inherit": "false",
@@ -216,14 +111,7 @@
                 "source": "P1",
                 "target": "R",
                 "track": "false",
-                "value": "builtins.bytes.decode"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,source",
-                "target": "R",
-                "track": "false",
-                "value": "builtins.bytearray.__init__"
+                "value": "builtins.bytearray.decode"
             },
             {
                 "inherit": "false",
@@ -234,17 +122,24 @@
             },
             {
                 "inherit": "false",
-                "source": "P1,object",
+                "source": "P",
                 "target": "R",
                 "track": "false",
-                "value": "builtins.str.__new__"
+                "value": "builtins.bytes.cformat"
             },
             {
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
                 "track": "false",
-                "value": "builtins.bytearray.decode"
+                "value": "builtins.bytes.decode"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,object",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.__new__"
             },
             {
                 "inherit": "false",
@@ -272,7 +167,63 @@
                 "source": "P",
                 "target": "R",
                 "track": "false",
+                "value": "builtins.str.cformat"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
                 "value": "builtins.str.concat"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.encode"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.format"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.fstring"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.fstring"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.join"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.ljust"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.lower"
             },
             {
                 "inherit": "false",
@@ -311,6 +262,20 @@
             },
             {
                 "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.replace"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.rjust"
+            },
+            {
+                "inherit": "false",
                 "source": "P1",
                 "target": "R",
                 "track": "false",
@@ -329,6 +294,13 @@
                 "target": "R",
                 "track": "false",
                 "value": "builtins.str.rstrip"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.split"
             },
             {
                 "inherit": "false",
@@ -363,6 +335,13 @@
                 "source": "P1",
                 "target": "R",
                 "track": "false",
+                "value": "builtins.str.translate"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
                 "value": "builtins.str.upper"
             },
             {
@@ -374,17 +353,52 @@
             },
             {
                 "inherit": "false",
-                "source": "P1,s",
+                "source": "P",
                 "target": "R",
                 "track": "false",
-                "value": "base64.b64encode"
+                "value": "django.template.base.Template.render"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "django.template.base.render_value_in_context"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "flask.jsonify"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,obj",
+                "target": "R",
+                "track": "false",
+                "value": "json.dumps"
             },
             {
                 "inherit": "false",
                 "source": "P1,s",
                 "target": "R",
                 "track": "false",
-                "value": "base64.b64decode"
+                "value": "json.loads"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "os.path.join"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,string",
+                "target": "R",
+                "track": "false",
+                "value": "urllib.parse.unquote"
             },
             {
                 "inherit": "false",
@@ -399,20 +413,6 @@
                 "target": "R",
                 "track": "false",
                 "value": "yaml.dump_all"
-            },
-            {
-                "inherit": "false",
-                "source": "P",
-                "target": "R",
-                "track": "false",
-                "value": "builtins.str.replace"
-            },
-            {
-                "inherit": "false",
-                "source": "P",
-                "target": "R",
-                "track": "false",
-                "value": "builtins.str.fstring"
             }
         ],
         "enable": 1,
@@ -426,7 +426,14 @@
                 "source": "P",
                 "target": "R",
                 "track": "false",
-                "value": "django.utils.datastructures.MultiValueDict.get"
+                "value": "django.http.request.HttpRequest.read"
+            },
+            {
+                "inherit": "false",
+                "source": "P2,path",
+                "target": "R",
+                "track": "false",
+                "value": "django.urls.resolvers.RoutePattern.match"
             },
             {
                 "inherit": "false",
@@ -440,21 +447,7 @@
                 "source": "P",
                 "target": "R",
                 "track": "false",
-                "value": "django.http.request.HttpRequest.read"
-            },
-            {
-                "inherit": "false",
-                "source": "P",
-                "target": "R",
-                "track": "false",
-                "value": "werkzeug.datastructures.getlist"
-            },
-            {
-                "inherit": "false",
-                "source": "P",
-                "target": "R",
-                "track": "false",
-                "value": "werkzeug.datastructures.TypeConversionDict.get"
+                "value": "django.utils.datastructures.MultiValueDict.get"
             },
             {
                 "inherit": "false",
@@ -468,14 +461,14 @@
                 "source": "P",
                 "target": "R",
                 "track": "false",
-                "value": "werkzeug.wrappers.request.Request.get_data"
+                "value": "werkzeug.datastructures.TypeConversionDict.get"
             },
             {
                 "inherit": "false",
-                "source": "P2,path",
+                "source": "P",
                 "target": "R",
                 "track": "false",
-                "value": "django.urls.resolvers.RoutePattern.match"
+                "value": "werkzeug.datastructures.getlist"
             },
             {
                 "inherit": "all",
@@ -483,6 +476,13 @@
                 "target": "R",
                 "track": "false",
                 "value": "werkzeug.wrappers.base_request.BaseRequest.get_data"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "werkzeug.wrappers.request.Request.get_data"
             }
         ],
         "enable": 1,
@@ -493,10 +493,31 @@
         "details": [
             {
                 "inherit": "false",
-                "source": "P1,pattern",
+                "source": "P1,s",
                 "target": "R",
                 "track": "false",
-                "value": "re.escape"
+                "value": "html.escape"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "jinja2.runtime.escape"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,assertion_value",
+                "target": "R",
+                "track": "false",
+                "value": "ldap.filter.escape_filter_chars"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,text",
+                "target": "R",
+                "track": "false",
+                "value": "ldap3.utils.conv.escape_filter_chars"
             },
             {
                 "inherit": "false",
@@ -514,31 +535,10 @@
             },
             {
                 "inherit": "false",
-                "source": "P",
+                "source": "P1,pattern",
                 "target": "R",
                 "track": "false",
-                "value": "jinja2.runtime.escape"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,s",
-                "target": "R",
-                "track": "false",
-                "value": "html.escape"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,assertion_value",
-                "target": "R",
-                "track": "false",
-                "value": "ldap.filter.escape_filter_chars"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,text",
-                "target": "R",
-                "track": "false",
-                "value": "ldap3.utils.conv.escape_filter_chars"
+                "value": "re.escape"
             }
         ],
         "enable": 1,
@@ -549,17 +549,17 @@
         "details": [
             {
                 "inherit": "false",
-                "source": "P3,search_filter",
-                "target": "",
-                "track": "true",
-                "value": "ldap3.core.connection.Connection.search"
-            },
-            {
-                "inherit": "false",
                 "source": "P4,filterstr",
                 "target": "",
                 "track": "true",
                 "value": "ldap.ldapobject.SimpleLDAPObject.search_ext"
+            },
+            {
+                "inherit": "false",
+                "source": "P3,search_filter",
+                "target": "",
+                "track": "true",
+                "value": "ldap3.core.connection.Connection.search"
             }
         ],
         "enable": 1,
@@ -601,7 +601,28 @@
                 "source": "P1,pattern",
                 "target": "",
                 "track": "true",
+                "value": "re.findall"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,pattern",
+                "target": "",
+                "track": "true",
+                "value": "re.finditer"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,pattern",
+                "target": "",
+                "track": "true",
                 "value": "re.search"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,pattern",
+                "target": "",
+                "track": "true",
+                "value": "re.split"
             },
             {
                 "inherit": "false",
@@ -616,27 +637,6 @@
                 "target": "",
                 "track": "true",
                 "value": "re.subn"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,pattern",
-                "target": "",
-                "track": "true",
-                "value": "re.split"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,pattern",
-                "target": "",
-                "track": "true",
-                "value": "re.findall"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,pattern",
-                "target": "",
-                "track": "true",
-                "value": "re.finditer"
             }
         ],
         "enable": 1,
@@ -647,38 +647,17 @@
         "details": [
             {
                 "inherit": "false",
-                "source": "P2",
+                "source": "P2,query",
                 "target": "",
                 "track": "true",
-                "value": "sqlite3.Cursor.execute"
-            },
-            {
-                "inherit": "false",
-                "source": "P2",
-                "target": "",
-                "track": "true",
-                "value": "sqlite3.Cursor.executemany"
-            },
-            {
-                "inherit": "false",
-                "source": "P2",
-                "target": "",
-                "track": "true",
-                "value": "sqlite3.Cursor.executescript"
+                "value": "MySQLdb.cursors.BaseCursor.execute"
             },
             {
                 "inherit": "false",
                 "source": "P2,query",
                 "target": "",
                 "track": "true",
-                "value": "psycopg2._psycopg.cursor.execute"
-            },
-            {
-                "inherit": "false",
-                "source": "P2,query",
-                "target": "",
-                "track": "true",
-                "value": "psycopg2._psycopg.cursor.executemany"
+                "value": "MySQLdb.cursors.BaseCursor.executemany"
             },
             {
                 "inherit": "false",
@@ -699,14 +678,14 @@
                 "source": "P2,query",
                 "target": "",
                 "track": "true",
-                "value": "MySQLdb.cursors.BaseCursor.execute"
+                "value": "psycopg2._psycopg.cursor.execute"
             },
             {
                 "inherit": "false",
                 "source": "P2,query",
                 "target": "",
                 "track": "true",
-                "value": "MySQLdb.cursors.BaseCursor.executemany"
+                "value": "psycopg2._psycopg.cursor.executemany"
             },
             {
                 "inherit": "false",
@@ -721,6 +700,27 @@
                 "target": "",
                 "track": "true",
                 "value": "pymysql.cursors.Cursor.executemany"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "sqlite3.Cursor.execute"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "sqlite3.Cursor.executemany"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "sqlite3.Cursor.executescript"
             }
         ],
         "enable": 1,
@@ -734,14 +734,14 @@
                 "source": "P3,url",
                 "target": "",
                 "track": "true",
-                "value": "urllib.request.urlopen"
+                "value": "requests.sessions.Session.request"
             },
             {
                 "inherit": "false",
                 "source": "P3,url",
                 "target": "",
                 "track": "true",
-                "value": "requests.sessions.Session.request"
+                "value": "urllib.request.urlopen"
             }
         ],
         "enable": 1,
@@ -750,41 +750,6 @@
     },
     {
         "details": [
-            {
-                "inherit": "false",
-                "source": "P2,stream",
-                "target": "",
-                "track": "true",
-                "value": "yaml.loader.FullLoader.__init__"
-            },
-            {
-                "inherit": "false",
-                "source": "P2,stream",
-                "target": "",
-                "track": "true",
-                "value": "yaml.loader.UnsafeLoader.__init__"
-            },
-            {
-                "inherit": "false",
-                "source": "P2,stream",
-                "target": "",
-                "track": "true",
-                "value": "yaml.loader.Loader.__init__"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,stream",
-                "target": "",
-                "track": "true",
-                "value": "yaml.unsafe_load"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,stream",
-                "target": "",
-                "track": "true",
-                "value": "yaml.load"
-            },
             {
                 "inherit": "all",
                 "source": "P1,file",
@@ -804,7 +769,7 @@
                 "source": "P1,stream",
                 "target": "",
                 "track": "true",
-                "value": "yaml.unsafe_load_all"
+                "value": "yaml.load"
             },
             {
                 "inherit": "false",
@@ -812,6 +777,41 @@
                 "target": "",
                 "track": "true",
                 "value": "yaml.load_all"
+            },
+            {
+                "inherit": "false",
+                "source": "P2,stream",
+                "target": "",
+                "track": "true",
+                "value": "yaml.loader.FullLoader.__init__"
+            },
+            {
+                "inherit": "false",
+                "source": "P2,stream",
+                "target": "",
+                "track": "true",
+                "value": "yaml.loader.Loader.__init__"
+            },
+            {
+                "inherit": "false",
+                "source": "P2,stream",
+                "target": "",
+                "track": "true",
+                "value": "yaml.loader.UnsafeLoader.__init__"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,stream",
+                "target": "",
+                "track": "true",
+                "value": "yaml.unsafe_load"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,stream",
+                "target": "",
+                "track": "true",
+                "value": "yaml.unsafe_load_all"
             }
         ],
         "enable": 1,

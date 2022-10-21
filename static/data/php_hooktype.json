@@ -3,23 +3,23 @@
         "created_by": 1,
         "enable": 1,
         "language": 3,
+        "name": "GET",
+        "name_en": null,
+        "name_zh": "GET",
+        "system_type": 1,
+        "type": 2,
+        "value": "GET"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 3,
         "name": "\u547d\u4ee4\u6267\u884c ",
         "name_en": "OS Command Injection",
         "name_zh": "\u547d\u4ee4\u6267\u884c ",
         "system_type": 1,
         "type": 4,
         "value": "cmd-injection"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 3,
-        "name": "Sql\u6ce8\u5165",
-        "name_en": "SQL Injection",
-        "name_zh": "Sql\u6ce8\u5165",
-        "system_type": 1,
-        "type": 4,
-        "value": "sql-injection"
     },
     {
         "created_by": 1,
@@ -36,11 +36,11 @@
         "created_by": 1,
         "enable": 1,
         "language": 3,
-        "name": "GET",
-        "name_en": null,
-        "name_zh": "GET",
+        "name": "Sql\u6ce8\u5165",
+        "name_en": "SQL Injection",
+        "name_zh": "Sql\u6ce8\u5165",
         "system_type": 1,
-        "type": 2,
-        "value": "GET"
+        "type": 4,
+        "value": "sql-injection"
     }
 ]

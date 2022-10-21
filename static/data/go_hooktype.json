@@ -3,28 +3,6 @@
         "created_by": 1,
         "enable": 1,
         "language": 4,
-        "name": "Sql\u6ce8\u5165",
-        "name_en": "SQL Injection",
-        "name_zh": "Sql\u6ce8\u5165",
-        "system_type": 1,
-        "type": 4,
-        "value": "sql-injection"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 4,
-        "name": "\u670d\u52a1\u5668\u7aef\u8bf7\u6c42\u4f2a\u9020",
-        "name_en": "Server-Side Request Forgery (SSRF)",
-        "name_zh": "\u670d\u52a1\u5668\u7aef\u8bf7\u6c42\u4f2a\u9020",
-        "system_type": 1,
-        "type": 4,
-        "value": "ssrf"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 4,
         "name": "\u547d\u4ee4\u6267\u884c ",
         "name_en": "OS Command Injection",
         "name_zh": "\u547d\u4ee4\u6267\u884c ",
@@ -53,5 +31,27 @@
         "system_type": 1,
         "type": 4,
         "value": "reflected-xss"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 4,
+        "name": "Sql\u6ce8\u5165",
+        "name_en": "SQL Injection",
+        "name_zh": "Sql\u6ce8\u5165",
+        "system_type": 1,
+        "type": 4,
+        "value": "sql-injection"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 4,
+        "name": "\u670d\u52a1\u5668\u7aef\u8bf7\u6c42\u4f2a\u9020",
+        "name_en": "Server-Side Request Forgery (SSRF)",
+        "name_zh": "\u670d\u52a1\u5668\u7aef\u8bf7\u6c42\u4f2a\u9020",
+        "system_type": 1,
+        "type": 4,
+        "value": "ssrf"
     }
 ]
