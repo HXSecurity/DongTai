@@ -1,22 +1,30 @@
 [
     {
-        "user": 1,
-        "vul_type": "cmd-injection",
-        "level": 1,
-        "state": "enable",
-        "vul_name": "\u547d\u4ee4\u6267\u884c",
-        "vul_name_en": "\u547d\u4ee4\u6267\u884c",
-        "vul_name_zh": "\u547d\u4ee4\u6267\u884c",
-        "vul_desc": "\u547d\u4ee4\u6267\u884c\u6f0f\u6d1e\u662f\u6307\u7531\u4e8eWeb\u5e94\u7528\u7a0b\u5e8f\u5bf9\u7528\u6237\u63d0\u4ea4\u7684\u6570\u636e\u8fc7\u6ee4\u4e0d\u4e25\u683c\uff0c\u5bfc\u81f4\u9ed1\u5ba2\u53ef\u4ee5\u901a\u8fc7\u6784\u9020\u7279\u6b8a\u547d\u4ee4\u5b57\u7b26\u4e32\u7684\u65b9\u5f0f\uff0c\u5c06\u6570\u636e\u63d0\u4ea4\u81f3Web\u5e94\u7528\u7a0b\u5e8f\u4e2d\uff0c\u5e76\u5229\u7528\u8be5\u65b9\u5f0f\u6267\u884c\u5916\u90e8\u7a0b\u5e8f\u6216\u7cfb\u7edf\u547d\u4ee4\u5b9e\u65bd\u653b\u51fb\uff0c\u975e\u6cd5\u83b7\u53d6\u6570\u636e\u6216\u8005\u7f51\u7edc\u8d44\u6e90\u7b49\u3002",
-        "vul_desc_en": "Verifies that no untrusted data is used in commands sent to the operating system.\t",
-        "vul_desc_zh": "\u547d\u4ee4\u6267\u884c\u6f0f\u6d1e\u662f\u6307\u7531\u4e8eWeb\u5e94\u7528\u7a0b\u5e8f\u5bf9\u7528\u6237\u63d0\u4ea4\u7684\u6570\u636e\u8fc7\u6ee4\u4e0d\u4e25\u683c\uff0c\u5bfc\u81f4\u9ed1\u5ba2\u53ef\u4ee5\u901a\u8fc7\u6784\u9020\u7279\u6b8a\u547d\u4ee4\u5b57\u7b26\u4e32\u7684\u65b9\u5f0f\uff0c\u5c06\u6570\u636e\u63d0\u4ea4\u81f3Web\u5e94\u7528\u7a0b\u5e8f\u4e2d\uff0c\u5e76\u5229\u7528\u8be5\u65b9\u5f0f\u6267\u884c\u5916\u90e8\u7a0b\u5e8f\u6216\u7cfb\u7edf\u547d\u4ee4\u5b9e\u65bd\u653b\u51fb\uff0c\u975e\u6cd5\u83b7\u53d6\u6570\u636e\u6216\u8005\u7f51\u7edc\u8d44\u6e90\u7b49\u3002",
-        "vul_fix": "1\u3001\u5c3d\u91cf\u4e0d\u8981\u6267\u884c\u5916\u90e8\u7684\u5e94\u7528\u7a0b\u5e8f\u6216\u547d\u4ee4\u3002\n2\u3001\u4f7f\u7528\u81ea\u5b9a\u4e49\u51fd\u6570\u6216\u51fd\u6570\u5e93\u5b9e\u73b0\u5916\u90e8\u5e94\u7528\u7a0b\u5e8f\u6216\u547d\u4ee4\u7684\u529f\u80fd\u3002\n3\u3001\u5728\u6267\u884csystem\u3001eval\u7b49\u547d\u4ee4\u6267\u884c\u529f\u80fd\u7684\u51fd\u6570\u524d\uff0c\u786e\u5b9a\u53c2\u6570\u5185\u5bb9\u3002\n4\u3001\u4f7f\u7528escapeshellarg\u51fd\u6570\u5904\u7406\u76f8\u5173\u53c2\u6570\u3002Escapeshellarg\u51fd\u6570\u4f1a\u5c06\u4efb\u4f55\u5f15\u8d77\u53c2\u6570\u6216\u547d\u4ee4\u7ed3\u675f\u7684\u5b57\u7b26\u8fdb\u884c\u8f6c\u4e49\uff0c\u5982\u5355\u5f15\u53f7\u201c\u2019\u201d\u4f1a\u88ab\u8f6c\u4e49\u4e3a\u201c\u2019\u201d\uff0c\u53cc\u5f15\u53f7\u201c\u201d\u201d\u4f1a\u88ab\u8f6c\u4e49\u4e3a\u201c\u201d\u201d\uff0c\u5206\u53f7\u201c;\u201d\u4f1a\u88ab\u8f6c\u4e49\u4e3a\u201c;\u201d\uff0c\u8fd9\u6837escapeshellarg\u4f1a\u5c06\u53c2\u6570\u5185\u5bb9\u9650\u5236\u5728\u4e00\u5bf9\u5355\u5f15\u53f7\u6216\u53cc\u5f15\u53f7\u91cc\u9762\uff0c\u8f6c\u4e49\u53c2\u6570\u4e2d\u6240\u5305\u542b\u7684\u5355\u5f15\u53f7\u6216\u53cc\u5f15\u53f7\uff0c\u4f7f\u5176\u65e0\u6cd5\u5bf9\u5f53\u524d\u6267\u884c\u8fdb\u884c\u622a\u65ad\uff0c\u5b9e\u73b0\u9632\u8303\u547d\u4ee4\u6ce8\u5165\u653b\u51fb\u7684\u76ee\u7684\u3002\n5\u3001\u4f7f\u7528safe_mode_exec_dir\u6267\u884c\u53ef\u6267\u884c\u7684\u6587\u4ef6\u8def\u5f84\u3002\u5c06php.ini\u6587\u4ef6\u4e2d\u7684safe_mode\u8bbe\u7f6e\u4e3aOn\uff0c\u7136\u540e\u5c06\u5141\u8bb8\u6267\u884c\u7684\u6587\u4ef6\u653e\u5165\u4e00\u4e2a\u76ee\u5f55\u4e2d\uff0c\u5e76\u4f7f\u7528safe_mode_exec_dir\u6307\u5b9a\u8fd9\u4e2a\u53ef\u6267\u884c\u7684\u6587\u4ef6\u8def\u5f84\u3002\u8fd9\u6837\uff0c\u5728\u9700\u8981\u6267\u884c\u76f8\u5e94\u7684\u5916\u90e8\u7a0b\u5e8f\u65f6\uff0c\u7a0b\u5e8f\u5fc5\u987b\u5728safe_mode_exec_dir\u6307\u5b9a\u7684\u76ee\u5f55\u4e2d\u624d\u4f1a\u5141\u8bb8\u6267\u884c\uff0c\u5426\u5219\u6267\u884c\u5c06\u5931\u8d25\u3002",
-        "vul_fix_en": null,
-        "vul_fix_zh": "1\u3001\u5c3d\u91cf\u4e0d\u8981\u6267\u884c\u5916\u90e8\u7684\u5e94\u7528\u7a0b\u5e8f\u6216\u547d\u4ee4\u3002\n2\u3001\u4f7f\u7528\u81ea\u5b9a\u4e49\u51fd\u6570\u6216\u51fd\u6570\u5e93\u5b9e\u73b0\u5916\u90e8\u5e94\u7528\u7a0b\u5e8f\u6216\u547d\u4ee4\u7684\u529f\u80fd\u3002\n3\u3001\u5728\u6267\u884csystem\u3001eval\u7b49\u547d\u4ee4\u6267\u884c\u529f\u80fd\u7684\u51fd\u6570\u524d\uff0c\u786e\u5b9a\u53c2\u6570\u5185\u5bb9\u3002\n4\u3001\u4f7f\u7528escapeshellarg\u51fd\u6570\u5904\u7406\u76f8\u5173\u53c2\u6570\u3002Escapeshellarg\u51fd\u6570\u4f1a\u5c06\u4efb\u4f55\u5f15\u8d77\u53c2\u6570\u6216\u547d\u4ee4\u7ed3\u675f\u7684\u5b57\u7b26\u8fdb\u884c\u8f6c\u4e49\uff0c\u5982\u5355\u5f15\u53f7\u201c\u2019\u201d\u4f1a\u88ab\u8f6c\u4e49\u4e3a\u201c\u2019\u201d\uff0c\u53cc\u5f15\u53f7\u201c\u201d\u201d\u4f1a\u88ab\u8f6c\u4e49\u4e3a\u201c\u201d\u201d\uff0c\u5206\u53f7\u201c;\u201d\u4f1a\u88ab\u8f6c\u4e49\u4e3a\u201c;\u201d\uff0c\u8fd9\u6837escapeshellarg\u4f1a\u5c06\u53c2\u6570\u5185\u5bb9\u9650\u5236\u5728\u4e00\u5bf9\u5355\u5f15\u53f7\u6216\u53cc\u5f15\u53f7\u91cc\u9762\uff0c\u8f6c\u4e49\u53c2\u6570\u4e2d\u6240\u5305\u542b\u7684\u5355\u5f15\u53f7\u6216\u53cc\u5f15\u53f7\uff0c\u4f7f\u5176\u65e0\u6cd5\u5bf9\u5f53\u524d\u6267\u884c\u8fdb\u884c\u622a\u65ad\uff0c\u5b9e\u73b0\u9632\u8303\u547d\u4ee4\u6ce8\u5165\u653b\u51fb\u7684\u76ee\u7684\u3002\n5\u3001\u4f7f\u7528safe_mode_exec_dir\u6267\u884c\u53ef\u6267\u884c\u7684\u6587\u4ef6\u8def\u5f84\u3002\u5c06php.ini\u6587\u4ef6\u4e2d\u7684safe_mode\u8bbe\u7f6e\u4e3aOn\uff0c\u7136\u540e\u5c06\u5141\u8bb8\u6267\u884c\u7684\u6587\u4ef6\u653e\u5165\u4e00\u4e2a\u76ee\u5f55\u4e2d\uff0c\u5e76\u4f7f\u7528safe_mode_exec_dir\u6307\u5b9a\u8fd9\u4e2a\u53ef\u6267\u884c\u7684\u6587\u4ef6\u8def\u5f84\u3002\u8fd9\u6837\uff0c\u5728\u9700\u8981\u6267\u884c\u76f8\u5e94\u7684\u5916\u90e8\u7a0b\u5e8f\u65f6\uff0c\u7a0b\u5e8f\u5fc5\u987b\u5728safe_mode_exec_dir\u6307\u5b9a\u7684\u76ee\u5f55\u4e2d\u624d\u4f1a\u5141\u8bb8\u6267\u884c\uff0c\u5426\u5219\u6267\u884c\u5c06\u5931\u8d25\u3002",
-        "system_type": 1,
+        "type": 2,
+        "enable": 1,
+        "value": "GET",
         "details": [
             {
-                "value": ".system",
+                "value": ".$_GET",
+                "source": "P1",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1,
+                "language": 3,
+                "type": 2,
+                "system_type": 1
+            }
+        ]
+    },
+    {
+        "type": 4,
+        "enable": 1,
+        "value": "cmd-injection",
+        "details": [
+            {
+                "value": ".exec",
                 "source": "P",
                 "target": "",
                 "inherit": "false",
@@ -40,19 +48,7 @@
                 "system_type": 1
             },
             {
-                "value": ".exec",
-                "source": "P",
-                "target": "",
-                "inherit": "false",
-                "track": "true",
-                "created_by": 1,
-                "enable": 1,
-                "language": 3,
-                "type": 4,
-                "system_type": 1
-            },
-            {
-                "value": ".shell_exec",
+                "value": ".pcntl_exec",
                 "source": "P",
                 "target": "",
                 "inherit": "false",
@@ -88,37 +84,7 @@
                 "system_type": 1
             },
             {
-                "value": ".pcntl_exec",
-                "source": "P",
-                "target": "",
-                "inherit": "false",
-                "track": "true",
-                "created_by": 1,
-                "enable": 1,
-                "language": 3,
-                "type": 4,
-                "system_type": 1
-            }
-        ]
-    },
-    {
-        "user": 1,
-        "vul_type": "sql-injection",
-        "level": 1,
-        "state": "enable",
-        "vul_name": "SQL\u6ce8\u5165",
-        "vul_name_en": "SQL\u6ce8\u5165",
-        "vul_name_zh": "SQL\u6ce8\u5165",
-        "vul_desc": "\u8f6f\u4ef6\u4f7f\u7528\u6765\u81ea\u4e0a\u6e38\u7ec4\u4ef6\u7684\u5916\u90e8\u5f71\u54cd\u7684\u8f93\u5165\u6765\u6784\u9020\u5168\u90e8\u6216\u90e8\u5206SQL\u547d\u4ee4\uff0c\u4f46\u4e0d\u4f1a\u4e2d\u548c\u6216\u4e0d\u6b63\u786e\u5730\u4e2d\u548c\u4e86\u7279\u6b8a\u5143\u7d20\uff0c\u8fd9\u4e9b\u7279\u6b8a\u5143\u7d20\u5728\u5c06\u5176\u53d1\u9001\u5230\u4e0b\u6e38\u7ec4\u4ef6\u65f6\u53ef\u80fd\u4f1a\u4fee\u6539\u9884\u671f\u7684SQL\u547d\u4ee4\u3002",
-        "vul_desc_en": "Verifies that no untrusted data is used in dynamic database queries.\t",
-        "vul_desc_zh": "\u8f6f\u4ef6\u4f7f\u7528\u6765\u81ea\u4e0a\u6e38\u7ec4\u4ef6\u7684\u5916\u90e8\u5f71\u54cd\u7684\u8f93\u5165\u6765\u6784\u9020\u5168\u90e8\u6216\u90e8\u5206SQL\u547d\u4ee4\uff0c\u4f46\u4e0d\u4f1a\u4e2d\u548c\u6216\u4e0d\u6b63\u786e\u5730\u4e2d\u548c\u4e86\u7279\u6b8a\u5143\u7d20\uff0c\u8fd9\u4e9b\u7279\u6b8a\u5143\u7d20\u5728\u5c06\u5176\u53d1\u9001\u5230\u4e0b\u6e38\u7ec4\u4ef6\u65f6\u53ef\u80fd\u4f1a\u4fee\u6539\u9884\u671f\u7684SQL\u547d\u4ee4\u3002",
-        "vul_fix": "\u9632\u8303SQL\u6ce8\u5165\uff0c\u6807\u51c6\u65b9\u6848\u4e3a\u8f93\u5165\u9a8c\u8bc1\u4e0e\u53c2\u6570\u5316\u67e5\u8be2\u76f8\u7ed3\u5408\u3002\n\u8f93\u5165\u9a8c\u8bc1\u5206\u4e3a\u767d\u540d\u5355\u548c\u9ed1\u540d\u5355\u4e24\u79cd\u65b9\u5f0f\uff0c\u901a\u5e38\u5728\u7cfb\u7edf\u4e2d\u662f\u7ed3\u5408\u5230\u4e00\u8d77\u6765\u5b8c\u6210\u8f93\u5165\u9a8c\u8bc1\uff0c\u5177\u4f53\u5b9e\u73b0\u901a\u8fc7\u6b63\u5219\u8868\u8fbe\u5f0f\u6765\u5b8c\u6210\u3002\u9700\u8981\u6ce8\u610f\u4ee5\u4e0b\u51e0\u65b9\u9762\uff1a\n(1) \u5728\u53ef\u4fe1\u7cfb\u7edf\uff08\u6bd4\u5982\uff1a\u670d\u52a1\u5668\uff09\u4e0a\u6267\u884c\u6240\u6709\u7684\u6570\u636e\u9a8c\u8bc1\u3002\n(2) \u9a8c\u8bc1\u6240\u6709\u6765\u81ea\u4e0d\u53ef\u4fe1\u6570\u636e\u6e90\uff08\u6bd4\u5982\uff1a\u6570\u636e\u5e93\uff0c\u6587\u4ef6\u6d41\uff0c\u7b49\uff09\u7684\u6570\u636e\u3002\n(3) \u5e94\u5f53\u4e3a\u5e94\u7528\u7a0b\u5e8f\u5e94\u63d0\u4f9b\u4e00\u4e2a\u96c6\u4e2d\u7684\u8f93\u5165\u9a8c\u8bc1\u673a\u5236\u548c\u89c4\u5219\u3002\n(4) \u4e3a\u6240\u6709\u8f93\u5165\u660e\u786e\u6070\u5f53\u7684\u5b57\u7b26\u96c6\uff0c\u6bd4\u5982\uff1aUTF-8\u3002\u5728\u8f93\u5165\u9a8c\u8bc1\u524d\uff0c\u5c06\u6570\u636e\u6309\u7167\u5e38\u7528\u5b57\u7b26\u8fdb\u884c\u7f16\u7801\uff08\u89c4\u8303\u5316\uff09\u3002\u5982\u679c\u8fdb\u884c\u5173\u952e\u5b57\u7684\u9a8c\u8bc1\uff0c\u8bf7\u5148\u7edf\u4e00\u5927\u5c0f\u5199\u3002\n(5) \u9a8c\u8bc1\u7684\u4e0d\u4ec5\u662f\u53c2\u6570\uff0c\u5305\u542b\u6240\u6709\u6765\u81ea\u5ba2\u6237\u7aef\u7684\u6570\u636e\uff0c\u5305\u62ec\uff1a\u6240\u6709\u53c2\u6570\u3001URL\u3001HTTP\u5934\u4fe1\u606f\uff08\u6bd4\u5982\uff1acookie\u540d\u5b57\u548c\u6570\u636e\u503c\uff09\u3002\n(6) \u9a8c\u8bc1\u6b63\u786e\u7684\u6570\u636e\u7c7b\u578b\u3001\u9a8c\u8bc1\u6570\u636e\u8303\u56f4\u3001\u9a8c\u8bc1\u6570\u636e\u957f\u5ea6\u3002\n(7) \u8bf7\u8003\u8651\u662f\u5426\u5141\u8bb8\u8f93\u5165\u5e38\u89c1\u5371\u9669\u5b57\u7b26\u3002\u90e8\u5206\u5e38\u89c1\u7684\u5371\u9669\u5b57\u7b26\u5305\u62ec\uff1a< > \"\" ' % ( ) & +  ' \"\" \u3002\n(8) \u7279\u6b8a\u5b57\u7b26\u5355\u72ec\u9a8c\u8bc1\uff1a\u7a7a\u5b57\u8282 (%00)\uff1b\u6362\u884c\u7b26 (%0d, %0a, \n, \n)\uff1b\u8def\u5f84\u66ff\u4ee3\u5b57\u7b26\u201c\u70b9-\u70b9-\u659c\u6760\u201d\uff08../\u6216 ..\uff09\u3002\u9a8c\u8bc1\u66ff\u4ee3\u5b57\u7b26\uff1a %c0%ae%c0%ae/ (\u4f7f\u7528\u89c4\u8303\u5316 \u9a8c\u8bc1\u53cc\u7f16\u7801\u6216\u5176\u4ed6\u7c7b\u578b\u7684\u7f16\u7801\u653b\u51fb)\u3002\n\u53c2\u8003\u4ee3\u7801\uff1a\n(1) \u4f7f\u7528\u7279\u6b8a\u5b57\u7b26\u8fc7\u6ee4\u7a0b\u5e8f\u9632\u62a4SQL\u6ce8\u5165\u653b\u51fb\uff1a\n\u4ee3\u7801\u529f\u80fd\uff1a\u5bf9HTTP\u8bf7\u6c42\u4e2d\u7684\u6240\u6709\u53c2\u6570\u8fdb\u884c\u5371\u9669\u5b57\u7b26\u8fc7\u6ee4\uff0c\u53d1\u73b0\u5371\u9669\u5b57\u7b26\u53ef\u8df3\u8f6c\u5230\u76f8\u5e94\u7684\u9519\u8bef\u9875\u9762\u3002\n```java\npublic void doFilter(ServletRequest args0,\nServletResponse args1,FilterChain chain)\nthrows IOException, ServletException {\nHttpServletRequest req=(HttpServletRequest)args0;\nHttpServletResponse res=(HttpServletResponse)args1;\n//\u83b7\u5f97\u6240\u6709\u8bf7\u6c42\u53c2\u6570\u540d\nEnumeration params = req.getParameterNames();\nString sql = \"\"\"\";\nwhile (params.hasMoreElements()) {\n//\u5f97\u5230\u53c2\u6570\u540d\nString name = params.nextElement().toString();\n//\u5f97\u5230\u53c2\u6570\u5bf9\u5e94\u503c\nString[] value = req.getParameterValues(name);\nfor (int i = 0; i < value.length; i++) {\nsql = sql + value[i];\n}\n}\n//\u6709sql\u6ce8\u5165\u548cXSS\u5371\u9669\u5b57\u7b26\nif (sqlValidate(sql)) {\nthrow new IOException(\"\"\u8bf7\u6c42\u6709\u975e\u6cd5\u5b57\u7b26\uff1a\"\"+sql);\n} else {\nchain.doFilter(args0,args1);\n}\n}\nprotected static boolean sqlValidate(String str) {\nstr = str.toLowerCase(); //\u7edf\u4e00\u8f6c\u4e3a\u5c0f\u5199\nString badStr = \"\"and|exec|insert|select|delete\n|update|count|union|master|truncate|char|declare\n|cast|set|fetch|varchar|sysobjects|drop\n|`|'|\"\"|<|>|(|)|/||=|+|-|#|*|;|%\"\";\nString[] badStrs = badStr.split(\"\"|\"\");\nfor (int i = 0; i < badStrs.length; i++) {\nif (str.indexOf(badStrs[i]) >= 0) {\nreturn true; //\u53c2\u6570\u4e2d\u5305\u542b\u8981\u8fc7\u6ee4\u5173\u952e\u5b57;\n}\n}\nreturn false; //\u53c2\u6570\u4e2d\u4e0d\u5305\u542b\u8981\u8fc7\u6ee4\u5173\u952e\u5b57;\n}\n```\n(2) \u901a\u8fc7\u53c2\u6570\u5316\u67e5\u8be2\u65b9\u5f0f\u8fdb\u884cSQL\u6ce8\u5165\u653b\u51fb\u9632\u62a4\uff1a\n```java\nString sql = \u201cselect * from product where cat=\u2019?\u2019 and price >\u2019?\u2019\u201d;\nPreparedStatement pstmt = con.prepareStatement(sql);\npstmt.setInt(1, request.getParameter(\u201ccat\u201d));\npstmt.setString(2, request.getParameter(\u201cprice\u201d));\nResultSet rs = pstmt.executeQuery();\n```\n(3) \u4f7f\u7528MyBatis\u6280\u672f\uff0c\u901a\u8fc7Mapper.xml\u6587\u4ef6\u5b9a\u4e49SQL\u8bed\u53e5\u8fdb\u884cSQL\u6ce8\u5165\u653b\u51fb\u9632\u62a4\uff1a\n```\n<mapper namespace=\"TestUser\"> //\u547d\u540d\u7a7a\u95f4\n<select id=\"getById\" parameterType=\"java.lang.String\"\nresultMap=\"TestFlowResult\">\nselect\n<include refid=\"TestFlowColumns\" />\n```\n\u5728\u7f16\u5199mybatis\u7684\u6620\u5c04\u8bed\u53e5\u65f6\uff0c\u5c3d\u91cf\u91c7\u7528\u201c#{xxx}\u201d\u8fd9\u6837\u7684\u683c\u5f0f\u3002\u82e5\u4e0d\u5f97\u4e0d\u4f7f\u7528\u201cNULL\u201d\u8fd9\u6837\u7684\u53c2\u6570\uff0c\u8981\u624b\u5de5\u5730\u505a\u597d\u8fc7\u6ee4\u5de5\u4f5c\uff0c\u6765\u9632\u6b62sql\u6ce8\u5165\u653b\u51fb\u3002\n(4) \u5f3a\u7c7b\u578b\u7684\u53c2\u6570\u5316\u67e5\u8be2\uff0c\u5373\u5728\u6570\u636e\u5e93\u589e\u52a0\u3001\u67e5\u8be2\u3001\u66f4\u65b0\u64cd\u4f5c\u65f6\uff0csql\u8bed\u53e5\u4e2d\u6240\u6709\u8f93\u5165\u53c2\u6570\u7edf\u4e00\u91c7\u7528#param#\u65b9\u5f0f\u3002\u793a\u4f8b\u5982\u4e0b:\n<update id=\"\"updatePtaskDetailState\"\" parameterClass=\"\"java.lang.String\"\">\nupdate ZX_PTASKDETAIL set BATCHJNLNOSTATE = '4' where JNLNO = #jnlNo#\n}\n(5)\u9700\u8981\u4f7f\u7528like\u8bed\u53e5\u7684\u5730\u65b9\u53ef\u4ee5\u4f7f\u7528'%'||#param#||'%'\u6216concat(concat('%',#param#),'%')\u907f\u514d\u6ce8\u5165\u3002\u793a\u4f8b\u5982\u4e0b\nselect * from ZX_PCIF where name like '%'||#name#||'%'",
-        "vul_fix_en": null,
-        "vul_fix_zh": "\u9632\u8303SQL\u6ce8\u5165\uff0c\u6807\u51c6\u65b9\u6848\u4e3a\u8f93\u5165\u9a8c\u8bc1\u4e0e\u53c2\u6570\u5316\u67e5\u8be2\u76f8\u7ed3\u5408\u3002\n\u8f93\u5165\u9a8c\u8bc1\u5206\u4e3a\u767d\u540d\u5355\u548c\u9ed1\u540d\u5355\u4e24\u79cd\u65b9\u5f0f\uff0c\u901a\u5e38\u5728\u7cfb\u7edf\u4e2d\u662f\u7ed3\u5408\u5230\u4e00\u8d77\u6765\u5b8c\u6210\u8f93\u5165\u9a8c\u8bc1\uff0c\u5177\u4f53\u5b9e\u73b0\u901a\u8fc7\u6b63\u5219\u8868\u8fbe\u5f0f\u6765\u5b8c\u6210\u3002\u9700\u8981\u6ce8\u610f\u4ee5\u4e0b\u51e0\u65b9\u9762\uff1a\n(1) \u5728\u53ef\u4fe1\u7cfb\u7edf\uff08\u6bd4\u5982\uff1a\u670d\u52a1\u5668\uff09\u4e0a\u6267\u884c\u6240\u6709\u7684\u6570\u636e\u9a8c\u8bc1\u3002\n(2) \u9a8c\u8bc1\u6240\u6709\u6765\u81ea\u4e0d\u53ef\u4fe1\u6570\u636e\u6e90\uff08\u6bd4\u5982\uff1a\u6570\u636e\u5e93\uff0c\u6587\u4ef6\u6d41\uff0c\u7b49\uff09\u7684\u6570\u636e\u3002\n(3) \u5e94\u5f53\u4e3a\u5e94\u7528\u7a0b\u5e8f\u5e94\u63d0\u4f9b\u4e00\u4e2a\u96c6\u4e2d\u7684\u8f93\u5165\u9a8c\u8bc1\u673a\u5236\u548c\u89c4\u5219\u3002\n(4) \u4e3a\u6240\u6709\u8f93\u5165\u660e\u786e\u6070\u5f53\u7684\u5b57\u7b26\u96c6\uff0c\u6bd4\u5982\uff1aUTF-8\u3002\u5728\u8f93\u5165\u9a8c\u8bc1\u524d\uff0c\u5c06\u6570\u636e\u6309\u7167\u5e38\u7528\u5b57\u7b26\u8fdb\u884c\u7f16\u7801\uff08\u89c4\u8303\u5316\uff09\u3002\u5982\u679c\u8fdb\u884c\u5173\u952e\u5b57\u7684\u9a8c\u8bc1\uff0c\u8bf7\u5148\u7edf\u4e00\u5927\u5c0f\u5199\u3002\n(5) \u9a8c\u8bc1\u7684\u4e0d\u4ec5\u662f\u53c2\u6570\uff0c\u5305\u542b\u6240\u6709\u6765\u81ea\u5ba2\u6237\u7aef\u7684\u6570\u636e\uff0c\u5305\u62ec\uff1a\u6240\u6709\u53c2\u6570\u3001URL\u3001HTTP\u5934\u4fe1\u606f\uff08\u6bd4\u5982\uff1acookie\u540d\u5b57\u548c\u6570\u636e\u503c\uff09\u3002\n(6) \u9a8c\u8bc1\u6b63\u786e\u7684\u6570\u636e\u7c7b\u578b\u3001\u9a8c\u8bc1\u6570\u636e\u8303\u56f4\u3001\u9a8c\u8bc1\u6570\u636e\u957f\u5ea6\u3002\n(7) \u8bf7\u8003\u8651\u662f\u5426\u5141\u8bb8\u8f93\u5165\u5e38\u89c1\u5371\u9669\u5b57\u7b26\u3002\u90e8\u5206\u5e38\u89c1\u7684\u5371\u9669\u5b57\u7b26\u5305\u62ec\uff1a< > \"\" ' % ( ) & +  ' \"\" \u3002\n(8) \u7279\u6b8a\u5b57\u7b26\u5355\u72ec\u9a8c\u8bc1\uff1a\u7a7a\u5b57\u8282 (%00)\uff1b\u6362\u884c\u7b26 (%0d, %0a, \n, \n)\uff1b\u8def\u5f84\u66ff\u4ee3\u5b57\u7b26\u201c\u70b9-\u70b9-\u659c\u6760\u201d\uff08../\u6216 ..\uff09\u3002\u9a8c\u8bc1\u66ff\u4ee3\u5b57\u7b26\uff1a %c0%ae%c0%ae/ (\u4f7f\u7528\u89c4\u8303\u5316 \u9a8c\u8bc1\u53cc\u7f16\u7801\u6216\u5176\u4ed6\u7c7b\u578b\u7684\u7f16\u7801\u653b\u51fb)\u3002\n\u53c2\u8003\u4ee3\u7801\uff1a\n(1) \u4f7f\u7528\u7279\u6b8a\u5b57\u7b26\u8fc7\u6ee4\u7a0b\u5e8f\u9632\u62a4SQL\u6ce8\u5165\u653b\u51fb\uff1a\n\u4ee3\u7801\u529f\u80fd\uff1a\u5bf9HTTP\u8bf7\u6c42\u4e2d\u7684\u6240\u6709\u53c2\u6570\u8fdb\u884c\u5371\u9669\u5b57\u7b26\u8fc7\u6ee4\uff0c\u53d1\u73b0\u5371\u9669\u5b57\u7b26\u53ef\u8df3\u8f6c\u5230\u76f8\u5e94\u7684\u9519\u8bef\u9875\u9762\u3002\n```java\npublic void doFilter(ServletRequest args0,\nServletResponse args1,FilterChain chain)\nthrows IOException, ServletException {\nHttpServletRequest req=(HttpServletRequest)args0;\nHttpServletResponse res=(HttpServletResponse)args1;\n//\u83b7\u5f97\u6240\u6709\u8bf7\u6c42\u53c2\u6570\u540d\nEnumeration params = req.getParameterNames();\nString sql = \"\"\"\";\nwhile (params.hasMoreElements()) {\n//\u5f97\u5230\u53c2\u6570\u540d\nString name = params.nextElement().toString();\n//\u5f97\u5230\u53c2\u6570\u5bf9\u5e94\u503c\nString[] value = req.getParameterValues(name);\nfor (int i = 0; i < value.length; i++) {\nsql = sql + value[i];\n}\n}\n//\u6709sql\u6ce8\u5165\u548cXSS\u5371\u9669\u5b57\u7b26\nif (sqlValidate(sql)) {\nthrow new IOException(\"\"\u8bf7\u6c42\u6709\u975e\u6cd5\u5b57\u7b26\uff1a\"\"+sql);\n} else {\nchain.doFilter(args0,args1);\n}\n}\nprotected static boolean sqlValidate(String str) {\nstr = str.toLowerCase(); //\u7edf\u4e00\u8f6c\u4e3a\u5c0f\u5199\nString badStr = \"\"and|exec|insert|select|delete\n|update|count|union|master|truncate|char|declare\n|cast|set|fetch|varchar|sysobjects|drop\n|`|'|\"\"|<|>|(|)|/||=|+|-|#|*|;|%\"\";\nString[] badStrs = badStr.split(\"\"|\"\");\nfor (int i = 0; i < badStrs.length; i++) {\nif (str.indexOf(badStrs[i]) >= 0) {\nreturn true; //\u53c2\u6570\u4e2d\u5305\u542b\u8981\u8fc7\u6ee4\u5173\u952e\u5b57;\n}\n}\nreturn false; //\u53c2\u6570\u4e2d\u4e0d\u5305\u542b\u8981\u8fc7\u6ee4\u5173\u952e\u5b57;\n}\n```\n(2) \u901a\u8fc7\u53c2\u6570\u5316\u67e5\u8be2\u65b9\u5f0f\u8fdb\u884cSQL\u6ce8\u5165\u653b\u51fb\u9632\u62a4\uff1a\n```java\nString sql = \u201cselect * from product where cat=\u2019?\u2019 and price >\u2019?\u2019\u201d;\nPreparedStatement pstmt = con.prepareStatement(sql);\npstmt.setInt(1, request.getParameter(\u201ccat\u201d));\npstmt.setString(2, request.getParameter(\u201cprice\u201d));\nResultSet rs = pstmt.executeQuery();\n```\n(3) \u4f7f\u7528MyBatis\u6280\u672f\uff0c\u901a\u8fc7Mapper.xml\u6587\u4ef6\u5b9a\u4e49SQL\u8bed\u53e5\u8fdb\u884cSQL\u6ce8\u5165\u653b\u51fb\u9632\u62a4\uff1a\n```\n<mapper namespace=\"TestUser\"> //\u547d\u540d\u7a7a\u95f4\n<select id=\"getById\" parameterType=\"java.lang.String\"\nresultMap=\"TestFlowResult\">\nselect\n<include refid=\"TestFlowColumns\" />\n```\n\u5728\u7f16\u5199mybatis\u7684\u6620\u5c04\u8bed\u53e5\u65f6\uff0c\u5c3d\u91cf\u91c7\u7528\u201c#{xxx}\u201d\u8fd9\u6837\u7684\u683c\u5f0f\u3002\u82e5\u4e0d\u5f97\u4e0d\u4f7f\u7528\u201cNULL\u201d\u8fd9\u6837\u7684\u53c2\u6570\uff0c\u8981\u624b\u5de5\u5730\u505a\u597d\u8fc7\u6ee4\u5de5\u4f5c\uff0c\u6765\u9632\u6b62sql\u6ce8\u5165\u653b\u51fb\u3002\n(4) \u5f3a\u7c7b\u578b\u7684\u53c2\u6570\u5316\u67e5\u8be2\uff0c\u5373\u5728\u6570\u636e\u5e93\u589e\u52a0\u3001\u67e5\u8be2\u3001\u66f4\u65b0\u64cd\u4f5c\u65f6\uff0csql\u8bed\u53e5\u4e2d\u6240\u6709\u8f93\u5165\u53c2\u6570\u7edf\u4e00\u91c7\u7528#param#\u65b9\u5f0f\u3002\u793a\u4f8b\u5982\u4e0b:\n<update id=\"\"updatePtaskDetailState\"\" parameterClass=\"\"java.lang.String\"\">\nupdate ZX_PTASKDETAIL set BATCHJNLNOSTATE = '4' where JNLNO = #jnlNo#\n}\n(5)\u9700\u8981\u4f7f\u7528like\u8bed\u53e5\u7684\u5730\u65b9\u53ef\u4ee5\u4f7f\u7528'%'||#param#||'%'\u6216concat(concat('%',#param#),'%')\u907f\u514d\u6ce8\u5165\u3002\u793a\u4f8b\u5982\u4e0b\nselect * from ZX_PCIF where name like '%'||#name#||'%'",
-        "system_type": 1,
-        "details": [
-            {
-                "value": ".mysqli_query",
+                "value": ".shell_exec",
                 "source": "P",
                 "target": "",
                 "inherit": "false",
@@ -130,7 +96,7 @@
                 "system_type": 1
             },
             {
-                "value": ".mysqli_multi_query",
+                "value": ".system",
                 "source": "P",
                 "target": "",
                 "inherit": "false",
@@ -145,15 +111,93 @@
     },
     {
         "type": 1,
-        "name": "general-rules",
-        "name_en": null,
-        "name_zh": "general-rules",
-        "value": "general-rules",
         "enable": 1,
-        "created_by": 1,
-        "language": 3,
-        "system_type": 1,
+        "value": "general-rules",
         "details": [
+            {
+                "value": ".ZEND_ASSIGN_CONCAT",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1,
+                "language": 3,
+                "type": 1,
+                "system_type": 1
+            },
+            {
+                "value": ".ZEND_CONCAT",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1,
+                "language": 3,
+                "type": 1,
+                "system_type": 1
+            },
+            {
+                "value": ".ZEND_ECHO",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1,
+                "language": 3,
+                "type": 1,
+                "system_type": 1
+            },
+            {
+                "value": ".ZEND_EXIT",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1,
+                "language": 3,
+                "type": 1,
+                "system_type": 1
+            },
+            {
+                "value": ".ZEND_INCLUDE_OR_EVAL",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1,
+                "language": 3,
+                "type": 1,
+                "system_type": 1
+            },
+            {
+                "value": ".ZEND_INIT_USER_CALL",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1,
+                "language": 3,
+                "type": 1,
+                "system_type": 1
+            },
+            {
+                "value": ".ZEND_RETURN",
+                "source": "P",
+                "target": "R",
+                "inherit": "false",
+                "track": "false",
+                "created_by": 1,
+                "enable": 1,
+                "language": 3,
+                "type": 1,
+                "system_type": 1
+            },
             {
                 "value": ".ZEND_ROPE_END",
                 "source": "P",
@@ -429,114 +473,36 @@
                 "language": 3,
                 "type": 1,
                 "system_type": 1
-            },
-            {
-                "value": ".ZEND_ASSIGN_CONCAT",
-                "source": "P",
-                "target": "R",
-                "inherit": "false",
-                "track": "false",
-                "created_by": 1,
-                "enable": 1,
-                "language": 3,
-                "type": 1,
-                "system_type": 1
-            },
-            {
-                "value": ".ZEND_CONCAT",
-                "source": "P",
-                "target": "R",
-                "inherit": "false",
-                "track": "false",
-                "created_by": 1,
-                "enable": 1,
-                "language": 3,
-                "type": 1,
-                "system_type": 1
-            },
-            {
-                "value": ".ZEND_INIT_USER_CALL",
-                "source": "P",
-                "target": "R",
-                "inherit": "false",
-                "track": "false",
-                "created_by": 1,
-                "enable": 1,
-                "language": 3,
-                "type": 1,
-                "system_type": 1
-            },
-            {
-                "value": ".ZEND_ECHO",
-                "source": "P",
-                "target": "R",
-                "inherit": "false",
-                "track": "false",
-                "created_by": 1,
-                "enable": 1,
-                "language": 3,
-                "type": 1,
-                "system_type": 1
-            },
-            {
-                "value": ".ZEND_EXIT",
-                "source": "P",
-                "target": "R",
-                "inherit": "false",
-                "track": "false",
-                "created_by": 1,
-                "enable": 1,
-                "language": 3,
-                "type": 1,
-                "system_type": 1
-            },
-            {
-                "value": ".ZEND_INCLUDE_OR_EVAL",
-                "source": "P",
-                "target": "R",
-                "inherit": "false",
-                "track": "false",
-                "created_by": 1,
-                "enable": 1,
-                "language": 3,
-                "type": 1,
-                "system_type": 1
-            },
-            {
-                "value": ".ZEND_RETURN",
-                "source": "P",
-                "target": "R",
-                "inherit": "false",
-                "track": "false",
-                "created_by": 1,
-                "enable": 1,
-                "language": 3,
-                "type": 1,
-                "system_type": 1
             }
         ]
     },
     {
-        "type": 2,
-        "name": "GET",
-        "name_en": null,
-        "name_zh": "GET",
-        "value": "GET",
+        "type": 4,
         "enable": 1,
-        "created_by": 1,
-        "language": 3,
-        "system_type": 1,
+        "value": "sql-injection",
         "details": [
             {
-                "value": ".$_GET",
-                "source": "P1",
-                "target": "R",
+                "value": ".mysqli_multi_query",
+                "source": "P",
+                "target": "",
                 "inherit": "false",
-                "track": "false",
+                "track": "true",
                 "created_by": 1,
                 "enable": 1,
                 "language": 3,
-                "type": 2,
+                "type": 4,
+                "system_type": 1
+            },
+            {
+                "value": ".mysqli_query",
+                "source": "P",
+                "target": "",
+                "inherit": "false",
+                "track": "true",
+                "created_by": 1,
+                "enable": 1,
+                "language": 3,
+                "type": 4,
                 "system_type": 1
             }
         ]

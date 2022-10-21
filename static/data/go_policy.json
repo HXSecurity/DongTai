@@ -23,13 +23,13 @@
     {
         "type": 4,
         "enable": 1,
-        "value": "ssrf",
+        "value": "path-traversal",
         "details": [
             {
-                "source": "P2",
+                "source": "P1",
                 "track": "true",
                 "target": "",
-                "value": "http.(*Client).Do()",
+                "value": "os.OpenFile()",
                 "inherit": "false"
             }
         ]
@@ -100,13 +100,13 @@
     {
         "type": 4,
         "enable": 1,
-        "value": "path-traversal",
+        "value": "ssrf",
         "details": [
             {
-                "source": "P1",
+                "source": "P2",
                 "track": "true",
                 "target": "",
-                "value": "os.OpenFile()",
+                "value": "http.(*Client).Do()",
                 "inherit": "false"
             }
         ]

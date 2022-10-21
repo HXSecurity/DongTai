@@ -1,5 +1,19 @@
 [
     {
+        "type": 2,
+        "enable": 1,
+        "value": "GET",
+        "details": [
+            {
+                "source": "P1",
+                "track": "false",
+                "target": "R",
+                "value": ".$_GET",
+                "inherit": "false"
+            }
+        ]
+    },
+    {
         "type": 4,
         "enable": 1,
         "value": "cmd-injection",
@@ -51,27 +65,6 @@
                 "track": "true",
                 "target": "",
                 "value": ".pcntl_exec",
-                "inherit": "false"
-            }
-        ]
-    },
-    {
-        "type": 4,
-        "enable": 1,
-        "value": "sql-injection",
-        "details": [
-            {
-                "source": "P",
-                "track": "true",
-                "target": "",
-                "value": ".mysqli_query",
-                "inherit": "false"
-            },
-            {
-                "source": "P",
-                "track": "true",
-                "target": "",
-                "value": ".mysqli_multi_query",
                 "inherit": "false"
             }
         ]
@@ -294,15 +287,22 @@
         ]
     },
     {
-        "type": 2,
+        "type": 4,
         "enable": 1,
-        "value": "GET",
+        "value": "sql-injection",
         "details": [
             {
-                "source": "P1",
-                "track": "false",
-                "target": "R",
-                "value": ".$_GET",
+                "source": "P",
+                "track": "true",
+                "target": "",
+                "value": ".mysqli_query",
+                "inherit": "false"
+            },
+            {
+                "source": "P",
+                "track": "true",
+                "target": "",
+                "value": ".mysqli_multi_query",
                 "inherit": "false"
             }
         ]
