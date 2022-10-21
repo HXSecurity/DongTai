@@ -1,0 +1,57 @@
+[
+    {
+        "type": 4,
+        "name": "Sql\u6ce8\u5165",
+        "name_en": "SQL Injection",
+        "name_zh": "Sql\u6ce8\u5165",
+        "value": "sql-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 4,
+        "system_type": 1
+    },
+    {
+        "type": 4,
+        "name": "\u670d\u52a1\u5668\u7aef\u8bf7\u6c42\u4f2a\u9020",
+        "name_en": "Server-Side Request Forgery (SSRF)",
+        "name_zh": "\u670d\u52a1\u5668\u7aef\u8bf7\u6c42\u4f2a\u9020",
+        "value": "ssrf",
+        "enable": 1,
+        "created_by": 1,
+        "language": 4,
+        "system_type": 1
+    },
+    {
+        "type": 4,
+        "name": "\u547d\u4ee4\u6267\u884c ",
+        "name_en": "OS Command Injection",
+        "name_zh": "\u547d\u4ee4\u6267\u884c ",
+        "value": "cmd-injection",
+        "enable": 1,
+        "created_by": 1,
+        "language": 4,
+        "system_type": 1
+    },
+    {
+        "type": 4,
+        "name": "\u8def\u5f84\u7a7f\u8d8a",
+        "name_en": "Path Traversal",
+        "name_zh": "\u8def\u5f84\u7a7f\u8d8a",
+        "value": "path-traversal",
+        "enable": 1,
+        "created_by": 1,
+        "language": 4,
+        "system_type": 1
+    },
+    {
+        "type": 4,
+        "name": "\u53cd\u5c04\u578bXSS",
+        "name_en": "Cross-Site Scripting",
+        "name_zh": "\u53cd\u5c04\u578bXSS",
+        "value": "reflected-xss",
+        "enable": 1,
+        "created_by": 1,
+        "language": 4,
+        "system_type": 1
+    }
+]
