@@ -39,6 +39,7 @@ class HookProfilesV2EndPoint(HookProfilesEndPoint):
             for strategy in strategies:
                 profiles.append({
                     'type': hook_type.type,
+                    'vul_type': hook_type.value,
                     "source": strategy.get("source"),
                     "target": strategy.get("target"),
                     "signature": strategy.get("value"),
