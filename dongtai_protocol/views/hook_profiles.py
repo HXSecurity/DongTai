@@ -40,11 +40,13 @@ class HookProfilesEndPoint(OpenApiEndPoint):
     def get_profiles(user=None, language_id=JAVA, full=False, system_only=False):
         profiles = list()
         hook_types = IastStrategyModel.objects.filter(
-            Q(state='enable', user_id__in=set([1, user.id]) if user else [1])
+            Q(state__in=['enable'] if not full else ['enable', 'disable'],
+              user_id__in=set([1, user.id]) if user else [1])
             & (Q(system_type=1) if system_only else Q())).order_by('id')
         hook_types_a = HookType.objects.filter(
             Q(language_id=language_id,
-              enable=const.HOOK_TYPE_ENABLE,
+              enable__in=[const.HOOK_TYPE_ENABLE] if not full else
+              [const.HOOK_TYPE_ENABLE, const.HOOK_TYPE_DISABLE],
               created_by__in=set([1, user.id]) if user else [1],
               type__in=(1, 2, 3))
             & (Q(system_type=1) if system_only else Q())).order_by('id')

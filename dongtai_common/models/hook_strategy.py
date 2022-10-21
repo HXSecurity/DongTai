@@ -67,7 +67,7 @@ class HookStrategy(models.Model):
     strategy = models.ForeignKey(
         'dongtai_common.IastStrategyModel',
         blank=True,
-        default=0,
+        default=-1,
         on_delete=models.DO_NOTHING,
         db_column='strategy_id',
         db_constraint=False,

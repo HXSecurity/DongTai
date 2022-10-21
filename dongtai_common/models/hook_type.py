@@ -16,22 +16,21 @@ class HookType(models.Model):
     enable = models.IntegerField(blank=True, null=True)
     create_time = models.IntegerField(blank=True, null=True)
     update_time = models.IntegerField(blank=True, null=True)
-    created_by = models.ForeignKey(User,
-                                   db_column='created_by',
-                                   blank=True,
-                                   null=True,
-                                   on_delete=models.DO_NOTHING)
+    created_by = models.IntegerField(blank=True, null=True)
     language = models.ForeignKey(IastProgramLanguage,
                                  blank=True,
                                  default='',
                                  on_delete=models.DO_NOTHING,
                                  db_constraint=False)
-    vul_strategy = models.ForeignKey('dongtai_common.IastStrategyModel',
-                                 blank=True,
-                                 default='',
-                                 on_delete=models.DO_NOTHING,
-                                 db_column='strategy_id',
-                                 db_constraint=False,)
+    vul_strategy = models.ForeignKey(
+        'dongtai_common.IastStrategyModel',
+        blank=True,
+        default=-1,
+        null=True,
+        on_delete=models.DO_NOTHING,
+        db_column='strategy_id',
+        db_constraint=False,
+    )
     system_type = models.IntegerField(blank=True, null=True, default=0)
     class Meta:
         managed = get_managed()
