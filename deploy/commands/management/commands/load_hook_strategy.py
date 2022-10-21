@@ -9,7 +9,7 @@ from dongtai_common.models.sensitive_info import IastSensitiveInfoRule
 from dongtai_common.models.hook_strategy import HookStrategy
 from dongtai_common.models.hook_type import HookType
 from django.forms.models import model_to_dict
-
+from collections import OrderedDict
 
 class Command(BaseCommand):
     help = 'load hook_strategy'
@@ -21,7 +21,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         POLICY_DIR = os.path.join(BASE_DIR, 'static/data/')
         with open(os.path.join(POLICY_DIR, f'vul_strategy.json')) as fp:
-            full_strategies = json.load(fp)
+            full_strategies = json.load(fp,object_pairs_hook=OrderedDict)
         strategy_dict = {}
         for strategy in full_strategies:
             if IastStrategyModel.objects.filter(
@@ -63,13 +63,12 @@ class Command(BaseCommand):
             del strategy['user']
             strategy['level_id'] = strategy['level']
             del strategy['level']
-            print(strategy)
             strategy_obj = IastStrategyModel.objects.create(**strategy)
             strategy_dict[strategy['vul_type']] = strategy_obj
         for k, v in LANGUAGE_DICT.items():
             with open(os.path.join(POLICY_DIR,
                                    f'{k.lower()}_hooktype.json')) as fp:
-                hooktypes = json.load(fp)
+                hooktypes = json.load(fp, object_pairs_hook=OrderedDict)
             hooktype_dict = {}
             for hook_type in hooktypes:
                 if HookType.objects.filter(value=hook_type['value'],
@@ -78,12 +77,14 @@ class Command(BaseCommand):
                     #已存在策略类型，不会重建,会将新的规则添加到这上边
                     hooktype_obj = HookType.objects.filter(
                         value=hook_type['value'],
+                        language_id=v,
                         strategy__id__isnull=False,
                         system_type=1).first()
                     hooktype_dict[hook_type['value']] = hooktype_obj
                     continue
                 if HookType.objects.filter(value=hook_type['value'],
                                            strategy__id__isnull=False,
+                                           language_id=v,
                                            system_type=0).exists():
                     #存在用户定义的冲突策略,不会修改
                     continue
@@ -97,13 +98,10 @@ class Command(BaseCommand):
             HookStrategy.objects.filter(language_id=v, system_type=1).delete()
             with open(os.path.join(POLICY_DIR,
                                    f'{k.lower()}_full_policy.json')) as fp:
-                full_policy = json.load(fp)
+                full_policy = json.load(fp, object_pairs_hook=OrderedDict)
             for policy in full_policy:
-                if 'type' not in policy.keys():
-                    policy['type'] = 4
                 if policy['type'] == 4:
                     if policy['value'] not in strategy_dict.keys():
-                        print(policy)
                         continue
                     policy_strategy = strategy_dict[policy['value']]
                     for hook_strategy in policy['details']:
