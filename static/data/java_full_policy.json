@@ -823,49 +823,6 @@
             {
                 "created_by": 1,
                 "enable": 1,
-                "inherit": "true",
-                "language": 1,
-                "source": "O",
-                "system_type": 1,
-                "target": "R",
-                "track": "false",
-                "type": 1,
-                "value": "org.apache.commons.fileupload.FileItem.getName()"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "true",
-                "language": 1,
-                "source": "O",
-                "system_type": 1,
-                "target": "R",
-                "track": "false",
-                "type": 1,
-                "value": "org.springframework.web.multipart.MultipartFile.getName()"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "true",
-                "language": 1,
-                "source": "O",
-                "system_type": 1,
-                "target": "R",
-                "track": "false",
-                "type": 1,
-                "value": "org.springframework.web.multipart.MultipartFile.getOriginalFilename()"
-            }
-        ],
-        "enable": 1,
-        "type": 1,
-        "value": "Spring"
-    },
-    {
-        "details": [
-            {
-                "created_by": 1,
-                "enable": 1,
                 "inherit": "false",
                 "language": 1,
                 "source": "P1",
@@ -3256,6 +3213,49 @@
         "enable": 1,
         "type": 2,
         "value": "feign.ReflectiveFeign"
+    },
+    {
+        "details": [
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "true",
+                "language": 1,
+                "source": "O",
+                "system_type": 1,
+                "target": "R",
+                "track": "false",
+                "type": 1,
+                "value": "org.apache.commons.fileupload.FileItem.getName()"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "true",
+                "language": 1,
+                "source": "O",
+                "system_type": 1,
+                "target": "R",
+                "track": "false",
+                "type": 1,
+                "value": "org.springframework.web.multipart.MultipartFile.getName()"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "true",
+                "language": 1,
+                "source": "O",
+                "system_type": 1,
+                "target": "R",
+                "track": "false",
+                "type": 1,
+                "value": "org.springframework.web.multipart.MultipartFile.getOriginalFilename()"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "fileupload"
     },
     {
         "details": [

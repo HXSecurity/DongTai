@@ -26,11 +26,10 @@ class Command(BaseCommand):
         for strategy in full_strategies:
             if IastStrategyModel.objects.filter(
                     vul_type=strategy['vul_type'],
-                    strategy__id__isnull=False,
+                    #strategy__id__isnull=False,
                     system_type=1,
             ).exists() or IastStrategyModel.objects.filter(
                     vul_type=strategy['vul_type'],
-                    iastsensitiveinforule__id__isnull=False,
                     system_type=1).exists():
                 #已存在策略类型，不会重建
                 qs1 = IastStrategyModel.objects.filter(
@@ -48,7 +47,6 @@ class Command(BaseCommand):
                 continue
             if IastStrategyModel.objects.filter(
                     vul_type=strategy['vul_type'],
-                    strategy__id__isnull=False,
                     system_type=0).exists(
                     ) or IastStrategyModel.objects.filter(
                         vul_type=strategy['vul_type'],
@@ -71,20 +69,18 @@ class Command(BaseCommand):
             hooktype_dict = {}
             for hook_type in hooktypes:
                 if HookType.objects.filter(value=hook_type['value'],
-                                           strategy__id__isnull=False,
                                            type=hook_type['type'],
+                                           language_id=v,
                                            system_type=1).exists():
                     #已存在策略类型，不会重建,会将新的规则添加到这上边
                     hooktype_obj = HookType.objects.filter(
                         value=hook_type['value'],
                         language_id=v,
                         type=hook_type['type'],
-                        strategy__id__isnull=False,
                         system_type=1).first()
                     hooktype_dict[f"{hook_type['value']}-{hook_type['type']}"] = hooktype_obj
                     continue
                 if HookType.objects.filter(value=hook_type['value'],
-                                           strategy__id__isnull=False,
                                            type=hook_type['type'],
                                            language_id=v,
                                            system_type=0).exists():
@@ -112,7 +108,8 @@ class Command(BaseCommand):
                         HookStrategy.objects.create(strategy=policy_strategy,
                                                     **hook_strategy)
                 else:
-                    if policy['value'] not in hooktype_dict.keys():
+                    if f"{policy['value']}-{policy['type']}" not in hooktype_dict.keys(
+                    ):
                         continue
                     policy_hook_type = hooktype_dict[
                         f"{policy['value']}-{policy['type']}"]

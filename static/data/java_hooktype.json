@@ -421,17 +421,6 @@
         "created_by": 1,
         "enable": 1,
         "language": 1,
-        "name": "\u6587\u4ef6\u4e0a\u4f20",
-        "name_en": null,
-        "name_zh": "\u6587\u4ef6\u4e0a\u4f20",
-        "system_type": 1,
-        "type": 1,
-        "value": "Spring"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 1,
         "name": "\u5b57\u7b26\u4e32\u4f20\u64ad-01",
         "name_en": "Propagator:String",
         "name_zh": "\u5b57\u7b26\u4e32\u4f20\u64ad-01",
@@ -735,6 +724,17 @@
         "system_type": 1,
         "type": 2,
         "value": "feign.ReflectiveFeign"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 1,
+        "name": "\u6587\u4ef6\u4e0a\u4f20",
+        "name_en": null,
+        "name_zh": "\u6587\u4ef6\u4e0a\u4f20",
+        "system_type": 1,
+        "type": 1,
+        "value": "fileupload"
     },
     {
         "created_by": 1,
