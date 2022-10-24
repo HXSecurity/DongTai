@@ -88,7 +88,7 @@ def load_sink_strategy(user=None, language=None):
         strategy__in=type_query,
         language_id__in=[language_id] if language_id else LANGUAGE_MAP.values(),
         created_by__in=[user.id, 1] if user else [1]
-    ).values('id', 'value', 'hooktype__value')
+    ).values('id', 'value', 'strategy__vul_type')
     sub_method_signatures = set()
     for strategy in strategy_models:
         # for strategy in sub_queryset:
@@ -101,7 +101,7 @@ def load_sink_strategy(user=None, language=None):
 
         strategies.append({
             'strategy': strategy.get("id", ""),
-            'type': strategy.get("hooktype__value", ""),
+            'type': strategy.get("strategy__vul_type", ""),
             'value': sub_method_signature
         })
     return strategies
