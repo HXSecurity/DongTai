@@ -51,7 +51,8 @@ class Command(BaseCommand):
             ).exists() or IastStrategyModel.objects.filter(
                     vul_type=strategy['vul_type'],
                     iastsensitiveinforule__id__isnull=False,
-                    system_type=0).exists():
+                    system_type=0,
+            ).exists():
                 #存在用户定义的冲突策略,不会修改
                 continue
             #strategy['language_id'] = strategy['language']
