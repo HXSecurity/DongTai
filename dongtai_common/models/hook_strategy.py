@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.utils.settings import get_managed
 from dongtai_common.models.program_language import IastProgramLanguage
+from time import time
 
 
 #class PermissionsMixin(models.Model):
@@ -35,16 +36,13 @@ class HookStrategy(models.Model):
     target = models.CharField(max_length=255, blank=True, null=True)
     inherit = models.CharField(max_length=255, blank=True, null=True)
     track = models.CharField(max_length=5, blank=True, null=True)
-    create_time = models.IntegerField(blank=True, null=True)
-    update_time = models.IntegerField(blank=True, null=True)
-    created_by = models.IntegerField(blank=True, null=True, )
+    create_time = models.IntegerField(blank=True, null=True, default=time)
+    update_time = models.IntegerField(blank=True, null=True, default=time)
+    created_by = models.IntegerField(
+        blank=True,
+        null=True,
+    )
     enable = models.IntegerField(blank=True, null=False, default=1)
-    #    language = models.ForeignKey(IastProgramLanguage,
-    #                                 blank=True,
-    #                                 default='',
-    #                                 on_delete=models.DO_NOTHING,
-    #                                 db_constraint=False)
-    #    type = models.IntegerField(blank=True, null=True)
     language = models.ForeignKey(IastProgramLanguage,
                                  blank=True,
                                  default='',

@@ -8,14 +8,16 @@ from django.db import models
 from dongtai_common.utils.settings import get_managed
 from dongtai_common.models.program_language import IastProgramLanguage
 from dongtai_common.models.user import User
+from time import time
+
 
 class HookType(models.Model):
     type = models.IntegerField(blank=True, null=True)
     name = models.CharField(max_length=255, blank=True, null=True)
     value = models.CharField(max_length=255, blank=True, null=True)
     enable = models.IntegerField(blank=True, null=True)
-    create_time = models.IntegerField(blank=True, null=True)
-    update_time = models.IntegerField(blank=True, null=True)
+    create_time = models.IntegerField(blank=True, null=True, default=time)
+    update_time = models.IntegerField(blank=True, null=True, default=time)
     created_by = models.IntegerField(blank=True, null=True)
     language = models.ForeignKey(IastProgramLanguage,
                                  blank=True,
@@ -32,6 +34,7 @@ class HookType(models.Model):
         db_constraint=False,
     )
     system_type = models.IntegerField(blank=True, null=True, default=0)
+
     class Meta:
         managed = get_managed()
         db_table = 'iast_hook_type'
