@@ -122,7 +122,7 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
                 language_id=language_id,
                 type=hook_rule_type).values_list('id', flat=True).all()
             count = HookStrategy.objects.filter(
-                type__id__in=hook_type_ids,
+                hooktype__id__in=hook_type_ids,
                 created_by__in=user_ids).update(enable=op)
             logger.info(_('total of {} Policy types').format(count))
             status = True
