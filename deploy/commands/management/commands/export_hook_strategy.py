@@ -33,11 +33,14 @@ def export_strategy() -> list:
 
 
 def export_hooktype(language_id: int) -> list:
-    qs1 = HookType.objects.filter(language_id=language_id,
-                                  strategy__id__isnull=False).values_list(
-                                      'id', flat=True)
-    strategies = HookType.objects.filter(language_id=language_id,
-                                         pk__in=list(qs1)).order_by('id').all()
+    qs1 = HookType.objects.filter(
+        language_id=language_id,
+        enable__in=[0, 1],
+        created_by__in=[1],
+    ).values_list('id', flat=True)
+    strategies = HookType.objects.filter(
+        language_id=language_id, created_by__in=[1],
+        pk__in=list(qs1)).order_by('id').all()
 
     strategies_res = sorted([
         model_to_dict(i,
