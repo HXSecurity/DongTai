@@ -11,6 +11,7 @@ from dongtai_common.models.hook_type import HookType
 from django.forms.models import model_to_dict
 from collections import OrderedDict
 
+
 class Command(BaseCommand):
     help = 'load hook_strategy'
     functions = []
@@ -21,7 +22,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         POLICY_DIR = os.path.join(BASE_DIR, 'static/data/')
         with open(os.path.join(POLICY_DIR, f'vul_strategy.json')) as fp:
-            full_strategies = json.load(fp,object_pairs_hook=OrderedDict)
+            full_strategies = json.load(fp, object_pairs_hook=OrderedDict)
         strategy_dict = {}
         for strategy in full_strategies:
             if IastStrategyModel.objects.filter(
@@ -29,8 +30,7 @@ class Command(BaseCommand):
                     #strategy__id__isnull=False,
                     system_type=1,
             ).exists() or IastStrategyModel.objects.filter(
-                    vul_type=strategy['vul_type'],
-                    system_type=1).exists():
+                    vul_type=strategy['vul_type'], system_type=1).exists():
                 #已存在策略类型，不会重建
                 qs1 = IastStrategyModel.objects.filter(
                     vul_type=strategy['vul_type'],
@@ -46,8 +46,7 @@ class Command(BaseCommand):
                 strategy_dict[strategy['vul_type']] = strategy_obj
                 continue
             if IastStrategyModel.objects.filter(
-                    vul_type=strategy['vul_type'],
-                    system_type=0).exists(
+                    vul_type=strategy['vul_type'], system_type=0).exists(
                     ) or IastStrategyModel.objects.filter(
                         vul_type=strategy['vul_type'],
                         iastsensitiveinforule__id__isnull=False,
@@ -78,7 +77,8 @@ class Command(BaseCommand):
                         language_id=v,
                         type=hook_type['type'],
                         system_type=1).first()
-                    hooktype_dict[f"{hook_type['value']}-{hook_type['type']}"] = hooktype_obj
+                    hooktype_dict[
+                        f"{hook_type['value']}-{hook_type['type']}"] = hooktype_obj
                     continue
                 if HookType.objects.filter(value=hook_type['value'],
                                            type=hook_type['type'],
@@ -91,7 +91,8 @@ class Command(BaseCommand):
                 hook_type['language_id'] = v
                 hooktype_obj = HookType(**hook_type)
                 hooktype_obj.save()
-                hooktype_dict[f"{hook_type['value']}-{hook_type['type']}"] = hooktype_obj
+                hooktype_dict[
+                    f"{hook_type['value']}-{hook_type['type']}"] = hooktype_obj
 
             HookStrategy.objects.filter(language_id=v, system_type=1).delete()
             with open(os.path.join(POLICY_DIR,
