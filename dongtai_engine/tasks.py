@@ -86,7 +86,7 @@ def load_sink_strategy(user=None, language=None):
     type_query = IastStrategyModel.objects.filter(q)
     strategy_models = HookStrategy.objects.filter(
         strategy__in=type_query,
-        language_id__in=[language] if language else [1,2,3,4],
+        language_id__in=[language_id] if language_id else LANGUAGE_MAP.values(),
         created_by__in=[user.id, 1] if user else [1]
     ).values('id', 'value', 'hooktype__value')
     sub_method_signatures = set()
