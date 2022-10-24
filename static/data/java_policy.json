@@ -541,34 +541,6 @@
     {
         "details": [
             {
-                "inherit": "true",
-                "source": "O",
-                "target": "R",
-                "track": "false",
-                "value": "org.apache.commons.fileupload.FileItem.getName()"
-            },
-            {
-                "inherit": "true",
-                "source": "O",
-                "target": "R",
-                "track": "false",
-                "value": "org.springframework.web.multipart.MultipartFile.getName()"
-            },
-            {
-                "inherit": "true",
-                "source": "O",
-                "target": "R",
-                "track": "false",
-                "value": "org.springframework.web.multipart.MultipartFile.getOriginalFilename()"
-            }
-        ],
-        "enable": 1,
-        "type": 1,
-        "value": "Spring"
-    },
-    {
-        "details": [
-            {
                 "inherit": "false",
                 "source": "P1",
                 "target": "O",
@@ -1825,6 +1797,34 @@
         "enable": 1,
         "type": 2,
         "value": "feign.ReflectiveFeign"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "org.apache.commons.fileupload.FileItem.getName()"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.multipart.MultipartFile.getName()"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.multipart.MultipartFile.getOriginalFilename()"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "fileupload"
     },
     {
         "details": [
