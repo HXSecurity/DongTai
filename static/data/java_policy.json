@@ -1,0 +1,4167 @@
+[
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "java.util.Arrays.asList(java.lang.Object[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "java.util.Arrays.copyOf(byte[],int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "java.util.Arrays.copyOf(char[],int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "java.util.Arrays.copyOfRange(byte[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "java.util.Arrays.copyOfRange(char[],int,int)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "Arrays"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "java.nio.ByteBuffer.wrap(byte[],int,int)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "ByteBuffer"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "O",
+                "track": " ",
+                "value": "java.util.Collection.addAll(java.util.Collection)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "Collection"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1,2",
+                "target": "O",
+                "track": "",
+                "value": "javax.servlet.http.Cookie.<init>(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "javax.servlet.http.Cookie.getValue()"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "Cookie"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "java.util.Enumeration.nextElement()"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "Enumeration"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.apache.commons.fileupload.FileItem.write(java.io.File)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "FileWrite"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.unbescape.html.HtmlEscape.escapeHtml(java.lang.String,java.io.Writer,org.unbescape.html.HtmlEscapeType,org.unbescape.html.HtmlEscapeLevel)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.unbescape.html.HtmlEscape.escapeHtml(java.lang.String,org.unbescape.html.HtmlEscapeType,org.unbescape.html.HtmlEscapeLevel)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.unbescape.html.HtmlEscape.escapeHtml4(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.unbescape.html.HtmlEscape.escapeHtml4(java.lang.String,java.io.Writer)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.unbescape.html.HtmlEscape.escapeHtml4Xml(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.unbescape.html.HtmlEscape.escapeHtml4Xml(java.lang.String,java.io.Writer)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.unbescape.html.HtmlEscape.escapeHtml5(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.unbescape.html.HtmlEscape.escapeHtml5(java.lang.String,java.io.Writer)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.unbescape.html.HtmlEscape.escapeHtml5Xml(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.unbescape.html.HtmlEscape.escapeHtml5Xml(java.lang.String,java.io.Writer)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "Html5EscapeSymbolsInitializer"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "org.unbescape.html.Html5EscapeSymbolsInitializer.initializeHtml5()"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "Invalid:Html5EscapeSymbols"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "com.mysql.jdbc.ResultSetImpl.next()"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.jruby.runtime.load.LibrarySearcher.isAbsolute(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "O",
+                "track": "false",
+                "value": "org.thymeleaf.spring5.view.ThymeleafView.render(java.util.Map<java.lang.String,?>,javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "InvalidPropagator"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.naming.Context.lookup(java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "JNDI\u6ce8\u5165"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "org.apache.kafka.clients.consumer.ConsumerRecord.value()"
+            },
+            {
+                "inherit": "false",
+                "source": "P4,5",
+                "target": "O",
+                "track": "false",
+                "value": "org.apache.kafka.clients.producer.ProducerRecord.<init>(java.lang.String,java.lang.Integer,java.lang.Long,java.lang.Object,java.lang.Object,java.lang.Iterable)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "Kafka\u4f20\u64ad"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.util.List.<init>(java.util.Collection)"
+            },
+            {
+                "inherit": "true",
+                "source": "P2",
+                "target": "O",
+                "track": "",
+                "value": "java.util.List.add(int,java.lang.Object)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.util.List.add(java.lang.Object)"
+            },
+            {
+                "inherit": "true",
+                "source": "P2",
+                "target": "O",
+                "track": "false",
+                "value": "java.util.List.addAll(int,java.util.Collection)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.util.List.addAll(java.util.Collection)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "java.util.List.clone()"
+            },
+            {
+                "inherit": "true",
+                "source": "P2",
+                "target": "O",
+                "track": "",
+                "value": "java.util.List.set(int,java.lang.Object)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "java.util.List.toArray()"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "java.util.List.toArray(java.lang.Object[])"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "List"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "P1,2",
+                "target": "O",
+                "track": "",
+                "value": "java.util.Map.put(java.lang.Object,java.lang.Object)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.util.Map.putAll(java.util.Map)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1,2",
+                "target": "O",
+                "track": "",
+                "value": "java.util.Map.putIfAbsent(java.lang.Object,java.lang.Object)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "Map"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1,2",
+                "target": "R",
+                "track": "false",
+                "value": "com.baomidou.mybatisplus.core.override.MybatisMapperMethod.execute(org.apache.ibatis.session.SqlSession,java.lang.Object[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.apache.ibatis.executor.resultset.DefaultResultSetHandler.handleResultSets(java.sql.Statement)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "Mybatis\u4f20\u64ad"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "P2",
+                "target": "O",
+                "track": "false",
+                "value": "java.sql.Statement.setString(int,java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "PreparedStatement"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.ProcessBuilder.<init>(java.lang.String[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.ProcessBuilder.<init>(java.util.List)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.ProcessBuilder.command(java.lang.String[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.ProcessBuilder.command(java.util.List)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "ProcessBuilder"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "com.caucho.hessian.io.HessianInput.init(java.io.InputStream)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "Propagator:Hessian"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "com.fasterxml.jackson.databind.ObjectMapper.readValue(java.io.InputStream,com.fasterxml.jackson.databind.JavaType)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "Propagator:Jackson"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "javax.servlet.ServletRequest.getParameterNames()"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "javax.servlet.ServletRequest.getParameterValues(java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "RequestFacade"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "org.apache.solr.common.params.SolrParams.get(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "org.apache.solr.common.params.SolrParams.getParams(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.apache.solr.servlet.SolrRequestParsers.parseQueryString(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "P2",
+                "track": "false",
+                "value": "org.apache.solr.servlet.SolrRequestParsers.parseQueryString(java.lang.String,java.util.Map)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "SolrParamParser"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "io.grpc.MethodDescriptor.parseRequest(java.io.InputStream)"
+            }
+        ],
+        "enable": 1,
+        "type": 2,
+        "value": "Source:GrpcV1"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.String.<init>(byte[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.String.<init>(byte[],byte)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.String.<init>(byte[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.String.<init>(byte[],int,int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.String.<init>(byte[],int,int,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.String.<init>(byte[],int,int,java.nio.charset.Charset)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.String.<init>(byte[],java.nio.charset.Charset)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.String.<init>(char[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.String.<init>(char[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.String.<init>(char[],int,int,boolean)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.String.<init>(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.String.<init>(java.lang.StringBuffer)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.String.<init>(java.lang.StringBuilder)"
+            },
+            {
+                "inherit": "false",
+                "source": "O|P1",
+                "target": "R",
+                "track": "",
+                "value": "java.lang.String.concat(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "java.lang.String.getBytes()"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "P1",
+                "track": "false",
+                "value": "java.lang.String.getBytes(byte[],int,byte)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "P3",
+                "track": "",
+                "value": "java.lang.String.getBytes(int,int,byte[],int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "java.lang.String.getBytes(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.lang.String.getBytes(java.nio.charset.Charset)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "P3",
+                "track": "",
+                "value": "java.lang.String.getChars(int,int,char[],int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O|P2",
+                "target": "R",
+                "track": "false",
+                "value": "java.lang.String.replace(java.lang.CharSequence,java.lang.CharSequence)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "java.lang.String.split(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "java.lang.String.split(java.lang.String, int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.lang.String.strip()"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.lang.String.stripLeading()"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.lang.String.stripTrailing()"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "java.lang.String.substring(int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "java.lang.String.substring(int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "java.lang.String.toCharArray()"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "java.lang.String.toLowerCase(java.util.Locale)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "java.lang.String.toUpperCase(java.util.Locale)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.lang.String.trim()"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "java.lang.String.valueOf(java.lang.Object)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "java.lang.StringConcatHelper.newString(byte[],int,byte)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "java.lang.StringConcatHelper.newString(byte[],long)"
+            },
+            {
+                "inherit": "false",
+                "source": "P4",
+                "target": "P2",
+                "track": "false",
+                "value": "java.lang.StringConcatHelper.prepend(int,byte[],byte,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P4",
+                "target": "P2",
+                "track": "false",
+                "value": "java.lang.StringConcatHelper.prepend(long,byte[],byte,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringLatin1$LinesSpliterator.<init>(byte[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "java.lang.StringLatin1.newString(byte[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringUTF16$LinesSpliterator.<init>(byte[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "java.lang.StringUTF16.newString(byte[],int,int)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "String"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuffer.<init>(java.lang.CharSequence)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuffer.<init>(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuffer.append(char[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuffer.append(char[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuffer.append(java.lang.CharSequence)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuffer.append(java.lang.CharSequence,int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuffer.append(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuffer.append(java.lang.StringBuffer)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuffer.delete(int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuffer.deleteCharAt(int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "P3",
+                "track": "false",
+                "value": "java.lang.StringBuffer.getChars(int,int,char[],int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuffer.insert(int,char)"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuffer.insert(int,char[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuffer.insert(int,char[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuffer.insert(int,java.lang.CharSequence)"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuffer.insert(int,java.lang.CharSequence,int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuffer.insert(int,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P3",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuffer.replace(int,int,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuffer.setLength(int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.lang.StringBuffer.substring(int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.lang.StringBuffer.substring(int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.lang.StringBuffer.toString()"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "StringBuffer"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "com.github.pagehelper.parser.CountSqlParser.getSmartCountSql(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.AbstractStringBuilder.append(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "P3",
+                "track": "false",
+                "value": "java.lang.AbstractStringBuilder.getChars(int,int,char[],int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.AbstractStringBuilder.setLength(int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.lang.AbstractStringBuilder.substring(int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.lang.AbstractStringBuilder.substring(int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.StringBuilder.<init>(java.lang.CharSequence)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.StringBuilder.<init>(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.StringBuilder.append(char[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.StringBuilder.append(java.lang.CharSequence)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.StringBuilder.append(java.lang.CharSequence,int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.StringBuilder.append(java.lang.Object)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.StringBuilder.append(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.lang.StringBuilder.append(java.lang.StringBuffer)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuilder.delete(int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuilder.deleteCharAt(int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "P3",
+                "track": "false",
+                "value": "java.lang.StringBuilder.getChars(int,int,char[],int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuilder.insert(int,char)"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuilder.insert(int,char[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuilder.insert(int,char[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuilder.insert(int,java.lang.CharSequence)"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuilder.insert(int,java.lang.CharSequence,int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuilder.insert(int,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P3",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuilder.replace(int,int,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "O",
+                "track": "false",
+                "value": "java.lang.StringBuilder.setLength(int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.lang.StringBuilder.substring(int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.lang.StringBuilder.substring(int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.lang.StringBuilder.substring(int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "java.lang.StringBuilder.toString()"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "StringBuilder"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.apache.struts2.dispatcher.multipart.MultiPartRequest.getParameterValues(java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 2,
+        "value": "Struts2"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.net.URI.<init>(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,3",
+                "target": "O",
+                "track": "false",
+                "value": "java.net.URI.<init>(java.lang.String,java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,3,5,6,7",
+                "target": "O",
+                "track": "false",
+                "value": "java.net.URI.<init>(java.lang.String,java.lang.String,java.lang.String,int,java.lang.String,java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,3,4,5",
+                "target": "O",
+                "track": "false",
+                "value": "java.net.URI.<init>(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.net.URI.toURL()"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "URI"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1,2,4",
+                "target": "O",
+                "track": "false",
+                "value": "java.net.URL.<init>(java.lang.String,java.lang.String,int,java.lang.String,java.net.URLStreamHandler)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2",
+                "target": "O",
+                "track": "false",
+                "value": "java.net.URL.<init>(java.net.URL,java.lang.String,java.net.URLStreamHandler)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "URL"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "java.net.URLDecoder.decode(java.lang.String,java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "URLDecoder"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "R",
+                "track": "",
+                "value": "org.apache.commons.lang.StringEscapeUtils.escapeHtml(java.io.Writer,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "org.apache.commons.lang.StringEscapeUtils.escapeHtml(java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "apache-filter"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "java.util.Base64$Decoder.decode(byte[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "P2",
+                "track": "",
+                "value": "java.util.Base64$Decoder.decode(byte[],byte[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "java.util.Base64$Decoder.decode(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "java.util.Base64$Decoder.decode(java.nio.ByteBuffer)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "org.apache.commons.codec.binary.Base64.decode(byte[],int,int,org.apache.commons.codec.binary.BaseNCodec$Context)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "org.apache.commons.codec.binary.Base64.decodeBase64(byte[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "org.apache.commons.codec.binary.Base64.decodeBase64(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "org.apache.commons.codec.binary.Base64.decodeInteger(byte[])"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "org.apache.commons.codec.binary.BaseNCodec.decode(byte[])"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "org.apache.commons.codec.binary.BaseNCodec.decode(java.lang.Object)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "org.apache.commons.codec.binary.BaseNCodec.decode(java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "base64-dec"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "java.util.Base64$Encoder.encode(byte[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "P2",
+                "track": "",
+                "value": "java.util.Base64$Encoder.encode(byte[],byte[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "java.util.Base64$Encoder.encode(java.nio.ByteBuffer)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "java.util.Base64$Encoder.encodeToString(byte[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "org.apache.commons.codec.binary.Base64.encodeBase64(byte[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "org.apache.commons.codec.binary.Base64.encodeBase64(byte[],boolean)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "org.apache.commons.codec.binary.Base64.encodeBase64(byte[],boolean,boolean)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "org.apache.commons.codec.binary.Base64.encodeBase64(byte[],boolean,boolean,int)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "org.apache.commons.codec.binary.BaseNCodec.encode(byte[])"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "org.apache.commons.codec.binary.BaseNCodec.encode(byte[],int,int)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "org.apache.commons.codec.binary.BaseNCodec.encode(java.lang.Object)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "org.apache.commons.codec.binary.BaseNCodec.encodeAsString(byte[])"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "org.apache.commons.codec.binary.BaseNCodec.encodeToString(byte[])"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "base64-enc"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "java.lang.ProcessBuilder.start()"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2",
+                "target": "",
+                "track": "true",
+                "value": "java.lang.ProcessImpl.start(java.lang.String[],java.util.Map,java.lang.String,java.lang.ProcessBuilder$Redirect[],boolean)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.lang.Runtime.exec(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2",
+                "target": "",
+                "track": "true",
+                "value": "java.lang.Runtime.exec(java.lang.String,java.lang.String[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2",
+                "target": "",
+                "track": "true",
+                "value": "java.lang.Runtime.exec(java.lang.String,java.lang.String[],java.io.File)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.lang.Runtime.exec(java.lang.String[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2",
+                "target": "",
+                "track": "true",
+                "value": "java.lang.Runtime.exec(java.lang.String[],java.lang.String[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2",
+                "target": "",
+                "track": "true",
+                "value": "java.lang.Runtime.exec(java.lang.String[],java.lang.String[],java.io.File)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "cmd-injection"
+    },
+    {
+        "details": [
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "com.fasterxml.jackson.databind.ObjectMapper.readValue(java.io.InputStream,java.lang.Class)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "com.fasterxml.jackson.databind.ObjectMapper.readValue(java.lang.String,com.fasterxml.jackson.databind.JavaType)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "com.fasterxml.jackson.databind.ObjectMapper.readValue(java.lang.String,java.lang.Class)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "com.fasterxml.jackson"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.iast.springsec.common.DataManager.doManage(java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "custom-encrypt"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "java.lang.Runtime.load0(java.lang.Class,java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "dynamic-library-load"
+    },
+    {
+        "details": [
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.servlet.jsp.el.ExpressionEvaluator.evaluate(java.lang.String,java.lang.Class,javax.servlet.jsp.el.VariableResolver,javax.servlet.jsp.el.FunctionMapper)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "ognl.Ognl.getValue(java.lang.Object,java.lang.Object)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "ognl.Ognl.getValue(java.lang.Object,java.lang.Object,java.lang.Class)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "ognl.Ognl.getValue(java.lang.Object,java.util.Map,java.lang.Object)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "ognl.Ognl.getValue(java.lang.Object,java.util.Map,java.lang.Object,java.lang.Class)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "ognl.Ognl.getValue(java.lang.String,java.lang.Object)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "ognl.Ognl.getValue(java.lang.String,java.lang.Object,java.lang.Class)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "ognl.Ognl.getValue(java.lang.String,java.util.Map,java.lang.Object)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "ognl.Ognl.getValue(java.lang.String,java.util.Map,java.lang.Object,java.lang.Class)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.apache.commons.ognl.Ognl.parseExpression(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "org.springframework.expression.Expression.getValue()"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "org.springframework.expression.Expression.getValue(java.lang.Class)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "org.springframework.expression.Expression.getValue(java.lang.Object)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "org.springframework.expression.Expression.getValue(java.lang.Object,java.lang.Class)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "org.springframework.expression.Expression.getValue(org.springframework.expression.EvaluationContext)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "org.springframework.expression.Expression.getValue(org.springframework.expression.EvaluationContext,java.lang.Class)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "org.springframework.expression.Expression.getValue(org.springframework.expression.EvaluationContext,java.lang.Object)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "org.springframework.expression.Expression.getValue(org.springframework.expression.EvaluationContext,java.lang.Object,java.lang.Class)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "org.springframework.expression.Expression.getValueTypeDescriptor()"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "org.springframework.expression.Expression.getValueTypeDescriptor(java.lang.Object)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "org.springframework.expression.Expression.getValueTypeDescriptor(org.springframework.expression.EvaluationContext)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "org.springframework.expression.Expression.getValueTypeDescriptor(org.springframework.expression.EvaluationContext,java.lang.Object)"
+            },
+            {
+                "inherit": "true",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "org.thymeleaf.standard.expression.IStandardExpressionParser.parseExpression(org.thymeleaf.context.IExpressionContext,java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "expression-language-injection"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "feign.ReflectiveFeign$FeignInvocationHandler.invoke(java.lang.Object,java.lang.reflect.Method,java.lang.Object[])"
+            }
+        ],
+        "enable": 1,
+        "type": 2,
+        "value": "feign.ReflectiveFeign"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "org.apache.commons.fileupload.FileItem.getName()"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.multipart.MultipartFile.getName()"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.multipart.MultipartFile.getOriginalFilename()"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "fileupload"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "org.hibernate.Session.createFilter(java.lang.Object,java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.hibernate.Session.createQuery(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.hibernate.Session.createSQLQuery(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.hibernate.Session.createSQLQuery(java.lang.String,java.lang.String,java.lang.Class)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.hibernate.Session.createSQLQuery(java.lang.String,java.lang.String[],java.lang.Class[])"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.hibernate.Session.delete(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.hibernate.Session.delete(java.lang.String,java.lang.Object,org.hibernate.type.Type)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.hibernate.Session.delete(java.lang.String,java.lang.Object[],org.hibernate.type.Type[])"
+            },
+            {
+                "inherit": "true",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "org.hibernate.Session.filter(java.lang.Object,java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "org.hibernate.Session.filter(java.lang.Object,java.lang.String,java.lang.Object,org.hibernate.type.Type)"
+            },
+            {
+                "inherit": "true",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "org.hibernate.Session.filter(java.lang.Object,java.lang.String,java.lang.Object[],org.hibernate.type.Type[])"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.hibernate.Session.find(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.hibernate.Session.find(java.lang.String,java.lang.Object,org.hibernate.type.Type)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.hibernate.Session.find(java.lang.String,java.lang.Object[],org.hibernate.type.Type[])"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.hibernate.Session.iterate(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.hibernate.Session.iterate(java.lang.String,java.lang.Object,org.hibernate.type.Type)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.hibernate.Session.iterate(java.lang.String,java.lang.Object[],org.hibernate.type.Type[])"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.hibernate.SharedSessionContract.createQuery(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.hibernate.SharedSessionContract.createSQLQuery(java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "hql-injection"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.io.BufferedReader.<init>(java.io.FileReader)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.io.BufferedReader.<init>(java.io.InputStreamReader)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.io.BufferedReader.<init>(java.io.Reader)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.io.BufferedReader.<init>(java.io.Reader,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "java.io.BufferedReader.readLine()"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.io.ByteArrayInputStream.<init>(byte[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.io.ByteArrayInputStream.<init>(byte[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "O",
+                "track": "",
+                "value": "java.io.ByteArrayOutputStream.reset()"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.io.ByteArrayOutputStream.toByteArray()"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.io.ByteArrayOutputStream.toString()"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.io.ByteArrayOutputStream.toString(int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.io.ByteArrayOutputStream.toString(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.io.ByteArrayOutputStream.toString(java.nio.charset.Charset)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.io.ByteArrayOutputStream.write(byte[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.io.CharArrayReader.<init>(char[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.io.CharArrayReader.<init>(char[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "P1",
+                "track": "",
+                "value": "java.io.CharArrayReader.read(char[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.io.FileInputStream.<init>(java.io.File)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.io.FileInputStream.<init>(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.io.FileReader.<init>(java.io.File)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.io.InputStream.<init>(java.io.InputStream)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "P1",
+                "track": "",
+                "value": "java.io.InputStream.read(byte[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.io.InputStreamReader.<init>(java.io.InputStream)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.io.InputStreamReader.<init>(java.io.InputStream,java.nio.charset.Charset)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "P1",
+                "track": "",
+                "value": "java.io.InputStreamReader.read(char[],int,int)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.io.ObjectInputStream.<init>(java.io.InputStream)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.io.PipedInputStream.read(byte[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.io.PipedReader.read(char[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.io.PushbackInputStream.<init>(java.io.InputStream,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.io.StringReader.<init>(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.io.StringWriter.toString()"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.io.StringWriter.write(char[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.io.StringWriter.write(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.io.StringWriter.write(java.lang.String,int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.net.Socket.<init>(java.lang.String,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "java.net.Socket.getOutputStream()"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "O",
+                "track": "false",
+                "value": "org.apache.commons.io.output.ByteArrayOutputStream.reset()"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "org.apache.commons.io.output.ByteArrayOutputStream.write(byte[],int,int)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "io"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "javax.xml.bind.JAXBElement.getValue()"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(java.io.InputStream)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(java.io.Reader)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(javax.xml.transform.Source)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(javax.xml.transform.Source,java.lang.Class)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(org.xml.sax.InputSource)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "javax.xml.stream.XMLInputFactory.createXMLStreamReader(java.io.InputStream)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "javax.xml.stream.XMLInputFactory.createXMLStreamReader(java.io.InputStream,java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "javax.xml.stream.XMLInputFactory.createXMLStreamReader(java.io.Reader)"
+            },
+            {
+                "inherit": "true",
+                "source": "P2",
+                "target": "R",
+                "track": "",
+                "value": "javax.xml.stream.XMLInputFactory.createXMLStreamReader(java.lang.String,java.io.InputStream)"
+            },
+            {
+                "inherit": "true",
+                "source": "P2",
+                "target": "R",
+                "track": "",
+                "value": "javax.xml.stream.XMLInputFactory.createXMLStreamReader(java.lang.String,java.io.Reader)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "javax.xml.stream.XMLInputFactory.createXMLStreamReader(javax.xml.transform.Source)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "javax.xml.transform.sax.SAXSource.<init>(org.xml.sax.InputSource)"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "O",
+                "track": "",
+                "value": "javax.xml.transform.sax.SAXSource.<init>(org.xml.sax.XMLReader,org.xml.sax.InputSource)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "javax.xml.transform.sax.SAXSource.setInputSource(org.xml.sax.InputSource)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "javax.xml.transform.stream.StreamSource.<init>(java.io.File)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "javax.xml.transform.stream.StreamSource.<init>(java.io.InputStream)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "javax.xml.transform.stream.StreamSource.<init>(java.io.InputStream,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "javax.xml.transform.stream.StreamSource.<init>(java.io.Reader)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "javax.xml.transform.stream.StreamSource.<init>(java.io.Reader,java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "javax"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "jakarta.servlet.ServletRequest.getInputStream()"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "jakarta.servlet.ServletRequest.getParameter(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "jakarta.servlet.ServletRequest.getParameterNames()"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "jakarta.servlet.ServletRequest.getParameterValues(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "jakarta.servlet.ServletRequest.getReader()"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.ServletRequest.getInputStream()"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.ServletRequest.getParameter(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.ServletRequest.getParameterMap()"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.ServletRequest.getParameterNames()"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.ServletRequest.getParameterValues(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.ServletRequest.getReader()"
+            }
+        ],
+        "enable": 1,
+        "type": 2,
+        "value": "javax.servlet.ServletRequest"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "jakarta.servlet.http.HttpServletRequest.getCookies()"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "jakarta.servlet.http.HttpServletRequest.getHeader(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "jakarta.servlet.http.HttpServletRequest.getHeaderNames()"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "jakarta.servlet.http.HttpServletRequest.getHeaders(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "jakarta.servlet.http.HttpServletRequest.getPart(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "jakarta.servlet.http.HttpServletRequest.getParts()"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "jakarta.servlet.http.HttpServletRequest.getQueryString()"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.HttpServletRequest.getCookies()"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.HttpServletRequest.getHeader(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.HttpServletRequest.getHeaderNames()"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.HttpServletRequest.getHeaders(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.HttpServletRequest.getInputStream()"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.HttpServletRequest.getParameter(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.HttpServletRequest.getParameterMap()"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.HttpServletRequest.getParameterNames()"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.HttpServletRequest.getParameterValues(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.HttpServletRequest.getPart(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.HttpServletRequest.getParts()"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.HttpServletRequest.getQueryString()"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.HttpServletRequest.getReader()"
+            }
+        ],
+        "enable": 1,
+        "type": 2,
+        "value": "javax.servlet.http.HttpServletRequest"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "java.sql.Connection.nativeSQL(java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "jdbc"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "P1",
+                "track": "",
+                "value": "java.util.function.BiConsumer.accept(java.lang.Object,java.lang.Object"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "lambda-function"
+    },
+    {
+        "details": [
+            {
+                "inherit": "all",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "javax.naming.directory.DirContext.search(java.lang.String,java.lang.String,java.lang.Object[],javax.naming.directory.SearchControls)"
+            },
+            {
+                "inherit": "all",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "javax.naming.directory.DirContext.search(java.lang.String,java.lang.String,javax.naming.directory.SearchControls"
+            },
+            {
+                "inherit": "all",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "javax.naming.directory.DirContext.search(java.lang.String,java.lang.String,javax.naming.directory.SearchControls)"
+            },
+            {
+                "inherit": "all",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "javax.naming.directory.InitialDirContext.search(java.lang.String,java.lang.String,java.lang.Object[],javax.naming.directory.SearchControls)"
+            },
+            {
+                "inherit": "all",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "javax.naming.directory.InitialDirContext.search(java.lang.String,java.lang.String,javax.naming.directory.SearchControls"
+            },
+            {
+                "inherit": "all",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "javax.naming.directory.InitialDirContext.search(java.lang.String,java.lang.String,javax.naming.directory.SearchControls)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "ldap-injection"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.mongodb.DB.doEval(java.lang.String,java.lang.Object[])"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "nosql-injection"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "com.opensymphony.xwork2.util.ValueStack.findString(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "com.opensymphony.xwork2.util.ValueStack.findValue(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "com.opensymphony.xwork2.util.ValueStack.findValue(java.lang.String,java.lang.Class)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "ognl.Ognl.parseExpression(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "ognl.OgnlParser.<init>(java.io.InputStream)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "ognl.OgnlParser.<init>(java.io.Reader)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "ognl.OgnlParser.<init>(ognl.OgnlParserTokenManager)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "ognl.OgnlParser.topLevelExpression()"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "ognl"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "org.apache.commons.fileupload.FileItem.getString()"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "org.apache.commons.fileupload.FileItem"
+    },
+    {
+        "details": [
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.apache.commons.fileupload.FileUploadBase.parseRequest(org.apache.commons.fileupload.RequestContext)"
+            }
+        ],
+        "enable": 1,
+        "type": 2,
+        "value": "org.apache.commons.fileupload.FileUploadBase"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.method.support.HandlerMethodArgumentResolver.resolveArgument(org.springframework.core.MethodParameter,org.springframework.web.method.support.ModelAndViewContainer,org.springframework.web.context.request.NativeWebRequest,org.springframework.web.bind.support.WebDataBinderFactory)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.pattern.PathPattern.getPatternString()"
+            }
+        ],
+        "enable": 1,
+        "type": 2,
+        "value": "org.springframework.web.method.support.HandlerMethodArgumentResolver"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "org.owasp.esapi.reference.DefaultEncoder.encodeForHTML(java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "owasp-esapi"
+    },
+    {
+        "details": [
+            {
+                "inherit": "all",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "java.io.File.<init>(java.io.File,java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.io.File.<init>(java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1,2",
+                "target": "",
+                "track": "true",
+                "value": "java.io.File.<init>(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.io.File.<init>(java.net.URI)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1,2",
+                "target": "",
+                "track": "true",
+                "value": "java.nio.file.FileSystem.getPath(java.lang.String,java.lang.String[])"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.nio.file.spi.FileSystemProvider.getFileSystem(java.net.URI)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.nio.file.spi.FileSystemProvider.newFileSystem(java.net.URI,java.util.Map)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "path-traversal"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.util.regex.Pattern.matcher(java.lang.CharSequence)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "jregex.Pattern.matcher(java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "redos"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "false",
+                "value": "java.lang.Class.forName(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "false",
+                "value": "java.lang.Class.forName(java.lang.String,boolean,java.lang.ClassLoader)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "reflection-injection"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "P1",
+                "track": "",
+                "value": "org.apache.catalina.connector.CoyoteInputStream.read(byte[])"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "P1",
+                "track": "",
+                "value": "org.apache.catalina.connector.CoyoteInputStream.read(byte[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "P1",
+                "track": "",
+                "value": "org.apache.catalina.connector.CoyoteInputStream.read(java.nio.ByteBuffer)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "servelt-stream"
+    },
+    {
+        "details": [
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.mail.Message.setFrom(javax.mail.Address)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1,2",
+                "target": "",
+                "track": "true",
+                "value": "javax.mail.Message.setHeader(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "javax.mail.Message.setRecipient(javax.mail.Message.RecipientType,javax.mail.Address)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.mail.Message.setSubject(java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.mail.Part.setText(java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1,2",
+                "target": "",
+                "track": "true",
+                "value": "javax.mail.internet.InternetHeaders.addHeader(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.mail.internet.InternetHeaders.addHeaderLine(java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1,2",
+                "target": "",
+                "track": "true",
+                "value": "javax.mail.internet.InternetHeaders.setHeader(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "javax.mail.internet.MimeBodyPart.setText(javax.mail.internet.MimePart,java.lang.String,java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "javax.mail.internet.MimeMessage.setRecipients(javax.mail.Message.RecipientType,java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.mail.internet.MimeMessage.setSubject(java.lang.String,java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "smtp-injection"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "org.springframework.expression.ExpressionParser.parseExpression(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "org.springframework.expression.ExpressionParser.parseExpression(java.lang.String,org.springframework.expression.ParserContext)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "spel"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1,2,3",
+                "target": "R",
+                "track": "",
+                "value": "org.springframework.cloud.config.server.environment.MultipleJGitEnvironmentRepository.getLocations(java.lang.String,java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,3,4",
+                "target": "R",
+                "track": "",
+                "value": "org.springframework.cloud.config.server.resource.GenericResourceRepository.findOne(java.lang.String,java.lang.String,java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,3,4",
+                "target": "R",
+                "track": "",
+                "value": "org.springframework.cloud.config.server.resource.ResourceController.retrieve(java.lang.String,java.lang.String,java.lang.String,java.lang.String,boolean)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "",
+                "value": "org.springframework.web.util.HtmlUtils.htmlEscape(java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "spring"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Connection.prepareCall(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Connection.prepareCall(java.lang.String,int,int)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Connection.prepareCall(java.lang.String,int,int,int)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Connection.prepareStatement(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Connection.prepareStatement(java.lang.String,int)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Connection.prepareStatement(java.lang.String,int,int)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Connection.prepareStatement(java.lang.String,int,int,int)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Connection.prepareStatement(java.lang.String,int[])"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Connection.prepareStatement(java.lang.String,java.lang.String[])"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Statement.addBatch(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Statement.execute(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Statement.execute(java.lang.String,int)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Statement.execute(java.lang.String,int[])"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Statement.execute(java.lang.String,java.lang.String[])"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Statement.executeLargeUpdate(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Statement.executeLargeUpdate(java.lang.String,int)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Statement.executeLargeUpdate(java.lang.String,int[])"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Statement.executeLargeUpdate(java.lang.String,java.lang.String[])"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Statement.executeQuery(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Statement.executeUpdate(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Statement.executeUpdate(java.lang.String,int)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Statement.executeUpdate(java.lang.String,int[])"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.sql.Statement.executeUpdate(java.lang.String,java.lang.String[])"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "sql-injection"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "com.squareup.okhttp.Call.enqueue(com.squareup.okhttp.Callback)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "com.squareup.okhttp.Call.execute()"
+            },
+            {
+                "inherit": "all",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "java.net.URL.openConnection()"
+            },
+            {
+                "inherit": "all",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "java.net.URL.openConnection(java.net.Proxy)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "java.net.URL.openStream()"
+            },
+            {
+                "inherit": "all",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "okhttp3.Call.enqueue(okhttp3.Callback)"
+            },
+            {
+                "inherit": "all",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "okhttp3.Call.execute()"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "org.apache.commons.httpclient.HttpClient.executeMethod(org.apache.commons.httpclient.HostConfiguration,org.apache.commons.httpclient.HttpMethod,org.apache.commons.httpclient.HttpState)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.apache.commons.httpclient.HttpMethodBase.setURI(org.apache.commons.httpclient.URI)"
+            },
+            {
+                "inherit": "all",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "org.apache.hc.client5.http.impl.classic.CloseableHttpClient.doExecute(org.apache.hc.core5.http.HttpHost,org.apache.hc.core5.http.ClassicHttpRequest,org.apache.hc.core5.http.protocol.HttpContext)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.apache.http.client.methods.HttpRequestBase.setURI(java.net.URI)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "ssrf"
+    },
+    {
+        "details": [
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.alibaba.fastjson.JSON.parse(java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.alibaba.fastjson.JSON.parse(java.lang.String,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.alibaba.fastjson.JSON.parseObject(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "com.caucho.hessian.io.HessianInput.readObject()"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.esotericsoftware.kryo.Kryo.readClassAndObject(com.esotericsoftware.kryo.io.Input)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.esotericsoftware.kryo.Kryo.readObject(com.esotericsoftware.kryo.io.Input,java.lang.Class)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.esotericsoftware.kryo.Kryo.readObject(com.esotericsoftware.kryo.io.Input,java.lang.Class,com.esotericsoftware.kryo.Serializer)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.esotericsoftware.kryo.Kryo.readObjectOrNull(com.esotericsoftware.kryo.io.Input,java.lang.Class)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.esotericsoftware.kryo.Kryo.readObjectOrNull(com.esotericsoftware.kryo.io.Input,java.lang.Class,com.esotericsoftware.kryo.Serializer)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.thoughtworks.xstream.XStream.fromXML(java.io.InputStream)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.thoughtworks.xstream.XStream.fromXML(java.io.InputStream,java.lang.Object)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.thoughtworks.xstream.XStream.fromXML(java.io.Reader)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.thoughtworks.xstream.XStream.fromXML(java.io.Reader,java.lang.Object)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.thoughtworks.xstream.XStream.fromXML(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.thoughtworks.xstream.XStream.fromXML(java.lang.String,java.lang.Object)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.thoughtworks.xstream.XStream.fromXML(java.net.URL)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.thoughtworks.xstream.XStream.fromXML(java.net.URL,java.lang.Object)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "java.io.ObjectInput.readObject()"
+            },
+            {
+                "inherit": "all",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "java.io.ObjectInputStream.readObject()"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "unsafe-json-deserialize"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "java.io.BufferedReader.readLine()"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "unsafe-readline"
+    },
+    {
+        "details": [
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.beans.XMLDecoder.<init>(java.io.InputStream)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.beans.XMLDecoder.<init>(java.io.InputStream,java.lang.Object)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.beans.XMLDecoder.<init>(java.io.InputStream,java.lang.Object,java.beans.ExceptionListener)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "java.beans.XMLDecoder.<init>(org.xml.sax.InputSource)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "unsafe-xml-decode"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "jakarta.servlet.ServletContext.getRequestDispatcher(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "jakarta.servlet.http.HttpServletResponse.addHeader(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "jakarta.servlet.http.HttpServletResponse.sendRedirect(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "jakarta.servlet.http.HttpServletResponse.setHeader(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "jakarta.servlet.jsp.PageContext.forward(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "jakarta.ws.rs.core.Response.temporaryRedirect(java.net.URI)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.servlet.ServletContext.getRequestDispatcher(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.servlet.jsp.PageContext.forward(java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "unvalidated-forward"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "P4",
+                "target": "",
+                "track": "true",
+                "value": "io.netty.handler.codec.http.DefaultHttpHeaders.add0(int,int,java.lang.CharSequence,java.lang.CharSequence)"
+            },
+            {
+                "inherit": "true",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "javax.servlet.http.HttpServletResponse.addHeader(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.servlet.http.HttpServletResponse.sendRedirect(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "javax.servlet.http.HttpServletResponse.setHeader(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.ws.rs.core.Response.temporaryRedirect(java.net.URI)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.glassfish.grizzly.http.server.Response.sendRedirect(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "play.mvc.Results.redirect(java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "unvalidated-redirect"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "org.xml.sax.InputSource.<init>(java.io.InputStream)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "org.xml.sax.InputSource.<init>(java.io.Reader)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "org.xml.sax.InputSource.<init>(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "org.xml.sax.InputSource.getByteStream()"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "org.xml.sax.InputSource.getCharacterStream()"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "",
+                "value": "org.xml.sax.InputSource.getSystemId()"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "org.xml.sax.InputSource.setByteStream(java.io.InputStream)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "org.xml.sax.InputSource.setCharacterStream(java.io.Reader)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "",
+                "value": "org.xml.sax.InputSource.setSystemId(java.lang.String"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "xml.sax"
+    },
+    {
+        "details": [
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.sun.org.apache.xpath.internal.jaxp.XPathImpl.compile(java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.sun.org.apache.xpath.internal.jaxp.XPathImpl.eval(java.lang.String,java.lang.Object)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.sun.org.apache.xpath.internal.jaxp.XPathImpl.evaluate(java.lang.String,java.lang.Object)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.sun.org.apache.xpath.internal.jaxp.XPathImpl.evaluate(java.lang.String,java.lang.Object,javax.xml.namespace.QName)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.sun.org.apache.xpath.internal.jaxp.XPathImpl.evaluate(java.lang.String,org.xml.sax.InputSource)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "com.sun.org.apache.xpath.internal.jaxp.XPathImpl.evaluate(java.lang.String,org.xml.sax.InputSource,javax.xml.namespace.QName)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.xpath.XPath.compile(java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.xpath.XPath.eval(org.w3c.dom.Node,java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.xpath.XPath.evaluate(java.lang.String,java.lang.Object)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.xpath.XPath.evaluate(java.lang.String,java.lang.Object,javax.xml.namespace.QName)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.xpath.XPath.evaluate(java.lang.String,org.xml.sax.InputSource)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.xpath.XPath.evaluate(java.lang.String,org.xml.sax.InputSource,javax.xml.namespace.QName)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "net.sf.saxon.s9api.XPathCompiler.compile(java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "org.apache.xpath.XPathAPI.eval(org.w3c.dom.Node,java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "org.apache.xpath.XPathAPI.eval(org.w3c.dom.Node,java.lang.String,org.apache.xml.utils.PrefixResolver)"
+            },
+            {
+                "inherit": "all",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "org.apache.xpath.XPathAPI.eval(org.w3c.dom.Node,java.lang.String,org.w3c.dom.Node)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.apache.xpath.jaxp.XPathImpl.compile(java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.apache.xpath.jaxp.XPathImpl.eval(java.lang.String,java.lang.Object)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.apache.xpath.jaxp.XPathImpl.evaluate(java.lang.String,java.lang.Object)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.apache.xpath.jaxp.XPathImpl.evaluate(java.lang.String,java.lang.Object,javax.xml.namespace.QName)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.apache.xpath.jaxp.XPathImpl.evaluate(java.lang.String,org.xml.sax.InputSource)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.apache.xpath.jaxp.XPathImpl.evaluate(java.lang.String,org.xml.sax.InputSource,javax.xml.namespace.QName)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "xpath-injection"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(java.io.InputStream)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(java.io.Reader)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(javax.xml.stream.XMLEventReader)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(javax.xml.stream.XMLEventReader,java.lang.Class)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(javax.xml.stream.XMLStreamReader)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(javax.xml.stream.XMLStreamReader,java.lang.Class)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(javax.xml.transform.Source)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(javax.xml.transform.Source,java.lang.Class)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.bind.Unmarshaller.unmarshal(org.xml.sax.InputSource)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.parsers.DocumentBuilder.parse(java.io.File)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.parsers.DocumentBuilder.parse(java.io.InputStream)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.parsers.DocumentBuilder.parse(java.io.InputStream,java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.parsers.DocumentBuilder.parse(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.parsers.DocumentBuilder.parse(org.xml.sax.InputSource)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.parsers.SAXParser.parse(java.io.InputStream,org.xml.sax.HandlerBase)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.parsers.SAXParser.parse(java.io.InputStream,org.xml.sax.HandlerBase,java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.parsers.SAXParser.parse(java.io.InputStream,org.xml.sax.helpers.DefaultHandler)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.parsers.SAXParser.parse(java.io.InputStream,org.xml.sax.helpers.DefaultHandler,java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.parsers.SAXParser.parse(org.xml.sax.InputSource,org.xml.sax.HandlerBase)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.parsers.SAXParser.parse(org.xml.sax.InputSource,org.xml.sax.helpers.DefaultHandler)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.stream.XMLInputFactory.createXMLStreamReader(java.io.Reader)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "javax.xml.stream.XMLStreamReader.getElementText()"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "nu.xom.Builder.build(java.io.File)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "nu.xom.Builder.build(java.io.InputStream)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "nu.xom.Builder.build(java.io.InputStream,java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "nu.xom.Builder.build(java.io.Reader)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "nu.xom.Builder.build(java.io.Reader,java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "nu.xom.Builder.build(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "org.xml.sax.XMLReader.parse(org.xml.sax.InputSource)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "xxe"
+    },
+    {
+        "details": [
+            {
+                "inherit": "true",
+                "source": "",
+                "target": "",
+                "track": "",
+                "value": "com.sun.org.apache.xerces.internal.xni.grammars.XMLGrammarLoader.setFeature(java.lang.String, boolean)"
+            },
+            {
+                "inherit": "true",
+                "source": "",
+                "target": "",
+                "track": "",
+                "value": "com.sun.org.apache.xerces.internal.xni.parser.XMLParserConfiguration.setFeature(java.lang.String, boolean)"
+            },
+            {
+                "inherit": "true",
+                "source": "",
+                "target": "",
+                "track": "",
+                "value": "javax.xml.parsers.DocumentBuilderFactory.setFeature(java.lang.String, boolean)"
+            },
+            {
+                "inherit": "true",
+                "source": "",
+                "target": "",
+                "track": "",
+                "value": "javax.xml.parsers.SAXParserFactory.setFeature(java.lang.String, boolean)"
+            },
+            {
+                "inherit": "true",
+                "source": "",
+                "target": "",
+                "track": "",
+                "value": "javax.xml.transform.TransformerFactory.setFeature(java.lang.String, boolean)"
+            },
+            {
+                "inherit": "true",
+                "source": "",
+                "target": "",
+                "track": "",
+                "value": "org.xml.sax.XMLReader.setFeature(java.lang.String, boolean)"
+            }
+        ],
+        "enable": 1,
+        "type": 3,
+        "value": "xxe-filter"
+    },
+    {
+        "details": [
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "io.jsonwebtoken.JwtParser.parse(java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "\u8eab\u4efd\u8ba4\u8bc1"
+    }
+]

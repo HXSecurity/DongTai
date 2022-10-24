@@ -1,0 +1,114 @@
+[
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "exec.(*Cmd).Run()"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "exec.(*Cmd).Start()"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "cmd-injection"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "os.OpenFile()"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "path-traversal"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1,2",
+                "target": "",
+                "track": "true",
+                "value": "gorm.(*DB).Exec()"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "gorm.(*DB).Group()"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2",
+                "target": "",
+                "track": "true",
+                "value": "gorm.(*DB).Having()"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "gorm.(*DB).Order()"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2",
+                "target": "",
+                "track": "true",
+                "value": "gorm.(*DB).Pluck()"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2",
+                "target": "",
+                "track": "true",
+                "value": "gorm.(*DB).Raw()"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2",
+                "target": "",
+                "track": "true",
+                "value": "gorm.(*DB).Select()"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "true",
+                "value": "sql.(*DB).Query()"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "sql-injection"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "http.(*Client).Do()"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "ssrf"
+    }
+]
