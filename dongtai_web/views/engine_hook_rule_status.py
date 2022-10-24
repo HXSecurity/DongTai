@@ -112,7 +112,7 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
         if op is None:
             return R.failure(msg=_('Operation type does not exist'))
         if rule_type is not None and scope == 'all':
-            count = HookStrategy.objects.filter(type__id=rule_type, created_by=user_id).update(enable=op)
+            count = HookStrategy.objects.filter(hooktype__id=rule_type, created_by=user_id).update(enable=op)
             logger.info(_('Policy type {} operation success, total of {} Policy types').format(rule_type, count))
             status = True
         if hook_rule_type is not None and language_id is not None and scope == 'all':
@@ -122,7 +122,7 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
                 language_id=language_id,
                 type=hook_rule_type).values_list('id', flat=True).all()
             count = HookStrategy.objects.filter(
-                type__id__in=hook_type_ids,
+                hooktype__id__in=hook_type_ids,
                 created_by__in=user_ids).update(enable=op)
             logger.info(_('total of {} Policy types').format(count))
             status = True

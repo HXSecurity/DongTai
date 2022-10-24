@@ -82,14 +82,13 @@ def load_sink_strategy(user=None, language=None):
     language_id = 0
     if language and language in LANGUAGE_MAP:
         language_id = LANGUAGE_MAP[language]
-    type_query = HookType.objects.filter(type=4)
-    if language_id != 0:
-        type_query = type_query.filter(language_id=language_id)
-
+    q = ~Q(state='delete')
+    type_query = IastStrategyModel.objects.filter(q)
     strategy_models = HookStrategy.objects.filter(
-        type__in=type_query,
+        strategy__in=type_query,
+        language_id__in=[language] if language else [1,2,3,4],
         created_by__in=[user.id, 1] if user else [1]
-    ).values('id', 'value', 'type__value')
+    ).values('id', 'value', 'hooktype__value')
     sub_method_signatures = set()
     for strategy in strategy_models:
         # for strategy in sub_queryset:
@@ -102,7 +101,7 @@ def load_sink_strategy(user=None, language=None):
 
         strategies.append({
             'strategy': strategy.get("id", ""),
-            'type': strategy.get("type__value", ""),
+            'type': strategy.get("hooktype__value", ""),
             'value': sub_method_signature
         })
     return strategies
