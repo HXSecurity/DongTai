@@ -47,132 +47,11 @@
         "created_by": 1,
         "enable": 1,
         "language": 2,
-        "name": "\u6ca1\u6709\u53cd\u70b9\u51fb\u52ab\u6301\u63a7\u5236\u7684\u9875\u9762",
-        "name_en": "Pages Without Anti-Clickjacking Controls",
-        "name_zh": "\u6ca1\u6709\u53cd\u70b9\u51fb\u52ab\u6301\u63a7\u5236\u7684\u9875\u9762",
-        "system_type": 1,
-        "type": 4,
-        "value": "Pages Without Anti-Clickjacking Controls"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "\u6ca1\u6709\u53cd\u70b9\u51fb\u52ab\u6301\u63a7\u5236\u7684\u9875\u9762",
-        "name_en": "Pages Without Anti-Clickjacking Controls",
-        "name_zh": "\u6ca1\u6709\u53cd\u70b9\u51fb\u52ab\u6301\u63a7\u5236\u7684\u9875\u9762",
-        "system_type": 1,
-        "type": 3,
-        "value": "Pages Without Anti-Clickjacking Controls"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "\u4f7f\u7528\u4e0d\u5b89\u5168\u914d\u7f6e\u7684 Strict-Transport-Security \u6807\u5934\u8fdb\u884c\u54cd\u5e94",
-        "name_en": "Strict-Transport-Security",
-        "name_zh": "\u4f7f\u7528\u4e0d\u5b89\u5168\u914d\u7f6e\u7684 Strict-Transport-Security \u6807\u5934\u8fdb\u884c\u54cd\u5e94",
-        "system_type": 1,
-        "type": 4,
-        "value": "Response With Insecurely Configured Strict-Transport-Security Header"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "\u4f7f\u7528\u4e0d\u5b89\u5168\u914d\u7f6e\u7684 Strict-Transport-Security \u6807\u5934\u8fdb\u884c\u54cd\u5e94",
-        "name_en": "Strict-Transport-Security",
-        "name_zh": "\u4f7f\u7528\u4e0d\u5b89\u5168\u914d\u7f6e\u7684 Strict-Transport-Security \u6807\u5934\u8fdb\u884c\u54cd\u5e94",
-        "system_type": 1,
-        "type": 3,
-        "value": "Response With Insecurely Configured Strict-Transport-Security Header"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "\u7981\u7528 X-XSS-Protection \u7684\u54cd\u5e94",
-        "name_en": "Response With X-XSS-Protection Disabled",
-        "name_zh": "\u7981\u7528 X-XSS-Protection \u7684\u54cd\u5e94",
-        "system_type": 1,
-        "type": 4,
-        "value": "Response With X-XSS-Protection Disabled"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "\u7981\u7528 X-XSS-Protection \u7684\u54cd\u5e94",
-        "name_en": "Response With X-XSS-Protection Disabled",
-        "name_zh": "\u7981\u7528 X-XSS-Protection \u7684\u54cd\u5e94",
-        "system_type": 1,
-        "type": 3,
-        "value": "Response With X-XSS-Protection Disabled"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "\u6ca1\u6709Content-Security-Policy\u7684\u54cd\u5e94",
-        "name_en": "Response Without Content-Security-Policy Header",
-        "name_zh": "\u6ca1\u6709Content-Security-Policy\u7684\u54cd\u5e94",
-        "system_type": 1,
-        "type": 4,
-        "value": "Response Without Content-Security-Policy Header"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "\u6ca1\u6709Content-Security-Policy\u7684\u54cd\u5e94",
-        "name_en": "Response Without Content-Security-Policy Header",
-        "name_zh": "\u6ca1\u6709Content-Security-Policy\u7684\u54cd\u5e94",
-        "system_type": 1,
-        "type": 3,
-        "value": "Response Without Content-Security-Policy Header"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "\u6ca1\u6709 X-Content-Type-Options \u6807\u5934\u7684\u54cd\u5e94",
-        "name_en": "Response Without X-Content-Type-Options Header",
-        "name_zh": "\u6ca1\u6709 X-Content-Type-Options \u6807\u5934\u7684\u54cd\u5e94",
-        "system_type": 1,
-        "type": 4,
-        "value": "Response Without X-Content-Type-Options Header"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "\u6ca1\u6709 X-Content-Type-Options \u6807\u5934\u7684\u54cd\u5e94",
-        "name_en": "Response Without X-Content-Type-Options Header",
-        "name_zh": "\u6ca1\u6709 X-Content-Type-Options \u6807\u5934\u7684\u54cd\u5e94",
-        "system_type": 1,
-        "type": 3,
-        "value": "Response Without X-Content-Type-Options Header"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
         "name": "\u547d\u4ee4\u6267\u884c ",
         "name_en": "OS Command Injection",
         "name_zh": "\u547d\u4ee4\u6267\u884c ",
         "system_type": 1,
         "type": 4,
-        "value": "cmd-injection"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "\u547d\u4ee4\u6267\u884c ",
-        "name_en": "OS Command Injection",
-        "name_zh": "\u547d\u4ee4\u6267\u884c ",
-        "system_type": 1,
-        "type": 3,
         "value": "cmd-injection"
     },
     {
@@ -212,33 +91,11 @@
         "created_by": 1,
         "enable": 1,
         "language": 2,
-        "name": "Cookie-flag\u7f3a\u5931",
-        "name_en": "Application Disables ''secure'' Flag on Cookies",
-        "name_zh": "Cookie-flag\u7f3a\u5931",
-        "system_type": 1,
-        "type": 3,
-        "value": "cookie-flags-missing"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
         "name": "\u4e0d\u5b89\u5168\u7684\u52a0\u5bc6\u7b97\u6cd5",
         "name_en": "Insecure Encryption Algorithms",
         "name_zh": "\u4e0d\u5b89\u5168\u7684\u52a0\u5bc6\u7b97\u6cd5",
         "system_type": 1,
         "type": 4,
-        "value": "crypto-bad-ciphers"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "\u4e0d\u5b89\u5168\u7684\u52a0\u5bc6\u7b97\u6cd5",
-        "name_en": "Insecure Encryption Algorithms",
-        "name_zh": "\u4e0d\u5b89\u5168\u7684\u52a0\u5bc6\u7b97\u6cd5",
-        "system_type": 1,
-        "type": 3,
         "value": "crypto-bad-ciphers"
     },
     {
@@ -256,17 +113,6 @@
         "created_by": 1,
         "enable": 1,
         "language": 2,
-        "name": "\u4e0d\u5b89\u5168\u7684hash\u7b97\u6cd5",
-        "name_en": "Insecure Hash Algorithms",
-        "name_zh": "\u4e0d\u5b89\u5168\u7684hash\u7b97\u6cd5",
-        "system_type": 1,
-        "type": 3,
-        "value": "crypto-bad-mac"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
         "name": "\u4e0d\u5b89\u5168\u7684\u968f\u673a\u6570",
         "name_en": "Weak Random Number Generation",
         "name_zh": "\u4e0d\u5b89\u5168\u7684\u968f\u673a\u6570",
@@ -278,33 +124,11 @@
         "created_by": 1,
         "enable": 1,
         "language": 2,
-        "name": "\u4e0d\u5b89\u5168\u7684\u968f\u673a\u6570",
-        "name_en": "Weak Random Number Generation",
-        "name_zh": "\u4e0d\u5b89\u5168\u7684\u968f\u673a\u6570",
-        "system_type": 1,
-        "type": 3,
-        "value": "crypto-weak-randomness"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
         "name": "\u52a8\u6001\u5e93\u52a0\u8f7d",
         "name_en": "JNI Injection",
         "name_zh": "\u52a8\u6001\u5e93\u52a0\u8f7d",
         "system_type": 1,
         "type": 4,
-        "value": "dynamic-library-load"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "\u52a8\u6001\u5e93\u52a0\u8f7d",
-        "name_en": "JNI Injection",
-        "name_zh": "\u52a8\u6001\u5e93\u52a0\u8f7d",
-        "system_type": 1,
-        "type": 3,
         "value": "dynamic-library-load"
     },
     {
@@ -366,17 +190,6 @@
         "created_by": 1,
         "enable": 1,
         "language": 2,
-        "name": "\u8868\u8fbe\u5f0f\u6ce8\u5165",
-        "name_en": "Expression Language Injection",
-        "name_zh": "\u8868\u8fbe\u5f0f\u6ce8\u5165",
-        "system_type": 1,
-        "type": 3,
-        "value": "expression-language-injection"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
         "name": "general-rules",
         "name_en": null,
         "name_zh": "general-rules",
@@ -421,33 +234,11 @@
         "created_by": 1,
         "enable": 1,
         "language": 2,
-        "name": "Header\u5934\u6ce8\u5165",
-        "name_en": "Header Injection",
-        "name_zh": "Header\u5934\u6ce8\u5165",
-        "system_type": 1,
-        "type": 3,
-        "value": "header-injection"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
         "name": "Hql\u6ce8\u5165",
         "name_en": "Hibernate Injection",
         "name_zh": "Hql\u6ce8\u5165",
         "system_type": 1,
         "type": 4,
-        "value": "hql-injection"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "Hql\u6ce8\u5165",
-        "name_en": "Hibernate Injection",
-        "name_zh": "Hql\u6ce8\u5165",
-        "system_type": 1,
-        "type": 3,
         "value": "hql-injection"
     },
     {
@@ -465,33 +256,11 @@
         "created_by": 1,
         "enable": 1,
         "language": 2,
-        "name": "LDAP\u6ce8\u5165",
-        "name_en": "LDAP Injection",
-        "name_zh": "LDAP\u6ce8\u5165",
-        "system_type": 1,
-        "type": 3,
-        "value": "ldap-injection"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
         "name": "NoSql\u6ce8\u5165",
         "name_en": "NoSQL Injection",
         "name_zh": "NoSql\u6ce8\u5165",
         "system_type": 1,
         "type": 4,
-        "value": "nosql-injection"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "NoSql\u6ce8\u5165",
-        "name_en": "NoSQL Injection",
-        "name_zh": "NoSql\u6ce8\u5165",
-        "system_type": 1,
-        "type": 3,
         "value": "nosql-injection"
     },
     {
@@ -531,17 +300,6 @@
         "created_by": 1,
         "enable": 1,
         "language": 2,
-        "name": "path-traversal",
-        "name_en": null,
-        "name_zh": "path-traversal",
-        "system_type": 1,
-        "type": 3,
-        "value": "path-traversal"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
         "name": "\u8def\u5f84\u7a7f\u8d8a",
         "name_en": "Path Traversal",
         "name_zh": "\u8def\u5f84\u7a7f\u8d8a",
@@ -553,44 +311,11 @@
         "created_by": 1,
         "enable": 1,
         "language": 2,
-        "name": "path-traversal",
-        "name_en": null,
-        "name_zh": "path-traversal",
-        "system_type": 1,
-        "type": 3,
-        "value": "path-traversal"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "\u8def\u5f84\u7a7f\u8d8a",
-        "name_en": "Path Traversal",
-        "name_zh": "\u8def\u5f84\u7a7f\u8d8a",
-        "system_type": 1,
-        "type": 3,
-        "value": "path-traversal"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
         "name": "\u6b63\u5219\u8868\u8fbe\u5f0fDos\u653b\u51fb",
         "name_en": "Regular Expression DoS",
         "name_zh": "\u6b63\u5219\u8868\u8fbe\u5f0fDos\u653b\u51fb",
         "system_type": 1,
         "type": 4,
-        "value": "redos"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "\u6b63\u5219\u8868\u8fbe\u5f0fDos\u653b\u51fb",
-        "name_en": "Regular Expression DoS",
-        "name_zh": "\u6b63\u5219\u8868\u8fbe\u5f0fDos\u653b\u51fb",
-        "system_type": 1,
-        "type": 3,
         "value": "redos"
     },
     {
@@ -613,28 +338,6 @@
         "name_zh": "reflected-xss",
         "system_type": 1,
         "type": 4,
-        "value": "reflected-xss"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "\u53cd\u5c04\u578bXSS",
-        "name_en": "Cross-Site Scripting",
-        "name_zh": "\u53cd\u5c04\u578bXSS",
-        "system_type": 1,
-        "type": 3,
-        "value": "reflected-xss"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "reflected-xss",
-        "name_en": null,
-        "name_zh": "reflected-xss",
-        "system_type": 1,
-        "type": 3,
         "value": "reflected-xss"
     },
     {
@@ -663,33 +366,11 @@
         "created_by": 1,
         "enable": 1,
         "language": 2,
-        "name": "\u53cd\u5c04\u6ce8\u5165",
-        "name_en": "Reflection Injection",
-        "name_zh": "\u53cd\u5c04\u6ce8\u5165",
-        "system_type": 1,
-        "type": 3,
-        "value": "reflection-injection"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
         "name": "SMTP\u6ce8\u5165",
         "name_en": "SMTP Injection",
         "name_zh": "SMTP\u6ce8\u5165",
         "system_type": 1,
         "type": 4,
-        "value": "smtp-injection"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "SMTP\u6ce8\u5165",
-        "name_en": "SMTP Injection",
-        "name_zh": "SMTP\u6ce8\u5165",
-        "system_type": 1,
-        "type": 3,
         "value": "smtp-injection"
     },
     {
@@ -734,28 +415,6 @@
         "name_zh": "Sql\u6ce8\u5165",
         "system_type": 1,
         "type": 4,
-        "value": "sql-injection"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "sql-injection",
-        "name_en": null,
-        "name_zh": "sql-injection",
-        "system_type": 1,
-        "type": 3,
-        "value": "sql-injection"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "Sql\u6ce8\u5165",
-        "name_en": "SQL Injection",
-        "name_zh": "Sql\u6ce8\u5165",
-        "system_type": 1,
-        "type": 3,
         "value": "sql-injection"
     },
     {
@@ -806,44 +465,11 @@
         "created_by": 1,
         "enable": 1,
         "language": 2,
-        "name": "\u670d\u52a1\u5668\u7aef\u8bf7\u6c42\u4f2a\u9020",
-        "name_en": "Server-Side Request Forgery (SSRF)",
-        "name_zh": "\u670d\u52a1\u5668\u7aef\u8bf7\u6c42\u4f2a\u9020",
-        "system_type": 1,
-        "type": 3,
-        "value": "ssrf"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "ssrf",
-        "name_en": null,
-        "name_zh": "ssrf",
-        "system_type": 1,
-        "type": 3,
-        "value": "ssrf"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
         "name": "\u4fe1\u4efb\u8fb9\u754c",
         "name_en": "Trust Boundary Violation",
         "name_zh": "\u4fe1\u4efb\u8fb9\u754c",
         "system_type": 1,
         "type": 4,
-        "value": "trust-boundary-violation"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "\u4fe1\u4efb\u8fb9\u754c",
-        "name_en": "Trust Boundary Violation",
-        "name_zh": "\u4fe1\u4efb\u8fb9\u754c",
-        "system_type": 1,
-        "type": 3,
         "value": "trust-boundary-violation"
     },
     {
@@ -861,33 +487,11 @@
         "created_by": 1,
         "enable": 1,
         "language": 2,
-        "name": "\u4e0d\u5b89\u5168\u7684\u53cd\u5e8f\u5217\u5316",
-        "name_en": "Untrusted Deserialization",
-        "name_zh": "\u4e0d\u5b89\u5168\u7684\u53cd\u5e8f\u5217\u5316",
-        "system_type": 1,
-        "type": 3,
-        "value": "unsafe-json-deserialize"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
         "name": "\u4e0d\u5b89\u5168\u7684readline",
         "name_en": "Use of readLine on Untrusted Streams",
         "name_zh": "\u4e0d\u5b89\u5168\u7684readline",
         "system_type": 1,
         "type": 4,
-        "value": "unsafe-readline"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "\u4e0d\u5b89\u5168\u7684readline",
-        "name_en": "Use of readLine on Untrusted Streams",
-        "name_zh": "\u4e0d\u5b89\u5168\u7684readline",
-        "system_type": 1,
-        "type": 3,
         "value": "unsafe-readline"
     },
     {
@@ -905,33 +509,11 @@
         "created_by": 1,
         "enable": 1,
         "language": 2,
-        "name": "\u4e0d\u5b89\u5168\u7684XMl Decode",
-        "name_en": "Unsafe XML Decoding",
-        "name_zh": "\u4e0d\u5b89\u5168\u7684XMl Decode",
-        "system_type": 1,
-        "type": 3,
-        "value": "unsafe-xml-decode"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
         "name": "\u4e0d\u5b89\u5168\u7684\u8f6c\u53d1",
         "name_en": "Arbitrary Server Side Forwards",
         "name_zh": "\u4e0d\u5b89\u5168\u7684\u8f6c\u53d1",
         "system_type": 1,
         "type": 4,
-        "value": "unvalidated-forward"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "\u4e0d\u5b89\u5168\u7684\u8f6c\u53d1",
-        "name_en": "Arbitrary Server Side Forwards",
-        "name_zh": "\u4e0d\u5b89\u5168\u7684\u8f6c\u53d1",
-        "system_type": 1,
-        "type": 3,
         "value": "unvalidated-forward"
     },
     {
@@ -949,33 +531,11 @@
         "created_by": 1,
         "enable": 1,
         "language": 2,
-        "name": "\u4e0d\u5b89\u5168\u7684\u91cd\u5b9a\u5411",
-        "name_en": "Unvalidated Redirect",
-        "name_zh": "\u4e0d\u5b89\u5168\u7684\u91cd\u5b9a\u5411",
-        "system_type": 1,
-        "type": 3,
-        "value": "unvalidated-redirect"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
         "name": "XPATH\u6ce8\u5165",
         "name_en": "XPath Injection",
         "name_zh": "XPATH\u6ce8\u5165",
         "system_type": 1,
         "type": 4,
-        "value": "xpath-injection"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "XPATH\u6ce8\u5165",
-        "name_en": "XPath Injection",
-        "name_zh": "XPATH\u6ce8\u5165",
-        "system_type": 1,
-        "type": 3,
         "value": "xpath-injection"
     },
     {
@@ -998,28 +558,6 @@
         "name_zh": "xxe",
         "system_type": 1,
         "type": 4,
-        "value": "xxe"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "XML\u5916\u90e8\u5b9e\u4f53\u6ce8\u5165",
-        "name_en": "XML External Entity Injection (XXE)",
-        "name_zh": "XML\u5916\u90e8\u5b9e\u4f53\u6ce8\u5165",
-        "system_type": 1,
-        "type": 3,
-        "value": "xxe"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "xxe",
-        "name_en": null,
-        "name_zh": "xxe",
-        "system_type": 1,
-        "type": 3,
         "value": "xxe"
     },
     {
@@ -1041,30 +579,8 @@
         "name_en": null,
         "name_zh": "\u6587\u4ef6\u5199\u5165",
         "system_type": 1,
-        "type": 3,
-        "value": "\u6587\u4ef6\u5199\u5165"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "\u6587\u4ef6\u5199\u5165",
-        "name_en": null,
-        "name_zh": "\u6587\u4ef6\u5199\u5165",
-        "system_type": 1,
         "type": 4,
         "value": "\u6587\u4ef6\u5199\u5165"
-    },
-    {
-        "created_by": 1,
-        "enable": 1,
-        "language": 2,
-        "name": "\u8eab\u4efd\u8ba4\u8bc1",
-        "name_en": null,
-        "name_zh": "\u8eab\u4efd\u8ba4\u8bc1",
-        "system_type": 1,
-        "type": 3,
-        "value": "\u8eab\u4efd\u8ba4\u8bc1"
     },
     {
         "created_by": 1,
