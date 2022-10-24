@@ -10,6 +10,8 @@ from django.test import TestCase
 from dongtai_engine.tasks import search_vul_from_method_pool
 from dongtai_protocol.tests import download_if_not_exist
 from django.db import connections
+from django.test import TestCase
+from dongtai_common.models.user import User
 import unittest
 
 @unittest.skip("waiting for rebuild mock data")
@@ -88,3 +90,16 @@ class CoreTaskTestCase(AgentTestCase):
         method_pool = MethodPool.objects.filter(pk=method_pool_id).first()
         from dongtai_engine.tasks import search_vul_from_method_pool
         search_vul_from_method_pool(method_pool.pool_sign, method_pool.agent_id)
+
+
+class LoadSinkStrategyTestCase(TestCase):
+
+    def test_load_sink_strategy(self):
+        from dongtai_engine.tasks import load_sink_strategy
+        strategies = load_sink_strategy()
+        assert isinstance(strategies, list)
+        assert len(strategies) > 0
+        for language in (1,2,3,4):
+            strategies = load_sink_strategy(User.objects.get(pk=1), language)
+            assert isinstance(strategies, list)
+            assert len(strategies) > 0
