@@ -74,10 +74,10 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             is_track = request.data.get('track').strip()
             language_id = request.data.get('language_id')
 
-            return rule_type, rule_value, rule_source, rule_target, inherit, is_track
+            return rule_type, rule_value, rule_source, rule_target, inherit, is_track, language_id
         except Exception as e:
 
-            return None, None, None, None, None, None
+            return None, None, None, None, None, None, None
 
     def create_strategy(self, value, source, target, inherit, track,
                         created_by, language_id):
