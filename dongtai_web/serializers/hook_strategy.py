@@ -72,17 +72,21 @@ class HookRuleSerializer(serializers.ModelSerializer):
     class Meta:
         model = HookStrategy
         fields = ['id', 'rule_type_id', 'rule_type', 'value', 'source', 'target', 'inherit', 'track', 'update_time',
-                  'enable', 'user']
+                  'enable', 'user','strategy']
 
     def get_rule_type(self, obj):
-        rule_type = obj.type.first()
+        if obj.type == 4:
+            return obj.strategy.vul_name
+        rule_type = obj.hooktype
         if rule_type:
             return rule_type.name
         else:
             return 'Unknown'
 
     def get_rule_type_id(self, obj):
-        rule_type = obj.type.first()
+        if obj.type == 4:
+            return obj.strategy.id
+        rule_type = obj.hooktype
         if rule_type:
             return rule_type.id
         else:
