@@ -101,8 +101,8 @@ class EngineHookRulesEndPoint(UserEndPoint):
             if rule_type == 4:
                 if strategy_type:
                     rule_type_queryset = IastStrategyModel.objects.filter(
-                        user_id=strategy_type,
-                        created_by__in=(user_id, const.SYSTEM_USER_ID),
+                        pk=strategy_type,
+                        user_id__in=(user_id, const.SYSTEM_USER_ID),
                     )
                 else:
                     rule_type_queryset = IastStrategyModel.objects.filter(
