@@ -45,18 +45,29 @@ class EngineHookRuleSummaryEndPoint(UserEndPoint):
             ser.is_valid(True)
         except ValidationError as e:
             return R.failure(msg=_('Parameter error'))
-        rule_type_queryset = HookType.objects.filter(created_by__in=[request.user.id, const.SYSTEM_USER_ID])
+        rule_type_queryset = HookType.objects.filter(
+            created_by__in=[request.user.id, const.SYSTEM_USER_ID])
         if ser.validated_data.get('language_id', None):
             rule_type_queryset = rule_type_queryset.filter(
                 language_id=ser.validated_data['language_id'], enable__gt=0)
         rule_type_count = rule_type_queryset.values('id').count()
 
         sink_type_queryset = rule_type_queryset.filter(type=const.RULE_SINK)
-        sink_count = HookStrategy.objects.values('id').filter(type__in=sink_type_queryset,enable__gt=0).count()
+        sink_queryset = HookStrategy.objects.values('id').filter(type__in=[4],
+                                                                 enable__gt=0)
+        rule_queryset = HookStrategy.objects.values('id').filter(
+            type__in=[1, 2, 3], enable__gt=0)
+        if ser.validated_data.get('language_id', None):
+            sink_queryset = sink_queryset.filter(
+                language_id=ser.validated_data['language_id'])
+            rule_queryset = rule_queryset.filter(
+                language_id=ser.validated_data['language_id'])
+        sink_count = sink_queryset.count()
 
-        rule_count = HookStrategy.objects.values('id').filter(type__in=rule_type_queryset,enable__gt=0).count()
-        return R.success(data={
-            'typeCount': rule_type_count,
-            'ruleCount': rule_count,
-            'sinkCount': sink_count
-        })
+        rule_count = rule_queryset.count()
+        return R.success(
+            data={
+                'typeCount': rule_type_count,
+                'ruleCount': rule_count,
+                'sinkCount': sink_count
+            })
