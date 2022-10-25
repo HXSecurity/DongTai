@@ -16,8 +16,9 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from dongtai_web.serializers.hook_strategy import HOOK_TYPE_CHOICE
 from rest_framework.serializers import ValidationError
-
+from dongtai_common.models.strategy import IastStrategyModel
 from rest_framework import serializers
+
 
 class _EngineHookRulesQuerySerializer(serializers.Serializer):
     type = serializers.ChoiceField(
@@ -97,24 +98,43 @@ class EngineHookRulesEndPoint(UserEndPoint):
 
         try:
             user_id = request.user.id
-            if strategy_type:
-                rule_type_queryset = HookType.objects.filter(
-                    id=strategy_type,
-                    created_by__in=(user_id, const.SYSTEM_USER_ID),
-                    type=rule_type,
-                    language_id=language_id)
+            if rule_type == 4:
+                if strategy_type:
+                    rule_type_queryset = IastStrategyModel.objects.filter(
+                        user_id=strategy_type,
+                        created_by__in=(user_id, const.SYSTEM_USER_ID),
+                    )
+                else:
+                    rule_type_queryset = IastStrategyModel.objects.filter(
+                        user_id__in=(user_id, const.SYSTEM_USER_ID), )
             else:
-                rule_type_queryset = HookType.objects.filter(
-                    created_by__in=(user_id, const.SYSTEM_USER_ID),
-                    type=rule_type,
-                    language_id=language_id)
-            q = Q(type__in=rule_type_queryset) & Q(created_by=user_id) & Q(enable__in=(const.ENABLE,const.DISABLE))
+                if strategy_type:
+                    rule_type_queryset = HookType.objects.filter(
+                        id=strategy_type,
+                        created_by__in=(user_id, const.SYSTEM_USER_ID),
+                        type=rule_type,
+                        language_id=language_id)
+                else:
+                    rule_type_queryset = HookType.objects.filter(
+                        created_by__in=(user_id, const.SYSTEM_USER_ID),
+                        type=rule_type,
+                        language_id=language_id)
+            if rule_type == 4:
+                q = Q(strategy__in=rule_type_queryset) & Q(
+                    created_by=user_id) & Q(
+                        enable__in=(const.ENABLE, const.DISABLE)) & Q(
+                            language_id=language_id)
+            else:
+                q = Q(hooktype__in=rule_type_queryset) & Q(
+                    created_by=user_id) & Q(enable__in=(const.ENABLE,
+                                                        const.DISABLE))
             if keyword:
                 q = Q(value__icontains=keyword) & q
             rule_queryset = HookStrategy.objects.filter(q)
-            page_summary, queryset = self.get_paginator(rule_queryset, page=page, page_size=page_size)
+            page_summary, queryset = self.get_paginator(rule_queryset.order_by('-id'), page=page, page_size=page_size)
             data = HookRuleSerializer(queryset, many=True).data
             return R.success(data=data, page=page_summary)
         except Exception as e:
-            logger.error(_("Rule read error, error message: {}").format(e))
+            logger.error(_("Rule read error, error message: {}").format(e),
+                         exc_info=e)
             return R.failure()
