@@ -24,7 +24,7 @@ logger = logging.getLogger("django")
 class _ProjectsArgsSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=20,
                                          help_text=_('Number per page'))
-    page = serializers.IntegerField(default=1, help_text=_('Page index'))
+    page = serializers.IntegerField(min_value=1,default=1, help_text=_('Page index'))
     name = serializers.CharField(
         default=None,
         help_text=_(
@@ -48,11 +48,14 @@ class Projects(UserEndPoint):
         response_schema=_SuccessSerializer,
     )
     def get(self, request):
-        page = request.query_params.get('page', 1)
-        if not page > 0:
-            return R.failure()
-        page_size = request.query_params.get('pageSize', 20)
-        name = request.query_params.get('name')
+        ser = _ProjectsArgsSerializer(data=request.GET)
+        try:
+            if ser.is_valid(True):
+                page = ser.validated_data.get('page', 1)
+                page_size = ser.validated_data.get('pageSize', 20)
+                name = ser.validated_data.get('name')
+        except ValidationError as e:
+            return R.failure(data=e.detail)
 
         users = self.get_auth_users(request.user)
         queryset = IastProject.objects.filter(
