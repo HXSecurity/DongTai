@@ -96,7 +96,7 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
                 update_time=timestamp,
                 created_by=created_by,
                 enable=const.ENABLE,
-
+                language_id=language_id,
             )
             strategy.save()
             return strategy
