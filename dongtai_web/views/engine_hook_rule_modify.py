@@ -84,18 +84,30 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
     )
     def post(self, request):
         rule_id, rule_type, rule_value, rule_source, rule_target, inherit, is_track = self.parse_args(request)
-        hook_type = HookType.objects.filter(
+        strategy = HookStrategy.objects.filter(
+            id=rule_id, created_by=request.user.id).first()
+        if not strategy:
+            return R.failure(msg=_('No such hookstrategy.'))
+        if strategy.type == 4:
+            hook_type = IastStrategyModel.objects.filter(
                 id=rule_type,
-                created_by__in=(request.user.id, const.SYSTEM_USER_ID)
-        ).first()
-        if all((rule_id, rule_type, rule_value, rule_source, inherit, is_track, hook_type)) is False:
+                user_id__in=[request.user.id, const.SYSTEM_USER_ID],
+            ).first()
+        else:
+            hook_type = HookType.objects.filter(
+                id=rule_type,
+                created_by__in=(request.user.id,
+                                const.SYSTEM_USER_ID)).first()
+
+        if all((rule_id, rule_type, rule_value, rule_source, inherit, is_track,
+                strategy)) is False:
             return R.failure(msg=_('Incomplete parameter, please check again'))
 
-        strategy = HookStrategy.objects.filter(id=rule_id, created_by=request.user.id).first()
         if strategy:
-            if hook_type:
-                strategy.type.get(strategy=strategy).strategies.remove(strategy)
-                hook_type.strategies.add(strategy)
+            if hook_type and strategy.type == 4:
+                strategy.strategy = hook_type
+            else:
+                strategy.hooktype = hook_type
             strategy.value = rule_value
             strategy.source = rule_source
             strategy.target = rule_target
