@@ -49,6 +49,8 @@ class Projects(UserEndPoint):
     )
     def get(self, request):
         page = request.query_params.get('page', 1)
+        if not page > 0:
+            return R.failure()
         page_size = request.query_params.get('pageSize', 20)
         name = request.query_params.get('name')
 
