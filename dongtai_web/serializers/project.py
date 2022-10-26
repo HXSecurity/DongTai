@@ -13,13 +13,33 @@ from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
 from dongtai_common.utils import const
 from dongtai_common.utils.systemsettings import get_vul_validate
+from collections import defaultdict
+
+
+def get_vul_levels_dict(queryset):
+    vul_levels = IastVulnerabilityModel.objects.values(
+        'level__name_value', 'level', 'agent__bind_project_id').filter(
+            agent__bind_project_id__in=list(
+                queryset.values_list('id', flat=True)),
+            is_del=0).annotate(total=Count('level'))
+    vul_levels_dict = defaultdict(list)
+    for k in vul_levels:
+        vul_levels_dict[k['agent__bind_project_id']].append(k)
+    return vul_levels_dict
+
+def get_project_language(queryset):
+    project_languages = IastAgent.objects.values(
+        'bind_project_id', 'language').filter(bind_project_id__in=list(
+            queryset.values_list('id', flat=True))).distinct()
+    project_language_dict = defaultdict(list)
+    for k in project_languages:
+        project_language_dict[k['bind_project_id']].append(k['language'])
+    return project_language_dict
 
 class ProjectSerializer(serializers.ModelSerializer):
     vul_count = serializers.SerializerMethodField(
         help_text="Vulnerability Count")
     owner = serializers.SerializerMethodField(help_text="Project owner")
-    agent_count = serializers.SerializerMethodField(
-        help_text="Project current surviving agent")
     agent_language = serializers.SerializerMethodField(
         help_text="Agent language currently included in the project")
     USER_MAP = {}
@@ -35,17 +55,21 @@ class ProjectSerializer(serializers.ModelSerializer):
         try:
             all_agents = getattr(obj, 'project_agents')
         except Exception as agent_not_found:
-            all_agents = IastAgent.objects.values('id').filter(bind_project_id=obj.id)
+            all_agents = obj.iastagent_set.all()
             setattr(obj, 'project_agents', all_agents)
         return all_agents
 
     def get_vul_count(self, obj):
-        agents = self.get_agents(obj)
-        vul_levels = IastVulnerabilityModel.objects.values('level').filter(
-            agent__in=agents, is_del=0).annotate(total=Count('level'))
+        if 'vul_levels_dict' in self.context.keys():
+            vul_levels = self.context['vul_levels_dict'][obj.id]
+        else:
+            vul_levels = IastVulnerabilityModel.objects.values(
+                'level__name_value',
+                'level').filter(agent__bind_project_id=obj.id,
+                                is_del=0).annotate(total=Count('level'))
         for vul_level in vul_levels:
-            level = IastVulLevel.objects.get(id=vul_level['level'])
-            vul_level['name'] = level.name_value
+            vul_level['name'] = vul_level[
+                'level__name_value']
         return list(vul_levels) if vul_levels else list()
 
     def get_owner(self, obj):
@@ -53,11 +77,10 @@ class ProjectSerializer(serializers.ModelSerializer):
             self.USER_MAP[obj] = obj.user.get_username()
         return self.USER_MAP[obj]
 
-    def get_agent_count(self, obj):
-        return self.get_agents(obj).filter(online=const.RUNNING).count()
 
     def get_agent_language(self, obj):
-        res = self.get_agents(obj).all().values_list(
-            'language', flat=True).distinct()
+        if 'project_language_dict' in self.context.keys():
+            res = self.context['project_language_dict'][obj.id]
+        else:
+            res = obj.iastagent_set.values_list('language',flat=True).distinct()
         return list(res)
-
