@@ -23,6 +23,8 @@ logger = logging.getLogger('dongtai-webapi')
 class _HookRuleAddBodyargsSerializer(serializers.Serializer):
     rule_type_id = serializers.IntegerField(
         help_text=_('The id of hook rule type.'))
+    language_id = serializers.IntegerField(
+        help_text=_('The id of language.'))
     rule_value = serializers.CharField(
         help_text=_('The value of strategy'),
         max_length=255,
