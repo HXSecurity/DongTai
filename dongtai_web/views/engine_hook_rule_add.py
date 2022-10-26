@@ -119,27 +119,25 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             (rule_type, rule_value, rule_source, inherit, is_track)) is False:
             return R.failure(msg=_('Incomplete parameter, please check again'))
         if rule_target == "":
-            type_ = 4
+            hook_type = IastStrategyModel.objects.filter(
+                id=rule_type,
+                user_id__in=[request.user.id, const.SYSTEM_USER_ID],
+            ).first()
         else:
-            type_ = HookType.objects.filter(
+            hook_type = HookType.objects.filter(
                 id=rule_type,
                 created_by__in=(request.user.id, const.SYSTEM_USER_ID),
-            ).first().type
+            ).first()
+        if not hook_type:
+            return R.failure(msg=_('Failed to create strategy'))
+        if rule_target == "":
+            type_ = 4
+        else:
+            type_ = hook_type.type
         strategy = self.create_strategy(rule_value, rule_source, rule_target,
                                         inherit, is_track, request.user.id,
                                         language_id, type_)
         if strategy:
-            if rule_target == "":
-                hook_type = IastStrategyModel.objects.filter(
-                    id=rule_type,
-                    user_id__in=[request.user.id, const.SYSTEM_USER_ID],
-                ).first()
-            else:
-                hook_type = HookType.objects.filter(
-                    id=rule_type,
-                    created_by__in=(request.user.id, const.SYSTEM_USER_ID),
-                ).first()
-            if hook_type:
-                hook_type.strategies.add(strategy)
-                return R.success(msg=_('Strategy has been created successfully'))
+            hook_type.strategies.add(strategy)
+            return R.success(msg=_('Strategy has been created successfully'))
         return R.failure(msg=_('Failed to create strategy'))
