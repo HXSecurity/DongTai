@@ -14,6 +14,7 @@ from rest_framework import serializers
 from django.utils.text import format_lazy
 from dongtai_web.serializers.hook_strategy import SINK_POSITION_HELP_TEXT
 from dongtai_common.models.hook_type import HookType
+from dongtai_common.models.strategy import IastStrategyModel
 
 
 _PostResponseSerializer = get_response_serializer(status_msg_keypair=(
