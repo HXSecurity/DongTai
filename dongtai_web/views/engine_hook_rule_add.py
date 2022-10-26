@@ -82,22 +82,21 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             return None, None, None, None, None, None, None
 
     def create_strategy(self, value, source, target, inherit, track,
-                        created_by, language_id):
+                        created_by, language_id, type_):
         try:
 
             timestamp = int(time.time())
-            strategy = HookStrategy(
-                value=value,
-                source=source,
-                target=target,
-                inherit=inherit,
-                track=track,
-                create_time=timestamp,
-                update_time=timestamp,
-                created_by=created_by,
-                enable=const.ENABLE,
-                language_id=language_id,
-            )
+            strategy = HookStrategy(value=value,
+                                    source=source,
+                                    target=target,
+                                    inherit=inherit,
+                                    track=track,
+                                    create_time=timestamp,
+                                    update_time=timestamp,
+                                    created_by=created_by,
+                                    enable=const.ENABLE,
+                                    language_id=language_id,
+                                    type=type_)
             strategy.save()
             return strategy
         except Exception as e:
@@ -119,10 +118,16 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
         if all(
             (rule_type, rule_value, rule_source, inherit, is_track)) is False:
             return R.failure(msg=_('Incomplete parameter, please check again'))
-
+        if rule_target == "":
+            type_ = 4
+        else:
+            type_ = HookType.objects.filter(
+                id=rule_type,
+                created_by__in=(request.user.id, const.SYSTEM_USER_ID),
+            ).first().type
         strategy = self.create_strategy(rule_value, rule_source, rule_target,
                                         inherit, is_track, request.user.id,
-                                        language_id)
+                                        language_id, type_)
         if strategy:
             if rule_target == "":
                 hook_type = IastStrategyModel.objects.filter(
@@ -136,5 +141,5 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
                 ).first()
             if hook_type:
                 hook_type.strategies.add(strategy)
-            return R.success(msg=_('Strategy has been created successfully'))
+                return R.success(msg=_('Strategy has been created successfully'))
         return R.failure(msg=_('Failed to create strategy'))
