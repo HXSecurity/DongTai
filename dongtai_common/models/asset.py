@@ -37,7 +37,7 @@ class Asset(models.Model):
     vul_info_count = models.IntegerField(default=0, blank=True, null=False)
     agent = models.ForeignKey(
         to=IastAgent,
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
         related_name='assets',
         related_query_name='asset',
         verbose_name=_('agent'),
@@ -45,8 +45,8 @@ class Asset(models.Model):
         null=True,
         default=-1
     )
-    project = models.ForeignKey(IastProject, on_delete=models.DO_NOTHING, blank=True, null=False, default=-1)
-    project_version = models.ForeignKey(IastProjectVersion, on_delete=models.DO_NOTHING, blank=True, null=False,
+    project = models.ForeignKey(IastProject, on_delete=models.CASCADE, blank=True, null=False, default=-1)
+    project_version = models.ForeignKey(IastProjectVersion, on_delete=models.CASCADE, blank=True, null=False,
                                         default=-1)
     user = models.ForeignKey(User, models.DO_NOTHING, null=False, default=-1)
     project_name = models.CharField(max_length=255, blank=True, null=False, default='')
