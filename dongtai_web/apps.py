@@ -3,9 +3,9 @@ from django.apps import AppConfig
 
 
 class IastConfig(DongTaiAppConfigPatch, AppConfig):
-    name = "dongtai_web"
+    name: str = "dongtai_web"
 
-    def ready(self):
+    def ready(self) -> None:
         super().ready()
 #        register_preheat()
         from dongtai_conf.celery import app as celery_app

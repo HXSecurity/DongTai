@@ -11,16 +11,17 @@ from django.db import models
 from dongtai_common.utils.settings import get_managed
 
 
+from _typeshed import Incomplete
 class VersionControl(models.Model):
-    version = models.CharField(max_length=255, blank=True, null=True)
-    component_name = models.CharField(max_length=255, blank=True, null=True)
-    component_version_hash = models.CharField(max_length=255,
+    version: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    component_name: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    component_version_hash: Incomplete = models.CharField(max_length=255,
                                               blank=True,
                                               null=True)
-    additional = models.CharField(max_length=255, blank=True, null=True)
-    update_time = models.IntegerField(default=lambda: int(time.time()),
+    additional: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    update_time: Incomplete = models.IntegerField(default=lambda: int(time.time()),
                                       blank=True)
 
     class Meta:
-        managed = get_managed()
-        db_table = 'project_version_control'
+        managed: Incomplete = get_managed()
+        db_table: str = 'project_version_control'

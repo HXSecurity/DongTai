@@ -8,11 +8,12 @@
 from django.db import models
 from dongtai_common.utils.settings import get_managed
 
+from _typeshed import Incomplete
 class IastDeployDesc(models.Model):
-    desc = models.TextField(blank=True, null=True)
-    middleware = models.CharField(max_length=255, blank=True, null=True)
-    language = models.CharField(max_length=255, blank=True, null=True)
+    desc: Incomplete = models.TextField(blank=True, null=True)
+    middleware: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    language: Incomplete = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = get_managed()
-        db_table = 'iast_deploy'
+        managed: Incomplete = get_managed()
+        db_table: str = 'iast_deploy'

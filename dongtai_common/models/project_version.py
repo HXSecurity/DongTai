@@ -12,20 +12,21 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_common.utils.settings import get_managed
 
 
+from _typeshed import Incomplete
 class IastProjectVersion(models.Model):
-    version_name = models.CharField(max_length=255, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    current_version = models.PositiveSmallIntegerField(blank=True, default=0)
-    status = models.PositiveSmallIntegerField(blank=True, null=True)
-    create_time = models.IntegerField(_('create time'),
+    version_name: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    description: Incomplete = models.TextField(blank=True, null=True)
+    current_version: Incomplete = models.PositiveSmallIntegerField(blank=True, default=0)
+    status: Incomplete = models.PositiveSmallIntegerField(blank=True, null=True)
+    create_time: Incomplete = models.IntegerField(_('create time'),
                                       default=lambda: int(time.time()),
                                       blank=True)
-    update_time = models.IntegerField(_('update time'),
+    update_time: Incomplete = models.IntegerField(_('update time'),
                                       default=lambda: int(time.time()),
                                       blank=True)
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
-    project = models.ForeignKey(IastProject, models.DO_NOTHING, blank=True, null=True)
+    user: Incomplete = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
+    project: Incomplete = models.ForeignKey(IastProject, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        managed = get_managed()
-        db_table = 'iast_project_version'
+        managed: Incomplete = get_managed()
+        db_table: str = 'iast_project_version'

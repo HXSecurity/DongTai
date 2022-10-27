@@ -8,26 +8,27 @@ from django.db import models
 from dongtai_common.utils.settings import get_managed
 
 
+from _typeshed import Incomplete
 class ImportFrom(models.IntegerChoices):
-    SYSTEM = 1
-    USER = 2
-    __empty__ = 2
+    SYSTEM: int = 1
+    USER: int = 2
+    __empty__: int = 2
 
 
 class ScaMavenDb(models.Model):
-    group_id = models.CharField(max_length=255, blank=True, null=True)
-    atrifact_id = models.CharField(max_length=255, blank=True, null=True)
-    version = models.CharField(max_length=255, blank=True, null=True)
-    sha_1 = models.CharField(unique=True,
+    group_id: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    atrifact_id: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    version: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    sha_1: Incomplete = models.CharField(unique=True,
                              max_length=255,
                              blank=True,
                              null=True)
-    package_name = models.CharField(max_length=255, blank=True, null=True)
-    aql = models.CharField(max_length=255, blank=True, null=True)
-    license = models.CharField(max_length=255, blank=True, null=True)
-    import_from = models.IntegerField(choices=ImportFrom.choices,
+    package_name: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    aql: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    license: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    import_from: Incomplete = models.IntegerField(choices=ImportFrom.choices,
                                       default=ImportFrom.USER)
 
     class Meta:
-        managed = get_managed()
-        db_table = 'sca_maven_db'
+        managed: Incomplete = get_managed()
+        db_table: str = 'sca_maven_db'

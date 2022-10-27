@@ -3,20 +3,22 @@ from .utils import get_package_vul, get_package
 from django.test import TestCase
 
 
+from .utils import get_latest_version as get_latest_version, get_nearest_version as get_nearest_version, get_package as get_package, get_package_vul as get_package_vul, update_one_sca as update_one_sca
+from _typeshed import Incomplete
 class ExtenalApiTestCase(TestCase):
 
-    def test_get_package_vul_by_aql(self):
+    def test_get_package_vul_by_aql(self) -> None:
         res = get_package_vul(
             aql="maven:com.fasterxml.jackson.core:jackson-databind:2.9.3:")
         assert isinstance(res, list)
 
-    def test_get_package_by_ecosystem_and_hash_java(self):
+    def test_get_package_by_ecosystem_and_hash_java(self) -> None:
         res = get_package(
             ecosystem="maven",
             package_hash="3490508379d065fe3fcb80042b62f630f7588606")
         assert isinstance(res, list)
 
-    def test_get_package_by_ecosystem_and_hash_go(self):
+    def test_get_package_by_ecosystem_and_hash_go(self) -> None:
         res = get_package(
             ecosystem="golang",
             package_hash="3c61e56652c8d48ba09390f1170cf868007e1293")
@@ -31,7 +33,7 @@ from .utils import get_nearest_version, get_latest_version
 
 
 class DongTaiVersionTestCase(TestCase):
-    version_list = [
+    version_list: Incomplete = [
         '1.0', '1.0-m4', '1.0-rc1', '1.0.1', '1.2', '1.2-rc1', '1.2-rc2',
         '1.2.1', '1.2.2', '1.2.3', '1.2.4', '1.2.5', '1.2.6', '1.2.7', '1.2.8',
         '1.2.9', '2.0', '2.0-m1', '2.0-m2', '2.0-m4', '2.0.1', '2.0.2',
@@ -75,20 +77,20 @@ class DongTaiVersionTestCase(TestCase):
         '5.2.8.RELEASE', '5.3.14', '5.3.15', '5.3.16', '5.3.19'
     ]
 
-    def test_nearest_version(self):
+    def test_nearest_version(self) -> None:
         version = '5.1.3.RELEASE'
         nrversion = get_nearest_version(version, self.version_list)
         assert nrversion == '5.1.3.RELEASE'
 
-    def test_latest_version(self):
+    def test_latest_version(self) -> None:
         assert '5.3.19' == get_latest_version(self.version_list)
 
-    def test_nearest_version_1(self):
+    def test_nearest_version_1(self) -> None:
         version = '0.0.1'
         nrversion = get_nearest_version(version, self.version_list)
         assert nrversion == '1.0-rc1'
 
-    def test_nearest_version_2(self):
+    def test_nearest_version_2(self) -> None:
         version = '10.0.1'
         nrversion = get_nearest_version(version, self.version_list)
         assert nrversion == ''
@@ -98,19 +100,19 @@ from dongtai_common.models.asset import Asset
 
 class AgentHardencodeTestCase(AgentTestCase):
 
-    def test_update_one_sca_java(self):
+    def test_update_one_sca_java(self) -> None:
         update_one_sca(
             self.agent_id,
             "/Users/xxx/spring-boot/2.3.2.RELEASE/org.springframework:spring-beans.jar",
             "3490508379d065fe3fcb80042b62f630f7588606",
             "org.springframework:spring-beans.jar", "SHA-1")
 
-    def test_update_one_sca_golang(self):
+    def test_update_one_sca_golang(self) -> None:
         update_one_sca(self.agent_id, "pypi:markupsafe:2.0.1:",
                        "a4bb5ffad5564e4a0e25955e3a40b1c6158385b2",
                        "org.springframework:spring-beans.jar", "SHA-1")
 
-    def test_get_package_edge_case(self):
+    def test_get_package_edge_case(self) -> None:
         update_one_sca(self.agent_id, "",
                        "9b7860a324f4b2f2bc31bcdd99c7ee51fe32e0c8",
                        " org.springframework:spring-web.jar ", "SHA-1")
@@ -119,7 +121,7 @@ class AgentHardencodeTestCase(AgentTestCase):
             signature_value="9b7860a324f4b2f2bc31bcdd99c7ee51fe32e0c8").first(
         )
 
-    def test_get_package_edge_case_1(self):
+    def test_get_package_edge_case_1(self) -> None:
         update_one_sca(self.agent_id, "",
                        "07b6bf82cea13570b5290d6ed841283a1fcce170",
                        " org.springframework:spring-web.jar ", "SHA-1")
@@ -131,7 +133,7 @@ class AgentHardencodeTestCase(AgentTestCase):
         assert asset.safe_version_list is not None
         assert asset.iastvulassetrelation_set.all() != []
     
-    def test_update_one_sca_java_result_search(self):
+    def test_update_one_sca_java_result_search(self) -> None:
         update_one_sca(
             self.agent_id,
             "/Users/xxx/spring-boot/2.3.2.RELEASE/org.springframework:spring-beans.jar",

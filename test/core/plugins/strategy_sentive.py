@@ -4,10 +4,10 @@ from test import DongTaiTestCase
 
 
 class MyTestCase(DongTaiTestCase):
-    def test_something(self):
+    def test_something(self) -> None:
         self.assertEqual(True, True)
 
-    def test_search_id_card_leak(self):
+    def test_search_id_card_leak(self) -> None:
         id = 45789
         from dongtai_common.models.agent_method_pool import MethodPool
         method_pool = MethodPool.objects.get(id=id)
@@ -15,7 +15,7 @@ class MyTestCase(DongTaiTestCase):
             from dongtai_engine.plugins.strategy_sensitive import search_id_card_leak
             search_id_card_leak(method_pool)
 
-    def test_check_id_card(self):
+    def test_check_id_card(self) -> None:
         right_numbers = ('510103196502083435', '510103196608150034',)
         wrong_numbers = ('510103296502083435',)
         from dongtai_engine.plugins.strategy_sensitive import check_id_card
@@ -27,7 +27,7 @@ class MyTestCase(DongTaiTestCase):
             print('current number is: ' + wrong_number)
             self.assertEqual(False, check_id_card(wrong_number))
 
-    def test_check_response_content(self):
+    def test_check_response_content(self) -> None:
         id = 45789
         from dongtai_common.models.agent_method_pool import MethodPool
         method_pool = MethodPool.objects.get(id=id)

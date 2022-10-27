@@ -27,26 +27,28 @@ from dongtai_web.vul_log.vul_log import log_vul_found
 from dongtai_common.models.agent import IastAgent
 
 
-logger = logging.getLogger('dongtai.openapi')
+from _typeshed import Incomplete
+logger: Incomplete = logging.getLogger('dongtai.openapi')
 
 class HardEncodeVulSerializer(serializers.Serializer):
-    class_ = serializers.CharField(default=None,
+    class_: Incomplete = serializers.CharField(default=None,
                                    required=False,
                                    help_text=_("class name"))
-    field = serializers.CharField(default=None,
+    field: Incomplete = serializers.CharField(default=None,
                                   required=False,
                                   help_text=_("field"))
 
-    value = serializers.CharField(default=None, required=False)
-    is_jdk = serializers.BooleanField(default=None, required=False)
+    value: Incomplete = serializers.CharField(default=None, required=False)
+    is_jdk: Incomplete = serializers.BooleanField(default=None, required=False)
 
-    file_ = serializers.CharField(default=None, required=False)
+    file_: Incomplete = serializers.CharField(default=None, required=False)
 
 
 
 @ReportHandler.register(const.REPORT_VULN_HARDCODE)
 class HardEncodeVulHandler(IReportHandler):
-    def parse(self):
+    validated: bool
+    def parse(self) -> None:
         ser = HardEncodeVulSerializer(data=self.detail)
         try:
             if ser.is_valid(True):
@@ -58,7 +60,7 @@ class HardEncodeVulHandler(IReportHandler):
         for k, v in ser.validated_data.items():
             setattr(self, k, v)
 
-    def save(self):
+    def save(self) -> None:
         strategy = IastStrategyModel.objects.filter(user_id=1,
                                                     vul_type='硬编码').first()
         if not strategy or strategy.state != 'enable':

@@ -6,7 +6,7 @@ from test import DongTaiTestCase
 
 class MyTestCase(DongTaiTestCase):
 
-    def test_celery_beat(self):
+    def test_celery_beat(self) -> None:
         from django_celery_beat.models import PeriodicTask, IntervalSchedule
         schedule, created = IntervalSchedule.objects.get_or_create(every=1, period=IntervalSchedule.HOURS, )
 
@@ -52,11 +52,11 @@ class MyTestCase(DongTaiTestCase):
                 args=json.dumps([]),
             )
 
-    def test_agent_status_update(self):
+    def test_agent_status_update(self) -> None:
         from dongtai_engine.tasks import update_agent_status
         update_agent_status()
 
-    def test_heart_beat(self):
+    def test_heart_beat(self) -> None:
         import os
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dongtai_conf.settings")
         os.environ.setdefault("debug", "true")

@@ -11,22 +11,23 @@ from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 
 
+from _typeshed import Incomplete
 class IastHeaderVulnerability(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    project = models.ForeignKey(IastProject,
+    id: Incomplete = models.BigAutoField(primary_key=True)
+    project: Incomplete = models.ForeignKey(IastProject,
                                 on_delete=models.DO_NOTHING,
                                 blank=True,
                                 null=True,
                                 default=-1,
                                 db_constraint=False)
-    project_version = models.ForeignKey(IastProjectVersion,
+    project_version: Incomplete = models.ForeignKey(IastProjectVersion,
                                         on_delete=models.DO_NOTHING,
                                         blank=True,
                                         null=True,
                                         default=-1,
                                         db_constraint=False)
-    url = models.CharField(max_length=255, default='', blank=True, null=True)
-    vul = models.ForeignKey(IastVulnerabilityModel,
+    url: Incomplete = models.CharField(max_length=255, default='', blank=True, null=True)
+    vul: Incomplete = models.ForeignKey(IastVulnerabilityModel,
                             on_delete=models.DO_NOTHING,
                             blank=True,
                             null=True,
@@ -34,32 +35,32 @@ class IastHeaderVulnerability(models.Model):
                             db_constraint=False)
 
     class Meta:
-        managed = get_managed()
-        db_table = 'iast_header_vulnerability'
+        managed: Incomplete = get_managed()
+        db_table: str = 'iast_header_vulnerability'
 
 
 class IastHeaderVulnerabilityDetail(models.Model):
-    req_header = models.TextField(
+    req_header: Incomplete = models.TextField(
         blank=True,
         null=True,
     )
-    res_header = models.TextField(blank=True, null=True)
-    agent = models.ForeignKey(IastAgent,
+    res_header: Incomplete = models.TextField(blank=True, null=True)
+    agent: Incomplete = models.ForeignKey(IastAgent,
                               models.DO_NOTHING,
                               blank=True,
                               null=True,
                               db_constraint=False)
-    method_pool = models.ForeignKey(MethodPool,
+    method_pool: Incomplete = models.ForeignKey(MethodPool,
                                     models.DO_NOTHING,
                                     blank=True,
                                     null=True,
                                     db_constraint=False)
-    header_vul = models.ForeignKey(IastHeaderVulnerability,
+    header_vul: Incomplete = models.ForeignKey(IastHeaderVulnerability,
                                    models.DO_NOTHING,
                                    blank=True,
                                    null=True,
                                    db_constraint=False)
 
     class Meta:
-        managed = get_managed()
-        db_table = 'iast_header_vulnerability_detail'
+        managed: Incomplete = get_managed()
+        db_table: str = 'iast_header_vulnerability_detail'

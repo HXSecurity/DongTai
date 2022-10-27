@@ -18,7 +18,8 @@ from django.urls import include, path
 import os
 from dongtai_web.versioncontrol.views import VersionListView
 
-urlpatterns = [
+from _typeshed import Incomplete
+urlpatterns: Incomplete = [
     path('versionlist', VersionListView.as_view()),
 ]
 

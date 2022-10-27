@@ -18,7 +18,7 @@ import json
 class AgentHardencodeTestCase(AgentTestCase):
 
 
-    def test_agent_hardencode_vuln(self):
+    def test_agent_hardencode_vuln(self) -> None:
         json_ = {
             "detail": {
                 "file": "SpringsecApplication.java",
@@ -38,7 +38,7 @@ class AgentHardencodeTestCase(AgentTestCase):
             assert IastVulnerabilityModel.objects.filter(
                 strategy=strategy).exists()
 
-    def test_agent_hardencode_vuln_other(self):
+    def test_agent_hardencode_vuln_other(self) -> None:
         jsondata = {
             "detail": {
                 "agentId": self.agent_id,

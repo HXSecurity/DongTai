@@ -12,12 +12,14 @@ from dongtai_common.models.agent import IastAgent
 import json
 
 
+from _typeshed import Incomplete
 class AgentRegisterTestCase(AgentTestCase):
-    def setUp(self):
+    test_agent_id: Incomplete
+    def setUp(self) -> None:
         super().setUp()
         self.test_agent_id = []
 
-    def test_rep_register(self):
+    def test_rep_register(self) -> None:
         data1 = self.raw_register(name='rep_data')
         self.agent_heartbeat()
         data2 = self.raw_register(name='rep_data')
@@ -28,6 +30,6 @@ class AgentRegisterTestCase(AgentTestCase):
         ]
         assert data1.content == data2.content
 
-    def test_register(self):
+    def test_register(self) -> None:
         assert not IastAgent.objects.filter(pk=self.agent_id,
                                             project_version_id=0).exists()

@@ -31,7 +31,11 @@ from dongtai_protocol.views.agent_config import (
 from dongtai_protocol.views.except_action import AgentActionV2EndPoint
 from dongtai_protocol.views.hook_profilesv2 import HookProfilesV2EndPoint
 
-urlpatterns = [
+from _typeshed import Incomplete
+from dongtai_protocol.views.agent_config import AgentConfigView as AgentConfigView, AgentConfigv2View as AgentConfigv2View
+from dongtai_protocol.views.engine_status import EngineAction as EngineAction, EngineUpdateEndPoint as EngineUpdateEndPoint
+from dongtai_protocol.views.startuptime import StartupTimeEndPoint as StartupTimeEndPoint, StartupTimeGzipEndPoint as StartupTimeGzipEndPoint
+urlpatterns: Incomplete = [
     path('agent/download', AgentDownload.as_view()),
     path('agent/limit', LimitView.as_view()),
     path('agent/startuptime', StartupTimeEndPoint.as_view()),

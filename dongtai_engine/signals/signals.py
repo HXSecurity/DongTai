@@ -3,4 +3,5 @@
 
 from django.dispatch import Signal
 
-vul_found = Signal()
+from _typeshed import Incomplete
+vul_found: Incomplete = Signal()

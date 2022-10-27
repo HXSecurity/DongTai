@@ -12,23 +12,24 @@ from dongtai_common.models.agent import IastAgent
 from dongtai_common.utils.settings import get_managed
 
 
+from _typeshed import Incomplete
 class IastHeartbeat(models.Model):
-    memory = models.CharField(max_length=1000, blank=True, null=True)
-    cpu = models.CharField(max_length=1000, blank=True, null=True)
-    disk = models.CharField(max_length=1000, blank=True, null=True)
-    req_count = models.IntegerField(blank=True, null=True)
-    dt = models.IntegerField(blank=True, null=True)
-    report_queue = models.PositiveIntegerField(default=0,
+    memory: Incomplete = models.CharField(max_length=1000, blank=True, null=True)
+    cpu: Incomplete = models.CharField(max_length=1000, blank=True, null=True)
+    disk: Incomplete = models.CharField(max_length=1000, blank=True, null=True)
+    req_count: Incomplete = models.IntegerField(blank=True, null=True)
+    dt: Incomplete = models.IntegerField(blank=True, null=True)
+    report_queue: Incomplete = models.PositiveIntegerField(default=0,
                                                null=False,
                                                blank=False)
-    method_queue = models.PositiveIntegerField(default=0,
+    method_queue: Incomplete = models.PositiveIntegerField(default=0,
                                                null=False,
                                                blank=False)
-    replay_queue = models.PositiveIntegerField(default=0,
+    replay_queue: Incomplete = models.PositiveIntegerField(default=0,
                                                null=False,
                                                blank=False)
 
-    agent = models.ForeignKey(
+    agent: Incomplete = models.ForeignKey(
         to=IastAgent,
         on_delete=models.DO_NOTHING,
         related_name='heartbeats',
@@ -39,5 +40,5 @@ class IastHeartbeat(models.Model):
     )
 
     class Meta:
-        managed = get_managed()
-        db_table = 'iast_heartbeat'
+        managed: Incomplete = get_managed()
+        db_table: str = 'iast_heartbeat'

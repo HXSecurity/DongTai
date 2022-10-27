@@ -17,19 +17,20 @@ from dongtai_web.dongtai_sca.models import VulPackage
 from dongtai_common.models.aql_info import AqlInfo
 
 
+from _typeshed import Incomplete
 class AssetVulRelation(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    hash = models.CharField(max_length=255, blank=True, null=True)
-    create_time = models.IntegerField(blank=True, null=True)
-    is_del = models.SmallIntegerField(blank=True, null=True)
-    talent = models.ForeignKey(
+    id: Incomplete = models.BigAutoField(primary_key=True)
+    hash: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    create_time: Incomplete = models.IntegerField(blank=True, null=True)
+    is_del: Incomplete = models.SmallIntegerField(blank=True, null=True)
+    talent: Incomplete = models.ForeignKey(
         to=Talent,
         on_delete=models.DO_NOTHING,
         blank=True,
         null=True
     )
 
-    department = models.ForeignKey(
+    department: Incomplete = models.ForeignKey(
         to=Department,
         on_delete=models.DO_NOTHING,
         blank=True,
@@ -37,40 +38,40 @@ class AssetVulRelation(models.Model):
     )
 
 
-    user = models.ForeignKey(
+    user: Incomplete = models.ForeignKey(
         to=User,
         on_delete=models.DO_NOTHING,
         blank=True,
         null=True
     )
 
-    project_version = models.ForeignKey(
+    project_version: Incomplete = models.ForeignKey(
         to=IastProjectVersion,
         on_delete=models.DO_NOTHING,
         blank=True,
         null=True
     )
 
-    project = models.ForeignKey(
+    project: Incomplete = models.ForeignKey(
         to=IastProject,
         on_delete=models.DO_NOTHING,
         blank=True,
         null=True
     )
 
-    agent = models.ForeignKey(
+    agent: Incomplete = models.ForeignKey(
         to=IastAgent,
         on_delete=models.DO_NOTHING,
         blank=True,
         null=True
     )
-    vul_package = models.ForeignKey(
+    vul_package: Incomplete = models.ForeignKey(
         to=VulPackage,
         on_delete=models.DO_NOTHING,
         blank=True,
         null=True
     )
-    aql_info = models.ForeignKey(
+    aql_info: Incomplete = models.ForeignKey(
         to=AqlInfo,
         on_delete=models.DO_NOTHING,
         blank=True,
@@ -78,5 +79,5 @@ class AssetVulRelation(models.Model):
     )
 
     class Meta:
-        managed = get_managed()
-        db_table = 'iast_asset_vul_relation'
+        managed: Incomplete = get_managed()
+        db_table: str = 'iast_asset_vul_relation'

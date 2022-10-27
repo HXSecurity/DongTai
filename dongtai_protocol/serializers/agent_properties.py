@@ -8,7 +8,8 @@ from dongtai_common.models.agent_properties import IastAgentProperties
 from rest_framework import serializers
 
 
+from _typeshed import Incomplete
 class AgentPropertiesSerialize(serializers.ModelSerializer):
     class Meta:
-        model = IastAgentProperties
-        fields = ['hook_type', 'dump_class']
+        model: Incomplete = IastAgentProperties
+        fields: Incomplete = ['hook_type', 'dump_class']

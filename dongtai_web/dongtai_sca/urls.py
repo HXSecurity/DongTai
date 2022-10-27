@@ -5,9 +5,10 @@ from dongtai_web.dongtai_sca.views.package import PackageList, AssetAggrDetailAs
 from dongtai_web.dongtai_sca.views.package_vul import OnePackageVulList, AssetPackageVulList, AssetPackageVulDetail
 from rest_framework import routers
 
-router = routers.DefaultRouter()
+from _typeshed import Incomplete
+router: Incomplete = routers.DefaultRouter()
 
-urlpatterns = [
+urlpatterns: Incomplete = [
     path('package/', PackageList.as_view()),
     path('package_vul/', OnePackageVulList.as_view()),
     path('asset_projects/<int:aggr_id>', AssetProjects.as_view()),

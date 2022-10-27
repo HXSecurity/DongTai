@@ -6,7 +6,8 @@
 # project: webapi
 
 
-AGENT_STATUS = {
+from _typeshed import Incomplete
+AGENT_STATUS: Incomplete = {
     0: {
         "key": "无下发指令",
         "value": "notcmd",

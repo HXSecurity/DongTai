@@ -16,7 +16,7 @@ import json
 
 class AgentHardencodeTestCase(AgentTestCase):
 
-    def test_agent_hardencode_vuln(self):
+    def test_agent_hardencode_vuln(self) -> None:
         json_ = {
             "detail": {
                 "reqHeader":

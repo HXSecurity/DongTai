@@ -143,7 +143,15 @@ from dongtai_web.vul_recheck_payload.vul_recheck_payload import VulReCheckPayloa
 from dongtai_web.header_vul.base import HeaderVulViewSet
 
 
-urlpatterns = [
+from _typeshed import Incomplete
+from dongtai_web.threshold.agent_core_status import AgentCoreStatusUpdate as AgentCoreStatusUpdate, AgentCoreStatusUpdateALL as AgentCoreStatusUpdateALL
+from dongtai_web.threshold.config_setting import AgentThresholdConfig as AgentThresholdConfig, AgentThresholdConfigV2 as AgentThresholdConfigV2
+from dongtai_web.views.details_id import AgentListWithid as AgentListWithid, ProjectListWithid as ProjectListWithid, ScaListWithid as ScaListWithid, VulsListWithid as VulsListWithid
+from dongtai_web.views.github_contributors import GithubContributorsView as GithubContributorsView
+from dongtai_web.views.scan_strategys import ScanStrategyAllView as ScanStrategyAllView, ScanStrategyRelationProject as ScanStrategyRelationProject, ScanStrategyViewSet as ScanStrategyViewSet
+from dongtai_web.views.sensitive_info_rule import SensitiveInfoPatternTypeView as SensitiveInfoPatternTypeView, SensitiveInfoPatternValidationView as SensitiveInfoPatternValidationView, SensitiveInfoRuleAllView as SensitiveInfoRuleAllView, SensitiveInfoRuleBatchView as SensitiveInfoRuleBatchView, SensitiveInfoRuleViewSet as SensitiveInfoRuleViewSet
+from dongtai_web.views.vul_details import VulDetail as VulDetail, VulDetailV2 as VulDetailV2
+urlpatterns: Incomplete = [
     path('user/<int:user_id>', UserDetailEndPoint.as_view()),
     path('user/changePassword', UserPassword.as_view()),
     path('user/login', UserLogin.as_view()),

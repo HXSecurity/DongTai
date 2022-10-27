@@ -8,11 +8,12 @@ from django.db import models
 from dongtai_common.utils.settings import get_managed
 
 
+from _typeshed import Incomplete
 class IastVulLevel(models.Model):
-    name = models.CharField(max_length=255, blank=True, null=True)
-    name_value = models.CharField(max_length=255, blank=True, null=True)
-    name_type = models.CharField(max_length=255, blank=True, null=True)
+    name: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    name_value: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    name_type: Incomplete = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = get_managed()
-        db_table = 'iast_vul_level'
+        managed: Incomplete = get_managed()
+        db_table: str = 'iast_vul_level'

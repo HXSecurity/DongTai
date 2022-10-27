@@ -8,6 +8,7 @@ from base.endpoint import SessionAuthProxyView
 from dongtai_common.endpoint import UserPermission
 
 
+from _typeshed import Incomplete
 class MethodPoolProxy(SessionAuthProxyView):
-    permission_classes = (UserPermission,)
-    source = 'api/engine/method_pools'
+    permission_classes: Incomplete = (UserPermission,)
+    source: str = 'api/engine/method_pools'

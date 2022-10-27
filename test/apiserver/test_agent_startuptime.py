@@ -11,10 +11,11 @@
 from test.apiserver.test_agent_base import (AgentTestCase, gzipdata)
 
 
+from test.apiserver.test_agent_base import AgentTestCase as AgentTestCase, gzipdata as gzipdata
 class AgentStartUptimeTestCase(AgentTestCase):
 
 
-    def test_start_up_time_compalince(self):
+    def test_start_up_time_compalince(self) -> None:
         data = {'agentId': self.agent_id, 'startupTime': 448}
         gzip_data = gzipdata(data)
         response_no_gzip = self.client.post(

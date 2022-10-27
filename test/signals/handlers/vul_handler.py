@@ -9,13 +9,13 @@ from test import DongTaiTestCase
 
 
 class VulHandlerTest(DongTaiTestCase):
-    def test_send_vul_notify(self):
+    def test_send_vul_notify(self) -> None:
         from dongtai_common.models.vulnerablity import IastVulnerabilityModel
         vul = IastVulnerabilityModel.objects.filter(id=2208).first()
         from dongtai_engine.signals.handlers import send_vul_notify
         send_vul_notify(vul)
 
-    def test_create_notify_config(self):
+    def test_create_notify_config(self) -> None:
         web_hook_config = {
             'url': 'https://open.feishu.cn/open-apis/bot/v2/hook/af91727f-7287-427e-8206-78f4e65d1fe5',
             'template': 'url：{{url}}\n漏洞类型：{{vul_type}}\n账号：{{username}}\n项目：{{project}}'

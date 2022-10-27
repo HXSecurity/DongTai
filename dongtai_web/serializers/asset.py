@@ -7,7 +7,8 @@ from dongtai_common.models.asset import Asset
 from rest_framework import serializers
 
 
+from _typeshed import Incomplete
 class AssetSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Asset
-        fields = ['package_name', 'vul_count', 'version']
+        model: Incomplete = Asset
+        fields: Incomplete = ['package_name', 'vul_count', 'version']

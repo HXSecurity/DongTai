@@ -13,7 +13,9 @@ from django.urls import include, path
 import os
 from dongtai_conf import settings
 
-urlpatterns = [
+from _typeshed import Incomplete
+from dongtai_web.apitimelog.views import ApiTimeLogView as ApiTimeLogView
+urlpatterns: Incomplete = [
 ]
 
 if os.getenv('REQUESTLOG', None) == 'TRUE' or os.getenv('environment',

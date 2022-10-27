@@ -20,4 +20,5 @@ import os
 
 
 
-urlpatterns = []
+from _typeshed import Incomplete
+urlpatterns: Incomplete = []

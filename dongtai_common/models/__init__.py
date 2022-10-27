@@ -7,25 +7,35 @@
 
 from .user import User
 from . import api_route
-LANGUAGE_DICT = {'JAVA': 1, 'PYTHON': 2, 'PHP': 3, 'GO': 4}
+from .user import User as User
+from _typeshed import Incomplete
+LANGUAGE_ID_DICT: Incomplete
+LICENSE_RISK: Incomplete
+APP_LEVEL_RISK: Incomplete
+PNG_TREND_LEVEL: Incomplete
+SCA_AVAILABILITY_DICT: Incomplete
+SHARE_CONFIG_DICT: Incomplete
+WHITE_DOMAIN_NOTIFY: Incomplete
+DEFAULT_EXPORT_REPORT_DICT: Incomplete
+LANGUAGE_DICT: Incomplete = {'JAVA': 1, 'PYTHON': 2, 'PHP': 3, 'GO': 4}
 ### aggregation
 LANGUAGE_ID_DICT = {"1":"JAVA", "2": "PYTHON", "3": "PHP", "4":"GO"}
-AVAILABILITY_DICT = {
+AVAILABILITY_DICT: Incomplete = {
     "1": "存在利用代码",
     "2": "存在分析文章",
     "3": "无利用信息",
 }
-SOURCE_TYPE_DICT = {
+SOURCE_TYPE_DICT: Incomplete = {
     "1": "应用漏洞",
     "2": "组件漏洞"
 }
-AGGREGATION_ORDER = {
+AGGREGATION_ORDER: Incomplete = {
     "1":"vul.level_id",
     "2":"vul.create_time",
     "3":"vul.update_time",
 }
 
-APP_VUL_ORDER = {
+APP_VUL_ORDER: Incomplete = {
     "1":"level_id",
     "2":"first_time",
     "3":"latest_time",
@@ -39,7 +49,7 @@ LICENSE_RISK = {
     "0": "无风险",
     "4": "无风险",
 }
-LICENSE_RISK_DESC = {
+LICENSE_RISK_DESC: Incomplete = {
     "1": "禁止商业闭源集成",
     "2": "限制性商业闭源集成",
     "3": "部分商业闭源集成",
@@ -78,7 +88,7 @@ SHARE_CONFIG_DICT={
     "zendao_id":""
 }
 
-NOTIFY_TYPE_DICT = {
+NOTIFY_TYPE_DICT: Incomplete = {
     "1": "webHook",
     "2": "GitLab",
     "3": "Jira",
@@ -94,14 +104,14 @@ WHITE_DOMAIN_NOTIFY = [
     "oapi.dingtalk.com"
 ]
 
-VUL_TYPE_CSS = {
+VUL_TYPE_CSS: Incomplete = {
     "1":"sca-height",
     "2":"sca-middle",
     "3":"sca-low",
     "4":"sca-info",
 }
 
-VUL_DEP_CSS = {
+VUL_DEP_CSS: Incomplete = {
     "1":"height",
     "2":"middle",
     "3":"low",

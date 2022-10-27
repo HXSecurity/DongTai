@@ -4,10 +4,10 @@ from test import DongTaiTestCase
 
 
 class MyTestCase(DongTaiTestCase):
-    def test_something(self):
+    def test_something(self) -> None:
         self.assertEqual(True, False)
 
-    def test_HttpRequest(self):
+    def test_HttpRequest(self) -> None:
         from dongtai_web.views.vul_request_replay import HttpRequest
         raw_request = 'POST /system/role/list HTTP/1.1\n' \
                       'host:localhost\n' \
@@ -33,7 +33,7 @@ class MyTestCase(DongTaiTestCase):
         request = HttpRequest(raw_request)
         print(request)
 
-    def test_split_request(self):
+    def test_split_request(self) -> None:
         raw_request = 'POST /system/role/list?name=123 HTTP/1.1\n' \
                       'host:127.0.0.1:8002\n' \
                       'connection:keep-alive\n' \

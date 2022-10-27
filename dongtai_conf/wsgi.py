@@ -11,6 +11,7 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
+from _typeshed import Incomplete
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dongtai_conf.settings')
 
-application = get_wsgi_application()
+application: Incomplete = get_wsgi_application()

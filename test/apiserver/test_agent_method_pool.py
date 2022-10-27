@@ -15,7 +15,7 @@ import base64
 
 class AgentMethodPoolTestCase(AgentTestCase):
 
-    def test_agent_method_pool_upload(self):
+    def test_agent_method_pool_upload(self) -> None:
         method = {
             "detail": {
                 "agentId":
@@ -351,7 +351,7 @@ class AgentMethodPoolTestCase(AgentTestCase):
         assert len(res) == 1
 
 
-    def test_agent_method_pool_from_go_agent(self):
+    def test_agent_method_pool_from_go_agent(self) -> None:
         data = {
             "type": 36,
             "detail": {
@@ -699,7 +699,7 @@ class AgentMethodPoolTestCase(AgentTestCase):
         assert MethodPool.objects.filter(
             url="http://localhost:9999/sqli123132123313132321123231",
             agent_id=self.agent_id).exists()
-    def test_agent_method_pool_gzip_test(self):
+    def test_agent_method_pool_gzip_test(self) -> None:
         data = {
             "type": 36,
             "detail": {
@@ -1068,7 +1068,7 @@ class AgentMethodPoolTestCase(AgentTestCase):
 
 
 
-    def test_agent_method_pool(self):
+    def test_agent_method_pool(self) -> None:
         data = {
             "detail": {
                 "reqHeader":

@@ -15,7 +15,7 @@ from test.apiserver.test_agent_base import AgentTestCase
 class ScaUploadTestCase(AgentTestCase):
 
 
-    def test_agent_sca_upload(self):
+    def test_agent_sca_upload(self) -> None:
         data = {
             "detail": {
                 "packagePath":
@@ -29,7 +29,7 @@ class ScaUploadTestCase(AgentTestCase):
         }
         res = self.agent_report(data)
         assert res.status_code == 200
-    def test_agent_sca_bulk_upload(self):
+    def test_agent_sca_bulk_upload(self) -> None:
         data = {
             "detail": {
                 "agentId":

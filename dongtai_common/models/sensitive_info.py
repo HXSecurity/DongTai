@@ -12,30 +12,31 @@ from dongtai_common.models.user import User
 import time
 
 
+from _typeshed import Incomplete
 class IastPatternType(models.Model):
-    name = models.CharField(blank=True, default=None, max_length=255)
-    id = models.IntegerField(default=0, db_column='value')
-    logi_id = models.BigAutoField(primary_key=True, db_column='id')
+    name: Incomplete = models.CharField(blank=True, default=None, max_length=255)
+    id: Incomplete = models.IntegerField(default=0, db_column='value')
+    logi_id: Incomplete = models.BigAutoField(primary_key=True, db_column='id')
 
     class Meta:
-        db_table = 'iast_pattern_type'
+        db_table: str = 'iast_pattern_type'
 
 
 class IastSensitiveInfoRule(models.Model):
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
-    strategy = models.ForeignKey(IastStrategyModel,
+    user: Incomplete = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
+    strategy: Incomplete = models.ForeignKey(IastStrategyModel,
                                  models.DO_NOTHING,
                                  blank=True,
                                  null=True)
-    pattern_type = models.ForeignKey(IastPatternType,
+    pattern_type: Incomplete = models.ForeignKey(IastPatternType,
                                      models.DO_NOTHING,
                                      blank=True,
                                      default=None)
-    pattern = models.CharField(blank=True, default=None, max_length=255)
-    status = models.IntegerField(blank=True, default=None)
-    latest_time = models.IntegerField(default=lambda: int(time.time()),
+    pattern: Incomplete = models.CharField(blank=True, default=None, max_length=255)
+    status: Incomplete = models.IntegerField(blank=True, default=None)
+    latest_time: Incomplete = models.IntegerField(default=lambda: int(time.time()),
                                       blank=True,
                                       null=True)
 
     class Meta:
-        db_table = 'iast_sensitive_info_rule'
+        db_table: str = 'iast_sensitive_info_rule'

@@ -16,9 +16,12 @@ from dongtai_common.models.hook_type import HookType
 import time
 import unittest
 
+from _typeshed import Incomplete
 @unittest.skip("waiting for rebuild mock data")
 class ScanStrategyTestCase(APITestCase):
-    def setUp(self):
+    user: Incomplete
+    mockdata: Incomplete
+    def setUp(self) -> None:
         self.user = User.objects.filter(pk=1).first()
         self.client.force_authenticate(user=self.user)
         agent = IastAgent.objects.create(token='testtoken',
@@ -65,7 +68,7 @@ class ScanStrategyTestCase(APITestCase):
             status_id=1)
         self.mockdata = [agent, vuln]
 
-    def test_create(self):
+    def test_create(self) -> None:
         response = self.client.get('/api/v1/vuln/summary')
         assert response.status_code == 200
 

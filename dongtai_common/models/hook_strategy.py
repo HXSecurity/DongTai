@@ -30,27 +30,28 @@ from time import time
 #        abstract = True
 
 
+from _typeshed import Incomplete
 class HookStrategy(models.Model):
-    value = models.CharField(max_length=255, blank=True, null=True)
-    source = models.CharField(max_length=255, blank=True, null=True)
-    target = models.CharField(max_length=255, blank=True, null=True)
-    inherit = models.CharField(max_length=255, blank=True, null=True)
-    track = models.CharField(max_length=5, blank=True, null=True)
-    create_time = models.IntegerField(blank=True, null=True, default=time)
-    update_time = models.IntegerField(blank=True, null=True, default=time)
-    created_by = models.IntegerField(
+    value: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    source: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    target: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    inherit: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    track: Incomplete = models.CharField(max_length=5, blank=True, null=True)
+    create_time: Incomplete = models.IntegerField(blank=True, null=True, default=time)
+    update_time: Incomplete = models.IntegerField(blank=True, null=True, default=time)
+    created_by: Incomplete = models.IntegerField(
         blank=True,
         null=True,
     )
-    enable = models.IntegerField(blank=True, null=False, default=1)
-    language = models.ForeignKey(IastProgramLanguage,
+    enable: Incomplete = models.IntegerField(blank=True, null=False, default=1)
+    language: Incomplete = models.ForeignKey(IastProgramLanguage,
                                  blank=True,
                                  default='',
                                  on_delete=models.DO_NOTHING,
                                  db_constraint=False)
-    type = models.IntegerField(blank=True, null=True)
+    type: Incomplete = models.IntegerField(blank=True, null=True)
 
-    hooktype = models.ForeignKey(
+    hooktype: Incomplete = models.ForeignKey(
         HookType,
         verbose_name=_('type'),
         blank=True,
@@ -62,7 +63,7 @@ class HookStrategy(models.Model):
         related_query_name="strategy",
         on_delete=models.DO_NOTHING,
     )
-    strategy = models.ForeignKey(
+    strategy: Incomplete = models.ForeignKey(
         'dongtai_common.IastStrategyModel',
         blank=True,
         default=-1,
@@ -72,8 +73,8 @@ class HookStrategy(models.Model):
         related_name="strategies",
         related_query_name="strategy",
     )
-    system_type = models.IntegerField(blank=True, null=True, default=0)
+    system_type: Incomplete = models.IntegerField(blank=True, null=True, default=0)
 
     class Meta:
-        managed = get_managed()
-        db_table = 'iast_hook_strategy'
+        managed: Incomplete = get_managed()
+        db_table: str = 'iast_hook_strategy'

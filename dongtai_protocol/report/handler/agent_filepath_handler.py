@@ -11,18 +11,21 @@ from django.db import transaction
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.agent_thirdservice import IastThirdPartyService
 from simhash import Simhash
-logger = logging.getLogger('dongtai.openapi')
+from _typeshed import Incomplete
+logger: Incomplete = logging.getLogger('dongtai.openapi')
 
 
 
 @ReportHandler.register(const.REPORT_FILE_PATH)
 class FilePathHandler(IReportHandler):
 
-    def parse(self):
+    filepath: Incomplete
+    servicetype: Incomplete
+    def parse(self) -> None:
         self.filepath = self.detail.get('serviceDir')
         self.servicetype = self.detail.get('serviceType')
 
-    def save(self):
+    def save(self) -> None:
         try:
             simhash = _data_dump(self.filepath)
             IastAgent.objects.filter(pk=self.agent_id).update(

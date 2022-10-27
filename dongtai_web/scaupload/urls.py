@@ -24,7 +24,9 @@ from dongtai_web.scaupload.views import (
 )
 import os
 
-urlpatterns = [
+from _typeshed import Incomplete
+from dongtai_web.scaupload.views import SCADBMavenBulkDeleteView as SCADBMavenBulkDeleteView, SCADBMavenBulkViewSet as SCADBMavenBulkViewSet, SCADBMavenViewSet as SCADBMavenViewSet, SCALicenseViewSet as SCALicenseViewSet, SCATemplateViewSet as SCATemplateViewSet
+urlpatterns: Incomplete = [
     path('maven/bulk',
          SCADBMavenBulkViewSet.as_view({
              'get': 'list',

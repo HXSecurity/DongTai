@@ -4,10 +4,10 @@ from test import DongTaiTestCase
 
 
 class MyTestCase(DongTaiTestCase):
-    def test_something(self):
+    def test_something(self) -> None:
         self.assertEqual(True, False)
 
-    def test_mock(self):
+    def test_mock(self) -> None:
         import redis
         mock_data = {
             "dongtai_engine": {

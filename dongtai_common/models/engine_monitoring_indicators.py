@@ -10,14 +10,15 @@ from django.db import models
 from dongtai_common.utils.settings import get_managed
 
 
+from _typeshed import Incomplete
 class IastEnginMonitoringIndicators(models.Model):
-    key = models.CharField(max_length=100,
+    key: Incomplete = models.CharField(max_length=100,
                            blank=True,
                            default='',
                            null=False,
                            unique=True)
-    name = models.CharField(max_length=100, blank=True, default='', null=False)
+    name: Incomplete = models.CharField(max_length=100, blank=True, default='', null=False)
 
     class Meta:
-        managed = get_managed()
-        db_table = 'engine_monitoring_indicators'
+        managed: Incomplete = get_managed()
+        db_table: str = 'engine_monitoring_indicators'

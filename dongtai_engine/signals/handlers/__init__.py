@@ -5,3 +5,4 @@
 # project: dongtai-engine
 
 from .vul_handler import *
+from .vul_handler import *

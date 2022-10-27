@@ -10,14 +10,15 @@ from dongtai_common.models import User
 from dongtai_common.utils.settings import get_managed
 
 
+from _typeshed import Incomplete
 class AuthGroupRoutes(models.Model):
-    is_active = models.IntegerField(blank=True, null=True)
-    routes = models.JSONField(blank=True, null=True)
-    group = models.ForeignKey(Group, models.DO_NOTHING, blank=True, null=True)
-    created_by = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
-    create_time = models.IntegerField(blank=True, null=True)
-    update_time = models.IntegerField(blank=True, null=True)
+    is_active: Incomplete = models.IntegerField(blank=True, null=True)
+    routes: Incomplete = models.JSONField(blank=True, null=True)
+    group: Incomplete = models.ForeignKey(Group, models.DO_NOTHING, blank=True, null=True)
+    created_by: Incomplete = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
+    create_time: Incomplete = models.IntegerField(blank=True, null=True)
+    update_time: Incomplete = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = get_managed()
-        db_table = 'auth_group_routes'
+        managed: Incomplete = get_managed()
+        db_table: str = 'auth_group_routes'

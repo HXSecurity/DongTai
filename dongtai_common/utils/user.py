@@ -6,6 +6,7 @@ from django.db.models import Q
 
 
 
+from django.db.models import Q as Q, QuerySet as QuerySet
 def get_auth_users__by_id(user_id: int) -> QuerySet:
     user = User.objects.filter(pk=user_id).first()
     if user.is_system_admin():

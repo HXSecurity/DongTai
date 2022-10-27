@@ -8,29 +8,30 @@ from django.db import models
 from dongtai_common.utils.settings import get_managed
 
 
+from _typeshed import Incomplete
 class IastServer(models.Model):
-    hostname = models.CharField(max_length=255, blank=True, null=True)
-    ip = models.CharField(max_length=255, blank=True, null=True)
-    port = models.IntegerField(blank=True, null=True)
-    environment = models.TextField(blank=True, null=True)
-    path = models.CharField(max_length=255, blank=True, null=True)
-    status = models.CharField(max_length=255, blank=True, null=True)
-    container = models.CharField(max_length=255, blank=True, null=True)
-    container_path = models.CharField(max_length=255, blank=True, null=True)
-    cluster_name = models.CharField(max_length=255, blank=True, null=True)
-    cluster_version = models.CharField(max_length=100, blank=True, null=True)
-    command = models.TextField(blank=True, null=True)
-    env = models.CharField(max_length=255, blank=True, null=True)
-    runtime = models.CharField(max_length=255, blank=True, null=True)
-    create_time = models.IntegerField(blank=True, null=True)
-    update_time = models.IntegerField(blank=True, null=True)
-    network = models.CharField(max_length=255, blank=True, null=True)
-    protocol = models.CharField(max_length=255,
+    hostname: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    ip: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    port: Incomplete = models.IntegerField(blank=True, null=True)
+    environment: Incomplete = models.TextField(blank=True, null=True)
+    path: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    status: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    container: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    container_path: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    cluster_name: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    cluster_version: Incomplete = models.CharField(max_length=100, blank=True, null=True)
+    command: Incomplete = models.TextField(blank=True, null=True)
+    env: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    runtime: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    create_time: Incomplete = models.IntegerField(blank=True, null=True)
+    update_time: Incomplete = models.IntegerField(blank=True, null=True)
+    network: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    protocol: Incomplete = models.CharField(max_length=255,
                                 blank=True,
                                 null=True,
                                 default='')
-    pid = models.IntegerField(blank=True, null=True)
+    pid: Incomplete = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = get_managed()
-        db_table = 'iast_server'
+        managed: Incomplete = get_managed()
+        db_table: str = 'iast_server'

@@ -19,36 +19,37 @@ from dongtai_common.models.talent import Talent
 from dongtai_common.models.engine_monitoring_indicators import IastEnginMonitoringIndicators
 
 
+from _typeshed import Incomplete
 @register(IastStrategyModel)
 class IastStrategyModelTranslationOptions(TranslationOptions):
-    fields = ('vul_name', 'vul_desc', 'vul_fix')
+    fields: Incomplete = ('vul_name', 'vul_desc', 'vul_fix')
 
 
 @register(IastVulLevel)
 class IastVulLevelTranslationOptions(TranslationOptions):
-    fields = ('name_value', 'name_type')
+    fields: Incomplete = ('name_value', 'name_type')
 
 
 @register(IastDeployDesc)
 class IastDeployDescTranslationOptions(TranslationOptions):
-    fields = ('desc',)
+    fields: Incomplete = ('desc',)
 
 
 @register(IastDocument)
 class IastDocumentTranslationOptions(TranslationOptions):
-    fields = ('title', 'url')
+    fields: Incomplete = ('title', 'url')
 
 
 @register(HookType)
 class HookTypeTranslationOptions(TranslationOptions):
-    fields = ('name', )
+    fields: Incomplete = ('name', )
 
 
 @register(IastEnginMonitoringIndicators)
 class IastEnginMonitoringIndicatorsOptions(TranslationOptions):
-    fields = ('name', )
+    fields: Incomplete = ('name', )
 
 
 @register(IastVulnerabilityStatus)
 class IastVulnerabilityStatusOptions(TranslationOptions):
-    fields = ('name', )
+    fields: Incomplete = ('name', )

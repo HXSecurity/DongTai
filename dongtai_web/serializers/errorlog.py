@@ -10,8 +10,9 @@ import time
 from rest_framework import serializers
 
 
+from _typeshed import Incomplete
 class ErrorlogSerializer(serializers.Serializer):
-    errorlog = serializers.CharField()
-    state = serializers.CharField()
-    dt = serializers.IntegerField(default=int(time.time()))
-    agent_app = serializers.CharField()
+    errorlog: Incomplete = serializers.CharField()
+    state: Incomplete = serializers.CharField()
+    dt: Incomplete = serializers.IntegerField(default=int(time.time()))
+    agent_app: Incomplete = serializers.CharField()

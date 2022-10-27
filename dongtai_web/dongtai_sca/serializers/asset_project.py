@@ -8,9 +8,10 @@ from rest_framework import serializers
 from dongtai_common.models.asset import Asset
 
 
+from _typeshed import Incomplete
 class AssetProjectSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Asset
-        fields = [
+        model: Incomplete = Asset
+        fields: Incomplete = [
             'project_id', 'project_name', 'dependency_level', 'package_name'
         ]

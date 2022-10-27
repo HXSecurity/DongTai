@@ -4,7 +4,7 @@ from test.apiserver.test_agent_base import AgentTestCase
 
 class ApiRouteTestCase(AgentTestCase):
 
-    def test_agent_api_upload(self):
+    def test_agent_api_upload(self) -> None:
         data = {
             "detail": {
                 "agentId":

@@ -15,19 +15,21 @@ from dongtai_protocol.report.handler.report_handler_interface import IReportHand
 from dongtai_protocol.report.report_handler_factory import ReportHandler
 from django.utils.translation import gettext_lazy as _
 
-logger = logging.getLogger('dongtai.openapi')
+from _typeshed import Incomplete
+logger: Incomplete = logging.getLogger('dongtai.openapi')
 
 
 @ReportHandler.register(const.REPORT_ERROR_LOG)
 class ErrorLogHandler(IReportHandler):
-    def __init__(self):
+    log: Incomplete
+    def __init__(self) -> None:
         super().__init__()
         self.log = None
 
-    def parse(self):
+    def parse(self) -> None:
         self.log = self.detail.get('log')
 
-    def save(self):
+    def save(self) -> None:
         try:
             IastErrorlog.objects.create(
                 errorlog=self.log,

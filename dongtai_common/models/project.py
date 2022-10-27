@@ -12,20 +12,22 @@ from dongtai_common.utils.settings import get_managed
 import time
 
 
+from _typeshed import Incomplete
 class VulValidation(models.IntegerChoices):
-    FOLLOW_GLOBAL = 0
-    ENABLE = 1
-    DISABLE = 2
-    __empty__ = 0
+    FOLLOW_GLOBAL: int = 0
+    ENABLE: int = 1
+    DISABLE: int = 2
+    __empty__: int = 0
 
 
 class IastProject(models.Model):
-    name = models.CharField(max_length=255, blank=True, null=True)
-    mode = models.CharField(max_length=255, blank=True, null=True)
-    vul_count = models.PositiveIntegerField(blank=True, null=True)
-    agent_count = models.IntegerField(blank=True, null=True)
-    latest_time = models.IntegerField(blank=True, null=True)
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
+    scan: Incomplete
+    name: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    mode: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    vul_count: Incomplete = models.PositiveIntegerField(blank=True, null=True)
+    agent_count: Incomplete = models.IntegerField(blank=True, null=True)
+    latest_time: Incomplete = models.IntegerField(blank=True, null=True)
+    user: Incomplete = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
     # openapi服务不必使用该字段
     scan = models.ForeignKey(IastStrategyUser,
                              models.DO_NOTHING,
@@ -33,22 +35,22 @@ class IastProject(models.Model):
                              null=True)
 
 
-    vul_validation = models.IntegerField(default=0,
+    vul_validation: Incomplete = models.IntegerField(default=0,
                                          blank=True,
                                          null=False,
                                          choices=VulValidation.choices)
-    base_url = models.CharField(max_length=255, blank=True, default='')
-    test_req_header_key = models.CharField(max_length=511,
+    base_url: Incomplete = models.CharField(max_length=255, blank=True, default='')
+    test_req_header_key: Incomplete = models.CharField(max_length=511,
                                            blank=True,
                                            default='')
-    test_req_header_value = models.CharField(max_length=511,
+    test_req_header_value: Incomplete = models.CharField(max_length=511,
                                              blank=True,
                                              default='')
 
     class Meta:
-        managed = get_managed()
-        db_table = 'iast_project'
+        managed: Incomplete = get_managed()
+        db_table: str = 'iast_project'
 
-    def update_latest(self):
+    def update_latest(self) -> None:
         self.latest_time = int(time.time())
         self.save(update_fields=['latest_time'])

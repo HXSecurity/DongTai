@@ -18,16 +18,18 @@ from django.utils.translation import gettext_lazy as _
 from django.db import transaction
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.agent_thirdservice import IastThirdPartyService
-logger = logging.getLogger('dongtai.openapi')
+from _typeshed import Incomplete
+logger: Incomplete = logging.getLogger('dongtai.openapi')
 
 
 @ReportHandler.register(const.REPORT_THIRD_PARTY_SERVICE)
 class ThirdPartyServiceHandler(IReportHandler):
 
-    def parse(self):
+    service_data: Incomplete
+    def parse(self) -> None:
         self.service_data = self.detail.get('serviceData')
 
-    def save(self):
+    def save(self) -> None:
         try:
             agent = IastAgent.objects.filter(pk=self.agent_id)[0:1]
             if not agent:

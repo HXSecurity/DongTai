@@ -10,16 +10,17 @@ from dongtai_common.utils.settings import get_managed
 from dongtai_common.models import User
 
 
+from _typeshed import Incomplete
 class IastApplicationModel(models.Model):
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
-    name = models.CharField(max_length=255, blank=True, null=True)
-    path = models.CharField(max_length=255, blank=True, null=True)
-    status = models.CharField(max_length=255, blank=True, null=True)
-    server_id = models.IntegerField(blank=True, null=True)
-    vul_count = models.IntegerField(blank=True, null=True)
-    dt = models.IntegerField(blank=True, null=True)
+    user: Incomplete = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
+    name: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    path: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    status: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    server_id: Incomplete = models.IntegerField(blank=True, null=True)
+    vul_count: Incomplete = models.IntegerField(blank=True, null=True)
+    dt: Incomplete = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = get_managed()
-        db_table = 'iast_application'
-        unique_together = (('name', 'path'),)
+        managed: Incomplete = get_managed()
+        db_table: str = 'iast_application'
+        unique_together: Incomplete = (('name', 'path'),)

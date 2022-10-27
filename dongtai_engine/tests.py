@@ -17,7 +17,7 @@ import unittest
 @unittest.skip("waiting for rebuild mock data")
 class CoreScanTestCase(AgentTestCase):
 
-    def setUp(self):
+    def setUp(self) -> None:
         res = download_if_not_exist(
             "https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/test_data/iast_agent_method_pool.sql",
             "/tmp/test_core_iast_agent_method_pool.sql")
@@ -29,7 +29,7 @@ class CoreScanTestCase(AgentTestCase):
                 sqlfile += line
         cursor.execute(sqlfile)
 
-    def test_benchmark_method_pool_scan(self):
+    def test_benchmark_method_pool_scan(self) -> None:
         data = MethodPool.objects.all()
         vul_count_begin = IastVulnerabilityModel.objects.all().count()
         for method_pool in data:
@@ -42,7 +42,7 @@ class CoreScanTestCase(AgentTestCase):
         vul_count_after = IastVulnerabilityModel.objects.all().count()
         assert len(data) == vul_count_after - vul_count_begin
 
-    def test_params_empty_count(self):
+    def test_params_empty_count(self) -> None:
         data = MethodPool.objects.all()
         vul_count_without_param_mark_begin = IastVulnerabilityModel.objects.filter(
             param_name='{}', level_id__lte=2).all().count()
@@ -62,7 +62,7 @@ class CoreScanTestCase(AgentTestCase):
         ])
         assert res == 0
 
-    def test_params_single_uri(self):
+    def test_params_single_uri(self) -> None:
         data = MethodPool.objects.filter(uri='/benchmark/cmdi-00/BenchmarkTest00573').all()
         vul_count_without_param_mark_begin = IastVulnerabilityModel.objects.filter(
             param_name='{}', level_id__lte=2).all().count()
@@ -85,7 +85,7 @@ class CoreScanTestCase(AgentTestCase):
 @unittest.skip("waiting for rebuild mock data")
 class CoreTaskTestCase(AgentTestCase):
 
-    def test_search_method_pool(self):
+    def test_search_method_pool(self) -> None:
         method_pool_id = 4439061
         method_pool = MethodPool.objects.filter(pk=method_pool_id).first()
         from dongtai_engine.tasks import search_vul_from_method_pool
@@ -94,7 +94,7 @@ class CoreTaskTestCase(AgentTestCase):
 
 class LoadSinkStrategyTestCase(TestCase):
 
-    def test_load_sink_strategy(self):
+    def test_load_sink_strategy(self) -> None:
         from dongtai_engine.tasks import load_sink_strategy
         strategies = load_sink_strategy()
         assert isinstance(strategies, list)

@@ -1,6 +1,7 @@
 from collections import defaultdict
 
-bc = defaultdict(
+from _typeshed import Incomplete
+bc: Incomplete = defaultdict(
     lambda: "", {
         "CWE-843": "使用不兼容类型访问资源（类型混淆）",
         "CWE-710": "编程规范违背",

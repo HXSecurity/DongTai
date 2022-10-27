@@ -3,9 +3,10 @@ from dongtai_web.vul_log.vul_log import (log_change_status, log_recheck_vul,
                                          log_push_to_integration, log_vul_found)
 
 
+from dongtai_web.vul_log.vul_log import log_change_status as log_change_status, log_push_to_integration as log_push_to_integration, log_recheck_vul as log_recheck_vul, log_vul_found as log_vul_found
 class CreateLogTestCase(TestCase):
 
-    def test_query_agent(self):
+    def test_query_agent(self) -> None:
         log_change_status(user_id=1,
                           user_name="hello",
                           vul_id=[1],

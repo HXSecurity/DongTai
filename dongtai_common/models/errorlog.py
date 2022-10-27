@@ -10,12 +10,13 @@ from dongtai_common.models.agent import IastAgent
 from dongtai_common.utils.settings import get_managed
 
 
+from _typeshed import Incomplete
 class IastErrorlog(models.Model):
-    errorlog = models.TextField(blank=True, null=True)
-    state = models.CharField(max_length=50, blank=True, null=True)
-    dt = models.IntegerField(blank=True, null=True)
-    agent = models.ForeignKey(IastAgent, models.DO_NOTHING, blank=True, null=True)
+    errorlog: Incomplete = models.TextField(blank=True, null=True)
+    state: Incomplete = models.CharField(max_length=50, blank=True, null=True)
+    dt: Incomplete = models.IntegerField(blank=True, null=True)
+    agent: Incomplete = models.ForeignKey(IastAgent, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        managed = get_managed()
-        db_table = 'iast_errorlog'
+        managed: Incomplete = get_managed()
+        db_table: str = 'iast_errorlog'

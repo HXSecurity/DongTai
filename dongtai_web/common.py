@@ -4,5 +4,5 @@ from enum import IntEnum
 
 
 class VulType(IntEnum):
-    APPLICATION = 1
-    ASSET = 2
+    APPLICATION: int = 1
+    ASSET: int = 2

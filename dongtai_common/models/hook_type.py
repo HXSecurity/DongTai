@@ -11,20 +11,21 @@ from dongtai_common.models.user import User
 from time import time
 
 
+from _typeshed import Incomplete
 class HookType(models.Model):
-    type = models.IntegerField(blank=True, null=True)
-    name = models.CharField(max_length=255, blank=True, null=True)
-    value = models.CharField(max_length=255, blank=True, null=True)
-    enable = models.IntegerField(blank=True, null=True)
-    create_time = models.IntegerField(blank=True, null=True, default=time)
-    update_time = models.IntegerField(blank=True, null=True, default=time)
-    created_by = models.IntegerField(blank=True, null=True)
-    language = models.ForeignKey(IastProgramLanguage,
+    type: Incomplete = models.IntegerField(blank=True, null=True)
+    name: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    value: Incomplete = models.CharField(max_length=255, blank=True, null=True)
+    enable: Incomplete = models.IntegerField(blank=True, null=True)
+    create_time: Incomplete = models.IntegerField(blank=True, null=True, default=time)
+    update_time: Incomplete = models.IntegerField(blank=True, null=True, default=time)
+    created_by: Incomplete = models.IntegerField(blank=True, null=True)
+    language: Incomplete = models.ForeignKey(IastProgramLanguage,
                                  blank=True,
                                  default='',
                                  on_delete=models.DO_NOTHING,
                                  db_constraint=False)
-    vul_strategy = models.ForeignKey(
+    vul_strategy: Incomplete = models.ForeignKey(
         'dongtai_common.IastStrategyModel',
         blank=True,
         default=-1,
@@ -33,8 +34,8 @@ class HookType(models.Model):
         db_column='strategy_id',
         db_constraint=False,
     )
-    system_type = models.IntegerField(blank=True, null=True, default=0)
+    system_type: Incomplete = models.IntegerField(blank=True, null=True, default=0)
 
     class Meta:
-        managed = get_managed()
-        db_table = 'iast_hook_type'
+        managed: Incomplete = get_managed()
+        db_table: str = 'iast_hook_type'

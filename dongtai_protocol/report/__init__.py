@@ -14,6 +14,7 @@ from dongtai_protocol.report.handler.hardencode_vul_handler import HardEncodeVul
 from dongtai_protocol.report.handler.agent_third_service_handler import ThirdPartyServiceHandler
 from dongtai_protocol.report.handler.agent_filepath_handler import FilePathHandler
 
+from dongtai_protocol.report.handler.sca_handler import ScaBulkHandler as ScaBulkHandler, ScaHandler as ScaHandler
 if __name__ == '__main__':
     ErrorLogHandler()
     HeartBeatHandler()

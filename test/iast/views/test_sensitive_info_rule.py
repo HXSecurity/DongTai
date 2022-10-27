@@ -10,12 +10,14 @@
 from rest_framework.test import APITestCase
 from dongtai_common.models.user import User
 
+from _typeshed import Incomplete
 class SensitiveInfoRuleTestCase(APITestCase):
-    def setUp(self):
+    user: Incomplete
+    def setUp(self) -> None:
         self.user = User.objects.filter(pk=1).first()
         self.client.force_authenticate(user=self.user)
 
-    def test_sensitive_info_rule_create(self):
+    def test_sensitive_info_rule_create(self) -> None:
         response = self.client.post('/api/v1/sensitive_info_rule',
                                     data={
                                         'pattern': '0',

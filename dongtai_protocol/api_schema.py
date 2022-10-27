@@ -6,12 +6,13 @@
 from drf_spectacular.utils import OpenApiParameter, OpenApiExample
 
 
+from _typeshed import Incomplete
 class DongTaiAuth:
-    TOKEN = 'TokenAuthentication'
+    TOKEN: str = 'TokenAuthentication'
 
 
 class DongTaiParameter:
-    OPENAPI_URL = OpenApiParameter(
+    OPENAPI_URL: Incomplete = OpenApiParameter(
         name='url',
         description='OpenAPI Service Addr',
         required=True,
@@ -24,7 +25,7 @@ class DongTaiParameter:
             ),
         ],
     )
-    PROJECT_NAME = OpenApiParameter(
+    PROJECT_NAME: Incomplete = OpenApiParameter(
         name='projectName',
         type=str,
         description='The name of the project where the Agent needs to be installed',
@@ -37,7 +38,7 @@ class DongTaiParameter:
         ],
     )
 
-    LANGUAGE = OpenApiParameter(
+    LANGUAGE: Incomplete = OpenApiParameter(
         name='language',
         type=str,
         description='The development language of the project that needs to install the Agent',
@@ -51,7 +52,7 @@ class DongTaiParameter:
         ],
     )
 
-    VERSION = OpenApiParameter(
+    VERSION: Incomplete = OpenApiParameter(
         name='version',
         type=str,
         description='The development language of the project that needs to install the Agent',
@@ -65,7 +66,7 @@ class DongTaiParameter:
         ],
     )
 
-    AGENT_NAME = OpenApiParameter(
+    AGENT_NAME: Incomplete = OpenApiParameter(
         name='name',
         type=str,
         description='The development language of the project that needs to install the Agent',
@@ -79,7 +80,7 @@ class DongTaiParameter:
         ],
     )
 
-    HOSTNAME = OpenApiParameter(
+    HOSTNAME: Incomplete = OpenApiParameter(
         name='engineName',
         type=str,
         description='The development language of the project that needs to install the Agent',
@@ -93,7 +94,7 @@ class DongTaiParameter:
         ],
     )
 
-    NETWORK = OpenApiParameter(
+    NETWORK: Incomplete = OpenApiParameter(
         name='engineName',
         type=str,
         description='The development language of the project that needs to install the Agent',
@@ -107,7 +108,7 @@ class DongTaiParameter:
         ],
     )
 
-    CONTAINER_NAME = OpenApiParameter(
+    CONTAINER_NAME: Incomplete = OpenApiParameter(
         name='containerName',
         type=str,
         description='The development language of the project that needs to install the Agent',
@@ -122,7 +123,7 @@ class DongTaiParameter:
     )
 
 
-    SERVER_ADDR = OpenApiParameter(
+    SERVER_ADDR: Incomplete = OpenApiParameter(
         name='serverAddr',
         type=str,
         description='The development language of the project that needs to install the Agent',
@@ -136,7 +137,7 @@ class DongTaiParameter:
         ],
     )
 
-    SERVER_PORT = OpenApiParameter(
+    SERVER_PORT: Incomplete = OpenApiParameter(
         name='serverPort',
         type=str,
         description='The development language of the project that needs to install the Agent',
@@ -150,7 +151,7 @@ class DongTaiParameter:
         ],
     )
 
-    SERVER_PATH = OpenApiParameter(
+    SERVER_PATH: Incomplete = OpenApiParameter(
         name='serverPath',
         type=str,
         description='The development language of the project that needs to install the Agent',
@@ -164,7 +165,7 @@ class DongTaiParameter:
         ],
     )
 
-    SERVER_ENV = OpenApiParameter(
+    SERVER_ENV: Incomplete = OpenApiParameter(
         name='serverEnv',
         type=str,
         description='The development language of the project that needs to install the Agent',
@@ -178,7 +179,7 @@ class DongTaiParameter:
         ],
     )
 
-    PID = OpenApiParameter(
+    PID: Incomplete = OpenApiParameter(
         name='pid',
         type=str,
         description=
@@ -193,7 +194,7 @@ class DongTaiParameter:
         ],
     )
 
-    AUTO_CREATE_PROJECT = OpenApiParameter(
+    AUTO_CREATE_PROJECT: Incomplete = OpenApiParameter(
         name='autoCreateProject',
         type=int,
         description=
@@ -210,7 +211,7 @@ class DongTaiParameter:
             ),
         ],
     )
-    ENGINE_NAME = OpenApiParameter(
+    ENGINE_NAME: Incomplete = OpenApiParameter(
         name='engineName',
         type=str,
         description='The development language of the project that needs to install the Agent',

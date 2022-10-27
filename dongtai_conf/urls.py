@@ -19,7 +19,8 @@ import os
 from dongtai_conf import settings
 from django.views.decorators.csrf import csrf_exempt
 
-urlpatterns = [
+from _typeshed import Incomplete
+urlpatterns: Incomplete = [
     path('', include('{}.urls'.format(app))) for app in settings.CUSTOM_APPS
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

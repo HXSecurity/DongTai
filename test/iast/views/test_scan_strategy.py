@@ -15,9 +15,9 @@ from dongtai_common.models.user import User
 
 
 class ScanStrategyTestCase(APITestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         pass
-    def test_create(self):
+    def test_create(self) -> None:
         self.client.force_authenticate(user=User.objects.filter(pk=1).first())
         response = self.client.get('/api/v1/scan_strategy')
         print(response.content)
