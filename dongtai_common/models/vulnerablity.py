@@ -33,7 +33,7 @@ class IastVulnerabilityModel(models.Model):
     bottom_stack = models.CharField(max_length=255, blank=True, null=True)
     taint_value = models.CharField(max_length=255, blank=True, null=True)
     taint_position = models.CharField(max_length=255, blank=True, null=True)
-    agent = models.ForeignKey(IastAgent, models.DO_NOTHING, blank=True, null=True)
+    agent = models.ForeignKey(IastAgent, models.CASCADE, blank=True, null=True)
     context_path = models.CharField(max_length=255, blank=True, null=True)
     counts = models.IntegerField(blank=True, null=True)
     first_time = models.IntegerField(blank=True, null=True)
