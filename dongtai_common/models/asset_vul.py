@@ -66,11 +66,11 @@ class IastAssetVulRelationMetaData(models.Model):
 
 class IastVulAssetRelation(models.Model):
     asset_vul = models.ForeignKey(IastAssetVul,
-                                  on_delete=models.CASCADE,
+                                  on_delete=models.DO_NOTHING,
                                   db_constraint=False,
                                   db_column='asset_vul_id')
     asset = models.ForeignKey(Asset,
-                              on_delete=models.CASCADE,
+                              on_delete=models.DO_NOTHING,
                               db_constraint=False,
                               db_column='asset_id')
     status = models.ForeignKey(IastVulnerabilityStatus,
