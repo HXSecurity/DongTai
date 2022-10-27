@@ -34,8 +34,8 @@ class MyTestCase(DongTaiTestCase):
             redis_cli = redis.StrictRedis(
                 host=settings.config.get("redis", 'host'),
                 password=settings.config.get("redis", 'password'),
-                port=settings.config.get("redis", 'port'),
-                db=settings.config.get("redis", 'db'),
+                port=settings.config.getint("redis", 'port'),
+                db=settings.config.getint("redis", 'db'),
             )
 
             monitor_models = monitor_models.values('key', 'name')
