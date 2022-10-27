@@ -33,12 +33,12 @@ class IastAgent(models.Model):
     control = models.IntegerField(blank=True, null=True)
     is_control = models.IntegerField(blank=True, null=True)
     bind_project = models.ForeignKey(IastProject,
-                                     on_delete=models.DO_NOTHING,
+                                     on_delete=models.CASCADE,
                                      blank=True,
                                      null=True,
                                      default=-1)
     project_version = models.ForeignKey(IastProjectVersion,
-                                     on_delete=models.DO_NOTHING,
+                                     on_delete=models.CASCADE,
                                      blank=True,
                                      null=True,
                                      default=-1)
