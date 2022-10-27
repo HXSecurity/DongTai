@@ -26,7 +26,10 @@ from dongtai_common.permissions import UserPermission, ScopedPermission, SystemA
 from dongtai_common.utils import const
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q, Count
-from typing import Tuple, Dict
+from typing import Tuple, Dict, Union, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from django.core.paginator import _SupportsPagination
 
 logger = logging.getLogger('dongtai-core')
 
@@ -147,9 +150,11 @@ class EndPoint(APIView):
         pass
 
     @staticmethod
-    def get_paginator(queryset: QuerySet,
-                      page: int = 1,
-                      page_size: int = 20) -> Tuple[Dict, QuerySet]:
+    def get_paginator(
+        queryset: QuerySet,
+        page: int = 1,
+        page_size: int = 20
+    ) -> Tuple[Dict, Union[QuerySet, '_SupportsPagination']]:
         """
         根据模型集合、页号、每页大小获取分页数据
         :param queryset:
