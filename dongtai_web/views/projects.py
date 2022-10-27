@@ -18,6 +18,7 @@ from dongtai_web.serializers.project import (
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
+from rest_framework.serializers import ValidationError
 
 logger = logging.getLogger("django")
 
