@@ -13,10 +13,11 @@ from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
 from dongtai_common.utils import const
 from dongtai_common.utils.systemsettings import get_vul_validate
+from django.db.models import QuerySet
 from collections import defaultdict
 
 
-def get_vul_levels_dict(queryset):
+def get_vul_levels_dict(queryset: QuerySet) -> dict:
     vul_levels = IastVulnerabilityModel.objects.values(
         'level__name_value', 'level', 'agent__bind_project_id').filter(
             agent__bind_project_id__in=list(
@@ -27,7 +28,8 @@ def get_vul_levels_dict(queryset):
         vul_levels_dict[k['agent__bind_project_id']].append(k)
     return vul_levels_dict
 
-def get_project_language(queryset):
+
+def get_project_language(queryset: QuerySet) -> dict:
     project_languages = IastAgent.objects.values(
         'bind_project_id', 'language').filter(bind_project_id__in=list(
             queryset.values_list('id', flat=True))).distinct()
@@ -59,7 +61,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             setattr(obj, 'project_agents', all_agents)
         return all_agents
 
-    def get_vul_count(self, obj):
+    def get_vul_count(self, obj) -> list:
         if 'vul_levels_dict' in self.context.keys():
             vul_levels = self.context['vul_levels_dict'][obj.id]
         else:
@@ -68,19 +70,18 @@ class ProjectSerializer(serializers.ModelSerializer):
                 'level').filter(agent__bind_project_id=obj.id,
                                 is_del=0).annotate(total=Count('level'))
         for vul_level in vul_levels:
-            vul_level['name'] = vul_level[
-                'level__name_value']
+            vul_level['name'] = vul_level['level__name_value']
         return list(vul_levels) if vul_levels else list()
 
-    def get_owner(self, obj):
+    def get_owner(self, obj) -> str:
         if obj not in self.USER_MAP:
             self.USER_MAP[obj] = obj.user.get_username()
         return self.USER_MAP[obj]
 
-
-    def get_agent_language(self, obj):
+    def get_agent_language(self, obj) -> list:
         if 'project_language_dict' in self.context.keys():
             res = self.context['project_language_dict'][obj.id]
         else:
-            res = obj.iastagent_set.values_list('language',flat=True).distinct()
+            res = obj.iastagent_set.values_list('language',
+                                                flat=True).distinct()
         return list(res)
