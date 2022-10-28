@@ -18,7 +18,7 @@ MYSQL_USERNAME='root'
 MYSQL_PASSWORD='dongtai-iast'
 MYSQL_DATABASES='dongtai_webapi'
 
-DONGTAI_API="iast.huoxian.cn"
+DONGTAI_API="https://www.huoxian.cn"
 # DONGTAI_API="google.com"
 DONGTAI_API_ACCESSABLE=true
 
@@ -1203,6 +1203,10 @@ if [ ! 0 == $# ]; then # If options provided then
         docker exec -i $server_container_id /bin/bash -c "python manage.py update"
       else
         Info "mysql character set check completed OK!!"
+      fi
+      if [[ $(first_gt_second $TO_VERSION 1.8.6) == true ]]; then
+         docker exec -i $server_container_id /bin/bash -c "python manage.py load_hook_strategy"
+         Info "Refresh rule complete OK!!"
       fi
     }
 
