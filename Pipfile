@@ -68,6 +68,7 @@ botocore-stubs = "==1.27.71"
 pep8 = "==1.7.1"
 botocore = "==1.27.91"
 setuptools = "==65.5.0"
+elasticsearch = "==7.17.7"
 
 [dev-packages]
 
