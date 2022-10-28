@@ -13,6 +13,7 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_web.dongtai_sca.common.sca_vul import GetScaVulData
 from dongtai_common.models.asset_vul import IastVulAssetRelation
 from dongtai_common.models.asset import Asset
+from collections import defaultdict
 
 LEVEL_MAP = {'critical': '严重', 'high': '高危', 'medium': '中危', 'low': '低危'}
 
@@ -131,9 +132,23 @@ class AssetPackageVulList(UserEndPoint):
         #                                         package_hash=asset_aggr.signature_value,
         #                                         package_version=asset_aggr.version).all()
         auth_asset_vuls = IastAssetVul.objects.filter(
-            iastvulassetrelation__asset_id=aggr_id).select_related(
-                 'level').prefetch_related(
-                    'iastassetvultyperelation_set__asset_vul_type').all()
+            iastvulassetrelation__asset_id=aggr_id
+        ).select_related('level').prefetch_related(
+            'iastassetvultyperelation_set__asset_vul_type',
+        ).all()
+        vul_dependency_paths = IastAssetVul.objects.filter(
+            iastvulassetrelation__asset_id=aggr_id
+        ).values(
+            'iastvulassetrelation__vul_asset_metadata__vul_dependency_path',
+            'pk').all()
+        vul_dependency_path_dict = defaultdict(str)
+        for vul_dependency_path in vul_dependency_paths:
+            if vul_dependency_path[
+                    'iastvulassetrelation__vul_asset_metadata__vul_dependency_path']:
+                vul_dependency_path_dict[
+                    vul_dependency_path['pk']] = vul_dependency_path[
+                        'iastvulassetrelation__vul_asset_metadata__vul_dependency_path'][
+                            -1]
         for a_vul in auth_asset_vuls:
             #vul_type_relation = IastAssetVulTypeRelation.objects.filter(
             #    asset_vul_id=a_vul.id)
@@ -150,14 +165,24 @@ class AssetPackageVulList(UserEndPoint):
                 logger.debug(e)
                 cve_code = ""
             vul_list.append({
-                "asset_vul_id": a_vul.id,
-                "vul_title": a_vul.vul_name,
-                "cve_id": cve_code,
-                "sid": a_vul.sid,
-                "cve_nums": a_vul.vul_cve_nums,
-                "vul_type": vul_type_str,
-                "level_id": a_vul.level.id,
-                "level": a_vul.level.name_value,
+                "asset_vul_id":
+                a_vul.id,
+                "vul_title":
+                a_vul.vul_name,
+                "cve_id":
+                cve_code,
+                "sid":
+                a_vul.sid,
+                "cve_nums":
+                a_vul.vul_cve_nums,
+                "vul_type":
+                vul_type_str,
+                "level_id":
+                a_vul.level.id,
+                "level":
+                a_vul.level.name_value,
+                "origin_package":
+                vul_dependency_path_dict[a_vul.id],
             })
 
         return R.success(data=vul_list)
