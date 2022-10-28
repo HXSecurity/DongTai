@@ -148,7 +148,7 @@ class AssetPackageVulList(UserEndPoint):
                 vul_dependency_path_dict[
                     vul_dependency_path['pk']] = vul_dependency_path[
                         'iastvulassetrelation__vul_asset_metadata__vul_dependency_path'][
-                            -1]
+                            0]
         for a_vul in auth_asset_vuls:
             #vul_type_relation = IastAssetVulTypeRelation.objects.filter(
             #    asset_vul_id=a_vul.id)
