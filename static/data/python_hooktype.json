@@ -342,7 +342,7 @@
     },
     {
         "created_by": 1,
-        "enable": 0,
+        "enable": 1,
         "language": 2,
         "name": "\u53cd\u5c04\u578bXSS\u8fc7\u6ee4\u7c7b\u578b",
         "name_en": "Cross-Site Scripting Filter",
@@ -375,7 +375,7 @@
     },
     {
         "created_by": 1,
-        "enable": 0,
+        "enable": 1,
         "language": 2,
         "name": "SpringCloudConfigServer",
         "name_en": "SpringCloudConfigServer",
@@ -386,7 +386,7 @@
     },
     {
         "created_by": 1,
-        "enable": 0,
+        "enable": 1,
         "language": 2,
         "name": "SpringCloudConfigServer",
         "name_en": "SpringCloudConfigServer",
@@ -419,7 +419,7 @@
     },
     {
         "created_by": 1,
-        "enable": 0,
+        "enable": 1,
         "language": 2,
         "name": "SQL\u8d8a\u6743\u7c7b\u578b",
         "name_en": "Over Power",
@@ -430,7 +430,7 @@
     },
     {
         "created_by": 1,
-        "enable": 0,
+        "enable": 1,
         "language": 2,
         "name": "SQL\u8d8a\u6743\u7c7b\u578b",
         "name_en": "Over Power",
