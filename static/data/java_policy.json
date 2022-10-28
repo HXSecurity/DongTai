@@ -2637,8 +2637,8 @@
                 "inherit": "true",
                 "source": "O",
                 "target": "P1",
-                "track": "",
-                "value": "java.util.function.BiConsumer.accept(java.lang.Object,java.lang.Object"
+                "track": "false",
+                "value": "java.util.function.BiConsumer.accept(java.lang.Object,java.lang.Object)"
             }
         ],
         "enable": 1,
