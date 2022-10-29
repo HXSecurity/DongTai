@@ -65,6 +65,9 @@ Selector labels
 {{- define "dongtai.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "dongtai.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels }}
+{{- end }}
 {{- end -}}
 
 {{/*
@@ -111,7 +114,7 @@ imagePullPolicy: {{.Values.imagePullPolicy}}
 
 {{- define "deploy.initContainers" -}}
 initContainers:
-  - image: busybox
+  - image: {{ .Values.images }}/dongtai-logrotate:{{ .Values.tag }}
     command:
     - sh
     - -c

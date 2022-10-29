@@ -19,11 +19,15 @@ spec:
     metadata:
       annotations:
         build_number: "{{ template "dongtai.fullname" . }}"
-        {{- if not .Values.skipistio }}{{ include "dongtai.istiolabels" . }}{{ end }}
+        {{- if not .Values.skipistio }}{{ include "dongtai.istiolabels" . | nindent 8 }}{{ end }}
       labels:
         app: {{ template "dongtai.fullname" . }}-web
         {{- include "dongtai.labels" .  | nindent 8 }}
     spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
       containers:
         - name: {{ template "dongtai.fullname" . }}-web-container
           image: {{ .Values.images }}/dongtai-web:{{ .Values.tag }}
@@ -59,22 +63,30 @@ spec:
     metadata:
       annotations:
         build_number: "{{ template "dongtai.fullname" . }}"
-        {{- if not .Values.skipistio }}{{ include "dongtai.istiolabels" . }}{{ end }}
+        {{- if not .Values.skipistio }}{{ include "dongtai.istiolabels" . | nindent 8 }}{{ end }}
       labels:
         app: {{ template "dongtai.fullname" . }}-server
         {{- include "dongtai.labels" .  | nindent 8 }}
     spec:
-      {{- if .Values.somaxconn }}
-      {{- include "deploy.initContainers" . | nindent 6 }}
-      {{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
       containers:
         - name: {{ template "dongtai.fullname" . }}-server-container
           image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
           env:
             - name: DONGTAI_CONCURRENCY
               value: --processes 4
+            {{- range $key, $value :=  .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
           {{- include "deploy.config" . | nindent 10 }}
       {{- include "deploy.config.vo" . | nindent 6 }}
+      {{- if .Values.somaxconn }}
+      {{- include "deploy.initContainers" . | nindent 6 }}
+      {{- end }}
 ---
 
 #dongtai-worker-task服务
@@ -100,6 +112,10 @@ spec:
         app: {{ template "dongtai.fullname" . }}-worker-task
         {{- include "dongtai.labels" .  | nindent 8 }}
     spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
       containers:
         - name: {{ template "dongtai.fullname" . }}-worker-task-container
           image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
@@ -131,6 +147,10 @@ spec:
         app: {{ template "dongtai.fullname" . }}-worker-high-freq
         {{- include "dongtai.labels" .  | nindent 8 }}
     spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
       containers:
         - name: {{ template "dongtai.fullname" . }}-worker-high-freq-container
           image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
@@ -165,6 +185,10 @@ spec:
         app: {{ template "dongtai.fullname" . }}-worker-beat
         {{- include "dongtai.labels" .  | nindent 8 }}
     spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
       containers:
         - name: {{ template "dongtai.fullname" . }}-worker-beat-container
           image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
@@ -200,6 +224,10 @@ spec:
         app: {{ template "dongtai.fullname" . }}-worker-sca
         {{- include "dongtai.labels" .  | nindent 8 }}
     spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
       containers:
         - name: {{ template "dongtai.fullname" . }}-worker-sca-container
           image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
@@ -235,6 +263,10 @@ spec:
         app: {{ template "dongtai.fullname" . }}-worker-report-only
         {{- include "dongtai.labels" .  | nindent 8 }}
     spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
       containers:
         - name: {{ template "dongtai.fullname" . }}-worker-report-only-container
           image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
@@ -266,6 +298,10 @@ spec:
         app: {{ template "dongtai.fullname" . }}-worker-chain
         {{- include "dongtai.labels" .  | nindent 8 }}
     spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
       containers:
         - name: {{ template "dongtai.fullname" . }}-worker-chain-container
           image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
@@ -302,6 +338,10 @@ spec:
         app: {{ template "dongtai.fullname" . }}-worker-other
         {{- include "dongtai.labels" .  | nindent 8 }}
     spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
       containers:
         - name: {{ template "dongtai.fullname" . }}-worker-other-container
           image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
@@ -309,7 +349,7 @@ spec:
           args: [ "worker-other" ]
           env:
             - name: DONGTAI_CONCURRENCY
-              value: --concurrency=12
+              value: --concurrency=10
           {{- include "deploy.config" . | nindent 10 }}
       {{- include "deploy.config.vo" . | nindent 6 }}
 
@@ -338,6 +378,10 @@ spec:
         app: {{ template "dongtai.fullname" . }}-worker-es
         {{- include "dongtai.labels" .  | nindent 8 }}
     spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
       containers:
         - name: {{ template "dongtai.fullname" . }}-worker-es-container
           image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
@@ -367,11 +411,15 @@ spec:
     metadata:
       annotations:
         build_number: "{{ template "dongtai.fullname" . }}"
-        {{- if not .Values.skipistio }}{{ include "dongtai.istiolabels" . }}{{ end }}
+        {{- if not .Values.skipistio }}{{ include "dongtai.istiolabels" . | nindent 8}}{{ end }}
       labels:
         app: {{ template "dongtai.fullname" . }}-logstash
         {{- include "dongtai.labels" .  | nindent 8 }}
     spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
       containers:
       - image: {{ .Values.images }}/dongtai-logrotate:{{ .Values.tag }}
         name: logrotate
@@ -445,4 +493,8 @@ spec:
       - name: {{ template "dongtai.fullname" . }}-log-path
         persistentVolumeClaim:
           {{ include "deploy.config.persistentVolumeClaim" . }}
+      {{- include "deploy.config.vo" . | nindent 6 }}
+      {{- if .Values.somaxconn }}
+      {{- include "deploy.initContainers" . | nindent 6 }}
+      {{- end }}
 ---
