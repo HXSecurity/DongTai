@@ -15,12 +15,16 @@ spec:
     metadata:
       annotations:
         build_number: "{{ template "dongtai.fullname" . }}"
-        {{- if not .Values.skipistio }}{{ include "dongtai.istiolabels" . }}{{ end }}
+        {{- if not .Values.skipistio }}{{ include "dongtai.istiolabels" . | nindent 8 }}{{ end }}
       labels:
         app: {{ template "dongtai.fullname" . }}-redis
         release: {{ .Release.Name }}
         {{- include "dongtai.labels" .  | nindent 8 }}
     spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
       containers:
       - image: {{ .Values.images }}/dongtai-redis:{{ .Values.tag }}
         imagePullPolicy: Always
@@ -50,12 +54,16 @@ spec:
     metadata:
       annotations:
         build_number: "{{ template "dongtai.fullname" . }}"
-        {{- if not .Values.skipistio }}{{ include "dongtai.istiolabels" . }}{{ end }}
+        {{- if not .Values.skipistio }}{{ include "dongtai.istiolabels" . | nindent 8 }}{{ end }}
       labels:
         app: {{ template "dongtai.fullname" . }}-mysql
         release: {{ .Release.Name }}
         {{- include "dongtai.labels" .  | nindent 8 }}
     spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
       containers:
         - image: {{ .Values.images }}/dongtai-mysql:{{ .Values.tag }}
           name: mysql-container
