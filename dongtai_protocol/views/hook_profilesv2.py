@@ -10,7 +10,8 @@ from dongtai_common.endpoint import OpenApiEndPoint, R
 from django.db.models import (Prefetch, OuterRef, Subquery)
 # note: 当前依赖必须保留，否则无法通过hooktype反向查找策略
 from dongtai_protocol.api_schema import DongTaiParameter
-from dongtai_protocol.views.hook_profiles import HookProfilesEndPoint, JAVA
+from dongtai_protocol.views.hook_profiles import HookProfilesEndPoint, JAVA, convert_strategy
+from django.db.models import Q
 
 logger = logging.getLogger("django")
 
@@ -22,17 +23,16 @@ class HookProfilesV2EndPoint(HookProfilesEndPoint):
     @staticmethod
     def get_profiles(user=None, language_id=JAVA):
         profiles = list()
-        hook_types = HookType.objects.filter(vul_strategy__state='enable',
-                                             vul_strategy__user_id__in=set(
-                                                 [1, user.id]),
-                                             language_id=language_id,
-                                             enable=const.HOOK_TYPE_ENABLE,
-                                             type__in=(3, 4))
         hook_types_a = HookType.objects.filter(language_id=language_id,
                                                enable=const.HOOK_TYPE_ENABLE,
-                                               type__in=(1, 2))
+                                               type__in=(1, 2, 3))
+        hook_types = IastStrategyModel.objects.filter(
+            Q(state__in=['enable'],
+              user_id__in=set([1, user.id]) if user else [1])).order_by('id')
         for hook_type in list(hook_types) + list(hook_types_a):
             strategy_details = list()
+            if isinstance(hook_type, IastStrategyModel):
+                hook_type = convert_strategy(hook_type)
             strategies = hook_type.strategies.filter(
                 created_by__in=[1, user.id] if user else [1],
                 enable=const.HOOK_TYPE_ENABLE).values()
