@@ -2659,13 +2659,6 @@
                 "source": "P2",
                 "target": "",
                 "track": "true",
-                "value": "javax.naming.directory.DirContext.search(java.lang.String,java.lang.String,javax.naming.directory.SearchControls"
-            },
-            {
-                "inherit": "all",
-                "source": "P2",
-                "target": "",
-                "track": "true",
                 "value": "javax.naming.directory.DirContext.search(java.lang.String,java.lang.String,javax.naming.directory.SearchControls)"
             },
             {
@@ -2674,13 +2667,6 @@
                 "target": "",
                 "track": "true",
                 "value": "javax.naming.directory.InitialDirContext.search(java.lang.String,java.lang.String,java.lang.Object[],javax.naming.directory.SearchControls)"
-            },
-            {
-                "inherit": "all",
-                "source": "P2",
-                "target": "",
-                "track": "true",
-                "value": "javax.naming.directory.InitialDirContext.search(java.lang.String,java.lang.String,javax.naming.directory.SearchControls"
             },
             {
                 "inherit": "all",
