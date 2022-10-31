@@ -60,7 +60,7 @@ class HookProfilesEndPoint(OpenApiEndPoint):
                   if not isinstance(hook_type, IastStrategyModel) else [4],
                   created_by__in=[1, user.id] if user else [1],
                   enable=const.HOOK_TYPE_ENABLE)
-                & Q(system_type=1) if system_only else Q()).order_by('id')
+                & (Q(system_type=1) if system_only else Q())).order_by('id')
             if full:
                 from django.forms.models import model_to_dict
                 if not strategies.count():
