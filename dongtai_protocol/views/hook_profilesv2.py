@@ -35,7 +35,10 @@ class HookProfilesV2EndPoint(HookProfilesEndPoint):
                 hook_type = convert_strategy(hook_type)
             strategies = hook_type.strategies.filter(
                 created_by__in=[1, user.id] if user else [1],
-                enable=const.HOOK_TYPE_ENABLE).values()
+                type__in=(1, 2, 3)
+                if not isinstance(hook_type, IastStrategyModel) else [4],
+                enable=const.HOOK_TYPE_ENABLE,
+                language_id=language_id).values()
             for strategy in strategies:
                 profiles.append({
                     'type': hook_type.type,
