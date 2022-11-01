@@ -11,7 +11,6 @@ from dongtai_protocol.report.log_service import LogService
 from dongtai_common.models.agent import IastAgent
 
 logger = logging.getLogger('dongtai.openapi')
-jsonlogger = logging.getLogger('jsonlogger')
 
 class ReportHandler:
     HANDLERS = {}
@@ -64,6 +63,7 @@ class ReportHandler:
                     logger.error(_('Report type {} handler does not exist').format(report_type))
                 return None
             #if report_type == 36:
+            #    jsonlogger = logging.getLogger('jsonlogger')
             #    jsonlogger.error('report', extra=reports)
             result = class_of_handler().handle(reports, user)
             return result
