@@ -32,7 +32,7 @@ spec:
         - name: {{ template "dongtai.fullname" . }}-web-container
           image: {{ .Values.images }}/dongtai-web:{{ .Values.tag }}
           imagePullPolicy: Always
-          {{ include "deploy.resources" . | nindent 10 }}
+          {{- include "deploy.resources" . | nindent 10 }}
           volumeMounts:
             - name: configfile
               mountPath: /etc/nginx/nginx.conf
