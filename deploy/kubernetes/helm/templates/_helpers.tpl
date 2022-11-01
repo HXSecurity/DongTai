@@ -82,6 +82,11 @@ Create the name of the service account to use
 {{- end -}}
 
 {{- define "deploy.config" -}}
+
+{{- if .Values.lifecycle -}}
+{{ include "deploy.lifecycle" . }}
+{{ end -}}
+
 {{ include "deploy.imagePullPolicy" . }}
 {{ include "deploy.resources" . }}
 volumeMounts:
@@ -90,6 +95,13 @@ volumeMounts:
     subPath: config.ini
   - name: {{ template "dongtai.fullname" . }}-log-path
     mountPath: /tmp/logstash
+{{- end -}}
+
+{{- define "deploy.lifecycle" -}}
+lifecycle:
+  postStart:
+    exec:
+      command: ['/bin/bash','-c', 'sleep 60; if [ -f "/tmp/logstash/server.log" ];then mv /tmp/logstash/server.log /tmp/ ; else echo "OK!"; fi']
 {{- end -}}
 
 {{- define "deploy.configmax" -}}
