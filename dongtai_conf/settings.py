@@ -376,11 +376,11 @@ LOGGING = {
             'filename': '/tmp/worker.log',
             'formatter': 'verbose'
         },
-        'jsonlog': {
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': TMP_COMMON_PATH + '/server.log',
-            'formatter': 'json'
-        }
+#        'jsonlog': {
+#            'class': 'logging.handlers.RotatingFileHandler',
+#            'filename': TMP_COMMON_PATH + '/server.log',
+#            'formatter': 'json'
+#        }
     },
     'loggers': {
         'django.db.backends': {
@@ -418,11 +418,11 @@ LOGGING = {
             'propagate': True,
             'level': LOGGING_LEVEL,
         },
-        'jsonlogger': {  # it use to logging to local logstash file
-            'handlers': ['jsonlog'],
-            'propagate': True,
-            'level': 'DEBUG',
-        },
+#        'jsonlogger': {  # it use to logging to local logstash file
+#            'handlers': ['jsonlog'],
+#            'propagate': True,
+#            'level': 'DEBUG',
+#        },
     }
 }
 REST_PROXY = {
