@@ -180,7 +180,7 @@ class ApiRouteSearch(UserEndPoint):
             bind_project_id=project_id,
             project_version_id=current_project_version.get("version_id",
                                                            0)).values("id")
-        q = Q(agent_id__in=[_['id'] for _ in agents]) 
+        q = Q(agent_id__in=[_['id'] for _ in agents])
         q = q & Q(
             method_id__in=[_['id']
                            for _ in api_methods]) if api_methods != [] else q
@@ -279,7 +279,7 @@ def _get_vuls(uri, agents):
     return [_get_hook_type(vul) for vul in vuls]
 
 
-def _get_hook_type(vul):
+def _get_hook_type(vul: IastVulnerabilityModel) -> dict:
 
     hook_type = HookType.objects.filter(pk=vul['hook_type_id']).first()
     hook_type_name = hook_type.name if hook_type else None
@@ -288,8 +288,7 @@ def _get_hook_type(vul):
     type_ = list(
         filter(lambda x: x is not None, [strategy_name, hook_type_name]))
     type_name = type_[0] if type_ else ''
-    if hook_type:
-        return {'hook_type_name': type_name, 'level_id': vul['level_id']}
+    return {'hook_type_name': type_name, 'level_id': vul['level_id']}
 
 
 def _get_parameters(api_route):
