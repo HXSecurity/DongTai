@@ -82,6 +82,7 @@ INSTALLED_APPS = [
     'modeltranslation',
     'django_celery_beat',
     'deploy.commands',
+    'test.debug',
 ]
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
