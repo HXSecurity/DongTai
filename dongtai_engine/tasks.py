@@ -109,9 +109,15 @@ def load_sink_strategy(user=None, language=None):
 
 from dongtai_engine.signals.handlers.vul_handler import handler_vul
 from dongtai_engine.filters.main import vul_filter
+from typing import Optional, Any,Union
+from dongtai_common.models.strategy import IastStrategyModel
 
 
-def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
+def search_and_save_vul(engine: Optional[VulEngine] ,
+                        method_pool_model: Union[IastAgentMethodPoolReplay,
+                                                 MethodPool],
+                        method_pool: Optional[Any] ,
+                        strategy: IastStrategyModel = list) -> None:
     """
     搜索方法池是否存在满足策略的数据，如果存在，保存相关数据为漏洞
     :param method_pool_model: 方法池实例化对象
@@ -119,11 +125,19 @@ def search_and_save_vul(engine, method_pool_model, method_pool, strategy):
     :return: None
     """
     logger.info(f'current sink rule is {strategy.get("type")}')
-    queryset = IastStrategyModel.objects.filter(vul_type=strategy['type'], state=const.STRATEGY_ENABLE)
+    queryset = IastStrategyModel.objects.filter(vul_type=strategy['type'],
+                                                state=const.STRATEGY_ENABLE)
     if not queryset.values('id').exists():
-        logger.error(f'current method pool hit rule {strategy.get("type")}, but no vul strategy.')
+        logger.error(
+            f'current method pool hit rule {strategy.get("type")}, but no vul strategy.'
+        )
         return
-    engine.search(method_pool=method_pool, vul_method_signature=strategy.get('value'))
+    if method_pool is None:
+        method_pool = json.loads(method_pool_model.method_pool
+                                 ) if method_pool_model.method_pool else []
+    engine = VulEngine()
+    engine.search(method_pool=method_pool,
+                  vul_method_signature=strategy.get('value'))
     status, stack, source_sign, sink_sign, taint_value = engine.result()
     if status:
         filterres = vul_filter(
@@ -225,7 +239,7 @@ def search_vul_from_method_pool(self, method_pool_sign, agent_id, retryable=Fals
             # print(engine.method_pool_signatures)
             for strategy in strategies:
                 if strategy.get('value') in engine.method_pool_signatures:
-                    search_and_save_vul(engine, method_pool_model, method_pool, strategy)
+                    search_and_save_vul(engine, method_pool_model, None, strategy)
         logger.info(f'漏洞检测成功')
     except RetryableException as e:
         if self.request.retries < self.max_retries:
@@ -247,14 +261,14 @@ def search_vul_from_replay_method_pool(method_pool_id):
             logger.warn(f'重放数据漏洞检测终止，方法池 {method_pool_id} 不存在')
         strategies = load_sink_strategy(method_pool_model.agent.user, method_pool_model.agent.language)
         engine = VulEngine()
-        method_pool = json.loads(method_pool_model.method_pool)
+        method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
+        engine.method_pool = method_pool
         if method_pool is None or len(method_pool) == 0:
             return
-        engine.method_pool = method_pool
         for strategy in strategies:
             if strategy.get('value') not in engine.method_pool_signatures:
                 continue
-            search_and_save_vul(engine, method_pool_model, method_pool, strategy)
+            search_and_save_vul(engine, method_pool_model, None, strategy)
         logger.info(f'重放数据漏洞检测成功')
     except Exception as e:
         logger.error(f'重放数据漏洞检测出错，方法池 {method_pool_id}. 错误原因：{e}')
