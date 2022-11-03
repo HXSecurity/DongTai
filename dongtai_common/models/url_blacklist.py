@@ -4,7 +4,7 @@ from dongtai_common.utils.settings import get_managed
 from django.db.models import IntegerChoices
 from django.utils.translation import gettext_lazy as _
 from time import time
-
+from typing import List, Dict
 
 class TargetOperator(IntegerChoices):
     #    EQUAL = 1, _("等于")
@@ -41,10 +41,10 @@ class IastAgentBlackRule(models.Model):
         managed = get_managed()
         db_table = 'iast_agent_black_rule'
 
-    def to_full_rule(self) -> dict:
+    def to_full_rule(self) -> List[Dict]:
         return list(
             map(lambda x: x.to_agent_rule(),
-                self.iastagentblackruledetail_set))
+                self.iastagentblackruledetail_set.all()))
 
 
 class IastAgentBlackRuleDetail(models.Model):
@@ -68,5 +68,5 @@ class IastAgentBlackRuleDetail(models.Model):
         managed = get_managed()
         db_table = 'iast_agent_black_rule_detail'
 
-    def to_agent_rule(self) -> dict:
+    def to_agent_rule(self) -> Dict:
         return {self.operator: self.value}
