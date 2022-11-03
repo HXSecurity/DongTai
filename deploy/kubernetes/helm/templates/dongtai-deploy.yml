@@ -426,9 +426,11 @@ spec:
         securityContext:
           runAsUser: 0
         {{ include "deploy.imagePullPolicy" . }}
+        {{- if .Values.storage.persistentVolumeClaim }}
         volumeMounts:
         - name: {{ template "dongtai.fullname" . }}-log-path
           mountPath: /tmp/logstash
+        {{- end }}
       - image: {{ .Values.images }}/dongtai-logstash:{{ .Values.tag }}
         name: logstash
         securityContext:
@@ -457,9 +459,6 @@ spec:
         - containerPort: 8083
           protocol: TCP
           name: log-http
-        volumeMounts:
-        - name: {{ template "dongtai.fullname" . }}-log-path
-          mountPath: /tmp/logstash
         resources:
           requests:
             cpu: 1000m
@@ -489,11 +488,15 @@ spec:
 #           tcpSocket:
 #             port: 9600
 #           timeoutSeconds: 1
+{{- if .Values.storage.persistentVolumeClaim }}
+        volumeMounts:
+        - name: {{ template "dongtai.fullname" . }}-log-path
+          mountPath: /tmp/logstash
       volumes:
       - name: {{ template "dongtai.fullname" . }}-log-path
         persistentVolumeClaim:
           {{ include "deploy.config.persistentVolumeClaim" . }}
-      {{- include "deploy.config.vo" . | nindent 6 }}
+{{ end -}}
       {{- if .Values.somaxconn }}
       {{- include "deploy.initContainers" . | nindent 6 }}
       {{- end }}
