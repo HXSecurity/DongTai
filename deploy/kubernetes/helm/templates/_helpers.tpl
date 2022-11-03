@@ -81,6 +81,7 @@ Create the name of the service account to use
 {{- end -}}
 {{- end -}}
 
+
 {{- define "deploy.config" -}}
 
 {{- if .Values.lifecycle -}}
@@ -93,9 +94,12 @@ volumeMounts:
   - name: {{ template "dongtai.fullname" . }}-configfile
     mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
     subPath: config.ini
+{{- if .Values.storage.persistentVolumeClaim }}
   - name: {{ template "dongtai.fullname" . }}-log-path
     mountPath: /tmp/logstash
 {{- end -}}
+{{- end -}}
+
 
 {{- define "deploy.lifecycle" -}}
 lifecycle:
@@ -117,8 +121,10 @@ volumeMounts:
   - name: {{ template "dongtai.fullname" . }}-configfile
     mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
     subPath: config.ini
+{{- if .Values.storage.persistentVolumeClaim }}
   - name: {{ template "dongtai.fullname" . }}-log-path
     mountPath: /tmp/logstash
+{{- end -}}
 {{- end -}}
 {{- define "deploy.imagePullPolicy" -}}
 imagePullPolicy: {{.Values.imagePullPolicy}}
@@ -152,9 +158,11 @@ volumes:
   - name: {{ template "dongtai.fullname" . }}-configfile
     configMap:
       name: dongtai-iast-config.ini
+{{- if .Values.storage.persistentVolumeClaim }}
   - name: {{ template "dongtai.fullname" . }}-log-path
     persistentVolumeClaim:
       {{ include "deploy.config.persistentVolumeClaim" . }}
+{{- end -}}
 {{- end -}}
 
 {{- define "deploy.config.persistentVolumeClaim" -}}
