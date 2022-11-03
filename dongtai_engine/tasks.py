@@ -109,14 +109,14 @@ def load_sink_strategy(user=None, language=None):
 
 from dongtai_engine.signals.handlers.vul_handler import handler_vul
 from dongtai_engine.filters.main import vul_filter
-from typing import Optional, Any,Union
+from typing import Optional, Any, Union
 from dongtai_common.models.strategy import IastStrategyModel
 
 
-def search_and_save_vul(engine: Optional[VulEngine] ,
+def search_and_save_vul(engine: Optional[VulEngine],
                         method_pool_model: Union[IastAgentMethodPoolReplay,
                                                  MethodPool],
-                        method_pool: Optional[Any] ,
+                        method_pool: Optional[Any],
                         strategy: IastStrategyModel = list) -> None:
     """
     搜索方法池是否存在满足策略的数据，如果存在，保存相关数据为漏洞
