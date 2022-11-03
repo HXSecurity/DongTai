@@ -45,7 +45,7 @@ sca:
 storage:
   storageClassName: null
   # or You can choose to specify the storage class above, or create a custom multi-node read-write pvc below ！！！
-  persistentVolumeClaim: iast-agent-pvc
+  persistentVolumeClaim: iast-agent-pvc  # or null(The agent needs to close the reporting log function 'dongtai.log.disable-collector: false')
 
 csrfTrustOrigins: .example.com
 secretKey: vbjlvbxfvazjfprywuxgyclmvhtmselddsefxxlcixovmqfpgy
