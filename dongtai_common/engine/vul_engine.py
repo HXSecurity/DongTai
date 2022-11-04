@@ -185,7 +185,7 @@ class VulEngine(object):
                 index, size, current_link,
                 set(the_second_stack.get('sourceHash')))
             self.vul_stack[0] = extract_stack[::-1]
-        else:
+        elif self.vul_stack:
             final_stack = self.vul_stack[-1][-1]
             for ind, method in enumerate(self.method_pool):
                 if method['invokeId'] == final_stack['invokeId']:
@@ -214,7 +214,8 @@ class VulEngine(object):
             extract_stack = self.find_other_branch_v2(
                 index, size, current_link, set(final_stack.get('sourceHash')))
             self.vul_stack[0] = extract_stack[::-1]
-
+        else:
+            pass
         self.vul_filter()
 
     def find_other_branch_v2(self, index, size, current_link, source_hash):
@@ -255,7 +256,6 @@ class VulEngine(object):
                         from urllib.parse import urlparse
                         o = urlparse(url)
                         if origin_source not in f'{o.scheme}://{o.netloc}{o.path}':
-                            print(origin_source, url)
                             self.vul_stack[index] = []
                             break
             vul_source_signature = self.vul_source_signature
