@@ -17,9 +17,8 @@ from dongtai_common.models.message import IastMessage
 import threading
 from django.db.models import Q
 from django.db import transaction
-from dongtai_conf.settings import TMP_COMMON_PATH
+from dongtai_conf.settings import TMP_COMMON_PATH, AGENT_LOG_DIR
 from tempfile import NamedTemporaryFile
-from dongtai_conf.settings import TMP_COMMON_PATH
 from dongtai_common.endpoint import R
 
 logger = logging.getLogger('dongtai-webapi')
