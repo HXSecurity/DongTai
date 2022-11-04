@@ -33,7 +33,7 @@ class ZipFileTestCase(TestCase):
         print(res)
 
     def test_getzipfilesinmemorty(self):
-        res = getzipfilesinmemorty(['./README.md', './lingzhi.sh'])
+        res = getzipfilesinmemorty(['./README.md', 'Pipfile'])
         print(res)
 
     def test_get_zip_together(self):
