@@ -13,8 +13,8 @@ from datetime import datetime
 
 
 class DataGatherSettingsSer(serializers.Serializer):
-    method_pool_max_length = serializers.IntegerField()
-    gather_res_body = serializers.BooleanField()
+    method_pool_max_length = serializers.IntegerField(default=5000)
+    gather_res_body = serializers.BooleanField(default=True)
 
 
 def get_json_from_iast_profile(key: str,
@@ -25,14 +25,19 @@ def get_json_from_iast_profile(key: str,
     return _serializer(data=profile_data).data
 
 
+def get_data_gather_data() -> dict:
+    key = 'data_gather'
+    data = get_json_from_iast_profile(key, DataGatherSettingsSer)
+    return data
+
+
 class DataGatherEndpoint(UserEndPoint):
 
     @extend_schema_with_envcheck(summary=_('Get Profile'),
                                  description=_("Get Profile with key"),
                                  tags=[_('Profile')])
     def get(self, request):
-        key = 'data_gather'
-        data = get_json_from_iast_profile(key, DataGatherSettingsSer)
+        data = get_data_gather_data()
         return R.success(data=data)
 
     @extend_schema_with_envcheck(summary=_('Profile modify'),
