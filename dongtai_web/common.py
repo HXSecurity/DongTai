@@ -19,9 +19,10 @@ from rest_framework.serializers import ValidationError
 from django.forms.models import model_to_dict
 import json
 from datetime import datetime
+from typing import Type
 
 def get_json_from_iast_profile(key: str,
-                               _serializer: serializers.Serializer) -> dict:
+                               _serializer: Type[serializers.Serializer]) -> dict:
     profile = IastProfile.objects.filter(key=key).values_list(
         'value', flat=True).first()
     profile_data = json.loads(profile) if profile else {}
