@@ -5,7 +5,7 @@ from importlib import import_module
 from inspect import getmembers, isclass
 from functools import wraps
 import logging
-from typing import Any
+from typing import Any, Tuple
 
 logger = logging.getLogger('dongtai.openapi')
 PLUGIN_DICT = {}
@@ -62,7 +62,7 @@ class DongTaiPlugin:
         else:
             setattr(target_class, self.target_func_name, patched_function)
 
-    def monkey_patch(self, appname):
+    def monkey_patch(self, appname:str) -> None:
         if self.appname == appname:
             try:
                 self._monkey_patch()
@@ -73,7 +73,7 @@ class DongTaiPlugin:
                 logger.error(f"monkey_patch failed: {e}", exc_info=True)
 
 
-def monkey_patch(appname):
+def monkey_patch(appname: str) -> None:
     plugin_dict = get_plugin_dict()
     for plugin in plugin_dict.get(appname, []):
         plugin().monkey_patch(appname)
@@ -103,6 +103,6 @@ def get_plugin_dict():
     return PLUGIN_DICT
 
 
-def _plug_class_filter(tup):
+def _plug_class_filter(tup: Tuple) -> bool:
     return tup[0].startswith('Plug') and isclass(tup[1]) and issubclass(
         tup[1], DongTaiPlugin)
