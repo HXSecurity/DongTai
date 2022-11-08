@@ -30,6 +30,7 @@ from dongtai_protocol.views.agent_config import (
 )
 from dongtai_protocol.views.except_action import AgentActionV2EndPoint
 from dongtai_protocol.views.hook_profilesv2 import HookProfilesV2EndPoint
+from dongtai_protocol.views.agent_configv2 import AgentConfigAllinOneView
 
 urlpatterns = [
     path('agent/download', AgentDownload.as_view()),
@@ -58,6 +59,7 @@ urlpatterns = [
          AgentActionV2EndPoint.as_view({'get': 'except_running_status'})),
     path('actual_action',
          AgentActionV2EndPoint.as_view({'post': 'actual_running_status'})),
+    path('agent/config', AgentConfigAllinOneView.as_view()),
 ]
 
 urlpatterns = [path('api/v1/', include(urlpatterns), name='OpenAPI'), ]
