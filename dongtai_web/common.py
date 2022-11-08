@@ -26,7 +26,9 @@ def get_json_from_iast_profile(key: str,
     profile = IastProfile.objects.filter(key=key).values_list(
         'value', flat=True).first()
     profile_data = json.loads(profile) if profile else {}
-    return _serializer(data=profile_data).data
+    ser = _serializer(data=profile_data)
+    ser.is_valid()
+    return ser.data
 
 def get_data_gather_data() -> dict:
     return {}
