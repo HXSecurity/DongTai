@@ -82,6 +82,7 @@ INSTALLED_APPS = [
     'modeltranslation',
     'django_celery_beat',
     'deploy.commands',
+    'test.debug',
 ]
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
@@ -712,5 +713,12 @@ def set_asyncio_policy():
     if state:
         asyncio.set_event_loop_policy(asyncio_gevent.EventLoopPolicy())
 
+AGENT_LOG_DIR = os.path.join(TMP_COMMON_PATH, 'batchagent')
+
+# check path exists
+for _dir in (TMP_COMMON_PATH,AGENT_LOG_DIR):
+    if not os.path.exists(_dir):
+        print(f'{_dir} is not exists, check the init.')
+        exit(0)
 
 set_asyncio_policy()
