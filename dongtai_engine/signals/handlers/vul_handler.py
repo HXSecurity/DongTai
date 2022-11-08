@@ -205,11 +205,14 @@ def get_original_url(uri: str, url_desc: str) -> str:
     res[int(location)] = "<placeholder>"
     return "/".join(res)
 
+from dongtai_common.engine.compatibility import method_pool_3_to_2
 
 def get_real_url(method_pools: dict) -> str:
     for method_pool in method_pools:
         if method_pool[
                 'signature'] == 'org.springframework.web.util.pattern.PathPattern.getPatternString()':
+            if 'targetValues' not in method_pool.keys():
+                method_pool = method_pool_3_to_2(method_pool)           
             return method_pool['targetValues']
     return ''
 
