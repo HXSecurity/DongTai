@@ -10,10 +10,27 @@ from django.utils.translation import gettext_lazy as _
 from result import Ok, Err, Result
 from dongtai_common.models.agent_config import MetricGroup
 from dongtai_web.common import get_data_gather_data
+from rest_framework import serializers
+from rest_framework.serializers import ValidationError
+from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
+
+class _AgentConfigArgsSerializer(serializers.Serializer):
+    agent_id = serializers.IntegerField(required=True,
+                                        help_text=_('Agent id'))
 
 class AgentConfigAllinOneView(OpenApiEndPoint):
 
-    def post(self, request):
+    @extend_schema_with_envcheck(
+        [_AgentConfigArgsSerializer],
+        tags=['agent upload'],
+        description='Through agent_ Id get disaster recovery strategy',
+        methods=['GET'])
+    def get(self, request):
+        ser = _AgentConfigArgsSerializer(data=request.GET)
+        try:
+            ser.is_valid(True)
+        except ValidationError as e:
+            return R.failure(data=e.detail)
         data = get_data_gather_data()
         return R.success(data=data)
