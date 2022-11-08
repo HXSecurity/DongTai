@@ -78,7 +78,11 @@ class IastAgentBlackRuleDetail(models.Model):
         db_table = 'iast_agent_black_rule_detail'
 
     def to_agent_rule(self) -> Dict:
-        return {self.operator: self.value}
+        return {
+            'target_type': TargetType(self.target_type).name,
+            'operator': TargetOperator(self.operator).name,
+            'value': self.value,
+        }
 
 
 def create_blacklist_rule(target_type: TargetType, operator: TargetOperator,
