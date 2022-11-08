@@ -53,6 +53,12 @@ class VulEngine(object):
         self._method_pool = sorted(method_pool,
                                    key=lambda e: e.__getitem__('invokeId'),
                                    reverse=True)
+        from dongtai_common.engine.compatibility import method_pool_3_to_2, method_pool_is_3
+        if method_pool_is_3(method_pool[0]):
+            self._method_pool = list(map(method_pool_3_to_2, self._method_pool))
+        self._method_pool = sorted(self._method_pool,
+                                   key=lambda e: e.__getitem__('invokeId'),
+                                   reverse=True)
         self._method_pool_invokeid_dict = {
             mp['invokeId']: ind
             for ind, mp in enumerate(self._method_pool)
@@ -130,7 +136,6 @@ class VulEngine(object):
                 self.taint_value = method['sourceValues']
             # 找到sink点所在索引后，开始向后递归
             current_link = list()
-
             vul_method_detail = self.copy_method(method_detail=method,
                                                  sink=True)
             current_link.append(vul_method_detail)
@@ -204,6 +209,12 @@ class VulEngine(object):
                             if v['ranges']:
                                 has_vul = True
                         the_second_stack = stack
+                        break
+                else:
+                    if set(final_stack['sourceHash']) & set(
+                            stack['targetHash']):
+                        the_second_stack = stack
+                        has_vul = True
                         break
             if not the_second_stack or not has_vul:
                 self.vul_source_signature = None
