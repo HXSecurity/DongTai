@@ -6,13 +6,14 @@ from django.utils.translation import gettext_lazy as _
 from time import time
 from typing import List, Dict
 
+
 class TargetOperator(IntegerChoices):
     EQUAL = 1, _("等于")
     NOT_EQUAL = 2, _("不等于")
     CONTAIN = 3, _("包含")
     NOT_CONTAIN = 4, _("不包含")
-#    KEY_CONTAIN = 6, _("不包含")
-#    VALUE_CONTAIN = 5, _("不包含")
+    EXISTS = 5, _("存在")
+    NOT_EXISTS = 6, _("不存在")
 
 
 class TargetType(IntegerChoices):
@@ -23,9 +24,11 @@ class TargetType(IntegerChoices):
 class TargetScope(IntegerChoices):
     GLOBAL = 1, _("GLOBAL")
 
+
 class State(IntegerChoices):
     ENABLE = 1, _("ENABLE")
     DISABLE = 2, _("DISABLE")
+
 
 class IastAgentBlackRule(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING)
