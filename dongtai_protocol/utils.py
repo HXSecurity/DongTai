@@ -65,7 +65,7 @@ class OssDownloader(object):
             local_file=local_file)
 
 
-def base64_decode(raw):
+def base64_decode(raw: str) -> str:
     try:
         return base64.b64decode(raw).decode('utf-8').strip()
     except Exception as decode_error:
