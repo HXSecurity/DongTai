@@ -529,7 +529,7 @@ def decode_content(body: bytes, content_encoding: str, version: str) -> str:
     try:
         return body.decode('utf-8')
     except BaseException:
-        logger.info('decode_content, {}'.format(body))
+        logger.info('decode_content, {!r}'.format(body))
         logger.info('utf-8 decode failed, use raw ')
         return body.decode('raw_unicode_escape')
 
