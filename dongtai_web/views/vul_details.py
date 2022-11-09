@@ -143,7 +143,7 @@ class VulDetail(UserEndPoint):
                 _item = f"{method['callerClass']}.{method['callerMethod']}()"
                 filename = method['callerClass']
                 line_number = method['callerLineNumber']
-                # For compatibility with old data 
+                # For compatibility with old data
                 # (method_counts > 1 and i == 0)
                 # it should remove after serval versions
                 if method['tag'] == 'source' or (method_counts > 1 and i == 0):
@@ -467,6 +467,7 @@ def parse_param_name(param_name):
         return res
     except BaseException:
         return {}
+
 
 
 if __name__ == '__main__':
