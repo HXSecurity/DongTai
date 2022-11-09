@@ -1,4 +1,4 @@
-def method_pool_is_3(dic) -> bool:
+def method_pool_is_3(dic: dict) -> bool:
     if 'taintPosition' in dic.keys():
         return True
     return False
@@ -40,3 +40,9 @@ def method_pool_3_to_2(dic: dict) -> dict:
                 sourceValues.append('')
     dic['targetValues'] = ','.join(targetValues)
     return dic
+
+def parse_target_value(target_value: str):
+    position = target_value.rfind('*')
+    origin_str = target_value[0:position][1:-2]
+    #len_of_origin = int(target_value[position::])
+    return origin_str
