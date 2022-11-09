@@ -1,4 +1,4 @@
-def method_pool_is_3(dic) -> bool:
+def method_pool_is_3(dic: dict) -> bool:
     if 'taintPosition' in dic.keys():
         return True
     return False
