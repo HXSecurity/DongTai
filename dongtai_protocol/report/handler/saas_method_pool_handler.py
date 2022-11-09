@@ -561,7 +561,7 @@ def get_res_body(res_body, version):
 
 
 
-def new_decode_content(res_body: str, version: str, encoding: str) -> str:
+def new_decode_content(res_body: str, encoding: str, version: str) -> str:
     if version == 'v1':
         return res_body
     if version in ('v2', 'v3'):
