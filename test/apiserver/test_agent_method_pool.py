@@ -1055,15 +1055,9 @@ class AgentMethodPoolTestCase(AgentTestCase):
         assert MethodPool.objects.filter(
             url="http://localhost:9999/sqli123132123313132321123231test",
             agent_id=self.agent_id).exists()
-        assert not MethodPool.objects.filter(
-            url="http://localhost:9999/sqli123132123313132321123231test",
-            agent_id=self.agent_id,
-            res_body=gzip_test_data).exists()
-
-        assert MethodPool.objects.filter(
-            url="http://localhost:9999/sqli123132123313132321123231test",
-            agent_id=self.agent_id,
-            res_body=testdata).exists()
+        method_pool = MethodPool.objects.filter(url="http://localhost:9999/sqli123132123313132321123231test",agent_id=self.agent_id).first()
+        assert not method_pool.res_body == gzip_test_data
+        assert method_pool.res_body == testdata
 
 
 

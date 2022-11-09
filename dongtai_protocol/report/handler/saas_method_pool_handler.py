@@ -121,8 +121,8 @@ class SaasMethodPoolHandler(IReportHandler):
                     req_params=self.http_query_string,
                     req_data=self.http_req_data,
                     res_header=self.http_res_header,
-                    res_body=decode_content(
-                        get_res_body(self.http_res_body, self.version),
+                    res_body=new_decode_content(
+                        self.http_res_body,
                         get_content_encoding(self.http_res_header),
                         self.version),
                     context_path=self.context_path,
@@ -143,10 +143,11 @@ class SaasMethodPoolHandler(IReportHandler):
                     req_params=self.http_query_string,
                     req_data=self.http_req_data,
                     res_header=self.http_res_header,
-                    res_body=decode_content(
-                        get_res_body(self.http_res_body, self.version),
+                    res_body=new_decode_content(
+                        self.http_res_body,
                         get_content_encoding(self.http_res_header),
-                        self.version),
+                        self.version,
+                    ),
                     context_path=self.context_path,
                     method_pool=json.dumps(self.method_pool),
                     clent_ip=self.client_ip,
@@ -193,35 +194,60 @@ class SaasMethodPoolHandler(IReportHandler):
     def to_json(self, pool_sign: str):
         timestamp = int(time.time())
         pool = {
-            'agent_id': self.agent_id,
-            'url': self.http_url,
-            'uri': self.http_uri,
-            'http_method': self.http_method,
-            'http_scheme': self.http_scheme,
-            'http_protocol': self.http_protocol,
-            'req_header': self.http_req_header,
-            'req_params': self.http_query_string,
-            'req_data': self.http_req_data,
-            'req_header_for_search': utils.build_request_header(req_method=self.http_method,
-                                                                raw_req_header=self.http_req_header,
-                                                                uri=self.http_uri,
-                                                                query_params=self.http_query_string,
-                                                                http_protocol=self.http_protocol),
-            'res_header': utils.base64_decode(self.http_res_header),
-            'res_body': decode_content(get_res_body(self.http_res_body, self.version),
-                                       get_content_encoding(self.http_res_header), self.version),
-            'context_path': self.context_path,
-            'method_pool': json.dumps(self.method_pool),
-            'pool_sign': pool_sign,
-            'clent_ip': self.client_ip,
-            'create_time': timestamp,
-            'update_time': timestamp,
-            'uri_sha1': self.sha1(self.http_uri),
-            'user_id': self.agent.user_id,
-            'bind_project_id': self.agent.bind_project_id,
-            'project_version_id': self.agent.project_version_id,
-            'language': self.agent.language,
-            'agent_id': self.agent.id,
+            'agent_id':
+            self.agent_id,
+            'url':
+            self.http_url,
+            'uri':
+            self.http_uri,
+            'http_method':
+            self.http_method,
+            'http_scheme':
+            self.http_scheme,
+            'http_protocol':
+            self.http_protocol,
+            'req_header':
+            self.http_req_header,
+            'req_params':
+            self.http_query_string,
+            'req_data':
+            self.http_req_data,
+            'req_header_for_search':
+            utils.build_request_header(req_method=self.http_method,
+                                       raw_req_header=self.http_req_header,
+                                       uri=self.http_uri,
+                                       query_params=self.http_query_string,
+                                       http_protocol=self.http_protocol),
+            'res_header':
+            utils.base64_decode(self.http_res_header),
+            'res_body':
+            new_decode_content(self.http_res_body,
+                               get_content_encoding(self.http_res_header),
+                               self.version),
+            'context_path':
+            self.context_path,
+            'method_pool':
+            json.dumps(self.method_pool),
+            'pool_sign':
+            pool_sign,
+            'clent_ip':
+            self.client_ip,
+            'create_time':
+            timestamp,
+            'update_time':
+            timestamp,
+            'uri_sha1':
+            self.sha1(self.http_uri),
+            'user_id':
+            self.agent.user_id,
+            'bind_project_id':
+            self.agent.bind_project_id,
+            'project_version_id':
+            self.agent.project_version_id,
+            'language':
+            self.agent.language,
+            'agent_id':
+            self.agent.id,
         }
         return json.dumps(pool)
 
@@ -254,9 +280,9 @@ class SaasMethodPoolHandler(IReportHandler):
                 query_params=self.http_query_string,
                 http_protocol=self.http_protocol)
             method_pool.res_header = utils.base64_decode(self.http_res_header)
-            method_pool.res_body = decode_content(
-                get_res_body(self.http_res_body, self.version),
-                get_content_encoding(self.http_res_header), self.version)
+            method_pool.res_body = new_decode_content(
+                self.http_res_body, get_content_encoding(self.http_res_header),
+                self.version)
             method_pool.uri_sha1 = self.sha1(self.http_uri)
             method_pool.save(update_fields=[
                 'update_time',
@@ -293,9 +319,9 @@ class SaasMethodPoolHandler(IReportHandler):
                     query_params=self.http_query_string,
                     http_protocol=self.http_protocol),
                 res_header=utils.base64_decode(self.http_res_header),
-                res_body = decode_content(
-                get_res_body(self.http_res_body, self.version),
-                get_content_encoding(self.http_res_header),self.version),
+                res_body=new_decode_content(
+                    self.http_res_body,
+                    get_content_encoding(self.http_res_header), self.version),
                 context_path=self.context_path,
                 method_pool=json.dumps(self.method_pool),
                 pool_sign=pool_sign,
@@ -490,9 +516,8 @@ def single_insert(api_route_id, param_name, annotation) -> None:
     except IntegrityError as e:
         logger.info(e)
 
-def decode_content(body, content_encoding, version):
-    if version == 'v1':
-        return body
+
+def decode_content(body: bytes, content_encoding: str, version: str) -> str:
     if content_encoding == 'gzip':
         try:
             return gzip.decompress(body).decode('utf-8')
@@ -504,12 +529,12 @@ def decode_content(body, content_encoding, version):
     try:
         return body.decode('utf-8')
     except BaseException:
-        logger.info('decode_content, {}'.format(body))
+        logger.info('decode_content, {!r}'.format(body))
         logger.info('utf-8 decode failed, use raw ')
         return body.decode('raw_unicode_escape')
 
 
-def get_content_encoding(b64_res_headers):
+def get_content_encoding(b64_res_headers: str) -> str:
     res_headers = utils.base64_decode(b64_res_headers)
     for header in res_headers.split('\n'):
         try:
@@ -532,3 +557,14 @@ def get_res_body(res_body, version):
         return base64.b64decode(res_body)
     logger.info('no match version now version: {}'.format(version))
     return res_body
+
+
+
+
+def new_decode_content(res_body: str, encoding: str, version: str) -> str:
+    if version == 'v1':
+        return res_body
+    if version in ('v2', 'v3'):
+        return decode_content(base64.b64decode(res_body), encoding, version)
+    logger.info('no match version now version: {}'.format(version))
+    return ''
