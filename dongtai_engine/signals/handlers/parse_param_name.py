@@ -1,5 +1,5 @@
 from django.http.request import QueryDict
-
+from dongtai_common.engine.compatibility import method_pool_is_3, parse_target_value
 
 class ParamDict(QueryDict):
 
@@ -19,5 +19,10 @@ class ParamDict(QueryDict):
                     v_ = '='.join(groups[i:])
                     self.extend_kv_dict[k_] = v_
                     self.extend_k_map[k_] = k
+
+
 def parse_target_values_from_vul_stack(vul_stack):
-    return [i['targetValues'] for i in vul_stack[0]]
+    target_values = [i['targetValues'] for i in vul_stack[0]]
+    if method_pool_is_3(vul_stack[0]):
+        target_values = [parse_target_value(x) for x in target_values]
+    return target_values
