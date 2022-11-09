@@ -528,5 +528,7 @@ def get_res_body(res_body, version):
         return res_body  # bytes
     elif version == 'v2':
         return base64.b64decode(res_body)  # bytes
+    elif version == 'v3':
+        return base64.b64decode(res_body)
     logger.info('no match version now version: {}'.format(version))
     return res_body
