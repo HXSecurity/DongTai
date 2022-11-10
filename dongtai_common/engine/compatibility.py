@@ -70,7 +70,9 @@ def highlight_target_value(target_value: str, ranges: List) -> str:
         ranges = sorted(ranges, key=lambda x: x['start'])
         final_str = []
         for range_ in ranges:
-            final_str.append(
-                f"<em>{value[range_['start']:range_['stop']]}</em>")
-        return "".join(final_str)
-    return f"<em>{value}</em>"
+            hightlinevalue = value[range_['start']:range_['stop']]
+            value = value[:range_[
+                'start']] + '<em style="color:red;">' + value[range_['start']:]
+            value = value[:range_['stop']] + '</em>' + value[range_['stop']:]
+        return value
+    return f'<em style="color:red;">{value}</em>'
