@@ -8,6 +8,7 @@ import copy
 
 from django.utils.functional import cached_property
 from collections import defaultdict
+from dongtai_common.engine.compatibility import method_pool_3_to_2, method_pool_is_3, parse_target_value
 
 logger = logging.getLogger('dongtai-engine')
 
@@ -34,7 +35,7 @@ class VulEngine(object):
         self.edge_code = 1
         self.taint_value = ''
         self.vul_type = None
-
+        self.version = 1
     @property
     def method_pool(self):
         """
@@ -53,9 +54,9 @@ class VulEngine(object):
         self._method_pool = sorted(method_pool,
                                    key=lambda e: e.__getitem__('invokeId'),
                                    reverse=True)
-        from dongtai_common.engine.compatibility import method_pool_3_to_2, method_pool_is_3
         if method_pool_is_3(method_pool[0]):
             self._method_pool = list(map(method_pool_3_to_2, self._method_pool))
+            self.version = 3
         self._method_pool = sorted(self._method_pool,
                                    key=lambda e: e.__getitem__('invokeId'),
                                    reverse=True)
@@ -399,6 +400,8 @@ class VulEngine(object):
             self.graph_data['nodes'].append(node)
 
     def result(self):
+        if self.version == 3:
+            self.taint_value = parse_target_value(self.taint_value)
         if self.vul_source_signature:
             return True, self.vul_stack, self.vul_source_signature, self.vul_method_signature, self.taint_value
         return False, None, None, None, None
