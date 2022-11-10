@@ -41,6 +41,7 @@ def method_pool_3_to_2(dic: dict) -> dict:
     dic['targetValues'] = ','.join(targetValues)
     return dic
 
+
 def parse_target_value(target_value: str) -> str:
     if not target_value:
         return target_value
@@ -53,8 +54,9 @@ def parse_target_value_length(target_value: str) -> int:
     if not target_value:
         return 0
     position = target_value.rfind('*')
-    len_of_origin = int(target_value[position+1::])
+    len_of_origin = int(target_value[position + 1::])
     return len_of_origin
+
 
 from typing import List
 
@@ -65,7 +67,7 @@ def highlight_target_value(target_value: str, ranges: List) -> str:
     if not value:
         return target_value
     if ranges and value and len(value) == value_origin_len:
-        ranges = sorted(ranges, key = lambda x: x['start'])
+        ranges = sorted(ranges, key=lambda x: x['start'])
         final_str = []
         for range_ in ranges:
             final_str.append(
