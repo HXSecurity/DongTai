@@ -68,6 +68,9 @@ def highlight_target_value(target_value: str, ranges: List) -> str:
     if not value:
         return target_value
     ranges = sorted(ranges, key=lambda x: x['start'])
+    for range_ in ranges:
+        if range_['start'] > value_origin_len or range_['stop'] > value_origin_len:
+            return f'<em style="color:red;">{value}</em>'
     if ranges and value and len(value) == value_origin_len:
         final_str = []
         str_dict = {ind: str_ for ind, str_ in enumerate(value)}
