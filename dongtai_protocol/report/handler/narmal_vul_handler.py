@@ -135,12 +135,6 @@ class NormalVulnHandler(BaseVulnHandler):
             f"{level_id} {vul_type} {vul_type_enable} {hook_type_id} {strategy_id}"
         )
         index = -1
-        for ind, stack in enumerate(self.app_caller):
-            if stack.startswith(
-                    "io.dongtai.iast.core.handler.hookpoint.SpyDispatcherImpl.collectMethodPool"
-            ):
-                index = ind
-
         if vul_type_enable == 0:
             return
         caller_message = self.app_caller[index + 2]
@@ -211,7 +205,8 @@ class NormalVulnHandler(BaseVulnHandler):
             strategy_id=strategy_id,
             uri=self.app_caller[index + 2],
             http_method=self.http_method,
-            agent__in=project_agents).order_by('-latest_time').first()
+            agent__in=project_agents,
+            is_del=0).order_by('-latest_time').first()
         project = IastProject.objects.filter(
             pk=self.agent.bind_project_id).first()
         if project:
