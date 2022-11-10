@@ -96,17 +96,18 @@ def highlight_target_value(target_value: str, ranges: List) -> str:
         str_dict = {}
         str_dict.update(str_dict_begin)
         str_dict.update(str_dict_end)
-        str_dict[begin_part_length+2] = '...'
+        str_dict[begin_part_length + 2] = '...'
         for range_ in ranges:
-            if range_['start'] in str_dict.keys(
-            ) and (range_['stop'] - 1) in str_dict.keys():
+            if range_['start'] in str_dict.keys() and (range_['stop'] -
+                                                       1) in str_dict.keys():
                 str_dict[
                     range_['start']] = '<em style="color:red;">' + str_dict[
                         range_['start']]
-                str_dict[range_['stop'] - 1] =  str_dict[range_['stop'] - 1] + '</em>'
+                str_dict[range_['stop'] -
+                         1] = str_dict[range_['stop'] - 1] + '</em>'
 
-            if range_['start'] in str_dict.keys(
-            ) and (range_['stop'] - 1) not in str_dict.keys():
+            if range_['start'] in str_dict.keys() and (
+                    range_['stop'] - 1) not in str_dict.keys():
                 str_dict[
                     range_['start']] = '<em style="color:red;">' + str_dict[
                         range_['start']]
@@ -125,9 +126,10 @@ def highlight_target_value(target_value: str, ranges: List) -> str:
             if range_['start'] not in str_dict.keys() or (
                     range_['stop']) not in str_dict.keys():
                 str_dict[begin_part_length +
-                        2] = '<em style="color:red;">' + '...' + '</em>'
+                         2] = '<em style="color:red;">' + '...' + '</em>'
         final_str = list(
-            map(lambda x: x[1], sorted(str_dict.items(), key=lambda kv: kv[0])))
+            map(lambda x: x[1], sorted(str_dict.items(),
+                                       key=lambda kv: kv[0])))
         return "".join(final_str)
 
     return f'<em style="color:red;">{value}</em>'
