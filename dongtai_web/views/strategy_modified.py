@@ -11,7 +11,6 @@ _ResponseSerializer = get_response_serializer()
 
 class StrategyCreateSerializer(serializers.Serializer):
     vul_name = serializers.CharField(help_text=_('The name of the vulnerability type targeted by the strategy'))
-    vul_type = serializers.CharField(help_text=_('Types of vulnerabilities targeted by the strategy'))
     state = serializers.CharField(help_text=_('This field indicates whether the vulnerability is enabled, 1 or 0'))
     vul_desc = serializers.CharField(help_text=_('Description of the corresponding vulnerabilities of the strategy'))
     level_id = serializers.IntegerField(
@@ -45,8 +44,6 @@ class StrategyModified(TalentAdminEndPoint):
             pk=id_).first()
         if not strategy:
             return R.failure()
-        if not HookType.objects.filter(vul_strategy=strategy).exists():
-            del data['vul_type']
         _update(strategy, data)
         HookType.objects.filter(vul_strategy=strategy,
                                 type=4).update(name=data['vul_name'])

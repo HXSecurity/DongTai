@@ -1080,30 +1080,6 @@
                 "source": "O",
                 "system_type": 1,
                 "target": "R",
-                "track": "",
-                "type": 1,
-                "value": "java.lang.String.split(java.lang.String)"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "false",
-                "language": 1,
-                "source": "O",
-                "system_type": 1,
-                "target": "R",
-                "track": "",
-                "type": 1,
-                "value": "java.lang.String.split(java.lang.String, int)"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "false",
-                "language": 1,
-                "source": "O",
-                "system_type": 1,
-                "target": "R",
                 "track": "false",
                 "type": 1,
                 "value": "java.lang.String.strip()"
