@@ -71,6 +71,6 @@ def highlight_target_value(target_value: str, ranges: List) -> str:
         final_str = []
         for range_ in ranges:
             final_str.append(
-                f"<emt>{value[range_['start']:range_['stop']]}</emt>")
+                f"<em>{value[range_['start']:range_['stop']]}</em>")
         return "".join(final_str)
-    return f"<emt>{value}</emt>"
+    return f"<em>{value}</em>"
