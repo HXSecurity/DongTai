@@ -26,7 +26,7 @@ def method_pool_3_to_2(dic: dict) -> dict:
             try:
                 sourceValues.append(pdict[position])
             except KeyError:
-                sourceValues.append('')
+                pass
     dic['sourceValues'] = ','.join(sourceValues)
     for position in dic['taintPosition']['target']:
         if position == 'O':
@@ -37,7 +37,7 @@ def method_pool_3_to_2(dic: dict) -> dict:
             try:
                 targetValues.append(pdict[position])
             except KeyError:
-                sourceValues.append('')
+                pass
     dic['targetValues'] = ','.join(targetValues)
     return dic
 

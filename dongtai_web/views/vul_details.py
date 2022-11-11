@@ -148,17 +148,27 @@ class VulDetail(UserEndPoint):
                             method["targetRange"][0]["ranges"]
                             if "targetRange" in method.keys()
                             and method["targetRange"] else [])
-                        method['sourceValues'] = parse_target_value(method['sourceValues'])
+                        method['sourceValues'] = parse_target_value(
+                            method['sourceValues'])
                         beforehighlight = method['targetValues']
+            else:
+                for method in method_note_pool:
+                    method['ori_targetValues'] = method['targetValues']
+                    method['ori_sourceValues'] = method['sourceValues']
+
             for i in range(method_counts):
                 method = method_note_pool[i]
                 if not isinstance(method, dict):
                     # 有错误数据情况，跳过 fix me
                     continue
-                class_name = method['originClassName'] if 'originClassName' in method else method['className']
+                class_name = method[
+                    'originClassName'] if 'originClassName' in method else method[
+                        'className']
                 method_name = method['methodName']
-                source = ', '.join([str(_hash) for _hash in method['sourceHash']])
-                target = ', '.join([str(_hash) for _hash in method['targetHash']])
+                source = ', '.join(
+                    [str(_hash) for _hash in method['sourceHash']])
+                target = ', '.join(
+                    [str(_hash) for _hash in method['targetHash']])
                 _item = f"{method['callerClass']}.{method['callerMethod']}()"
                 filename = method['callerClass']
                 line_number = method['callerLineNumber']
