@@ -405,9 +405,9 @@ def update_agent_status():
 
         vul_id_qs = IastReplayQueue.objects.filter(
             update_time__lte=timestamp - 60 * 5,
-            verify_time__is_null=True,
+            verify_time__isnull=True,
             replay_type=1).values('relation_id').distinct()
-        IastVulnerabilityModel.objects.filter(vul_id__in=vul_id_qs).update(
+        IastVulnerabilityModel.objects.filter(pk__in=vul_id_qs).update(
             status_id=3)
         logger.info(f'检测引擎状态更新成功')
     except Exception as e:
