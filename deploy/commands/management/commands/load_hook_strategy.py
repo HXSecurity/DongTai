@@ -10,7 +10,7 @@ from dongtai_common.models.hook_strategy import HookStrategy
 from dongtai_common.models.hook_type import HookType
 from django.forms.models import model_to_dict
 from collections import OrderedDict
-
+from dongtai_common.utils.validate import save_hook_stratefile_sha1sum
 
 class Command(BaseCommand):
     help = 'load hook_strategy'
@@ -27,22 +27,27 @@ class Command(BaseCommand):
         for strategy in full_strategies:
             if IastStrategyModel.objects.filter(
                     vul_type=strategy['vul_type'],
-                    #strategy__id__isnull=False,
                     system_type=1,
-            ).exists() or IastStrategyModel.objects.filter(
-                    vul_type=strategy['vul_type'], system_type=1).exists():
+            ).exists():
                 #已存在策略类型，不会重建
+                IastStrategyModel.objects.filter(
+                    vul_type=strategy['vul_type'],
+                    system_type=1,
+                ).update(
+                    **{
+                        your_key: strategy[your_key]
+                        for your_key in [
+                            'vul_desc', 'vul_desc_en', 'vul_desc_zh',
+                            'vul_fix', 'vul_fix_en', 'vul_fix_zh', 'vul_name',
+                            'vul_name_en', 'vul_name_zh', 'level'
+                        ]
+                    })
                 qs1 = IastStrategyModel.objects.filter(
                     vul_type=strategy['vul_type'],
                     system_type=1,
-                    strategy__id__isnull=False).values_list('id', flat=True)
-                qs2 = IastStrategyModel.objects.filter(
-                    vul_type=strategy['vul_type'],
-                    system_type=1,
-                    iastsensitiveinforule__id__isnull=False).values_list(
-                        'id', flat=True)
+                ).values_list('id', flat=True)
                 strategy_obj = IastStrategyModel.objects.filter(
-                    pk__in=list(qs1.union(qs2))).order_by('id').first()
+                    pk__in=qs1).order_by('id').first()
                 strategy_dict[strategy['vul_type']] = strategy_obj
                 continue
             if IastStrategyModel.objects.filter(
@@ -121,4 +126,5 @@ class Command(BaseCommand):
                         hook_strategy['language_id'] = v
                         HookStrategy.objects.create(hooktype=policy_hook_type,
                                                     **hook_strategy)
+        save_hook_stratefile_sha1sum()
         self.stdout.write(self.style.SUCCESS('Successfully load strategy .'))
