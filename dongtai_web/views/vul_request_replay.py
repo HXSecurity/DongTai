@@ -278,13 +278,12 @@ class RequestReplayEndPoint(UserEndPoint):
             return R.failure(msg="replay_type error")
         replay_type = const.REQUEST_REPLAY if replay_type is None else int(replay_type)
         replay_data = IastReplayQueue.objects.filter(id=replay_id).first()
-        if not replay_data:
+        if not replay_data :
             return R.failure(
                 status=203,
                 msg=_(
                     'Replay request does not exist or no permission to access')
             )
-
         if request.user.is_superuser == 1 or replay_data.agent.user_id == request.user.id:
             pass
         elif request.user.is_superuser == 2 and replay_data.agent.user_id != request.user.id:
@@ -304,17 +303,19 @@ class RequestReplayEndPoint(UserEndPoint):
             )
         if replay_data.state != const.SOLVED:
             return R.failure(msg=_('Replay request processing'))
-        replay_data = IastAgentMethodPoolReplay.objects.filter(
+        replay_data_method_pool = IastAgentMethodPoolReplay.objects.filter(
             replay_id=replay_id,
             replay_type=replay_type).values('res_header', 'res_body',
                                             'method_pool', 'id').first()
-        if replay_data:
+        if replay_data_method_pool:
             return R.success(
                 data={
                     'response':
-                    self.parse_response(replay_data['res_header'],
-                                        replay_data['res_body']),
-                    'method_pool_replay_id':replay_data['id'],
+                    self.parse_response(replay_data_method_pool['res_header'],
+                                        replay_data_method_pool['res_body']),
+                    'method_pool_replay_id':replay_data_method_pool['id'],
                 })
         else:
+            if replay_data.create_time < (int(time.time()) - 60 * 5):
+                return R.failure(status=203, msg=_('重放超时'))
             return R.failure(status=203, msg=_('Replay failed'))
