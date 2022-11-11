@@ -695,6 +695,7 @@ else:
     METHOD_POOL_INDEX = ''
     ASSET_INDEX = ''
 
+AUTO_UPDATE_HOOK_STRATEGY = config.getboolean('other', 'auto_update_hook_strategy',fallback=False)
 
 def is_gevent_monkey_patched() -> bool:
     try:
