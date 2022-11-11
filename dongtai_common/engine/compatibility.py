@@ -7,6 +7,7 @@ KEY_MAPPING = {'O':'objValue','R':'retValue'}
 
 def method_pool_3_to_2(dic: dict) -> dict:
     pdict = {}
+    import pdb;pdb.set_trace()
     if 'parameterValues' not in dic.keys():
         dic['parameterValues'] = []
     if 'source' not in dic['taintPosition'].keys():
