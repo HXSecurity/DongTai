@@ -276,9 +276,10 @@ class RequestReplayEndPoint(UserEndPoint):
                 const.API_REPLAY, const.REQUEST_REPLAY
         ]:
             return R.failure(msg="replay_type error")
-        replay_type = const.REQUEST_REPLAY if replay_type is None else int(replay_type)
+        replay_type = const.REQUEST_REPLAY if replay_type is None else int(
+            replay_type)
         replay_data = IastReplayQueue.objects.filter(id=replay_id).first()
-        if not replay_data :
+        if not replay_data:
             return R.failure(
                 status=203,
                 msg=_(
