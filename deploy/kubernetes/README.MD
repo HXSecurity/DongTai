@@ -32,14 +32,17 @@ Before install, you have to make sure the helm is available. Follow [this guide]
    ```
    --set storage.storageClassName=storageclass
    or
-   --set storage.persistentVolumeClaim=pvc
+   --set storage.persistentVolumeClaim=pvc (will be enabled by default)
+   
+   Or do not use the storage class, will affect the use of some features, such as (agent log page collection)
+   --set storage.persistentVolumeClaim=null
    ```
    
 2. Install
 
    ```
    helm install project --create-namespace -n dongtai dongtai/dongtai-iast \
-   --set storage.persistentVolumeClaim=pvc
+   --set storage.persistentVolumeClaim=null
    ```
    
    This command will deploy dongtai servers in dongtai namespace and expose service with `ClusterIP`.
@@ -73,16 +76,16 @@ You can also pass in a single value using **`--set`**, for example, you can swit
 
 ```shell
 helm install project --create-namespace -n dongtai dongtai/dongtai-iast \
---set storage.persistentVolumeClaim=pvc \
+--set storage.persistentVolumeClaim=null \
 --set accessType=NodePort --set NodePort=30080 \
---set tag=1.8.5
+--set tag=1.9.0
 ```
 
 If you need to modify somaxconn (128) 
 
 ```
  helm install project --create-namespace -n dongtai dongtai/dongtai-iast \
- --set storage.persistentVolumeClaim=pvc \
+ --set storage.persistentVolumeClaim=null \
  --set somaxconn=1024
 ```
 
