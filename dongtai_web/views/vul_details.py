@@ -133,15 +133,23 @@ class VulDetail(UserEndPoint):
             method_counts = len(method_note_pool)
             from dongtai_common.engine.compatibility import parse_target_value,highlight_target_value, method_pool_is_3
             if method_note_pool and method_pool_is_3(method_note_pool[0]):
+                beforehighlight = ""
                 for method in method_note_pool:
-                    method['ori_targetValues'] = method['targetValues']
-                    method['ori_sourceValues'] = method['sourceValues']
-                    method['targetValues'] = highlight_target_value(
-                        method['ori_targetValues'],
-                        method["targetRange"][0]["ranges"]
-                        if "targetRange" in method.keys()
-                        and method["targetRange"] else [])
-                    method['sourceValues'] = parse_target_value(method['sourceValues'])
+                    if method['tag'] == 'sink':
+                        method['ori_targetValues'] = method['targetValues']
+                        method['ori_sourceValues'] = method['sourceValues']
+                        method['sourceValues'] = beforehighlight
+                        method['ori_targetValues'] = method['targetValues']
+                    else:
+                        method['ori_targetValues'] = method['targetValues']
+                        method['ori_sourceValues'] = method['sourceValues']
+                        method['targetValues'] = highlight_target_value(
+                            method['ori_targetValues'],
+                            method["targetRange"][0]["ranges"]
+                            if "targetRange" in method.keys()
+                            and method["targetRange"] else [])
+                        method['sourceValues'] = parse_target_value(method['sourceValues'])
+                        beforehighlight = method['targetValues']
             for i in range(method_counts):
                 method = method_note_pool[i]
                 if not isinstance(method, dict):
