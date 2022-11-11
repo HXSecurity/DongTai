@@ -301,6 +301,8 @@ class RequestReplayEndPoint(UserEndPoint):
                 msg=_(
                     'Replay request does not exist or no permission to access')
             )
+        if replay_data.create_time < (int(time.time()) - 60 * 5):
+            return R.failure(status=203, msg=_('重放超时'))
         if replay_data.state != const.SOLVED:
             return R.failure(msg=_('Replay request processing'))
         replay_data_method_pool = IastAgentMethodPoolReplay.objects.filter(
@@ -313,9 +315,8 @@ class RequestReplayEndPoint(UserEndPoint):
                     'response':
                     self.parse_response(replay_data_method_pool['res_header'],
                                         replay_data_method_pool['res_body']),
-                    'method_pool_replay_id':replay_data_method_pool['id'],
+                    'method_pool_replay_id':
+                    replay_data_method_pool['id'],
                 })
         else:
-            if replay_data.create_time < (int(time.time()) - 60 * 5):
-                return R.failure(status=203, msg=_('重放超时'))
             return R.failure(status=203, msg=_('Replay failed'))
