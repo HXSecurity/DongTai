@@ -197,8 +197,8 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     lambda x: (x[0].replace('search_after_', ''), x[1]),
                     filter(lambda x: x[0].startswith('search_after_'),
                            request.data.items()))))
+        q = Q()
         if 'id' in request.data.keys():
-            q = q if 'q' in vars() else Q()
             q = assemble_query(search_after_fields, 'lte', q, operator.and_)
             if search_mode == 1:
                 q = assemble_query(search_fields_, 'regex', Q(), operator.or_)
@@ -237,7 +237,6 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     pool_sign__in=[i['pool_sign'] for i in method_pools
                                    ]).order_by('-update_time').values().all())
         else:
-            q = q if 'q' in vars() else Q()
             q = assemble_query(search_after_fields, 'lte', q, operator.and_)
             if search_mode == 1:
                 q = assemble_query(search_fields_, 'regex', Q(), operator.or_)

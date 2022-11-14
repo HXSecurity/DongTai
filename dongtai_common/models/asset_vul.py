@@ -83,74 +83,7 @@ class IastVulAssetRelation(models.Model):
                                            on_delete=models.DO_NOTHING,
                                            default="")
 
-    @property
-    def effected_version_list(self):
-        if self.vul_asset_metadata_id:
-            self._effected_version_list = self.vul_asset_metadata.effected_version_list
-            return self.vul_asset_metadata.effected_version_list
-        if self._effected_version_list:
-            return self._effected_version_list
-        return list()
 
-    @effected_version_list.setter
-    def effected_version_list_get(self, value):
-        self._effected_version_list = value
-
-    @property
-    def vul_dependency_path(self):
-        if self.vul_asset_metadata_id:
-            self._vul_dependency_path = self.vul_asset_metadata.vul_dependency_path
-            return self.vul_asset_metadata.vul_dependency_path
-        if self._vul_dependency_path:
-            return self._vul_dependency_path
-        return list()
-
-    @vul_dependency_path.setter
-    def vul_dependency_path_get(self, value):
-        self._vul_dependency_path = value
-
-    @property
-    def fixed_version_list(self):
-        if self.vul_asset_metadata_id:
-            self._fixed_version_list = self.vul_asset_metadata.fixed_version_list
-            return self.vul_asset_metadata.fixed_version_list
-        if self._fixed_version_list:
-            return self._fixed_version_list
-        return list()
-
-    @fixed_version_list.setter
-    def fixed_version_list_get(self, value):
-        self._fixed_version_list = value
-
-    @property
-    def nearest_fixed_version(self):
-        if self.vul_asset_metadata_id:
-            self._nearest_fixed_version = self.vul_asset_metadata.nearest_fixed_version
-            return self.vul_asset_metadata.nearest_fixed_version
-        if self._nearest_fixed_version:
-            return self._nearest_fixed_version
-        return dict()
-
-    @nearest_fixed_version.setter
-    def nearest_fixed_version_get(self, value):
-        self._nearest_fixed_version = value
-
-    def save(self, *args, **kwargs):
-        field_list = ("vul_dependency_path", "effected_version_list",
-                      "fixed_version_list", "nearest_fixed_version")
-        if not self.vul_asset_metadata_id and any(
-            (getattr(self, "_" + field, None) for field in field_list)):
-            try:
-                key: str = self.asset_vul.sid + self.asset.package_name
-                IastAssetVulRelationMetaData.objects.create(
-                    vul_asset_key=key,
-                    **{
-                        field: getattr(self, "_" + field)
-                        for field in field_list
-                    })
-            except IntegrityError as e:
-                pass
-        super(IastVulAssetRelation, self).save(*args, **kwargs)
 
     class Meta:
         managed = get_managed()
