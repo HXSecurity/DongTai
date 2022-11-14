@@ -28,8 +28,6 @@ logger = logging.getLogger("django")
 
 class _ProjectsAddBodyArgsSerializer(serializers.Serializer):
     name = serializers.CharField(help_text=_('The name of project'))
-    agent_ids = serializers.CharField(help_text=_(
-        'The id corresponding to the agent, use, for segmentation.'))
     scan_id = serializers.IntegerField(
         help_text=_("The id corresponding to the scanning strategy."))
     version_name = serializers.CharField(
@@ -72,16 +70,18 @@ class ProjectAdd(UserEndPoint):
             with transaction.atomic():
                 name = request.data.get("name")
                 mode = "插桩模式"
-                scan_id = int(request.data.get("scan_id",0))
+                scan_id = int(request.data.get("scan_id", 0))
                 auth_users = self.get_auth_users(request.user)
                 if scan_id == 5:
                     scan = IastStrategyUser.objects.filter(id=scan_id).first()
                 else:
-                    scan = IastStrategyUser.objects.filter(id=scan_id, user__in=auth_users).first()
-                agent_ids = request.data.get("agent_ids", None)
+                    scan = IastStrategyUser.objects.filter(
+                        id=scan_id, user__in=auth_users).first()
                 base_url = request.data.get('base_url', None)
-                test_req_header_key = request.data.get('test_req_header_key',None)
-                test_req_header_value = request.data.get('test_req_header_value', None)
+                test_req_header_key = request.data.get('test_req_header_key',
+                                                       None)
+                test_req_header_value = request.data.get(
+                    'test_req_header_value', None)
                 description = request.data.get('description', None)
                 pid = request.data.get("pid", 0)
                 accessable_ips = []
@@ -94,20 +94,15 @@ class ProjectAdd(UserEndPoint):
                 if accessable_ips:
                     parsed_url = urlparse(base_url)
                     if parsed_url.netloc not in parsed_url:
-                        return R.failure(status=202, msg=_('base_url validate failed'))
+                        return R.failure(status=202,
+                                         msg=_('base_url validate failed'))
                 if base_url and not url_validate(base_url):
-                    return R.failure(status=202, msg=_('base_url validate failed'))
-                if agent_ids:
-                    try:
-                        agents = [int(i) for i in agent_ids.split(',')]
-                    except Exception as e:
-                        print(e)
-                        return R.failure(status=202, msg=_('Agent parse error'))
-                else:
-                    agents = []
+                    return R.failure(status=202,
+                                     msg=_('base_url validate failed'))
                 if not scan_id or not name or not mode:
                     logger.error('require base scan_id and name')
-                    return R.failure(status=202, msg=_('Required scan strategy and name'))
+                    return R.failure(status=202,
+                                     msg=_('Required scan strategy and name'))
 
                 version_name = request.data.get("version_name", "")
                 if not version_name:
@@ -115,18 +110,24 @@ class ProjectAdd(UserEndPoint):
                 vul_validation = request.data.get("vul_validation", None)
 
                 if pid:
-                    project = IastProject.objects.filter(id=pid, user__in=auth_users).first()
+                    project = IastProject.objects.filter(
+                        id=pid, user__in=auth_users).first()
                     project.name = name
                 else:
 
-                    project = IastProject.objects.filter(name=name, user=request.user).first()
+                    project = IastProject.objects.filter(
+                        name=name, user=request.user).first()
                     if not project:
-                        project = IastProject.objects.create(name=name, user=request.user)
+                        project = IastProject.objects.create(name=name,
+                                                             user=request.user)
                     else:
-                        return R.failure(status=203, msg=_('Failed to create, the application name already exists'))
+                        return R.failure(
+                            status=203,
+                            msg=
+                            _('Failed to create, the application name already exists'
+                              ))
                 versionInfo = IastProjectVersion.objects.filter(
-                    project_id=project.id,
-                    current_version=1,
+                    project_id=project.id, current_version=1,
                     status=1).first()
                 if versionInfo:
                     project_version_id = versionInfo.id
@@ -140,26 +141,19 @@ class ProjectAdd(UserEndPoint):
                     "current_version": 1
                 }
                 if not versionInfo or not (
-                            versionInfo.version_name == version_name
-                        and (versionInfo.description == description or not description)):
-                    result = version_modify(project.user,auth_users,
+                        versionInfo.version_name == version_name and
+                    (versionInfo.description == description
+                     or not description)):
+                    result = version_modify(project.user, auth_users,
                                             current_project_version)
                     if result.get("status", "202") == "202":
                         logger.error('version update failure')
                         return R.failure(status=202,
-                                         msg=result.get('msg',
-                                                        _("Version Update Error")))
+                                         msg=result.get(
+                                             'msg', _("Version Update Error")))
                     else:
-                        project_version_id = result.get("data", {}).get("version_id", 0)
-
-                if agents:
-                    haveBind = IastAgent.objects.filter(
-                        ~Q(bind_project_id=project.id),
-                        id__in=agents,
-                        bind_project_id__gt=0,
-                        user__in=auth_users).exists()
-                    if haveBind:
-                        return R.failure(status=202, msg=_('Agent has been bound by other application'))
+                        project_version_id = result.get("data", {}).get(
+                            "version_id", 0)
 
                 project.scan = scan
                 project.mode = mode
@@ -168,17 +162,6 @@ class ProjectAdd(UserEndPoint):
                 project.latest_time = int(time.time())
                 if vul_validation is not None:
                     project.vul_validation = vul_validation
-                if agents:
-                    project.agent_count = IastAgent.objects.filter(
-                        Q(id__in=agents) | Q(project_name=name),
-                        user__in=auth_users,
-                    ).update(bind_project_id=project.id, project_version_id=project_version_id)
-                else:
-                    project.agent_count = IastAgent.objects.filter(
-                        project_name=name, user=request.user).update(
-                            bind_project_id=-1,
-                            project_version_id=project_version_id)
-
                 if base_url:
                     project.base_url = replace_ending(base_url, '/', '')
                 if test_req_header_key:
@@ -186,9 +169,8 @@ class ProjectAdd(UserEndPoint):
                 if test_req_header_value:
                     project.test_req_header_value = test_req_header_value
                 project.save(update_fields=[
-                    'name', 'scan_id', 'mode', 'agent_count',
-                    'latest_time', 'vul_validation', 'base_url',
-                    'test_req_header_key', 'test_req_header_value'
+                    'name', 'scan_id', 'mode', 'latest_time', 'vul_validation',
+                    'base_url', 'test_req_header_key', 'test_req_header_value'
                 ])
                 return R.success(msg='操作成功')
         except Exception as e:
