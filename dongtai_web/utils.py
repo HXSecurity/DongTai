@@ -25,7 +25,7 @@ from dongtai_common.models.api_route import IastApiRoute, IastApiMethod, IastApi
 from dongtai_common.models.agent_method_pool import MethodPool
 from rest_framework.serializers import Serializer
 from dongtai_conf.settings import OPENAPI
-
+from typing import Optional, List , Dict, Union
 
 def get_model_field(model, exclude=[], include=[]):
     fields = [field.name for field in model._meta.fields]
@@ -73,7 +73,7 @@ def assemble_query_2(condictions: dict,
 
 
 def extend_schema_with_envcheck(querys: list = [],
-                                request_bodys: list = [],
+                                request_bodys: Optional[Union[List,Dict]] = [],
                                 response_bodys: list = [],
                                 response_schema=None,
                                 **kwargs):
