@@ -9,9 +9,10 @@ dir_set.remove('manage.py')
 dir_set.remove('setup.py')
 
 dir_set = set(filter(lambda x: 'deploy/commands' not in x, dir_set))
-ntheards = os.cpu_count()
+dir_set = set(filter(lambda x: not x.startswith('test'), dir_set))
+nthreads = os.cpu_count()
 
 setup(ext_modules=cythonize(dir_set,
                             compiler_directives={'language_level': 3},
                             exclude_failures=True,
-                            ntheards=ntheards))
+                            nthreads=nthreads))
