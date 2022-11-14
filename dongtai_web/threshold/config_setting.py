@@ -204,14 +204,14 @@ def get_metric_types(metrics):
     str_list = []
     for metric in metrics:
         str_list.append(str(MetricType(metric['metric_type']).label))
-    return str(_("、")).join(str_list)
+    return "、".join(str_list)
 
 
 def get_targets(targets):
     str_list = []
     for target in targets:
         str_list.append(str(TargetType(target['target_type']).label))
-    res = str(_("、")).join(str_list)
+    res = "、".join(str_list)
     if not res:
         return str(_("全部"))
     return res
