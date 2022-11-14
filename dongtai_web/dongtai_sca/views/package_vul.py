@@ -14,6 +14,9 @@ from dongtai_web.dongtai_sca.common.sca_vul import GetScaVulData
 from dongtai_common.models.asset_vul import IastVulAssetRelation
 from dongtai_common.models.asset import Asset
 from collections import defaultdict
+import logging 
+
+logger = logging.getLogger('dongtai-webapi')
 
 LEVEL_MAP = {'critical': '严重', 'high': '高危', 'medium': '中危', 'low': '低危'}
 
