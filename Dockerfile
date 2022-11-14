@@ -3,27 +3,28 @@ ARG VERSION
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
-ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US.UTF-8
 ENV TZ=Asia/Shanghai
 
 RUN apt-get update -y \
-    && apt install -y gettext gcc make cmake libmariadb-dev curl libc6-dev unzip cron  openjdk-11-jdk fonts-wqy-microhei vim build-essential ninja-build cython3 pybind11-dev libre2-dev locales
-#     htop sysstat net-tools iproute2 procps lsof
+    && apt install -y gettext gcc make cmake libmariadb-dev curl libc6-dev unzip cron fonts-wqy-microhei vim build-essential ninja-build cython3 pybind11-dev libre2-dev locales \
+#     htop sysstat net-tools iproute2 procps lsof \
+    openjdk-11-jdk wkhtmltopdf \
+    && sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen \
+    && locale-gen
 
-RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
-    locale-gen
-
-RUN curl -L https://github.com/Endava/cats/releases/download/cats-7.0.1/cats-linux -o  /usr/bin/cats \
-    && chmod +x /usr/bin/cats \
-    && curl -L https://charts.dongtai.io/apk/wkhtmltopdf -o /usr/bin/wkhtmltopdf \
-    && chmod +x /usr/bin/wkhtmltopdf
+# RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
+#     locale-gen
+# RUN curl -L https://github.com/Endava/cats/releases/download/cats-7.0.1/cats-linux -o  /usr/bin/cats \
+#     && chmod +x /usr/bin/cats \
+#     && curl -L https://charts.dongtai.io/apk/wkhtmltopdf -o /usr/bin/wkhtmltopdf \
+#     && chmod +x /usr/bin/wkhtmltopdf
+# COPY requirements.txt /opt/dongtai/webapi/requirements.txt
+# RUN pip3 install -r /opt/dongtai/webapi/requirements.txt
 
 COPY Pipfile .
 COPY Pipfile.lock .
 RUN pip install pipenv && python3 -m pipenv sync --system 
-#COPY requirements.txt /opt/dongtai/webapi/requirements.txt
-#RUN pip3 install -r /opt/dongtai/webapi/requirements.txt
 
 # debug performance ...
 COPY . /opt/dongtai
