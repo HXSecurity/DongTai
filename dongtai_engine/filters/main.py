@@ -1,7 +1,7 @@
 from urllib.parse import urlparse
 
 
-def vul_filter(stack, source_sign, sink_sign, taint_value: list, vul_type, agent_id):
+def vul_filter(stack, source_sign, sink_sign, taint_value, vul_type, agent_id):
     if vul_type == 'reflected-xss':
         target_signature = stack[0][0]['signature']
         filter_source_signature = [

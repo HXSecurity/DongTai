@@ -126,7 +126,7 @@ from functools import lru_cache
 
 
 @lru_cache(maxsize=128)
-def get_location_data() -> dict:
+def get_location_data() -> defaultdict:
     try:
         with open('/opt/dongtai/static/data/java_params.json') as fp:
             data = json.load(fp)
@@ -178,8 +178,8 @@ def get_http_locationstr(method_pool: MethodPool,
 
 
 def parse_taint_position(source_method, vul_meta, taint_value,
-                         vul_stack) -> dict:
-    param_names: dict = defaultdict(lambda: [], {})
+                         vul_stack) -> defaultdict:
+    param_names: defaultdict = defaultdict(lambda: [], {})
     target_values: List[str] = list(
         filter(lambda x: x, parse_target_values_from_vul_stack(vul_stack)))
     for taint_value in target_values:
@@ -207,7 +207,7 @@ def get_original_url(uri: str, url_desc: str) -> str:
 
 from dongtai_common.engine.compatibility import method_pool_3_to_2
 
-def get_real_url(method_pools: dict) -> str:
+def get_real_url(method_pools: list) -> str:
     for method_pool in method_pools:
         if method_pool[
                 'signature'] == 'org.springframework.web.util.pattern.PathPattern.getPatternString()':
