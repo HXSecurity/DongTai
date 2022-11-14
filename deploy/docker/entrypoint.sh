@@ -1,5 +1,6 @@
 #!/bin/bash
 echo '启动uwsgi服务'
+/bin/bash -c 'mkdir -p /tmp/{logstash/{batchagent,report/{img,word,pdf,excel,html}},iast_cache/package}'
 python manage.py compilemessages  
 sleep 2
 python /opt/dongtai/deploy/docker/version_update.py || true
