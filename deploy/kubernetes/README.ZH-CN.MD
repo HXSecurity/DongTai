@@ -31,13 +31,16 @@
    ```
    --set storage.storageClassName=storageclass
    or
-   --set storage.persistentVolumeClaim=pvc
+   --set storage.persistentVolumeClaim=pvc（默认会启用）
+   
+   或者不使用存储类，会影响部分功能使用，如（agent日志页面收集）
+   --set storage.persistentVolumeClaim=null
    ```
    
 2. 安装
 
    ```
-   helm install project --create-namespace -n dongtai dongtai/dongtai-iast --set storage.persistentVolumeClaim=pvc
+   helm install project --create-namespace -n dongtai dongtai/dongtai-iast --set storage.persistentVolumeClaim=null
    ```
    
    这个命令将会在dongtai命名空间部署 `Dongtai` 服务,并且使用 `ClusterIP` 方式暴露服务.
@@ -71,7 +74,7 @@ helm install project --create-namespace -n dongtai dongtai/dongtai-iast \
 
 ```shell
 helm install project --create-namespace -n dongtai dongtai/dongtai-iast \
---set storage.persistentVolumeClaim=pvc \
+--set storage.persistentVolumeClaim=null \
 --set accessType=NodePort --set NodePort=30080 \
 --set tag=1.8.5
 ```
@@ -79,7 +82,7 @@ helm install project --create-namespace -n dongtai dongtai/dongtai-iast \
 
 ```
 helm install project --create-namespace -n dongtai dongtai/dongtai-iast \
---set storage.persistentVolumeClaim=pvc \
+--set storage.persistentVolumeClaim=null \
 --set somaxconn=1024
 ```
 
