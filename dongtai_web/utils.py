@@ -43,7 +43,7 @@ def get_model_order_options(*args, **kwargs):
     return order_fields + list(map(lambda x: ''.join(['-', x]), order_fields))
 
 
-def assemble_query(condictions: dict,
+def assemble_query(condictions: List,
                    lookuptype='',
                    base_query=Q(),
                    operator_=operator.or_):
@@ -213,8 +213,8 @@ def checkcover(api_route, agents, http_method=None):
 
 
 def checkcover_batch(api_route, agents):
-    uri_hash = [hashlib.sha1(api_route.path.encode('utf-8')).hexdigest()
-                for api_route in api_route.only('path')]
+    uri_hash = [hashlib.sha1(api_route_.path.encode('utf-8')).hexdigest()
+                for api_route_ in api_route.only('path')]
     cover_count = MethodPool.objects.filter(
         uri_sha1__in=uri_hash,
         agent__in=agents).values('uri_sha1').distinct().count()

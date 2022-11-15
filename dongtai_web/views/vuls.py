@@ -202,6 +202,11 @@ class VulsEndPoint(UserEndPoint):
         }
         auth_users = self.get_auth_users(request.user)
         auth_agents = self.get_auth_agents(auth_users)
+        try:
+            page = int(request.query_params.get('page', 1))
+            page_size = int(request.query_params.get("pageSize", 20))
+        except ValueError as e:
+            return R.failure(_("Parameter error"))
         if auth_agents is None:
             return R.success(page={}, data=[], msg=_('No data'))
 
@@ -291,8 +296,6 @@ class VulsEndPoint(UserEndPoint):
         if allType:
             for item in allType:
                 allTypeArr[item.id] = item.name_value
-        page = request.query_params.get('page', 1)
-        page_size = request.query_params.get("pageSize", 20)
         page_summary, page_data = self.get_paginator(queryset, page, page_size)
         datas = VulSerializer(page_data, many=True).data
         pro_length = len(datas)

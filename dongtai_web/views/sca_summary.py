@@ -251,7 +251,7 @@ class ScaSummary(UserEndPoint):
         return R.success(data=end['data'])
 
     def get_extend_data(self, end: dict, base_query_sql: str,
-                        asset_aggr_where: str, sql_params: tuple):
+                        asset_aggr_where: str, sql_params: list):
         return end, base_query_sql, asset_aggr_where, sql_params
 
     def get_data_from_es(self, user_id, es_query):
