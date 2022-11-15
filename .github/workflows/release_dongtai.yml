@@ -78,16 +78,6 @@ jobs:
             dongtai/dongtai-server:latest
             dongtai/dongtai-server:${{ steps.release.outputs.version }}
 
-      #- uses: actions/checkout@master
-      #- name: deploy to cluster
-      #  uses: wahyd4/kubectl-helm-action@master
-      #  env:
-      #    KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-      #  with:
-      #    args: |
-      #      find .github/deploy/deploy-dongtai-server-prod.yml -type f -exec sed -i 's/VERSION/${{ steps.release.outputs.version }}/g' {} \;
-      #      ls .github/deploy/deploy-dongtai-server-prod.yml | xargs -I {} kubectl apply -f {}
-
       - name: finish build
         uses: joelwmale/webhook-action@master
         with:
