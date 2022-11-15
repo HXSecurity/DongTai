@@ -85,6 +85,10 @@ def cached(function,
     return get_cache_or_call
 
 
+
 def cached_decorator(random_range, use_celery_update=False):
-    return lambda x: cached(
-        x, random_range, use_celery_update=use_celery_update)
+
+    def _noname(function):
+        return cached(function, random_range, use_celery_update=use_celery_update)
+
+    return _noname
