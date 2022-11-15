@@ -417,6 +417,7 @@
                 "sha256:ea8b35d0da49f7b2ee99a79125f1943e033431dd114726d6643cc35de619230e"
             ],
             "index": "pypi",
+            "markers": null,
             "version": "==1.12.0"
         },
         "django-stubs-ext": {
@@ -475,6 +476,7 @@
                 "sha256:6e8a80a0716d8af02aa387dae47f8ef97b6c0efdf159d83a5918d582f8b1ea07"
             ],
             "index": "pypi",
+            "markers": null,
             "version": "==1.7.0"
         },
         "docxcompose": {
@@ -1401,11 +1403,11 @@
         },
         "types-awscrt": {
             "hashes": [
-                "sha256:0f1a233ab54fd51c7cbaa3265e73680c9568263cc67ed706093cb77b3bdef9ac",
-                "sha256:9ad0dd32ee2d4d8169222c134d2383a72857bd5c2b796c69e447530ad8a3b574"
+                "sha256:faa90585ef8f4e6e85fde17ad2c04604717a7978840416c92b7adddbf6fe5793",
+                "sha256:ff24dcbed0d1d27bc2565702af0a2ae5eb73223de87dfe3e4e1bf2eaf00a57ec"
             ],
             "markers": "python_version >= '3.7' and python_version < '4.0'",
-            "version": "==0.15.2"
+            "version": "==0.15.3"
         },
         "types-markdown": {
             "hashes": [
