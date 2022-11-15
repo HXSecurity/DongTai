@@ -29,7 +29,7 @@ def get_vul_levels_dict(queryset: QuerySet) -> defaultdict:
     return vul_levels_dict
 
 
-def get_project_language(queryset: QuerySet) -> dict:
+def get_project_language(queryset: QuerySet) -> defaultdict:
     project_languages = IastAgent.objects.values(
         'bind_project_id', 'language').filter(bind_project_id__in=list(
             queryset.values_list('id', flat=True))).distinct()
