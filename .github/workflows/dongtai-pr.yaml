@@ -1,0 +1,26 @@
+name: dongtai-pr
+on:
+  push:
+  pull_request:
+
+jobs:
+  run_if:
+    if: ${{ github.event_name == 'push' && github.repository_owner == 'HXSecurity' && github.ref == 'refs/heads/main'}}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v1
+      - name: Generate version file
+        run: |
+           git checkout -b pr@main@v${{github.run_number}}
+           git remote set-url origin --push --add '${{ secrets.DONGTAI_GITHUB_TOKEN_ALL }}'
+           git push --set-upstream origin pr@main@v${{github.run_number}}
+
+  generic_handler:
+    if: ${{ github.repository_owner == 'HXSecurityBusiness' }}
+    name: pr
+    runs-on: ubuntu-latest
+    steps:
+      - uses: tscuite/action-generic-handler@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.DONGTAI_GITHUB_TOKEN_ALL_CLIENT }}
