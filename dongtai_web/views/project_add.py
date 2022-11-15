@@ -157,7 +157,6 @@ class ProjectAdd(UserEndPoint):
 
                 project.scan = scan
                 project.mode = mode
-                project.agent_count = len(agents)
                 # project.user = request.user
                 project.latest_time = int(time.time())
                 if vul_validation is not None:
@@ -174,7 +173,7 @@ class ProjectAdd(UserEndPoint):
                 ])
                 return R.success(msg='操作成功')
         except Exception as e:
-            logger.error(e)
+            logger.error(e,exc_info=e)
             return R.failure(status=202, msg=_('Parameter error'))
 
 
