@@ -54,10 +54,13 @@ class PreHeatRegister:
         annotation_dict = function.__annotations__.copy()
         if 'return' in annotation_dict:
             del annotation_dict['return']
-        if not annotation_dict == {'user_id': int}:
+
+        if annotation_dict == {'user_id': int} or annotation_dict == {'user_id': 'int'}:
+            pass
+        else:
             logger.info(f'{function.__name__} annotations not fit in')
             raise PreHeatException(
-                'function is not fit in , please  annotation user_id :int in params'
+                'function {function.__name__} is not fit in , please  annotation user_id :int in params'
             )
         if function in cls.functions:
             logger.info(
