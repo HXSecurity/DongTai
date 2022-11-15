@@ -93,7 +93,7 @@ class SaasMethodPoolHandler(IReportHandler):
         :return:
         """
         headers = SaasMethodPoolHandler.parse_headers(self.http_req_header)
-        save_project_header(headers.keys(), self.agent_id)
+        save_project_header(list(headers.keys()), self.agent_id)
         add_new_api_route(self.agent_id, self.http_uri, self.http_method)
         import base64
         params_dict = get_params_dict(base64.b64decode(self.http_req_header),

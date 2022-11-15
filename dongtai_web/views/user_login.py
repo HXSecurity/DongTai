@@ -19,13 +19,14 @@ class UserLogin(UserEndPoint):
     name = "user_views_login"
     description = _("User login")
 
-    @extend_schema_with_envcheck([], {
+    def post(self, request):
+        """{
         'username': "",
         'password': "",
         'captcha_hash_key': "",
         'captcha': ""
-    })
-    def post(self, request):
+        }
+        """
         try:
             captcha_hash_key = request.data["captcha_hash_key"]
             captcha = request.data["captcha"]

@@ -142,4 +142,4 @@ class AgentHardencodeTestCase(AgentTestCase):
             signature_value="3490508379d065fe3fcb80042b62f630f7588606").first(
         )
         for i in asset.iastvulassetrelation_set.all():
-            assert len(i.vul_dependency_path) > 0
+            assert len(i.vul_asset_metadata.vul_dependency_path) > 0
