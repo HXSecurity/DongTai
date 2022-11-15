@@ -17,7 +17,7 @@ from django.db.models import QuerySet
 from collections import defaultdict
 
 
-def get_vul_levels_dict(queryset: QuerySet) -> dict:
+def get_vul_levels_dict(queryset: QuerySet) -> defaultdict:
     vul_levels = IastVulnerabilityModel.objects.values(
         'level__name_value', 'level', 'agent__bind_project_id').filter(
             agent__bind_project_id__in=list(
@@ -29,7 +29,7 @@ def get_vul_levels_dict(queryset: QuerySet) -> dict:
     return vul_levels_dict
 
 
-def get_project_language(queryset: QuerySet) -> dict:
+def get_project_language(queryset: QuerySet) -> defaultdict:
     project_languages = IastAgent.objects.values(
         'bind_project_id', 'language').filter(bind_project_id__in=list(
             queryset.values_list('id', flat=True))).distinct()
