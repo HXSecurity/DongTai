@@ -9,6 +9,7 @@ dir_set.remove('setup.py')
 
 dir_set = set(filter(lambda x: 'deploy/commands' not in x, dir_set))
 dir_set = set(filter(lambda x: 'test' not in x, dir_set))
+dir_set = set(filter(lambda x: 'migrations' not in x, dir_set))
 
 setup(ext_modules=cythonize(
     dir_set,
