@@ -7,7 +7,7 @@ ENV LANGUAGE=en_US.UTF-8
 ENV TZ=Asia/Shanghai
 
 RUN apt-get update -y \
-    && apt install -y --no-install-recommends gettext gcc make cmake libmariadb-dev curl libc6-dev unzip cron fonts-wqy-microhei vim build-essential ninja-build cython3 pybind11-dev libre2-dev locales \
+		&& apt install -y gettext gcc make cmake libmariadb-dev curl libc6-dev unzip cron fonts-wqy-microhei vim build-essential ninja-build cython3 pybind11-dev libre2-dev locales \
 #     htop sysstat net-tools iproute2 procps lsof \
     openjdk-11-jdk wkhtmltopdf \
     && sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen \
@@ -24,7 +24,7 @@ RUN apt-get update -y \
 
 COPY Pipfile .
 COPY Pipfile.lock .
-RUN pip install pipenv && python3 -m pipenv sync --system 
+RUN pip install pipenv && python3 -m pipenv sync --system -v
 
 # debug performance ...
 COPY . /opt/dongtai
