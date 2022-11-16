@@ -88,8 +88,8 @@ class VulListEndPoint(MixinAuthEndPoint):
             if order and order in get_model_order_options(IastVulnerabilityModel):
                 queryset = queryset.order_by(order)
 
-            page = request.query_params.get('page', 1)
-            page_size = request.query_params.get("pageSize", 20)
+            page = int(request.query_params.get('page', 1))
+            page_size = int(request.query_params.get("pageSize", 20))
             page_summary, page_data = self.get_paginator(queryset, page, page_size)
 
             return R.success(page=page_summary, data=VulForPluginSerializer(page_data, many=True).data)

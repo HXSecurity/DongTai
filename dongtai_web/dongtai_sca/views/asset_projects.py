@@ -84,8 +84,8 @@ class AssetVulProjects(UserEndPoint):
 
             data = []
             asset_queryset = asset_queryset.order_by('project_id', 'project_version_id')
-            page = request.query_params.get('page', 1)
-            page_size = request.query_params.get('pageSize', 10)
+            page = int(request.query_params.get('page', 1))
+            page_size = int(request.query_params.get('pageSize', 10))
             page_summary, page_data = self.get_paginator(asset_queryset, page, page_size)
 
             if page_data:
