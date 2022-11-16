@@ -86,11 +86,19 @@ def get_plugin_dict():
     PLUGIN_ROOT_PATH = join(BASE_DIR, 'dongtai_conf/plugin')
     for root, directories, files in walk(top=PLUGIN_ROOT_PATH, topdown=False):
         for file_ in files:
-            if file_.startswith('plug_') and file_.endswith('.py'):
-                packname = '.'.join([
-                    root.replace(BASE_DIR + '/', '').replace('/', '.'),
-                    file_.replace('.py', '')
-                ])
+            if file_.startswith('plug_') and (file_.endswith('.py')
+                                              or file_.endswith('.so')):
+                if file_.endswith('.py'):
+                    packname = '.'.join([
+                        root.replace(BASE_DIR + '/', '').replace('/', '.'),
+                        file_.replace('.py', '')
+                    ])
+                else:
+                    packname = '.'.join([
+                        root.replace(BASE_DIR + '/', '').replace('/', '.'),
+                        file_.split('.')[0]
+                    ])
+
                 mod = import_module(packname)
                 plugin_classes = filter(lambda x: _plug_class_filter(x),
                                         getmembers(mod))

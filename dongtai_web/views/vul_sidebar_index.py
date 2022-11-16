@@ -113,8 +113,8 @@ class VulSideBarList(UserEndPoint):
         else:
             queryset = queryset.order_by('-latest_time')
 
-        page = request.query_params.get('page', 1)
-        page_size = request.query_params.get('pageSize', 10)
+        page = int(request.query_params.get('page', 1))
+        page_size = int(request.query_params.get('pageSize', 10))
         page_summary, queryset = self.get_paginator(queryset,
                                                     page=page,
                                                     page_size=page_size)
