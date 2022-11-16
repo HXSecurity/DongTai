@@ -42,8 +42,9 @@ def get_model_order_options(*args, **kwargs):
     order_fields = get_model_field(*args, **kwargs)
     return order_fields + list(map(lambda x: ''.join(['-', x]), order_fields))
 
-
-def assemble_query(condictions: List,
+#temporary fit in to cython 
+#def assemble_query(condictions: List,
+def assemble_query(condictions: list,
                    lookuptype='',
                    base_query=Q(),
                    operator_=operator.or_):
@@ -248,7 +249,6 @@ def validate_url(url):
         return all([result.scheme, result.netloc])
     except BaseException:
         return False
-    return True
 
 
 logger = logging.getLogger('dongtai-dongtai_conf')

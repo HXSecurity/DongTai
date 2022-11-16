@@ -29,3 +29,5 @@ build
 *.log.*
 celerybeat.pid
 *.mo
+*.o
+*.c
