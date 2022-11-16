@@ -43,3 +43,6 @@ config.ini
 /*.docx
 .git
 .idea
+build
+*.c
+*.o
