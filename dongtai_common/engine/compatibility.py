@@ -62,19 +62,22 @@ from typing import List
 from math import ceil
 AGENT_DEFAULT_LENGTH = 1024
 
-def highlight_target_value(target_value: str, ranges: List) -> str:
+
+# temporary fit in cython
+#def highlight_target_value(target_value: str, ranges: List) -> str:
+def highlight_target_value(target_value: str, ranges: list) -> str:
     value = parse_target_value(target_value)
     value_origin_len = parse_target_value_length(target_value)
     if not value:
         return target_value
-    ranges = sorted(ranges, key=lambda x: x['start'])
-    for range_ in ranges:
+    sorted_ranges = sorted(ranges, key=lambda x: x['start'])
+    for range_ in sorted_ranges:
         if range_['start'] > value_origin_len or range_['stop'] > value_origin_len:
             return f'<em style="color:red;">{value}</em>'
-    if ranges and value and len(value) == value_origin_len:
+    if sorted_ranges and value and len(value) == value_origin_len:
         final_str = []
         str_dict = {ind: str_ for ind, str_ in enumerate(value)}
-        for range_ in ranges:
+        for range_ in sorted_ranges:
             str_dict[range_['start']] = '<em style="color:red;">' + str_dict[
                 range_['start']]
             str_dict[range_['stop'] -
@@ -83,7 +86,7 @@ def highlight_target_value(target_value: str, ranges: List) -> str:
             map(lambda x: x[1], sorted(str_dict.items(),
                                        key=lambda kv: kv[0])))
         return "".join(final_str)
-    if ranges and value and len(value) < value_origin_len:
+    if sorted_ranges and value and len(value) < value_origin_len:
         begin_part_length = ceil((AGENT_DEFAULT_LENGTH - 3) / 2)
         end_part_length = int((AGENT_DEFAULT_LENGTH - 3) / 2)
         hidden_red_flag = False
@@ -100,7 +103,7 @@ def highlight_target_value(target_value: str, ranges: List) -> str:
         str_dict.update(str_dict_begin)
         str_dict.update(str_dict_end)
         str_dict[begin_part_length + 2] = '...'
-        for range_ in ranges:
+        for range_ in sorted_ranges:
             if range_['start'] in str_dict.keys() and (range_['stop'] -
                                                        1) in str_dict.keys():
                 str_dict[

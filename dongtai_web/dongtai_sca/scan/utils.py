@@ -199,7 +199,8 @@ def get_license_list(license_list_str: str) -> List[Dict]:
         "level_desc": "允许商业集成"
     }]
 
-def get_highest_license(license_list: List[Dict]) -> Dict:
+# temporary remove to fit in cython complier
+def get_highest_license(license_list: list) -> dict:
     logger.debug(f'license_list : {license_list}')
     res = sorted(license_list, key=lambda x: x['level_id'], reverse=True)
     if res:
