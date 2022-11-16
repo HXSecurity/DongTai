@@ -77,6 +77,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v1
       
       - name: Build and push ${{ matrix.arch }}
         uses: docker/build-push-action@v2
