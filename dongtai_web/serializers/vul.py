@@ -53,7 +53,7 @@ class VulSerializer(serializers.ModelSerializer):
         return name
 
     @staticmethod
-    def judge_is_header_vul(strategy_id: str):
+    def judge_is_header_vul(strategy_id: int):
         if strategy_id in (28, 29, 30, 31, 32):
             return True
         return False

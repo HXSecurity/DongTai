@@ -70,7 +70,7 @@ class AgentListv2(UserEndPoint, ViewSet):
                 )
             data = {'agents': queryset, "summary": summary}
         except Exception as e:
-            logger.error("agents pagenation_list error:{}".format(e))
+            logger.error("agents pagenation_list error:{}".format(e),exc_info=e)
             data = dict()
         return R.success(data=data)
 
