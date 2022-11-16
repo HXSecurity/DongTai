@@ -235,6 +235,7 @@ jobs:
           python3 ./deploy/docker/version_update.py || true
           pip install Cython==3.0.0a11
           python setup.py build_ext --inplace
+          find . -name "*.so"  | grep test | xargs rm
           python manage.py test
   
   Run-API-TEST-With-Cython:
