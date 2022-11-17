@@ -120,7 +120,7 @@ class BaseVulnHandler(IReportHandler):
         self.http_res_body = self.detail.get('resBody')
         self.req_header_for_search = utils.build_request_header(
             req_method=self.http_method,
-            raw_req_header=self.http_req_header,
+            raw_req_header=self.http_header,
             uri=self.http_uri,
             query_params=self.http_query_string,
             http_protocol=self.http_protocol)
