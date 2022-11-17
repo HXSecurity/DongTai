@@ -344,11 +344,11 @@ from collections import defaultdict
 from dongtai_common.models.asset_vul import IastAssetVul
 
 
-def stat_severity(serveritys) -> defaultdict:
+def stat_severity(serveritys) -> dict:
     dic = defaultdict(int)
     for serverity in serveritys:
         dic[serverity] += 1
-    return dic
+    return dict(dic)
 
 
 from dongtai_common.models.asset import Asset
