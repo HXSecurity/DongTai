@@ -20,6 +20,9 @@ from dongtai_protocol.report.report_handler_factory import ReportHandler
 from dongtai_web.vul_log.vul_log import log_vul_found
 from dongtai_common.models.agent import IastAgent
 import re2 as re
+from dongtai_common.models.header_vulnerablity import IastHeaderVulnerability, IastHeaderVulnerabilityDetail
+from django.db import IntegrityError
+from dongtai_protocol import utils
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -115,6 +118,12 @@ class BaseVulnHandler(IReportHandler):
         self.http_replay = self.detail.get('replayRequest')
         self.http_res_header = self.detail.get('resHeader')
         self.http_res_body = self.detail.get('resBody')
+        self.req_header_for_search = utils.build_request_header(
+            req_method=self.http_method,
+            raw_req_header=self.http_req_header,
+            uri=self.http_uri,
+            query_params=self.http_query_string,
+            http_protocol=self.http_protocol)
 
 
 @ReportHandler.register(const.REPORT_VULN_NORNAL)
@@ -232,7 +241,7 @@ class NormalVulnHandler(BaseVulnHandler):
                 level_id=level_id,
                 url=self.app_caller[index + 2],
                 uri=self.app_caller[index + 2],
-                http_method=self.http_method,
+                http_method="",
                 http_scheme=self.http_scheme,
                 http_protocol=self.http_protocol,
                 req_header=self.http_header,
@@ -261,3 +270,36 @@ class NormalVulnHandler(BaseVulnHandler):
             agent__in=project_agents,
             pk__lt=iast_vul.id,
         ).delete()
+        header_vul = None
+        if not IastHeaderVulnerability.objects.filter(
+                project_id=self.agent.bind_project_id,
+                project_version=self.agent.project_version_id,
+                url=self.http_uri,
+                vul=iast_vul.id,
+        ).exists():
+            try:
+                header_vul = IastHeaderVulnerability.objects.create(
+                    project_id=self.agent.bind_project_id,
+                    project_version=self.agent.project_version_id,
+                    url=self.http_uri,
+                    vul_id=iast_vul.id,
+                )
+            except IntegrityError as e:
+                logger.debug("unique error stack: ", exc_info=True)
+                logger.info(
+                    "unique error cause by concurrency insert,ignore it")
+        if header_vul and not IastHeaderVulnerabilityDetail.objects.filter(
+                agent_id=self.agent.id,
+                header_vul_id=header_vul.id,
+        ).exists():
+            try:
+                IastHeaderVulnerabilityDetail.objects.create(
+                    agent_id=self.agent.id,
+                    method_pool_id=-1,
+                    header_vul_id=header_vul.id,
+                    req_header=self.req_header_for_search,
+                    res_header=self.http_res_header)
+            except IntegrityError as e:
+                logger.debug("unique error stack: ", exc_info=True)
+                logger.info(
+                    "unique error cause by concurrency insert,ignore it")
