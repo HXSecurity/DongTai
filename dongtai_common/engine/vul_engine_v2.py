@@ -6,6 +6,7 @@
 from copy import deepcopy
 
 from django.utils.functional import cached_property
+from dongtai_common.engine.compatibility import method_pool_3_to_2, method_pool_is_3
 
 
 class VulEngineV2(object):
@@ -72,6 +73,8 @@ class VulEngineV2(object):
         :param vul_method_signature: 漏洞方法签名，str
         :return:
         """
+        if method_pool_is_3(method_pool[0]):
+            method_pool = list(map(method_pool_3_to_2, method_pool))
         self.method_pool = method_pool
         self.vul_method_signature = vul_method_signature
         self.hit_vul = False
