@@ -14,8 +14,8 @@ from django.conf import settings
 
 
 class Demo(UserEndPoint):
-    permission_classes = []
-    authentication_classes = []
+    permission_classes = ()
+    authentication_classes = ()
     name = "user_views_login"
     description = "用户登录"
 

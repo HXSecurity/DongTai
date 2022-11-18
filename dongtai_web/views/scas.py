@@ -47,12 +47,15 @@ def get_order_params(order_fields, order_by):
 
     return order, order_type
 
+
 def intersperse(lst, item):
     result = [item] * (len(lst) * 2 - 1)
     result[0::2] = lst
     return result
 
+
 class ScaList(UserEndPoint):
+
     @extend_schema_with_envcheck(
         [
             {
@@ -92,42 +95,42 @@ class ScaList(UserEndPoint):
             },
             {
                 'name':
-                    "version_id",
+                "version_id",
                 'type':
-                    int,
+                int,
                 'description':
-                    _("The default is the current version id of the project.")
+                _("The default is the current version id of the project.")
             },
             {
                 'name': "keyword",
                 'type': str,
                 'description':
-                    _("Fuzzy keyword search field for package_name.")
+                _("Fuzzy keyword search field for package_name.")
             },
             {
                 'name':
-                    "order",
+                "order",
                 'type':
-                    str,
+                str,
                 'description':
-                    format_lazy(
-                        "{} : {}", _('Sorted index'), ",".join([
-                            'version', 'level', 'vul_count', 'language',
-                            'package_name'
-                        ]))
+                format_lazy(
+                    "{} : {}", _('Sorted index'), ",".join([
+                        'version', 'level', 'vul_count', 'language',
+                        'package_name'
+                    ]))
             },
         ], [], [
             {
                 'name':
-                    _('Get data sample'),
+                _('Get data sample'),
                 'description':
-                    _("The aggregation results are programming language, risk level, vulnerability type, project"
-                      ),
+                _("The aggregation results are programming language, risk level, vulnerability type, project"
+                  ),
                 'value': {
                     "status":
-                        201,
+                    201,
                     "msg":
-                        "success",
+                    "success",
                     "data": [
                         {
                             "id": 13293,
@@ -138,9 +141,9 @@ class ScaList(UserEndPoint):
                             "project_version": "No application version",
                             "language": "JAVA",
                             "agent_name":
-                                "Mac OS X-bogon-v1.0.0-0c864ba2a60b48aaa1a8b49a53a6749b",
+                            "Mac OS X-bogon-v1.0.0-0c864ba2a60b48aaa1a8b49a53a6749b",
                             "signature_value":
-                                "f744df92326c4bea7682fd16004bec184148db07",
+                            "f744df92326c4bea7682fd16004bec184148db07",
                             "level": "INFO",
                             "level_type": 4,
                             "vul_count": 0,
@@ -199,7 +202,8 @@ class ScaList(UserEndPoint):
             es_query['bind_project_id'] = project_id
             version_id = request.GET.get('version_id', None)
             if not version_id:
-                current_project_version = get_project_version(project_id, auth_users)
+                current_project_version = get_project_version(
+                    project_id, auth_users)
             else:
                 current_project_version = get_project_version_by_id(version_id)
 
@@ -212,7 +216,8 @@ class ScaList(UserEndPoint):
             count_sql_params.append(project_version_id)
             where_conditions.append('project_id = %(project_id)s ')
             where_conditions_dict['project_id'] = project_id
-            where_conditions.append('project_version_id = %(project_version_id)s')
+            where_conditions.append(
+                'project_version_id = %(project_version_id)s')
             where_conditions_dict['project_version_id'] = project_version_id
 
         total_count_sql = "SELECT count(distinct(iast_asset_aggr.id)) as alltotal FROM iast_asset_aggr {base_query_sql} {where_sql} limit 1 "
@@ -250,6 +255,7 @@ class ScaList(UserEndPoint):
         package_kw = request_data.get('keyword', None)
         if package_kw:
             es_query['search_keyword'] = package_kw
+
     #     package_kw = pymysql.converters.escape_string(package_kw)
         if package_kw and package_kw.strip() != '':
             package_kw = '%{}%'.format(package_kw)
@@ -264,28 +270,30 @@ class ScaList(UserEndPoint):
         if not order or order == "-":
             order = '-vul_count'
 
-        order_fields = [
-            'level', 'license', 'vul_count', 'project_count'
-        ]
+        order_fields = ['level', 'license', 'vul_count', 'project_count']
         order, order_type = get_order_params(order_fields, order)
         es_query['order'] = order
         es_query['order_type'] = order_type
-#        if ELASTICSEARCH_STATE:
-#            data = get_vul_list_from_elastic_searchv2(**es_query)
-#        else:
-        data = mysql_search(where_conditions, where_conditions_dict,
-                                page_size, order_type, order, page)
+        #        if ELASTICSEARCH_STATE:
+        #            data = get_vul_list_from_elastic_searchv2(**es_query)
+        #        else:
+        data = mysql_search(where_conditions, where_conditions_dict, page_size,
+                            order_type, order, page)
         query_data = ScaAssetSerializer(data, many=True).data
 
         return R.success(data=query_data)
-        order_sql = " order by {} {},iast_asset_aggr.id DESC ".format(order, order_type)
+        order_sql = " order by {} {},iast_asset_aggr.id DESC ".format(
+            order, order_type)
         page_sql = " limit %s,%s"
         list_sql_params.append(query_start)
         list_sql_params.append(page_size)
 
-        total_count_sql = total_count_sql.format(base_query_sql=base_query_sql, where_sql=asset_aggr_where)
-        list_query_sql = list_query_sql.format(base_query_sql=base_query_sql, where_sql=asset_aggr_where,
-                                               order_sql=order_sql, page_sql=page_sql)
+        total_count_sql = total_count_sql.format(base_query_sql=base_query_sql,
+                                                 where_sql=asset_aggr_where)
+        list_query_sql = list_query_sql.format(base_query_sql=base_query_sql,
+                                               where_sql=asset_aggr_where,
+                                               order_sql=order_sql,
+                                               page_sql=page_sql)
 
         total_count = 0
         sca_ids = []
@@ -304,13 +312,15 @@ class ScaList(UserEndPoint):
         except Exception as e:
             logger.warning("sca list error:{}".format(e))
 
+
 #        if ELASTICSEARCH_STATE :
 #            query_data = ScaAssetSerializer(get_vul_list_from_elastic_search(
 #                sca_ids, order_by),
 #                                            many=True).data
 #        else:
         query_data = ScaAssetSerializer(
-            AssetAggr.objects.filter(signature_value__in=sca_ids).order_by(order_by).select_related('level'),
+            AssetAggr.objects.filter(signature_value__in=sca_ids).order_by(
+                order_by).select_related('level'),
             many=True).data
 
         return R.success(data=query_data)
@@ -318,7 +328,6 @@ class ScaList(UserEndPoint):
     def extend_sql(self, request_data, asset_aggr_where, count_sql_params,
                    list_sql_params):
         return asset_aggr_where, count_sql_params, list_sql_params
-
 
 from elasticsearch_dsl import Q, Search
 from elasticsearch import Elasticsearch
@@ -339,14 +348,13 @@ def get_vul_list_from_elastic_search(sca_ids=[], order=None):
     must_query = [
         Q('terms', **{"signature_value": sca_ids}),
     ]
-    a = Q('bool',
-          must=must_query)
+    a = Q('bool', must=must_query)
     extra_dict = {}
     order_list = []
     if order:
         order_list.insert(0, order)
-    res = AssetAggrDocument.search().query(a).extra(
-        **extra_dict).sort(*order_list)[:len(sca_ids)]
+    res = AssetAggrDocument.search().query(a).extra(**extra_dict).sort(
+        *order_list)[:len(sca_ids)]
     resp = res.execute()
     vuls = [i._d_ for i in list(resp)]
     for i in vuls:
@@ -450,9 +458,10 @@ def get_vul_list_from_elastic_searchv2(user_id,
                 #minimum_should_match=1
             ))
     a = Q('bool', must=must_query)
-    search = IastAssetDocument.search().query(Q(
-        'bool',
-        must=must_query)).extra(**extra_dict).sort(*order_list)[:page_size * WINDOW_SIZE]
+    search = IastAssetDocument.search().query(
+        Q('bool',
+          must=must_query)).extra(**extra_dict).sort(*order_list)[:page_size *
+                                                                  WINDOW_SIZE]
     logger.debug(f"search_query : {search.to_dict()}")
     resp = search.execute()
     vuls = [i._d_ for i in list(resp)]
@@ -496,19 +505,27 @@ def mysql_search(where_conditions, where_conditions_dict, page_size,
     if page != 1 and not after_key:
         return []
     if after_key:
-        after_order_value,  after_signature = after_key
+        after_order_value, after_signature = after_key
         if order_type == 'desc':
-            where_conditions.append(f"({order}, signature_value) < %(after_order_value)s ")
-            where_conditions_dict['after_order_value'] = (after_order_value, after_signature)
+            where_conditions.append(
+                f"({order}, signature_value) < %(after_order_value)s ")
+            where_conditions_dict['after_order_value'] = (after_order_value,
+                                                          after_signature)
         else:
-            where_conditions.append(f"({order}, signature_value) > %(after_order_value)s ")
-            where_conditions_dict['after_order_value'] = (after_order_value, after_signature)
+            where_conditions.append(
+                f"({order}, signature_value) > %(after_order_value)s ")
+            where_conditions_dict['after_order_value'] = (after_order_value,
+                                                          after_signature)
+
+
 #        where_conditions.append(f"signature_value < %(after_order_id)s ")
 #        where_conditions_dict['after_order_id'] = after_signature
 
-    order_conditions = ["signature_value DESC", ]
+    order_conditions = [
+        "signature_value DESC",
+    ]
     order_conditions_dict = {
-#        "id": 'id',
+        #        "id": 'id',
     }
     if order_type == 'desc':
         order_conditions.insert(0, f"{order} DESC")

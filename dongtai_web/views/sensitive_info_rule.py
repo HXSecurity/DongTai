@@ -157,7 +157,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint,viewsets.ViewSet):
                          page=page_summary)
 
     @extend_schema_with_envcheck(
-            request=SensitiveInfoRuleCreateSerializer,
+        request=SensitiveInfoRuleCreateSerializer,
         tags=[_('SensitiveInfoRule')],
         summary=_('SensitiveInfoRule Create'),
         description=

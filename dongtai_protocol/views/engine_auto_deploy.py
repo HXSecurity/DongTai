@@ -61,9 +61,9 @@ choice_pid(){
 
 while getopts "u:" arg #选项后面的冒号表示该选项需要参数
 do
-    case $arg in
+     case $arg in
         u)
-			URL=$OPTARG
+            URL=$OPTARG
             ;;
         ?)  #当有不认识的选项的时候arg为?
             echo "unkonw argument"
@@ -73,7 +73,7 @@ do
 done
 
 if [ ! $URL ]; then
-	echo "Usage: lingzhi.sh -u <url>\n\t-u <url>, iast server url, eg: http://127.0.0.1:8000"
+    echo "Usage: lingzhi.sh -u <url>\n\t-u <url>, iast server url, eg: http://127.0.0.1:8000"
 else
     # 检查并选择需要attach的进程
     banner

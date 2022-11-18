@@ -22,7 +22,7 @@ class VulEngineSearchTestCase(TestCase):
             'operator': 'CONTAIN',
             'value': '123123'
         }] == rule.to_full_rule()
-    
+
     def test_url_rule_create_header(self):
         create_blacklist_rule(TargetType.HEADER_KEY,
                               TargetOperator.CONTAIN,

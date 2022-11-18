@@ -279,7 +279,7 @@ def _get_vuls(uri, agents):
     return [_get_hook_type(vul) for vul in vuls]
 
 
-def _get_hook_type(vul: IastVulnerabilityModel) -> dict:
+def _get_hook_type(vul: dict) -> dict:
 
     hook_type = HookType.objects.filter(pk=vul['hook_type_id']).first()
     hook_type_name = hook_type.name if hook_type else None
