@@ -273,14 +273,14 @@ class NormalVulnHandler(BaseVulnHandler):
         header_vul = None
         if not IastHeaderVulnerability.objects.filter(
                 project_id=self.agent.bind_project_id,
-                project_version=self.agent.project_version_id,
+                project_version_id=self.agent.project_version_id,
                 url=self.http_uri,
                 vul=iast_vul.id,
         ).exists():
             try:
                 header_vul = IastHeaderVulnerability.objects.create(
                     project_id=self.agent.bind_project_id,
-                    project_version=self.agent.project_version_id,
+                    project_version_id=self.agent.project_version_id,
                     url=self.http_uri,
                     vul_id=iast_vul.id,
                 )
