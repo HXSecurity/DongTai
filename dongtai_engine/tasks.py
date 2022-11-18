@@ -39,6 +39,7 @@ from dongtai_common.models.project_report import ProjectReport
 import requests
 from hashlib import sha1
 from dongtai_engine.task_base import replay_payload_data
+from typing import List, Dict
 
 LANGUAGE_MAP = {
     "JAVA": 1,
@@ -71,7 +72,7 @@ def queryset_to_iterator(queryset):
             break
 
 
-def load_sink_strategy(user=None, language=None):
+def load_sink_strategy(user=None, language=None) -> List[Dict]:
     """
     加载用户user有权限方法的策略
     :param user: edit by song
@@ -117,7 +118,7 @@ def search_and_save_vul(engine: Optional[VulEngine],
                         method_pool_model: Union[IastAgentMethodPoolReplay,
                                                  MethodPool],
                         method_pool: Optional[Any],
-                        strategy: IastStrategyModel = list) -> None:
+                        strategy: dict = {}) -> None:
     """
     搜索方法池是否存在满足策略的数据，如果存在，保存相关数据为漏洞
     :param method_pool_model: 方法池实例化对象
@@ -139,29 +140,36 @@ def search_and_save_vul(engine: Optional[VulEngine],
     engine.search(method_pool=method_pool,
                   vul_method_signature=strategy.get('value'))
     status, stack, source_sign, sink_sign, taint_value = engine.result()
+    vul_strategy = queryset.values("level", "vul_name", "id").first()
+    vul_type = queryset.values('vul_type').first()
+    if not vul_strategy or not vul_type:
+        return 
     if status:
         filterres = vul_filter(
             stack,
             source_sign,
             sink_sign,
             taint_value,
-            queryset.values('vul_type').first()['vul_type'],
+            vul_type['vul_type'],
             agent_id=method_pool_model.agent_id,
         )
         logger.info(f'vul filter_status : {filterres}')
     if status and filterres:
         logger.info(f'vul_found {method_pool_model.agent_id}  {method_pool_model.url} {sink_sign}')
         vul_strategy = queryset.values("level", "vul_name", "id").first()
-        handler_vul(
-            sender="tasks.search_and_save_vul",
-            vul_meta=method_pool_model,
-            vul_level=vul_strategy['level'],
-            strategy_id=vul_strategy['id'],
-            vul_stack=stack,
-            top_stack=source_sign,
-            bottom_stack=sink_sign,
-            taint_value=taint_value
-        )
+        if not vul_strategy:
+            pass
+        else:
+            handler_vul(
+                sender="tasks.search_and_save_vul",
+                vul_meta=method_pool_model,
+                vul_level=vul_strategy['level'],
+                strategy_id=vul_strategy['id'],
+                vul_stack=stack,
+                top_stack=source_sign,
+                bottom_stack=sink_sign,
+                taint_value=taint_value
+            )
     else:
         try:
             if isinstance(method_pool_model, MethodPool):
