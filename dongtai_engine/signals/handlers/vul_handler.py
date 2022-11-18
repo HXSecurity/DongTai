@@ -212,7 +212,7 @@ def get_real_url(method_pools: list) -> str:
         if method_pool[
                 'signature'] == 'org.springframework.web.util.pattern.PathPattern.getPatternString()':
             if 'targetValues' not in method_pool.keys():
-                method_pool = method_pool_3_to_2(method_pool)           
+                method_pool = method_pool_3_to_2(method_pool)
             return method_pool['targetValues']
     return ''
 

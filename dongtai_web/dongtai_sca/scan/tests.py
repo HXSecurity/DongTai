@@ -130,7 +130,7 @@ class AgentHardencodeTestCase(AgentTestCase):
         assert asset is not None
         assert asset.safe_version_list is not None
         assert asset.iastvulassetrelation_set.all() != []
-    
+
     def test_update_one_sca_java_result_search(self):
         update_one_sca(
             self.agent_id,
