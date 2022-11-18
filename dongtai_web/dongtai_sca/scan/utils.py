@@ -17,6 +17,7 @@ from http import HTTPStatus
 
 logger = logging.getLogger("dongtai-webapi")
 
+
 def get_sca_token() -> str:
     #profilefromdb = IastProfile.objects.filter(key='sca_token').values_list(
     #    'value', flat=True).first()
@@ -26,14 +27,17 @@ def get_sca_token() -> str:
     from dongtai_conf.settings import SCA_TOKEN
     return SCA_TOKEN
 
-def request_get_res_data_with_exception(data_extract_func: Callable[
-    [Response], Result] = lambda x: Ok(x),
-                                        *args,
-                                        **kwargs) -> Result:
+
+def request_get_res_data_with_exception(
+        data_extract_func: Callable[[Response], Result] = lambda x: Ok(x),
+        *args,
+        **kwargs) -> Result:
     try:
         response: Response = requests.request(*args, **kwargs)
         logger.debug(f"response content: {response.content!r}")
-        logger.info(f"response content url: {response.url} status_code: {response.status_code}")
+        logger.info(
+            f"response content url: {response.url} status_code: {response.status_code}"
+        )
         res = data_extract_func(response)
         if isinstance(res, Err):
             return res
@@ -70,7 +74,9 @@ def data_transfrom(response: Response) -> Result[List[Dict], str]:
         logger.error(f"unexcepted Exception : {e}", exc_info=True)
         return Err('Failed')
 
-def data_transfrom_package_vul_v2(response: Response) -> Result[List[Dict], str]:
+
+def data_transfrom_package_vul_v2(
+        response: Response) -> Result[List[Dict], str]:
     if response.status_code == HTTPStatus.FORBIDDEN:
         return Err('Rate Limit Exceeded')
     try:
@@ -88,7 +94,9 @@ def data_transfrom_package_vul_v2(response: Response) -> Result[List[Dict], str]
         logger.error(f"unexcepted Exception : {e}", exc_info=True)
         return Err('Failed')
 
-@cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60),)
+
+@cached_decorator(
+    random_range=(2 * 60 * 60, 2 * 60 * 60), )
 def get_package_vul(aql: Optional[str] = None,
                     ecosystem: Optional[str] = None,
                     package_hash: Optional[str] = None) -> List[Dict]:
@@ -100,12 +108,12 @@ def get_package_vul(aql: Optional[str] = None,
     headers = {"Token": get_sca_token()}
     payload = ""
     res = request_get_res_data_with_exception(data_transfrom,
-                                                   "GET",
-                                                   url,
-                                                   data=payload,
-                                                   params=querystring,
-                                                   headers=headers,
-                                                   timeout=SCA_TIMEOUT)
+                                              "GET",
+                                              url,
+                                              data=payload,
+                                              params=querystring,
+                                              headers=headers,
+                                              timeout=SCA_TIMEOUT)
     if isinstance(res, Err):
         return []
     data = res.value
@@ -114,9 +122,10 @@ def get_package_vul(aql: Optional[str] = None,
 
 @cached_decorator(
     random_range=(2 * 60 * 60, 2 * 60 * 60), )
-def get_package_vul_v2(aql: Optional[str] = None,
-                       ecosystem: Optional[str] = None,
-                       package_hash: Optional[str] = None) -> Tuple[List[Dict],List[Dict]]:
+def get_package_vul_v2(
+        aql: Optional[str] = None,
+        ecosystem: Optional[str] = None,
+        package_hash: Optional[str] = None) -> Tuple[List[Dict], List[Dict]]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v2/package_vul/")
     if aql is not None:
         querystring = {"aql": aql}
@@ -136,7 +145,9 @@ def get_package_vul_v2(aql: Optional[str] = None,
     data = res.value
     return data
 
-@cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60),)
+
+@cached_decorator(
+    random_range=(2 * 60 * 60, 2 * 60 * 60), )
 def get_package(aql: Optional[str] = None,
                 ecosystem: Optional[str] = None,
                 package_hash: Optional[str] = None) -> List[Dict]:
@@ -179,9 +190,8 @@ from dongtai_conf.settings import SCA_SETUP
 def get_license_list(license_list_str: str) -> List[Dict]:
     license_list = list(filter(lambda x: x, license_list_str.split(",")))
     res = list(
-        PackageLicenseLevel.objects.filter(
-            identifier__in=license_list).values('identifier', 'level_id',
-                                                     'level_desc').all())
+        PackageLicenseLevel.objects.filter(identifier__in=license_list).values(
+            'identifier', 'level_id', 'level_desc').all())
     selected_identifier = list(map(lambda x: x['identifier'], res))
     for k in license_list:
         if k not in selected_identifier:
@@ -199,6 +209,7 @@ def get_license_list(license_list_str: str) -> List[Dict]:
         "level_desc": "允许商业集成"
     }]
 
+
 # temporary remove to fit in cython complier
 def get_highest_license(license_list: list) -> dict:
     logger.debug(f'license_list : {license_list}')
@@ -214,9 +225,11 @@ def get_highest_license(license_list: list) -> dict:
 
 from hashlib import sha1
 
+
 def sha_1(raw):
     sha1_str = sha1(raw.encode("utf-8")).hexdigest()
     return sha1_str
+
 
 @shared_task(queue='dongtai-sca-task')
 def update_one_sca(agent_id,
@@ -393,7 +406,7 @@ def get_cve_numbers(cve: str = "",
 def get_vul_serial(title: str = "",
                    cve: str = "",
                    cwe: list = [],
-                    cnvd: str = "",
+                   cnvd: str = "",
                    cnnvd: str = "") -> str:
     return "|".join([title, cve, cnvd, cnnvd] + cwe)
 
@@ -440,6 +453,7 @@ from dongtai_common.models.asset_vul import (IastAssetVulTypeRelation,
 
 from .cwe import get_cwe_name
 
+
 def get_asset_level(res: dict) -> int:
     level_map = {'critical': 1, 'high': 1, 'medium': 2, 'low': 3}
     for k, v in level_map.items():
@@ -463,7 +477,8 @@ def get_title(title_zh: str, title_en: str) -> str:
 
 
 from django.db import IntegrityError
-from dongtai_common.models.asset_vul import IastAssetVulRelationMetaData 
+from dongtai_common.models.asset_vul import IastAssetVulRelationMetaData
+
 
 def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                    version: str):
@@ -541,10 +556,10 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
             IastAssetVulRelationMetaData.objects.update_or_create(
                 vul_asset_key=key,
                 **{
-                "vul_dependency_path": vul_dependency,
-                "effected_version_list": package_effected_version_list,
-                "fixed_version_list": package_fixed_version_list,
-                "nearest_fixed_version": nearest_fixed_version,
+                    "vul_dependency_path": vul_dependency,
+                    "effected_version_list": package_effected_version_list,
+                    "fixed_version_list": package_fixed_version_list,
+                    "nearest_fixed_version": nearest_fixed_version,
                 })
         except IntegrityError as e:
             pass

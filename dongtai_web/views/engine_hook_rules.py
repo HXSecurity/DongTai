@@ -27,7 +27,7 @@ class _EngineHookRulesQuerySerializer(serializers.Serializer):
         _("type of hook rule \n 1 represents the propagation method, 2 represents the source method, 3 represents the filter method, and 4 represents the taint method"
           ))
     pageSize = serializers.IntegerField(default=20,
-                                         help_text=_('number per page'))
+                                        help_text=_('number per page'))
     page = serializers.IntegerField(default=1, help_text=_('page index'))
     strategy_type = serializers.IntegerField(
         help_text=_("The id of hook_type"), required=False)
@@ -36,7 +36,7 @@ class _EngineHookRulesQuerySerializer(serializers.Serializer):
         help_text=_('The id of programming language'),
         required=False)
     keyword = serializers.CharField(help_text=_('The keyword for search'),
-                                     required=False)
+                                    required=False)
 
 
 _ResponseSerializer = get_response_serializer(
@@ -46,6 +46,7 @@ logger = logging.getLogger('dongtai-webapi')
 
 
 class EngineHookRulesEndPoint(UserEndPoint):
+
     def parse_args(self, request):
         try:
             ser = _EngineHookRulesQuerySerializer(data=request.GET)
@@ -55,9 +56,9 @@ class EngineHookRulesEndPoint(UserEndPoint):
                 return None, None, None, None, None, None
             rule_type = ser.validated_data.get('type', const.RULE_PROPAGATOR)
             rule_type = int(rule_type)
-            if rule_type not in (
-                    const.RULE_SOURCE, const.RULE_ENTRY_POINT, const.RULE_PROPAGATOR, const.RULE_FILTER,
-                    const.RULE_SINK):
+            if rule_type not in (const.RULE_SOURCE, const.RULE_ENTRY_POINT,
+                                 const.RULE_PROPAGATOR, const.RULE_FILTER,
+                                 const.RULE_SINK):
                 rule_type = None
 
             page = ser.validated_data.get('page', 1)
@@ -73,7 +74,8 @@ class EngineHookRulesEndPoint(UserEndPoint):
             strategy_type = ser.validated_data.get('strategy_type')
             return rule_type, page, page_size, strategy_type, language_id, keyword
         except Exception as e:
-            logger.error(_("Parameter parsing failed, error message: {}").format(e))
+            logger.error(
+                _("Parameter parsing failed, error message: {}").format(e))
             return None, None, None, None, None, None
 
     @extend_schema_with_envcheck(
@@ -90,8 +92,7 @@ class EngineHookRulesEndPoint(UserEndPoint):
         rule_type, page, page_size, strategy_type, language_id, keyword = res
         if all(
                 map(lambda x: x is not None,
-                    [rule_type, page, page_size,  language_id
-                     ])) is False:
+                    [rule_type, page, page_size, language_id])) is False:
             return R.failure(msg=_('Parameter error'))
         if rule_type is None:
             return R.failure(msg=_('Strategy type does not exist'))
@@ -131,7 +132,8 @@ class EngineHookRulesEndPoint(UserEndPoint):
             if keyword:
                 q = Q(value__icontains=keyword) & q
             rule_queryset = HookStrategy.objects.filter(q)
-            page_summary, queryset = self.get_paginator(rule_queryset.order_by('-id'), page=page, page_size=page_size)
+            page_summary, queryset = self.get_paginator(
+                rule_queryset.order_by('-id'), page=page, page_size=page_size)
             data = HookRuleSerializer(queryset, many=True).data
             return R.success(data=data, page=page_summary)
         except Exception as e:

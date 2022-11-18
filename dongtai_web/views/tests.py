@@ -10,7 +10,7 @@ from unittest.mock import patch
 class TypingTestCase(DongTaiTestCase):
     hooktypes = MockSet(MockModel(pk=1, name=''), )
     strategies = MockSet(MockModel(pk=1, vul_name='strategy'), )
-    vul = MockModel(hook_type_id=1, strategy_id=1, level_id=1)
+    vul = {"hook_type_id": 1, "strategy_id": 1, "level_id": 1}
     with patch('dongtai_common.models.hook_type.HookType',
                hooktypes), patch('dongtai_common.models.strategy', strategies):
         assert _get_hook_type(vul) is not None
