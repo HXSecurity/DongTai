@@ -63,20 +63,26 @@ from math import ceil
 AGENT_DEFAULT_LENGTH = 1024
 
 
+def xss_prevent(char: str) -> str:
+    if char == '<':
+        return '&lt;'
+    return char
+
+
 # temporary fit in cython
 #def highlight_target_value(target_value: str, ranges: List) -> str:
 def highlight_target_value(target_value: str, ranges: list) -> str:
     value = parse_target_value(target_value)
     value_origin_len = parse_target_value_length(target_value)
     if not value:
-        return target_value
+        return target_value.replace("<","&lt;")
     sorted_ranges = sorted(ranges, key=lambda x: x['start'])
     for range_ in sorted_ranges:
         if range_['start'] > value_origin_len or range_['stop'] > value_origin_len:
             return f'<em style="color:red;">{value}</em>'
     if sorted_ranges and value and len(value) == value_origin_len:
         final_str = []
-        str_dict = {ind: str_ for ind, str_ in enumerate(value)}
+        str_dict = {ind: xss_prevent(str_) for ind, str_ in enumerate(value)}
         for range_ in sorted_ranges:
             str_dict[range_['start']] = '<em style="color:red;">' + str_dict[
                 range_['start']]
@@ -92,11 +98,11 @@ def highlight_target_value(target_value: str, ranges: list) -> str:
         hidden_red_flag = False
         end_part_start_ind = value_origin_len - end_part_length
         str_dict_begin = {
-            ind: str_
+            ind: xss_prevent(str_)
             for ind, str_ in enumerate(value[:begin_part_length])
         }
         str_dict_end = {
-            ind + (value_origin_len - end_part_length) + 3: str_
+            ind + (value_origin_len - end_part_length) + 3: xss_prevent(str_)
             for ind, str_ in enumerate(value[-end_part_length:])
         }
         str_dict = {}
