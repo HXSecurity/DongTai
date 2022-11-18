@@ -28,6 +28,7 @@ with open('./test/integration/mockdata/new-novul.json') as fp:
 with open('./test/integration/mockdata/exec2.json') as fp:
     exec2_json = json.load(fp)
 
+
 def mock_uuid():
     return uuid.UUID(int=0)
 
@@ -42,8 +43,9 @@ class AgentHardencodeTestCase(AgentTestCase):
             res = self.agent_report(new_exec_json)
             search_vul_from_method_pool(str(uuid.UUID(int=0).hex),
                                         self.agent_id)
-            print(IastVulnerabilityModel.objects.filter(
-                agent_id=self.agent_id, level_id=1).count())
+            print(
+                IastVulnerabilityModel.objects.filter(agent_id=self.agent_id,
+                                                      level_id=1).count())
             assert IastVulnerabilityModel.objects.filter(
                 agent_id=self.agent_id, level_id=1).count() == 1
 
@@ -54,7 +56,7 @@ class AgentHardencodeTestCase(AgentTestCase):
                                         self.agent_id)
             assert IastVulnerabilityModel.objects.filter(
                 agent_id=self.agent_id, level_id=1).count() == 1
-    
+
     def test_agent_hardencode_vuln_upload4(self):
         with patch('uuid.uuid4', mock_uuid):
             res = self.agent_report(new_novul_json)
@@ -62,7 +64,7 @@ class AgentHardencodeTestCase(AgentTestCase):
                                         self.agent_id)
             assert IastVulnerabilityModel.objects.filter(
                 agent_id=self.agent_id, level_id=1).count() == 0
-    
+
     def test_agent_hardencode_vuln_upload5(self):
         with patch('uuid.uuid4', mock_uuid):
             res = self.agent_report(exec2_json)

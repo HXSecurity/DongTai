@@ -11,8 +11,12 @@ def aws_get_secret(base_dir: str):
     aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
     region_name = os.getenv('REGION_NAME')
     secret_name = os.getenv('SECRET_NAME')
-    if not all(
-        [aws_access_key_id, aws_secret_access_key, region_name, secret_name]):
+    if not all([
+            aws_access_key_id,
+            aws_secret_access_key,
+            region_name,
+            secret_name,
+    ]):
         sys.exit("environment not set")
     session = boto3.session.Session()
     client = session.client(aws_access_key_id=aws_access_key_id,

@@ -143,8 +143,10 @@ def search_and_save_vul(engine: Optional[VulEngine],
     vul_strategy = queryset.values("level", "vul_name", "id").first()
     vul_type = queryset.values('vul_type').first()
     if not vul_strategy or not vul_type:
-        logger.info(f'vul data corruption , stop scan in method_pool {method_pool_model.id}' )
-        return 
+        logger.info(
+            f'vul data corruption , stop scan in method_pool {method_pool_model.id}'
+        )
+        return
     if status:
         filterres = vul_filter(
             stack,

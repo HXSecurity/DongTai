@@ -235,9 +235,9 @@ class VulEngine(object):
             sub_method = self.method_pool[sub_index]
             sub_target_hash = set(sub_method.get('targetHash'))
             sub_target_rpc_hash = set(sub_method.get('targetHashForRpc', []))
-            if ((sub_target_hash and sub_target_hash & source_hash) or
-                (sub_target_rpc_hash and sub_target_rpc_hash & source_hash)
-                ) and check_service_propagate_method_state(sub_method):
+            if (((sub_target_hash and sub_target_hash & source_hash) or
+                 (sub_target_rpc_hash and sub_target_rpc_hash & source_hash))
+                    and check_service_propagate_method_state(sub_method)):
                 logger.info(f"stisfied {sub_method}")
                 if sub_method.get('source'):
                     current_link.append(
@@ -313,9 +313,9 @@ class VulEngine(object):
             sub_method = self.method_pool[sub_index]
             sub_target_hash = set(sub_method.get('targetHash'))
             sub_target_rpc_hash = set(sub_method.get('targetHashForRpc', []))
-            if ((sub_target_hash and sub_target_hash & source_hash) or
-                (sub_target_rpc_hash and sub_target_rpc_hash & source_hash)
-                ) and check_service_propagate_method_state(sub_method):
+            if (((sub_target_hash and sub_target_hash & source_hash) or
+                 (sub_target_rpc_hash and sub_target_rpc_hash & source_hash))
+                    and check_service_propagate_method_state(sub_method)):
                 logger.info(f"stisfied {sub_method}")
                 if sub_method.get('source'):
                     current_link.append(

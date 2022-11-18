@@ -115,8 +115,13 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
     def post(self, request):
         (rule_type, rule_value, rule_source, rule_target, inherit, is_track,
          language_id) = self.parse_args(request)
-        if all(
-            (rule_type, rule_value, rule_source, inherit, is_track)) is False:
+        if all((
+                rule_type,
+                rule_value,
+                rule_source,
+                inherit,
+                is_track,
+        )) is False:
             return R.failure(msg=_('Incomplete parameter, please check again'))
         if rule_target == "":
             hook_type = IastStrategyModel.objects.filter(
