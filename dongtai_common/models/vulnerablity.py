@@ -4,6 +4,8 @@ from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_common.utils.settings import get_managed
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.hook_type import HookType
+
+
 class IastVulnerabilityStatus(models.Model):
     name = models.CharField(max_length=100, blank=True, default='')
 
@@ -11,20 +13,30 @@ class IastVulnerabilityStatus(models.Model):
         managed = get_managed()
         db_table = 'iast_vulnerability_status'
 
+
 class IastVulnerabilityModel(models.Model):
     id = models.BigAutoField(primary_key=True)
     search_keywords = models.CharField(max_length=1000, blank=True, null=True)
-    level = models.ForeignKey(IastVulLevel, models.DO_NOTHING, blank=True, null=True)
+    level = models.ForeignKey(IastVulLevel,
+                              models.DO_NOTHING,
+                              blank=True,
+                              null=True)
     url = models.CharField(max_length=2000, blank=True, null=True)
     uri = models.CharField(max_length=255, blank=True, null=True)
     pattern_uri = models.CharField(max_length=255, blank=True, null=True)
     # 模糊搜索 全文索引 查询
-    vul_title = models.CharField(max_length=255, blank=True, null=True,default="")
+    vul_title = models.CharField(max_length=255,
+                                 blank=True,
+                                 null=True,
+                                 default="")
     http_method = models.CharField(max_length=10, blank=True, null=True)
     http_scheme = models.CharField(max_length=255, blank=True, null=True)
     http_protocol = models.CharField(max_length=255, blank=True, null=True)
     req_header = models.TextField(blank=True, null=True)
-    req_params = models.CharField(max_length=2000, blank=True, null=True, default="")
+    req_params = models.CharField(max_length=2000,
+                                  blank=True,
+                                  null=True,
+                                  default="")
     req_data = models.TextField(blank=True, null=True)
     res_header = models.TextField(blank=True, null=True)
     res_body = models.TextField(blank=True, null=True)
@@ -41,13 +53,16 @@ class IastVulnerabilityModel(models.Model):
     latest_time_desc = models.IntegerField(blank=True, null=True, default=0)
     level_id_desc = models.SmallIntegerField(blank=True, null=True, default=0)
     client_ip = models.CharField(max_length=255, blank=True, null=True)
-    param_name = models.CharField(max_length=255, blank=True, null=True, default='')
-    is_del = models.SmallIntegerField(blank=True, null=True,default=0)
+    param_name = models.CharField(max_length=255,
+                                  blank=True,
+                                  null=True,
+                                  default='')
+    is_del = models.SmallIntegerField(blank=True, null=True, default=0)
     method_pool_id = models.IntegerField(default=-1, blank=True, null=True)
     strategy = models.ForeignKey(IastStrategyModel,
-                                  on_delete=models.DO_NOTHING,
-                                  db_constraint=False,
-                                  db_column='strategy_id')
+                                 on_delete=models.DO_NOTHING,
+                                 db_constraint=False,
+                                 db_column='strategy_id')
     hook_type = models.ForeignKey(HookType,
                                   on_delete=models.DO_NOTHING,
                                   db_constraint=False,
@@ -98,11 +113,9 @@ class IastVulnerabilityDocument(Document):
     level_id = fields.IntegerField(attr="level_id")
     bind_project_id = fields.IntegerField(attr="agent.bind_project_id")
     language = fields.IntegerField(attr="agent.language")
-    project_version_id = fields.IntegerField(
-        attr="agent.project_version_id")
+    project_version_id = fields.IntegerField(attr="agent.project_version_id")
     project_name = fields.IntegerField(attr="agent.bind_project.name")
     token = fields.IntegerField(attr="agent.token")
-
 
     @classmethod
     def search(cls, using=None, index=None):
@@ -122,7 +135,6 @@ class IastVulnerabilityDocument(Document):
         if isinstance(related_instance, IastAgent):
             if related_instance.bind_project_id < 0:
                 return related_instance.iastvulnerabilitymodel_set.all()
-
 
     class Index:
         name = VULNERABILITY_INDEX

@@ -23,13 +23,13 @@ class IastVulLog(models.Model):
     meta_data = models.JSONField(blank=True, null=True)
     datetime = models.IntegerField(blank=True, null=True, default=time)
     vul = models.ForeignKey(IastVulnerabilityModel,
-                                models.DO_NOTHING,
-                                default=-1,
-                                db_constraint=False)
+                            models.DO_NOTHING,
+                            default=-1,
+                            db_constraint=False)
     asset_vul = models.ForeignKey(IastAssetVul,
-                                      models.DO_NOTHING,
-                                      default=-1,
-                                      db_constraint=False)
+                                  models.DO_NOTHING,
+                                  default=-1,
+                                  db_constraint=False)
     user = models.ForeignKey(User, models.DO_NOTHING, db_constraint=False)
 
     class Meta:
