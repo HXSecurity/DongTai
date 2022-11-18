@@ -1,7 +1,7 @@
 import unittest
 
 from test import DongTaiTestCase
-from django_mock_queries.query import MockSet
+from django_mock_queries.query import MockSet, MockModel
 from dongtai_web.views.api_route_search import _get_hook_type
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from unittest.mock import patch
