@@ -57,7 +57,7 @@ jobs:
           file: Dockerfile
           context: .
           push: true
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           tags: | 
             registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:latest
             registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:1.0.${{github.run_number}}
