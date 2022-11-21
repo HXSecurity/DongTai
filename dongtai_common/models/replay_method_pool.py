@@ -11,6 +11,7 @@ from dongtai_common.utils.settings import get_managed
 
 
 class IastAgentMethodPoolReplay(models.Model):
+    id = models.BigAutoField(primary_key=True)
     agent = models.ForeignKey(IastAgent, models.DO_NOTHING, blank=True, null=True)
     url = models.CharField(max_length=2000, blank=True, null=True)
     uri = models.CharField(max_length=2000, blank=True, null=True)
