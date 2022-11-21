@@ -22,7 +22,7 @@ from dongtai_common.models.api_route import IastApiRoute, FromWhereChoices
 from dongtai_common.models.asset import Asset
 from dongtai_common.utils.user import get_auth_users__by_id
 import json
-from typing import Optional, Str
+from typing import Optional
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -125,7 +125,7 @@ def get_is_control(actual_running_status: int, except_running_status: int,
         return 1
     return 0
 
-def get_disk(jsonstr: Optional[Str]) -> str:
+def get_disk(jsonstr: Optional[str]) -> str:
     if not jsonstr:
         return ''
     dic = json.loads(jsonstr)
@@ -139,7 +139,7 @@ def get_disk(jsonstr: Optional[Str]) -> str:
     return res
 
 
-def get_cpu(jsonstr: Optional[Str]) -> str:
+def get_cpu(jsonstr: Optional[str]) -> str:
     if not jsonstr:
         return ''
     try:
@@ -151,7 +151,7 @@ def get_cpu(jsonstr: Optional[Str]) -> str:
     return res
 
 
-def get_memory(jsonstr: Optional[Str]) -> str:
+def get_memory(jsonstr: Optional[str]) -> str:
     if not jsonstr:
         return ''
     try:
