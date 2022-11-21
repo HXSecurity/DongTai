@@ -1166,9 +1166,6 @@ if [ ! 0 == $# ]; then # If options provided then
     }
 
     function execute_update() {
-      # extract sql name and reverse list
-
-      SQL_NAMES=$(cat updaterecord.txt | awk "/${TO_VERSION//./\\.}/,/${FROM_VERSION//./\\.}/ {print \$2}" | grep -vF "$FROM_VERSION" | awk "{array[NR]=\$0} END { for(i=NR;i>0;i--) {print array[i];} }")
       mysql_container_id=$(get_mysql_container_id)
       server_container_id=$(get_server_container_id)
       # check whether mysql is ready
@@ -1181,6 +1178,11 @@ if [ ! 0 == $# ]; then # If options provided then
         fi
         sleep 2
       done
+      # extract sql name and reverse list
+      SQL_NAMES=$(cat updaterecord.txt | awk "/${TO_VERSION//./\\.}/,/${FROM_VERSION//./\\.}/ {print \$2}" | grep -vF "$FROM_VERSION" | awk "{array[NR]=\$0} END { for(i=NR;i>0;i--) {print array[i];} }")
+      if [[ $(first_gt_second $TO_VERSION 1.9.0) == true ]]; then
+         SQL_NAMES=$(docker exec -i $mysql_container_id /bin/bash -c "cat /schema/updaterecord.txt" | awk "/${TO_VERSION//./\\.}/,/${FROM_VERSION//./\\.}/ {print \$2}" | grep -vF "$FROM_VERSION" | awk "{array[NR]=\$0} END { for(i=NR;i>0;i--) {print array[i];} }")
+      fi
 
       # change sql store directory from /docker-entrypoint-initdb.d to /sql
       # from 1.3.0
