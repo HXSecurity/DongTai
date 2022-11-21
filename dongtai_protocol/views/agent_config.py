@@ -142,6 +142,8 @@ def get_agent_config(agent_id: int) -> Result:
         config_id = res.value
         config = IastCircuitConfig.objects.filter(
             pk=config_id).first()
+        if not config:
+            continue
         metric_list = []
         for metric in IastCircuitMetric.objects.filter(
                 circuit_config_id=config.id).all():
