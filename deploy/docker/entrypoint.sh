@@ -19,8 +19,9 @@ elif [ "$1" = "worker-sca" ]; then
 elif [ "$1" = "worker-other" ]; then
 	celery -A dongtai_conf worker -l info -X dongtai-periodic-task,dongtai-method-pool-scan,dongtai-replay-vul-scan,dongtai-sca-task $DONGTAI_CONCURRENCY -E --pidfile= 
 elif [ "$1" = "beat" ]; then
-    celery -A dongtai_conf beat -l info $DONGTAI_CONCURRENCY  --pidfile= --scheduler django_celery_beat.schedulers:DatabaseScheduler
+	celery -A dongtai_conf beat -l info $DONGTAI_CONCURRENCY  --pidfile= --scheduler django_celery_beat.schedulers:DatabaseScheduler
 else
-    echo "Get the latest vulnerability rules ."; python manage.py load_hook_strategy 2> /dev/null || echo "Lost connection to MySQL server !!!"; exit 1
+	echo "Get the latest vulnerability rules." && python manage.py load_hook_strategy 2> /dev/null
+	if [ $? -ne 0 ]; then echo "ERROR: Lost connection to MySQL server !!!" && exit 1 ; else echo "succeed" ;fi
 	/usr/local/bin/uwsgi --ini /opt/dongtai/dongtai_conf/conf/uwsgi.ini $DONGTAI_CONCURRENCY
 fi
