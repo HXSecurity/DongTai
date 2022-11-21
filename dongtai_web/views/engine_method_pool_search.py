@@ -201,9 +201,9 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         if 'id' in request.data.keys():
             q = assemble_query(search_after_fields, 'lte', q, operator.and_)
             if search_mode == 1:
-                q = assemble_query(search_fields_, 'regex', Q(), operator.or_)
+                q = assemble_query(search_fields, 'regex', Q(), operator.or_)
             elif search_mode == 2:
-                q = assemble_query_2(search_fields_, 'regex', Q(),
+                q = assemble_query_2(search_fields, 'regex', Q(),
                                      operator.and_)
             if 'id' in request.data.keys():
                 q = q & Q(pk=request.data['id'])
