@@ -128,6 +128,11 @@ def search_and_save_vul(engine: Optional[VulEngine],
     logger.info(f'current sink rule is {strategy.get("type")}')
     queryset = IastStrategyModel.objects.filter(vul_type=strategy['type'],
                                                 state=const.STRATEGY_ENABLE)
+    if not method_pool_model:
+        logger.info(
+            'method_pool_model missing skip'
+        )
+        return 
     if not queryset.values('id').exists():
         logger.error(
             f'current method pool hit rule {strategy.get("type")}, but no vul strategy.'
@@ -154,11 +159,13 @@ def search_and_save_vul(engine: Optional[VulEngine],
             sink_sign,
             taint_value,
             vul_type['vul_type'],
-            agent_id=method_pool_model.agent_id,
         )
         logger.info(f'vul filter_status : {filterres}')
     if status and filterres:
-        logger.info(f'vul_found {method_pool_model.agent_id}  {method_pool_model.url} {sink_sign}')
+        if isinstance(method_pool_model, MethodPool):
+            logger.info(f'vul_found {method_pool_model.agent_id}  {method_pool_model.url} {sink_sign}')
+        else:
+            logger.info(f'vul_found {method_pool_model.id}  {method_pool_model.url} {sink_sign}')
         vul_strategy = queryset.values("level", "vul_name", "id").first()
         if not vul_strategy:
             pass
@@ -194,7 +201,7 @@ def search_and_save_vul(engine: Optional[VulEngine],
                 verify_time=timestamp,
                 update_time=timestamp
             )
-            IastProject.objects.filter(id=method_pool.agent.bind_project_id).update(latest_time=timestamp)
+            IastProject.objects.filter(id=method_pool_model.agent.bind_project_id).update(latest_time=timestamp)
         except Exception as e:
             logger.info(f'漏洞数据处理出错，原因：{e}')
 
