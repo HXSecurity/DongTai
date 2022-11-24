@@ -33,6 +33,7 @@ class ApiRouteHandler(IReportHandler):
                 raise ValueError(_("No such agent"))
             agent = agent[0]
             for api_route in self.api_routes:
+                logger.debug(f"recoding api_route: {api_route}")
                 http_methods = []
                 with transaction.atomic():
                     try:
