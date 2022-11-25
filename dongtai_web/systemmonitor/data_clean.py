@@ -63,7 +63,7 @@ class DataCleanEndpoint(UserEndPoint):
             day_of_month='*',
             month_of_year='*',
         )
-        PeriodicTask.objects.get_or_create(
+        PeriodicTask.objects.update_or_create(
             name='data clean functions',  # simply describes this periodic task.
             defaults={
                 'crontab': schedule,  # we created this above.
