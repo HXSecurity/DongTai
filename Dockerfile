@@ -15,7 +15,7 @@ RUN apt-get update -y \
 
 COPY Pipfile .
 COPY Pipfile.lock .
-RUN pip install pipenv && python3 -m pipenv sync --system -v
+RUN pip install pipenv && python3 -m pipenv sync --system -v --extra-pip-args --no-usepep517
 
 COPY . /opt/dongtai
 WORKDIR /opt/dongtai
