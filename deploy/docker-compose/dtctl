@@ -1171,17 +1171,18 @@ if [ ! 0 == $# ]; then # If options provided then
       # check whether mysql is ready
       while :; do
         Info "start to check mysql status ..."
-        tables=$(docker exec -i $mysql_container_id /bin/bash -c "mysql -uroot -p'dongtai-iast'  --execute \"SHOW DATABASES;\"" || true)
+        tables=$(docker exec -i $mysql_container_id /bin/bash -c "mysql -uroot -p'dongtai-iast'  --execute \"SHOW DATABASES;\"" 2> /dev/null || true)
         if [[ ${tables["mysql"]} ]]; then
           Notice "mysql instance ready!"
           break
         fi
-        sleep 2
+        sleep 3
       done
       # extract sql name and reverse list
-      SQL_NAMES=$(cat updaterecord.txt | awk "/${TO_VERSION//./\\.}/,/${FROM_VERSION//./\\.}/ {print \$2}" | grep -vF "$FROM_VERSION" | awk "{array[NR]=\$0} END { for(i=NR;i>0;i--) {print array[i];} }")
       if [[ $(first_gt_second $TO_VERSION 1.9.0) == true ]]; then
          SQL_NAMES=$(docker exec -i $mysql_container_id /bin/bash -c "cat /schema/updaterecord.txt" | awk "/${TO_VERSION//./\\.}/,/${FROM_VERSION//./\\.}/ {print \$2}" | grep -vF "$FROM_VERSION" | awk "{array[NR]=\$0} END { for(i=NR;i>0;i--) {print array[i];} }")
+      else
+        SQL_NAMES=$(cat updaterecord.txt | awk "/${TO_VERSION//./\\.}/,/${FROM_VERSION//./\\.}/ {print \$2}" | grep -vF "$FROM_VERSION" | awk "{array[NR]=\$0} END { for(i=NR;i>0;i--) {print array[i];} }")
       fi
 
       # change sql store directory from /docker-entrypoint-initdb.d to /sql
