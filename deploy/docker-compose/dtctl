@@ -1199,6 +1199,10 @@ if [ ! 0 == $# ]; then # If options provided then
       for SQL in $SQL_NAMES; do
         Info "Start to load sql:[$SQL]"
         docker exec -i $mysql_container_id /bin/bash -c "mysql -uroot -p'dongtai-iast' dongtai_webapi < $sql_dir/$SQL"
+        if [ $SQL = "update-20221126-release-1.9.1.sql" ]; then
+          docker exec -i $mysql_container_id /bin/bash -c "mysql -uroot -p'dongtai-iast' dongtai_webapi < /schema/mysql8.sql"
+          Info "Sql character mysql8.0 ok!"
+        fi
       done
       if [ $TO_VERSION = 1.8.0 ]; then
         docker exec -i $mysql_container_id /bin/bash -c "mysql -uroot -p'dongtai-iast' dongtai_webapi < $sql_dir/utf8mb4_general_ci.sql"
