@@ -35,18 +35,6 @@
                 "target": "R",
                 "track": "false",
                 "type": 1,
-                "value": "java.util.Arrays.copyOf(char[],int)"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "false",
-                "language": 1,
-                "source": "P1",
-                "system_type": 1,
-                "target": "R",
-                "track": "false",
-                "type": 1,
                 "value": "java.util.Arrays.copyOfRange(byte[],int,int)"
             },
             {
@@ -2585,7 +2573,7 @@
                 "value": "org.glassfish.grizzly.http.Cookie.setSecure(boolean)"
             }
         ],
-        "enable": 0,
+        "enable": 1,
         "type": 4,
         "value": "cookie-flags-missing"
     },
@@ -2628,7 +2616,7 @@
                 "value": "javax.crypto.Cipher.getInstance(java.lang.String,java.security.Provider)"
             }
         ],
-        "enable": 0,
+        "enable": 1,
         "type": 4,
         "value": "crypto-bad-ciphers"
     },
@@ -2671,7 +2659,7 @@
                 "value": "java.security.MessageDigest.getInstance(java.lang.String,java.security.Provider)"
             }
         ],
-        "enable": 0,
+        "enable": 1,
         "type": 4,
         "value": "crypto-bad-mac"
     },
@@ -2846,7 +2834,7 @@
                 "value": "org.apache.commons.lang.RandomStringUtils.randomNumeric(int)"
             }
         ],
-        "enable": 0,
+        "enable": 1,
         "type": 4,
         "value": "crypto-weak-randomness"
     },
@@ -5460,7 +5448,7 @@
                 "value": "play.twirl.api.Html$.apply(java.lang.String)"
             }
         ],
-        "enable": 0,
+        "enable": 1,
         "type": 4,
         "value": "reflected-xss"
     },
@@ -6339,7 +6327,7 @@
                 "value": "play.mvc.Http$Session.put(java.lang.String,java.lang.String)"
             }
         ],
-        "enable": 0,
+        "enable": 1,
         "type": 4,
         "value": "trust-boundary-violation"
     },
