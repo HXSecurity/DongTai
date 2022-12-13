@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 asgiref = "*"
-certifi = "==2020.11.8"
+certifi = "==2022.12.7"
 cffi = "==1.15.1"
 chardet = "==3.0.4"
 django = "~=3.2.12"
@@ -75,6 +75,7 @@ pillow = "==9.3.0"
 pyrsistent = "==0.19.1"
 pytz = "==2022.6"
 types-pyyaml = "==6.0.12.2"
+uwsgi = "==2.0.21"
 
 [dev-packages]
 
