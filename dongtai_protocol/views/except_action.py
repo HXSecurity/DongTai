@@ -34,6 +34,7 @@ class AgentActionV2EndPoint(OpenApiEndPoint,ViewSet):
             return R.failure(msg=_("Agent not found"))
         agent.actual_running_status = actual_running_status
         agent.state_status = state_status
+        agent.save()
         return R.success(msg="success update")
 
     @extend_schema(description='Agent Update, Data is Gzip',
