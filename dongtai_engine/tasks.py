@@ -426,7 +426,7 @@ def update_agent_status():
             verify_time__isnull=True,
             replay_type=1).values('relation_id').distinct()
         IastVulnerabilityModel.objects.filter(pk__in=vul_id_qs).update(
-            status_id=3)
+            status_id=7)
         logger.info(f'检测引擎状态更新成功')
     except Exception as e:
         logger.error(f'检测引擎状态更新出错，错误详情：{e}')
