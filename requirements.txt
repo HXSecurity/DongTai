@@ -12,7 +12,7 @@ boto3-stubs==1.24.72
 botocore==1.27.91
 botocore-stubs==1.27.71
 celery==5.2.7
-certifi==2020.11.8
+certifi==2022.12.7
 cffi==1.15.1
 chardet==3.0.4
 click==8.1.3 ; python_version >= '3.7'
@@ -116,6 +116,7 @@ types-urllib3==1.26.24
 typing-extensions==4.3.0
 uritemplate==4.1.1 ; python_version >= '3.6'
 urllib3==1.26.5
+uwsgi==2.0.21
 uwsgitop==0.11
 vine==5.0.0 ; python_version >= '3.6'
 wcwidth==0.2.5
