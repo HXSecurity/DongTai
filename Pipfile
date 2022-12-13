@@ -75,6 +75,7 @@ pillow = "==9.3.0"
 pyrsistent = "==0.19.1"
 pytz = "==2022.6"
 types-pyyaml = "==6.0.12.2"
+uwsgi = "==2.0.21"
 
 [dev-packages]
 
