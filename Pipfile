@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 asgiref = "*"
-certifi = "==2020.11.8"
+certifi = "==2022.12.7"
 cffi = "==1.15.1"
 chardet = "==3.0.4"
 django = "~=3.2.12"
