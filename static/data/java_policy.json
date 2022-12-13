@@ -20,6 +20,13 @@
                 "source": "P1",
                 "target": "R",
                 "track": "false",
+                "value": "java.util.Arrays.copyOf(char[],int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
                 "value": "java.util.Arrays.copyOfRange(byte[],int,int)"
             },
             {
@@ -110,83 +117,6 @@
         "enable": 1,
         "type": 4,
         "value": "FileWrite"
-    },
-    {
-        "details": [
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "R",
-                "track": "false",
-                "value": "org.unbescape.html.HtmlEscape.escapeHtml(java.lang.String,java.io.Writer,org.unbescape.html.HtmlEscapeType,org.unbescape.html.HtmlEscapeLevel)"
-            },
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "R",
-                "track": "false",
-                "value": "org.unbescape.html.HtmlEscape.escapeHtml(java.lang.String,org.unbescape.html.HtmlEscapeType,org.unbescape.html.HtmlEscapeLevel)"
-            },
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "R",
-                "track": "false",
-                "value": "org.unbescape.html.HtmlEscape.escapeHtml4(java.lang.String)"
-            },
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "R",
-                "track": "false",
-                "value": "org.unbescape.html.HtmlEscape.escapeHtml4(java.lang.String,java.io.Writer)"
-            },
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "R",
-                "track": "false",
-                "value": "org.unbescape.html.HtmlEscape.escapeHtml4Xml(java.lang.String)"
-            },
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "R",
-                "track": "false",
-                "value": "org.unbescape.html.HtmlEscape.escapeHtml4Xml(java.lang.String,java.io.Writer)"
-            },
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "R",
-                "track": "false",
-                "value": "org.unbescape.html.HtmlEscape.escapeHtml5(java.lang.String)"
-            },
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "R",
-                "track": "false",
-                "value": "org.unbescape.html.HtmlEscape.escapeHtml5(java.lang.String,java.io.Writer)"
-            },
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "R",
-                "track": "false",
-                "value": "org.unbescape.html.HtmlEscape.escapeHtml5Xml(java.lang.String)"
-            },
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "R",
-                "track": "false",
-                "value": "org.unbescape.html.HtmlEscape.escapeHtml5Xml(java.lang.String,java.io.Writer)"
-            }
-        ],
-        "enable": 1,
-        "type": 1,
-        "value": "Html5EscapeSymbolsInitializer"
     },
     {
         "details": [
@@ -1278,8 +1208,8 @@
             {
                 "inherit": "false",
                 "source": "P2",
-                "target": "R",
-                "track": "",
+                "target": "P1",
+                "track": "false",
                 "value": "org.apache.commons.lang.StringEscapeUtils.escapeHtml(java.io.Writer,java.lang.String)"
             },
             {
@@ -2984,20 +2914,6 @@
     {
         "details": [
             {
-                "inherit": "true",
-                "source": "P1",
-                "target": "R",
-                "track": "",
-                "value": "org.owasp.esapi.reference.DefaultEncoder.encodeForHTML(java.lang.String)"
-            }
-        ],
-        "enable": 1,
-        "type": 1,
-        "value": "owasp-esapi"
-    },
-    {
-        "details": [
-            {
                 "inherit": "all",
                 "source": "P2",
                 "target": "",
@@ -3233,13 +3149,6 @@
                 "source": "P1",
                 "target": "",
                 "track": "true",
-                "value": "org.apache.jasper.runtime.JspWriterImpl.println(java.lang.String)"
-            },
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "",
-                "track": "true",
                 "value": "org.apache.tapestry5.internal.services.MarkupWriterImpl.writeRaw(java.lang.String)"
             },
             {
@@ -3332,20 +3241,6 @@
                 "target": "",
                 "track": "true",
                 "value": "org.springframework.http.converter.StringHttpMessageConverter.writeInternal(java.lang.String,org.springframework.http.HttpOutputMessage)"
-            },
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "",
-                "track": "true",
-                "value": "org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor.handleReturnValue(java.lang.Object,org.springframework.core.MethodParameter,org.springframework.web.method.support.ModelAndViewContainer,org.springframework.web.context.request.NativeWebRequest)"
-            },
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "",
-                "track": "true",
-                "value": "play.twirl.api.Html$.apply(java.lang.String)"
             }
         ],
         "enable": 1,
@@ -3360,13 +3255,6 @@
                 "target": "",
                 "track": "false",
                 "value": "java.lang.Class.forName(java.lang.String)"
-            },
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "",
-                "track": "false",
-                "value": "java.lang.Class.forName(java.lang.String,boolean,java.lang.ClassLoader)"
             }
         ],
         "enable": 1,
@@ -4034,39 +3922,11 @@
                 "value": "jakarta.servlet.ServletContext.getRequestDispatcher(java.lang.String)"
             },
             {
-                "inherit": "true",
-                "source": "P2",
-                "target": "",
-                "track": "true",
-                "value": "jakarta.servlet.http.HttpServletResponse.addHeader(java.lang.String,java.lang.String)"
-            },
-            {
-                "inherit": "true",
-                "source": "P1",
-                "target": "",
-                "track": "true",
-                "value": "jakarta.servlet.http.HttpServletResponse.sendRedirect(java.lang.String)"
-            },
-            {
-                "inherit": "true",
-                "source": "P2",
-                "target": "",
-                "track": "true",
-                "value": "jakarta.servlet.http.HttpServletResponse.setHeader(java.lang.String,java.lang.String)"
-            },
-            {
                 "inherit": "false",
                 "source": "P1",
                 "target": "",
                 "track": "true",
                 "value": "jakarta.servlet.jsp.PageContext.forward(java.lang.String)"
-            },
-            {
-                "inherit": "true",
-                "source": "P1",
-                "target": "",
-                "track": "true",
-                "value": "jakarta.ws.rs.core.Response.temporaryRedirect(java.net.URI)"
             },
             {
                 "inherit": "true",
@@ -4095,6 +3955,34 @@
                 "target": "",
                 "track": "true",
                 "value": "io.netty.handler.codec.http.DefaultHttpHeaders.add0(int,int,java.lang.CharSequence,java.lang.CharSequence)"
+            },
+            {
+                "inherit": "true",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "jakarta.servlet.http.HttpServletResponse.addHeader(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "jakarta.servlet.http.HttpServletResponse.sendRedirect(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "jakarta.servlet.http.HttpServletResponse.setHeader(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "jakarta.ws.rs.core.Response.temporaryRedirect(java.net.URI)"
             },
             {
                 "inherit": "true",
