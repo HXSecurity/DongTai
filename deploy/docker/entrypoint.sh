@@ -23,5 +23,5 @@ elif [ "$1" = "beat" ]; then
 else
 	echo "Get the latest vulnerability rules." && python manage.py load_hook_strategy 2> /dev/null
 	if [ $? -ne 0 ]; then echo "ERROR: Lost connection to MySQL server !!!" && exit 1 ; else echo "succeed" ;fi
-	/usr/local/bin/uwsgi --ini /opt/dongtai/dongtai_conf/conf/uwsgi.ini $DONGTAI_CONCURRENCY
+	uwsgi --ini /opt/dongtai/dongtai_conf/conf/uwsgi.ini $DONGTAI_CONCURRENCY
 fi
