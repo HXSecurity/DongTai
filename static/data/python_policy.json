@@ -52,6 +52,111 @@
         "details": [
             {
                 "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Crypto.Cipher._mode_cbc.CbcMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Crypto.Cipher._mode_cfb.CfbMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Crypto.Cipher._mode_ctr.CtrMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Crypto.Cipher._mode_eax.EaxMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Crypto.Cipher._mode_ecb.EcbMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Crypto.Cipher._mode_ofb.OfbMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Crypto.Cipher._mode_openpgp.OpenPgpMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Cryptodome.Cipher._mode_cbc.CbcMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Cryptodome.Cipher._mode_cfb.CfbMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Cryptodome.Cipher._mode_ctr.CtrMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Cryptodome.Cipher._mode_eax.EaxMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Cryptodome.Cipher._mode_ecb.EcbMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Cryptodome.Cipher._mode_ofb.OfbMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Cryptodome.Cipher._mode_openpgp.OpenPgpMode.encrypt"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "crypto-bad-ciphers"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
                 "source": "P",
                 "target": "R",
                 "track": "false",
@@ -642,6 +747,27 @@
         "enable": 1,
         "type": 4,
         "value": "redos"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P2,content",
+                "target": "",
+                "track": "true",
+                "value": "django.http.response.HttpResponse.__init__"
+            },
+            {
+                "inherit": "false",
+                "source": "P2,rv",
+                "target": "",
+                "track": "true",
+                "value": "flask.app.Flask.make_response"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "reflected-xss"
     },
     {
         "details": [
