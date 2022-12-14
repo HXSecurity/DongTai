@@ -132,7 +132,7 @@ def search_and_save_vul(engine: Optional[VulEngine],
         logger.info(
             'method_pool_model missing skip'
         )
-        return 
+        return
     if not queryset.values('id').exists():
         logger.error(
             f'current method pool hit rule {strategy.get("type")}, but no vul strategy.'
@@ -394,11 +394,13 @@ def sha_1(raw):
     return sha1_str
 
 
-def is_alive(agent_id, timestamp):
+def is_alive(agent_id: int, timestamp: int) -> bool:
     """
     Whether the probe is alive or not, the judgment condition: there is a heartbeat log within 2 minutes
     """
-    return IastHeartbeat.objects.values('id').filter(agent__id=agent_id, dt__gt=(timestamp - 60 * 2)).exists()
+    return IastHeartbeat.objects.values('id').filter(agent__id=agent_id,
+                                                     dt__gt=(timestamp -
+                                                             60 * 2)).exists()
 
 
 @shared_task(queue='dongtai-periodic-task')

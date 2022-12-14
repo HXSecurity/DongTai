@@ -167,7 +167,7 @@ def get_memory(jsonstr: Optional[str]) -> str:
 def cal_state(agent: dict) -> StateType:
     if agent['online'] == 1 and agent['actual_running_status'] == 1:
         return StateType.RUNNING
-    elif agent['online'] == 1 and agent['actual_running_status'] == 2:
+    elif agent['online'] == 1 and (agent['actual_running_status'] == 2 or agent['actual_running_status'] == 3):
         return StateType.STOP
     #elif agent['online'] == 0:
     #    return StateType.UNINSTALL
