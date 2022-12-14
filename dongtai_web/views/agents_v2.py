@@ -23,6 +23,7 @@ from dongtai_common.models.asset import Asset
 from dongtai_common.utils.user import get_auth_users__by_id
 import json
 from typing import Optional
+from time import time
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -45,6 +46,7 @@ class AgentListv2(UserEndPoint, ViewSet):
             state = StateType(int(request.query_params.get('state', 1)))
             project_name = request.query_params.get('project_name', '')
             project_id = int(request.query_params.get('project_id', 0))
+            last_days = int(request.query_params.get('last_days', 0))
             filter_condiction = generate_filter(state) & Q(
                 user__in=get_auth_users__by_id(request.user.id))
             if project_name:
@@ -53,11 +55,15 @@ class AgentListv2(UserEndPoint, ViewSet):
             if project_id:
                 filter_condiction = filter_condiction & Q(
                     bind_project_id=project_id)
+            if last_days:
+                filter_condiction = filter_condiction & Q(
+                    latest_time__gte=int(time()) - 60 * 60 * 24 * last_days)
+
             page = page if page else 1
             page_size = page_size if page_size else 20
 
-            summary, queryset = self.get_paginator(query_agent(filter_condiction),
-                                                   page, page_size)
+            summary, queryset = self.get_paginator(
+                query_agent(filter_condiction), page, page_size)
             queryset = list(queryset)
             for agent in queryset:
                 agent['state'] = cal_state(agent)
@@ -69,9 +75,12 @@ class AgentListv2(UserEndPoint, ViewSet):
                     agent['except_running_status'],
                     agent['online'],
                 )
+                agent['ipaddresses'] = ['172.22.22.11', '10.0.2.15']
+                agent['events'] = ['注册成功', '加载成功']
             data = {'agents': queryset, "summary": summary}
         except Exception as e:
-            logger.error("agents pagenation_list error:{}".format(e),exc_info=e)
+            logger.error("agents pagenation_list error:{}".format(e),
+                         exc_info=e)
             data = dict()
         return R.success(data=data)
 
@@ -114,16 +123,18 @@ def generate_filter(state: StateType) -> Q:
     elif state == StateType.RUNNING:
         return Q(online=1) & Q(actual_running_status=1)
     elif state == StateType.STOP:
-        return Q(online=1) & Q(actual_running_status=2)
+        return Q(online=1) & ~Q(actual_running_status=1)
     elif state == StateType.UNINSTALL:
         return Q(online=0)
     return Q()
+
 
 def get_is_control(actual_running_status: int, except_running_status: int,
                    online: int) -> int:
     if online and actual_running_status != except_running_status:
         return 1
     return 0
+
 
 def get_disk(jsonstr: Optional[str]) -> str:
     if not jsonstr:
@@ -167,7 +178,7 @@ def get_memory(jsonstr: Optional[str]) -> str:
 def cal_state(agent: dict) -> StateType:
     if agent['online'] == 1 and agent['actual_running_status'] == 1:
         return StateType.RUNNING
-    elif agent['online'] == 1 and (agent['actual_running_status'] == 2 or agent['actual_running_status'] == 3):
+    elif agent['online'] == 1 and not agent['actual_running_status'] == 1:
         return StateType.STOP
     #elif agent['online'] == 0:
     #    return StateType.UNINSTALL
