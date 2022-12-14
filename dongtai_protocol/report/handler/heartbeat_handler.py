@@ -166,6 +166,9 @@ class HeartBeatHandler(IReportHandler):
     def save(self):
         self.save_heartbeat()
 
+    def get_agent(self, agent_id):
+        return IastAgent.objects.filter(id=agent_id, user=self.user_id).first()
+
 
 def get_k8s_deployment_id(hostname: str) -> str:
     return hostname[hostname.rindex('-')]
