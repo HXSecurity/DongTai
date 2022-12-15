@@ -64,3 +64,10 @@ class IastAgent(models.Model):
     class Meta:
         managed = get_managed()
         db_table = 'iast_agent'
+
+
+#class IastAgent(models.Model):
+#
+#    class Meta:
+#        managed = get_managed()
+#        db_table = 'iast_agent'

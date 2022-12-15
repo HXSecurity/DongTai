@@ -23,4 +23,4 @@ class ApiHeartBeatTestCase(AgentTestCase):
         }
         data['detail']['agentId'] = self.agent_id
         res = self.agent_report(data, agentId=self.agent_id)
-        assert is_alive(self.agent_id, int(time())) == True
+        assert is_alive(self.agent_id, int(time()))
