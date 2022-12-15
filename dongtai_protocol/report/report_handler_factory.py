@@ -4,7 +4,10 @@
 # datetime:2020/10/23 12:00
 # software: PyCharm
 # project: webapi
-import logging, requests, json, time
+import logging
+import requests
+import json
+import time
 from django.utils.translation import gettext_lazy as _
 from dongtai_conf import settings
 from dongtai_protocol.report.log_service import LogService
@@ -30,15 +33,18 @@ class ReportHandler:
             report_type = reports.get('type')
             # 根据消息类型，转发上报到指定地址
             if report_type == 1:
-                isCoreInstalled = reports.get("detail",{}).get("isCoreInstalled", 0)
-                isCoreRunning = reports.get("detail",{}).get("isCoreRunning", 0)
+                isCoreInstalled = reports.get("detail",{}).get("isCoreInstalled", None)
+                isCoreRunning = reports.get("detail",{}).get("isCoreRunning", None)
                 agentId = reports.get("detail",{}).get("agentId", 0)
                 # is_core_running 0 未运行，1运行中，2已卸载
-                if isCoreInstalled == 0:
+                if isCoreInstalled is None and isCoreRunning is None:
+                    pass
+                elif isCoreInstalled == 0:
                     is_core_running = 2
                     IastAgent.objects.filter(
                         user=user,
                         id=agentId).update(actual_running_status=2)
+                    IastAgent.objects.filter(user=user,id=agentId).update(is_core_running=is_core_running)
                 else:
                     if isCoreRunning == 1:
                         is_core_running = 1
@@ -51,7 +57,7 @@ class ReportHandler:
                             user=user,
                             id=agentId).update(actual_running_status=2)
 
-                IastAgent.objects.filter(user=user,id=agentId).update(is_core_running=is_core_running)
+                    IastAgent.objects.filter(user=user,id=agentId).update(is_core_running=is_core_running)
             # web hook
             # req = requests.post(
             #     settings.AGENT_ENGINE_URL.format(user_id=user.id, report_type=report_type),

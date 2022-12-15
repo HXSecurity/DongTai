@@ -20,7 +20,8 @@ from django.utils.text import format_lazy
 
 from dongtai_web.serializers.vul import VulSummaryResponseDataSerializer
 
-import copy,time
+import copy
+import time
 
 
 _ResponseSerializer = get_response_serializer(VulSummaryResponseDataSerializer())

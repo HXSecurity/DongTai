@@ -7,7 +7,8 @@
 
 from dongtai_common.endpoint import OpenApiEndPoint, R
 from drf_spectacular.utils import extend_schema
-import time,logging
+import time
+import logging
 from dongtai_protocol.api_schema import DongTaiParameter
 from dongtai_protocol.decrypter import parse_data
 from dongtai_protocol.report.report_handler_factory import ReportHandler
