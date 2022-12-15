@@ -68,13 +68,13 @@ class IastAgent(models.Model):
         db_table = 'iast_agent'
 
     def append_events(self, event: str):
-        events_list = json.loads(self.events)
+        events_list = self.events if self.events else ["注册成功"]
         events_list.append(event)
-        self.events = json.dumps(events_list)
+        self.events = events_list
         self.save()
 
     def only_register(self):
-        events_list = json.loads(self.events)
+        events_list = self.events if self.events else ["注册成功"]
         return events_list == ['注册成功']
 
 #class IastAgent(models.Model):
