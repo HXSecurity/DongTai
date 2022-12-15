@@ -5,8 +5,10 @@
 # software: PyCharm
 # project: lingzhi-agent-server
 import json
-import os, re
-import uuid, logging
+import os
+import re
+import uuid
+import logging
 
 from django.http import FileResponse
 from dongtai_common.endpoint import UserEndPoint, R
@@ -19,7 +21,8 @@ from dongtai_protocol.utils import OssDownloader
 from dongtai_conf.settings import BUCKET_NAME_BASE_URL, VERSION
 
 import shutil
-import tarfile, os
+import tarfile
+import os
 import threading
 import time
 

@@ -99,8 +99,10 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         return ''
 
     @staticmethod
-    def register_server(agent_id, hostname, network, container_name, server_addr, server_port, cluster_name,cluster_version,
-                        server_path, server_env, pid):
+    def register_server(agent_id, hostname, network, container_name,
+                        server_addr, server_port, cluster_name,
+                        cluster_version, server_path, server_env, pid,
+                        server_ipaddresslist):
         """
         注册server，并关联server至agent
         :param agent_id:
@@ -131,12 +133,16 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         try:
             port = int(server_port)
         except Exception as e:
-            logger.error(_('The server port does not exist, has been set to the default: 0'))
+            logger.error(
+                _('The server port does not exist, has been set to the default: 0'
+                  ))
             port = 0
 
         server_id = agent.server_id
 
-        server = IastServer.objects.filter(id=server_id).first() if server_id else None
+        server = IastServer.objects.filter(
+            id=server_id).first() if server_id else None
+        ipaddresslist = json.dumps(server_ipaddresslist)
         if server:
             server.hostname = hostname
             server.network = network
@@ -149,7 +155,19 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             server.cluster_version = cluster_version
             server.status = 'online'
             server.update_time = int(time.time())
-            server.save(update_fields=['hostname', 'command', 'ip', 'port', 'env', 'status', 'update_time', 'cluster_name', 'cluster_version'])
+            server.ipaddresslist = ipaddresslist
+            server.save(update_fields=[
+                'hostname',
+                'command',
+                'ip',
+                'port',
+                'env',
+                'status',
+                'update_time',
+                'cluster_name',
+                'cluster_version',
+                "ipaddresslist",
+            ])
         else:
             server = IastServer.objects.create(
                 hostname=hostname,
@@ -167,34 +185,33 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 command=command,
                 runtime=AgentRegisterEndPoint.get_runtime(envs),
                 create_time=int(time.time()),
-                update_time=int(time.time())
+                update_time=int(time.time()),
+                ipaddresslist=ipaddresslist,
             )
             agent.server_id = server.id
             agent.save(update_fields=['server_id'])
             logger.info(_('Server record creation success'))
 
-    @extend_schema(
-        description='Agent Register, Data is Gzip',
-        parameters=[
-            DongTaiParameter.AGENT_NAME,
-            DongTaiParameter.LANGUAGE,
-            DongTaiParameter.VERSION,
-            DongTaiParameter.PROJECT_NAME,
-            DongTaiParameter.HOSTNAME,
-            DongTaiParameter.NETWORK,
-            DongTaiParameter.CONTAINER_NAME,
-            DongTaiParameter.SERVER_ADDR,
-            DongTaiParameter.SERVER_PORT,
-            DongTaiParameter.SERVER_PATH,
-            DongTaiParameter.SERVER_ENV,
-            DongTaiParameter.PID,
-            DongTaiParameter.AUTO_CREATE_PROJECT,
-        ],
-        responses=[
-            {204: None}
-        ],
-        methods=['POST']
-    )
+    @extend_schema(description='Agent Register, Data is Gzip',
+                   parameters=[
+                       DongTaiParameter.AGENT_NAME,
+                       DongTaiParameter.LANGUAGE,
+                       DongTaiParameter.VERSION,
+                       DongTaiParameter.PROJECT_NAME,
+                       DongTaiParameter.HOSTNAME,
+                       DongTaiParameter.NETWORK,
+                       DongTaiParameter.CONTAINER_NAME,
+                       DongTaiParameter.SERVER_ADDR,
+                       DongTaiParameter.SERVER_PORT,
+                       DongTaiParameter.SERVER_PATH,
+                       DongTaiParameter.SERVER_ENV,
+                       DongTaiParameter.PID,
+                       DongTaiParameter.AUTO_CREATE_PROJECT,
+                   ],
+                   responses=[{
+                       204: None
+                   }],
+                   methods=['POST'])
     def post(self, request: Request):
         try:
             param = parse_data(request.read())
@@ -282,6 +299,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 cluster_version=cluster_version,
                 server_env=server_env,
                 pid=pid,
+                server_ipaddresslist = get_ipaddresslist(network),
             )
 
             core_auto_start = 0
@@ -353,3 +371,20 @@ def get_ipaddress(network: str):
     except Exception as e:
         logger.error(e, exc_info=True)
         return ''
+
+
+def get_ipaddresslist(network: str) -> list:
+    try:
+        network_data = json.loads(network)
+        if isinstance(network_data, list):
+            res = []
+            for i in network_data:
+                res.append(i['ip'])
+            return res
+        if isinstance(network_data, dict):
+            return [network_data['ip']]
+    except KeyError as e:
+        logger.error(network_data,exc_info=e)
+    except Exception as e:
+        logger.error(e, exc_info=e)
+    return []

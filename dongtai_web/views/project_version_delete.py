@@ -3,7 +3,8 @@
 # author:sjh
 # software: PyCharm
 # project: lingzhi-webapi
-import logging, time
+import logging
+import time
 from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint
 from dongtai_common.models.project_version import IastProjectVersion
