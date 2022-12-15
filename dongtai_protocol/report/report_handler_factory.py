@@ -4,7 +4,10 @@
 # datetime:2020/10/23 12:00
 # software: PyCharm
 # project: webapi
-import logging, requests, json, time
+import logging
+import requests
+import json
+import time
 from django.utils.translation import gettext_lazy as _
 from dongtai_conf import settings
 from dongtai_protocol.report.log_service import LogService

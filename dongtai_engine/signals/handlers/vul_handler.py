@@ -3,7 +3,8 @@
 # author: owefsad@huoxian.cn
 # datetime: 2021/4/30 下午3:00
 # project: dongtai-engine
-import json,random
+import json
+import random
 import time
 import requests
 from celery.apps.worker import logger
