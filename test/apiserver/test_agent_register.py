@@ -19,7 +19,6 @@ class AgentRegisterTestCase(AgentTestCase):
 
     def test_rep_register(self):
         data1 = self.raw_register(name='rep_data')
-        self.agent_heartbeat()
         data2 = self.raw_register(name='rep_data')
         assert data1.status_code == 200 and data2.status_code == 200
         self.test_agent_id += [
@@ -31,3 +30,9 @@ class AgentRegisterTestCase(AgentTestCase):
     def test_register(self):
         assert not IastAgent.objects.filter(pk=self.agent_id,
                                             project_version_id=0).exists()
+
+    def test_old_register(self):
+        dic = {
+            "network": "{\"name\":\"en0\",\"ip\":\"192.168.2.143\"}",
+        }
+        self.raw_register(**dic)
