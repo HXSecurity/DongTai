@@ -76,7 +76,7 @@ class AgentListv2(UserEndPoint, ViewSet):
                     agent['online'],
                 )
                 agent['ipaddresses'] = get_service_addrs(
-                    agent['server__ipaddresslist'], agent['server__port'])
+                    json.loads(agent['server__ipaddresslist']), agent['server__port'])
                 if not agent['events']:
                     agent['events'] = ['注册成功']
             data = {'agents': queryset, "summary": summary}
