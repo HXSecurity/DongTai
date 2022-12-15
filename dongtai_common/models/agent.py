@@ -13,6 +13,8 @@ from dongtai_common.models.server import IastServer
 from dongtai_common.utils.settings import get_managed
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
+import json
+
 
 class IastAgent(models.Model):
     token = models.CharField(max_length=255, blank=True, null=True)
@@ -38,10 +40,10 @@ class IastAgent(models.Model):
                                      null=True,
                                      default=-1)
     project_version = models.ForeignKey(IastProjectVersion,
-                                     on_delete=models.CASCADE,
-                                     blank=True,
-                                     null=True,
-                                     default=-1)
+                                        on_delete=models.CASCADE,
+                                        blank=True,
+                                        null=True,
+                                        default=-1)
     project_name = models.CharField(max_length=255, blank=True, null=True)
     online = models.PositiveSmallIntegerField(blank=True, default=0)
     language = models.CharField(max_length=10, blank=True, null=True)
@@ -59,8 +61,24 @@ class IastAgent(models.Model):
     actual_running_status = models.IntegerField(default=1, null=False)
     except_running_status = models.IntegerField(default=1, null=False)
     state_status = models.IntegerField(default=1, null=False)
-
+    events = models.JSONField(null=False, default=lambda: ['注册成功'])
 
     class Meta:
         managed = get_managed()
         db_table = 'iast_agent'
+
+    def append_events(self, event: str):
+        events_list = self.events if self.events else ["注册成功"]
+        events_list.append(event)
+        self.events = events_list
+        self.save()
+
+    def only_register(self):
+        events_list = self.events if self.events else ["注册成功"]
+        return events_list == ['注册成功']
+
+#class IastAgent(models.Model):
+#
+#    class Meta:
+#        managed = get_managed()
+#        db_table = 'iast_agent'

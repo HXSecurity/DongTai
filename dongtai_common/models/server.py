@@ -30,6 +30,7 @@ class IastServer(models.Model):
                                 null=True,
                                 default='')
     pid = models.IntegerField(blank=True, null=True)
+    ipaddresslist = models.JSONField(null=False, default=list)
 
     class Meta:
         managed = get_managed()
