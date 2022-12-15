@@ -259,6 +259,9 @@ def search_vul_from_method_pool(self, method_pool_sign, agent_id, retryable=Fals
                 if strategy.get('value') in engine.method_pool_signatures:
                     search_and_save_vul(engine, method_pool_model, None, strategy)
         logger.info(f'漏洞检测成功')
+        from dongtai_engine.plugins.method_pool import method_pool_after_scan, enable_method_pool_post_scan_hook
+        if method_pool_model and enable_method_pool_post_scan_hook(method_pool_model):
+            method_pool_after_scan(method_pool_model)
     except RetryableException as e:
         if self.request.retries < self.max_retries:
             delay = 5 + pow(3, self.request.retries) * 10
