@@ -4,7 +4,8 @@
 
 # software: PyCharm
 # project: lingzhi-webapi
-import logging, time
+import logging
+import time
 from dongtai_common.endpoint import R
 from django.db.models import Q
 from dongtai_common.endpoint import UserEndPoint
