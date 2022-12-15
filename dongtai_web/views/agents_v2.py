@@ -103,8 +103,10 @@ class AgentListv2(UserEndPoint, ViewSet):
             res = dict()
         return R.success(data=res)
 
+
 def get_service_addrs(ip_list: list, port: int) -> list:
-    return list(map(lambda x: x + str(port) ,ip_list))
+    return list(map(lambda x: x + str(port), ip_list))
+
 
 def get_agent_stat(agent_id: int, user_id: int) -> dict:
     res = {}

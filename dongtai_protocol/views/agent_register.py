@@ -384,7 +384,7 @@ def get_ipaddresslist(network: str) -> list:
         if isinstance(network_data, dict):
             return [network_data['ip']]
     except KeyError as e:
-        return []
+        logger.error(network_data,exc_info=e)
     except Exception as e:
-        logger.error(e, exc_info=True)
-        return []
+        logger.error(e, exc_info=e)
+    return []
