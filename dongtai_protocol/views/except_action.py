@@ -10,10 +10,13 @@ from django.utils.translation import gettext_lazy as _
 from urllib.parse import urlparse, urlunparse
 from dongtai_web.views.project_add import is_ip
 from rest_framework.viewsets import ViewSet
+
 logger = logging.getLogger('dongtai.openapi')
 
+EVENT_MAPPING = {1: "加载成功", 2: "降级成功", 3: "卸载成功", 4: "代码异常"}
 
-class AgentActionV2EndPoint(OpenApiEndPoint,ViewSet):
+
+class AgentActionV2EndPoint(OpenApiEndPoint, ViewSet):
 
     @extend_schema(description='Agent Update, Data is Gzip',
                    responses=[{
@@ -26,12 +29,18 @@ class AgentActionV2EndPoint(OpenApiEndPoint,ViewSet):
             agent_id = int(param.get('agentId', None))
             actual_running_status = int(param.get('actualRunningStatus', None))
             state_status = int(param.get('stateStatus', None))
-        except Exception as e:
-            logger.error(e, exc_info=True)
+        except Exception as exception:
+            logger.error(exception, exc_info=True)
             return R.failure(msg="参数错误")
         agent = IastAgent.objects.filter(pk=agent_id).first()
         if not agent:
             return R.failure(msg=_("Agent not found"))
+        if agent.only_register(
+        ) or agent.actual_running_status != actual_running_status:
+            if not agent.events:
+                agent.append_events("注册成功")
+            if agent.actual_running_status in EVENT_MAPPING:
+                agent.append_events(EVENT_MAPPING[agent.actual_running_status])
         agent.actual_running_status = actual_running_status
         agent.state_status = state_status
         agent.save()

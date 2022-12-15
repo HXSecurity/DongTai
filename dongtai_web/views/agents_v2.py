@@ -75,8 +75,10 @@ class AgentListv2(UserEndPoint, ViewSet):
                     agent['except_running_status'],
                     agent['online'],
                 )
-                agent['ipaddresses'] = ['172.22.22.11', '10.0.2.15']
-                agent['events'] = ['注册成功', '加载成功']
+                agent['ipaddresses'] = get_service_addrs(
+                    agent['server__ipaddresslist'], agent['server__port'])
+                if not agent['events']:
+                    agent['events'] = ['注册成功']
             data = {'agents': queryset, "summary": summary}
         except Exception as e:
             logger.error("agents pagenation_list error:{}".format(e),
@@ -101,6 +103,8 @@ class AgentListv2(UserEndPoint, ViewSet):
             res = dict()
         return R.success(data=res)
 
+def get_service_addrs(ip_list: list, port: int) -> list:
+    return list(map(lambda x: x + str(port) ,ip_list))
 
 def get_agent_stat(agent_id: int, user_id: int) -> dict:
     res = {}
@@ -189,7 +193,8 @@ def query_agent(filter_condiction=Q()) -> QuerySet:
     return IastAgent.objects.filter(filter_condiction).values(
         'alias', 'token', 'bind_project__name', 'bind_project__user__username',
         'language', 'server__ip', 'server__port', 'server__path',
-        'server__hostname', 'heartbeat__memory', 'heartbeat__cpu',
-        'heartbeat__disk', 'register_time', 'is_core_running', 'is_control',
-        'online', 'id', 'bind_project__id', 'version', 'except_running_status',
+        'server__ipaddresslist', 'events', 'server__hostname',
+        'heartbeat__memory', 'heartbeat__cpu', 'heartbeat__disk',
+        'register_time', 'is_core_running', 'is_control', 'online', 'id',
+        'bind_project__id', 'version', 'except_running_status',
         'actual_running_status', 'state_status').order_by('-latest_time')
