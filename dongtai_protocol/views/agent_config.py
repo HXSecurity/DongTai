@@ -150,7 +150,7 @@ def get_agent_config(agent_id: int) -> Result:
             metric_list.append(convert_metric(metric))
         data[mg.name.lower()] = metric_list
         data[mg.name.lower()
-             + "IsUninstall"] = True if config.deal == DealType.UNLOAD else False
+             + "IsUninstall"] = False
         interval_list.append(config.interval)
     # if interval_list is [], there is mean no config found here. 
     # because interval is required in create config.
