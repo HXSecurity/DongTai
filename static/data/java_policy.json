@@ -122,6 +122,55 @@
         "details": [
             {
                 "inherit": "false",
+                "source": "P1",
+                "target": "P4",
+                "track": "false",
+                "value": "org.unbescape.html.HtmlEscapeUtil.escape(char[],int,int,java.io.Writer,org.unbescape.html.HtmlEscapeType,org.unbescape.html.HtmlEscapeLevel)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "P2",
+                "track": "false",
+                "value": "org.unbescape.html.HtmlEscapeUtil.escape(java.io.Reader,java.io.Writer,org.unbescape.html.HtmlEscapeType,org.unbescape.html.HtmlEscapeLevel)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.unbescape.html.HtmlEscapeUtil.escape(java.lang.String,org.unbescape.html.HtmlEscapeType,org.unbescape.html.HtmlEscapeLevel)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "P4",
+                "track": "false",
+                "value": "org.unbescape.html.HtmlEscapeUtil.unescape(char[],int,int,java.io.Writer)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "P2",
+                "track": "false",
+                "value": "org.unbescape.html.HtmlEscapeUtil.unescape(java.io.Reader,java.io.Writer)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.unbescape.html.HtmlEscapeUtil.unescape(java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "Html5EscapeSymbolsInitializer"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
                 "source": "O",
                 "target": "R",
                 "track": "false",
@@ -1183,6 +1232,69 @@
                 "target": "O",
                 "track": "false",
                 "value": "java.net.URL.<init>(java.net.URL,java.lang.String,java.net.URLStreamHandler)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "java.net.URLDecoder.decode(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "java.net.URLDecoder.decode(java.lang.String,java.nio.charset.Charset)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "java.net.URLEncoder.encode(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "java.net.URLEncoder.encode(java.lang.String,java.nio.charset.Charset)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.HttpServletResponse.encodeRedirectURL(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.HttpServletResponse.encodeRedirectUrl(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.HttpServletResponse.encodeURL(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.HttpServletResponse.encodeUrl(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.apache.catalina.util.URLEncoder.encode(java.lang.String)"
             }
         ],
         "enable": 1,
@@ -1218,6 +1330,48 @@
                 "target": "R",
                 "track": "",
                 "value": "org.apache.commons.lang.StringEscapeUtils.escapeHtml(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "P1",
+                "track": "false",
+                "value": "org.apache.commons.lang.StringEscapeUtils.unescapeHtml(java.io.Writer,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.apache.commons.lang.StringEscapeUtils.unescapeHtml(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.apache.commons.lang3.StringEscapeUtils.escapeHtml3(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.apache.commons.lang3.StringEscapeUtils.escapeHtml4(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.apache.commons.lang3.StringEscapeUtils.unescapeHtml3(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.apache.commons.lang3.StringEscapeUtils.unescapeHtml4(java.lang.String)"
             }
         ],
         "enable": 1,
@@ -2914,6 +3068,181 @@
     {
         "details": [
             {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.encoder.Encode.forHtml(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.encoder.Encode.forHtmlAttribute(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.encoder.Encode.forHtmlContent(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.encoder.Encode.forHtmlUnquotedAttribute(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.encoder.Encode.forUri(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.encoder.Encode.forUriComponent(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.esapi.Encoder.decodeForHTML(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.esapi.Encoder.decodeFromBase64(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.esapi.Encoder.decodeFromURL(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.esapi.Encoder.encodeForBase64(byte[],boolean)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.esapi.Encoder.encodeForHTML(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.esapi.Encoder.encodeForHTMLAttribute(java.lang.String)"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.esapi.Encoder.encodeForURL(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.esapi.codecs.Base64.decode(byte[],int,int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.esapi.codecs.Base64.decode(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.esapi.codecs.Base64.decode(java.lang.String,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.esapi.codecs.Base64.encodeBytes(byte[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.esapi.codecs.Base64.encodeBytes(byte[],int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.esapi.codecs.Base64.encodeBytes(byte[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.esapi.codecs.Base64.encodeBytes(byte[],int,int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.html.PolicyFactory.sanitize(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.validator.html.CleanResults.getCleanHTML()"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.validator.html.CleanResults.getCleanXMLDocumentFragment()"
+            },
+            {
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.owasp.validator.html.scan.AbstractAntiSamyScanner.scan(java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "owasp-esapi"
+    },
+    {
+        "details": [
+            {
                 "inherit": "all",
                 "source": "P2",
                 "target": "",
@@ -3003,6 +3332,34 @@
                 "target": "",
                 "track": "true",
                 "value": "com.sun.faces.renderkit.html_basic.HtmlResponseWriter.write(java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "jakarta.servlet.ServletOutputStream.print(java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "jakarta.servlet.ServletOutputStream.println(java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "jakarta.servlet.ServletOutputStream.write(byte[])"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "jakarta.servlet.ServletOutputStream.write(byte[],int,int)"
             },
             {
                 "inherit": "all",
@@ -3101,6 +3458,34 @@
                 "target": "",
                 "track": "true",
                 "value": "java.io.PrintWriter.write(java.lang.String,int,int)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.servlet.ServletOutputStream.print(java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.servlet.ServletOutputStream.println(java.lang.String)"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.servlet.ServletOutputStream.write(byte[])"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "javax.servlet.ServletOutputStream.write(byte[],int,int)"
             },
             {
                 "inherit": "all",
@@ -3421,8 +3806,204 @@
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
+                "track": "false",
+                "value": "org.springframework.util.StringUtils.uriDecode(java.lang.String,java.nio.charset.Charset)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
                 "track": "",
                 "value": "org.springframework.web.util.HtmlUtils.htmlEscape(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.HtmlUtils.htmlEscape(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.HtmlUtils.htmlEscapeDecimal(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.HtmlUtils.htmlEscapeDecimal(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.HtmlUtils.htmlEscapeHex(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.HtmlUtils.htmlEscapeHex(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.HtmlUtils.htmlUnescape(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.UriUtils.decode(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.UriUtils.encode(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.UriUtils.encode(java.lang.String,java.nio.charset.Charset)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.UriUtils.encodeAuthority(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.UriUtils.encodeFragment(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.UriUtils.encodeHost(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.UriUtils.encodeHttpUrl(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.UriUtils.encodePath(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.UriUtils.encodePathSegment(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.UriUtils.encodePort(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.UriUtils.encodeQuery(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.UriUtils.encodeQueryParam(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.UriUtils.encodeScheme(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.UriUtils.encodeUri(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.web.util.UriUtils.encodeUserInfo(java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.webflow.util.Base64.decode(byte[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.webflow.util.Base64.decode(byte[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.webflow.util.Base64.decodeFromString(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.webflow.util.Base64.encode(byte[])"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.webflow.util.Base64.encode(byte[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "org.springframework.webflow.util.Base64.encodeToString(java.lang.String)"
             }
         ],
         "enable": 1,
