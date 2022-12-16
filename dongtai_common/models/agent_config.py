@@ -42,7 +42,7 @@ class MetricGroup(IntegerChoices):
 
 
 class DealType(IntegerChoices):
-    UNLOAD = 1, _("完全卸载")
+#    UNLOAD = 1, _("完全卸载")
     RELIVE = 2, _("恢复后启动")
 
 
@@ -122,7 +122,7 @@ class IastCircuitConfig(models.Model):
     is_enable = models.IntegerField(blank=True, null=True)
     is_deleted = models.IntegerField(default=0, blank=True, null=True)
     deal = models.IntegerField(blank=True, null=True)
-    interval = models.IntegerField(blank=True, null=True)
+    interval = models.IntegerField(blank=True, null=True, default=30)
     metric_group = models.IntegerField(blank=True, null=True)
     priority = models.IntegerField(blank=True, null=True)
     create_time = models.IntegerField(blank=True,

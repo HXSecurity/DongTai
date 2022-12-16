@@ -573,7 +573,7 @@ DEFAULT_CIRCUITCONFIG = {
         "interval":
         1,
         "deal":
-        1,
+        2,
         "is_enable":
         1,
         "is_deleted":
@@ -587,10 +587,6 @@ DEFAULT_CIRCUITCONFIG = {
             "metric_type": 2,
             "opt": 5,
             "value": 100
-        }, {
-            "metric_type": 3,
-            "opt": 5,
-            "value": 1000000000
         }]
     },
     'JVM': {
