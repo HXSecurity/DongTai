@@ -73,6 +73,7 @@ jobs:
         with:
           file: Dockerfile
           context: .
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: | 
             dongtai/dongtai-server:latest
