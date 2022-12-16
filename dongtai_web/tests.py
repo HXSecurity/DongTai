@@ -66,10 +66,6 @@ class ChoiceConvertTestCase(TestCase):
             "metric_type": 2,
             "opt": 5,
             "value": 100
-        }, {
-            "metric_type": 3,
-            "opt": 5,
-            "value": 1000000000
         }]
         res = get_metric_types(metrics)
         print(res)
