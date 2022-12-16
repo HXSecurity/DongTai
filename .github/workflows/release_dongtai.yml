@@ -67,9 +67,13 @@ jobs:
           ossutil cp oss://dongtai/agent/python/ ./  --include "*.tar.gz" -r
           ossutil cp oss://dongtai/agent/php/ ./  --include "*.tar.gz" -r
           echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('${{ steps.release.outputs.version }}', '${{ github.event.repository.name }}', '${GITHUB_SHA}');" >> ./deploy/docker/version.sql
-        
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2
       - name: Build and push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           file: Dockerfile
           context: .
