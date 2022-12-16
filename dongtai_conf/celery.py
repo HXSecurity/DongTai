@@ -26,13 +26,25 @@ configs = {k: v for k, v in settings.__dict__.items() if k.startswith('CELERY')}
 
 configs["task_queues"] = [
     # normal
-    Queue("dongtai-method-pool-scan", Exchange("dongtai-method-pool-scan"), routing_key="dongtai-method-pool-scan"),
-    Queue("dongtai-replay-vul-scan", Exchange("dongtai-replay-vul-scan"), routing_key="dongtai-replay-vul-scan"),
-    Queue("dongtai-sca-task", Exchange("dongtai-sca-task"), routing_key="dongtai-sca-task"),
-    Queue("dongtai-function-flush-data", Exchange("dongtai-function-flush-data"), routing_key="dongtai-function-flush-data"),
-    Queue("dongtai-es-save-task", Exchange("dongtai-es-save-task"), routing_key="dongtai-es-save-task"),
+    Queue("dongtai-method-pool-scan",
+          Exchange("dongtai-method-pool-scan"),
+          routing_key="dongtai-method-pool-scan"),
+    Queue("dongtai-replay-vul-scan",
+          Exchange("dongtai-replay-vul-scan"),
+          routing_key="dongtai-replay-vul-scan"),
+    Queue("dongtai-sca-task",
+          Exchange("dongtai-sca-task"),
+          routing_key="dongtai-sca-task"),
+    Queue("dongtai-function-flush-data",
+          Exchange("dongtai-function-flush-data"),
+          routing_key="dongtai-function-flush-data"),
+    Queue("dongtai-es-save-task",
+          Exchange("dongtai-es-save-task"),
+          routing_key="dongtai-es-save-task"),
     # cronjob
-    Queue("dongtai-periodic-task", Exchange("dongtai-periodic-task"), routing_key="dongtai-periodic-task"),
+    Queue("dongtai-periodic-task",
+          Exchange("dongtai-periodic-task"),
+          routing_key="dongtai-periodic-task"),
 ]
 # celery config
 configs['task_serializer'] = 'json'
@@ -42,8 +54,9 @@ configs['task_ignore_result'] = True
 configs['task_acks_late'] = True
 configs['task_acks_on_failure_or_timeout'] = True
 configs['broker_connection_retry_on_startup'] = False
-configs['broker_connection_max_retries'] = 0 # it means retry forever
-configs['broker_pool_limit'] = 1000 # to forbid contention can arise when using gevent.
+configs['broker_connection_max_retries'] = 0  # it means retry forever
+configs[
+    'broker_pool_limit'] = 1000  # to forbid contention can arise when using gevent.
 # configs['worker_concurrency'] = 8
 configs["task_routes"] = {
     # normal
