@@ -41,6 +41,9 @@ configs['accept_content'] = ['json']
 configs['task_ignore_result'] = True
 configs['task_acks_late'] = True
 configs['task_acks_on_failure_or_timeout'] = True
+configs['broker_connection_retry_on_startup'] = False
+configs['broker_connection_max_retries'] = 0 # it means retry forever
+configs['broker_pool_limit'] = 1000 # to forbid contention can arise when using gevent.
 # configs['worker_concurrency'] = 8
 configs["task_routes"] = {
     # normal
