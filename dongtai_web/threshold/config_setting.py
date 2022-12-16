@@ -135,7 +135,7 @@ class AgentConfigSettingV2Serializer(serializers.Serializer):
     metric_group = serializers.ChoiceField(MetricGroup.choices)
     metrics = serializers.ListField(
         child=AgentConfigSettingV2MetricSerializer())
-    interval = serializers.IntegerField()
+    interval = serializers.IntegerField(default=30)
     deal = serializers.ChoiceField(DealType.choices)
     is_enable = serializers.IntegerField()
 
