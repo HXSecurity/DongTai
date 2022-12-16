@@ -42,7 +42,7 @@ class MetricGroup(IntegerChoices):
 
 
 class DealType(IntegerChoices):
-#    UNLOAD = 1, _("完全卸载")
+    #    UNLOAD = 1, _("完全卸载")
     RELIVE = 2, _("恢复后启动")
 
 
