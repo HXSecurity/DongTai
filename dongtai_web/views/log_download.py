@@ -5,7 +5,7 @@ from dongtai_common.endpoint import UserEndPoint
 from io import BytesIO, StringIO
 from dongtai_common.models.agent import IastAgent
 from enum import Enum
-from django.http import FileResponse,JsonResponse
+from django.http import FileResponse, JsonResponse
 from rest_framework import viewsets
 import logging
 from result import Ok, Err, Result
@@ -27,6 +27,7 @@ logger = logging.getLogger('dongtai-webapi')
 class ResultType(Enum):
     OK = 1
     ERR = 2
+
 
 def nothing_resp():
     return HttpResponseNotFound("找不到相关日志数据")
@@ -55,7 +56,6 @@ class AgentLogDownload(UserEndPoint, viewsets.ViewSet):
             return response
         return nothing_resp()
 
-
     def batch_task_add(self, request):
         mode = request.data.get('mode', 1)
         users = self.get_auth_users(self.request.user)
@@ -80,14 +80,13 @@ class AgentLogDownload(UserEndPoint, viewsets.ViewSet):
                 return nothing_resp()
             return FileResponse(open(
                 os.path.join(TMP_COMMON_PATH, f'batchagent/{pk}.zip'), 'rb'),
-                                filename='agentlog.zip')
+                filename='agentlog.zip')
         except FileNotFoundError as e:
             logger.info(e)
             return nothing_resp()
         except Exception as e:
             logger.info(e)
             return nothing_resp()
-
 
 
 def generate_path(agent_id):
@@ -164,6 +163,7 @@ def get_zip_together(agents_ids, msg_id):
                                                    agents_ids))))
     filepath = zip_file_write(msg_id, res)
     return filepath
+
 
 @transaction.atomic
 def generate_agent_log_zip(q, user_id):

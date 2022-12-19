@@ -18,6 +18,7 @@ class IastThirdPartyService(models.Model):
     address = models.CharField(max_length=255, blank=True, null=True)
     service_type = models.CharField(max_length=255, blank=True, null=True)
     port = models.CharField(max_length=255, blank=True, null=True)
+
     class Meta:
         managed = get_managed()
         db_table = 'iast_third_party_service'

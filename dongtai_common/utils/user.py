@@ -5,7 +5,6 @@ from dongtai_common.utils import const
 from django.db.models import Q
 
 
-
 def get_auth_users__by_id(user_id: int) -> QuerySet:
     user = User.objects.filter(pk=user_id).first()
     if not user:

@@ -46,9 +46,8 @@ class ProjectDetail(UserEndPoint):
     @extend_schema_with_envcheck(
         tags=[_('Project')],
         summary=_('Projects Detail'),
-        description=
-        _("Get project information by project id, including the current version information of the project."
-          ),
+        description=_("Get project information by project id, including the current version information of the project."
+                      ),
         response_schema=_ResponseSerializer,
     )
     def get(self, request, id):
@@ -63,7 +62,7 @@ class ProjectDetail(UserEndPoint):
                 scan_name = project.scan.name
             else:
                 scan_id = 0
-                scan_name = ''                
+                scan_name = ''
 
             current_project_version = get_project_version(project.id, auth_users)
             return R.success(data={
@@ -75,10 +74,9 @@ class ProjectDetail(UserEndPoint):
                 "agents": agents,
                 "versionData": current_project_version,
                 "vul_validation": project.vul_validation,
-                'base_url':project.base_url,
-                "test_req_header_key":project.test_req_header_key,
-                "test_req_header_value":project.test_req_header_value,
+                'base_url': project.base_url,
+                "test_req_header_key": project.test_req_header_key,
+                "test_req_header_value": project.test_req_header_value,
             })
         else:
             return R.failure(status=203, msg=_('no permission'))
-

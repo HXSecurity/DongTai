@@ -9,8 +9,10 @@ from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from django.forms.models import model_to_dict
 
+
 class ProfilepostArgsSer(serializers.Serializer):
     value = serializers.CharField(help_text=_('profile value'))
+
 
 class ProfileEndpoint(UserEndPoint):
     @extend_schema_with_envcheck(summary=_('Get Profile'),
@@ -25,7 +27,7 @@ class ProfileEndpoint(UserEndPoint):
         return R.success(data={key: profile})
 
     @extend_schema_with_envcheck(summary=_('Profile modify'),
-                                request=ProfilepostArgsSer,
+                                 request=ProfilepostArgsSer,
                                  description=_("Modifiy Profile with key"),
                                  tags=[_('Profile')])
     def post(self, request, key):
@@ -48,6 +50,7 @@ class ProfileEndpoint(UserEndPoint):
             print(e)
             return R.failure(msg=_("Update {} failed").format(key))
         return R.success(data={key: obj.value})
+
 
 class ProfileBatchGetArgsSer(serializers.Serializer):
     keys = serializers.ListField(help_text=_('profile key'))

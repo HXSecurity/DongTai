@@ -18,6 +18,7 @@ from dongtai_web.utils import sha1
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
 
+
 class ApiRouteCoverRelationSerializer(serializers.ModelSerializer):
     class Meta:
         model = MethodPool
@@ -41,9 +42,8 @@ class ApiRouteRelationRequest(UserEndPoint):
         }],
         tags=[_('API Route')],
         summary=_('API Route Relation Request'),
-        description=
-        _("Get the coverrate of the project corresponding to the specified id."
-          ),
+        description=_("Get the coverrate of the project corresponding to the specified id."
+                      ),
         response_schema=_GetResponseSerializer,
     )
     def get(self, request):

@@ -36,7 +36,6 @@ class AssetVulRelation(models.Model):
         null=True
     )
 
-
     user = models.ForeignKey(
         to=User,
         on_delete=models.DO_NOTHING,

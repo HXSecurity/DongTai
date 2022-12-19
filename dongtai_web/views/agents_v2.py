@@ -188,7 +188,7 @@ def cal_state(agent: dict) -> StateType:
         return StateType.RUNNING
     elif agent['online'] == 1 and not agent['actual_running_status'] == 1:
         return StateType.STOP
-    #elif agent['online'] == 0:
+    # elif agent['online'] == 0:
     #    return StateType.UNINSTALL
     return StateType.UNINSTALL
 

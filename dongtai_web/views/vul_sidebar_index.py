@@ -4,6 +4,7 @@
 # software: idea
 # project: lingzhi-webapi
 
+from dongtai_web.utils import get_model_order_options
 from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
@@ -21,7 +22,6 @@ VALUES = [
     'uri',
 ]
 
-from dongtai_web.utils import get_model_order_options
 
 class VulSideBarList(UserEndPoint):
     @extend_schema_with_envcheck(

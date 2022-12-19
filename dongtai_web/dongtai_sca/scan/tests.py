@@ -1,3 +1,8 @@
+from dongtai_common.models.asset import Asset
+from .utils import get_nearest_version, get_latest_version
+from .utils import update_one_sca
+from test.apiserver.test_agent_base import AgentTestCase
+from test import DongTaiTestCase
 from .utils import get_package_vul, get_package
 
 from django.test import TestCase
@@ -21,13 +26,6 @@ class ExtenalApiTestCase(TestCase):
             ecosystem="golang",
             package_hash="3c61e56652c8d48ba09390f1170cf868007e1293")
         assert isinstance(res, list)
-
-
-from test import DongTaiTestCase
-from test.apiserver.test_agent_base import AgentTestCase
-from .utils import update_one_sca
-
-from .utils import get_nearest_version, get_latest_version
 
 
 class DongTaiVersionTestCase(TestCase):
@@ -93,8 +91,6 @@ class DongTaiVersionTestCase(TestCase):
         nrversion = get_nearest_version(version, self.version_list)
         assert nrversion == ''
 
-
-from dongtai_common.models.asset import Asset
 
 class AgentHardencodeTestCase(AgentTestCase):
 

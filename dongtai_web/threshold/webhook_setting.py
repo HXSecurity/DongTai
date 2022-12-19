@@ -63,6 +63,6 @@ class AgentWebHookConfig(UserEndPoint):
             return R.failure(msg=_('Incomplete parameter, please check again'))
         config = self.create_webHook_config(user, type_id, url, headers, id)
         if config:
-            return R.success(msg=_('Config has been created successfully'),data={"id":config.id})
+            return R.success(msg=_('Config has been created successfully'), data={"id": config.id})
         else:
             R.failure(msg=_('Failed to create config'))

@@ -18,6 +18,7 @@ logger = logging.getLogger('dongtai-webapi')
 OP_CHOICES = ('enable', 'disable', 'delete')
 SCOPE_CHOICES = ('all',)
 
+
 class EngineHookRuleStatusGetQuerySerializer(serializers.Serializer):
     rule_id = serializers.IntegerField(required=False,
                                        help_text=_("The id of hook rule"))
@@ -53,6 +54,7 @@ _PostResponseSerializer = get_response_serializer(status_msg_keypair=(
     ((202, _('Operation type does not exist')), ''),
     ((202, _('Incorrect parameter')), ''),
 ))
+
 
 class EngineHookRuleEnableEndPoint(UserEndPoint):
     def parse_args(self, request):

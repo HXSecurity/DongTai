@@ -10,7 +10,7 @@ from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.strategy import IastStrategyModel
 
-from dongtai_web.utils import get_model_field, assemble_query,assemble_query_2
+from dongtai_web.utils import get_model_field, assemble_query, assemble_query_2
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.translation import gettext_lazy
 from django.db.utils import OperationalError
@@ -22,54 +22,52 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import gettext_lazy
 from dongtai_conf.settings import ELASTICSEARCH_STATE
 
+
 class MethodPoolSearchProxySer(serializers.Serializer):
     page_size = serializers.IntegerField(min_value=1,
                                          help_text=_("number per page"))
     highlight = serializers.IntegerField(
         default=1,
-        help_text=
-        _("Whether to enable highlighting, the text where the regular expression matches will be highlighted"
-          ))
+        help_text=_("Whether to enable highlighting, the text where the regular expression matches will be highlighted"
+                    ))
     exclude_ids = serializers.ListField(
         child=serializers.IntegerField(),
-        help_text=
-        _("Exclude the method_pool entry with the following id, this field is used to obtain the data of the entire project in batches."
-          ),
+        help_text=_("Exclude the method_pool entry with the following id, this field is used to obtain the data of the entire project in batches."
+                    ),
         required=False)
     time_range = serializers.ListField(
         child=serializers.IntegerField(
             min_value=1, help_text=_('time  format such as 1,1628190947242')),
         min_length=2,
         max_length=2,
-        help_text=
-        _("Time range, the default is the current time to the previous seven days, separated by',', format such as 1,1628190947242"
-          ))
+        help_text=_("Time range, the default is the current time to the previous seven days, separated by',', format such as 1,1628190947242"
+                    ))
     url = serializers.CharField(
         help_text=_("The url of the method pool, search using regular syntax"),
         required=False)
     res_header = serializers.CharField(help_text=_(
         "The response header of the method pood, search using regular syntax"),
-                                       required=False)
+        required=False)
     res_body = serializers.CharField(help_text=_(
         "The response body of the calling chain, search using regular syntax"),
-                                     required=False)
+        required=False)
     req_header_fs = serializers.CharField(help_text=_(
         "The request header of the calling chain, search using regular syntax"
     ),
-                                          required=False)
+        required=False)
     req_data = serializers.CharField(help_text=_(
         "The request data of the calling chain, search using regular syntax"),
-                                     required=False)
+        required=False)
     sinkvalues = serializers.CharField(help_text=_(
         "The sinkvalues of the calling chain, search using regular syntax"),
-                                       required=False)
+        required=False)
     signature = serializers.CharField(help_text=_(
         "The signature of the calling chain, search using regular syntax"),
-                                      required=False)
+        required=False)
     update_time = serializers.CharField(help_text=_(
         "The filter field will return the method call chain with the update time after this time, which can be combined with the exclude_ids field to handle paging"
     ),
-                                        required=False)
+        required=False)
     search_mode = serializers.IntegerField(
         help_text=_("the search_mode , 1-regex match ,2-regex not match "),
         default=1,
@@ -146,9 +144,8 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         request=MethodPoolSearchProxySer,
         tags=[_('Method Pool')],
         summary=_('Method Pool Search'),
-        description=
-        _("Search for the method pool information according to the following conditions, the default is regular expression input, regular specifications refer to REGEX POSIX 1003.2"
-          ),
+        description=_("Search for the method pool information according to the following conditions, the default is regular expression input, regular specifications refer to REGEX POSIX 1003.2"
+                      ),
         response_schema=_GetResponseSerializer,
     )
     def post(self, request):
@@ -163,7 +160,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             MethodPool,
             include=model_fields,
         )
-        #fields.extend(['sinkvalues', 'signature'])
+        # fields.extend(['sinkvalues', 'signature'])
         search_after_keys = ['update_time']
         exclude_ids = request.data.get('exclude_ids', None)
         time_range = request.data.get('time_range', None)
@@ -174,12 +171,12 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             [start_time,
              end_time] = time_range if time_range is not None and len(
                  time_range) == 2 else [
-                         int(time.time()) - 60 * 60 * 24 * 7,
-                         int(time.time())
-            # and 0 < time_range[1] - time_range[
-            #         0] <= 60 * 60 * 24 * 7 else [
-            #             int(time.time()) - 60 * 60 * 24 * 7,
-            #             int(time.time())
+                int(time.time()) - 60 * 60 * 24 * 7,
+                int(time.time())
+                # and 0 < time_range[1] - time_range[
+                #         0] <= 60 * 60 * 24 * 7 else [
+                #             int(time.time()) - 60 * 60 * 24 * 7,
+                #             int(time.time())
             ]
             ids = exclude_ids if isinstance(exclude_ids, list) and all(
                 map(lambda x: isinstance(x, int), exclude_ids)) else []
@@ -272,7 +269,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     for i in agents]).values('id', 'name', 'user_id')
         vulnerablity = IastVulnerabilityModel.objects.filter(
             method_pool_id__in=[i['id'] for i in method_pools]).all().values(
-                'id', 'hook_type_id','hook_type__name', 'strategy__vul_name','strategy_id','method_pool_id', 'level_id').distinct()
+                'id', 'hook_type_id', 'hook_type__name', 'strategy__vul_name', 'strategy_id', 'method_pool_id', 'level_id').distinct()
         users = User.objects.filter(pk__in=[_['user_id']
                                             for _ in agents]).values(
                                                 'id', 'username')
@@ -350,7 +347,7 @@ def _transform(models: list, reindex_id: str):
 
 def aggregation_count(list_, primary_key, count_key):
     """
-    params   
+    params
     list_ : [{},{}]
     """
     return list(
@@ -359,7 +356,6 @@ def aggregation_count(list_, primary_key, count_key):
                 primary_key: x[primary_key],
                 'count': len(x[count_key])
             }, list_))
-
 
 
 def highlight_matches(query, text, html):

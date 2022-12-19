@@ -3,6 +3,21 @@
 # author:owefsad
 # software: PyCharm
 # project: lingzhi-webapi
+from elasticsearch_dsl import Q, Search
+from dongtai_common.models.asset import IastAssetDocument
+from dongtai_web.aggregation.aggregation_common import auth_user_list_str
+from dongtai_common.models.asset_aggr import AssetAggrDocument
+from dongtai_conf.settings import ELASTICSEARCH_STATE
+from dongtai_common.common.utils import make_hash
+from dongtai_conf import settings
+from django.core.cache import cache
+from dongtai_common.models.vul_level import IastVulLevel
+from dongtai_common.models.project import IastProject
+from dongtai_common.models.program_language import IastProgramLanguage
+from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
+from dongtai_common.models.strategy import IastStrategyModel
+from elasticsearch_dsl import A
+from elasticsearch import Elasticsearch
 import logging
 
 import pymysql
@@ -160,9 +175,8 @@ class ScaList(UserEndPoint):
         ],
         tags=[_('Component')],
         summary=_("Component List (with project)"),
-        description=
-        _("use the specified project information to obtain the corresponding component."
-          ),
+        description=_("use the specified project information to obtain the corresponding component."
+                      ),
         response_schema=_ResponseSerializer)
     def post(self, request):
         """
@@ -329,20 +343,6 @@ class ScaList(UserEndPoint):
                    list_sql_params):
         return asset_aggr_where, count_sql_params, list_sql_params
 
-from elasticsearch_dsl import Q, Search
-from elasticsearch import Elasticsearch
-from elasticsearch_dsl import A
-from dongtai_common.models.strategy import IastStrategyModel
-from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
-from dongtai_common.models.program_language import IastProgramLanguage
-from dongtai_common.models.project import IastProject
-from dongtai_common.models.vul_level import IastVulLevel
-from django.core.cache import cache
-from dongtai_conf import settings
-from dongtai_common.common.utils import make_hash
-from dongtai_conf.settings import ELASTICSEARCH_STATE
-from dongtai_common.models.asset_aggr import AssetAggrDocument
-
 
 def get_vul_list_from_elastic_search(sca_ids=[], order=None):
     must_query = [
@@ -362,10 +362,6 @@ def get_vul_list_from_elastic_search(sca_ids=[], order=None):
             del i['@timestamp']
     res_vul = [AssetAggr(**i) for i in vuls]
     return res_vul
-
-
-from dongtai_web.aggregation.aggregation_common import auth_user_list_str
-from dongtai_common.models.asset import IastAssetDocument
 
 
 def get_vul_list_from_elastic_searchv2(user_id,
@@ -427,12 +423,12 @@ def get_vul_list_from_elastic_searchv2(user_id,
             field = 'package_name'
         after_fields.append(field)
     if after_key:
-        #sub_after_must_query = []
+        # sub_after_must_query = []
         sub_after_must_not_query = []
-        #sub_after_should_query = []
+        # sub_after_should_query = []
         sub_after_must_not_query.append(
             Q('terms', **{"signature_value.keyword": after_key}))
-        #for info, value in zip(order_list, after_key):
+        # for info, value in zip(order_list, after_key):
         #    field = ''
         #    opt = ''
         #    if isinstance(info, dict):
@@ -453,9 +449,9 @@ def get_vul_list_from_elastic_searchv2(user_id,
             Q(
                 'bool',
                 must_not=sub_after_must_not_query,
-                #must=sub_after_must_query,
-                #should=sub_after_should_query,
-                #minimum_should_match=1
+                # must=sub_after_must_query,
+                # should=sub_after_should_query,
+                # minimum_should_match=1
             ))
     a = Q('bool', must=must_query)
     search = IastAssetDocument.search().query(
@@ -473,10 +469,10 @@ def get_vul_list_from_elastic_searchv2(user_id,
             break
         new_after_key = after_key.copy()
         new_after_key.extend([i['signature_value'] for i in chunk])
-        #latest_data = chunk[-1]
-        #after_key = [
+        # latest_data = chunk[-1]
+        # after_key = [
         #    latest_data.get(after_field) for after_field in after_fields
-        #]
+        # ]
         after_table[page + i + 1] = new_after_key
         after_key = new_after_key
     for i in vuls:
@@ -485,7 +481,7 @@ def get_vul_list_from_elastic_searchv2(user_id,
         if 'signature_value.keyword' in i.keys():
             del i['signature_value.keyword']
     res_vul = [Asset(**i) for i in vuls]
-    #if resp.hits:
+    # if resp.hits:
     #    afterkey = resp.hits[-1].meta['sort']
     #    after_table[page + 1] = afterkey
     print(after_table)
@@ -535,14 +531,14 @@ def mysql_search(where_conditions, where_conditions_dict, page_size,
     final_sql = """SELECT ia2.* FROM iast_asset ia2
         RIGHT JOIN
         (SELECT signature_value as _1, MAX(id) as _2, ANY_VALUE(vul_count) as vul_count,
-        ANY_VALUE(language) as language , 
-        ANY_VALUE(license) as license , 
+        ANY_VALUE(language) as language ,
+        ANY_VALUE(license) as license ,
         ANY_VALUE(level_id) as level_id FROM iast_asset ia
         WHERE {where_place}
-        GROUP BY signature_value 
+        GROUP BY signature_value
         ORDER BY {order_place}
         ) AS TMP ON
-        ia2.signature_value = TMP._1 AND ia2.id = TMP._2 
+        ia2.signature_value = TMP._1 AND ia2.id = TMP._2
         ORDER BY {order_place} LIMIT {size} ;""".format(
         where_place=' AND '.join(where_conditions)
         if where_conditions else '1 = 1',
@@ -550,7 +546,7 @@ def mysql_search(where_conditions, where_conditions_dict, page_size,
         if order_conditions else 'NULL',
         size='%(size)s')
     base_dict = {'size': page_size * WINDOW_SIZE}
-    #base_dict.update(order_conditions_dict)
+    # base_dict.update(order_conditions_dict)
     base_dict.update(where_conditions_dict)
     data = Asset.objects.raw(final_sql, params=base_dict)
     data = list(data)

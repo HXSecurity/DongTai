@@ -42,7 +42,6 @@ class _ProjectsAddBodyArgsSerializer(serializers.Serializer):
     test_req_header_value = serializers.CharField()
 
 
-
 _ResponseSerializer = get_response_serializer(status_msg_keypair=(
     ((202, _('Parameter error')), ''),
     ((201, _('Created success')), ''),
@@ -123,9 +122,8 @@ class ProjectAdd(UserEndPoint):
                     else:
                         return R.failure(
                             status=203,
-                            msg=
-                            _('Failed to create, the application name already exists'
-                              ))
+                            msg=_('Failed to create, the application name already exists'
+                                  ))
                 versionInfo = IastProjectVersion.objects.filter(
                     project_id=project.id, current_version=1,
                     status=1).first()
@@ -173,7 +171,7 @@ class ProjectAdd(UserEndPoint):
                 ])
                 return R.success(msg='操作成功')
         except Exception as e:
-            logger.error(e,exc_info=e)
+            logger.error(e, exc_info=e)
             return R.failure(status=202, msg=_('Parameter error'))
 
 
@@ -202,7 +200,6 @@ def url_validate(url):
     return ip_validate(parse_re.hostname) if is_ip(parse_re.hostname) else True
 
 
-
 def ip_validate(ip):
     try:
         ipadrs = ipaddress.IPv4Address(ip)
@@ -218,8 +215,10 @@ def ip_validate(ip):
         pass
     return True
 
+
 def is_ip(address):
     return not address.split('.')[-1].isalpha()
+
 
 def replace_ending(sentence, old, new):
     if sentence.endswith(old):

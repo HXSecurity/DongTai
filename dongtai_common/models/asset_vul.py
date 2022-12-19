@@ -1,3 +1,10 @@
+import uuid
+from dongtai_common.models.agent import IastAgent
+from django.core.cache import cache
+from django_elasticsearch_dsl.search import Search
+from dongtai_conf.settings import ASSET_VUL_INDEX
+from django_elasticsearch_dsl import Document, fields
+from django_elasticsearch_dsl.registries import registry
 from dongtai_common.models.asset import Asset
 from django.db import models
 from dongtai_common.utils.settings import get_managed
@@ -83,8 +90,6 @@ class IastVulAssetRelation(models.Model):
                                            on_delete=models.DO_NOTHING,
                                            default="")
 
-
-
     class Meta:
         managed = get_managed()
         db_table = 'iast_asset_vul_relation'
@@ -114,15 +119,7 @@ class IastAssetVulTypeRelation(models.Model):
         managed = get_managed()
         db_table = 'iast_asset_vul_type_relation'
 
-
     # "iast_asset_vul_type_relation      iast_asset_vul_relation  iast_asset_vul iast_asset "
-from django_elasticsearch_dsl.registries import registry
-from django_elasticsearch_dsl import Document, fields
-from dongtai_conf.settings import ASSET_VUL_INDEX
-from django_elasticsearch_dsl.search import Search
-from django.core.cache import cache
-from dongtai_common.models.agent import IastAgent
-import uuid
 
 
 @registry.register_document

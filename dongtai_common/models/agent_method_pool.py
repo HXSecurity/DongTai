@@ -4,6 +4,10 @@
 # datetime:2021/1/14 下午3:35
 # software: PyCharm
 # project: dongtai-models
+from dongtai_conf.settings import METHOD_POOL_INDEX
+from django_elasticsearch_dsl import Document, fields
+from django_elasticsearch_dsl.registries import registry
+from django_elasticsearch_dsl import Document
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -12,6 +16,8 @@ from dongtai_common.models.hook_strategy import HookStrategy
 from dongtai_common.utils.settings import get_managed
 
 # 'id', 'agent', 'uri', 'http_method', 'http_scheme', 'req_header', 'req_params', 'req_data', 'taint_value','param_name'
+
+
 class MethodPool(models.Model):
     id = models.BigAutoField(primary_key=True)
     agent = models.ForeignKey(IastAgent,
@@ -58,12 +64,6 @@ class MethodPool(models.Model):
         managed = get_managed()
         db_table = 'iast_agent_method_pool'
         indexes = [models.Index(fields=['uri_sha1', 'http_method', 'agent'])]
-
-
-from django_elasticsearch_dsl import Document
-from django_elasticsearch_dsl.registries import registry
-from django_elasticsearch_dsl import Document, fields
-from dongtai_conf.settings import METHOD_POOL_INDEX
 
 
 @registry.register_document

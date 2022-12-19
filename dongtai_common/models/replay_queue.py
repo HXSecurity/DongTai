@@ -10,6 +10,7 @@ from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.utils.settings import get_managed
 from dongtai_common.models.vul_recheck_payload import IastVulRecheckPayload
 
+
 class IastReplayQueue(models.Model):
     agent = models.ForeignKey(IastAgent, models.DO_NOTHING, blank=True, null=True)
     relation_id = models.IntegerField(blank=True, null=True)

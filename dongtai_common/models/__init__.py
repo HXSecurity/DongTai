@@ -21,18 +21,18 @@ SOURCE_TYPE_DICT = {
     "2": "组件漏洞"
 }
 AGGREGATION_ORDER = {
-    "1":"vul.level_id",
-    "2":"vul.create_time",
-    "3":"vul.update_time",
+    "1": "vul.level_id",
+    "2": "vul.create_time",
+    "3": "vul.update_time",
 }
 
 APP_VUL_ORDER = {
-    "1":"level_id",
-    "2":"first_time",
-    "3":"latest_time",
-    "4":"status_id",
+    "1": "level_id",
+    "2": "first_time",
+    "3": "latest_time",
+    "4": "status_id",
 }
-#license 风险等级
+# license 风险等级
 LICENSE_RISK = {
     "1": "高",
     "2": "中",
@@ -58,25 +58,25 @@ APP_LEVEL_RISK = {
 }
 # 图片生成
 PNG_TREND_LEVEL = {
-    "1":"高危漏洞",
-    "2":"中危漏洞",
-    "3":"低危漏洞",
-    "4":"提示信息"
+    "1": "高危漏洞",
+    "2": "中危漏洞",
+    "3": "低危漏洞",
+    "4": "提示信息"
 }
 # 组件漏洞可利用性
 SCA_AVAILABILITY_DICT = {
-    "1":"存在利用代码",
-    "2":"存在分析文章",
-    "3":"无利用信息"
+    "1": "存在利用代码",
+    "2": "存在分析文章",
+    "3": "无利用信息"
 }
 # default share config key
-SHARE_CONFIG_DICT={
-    "jira_url":"",
-    "jira_id":"",
-    "gitlab_url":"",
-    "gitlab_id":"",
-    "zendao_url":"",
-    "zendao_id":""
+SHARE_CONFIG_DICT = {
+    "jira_url": "",
+    "jira_id": "",
+    "gitlab_url": "",
+    "gitlab_id": "",
+    "zendao_url": "",
+    "zendao_id": ""
 }
 
 NOTIFY_TYPE_DICT = {
@@ -96,57 +96,57 @@ WHITE_DOMAIN_NOTIFY = [
 ]
 
 VUL_TYPE_CSS = {
-    "1":"sca-height",
-    "2":"sca-middle",
-    "3":"sca-low",
-    "4":"sca-info",
+    "1": "sca-height",
+    "2": "sca-middle",
+    "3": "sca-low",
+    "4": "sca-info",
 }
 
 VUL_DEP_CSS = {
-    "1":"height",
-    "2":"middle",
-    "3":"low",
-    "4":"info",
+    "1": "height",
+    "2": "middle",
+    "3": "low",
+    "4": "info",
 }
 
 # export report default info
 DEFAULT_EXPORT_REPORT_DICT = {
-        "description": {
-            "user_id":"user_id",
-            "report_name":"report_name",
-            "project_name": "",
-            "version_name": "version_name",
-            "api_vount": "",
-            "vul_level_count":{},
-            "license_level_count":{},
-            "project_create_time": "",
-            "report_create_time": "",
+    "description": {
+        "user_id": "user_id",
+        "report_name": "report_name",
+        "project_name": "",
+        "version_name": "version_name",
+        "api_vount": "",
+        "vul_level_count": {},
+        "license_level_count": {},
+        "project_create_time": "",
+        "report_create_time": "",
+    },
+    "risk_analysis": {
+        "content": "",
+        "level_png": "",
+        "trend_png": "",
+        "app_vul_type": {
+            "1": {},
+            "2": {},
+            "3": {},
+            "4": {},
+            "5": {},
         },
-        "risk_analysis": {
-            "content": "",
-            "level_png": "",
-            "trend_png": "",
-            "app_vul_type": {
-                "1":{},
-                "2":{},
-                "3":{},
-                "4":{},
-                "5":{},
-            },
-            "sca_vul_type": {
-                "1": {},
-                "2": {},
-                "3": {},
-                "4": {},
-                "5": {},
-            },
-            "license_type": {}
+        "sca_vul_type": {
+            "1": {},
+            "2": {},
+            "3": {},
+            "4": {},
+            "5": {},
         },
-        "risk_details": {
-            "app_vul_detail": [],
-            "sca_vul_detail": [],
-            "license_vul_detail": []
-        },
-        "sca_list": {},
-        "api_site_map": {}
+        "license_type": {}
+    },
+    "risk_details": {
+        "app_vul_detail": [],
+        "sca_vul_detail": [],
+        "license_vul_detail": []
+    },
+    "sca_list": {},
+    "api_site_map": {}
 }

@@ -7,7 +7,6 @@
 ######################################################################
 
 
-
 from functools import reduce
 
 from django.db.models import Q

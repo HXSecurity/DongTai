@@ -36,10 +36,12 @@ class _VulDetailResponseDataServerSerializer(serializers.Serializer):
     environment = serializers.CharField()
     command = serializers.CharField()
 
+
 class _VulDetailResponseDataStrategySerializer(serializers.Serializer):
     desc = serializers.CharField()
     sample_code = serializers.CharField()
     repair_suggestion = serializers.CharField()
+
 
 class _VulDetailResponseDataVulSerializer(serializers.Serializer):
     url = serializers.CharField()
@@ -131,7 +133,7 @@ class VulDetail(UserEndPoint):
                 return results
             method_note_pool = json.loads(graphy)[0]
             method_counts = len(method_note_pool)
-            from dongtai_common.engine.compatibility import parse_target_value,highlight_target_value, method_pool_is_3
+            from dongtai_common.engine.compatibility import parse_target_value, highlight_target_value, method_pool_is_3
             if method_note_pool and method_pool_is_3(method_note_pool[0]):
                 beforehighlight = ""
                 for method in method_note_pool:
@@ -200,7 +202,7 @@ class VulDetail(UserEndPoint):
                 })
                 results.append(final_res)
         except Exception as e:
-            logger.error(_('Analysis of errovence analysis of stain call diagram: {}').format(__name__,e),exc_info=True)
+            logger.error(_('Analysis of errovence analysis of stain call diagram: {}').format(__name__, e), exc_info=True)
         return results
 
     @staticmethod
@@ -248,7 +250,7 @@ class VulDetail(UserEndPoint):
         try:
             self.server = agent.server
         except Exception as e:
-            logger.error(_('[{}] Vulnerability information parsing error, error message: {}').format(__name__,e))
+            logger.error(_('[{}] Vulnerability information parsing error, error message: {}').format(__name__, e))
             self.server = {}
         self.vul_name = vul.type
 
@@ -284,8 +286,8 @@ class VulDetail(UserEndPoint):
             vul.counts,
             'req_header':
             htmlescape(self.parse_request(vul.http_method, vul.uri, vul.req_params,
-                               vul.http_protocol, vul.req_header,
-                               vul.req_data)) if is_need_http_detail(strategy_name) else '',
+                                          vul.http_protocol, vul.req_header,
+                                          vul.req_data)) if is_need_http_detail(strategy_name) else '',
             'response':
             htmlescape(self.parse_response(vul.res_header, vul.res_body)) if is_need_http_detail(strategy_name) else '',
             'graph':
@@ -381,12 +383,11 @@ class VulDetail(UserEndPoint):
             }
         }
     }],
-                                 summary=_('Vulnerability details'),
-                                 description=
-                                 _('Use the corresponding id of the vulnerability to query the details of the vulnerability'
-                                   ),
-                                 tags=[_('Vulnerability')],
-                                 response_schema=_ResponseSerializer)
+        summary=_('Vulnerability details'),
+        description=_('Use the corresponding id of the vulnerability to query the details of the vulnerability'
+                      ),
+        tags=[_('Vulnerability')],
+        response_schema=_ResponseSerializer)
     def get(self, request, id):
         """
         :param request:
@@ -403,7 +404,7 @@ class VulDetail(UserEndPoint):
                 }
             )
         except Exception as e:
-            logger.error(_('[{}] Vulnerability information parsing error, error message: {}').format(__name__,e))
+            logger.error(_('[{}] Vulnerability information parsing error, error message: {}').format(__name__, e))
             return R.failure(msg=_('Vulnerability data query error'))
 
 
@@ -471,10 +472,8 @@ class VulDetailV2(VulDetail):
         except Exception as e:
             logger.error(
                 _('[{}] Vulnerability information parsing error, error message: {}'
-                  ).format(__name__, e),exc_info=True)
+                  ).format(__name__, e), exc_info=True)
             return R.failure(msg=_('Vulnerability data query error'))
-
-
 
 
 def htmlescape(string):
@@ -487,8 +486,10 @@ def htmlescape(string):
                                     "6350be97a65823fc42ddd9dc78e17ddf13ff693b",
                                     "<em>")
 
+
 def is_need_http_detail(name):
     return False if name in ['硬编码'] else True
+
 
 def parse_param_name(param_name):
     try:
@@ -496,7 +497,6 @@ def parse_param_name(param_name):
         return res
     except BaseException:
         return {}
-
 
 
 if __name__ == '__main__':

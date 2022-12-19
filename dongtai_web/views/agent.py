@@ -76,7 +76,7 @@ class Agent(UserEndPoint):
     )
     def get(self, request, id_):
         try:
-            a = int(id_) > 0 
+            a = int(id_) > 0
             if not a:
                 return R.failure(msg=_("Can't find relevant data"))
         except BaseException:

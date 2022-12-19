@@ -22,6 +22,7 @@ from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_web.views.utils.commonstats import get_summary_by_agent_ids
 from dongtai_common.utils import const
 
+
 class ProjectSummaryQuerySerializer(serializers.Serializer):
     version_id = serializers.CharField(
         help_text=_("The version id of the project"))
@@ -94,9 +95,8 @@ class ProjectSummary(UserEndPoint):
     @extend_schema_with_envcheck(
         tags=[_('Project')],
         summary=_('Projects Summary'),
-        description=
-        _("Get project deatils and its statistics data about vulnerablity."
-          ),
+        description=_("Get project deatils and its statistics data about vulnerablity."
+                      ),
         response_schema=_ProjectSummaryResponseSerializer,
     )
     def get(self, request, id):

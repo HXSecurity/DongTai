@@ -8,7 +8,6 @@ from django.db import models
 from dongtai_common.utils.settings import get_managed
 
 
-
 class IastOverpowerUserAuth(models.Model):
     server_name = models.CharField(max_length=255, blank=True, null=True)
     server_port = models.CharField(max_length=5, blank=True, null=True)

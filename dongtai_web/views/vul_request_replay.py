@@ -80,10 +80,10 @@ class RequestReplayEndPoint(UserEndPoint):
     @staticmethod
     def check_method_pool(method_pool_id, user):
         """
-        :param method_pool_id: 
-        :param user: 
+        :param method_pool_id:
+        :param user:
         :return:
-            status: True；False 
+            status: True；False
             model: methodpool;None
         """
         if method_pool_id is None or method_pool_id == '':
@@ -108,8 +108,8 @@ class RequestReplayEndPoint(UserEndPoint):
     @staticmethod
     def check_agent_active(agent):
         """
-        :param agent: 
-        :return: True  ；False 
+        :param agent:
+        :return: True  ；False
         """
         if not agent:
             return True
@@ -119,8 +119,8 @@ class RequestReplayEndPoint(UserEndPoint):
     def send_request_to_replay_queue(relation_id, agent_id, replay_request,
                                      replay_type):
         """
-        :param replay_request: 
-        :param method_pool_model: 
+        :param replay_request:
+        :param method_pool_model:
         :return: 0、1
         """
         timestamp = int(time.time())

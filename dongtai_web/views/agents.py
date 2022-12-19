@@ -29,6 +29,7 @@ class AgentList(UserEndPoint):
     name = "api-v1-agents"
     description = _("Agent list")
     SERVER_MAP = dict()
+
     @extend_schema_with_envcheck(
         [
             {
@@ -166,7 +167,7 @@ class AgentList(UserEndPoint):
             for item in cur_data:
                 cur_ids.append(item)
 
-            queryset = IastAgent.objects.filter(id__in=cur_ids).order_by('-id').select_related("server","user").prefetch_related(
+            queryset = IastAgent.objects.filter(id__in=cur_ids).order_by('-id').select_related("server", "user").prefetch_related(
                 "heartbeats"
             )
             end = []
@@ -212,10 +213,10 @@ class AgentList(UserEndPoint):
                 page=page_info
             )
         except ValueError as e:
-            logger.error(e,exc_info=True)
+            logger.error(e, exc_info=True)
             return R.failure(msg=_('Incorrect format parameter, please check again'))
         except Exception as e:
-            logger.error(e,exc_info=True)
+            logger.error(e, exc_info=True)
             return R.failure(msg=_('Program error'))
 
 

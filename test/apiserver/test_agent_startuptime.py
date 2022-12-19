@@ -7,12 +7,10 @@
 ######################################################################
 
 
-
 from test.apiserver.test_agent_base import (AgentTestCase, gzipdata)
 
 
 class AgentStartUptimeTestCase(AgentTestCase):
-
 
     def test_start_up_time_compalince(self):
         data = {'agentId': self.agent_id, 'startupTime': 448}

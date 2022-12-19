@@ -4,12 +4,19 @@
 # datetime:2021/1/5 下午12:36
 # software: PyCharm
 # project: lingzhi-webapi
+from dongtai_common.models.api_route import IastApiParameter
+from django.http.request import QueryDict
+from django.db.utils import IntegrityError
+from dongtai_common.models.api_route import (IastApiRoute, IastApiMethod,
+                                             HttpMethod,
+                                             IastApiMethodHttpMethodRelation,
+                                             FromWhereChoices)
 import json
 import logging
 import random
 import time
 import uuid
-from hashlib import sha256,sha1
+from hashlib import sha256, sha1
 
 import requests
 from django.db import transaction
@@ -352,7 +359,7 @@ class SaasMethodPoolHandler(IReportHandler):
                     timedelta(hours=3),
                 )
                 logger.info(
-                        f'[+] send method_pool [{method_pool_sign}] to engine for task search_vul_from_method_pool id: {res.task_id}')
+                    f'[+] send method_pool [{method_pool_sign}] to engine for task search_vul_from_method_pool id: {res.task_id}')
             else:
                 logger.info(
                     f'[+] send method_pool [{method_pool_id}] to engine for {model if model else ""}'
@@ -361,7 +368,7 @@ class SaasMethodPoolHandler(IReportHandler):
                 logger.info(
                     f'[+] send method_pool [{method_pool_id}] to engine for task search_vul_from_replay_method_pool id: {res.task_id}'
                 )
-                #requests.get(url=settings.REPLAY_ENGINE_URL.format(id=method_pool_id))
+                # requests.get(url=settings.REPLAY_ENGINE_URL.format(id=method_pool_id))
         except Exception as e:
             logger.warning(f'[-] Failure: send method_pool [{method_pool_id}{method_pool_sign}], Error: {e}')
 
@@ -388,13 +395,6 @@ class SaasMethodPoolHandler(IReportHandler):
         h = sha256()
         h.update(raw.encode('utf-8'))
         return h.hexdigest()
-
-
-from dongtai_common.models.api_route import (IastApiRoute, IastApiMethod,
-                                             HttpMethod,
-                                             IastApiMethodHttpMethodRelation,
-                                             FromWhereChoices)
-from django.db.utils import IntegrityError
 
 
 def save_project_header(keys: list, agent_id: int):
@@ -440,9 +440,6 @@ def add_new_api_route(agent_id, path, method):
 
     except IntegrityError as e:
         logger.info(e)
-
-
-from django.http.request import QueryDict
 
 
 def get_params_dict(req_header, req_body, req_params):
@@ -492,10 +489,6 @@ def update_api_route_deatil(agent_id, path, method, params_dict):
         annotation = annotation_dict[key]
         for param_name in value:
             single_insert(api_route.id, param_name, annotation)
-
-
-from dongtai_common.models.api_route import IastApiParameter
-
 
 
 def single_insert(api_route_id, param_name, annotation) -> None:
@@ -557,8 +550,6 @@ def get_res_body(res_body, version):
         return base64.b64decode(res_body)
     logger.info('no match version now version: {}'.format(version))
     return res_body
-
-
 
 
 def new_decode_content(res_body: str, encoding: str, version: str) -> str:

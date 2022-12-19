@@ -13,6 +13,7 @@ import logging
 
 logger = logging.getLogger('dongtai-dongtai_conf')
 
+
 class DelVulMany(UserEndPoint):
     name = "api-v2-aggregation-list-del"
     description = _("del vul list of many")
@@ -26,9 +27,9 @@ class DelVulMany(UserEndPoint):
         ),
     )
     def post(self, request):
-        ids = request.data.get("ids","")
+        ids = request.data.get("ids", "")
         ids = turnIntListOfStr(ids)
-        source_type = request.data.get("source_type",1)
+        source_type = request.data.get("source_type", 1)
         user = request.user
         if source_type == 1:
             queryset = IastVulnerabilityModel.objects.filter(is_del=0)
@@ -53,7 +54,7 @@ class DelVulMany(UserEndPoint):
             else:
                 queryset = queryset.filter(asset__user_id=user.id)
 
-        if source_type==1:
+        if source_type == 1:
             # 应用漏洞删除
             queryset.filter(id__in=ids).update(is_del=1)
         else:

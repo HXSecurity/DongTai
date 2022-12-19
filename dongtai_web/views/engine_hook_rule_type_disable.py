@@ -22,6 +22,7 @@ _GetResponseSerializer = get_response_serializer(status_msg_keypair=(
     ((202, _('Strategy does not exist')), ''),
 ))
 
+
 class EngineHookRuleTypeDisableEndPoint(UserEndPoint):
     def parse_args(self, request):
         try:

@@ -22,9 +22,8 @@ logger = logging.getLogger('dongtai-webapi')
 class _EngineHookRuleTypeAddSerializer(serializers.Serializer):
     type = serializers.ChoiceField(
         HOOK_TYPE_CHOICE,
-        help_text=
-        _("type of hook rule \n 1 represents the propagation method, 2 represents the source method, 3 represents the filter method, and 4 represents the taint method"
-          ),
+        help_text=_("type of hook rule \n 1 represents the propagation method, 2 represents the source method, 3 represents the filter method, and 4 represents the taint method"
+                    ),
         required=True)
     enable = serializers.ChoiceField(
         ENABLE_CHOICE,
@@ -41,9 +40,8 @@ class _EngineHookRuleTypeAddSerializer(serializers.Serializer):
     language_id = serializers.ChoiceField(
         (1, 2, 3, 4),
         default=1,
-        help_text=
-        _('The id of programming language,find it in the programming language api'
-          ),
+        help_text=_('The id of programming language,find it in the programming language api'
+                    ),
     )
 
 

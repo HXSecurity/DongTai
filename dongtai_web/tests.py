@@ -20,6 +20,7 @@ from dongtai_common.models.agent_config import (
     MetricOperator,
 )
 
+
 class DashboardTestCase(TestCase):
     def test_query_agent(self):
         res = query_agent()
@@ -41,6 +42,7 @@ class ZipFileTestCase(TestCase):
         res = get_zip_together([1, 2, 3], 1)
         print(res)
 
+
 class ChoiceConvertTestCase(TestCase):
     def test_choice_convert(self):
         able_to_search = (MetricType, MetricGroup,
@@ -49,6 +51,7 @@ class ChoiceConvertTestCase(TestCase):
         for i in able_to_search:
             res = convert_choices_to_dict(i)
             print(res)
+
     def test_choice_convert_value(self):
         able_to_search = (MetricType, MetricGroup,
                           TargetOperator,

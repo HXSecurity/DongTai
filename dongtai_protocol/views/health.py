@@ -20,6 +20,7 @@ from dongtai_protocol.utils import checkossstatus
 
 logger = logging.getLogger("dongtai.openapi")
 
+
 def checkenginestaus():
     import redis
     mock_data = {
@@ -67,6 +68,7 @@ def checkenginestaus():
         return R.success(data=mock_data)
     return R.success(data=mock_data)
 
+
 def _checkenginestatus():
     try:
         resp = checkenginestaus()
@@ -78,6 +80,7 @@ def _checkenginestatus():
         logger.info("HealthView_checkenginestatus:{}".format(e))
         return False, None
     return True, resp
+
 
 class HealthView(UserEndPoint):
     @extend_schema(

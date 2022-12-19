@@ -38,6 +38,7 @@ def get_project_language(queryset: QuerySet) -> defaultdict:
         project_language_dict[k['bind_project_id']].append(k['language'])
     return project_language_dict
 
+
 class ProjectSerializer(serializers.ModelSerializer):
     vul_count = serializers.SerializerMethodField(
         help_text="Vulnerability Count")

@@ -1,9 +1,15 @@
+from math import ceil
+from typing import List
+
+
 def method_pool_is_3(dic: dict) -> bool:
     if 'taintPosition' in dic.keys():
         return True
     return False
 
-KEY_MAPPING = {'O':'objValue','R':'retValue'}
+
+KEY_MAPPING = {'O': 'objValue', 'R': 'retValue'}
+
 
 def method_pool_3_to_2(dic: dict) -> dict:
     pdict = {}
@@ -58,8 +64,6 @@ def parse_target_value_length(target_value: str) -> int:
     return len_of_origin
 
 
-from typing import List
-from math import ceil
 AGENT_DEFAULT_LENGTH = 1024
 
 
@@ -70,12 +74,12 @@ def xss_prevent(char: str) -> str:
 
 
 # temporary fit in cython
-#def highlight_target_value(target_value: str, ranges: List) -> str:
+# def highlight_target_value(target_value: str, ranges: List) -> str:
 def highlight_target_value(target_value: str, ranges: list) -> str:
     value = parse_target_value(target_value)
     value_origin_len = parse_target_value_length(target_value)
     if not value:
-        return target_value.replace("<","&lt;")
+        return target_value.replace("<", "&lt;")
     sorted_ranges = sorted(ranges, key=lambda x: x['start'])
     for range_ in sorted_ranges:
         if range_['start'] > value_origin_len or range_['stop'] > value_origin_len:

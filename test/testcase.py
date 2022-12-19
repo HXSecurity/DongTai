@@ -39,8 +39,8 @@ def fuzz_test_data(end_point, httpmethod):
     return li
 
 
-#@ddt
-#class DocumentsEndpointTests(APITestCase):
+# @ddt
+# class DocumentsEndpointTests(APITestCase):
 #    def setUp(self):
 #        self.url = '/api/v1/documents'
 #        self.view = DocumentsEndpoint
@@ -79,9 +79,9 @@ def fuzz_test_data(end_point, httpmethod):
 #    def test_documents_retrive22(self):
 #        response = self.client.get(self.url, {'language': 'python'})
 #        self.assertEqual(response.status_code, 200)
-#from django.urls import resolve
+# from django.urls import resolve
 #
-#class DocumentsEndpointTests(APITestCase):
+# class DocumentsEndpointTests(APITestCase):
 #    def setUp(self):
 #        self.urls = ['/api/v1/documents', '/api/v1/api_route/search']
 #        url = '/api/v1/documents'

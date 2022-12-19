@@ -19,6 +19,7 @@ class _AgentConfigArgsSerializer(serializers.Serializer):
     agent_id = serializers.IntegerField(required=True,
                                         help_text=_('Agent id'))
 
+
 class AgentConfigAllinOneView(OpenApiEndPoint):
 
     @extend_schema_with_envcheck(

@@ -83,9 +83,8 @@ class ScaDetailView(UserEndPoint):
         }],
         tags=[_('Component')],
         summary=_("Component Detail"),
-        description=
-        _("Get the details of the corresponding component by specifying the id."
-          ),
+        description=_("Get the details of the corresponding component by specifying the id."
+                      ),
         response_schema=_ResponseSerializer
     )
     def get(self, request, id):

@@ -5,6 +5,15 @@
 # software: PyCharm
 # project: dongtai-models
 
+import uuid
+from django.core.cache import cache
+from django_elasticsearch_dsl.search import Search
+from dongtai_conf.settings import ASSET_INDEX
+from django_elasticsearch_dsl import Document, fields
+from django.db.models.fields.related import ForeignKey
+from dongtai_web.utils import get_model_field
+from django_elasticsearch_dsl.registries import registry
+from django_elasticsearch_dsl import Document
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -72,16 +81,6 @@ class Asset(models.Model):
         managed = get_managed()
         db_table = 'iast_asset'
 
-
-from django_elasticsearch_dsl import Document
-from django_elasticsearch_dsl.registries import registry
-from dongtai_web.utils import get_model_field
-from django.db.models.fields.related import ForeignKey
-from django_elasticsearch_dsl import Document, fields
-from dongtai_conf.settings import ASSET_INDEX
-from django_elasticsearch_dsl.search import Search
-from django.core.cache import cache
-import uuid
 
 @registry.register_document
 class IastAssetDocument(Document):

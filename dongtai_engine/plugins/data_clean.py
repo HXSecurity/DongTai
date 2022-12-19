@@ -64,8 +64,8 @@ def data_cleanup(days: int):
         if not any([latest_id, first_id]):
             logger.info("no data for clean up")
         batch_clean(latest_id, first_id, 10000)
-        #qs = MethodPool.objects.filter(pk__lte=latest_id)
-        #qs._raw_delete(qs.db)
+        # qs = MethodPool.objects.filter(pk__lte=latest_id)
+        # qs._raw_delete(qs.db)
 
 
 @sync_to_async(thread_sensitive=False)

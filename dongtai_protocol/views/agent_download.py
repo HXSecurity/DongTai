@@ -28,6 +28,7 @@ import time
 
 logger = logging.getLogger('dongtai.openapi')
 
+
 class JavaAgentDownload():
 
     def __init__(self, user_id):
@@ -38,7 +39,7 @@ class JavaAgentDownload():
         self.original_agent_file = f'/tmp/iast_cache/package/{self.agent_file}'
         self.user_target_path = f'/tmp/{os.getpid()}-{t.ident}-{user_id}'
         self.target_path = f'/tmp/{os.getpid()}-{t.ident}-{user_id}/iast_cache/package'
-        self.remote_agent_file = BUCKET_NAME_BASE_URL + 'java/'+ VERSION +'/dongtai-agent.jar'
+        self.remote_agent_file = BUCKET_NAME_BASE_URL + 'java/' + VERSION + '/dongtai-agent.jar'
         if not os.path.exists(f"{self.target_path}"):
             os.makedirs(f"{self.target_path}")
         if not os.path.exists(self.original_agent_path):
@@ -218,6 +219,7 @@ class PhpAgentDownload():
             logger.error(f'replace config error: {e}')
             return False
 
+
 class GoAgentDownload():
 
     def __init__(self, user_id):
@@ -248,6 +250,7 @@ class GoAgentDownload():
             ]
             fp.writelines([config + "\n" for config in configs])
         return True
+
     def replace_config(self):
         return True
 

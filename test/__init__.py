@@ -3,6 +3,7 @@
 # author: owefsad@huoxian.cn
 # datetime: 2021/7/13 下午10:21
 # project: dongtai-engine
+from django.test.runner import DiscoverRunner
 import os
 import unittest
 
@@ -16,8 +17,6 @@ class DongTaiTestCase(unittest.TestCase):
         os.environ.setdefault("debug", "true")
         django.setup()
 
-
-from django.test.runner import DiscoverRunner
 
 class NoDbTestRunner(DiscoverRunner):
 

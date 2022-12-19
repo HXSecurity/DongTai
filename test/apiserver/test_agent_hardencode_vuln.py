@@ -7,7 +7,6 @@
 ######################################################################
 
 
-
 from test.apiserver.test_agent_base import AgentTestCase
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.agent_method_pool import MethodPool
@@ -15,8 +14,8 @@ from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 import json
 
-class AgentHardencodeTestCase(AgentTestCase):
 
+class AgentHardencodeTestCase(AgentTestCase):
 
     def test_agent_hardencode_vuln(self):
         json_ = {

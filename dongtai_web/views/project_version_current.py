@@ -17,6 +17,7 @@ from rest_framework import serializers
 
 logger = logging.getLogger("django")
 
+
 class _ProjectVersionCurrentSerializer(serializers.Serializer):
     version_id = serializers.CharField(
         help_text=_("The version id of the project"))
@@ -38,9 +39,8 @@ class ProjectVersionCurrent(UserEndPoint):
         request=_ProjectVersionCurrentSerializer,
         tags=[_('Project')],
         summary=_('Projects Version Current'),
-        description=
-        _("Specify the selected version as the current version of the project according to the given conditions."
-          ),
+        description=_("Specify the selected version as the current version of the project according to the given conditions."
+                      ),
         response_schema=_ResponseSerializer,
     )
     def post(self, request):

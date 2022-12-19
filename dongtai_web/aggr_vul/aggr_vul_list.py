@@ -419,7 +419,7 @@ def get_vul_list_from_elastic_search(user_id,
               must=sub_after_must_query,
               should=sub_after_should_query,
               minimum_should_match=1))
-        #extra_dict['search_after'] = after_key
+        # extra_dict['search_after'] = after_key
     a = Q('bool', must=must_query)
     res = IastAssetVulnerabilityDocument.search().query(a).extra(
         collapse={

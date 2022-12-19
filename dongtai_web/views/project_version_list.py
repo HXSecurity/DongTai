@@ -33,6 +33,7 @@ class _VersionListDataSerializer(serializers.ModelSerializer):
 _ProjectVersionListResponseSerializer = get_response_serializer(
     _VersionListDataSerializer(many=True))
 
+
 class ProjectVersionList(UserEndPoint):
     name = "api-v1-project-version-list"
     description = _("View application version list")
