@@ -144,7 +144,7 @@ jobs:
           pip install pycodestyle
       - name: Django Unit Testing
         run: |
-          pycodestyle  --ignore=E501,E402,E231,E302,E303,E251,E265,W503,E128,E122,E225 --statistics .
+          pycodestyle  --ignore=E501,E402,E231,E302,E303,E251,E265,W503,E128,E122,E225,E305,W504 --statistics .
 
   Run-Unit-TEST:
     runs-on: ubuntu-latest
