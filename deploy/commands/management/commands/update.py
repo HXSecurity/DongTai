@@ -4,9 +4,10 @@ from django.core.management.base import BaseCommand
 class Command(BaseCommand):
     help = 'scripts to deal with old data to new version'
     functions = []
+
     def add_arguments(self, parser):
         pass
-        #parser.add_argument('update', nargs='+', type=int)
+        # parser.add_argument('update', nargs='+', type=int)
 
     def handle(self, *args, **options):
         from dongtai_web.dongtai_sca.tasks import refresh_all_asset_data

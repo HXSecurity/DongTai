@@ -13,6 +13,7 @@ from dongtai_common.models.agent import IastAgent
 from rest_framework.serializers import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+
 class AgentAliasArgsSerializer(serializers.Serializer):
     id = serializers.IntegerField(
         help_text=_('The id corresponding to the agent.'))
@@ -25,6 +26,7 @@ _ResponseSerializer = get_response_serializer(status_msg_keypair=(
     ((202, _('Agent does not exist or no permission to access')), ''),
     ((202, _('Error while deleting, please try again later')), ''),
 ))
+
 
 class AgentAliasModified(UserEndPoint):
     @extend_schema_with_envcheck(

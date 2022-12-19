@@ -7,7 +7,6 @@
 ######################################################################
 
 
-
 from dongtai_common.utils import const
 from dongtai_common.models.message import IastMessage
 from dongtai_common.endpoint import R
@@ -19,8 +18,6 @@ from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.translation import gettext_lazy as _
-
-
 
 
 class MessageSerializer(serializers.ModelSerializer):

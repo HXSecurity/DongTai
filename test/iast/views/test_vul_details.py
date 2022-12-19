@@ -29,7 +29,6 @@ class VulDetailTestCase(APITestCase):
             port=22,
             container=None)
 
-
     def test_get_server(self):
         obj = VulDetail()
         obj.server = self.server

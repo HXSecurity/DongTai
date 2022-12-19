@@ -7,8 +7,6 @@ import logging
 logger = logging.getLogger('dongtai-webapi')
 
 
-
-
 def delete_model(method_pool: MethodPool) -> None:
     method_pool.delete()
 
@@ -23,4 +21,4 @@ class PlugMethodPoolAfterScan(DongTaiPlugin):
         pass
 
     def after_patch_function(self, func_args, func_kwargs, func_res):
-        return delete_model(*func_args,**func_kwargs)
+        return delete_model(*func_args, **func_kwargs)

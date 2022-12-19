@@ -10,6 +10,7 @@
 from rest_framework.test import APITestCase
 from dongtai_common.models.user import User
 
+
 class SensitiveInfoRuleTestCase(APITestCase):
     def setUp(self):
         self.user = User.objects.filter(pk=1).first()

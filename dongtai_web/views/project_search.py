@@ -14,6 +14,8 @@ logger = logging.getLogger("django")
 class _ProjectSearchQuerySerializer(serializers.Serializer):
     name = serializers.CharField(
         help_text=_("Project name, support fuzzy search."))
+
+
 class _ProjectSearchDataSerializer(serializers.Serializer):
     id = serializers.IntegerField(help_text=_("The id of the project"))
     name = serializers.CharField(help_text=_('The name of project'))
@@ -33,9 +35,8 @@ class ProjectSearch(UserEndPoint):
         [_ProjectSearchQuerySerializer],
         tags=[_('Project')],
         summary=_('Projects Search'),
-        description=
-        _("Get the id and name of the item according to the search keyword matching the item name, in descending order of time."
-          ),
+        description=_("Get the id and name of the item according to the search keyword matching the item name, in descending order of time."
+                      ),
         response_schema=_ProjectResponseSerializer,
     )
     def get(self, request):

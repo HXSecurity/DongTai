@@ -69,7 +69,7 @@ class AgentDeleteEndPoint(UserEndPoint):
             deleted, _rows_count = IastErrorlog.objects.filter(agent=self.agent).delete()
             logger.error(_('Error logs deleted successfully, Deletion Amount: {}').format(deleted))
         except Exception as e:
-            logger.error(_('Failed to delete error logs, probe ID: {}, error message: {}').format(self.agent.id,e))
+            logger.error(_('Failed to delete error logs, probe ID: {}, error message: {}').format(self.agent.id, e))
 
     def delete_heart_beat(self):
         try:

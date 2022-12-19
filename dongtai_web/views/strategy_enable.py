@@ -21,6 +21,7 @@ _ResponseSerializer = get_response_serializer(status_msg_keypair=(
 
 ENABLE = 'enable'
 
+
 class StrategyEnableEndpoint(TalentAdminEndPoint):
     @extend_schema_with_envcheck(
         tags=[_('Strategy')],
@@ -42,11 +43,11 @@ class StrategyEnableEndpoint(TalentAdminEndPoint):
                     enable=const.HOOK_TYPE_ENABLE)
                 strategy_model.enable = const.HOOK_TYPE_ENABLE
                 strategy_model.save(update_fields=['enable'])
-                total_counts += counts 
+                total_counts += counts
             return R.success(msg=_('Policy enabled success, total {} hook rules').format(total_counts))
         else:
             return R.failure(msg=_('Strategy does not exist'))
 
 
-if __name__ == '__main__': 
+if __name__ == '__main__':
     HookStrategy.objects.values("id").count()

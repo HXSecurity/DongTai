@@ -299,7 +299,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 cluster_version=cluster_version,
                 server_env=server_env,
                 pid=pid,
-                server_ipaddresslist = get_ipaddresslist(network),
+                server_ipaddresslist=get_ipaddresslist(network),
             )
 
             core_auto_start = 0
@@ -384,7 +384,7 @@ def get_ipaddresslist(network: str) -> list:
         if isinstance(network_data, dict):
             return [network_data['ip']]
     except KeyError as e:
-        logger.error(network_data,exc_info=e)
+        logger.error(network_data, exc_info=e)
     except Exception as e:
         logger.error(e, exc_info=e)
     return []

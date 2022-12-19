@@ -4,6 +4,7 @@ import os
 from dongtai_common.engine.vul_engine import VulEngine
 import json
 
+
 class VulEngineSearchTestCase(TestCase):
 
     def test_search_method_pool(self):

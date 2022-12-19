@@ -45,8 +45,8 @@ class GetAgentThresholdConfig(UserEndPoint):
                     data['enableAutoFallback'] = data_detail.get("enableAutoFallback", None)
                     data['hookLimitTokenPerSecond'] = data_detail.get("hookLimitTokenPerSecond", None)
                     data['heavyTrafficLimitTokenPerSecond'] = data_detail.get("heavyTrafficLimitTokenPerSecond", None)
-                    data['cpuUsagePercentage'] = data_detail.get("performanceLimitMaxThreshold", {}).get("cpuUsage", {}).get("cpuUsagePercentage",None)
-                    data['memUsagePercentage'] = data_detail.get("performanceLimitMaxThreshold", {}).get("memoryUsage", {}).get("memUsagePercentage",None)
+                    data['cpuUsagePercentage'] = data_detail.get("performanceLimitMaxThreshold", {}).get("cpuUsage", {}).get("cpuUsagePercentage", None)
+                    data['memUsagePercentage'] = data_detail.get("performanceLimitMaxThreshold", {}).get("memoryUsage", {}).get("memUsagePercentage", None)
                 else:
                     data['enableAutoFallback'] = ""
                     data['hookLimitTokenPerSecond'] = ""

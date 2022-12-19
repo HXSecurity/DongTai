@@ -1,4 +1,5 @@
 
+from django.forms.models import model_to_dict
 import logging
 import time
 
@@ -9,7 +10,6 @@ from drf_spectacular.utils import extend_schema
 from dongtai_protocol.api_schema import DongTaiParameter, DongTaiAuth
 
 logger = logging.getLogger('dongtai.openapi')
-from django.forms.models import model_to_dict
 
 
 class LimitView(OpenApiEndPoint):

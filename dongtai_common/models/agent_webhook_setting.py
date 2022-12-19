@@ -7,7 +7,7 @@ from dongtai_common.utils.settings import get_managed
 class IastAgentUploadTypeUrl(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING)
     type_id = models.IntegerField(blank=True, null=True)
-    send_num = models.IntegerField(blank=True, null=True,default=0)
+    send_num = models.IntegerField(blank=True, null=True, default=0)
     url = models.CharField(max_length=255, blank=True, null=True)
     headers = models.JSONField()
 

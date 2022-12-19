@@ -176,7 +176,7 @@ class VulReCheckv2(UserEndPoint):
                 "pending": waiting_count,
                 "recheck": re_success_count,
                 "checking": success_count
-            },msg=_('Handle success'))
+            }, msg=_('Handle success'))
 
         except Exception as e:
             logger.error(f' msg:{e}')
@@ -190,7 +190,7 @@ class VulReCheckv2(UserEndPoint):
                 agent_queryset = IastAgent.objects.values("id").filter(
                     bind_project_id=project_id)
                 if agent_queryset:
-                    agent_ids = agent_queryset.values_list('id',flat=True)
+                    agent_ids = agent_queryset.values_list('id', flat=True)
                     vul_queryset = IastVulnerabilityModel.objects.filter(
                         agent_id__in=agent_ids)
                     waiting_count, success_count, re_success_count = self.recheck(
@@ -203,7 +203,7 @@ class VulReCheckv2(UserEndPoint):
             else:
                 return False, 0, 0, 0, _('No permission to access')
         except Exception as e:
-            logger.error(f' msg:{e}',exc_info=True)
+            logger.error(f' msg:{e}', exc_info=True)
             return False, 0, 0, 0, _('Batch playback error')
 
     @extend_schema_with_envcheck(

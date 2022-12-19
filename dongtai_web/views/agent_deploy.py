@@ -19,7 +19,6 @@ from rest_framework import serializers
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 
-
 class AgentDeployArgsSerializer(serializers.Serializer):
     middleware = serializers.CharField(required=False)
     language = serializers.CharField(required=False)
@@ -27,6 +26,7 @@ class AgentDeployArgsSerializer(serializers.Serializer):
 
 _ResponseSerializer = get_response_serializer(
     status_msg_keypair=(((201, _("Corresponding deployment document could not be found")), ''), ))
+
 
 class AgentDeploy(UserEndPoint):
     @extend_schema_with_envcheck([AgentDeployArgsSerializer],

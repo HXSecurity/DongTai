@@ -15,6 +15,7 @@ from dongtai_common.models.agent import IastAgent
 
 logger = logging.getLogger('dongtai.openapi')
 
+
 class ReportHandler:
     HANDLERS = {}
     log_service = None
@@ -33,9 +34,9 @@ class ReportHandler:
             report_type = reports.get('type')
             # 根据消息类型，转发上报到指定地址
             if report_type == 1:
-                isCoreInstalled = reports.get("detail",{}).get("isCoreInstalled", None)
-                isCoreRunning = reports.get("detail",{}).get("isCoreRunning", None)
-                agentId = reports.get("detail",{}).get("agentId", 0)
+                isCoreInstalled = reports.get("detail", {}).get("isCoreInstalled", None)
+                isCoreRunning = reports.get("detail", {}).get("isCoreRunning", None)
+                agentId = reports.get("detail", {}).get("agentId", 0)
                 # is_core_running 0 未运行，1运行中，2已卸载
                 if isCoreInstalled is None and isCoreRunning is None:
                     pass
@@ -44,7 +45,7 @@ class ReportHandler:
                     IastAgent.objects.filter(
                         user=user,
                         id=agentId).update(actual_running_status=2)
-                    IastAgent.objects.filter(user=user,id=agentId).update(is_core_running=is_core_running)
+                    IastAgent.objects.filter(user=user, id=agentId).update(is_core_running=is_core_running)
                 else:
                     if isCoreRunning == 1:
                         is_core_running = 1
@@ -57,7 +58,7 @@ class ReportHandler:
                             user=user,
                             id=agentId).update(actual_running_status=2)
 
-                    IastAgent.objects.filter(user=user,id=agentId).update(is_core_running=is_core_running)
+                    IastAgent.objects.filter(user=user, id=agentId).update(is_core_running=is_core_running)
             # web hook
             # req = requests.post(
             #     settings.AGENT_ENGINE_URL.format(user_id=user.id, report_type=report_type),
@@ -68,7 +69,7 @@ class ReportHandler:
                 if report_type in [1, 81, 33, 36, 17, 18, 97, 37]:
                     logger.error(_('Report type {} handler does not exist').format(report_type))
                 return None
-            #if report_type == 36:
+            # if report_type == 36:
             #    jsonlogger = logging.getLogger('jsonlogger')
             #    jsonlogger.error('report', extra=reports)
             result = class_of_handler().handle(reports, user)

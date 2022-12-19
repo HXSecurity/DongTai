@@ -36,6 +36,7 @@ class VulEngine(object):
         self.taint_value = ''
         self.vul_type = None
         self.version = 1
+
     @property
     def method_pool(self):
         """

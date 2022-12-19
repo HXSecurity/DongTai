@@ -24,7 +24,7 @@ class ProjectSaasMethodPoolHeader(models.Model):
                               blank=True,
                               null=True,
                               db_constraint=False)
-    header_type = models.IntegerField(choices=HeaderType.choices,default=0)
+    header_type = models.IntegerField(choices=HeaderType.choices, default=0)
 
     class Meta:
         managed = get_managed()

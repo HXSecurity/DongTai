@@ -3,6 +3,8 @@
 # author: owefsad@huoxian.cn
 # datetime: 2021/10/22 下午2:26
 # project: DongTai-engine
+import uuid
+from django.core.cache import cache
 import random
 import time
 from http.client import HTTPResponse
@@ -19,6 +21,7 @@ from dongtai_engine.plugins import is_strategy_enable
 from dongtai_web.vul_log.vul_log import log_vul_found, log_recheck_vul
 from dongtai_common.models.header_vulnerablity import IastHeaderVulnerability, IastHeaderVulnerabilityDetail
 from django.db import IntegrityError
+
 
 class FakeSocket():
     def __init__(self, response_str):
@@ -85,10 +88,6 @@ def check_response_header(method_pool):
             save_vul('Response Without X-Content-Type-Options Header', method_pool, position='HTTP Response Header')
     except Exception as e:
         logger.error("check_response_header failed, reason: " + str(e))
-
-
-from django.core.cache import cache
-import uuid
 
 
 def save_vul(vul_type, method_pool, position=None, data=None):
@@ -207,11 +206,11 @@ def save_vul(vul_type, method_pool, position=None, data=None):
         except IntegrityError as e:
             logger.debug("unique error stack: ", exc_info=True)
             logger.info("unique error cause by concurrency insert,ignore it")
-    #delete if exists more than one   departured use redis lock
-    #IastVulnerabilityModel.objects.filter(
+    # delete if exists more than one   departured use redis lock
+    # IastVulnerabilityModel.objects.filter(
     #    strategy=vul_strategy.id,
     #    uri=method_pool.uri,
     #    http_method=method_pool.http_method,
     #    agent__in=project_agents,
     #    pk__lt=vul.id,
-    #).delete()
+    # ).delete()

@@ -27,7 +27,7 @@ def export_strategy() -> list:
                           'update_time', 'dt'
                       ]) for i in strategies
     ],
-                            key=lambda item: item['vul_type'])
+        key=lambda item: item['vul_type'])
     return strategies_res
 
 
@@ -49,8 +49,9 @@ def export_hooktype(language_id: int) -> list:
                           'update_time', 'dt'
                       ]) for i in strategies
     ],
-                            key=lambda item: item['value'])
+        key=lambda item: item['value'])
     return strategies_res
+
 
 class Command(BaseCommand):
     help = 'export all hook_strategy'
@@ -60,7 +61,7 @@ class Command(BaseCommand):
         pass
 
     def handle(self, *args, **options):
-        POLICY_DIR = os.path.join(BASE_DIR,'static/data/')
+        POLICY_DIR = os.path.join(BASE_DIR, 'static/data/')
         for k, v in LANGUAGE_DICT.items():
             c = HookProfilesEndPoint.get_profiles(language_id=v,
                                                   system_only=True)

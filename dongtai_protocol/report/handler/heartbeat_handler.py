@@ -37,7 +37,6 @@ class HeartBeatHandler(IReportHandler):
         self.replay_queue = None
         self.return_queue = None
 
-
     def parse(self):
         self.cpu = self.detail.get('cpu')
         self.memory = self.detail.get('memory')

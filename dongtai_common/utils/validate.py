@@ -5,6 +5,16 @@
 # project: dongtai-engine
 
 
+from functools import reduce
+from dongtai_conf.settings import BASE_DIR
+from django.db.models import Q
+from dongtai_common.models.profile import IastProfile
+from typing import List
+from dataclasses import dataclass
+import hashlib
+import os
+
+
 class Validate:
     """
     common Validate for dongtai project
@@ -20,7 +30,7 @@ class Validate:
         for item in iterable:
             try:
                 int(item)
-            except:
+            except BaseException:
                 return False
         return True
 
@@ -34,16 +44,6 @@ class Validate:
         return obj is None or obj == ''
 
 
-import os
-import hashlib
-from dataclasses import dataclass
-from typing import List
-
-from dongtai_common.models.profile import IastProfile
-from django.db.models import Q
-from dongtai_conf.settings import BASE_DIR
-
-
 @dataclass
 class FileHashPair:
     path: str
@@ -52,7 +52,7 @@ class FileHashPair:
 
 def calculate_dir_sha() -> List[FileHashPair]:
     dic_list = []
-    for (path, dirs, files) in os.walk(os.path.join(BASE_DIR,'static/data')):
+    for (path, dirs, files) in os.walk(os.path.join(BASE_DIR, 'static/data')):
         for file_ in sorted(files):
             fullpath = os.path.join(path, file_)
             sha = hashlib.sha1(usedforsecurity=False)
@@ -68,9 +68,6 @@ def calculate_dir_sha() -> List[FileHashPair]:
             )
             dic_list.append(dic)
     return dic_list
-
-
-from functools import reduce
 
 
 def validate_hook_strategy_update() -> bool:

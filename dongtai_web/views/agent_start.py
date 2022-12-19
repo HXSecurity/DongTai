@@ -11,6 +11,8 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from dongtai_web.serializers.agent import AgentToggleArgsSerializer
+
+
 class _AgentStopBodyArgsSerializer(serializers.Serializer):
     id = serializers.IntegerField(help_text=_(
         'The id corresponding to the agent.'))
@@ -20,6 +22,7 @@ class _AgentStopBodyArgsSerializer(serializers.Serializer):
 
 _ResponseSerializer = get_response_serializer(
     status_msg_keypair=(((201, _('Suspending ...')), ''), ))
+
 
 class AgentStart(UserEndPoint):
     name = "api-v1-agent-start"
@@ -40,7 +43,7 @@ class AgentStart(UserEndPoint):
             try:
                 agent_ids = [int(i) for i in agent_ids.split(',')]
             except BaseException:
-                return R.failure(_("Parameter error")) 
+                return R.failure(_("Parameter error"))
         if agent_id:
             agent = IastAgent.objects.filter(user=request.user, id=agent_id).first()
             if agent is None:

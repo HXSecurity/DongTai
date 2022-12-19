@@ -22,10 +22,11 @@ from rest_framework.serializers import ValidationError
 
 logger = logging.getLogger("django")
 
+
 class _ProjectsArgsSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=20,
                                          help_text=_('Number per page'))
-    page = serializers.IntegerField(min_value=1,default=1, help_text=_('Page index'))
+    page = serializers.IntegerField(min_value=1, default=1, help_text=_('Page index'))
     name = serializers.CharField(
         default=None,
         help_text=_(
@@ -43,9 +44,8 @@ class Projects(UserEndPoint):
         [_ProjectsArgsSerializer],
         tags=[_('Project')],
         summary=_('Projects List'),
-        description=
-        _("Get the item corresponding to the user, support fuzzy search based on name."
-          ),
+        description=_("Get the item corresponding to the user, support fuzzy search based on name."
+                      ),
         response_schema=_SuccessSerializer,
     )
     def get(self, request):

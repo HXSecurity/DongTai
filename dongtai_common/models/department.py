@@ -14,6 +14,7 @@ from dongtai_common.utils.settings import get_managed
 from dongtai_common.utils.customfields import trans_char_field
 from typing import Any
 
+
 class IastDepartment(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
 
@@ -64,7 +65,6 @@ class Department(PermissionsMixin):
 
     def get_department_name(self):
         return self.name
-
 
     @trans_char_field('name', {
         'zh': {

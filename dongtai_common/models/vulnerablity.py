@@ -1,3 +1,9 @@
+import uuid
+from django.core.cache import cache
+from django_elasticsearch_dsl.search import Search
+from dongtai_conf.settings import VULNERABILITY_INDEX
+from django_elasticsearch_dsl import Document, fields
+from django_elasticsearch_dsl.registries import registry
 from django.db import models
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.vul_level import IastVulLevel
@@ -93,14 +99,6 @@ class IastVulnerabilityModel(models.Model):
         self.latest_time_desc = -int(self.latest_time)
         self.level_id_desc = -int(self.level_id)
         super(IastVulnerabilityModel, self).save(*args, **kwargs)
-
-
-from django_elasticsearch_dsl.registries import registry
-from django_elasticsearch_dsl import Document, fields
-from dongtai_conf.settings import VULNERABILITY_INDEX
-from django_elasticsearch_dsl.search import Search
-from django.core.cache import cache
-import uuid
 
 
 @registry.register_document

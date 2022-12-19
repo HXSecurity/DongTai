@@ -1,5 +1,8 @@
+from tempfile import TemporaryFile, SpooledTemporaryFile
+from io import BytesIO
 from http.client import parse_headers
-#Request{method=GET, url=http://www.baidu.com/, tag=null}
+# Request{method=GET, url=http://www.baidu.com/, tag=null}
+
 
 class JavaObjects:
 
@@ -23,10 +26,6 @@ def parse_java_objects(objects_string: str):
         for attr in objects_attrstring.strip('{}').split(', ')
     ]
     return JavaObjects(objects_classname, objects_attrs)
-
-
-from io import BytesIO
-from tempfile import TemporaryFile, SpooledTemporaryFile
 
 
 def parse_headers_dict_from_bytes(header_bytes: bytes) -> dict:

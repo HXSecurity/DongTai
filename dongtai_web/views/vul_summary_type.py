@@ -10,7 +10,7 @@ from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.models.strategy import IastStrategyModel
 
-from dongtai_web.base.agent import get_project_vul_count,get_hook_type_name
+from dongtai_web.base.agent import get_project_vul_count, get_hook_type_name
 from dongtai_web.base.project_version import get_project_version, get_project_version_by_id
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
@@ -114,7 +114,7 @@ class VulSummaryType(UserEndPoint):
                     "type": [{
                         "type": "Path Traversal",
                         "count": 79
-                    },  {
+                    }, {
                         "type": "Insecure Hash Algorithms",
                         "count": 1
                     }, {
@@ -127,9 +127,8 @@ class VulSummaryType(UserEndPoint):
         }],
         tags=[_('Vulnerability')],
         summary=_('Vulnerability Summary'),
-        description=
-        _('Use the following conditions to view the statistics of the number of vulnerabilities in the project.'
-          ),
+        description=_('Use the following conditions to view the statistics of the number of vulnerabilities in the project.'
+                      ),
         response_schema=_ResponseSerializer
     )
     def get(self, request):
@@ -237,5 +236,3 @@ class VulSummaryType(UserEndPoint):
         end['data']['type'] = sorted(vul_type_list, key=lambda x: x['count'], reverse=True)
 
         return R.success(data=end['data'], level_data=end['level_data'])
-
-

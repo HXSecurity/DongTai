@@ -7,7 +7,6 @@
 ######################################################################
 
 
-
 from rest_framework.test import APITestCase
 from django.urls import include, path, reverse
 from dongtai_web.views.scan_strategys import ScanStrategyViewSet
@@ -17,6 +16,7 @@ from dongtai_common.models.user import User
 class ScanStrategyTestCase(APITestCase):
     def setUp(self):
         pass
+
     def test_create(self):
         self.client.force_authenticate(user=User.objects.filter(pk=1).first())
         response = self.client.get('/api/v1/scan_strategy')

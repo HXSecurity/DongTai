@@ -8,7 +8,7 @@ from django.http import JsonResponse
 class ApiTimeLogView(UserEndPoint):
     def get(self, request):
         res = []
-        for k,v in REQUEST_DICT.items():
+        for k, v in REQUEST_DICT.items():
             v['uri'] = k
             res.append(v)
-        return JsonResponse(res,safe=False)
+        return JsonResponse(res, safe=False)

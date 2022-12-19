@@ -57,7 +57,7 @@ class TargetType(IntegerChoices):
     AGENT_LANGUAGE = 8, _("语言")
 
 
-#keep match with agent ,ignore its naming style
+# keep match with agent ,ignore its naming style
 class MetricType(IntegerChoices):
     cpuUsagePercentage = 1, _("系统CPU使用率阈值")
     sysMemUsagePercentage = 2, _("系统内存使用率阈值")

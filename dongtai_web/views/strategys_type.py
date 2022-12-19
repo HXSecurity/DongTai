@@ -14,6 +14,7 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 
 from rest_framework import serializers
 
+
 class _StrategyTypeResponseDataTypeValueSerializer(serializers.Serializer):
     strategy_id = serializers.CharField(help_text=_('The id of strategy'))
     vul_name = serializers.CharField(help_text=_('The name of the vulnerability type targeted by the strategy'))
@@ -27,7 +28,6 @@ class _StrategyTypeResponseDataStrategySerializer(serializers.Serializer):
     level_name = serializers.IntegerField(
         help_text=_('Level name of vulnerability'))
     type_value = _StrategyTypeResponseDataTypeValueSerializer(many=True)
-
 
 
 _ResponseSerializer = get_response_serializer(

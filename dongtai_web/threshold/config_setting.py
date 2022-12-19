@@ -4,6 +4,31 @@
 # software: PyCharm
 # project: webApi
 # agent threshold setting
+from dongtai_conf.settings import DEFAULT_CIRCUITCONFIG
+from django.db.models import F
+from django.forms.models import model_to_dict
+from django.db.models import Max, Min
+from functools import partial
+from inflection import underscore
+from collections.abc import Iterable
+from dongtai_common.models.agent_config import (
+    IastCircuitTarget,
+    IastCircuitConfig,
+    IastCircuitMetric,
+    TargetType,
+    TargetOperator,
+    DealType,
+    MetricType,
+    MetricGroup,
+    MetricOperator,
+    SystemMetricType,
+    JVMMetricType,
+    ApplicationMetricType,
+    UNIT_DICT,
+)
+from rest_framework import viewsets
+from django.db.models import IntegerChoices
+from rest_framework import serializers
 import time
 
 from dongtai_common.endpoint import UserEndPoint, R, TalentAdminEndPoint
@@ -23,12 +48,12 @@ class AgentThresholdConfig(UserEndPoint):
     name = "api-v1-agent-threshold-config-setting"
     description = _("config Agent")
 
-    def create_agent_config(self,user, details, hostname, ip, port, cluster_name, cluster_version, priority,id):
+    def create_agent_config(self, user, details, hostname, ip, port, cluster_name, cluster_version, priority, id):
         try:
 
             timestamp = int(time.time())
             if id:
-                strategy = IastAgentConfig.objects.filter(user=user,id=id).order_by("-create_time").first()
+                strategy = IastAgentConfig.objects.filter(user=user, id=id).order_by("-create_time").first()
             else:
                 strategy = IastAgentConfig.objects.filter(user=user, id=id).order_by("-create_time").first()
             if strategy:
@@ -81,40 +106,19 @@ class AgentThresholdConfig(UserEndPoint):
 
             return R.failure(data=e.detail)
 
-        config = self.create_agent_config(user, details, hostname, ip, port, cluster_name, cluster_version, priority,id)
+        config = self.create_agent_config(user, details, hostname, ip, port, cluster_name, cluster_version, priority, id)
         if config:
             return R.success(msg=_('保存成功'))
         else:
             return R.failure(msg=_('保存失败'))
 
 
-from rest_framework import serializers
-from django.db.models import IntegerChoices
-from rest_framework import viewsets
-from dongtai_common.models.agent_config import (
-    IastCircuitTarget,
-    IastCircuitConfig,
-    IastCircuitMetric,
-    TargetType,
-    TargetOperator,
-    DealType,
-    MetricType,
-    MetricGroup,
-    MetricOperator,
-    SystemMetricType,
-    JVMMetricType,
-    ApplicationMetricType,
-    UNIT_DICT,
-)
-from collections.abc import Iterable
-from inflection import underscore
-from functools import partial
-
 def intable_validate(value):
     try:
         a = int(value)
     except ValueError as e:
         raise serializers.ValidationError('This field must be an intable.')
+
 
 class AgentConfigSettingV2TargetSerializer(serializers.Serializer):
     target_type = serializers.ChoiceField(TargetType.choices)
@@ -140,17 +144,15 @@ class AgentConfigSettingV2Serializer(serializers.Serializer):
     is_enable = serializers.IntegerField()
 
 
-from django.db.models import Max, Min
-from django.forms.models import model_to_dict
-
-
 def get_priority_max_now() -> int:
     res = IastCircuitConfig.objects.all().aggregate(Max("priority"))
     return res["priority__max"] + 1
 
+
 def get_priority_min_now() -> int:
     res = IastCircuitConfig.objects.all().aggregate(Min("priority"))
     return res["priority__min"] - 1
+
 
 def config_create(data, user):
     fields = ('name', 'metric_group', 'is_enable', 'deal',
@@ -171,7 +173,7 @@ def config_create(data, user):
 
 
 def config_update(data, config_id):
-    fields = ('name', 'metric_group', 'is_enable',  'deal',
+    fields = ('name', 'metric_group', 'is_enable', 'deal',
               "interval")
     filted_data = get_data_from_dict_by_key(data, fields)
     metric_types = get_metric_types(data['metrics'])
@@ -181,9 +183,9 @@ def config_update(data, config_id):
                              metric_types=metric_types,
                              target_types=targets)
     IastCircuitTarget.objects.filter(
-            circuit_config_id=config_id).delete()
+        circuit_config_id=config_id).delete()
     IastCircuitMetric.objects.filter(
-            circuit_config_id=config_id).delete()
+        circuit_config_id=config_id).delete()
     obj = IastCircuitConfig.objects.filter(pk=config_id).first()
     for i in data['targets']:
         create_target(i, obj)
@@ -221,14 +223,11 @@ def get_data_from_dict_by_key(dic: dict, fields: Iterable) -> dict:
     return {i: dic[i] for i in fields}
 
 
-from django.db.models import F
-
-
-#when target_priority < config.priorty
+# when target_priority < config.priorty
 def set_config_change_lt(config_id, target_priority: int):
     config = IastCircuitConfig.objects.filter(pk=config_id).first()
     if not config:
-        return 
+        return
     IastCircuitConfig.objects.filter(
         priority__gte=target_priority,
         priority__lt=config.priority).update(priority=F('priority') + 1)
@@ -241,11 +240,11 @@ def set_config_top(config_id):
                                 target_priority=get_priority_min_now())
 
 
-#when target_priority > config.priorty
+# when target_priority > config.priorty
 def set_config_change_gt(config_id, target_priority: int):
     config = IastCircuitConfig.objects.filter(pk=config_id).first()
     if not config:
-        return 
+        return
     IastCircuitConfig.objects.filter(
         priority__lte=target_priority,
         priority__gt=config.priority).update(priority=F('priority') - 1)
@@ -260,14 +259,11 @@ def set_config_bottom(config_id):
 def set_config_change_proprity(config_id, priority_range: list):
     config = IastCircuitConfig.objects.filter(pk=config_id).first()
     if not config:
-        return 
+        return
     if min(priority_range) > config.priority:
         set_config_change_gt(config.id, min(priority_range))
     if max(priority_range) < config.priority:
         set_config_change_lt(config.id, max(priority_range))
-
-
-from dongtai_conf.settings import DEFAULT_CIRCUITCONFIG
 
 
 class AgentThresholdConfigV2(TalentAdminEndPoint, viewsets.ViewSet):
@@ -308,7 +304,7 @@ class AgentThresholdConfigV2(TalentAdminEndPoint, viewsets.ViewSet):
         queryset = IastCircuitConfig.objects.filter(
             is_deleted=0).order_by('priority').prefetch_related(
                 'iastcircuittarget_set', 'iastcircuitmetric_set').all()
-        #page_summary, page_data = self.get_paginator(queryset, page, page_size)
+        # page_summary, page_data = self.get_paginator(queryset, page, page_size)
         obj_list = []
         for data in queryset:
             obj = model_to_dict(data)

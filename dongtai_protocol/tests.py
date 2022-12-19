@@ -1,4 +1,12 @@
-from test.apiserver.test_agent_base import AgentTestCase,gzipdata
+from dongtai_protocol.report.handler.heartbeat_handler import HeartBeatHandler
+from dongtai_common.utils import const
+from dongtai_common.models.replay_queue import IastReplayQueue
+from dongtai_protocol.report.handler.heartbeat_handler import (
+    addtional_agent_ids_query_deployway_and_path,
+    addtional_agenti_ids_query_filepath_simhash)
+from os.path import exists
+import requests
+from test.apiserver.test_agent_base import AgentTestCase, gzipdata
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.agent_method_pool import MethodPool
 import gzip
@@ -8,6 +16,7 @@ import json
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from result import Ok, Err, Result
 import unittest
+
 
 class AgentMethodPoolUploadTestCase(AgentTestCase):
 
@@ -29,10 +38,6 @@ class AgentMethodPoolUploadTestCase(AgentTestCase):
         assert MethodPool.objects.filter(agent_id=self.agent_id).count() == len(data)
 
 
-import requests
-from os.path import exists
-
-
 def download_file(url, filepath):
     with requests.get(url, stream=True) as r:
         r.raise_for_status()
@@ -48,13 +53,6 @@ def download_if_not_exist(url: str, path: str) -> Result:
     res = download_file(url, path)
     return res
 
-
-from dongtai_protocol.report.handler.heartbeat_handler import (
-    addtional_agent_ids_query_deployway_and_path,
-    addtional_agenti_ids_query_filepath_simhash)
-from dongtai_common.models.replay_queue import IastReplayQueue
-from dongtai_common.utils import const
-from dongtai_protocol.report.handler.heartbeat_handler import HeartBeatHandler
 
 class AgentHeartBeatTestCase(AgentTestCase):
 
@@ -91,9 +89,6 @@ class AgentHeartBeatTestCase(AgentTestCase):
 
 def get_replay_id_set(replay_list: list) -> set:
     return set([i['id'] for i in replay_list])
-
-
-import base64
 
 
 @unittest.skip("waiting for rebuild mock data")

@@ -21,6 +21,7 @@ def weeks_ago(week: int = 1):
     beginT = int(time.mktime(beginArray))
     return current_timestamp, beginT, weekend
 
+
 def get_summary_by_agent_ids(agent_ids: Iterable):
     data = {}
     data['type_summary'] = []

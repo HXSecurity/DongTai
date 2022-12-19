@@ -1,4 +1,4 @@
-from test.apiserver.test_agent_base import AgentTestCase,gzipdata
+from test.apiserver.test_agent_base import AgentTestCase, gzipdata
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.agent_method_pool import MethodPool
 import gzip
@@ -13,6 +13,7 @@ from django.db import connections
 from django.test import TestCase
 from dongtai_common.models.user import User
 import unittest
+
 
 @unittest.skip("waiting for rebuild mock data")
 class CoreScanTestCase(AgentTestCase):
@@ -54,7 +55,7 @@ class CoreScanTestCase(AgentTestCase):
             assert IastVulnerabilityModel.objects.filter(
                 url=method_pool.url, agent_id=self.agent_id).exists()
         vul_count_without_param_mark_after = IastVulnerabilityModel.objects.filter(param_name='{}',
-            level_id__lte=2).all().count()
+                                                                                   level_id__lte=2).all().count()
         res = vul_count_without_param_mark_after - vul_count_without_param_mark_begin
         print([
             i.uri for i in IastVulnerabilityModel.objects.filter(
@@ -74,13 +75,14 @@ class CoreScanTestCase(AgentTestCase):
             assert IastVulnerabilityModel.objects.filter(
                 url=method_pool.url, agent_id=self.agent_id).exists()
         vul_count_without_param_mark_after = IastVulnerabilityModel.objects.filter(param_name='{}',
-            level_id__lte=2).all().count()
+                                                                                   level_id__lte=2).all().count()
         res = vul_count_without_param_mark_after - vul_count_without_param_mark_begin
         print([
             i.uri for i in IastVulnerabilityModel.objects.filter(
                 param_name='{}', level_id__lte=2).all()
         ])
         assert res == 0
+
 
 @unittest.skip("waiting for rebuild mock data")
 class CoreTaskTestCase(AgentTestCase):
@@ -99,7 +101,7 @@ class LoadSinkStrategyTestCase(TestCase):
         strategies = load_sink_strategy()
         assert isinstance(strategies, list)
         assert len(strategies) > 0
-        for language in (1,2,3,4):
+        for language in (1, 2, 3, 4):
             strategies = load_sink_strategy(User.objects.get(pk=1), language)
             assert isinstance(strategies, list)
             assert len(strategies) > 0

@@ -4,6 +4,7 @@
 # datetime:2020/8/11 15:02
 # software: PyCharm
 # project: webapi
+from datetime import datetime
 import logging
 
 from django.contrib.auth import logout
@@ -14,7 +15,7 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_conf import settings
 
 logger = logging.getLogger("django")
-from datetime import datetime
+
 
 class UserLogout(AnonymousAuthEndPoint):
     name = "api-v1-user-logout"
@@ -27,6 +28,6 @@ class UserLogout(AnonymousAuthEndPoint):
             "status": 201,
             "msg": _('Sign out successfully')
         })
-        response.delete_cookie(key=settings.CSRF_COOKIE_NAME,domain=settings.SESSION_COOKIE_DOMAIN)
-        response.delete_cookie(key='sessionid',domain=settings.SESSION_COOKIE_DOMAIN)
+        response.delete_cookie(key=settings.CSRF_COOKIE_NAME, domain=settings.SESSION_COOKIE_DOMAIN)
+        response.delete_cookie(key='sessionid', domain=settings.SESSION_COOKIE_DOMAIN)
         return response

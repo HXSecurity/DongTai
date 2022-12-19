@@ -64,7 +64,7 @@ class MethodGraph(AnonymousAndUserEndPoint):
             return R.success(data=data)
 
         except Exception as e:
-            logger.error(e,exc_info=True)
+            logger.error(e, exc_info=True)
             return R.failure(msg=_('Page and PageSize can only be numeric'))
 
     def get_method_pool(self, user, method_pool_id):
@@ -86,11 +86,11 @@ class MethodGraph(AnonymousAndUserEndPoint):
 
     def search_taint_link(self, method_pool, sources, sinks, propagators):
         """
-        :param method_pool: 
-        :param sources: 
-        :param sinks: 
-        :param propagators: 
-        :return: 
+        :param method_pool:
+        :param sources:
+        :param sinks:
+        :param propagators:
+        :return:
         """
         engine = VulEngine()
         links = list()

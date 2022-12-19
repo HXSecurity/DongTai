@@ -77,7 +77,7 @@ class IastAgent(models.Model):
         events_list = self.events if self.events else ["注册成功"]
         return events_list == ['注册成功']
 
-#class IastAgent(models.Model):
+# class IastAgent(models.Model):
 #
 #    class Meta:
 #        managed = get_managed()

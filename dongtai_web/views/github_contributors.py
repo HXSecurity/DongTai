@@ -13,8 +13,10 @@ import asyncio
 from functools import partial
 import os
 
+
 async def delay(time):
     await asyncio.sleep(time)
+
 
 async def timer(time, function):
     while True:

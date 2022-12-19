@@ -16,6 +16,7 @@ from dongtai_common.models.hook_type import HookType
 import time
 import unittest
 
+
 @unittest.skip("waiting for rebuild mock data")
 class ScanStrategyTestCase(APITestCase):
     def setUp(self):
@@ -68,4 +69,3 @@ class ScanStrategyTestCase(APITestCase):
     def test_create(self):
         response = self.client.get('/api/v1/vuln/summary')
         assert response.status_code == 200
-

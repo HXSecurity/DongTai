@@ -44,15 +44,13 @@ class _EngineHookRuleModifySerializer(serializers.Serializer):
         max_length=255,
     )
     inherit = serializers.CharField(
-        help_text=
-        _('Inheritance type, false-only detect current class, true-inspect subclasses, all-check current class and subclasses'
-          ),
+        help_text=_('Inheritance type, false-only detect current class, true-inspect subclasses, all-check current class and subclasses'
+                    ),
         max_length=255,
     )
     track = serializers.CharField(
-        help_text=
-        _("Indicates whether taint tracking is required, true-required, false-not required."
-          ),
+        help_text=_("Indicates whether taint tracking is required, true-required, false-not required."
+                    ),
         max_length=5,
     )
 
