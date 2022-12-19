@@ -67,7 +67,7 @@ class VulReCheck(UserEndPoint):
         re_success_count = 0
         opt_vul_queryset = vul_queryset.only('agent__id', 'id')
         vul_ids = [i.id for i in opt_vul_queryset]
-        vul_id_agentmap = {i.id:i.agent_id for i in opt_vul_queryset}
+        vul_id_agentmap = {i.id: i.agent_id for i in opt_vul_queryset}
         history_replay_vul_ids = IastReplayQueue.objects.filter(
             relation_id__in=vul_ids,
             replay_type=const.VUL_REPLAY).order_by('relation_id').values_list(
@@ -157,7 +157,7 @@ class VulReCheck(UserEndPoint):
             no_agent, waiting_count, success_count, re_success_count = self.vul_check_for_queryset(
                 vul_queryset)
             # 加重放日志 vul_ids
-            log_recheck_vul(request.user.id,request.user.username,vul_ids,"待验证")
+            log_recheck_vul(request.user.id, request.user.username, vul_ids, "待验证")
 
             # def log_recheck_vul(user_id: int, user_name: str, vul_id: list,  vul_status: str):
             return R.success(data={
@@ -165,7 +165,7 @@ class VulReCheck(UserEndPoint):
                 "pending": waiting_count,
                 "recheck": re_success_count,
                 "checking": success_count
-            },msg=_('Handle success'))
+            }, msg=_('Handle success'))
 
         except Exception as e:
             logger.error(f' msg:{e}')
@@ -179,7 +179,7 @@ class VulReCheck(UserEndPoint):
                 agent_queryset = IastAgent.objects.values("id").filter(
                     bind_project_id=project_id)
                 if agent_queryset:
-                    agent_ids = agent_queryset.values_list('id',flat=True)
+                    agent_ids = agent_queryset.values_list('id', flat=True)
                     vul_queryset = IastVulnerabilityModel.objects.filter(
                         agent_id__in=agent_ids)
                     waiting_count, success_count, re_success_count = self.recheck(
@@ -192,7 +192,7 @@ class VulReCheck(UserEndPoint):
             else:
                 return False, 0, 0, 0, _('No permission to access')
         except Exception as e:
-            logger.error(f' msg:{e}',exc_info=True)
+            logger.error(f' msg:{e}', exc_info=True)
             return False, 0, 0, 0, _('Batch playback error')
 
     @extend_schema_with_envcheck(
@@ -243,7 +243,7 @@ class VulReCheck(UserEndPoint):
                 "recheck": recheck,
                 "checking": checking
             },
-                             msg=_("Handle success"))
+                msg=_("Handle success"))
             return R.failure(msg=_("Incorrect format parameter"))
 
         except Exception as e:

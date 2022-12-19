@@ -7,9 +7,7 @@
 ######################################################################
 
 
-
 from dongtai_common.models.profile import IastProfile
-
 
 
 def get_vul_validate():

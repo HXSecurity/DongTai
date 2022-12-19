@@ -15,8 +15,8 @@ class AgentConfigSettingSerializer(serializers.Serializer):
     ip = serializers.CharField(help_text=_('The ip of the agent.'), max_length=100, required=False, allow_blank=True)
     port = serializers.IntegerField(help_text=_('The port of the agent.'), required=False, default=80)
     id = serializers.IntegerField(help_text=_('The port of the agent.'), required=False, default=None)
-    cluster_name = serializers.CharField(help_text=_('The cluster_name of the agent.'), max_length=255,required=False, allow_blank=True)
-    cluster_version = serializers.CharField(help_text=_('The cluster_version of the agent.'), max_length=100,required=False, allow_blank=True)
+    cluster_name = serializers.CharField(help_text=_('The cluster_name of the agent.'), max_length=255, required=False, allow_blank=True)
+    cluster_version = serializers.CharField(help_text=_('The cluster_version of the agent.'), max_length=100, required=False, allow_blank=True)
     priority = serializers.IntegerField(help_text=_('The priority of the agent.'), required=True)
 
 

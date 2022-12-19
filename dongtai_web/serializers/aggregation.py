@@ -12,6 +12,7 @@ def intable_str(value: str):
     except ValueError:
         raise serializers.ValidationError('Not int able after str split')
 
+
 class AggregationArgsSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=20,
                                          min_value=1,

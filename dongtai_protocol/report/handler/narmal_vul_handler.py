@@ -149,7 +149,7 @@ class NormalVulnHandler(BaseVulnHandler):
         caller_message = self.app_caller[index + 2]
         sink_message = self.app_caller[index + 1]
         caller_message_location = re.search(
-            '\(.*\)', caller_message).group(0).strip('()').split(':')
+            '\\(.*\\)', caller_message).group(0).strip('()').split(':')
         if len(caller_message_location) == 2:
             caller_message_file, caller_message_linenumber = caller_message_location
         else:
@@ -164,24 +164,24 @@ class NormalVulnHandler(BaseVulnHandler):
             1,
             "className":
             '.'.join(
-                re.search('.*\(',
+                re.search('.*\\(',
                           sink_message).group(0).strip('()').split('.')[:-1]),
             "signature":
             sink_message,
             "interfaces": [],
             "methodName":
-            re.search('.*\(',
+            re.search('.*\\(',
                       sink_message).group(0).strip('()').split('.')[-1],
             "sourceHash": [],
             "targetHash": [],
             "callerClass":
             '.'.join(
                 re.search(
-                    '.*\(',
+                    '.*\\(',
                     caller_message).group(0).strip('()').split('.')[:-1]),
             "targetRange": [],
             "callerMethod":
-            re.search('.*\(',
+            re.search('.*\\(',
                       caller_message).group(0).strip('()').split('.')[-1],
             "retClassName":
             "",
@@ -191,7 +191,7 @@ class NormalVulnHandler(BaseVulnHandler):
             "",
             "originClassName":
             '.'.join(
-                re.search('.*\(',
+                re.search('.*\\(',
                           sink_message).group(0).strip('()').split('.')[:-1]),
             "callerLineNumber":
             caller_message_linenumber,

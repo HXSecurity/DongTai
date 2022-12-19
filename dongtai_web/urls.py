@@ -4,6 +4,16 @@
 # datetime:2020/5/21 15:55
 # software: PyCharm
 # project: webapi
+from dongtai_web.systemmonitor.urls import urlpatterns as systemmonitor_urls
+from dongtai_web.versioncontrol.urls import urlpatterns as versioncontrol_urls
+from dongtai_web.dongtai_sca.urls import urlpatterns as sca_urls
+from dongtai_web.apitimelog.urls import urlpatterns as apitimelog_urls
+from dongtai_web.scaupload.urls import urlpatterns as scaupload_urls
+from dongtai_web.aggr_vul.app_vul_summary import GetAppVulsSummary
+from dongtai_web.aggr_vul.app_vul_list import GetAppVulsList
+from dongtai_web.aggr_vul.aggr_vul_summary import GetScaSummary
+from dongtai_web.aggr_vul.aggr_vul_list import GetAggregationVulList
+from dongtai_web.views.agents_v2 import AgentListv2
 import os
 from django.urls import path, include
 from rest_framework.urlpatterns import format_suffix_patterns
@@ -202,7 +212,7 @@ urlpatterns = [
     path('agents/user', UserAgentList.as_view()),
     path('agent/install', AgentInstall.as_view()),
     path('agent/uninstall', AgentUninstall.as_view()),
-    #path('agent/upgrade/online', AgentUpgradeOnline.as_view()),
+    # path('agent/upgrade/online', AgentUpgradeOnline.as_view()),
     #    path('agent/upgrade/offline', AgentUpgradeOffline.as_view()),
     path('agent/status/update', AgentStatusUpdate.as_view()),
     path('agent/start', AgentStart.as_view()),
@@ -372,11 +382,6 @@ if os.getenv('githubcount', None) in ('true', ) or os.getenv('environment', None
     urlpatterns.extend([
         path('github_contributors', GithubContributorsView.as_view()),
     ])
-from dongtai_web.views.agents_v2 import AgentListv2
-from dongtai_web.aggr_vul.aggr_vul_list import GetAggregationVulList
-from dongtai_web.aggr_vul.aggr_vul_summary import GetScaSummary
-from dongtai_web.aggr_vul.app_vul_list import GetAppVulsList
-from dongtai_web.aggr_vul.app_vul_summary import GetAppVulsSummary
 
 urlpatterns = [path('api/v1/', include(urlpatterns))]
 urlpatterns.extend([
@@ -392,11 +397,6 @@ urlpatterns.extend([
     path('api/v2/app_vul_list_content', GetAppVulsList.as_view()),
     path('api/v2/app_vul_summary', GetAppVulsSummary.as_view()),
 ])
-from dongtai_web.scaupload.urls import urlpatterns as scaupload_urls
-from dongtai_web.apitimelog.urls import urlpatterns as apitimelog_urls
-from dongtai_web.dongtai_sca.urls import urlpatterns as sca_urls
-from dongtai_web.versioncontrol.urls import urlpatterns as versioncontrol_urls
-from dongtai_web.systemmonitor.urls import urlpatterns as systemmonitor_urls
 
 urlpatterns.extend(scaupload_urls)
 urlpatterns.extend(apitimelog_urls)

@@ -36,6 +36,7 @@ from dongtai_common.models.strategy import IastStrategyModel
 
 logger = logging.getLogger('dongtai-webapi')
 
+
 class ApiRouteSearchRequestBodySerializer(serializers.Serializer):
     page_size = serializers.IntegerField(
         help_text=_("number per page"),
@@ -51,14 +52,14 @@ class ApiRouteSearchRequestBodySerializer(serializers.Serializer):
     exclude_ids = serializers.CharField(help_text=_(
         "Exclude the api route entry with the following id, this field is used to obtain the data of the entire project in batches."
     ),
-                                        required=False)
+        required=False)
     is_cover = serializers.ChoiceField(
         (1, 0),
-        help_text=
-        _("Whether the api is covered by detection, that is, there is associated request data in the record."
-          ),
+        help_text=_("Whether the api is covered by detection, that is, there is associated request data in the record."
+                    ),
         required=False,
     )
+
 
 class ApiRouteHttpMethodSerialier(serializers.Serializer):
     httpmethod = serializers.CharField()
@@ -114,9 +115,8 @@ class ApiRouteSearchResponseSerializer(serializers.Serializer):
         help_text=_("The id of the agent reported the api route"))
     is_cover = serializers.ChoiceField(
         (1, 0),
-        help_text=
-        _("Whether the api is covered by detection, that is, there is associated request data in the record."
-          ),
+        help_text=_("Whether the api is covered by detection, that is, there is associated request data in the record."
+                    ),
         required=False,
     )
     responses = ApiRouteResponseSerialier(many=True)
@@ -134,9 +134,8 @@ class ApiRouteSearch(UserEndPoint):
         request=ApiRouteSearchRequestBodySerializer,
         tags=[_('API Route')],
         summary=_('API Route Search'),
-        description=
-        _("Get the API list corresponding to the project according to the following parameters. By default, there is no sorting. Please use the exclude_ids field for pagination."
-          ),
+        description=_("Get the API list corresponding to the project according to the following parameters. By default, there is no sorting. Please use the exclude_ids field for pagination."
+                      ),
         response_schema=_GetResponseSerializer,
     )
     def post(self, request):
@@ -269,6 +268,7 @@ def serialize(api_route):
     item['responses'] = _get_responses(api_route)
     item['method'] = _get_api_method(item['method'])
     return item
+
 
 def _get_vuls(uri, agents):
     vuls = IastVulnerabilityModel.objects.filter(

@@ -22,6 +22,8 @@ from rest_framework import serializers
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 logger = logging.getLogger('dongtai-webapi')
+
+
 class AgentDeleteQuerysSerializer(serializers.Serializer):
     ids = serializers.CharField(help_text=_(
         'The id corresponding to the agent, use"," for segmentation.'))
@@ -86,7 +88,7 @@ class AgentsDeleteEndPoint(UserEndPoint):
             deleted, _rows_count = IastErrorlog.objects.filter(agent=self.agent).delete()
             logger.warning(_('Error logs deleted successfully, Deletion Amount: {}').format(deleted))
         except Exception as e:
-            logger.warning(_('Failed to delete error logs, probe ID: {}, error message: {}').format(self.agent.id,e))
+            logger.warning(_('Failed to delete error logs, probe ID: {}, error message: {}').format(self.agent.id, e))
 
     def delete_heart_beat(self):
         try:

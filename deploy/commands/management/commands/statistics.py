@@ -11,7 +11,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         pass
-        #parser.add_argument('update', nargs='+', type=int)
+        # parser.add_argument('update', nargs='+', type=int)
 
     def handle(self, *args, **options):
         agent_count = IastAgent.objects.all().count()

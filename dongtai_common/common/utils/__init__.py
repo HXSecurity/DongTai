@@ -1,3 +1,8 @@
+from django.core.cache import cache
+import copy
+from functools import wraps
+
+
 class DongTaiAppConfigPatch():
     def ready(self):
         try:
@@ -6,7 +11,6 @@ class DongTaiAppConfigPatch():
         except ImportError as e:
             print(e)
             pass
-
 
 
 class CSPMiddleware:
@@ -19,10 +23,6 @@ class CSPMiddleware:
             'Content-Security-Policy'] = "default-src * ; img-src *;media-src *;script-src 'self' cdn.jsdelivr.net 'unsafe-inline'"
         return response
 
-from django.core.cache import cache
-from functools import wraps
-
-import copy
 
 def make_hash(obj):
     """Make a hash from an arbitrary nested dictionary, list, tuple or
@@ -83,7 +83,6 @@ def cached(function,
     get_cache_or_call.__origin__name__ = 'cached'
     get_cache_or_call.__random_range__ = random_range
     return get_cache_or_call
-
 
 
 def cached_decorator(random_range, use_celery_update=False):

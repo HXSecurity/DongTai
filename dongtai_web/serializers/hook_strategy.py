@@ -51,15 +51,13 @@ class HookRuleSerializer(serializers.ModelSerializer):
         max_length=255,
     )
     inherit = serializers.CharField(
-        help_text=
-        _('Inheritance type, false-only detect current class, true-inspect subclasses, all-check current class and subclasses'
-          ),
+        help_text=_('Inheritance type, false-only detect current class, true-inspect subclasses, all-check current class and subclasses'
+                    ),
         max_length=255,
     )
     track = serializers.CharField(
-        help_text=
-        _("Indicates whether taint tracking is required, true-required, false-not required."
-          ),
+        help_text=_("Indicates whether taint tracking is required, true-required, false-not required."
+                    ),
         max_length=5,
     )
     update_time = serializers.IntegerField(
@@ -67,12 +65,12 @@ class HookRuleSerializer(serializers.ModelSerializer):
     enable = serializers.IntegerField(help_text=_(
         "The enabled state of the hook strategy: 0-disabled, 1-enabled, -1-deleted"
     ),
-                                      default=1)
+        default=1)
 
     class Meta:
         model = HookStrategy
         fields = ['id', 'rule_type_id', 'rule_type', 'value', 'source', 'target', 'inherit', 'track', 'update_time',
-                  'enable', 'user','strategy']
+                  'enable', 'user', 'strategy']
 
     def get_rule_type(self, obj):
         if obj.type == 4:

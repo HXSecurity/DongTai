@@ -11,6 +11,7 @@ from django.db import models
 from dongtai_common.utils.settings import get_managed
 from time import time
 
+
 class IastMessageType(models.Model):
     name = models.CharField(max_length=100, blank=True, null=False, default='')
 

@@ -121,7 +121,6 @@ class DongTaiParameter:
         ],
     )
 
-
     SERVER_ADDR = OpenApiParameter(
         name='serverAddr',
         type=str,
@@ -181,8 +180,7 @@ class DongTaiParameter:
     PID = OpenApiParameter(
         name='pid',
         type=str,
-        description=
-        'The development language of the project that needs to install the Agent',
+        description='The development language of the project that needs to install the Agent',
         required=True,
         examples=[
             OpenApiExample(
@@ -196,8 +194,7 @@ class DongTaiParameter:
     AUTO_CREATE_PROJECT = OpenApiParameter(
         name='autoCreateProject',
         type=int,
-        description=
-        'auto create project if project not found when this varibale is 1',
+        description='auto create project if project not found when this varibale is 1',
         required=True,
         examples=[
             OpenApiExample(

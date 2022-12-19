@@ -29,6 +29,7 @@ from dongtai_common.models.agent import IastAgent
 
 logger = logging.getLogger('dongtai.openapi')
 
+
 class HardEncodeVulSerializer(serializers.Serializer):
     class_ = serializers.CharField(default=None,
                                    required=False,
@@ -41,7 +42,6 @@ class HardEncodeVulSerializer(serializers.Serializer):
     is_jdk = serializers.BooleanField(default=None, required=False)
 
     file_ = serializers.CharField(default=None, required=False)
-
 
 
 @ReportHandler.register(const.REPORT_VULN_HARDCODE)

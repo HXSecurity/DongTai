@@ -59,5 +59,5 @@ class EngineMethodPoolSca(AnonymousAndUserEndPoint):
             data=ScaSerializer(queryset.select_related('level', 'agent'),
                                context={
                                    'license_dict': license_dict
-                               },
-                               many=True).data)
+            },
+                many=True).data)

@@ -23,9 +23,8 @@ from rest_framework import serializers
 class _EngineHookRulesQuerySerializer(serializers.Serializer):
     type = serializers.ChoiceField(
         HOOK_TYPE_CHOICE,
-        help_text=
-        _("type of hook rule \n 1 represents the propagation method, 2 represents the source method, 3 represents the filter method, and 4 represents the taint method"
-          ))
+        help_text=_("type of hook rule \n 1 represents the propagation method, 2 represents the source method, 3 represents the filter method, and 4 represents the taint method"
+                    ))
     pageSize = serializers.IntegerField(default=20,
                                         help_text=_('number per page'))
     page = serializers.IntegerField(default=1, help_text=_('page index'))

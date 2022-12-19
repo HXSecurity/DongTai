@@ -145,7 +145,7 @@ class VulSummaryTypeSerializer(serializers.Serializer):
     type = serializers.CharField(help_text=_("The name of vulnerablity type"))
     count = serializers.IntegerField(help_text=_(
         "The number of vulnerabilities corresponding to the vulnerablity type")
-                                     )
+    )
 
 
 class VulSummaryProjectSerializer(serializers.Serializer):

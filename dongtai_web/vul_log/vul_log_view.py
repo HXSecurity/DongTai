@@ -16,6 +16,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import viewsets
 from dongtai_web.common import VulType
 
+
 class VulLogViewSet(UserEndPoint, viewsets.ViewSet):
     name = "api-v1-vul-log"
     description = _("vul-log")

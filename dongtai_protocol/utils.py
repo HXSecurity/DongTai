@@ -58,7 +58,7 @@ class OssDownloader(object):
     @staticmethod
     def download_file(object_name, local_file):
         return OssDownloader.download_file_to_path(  # access_key=settings.ACCESS_KEY,
-            #access_key_secret=settings.ACCESS_KEY_SECRET,
+            # access_key_secret=settings.ACCESS_KEY_SECRET,
             bucket_url=OssDownloader.BUCKET_URL,
             bucket_name=OssDownloader.BUCKET_NAME,
             object_name=object_name,

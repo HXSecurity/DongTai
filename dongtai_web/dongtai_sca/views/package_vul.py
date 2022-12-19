@@ -14,7 +14,7 @@ from dongtai_web.dongtai_sca.common.sca_vul import GetScaVulData
 from dongtai_common.models.asset_vul import IastVulAssetRelation
 from dongtai_common.models.asset import Asset
 from collections import defaultdict
-import logging 
+import logging
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -114,24 +114,24 @@ class AssetPackageVulList(UserEndPoint):
 
     def get(self, request, aggr_id):
         auth_users = self.get_auth_users(request.user)
-        #asset_queryset = self.get_auth_assets(auth_users)
+        # asset_queryset = self.get_auth_assets(auth_users)
         asset = Asset.objects.filter(pk=aggr_id,
                                      user__in=auth_users).first()
         if not asset:
             return R.failure(msg=_('Components do not exist or no permission to access'))
-        #asset_aggr = AssetAggr.objects.filter(
+        # asset_aggr = AssetAggr.objects.filter(
         #    signature_value=asset.signature_value).first()
-        #if not asset_aggr:
+        # if not asset_aggr:
         #    return R.failure(msg=_('Components do not exist or no permission to access'))
 
-        #asset_queryset_exist = asset_queryset.filter(signature_value=asset.signature_value,
+        # asset_queryset_exist = asset_queryset.filter(signature_value=asset.signature_value,
         #                                             version=asset.version, dependency_level__gt=0).exists()
-        #if not asset_queryset_exist:
+        # if not asset_queryset_exist:
         #    return R.failure(msg=_('Components do not exist or no permission to access'))
 
         vul_list = []
-        #auth_asset_vuls = self.get_auth_asset_vuls(asset_queryset)
-        #asset_vuls = IastAssetVul.objects.filter(aql=asset_aggr.package_name,
+        # auth_asset_vuls = self.get_auth_asset_vuls(asset_queryset)
+        # asset_vuls = IastAssetVul.objects.filter(aql=asset_aggr.package_name,
         #                                         package_hash=asset_aggr.signature_value,
         #                                         package_version=asset_aggr.version).all()
         auth_asset_vuls = IastAssetVul.objects.filter(
@@ -153,7 +153,7 @@ class AssetPackageVulList(UserEndPoint):
                         'iastvulassetrelation__vul_asset_metadata__vul_dependency_path'][
                             0]
         for a_vul in auth_asset_vuls:
-            #vul_type_relation = IastAssetVulTypeRelation.objects.filter(
+            # vul_type_relation = IastAssetVulTypeRelation.objects.filter(
             #    asset_vul_id=a_vul.id)
             vul_type_relation = a_vul.iastassetvultyperelation_set.all()
             vul_type_str = ""

@@ -8,4 +8,3 @@ import schemathesis
 def add_case(context, case, response):
     time.sleep(0.1)
     return None
-

@@ -11,10 +11,11 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 from rest_framework import serializers
+
+
 class _StrategyResponseDataStrategySerializer(serializers.Serializer):
     id = serializers.CharField(help_text=_('The id of agent'))
     name = serializers.CharField(help_text=_('The name of the strategy'))
-
 
 
 _ResponseSerializer = get_response_serializer(

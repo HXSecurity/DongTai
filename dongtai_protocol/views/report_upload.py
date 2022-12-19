@@ -17,6 +17,7 @@ from django.http import JsonResponse
 
 logger = logging.getLogger('dongtai.openapi')
 
+
 class ReportUploadEndPoint(OpenApiEndPoint):
     name = "api-v1-report-upload"
     description = "agent上传报告"

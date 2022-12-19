@@ -57,9 +57,9 @@ class AgentCoreStatusUpdate(UserEndPoint):
 
         if agent_ids:
             except_running_status = STATUS_MAPPING[core_status]
-            #Here could be simply to such as "control_status in statusData.keys()"
-            statusData = AGENT_STATUS.get(core_status,{})
-            control_status = statusData.get("value",None)
+            # Here could be simply to such as "control_status in statusData.keys()"
+            statusData = AGENT_STATUS.get(core_status, {})
+            control_status = statusData.get("value", None)
             if control_status is None:
                 return R.failure(msg=_('Incomplete parameter, please check again'))
             user = request.user

@@ -4,6 +4,9 @@
 # datetime:2021/1/26 下午4:45
 # software: PyCharm
 # project: lingzhi-engine
+from typing import Optional, Any, Union
+from dongtai_engine.filters.main import vul_filter
+from dongtai_engine.signals.handlers.vul_handler import handler_vul
 import hashlib
 import json
 import time
@@ -106,12 +109,6 @@ def load_sink_strategy(user=None, language=None) -> List[Dict]:
             'value': sub_method_signature
         })
     return strategies
-
-
-from dongtai_engine.signals.handlers.vul_handler import handler_vul
-from dongtai_engine.filters.main import vul_filter
-from typing import Optional, Any, Union
-from dongtai_common.models.strategy import IastStrategyModel
 
 
 def search_and_save_vul(engine: Optional[VulEngine],

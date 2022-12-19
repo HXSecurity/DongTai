@@ -6,6 +6,7 @@ from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_common.utils.settings import get_managed
 from time import time
 
+
 class IastStrategyModel(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
     vul_type = models.CharField(max_length=255, blank=True, null=True)

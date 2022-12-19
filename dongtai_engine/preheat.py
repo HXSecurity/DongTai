@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from django.db.utils import OperationalError
 from django.db import connection as conn
 
-#def function_preheat(func__module__: str, func__name__: str, *args, **kwargs):
+# def function_preheat(func__module__: str, func__name__: str, *args, **kwargs):
 #    module = import_module(func__module__)
 #    func = getattr(module, func__name__)
 #    try:
@@ -42,6 +42,7 @@ def function_preheat():
                     logger.error(e, exc_info=True)
                     continue
 
+
 class PreHeatException(Exception):
     pass
 
@@ -68,7 +69,6 @@ class PreHeatRegister:
             return
         cls.functions.append(function)
         logger.debug(f"preheat functions {PreHeatRegister.functions}")
-
 
 
 @shared_task(queue='dongtai-function-flush-data')

@@ -13,9 +13,9 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 from dongtai_web.serializers.agent import AgentToggleArgsSerializer
 
 
-
 _ResponseSerializer = get_response_serializer(
     status_msg_keypair=(((201, _('Suspending ...')), ''), ))
+
 
 class AgentStop(UserEndPoint):
     name = "api-v1-agent-stop"
@@ -36,7 +36,7 @@ class AgentStop(UserEndPoint):
             try:
                 agent_ids = [int(i) for i in agent_ids.split(',')]
             except BaseException:
-                return R.failure(_("Parameter error")) 
+                return R.failure(_("Parameter error"))
         if agent_id:
             agent = IastAgent.objects.filter(user=request.user,
                                              id=agent_id).first()

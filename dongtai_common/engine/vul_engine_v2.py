@@ -55,8 +55,8 @@ class VulEngineV2(object):
         self._method_pool = sorted(filter(
             lambda x: not ('type' in x.keys() and 'stack' in x.keys()),
             method_pool),
-                                   key=lambda e: e.__getitem__('invokeId'),
-                                   reverse=True)
+            key=lambda e: e.__getitem__('invokeId'),
+            reverse=True)
 
     @property
     def vul_method_signature(self):

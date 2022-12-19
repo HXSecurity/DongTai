@@ -7,10 +7,8 @@
 ######################################################################
 
 
-
 class ScaLibError(Exception):
     pass
-
 
 
 def get_packge_from_sca_lib(**kwargs):

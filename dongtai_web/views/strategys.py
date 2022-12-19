@@ -24,6 +24,7 @@ from dongtai_common.permissions import TalentAdminPermission
 from rest_framework.decorators import permission_classes
 from dongtai_common.models.vul_level import IastVulLevel
 
+
 class _StrategyResponseDataStrategySerializer(serializers.Serializer):
     id = serializers.CharField(help_text=_('The id of agent'))
     vul_name = serializers.CharField(help_text=_('The name of the vulnerability type targeted by the strategy'))
@@ -49,9 +50,8 @@ class StrategyCreateSerializer(serializers.Serializer):
         help_text=_('The strategy corresponds to the level of vulnerability'))
     vul_fix = serializers.CharField(
         allow_blank=True,
-        help_text=
-        _("Suggestions for repairing vulnerabilities corresponding to the strategy"
-          ))
+        help_text=_("Suggestions for repairing vulnerabilities corresponding to the strategy"
+                    ))
 
     def validate_level_id(self, value):
         if not IastVulLevel.objects.filter(pk=value).exists():
@@ -75,6 +75,7 @@ class _StrategyArgsSerializer(serializers.Serializer):
 
 STATUS_DELETE = 'delete'
 
+
 class StrategyEndpoint(UserEndPoint):
 
     @extend_schema_with_envcheck(
@@ -91,8 +92,9 @@ class StrategyEndpoint(UserEndPoint):
         queryset = IastStrategyModel.objects.filter(q).first()
         return R.success(data=StrategySerializer(queryset).data,)
 
+
 class StrategysEndpoint(UserEndPoint):
-    permission_classes_by_action = {'POST':(TalentAdminPermission,)}
+    permission_classes_by_action = {'POST': (TalentAdminPermission,)}
 
     def get_permissions(self):
         try:
@@ -125,7 +127,7 @@ class StrategysEndpoint(UserEndPoint):
         if page and page_size:
             page_summary, page_data = self.get_paginator(queryset, page, page_size)
             return R.success(data=StrategySerializer(page_data, many=True).data,
-                         page=page_summary)
+                             page=page_summary)
         else:
             return R.success(data=StrategySerializer(queryset, many=True).data,)
 
@@ -173,6 +175,7 @@ class StrategysEndpoint(UserEndPoint):
             return R.success(data=list(models.values()))
         else:
             return R.success(msg=_('No strategy'))
+
     @extend_schema_with_envcheck(
         request=StrategyCreateSerializer,
         tags=[_('Strategy')],

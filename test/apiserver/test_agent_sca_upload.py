@@ -7,13 +7,10 @@
 ######################################################################
 
 
-
 from test.apiserver.test_agent_base import AgentTestCase
 
 
-
 class ScaUploadTestCase(AgentTestCase):
-
 
     def test_agent_sca_upload(self):
         data = {
@@ -29,6 +26,7 @@ class ScaUploadTestCase(AgentTestCase):
         }
         res = self.agent_report(data)
         assert res.status_code == 200
+
     def test_agent_sca_bulk_upload(self):
         data = {
             "detail": {

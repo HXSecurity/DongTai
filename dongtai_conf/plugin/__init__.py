@@ -62,7 +62,7 @@ class DongTaiPlugin:
         else:
             setattr(target_class, self.target_func_name, patched_function)
 
-    def monkey_patch(self, appname:str) -> None:
+    def monkey_patch(self, appname: str) -> None:
         if self.appname == appname:
             try:
                 self._monkey_patch()

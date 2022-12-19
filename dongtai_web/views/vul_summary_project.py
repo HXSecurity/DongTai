@@ -9,7 +9,7 @@ from dongtai_common.endpoint import UserEndPoint
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.models.strategy import IastStrategyModel
 
-from dongtai_web.base.agent import get_project_vul_count,get_hook_type_name,get_agent_languages
+from dongtai_web.base.agent import get_project_vul_count, get_hook_type_name, get_agent_languages
 from dongtai_web.base.project_version import get_project_version, get_project_version_by_id
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
@@ -19,7 +19,6 @@ from django.utils.text import format_lazy
 from dongtai_common.models.hook_type import HookType
 from django.db.models import Q
 _ResponseSerializer = get_response_serializer(VulSummaryResponseDataSerializer())
-
 
 
 class VulSummaryProject(UserEndPoint):
@@ -114,7 +113,7 @@ class VulSummaryProject(UserEndPoint):
                         "project_name": "demo1",
                         "count": 23,
                         "id": 58
-                    },{
+                    }, {
                         "project_name": "demo5",
                         "count": 1,
                         "id": 71
@@ -125,9 +124,8 @@ class VulSummaryProject(UserEndPoint):
         }],
         tags=[_('Vulnerability')],
         summary=_('Vulnerability Summary'),
-        description=
-        _('Use the following conditions to view the statistics of the number of vulnerabilities in the project.'
-          ),
+        description=_('Use the following conditions to view the statistics of the number of vulnerabilities in the project.'
+                      ),
         response_schema=_ResponseSerializer
     )
     def get(self, request):
@@ -205,5 +203,3 @@ class VulSummaryProject(UserEndPoint):
             project_id=project_id)
 
         return R.success(data=end['data'], level_data=end['level_data'])
-
-

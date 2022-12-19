@@ -13,6 +13,7 @@ from django.utils.text import format_lazy
 
 from dongtai_web.utils import get_model_order_options
 
+
 class ScaSidebarList(UserEndPoint):
     @extend_schema_with_envcheck(
         [
@@ -44,9 +45,8 @@ class ScaSidebarList(UserEndPoint):
         ],
         tags=[_('Component')],
         summary=_("Component List"),
-        description=
-        _("Use the specified project information to obtain the corresponding component."
-          ),
+        description=_("Use the specified project information to obtain the corresponding component."
+                      ),
     )
     def get(self, request):
         """

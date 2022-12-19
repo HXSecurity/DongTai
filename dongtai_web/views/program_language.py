@@ -7,7 +7,6 @@
 ######################################################################
 
 
-
 from dongtai_common.endpoint import R, AnonymousAndUserEndPoint
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers

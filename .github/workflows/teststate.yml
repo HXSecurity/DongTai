@@ -141,10 +141,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install wheel
           pip install -r requirements.txt
-          
+          pip install pycodestyle
       - name: Django Unit Testing
         run: |
-          pep8  --ignore=E501,E402,E231,E302,E301,E303,E251,E265,W291,E126,W391,W503,E128,E122,E241,E225,E701,W191 --statistics .
+          pycodestyle  --ignore=E501,E402,E231,E302,E303,E251,E265,W503,E128,E122,E225,E305,W504 --statistics .
 
   Run-Unit-TEST:
     runs-on: ubuntu-latest

@@ -13,6 +13,7 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
 
+
 class _ProjectsDelBodyArgsSerializer(serializers.Serializer):
     id = serializers.IntegerField(help_text=_("The id of the project"))
 
@@ -48,5 +49,5 @@ class ProjectDel(UserEndPoint):
 
             return R.success(msg=_('Application has been deleted successfully'))
         except Exception as e:
-            logger.error(e,exc_info=e)
+            logger.error(e, exc_info=e)
             return R.failure(msg=_('Failed to delete the project.'))

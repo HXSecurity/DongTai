@@ -18,6 +18,7 @@ class AgentUpgradeOffline(TalentAdminEndPoint):
             AgentUpgradeOffline.handle_uploaded_file(filename, file)
             return R.success(msg=_('Upload successful'))
         return R.failure(msg=_('{} files not supported').format(filename))
+
     @staticmethod
     def handle_uploaded_file(filename, file):
         with open(f'iast/upload/iast-package/{filename}', 'wb+') as destination:

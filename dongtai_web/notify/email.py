@@ -54,7 +54,7 @@ Example 1:    mail_content = "<span>This is a auto-send mail.</span>"
  Example 2:    mail_content = '
       Hi,
         This is a auto - send mail.'
-    mail = Email("smtp.qq.com", "execute@qq.com", password, "send_user@qq.com", ["recv1@qq.com", "recv2@qq.com"], 
+    mail = Email("smtp.qq.com", "execute@qq.com", password, "send_user@qq.com", ["recv1@qq.com", "recv2@qq.com"],
     "Test Moudle", mail_content)
     mail.sendmail()
 '''

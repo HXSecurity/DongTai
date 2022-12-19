@@ -52,9 +52,8 @@ class OpenApiEndpoint(UserEndPoint):
         request=OpenApiEndpointSerializer,
         tags=[_('Profile')],
         summary=_('Profile DongTai-OpenApi Modify'),
-        description=
-        _("To set the url address of DongTai-OpenApi, administrator rights are required"
-          ),
+        description=_("To set the url address of DongTai-OpenApi, administrator rights are required"
+                      ),
         response_schema=_PostResponseSerializer,
     )
     def post(self, request):

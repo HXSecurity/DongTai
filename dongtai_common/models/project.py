@@ -32,7 +32,6 @@ class IastProject(models.Model):
                              blank=True,
                              null=True)
 
-
     vul_validation = models.IntegerField(default=0,
                                          blank=True,
                                          null=False,

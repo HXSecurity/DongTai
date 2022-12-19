@@ -17,6 +17,8 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 from dongtai_common.endpoint import TalentAdminEndPoint
 
 from rest_framework import serializers
+
+
 class _StrategyResponseDataStrategySerializer(serializers.Serializer):
     id = serializers.CharField(help_text=_('The id of strategy'))
 
@@ -25,6 +27,8 @@ _ResponseSerializer = get_response_serializer(
     data_serializer=_StrategyResponseDataStrategySerializer(many=True), )
 
 DELETE = 'delete'
+
+
 class StrategyDelete(TalentAdminEndPoint):
 
     @extend_schema_with_envcheck(
