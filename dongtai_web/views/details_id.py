@@ -7,7 +7,6 @@
 ######################################################################
 
 
-
 import logging
 
 from dongtai_common.endpoint import UserEndPoint, R
@@ -36,6 +35,7 @@ class IdsSerializer(serializers.Serializer):
 
 class DetailListWithid(UserEndPoint):
     serializers = serializers.Serializer
+
     def parse_ids(self, request):
         ser = IdsSerializer(data=request.data)
         try:
@@ -65,13 +65,13 @@ class AgentListWithid(DetailListWithid):
                                           user__in=self.get_auth_users(
                                               request.user)).all()
         return agents
+
     @extend_schema_with_envcheck(
         request=IdsSerializer,
         tags=[_('Agent')],
         summary=_('Agent List with id'),
-        description=
-        _("Get the item corresponding to the user, support fuzzy search based on name."
-          ),
+        description=_("Get the item corresponding to the user, support fuzzy search based on name."
+                      ),
     )
     def post(self, request):
         return super().get(request)
@@ -90,9 +90,8 @@ class ProjectListWithid(DetailListWithid):
         request=IdsSerializer,
         tags=[_('Project')],
         summary=_('Project List with id'),
-        description=
-        _("Get the item corresponding to the user, support fuzzy search based on name."
-          ),
+        description=_("Get the item corresponding to the user, support fuzzy search based on name."
+                      ),
     )
     def post(self, request):
         return super().get(request)
@@ -111,9 +110,8 @@ class ScaListWithid(DetailListWithid):
         request=IdsSerializer,
         tags=[_('Component')],
         summary=_('Component List with id'),
-        description=
-        _("Get the item corresponding to the user, support fuzzy search based on name."
-          ),
+        description=_("Get the item corresponding to the user, support fuzzy search based on name."
+                      ),
     )
     def post(self, request):
         return super().get(request)
@@ -133,9 +131,8 @@ class VulsListWithid(DetailListWithid):
         request=IdsSerializer,
         tags=[_('Vulnerability')],
         summary=_('Vulnerability List with id'),
-        description=
-        _("Get the item corresponding to the user, support fuzzy search based on name."
-          ),
+        description=_("Get the item corresponding to the user, support fuzzy search based on name."
+                      ),
     )
     def post(self, request):
         return super().get(request)

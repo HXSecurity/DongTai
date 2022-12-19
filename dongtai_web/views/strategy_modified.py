@@ -9,6 +9,7 @@ from dongtai_common.endpoint import TalentAdminEndPoint
 
 _ResponseSerializer = get_response_serializer()
 
+
 class StrategyCreateSerializer(serializers.Serializer):
     vul_name = serializers.CharField(help_text=_('The name of the vulnerability type targeted by the strategy'))
     state = serializers.CharField(help_text=_('This field indicates whether the vulnerability is enabled, 1 or 0'))
@@ -20,6 +21,7 @@ class StrategyCreateSerializer(serializers.Serializer):
     vul_fix = serializers.CharField(help_text=_(
         "Suggestions for repairing vulnerabilities corresponding to the strategy"
     ))
+
 
 class StrategyModified(TalentAdminEndPoint):
 
@@ -50,13 +52,13 @@ class StrategyModified(TalentAdminEndPoint):
         HookType.objects.filter(vul_strategy=strategy,
                                 type=3).update(name=data['vul_name'])
         return R.success(data={'id': id_})
-        #hook_type = HookType.objects.filter(pk=id_).first()
-        #_update(hook_type, data)
-        #strategy = IastStrategyModel.objects.filter(
+        # hook_type = HookType.objects.filter(pk=id_).first()
+        # _update(hook_type, data)
+        # strategy = IastStrategyModel.objects.filter(
         #    hook_type=hook_type.id).first()
-        #if strategy:
+        # if strategy:
         #    _update(strategy, data)
-        #return R.success(data={"id": id_})
+        # return R.success(data={"id": id_})
 
 
 def _update(model, dic):

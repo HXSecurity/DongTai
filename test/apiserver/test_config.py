@@ -17,7 +17,6 @@ class VulDetailTestCase(APITestCase):
         res = get_agent_config_by_scan(1, 2)
         print(res)
 
-
     def test_agent_config_request(self):
         self.user = User.objects.filter(pk=1).first()
         self.client.force_authenticate(user=self.user)

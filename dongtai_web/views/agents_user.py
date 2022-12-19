@@ -9,6 +9,7 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
+
 class _UserAgentResponseDataSerializer(serializers.Serializer):
     token = serializers.CharField(help_text=_('The name of agent'))
     id = serializers.CharField(help_text=_('The id of agent'))

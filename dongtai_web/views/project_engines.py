@@ -44,7 +44,7 @@ class ProjectEngines(UserEndPoint):
         queryset = IastAgent.objects.filter(
             user__in=auth_users,
             online=const.RUNNING,
-            bind_project_id__in=[0, pid]).values("id", "token","alias")
+            bind_project_id__in=[0, pid]).values("id", "token", "alias")
         data = []
         if queryset:
             for item in queryset:

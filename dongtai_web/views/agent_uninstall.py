@@ -19,6 +19,7 @@ _ResponseSerializer = get_response_serializer(status_msg_keypair=(
      ''),
 ))
 
+
 class AgentUninstall(UserEndPoint):
     name = "api-v1-agent-uninstall"
     description = _("Uninstall Agent")

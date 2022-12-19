@@ -9,7 +9,7 @@ class ListPageMaker():
         page_size = page_size if page_size < 50 else 50
         return page, page_size, request.user
 
-    def make_key(self, request,keyName="logs"):
+    def make_key(self, request, keyName="logs"):
         self.cache_key = f"{request.user.id}_total_{keyName}_id"
         self.cache_key_max_id = f"{request.user.id}_max_{keyName}_id"
 

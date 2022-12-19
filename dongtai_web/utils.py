@@ -42,8 +42,10 @@ def get_model_order_options(*args, **kwargs):
     order_fields = get_model_field(*args, **kwargs)
     return order_fields + list(map(lambda x: ''.join(['-', x]), order_fields))
 
-#temporary fit in to cython 
-#def assemble_query(condictions: List,
+# temporary fit in to cython
+# def assemble_query(condictions: List,
+
+
 def assemble_query(condictions: list,
                    lookuptype='',
                    base_query=Q(),
@@ -75,7 +77,7 @@ def assemble_query_2(condictions: dict,
 
 
 def extend_schema_with_envcheck(querys: list = [],
-                                request_bodys: Optional[Union[List,Dict]] = [],
+                                request_bodys: Optional[Union[List, Dict]] = [],
                                 response_bodys: list = [],
                                 response_schema=None,
                                 **kwargs):

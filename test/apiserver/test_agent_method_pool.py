@@ -7,11 +7,12 @@
 ######################################################################
 
 
-from test.apiserver.test_agent_base import AgentTestCase,gzipdata
+from test.apiserver.test_agent_base import AgentTestCase, gzipdata
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.agent_method_pool import MethodPool
 import gzip
 import base64
+
 
 class AgentMethodPoolTestCase(AgentTestCase):
 
@@ -349,7 +350,6 @@ class AgentMethodPoolTestCase(AgentTestCase):
         assert response.status_code == 200
         res = MethodPool.objects.filter(agent_id=self.agent_id).all()
         assert len(res) == 1
-
 
     def test_agent_method_pool_from_go_agent(self):
         data = {
@@ -699,6 +699,7 @@ class AgentMethodPoolTestCase(AgentTestCase):
         assert MethodPool.objects.filter(
             url="http://localhost:9999/sqli123132123313132321123231",
             agent_id=self.agent_id).exists()
+
     def test_agent_method_pool_gzip_test(self):
         data = {
             "type": 36,
@@ -1055,12 +1056,9 @@ class AgentMethodPoolTestCase(AgentTestCase):
         assert MethodPool.objects.filter(
             url="http://localhost:9999/sqli123132123313132321123231test",
             agent_id=self.agent_id).exists()
-        method_pool = MethodPool.objects.filter(url="http://localhost:9999/sqli123132123313132321123231test",agent_id=self.agent_id).first()
+        method_pool = MethodPool.objects.filter(url="http://localhost:9999/sqli123132123313132321123231test", agent_id=self.agent_id).first()
         assert not method_pool.res_body == gzip_test_data
         assert method_pool.res_body == testdata
-
-
-
 
     def test_agent_method_pool(self):
         data = {
@@ -1088,4 +1086,3 @@ class AgentMethodPoolTestCase(AgentTestCase):
         }
         data['detail']['agentId'] = self.agent_id
         res = self.agent_report(data, agentId=self.agent_id)
-

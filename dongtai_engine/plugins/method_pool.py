@@ -1,6 +1,7 @@
 from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 
+
 def method_pool_after_scan(method_pool: MethodPool):
     pass
 

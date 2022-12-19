@@ -6,6 +6,7 @@ from rest_framework import serializers
 from dongtai_common.models.project import IastProject
 from django.db import transaction
 
+
 class VersionModifySerializer(serializers.Serializer):
     version_id = serializers.CharField(
         help_text=_("The version id of the project"))
@@ -16,6 +17,7 @@ class VersionModifySerializer(serializers.Serializer):
     project_id = serializers.IntegerField(help_text=_("The id of the project"))
     current_version = serializers.IntegerField(help_text=_(
         "Whether it is the current version, 1 means yes, 0 means no."))
+
 
 @transaction.atomic
 def version_modify(user, auth_users, versionData=None):
@@ -60,13 +62,13 @@ def version_modify(user, auth_users, versionData=None):
             version.description = description
             version.save()
     else:
-        version,created = IastProjectVersion.objects.get_or_create(
+        version, created = IastProjectVersion.objects.get_or_create(
             project_id=project.id,
             user=project.user,
             current_version=current_version,
             version_name=version_name,
-            description = description)
-    version.status=1
+            description=description)
+    version.status = 1
     version.save()
     return {
         "status": "201",
@@ -77,7 +79,6 @@ def version_modify(user, auth_users, versionData=None):
             "description": description
         }
     }
-
 
 
 def get_project_version(project_id, auth_users):
@@ -114,7 +115,6 @@ def get_project_version_by_id(version_id):
             "description": "",
         }
     return current_project_version
-
 
 
 class ProjectsVersionDataSerializer(serializers.Serializer):

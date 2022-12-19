@@ -28,10 +28,9 @@ class ProjectVersionAdd(UserEndPoint):
         request=VersionModifySerializer,
         tags=[_('Project')],
         summary=_('Projects Version Add'),
-        description=
-        _("""Add project version information according to the given conditions;
+        description=_("""Add project version information according to the given conditions;
             if the version id is specified, the corresponding version information is updated according to the given conditions."""
-          ),
+                      ),
         response_schema=_ResponseSerializer,
     )
     def post(self, request):
@@ -45,5 +44,5 @@ class ProjectVersionAdd(UserEndPoint):
                 return R.success(msg=_('Created success'), data=result.get("data", {}))
 
         except Exception as e:
-            logger.error(e,exc_info=True)
+            logger.error(e, exc_info=True)
             return R.failure(status=202, msg=_("Parameter error"))

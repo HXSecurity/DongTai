@@ -13,13 +13,14 @@ from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("dongtai-webapi")
 
+
 class UserPassword(UserEndPoint):
     name = "api-v1-user-password"
     description = _("Change Password")
 
     def post(self, request):
         user = request.user
-        try:        
+        try:
             if not request.data['old_password'] or not request.data['new_password']:
                 return R.failure(msg=_('Password should not be empty'))
             else:
@@ -35,4 +36,3 @@ class UserPassword(UserEndPoint):
         except Exception as e:
             logger.error(e)
             return R.failure(msg=_('Incorrect'))
-

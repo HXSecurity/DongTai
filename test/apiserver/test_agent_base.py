@@ -379,7 +379,7 @@ class AgentTestCase(APITestCase):
     def setUp(self):
         self.user = User.objects.filter(pk=1).first()
         self.client.force_authenticate(user=self.user)
-        data =self.register_agent(name='test')
+        data = self.register_agent(name='test')
         self.agent_id = data['id']
 
     def raw_register(self, **kwargs):
@@ -416,6 +416,7 @@ class AgentTestCase(APITestCase):
             content_type='application/json',
         )
         return response
+
     def agent_method_pool(self, **kwargs):
         method_pool_data = METHODPOOL_JSON
         method_pool_data['detail']['agentId'] = self.agent_id

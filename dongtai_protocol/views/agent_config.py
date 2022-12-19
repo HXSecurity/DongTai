@@ -1,3 +1,15 @@
+from django.db.models import F
+from dongtai_common.models.agent_config import (
+    IastCircuitTarget,
+    IastCircuitConfig,
+    IastCircuitMetric,
+    TargetType,
+    TargetOperator,
+    DealType,
+    MetricType,
+    MetricGroup,
+    MetricOperator,
+)
 from dongtai_protocol.decrypter import parse_data
 from dongtai_common.endpoint import OpenApiEndPoint, R
 from dongtai_common.models.agent import IastAgent
@@ -49,18 +61,6 @@ class AgentConfigView(OpenApiEndPoint):
         return R.success(data=data)
 
 
-from dongtai_common.models.agent_config import (
-    IastCircuitTarget,
-    IastCircuitConfig,
-    IastCircuitMetric,
-    TargetType,
-    TargetOperator,
-    DealType,
-    MetricType,
-    MetricGroup,
-    MetricOperator,
-)
-
 class AgentConfigv2View(OpenApiEndPoint):
 
     def post(self, request):
@@ -79,9 +79,6 @@ class AgentConfigv2View(OpenApiEndPoint):
             return R.success(msg=_(res.value), data={})
         agent_config = res.value
         return R.success(msg=_('Successfully'), data=agent_config)
-
-
-from django.db.models import F
 
 
 def get_agent_filter_details(agent_id):
@@ -124,10 +121,12 @@ def get_function(opt: TargetOperator):
     if opt == TargetOperator.NOT_CONTAIN:
         return lambda x, y: x not in y
 
+
 def get_filter_by_target(target):
     targetattr = TargetType(target.target_type).name
     opt_function = get_function(TargetType(target.opt))
-    return lambda x:opt_function(x[targetattr], target.value)
+    return lambda x: opt_function(x[targetattr], target.value)
+
 
 def get_agent_config(agent_id: int) -> Result:
     data = {
@@ -137,7 +136,7 @@ def get_agent_config(agent_id: int) -> Result:
     interval_list = []
     for mg in MetricGroup:
         res = get_agent_config_by_scan(agent_id, mg)
-        if isinstance(res,Err):
+        if isinstance(res, Err):
             continue
         config_id = res.value
         config = IastCircuitConfig.objects.filter(
@@ -152,13 +151,12 @@ def get_agent_config(agent_id: int) -> Result:
         data[mg.name.lower()
              + "IsUninstall"] = False
         interval_list.append(config.interval)
-    # if interval_list is [], there is mean no config found here. 
+    # if interval_list is [], there is mean no config found here.
     # because interval is required in create config.
     if not interval_list:
         return Err('No config found')
     data["performanceLimitRiskMaxMetricsCount"] = min(interval_list)
     return Ok(data)
-
 
 
 def convert_metric(metric):

@@ -33,10 +33,10 @@ def handle_batch_save(app_label, model_name):
     pipe = con.pipeline()
     pipe.multi()
     model_ids, status = pipe.lrange(list_key, 0,
-                                   DONGTAI_REDIS_ES_UPDATE_BATCH_SIZE).ltrim(
-                                       list_key,
-                                       DONGTAI_REDIS_ES_UPDATE_BATCH_SIZE,
-                                       -1).execute()
+                                    DONGTAI_REDIS_ES_UPDATE_BATCH_SIZE).ltrim(
+        list_key,
+        DONGTAI_REDIS_ES_UPDATE_BATCH_SIZE,
+        -1).execute()
     logger.info(f'handle batch save to es model_ids size: {len(model_ids)}')
     cache.decr(rate_limit_key, len(model_ids))
     for doc in registry._models[model_name]:
@@ -52,8 +52,8 @@ def handle_batch_save(app_label, model_name):
     else:
         cache.decr(batch_task_count_key)
 
-class DTCelerySignalProcessor(RealTimeSignalProcessor):
 
+class DTCelerySignalProcessor(RealTimeSignalProcessor):
 
     def handle_save(self, sender, instance, **kwargs):
         app_label = instance._meta.app_label
@@ -75,6 +75,7 @@ def task_routings(instance, app_label, model_name):
     else:
         logger.info(f'handle_save to es: {model_name} ')
         handle_save.delay(instance.pk, app_label, model_name)
+
 
 def add_task(pk, app_label, model_name):
     list_key = f"batch-save-list{app_label}-{model_name}-task"

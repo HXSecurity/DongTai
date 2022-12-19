@@ -47,7 +47,6 @@ class AgentDeploySave(UserEndPoint):
         end['step'] = step
         return R.success(step=step, data=end['data'], user_token=end['user_token'], desc=end['desc'])
 
-
     def post(self, request):
         user = request.user
         token, success = Token.objects.get_or_create(user=user)

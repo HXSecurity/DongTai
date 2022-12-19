@@ -24,7 +24,7 @@ class EngineHookRuleSummarySerializer(serializers.Serializer):
 class _EngineHookRuleSummaryQuerySerializer(serializers.Serializer):
     language_id = serializers.IntegerField(
         help_text=_('The id of programming language'),
-        required=False,allow_null=True)
+        required=False, allow_null=True)
 
 
 _ResponseSerializer = get_response_serializer(

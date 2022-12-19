@@ -6,7 +6,8 @@ import os
 from shutil import copytree
 from typing import Optional
 
-def _get_plugin(repo: str, extra:dict):
+
+def _get_plugin(repo: str, extra: dict):
     url_schema = 'https://github.com/{repo}/{resofurl}'
     default_url = 'https://github.com/HXSecurityBusiness/DongTai-webapi/archive/refs/heads/main.zip'
     default_url = 'https://github.com/Bidaya0/DongTai-openapi/archive/refs/tags/v1.0.3.zip'
@@ -26,13 +27,14 @@ def _get_plugin(repo: str, extra:dict):
     owner, repo_name = repo.split('/')
     z.extractall(f'/tmp/plugin/{repo_name}')
 
+
 def _install_plugin(repo: str):
-    owner,repo_name = repo.split('/')
+    owner, repo_name = repo.split('/')
     base_path = f"/tmp/plugin/{repo_name}/{os.listdir(f'/tmp/plugin/{repo_name}')[0]}"
     copyapp_path = f"{base_path}/logs"
-    copytree(copyapp_path,f'./{repo_name}')
+    copytree(copyapp_path, f'./{repo_name}')
     copyapp_path = f"{base_path}/logs"
-    copytree(copyapp_path,f'./plugin/{repo_name}/')
+    copytree(copyapp_path, f'./plugin/{repo_name}/')
 
 
 def get_plugin(repo: str,
@@ -47,7 +49,7 @@ def get_plugin(repo: str,
             zip(['branch', 'tag', 'commit', 'uri'],
                 [branch, tag, commit, uri]))
     }
-    _get_plugin(repo,extra)
+    _get_plugin(repo, extra)
     _install_plugin(repo)
 
 

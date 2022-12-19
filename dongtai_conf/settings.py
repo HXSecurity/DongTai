@@ -377,11 +377,11 @@ LOGGING = {
             'filename': '/tmp/worker.log',
             'formatter': 'verbose'
         },
-#        'jsonlog': {
-#            'class': 'logging.handlers.RotatingFileHandler',
-#            'filename': TMP_COMMON_PATH + '/server.log',
-#            'formatter': 'json'
-#        }
+        #        'jsonlog': {
+        #            'class': 'logging.handlers.RotatingFileHandler',
+        #            'filename': TMP_COMMON_PATH + '/server.log',
+        #            'formatter': 'json'
+        #        }
     },
     'loggers': {
         'django.db.backends': {
@@ -419,11 +419,11 @@ LOGGING = {
             'propagate': True,
             'level': LOGGING_LEVEL,
         },
-#        'jsonlogger': {  # it use to logging to local logstash file
-#            'handlers': ['jsonlog'],
-#            'propagate': True,
-#            'level': 'DEBUG',
-#        },
+        #        'jsonlogger': {  # it use to logging to local logstash file
+        #            'handlers': ['jsonlog'],
+        #            'propagate': True,
+        #            'level': 'DEBUG',
+        #        },
     }
 }
 REST_PROXY = {
@@ -691,7 +691,8 @@ else:
     METHOD_POOL_INDEX = ''
     ASSET_INDEX = ''
 
-AUTO_UPDATE_HOOK_STRATEGY = config.getboolean('other', 'auto_update_hook_strategy',fallback=False)
+AUTO_UPDATE_HOOK_STRATEGY = config.getboolean('other', 'auto_update_hook_strategy', fallback=False)
+
 
 def is_gevent_monkey_patched() -> bool:
     try:
@@ -710,10 +711,11 @@ def set_asyncio_policy():
     if state:
         asyncio.set_event_loop_policy(asyncio_gevent.EventLoopPolicy())
 
+
 AGENT_LOG_DIR = os.path.join(TMP_COMMON_PATH, 'batchagent')
 
 # check path exists
-for _dir in (TMP_COMMON_PATH,AGENT_LOG_DIR):
+for _dir in (TMP_COMMON_PATH, AGENT_LOG_DIR):
     if not os.path.exists(_dir):
         print(f'{_dir} is not exists, check the init.')
         exit(0)

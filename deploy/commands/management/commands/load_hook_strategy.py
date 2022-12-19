@@ -12,6 +12,7 @@ from django.forms.models import model_to_dict
 from collections import OrderedDict
 from dongtai_common.utils.validate import save_hook_stratefile_sha1sum
 
+
 class Command(BaseCommand):
     help = 'load hook_strategy'
     functions = []
@@ -29,7 +30,7 @@ class Command(BaseCommand):
                     vul_type=strategy['vul_type'],
                     system_type=1,
             ).exists():
-                #已存在策略类型，不会重建
+                # 已存在策略类型，不会重建
                 IastStrategyModel.objects.filter(
                     vul_type=strategy['vul_type'],
                     system_type=1,
@@ -58,10 +59,10 @@ class Command(BaseCommand):
                     iastsensitiveinforule__id__isnull=False,
                     system_type=0,
             ).exists():
-                #存在用户定义的冲突策略,不会修改
+                # 存在用户定义的冲突策略,不会修改
                 continue
-            #strategy['language_id'] = strategy['language']
-            #del strategy['language']
+            # strategy['language_id'] = strategy['language']
+            # del strategy['language']
             strategy['user_id'] = strategy['user']
             del strategy['user']
             strategy['level_id'] = strategy['level']
@@ -78,7 +79,7 @@ class Command(BaseCommand):
                                            type=hook_type['type'],
                                            language_id=v,
                                            system_type=1).exists():
-                    #已存在策略类型，不会重建,会将新的规则添加到这上边
+                    # 已存在策略类型，不会重建,会将新的规则添加到这上边
                     hooktype_obj = HookType.objects.filter(
                         value=hook_type['value'],
                         language_id=v,
@@ -91,9 +92,9 @@ class Command(BaseCommand):
                                            type=hook_type['type'],
                                            language_id=v,
                                            system_type=0).exists():
-                    #存在用户定义的冲突策略,不会修改
+                    # 存在用户定义的冲突策略,不会修改
                     continue
-                #del hook_type['created_by']
+                # del hook_type['created_by']
                 del hook_type['language']
                 hook_type['language_id'] = v
                 hooktype_obj = HookType(**hook_type)

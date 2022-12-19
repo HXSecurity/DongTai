@@ -7,7 +7,6 @@
 ######################################################################
 
 
-
 from dongtai_common.utils import const
 from dongtai_common.models.message import IastMessage
 from dongtai_common.endpoint import R

@@ -38,12 +38,12 @@ class LanguageSetting(AnonymousAndUserEndPoint):
         )
         return response
 
-#from dongtai.endpoint import R, TalentAdminEndPoint
-#from configparser import ConfigParser
-#from webapi.settings import BASE_DIR
+# from dongtai.endpoint import R, TalentAdminEndPoint
+# from configparser import ConfigParser
+# from webapi.settings import BASE_DIR
 #
 #
-#class DefaultLanguageSetting(AnonymousAndUserEndPoint):
+# class DefaultLanguageSetting(AnonymousAndUserEndPoint):
 #    def post(self, request):
 #        config = ConfigParser()
 #        default_language = request.data.get('default_language', None)

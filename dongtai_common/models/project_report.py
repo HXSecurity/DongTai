@@ -13,9 +13,10 @@ from dongtai_common.models.server import IastServer
 from dongtai_common.utils.settings import get_managed
 
 ORDER_TYPE_REPORT = {
-    "1":"create_time",
-    "2":"status"
+    "1": "create_time",
+    "2": "status"
 }
+
 
 class ProjectReport(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING)
@@ -31,7 +32,7 @@ class ProjectReport(models.Model):
     trend_png = models.CharField(default='', max_length=255, blank=True, null=True)
     version_str = models.CharField(default='', max_length=255, blank=True, null=True)
     vul_type_str = models.CharField(default='', max_length=255, blank=True, null=True)
-    sca_type_str = models.TextField(default='',  blank=True, null=True)
+    sca_type_str = models.TextField(default='', blank=True, null=True)
     vul_id = models.IntegerField(blank=True, null=True, default=0)
     report_name = models.CharField(default='', max_length=255, blank=True, null=True)
 

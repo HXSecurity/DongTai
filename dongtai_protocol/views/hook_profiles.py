@@ -32,6 +32,7 @@ def convert_strategy(strategy: IastStrategyModel):
     strategy.type = 4
     return strategy
 
+
 class HookProfilesEndPoint(OpenApiEndPoint):
     name = "api-v1-profiles"
     description = "获取HOOK策略"
@@ -80,7 +81,7 @@ class HookProfilesEndPoint(OpenApiEndPoint):
                                           "strategy", "update_time"
                                       ]) for i in strategies
                     ],
-                           key=lambda item: item['value'])
+                        key=lambda item: item['value'])
                 }
                 profiles.append(profile)
             else:

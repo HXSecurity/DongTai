@@ -3,6 +3,22 @@
 # author:owefsad
 # software: PyCharm
 # project: lingzhi-webapi
+from dongtai_web.utils import dict_transfrom
+from dongtai_common.models.asset import IastAssetDocument
+from dongtai_common.models import LANGUAGE_DICT
+from dongtai_web.aggregation.aggregation_common import auth_user_list_str
+from dongtai_common.models.asset_aggr import AssetAggrDocument
+from dongtai_conf.settings import ELASTICSEARCH_STATE
+from dongtai_common.common.utils import make_hash
+from dongtai_conf import settings
+from django.core.cache import cache
+from dongtai_common.models.project import IastProject
+from dongtai_common.models.program_language import IastProgramLanguage
+from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
+from dongtai_common.models.strategy import IastStrategyModel
+from elasticsearch_dsl import A
+from elasticsearch import Elasticsearch
+from elasticsearch_dsl import Q, Search
 import pymysql
 from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.vul_level import IastVulLevel
@@ -146,9 +162,8 @@ class ScaSummary(UserEndPoint):
         ],
         tags=[_('Component')],
         summary=_("Component Summary (with project)"),
-        description=
-        _("Use the specified project information to get the corresponding component summary"
-          ),
+        description=_("Use the specified project information to get the corresponding component summary"
+                      ),
         response_schema=_ResponseSerializer)
     def post(self, request):
         """
@@ -186,7 +201,7 @@ class ScaSummary(UserEndPoint):
                 current_project_version = get_project_version(project_id, auth_users)
             else:
                 current_project_version = get_project_version_by_id(version_id)
-            #base_query_sql = base_query_sql + " and iast_asset.project_id=%s and iast_asset.project_version_id=%s "
+            # base_query_sql = base_query_sql + " and iast_asset.project_id=%s and iast_asset.project_version_id=%s "
             asset_aggr_where = asset_aggr_where + " and iast_asset.project_id=%s and iast_asset.project_version_id=%s "
             sql_params.append(project_id)
             sql_params.append(current_project_version.get("version_id", 0))
@@ -247,7 +262,6 @@ class ScaSummary(UserEndPoint):
         end, base_query_sql, asset_aggr_where, sql_param = self.get_extend_data(
             end, base_query_sql, asset_aggr_where, sql_params)
 
-
         return R.success(data=end['data'])
 
     def get_extend_data(self, end: dict, base_query_sql: str,
@@ -258,25 +272,6 @@ class ScaSummary(UserEndPoint):
         resp, origin_resp = get_vul_list_from_elastic_search(
             user_id, **es_query)
         return resp, origin_resp
-
-
-from elasticsearch_dsl import Q, Search
-from elasticsearch import Elasticsearch
-from elasticsearch_dsl import A
-from dongtai_common.models.strategy import IastStrategyModel
-from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
-from dongtai_common.models.program_language import IastProgramLanguage
-from dongtai_common.models.project import IastProject
-from dongtai_common.models.vul_level import IastVulLevel
-from django.core.cache import cache
-from dongtai_conf import settings
-from dongtai_common.common.utils import make_hash
-from dongtai_conf.settings import ELASTICSEARCH_STATE
-from dongtai_common.models.asset_aggr import AssetAggrDocument
-from dongtai_web.aggregation.aggregation_common import auth_user_list_str
-from dongtai_common.models import LANGUAGE_DICT
-from dongtai_common.models.asset import IastAssetDocument
-from dongtai_web.utils import dict_transfrom
 
 
 def get_vul_list_from_elastic_search(user_id,

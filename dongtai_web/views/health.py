@@ -7,7 +7,6 @@
 ######################################################################
 
 
-
 from dongtai_common.endpoint import R
 from django.utils.translation import gettext_lazy as _
 from dongtai_common.endpoint import UserEndPoint
@@ -60,5 +59,3 @@ class HealthView(UserEndPoint):
                 'name'] = cur_language_field if cur_language_field else indicator[
                     'name']
         return R.success(data=data)
-
-

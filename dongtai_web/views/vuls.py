@@ -24,6 +24,7 @@ from django.utils.text import format_lazy
 from dongtai_web.utils import get_model_order_options
 from rest_framework import serializers
 
+
 class _VulsEndPointResponseSerializer(VulSerializer):
     index = serializers.IntegerField()
     project_name = serializers.CharField(
@@ -217,7 +218,7 @@ class VulsEndPoint(UserEndPoint):
         queryset = IastVulnerabilityModel.objects.values(
             'id', 'hook_type_id', 'url', 'uri', 'agent_id', 'level_id',
             'http_method', 'top_stack', 'bottom_stack', 'taint_position',
-            'latest_time', 'first_time','strategy_id',
+            'latest_time', 'first_time', 'strategy_id',
             'status_id').filter(agent__in=auth_agents)
 
         level = request.query_params.get('level')
@@ -237,7 +238,7 @@ class VulsEndPoint(UserEndPoint):
         elif type_:
             hook_types = HookType.objects.filter(name=type_).all()
             strategys = IastStrategyModel.objects.filter(vul_name=type_).all()
-            q = Q(hook_type__in=hook_types,strategy_id=0) | Q(strategy__in=strategys)
+            q = Q(hook_type__in=hook_types, strategy_id=0) | Q(strategy__in=strategys)
             queryset = queryset.filter(q)
 
         project_name = request.query_params.get('project_name')

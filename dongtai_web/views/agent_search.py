@@ -13,6 +13,7 @@ from django.forms.models import model_to_dict
 
 from dongtai_web.utils import get_model_field
 
+
 class _AgentSearchQuerysSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=20,
                                          help_text=_('Number per page'))
@@ -25,6 +26,7 @@ class _AgentSearchQuerysSerializer(serializers.Serializer):
 
 _ResponseSerializer = get_response_serializer(
     status_msg_keypair=(((201, _('Suspending ...')), ''), ))
+
 
 class AgentSearch(AnonymousAndUserEndPoint):
     @extend_schema_with_envcheck(

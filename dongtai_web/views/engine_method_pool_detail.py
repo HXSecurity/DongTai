@@ -28,8 +28,6 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
         token: agent-ip-port-path
         """
 
-
-
         try:
             latest_id, page_size, rule_name, rule_msg, rule_level, source_set, sink_set, propagator_set = \
                 self.parse_search_condition(request)
@@ -58,7 +56,7 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
     def parse_search_condition(request):
         """
         :param request:
-        :return: 
+        :return:
         """
         latest_id = int(request.query_params.get('latest', 0))
         page_size = int(request.query_params.get('pageSize', 20))
@@ -88,10 +86,9 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
         if queryset.values('id').exists() is False:
             return None
 
-
         matches = list()
         while True:
-            logger.debug(_('Searching, current {} page').format(index +1))
+            logger.debug(_('Searching, current {} page').format(index + 1))
             page = queryset.values('id', 'method_pool')[index * size:(index + 1) * size - 1]
             if page:
                 if len(matches) == page_size:

@@ -6,7 +6,7 @@
 # @description :
 ######################################################################
 
-from dongtai_common.models.sensitive_info import IastPatternType,IastSensitiveInfoRule
+from dongtai_common.models.sensitive_info import IastPatternType, IastSensitiveInfoRule
 from rest_framework import serializers
 from dongtai_common.endpoint import UserEndPoint, R
 from rest_framework.serializers import ValidationError
@@ -20,6 +20,7 @@ class BatchStatusUpdateSerializer(serializers.Serializer):
 class BatchStatusUpdateSerializerView(UserEndPoint):
     serializer = BatchStatusUpdateSerializer
     status_field = ''
+
     def post(self, request):
         data = self.get_params(request.data)
         self.update_model(data)

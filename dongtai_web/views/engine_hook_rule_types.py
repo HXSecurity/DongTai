@@ -30,9 +30,8 @@ class _EngineHookRuleTypeArgsSerializer(serializers.Serializer):
     page = serializers.IntegerField(default=1, help_text=_('Page index'))
     type = serializers.ChoiceField(
         HOOK_TYPE_CHOICE,
-        help_text=
-        _("type of hook rule \n 1 represents the propagation method, 2 represents the source method, 3 represents the filter method, and 4 represents the taint method"
-          ))
+        help_text=_("type of hook rule \n 1 represents the propagation method, 2 represents the source method, 3 represents the filter method, and 4 represents the taint method"
+                    ))
     language_id = serializers.IntegerField(
         default=1,
         help_text=_('The id of programming language'),

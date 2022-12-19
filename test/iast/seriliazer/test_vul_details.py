@@ -7,7 +7,6 @@
 ######################################################################
 
 
-
 from django.test import TestCase
 from django.urls import include, path, reverse
 from dongtai_common.models.user import User
@@ -19,6 +18,7 @@ from dongtai_web.serializers.vul import VulSerializer
 
 TEST_DATA = ('', None, 'Django', 'Apache Tomcat/9.0.37', 'Tomcat/8.x',
              'php-fpm', 'WebLogic')
+
 
 @ddt
 class VulTestCase(TestCase):

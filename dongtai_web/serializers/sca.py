@@ -107,6 +107,7 @@ class ScaAssetSerializer(serializers.ModelSerializer):
     license_desc = serializers.SerializerMethodField()
     vul_high_count = serializers.SerializerMethodField()
     project_count = serializers.SerializerMethodField()
+
     class Meta:
         model = Asset
         fields = [
@@ -114,7 +115,7 @@ class ScaAssetSerializer(serializers.ModelSerializer):
             'language', 'signature_value', 'level', 'level_type', 'vul_count',
             'vul_high_count', 'vul_medium_count', 'vul_low_count',
             'vul_info_count', 'project_count', 'safe_version_list',
-            'nearest_safe_version', 'license', 'latest_safe_version','license_list','highest_license',
+            'nearest_safe_version', 'license', 'latest_safe_version', 'license_list', 'highest_license',
             'license_level', 'license_desc'
         ]
 

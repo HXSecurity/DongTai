@@ -1,3 +1,21 @@
+from dongtai_common.models.asset_vul import IastAssetVulRelationMetaData
+from django.db import IntegrityError
+from .cwe import get_cwe_name
+from dongtai_common.models.asset_vul import (IastAssetVulTypeRelation,
+                                             IastAssetVul,
+                                             IastVulAssetRelation,
+                                             IastAssetVulType)
+from packaging.version import _BaseVersion
+from dongtai_common.models.asset_vul import IastAssetVul
+from collections import defaultdict
+from hashlib import sha1
+from dongtai_conf.settings import SCA_SETUP
+from dongtai_web.dongtai_sca.models import PackageLicenseLevel
+from celery import shared_task
+import time
+from dongtai_common.models.vul_level import IastVulLevel
+from dongtai_common.models.asset import Asset
+from dongtai_common.models.agent import IastAgent
 import requests
 from result import Ok, Err, Result
 import logging
@@ -19,11 +37,11 @@ logger = logging.getLogger("dongtai-webapi")
 
 
 def get_sca_token() -> str:
-    #profilefromdb = IastProfile.objects.filter(key='sca_token').values_list(
+    # profilefromdb = IastProfile.objects.filter(key='sca_token').values_list(
     #    'value', flat=True).first()
-    #if profilefromdb:
+    # if profilefromdb:
     #    return profilefromdb
-    #return ''
+    # return ''
     from dongtai_conf.settings import SCA_TOKEN
     return SCA_TOKEN
 
@@ -171,20 +189,11 @@ def get_package(aql: Optional[str] = None,
     return data
 
 
-from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.asset import Asset
-from dongtai_common.models.vul_level import IastVulLevel
-import time
-#from dongtai_web.dongtai_sca.utils import sca_scan_asset
+# from dongtai_web.dongtai_sca.utils import sca_scan_asset
 
 
 def get_package_aql(name: str, ecosystem: str, version: str) -> str:
     return f"{ecosystem}:{name}:{version}"
-
-
-from celery import shared_task
-from dongtai_web.dongtai_sca.models import PackageLicenseLevel
-from dongtai_conf.settings import SCA_SETUP
 
 
 def get_license_list(license_list_str: str) -> List[Dict]:
@@ -221,9 +230,6 @@ def get_highest_license(license_list: list) -> dict:
         "level_id": 0,
         "level_desc": "允许商业集成"
     }
-
-
-from hashlib import sha1
 
 
 def sha_1(raw):
@@ -353,19 +359,11 @@ def update_one_sca(agent_id,
                        package['version'])
 
 
-from collections import defaultdict
-from dongtai_common.models.asset_vul import IastAssetVul
-
-
 def stat_severity(serveritys) -> dict:
     dic = defaultdict(int)
     for serverity in serveritys:
         dic[serverity] += 1
     return dict(dic)
-
-
-from dongtai_common.models.asset import Asset
-from packaging.version import _BaseVersion
 
 
 class DongTaiScaVersion(_BaseVersion):
@@ -411,9 +409,6 @@ def get_vul_serial(title: str = "",
     return "|".join([title, cve, cnvd, cnnvd] + cwe)
 
 
-from collections import defaultdict
-
-
 def get_vul_level_dict() -> defaultdict:
     return defaultdict(lambda: 5, {
         'high': 1,
@@ -446,14 +441,6 @@ def get_vul_path(base_aql: str,
             vul_package_path)) + [base_aql]
 
 
-from dongtai_common.models.asset_vul import (IastAssetVulTypeRelation,
-                                             IastAssetVul,
-                                             IastVulAssetRelation,
-                                             IastAssetVulType)
-
-from .cwe import get_cwe_name
-
-
 def get_asset_level(res: dict) -> int:
     level_map = {'critical': 1, 'high': 1, 'medium': 2, 'low': 3}
     for k, v in level_map.items():
@@ -474,10 +461,6 @@ def get_title(title_zh: str, title_en: str) -> str:
     if title_list:
         return title_list[0]
     return ""
-
-
-from django.db import IntegrityError
-from dongtai_common.models.asset_vul import IastAssetVulRelationMetaData
 
 
 def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
@@ -503,7 +486,7 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                                     vul['cwe_info'], vul['cnvd'], vul['cnnvd'])
         vul_level = get_vul_level_dict()[vul['severity']]
         detail = get_detail(vul['description'])
-        #still need , save to asset_vul_relation
+        # still need , save to asset_vul_relation
         # nearest_fixed_version = get_nearest_version(version, vul['fixed'])
         # save to asset latest_version
         # latest_version = get_latest_version(vul['safe_version'])
@@ -533,11 +516,11 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                 "aql": aql,
                 # package_hash=vul_package_hash, #???
                 "package_version": version,
-                #package_latest_version=latest_version,
+                # package_latest_version=latest_version,
                 "package_language": package_language,
                 "have_article": 1 if vul['references'] else 0,
                 "have_poc": 1 if vul['poc'] else 0,
-                #cve_id=cve_relation.id,
+                # cve_id=cve_relation.id,
                 "vul_cve_nums": cve_numbers,
                 "vul_serial": vul_serial,
                 "vul_publish_time": vul['publish_time'],

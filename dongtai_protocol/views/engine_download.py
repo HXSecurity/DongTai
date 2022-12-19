@@ -31,7 +31,7 @@ class EngineDownloadEndPoint(OpenApiEndPoint):
     description = "iast agent-下载IAST依赖的core、inject jar包"
     LOCAL_AGENT_PATH = '/tmp/iast_cache/package'
     LOCAL_AGENT_FILE = '/tmp/iast_cache/package/{package_name}.jar'
-    REMOTE_AGENT_FILE = BUCKET_NAME_BASE_URL + 'java/'+ VERSION + '/{package_name}.jar'
+    REMOTE_AGENT_FILE = BUCKET_NAME_BASE_URL + 'java/' + VERSION + '/{package_name}.jar'
 
     @extend_schema(
         description='Agent Engine Download',

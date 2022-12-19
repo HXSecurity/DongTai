@@ -62,14 +62,14 @@ class AgentDownload(UserEndPoint):
         language = request.query_params.get('language', 'java')
         project_name = request.query_params.get('projectName', 'Demo Project')
         token, success = Token.objects.values('key').get_or_create(user=request.user)
-        AGENT_SERVER_PROXY={'HOST':''}
+        AGENT_SERVER_PROXY = {'HOST': ''}
         AGENT_SERVER_PROXY['HOST'] = get_openapi()
         try:
             resp = requests.get(
-            url=f'{AGENT_SERVER_PROXY["HOST"]}/api/v1/agent/download?url={base_url}&language={language}&projectName={project_name}',
-            headers={
-                'Authorization': f'Token {token["key"]}'
-            })
+                url=f'{AGENT_SERVER_PROXY["HOST"]}/api/v1/agent/download?url={base_url}&language={language}&projectName={project_name}',
+                headers={
+                    'Authorization': f'Token {token["key"]}'
+                })
         except ConnectionError as e:
             return R.failure(msg='conncet error,please check config.ini')
         except Exception as e:

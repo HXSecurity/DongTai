@@ -21,6 +21,7 @@ _ResponseSerializer = get_response_serializer(status_msg_keypair=(
     ((202, _('Incorrect parameter')), ''),
 ))
 
+
 class VulStatus(UserEndPoint):
     name = "api-v1-vuln-status"
     description = _("Modify the vulnerability status")
@@ -60,9 +61,9 @@ class VulStatus(UserEndPoint):
         }],
         tags=[_('Vulnerability')],
         summary=_("Vulnerability Status Modify"),
-        description=_("""Modify the vulnerability status of the specified id. 
-        The status is specified by the following two parameters. 
-        Status corresponds to the status noun and status_id corresponds to the status id. 
+        description=_("""Modify the vulnerability status of the specified id.
+        The status is specified by the following two parameters.
+        Status corresponds to the status noun and status_id corresponds to the status id.
         Both can be obtained from the vulnerability status list API, and status_id is preferred."""
                       ),
         response_schema=_ResponseSerializer,

@@ -12,6 +12,8 @@ import json
 import logging
 request_logger = logging.getLogger(__name__)
 REQUEST_DICT = {}
+
+
 class RequestLogMiddleware:
 
     def __init__(self, get_response):

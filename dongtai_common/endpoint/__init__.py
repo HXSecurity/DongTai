@@ -42,7 +42,6 @@ class EndPoint(APIView):
     description = "ApiServer接口"
 
     def __init__(self, **kwargs):
-
         """
         Constructor. Called in the URLconf; can contain helpful extra
         keyword arguments, and other things.

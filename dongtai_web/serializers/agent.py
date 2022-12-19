@@ -13,6 +13,7 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_common.models.agent_method_pool import MethodPool
 from collections import defaultdict
 
+
 class AgentSerializer(serializers.ModelSerializer):
     USER_MAP = dict()
     SERVER_MAP = dict()
@@ -125,7 +126,6 @@ class ProjectEngineSerializer(serializers.ModelSerializer):
     class Meta:
         model = IastAgent
         fields = ['id', 'token', 'is_core_running']
-
 
 
 class AgentToggleArgsSerializer(serializers.Serializer):

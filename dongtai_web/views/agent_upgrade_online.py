@@ -34,8 +34,6 @@ class AgentUpgradeOnline(TalentAdminEndPoint):
     name = "api-v1-agent-install"
     description = _("Online Upgrade Agent")
 
-
-
     @extend_schema_with_envcheck(request=AgentUpgradeArgsSerializer,
                                  tags=[_('Agent')],
                                  summary=_('Agent Upgrade Online'),

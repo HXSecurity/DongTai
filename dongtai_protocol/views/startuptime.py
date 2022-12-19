@@ -7,7 +7,6 @@
 ######################################################################
 
 
-
 import logging
 
 from dongtai_common.models.agent import IastAgent

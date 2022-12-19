@@ -16,13 +16,16 @@ from django_celery_beat.models import (
 )
 from dongtai_engine.plugins.data_clean import data_cleanup
 
+
 class DataCleanSettingsSer(serializers.Serializer):
     clean_time = serializers.TimeField(format="%H:%M:%S")
     days_before = serializers.IntegerField()
     enable = serializers.BooleanField()
 
+
 class DataCleanDoItNowArgsSer(serializers.Serializer):
     days_before = serializers.IntegerField()
+
 
 class DataCleanEndpoint(UserEndPoint):
 
@@ -84,6 +87,7 @@ class DataCleanEndpoint(UserEndPoint):
             return R.failure(msg=_("Update {} failed").format(key))
         data = json.loads(value)
         return R.success(data=data)
+
 
 class DataCleanDoItNowEndpoint(UserEndPoint):
 

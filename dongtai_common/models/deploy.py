@@ -8,6 +8,7 @@
 from django.db import models
 from dongtai_common.utils.settings import get_managed
 
+
 class IastDeployDesc(models.Model):
     desc = models.TextField(blank=True, null=True)
     middleware = models.CharField(max_length=255, blank=True, null=True)

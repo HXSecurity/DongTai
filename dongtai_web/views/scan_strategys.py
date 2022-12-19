@@ -28,15 +28,18 @@ logger = logging.getLogger('dongtai-webapi')
 
 class ScanStrategySerializer(serializers.ModelSerializer):
     content = serializers.SerializerMethodField()
+
     class Meta:
         model = IastStrategyUser
         fields = ['id', 'name', 'content', 'user', 'status', 'created_at']
+
     def get_content(self, obj):
         try:
             return [int(i) for i in obj.content.split(',')]
         except Exception as e:
             print(e)
             return []
+
 
 class _ScanStrategyArgsSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=20,
@@ -74,9 +77,8 @@ class ScanStrategyRelationProject(UserEndPoint):
         request=ScanCreateSerializer,
         tags=[_('ScanStrategy')],
         summary=_('ScanStrategy Relation Projects'),
-        description=
-        _("Get scan strategy relation projects"
-          ),
+        description=_("Get scan strategy relation projects"
+                      ),
     )
     def get(self, request, pk):
         ser = _ScanStrategyRelationProjectArgsSerializer(data=request.GET)
@@ -110,9 +112,8 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
         [_ScanStrategyArgsSerializer],
         tags=[_('ScanStrategy')],
         summary=_('ScanStrategy List'),
-        description=
-        _("Get the item corresponding to the user, support fuzzy search based on name."
-          ),
+        description=_("Get the item corresponding to the user, support fuzzy search based on name."
+                      ),
     )
     def list(self, request):
         ser = _ScanStrategyArgsSerializer(data=request.GET)
@@ -139,9 +140,8 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
         request=ScanCreateSerializer,
         tags=[_('ScanStrategy')],
         summary=_('ScanStrategy Create'),
-        description=
-        _("Create ScanStrategy"
-          ),
+        description=_("Create ScanStrategy"
+                      ),
     )
     def create(self, request):
         ser = ScanCreateSerializer(data=request.data)
@@ -166,9 +166,8 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
         request=ScanCreateSerializer,
         tags=[_('ScanStrategy')],
         summary=_('ScanStrategy Update'),
-        description=
-        _("Get the item corresponding to the user, support fuzzy search based on name."
-          ),
+        description=_("Get the item corresponding to the user, support fuzzy search based on name."
+                      ),
     )
     def update(self, request, pk):
         ser = ScanCreateSerializer(data=request.data, partial=True)
@@ -188,9 +187,8 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
     @extend_schema_with_envcheck(
         tags=[_('ScanStrategy')],
         summary=_('ScanStrategy delete'),
-        description=
-        _("Get the item corresponding to the user, support fuzzy search based on name."
-          ),
+        description=_("Get the item corresponding to the user, support fuzzy search based on name."
+                      ),
     )
     def destory(self, request, pk):
         scan = IastStrategyUser.objects.filter(pk=pk, user__in=self.get_auth_users(request.user)).first()
@@ -216,6 +214,7 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
         obj = IastStrategyUser.objects.filter(pk=pk, user__in=self.get_auth_users(request.user)).first()
         return R.success(data=ScanStrategySerializer(obj).data)
 
+
 class ScanStrategyBatchView(BatchStatusUpdateSerializerView):
     status_field = 'status'
     model = IastStrategyUser
@@ -232,6 +231,7 @@ class ScanStrategyBatchView(BatchStatusUpdateSerializerView):
         data['ids'] = filter_using(data['ids'], [user])
         self.update_model(request, data)
         return R.success(msg=_('update success'))
+
 
 class ScanStrategyAllView(AllStatusUpdateSerializerView):
     status_field = 'status'

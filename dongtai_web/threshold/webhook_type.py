@@ -48,10 +48,10 @@ class AgentWebHookTypeList(UserEndPoint):
             }, {
                 "key": "ApiSiteMap",
                 "value": 97
-            },  {
+            }, {
                 "key": "硬编码",
                 "value": 37
-            },  {
+            }, {
                 "key": "高频hook限流",
                 "value": 65
             }, {

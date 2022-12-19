@@ -34,10 +34,10 @@ def log_recheck_vul(user_id: int, user_name: str, vul_id: list,
 
 
 def log_push_to_integration(user_id: int, user_name: str, vul_id: int,
-                            integration_name: str,source_vul_type:int):
+                            integration_name: str, source_vul_type: int):
     kwargs = locals()
     msg = f"id为{user_id}的用户{user_name}推送漏洞到{integration_name}"
-    if source_vul_type ==1:
+    if source_vul_type == 1:
         IastVulLog.objects.create(
             msg_type=MessageTypeChoices.PUSH_TO_INTEGRATION,
             msg=msg,

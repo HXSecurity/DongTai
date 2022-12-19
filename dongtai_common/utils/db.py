@@ -46,5 +46,3 @@ class SearchLanguageMode(Expression):
 
     def set_source_expressions(self, expressions):
         self.expressions = expressions
-
-
