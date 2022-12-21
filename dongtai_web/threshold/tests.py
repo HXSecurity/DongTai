@@ -4,7 +4,7 @@ from rest_framework.utils.serializer_helpers import ReturnDict
 
 class TypingTestCase(TestCase):
 
-    def test_typing_in_get_data_from_dict_by_key():
+    def test_typing_in_get_data_from_dict_by_key(self, ):
         get_data_from_dict_by_key({"213123132": "123123132"}, ("213123132", ))
         get_data_from_dict_by_key(
             AgentConfigSettingV2TargetSerializer(data={
