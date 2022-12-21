@@ -37,6 +37,8 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from dongtai_web.serializers.agent_config import AgentConfigSettingSerializer
 from rest_framework.serializers import ValidationError
+from rest_framework.utils.serializer_helpers import ReturnDict
+from typing import Dict
 
 _ResponseSerializer = get_response_serializer(status_msg_keypair=(
     ((201, _('The setting is complete')), ''),
@@ -219,7 +221,8 @@ def get_targets(targets):
     return res
 
 
-def get_data_from_dict_by_key(dic: dict, fields: Iterable) -> dict:
+def get_data_from_dict_by_key(dic: ReturnDict | Dict,
+                              fields: Iterable) -> Dict:
     return {i: dic[i] for i in fields}
 
 
