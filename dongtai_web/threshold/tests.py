@@ -1,5 +1,8 @@
 from django.test import TestCase
-from dongtai_web.threshold.config_setting import get_data_from_dict_by_key
+from dongtai_web.threshold.config_setting import (
+    get_data_from_dict_by_key,
+    AgentConfigSettingV2TargetSerializer,
+)
 from rest_framework.utils.serializer_helpers import ReturnDict
 
 class TypingTestCase(TestCase):
