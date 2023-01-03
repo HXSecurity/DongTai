@@ -39,6 +39,7 @@ from dongtai_web.serializers.agent_config import AgentConfigSettingSerializer
 from rest_framework.serializers import ValidationError
 from rest_framework.utils.serializer_helpers import ReturnDict
 from typing import Dict
+from collections import OrderedDict
 
 _ResponseSerializer = get_response_serializer(status_msg_keypair=(
     ((201, _('The setting is complete')), ''),
@@ -196,11 +197,13 @@ def config_update(data, config_id):
         create_metric(i, obj)
 
 
-def create_metric(metrics: dict, circuit_config: IastCircuitConfig):
+def create_metric(metrics: dict | OrderedDict,
+                  circuit_config: IastCircuitConfig):
     IastCircuitMetric.objects.create(circuit_config=circuit_config, **metrics)
 
 
-def create_target(target: dict, circuit_config: IastCircuitConfig):
+def create_target(target: dict | OrderedDict,
+                  circuit_config: IastCircuitConfig):
     IastCircuitTarget.objects.create(circuit_config=circuit_config, **target)
 
 
