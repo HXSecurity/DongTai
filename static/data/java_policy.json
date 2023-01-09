@@ -6,13 +6,6 @@
                 "source": "P1",
                 "target": "R",
                 "track": "false",
-                "value": "java.util.Arrays.asList(java.lang.Object[])"
-            },
-            {
-                "inherit": "false",
-                "source": "P1",
-                "target": "R",
-                "track": "false",
                 "value": "java.util.Arrays.copyOf(byte[],int)"
             },
             {
@@ -54,20 +47,6 @@
         "enable": 1,
         "type": 1,
         "value": "ByteBuffer"
-    },
-    {
-        "details": [
-            {
-                "inherit": "true",
-                "source": "P1",
-                "target": "O",
-                "track": " ",
-                "value": "java.util.Collection.addAll(java.util.Collection)"
-            }
-        ],
-        "enable": 1,
-        "type": 1,
-        "value": "Collection"
     },
     {
         "details": [
@@ -248,13 +227,6 @@
         "details": [
             {
                 "inherit": "true",
-                "source": "P1",
-                "target": "O",
-                "track": "",
-                "value": "java.util.List.<init>(java.util.Collection)"
-            },
-            {
-                "inherit": "true",
                 "source": "P2",
                 "target": "O",
                 "track": "",
@@ -266,81 +238,11 @@
                 "target": "O",
                 "track": "",
                 "value": "java.util.List.add(java.lang.Object)"
-            },
-            {
-                "inherit": "true",
-                "source": "P2",
-                "target": "O",
-                "track": "false",
-                "value": "java.util.List.addAll(int,java.util.Collection)"
-            },
-            {
-                "inherit": "true",
-                "source": "P1",
-                "target": "O",
-                "track": "",
-                "value": "java.util.List.addAll(java.util.Collection)"
-            },
-            {
-                "inherit": "true",
-                "source": "O",
-                "target": "R",
-                "track": "",
-                "value": "java.util.List.clone()"
-            },
-            {
-                "inherit": "true",
-                "source": "P2",
-                "target": "O",
-                "track": "",
-                "value": "java.util.List.set(int,java.lang.Object)"
-            },
-            {
-                "inherit": "true",
-                "source": "O",
-                "target": "R",
-                "track": "",
-                "value": "java.util.List.toArray()"
-            },
-            {
-                "inherit": "true",
-                "source": "O",
-                "target": "R",
-                "track": "",
-                "value": "java.util.List.toArray(java.lang.Object[])"
             }
         ],
         "enable": 1,
         "type": 1,
         "value": "List"
-    },
-    {
-        "details": [
-            {
-                "inherit": "true",
-                "source": "P1,2",
-                "target": "O",
-                "track": "",
-                "value": "java.util.Map.put(java.lang.Object,java.lang.Object)"
-            },
-            {
-                "inherit": "true",
-                "source": "P1",
-                "target": "O",
-                "track": "",
-                "value": "java.util.Map.putAll(java.util.Map)"
-            },
-            {
-                "inherit": "true",
-                "source": "P1,2",
-                "target": "O",
-                "track": "",
-                "value": "java.util.Map.putIfAbsent(java.lang.Object,java.lang.Object)"
-            }
-        ],
-        "enable": 1,
-        "type": 1,
-        "value": "Map"
     },
     {
         "details": [
@@ -2042,20 +1944,6 @@
         "enable": 1,
         "type": 4,
         "value": "expression-language-injection"
-    },
-    {
-        "details": [
-            {
-                "inherit": "false",
-                "source": "O",
-                "target": "R",
-                "track": "false",
-                "value": "feign.ReflectiveFeign$FeignInvocationHandler.invoke(java.lang.Object,java.lang.reflect.Method,java.lang.Object[])"
-            }
-        ],
-        "enable": 1,
-        "type": 2,
-        "value": "feign.ReflectiveFeign"
     },
     {
         "details": [
@@ -4199,27 +4087,6 @@
                 "source": "O",
                 "target": "",
                 "track": "true",
-                "value": "java.net.URL.openConnection()"
-            },
-            {
-                "inherit": "all",
-                "source": "O",
-                "target": "",
-                "track": "true",
-                "value": "java.net.URL.openConnection(java.net.Proxy)"
-            },
-            {
-                "inherit": "false",
-                "source": "O",
-                "target": "",
-                "track": "true",
-                "value": "java.net.URL.openStream()"
-            },
-            {
-                "inherit": "all",
-                "source": "O",
-                "target": "",
-                "track": "true",
                 "value": "okhttp3.Call.enqueue(okhttp3.Callback)"
             },
             {
@@ -4256,6 +4123,20 @@
                 "target": "",
                 "track": "true",
                 "value": "org.apache.http.client.methods.HttpRequestBase.setURI(java.net.URI)"
+            },
+            {
+                "inherit": "all",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "sun.net.www.protocol.http.HttpURLConnection.connect()"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "",
+                "track": "true",
+                "value": "sun.net.www.protocol.http.HttpURLConnection.getInputStream()"
             }
         ],
         "enable": 1,
