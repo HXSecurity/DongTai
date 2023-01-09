@@ -11,18 +11,6 @@
                 "target": "R",
                 "track": "false",
                 "type": 1,
-                "value": "java.util.Arrays.asList(java.lang.Object[])"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "false",
-                "language": 1,
-                "source": "P1",
-                "system_type": 1,
-                "target": "R",
-                "track": "false",
-                "type": 1,
                 "value": "java.util.Arrays.copyOf(byte[],int)"
             },
             {
@@ -84,25 +72,6 @@
         "enable": 1,
         "type": 1,
         "value": "ByteBuffer"
-    },
-    {
-        "details": [
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "true",
-                "language": 1,
-                "source": "P1",
-                "system_type": 1,
-                "target": "O",
-                "track": " ",
-                "type": 1,
-                "value": "java.util.Collection.addAll(java.util.Collection)"
-            }
-        ],
-        "enable": 1,
-        "type": 1,
-        "value": "Collection"
     },
     {
         "details": [
@@ -371,18 +340,6 @@
                 "enable": 1,
                 "inherit": "true",
                 "language": 1,
-                "source": "P1",
-                "system_type": 1,
-                "target": "O",
-                "track": "",
-                "type": 1,
-                "value": "java.util.List.<init>(java.util.Collection)"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "true",
-                "language": 1,
                 "source": "P2",
                 "system_type": 1,
                 "target": "O",
@@ -401,126 +358,11 @@
                 "track": "",
                 "type": 1,
                 "value": "java.util.List.add(java.lang.Object)"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "true",
-                "language": 1,
-                "source": "P2",
-                "system_type": 1,
-                "target": "O",
-                "track": "false",
-                "type": 1,
-                "value": "java.util.List.addAll(int,java.util.Collection)"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "true",
-                "language": 1,
-                "source": "P1",
-                "system_type": 1,
-                "target": "O",
-                "track": "",
-                "type": 1,
-                "value": "java.util.List.addAll(java.util.Collection)"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "true",
-                "language": 1,
-                "source": "O",
-                "system_type": 1,
-                "target": "R",
-                "track": "",
-                "type": 1,
-                "value": "java.util.List.clone()"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "true",
-                "language": 1,
-                "source": "P2",
-                "system_type": 1,
-                "target": "O",
-                "track": "",
-                "type": 1,
-                "value": "java.util.List.set(int,java.lang.Object)"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "true",
-                "language": 1,
-                "source": "O",
-                "system_type": 1,
-                "target": "R",
-                "track": "",
-                "type": 1,
-                "value": "java.util.List.toArray()"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "true",
-                "language": 1,
-                "source": "O",
-                "system_type": 1,
-                "target": "R",
-                "track": "",
-                "type": 1,
-                "value": "java.util.List.toArray(java.lang.Object[])"
             }
         ],
         "enable": 1,
         "type": 1,
         "value": "List"
-    },
-    {
-        "details": [
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "true",
-                "language": 1,
-                "source": "P1,2",
-                "system_type": 1,
-                "target": "O",
-                "track": "",
-                "type": 1,
-                "value": "java.util.Map.put(java.lang.Object,java.lang.Object)"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "true",
-                "language": 1,
-                "source": "P1",
-                "system_type": 1,
-                "target": "O",
-                "track": "",
-                "type": 1,
-                "value": "java.util.Map.putAll(java.util.Map)"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "true",
-                "language": 1,
-                "source": "P1,2",
-                "system_type": 1,
-                "target": "O",
-                "track": "",
-                "type": 1,
-                "value": "java.util.Map.putIfAbsent(java.lang.Object,java.lang.Object)"
-            }
-        ],
-        "enable": 1,
-        "type": 1,
-        "value": "Map"
     },
     {
         "details": [
@@ -3302,25 +3144,6 @@
         "enable": 1,
         "type": 4,
         "value": "expression-language-injection"
-    },
-    {
-        "details": [
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "false",
-                "language": 1,
-                "source": "O",
-                "system_type": 1,
-                "target": "R",
-                "track": "false",
-                "type": 2,
-                "value": "feign.ReflectiveFeign$FeignInvocationHandler.invoke(java.lang.Object,java.lang.reflect.Method,java.lang.Object[])"
-            }
-        ],
-        "enable": 1,
-        "type": 2,
-        "value": "feign.ReflectiveFeign"
     },
     {
         "details": [
@@ -6874,42 +6697,6 @@
                 "target": "",
                 "track": "true",
                 "type": 4,
-                "value": "java.net.URL.openConnection()"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "all",
-                "language": 1,
-                "source": "O",
-                "system_type": 1,
-                "target": "",
-                "track": "true",
-                "type": 4,
-                "value": "java.net.URL.openConnection(java.net.Proxy)"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "false",
-                "language": 1,
-                "source": "O",
-                "system_type": 1,
-                "target": "",
-                "track": "true",
-                "type": 4,
-                "value": "java.net.URL.openStream()"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "all",
-                "language": 1,
-                "source": "O",
-                "system_type": 1,
-                "target": "",
-                "track": "true",
-                "type": 4,
                 "value": "okhttp3.Call.enqueue(okhttp3.Callback)"
             },
             {
@@ -6971,6 +6758,30 @@
                 "track": "true",
                 "type": 4,
                 "value": "org.apache.http.client.methods.HttpRequestBase.setURI(java.net.URI)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "all",
+                "language": 1,
+                "source": "O",
+                "system_type": 1,
+                "target": "",
+                "track": "true",
+                "type": 4,
+                "value": "sun.net.www.protocol.http.HttpURLConnection.connect()"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "O",
+                "system_type": 1,
+                "target": "",
+                "track": "true",
+                "type": 4,
+                "value": "sun.net.www.protocol.http.HttpURLConnection.getInputStream()"
             }
         ],
         "enable": 1,
