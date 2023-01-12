@@ -6,6 +6,7 @@
 */migrations/*
 *.pyc
 .idea/
+.vscode/
 scaapi/cron/logs/sca.log
 *.docx
 db/*

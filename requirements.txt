@@ -98,7 +98,7 @@ redis==3.5.3
 requests==2.25.1
 result==0.8.0
 s3transfer==0.6.0 ; python_version >= '3.7'
-setuptools==65.5.0
+setuptools==65.5.1
 simhash==2.1.2
 six==1.15.0
 sqlparse==0.4.3 ; python_version >= '3.5'
