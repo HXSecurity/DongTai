@@ -287,7 +287,7 @@ class VulEngine(object):
                     filter=False):
         vul_method_detail = copy.deepcopy(method_detail)
         vul_method_detail['originClassName'] = vul_method_detail[
-            'originClassName'].split('.')[-1]
+            'originClassName']
         # todo  根据类型进行拼接
         if source:
             vul_method_detail['tag'] = 'source'
