@@ -14,7 +14,10 @@ from dongtai_common.utils.settings import get_managed
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
 import json
+from time import time
 
+def lambda_time():
+    return time.strftime("%Y-%m-%d %H:%M:S",time.localtime(int(time())))
 
 class IastAgent(models.Model):
     token = models.CharField(max_length=255, blank=True, null=True)
@@ -61,21 +64,52 @@ class IastAgent(models.Model):
     actual_running_status = models.IntegerField(default=1, null=False)
     except_running_status = models.IntegerField(default=1, null=False)
     state_status = models.IntegerField(default=1, null=False)
-    events = models.JSONField(null=False, default=lambda: ['注册成功'])
+    events = models.JSONField(null=False,
+                              default=lambda: [{
+                                  "time": lambda_time,
+                                  "event": "注册成功"
+                              }])
 
     class Meta:
         managed = get_managed()
         db_table = 'iast_agent'
 
     def append_events(self, event: str):
-        events_list = self.events if self.events else ["注册成功"]
-        events_list.append(event)
+        events_list = self.events if self.events else [{
+                                  "time": lambda_time(),
+                                  "event": "注册成功"
+                              }]
+        events_list.append(
+                {
+                    "time": lambda_time(),
+                    "event": event
+                })
         self.events = events_list
         self.save()
 
     def only_register(self):
-        events_list = self.events if self.events else ["注册成功"]
+        events_list = self.events if self.events else [{
+                                  "time": lambda_time(),
+                                  "event": "注册成功"
+                              }]
         return events_list == ['注册成功']
+
+    def update_events(self):
+        new_event_list = list(
+            map(
+                lambda event: {
+                    "time": None,
+                    "event": event
+                } if isinstance(event, str) else event, self.events))
+        self.events = new_event_list
+        self.save()
+
+    def is_need_to_update(self):
+        return any(map(lambda x:isinstance(x,str),self.events))
+
+    def update_events_if_need(self):
+        if self.is_need_to_update():
+            update_events()
 
 # class IastAgent(models.Model):
 #

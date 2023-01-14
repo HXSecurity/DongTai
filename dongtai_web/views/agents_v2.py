@@ -76,9 +76,23 @@ class AgentListv2(UserEndPoint, ViewSet):
                     agent['online'],
                 )
                 agent['ipaddresses'] = get_service_addrs(
-                    json.loads(agent['server__ipaddresslist']), agent['server__port'])
+                    json.loads(agent['server__ipaddresslist']),
+                    agent['server__port'])
                 if not agent['events']:
                     agent['events'] = ['注册成功']
+                    agent['events_objlist'] = [{'event': '注册成功', "time": None}]
+                else:
+                    events = agent['events']
+                    is_oldevent = any((isinstance(x, str) for x in events))
+                    if is_oldevent:
+                        agent['events'] = events
+                        agent['events_objlist'] = [{
+                            'event': i,
+                            "time": None
+                        } for i in events]
+                    else:
+                        agent['events'] = [i['event'] for i in events]
+                        agent['events_objlist'] = events
             data = {'agents': queryset, "summary": summary}
         except Exception as e:
             logger.error("agents pagenation_list error:{}".format(e),
