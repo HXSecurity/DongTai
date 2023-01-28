@@ -6,7 +6,7 @@ from django.forms.models import model_to_dict
 from dongtai_common.utils import const
 from dongtai_web.serializers.agent import AgentSerializer
 from dongtai_web.utils import get_model_field
-from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.agent import IastAgent, IastAgentEvent
 from collections import defaultdict
 from functools import reduce
 from django.db.models import Q
@@ -24,6 +24,7 @@ from dongtai_common.utils.user import get_auth_users__by_id
 import json
 from typing import Optional
 from time import time
+from itertools import groupby
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -65,6 +66,7 @@ class AgentListv2(UserEndPoint, ViewSet):
             summary, queryset = self.get_paginator(
                 query_agent(filter_condiction), page, page_size)
             queryset = list(queryset)
+            agent_dict = {}
             for agent in queryset:
                 agent['state'] = cal_state(agent)
                 agent['memory_rate'] = get_memory(agent['heartbeat__memory'])
@@ -79,6 +81,15 @@ class AgentListv2(UserEndPoint, ViewSet):
                     json.loads(agent['server__ipaddresslist']), agent['server__port'])
                 if not agent['events']:
                     agent['events'] = ['注册成功']
+                agent_dict[agent['id']]  = {}
+            agent_events = IastAgentEvent.objects.filter(
+                agent__id__in=agent_dict.keys()).values().all()
+            agent_events_dict = {
+                k: list(g)
+                for k, g in groupby(agent_events, key=lambda x: x['agent_id'])
+            }
+            for agent in queryset:
+                agent['new_events'] = agent_events_dict[agent['id']]
             data = {'agents': queryset, "summary": summary}
         except Exception as e:
             logger.error("agents pagenation_list error:{}".format(e),

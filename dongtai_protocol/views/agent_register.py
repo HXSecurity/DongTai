@@ -45,10 +45,8 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 project_current_version = project_version
             else:
                 project_current_version = IastProjectVersion.objects.filter(
-                    project_id=project['id'],
-                    current_version=1,
-                    status=1
-                ).first()
+                    project_id=project['id'], current_version=1,
+                    status=1).first()
             agent_id = AgentRegisterEndPoint.get_agent_id(
                 token, project_name, user, project_current_version.id)
             if agent_id == -1:
@@ -61,11 +59,13 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                     project_name=project_name,
                     project_version_id=project_current_version.id,
                     language=language,
-                    is_audit=is_audit
-                )
+                    is_audit=is_audit)
         else:
-            agent_id = AgentRegisterEndPoint.get_agent_id(token=token, project_name=project_name, user=user,
-                                                          current_project_version_id=0)
+            agent_id = AgentRegisterEndPoint.get_agent_id(
+                token=token,
+                project_name=project_name,
+                user=user,
+                current_project_version_id=0)
             if agent_id == -1:
                 agent_id = AgentRegisterEndPoint.__register_agent(
                     exist_project=False,
@@ -76,8 +76,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                     project_name=project_name,
                     project_version_id=0,
                     language=language,
-                    is_audit=is_audit
-                )
+                    is_audit=is_audit)
         return agent_id
 
     @staticmethod
@@ -313,7 +312,10 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 agent.save()
                 core_auto_start = agent.is_audit
 
-            return R.success(data={'id': agent_id, 'coreAutoStart': core_auto_start})
+            return R.success(data={
+                'id': agent_id,
+                'coreAutoStart': core_auto_start
+            })
         except Exception as e:
             logger.error("探针注册失败，原因：{reason}".format(reason=e), exc_info=True)
             return R.failure(msg="探针注册失败")
@@ -324,8 +326,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             token=token,
             project_name=project_name,
             user=user,
-            project_version_id=current_project_version_id
-        )
+            project_version_id=current_project_version_id)
         agent = queryset.first()
         if agent:
             queryset.update(is_core_running=1, online=1, is_running=1)
@@ -333,25 +334,26 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         return -1
 
     @staticmethod
-    def __register_agent(exist_project, token, user, version, project_id, project_name, project_version_id, language, is_audit):
+    def __register_agent(exist_project, token, user, version, project_id,
+                         project_name, project_version_id, language, is_audit):
         if exist_project:
-            IastAgent.objects.filter(token=token, online=1, user=user).update(online=0)
-        agent = IastAgent.objects.create(
-            token=token,
-            version=version,
-            latest_time=int(time.time()),
-            user=user,
-            is_running=1,
-            bind_project_id=project_id,
-            project_name=project_name,
-            control=0,
-            is_control=0,
-            is_core_running=1,
-            online=1,
-            project_version_id=project_version_id,
-            language=language,
-            is_audit=is_audit
-        )
+            IastAgent.objects.filter(token=token, online=1,
+                                     user=user).update(online=0)
+        agent = IastAgent.objects.create(token=token,
+                                         version=version,
+                                         latest_time=int(time.time()),
+                                         user=user,
+                                         is_running=1,
+                                         bind_project_id=project_id,
+                                         project_name=project_name,
+                                         control=0,
+                                         is_control=0,
+                                         is_core_running=1,
+                                         online=1,
+                                         project_version_id=project_version_id,
+                                         language=language,
+                                         is_audit=is_audit)
+        agent.append_events('注册成功')
         return agent.id
 
 
