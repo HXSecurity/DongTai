@@ -35,10 +35,7 @@ class AgentActionV2EndPoint(OpenApiEndPoint, ViewSet):
         agent = IastAgent.objects.filter(pk=agent_id).first()
         if not agent:
             return R.failure(msg=_("Agent not found"))
-        if agent.only_register(
-        ) or agent.actual_running_status != actual_running_status:
-            if not agent.events:
-                agent.append_events("注册成功")
+        if agent.actual_running_status != actual_running_status:
             if actual_running_status in EVENT_MAPPING:
                 agent.append_events(EVENT_MAPPING[actual_running_status])
         agent.actual_running_status = actual_running_status
