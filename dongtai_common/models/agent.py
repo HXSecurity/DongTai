@@ -69,10 +69,10 @@ class IastAgent(models.Model):
         db_table = 'iast_agent'
 
     def append_events(self, event: str):
-        #events_list = self.events if self.events else ["注册成功"]
-        #events_list.append(event)
-        #self.events = events_list
-        #self.save()
+        events_list = self.events if self.events else ["注册成功"]
+        events_list.append(event)
+        self.events = events_list
+        self.save()
         self.update_events_if_need()
         IastAgentEvent.objects.create(agent_id=self.id, name=event)
 
