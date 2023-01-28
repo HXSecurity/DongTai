@@ -78,10 +78,11 @@ class AgentListv2(UserEndPoint, ViewSet):
                     agent['online'],
                 )
                 agent['ipaddresses'] = get_service_addrs(
-                    json.loads(agent['server__ipaddresslist']), agent['server__port'])
+                    json.loads(agent['server__ipaddresslist']),
+                    agent['server__port'])
                 if not agent['events']:
                     agent['events'] = ['注册成功']
-                agent_dict[agent['id']]  = {}
+                agent_dict[agent['id']] = {}
             agent_events = IastAgentEvent.objects.filter(
                 agent__id__in=agent_dict.keys()).values().all()
             agent_events_dict = {
