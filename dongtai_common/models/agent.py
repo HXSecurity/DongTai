@@ -69,11 +69,11 @@ class IastAgent(models.Model):
         db_table = 'iast_agent'
 
     def append_events(self, event: str):
+        self.update_events_if_need()
         events_list = self.events if self.events else ["注册成功"]
         events_list.append(event)
         self.events = events_list
         self.save()
-        self.update_events_if_need()
         IastAgentEvent.objects.create(agent_id=self.id, name=event)
 
     def only_register(self):
@@ -87,7 +87,7 @@ class IastAgent(models.Model):
                                           time=None)
 
     def is_need_to_update(self):
-        if len(self.events) <= self.new_events.count():
+        if self.events and len(self.events) <= self.new_events.count():
             return False
         return True
 
