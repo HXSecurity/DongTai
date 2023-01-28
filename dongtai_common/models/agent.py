@@ -14,6 +14,7 @@ from dongtai_common.utils.settings import get_managed
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
 import json
+from time import time
 
 
 class IastAgent(models.Model):
@@ -68,14 +69,47 @@ class IastAgent(models.Model):
         db_table = 'iast_agent'
 
     def append_events(self, event: str):
-        events_list = self.events if self.events else ["注册成功"]
-        events_list.append(event)
-        self.events = events_list
-        self.save()
+        #events_list = self.events if self.events else ["注册成功"]
+        #events_list.append(event)
+        #self.events = events_list
+        #self.save()
+        self.update_events_if_need()
+        IastAgentEvent.objects.create(agent_id=self.id, name=event)
 
     def only_register(self):
         events_list = self.events if self.events else ["注册成功"]
         return events_list == ['注册成功']
+
+    def update_events(self):
+        for event in self.events:
+            IastAgentEvent.objects.create(agent_id=self.id,
+                                          name=event,
+                                          time=None)
+
+    def is_need_to_update(self):
+        if len(self.events) <= self.new_events.count():
+            return False
+        return True
+
+    def update_events_if_need(self):
+        if self.is_need_to_update():
+            self.update_events()
+
+
+class IastAgentEvent(models.Model):
+    agent = models.ForeignKey(IastAgent,
+                              on_delete=models.CASCADE,
+                              related_name='new_events',
+                              null=True)
+    name = models.CharField(default='', max_length=255, blank=True, null=True)
+    time = models.IntegerField(default=lambda: int(time()),
+                               blank=True,
+                               null=True)
+
+    class Meta:
+        managed = get_managed()
+        db_table = 'iast_agent_event'
+
 
 # class IastAgent(models.Model):
 #
