@@ -91,8 +91,7 @@ class AgentListv2(UserEndPoint, ViewSet):
             }
             for agent in queryset:
                 agent['new_events'] = agent_events_dict[
-                    agent['id']] if agent['id'] in agent_events_dict.keys(
-                    ) else {}
+                    agent['id']] if agent['id'] in agent_events_dict else {}
             data = {'agents': queryset, "summary": summary}
         except Exception as e:
             logger.error("agents pagenation_list error:{}".format(e),
