@@ -353,7 +353,6 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                                          project_version_id=project_version_id,
                                          language=language,
                                          is_audit=is_audit)
-        agent.append_events('注册成功')
         return agent.id
 
 
