@@ -90,7 +90,9 @@ class AgentListv2(UserEndPoint, ViewSet):
                 for k, g in groupby(agent_events, key=lambda x: x['agent_id'])
             }
             for agent in queryset:
-                agent['new_events'] = agent_events_dict[agent['id']]
+                agent['new_events'] = agent_events_dict[
+                    agent['id']] if agent['id'] in agent_events_dict.keys(
+                    ) else {}
             data = {'agents': queryset, "summary": summary}
         except Exception as e:
             logger.error("agents pagenation_list error:{}".format(e),
