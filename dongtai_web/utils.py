@@ -23,6 +23,7 @@ import operator
 import hashlib
 from dongtai_common.models.api_route import IastApiRoute, IastApiMethod, IastApiRoute, HttpMethod, IastApiResponse, IastApiMethodHttpMethodRelation
 from dongtai_common.models.agent_method_pool import MethodPool
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from rest_framework.serializers import Serializer
 from dongtai_conf.settings import OPENAPI
 from typing import Optional, List, Dict, Union
@@ -211,6 +212,10 @@ def checkcover(api_route, agents, http_method=None):
         q = q & Q(http_method__in=http_methods)
     q = q & Q(uri_sha1=uri_hash)
     if MethodPool.objects.filter(q).exists():
+        return True
+
+    w = Q(agent_id__in=[_['id'] for _ in agents]) & Q(uri=api_route.path)
+    if IastVulnerabilityModel.objects.filter(w).exists():
         return True
     return False
 
