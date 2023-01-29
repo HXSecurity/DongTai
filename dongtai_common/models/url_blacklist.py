@@ -23,6 +23,8 @@ class TargetType(IntegerChoices):
 
 class TargetScope(IntegerChoices):
     GLOBAL = 1, _("GLOBAL")
+    TEMPLATE = 2, _("TEMPLATE")
+    PROJECT = 3, _("PROJECT")
 
 
 class State(IntegerChoices):
