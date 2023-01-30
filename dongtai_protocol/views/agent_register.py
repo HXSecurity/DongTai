@@ -9,7 +9,8 @@ import logging
 import time
 
 from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.project import IastProject
+from dongtai_common.models.project import (IastProject, IastProjectTemplate,
+                                           VulValidation)
 from dongtai_common.models.project_version import IastProjectVersion
 from dongtai_common.models.server import IastServer
 from dongtai_common.models.profile import IastProfile
@@ -237,16 +238,32 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             user = request.user
             version_name = param.get('projectVersion', 'V1.0')
             version_name = version_name if version_name else 'V1.0'
+            template_id = param.get('template_id', None)
             with transaction.atomic():
+                default_params = {
+                    'scan_id': 5,
+                    'agent_count': 0,
+                    'mode': '插桩模式',
+                    'latest_time': int(time.time())
+                }
+
+                if template_id is not None:
+                    template = IastProjectTemplate.objects.filter(
+                        pk=template_id).first()
+                    if not template:
+                        template = IastProjectTemplate.objects.filter(
+                            is_system=1).first()
+                else:
+                    template = IastProjectTemplate.objects.filter(
+                        is_system=1).first()
+
+                default_params.update(template.to_full_project_args())
+
                 obj, project_created = IastProject.objects.get_or_create(
                     name=project_name,
                     user=request.user,
-                    defaults={
-                        'scan_id': 5,
-                        'agent_count': 0,
-                        'mode': '插桩模式',
-                        'latest_time': int(time.time())
-                    })
+                    defaults=default_params,
+                )
                 project_version, version_created = IastProjectVersion.objects.get_or_create(
                     project_id=obj.id,
                     version_name=version_name,

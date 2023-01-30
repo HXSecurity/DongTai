@@ -1,4 +1,8 @@
-from dongtai_common.models.project import (IastProject, IastProjectTemplate)
+from dongtai_common.models.project import (
+    IastProject,
+    IastProjectTemplate,
+    VulValidation,
+)
 from rest_framework import serializers
 from dongtai_common.endpoint import UserEndPoint, R, TalentAdminEndPoint
 from rest_framework import viewsets
@@ -15,26 +19,30 @@ class ProjectTemplateCreateArgsSerializer(serializers.Serializer):
     scan_id = serializers.IntegerField(
         help_text=_("The id corresponding to the scanning strategy."))
     vul_validation = serializers.IntegerField(
-        help_text="vul validation switch")
+        help_text="vul validation switch, 0-FOLLOW_GLOBAL, 1-ENABLE,2-DISABLE")
     data_gather = serializers.JSONField(help_text="data gather settings",
                                        required=False)
-    data_gather_is_followglobal = serializers.IntegerField()
-    blacklist_is_followglobal = serializers.IntegerField()
-    blacklist = serializers.SerializerMethodField()
+    data_gather_is_followglobal = serializers.IntegerField(required=False,default=0)
+    blacklist_is_followglobal = serializers.IntegerField(required=False,default=0)
+    blacklist = serializers.SerializerMethodField(required=False)
 
     def get_blacklist(self, obj):
         return []
-    
+
     class Meta:
         model = IastProjectTemplate
 
 def template_create(data, user):
     data['user_id'] = user.id
+    for field in ["blacklist"]:
+        del data[field]
     IastProjectTemplate.objects.create(**data)
 
 
 def template_update(pk, data, user):
     data['user_id'] = user.id
+    for field in ["blacklist"]:
+        del data[field]
     IastProjectTemplate.objects.filter(pk=pk).update(**data)
 
 
@@ -83,11 +91,9 @@ class IastProjectTemplateView(TalentAdminEndPoint, viewsets.ViewSet):
         except ValidationError as e:
             return R.failure(data=e.detail)
         summary, templates = self.get_paginator(
-            IastProjectTemplate.objects.values().order_by('-latest_time').all(), page, page_size)
-        return R.success(data={
-            "templates": list(templates),
-            "summary": summary
-        })
+            IastProjectTemplate.objects.values().order_by(
+                '-latest_time').all(), page, page_size)
+        return R.success(data=list(templates), page=summary)
 
     @extend_schema_with_envcheck(summary=_('delete project template'),
                                  description=_("delete project template"),

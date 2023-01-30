@@ -89,6 +89,7 @@ from dongtai_web.views.user_passwrd import UserPassword
 from dongtai_web.views.user_passwrd_reset import UserPasswordReset
 from dongtai_web.views.user_register_batch import UserRegisterEndPoint
 from dongtai_web.views.user_token import UserToken
+from dongtai_web.views.user_token import UserDepartmentToken
 from dongtai_web.views.vul_count_for_plugin import VulCountForPluginEndPoint
 from dongtai_web.views.vul_delete import VulDelete
 from dongtai_web.views.vul_details import (
@@ -160,6 +161,7 @@ urlpatterns = [
     path('user/logout', UserLogout.as_view()),
     path('user/info', UserInfoEndpoint.as_view()),
     path('user/token', UserToken.as_view()),
+    path('user/department/token', UserDepartmentToken.as_view()),
     path('user/password/reset', UserPasswordReset.as_view()),
     path('captcha/', include('captcha.urls')),
     path(r'captcha/refresh', CaptchaCreate.as_view()),

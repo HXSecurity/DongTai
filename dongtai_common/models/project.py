@@ -86,3 +86,12 @@ class IastProjectTemplate(models.Model):
 
     def to_full_template(self):
         pass
+
+    def to_full_project_args(self):
+        return {
+            "scan_id": self.scan_id,
+            "vul_validation": self.vul_validation,
+            "data_gather": self.data_gather,
+            "data_gather_is_followglobal": self.data_gather_is_followglobal,
+            "blacklist_is_followglobal": self.blacklist_is_followglobal,
+        }

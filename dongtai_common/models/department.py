@@ -58,6 +58,8 @@ class Department(PermissionsMixin):
     created_by = models.IntegerField(_('created by'), blank=True)
     parent_id = models.IntegerField(_('parent id'), blank=True)
     principal_id = models.IntegerField(default=0, blank=True)
+    department_path = models.CharField(max_length=1024, blank=True)
+    token = models.CharField(max_length=1024, blank=True)
 
     class Meta:
         managed = get_managed()
