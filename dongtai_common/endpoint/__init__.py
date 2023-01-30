@@ -15,6 +15,7 @@ from django.views.decorators.csrf import csrf_exempt
 from dongtai_common.models import User
 from dongtai_common.models.agent import IastAgent
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from dongtai_common.common.utils import DepartmentTokenAuthentication
 from rest_framework.views import APIView
 from rest_framework import status, exceptions
 from django.core.paginator import PageNotAnInteger, EmptyPage
@@ -308,7 +309,7 @@ class UserEndPoint(MixinAuthEndPoint):
 
 
 class OpenApiEndPoint(EndPoint):
-    authentication_classes = (TokenAuthentication,)
+    authentication_classes = (DepartmentTokenAuthentication, TokenAuthentication)
     permission_classes = (UserPermission,)
 
 
