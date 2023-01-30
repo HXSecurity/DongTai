@@ -11,10 +11,12 @@ import uuid
 import logging
 
 from django.http import FileResponse
-from dongtai_common.endpoint import UserEndPoint, R
+from dongtai_common.endpoint import UserEndPoint, R, OpenApiEndPoint
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from rest_framework.authtoken.models import Token
 from django.utils.translation import gettext_lazy as _
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from dongtai_common.common.utils import DepartmentTokenAuthentication
 
 from dongtai_protocol.api_schema import DongTaiParameter, DongTaiAuth
 from dongtai_protocol.utils import OssDownloader
@@ -53,17 +55,17 @@ class JavaAgentDownload():
                 object_name=self.remote_agent_file, local_file=f"{self.original_agent_file}"
             )
 
-    def create_config(self, base_url, agent_token, auth_token, project_name):
+    def create_config(self, base_url, agent_token, auth_token, project_name, template_id):
         try:
             user_file = f"{self.target_path}/{self.agent_file}"
             if not os.path.exists(user_file):
                 shutil.copyfile(self.original_agent_file, user_file)
 
-            data = "iast.response.name=DongTai Iast\niast.server.url={url}\niast.server.token={token}\niast.allhook.enable=false\niast.dump.class.enable=false\niast.dump.class.path=/tmp/iast-class-dump/\niast.service.report.interval=30000\napp.name=DongTai\nengine.status=start\nengine.name={agent_token}\njdk.version={jdk_level}\nproject.name={project_name}\niast.proxy.enable=false\niast.proxy.host=\niast.proxy.port=\niast.server.mode=local\n"
+            data = "iast.response.name=DongTai Iast\niast.server.url={url}\niast.server.token={token}\niast.allhook.enable=false\niast.dump.class.enable=false\niast.dump.class.path=/tmp/iast-class-dump/\niast.service.report.interval=30000\napp.name=DongTai\nengine.status=start\nengine.name={agent_token}\njdk.version={jdk_level}\nproject.name={project_name}\niast.proxy.enable=false\niast.proxy.host=\niast.proxy.port=\niast.server.mode=local\ndongtai.project.template={template_id}\n"
             with open(f'{self.user_target_path}/iast.properties', 'w') as config_file:
                 config_file.write(
                     data.format(url=base_url, token=auth_token, agent_token=agent_token, jdk_level=1,
-                                project_name=project_name)
+                                project_name=project_name,template_id=template_id)
                 )
             return True
         except Exception as e:
@@ -100,7 +102,7 @@ class PythonAgentDownload():
                 object_name=self.remote_agent_file, local_file=f"{self.original_agent_file}"
             )
 
-    def create_config(self, base_url, agent_token, auth_token, project_name):
+    def create_config(self, base_url, agent_token, auth_token, project_name, **kwargs):
         try:
             user_file = f"{self.target_path}/{self.agent_file}"
             if not AgentDownload.is_tar_file(self.original_agent_file):
@@ -169,7 +171,7 @@ class PhpAgentDownload():
                 object_name=self.remote_agent_file, local_file=f"{self.original_agent_file}"
             )
 
-    def create_config(self, base_url, agent_token, auth_token, project_name):
+    def create_config(self, base_url, agent_token, auth_token, project_name, **kwargs):
         try:
             user_file = f"{self.target_path}/{self.agent_file}"
             if not AgentDownload.is_tar_file(self.original_agent_file):
@@ -238,7 +240,7 @@ class GoAgentDownload():
     def download_agent(self):
         return True
 
-    def create_config(self, base_url, agent_token, auth_token, project_name):
+    def create_config(self, base_url, agent_token, auth_token, project_name, **kwargs):
         with open(f"{self.target_path}/{self.agent_file}", "w") as fp:
             configs = [
                 f'DongtaiGoOpenapi: "{base_url}"',
@@ -255,12 +257,14 @@ class GoAgentDownload():
         return True
 
 
-class AgentDownload(UserEndPoint):
+class AgentDownload(OpenApiEndPoint):
     """
     当前用户详情
     """
     name = "download_iast_agent"
     description = "下载洞态Agent"
+    authentication_classes = (DepartmentTokenAuthentication,
+                              TokenAuthentication, SessionAuthentication)
 
     @staticmethod
     def is_tar_file(file):
@@ -301,9 +305,14 @@ class AgentDownload(UserEndPoint):
         try:
             base_url = request.query_params.get('url', 'https://www.huoxian.cn')
             project_name = request.query_params.get('projectName', 'Demo Project')
+            project_version = request.query_params.get('projectVersion', 'V1.0')
             language = request.query_params.get('language')
+            department_token = request.query_params.get('department_token')
+            template_id = request.query_params.get('template_id')
             user_token = request.query_params.get('token', None)
-            if not user_token:
+            if department_token:
+                final_token = department_token
+            elif not user_token:
                 token, success = Token.objects.get_or_create(user=request.user)
                 final_token = token.key
             else:
@@ -315,8 +324,13 @@ class AgentDownload(UserEndPoint):
             if handler.download_agent() is False:
                 return R.failure(msg="agent file download failure. please contact official staff for help.")
 
-            if handler.create_config(base_url=base_url, agent_token=agent_token, auth_token=final_token,
-                                     project_name=project_name):
+            if handler.create_config(
+                    base_url=base_url,
+                    agent_token=agent_token,
+                    auth_token=final_token,
+                    project_name=project_name,
+                    template_id=template_id,
+            ):
                 handler.replace_config()
                 response = FileResponse(
                     open(f"{handler.target_path}/{handler.agent_file}", "rb"))
@@ -324,12 +338,12 @@ class AgentDownload(UserEndPoint):
                 response[
                     'Content-Disposition'] = f"attachment; filename={handler.agent_file}"
                 return response
-            else:
-                return R.failure(msg="agent file not exit.")
+            return R.failure(msg="agent file not exit.")
         except Exception as e:
             logger.error(
                 _('Agent download failed, user: {}, error details: {}').format(
-                    request.user.get_username(), e))
+                    request.user.get_username(), e),
+                exc_info=e)
             return R.failure(msg="agent file not exit.")
         finally:
             try:

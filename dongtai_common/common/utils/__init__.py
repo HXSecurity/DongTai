@@ -91,3 +91,31 @@ def cached_decorator(random_range, use_celery_update=False):
         return cached(function, random_range, use_celery_update=use_celery_update)
 
     return _noname
+
+from rest_framework.authentication import TokenAuthentication, get_authorization_header
+
+
+class DepartmentTokenAuthentication(TokenAuthentication):
+
+    keyword = 'Token GROUP'
+    model = None
+
+    def authenticate_credentials(self, key):
+        from dongtai_common.models.department import Department
+        from dongtai_common.models.user import User
+        model = Department
+        try:
+            department = model.objects.get(token=key)
+            user = User.objects.get(pk=department.principal_id)
+        except model.DoesNotExist:
+            raise exceptions.AuthenticationFailed(_('Invalid token.'))
+        return (user, key)
+
+    def authenticate(self, request):
+        auth = get_authorization_header(request)
+        if not auth or not auth.lower().startswith(
+                self.keyword.lower().encode()):
+            return None
+        token = auth.lower().replace(self.keyword.lower().encode(), b'',
+                                     1).decode()
+        return self.authenticate_credentials(token)

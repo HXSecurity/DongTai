@@ -89,6 +89,7 @@ from dongtai_web.views.user_passwrd import UserPassword
 from dongtai_web.views.user_passwrd_reset import UserPasswordReset
 from dongtai_web.views.user_register_batch import UserRegisterEndPoint
 from dongtai_web.views.user_token import UserToken
+from dongtai_web.views.user_token import UserDepartmentToken
 from dongtai_web.views.vul_count_for_plugin import VulCountForPluginEndPoint
 from dongtai_web.views.vul_delete import VulDelete
 from dongtai_web.views.vul_details import (
@@ -151,7 +152,7 @@ from dongtai_web.threshold.config_setting import (
 from dongtai_web.vul_log.vul_log_view import VulLogViewSet
 from dongtai_web.vul_recheck_payload.vul_recheck_payload import VulReCheckPayloadViewSet
 from dongtai_web.header_vul.base import HeaderVulViewSet
-
+from dongtai_web.projecttemplate import IastProjectTemplateView
 
 urlpatterns = [
     path('user/<int:user_id>', UserDetailEndPoint.as_view()),
@@ -160,6 +161,7 @@ urlpatterns = [
     path('user/logout', UserLogout.as_view()),
     path('user/info', UserInfoEndpoint.as_view()),
     path('user/token', UserToken.as_view()),
+    path('user/department/token', UserDepartmentToken.as_view()),
     path('user/password/reset', UserPasswordReset.as_view()),
     path('captcha/', include('captcha.urls')),
     path(r'captcha/refresh', CaptchaCreate.as_view()),
@@ -369,6 +371,18 @@ urlpatterns = [
     path('header_vul/<int:pk>', HeaderVulViewSet.as_view({
         'delete': "delete",
     })),
+    path(
+        'projecttemplate/<int:pk>',
+        IastProjectTemplateView.as_view({
+            'get': "retrieve",
+            'put': 'update',
+            'delete': 'delete',
+        })),
+    path('projecttemplate',
+         IastProjectTemplateView.as_view({
+             'get': "list",
+             'post': 'create',
+         })),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
