@@ -7,6 +7,7 @@
 
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.models.department import Department
@@ -31,12 +32,17 @@ class PermissionsMixin(models.Model):
 
 
 class SaaSUserManager(UserManager):
+
     def create_user(self, username, email=None, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', 0)
         return self._create_user(username, email, password, **extra_fields)
 
-    def create_talent_user(self, username, email=None, password=None, **extra_fields):
+    def create_talent_user(self,
+                           username,
+                           email=None,
+                           password=None,
+                           **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', 2)
 
@@ -47,7 +53,11 @@ class SaaSUserManager(UserManager):
 
         return self._create_user(username, email, password, **extra_fields)
 
-    def create_system_user(self, username, email=None, password=None, **extra_fields):
+    def create_system_user(self,
+                           username,
+                           email=None,
+                           password=None,
+                           **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', 1)
 
@@ -81,3 +91,9 @@ class User(AbstractUser, PermissionsMixin):
 
     def get_department(self):
         return self.department.get()
+
+    def get_relative_department(self):
+        department = self.get_department()
+        return Department.objects.filter(
+            Q(department_path__startswith=department.department_path)
+            | Q(principal_id=self.id))

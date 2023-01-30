@@ -22,3 +22,15 @@ class UserToken(UserEndPoint):
         token, success = Token.objects.get_or_create(user=request.user)
 
         return R.success(data={'token': token.key})
+
+
+class UserDepartmentToken(UserEndPoint):
+    name = "iast-v1-user-department-token"
+    description = _("Get Department Deploy token")
+
+    def get(self, request):
+        departments = request.user.get_relative_department()
+        tokens = departments.values('token', 'name').all()
+        for token in tokens:
+            token['token'] = 'GROUP' + token['token']
+        return R.success(data=list(tokens))
