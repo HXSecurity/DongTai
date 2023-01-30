@@ -13,7 +13,6 @@ import asyncio
 from typing import List, Tuple
 import asyncio_gevent
 
-
 DELETE_BATCH_SIZE = 10000
 
 
@@ -63,9 +62,10 @@ def data_cleanup(days: int):
                 'id', flat=True).first()
         if not any([latest_id, first_id]):
             logger.info("no data for clean up")
-        batch_clean(latest_id, first_id, 10000)
-        # qs = MethodPool.objects.filter(pk__lte=latest_id)
-        # qs._raw_delete(qs.db)
+        if all([latest_id, first_id]):
+            batch_clean(latest_id, first_id, 10000)
+            # qs = MethodPool.objects.filter(pk__lte=latest_id)
+            # qs._raw_delete(qs.db)
 
 
 @sync_to_async(thread_sensitive=False)
