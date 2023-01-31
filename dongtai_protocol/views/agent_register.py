@@ -19,7 +19,6 @@ from rest_framework.request import Request
 from django.utils.translation import gettext_lazy as _
 from django.db import transaction
 import time
-from dongtai_common.utils.license import is_agent_allowed
 from dongtai_common.endpoint import OpenApiEndPoint, R
 
 import json
