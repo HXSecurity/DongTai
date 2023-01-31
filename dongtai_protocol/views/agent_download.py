@@ -55,13 +55,14 @@ class JavaAgentDownload():
                 object_name=self.remote_agent_file, local_file=f"{self.original_agent_file}"
             )
 
-    def create_config(self, base_url, agent_token, auth_token, project_name, template_id):
+    def create_config(self, base_url, agent_token, auth_token, project_name,
+                      project_version, template_id):
         try:
             user_file = f"{self.target_path}/{self.agent_file}"
             if not os.path.exists(user_file):
                 shutil.copyfile(self.original_agent_file, user_file)
 
-            data = "iast.response.name=DongTai Iast\niast.server.url={url}\niast.server.token={token}\niast.allhook.enable=false\niast.dump.class.enable=false\niast.dump.class.path=/tmp/iast-class-dump/\niast.service.report.interval=30000\napp.name=DongTai\nengine.status=start\nengine.name={agent_token}\njdk.version={jdk_level}\nproject.name={project_name}\niast.proxy.enable=false\niast.proxy.host=\niast.proxy.port=\niast.server.mode=local\ndongtai.project.template={template_id}\n"
+            data = "iast.response.name=DongTai Iast\niast.server.url={url}\niast.server.token={token}\niast.allhook.enable=false\niast.dump.class.enable=false\niast.dump.class.path=/tmp/iast-class-dump/\niast.service.report.interval=30000\napp.name=DongTai\nengine.status=start\nengine.name={agent_token}\njdk.version={jdk_level}\nproject.name={project_name}\niast.proxy.enable=false\niast.proxy.host=\niast.proxy.port=\niast.server.mode=local\ndongtai.app.template={template_id}\nproject.version={project_version}\n"
             with open(f'{self.user_target_path}/iast.properties', 'w') as config_file:
                 config_file.write(
                     data.format(url=base_url, token=auth_token, agent_token=agent_token, jdk_level=1,
@@ -329,6 +330,7 @@ class AgentDownload(OpenApiEndPoint):
                     agent_token=agent_token,
                     auth_token=final_token,
                     project_name=project_name,
+                    project_version=project_version,
                     template_id=template_id,
             ):
                 handler.replace_config()
