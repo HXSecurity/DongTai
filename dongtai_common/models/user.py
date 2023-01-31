@@ -78,19 +78,30 @@ class User(AbstractUser, PermissionsMixin):
     class Meta(AbstractUser.Meta):
         db_table = 'auth_user'
 
-    def is_talent_admin(self):
-        return self.is_superuser == 2 or self.is_superuser == 1
-
     def is_system_admin(self):
         return self.is_superuser == 1
 
+    def is_talent_admin(self):
+        return self.is_superuser == 2 or self.is_superuser == 1
+
     def get_talent(self):
-        department = self.department.get() if self else None
-        talent = department.talent.get() if department else None
+        try:
+            department = self.department.get() if self.department else None
+            talent = department.talent.get() if department else None
+        except Exception as e:
+            talent = None
         return talent
 
     def get_department(self):
-        return self.department.get()
+        try:
+            department = self.department.get()
+        except Exception as e:
+            department = None
+        return department
+
+    @property
+    def is_department_admin(self):
+        return Department.objects.filter(principal_id=self.id).exists()
 
     def get_relative_department(self):
         department = self.get_department()
