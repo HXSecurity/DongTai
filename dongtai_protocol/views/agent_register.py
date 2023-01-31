@@ -19,6 +19,7 @@ from rest_framework.request import Request
 from django.utils.translation import gettext_lazy as _
 from django.db import transaction
 import time
+from dongtai_common.utils.license import is_agent_allowed
 from dongtai_common.endpoint import OpenApiEndPoint, R
 
 import json
@@ -238,48 +239,35 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             user = request.user
             version_name = param.get('projectVersion', 'V1.0')
             version_name = version_name if version_name else 'V1.0'
-            template_id = param.get('template_id', None)
-            with transaction.atomic():
-                default_params = {
-                    'scan_id': 5,
-                    'agent_count': 0,
-                    'mode': '插桩模式',
-                    'latest_time': int(time.time())
-                }
+            template_id = param.get('projectTemplateId', None)
+            default_params = {
+                'scan_id': 5,
+                'agent_count': 0,
+                'mode': '插桩模式',
+                'latest_time': int(time.time())
+            }
 
-                if template_id is not None:
-                    template = IastProjectTemplate.objects.filter(
-                        pk=template_id).first()
-                    if not template:
-                        template = IastProjectTemplate.objects.filter(
-                            is_system=1).first()
-                else:
+            if template_id is not None:
+                template = IastProjectTemplate.objects.filter(
+                    pk=template_id).first()
+                if not template:
                     template = IastProjectTemplate.objects.filter(
                         is_system=1).first()
+            else:
+                template = IastProjectTemplate.objects.filter(
+                    is_system=1).first()
 
-                default_params.update(template.to_full_project_args())
+            default_params.update(template.to_full_project_args())
 
-                obj, project_created = IastProject.objects.get_or_create(
-                    name=project_name,
-                    user=request.user,
-                    defaults=default_params,
-                )
-                project_version, version_created = IastProjectVersion.objects.get_or_create(
-                    project_id=obj.id,
-                    version_name=version_name,
-                    defaults={
-                        'user': request.user,
-                        'version_name': version_name,
-                        'status': 1,
-                        'description': '',
-                        'current_version': 0,
-                    })
-                if version_created:
-                    count = IastProjectVersion.objects.filter(
-                        project_id=obj.id).count()
-                    if count == 1:
-                        project_version.current_version = 1
-                        project_version.save()
+            with transaction.atomic():
+                (
+                    obj,
+                    project_created,
+                    project_version,
+                    version_created,
+                    template,
+                ) = project_create(default_params, project_name, request.user,
+                                   version_name, template)
             if project_created:
                 logger.info(_('auto create project {}').format(obj.id))
             if version_created:
@@ -406,3 +394,27 @@ def get_ipaddresslist(network: str) -> list:
     except Exception as e:
         logger.error(e, exc_info=e)
     return []
+
+
+def project_create(default_params, project_name, user, version_name, template):
+    obj, project_created = IastProject.objects.get_or_create(
+        name=project_name,
+        user=user,
+        defaults=default_params,
+    )
+    project_version, version_created = IastProjectVersion.objects.get_or_create(
+        project_id=obj.id,
+        version_name=version_name,
+        defaults={
+            'user': user,
+            'version_name': version_name,
+            'status': 1,
+            'description': '',
+            'current_version': 0,
+        })
+    if version_created:
+        count = IastProjectVersion.objects.filter(project_id=obj.id).count()
+        if count == 1:
+            project_version.current_version = 1
+            project_version.save()
+    return obj, project_created, project_version, version_created, template

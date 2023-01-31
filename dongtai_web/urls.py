@@ -152,7 +152,7 @@ from dongtai_web.threshold.config_setting import (
 from dongtai_web.vul_log.vul_log_view import VulLogViewSet
 from dongtai_web.vul_recheck_payload.vul_recheck_payload import VulReCheckPayloadViewSet
 from dongtai_web.header_vul.base import HeaderVulViewSet
-from dongtai_web.projecttemplate import IastProjectTemplateView
+from dongtai_web.projecttemplate.base import IastProjectTemplateView
 
 urlpatterns = [
     path('user/<int:user_id>', UserDetailEndPoint.as_view()),
