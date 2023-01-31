@@ -8,17 +8,6 @@ from dongtai_common.endpoint import UserEndPoint, R, TalentAdminEndPoint
 from rest_framework import viewsets
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from dongtai_common.models.url_blacklist import (
-    TargetType,
-    TargetOperator,
-    TargetScope,
-    State,
-    IastAgentBlackRule,
-    IastAgentBlackRuleDetail,
-    create_blacklist_rule,
-    update_blacklist_rule,
-)
-from dongtai_web.systemmonitor.url_blacklist import get_view_rule
 
 class PaginationSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=20,
@@ -40,14 +29,6 @@ class ProjectTemplateCreateArgsSerializer(serializers.Serializer):
     blacklist = serializers.SerializerMethodField(required=False)
 
     def get_blacklist(self, obj):
-        if 'id' not in obj:
-            return []
-        rules = IastAgentBlackRule.objects.filter(project_template_id=obj['id']).all()
-        rule_list = []
-        for rule in rules:
-            rule_dict = get_view_rule(rule)
-            rule_list.append(rule_dict)
-        return rule_list
         return []
 
 
@@ -66,37 +47,17 @@ class ProjectTemplateCreateArgsSerializer(serializers.Serializer):
 
 def template_create(data, user):
     data['user_id'] = user.id
-    data_copy = data.copy()
     for field in ["blacklist"]:
         del data[field]
     project_template = IastProjectTemplate.objects.create(**data)
     pk = project_template.id
-    scope = TargetScope.TEMPLATE
-    for rule in data_copy['blacklist']:
-        create_blacklist_rule(rule['target'],
-                              rule['operator'],
-                              rule['value'],
-                              rule['state'],
-                              project_template_id=pk,
-                              scope=scope)
     return pk
 
 def template_update(pk, data, user):
     data['user_id'] = user.id
-    data_copy = data.copy()
     for field in ["blacklist"]:
         del data[field]
     IastProjectTemplate.objects.filter(pk=pk).update(**data)
-    scope = TargetScope.TEMPLATE
-    for rule in data_copy['blacklist']:
-        IastAgentBlackRule.objects.filter(project_template_id=pk).delete()
-        create_blacklist_rule(rule['target'],
-                              rule['operator'],
-                              rule['value'],
-                              rule['state'],
-                              project_template_id=pk,
-                              scope=scope)
-
 
 
 class IastProjectTemplateView(TalentAdminEndPoint, viewsets.ViewSet):
@@ -156,7 +117,7 @@ class IastProjectTemplateView(TalentAdminEndPoint, viewsets.ViewSet):
                                  description=_("get project template"),
                                  tags=[_('projectemplate')])
     def retrieve(self, request, pk):
-        obj = IastProjectTemplate.objects.filter(pk=pk).first()
+        obj = IastProjectTemplate.objects.filter(pk=pk).values().first()
         if not obj:
             return R.failure()
         return R.success(data=ProjectTemplateCreateArgsSerializer(obj).data)
