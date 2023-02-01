@@ -37,5 +37,5 @@ class AgentConfigAllinOneView(OpenApiEndPoint):
             ser.is_valid(True)
         except ValidationError as e:
             return R.failure(data=e.detail)
-        data = get_agent_data_gather_config(ser.agent_id)
+        data = get_agent_data_gather_config(ser.data['agent_id'])
         return R.success(data=data)
