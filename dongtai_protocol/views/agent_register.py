@@ -256,7 +256,8 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 template = IastProjectTemplate.objects.filter(
                     is_system=1).first()
 
-            default_params.update(template.to_full_project_args())
+            default_params.update(
+                template.to_full_project_args() if template else {})
 
             with transaction.atomic():
                 (
