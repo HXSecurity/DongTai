@@ -27,6 +27,7 @@ class ProjectTemplateCreateArgsSerializer(serializers.Serializer):
     data_gather_is_followglobal = serializers.IntegerField(required=False,default=0)
     blacklist_is_followglobal = serializers.IntegerField(required=False,default=0)
     blacklist = serializers.SerializerMethodField(required=False)
+    is_system = serializers.IntegerField(required=False,default=0)
 
     def get_blacklist(self, obj):
         return []
