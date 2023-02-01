@@ -65,9 +65,15 @@ class JavaAgentDownload():
             data = "iast.response.name=DongTai Iast\niast.server.url={url}\niast.server.token={token}\niast.allhook.enable=false\niast.dump.class.enable=false\niast.dump.class.path=/tmp/iast-class-dump/\niast.service.report.interval=30000\napp.name=DongTai\nengine.status=start\nengine.name={agent_token}\njdk.version={jdk_level}\nproject.name={project_name}\niast.proxy.enable=false\niast.proxy.host=\niast.proxy.port=\niast.server.mode=local\ndongtai.app.template={template_id}\nproject.version={project_version}\n"
             with open(f'{self.user_target_path}/iast.properties', 'w') as config_file:
                 config_file.write(
-                    data.format(url=base_url, token=auth_token, agent_token=agent_token, jdk_level=1,
-                                project_name=project_name,template_id=template_id)
-                )
+                    data.format(
+                        url=base_url,
+                        token=auth_token,
+                        agent_token=agent_token,
+                        jdk_level=1,
+                        project_name=project_name,
+                        template_id=template_id,
+                        project_version=project_version,
+                    ))
             return True
         except Exception as e:
             logger.error(_('Agent configuration file creation failed, reason: {E}').format(e))
