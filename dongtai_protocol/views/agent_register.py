@@ -344,20 +344,23 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         if exist_project:
             IastAgent.objects.filter(token=token, online=1,
                                      user=user).update(online=0)
-        agent = IastAgent.objects.create(token=token,
-                                         version=version,
-                                         latest_time=int(time.time()),
-                                         user=user,
-                                         is_running=1,
-                                         bind_project_id=project_id,
-                                         project_name=project_name,
-                                         control=0,
-                                         is_control=0,
-                                         is_core_running=1,
-                                         online=1,
-                                         project_version_id=project_version_id,
-                                         language=language,
-                                         is_audit=is_audit)
+        agent = IastAgent.objects.create(
+            token=token,
+            version=version,
+            latest_time=int(time.time()),
+            user=user,
+            is_running=1,
+            bind_project_id=project_id,
+            project_name=project_name,
+            control=0,
+            is_control=0,
+            is_core_running=1,
+            online=1,
+            project_version_id=project_version_id,
+            language=language,
+            is_audit=is_audit,
+            department=user.get_using_department(),
+        )
         return agent.id
 
 
@@ -397,10 +400,12 @@ def get_ipaddresslist(network: str) -> list:
 
 
 def project_create(default_params, project_name, user, version_name, template):
+    department = user.get_using_department()
     obj, project_created = IastProject.objects.get_or_create(
         name=project_name,
         user=user,
         defaults=default_params,
+        department=department,
     )
     project_version, version_created = IastProjectVersion.objects.get_or_create(
         project_id=obj.id,

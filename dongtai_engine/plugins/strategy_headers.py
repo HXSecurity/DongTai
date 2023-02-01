@@ -171,7 +171,10 @@ def save_vul(vul_type, method_pool, position=None, data=None):
             latest_time=timestamp,
             client_ip=method_pool.clent_ip,
             param_name=None,
-            method_pool_id=method_pool.id)
+            method_pool_id=method_pool.id,
+            project_version_id=vul.agent.project_version_id,
+            project_id=vul.agent.bind_project_id,
+            )
         log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
                       vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)
     cache.delete(cache_key)
