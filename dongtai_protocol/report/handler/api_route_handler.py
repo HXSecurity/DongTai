@@ -87,6 +87,8 @@ def _route_dump(item, api_method, agent):
     item['agent'] = agent
     item['path'] = item['uri']
     del item['uri']
+    item['project_id'] = agent.bind_project_id
+    item['project_version_id'] = agent.project_version_id
     return item
 
 

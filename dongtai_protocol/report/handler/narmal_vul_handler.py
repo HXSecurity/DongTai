@@ -214,7 +214,7 @@ class NormalVulnHandler(BaseVulnHandler):
             strategy_id=strategy_id,
             uri=self.app_caller[index + 2],
             http_method=self.http_method,
-            agent__in=project_agents,
+            project_version_id=self.agent.project_version_id,
             is_del=0).order_by('-latest_time').first()
         project = IastProject.objects.filter(
             pk=self.agent.bind_project_id).first()
@@ -258,7 +258,10 @@ class NormalVulnHandler(BaseVulnHandler):
                 client_ip=self.client_ip,
                 full_stack=json.dumps(full_stack, ensure_ascii=False),
                 top_stack=self.app_caller[index + 1],
-                bottom_stack=self.app_caller[index + 2])
+                bottom_stack=self.app_caller[index + 2],
+                project_version_id=iast_vul.agent.project_version_id,
+                project_id=iast_vul.agent.bind_project_id,
+                )
             log_vul_found(iast_vul.agent.user_id,
                           iast_vul.agent.bind_project.name,
                           iast_vul.agent.bind_project_id, iast_vul.id,
@@ -267,7 +270,7 @@ class NormalVulnHandler(BaseVulnHandler):
             strategy_id=strategy_id,
             uri=self.http_uri,
             http_method=self.http_method,
-            agent__in=project_agents,
+            project_version_id=iast_vul.agent.project_version_id,
             pk__lt=iast_vul.id,
         ).delete()
         header_vul = None

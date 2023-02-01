@@ -9,6 +9,7 @@ from django.db import models
 from dongtai_common.models import User
 from dongtai_common.models.strategy_user import IastStrategyUser
 from dongtai_common.utils.settings import get_managed
+from dongtai_common.models.department import Department
 import time
 
 
@@ -51,6 +52,10 @@ class IastProject(models.Model):
     data_gather = models.JSONField()
     data_gather_is_followglobal = models.IntegerField(default=1)
     blacklist_is_followglobal = models.IntegerField(default=1)
+    department = models.ForeignKey(Department,
+                                   models.DO_NOTHING,
+                                   blank=True,
+                                   null=True)
 
     class Meta:
         managed = get_managed()
