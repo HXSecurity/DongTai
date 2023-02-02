@@ -75,10 +75,10 @@ class IastApiRoute(models.Model):
     from_where = models.IntegerField(default=FromWhereChoices.FROM_AGENT,
                                      choices=FromWhereChoices.choices)
     project = models.ForeignKey(IastProject,
-                                     on_delete=models.CASCADE,
-                                     blank=True,
-                                     null=True,
-                                     default=-1)
+                                on_delete=models.CASCADE,
+                                blank=True,
+                                null=True,
+                                default=-1)
     project_version = models.ForeignKey(IastProjectVersion,
                                         on_delete=models.CASCADE,
                                         blank=True,

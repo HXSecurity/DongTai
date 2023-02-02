@@ -53,7 +53,10 @@ class IastVulnerabilityModel(models.Model):
     bottom_stack = models.CharField(max_length=255, blank=True, null=True)
     taint_value = models.CharField(max_length=255, blank=True, null=True)
     taint_position = models.CharField(max_length=255, blank=True, null=True)
-    agent = models.ForeignKey(IastAgent, models.DO_NOTHING, blank=True, null=True)
+    agent = models.ForeignKey(IastAgent,
+                              models.DO_NOTHING,
+                              blank=True,
+                              null=True)
     context_path = models.CharField(max_length=255, blank=True, null=True)
     counts = models.IntegerField(blank=True, null=True)
     first_time = models.IntegerField(blank=True, null=True)
@@ -80,10 +83,10 @@ class IastVulnerabilityModel(models.Model):
                                db_constraint=False,
                                db_column='status_id')
     project = models.ForeignKey(IastProject,
-                                     on_delete=models.CASCADE,
-                                     blank=True,
-                                     null=True,
-                                     default=-1)
+                                on_delete=models.CASCADE,
+                                blank=True,
+                                null=True,
+                                default=-1)
     project_version = models.ForeignKey(IastProjectVersion,
                                         on_delete=models.CASCADE,
                                         blank=True,
