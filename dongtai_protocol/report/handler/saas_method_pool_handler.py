@@ -39,7 +39,7 @@ import base64
 from typing import Tuple
 from django.core.cache import cache
 from datetime import datetime, timedelta
-
+from dongtai_common.models.agent import IastAgent
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -101,7 +101,7 @@ class SaasMethodPoolHandler(IReportHandler):
         """
         headers = SaasMethodPoolHandler.parse_headers(self.http_req_header)
         #save_project_header(list(headers.keys()), self.agent_id)
-        #add_new_api_route(self.agent_id, self.http_uri, self.http_method)
+        add_new_api_route(self.agent, self.http_uri, self.http_method)
         import base64
         params_dict = get_params_dict(base64.b64decode(self.http_req_header),
                                       self.http_req_data,
@@ -415,14 +415,14 @@ def save_project_header(keys: list, agent_id: int):
                                                     ignore_conflicts=True)
 
 
-def add_new_api_route(agent_id, path, method):
-    logger.info(f"{agent_id}, {path}, {method}")
+def add_new_api_route(agent: IastAgent, path, method):
+    logger.info(f"{agent.id}, {path}, {method}")
     uuid_key = uuid.uuid4().hex
     is_api_cached = uuid_key != cache.get_or_set(
-        f'api_route-{agent_id}-{path}-{method}', uuid_key, 60 * 5)
+        f'api_route-{agent.id}-{path}-{method}', uuid_key, 60 * 5)
     if is_api_cached:
         logger.info(
-            f"found cache api_route-{agent_id}-{path}-{method} ,skip its insert"
+            f"found cache api_route-{agent.id}-{path}-{method} ,skip its insert"
         )
         return
     try:
@@ -436,7 +436,10 @@ def add_new_api_route(agent_id, path, method):
             from_where=FromWhereChoices.FROM_METHOD_POOL,
             method_id=api_method.id,
             path=path,
-            agent_id=agent_id)
+            agent_id=agent.id,
+            project_id=agent.bind_project_id,
+            project_version_id=agent.project_version_id,
+        )
 
     except IntegrityError as e:
         logger.info(e)
