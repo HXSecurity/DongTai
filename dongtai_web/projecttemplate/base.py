@@ -49,7 +49,8 @@ class ProjectTemplateCreateArgsSerializer(serializers.Serializer):
 def template_create(data, user):
     data['user_id'] = user.id
     for field in ["blacklist"]:
-        del data[field]
+        if field in data:
+            del data[field]
     project_template = IastProjectTemplate.objects.create(**data)
     pk = project_template.id
     return pk
@@ -57,7 +58,8 @@ def template_create(data, user):
 def template_update(pk, data, user):
     data['user_id'] = user.id
     for field in ["blacklist"]:
-        del data[field]
+        if field in data:
+            del data[field]
     IastProjectTemplate.objects.filter(pk=pk).update(**data)
 
 
