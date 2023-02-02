@@ -24,6 +24,7 @@ from django.db import IntegrityError
 
 
 class FakeSocket():
+
     def __init__(self, response_str):
         self._file = BytesIO(response_str)
 
@@ -54,7 +55,8 @@ def check_strict_transport_security(response):
     if response.getheader('Strict-Transport-Security'):
         # parse max-age
         import re
-        result = re.match('max-age=(\\d+);.*?', response.getheader('Strict-Transport-Security'))
+        result = re.match('max-age=(\\d+);.*?',
+                          response.getheader('Strict-Transport-Security'))
         if result is None:
             return
         max_age = result.group(1)
@@ -74,18 +76,27 @@ def check_x_content_type_options(response):
 
 def check_response_header(method_pool):
     try:
-        response = parse_response(method_pool.res_header.strip() + '\n\n' + method_pool.res_body.strip())
+        response = parse_response(method_pool.res_header.strip() + '\n\n' +
+                                  method_pool.res_body.strip())
         if check_csp(response):
-            save_vul('Response Without Content-Security-Policy Header', method_pool, position='HTTP Response Header')
+            save_vul('Response Without Content-Security-Policy Header',
+                     method_pool,
+                     position='HTTP Response Header')
         if check_x_xss_protection(response):
             save_vul('Response With X-XSS-Protection Disabled', method_pool)
         if check_strict_transport_security(response):
-            save_vul('Response With Insecurely Configured Strict-Transport-Security Header', method_pool,
-                     position='HTTP Response Header')
+            save_vul(
+                'Response With Insecurely Configured Strict-Transport-Security Header',
+                method_pool,
+                position='HTTP Response Header')
         if check_x_frame_options(response):
-            save_vul('Pages Without Anti-Clickjacking Controls', method_pool, position='HTTP Response Header')
+            save_vul('Pages Without Anti-Clickjacking Controls',
+                     method_pool,
+                     position='HTTP Response Header')
         if check_x_content_type_options(response):
-            save_vul('Response Without X-Content-Type-Options Header', method_pool, position='HTTP Response Header')
+            save_vul('Response Without X-Content-Type-Options Header',
+                     method_pool,
+                     position='HTTP Response Header')
     except Exception as e:
         logger.error("check_response_header failed, reason: " + str(e))
 
@@ -174,7 +185,7 @@ def save_vul(vul_type, method_pool, position=None, data=None):
             method_pool_id=method_pool.id,
             project_version_id=vul.agent.project_version_id,
             project_id=vul.agent.bind_project_id,
-            )
+        )
         log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
                       vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)
     cache.delete(cache_key)
