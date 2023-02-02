@@ -238,8 +238,6 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     pattern_uri: str = pattern_string if pattern_string else get_original_url(
         vul_meta.uri, url_desc)
     logger.info(f"agent_id: {vul_meta.agent_id} vul_uri_pattern: {pattern_uri} vul_uri: {vul_meta.uri} param_name: {param_name}")
-    from dongtai_common.models.agent import IastAgent
-    project_agents = IastAgent.objects.filter(project_version_id=vul_meta.agent.project_version_id)
     uuid_key = uuid.uuid4().hex
     cache_key = f'vul_save-{strategy_id}-{pattern_uri}-{vul_meta.http_method}-{vul_meta.agent.project_version_id}-{param_name}'
     is_api_cached = uuid_key != cache.get_or_set(cache_key, uuid_key)
@@ -250,7 +248,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
         strategy_id=strategy_id,
         pattern_uri=pattern_uri,
         http_method=vul_meta.http_method,
-        agent__project_version_id=vul_meta.agent.project_version_id,
+        project_version_id=vul_meta.agent.project_version_id,
         param_name=param_name,
     ).order_by('-latest_time').first()
     IastProject.objects.filter(id=vul_meta.agent.bind_project_id).update(latest_time=timestamp)
@@ -311,7 +309,9 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
             latest_time=timestamp,
             client_ip=vul_meta.clent_ip,
             param_name=param_name,
-            method_pool_id=vul_meta.id
+            method_pool_id=vul_meta.id,
+            project_version_id=vul_meta.agent.project_version_id,
+            project_id=vul_meta.agent.bind_project_id,
         )
         log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
                       vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)

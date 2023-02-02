@@ -74,6 +74,7 @@ class User(AbstractUser, PermissionsMixin):
     phone = models.CharField(max_length=15)
     default_language = models.CharField(max_length=15)
     objects = SaaSUserManager()
+    using_department = None
 
     class Meta(AbstractUser.Meta):
         db_table = 'auth_user'
@@ -108,3 +109,8 @@ class User(AbstractUser, PermissionsMixin):
         return Department.objects.filter(
             Q(department_path__startswith=department.department_path)
             | Q(principal_id=self.id))
+
+    def get_using_department(self):
+        if self.using_department:
+            return self.using_department
+        return self.get_department()
