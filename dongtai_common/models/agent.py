@@ -14,6 +14,7 @@ from dongtai_common.utils.settings import get_managed
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
 import json
+from dongtai_common.models.department import Department
 from time import time
 
 
@@ -63,6 +64,10 @@ class IastAgent(models.Model):
     except_running_status = models.IntegerField(default=1, null=False)
     state_status = models.IntegerField(default=1, null=False)
     events = models.JSONField(null=False, default=lambda: ['注册成功'])
+    department = models.ForeignKey(Department,
+                                   models.DO_NOTHING,
+                                   blank=True,
+                                   null=True)
 
     class Meta:
         managed = get_managed()

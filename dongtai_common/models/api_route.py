@@ -9,6 +9,8 @@
 from django.db import models
 from dongtai_common.utils.settings import get_managed
 from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.project import IastProject
+from dongtai_common.models.project_version import IastProjectVersion
 
 
 class HttpMethod(models.Model):
@@ -66,12 +68,22 @@ class IastApiRoute(models.Model):
                                  db_column='code_file')
     controller = models.CharField(max_length=100, blank=True)
     agent = models.ForeignKey(IastAgent,
-                              on_delete=models.CASCADE,
+                              on_delete=models.DO_NOTHING,
                               db_constraint=False,
                               db_index=True,
                               db_column='agent_id')
     from_where = models.IntegerField(default=FromWhereChoices.FROM_AGENT,
                                      choices=FromWhereChoices.choices)
+    project = models.ForeignKey(IastProject,
+                                on_delete=models.CASCADE,
+                                blank=True,
+                                null=True,
+                                default=-1)
+    project_version = models.ForeignKey(IastProjectVersion,
+                                        on_delete=models.CASCADE,
+                                        blank=True,
+                                        null=True,
+                                        default=-1)
 
     class Meta:
         managed = get_managed()

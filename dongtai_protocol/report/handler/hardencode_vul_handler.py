@@ -6,7 +6,6 @@
 # @description :
 ######################################################################
 
-
 import json
 import logging
 import random
@@ -25,7 +24,6 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import ValidationError
 from dongtai_web.vul_log.vul_log import log_vul_found
 from dongtai_common.models.agent import IastAgent
-
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -46,6 +44,7 @@ class HardEncodeVulSerializer(serializers.Serializer):
 
 @ReportHandler.register(const.REPORT_VULN_HARDCODE)
 class HardEncodeVulHandler(IReportHandler):
+
     def parse(self):
         ser = HardEncodeVulSerializer(data=self.detail)
         try:
@@ -69,7 +68,8 @@ class HardEncodeVulHandler(IReportHandler):
             strategy_id=strategy.id,
             uri=self.detail.get('class', ''),
             http_method='',
-            agent__in=project_agents).order_by('-latest_time').first()
+            project_version_id=self.agent.project_version_id).order_by(
+                '-latest_time').first()
         timestamp = int(time.time())
         if iast_vul:
             iast_vul.uri = self.detail.get('file', ''),
@@ -109,12 +109,15 @@ class HardEncodeVulHandler(IReportHandler):
                 top_stack="字段:{}".format(self.field),
                 method_pool_id=-1,
                 bottom_stack="硬编码值:{}".format(self.value),
-                agent=self.agent)
+                agent=self.agent,
+                project_version_id=iast_vul.agent.project_version_id,
+                project_id=iast_vul.agent.bind_project_id,
+            )
         IastVulnerabilityModel.objects.filter(
             strategy_id=strategy.id,
             uri=self.detail.get('file', ''),
             http_method='',
-            agent__in=project_agents,
+            project_version_id=iast_vul.agent.project_version_id,
             pk__lt=iast_vul.id).delete()
         log_vul_found(iast_vul.agent.user_id, iast_vul.agent.bind_project.name,
                       iast_vul.agent.bind_project_id, iast_vul.id,

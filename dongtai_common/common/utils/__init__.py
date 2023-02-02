@@ -107,6 +107,7 @@ class DepartmentTokenAuthentication(TokenAuthentication):
         try:
             department = model.objects.get(token=key)
             user = User.objects.get(pk=department.principal_id)
+            user.using_department = department
         except model.DoesNotExist:
             raise exceptions.AuthenticationFailed(_('Invalid token.'))
         return (user, key)
