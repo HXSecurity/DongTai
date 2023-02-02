@@ -261,7 +261,7 @@ class NormalVulnHandler(BaseVulnHandler):
                 bottom_stack=self.app_caller[index + 2],
                 project_version_id=iast_vul.agent.project_version_id,
                 project_id=iast_vul.agent.bind_project_id,
-                )
+            )
             log_vul_found(iast_vul.agent.user_id,
                           iast_vul.agent.bind_project.name,
                           iast_vul.agent.bind_project_id, iast_vul.id,
