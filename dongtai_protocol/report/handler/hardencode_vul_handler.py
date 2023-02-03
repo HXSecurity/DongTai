@@ -110,8 +110,8 @@ class HardEncodeVulHandler(IReportHandler):
                 method_pool_id=-1,
                 bottom_stack="硬编码值:{}".format(self.value),
                 agent=self.agent,
-                project_version_id=iast_vul.agent.project_version_id,
-                project_id=iast_vul.agent.bind_project_id,
+                project_version_id=self.agent.project_version_id,
+                project_id=self.agent.bind_project_id,
             )
         IastVulnerabilityModel.objects.filter(
             strategy_id=strategy.id,
