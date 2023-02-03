@@ -198,7 +198,7 @@ class ScaSummary(UserEndPoint):
         if project_id and project_id != '':
             version_id = request.GET.get('version_id', None)
             if not version_id:
-                current_project_version = get_project_version(project_id, auth_users)
+                current_project_version = get_project_version(project_id)
             else:
                 current_project_version = get_project_version_by_id(version_id)
             # base_query_sql = base_query_sql + " and iast_asset.project_id=%s and iast_asset.project_version_id=%s "

@@ -119,7 +119,7 @@ class ProjectSummary(UserEndPoint):
 
         if not version_id:
             current_project_version = get_project_version(
-                project.id, auth_users)
+                project.id)
         else:
             current_project_version = get_project_version_by_id(version_id)
         data['versionData'] = current_project_version
