@@ -52,7 +52,7 @@ class ApiRouteCoverRate(UserEndPoint):
         auth_users = self.get_auth_users(request.user)
         if not version_id:
             current_project_version = get_project_version(
-                project_id, auth_users)
+                project_id)
         else:
             current_project_version = get_project_version_by_id(version_id)
         agents = IastAgent.objects.filter(

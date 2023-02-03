@@ -51,8 +51,9 @@ class ProjectDetail(UserEndPoint):
         response_schema=_ResponseSerializer,
     )
     def get(self, request, id):
-        auth_users = self.get_auth_users(request.user)
-        project = IastProject.objects.filter(user__in=auth_users, id=id).first()
+        # auth_users = self.get_auth_users(request.user)
+        department = request.user.get_relative_department()
+        project = IastProject.objects.filter(department__in=department, id=id).first()
 
         if project:
             relations = IastAgent.objects.filter(bind_project_id=project.id, online=const.RUNNING)
@@ -64,7 +65,7 @@ class ProjectDetail(UserEndPoint):
                 scan_id = 0
                 scan_name = ''
 
-            current_project_version = get_project_version(project.id, auth_users)
+            current_project_version = get_project_version(project.id)
             return R.success(data={
                 "name": project.name,
                 "id": project.id,
