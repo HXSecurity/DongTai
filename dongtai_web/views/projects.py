@@ -58,9 +58,10 @@ class Projects(UserEndPoint):
         except ValidationError as e:
             return R.failure(data=e.detail)
 
-        users = self.get_auth_users(request.user)
+        # users = self.get_auth_users(request.user)
+        department = request.user.get_relative_department()
         queryset = IastProject.objects.filter(
-            user__in=users).order_by('-latest_time')
+            department__in=department).order_by('-latest_time')
         if name:
             queryset = queryset.filter(name__icontains=name)
         page_summary, page_data = self.get_paginator(queryset, page, page_size)
