@@ -1855,6 +1855,9 @@ if [ ! 0 == $# ]; then # If options provided then
               "user_id": {
                 "type": "integer"
               },
+              "department_id": {
+                "type": "integer"
+              },
               "vul_title": {
                 "type": "text"
               }

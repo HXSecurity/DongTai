@@ -57,6 +57,7 @@ class IastVulnerabilityModel(models.Model):
                               models.DO_NOTHING,
                               blank=True,
                               null=True)
+    language = models.CharField(max_length=10, blank=True, null=True)
     context_path = models.CharField(max_length=255, blank=True, null=True)
     counts = models.IntegerField(blank=True, null=True)
     first_time = models.IntegerField(blank=True, null=True)

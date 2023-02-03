@@ -10,7 +10,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
-from dongtai_common.models.department import Department
+from dongtai_common.models.department import Department, IastDepartment
 from dongtai_common.utils.settings import get_managed
 
 
@@ -104,7 +104,7 @@ class User(AbstractUser, PermissionsMixin):
     def is_department_admin(self):
         return Department.objects.filter(principal_id=self.id).exists()
 
-    def get_relative_department(self):
+    def get_relative_department(self) -> IastDepartment:
         department = self.get_department()
         return Department.objects.filter(
             Q(department_path__startswith=department.department_path)

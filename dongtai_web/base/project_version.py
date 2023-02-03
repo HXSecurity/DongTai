@@ -20,13 +20,13 @@ class VersionModifySerializer(serializers.Serializer):
 
 
 @transaction.atomic
-def version_modify(user, auth_users, versionData=None):
+def version_modify(user, department, versionData=None):
     version_id = versionData.get("version_id", 0)
     project_id = versionData.get("project_id", 0)
     current_version = versionData.get("current_version", 0)
     version_name = versionData.get("version_name", "")
     description = versionData.get("description", "")
-    project = IastProject.objects.filter(user__in=auth_users,
+    project = IastProject.objects.filter(department__in=department,
                                          id=project_id).only(
                                              'id', 'user').first()
     if not version_name or not project:

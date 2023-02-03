@@ -40,9 +40,10 @@ class ProjectEngines(UserEndPoint):
         response_schema=_ProjectEnginesResponseSerializer,
     )
     def get(self, request, pid):
-        auth_users = self.get_auth_users(request.user)
+        # auth_users = self.get_auth_users(request.user)
+        department = request.user.get_relative_department()
         queryset = IastAgent.objects.filter(
-            user__in=auth_users,
+            department__in=department,
             online=const.RUNNING,
             bind_project_id__in=[0, pid]).values("id", "token", "alias")
         data = []
