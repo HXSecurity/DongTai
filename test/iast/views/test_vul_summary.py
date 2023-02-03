@@ -56,6 +56,7 @@ class ScanStrategyTestCase(APITestCase):
             agent=agent,
             context_path='',
             counts=1,
+            language='NGUAGE',
             first_time=int(time.time()),
             latest_time=int(time.time()),
             client_ip='0',

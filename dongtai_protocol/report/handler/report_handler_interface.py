@@ -5,6 +5,7 @@
 # software: PyCharm
 # project: webapi
 import logging
+from typing import Optional
 
 from django.db.models import Q
 from dongtai_common.models.agent import IastAgent
@@ -20,7 +21,7 @@ class IReportHandler:
         self._user_id = None
         self.agent_id = None
         self.project_name = None
-        self.agent = None
+        self.agent: Optional[IastAgent] = None
 
     @property
     def report(self):

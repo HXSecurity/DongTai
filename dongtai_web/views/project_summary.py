@@ -100,8 +100,9 @@ class ProjectSummary(UserEndPoint):
         response_schema=_ProjectSummaryResponseSerializer,
     )
     def get(self, request, id):
-        auth_users = self.get_auth_users(request.user)
-        project = IastProject.objects.filter(user__in=auth_users,
+        # auth_users = self.get_auth_users(request.user)
+        department = request.user.get_relative_department()
+        project = IastProject.objects.filter(department__in=department,
                                              id=id).first()
 
         if not project:
@@ -124,7 +125,7 @@ class ProjectSummary(UserEndPoint):
             current_project_version = get_project_version_by_id(version_id)
         data['versionData'] = current_project_version
         relations = IastAgent.objects.filter(
-            user__in=auth_users,
+            department__in=department,
             bind_project_id=project.id,
             project_version_id=current_project_version.get("version_id", 0)
         ).values("id")
