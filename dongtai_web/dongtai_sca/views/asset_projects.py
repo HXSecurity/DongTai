@@ -28,13 +28,13 @@ class AssetProjects(UserEndPoint):
 
     def get(self, request, aggr_id):
         try:
-            auth_users = self.get_auth_users(request.user)
-            asset_queryset = self.get_auth_assets(auth_users)
+            departments = request.user.get_relative_department()
+            asset_queryset = Asset.objects.filter(department__in=departments, is_del=0)
             asset = Asset.objects.filter(id=aggr_id).first()
             #asset_aggr = AssetAggr.objects.filter(
             #    signature_value=asset.signature_value).first()
-            #if not asset_aggr:
-            #    return R.failure(msg=_('Components do not exist or no permission to access'))
+            if not asset:
+                return R.failure(msg=_('Components do not exist or no permission to access'))
 
             asset_queryset = asset_queryset.filter(
                 signature_value=asset.signature_value,
@@ -90,8 +90,9 @@ class AssetVulProjects(UserEndPoint):
 
             if page_data:
                 for _data in page_data:
-                    project_version_query = IastProjectVersion.objects.filter(project_id=_data['project_id'],
-                                                                              id=_data['project_version_id']).first()
+                    project_version_query = IastProjectVersion.objects.filter(
+                        project_id=_data['project_id'],
+                        id=_data['project_version_id']).first()
                     if project_version_query:
                         project_version = project_version_query.version_name
                     else:
