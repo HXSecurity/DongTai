@@ -388,6 +388,7 @@ LOGGING = {
         'django.db.backends': {
             'handlers': ['console'],
             'level': LOGGING_LEVEL,
+            'propagate': False,
             'encoding': "utf-8",
         },
         'dongtai-webapi': {
@@ -408,7 +409,6 @@ LOGGING = {
         'django': {
             'handlers': ['console', 'dongtai-webapi'],
             'propagate': True,
-            'level': LOGGING_LEVEL,
         },
         'dongtai-engine': {
             'handlers': ['console', 'dongtai-webapi'],
