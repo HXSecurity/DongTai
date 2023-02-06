@@ -460,7 +460,6 @@ def get_vul_list_from_elastic_searchv2(user_id,
         Q('bool',
           must=must_query)).extra(**extra_dict).sort(*order_list)[:page_size *
                                                                   WINDOW_SIZE]
-    import pdb;pdb.set_trace()
     logger.debug(f"search_query : {search.to_dict()}")
     resp = search.execute()
     vuls = [i._d_ for i in list(resp)]
