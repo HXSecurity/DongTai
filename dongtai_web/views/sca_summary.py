@@ -177,12 +177,12 @@ class ScaSummary(UserEndPoint):
             "data": {}
         }
 
-        auth_users = self.get_auth_users(request.user)
         request_data = request.data
 
-        auth_user_ids = [str(_i.id) for _i in auth_users]
-        base_query_sql = " LEFT JOIN iast_asset_aggr ON iast_asset.signature_value = iast_asset_aggr.signature_value WHERE iast_asset.user_id in %s and iast_asset.is_del=0 "
-        sql_params = [auth_user_ids]
+        departments = request.user.get_relative_department()
+        department_ids = [i.id for i in departments]
+        base_query_sql = "WHERE iast_asset.department_id in %s and iast_asset.is_del=0 "
+        sql_params = [department_ids]
         asset_aggr_where = " and iast_asset.is_del=0 "
         package_kw = request_data.get('keyword', "")
         es_query = {}

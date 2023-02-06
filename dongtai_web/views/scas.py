@@ -193,7 +193,9 @@ class ScaList(UserEndPoint):
         query_start = (page - 1) * page_size
 
         auth_user_ids = [str(_i.id) for _i in auth_users]
-        base_query_sql = " LEFT JOIN iast_asset ON iast_asset.signature_value = iast_asset_aggr.signature_value WHERE  iast_asset.user_id in %s and iast_asset.is_del=0 "
+        departments = request.user.get_relative_department()
+        department_ids = [department.id for department in departments]
+        base_query_sql = " LEFT JOIN iast_asset ON iast_asset.signature_value = iast_asset_aggr.signature_value WHERE  iast_asset.department_id in %s and iast_asset.is_del=0 "
         list_sql_params = [auth_user_ids]
         count_sql_params = [auth_user_ids]
         es_query = {}
@@ -203,13 +205,13 @@ class ScaList(UserEndPoint):
         asset_aggr_where = " and iast_asset_aggr.id>0 "
         where_conditions = []
         where_conditions_dict = {}
-        user_ids = [_i.id for _i in auth_users]
-        if len(user_ids) == 1:
-            where_conditions.append('user_id = %(user_ids)s')
-            where_conditions_dict['user_ids'] = user_ids[0]
+        #user_ids = [_i.id for _i in auth_users]
+        if len(department_ids) == 1:
+            where_conditions.append('department_id = %(department_ids)s')
+            where_conditions_dict['department_ids'] = department_ids[0]
         else:
-            where_conditions.append('user_id IN %(user_ids)s')
-            where_conditions_dict['user_ids'] = user_ids
+            where_conditions.append('department_id IN %(department_ids)s')
+            where_conditions_dict['department_ids'] = department_ids
 
         project_id = request_data.get('project_id', None)
         if project_id and project_id != '':
@@ -288,56 +290,56 @@ class ScaList(UserEndPoint):
         order, order_type = get_order_params(order_fields, order)
         es_query['order'] = order
         es_query['order_type'] = order_type
-        #        if ELASTICSEARCH_STATE:
-        #            data = get_vul_list_from_elastic_searchv2(**es_query)
+#        if ELASTICSEARCH_STATE:
+#            data = get_vul_list_from_elastic_searchv2(**es_query)
         #        else:
         data = mysql_search(where_conditions, where_conditions_dict, page_size,
                             order_type, order, page)
         query_data = ScaAssetSerializer(data, many=True).data
 
         return R.success(data=query_data)
-        order_sql = " order by {} {},iast_asset_aggr.id DESC ".format(
-            order, order_type)
-        page_sql = " limit %s,%s"
-        list_sql_params.append(query_start)
-        list_sql_params.append(page_size)
-
-        total_count_sql = total_count_sql.format(base_query_sql=base_query_sql,
-                                                 where_sql=asset_aggr_where)
-        list_query_sql = list_query_sql.format(base_query_sql=base_query_sql,
-                                               where_sql=asset_aggr_where,
-                                               order_sql=order_sql,
-                                               page_sql=page_sql)
-
-        total_count = 0
-        sca_ids = []
-        try:
-            with connection.cursor() as cursor:
-                cursor.execute(total_count_sql, count_sql_params)
-                total_count_query = cursor.fetchone()
-                total_count = total_count_query[0]
-
-            with connection.cursor() as cursor:
-                cursor.execute(list_query_sql, list_sql_params)
-                list_query = cursor.fetchall()
-                if list_query:
-                    for _l in list_query:
-                        sca_ids.append(_l[0])
-        except Exception as e:
-            logger.warning("sca list error:{}".format(e))
-
-
+#        order_sql = " order by {} {},iast_asset_aggr.id DESC ".format(
+#            order, order_type)
+#        page_sql = " limit %s,%s"
+#        list_sql_params.append(query_start)
+#        list_sql_params.append(page_size)
+#
+#        total_count_sql = total_count_sql.format(base_query_sql=base_query_sql,
+#                                                 where_sql=asset_aggr_where)
+#        list_query_sql = list_query_sql.format(base_query_sql=base_query_sql,
+#                                               where_sql=asset_aggr_where,
+#                                               order_sql=order_sql,
+#                                               page_sql=page_sql)
+#
+#        total_count = 0
+#        sca_ids = []
+#        try:
+#            with connection.cursor() as cursor:
+#                cursor.execute(total_count_sql, count_sql_params)
+#                total_count_query = cursor.fetchone()
+#                total_count = total_count_query[0]
+#
+#            with connection.cursor() as cursor:
+#                cursor.execute(list_query_sql, list_sql_params)
+#                list_query = cursor.fetchall()
+#                if list_query:
+#                    for _l in list_query:
+#                        sca_ids.append(_l[0])
+#        except Exception as e:
+#            logger.warning("sca list error:{}".format(e))
+#
+#
 #        if ELASTICSEARCH_STATE :
 #            query_data = ScaAssetSerializer(get_vul_list_from_elastic_search(
 #                sca_ids, order_by),
 #                                            many=True).data
 #        else:
-        query_data = ScaAssetSerializer(
-            AssetAggr.objects.filter(signature_value__in=sca_ids).order_by(
-                order_by).select_related('level'),
-            many=True).data
-
-        return R.success(data=query_data)
+#        query_data = ScaAssetSerializer(
+#            AssetAggr.objects.filter(signature_value__in=sca_ids).order_by(
+#                order_by).select_related('level'),
+#            many=True).data
+#
+#        return R.success(data=query_data)
 
     def extend_sql(self, request_data, asset_aggr_where, count_sql_params,
                    list_sql_params):
@@ -458,6 +460,7 @@ def get_vul_list_from_elastic_searchv2(user_id,
         Q('bool',
           must=must_query)).extra(**extra_dict).sort(*order_list)[:page_size *
                                                                   WINDOW_SIZE]
+    import pdb;pdb.set_trace()
     logger.debug(f"search_query : {search.to_dict()}")
     resp = search.execute()
     vuls = [i._d_ for i in list(resp)]
@@ -530,15 +533,10 @@ def mysql_search(where_conditions, where_conditions_dict, page_size,
     order_conditions_dict["field"] = order
     final_sql = """SELECT ia2.* FROM iast_asset ia2
         RIGHT JOIN
-        (SELECT signature_value as _1, MAX(id) as _2, ANY_VALUE(vul_count) as vul_count,
-        ANY_VALUE(language) as language ,
-        ANY_VALUE(license) as license ,
-        ANY_VALUE(level_id) as level_id FROM iast_asset ia
+        (SELECT MAX(id) as _2 FROM iast_asset ia
         WHERE {where_place}
         GROUP BY signature_value
-        ORDER BY {order_place}
-        ) AS TMP ON
-        ia2.signature_value = TMP._1 AND ia2.id = TMP._2
+        ) AS TMP ON ia2.id = TMP._2
         ORDER BY {order_place} LIMIT {size} ;""".format(
         where_place=' AND '.join(where_conditions)
         if where_conditions else '1 = 1',
