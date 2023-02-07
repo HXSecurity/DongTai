@@ -188,6 +188,7 @@ def save_vul(vul_type, method_pool, position=None, data=None):
             project_version_id=vul.agent.project_version_id,
             project_id=vul.agent.bind_project_id,
             language=method_pool.agent.language,
+            server_id=method_pool.agent.server_id,
         )
         log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
                       vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)

@@ -220,8 +220,8 @@ class VulDetail(UserEndPoint):
     def parse_response(header, body):
         return '{header}\n\n{body}'.format(header=header, body=body)
 
-    def get_vul(self, auth_agents):
-        vul = IastVulnerabilityModel.objects.filter(id=self.vul_id).first()
+    def get_vul(self, department):
+        vul = IastVulnerabilityModel.objects.filter(id=self.vul_id, project__department__in=department).first()
         hook_type = HookType.objects.filter(pk=vul.hook_type_id).first() if vul is not None else None
         hook_type_name = hook_type.name if hook_type else None
         strategy = IastStrategyModel.objects.filter(pk=vul.strategy_id).first()
@@ -231,14 +231,13 @@ class VulDetail(UserEndPoint):
         vul.type = type_[0] if type_ else ''
         status = IastVulnerabilityStatus.objects.filter(pk=vul.status_id).first()
         vul.status_ = status.name if status else ''
-        agent = vul.agent
-        project_id = agent.bind_project_id
+        project_id = vul.project_id
         if project_id is None or project_id == 0:
             project = None
         else:
             project = IastProject.objects.values("name").filter(id=project_id).first()
 
-        project_version_id = agent.project_version_id
+        project_version_id = vul.project_version_id
         if project_version_id:
             project_version = IastProjectVersion.objects.values('version_name').filter(id=project_version_id).first()
             if project_version:
@@ -248,7 +247,7 @@ class VulDetail(UserEndPoint):
         else:
             project_version_name = ''
         try:
-            self.server = agent.server
+            self.server = vul.server
         except Exception as e:
             logger.error(_('[{}] Vulnerability information parsing error, error message: {}').format(__name__, e))
             self.server = {}
@@ -260,7 +259,7 @@ class VulDetail(UserEndPoint):
             'uri':
             vul.uri,
             'agent_name':
-            agent.token,
+            vul.agent.token,
             'http_method':
             vul.http_method,
             'type':
@@ -277,7 +276,7 @@ class VulDetail(UserEndPoint):
             'project_version':
             project_version_name,
             'language':
-            agent.language,
+            vul.language,
             'level':
             vul.level.name_value,
             'level_type':
@@ -436,12 +435,13 @@ class VulDetailV2(VulDetail):
         }]
         return res
 
-    def get(self, request, id):
+    def get(self, request, id, departments=None):
         self.vul_id = id
-        self.auth_agents = self.get_auth_agents_with_user(request.user)
+        # self.auth_agents = self.get_auth_agents_with_user(request.user)
+        department = request.user.get_relative_department()
         try:
             data = {
-                'vul': self.get_vul(self.auth_agents),
+                'vul': self.get_vul(department),
                 'server': self.get_server(),
                 'strategy': self.get_strategy()
             }

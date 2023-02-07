@@ -153,17 +153,20 @@ class VulReCheckv2(UserEndPoint):
             vul_ids = request.data.get("ids", "")
 
             user = request.user
-            # 超级管理员
-            if user.is_system_admin():
-                queryset = IastVulnerabilityModel.objects.filter(is_del=0)
-            # 租户管理员 or 部门管理员
-            elif user.is_talent_admin() or user.is_department_admin:
-                users = self.get_auth_users(user)
-                user_ids = list(users.values_list('id', flat=True))
-                queryset = IastVulnerabilityModel.objects.filter(is_del=0, agent__user_id__in=user_ids)
-            else:
-                # 普通用户
-                queryset = IastVulnerabilityModel.objects.filter(is_del=0, agent__user_id=user.id)
+            department = request.user.get_relative_department()
+            # # 超级管理员
+            # if user.is_system_admin():
+            #     queryset = IastVulnerabilityModel.objects.filter(is_del=0)
+            # # 租户管理员 or 部门管理员
+            # elif user.is_talent_admin() or user.is_department_admin:
+            #     users = self.get_auth_users(user)
+            #     user_ids = list(users.values_list('id', flat=True))
+            #     queryset = IastVulnerabilityModel.objects.filter(is_del=0, agent__user_id__in=user_ids)
+            # else:
+            #     # 普通用户
+            #     queryset = IastVulnerabilityModel.objects.filter(is_del=0, agent__user_id=user.id)
+            queryset = IastVulnerabilityModel.objects.filter(
+                is_del=0, project__department_id__in=department)
             ids_list = turnIntListOfStr(vul_ids)
 
             vul_queryset = queryset.filter(id__in=ids_list)
