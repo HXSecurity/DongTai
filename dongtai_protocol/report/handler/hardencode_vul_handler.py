@@ -113,6 +113,7 @@ class HardEncodeVulHandler(IReportHandler):
                 project_version_id=self.agent.project_version_id,
                 project_id=self.agent.bind_project_id,
                 language=self.agent.language,
+                server_id=self.agent.server_id,
             )
         IastVulnerabilityModel.objects.filter(
             strategy_id=strategy.id,

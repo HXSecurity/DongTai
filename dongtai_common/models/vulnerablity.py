@@ -1,6 +1,8 @@
 import uuid
 from django.core.cache import cache
 from django_elasticsearch_dsl.search import Search
+
+from dongtai_common.models.server import IastServer
 from dongtai_conf.settings import VULNERABILITY_INDEX
 from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
@@ -93,6 +95,11 @@ class IastVulnerabilityModel(models.Model):
                                         blank=True,
                                         null=True,
                                         default=-1)
+    server = models.ForeignKey(IastServer,
+                               on_delete=models.CASCADE,
+                               blank=True,
+                               null=True,
+                               default=-1)
 
     class Meta:
         managed = get_managed()
