@@ -119,6 +119,7 @@ def save_vul(vul_type, method_pool, position=None, data=None):
     uuid_key = uuid.uuid4().hex
     cache_key = f'vul_save-{vul_strategy.id}--{method_pool.http_method}-{method_pool.agent.project_version_id}'
     is_api_cached = uuid_key != cache.get_or_set(cache_key, uuid_key)
+
     if is_api_cached:
         return
     vul = IastVulnerabilityModel.objects.filter(
@@ -144,6 +145,7 @@ def save_vul(vul_type, method_pool, position=None, data=None):
         vul.counts = vul.counts + 1
         vul.latest_time = timestamp
         vul.method_pool_id = method_pool.id
+        vul.language = method_pool.agent.language
         vul.save(update_fields=[
             'url', 'req_header', 'req_params', 'req_data', 'res_header',
             'res_body', 'taint_value', 'taint_position', 'context_path',
@@ -185,6 +187,7 @@ def save_vul(vul_type, method_pool, position=None, data=None):
             method_pool_id=method_pool.id,
             project_version_id=vul.agent.project_version_id,
             project_id=vul.agent.bind_project_id,
+            language=method_pool.agent.language,
         )
         log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
                       vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)

@@ -23,6 +23,7 @@ from urllib.parse import urlparse, urlunparse
 import ipaddress
 import requests
 from dongtai_common.models.server import IastServer
+
 logger = logging.getLogger("django")
 
 
@@ -70,12 +71,13 @@ class ProjectAdd(UserEndPoint):
                 name = request.data.get("name")
                 mode = "插桩模式"
                 scan_id = int(request.data.get("scan_id", 0))
-                auth_users = self.get_auth_users(request.user)
+                # auth_users = self.get_auth_users(request.user)
+                departments = request.user.get_relative_department()
                 if scan_id == 5:
                     scan = IastStrategyUser.objects.filter(id=scan_id).first()
                 else:
                     scan = IastStrategyUser.objects.filter(
-                        id=scan_id, user__in=auth_users).first()
+                        id=scan_id, department__in=departments).first()
                 base_url = request.data.get('base_url', None)
                 test_req_header_key = request.data.get('test_req_header_key',
                                                        None)
@@ -110,20 +112,27 @@ class ProjectAdd(UserEndPoint):
 
                 if pid:
                     project = IastProject.objects.filter(
-                        id=pid, user__in=auth_users).first()
+                        id=pid, department__in=departments).first()
                     project.name = name
                 else:
+                    department_id = request.data.get("department_id")
+                    if not departments.filter(pk=department_id).exists():
+                        return R.failure(
+                            status=203,
+                            msg=_('department does not exist'
+                                  ))
 
                     project = IastProject.objects.filter(
-                        name=name, user=request.user).first()
+                        name=name, user_id=request.user.id, department_id=department_id).first()
                     if not project:
                         project = IastProject.objects.create(name=name,
-                                                             user=request.user)
+                                                             user_id=request.user.id, department_id=department_id)
                     else:
                         return R.failure(
                             status=203,
                             msg=_('Failed to create, the application name already exists'
                                   ))
+
                 versionInfo = IastProjectVersion.objects.filter(
                     project_id=project.id, current_version=1,
                     status=1).first()
@@ -142,7 +151,7 @@ class ProjectAdd(UserEndPoint):
                         or not (versionInfo.version_name == version_name and
                                 (versionInfo.description == description
                                  or not description))):
-                    result = version_modify(project.user, auth_users,
+                    result = version_modify(project.user, departments,
                                             current_project_version)
                     if result.get("status", "202") == "202":
                         logger.error('version update failure')

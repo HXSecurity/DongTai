@@ -3,6 +3,8 @@ from django.db.models import Prefetch
 
 from dongtai_common.endpoint import UserEndPoint, R
 from django.forms.models import model_to_dict
+
+from dongtai_common.models.department import Department
 from dongtai_common.utils import const
 from dongtai_web.serializers.agent import AgentSerializer
 from dongtai_web.utils import get_model_field
@@ -41,6 +43,7 @@ class AgentListv2(UserEndPoint, ViewSet):
     description = _("Agent list")
 
     def pagenation_list(self, request):
+        department = request.user.get_relative_department()
         try:
             page = int(request.query_params.get('page', 1))
             page_size = int(request.query_params.get('page_size', 20))
@@ -49,7 +52,7 @@ class AgentListv2(UserEndPoint, ViewSet):
             project_id = int(request.query_params.get('project_id', 0))
             last_days = int(request.query_params.get('last_days', 0))
             filter_condiction = generate_filter(state) & Q(
-                user__in=get_auth_users__by_id(request.user.id))
+                department__in=department)
             if project_name:
                 filter_condiction = filter_condiction & Q(
                     bind_project__name__icontains=project_name)
@@ -101,16 +104,20 @@ class AgentListv2(UserEndPoint, ViewSet):
 
     def summary(self, request):
         res = {}
+        department = request.user.get_relative_department()
         for type_ in StateType:
             res[type_] = IastAgent.objects.filter(
                 generate_filter(type_),
-                user__in=get_auth_users__by_id(request.user.id)).count()
+                department__in=department).count()
+            # user__in=get_auth_users__by_id(request.user.id)).count()
+
         return R.success(data=res)
 
     def agent_stat(self, request):
+        department = request.user.get_relative_department()
         try:
             agent_id = int(request.query_params.get('id', 0))
-            res = get_agent_stat(agent_id, request.user.id)
+            res = get_agent_stat(agent_id, department)
         except Exception as e:
             logger.error("agent_stat error:{}".format(e))
             res = dict()
@@ -123,18 +130,19 @@ def get_service_addrs(ip_list: list, port: int) -> list:
     return list(map(lambda x: x + ":" + str(port), ip_list))
 
 
-def get_agent_stat(agent_id: int, user_id: int) -> dict:
+def get_agent_stat(agent_id: int, department: Department) -> dict:
     res = {}
     res['api_count'] = IastApiRoute.objects.filter(
         agent__id=agent_id,
         from_where=FromWhereChoices.FROM_AGENT,
-        agent__user__in=get_auth_users__by_id(user_id)).count()
+        project__department__in=department).count()
+    # agent__user__in = get_auth_users__by_id(user_id)).count()
     res['sca_count'] = Asset.objects.filter(
         agent__id=agent_id,
-        agent__user__in=get_auth_users__by_id(user_id)).count()
+        project__department__in=department).count()
     res['vul_count'] = IastVulnerabilityModel.objects.filter(
         agent__id=agent_id,
-        agent__user__in=get_auth_users__by_id(user_id)).count()
+        project__department__in=department).count()
     return res
 
 
