@@ -16,6 +16,7 @@ from dongtai_web.utils import extend_schema_with_envcheck
 from dongtai_common.models.api_route import IastApiRoute, FromWhereChoices
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
+from dongtai_common.models.project import IastProject
 import logging
 
 logger = logging.getLogger("dongtai-webapi")
@@ -64,7 +65,8 @@ class ApiRouteCoverRate(UserEndPoint):
             bind_project_id=project_id,
             project_version_id=current_project_version.get("version_id",
                                                            0)).values("id")
-        q = Q(project_version_id=version_id, project_id=project_id)
+        q = Q(project_version_id=current_project_version.get("version_id", 0),
+              project_id=project_id)
         queryset = IastApiRoute.objects.filter(q)
         total = queryset.values("path").distinct().count()
         cover_count = checkcover_batch(queryset, agents)
