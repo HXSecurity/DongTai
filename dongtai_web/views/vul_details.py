@@ -259,7 +259,7 @@ class VulDetail(UserEndPoint):
             'uri':
             vul.uri,
             'agent_name':
-            vul.agent.token,
+            vul.agent.token if vul.agent else "",
             'http_method':
             vul.http_method,
             'type':
@@ -435,9 +435,8 @@ class VulDetailV2(VulDetail):
         }]
         return res
 
-    def get(self, request, id, departments=None):
+    def get(self, request, id,):
         self.vul_id = id
-        # self.auth_agents = self.get_auth_agents_with_user(request.user)
         department = request.user.get_relative_department()
         try:
             data = {

@@ -75,25 +75,12 @@ class VulStatus(UserEndPoint):
         user = request.user
         user_id = user.id
         department = request.user.get_relative_department()
-        # 超级管理员
         if not (isinstance(vul_id, int) or isinstance(vul_ids, list)):
             return R.failure()
         if not vul_ids:
             vul_ids = [vul_id]
-        # if user.is_system_admin():
-        #     queryset = IastVulnerabilityModel.objects.filter(is_del=0)
-        # # 租户管理员 or 部门管理员
-        # elif user.is_talent_admin() or user.is_department_admin:
-        #     users = self.get_auth_users(user)
-        #     user_ids = list(users.values_list('id', flat=True))
-        #     queryset = IastVulnerabilityModel.objects.filter(
-        #         is_del=0, agent__user_id__in=user_ids)
-        # else:
-        #     # 普通用户
-        #     queryset = IastVulnerabilityModel.objects.filter(
-        #         is_del=0, agent__user_id=user_id)
         queryset = IastVulnerabilityModel.objects.filter(
-            is_del=0, project__department_id__in=department)
+            is_del=0, project__department__in=department)
         vul_status = IastVulnerabilityStatus.objects.filter(
             pk=status_id).first()
         if vul_status:
