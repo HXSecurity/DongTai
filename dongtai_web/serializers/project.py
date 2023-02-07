@@ -19,12 +19,13 @@ from collections import defaultdict
 
 def get_vul_levels_dict(queryset: QuerySet) -> defaultdict:
     vul_levels = IastVulnerabilityModel.objects.values(
-        'level__name_value', 'level', 'agent__bind_project_id').filter(
-            agent__bind_project_id__in=list(
+        'level__name_value', 'level', 'project_id').filter(
+            project_id__in=list(
                 queryset.values_list('id', flat=True)),
             is_del=0).annotate(total=Count('level'))
     vul_levels_dict = defaultdict(list)
     for k in vul_levels:
+        k['agent__bind_project_id'] = k['project_id']
         vul_levels_dict[k['agent__bind_project_id']].append(k)
     return vul_levels_dict
 
