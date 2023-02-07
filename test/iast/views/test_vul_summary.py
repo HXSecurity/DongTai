@@ -34,7 +34,7 @@ class ScanStrategyTestCase(APITestCase):
                                          is_core_running=1,
                                          online=1,
                                          project_version_id=1,
-                                         language='NGUAGE',
+                                         language='JAVA',
                                          is_audit=1)
         vuln = IastVulnerabilityModel.objects.create(
             level_id=1,
@@ -56,7 +56,7 @@ class ScanStrategyTestCase(APITestCase):
             agent=agent,
             context_path='',
             counts=1,
-            language='NGUAGE',
+            language='JAVA',
             first_time=int(time.time()),
             latest_time=int(time.time()),
             client_ip='0',

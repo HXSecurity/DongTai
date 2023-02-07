@@ -126,7 +126,7 @@ class IastVulnerabilityDocument(Document):
     status_id = fields.IntegerField(attr="status_id")
     level_id = fields.IntegerField(attr="level_id")
     bind_project_id = fields.IntegerField(attr="agent.bind_project_id")
-    language = fields.IntegerField(attr="agent.language")
+    # language = fields.IntegerField(attr="agent.language")
     project_version_id = fields.IntegerField(attr="agent.project_version_id")
     project_name = fields.IntegerField(attr="agent.bind_project.name")
     token = fields.IntegerField(attr="agent.token")
@@ -162,7 +162,7 @@ class IastVulnerabilityDocument(Document):
             'bottom_stack', 'taint_value', 'taint_position', 'context_path',
             'counts', 'first_time', 'latest_time', 'latest_time_desc',
             'level_id_desc', 'client_ip', 'param_name', 'is_del',
-            'method_pool_id'
+            'method_pool_id', 'language'
         ]
         auto_refresh = False
 
