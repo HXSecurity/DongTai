@@ -19,7 +19,7 @@ from django.db.models import Q
 from rest_framework import serializers
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from dongtai_common.models.strategy import IastStrategyModel
-from dongtai_web.views.utils.commonstats import get_summary_by_agent_ids
+from dongtai_web.views.utils.commonstats import get_summary_by_project
 from dongtai_common.utils import const
 
 
@@ -124,17 +124,11 @@ class ProjectSummary(UserEndPoint):
         else:
             current_project_version = get_project_version_by_id(version_id)
         data['versionData'] = current_project_version
-        relations = IastAgent.objects.filter(
-            department__in=department,
-            bind_project_id=project.id,
-            project_version_id=current_project_version.get("version_id", 0)
-        ).values("id")
-
-        agent_ids = [relation['id'] for relation in relations]
         agent_id = request.query_params.get('agent_id')
         if agent_id:
             agent_ids = [agent_id]
-        data_stat = get_summary_by_agent_ids(agent_ids)
+        data_stat = get_summary_by_project(
+            id, current_project_version.get("version_id", 0))
         data.update(data_stat)
         data['agent_language'] = ProjectSerializer(
             project).data['agent_language']
