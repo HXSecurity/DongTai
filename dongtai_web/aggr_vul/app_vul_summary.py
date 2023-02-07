@@ -1,3 +1,4 @@
+from dongtai_common.models.department import Department
 from dongtai_web.utils import dict_transfrom
 from dongtai_engine.elatic_search.data_correction import data_correction_interpetor
 from dongtai_conf.settings import ELASTICSEARCH_STATE
@@ -29,28 +30,30 @@ def _annotate_by_query(q, value_fields, count_field):
 #                  use_celery_update=True)
 
 
-def get_annotate_cache_data(user_id: int):
-    return get_annotate_data(user_id, 0, 0)
+def get_annotate_cache_data(department: Department):
+    return get_annotate_data(department, 0, 0)
 
 
 def get_annotate_data(
-    user_id: int, bind_project_id=int, project_version_id=int
+    department: Department, bind_project_id=int, project_version_id=int
 ) -> dict:
-    auth_user_info = auth_user_list_str(user_id=user_id)
-    cache_q = Q(is_del=0, agent__bind_project_id__gt=0,
-                agent__user_id__in=auth_user_info['user_list'])
+    # auth_user_info = auth_user_list_str(user_id=user_id)
+    # cache_q = Q(is_del=0, agent__bind_project_id__gt=0,
+    #             agent__user_id__in=auth_user_info['user_list'])
+    cache_q = Q(is_del=0, project_id__gt=0,
+                project__department__in=department)
 
     # 从项目列表进入 绑定项目id
     if bind_project_id:
-        cache_q = cache_q & Q(agent__bind_project_id=bind_project_id)
+        cache_q = cache_q & Q(project_id=bind_project_id)
     # 项目版本号
     if project_version_id:
-        cache_q = cache_q & Q(agent__project_version_id=project_version_id)
+        cache_q = cache_q & Q(project_version_id=project_version_id)
     # 项目统计
     pro_info = _annotate_by_query(
         cache_q,
-        ("agent__bind_project_id", "agent__project_name"),
-        "agent__bind_project_id",
+        ("project_id", "project__name"),
+        "project_id",
     )
 
     result_summary = {
@@ -64,9 +67,9 @@ def get_annotate_data(
     for item in pro_info:
         result_summary["project"].append(
             {
-                "name": item["agent__project_name"],
+                "name": item["project__name"],
                 "num": item["count"],
-                "id": item["agent__bind_project_id"],
+                "id": item["project_id"],
             }
         )
     # 漏洞类型统计
@@ -110,19 +113,19 @@ def get_annotate_data(
 
     # # 按语言筛选
     language_info = _annotate_by_query(
-        cache_q, ("agent__language",), "agent__language")
+        cache_q, ("language",), "language")
     lang_arr = copy.copy(LANGUAGE_DICT)
     lang_key = lang_arr.keys()
     for item in language_info:
         result_summary["language"].append(
             {
-                "name": item["agent__language"],
+                "name": item["language"],
                 "num": item["count"],
-                "id": lang_arr.get(item["agent__language"]),
+                "id": lang_arr.get(item["language"]),
             }
         )
-        if item["agent__language"] in lang_key:
-            del lang_arr[item["agent__language"]]
+        if item["language"] in lang_key:
+            del lang_arr[item["language"]]
     if lang_arr:
         for item in lang_arr.keys():
             result_summary["language"].append(
@@ -148,8 +151,9 @@ class GetAppVulsSummary(UserEndPoint):
         :return:
         """
 
-        user = request.user
-        user_id = user.id
+        # user = request.user
+        # user_id = user.id
+        department = request.user.get_relative_department()
 
         ser = AggregationArgsSerializer(data=request.data)
         bind_project_id = 0
@@ -164,16 +168,15 @@ class GetAppVulsSummary(UserEndPoint):
                         "project_version_id", 0)
 
             if ELASTICSEARCH_STATE:
-                result_summary = get_annotate_data_es(user_id, bind_project_id,
+                result_summary = get_annotate_data_es(department, bind_project_id,
                                                       project_version_id)
-
             elif bind_project_id or project_version_id:
                 result_summary = get_annotate_data(
-                    user_id, bind_project_id, project_version_id
+                    department, bind_project_id, project_version_id
                 )
             else:
                 # 全局下走缓存
-                result_summary = get_annotate_cache_data(user_id)
+                result_summary = get_annotate_cache_data(department)
         except ValidationError as e:
             logger.info(e)
             return R.failure(data=e.detail)
@@ -185,7 +188,7 @@ class GetAppVulsSummary(UserEndPoint):
         )
 
 
-def get_annotate_data_es(user_id, bind_project_id, project_version_id):
+def get_annotate_data_es(department: Department, bind_project_id, project_version_id):
     from dongtai_common.models.vulnerablity import IastVulnerabilityDocument
     from elasticsearch_dsl import Q, Search
     from elasticsearch import Elasticsearch
@@ -196,13 +199,14 @@ def get_annotate_data_es(user_id, bind_project_id, project_version_id):
     from dongtai_common.models.project import IastProject
     from dongtai_common.models.vul_level import IastVulLevel
 
-    user_id_list = [user_id]
-    auth_user_info = auth_user_list_str(user_id=user_id)
-    user_id_list = auth_user_info['user_list']
+    # user_id_list = [user_id]
+    # auth_user_info = auth_user_list_str(user_id=user_id)
+    # user_id_list = auth_user_info['user_list']
     strategy_ids = list(IastStrategyModel.objects.all().values_list('id',
                                                                     flat=True))
+
     must_query = [
-        Q('terms', user_id=user_id_list),
+        Q('terms', department_id=list(department.values_list("id", flat=True))),
         Q('terms', is_del=[0]),
         Q('terms', is_del=[0]),
         Q('range', bind_project_id={'gt': 0}),

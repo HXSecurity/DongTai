@@ -30,7 +30,7 @@ class UserDepartmentToken(UserEndPoint):
 
     def get(self, request):
         departments = request.user.get_relative_department()
-        tokens = departments.values('token', 'name').all()
+        tokens = departments.values('id','token', 'name').all()
         for token in tokens:
             token['token'] = 'GROUP' + token['token']
         return R.success(data=list(tokens))

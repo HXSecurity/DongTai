@@ -35,8 +35,9 @@ class ProjectVersionAdd(UserEndPoint):
     )
     def post(self, request):
         try:
-            auth_users = self.get_auth_users(request.user)
-            result = version_modify(request.user, auth_users, request.data)
+            # auth_users = self.get_auth_users(request.user)
+            department = request.user.get_relative_department()
+            result = version_modify(request.user, department, request.data)
             if result.get("status", "202") == "202":
                 return R.failure(status=202,
                                  msg=result.get("msg", _("Parameter error")))

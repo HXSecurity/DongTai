@@ -9,6 +9,8 @@ import time
 import requests
 from celery.apps.worker import logger
 from django.dispatch import receiver
+
+from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.project import IastProject, VulValidation
 from dongtai_common.models.replay_queue import IastReplayQueue
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
@@ -270,12 +272,13 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
         vul.counts = vul.counts + 1
         vul.latest_time = timestamp
         vul.method_pool_id = vul_meta.id
+        vul.language = vul_meta.agent.language
         vul.full_stack = json.dumps(vul_stack, ensure_ascii=False)
         vul.save(update_fields=[
             'url', 'req_header', 'req_params', 'req_data', 'res_header',
             'res_body', 'taint_value', 'taint_position', 'method_pool_id',
             'context_path', 'client_ip', 'top_stack', 'bottom_stack',
-            'full_stack', 'counts', 'latest_time', 'latest_time_desc'
+            'full_stack', 'counts', 'latest_time', 'latest_time_desc', 'language'
         ])
     else:
         from dongtai_common.models.hook_type import HookType
@@ -312,6 +315,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
             method_pool_id=vul_meta.id,
             project_version_id=vul_meta.agent.project_version_id,
             project_id=vul_meta.agent.bind_project_id,
+            language=vul_meta.agent.language,
         )
         log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
                       vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)
