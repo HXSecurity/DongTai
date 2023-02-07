@@ -28,6 +28,9 @@ from dongtai_common.utils import const
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q, Count
 from typing import Tuple, Dict, Union, TYPE_CHECKING
+from dongtai_common.models.department import Department
+from functools import reduce
+from operator import ior
 
 if TYPE_CHECKING:
     from django.core.paginator import _SupportsPagination
@@ -225,7 +228,12 @@ class EndPoint(APIView):
         :param users:
         :return:
         """
-        return IastAgent.objects.filter(user__in=users)
+        qs = Department.objects.none()
+        users = []
+        qss = [user.get_relative_department() for user in users]
+        departments = reduce(ior, qss, qs)
+        return IastAgent.objects.filter(
+            bind_project__department__in=departments)
         # if isinstance(users, QuerySet):
         #    return IastAgent.objects.filter(user__in=users)
         # else:
@@ -238,7 +246,11 @@ class EndPoint(APIView):
         :param users:
         :return:
         """
-        return Asset.objects.filter(user__in=users, is_del=0)
+        qs = Department.objects.none()
+        users = []
+        qss = [user.get_relative_department() for user in users]
+        departments = reduce(ior,qss, qs)
+        return Asset.objects.filter(department__in=departments, is_del=0)
 
     @staticmethod
     def get_auth_asset_aggrs(auth_assets):
@@ -275,14 +287,14 @@ class EndPoint(APIView):
 
     @staticmethod
     def get_auth_and_anonymous_agents(user):
-        query_user = []
-        if user.is_active:
-            query_user = user
-
-        if query_user == []:
-            dt_range_user = User.objects.filter(username=const.USER_BUGENV).first()
-            if dt_range_user:
-                query_user = dt_range_user
+        #        query_user = []
+        #        if user.is_active:
+        #            query_user = user
+        #
+        #        if query_user == []:
+        #            dt_range_user = User.objects.filter(username=const.USER_BUGENV).first()
+        #            if dt_range_user:
+        #                query_user = dt_range_user
         return EndPoint.get_auth_agents_with_user(query_user)
 
 
