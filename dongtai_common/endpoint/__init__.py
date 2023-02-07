@@ -229,7 +229,6 @@ class EndPoint(APIView):
         :return:
         """
         qs = Department.objects.none()
-        users = []
         qss = [user.get_relative_department() for user in users]
         departments = reduce(ior, qss, qs)
         return IastAgent.objects.filter(
