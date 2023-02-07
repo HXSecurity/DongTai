@@ -181,7 +181,7 @@ class ApiRouteSearch(UserEndPoint):
             project_version_id=current_project_version.get("version_id",
                                                            0)).values("id")
         q = Q(agent_id__in=[_['id'] for _ in agents])
-        departments = request.user.get_relative_department() 
+        departments = request.user.get_relative_department()
         projectexist = IastProject.objects.filter(department__in=departments,
                                                   pk=project_id).first()
         if not projectexist:

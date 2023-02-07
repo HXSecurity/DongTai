@@ -55,7 +55,7 @@ class ApiRouteCoverRate(UserEndPoint):
                 project_id)
         else:
             current_project_version = get_project_version_by_id(version_id)
-        departments = request.user.get_relative_department() 
+        departments = request.user.get_relative_department()
         projectexist = IastProject.objects.filter(department__in=departments,
                                                   pk=project_id).first()
         if not projectexist:
