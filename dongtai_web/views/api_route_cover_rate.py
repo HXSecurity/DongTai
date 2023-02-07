@@ -55,12 +55,16 @@ class ApiRouteCoverRate(UserEndPoint):
                 project_id)
         else:
             current_project_version = get_project_version_by_id(version_id)
+        departments = request.user.get_relative_department() 
+        projectexist = IastProject.objects.filter(department__in=departments,
+                                                  pk=project_id).first()
+        if not projectexist:
+            return R.failure(_("Parameter error"))
         agents = IastAgent.objects.filter(
-            user__in=auth_users,
             bind_project_id=project_id,
             project_version_id=current_project_version.get("version_id",
                                                            0)).values("id")
-        q = Q(agent__in=agents)
+        q = Q(project_version_id=version_id, project_id=project_id)
         queryset = IastApiRoute.objects.filter(q)
         total = queryset.values("path").distinct().count()
         cover_count = checkcover_batch(queryset, agents)

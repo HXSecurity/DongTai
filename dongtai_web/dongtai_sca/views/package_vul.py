@@ -199,19 +199,17 @@ class AssetPackageVulDetail(UserEndPoint):
         # 组件漏洞基础 数据读取
         asset_vul = IastAssetVul.objects.filter(id=vul_id).first()
         # 用户鉴权
-        auth_users = self.get_auth_users(request.user)
-        asset_queryset = self.get_auth_assets(auth_users)
-
+        departments = request.user.get_relative_department()
         # 判断是否有权限
-        if not asset_vul or not permission_to_read_asset_vul(auth_users, vul_id):
+        if not asset_vul or not permission_to_read_asset_vul(departments, vul_id):
             return R.failure(
                 msg=_('Vul do not exist or no permission to access'))
 
-        data = GetScaVulData(asset_vul, asset_queryset)
+        data = GetScaVulData(asset_vul)
 
         return R.success(data=data)
 
 
-def permission_to_read_asset_vul(users, asset_vul_id: int):
+def permission_to_read_asset_vul(departments, asset_vul_id: int):
     return IastVulAssetRelation.objects.filter(
-        asset__user__in=users, asset_vul_id=asset_vul_id).exists()
+        asset__department__in=departments, asset_vul_id=asset_vul_id).exists()

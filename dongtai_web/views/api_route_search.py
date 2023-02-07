@@ -33,6 +33,7 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 import logging
 from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.project import IastProject
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -180,6 +181,16 @@ class ApiRouteSearch(UserEndPoint):
             project_version_id=current_project_version.get("version_id",
                                                            0)).values("id")
         q = Q(agent_id__in=[_['id'] for _ in agents])
+        departments = request.user.get_relative_department() 
+        projectexist = IastProject.objects.filter(department__in=departments,
+                                                  pk=project_id).first()
+        if not projectexist:
+            return R.failure(_("Parameter error"))
+        agents = IastAgent.objects.filter(
+            bind_project_id=project_id,
+            project_version_id=current_project_version.get("version_id",
+                                                           0)).values("id")
+        q = Q(project_version_id=version_id, project_id=project_id)
         q = q & Q(
             method_id__in=[_['id']
                            for _ in api_methods]) if api_methods != [] else q
