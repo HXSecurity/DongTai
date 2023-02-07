@@ -679,8 +679,8 @@ if ELASTICSEARCH_STATE:
     ELASTICSEARCH_DSL_AUTO_REFRESH = False
     ELASTICSEARCH_DSL_SIGNAL_PROCESSOR = 'dongtai_common.utils.es.DTCelerySignalProcessor'
     from elasticsearch import logger as es_logger
-    import elasticsearch
-    es_logger.setLevel(elasticsearch.logging.INFO)
+    # import elasticsearch
+    es_logger.setLevel(LOGGING_LEVEL)
 else:
     ELASTICSEARCH_DSL = {
         'default': {
