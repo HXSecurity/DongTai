@@ -13,7 +13,7 @@ def get_ref(refs) -> list:
     return refs
 
 # 通过asset_vul获取 组件详情信息
-def GetScaVulData(asset_vul, asset_queryset):
+def GetScaVulData(asset_vul, asset_queryset=None):
     data = {'base_info': dict(), 'poc_info': dict()}
     vul_id = asset_vul.id
 

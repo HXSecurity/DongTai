@@ -174,10 +174,11 @@ class GetAggregationVulList(UserEndPoint):
 
         except ValidationError as e:
             return R.failure(data=e.detail)
-        user_auth_info = auth_user_list_str(user=request.user,
-                                            user_table="asset")
+        departments = list(request.user.get_relative_department())
+        department_filter_sql = " and {}.department_id in ({})".format(
+            "asset", ",".join(map(lambda x: str(x.id), departments)))
         query_condition = query_condition + \
-            user_auth_info.get("user_condition_str")
+            department_filter_sql
 
         if keywords:
             query_base = "SELECT DISTINCT(vul.id),vul.id,vul.level_id,vul.update_time_desc,vul.update_time," \
@@ -273,7 +274,7 @@ class GetAggregationVulList(UserEndPoint):
             afdistset = Asset.objects.filter(
                 iastvulassetrelation__asset_vul_id__in=vul_ids,
                 iastvulassetrelation__is_del=0,
-                user_id__in=user_auth_info['user_list'],
+                department__in=departments,
                 project_id__gt=0).values(
                     'project_id',
                     'iastvulassetrelation__asset_vul_id').annotate(
