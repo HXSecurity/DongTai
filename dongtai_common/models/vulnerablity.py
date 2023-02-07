@@ -137,6 +137,7 @@ class IastVulnerabilityDocument(Document):
     project_version_id = fields.IntegerField(attr="agent.project_version_id")
     project_name = fields.IntegerField(attr="agent.bind_project.name")
     token = fields.IntegerField(attr="agent.token")
+    server_id = fields.IntegerField(attr="server_id")
 
     @classmethod
     def search(cls, using=None, index=None):
@@ -169,7 +170,7 @@ class IastVulnerabilityDocument(Document):
             'bottom_stack', 'taint_value', 'taint_position', 'context_path',
             'counts', 'first_time', 'latest_time', 'latest_time_desc',
             'level_id_desc', 'client_ip', 'param_name', 'is_del',
-            'method_pool_id', 'language'
+            'method_pool_id', 'language',
         ]
         auto_refresh = False
 

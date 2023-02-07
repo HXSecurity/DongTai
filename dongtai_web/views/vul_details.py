@@ -20,6 +20,7 @@ from dongtai_web.serializers.vul import VulSerializer
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
+from django.db.models.base import ObjectDoesNotExist
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -149,7 +150,7 @@ class VulDetail(UserEndPoint):
                             method['ori_targetValues'],
                             method["targetRange"][0]["ranges"]
                             if "targetRange" in method.keys()
-                            and method["targetRange"] else [])
+                               and method["targetRange"] else [])
                         method['sourceValues'] = parse_target_value(
                             method['sourceValues'])
                         beforehighlight = method['targetValues']
@@ -165,7 +166,7 @@ class VulDetail(UserEndPoint):
                     continue
                 class_name = method[
                     'originClassName'] if 'originClassName' in method else method[
-                        'className']
+                    'className']
                 method_name = method['methodName']
                 source = ', '.join(
                     [str(_hash) for _hash in method['sourceHash']])
@@ -202,7 +203,8 @@ class VulDetail(UserEndPoint):
                 })
                 results.append(final_res)
         except Exception as e:
-            logger.error(_('Analysis of errovence analysis of stain call diagram: {}').format(__name__, e), exc_info=True)
+            logger.error(_('Analysis of errovence analysis of stain call diagram: {}').format(__name__, e),
+                         exc_info=True)
         return results
 
     @staticmethod
@@ -249,62 +251,72 @@ class VulDetail(UserEndPoint):
         try:
             self.server = vul.server
         except Exception as e:
-            logger.error(_('[{}] Vulnerability information parsing error, error message: {}').format(__name__, e))
+            logger.error(_('[{}] Vulnerability information parsing error, error message: {}').format(__name__, e),
+                         exc_info=e)
             self.server = {}
         self.vul_name = vul.type
+        try:
+            token = vul.agent.token
+        except ObjectDoesNotExist as e:
+            logger.error(
+                _('[{}] Unable to get agent__token, please check whether the agent still exists: {}').format(__name__,
+                                                                                                             e),
+                exc_info=e)
+            token = ""
 
         return {
             'url':
-            vul.url,
+                vul.url,
             'uri':
-            vul.uri,
+                vul.uri,
             'agent_name':
-            vul.agent.token if vul.agent else "",
+                token,
             'http_method':
-            vul.http_method,
+                vul.http_method,
             'type':
-            vul.type,
+                vul.type,
             'taint_position':
-            vul.taint_position,
+                vul.taint_position,
             'first_time':
-            vul.first_time,
+                vul.first_time,
             'latest_time':
-            vul.latest_time,
+                vul.latest_time,
             'project_name':
-            project['name']
-            if project else _('The application has not been binded'),
+                project['name']
+                if project else _('The application has not been binded'),
             'project_version':
-            project_version_name,
+                project_version_name,
             'language':
-            vul.language,
+                vul.language,
             'level':
-            vul.level.name_value,
+                vul.level.name_value,
             'level_type':
-            vul.level.id,
+                vul.level.id,
             'counts':
-            vul.counts,
+                vul.counts,
             'req_header':
-            htmlescape(self.parse_request(vul.http_method, vul.uri, vul.req_params,
-                                          vul.http_protocol, vul.req_header,
-                                          vul.req_data)) if is_need_http_detail(strategy_name) else '',
+                htmlescape(self.parse_request(vul.http_method, vul.uri, vul.req_params,
+                                              vul.http_protocol, vul.req_header,
+                                              vul.req_data)) if is_need_http_detail(strategy_name) else '',
             'response':
-            htmlescape(self.parse_response(vul.res_header, vul.res_body)) if is_need_http_detail(strategy_name) else '',
+                htmlescape(self.parse_response(vul.res_header, vul.res_body)) if is_need_http_detail(
+                    strategy_name) else '',
             'graph':
-            self.parse_graphy(vul.full_stack),
+                self.parse_graphy(vul.full_stack),
             'context_path':
-            vul.context_path,
+                vul.context_path,
             'client_ip':
-            vul.client_ip,
+                vul.client_ip,
             'status':
-            vul.status_,
+                vul.status_,
             'taint_value':
-            vul.taint_value,
+                vul.taint_value,
             'param_name':
-            parse_param_name(vul.param_name) if vul.param_name else {},
+                parse_param_name(vul.param_name) if vul.param_name else {},
             'method_pool_id':
-            vul.method_pool_id,
+                vul.method_pool_id,
             'project_id':
-            project_id,
+                project_id,
             'is_need_http_detail': is_need_http_detail(strategy_name),
         }
 
@@ -323,10 +335,10 @@ class VulDetail(UserEndPoint):
 
     @extend_schema_with_envcheck(response_bodys=[{
         'name':
-        _('Get data sample'),
+            _('Get data sample'),
         'description':
-        _("The aggregation results are programming language, risk level, vulnerability type, project"
-          ),
+            _("The aggregation results are programming language, risk level, vulnerability type, project"
+              ),
         'value': {
             "status": 201,
             "msg": "success",
@@ -335,7 +347,7 @@ class VulDetail(UserEndPoint):
                     "url": "http://localhost:81/captcha/captchaImage",
                     "uri": "/captcha/captchaImage",
                     "agent_name":
-                    "Mac OS X-localhost-v1.0.0-d24bf703ca62499ebdd12770708296f5",
+                        "Mac OS X-localhost-v1.0.0-d24bf703ca62499ebdd12770708296f5",
                     "http_method": "GET",
                     "type": "Weak Random Number Generation",
                     "taint_position": None,
@@ -348,7 +360,7 @@ class VulDetail(UserEndPoint):
                     "level_type": 3,
                     "counts": 6,
                     "req_header":
-                    "GET /captcha/captchaImage?type=math HTTP/1.1\nhost:localhost:81\nconnection:keep-alive\nsec-ch-ua:\"Google Chrome\";v=\"93\", \" Not;A Brand\";v=\"99\", \"Chromium\";v=\"93\"\nsec-ch-ua-mobile:?0\nuser-agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36\nsec-ch-ua-platform:\"macOS\"\naccept:image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8\nsec-fetch-site:same-origin\nsec-fetch-mode:no-cors\nsec-fetch-dest:image\nreferer:http://localhost:81/login\naccept-encoding:gzip, deflate, br\naccept-language:zh-CN,zh;q=0.9\ncookie:JSESSIONID=4bada2e5-d848-4218-8e24-3b28f765b986\n",
+                        "GET /captcha/captchaImage?type=math HTTP/1.1\nhost:localhost:81\nconnection:keep-alive\nsec-ch-ua:\"Google Chrome\";v=\"93\", \" Not;A Brand\";v=\"99\", \"Chromium\";v=\"93\"\nsec-ch-ua-mobile:?0\nuser-agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36\nsec-ch-ua-platform:\"macOS\"\naccept:image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8\nsec-fetch-site:same-origin\nsec-fetch-mode:no-cors\nsec-fetch-dest:image\nreferer:http://localhost:81/login\naccept-encoding:gzip, deflate, br\naccept-language:zh-CN,zh;q=0.9\ncookie:JSESSIONID=4bada2e5-d848-4218-8e24-3b28f765b986\n",
                     "response": "None\n\nNone",
                     "graph": None,
                     "context_path": "127.0.0.1",
@@ -367,15 +379,15 @@ class VulDetail(UserEndPoint):
                     "container": "Apache Tomcat/9.0.41",
                     "server_type": "apache tomcat",
                     "container_path":
-                    "/Users/erzhuangniu/workspace/vul/demo-4.6.1",
+                        "/Users/erzhuangniu/workspace/vul/demo-4.6.1",
                     "runtime": "OpenJDK Runtime Environment",
                     "environment":
-                    "java.runtime.name=OpenJDK Runtime Environment, spring.output.ansi.enabled=always, project.name=demo-4.6.1, sun.boot.library.path=/Users/erzhuangniu/Library/Java/JavaVirtualMachines/corretto-1.8.0_292/Contents/Home/jre/lib, java.vm.version=25.292-b10, gop",
+                        "java.runtime.name=OpenJDK Runtime Environment, spring.output.ansi.enabled=always, project.name=demo-4.6.1, sun.boot.library.path=/Users/erzhuangniu/Library/Java/JavaVirtualMachines/corretto-1.8.0_292/Contents/Home/jre/lib, java.vm.version=25.292-b10, gop",
                     "command": "com.ruoyi.demoApplication"
                 },
                 "strategy": {
                     "desc":
-                    "Verifies that weak sources of entropy are not used.",
+                        "Verifies that weak sources of entropy are not used.",
                     "sample_code": "",
                     "repair_suggestion": None
                 }
@@ -435,7 +447,7 @@ class VulDetailV2(VulDetail):
         }]
         return res
 
-    def get(self, request, id,):
+    def get(self, request, id, ):
         self.vul_id = id
         department = request.user.get_relative_department()
         try:
@@ -478,12 +490,12 @@ class VulDetailV2(VulDetail):
 def htmlescape(string):
     return string.replace(
         '<em>', "6350be97a65823fc42ddd9dc78e17ddf13ff693b").replace(
-            '</em>', "4d415116bf74985fbdb232cd954cd40392fbcd69").replace(
-                '<',
-                '&lt;').replace("4d415116bf74985fbdb232cd954cd40392fbcd69",
-                                "</em>").replace(
-                                    "6350be97a65823fc42ddd9dc78e17ddf13ff693b",
-                                    "<em>")
+        '</em>', "4d415116bf74985fbdb232cd954cd40392fbcd69").replace(
+        '<',
+        '&lt;').replace("4d415116bf74985fbdb232cd954cd40392fbcd69",
+                        "</em>").replace(
+        "6350be97a65823fc42ddd9dc78e17ddf13ff693b",
+        "<em>")
 
 
 def is_need_http_detail(name):

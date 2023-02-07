@@ -387,7 +387,7 @@ spec:
               subPath: config.ini
           env:
             - name: DONGTAI_CONCURRENCY
-              value: -P gevent --concurrency=64
+              value: -P gevent --concurrency=128
           resources:
             limits:
               cpu: "500m"
