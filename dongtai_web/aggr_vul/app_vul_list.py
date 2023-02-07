@@ -175,6 +175,10 @@ class GetAppVulsList(UserEndPoint):
                     item['server__container'])
                 item['is_header_vul'] = VulSerializer.judge_is_header_vul(
                     item['strategy_id'])
+                item['agent__project_name'] = item['project__name']
+                item['agent__server__container'] = item['server__container']
+                item['agent__language'] = item['language']
+                item['agent__bind_project_id'] = item['project_id']
                 item['header_vul_urls'] = VulSerializer.find_all_urls(
                     item['id']) if item['is_header_vul'] else []
                 end['data'].append(item)
