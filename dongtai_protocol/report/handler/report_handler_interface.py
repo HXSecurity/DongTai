@@ -21,7 +21,7 @@ class IReportHandler:
         self._user_id = None
         self.agent_id = None
         self.project_name = None
-        self.agent: Optional[IastAgent] = None
+        self.agent: IastAgent = IastAgent()
 
     @property
     def report(self):
@@ -56,6 +56,8 @@ class IReportHandler:
         logger.info(
             f"report_type : {self.report.get('type',0)} agent_id: {self.agent_id} has_permission: {'YES' if self.agent else 'No'}"
         )
+        if not self.agent:
+            return None
         return self.agent
 
     def parse(self):

@@ -25,7 +25,7 @@ logger = logging.getLogger("django")
 
 class _ProjectsArgsSerializer(serializers.Serializer):
     pageSize = serializers.IntegerField(default=20,
-                                         help_text=_('Number per page'))
+                                        help_text=_('Number per page'))
     page = serializers.IntegerField(min_value=1, default=1, help_text=_('Page index'))
     name = serializers.CharField(
         default=None,
