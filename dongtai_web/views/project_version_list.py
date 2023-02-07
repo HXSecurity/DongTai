@@ -47,22 +47,22 @@ class ProjectVersionList(UserEndPoint):
     )
     def get(self, request, project_id):
         try:
-            # auth_users = self.get_auth_users(request.user)
             department = request.user.get_relative_department()
             project = IastProject.objects.filter(department__in=department, id=project_id).first()
-            if project:
-                versionInfo = IastProjectVersion.objects.filter(project_id=project_id, status=1).order_by("-id")
-                data = []
-                if versionInfo:
-                    for item in versionInfo:
-                        data.append({
-                            "version_id": item.id,
-                            "version_name": item.version_name,
-                            "current_version": item.current_version,
-                            "description": item.description,
-                        })
-            else:
+            if not project:
                 return R.failure(status=203, msg=_('no permission'))
+
+            versionInfo = IastProjectVersion.objects.filter(project_id=project_id, status=1).order_by("-id")
+            data = []
+            if versionInfo:
+                for item in versionInfo:
+                    data.append({
+                        "version_id": item.id,
+                        "version_name": item.version_name,
+                        "current_version": item.current_version,
+                        "description": item.description,
+                    })
+
             return R.success(msg=_('Search successful'), data=data)
         except Exception as e:
             logger.error(e)

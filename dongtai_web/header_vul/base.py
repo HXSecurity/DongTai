@@ -74,8 +74,9 @@ class HeaderVulViewSet(UserEndPoint, viewsets.ViewSet):
                 vul_id = ser.validated_data['vul_id']
         except ValidationError as e:
             return R.failure(data=e.detail)
-        users = self.get_auth_users(request.user)
-        q = Q(project__user__in=users) & Q(vul_id=vul_id)
+        # users = self.get_auth_users(request.user)
+        department = request.user.get_relative_department()
+        q = Q(project__department__in=department) & Q(vul_id=vul_id)
         queryset = IastHeaderVulnerability.objects.filter(q).all()
         page_summary, page_data = self.get_paginator(queryset, page, page_size)
         return R.success(data=HeaderVulSerializer(page_data, many=True).data,

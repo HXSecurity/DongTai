@@ -316,6 +316,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
             project_version_id=vul_meta.agent.project_version_id,
             project_id=vul_meta.agent.bind_project_id,
             language=vul_meta.agent.language,
+            server_id=vul_meta.agent.server_id,
         )
         log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
                       vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)
