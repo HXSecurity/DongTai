@@ -27,13 +27,12 @@ from dongtai_common.common.utils import make_hash
 from dongtai_conf.settings import ELASTICSEARCH_STATE
 from dongtai_engine.elatic_search.data_correction import data_correction_interpetor
 
-
-INT_LIMIT: int = 2**64 - 1
+INT_LIMIT: int = 2 ** 64 - 1
 
 
 class GetAppVulsList(UserEndPoint):
 
-    @ extend_schema_with_envcheck(
+    @extend_schema_with_envcheck(
         request=AggregationArgsSerializer,
         tags=[_('app VulList')],
         summary=_('app List Select'),
@@ -52,13 +51,14 @@ class GetAppVulsList(UserEndPoint):
             "data": [],
         }
         ser = AggregationArgsSerializer(data=request.data)
-        user = request.user
+        # user = request.user
         # 获取用户权限
-        auth_user_info = auth_user_list_str(user=user)
+        # auth_user_info = auth_user_list_str(user=user)
+        departments = request.user.get_relative_department()
         queryset = IastVulnerabilityModel.objects.filter(
             is_del=0,
-            agent__bind_project_id__gt=0,
-            agent__user_id__in=auth_user_info['user_list'])
+            project_id__gt=0,
+            project__department__in=departments)
 
         try:
             if ser.is_valid(True):
@@ -74,13 +74,13 @@ class GetAppVulsList(UserEndPoint):
                 # 从项目列表进入 绑定项目id
                 if ser.validated_data.get("bind_project_id", 0):
                     queryset = queryset.filter(
-                        agent__bind_project_id=ser.validated_data.get("bind_project_id"))
+                        project_id=ser.validated_data.get("bind_project_id"))
                     es_query['bind_project_id'] = ser.validated_data.get(
                         "bind_project_id")
                 # 项目版本号
                 if ser.validated_data.get("project_version_id", 0):
                     queryset = queryset.filter(
-                        agent__project_version_id=ser.validated_data.get("project_version_id"))
+                        project_version_id=ser.validated_data.get("project_version_id"))
                     es_query['project_version_id'] = ser.validated_data.get(
                         "project_version_id")
                 # 按项目筛选
@@ -88,7 +88,7 @@ class GetAppVulsList(UserEndPoint):
                     project_id_list = turnIntListOfStr(
                         ser.validated_data.get("project_id_str", ""))
                     queryset = queryset.filter(
-                        agent__bind_project_id__in=project_id_list)
+                        project_id__in=project_id_list)
                     es_query['project_ids'] = project_id_list
                 # 漏洞类型筛选
                 if ser.validated_data.get("hook_type_id_str", ""):
@@ -116,15 +116,15 @@ class GetAppVulsList(UserEndPoint):
                     for lang in language_id_list:
                         language_arr.append(LANGUAGE_ID_DICT.get(str(lang)))
                     queryset = queryset.filter(
-                        agent__language__in=language_arr)
+                        language__in=language_arr)
                     es_query['language_ids'] = language_arr
                 order_list = []
                 fields = [
                     "id", "uri", "http_method", "top_stack", "bottom_stack",
                     "level_id", "taint_position", "status_id", "first_time",
-                    "latest_time", "strategy__vul_name", "agent__language",
-                    "agent__project_name", "agent__server__container",
-                    "agent__bind_project_id", 'strategy_id'
+                    "latest_time", "strategy__vul_name", "language",
+                    "project__name", "server__container",
+                    "project_id", 'strategy_id'
                 ]
                 if keywords:
                     es_query['search_keyword'] = keywords
@@ -158,7 +158,7 @@ class GetAppVulsList(UserEndPoint):
                 es_query['order'] = order_type_desc + order_type
                 if ELASTICSEARCH_STATE:
                     vul_data = get_vul_list_from_elastic_search(
-                        request.user.id,
+                        departments,
                         page=page,
                         page_size=page_size,
                         **es_query)
@@ -172,7 +172,7 @@ class GetAppVulsList(UserEndPoint):
                 item['level_name'] = APP_LEVEL_RISK.get(
                     str(item['level_id']), "")
                 item['server_type'] = VulSerializer.split_container_name(
-                    item['agent__server__container'])
+                    item['server__container'])
                 item['is_header_vul'] = VulSerializer.judge_is_header_vul(
                     item['strategy_id'])
                 item['header_vul_urls'] = VulSerializer.find_all_urls(
@@ -196,7 +196,7 @@ class GetAppVulsList(UserEndPoint):
         }, )
 
 
-def get_vul_list_from_elastic_search(user_id,
+def get_vul_list_from_elastic_search(departments,
                                      project_ids=[],
                                      project_version_ids=[],
                                      hook_type_ids=[],
@@ -210,13 +210,14 @@ def get_vul_list_from_elastic_search(user_id,
                                      bind_project_id=0,
                                      project_version_id=0,
                                      order=""):
-    user_id_list = [user_id]
-    auth_user_info = auth_user_list_str(user_id=user_id)
-    user_id_list = auth_user_info['user_list']
+    # user_id_list = [user_id]
+    # auth_user_info = auth_user_list_str(user_id=user_id)
+    # user_id_list = auth_user_info['user_list']
     from dongtai_common.models.strategy import IastStrategyModel
     from dongtai_common.models.agent import IastAgent
+    department_ids = list(departments.values_list("id", flat=True))
     must_query = [
-        Q('terms', user_id=user_id_list),
+        Q('terms', department_id=department_ids),
         Q('terms', is_del=[0]),
         Q('range', bind_project_id={'gt': 0}),
         Q('range', strategy_id={'gt': 0}),
@@ -251,7 +252,7 @@ def get_vul_list_from_elastic_search(user_id,
     a = Q('bool',
           must=must_query)
     hashkey = make_hash([
-        user_id, project_ids, project_version_ids, hook_type_ids, level_ids,
+        department_ids, project_ids, project_version_ids, hook_type_ids, level_ids,
         status_ids, language_ids, search_keyword, page_size, bind_project_id,
         project_version_id
     ])
@@ -264,20 +265,20 @@ def get_vul_list_from_elastic_search(user_id,
         extra_dict['search_after'] = after_key
     res = IastVulnerabilityDocument.search().query(a).extra(**extra_dict).sort(
         *order_list)[:page_size].using(
-            Elasticsearch(settings.ELASTICSEARCH_DSL['default']['hosts']))
+        Elasticsearch(settings.ELASTICSEARCH_DSL['default']['hosts']))
     resp = res.execute()
     extra_datas = IastVulnerabilityModel.objects.filter(
         pk__in=[i['id']
-                for i in resp]).values('strategy__vul_name', 'agent__language',
-                                       'agent__project_name',
-                                       'agent__server__container',
-                                       'agent__bind_project_id', 'id')
+                for i in resp]).values('strategy__vul_name', 'language',
+                                       'project__name',
+                                       'server_id',
+                                       'project_id', 'id')
     extra_data_dic = {ex_data['id']: ex_data for ex_data in extra_datas}
     vuls = [i._d_ for i in list(resp)]
     vul_incorrect_id = []
-    agent_values = ('language', 'project_name', 'server__container',
+    agent_values = ('language', 'project__name', 'server__container',
                     'bind_project_id', 'id')
-    strategy_values = ('vul_name', )
+    strategy_values = ('vul_name',)
     for vul in vuls:
         if vul['id'] not in extra_data_dic.keys():
             vul_incorrect_id.append(vul['id'])
