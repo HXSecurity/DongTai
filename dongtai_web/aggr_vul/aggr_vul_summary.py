@@ -12,7 +12,7 @@ from rest_framework.serializers import ValidationError
 from django.db import connection
 from dongtai_common.common.utils import cached_decorator
 from dongtai_common.models import APP_LEVEL_RISK
-
+from dongtai_common.models.user import User
 
 def get_annotate_sca_common_data(user_id: int, pro_condition: str):
     return get_annotate_sca_base_data(user_id, pro_condition)
@@ -49,9 +49,13 @@ def get_annotate_sca_base_data(user_id: int, pro_condition: str):
         "project": []
     }
     # auth_condition = getAuthBaseQuery(user_id=user_id, table_str="asset")
-    user_auth_info = auth_user_list_str(user_id=user_id, user_table="asset")
+    #user_auth_info = auth_user_list_str(user_id=user_id, user_table="asset")
+    user = User.objects.get(pk=user_id)
+    departments = list(user.get_relative_department())
+    department_filter_sql = " and {}.department_id in ({})".format(
+        "asset", ",".join(map(lambda x: str(x.id), departments)))
     query_condition = " where rel.is_del=0 and asset.project_id>0 " + \
-        user_auth_info.get("user_condition_str") + pro_condition
+        department_filter_sql + pro_condition
     base_join = "left JOIN iast_asset_vul_relation as rel on rel.asset_vul_id=vul.id  " \
                 "left JOIN iast_asset as asset on rel.asset_id=asset.id "
     # level_join = "left JOIN iast_vul_level as level on level.id=vul.level_id "
@@ -172,10 +176,11 @@ def get_annotate_data_es(
     from dongtai_conf import settings
     from dongtai_web.utils import dict_transfrom
     user_id_list = [user_id]
-    auth_user_info = auth_user_list_str(user_id=user_id)
-    user_id_list = auth_user_info['user_list']
+    user = User.objects.get(pk=user_id)
+    departments = list(user.get_relative_department())
+    department_ids = [i.id for i in departments]
     must_query = [
-        Q('terms', asset_user_id=user_id_list),
+        Q('terms', asset_department_id=department_ids),
         Q('terms', asset_vul_relation_is_del=[0]),
         Q('range', asset_project_id={'gt': 0}),
     ]
