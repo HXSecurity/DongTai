@@ -23,6 +23,7 @@ from urllib.parse import urlparse, urlunparse
 import ipaddress
 import requests
 from dongtai_common.models.server import IastServer
+
 logger = logging.getLogger("django")
 
 
@@ -115,22 +116,23 @@ class ProjectAdd(UserEndPoint):
                     project.name = name
                 else:
                     department_id = request.data.get("department_id")
-                    if departments.filter(pk=department_id).exists():
-                      project = IastProject.objects.filter(
-                          name=name, user_id=request.user.id, department_id=department_id).first()
-                      if not project:
-                          project = IastProject.objects.create(name=name,
-                                                               user_id=request.user.id, department_id=department_id)
-                      else:
-                          return R.failure(
-                              status=203,
-                              msg=_('Failed to create, the application name already exists'
-                                    ))
-                    else:
+                    if not departments.filter(pk=department_id).exists():
                         return R.failure(
                             status=203,
                             msg=_('department does not exist'
                                   ))
+
+                    project = IastProject.objects.filter(
+                        name=name, user_id=request.user.id, department_id=department_id).first()
+                    if not project:
+                        project = IastProject.objects.create(name=name,
+                                                             user_id=request.user.id, department_id=department_id)
+                    else:
+                        return R.failure(
+                            status=203,
+                            msg=_('Failed to create, the application name already exists'
+                                  ))
+
                 versionInfo = IastProjectVersion.objects.filter(
                     project_id=project.id, current_version=1,
                     status=1).first()

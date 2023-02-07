@@ -1,3 +1,4 @@
+from dongtai_common.models.department import Department
 from dongtai_web.utils import dict_transfrom
 from dongtai_engine.elatic_search.data_correction import data_correction_interpetor
 from dongtai_conf.settings import ELASTICSEARCH_STATE
@@ -29,12 +30,12 @@ def _annotate_by_query(q, value_fields, count_field):
 #                  use_celery_update=True)
 
 
-def get_annotate_cache_data(department: int):
+def get_annotate_cache_data(department: Department):
     return get_annotate_data(department, 0, 0)
 
 
 def get_annotate_data(
-    department: int, bind_project_id=int, project_version_id=int
+    department: Department, bind_project_id=int, project_version_id=int
 ) -> dict:
     # auth_user_info = auth_user_list_str(user_id=user_id)
     # cache_q = Q(is_del=0, agent__bind_project_id__gt=0,
@@ -187,7 +188,7 @@ class GetAppVulsSummary(UserEndPoint):
         )
 
 
-def get_annotate_data_es(department, bind_project_id, project_version_id):
+def get_annotate_data_es(department: Department, bind_project_id, project_version_id):
     from dongtai_common.models.vulnerablity import IastVulnerabilityDocument
     from elasticsearch_dsl import Q, Search
     from elasticsearch import Elasticsearch
@@ -203,8 +204,9 @@ def get_annotate_data_es(department, bind_project_id, project_version_id):
     # user_id_list = auth_user_info['user_list']
     strategy_ids = list(IastStrategyModel.objects.all().values_list('id',
                                                                     flat=True))
+
     must_query = [
-        Q('terms', user_id=department),
+        Q('terms', department_id=list(department.values_list("id", flat=True))),
         Q('terms', is_del=[0]),
         Q('terms', is_del=[0]),
         Q('range', bind_project_id={'gt': 0}),

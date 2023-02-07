@@ -3,6 +3,8 @@ from django.db.models import Prefetch
 
 from dongtai_common.endpoint import UserEndPoint, R
 from django.forms.models import model_to_dict
+
+from dongtai_common.models.department import Department
 from dongtai_common.utils import const
 from dongtai_web.serializers.agent import AgentSerializer
 from dongtai_web.utils import get_model_field
@@ -128,19 +130,19 @@ def get_service_addrs(ip_list: list, port: int) -> list:
     return list(map(lambda x: x + ":" + str(port), ip_list))
 
 
-def get_agent_stat(agent_id: int, department: int) -> dict:
+def get_agent_stat(agent_id: int, department: Department) -> dict:
     res = {}
     res['api_count'] = IastApiRoute.objects.filter(
         agent__id=agent_id,
         from_where=FromWhereChoices.FROM_AGENT,
-        agent__department__in=department).count()
+        project__department__in=department).count()
     # agent__user__in = get_auth_users__by_id(user_id)).count()
     res['sca_count'] = Asset.objects.filter(
         agent__id=agent_id,
-        agent__department__in=department).count()
+        project__department__in=department).count()
     res['vul_count'] = IastVulnerabilityModel.objects.filter(
         agent__id=agent_id,
-        agent__department__in=department).count()
+        project__department__in=department).count()
     return res
 
 
