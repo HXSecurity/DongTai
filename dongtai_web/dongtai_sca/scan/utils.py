@@ -272,6 +272,7 @@ def update_one_sca(agent_id,
             asset.project_id = -1
             if agent.bind_project_id:
                 asset.project_id = agent.bind_project_id
+                asset.department_id = agent.bind_project.department_id
             asset.user_id = -1
             if agent.user_id:
                 asset.user_id = agent.user_id
@@ -310,6 +311,7 @@ def update_one_sca(agent_id,
             asset.project_id = -1
             if agent.bind_project_id:
                 asset.project_id = agent.bind_project_id
+                asset.department_id = agent.bind_project.department_id
             asset.user_id = -1
             if agent.user_id:
                 asset.user_id = agent.user_id
@@ -344,6 +346,7 @@ def update_one_sca(agent_id,
             asset.project_id = -1
             if agent.bind_project_id:
                 asset.project_id = agent.bind_project_id
+                asset.department_id = agent.bind_project.department_id
             asset.user_id = -1
             if agent.user_id:
                 asset.user_id = agent.user_id
