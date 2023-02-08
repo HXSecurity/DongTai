@@ -263,6 +263,7 @@ class NormalVulnHandler(BaseVulnHandler):
                 project_id=iast_vul.agent.bind_project_id,
                 language=self.agent.language,
                 server_id=self.agent.server_id,
+                department_id=self.agent.department_id,
             )
             log_vul_found(iast_vul.agent.user_id,
                           iast_vul.agent.bind_project.name,
