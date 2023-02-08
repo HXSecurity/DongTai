@@ -339,7 +339,7 @@ FILES_SIZE_LIMIT = 1024 * 1024 * 50
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
             'format':
@@ -677,10 +677,10 @@ if ELASTICSEARCH_STATE:
     ASSET_INDEX = config.get('elastic_search', 'asset_index')
     ELASTICSEARCH_DSL_PARALLEL = True
     ELASTICSEARCH_DSL_AUTO_REFRESH = False
-    ELASTICSEARCH_DSL_SIGNAL_PROCESSOR = 'dongtai_common.utils.es.DTCelerySignalProcessor'
+    # ELASTICSEARCH_DSL_SIGNAL_PROCESSOR = 'dongtai_common.utils.es.DTCelerySignalProcessor'
     from elasticsearch import logger as es_logger
-    # import elasticsearch
-    es_logger.setLevel(LOGGING_LEVEL)
+    import elasticsearch
+    es_logger.setLevel(elasticsearch.logging.DEBUG)
 else:
     ELASTICSEARCH_DSL = {
         'default': {
