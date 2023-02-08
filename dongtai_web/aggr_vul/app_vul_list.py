@@ -281,7 +281,7 @@ def get_vul_list_from_elastic_search(departments,
     vuls = [i._d_ for i in list(resp)]
     vul_incorrect_id = []
     iast_vulnerability_values = ('language', 'project__name', 'server__container',
-                                 'bind_project_id', 'id')
+                                 'project_id', 'id')
     strategy_values = ('vul_name',)
     for vul in vuls:
         if 'server__container' not in vul:
