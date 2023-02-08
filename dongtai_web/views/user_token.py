@@ -10,6 +10,7 @@ from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint
 from rest_framework.authtoken.models import Token
 from django.utils.translation import gettext_lazy as _
+from dongtai_web.projecttemplate.update_department_data import update_department_data
 
 logger = logging.getLogger("django")
 
@@ -30,6 +31,9 @@ class UserDepartmentToken(UserEndPoint):
 
     def get(self, request):
         departments = request.user.get_relative_department()
+        department = request.user.get_department()
+        if not department.token:
+            update_department_data()            
         tokens = departments.values('id','token', 'name').all()
         for token in tokens:
             token['token'] = 'GROUP' + token['token']
