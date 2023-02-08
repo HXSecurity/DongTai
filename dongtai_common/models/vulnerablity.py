@@ -138,6 +138,7 @@ class IastVulnerabilityDocument(Document):
     project_name = fields.IntegerField(attr="agent.bind_project.name")
     token = fields.IntegerField(attr="agent.token")
     server_id = fields.IntegerField(attr="server_id")
+    department_id = fields.IntegerField(attr="department_id")
 
     @classmethod
     def search(cls, using=None, index=None):
