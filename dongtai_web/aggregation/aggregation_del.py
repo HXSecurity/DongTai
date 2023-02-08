@@ -30,29 +30,17 @@ class DelVulMany(UserEndPoint):
         ids = request.data.get("ids", "")
         ids = turnIntListOfStr(ids)
         source_type = request.data.get("source_type", 1)
-        user = request.user
+        department = request.user.get_relative_department()
         if source_type == 1:
             queryset = IastVulnerabilityModel.objects.filter(is_del=0)
         else:
             queryset = IastVulAssetRelation.objects.filter(is_del=0)
 
-        # 超级管理员
-        if user.is_system_admin():
-            pass
-        # 租户管理员 or 部门管理员
-        elif user.is_talent_admin() or user.is_department_admin:
-            users = self.get_auth_users(user)
-            user_ids = list(users.values_list('id', flat=True))
-            if source_type == 1:
-                queryset = queryset.filter(agent__user_id__in=user_ids)
-            else:
-                queryset = queryset.filter(asset__user_id__in=user_ids)
+        # 部门删除逻辑
+        if source_type == 1:
+            queryset = queryset.filter(project__department__in=department)
         else:
-            # 普通用户
-            if source_type == 1:
-                queryset = queryset.filter(agent__user_id=user.id)
-            else:
-                queryset = queryset.filter(asset__user_id=user.id)
+            queryset = queryset.filter(asset__department__in=department)
 
         if source_type == 1:
             # 应用漏洞删除
