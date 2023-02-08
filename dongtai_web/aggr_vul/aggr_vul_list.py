@@ -340,8 +340,11 @@ def get_vul_list_from_elastic_search(user_id,
     user_id_list = [user_id]
     auth_user_info = auth_user_list_str(user_id=user_id)
     user_id_list = auth_user_info['user_list']
+    user = User.objects.filter(pk=user_id).first()
+    departments = user.get_relative_department()
+    department_ids = [department.id for department in departments]
     must_query = [
-        Q('terms', asset_user_id=user_id_list),
+        Q('terms', asset_department_id=department_ids),
         Q('terms', asset_vul_relation_is_del=[0]),
         Q('range', asset_project_id={'gt': 0}),
     ]
