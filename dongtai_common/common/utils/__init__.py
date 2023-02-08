@@ -103,6 +103,7 @@ class DepartmentTokenAuthentication(TokenAuthentication):
     def authenticate_credentials(self, key):
         from dongtai_common.models.department import Department
         from dongtai_common.models.user import User
+        from rest_framework import exceptions
         model = Department
         try:
             department = model.objects.get(token=key)
