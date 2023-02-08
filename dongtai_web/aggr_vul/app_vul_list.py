@@ -280,23 +280,29 @@ def get_vul_list_from_elastic_search(departments,
     extra_data_dic = {ex_data['id']: ex_data for ex_data in extra_datas}
     vuls = [i._d_ for i in list(resp)]
     vul_incorrect_id = []
-    agent_values = ('language', 'project__name', 'server__container',
-                    'bind_project_id', 'id')
+    iast_vulnerability_values = ('language', 'project__name', 'server__container',
+                                 'bind_project_id', 'id')
     strategy_values = ('vul_name',)
     for vul in vuls:
+        if 'server__container' not in vul:
+            vul['server__container'] = ""
         if vul['id'] not in extra_data_dic.keys():
             vul_incorrect_id.append(vul['id'])
             strategy_dic = IastStrategyModel.objects.filter(
                 pk=vul['strategy_id']).values(*strategy_values).first()
-            agent_dic = IastAgent.objects.filter(pk=vul['agent_id']).values(
-                *agent_values).first()
+            iast_vulnerability_dic = IastVulnerabilityModel.objects.filter(pk=vul['agent_id']).values(
+                *iast_vulnerability_values).first()
             if not strategy_dic:
                 strategy_dic = {i: '' for i in strategy_values}
-            if not agent_dic:
-                agent_dic = {i: '' for i in agent_values}
+            if not iast_vulnerability_dic:
+                iast_vulnerability_dic = {i: '' for i in iast_vulnerability_values}
+            vul['agent__project_name'] = vul['project__name']
+            vul['agent__server__container'] = vul['server__container']
+            vul['agent__language'] = vul['language']
+            vul['agent__bind_project_id'] = vul['project_id']
             for k, v in strategy_dic.items():
                 vul['strategy__' + k] = v
-            for k, v in agent_dic.items():
+            for k, v in iast_vulnerability_dic.items():
                 vul['agent__' + k] = v
         else:
             vul.update(extra_data_dic[vul['id']])
