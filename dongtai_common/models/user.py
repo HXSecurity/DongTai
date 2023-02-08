@@ -80,10 +80,10 @@ class User(AbstractUser, PermissionsMixin):
         db_table = 'auth_user'
 
     def is_system_admin(self):
-        return self.is_superuser == 1 or self.is_superuser == 6
+        return self.is_superuser == 1 
 
     def is_talent_admin(self):
-        return self.is_superuser == 2 or self.is_superuser == 1
+        return self.is_superuser == 2 or self.is_superuser == 1 or self.is_superuser == 6
 
     def get_talent(self):
         try:
