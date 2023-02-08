@@ -405,11 +405,11 @@ class VulDetail(UserEndPoint):
         :return:
         """
         self.vul_id = id
-        self.auth_agents = self.get_auth_agents_with_user(request.user)
+        self.departments = request.user.get_relative_department()
         try:
             return R.success(
                 data={
-                    'vul': self.get_vul(self.auth_agents),
+                    'vul': self.get_vul(self.departments),
                     'server': self.get_server(),
                     'strategy': self.get_strategy()
                 }
@@ -449,10 +449,10 @@ class VulDetailV2(VulDetail):
 
     def get(self, request, id, ):
         self.vul_id = id
-        department = request.user.get_relative_department()
+        self.departments = request.user.get_relative_department()
         try:
             data = {
-                'vul': self.get_vul(department),
+                'vul': self.get_vul(self.departments),
                 'server': self.get_server(),
                 'strategy': self.get_strategy()
             }
