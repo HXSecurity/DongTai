@@ -33,7 +33,7 @@ from typing import List
 from dongtai_common.models.asset import Asset
 from django.db.models import Max
 from dongtai_common.models.asset_vul import IastAssetVul
-from dogntai_common.models.user import User
+from dongtai_common.models.user import User
 
 logger = logging.getLogger("django")
 INT_LIMIT: int = 2**64 - 1
