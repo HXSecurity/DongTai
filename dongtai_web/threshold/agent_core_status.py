@@ -56,25 +56,15 @@ class AgentCoreStatusUpdate(UserEndPoint):
             agent_ids = [int(agent_id)]
 
         if agent_ids:
+            department = request.user.get_relative_department()
             except_running_status = STATUS_MAPPING[core_status]
             # Here could be simply to such as "control_status in statusData.keys()"
             statusData = AGENT_STATUS.get(core_status, {})
             control_status = statusData.get("value", None)
             if control_status is None:
                 return R.failure(msg=_('Incomplete parameter, please check again'))
-            user = request.user
 
-            # 超级管理员
-            if user.is_system_admin():
-                queryset = IastAgent.objects.all()
-            # 租户管理员
-            elif user.is_superuser == 2:
-                users = self.get_auth_users(user)
-                user_ids = list(users.values_list('id', flat=True))
-                queryset = IastAgent.objects.filter(user_id__in=user_ids)
-            else:
-                # 普通用户
-                queryset = IastAgent.objects.filter(user=user)
+            queryset = IastAgent.objects.filter(department__in=department)
             queryset.filter(id__in=agent_ids).update(
                 except_running_status=except_running_status,
                 control=core_status,
@@ -101,22 +91,13 @@ class AgentCoreStatusUpdateALL(UserEndPoint):
 
     def post(self, request):
         ser = AgentCoreStatusSerializer(data=request.data)
+        department = request.user.get_relative_department()
         if ser.is_valid(False):
             core_status = ser.validated_data.get('core_status', None)
         else:
             return R.failure(msg=_('Incomplete parameter, please check again'))
-        user = request.user
-        # 超级管理员
-        if user.is_system_admin():
-            queryset = IastAgent.objects.all()
-        # 租户管理员
-        elif user.is_superuser == 2:
-            users = self.get_auth_users(user)
-            user_ids = list(users.values_list('id', flat=True))
-            queryset = IastAgent.objects.filter(user_id__in=user_ids)
-        else:
-            # 普通用户
-            queryset = IastAgent.objects.filter(user=user)
+
+        queryset = IastAgent.objects.filter(department__in=department)
         except_running_status = STATUS_MAPPING[core_status]
         queryset.filter(online=1).update(
             except_running_status=except_running_status,

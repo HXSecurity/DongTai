@@ -32,13 +32,14 @@ class AgentStop(UserEndPoint):
     def post(self, request):
         agent_id = request.data.get('id', None)
         agent_ids = request.data.get('ids', None)
+        department = request.user.get_relative_department()
         if agent_ids:
             try:
                 agent_ids = [int(i) for i in agent_ids.split(',')]
-            except BaseException:
+            except Exception:
                 return R.failure(_("Parameter error"))
         if agent_id:
-            agent = IastAgent.objects.filter(user=request.user,
+            agent = IastAgent.objects.filter(department__in=department,
                                              id=agent_id).first()
             if agent is None:
                 return R.failure(msg=_('Engine does not exist or no permission to access'))
@@ -50,7 +51,7 @@ class AgentStop(UserEndPoint):
             agent.save(update_fields=['latest_time', 'control', 'is_control'])
         if agent_ids:
             for agent_id in agent_ids:
-                agent = IastAgent.objects.filter(user=request.user,
+                agent = IastAgent.objects.filter(department__in=department,
                                                  id=agent_id).first()
                 if agent is None:
                     continue
