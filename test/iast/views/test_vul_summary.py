@@ -65,7 +65,6 @@ class ScanStrategyTestCase(APITestCase):
             strategy_id=-1,
             hook_type_id=1,
             server_id=1,
-            department_id=1,
             status_id=1)
         self.mockdata = [agent, vuln]
 
