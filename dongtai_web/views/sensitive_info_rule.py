@@ -122,7 +122,6 @@ class _RegexPatternValidationSerializer(serializers.Serializer):
 
 
 class SensitiveInfoRuleViewSet(UserEndPoint, viewsets.ViewSet):
-   
 
     def get_permissions(self):
         try:
