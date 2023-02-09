@@ -8,6 +8,7 @@ from dongtai_common.endpoint import UserEndPoint, R, TalentAdminEndPoint
 from rest_framework import viewsets
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
+from dongtai_common.permissions import UserPermission, ScopedPermission, SystemAdminPermission, TalentAdminPermission
 
 class PaginationSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=20,
@@ -67,6 +68,8 @@ class IastProjectTemplateView(TalentAdminEndPoint, viewsets.ViewSet):
     name = "api-v1-agent-project-template"
     description = _("project_template")
 
+    permission_classes_by_action = {'list': (UserPermission, )}
+    
     @extend_schema_with_envcheck(request=ProjectTemplateCreateArgsSerializer,
                                  summary=_('Create project template'),
                                  description=_("Create project template"),
