@@ -31,12 +31,12 @@ class VulCountForPluginEndPoint(MixinAuthEndPoint):
     )
     def get(self, request):
         agent_name = request.query_params.get('name')
+        department = request.user.get_relative_department()
         if not agent_name:
             return R.failure(msg=_("Please input agent name."))
 
         agent = IastAgent.objects.filter(token=agent_name,
-                                         id__in=self.get_auth_agents_with_user(
-                                             request.user)).first()
+                                         department__in=department).first()
         if not agent:
             return R.failure(msg=_("agent_name not found"))
 
