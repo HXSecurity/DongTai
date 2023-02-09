@@ -210,7 +210,6 @@ class EndPoint(APIView):
             users = User.objects.filter(department__in=departments)
         else:
             users = User.objects.filter(id=user.id).all()
-
         return users
 
     @staticmethod
@@ -247,7 +246,6 @@ class EndPoint(APIView):
         :return:
         """
         qs = Department.objects.none()
-        users = []
         qss = [user.get_relative_department() for user in users]
         departments = reduce(ior,qss, qs)
         return Asset.objects.filter(department__in=departments, is_del=0)
