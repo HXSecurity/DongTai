@@ -69,7 +69,15 @@ class IastProjectTemplateView(TalentAdminEndPoint, viewsets.ViewSet):
     description = _("project_template")
 
     permission_classes_by_action = {'list': (UserPermission, )}
-    
+
+
+    def get_permissions(self):
+        try:
+            return [permission() for permission in self.permission_classes_by_action[self.action]]
+        except KeyError:
+            return [permission() for permission in self.permission_classes]
+
+
     @extend_schema_with_envcheck(request=ProjectTemplateCreateArgsSerializer,
                                  summary=_('Create project template'),
                                  description=_("Create project template"),
