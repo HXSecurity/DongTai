@@ -125,7 +125,7 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
         except ValidationError as e:
             return R.failure(data=e.detail)
         users = self.get_auth_users(request.user)
-        q = Q(user__in=users) & ~Q(status=-1)
+        q = ~Q(status=-1)
         if name:
             q = Q(name__icontains=name) & q
         queryset = IastStrategyUser.objects.filter(q).order_by('-created_at')
@@ -179,9 +179,8 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
         if ser.validated_data.get('content', None):
             ser.validated_data['content'] = ','.join(
                 [str(i) for i in ser.validated_data['content']])
-        users = self.get_auth_users(request.user)
         obj = IastStrategyUser.objects.filter(
-            pk=pk, user__in=users).update(**ser.validated_data)
+            pk=pk).update(**ser.validated_data)
         return R.success(msg=_('update success'))
 
     @extend_schema_with_envcheck(
@@ -191,15 +190,13 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
                       ),
     )
     def destory(self, request, pk):
-        scan = IastStrategyUser.objects.filter(pk=pk, user__in=self.get_auth_users(request.user)).first()
+        scan = IastStrategyUser.objects.filter(pk=pk).first()
         if not scan:
             return R.failure(msg='No scan strategy found')
         if checkusing(scan):
             return R.failure(msg='someproject is using this scan strategy')
         try:
-            IastStrategyUser.objects.filter(
-                pk=pk,
-                user__in=self.get_auth_users(request.user)).update(status=-1)
+            IastStrategyUser.objects.filter(pk=pk, ).update(status=-1)
             return R.success(msg=_('delete success'))
         except Exception as e:
             logger.error(e)
@@ -211,7 +208,7 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
         description=_("Get the item with pk"),
     )
     def retrieve(self, request, pk):
-        obj = IastStrategyUser.objects.filter(pk=pk, user__in=self.get_auth_users(request.user)).first()
+        obj = IastStrategyUser.objects.filter(pk=pk).first()
         return R.success(data=ScanStrategySerializer(obj).data)
 
 

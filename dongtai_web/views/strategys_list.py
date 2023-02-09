@@ -33,11 +33,8 @@ class StrategyList(UserEndPoint):
         response_schema=_ResponseSerializer,
     )
     def get(self, request):
-        user = request.user
-        queryset = IastStrategyUser.objects.filter(
-            user=user,
-            status=1
-        ).values("id", "name").order_by("-id")
+        queryset = IastStrategyUser.objects.filter(status=1).values(
+            "id", "name").order_by("-id")
         data = []
         if queryset:
             for item in queryset:
