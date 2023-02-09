@@ -297,11 +297,6 @@ class EndPoint(APIView):
         #                query_user = dt_range_user
         return EndPoint.get_auth_agents_with_user(query_user)
 
-    def get_permissions(self):
-        try:
-            return [permission() for permission in self.permission_classes_by_action[self.action]]
-        except KeyError:
-            return [permission() for permission in self.permission_classes]
 
 
 
