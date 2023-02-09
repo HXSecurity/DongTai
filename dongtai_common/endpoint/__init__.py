@@ -44,6 +44,7 @@ class EndPoint(APIView):
     """
     name = "api-v1"
     description = "ApiServer接口"
+    permission_classes_by_action = {}
 
     def __init__(self, **kwargs):
         """
@@ -295,6 +296,14 @@ class EndPoint(APIView):
         #            if dt_range_user:
         #                query_user = dt_range_user
         return EndPoint.get_auth_agents_with_user(query_user)
+
+    def get_permissions(self):
+        try:
+            return [permission() for permission in self.permission_classes_by_action[self.action]]
+        except KeyError:
+            return [permission() for permission in self.permission_classes]
+
+
 
 
 class MixinAuthEndPoint(EndPoint):
