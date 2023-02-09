@@ -42,9 +42,9 @@ class AgentLogDownload(UserEndPoint, viewsets.ViewSet):
                 return nothing_resp()
         except BaseException:
             return nothing_resp()
+        department = request.user.get_relative_department()
         if IastAgent.objects.filter(pk=pk,
-                                    user__in=get_auth_users__by_id(
-                                        request.user.id)).exists():
+                                    department__in=department).exists():
             result = get_newest_log_zip(pk)
             if isinstance(result, Err):
                 return nothing_resp()
@@ -58,8 +58,8 @@ class AgentLogDownload(UserEndPoint, viewsets.ViewSet):
 
     def batch_task_add(self, request):
         mode = request.data.get('mode', 1)
-        users = self.get_auth_users(self.request.user)
-        q = Q(user__in=users)
+        department = request.user.get_relative_department()
+        q = Q(department__in=department)
         if mode == 1:
             ids = request.data.get('ids', [])
             q = q & Q(pk__in=ids)
