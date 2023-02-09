@@ -8,6 +8,7 @@ from dongtai_web.utils import extend_schema_with_envcheck
 from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint
 from django.utils.translation import gettext_lazy as _
+from dongtai_web.projecttemplate.update_department_data import update_department_data
 import time
 
 logger = logging.getLogger("dongtai-webapi")
@@ -40,6 +41,9 @@ class UserLogin(UserEndPoint):
                     user = authenticate(username=username, password=password)
                     if user is not None and user.is_active:
                         login(request, user)
+                        department = user.get_department()
+                        if not department.department_path:
+                            update_department_data() 
                         return R.success(
                             msg=_('Login successful'),
                             data={'default_language': user.default_language})
