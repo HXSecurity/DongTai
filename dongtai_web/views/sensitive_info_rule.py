@@ -122,8 +122,8 @@ class _RegexPatternValidationSerializer(serializers.Serializer):
 
 
 class SensitiveInfoRuleViewSet(UserEndPoint, viewsets.ViewSet):
-
-    permission_classes_by_action = {}
+   
+    permission_classes_by_action = {'list': (UserPermission, )}
 
     def get_permissions(self):
         try:
