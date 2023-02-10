@@ -87,9 +87,7 @@ class ScanStrategyRelationProject(UserEndPoint):
                 size = ser.validated_data['size']
         except ValidationError as e:
             return R.failure(data=e.detail)
-        user = self.get_auth_users(request.user)
-        scan_strategy = IastStrategyUser.objects.filter(pk=pk,
-                                                        user__in=user).first()
+        scan_strategy = IastStrategyUser.objects.filter(pk=pk).first()
         projects = IastProject.objects.filter(
             scan=scan_strategy).order_by('-latest_time')[::size]
         return R.success(data=_ProjectSerializer(projects, many=True).data)
@@ -124,7 +122,6 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
                 page_size = ser.validated_data['page_size']
         except ValidationError as e:
             return R.failure(data=e.detail)
-        users = self.get_auth_users(request.user)
         q = ~Q(status=-1)
         if name:
             q = Q(name__icontains=name) & q
