@@ -72,12 +72,7 @@ class ProjectAdd(UserEndPoint):
                 mode = "插桩模式"
                 scan_id = int(request.data.get("scan_id", 0))
                 # auth_users = self.get_auth_users(request.user)
-                departments = request.user.get_relative_department()
-                if scan_id == 5:
-                    scan = IastStrategyUser.objects.filter(id=scan_id).first()
-                else:
-                    scan = IastStrategyUser.objects.filter(
-                        id=scan_id, department__in=departments).first()
+                scan = IastStrategyUser.objects.filter(id=scan_id).first()
                 base_url = request.data.get('base_url', None)
                 test_req_header_key = request.data.get('test_req_header_key',
                                                        None)
@@ -175,7 +170,7 @@ class ProjectAdd(UserEndPoint):
                 if test_req_header_value:
                     project.test_req_header_value = test_req_header_value
                 project.save(update_fields=[
-                    'name', 'scan_id', 'mode', 'latest_time', 'vul_validation',
+                    'name', 'scan', 'mode', 'latest_time', 'vul_validation',
                     'base_url', 'test_req_header_key', 'test_req_header_value'
                 ])
                 return R.success(msg='操作成功')
