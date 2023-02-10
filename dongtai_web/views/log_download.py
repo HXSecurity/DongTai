@@ -161,8 +161,7 @@ def get_zip_together(agents_ids, msg_id):
             lambda x: isinstance(x, Ok),
             map(file_newest_2_file_under_path, map(generate_path,
                                                    agents_ids))))
-    filepath = zip_file_write(msg_id, res)
-    return filepath
+    return zip_file_write(msg_id, res)
 
 
 @transaction.atomic
@@ -172,6 +171,10 @@ def generate_agent_log_zip(q, user_id):
                                      message_type_id=2,
                                      relative_url='/api/v1/agent/log/tmp',
                                      to_user_id=user_id)
-    get_zip_together(agent_ids, msg.id)
+
+    zip_file_size = os.path.getsize(get_zip_together(agent_ids, msg.id))
+    if int(zip_file_size) < 500:
+        msg.message = 'agent日志获取失败，请登录项目服务器获取'
+        msg.relative_url = f'/api/v1/agent/log/batch/null'
     msg.relative_url = f'/api/v1/agent/log/batch/{msg.id}'
     msg.save()
