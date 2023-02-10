@@ -68,6 +68,7 @@ class VulStatus(UserEndPoint):
                       ),
         response_schema=_ResponseSerializer,
     )
+
     def post(self, request):
         vul_id = request.data.get('vul_id')
         vul_ids = request.data.get('vul_ids')
@@ -84,9 +85,15 @@ class VulStatus(UserEndPoint):
         vul_status = IastVulnerabilityStatus.objects.filter(
             pk=status_id).first()
         if vul_status:
-            queryset.filter(id__in=vul_ids).update(status_id=status_id)
-            ids = list(
-                queryset.filter(id__in=vul_ids).values_list('id', flat=True))
+            queryset_status = queryset.filter(id__in=vul_ids)
+            ids = []
+            for vul in queryset_status:
+                vul.status_id = status_id
+                vul.save()
+                ids.append(vul.id)
+
+            # ids = list(
+            #     queryset.filter(id__in=vul_ids).values_list('id', flat=True))
             log_change_status(user_id, request.user.username, ids,
                               vul_status.name)
         return R.success()

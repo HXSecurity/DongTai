@@ -23,8 +23,8 @@ from django.db.models import F
 from django.db.models import Q
 import threading
 from dongtai_common.models.vul_recheck_payload import IastVulRecheckPayload
-logger = logging.getLogger('dongtai-webapi')
 
+logger = logging.getLogger('dongtai-webapi')
 
 _ResponseGetSerializer = get_response_serializer(
     status_msg_keypair=(
@@ -57,7 +57,7 @@ class VulReCheckv2(UserEndPoint):
         history_replay_vul_ids = IastReplayQueue.objects.filter(
             relation_id__in=vul_ids,
             replay_type=const.VUL_REPLAY).order_by('relation_id').values_list(
-                'relation_id', flat=True).distinct()
+            'relation_id', flat=True).distinct()
 
         waiting_count = IastReplayQueue.objects.filter(
             Q(relation_id__in=vul_ids)
@@ -67,16 +67,16 @@ class VulReCheckv2(UserEndPoint):
             Q(relation_id__in=[i.id for i in opt_vul_queryset])
             & Q(replay_type=const.VUL_REPLAY)
             & ~Q(state__in=(const.PENDING, const.WAITING))).update(
-                state=const.WAITING,
-                count=F('count') + 1,
-                update_time=timestamp)
+            state=const.WAITING,
+            count=F('count') + 1,
+            update_time=timestamp)
         vuls_not_exist = set(vul_ids)  # - set(history_replay_vul_ids)
         success_count = len(vuls_not_exist)
         vul_payload_dict = {}
         for vul_id in vuls_not_exist:
             vul_payload_dict[vul_id] = IastVulRecheckPayload.objects.filter(
                 strategy__iastvulnerabilitymodel__id=vul_id).values_list(
-                    'pk', flat=True).all()
+                'pk', flat=True).all()
         replay_queue = []
         for key, value in vul_payload_dict.items():
             item = [
@@ -102,7 +102,11 @@ class VulReCheckv2(UserEndPoint):
             replay_queue += item
         IastReplayQueue.objects.bulk_create(replay_queue,
                                             ignore_conflicts=True)
-        vul_queryset.update(status_id=1, latest_time=timestamp)
+
+        for vul in vul_queryset:
+            vul.status_id = 1
+            vul.latest_time = timestamp
+            vul.save()
 
         return waiting_count, success_count, re_success_count
 
@@ -112,7 +116,7 @@ class VulReCheckv2(UserEndPoint):
             id__in=vul_queryset.values('agent_id'),
             online=const.RUNNING,
             is_core_running=const.CORE_IS_RUNNING).values(
-                "id").distinct().all()
+            "id").distinct().all()
         no_agent = vul_queryset.filter(~Q(
             agent_id__in=active_agent_ids)).count()
         waiting_count, success_count, re_success_count = VulReCheckv2.recheck(
@@ -122,19 +126,19 @@ class VulReCheckv2(UserEndPoint):
     @extend_schema_with_envcheck(
         [{
             'name':
-            'type',
+                'type',
             'type':
-            str,
+                str,
             'description':
-            _('''available options are ("all","project").
+                _('''available options are ("all","project").
                 Corresponding to all or specific project respectively.''')
         }, {
             'name':
-            "projectId",
+                "projectId",
             'type':
-            int,
+                int,
             'description':
-            _("""The corresponding id of the Project.
+                _("""The corresponding id of the Project.
             Only If the type is project, the projectId here will be used.""")
         }],
         tags=[_('Vulnerability')],
@@ -199,19 +203,19 @@ class VulReCheckv2(UserEndPoint):
     @extend_schema_with_envcheck(
         [{
             'name':
-            'type',
+                'type',
             'type':
-            str,
+                str,
             'description':
-            _('''available options are ("all","project").
+                _('''available options are ("all","project").
                 Corresponding to all or specific project respectively.''')
         }, {
             'name':
-            "projectId",
+                "projectId",
             'type':
-            int,
+                int,
             'description':
-            _("""The corresponding id of the Project.
+                _("""The corresponding id of the Project.
             Only If the type is project, the projectId here will be used.""")
         }],
         tags=[_('Vulnerability')],
@@ -233,6 +237,7 @@ class VulReCheckv2(UserEndPoint):
 
                 def vul_check_thread():
                     self.vul_check_for_queryset(vul_queryset)
+
                 t1 = threading.Thread(target=vul_check_thread, daemon=True)
                 t1.start()
                 return R.success(msg=_('Verification in progress'))
@@ -242,6 +247,7 @@ class VulReCheckv2(UserEndPoint):
                 def vul_check_thread():
                     self.vul_check_for_project(project_id,
                                                auth_users=auth_users)
+
                 t1 = threading.Thread(target=vul_check_thread, daemon=True)
                 t1.start()
                 return R.success(msg=_("Verification in progress"))
