@@ -37,6 +37,7 @@ from rest_framework.serializers import ValidationError
 from dongtai_web.serializers.hook_strategy import HOOK_TYPE_CHOICE
 from rest_framework import viewsets
 from django.db import connection
+
 logger = logging.getLogger('dongtai-webapi')
 
 
@@ -122,7 +123,6 @@ class _RegexPatternValidationSerializer(serializers.Serializer):
 
 
 class SensitiveInfoRuleViewSet(UserEndPoint, viewsets.ViewSet):
-   
 
     def get_permissions(self):
         try:

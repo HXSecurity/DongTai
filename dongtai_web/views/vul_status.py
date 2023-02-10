@@ -68,7 +68,6 @@ class VulStatus(UserEndPoint):
                       ),
         response_schema=_ResponseSerializer,
     )
-
     def post(self, request):
         vul_id = request.data.get('vul_id')
         vul_ids = request.data.get('vul_ids')
