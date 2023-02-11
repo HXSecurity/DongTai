@@ -1,3 +1,4 @@
+from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel, IastVulnerabilityDocument
 from celery import shared_task
 from django.apps import apps
@@ -56,16 +57,24 @@ def data_cleanup(days: int):
         # it could aviod to load every instance into memory.
         latest_id = MethodPool.objects.filter(
             update_time__lte=delete_time_stamp).order_by('-id').values_list(
-                'id', flat=True).first()
+            'id', flat=True).first()
         first_id = MethodPool.objects.filter(
             update_time__lte=delete_time_stamp).order_by('id').values_list(
-                'id', flat=True).first()
+            'id', flat=True).first()
         if not any([latest_id, first_id]):
             logger.info("no data for clean up")
         if all([latest_id, first_id]):
             batch_clean(latest_id, first_id, 10000)
             # qs = MethodPool.objects.filter(pk__lte=latest_id)
             # qs._raw_delete(qs.db)
+
+        logger.info(f'Delete offline agent 30 days ago')
+        agent_latest_id = IastAgent.objects.filter(
+            latest_time__lte=delete_time_stamp).order_by('-id').values_list(
+            'id', flat=True).first()
+        if any([agent_latest_id]):
+            IastAgent.objects.filter(pk__lte=agent_latest_id,
+                                     online=0).delete()
 
 
 @sync_to_async(thread_sensitive=False)
