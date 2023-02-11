@@ -70,7 +70,7 @@ class VulListEndPoint(MixinAuthEndPoint):
             return R.failure(msg=_("Please input agent name."))
 
         agent = IastAgent.objects.filter(token=agent_name,
-                                         department__in=department).first()
+                                         department__in=department).last()
         if not agent:
             return R.failure(msg=_("agent_name not found"))
 
