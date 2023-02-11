@@ -278,6 +278,17 @@
         "created_by": 1,
         "enable": 1,
         "language": 1,
+        "name": "Scanner",
+        "name_en": null,
+        "name_zh": "Scanner",
+        "system_type": 0,
+        "type": 1,
+        "value": "Scanner"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 1,
         "name": "Solr\u53c2\u6570\u89e3\u6790",
         "name_en": "Propagator:Apache Solr",
         "name_zh": "Solr\u53c2\u6570\u89e3\u6790",

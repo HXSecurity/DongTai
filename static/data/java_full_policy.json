@@ -338,37 +338,6 @@
             {
                 "created_by": 1,
                 "enable": 1,
-                "inherit": "true",
-                "language": 1,
-                "source": "P2",
-                "system_type": 1,
-                "target": "O",
-                "track": "",
-                "type": 1,
-                "value": "java.util.List.add(int,java.lang.Object)"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "true",
-                "language": 1,
-                "source": "P1",
-                "system_type": 1,
-                "target": "O",
-                "track": "",
-                "type": 1,
-                "value": "java.util.List.add(java.lang.Object)"
-            }
-        ],
-        "enable": 1,
-        "type": 1,
-        "value": "List"
-    },
-    {
-        "details": [
-            {
-                "created_by": 1,
-                "enable": 1,
                 "inherit": "false",
                 "language": 1,
                 "source": "P1,2",
@@ -413,61 +382,6 @@
         "enable": 1,
         "type": 1,
         "value": "PreparedStatement"
-    },
-    {
-        "details": [
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "false",
-                "language": 1,
-                "source": "P1",
-                "system_type": 1,
-                "target": "O",
-                "track": "",
-                "type": 1,
-                "value": "java.lang.ProcessBuilder.<init>(java.lang.String[])"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "false",
-                "language": 1,
-                "source": "P1",
-                "system_type": 1,
-                "target": "O",
-                "track": "",
-                "type": 1,
-                "value": "java.lang.ProcessBuilder.<init>(java.util.List)"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "false",
-                "language": 1,
-                "source": "P1",
-                "system_type": 1,
-                "target": "O",
-                "track": "",
-                "type": 1,
-                "value": "java.lang.ProcessBuilder.command(java.lang.String[])"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "false",
-                "language": 1,
-                "source": "P1",
-                "system_type": 1,
-                "target": "O",
-                "track": "",
-                "type": 1,
-                "value": "java.lang.ProcessBuilder.command(java.util.List)"
-            }
-        ],
-        "enable": 1,
-        "type": 1,
-        "value": "ProcessBuilder"
     },
     {
         "details": [
@@ -2369,18 +2283,6 @@
                 "enable": 1,
                 "inherit": "false",
                 "language": 1,
-                "source": "O",
-                "system_type": 1,
-                "target": "",
-                "track": "true",
-                "type": 4,
-                "value": "java.lang.ProcessBuilder.start()"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "false",
-                "language": 1,
                 "source": "P1,2",
                 "system_type": 1,
                 "target": "",
@@ -2559,7 +2461,7 @@
                 "value": "org.glassfish.grizzly.http.Cookie.setSecure(boolean)"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "cookie-flags-missing"
     },
@@ -2602,7 +2504,7 @@
                 "value": "javax.crypto.Cipher.getInstance(java.lang.String,java.security.Provider)"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "crypto-bad-ciphers"
     },
@@ -2645,7 +2547,7 @@
                 "value": "java.security.MessageDigest.getInstance(java.lang.String,java.security.Provider)"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "crypto-bad-mac"
     },
@@ -2820,7 +2722,7 @@
                 "value": "org.apache.commons.lang.RandomStringUtils.randomNumeric(int)"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "crypto-weak-randomness"
     },
@@ -5751,7 +5653,7 @@
                 "value": "org.springframework.http.converter.StringHttpMessageConverter.writeInternal(java.lang.String,org.springframework.http.HttpOutputMessage)"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "reflected-xss"
     },
@@ -6714,18 +6616,6 @@
             {
                 "created_by": 1,
                 "enable": 1,
-                "inherit": "false",
-                "language": 1,
-                "source": "P2",
-                "system_type": 1,
-                "target": "",
-                "track": "true",
-                "type": 4,
-                "value": "org.apache.commons.httpclient.HttpClient.executeMethod(org.apache.commons.httpclient.HostConfiguration,org.apache.commons.httpclient.HttpMethod,org.apache.commons.httpclient.HttpState)"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
                 "inherit": "all",
                 "language": 1,
                 "source": "P1",
@@ -6746,18 +6636,6 @@
                 "track": "true",
                 "type": 4,
                 "value": "org.apache.hc.client5.http.impl.classic.CloseableHttpClient.doExecute(org.apache.hc.core5.http.HttpHost,org.apache.hc.core5.http.ClassicHttpRequest,org.apache.hc.core5.http.protocol.HttpContext)"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "all",
-                "language": 1,
-                "source": "P1",
-                "system_type": 1,
-                "target": "",
-                "track": "true",
-                "type": 4,
-                "value": "org.apache.http.client.methods.HttpRequestBase.setURI(java.net.URI)"
             },
             {
                 "created_by": 1,
@@ -6851,7 +6729,7 @@
                 "value": "play.mvc.Http$Session.put(java.lang.String,java.lang.String)"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "trust-boundary-violation"
     },
