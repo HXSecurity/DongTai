@@ -281,7 +281,7 @@
         "name": "Scanner",
         "name_en": null,
         "name_zh": "Scanner",
-        "system_type": 0,
+        "system_type": 1,
         "type": 1,
         "value": "Scanner"
     },

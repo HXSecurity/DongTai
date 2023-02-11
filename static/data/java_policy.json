@@ -310,6 +310,111 @@
     {
         "details": [
             {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.util.Scanner.<init>(java.io.InputStream)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.util.Scanner.<init>(java.io.InputStream,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.util.Scanner.<init>(java.io.InputStream,java.nio.charset.Charset)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "java.util.Scanner.<init>(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.util.Scanner.findInLine(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.util.Scanner.findInLine(java.util.regex.Pattern)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.util.Scanner.findWithinHorizon(java.lang.String,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.util.Scanner.findWithinHorizon(java.util.regex.Pattern,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.util.Scanner.next()"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.util.Scanner.next(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.util.Scanner.next(java.util.regex.Pattern)"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "java.util.Scanner.nextLine()"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "sun.misc.CharacterDecoder.decodeBuffer(java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "sun.misc.CharacterEncoder.encode(byte[])"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "Scanner"
+    },
+    {
+        "details": [
+            {
                 "inherit": "true",
                 "source": "O",
                 "target": "R",
@@ -1860,6 +1965,83 @@
                 "inherit": "false",
                 "source": "P1",
                 "target": "O",
+                "track": "false",
+                "value": "org.apache.http.entity.ByteArrayEntity.<init>(byte[],int,int,org.apache.http.entity.ContentType)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "org.apache.http.entity.ByteArrayEntity.<init>(byte[],org.apache.http.entity.ContentType)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "org.apache.http.entity.InputStreamEntity.<init>(java.io.InputStream,long,org.apache.http.entity.ContentType)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "org.apache.http.entity.StringEntity.<init>(java.lang.String,java.lang.String,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "org.apache.http.entity.StringEntity.<init>(java.lang.String,org.apache.http.entity.ContentType)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "httpclient"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "org.apache.hc.core5.http.io.entity.ByteArrayEntity.<init>(byte[],int,int,org.apache.hc.core5.http.ContentType,java.lang.String,boolean)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "org.apache.hc.core5.http.io.entity.ByteArrayEntity.<init>(byte[],org.apache.hc.core5.http.ContentType,java.lang.String,boolean)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "org.apache.hc.core5.http.io.entity.InputStreamEntity.<init>(java.io.InputStream,long,org.apache.hc.core5.http.ContentType,java.lang.String)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
+                "value": "org.apache.hc.core5.http.io.entity.StringEntity.<init>(java.lang.String,org.apache.hc.core5.http.ContentType,java.lang.String,boolean)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "httpclient5"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
                 "track": "",
                 "value": "java.io.BufferedReader.<init>(java.io.FileReader)"
             },
@@ -2648,6 +2830,48 @@
     {
         "details": [
             {
+                "inherit": "false",
+                "source": "P2",
+                "target": "R",
+                "track": "false",
+                "value": "com.squareup.okhttp.RequestBody.create(com.squareup.okhttp.MediaType,byte[],int,int)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "okhttp"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "okhttp3.RequestBody$Companion.create(byte[],okhttp3.MediaType,int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "R",
+                "track": "false",
+                "value": "okhttp3.RequestBody$Companion.create(okhttp3.MediaType,byte[],int,int)"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "R",
+                "track": "false",
+                "value": "okhttp3.RequestBody.create(okhttp3.MediaType,byte[],int,int)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "okhttp3"
+    },
+    {
+        "details": [
+            {
                 "inherit": "true",
                 "source": "O",
                 "target": "R",
@@ -2667,6 +2891,13 @@
                 "target": "R",
                 "track": "false",
                 "value": "org.apache.commons.fileupload.FileUploadBase.parseRequest(org.apache.commons.fileupload.RequestContext)"
+            },
+            {
+                "inherit": "true",
+                "source": "O",
+                "target": "O",
+                "track": "false",
+                "value": "trigger.ApplicationRun.main(java.lang.String[])"
             }
         ],
         "enable": 1,
@@ -2688,6 +2919,13 @@
                 "target": "R",
                 "track": "false",
                 "value": "org.springframework.web.util.pattern.PathPattern.getPatternString()"
+            },
+            {
+                "inherit": "false",
+                "source": "O",
+                "target": "O",
+                "track": "false",
+                "value": "trigger.ApplicationRun.main(java.lang.String[])"
             }
         ],
         "enable": 1,
@@ -3535,6 +3773,13 @@
                 "target": "",
                 "track": "true",
                 "value": "org.apache.hc.client5.http.impl.classic.CloseableHttpClient.doExecute(org.apache.hc.core5.http.HttpHost,org.apache.hc.core5.http.ClassicHttpRequest,org.apache.hc.core5.http.protocol.HttpContext)"
+            },
+            {
+                "inherit": "all",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "org.apache.http.impl.client.CloseableHttpClient.doExecute(org.apache.http.HttpHost,org.apache.http.HttpRequest,org.apache.http.protocol.HttpContext)"
             },
             {
                 "inherit": "all",

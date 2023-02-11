@@ -457,6 +457,181 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "P1",
+                "system_type": 1,
+                "target": "O",
+                "track": "false",
+                "type": 1,
+                "value": "java.util.Scanner.<init>(java.io.InputStream)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "P1",
+                "system_type": 1,
+                "target": "O",
+                "track": "false",
+                "type": 1,
+                "value": "java.util.Scanner.<init>(java.io.InputStream,java.lang.String)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "P1",
+                "system_type": 1,
+                "target": "O",
+                "track": "false",
+                "type": 1,
+                "value": "java.util.Scanner.<init>(java.io.InputStream,java.nio.charset.Charset)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "P1",
+                "system_type": 1,
+                "target": "O",
+                "track": "false",
+                "type": 1,
+                "value": "java.util.Scanner.<init>(java.lang.String)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "O",
+                "system_type": 1,
+                "target": "R",
+                "track": "false",
+                "type": 1,
+                "value": "java.util.Scanner.findInLine(java.lang.String)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "O",
+                "system_type": 1,
+                "target": "R",
+                "track": "false",
+                "type": 1,
+                "value": "java.util.Scanner.findInLine(java.util.regex.Pattern)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "O",
+                "system_type": 1,
+                "target": "R",
+                "track": "false",
+                "type": 1,
+                "value": "java.util.Scanner.findWithinHorizon(java.lang.String,int)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "O",
+                "system_type": 1,
+                "target": "R",
+                "track": "false",
+                "type": 1,
+                "value": "java.util.Scanner.findWithinHorizon(java.util.regex.Pattern,int)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "O",
+                "system_type": 1,
+                "target": "R",
+                "track": "false",
+                "type": 1,
+                "value": "java.util.Scanner.next()"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "O",
+                "system_type": 1,
+                "target": "R",
+                "track": "false",
+                "type": 1,
+                "value": "java.util.Scanner.next(java.lang.String)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "O",
+                "system_type": 1,
+                "target": "R",
+                "track": "false",
+                "type": 1,
+                "value": "java.util.Scanner.next(java.util.regex.Pattern)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "O",
+                "system_type": 1,
+                "target": "R",
+                "track": "false",
+                "type": 1,
+                "value": "java.util.Scanner.nextLine()"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "P1",
+                "system_type": 1,
+                "target": "R",
+                "track": "false",
+                "type": 1,
+                "value": "sun.misc.CharacterDecoder.decodeBuffer(java.lang.String)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "P1",
+                "system_type": 1,
+                "target": "R",
+                "track": "false",
+                "type": 1,
+                "value": "sun.misc.CharacterEncoder.encode(byte[])"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "Scanner"
+    },
+    {
+        "details": [
+            {
+                "created_by": 1,
+                "enable": 1,
                 "inherit": "true",
                 "language": 1,
                 "source": "O",
@@ -3335,6 +3510,128 @@
                 "source": "P1",
                 "system_type": 1,
                 "target": "O",
+                "track": "false",
+                "type": 1,
+                "value": "org.apache.http.entity.ByteArrayEntity.<init>(byte[],int,int,org.apache.http.entity.ContentType)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "P1",
+                "system_type": 1,
+                "target": "O",
+                "track": "false",
+                "type": 1,
+                "value": "org.apache.http.entity.ByteArrayEntity.<init>(byte[],org.apache.http.entity.ContentType)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "P1",
+                "system_type": 1,
+                "target": "O",
+                "track": "false",
+                "type": 1,
+                "value": "org.apache.http.entity.InputStreamEntity.<init>(java.io.InputStream,long,org.apache.http.entity.ContentType)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "P1",
+                "system_type": 1,
+                "target": "O",
+                "track": "false",
+                "type": 1,
+                "value": "org.apache.http.entity.StringEntity.<init>(java.lang.String,java.lang.String,java.lang.String)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "P1",
+                "system_type": 1,
+                "target": "O",
+                "track": "false",
+                "type": 1,
+                "value": "org.apache.http.entity.StringEntity.<init>(java.lang.String,org.apache.http.entity.ContentType)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "httpclient"
+    },
+    {
+        "details": [
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "P1",
+                "system_type": 1,
+                "target": "O",
+                "track": "false",
+                "type": 1,
+                "value": "org.apache.hc.core5.http.io.entity.ByteArrayEntity.<init>(byte[],int,int,org.apache.hc.core5.http.ContentType,java.lang.String,boolean)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "P1",
+                "system_type": 1,
+                "target": "O",
+                "track": "false",
+                "type": 1,
+                "value": "org.apache.hc.core5.http.io.entity.ByteArrayEntity.<init>(byte[],org.apache.hc.core5.http.ContentType,java.lang.String,boolean)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "P1",
+                "system_type": 1,
+                "target": "O",
+                "track": "false",
+                "type": 1,
+                "value": "org.apache.hc.core5.http.io.entity.InputStreamEntity.<init>(java.io.InputStream,long,org.apache.hc.core5.http.ContentType,java.lang.String)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "P1",
+                "system_type": 1,
+                "target": "O",
+                "track": "false",
+                "type": 1,
+                "value": "org.apache.hc.core5.http.io.entity.StringEntity.<init>(java.lang.String,org.apache.hc.core5.http.ContentType,java.lang.String,boolean)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "httpclient5"
+    },
+    {
+        "details": [
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "P1",
+                "system_type": 1,
+                "target": "O",
                 "track": "",
                 "type": 1,
                 "value": "java.io.BufferedReader.<init>(java.io.FileReader)"
@@ -4641,6 +4938,68 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "P2",
+                "system_type": 1,
+                "target": "R",
+                "track": "false",
+                "type": 1,
+                "value": "com.squareup.okhttp.RequestBody.create(com.squareup.okhttp.MediaType,byte[],int,int)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "okhttp"
+    },
+    {
+        "details": [
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "P1",
+                "system_type": 1,
+                "target": "R",
+                "track": "false",
+                "type": 1,
+                "value": "okhttp3.RequestBody$Companion.create(byte[],okhttp3.MediaType,int,int)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "P2",
+                "system_type": 1,
+                "target": "R",
+                "track": "false",
+                "type": 1,
+                "value": "okhttp3.RequestBody$Companion.create(okhttp3.MediaType,byte[],int,int)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "P2",
+                "system_type": 1,
+                "target": "R",
+                "track": "false",
+                "type": 1,
+                "value": "okhttp3.RequestBody.create(okhttp3.MediaType,byte[],int,int)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "okhttp3"
+    },
+    {
+        "details": [
+            {
+                "created_by": 1,
+                "enable": 1,
                 "inherit": "true",
                 "language": 1,
                 "source": "O",
@@ -4668,6 +5027,18 @@
                 "track": "false",
                 "type": 2,
                 "value": "org.apache.commons.fileupload.FileUploadBase.parseRequest(org.apache.commons.fileupload.RequestContext)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "true",
+                "language": 1,
+                "source": "O",
+                "system_type": 1,
+                "target": "O",
+                "track": "false",
+                "type": 2,
+                "value": "trigger.ApplicationRun.main(java.lang.String[])"
             }
         ],
         "enable": 1,
@@ -4699,6 +5070,18 @@
                 "track": "false",
                 "type": 2,
                 "value": "org.springframework.web.util.pattern.PathPattern.getPatternString()"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "O",
+                "system_type": 1,
+                "target": "O",
+                "track": "false",
+                "type": 2,
+                "value": "trigger.ApplicationRun.main(java.lang.String[])"
             }
         ],
         "enable": 1,
@@ -6636,6 +7019,18 @@
                 "track": "true",
                 "type": 4,
                 "value": "org.apache.hc.client5.http.impl.classic.CloseableHttpClient.doExecute(org.apache.hc.core5.http.HttpHost,org.apache.hc.core5.http.ClassicHttpRequest,org.apache.hc.core5.http.protocol.HttpContext)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "all",
+                "language": 1,
+                "source": "P2",
+                "system_type": 1,
+                "target": "",
+                "track": "true",
+                "type": 4,
+                "value": "org.apache.http.impl.client.CloseableHttpClient.doExecute(org.apache.http.HttpHost,org.apache.http.HttpRequest,org.apache.http.protocol.HttpContext)"
             },
             {
                 "created_by": 1,
