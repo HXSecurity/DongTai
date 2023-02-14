@@ -157,56 +157,56 @@ class NormalVulnHandler(BaseVulnHandler):
             caller_message_linenumber = 0
         full_stack = [[{
             "args":
-            "",
+                "",
             "source":
-            False,
+                False,
             "invokeId":
-            1,
+                1,
             "className":
-            '.'.join(
-                re.search('.*\\(',
-                          sink_message).group(0).strip('()').split('.')[:-1]),
+                '.'.join(
+                    re.search('.*\\(',
+                              sink_message).group(0).strip('()').split('.')[:-1]),
             "signature":
-            sink_message,
+                sink_message,
             "interfaces": [],
             "methodName":
-            re.search('.*\\(',
-                      sink_message).group(0).strip('()').split('.')[-1],
+                re.search('.*\\(',
+                          sink_message).group(0).strip('()').split('.')[-1],
             "sourceHash": [],
             "targetHash": [],
             "callerClass":
-            '.'.join(
-                re.search(
-                    '.*\\(',
-                    caller_message).group(0).strip('()').split('.')[:-1]),
+                '.'.join(
+                    re.search(
+                        '.*\\(',
+                        caller_message).group(0).strip('()').split('.')[:-1]),
             "targetRange": [],
             "callerMethod":
-            re.search('.*\\(',
-                      caller_message).group(0).strip('()').split('.')[-1],
-            "retClassName":
-            "",
-            "sourceValues":
-            "",
-            "targetValues":
-            "",
-            "originClassName":
-            '.'.join(
                 re.search('.*\\(',
-                          sink_message).group(0).strip('()').split('.')[:-1]),
+                          caller_message).group(0).strip('()').split('.')[-1],
+            "retClassName":
+                "",
+            "sourceValues":
+                "",
+            "targetValues":
+                "",
+            "originClassName":
+                '.'.join(
+                    re.search('.*\\(',
+                              sink_message).group(0).strip('()').split('.')[:-1]),
             "callerLineNumber":
-            caller_message_linenumber,
+                caller_message_linenumber,
             "sourceHashForRpc": [],
             "targetHashForRpc": [],
             "sourceIsReference":
-            False,
+                False,
             "targetIsReference":
-            False,
+                False,
             "projectPropagatorClose":
-            False,
+                False,
             "tag":
-            "sink",
+                "sink",
             "code":
-            sink_message,
+                sink_message,
         }]]
         project_agents = IastAgent.objects.filter(
             project_version_id=self.agent.project_version_id)
@@ -218,6 +218,12 @@ class NormalVulnHandler(BaseVulnHandler):
             is_del=0).order_by('-latest_time').first()
         project = IastProject.objects.filter(
             pk=self.agent.bind_project_id).first()
+        from dongtai_common.models.strategy_user import IastStrategyUser
+        scan_template = IastStrategyUser.objects.filter(pk=project.scan_id).first()
+        if scan_template:
+            strategy_ids = [int(i) for i in scan_template.content.split(',')]
+            if strategy_id in strategy_ids:
+                return 
         if project:
             project.update_latest()
         timestamp = int(time.time())

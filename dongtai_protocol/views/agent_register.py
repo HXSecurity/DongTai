@@ -239,12 +239,6 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             version_name = param.get('projectVersion', 'V1.0')
             version_name = version_name if version_name else 'V1.0'
             template_id = param.get('projectTemplateId', None)
-            default_params = {
-                'scan_id': 5,
-                'agent_count': 0,
-                'mode': '插桩模式',
-                'latest_time': int(time.time())
-            }
 
             if template_id is not None:
                 template = IastProjectTemplate.objects.filter(
@@ -256,8 +250,17 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 template = IastProjectTemplate.objects.filter(
                     is_system=1).first()
 
+            default_params = {
+                'scan_id': 5,
+                'agent_count': 0,
+                'mode': '插桩模式',
+                'latest_time': int(time.time()),
+                'template_id': template.id if template else -1,
+            }
+
             default_params.update(
                 template.to_full_project_args() if template else {})
+
 
             with transaction.atomic():
                 (
@@ -401,12 +404,19 @@ def get_ipaddresslist(network: str) -> list:
 
 def project_create(default_params, project_name, user, version_name, template):
     department = user.get_using_department()
-    obj, project_created = IastProject.objects.get_or_create(
+    project_created = False
+    obj = IastProject.objects.filter(
         name=project_name,
         user=user,
-        defaults=default_params,
         department=department,
-    )
+    ).first()
+    if not obj:
+        obj, project_created = IastProject.objects.get_or_create(
+            name=project_name,
+            user=user,
+            department=department,
+            defaults=default_params,
+        )
     project_version, version_created = IastProjectVersion.objects.get_or_create(
         project_id=obj.id,
         version_name=version_name,
