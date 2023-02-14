@@ -139,7 +139,8 @@ class ScaAssetSerializer(serializers.ModelSerializer):
         obj.license_level = 0
         obj.license_desc = "允许商业集成"
         if obj.license:
-            license_level = PackageLicenseLevel.objects.filter(identifier=obj.license).first()
+            license_level = PackageLicenseLevel.objects.filter(
+                identifier=obj.license).first()
             obj.license_level = license_level.level_id if license_level else 0
             obj.license_desc = license_level.level_desc if license_level else "允许商业集成"
 
@@ -152,7 +153,7 @@ class ScaAssetSerializer(serializers.ModelSerializer):
     def get_vul_high_count(self, obj):
         return obj.vul_high_count + obj.vul_critical_count
 
-    def get_project_count(self, obj): 
+    def get_project_count(self, obj):
         return Asset.objects.filter(
             signature_value=obj.signature_value,
             version=obj.version,
