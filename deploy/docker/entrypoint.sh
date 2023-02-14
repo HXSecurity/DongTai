@@ -21,7 +21,7 @@ elif [ "$1" = "worker-other" ]; then
 elif [ "$1" = "beat" ]; then
 	celery -A dongtai_conf beat -l info $DONGTAI_CONCURRENCY  --pidfile= --scheduler django_celery_beat.schedulers:DatabaseScheduler
 else
-	echo "Get the latest vulnerability rules." && python manage.py load_hook_strategy 2> /dev/null
+	echo "Get the latest vulnerability rules." && python manage.py load_hook_strategy
 	if [ $? -ne 0 ]; then echo "ERROR: Lost connection to MySQL server !!!" && exit 1 ; else echo "succeed" ;fi
 	uwsgi --ini /opt/dongtai/dongtai_conf/conf/uwsgi.ini $DONGTAI_CONCURRENCY
 fi
