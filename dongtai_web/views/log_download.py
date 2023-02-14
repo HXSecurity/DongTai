@@ -173,8 +173,8 @@ def generate_agent_log_zip(q, user_id):
                                      to_user_id=user_id)
 
     zip_file_size = os.path.getsize(get_zip_together(agent_ids, msg.id))
+    msg.relative_url = f'/api/v1/agent/log/batch/{msg.id}'
     if int(zip_file_size) < 500:
         msg.message = 'agent日志获取失败，请登录项目服务器获取'
         msg.relative_url = f'/api/v1/agent/log/batch/null'
-    msg.relative_url = f'/api/v1/agent/log/batch/{msg.id}'
     msg.save()
