@@ -79,6 +79,7 @@ class ProjectDetail(UserEndPoint):
                 "test_req_header_key": project.test_req_header_key,
                 "test_req_header_value": project.test_req_header_value,
                 "department_id": project.department.id,
+                "template_id": project.template_id,
             })
         else:
             return R.failure(status=203, msg=_('no permission'))

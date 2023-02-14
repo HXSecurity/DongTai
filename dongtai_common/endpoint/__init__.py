@@ -26,6 +26,7 @@ from dongtai_common.models.asset_vul import IastVulAssetRelation, IastAssetVul
 from dongtai_common.permissions import UserPermission, ScopedPermission, SystemAdminPermission, TalentAdminPermission
 from dongtai_common.utils import const
 from django.utils.translation import gettext_lazy as _
+from dongtai_common.models.department import Department
 from django.db.models import Q, Count
 from typing import Tuple, Dict, Union, TYPE_CHECKING
 from dongtai_common.models.department import Department
@@ -208,6 +209,9 @@ class EndPoint(APIView):
             talent = user.get_talent()
             departments = talent.departments.all()
             users = User.objects.filter(department__in=departments)
+        elif user.is_department_admin:
+            users = User.objects.filter(
+                Q(department__principal_id=user.id) | Q(id=user.id)).all()
         else:
             users = User.objects.filter(id=user.id).all()
         return users
@@ -293,7 +297,7 @@ class EndPoint(APIView):
         #            dt_range_user = User.objects.filter(username=const.USER_BUGENV).first()
         #            if dt_range_user:
         #                query_user = dt_range_user
-        return EndPoint.get_auth_agents_with_user(query_user)
+        return EndPoint.get_auth_agents_with_user(user)
 
 
 
@@ -334,12 +338,14 @@ class EngineApiEndPoint(EndPoint):
 class SystemAdminEndPoint(EndPoint):
     authentication_classes = (SessionAuthentication, TokenAuthentication)
     # authentication_classes = (TokenAuthentication,)
-    permission_classes = (SystemAdminPermission,)
+    permission_classes = (UserPermission,)
+    #permission_classes = (SystemAdminPermission,)
 
 
 class TalentAdminEndPoint(EndPoint):
     authentication_classes = (SessionAuthentication, TokenAuthentication)
-    permission_classes = (TalentAdminPermission,)
+    permission_classes = (UserPermission,)
+    #permission_classes = (TalentAdminPermission,)
 
 
 class R:
