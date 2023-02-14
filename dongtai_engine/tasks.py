@@ -9,7 +9,8 @@ from dongtai_engine.filters.main import vul_filter
 from dongtai_engine.signals.handlers.vul_handler import handler_vul
 import hashlib
 import json
-import time,random
+import time
+import random
 from json import JSONDecodeError
 
 from celery import shared_task
@@ -49,12 +50,7 @@ from dongtai_engine.task_base import replay_payload_data
 from typing import List, Dict
 from dongtai_common.models.strategy_user import IastStrategyUser
 
-LANGUAGE_MAP = {
-    "JAVA": 1,
-    "PYTHON": 2,
-    "PHP": 3,
-    "GO": 4
-}
+LANGUAGE_MAP = {"JAVA": 1, "PYTHON": 2, "PHP": 3, "GO": 4}
 
 RETRY_INTERVALS = [10, 30, 90]
 

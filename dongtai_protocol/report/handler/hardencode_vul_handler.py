@@ -64,11 +64,12 @@ class HardEncodeVulHandler(IReportHandler):
         if not strategy or strategy.state != 'enable':
             return
         from dongtai_common.models.strategy_user import IastStrategyUser
-        scan_template = IastStrategyUser.objects.filter(pk=self.agent.bind_project.scan_id).first()
+        scan_template = IastStrategyUser.objects.filter(
+            pk=self.agent.bind_project.scan_id).first()
         if scan_template:
             strategy_ids = [int(i) for i in scan_template.content.split(',')]
             if strategy.id in strategy_ids:
-                return 
+                return
         project_agents = IastAgent.objects.filter(
             project_version_id=self.agent.project_version_id)
         iast_vul = IastVulnerabilityModel.objects.filter(

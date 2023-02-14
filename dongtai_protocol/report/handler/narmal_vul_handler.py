@@ -219,11 +219,12 @@ class NormalVulnHandler(BaseVulnHandler):
         project = IastProject.objects.filter(
             pk=self.agent.bind_project_id).first()
         from dongtai_common.models.strategy_user import IastStrategyUser
-        scan_template = IastStrategyUser.objects.filter(pk=project.scan_id).first()
+        scan_template = IastStrategyUser.objects.filter(
+            pk=project.scan_id).first()
         if scan_template:
             strategy_ids = [int(i) for i in scan_template.content.split(',')]
             if strategy_id in strategy_ids:
-                return 
+                return
         if project:
             project.update_latest()
         timestamp = int(time.time())
