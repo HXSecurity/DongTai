@@ -65,8 +65,8 @@ class VulListEndPoint(MixinAuthEndPoint):
     )
     def get(self, request):
         agent_name = request.query_params.get('name', None)
-        departmenttoken = request.query_params.get('departmenttoken', None)
-        projectname = request.query_params.get('projectname', None)
+        departmenttoken = request.query_params.get('departmenttoken', '')
+        projectname = request.query_params.get('projectname', '')
         department = request.user.get_relative_department()
         if not agent_name:
             return R.failure(msg=_("Please input agent name."))
