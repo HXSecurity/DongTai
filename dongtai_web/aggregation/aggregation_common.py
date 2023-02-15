@@ -1,15 +1,9 @@
-
-from dongtai_common.models.asset_vul_relation import AssetVulRelation
-from dongtai_common.models.aql_info import AqlInfo
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.hook_type import HookType
-from dongtai_common.models import LICENSE_RISK,SCA_AVAILABILITY_DICT
 from dongtai_web.serializers.vul import VulSerializer
 from dongtai_common.models import User
 from dongtai_common.endpoint import UserEndPoint
-from dongtai_common.models.asset_aggr import AssetAggr
-from django.db.models import Q
 
 # list id 去重
 def getUniqueList(origin_list=[]):
@@ -30,52 +24,21 @@ def turnIntListOfStr(type_str,field=""):
     except Exception as e:
         return ""
 
+# str 逗号分割，强校验
+def checkMustIntToStr(type_str):
+    type_list = type_str.split(",")
 
-# 通过sca——aql读取 组件漏洞 修复版本，最新版本，开源许可证,agent_id
-def getScaInfoByAql(aql_ids=None):
-    if aql_ids is None:
-        return {}
-    else:
-        aql_ids = getUniqueList(aql_ids)
-    sca_info = {
-        "aql_arr":{},
-        "asset_arr":{},
-        "hash_arr":{},
-        "agent_ids":[]
-    }
-    aql_info = AqlInfo.objects.filter(id__in=aql_ids).values(
-        "id",
-        "safe_version","latest_version","source_license","license_risk","availability")
-    if aql_info:
-        for item in aql_info:
-            aql_info_id = str(item['id'])
-            del item['id']
-            item['license_risk_name'] = LICENSE_RISK.get(str(item['license_risk']),"无风险")
-            item['availability_name'] = SCA_AVAILABILITY_DICT.get(str(item['availability']),"无利用信息")
-            sca_info["aql_arr"][aql_info_id] = item
-    asset_info = AssetVulRelation.objects.filter(aql_info_id__in=aql_ids).values(
-        "aql_info_id","id","agent_id","create_time","vul_package_id","hash")
-    hash_list = []
-    if asset_info:
-        for item in asset_info:
-            aql_info_id = item['aql_info_id']
-            if item['hash'] not in hash_list:
-                hash_list.append(item['hash'])
-            del item['aql_info_id']
-            if not sca_info["asset_arr"].get(aql_info_id):
-                sca_info["asset_arr"][aql_info_id] = [item]
-            else:
-                sca_info["asset_arr"][aql_info_id].append(item)
+    if not type_list or not type_str:
+        return ""
+    # 去重
+    type_arr = list(set(type_list))
+    # 转int
 
-            sca_info["agent_ids"].append(item['agent_id'])
-    # 通过hash list 读取 iast_asset_aggr id
-    aggr_info = AssetAggr.objects.filter(signature_value__in=hash_list).values("id","signature_value")
-
-    if aggr_info:
-        for item in aggr_info:
-            sca_info['hash_arr'][item['signature_value']] = item['id']
-
-    return sca_info
+    type_int_list = list(map(int, type_arr))
+    # 转 str
+    type_str_list = list(map(str, type_int_list))
+    result = ",".join(type_str_list)
+    return result
 
 # 通过app vul ids 读取应用漏洞调用链,agent_id，漏洞状态
 def getAppVulInfoById(vul_ids=None):
@@ -132,9 +95,22 @@ def getHookTypeName(ids=None):
             type_arr[type_id] = item
     return type_arr
 
+# 应用漏洞推送
+def appVulShareConfig(app_vul_ids,user_id):
+
+    query_vul_inetration = IastVulInegration.objects.filter(
+        vul_id__in=app_vul_ids, user_id=user_id).values(
+        "vul_id","jira_url","jira_id","gitlab_url","gitlab_id","zendao_url","zendao_id")
+    config_dict = {}
+    if query_vul_inetration:
+        for item in query_vul_inetration:
+            vul_id = item['vul_id']
+            config_dict[vul_id] = item
+    return config_dict
 
 # 鉴权  IastVulAssetRelation
 def getAuthUserInfo(user,base_query):
+    # Don't use it again.
     # is_superuser == 2 租户管理员 is_superuser == 1 超级管理员  is_department_admin==True 部门管理员  其他为普通用户
     user_id = user.id
     # 超级管理员
@@ -159,27 +135,42 @@ def getAuthUserInfo(user,base_query):
 
 
 def auth_user_list_str(user=None,user_id=0,user_table=""):
-    result = {
-        "user_list":[],
-        "user_str":"",
-        "user_condition_str":""
-    }
+    # Don't use it again.
+    result = {"user_list": [], "user_str": "", "user_condition_str": ""}
     if user is None:
         user = User.objects.filter(id=user_id).first()
-    users = UserEndPoint.get_auth_users(user)
-    user_ids = list(users.values_list("id", flat=True))
+    if not user:
+        return result
+    departments = user.get_relative_department()
+    department_ids = list(departments.values_list("id", flat=True))
+    department_ids_arr = ",".join(list(map(str, department_ids)))
+    user_ids = list(
+        User.objects.filter(department__in=departments).values_list("id",
+                                                                    flat=True))
     result['user_list'] = user_ids
     user_ids_arr = list(map(str, user_ids))
     user_str = ",".join(user_ids_arr)
     result['user_str'] = user_str
+    result['department_list'] = department_ids
+    result['department_str'] = department_ids_arr
     if user_table:
-        result['user_condition_str'] = " and {}.user_id in ({})".format(user_table, user_str)
-
+        result['user_condition_str'] = " and {}.department_id in ({})".format(
+            user_table, department_ids_arr)
     return result
+
+def auth_user_list_only(user_id=0):
+    user = User.objects.filter(id=user_id).first()
+    if not user:
+        return []
+    users = UserEndPoint.get_auth_users(user)
+    user_ids = list(users.values_list("id", flat=True))
+    return user_ids
+
 
 
 # 鉴权 后 获取 漏洞信息  auth_condition = getAuthBaseQuery(request.user, "asset")
 def getAuthBaseQuery(user=None,table_str="",user_id=0):
+    # Don't use it again.
 
     # is_superuser == 2 租户管理员 is_superuser == 1 超级管理员  is_department_admin==True 部门管理员  其他为普通用户
     if user is None:

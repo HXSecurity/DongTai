@@ -19,6 +19,7 @@ from dongtai_common.utils import const
 from dongtai_conf import settings
 from dongtai_protocol.report.handler.report_handler_interface import IReportHandler
 from dongtai_protocol.report.report_handler_factory import ReportHandler
+
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import ValidationError
@@ -62,6 +63,13 @@ class HardEncodeVulHandler(IReportHandler):
                                                     vul_type='硬编码').first()
         if not strategy or strategy.state != 'enable':
             return
+        from dongtai_common.models.strategy_user import IastStrategyUser
+        scan_template = IastStrategyUser.objects.filter(
+            pk=self.agent.bind_project.scan_id).first()
+        if scan_template:
+            strategy_ids = [int(i) for i in scan_template.content.split(',')]
+            if strategy.id in strategy_ids:
+                return
         project_agents = IastAgent.objects.filter(
             project_version_id=self.agent.project_version_id)
         iast_vul = IastVulnerabilityModel.objects.filter(
@@ -82,6 +90,7 @@ class HardEncodeVulHandler(IReportHandler):
             iast_vul.top_stack = "字段:{}".format(self.field),
             iast_vul.bottom_stack = "硬编码值:{}".format(self.value),
             iast_vul.save()
+
         else:
             iast_vul = IastVulnerabilityModel.objects.create(
                 hook_type_id=-1,

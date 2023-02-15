@@ -10,12 +10,14 @@ from dongtai_engine.signals.handlers.vul_handler import handler_vul
 import hashlib
 import json
 import time
+import random
 from json import JSONDecodeError
 
 from celery import shared_task
 from celery.apps.worker import logger
 from django.db.models import Sum, Q
-
+from django.forms import model_to_dict
+from django.core.cache import cache
 from dongtai_common.engine.vul_engine import VulEngine
 from dongtai_common.models import User
 from dongtai_common.models.agent import IastAgent
@@ -28,6 +30,7 @@ from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai_common.models.replay_queue import IastReplayQueue
+from dongtai_common.models.sca_maven_db import ScaMavenDb
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
@@ -38,18 +41,15 @@ from dongtai_engine.plugins.strategy_sensitive import check_response_content
 from dongtai_engine.replay import Replay
 from dongtai_conf import settings
 from dongtai_web.dongtai_sca.utils import sca_scan_asset
+from dongtai_engine.signals import vul_found
 from dongtai_common.models.project_report import ProjectReport
 import requests
 from hashlib import sha1
 from dongtai_engine.task_base import replay_payload_data
 from typing import List, Dict
+from dongtai_common.models.strategy_user import IastStrategyUser
 
-LANGUAGE_MAP = {
-    "JAVA": 1,
-    "PYTHON": 2,
-    "PHP": 3,
-    "GO": 4
-}
+LANGUAGE_MAP = {"JAVA": 1, "PYTHON": 2, "PHP": 3, "GO": 4}
 
 RETRY_INTERVALS = [10, 30, 90]
 
@@ -75,7 +75,7 @@ def queryset_to_iterator(queryset):
             break
 
 
-def load_sink_strategy(user=None, language=None) -> List[Dict]:
+def load_sink_strategy(user=None, language=None, scan_id=0) -> List[Dict]:
     """
     加载用户user有权限方法的策略
     :param user: edit by song
@@ -87,6 +87,10 @@ def load_sink_strategy(user=None, language=None) -> List[Dict]:
     if language and language in LANGUAGE_MAP:
         language_id = LANGUAGE_MAP[language]
     q = ~Q(state='delete')
+    scan_template = IastStrategyUser.objects.filter(pk=scan_id).first()
+    if scan_template:
+        strategy_id = [int(i) for i in scan_template.content.split(',')]
+        q = q & Q(pk__in=strategy_id)
     type_query = IastStrategyModel.objects.filter(q)
     strategy_models = HookStrategy.objects.filter(
         strategy__in=type_query,
@@ -246,7 +250,9 @@ def search_vul_from_method_pool(self, method_pool_sign, agent_id, retryable=Fals
         check_response_header(method_pool_model)
         check_response_content(method_pool_model)
 
-        strategies = load_sink_strategy(method_pool_model.agent.user, method_pool_model.agent.language)
+        strategies = load_sink_strategy(
+            method_pool_model.agent.user, method_pool_model.agent.language,
+            method_pool_model.agent.bind_project.scan_id)
         engine = VulEngine()
         method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
         engine.method_pool = method_pool

@@ -84,6 +84,7 @@ def version_modify(user, department, versionData=None):
 def get_project_version(project_id, auth_users=None):
     versionInfo = IastProjectVersion.objects.filter(
         project_id=project_id,
+        current_version=1,
     ).first()
     if versionInfo:
         current_project_version = {
