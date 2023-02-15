@@ -65,12 +65,17 @@ class VulListEndPoint(MixinAuthEndPoint):
     )
     def get(self, request):
         agent_name = request.query_params.get('name', None)
+        departmenttoken = request.query_params.get('departmenttoken', '')
+        projectname = request.query_params.get('projectname', '')
         department = request.user.get_relative_department()
         if not agent_name:
             return R.failure(msg=_("Please input agent name."))
-
-        agent = IastAgent.objects.filter(token=agent_name,
-                                         department__in=department).last()
+        departmenttoken = departmenttoken.replace('GROUP','')
+        agent = IastAgent.objects.filter(
+            token=agent_name,
+            department__token=departmenttoken,
+            bind_project__name=projectname,
+        ).last()
         if not agent:
             return R.failure(msg=_("agent_name not found"))
 
