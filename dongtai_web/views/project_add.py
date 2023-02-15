@@ -41,6 +41,7 @@ class _ProjectsAddBodyArgsSerializer(serializers.Serializer):
     base_url = serializers.CharField()
     test_req_header_key = serializers.CharField()
     test_req_header_value = serializers.CharField()
+    template_id = serializers.IntegerField(help_text=_("The id of the project"))
 
 
 _ResponseSerializer = get_response_serializer(status_msg_keypair=(
@@ -71,7 +72,9 @@ class ProjectAdd(UserEndPoint):
                 name = request.data.get("name")
                 mode = "插桩模式"
                 scan_id = int(request.data.get("scan_id", 0))
+                template_id = int(request.data.get("template_id", 0))
                 # auth_users = self.get_auth_users(request.user)
+                departments = request.user.get_relative_department()
                 scan = IastStrategyUser.objects.filter(id=scan_id).first()
                 base_url = request.data.get('base_url', None)
                 test_req_header_key = request.data.get('test_req_header_key',
@@ -79,6 +82,7 @@ class ProjectAdd(UserEndPoint):
                 test_req_header_value = request.data.get(
                     'test_req_header_value', None)
                 description = request.data.get('description', None)
+                department_id = request.data.get('department_id', None)
                 pid = request.data.get("pid", 0)
                 accessable_ips = []
                 if pid and base_url:
@@ -121,7 +125,7 @@ class ProjectAdd(UserEndPoint):
                         name=name, user_id=request.user.id, department_id=department_id).first()
                     if not project:
                         project = IastProject.objects.create(name=name,
-                                                             user_id=request.user.id, department_id=department_id)
+                                                             user_id=request.user.id, department_id=department_id, template_id=template_id)
                     else:
                         return R.failure(
                             status=203,
@@ -159,7 +163,9 @@ class ProjectAdd(UserEndPoint):
 
                 project.scan = scan
                 project.mode = mode
+                project.template_id = template_id
                 # project.user = request.user
+                project.department_id = department_id
                 project.latest_time = int(time.time())
                 if vul_validation is not None:
                     project.vul_validation = vul_validation
@@ -170,8 +176,9 @@ class ProjectAdd(UserEndPoint):
                 if test_req_header_value:
                     project.test_req_header_value = test_req_header_value
                 project.save(update_fields=[
-                    'name', 'scan', 'mode', 'latest_time', 'vul_validation',
-                    'base_url', 'test_req_header_key', 'test_req_header_value'
+                    'name', 'scan_id', 'mode', 'latest_time', 'vul_validation',
+                    'base_url', 'test_req_header_key', 'test_req_header_value',
+                    'template_id', 'department_id'
                 ])
                 return R.success(msg='操作成功')
         except Exception as e:

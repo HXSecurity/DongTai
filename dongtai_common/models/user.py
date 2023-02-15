@@ -105,10 +105,22 @@ class User(AbstractUser, PermissionsMixin):
         return Department.objects.filter(principal_id=self.id).exists()
 
     def get_relative_department(self) -> QuerySet:
+        from functools import reduce
+        from operator import ior
         department = self.get_department()
-        return Department.objects.filter(
-            Q(department_path__startswith=department.department_path)
-            | Q(principal_id=self.id))
+        principal_departments = Department.objects.filter(
+            Q(principal_id=self.id) | Q(pk=department.id))
+        qs = Department.objects.none()
+        qss = [
+            Q(department_path__startswith=pdepartment.department_path)
+            for pdepartment in principal_departments
+        ]
+        totals = reduce(ior, qss, qs)
+        if not totals:
+            total_dep = Department.objects.none()
+        else:
+            total_dep = Department.objects.filter(totals)
+        return Department.objects.filter(pk__in=[i.id for i in total_dep])
 
     def get_using_department(self):
         if self.using_department:
