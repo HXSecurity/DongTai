@@ -70,7 +70,7 @@ class VulListEndPoint(MixinAuthEndPoint):
         department = request.user.get_relative_department()
         if not agent_name:
             return R.failure(msg=_("Please input agent name."))
-        departmenttoken = departmenttoken.replace('GROUP','')
+        departmenttoken = departmenttoken.replace('GROUP', '')
         agent = IastAgent.objects.filter(
             token=agent_name,
             department__token=departmenttoken,

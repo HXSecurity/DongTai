@@ -115,11 +115,11 @@ def data_transfrom_package_vul_v2(
 
 @cached_decorator(
     random_range=(2 * 60 * 60, 2 * 60 * 60), )
-def get_package_vul(aql: Optional[str] = None,
-                    ecosystem: Optional[str] = None,
-                    package_hash: Optional[str] = None) -> List[Dict]:
+def get_package_vul(aql: str = "",
+                    ecosystem: str = "",
+                    package_hash: str = "") -> List[Dict]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v1/package_vul/")
-    if aql is not None:
+    if aql:
         querystring = {"aql": aql}
     else:
         querystring = {"ecosystem": ecosystem, "hash": package_hash}
@@ -141,11 +141,11 @@ def get_package_vul(aql: Optional[str] = None,
 @cached_decorator(
     random_range=(2 * 60 * 60, 2 * 60 * 60), )
 def get_package_vul_v2(
-        aql: Optional[str] = None,
-        ecosystem: Optional[str] = None,
-        package_hash: Optional[str] = None) -> Tuple[List[Dict], List[Dict]]:
+        aql: str = "",
+        ecosystem: str = "",
+        package_hash: str = "") -> Tuple[List[Dict], List[Dict]]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v2/package_vul/")
-    if aql is not None:
+    if aql:
         querystring = {"aql": aql}
     else:
         querystring = {"ecosystem": ecosystem, "hash": package_hash}
@@ -166,9 +166,9 @@ def get_package_vul_v2(
 
 @cached_decorator(
     random_range=(2 * 60 * 60, 2 * 60 * 60), )
-def get_package(aql: Optional[str] = None,
-                ecosystem: Optional[str] = None,
-                package_hash: Optional[str] = None) -> List[Dict]:
+def get_package(aql: str = "",
+                ecosystem: str = "",
+                package_hash: str = "") -> List[Dict]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v1/package/")
     if aql is not None:
         querystring = {"aql": aql}

@@ -115,7 +115,7 @@ class AssetVulProjects(UserEndPoint):
             return R.failure(msg=_('Component vul projects query failed'))
 
 
-from typing import List, Optional,Dict
+from typing import List, Optional, Dict
 
 
 def get_tree(dep_list: List[str]):
@@ -199,7 +199,7 @@ class ProjectsAssets(UserEndPoint):
 
             return R.success(data=[resp_data])
         except Exception as e:
-            logger.error(e,exc_info=True)
+            logger.error(e, exc_info=True)
             return R.failure(msg=_('Component vul projects query failed'))
 
 

@@ -10,29 +10,35 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from dongtai_common.permissions import UserPermission, ScopedPermission, SystemAdminPermission, TalentAdminPermission
 
+
 class PaginationSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=20,
                                          help_text=_('Number per page'))
     page = serializers.IntegerField(default=1, help_text=_('Page index'))
 
+
 class ProjectTemplateCreateArgsSerializer(serializers.Serializer):
     id = serializers.IntegerField(
-        help_text=_("The id corresponding to the scanning strategy."), required=False)
+        min_value=1,
+        help_text=_("The id corresponding to the scanning strategy."),
+        required=False)
     template_name = serializers.CharField(help_text=_('The name of project'))
     scan_id = serializers.IntegerField(
+        min_value=1,
         help_text=_("The id corresponding to the scanning strategy."))
     vul_validation = serializers.IntegerField(
         help_text="vul validation switch, 0-FOLLOW_GLOBAL, 1-ENABLE,2-DISABLE")
     data_gather = serializers.JSONField(help_text="data gather settings",
-                                       required=False)
-    data_gather_is_followglobal = serializers.IntegerField(required=False,default=0)
-    blacklist_is_followglobal = serializers.IntegerField(required=False,default=0)
+                                        required=False)
+    data_gather_is_followglobal = serializers.IntegerField(required=False,
+                                                           default=0)
+    blacklist_is_followglobal = serializers.IntegerField(required=False,
+                                                         default=0)
     blacklist = serializers.SerializerMethodField(required=False)
-    is_system = serializers.IntegerField(required=False,default=0)
+    is_system = serializers.IntegerField(required=False, default=0)
 
     def get_blacklist(self, obj):
         return []
-
 
     class Meta:
         model = IastProjectTemplate
@@ -47,6 +53,7 @@ class ProjectTemplateCreateArgsSerializer(serializers.Serializer):
             'blacklist',
         ]
 
+
 def template_create(data, user):
     data['user_id'] = user.id
     for field in ["blacklist"]:
@@ -55,6 +62,7 @@ def template_create(data, user):
     project_template = IastProjectTemplate.objects.create(**data)
     pk = project_template.id
     return pk
+
 
 def template_update(pk, data, user):
     data['user_id'] = user.id
@@ -70,13 +78,14 @@ class IastProjectTemplateView(TalentAdminEndPoint, viewsets.ViewSet):
 
     permission_classes_by_action = {'list': (UserPermission, )}
 
-
     def get_permissions(self):
         try:
-            return [permission() for permission in self.permission_classes_by_action[self.action]]
+            return [
+                permission() for permission in
+                self.permission_classes_by_action[self.action]
+            ]
         except KeyError:
             return [permission() for permission in self.permission_classes]
-
 
     @extend_schema_with_envcheck(request=ProjectTemplateCreateArgsSerializer,
                                  summary=_('Create project template'),
@@ -87,7 +96,11 @@ class IastProjectTemplateView(TalentAdminEndPoint, viewsets.ViewSet):
         ser.is_valid()
         if ser.errors:
             return R.failure(data=ser.errors)
-        template_create(request.data, request.user)
+        data = {}
+        for field in ProjectTemplateCreateArgsSerializer.Meta.fields:
+            if field in data:
+                data[field] = request.data[field]
+        template_create(data, request.user)
         return R.success()
 
     @extend_schema_with_envcheck(request=ProjectTemplateCreateArgsSerializer,
@@ -99,7 +112,11 @@ class IastProjectTemplateView(TalentAdminEndPoint, viewsets.ViewSet):
         ser.is_valid()
         if ser.errors:
             return R.failure(data=ser.errors)
-        template_update(pk, request.data, request.user)
+        data = {}
+        for field in ProjectTemplateCreateArgsSerializer.Meta.fields:
+            if field in data:
+                data[field] = request.data[field]
+        template_update(pk, data, request.user)
         return R.success()
 
     @extend_schema_with_envcheck([PaginationSerializer],
@@ -116,9 +133,11 @@ class IastProjectTemplateView(TalentAdminEndPoint, viewsets.ViewSet):
         summary, templates = self.get_paginator(
             IastProjectTemplate.objects.values().order_by(
                 '-latest_time').all(), page, page_size)
-        return R.success(data=ProjectTemplateCreateArgsSerializer(templates,
-                                                                  many=True).data,
-                         page=summary)
+        return R.success(
+            data=ProjectTemplateCreateArgsSerializer(templates,
+                                                     many=True).data,
+            page=summary,
+        )
 
     @extend_schema_with_envcheck(summary=_('delete project template'),
                                  description=_("delete project template"),

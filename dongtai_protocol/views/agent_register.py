@@ -261,7 +261,6 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             default_params.update(
                 template.to_full_project_args() if template else {})
 
-
             with transaction.atomic():
                 (
                     obj,
