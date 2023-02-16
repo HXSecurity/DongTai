@@ -125,9 +125,11 @@ class IastProjectTemplateView(TalentAdminEndPoint, viewsets.ViewSet):
         summary, templates = self.get_paginator(
             IastProjectTemplate.objects.values().order_by(
                 '-latest_time').all(), page, page_size)
-        return R.success(data=ProjectTemplateCreateArgsSerializer(
-            templates, many=True).data,
-                         page=summary)
+        return R.success(
+            data=ProjectTemplateCreateArgsSerializer(templates,
+                                                     many=True).data,
+            page=summary,
+        )
 
     @extend_schema_with_envcheck(summary=_('delete project template'),
                                  description=_("delete project template"),
