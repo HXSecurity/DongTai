@@ -116,7 +116,7 @@ class IastProjectTemplateView(TalentAdminEndPoint, viewsets.ViewSet):
         for field in ProjectTemplateCreateArgsSerializer.Meta.fields:
             if field in data:
                 data[field] = request.data[field]
-        template_update(pk, request.data, request.user)
+        template_update(pk, data, request.user)
         return R.success()
 
     @extend_schema_with_envcheck([PaginationSerializer],
