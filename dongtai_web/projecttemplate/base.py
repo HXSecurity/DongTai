@@ -15,12 +15,15 @@ class PaginationSerializer(serializers.Serializer):
                                          help_text=_('Number per page'))
     page = serializers.IntegerField(default=1, help_text=_('Page index'))
 
+
 class ProjectTemplateCreateArgsSerializer(serializers.Serializer):
     id = serializers.IntegerField(
-        help_text=_("The id corresponding to the scanning strategy."), required=False)
+        min_value=1,
+        help_text=_("The id corresponding to the scanning strategy."),
+        required=False)
     template_name = serializers.CharField(help_text=_('The name of project'))
     scan_id = serializers.IntegerField(
-        help_text=_("The id corresponding to the scanning strategy."))
+        min_value=1,help_text=_("The id corresponding to the scanning strategy."))
     vul_validation = serializers.IntegerField(
         help_text="vul validation switch, 0-FOLLOW_GLOBAL, 1-ENABLE,2-DISABLE")
     data_gather = serializers.JSONField(help_text="data gather settings",
