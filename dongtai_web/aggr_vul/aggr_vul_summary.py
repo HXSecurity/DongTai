@@ -28,7 +28,7 @@ def get_annotate_sca_cache_data(user_id: int, pro_condition: str):
 
 
 def get_annotate_sca_base_data(user_id: int, pro_condition: str):
-    base_summary: Dict[Union[Dict[str, Union[str, int]], List]] = {
+    base_summary: Dict[str, Union[Dict[str, Union[str, int]], List]] = {
         "level": [],
         "availability": {
             "have_poc": {
