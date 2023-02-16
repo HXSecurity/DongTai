@@ -96,7 +96,10 @@ class IastProjectTemplateView(TalentAdminEndPoint, viewsets.ViewSet):
         ser.is_valid()
         if ser.errors:
             return R.failure(data=ser.errors)
-        template_create(request.data, request.user)
+        data = {}
+        for field in ProjectTemplateCreateArgsSerializer.Meta.fields:
+            data[field] = request.data[field]
+        template_create(data, request.user)
         return R.success()
 
     @extend_schema_with_envcheck(request=ProjectTemplateCreateArgsSerializer,
@@ -108,6 +111,9 @@ class IastProjectTemplateView(TalentAdminEndPoint, viewsets.ViewSet):
         ser.is_valid()
         if ser.errors:
             return R.failure(data=ser.errors)
+        data = {}
+        for field in ProjectTemplateCreateArgsSerializer.Meta.fields:
+            data[field] = request.data[field]
         template_update(pk, request.data, request.user)
         return R.success()
 
