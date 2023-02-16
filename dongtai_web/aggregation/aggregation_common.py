@@ -5,12 +5,14 @@ from dongtai_web.serializers.vul import VulSerializer
 from dongtai_common.models import User
 from dongtai_common.endpoint import UserEndPoint
 
+
 # list id 去重
 def getUniqueList(origin_list=[]):
     return list(set(origin_list))
 
+
 # str to int list
-def turnIntListOfStr(type_str,field=""):
+def turnIntListOfStr(type_str, field=""):
     try:
         type_list = type_str.split(",")
         # 安全校验，强制转int
@@ -18,11 +20,12 @@ def turnIntListOfStr(type_str,field=""):
         if field:
             type_int_list = list(map(str, type_list))
             type_int_str = ",".join(type_int_list)
-            return " and {} in ({}) ".format(field,type_int_str)
+            return " and {} in ({}) ".format(field, type_int_str)
         else:
             return type_list
     except Exception as e:
         return ""
+
 
 # str 逗号分割，强校验
 def checkMustIntToStr(type_str):
@@ -40,16 +43,17 @@ def checkMustIntToStr(type_str):
     result = ",".join(type_str_list)
     return result
 
+
 # 通过app vul ids 读取应用漏洞调用链,agent_id，漏洞状态
 def getAppVulInfoById(vul_ids=None):
     if vul_ids is None:
         return {}
-    vul_info=IastVulnerabilityModel.objects.filter(id__in=vul_ids).values(
-        "id",
-        "top_stack","bottom_stack","status_id","status__name","agent_id","latest_time")
+    vul_info = IastVulnerabilityModel.objects.filter(id__in=vul_ids).values(
+        "id", "top_stack", "bottom_stack", "status_id", "status__name",
+        "agent_id", "latest_time")
     vul_result = {
         "vul_info": {},
-        "agent_ids":[],
+        "agent_ids": [],
     }
     if vul_info:
         for item in vul_info:
@@ -59,6 +63,7 @@ def getAppVulInfoById(vul_ids=None):
             vul_result['vul_info'][vul_id] = item
     return vul_result
 
+
 # 通过agent_ids 获取项目id，name，version，中间件，
 def getProjectInfoByAgentId(agent_ids=None):
     if agent_ids is None:
@@ -66,9 +71,9 @@ def getProjectInfoByAgentId(agent_ids=None):
     else:
         agent_ids = getUniqueList(agent_ids)
     agent_info = IastAgent.objects.filter(id__in=agent_ids).values(
-        "id",
-        "project_name","project_version_id","project_version__version_name","bind_project_id","server__container"
-    )
+        "id", "project_name", "project_version_id",
+        "project_version__version_name", "bind_project_id",
+        "server__container")
     agent_result = {}
     if agent_info:
         for item in agent_info:
@@ -79,6 +84,7 @@ def getProjectInfoByAgentId(agent_ids=None):
             agent_result[agent_id] = item
     return agent_result
 
+
 # 通过漏洞类型id 获取漏洞名称，等级
 def getHookTypeName(ids=None):
     if ids is None:
@@ -86,7 +92,8 @@ def getHookTypeName(ids=None):
     else:
         type_arr = {}
 
-    type_info = HookType.objects.filter(id__in=ids).values("id","type","name")
+    type_info = HookType.objects.filter(id__in=ids).values(
+        "id", "type", "name")
     if type_info:
         for item in type_info:
 
@@ -95,12 +102,14 @@ def getHookTypeName(ids=None):
             type_arr[type_id] = item
     return type_arr
 
+
 # 应用漏洞推送
-def appVulShareConfig(app_vul_ids,user_id):
+def appVulShareConfig(app_vul_ids, user_id):
 
     query_vul_inetration = IastVulInegration.objects.filter(
-        vul_id__in=app_vul_ids, user_id=user_id).values(
-        "vul_id","jira_url","jira_id","gitlab_url","gitlab_id","zendao_url","zendao_id")
+        vul_id__in=app_vul_ids,
+        user_id=user_id).values("vul_id", "jira_url", "jira_id", "gitlab_url",
+                                "gitlab_id", "zendao_url", "zendao_id")
     config_dict = {}
     if query_vul_inetration:
         for item in query_vul_inetration:
@@ -108,8 +117,9 @@ def appVulShareConfig(app_vul_ids,user_id):
             config_dict[vul_id] = item
     return config_dict
 
+
 # 鉴权  IastVulAssetRelation
-def getAuthUserInfo(user,base_query):
+def getAuthUserInfo(user, base_query):
     # Don't use it again.
     # is_superuser == 2 租户管理员 is_superuser == 1 超级管理员  is_department_admin==True 部门管理员  其他为普通用户
     user_id = user.id
@@ -134,7 +144,7 @@ def getAuthUserInfo(user,base_query):
     return base_query
 
 
-def auth_user_list_str(user=None,user_id=0,user_table=""):
+def auth_user_list_str(user=None, user_id=0, user_table=""):
     # Don't use it again.
     result = {"user_list": [], "user_str": "", "user_condition_str": ""}
     if user is None:
@@ -158,6 +168,7 @@ def auth_user_list_str(user=None,user_id=0,user_table=""):
             user_table, department_ids_arr)
     return result
 
+
 def auth_user_list_only(user_id=0):
     user = User.objects.filter(id=user_id).first()
     if not user:
@@ -167,9 +178,8 @@ def auth_user_list_only(user_id=0):
     return user_ids
 
 
-
 # 鉴权 后 获取 漏洞信息  auth_condition = getAuthBaseQuery(request.user, "asset")
-def getAuthBaseQuery(user=None,table_str="",user_id=0):
+def getAuthBaseQuery(user=None, table_str="", user_id=0):
     # Don't use it again.
 
     # is_superuser == 2 租户管理员 is_superuser == 1 超级管理员  is_department_admin==True 部门管理员  其他为普通用户
@@ -188,13 +198,13 @@ def getAuthBaseQuery(user=None,table_str="",user_id=0):
         if not talent or talent is None:
             pass
         else:
-            query_base = " and {}.talent_id={}".format(table_str,talent.id)
+            query_base = " and {}.talent_id={}".format(table_str, talent.id)
     # 部门管理员 获取部门id
     elif user.is_department_admin:
         users = UserEndPoint.get_auth_users(user)
         user_ids = list(users.values_list("id", flat=True))
         user_ids = list(map(str, user_ids))
         user_str = ",".join(user_ids)
-        query_base = " and {}.user_id in ({})".format(table_str,user_str)
+        query_base = " and {}.user_id in ({})".format(table_str, user_str)
 
     return query_base

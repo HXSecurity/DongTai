@@ -25,6 +25,7 @@ from typing import List, Optional, Callable
 import json
 from collections import defaultdict
 
+
 def equals(source, target):
     if source == target or source in target or target in source:
         return True
@@ -70,6 +71,7 @@ def parse_body(body: str, taint_value: str) -> Optional[str]:
         return parse_params(body, taint_value)
     return None
 
+
 from dongtai_engine.filters.utils import parse_headers_dict_from_bytes
 
 
@@ -83,7 +85,6 @@ def parse_header(req_header: str, taint_value: str) -> Optional[str]:
         if v == taint_value or k == taint_value:
             return k
     return None
-
 
 
 def parse_cookie(req_header: str, taint_value: str) -> Optional[str]:
@@ -110,6 +111,7 @@ def parse_cookie(req_header: str, taint_value: str) -> Optional[str]:
                 return cookie_item[0]
     return None
 
+
 def parse_path(uri: str, taint_value: str) -> Optional[str]:
     """
     从PathVariable中解析污点位置
@@ -134,10 +136,11 @@ def get_location_data() -> defaultdict:
         with open('/opt/dongtai/static/data/java_params.json') as fp:
             data = json.load(fp)
     except Exception as e:
-        logger.error(e,exc_info=True)
+        logger.error(e, exc_info=True)
         data = {}
     #return defaultdict(lambda: [], data)
-    return defaultdict(lambda: ['GET', 'POST', 'HEADER', 'PATH', 'COOKIE'], data)
+    return defaultdict(lambda: ['GET', 'POST', 'HEADER', 'PATH', 'COOKIE'],
+                       data)
 
 
 def get_parser_location(source_method: str) -> List[str]:
@@ -152,11 +155,12 @@ def get_location_parser(location: str) -> Callable[[str, str], Optional[str]]:
         "PATH": parse_path,
         "COOKIE": parse_cookie
     }
-    return defaultdict(lambda: lambda http_locationstr, taint_value: None, data)[location]
+    return defaultdict(lambda: lambda http_locationstr, taint_value: None,
+                       data)[location]
 
 
 def parse_taint_params(location: str, http_locationstr: Optional[str],
-                 taint_value: str) -> Optional[str]:
+                       taint_value: str) -> Optional[str]:
     if not http_locationstr:
         return None
     res = get_location_parser(location)(http_locationstr, taint_value)
@@ -199,6 +203,8 @@ def parse_taint_position(source_method, vul_meta, taint_value,
 
 from django.core.cache import cache
 import uuid
+
+
 def get_original_url(uri: str, url_desc: str) -> str:
     if url_desc.startswith('location'):
         _, location = url_desc.split(":")
@@ -208,7 +214,9 @@ def get_original_url(uri: str, url_desc: str) -> str:
     res[int(location)] = "<placeholder>"
     return "/".join(res)
 
+
 from dongtai_common.engine.compatibility import method_pool_3_to_2
+
 
 def get_real_url(method_pools: list) -> str:
     for method_pool in method_pools:
@@ -220,13 +228,18 @@ def get_real_url(method_pools: list) -> str:
     return ''
 
 
-def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs):
+def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
+             bottom_stack, **kwargs):
     logger.info(
-        f'save vul, strategy id: {strategy_id}, from: {"normal" if "replay_id" not in kwargs else "replay"}, id: {vul_meta.id}')
+        f'save vul, strategy id: {strategy_id}, from: {"normal" if "replay_id" not in kwargs else "replay"}, id: {vul_meta.id}'
+    )
     # 如果是重放请求，且重放请求类型为漏洞验证，更新漏洞状态为
     taint_value = kwargs['taint_value']
     timestamp = int(time.time())
-    param_names = parse_taint_position(source_method=top_stack, vul_meta=vul_meta, taint_value=taint_value, vul_stack=vul_stack)
+    param_names = parse_taint_position(source_method=top_stack,
+                                       vul_meta=vul_meta,
+                                       taint_value=taint_value,
+                                       vul_stack=vul_stack)
     if parse_params:
         param_name = json.dumps(param_names)
         taint_position = '/'.join(param_names.keys())
@@ -239,7 +252,9 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
     pattern_string: str = get_real_url(json.loads(vul_meta.method_pool))
     pattern_uri: str = pattern_string if pattern_string else get_original_url(
         vul_meta.uri, url_desc)
-    logger.info(f"agent_id: {vul_meta.agent_id} vul_uri_pattern: {pattern_uri} vul_uri: {vul_meta.uri} param_name: {param_name}")
+    logger.info(
+        f"agent_id: {vul_meta.agent_id} vul_uri_pattern: {pattern_uri} vul_uri: {vul_meta.uri} param_name: {param_name}"
+    )
     uuid_key = uuid.uuid4().hex
     cache_key = f'vul_save-{strategy_id}-{pattern_uri}-{vul_meta.http_method}-{vul_meta.agent.project_version_id}-{param_name}'
     is_api_cached = uuid_key != cache.get_or_set(cache_key, uuid_key)
@@ -253,7 +268,8 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
         project_version_id=vul_meta.agent.project_version_id,
         param_name=param_name,
     ).order_by('-latest_time').first()
-    IastProject.objects.filter(id=vul_meta.agent.bind_project_id).update(latest_time=timestamp)
+    IastProject.objects.filter(id=vul_meta.agent.bind_project_id).update(
+        latest_time=timestamp)
     if vul:
         vul.url = vul_meta.url
         vul.uri = vul_meta.uri
@@ -278,11 +294,13 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
             'url', 'req_header', 'req_params', 'req_data', 'res_header',
             'res_body', 'taint_value', 'taint_position', 'method_pool_id',
             'context_path', 'client_ip', 'top_stack', 'bottom_stack',
-            'full_stack', 'counts', 'latest_time', 'latest_time_desc', 'language'
+            'full_stack', 'counts', 'latest_time', 'latest_time_desc',
+            'language'
         ])
     else:
         from dongtai_common.models.hook_type import HookType
-        hook_type = HookType.objects.filter(vul_strategy_id=strategy_id).first()
+        hook_type = HookType.objects.filter(
+            vul_strategy_id=strategy_id).first()
         vul = IastVulnerabilityModel.objects.create(
             strategy_id=strategy_id,
             # fixme: delete field hook_type
@@ -290,7 +308,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
             level_id=vul_level,
             url=vul_meta.url,
             uri=vul_meta.uri,
-            pattern_uri = pattern_uri,
+            pattern_uri=pattern_uri,
             http_method=vul_meta.http_method,
             http_scheme=vul_meta.http_scheme,
             http_protocol=vul_meta.http_protocol,
@@ -337,12 +355,14 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stac
 
 from dongtai_common.models.vul_recheck_payload import IastVulRecheckPayload
 
+
 def create_vul_recheck_task(vul_id, agent, timestamp):
     project = IastProject.objects.filter(id=agent.bind_project_id).first()
     if project and project.vul_validation == VulValidation.DISABLE:
         return
     enable_validate = False
-    if project is None or (project and project.vul_validation == VulValidation.FOLLOW_GLOBAL):
+    if project is None or (project and project.vul_validation
+                           == VulValidation.FOLLOW_GLOBAL):
         enable_validate = get_vul_validate()
     if project and project.vul_validation == VulValidation.ENABLE:
         enable_validate = True
@@ -350,7 +370,8 @@ def create_vul_recheck_task(vul_id, agent, timestamp):
     if enable_validate is False:
         return
 
-    replay_model = IastReplayQueue.objects.filter(replay_type=const.VUL_REPLAY, relation_id=vul_id).first()
+    replay_model = IastReplayQueue.objects.filter(replay_type=const.VUL_REPLAY,
+                                                  relation_id=vul_id).first()
     if replay_model:
         if replay_model.state in [const.PENDING, const.WAITING, const.SOLVING]:
             return
@@ -387,15 +408,21 @@ def create_vul_recheck_task(vul_id, agent, timestamp):
                                            replay_type=const.VUL_REPLAY)
 
 
-def handler_replay_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs):
+def handler_replay_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
+                       bottom_stack, **kwargs):
     timestamp = int(time.time())
-    vul = IastVulnerabilityModel.objects.filter(id=kwargs['relation_id']).first()
-    logger.info(f'handle vul replay, current strategy:{vul.strategy_id}, target hook_type:{strategy_id}')
+    vul = IastVulnerabilityModel.objects.filter(
+        id=kwargs['relation_id']).first()
+    logger.info(
+        f'handle vul replay, current strategy:{vul.strategy_id}, target hook_type:{strategy_id}'
+    )
     if vul and vul.strategy_id == strategy_id:
         vul.status_id = settings.CONFIRMED
         vul.latest_time = timestamp
-        vul.save(update_fields=['status_id', 'latest_time','latest_time_desc'])
-        IastProject.objects.filter(id=vul_meta.agent.bind_project_id).update(latest_time=timestamp)
+        vul.save(
+            update_fields=['status_id', 'latest_time', 'latest_time_desc'])
+        IastProject.objects.filter(id=vul_meta.agent.bind_project_id).update(
+            latest_time=timestamp)
 
         IastReplayQueue.objects.filter(id=kwargs['replay_id']).update(
             state=const.SOLVED,
@@ -411,14 +438,18 @@ def handler_replay_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, b
         log_recheck_vul(vul.agent.user.id, vul.agent.user.username, [vul.id],
                         '已确认')
     else:
-        vul = save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs)
+        vul = save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
+                       bottom_stack, **kwargs)
 
-        create_vul_recheck_task(vul_id=vul.id, agent=vul.agent, timestamp=timestamp)
+        create_vul_recheck_task(vul_id=vul.id,
+                                agent=vul.agent,
+                                timestamp=timestamp)
     return vul
 
 
 @receiver(vul_found)
-def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs):
+def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
+                bottom_stack, **kwargs):
     """
     保存漏洞数据
     :param vul_meta:
@@ -442,7 +473,9 @@ def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_s
         if replay_type == const.VUL_REPLAY:
             kwargs['relation_id'] = relation_id
             kwargs['replay_id'] = replay_id
-            vul = handler_replay_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs)
+            vul = handler_replay_vul(vul_meta, vul_level, strategy_id,
+                                     vul_stack, top_stack, bottom_stack,
+                                     **kwargs)
         elif replay_type == const.REQUEST_REPLAY:
             # 数据包调试数据暂不检测漏洞
             vul = None

@@ -32,7 +32,7 @@ class VulStatus(UserEndPoint):
             {
                 'name': _("Update with status_id"),
                 "description":
-                    _("Update vulnerability status with status id."),
+                _("Update vulnerability status with status id."),
                 'value': {
                     'id': 1,
                     'status_id': 1
@@ -41,7 +41,7 @@ class VulStatus(UserEndPoint):
             {
                 'name': _("Update with status name(Not recommended)"),
                 "description":
-                    _("Update vulnerability status with status name."),
+                _("Update vulnerability status with status name."),
                 'value': {
                     'id': 1,
                     'status': "str"
@@ -50,10 +50,10 @@ class VulStatus(UserEndPoint):
         ],
         [{
             'name':
-                _('Get data sample'),
+            _('Get data sample'),
             'description':
-                _("The aggregation results are programming language, risk level, vulnerability type, project"
-                  ),
+            _("The aggregation results are programming language, risk level, vulnerability type, project"
+              ),
             'value': {
                 "status": 201,
                 "msg": "Vulnerability status is modified to Confirmed"
