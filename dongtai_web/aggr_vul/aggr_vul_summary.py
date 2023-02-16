@@ -13,9 +13,12 @@ from django.db import connection
 from dongtai_common.common.utils import cached_decorator
 from dongtai_common.models import APP_LEVEL_RISK
 from dongtai_common.models.user import User
+from typing import Dict, Union, List, Str
+
 
 def get_annotate_sca_common_data(user_id: int, pro_condition: str):
     return get_annotate_sca_base_data(user_id, pro_condition)
+
 
 # @cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60), use_celery_update=True)
 
@@ -25,7 +28,7 @@ def get_annotate_sca_cache_data(user_id: int, pro_condition: str):
 
 
 def get_annotate_sca_base_data(user_id: int, pro_condition: str):
-    base_summary = {
+    base_summary: Dict[Union[Dict[Str], List]] = {
         "level": [],
         "availability": {
             "have_poc": {
