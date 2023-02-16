@@ -98,7 +98,8 @@ class IastProjectTemplateView(TalentAdminEndPoint, viewsets.ViewSet):
             return R.failure(data=ser.errors)
         data = {}
         for field in ProjectTemplateCreateArgsSerializer.Meta.fields:
-            data[field] = request.data[field]
+            if field in data:
+                data[field] = request.data[field]
         template_create(data, request.user)
         return R.success()
 
@@ -113,7 +114,8 @@ class IastProjectTemplateView(TalentAdminEndPoint, viewsets.ViewSet):
             return R.failure(data=ser.errors)
         data = {}
         for field in ProjectTemplateCreateArgsSerializer.Meta.fields:
-            data[field] = request.data[field]
+            if field in data:
+                data[field] = request.data[field]
         template_update(pk, request.data, request.user)
         return R.success()
 
