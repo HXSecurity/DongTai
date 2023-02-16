@@ -120,7 +120,7 @@ jobs:
           
       - name: Django Unit Testing
         run: |
-          mypy --show-error-codes --ignore-missing-imports --disable-error-code var-annotated  --disable-error-code  dict-item  --disable-error-code  list-item  --disable-error-code attr-defined  --disable-error-code index --disable-error-code arg-type --disable-error-code assignment --disable-error-code misc .
+          mypy --show-error-codes --ignore-missing-imports --disable-error-code var-annotated  --disable-error-code  list-item  --disable-error-code attr-defined --disable-error-code arg-type --disable-error-code assignment --disable-error-code misc .
 
   Run-Pep8Check:
     runs-on: ubuntu-latest
@@ -145,7 +145,7 @@ jobs:
           pip install pycodestyle
       - name: Django Unit Testing
         run: |
-          pycodestyle  --ignore=E501,E402,E231,E302,E303,E251,E265,W503,E128,E122,E225,E305,W504 --statistics .
+          pycodestyle  --ignore=E501,E402,E302,E265,W503,W504 --statistics .
 
   Run-Unit-TEST:
     runs-on: ubuntu-latest

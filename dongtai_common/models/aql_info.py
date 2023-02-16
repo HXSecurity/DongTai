@@ -24,9 +24,11 @@ class AqlInfo(models.Model):
     availability = models.SmallIntegerField(blank=True, null=True)
     license_risk = models.SmallIntegerField(blank=True, null=True)
     vul_type_name = models.CharField(max_length=255, blank=True, null=True)
-    level = models.ForeignKey(IastVulLevel, models.DO_NOTHING, blank=True, null=True)
+    level = models.ForeignKey(IastVulLevel,
+                              models.DO_NOTHING,
+                              blank=True,
+                              null=True)
     cve_relation_id = models.IntegerField(blank=True, null=True)
-
 
     class Meta:
         managed = get_managed()

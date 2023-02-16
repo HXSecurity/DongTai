@@ -4,6 +4,7 @@ from functools import wraps
 
 
 class DongTaiAppConfigPatch():
+
     def ready(self):
         try:
             from dongtai_conf.plugin import monkey_patch
@@ -14,6 +15,7 @@ class DongTaiAppConfigPatch():
 
 
 class CSPMiddleware:
+
     def __init__(self, get_response):
         self.get_response = get_response
 
@@ -88,9 +90,12 @@ def cached(function,
 def cached_decorator(random_range, use_celery_update=False):
 
     def _noname(function):
-        return cached(function, random_range, use_celery_update=use_celery_update)
+        return cached(function,
+                      random_range,
+                      use_celery_update=use_celery_update)
 
     return _noname
+
 
 from rest_framework.authentication import TokenAuthentication, get_authorization_header
 

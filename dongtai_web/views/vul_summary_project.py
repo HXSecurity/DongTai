@@ -18,7 +18,9 @@ from django.utils.text import format_lazy
 
 from dongtai_common.models.hook_type import HookType
 from django.db.models import Q
-_ResponseSerializer = get_response_serializer(VulSummaryResponseDataSerializer())
+
+_ResponseSerializer = get_response_serializer(
+    VulSummaryResponseDataSerializer())
 
 
 class VulSummaryProject(UserEndPoint):
@@ -45,11 +47,11 @@ class VulSummaryProject(UserEndPoint):
             },
             {
                 'name':
-                    "level",
+                "level",
                 'type':
-                    int,
+                int,
                 'description':
-                    format_lazy("{} : {}", _('Level of vulnerability'), "1,2,3,4")
+                format_lazy("{} : {}", _('Level of vulnerability'), "1,2,3,4")
             },
             {
                 'name': "project_id",
@@ -58,11 +60,11 @@ class VulSummaryProject(UserEndPoint):
             },
             {
                 'name':
-                    "version_id",
+                "version_id",
                 'type':
-                    int,
+                int,
                 'description':
-                    _("The default is the current version id of the project.")
+                _("The default is the current version id of the project.")
             },
             {
                 'name': "status",
@@ -82,64 +84,59 @@ class VulSummaryProject(UserEndPoint):
             },
             {
                 'name':
-                    "order",
+                "order",
                 'type':
-                    str,
+                str,
                 'description':
-                    format_lazy(
-                        "{} : {}", _('Sorted index'), ",".join(
-                            ['type', 'type', 'first_time', 'latest_time', 'url']))
+                format_lazy(
+                    "{} : {}", _('Sorted index'), ",".join(
+                        ['type', 'type', 'first_time', 'latest_time', 'url']))
             },
-        ],
-        [],
-        [{
+        ], [], [{
             'name':
-                _('Get data sample'),
+            _('Get data sample'),
             'description':
-                _("The aggregation results are programming language, risk level, vulnerability type, project"
-                  ),
+            _("The aggregation results are programming language, risk level, vulnerability type, project"
+              ),
             'value': {
                 "status": 201,
                 "msg": "success",
                 "data": {
-                    "language": [{
-                        "language": "JAVA",
-                        "count": 136
-                    }, {
-                        "language": "PYTHON",
-                        "count": 0
-                    }],
-                    "projects": [{
-                        "project_name": "demo1",
-                        "count": 23,
-                        "id": 58
-                    }, {
-                        "project_name": "demo5",
-                        "count": 1,
-                        "id": 71
-                    }]
+                    "language": [
+                        {
+                            "language": "JAVA",
+                            "count": 136
+                        }, {
+                            "language": "PYTHON",
+                            "count": 0
+                        }
+                    ],
+                    "projects": [
+                        {
+                            "project_name": "demo1",
+                            "count": 23,
+                            "id": 58
+                        }, {
+                            "project_name": "demo5",
+                            "count": 1,
+                            "id": 71
+                        }
+                    ]
                 },
                 "level_data": []
             }
         }],
         tags=[_('Vulnerability')],
         summary=_('Vulnerability Summary'),
-        description=_('Use the following conditions to view the statistics of the number of vulnerabilities in the project.'
-                      ),
-        response_schema=_ResponseSerializer
-    )
+        description=_('Use the following conditions to view the statistics of the number of vulnerabilities in the project.'),
+        response_schema=_ResponseSerializer)
     def get(self, request):
         """
         :param request:
         :return:
         """
 
-        end = {
-            "status": 201,
-            "msg": "success",
-            "level_data": [],
-            "data": {}
-        }
+        end = {"status": 201, "msg": "success", "level_data": [], "data": {}}
 
         auth_users = self.get_auth_users(request.user)
         auth_agents = self.get_auth_agents(auth_users)
@@ -154,14 +151,13 @@ class VulSummaryProject(UserEndPoint):
 
             version_id = request.GET.get('version_id', None)
             if not version_id:
-                current_project_version = get_project_version(
-                    project_id)
+                current_project_version = get_project_version(project_id)
             else:
                 current_project_version = get_project_version_by_id(version_id)
             auth_agents = auth_agents.filter(
                 bind_project_id=project_id,
-                project_version_id=current_project_version.get("version_id", 0)
-            )
+                project_version_id=current_project_version.get(
+                    "version_id", 0))
 
         queryset = queryset.filter(agent__in=auth_agents)
 
@@ -183,7 +179,8 @@ class VulSummaryProject(UserEndPoint):
         vul_type = request.query_params.get('type')
         if vul_type:
             hook_types = HookType.objects.filter(name=vul_type).all()
-            strategys = IastStrategyModel.objects.filter(vul_name=vul_type).all()
+            strategys = IastStrategyModel.objects.filter(
+                vul_name=vul_type).all()
             q = Q(hook_type__in=hook_types) | Q(strategy__in=strategys)
             queryset = queryset.filter(q)
 
@@ -194,7 +191,8 @@ class VulSummaryProject(UserEndPoint):
         q = Q()
         queryset = queryset.filter(q)
 
-        agent_count = queryset.values('agent_id').annotate(count=Count('agent_id'))
+        agent_count = queryset.values('agent_id').annotate(
+            count=Count('agent_id'))
         end['data']['language'] = get_agent_languages(agent_count)
         end['data']['projects'] = get_project_vul_count(
             users=auth_users,
