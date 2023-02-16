@@ -82,7 +82,8 @@ def highlight_target_value(target_value: str, ranges: list) -> str:
         return target_value.replace("<", "&lt;")
     sorted_ranges = sorted(ranges, key=lambda x: x['start'])
     for range_ in sorted_ranges:
-        if range_['start'] > value_origin_len or range_['stop'] > value_origin_len:
+        if range_['start'] > value_origin_len or range_[
+                'stop'] > value_origin_len:
             return f'<em style="color:red;">{value}</em>'
     if sorted_ranges and value and len(value) == value_origin_len:
         final_str = []

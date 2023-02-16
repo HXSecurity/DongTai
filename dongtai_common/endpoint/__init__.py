@@ -70,7 +70,8 @@ class EndPoint(APIView):
 
         request.json_body = None
 
-        if not request.META.get("CONTENT_TYPE", "").startswith("application/json"):
+        if not request.META.get("CONTENT_TYPE",
+                                "").startswith("application/json"):
             return
 
         if not len(request.body):
@@ -111,16 +112,18 @@ class EndPoint(APIView):
             response = self.handle_exception(exc)
             return self.finalize_response(request, response, *args, **kwargs)
 
-        self.response = self.finalize_response(request, response, *args, **kwargs)
-        if self.request.user is not None and self.request.user.is_active and handler.__module__.startswith('dongtai_web') and self.description is not None:
+        self.response = self.finalize_response(request, response, *args,
+                                               **kwargs)
+        if self.request.user is not None and self.request.user.is_active and handler.__module__.startswith(
+                'dongtai_web') and self.description is not None:
             self.log_manager.log_action(
                 user_id=self.request.user.id,
-                content_type_id=ContentType.objects.get_or_create(app_label=self.request.content_type)[0].id,
+                content_type_id=ContentType.objects.get_or_create(
+                    app_label=self.request.content_type)[0].id,
                 object_id='',
                 object_repr='',
                 action_flag=CHANGE,
-                change_message=f'访问{self.description}接口'
-            )
+                change_message=f'访问{self.description}接口')
         return self.response
 
     def handle_exception(self, exc):
@@ -130,8 +133,13 @@ class EndPoint(APIView):
         """
         if isinstance(exc, exceptions.Throttled):
             exc.status_code = status.HTTP_429_TOO_MANY_REQUESTS
-        elif isinstance(exc, (exceptions.NotAuthenticated,
-                              exceptions.AuthenticationFailed)):
+        elif isinstance(
+            exc,
+            (
+                exceptions.NotAuthenticated,
+                exceptions.AuthenticationFailed,
+            ),
+        ):
             # WWW-Authenticate header for 401 responses, else coerce to 403
             auth_header = self.get_authenticate_header(self.request)
 
@@ -251,7 +259,7 @@ class EndPoint(APIView):
         """
         qs = Department.objects.none()
         qss = [user.get_relative_department() for user in users]
-        departments = reduce(ior,qss, qs)
+        departments = reduce(ior, qss, qs)
         return Asset.objects.filter(department__in=departments, is_del=0)
 
     @staticmethod
@@ -261,12 +269,14 @@ class EndPoint(APIView):
         :param users:
         :return:
         """
-        auth_assets = auth_assets.values('signature_value').annotate(total=Count('signature_value'))
+        auth_assets = auth_assets.values('signature_value').annotate(
+            total=Count('signature_value'))
         auth_hash = []
         for asset in auth_assets:
             auth_hash.append(asset['signature_value'])
         auth_hash = list(set(auth_hash))
-        queryset = AssetAggr.objects.filter(signature_value__in=auth_hash, is_del=0)
+        queryset = AssetAggr.objects.filter(signature_value__in=auth_hash,
+                                            is_del=0)
         return queryset
 
     @staticmethod
@@ -276,11 +286,12 @@ class EndPoint(APIView):
         :param users:
         :return:
         """
-        permission_assets = assets.filter(dependency_level__gt=0).values('id').all()
+        permission_assets = assets.filter(
+            dependency_level__gt=0).values('id').all()
         auth_assets = [_i['id'] for _i in permission_assets]
 
-        vul_asset_ids = IastVulAssetRelation.objects.filter(asset_id__in=auth_assets, is_del=0).values(
-            'asset_vul_id').all()
+        vul_asset_ids = IastVulAssetRelation.objects.filter(
+            asset_id__in=auth_assets, is_del=0).values('asset_vul_id').all()
         perm_vul_ids = []
         if vul_asset_ids:
             perm_vul_ids = [_i['asset_vul_id'] for _i in vul_asset_ids]
@@ -300,14 +311,14 @@ class EndPoint(APIView):
         return EndPoint.get_auth_agents_with_user(user)
 
 
-
-
-
 class MixinAuthEndPoint(EndPoint):
     """
     通过Token和Sessin验证的API入口
     """
-    authentication_classes = (SessionAuthentication, TokenAuthentication,)
+    authentication_classes = (
+        SessionAuthentication,
+        TokenAuthentication,
+    )
 
 
 class AnonymousAuthEndPoint(EndPoint):
@@ -322,29 +333,30 @@ class AnonymousAndUserEndPoint(MixinAuthEndPoint):
 
 
 class UserEndPoint(MixinAuthEndPoint):
-    permission_classes = (UserPermission,)
+    permission_classes = (UserPermission, )
 
 
 class OpenApiEndPoint(EndPoint):
-    authentication_classes = (DepartmentTokenAuthentication, TokenAuthentication)
-    permission_classes = (UserPermission,)
+    authentication_classes = (DepartmentTokenAuthentication,
+                              TokenAuthentication)
+    permission_classes = (UserPermission, )
 
 
 class EngineApiEndPoint(EndPoint):
     authentication_classes = (SessionAuthentication, TokenAuthentication)
-    permission_classes = (UserPermission,)
+    permission_classes = (UserPermission, )
 
 
 class SystemAdminEndPoint(EndPoint):
     authentication_classes = (SessionAuthentication, TokenAuthentication)
     # authentication_classes = (TokenAuthentication,)
-    permission_classes = (UserPermission,)
+    permission_classes = (UserPermission, )
     #permission_classes = (SystemAdminPermission,)
 
 
 class TalentAdminEndPoint(EndPoint):
     authentication_classes = (SessionAuthentication, TokenAuthentication)
-    permission_classes = (UserPermission,)
+    permission_classes = (UserPermission, )
     #permission_classes = (TalentAdminPermission,)
 
 
@@ -354,6 +366,7 @@ class R:
     ref: https://cwe.mitre.org/data/definitions/497.html
     ref: https://cwe.mitre.org/data/definitions/209.html
     """
+
     @staticmethod
     def success(status=201, data=None, msg=_("success"), page=None, **kwargs):
         resp_data = {"status": status, "msg": msg}

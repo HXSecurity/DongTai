@@ -86,96 +86,86 @@ class ScaSummary(UserEndPoint):
             },
             {
                 'name':
-                    "version_id",
+                "version_id",
                 'type':
-                    int,
+                int,
                 'description':
-                    _("The default is the current version id of the project.")
+                _("The default is the current version id of the project.")
             },
             {
                 'name': "keyword",
                 'type': str,
                 'description':
-                    _("Fuzzy keyword search field for package_name.")
+                _("Fuzzy keyword search field for package_name.")
             },
             {
                 'name':
-                    "order",
+                "order",
                 'type':
-                    str,
+                str,
                 'description':
-                    format_lazy(
-                        "{} : {}", _('Sorted index'), ",".join([
-                            'version', 'level', 'vul_count', 'language',
-                            'package_name'
-                        ]))
+                format_lazy(
+                    "{} : {}", _('Sorted index'), ",".join([
+                        'version', 'level', 'vul_count', 'language',
+                        'package_name'
+                    ]))
             },
-        ], [], [
-            {
-                'name':
-                    _('Get data sample'),
-                'description':
-                    _("The aggregation results are programming language, risk level, vulnerability type, project"
-                      ),
-                'value': {
-                    "status": 201,
-                    "msg": "success",
-                    "data": {
-                        "language": [
-                            {
-                                "language": "JAVA",
-                                "count": 17
-                            }, {
-                                "language": "PYTHON",
-                                "count": 0
-                            }
-                        ],
-                        "level": [
-                            {
-                                "level": "HIGH",
-                                "count": 0,
-                                "level_id": 1
-                            }, {
-                                "level": "MEDIUM",
-                                "count": 0,
-                                "level_id": 2
-                            }, {
-                                "level": "LOW",
-                                "count": 0,
-                                "level_id": 3
-                            }, {
-                                "level": "INFO",
-                                "count": 17,
-                                "level_id": 4
-                            }
-                        ],
-                        "projects": [
-                            {
-                                "project_name": "demo",
-                                "count": 17,
-                                "id": 67
-                            }
-                        ]
-                    }
+        ],
+        [],
+        [{
+            'name':
+            _('Get data sample'),
+            'description':
+            _("The aggregation results are programming language, risk level, vulnerability type, project"
+              ),
+            'value': {
+                "status": 201,
+                "msg": "success",
+                "data": {
+                    "language": [{
+                        "language": "JAVA",
+                        "count": 17
+                    }, {
+                        "language": "PYTHON",
+                        "count": 0
+                    }],
+                    "level": [{
+                        "level": "HIGH",
+                        "count": 0,
+                        "level_id": 1
+                    }, {
+                        "level": "MEDIUM",
+                        "count": 0,
+                        "level_id": 2
+                    }, {
+                        "level": "LOW",
+                        "count": 0,
+                        "level_id": 3
+                    }, {
+                        "level": "INFO",
+                        "count": 17,
+                        "level_id": 4
+                    }],
+                    "projects": [{
+                        "project_name": "demo",
+                        "count": 17,
+                        "id": 67
+                    }]
                 }
             }
-        ],
+        }],
         tags=[_('Component')],
         summary=_("Component Summary (with project)"),
-        description=_("Use the specified project information to get the corresponding component summary"
-                      ),
-        response_schema=_ResponseSerializer)
+        description=_("Use the specified project information to get the corresponding component summary"),
+        response_schema=_ResponseSerializer,
+    )
     def post(self, request):
         """
         :param request:
         :return:
         """
 
-        end = {
-            "status": 201,
-            "msg": "success",
-            "data": {}
-        }
+        end = {"status": 201, "msg": "success", "data": {}}
 
         request_data = request.data
 
@@ -206,7 +196,9 @@ class ScaSummary(UserEndPoint):
             sql_params.append(project_id)
             sql_params.append(current_project_version.get("version_id", 0))
             es_query["bind_project_id"] = project_id
-            es_query["project_version_id"] = current_project_version.get("version_id", 0)
+            es_query["project_version_id"] = current_project_version.get(
+                "version_id", 0)
+
 
 #        if ELASTICSEARCH_STATE:
 #            resp, _ = self.get_data_from_es(request.user.id, es_query)
@@ -225,7 +217,8 @@ class ScaSummary(UserEndPoint):
         _temp_data = dict()
         # 漏洞等级汇总
         level_summary_sql = "SELECT iast_asset.level_id,count(DISTINCT(iast_asset.signature_value)) as total FROM iast_asset {base_query_sql} {where_sql} GROUP BY iast_asset.level_id "
-        level_summary_sql = level_summary_sql.format(base_query_sql=base_query_sql, where_sql=asset_aggr_where)
+        level_summary_sql = level_summary_sql.format(
+            base_query_sql=base_query_sql, where_sql=asset_aggr_where)
 
         with connection.cursor() as cursor:
             cursor.execute(level_summary_sql, sql_params)
@@ -237,12 +230,15 @@ class ScaSummary(UserEndPoint):
 
         DEFAULT_LEVEL.update(_temp_data)
         end['data']['level'] = [{
-            'level': _key, 'count': _value, 'level_id': levelNameArr[_key]
+            'level': _key,
+            'count': _value,
+            'level_id': levelNameArr[_key]
         } for _key, _value in DEFAULT_LEVEL.items()]
 
         default_language = initlanguage()
         language_summary_sql = "SELECT iast_asset.language,count(DISTINCT(iast_asset.signature_value)) as total FROM iast_asset {base_query_sql} {where_sql} GROUP BY iast_asset.language "
-        language_summary_sql = language_summary_sql.format(base_query_sql=base_query_sql, where_sql=asset_aggr_where)
+        language_summary_sql = language_summary_sql.format(
+            base_query_sql=base_query_sql, where_sql=asset_aggr_where)
 
         with connection.cursor() as cursor:
             cursor.execute(language_summary_sql, sql_params)
@@ -251,12 +247,14 @@ class ScaSummary(UserEndPoint):
                 for _l in language_summary:
                     language, total = _l
                     if default_language.get(language, None):
-                        default_language[language] = total + default_language[language]
+                        default_language[
+                            language] = total + default_language[language]
                     else:
                         default_language[language] = total
 
         end['data']['language'] = [{
-            'language': _key, 'count': _value
+            'language': _key,
+            'count': _value
         } for _key, _value in default_language.items()]
 
         end, base_query_sql, asset_aggr_where, sql_param = self.get_extend_data(
@@ -296,14 +294,11 @@ def get_vul_list_from_elastic_search(user_id,
               **{"package_name.keyword": {
                   "value": f"*{search_keyword}*"
               }}))
-    a = Q('bool',
-          must=must_query)
+    a = Q('bool', must=must_query)
     search = IastAssetDocument.search().query(Q('bool', must=must_query))[:0]
     buckets = {
         'level': A('terms', field='level_id', size=2147483647),
-        "language": A('terms',
-                      field='language.keyword',
-                      size=2147483647),
+        "language": A('terms', field='language.keyword', size=2147483647),
         **extend_aggs_buckets
     }
     for k, v in buckets.items():
@@ -341,8 +336,7 @@ def get_vul_list_from_elastic_search(user_id,
                 i['level_id'] = i['id']
                 del i['id']
             level_ids = [i['level_id'] for i in origin_buckets]
-            level = IastVulLevel.objects.values(
-                'id', 'name_value').all()
+            level = IastVulLevel.objects.values('id', 'name_value').all()
             level_dic = dict_transfrom(level, 'id')
             for i in origin_buckets:
                 i['level'] = level_dic[i['level_id']]['name_value']

@@ -18,7 +18,9 @@ from dongtai_web.serializers.vul import VulSummaryResponseDataSerializer
 from django.utils.text import format_lazy
 from dongtai_common.models.hook_type import HookType
 from django.db.models import Q
-_ResponseSerializer = get_response_serializer(VulSummaryResponseDataSerializer())
+
+_ResponseSerializer = get_response_serializer(
+    VulSummaryResponseDataSerializer())
 
 
 class VulSummaryType(UserEndPoint):
@@ -45,11 +47,11 @@ class VulSummaryType(UserEndPoint):
             },
             {
                 'name':
-                    "level",
+                "level",
                 'type':
-                    int,
+                int,
                 'description':
-                    format_lazy("{} : {}", _('Level of vulnerability'), "1,2,3,4")
+                format_lazy("{} : {}", _('Level of vulnerability'), "1,2,3,4")
             },
             {
                 'name': "project_id",
@@ -58,11 +60,11 @@ class VulSummaryType(UserEndPoint):
             },
             {
                 'name':
-                    "version_id",
+                "version_id",
                 'type':
-                    int,
+                int,
                 'description':
-                    _("The default is the current version id of the project.")
+                _("The default is the current version id of the project.")
             },
             {
                 'name': "status",
@@ -82,67 +84,62 @@ class VulSummaryType(UserEndPoint):
             },
             {
                 'name':
-                    "order",
+                "order",
                 'type':
-                    str,
+                str,
                 'description':
-                    format_lazy(
-                        "{} : {}", _('Sorted index'), ",".join(
-                            ['type', 'type', 'first_time', 'latest_time', 'url']))
+                format_lazy(
+                    "{} : {}", _('Sorted index'), ",".join(
+                        ['type', 'type', 'first_time', 'latest_time', 'url']))
             },
-        ],
-        [],
-        [{
+        ], [], [{
             'name':
-                _('Get data sample'),
+            _('Get data sample'),
             'description':
-                _("The aggregation results are programming language, risk level, vulnerability type, project"
-                  ),
+            _("The aggregation results are programming language, risk level, vulnerability type, project"
+              ),
             'value': {
                 "status": 201,
                 "msg": "success",
                 "data": {
-                    "level": [{
-                        "level": "HIGH",
-                        "count": 116,
-                        "level_id": 1
-                    }, {
-                        "level": "INFO",
-                        "count": 0,
-                        "level_id": 4
-                    }],
-                    "type": [{
-                        "type": "Path Traversal",
-                        "count": 79
-                    }, {
-                        "type": "Insecure Hash Algorithms",
-                        "count": 1
-                    }, {
-                        "type": "Arbitrary Server Side Forwards",
-                        "count": 1
-                    }]
+                    "level": [
+                        {
+                            "level": "HIGH",
+                            "count": 116,
+                            "level_id": 1
+                        }, {
+                            "level": "INFO",
+                            "count": 0,
+                            "level_id": 4
+                        }
+                    ],
+                    "type": [
+                        {
+                            "type": "Path Traversal",
+                            "count": 79
+                        }, {
+                            "type": "Insecure Hash Algorithms",
+                            "count": 1
+                        }, {
+                            "type": "Arbitrary Server Side Forwards",
+                            "count": 1
+                        }
+                    ]
                 },
                 "level_data": []
             }
         }],
         tags=[_('Vulnerability')],
         summary=_('Vulnerability Summary'),
-        description=_('Use the following conditions to view the statistics of the number of vulnerabilities in the project.'
-                      ),
-        response_schema=_ResponseSerializer
-    )
+        description=_('Use the following conditions to view the statistics of the number of vulnerabilities in the project.'),
+        response_schema=_ResponseSerializer)
     def get(self, request):
         """
         :param request:
         :return:
         """
 
-        end = {
-            "status": 201,
-            "msg": "success",
-            "level_data": [],
-            "data": {}
-        }
+        end = {"status": 201, "msg": "success", "level_data": [], "data": {}}
 
         auth_users = self.get_auth_users(request.user)
         auth_agents = self.get_auth_agents(auth_users)
@@ -157,14 +154,13 @@ class VulSummaryType(UserEndPoint):
 
             version_id = request.GET.get('version_id', None)
             if not version_id:
-                current_project_version = get_project_version(
-                    project_id)
+                current_project_version = get_project_version(project_id)
             else:
                 current_project_version = get_project_version_by_id(version_id)
             auth_agents = auth_agents.filter(
                 bind_project_id=project_id,
-                project_version_id=current_project_version.get("version_id", 0)
-            )
+                project_version_id=current_project_version.get(
+                    "version_id", 0))
 
         queryset = queryset.filter(agent__in=auth_agents)
 
@@ -186,7 +182,8 @@ class VulSummaryType(UserEndPoint):
         vul_type = request.query_params.get('type')
         if vul_type:
             hook_types = HookType.objects.filter(name=vul_type).all()
-            strategys = IastStrategyModel.objects.filter(vul_name=vul_type).all()
+            strategys = IastStrategyModel.objects.filter(
+                vul_name=vul_type).all()
             q = Q(hook_type__in=hook_types) | Q(strategy__in=strategys)
             queryset = queryset.filter(q)
 
@@ -207,18 +204,21 @@ class VulSummaryType(UserEndPoint):
                 DEFAULT_LEVEL[level_item.name_value] = 0
                 vul_level_metadata[level_item.name_value] = level_item.id
                 levelIdArr[level_item.id] = level_item.name_value
-        level_summary = queryset.values('level').order_by('level').annotate(total=Count('level'))
+        level_summary = queryset.values('level').order_by('level').annotate(
+            total=Count('level'))
         for temp in level_summary:
             DEFAULT_LEVEL[levelIdArr[temp['level']]] = temp['total']
         end['data']['level'] = [{
-            'level': _key, 'count': _value, 'level_id': vul_level_metadata[_key]
+            'level': _key,
+            'count': _value,
+            'level_id': vul_level_metadata[_key]
         } for _key, _value in DEFAULT_LEVEL.items()]
 
         # 汇总 type
         type_summary = queryset.values(
             'hook_type_id', 'strategy_id', 'hook_type__name',
             'strategy__vul_name').order_by('hook_type_id').annotate(
-            total=Count('hook_type_id'))
+                total=Count('hook_type_id'))
         type_summary = list(type_summary)
 
         vul_type_list = [{
@@ -233,6 +233,8 @@ class VulSummaryType(UserEndPoint):
             else:
                 tempdic[vul_type['type']] = vul_type
         vul_type_list = tempdic.values()
-        end['data']['type'] = sorted(vul_type_list, key=lambda x: x['count'], reverse=True)
+        end['data']['type'] = sorted(vul_type_list,
+                                     key=lambda x: x['count'],
+                                     reverse=True)
 
         return R.success(data=end['data'], level_data=end['level_data'])
