@@ -284,7 +284,8 @@ def regexcompile(pattern):
     try:
         regex = re.compile(pattern)
     except Exception as e:
-        print(e)
+        logger.debug(e, exc_info=e)
+        logger.info("error:%s pattern: %s ", e, pattern)
         return False
     return True
 
@@ -293,7 +294,8 @@ def jqcompile(pattern):
     try:
         regex = jq.compile(pattern)
     except Exception as e:
-        print(e)
+        logger.debug(e, exc_info=e)
+        logger.info("error:%s pattern: %s ", e, pattern)
         return False
     return True
 
@@ -302,12 +304,13 @@ def regextest(test_data, pattern):
     try:
         regex = re.compile(pattern, re.M)
     except Exception as e:
-        print(e)
+        logger.debug(e, exc_info=e)
+        logger.info("error:%s pattern: %s data: %s", e, pattern, test_data)
         data = ''
         status = 0
         return data, status
     result = regex.search(test_data)
-    if result and result.groups():
+    if result and (result.groups() or result.group()):
         return result.group(0), 1
     return '', 1
 
@@ -317,7 +320,7 @@ def jsontest(test_data, pattern):
         data = jq.compile(pattern).input(text=test_data).text()
         status = 1
     except Exception as e:
-        print(e)
+        logger.debug(e, exc_info=e)
         data = ''
         status = 0
     return data, status
