@@ -43,29 +43,27 @@ def check_response_content(method_pool):
                 for key, value in needed_check_data.items():
                     try:
                         result = pattern.search(value)
-                        if result and result.groups():
-                            save_vul(
-                                vul_type=rule.strategy.vul_type,
-                                method_pool=method_pool,
-                                position=key,
-                                data=result.group(0)
-                            )
+                        if result and (result.groups() or result.group()):
+                            save_vul(vul_type=rule.strategy.vul_type,
+                                     method_pool=method_pool,
+                                     position=key,
+                                     data=result.group(0))
                     except Exception as e:
                         logger.error(
-                            f'check_response_content error, rule: {rule.id}, rule name: {rule.strategy.vul_type}, reason: {e}', exc_info=True)
+                            f'check_response_content error, rule: {rule.id}, rule name: {rule.strategy.vul_type}, reason: {e}',
+                            exc_info=True)
             elif json_response and rule.pattern_type.id == 2:
                 pattern = jq.compile(rule.pattern)
                 result = pattern.input(json_response).all()
                 if result:
-                    save_vul(
-                        vul_type=rule.strategy.vul_type,
-                        method_pool=method_pool,
-                        position='HTTP Response Body',
-                        data=' '.join(result)
-                    )
+                    save_vul(vul_type=rule.strategy.vul_type,
+                             method_pool=method_pool,
+                             position='HTTP Response Body',
+                             data=' '.join(result))
         except Exception as e:
             logger.error(
-                f'check_response_content error, rule: {rule.id}, rule name: {rule.strategy.vul_type}, reason: {e}', exc_info=True)
+                f'check_response_content error, rule: {rule.id}, rule name: {rule.strategy.vul_type}, reason: {e}',
+                exc_info=True)
 
     search_id_card_leak(method_pool)
 
