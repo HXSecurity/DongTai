@@ -396,7 +396,7 @@ def update_one_sca(agent_id, package_path, package_signature, package_name, pack
 
 
 def sha_1(raw):
-    sha1_str = hashlib.sha1(raw.encode("utf-8")).hexdigest()
+    sha1_str = hashlib.sha1(raw.encode("utf-8"), usedforsecurity=False).hexdigest()
     return sha1_str
 
 
