@@ -201,7 +201,7 @@ def batch_queryset(queryset, batch_size=1):
 
 
 def checkcover(api_route, agents, http_method=None):
-    uri_hash = hashlib.sha1(api_route.path.encode('utf-8')).hexdigest()
+    uri_hash = hashlib.sha1(api_route.path.encode('utf-8'), usedforsecurity=False).hexdigest()
     api_method_id = api_route.method_id
     q = Q(agent_id__in=[_['id'] for _ in agents])
     if http_method:
@@ -221,7 +221,7 @@ def checkcover(api_route, agents, http_method=None):
 
 
 def checkcover_batch(api_route, agents):
-    uri_hash = [hashlib.sha1(api_route_.path.encode('utf-8')).hexdigest()
+    uri_hash = [hashlib.sha1(api_route_.path.encode('utf-8'), usedforsecurity=False).hexdigest()
                 for api_route_ in api_route.only('path')]
     cover_count = MethodPool.objects.filter(
         uri_sha1__in=uri_hash,
@@ -236,7 +236,7 @@ def apiroute_cachekey(api_route, agents, http_method=None):
 
 
 def sha1(string, encoding='utf-8'):
-    return hashlib.sha1(string.encode(encoding)).hexdigest()
+    return hashlib.sha1(string.encode(encoding), usedforsecurity=False).hexdigest()
 
 
 def get_openapi():
