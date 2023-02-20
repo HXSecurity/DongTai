@@ -87,7 +87,7 @@ chmod u+x build_with_docker_compose.sh
 
 ## 文档
 
-- [官方文档](https://doc.dongtai.io/zh/)
+- [官方文档](https://doc.dongtai.io)
 - [官方网站](https://dongtai.io)
 
 ## Stats
