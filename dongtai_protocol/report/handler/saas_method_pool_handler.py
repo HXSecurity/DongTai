@@ -386,13 +386,13 @@ class SaasMethodPoolHandler(IReportHandler):
 
     @staticmethod
     def sha1(raw):
-        h = sha1()
+        h = sha1(usedforsecurity=False)
         h.update(raw.encode('utf-8'))
         return h.hexdigest()
 
     @staticmethod
     def sha256(raw):
-        h = sha256()
+        h = sha256(usedforsecurity=False)
         h.update(raw.encode('utf-8'))
         return h.hexdigest()
 
