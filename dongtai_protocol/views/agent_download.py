@@ -83,7 +83,8 @@ class JavaAgentDownload():
         user_file = f"{self.target_path}/{self.agent_file}"
         # 执行jar -uvf {JavaAgentDownload.LOCAL_AGENT_FILE} iast.properties更新jar包的文件
         import os
-        os.system(f'cd {self.user_target_path};jar -uvf {user_file} iast.properties')
+        os.system(f'cd {self.user_target_path};jar -uvf {user_file} iast.properties') # nosec 
+        # ignore because no userinput invoked here.
 
 
 class PythonAgentDownload():

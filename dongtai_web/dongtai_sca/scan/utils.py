@@ -233,7 +233,7 @@ def get_highest_license(license_list: list) -> dict:
 
 
 def sha_1(raw):
-    sha1_str = sha1(raw.encode("utf-8")).hexdigest()
+    sha1_str = sha1(raw.encode("utf-8"), usedforsecurity=False).hexdigest()
     return sha1_str
 
 
