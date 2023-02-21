@@ -49,7 +49,7 @@ class AgentStop(UserEndPoint):
             agent.is_control = 1
             agent.except_running_status = 2
             agent.latest_time = int(time.time())
-            agent.save(update_fields=['latest_time', 'control', 'is_control'])
+            agent.save()
         if agent_ids:
             for agent_id in agent_ids:
                 agent = IastAgent.objects.filter(department__in=department,
@@ -62,7 +62,6 @@ class AgentStop(UserEndPoint):
                 agent.is_control = 1
                 agent.latest_time = int(time.time())
                 agent.except_running_status = 2
-                agent.save(
-                    update_fields=['latest_time', 'control', 'is_control'])
+                agent.save()
 
         return R.success(msg=_('Suspending ...'))
