@@ -106,22 +106,22 @@ def get_annotate_sca_base_data(user_id: int, pro_condition: str):
                 })
 
         # 存在利用代码
-        count_poc_query = "SELECT count(DISTINCT( vul.id )) as have_poc_count from iast_asset_vul as vul  " \
-                          + base_join + query_condition + " and  vul.have_poc=1 "
+        count_poc_query = "SELECT COUNT(*) as have_poc_count FROM (SELECT DISTINCT( vul.id )  from iast_asset_vul as vul  " \
+                          + base_join + query_condition + " and  vul.have_poc=1 ) temp"
         cursor.execute(count_poc_query)
         poc_summary = cursor.fetchone()
         if poc_summary:
             result_summary['availability']['have_poc']['num'] = poc_summary[0]
         # 存在分析文章
-        count_article_query = "SELECT count(DISTINCT( vul.id )) as have_article_count from iast_asset_vul as vul  " \
-                              + base_join + query_condition + " and  vul.have_article=1 "
+        count_article_query = "SELECT COUNT(*) as have_article_count FROM ( SELECT DISTINCT( vul.id ) from iast_asset_vul as vul  " \
+                              + base_join + query_condition + " and  vul.have_article=1 ) temp"
         cursor.execute(count_article_query)
         article_summary = cursor.fetchone()
         if article_summary:
             result_summary['availability']['have_article']['num'] = article_summary[0]
         # 无利用信息
-        count_no_availability_query = "SELECT count(DISTINCT( vul.id )) as no_availability from iast_asset_vul as vul  " \
-                                      + base_join + query_condition + " and  vul.have_article=0 and  vul.have_poc=0 "
+        count_no_availability_query = "SELECT COUNT(*) FROM (SELECT DISTINCT( vul.id ) as no_availability from iast_asset_vul as vul  " \
+                                      + base_join + query_condition + " and  vul.have_article=0 and  vul.have_poc=0) temp "
         cursor.execute(count_no_availability_query)
         no_availability_summary = cursor.fetchone()
         if no_availability_summary:
