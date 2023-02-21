@@ -47,6 +47,7 @@ class AgentStop(UserEndPoint):
                 return R.failure(msg=_('Agent is stopping service, please try again later'))
             agent.control = 4
             agent.is_control = 1
+            agent.except_running_status = 2
             agent.latest_time = int(time.time())
             agent.save(update_fields=['latest_time', 'control', 'is_control'])
         if agent_ids:
@@ -60,6 +61,7 @@ class AgentStop(UserEndPoint):
                 agent.control = 4
                 agent.is_control = 1
                 agent.latest_time = int(time.time())
+                agent.except_running_status = 2
                 agent.save(
                     update_fields=['latest_time', 'control', 'is_control'])
 
