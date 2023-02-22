@@ -38,6 +38,20 @@
         "details": [
             {
                 "inherit": "false",
+                "source": "P3",
+                "target": "",
+                "track": "true",
+                "value": "template.(*Template).ExecuteTemplate()"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "reflected-xss"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
                 "source": "P1,2",
                 "target": "",
                 "track": "true",
