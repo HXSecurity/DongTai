@@ -40,6 +40,7 @@ from typing import Tuple
 from django.core.cache import cache
 from datetime import datetime, timedelta
 from dongtai_common.models.agent import IastAgent
+from django.core.exceptions import MultipleObjectsReturned
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -441,8 +442,9 @@ def add_new_api_route(agent: IastAgent, path, method):
             project_version_id=agent.project_version_id,
         )
 
-    except IntegrityError as e:
+    except (IntegrityError, MultipleObjectsReturned) as e:
         logger.info(e)
+        logger.debug(e, exc_info=e)
 
 
 def get_params_dict(req_header, req_body, req_params):
