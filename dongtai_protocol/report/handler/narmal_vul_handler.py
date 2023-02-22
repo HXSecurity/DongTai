@@ -223,7 +223,7 @@ class NormalVulnHandler(BaseVulnHandler):
             pk=project.scan_id).first()
         if scan_template:
             strategy_ids = [int(i) for i in scan_template.content.split(',')]
-            if strategy_id in strategy_ids:
+            if strategy_id not in strategy_ids:
                 return
         if project:
             project.update_latest()
