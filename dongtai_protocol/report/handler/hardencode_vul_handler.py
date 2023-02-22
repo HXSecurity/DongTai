@@ -68,7 +68,7 @@ class HardEncodeVulHandler(IReportHandler):
             pk=self.agent.bind_project.scan_id).first()
         if scan_template:
             strategy_ids = [int(i) for i in scan_template.content.split(',')]
-            if strategy.id in strategy_ids:
+            if strategy.id not in strategy_ids:
                 return
         project_agents = IastAgent.objects.filter(
             project_version_id=self.agent.project_version_id)
