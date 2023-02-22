@@ -61,7 +61,7 @@ class AgentListv2(UserEndPoint, ViewSet):
                     bind_project_id=project_id)
             if last_days:
                 filter_condiction = filter_condiction & Q(
-                    latest_time__gte=int(time()) - 60 * 60 * 24 * last_days)
+                    heartbeat__dt__gte=int(time()) - 60 * 60 * 24 * last_days)
 
             page = page if page else 1
             page_size = page_size if page_size else 20
