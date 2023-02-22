@@ -2636,7 +2636,7 @@
                 "value": "org.glassfish.grizzly.http.Cookie.setSecure(boolean)"
             }
         ],
-        "enable": 0,
+        "enable": 1,
         "type": 4,
         "value": "cookie-flags-missing"
     },
@@ -2679,7 +2679,7 @@
                 "value": "javax.crypto.Cipher.getInstance(java.lang.String,java.security.Provider)"
             }
         ],
-        "enable": 0,
+        "enable": 1,
         "type": 4,
         "value": "crypto-bad-ciphers"
     },
@@ -2722,7 +2722,7 @@
                 "value": "java.security.MessageDigest.getInstance(java.lang.String,java.security.Provider)"
             }
         ],
-        "enable": 0,
+        "enable": 1,
         "type": 4,
         "value": "crypto-bad-mac"
     },
@@ -2897,7 +2897,7 @@
                 "value": "org.apache.commons.lang.RandomStringUtils.randomNumeric(int)"
             }
         ],
-        "enable": 0,
+        "enable": 1,
         "type": 4,
         "value": "crypto-weak-randomness"
     },
@@ -5027,18 +5027,6 @@
                 "track": "false",
                 "type": 2,
                 "value": "org.apache.commons.fileupload.FileUploadBase.parseRequest(org.apache.commons.fileupload.RequestContext)"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "true",
-                "language": 1,
-                "source": "O",
-                "system_type": 1,
-                "target": "O",
-                "track": "false",
-                "type": 2,
-                "value": "trigger.ApplicationRun.main(java.lang.String[])"
             }
         ],
         "enable": 1,
@@ -5070,18 +5058,6 @@
                 "track": "false",
                 "type": 2,
                 "value": "org.springframework.web.util.pattern.PathPattern.getPatternString()"
-            },
-            {
-                "created_by": 1,
-                "enable": 1,
-                "inherit": "false",
-                "language": 1,
-                "source": "O",
-                "system_type": 1,
-                "target": "O",
-                "track": "false",
-                "type": 2,
-                "value": "trigger.ApplicationRun.main(java.lang.String[])"
             }
         ],
         "enable": 1,
@@ -6036,7 +6012,7 @@
                 "value": "org.springframework.http.converter.StringHttpMessageConverter.writeInternal(java.lang.String,org.springframework.http.HttpOutputMessage)"
             }
         ],
-        "enable": 0,
+        "enable": 1,
         "type": 4,
         "value": "reflected-xss"
     },
@@ -7124,7 +7100,7 @@
                 "value": "play.mvc.Http$Session.put(java.lang.String,java.lang.String)"
             }
         ],
-        "enable": 0,
+        "enable": 1,
         "type": 4,
         "value": "trust-boundary-violation"
     },
