@@ -184,7 +184,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             return R.failure(gettext_lazy("Parameter error"))
         search_fields = dict(
             filter(lambda k: k[0] in fields, request.data.items()))
-        search_fields_ = []
+        search_fields_: list = []
         for k, v in search_fields.items():
             search_fields_.append((k, v))
         search_after_fields = list(
@@ -198,9 +198,9 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         if 'id' in request.data.keys():
             q = assemble_query(search_after_fields, 'lte', q, operator.and_)
             if search_mode == 1:
-                q = assemble_query(search_fields, 'regex', Q(), operator.or_)
+                q = assemble_query(search_fields_, 'regex', Q(), operator.or_)
             elif search_mode == 2:
-                q = assemble_query_2(search_fields, 'regex', Q(),
+                q = assemble_query_2(search_fields_, 'regex', Q(),
                                      operator.and_)
             if 'id' in request.data.keys():
                 q = q & Q(pk=request.data['id'])

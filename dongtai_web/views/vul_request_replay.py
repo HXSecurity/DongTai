@@ -91,8 +91,8 @@ class RequestReplayEndPoint(UserEndPoint):
 
         auth_agents = RequestReplayEndPoint.get_auth_agents_with_user(user)
         if method_pool_id == -1:
-            method_pool_model = namedtuple('MethodPool', ['id', 'agent'])
-            agent = namedtuple('MethodPool', ['id', 'is_running'])
+            method_pool_model = namedtuple('method_pool_model', ['id', 'agent'])
+            agent = namedtuple('agent', ['id', 'is_running'])
             agent.id = 0
             agent.is_running = 0
             method_pool_model.agent = agent

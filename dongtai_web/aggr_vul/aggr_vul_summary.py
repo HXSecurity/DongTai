@@ -286,11 +286,11 @@ def get_annotate_data_es(
             have_poc_count = i['doc_count']
             for k in i['article']['buckets']:
                 if k['key'] == 1:
-                    have_article_count += k['doc_count']
+                    have_article_count += int(k['doc_count'])
         if i['key'] == 0:
             for k in i['article']['buckets']:
                 if k['key'] == 1:
-                    have_article_count += k['doc_count']
+                    have_article_count += int(k['doc_count'])
                 if k['key'] == 0:
                     no_usable_count = k['doc_count']
 
