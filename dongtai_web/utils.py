@@ -62,7 +62,7 @@ def assemble_query(condictions: list,
                 }, condictions)), base_query)
 
 
-def assemble_query_2(condictions: dict,
+def assemble_query_2(condictions: list,
                      lookuptype='',
                      base_query=Q(),
                      operator_=operator.or_):
