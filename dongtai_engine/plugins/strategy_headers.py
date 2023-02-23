@@ -98,7 +98,8 @@ def check_response_header(method_pool):
                      method_pool,
                      position='HTTP Response Header')
     except Exception as e:
-        logger.error("check_response_header failed, reason: " + str(e))
+        logger.error("check_response_header failed, reason: " + str(e),
+                     exc_info=e)
 
 
 def save_vul(vul_type, method_pool, position=None, data=None):
@@ -185,8 +186,8 @@ def save_vul(vul_type, method_pool, position=None, data=None):
             client_ip=method_pool.clent_ip,
             param_name=None,
             method_pool_id=method_pool.id,
-            project_version_id=vul.agent.project_version_id,
-            project_id=vul.agent.bind_project_id,
+            project_version_id=method_pool.agent.project_version_id,
+            project_id=method_pool.agent.bind_project_id,
             language=method_pool.agent.language,
             server_id=method_pool.agent.server_id,
         )

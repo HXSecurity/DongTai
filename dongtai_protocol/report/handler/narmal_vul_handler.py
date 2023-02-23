@@ -279,7 +279,7 @@ class NormalVulnHandler(BaseVulnHandler):
             strategy_id=strategy_id,
             uri=self.http_uri,
             http_method=self.http_method,
-            project_version_id=iast_vul.agent.project_version_id,
+            project_version_id=self.agent.project_version_id,
             pk__lt=iast_vul.id,
         ).delete()
         header_vul = None

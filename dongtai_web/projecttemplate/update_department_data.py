@@ -10,5 +10,5 @@ def update_department_data():
         else:
             department_dict[department.id] = f"{department_dict[department.parent_id]}-{department.id}"
         department.department_path = department_dict[department.id]
-        department.token = Token.generate_key()
+        department.token = Token().generate_key()
         department.save()
