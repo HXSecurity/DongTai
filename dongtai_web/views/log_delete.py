@@ -20,13 +20,10 @@ class LogDelete(UserEndPoint):
             user = request.user
             if user.is_superuser == 1:
                 LogEntry.objects.filter(id__in=ids).delete()
-            elif user.is_superuser == 2:
-                users = self.get_auth_users(user)
-                user_ids = list(users.values_list('id', flat=True))
-                LogEntry.objects.filter(id__in=ids, user_id__in=user_ids).delete()
-            else:
-                return R.failure(msg=_('no permission'))
-
+                return R.success(msg=_('success'))
+            users = self.get_auth_users(user)
+            user_ids = list(users.values_list('id', flat=True))
+            LogEntry.objects.filter(id__in=ids, user_id__in=user_ids).delete()
             return R.success(msg=_('success'))
         else:
             return R.failure(status=203, msg=_('The data to be deleted should not be empty'))
