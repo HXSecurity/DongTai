@@ -54,7 +54,7 @@ asyncio-gevent = "==0.2.1"
 gevent = "==21.12.0"
 ddt = "==1.6.0"
 boto3 = "==1.24.59"
-mypy = "==0.961"
+mypy = "==1.0.1"
 typing-extensions = ">=4.3.0"
 djangorestframework-stubs = {version = ">=1.7.0", extras = ["compatible-mypy"]}
 django-stubs = {version = ">=1.12.0", extras = ["compatible-mypy"]}
