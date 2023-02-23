@@ -289,6 +289,7 @@ class GetAggregationVulList(UserEndPoint):
             ).values("asset_vul_id", "asset__project_id",
                      "asset__project_name",
                      "asset__project_version__version_name",
+                     "asset__project_version_id",
                      "asset__agent__server__container").distinct()
             pro_arr = {}
             for item in pro_info:

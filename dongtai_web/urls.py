@@ -145,7 +145,7 @@ from dongtai_web.views.log_download import AgentLogDownload
 
 from dongtai_web.threshold.agent_core_status import (AgentCoreStatusUpdate,
                                                      AgentCoreStatusUpdateALL)
-from dongtai_web.aggregation.aggregation_del import DelVulMany
+from dongtai_web.aggregation.aggregation_del import DelVulMany, DelVulProjectLevel
 
 from dongtai_web.threshold.config_setting import (
     AgentThresholdConfigV2, )
@@ -328,6 +328,7 @@ urlpatterns = [
 
     # vul list page of sca and common vul
     path('vul_list_delete', DelVulMany.as_view()),
+    path('project_vul_delete', DelVulProjectLevel.as_view()),
     path('circuit_config',
          AgentThresholdConfigV2.as_view({
              "post": "create",
