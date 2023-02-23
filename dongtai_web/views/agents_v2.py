@@ -105,10 +105,16 @@ class AgentListv2(UserEndPoint, ViewSet):
     def summary(self, request):
         res = {}
         department = request.user.get_relative_department()
+        last_days = int(request.query_params.get('last_days', 0))
         for type_ in StateType:
+            filter_condiction = generate_filter(type_)
+            if last_days:
+                filter_condiction = filter_condiction & Q(
+                    heartbeat__dt__gte=int(time()) - 60 * 60 * 24 * last_days)
             res[type_] = IastAgent.objects.filter(
-                generate_filter(type_),
-                department__in=department).count()
+                filter_condiction,
+                department__in=department,
+            ).count()
             # user__in=get_auth_users__by_id(request.user.id)).count()
 
         return R.success(data=res)
