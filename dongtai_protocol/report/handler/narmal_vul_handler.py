@@ -266,15 +266,15 @@ class NormalVulnHandler(BaseVulnHandler):
                 full_stack=json.dumps(full_stack, ensure_ascii=False),
                 top_stack=self.app_caller[index + 1],
                 bottom_stack=self.app_caller[index + 2],
-                project_version_id=iast_vul.agent.project_version_id,
-                project_id=iast_vul.agent.bind_project_id,
+                project_version_id=self.agent.project_version_id,
+                project_id=self.agent.bind_project_id,
                 language=self.agent.language,
                 server_id=self.agent.server_id,
             )
-            log_vul_found(iast_vul.agent.user_id,
-                          iast_vul.agent.bind_project.name,
-                          iast_vul.agent.bind_project_id, iast_vul.id,
-                          iast_vul.strategy.vul_name)
+            log_vul_found(self.agent.user_id,
+                          self.agent.bind_project.name,
+                          self.agent.bind_project_id, iast_vul.id,
+                          self.strategy.vul_name)
         IastVulnerabilityModel.objects.filter(
             strategy_id=strategy_id,
             uri=self.http_uri,
