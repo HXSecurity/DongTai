@@ -98,6 +98,7 @@ def cached_decorator(random_range, use_celery_update=False):
 
 
 from rest_framework.authentication import TokenAuthentication, get_authorization_header
+from django.utils.translation import gettext_lazy as _
 
 
 class DepartmentTokenAuthentication(TokenAuthentication):

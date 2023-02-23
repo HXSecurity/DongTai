@@ -39,7 +39,7 @@ logger = logging.getLogger("django")
 INT_LIMIT: int = 2**64 - 1
 
 
-def convert_cwe(cwe: [List, str]) -> str:
+def convert_cwe(cwe: List | str) -> str:
     if isinstance(cwe, list):
         if len(cwe) > 0:
             return cwe[0].replace("CWE-", "")
