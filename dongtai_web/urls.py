@@ -145,7 +145,8 @@ from dongtai_web.views.log_download import AgentLogDownload
 
 from dongtai_web.threshold.agent_core_status import (AgentCoreStatusUpdate,
                                                      AgentCoreStatusUpdateALL)
-from dongtai_web.aggregation.aggregation_del import DelVulMany, DelVulProjectLevel
+from dongtai_web.aggregation.aggregation_del import DelVulMany
+from dongtai_web.aggregation.aggregation_project_del import DelVulProjectLevel
 
 from dongtai_web.threshold.config_setting import (
     AgentThresholdConfigV2, )
