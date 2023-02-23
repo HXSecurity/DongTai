@@ -271,10 +271,10 @@ class NormalVulnHandler(BaseVulnHandler):
                 language=self.agent.language,
                 server_id=self.agent.server_id,
             )
-            log_vul_found(self.agent.user_id,
-                          self.agent.bind_project.name,
-                          self.agent.bind_project_id, iast_vul.id,
-                          self.strategy.vul_name)
+            log_vul_found(iast_vul.agent.user_id,
+                          iast_vul.agent.bind_project.name,
+                          iast_vul.agent.bind_project_id, iast_vul.id,
+                          iast_vul.strategy.vul_name)
         IastVulnerabilityModel.objects.filter(
             strategy_id=strategy_id,
             uri=self.http_uri,
