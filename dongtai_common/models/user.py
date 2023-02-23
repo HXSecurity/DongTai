@@ -70,7 +70,7 @@ class SaaSUserManager(UserManager):
 
 
 class User(AbstractUser, PermissionsMixin):
-    is_superuser = models.IntegerField(default=0)
+    is_superuser: int = models.IntegerField(default=0)
     phone = models.CharField(max_length=15)
     default_language = models.CharField(max_length=15)
     objects = SaaSUserManager()
