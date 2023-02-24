@@ -57,6 +57,7 @@ _PostResponseSerializer = get_response_serializer(status_msg_keypair=(
 
 
 class EngineHookRuleEnableEndPoint(UserEndPoint):
+
     def parse_args(self, request):
         rule_id = request.query_params.get('rule_id')
         rule_type = request.query_params.get('type')
@@ -68,16 +69,14 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
     @staticmethod
     def set_strategy_status(strategy_id, strategy_ids, user_id, enable_status):
         if strategy_id:
-            rule = HookStrategy.objects.filter(id=strategy_id,
-                                               created_by=user_id).first()
+            rule = HookStrategy.objects.filter(id=strategy_id, ).first()
             if rule:
                 rule.enable = enable_status
                 rule.save()
                 return 1
         elif strategy_ids:
             count = HookStrategy.objects.filter(
-                id__in=strategy_ids,
-                created_by=user_id).update(enable=enable_status)
+                id__in=strategy_ids, ).update(enable=enable_status)
             return count
         return 0
 
