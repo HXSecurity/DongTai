@@ -84,19 +84,15 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
     def post(self, request):
         rule_id, rule_type, rule_value, rule_source, rule_target, inherit, is_track = self.parse_args(request)
         strategy = HookStrategy.objects.filter(
-            id=rule_id, created_by=request.user.id).first()
+            id=rule_id).first()
         if not strategy:
             return R.failure(msg=_('No such hookstrategy.'))
         if strategy.type == 4:
             hook_type = IastStrategyModel.objects.filter(
                 id=rule_type,
-                user_id__in=[request.user.id, const.SYSTEM_USER_ID],
             ).first()
         else:
-            hook_type = HookType.objects.filter(
-                id=rule_type,
-                created_by__in=(request.user.id,
-                                const.SYSTEM_USER_ID)).first()
+            hook_type = HookType.objects.filter(id=rule_type, ).first()
 
         if all((rule_id, rule_type, rule_value, rule_source, inherit, is_track,
                 strategy)) is False:
