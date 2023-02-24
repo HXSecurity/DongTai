@@ -102,32 +102,25 @@ class EngineHookRulesEndPoint(UserEndPoint):
                 if strategy_type:
                     rule_type_queryset = IastStrategyModel.objects.filter(
                         pk=strategy_type,
-                        user_id__in=(user_id, const.SYSTEM_USER_ID),
                     )
                 else:
-                    rule_type_queryset = IastStrategyModel.objects.filter(
-                        user_id__in=(user_id, const.SYSTEM_USER_ID), )
+                    rule_type_queryset = IastStrategyModel.objects.all()
             else:
                 if strategy_type:
                     rule_type_queryset = HookType.objects.filter(
                         id=strategy_type,
-                        created_by__in=(user_id, const.SYSTEM_USER_ID),
                         type=rule_type,
                         language_id=language_id)
                 else:
                     rule_type_queryset = HookType.objects.filter(
-                        created_by__in=(user_id, const.SYSTEM_USER_ID),
                         type=rule_type,
                         language_id=language_id)
             if rule_type == 4:
-                q = Q(strategy__in=rule_type_queryset) & Q(
-                    created_by=user_id) & Q(
-                        enable__in=(const.ENABLE, const.DISABLE)) & Q(
-                            language_id=language_id)
+                q = Q(strategy__in=rule_type_queryset) & Q(enable__in=(
+                    const.ENABLE, const.DISABLE)) & Q(language_id=language_id)
             else:
                 q = Q(hooktype__in=rule_type_queryset) & Q(
-                    created_by=user_id) & Q(enable__in=(const.ENABLE,
-                                                        const.DISABLE))
+                    enable__in=(const.ENABLE, const.DISABLE))
             if keyword:
                 q = Q(value__icontains=keyword) & q
             rule_queryset = HookStrategy.objects.filter(q)
