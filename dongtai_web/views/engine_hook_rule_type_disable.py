@@ -47,7 +47,7 @@ class EngineHookRuleTypeDisableEndPoint(UserEndPoint):
         if rule_id is None:
             return R.failure(msg=_('Strategy does not exist'))
 
-        rule = HookStrategy.objects.filter(id=rule_id, created_by=request.user.id).first()
+        rule = HookStrategy.objects.filter(id=rule_id).first()
         if rule:
             rule_type = rule.type.first()
             if rule_type:

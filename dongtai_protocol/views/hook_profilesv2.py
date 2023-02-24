@@ -34,7 +34,6 @@ class HookProfilesV2EndPoint(HookProfilesEndPoint):
             if isinstance(hook_type, IastStrategyModel):
                 hook_type = convert_strategy(hook_type)
             strategies = hook_type.strategies.filter(
-                created_by__in=[1, user.id] if user else [1],
                 type__in=(1, 2, 3)
                 if not isinstance(hook_type, IastStrategyModel) else [4],
                 enable=const.HOOK_TYPE_ENABLE,
