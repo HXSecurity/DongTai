@@ -276,10 +276,10 @@ class NormalVulnHandler(BaseVulnHandler):
                           iast_vul.agent.bind_project_id, iast_vul.id,
                           iast_vul.strategy.vul_name)
         IastVulnerabilityModel.objects.filter(
-            strategy_id=strategy_id,
-            uri=self.http_uri,
-            http_method=self.http_method,
-            project_version_id=self.agent.project_version_id,
+            strategy_id=iast_vul.strategy_id,
+            uri=iast_vul.uri,
+            http_method=iast_vul.http_method,
+            project_version_id=iast_vul.agent.project_version_id,
             pk__lt=iast_vul.id,
         ).delete()
         header_vul = None
@@ -300,18 +300,19 @@ class NormalVulnHandler(BaseVulnHandler):
                 logger.debug("unique error stack: ", exc_info=True)
                 logger.info(
                     "unique error cause by concurrency insert,ignore it")
-        if header_vul and not IastHeaderVulnerabilityDetail.objects.filter(
-                agent_id=self.agent.id,
-                header_vul_id=header_vul.id,
-        ).exists():
-            try:
-                IastHeaderVulnerabilityDetail.objects.create(
-                    agent_id=self.agent.id,
-                    method_pool_id=-1,
-                    header_vul_id=header_vul.id,
-                    req_header=self.req_header_for_search,
-                    res_header=self.http_res_header)
-            except IntegrityError as e:
-                logger.debug("unique error stack: ", exc_info=True)
-                logger.info(
-                    "unique error cause by concurrency insert,ignore it")
+        # disable when no req_header and res_header
+#        if header_vul and not IastHeaderVulnerabilityDetail.objects.filter(
+#                agent_id=self.agent.id,
+#                header_vul_id=header_vul.id,
+#        ).exists():
+#            try:
+#                IastHeaderVulnerabilityDetail.objects.create(
+#                    agent_id=self.agent.id,
+#                    method_pool_id=-1,
+#                    header_vul_id=header_vul.id,
+#                    req_header=self.req_header_for_search,
+#                    res_header=self.http_res_header)
+#            except IntegrityError as e:
+#                logger.debug("unique error stack: ", exc_info=True)
+#                logger.info(
+#                    "unique error cause by concurrency insert,ignore it")
