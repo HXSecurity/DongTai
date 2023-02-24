@@ -38,14 +38,14 @@ class DelVulProjectLevel(UserEndPoint):
         if source_type == 1:
             queryset = queryset.filter(project_id__in=[project_id])
         else:
-            queryset = queryset.filter(asset_project_id__in=[project_id])
+            queryset = queryset.filter(asset__project_id__in=[project_id])
         if project_version_id:
             if source_type == 1:
                 queryset = queryset.filter(
                     project_version_id__in=[project_version_id])
             else:
                 queryset = queryset.filter(
-                    asset_project_version_id__in=[project_version_id])
+                    asset__project_version_id__in=[project_version_id])
 
         # 部门删除逻辑
         if source_type == 1:
