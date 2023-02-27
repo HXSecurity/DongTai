@@ -22,12 +22,12 @@ class UserLogout(AnonymousAuthEndPoint):
     description = _("Sign out")
 
     def get(self, request):
-        if request.user.is_active:
-            logout(request)
+        logout(request)
         response = JsonResponse({
             "status": 201,
             "msg": _('Sign out successfully')
         })
+        request.session.delete()
         response.delete_cookie(key=settings.CSRF_COOKIE_NAME, domain=settings.SESSION_COOKIE_DOMAIN)
         response.delete_cookie(key='sessionid', domain=settings.SESSION_COOKIE_DOMAIN)
         return response
