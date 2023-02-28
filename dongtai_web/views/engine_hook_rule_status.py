@@ -67,7 +67,7 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
             'language_id'), request.query_params.get('hook_rule_type')
 
     @staticmethod
-    def set_strategy_status(strategy_id, strategy_ids, user_id, enable_status):
+    def set_strategy_status(strategy_id, strategy_ids, enable_status):
         if strategy_id:
             rule = HookStrategy.objects.filter(id=strategy_id, ).first()
             if rule:
@@ -147,9 +147,7 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
         request=EngineHookRuleStatusPostBodySerializer,
         tags=[_('Hook Rule')],
         summary=_('Hook Rule Status Modify (Batch)'),
-        description=
-        _("Batch modify the status of the rule corresponding to the specified id"
-          ),
+        description=_("Batch modify the status of the rule corresponding to the specified id"),
         response_schema=_PostResponseSerializer,
     )
     def post(self, request):
