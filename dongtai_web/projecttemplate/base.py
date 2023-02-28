@@ -27,6 +27,8 @@ class ProjectTemplateCreateArgsSerializer(serializers.Serializer):
         min_value=1,
         help_text=_("The id corresponding to the scanning strategy."))
     vul_validation = serializers.IntegerField(
+        min_value=0,
+        max_value=2,
         help_text="vul validation switch, 0-FOLLOW_GLOBAL, 1-ENABLE,2-DISABLE")
     data_gather = serializers.JSONField(help_text="data gather settings",
                                         required=False)
