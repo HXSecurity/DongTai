@@ -170,7 +170,7 @@ jobs:
           pip install flake8
       - name: Django Unit Testing
         run: |
-          flake8 --max-complexity 43  --statistics --ignore=E265,E302,E402,E501,F401,F541,F811,F841 --show-source .  
+          flake8 --max-complexity 43  --statistics --ignore=E265,E302,E402,E501,F401,F541,F811,F841,W503,W504 --show-source .  
   
   Run-BanditCheck:
     runs-on: ubuntu-latest
