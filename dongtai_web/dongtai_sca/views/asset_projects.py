@@ -18,6 +18,7 @@ from dongtai_common.models.project_version import IastProjectVersion
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_web.serializers.sca import ScaSerializer
 from dongtai_web.dongtai_sca.serializers.asset_project import AssetProjectSerializer
+from typing import List, Optional, Dict
 
 logger = logging.getLogger(__name__)
 
@@ -104,18 +105,25 @@ class AssetVulProjects(UserEndPoint):
                         id=asset_info['level_id']).first()
                     #level = IastVulLevel.objects.filter(id=_data['level_id']).first()
                     level_name = level.name_value if level else ""
-                    data.append(
-                        {'project_id': _data['project_id'], 'project_name': _data['project_name'], 'level': level_name,
-                         'project_version': project_version, 'dependency_level': 0,
-                         'project_version_id': _data['project_version_id']})
+                    data.append({
+                        'project_id':
+                        _data['project_id'],
+                        'project_name':
+                        _data['project_name'],
+                        'level':
+                        level_name,
+                        'project_version':
+                        project_version,
+                        'dependency_level':
+                        0,
+                        'project_version_id':
+                        _data['project_version_id']
+                    })
 
             return R.success(data=data, page=page_summary)
         except Exception as e:
             logger.error(e)
             return R.failure(msg=_('Component vul projects query failed'))
-
-
-from typing import List, Optional, Dict
 
 
 def get_tree(dep_list: List[str]):

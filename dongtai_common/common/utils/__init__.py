@@ -1,6 +1,8 @@
 from django.core.cache import cache
 import copy
 from functools import wraps
+from rest_framework.authentication import TokenAuthentication, get_authorization_header
+from django.utils.translation import gettext_lazy as _
 
 
 class DongTaiAppConfigPatch():
@@ -95,10 +97,6 @@ def cached_decorator(random_range, use_celery_update=False):
                       use_celery_update=use_celery_update)
 
     return _noname
-
-
-from rest_framework.authentication import TokenAuthentication, get_authorization_header
-from django.utils.translation import gettext_lazy as _
 
 
 class DepartmentTokenAuthentication(TokenAuthentication):

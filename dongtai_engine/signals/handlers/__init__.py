@@ -4,4 +4,5 @@
 # datetime: 2021/4/30 下午2:58
 # project: dongtai-engine
 
-from .vul_handler import *
+# inappropriate implementation to load handler in django
+# from .vul_handler import *

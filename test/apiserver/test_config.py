@@ -1,6 +1,9 @@
 from rest_framework.test import APITestCase
-from dongtai_protocol.views.agent_config import get_agent_config
-from dongtai_protocol.views.agent_config import *
+from dongtai_protocol.views.agent_config import (
+    get_agent_config,
+    get_agent_filter_details,
+    get_agent_config_by_scan,
+)
 from dongtai_common.models.user import User
 
 
