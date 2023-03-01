@@ -5,4 +5,4 @@
 # project: dongtai-engine
 
 # inappropriate implementation to trigger task of load handlers
-import vul_handler
+import .vul_handler
