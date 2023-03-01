@@ -254,8 +254,6 @@ class SaasMethodPoolHandler(IReportHandler):
             self.agent.project_version_id,
             'language':
             self.agent.language,
-            'agent_id':
-            self.agent.id,
         }
         return json.dumps(pool)
 
