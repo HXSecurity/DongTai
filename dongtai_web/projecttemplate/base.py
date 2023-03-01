@@ -25,6 +25,7 @@ class ProjectTemplateCreateArgsSerializer(serializers.Serializer):
     template_name = serializers.CharField(help_text=_('The name of project'))
     scan_id = serializers.IntegerField(
         min_value=1,
+        max_value=2**32,
         help_text=_("The id corresponding to the scanning strategy."))
     vul_validation = serializers.IntegerField(
         min_value=0,
