@@ -25,6 +25,7 @@ class ProjectTemplateCreateArgsSerializer(serializers.Serializer):
     template_name = serializers.CharField(help_text=_('The name of project'))
     scan_id = serializers.IntegerField(
         min_value=1,
+        max_value=2**32,
         help_text=_("The id corresponding to the scanning strategy."))
     vul_validation = serializers.IntegerField(
         min_value=0,
@@ -33,8 +34,12 @@ class ProjectTemplateCreateArgsSerializer(serializers.Serializer):
     data_gather = serializers.JSONField(help_text="data gather settings",
                                         required=False)
     data_gather_is_followglobal = serializers.IntegerField(required=False,
+                                                           min_value=0,
+                                                           max_value=2,
                                                            default=0)
     blacklist_is_followglobal = serializers.IntegerField(required=False,
+                                                         min_value=0,
+                                                         max_value=2,
                                                          default=0)
     blacklist = serializers.SerializerMethodField(required=False)
     is_system = serializers.IntegerField(required=False, default=0)
@@ -100,7 +105,7 @@ class IastProjectTemplateView(TalentAdminEndPoint, viewsets.ViewSet):
             return R.failure(data=ser.errors)
         data = {}
         for field in ProjectTemplateCreateArgsSerializer.Meta.fields:
-            if field in request.data:
+            if field in request.data and field != 'id':
                 data[field] = request.data[field]
         template_create(data, request.user)
         return R.success()
