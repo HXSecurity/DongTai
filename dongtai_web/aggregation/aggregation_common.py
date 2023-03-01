@@ -105,17 +105,17 @@ def getHookTypeName(ids=None):
 
 # 应用漏洞推送
 def appVulShareConfig(app_vul_ids, user_id):
-
-    query_vul_inetration = IastVulInegration.objects.filter(
-        vul_id__in=app_vul_ids,
-        user_id=user_id).values("vul_id", "jira_url", "jira_id", "gitlab_url",
-                                "gitlab_id", "zendao_url", "zendao_id")
-    config_dict = {}
-    if query_vul_inetration:
-        for item in query_vul_inetration:
-            vul_id = item['vul_id']
-            config_dict[vul_id] = item
-    return config_dict
+    return {}
+#    query_vul_inetration = IastVulInegration.objects.filter(
+#        vul_id__in=app_vul_ids,
+#        user_id=user_id).values("vul_id", "jira_url", "jira_id", "gitlab_url",
+#                                "gitlab_id", "zendao_url", "zendao_id")
+#    config_dict = {}
+#    if query_vul_inetration:
+#        for item in query_vul_inetration:
+#            vul_id = item['vul_id']
+#            config_dict[vul_id] = item
+#    return config_dict
 
 
 # 鉴权  IastVulAssetRelation

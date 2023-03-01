@@ -4,8 +4,10 @@ import json
 from dongtai_common.models.url_blacklist import (
     IastAgentBlackRule,
     create_blacklist_rule,
+    TargetType,
+    TargetOperator,
+    State,
 )
-from dongtai_common.models.url_blacklist import *
 
 
 class VulEngineSearchTestCase(TestCase):
