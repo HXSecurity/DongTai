@@ -64,9 +64,16 @@ def parse_params(param_values: str, taint_value: str) -> Optional[str]:
 def parse_body(body: str, taint_value: str) -> Optional[str]:
     try:
         post_body = json.loads(body)
-        for key, value in post_body.items():
-            if taint_value == value or taint_value == key:
-                return key
+        if isinstance(post_body, dict):
+            for key, value in post_body.items():
+                if taint_value == value or taint_value == key:
+                    return key
+        if isinstance(post_body, list):
+            for index, value in enumerate(post_body):
+                if taint_value == value:
+                    return f"position {index}"
+        if post_body == taint_value:
+            return 'all'
     except Exception as e:
         return parse_params(body, taint_value)
     return None
