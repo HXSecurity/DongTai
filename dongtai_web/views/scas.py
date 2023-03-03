@@ -285,12 +285,12 @@ class ScaList(UserEndPoint):
         if license:
             es_query['license'] = license
 
-        if license :
+        if license:
             list_sql_params.append(license)
             count_sql_params.append(license)
             where_conditions.append('license IN %(license)s')
             where_conditions_dict['license'] = license
-        
+
         order_by = '-vul_count'
         order = request.data.get('order', None)
         if not order or order == "-":
@@ -300,8 +300,8 @@ class ScaList(UserEndPoint):
         order, order_type = get_order_params(order_fields, order)
         es_query['order'] = order
         es_query['order_type'] = order_type
-#        if ELASTICSEARCH_STATE:
-#            data = get_vul_list_from_elastic_searchv2(**es_query)
+        #        if ELASTICSEARCH_STATE:
+        #            data = get_vul_list_from_elastic_searchv2(**es_query)
         #        else:
         data = mysql_search(where_conditions, where_conditions_dict, page_size,
                             order_type, order, page)
