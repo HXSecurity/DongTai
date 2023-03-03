@@ -199,10 +199,8 @@ class ApiRouteSearch(UserEndPoint):
         q = q & ~Q(pk__in=exclude_id) if exclude_id else q
         q = q & Q(is_cover=is_cover) if is_cover is not None else q
         api_routes = IastApiRoute.objects.filter(q).order_by(
-            'id').select_related('method', ).prefetch_related(
-                'iastapiresponse_set',
-                'iastapiparameter_set',
-            ).all()
+            'id').select_related('method').prefetch_related(
+                'iastapiresponse_set', 'iastapiparameter_set').all()
         distinct_fields = ["path", "method_id"]
         distinct_exist_list = [] if not exclude_id else list(
             set(
@@ -339,7 +337,7 @@ def _get_responses_type(api_route):
 
 
 def _get_api_method(api_method):
-    apimethod = api_method.http_method.all() #IastApiMethod.objects.filter(pk=api_method.id).first()
+    apimethod = api_method.http_method.all()
     res = {}
     res['apimethod'] = api_method.method
     res['httpmethods'] = [_.method for _ in api_method.http_method.all()]
