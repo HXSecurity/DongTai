@@ -84,6 +84,7 @@ class IastApiRoute(models.Model):
                                         blank=True,
                                         null=True,
                                         default=-1)
+    is_cover = models.IntegerField(default=0)
 
     class Meta:
         managed = get_managed()
