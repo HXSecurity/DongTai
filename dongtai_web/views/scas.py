@@ -281,6 +281,16 @@ class ScaList(UserEndPoint):
             where_conditions.append('package_name LIKE %(package_kw)s')
             where_conditions_dict['package_kw'] = package_kw
 
+        license = request_data.get('license', None)
+        if license:
+            es_query['license'] = license
+
+        if license :
+            list_sql_params.append(license)
+            count_sql_params.append(license)
+            where_conditions.append('license IN %(license)s')
+            where_conditions_dict['license'] = license
+        
         order_by = '-vul_count'
         order = request.data.get('order', None)
         if not order or order == "-":
