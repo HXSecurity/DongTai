@@ -322,6 +322,7 @@ def update_one_sca(agent_id,
         asset.license = highest_license['identifier']
         asset.dt = int(time.time())
         asset.save()
+        return
 
     for package in packages:
         asset = Asset()
