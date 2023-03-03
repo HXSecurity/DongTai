@@ -197,7 +197,10 @@ class ApiRouteSearch(UserEndPoint):
                            for _ in api_methods]) if api_methods != [] else q
         q = q & Q(path__icontains=uri) if uri else q
         q = q & ~Q(pk__in=exclude_id) if exclude_id else q
-        api_routes = IastApiRoute.objects.filter(q).order_by('id').all()
+        q = q & Q(is_cover=is_cover) if is_cover is not None else q
+        api_routes = IastApiRoute.objects.filter(q).order_by(
+            'id').select_related('method').prefetch_related(
+                'iastapiresponse_set', 'iastapiparameter_set').all()
         distinct_fields = ["path", "method_id"]
         distinct_exist_list = [] if not exclude_id else list(
             set(
@@ -230,7 +233,7 @@ def _filter_and_label(api_routes,
                       distinct_exist_list=[]):
     api_routes_after_filter = []
     distinct_exist_list = distinct_exist_list.copy()
-    for api_route in batch_queryset(api_routes):
+    for api_route in api_routes:
         distinct_key_ = distinct_key(
             {
                 'path': api_route.path,
@@ -240,7 +243,7 @@ def _filter_and_label(api_routes,
             continue
         else:
             distinct_exist_list.append(distinct_key_)
-        api_route.is_cover = checkcover(api_route, agents, http_method)
+#        api_route.is_cover = checkcover(api_route, agents, http_method)
         if is_cover is not None:
             api_routes_after_filter += [
                 api_route
@@ -269,7 +272,7 @@ def _serialize(api_route, agents):
     item['is_cover'] = is_cover_dict[api_route.is_cover]
     item['parameters'] = _get_parameters(api_route)
     item['responses'] = _get_responses(api_route)
-    item['method'] = _get_api_method(item['method'])
+    item['method'] = _get_api_method(api_route.method)
     item['vulnerablities'] = _get_vuls(item['path'], agents)
     return item
 
@@ -284,14 +287,17 @@ def serialize(api_route):
 
 def _get_vuls(uri, agents):
     vuls = IastVulnerabilityModel.objects.filter(
-        uri=uri, agent_id__in=[_['id'] for _ in agents
-                               ]).distinct().values('hook_type_id',
-                                                    'level_id',
-                                                    'strategy_id').all()
+        uri=uri, agent_id__in=[_['id'] for _ in agents],
+        is_del=0).values('hook_type_id', 'level_id', 'strategy_id',
+                         'strategy__vul_name').all()
     return [_get_hook_type(vul) for vul in vuls]
 
 
 def _get_hook_type(vul: dict) -> dict:
+    return {
+        'hook_type_name': vul['strategy__vul_name'],
+        'level_id': vul['level_id']
+    }
 
     hook_type = HookType.objects.filter(pk=vul['hook_type_id']).first()
     hook_type_name = hook_type.name if hook_type else None
@@ -304,7 +310,8 @@ def _get_hook_type(vul: dict) -> dict:
 
 
 def _get_parameters(api_route):
-    parameters = IastApiParameter.objects.filter(route=api_route).all()
+    parameters = api_route.iastapiparameter_set.all()
+    #    parameters = IastApiParameter.objects.filter(route=api_route).all()
     parameters = [model_to_dict(parameter) for parameter in parameters]
     parameters = [_get_parameters_type(parameter) for parameter in parameters]
     return parameters
@@ -317,7 +324,8 @@ def _get_parameters_type(api_route):
 
 
 def _get_responses(api_route):
-    responses = IastApiResponse.objects.filter(route=api_route).all()
+    responses = api_route.iastapiresponse_set.all()
+    #    responses = IastApiResponse.objects.filter(route=api_route).all()
     responses = [model_to_dict(response) for response in responses]
     responses = [_get_responses_type(response) for response in responses]
     return responses
@@ -328,14 +336,18 @@ def _get_responses_type(api_route):
     return api_route
 
 
-def _get_api_method(api_method_id):
-    apimethod = IastApiMethod.objects.filter(pk=api_method_id).first()
-    if apimethod:
-        res = {}
-        res['apimethod'] = apimethod.method
-        res['httpmethods'] = [_.method for _ in apimethod.http_method.all()]
-        return res
-    return {}
+def _get_api_method(api_method):
+    apimethod = api_method.http_method.all()
+    res = {}
+    res['apimethod'] = api_method.method
+    res['httpmethods'] = [_.method for _ in api_method.http_method.all()]
+    return res
+#    if apimethod:
+#        res = {}
+#        res['apimethod'] = apimethod.method
+#        res['httpmethods'] = [_.method for _ in apimethod.http_method.all()]
+#        return res
+#    return {}
 
 
 def _inverse_dict(dic: dict) -> dict:

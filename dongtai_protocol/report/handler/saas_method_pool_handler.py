@@ -439,6 +439,12 @@ def add_new_api_route(agent: IastAgent, path, method):
             project_id=agent.bind_project_id,
             project_version_id=agent.project_version_id,
         )
+        IastApiRoute.objects.filter(
+            path=path,
+            method_id=api_method.id,
+            project_id=agent.bind_project_id,
+            project_version_id=agent.project_version_id,
+        ).update(is_cover=1)
 
     except (IntegrityError, MultipleObjectsReturned) as e:
         logger.info(e)
