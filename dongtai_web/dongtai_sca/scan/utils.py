@@ -170,7 +170,7 @@ def get_package(aql: str = "",
                 ecosystem: str = "",
                 package_hash: str = "") -> List[Dict]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v1/package/")
-    if aql is not None:
+    if aql:
         querystring = {"aql": aql}
     else:
         querystring = {"ecosystem": ecosystem, "hash": package_hash}
