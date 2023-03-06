@@ -221,6 +221,8 @@ def checkcover(api_route, agents, http_method=None):
 
 
 def checkcover_batch(api_route, agents):
+    return api_route.filter(is_cover=1).values(
+        "path", "method_id").distinct().count()
     uri_hash = [hashlib.sha1(api_route_.path.encode('utf-8'), usedforsecurity=False).hexdigest()
                 for api_route_ in api_route.only('path')]
     cover_count = MethodPool.objects.filter(
