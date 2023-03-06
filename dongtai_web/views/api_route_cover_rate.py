@@ -68,7 +68,7 @@ class ApiRouteCoverRate(UserEndPoint):
         q = Q(project_version_id=current_project_version.get("version_id", 0),
               project_id=project_id)
         queryset = IastApiRoute.objects.filter(q)
-        total = queryset.values("path").distinct().count()
+        total = queryset.values("path", "method_id").distinct().count()
         cover_count = checkcover_batch(queryset, agents)
         try:
             cover_rate = "{:.2%}".format(cover_count / total)
