@@ -142,7 +142,7 @@ class ApiRouteSearch(UserEndPoint):
     def post(self, request):
         try:
             page_size = int(request.data.get('page_size', 1))
-            page_index = int(request.data.get('page_index', 1))
+            page_index = int(request.data.get('page_index', 0))
             uri = request.data.get('uri', None)
             http_method = request.data.get('http_method', None)
             project_id = request.data.get('project_id', None)
@@ -196,11 +196,13 @@ class ApiRouteSearch(UserEndPoint):
             method_id__in=[_['id']
                            for _ in api_methods]) if api_methods != [] else q
         q = q & Q(path__icontains=uri) if uri else q
-        q = q & ~Q(pk__in=exclude_id) if exclude_id else q
+        q = q & ~Q(pk__in=exclude_id) if exclude_id and not page_index else q
         q = q & Q(is_cover=is_cover) if is_cover is not None else q
         api_routes = IastApiRoute.objects.filter(q).order_by(
             'id').select_related('method').prefetch_related(
                 'iastapiresponse_set', 'iastapiparameter_set').all()
+        if page_index:
+            no_used , api_routes = self.get_paginator(api_routes, page_index, page_size)
         distinct_fields = ["path", "method_id"]
         distinct_exist_list = [] if not exclude_id else list(
             set(
@@ -289,7 +291,7 @@ def _get_vuls(uri, agents):
     vuls = IastVulnerabilityModel.objects.filter(
         uri=uri, agent_id__in=[_['id'] for _ in agents],
         is_del=0).values('hook_type_id', 'level_id', 'strategy_id',
-                         'strategy__vul_name').all()
+                         'strategy__vul_name').distinct().all()
     return [_get_hook_type(vul) for vul in vuls]
 
 
