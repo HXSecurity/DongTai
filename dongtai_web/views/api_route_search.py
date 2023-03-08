@@ -202,7 +202,8 @@ class ApiRouteSearch(UserEndPoint):
             'id').select_related('method').prefetch_related(
                 'iastapiresponse_set', 'iastapiparameter_set').all()
         if page_index:
-            no_used , api_routes = self.get_paginator(api_routes, page_index, page_size)
+            no_used, api_routes = self.get_paginator(api_routes, page_index,
+                                                     page_size)
         distinct_fields = ["path", "method_id"]
         distinct_exist_list = [] if not exclude_id else list(
             set(
