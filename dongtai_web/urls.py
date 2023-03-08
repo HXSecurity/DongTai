@@ -154,6 +154,7 @@ from dongtai_web.vul_log.vul_log_view import VulLogViewSet
 from dongtai_web.vul_recheck_payload.vul_recheck_payload import VulReCheckPayloadViewSet
 from dongtai_web.header_vul.base import HeaderVulViewSet
 from dongtai_web.projecttemplate.base import IastProjectTemplateView
+from dongtai_web.xray.webhook import XrayWebhook
 
 urlpatterns = [
     path('user/<int:user_id>', UserDetailEndPoint.as_view()),
@@ -385,6 +386,7 @@ urlpatterns = [
              'get': "list",
              'post': 'create',
          })),
+    path('xray_webhook', XrayWebhook.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
