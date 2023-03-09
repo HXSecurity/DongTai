@@ -1,7 +1,10 @@
 from rest_framework.test import APITestCase
 from io import StringIO
 from unittest.mock import patch
-from dongtai_web.xray.webhook import parse_xray_uuid
+from dongtai_web.xray.webhook import (
+    parse_xray_uuid,
+    parse_agent_id,
+)
 
 class AgentTestCase(APITestCase):
 
@@ -81,4 +84,10 @@ class AgentTestCase(APITestCase):
         data = """HTTP/1.1 302 Found\r\nConnection: keep-alive\r\nContent-Type: text/html; charset=UTF-8\r\nDate: Mon, 06 Mar 2023 08:20:06 GMT\r\nLocation: login.php\r\nServer: nginx/1.19.0\r\nXray: sadadasdadadddassd\r\nX-Powered-By: PHP/5.6.40-38+ubuntu20.04.1+deb.sury.org+1\r\n\r\n"""
         header = parse_xray_uuid(data)
         self.assertEqual(header, "sadadasdadadddassd")
+        pass
+    
+    def test_parse_agent_id(self):
+        data = """HTTP/1.1 302 Found\r\nConnection: keep-alive\r\nContent-Type: text/html; charset=UTF-8\r\nDate: Mon, 06 Mar 2023 08:20:06 GMT\r\nLocation: login.php\r\nServer: nginx/1.19.0\r\nAgentId: 1\r\nX-Powered-By: PHP/5.6.40-38+ubuntu20.04.1+deb.sury.org+1\r\n\r\n"""
+        header = parse_agent_id(data)
+        self.assertEqual(header, "1")
         pass

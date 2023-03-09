@@ -155,6 +155,7 @@ from dongtai_web.vul_recheck_payload.vul_recheck_payload import VulReCheckPayloa
 from dongtai_web.header_vul.base import HeaderVulViewSet
 from dongtai_web.projecttemplate.base import IastProjectTemplateView
 from dongtai_web.xray.webhook import XrayWebhook
+from dongtai_web.xray.vul_relative_data import VulRelativeDAST
 
 urlpatterns = [
     path('user/<int:user_id>', UserDetailEndPoint.as_view()),
@@ -387,6 +388,7 @@ urlpatterns = [
              'post': 'create',
          })),
     path('xray_webhook', XrayWebhook.as_view()),
+    path('vul_relative_dast/<int:vul_id>', VulRelativeDAST.as_view()),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
