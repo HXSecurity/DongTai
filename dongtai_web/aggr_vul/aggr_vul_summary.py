@@ -172,7 +172,7 @@ def get_annotate_sca_base_data(user_id: int, pro_condition: str):
                     "name": type_name
                 })
         # 归属项目 统计
-        count_project_query = " SELECT project_id,name AS project_name ,_count FROM iast_project AS ip RIGHT  JOIN ( SELECT asset.project_id AS project_id, count( DISTINCT(vul.id ))  AS _count " \
+        count_project_query = " SELECT project_id, _count, name AS project_name FROM iast_project AS ip RIGHT  JOIN ( SELECT asset.project_id AS project_id, count( DISTINCT(vul.id ))  AS _count " \
                               "  from iast_asset_vul as vul  " \
                               + base_join + query_condition + " and asset.project_id>0 group by asset.project_id )   temp ON ip.id = temp.project_id "
         cursor.execute(count_project_query)
