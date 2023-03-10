@@ -335,6 +335,13 @@
                 "source": "P1",
                 "target": "O",
                 "track": "false",
+                "value": "java.util.Scanner.<init>(java.lang.Readable,java.util.regex.Pattern)"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "O",
+                "track": "false",
                 "value": "java.util.Scanner.<init>(java.lang.String)"
             },
             {
@@ -392,6 +399,13 @@
                 "target": "R",
                 "track": "false",
                 "value": "java.util.Scanner.nextLine()"
+            },
+            {
+                "inherit": "all",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "sun.misc.CharacterDecoder.decodeBuffer(java.io.InputStream)"
             },
             {
                 "inherit": "false",
