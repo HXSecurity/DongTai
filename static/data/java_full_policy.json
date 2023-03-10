@@ -500,6 +500,18 @@
                 "target": "O",
                 "track": "false",
                 "type": 1,
+                "value": "java.util.Scanner.<init>(java.lang.Readable,java.util.regex.Pattern)"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "false",
+                "language": 1,
+                "source": "P1",
+                "system_type": 1,
+                "target": "O",
+                "track": "false",
+                "type": 1,
                 "value": "java.util.Scanner.<init>(java.lang.String)"
             },
             {
@@ -597,6 +609,18 @@
                 "track": "false",
                 "type": 1,
                 "value": "java.util.Scanner.nextLine()"
+            },
+            {
+                "created_by": 1,
+                "enable": 1,
+                "inherit": "all",
+                "language": 1,
+                "source": "P1",
+                "system_type": 1,
+                "target": "R",
+                "track": "false",
+                "type": 1,
+                "value": "sun.misc.CharacterDecoder.decodeBuffer(java.io.InputStream)"
             },
             {
                 "created_by": 1,
