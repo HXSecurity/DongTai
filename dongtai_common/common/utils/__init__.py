@@ -111,8 +111,8 @@ class DepartmentTokenAuthentication(TokenAuthentication):
         model = Department
         try:
             department = model.objects.get(token=key)
-            principal = User.objects.fliter(pk=department.principal_id).first()
-            user = principal if principal else User.objects.fliter(pk=1).first()
+            principal = User.objects.filter(pk=department.principal_id).first()
+            user = principal if principal else User.objects.filter(pk=1).first()
             user.using_department = department
         except model.DoesNotExist:
             raise exceptions.AuthenticationFailed(_('Invalid token.'))
