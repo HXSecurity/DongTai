@@ -107,6 +107,8 @@ class User(AbstractUser, PermissionsMixin):
     def get_relative_department(self) -> QuerySet:
         from functools import reduce
         from operator import ior
+        if self.id == 1:
+            return Department.objects.all()
         department = self.get_department()
         principal_departments = Department.objects.filter(
             Q(principal_id=self.id) | Q(pk=department.id))
