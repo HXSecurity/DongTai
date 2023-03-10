@@ -45,11 +45,11 @@ def get_annotate_sca_common_data(user_id: int, pro_condition: str):
     return get_annotate_sca_base_data(user_id, pro_condition)
 
 
-# @cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60), use_celery_update=True)
 
 
-def get_annotate_sca_cache_data(user_id: int, pro_condition: str):
-    return get_annotate_sca_base_data(user_id, pro_condition)
+@cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60), use_celery_update=True)
+def get_annotate_sca_cache_data(user_id: int):
+    return get_annotate_sca_base_data(user_id)
 
 
 def get_annotate_sca_base_data(user_id: int, pro_condition: str):
@@ -355,7 +355,7 @@ class GetScaSummary(UserEndPoint):
         else:
             # 全局数据，没有项目信息 数据按用户id缓存
             result_summary = get_annotate_sca_cache_data(
-                request.user.id, pro_condition)
+                request.user.id)
 
         return R.success(data={
             'messages': result_summary
