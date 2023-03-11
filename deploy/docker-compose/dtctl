@@ -1211,6 +1211,12 @@ if [ ! 0 == $# ]; then # If options provided then
       else
         Info "mysql character set check completed OK!!"
       fi
+      if [ $TO_VERSION = 1.9.3 ]; then
+        Info "token edit OK!!"
+        docker exec -i $server_container_id /bin/bash -c "python manage.py updatedepartmenttoken"
+      else
+        Info "token OK!!"
+      fi
       if [[ $(first_gt_second $TO_VERSION 1.8.6) == true ]]; then
          docker exec -i $server_container_id /bin/bash -c "python manage.py load_hook_strategy" 2> /dev/null
          Info "Refresh rule complete OK!!"
