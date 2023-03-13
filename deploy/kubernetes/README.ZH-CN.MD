@@ -15,61 +15,6 @@
 
 ## 部署
 
-### 脚本安装
-
-用法:  
-```
-./install.sh -m NodePort -s mysql -n dongtai-iast
-```
-
-m: 访问模式(mode)，可选：`NodePort` `LoadBalancer`,默认为：NodePort
-
-s: 跳过的资源(skip)，可选： `mysql` `redis`  `mysql,redis`，默认：不跳过
-
-n: 指定namespace，默认为：`dongtai-iast`
-
-#### 自定义配置
-
-如需修改mysql和redis的配置，需要手动修改 `manifest/4.deploy-iast-server.yml`最上部分的`[mysql]`和`redis`部分配置。
-
-> 说明：假设`mysql`和`redis`的配置可用于生产环境，此部署方案即可用于生产环境部署。
-
-
-####  访问
-
-##### NodePort 
-
-##### 获取可用的Node IP
-```shell script
-kubectl get nodes -o wide |  awk {'print $1" " $2 " " $7'} | column -t
-```
-
-#### 获取可用的NodePort
-
-```shell script
-kubectl get svc dongtai-web-pub-svc -n dongtai-iast -o=jsonpath='{.spec.ports[0].nodePort}'
-kubectl get svc dongtai-engine-pub-svc -n dongtai-iast -o=jsonpath='{.spec.ports[0].nodePort}')
-```
-
-##### 访问地址:
-```shell script
-http://${NodeIP}:${PORT}
-```
-
-##### LoadBalancer
-
-##### 获取可用的LoadBalancer IP或者DNS
-```shell script
-kubectl get svc dongtai-web-pub-svc dongtai-engine-pub-svc -n dongtai-iast
-```
-
-####  卸载
-
-```shell script
-kubectl delete namespace ${YourNamespace}
-```
-
-
 ### 使用 helm 安装
 
 安装之前请确保已经安装`helm`.通过下面链接[this guide](https://helm.sh/docs/intro/install/)安装.
@@ -81,10 +26,21 @@ kubectl delete namespace ${YourNamespace}
    helm repo update
    ```
 
+2. 需要准备一个 `storageclass`, 或者一个可公共写的 `pvc` 
+
+   ```
+   --set storage.storageClassName=storageclass
+   or
+   --set storage.persistentVolumeClaim=pvc（默认会启用）
+   
+   或者不使用存储类，会影响部分功能使用，如（agent日志页面收集）
+   --set storage.persistentVolumeClaim=null
+   ```
+   
 2. 安装
 
    ```
-   helm install --create-namespace -n dongtai  dongtai-iast dongtai/dongtai-iast
+   helm install project --create-namespace -n dongtai dongtai/dongtai-iast --set storage.persistentVolumeClaim=null
    ```
    
    这个命令将会在dongtai命名空间部署 `Dongtai` 服务,并且使用 `ClusterIP` 方式暴露服务.
@@ -110,23 +66,53 @@ redis:
 ```
 
 ``` shell script
- helm install --create-namespace -n dongtai --values /tmp/my-values.yaml dongtai-iast dongtai/dongtai-iast
+helm install project --create-namespace -n dongtai dongtai/dongtai-iast \
+--values /tmp/my-values.yaml
 ```
 
 你也可以使用 `--set`来覆盖单个值, 例如: 你可以使用 `--set` 将 `ClusterIP` 切换成 `NodePort` 
 
 ```shell
-helm install --create-namespace -n dongtai-test --set accessType=NodePort --set imageVersion=1.3.1  dongtai-iast dongtai/dongtai-iast
+helm install project --create-namespace -n dongtai dongtai/dongtai-iast \
+--set storage.persistentVolumeClaim=null \
+--set accessType=NodePort --set NodePort=30080 \
+--set tag=1.8.5
 ```
+如果你需要修改 somaxconn (128) 
+
+```
+helm install project --create-namespace -n dongtai dongtai/dongtai-iast \
+--set storage.persistentVolumeClaim=null \
+--set somaxconn=1024
+```
+
 可用值:
 
 **skipMysql**:  false (default)
 **skipRedis**: false (default)
 **accessType**: ClusterIP(default), Options: ClusterIP,NodePort,LoadBalancer
 **imageVersion**: latest (default)
+**logging_level**: INFO (default)
 
 #### 卸载
 ```
-helm uninstall dongtai-iast -n dongtai
+helm uninstall project -n dongtai
+```
+
+
+### 扩缩容
+
+使用 `kubectl scale` 命令可以把 `dongtai` 服务扩容成你期望的数量。
+
+```
+kubectl scale deployments ${deployment-names} --replicas=${count} -n ${your-namespace}
+```
+
+
+
+如果需要yaml文件直接部署，请使用如下命令导出
+
+```
+helm install --dry-run project -n default dongtai/dongtai-iast
 ```
 

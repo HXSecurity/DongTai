@@ -8,7 +8,7 @@
 
 import django
 from rest_framework.test import APITestCase
-from iast.views.documents import DocumentsEndpoint
+from dongtai_web.views.documents import DocumentsEndpoint
 from django.urls import reverse
 from urllib.parse import urlencode
 from rest_framework.serializers import SerializerMetaclass
@@ -35,12 +35,12 @@ def fuzz_test_data(end_point, httpmethod):
             queryfield.append(query['name'])
             if query['type'] == int:
                 data_tuple.append([0, -1, '', '1', '-1', 0, 'alw'])
-    li =  list(product(*data_tuple))
+    li = list(product(*data_tuple))
     return li
 
 
-#@ddt
-#class DocumentsEndpointTests(APITestCase):
+# @ddt
+# class DocumentsEndpointTests(APITestCase):
 #    def setUp(self):
 #        self.url = '/api/v1/documents'
 #        self.view = DocumentsEndpoint
@@ -79,9 +79,9 @@ def fuzz_test_data(end_point, httpmethod):
 #    def test_documents_retrive22(self):
 #        response = self.client.get(self.url, {'language': 'python'})
 #        self.assertEqual(response.status_code, 200)
-#from django.urls import resolve
+# from django.urls import resolve
 #
-#class DocumentsEndpointTests(APITestCase):
+# class DocumentsEndpointTests(APITestCase):
 #    def setUp(self):
 #        self.urls = ['/api/v1/documents', '/api/v1/api_route/search']
 #        url = '/api/v1/documents'

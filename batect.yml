@@ -24,30 +24,30 @@ containers:
       #      DONGTAI_IAST_BASE_URL: ${DONGTAI_IAST_BASE_URL:-https://iast.io/openapi}
       #      DONGTAI_AGNET_TOKEN: ${DONGTAI_AGNET_TOKEN:-79798299b48839c84886d728958a8f708e119868}
     volumes:
-      - .:/opt/dongtai/webapi/
+      - .:/opt/dongtai/
 
   dongtai-web:
     image: dongtai/dongtai-web:latest
     image_pull_policy: Always
+    volumes:
+      - ./deploy/docker-compose/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
 
   dongtai-engine:
     build_directory: .
     dockerfile: ./Dockerfile
-    command: /opt/dongtai/engine/docker/entrypoint.sh worker
+    command:  worker
     volumes:
-      - .:/opt/dongtai/webapi/
+      - .:/opt/dongtai/
 
 
   dongtai-engine-task:
     build_directory: .
     dockerfile: ./Dockerfile
-    command: /opt/dongtai/engine/docker/entrypoint.sh beat
+    command:  beat
     volumes:
-      - ./conf/config.ini:/opt/dongtai/webapi/conf/config.ini
+      - .:/opt/dongtai/
     dependencies:
       - dongtai-engine
 
@@ -77,6 +77,7 @@ tasks:
         - "8000:8000"
     dependencies:
       - dongtai-mysql
+      - dongtai-redis
     group: serve
 
   makemessages:
@@ -97,6 +98,7 @@ tasks:
         - "8000:8000"
     dependencies:
       - dongtai-mysql
+      - dongtai-redis
     customise:
       dongtai-mysql:
         ports:
@@ -109,6 +111,7 @@ tasks:
       container: dongtai-server
       entrypoint: /opt/dongtai/webapi/.batect/agent_deco.sh /opt/dongtai/webapi/.batect/manage_test.sh
     dependencies:
+      - dongtai-redis
       - dongtai-mysql
     group: test
 
@@ -118,6 +121,7 @@ tasks:
       container: dongtai-web
     dependencies:
       - dongtai-mysql
+      - dongtai-redis
       - dongtai-server
     group: integration
   integration-test-all:

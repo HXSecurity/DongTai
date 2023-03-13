@@ -1,0 +1,18 @@
+{{- if .Values.storage.storageClassName -}}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+#   annotations:
+#{{/*     {{- include "dongtai.pv" . | nindent 4 }} */}}
+  name: {{.Values.storage.persistentVolumeClaim}}
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 2G
+  storageClassName: {{.Values.storage.storageClassName}}
+---
+{{- end -}}

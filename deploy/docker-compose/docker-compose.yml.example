@@ -1,0 +1,137 @@
+version: "2"
+services:
+  dongtai-mysql: 
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-mysql:{ChangeThisVersion}
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - "mysql-vol:/var/lib/mysql:rw"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-redis:
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-redis:{ChangeThisVersion}
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-web:
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-web:{ChangeThisVersion}
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - "./nginx.conf:/etc/nginx/nginx.conf"
+    depends_on:
+      - dongtai-server
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-server:
+    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:{ChangeThisVersion}"
+    restart: always
+    sysctls:
+      net.core.somaxconn: 1024
+    volumes:
+      - ./log/:/tmp/logstash/
+      - ./config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-task:
+    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:{ChangeThisVersion}"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "beat"]
+    volumes:
+      - ./config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-beat:
+    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:{ChangeThisVersion}"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-beat"]
+    volumes:
+      - ./config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-high-freq:
+    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:{ChangeThisVersion}"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-high-freq"]
+    environment:
+      - DONGTAI_CONCURRENCY=-P gevent --concurrency=128
+    volumes:
+      - ./config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-sca:
+    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:{ChangeThisVersion}"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-sca"]
+    environment:
+      - DONGTAI_CONCURRENCY=-P gevent --concurrency=10
+    volumes:
+      - ./config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-es:
+    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:{ChangeThisVersion}"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-es"]
+    environment:
+      - DONGTAI_CONCURRENCY=-P gevent --concurrency=64
+    volumes:
+      - ./config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-other:
+    image: "registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-server:{ChangeThisVersion}"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-other"]
+    volumes:
+      - ./config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-logrotate:
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-logrotate:{ChangeThisVersion}
+    restart: always
+    user: root
+    volumes:
+      - "./log/:/tmp/logstash/"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-logstash:
+    image: registry.cn-beijing.aliyuncs.com/huoxian_pub/dongtai-logstash:{ChangeThisVersion}
+    restart: always
+    user: root
+    environment:
+      - DATABASE=dongtai-mysql:3306/dongtai_webapi
+      - USERNAME=root
+      - PASSWORD=dongtai-iast
+    volumes:
+      - "./log/:/tmp/logstash/"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+volumes:
+  mysql-vol:

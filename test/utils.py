@@ -3,7 +3,7 @@
 # @file        : utils
 # @created     : Monday Sep 27, 2021 18:03:20 CST
 #
-# @description : 
+# @description :
 ######################################################################
 
 
@@ -15,6 +15,8 @@ from rest_framework.serializers import CharField, IntegerField
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 fake = Faker()
+
+
 def _datagen_serializer(ser):
     fields = ser.get_fields()
     data = {}
@@ -57,4 +59,3 @@ def _datagen_char(field: CharField) -> str:
 
 def _datagen_choice(field: ChoiceField):
     return choice(list(field.choices.values()))
-

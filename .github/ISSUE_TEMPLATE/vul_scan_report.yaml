@@ -1,0 +1,63 @@
+name: "🔍 False positives/negatives vulnerability report"
+description: "Report a false positives/negatives vulnerability to help us improve DongTai vulnerability detection. "
+title: "[Vulnerability Detect]: "
+labels: [detection]
+body:
+- type: markdown
+  attributes:
+    value: |
+      Thank you for submitting a vulnerability detection report!
+
+      Please fill out the template below to make it easier to debug your problem.
+
+      If you are not sure if it is a bug or not, you can contact us via the available [support channels](https://github.com/HXSecurity/DongTai/issues/new/choose).
+- type: checkboxes
+  attributes:
+    label: Preflight Checklist
+    description: Please ensure you've completed all of the following.
+    options:
+      - label: I agree to follow the [Code of Conduct](https://github.com/HXSecurity/DongTai/blob/main/.github/CODE_OF_CONDUCT.md) that this project adheres to.
+        required: true
+      - label: I have searched the [issue tracker](https://www.github.com/HXSecurity/DongTai/issues) for an issue that matches the one I want to file, without success.
+        required: true
+      - label: I am not looking for support or already pursued the available [support channels](https://github.com/HXSecurity/DongTai/issues/new/choose) without success.
+        required: true
+- type: input
+  attributes:
+    label: Version
+    description: What version of DongTai are you running?
+    placeholder: 1.0.0
+  validations:
+    required: true
+- type: dropdown
+  attributes:
+    label: Installation Type
+    description: How did you install DongTai?
+    options:
+      - Official SaaS Service
+      - Official Kubernetes
+      - Official Docker Compose
+      - Other (specify below)
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Describe the details of the bug and the steps to reproduce it
+    description: Steps to reproduce the behavior if it is not self-explanatory.
+    placeholder: |
+      1. Detect false positives and false negatives:
+      2. Provide reproducible code (if any)
+      3. Screenshot of IAST code call chain:
+      4. Vulnerability Type:
+      5. Details (details explain the reasons and logic for judging false positives and false negatives):
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Additional Information
+    description: Links? References? Anything that will give us more context about the issue that you are encountering!
+- type: textarea
+  attributes:
+    label: Logs
+    description: Dex application logs (if relevant).
+    render: shell

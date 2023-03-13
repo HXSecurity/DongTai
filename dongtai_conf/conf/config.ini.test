@@ -1,0 +1,66 @@
+[mysql]
+host = 127.0.0.1
+port = 3306
+name = dongtai_webapi
+user = root
+password = dongtai-iast
+
+[redis]
+host = 127.0.0.1
+port = 6379
+password = 123456 
+db = 0
+
+[engine]
+url = http://dongtai-engine:8000
+
+[apiserver]
+url = http://dongtai-server:8000
+
+[smtp]
+server = smtp_server
+user = smtp_user
+password = smtp_password
+from_addr = from_addr
+port = 25
+ssl = False
+cc_addr = cc_addr
+
+
+[aliyun_oss]
+access_key = LTAI5t7pu9WUT2DcbknfNiaD
+access_key_secret = ZoEOSi7KfayQ7JalvJVHa37fdZ4XFY
+
+[security]
+csrf_trust_origins = localhost,.huoxian.cn,.secnium.xyz
+secret_key = vbjlvbxfvazjfprywuxgyclmvhtmselddsefxxlcixovmqfpgy
+
+[sca]
+base_url = http://52.80.75.225:8000
+timeout = 5
+token = 
+
+[task]
+retryable = false
+max_retries = 3
+async_send = false
+async_send_delay = 2
+
+[log_service]
+host = localhost
+port = 8082
+
+[other]
+domain = http://localhost.domain/
+demo_session_cookie_domain = .huoxian.cn
+logging_level = INFO
+cache_preheat = True
+
+[elastic_search]
+enable = false 
+host = http://dongtai:dongtaies@dongtaies:9200
+vulnerability_index = alias-dongtai-v1-vulnerability-dev
+asset_aggr_index = alias-dongtai-v1-asset-aggr-dev
+asset_index = alias-dongtai-v1-asset-dev
+method_pool_index = alias-dongtai-v1-method-pool-dev
+asset_vul_index = alias-dongtai-v1-asset-vul-dev

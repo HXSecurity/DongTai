@@ -1,0 +1,968 @@
+[
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1,cmd",
+                "target": "",
+                "track": "true",
+                "value": "os.popen"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,command",
+                "target": "",
+                "track": "true",
+                "value": "os.system"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,args",
+                "target": "",
+                "track": "true",
+                "value": "subprocess.Popen"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "cmd-injection"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "builtins.eval"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "",
+                "track": "true",
+                "value": "builtins.exec"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "code-execution"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Crypto.Cipher._mode_cbc.CbcMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Crypto.Cipher._mode_cfb.CfbMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Crypto.Cipher._mode_ctr.CtrMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Crypto.Cipher._mode_eax.EaxMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Crypto.Cipher._mode_ecb.EcbMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Crypto.Cipher._mode_ofb.OfbMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Crypto.Cipher._mode_openpgp.OpenPgpMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Cryptodome.Cipher._mode_cbc.CbcMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Cryptodome.Cipher._mode_cfb.CfbMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Cryptodome.Cipher._mode_ctr.CtrMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Cryptodome.Cipher._mode_eax.EaxMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Cryptodome.Cipher._mode_ecb.EcbMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Cryptodome.Cipher._mode_ofb.OfbMode.encrypt"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,2,plaintext",
+                "target": "",
+                "track": "true",
+                "value": "Cryptodome.Cipher._mode_openpgp.OpenPgpMode.encrypt"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "crypto-bad-ciphers"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "Crypto.Cipher.Blowfish.new"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "Crypto.Cipher.DES.new"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "Cryptodome.Cipher.Blowfish.new"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "Cryptodome.Cipher.DES.new"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,s",
+                "target": "R",
+                "track": "false",
+                "value": "base64.b64decode"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,s",
+                "target": "R",
+                "track": "false",
+                "value": "base64.b64encode"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,source",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.bytearray.__init__"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.bytearray.cformat"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.bytearray.decode"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,source",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.bytes.__new__"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.bytes.cformat"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.bytes.decode"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,object",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.__new__"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.capitalize"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.casefold"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.center"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.cformat"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.concat"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.encode"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.format"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.fstring"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.fstring"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.join"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.ljust"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.lower"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.lstrip"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.partition"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.removeprefix"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.removesuffix"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.repeat"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.replace"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.rjust"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.rpartition"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.rsplit"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.rstrip"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.split"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.splitlines"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.strip"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.swapcase"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.title"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.translate"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.upper"
+            },
+            {
+                "inherit": "false",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "builtins.str.zfill"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "django.template.base.Template.render"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "django.template.base.render_value_in_context"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "flask.jsonify"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,obj",
+                "target": "R",
+                "track": "false",
+                "value": "json.dumps"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,s",
+                "target": "R",
+                "track": "false",
+                "value": "json.loads"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "os.path.join"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,string",
+                "target": "R",
+                "track": "false",
+                "value": "urllib.parse.unquote"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,data",
+                "target": "R",
+                "track": "false",
+                "value": "yaml.dump"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,documents",
+                "target": "R",
+                "track": "false",
+                "value": "yaml.dump_all"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "general-rules"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "django.http.request.HttpRequest.read"
+            },
+            {
+                "inherit": "false",
+                "source": "P2,path",
+                "target": "R",
+                "track": "false",
+                "value": "django.urls.resolvers.RoutePattern.match"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "django.utils.datastructures.MultiValueDict.__getitem__"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "django.utils.datastructures.MultiValueDict.get"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "werkzeug.datastructures.MultiDict.__getitem__"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "werkzeug.datastructures.TypeConversionDict.get"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "werkzeug.datastructures.getlist"
+            },
+            {
+                "inherit": "all",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "werkzeug.wrappers.base_request.BaseRequest.get_data"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "werkzeug.wrappers.request.Request.get_data"
+            }
+        ],
+        "enable": 1,
+        "type": 2,
+        "value": "general-rules"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1,s",
+                "target": "R",
+                "track": "false",
+                "value": "html.escape"
+            },
+            {
+                "inherit": "false",
+                "source": "P",
+                "target": "R",
+                "track": "false",
+                "value": "jinja2.runtime.escape"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,assertion_value",
+                "target": "R",
+                "track": "false",
+                "value": "ldap.filter.escape_filter_chars"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,text",
+                "target": "R",
+                "track": "false",
+                "value": "ldap3.utils.conv.escape_filter_chars"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,s",
+                "target": "R",
+                "track": "false",
+                "value": "markupsafe.escape"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,s",
+                "target": "R",
+                "track": "false",
+                "value": "markupsafe.escape_silent"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,pattern",
+                "target": "R",
+                "track": "false",
+                "value": "re.escape"
+            }
+        ],
+        "enable": 1,
+        "type": 3,
+        "value": "general-rules"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P4,filterstr",
+                "target": "",
+                "track": "true",
+                "value": "ldap.ldapobject.SimpleLDAPObject.search_ext"
+            },
+            {
+                "inherit": "false",
+                "source": "P3,search_filter",
+                "target": "",
+                "track": "true",
+                "value": "ldap3.core.connection.Connection.search"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "ldap-injection"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P2,filter",
+                "target": "",
+                "track": "true",
+                "value": "pymongo.collection.Collection.find"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "nosql-injection"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1,file",
+                "target": "",
+                "track": "true",
+                "value": "builtins.open"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "path-traversal"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1,pattern",
+                "target": "",
+                "track": "true",
+                "value": "re.findall"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,pattern",
+                "target": "",
+                "track": "true",
+                "value": "re.finditer"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,pattern",
+                "target": "",
+                "track": "true",
+                "value": "re.search"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,pattern",
+                "target": "",
+                "track": "true",
+                "value": "re.split"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,pattern",
+                "target": "",
+                "track": "true",
+                "value": "re.sub"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,pattern",
+                "target": "",
+                "track": "true",
+                "value": "re.subn"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "redos"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P2,content",
+                "target": "",
+                "track": "true",
+                "value": "django.http.response.HttpResponse.__init__"
+            },
+            {
+                "inherit": "false",
+                "source": "P2,rv",
+                "target": "",
+                "track": "true",
+                "value": "flask.app.Flask.make_response"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "reflected-xss"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P2,query",
+                "target": "",
+                "track": "true",
+                "value": "MySQLdb.cursors.BaseCursor.execute"
+            },
+            {
+                "inherit": "false",
+                "source": "P2,query",
+                "target": "",
+                "track": "true",
+                "value": "MySQLdb.cursors.BaseCursor.executemany"
+            },
+            {
+                "inherit": "false",
+                "source": "P2,operation",
+                "target": "",
+                "track": "true",
+                "value": "mysql.connector.cursor.CursorBase.execute"
+            },
+            {
+                "inherit": "false",
+                "source": "P2,operation",
+                "target": "",
+                "track": "true",
+                "value": "mysql.connector.cursor.CursorBase.executemany"
+            },
+            {
+                "inherit": "false",
+                "source": "P2,query",
+                "target": "",
+                "track": "true",
+                "value": "psycopg2._psycopg.cursor.execute"
+            },
+            {
+                "inherit": "false",
+                "source": "P2,query",
+                "target": "",
+                "track": "true",
+                "value": "psycopg2._psycopg.cursor.executemany"
+            },
+            {
+                "inherit": "false",
+                "source": "P2,query",
+                "target": "",
+                "track": "true",
+                "value": "pymysql.cursors.Cursor.execute"
+            },
+            {
+                "inherit": "false",
+                "source": "P2,query",
+                "target": "",
+                "track": "true",
+                "value": "pymysql.cursors.Cursor.executemany"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "sqlite3.Cursor.execute"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "sqlite3.Cursor.executemany"
+            },
+            {
+                "inherit": "false",
+                "source": "P2",
+                "target": "",
+                "track": "true",
+                "value": "sqlite3.Cursor.executescript"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "sql-injection"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P3,url",
+                "target": "",
+                "track": "true",
+                "value": "requests.sessions.Session.request"
+            },
+            {
+                "inherit": "false",
+                "source": "P3,url",
+                "target": "",
+                "track": "true",
+                "value": "urllib.request.urlopen"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "ssrf"
+    },
+    {
+        "details": [
+            {
+                "inherit": "all",
+                "source": "P1,file",
+                "target": "",
+                "track": "true",
+                "value": "pickle.load"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,data",
+                "target": "",
+                "track": "true",
+                "value": "pickle.loads"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,stream",
+                "target": "",
+                "track": "true",
+                "value": "yaml.load"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,stream",
+                "target": "",
+                "track": "true",
+                "value": "yaml.load_all"
+            },
+            {
+                "inherit": "false",
+                "source": "P2,stream",
+                "target": "",
+                "track": "true",
+                "value": "yaml.loader.FullLoader.__init__"
+            },
+            {
+                "inherit": "false",
+                "source": "P2,stream",
+                "target": "",
+                "track": "true",
+                "value": "yaml.loader.Loader.__init__"
+            },
+            {
+                "inherit": "false",
+                "source": "P2,stream",
+                "target": "",
+                "track": "true",
+                "value": "yaml.loader.UnsafeLoader.__init__"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,stream",
+                "target": "",
+                "track": "true",
+                "value": "yaml.unsafe_load"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,stream",
+                "target": "",
+                "track": "true",
+                "value": "yaml.unsafe_load_all"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "unsafe-json-deserialize"
+    },
+    {
+        "details": [
+            {
+                "inherit": "false",
+                "source": "P1,text",
+                "target": "",
+                "track": "true",
+                "value": "lxml.etree.fromstring"
+            },
+            {
+                "inherit": "false",
+                "source": "P1,source",
+                "target": "",
+                "track": "true",
+                "value": "lxml.etree.parse"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "xxe"
+    }
+]
