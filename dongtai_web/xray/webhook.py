@@ -94,14 +94,14 @@ class XrayWebhook(AnonymousAuthEndPoint):
             logger.debug(request.data)
         elif "type" in request.data and request.data["type"] == "web_vuln":
             iast_vul_codes = get_iast_vul_code(
-                request.data['detail']['plugin'])
+                request.data['data']['detail']['plugin'])
             strategy_ids = list(
                 IastStrategyModel.objects.filter(
                     vul_type__in=iast_vul_codes).value_list(
                         'pk',
                         flat=True,
                     ).all())
-            for reqres_pair in request.data['detail']['snapshot']:
+            for reqres_pair in request.data['data']['detail']['snapshot']:
                 req, res = reqres_pair
                 uuid = parse_xray_uuid(res)
                 if uuid:
