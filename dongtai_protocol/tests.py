@@ -106,7 +106,6 @@ class AgentSaasMethodPoolParseApiTestCase(AgentTestCase):
         print(cookie.keys())
 
 
-
 class SimhashTypingCheckTestCase(TestCase):
 
     def test_data_dump(self):
