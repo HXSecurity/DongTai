@@ -16,62 +16,6 @@
 
 ## Deployment
 
-### Setup with shell
-
-Usage:  
-```
-./install.sh -m NodePort -s mysql -n dongtai-iast
-```
-
-m: access mode(mode), optional: `NodePort` `LoadBalancer`, default: NodePort
-
-s: skipped resources(skip), optional: `mysql` `redis`  `mysql,redis`, default: don't skip
-
-n: specify the namespace, default: `dongtai-iast`
-
-#### Custom configuration
-
-If you want to modify the configuration of mysql and Redis, manually modify the configuration `manifest/4.deploy-iast-server.yml` The top part of `[mysql]` and `redis`.
-
-> Note: Assuming that `mysql` and `redis` can be configured for production, this deployment scheme can be used for production deployment.
-
-####  Access
-
-##### NodePort 
-
-##### Obtain an available Node IP address
-
-```shell script
-kubectl get nodes -o wide |  awk {'print $1" " $2 " " $7'} | column -t
-```
-
-##### Obtain an available NodePort
-
-```shell script
-kubectl get svc dongtai-web-pub-svc -n dongtai-iast -o=jsonpath='{.spec.ports[0].nodePort}'
-kubectl get svc dongtai-engine-pub-svc -n dongtai-iast -o=jsonpath='{.spec.ports[0].nodePort}')
-```
-
-##### Access Link:
-
-```shell script
-http://${NodeIP}:${PORT}
-```
-
-##### LoadBalancer
-
-##### Obtain the available LoadBalancer IP address or DNS
-
-```shell script
-kubectl get svc dongtai-web-pub-svc dongtai-engine-pub-svc -n dongtai-iast
-```
-
-#### Uninstall
-
-```shell script
-kubectl delete namespace ${YourNamespace}
-```
-
 ### Setup with helm
 
 Before install, you have to make sure the helm is available. Follow [this guide](https://helm.sh/docs/intro/install/) to install helm.
@@ -83,10 +27,22 @@ Before install, you have to make sure the helm is available. Follow [this guide]
    helm repo update
    ```
 
+2. Need to specify your `storageclass`, or specify a public write `pvc`
+
+   ```
+   --set storage.storageClassName=storageclass
+   or
+   --set storage.persistentVolumeClaim=pvc (will be enabled by default)
+   
+   Or do not use the storage class, will affect the use of some features, such as (agent log page collection)
+   --set storage.persistentVolumeClaim=null
+   ```
+   
 2. Install
 
    ```
-   helm install --create-namespace -n dongtai  dongtai-iast dongtai/dongtai-iast
+   helm install project --create-namespace -n dongtai dongtai/dongtai-iast \
+   --set storage.persistentVolumeClaim=null
    ```
    
    This command will deploy dongtai servers in dongtai namespace and expose service with `ClusterIP`.
@@ -96,6 +52,7 @@ Before install, you have to make sure the helm is available. Follow [this guide]
 If you want to modify the configuration of mysql and Redis,you can overwrite the values by your own file,Suppose you have a file in `/tmp/my-values.yml` with values as follow:
 
 ``` yaml
+skipMysql: true
 mysql:
   host: my-dongtai-mysql
   port: 3306
@@ -103,6 +60,7 @@ mysql:
   user: root
   password: my-dongtai-iast
 
+skipRedis: true
 redis:
   host: my-dongtai-redis
   port: 6379
@@ -111,14 +69,24 @@ redis:
 ```
 
 ``` shell script
- helm install --create-namespace -n dongtai --values /tmp/my-values.yaml dongtai-iast dongtai/dongtai-iast
+helm install project --create-namespace -n dongtai dongtai/dongtai-iast --values /tmp/my-values.yaml
 ```
 
 You can also pass in a single value using **`--set`**, for example, you can switch defalut access type `ClusterIP` to `NodePort` 
 
 ```shell
-helm install --create-namespace -n dongtai-test --set accessType=NodePort --set imageVersion=1.3.1  dongtai-iast dongtai/dongtai-iast
+helm install project --create-namespace -n dongtai dongtai/dongtai-iast \
+--set storage.persistentVolumeClaim=null \
+--set accessType=NodePort --set NodePort=30080 \
+--set tag=1.9.0
+```
 
+If you need to modify somaxconn (128) 
+
+```
+ helm install project --create-namespace -n dongtai dongtai/dongtai-iast \
+ --set storage.persistentVolumeClaim=null \
+ --set somaxconn=1024
 ```
 
 Avaliable values:
@@ -127,10 +95,29 @@ Avaliable values:
 **skipRedis**: false (default)
 **accessType**: ClusterIP(default), Options: ClusterIP,NodePort,LoadBalancer
 **imageVersion**: latest (default)
+**logging_level**: INFO (default)
 
 #### Uninstall
 ```
-helm uninstall dongtai-iast -n dongtai
+helm uninstall project -n dongtai
 ```
 
 <img src="https://static.scarf.sh/a.png?x-pxid=a7858f70-7435-420a-bc4e-0b71a7727c99" />
+
+
+### Scale
+
+With `kubectl scale` command, you can scale `dongtai` deployment to your desire count.
+
+```
+kubectl scale deployments ${deployment-names} --replicas=${count} -n ${your-namespace}
+```
+
+
+
+If you need the yaml file to be deployed directly, please use the following command to export
+
+```
+helm install --dry-run project -n default dongtai/dongtai-iast
+```
+

@@ -11,12 +11,12 @@ class AgentDownloadTestCase(DongTaiTestCase):
         pass
 
     def test_python_agent_replace_config(self):
-        from apiserver.views.agent_download import PythonAgentDownload
+        from dongtai_protocol.views.agent_download import PythonAgentDownload
         download_handler = PythonAgentDownload()
         download_handler.replace_config()
 
     def test_java_agent_download(self):
-        from apiserver.views.agent_download import JavaAgentDownload
+        from dongtai_protocol.views.agent_download import JavaAgentDownload
         download_handler = JavaAgentDownload()
         download_handler.download_agent()
 

@@ -27,10 +27,10 @@ class MyTestCase(DongTaiTestCase):
             ],
         }
         # 读取数据库中的redis键，然后查找队列大小
-        from dongtai.models.engine_monitoring_indicators import IastEnginMonitoringIndicators
+        from dongtai_common.models.engine_monitoring_indicators import IastEnginMonitoringIndicators
         monitor_models = IastEnginMonitoringIndicators.objects.all()
         if monitor_models.values('id').count() > 0:
-            from lingzhi_engine import settings
+            from dongtai_conf import settings
             redis_cli = redis.StrictRedis(
                 host=settings.config.get("redis", 'host'),
                 password=settings.config.get("redis", 'password'),

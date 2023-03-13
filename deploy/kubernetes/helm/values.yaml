@@ -1,16 +1,30 @@
 # Default values for dongtai.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
-replicaCount: 1
-
 # dongtai config
 # appNamespace: dongtai-iast
-skipMysql: false 
-skipRedis: false
-accessType: ClusterIP 
-imageVersion: latest
+skipistio: true
 
+images: registry.cn-beijing.aliyuncs.com/huoxian_pub    # or   dongtai
+tag: latest
+imagePullPolicy: Always
+replicaCount: 1
+cpu: 1000m
+memory: 1500Mi
+accessType: ClusterIP  # NodePort, LoadBalancer, ClusterIP
+NodePort: 30080
+logging_level: INFO # DEBUG, INFO
+somaxconn: null #If system max net.core.somaxconn (128) . Example: somaxconn: 1024
+
+nodeSelector:
+  kubernetes.io/os: linux
+  kubernetes.io/arch: amd64
+podLabels: {}
+  # example: "test"
+env: {}
+  # example: iast-foo
+  
+skipMysql: false
 mysql:
   host: dongtai-mysql
   port: 3306
@@ -18,18 +32,24 @@ mysql:
   user: root
   password: dongtai-iast
 
+skipRedis: false
 redis:
   host: dongtai-redis
   port: 6379
   password: 123456
   db: 0
 
-enginUrl: http://dongtai-engine-svc:80
+sca:
+  sca_token: 
 
-apiServer: http://dongtai-openapi-svc:80
+storage:
+  storageClassName: null
+  # or You can choose to specify the storage class above, or create a custom multi-node read-write pvc below ！！！
+  persistentVolumeClaim: iast-agent-pvc  # or null(The agent needs to close the reporting log function 'dongtai.log.disable-collector: false')
 
 csrfTrustOrigins: .example.com
 secretKey: vbjlvbxfvazjfprywuxgyclmvhtmselddsefxxlcixovmqfpgy
+
 smtp:
   server: smtp_server
   user: smtp_user
@@ -37,7 +57,3 @@ smtp:
   from_addr: from_addr
   ssl: False
   cc_addr: cc_addr
-
-
-sca:
-  base_url: https://iast.huoxian.cn/openapi/sca/v1

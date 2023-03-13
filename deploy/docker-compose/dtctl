@@ -13,9 +13,20 @@ DESTORY_DATA=false
 PROJECT_NAME=dongtai
 REGISRTY=1
 
-DONGTAI_API="iast.huoxian.cn"
+MYSQL_IP='dongtai-mysql:3306'
+MYSQL_USERNAME='root'
+MYSQL_PASSWORD='dongtai-iast'
+MYSQL_DATABASES='dongtai_webapi'
+
+DONGTAI_API="https://www.huoxian.cn"
 # DONGTAI_API="google.com"
 DONGTAI_API_ACCESSABLE=true
+
+
+DONGTAI_WEB_VER=""
+DONGTAI_SERVER_VER=""
+DONGTAI_REDIS_VER=""
+DONGTAI_MYSQL_VER=""
 
 Info() {
   echo -e "[Info] $1" >&2
@@ -54,8 +65,9 @@ usage() {
   Usage "\t$_filename dbrestore -f FILEPATH                       Restore mysql database"
   Usage "\t$_filename dbbackup  -d FILEPATH                       Backup mysql database"
   Usage "\t$_filename file                                        Export docker-compose.yml "
-  Usage "\t$_filename logs webapi|openapi|web|mysql|web|engine    Extract tail logs"
+  Usage "\t$_filename logs server|web|mysql|engine    Extract tail logs"
   Usage "\t$_filename start [PROJECT]                             Start all container,default project: dongtai"
+  Usage "\t$_filename index                                       Initialize elasticsearch index"
 
 }
 
@@ -101,6 +113,7 @@ shell_dir=$(dirname "$shell_path")
 function first_gt_second() {
   first=${1//./}
   second=${2//./}
+
   aa=$(( first - second ))
   if [ $aa -gt 0 ]; then
     echo true
@@ -129,17 +142,26 @@ function exit_not_running() {
 
 # get docker-compose project_name
 get_project_name() {
-  retval=$(docker inspect --format='{{ index .Config.Labels "com.docker.compose.project" }}' $(docker ps | grep "dongtai-web:" | awk '{print $1}'))
-  echo "$retval"
+  if [ ! $PROJECT_NAME ];then
+    retval=$(docker inspect --format='{{ index .Config.Labels "com.docker.compose.project" }}' $(docker ps | grep "dongtai-web:" | awk '{print $1}'))
+    echo "$retval"
+  else
+    echo  "$PROJECT_NAME"
+  fi
 }
+
 function current_image_version() {
   PROJECT_NAME=$(get_project_name)
-  ver=$(docker ps  --filter "label=com.docker.compose.project=$PROJECT_NAME" | grep "dongtai-web:" | awk '{split($2,a,":");print a[2]}')
+  if [ -z $1 ]; then
+    ver=$(docker ps  --filter "label=com.docker.compose.project=$PROJECT_NAME" | grep "dongtai-web:" | awk '{split($2,a,":");print a[2]}' | tail -n 1 )
+  else
+    ver=$(docker ps  --filter "label=com.docker.compose.project=$PROJECT_NAME" | grep "$1:" | awk '{split($2,a,":");print a[2]}'| tail -n 1 )
+  fi
   echo "$ver"
 }
 
 function get_latest_release_version() {
-  ver=$(cat updaterecord.txt | awk 'NR==2 {print $1}')
+  ver=`curl -s -S "https://registry.hub.docker.com/v2/repositories/dongtai/dongtai-web/tags" | sed -e 's/,/,\n/g' -e 's/\[/\[\n/g' | grep '"name"' | awk -F\" '{print $4;}' | sort -rfu | grep -v beta |sed -n '2p'`
   echo "$ver"
 }
 
@@ -159,6 +181,15 @@ function get_mysql_container_id() {
   PROJECT_NAME=$(get_project_name)
   mysql_container_id=$(docker ps -a  --filter "label=com.docker.compose.project=$PROJECT_NAME" | grep "mysql" | awk '{print $1}')
   echo "$mysql_container_id"
+
+}
+
+# get server container id
+function get_server_container_id() {
+  server_container_id=""
+  PROJECT_NAME=$(get_project_name)
+  server_container_id=$(docker ps -a  --filter "label=com.docker.compose.project=dongtai" | grep "server" | awk '{print $NF}' | grep dongtai-server)
+  echo "$server_container_id"
 
 }
 
@@ -188,6 +219,27 @@ function network() {
   fi
   echo false
   return
+}
+
+ if [ ! $(network) == true ]; then
+    Error "Internet unavailable."
+    exit 1
+  fi
+# start to fetch the latest dtctl
+# git pull
+
+# get the latest docker image tag from
+
+get_latest_image_tag_from_dockerhub() {
+  image="$1"
+  Info "start to get latest tag of $image"
+  tags=`curl -s -S "https://registry.hub.docker.com/v2/repositories/${image}/tags" | sed -e 's/,/,\n/g' -e 's/\[/\[\n/g' | grep '"name"' | awk -F\" '{print $4;}' | sort -rfu | grep -v beta | sed -n '2p'`
+
+  if [ -n "$2" ]
+  then
+      tags=` echo "${tags}" | grep "$2" `
+  fi
+  echo "${tags}" | grep -E '^([0-9]+\.){0,2}(\*|[0-9]+)$' | tail -n 1
 }
 
 declare -a EXCLUDED_TABLES=(
@@ -242,6 +294,7 @@ function backup_mysql() {
   Notice "Start to backup exist data,this will take a few minutes, don’t interrupt."
   docker exec -i $(get_mysql_container_id) /bin/bash -c "mysqldump -uroot -pdongtai-iast --single-transaction -R -E --default-character-set=utf8mb4 --databases 'dongtai_webapi' " >$backup_filename || exit 1
   Info "Finished backup exist data..."
+  Info "$backup_filename"
 }
 
 function restore_mysql() {
@@ -312,10 +365,25 @@ function create_docker_compose_file() {
     registry=$(get_image_registry 2)
   fi
 
+  if [ "$3" == "load_file" -o "$3" == "rm" ]; then
+    DONGTAI_WEB_VER=$(current_image_version dongtai-web)
+    DONGTAI_SERVER_VER=$(current_image_version dongtai-server)
+    DONGTAI_REDIS_VER=$(current_image_version dongtai-redis)
+    DONGTAI_MYSQL_VER=$(current_image_version dongtai-mysql)
+  fi
+
+
+
   MYSQL_IMAGE_NAME="dongtai-mysql"
   if [ $DONGTAI_API_ACCESSABLE == false ]; then
     if [[ $(first_gt_second $CHANGE_THIS_VERSION 1.2.0) == true ]]; then
       MYSQL_IMAGE_NAME="dongtai-mysql-sca"
+    fi
+  fi
+
+  if [ $DONGTAI_API_ACCESSABLE == false ]; then
+    if [[ $(first_gt_second $CHANGE_THIS_VERSION 1.8.2) == true ]]; then
+      MYSQL_IMAGE_NAME="dongtai-mysql"
     fi
   fi
 
@@ -324,7 +392,7 @@ function create_docker_compose_file() {
     export MYSQL_STR=$(
       cat <<EOF
 dongtai-mysql: 
-    image: $registry/$MYSQL_IMAGE_NAME:$CHANGE_THIS_VERSION
+    image: $registry/$MYSQL_IMAGE_NAME:$DONGTAI_MYSQL_VER
     restart: always
     volumes:
       - "$_DATA_DIR:/var/lib/mysql:rw"
@@ -335,13 +403,18 @@ dongtai-mysql:
         max-size: "10m"
 EOF
     )
+  elif [[ $(first_gt_second $CHANGE_THIS_VERSION 1.7.9) == true ]]; then
+    read -p "请输入您的数据库IP和端口: 如 127.0.0.1:3306:" MYSQL_IP
+    read -p "请输入您的数据库用户: 如 root:" MYSQL_USERNAME
+    read -p "请输入您的数据库密码: 如 123456:" MYSQL_PASSWORD
+    read -p "请输入您创建好的数据库名: 如 dongtai:" MYSQL_DATABASES
   fi
 
   if [ $SKIP_REDIS == false ]; then
     export REDIS_STR=$(
       cat <<EOF
 dongtai-redis:
-    image: $registry/dongtai-redis:$CHANGE_THIS_VERSION
+    image: $registry/dongtai-redis:$DONGTAI_REDIS_VER
     restart: always
     logging:
       driver: "json-file"
@@ -352,14 +425,238 @@ EOF
     )
   fi
 
-  if [[ $(first_gt_second $CHANGE_THIS_VERSION 1.3.1) == true ]]; then
+  if [[ $(first_gt_second $CHANGE_THIS_VERSION 1.8.1) == true ]]; then
      read -r -d '' DOCKER_COMPOSE_FILE <<EOM
 version: "2"
 services:
   $MYSQL_STR
   $REDIS_STR
   dongtai-web:
-    image: $registry/dongtai-web:$CHANGE_THIS_VERSION
+    image: $registry/dongtai-web:$DONGTAI_WEB_VER
+    restart: always
+    ports:
+      - "$WEB_SERVICE_PORT:80"
+    volumes:
+      - "$PWD/nginx.conf-1.8.0:/etc/nginx/nginx.conf"
+    depends_on:
+      - dongtai-server
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-server:
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+    restart: always
+    sysctls:
+      net.core.somaxconn: 1024
+    volumes:
+      - iast-vol:/tmp/logstash/
+      - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-task:
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "beat"]
+    volumes:
+      - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-beat:
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-beat"]
+    volumes:
+      - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-other:
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-other"]
+    volumes:
+      - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-high-freq:
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-high-freq"]
+    environment:
+      - DONGTAI_CONCURRENCY=-P gevent --concurrency=128
+    volumes:
+      - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-sca:
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-sca"]
+    environment:
+      - DONGTAI_CONCURRENCY=-P gevent --concurrency=10
+    volumes:
+      - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-es:
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-es"]
+    environment:
+      - DONGTAI_CONCURRENCY=-P gevent --concurrency=64
+    volumes:
+      - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-logrotate:
+    image: "$registry/dongtai-logrotate:$DONGTAI_SERVER_VER"
+    restart: always
+    user: root
+    volumes:
+      - iast-vol:/tmp/logstash/
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-logstash:
+    image: "$registry/dongtai-logstash:$DONGTAI_SERVER_VER"
+    restart: always
+    user: root
+    environment:
+      - DATABASE=${MYSQL_IP}/${MYSQL_DATABASES}
+      - USERNAME=${MYSQL_USERNAME}
+      - PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - iast-vol:/tmp/logstash/
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+volumes:
+  mysql-vol:
+  iast-vol:
+EOM
+  elif [[ $(first_gt_second $CHANGE_THIS_VERSION 1.7.9) == true ]]; then
+     read -r -d '' DOCKER_COMPOSE_FILE <<EOM
+version: "2"
+services:
+  $MYSQL_STR
+  $REDIS_STR
+  dongtai-web:
+    image: $registry/dongtai-web:$DONGTAI_WEB_VER
+    restart: always
+    ports:
+      - "$WEB_SERVICE_PORT:80"
+    volumes:
+      - "$PWD/nginx.conf-1.8.0:/etc/nginx/nginx.conf"
+    depends_on:
+      - dongtai-server
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-server:
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+    restart: always
+    sysctls:
+      net.core.somaxconn: 1024
+    volumes:
+      - iast-vol:/tmp/logstash/
+      - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-task:
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "beat"]
+    volumes:
+      - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-beat:
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-beat"]
+    volumes:
+      - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-other:
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-other"]
+    volumes:
+      - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-worker-high-freq:
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
+    restart: always
+    entrypoint: ["/opt/dongtai/deploy/docker/entrypoint.sh", "worker-high-freq"]
+    volumes:
+      - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-logrotate:
+    image: "$registry/dongtai-logrotate:$DONGTAI_SERVER_VER"
+    restart: always
+    user: root
+    volumes:
+      - iast-vol:/tmp/logstash/
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+  dongtai-logstash:
+    image: "$registry/dongtai-logstash:$DONGTAI_SERVER_VER"
+    restart: always
+    user: root
+    environment:
+      - DATABASE=${MYSQL_IP}/${MYSQL_DATABASES}
+      - USERNAME=${MYSQL_USERNAME}
+      - PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - iast-vol:/tmp/logstash/
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+volumes:
+  mysql-vol:
+  iast-vol:
+EOM
+  elif [[ $(first_gt_second $CHANGE_THIS_VERSION 1.3.1) == true ]]; then
+     read -r -d '' DOCKER_COMPOSE_FILE <<EOM
+version: "2"
+services:
+  $MYSQL_STR
+  $REDIS_STR
+  dongtai-web:
+    image: $registry/dongtai-web:$DONGTAI_WEB_VER
     restart: always
     ports:
       - "$WEB_SERVICE_PORT:80"
@@ -371,9 +668,8 @@ services:
       driver: "json-file"
       options:
         max-size: "10m"
-
   dongtai-engine:
-    image: "$registry/dongtai-server:$CHANGE_THIS_VERSION"
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     entrypoint: ["/opt/dongtai/webapi/docker/entrypoint.sh", "worker"]
     volumes:
@@ -383,7 +679,7 @@ services:
       options:
         max-size: "10m"
   dongtai-server:
-    image: "$registry/dongtai-server:$CHANGE_THIS_VERSION"
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     volumes:
       - $PWD/config-tutorial.ini:/opt/dongtai/webapi/conf/config.ini
@@ -392,7 +688,7 @@ services:
       options:
         max-size: "10m"
   dongtai-engine-task:
-    image: "$registry/dongtai-server:$CHANGE_THIS_VERSION"
+    image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     entrypoint: ["/opt/dongtai/webapi/docker/entrypoint.sh", "beat"]
     volumes:
@@ -405,6 +701,7 @@ volumes:
   mysql-vol:
 
 EOM
+
   else
   read -r -d '' DOCKER_COMPOSE_FILE <<EOM
 version: "2"
@@ -476,8 +773,6 @@ EOM
 
   fi
 
-  
-
   echo "$DOCKER_COMPOSE_FILE"
 
 }
@@ -501,7 +796,7 @@ if [ ! 0 == $# ]; then # If options provided then
   shift # Get subcommand and shift to next option
   case "$subcommand" in
   "debug")
-    result=$(first_gt_second 1.1.0 1.2.0)
+    result=$(get_latest_image_tag_from_dockerhub dongtai/dongtai-server)
     echo ""
     echo "result:$result"
     ;;
@@ -625,10 +920,10 @@ if [ ! 0 == $# ]; then # If options provided then
 
   "file")
     exit_not_running
-    compose_file=$(create_docker_compose_file $(current_image_version) $(get_web_service_port) $(get_database_data_dir))
+    compose_file=$(create_docker_compose_file $(current_image_version) $(get_web_service_port) load_file $(get_database_data_dir) ) 
     file_path="$shell_dir/docker-compose.yml"
-    echo "$compose_file" >$file_path | exit 1
     Info "File location:$file_path"
+    echo "$compose_file" >$file_path | exit 1
     ;;
 
   "logs")
@@ -655,9 +950,24 @@ if [ ! 0 == $# ]; then # If options provided then
     }
 
     check_docker_compose() {
+      Info "check docker-compose servie status."
+      DOCKER_COMPOSE_V2=`docker-compose --version | grep  -E 'version.*v2' | awk '{print $4}'` || true
+      DOCKER_COMPOSE_V3="Please download docker-compose version 2.1.0 or above: https://github.com/docker/compose"
       if ! [ -x "$(command -v docker-compose)" ]; then
         Error 'docker-compose not installed.'
         exit 1
+      else
+        if [ ! -n "$DOCKER_COMPOSE_V2" ]; then
+          Error "$DOCKER_COMPOSE_V3"
+          exit 1
+        else 
+          if [[ $(first_gt_second ${DOCKER_COMPOSE_V2:1} 2.1.0) == true ]]; then
+              Info "docker-compose service is $DOCKER_COMPOSE_V2."
+          else
+              Error "$DOCKER_COMPOSE_V3"
+              exit 1
+          fi
+        fi
       fi
     }
 
@@ -677,7 +987,7 @@ if [ ! 0 == $# ]; then # If options provided then
         exit 1
       fi
 
-      docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") up -d
+      docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") up -d --remove-orphans
     }
 
     # Specify the port of Web, OpenAPI service and check whether it is available
@@ -753,8 +1063,21 @@ if [ ! 0 == $# ]; then # If options provided then
     fi
 
     if [ -z "$CHANGE_THIS_VERSION" ] || [ "$CHANGE_THIS_VERSION" == "" ]; then
-      CHANGE_THIS_VERSION=$(get_latest_release_version)
+      # CHANGE_THIS_VERSION=$(get_latest_release_version)
+        Info $CHANGE_THIS_VERSION
+        DONGTAI_WEB_VER=$(get_latest_image_tag_from_dockerhub dongtai/dongtai-web)
+        DONGTAI_SERVER_VER=$(get_latest_image_tag_from_dockerhub dongtai/dongtai-server)
+        DONGTAI_REDIS_VER=$(get_latest_image_tag_from_dockerhub dongtai/dongtai-redis)
+        DONGTAI_MYSQL_VER=$(get_latest_image_tag_from_dockerhub dongtai/dongtai-mysql)
+        CHANGE_THIS_VERSION=$DONGTAI_MYSQL_VER
+    else
+      DONGTAI_WEB_VER=$CHANGE_THIS_VERSION
+      DONGTAI_SERVER_VER=$CHANGE_THIS_VERSION
+      DONGTAI_REDIS_VER=$CHANGE_THIS_VERSION
+      DONGTAI_MYSQL_VER=$CHANGE_THIS_VERSION
     fi
+
+
 
     check_network
     check_docker
@@ -799,6 +1122,7 @@ if [ ! 0 == $# ]; then # If options provided then
       data_dir=$(get_database_data_dir)
       Notice "Data volume will be deleted."
       docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") down -v
+      #docker volume rm dongtai_iast-vol
       if [ "$MOUNT_TYPE" == "bind" ]; then
         Notice "Data will be deleted in $data_dir"
         rm -rf $data_dir
@@ -842,21 +1166,24 @@ if [ ! 0 == $# ]; then # If options provided then
     }
 
     function execute_update() {
-      # extract sql name and reverse list
-
-      SQL_NAMES=$(cat updaterecord.txt | awk "/${TO_VERSION//./\\.}/,/${FROM_VERSION//./\\.}/ {print \$2}" | grep -vF "$FROM_VERSION" | awk "{array[NR]=\$0} END { for(i=NR;i>0;i--) {print array[i];} }")
-
       mysql_container_id=$(get_mysql_container_id)
+      server_container_id=$(get_server_container_id)
       # check whether mysql is ready
       while :; do
         Info "start to check mysql status ..."
-        tables=$(docker exec -i $mysql_container_id /bin/bash -c "mysql -uroot -p'dongtai-iast'  --execute \"SHOW DATABASES;\"" || true)
+        tables=$(docker exec -i $mysql_container_id /bin/bash -c "mysql -uroot -p'dongtai-iast'  --execute \"SHOW DATABASES;\"" 2> /dev/null || true)
         if [[ ${tables["mysql"]} ]]; then
           Notice "mysql instance ready!"
           break
         fi
-        sleep 2
+        sleep 3
       done
+      # extract sql name and reverse list
+      if [[ $(first_gt_second $TO_VERSION 1.9.0) == true ]]; then
+        SQL_NAMES=$(docker exec -i $mysql_container_id /bin/bash -c "cat /schema/updaterecord.txt" | awk "/${TO_VERSION//./\\.}/,/${FROM_VERSION//./\\.}/ {print \$2}" | grep -vF "$FROM_VERSION" | awk "{array[NR]=\$0} END { for(i=NR;i>0;i--) {print array[i];} }")
+      else
+        SQL_NAMES=$(cat updaterecord.txt | awk "/${TO_VERSION//./\\.}/,/${FROM_VERSION//./\\.}/ {print \$2}" | grep -vF "$FROM_VERSION" | awk "{array[NR]=\$0} END { for(i=NR;i>0;i--) {print array[i];} }")
+      fi
 
       # change sql store directory from /docker-entrypoint-initdb.d to /sql
       # from 1.3.0
@@ -872,8 +1199,28 @@ if [ ! 0 == $# ]; then # If options provided then
       for SQL in $SQL_NAMES; do
         Info "Start to load sql:[$SQL]"
         docker exec -i $mysql_container_id /bin/bash -c "mysql -uroot -p'dongtai-iast' dongtai_webapi < $sql_dir/$SQL"
+        # if [ $SQL = "update-20221126-release-1.9.1.sql" ]; then
+        #   docker exec -i $mysql_container_id /bin/bash -c "mysql -uroot -p'dongtai-iast' dongtai_webapi < /schema/mysql8.sql"
+        #   Info "Sql character mysql8.0 ok!"
+        # fi
       done
-
+      if [ $TO_VERSION = 1.8.0 ]; then
+        docker exec -i $mysql_container_id /bin/bash -c "mysql -uroot -p'dongtai-iast' dongtai_webapi < $sql_dir/utf8mb4_general_ci.sql"
+        Info "Sql character ok!"
+        docker exec -i $server_container_id /bin/bash -c "python manage.py update"
+      else
+        Info "mysql character set check completed OK!!"
+      fi
+      if [ $TO_VERSION = 1.9.3 ]; then
+        Info "token edit OK!!"
+        docker exec -i $server_container_id /bin/bash -c "python manage.py updatedepartmenttoken"
+      else
+        Info "token OK!!"
+      fi
+      if [[ $(first_gt_second $TO_VERSION 1.8.6) == true ]]; then
+         docker exec -i $server_container_id /bin/bash -c "python manage.py load_hook_strategy" 2> /dev/null
+         Info "Refresh rule complete OK!!"
+      fi
     }
 
     function check_after_execute() {
@@ -905,7 +1252,7 @@ if [ ! 0 == $# ]; then # If options provided then
       docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") pull
 
       Info "Start new containers with tag $TO_VERSION "
-      docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") up -d
+      docker-compose -p $PROJECT_NAME -f <(echo "$docker_compose_file") up -d --remove-orphans
 
     }
 
@@ -942,11 +1289,22 @@ if [ ! 0 == $# ]; then # If options provided then
     fi
 
     FROM_VERSION=$(current_image_version)
+    UPGRADE_TO_VERSION=$TO_VERSION
     if [ -z "$TO_VERSION" ]; then
       TO_VERSION=$(get_latest_release_version)
+      UPGRADE_TO_VERSION="latest"
+      DONGTAI_WEB_VER=$(get_latest_image_tag_from_dockerhub dongtai/dongtai-web)
+      DONGTAI_SERVER_VER=$(get_latest_image_tag_from_dockerhub dongtai/dongtai-server)
+      DONGTAI_REDIS_VER=$(get_latest_image_tag_from_dockerhub dongtai/dongtai-redis)
+      DONGTAI_MYSQL_VER=$(get_latest_image_tag_from_dockerhub dongtai/dongtai-mysql)
+    else
+      DONGTAI_WEB_VER=$TO_VERSION
+      DONGTAI_SERVER_VER=$TO_VERSION
+      DONGTAI_REDIS_VER=$TO_VERSION
+      DONGTAI_MYSQL_VER=$TO_VERSION
     fi
 
-    Info "Upgrade: $FROM_VERSION -> $TO_VERSION"
+    Info "Upgrade: $FROM_VERSION -> $UPGRADE_TO_VERSION"
 
     f_gt_t=$(first_gt_second $FROM_VERSION $TO_VERSION)
 
@@ -956,15 +1314,1350 @@ if [ ! 0 == $# ]; then # If options provided then
     fi
 
     check_network
-    backup_mysql
+
+    read -r -p "Do you need to backup the database ? [Y/n] " input
+    case $input in
+        [yY][eE][sS]|[yY])
+            Info "start backup"
+            backup_mysql
+            ;;
+        [nN][oO]|[nN])
+            Info "Cancel backup"
+            ;;
+        *)
+            Info "Cancel backup"
+            ;;
+    esac
+
     check_update_record_file
-    check_schema_hash
+    #check_schema_hash
     upgrade_docker_image
     execute_update
-    check_after_execute
+    #check_after_execute
     summary
 
     ;;
+  "index")
+    ES_HOST=""
+    ES_ALIAS="dongtai-iast"
+    if [ ! 0 == $# ]; then # if options provided
+      while getopts ":t" optname; do
+        case "$optname" in
+        "t")
+          read -p "请输入您要创建的 elasticsearch 索引前缀名: 如 dongtai-iast :" ES_ALIA
+          if [ -z "$ES_ALIA" ]; then
+            Info "将使用默认前缀名: $ES_ALIAS"
+          else
+            ES_ALIAS=$(echo $ES_ALIA | tr "[A-Z]" "[a-z]" | sed 's/[^ -z]/x/g')
+            Info "索引前缀名已经转换为小写 请记录 $ES_ALIAS"
+          fi
+          ;;
+        ":") ;;
+        "?")
+          Error "Unknown option $OPTARG"
+          exit 1
+          ;;
+        esac
+      done
+    fi
+    function dongtai_es() {
+      read -p "请输入您的 elasticsearch 地址: 如 http://127.0.0.1:9200   :" ES_IP
+      read -p "请输入您的 elasticsearch 用户: 如 elastic (无密码直接回车):" ES_USERNAME
+      read -p "请输入您的 elasticsearch 密码: 如 123456  (无密码直接回车):" ES_PASSWORD
+      if [ -z "$ES_USERNAME" ]; then
+        ES_HOST=$ES_IP
+      else
+        ES_APP=$(echo $ES_IP | sed "s#//# #g")
+        ARR=($ES_APP)
+        ES_HOST=${ARR[0]}//${ES_USERNAME}:${ES_PASSWORD}@${ARR[1]}
+      fi
+      Info $ES_HOST
+      ES_CODE=`curl -I -m 10 -o /dev/null -s -w %{http_code} ${ES_HOST}`
+      if [ $ES_CODE -eq 200 ]; then
+        Info $ES_CODE
+      else
+         Info "Please check that your elasticsearch configuration is correct !!!"
+        exit 1
+      fi
+    }
+
+    function dongtai_index() {
+      Notice "-----index create-----"
+      Info "index created   $ES_HOST  !!!"
+      #ilm
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/_ilm/policy/${ES_ALIAS}-dongtai-ilm-policy -d '
+      {
+        "policy": {
+          "phases": {
+            "hot": {
+              "min_age": "0ms",
+              "actions": {
+                "rollover": {
+                  "max_age": "90d",
+                  "max_size": "60gb"
+                },
+                "set_priority": {
+                  "priority": 999
+                }
+              }
+            }
+          }
+        }
+      }'
+      #template-dongtai-v1-method-pool
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/_template/${ES_ALIAS}-dongtai-v1-method-pool-template?include_type_name -d '
+      {
+        "order": 1,
+        "index_patterns": [
+          "'${ES_ALIAS}'-dongtai-v1-method-pool-index-*"
+        ],
+        "settings": {
+          "index": {
+            "lifecycle": {
+              "name": "'${ES_ALIAS}'-dongtai-ilm-policy",
+              "rollover_alias": "'${ES_ALIAS}'-alias-dongtai-v1-method-pool"
+            },
+            "highlight": {
+              "max_analyzed_offset": "10000000"
+            },
+            "refresh_interval": "30s",
+            "analysis": {
+              "analyzer": {
+                "ngram_analyzer": {
+                  "tokenizer": "ngram_tokenizer"
+                }
+              },
+              "tokenizer": {
+                "ngram_tokenizer": {
+                  "token_chars": [
+                    "letter",
+                    "digit",
+                    "symbol",
+                    "punctuation"
+                  ],
+                  "min_gram": "1",
+                  "type": "ngram",
+                  "max_gram": "2"
+                }
+              }
+            },
+            "number_of_shards": "4",
+            "number_of_replicas": "1"
+          }
+        },
+        "mappings": {
+          "_doc": {
+            "dynamic": "true",
+            "_meta": {},
+            "_source": {
+              "includes": [],
+              "excludes": []
+            },
+            "dynamic_date_formats": [
+              "strict_date_optional_time",
+              "yyyy/MM/dd HH:mm:ss Z||yyyy/MM/dd Z"
+            ],
+            "dynamic_templates": [],
+            "date_detection": true,
+            "numeric_detection": false,
+            "properties": {
+              "@timestamp": {
+                "type": "date"
+              },
+              "agent_id": {
+                "type": "integer"
+              },
+              "bind_project_id": {
+                "type": "long"
+              },
+              "clent_ip": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "context_path": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "create_time": {
+                "type": "date",
+                "ignore_malformed": false,
+                "format": "strict_date_optional_time||epoch_second"
+              },
+              "http_method": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "http_protocol": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "http_scheme": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "id": {
+                "type": "integer"
+              },
+              "language": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "method_pool": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "pool_sign": {
+                "type": "keyword"
+              },
+              "project_name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "project_version_id": {
+                "type": "long"
+              },
+              "req_data": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "req_header": {
+                "type": "text"
+              },
+              "req_header_for_search": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "req_params": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "res_body": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "res_header": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "token": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "update_time": {
+                "type": "date",
+                "ignore_malformed": false,
+                "format": "strict_date_optional_time||epoch_second"
+              },
+              "uri": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "uri_sha1": {
+                "type": "keyword"
+              },
+              "url": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "user_id": {
+                "type": "long"
+              }
+            }
+          }
+        }
+      }'
+      
+      
+      #template-dongtai-v1-vulnerability
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/_template/${ES_ALIAS}-dongtai-v1-vulnerability-template?include_type_name -d '
+      {
+        "order": 1,
+        "index_patterns": [
+          "'${ES_ALIAS}'-dongtai-v1-vulnerability-index-*"
+        ],
+        "settings": {
+          "index": {
+            "lifecycle": {
+              "name": "'${ES_ALIAS}'-dongtai-ilm-policy",
+              "rollover_alias": "'${ES_ALIAS}'-alias-dongtai-v1-vulnerability"
+            },
+            "highlight": {
+              "max_analyzed_offset": "10000000"
+            },
+            "refresh_interval": "30s",
+            "analysis": {
+              "analyzer": {
+                "ngram_analyzer": {
+                  "tokenizer": "ngram_tokenizer"
+                }
+              },
+              "tokenizer": {
+                "ngram_tokenizer": {
+                  "token_chars": [
+                    "letter",
+                    "digit",
+                    "symbol",
+                    "punctuation"
+                  ],
+                  "min_gram": "1",
+                  "type": "ngram",
+                  "max_gram": "2"
+                }
+              }
+            },
+            "number_of_shards": "4",
+            "number_of_replicas": "1"
+          }
+        },
+        "mappings": {
+          "_doc": {
+            "dynamic": "true",
+            "_meta": {},
+            "_source": {
+              "includes": [],
+              "excludes": []
+            },
+            "dynamic_date_formats": [
+              "strict_date_optional_time",
+              "yyyy/MM/dd HH:mm:ss Z||yyyy/MM/dd Z"
+            ],
+            "dynamic_templates": [],
+            "date_detection": true,
+            "numeric_detection": false,
+            "properties": {
+              "@timestamp": {
+                "type": "date"
+              },
+              "agent_id": {
+                "type": "integer"
+              },
+              "bind_project_id": {
+                "type": "integer"
+              },
+              "bottom_stack": {
+                "type": "text"
+              },
+              "client_ip": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "context_path": {
+                "type": "text"
+              },
+              "counts": {
+                "type": "integer"
+              },
+              "first_time": {
+                "type": "date",
+                "ignore_malformed": false,
+                "format": "strict_date_optional_time||epoch_second"
+              },
+              "full_stack": {
+                "type": "text"
+              },
+              "hook_type_id": {
+                "type": "integer"
+              },
+              "http_method": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "http_protocol": {
+                "type": "text"
+              },
+              "http_scheme": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "id": {
+                "type": "integer"
+              },
+              "is_del": {
+                "type": "integer"
+              },
+              "language": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "latest_time": {
+                "type": "date",
+                "ignore_malformed": false,
+                "format": "strict_date_optional_time||epoch_second"
+              },
+              "latest_time_desc": {
+                "type": "integer"
+              },
+              "level_id": {
+                "type": "integer"
+              },
+              "level_id_desc": {
+                "type": "integer"
+              },
+              "method_pool_id": {
+                "type": "integer"
+              },
+              "param_name": {
+                "type": "text"
+              },
+              "project_name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "project_version_id": {
+                "type": "integer"
+              },
+              "req_data": {
+                "type": "text"
+              },
+              "req_header": {
+                "type": "text"
+              },
+              "req_params": {
+                "type": "text"
+              },
+              "res_body": {
+                "type": "text"
+              },
+              "res_header": {
+                "type": "text"
+              },
+              "search_keywords": {
+                "type": "text"
+              },
+              "status": {
+                "type": "text"
+              },
+              "status_id": {
+                "type": "integer"
+              },
+              "strategy_id": {
+                "type": "integer"
+              },
+              "taint_position": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "taint_value": {
+                "type": "text"
+              },
+              "token": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "top_stack": {
+                "type": "text"
+              },
+              "uri": {
+                "type": "text"
+              },
+              "url": {
+                "type": "text"
+              },
+              "user_id": {
+                "type": "integer"
+              },
+              "department_id": {
+                "type": "integer"
+              },
+              "vul_title": {
+                "type": "text"
+              }
+            }
+          }
+        }
+      }'
+      
+      #template-dongtai-v1-asset
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/_template/${ES_ALIAS}-dongtai-v1-asset-template?include_type_name -d '
+      {
+        "order": 1,
+        "index_patterns": [
+          "'${ES_ALIAS}'-dongtai-v1-asset-index-*"
+        ],
+        "settings": {
+          "index": {
+            "lifecycle": {
+              "name": "'${ES_ALIAS}'-dongtai-ilm-policy",
+              "rollover_alias": "'${ES_ALIAS}'-alias-dongtai-v1-asset"
+            },
+            "highlight": {
+              "max_analyzed_offset": "10000000"
+            },
+            "refresh_interval": "30s",
+            "analysis": {
+              "analyzer": {
+                "ngram_analyzer": {
+                  "tokenizer": "ngram_tokenizer"
+                }
+              },
+              "tokenizer": {
+                "ngram_tokenizer": {
+                  "token_chars": [
+                    "letter",
+                    "digit",
+                    "symbol",
+                    "punctuation"
+                  ],
+                  "min_gram": "1",
+                  "type": "ngram",
+                  "max_gram": "2"
+                }
+              }
+            },
+            "number_of_shards": "4",
+            "number_of_replicas": "1"
+          }
+        },
+        "mappings": {
+          "_doc": {
+            "dynamic": "true",
+            "_meta": {},
+            "_source": {
+              "includes": [],
+              "excludes": []
+            },
+            "dynamic_date_formats": [
+              "strict_date_optional_time",
+              "yyyy/MM/dd HH:mm:ss Z||yyyy/MM/dd Z"
+            ],
+            "dynamic_templates": [],
+            "date_detection": true,
+            "numeric_detection": false,
+            "properties": {
+              "@timestamp": {
+                "type": "date"
+              },
+              "agent_id": {
+                "type": "long"
+              },
+              "department_id": {
+                "type": "long"
+              },
+              "dependency_level": {
+                "type": "long"
+              },
+              "dt": {
+                "type": "date",
+                "ignore_malformed": false,
+                "format": "strict_date_optional_time||epoch_second"
+              },
+              "id": {
+                "type": "long"
+              },
+              "is_del": {
+                "type": "long"
+              },
+              "language": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "last_version": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "level_id": {
+                "type": "long"
+              },
+              "license": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "package_name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "package_path": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "parent_dependency_id": {
+                "type": "long"
+              },
+              "project_id": {
+                "type": "long"
+              },
+              "project_name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "project_version_id": {
+                "type": "long"
+              },
+              "safe_version": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "signature_algorithm": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "signature_value": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "talent_id": {
+                "type": "long"
+              },
+              "user_id": {
+                "type": "long"
+              },
+              "version": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "vul_count": {
+                "type": "long"
+              },
+              "vul_critical_count": {
+                "type": "long"
+              },
+              "vul_high_count": {
+                "type": "long"
+              },
+              "vul_info_count": {
+                "type": "long"
+              },
+              "vul_low_count": {
+                "type": "long"
+              },
+              "vul_medium_count": {
+                "type": "long"
+              }
+            }
+          }
+        }
+      }'
+      
+      #template-dongtai-v1-asset-vul
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/_template/${ES_ALIAS}-dongtai-v1-asset-vul-template?include_type_name -d '
+      {
+        "order": 1,
+        "index_patterns": [
+          "'${ES_ALIAS}'-dongtai-v1-asset-vul-index-*"
+        ],
+        "settings": {
+          "index": {
+            "lifecycle": {
+              "name": "'${ES_ALIAS}'-dongtai-ilm-policy",
+              "rollover_alias": "'${ES_ALIAS}'-alias-dongtai-v1-asset-vul"
+            },
+            "highlight": {
+              "max_analyzed_offset": "10000000"
+            },
+            "refresh_interval": "30s",
+            "analysis": {
+              "analyzer": {
+                "ngram_analyzer": {
+                  "tokenizer": "ngram_tokenizer"
+                }
+              },
+              "tokenizer": {
+                "ngram_tokenizer": {
+                  "token_chars": [
+                    "letter",
+                    "digit",
+                    "symbol",
+                    "punctuation"
+                  ],
+                  "min_gram": "1",
+                  "type": "ngram",
+                  "max_gram": "2"
+                }
+              }
+            },
+            "number_of_shards": "4",
+            "number_of_replicas": "1"
+          }
+        },
+        "mappings": {
+          "_doc": {
+            "dynamic": "true",
+            "_meta": {},
+            "_source": {
+              "includes": [],
+              "excludes": []
+            },
+            "dynamic_date_formats": [
+              "strict_date_optional_time",
+              "yyyy/MM/dd HH:mm:ss Z||yyyy/MM/dd Z"
+            ],
+            "dynamic_templates": [],
+            "date_detection": true,
+            "numeric_detection": false,
+            "properties": {
+              "@timestamp": {
+                "type": "date"
+              },
+              "agent_id": {
+                "type": "long"
+              },
+              "aql": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "asset_agent_id": {
+                "type": "integer"
+              },
+              "asset_id": {
+                "type": "long"
+              },
+              "asset_project_id": {
+                "type": "integer"
+              },
+              "asset_project_version_id": {
+                "type": "integer"
+              },
+              "asset_user_id": {
+                "type": "integer"
+              },
+              "asset_vul_id": {
+                "type": "integer"
+              },
+              "asset_vul_relation_id": {
+                "type": "integer"
+              },
+              "asset_vul_relation_is_del": {
+                "type": "integer"
+              },
+              "bind_project_id": {
+                "type": "long"
+              },
+              "clent_ip": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "context_path": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "create_time": {
+                "type": "date",
+                "ignore_malformed": false,
+                "format": "strict_date_optional_time||epoch_second"
+              },
+              "cve_code": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "cve_id": {
+                "type": "integer",
+                "ignore_malformed": false,
+                "coerce": true
+              },
+              "have_article": {
+                "type": "integer"
+              },
+              "have_poc": {
+                "type": "integer"
+              },
+              "http_method": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "http_protocol": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "http_scheme": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "id": {
+                "type": "long"
+              },
+              "language": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "level_id": {
+                "type": "integer"
+              },
+              "license": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "license_level": {
+                "type": "integer"
+              },
+              "method_pool": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "package_hash": {
+                "type": "keyword"
+              },
+              "package_language": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "package_latest_version": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "package_name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "package_safe_version": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "package_version": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "pool_sign": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "project_id": {
+                "type": "long"
+              },
+              "project_version_id": {
+                "type": "long"
+              },
+              "req_data": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "req_header": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "req_header_for_search": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "req_params": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "res_body": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "res_header": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "search_title": {
+                "type": "text"
+              },
+              "update_time": {
+                "type": "date",
+                "ignore_malformed": false,
+                "format": "strict_date_optional_time||epoch_second"
+              },
+              "update_time_desc": {
+                "type": "integer",
+                "ignore_malformed": false,
+                "coerce": true
+              },
+              "uri_sha1": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "url": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "user_id": {
+                "type": "long"
+              },
+              "vul_cve_nums": {
+                "type": "text"
+              },
+              "vul_detail": {
+                "type": "text"
+              },
+              "vul_name": {
+                "type": "text"
+              },
+              "vul_publish_time": {
+                "type": "date",
+                "ignore_malformed": false,
+                "format": "strict_date_optional_time||epoch_second"
+              },
+              "vul_serial": {
+                "type": "text"
+              },
+              "vul_update_time": {
+                "type": "date",
+                "ignore_malformed": false,
+                "format": "strict_date_optional_time||epoch_second"
+              }
+            }
+          }
+        }
+      }'
+      
+      
+      #template-dongtai-v1-asset-vul
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/_template/${ES_ALIAS}-dongtai-v1-asset-aggr-template?include_type_name -d '
+      {
+        "order": 1,
+        "index_patterns": [
+          "'${ES_ALIAS}'-dongtai-v1-asset-aggr-index-*"
+        ],
+        "settings": {
+          "index": {
+            "lifecycle": {
+              "name": "'${ES_ALIAS}'-dongtai-ilm-policy",
+              "rollover_alias": "'${ES_ALIAS}'-alias-dongtai-v1-asset-aggr"
+            },
+            "highlight": {
+              "max_analyzed_offset": "10000000"
+            },
+            "refresh_interval": "30s",
+            "analysis": {
+              "analyzer": {
+                "ngram_analyzer": {
+                  "tokenizer": "ngram_tokenizer"
+                }
+              },
+              "tokenizer": {
+                "ngram_tokenizer": {
+                  "token_chars": [
+                    "letter",
+                    "digit",
+                    "symbol",
+                    "punctuation"
+                  ],
+                  "min_gram": "1",
+                  "type": "ngram",
+                  "max_gram": "2"
+                }
+              }
+            },
+            "number_of_shards": "4",
+            "number_of_replicas": "1"
+          }
+        },
+        "mappings": {
+          "_doc": {
+            "dynamic": "true",
+            "_meta": {},
+            "_source": {
+              "includes": [],
+              "excludes": []
+            },
+            "dynamic_date_formats": [
+              "strict_date_optional_time",
+              "yyyy/MM/dd HH:mm:ss Z||yyyy/MM/dd Z"
+            ],
+            "dynamic_templates": [],
+            "date_detection": true,
+            "numeric_detection": false,
+            "properties": {
+              "@timestamp": {
+                "type": "date"
+              },
+              "id": {
+                "type": "integer"
+              },
+              "is_del": {
+                "type": "integer"
+              },
+              "language": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "last_version": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "level_id": {
+                "type": "integer"
+              },
+              "license": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "package_name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "project_count": {
+                "type": "integer"
+              },
+              "safe_version": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "signature_value": {
+                "type": "keyword"
+              },
+              "version": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "vul_count": {
+                "type": "integer"
+              },
+              "vul_critical_count": {
+                "type": "integer"
+              },
+              "vul_high_count": {
+                "type": "integer"
+              },
+              "vul_info_count": {
+                "type": "integer"
+              },
+              "vul_low_count": {
+                "type": "integer"
+              },
+              "vul_medium_count": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      }'
+      
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/${ES_ALIAS}-dongtai-v1-method-pool-index-000001 -d '
+      {
+        "aliases": {
+          "'${ES_ALIAS}'-alias-dongtai-v1-method-pool": {
+            "is_write_index": true
+          }
+        }
+      }'
+      
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/${ES_ALIAS}-dongtai-v1-vulnerability-index-000001 -d '
+      {
+        "aliases": {
+          "'${ES_ALIAS}'-alias-dongtai-v1-vulnerability": {
+            "is_write_index": true
+          }
+        }
+      }'
+      
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/${ES_ALIAS}-dongtai-v1-asset-index-000001 -d '
+      {
+        "aliases": {
+          "'${ES_ALIAS}'-alias-dongtai-v1-asset": {
+            "is_write_index": true
+          }
+        }
+      }'
+      
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/${ES_ALIAS}-dongtai-v1-asset-aggr-index-000001 -d '
+      {
+        "aliases": {
+          "'${ES_ALIAS}'-alias-dongtai-v1-asset-aggr": {
+            "is_write_index": true
+          }
+        }
+      }'
+      
+      curl -H 'content-Type:application/json' -XPUT ${ES_HOST}/${ES_ALIAS}-dongtai-v1-asset-vul-index-000001 -d '
+      {
+        "aliases": {
+          "'${ES_ALIAS}'-alias-dongtai-v1-asset-vul": {
+            "is_write_index": true
+          }
+        }
+      }'
+      Info "index created Ok !!!"
+      Notice "-----index created Ok !!!-----"
+    }
+    
+    dongtai_es
+    dongtai_index
+
+    ;;
+
   *) # Invalid subcommand
     if [ ! -z $subcommand ]; then # Don't show if no subcommand provided
       echo "Invalid subcommand: $subcommand"

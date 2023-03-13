@@ -1,24 +1,27 @@
-FROM python:3.7-slim
+FROM python:3.10-slim
 ARG VERSION
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
-ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US.UTF-8
 ENV TZ=Asia/Shanghai
 
 RUN apt-get update -y \
-		&& apt install -y gettext gcc make cmake libmariadb-dev curl libc6-dev unzip cron  openjdk-11-jdk fonts-wqy-microhei
-    
-RUN curl -L https://github.com/Endava/cats/releases/download/cats-7.0.1/cats-linux -o  /usr/local/bin/cats \
-	&& chmod +x /usr/local/bin/cats \
-	&& ln -s /usr/local/bin/cats /usr/bin/cats
+    && apt install -y gettext gcc make cmake libmariadb-dev curl libc6-dev unzip cron \
+    fonts-wqy-microhei vim build-essential ninja-build cython3 pybind11-dev libre2-dev locales \
+#   htop sysstat net-tools iproute2 procps lsof \
+    openjdk-11-jdk \
+    && sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen \
+    && ALIMARCH=`arch` && curl -L https://charts.dongtai.io/apk/${ALIMARCH}/wkhtmltopdf -o /usr/bin/wkhtmltopdf \
+    && chmod +x /usr/bin/wkhtmltopdf
 
-COPY requirements-prod.txt /opt/dongtai/webapi/requirements.txt
-RUN pip3 install -r /opt/dongtai/webapi/requirements.txt
+COPY Pipfile .
+COPY Pipfile.lock .
+RUN pip install -U pip && pip install pipenv wheel && python3 -m pipenv sync --system -v
 
-COPY . /opt/dongtai/webapi
-WORKDIR /opt/dongtai/webapi
+COPY . /opt/dongtai
+WORKDIR /opt/dongtai
 
-RUN mkdir -p /tmp/iast_cache/package && mv /opt/dongtai/webapi/*.jar /tmp/iast_cache/package/ || true && mv /opt/dongtai/webapi/*.tar.gz /tmp/ || true 
-ENTRYPOINT ["/bin/bash","/opt/dongtai/webapi/docker/entrypoint.sh"]
+RUN /bin/bash -c 'mkdir -p /tmp/{logstash/{batchagent,report/{img,word,pdf,excel,html}},iast_cache/package}' \
+    && mv /opt/dongtai/*.jar /tmp/iast_cache/package/ || true && mv /opt/dongtai/*.tar.gz /tmp/ || true 
+ENTRYPOINT ["/bin/bash","/opt/dongtai/deploy/docker/entrypoint.sh"]
