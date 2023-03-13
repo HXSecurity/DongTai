@@ -123,7 +123,9 @@ class PythonAgentDownload():
                 shutil.copyfile(self.original_agent_file, f"{user_file}.bak")
 
             agent_file = tarfile.open(user_file)
-            agent_file.extractall(path=self.target_path)
+            agent_file.extractall(
+                path=self.target_path, members=lambda memberz: memberz
+            )  # trust upstream package until upstream provide file list to validate.
             names = agent_file.getnames()
             self.target_source_path = f"{self.target_path}/{names[0]}"
             config_path = ""
@@ -192,7 +194,9 @@ class PhpAgentDownload():
                 shutil.copyfile(self.original_agent_file, f"{user_file}.bak")
 
             agent_file = tarfile.open(user_file)
-            agent_file.extractall(path=self.target_path)
+            agent_file.extractall(
+                path=self.target_path, members=lambda memberz: memberz
+            )  # trust upstream package until upstream provide file list to validate.
             agent_file.close()
 
             config_lines = []
@@ -280,7 +284,9 @@ class AgentDownload(OpenApiEndPoint):
         tmp_path = f"/tmp/.dongtai_agent_test/{time.time_ns()}"
         try:
             agent_file = tarfile.open(file)
-            agent_file.extractall(path=tmp_path)
+            agent_file.extractall(
+                path=tmp_path, members=lambda memberz: memberz
+            )  # trust upstream package until upstream provide file list to validate.
         except tarfile.ReadError:
             return False
         except Exception as e:

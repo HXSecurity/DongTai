@@ -7,7 +7,7 @@ class IastConfig(DongTaiAppConfigPatch, AppConfig):
 
     def ready(self):
         super().ready()
-#        register_preheat()
+        register_preheat()
         from dongtai_conf.celery import app as celery_app
         from dongtai_common.utils.validate import validate_hook_strategy_update
         from deploy.commands.management.commands.load_hook_strategy import Command
@@ -16,9 +16,9 @@ class IastConfig(DongTaiAppConfigPatch, AppConfig):
             print("enable auto_update_hook_strategy  updating hook strategy from file")
             Command().handle()
 
-# def register_preheat():
-#    from dongtai_engine.preheat import PreHeatRegister
-#
-#    from dongtai_web.aggr_vul.app_vul_summary import get_annotate_cache_data
-#
-#    PreHeatRegister.register(get_annotate_cache_data)
+
+def register_preheat():
+    from dongtai_engine.preheat import PreHeatRegister
+    from dongtai_web.aggr_vul.aggr_vul_summary import get_annotate_sca_cache_data
+
+    PreHeatRegister.register(get_annotate_sca_cache_data)

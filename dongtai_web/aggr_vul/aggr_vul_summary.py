@@ -45,11 +45,10 @@ def get_annotate_sca_common_data(user_id: int, pro_condition: str):
     return get_annotate_sca_base_data(user_id, pro_condition)
 
 
-# @cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60), use_celery_update=True)
-
-
-def get_annotate_sca_cache_data(user_id: int, pro_condition: str):
-    return get_annotate_sca_base_data(user_id, pro_condition)
+@cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60),
+                  use_celery_update=True)
+def get_annotate_sca_cache_data(user_id: int):
+    return get_annotate_sca_base_data(user_id, "")
 
 
 def get_annotate_sca_base_data(user_id: int, pro_condition: str):
@@ -125,7 +124,8 @@ def get_annotate_sca_base_data(user_id: int, pro_condition: str):
         cursor.execute(count_no_availability_query)
         no_availability_summary = cursor.fetchone()
         if no_availability_summary:
-            result_summary['availability']['no_availability']['num'] = no_availability_summary[0]
+            result_summary['availability']['no_availability'][
+                'num'] = no_availability_summary[0]
 
         count_language_query = "SELECT  vul.package_language, count( DISTINCT(vul.id )) AS count_package_language  from iast_asset_vul as vul  " \
                                + base_join + query_condition + " group by vul.package_language  "
@@ -137,21 +137,22 @@ def get_annotate_sca_base_data(user_id: int, pro_condition: str):
             for item in language_summary:
                 package_language, count_package_language = item
                 result_summary['language'].append({
-                    "id": lang_arr.get(str(package_language)),
-                    "num": count_package_language,
-                    "name": package_language
+                    "id":
+                    lang_arr.get(str(package_language)),
+                    "num":
+                    count_package_language,
+                    "name":
+                    package_language
                 })
                 if package_language in lang_key:
                     del lang_arr[package_language]
         if lang_arr:
             for item in lang_arr.keys():
-                result_summary["language"].append(
-                    {
-                        "id": LANGUAGE_DICT.get(item),
-                        "num": 0,
-                        "name": item
-                    }
-                )
+                result_summary["language"].append({
+                    "id": LANGUAGE_DICT.get(item),
+                    "num": 0,
+                    "name": item
+                })
 
         # 漏洞类型 统计
         vul_type_join = "left JOIN iast_asset_vul_type_relation as typeR on vul.id=typeR.asset_vul_id " \
@@ -170,9 +171,9 @@ def get_annotate_sca_base_data(user_id: int, pro_condition: str):
                     "name": type_name
                 })
         # 归属项目 统计
-        count_project_query = "SELECT asset.project_id, count( DISTINCT(vul.id )), " \
-                              " asset.project_name from iast_asset_vul as vul  " \
-                              + base_join + query_condition + " and asset.project_id>0 group by asset.project_id,asset.project_name  "
+        count_project_query = " SELECT project_id, _count, name AS project_name FROM iast_project AS ip RIGHT  JOIN ( SELECT asset.project_id AS project_id, count( DISTINCT(vul.id ))  AS _count " \
+                              "  from iast_asset_vul as vul  " \
+                              + base_join + query_condition + " and asset.project_id>0 group by asset.project_id )   temp ON ip.id = temp.project_id "
         cursor.execute(count_project_query)
         project_summary = cursor.fetchall()
         if project_summary:
@@ -353,7 +354,7 @@ class GetScaSummary(UserEndPoint):
         else:
             # 全局数据，没有项目信息 数据按用户id缓存
             result_summary = get_annotate_sca_cache_data(
-                request.user.id, pro_condition)
+                request.user.id)
 
         return R.success(data={
             'messages': result_summary
