@@ -25,7 +25,6 @@ jobs:
         python-version: [3.7]
     steps:
       - name: Checkout
-        if: !${{ inputs.server_version }}
         uses: actions/checkout@v3
 
       - name: Checkout
