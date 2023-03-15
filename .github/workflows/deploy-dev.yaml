@@ -11,9 +11,9 @@ on:
       agent_version:
         required: true
         type: string
-      server_version:
-        required: true
-        type: string
+      # server_version:
+      #   required: true
+      #   type: string
 
 jobs:
   Deploy-to-dev:
@@ -27,11 +27,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Checkout
-        if: ${{ inputs.server_version }}
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.server_version }}
+      # - name: Checkout
+      #   if: ${{ inputs.server_version }}
+      #   uses: actions/checkout@v3
+      #   with:
+      #     ref: ${{ inputs.server_version }}
 
       - name: Get the release version
         id: version
