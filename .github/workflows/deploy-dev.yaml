@@ -37,10 +37,6 @@ jobs:
         id: version
         run: echo ::set-output name=GITHUB_REF::${GITHUB_REF##*/}
 
-      - name: Get the release version
-        id: version
-        run: echo ::set-output name=GITHUB_REF::${GITHUB_REF##*/}
-
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v2
 
