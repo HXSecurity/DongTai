@@ -5,16 +5,16 @@ on:
 
 jobs:
   run_if:
-    if: ${{ github.event_name == 'push' && github.repository_owner == 'HXSecurity' && github.ref == 'refs/heads/main'}}
+    if: ${{ github.event_name == 'push' && github.repository_owner == 'HXSecurity' && github.ref == 'refs/heads/develop'}}
     runs-on: ubuntu-latest
     steps:
       - name: Check out branch
         uses: actions/checkout@v1
       - name: Generate version file
         run: |
-           git checkout -b pr@main@v${{github.run_number}}
+           git checkout -b pr@develop@v${{github.run_number}}
            git remote set-url origin --push --add '${{ secrets.DONGTAI_GITHUB_TOKEN_ALL }}'
-           git push --set-upstream origin pr@main@v${{github.run_number}}
+           git push --set-upstream origin pr@develop@v${{github.run_number}}
 
   generic_handler:
     if: ${{ github.repository_owner == 'HXSecurityBusiness' }}
