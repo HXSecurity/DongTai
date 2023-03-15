@@ -135,7 +135,7 @@ def search_and_save_vul(engine: Optional[VulEngine],
         )
         return
     if not queryset.values('id').exists():
-        logger.error(
+        logger.warning(
             f'current method pool hit rule {strategy.get("type")}, but no vul strategy.'
         )
         return
@@ -240,7 +240,7 @@ def search_vul_from_method_pool(self, method_pool_sign, agent_id, retryable=Fals
                     tries = self.request.retries + 1
                     raise RetryableException(f'漏洞检测方法池 {method_pool_sign} 不存在，重试第 {tries} 次')
                 else:
-                    logger.error(f'漏洞检测超过最大重试次数 {self.max_retries}，方法池 {method_pool_sign} 不存在')
+                    logger.warning(f'漏洞检测超过最大重试次数 {self.max_retries}，方法池 {method_pool_sign} 不存在')
             else:
                 logger.warning(f'漏洞检测终止，方法池 {method_pool_sign} 不存在')
             return
@@ -270,10 +270,9 @@ def search_vul_from_method_pool(self, method_pool_sign, agent_id, retryable=Fals
             delay = 5 + pow(3, self.request.retries) * 10
             self.retry(exc=e, countdown=delay)
         else:
-            logger.error(f'漏洞检测超过最大重试次数，错误原因：{e}')
+            logger.info(f'漏洞检测超过最大重试次数，错误原因：{e}')
     except Exception as e:
-        logger.error(e, exc_info=True)
-        logger.error(f'漏洞检测出错，方法池 {method_pool_sign}. 错误原因：{e}')
+        logger.error(f'漏洞检测出错，方法池 {method_pool_sign}. 错误原因：{e}', exc_info=e)
 
 
 @shared_task(queue='dongtai-replay-vul-scan')
@@ -559,7 +558,7 @@ def vul_recheck():
                 try:
                     params = json.loads(vulnerability['param_name'])
                 except JSONDecodeError as e:
-                    logger.error(f'污点数据解析出错，原因：{e}')
+                    logger.warning(f'污点数据解析出错，原因：{e}', exc_info=e)
                     Replay.replay_failed(replay=replay, timestamp=timestamp)
                     con = 1
             else:
@@ -619,7 +618,7 @@ def vul_recheck():
                         try:
                             headers = base64.b64encode('\n'.join(header_raw))
                         except Exception as e:
-                            logger.error(f'请求头解析失败，漏洞ID: {vulnerability["id"]}')
+                            logger.warning(f'请求头解析失败，漏洞ID: {vulnerability["id"]}', exc_info=e)
                     elif position == 'COOKIE':
                         import base64
                         header_raw = base64.b64decode(headers).decode('utf-8').split('\n')
