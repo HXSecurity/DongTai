@@ -2,8 +2,18 @@ name: Deploy DongTai Server To Dev
 
 on:
   push:
-    branches: [ "main"  ]
+    branches:
+      - main
+      - beta
+      - develop
   workflow_dispatch:
+    inputs:
+      agent_version:
+        required: true
+        type: string
+      server_version:
+        required: true
+        type: string
 
 jobs:
   Deploy-to-dev:
@@ -15,7 +25,17 @@ jobs:
         python-version: [3.7]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
+      - name: Checkout
+        if: ${{ inputs.server_version }}
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.server_version }}
+
+      - name: Get the release version
+        id: version
+        run: echo ::set-output name=GITHUB_REF::${GITHUB_REF##*/}
 
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v2
@@ -42,11 +62,18 @@ jobs:
           access-key-id: ${{ secrets.CHART_OSS_ACCESS_KEY_ID }}
           access-key-secret: ${{ secrets.CHART_OSS_ACCESS_KEY_SECRET }}
           
-      - name: Download Agent
+      - name: Download Agent dev
+        if: ${{ steps.version.outputs.GITHUB_REF }} == develop || ${{ steps.version.outputs.GITHUB_REF }} == beta || ${{ steps.version.outputs.GITHUB_REF }} == main
         run: |
-          ossutil cp oss://dongtai-helm-charts/agent_test/java/latest/ ./ --include "*.jar" -r
-          ossutil cp oss://dongtai-helm-charts/agent_test/python/ ./  --include "*.tar.gz" -r
-          
+          if [ ${{ steps.version.outputs.GITHUB_REF }} = develop ] ; then ossutil cp oss://dongtai-helm-charts/agent_test/java/latest/ ./ --include "*.jar" -r
+          else  ossutil cp oss://dongtai-helm-charts/agent_${{ steps.version.outputs.GITHUB_REF }}/java/latest/ ./ --include "*.jar" -r
+          fi
+
+      - name: Download Agent  ${{ inputs.agent_version }}
+        if: ${{ inputs.agent_version }}
+        run: |
+          ossutil cp oss://dongtai/agent/java/${{ inputs.agent_version }}/ ./ --include "*.jar" -r
+
       - name: Generate version file
         run: |
           echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('${{ github.run_number }}.0.0', '${{ github.event.repository.name }}', '${GITHUB_SHA}');" >> ./deploy/docker/version.sql
@@ -59,8 +86,8 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: | 
-            registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:latest
-            registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:1.0.${{github.run_number}}
+            registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:latest-${{ steps.version.outputs.GITHUB_REF }}
+            registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:1.0.${{github.run_number}}-${{ steps.version.outputs.GITHUB_REF }}
 
       - uses: actions/checkout@master
       - name: deploy to cluster
@@ -69,5 +96,8 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_TEST_DATA }}
         with:
           args: |
-            find .github/deploy/deploy-dongtai-server-test.yml -type f -exec sed -i 's/VERSION/1.0.${{github.run_number}}/g' {} \;
+            if [ ${{ steps.version.outputs.GITHUB_REF }} = beta ] ; then find .github/deploy/deploy-dongtai-server-test.yml -type f -exec sed -i 's/iast-test/iast-beta/g' {} \; 
+            elif [ ${{ steps.version.outputs.GITHUB_REF }} = develop ] ; then echo testing !!!
+            else find .github/deploy/deploy-dongtai-server-test.yml -type f -exec sed -i 's/iast-test/iast-main/g' {} \; ;fi
+            find .github/deploy/deploy-dongtai-server-test.yml -type f -exec sed -i 's/VERSION/1.0.${{github.run_number}}-${{ steps.version.outputs.GITHUB_REF }}/g' {} \;
             ls .github/deploy/deploy-dongtai-server-test.yml | xargs -I {} kubectl apply -f {}
