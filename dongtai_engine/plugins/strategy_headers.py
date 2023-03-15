@@ -98,8 +98,10 @@ def check_response_header(method_pool):
                      method_pool,
                      position='HTTP Response Header')
     except Exception as e:
-        logger.warning("check_response_header failed, reason: " + str(e),
-                     exc_info=e)
+        logger.warning(
+            "check_response_header failed, reason: " + str(e),
+            exc_info=e,
+        )
 
 
 def save_vul(vul_type, method_pool, position=None, data=None):
