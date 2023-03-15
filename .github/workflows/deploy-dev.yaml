@@ -70,7 +70,7 @@ jobs:
           fi
 
       - name: Download Agent  ${{ inputs.agent_version }}
-        if: ${{ inputs.os_version }}
+        if: ${{ inputs.agent_version }}
         run: |
           ossutil cp oss://dongtai/agent/java/${{ inputs.agent_version }}/ ./ --include "*.jar" -r
 
