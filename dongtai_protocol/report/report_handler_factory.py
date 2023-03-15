@@ -75,7 +75,7 @@ class ReportHandler:
             result = class_of_handler().handle(reports, user)
             return result
         except Exception as e:
-            logger.error(e, exc_info=True)
+            logger.error(e, exc_info=e)
         return None
 
     @classmethod

@@ -20,5 +20,5 @@ def build_response(header, body):
         _data = base64.b64decode(header.encode("utf-8")).decode("utf-8")
     except Exception as e:
         _data = ''
-        logger.error(f'Response Header解析出错，错误原因：{e}')
+        logger.warning(f'Response Header解析出错，错误原因：{e}', exc_info=e)
     return '{header}\n\n{body}'.format(header=_data, body=body)
