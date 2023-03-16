@@ -49,9 +49,9 @@ def check_response_content(method_pool):
                                      position=key,
                                      data=result.group(0))
                     except Exception as e:
-                        logger.error(
+                        logger.warning(
                             f'check_response_content error, rule: {rule.id}, rule name: {rule.strategy.vul_type}, reason: {e}',
-                            exc_info=True)
+                            exc_info=e)
             elif json_response and rule.pattern_type.id == 2:
                 pattern = jq.compile(rule.pattern)
                 result = pattern.input(json_response).all()
@@ -61,9 +61,9 @@ def check_response_content(method_pool):
                              position='HTTP Response Body',
                              data=' '.join(result))
         except Exception as e:
-            logger.error(
+            logger.warning(
                 f'check_response_content error, rule: {rule.id}, rule name: {rule.strategy.vul_type}, reason: {e}',
-                exc_info=True)
+                exc_info=e)
 
     search_id_card_leak(method_pool)
 
@@ -89,8 +89,9 @@ def search_id_card_leak(method_pool):
                 # todo: add highlight to id_card
                 save_vul(vul_type='ID Number Leak', method_pool=method_pool, position=key, data=card)
         except Exception as e:
-            logger.error(
-                f'check_response_content error, rule name: ID Number Leak, Method Pool ID: {method_pool.id}, reason: {e}')
+            logger.warning(
+                f'check_response_content error, rule name: ID Number Leak, Method Pool ID: {method_pool.id}, reason: {e}',
+                exc_info=e)
 
 
 def check_id_card(id_card):
