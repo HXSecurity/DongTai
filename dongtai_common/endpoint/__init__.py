@@ -32,6 +32,7 @@ from typing import Tuple, Dict, Union, TYPE_CHECKING
 from dongtai_common.models.department import Department
 from functools import reduce
 from operator import ior
+from rest_framework.exceptions import AuthenticationFailed
 
 if TYPE_CHECKING:
     from django.core.paginator import _SupportsPagination
@@ -107,9 +108,13 @@ class EndPoint(APIView):
             else:
                 handler = self.http_method_not_allowed
             response = handler(request, *args, **kwargs)
-        except Exception as exc:
-            logger.error(f'url: {self.request.path},exc:{exc}', exc_info=True)
+        except AuthenticationFailed as exc:
+            logger.debug(f'url: {self.request.path},exc:{exc}')
             response = self.handle_exception(exc)
+        except Exception as exc:
+            logger.warning(f'url: {self.request.path},exc:{exc}', exc_info=exc)
+            response = self.handle_exception(exc)
+        finally:
             return self.finalize_response(request, response, *args, **kwargs)
 
         self.response = self.finalize_response(request, response, *args,
@@ -198,7 +203,7 @@ class EndPoint(APIView):
         except EmptyPage:
             return page_summary, queryset.none()
         except BaseException as e:
-            logger.error(e, exc_info=e)
+            logger.info(e, exc_info=e)
             return page_summary, queryset.none()
         return page_summary, page_list
 
