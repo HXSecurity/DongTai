@@ -3,6 +3,14 @@ name: Release DongTai-Server
 on:
   release:
     types: [ created, edited ]
+  workflow_dispatch:
+    inputs:
+      agent_version:
+        required: true
+        type: string
+      server_version:
+        required: true
+        type: string
 
 jobs:
   build:
@@ -26,15 +34,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - id: release
+      - name: Set the value
+        id: release
         run: |
           TAG_NAME=${{ github.event.release.tag_name }}
           ID=`echo ${TAG_NAME##v}`
-          echo "::set-output name=VERSION::$ID"
+          if [ -z "${{ inputs.server_version }}" ]
+          then
+              echo "variable is empty"
+          else
+              ID=${{ inputs.server_version }}
+          fi
+          echo "iast_version=$ID" >> $GITHUB_ENV
 
       - name: Generate version file
         run: |
-          bash .github/workflows/version_update.sh "${{ steps.release.outputs.VERSION }}"
+          bash .github/workflows/version_update.sh "${{ env.iast_version }}"
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
@@ -56,17 +71,17 @@ jobs:
           access-key-id: ${{ secrets.ALIYUN_OSS_KEY_ID }}
           access-key-secret: ${{ secrets.ALIYUN_OSS_KEY_SECRET }}
       - run: |
-          echo "${{ github.event.repository.name }},version,${{ steps.release.outputs.version }}" >> version.txt && \
+          echo "${{ github.event.repository.name }},version,${{ env.iast_version }}" >> version.txt && \
           echo "${{ github.event.repository.name }},commit_hash,${GITHUB_SHA}" >> version.txt && \
           cat version.txt
-          ossutil cp -rf version.txt oss://huoqi-public/iast/release-version/${{ github.event.repository.name }}/${{ steps.release.outputs.version }}/version.txt
-          ossutil cp oss://dongtai/agent/java/${{ steps.release.outputs.VERSION }}/ ./ --include "*.jar" -r
+          ossutil cp -rf version.txt oss://huoqi-public/iast/release-version/${{ github.event.repository.name }}/${{ env.iast_version }}/version.txt
+          ossutil cp oss://dongtai/agent/java/${{ inputs.agent_version }}/ ./ --include "*.jar" -r
           [ ! -f ./dongtai-agent.jar ] && echo "$FILE does not exist."
           [ ! -f ./dongtai-agent.jar ] && ossutil cp oss://dongtai/agent/java/latest/ ./ --include "*.jar" -r
           [ ! -f ./dongtai-agent.jar ] && echo "$FILE does not exist."
           ossutil cp oss://dongtai/agent/python/ ./  --include "*.tar.gz" -r
           ossutil cp oss://dongtai/agent/php/ ./  --include "*.tar.gz" -r
-          echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('${{ steps.release.outputs.version }}', '${{ github.event.repository.name }}', '${GITHUB_SHA}');" >> ./deploy/docker/version.sql
+          echo "REPLACE INTO project_version_control (version, component_name, component_version_hash) VALUES('${{ env.iast_version }}', '${{ github.event.repository.name }}', '${GITHUB_SHA}');" >> ./deploy/docker/version.sql
 
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v2
@@ -81,7 +96,7 @@ jobs:
           push: true
           tags: | 
             dongtai/dongtai-server:latest
-            dongtai/dongtai-server:${{ steps.release.outputs.version }}
+            dongtai/dongtai-server:${{ env.iast_version }}
 
       - name: finish build
         uses: joelwmale/webhook-action@master
@@ -99,11 +114,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - id: release
+      - name: Set the value
+        id: release
         run: |
           TAG_NAME=${{ github.event.release.tag_name }}
           ID=`echo ${TAG_NAME##v}`
-          echo "::set-output name=VERSION::$ID"
+          if [ -z "${{ inputs.server_version }}" ]
+          then
+              echo "variable is empty"
+          else
+              ID=${{ inputs.server_version }}
+          fi
+          echo "iast_version=$ID" >> $GITHUB_ENV
       
       - uses: azure/setup-helm@v1
         with:
@@ -123,15 +145,15 @@ jobs:
 
       - name: Download existed repo files
         run: |
-          sed -i "s#tag: latest#tag: ${{ steps.release.outputs.VERSION }}#g" deploy/kubernetes/helm/values.yaml
+          sed -i "s#tag: latest#tag: ${{ env.iast_version }}#g" deploy/kubernetes/helm/values.yaml
           ossutil cp -rf  oss://dongtai-helm-charts/iast/ ~/helm/repo/  --include dongtai-iast-*.tgz --exclude "index.yaml"
 
       - name: Create helm package
         run: |
-          helm package deploy/kubernetes/helm  -d ~/helm/repo --app-version ${{ steps.get_version.outputs.VERSION }} --version ${{ steps.get_version.outputs.VERSION }}
+          helm package deploy/kubernetes/helm  -d ~/helm/repo --app-version ${{ env.iast_version }} --version ${{ env.iast_version }}
           helm repo index ~/helm/repo/ --url ${{ secrets.DONGTAI_IAST_CHART_REPO_URL }}
 
       - name: Push helm chart to repo
         run: |
-          ossutil cp -rf ~/helm/repo/dongtai-iast-${{ steps.get_version.outputs.VERSION }}.tgz  oss://dongtai-helm-charts/iast/
+          ossutil cp -rf ~/helm/repo/dongtai-iast-${{ env.iast_version }}.tgz  oss://dongtai-helm-charts/iast/
           ossutil cp -rf ~/helm/repo/index.yaml  oss://dongtai-helm-charts/iast/
