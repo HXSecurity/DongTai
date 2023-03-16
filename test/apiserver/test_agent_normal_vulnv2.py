@@ -75,9 +75,10 @@ class AgentNormalVulTestCase(AgentTestCase):
                                         self.agent_id)
             assert IastVulnerabilityModel.objects.filter(
                 agent_id=self.agent_id, level_id=1).count() == 1
+
     def test_agent_vuln_upload6(self):
         with patch('uuid.uuid4', mock_uuid):
-            res = self.agent_report(xss_json) 
+            res = self.agent_report(xss_json)
             search_vul_from_method_pool(str(uuid.UUID(int=0).hex),
                                         self.agent_id)
             assert IastVulnerabilityModel.objects.filter(
