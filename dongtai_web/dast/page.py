@@ -25,8 +25,8 @@ class VulsPageArgsSerializer(serializers.Serializer):
     keyword = serializers.CharField(help_text=_('keyword'), required=False)
     project_id = serializers.ListField(child=serializers.IntegerField(),
                                        required=False)
-    project_version_id = serializers.ListField(
-        child=serializers.IntegerField(), required=False)
+    project_version_id = serializers.IntegerField(required=False)
+    bind_project_id = serializers.IntegerField(required=False)
     vul_level_id = serializers.ListField(child=serializers.IntegerField(),
                                          required=False)
     vul_type = serializers.ListField(child=serializers.CharField(),
@@ -39,7 +39,7 @@ class VulsPageArgsSerializer(serializers.Serializer):
 class VulsSummaryArgsSerializer(VulsPageArgsSerializer):
 
     class Meta:
-        fields = ['project_id', 'project_version_id']
+        fields = ['bind_project_id', 'project_id', 'project_version_id']
 
 
 class VulsDeleteArgsSerializer(VulsPageArgsSerializer):
@@ -85,7 +85,7 @@ class DastVulsEndPoint(UserEndPoint, viewsets.ViewSet):
                                  description=_("Dast Vul Summary"),
                                  tags=[_('Dast Vul')])
     def summary(self, request):
-        ser = VulsSummaryArgsSerializer(data=request.GET)
+        ser = VulsSummaryArgsSerializer(data=request.data)
         try:
             if ser.is_valid(True):
                 pass
@@ -93,8 +93,8 @@ class DastVulsEndPoint(UserEndPoint, viewsets.ViewSet):
             return R.failure(data=e.detail)
         department = request.user.get_relative_department()
         q = Q(project__department__in=department)
-        if 'project_id' in ser.validated_data:
-            q = q & Q(project_id=ser.validated_data['project_id'])
+        if 'bind_project_id' in ser.validated_data:
+            q = q & Q(project_id=ser.validated_data['bind_project_id'])
         if 'project_version_id' in ser.validated_data:
             q = q & Q(project_id=ser.validated_data['project_version_id'])
         vul_level_info = IastDastIntegration.objects.filter(q).values(
@@ -117,7 +117,7 @@ class DastVulsEndPoint(UserEndPoint, viewsets.ViewSet):
                                  description=_("Dast Vul list"),
                                  tags=[_('Dast Vul')])
     def page(self, request):
-        ser = VulsPageArgsSerializer(data=request.GET)
+        ser = VulsPageArgsSerializer(data=request.data)
         try:
             if ser.is_valid(True):
                 pass
@@ -127,12 +127,14 @@ class DastVulsEndPoint(UserEndPoint, viewsets.ViewSet):
         q = Q(project__department__in=department)
         if 'vul_level_id' in ser.validated_data:
             q = q & Q(vul_level_id__in=ser.validated_data['vul_level_id'])
+        if 'bind_project_id' in ser.validated_data:
+            q = q & Q(project_id=ser.validated_data['bind_project_id'])
         if 'vul_type' in ser.validated_data:
             q = q & Q(vul_type__in=ser.validated_data['vul_type'])
         if 'project_id' in ser.validated_data:
-            q = q & Q(project_id=ser.validated_data['project_id'])
+            q = q & Q(project_id__in=ser.validated_data['project_id'])
         if 'project_version_id' in ser.validated_data:
-            q = q & Q(project_id=ser.validated_data['project_version_id'])
+            q = q & Q(project_version_id=ser.validated_data['project_version_id'])
         if 'keyword' in ser.validated_data:
             q = q & Q(keyword__contains=ser.validated_data['keyword'])
         if ser.validated_data['order_by_order'] == 'desc':
