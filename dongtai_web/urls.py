@@ -154,6 +154,8 @@ from dongtai_web.vul_log.vul_log_view import VulLogViewSet
 from dongtai_web.vul_recheck_payload.vul_recheck_payload import VulReCheckPayloadViewSet
 from dongtai_web.header_vul.base import HeaderVulViewSet
 from dongtai_web.projecttemplate.base import IastProjectTemplateView
+from dongtai_web.dast.webhook import DastWebhook
+from dongtai_web.dast.page import DastVulsEndPoint
 
 urlpatterns = [
     path('user/<int:user_id>', UserDetailEndPoint.as_view()),
@@ -385,6 +387,24 @@ urlpatterns = [
              'get': "list",
              'post': 'create',
          })),
+    path('dast_webhook', DastWebhook.as_view()),
+    path(
+        'dastvul/<int:pk>',
+        DastVulsEndPoint.as_view({
+            'get': "single",
+        })),
+    path(
+        'dastvul',
+        DastVulsEndPoint.as_view({
+            'post': "page",
+            'delete': "delete",
+        })),
+    path(
+        'dastvul/summary',
+        DastVulsEndPoint.as_view({
+            'post': "summary",
+        })),
+
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
