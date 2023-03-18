@@ -346,12 +346,6 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
         log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
                       vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)
     cache.delete(cache_key)
-    from dongtai_web.xray.webhook import parse_xray_uuid, bind_xray_messages
-    uuid = parse_xray_uuid(vul_meta.res_header, "\n")
-    if uuid:
-        (agent_id, uuid) = uuid.split(".")
-        bind_xray_messages(vul.agent_id, uuid, [vul_ids])
-
     #delete if exists more than one   departured use redis lock
     #IastVulnerabilityModel.objects.filter(
     #    strategy_id=strategy_id,
