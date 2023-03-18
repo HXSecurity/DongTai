@@ -46,10 +46,13 @@ class VulsDeleteArgsSerializer(VulsPageArgsSerializer):
     vul_id = serializers.ListField(child=serializers.IntegerField(),
                                    required=False)
 
+
 class VulsResArgsSerializer(serializers.ModelSerializer):
     project_name = serializers.CharField(source='project.name')
-    project_version_name = serializers.CharField(source='project_version.version_name')
+    project_version_name = serializers.CharField(
+        source='project_version.version_name')
     vul_level_name = serializers.CharField(source='vul_level.name')
+
     class Meta:
         model = IastDastIntegration
         fields = [
@@ -140,7 +143,8 @@ class DastVulsEndPoint(UserEndPoint, viewsets.ViewSet):
             IastDastIntegration.objects.filter(q).order_by(
                 order_by_func).all(), ser.validated_data['page'],
             ser.validated_data['page_size'])
-        return R.success(data=VulsResArgsSerializer(dastvuls,many=True).data, page=page_summary)
+        return R.success(data=VulsResArgsSerializer(dastvuls, many=True).data,
+                         page=page_summary)
 
     @extend_schema_with_envcheck(summary=_('Dast Vul detail'),
                                  description=_("Dast Vul detail"),

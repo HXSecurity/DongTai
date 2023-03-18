@@ -122,6 +122,7 @@ class DastIntegrationSerializer(serializers.ModelSerializer):
     dongtai_vul_type = serializers.ListField(child=serializers.CharField())
     agent_id = serializers.ListField(child=serializers.CharField())
     vul_level = serializers.ChoiceField(['HIGH', 'MEDIUM', 'LOW', 'NOTE'])
+
     class Meta:
         model = IastDastIntegration
         fields = [
@@ -147,6 +148,7 @@ VUL_LEVEL_DICT = {
     "NOTE": 5,
 }
 
+
 class DastWebhook(AnonymousAuthEndPoint):
     name = "api-v1-dast-webhook"
     description = _("Dast Webhook")
@@ -166,10 +168,14 @@ class DastWebhook(AnonymousAuthEndPoint):
             IastAgent.objects.filter(
                 pk__in=(int(i)
                         for i in ser.validated_data['agent_id'])).values_list(
-                            'bind_project_id', 'project_version_id',).distinct(), )
+                            'bind_project_id',
+                            'project_version_id',
+                        ).distinct(), )
         dast_list = []
         vul_level_id = VUL_LEVEL_DICT[ser.validated_data['vul_level']]
-        for field in ['dt_uuid_id','dongtai_vul_type','agent_id','vul_level']:
+        for field in [
+                'dt_uuid_id', 'dongtai_vul_type', 'agent_id', 'vul_level'
+        ]:
             del ser.validated_data[field]
         for project_id, project_version_id in project_info_set:
             dastintegration = IastDastIntegration(
