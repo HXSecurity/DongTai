@@ -102,10 +102,8 @@ class XrayWebhook(AnonymousAuthEndPoint):
                 request.data['data']['detail']['plugin'])
             strategy_ids = list(
                 IastStrategyModel.objects.filter(
-                    vul_type__in=iast_vul_codes).value_list(
-                        'pk',
-                        flat=True,
-                    ).all())
+                    vul_type__in=iast_vul_codes).value_list('pk',
+                                                            flat=True).all())
             for reqres_pair in request.data['data']['detail']['snapshot']:
                 req, res = reqres_pair
                 uuid = parse_xray_uuid(res)
@@ -174,7 +172,10 @@ class DastWebhook(AnonymousAuthEndPoint):
         dast_list = []
         vul_level_id = VUL_LEVEL_DICT[ser.validated_data['vul_level']]
         for field in [
-                'dt_uuid_id', 'dongtai_vul_type', 'agent_id', 'vul_level'
+                'dt_uuid_id',
+                'dongtai_vul_type',
+                'agent_id',
+                'vul_level',
         ]:
             del ser.validated_data[field]
         for project_id, project_version_id in project_info_set:
