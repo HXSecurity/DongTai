@@ -159,7 +159,7 @@ class DastVulsEndPoint(UserEndPoint, viewsets.ViewSet):
                                  description=_("Dast Vul delete"),
                                  tags=[_('Dast Vul')])
     def delete(self, request):
-        ser = VulsDelteArgsSerializer(data=request.data)
+        ser = VulsDeleteArgsSerializer(data=request.data)
         try:
             if ser.is_valid(True):
                 pass
