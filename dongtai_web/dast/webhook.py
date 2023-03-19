@@ -12,32 +12,35 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 from dongtai_common.models.dast_integration import IastDastIntegration
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
+from dongtai_conf.settings import DAST_TOKEN
 
 logger = logging.getLogger('dongtai-webapi')
 
 
-class DastIntegrationSerializer(serializers.ModelSerializer):
-    dt_uuid_id = serializers.ListField(child=serializers.CharField())
-    dongtai_vul_type = serializers.ListField(child=serializers.CharField())
-    agent_id = serializers.ListField(child=serializers.CharField())
-    vul_level = serializers.ChoiceField(['HIGH', 'MEDIUM', 'LOW', 'NOTE'])
+class DastIntegrationRequestMessagesSerializer(serializers.Serializer):
+    request = serializers.CharField()
+    response = serializers.CharField()
 
-    class Meta:
-        model = IastDastIntegration
-        fields = [
-            'detail',
-            'vul_level',
-            'urls',
-            'payload',
-            'create_time',
-            'vul_type',
-            'request_messages',
-            'dt_uuid_id',
-            'dongtai_vul_type',
-            'dast_tag',
-            'agent_id',
-            'target',
-        ]
+
+class DastIntegrationSerializer(serializers.Serializer):
+    dt_uuid_id = serializers.ListField(child=serializers.CharField(),
+                                       required=True)
+    dongtai_vul_type = serializers.ListField(child=serializers.CharField(),
+                                             required=True)
+    agent_id = serializers.ListField(child=serializers.CharField(),
+                                     required=True)
+    request_messages = serializers.ListField(
+        child=DastIntegrationRequestMessagesSerializer(), required=True)
+    vul_level = serializers.ChoiceField(['HIGH', 'MEDIUM', 'LOW', 'NOTE'],
+                                        required=True)
+    urls = serializers.ListField(child=serializers.CharField(), required=True)
+    detail = serializers.CharField(required=True)
+    payload = serializers.CharField(required=True)
+    dast_tag = serializers.CharField(required=True)
+    target = serializers.CharField(required=True)
+    vul_name = serializers.CharField(required=True)
+    create_time = serializers.IntegerField(required=True)
+    vul_type = serializers.CharField(required=True)
 
 
 VUL_LEVEL_DICT = {
@@ -57,12 +60,18 @@ class DastWebhook(AnonymousAuthEndPoint):
                                  description=_("Dast Webhook push vul"),
                                  tags=[_('Dast Webhook')])
     def post(self, request):
+        used_token = request.headers.get(
+            'X-Dongtai-Dast-Vul-Api-Authorization', '')
+        if used_token != DAST_TOKEN:
+            return R.failure(msg="Authorization check failed", status_code=401)
         ser = DastIntegrationSerializer(data=request.data)
         try:
-            if ser.is_valid(False):
+            if ser.is_valid(True):
                 pass
         except ValidationError as e:
-            return R.failure(data=e, status_code=422)
+            logger.debug(request.data)
+            logger.info(e.detail)
+            return R.failure(data=e.detail, status_code=422)
         project_info_set = list(
             IastAgent.objects.filter(
                 pk__in=(int(i)
