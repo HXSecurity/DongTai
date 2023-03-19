@@ -34,10 +34,10 @@ class DastIntegrationSerializer(serializers.Serializer):
     vul_level = serializers.ChoiceField(['HIGH', 'MEDIUM', 'LOW', 'NOTE'],
                                         required=True)
     urls = serializers.ListField(child=serializers.CharField(), required=True)
-    detail = serializers.CharField(required=True)
-    payload = serializers.CharField(required=True)
+    detail = serializers.CharField(required=True, allow_blank=True)
+    payload = serializers.CharField(required=True, allow_blank=True)
     dast_tag = serializers.CharField(required=True)
-    target = serializers.CharField(required=True)
+    target = serializers.CharField(required=True, allow_blank=True)
     vul_name = serializers.CharField(required=True)
     create_time = serializers.IntegerField(required=True)
     vul_type = serializers.CharField(required=True)
