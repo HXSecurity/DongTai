@@ -155,7 +155,7 @@ class DastWebhookTestCase(APITestCase):
                                json.dumps(data1),
                                content_type="application/json")
         self.assertEqual(res.status_code, 201)
-    
+
     def test_positive_push_201_2(self):
         res = self.client.post('/api/v1/dast_webhook',
                                json.dumps(data4),
