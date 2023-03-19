@@ -2,7 +2,8 @@ from rest_framework.test import APITestCase
 import json
 
 data1 = {
-    "vul_name":"/vulns/002-file-read.jsp 路径穿越",
+    "vul_name":
+    "/vulns/002-file-read.jsp 路径穿越",
     "detail":
     "test",
     "vul_level":
@@ -38,7 +39,8 @@ data1 = {
 }
 
 data2 = {
-    "vul_name":"/vulns/002-file-read.jsp 路径穿越",
+    "vul_name":
+    "/vulns/002-file-read.jsp 路径穿越",
     "detail":
     "test",
     "vul_level":
@@ -68,7 +70,8 @@ data2 = {
 }
 
 data3 = {
-    "vul_name":"/vulns/002-file-read.jsp 路径穿越",
+    "vul_name":
+    "/vulns/002-file-read.jsp 路径穿越",
     "detail":
     "test",
     "vul_level":
@@ -111,20 +114,20 @@ class DastWebhookTestCase(APITestCase):
         self.client.credentials(
             HTTP_X_DONGTAI_DAST_VUL_API_AUTHORIZATION=DAST_TOKEN)
 
-
     def test_positive_push(self):
         res = self.client.post('/api/v1/dast_webhook',
                                json.dumps(data1),
                                content_type="application/json")
         self.assertEqual(res.status_code, 201)
-    def test_nagetive_push_412(self):
+
+    def test_nagetive_push_422(self):
         res = self.client.post('/api/v1/dast_webhook',
                                json.dumps(data2),
                                content_type="application/json")
         self.assertEqual(res.status_code, 422)
         print(json.loads(res.content))
         pass
-    
+
     def test_nagetive_push_412(self):
         res = self.client.post('/api/v1/dast_webhook',
                                json.dumps(data3),
