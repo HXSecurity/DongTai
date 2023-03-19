@@ -721,4 +721,6 @@ for _dir in (TMP_COMMON_PATH, AGENT_LOG_DIR):
         print(f'{_dir} is not exists, check the init.')
         exit(0)
 
+DAST_TOKEN = config.get('other', 'dast_token', fallback='')
+
 set_asyncio_policy()
