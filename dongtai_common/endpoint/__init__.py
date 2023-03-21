@@ -114,8 +114,6 @@ class EndPoint(APIView):
         except Exception as exc:
             logger.warning(f'url: {self.request.path},exc:{exc}', exc_info=exc)
             response = self.handle_exception(exc)
-        finally:
-            return self.finalize_response(request, response, *args, **kwargs)
 
         self.response = self.finalize_response(request, response, *args,
                                                **kwargs)
