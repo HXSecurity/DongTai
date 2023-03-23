@@ -44,7 +44,7 @@ class VulsSummaryArgsSerializer(VulsPageArgsSerializer):
 
 class VulsDeleteArgsSerializer(VulsPageArgsSerializer):
     vul_id = serializers.ListField(child=serializers.IntegerField(),
-                                   required=False)
+                                   required=True)
 
 
 class VulsResArgsSerializer(serializers.ModelSerializer):
@@ -136,7 +136,7 @@ class DastVulsEndPoint(UserEndPoint, viewsets.ViewSet):
         if 'project_version_id' in ser.validated_data:
             q = q & Q(project_version_id=ser.validated_data['project_version_id'])
         if 'keyword' in ser.validated_data:
-            q = q & Q(keyword__contains=ser.validated_data['keyword'])
+            q = q & Q(vul_name__contains=ser.validated_data['keyword'])
         if ser.validated_data['order_by_order'] == 'desc':
             order_by_func = F(ser.validated_data['order_by_field']).desc()
         else:
