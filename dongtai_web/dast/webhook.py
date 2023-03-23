@@ -12,6 +12,8 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 from dongtai_common.models.dast_integration import (
     IastDastIntegration,
     IastDastIntegrationRelation,
+    IastvulDtMarkRelation,
+    DastvulDtMarkRelation,
 )
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
@@ -95,17 +97,16 @@ class DastWebhook(AnonymousAuthEndPoint):
                 **ser.validated_data)
             dastintegration.save()
             dast_list.append(dastintegration)
+        dastvuldtmarkrel = []
         for mark in dt_marks:
-            vul_ids = cache.get(f'dastvul-{mark}', default=[])
             for vul in dast_list:
-                vul_ids.append(vul.id)
-            cache.set(f'dastvul-{mark}', vul_ids, 60 * 10)
-            iast_vul_ids = cache.get(f'iastvul-{mark}', default=[])
-            match_vul = IastVulnerabilityModel.objects.filter(
-                uri__in=ser.validated_data['urls'],
-                strategy__vul_type__in=ser.validated_data['dongtai_vul_type'],
-                pk__in=iast_vul_ids,
-            ).values_list('id', flat=True)
+                dastvuldtmarkrel.append(
+                    DastvulDtMarkRelation(dt_mark=mark, dastvul=vul))
+            match_vul = IastvulDtMarkRelation.objects.filter(
+                iastvul__uri__in=ser.validated_data['urls'],
+                iastvul__strategy__vul_type__in=ser.validated_data['dongtai_vul_type'],
+                dt_mark=mark
+            ).values_list('iastvul_id', flat=True)
             create_rels = []
             for iastvul in match_vul:
                 for dastvul in dast_list:
@@ -125,6 +126,8 @@ class DastWebhook(AnonymousAuthEndPoint):
             )
             rels_created = IastDastIntegrationRelation.objects.bulk_create(
                 create_rels, ignore_conflicts=True)
+        mark_created = DastvulDtMarkRelation.objects.bulk_create(
+            dastvuldtmarkrel, ignore_conflicts=True)
         if dast_list:
             return R.success(status_code=201)
         return R.failure(status_code=412)

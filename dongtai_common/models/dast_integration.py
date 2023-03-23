@@ -68,3 +68,29 @@ class IastDastIntegrationRelation(models.Model):
     class Meta:
         managed = get_managed()
         db_table = 'iast_dast_integration_relation'
+
+
+class IastvulDtMarkRelation(models.Model):
+    dt_mark = models.CharField(max_length=255, blank=True, null=True)
+    iastvul = models.ForeignKey(IastVulnerabilityModel,
+                                on_delete=models.CASCADE,
+                                blank=True,
+                                null=True,
+                                default=-1)
+
+    class Meta:
+        managed = get_managed()
+        db_table = 'iast_iast_dtmatk_relation'
+
+
+class DastvulDtMarkRelation(models.Model):
+    dt_mark = models.CharField(max_length=255, blank=True, null=True)
+    dastvul = models.ForeignKey(IastDastIntegration,
+                                on_delete=models.CASCADE,
+                                blank=True,
+                                null=True,
+                                default=-1)
+
+    class Meta:
+        managed = get_managed()
+        db_table = 'iast_dast_dtmatk_relation'
