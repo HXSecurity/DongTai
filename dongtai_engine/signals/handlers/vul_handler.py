@@ -212,13 +212,17 @@ from django.core.cache import cache
 import uuid
 
 
-def get_original_url(uri: str, url_desc: str) -> str:
-    if url_desc.startswith('location'):
-        _, location = url_desc.split(":")
-    else:
+def get_original_url(uri: str, url_desc: list) -> str:
+    locations = []
+    for desc in url_desc:
+        if desc.startswith('location'):
+            _, location = desc.split(":")
+            locations.append(location)
+    if not locations:
         return uri
     res = uri.split('/')
-    res[int(location)] = "<placeholder>"
+    for location in locations:
+        res[int(location)] = "<placeholder>"
     return "/".join(res)
 
 
@@ -253,7 +257,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
     else:
         param_name = ''
         taint_position = ''
-    url_desc: str = ""
+    url_desc: list = []
     if 'PATH' in param_names.keys():
         url_desc = param_names['PATH']
     pattern_string: str = get_real_url(json.loads(vul_meta.method_pool))
