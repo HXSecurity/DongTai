@@ -27,8 +27,8 @@ class IastDastIntegration(models.Model):
     target = models.CharField(max_length=255, blank=True, null=True)
     vul_type = models.CharField(max_length=255, blank=True, null=True)
     dast_tag = models.CharField(max_length=255, blank=True, null=True)
-    request_messages = models.JSONField(null=False, default=[])
-    urls = models.JSONField(null=False, default=[])
+    request_messages = models.JSONField(null=False, default=list)
+    urls = models.JSONField(null=False, default=list)
     create_time = models.IntegerField(default=lambda: int(time.time()),
                                       blank=True,
                                       null=True)
@@ -45,7 +45,7 @@ class IastDastIntegration(models.Model):
                                         blank=True,
                                         null=True,
                                         default=-1)
-    dongtai_vul_type = models.JSONField(null=False, default=[])
+    dongtai_vul_type = models.JSONField(null=False, default=list)
 
     class Meta:
         managed = get_managed()
