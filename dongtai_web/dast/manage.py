@@ -62,8 +62,8 @@ class DastManageEndPoint(UserEndPoint, viewsets.ViewSet):
         key = 'dast_validation_settings'
         profile = IastProfile.objects.filter(key=key).values_list(
             'value', flat=True).first()
-        data = json.loads(profile)
         if profile is None:
             return R.failure(
                 msg=_("Failed to get {} configuration").format(key))
+        data = json.loads(profile)
         return R.success(data=data)
