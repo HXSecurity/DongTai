@@ -508,14 +508,18 @@ def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
             return
         from dongtai_common.models.strategy import IastStrategyModel
         from dongtai_protocol.utils import base64_decode
+        from dongtai_common.models.dast_integration import (
+            IastDastIntegration,
+            IastDastIntegrationRelation,
+            IastvulDtMarkRelation,
+            DastvulDtMarkRelation,
+        )
         from dongtai_common.models.dast_integration import IastDastIntegration, IastDastIntegrationRelation
         mark = parse_dast_mark(base64_decode(vul.req_header))
-        vul_ids = cache.get(f'dastvul-{mark}', default=[])
-        dastvuls = IastDastIntegration.objects.filter(
-            pk__in=vul_ids).all()
-        iast_vul_ids = cache.get(f'iastvul-{mark}', default=[])
-        iast_vul_ids.append(vul.id)
-        cache.set(f'iastvul-{mark}', iast_vul_ids, 6 * 1 * 100)
+        vul_ids = DastvulDtMarkRelation.objects.filter(
+            dt_mark=mark).values('dastvul_id').distinct()
+        dastvuls = IastDastIntegration.objects.filter(pk__in=vul_ids).all()
+        IastvulDtMarkRelation.objects.create(dt_mark=mark, iastvul=vul)
         create_rels = []
         for dastvul in dastvuls:
             if vul.strategy.vul_type in dastvul.dongtai_vul_type and vul.uri in dastvul.urls:
