@@ -55,16 +55,16 @@ class IastDastIntegration(models.Model):
 class IastDastIntegrationRelation(models.Model):
     dt_mark = models.CharField(max_length=255, blank=True, null=True)
     iastvul = models.ForeignKey(IastVulnerabilityModel,
-                                 on_delete=models.CASCADE,
-                                 blank=True,
-                                 null=True,
-                                 default=-1)
+                                on_delete=models.CASCADE,
+                                blank=True,
+                                null=True,
+                                default=-1)
     dastvul = models.ForeignKey(IastDastIntegration,
-                                 on_delete=models.CASCADE,
-                                 blank=True,
-                                 null=True,
-                                 default=-1)
-    
+                                on_delete=models.CASCADE,
+                                blank=True,
+                                null=True,
+                                default=-1)
+
     class Meta:
         managed = get_managed()
         db_table = 'iast_dast_integration_relation'

@@ -4,7 +4,7 @@ import json
 from dongtai_conf.settings import BASE_DIR
 import os
 
-MOCK_DATA_PATH = os.path.join(BASE_DIR,'dongtai_web/dast/mockdata')
+MOCK_DATA_PATH = os.path.join(BASE_DIR, 'dongtai_web/dast/mockdata')
 
 data1 = {
     "dt_mark": ["e622e6675e7842f7b09e4c1a7b2d8b4f"],
@@ -14,10 +14,7 @@ data1 = {
     "test",
     "vul_level":
     "HIGH",
-    "urls": [
-        "/vulns/002-file-read.jsp",
-        "/vulns/002-file-read.jsp"
-    ],
+    "urls": ["/vulns/002-file-read.jsp", "/vulns/002-file-read.jsp"],
     "payload":
     "string",
     "create_time":
@@ -152,33 +149,38 @@ data4 = {
     "http://192.168.0.64:8080/"
 }
 
-class DastWebhookTestCase(APITestCase):
+
+class DastWebhookTestCase(AgentTestCase):
 
     def setUp(self):
+        super().setUp()
         from dongtai_conf.settings import DAST_TOKEN
         self.client.credentials(
             HTTP_X_DONGTAI_DAST_VUL_API_AUTHORIZATION=DAST_TOKEN)
 
-
-
     def test_positive_push_201_2(self):
+        new_data = data4.copy()
+        new_data["agent_id"] = [str(self.agent_id)]
         res = self.client.post('/api/v1/dast_webhook',
-                               json.dumps(data4),
+                               json.dumps(new_data),
                                content_type="application/json")
         self.assertEqual(res.status_code, 201)
 
     def test_positive_push_201_3(self):
+        new_data = data4.copy()
+        new_data["agent_id"] = [str(self.agent_id)]
         res = self.client.post('/api/v1/dast_webhook',
-                               json.dumps(data4),
+                               json.dumps(new_data),
                                content_type="application/json")
         self.assertEqual(res.status_code, 201)
 
     def test_nagetive_push_422(self):
+        new_data = data2.copy()
+        new_data["agent_id"] = [str(self.agent_id)]
         res = self.client.post('/api/v1/dast_webhook',
-                               json.dumps(data2),
+                               json.dumps(new_data),
                                content_type="application/json")
         self.assertEqual(res.status_code, 422)
-        print(json.loads(res.content))
         pass
 
     def test_nagetive_push_412(self):
@@ -191,7 +193,9 @@ class DastWebhookTestCase(APITestCase):
     def tearDown(self):
         pass
 
+
 class IastDastIntegrationBindTestCase(AgentTestCase):
+
     def setUp(self):
         super().setUp()
         from dongtai_conf.settings import DAST_TOKEN
@@ -208,7 +212,8 @@ class IastDastIntegrationBindTestCase(AgentTestCase):
         from dongtai_engine.tasks import search_vul_from_method_pool
         from dongtai_common.models.agent_method_pool import MethodPool
         import pickle
-        with open(os.path.join(MOCK_DATA_PATH,'method_pool.pickle'), 'rb') as fp:
+        with open(os.path.join(MOCK_DATA_PATH, 'method_pool.pickle'),
+                  'rb') as fp:
             method_pool = pickle.load(fp)
         method_pool.agent_id = self.agent_id
         method_pool.save()
@@ -223,7 +228,8 @@ class IastDastIntegrationBindTestCase(AgentTestCase):
         from dongtai_engine.tasks import search_vul_from_method_pool
         from dongtai_common.models.agent_method_pool import MethodPool
         import pickle
-        with open(os.path.join(MOCK_DATA_PATH,'method_pool.pickle'), 'rb') as fp:
+        with open(os.path.join(MOCK_DATA_PATH, 'method_pool.pickle'),
+                  'rb') as fp:
             method_pool = pickle.load(fp)
         method_pool.agent_id = self.agent_id
         method_pool.save()
