@@ -9,7 +9,12 @@ from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from django.core.cache import cache
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from dongtai_common.models.dast_integration import IastDastIntegration
+from dongtai_common.models.dast_integration import (
+    IastDastIntegration,
+    IastDastIntegrationRelation,
+    IastvulDtMarkRelation,
+    DastvulDtMarkRelation,
+)
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from dongtai_conf.settings import DAST_TOKEN
@@ -34,6 +39,7 @@ class DastIntegrationSerializer(serializers.Serializer):
     vul_level = serializers.ChoiceField(['HIGH', 'MEDIUM', 'LOW', 'NOTE'],
                                         required=True)
     urls = serializers.ListField(child=serializers.CharField(), required=True)
+    dt_mark = serializers.ListField(child=serializers.CharField(), required=True)
     detail = serializers.CharField(required=True, allow_blank=True)
     payload = serializers.CharField(required=True, allow_blank=True)
     dast_tag = serializers.CharField(required=True)
@@ -80,12 +86,8 @@ class DastWebhook(AnonymousAuthEndPoint):
                             'project_version_id').distinct(), )
         dast_list = []
         vul_level_id = VUL_LEVEL_DICT[ser.validated_data['vul_level']]
-        for field in [
-                'dt_uuid_id',
-                'dongtai_vul_type',
-                'agent_id',
-                'vul_level',
-        ]:
+        dt_marks = ser.validated_data['dt_mark']
+        for field in ['dt_uuid_id', 'agent_id', 'vul_level', 'dt_mark']:
             del ser.validated_data[field]
         for project_id, project_version_id in project_info_set:
             dastintegration = IastDastIntegration(
@@ -93,8 +95,39 @@ class DastWebhook(AnonymousAuthEndPoint):
                 project_version_id=project_version_id,
                 vul_level_id=vul_level_id,
                 **ser.validated_data)
+            dastintegration.save()
             dast_list.append(dastintegration)
-        dasts = IastDastIntegration.objects.bulk_create(dast_list)
-        if dasts:
+        dastvuldtmarkrel = []
+        for mark in dt_marks:
+            for vul in dast_list:
+                dastvuldtmarkrel.append(
+                    DastvulDtMarkRelation(dt_mark=mark, dastvul=vul))
+            match_vul = IastvulDtMarkRelation.objects.filter(
+                iastvul__uri__in=ser.validated_data['urls'],
+                iastvul__strategy__vul_type__in=ser.validated_data['dongtai_vul_type'],
+                dt_mark=mark
+            ).values_list('iastvul_id', flat=True)
+            create_rels = []
+            for iastvul in match_vul:
+                for dastvul in dast_list:
+                    rel = IastDastIntegrationRelation(iastvul_id=iastvul,
+                                                      dastvul=dastvul,
+                                                      dt_mark=mark)
+                    logger.debug(
+                        "create vul_relation iast_vul %s dastvul %s",
+                        iastvul,
+                        dastvul.id,
+                    )
+                    create_rels.append(rel)
+            logger.debug(
+                "create vul_relation count %s with mark %s",
+                len(create_rels),
+                mark,
+            )
+            rels_created = IastDastIntegrationRelation.objects.bulk_create(
+                create_rels, ignore_conflicts=True)
+        mark_created = DastvulDtMarkRelation.objects.bulk_create(
+            dastvuldtmarkrel, ignore_conflicts=True)
+        if dast_list:
             return R.success(status_code=201)
         return R.failure(status_code=412)

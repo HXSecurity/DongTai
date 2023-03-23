@@ -239,6 +239,15 @@ def get_real_url(method_pools: list) -> str:
     return ''
 
 
+def parse_dast_mark(req_header: str) -> str:
+    res_list = req_header.split()
+    for line in res_list:
+        if line.startswith("dt-mark-header"):
+            key_tuple = line.split(":")
+            return key_tuple[1].strip()
+    return ""
+
+
 def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
              bottom_stack, **kwargs):
     logger.info(
@@ -501,6 +510,39 @@ def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
                        bottom_stack, **kwargs)
         if not vul:
             return
+        from dongtai_common.models.strategy import IastStrategyModel
+        from dongtai_protocol.utils import base64_decode
+        from dongtai_common.models.dast_integration import (
+            IastDastIntegration,
+            IastDastIntegrationRelation,
+            IastvulDtMarkRelation,
+            DastvulDtMarkRelation,
+        )
+        from dongtai_common.models.dast_integration import IastDastIntegration, IastDastIntegrationRelation
+        mark = parse_dast_mark(base64_decode(vul.req_header))
+        vul_ids = DastvulDtMarkRelation.objects.filter(
+            dt_mark=mark).values('dastvul_id').distinct()
+        dastvuls = IastDastIntegration.objects.filter(pk__in=vul_ids).all()
+        IastvulDtMarkRelation.objects.create(dt_mark=mark, iastvul=vul)
+        create_rels = []
+        for dastvul in dastvuls:
+            if vul.strategy.vul_type in dastvul.dongtai_vul_type and vul.uri in dastvul.urls:
+                rel = IastDastIntegrationRelation(iastvul=vul,
+                                                  dastvul=dastvul,
+                                                  dt_mark=mark)
+                logger.debug(
+                    "create vul_relation iast_vul %s dastvul %s",
+                    vul.id,
+                    dastvul.id,
+                )
+                create_rels.append(rel)
+        rels_created = IastDastIntegrationRelation.objects.bulk_create(
+            create_rels, ignore_conflicts=True)
+        logger.debug(
+            "create vul_relation count %s with mark %s",
+            len(create_rels),
+            mark,
+        )
         create_vul_recheck_task(vul_id=vul.id,
                                 agent=vul.agent,
                                 timestamp=timestamp)
