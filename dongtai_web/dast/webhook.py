@@ -130,4 +130,5 @@ class DastWebhook(AnonymousAuthEndPoint):
             dastvuldtmarkrel, ignore_conflicts=True)
         if dast_list:
             return R.success(status_code=201)
+        logger.debug(request.data)
         return R.failure(status_code=412)

@@ -14,11 +14,12 @@ from dongtai_common.models.dast_integration import (
     IastDastIntegration,
     IastDastIntegrationRelation,
     DastvulDtMarkRelation,
+    IastvulDtMarkRelation,
 )
 from rest_framework import serializers
 from rest_framework import viewsets
 from rest_framework.serializers import ValidationError
-
+from collections import defaultdict
 logger = logging.getLogger('dongtai-webapi')
 
 
@@ -84,13 +85,14 @@ class VulsResArgsSerializer(serializers.ModelSerializer):
 
 
 class IastVulRelationArgsSerializer(serializers.Serializer):
+    page_size = serializers.IntegerField(default=20,
+                                         help_text=_('Number per page'))
+    page = serializers.IntegerField(default=1, help_text=_('Page index'))
     pk = serializers.IntegerField(default=20, help_text=_('iast_vul id'))
-    mode = serializers.ChoiceField(
-        ['all', 'only_rel'],
-        default='only_rel',
-        help_text=
-        _('all mode return all dastvul share same dt_mark, only_rel mode return dastvul with relation'
-          ))
+    is_relatived = serializers.BooleanField(required=False, default=None)
+    vul_type = serializers.ListField(child=serializers.CharField(),
+                                     required=False,
+                                     default=[])
 
 
 class IastVulRelationDeleteArgsSerializer(serializers.Serializer):
@@ -231,28 +233,52 @@ class DastVulsEndPoint(UserEndPoint, viewsets.ViewSet):
         )
         return R.success()
 
-    @extend_schema_with_envcheck([IastVulRelationArgsSerializer],
+    @extend_schema_with_envcheck(request=IastVulRelationArgsSerializer,
                                  summary=_('Dast Vul Relation vul'),
                                  description=_("Dast Vul Relation vul"),
                                  tags=[_('Dast Vul')])
-    def get_relative_with_iast_vul(self, request):
-        ser = IastVulRelationArgsSerializer(data=request.query_params)
+    def get_relative_with_dast_vul(self, request):
+        ser = IastVulRelationArgsSerializer(data=request.data)
         try:
             if ser.is_valid(True):
                 pass
         except ValidationError as e:
             return R.failure(data=e.detail)
-        if ser.validated_data['mode'] == 'all':
-            dt_marks = IastvulDtMarkRelation.objects.filter(
-                pk__in=ser.validated_data['pk']).values('dt_mark').all()
-            dastvul_ids = DastvulDtMarkRelation.objects.filter(
-                dt_mark__in=dt_marks).values('dastvul_id').distinct().all()
-            dastvuls = IastDastIntegration.objects.filter(
-                pk__in=dastvul_ids).all()
-        else:
+        q = Q()
+        if ser.validated_data['is_relatived'] == True:
             dastvul_ids = IastDastIntegrationRelation.objects.filter(
                 iastvul_id=ser.validated_data['pk']).values(
-                    'dast_vul_id').all()
-            dastvuls = IastDastIntegration.objects.filter(
-                pk__in=dastvul_ids).all()
-        return R.success(data=VulsResArgsSerializer(dastvuls, many=True).data)
+                    'dastvul_id').all()
+            q = q & Q(pk__in=dastvul_ids)
+        elif ser.validated_data['is_relatived'] == False:
+            dt_marks = IastvulDtMarkRelation.objects.filter(
+                iastvul_id=ser.validated_data['pk']).values('dt_mark')
+            dastvul_ids = DastvulDtMarkRelation.objects.filter(
+                dt_mark__in=dt_marks).values('dastvul_id').all()
+            q = q & Q(pk__in=dastvul_ids)
+        if ser.validated_data['vul_type']:
+            q = q & Q(vul_type__in=ser.validated_data['vul_type'])
+        page_summary, dastvuls = self.get_paginator(
+            IastDastIntegration.objects.filter(q).order_by('-pk').all(),
+            ser.validated_data['page'], ser.validated_data['page_size'])
+        data = VulsResArgsSerializer(dastvuls, many=True).data
+        relative_dict = defaultdict(
+            lambda: False, {
+                k: True
+                for k in IastDastIntegrationRelation.objects.filter(
+                    iastvul_id=ser.validated_data['pk'],
+                    dastvul_id__in=[i.id for i in data]).value_list(
+                        'dastvul_id').distinct().all()
+            })
+        for item in data:
+            item['is_relatived'] = relative_dict[item['id']]
+        return R.success(data=VulsResArgsSerializer(dastvuls, many=True).data,
+                         page=page_summary)
+
+    @extend_schema_with_envcheck(summary=_('Dast Vul type'),
+                                 description=_("Dast Vul type"),
+                                 tags=[_('Dast Vul')])
+    def get_vul_type(self, request):
+        vul_type = IastDastIntegration.objects.value_list(
+            'vul_type', flat=True).distinct().all()
+        return R.success(data=vul_type)
