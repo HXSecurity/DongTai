@@ -267,7 +267,7 @@ class DastVulsEndPoint(UserEndPoint, viewsets.ViewSet):
                 k: True
                 for k in IastDastIntegrationRelation.objects.filter(
                     iastvul_id=ser.validated_data['pk'],
-                    dastvul_id__in=[i.id for i in data]).value_list(
+                    dastvul_id__in=[i['id'] for i in data]).values_list(
                         'dastvul_id').distinct().all()
             })
         for item in data:

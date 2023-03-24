@@ -516,29 +516,41 @@ def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
         )
         from dongtai_common.models.dast_integration import IastDastIntegration, IastDastIntegrationRelation
         mark = parse_dast_mark(base64_decode(vul.req_header))
-        vul_ids = DastvulDtMarkRelation.objects.filter(
-            dt_mark=mark).values('dastvul_id').distinct()
-        dastvuls = IastDastIntegration.objects.filter(pk__in=vul_ids).all()
-        IastvulDtMarkRelation.objects.create(dt_mark=mark, iastvul=vul)
-        create_rels = []
-        for dastvul in dastvuls:
-            if vul.strategy.vul_type in dastvul.dongtai_vul_type and vul.uri in dastvul.urls:
-                rel = IastDastIntegrationRelation(iastvul=vul,
-                                                  dastvul=dastvul,
-                                                  dt_mark=mark)
+        if mark:
+            key = 'dast_validation_settings'
+            profile = IastProfile.objects.filter(key=key).values_list(
+                'value', flat=True).first()
+            if profile is None:
+                return R.failure(
+                    msg=_("Failed to get {} configuration").format(key))
+            data = json.loads(profile)
+            logger.info("mark found , try to bind exist dastvul.")
+            vul_ids = DastvulDtMarkRelation.objects.filter(
+                dt_mark=mark).values('dastvul_id').distinct()
+            dastvuls = IastDastIntegration.objects.filter(pk__in=vul_ids).all()
+            IastvulDtMarkRelation.objects.create(dt_mark=mark, iastvul=vul)
+            create_rels = []
+            for dastvul in dastvuls:
                 logger.debug(
-                    "create vul_relation iast_vul %s dastvul %s",
-                    vul.id,
-                    dastvul.id,
+                    f"vul.strategy.vul_type: {vul.strategy.vul_type}, vul.uri: {vul.uri}"
                 )
-                create_rels.append(rel)
-        rels_created = IastDastIntegrationRelation.objects.bulk_create(
-            create_rels, ignore_conflicts=True)
-        logger.debug(
-            "create vul_relation count %s with mark %s",
-            len(create_rels),
-            mark,
-        )
+                if vul.strategy.vul_type in dastvul.dongtai_vul_type and vul.uri in dastvul.urls:
+                    rel = IastDastIntegrationRelation(iastvul=vul,
+                                                      dastvul=dastvul,
+                                                      dt_mark=mark)
+                    logger.info(
+                        "create vul_relation iast_vul %s dastvul %s",
+                        vul.id,
+                        dastvul.id,
+                    )
+                    create_rels.append(rel)
+            rels_created = IastDastIntegrationRelation.objects.bulk_create(
+                create_rels, ignore_conflicts=True)
+            logger.debug(
+                "create vul_relation count %s with mark %s",
+                len(rels_created),
+                mark,
+            )
         create_vul_recheck_task(vul_id=vul.id,
                                 agent=vul.agent,
                                 timestamp=timestamp)
