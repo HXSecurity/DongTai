@@ -400,12 +400,15 @@ urlpatterns = [
     path(
         'dastvul/relation',
         DastVulsEndPoint.as_view({
-            'post': "get_relative_with_iast_vul",
+            'post': "get_relative_with_dast_vul",
             'delete': "delete_relation",
             'create': "create_relation",
         })),
     path('dastvul/summary', DastVulsEndPoint.as_view({
         'post': "summary",
+    })),
+    path('dastvul/vultype', DastVulsEndPoint.as_view({
+        'get': "get_vul_type",
     })),
     path(
         'dastvul/settings',
