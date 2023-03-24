@@ -397,14 +397,22 @@ urlpatterns = [
              'post': "page",
              'delete': "delete",
          })),
+    path(
+        'dastvul/relation',
+        DastVulsEndPoint.as_view({
+            'post': "get_relative_with_iast_vul",
+            'delete': "delete_relation",
+            'create': "create_relation",
+        })),
     path('dastvul/summary', DastVulsEndPoint.as_view({
         'post': "summary",
     })),
-    path('dastvul/settings',
-         DastManageEndPoint.as_view({
-             'post': "change_validation_settings",
-             'get': "get_validation_settings",
-         })),
+    path(
+        'dastvul/settings',
+        DastManageEndPoint.as_view({
+            'post': "change_validation_settings",
+            'get': "get_validation_settings",
+        })),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
