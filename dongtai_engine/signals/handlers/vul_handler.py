@@ -24,6 +24,7 @@ from dongtai_engine.signals.handlers.parse_param_name import parse_target_values
 from typing import List, Optional, Callable
 import json
 from collections import defaultdict
+from dongtai_common.models.profile import IastProfile
 
 
 def equals(source, target):
@@ -517,6 +518,10 @@ def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
         from dongtai_common.models.dast_integration import IastDastIntegration, IastDastIntegrationRelation
         mark = parse_dast_mark(base64_decode(vul.req_header))
         if mark:
+            key = 'dast_validation_settings'
+            profile = IastProfile.objects.filter(key=key).values_list(
+                'value', flat=True).first()
+            data = json.loads(profile) if profile else {}
             logger.info("mark found , try to bind exist dastvul.")
             vul_ids = DastvulDtMarkRelation.objects.filter(
                 dt_mark=mark).values('dastvul_id').distinct()
@@ -527,6 +532,13 @@ def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
                 logger.debug(
                     f"vul.strategy.vul_type: {vul.strategy.vul_type}, vul.uri: {vul.uri}"
                 )
+                if data and data[
+                        'validation_status'] and vul.strategy_id not in data[
+                            'strategy_id']:
+                    logger.debug(
+                        f"vul.strategy.vul_type not in validation strategy_id list or not enable validation"
+                    )
+                    continue
                 if vul.strategy.vul_type in dastvul.dongtai_vul_type and vul.uri in dastvul.urls:
                     rel = IastDastIntegrationRelation(iastvul=vul,
                                                       dastvul=dastvul,
