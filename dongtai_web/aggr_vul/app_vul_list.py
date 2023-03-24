@@ -177,7 +177,7 @@ class GetAppVulsList(UserEndPoint):
                                            'iastvul_id').distinct()
         dast_vul_types_dict = defaultdict(
             list, {
-                k: set(map(g, lambda x: x['dastvul__vul_type']))
+                k: list(set(map(lambda x: x['dastvul__vul_type'], g)))
                 for k, g in groupby(dast_vul_types,
                                     key=lambda x: x['iastvul_id'])
             })
@@ -202,8 +202,8 @@ class GetAppVulsList(UserEndPoint):
                     item['id']) if item['is_header_vul'] else []
                 item['dastvul__vul_type'] = dast_vul_types_dict[item['id']]
                 item['dastvul_count'] = dastvul_rel_count_res_dict[item['id']]
-                item['dast_validation_status'] = dastvul_rel_count_res_dict[
-                    item['id']]
+                item['dast_validation_status'] = True if dastvul_rel_count_res_dict[
+                    item['id']] else False
                 end['data'].append(item)
         # all Iast Vulnerability Status
         status = IastVulnerabilityStatus.objects.all()
