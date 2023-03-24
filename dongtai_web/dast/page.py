@@ -279,6 +279,6 @@ class DastVulsEndPoint(UserEndPoint, viewsets.ViewSet):
                                  description=_("Dast Vul type"),
                                  tags=[_('Dast Vul')])
     def get_vul_type(self, request):
-        vul_type = IastDastIntegration.objects.value_list(
+        vul_type = IastDastIntegration.objects.values_list(
             'vul_type', flat=True).distinct().all()
         return R.success(data=vul_type)
