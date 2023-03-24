@@ -84,6 +84,8 @@ class ProjectAdd(UserEndPoint):
                 description = request.data.get('description', None)
                 department_id = request.data.get('department_id', None)
                 pid = request.data.get("pid", 0)
+                enable_log = request.data.get("enable_log", None)
+                log_level = request.data.get("log_level", None)
                 accessable_ips = []
                 if pid and base_url:
                     ips = filter(lambda x: ip_validate(x), [
@@ -175,10 +177,14 @@ class ProjectAdd(UserEndPoint):
                     project.test_req_header_key = test_req_header_key
                 if test_req_header_value:
                     project.test_req_header_value = test_req_header_value
+                if enable_log is not None:
+                    project.enable_log = enable_log
+                if log_level is not None:
+                    project.log_level = log_level
                 project.save(update_fields=[
                     'name', 'scan_id', 'mode', 'latest_time', 'vul_validation',
                     'base_url', 'test_req_header_key', 'test_req_header_value',
-                    'template_id', 'department_id'
+                    'template_id', 'department_id', 'enable_log', 'log_level'
                 ])
                 return R.success(msg='操作成功')
         except Exception as e:
