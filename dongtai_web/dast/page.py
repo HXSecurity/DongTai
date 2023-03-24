@@ -47,7 +47,7 @@ class VulsSummaryArgsSerializer(VulsPageArgsSerializer):
         fields = ['bind_project_id', 'project_id', 'project_version_id']
 
 
-class VulsDeleteArgsSerializer(VulsPageArgsSerializer):
+class VulsDeleteArgsSerializer(serializers.Serializer):
     vul_id = serializers.ListField(child=serializers.IntegerField(),
                                    required=True)
 
@@ -182,11 +182,12 @@ class DastVulsEndPoint(UserEndPoint, viewsets.ViewSet):
         dastvul = IastDastIntegration.objects.filter(q).first()
         return R.success(data=VulsResArgsSerializer(dastvul).data)
 
-    @extend_schema_with_envcheck(summary=_('Dast Vul delete'),
+    @extend_schema_with_envcheck([VulsDeleteArgsSerializer],
+                                 summary=_('Dast Vul delete'),
                                  description=_("Dast Vul delete"),
                                  tags=[_('Dast Vul')])
     def delete(self, request):
-        ser = VulsDeleteArgsSerializer(data=request.data)
+        ser = VulsDeleteArgsSerializer(data=request.GET)
         try:
             if ser.is_valid(True):
                 pass
@@ -281,4 +282,4 @@ class DastVulsEndPoint(UserEndPoint, viewsets.ViewSet):
     def get_vul_type(self, request):
         vul_type = IastDastIntegration.objects.values_list(
             'vul_type', flat=True).distinct().all()
-        return R.success(data=vul_type)
+        return R.success(data=list(vul_type))
