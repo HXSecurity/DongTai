@@ -18,6 +18,7 @@ from dongtai_common.models.dast_integration import (
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from dongtai_conf.settings import DAST_TOKEN
+from dongtai_common.models.profile import IastProfile
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -102,11 +103,23 @@ class DastWebhook(AnonymousAuthEndPoint):
             for vul in dast_list:
                 dastvuldtmarkrel.append(
                     DastvulDtMarkRelation(dt_mark=mark, dastvul=vul))
-            match_vul = IastvulDtMarkRelation.objects.filter(
-                iastvul__uri__in=ser.validated_data['urls'],
-                iastvul__strategy__vul_type__in=ser.validated_data['dongtai_vul_type'],
-                dt_mark=mark
-            ).values_list('iastvul_id', flat=True)
+            key = 'dast_validation_settings'
+            profile = IastProfile.objects.filter(key=key).values_list(
+                'value', flat=True).first()
+            data = json.loads(profile) if profile else {}
+            if data:
+                match_vul = IastvulDtMarkRelation.objects.filter(
+                    iastvul__uri__in=ser.validated_data['urls'],
+                    iastvul__strategy__vul_type__in=ser.validated_data['dongtai_vul_type'],
+                    iastvul__strategy_id__in=data['strategy_id'],
+                    dt_mark=mark
+                ).values_list('iastvul_id', flat=True)
+            else:
+                match_vul = IastvulDtMarkRelation.objects.filter(
+                    iastvul__uri__in=ser.validated_data['urls'],
+                    iastvul__strategy__vul_type__in=ser.validated_data['dongtai_vul_type'],
+                    dt_mark=mark
+                ).values_list('iastvul_id', flat=True)
             create_rels = []
             for iastvul in match_vul:
                 for dastvul in dast_list:
