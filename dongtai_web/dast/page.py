@@ -245,12 +245,12 @@ class DastVulsEndPoint(UserEndPoint, viewsets.ViewSet):
         except ValidationError as e:
             return R.failure(data=e.detail)
         q = Q()
-        if ser.validated_data['is_relatived'] == True:
+        if ser.validated_data['is_relatived'] is True:
             dastvul_ids = IastDastIntegrationRelation.objects.filter(
                 iastvul_id=ser.validated_data['pk']).values(
                     'dastvul_id').all()
             q = q & Q(pk__in=dastvul_ids)
-        elif ser.validated_data['is_relatived'] == False:
+        elif ser.validated_data['is_relatived'] is False:
             dt_marks = IastvulDtMarkRelation.objects.filter(
                 iastvul_id=ser.validated_data['pk']).values('dt_mark')
             dastvul_ids = DastvulDtMarkRelation.objects.filter(
