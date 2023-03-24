@@ -517,13 +517,6 @@ def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
         from dongtai_common.models.dast_integration import IastDastIntegration, IastDastIntegrationRelation
         mark = parse_dast_mark(base64_decode(vul.req_header))
         if mark:
-            key = 'dast_validation_settings'
-            profile = IastProfile.objects.filter(key=key).values_list(
-                'value', flat=True).first()
-            if profile is None:
-                return R.failure(
-                    msg=_("Failed to get {} configuration").format(key))
-            data = json.loads(profile)
             logger.info("mark found , try to bind exist dastvul.")
             vul_ids = DastvulDtMarkRelation.objects.filter(
                 dt_mark=mark).values('dastvul_id').distinct()
