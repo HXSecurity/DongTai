@@ -177,10 +177,6 @@ class ProjectAdd(UserEndPoint):
                     project.test_req_header_key = test_req_header_key
                 if test_req_header_value:
                     project.test_req_header_value = test_req_header_value
-                if enable_log is not None:
-                    project.enable_log = enable_log
-                if log_level is not None:
-                    project.log_level = log_level
                 project.save(update_fields=[
                     'name', 'scan_id', 'mode', 'latest_time', 'vul_validation',
                     'base_url', 'test_req_header_key', 'test_req_header_value',
