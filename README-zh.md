@@ -60,7 +60,7 @@ DongTai是一款开源的被动式交互式安全测试(IAST)产品，通过动�
 
 - 填写[在线问卷](https://jinshuju.net/f/I9PNmf)注册账号
 - 登录[洞态IAST](https://iast.io)系统
-- 根据[在线文档](https://doc.dongtai.io/zh/02_start/index.html)进行快速体验
+- 根据[在线文档](https://doc.dongtai.io/docs/category/%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B/)进行快速体验
 
 ### 2. 本地化部署版本
 
