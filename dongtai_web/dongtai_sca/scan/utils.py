@@ -454,7 +454,7 @@ def get_asset_level(res: dict) -> int:
         'low': 3
     }
     for k, v in level_map.items():
-        if res[k] > 0:
+        if k in res and res[k] > 0:
             return v
     return 4
 
