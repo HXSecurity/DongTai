@@ -363,10 +363,10 @@ def update_one_sca(agent_id,
                        package['version'])
 
 
-def stat_severity(serveritys) -> dict:
+def stat_severity(serveritys: str) -> dict:
     dic = defaultdict(int)
     for serverity in serveritys:
-        dic[serverity] += 1
+        dic[serverity.lower()] += 1
     return dict(dic)
 
 
@@ -446,7 +446,13 @@ def get_vul_path(base_aql: str,
 
 
 def get_asset_level(res: dict) -> int:
-    level_map = {'critical': 1, 'high': 1, 'medium': 2, 'low': 3}
+    level_map = {
+        'moderate': 1,
+        'critical': 1,
+        'high': 1,
+        'medium': 2,
+        'low': 3
+    }
     for k, v in level_map.items():
         if res[k] > 0:
             return v
