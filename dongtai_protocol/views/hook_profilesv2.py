@@ -45,6 +45,8 @@ class HookProfilesV2EndPoint(HookProfilesEndPoint):
                     "source": strategy.get("source"),
                     "target": strategy.get("target"),
                     "signature": strategy.get("value"),
-                    "inherit": strategy.get("inherit")
+                    "inherit": strategy.get("inherit"),
+                    "ignore_blacklist": strategy.get("ignore_blacklist"),
+                    "ignore_internal": strategy.get("ignore_internal"),
                 })
         return profiles
