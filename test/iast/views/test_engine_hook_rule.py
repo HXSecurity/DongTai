@@ -6,7 +6,6 @@
 # @description :
 ######################################################################
 
-
 from rest_framework.test import APITestCase
 from django.urls import include, path, reverse
 from dongtai_common.models.user import User
@@ -18,7 +17,9 @@ import unittest
 import json
 from dongtai_common.models.hook_strategy import HookStrategy
 
+
 class EngineHookRuleTestCase(APITestCase):
+
     def setUp(self):
         self.user = User.objects.filter(pk=1).first()
         self.client.force_authenticate(user=self.user)
@@ -88,8 +89,7 @@ class EngineHookRuleTestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
         respdata = json.loads(response.content)
         self.assertEqual(respdata['status'], 201)
-        hook_rule = HookStrategy.objects.filter(
-            value="1231231231").first()
+        hook_rule = HookStrategy.objects.filter(value="1231231231").first()
         self.assertNotEqual(hook_rule, None)
         data2 = {
             "rule_id": hook_rule.id,
@@ -105,7 +105,6 @@ class EngineHookRuleTestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
         respdata = json.loads(response.content)
         self.assertEqual(respdata['status'], 201)
-
 
     def test_modify_2(self):
         data = {
@@ -123,8 +122,7 @@ class EngineHookRuleTestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
         respdata = json.loads(response.content)
         self.assertEqual(respdata['status'], 201)
-        hook_rule = HookStrategy.objects.filter(
-            value="1231231231").first()
+        hook_rule = HookStrategy.objects.filter(value="1231231231").first()
         self.assertNotEqual(hook_rule, None)
         data2 = {
             "rule_id": hook_rule.id,
@@ -142,7 +140,6 @@ class EngineHookRuleTestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
         respdata = json.loads(response.content)
         self.assertEqual(respdata['status'], 201)
-
 
     def test_create_legacy(self):
         data = {
