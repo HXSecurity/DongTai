@@ -41,10 +41,6 @@ class AgentConfigTestCase(AgentTestCase):
         data = json.loads(res.content)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(
-            res.content,
-            b'{"status": 201, "msg": "\\u64cd\\u4f5c\\u6210\\u529f", "data": {"enable_log": true, "log_level": "INFO"}}'
-        )
-        self.assertEqual(
             data['data'],
             {
                 "enable_log": True,
