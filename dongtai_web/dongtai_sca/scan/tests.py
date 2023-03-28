@@ -139,3 +139,15 @@ class AgentHardencodeTestCase(AgentTestCase):
         )
         for i in asset.iastvulassetrelation_set.all():
             assert len(i.vul_asset_metadata.vul_dependency_path) > 0
+
+    def test_update_one_sca_java_result_new(self):
+        update_one_sca(
+            self.agent_id,
+            "/Users/xxx/spring-boot/2.3.2.RELEASE/org.springframework:spring-beans.jar",
+            "59fb39a2a8e507785206b42fb8231df0608ff640",
+            "org.springframework:spring-beans.jar", "SHA-1")
+        asset = Asset.objects.filter(
+            agent_id=self.agent_id,
+            signature_value="59fb39a2a8e507785206b42fb8231df0608ff640",
+        ).first()
+        self.assertGreater(asset.vul_count, 0)
