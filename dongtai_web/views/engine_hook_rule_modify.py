@@ -44,14 +44,26 @@ class _EngineHookRuleModifySerializer(serializers.Serializer):
         max_length=255,
     )
     inherit = serializers.CharField(
-        help_text=_('Inheritance type, false-only detect current class, true-inspect subclasses, all-check current class and subclasses'
-                    ),
+        help_text=
+        _('Inheritance type, false-only detect current class, true-inspect subclasses, all-check current class and subclasses'
+          ),
         max_length=255,
     )
     track = serializers.CharField(
-        help_text=_("Indicates whether taint tracking is required, true-required, false-not required."
-                    ),
+        help_text=
+        _("Indicates whether taint tracking is required, true-required, false-not required."
+          ),
         max_length=5,
+    )
+    ignore_blacklist = serializers.BooleanField(
+        help_text=_("ignore_blacklist "),
+        required=False,
+        default=False,
+    )
+    ignore_internal = serializers.CharField(
+        help_text=_("ignore_internal "),
+        required=False,
+        default=False,
     )
 
 
@@ -69,8 +81,13 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
             rule_target = request.data.get('rule_target').strip()
             inherit = request.data.get('inherit').strip()
             is_track = request.data.get('track').strip()
+            ignore_blacklist = request.data.get('ignore_blacklist', False)
+            ignore_internal = request.data.get('ignore_internal', False)
 
-            return rule_id, rule_type, rule_value, rule_source, rule_target, inherit, is_track
+            return (rule_id, rule_type, rule_value, rule_source, rule_target,
+                    inherit, is_track, language_id, ignore_blacklist,
+                    ignore_internal)
+
         except Exception as e:
             return None, None, None, None, None, None, None
 
@@ -82,15 +99,16 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
         response_schema=_PostResponseSerializer,
     )
     def post(self, request):
-        rule_id, rule_type, rule_value, rule_source, rule_target, inherit, is_track = self.parse_args(request)
-        strategy = HookStrategy.objects.filter(
-            id=rule_id).first()
+        # bad parameter parse and validate example, don't do this again.
+        (rule_id, rule_type, rule_value, rule_source, rule_target, inherit,
+         is_track, language_id, ignore_blacklist,
+         ignore_internal) = self.parse_args(request)
+        strategy = HookStrategy.objects.filter(id=rule_id).first()
         if not strategy:
             return R.failure(msg=_('No such hookstrategy.'))
         if strategy.type == 4:
             hook_type = IastStrategyModel.objects.filter(
-                id=rule_type,
-            ).first()
+                id=rule_type, ).first()
         else:
             hook_type = HookType.objects.filter(id=rule_type, ).first()
 
@@ -109,6 +127,8 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
             strategy.inherit = inherit
             strategy.track = is_track
             strategy.update_time = int(time.time())
+            strategy.ignore_blacklist = ignore_blacklist
+            strategy.ignore_internal = ignore_internal
             strategy.save()
 
             return R.success(msg=_('strategy has been created successfully'))
