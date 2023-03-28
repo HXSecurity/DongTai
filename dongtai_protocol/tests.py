@@ -16,6 +16,7 @@ import json
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from result import Ok, Err, Result
 import unittest
+from django.test import TestCase
 
 
 class AgentMethodPoolUploadTestCase(AgentTestCase):
@@ -103,3 +104,12 @@ class AgentSaasMethodPoolParseApiTestCase(AgentTestCase):
         cookie = SimpleCookie()
         cookie.load(res['cookie'])
         print(cookie.keys())
+
+
+class SimhashTypingCheckTestCase(TestCase):
+
+    def test_data_dump(self):
+        from dongtai_protocol.report.handler.agent_filepath_handler import _data_dump
+        serviceDir = "F:\\projects\\huoxian\\iast\\vul\\SecExample\\.git\\config\n"
+        res = _data_dump(serviceDir)
+        self.assertIsInstance(res, str)

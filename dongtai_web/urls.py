@@ -154,6 +154,9 @@ from dongtai_web.vul_log.vul_log_view import VulLogViewSet
 from dongtai_web.vul_recheck_payload.vul_recheck_payload import VulReCheckPayloadViewSet
 from dongtai_web.header_vul.base import HeaderVulViewSet
 from dongtai_web.projecttemplate.base import IastProjectTemplateView
+from dongtai_web.dast.webhook import DastWebhook
+from dongtai_web.dast.page import DastVulsEndPoint
+from dongtai_web.dast.manage import DastManageEndPoint
 
 urlpatterns = [
     path('user/<int:user_id>', UserDetailEndPoint.as_view()),
@@ -385,6 +388,37 @@ urlpatterns = [
              'get': "list",
              'post': 'create',
          })),
+    path('dast_webhook', DastWebhook.as_view()),
+    path('dastvul/<int:pk>', DastVulsEndPoint.as_view({
+        'get': "single",
+    })),
+    path('dastvul',
+         DastVulsEndPoint.as_view({
+             'post': "page",
+             'delete': "delete",
+         })),
+    path(
+        'dastvul/relation',
+        DastVulsEndPoint.as_view({
+            'delete': "delete_relation",
+            'post': "create_relation",
+        })),
+    path('dastvul/relationlist',
+         DastVulsEndPoint.as_view({
+             'post': "get_relative_with_dast_vul",
+         })),
+    path('dastvul/summary', DastVulsEndPoint.as_view({
+        'post': "summary",
+    })),
+    path('dastvul/vultype', DastVulsEndPoint.as_view({
+        'get': "get_vul_type",
+    })),
+    path(
+        'dastvul/settings',
+        DastManageEndPoint.as_view({
+            'post': "change_validation_settings",
+            'get': "get_validation_settings",
+        })),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口

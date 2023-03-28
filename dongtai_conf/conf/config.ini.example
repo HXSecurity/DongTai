@@ -59,6 +59,7 @@ report_excel = report/excel
 [other]
 logging_level = INFO
 cache_preheat = True
+dast_token = 837e62834b8423418c2a2a311c69fb96kkkknwqe
 
 [elastic_search]
 enable = false 
