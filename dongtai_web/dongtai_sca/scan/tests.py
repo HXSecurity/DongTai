@@ -112,8 +112,8 @@ class AgentHardencodeTestCase(AgentTestCase):
                        " org.springframework:spring-web.jar ", "SHA-1")
         asset = Asset.objects.filter(
             agent_id=self.agent_id,
-            signature_value="9b7860a324f4b2f2bc31bcdd99c7ee51fe32e0c8").first(
-            )
+            signature_value="9b7860a324f4b2f2bc31bcdd99c7ee51fe32e0c8",
+        ).first()
 
     def test_get_package_edge_case_1(self):
         update_one_sca(self.agent_id, "",
