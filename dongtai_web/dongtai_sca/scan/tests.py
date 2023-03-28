@@ -139,3 +139,17 @@ class AgentHardencodeTestCase(AgentTestCase):
         )
         for i in asset.iastvulassetrelation_set.all():
             assert len(i.vul_asset_metadata.vul_dependency_path) > 0
+    
+    def test_update_one_sca_java_result_search2(self):
+        update_one_sca(
+            self.agent_id,
+            "/Users/xxx/spring-boot/2.3.2.RELEASE/com.amazon.redshift:redshift-jdbc42.jar",
+            "6f32a6a4af4820e4240a269a0b1a3217e43788e2",
+            "com.amazon.redshift:redshift-jdbc42.jar", "SHA-1")
+        asset = Asset.objects.filter(
+            agent_id=self.agent_id,
+            signature_value="6f32a6a4af4820e4240a269a0b1a3217e43788e2").first(
+        )
+        for asset_rel in asset.iastvulassetrelation_set.all():
+            if asset_rel.asset_vul.vul_cve_nums == {'cve': 'CVE-2022-41828', 'cwe': [], 'cnvd': '', 'cnnvd': ''}:
+                self.assertEqual(asset_rel.asset_vul.level_id,1)
