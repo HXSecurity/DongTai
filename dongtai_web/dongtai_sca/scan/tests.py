@@ -122,7 +122,7 @@ class AgentHardencodeTestCase(AgentTestCase):
         asset = Asset.objects.filter(
             agent_id=self.agent_id,
             signature_value="07b6bf82cea13570b5290d6ed841283a1fcce170").first(
-        )
+            )
         assert asset is not None
         assert asset.safe_version_list is not None
         assert asset.iastvulassetrelation_set.all() != []
@@ -136,10 +136,10 @@ class AgentHardencodeTestCase(AgentTestCase):
         asset = Asset.objects.filter(
             agent_id=self.agent_id,
             signature_value="3490508379d065fe3fcb80042b62f630f7588606").first(
-        )
+            )
         for i in asset.iastvulassetrelation_set.all():
             assert len(i.vul_asset_metadata.vul_dependency_path) > 0
-    
+
     def test_update_one_sca_java_result_search2(self):
         update_one_sca(
             self.agent_id,
@@ -149,7 +149,12 @@ class AgentHardencodeTestCase(AgentTestCase):
         asset = Asset.objects.filter(
             agent_id=self.agent_id,
             signature_value="6f32a6a4af4820e4240a269a0b1a3217e43788e2").first(
-        )
+            )
         for asset_rel in asset.iastvulassetrelation_set.all():
-            if asset_rel.asset_vul.vul_cve_nums == {'cve': 'CVE-2022-41828', 'cwe': [], 'cnvd': '', 'cnnvd': ''}:
-                self.assertEqual(asset_rel.asset_vul.level_id,1)
+            if asset_rel.asset_vul.vul_cve_nums == {
+                    'cve': 'CVE-2022-41828',
+                    'cwe': [],
+                    'cnvd': '',
+                    'cnnvd': ''
+            }:
+                self.assertEqual(asset_rel.asset_vul.level_id, 1)
