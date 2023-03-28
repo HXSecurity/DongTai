@@ -16,7 +16,6 @@ from dongtai_web.serializers.hook_strategy import SINK_POSITION_HELP_TEXT
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.strategy import IastStrategyModel
 
-
 _PostResponseSerializer = get_response_serializer(status_msg_keypair=(
     ((201, _('strategy has been created successfully')), ''),
     ((202, _('Incomplete parameter, please check again')), ''),
@@ -25,8 +24,7 @@ _PostResponseSerializer = get_response_serializer(status_msg_keypair=(
 
 
 class _EngineHookRuleModifySerializer(serializers.Serializer):
-    rule_id = serializers.IntegerField(
-        help_text=_('The id of hook rule'))
+    rule_id = serializers.IntegerField(help_text=_('The id of hook rule'))
     rule_type_id = serializers.IntegerField(
         help_text=_('The id of hook rule type.'))
     rule_value = serializers.CharField(
@@ -68,6 +66,7 @@ class _EngineHookRuleModifySerializer(serializers.Serializer):
 
 
 class EngineHookRuleModifyEndPoint(UserEndPoint):
+
     def parse_args(self, request):
         """
         :param request:
@@ -85,11 +84,10 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
             ignore_internal = request.data.get('ignore_internal', False)
 
             return (rule_id, rule_type, rule_value, rule_source, rule_target,
-                    inherit, is_track, language_id, ignore_blacklist,
-                    ignore_internal)
+                    inherit, is_track, ignore_blacklist, ignore_internal)
 
         except Exception as e:
-            return None, None, None, None, None, None, None
+            return None, None, None, None, None, None, None, None, None
 
     @extend_schema_with_envcheck(
         request=_EngineHookRuleModifySerializer,
