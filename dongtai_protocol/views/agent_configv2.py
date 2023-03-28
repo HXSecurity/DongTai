@@ -13,7 +13,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from dongtai_web.common import get_data_gather_data
-
+from dongtai_common.models.project import IastProject
 
 class _AgentConfigArgsSerializer(serializers.Serializer):
     agent_id = serializers.IntegerField(required=True, help_text=_('Agent id'))
@@ -38,4 +38,9 @@ class AgentConfigAllinOneView(OpenApiEndPoint):
         except ValidationError as e:
             return R.failure(data=e.detail)
         data = get_agent_data_gather_config(ser.data['agent_id'])
+        agent = IastAgent.objects.filter(pk=ser.data['agent_id']).first()
+        if agent.bind_project is not None and agent.bind_project.enable_log is not None:
+            data['enable_log'] = agent.bind_project.enable_log
+        if agent.bind_project is not None and agent.bind_project.log_level is not None:
+            data['log_level'] = agent.bind_project.log_level
         return R.success(data=data)
