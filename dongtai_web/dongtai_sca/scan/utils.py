@@ -415,6 +415,7 @@ def get_vul_serial(title: str = "",
 
 def get_vul_level_dict() -> defaultdict:
     return defaultdict(lambda: 5, {
+        'moderate': 1,
         'high': 1,
         "critical": 1,
         "medium": 2,
@@ -494,7 +495,7 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
             version, [i['version'] for i in vul['fixed']])
         vul_serial = get_vul_serial(vul['vul_title'], vul['cve'],
                                     vul['cwe_info'], vul['cnvd'], vul['cnnvd'])
-        vul_level = get_vul_level_dict()[vul['severity']]
+        vul_level = get_vul_level_dict()[vul['severity'].lower()]
         detail = get_detail(vul['description'])
         # still need , save to asset_vul_relation
         # nearest_fixed_version = get_nearest_version(version, vul['fixed'])
