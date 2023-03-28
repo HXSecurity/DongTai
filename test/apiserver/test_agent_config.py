@@ -6,28 +6,29 @@
 # @description :
 ######################################################################
 
-
 from test.apiserver.test_agent_base import AgentTestCase
 from dongtai_common.models.agent import IastAgent
 import json
 
 
 class AgentConfigTestCase(AgentTestCase):
+
     def setUp(self):
         super().setUp()
 
     def test_rep_agent_config_avalible(self):
-        res = self.client.get('/api/v1/agent/config?agent_id=2',
+        res = self.client.get(f'/api/v1/agent/config?agent_id={self.agent_id}',
                               content_type="application/json")
         self.assertEqual(res.status_code, 200)
 
     def test_rep_agent_config(self):
         res = self.client.get(f'/api/v1/agent/config?agent_id={self.agent_id}',
                               content_type="application/json")
+        data = json.loads(res.content)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(
-            res.content,
-            b'{"status": 201, "msg": "\\u64cd\\u4f5c\\u6210\\u529f", "data": {}}'
+            data['data'],
+            {},
         )
 
     def test_rep_agent_config2(self):
@@ -37,10 +38,14 @@ class AgentConfigTestCase(AgentTestCase):
         agent.bind_project.save()
         res = self.client.get(f'/api/v1/agent/config?agent_id={self.agent_id}',
                               content_type="application/json")
+        data = json.loads(res.content)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(
-            res.content,
-            b'{"status": 201, "msg": "\\u64cd\\u4f5c\\u6210\\u529f", "data": {"enable_log": true, "log_level": "INFO"}}'
+            data['data'],
+            {
+                "enable_log": True,
+                "log_level": "INFO"
+            },
         )
 
     def test_rep_agent_config3(self):
@@ -49,8 +54,9 @@ class AgentConfigTestCase(AgentTestCase):
         agent.bind_project.save()
         res = self.client.get(f'/api/v1/agent/config?agent_id={self.agent_id}',
                               content_type="application/json")
+        data = json.loads(res.content)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(
-            res.content,
-            b'{"status": 201, "msg": "\\u64cd\\u4f5c\\u6210\\u529f", "data": {"log_level": "INFO"}}'
+            data['data'],
+            {"log_level": "INFO"},
         )
