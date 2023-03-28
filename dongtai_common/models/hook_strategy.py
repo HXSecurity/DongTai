@@ -73,6 +73,12 @@ class HookStrategy(models.Model):
         related_query_name="strategy",
     )
     system_type = models.IntegerField(blank=True, null=True, default=0)
+    ignore_blacklist = models.BooleanField(blank=True,
+                                           null=False,
+                                           default=False)
+    ignore_internal = models.BooleanField(blank=True,
+                                          null=False,
+                                          default=False)
 
     class Meta:
         managed = get_managed()
