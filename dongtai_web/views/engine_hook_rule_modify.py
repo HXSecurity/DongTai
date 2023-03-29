@@ -95,7 +95,7 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
     def post(self, request):
         # bad parameter parse and validate example, don't do this again.
         (rule_id, rule_type, rule_value, rule_source, rule_target, inherit,
-         is_track, language_id, ignore_blacklist,
+         is_track, ignore_blacklist,
          ignore_internal) = self.parse_args(request)
         strategy = HookStrategy.objects.filter(id=rule_id).first()
         if not strategy:
