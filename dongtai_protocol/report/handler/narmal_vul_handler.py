@@ -229,6 +229,7 @@ class NormalVulnHandler(BaseVulnHandler):
             project.update_latest()
         timestamp = int(time.time())
         if iast_vul:
+            iast_vul.uri = self.app_caller[index + 2]
             iast_vul.url = self.app_caller[index + 2]
             iast_vul.req_header = self.http_header
             iast_vul.req_params = self.http_query_string
@@ -248,7 +249,7 @@ class NormalVulnHandler(BaseVulnHandler):
                 level_id=level_id,
                 url=self.app_caller[index + 2],
                 uri=self.app_caller[index + 2],
-                http_method="",
+                http_method=self.http_method,
                 http_scheme=self.http_scheme,
                 http_protocol=self.http_protocol,
                 req_header=self.http_header,
