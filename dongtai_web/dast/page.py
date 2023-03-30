@@ -269,11 +269,11 @@ class DastVulsEndPoint(UserEndPoint, viewsets.ViewSet):
                 for k in IastDastIntegrationRelation.objects.filter(
                     iastvul_id=ser.validated_data['pk'],
                     dastvul_id__in=[i['id'] for i in data]).values_list(
-                        'dastvul_id').distinct().all()
+                        'dastvul_id', flat=True).distinct().all()
             })
         for item in data:
             item['is_relatived'] = relative_dict[item['id']]
-        return R.success(data=VulsResArgsSerializer(dastvuls, many=True).data,
+        return R.success(data=data,
                          page=page_summary)
 
     @extend_schema_with_envcheck(summary=_('Dast Vul type'),
