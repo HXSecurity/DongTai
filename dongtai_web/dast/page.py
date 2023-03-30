@@ -254,9 +254,12 @@ class DastVulsEndPoint(UserEndPoint, viewsets.ViewSet):
         elif ser.validated_data['is_relatived'] is False:
             dt_marks = IastvulDtMarkRelation.objects.filter(
                 iastvul_id=ser.validated_data['pk']).values('dt_mark')
+            relatived_dastvul_ids = IastDastIntegrationRelation.objects.filter(
+                iastvul_id=ser.validated_data['pk']).values(
+                    'dastvul_id').all()
             dastvul_ids = DastvulDtMarkRelation.objects.filter(
                 dt_mark__in=dt_marks).values('dastvul_id').all()
-            q = q & Q(pk__in=dastvul_ids)
+            q = q & Q(pk__in=dastvul_ids) & ~Q(pk__in=relatived_dastvul_ids)
         if ser.validated_data['vul_type']:
             q = q & Q(vul_type__in=ser.validated_data['vul_type'])
         page_summary, dastvuls = self.get_paginator(
