@@ -31,12 +31,11 @@ class VulEngineSearchTestCase(TestCase):
         engine.method_pool = mock_method_pool_data
         engine.search(
             method_pool=mock_method_pool_data,
-            vul_method_signature=
-            'org.apache.http.impl.client.CloseableHttpClient.doExecute'
+            vul_method_signature='org.apache.http.impl.client.CloseableHttpClient.doExecute',
         )
         status, stack, source_sign, sink_sign, taint_value = engine.result()
         self.assertEqual(status, False)
-    
+
     def test_search_method_pool_ssrf_unsafe(self):
         MOCKDATA_FILE = os.path.join(MOCKDATA_DIR,
                                      'ssrf_in_cookie_unsafe.json')
@@ -46,8 +45,7 @@ class VulEngineSearchTestCase(TestCase):
         engine.method_pool = mock_method_pool_data
         engine.search(
             method_pool=mock_method_pool_data,
-            vul_method_signature=
-            'org.apache.http.impl.client.CloseableHttpClient.doExecute'
+            vul_method_signature='org.apache.http.impl.client.CloseableHttpClient.doExecute'
         )
         status, stack, source_sign, sink_sign, taint_value = engine.result()
         self.assertEqual(status, True)
