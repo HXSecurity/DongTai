@@ -251,8 +251,10 @@ class DastVulsEndPoint(UserEndPoint, viewsets.ViewSet):
             return R.failure(data=e.detail)
         q = Q()
         if ser.validated_data['is_relatived'] is True:
-            dt_marks = list(IastvulDtMarkRelation.objects.filter(
-                iastvul_id=ser.validated_data['pk']).values('dt_mark')) + ['manully']
+            dt_marks = list(
+                IastvulDtMarkRelation.objects.filter(
+                    iastvul_id=ser.validated_data['pk']).values_list(
+                        'dt_mark', flat=True)) + ['manully']
             relatived_dastvul_ids = IastDastIntegrationRelation.objects.filter(
                 iastvul_id=ser.validated_data['pk']).values(
                     'dastvul_id').all()
@@ -260,8 +262,10 @@ class DastVulsEndPoint(UserEndPoint, viewsets.ViewSet):
                 dt_mark__in=dt_marks).values('dastvul_id').all()
             q = q & Q(pk__in=dastvul_ids) & Q(pk__in=relatived_dastvul_ids)
         elif ser.validated_data['is_relatived'] is False:
-            dt_marks = list(IastvulDtMarkRelation.objects.filter(
-                iastvul_id=ser.validated_data['pk']).values('dt_mark')) + ['manully']
+            dt_marks = list(
+                IastvulDtMarkRelation.objects.filter(
+                    iastvul_id=ser.validated_data['pk']).values_list(
+                        'dt_mark', flat=True)) + ['manully']
             relatived_dastvul_ids = IastDastIntegrationRelation.objects.filter(
                 iastvul_id=ser.validated_data['pk']).values(
                     'dastvul_id').all()
