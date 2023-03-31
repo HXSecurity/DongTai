@@ -419,6 +419,11 @@ urlpatterns = [
             'post': "change_validation_settings",
             'get': "get_validation_settings",
         })),
+    path(
+        'dastvul/settings/doc',
+        DastManageEndPoint.as_view({
+            'get': "get_doc_url",
+        })),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
