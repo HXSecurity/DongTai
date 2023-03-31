@@ -69,7 +69,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         else:
             vul_levels = IastVulnerabilityModel.objects.values(
                 'level__name_value',
-                'level').filter(agent__bind_project_id=obj.id,
+                'level').filter(project_id=obj.id,
                                 is_del=0).annotate(total=Count('level'))
         for vul_level in vul_levels:
             vul_level['name'] = vul_level['level__name_value']
