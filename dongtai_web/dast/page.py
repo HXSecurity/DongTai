@@ -20,6 +20,7 @@ from rest_framework import serializers
 from rest_framework import viewsets
 from rest_framework.serializers import ValidationError
 from collections import defaultdict
+from django.db.utils import IntegrityError
 logger = logging.getLogger('dongtai-webapi')
 
 
@@ -227,11 +228,14 @@ class DastVulsEndPoint(UserEndPoint, viewsets.ViewSet):
                 pass
         except ValidationError as e:
             return R.failure(data=e.detail)
-        IastDastIntegrationRelation.objects.create(
-            dt_mark="manully",
-            iastvul_id=ser.validated_data['iastvul_id'],
-            dastvul_id=ser.validated_data['dastvul_id'],
-        )
+        try:
+            IastDastIntegrationRelation.objects.create(
+                dt_mark="manully",
+                iastvul_id=ser.validated_data['iastvul_id'],
+                dastvul_id=ser.validated_data['dastvul_id'],
+            )
+        except IntegrityError as e:
+            logger.debug("confilct exist ,skip")
         return R.success()
 
     @extend_schema_with_envcheck(request=IastVulRelationArgsSerializer,
@@ -247,19 +251,28 @@ class DastVulsEndPoint(UserEndPoint, viewsets.ViewSet):
             return R.failure(data=e.detail)
         q = Q()
         if ser.validated_data['is_relatived'] is True:
-            dastvul_ids = IastDastIntegrationRelation.objects.filter(
+            dt_marks = list(IastvulDtMarkRelation.objects.filter(
+                iastvul_id=ser.validated_data['pk']).values('dt_mark')) + ['manully']
+            relatived_dastvul_ids = IastDastIntegrationRelation.objects.filter(
                 iastvul_id=ser.validated_data['pk']).values(
                     'dastvul_id').all()
-            q = q & Q(pk__in=dastvul_ids)
+            dastvul_ids = DastvulDtMarkRelation.objects.filter(
+                dt_mark__in=dt_marks).values('dastvul_id').all()
+            q = q & Q(pk__in=dastvul_ids) & Q(pk__in=relatived_dastvul_ids)
         elif ser.validated_data['is_relatived'] is False:
-            dt_marks = IastvulDtMarkRelation.objects.filter(
-                iastvul_id=ser.validated_data['pk']).values('dt_mark')
+            dt_marks = list(IastvulDtMarkRelation.objects.filter(
+                iastvul_id=ser.validated_data['pk']).values('dt_mark')) + ['manully']
             relatived_dastvul_ids = IastDastIntegrationRelation.objects.filter(
                 iastvul_id=ser.validated_data['pk']).values(
                     'dastvul_id').all()
             dastvul_ids = DastvulDtMarkRelation.objects.filter(
                 dt_mark__in=dt_marks).values('dastvul_id').all()
             q = q & Q(pk__in=dastvul_ids) & ~Q(pk__in=relatived_dastvul_ids)
+        else:
+            dastvul_ids = IastDastIntegrationRelation.objects.filter(
+                iastvul_id=ser.validated_data['pk']).values(
+                    'dastvul_id').all()
+            q = q & Q(pk__in=dastvul_ids)
         if ser.validated_data['vul_type']:
             q = q & Q(vul_type__in=ser.validated_data['vul_type'])
         page_summary, dastvuls = self.get_paginator(
