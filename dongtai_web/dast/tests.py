@@ -3,6 +3,7 @@ from test.apiserver.test_agent_base import AgentTestCase
 import json
 from dongtai_conf.settings import BASE_DIR
 import os
+import uuid
 
 MOCK_DATA_PATH = os.path.join(BASE_DIR, 'dongtai_web/dast/mockdata')
 
@@ -241,6 +242,83 @@ class IastDastIntegrationBindTestCase(AgentTestCase):
                                json.dumps(new_data),
                                content_type="application/json")
         self.assertEqual(res.status_code, 201)
+        from dongtai_common.models.dast_integration import IastDastIntegrationRelation
+        relcount = IastDastIntegrationRelation.objects.filter(
+            iastvul__method_pool_id=method_pool.id).count()
+        self.assertEqual(relcount, 1)
+    
+    def test_positive_create_push_distinct(self):
+        from dongtai_engine.tasks import search_vul_from_method_pool
+        from dongtai_common.models.agent_method_pool import MethodPool
+        import pickle
+        with open(os.path.join(MOCK_DATA_PATH, 'method_pool.pickle'),
+                  'rb') as fp:
+            method_pool = pickle.load(fp)
+        method_pool.agent_id = self.agent_id
+        method_pool.save()
+        search_vul_from_method_pool(method_pool.pool_sign,
+                                    method_pool.agent_id)
+        new_data = data1.copy()
+        new_data["agent_id"] = [str(self.agent_id)]
+        res = self.client.post('/api/v1/dast_webhook',
+                               json.dumps(new_data),
+                               content_type="application/json")
+        self.assertEqual(res.status_code, 201)
+        res = self.client.post('/api/v1/dast_webhook',
+                               json.dumps(new_data),
+                               content_type="application/json")
+        self.assertEqual(res.status_code, 201)
+        res = self.client.post('/api/v1/dast_webhook',
+                               json.dumps(new_data),
+                               content_type="application/json")
+        self.assertEqual(res.status_code, 201)
+        res = self.client.post('/api/v1/dast_webhook',
+                               json.dumps(new_data),
+                               content_type="application/json")
+        self.assertEqual(res.status_code, 201)
+        from dongtai_common.models.dast_integration import IastDastIntegrationRelation
+        relcount = IastDastIntegrationRelation.objects.filter(
+            iastvul__method_pool_id=method_pool.id).count()
+        self.assertEqual(relcount, 1)
+    
+    def test_positive_push_create_distinct(self):
+        new_data = data1.copy()
+        new_data["agent_id"] = [str(self.agent_id)]
+        res = self.client.post('/api/v1/dast_webhook',
+                               json.dumps(new_data),
+                               content_type="application/json")
+        self.assertEqual(res.status_code, 201)
+        from dongtai_engine.tasks import search_vul_from_method_pool
+        from dongtai_common.models.agent_method_pool import MethodPool
+        import pickle
+        with open(os.path.join(MOCK_DATA_PATH, 'method_pool.pickle'),
+                  'rb') as fp:
+            method_pool = pickle.load(fp)
+        method_pool.agent_id = self.agent_id
+        method_pool.save()
+        search_vul_from_method_pool(method_pool.pool_sign,
+                                    method_pool.agent_id)
+        method_pool.pool_sign = uuid.uuid4().hex
+        method_pool.id = None
+        method_pool.save()
+        search_vul_from_method_pool(method_pool.pool_sign,
+                                    method_pool.agent_id)
+        method_pool.pool_sign = uuid.uuid4().hex
+        method_pool.id = None
+        method_pool.save()
+        search_vul_from_method_pool(method_pool.pool_sign,
+                                    method_pool.agent_id)
+        method_pool.pool_sign = uuid.uuid4().hex
+        method_pool.id = None
+        method_pool.save()
+        search_vul_from_method_pool(method_pool.pool_sign,
+                                    method_pool.agent_id)
+        method_pool.pool_sign = uuid.uuid4().hex
+        method_pool.id = None
+        method_pool.save()
+        search_vul_from_method_pool(method_pool.pool_sign,
+                                    method_pool.agent_id)
+
         from dongtai_common.models.dast_integration import IastDastIntegrationRelation
         relcount = IastDastIntegrationRelation.objects.filter(
             iastvul__method_pool_id=method_pool.id).count()

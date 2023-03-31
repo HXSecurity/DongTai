@@ -172,7 +172,7 @@ class GetAppVulsList(UserEndPoint):
         vul_ids = [vul['id'] for vul in vul_data]
         dastvul_rel_count_res = IastDastIntegrationRelation.objects.filter(
             iastvul_id__in=vul_ids).values('iastvul_id').annotate(
-                dastvul_count=Count('iastvul_id'))
+                dastvul_count=Count('dastvul_id'))
         dast_vul_types = IastDastIntegrationRelation.objects.filter(
             iastvul_id__in=vul_ids).values('dastvul__vul_type',
                                            'iastvul_id').distinct()
