@@ -269,9 +269,11 @@ class DastVulsEndPoint(UserEndPoint, viewsets.ViewSet):
                 dt_mark__in=dt_marks).values('dastvul_id').all()
             q = q & Q(pk__in=dastvul_ids) & ~Q(pk__in=relatived_dastvul_ids)
         else:
-            dastvul_ids = IastDastIntegrationRelation.objects.filter(
+            dt_marks = IastvulDtMarkRelation.objects.filter(
                 iastvul_id=ser.validated_data['pk']).values(
-                    'dastvul_id').all()
+                    'dt_mark').all()
+            dastvul_ids = DastvulDtMarkRelation.objects.filter(
+                dt_mark__in=dt_marks).values('dastvul_id').all()
             q = q & Q(pk__in=dastvul_ids)
         if ser.validated_data['vul_type']:
             q = q & Q(vul_type__in=ser.validated_data['vul_type'])
