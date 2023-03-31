@@ -19,7 +19,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from dongtai_conf.settings import DAST_TOKEN
 from dongtai_common.models.profile import IastProfile
-
+from django.db.utils import IntegrityError
 logger = logging.getLogger('dongtai-webapi')
 
 
@@ -91,12 +91,21 @@ class DastWebhook(AnonymousAuthEndPoint):
         for field in ['dt_uuid_id', 'agent_id', 'vul_level', 'dt_mark']:
             del ser.validated_data[field]
         for project_id, project_version_id in project_info_set:
-            dastintegration = IastDastIntegration(
-                project_id=project_id,
-                project_version_id=project_version_id,
-                vul_level_id=vul_level_id,
-                **ser.validated_data)
-            dastintegration.save()
+            dastintegration = IastDastIntegration.objects.filter(
+                    project_id=project_id,
+                    project_version_id=project_version_id,
+                    vul_type=ser.validated_data['vul_type'],
+                    target=ser.validated_data['target'],
+            ).first()
+            if dastintegration:
+                logger.debug("dast vul exist, skip")
+            else:
+                dastintegration = IastDastIntegration(
+                    project_id=project_id,
+                    project_version_id=project_version_id,
+                    vul_level_id=vul_level_id,
+                    **ser.validated_data)
+                dastintegration.save()
             dast_list.append(dastintegration)
         dastvuldtmarkrel = []
         for mark in dt_marks:
