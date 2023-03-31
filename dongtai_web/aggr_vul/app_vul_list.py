@@ -174,8 +174,9 @@ class GetAppVulsList(UserEndPoint):
             iastvul_id__in=vul_ids).values('iastvul_id').annotate(
                 dastvul_count=Count('dastvul_id'))
         dast_vul_types = IastDastIntegrationRelation.objects.filter(
-            iastvul_id__in=vul_ids).values('dastvul__vul_type',
-                                           'iastvul_id').distinct()
+            iastvul_id__in=vul_ids,
+            dastvul__vul_type__isnull=False,
+        ).values('dastvul__vul_type', 'iastvul_id').distinct()
         dast_vul_types_dict = defaultdict(
             list, {
                 k: list(set(map(lambda x: x['dastvul__vul_type'], g)))
