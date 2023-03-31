@@ -67,3 +67,12 @@ class DastManageEndPoint(UserEndPoint, viewsets.ViewSet):
                 msg=_("Failed to get {} configuration").format(key))
         data = json.loads(profile)
         return R.success(data=data)
+
+    @extend_schema_with_envcheck(summary=_('Dast Vul Settings Doc'),
+                                 description=_("Dast Vul Settings Doc"),
+                                 tags=[_('Dast Vul')])
+    def get_doc_url(self, request):
+        return R.success(data={
+            "url":
+            "https://i0x0fy4ibf.feishu.cn/docx/GGpUdYopaoxD4oxnOlncKKbsnRh"
+        })
