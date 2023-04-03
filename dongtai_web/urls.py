@@ -157,6 +157,7 @@ from dongtai_web.projecttemplate.base import IastProjectTemplateView
 from dongtai_web.dast.webhook import DastWebhook
 from dongtai_web.dast.page import DastVulsEndPoint
 from dongtai_web.dast.manage import DastManageEndPoint
+from dongtai_web.views.new_project_query import (NewApiRouteSearch, ProjectVersionList)
 
 urlpatterns = [
     path('user/<int:user_id>', UserDetailEndPoint.as_view()),
@@ -451,6 +452,8 @@ urlpatterns.extend([
     path('api/v2/sca_vul_summary', GetScaSummary.as_view()),
     path('api/v2/app_vul_list_content', GetAppVulsList.as_view()),
     path('api/v2/app_vul_summary', GetAppVulsSummary.as_view()),
+    path('api/v2/api_route/search', NewApiRouteSearch.as_view()),
+    path('api/v2/project_version', ProjectVersionList.as_view()),
 ])
 
 urlpatterns.extend(scaupload_urls)
