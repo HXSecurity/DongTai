@@ -98,9 +98,11 @@ class IastVulRelationArgsSerializer(serializers.Serializer):
 
 class IastVulRelationDeleteArgsSerializer(serializers.Serializer):
     iastvul_id = serializers.IntegerField(min_value=1,
+                                          max_value=2**31 - 1,
                                           help_text=_('iast_vul id'),
                                           required=True)
     dastvul_id = serializers.IntegerField(min_value=1,
+                                          max_value=2**31 - 1,
                                           help_text=_('dast_vul id'),
                                           required=True)
 
