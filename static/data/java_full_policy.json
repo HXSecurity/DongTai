@@ -3068,7 +3068,7 @@
                 "value": "org.glassfish.grizzly.http.Cookie.setSecure(boolean)"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "cookie-flags-missing"
     },
@@ -3117,7 +3117,7 @@
                 "value": "javax.crypto.Cipher.getInstance(java.lang.String,java.security.Provider)"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "crypto-bad-ciphers"
     },
@@ -3166,7 +3166,7 @@
                 "value": "java.security.MessageDigest.getInstance(java.lang.String,java.security.Provider)"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "crypto-bad-mac"
     },
@@ -3369,7 +3369,7 @@
                 "value": "org.apache.commons.lang.RandomStringUtils.randomNumeric(int)"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "crypto-weak-randomness"
     },
@@ -6974,7 +6974,7 @@
                 "value": "org.springframework.http.converter.StringHttpMessageConverter.writeInternal(java.lang.String,org.springframework.http.HttpOutputMessage)"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "reflected-xss"
     },
@@ -8234,7 +8234,7 @@
                 "value": "play.mvc.Http$Session.put(java.lang.String,java.lang.String)"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "trust-boundary-violation"
     },
