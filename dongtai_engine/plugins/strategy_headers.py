@@ -8,6 +8,7 @@ from django.core.cache import cache
 import random
 import time
 from http.client import HTTPResponse
+from http.client import BadStatusLine
 from io import BytesIO
 
 from celery.apps.worker import logger
@@ -78,6 +79,10 @@ def check_response_header(method_pool):
     try:
         response = parse_response(method_pool.res_header.strip() + '\n\n' +
                                   method_pool.res_body.strip())
+    except BadStatusLine as e:
+        logger.debug("parse response header failed, reason: %s", e)
+        return
+    try:
         if check_csp(response):
             save_vul('Response Without Content-Security-Policy Header',
                      method_pool,
