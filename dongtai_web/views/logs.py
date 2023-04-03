@@ -68,23 +68,20 @@ class LogsEndpoint(UserEndPoint):
                 cur_ids.append(item)
             # read log detail
             page_data = LogEntry.objects.filter(id__in=cur_ids).order_by('-id').select_related('content_type', 'user')
-            if page_data:
-                data = []
-                for item in page_data:
-                    data.append({
-                        "log_id": item.id,
-                        "user_id": item.user.id,
-                        "username": item.user.username,
-                        "action_time": item.action_time.strftime('%Y-%m-%d %H:%M:%S'),
-                        "content_type": item.content_type.app_labeled_name,
-                        "object_id": item.object_id,
-                        "object_repr": item.object_repr,
-                        "action_flag": item.action_flag,
-                        "change_message": item.change_message,
-                    })
-                return R.success(data=data, total=total)
-            else:
-                return R.failure(msg=_('No permission to access'), status=203)
+            data = []
+            for item in page_data:
+                data.append({
+                    "log_id": item.id,
+                    "user_id": item.user.id,
+                    "username": item.user.username,
+                    "action_time": item.action_time.strftime('%Y-%m-%d %H:%M:%S'),
+                    "content_type": item.content_type.app_labeled_name,
+                    "object_id": item.object_id,
+                    "object_repr": item.object_repr,
+                    "action_flag": item.action_flag,
+                    "change_message": item.change_message,
+                })
+            return R.success(data=data, total=total)
         except Exception as e:
             logger.error(e, exc_info=True)
             return R.success(data=list(), msg=_('failure'))

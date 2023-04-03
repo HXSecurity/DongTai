@@ -98,8 +98,10 @@ def check_response_header(method_pool):
                      method_pool,
                      position='HTTP Response Header')
     except Exception as e:
-        logger.error("check_response_header failed, reason: " + str(e),
-                     exc_info=e)
+        logger.warning(
+            "check_response_header failed, reason: " + str(e),
+            exc_info=e,
+        )
 
 
 def save_vul(vul_type, method_pool, position=None, data=None):
@@ -110,7 +112,7 @@ def save_vul(vul_type, method_pool, position=None, data=None):
         state=const.STRATEGY_ENABLE,
         user_id__in=(1, method_pool.agent.user.id)).first()
     if vul_strategy is None:
-        logger.error(
+        logger.warning(
             f'There is no corresponding strategy for the current vulnerability: {vul_type}'
         )
 

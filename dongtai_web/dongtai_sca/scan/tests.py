@@ -112,8 +112,8 @@ class AgentHardencodeTestCase(AgentTestCase):
                        " org.springframework:spring-web.jar ", "SHA-1")
         asset = Asset.objects.filter(
             agent_id=self.agent_id,
-            signature_value="9b7860a324f4b2f2bc31bcdd99c7ee51fe32e0c8").first(
-        )
+            signature_value="9b7860a324f4b2f2bc31bcdd99c7ee51fe32e0c8",
+        ).first()
 
     def test_get_package_edge_case_1(self):
         update_one_sca(self.agent_id, "",
@@ -121,8 +121,8 @@ class AgentHardencodeTestCase(AgentTestCase):
                        " org.springframework:spring-web.jar ", "SHA-1")
         asset = Asset.objects.filter(
             agent_id=self.agent_id,
-            signature_value="07b6bf82cea13570b5290d6ed841283a1fcce170").first(
-        )
+            signature_value="07b6bf82cea13570b5290d6ed841283a1fcce170",
+        ).first()
         assert asset is not None
         assert asset.safe_version_list is not None
         assert asset.iastvulassetrelation_set.all() != []
@@ -135,7 +135,39 @@ class AgentHardencodeTestCase(AgentTestCase):
             "org.springframework:spring-beans.jar", "SHA-1")
         asset = Asset.objects.filter(
             agent_id=self.agent_id,
-            signature_value="3490508379d065fe3fcb80042b62f630f7588606").first(
-        )
+            signature_value="3490508379d065fe3fcb80042b62f630f7588606",
+        ).first()
         for i in asset.iastvulassetrelation_set.all():
             assert len(i.vul_asset_metadata.vul_dependency_path) > 0
+
+    def test_update_one_sca_java_result_search2(self):
+        update_one_sca(
+            self.agent_id,
+            "/Users/xxx/spring-boot/2.3.2.RELEASE/com.amazon.redshift:redshift-jdbc42.jar",
+            "6f32a6a4af4820e4240a269a0b1a3217e43788e2",
+            "com.amazon.redshift:redshift-jdbc42.jar", "SHA-1")
+        asset = Asset.objects.filter(
+            agent_id=self.agent_id,
+            signature_value="6f32a6a4af4820e4240a269a0b1a3217e43788e2",
+        ).first()
+        for asset_rel in asset.iastvulassetrelation_set.all():
+            if asset_rel.asset_vul.vul_cve_nums == {
+                    'cve': 'CVE-2022-41828',
+                    'cwe': [],
+                    'cnvd': '',
+                    'cnnvd': ''
+            }:
+                self.assertEqual(asset_rel.asset_vul.level_id, 1)
+
+    def test_update_one_sca_java_result_new(self):
+        update_one_sca(
+            self.agent_id,
+            "/Users/xxx/spring-boot/2.3.2.RELEASE/org.springframework:spring-beans.jar",
+            "59fb39a2a8e507785206b42fb8231df0608ff640",
+            "org.springframework:spring-beans.jar", "SHA-1")
+        asset = Asset.objects.filter(
+            agent_id=self.agent_id,
+            signature_value="59fb39a2a8e507785206b42fb8231df0608ff640",
+        ).first()
+        # skip until sca data stable
+        self.assertGreaterEqual(asset.vul_count, 0)

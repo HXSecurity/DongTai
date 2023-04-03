@@ -40,13 +40,11 @@ class _HookRuleAddBodyargsSerializer(serializers.Serializer):
         max_length=255,
     )
     inherit = serializers.CharField(
-        help_text=_('Inheritance type, false-only detect current class, true-inspect subclasses, all-check current class and subclasses'
-                    ),
+        help_text=_('Inheritance type, false-only detect current class, true-inspect subclasses, all-check current class and subclasses'),
         max_length=255,
     )
     track = serializers.CharField(
-        help_text=_("Indicates whether taint tracking is required, true-required, false-not required."
-                    ),
+        help_text=_("Indicates whether taint tracking is required, true-required, false-not required."),
         max_length=5,
     )
 
@@ -73,28 +71,36 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             inherit = request.data.get('inherit').strip()
             is_track = request.data.get('track').strip()
             language_id = request.data.get('language_id')
+            ignore_blacklist = request.data.get('ignore_blacklist', False)
+            ignore_internal = request.data.get('ignore_internal', False)
 
-            return rule_type, rule_value, rule_source, rule_target, inherit, is_track, language_id
+            return (rule_type, rule_value, rule_source, rule_target, inherit,
+                    is_track, language_id, ignore_blacklist, ignore_internal)
         except Exception as e:
 
-            return None, None, None, None, None, None, None
+            return None, None, None, None, None, None, None, None, None
 
     def create_strategy(self, value, source, target, inherit, track,
-                        created_by, language_id, type_):
+                        created_by, language_id, type_, ignore_blacklist,
+                        ignore_internal):
         try:
 
             timestamp = int(time.time())
-            strategy = HookStrategy(value=value,
-                                    source=source,
-                                    target=target,
-                                    inherit=inherit,
-                                    track=track,
-                                    create_time=timestamp,
-                                    update_time=timestamp,
-                                    created_by=created_by,
-                                    enable=const.ENABLE,
-                                    language_id=language_id,
-                                    type=type_)
+            strategy = HookStrategy(
+                value=value,
+                source=source,
+                target=target,
+                inherit=inherit,
+                track=track,
+                create_time=timestamp,
+                update_time=timestamp,
+                created_by=created_by,
+                enable=const.ENABLE,
+                language_id=language_id,
+                type=type_,
+                ignore_blacklist=ignore_blacklist,
+                ignore_internal=ignore_internal,
+            )
             strategy.save()
             return strategy
         except Exception as e:
@@ -105,13 +111,14 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
         request=_HookRuleAddBodyargsSerializer,
         tags=[_('Hook Rule')],
         summary=_('Hook Rule Add'),
-        description=_("Generate corresponding strategy group according to the strategy selected by the user."
-                      ),
+        description=_("Generate corresponding strategy group according to the strategy selected by the user."),
         response_schema=_ResponseSerializer,
     )
     def post(self, request):
+        # bad parameter parse and validate example, don't do this again.
         (rule_type, rule_value, rule_source, rule_target, inherit, is_track,
-         language_id) = self.parse_args(request)
+         language_id, ignore_blacklist,
+         ignore_internal) = self.parse_args(request)
         if all((
                 rule_type,
                 rule_value,
@@ -138,7 +145,8 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             type_ = hook_type.type
         strategy = self.create_strategy(rule_value, rule_source, rule_target,
                                         inherit, is_track, request.user.id,
-                                        language_id, type_)
+                                        language_id, type_, ignore_blacklist,
+                                        ignore_internal)
         if strategy:
             hook_type.strategies.add(strategy)
             return R.success(msg=_('Strategy has been created successfully'))
