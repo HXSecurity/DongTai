@@ -54,9 +54,7 @@ class ProjectVersionList(UserEndPoint):
         [ProjectVersionArgSerializer],
         tags=[_('Project')],
         summary=_('Projects List'),
-        description=
-        _("Get the item corresponding to the user, support fuzzy search based on name."
-          ),
+        description=_("Get the item corresponding to the user, support fuzzy search based on name."),
     )
     def get(self, request):
         ser = ProjectVersionArgSerializer(data=request.GET)
@@ -89,9 +87,7 @@ class NewApiRouteSearch(UserEndPoint):
         request=ApiRouteArgSerializer,
         tags=[_('API Route')],
         summary=_('New api route search'),
-        description=
-        _("Get the item corresponding to the user, support fuzzy search based on name."
-          ),
+        description=_("Get the item corresponding to the user, support fuzzy search based on name."),
     )
     def post(self, request):
         ser = ApiRouteArgSerializer(data=request.data)
