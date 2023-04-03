@@ -80,7 +80,7 @@ def check_response_header(method_pool):
         response = parse_response(method_pool.res_header.strip() + '\n\n' +
                                   method_pool.res_body.strip())
     except BadStatusLine as e:
-        logger.debug("parse response header failed, reason: %s",e)
+        logger.debug("parse response header failed, reason: %s", e)
         return
     try:
         if check_csp(response):
