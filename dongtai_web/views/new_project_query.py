@@ -46,7 +46,7 @@ class ApiRouteArgSerializer(serializers.Serializer):
                                         required=False)
 
 
-class ProjectVersionList(UserEndPoint):
+class NewProjectVersionList(UserEndPoint):
     name = "api-v1-project-version-delete"
     description = _("Delete application version information")
 
