@@ -14,6 +14,7 @@ from dongtai_common.models.api_route import IastApiRoute
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
+from rest_framework.serializers import ValidationError
 
 logger = logging.getLogger("django")
 
@@ -53,8 +54,9 @@ class ProjectVersionList(UserEndPoint):
         [ProjectVersionArgSerializer],
         tags=[_('Project')],
         summary=_('Projects List'),
-        description=_("Get the item corresponding to the user, support fuzzy search based on name."
-                      ),
+        description=
+        _("Get the item corresponding to the user, support fuzzy search based on name."
+          ),
     )
     def get(self, request):
         ser = ProjectVersionArgSerializer(data=request.GET)
@@ -87,8 +89,9 @@ class NewApiRouteSearch(UserEndPoint):
         request=ApiRouteArgSerializer,
         tags=[_('API Route')],
         summary=_('New api route search'),
-        description=_("Get the item corresponding to the user, support fuzzy search based on name."
-                      ),
+        description=
+        _("Get the item corresponding to the user, support fuzzy search based on name."
+          ),
     )
     def post(self, request):
         ser = ApiRouteArgSerializer(data=request.data)
@@ -112,10 +115,11 @@ class NewApiRouteSearch(UserEndPoint):
         page_info, documents = self.get_paginator(
             IastApiRoute.objects.filter(q).order_by('-id').values(
                 'method__method', 'path', 'id', 'project_id',
-                'project_version', 'controller', 'code_class',
-                'code_file','is_cover').all(), page, page_size)
+                'project_version', 'controller', 'code_class', 'code_file',
+                'is_cover').all(), page, page_size)
         documents = list(documents)
         for document in documents:
-            document['method'] = {"httpmethods":document['method__method'].split("/")}
+            document['method'] = {
+                "httpmethods": document['method__method'].split("/")
+            }
         return R.success(data=documents, page=page_info)
-
