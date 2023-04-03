@@ -4,6 +4,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 4,
                 "source": "O",
@@ -16,6 +18,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 4,
                 "source": "O",
@@ -35,6 +39,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 4,
                 "source": "P1",
@@ -54,6 +60,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 4,
                 "source": "P3",
@@ -64,7 +72,7 @@
                 "value": "template.(*Template).ExecuteTemplate()"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "reflected-xss"
     },
@@ -73,6 +81,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 4,
                 "source": "P1,2",
@@ -85,6 +95,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 4,
                 "source": "P1",
@@ -97,6 +109,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 4,
                 "source": "P1,2",
@@ -109,6 +123,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 4,
                 "source": "P1",
@@ -121,6 +137,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 4,
                 "source": "P1,2",
@@ -133,6 +151,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 4,
                 "source": "P1,2",
@@ -145,6 +165,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 4,
                 "source": "P1,2",
@@ -157,6 +179,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 4,
                 "source": "P1",
@@ -176,6 +200,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 4,
                 "source": "P2",

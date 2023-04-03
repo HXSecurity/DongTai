@@ -191,13 +191,13 @@ class SaasMethodPoolHandler(IReportHandler):
                         logger.info(
                             f"record method failed : {self.agent_id} {self.http_uri} {self.http_method}"
                         )
-                        logger.warning(e, exc_info=True)
+                        logger.warning(e, exc_info=e)
                 try:
                     logger.info(f"send normal method pool {self.agent_id} {self.http_uri} {pool_sign} to celery ")
                     self.send_to_engine(method_pool_sign=pool_sign,
                                         update_record=update_record)
                 except Exception as e:
-                    logger.warning(e, exc_info=True)
+                    logger.warning(e, exc_info=e)
 
     def to_json(self, pool_sign: str):
         timestamp = int(time.time())
@@ -369,7 +369,7 @@ class SaasMethodPoolHandler(IReportHandler):
                 )
                 # requests.get(url=settings.REPLAY_ENGINE_URL.format(id=method_pool_id))
         except Exception as e:
-            logger.warning(f'[-] Failure: send method_pool [{method_pool_id}{method_pool_sign}], Error: {e}')
+            logger.error(f'[-] Failure: send method_pool [{method_pool_id}{method_pool_sign}], Error: {e}', exc_info=e)
 
     def calc_hash(self):
         sign_raw = '-'.join(

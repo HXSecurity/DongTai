@@ -154,6 +154,10 @@ from dongtai_web.vul_log.vul_log_view import VulLogViewSet
 from dongtai_web.vul_recheck_payload.vul_recheck_payload import VulReCheckPayloadViewSet
 from dongtai_web.header_vul.base import HeaderVulViewSet
 from dongtai_web.projecttemplate.base import IastProjectTemplateView
+from dongtai_web.dast.webhook import DastWebhook
+from dongtai_web.dast.page import DastVulsEndPoint
+from dongtai_web.dast.manage import DastManageEndPoint
+from dongtai_web.views.new_project_query import (NewApiRouteSearch, NewProjectVersionList)
 
 urlpatterns = [
     path('user/<int:user_id>', UserDetailEndPoint.as_view()),
@@ -385,6 +389,42 @@ urlpatterns = [
              'get': "list",
              'post': 'create',
          })),
+    path('dast_webhook', DastWebhook.as_view()),
+    path('dastvul/<int:pk>', DastVulsEndPoint.as_view({
+        'get': "single",
+    })),
+    path('dastvul',
+         DastVulsEndPoint.as_view({
+             'post': "page",
+             'delete': "delete",
+         })),
+    path(
+        'dastvul/relation',
+        DastVulsEndPoint.as_view({
+            'delete': "delete_relation",
+            'post': "create_relation",
+        })),
+    path('dastvul/relationlist',
+         DastVulsEndPoint.as_view({
+             'post': "get_relative_with_dast_vul",
+         })),
+    path('dastvul/summary', DastVulsEndPoint.as_view({
+        'post': "summary",
+    })),
+    path('dastvul/vultype', DastVulsEndPoint.as_view({
+        'get': "get_vul_type",
+    })),
+    path(
+        'dastvul/settings',
+        DastManageEndPoint.as_view({
+            'post': "change_validation_settings",
+            'get': "get_validation_settings",
+        })),
+    path(
+        'dastvul/settings/doc',
+        DastManageEndPoint.as_view({
+            'get': "get_doc_url",
+        })),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     # demo接口
@@ -412,6 +452,8 @@ urlpatterns.extend([
     path('api/v2/sca_vul_summary', GetScaSummary.as_view()),
     path('api/v2/app_vul_list_content', GetAppVulsList.as_view()),
     path('api/v2/app_vul_summary', GetAppVulsSummary.as_view()),
+    path('api/v2/api_route/search', NewApiRouteSearch.as_view()),
+    path('api/v2/project_version', NewProjectVersionList.as_view()),
 ])
 
 urlpatterns.extend(scaupload_urls)

@@ -32,6 +32,7 @@ from typing import Tuple, Dict, Union, TYPE_CHECKING
 from dongtai_common.models.department import Department
 from functools import reduce
 from operator import ior
+from rest_framework.exceptions import AuthenticationFailed
 
 if TYPE_CHECKING:
     from django.core.paginator import _SupportsPagination
@@ -107,10 +108,12 @@ class EndPoint(APIView):
             else:
                 handler = self.http_method_not_allowed
             response = handler(request, *args, **kwargs)
-        except Exception as exc:
-            logger.error(f'url: {self.request.path},exc:{exc}', exc_info=True)
+        except AuthenticationFailed as exc:
+            logger.debug(f'url: {self.request.path},exc:{exc}')
             response = self.handle_exception(exc)
-            return self.finalize_response(request, response, *args, **kwargs)
+        except Exception as exc:
+            logger.warning(f'url: {self.request.path},exc:{exc}', exc_info=exc)
+            response = self.handle_exception(exc)
 
         self.response = self.finalize_response(request, response, *args,
                                                **kwargs)
@@ -198,7 +201,7 @@ class EndPoint(APIView):
         except EmptyPage:
             return page_summary, queryset.none()
         except BaseException as e:
-            logger.error(e, exc_info=e)
+            logger.info(e, exc_info=e)
             return page_summary, queryset.none()
         return page_summary, page_list
 
@@ -368,7 +371,14 @@ class R:
     """
 
     @staticmethod
-    def success(status=201, data=None, msg=_("success"), page=None, **kwargs):
+    def success(
+            status=201,
+            data=None,
+            msg=_("success"),
+            page=None,
+            status_code=200,
+            **kwargs,
+    ):
         resp_data = {"status": status, "msg": msg}
         if data is not None:
             resp_data['data'] = data
@@ -378,11 +388,18 @@ class R:
         for key, value in kwargs.items():
             resp_data[key] = value
 
-        return JsonResponse(resp_data)
+        return JsonResponse(
+            resp_data,
+            status=status_code,
+        )
 
     @staticmethod
-    def failure(status=202, data=None, msg=_("failure")):
+    def failure(status=202, data=None, status_code=200, msg=_("failure")):
         resp_data = {"status": status, "msg": msg}
         if data:
             resp_data['data'] = data
-        return JsonResponse(resp_data)
+
+        return JsonResponse(
+            resp_data,
+            status=status_code,
+        )

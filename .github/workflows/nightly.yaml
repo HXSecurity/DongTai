@@ -69,7 +69,7 @@ jobs:
           python3 manage.py updatedepartmenttoken
           python3 manage.py runserver 0.0.0.0:8000  &
           sleep 60
-          schemathesis   run --base-url "http://localhost:8000/"  -H 'Authorization: Token 67aebd78e700ad36a82a152276196b5f49fafeb0' http://localhost:8000/api/XZPcGFKoxYXScwGjQtJx8u/schema/  --hypothesis-suppress-health-check=data_too_large,filter_too_much,too_slow,return_value,large_base_example,not_a_test_method,function_scoped_fixture --validate-schema=false  --hypothesis-verbosity normal 
+          schemathesis   run --base-url "http://localhost:8000/"  -H 'Authorization: Token 67aebd78e700ad36a82a152276196b5f49fafeb0' http://localhost:8000/api/XZPcGFKoxYXScwGjQtJx8u/schema/  --hypothesis-suppress-health-check=data_too_large,filter_too_much,too_slow,large_base_example,function_scoped_fixture --validate-schema=false  --hypothesis-verbosity normal 
   
   Run-BuildCheck:
     if: ${{ github.repository_owner == 'HXSecurity' }}

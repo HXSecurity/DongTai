@@ -2,6 +2,8 @@
     {
         "details": [
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,cmd",
                 "target": "",
@@ -9,6 +11,8 @@
                 "value": "os.popen"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,command",
                 "target": "",
@@ -16,6 +20,8 @@
                 "value": "os.system"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,args",
                 "target": "",
@@ -30,6 +36,8 @@
     {
         "details": [
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "",
@@ -37,6 +45,8 @@
                 "value": "builtins.eval"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "",
@@ -51,111 +61,8 @@
     {
         "details": [
             {
-                "inherit": "false",
-                "source": "P1,2,plaintext",
-                "target": "",
-                "track": "true",
-                "value": "Crypto.Cipher._mode_cbc.CbcMode.encrypt"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,2,plaintext",
-                "target": "",
-                "track": "true",
-                "value": "Crypto.Cipher._mode_cfb.CfbMode.encrypt"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,2,plaintext",
-                "target": "",
-                "track": "true",
-                "value": "Crypto.Cipher._mode_ctr.CtrMode.encrypt"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,2,plaintext",
-                "target": "",
-                "track": "true",
-                "value": "Crypto.Cipher._mode_eax.EaxMode.encrypt"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,2,plaintext",
-                "target": "",
-                "track": "true",
-                "value": "Crypto.Cipher._mode_ecb.EcbMode.encrypt"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,2,plaintext",
-                "target": "",
-                "track": "true",
-                "value": "Crypto.Cipher._mode_ofb.OfbMode.encrypt"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,2,plaintext",
-                "target": "",
-                "track": "true",
-                "value": "Crypto.Cipher._mode_openpgp.OpenPgpMode.encrypt"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,2,plaintext",
-                "target": "",
-                "track": "true",
-                "value": "Cryptodome.Cipher._mode_cbc.CbcMode.encrypt"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,2,plaintext",
-                "target": "",
-                "track": "true",
-                "value": "Cryptodome.Cipher._mode_cfb.CfbMode.encrypt"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,2,plaintext",
-                "target": "",
-                "track": "true",
-                "value": "Cryptodome.Cipher._mode_ctr.CtrMode.encrypt"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,2,plaintext",
-                "target": "",
-                "track": "true",
-                "value": "Cryptodome.Cipher._mode_eax.EaxMode.encrypt"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,2,plaintext",
-                "target": "",
-                "track": "true",
-                "value": "Cryptodome.Cipher._mode_ecb.EcbMode.encrypt"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,2,plaintext",
-                "target": "",
-                "track": "true",
-                "value": "Cryptodome.Cipher._mode_ofb.OfbMode.encrypt"
-            },
-            {
-                "inherit": "false",
-                "source": "P1,2,plaintext",
-                "target": "",
-                "track": "true",
-                "value": "Cryptodome.Cipher._mode_openpgp.OpenPgpMode.encrypt"
-            }
-        ],
-        "enable": 1,
-        "type": 4,
-        "value": "crypto-bad-ciphers"
-    },
-    {
-        "details": [
-            {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -163,6 +70,8 @@
                 "value": "Crypto.Cipher.Blowfish.new"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -170,6 +79,8 @@
                 "value": "Crypto.Cipher.DES.new"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -177,6 +88,8 @@
                 "value": "Cryptodome.Cipher.Blowfish.new"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -184,6 +97,8 @@
                 "value": "Cryptodome.Cipher.DES.new"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,s",
                 "target": "R",
@@ -191,6 +106,8 @@
                 "value": "base64.b64decode"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,s",
                 "target": "R",
@@ -198,6 +115,8 @@
                 "value": "base64.b64encode"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,source",
                 "target": "R",
@@ -205,6 +124,8 @@
                 "value": "builtins.bytearray.__init__"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -212,6 +133,8 @@
                 "value": "builtins.bytearray.cformat"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -219,6 +142,8 @@
                 "value": "builtins.bytearray.decode"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,source",
                 "target": "R",
@@ -226,6 +151,8 @@
                 "value": "builtins.bytes.__new__"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -233,6 +160,8 @@
                 "value": "builtins.bytes.cformat"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -240,6 +169,8 @@
                 "value": "builtins.bytes.decode"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,object",
                 "target": "R",
@@ -247,6 +178,8 @@
                 "value": "builtins.str.__new__"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -254,6 +187,8 @@
                 "value": "builtins.str.capitalize"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -261,6 +196,8 @@
                 "value": "builtins.str.casefold"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -268,6 +205,8 @@
                 "value": "builtins.str.center"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -275,6 +214,8 @@
                 "value": "builtins.str.cformat"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -282,6 +223,8 @@
                 "value": "builtins.str.concat"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -289,6 +232,8 @@
                 "value": "builtins.str.encode"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -296,6 +241,8 @@
                 "value": "builtins.str.format"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -303,6 +250,8 @@
                 "value": "builtins.str.fstring"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -310,6 +259,8 @@
                 "value": "builtins.str.fstring"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -317,6 +268,8 @@
                 "value": "builtins.str.join"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -324,6 +277,8 @@
                 "value": "builtins.str.ljust"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -331,6 +286,8 @@
                 "value": "builtins.str.lower"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -338,6 +295,8 @@
                 "value": "builtins.str.lstrip"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -345,6 +304,8 @@
                 "value": "builtins.str.partition"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -352,6 +313,8 @@
                 "value": "builtins.str.removeprefix"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -359,6 +322,8 @@
                 "value": "builtins.str.removesuffix"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -366,6 +331,8 @@
                 "value": "builtins.str.repeat"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -373,6 +340,8 @@
                 "value": "builtins.str.replace"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -380,6 +349,8 @@
                 "value": "builtins.str.rjust"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -387,6 +358,8 @@
                 "value": "builtins.str.rpartition"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -394,6 +367,8 @@
                 "value": "builtins.str.rsplit"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -401,6 +376,8 @@
                 "value": "builtins.str.rstrip"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -408,6 +385,8 @@
                 "value": "builtins.str.split"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -415,6 +394,8 @@
                 "value": "builtins.str.splitlines"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -422,6 +403,8 @@
                 "value": "builtins.str.strip"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -429,6 +412,8 @@
                 "value": "builtins.str.swapcase"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -436,6 +421,8 @@
                 "value": "builtins.str.title"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -443,6 +430,8 @@
                 "value": "builtins.str.translate"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -450,6 +439,8 @@
                 "value": "builtins.str.upper"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -457,6 +448,8 @@
                 "value": "builtins.str.zfill"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -464,6 +457,8 @@
                 "value": "django.template.base.Template.render"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -471,6 +466,8 @@
                 "value": "django.template.base.render_value_in_context"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -478,6 +475,8 @@
                 "value": "flask.jsonify"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,obj",
                 "target": "R",
@@ -485,6 +484,8 @@
                 "value": "json.dumps"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,s",
                 "target": "R",
@@ -492,6 +493,8 @@
                 "value": "json.loads"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -499,6 +502,8 @@
                 "value": "os.path.join"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,string",
                 "target": "R",
@@ -506,6 +511,8 @@
                 "value": "urllib.parse.unquote"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,data",
                 "target": "R",
@@ -513,6 +520,8 @@
                 "value": "yaml.dump"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,documents",
                 "target": "R",
@@ -527,6 +536,8 @@
     {
         "details": [
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -534,6 +545,8 @@
                 "value": "django.http.request.HttpRequest.read"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P2,path",
                 "target": "R",
@@ -541,6 +554,8 @@
                 "value": "django.urls.resolvers.RoutePattern.match"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -548,6 +563,8 @@
                 "value": "django.utils.datastructures.MultiValueDict.__getitem__"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -555,6 +572,8 @@
                 "value": "django.utils.datastructures.MultiValueDict.get"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -562,6 +581,8 @@
                 "value": "werkzeug.datastructures.MultiDict.__getitem__"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -569,6 +590,8 @@
                 "value": "werkzeug.datastructures.TypeConversionDict.get"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -576,6 +599,8 @@
                 "value": "werkzeug.datastructures.getlist"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "all",
                 "source": "P",
                 "target": "R",
@@ -583,6 +608,8 @@
                 "value": "werkzeug.wrappers.base_request.BaseRequest.get_data"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -597,6 +624,8 @@
     {
         "details": [
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,s",
                 "target": "R",
@@ -604,6 +633,8 @@
                 "value": "html.escape"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -611,6 +642,8 @@
                 "value": "jinja2.runtime.escape"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,assertion_value",
                 "target": "R",
@@ -618,6 +651,8 @@
                 "value": "ldap.filter.escape_filter_chars"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,text",
                 "target": "R",
@@ -625,6 +660,8 @@
                 "value": "ldap3.utils.conv.escape_filter_chars"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,s",
                 "target": "R",
@@ -632,6 +669,8 @@
                 "value": "markupsafe.escape"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,s",
                 "target": "R",
@@ -639,6 +678,8 @@
                 "value": "markupsafe.escape_silent"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,pattern",
                 "target": "R",
@@ -653,6 +694,8 @@
     {
         "details": [
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P4,filterstr",
                 "target": "",
@@ -660,6 +703,8 @@
                 "value": "ldap.ldapobject.SimpleLDAPObject.search_ext"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P3,search_filter",
                 "target": "",
@@ -674,6 +719,8 @@
     {
         "details": [
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P2,filter",
                 "target": "",
@@ -688,6 +735,8 @@
     {
         "details": [
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,file",
                 "target": "",
@@ -702,6 +751,8 @@
     {
         "details": [
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,pattern",
                 "target": "",
@@ -709,6 +760,8 @@
                 "value": "re.findall"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,pattern",
                 "target": "",
@@ -716,6 +769,8 @@
                 "value": "re.finditer"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,pattern",
                 "target": "",
@@ -723,6 +778,8 @@
                 "value": "re.search"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,pattern",
                 "target": "",
@@ -730,6 +787,8 @@
                 "value": "re.split"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,pattern",
                 "target": "",
@@ -737,6 +796,8 @@
                 "value": "re.sub"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,pattern",
                 "target": "",
@@ -751,27 +812,8 @@
     {
         "details": [
             {
-                "inherit": "false",
-                "source": "P2,content",
-                "target": "",
-                "track": "true",
-                "value": "django.http.response.HttpResponse.__init__"
-            },
-            {
-                "inherit": "false",
-                "source": "P2,rv",
-                "target": "",
-                "track": "true",
-                "value": "flask.app.Flask.make_response"
-            }
-        ],
-        "enable": 1,
-        "type": 4,
-        "value": "reflected-xss"
-    },
-    {
-        "details": [
-            {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P2,query",
                 "target": "",
@@ -779,6 +821,8 @@
                 "value": "MySQLdb.cursors.BaseCursor.execute"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P2,query",
                 "target": "",
@@ -786,6 +830,8 @@
                 "value": "MySQLdb.cursors.BaseCursor.executemany"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P2,operation",
                 "target": "",
@@ -793,6 +839,8 @@
                 "value": "mysql.connector.cursor.CursorBase.execute"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P2,operation",
                 "target": "",
@@ -800,6 +848,8 @@
                 "value": "mysql.connector.cursor.CursorBase.executemany"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P2,query",
                 "target": "",
@@ -807,6 +857,8 @@
                 "value": "psycopg2._psycopg.cursor.execute"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P2,query",
                 "target": "",
@@ -814,6 +866,8 @@
                 "value": "psycopg2._psycopg.cursor.executemany"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P2,query",
                 "target": "",
@@ -821,6 +875,8 @@
                 "value": "pymysql.cursors.Cursor.execute"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P2,query",
                 "target": "",
@@ -828,6 +884,8 @@
                 "value": "pymysql.cursors.Cursor.executemany"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P2",
                 "target": "",
@@ -835,6 +893,8 @@
                 "value": "sqlite3.Cursor.execute"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P2",
                 "target": "",
@@ -842,6 +902,8 @@
                 "value": "sqlite3.Cursor.executemany"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P2",
                 "target": "",
@@ -856,6 +918,8 @@
     {
         "details": [
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P3,url",
                 "target": "",
@@ -863,6 +927,8 @@
                 "value": "requests.sessions.Session.request"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P3,url",
                 "target": "",
@@ -877,6 +943,8 @@
     {
         "details": [
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "all",
                 "source": "P1,file",
                 "target": "",
@@ -884,6 +952,8 @@
                 "value": "pickle.load"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,data",
                 "target": "",
@@ -891,6 +961,8 @@
                 "value": "pickle.loads"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,stream",
                 "target": "",
@@ -898,6 +970,8 @@
                 "value": "yaml.load"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,stream",
                 "target": "",
@@ -905,6 +979,8 @@
                 "value": "yaml.load_all"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P2,stream",
                 "target": "",
@@ -912,6 +988,8 @@
                 "value": "yaml.loader.FullLoader.__init__"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P2,stream",
                 "target": "",
@@ -919,6 +997,8 @@
                 "value": "yaml.loader.Loader.__init__"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P2,stream",
                 "target": "",
@@ -926,6 +1006,8 @@
                 "value": "yaml.loader.UnsafeLoader.__init__"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,stream",
                 "target": "",
@@ -933,6 +1015,8 @@
                 "value": "yaml.unsafe_load"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,stream",
                 "target": "",
@@ -947,6 +1031,8 @@
     {
         "details": [
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,text",
                 "target": "",
@@ -954,6 +1040,8 @@
                 "value": "lxml.etree.fromstring"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,source",
                 "target": "",

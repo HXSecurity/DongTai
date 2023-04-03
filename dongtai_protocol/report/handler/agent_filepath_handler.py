@@ -34,4 +34,4 @@ class FilePathHandler(IReportHandler):
 
 
 def _data_dump(filepath: str) -> str:
-    return Simhash(filepath).value
+    return str(Simhash(filepath).value)

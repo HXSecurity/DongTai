@@ -363,10 +363,13 @@ def update_one_sca(agent_id,
                        package['version'])
 
 
-def stat_severity(serveritys) -> dict:
+def stat_severity(serveritys: str) -> dict:
     dic = defaultdict(int)
     for serverity in serveritys:
-        dic[serverity] += 1
+        if serverity.lower() == 'moderate':
+            dic['critical'] += 1
+        else:
+            dic[serverity.lower()] += 1
     return dict(dic)
 
 
@@ -415,6 +418,7 @@ def get_vul_serial(title: str = "",
 
 def get_vul_level_dict() -> defaultdict:
     return defaultdict(lambda: 5, {
+        'moderate': 1,
         'high': 1,
         "critical": 1,
         "medium": 2,
@@ -446,9 +450,14 @@ def get_vul_path(base_aql: str,
 
 
 def get_asset_level(res: dict) -> int:
-    level_map = {'critical': 1, 'high': 1, 'medium': 2, 'low': 3}
+    level_map = {
+        'critical': 1,
+        'high': 1,
+        'medium': 2,
+        'low': 3
+    }
     for k, v in level_map.items():
-        if res[k] > 0:
+        if k in res and res[k] > 0:
             return v
     return 4
 
@@ -488,7 +497,7 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
             version, [i['version'] for i in vul['fixed']])
         vul_serial = get_vul_serial(vul['vul_title'], vul['cve'],
                                     vul['cwe_info'], vul['cnvd'], vul['cnnvd'])
-        vul_level = get_vul_level_dict()[vul['severity']]
+        vul_level = get_vul_level_dict()[vul['severity'].lower()]
         detail = get_detail(vul['description'])
         # still need , save to asset_vul_relation
         # nearest_fixed_version = get_nearest_version(version, vul['fixed'])

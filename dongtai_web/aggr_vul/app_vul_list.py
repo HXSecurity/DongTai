@@ -26,8 +26,12 @@ from dongtai_conf import settings
 from dongtai_common.common.utils import make_hash
 from dongtai_conf.settings import ELASTICSEARCH_STATE
 from dongtai_engine.elatic_search.data_correction import data_correction_interpetor
+from dongtai_common.models.dast_integration import IastDastIntegrationRelation
+from django.db.models import (Count, Sum)
+from itertools import groupby
+from collections import defaultdict
 
-INT_LIMIT: int = 2 ** 64 - 1
+INT_LIMIT: int = 2**64 - 1
 
 
 class GetAppVulsList(UserEndPoint):
@@ -36,9 +40,7 @@ class GetAppVulsList(UserEndPoint):
         request=AggregationArgsSerializer,
         tags=[_('app VulList')],
         summary=_('app List Select'),
-        description=_(
-            "select sca vul and app vul by keywords"
-        ),
+        description=_("select sca vul and app vul by keywords"),
     )
     def post(self, request):
         """
@@ -56,9 +58,7 @@ class GetAppVulsList(UserEndPoint):
         # auth_user_info = auth_user_list_str(user=user)
         departments = request.user.get_relative_department()
         queryset = IastVulnerabilityModel.objects.filter(
-            is_del=0,
-            project_id__gt=0,
-            project__department__in=departments)
+            is_del=0, project_id__gt=0, project__department__in=departments)
 
         try:
             if ser.is_valid(True):
@@ -80,15 +80,15 @@ class GetAppVulsList(UserEndPoint):
                 # 项目版本号
                 if ser.validated_data.get("project_version_id", 0):
                     queryset = queryset.filter(
-                        project_version_id=ser.validated_data.get("project_version_id"))
+                        project_version_id=ser.validated_data.get(
+                            "project_version_id"))
                     es_query['project_version_id'] = ser.validated_data.get(
                         "project_version_id")
                 # 按项目筛选
                 if ser.validated_data.get("project_id_str", ""):
                     project_id_list = turnIntListOfStr(
                         ser.validated_data.get("project_id_str", ""))
-                    queryset = queryset.filter(
-                        project_id__in=project_id_list)
+                    queryset = queryset.filter(project_id__in=project_id_list)
                     es_query['project_ids'] = project_id_list
                 # 漏洞类型筛选
                 if ser.validated_data.get("hook_type_id_str", ""):
@@ -115,8 +115,7 @@ class GetAppVulsList(UserEndPoint):
                     language_arr = []
                     for lang in language_id_list:
                         language_arr.append(LANGUAGE_ID_DICT.get(str(lang)))
-                    queryset = queryset.filter(
-                        language__in=language_arr)
+                    queryset = queryset.filter(language__in=language_arr)
                     es_query['language_ids'] = language_arr
                 order_list = []
                 fields = [
@@ -133,21 +132,23 @@ class GetAppVulsList(UserEndPoint):
                     order_list = ["-score"]
                     fields.append("score")
 
-                    queryset = queryset.annotate(
-                        score=SearchLanguageMode(
-                            [
-                                F('search_keywords'),
-                                F('uri'),
-                                F('vul_title'),
-                                F('http_method'),
-                                F('http_protocol'),
-                                F('top_stack'),
-                                F('bottom_stack')],
-                            search_keyword=keywords))
+                    queryset = queryset.annotate(score=SearchLanguageMode(
+                        [
+                            F('search_keywords'),
+                            F('uri'),
+                            F('vul_title'),
+                            F('http_method'),
+                            F('http_protocol'),
+                            F('top_stack'),
+                            F('bottom_stack')
+                        ],
+                        search_keyword=keywords,
+                    ))
                 # 排序
                 order_type = APP_VUL_ORDER.get(
                     str(ser.validated_data['order_type']), "level_id")
-                order_type_desc = "-" if ser.validated_data['order_type_desc'] else ""
+                order_type_desc = "-" if ser.validated_data[
+                    'order_type_desc'] else ""
                 if order_type == "level_id":
                     order_list.append(order_type_desc + order_type)
                     if ser.validated_data['order_type_desc']:
@@ -168,6 +169,25 @@ class GetAppVulsList(UserEndPoint):
                         *tuple(order_list))[begin_num:end_num]
         except ValidationError as e:
             return R.failure(data=e.detail)
+        vul_ids = [vul['id'] for vul in vul_data]
+        dastvul_rel_count_res = IastDastIntegrationRelation.objects.filter(
+            iastvul_id__in=vul_ids).values('iastvul_id').annotate(
+                dastvul_count=Count('dastvul_id'))
+        dast_vul_types = IastDastIntegrationRelation.objects.filter(
+            iastvul_id__in=vul_ids,
+            dastvul__vul_type__isnull=False,
+        ).values('dastvul__vul_type', 'iastvul_id').distinct()
+        dast_vul_types_dict = defaultdict(
+            list, {
+                k: list(set(map(lambda x: x['dastvul__vul_type'], g)))
+                for k, g in groupby(dast_vul_types,
+                                    key=lambda x: x['iastvul_id'])
+            })
+        dastvul_rel_count_res_dict = defaultdict(
+            lambda: 0, {
+                item['iastvul_id']: item['dastvul_count']
+                for item in dastvul_rel_count_res
+            })
         if vul_data:
             for item in vul_data:
                 item['level_name'] = APP_LEVEL_RISK.get(
@@ -182,8 +202,11 @@ class GetAppVulsList(UserEndPoint):
                 item['agent__bind_project_id'] = item['project_id']
                 item['header_vul_urls'] = VulSerializer.find_all_urls(
                     item['id']) if item['is_header_vul'] else []
+                item['dastvul__vul_type'] = dast_vul_types_dict[item['id']]
+                item['dastvul_count'] = dastvul_rel_count_res_dict[item['id']]
+                item['dast_validation_status'] = True if dastvul_rel_count_res_dict[
+                    item['id']] else False
                 end['data'].append(item)
-
         # all Iast Vulnerability Status
         status = IastVulnerabilityStatus.objects.all()
         status_obj = {}

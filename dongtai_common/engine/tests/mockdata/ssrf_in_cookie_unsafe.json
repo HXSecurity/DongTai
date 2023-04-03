@@ -1,0 +1,408 @@
+[{
+	"source": false,
+	"invokeId": 584,
+	"objValue": "[http-outgoing-1 >> Host: www.baidu.com]*38",
+	"retValue": "[http-outgoing-1 >> Host: www.baidu.com]*38",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.toString()",
+	"methodName": "toString",
+	"sourceHash": [1514589249],
+	"targetHash": [906766125],
+	"callerClass": "org.apache.http.impl.conn.LoggingManagedHttpClientConnection",
+	"targetRange": [{
+		"hash": 906766125,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 38,
+			"start": 25
+		}, {
+			"name": "cross-site",
+			"stop": 38,
+			"start": 25
+		}]
+	}],
+	"callerMethod": "onRequestSubmitted",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"callerLineNumber": 127
+}, {
+	"source": false,
+	"invokeId": 583,
+	"objValue": "[http-outgoing-1 >> Host: www.baidu.com]*38",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [1866865017],
+	"targetHash": [1514589249],
+	"callerClass": "org.apache.http.impl.conn.LoggingManagedHttpClientConnection",
+	"targetRange": [{
+		"hash": 1514589249,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 38,
+			"start": 25
+		}, {
+			"name": "cross-site",
+			"stop": 38,
+			"start": 25
+		}]
+	}],
+	"callerMethod": "onRequestSubmitted",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[Host: www.baidu.com]*19"
+	}],
+	"callerLineNumber": 127
+}, {
+	"source": false,
+	"invokeId": 582,
+	"objValue": "[Host: www.baidu.com]*19",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.<init>(char[],int,int)",
+	"methodName": "<init>",
+	"sourceHash": [290356233],
+	"targetHash": [1866865017],
+	"callerClass": "org.apache.http.util.CharArrayBuffer",
+	"targetRange": [{
+		"hash": 1866865017,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 19,
+			"start": 6
+		}, {
+			"name": "cross-site",
+			"stop": 19,
+			"start": 6
+		}]
+	}],
+	"callerMethod": "toString",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.String",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[[C@114e7c09]*11"
+	}],
+	"callerLineNumber": 489
+}, {
+	"source": false,
+	"invokeId": 581,
+	"objValue": "[www.baidu.com]*13",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.getChars(int,int,char[],int)",
+	"methodName": "getChars",
+	"sourceHash": [1883524892],
+	"targetHash": [290356233],
+	"callerClass": "org.apache.http.util.CharArrayBuffer",
+	"targetRange": [{
+		"hash": 290356233,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 19,
+			"start": 6
+		}, {
+			"name": "cross-site",
+			"stop": 19,
+			"start": 6
+		}]
+	}],
+	"callerMethod": "append",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["P3"]
+	},
+	"originClassName": "java.lang.String",
+	"parameterValues": [{
+		"index": "P3",
+		"value": "[[C@114e7c09]*11"
+	}],
+	"callerLineNumber": 111
+}, {
+	"source": false,
+	"invokeId": 580,
+	"objValue": "[www.baidu.com]*13",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.getChars(int,int,char[],int)",
+	"methodName": "getChars",
+	"sourceHash": [1883524892],
+	"targetHash": [266377212],
+	"callerClass": "org.apache.http.util.CharArrayBuffer",
+	"targetRange": [{
+		"hash": 266377212,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 19,
+			"start": 6
+		}, {
+			"name": "cross-site",
+			"stop": 19,
+			"start": 6
+		}]
+	}],
+	"callerMethod": "append",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["P3"]
+	},
+	"originClassName": "java.lang.String",
+	"parameterValues": [{
+		"index": "P3",
+		"value": "[[C@fe097fc]*10"
+	}],
+	"callerLineNumber": 111
+}, {
+	"source": false,
+	"traceId": "0bf0a78c5b474758b3b23bf7bed53fb8.1.4215d5e91246be7a.586c95c55bf3206f",
+	"invokeId": 579,
+	"objValue": "[http://www.baidu.com]*20",
+	"className": "org.apache.http.impl.client.CloseableHttpClient",
+	"signature": "org.apache.http.impl.client.CloseableHttpClient.doExecute(org.apache.http.HttpHost,org.apache.http.HttpRequest,org.apache.http.protocol.HttpContext)",
+	"methodName": "doExecute",
+	"sourceHash": [1883524892, 209940398],
+	"sourceType": [{
+		"hash": 209940398,
+		"type": "PROTOCOL"
+	}, {
+		"hash": 1883524892,
+		"type": "HOST"
+	}],
+	"targetHash": [],
+	"callerClass": "org.apache.http.impl.client.CloseableHttpClient",
+	"callerMethod": "execute",
+	"taintPosition": {
+		"source": ["P2"]
+	},
+	"originClassName": "org.apache.http.impl.client.InternalHttpClient",
+	"callerLineNumber": 82
+}, {
+	"source": false,
+	"invokeId": 578,
+	"objValue": "[http://www.baidu.com]*20",
+	"className": "java.net.URI",
+	"signature": "java.net.URI.<init>(java.lang.String)",
+	"methodName": "<init>",
+	"sourceHash": [1325156701],
+	"targetHash": [1204192554],
+	"callerClass": "java.net.URI",
+	"targetRange": [{
+		"hash": 1204192554,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 21,
+			"start": 0
+		}, {
+			"name": "cross-site",
+			"stop": 21,
+			"start": 0
+		}]
+	}],
+	"callerMethod": "create",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.net.URI",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[http://www.baidu.com]*20"
+	}],
+	"callerLineNumber": 850
+}, {
+	"source": false,
+	"invokeId": 577,
+	"objValue": "[http://www.baidu.com]*20",
+	"retValue": "[//www.baidu.com]*15",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [1325156701],
+	"targetHash": [1345289886],
+	"callerClass": "java.net.URI$Parser",
+	"targetRange": [{
+		"hash": 1345289886,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 15,
+			"start": 0
+		}, {
+			"name": "cross-site",
+			"stop": 15,
+			"start": 0
+		}]
+	}],
+	"callerMethod": "substring",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 2868
+}, {
+	"source": false,
+	"invokeId": 576,
+	"objValue": "[http://www.baidu.com]*20",
+	"retValue": "[www.baidu.com]*13",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [1325156701],
+	"targetHash": [1826802032],
+	"callerClass": "java.net.URI$Parser",
+	"targetRange": [{
+		"hash": 1826802032,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 13,
+			"start": 0
+		}, {
+			"name": "cross-site",
+			"stop": 13,
+			"start": 0
+		}]
+	}],
+	"callerMethod": "substring",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 2868
+}, {
+	"source": false,
+	"invokeId": 575,
+	"objValue": "[http://www.baidu.com]*20",
+	"retValue": "[www.baidu.com]*13",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [1325156701],
+	"targetHash": [1883524892],
+	"callerClass": "java.net.URI$Parser",
+	"targetRange": [{
+		"hash": 1883524892,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 13,
+			"start": 0
+		}, {
+			"name": "cross-site",
+			"stop": 13,
+			"start": 0
+		}]
+	}],
+	"callerMethod": "substring",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 2868
+}, {
+	"source": false,
+	"invokeId": 574,
+	"objValue": "[http://www.baidu.com]*20",
+	"retValue": "[http]*4",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [1325156701],
+	"targetHash": [209940398],
+	"callerClass": "java.net.URI$Parser",
+	"targetRange": [{
+		"hash": 209940398,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 4,
+			"start": 0
+		}, {
+			"name": "cross-site",
+			"stop": 4,
+			"start": 0
+		}]
+	}],
+	"callerMethod": "substring",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 2868
+}, {
+	"source": true,
+	"invokeId": 573,
+	"objValue": "[org.apache.catalina.connector.RequestFacade@35336e97]52",
+	"retValue": "[http://www.baidu.com]*20",
+	"className": "javax.servlet.http.HttpServletRequest",
+	"signature": "javax.servlet.http.HttpServletRequest.getParameter(java.lang.String)",
+	"methodName": "getParameter",
+	"sourceHash": [],
+	"targetHash": [1325156701],
+	"callerClass": "org.apache.jsp._011_002dssrf_002dhttpclient_jsp",
+	"targetRange": [{
+		"hash": 1325156701,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 20,
+			"start": 0
+		}, {
+			"name": "cross-site",
+			"stop": 20,
+			"start": 0
+		}]
+	}],
+	"callerMethod": "_jspService",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["R"]
+	},
+	"originClassName": "org.apache.catalina.connector.RequestFacade",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[url]*3"
+	}],
+	"callerLineNumber": 141
+}, {
+	"source": true,
+	"invokeId": 572,
+	"objValue": "[url=http://www.baidu.com]*24",
+	"retValue": "[url=http://www.baidu.com]*24",
+	"className": "javax.servlet.http.HttpServletRequest",
+	"signature": "javax.servlet.http.HttpServletRequest.getQueryString()",
+	"methodName": "getQueryString",
+	"sourceHash": [],
+	"targetHash": [942008588],
+	"callerClass": "org.apache.jasper.servlet.JspServlet",
+	"targetRange": [{
+		"hash": 942008588,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 24,
+			"start": 0
+		}, {
+			"name": "cross-site",
+			"stop": 24,
+			"start": 0
+		}, {
+			"name": "xss-encoded",
+			"stop": 24,
+			"start": 0
+		}]
+	}],
+	"callerMethod": "preCompile",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "org.apache.catalina.connector.RequestFacade",
+	"callerLineNumber": 238
+}]

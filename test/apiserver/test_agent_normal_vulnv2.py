@@ -28,17 +28,20 @@ with open('./test/integration/mockdata/new-novul.json') as fp:
 with open('./test/integration/mockdata/exec2.json') as fp:
     exec2_json = json.load(fp)
 
+with open('./test/integration/mockdata/xss.json') as fp:
+    xss_json = json.load(fp)
+
 
 def mock_uuid():
     return uuid.UUID(int=0)
 
 
-class AgentHardencodeTestCase(AgentTestCase):
+class AgentNormalVulTestCase(AgentTestCase):
 
-    def test_agent_hardencode_vuln_upload(self):
+    def test_agent_vuln_upload(self):
         res = self.agent_report(new_exec_json)
 
-    def test_agent_hardencode_vuln_upload2(self):
+    def test_agent_vuln_upload2(self):
         with patch('uuid.uuid4', mock_uuid):
             res = self.agent_report(new_exec_json)
             search_vul_from_method_pool(str(uuid.UUID(int=0).hex),
@@ -49,7 +52,7 @@ class AgentHardencodeTestCase(AgentTestCase):
             assert IastVulnerabilityModel.objects.filter(
                 agent_id=self.agent_id, level_id=1).count() == 1
 
-    def test_agent_hardencode_vuln_upload3(self):
+    def test_agent_vuln_upload3(self):
         with patch('uuid.uuid4', mock_uuid):
             res = self.agent_report(old_exec_json)
             search_vul_from_method_pool(str(uuid.UUID(int=0).hex),
@@ -57,7 +60,7 @@ class AgentHardencodeTestCase(AgentTestCase):
             assert IastVulnerabilityModel.objects.filter(
                 agent_id=self.agent_id, level_id=1).count() == 1
 
-    def test_agent_hardencode_vuln_upload4(self):
+    def test_agent_vuln_upload4(self):
         with patch('uuid.uuid4', mock_uuid):
             res = self.agent_report(new_novul_json)
             search_vul_from_method_pool(str(uuid.UUID(int=0).hex),
@@ -65,10 +68,18 @@ class AgentHardencodeTestCase(AgentTestCase):
             assert IastVulnerabilityModel.objects.filter(
                 agent_id=self.agent_id, level_id=1).count() == 0
 
-    def test_agent_hardencode_vuln_upload5(self):
+    def test_agent_vuln_upload5(self):
         with patch('uuid.uuid4', mock_uuid):
             res = self.agent_report(exec2_json)
             search_vul_from_method_pool(str(uuid.UUID(int=0).hex),
                                         self.agent_id)
             assert IastVulnerabilityModel.objects.filter(
                 agent_id=self.agent_id, level_id=1).count() == 1
+
+    def test_agent_vuln_upload6(self):
+        with patch('uuid.uuid4', mock_uuid):
+            res = self.agent_report(xss_json)
+            search_vul_from_method_pool(str(uuid.UUID(int=0).hex),
+                                        self.agent_id)
+            assert IastVulnerabilityModel.objects.filter(
+                agent_id=self.agent_id, level_id=2).count() == 0

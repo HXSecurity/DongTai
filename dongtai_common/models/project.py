@@ -95,6 +95,8 @@ class IastProject(models.Model):
                                  models.DO_NOTHING,
                                  blank=True,
                                  null=True)
+    enable_log = models.BooleanField(null=True)
+    log_level = models.CharField(max_length=511, null=True)
 
     class Meta:
         managed = get_managed()
