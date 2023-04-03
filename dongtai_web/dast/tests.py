@@ -246,7 +246,7 @@ class IastDastIntegrationBindTestCase(AgentTestCase):
         relcount = IastDastIntegrationRelation.objects.filter(
             iastvul__method_pool_id=method_pool.id).count()
         self.assertEqual(relcount, 1)
-    
+
     def test_positive_create_push_distinct(self):
         from dongtai_engine.tasks import search_vul_from_method_pool
         from dongtai_common.models.agent_method_pool import MethodPool
@@ -280,7 +280,7 @@ class IastDastIntegrationBindTestCase(AgentTestCase):
         relcount = IastDastIntegrationRelation.objects.filter(
             iastvul__method_pool_id=method_pool.id).count()
         self.assertEqual(relcount, 1)
-    
+
     def test_positive_push_create_distinct(self):
         new_data = data1.copy()
         new_data["agent_id"] = [str(self.agent_id)]
