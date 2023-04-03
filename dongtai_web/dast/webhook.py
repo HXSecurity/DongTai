@@ -92,10 +92,10 @@ class DastWebhook(AnonymousAuthEndPoint):
             del ser.validated_data[field]
         for project_id, project_version_id in project_info_set:
             dastintegration = IastDastIntegration.objects.filter(
-                    project_id=project_id,
-                    project_version_id=project_version_id,
-                    vul_type=ser.validated_data['vul_type'],
-                    target=ser.validated_data['target'],
+                project_id=project_id,
+                project_version_id=project_version_id,
+                vul_type=ser.validated_data['vul_type'],
+                target=ser.validated_data['target'],
             ).first()
             if dastintegration:
                 logger.debug("dast vul exist, skip")
