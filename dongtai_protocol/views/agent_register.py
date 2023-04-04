@@ -257,6 +257,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 'mode': '插桩模式',
                 'latest_time': int(time.time()),
                 'template_id': template.id if template else -1,
+                'user': user,
             }
 
             default_params.update(
@@ -330,11 +331,20 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
 
     @staticmethod
     def get_agent_id(token, project_name, user, current_project_version_id):
-        queryset = IastAgent.objects.values('id').filter(
-            token=token,
-            project_name=project_name,
-            user=user,
-            project_version_id=current_project_version_id)
+        project  = IastProject.objects.filter(department=user.get_using_department(),
+                                   name=project_name).first()
+        if project:
+            queryset = IastAgent.objects.values('id').filter(
+                token=token,
+                bind_project=project,
+                department=user.get_using_department(),
+                project_version_id=current_project_version_id)
+        else:
+            queryset = IastAgent.objects.values('id').filter(
+                token=token,
+                project_name=project_name,
+                department=user.get_using_department(),
+                project_version_id=current_project_version_id)
         agent = queryset.first()
         if agent:
             queryset.update(is_core_running=1, online=1, is_running=1)
@@ -345,8 +355,9 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
     def __register_agent(exist_project, token, user, version, project_id,
                          project_name, project_version_id, language, is_audit):
         if exist_project:
-            IastAgent.objects.filter(token=token, online=1,
-                                     user=user).update(online=0)
+            IastAgent.objects.filter(
+                token=token, online=1,
+                department=user.get_using_department()).update(online=0)
         agent = IastAgent.objects.create(
             token=token,
             version=version,
@@ -412,7 +423,6 @@ def project_create(default_params, project_name, user, version_name, template):
     if not obj:
         obj, project_created = IastProject.objects.get_or_create(
             name=project_name,
-            user=user,
             department=department,
             defaults=default_params,
         )
