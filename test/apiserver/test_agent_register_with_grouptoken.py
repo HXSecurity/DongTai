@@ -9,6 +9,7 @@
 from test.apiserver.test_agent_base import AgentTestCase
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.department import Department
+from dongtai_web.projecttemplate.update_department_data import update_department_data
 import json
 import uuid
 
@@ -17,6 +18,7 @@ class AgentNewRegisterGroupTokenTestCase(AgentTestCase):
 
     def setUp(self):
         super().setUp()
+        update_department_data()
         self.client.force_authenticate(user=None)
         self.test_agent_id = []
 
