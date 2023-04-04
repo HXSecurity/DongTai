@@ -331,8 +331,8 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
 
     @staticmethod
     def get_agent_id(token, project_name, user, current_project_version_id):
-        project  = IastProject.objects.filter(department=user.get_using_department(),
-                                   name=project_name).first()
+        project = IastProject.objects.filter(
+            department=user.get_using_department(), name=project_name).first()
         if project:
             queryset = IastAgent.objects.values('id').filter(
                 token=token,
