@@ -14,8 +14,14 @@ from dongtai_web.views.utils.commonview import (
     AllStatusUpdateSerializerView,
 )
 from dongtai_common.permissions import TalentAdminPermission
-import re2 as re
-import jq
+try:
+    import re2 as re
+except ImportError as e:
+    import re
+try:
+    import jq
+except ImportError:
+    pass
 from dongtai_common.models.sensitive_info import IastPatternType, IastSensitiveInfoRule
 from django.db.models import Q
 import time
