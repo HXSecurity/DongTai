@@ -1,3 +1,5 @@
+import os
+
 from dongtai_conf.settings import BASE_DIR
 from os import walk, chdir, getcwd
 from os.path import join
@@ -83,19 +85,19 @@ def get_plugin_dict():
     if PLUGIN_DICT:
         return PLUGIN_DICT
     previous_path = getcwd()
-    PLUGIN_ROOT_PATH = join(BASE_DIR, 'dongtai_conf/plugin')
+    PLUGIN_ROOT_PATH = join(BASE_DIR, 'dongtai_conf' + os.sep + 'plugin')
     for root, directories, files in walk(top=PLUGIN_ROOT_PATH, topdown=False):
         for file_ in files:
             if file_.startswith('plug_') and (file_.endswith('.py')
                                               or file_.endswith('.so')):
                 if file_.endswith('.py'):
                     packname = '.'.join([
-                        root.replace(BASE_DIR + '/', '').replace('/', '.'),
+                        root.replace(BASE_DIR + os.sep, '').replace(os.sep, '.'),
                         file_.replace('.py', '')
                     ])
                 else:
                     packname = '.'.join([
-                        root.replace(BASE_DIR + '/', '').replace('/', '.'),
+                        root.replace(BASE_DIR + os.sep, '').replace(os.sep, '.'),
                         file_.split('.')[0]
                     ])
 

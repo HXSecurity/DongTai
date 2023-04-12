@@ -98,8 +98,8 @@ def get_installed_apps():
             if 'apps.py' in file_ and len(
                     list(
                         filter(lambda x: x != '',
-                               root.replace(getcwd(), '').split('/')))) == 1:
-                app_path = f"{root.replace(BASE_DIR + '/', '').replace('/', '.')}"
+                               root.replace(getcwd(), '').split(os.sep)))) == 1:
+                app_path = f"{root.replace(BASE_DIR + os.sep, '').replace(os.sep, '.')}"
                 master.append(app_path)
     chdir(previous_path)
     return master
