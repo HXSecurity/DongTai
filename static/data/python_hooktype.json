@@ -454,9 +454,9 @@
         "created_by": 1,
         "enable": 1,
         "language": 2,
-        "name": "\u670d\u52a1\u5668\u7aef\u8bf7\u6c42\u4f2a\u9020",
+        "name": "ssrf",
         "name_en": null,
-        "name_zh": "\u670d\u52a1\u5668\u7aef\u8bf7\u6c42\u4f2a\u9020",
+        "name_zh": "ssrf",
         "system_type": 1,
         "type": 4,
         "value": "ssrf"
