@@ -4,6 +4,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,cmd",
@@ -16,6 +18,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,command",
@@ -28,6 +32,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,args",
@@ -47,6 +53,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -59,6 +67,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -78,6 +88,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,2,plaintext",
@@ -90,6 +102,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,2,plaintext",
@@ -102,6 +116,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,2,plaintext",
@@ -114,6 +130,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,2,plaintext",
@@ -126,6 +144,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,2,plaintext",
@@ -138,6 +158,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,2,plaintext",
@@ -150,6 +172,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,2,plaintext",
@@ -162,6 +186,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,2,plaintext",
@@ -174,6 +200,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,2,plaintext",
@@ -186,6 +214,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,2,plaintext",
@@ -198,6 +228,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,2,plaintext",
@@ -210,6 +242,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,2,plaintext",
@@ -222,6 +256,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,2,plaintext",
@@ -234,6 +270,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,2,plaintext",
@@ -244,7 +282,7 @@
                 "value": "Cryptodome.Cipher._mode_openpgp.OpenPgpMode.encrypt"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "crypto-bad-ciphers"
     },
@@ -253,6 +291,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -265,6 +305,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -277,6 +319,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -289,6 +333,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -301,6 +347,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,s",
@@ -313,6 +361,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,s",
@@ -325,6 +375,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,source",
@@ -337,6 +389,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -349,6 +403,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -361,6 +417,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,source",
@@ -373,6 +431,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -385,6 +445,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -397,6 +459,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,object",
@@ -409,6 +473,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -421,6 +487,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -433,6 +501,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -445,6 +515,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -457,6 +529,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -469,6 +543,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -481,6 +557,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -493,6 +571,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -505,6 +585,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -517,6 +599,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -529,6 +613,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -541,6 +627,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -553,6 +641,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -565,6 +655,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -577,6 +669,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -589,6 +683,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -601,6 +697,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -613,6 +711,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -625,6 +725,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -637,6 +739,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -649,6 +753,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -661,6 +767,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -673,6 +781,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -685,6 +795,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -697,6 +809,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -709,6 +823,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -721,6 +837,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -733,6 +851,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -745,6 +865,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -757,6 +879,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1",
@@ -769,6 +893,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -781,6 +907,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -793,6 +921,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -805,6 +935,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,obj",
@@ -817,6 +949,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,s",
@@ -829,6 +963,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -841,6 +977,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,string",
@@ -853,6 +991,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,data",
@@ -865,6 +1005,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,documents",
@@ -884,6 +1026,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -896,6 +1040,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P2,path",
@@ -908,6 +1054,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -920,6 +1068,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -932,6 +1082,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -944,6 +1096,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -956,6 +1110,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -968,6 +1124,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "all",
                 "language": 2,
                 "source": "P",
@@ -980,6 +1138,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -999,6 +1159,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,s",
@@ -1011,6 +1173,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P",
@@ -1023,6 +1187,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,assertion_value",
@@ -1035,6 +1201,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,text",
@@ -1047,6 +1215,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,s",
@@ -1059,6 +1229,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,s",
@@ -1071,6 +1243,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,pattern",
@@ -1090,6 +1264,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P4,filterstr",
@@ -1102,6 +1278,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P3,search_filter",
@@ -1121,6 +1299,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P2,filter",
@@ -1140,6 +1320,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,file",
@@ -1159,6 +1341,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,pattern",
@@ -1171,6 +1355,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,pattern",
@@ -1183,6 +1369,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,pattern",
@@ -1195,6 +1383,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,pattern",
@@ -1207,6 +1397,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,pattern",
@@ -1219,6 +1411,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,pattern",
@@ -1238,6 +1432,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P2,content",
@@ -1250,6 +1446,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P2,rv",
@@ -1260,7 +1458,7 @@
                 "value": "flask.app.Flask.make_response"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "reflected-xss"
     },
@@ -1269,6 +1467,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P2,query",
@@ -1281,6 +1481,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P2,query",
@@ -1293,6 +1495,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P2,operation",
@@ -1305,6 +1509,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P2,operation",
@@ -1317,6 +1523,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P2,query",
@@ -1329,6 +1537,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P2,query",
@@ -1341,6 +1551,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P2,query",
@@ -1353,6 +1565,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P2,query",
@@ -1365,6 +1579,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P2",
@@ -1377,6 +1593,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P2",
@@ -1389,6 +1607,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P2",
@@ -1408,6 +1628,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P3,url",
@@ -1420,6 +1642,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P3,url",
@@ -1439,6 +1663,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "all",
                 "language": 2,
                 "source": "P1,file",
@@ -1451,6 +1677,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,data",
@@ -1463,6 +1691,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,stream",
@@ -1475,6 +1705,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,stream",
@@ -1487,6 +1719,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P2,stream",
@@ -1499,6 +1733,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P2,stream",
@@ -1511,6 +1747,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P2,stream",
@@ -1523,6 +1761,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,stream",
@@ -1535,6 +1775,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,stream",
@@ -1554,6 +1796,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,text",
@@ -1566,6 +1810,8 @@
             {
                 "created_by": 1,
                 "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "language": 2,
                 "source": "P1,source",

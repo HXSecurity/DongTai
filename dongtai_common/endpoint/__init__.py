@@ -114,8 +114,6 @@ class EndPoint(APIView):
         except Exception as exc:
             logger.warning(f'url: {self.request.path},exc:{exc}', exc_info=exc)
             response = self.handle_exception(exc)
-        finally:
-            return self.finalize_response(request, response, *args, **kwargs)
 
         self.response = self.finalize_response(request, response, *args,
                                                **kwargs)
@@ -373,7 +371,14 @@ class R:
     """
 
     @staticmethod
-    def success(status=201, data=None, msg=_("success"), page=None, **kwargs):
+    def success(
+            status=201,
+            data=None,
+            msg=_("success"),
+            page=None,
+            status_code=200,
+            **kwargs,
+    ):
         resp_data = {"status": status, "msg": msg}
         if data is not None:
             resp_data['data'] = data
@@ -383,11 +388,18 @@ class R:
         for key, value in kwargs.items():
             resp_data[key] = value
 
-        return JsonResponse(resp_data)
+        return JsonResponse(
+            resp_data,
+            status=status_code,
+        )
 
     @staticmethod
-    def failure(status=202, data=None, msg=_("failure")):
+    def failure(status=202, data=None, status_code=200, msg=_("failure")):
         resp_data = {"status": status, "msg": msg}
         if data:
             resp_data['data'] = data
-        return JsonResponse(resp_data)
+
+        return JsonResponse(
+            resp_data,
+            status=status_code,
+        )

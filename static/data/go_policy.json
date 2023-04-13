@@ -2,6 +2,8 @@
     {
         "details": [
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "O",
                 "target": "",
@@ -9,6 +11,8 @@
                 "value": "exec.(*Cmd).Run()"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "O",
                 "target": "",
@@ -23,6 +27,8 @@
     {
         "details": [
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "",
@@ -37,20 +43,8 @@
     {
         "details": [
             {
-                "inherit": "false",
-                "source": "P3",
-                "target": "",
-                "track": "true",
-                "value": "template.(*Template).ExecuteTemplate()"
-            }
-        ],
-        "enable": 1,
-        "type": 4,
-        "value": "reflected-xss"
-    },
-    {
-        "details": [
-            {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,2",
                 "target": "",
@@ -58,6 +52,8 @@
                 "value": "gorm.(*DB).Exec()"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "",
@@ -65,6 +61,8 @@
                 "value": "gorm.(*DB).Group()"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,2",
                 "target": "",
@@ -72,6 +70,8 @@
                 "value": "gorm.(*DB).Having()"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "",
@@ -79,6 +79,8 @@
                 "value": "gorm.(*DB).Order()"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,2",
                 "target": "",
@@ -86,6 +88,8 @@
                 "value": "gorm.(*DB).Pluck()"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,2",
                 "target": "",
@@ -93,6 +97,8 @@
                 "value": "gorm.(*DB).Raw()"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1,2",
                 "target": "",
@@ -100,6 +106,8 @@
                 "value": "gorm.(*DB).Select()"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -114,6 +122,8 @@
     {
         "details": [
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P2",
                 "target": "",

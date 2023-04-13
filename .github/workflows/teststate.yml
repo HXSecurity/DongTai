@@ -66,7 +66,7 @@ jobs:
           python3 manage.py updatedepartmenttoken
           python3 manage.py runserver 0.0.0.0:8000 > webapi.log &
           sleep 15
-          schemathesis run --base-url "http://localhost:8000/"  -H 'Authorization: Token 67aebd78e700ad36a82a152276196b5f49fafeb0' http://localhost:8000/api/XZPcGFKoxYXScwGjQtJx8u/schema/  --hypothesis-suppress-health-check=data_too_large,filter_too_much,too_slow,return_value,large_base_example,not_a_test_method,function_scoped_fixture --validate-schema=false  --hypothesis-verbosity normal 
+          schemathesis run --base-url "http://localhost:8000/"  -H 'Authorization: Token 67aebd78e700ad36a82a152276196b5f49fafeb0' http://localhost:8000/api/XZPcGFKoxYXScwGjQtJx8u/schema/  --hypothesis-suppress-health-check=data_too_large,filter_too_much,too_slow,large_base_example,function_scoped_fixture --validate-schema=false  --hypothesis-verbosity normal 
   
   Run-BuildCheck:
     runs-on: ubuntu-latest
@@ -235,6 +235,7 @@ jobs:
           sudo apt-get install build-essential cmake ninja-build python3-dev cython3 pybind11-dev libre2-dev -y
           python -m pip install --upgrade pip
           pip install wheel
+          pip install coverage
           pip install -r requirements.txt
           
       - name: Django Unit Testing
@@ -242,7 +243,8 @@ jobs:
           cp dongtai_conf/conf/config.ini.test dongtai_conf/conf/config.ini
           mkdir -p /tmp/logstash/report/{img,word,pdf,excel} && mkdir -p /tmp/iast_cache/package && mkdir -p /tmp/logstash/batchagent 
           python3 ./deploy/docker/version_update.py || true
-          python manage.py test
+          coverage run --source='.' manage.py test
+          coverage report
 
   Run-Unit-TEST-In-Cython:
     runs-on: ubuntu-latest
@@ -282,6 +284,7 @@ jobs:
           sudo apt-get install build-essential cmake ninja-build python3-dev cython3 pybind11-dev libre2-dev -y
           python -m pip install --upgrade pip
           pip install wheel
+          pip install coverage
           pip install -r requirements.txt
           
       - name: Django Unit Testing
@@ -292,7 +295,8 @@ jobs:
           pip install Cython==3.0.0a11
           python setup.py build_ext --inplace
           find . -name "*.so"  | grep test | xargs rm
-          python manage.py test
+          coverage run --source='.' manage.py test
+          coverage report
   
   Run-API-TEST-With-Cython:
     runs-on: ubuntu-latest
@@ -348,7 +352,7 @@ jobs:
           python3 manage.py updatedepartmenttoken
           python3 manage.py runserver 0.0.0.0:8000 > webapi.log &
           sleep 15
-          schemathesis run --base-url "http://localhost:8000/"  -H 'Authorization: Token 67aebd78e700ad36a82a152276196b5f49fafeb0' http://localhost:8000/api/XZPcGFKoxYXScwGjQtJx8u/schema/  --hypothesis-suppress-health-check=data_too_large,filter_too_much,too_slow,return_value,large_base_example,not_a_test_method,function_scoped_fixture --validate-schema=false  --hypothesis-verbosity normal 
+          schemathesis run --base-url "http://localhost:8000/"  -H 'Authorization: Token 67aebd78e700ad36a82a152276196b5f49fafeb0' http://localhost:8000/api/XZPcGFKoxYXScwGjQtJx8u/schema/  --hypothesis-suppress-health-check=data_too_large,filter_too_much,too_slow,large_base_example,function_scoped_fixture --validate-schema=false  --hypothesis-verbosity normal 
 
   analyze:
     name: Analyze

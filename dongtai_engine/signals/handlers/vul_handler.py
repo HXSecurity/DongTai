@@ -24,6 +24,7 @@ from dongtai_engine.signals.handlers.parse_param_name import parse_target_values
 from typing import List, Optional, Callable
 import json
 from collections import defaultdict
+from dongtai_common.models.profile import IastProfile
 
 
 def equals(source, target):
@@ -212,13 +213,17 @@ from django.core.cache import cache
 import uuid
 
 
-def get_original_url(uri: str, url_desc: str) -> str:
-    if url_desc.startswith('location'):
-        _, location = url_desc.split(":")
-    else:
+def get_original_url(uri: str, url_desc: list) -> str:
+    locations = []
+    for desc in url_desc:
+        if desc.startswith('location'):
+            _, location = desc.split(":")
+            locations.append(location)
+    if not locations:
         return uri
     res = uri.split('/')
-    res[int(location)] = "<placeholder>"
+    for location in locations:
+        res[int(location)] = "<placeholder>"
     return "/".join(res)
 
 
@@ -233,6 +238,15 @@ def get_real_url(method_pools: list) -> str:
                 method_pool = method_pool_3_to_2(method_pool)
             return method_pool['targetValues']
     return ''
+
+
+def parse_dast_mark(req_header: str) -> str:
+    res_list = req_header.split()
+    for line in res_list:
+        if line.startswith("dt-mark-header"):
+            key_tuple = line.split(":")
+            return key_tuple[1].strip()
+    return ""
 
 
 def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
@@ -253,7 +267,7 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
     else:
         param_name = ''
         taint_position = ''
-    url_desc: str = ""
+    url_desc: list = []
     if 'PATH' in param_names.keys():
         url_desc = param_names['PATH']
     pattern_string: str = get_real_url(json.loads(vul_meta.method_pool))
@@ -497,6 +511,55 @@ def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
                        bottom_stack, **kwargs)
         if not vul:
             return
+        from dongtai_common.models.strategy import IastStrategyModel
+        from dongtai_protocol.utils import base64_decode
+        from dongtai_common.models.dast_integration import (
+            IastDastIntegration,
+            IastDastIntegrationRelation,
+            IastvulDtMarkRelation,
+            DastvulDtMarkRelation,
+        )
+        from dongtai_common.models.dast_integration import IastDastIntegration, IastDastIntegrationRelation
+        mark = parse_dast_mark(base64_decode(vul.req_header))
+        if mark:
+            key = 'dast_validation_settings'
+            profile = IastProfile.objects.filter(key=key).values_list(
+                'value', flat=True).first()
+            data = json.loads(profile) if profile else {}
+            logger.info("mark found , try to bind exist dastvul.")
+            vul_ids = DastvulDtMarkRelation.objects.filter(
+                dt_mark=mark).values('dastvul_id').distinct()
+            dastvuls = IastDastIntegration.objects.filter(pk__in=vul_ids).all()
+            IastvulDtMarkRelation.objects.create(dt_mark=mark, iastvul=vul)
+            create_rels = []
+            for dastvul in dastvuls:
+                logger.debug(
+                    f"vul.strategy.vul_type: {vul.strategy.vul_type}, vul.uri: {vul.uri}"
+                )
+                if data and data[
+                        'validation_status'] and vul.strategy_id not in data[
+                            'strategy_id']:
+                    logger.debug(
+                        f"vul.strategy.vul_type not in validation strategy_id list or not enable validation"
+                    )
+                    continue
+                if vul.strategy.vul_type in dastvul.dongtai_vul_type and vul.uri in dastvul.urls:
+                    rel = IastDastIntegrationRelation(iastvul=vul,
+                                                      dastvul=dastvul,
+                                                      dt_mark=mark)
+                    logger.info(
+                        "create vul_relation iast_vul %s dastvul %s",
+                        vul.id,
+                        dastvul.id,
+                    )
+                    create_rels.append(rel)
+            rels_created = IastDastIntegrationRelation.objects.bulk_create(
+                create_rels, ignore_conflicts=True)
+            logger.debug(
+                "create vul_relation count %s with mark %s",
+                len(rels_created),
+                mark,
+            )
         create_vul_recheck_task(vul_id=vul.id,
                                 agent=vul.agent,
                                 timestamp=timestamp)

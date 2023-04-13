@@ -213,7 +213,7 @@ class NormalVulnHandler(BaseVulnHandler):
         iast_vul = IastVulnerabilityModel.objects.filter(
             strategy_id=strategy_id,
             uri=self.app_caller[index + 2],
-            http_method=self.http_method,
+            http_method="",
             project_version_id=self.agent.project_version_id,
             is_del=0).order_by('-latest_time').first()
         project = IastProject.objects.filter(
@@ -229,6 +229,7 @@ class NormalVulnHandler(BaseVulnHandler):
             project.update_latest()
         timestamp = int(time.time())
         if iast_vul:
+            iast_vul.uri = self.app_caller[index + 2]
             iast_vul.url = self.app_caller[index + 2]
             iast_vul.req_header = self.http_header
             iast_vul.req_params = self.http_query_string

@@ -2,6 +2,8 @@
     {
         "details": [
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P1",
                 "target": "R",
@@ -16,6 +18,8 @@
     {
         "details": [
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "",
@@ -23,6 +27,8 @@
                 "value": ".exec"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "",
@@ -30,6 +36,8 @@
                 "value": ".passthru"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "",
@@ -37,6 +45,8 @@
                 "value": ".pcntl_exec"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "",
@@ -44,6 +54,8 @@
                 "value": ".popen"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "",
@@ -51,6 +63,8 @@
                 "value": ".proc_open"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "",
@@ -58,6 +72,8 @@
                 "value": ".shell_exec"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "",
@@ -72,6 +88,8 @@
     {
         "details": [
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -79,6 +97,8 @@
                 "value": ".ZEND_ASSIGN_CONCAT"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -86,6 +106,8 @@
                 "value": ".ZEND_CONCAT"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -93,6 +115,8 @@
                 "value": ".ZEND_ECHO"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -100,6 +124,8 @@
                 "value": ".ZEND_EXIT"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -107,6 +133,8 @@
                 "value": ".ZEND_INCLUDE_OR_EVAL"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -114,6 +142,8 @@
                 "value": ".ZEND_INIT_USER_CALL"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -121,6 +151,8 @@
                 "value": ".ZEND_RETURN"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -128,6 +160,8 @@
                 "value": ".ZEND_ROPE_END"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -135,6 +169,8 @@
                 "value": "basename"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -142,6 +178,8 @@
                 "value": "dirname"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -149,6 +187,8 @@
                 "value": "explode"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -156,6 +196,8 @@
                 "value": "implode"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -163,6 +205,8 @@
                 "value": "join"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -170,6 +214,8 @@
                 "value": "ltrim"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -177,6 +223,8 @@
                 "value": "mysqli_real_escape_string"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -184,6 +232,8 @@
                 "value": "pathinfo"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -191,6 +241,8 @@
                 "value": "rtrim"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -198,6 +250,8 @@
                 "value": "split"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -205,6 +259,8 @@
                 "value": "sprintf"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -212,6 +268,8 @@
                 "value": "str_ireplace"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -219,6 +277,8 @@
                 "value": "str_pad"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -226,6 +286,8 @@
                 "value": "str_replace"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -233,6 +295,8 @@
                 "value": "stripslashes"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -240,6 +304,8 @@
                 "value": "strstr"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -247,6 +313,8 @@
                 "value": "strtolower"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -254,6 +322,8 @@
                 "value": "strtoupper"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -261,6 +331,8 @@
                 "value": "strval"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -268,6 +340,8 @@
                 "value": "substr"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -275,6 +349,8 @@
                 "value": "trim"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "R",
@@ -289,6 +365,8 @@
     {
         "details": [
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "",
@@ -296,6 +374,8 @@
                 "value": ".mysqli_multi_query"
             },
             {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "false",
                 "source": "P",
                 "target": "",
