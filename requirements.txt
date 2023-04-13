@@ -91,7 +91,7 @@ python-docx==0.8.11
 python-json-logger==2.0.7
 pytz==2022.6
 pyyaml==6.0 ; python_version >= '3.6'
-redis==3.5.3
+redis==4.4.4
 requests==2.25.1
 result==0.8.0
 s3transfer==0.6.0 ; python_version >= '3.7'

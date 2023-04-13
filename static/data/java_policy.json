@@ -75,6 +75,15 @@
                 "inherit": "false",
                 "source": "O",
                 "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.Cookie.getName()"
+            },
+            {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "O",
+                "target": "R",
                 "track": "",
                 "value": "javax.servlet.http.Cookie.getValue()"
             }
@@ -1092,7 +1101,7 @@
                 "ignore_blacklist": false,
                 "ignore_internal": false,
                 "inherit": "false",
-                "source": "P3",
+                "source": "O|P3",
                 "target": "O",
                 "track": "false",
                 "value": "java.lang.StringBuffer.replace(int,int,java.lang.String)"
@@ -1351,7 +1360,7 @@
                 "ignore_blacklist": false,
                 "ignore_internal": false,
                 "inherit": "false",
-                "source": "P3",
+                "source": "O|P3",
                 "target": "O",
                 "track": "false",
                 "value": "java.lang.StringBuilder.replace(int,int,java.lang.String)"
@@ -3276,6 +3285,60 @@
                 "source": "O",
                 "target": "R",
                 "track": "false",
+                "value": "jakarta.servlet.http.Part.getContentType()"
+            },
+            {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "jakarta.servlet.http.Part.getHeader(java.lang.String)"
+            },
+            {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "jakarta.servlet.http.Part.getHeaderNames()"
+            },
+            {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "jakarta.servlet.http.Part.getHeaders(java.lang.String)"
+            },
+            {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "jakarta.servlet.http.Part.getName()"
+            },
+            {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "jakarta.servlet.http.Part.getSubmittedFileName()"
+            },
+            {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
                 "value": "javax.servlet.http.HttpServletRequest.getCookies()"
             },
             {
@@ -3385,6 +3448,60 @@
                 "target": "R",
                 "track": "false",
                 "value": "javax.servlet.http.HttpServletRequest.getReader()"
+            },
+            {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.Part.getContentType()"
+            },
+            {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.Part.getHeader(java.lang.String)"
+            },
+            {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.Part.getHeaderNames()"
+            },
+            {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.Part.getHeaders(java.lang.String)"
+            },
+            {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.Part.getName()"
+            },
+            {
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "O",
+                "target": "R",
+                "track": "false",
+                "value": "javax.servlet.http.Part.getSubmittedFileName()"
             }
         ],
         "enable": 1,
