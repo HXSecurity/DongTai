@@ -95,4 +95,4 @@ Any questions? Let's discuss in [#DongTai discussions](https://github.com/HXSecu
 
 ## Stats
 
-![Alt](https://repobeats.axiom.co/api/embed/ea6a307f8f06cd1c2a19f2312751eb1706382af8.svg "Repobeats analytics image")
+![Alt](https://repobeats.axiom.co/api/embed/904e8c4c645fe5352cbb543cd1ad8dd518e5f94b.svg "Repobeats analytics image")

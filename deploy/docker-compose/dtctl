@@ -161,7 +161,7 @@ function current_image_version() {
 }
 
 function get_latest_release_version() {
-  ver=`curl -s -S "https://registry.hub.docker.com/v2/repositories/dongtai/dongtai-web/tags" | sed -e 's/,/,\n/g' -e 's/\[/\[\n/g' | grep '"name"' | awk -F\" '{print $4;}' | sort -rfu | grep -v beta |sed -n '2p'`
+  ver=`curl -s -S "https://registry.hub.docker.com/v2/repositories/dongtai/dongtai-web/tags" | sed -e 's/,/,\n/g' -e 's/\[/\[\n/g' | grep '"name"' | awk -F\" '{print $4;}' | grep -v beta |sed -n '2p'`
   echo "$ver"
 }
 
@@ -233,7 +233,7 @@ function network() {
 get_latest_image_tag_from_dockerhub() {
   image="$1"
   Info "start to get latest tag of $image"
-  tags=`curl -s -S "https://registry.hub.docker.com/v2/repositories/${image}/tags" | sed -e 's/,/,\n/g' -e 's/\[/\[\n/g' | grep '"name"' | awk -F\" '{print $4;}' | sort -rfu | grep -v beta | sed -n '2p'`
+  tags=`curl -s -S "https://registry.hub.docker.com/v2/repositories/${image}/tags" | sed -e 's/,/,\n/g' -e 's/\[/\[\n/g' | grep '"name"' | awk -F\" '{print $4;}' | grep -v beta | sed -n '2p'`
 
   if [ -n "$2" ]
   then
