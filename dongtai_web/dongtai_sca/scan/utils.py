@@ -363,7 +363,7 @@ def update_one_sca(agent_id,
                        package['version'])
 
 
-def stat_severity(serveritys: str) -> dict:
+def stat_severity(serveritys: list) -> dict:
     dic = defaultdict(int)
     for serverity in serveritys:
         if serverity.lower() == 'moderate':
@@ -480,7 +480,7 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                    version: str):
     aql = get_package_aql(package_name, ecosystem, version)
     package_vuls, safe_version = get_package_vul_v2(aql)
-    res = stat_severity(map(lambda x: x["severity"], package_vuls))
+    res = stat_severity(list(map(lambda x: x["severity"], package_vuls)))
     timestamp = int(time.time())
     package_language = get_ecosystem_language_dict()[ecosystem]
     Asset.objects.filter(pk=asset_id).update(level_id=get_asset_level(res))
