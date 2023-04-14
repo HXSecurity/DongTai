@@ -36,8 +36,12 @@ class HookStrategy(models.Model):
     target = models.CharField(max_length=255, blank=True, null=True)
     inherit = models.CharField(max_length=255, blank=True, null=True)
     track = models.CharField(max_length=5, blank=True, null=True)
-    create_time = models.IntegerField(blank=True, null=True, default=time)
-    update_time = models.IntegerField(blank=True, null=True, default=time)
+    create_time = models.IntegerField(blank=True,
+                                      null=True,
+                                      default=lambda: int(time()))
+    update_time = models.IntegerField(blank=True,
+                                      null=True,
+                                      default=lambda: int(time()))
     created_by = models.IntegerField(
         blank=True,
         null=True,
@@ -79,6 +83,10 @@ class HookStrategy(models.Model):
     ignore_internal = models.BooleanField(blank=True,
                                           null=False,
                                           default=False)
+    tags = models.JSONField(default=list)
+    untags = models.JSONField(default=list)
+    stack_blacklist = models.JSONField(default=list)
+    command = models.CharField(max_length=128, null=True, default="")
 
     class Meta:
         managed = get_managed()
