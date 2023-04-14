@@ -100,3 +100,56 @@ jobs:
           tags: | 
             registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:latest
             registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:1.0.${{github.run_number}}
+  
+  Run-MypyCheck:
+    if: ${{ github.repository_owner == 'HXSecurity' }}
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: ["3.10"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get install build-essential cmake ninja-build python3-dev cython3 pybind11-dev libre2-dev -y
+          python -m pip install --upgrade pip
+          pip install wheel
+          pip install -r requirements.txt
+          
+      - name: Django Unit Testing
+        run: |
+          mypy --show-error-codes --ignore-missing-imports  --show-error-context --pretty --no-incremental . 
+  
+  Run-Pep8Check:
+    if: ${{ github.repository_owner == 'HXSecurity' }}
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: ["3.10"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get install build-essential cmake ninja-build python3-dev cython3 pybind11-dev libre2-dev -y
+          python -m pip install --upgrade pip
+          pip install wheel
+          pip install -r requirements.txt
+          pip install pycodestyle
+      - name: Django Unit Testing
+        run: |
+          pycodestyle  --ignore=E501 --statistics .
+
