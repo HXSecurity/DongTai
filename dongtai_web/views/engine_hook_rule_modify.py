@@ -63,24 +63,15 @@ class _EngineHookRuleModifySerializer(serializers.Serializer):
     )
     tags = serializers.ListField(
         child=serializers.CharField(),
-        help_text=
-        _("Indicates whether taint tracking is required, true-required, false-not required."
-          ),
         required=False,
         default=list,
     )
     untags = serializers.ListField(
         child=serializers.CharField(),
-        help_text=
-        _("Indicates whether taint tracking is required, true-required, false-not required."
-          ),
         required=False,
         default=list,
     )
     command = serializers.CharField(
-        help_text=
-        _("Indicates whether taint tracking is required, true-required, false-not required."
-          ),
         max_length=256,
         validators=[valitate_taint_command],
         required=False,
@@ -88,9 +79,6 @@ class _EngineHookRuleModifySerializer(serializers.Serializer):
     )
     stack_blacklist = serializers.ListField(
         child=serializers.CharField(),
-        help_text=
-        _("Indicates whether taint tracking is required, true-required, false-not required."
-          ),
         required=False,
         default=list,
     )
