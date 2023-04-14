@@ -15,8 +15,9 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 from django.utils.text import format_lazy
 from dongtai_web.serializers.hook_strategy import SINK_POSITION_HELP_TEXT
 from rest_framework import serializers
+from rest_framework.serializers import ValidationError
 from dongtai_common.models.strategy import IastStrategyModel
-
+from dongtai_common.common.agent_command_check import valitate_taint_command
 logger = logging.getLogger('dongtai-webapi')
 
 
@@ -47,6 +48,51 @@ class _HookRuleAddBodyargsSerializer(serializers.Serializer):
         help_text=_("Indicates whether taint tracking is required, true-required, false-not required."),
         max_length=5,
     )
+    ignore_blacklist = serializers.BooleanField(
+        help_text=_("Indicates whether taint tracking is required, true-required, false-not required."),
+        required=False,
+        default=False,
+    )
+    ignore_internal = serializers.BooleanField(
+        help_text=
+        _("Indicates whether taint tracking is required, true-required, false-not required."
+          ),
+        required=False,
+        default=False,
+    )
+    tags = serializers.ListField(
+        child=serializers.CharField(),
+        help_text=
+        _("Indicates whether taint tracking is required, true-required, false-not required."
+          ),
+        required=False,
+        default=list,
+    )
+    untags = serializers.ListField(
+        child=serializers.CharField(),
+        help_text=
+        _("Indicates whether taint tracking is required, true-required, false-not required."
+          ),
+        required=False,
+        default=list,
+    )
+    command = serializers.CharField(
+        help_text=
+        _("Indicates whether taint tracking is required, true-required, false-not required."
+          ),
+        max_length=255,
+        validators=[valitate_taint_command],
+        required=False,
+        default="",
+    )
+    stack_blacklist = serializers.ListField(
+        child=serializers.CharField(),
+        help_text=
+        _("Indicates whether taint tracking is required, true-required, false-not required."
+          ),
+        required=False,
+        default=list,
+    )
 
 
 _ResponseSerializer = get_response_serializer(status_msg_keypair=(
@@ -73,18 +119,31 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             language_id = request.data.get('language_id')
             ignore_blacklist = request.data.get('ignore_blacklist', False)
             ignore_internal = request.data.get('ignore_internal', False)
+            tags = request.data.get('tags', [])
+            untags = request.data.get('untags', [])
+            command = request.data.get('command', "")
+            stack_blacklist = request.data.get('stack_blacklist', [])
 
-            return (rule_type, rule_value, rule_source, rule_target, inherit,
-                    is_track, language_id, ignore_blacklist, ignore_internal)
+            return (
+                rule_type,
+                rule_value,
+                rule_source,
+                rule_target,
+                inherit,
+                is_track,
+                language_id,
+                ignore_blacklist,
+                ignore_internal,
+            )
         except Exception as e:
-
+            logger.error(e, exc_info=e)
             return None, None, None, None, None, None, None, None, None
 
-    def create_strategy(self, value, source, target, inherit, track,
-                        created_by, language_id, type_, ignore_blacklist,
-                        ignore_internal):
+    @staticmethod
+    def create_strategy(value, source, target, inherit, track, created_by,
+                        language_id, type_, ignore_blacklist, ignore_internal,
+                        tags, untags, command, stack_blacklist):
         try:
-
             timestamp = int(time.time())
             strategy = HookStrategy(
                 value=value,
@@ -116,6 +175,7 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
     )
     def post(self, request):
         # bad parameter parse and validate example, don't do this again.
+        # don't use it again when old fields change.
         (rule_type, rule_value, rule_source, rule_target, inherit, is_track,
          language_id, ignore_blacklist,
          ignore_internal) = self.parse_args(request)
@@ -127,6 +187,14 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
                 is_track,
         )) is False:
             return R.failure(msg=_('Incomplete parameter, please check again'))
+
+        ser = _HookRuleAddBodyargsSerializer(data=request.data)
+        try:
+            if ser.is_valid(True):
+                pass
+        except ValidationError as e:
+            return R.failure(data=e.detail,
+                             msg=_('Incomplete parameter, please check again'))
         if rule_target == "":
             hook_type = IastStrategyModel.objects.filter(
                 id=rule_type,
@@ -143,10 +211,22 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             type_ = 4
         else:
             type_ = hook_type.type
-        strategy = self.create_strategy(rule_value, rule_source, rule_target,
-                                        inherit, is_track, request.user.id,
-                                        language_id, type_, ignore_blacklist,
-                                        ignore_internal)
+        strategy = self.create_strategy(
+            rule_value,
+            rule_source,
+            rule_target,
+            inherit,
+            is_track,
+            request.user.id,
+            language_id,
+            type_,
+            ignore_blacklist,
+            ignore_internal,
+            ser.validated_data['tags'],
+            ser.validated_data['untags'],
+            ser.validated_data['command'],
+            ser.validated_data['stack_blacklist'],
+        )
         if strategy:
             hook_type.strategies.add(strategy)
             return R.success(msg=_('Strategy has been created successfully'))
