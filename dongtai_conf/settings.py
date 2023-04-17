@@ -651,6 +651,9 @@ DEFAULT_CIRCUITCONFIG = {
         }]
     }
 }
+DEFAULT_IAST_VALUE_TAG = ['cross-site', 'xss-encoded', 'html-encoded', 'html-decoded', 'url-encoded', 'url-decoded', 'base64-encoded', 'base64-decoded']
+DEFAULT_TAINT_VALUE_RANGE_COMMANDS = ['KEEP', 'APPEND', 'SUBSET', 'INSERT', 'REMOVE', 'REPLACE', 'CONCAT', 'TRIM', 'TRIM_RIGHT', 'TRIM_LEFT']
+
 DONGTAI_MAX_RATE_LIMIT = 10
 DONGTAI_REDIS_ES_UPDATE_BATCH_SIZE = 500
 DONGTAI_MAX_BATCH_TASK_CONCORRENCY = 5
