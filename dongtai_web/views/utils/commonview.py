@@ -23,7 +23,7 @@ class BatchStatusUpdateSerializerView(UserEndPoint):
 
     def post(self, request):
         data = self.get_params(request.data)
-        self.update_model(data)
+        self.update_model(request, data)
         return R.success(msg='update success')
 
     def get_params(self, data):
@@ -35,12 +35,9 @@ class BatchStatusUpdateSerializerView(UserEndPoint):
             return {'ids': [], 'status': 0}
         return ser.validated_data
 
-    def update_model(self, request, validated_data):
-        self.model.objects.filter(pk__in=validated_data['ids'],
-                                  user__in=[request.user]).update(**{
-                                      self.status_field:
-                                      validated_data['status']
-                                  })
+    def update_model(self, request,validated_data):
+        self.model.objects.filter(pk__in=validated_data['ids'], user__in=[request.user]).update(
+            **{self.status_field: validated_data['status']})
 
 
 class AllStatusUpdateSerializer(serializers.Serializer):
@@ -53,7 +50,7 @@ class AllStatusUpdateSerializerView(UserEndPoint):
 
     def post(self, request):
         data = self.get_params(request.data)
-        self.update_model(data)
+        self.update_model(request, data)
         return R.success(msg='update success')
 
     def get_params(self, data):
