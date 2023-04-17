@@ -11,10 +11,12 @@ from dongtai_common.models.hook_strategy import HookStrategy
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
+from rest_framework.serializers import ValidationError
 from django.utils.text import format_lazy
 from dongtai_web.serializers.hook_strategy import SINK_POSITION_HELP_TEXT
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.common.agent_command_check import valitate_taint_command
 
 _PostResponseSerializer = get_response_serializer(status_msg_keypair=(
     ((201, _('strategy has been created successfully')), ''),
@@ -59,6 +61,27 @@ class _EngineHookRuleModifySerializer(serializers.Serializer):
         required=False,
         default=False,
     )
+    tags = serializers.ListField(
+        child=serializers.CharField(),
+        required=False,
+        default=list,
+    )
+    untags = serializers.ListField(
+        child=serializers.CharField(),
+        required=False,
+        default=list,
+    )
+    command = serializers.CharField(
+        max_length=256,
+        validators=[valitate_taint_command],
+        required=False,
+        default="",
+    )
+    stack_blacklist = serializers.ListField(
+        child=serializers.CharField(),
+        required=False,
+        default=list,
+    )
 
 
 class EngineHookRuleModifyEndPoint(UserEndPoint):
@@ -94,6 +117,7 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
     )
     def post(self, request):
         # bad parameter parse and validate example, don't do this again.
+        # don't use it again when old fields change.
         (rule_id, rule_type, rule_value, rule_source, rule_target, inherit,
          is_track, ignore_blacklist,
          ignore_internal) = self.parse_args(request)
@@ -105,10 +129,17 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
                 id=rule_type, ).first()
         else:
             hook_type = HookType.objects.filter(id=rule_type, ).first()
-
         if all((rule_id, rule_type, rule_value, rule_source, inherit, is_track,
                 strategy)) is False:
             return R.failure(msg=_('Incomplete parameter, please check again'))
+
+        ser = _EngineHookRuleModifySerializer(data=request.data)
+        try:
+            if ser.is_valid(True):
+                pass
+        except ValidationError as e:
+            return R.failure(data=e.detail,
+                             msg=_('Incomplete parameter, please check again'))
 
         if strategy:
             if hook_type and strategy.type == 4:
@@ -123,6 +154,10 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
             strategy.update_time = int(time.time())
             strategy.ignore_blacklist = ignore_blacklist
             strategy.ignore_internal = ignore_internal
+            strategy.tags = ser.validated_data['tags']
+            strategy.untags = ser.validated_data['untags']
+            strategy.command = ser.validated_data['command']
+            strategy.stack_blacklist = ser.validated_data['stack_blacklist']
             strategy.save()
 
             return R.success(msg=_('strategy has been created successfully'))
