@@ -99,7 +99,7 @@ def data_transfrom_package_vul_v2(
         return Err('Rate Limit Exceeded')
     try:
         res_data = json.loads(response.content)
-        return Ok((res_data['data'], res_data['safe_version']))
+        return Ok([res_data['data'], res_data['safe_version']])
     except JSONDecodeError as e:
         logger.debug(e, exc_info=True)
         logger.info(f'JSONDecodeError content: {response.content!r}')
@@ -363,7 +363,7 @@ def update_one_sca(agent_id,
                        package['version'])
 
 
-def stat_severity(serveritys: str) -> dict:
+def stat_severity(serveritys: list) -> dict:
     dic = defaultdict(int)
     for serverity in serveritys:
         if serverity.lower() == 'moderate':
@@ -386,7 +386,7 @@ class DongTaiScaVersion(_BaseVersion):
             version_list.append("0")
         for _version in version_list:
             version_code += _version.zfill(5)
-        self._key = version_code
+        self._key = (version_code, )
         self._version = version
 
 
@@ -480,7 +480,7 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                    version: str):
     aql = get_package_aql(package_name, ecosystem, version)
     package_vuls, safe_version = get_package_vul_v2(aql)
-    res = stat_severity(map(lambda x: x["severity"], package_vuls))
+    res = stat_severity(list(map(lambda x: x["severity"], package_vuls)))
     timestamp = int(time.time())
     package_language = get_ecosystem_language_dict()[ecosystem]
     Asset.objects.filter(pk=asset_id).update(level_id=get_asset_level(res))
@@ -579,8 +579,11 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                     logger.debug("unique error stack: ", exc_info=True)
                     logger.info(
                         "unique error cause by concurrency insert,ignore it")
-            type_: IastAssetVulType = IastAssetVulType.objects.filter(
+            type_ = IastAssetVulType.objects.filter(
                 cwe_id=cwe_id).first()
+            if not type_:
+                logger.info("create type_ failed: %s", cwe_id)
+                continue
             IastAssetVulTypeRelation.objects.get_or_create(
                 asset_vul_id=asset_vul.id, asset_vul_type_id=type_.id)
     nearest_safe_version = get_nearest_version(
