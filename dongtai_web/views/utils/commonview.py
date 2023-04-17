@@ -35,9 +35,11 @@ class BatchStatusUpdateSerializerView(UserEndPoint):
             return {'ids': [], 'status': 0}
         return ser.validated_data
 
-    def update_model(self, request,validated_data):
-        self.model.objects.filter(pk__in=validated_data['ids'], user__in=[request.user]).update(
-            **{self.status_field: validated_data['status']})
+    def update_model(self, request, validated_data):
+        self.model.objects.filter(
+            pk__in=validated_data['ids'], user__in=[
+                request.user
+            ]).update(**{self.status_field: validated_data['status']})
 
 
 class AllStatusUpdateSerializer(serializers.Serializer):
