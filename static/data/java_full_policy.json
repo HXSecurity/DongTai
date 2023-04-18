@@ -1344,7 +1344,7 @@
                 "value": "java.lang.String.getBytes()"
             },
             {
-                "command": "OVERWRITE(P2)",
+                "command": "",
                 "created_by": 1,
                 "enable": 1,
                 "ignore_blacklist": false,
