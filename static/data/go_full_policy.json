@@ -2,6 +2,7 @@
     {
         "details": [
             {
+                "command": "",
                 "created_by": 1,
                 "enable": 1,
                 "ignore_blacklist": false,
@@ -9,13 +10,17 @@
                 "inherit": "false",
                 "language": 4,
                 "source": "O",
+                "stack_blacklist": [],
                 "system_type": 1,
+                "tags": [],
                 "target": "",
                 "track": "true",
                 "type": 4,
+                "untags": [],
                 "value": "exec.(*Cmd).Run()"
             },
             {
+                "command": "",
                 "created_by": 1,
                 "enable": 1,
                 "ignore_blacklist": false,
@@ -23,10 +28,13 @@
                 "inherit": "false",
                 "language": 4,
                 "source": "O",
+                "stack_blacklist": [],
                 "system_type": 1,
+                "tags": [],
                 "target": "",
                 "track": "true",
                 "type": 4,
+                "untags": [],
                 "value": "exec.(*Cmd).Start()"
             }
         ],
@@ -37,6 +45,7 @@
     {
         "details": [
             {
+                "command": "",
                 "created_by": 1,
                 "enable": 1,
                 "ignore_blacklist": false,
@@ -44,10 +53,13 @@
                 "inherit": "false",
                 "language": 4,
                 "source": "P1",
+                "stack_blacklist": [],
                 "system_type": 1,
+                "tags": [],
                 "target": "",
                 "track": "true",
                 "type": 4,
+                "untags": [],
                 "value": "os.OpenFile()"
             }
         ],
@@ -58,6 +70,7 @@
     {
         "details": [
             {
+                "command": "",
                 "created_by": 1,
                 "enable": 1,
                 "ignore_blacklist": false,
@@ -65,10 +78,13 @@
                 "inherit": "false",
                 "language": 4,
                 "source": "P3",
+                "stack_blacklist": [],
                 "system_type": 1,
+                "tags": [],
                 "target": "",
                 "track": "true",
                 "type": 4,
+                "untags": [],
                 "value": "template.(*Template).ExecuteTemplate()"
             }
         ],
@@ -79,6 +95,7 @@
     {
         "details": [
             {
+                "command": "",
                 "created_by": 1,
                 "enable": 1,
                 "ignore_blacklist": false,
@@ -86,13 +103,17 @@
                 "inherit": "false",
                 "language": 4,
                 "source": "P1,2",
+                "stack_blacklist": [],
                 "system_type": 1,
+                "tags": [],
                 "target": "",
                 "track": "true",
                 "type": 4,
+                "untags": [],
                 "value": "gorm.(*DB).Exec()"
             },
             {
+                "command": "",
                 "created_by": 1,
                 "enable": 1,
                 "ignore_blacklist": false,
@@ -100,13 +121,17 @@
                 "inherit": "false",
                 "language": 4,
                 "source": "P1",
+                "stack_blacklist": [],
                 "system_type": 1,
+                "tags": [],
                 "target": "",
                 "track": "true",
                 "type": 4,
+                "untags": [],
                 "value": "gorm.(*DB).Group()"
             },
             {
+                "command": "",
                 "created_by": 1,
                 "enable": 1,
                 "ignore_blacklist": false,
@@ -114,13 +139,17 @@
                 "inherit": "false",
                 "language": 4,
                 "source": "P1,2",
+                "stack_blacklist": [],
                 "system_type": 1,
+                "tags": [],
                 "target": "",
                 "track": "true",
                 "type": 4,
+                "untags": [],
                 "value": "gorm.(*DB).Having()"
             },
             {
+                "command": "",
                 "created_by": 1,
                 "enable": 1,
                 "ignore_blacklist": false,
@@ -128,13 +157,17 @@
                 "inherit": "false",
                 "language": 4,
                 "source": "P1",
+                "stack_blacklist": [],
                 "system_type": 1,
+                "tags": [],
                 "target": "",
                 "track": "true",
                 "type": 4,
+                "untags": [],
                 "value": "gorm.(*DB).Order()"
             },
             {
+                "command": "",
                 "created_by": 1,
                 "enable": 1,
                 "ignore_blacklist": false,
@@ -142,13 +175,17 @@
                 "inherit": "false",
                 "language": 4,
                 "source": "P1,2",
+                "stack_blacklist": [],
                 "system_type": 1,
+                "tags": [],
                 "target": "",
                 "track": "true",
                 "type": 4,
+                "untags": [],
                 "value": "gorm.(*DB).Pluck()"
             },
             {
+                "command": "",
                 "created_by": 1,
                 "enable": 1,
                 "ignore_blacklist": false,
@@ -156,13 +193,17 @@
                 "inherit": "false",
                 "language": 4,
                 "source": "P1,2",
+                "stack_blacklist": [],
                 "system_type": 1,
+                "tags": [],
                 "target": "",
                 "track": "true",
                 "type": 4,
+                "untags": [],
                 "value": "gorm.(*DB).Raw()"
             },
             {
+                "command": "",
                 "created_by": 1,
                 "enable": 1,
                 "ignore_blacklist": false,
@@ -170,13 +211,17 @@
                 "inherit": "false",
                 "language": 4,
                 "source": "P1,2",
+                "stack_blacklist": [],
                 "system_type": 1,
+                "tags": [],
                 "target": "",
                 "track": "true",
                 "type": 4,
+                "untags": [],
                 "value": "gorm.(*DB).Select()"
             },
             {
+                "command": "",
                 "created_by": 1,
                 "enable": 1,
                 "ignore_blacklist": false,
@@ -184,10 +229,13 @@
                 "inherit": "false",
                 "language": 4,
                 "source": "P1",
+                "stack_blacklist": [],
                 "system_type": 1,
+                "tags": [],
                 "target": "R",
                 "track": "true",
                 "type": 4,
+                "untags": [],
                 "value": "sql.(*DB).Query()"
             }
         ],
@@ -198,6 +246,7 @@
     {
         "details": [
             {
+                "command": "",
                 "created_by": 1,
                 "enable": 1,
                 "ignore_blacklist": false,
@@ -205,10 +254,13 @@
                 "inherit": "false",
                 "language": 4,
                 "source": "P2",
+                "stack_blacklist": [],
                 "system_type": 1,
+                "tags": [],
                 "target": "",
                 "track": "true",
                 "type": 4,
+                "untags": [],
                 "value": "http.(*Client).Do()"
             }
         ],
