@@ -17,7 +17,10 @@ from dongtai_web.serializers.hook_strategy import SINK_POSITION_HELP_TEXT
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from dongtai_common.models.strategy import IastStrategyModel
-from dongtai_common.common.agent_command_check import valitate_taint_command
+from dongtai_common.common.agent_command_check import (
+    valitate_taint_command,
+    valitate_tag,
+)
 logger = logging.getLogger('dongtai-webapi')
 
 
@@ -57,12 +60,12 @@ class _HookRuleAddBodyargsSerializer(serializers.Serializer):
         default=False,
     )
     tags = serializers.ListField(
-        child=serializers.CharField(),
+        child=serializers.CharField(validators=[valitate_tag]),
         required=False,
         default=list,
     )
     untags = serializers.ListField(
-        child=serializers.CharField(),
+        child=serializers.CharField(validators=[valitate_tag]),
         required=False,
         default=list,
     )
