@@ -21,6 +21,7 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
 from django.db.models.base import ObjectDoesNotExist
+from dongtai_common.utils.stack_recognize import stacks_convert
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -121,7 +122,7 @@ class VulDetail(UserEndPoint):
                 'command': ""
             }
 
-    def parse_graphy(self, graphy):
+    def parse_graphy(self, graphy, extend_black_list=[], extend_white_list=[]):
         """
 
         :param graphy: [{"classname": "org.apache.struts2.dispatcher.StrutsRequestWrapper", "methodname": "getParameter", "in": ", "out": "desc", "stack": "javax.servlet.ServletRequestWrapper.getParameter(ServletRequestWrapper.java)"}, {"classname": "java.lang.StringBuilder", "methodname": "append", "in": "desc", "out": "select host,user from user where user=+desc order by host ", "stack": "java.lang.StringBuilder.append(StringBuilder.java)"}, {"classname": "java.lang.StringBuilder", "methodname": "toString", "in": "select host,user from user where user=+desc order by host ", "out": "select host,user from user where user=+desc order by host ", "stack": "java.lang.StringBuilder.toString(StringBuilder.java)"}, {"classname": "com.mysql.jdbc.JDBC4Connection", "methodname": "prepareStatement", "in": "select host,user from user where user=+desc order by host ", "out": "NULL", "stack": "com.mysql.jdbc.ConnectionImpl.prepareStatement(ConnectionImpl.java)"}]
@@ -186,6 +187,7 @@ class VulDetail(UserEndPoint):
                     data_type = _('Propagation method')
                 # data_type 有 lazy 方法，需要转str，否则无法json.dumps
                 final_res = method.copy()
+                # 加上获取项目级别的黑白名单
                 final_res.update({
                     'type': str(data_type),
                     'file': filename,
@@ -200,6 +202,7 @@ class VulDetail(UserEndPoint):
                     'node': f'{class_name}.{method_name}()',
                     'tag': method.get('tag', None),
                     'code': htmlescape(method.get('code', None)),
+                    "stacks": stacks_convert(method.get("stacks", [])),
                 })
                 results.append(final_res)
         except Exception as e:
