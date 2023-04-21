@@ -146,6 +146,10 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
                 type=type_,
                 ignore_blacklist=ignore_blacklist,
                 ignore_internal=ignore_internal,
+                tags=tags,
+                untags=untags,
+                command=command,
+                stack_blacklist=stack_blacklist,
             )
             strategy.save()
             return strategy
