@@ -102,11 +102,11 @@ class NewApiRouteSearch(UserEndPoint):
             return R.failure(data=e.detail)
         q = Q()
         if project_id:
-            q = Q(project_id=project_id)
+            q = q & Q(project_id=project_id)
         if version_id:
-            q = Q(project_version_id=version_id)
-        if is_cover:
-            q = Q(is_cover=is_cover)
+            q = q & Q(project_version_id=version_id)
+        if is_cover is not None:
+            q = q & Q(is_cover=is_cover)
 
         page_info, documents = self.get_paginator(
             IastApiRoute.objects.filter(q).order_by('-id').values(
