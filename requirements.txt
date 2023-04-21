@@ -98,7 +98,7 @@ s3transfer==0.6.0 ; python_version >= '3.7'
 setuptools==65.5.1
 simhash==2.1.2
 six==1.15.0
-sqlparse==0.4.3 ; python_version >= '3.5'
+sqlparse==0.4.4 ; python_version >= '3.5'
 tablib[html,ods,xls,xlsx,yaml]==3.3.0 ; python_version >= '3.7'
 tomli==2.0.1 ; python_version < '3.11'
 types-awscrt==0.16.10 ; python_version >= '3.7' and python_version < '4.0'
