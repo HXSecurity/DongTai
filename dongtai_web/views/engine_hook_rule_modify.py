@@ -59,7 +59,7 @@ class _EngineHookRuleModifySerializer(serializers.Serializer):
         required=False,
         default=False,
     )
-    ignore_internal = serializers.CharField(
+    ignore_internal = serializers.BooleanField(
         help_text=_("ignore_internal "),
         required=False,
         default=False,
