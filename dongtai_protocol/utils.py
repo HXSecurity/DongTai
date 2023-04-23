@@ -102,8 +102,8 @@ def updateossstatus():
                     package_name=package_name),
                 EngineDownloadEndPoint.LOCAL_AGENT_FILE.format(
                     package_name=package_name))
-        downloadstatus = JavaAgentDownload().download_agent(
-        ) and PythonAgentDownload().download_agent()
+        downloadstatus = JavaAgentDownload(user_id=1).download_agent(
+        ) and PythonAgentDownload(user_id=1).download_agent()
         return downloadstatus, None
     except RequestError:
         return False, None

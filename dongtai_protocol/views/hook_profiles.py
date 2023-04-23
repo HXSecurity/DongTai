@@ -94,6 +94,10 @@ class HookProfilesEndPoint(OpenApiEndPoint):
                         "inherit": strategy.get("inherit"),
                         "ignore_blacklist": strategy.get("ignore_blacklist"),
                         "ignore_internal": strategy.get("ignore_internal"),
+                        "tags": strategy.get("tags"),
+                        "untags": strategy.get("untags"),
+                        "command": strategy.get("command"),
+                        "stack_blacklist": strategy.get("stack_blacklist"),
                     })
                 strategy_details = sorted(strategy_details,
                                           key=lambda item: item['value'])
