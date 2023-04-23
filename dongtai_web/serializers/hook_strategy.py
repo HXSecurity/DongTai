@@ -84,6 +84,10 @@ class HookRuleSerializer(serializers.ModelSerializer):
             'strategy',
             'ignore_blacklist',
             'ignore_internal',
+            'tags',
+            'untags',
+            'stack_blacklist',
+            'command'
         ]
 
     def get_rule_type(self, obj):

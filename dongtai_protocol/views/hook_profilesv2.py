@@ -48,5 +48,9 @@ class HookProfilesV2EndPoint(HookProfilesEndPoint):
                     "inherit": strategy.get("inherit"),
                     "ignore_blacklist": strategy.get("ignore_blacklist"),
                     "ignore_internal": strategy.get("ignore_internal"),
+                    "tags": strategy.get("tags"),
+                    "untags": strategy.get("untags"),
+                    "command": strategy.get("command"),
+                    "stack_blacklist": strategy.get("stack_blacklist"),
                 })
         return profiles
