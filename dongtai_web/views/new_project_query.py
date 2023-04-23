@@ -44,6 +44,9 @@ class ApiRouteArgSerializer(serializers.Serializer):
     is_cover = serializers.IntegerField(default=None,
                                         help_text=_('Project id'),
                                         required=False)
+    from_where = serializers.IntegerField(default=None,
+                                        help_text=_('Project id'),
+                                        required=False)
 
 
 class NewProjectVersionList(UserEndPoint):
@@ -64,6 +67,7 @@ class NewProjectVersionList(UserEndPoint):
                 page = ser.validated_data['page']
                 version_name = ser.validated_data['version_name']
                 project_id = ser.validated_data['project_id']
+                from_where = ser.validated_data['from_where']
         except ValidationError as e:
             return R.failure(data=e.detail)
         q = Q()
@@ -98,6 +102,7 @@ class NewApiRouteSearch(UserEndPoint):
                 project_id = ser.validated_data['project_id']
                 version_id = ser.validated_data['version_id']
                 is_cover = ser.validated_data['is_cover']
+                from_where = ser.validated_data['from_where']
         except ValidationError as e:
             return R.failure(data=e.detail)
         q = Q()
@@ -107,6 +112,8 @@ class NewApiRouteSearch(UserEndPoint):
             q = q & Q(project_version_id=version_id)
         if is_cover is not None:
             q = q & Q(is_cover=is_cover)
+        if from_where is not None:
+            q = q & Q(from_where=from_where)
 
         page_info, documents = self.get_paginator(
             IastApiRoute.objects.filter(q).order_by('-id').values(
