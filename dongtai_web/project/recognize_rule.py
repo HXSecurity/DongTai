@@ -151,16 +151,18 @@ class RecognizeRuleViewSet(UserEndPoint, ViewSet):
         """
         Example:
         
+        -------------------------
         {
             "delete_type":1,
             "project_id":1
         }
-        
+        -------------------------
         {
             "delete_type":2,
             "project_id":1,
             "delete_ids": [1,2,3]
         }
+        ------------------------
         """
         ser = RecognizeRuleBatchDeleteSerializer(data=request.data)
         try:
