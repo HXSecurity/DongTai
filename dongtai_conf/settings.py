@@ -236,7 +236,7 @@ WSGI_APPLICATION = 'dongtai_conf.wsgi.application'
 
 DATABASES = {
     'default': {
-        'CONN_MAX_AGE': 900,
+        #'CONN_MAX_AGE': 10,
         'ENGINE': 'django.db.backends.mysql',
         'USER': config.get("mysql", 'user'),
         'NAME': config.get("mysql", 'name'),

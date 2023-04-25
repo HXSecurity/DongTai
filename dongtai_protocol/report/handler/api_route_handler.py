@@ -37,35 +37,36 @@ class ApiRouteHandler(IReportHandler):
                 http_methods = []
                 with transaction.atomic():
                     try:
-                        for http_method in api_route['method']:
+                        for http_method_str in api_route['method']:
                             http_method, __ = HttpMethod.objects.get_or_create(
-                                method=http_method.upper())
+                                method=http_method_str.upper())
                             http_methods.append(http_method)
-                        api_method, is_create = IastApiMethod.objects.get_or_create(
-                            method='/'.join(api_route['method']))
-                        if is_create:
-                            for http_method in http_methods:
-                                IastApiMethodHttpMethodRelation.objects.create(
-                                    api_method_id=api_method.id,
-                                    http_method_id=http_method.id)
-                        fields = [
-                            'uri', 'code_class', 'description', 'code_file',
-                            'controller', 'agent'
-                        ]
-                        api_route_dict = _dictfilter(api_route, fields)
-                        api_route_obj = _route_dump(api_route_dict, api_method,
-                                                    agent)
-                        api_route_model, is_create = IastApiRoute.objects.get_or_create(
-                            **api_route_obj)
-                        parameters = api_route['parameters']
-                        for parameter in parameters:
-                            parameter_obj = _para_dump(parameter,
-                                                       api_route_model)
-                            IastApiParameter.objects.get_or_create(**parameter_obj)
-                        response_obj = _response_dump(
-                            {'return_type': api_route['returnType']},
-                            api_route_model)
-                        IastApiResponse.objects.get_or_create(**response_obj)
+                            api_method, is_create = IastApiMethod.objects.get_or_create(
+                                method=http_method_str.upper())
+                            if is_create:
+                                for http_method in http_methods:
+                                    IastApiMethodHttpMethodRelation.objects.create(
+                                        api_method_id=api_method.id,
+                                        http_method_id=http_method.id)
+                            fields = [
+                                'uri', 'code_class', 'description',
+                                'code_file', 'controller', 'agent'
+                            ]
+                            api_route_dict = _dictfilter(api_route, fields)
+                            api_route_obj = _route_dump(
+                                api_route_dict, api_method, agent)
+                            api_route_model, is_create = IastApiRoute.objects.get_or_create(
+                                **api_route_obj)
+                            parameters = api_route['parameters']
+                            for parameter in parameters:
+                                parameter_obj = _para_dump(
+                                    parameter, api_route_model)
+                                IastApiParameter.objects.get_or_create(
+                                    **parameter_obj)
+                            response_obj = _response_dump(
+                                {'return_type': api_route['returnType']},
+                                api_route_model)
+                            IastApiResponse.objects.get_or_create(**response_obj)
                     except Exception as e:
                         print(e)
                 logger.info(_('API navigation log record successfully'))
