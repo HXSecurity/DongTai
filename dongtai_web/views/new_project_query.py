@@ -67,7 +67,6 @@ class NewProjectVersionList(UserEndPoint):
                 page = ser.validated_data['page']
                 version_name = ser.validated_data['version_name']
                 project_id = ser.validated_data['project_id']
-                from_where = ser.validated_data['from_where']
         except ValidationError as e:
             return R.failure(data=e.detail)
         q = Q()
