@@ -16,7 +16,10 @@ from django.utils.text import format_lazy
 from dongtai_web.serializers.hook_strategy import SINK_POSITION_HELP_TEXT
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.strategy import IastStrategyModel
-from dongtai_common.common.agent_command_check import valitate_taint_command
+from dongtai_common.common.agent_command_check import (
+    valitate_taint_command,
+    valitate_tag,
+)
 
 _PostResponseSerializer = get_response_serializer(status_msg_keypair=(
     ((201, _('strategy has been created successfully')), ''),
@@ -56,18 +59,18 @@ class _EngineHookRuleModifySerializer(serializers.Serializer):
         required=False,
         default=False,
     )
-    ignore_internal = serializers.CharField(
+    ignore_internal = serializers.BooleanField(
         help_text=_("ignore_internal "),
         required=False,
         default=False,
     )
     tags = serializers.ListField(
-        child=serializers.CharField(),
+        child=serializers.CharField(validators=[valitate_tag]),
         required=False,
         default=list,
     )
     untags = serializers.ListField(
-        child=serializers.CharField(),
+        child=serializers.CharField(validators=[valitate_tag]),
         required=False,
         default=list,
     )
