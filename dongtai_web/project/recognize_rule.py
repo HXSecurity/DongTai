@@ -150,7 +150,7 @@ class RecognizeRuleViewSet(UserEndPoint, ViewSet):
     def destory(self, request):
         """
         Example:
-        
+
         -------------------------
         {
             "delete_type":1,
