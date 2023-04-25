@@ -158,6 +158,7 @@ from dongtai_web.dast.webhook import DastWebhook
 from dongtai_web.dast.page import DastVulsEndPoint
 from dongtai_web.dast.manage import DastManageEndPoint
 from dongtai_web.views.new_project_query import (NewApiRouteSearch, NewProjectVersionList)
+from dongtai_web.project.recognize_rule import RecognizeRuleViewSet
 
 urlpatterns = [
     path('user/<int:user_id>', UserDetailEndPoint.as_view()),
@@ -420,10 +421,22 @@ urlpatterns = [
             'post': "change_validation_settings",
             'get': "get_validation_settings",
         })),
+    path('dastvul/settings/doc',
+         DastManageEndPoint.as_view({
+             'get': "get_doc_url",
+         })),
     path(
-        'dastvul/settings/doc',
-        DastManageEndPoint.as_view({
-            'get': "get_doc_url",
+        'project/recognize_rule/<int:pk>',
+        RecognizeRuleViewSet.as_view({
+            'get': "retrieve",
+            'put': "update",
+        })),
+    path(
+        'project/recognize_rule',
+        RecognizeRuleViewSet.as_view({
+            'post': "create",
+            'get': "list",
+            'delete': "destory",
         })),
 ]
 if os.getenv('environment', None) in ('TEST', 'PROD'):
