@@ -76,6 +76,7 @@ pyrsistent = "==0.19.1"
 pytz = "==2022.6"
 types-pyyaml = ">=6.0.12.2"
 uwsgi = "==2.0.21"
+marisa-trie = "==0.8.0"
 
 [dev-packages]
 
