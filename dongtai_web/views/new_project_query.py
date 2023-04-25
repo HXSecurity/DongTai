@@ -45,8 +45,8 @@ class ApiRouteArgSerializer(serializers.Serializer):
                                         help_text=_('Project id'),
                                         required=False)
     from_where = serializers.IntegerField(default=None,
-                                        help_text=_('Project id'),
-                                        required=False)
+                                          help_text=_('Project id'),
+                                          required=False)
 
 
 class NewProjectVersionList(UserEndPoint):
