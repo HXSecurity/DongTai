@@ -77,6 +77,7 @@ class _HookRuleAddBodyargsSerializer(serializers.Serializer):
         validators=[valitate_taint_command],
         required=False,
         default="",
+        allow_blank=True, 
     )
     stack_blacklist = serializers.ListField(
         child=serializers.CharField(),
