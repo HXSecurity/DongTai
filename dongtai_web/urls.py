@@ -473,7 +473,7 @@ urlpatterns.extend([
     path('api/v2/project_version', NewProjectVersionList.as_view()),
 ])
 
-urlpatterns.extend(scaupload_urls)
+# urlpatterns.extend(scaupload_urls) departured
 urlpatterns.extend(apitimelog_urls)
 urlpatterns.extend(sca_urls)
 urlpatterns.extend(versioncontrol_urls)
