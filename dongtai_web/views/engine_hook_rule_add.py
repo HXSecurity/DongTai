@@ -32,16 +32,19 @@ class _HookRuleAddBodyargsSerializer(serializers.Serializer):
     rule_value = serializers.CharField(
         help_text=_('The value of strategy'),
         max_length=255,
+        allow_blank=True, 
     )
     rule_source = serializers.CharField(
         help_text=format_lazy("{}\n{}", _("Source of taint"),
                               SINK_POSITION_HELP_TEXT),
         max_length=255,
+        allow_blank=True, 
     )
     rule_target = serializers.CharField(
         help_text=format_lazy("{}\n{}", _("Target of taint"),
                               SINK_POSITION_HELP_TEXT),
         max_length=255,
+        allow_blank=True, 
     )
     inherit = serializers.CharField(
         help_text=_('Inheritance type, false-only detect current class, true-inspect subclasses, all-check current class and subclasses'),
@@ -74,6 +77,7 @@ class _HookRuleAddBodyargsSerializer(serializers.Serializer):
         validators=[valitate_taint_command],
         required=False,
         default="",
+        allow_blank=True, 
     )
     stack_blacklist = serializers.ListField(
         child=serializers.CharField(),
