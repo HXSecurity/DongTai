@@ -11,7 +11,12 @@ on:
     branches: [main, develop]
   schedule:
     - cron: '0 0 * * *'
-    
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+
 jobs:
   # This workflow contains a single job called "build"
   Run-API-TEST:
