@@ -21,6 +21,8 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
 from django.db.models.base import ObjectDoesNotExist
+from dongtai_common.utils.stack_recognize import stacks_convert
+from dongtai_common.models.recognize_rule import IastRecognizeRule, RuleTypeChoices
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -121,7 +123,10 @@ class VulDetail(UserEndPoint):
                 'command': ""
             }
 
-    def parse_graphy(self, graphy):
+    def parse_graphy(self,
+                     graphy,
+                     extend_black_list: list = [],
+                     extend_white_list: list = []):
         """
 
         :param graphy: [{"classname": "org.apache.struts2.dispatcher.StrutsRequestWrapper", "methodname": "getParameter", "in": ", "out": "desc", "stack": "javax.servlet.ServletRequestWrapper.getParameter(ServletRequestWrapper.java)"}, {"classname": "java.lang.StringBuilder", "methodname": "append", "in": "desc", "out": "select host,user from user where user=+desc order by host ", "stack": "java.lang.StringBuilder.append(StringBuilder.java)"}, {"classname": "java.lang.StringBuilder", "methodname": "toString", "in": "select host,user from user where user=+desc order by host ", "out": "select host,user from user where user=+desc order by host ", "stack": "java.lang.StringBuilder.toString(StringBuilder.java)"}, {"classname": "com.mysql.jdbc.JDBC4Connection", "methodname": "prepareStatement", "in": "select host,user from user where user=+desc order by host ", "out": "NULL", "stack": "com.mysql.jdbc.ConnectionImpl.prepareStatement(ConnectionImpl.java)"}]
@@ -186,20 +191,37 @@ class VulDetail(UserEndPoint):
                     data_type = _('Propagation method')
                 # data_type 有 lazy 方法，需要转str，否则无法json.dumps
                 final_res = method.copy()
+                # 加上获取项目级别的黑白名单
                 final_res.update({
-                    'type': str(data_type),
-                    'file': filename,
-                    'caller': _item,
-                    'line_number': line_number,
-                    'class': class_name,
-                    'method': method_name,
-                    'source': source,
-                    'source_value': method.get('sourceValues', None),
-                    'target': target,
-                    'target_value': method.get('targetValues', None),
-                    'node': f'{class_name}.{method_name}()',
-                    'tag': method.get('tag', None),
-                    'code': htmlescape(method.get('code', None)),
+                    'type':
+                    str(data_type),
+                    'file':
+                    filename,
+                    'caller':
+                    _item,
+                    'line_number':
+                    line_number,
+                    'class':
+                    class_name,
+                    'method':
+                    method_name,
+                    'source':
+                    source,
+                    'source_value':
+                    method.get('sourceValues', None),
+                    'target':
+                    target,
+                    'target_value':
+                    method.get('targetValues', None),
+                    'node':
+                    f'{class_name}.{method_name}()',
+                    'tag':
+                    method.get('tag', None),
+                    'code':
+                    htmlescape(method.get('code', None)),
+                    "stacks":
+                    stacks_convert(method.get("stacks", []), extend_black_list,
+                                   extend_white_list),
                 })
                 results.append(final_res)
         except Exception as e:
@@ -264,6 +286,13 @@ class VulDetail(UserEndPoint):
                 exc_info=e)
             token = ""
 
+        extend_black_list = list(IastRecognizeRule.objects.filter(
+            project_id=project_id,
+            rule_type=RuleTypeChoices.BLACK).values('rule_detail').all())
+        extend_white_list = list(IastRecognizeRule.objects.filter(
+            project_id=project_id,
+            rule_type=RuleTypeChoices.WHITE).values('rule_detail').all())
+
         return {
             'url':
                 vul.url,
@@ -302,7 +331,7 @@ class VulDetail(UserEndPoint):
                 htmlescape(self.parse_response(vul.res_header, vul.res_body)) if is_need_http_detail(
                     strategy_name) else '',
             'graph':
-                self.parse_graphy(vul.full_stack),
+                self.parse_graphy(vul.full_stack, extend_black_list, extend_white_list),
             'context_path':
                 vul.context_path,
             'client_ip':
