@@ -24,6 +24,7 @@ from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.models.api_route import IastApiRoute, FromWhereChoices
 from dongtai_common.models.asset import Asset
 from dongtai_common.utils.user import get_auth_users__by_id
+from rest_framework.serializers import ValidationError
 import json
 from typing import Optional
 from time import time
