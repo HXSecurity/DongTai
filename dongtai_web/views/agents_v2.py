@@ -19,6 +19,7 @@ from django.core.cache import cache
 from enum import IntEnum
 from django.db.models.query import QuerySet
 from rest_framework.viewsets import ViewSet
+from rest_framework import serializers
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.models.api_route import IastApiRoute, FromWhereChoices
 from dongtai_common.models.asset import Asset
@@ -36,70 +37,86 @@ class StateType(IntEnum):
     RUNNING = 2
     STOP = 3
     UNINSTALL = 4
+    ONLINE = 5
+    ALLOW_REPORT = 6
+
+
+class AgentListv2ArgsSerializer(serializers.Serializer):
+    page_size = serializers.IntegerField(default=20,
+                                         help_text=_('Number per page'))
+    page = serializers.IntegerField(default=1, help_text=_('Page index'))
+    state = serializers.ChoiceField(choices=StateType)
+    last_days = serializers.IntegerField(default=None,
+                                         required=False,
+                                         help_text=_('Last days'))
+    project_id = serializers.IntegerField(default=None,
+                                          required=False,
+                                          help_text=_('project_id'))
+    project_name = serializers.CharField(default=None,
+                                         help_text=_("project_name"))
 
 
 class AgentListv2(UserEndPoint, ViewSet):
     name = "api-v1-agents"
     description = _("Agent list")
 
+    @extend_schema_with_envcheck(
+        [AgentListv2ArgsSerializer],
+        tags=[_('Agent')],
+        summary=_('Agent List v2'),
+    )
     def pagenation_list(self, request):
-        department = request.user.get_relative_department()
+        ser = AgentListv2ArgsSerializer(data=request.GET)
         try:
-            page = int(request.query_params.get('page', 1))
-            page_size = int(request.query_params.get('page_size', 20))
-            state = StateType(int(request.query_params.get('state', 1)))
-            project_name = request.query_params.get('project_name', '')
-            project_id = int(request.query_params.get('project_id', 0))
-            last_days = int(request.query_params.get('last_days', 0))
-            filter_condiction = generate_filter(state) & Q(
-                department__in=department)
-            if project_name:
-                filter_condiction = filter_condiction & Q(
-                    bind_project__name__icontains=project_name)
-            if project_id:
-                filter_condiction = filter_condiction & Q(
-                    bind_project_id=project_id)
-            if last_days:
-                filter_condiction = filter_condiction & Q(
-                    heartbeat__dt__gte=int(time()) - 60 * 60 * 24 * last_days)
+            ser.is_valid(True)
+        except ValidationError as e:
+            return R.failure(data=e.detail)
+        department = request.user.get_relative_department()
+        filter_condiction = generate_filter(
+            ser.validated_data['state']) & Q(department__in=department)
+        if ser.validated_data['project_name']:
+            filter_condiction = filter_condiction & Q(
+                bind_project__name__icontains=ser.
+                validated_data['project_name'])
+        if ser.validated_data['project_id'] is not None:
+            filter_condiction = filter_condiction & Q(
+                bind_project_id=ser.validated_data['project_id'])
+        if ser.validated_data['last_days'] is not None:
+            filter_condiction = filter_condiction & Q(
+                heartbeat__dt__gte=int(time()) -
+                60 * 60 * 24 * ser.validated_data['last_days'])
 
-            page = page if page else 1
-            page_size = page_size if page_size else 20
-
-            summary, queryset = self.get_paginator(
-                query_agent(filter_condiction), page, page_size)
-            queryset = list(queryset)
-            agent_dict = {}
-            for agent in queryset:
-                agent['state'] = cal_state(agent)
-                agent['memory_rate'] = get_memory(agent['heartbeat__memory'])
-                agent['cpu_rate'] = get_cpu(agent['heartbeat__cpu'])
-                agent['disk_rate'] = get_disk(agent['heartbeat__disk'])
-                agent['is_control'] = get_is_control(
-                    agent['actual_running_status'],
-                    agent['except_running_status'],
-                    agent['online'],
-                )
-                agent['ipaddresses'] = get_service_addrs(
-                    json.loads(agent['server__ipaddresslist']),
-                    agent['server__port'])
-                if not agent['events']:
-                    agent['events'] = ['注册成功']
-                agent_dict[agent['id']] = {}
-            agent_events = IastAgentEvent.objects.filter(
-                agent__id__in=agent_dict.keys()).values().all()
-            agent_events_dict = {
-                k: list(g)
-                for k, g in groupby(agent_events, key=lambda x: x['agent_id'])
-            }
-            for agent in queryset:
-                agent['new_events'] = agent_events_dict[
-                    agent['id']] if agent['id'] in agent_events_dict else {}
-            data = {'agents': queryset, "summary": summary}
-        except Exception as e:
-            logger.error("agents pagenation_list error:{}".format(e),
-                         exc_info=e)
-            data = dict()
+        summary, queryset = self.get_paginator(query_agent(filter_condiction),
+                                               ser.validated_data['page'],
+                                               ser.validated_data['page_size'])
+        queryset = list(queryset)
+        agent_dict = {}
+        for agent in queryset:
+            agent['state'] = cal_state(agent)
+            agent['memory_rate'] = get_memory(agent['heartbeat__memory'])
+            agent['cpu_rate'] = get_cpu(agent['heartbeat__cpu'])
+            agent['disk_rate'] = get_disk(agent['heartbeat__disk'])
+            agent['is_control'] = get_is_control(
+                agent['actual_running_status'],
+                agent['except_running_status'],
+                agent['online'],
+            )
+            agent['ipaddresses'] = get_service_addrs(
+                json.loads(agent['server__ipaddresslist']),
+                agent['server__port'])
+            if not agent['events']:
+                agent['events'] = ['注册成功']
+            agent_dict[agent['id']] = {}
+        agent_events = IastAgentEvent.objects.filter(
+            agent__id__in=agent_dict.keys()).values().all()
+        agent_events_dict = {
+            k: list(g)
+            for k, g in groupby(agent_events, key=lambda x: x['agent_id'])
+        }
+        for agent in queryset:
+            agent['new_events'] = agent_events_dict[
+                agent['id']] if agent['id'] in agent_events_dict else {}
+        data = {'agents': queryset, "summary": summary}
         return R.success(data=data)
 
     def summary(self, request):
@@ -161,6 +178,10 @@ def generate_filter(state: StateType) -> Q:
         return Q(online=1) & ~Q(actual_running_status=1)
     elif state == StateType.UNINSTALL:
         return Q(online=0)
+    elif state == StateType.ONLINE:
+        return Q(online=1)
+    elif state == StateType.ALLOW_REPORT:
+        return Q(allow_report=1)
     return Q()
 
 
@@ -228,4 +249,5 @@ def query_agent(filter_condiction=Q()) -> QuerySet:
         'heartbeat__memory', 'heartbeat__cpu', 'heartbeat__disk',
         'register_time', 'is_core_running', 'is_control', 'online', 'id',
         'bind_project__id', 'version', 'except_running_status',
-        'actual_running_status', 'state_status').order_by('-latest_time')
+        'actual_running_status', 'state_status',
+        'allow_report').order_by('-latest_time')
