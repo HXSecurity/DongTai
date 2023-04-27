@@ -68,6 +68,7 @@ class IastAgent(models.Model):
                                    models.DO_NOTHING,
                                    blank=True,
                                    null=True)
+    allow_report = models.IntegerField(default=1, null=False)
 
     class Meta:
         managed = get_managed()

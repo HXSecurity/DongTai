@@ -28,6 +28,9 @@ from dongtai_protocol.decrypter import parse_data
 logger = logging.getLogger('dongtai.openapi')
 
 
+def get_agent_allow_report(agent_id):
+    return 1
+
 class AgentRegisterEndPoint(OpenApiEndPoint):
     """
     引擎注册接口
@@ -42,6 +45,9 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         project = IastProject.objects.values('id').filter(
             name=project_name, department=department).first()
         is_audit = AgentRegisterEndPoint.get_is_audit()
+        project_id = 0
+        project_version_id = 0
+        exist_project = False
         if project:
             if project_version:
                 project_current_version = project_version
@@ -49,36 +55,26 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 project_current_version = IastProjectVersion.objects.filter(
                     project_id=project['id'], current_version=1,
                     status=1).first()
-            agent_id = AgentRegisterEndPoint.get_agent_id(
-                token, project_name, user, project_current_version.id)
-            if agent_id == -1:
-                agent_id = AgentRegisterEndPoint.__register_agent(
-                    exist_project=True,
-                    token=token,
-                    user=user,
-                    version=version,
-                    project_id=project['id'],
-                    project_name=project_name,
-                    project_version_id=project_current_version.id,
-                    language=language,
-                    is_audit=is_audit)
-        else:
-            agent_id = AgentRegisterEndPoint.get_agent_id(
+            project_id = project['id']
+            project_version_id = project_current_version.id
+            exist_project = True
+        agent_id = AgentRegisterEndPoint.get_agent_id(
+            token=token,
+            project_name=project_name,
+            user=user,
+            current_project_version_id=project_version_id)
+        allow_report = get_agent_allow_report(agent_id)
+        if agent_id == -1:
+            agent_id = AgentRegisterEndPoint.__register_agent(
+                exist_project=False,
                 token=token,
-                project_name=project_name,
                 user=user,
-                current_project_version_id=0)
-            if agent_id == -1:
-                agent_id = AgentRegisterEndPoint.__register_agent(
-                    exist_project=False,
-                    token=token,
-                    user=user,
-                    version=version,
-                    project_id=0,
-                    project_name=project_name,
-                    project_version_id=0,
-                    language=language,
-                    is_audit=is_audit)
+                version=version,
+                project_id=project_id,
+                project_name=project_name,
+                project_version_id=project_version_id,
+                language=language,
+                is_audit=is_audit)
         return agent_id
 
     @staticmethod
