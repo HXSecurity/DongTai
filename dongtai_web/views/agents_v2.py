@@ -25,6 +25,7 @@ from dongtai_common.models.api_route import IastApiRoute, FromWhereChoices
 from dongtai_common.models.asset import Asset
 from dongtai_common.utils.user import get_auth_users__by_id
 from rest_framework.serializers import ValidationError
+from django.db.models import IntegerChoices
 import json
 from typing import Optional
 from time import time
@@ -33,7 +34,7 @@ from itertools import groupby
 logger = logging.getLogger('dongtai-webapi')
 
 
-class StateType(IntEnum):
+class StateType(IntegerChoices):
     ALL = 1
     RUNNING = 2
     STOP = 3
@@ -143,7 +144,7 @@ class AgentListv2(UserEndPoint, ViewSet):
             agent_id = int(request.query_params.get('id', 0))
             res = get_agent_stat(agent_id, department)
         except Exception as e:
-            logger.error("agent_stat error:{}".format(e))
+            logger.debug("agent_stat error:{}".format(e))
             res = dict()
         return R.success(data=res)
 
