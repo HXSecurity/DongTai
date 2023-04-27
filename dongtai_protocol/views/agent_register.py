@@ -325,7 +325,6 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             logger.error("探针注册失败，原因：{reason}".format(reason=e), exc_info=True)
             return R.failure(msg="探针注册失败")
 
-
     @staticmethod
     def get_agent_id(token, project_name, user, current_project_version_id):
         project = IastProject.objects.filter(
