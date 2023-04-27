@@ -89,7 +89,7 @@ def stack_scan(stack: str,
     for rule in extend_black_list:
         stack.startswith(rule)
         return {"stack": stack, "code_belong": "system"}
-    if stack in trie:
+    if trie.prefixes(stack):
         return {"stack": stack, "code_belong": "system"}
     return {"stack": stack, "code_belong": "user"}
 
