@@ -40,9 +40,20 @@ def get_project_language(queryset: QuerySet) -> defaultdict:
     return project_language_dict
 
 
+def get_agent_count(queryset: QuerySet) -> defaultdict:
+    agent_counts = IastAgent.objects.values('bind_project_id').filter(
+        bind_project_id__in=list(queryset.values_list(
+            'id', flat=True))).annotate(agent_count=Count('id'))
+    agent_count_dict = defaultdict(int)
+    for k in agent_counts:
+        agent_count_dict[k['bind_project_id']] = k['agent_count']
+    return agent_count_dict
+
 class ProjectSerializer(serializers.ModelSerializer):
     vul_count = serializers.SerializerMethodField(
         help_text="Vulnerability Count")
+    agent_count = serializers.SerializerMethodField(
+        help_text="Agent Count")
     owner = serializers.SerializerMethodField(help_text="Project owner")
     agent_language = serializers.SerializerMethodField(
         help_text="Agent language currently included in the project")
@@ -87,3 +98,10 @@ class ProjectSerializer(serializers.ModelSerializer):
             res = obj.iastagent_set.values_list('language',
                                                 flat=True).distinct()
         return list(res)
+
+    def get_agent_count(self, obj) -> list:
+        if 'agent_count_dict' in self.context.keys():
+            res = self.context['agent_count_dict'][obj.id]
+        else:
+            res = obj.iastagent_set.count()
+        return res
