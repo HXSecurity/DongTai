@@ -198,9 +198,9 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         if 'id' in request.data.keys():
             q = assemble_query(search_after_fields, 'lte', q, operator.and_)
             if search_mode == 1:
-                q = assemble_query(search_fields_, 'regex', Q(), operator.or_)
+                q = assemble_query(search_fields_, 'contains', Q(), operator.or_)
             elif search_mode == 2:
-                q = assemble_query_2(search_fields_, 'regex', Q(),
+                q = assemble_query_2(search_fields_, 'contains', Q(),
                                      operator.and_)
             if 'id' in request.data.keys():
                 q = q & Q(pk=request.data['id'])
@@ -217,9 +217,10 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             try:
                 method_pools = list(queryset.values())
             except OperationalError as e:
-                return R.failure(msg=gettext_lazy(
-                    "The regular expression format is wrong, please use REGEX POSIX 1003.2"
-                ))
+                return R.failure(msg="处理超时，建议选择更小的查询时间范围")
+#                return R.failure(msg=gettext_lazy(
+#                    "The regular expression format is wrong, please use REGEX POSIX 1003.2"
+#                ))
         elif ELASTICSEARCH_STATE:
             method_pools = search_generate(
                 search_fields_, time_range,
@@ -363,7 +364,8 @@ def highlight_matches(query, text, html):
 
     def span_matches(match):
         return html.format(match.group(0))
-    return re.sub(query, span_matches, text, flags=re.I)
+
+    return text.replace(query, html.format(query))
 
 
 def search_generate(search_fields, time_range, user_ids, search_after_fields, filter_ids,
