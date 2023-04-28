@@ -99,7 +99,7 @@ class ProjectSerializer(serializers.ModelSerializer):
                                                 flat=True).distinct()
         return list(res)
 
-    def get_agent_count(self, obj) -> list:
+    def get_agent_count(self, obj) -> int:
         if 'agent_count_dict' in self.context.keys():
             res = self.context['agent_count_dict'][obj.id]
         else:
