@@ -1,11 +1,10 @@
-
 from django.db import models
 import copy
 from django.db.models import Expression
 
 
 class SearchLanguageMode(Expression):
-    template = "MATCH( %(expressions)s ) AGAINST ( '+%(search_keyword)s' IN NATURAL LANGUAGE MODE )"
+    template = "MATCH( %(expressions)s ) AGAINST ( +%(search_keyword)s IN NATURAL LANGUAGE MODE )"
 
     def __init__(self, expressions, search_keyword):
         super().__init__(output_field=models.IntegerField())
@@ -37,8 +36,9 @@ class SearchLanguageMode(Expression):
         template = template or self.template
         data = {
             'expressions': ','.join(sql_expressions),
-            'search_keyword': self.search_keyword
+            'search_keyword': "%s",
         }
+        sql_params.append(self.search_keyword)
         return template % data, sql_params
 
     def get_source_expressions(self):
