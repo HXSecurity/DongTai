@@ -142,7 +142,7 @@ class GetAppVulsList(UserEndPoint):
                             F('top_stack'),
                             F('bottom_stack')
                         ],
-                        search_keyword="+"+keywords,
+                        search_keyword="+" + keywords,
                     ))
                 # 排序
                 order_type = APP_VUL_ORDER.get(
