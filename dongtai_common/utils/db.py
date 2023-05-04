@@ -4,7 +4,7 @@ from django.db.models import Expression
 
 
 class SearchLanguageMode(Expression):
-    template = "MATCH( %(expressions)s ) AGAINST ( +%(search_keyword)s IN NATURAL LANGUAGE MODE )"
+    template = "MATCH( %(expressions)s ) AGAINST ( %(search_keyword)s IN NATURAL LANGUAGE MODE )"
 
     def __init__(self, expressions, search_keyword):
         super().__init__(output_field=models.IntegerField())
