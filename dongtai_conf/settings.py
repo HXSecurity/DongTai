@@ -256,6 +256,26 @@ DATABASES = {
             'HOST': config.get("mysql", 'host'),
             'PORT': config.get("mysql", 'port'),
         }
+    },
+    'timeout10': {
+        'ENGINE': 'django.db.backends.mysql',
+        'USER': config.get("mysql", 'user'),
+        'NAME': config.get("mysql", 'name'),
+        'PASSWORD': config.get("mysql", 'password'),
+        'HOST': config.get("mysql", 'host'),
+        'PORT': config.get("mysql", 'port'),
+        'OPTIONS': {
+            'init_command': 'SET max_execution_time=10000;', # Here is ms.
+            'charset': 'utf8mb4',
+            'use_unicode': True,
+        },
+        'TEST': {
+            'USER': config.get("mysql", 'user'),
+            'NAME': config.get("mysql", 'name'),
+            'PASSWORD': config.get("mysql", 'password'),
+            'HOST': config.get("mysql", 'host'),
+            'PORT': config.get("mysql", 'port'),
+        }
     }
 }
 REDIS_URL = 'redis://:%(password)s@%(host)s:%(port)s/%(db)s' % {
