@@ -69,7 +69,7 @@ class MethodPoolSearchProxySer(serializers.Serializer):
     ),
         required=False)
     search_mode = serializers.IntegerField(
-        help_text=_("the search_mode , 1-regex match ,2-regex not match "),
+        help_text=_("the search_mode , 1-contains match ,2-contains not match "),
         default=1,
         required=False)
 
@@ -195,10 +195,25 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     filter(lambda x: x[0].startswith('search_after_'),
                            request.data.items()))))
         q = Q()
-        if 'id' in request.data.keys():
+        if ELASTICSEARCH_STATE:
+            method_pools = search_generate(
+                search_fields_, time_range,
+                self.get_auth_users(request.user).values_list('id', flat=True),
+                search_after_fields, exclude_ids, page_size, search_mode)
+            method_pools = [i._d_ for i in method_pools]
+            for method_pool in method_pools:
+                method_pool['req_header_fs'] = method_pool[
+                    'req_header_for_search']
+            method_pools = list(
+                MethodPool.objects.filter(
+                    agent_id__in=[i['agent_id'] for i in method_pools],
+                    pool_sign__in=[i['pool_sign'] for i in method_pools
+                                   ]).order_by('-update_time').values().all())
+        else:
             q = assemble_query(search_after_fields, 'lte', q, operator.and_)
             if search_mode == 1:
-                q = assemble_query(search_fields_, 'contains', Q(), operator.or_)
+                q = assemble_query(search_fields_, 'contains', Q(),
+                                   operator.or_)
             elif search_mode == 2:
                 q = assemble_query_2(search_fields_, 'contains', Q(),
                                      operator.and_)
@@ -218,47 +233,6 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                 method_pools = list(queryset.values())
             except OperationalError as e:
                 return R.failure(msg="处理超时，建议选择更小的查询时间范围")
-#                return R.failure(msg=gettext_lazy(
-#                    "The regular expression format is wrong, please use REGEX POSIX 1003.2"
-#                ))
-        elif ELASTICSEARCH_STATE:
-            method_pools = search_generate(
-                search_fields_, time_range,
-                self.get_auth_users(request.user).values_list('id', flat=True),
-                search_after_fields, exclude_ids, page_size, search_mode)
-            method_pools = [i._d_ for i in method_pools]
-            for method_pool in method_pools:
-                method_pool['req_header_fs'] = method_pool['req_header_for_search']
-            method_pools = list(
-                MethodPool.objects.filter(
-                    agent_id__in=[i['agent_id'] for i in method_pools],
-                    pool_sign__in=[i['pool_sign'] for i in method_pools
-                                   ]).order_by('-update_time').values().all())
-        else:
-            q = assemble_query(search_after_fields, 'lte', q, operator.and_)
-            if search_mode == 1:
-                q = assemble_query(search_fields_, 'regex', Q(), operator.or_)
-            elif search_mode == 2:
-                q = assemble_query_2(search_fields_, 'regex', Q(),
-                                     operator.and_)
-            if 'id' in request.data.keys():
-                q = q & Q(pk=request.data['id'])
-            q = q & Q(agent_id__in=[
-                item['id'] for item in list(
-                    self.get_auth_agents_with_user(request.user).values('id'))
-            ])
-            if time_range:
-                q = (q & (Q(update_time__gte=start_time)
-                          & Q(update_time__lte=end_time)))
-            q = (q & (~Q(pk__in=ids))) if ids is not None and ids != [] else q
-            queryset = MethodPool.objects.filter(q).order_by(
-                '-update_time')[:page_size]
-            try:
-                method_pools = list(queryset.values())
-            except OperationalError as e:
-                return R.failure(msg=gettext_lazy(
-                    "The regular expression format is wrong, please use REGEX POSIX 1003.2"
-                ))
         afterkeys = {}
         for i in method_pools[-1:]:
             afterkeys['update_time'] = i['update_time']
