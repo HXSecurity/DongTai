@@ -21,7 +21,9 @@ from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import gettext_lazy
 from dongtai_conf.settings import ELASTICSEARCH_STATE
+import logging
 
+logger = logging.getLogger('dongtai-webapi')
 
 class MethodPoolSearchProxySer(serializers.Serializer):
     page_size = serializers.IntegerField(min_value=1,
@@ -230,8 +232,12 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             queryset = MethodPool.objects.filter(q).order_by(
                 '-update_time')[:page_size]
             try:
-                method_pools = list(queryset.values())
+                method_pools = list(queryset.values().using("timeout10"))
             except OperationalError as e:
+                if e.args[0] != 3024:
+                    logger.warning(e, exc_info=e)
+                else:
+                    logger.debug(e, exc_info=e)
                 return R.failure(msg="处理超时，建议选择更小的查询时间范围")
         afterkeys = {}
         for i in method_pools[-1:]:
