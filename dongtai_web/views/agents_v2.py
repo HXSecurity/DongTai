@@ -58,7 +58,7 @@ class AgentListv2ArgsSerializer(serializers.Serializer):
                                          help_text=_("project_name"))
     allow_report = serializers.IntegerField(default=None,
                                             required=False,
-                                            help_text=_('project_id'))
+                                            help_text=_('allow_report'))
 
 
 class AgentListv2(UserEndPoint, ViewSet):
