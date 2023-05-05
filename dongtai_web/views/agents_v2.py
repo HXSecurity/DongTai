@@ -56,6 +56,9 @@ class AgentListv2ArgsSerializer(serializers.Serializer):
                                           help_text=_('project_id'))
     project_name = serializers.CharField(default=None,
                                          help_text=_("project_name"))
+    allow_report = serializers.IntegerField(default=None,
+                                            required=False,
+                                            help_text=_('project_id'))
 
 
 class AgentListv2(UserEndPoint, ViewSet):
@@ -83,6 +86,9 @@ class AgentListv2(UserEndPoint, ViewSet):
         if ser.validated_data['project_id'] is not None:
             filter_condiction = filter_condiction & Q(
                 bind_project_id=ser.validated_data['project_id'])
+        if ser.validated_data['allow_report'] is not None:
+            filter_condiction = filter_condiction & Q(
+                allow_report=ser.validated_data['allow_report'])
         if ser.validated_data['last_days'] is not None:
             filter_condiction = filter_condiction & Q(
                 heartbeat__dt__gte=int(time()) -
