@@ -265,7 +265,7 @@ DATABASES = {
         'HOST': config.get("mysql", 'host'),
         'PORT': config.get("mysql", 'port'),
         'OPTIONS': {
-            'init_command': 'SET max_execution_time=10000;', # Here is ms.
+            'init_command': 'SET max_execution_time=10000;',  # Here is ms.
             'charset': 'utf8mb4',
             'use_unicode': True,
         },
