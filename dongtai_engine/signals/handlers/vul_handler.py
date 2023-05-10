@@ -231,13 +231,13 @@ from dongtai_common.engine.compatibility import method_pool_3_to_2
 
 
 def get_real_url(method_pools: list) -> str:
-    for method_pool in method_pools:
+    for method_pool in method_pools[::-1]:
         if method_pool[
                 'signature'] == 'org.springframework.web.util.pattern.PathPattern.getPatternString()':
             if 'targetValues' not in method_pool.keys():
                 method_pool = method_pool_3_to_2(method_pool)
             return method_pool['targetValues']
-    return ''
+    return ""
 
 
 def parse_dast_mark(req_header: str) -> str:
