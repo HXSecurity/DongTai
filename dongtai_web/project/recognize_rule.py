@@ -45,6 +45,8 @@ class RecognizeRuleSerializer(serializers.ModelSerializer):
 
 
 class RecognizeRuleCreateSerializer(serializers.ModelSerializer):
+    project_id = serializers.IntegerField(help_text=_('project id'),
+                                          required=True)
 
     class Meta:
         model = IastRecognizeRule
@@ -57,7 +59,7 @@ class RecognizeRuleBatchDeleteSerializer(serializers.Serializer):
         required=True,
         choices=DeleteTypeChoices,
     )
-    project_id = serializers.IntegerField(help_text=_('Page index'),
+    project_id = serializers.IntegerField(help_text=_('project id'),
                                           required=True)
     delete_ids = serializers.ListField(
         child=serializers.IntegerField(required=True, ),
