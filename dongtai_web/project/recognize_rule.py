@@ -54,6 +54,11 @@ class RecognizeRuleCreateSerializer(serializers.ModelSerializer):
 
 
 class RecognizeRuleBatchDeleteSerializer(serializers.Serializer):
+    rule_type = serializers.ChoiceField(
+        help_text=_('Rule type'),
+        required=True,
+        choices=RuleTypeChoices,
+    )
     delete_type = serializers.ChoiceField(
         help_text=_('Delete Type'),
         required=True,
@@ -174,11 +179,14 @@ class RecognizeRuleViewSet(UserEndPoint, ViewSet):
             return R.failure(data=e.detail)
         if ser.validated_data['delete_type'] == DeleteTypeChoices.ALL:
             IastRecognizeRule.objects.filter(
-                project_id=ser.validated_data['project_id']).delete()
+                project_id=ser.validated_data['project_id'],
+                rule_type=ser.validated_data['rule_type'],
+            ).delete()
         else:
             IastRecognizeRule.objects.filter(
                 project_id=ser.validated_data['project_id'],
                 pk__in=ser.validated_data['delete_ids'],
+                rule_type=ser.validated_data['rule_type'],
             ).delete()
         return R.success(msg=_('delete success'))
 
