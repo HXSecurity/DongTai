@@ -45,7 +45,8 @@ class RecognizeRuleSerializer(serializers.ModelSerializer):
 
 
 class RecognizeRuleCreateSerializer(serializers.ModelSerializer):
-    project_id = serializers.IntegerField(help_text=_('project id'),
+    project_id = serializers.IntegerField(min_value=1,
+                                          help_text=_('project id'),
                                           required=True)
 
     class Meta:
