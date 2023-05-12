@@ -143,6 +143,8 @@ class RecognizeRuleViewSet(UserEndPoint, ViewSet):
         try:
             if ser.is_valid(True):
                 pass
+            if not pk > 0:
+                return R.failure()
         except ValidationError as e:
             return R.failure(data=e.detail)
         obj = IastRecognizeRule.objects.filter(pk=pk).update(
