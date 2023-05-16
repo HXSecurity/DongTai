@@ -3908,14 +3908,14 @@
                 "enable": 1,
                 "ignore_blacklist": false,
                 "ignore_internal": false,
-                "inherit": "true",
+                "inherit": "all",
                 "language": 1,
                 "source": "P1",
                 "stack_blacklist": [],
                 "system_type": 1,
                 "tags": [],
                 "target": "",
-                "track": "false",
+                "track": "true",
                 "type": 4,
                 "untags": [],
                 "value": "javax.servlet.http.Cookie.setSecure(boolean)"
@@ -6769,6 +6769,26 @@
                 "type": 2,
                 "untags": [],
                 "value": "jakarta.servlet.http.HttpServletRequest.getHeaders(java.lang.String)"
+            },
+            {
+                "command": "",
+                "created_by": 1,
+                "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "language": 1,
+                "source": "P1",
+                "stack_blacklist": [],
+                "system_type": 1,
+                "tags": [
+                    "cross-site"
+                ],
+                "target": "R",
+                "track": "false",
+                "type": 2,
+                "untags": [],
+                "value": "jakarta.servlet.http.HttpServletRequest.getParameter(java.lang.String)"
             },
             {
                 "command": "",
