@@ -32,7 +32,7 @@ from dongtai_common.models.res_header import (
 from dongtai_engine.tasks import search_vul_from_method_pool, search_vul_from_replay_method_pool
 from dongtai_conf import settings
 from dongtai_protocol import utils
-from dongtai_protocol.report.handler.report_handler_interface import IReportHandler
+from dongtai_protocol.report.handler.report_handler_interface import IReportHandler, get_agent
 from dongtai_protocol.report.report_handler_factory import ReportHandler
 import gzip
 import base64
@@ -183,15 +183,14 @@ class SaasMethodPoolHandler(IReportHandler):
                     logger.warning(e, exc_info=True)
             else:
                 current_version_agents = self.get_project_agents(self.agent)
-                with transaction.atomic():
-                    try:
-                        update_record, method_pool = self.save_method_call(
-                            pool_sign, current_version_agents)
-                    except Exception as e:
-                        logger.info(
-                            f"record method failed : {self.agent_id} {self.http_uri} {self.http_method}"
-                        )
-                        logger.warning(e, exc_info=e)
+                try:
+                    update_record, method_pool = self.save_method_call(
+                        pool_sign, current_version_agents)
+                except Exception as e:
+                    logger.info(
+                        f"record method failed : {self.agent_id} {self.http_uri} {self.http_method}"
+                    )
+                    logger.warning(e, exc_info=e)
                 try:
                     logger.info(f"send normal method pool {self.agent_id} {self.http_uri} {pool_sign} to celery ")
                     self.send_to_engine(method_pool_sign=pool_sign,
@@ -267,46 +266,47 @@ class SaasMethodPoolHandler(IReportHandler):
         """
         # todo need to del
         # pool_sign = random.sample('zyxwvutsrqmlkjihgfedcba',5)
-        method_pool = MethodPool.objects.filter(
-            pool_sign=pool_sign, agent__in=current_version_agents).first()
-        update_record = True
-        if method_pool:
-            method_pool.update_time = int(time.time())
-            method_pool.method_pool = json.dumps(self.method_pool)
-            method_pool.uri = self.http_uri
-            method_pool.url = self.http_url
-            method_pool.http_method = self.http_method
-            method_pool.req_header = self.http_req_header
-            method_pool.req_params = self.http_query_string
-            method_pool.req_data = self.http_req_data
-            method_pool.req_header_fs = utils.build_request_header(
-                req_method=self.http_method,
-                raw_req_header=self.http_req_header,
-                uri=self.http_uri,
-                query_params=self.http_query_string,
-                http_protocol=self.http_protocol)
-            method_pool.res_header = utils.base64_decode(self.http_res_header)
-            method_pool.res_body = new_decode_content(
-                self.http_res_body, get_content_encoding(self.http_res_header),
-                self.version)
-            method_pool.uri_sha1 = self.sha1(self.http_uri)
-            method_pool.save(update_fields=[
-                'update_time',
-                'method_pool',
-                'uri',
-                'url',
-                'http_method',
-                'req_header',
-                'req_params',
-                'req_data',
-                'req_header_fs',
-                'res_header',
-                'res_body',
-                'uri_sha1',
-            ])
-        else:
+#        method_pool = MethodPool.objects.filter(
+#            pool_sign=pool_sign, agent__in=current_version_agents).first()
+#        update_record = True
+#        if method_pool:
+#            method_pool.update_time = int(time.time())
+#            method_pool.method_pool = json.dumps(self.method_pool)
+#            method_pool.uri = self.http_uri
+#            method_pool.url = self.http_url
+#            method_pool.http_method = self.http_method
+#            method_pool.req_header = self.http_req_header
+#            method_pool.req_params = self.http_query_string
+#            method_pool.req_data = self.http_req_data
+#            method_pool.req_header_fs = utils.build_request_header(
+#                req_method=self.http_method,
+#                raw_req_header=self.http_req_header,
+#                uri=self.http_uri,
+#                query_params=self.http_query_string,
+#                http_protocol=self.http_protocol)
+#            method_pool.res_header = utils.base64_decode(self.http_res_header)
+#            method_pool.res_body = new_decode_content(
+#                self.http_res_body, get_content_encoding(self.http_res_header),
+#                self.version)
+#            method_pool.uri_sha1 = self.sha1(self.http_uri)
+#            method_pool.save(update_fields=[
+#                'update_time',
+#                'method_pool',
+#                'uri',
+#                'url',
+#                'http_method',
+#                'req_header',
+#                'req_params',
+#                'req_data',
+#                'req_header_fs',
+#                'res_header',
+#                'res_body',
+#                'uri_sha1',
+#            ])
+#        else:
             # 获取agent
-            update_record = False
+        update_record = False
+        try: 
             timestamp = int(time.time())
             method_pool = MethodPool.objects.create(
                 agent=self.agent,
@@ -336,6 +336,9 @@ class SaasMethodPoolHandler(IReportHandler):
                 update_time=timestamp,
                 uri_sha1=self.sha1(self.http_uri),
             )
+        except (IntegrityError, MultipleObjectsReturned) as e:
+            logger.info(e)
+            logger.debug(e, exc_info=e)
         return update_record, method_pool
 
     def send_to_engine(self, method_pool_id="", method_pool_sign="", update_record=False, model=None):
@@ -396,10 +399,26 @@ class SaasMethodPoolHandler(IReportHandler):
         return h.hexdigest()
 
     def get_agent(self, agent_id):
-        return IastAgent.objects.filter(id=agent_id,
-                                        online=1,
-                                        allow_report=1,
-                                        user=self.user_id).first()
+        return get_agent(
+            agent_id,
+            {
+                "pk": agent_id,
+                "online": 1,
+                "user": self.user_id,
+                "allow_report": 1,
+            },
+            (
+                'id',
+                'bind_project_id',
+                'project_version_id',
+                'project_name',
+                'language',
+                'project_version_id',
+                'server_id',
+                'filepathsimhash',
+                'servicetype',
+            ),
+        )
 
 
 def save_project_header(keys: list, agent_id: int):

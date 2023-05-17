@@ -10,9 +10,17 @@ from typing import Optional
 from django.db.models import Q
 from dongtai_common.models.agent import IastAgent
 from django.utils.translation import gettext_lazy as _
+from dongtai_common.common.utils import cached_decorator
 
 logger = logging.getLogger('dongtai.openapi')
 
+
+@cached_decorator(random_range=(60, 120), use_celery_update=False)
+def get_agent(agent_id, kwargs, fields):
+    return IastAgent.objects.filter(
+        id=agent_id,
+        **kwargs,
+    ).only(*fields).first()
 
 class IReportHandler:
     def __init__(self):
@@ -102,4 +110,22 @@ class IReportHandler:
         return agents
 
     def get_agent(self, agent_id):
-        return IastAgent.objects.filter(id=agent_id, online=1, user=self.user_id).first()
+        return get_agent(
+            agent_id,
+            {
+                "pk": self.agnet_id,
+                "online": 1,
+                "user": self.user_id,
+            },
+            (
+                'id',
+                'bind_project_id',
+                'project_version_id',
+                'project_name',
+                'language',
+                'project_version_id',
+                'server_id',
+                'filepathsimhash',
+                'servicetype',
+            ),
+        )
