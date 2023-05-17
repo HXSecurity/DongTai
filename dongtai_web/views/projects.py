@@ -14,6 +14,7 @@ from dongtai_web.serializers.project import (
     ProjectSerializer,
     get_vul_levels_dict,
     get_project_language,
+    get_agent_count,
 )
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
@@ -67,6 +68,7 @@ class Projects(UserEndPoint):
         page_summary, page_data = self.get_paginator(queryset, page, page_size)
         vul_levels_dict = get_vul_levels_dict(page_data)
         project_language_dict = get_project_language(page_data)
+        agent_count_dict = get_agent_count(page_data)
         return R.success(
             data=ProjectSerializer(
                 page_data,
@@ -74,6 +76,7 @@ class Projects(UserEndPoint):
                 context={
                     'vul_levels_dict': vul_levels_dict,
                     'project_language_dict': project_language_dict,
+                    'agent_count_dict': agent_count_dict,
                 },
             ).data,
             page=page_summary,

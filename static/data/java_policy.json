@@ -4678,6 +4678,21 @@
                 "target": "R",
                 "track": "false",
                 "untags": [],
+                "value": "jakarta.servlet.http.HttpServletRequest.getParameter(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "cross-site"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [],
                 "value": "jakarta.servlet.http.HttpServletRequest.getPart(java.lang.String)"
             },
             {

@@ -395,6 +395,12 @@ class SaasMethodPoolHandler(IReportHandler):
         h.update(raw.encode('utf-8'))
         return h.hexdigest()
 
+    def get_agent(self, agent_id):
+        return IastAgent.objects.filter(id=agent_id,
+                                        online=1,
+                                        allow_report=1,
+                                        user=self.user_id).first()
+
 
 def save_project_header(keys: list, agent_id: int):
     uuid_key = uuid.uuid4().hex

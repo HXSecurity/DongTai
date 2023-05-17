@@ -419,6 +419,8 @@ def update_agent_status():
     更新Agent状态
     :return:
     """
+    from dongtai_engine.plugins.engine_status_change import after_agent_status_update, before_agent_status_update
+    before_agent_status_update()
     logger.info(f'检测引擎状态更新开始')
     timestamp = int(time.time())
     try:
@@ -441,8 +443,8 @@ def update_agent_status():
             status_id=7)
         logger.info(f'检测引擎状态更新成功')
     except Exception as e:
-        logger.error(f'检测引擎状态更新出错，错误详情：{e}')
-
+        logger.error(f'检测引擎状态更新出错，错误详情：{e}', exc_info=e)
+    after_agent_status_update()
 
 @shared_task(queue='dongtai-periodic-task')
 def heartbeat():

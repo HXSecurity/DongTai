@@ -58,5 +58,8 @@ class AgentActionV2EndPoint(OpenApiEndPoint, ViewSet):
         agent = IastAgent.objects.filter(pk=agent_id).first()
         if not agent:
             return R.failure(msg=_("Agent not found"))
-        data = {"exceptRunningStatus": agent.except_running_status}
+        data = {
+            "exceptRunningStatus": agent.except_running_status,
+            'allowReport': agent.allow_report
+        }
         return R.success(msg="success update", data=data)

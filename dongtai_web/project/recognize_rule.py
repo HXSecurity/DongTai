@@ -45,6 +45,10 @@ class RecognizeRuleSerializer(serializers.ModelSerializer):
 
 
 class RecognizeRuleCreateSerializer(serializers.ModelSerializer):
+    project_id = serializers.IntegerField(min_value=1,
+                                          max_value=2**31 - 1,
+                                          help_text=_('project id'),
+                                          required=True)
 
     class Meta:
         model = IastRecognizeRule
@@ -52,12 +56,17 @@ class RecognizeRuleCreateSerializer(serializers.ModelSerializer):
 
 
 class RecognizeRuleBatchDeleteSerializer(serializers.Serializer):
+    rule_type = serializers.ChoiceField(
+        help_text=_('Rule type'),
+        required=True,
+        choices=RuleTypeChoices,
+    )
     delete_type = serializers.ChoiceField(
         help_text=_('Delete Type'),
         required=True,
         choices=DeleteTypeChoices,
     )
-    project_id = serializers.IntegerField(help_text=_('Page index'),
+    project_id = serializers.IntegerField(help_text=_('project id'),
                                           required=True)
     delete_ids = serializers.ListField(
         child=serializers.IntegerField(required=True, ),
@@ -136,6 +145,8 @@ class RecognizeRuleViewSet(UserEndPoint, ViewSet):
         try:
             if ser.is_valid(True):
                 pass
+            if not pk > 0:
+                return R.failure()
         except ValidationError as e:
             return R.failure(data=e.detail)
         obj = IastRecognizeRule.objects.filter(pk=pk).update(
@@ -172,11 +183,14 @@ class RecognizeRuleViewSet(UserEndPoint, ViewSet):
             return R.failure(data=e.detail)
         if ser.validated_data['delete_type'] == DeleteTypeChoices.ALL:
             IastRecognizeRule.objects.filter(
-                project_id=ser.validated_data['project_id']).delete()
+                project_id=ser.validated_data['project_id'],
+                rule_type=ser.validated_data['rule_type'],
+            ).delete()
         else:
             IastRecognizeRule.objects.filter(
                 project_id=ser.validated_data['project_id'],
                 pk__in=ser.validated_data['delete_ids'],
+                rule_type=ser.validated_data['rule_type'],
             ).delete()
         return R.success(msg=_('delete success'))
 
