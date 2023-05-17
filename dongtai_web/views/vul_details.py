@@ -286,12 +286,16 @@ class VulDetail(UserEndPoint):
                 exc_info=e)
             token = ""
 
-        extend_black_list = list(IastRecognizeRule.objects.filter(
-            project_id=project_id,
-            rule_type=RuleTypeChoices.BLACK).values('rule_detail').all())
-        extend_white_list = list(IastRecognizeRule.objects.filter(
-            project_id=project_id,
-            rule_type=RuleTypeChoices.WHITE).values('rule_detail').all())
+        extend_black_list = list(
+            IastRecognizeRule.objects.filter(
+                project_id=project_id,
+                rule_type=RuleTypeChoices.BLACK).values_list('rule_detail',
+                                                             flat=True).all())
+        extend_white_list = list(
+            IastRecognizeRule.objects.filter(
+                project_id=project_id,
+                rule_type=RuleTypeChoices.WHITE).values_list('rule_detail',
+                                                             flat=True).all())
 
         return {
             'url':
