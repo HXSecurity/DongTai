@@ -99,22 +99,29 @@ def cached_decorator(random_range, use_celery_update=False):
     return _noname
 
 
+@cached_decorator(random_range=(60, 120), use_celery_update=False)
+def get_user_from_department_key(key):
+    from dongtai_common.models.department import Department
+    from dongtai_common.models.user import User
+    from rest_framework import exceptions
+    department = Department.objects.get(token=key)
+    principal = User.objects.filter(pk=department.principal_id).first()
+    user = principal if principal else User.objects.filter(pk=1).first()
+    user.using_department = department
+    return user
+
 class DepartmentTokenAuthentication(TokenAuthentication):
 
     keyword = 'Token GROUP'
     model = None
 
-    def authenticate_credentials(self, key):
+    def auth_decodedenticate_credentials(self, key):
         from dongtai_common.models.department import Department
         from dongtai_common.models.user import User
         from rest_framework import exceptions
-        model = Department
         try:
-            department = model.objects.get(token=key)
-            principal = User.objects.filter(pk=department.principal_id).first()
-            user = principal if principal else User.objects.filter(pk=1).first()
-            user.using_department = department
-        except model.DoesNotExist:
+            user = get_user_from_department_key(key)
+        except Department.DoesNotExist:
             raise exceptions.AuthenticationFailed(_('Invalid token.'))
         return (user, key)
 
@@ -125,4 +132,4 @@ class DepartmentTokenAuthentication(TokenAuthentication):
             return None
         token = auth.lower().replace(self.keyword.lower().encode(), b'',
                                      1).decode()
-        return self.authenticate_credentials(token)
+        return self.auth_decodedenticate_credentials(token)
