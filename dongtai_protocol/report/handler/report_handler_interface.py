@@ -113,7 +113,7 @@ class IReportHandler:
         return get_agent(
             agent_id,
             {
-                "pk": self.agnet_id,
+                "pk": agent_id,
                 "online": 1,
                 "user": self.user_id,
             },
