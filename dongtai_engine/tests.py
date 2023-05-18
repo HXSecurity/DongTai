@@ -84,11 +84,11 @@ class CoreScanTestCase(AgentTestCase):
         assert res == 0
 
 
-@unittest.skip("waiting for rebuild mock data")
+#@unittest.skip("waiting for rebuild mock data")
 class CoreTaskTestCase(AgentTestCase):
 
     def test_search_method_pool(self):
-        method_pool_id = 4439061
+        method_pool_id = 752
         method_pool = MethodPool.objects.filter(pk=method_pool_id).first()
         from dongtai_engine.tasks import search_vul_from_method_pool
         search_vul_from_method_pool(method_pool.pool_sign, method_pool.agent_id)
