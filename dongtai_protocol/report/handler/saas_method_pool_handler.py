@@ -266,47 +266,47 @@ class SaasMethodPoolHandler(IReportHandler):
         """
         # todo need to del
         # pool_sign = random.sample('zyxwvutsrqmlkjihgfedcba',5)
-#        method_pool = MethodPool.objects.filter(
-#            pool_sign=pool_sign, agent__in=current_version_agents).first()
-#        update_record = True
-#        if method_pool:
-#            method_pool.update_time = int(time.time())
-#            method_pool.method_pool = json.dumps(self.method_pool)
-#            method_pool.uri = self.http_uri
-#            method_pool.url = self.http_url
-#            method_pool.http_method = self.http_method
-#            method_pool.req_header = self.http_req_header
-#            method_pool.req_params = self.http_query_string
-#            method_pool.req_data = self.http_req_data
-#            method_pool.req_header_fs = utils.build_request_header(
-#                req_method=self.http_method,
-#                raw_req_header=self.http_req_header,
-#                uri=self.http_uri,
-#                query_params=self.http_query_string,
-#                http_protocol=self.http_protocol)
-#            method_pool.res_header = utils.base64_decode(self.http_res_header)
-#            method_pool.res_body = new_decode_content(
-#                self.http_res_body, get_content_encoding(self.http_res_header),
-#                self.version)
-#            method_pool.uri_sha1 = self.sha1(self.http_uri)
-#            method_pool.save(update_fields=[
-#                'update_time',
-#                'method_pool',
-#                'uri',
-#                'url',
-#                'http_method',
-#                'req_header',
-#                'req_params',
-#                'req_data',
-#                'req_header_fs',
-#                'res_header',
-#                'res_body',
-#                'uri_sha1',
-#            ])
-#        else:
-            # 获取agent
+        #        method_pool = MethodPool.objects.filter(
+        #            pool_sign=pool_sign, agent__in=current_version_agents).first()
+        #        update_record = True
+        #        if method_pool:
+        #            method_pool.update_time = int(time.time())
+        #            method_pool.method_pool = json.dumps(self.method_pool)
+        #            method_pool.uri = self.http_uri
+        #            method_pool.url = self.http_url
+        #            method_pool.http_method = self.http_method
+        #            method_pool.req_header = self.http_req_header
+        #            method_pool.req_params = self.http_query_string
+        #            method_pool.req_data = self.http_req_data
+        #            method_pool.req_header_fs = utils.build_request_header(
+        #                req_method=self.http_method,
+        #                raw_req_header=self.http_req_header,
+        #                uri=self.http_uri,
+        #                query_params=self.http_query_string,
+        #                http_protocol=self.http_protocol)
+        #            method_pool.res_header = utils.base64_decode(self.http_res_header)
+        #            method_pool.res_body = new_decode_content(
+        #                self.http_res_body, get_content_encoding(self.http_res_header),
+        #                self.version)
+        #            method_pool.uri_sha1 = self.sha1(self.http_uri)
+        #            method_pool.save(update_fields=[
+        #                'update_time',
+        #                'method_pool',
+        #                'uri',
+        #                'url',
+        #                'http_method',
+        #                'req_header',
+        #                'req_params',
+        #                'req_data',
+        #                'req_header_fs',
+        #                'res_header',
+        #                'res_body',
+        #                'uri_sha1',
+        #            ])
+        #        else:
+        # 获取agent
         update_record = False
-        try: 
+        try:
             timestamp = int(time.time())
             method_pool = MethodPool.objects.create(
                 agent=self.agent,
