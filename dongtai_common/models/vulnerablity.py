@@ -15,7 +15,6 @@ from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
 
-
 class IastVulnerabilityStatus(models.Model):
     name = models.CharField(max_length=100, blank=True, default='')
 

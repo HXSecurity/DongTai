@@ -23,6 +23,8 @@ from urllib.parse import urlparse, urlunparse
 import ipaddress
 import requests
 from dongtai_common.models.server import IastServer
+from dongtai_common.common.utils import disable_cache
+from dongtai_engine.common.queryset import get_scan_id
 
 logger = logging.getLogger("django")
 
@@ -184,6 +186,7 @@ class ProjectAdd(UserEndPoint):
                     'base_url', 'test_req_header_key', 'test_req_header_value',
                     'template_id', 'department_id', 'enable_log', 'log_level'
                 ])
+                disable_cache(get_scan_id, (project.id))
                 return R.success(msg='操作成功')
         except Exception as e:
             logger.error(e, exc_info=e)
