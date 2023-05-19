@@ -61,7 +61,7 @@ def load_sink_strategy(user=None, language=None, scan_id=0) -> List[Dict]:
             'strategy_vul_name':
             strategy.get("strategy__vul_name"),
             'strategy_strategy_id':
-            strategy.get("strategy__strategy_id"),
+            strategy.get("strategy_id"),
         })
     return strategies
 
