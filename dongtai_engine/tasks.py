@@ -50,7 +50,6 @@ from dongtai_engine.common.queryset import get_scan_id, load_sink_strategy, get_
 RETRY_INTERVALS = [10, 30, 90]
 
 
-
 class RetryableException(Exception):
     pass
 
@@ -70,8 +69,6 @@ def queryset_to_iterator(queryset):
             yield temp_queryset
         else:
             break
-
-
 
 
 def search_and_save_vul(engine: Optional[VulEngine],
