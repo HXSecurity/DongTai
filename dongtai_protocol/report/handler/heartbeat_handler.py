@@ -41,7 +41,7 @@ class HeartBeatHandler(IReportHandler):
         self.cpu = self.detail.get('cpu')
         self.memory = self.detail.get('memory')
         self.disk = self.detail.get('disk')
-        self.req_count = self.detail.get('reqCount')
+        self.req_count = self.detail.get('reqCount', None)
         self.report_queue = self.detail.get('reportQueue', 0)
         self.method_queue = self.detail.get('methodQueue', 0)
         self.replay_queue = self.detail.get('replayQueue', 0)
@@ -69,10 +69,14 @@ class HeartBeatHandler(IReportHandler):
                     'req_count', 'dt', 'report_queue', 'method_queue', 'replay_queue'
                 ])
             elif self.return_queue == 0:
+                update_fields = ['disk', 'memory', 'cpu', 'dt']
+                if heartbeat.req_count is not None:
+                    update_fields.append('req_count')
+                    heartbeat.req_count = self.req_count
                 heartbeat.memory = self.memory
                 heartbeat.cpu = self.cpu
                 heartbeat.disk = self.disk
-                heartbeat.save(update_fields=['disk', 'memory', 'cpu', 'dt'])
+                heartbeat.save(update_fields=update_fields)
             else:
                 heartbeat.memory = self.memory
                 heartbeat.cpu = self.cpu
