@@ -20,9 +20,19 @@ from django.db.models import (QuerySet, Q, F)
 from dongtai_common.models.project import IastProject, VulValidation
 from dongtai_common.utils.systemsettings import get_vul_validate
 from dongtai_common.models.agent import IastAgent
+from django.core.cache import cache
+
+
 
 logger = logging.getLogger('dongtai.openapi')
 
+
+def update_agent_cache(agent_id, data):
+    cache.set(f"heartbeat-{agent_id}", data, timeout=521)
+
+
+def check_agent_incache(agent_id):
+    return True if cache.get(f"heartbeat-{agent_id}") else False
 
 @ReportHandler.register(const.REPORT_HEART_BEAT)
 class HeartBeatHandler(IReportHandler):
@@ -52,52 +62,40 @@ class HeartBeatHandler(IReportHandler):
         return self.agent
 
     def save_heartbeat(self):
-        self.agent.is_running = 1
-        self.agent.online = 1
-        self.agent.save(update_fields=['is_running', 'online'])
-        queryset = IastHeartbeat.objects.filter(agent=self.agent)
-        heartbeat = queryset.order_by('-id').first()
-        if heartbeat:
-            queryset.exclude(pk=heartbeat.id).delete()
-            heartbeat.dt = int(time.time())
-            if self.return_queue == 1:
-                heartbeat.req_count = self.req_count
-                heartbeat.report_queue = self.report_queue
-                heartbeat.method_queue = self.method_queue
-                heartbeat.replay_queue = self.replay_queue
-                heartbeat.save(update_fields=[
-                    'req_count', 'dt', 'report_queue', 'method_queue', 'replay_queue'
-                ])
-            elif self.return_queue == 0:
-                update_fields = ['disk', 'memory', 'cpu', 'dt']
-                if heartbeat.req_count is not None:
-                    update_fields.append('req_count')
-                    heartbeat.req_count = self.req_count
-                heartbeat.memory = self.memory
-                heartbeat.cpu = self.cpu
-                heartbeat.disk = self.disk
-                heartbeat.save(update_fields=update_fields)
-            else:
-                heartbeat.memory = self.memory
-                heartbeat.cpu = self.cpu
-                heartbeat.req_count = self.req_count
-                heartbeat.report_queue = self.report_queue
-                heartbeat.method_queue = self.method_queue
-                heartbeat.replay_queue = self.replay_queue
-                heartbeat.disk = self.disk
-                heartbeat.save(update_fields=[
-                    'disk', 'memory', 'cpu', 'req_count', 'dt', 'report_queue',
-                    'method_queue', 'replay_queue'
-                ])
+        default_dict = {"dt": int(time.time())}
+        if not check_agent_incache(self.agetn_id):
+            self.agent.is_running = 1
+            self.agent.online = 1
+            IastHeartbeat.objects.update_or_create(agent_id=self.agent_id,
+                                                   defaults={
+                                                       "dt": int(time.time()),
+                                                       "is_running": 1,
+                                                       "online": 1
+                                                   })
+        if self.return_queue == 1:
+            default_dict['req_count'] = self.req_count
+            default_dict['report_queue'] = self.report_queue
+            default_dict['method_queue'] = self.method_queue
+            default_dict['replay_queue'] = self.replay_queue
+            IastHeartbeat.objects.update_or_create(agent_id=self.agent_id,
+                                                   defaults=default_dict)
+        elif self.return_queue == 0:
+            if heartbeat.req_count is not None:
+                default_dict['req_count'] = self.req_count
+            default_dict['memory'] = self.memory
+            default_dict['cpu'] = self.cpu
+            default_dict['disk'] = self.disk
+            update_agent_cache(self.agent_id, default_dict)
         else:
-            IastHeartbeat.objects.create(memory=self.memory,
-                                         cpu=self.cpu,
-                                         req_count=self.req_count,
-                                         report_queue=self.replay_queue,
-                                         method_queue=self.method_queue,
-                                         replay_queue=self.replay_queue,
-                                         dt=int(time.time()),
-                                         agent=self.agent)
+            default_dict['memory'] = self.memory
+            default_dict['cpu'] = self.cpu
+            default_dict['req_count'] = self.req_count
+            default_dict['report_queue'] = self.report_queue
+            default_dict['method_queue'] = self.method_queue
+            default_dict['replay_queue'] = self.replay_queue
+            default_dict['disk'] = self.disk
+            IastHeartbeat.objects.update_or_create(agent_id=self.agent_id,
+                                                   defaults=default_dict)
 
     def get_result(self, msg=None):
         logger.info('return_queue: {}'.format(self.return_queue))

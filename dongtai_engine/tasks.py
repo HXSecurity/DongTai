@@ -423,27 +423,23 @@ def update_agent_status():
     before_agent_status_update()
     logger.info(f'检测引擎状态更新开始')
     timestamp = int(time.time())
-    try:
-        running_agents = IastAgent.objects.values("id").filter(online=1)
-        is_stopped_agents = list()
-        for agent in running_agents:
-            agent_id = agent['id']
-            if is_alive(agent_id=agent_id, timestamp=timestamp):
-                continue
-            else:
-                is_stopped_agents.append(agent_id)
-        if is_stopped_agents:
-            IastAgent.objects.filter(id__in=is_stopped_agents).update(is_running=0, is_core_running=0, online=0)
-
-        vul_id_qs = IastReplayQueue.objects.filter(
-            update_time__lte=timestamp - 60 * 5,
-            verify_time__isnull=True,
-            replay_type=1).values('relation_id').distinct()
-        IastVulnerabilityModel.objects.filter(pk__in=vul_id_qs).update(
-            status_id=7)
-        logger.info(f'检测引擎状态更新成功')
-    except Exception as e:
-        logger.error(f'检测引擎状态更新出错，错误详情：{e}', exc_info=e)
+    running_agents_ids = list(
+        IastAgent.objects.values("id").filter(online=1).values_list(
+            'pk', flat=True).all())
+    heartbeat_keys = set(map(lambda x: f"heartbeat-{x}", running_agents_ids))
+    exists_keys = set(cache.get_many(heartbeat_keys).keys())
+    keys_missing = heartbeat_keys - exists_keys
+    stop_agent_ids = list(
+        map(lambda x: int(x.replace("heartbeat-", "")), keys_missing))
+    IastAgent.objects.filter(id__in=is_stop_agent_ids).update(
+        is_running=0, is_core_running=0, online=0)
+    vul_id_qs = IastReplayQueue.objects.filter(
+        update_time__lte=timestamp - 60 * 5,
+        verify_time__isnull=True,
+        replay_type=1).values('relation_id').distinct()
+    IastVulnerabilityModel.objects.filter(pk__in=vul_id_qs).update(status_id=7)
+    logger.info("update offline agent: %s", stop_agent_ids)
+    logger.info(f'检测引擎状态更新成功')
     after_agent_status_update()
 
 @shared_task(queue='dongtai-periodic-task')
