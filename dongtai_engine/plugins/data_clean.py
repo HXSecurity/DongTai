@@ -12,7 +12,7 @@ from dongtai_conf.settings import ELASTICSEARCH_STATE
 from asgiref.sync import sync_to_async
 import asyncio
 from typing import List, Tuple
-import asyncio_gevent
+#import asyncio_gevent
 
 DELETE_BATCH_SIZE = 10000
 
@@ -84,7 +84,7 @@ def data_clean_batch(upper_id: int, lower_id: int):
     qs._raw_delete(qs.db)
 
 
-@asyncio_gevent.async_to_sync
+#@asyncio_gevent.async_to_sync
 async def loop_main(range_list: List[Tuple[int, int]]):
     coros = [
         data_clean_batch(upper_id, lower_id)
@@ -97,4 +97,5 @@ def batch_clean(upper_id: int, lower_id: int, batch_size: int):
     chunk_range = list(
         zip(range(lower_id + batch_size, upper_id + batch_size, batch_size),
             range(lower_id, upper_id, batch_size)))
-    loop_main(chunk_range)
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(loop_main(chunk_range))

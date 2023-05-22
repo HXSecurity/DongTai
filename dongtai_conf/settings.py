@@ -798,12 +798,16 @@ def is_gevent_monkey_patched() -> bool:
 
 
 def set_asyncio_policy():
-    import asyncio_gevent
-    import asyncio
     state = is_gevent_monkey_patched()
     print(f"is in gevent patched : {state}")
-    if state:
-        asyncio.set_event_loop_policy(asyncio_gevent.EventLoopPolicy())
+    pass
+#   disable until this package update
+#    import asyncio_gevent
+#    import asyncio
+#    state = is_gevent_monkey_patched()
+#    print(f"is in gevent patched : {state}")
+#    if state:
+#        asyncio.set_event_loop_policy(asyncio_gevent.EventLoopPolicy())
 
 
 AGENT_LOG_DIR = os.path.join(TMP_COMMON_PATH, 'batchagent')
