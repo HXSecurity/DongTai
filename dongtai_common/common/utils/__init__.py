@@ -89,6 +89,11 @@ def cached(function,
     return get_cache_or_call
 
 
+def disable_cache(function, args=(), kwargs={}):
+    cache_key = make_hash(
+        (function.__module__ + function.__name__, args, kwargs))
+    cache.delete(cache_key)
+
 def cached_decorator(random_range, use_celery_update=False):
 
     def _noname(function):

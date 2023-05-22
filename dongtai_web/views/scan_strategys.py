@@ -22,6 +22,9 @@ from dongtai_web.views.utils.commonview import (
     BatchStatusUpdateSerializerView,
     AllStatusUpdateSerializerView,
 )
+from dongtai_common.common.utils import disable_cache
+from dongtai_engine.common.queryset import load_sink_strategy
+
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -176,8 +179,9 @@ class ScanStrategyViewSet(UserEndPoint, viewsets.ViewSet):
         if ser.validated_data.get('content', None):
             ser.validated_data['content'] = ','.join(
                 [str(i) for i in ser.validated_data['content']])
-        obj = IastStrategyUser.objects.filter(
-            pk=pk).update(**ser.validated_data)
+        obj = IastStrategyUser.objects.filter(pk=pk).update(
+            **ser.validated_data)
+        disable_cache(load_sink_strategy, (), kwargs={"scan_id": pk})
         return R.success(msg=_('update success'))
 
     @extend_schema_with_envcheck(
