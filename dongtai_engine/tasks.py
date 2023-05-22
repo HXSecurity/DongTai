@@ -408,10 +408,8 @@ def is_alive(agent_id: int, timestamp: int) -> bool:
     """
     Whether the probe is alive or not, the judgment condition: there is a heartbeat log within 2 minutes
     """
-    return IastHeartbeat.objects.values('id').filter(agent__id=agent_id,
-                                                     dt__gt=(timestamp -
-                                                             60 * 2)).exists()
-
+    heartbeat_key = f"heartbeat-{agent_id}"
+    return True if cache.get(heartbeat_key) is not None else False
 
 @shared_task(queue='dongtai-periodic-task')
 def update_agent_status():
