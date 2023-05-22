@@ -63,14 +63,12 @@ class HeartBeatHandler(IReportHandler):
 
     def save_heartbeat(self):
         default_dict = {"dt": int(time.time())}
-        if not check_agent_incache(self.agetn_id):
+        if not check_agent_incache(self.agent_id):
             self.agent.is_running = 1
             self.agent.online = 1
             IastHeartbeat.objects.update_or_create(agent_id=self.agent_id,
                                                    defaults={
                                                        "dt": int(time.time()),
-                                                       "is_running": 1,
-                                                       "online": 1
                                                    })
         if self.return_queue == 1:
             default_dict['req_count'] = self.req_count
@@ -79,14 +77,12 @@ class HeartBeatHandler(IReportHandler):
             default_dict['replay_queue'] = self.replay_queue
             IastHeartbeat.objects.update_or_create(agent_id=self.agent_id,
                                                    defaults=default_dict)
-            update_agent_cache(self.agent_id, default_dict)
         elif self.return_queue == 0:
-            if heartbeat.req_count is not None:
+            if self.req_count is not None:
                 default_dict['req_count'] = self.req_count
             default_dict['memory'] = self.memory
             default_dict['cpu'] = self.cpu
             default_dict['disk'] = self.disk
-            update_agent_cache(self.agent_id, default_dict)
         else:
             default_dict['memory'] = self.memory
             default_dict['cpu'] = self.cpu
@@ -97,7 +93,7 @@ class HeartBeatHandler(IReportHandler):
             default_dict['disk'] = self.disk
             IastHeartbeat.objects.update_or_create(agent_id=self.agent_id,
                                                    defaults=default_dict)
-            update_agent_cache(self.agent_id, default_dict)
+        update_agent_cache(self.agent_id, default_dict)
 
     def get_result(self, msg=None):
         logger.info('return_queue: {}'.format(self.return_queue))

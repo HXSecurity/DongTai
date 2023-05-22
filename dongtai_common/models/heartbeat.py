@@ -16,7 +16,7 @@ class IastHeartbeat(models.Model):
     memory = models.CharField(max_length=1000, blank=True, null=True)
     cpu = models.CharField(max_length=1000, blank=True, null=True)
     disk = models.CharField(max_length=1000, blank=True, null=True)
-    req_count = models.IntegerField(blank=True, null=True)
+    req_count = models.IntegerField(default=0,blank=True, null=True)
     dt = models.IntegerField(blank=True, null=True)
     report_queue = models.PositiveIntegerField(default=0,
                                                null=False,
