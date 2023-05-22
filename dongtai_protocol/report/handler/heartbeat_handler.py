@@ -79,6 +79,7 @@ class HeartBeatHandler(IReportHandler):
             default_dict['replay_queue'] = self.replay_queue
             IastHeartbeat.objects.update_or_create(agent_id=self.agent_id,
                                                    defaults=default_dict)
+            update_agent_cache(self.agent_id, default_dict)
         elif self.return_queue == 0:
             if heartbeat.req_count is not None:
                 default_dict['req_count'] = self.req_count
@@ -96,6 +97,7 @@ class HeartBeatHandler(IReportHandler):
             default_dict['disk'] = self.disk
             IastHeartbeat.objects.update_or_create(agent_id=self.agent_id,
                                                    defaults=default_dict)
+            update_agent_cache(self.agent_id, default_dict)
 
     def get_result(self, msg=None):
         logger.info('return_queue: {}'.format(self.return_queue))
