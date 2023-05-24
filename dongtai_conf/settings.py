@@ -122,13 +122,9 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
     ],
-    'DEFAULT_THROTTLE_CLASSES':
-    (  #'rest_framework.throttling.AnonRateThrottle',
-        #'rest_framework.throttling.UserRateThrottle',
+    'DEFAULT_THROTTLE_CLASSES': (
     ),
     'DEFAULT_THROTTLE_RATES': {
-        #    'anon': '6000000/min',
-        #    'user': '6000000/min'
     },
 }
 
@@ -474,9 +470,8 @@ TEST_RUNNER = 'test.NoDbTestRunner'
 
 
 if os.getenv('environment', None) == 'TEST' or os.getenv('REQUESTLOG',
-                                                        None) == 'TRUE':
-   MIDDLEWARE.insert(0, 'apitimelog.middleware.RequestLogMiddleware')
-
+                                                         None) == 'TRUE':
+    MIDDLEWARE.insert(0, 'apitimelog.middleware.RequestLogMiddleware')
 
 if os.getenv('PYTHONAGENT', None) == 'TRUE':
     MIDDLEWARE.insert(
@@ -509,12 +504,11 @@ The Token method is recommended here, and users can find it in the Agent install
     REST_FRAMEWORK[
         'DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'
 
-
 if os.getenv('environment', None) == 'TEST' or os.getenv('CPROFILE',
                                                          None) == 'TRUE':
     DJANGO_CPROFILE_MIDDLEWARE_REQUIRE_STAFF = False
-    MIDDLEWARE.insert(0,
-        'django_cprofile_middleware.middleware.ProfilerMiddleware')
+    MIDDLEWARE.insert(
+        0, 'django_cprofile_middleware.middleware.ProfilerMiddleware')
 
 try:
     SCA_BASE_URL = config.get('sca', 'base_url')
@@ -527,10 +521,8 @@ except BaseException:
     SCA_TOKEN = ""
     SCA_SETUP = False
 
-
 if os.getenv('environment', None) in ('TEST', 'PROD'):
-    SESSION_COOKIE_DOMAIN = config.get('other',
-                                       'demo_session_cookie_domain')
+    SESSION_COOKIE_DOMAIN = config.get('other', 'demo_session_cookie_domain')
     CSRF_COOKIE_DOMAIN = SESSION_COOKIE_DOMAIN
     DOMAIN = config.get('other', 'domain')
 
