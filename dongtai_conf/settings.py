@@ -23,7 +23,6 @@ import random
 import pymysql
 from dongtai_conf.utils import get_config
 
-
 pymysql.install_as_MySQLdb()
 
 
@@ -113,7 +112,7 @@ MODELTRANSLATION_LANGUAGES = ('en', 'zh')
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'zh'
 REST_FRAMEWORK = {
     'PAGE_SIZE':
-        20,
+    20,
     'DEFAULT_PAGINATION_CLASS': ['django.core.paginator'],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
@@ -123,11 +122,13 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
     ],
-    'DEFAULT_THROTTLE_CLASSES': ('rest_framework.throttling.AnonRateThrottle',
-                                 'rest_framework.throttling.UserRateThrottle'),
+    'DEFAULT_THROTTLE_CLASSES':
+    (  #'rest_framework.throttling.AnonRateThrottle',
+        #'rest_framework.throttling.UserRateThrottle',
+    ),
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '6000000/min',
-        'user': '6000000/min'
+        #    'anon': '6000000/min',
+        #    'user': '6000000/min'
     },
 }
 
@@ -145,8 +146,8 @@ USE_L10N = True
 MODELTRANSLATION_FALLBACK_LANGUAGES = ('zh', 'en')
 MIDDLEWARE = [
     'django.middleware.gzip.GZipMiddleware',
-    'dongtai_common.common.utils.CSPMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+#    'dongtai_common.common.utils.CSPMiddleware',
+#    'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -412,31 +413,32 @@ LOGGING = {
             'encoding': "utf-8",
         },
         'dongtai-webapi': {
-            'handlers': ['console', 'dongtai-webapi'],
+            'handlers': ['console', ],
             'propagate': True,
             'level': LOGGING_LEVEL,
         },
         'dongtai.openapi': {
-            'handlers': ['console', 'dongtai.openapi'],
+            'handlers': ['console', ],
             'propagate': True,
             'level': LOGGING_LEVEL,
         },
         'dongtai-core': {
-            'handlers': ['console', 'dongtai-webapi'],
+            'handlers': ['console', ],
             'propagate': True,
             'level': LOGGING_LEVEL,
         },
         'django': {
-            'handlers': ['console', 'dongtai-webapi'],
+            'handlers': ['console', ],
+            'level': LOGGING_LEVEL,
             'propagate': True,
         },
         'dongtai-engine': {
-            'handlers': ['console', 'dongtai-webapi'],
+            'handlers': ['console', ],
             'propagate': True,
             'level': LOGGING_LEVEL,
         },
         'celery.apps.worker': {
-            'handlers': ['console', 'celery.apps.worker'],
+            'handlers': ['console', ],
             'propagate': True,
             'level': LOGGING_LEVEL,
         },
@@ -471,9 +473,9 @@ X_FRAME_OPTIONS = 'DENY'
 TEST_RUNNER = 'test.NoDbTestRunner'
 
 
-# if os.getenv('environment', None) == 'TEST' or os.getenv('REQUESTLOG',
-#                                                         None) == 'TRUE':
-#    MIDDLEWARE.insert(0, 'apitimelog.middleware.RequestLogMiddleware')
+if os.getenv('environment', None) == 'TEST' or os.getenv('REQUESTLOG',
+                                                        None) == 'TRUE':
+   MIDDLEWARE.insert(0, 'apitimelog.middleware.RequestLogMiddleware')
 
 
 if os.getenv('PYTHONAGENT', None) == 'TRUE':
@@ -511,7 +513,7 @@ The Token method is recommended here, and users can find it in the Agent install
 if os.getenv('environment', None) == 'TEST' or os.getenv('CPROFILE',
                                                          None) == 'TRUE':
     DJANGO_CPROFILE_MIDDLEWARE_REQUIRE_STAFF = False
-    MIDDLEWARE.append(
+    MIDDLEWARE.insert(0,
         'django_cprofile_middleware.middleware.ProfilerMiddleware')
 
 try:

@@ -14,6 +14,7 @@ from dongtai_protocol.decrypter import parse_data
 from dongtai_protocol.report.report_handler_factory import ReportHandler
 from rest_framework.views import APIView
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -30,6 +31,7 @@ class ReportUploadEndPoint(OpenApiEndPoint):
         responses=R,
         methods=['GET']
     )
+    @csrf_exempt
     def post(self, request):
         try:
             report = parse_data(request.read())

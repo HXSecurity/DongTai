@@ -70,17 +70,20 @@ def cached(function,
         # the cache
         cache_key = make_hash(
             (function.__module__ + function.__name__, args, kwargs))
-        cached_result = cache.get(cache_key)
+        #cache_key = function.__module__ + function.__name__
+        cached_result = cache.get(cache_key, "NOT NONE")
         if random_range:
             cache_time = random.randint(*random_range)
         if use_celery_update:
             function_flush.apply_async(args=(function.__module__,
                                              function.__name__, cache_time,
                                              tuple(args), kwargs))
-        if cached_result is None:
+        if cached_result == "NOT NONE":
             result = function(*args, **kwargs)
             cache.set(cache_key, result, cache_time)
             return result
+        elif cached_result is None:
+            return cached_result
         else:
             return cached_result
 

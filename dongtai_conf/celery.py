@@ -60,7 +60,7 @@ configs[
 # configs['worker_concurrency'] = 8
 configs["task_routes"] = {
     # normal
-    "dongtai_engine.tasks.search_vul_from_method_pool": {'exchange': 'dongtai-method-pool-scan', 'routing_key': 'dongtai-method-pool-scan'},
+    "dongtai_engine.tasks.search_vul_from_method_pool": {'queue': 'dongtai-method-pool-scan', 'routing_key': 'dongtai-method-pool-scan'},
     "dongtai_engine.tasks.search_vul_from_replay_method_pool": {'exchange': 'dongtai-replay-vul-scan', 'routing_key': 'dongtai-replay-vul-scan'},
     "dongtai_web.dongtai_sca.scan.utils.update_one_sca": {'exchange': 'dongtai-sca-task', 'routing_key': 'dongtai-sca-task'},
     "dongtai_engine.preheat.function_flush": {'exchange': 'dongtai-function-flush-data', 'routing_key': 'dongtai-function-flush-data'},
