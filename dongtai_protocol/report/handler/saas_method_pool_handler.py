@@ -41,9 +41,12 @@ from django.core.cache import cache
 from datetime import datetime, timedelta
 from dongtai_common.models.agent import IastAgent
 from django.core.exceptions import MultipleObjectsReturned
+from django_redis import get_redis_connection
 
 logger = logging.getLogger('dongtai.openapi')
 
+class A:
+    ignored = False
 
 @ReportHandler.register(const.REPORT_VULN_SAAS_POOL)
 class SaasMethodPoolHandler(IReportHandler):
@@ -354,22 +357,30 @@ class SaasMethodPoolHandler(IReportHandler):
                     'agent_id': self.agent_id,
                     'retryable': self.retryable,
                 }
+                search_vul_from_method_pool.AsyncResult = lambda x: A()
+                #task_app = search_vul_from_method_pool._get_app()
+                #options = task_app.amqp.router.route(dict(), search_vul_from_method_pool.name, tuple(), kwargs, None)
+                #message = task_app.amqp.create_task_message(method_pool_sign,search_vul_from_method_pool.name,kwargs=kwargs, argsrepr=options.get('argsrepr'),kwargsrepr=options.get('kwargsrepr'), expires=60* 60 *3 ,ignore_result=True)
+                #redis_cli = get_redis_connection()
+                #print(message)
+                #redis_cli.lpush("dongtai-method-pool-scan", json.dumps(message))
                 res = search_vul_from_method_pool.apply_async(
                     kwargs=kwargs,
                     countdown=delay,
                     expires=datetime.now() +
                     timedelta(hours=3),
+                    ignore_result=True
                 )
-                logger.info(
-                    f'[+] send method_pool [{method_pool_sign}] to engine for task search_vul_from_method_pool id: {res.task_id}')
+                #logger.info(
+                #    f'[+] send method_pool [{method_pool_sign}] to engine for task search_vul_from_method_pool id: {res.task_id}')
             else:
                 logger.info(
                     f'[+] send method_pool [{method_pool_id}] to engine for {model if model else ""}'
                 )
                 res = search_vul_from_replay_method_pool.delay(method_pool_id)
-                logger.info(
-                    f'[+] send method_pool [{method_pool_id}] to engine for task search_vul_from_replay_method_pool id: {res.task_id}'
-                )
+                #logger.info(
+                #    f'[+] send method_pool [{method_pool_id}] to engine for task search_vul_from_replay_method_pool id: {res.task_id}'
+                #)
                 # requests.get(url=settings.REPLAY_ENGINE_URL.format(id=method_pool_id))
         except Exception as e:
             logger.error(f'[-] Failure: send method_pool [{method_pool_id}{method_pool_sign}], Error: {e}', exc_info=e)
@@ -417,6 +428,7 @@ class SaasMethodPoolHandler(IReportHandler):
                 'server_id',
                 'filepathsimhash',
                 'servicetype',
+                "user_id",
             ),
         )
 
