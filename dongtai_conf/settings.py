@@ -10,10 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
+import os
 from typing import List
 from ast import literal_eval
 from urllib.parse import urljoin
-import os
 import sys
 from configparser import ConfigParser
 
