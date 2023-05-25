@@ -9,8 +9,8 @@ https://docs.djangoproject.com/en/3.0/howto/deployment/wsgi/
 
 import os
 
-ENABLE_GEVENT = os.environ.get("GEVENT", 'FALSE') == 'TRUE'
-if ENABLE_GEVENT:
+NOT_GEVENT = os.environ.get("NOT_GEVENT", 'FALSE') == 'TRUE'
+if not NOT_GEVENT:
     from gevent import monkey
     monkey.patch_all()
 
