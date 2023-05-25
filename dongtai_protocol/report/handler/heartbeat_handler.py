@@ -20,12 +20,22 @@ from django.db.models import (QuerySet, Q, F)
 from dongtai_common.models.project import IastProject, VulValidation
 from dongtai_common.utils.systemsettings import get_vul_validate
 from dongtai_common.models.agent import IastAgent
+from django.core.cache import cache
 
 logger = logging.getLogger('dongtai.openapi')
 
 
+def update_agent_cache(agent_id, data):
+    cache.set(f"heartbeat-{agent_id}", data, timeout=521)
+
+
+def check_agent_incache(agent_id):
+    return True if cache.get(f"heartbeat-{agent_id}") else False
+
+
 @ReportHandler.register(const.REPORT_HEART_BEAT)
 class HeartBeatHandler(IReportHandler):
+
     def __init__(self):
         super().__init__()
         self.req_count = None
@@ -41,59 +51,50 @@ class HeartBeatHandler(IReportHandler):
         self.cpu = self.detail.get('cpu')
         self.memory = self.detail.get('memory')
         self.disk = self.detail.get('disk')
-        self.req_count = self.detail.get('reqCount')
+        self.req_count = self.detail.get('reqCount', None)
         self.report_queue = self.detail.get('reportQueue', 0)
         self.method_queue = self.detail.get('methodQueue', 0)
         self.replay_queue = self.detail.get('replayQueue', 0)
         self.return_queue = self.detail.get('returnQueue', None)
 
     def has_permission(self):
-        self.agent = IastAgent.objects.filter(id=self.agent_id, user=self.user_id).first()
+        self.agent = IastAgent.objects.filter(id=self.agent_id,
+                                              user=self.user_id).first()
         return self.agent
 
     def save_heartbeat(self):
-        self.agent.is_running = 1
-        self.agent.online = 1
-        self.agent.save(update_fields=['is_running', 'online'])
-        queryset = IastHeartbeat.objects.filter(agent=self.agent)
-        heartbeat = queryset.order_by('-id').first()
-        if heartbeat:
-            queryset.exclude(pk=heartbeat.id).delete()
-            heartbeat.dt = int(time.time())
-            if self.return_queue == 1:
-                heartbeat.req_count = self.req_count
-                heartbeat.report_queue = self.report_queue
-                heartbeat.method_queue = self.method_queue
-                heartbeat.replay_queue = self.replay_queue
-                heartbeat.save(update_fields=[
-                    'req_count', 'dt', 'report_queue', 'method_queue', 'replay_queue'
-                ])
-            elif self.return_queue == 0:
-                heartbeat.memory = self.memory
-                heartbeat.cpu = self.cpu
-                heartbeat.disk = self.disk
-                heartbeat.save(update_fields=['disk', 'memory', 'cpu', 'dt'])
-            else:
-                heartbeat.memory = self.memory
-                heartbeat.cpu = self.cpu
-                heartbeat.req_count = self.req_count
-                heartbeat.report_queue = self.report_queue
-                heartbeat.method_queue = self.method_queue
-                heartbeat.replay_queue = self.replay_queue
-                heartbeat.disk = self.disk
-                heartbeat.save(update_fields=[
-                    'disk', 'memory', 'cpu', 'req_count', 'dt', 'report_queue',
-                    'method_queue', 'replay_queue'
-                ])
+        default_dict = {"dt": int(time.time())}
+        if not check_agent_incache(self.agent_id):
+            self.agent.is_running = 1
+            self.agent.online = 1
+            IastHeartbeat.objects.update_or_create(agent_id=self.agent_id,
+                                                   defaults={
+                                                       "dt": int(time.time()),
+                                                   })
+        if self.return_queue == 1:
+            default_dict['req_count'] = self.req_count
+            default_dict['report_queue'] = self.report_queue
+            default_dict['method_queue'] = self.method_queue
+            default_dict['replay_queue'] = self.replay_queue
+            IastHeartbeat.objects.update_or_create(agent_id=self.agent_id,
+                                                   defaults=default_dict)
+        elif self.return_queue == 0:
+            if self.req_count is not None:
+                default_dict['req_count'] = self.req_count
+            default_dict['memory'] = self.memory
+            default_dict['cpu'] = self.cpu
+            default_dict['disk'] = self.disk
         else:
-            IastHeartbeat.objects.create(memory=self.memory,
-                                         cpu=self.cpu,
-                                         req_count=self.req_count,
-                                         report_queue=self.replay_queue,
-                                         method_queue=self.method_queue,
-                                         replay_queue=self.replay_queue,
-                                         dt=int(time.time()),
-                                         agent=self.agent)
+            default_dict['memory'] = self.memory
+            default_dict['cpu'] = self.cpu
+            default_dict['req_count'] = self.req_count
+            default_dict['report_queue'] = self.report_queue
+            default_dict['method_queue'] = self.method_queue
+            default_dict['replay_queue'] = self.replay_queue
+            default_dict['disk'] = self.disk
+            IastHeartbeat.objects.update_or_create(agent_id=self.agent_id,
+                                                   defaults=default_dict)
+        update_agent_cache(self.agent_id, default_dict)
 
     def get_result(self, msg=None):
         logger.info('return_queue: {}'.format(self.return_queue))
@@ -148,10 +149,15 @@ class HeartBeatHandler(IReportHandler):
                                                state=const.WAITING).update(
                                                    update_time=timestamp,
                                                    state=const.SOLVING)
-                IastReplayQueue.objects.filter(id__in=failure_ids).update(update_time=timestamp, state=const.SOLVED)
+                IastReplayQueue.objects.filter(id__in=failure_ids).update(
+                    update_time=timestamp, state=const.SOLVED)
 
-                IastVulnerabilityModel.objects.filter(id__in=success_vul_ids).update(latest_time=timestamp, status_id=2)
-                IastVulnerabilityModel.objects.filter(id__in=failure_vul_ids).update(latest_time=timestamp, status_id=1)
+                IastVulnerabilityModel.objects.filter(
+                    id__in=success_vul_ids).update(latest_time=timestamp,
+                                                   status_id=2)
+                IastVulnerabilityModel.objects.filter(
+                    id__in=failure_vul_ids).update(latest_time=timestamp,
+                                                   status_id=1)
                 logger.info(_('Reproduction request issued successfully'))
                 logger.debug([i['id'] for i in replay_requests])
                 return replay_requests
