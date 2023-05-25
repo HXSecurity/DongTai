@@ -386,7 +386,7 @@ def update_agent_status():
     keys_missing = heartbeat_keys - exists_keys
     stop_agent_ids = list(
         map(lambda x: int(x.replace("heartbeat-", "")), keys_missing))
-    IastAgent.objects.filter(id__in=is_stop_agent_ids).update(
+    IastAgent.objects.filter(id__in=stop_agent_ids).update(
         is_running=0, is_core_running=0, online=0)
     vul_id_qs = IastReplayQueue.objects.filter(
         update_time__lte=timestamp - 60 * 5,

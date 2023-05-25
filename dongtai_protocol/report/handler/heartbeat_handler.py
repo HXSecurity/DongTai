@@ -22,8 +22,6 @@ from dongtai_common.utils.systemsettings import get_vul_validate
 from dongtai_common.models.agent import IastAgent
 from django.core.cache import cache
 
-
-
 logger = logging.getLogger('dongtai.openapi')
 
 
@@ -34,8 +32,10 @@ def update_agent_cache(agent_id, data):
 def check_agent_incache(agent_id):
     return True if cache.get(f"heartbeat-{agent_id}") else False
 
+
 @ReportHandler.register(const.REPORT_HEART_BEAT)
 class HeartBeatHandler(IReportHandler):
+
     def __init__(self):
         super().__init__()
         self.req_count = None
@@ -58,7 +58,8 @@ class HeartBeatHandler(IReportHandler):
         self.return_queue = self.detail.get('returnQueue', None)
 
     def has_permission(self):
-        self.agent = IastAgent.objects.filter(id=self.agent_id, user=self.user_id).first()
+        self.agent = IastAgent.objects.filter(id=self.agent_id,
+                                              user=self.user_id).first()
         return self.agent
 
     def save_heartbeat(self):
@@ -148,10 +149,15 @@ class HeartBeatHandler(IReportHandler):
                                                state=const.WAITING).update(
                                                    update_time=timestamp,
                                                    state=const.SOLVING)
-                IastReplayQueue.objects.filter(id__in=failure_ids).update(update_time=timestamp, state=const.SOLVED)
+                IastReplayQueue.objects.filter(id__in=failure_ids).update(
+                    update_time=timestamp, state=const.SOLVED)
 
-                IastVulnerabilityModel.objects.filter(id__in=success_vul_ids).update(latest_time=timestamp, status_id=2)
-                IastVulnerabilityModel.objects.filter(id__in=failure_vul_ids).update(latest_time=timestamp, status_id=1)
+                IastVulnerabilityModel.objects.filter(
+                    id__in=success_vul_ids).update(latest_time=timestamp,
+                                                   status_id=2)
+                IastVulnerabilityModel.objects.filter(
+                    id__in=failure_vul_ids).update(latest_time=timestamp,
+                                                   status_id=1)
                 logger.info(_('Reproduction request issued successfully'))
                 logger.debug([i['id'] for i in replay_requests])
                 return replay_requests
