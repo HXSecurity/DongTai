@@ -77,6 +77,7 @@ configs["task_routes"] = {
 }
 configs["CELERY_ENABLE_UTC"] = False
 configs["timezone"] = settings.TIME_ZONE
+configs["singleton_backend_url"] = settings.CELERY_BROKER_URL
 configs["DJANGO_CELERY_BEAT_TZ_AWARE"] = False
 configs["CELERY_BEAT_SCHEDULER"] = 'django_celery_beat.schedulers:DatabaseScheduler'
 

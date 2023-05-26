@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
 # datetime:2021/1/26 下午4:45
@@ -46,6 +45,7 @@ from hashlib import sha1
 from dongtai_engine.task_base import replay_payload_data
 from typing import List, Dict
 from dongtai_engine.common.queryset import get_scan_id, load_sink_strategy, get_agent
+from dongtai_engine.plugins.project_time_update import project_time_update
 
 RETRY_INTERVALS = [10, 30, 90]
 
@@ -161,9 +161,9 @@ def search_and_save_vul(engine: Optional[VulEngine],
                 state=const.SOLVED,
                 result=const.RECHECK_FALSE,
                 verify_time=timestamp,
-                update_time=timestamp
-            )
-            IastProject.objects.filter(id=method_pool_model.agent.bind_project_id).update(latest_time=timestamp)
+                update_time=timestamp)
+            project_time_stamp_update.apply_async(
+                (method_pool_model.agent.bind_project_id, ), countdown=5)
         except Exception as e:
             logger.info(f'漏洞数据处理出错，原因：{e}')
 
