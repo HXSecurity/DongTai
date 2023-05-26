@@ -17,6 +17,7 @@ import logging
 from django.utils.translation import gettext_lazy as _
 from django.db import transaction
 from dongtai_common.models.project import IastProject
+from dongtai_engine.plugins.project_time_update import project_time_stamp_update
 logger = logging.getLogger('dongtai.openapi')
 
 
@@ -70,9 +71,8 @@ class ApiRouteHandler(IReportHandler):
                     except Exception as e:
                         print(e)
                 logger.info(_('API navigation log record successfully'))
-            project = IastProject.objects.filter(pk=self.agent.bind_project_id).first()
-            if project:
-                project.update_latest()
+            project_time_stamp_update.apply_async(
+                (method_pool.agent.bind_project_id, ), countdown=5)
         except Exception as e:
             logger.info(_('API navigation log failed, why: {}').format(e))
 
