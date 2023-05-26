@@ -72,7 +72,7 @@ class ApiRouteHandler(IReportHandler):
                         print(e)
                 logger.info(_('API navigation log record successfully'))
             project_time_stamp_update.apply_async(
-                (method_pool.agent.bind_project_id, ), countdown=5)
+                (self.agent.bind_project_id, ), countdown=5)
         except Exception as e:
             logger.info(_('API navigation log failed, why: {}').format(e))
 
