@@ -45,7 +45,7 @@ from hashlib import sha1
 from dongtai_engine.task_base import replay_payload_data
 from typing import List, Dict
 from dongtai_engine.common.queryset import get_scan_id, load_sink_strategy, get_agent
-from dongtai_engine.plugins.project_time_update import project_time_update
+from dongtai_engine.plugins.project_time_update import project_time_stamp_update
 
 RETRY_INTERVALS = [10, 30, 90]
 
