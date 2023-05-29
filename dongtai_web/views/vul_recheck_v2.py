@@ -80,8 +80,8 @@ class VulReCheckv2(UserEndPoint):
         replay_queue = []
         for key, value in vul_payload_dict.items():
             item = [
-                IastReplayQueue(agent_id=vul_id_agentmap[vul_id],
-                                relation_id=vul_id,
+                IastReplayQueue(agent_id=vul_id_agentmap[key],
+                                relation_id=key,
                                 state=const.WAITING,
                                 count=1,
                                 create_time=timestamp,
@@ -91,8 +91,8 @@ class VulReCheckv2(UserEndPoint):
             ]
             if not item:
                 item = [
-                    IastReplayQueue(agent_id=vul_id_agentmap[vul_id],
-                                    relation_id=vul_id,
+                    IastReplayQueue(agent_id=vul_id_agentmap[key],
+                                    relation_id=key,
                                     state=const.WAITING,
                                     count=1,
                                     create_time=timestamp,
