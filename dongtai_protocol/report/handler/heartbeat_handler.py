@@ -65,12 +65,10 @@ class HeartBeatHandler(IReportHandler):
     def save_heartbeat(self):
         default_dict = {"dt": int(time.time())}
         if not check_agent_incache(self.agent_id):
-            self.agent.is_running = 1
-            self.agent.online = 1
+            default_dict['is_running'] = 1
+            default_dict['online'] = 1
             IastHeartbeat.objects.update_or_create(agent_id=self.agent_id,
-                                                   defaults={
-                                                       "dt": int(time.time()),
-                                                   })
+                                                   defaults=default_dict)
         if self.return_queue == 1:
             default_dict['req_count'] = self.req_count
             default_dict['report_queue'] = self.report_queue
