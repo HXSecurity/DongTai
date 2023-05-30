@@ -14,6 +14,7 @@ from rest_framework import serializers
 
 from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 from dongtai_common.models.assetv2 import AssetV2, AssetV2Global
+from rest_framework.serializers import ValidationError
 
 logger = logging.getLogger(__name__)
 
@@ -78,5 +79,8 @@ class PackageList(UserEndPoint):
             q = q & Q(aql__contains=ser.validated_data['keyword'])
         order = '-' if ser.validated_data[
             'order'] == 'desc' else '' + ser.validated_data['order_field']
-        AssetV2Global.objects.filter()
-        return JsonResponse({})
+        page_info, data = self.get_paginator(
+            AssetV2Global.objects.filter(q).order_by(order).values().all(),
+            ser.validated_data['page'], ser.validated_data['page_size'])
+        return R.success(data=PackeageScaAssetSerializer(data, many=True),
+                         page=page_info)

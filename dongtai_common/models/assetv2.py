@@ -68,7 +68,11 @@ class AssetV2(models.Model):
 
 class AssetV2Global(models.Model):
     id = models.BigAutoField(primary_key=True)
-    package_name = models.CharField(max_length=255, blank=True, null=True)
+    package_name = models.ForeignKey('IastPackageGAInfo',
+                                     on_delete=models.DO_NOTHING,
+                                     db_constraint=False,
+                                     db_column='package_name',
+                                     to_field="package_name")
     signature_algorithm = models.CharField(max_length=255,
                                            blank=True,
                                            null=True)
@@ -102,8 +106,20 @@ class IastAssetLicense(models.Model):
     asset = models.ForeignKey(AssetV2Global,
                               on_delete=models.DO_NOTHING,
                               db_constraint=False,
-                              db_column='asset')
+                              db_column='asset',
+                              to_field='aql')
 
     class Meta:
         managed = get_managed()
         db_table = 'iast_asset_v2_license'
+
+class IastPackageGAInfo(models.Model):
+    package_name = models.CharField(max_length=255,
+                                           blank=True,
+                                           null=True)
+    affected_versions = models.JSONField(blank=True, null=True, default=list)
+    unaffected_versions = models.JSONField(blank=True, null=True, default=list)
+
+    class Meta:
+        managed = get_managed()
+        db_table = 'iast_asset_v2_ga_info'

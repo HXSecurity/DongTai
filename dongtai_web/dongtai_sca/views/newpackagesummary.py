@@ -19,6 +19,7 @@ from typing import List
 from typing import Any
 from dataclasses import dataclass
 import json
+from django.db.models import Q, F, Count
 
 logger = logging.getLogger(__name__)
 
@@ -52,12 +53,6 @@ class Data:
 
 
 class PackageSummaryArgsSerializer(serializers.Serializer):
-    language_ids = serializers.ListField(
-        child=serializers.IntegerField(default=1, help_text=_('language')))
-    license_ids = serializers.ListField(
-        child=serializers.IntegerField(default=1, help_text=_('license')))
-    level_ids = serializers.ListField(
-        child=serializers.IntegerField(default=1, help_text=_('level')))
     project_id = serializers.IntegerField(default=1, help_text=_('Page index'))
     project_version_id = serializers.IntegerField(default=1,
                                                   help_text=_('Page index'))
@@ -76,7 +71,27 @@ FullSummaryResponseSerializer = get_response_serializer(
 class NewPackageSummary(UserEndPoint):
 
     @extend_schema_with_envcheck_v2(
-        request=PackageSummaryArgsSerializer,
+        parameters=[PackageSummaryArgsSerializer],
         responses={200: FullSummaryResponseSerializer})
-    def post(self, request):
+    def get(self, request):
+        ser = PackageSummaryArgsSerializer(data=request.query_params)
+        try:
+            if ser.is_valid(True):
+                pass
+        except ValidationError as e:
+            return R.failure(data=e.detail)
+        if 'project_id' in ser.validated_data:
+            q = q & Q(assetv2__project_id=ser.validated_data['project_id'])
+        if 'project_version_id' in ser.validated_data:
+            q = q & Q(assetv2__project_version_id=ser.
+                      validated_data['project_version_id'])
+        queryset = AssetV2Global.objects.filter(q)
+        langauge_summary_list = queryset.values('language_id').annotate(
+            count=Count('language_id'))
+        level_summary_list = queryset.values('level_id').annotate(
+            count=Count('level_id'))
+        license_summary_list = queryset.annotate(
+            license_id=F("iastassetlicense__license_id"),
+            count=Count('iastassetlicense__license_id')).values(
+                "license_id", "count")
         return JsonResponse({})

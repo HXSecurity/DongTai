@@ -39,10 +39,11 @@ class RelationProjectArgsSerializer(serializers.Serializer):
         help_text=_("project with be the first"))
 
 
-class RelationProjectSerializer(DataclassSerializer):
+class RelationProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
-        dataclass = RelationProject
+        model = AssetV2
+        fields = '__all__'
 
 
 FullRelationProjectResponseSerializer = get_response_serializer(
@@ -54,5 +55,17 @@ class NewPackageRelationProject(UserEndPoint):
     @extend_schema_with_envcheck_v2(
         request=RelationProjectArgsSerializer,
         responses={200: FullRelationProjectResponseSerializer})
-    def post(self, request):
-        return JsonResponse({})
+    def get(self, request, package_name, package_version):
+        ser = RelationProjectArgsSerializer(data=request.query_params)
+        try:
+            if ser.is_valid(True):
+                pass
+        except ValidationError as e:
+            return R.failure(data=e.detail)
+        assets = AssetV2.objects.filter(package_name=package_name,
+                                        version=package_version).all()
+        page_info, data = self.get_paginator(assets,
+                                             ser.validated_data['page'],
+                                             ser.validated_data['page_size'])
+        return R.success(data=RelationProjectSerializer(data, many=True),
+                         page=page_info)

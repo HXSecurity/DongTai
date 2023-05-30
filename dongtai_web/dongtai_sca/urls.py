@@ -25,14 +25,17 @@ urlpatterns = [
 
 v2_urlpatterns = [
     path('package/', PackageList.as_view()),
-    path('package/<str:package_name>/<str:package_version>',
+    path('package/<str:package_name>/<str:package_version>/detail',
          PackageDetail.as_view()),
     path('package_summary/', NewPackageSummary.as_view()),
-    path('package_vuls/', NewPackageVuls.as_view()),
-    path('package_vul_detail/<str:vul_id>', PackageVulDetail.as_view()),
-    path('package_realtion_project/', NewPackageRelationProject.as_view()),
-    path('package_realtion_project_version/',
-         NewPackageRelationProjectVersion.as_view()),
+    path('package_vuls/<str:package_name>/<str:package_version>',
+         NewPackageVuls.as_view()),
+    path('package_vul/<str:vul_id>', PackageVulDetail.as_view()),
+    path('package/<str:package_name>/<str:package_version>/relation_projects',
+         NewPackageRelationProject.as_view()),
+    path(
+        'package/<str:package_name>/<str:package_version>/relation_project/<int:project_id>',
+        NewPackageRelationProjectVersion.as_view()),
 ]
 
 urlpatterns = [

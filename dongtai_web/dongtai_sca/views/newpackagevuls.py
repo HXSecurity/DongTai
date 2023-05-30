@@ -53,8 +53,6 @@ class PackageVulsListArgsSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=20,
                                          help_text=_('Number per page'))
     page = serializers.IntegerField(default=1, help_text=_('Page index'))
-    package_name = serializers.CharField(help_text=_("pacakge name"))
-    package_version = serializers.CharField(help_text=_("package version"))
 
 
 class PackeageVulsSerializer(serializers.ModelSerializer):
@@ -73,5 +71,20 @@ class NewPackageVuls(UserEndPoint):
     @extend_schema_with_envcheck_v2(
         request=PackageVulsListArgsSerializer,
         responses={200: NewPackageVulSResponseSerializer})
-    def post(self, request):
-        return JsonResponse({})
+    def get(self, request, package_name, package_version):
+        ser = PackageListArgsSerializer(data=request.GET)
+        try:
+            if ser.is_valid(True):
+                pass
+        except ValidationError as e:
+            return R.failure(data=e.detail)
+        asset_vuls = IastAssetVulV2.objects.filter(
+            iastvulassetrelationv2__asset__package_name=pacakge_name,
+            iastvulassetrelationv2__asset__version=package_version).order_by(
+                '-id').all()
+        page_info, data = self.get_paginator(asset_vuls,
+                                             ser.validated_data['page'],
+                                             ser.validated_data['page_size'])
+
+        return R.success(data=PackeageVulsSerializer(data, many=True).data,
+                         page=page_info)

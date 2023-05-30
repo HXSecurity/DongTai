@@ -26,7 +26,6 @@ class IastAssetVulV2(models.Model):
     change_time = models.IntegerField(blank=True, null=True)
     published_time = models.IntegerField(blank=True, null=True)
     vul_id = models.CharField(max_length=255, blank=True, null=True)
-    asset = models.ManyToManyField('IastVulAssetRelationV2')
 
     class Meta:
         managed = True
@@ -37,25 +36,27 @@ class IastVulAssetRelationV2(models.Model):
     asset_vul = models.ForeignKey(IastAssetVulV2,
                                   on_delete=models.DO_NOTHING,
                                   db_constraint=False,
-                                  db_column='vul_id')
+                                  db_column='vul_id',
+                                  to_field="vul_id")
     asset = models.ForeignKey(AssetV2Global,
                               on_delete=models.DO_NOTHING,
                               db_constraint=False,
-                              db_column='asset')
+                              db_column='asset',
+                              to_field="aql")
 
     class Meta:
         managed = get_managed()
         db_table = 'iast_asset_vul_v2_relation'
 
 
-class IastPackageGAInfo(models.Model):
-    package_name = models.ForeignKey(AssetV2Global,
-                                     on_delete=models.DO_NOTHING,
-                                     db_constraint=False,
-                                     db_column='package_name')
-    affected_versions = models.JSONField(blank=True, null=True, default=list)
-    unaffected_versions = models.JSONField(blank=True, null=True, default=list)
-
-    class Meta:
-        managed = get_managed()
-        db_table = 'iast_asset_v2_ga_info'
+#class IastPackageGAInfo(models.Model):
+#    package_name = models.ForeignKey(AssetV2Global,
+#                                     on_delete=models.DO_NOTHING,
+#                                     db_constraint=False,
+#                                     db_column='package_name')
+#    affected_versions = models.JSONField(blank=True, null=True, default=list)
+#    unaffected_versions = models.JSONField(blank=True, null=True, default=list)
+#
+#    class Meta:
+#        managed = get_managed()
+#        db_table = 'iast_asset_v2_ga_info'

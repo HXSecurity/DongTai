@@ -49,4 +49,5 @@ class PackageVulDetail(UserEndPoint):
 
     @extend_schema_with_envcheck_v2(responses={200: _NewResponseSerializer})
     def get(self, request, vul_id):
-        return JsonResponse({})
+        asset_vul = IastAssetVulV2.objects.filter(vul_id=vul_id).first()
+        return R.success(data=PackeageVulsSerializer(asset_vul), )

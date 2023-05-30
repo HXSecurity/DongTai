@@ -12,7 +12,7 @@ from dongtai_web.utils import extend_schema_with_envcheck_v2, get_response_seria
 from rest_framework import serializers
 
 from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
-from dongtai_common.models.assetv2 import AssetV2, AssetV2Global
+from dongtai_common.models.assetv2 import (AssetV2, AssetV2Global, IastPackageGAInfo,)
 
 logger = logging.getLogger(__name__)
 
@@ -35,18 +35,34 @@ class PackageListArgsSerializer(serializers.Serializer):
     order = serializers.CharField(help_text=_("order"))
 
 
-class PackeageScaAssetSerializer(serializers.ModelSerializer):
+class PackeageScaPlainSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AssetV2Global
         fields = '__all__'
 
 
-_NewResponseSerializer = get_response_serializer(PackeageScaAssetSerializer())
+class PackeageScaAssetDetailSerializer(serializers.ModelSerializer):
+    affected_versions = serializers.ListField(
+        source='package_name.affected_versions')
+    unaffected_versions = serializers.ListField(
+        source='package_name.unaffected_versions')
+
+    class Meta:
+        model = AssetV2Global
+        fields = '__all__'
+
+
+_NewResponseSerializer = get_response_serializer(
+    PackeageScaAssetDetailSerializer())
 
 
 class PackageDetail(UserEndPoint):
 
     @extend_schema_with_envcheck_v2(responses={200: _NewResponseSerializer})
     def get(self, request, package_name, package_version):
-        return JsonResponse({})
+        asset = AssetV2Global.objects.filter(package_name=package_name,
+                                             version=package_version).first()
+        if asset:
+            return R.success(data=PackeageScaAssetDetailSerializer(asset).data)
+        return R.failure()

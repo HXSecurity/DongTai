@@ -52,5 +52,5 @@ class NewPackageRelationProjectVersion(UserEndPoint):
     @extend_schema_with_envcheck_v2(
         request=RelationProjectVersionArgsSerializer,
         responses={200: FullRelationProjectVersionResponseSerializer})
-    def post(self, request):
+    def get(self, request, package_name, package_version, project_id):
         return JsonResponse({})
