@@ -47,9 +47,12 @@ def make_hash(obj):
     return hash(tuple(frozenset(new_obj.items())))
 
 
-def cached(function,
-           random_range: tuple = (50, 100),
-           use_celery_update: bool = False):
+def cached(
+    function,
+    random_range: tuple = (50, 100),
+    use_celery_update: bool = False,
+    cache_logic_none: bool = True,
+):
     """Return a version of this function that caches its results for
     the time specified.
 
@@ -71,16 +74,19 @@ def cached(function,
         cache_key = make_hash(
             (function.__module__ + function.__name__, args, kwargs))
         #cache_key = function.__module__ + function.__name__
-        cached_result = cache.get(cache_key, "NOT NONE")
+        cached_result = cache.get(cache_key, "Not such key")
         if random_range:
             cache_time = random.randint(*random_range)
         if use_celery_update:
             function_flush.apply_async(args=(function.__module__,
                                              function.__name__, cache_time,
                                              tuple(args), kwargs))
-        if cached_result == "NOT NONE":
+        if cached_result == "Not such key":
             result = function(*args, **kwargs)
-            cache.set(cache_key, result, cache_time)
+            if cache_logic_none and result is None:
+                cache.set(cache_key, result, cache_time)
+            else:
+                cache.set(cache_key, result, cache_time)
             return result
         elif cached_result is None:
             return cached_result
@@ -97,12 +103,18 @@ def disable_cache(function, args=(), kwargs={}):
         (function.__module__ + function.__name__, args, kwargs))
     cache.delete(cache_key)
 
-def cached_decorator(random_range, use_celery_update=False):
+
+def cached_decorator(random_range,
+                     use_celery_update=False,
+                     cache_logic_none=True):
 
     def _noname(function):
-        return cached(function,
-                      random_range,
-                      use_celery_update=use_celery_update)
+        return cached(
+            function,
+            random_range,
+            use_celery_update=use_celery_update,
+            cache_logic_none=cache_logic_none,
+        )
 
     return _noname
 

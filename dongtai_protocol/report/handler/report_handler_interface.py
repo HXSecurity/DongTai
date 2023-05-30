@@ -15,7 +15,7 @@ from dongtai_common.common.utils import cached_decorator
 logger = logging.getLogger('dongtai.openapi')
 
 
-@cached_decorator(random_range=(60, 120), use_celery_update=False)
+@cached_decorator(random_range=(60, 120), use_celery_update=False, cache_logic_none=False)
 def get_agent(agent_id, kwargs, fields):
     return IastAgent.objects.filter(
         id=agent_id,
