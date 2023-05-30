@@ -99,8 +99,6 @@ class AssetV2Global(models.Model):
                                 null=False,
                                 default='')
     language_id = models.IntegerField(default=1, blank=True, null=False)
-
-    safe_version_list = models.JSONField(blank=True, null=True, default=list)
     license_list = models.JSONField(blank=True, null=True, default=list)
 
     class Meta:
@@ -109,16 +107,14 @@ class AssetV2Global(models.Model):
 
 
 class IastAssetLicense(models.Model):
+    """
+    only for the filter
+    """
     license_id = models.IntegerField(blank=True, null=True)
-    license = models.CharField(max_length=64,
-                               blank=True,
-                               null=False,
-                               default='')
     asset = models.ForeignKey(AssetV2Global,
                               on_delete=models.DO_NOTHING,
                               db_constraint=False,
                               db_column='asset_id')
-    create_time = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = get_managed()
