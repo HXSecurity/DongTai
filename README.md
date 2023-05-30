@@ -15,7 +15,7 @@
 
 ## About DongTai IAST
 
-`DongTai IAST` is an open-source passive interactive security testing (IAST) product. It uses dynamic hooks and taint tracking algorithms to achieve **universal vulnerability detection** and **multiples request associated with vulnerability detection (including but not limited to unauthorized vulnerabilities, overpower vulnerabilities)**, **Third-party component vulnerability detection**, etc. Currently, applications in Java and Python are supported for vulnerability detection.
+`Dongtai IAST` is an open-source Interactive Application Security Testing (IAST) tool that enables real-time detection of common vulnerabilities in Java applications and third-party components through passive instrumentation. It is particularly suitable for use in the testing phase of the development pipeline.
 
 
 ## Project structure
