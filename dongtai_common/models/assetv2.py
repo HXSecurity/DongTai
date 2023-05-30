@@ -30,23 +30,13 @@ from dongtai_common.models.talent import Talent
 class AssetV2(models.Model):
     id = models.BigAutoField(primary_key=True)
     package_name = models.CharField(max_length=255, blank=True, null=True)
-    aql = models.ForeignKey('AssetV2Global',
-                            to_field='aql',
-                            default='',
-                            on_delete=models.DO_NOTHING)
     package_path = models.CharField(max_length=255, blank=True, null=True)
     signature_algorithm = models.CharField(max_length=255,
                                            blank=True,
                                            null=True)
     signature_value = models.CharField(max_length=255, blank=True, null=True)
     dt = models.IntegerField(blank=True, null=True)
-    is_reconized = models.IntegerField(blank=True, null=True)
     version = models.CharField(max_length=255, blank=True, null=True)
-    level = models.ForeignKey(IastVulLevel,
-                              models.DO_NOTHING,
-                              blank=True,
-                              null=True,
-                              default=4)
     project = models.ForeignKey(IastProject,
                                 on_delete=models.CASCADE,
                                 blank=True,
@@ -57,17 +47,19 @@ class AssetV2(models.Model):
                                         blank=True,
                                         null=False,
                                         default=-1)
-    language = models.CharField(max_length=32,
-                                blank=True,
-                                null=False,
-                                default='')
-
     # 部门id
     department = models.ForeignKey(Department,
                                    models.DO_NOTHING,
                                    blank=True,
                                    null=True,
                                    default=-1)
+    language_id = models.IntegerField(default=1, blank=True, null=False)
+    is_reconized = models.IntegerField(blank=True, null=True)
+    aql = models.ForeignKey('AssetV2Global',
+                            to_field='aql',
+                            default='',
+                            db_column="aql",
+                            on_delete=models.DO_NOTHING)
 
     class Meta:
         managed = get_managed()
@@ -76,7 +68,6 @@ class AssetV2(models.Model):
 
 class AssetV2Global(models.Model):
     id = models.BigAutoField(primary_key=True)
-    aql = models.CharField(max_length=255, blank=True, null=True)
     package_name = models.CharField(max_length=255, blank=True, null=True)
     signature_algorithm = models.CharField(max_length=255,
                                            blank=True,
@@ -94,16 +85,13 @@ class AssetV2Global(models.Model):
     vul_medium_count = models.IntegerField(default=0, blank=True, null=False)
     vul_low_count = models.IntegerField(default=0, blank=True, null=False)
     vul_info_count = models.IntegerField(default=0, blank=True, null=False)
-    language = models.CharField(max_length=32,
-                                blank=True,
-                                null=False,
-                                default='')
-    language_id = models.IntegerField(default=1, blank=True, null=False)
     license_list = models.JSONField(blank=True, null=True, default=list)
+    language_id = models.IntegerField(default=1, blank=True, null=False)
+    aql = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_asset_v2_summary'
+        db_table = 'iast_asset_v2_global'
 
 
 class IastAssetLicense(models.Model):
@@ -114,7 +102,7 @@ class IastAssetLicense(models.Model):
     asset = models.ForeignKey(AssetV2Global,
                               on_delete=models.DO_NOTHING,
                               db_constraint=False,
-                              db_column='asset_id')
+                              db_column='asset')
 
     class Meta:
         managed = get_managed()

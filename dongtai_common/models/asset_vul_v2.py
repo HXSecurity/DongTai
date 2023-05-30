@@ -13,7 +13,6 @@ from dongtai_common.models.vul_level import IastVulLevel
 
 
 class IastAssetVulV2(models.Model):
-    vul_id = models.CharField(max_length=255, blank=True, null=True)
     vul_name = models.CharField(max_length=255, blank=True, null=True)
     vul_detail = models.TextField(blank=True, null=True)
     # 漏洞类型等级
@@ -21,13 +20,12 @@ class IastAssetVulV2(models.Model):
                               models.DO_NOTHING,
                               blank=True,
                               null=True)
-    vul_type = models.CharField(max_length=255, blank=True, null=True)
-    package_language = models.CharField(max_length=10, blank=True, null=True)
-    published_time = models.IntegerField(blank=True, null=True)
-    change_time = models.IntegerField(blank=True, null=True)
     update_time = models.IntegerField(blank=True, null=True)
     create_time = models.IntegerField(blank=True, null=True)
     references = models.JSONField(blank=True, null=True, default=list)
+    change_time = models.IntegerField(blank=True, null=True)
+    published_time = models.IntegerField(blank=True, null=True)
+    vul_id = models.CharField(max_length=255, blank=True, null=True)
     asset = models.ManyToManyField('IastVulAssetRelationV2')
 
     class Meta:
@@ -40,11 +38,10 @@ class IastVulAssetRelationV2(models.Model):
                                   on_delete=models.DO_NOTHING,
                                   db_constraint=False,
                                   db_column='vul_id')
-    assee = models.ForeignKey(AssetV2Global,
+    asset = models.ForeignKey(AssetV2Global,
                               on_delete=models.DO_NOTHING,
                               db_constraint=False,
-                              db_column='aql')
-    create_time = models.IntegerField(blank=True, null=True)
+                              db_column='asset')
 
     class Meta:
         managed = get_managed()
