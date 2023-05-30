@@ -67,7 +67,7 @@ class HeartBeatHandler(IReportHandler):
         if not check_agent_incache(self.agent_id):
             IastHeartbeat.objects.update_or_create(agent_id=self.agent_id,
                                                    defaults=default_dict)
-            IastAgent.objects.update_or_create(agent_id=self.agent_id,
+            IastAgent.objects.update_or_create(pk=self.agent_id,
                                                defaults={
                                                    "is_running": 1,
                                                    "online": 1
