@@ -1,16 +1,17 @@
 -i https://pypi.org/simple
 aliyun-python-sdk-core==2.13.36
 aliyun-python-sdk-core-v3==2.13.33
-aliyun-python-sdk-kms==2.16.0
+aliyun-python-sdk-kms==2.16.1
 amqp==5.1.1 ; python_version >= '3.6'
-asgiref==3.7.1
+asgiref==3.7.2
 async-timeout==4.0.2 ; python_version >= '3.6'
 attrs==23.1.0 ; python_version >= '3.7'
+autopep8==2.0.2 ; python_version >= '3.6'
 billiard==4.1.0 ; python_version >= '3.7'
 boto3==1.24.59
-boto3-stubs==1.26.141
+boto3-stubs==1.26.143
 botocore==1.27.91
-botocore-stubs==1.29.141
+botocore-stubs==1.29.143
 celery==5.3.0rc1
 celery-singleton==0.3.1
 certifi==2023.5.7
@@ -23,6 +24,7 @@ click-plugins==1.1.1
 click-repl==0.2.0
 crcmod==1.7
 cryptography==39.0.1
+dataclasses-json==0.5.7
 ddt==1.6.0
 defusedxml==0.7.1 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
 diff-match-patch==20230430 ; python_version >= '3.7'
@@ -38,6 +40,8 @@ django-modeltranslation==0.17.7
 django-ranged-response==0.2.0
 django-redis==5.2.0
 django-rest-framework-proxy==1.6.0
+django-seriously==0.4.0
+django-silk==5.0.3
 django-simple-captcha==0.5.17
 django-stubs[compatible-mypy]==1.15.0
 django-stubs-ext==4.2.0 ; python_version >= '3.7'
@@ -46,6 +50,7 @@ django-utils==0.0.2
 django-utils-six==2.0
 django-xff==1.3.0
 djangorestframework==3.12.4
+djangorestframework-dataclasses==1.2.0
 djangorestframework-stubs[compatible-mypy]==1.9.1
 docxcompose==1.3.4
 docxtpl==0.16.0
@@ -54,6 +59,7 @@ elasticsearch==7.17.7
 elasticsearch-dsl==7.4.1 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 et-xmlfile==1.1.0 ; python_version >= '3.6'
 gevent==22.10.2
+gprof2dot==2022.7.29 ; python_version >= '2.7'
 greenlet==2.0.2 ; platform_python_implementation == 'CPython'
 gunicorn==20.1.0
 id-validator==1.0.20
@@ -64,11 +70,13 @@ jmespath==0.10.0 ; python_version >= '2.6' and python_version not in '3.0, 3.1, 
 jq==1.3.0
 jsonlog==4.0.0
 jsonschema==4.17.0
-kombu==5.3.0rc1 ; python_version >= '3.8'
+kombu==5.3.0rc2 ; python_version >= '3.8'
 lxml==4.9.1
 marisa-trie==0.8.0
 markuppy==1.14
 markupsafe==2.1.2 ; python_version >= '3.7'
+marshmallow==3.19.0 ; python_version >= '3.7'
+marshmallow-enum==1.5.1
 mock==5.0.2 ; python_version >= '3.6'
 model-bakery==1.11.0 ; python_version >= '3'
 mypy==1.0.1
@@ -82,9 +90,11 @@ packaging==21.3
 pep8==1.7.1
 pillow==9.3.0
 prompt-toolkit==3.0.38 ; python_full_version >= '3.7.0'
+pycodestyle==2.10.0 ; python_version >= '3.6'
 pycparser==2.21
 pycryptodome==3.18.0 ; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
 pycryptodomex==3.14.1
+pydantic==1.10.8 ; python_version >= '3.7'
 pymysql==1.0.2
 pyparsing==3.0.9 ; python_full_version >= '3.6.8'
 pyre2==0.3.6
@@ -111,10 +121,11 @@ types-pyopenssl==23.1.0.3
 types-pytz==2023.3.0.0
 types-pyyaml==6.0.12.10
 types-redis==4.5.5.2
-types-requests==2.31.0.0
+types-requests==2.31.0.1
 types-s3transfer==0.6.1 ; python_version >= '3.7' and python_version < '4.0'
 types-urllib3==1.26.25.13
 typing-extensions==4.6.2
+typing-inspect==0.9.0
 tzdata==2023.3 ; python_version >= '2'
 uritemplate==4.1.1 ; python_version >= '3.6'
 urllib3==1.26.5

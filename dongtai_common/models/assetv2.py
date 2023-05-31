@@ -113,10 +113,9 @@ class IastAssetLicense(models.Model):
         managed = get_managed()
         db_table = 'iast_asset_v2_license'
 
+
 class IastPackageGAInfo(models.Model):
-    package_name = models.CharField(max_length=255,
-                                           blank=True,
-                                           null=True)
+    package_name = models.CharField(max_length=255, blank=True, null=True)
     affected_versions = models.JSONField(blank=True, null=True, default=list)
     unaffected_versions = models.JSONField(blank=True, null=True, default=list)
 

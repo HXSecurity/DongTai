@@ -72,6 +72,7 @@ class Data:
     affected_versions: List[str] = []
     unaffected_versions: List[str] = []
 
+
 @dataclass_json
 @dataclass
 class PackageInfo:
@@ -82,4 +83,3 @@ class PackageInfo:
     hash: str
     license: List[str]
     version_publish_time: str
-
