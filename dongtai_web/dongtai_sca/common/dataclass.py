@@ -5,13 +5,12 @@ from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from datetime import datetime
 
+
 @dataclass_json
 @dataclass
 class Reference:
     type: str = ""
     url: str = ""
-
-
 
 
 @dataclass_json
