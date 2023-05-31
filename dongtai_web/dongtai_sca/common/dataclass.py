@@ -12,12 +12,6 @@ class Reference:
     url: str = ""
 
 
-@dataclass_json
-@dataclass
-class Root:
-    status: int
-    msg: str
-    data: Data
 
 
 @dataclass_json
@@ -83,3 +77,10 @@ class PackageInfo:
     hash: str
     license: List[str]
     version_publish_time: str
+
+@dataclass_json
+@dataclass
+class Root:
+    status: int
+    msg: str
+    data: Data

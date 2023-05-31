@@ -10,6 +10,7 @@ from dongtai_common.endpoint import R, UserEndPoint
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck_v2, get_response_serializer
 from rest_framework import serializers
+from rest_framework.serializers import ValidationError
 
 from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 from dongtai_common.models.assetv2 import AssetV2, AssetV2Global
@@ -97,13 +98,14 @@ class NewPackageSummary(UserEndPoint):
                 pass
         except ValidationError as e:
             return R.failure(data=e.detail)
+        q = Q()
         if 'project_id' in ser.validated_data:
             q = q & Q(assetv2__project_id=ser.validated_data['project_id'])
         if 'project_version_id' in ser.validated_data:
             q = q & Q(assetv2__project_version_id=ser.
                       validated_data['project_version_id'])
         queryset = AssetV2Global.objects.filter(q)
-        langauge_summary_list = queryset.values('language_id').annotate(
+        language_summary_list = queryset.values('language_id').annotate(
             count=Count('language_id'))
         level_summary_list = queryset.values('level_id').annotate(
             count=Count('level_id'))

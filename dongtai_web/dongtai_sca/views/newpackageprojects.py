@@ -10,6 +10,7 @@ from dongtai_common.endpoint import R, UserEndPoint
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck_v2, get_response_serializer
 from rest_framework import serializers
+from rest_framework.serializers import ValidationError
 
 from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 from dongtai_common.models.assetv2 import AssetV2, AssetV2Global
