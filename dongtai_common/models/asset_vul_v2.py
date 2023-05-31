@@ -25,7 +25,10 @@ class IastAssetVulV2(models.Model):
     references = models.JSONField(blank=True, null=True, default=list)
     change_time = models.IntegerField(blank=True, null=True)
     published_time = models.IntegerField(blank=True, null=True)
-    vul_id = models.CharField(max_length=255, blank=True, null=True)
+    vul_id = models.CharField(max_length=255,
+                              blank=True,
+                              null=True,
+                              unique=True)
 
     class Meta:
         managed = True

@@ -29,7 +29,10 @@ from dongtai_common.models.talent import Talent
 
 class AssetV2(models.Model):
     id = models.BigAutoField(primary_key=True)
-    package_name = models.CharField(max_length=255, blank=True, null=True)
+    package_name = models.CharField(max_length=255,
+                                    blank=True,
+                                    null=True,
+                                    unique=True)
     package_path = models.CharField(max_length=255, blank=True, null=True)
     signature_algorithm = models.CharField(max_length=255,
                                            blank=True,
@@ -68,11 +71,13 @@ class AssetV2(models.Model):
 
 class AssetV2Global(models.Model):
     id = models.BigAutoField(primary_key=True)
-    package_name = models.ForeignKey('IastPackageGAInfo',
-                                     on_delete=models.DO_NOTHING,
-                                     db_constraint=False,
-                                     db_column='package_name',
-                                     to_field="package_name")
+    package_name = models.ForeignKey(
+        'IastPackageGAInfo',
+        on_delete=models.DO_NOTHING,
+        db_constraint=False,
+        db_column='package_name',
+        to_field="package_name",
+    )
     signature_algorithm = models.CharField(max_length=255,
                                            blank=True,
                                            null=True)
@@ -91,7 +96,7 @@ class AssetV2Global(models.Model):
     vul_info_count = models.IntegerField(default=0, blank=True, null=False)
     license_list = models.JSONField(blank=True, null=True, default=list)
     language_id = models.IntegerField(default=1, blank=True, null=False)
-    aql = models.CharField(max_length=255, blank=True, null=True)
+    aql = models.CharField(max_length=255, blank=True, null=True, unique=True)
 
     class Meta:
         managed = get_managed()
@@ -115,7 +120,10 @@ class IastAssetLicense(models.Model):
 
 
 class IastPackageGAInfo(models.Model):
-    package_name = models.CharField(max_length=255, blank=True, null=True)
+    package_name = models.CharField(max_length=255,
+                                    blank=True,
+                                    null=True,
+                                    unique=True)
     affected_versions = models.JSONField(blank=True, null=True, default=list)
     unaffected_versions = models.JSONField(blank=True, null=True, default=list)
 
