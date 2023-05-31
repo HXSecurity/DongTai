@@ -79,6 +79,10 @@ uwsgi = "==2.0.21"
 marisa-trie = "==0.8.0"
 gunicorn = "==20.1.0"
 celery-singleton = "*"
+djangorestframework-dataclasses = "*"
+django-seriously = "*"
+dataclasses-json = "*"
+django-silk = "*"
 
 [dev-packages]
 

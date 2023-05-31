@@ -435,6 +435,28 @@ def get_ecosystem_language_dict() -> defaultdict:
     })
 
 
+def get_language(language_id: int) -> str:
+    return defaultdict(lambda: "Java", {
+        1: "Java",
+        2: "Python",
+        3: "PHP",
+        4: "Golang",
+    })['language_id']
+
+
+def get_level(level_id: int) -> str:
+    return defaultdict(lambda: "无风险", {
+        1: "高危",
+        2: "中危",
+        3: "低危",
+        4: "无风险",
+    })[level_id]
+
+
+def get_license(license_id: int) -> str:
+    return defaultdict(lambda: "non-standard", {})[license_id]
+
+
 def get_description(descriptions: List[Dict]) -> str:
     if not descriptions:
         return ""
