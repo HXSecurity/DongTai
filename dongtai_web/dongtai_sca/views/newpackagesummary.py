@@ -20,6 +20,7 @@ from typing import Any
 from dataclasses import dataclass
 import json
 from django.db.models import Q, F, Count
+from dongtai_web.dongtai_sca.scan.utils import get_level, get_license, get_language
 
 logger = logging.getLogger(__name__)
 
@@ -50,6 +51,22 @@ class Data:
     level: List[Level]
     language: List[Language]
     license: List[License]
+
+
+def item_data_transfrom(
+    summary_dict,
+    function,
+    key,
+    new_key,
+):
+    summary_dict[new_key] = function(summary_dict[key])
+    return summary_dict
+
+
+def data_transfrom(dict_list, function, key, new_key):
+    return list(
+        map(lambda x: item_data_transfrom(x, function, key, new_key),
+            dict_list))
 
 
 class PackageSummaryArgsSerializer(serializers.Serializer):
@@ -94,4 +111,13 @@ class NewPackageSummary(UserEndPoint):
             license_id=F("iastassetlicense__license_id"),
             count=Count('iastassetlicense__license_id')).values(
                 "license_id", "count")
-        return JsonResponse({})
+        return R.success(data=DataclassSerializer(data={
+            "language":
+            data_transfrom(language_summary_list, get_language, "language_id",
+                           "language"),
+            "license":
+            data_transfrom(license_summary_list, get_license, "license_id",
+                           "license"),
+            "level":
+            data_transfrom(level_summary_list, get_level, "level_id", "level"),
+        }, ).data)
