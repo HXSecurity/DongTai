@@ -158,8 +158,8 @@ def data_transfrom_package_vul_v3(
     try:
         #res_data = PackageVulResponse.schema().loads(response.content)
         res_data = PackageVulResponse.from_json(response.content)
-        return Ok((res_data.data.vuls, res_data.data.affected_versions,
-                   res_data.data.unaffected_versions))
+        return Ok((res_data.data.vuls, tuple(res_data.data.affected_versions),
+                   tuple(res_data.data.unaffected_versions)))
     except ValidationError as e:
         logger.debug(e, exc_info=True)
         logger.info(f'ValidationError content: {response.content!r}')
@@ -249,7 +249,7 @@ def get_package_vul_v3(
                                               headers=headers,
                                               timeout=SCA_TIMEOUT)
     if isinstance(res, Err):
-        return [], [], []
+        return (), (), ()
     data = res.value
     return data
 
