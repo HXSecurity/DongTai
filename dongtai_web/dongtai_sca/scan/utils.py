@@ -668,9 +668,11 @@ def get_type_with_cwe(cwe_id: str) -> str:
 def sca_scan_asset_v2(aql: str, ecosystem: str, package_name: str,
                       version: str) -> PackageVulSummary:
     from dongtai_common.models.asset_vul_v2 import IastAssetVulV2, IastVulAssetRelationV2
-    vuls, affected_versions, unaffected_versions = get_package_vul_v3(ecosystem=ecosystem,
-                                  package_version=version,
-                                  package_name=package_name)
+    vuls, affected_versions, unaffected_versions = get_package_vul_v3(
+        ecosystem=ecosystem,
+        package_version=version,
+        package_name=package_name,
+    )
     vul_asset_rel_list = []
     for vul in vuls:
         IastAssetVulV2.objects.update_or_create(

@@ -6,7 +6,6 @@ from dataclasses_json import dataclass_json, config
 from datetime import datetime
 from dateutil.parser import parse
 
-
 # those Tuple[str] = () is not working
 # Since https://github.com/lidatong/dataclasses-json/pull/409
 # Be careful with potentially nullable types when using them temporarily.
