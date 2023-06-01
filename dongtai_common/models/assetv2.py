@@ -79,8 +79,8 @@ class AssetV2Global(models.Model):
         'IastPackageGAInfo',
         on_delete=models.DO_NOTHING,
         db_constraint=False,
-        db_column='package_name',
-        to_field="package_name",
+        db_column="package_fullname",
+        to_field="package_fullname",
     )
     signature_algorithm = models.CharField(max_length=255,
                                            blank=True,
@@ -124,7 +124,7 @@ class IastAssetLicense(models.Model):
 
 
 class IastPackageGAInfo(models.Model):
-    package_name = models.CharField(max_length=255,
+    package_fullname = models.CharField(max_length=255,
                                     blank=True,
                                     null=True,
                                     unique=True)
