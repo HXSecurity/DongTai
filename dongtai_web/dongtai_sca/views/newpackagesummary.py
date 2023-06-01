@@ -113,13 +113,15 @@ class NewPackageSummary(UserEndPoint):
             license_id=F("iastassetlicense__license_id"),
             count=Count('iastassetlicense__license_id')).values(
                 "license_id", "count")
-        return R.success(data=DataclassSerializer(data={
-            "language":
-            data_transfrom(language_summary_list, get_language, "language_id",
-                           "language"),
-            "license":
-            data_transfrom(license_summary_list, get_license, "license_id",
-                           "license"),
-            "level":
-            data_transfrom(level_summary_list, get_level, "level_id", "level"),
-        }, ).data)
+        return R.success(
+            data={
+                "language":
+                data_transfrom(language_summary_list, get_language,
+                               "language_id", "language"),
+                "license":
+                data_transfrom(license_summary_list, get_license, "license_id",
+                               "license"),
+                "level":
+                data_transfrom(level_summary_list, get_level, "level_id",
+                               "level"),
+            })

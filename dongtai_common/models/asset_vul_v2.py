@@ -29,6 +29,8 @@ class IastAssetVulV2(models.Model):
                               blank=True,
                               null=True,
                               unique=True)
+    vul_type = models.JSONField(blank=True, null=True)
+    vul_codes = models.JSONField(blank=True, null=True)
 
     class Meta:
         managed = True

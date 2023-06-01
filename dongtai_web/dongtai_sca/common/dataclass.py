@@ -1,9 +1,15 @@
-from typing import List
+from typing import Tuple
 from typing import Any
 from typing import Optional
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from datetime import datetime
+from dateutil.parser import *
+
+
+# those Tuple[str] = () is not working
+# Since https://github.com/lidatong/dataclasses-json/pull/409
+# Be careful with potentially nullable types when using them temporarily.
 
 
 @dataclass_json
@@ -16,8 +22,8 @@ class Reference:
 @dataclass_json
 @dataclass
 class VulCodes:
-    CVE: List[str] = []
-    GHSA: List[str] = []
+    CVE: Tuple[str] = ()
+    GHSA: Tuple[str] = ()
 
 
 @dataclass_json
@@ -25,29 +31,25 @@ class VulCodes:
 class VulInfo:
     vul_id: str = ""
     cvss_v3: str = ""
-    cwe: List[str] = []
+    cwe: Tuple[str] = ()
     title: str = ""
     description: str = ""
-    references: List[Reference] = []
-    severity: str = []
+    references: Tuple[Reference] = ()
+    severity: str = ""
     published_time: Optional[datetime] = field(
         default=None,
-        metadata=config(decoder=lambda x: datetime.fromisoformat(x)
-                        if x is not None else None,
+        metadata=config(decoder=lambda x: parse(x) if x is not None else None,
                         encoder=lambda x: datetime.isoformat(x)
                         if x is not None else None))
     create_time: datetime = field(default=datetime.now(),
-                                  metadata=config(
-                                      decoder=datetime.fromisoformat,
-                                      encoder=datetime.isoformat))
+                                  metadata=config(decoder=parse,
+                                                  encoder=datetime.isoformat))
     update_time: datetime = field(default=datetime.now(),
-                                  metadata=config(
-                                      decoder=datetime.fromisoformat,
-                                      encoder=datetime.isoformat))
+                                  metadata=config(decoder=parse,
+                                                  encoder=datetime.isoformat))
     change_time: datetime = field(default=datetime.now(),
-                                  metadata=config(
-                                      decoder=datetime.fromisoformat,
-                                      encoder=datetime.isoformat))
+                                  metadata=config(decoder=parse,
+                                                  encoder=datetime.isoformat))
 
 
 @dataclass_json
@@ -55,15 +57,16 @@ class VulInfo:
 class Vul:
     vul_info: VulInfo
     vul_codes: VulCodes
-    affected_versions: List[str] = []
+    affected_versions: Tuple[str] = ()
+    unaffected_versions: Tuple[str] = ()
 
 
 @dataclass_json
 @dataclass
-class Data:
-    vuls: List[Vul] = []
-    affected_versions: List[str] = []
-    unaffected_versions: List[str] = []
+class PackageVulData:
+    vuls: Tuple[Vul] = ()
+    affected_versions: Tuple[str] = ()
+    unaffected_versions: Tuple[str] = ()
 
 
 @dataclass_json
@@ -74,12 +77,21 @@ class PackageInfo:
     name: str
     version: str
     hash: str
-    license: List[str]
     version_publish_time: str
+    license: Tuple[str] = ()
+
 
 @dataclass_json
 @dataclass
-class Root:
+class PackageVulResponse:
     status: int
     msg: str
-    data: Data
+    data: PackageVulData
+
+
+@dataclass_json
+@dataclass
+class PackageResponse:
+    status: int
+    msg: str
+    data: Tuple[PackageInfo] = tuple()
