@@ -730,7 +730,7 @@ def new_update_one_sca(agent_id,
         package_info = sca_scan_asset_v2(aql, package.ecosystem, package.name,
                                          package.version)
         obj, created = IastPackageGAInfo.objects.update_or_create(
-            package_name=package_name,
+            package_name=package.name,
             defaults={
                 "affected_versions": package_info.affected_versions,
                 "unaffected_versions": package_info.unaffected_versions,
@@ -758,7 +758,7 @@ def new_update_one_sca(agent_id,
                 "version": package.version,
                 "project_id": agent.bind_project_id,
                 "project_version_id": agent.project_version_id,
-                "project_version_id": agent.bind_project.department_id,
+                "department_id": agent.bind_project.department_id,
             },
         )
         # need change package_name with ecosystem

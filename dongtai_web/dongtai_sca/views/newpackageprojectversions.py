@@ -39,7 +39,7 @@ class RelationProjectVersionArgsSerializer(serializers.Serializer):
 
 class RelationProjectVersionSerializer(serializers.ModelSerializer):
     project_version_name = serializers.CharField(
-        source='project_version.version__name')
+        source='project_version.version_name')
 
     class Meta:
         model = AssetV2
