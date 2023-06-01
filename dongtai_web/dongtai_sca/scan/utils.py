@@ -148,6 +148,7 @@ def data_transfrom_package_vul_v2(
         logger.error(f"unexcepted Exception : {e}", exc_info=True)
         return Err('Failed')
 
+
 def data_transfrom_package_vul_v3(
         response: Response) -> Result[PackageVulData, str]:
     if response.status_code == HTTPStatus.FORBIDDEN:
@@ -223,6 +224,7 @@ def get_package_vul_v2(
     data = res.value
     return data
 
+
 @cached_decorator(
     random_range=(2 * 60 * 60, 2 * 60 * 60), )
 def get_package_vul_v3(
@@ -249,7 +251,6 @@ def get_package_vul_v3(
     return data
 
 
-
 @cached_decorator(
     random_range=(2 * 60 * 60, 2 * 60 * 60), )
 def get_package(aql: str = "",
@@ -274,11 +275,12 @@ def get_package(aql: str = "",
     data = res.value
     return data
 
+
 @cached_decorator(
     random_range=(2 * 60 * 60, 2 * 60 * 60), )
 def get_package_v2(aql: str = "",
-                ecosystem: str = "",
-                package_hash: str = "") -> List[Dict]:
+                   ecosystem: str = "",
+                   package_hash: str = "") -> List[Dict]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v1/package/")
     if aql:
         querystring = {"aql": aql}
@@ -644,7 +646,7 @@ from dataclasses import dataclass, field, asdict
 
 
 @dataclass
-class PackageInfo:
+class PackageVulSummary:
     level_id: int = 0
     vul_count: int = 0
     vul_critical_count: int = 0
@@ -661,7 +663,7 @@ def get_type_with_cwe(cwe_id: str) -> str:
 
 
 def sca_scan_asset_v2(aql: str, ecosystem: str, package_name: str,
-                      version: str) -> PackageInfo:
+                      version: str) -> PackageVulSummary:
     from dongtai_common.models.asset_vul_v2 import IastAssetVulV2, IastVulAssetRelationV2
     vul_data = get_package_vul_v3(ecosystem=ecosystem,
                                   package_version=version,
@@ -680,7 +682,8 @@ def sca_scan_asset_v2(aql: str, ecosystem: str, package_name: str,
                 vul.vul_info.description,
                 "level_id":
                 get_vul_level_dict()[vul.vul_info.severity.lower()],
-                "references": [asdict(ref) for ref in vul.vul_info.references] if vul.vul_info.references else [],
+                "references": [asdict(ref) for ref in vul.vul_info.references]
+                if vul.vul_info.references else [],
                 "update_time":
                 vul.vul_info.update_time.timestamp(),
                 "create_time":
@@ -696,9 +699,9 @@ def sca_scan_asset_v2(aql: str, ecosystem: str, package_name: str,
                                               asset_id=aql)
     package_info_dict = stat_severity_v2(
         [vul.vul_info for vul in vul_data.vuls])
-    return PackageInfo(affected_versions=vul_data.affected_versions,
-                       unaffected_versions=vul_data.unaffected_versions,
-                       **package_info_dict)
+    return PackageVulSummary(affected_versions=vul_data.affected_versions,
+                             unaffected_versions=vul_data.unaffected_versions,
+                             **package_info_dict)
 
 
 @shared_task(queue='dongtai-sca-task')
@@ -916,9 +919,9 @@ def stat_severity_v2(vul_infos: List[VulInfo]) -> dict:
         if key not in res:
             res[key] = 0
     return dict(level_id=get_asset_level(res),
-                       vul_count=sum(res.values()),
-                       **{f"vul_{k}_count": v
-                          for k, v in res.items()})
+                vul_count=sum(res.values()),
+                **{f"vul_{k}_count": v
+                   for k, v in res.items()})
 
 
 class DongTaiScaVersion(_BaseVersion):
@@ -1029,12 +1032,7 @@ def get_vul_path(base_aql: str,
 
 
 def get_asset_level(res: dict) -> int:
-    level_map = {
-        'critical': 1,
-        'high': 1,
-        'medium': 2,
-        'low': 3
-    }
+    level_map = {'critical': 1, 'high': 1, 'medium': 2, 'low': 3}
     for k, v in level_map.items():
         if k in res and res[k] > 0:
             return v
@@ -1158,8 +1156,7 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                     logger.debug("unique error stack: ", exc_info=True)
                     logger.info(
                         "unique error cause by concurrency insert,ignore it")
-            type_ = IastAssetVulType.objects.filter(
-                cwe_id=cwe_id).first()
+            type_ = IastAssetVulType.objects.filter(cwe_id=cwe_id).first()
             if not type_:
                 logger.info("create type_ failed: %s", cwe_id)
                 continue
