@@ -695,6 +695,7 @@ def sca_scan_asset_v2(aql: str, ecosystem: str, package_name: str,
                 if vul.vul_info.published_time else
                 vul.vul_info.create_time.timestamp(),
             })
+        # need add update logic
         IastVulAssetRelationV2.objects.create(asset_vul_id=vul.vul_info.vul_id,
                                               asset_id=aql)
     package_info_dict = stat_severity_v2(
@@ -742,6 +743,7 @@ def new_update_one_sca(agent_id,
                 "signature_algorithm": "SHA-1",
                 "language_id": get_language_id(agent.language),
                 "package_fullname": obj,
+                "package_name": package.name,
                 "signature_value": package.hash,
                 "version": package.version,
                 "license_list": license_list,

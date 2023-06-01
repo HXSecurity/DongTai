@@ -11,6 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck_v2, get_response_serializer
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
+from django.db.models import Q
 
 from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 from dongtai_common.models.assetv2 import AssetV2, AssetV2Global
@@ -37,7 +38,7 @@ class RelationProjectArgsSerializer(serializers.Serializer):
     #    package_name = serializers.CharField(help_text=_("order_field"))
     #    package_version = serializers.CharField(help_text=_("order"))
     project_id = serializers.IntegerField(
-        required=False, help_text=_("project with be the first"))
+        default=None, required=False, help_text=_("project with be the first"))
 
 
 class RelationProjectSerializer(serializers.ModelSerializer):
@@ -63,9 +64,21 @@ class NewPackageRelationProject(UserEndPoint):
                 pass
         except ValidationError as e:
             return R.failure(data=e.detail)
-        assets = AssetV2.objects.filter(
-            package_name=package_name,
-            version=package_version).order_by('-id').all()
+        if ser.validated_data["project_id"]:
+            assets_p1 = AssetV2.objects.filter(
+                package_name=package_name,
+                version=package_version,
+                project_id=ser.validated_data["project_id"],
+            ).order_by('-id').all()
+            assets_p2 = AssetV2.objects.filter(
+                Q(package_name=package_name, version=package_version)
+                & ~Q(project_id__in=[ser.validated_data["project_id"]])
+            ).order_by('-id').all()
+            assets = assets_p1.union(assets_p2)
+        else:
+            assets = AssetV2.objects.filter(
+                package_name=package_name,
+                version=package_version).order_by('-id').all()
         page_info, data = self.get_paginator(assets,
                                              ser.validated_data['page'],
                                              ser.validated_data['page_size'])
