@@ -37,10 +37,13 @@ class RelationProjectVersionArgsSerializer(serializers.Serializer):
         help_text=_("project with be the first"))
 
 
-class RelationProjectVersionSerializer(DataclassSerializer):
+class RelationProjectVersionSerializer(serializers.ModelSerializer):
+    project_version_name = serializers.CharField(
+        source='project_version.version__name')
 
     class Meta:
-        dataclass = RelationProjectVersion
+        model = AssetV2
+        fields = ["project_version_name", "project_version_id", "package_path"]
 
 
 FullRelationProjectVersionResponseSerializer = get_response_serializer(
@@ -53,4 +56,9 @@ class NewPackageRelationProjectVersion(UserEndPoint):
         request=RelationProjectVersionArgsSerializer,
         responses={200: FullRelationProjectVersionResponseSerializer})
     def get(self, request, package_name, package_version, project_id):
-        return JsonResponse({})
+        assets = AssetV2.objects.filter(
+            package_name=package_name,
+            version=package_version,
+            project_id=project_id).order_by('-id').all()
+        return R.success(data=RelationProjectVersionSerializer(
+            assets, many=True).data, )

@@ -74,7 +74,8 @@ class AssetV2(models.Model):
 
 class AssetV2Global(models.Model):
     id = models.BigAutoField(primary_key=True)
-    package_name = models.ForeignKey(
+    package_name = models.CharField(max_length=255, blank=True, null=True)
+    package_fullname = models.ForeignKey(
         'IastPackageGAInfo',
         on_delete=models.DO_NOTHING,
         db_constraint=False,

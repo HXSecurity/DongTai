@@ -71,8 +71,8 @@ def data_transfrom(dict_list, function, key, new_key):
 
 
 class PackageSummaryArgsSerializer(serializers.Serializer):
-    project_id = serializers.IntegerField(default=1, help_text=_('Page index'))
-    project_version_id = serializers.IntegerField(default=1,
+    project_id = serializers.IntegerField(required=False, help_text=_('Page index'))
+    project_version_id = serializers.IntegerField(required=False,
                                                   help_text=_('Page index'))
 
 
