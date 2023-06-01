@@ -23,7 +23,7 @@ from requests.exceptions import ConnectionError, ConnectTimeout
 from requests.exceptions import RequestException
 import json
 from json.decoder import JSONDecodeError
-from typing import Optional, Callable, Any
+from typing import Optional, Callable, Any, Union
 from typing import List, Dict, Tuple
 from requests import Response
 from dongtai_conf.settings import SCA_BASE_URL, SCA_TIMEOUT
@@ -152,7 +152,8 @@ def data_transfrom_package_vul_v2(
 
 def data_transfrom_package_vul_v3(
     response: Response
-) -> Result[Tuple[Tuple[Vul], Tuple[str], Tuple[str], ], str]:
+) -> Result[Tuple[Union[Tuple[Vul], Tuple[()]], Union[Tuple[str], Tuple[()]],
+                  Union[Tuple[str], Tuple[()]], ], str]:
     if response.status_code == HTTPStatus.FORBIDDEN:
         return Err('Rate Limit Exceeded')
     try:
