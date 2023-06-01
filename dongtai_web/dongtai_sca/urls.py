@@ -40,5 +40,5 @@ v2_urlpatterns = [
 
 urlpatterns = [
     path('sca/v1/', include(urlpatterns), name='ScaAPI'),
-    path('sca/v2/', include(v2_urlpatterns), name='ScaAPI'),
+    path('api/sca/v2/', include(v2_urlpatterns), name='ScaAPI'),
 ]

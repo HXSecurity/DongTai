@@ -730,7 +730,7 @@ def new_update_one_sca(agent_id,
         package_info = sca_scan_asset_v2(aql, package.ecosystem, package.name,
                                          package.version)
         obj, created = IastPackageGAInfo.objects.update_or_create(
-            package_name=package.name,
+            package_fullname=package.name,
             defaults={
                 "affected_versions": package_info.affected_versions,
                 "unaffected_versions": package_info.unaffected_versions,
@@ -741,7 +741,7 @@ def new_update_one_sca(agent_id,
             defaults={
                 "signature_algorithm": "SHA-1",
                 "language_id": get_language_id(agent.language),
-                "package_name": obj,
+                "package_fullname": obj,
                 "signature_value": package.hash,
                 "version": package.version,
                 "license_list": license_list,
@@ -765,7 +765,7 @@ def new_update_one_sca(agent_id,
         datadict = asdict(package_info)
         del datadict['affected_versions']
         del datadict['unaffected_versions']
-        datadict['package_name'] = obj
+        datadict['package_fullname'] = obj
         AssetV2Global.objects.filter(aql=aql).update(**datadict)
         for i in license_list:
             license = IastAssetLicense(license_id=i["id"],
