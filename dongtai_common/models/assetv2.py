@@ -125,9 +125,9 @@ class IastAssetLicense(models.Model):
 
 class IastPackageGAInfo(models.Model):
     package_fullname = models.CharField(max_length=255,
-                                    blank=True,
-                                    null=True,
-                                    unique=True)
+                                        blank=True,
+                                        null=True,
+                                        unique=True)
     affected_versions = models.JSONField(blank=True, null=True, default=list)
     unaffected_versions = models.JSONField(blank=True, null=True, default=list)
 
