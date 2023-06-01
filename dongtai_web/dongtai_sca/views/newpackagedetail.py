@@ -35,8 +35,6 @@ class PackageListArgsSerializer(serializers.Serializer):
     order = serializers.CharField(help_text=_("order"))
 
 
-
-
 class PackeageScaAssetDetailSerializer(serializers.ModelSerializer):
     affected_versions = serializers.ListField(
         source='package_fullname.affected_versions')

@@ -172,14 +172,16 @@ class SCAScanV1TestCase(AgentTestCase):
         # skip until sca data stable
         self.assertGreaterEqual(asset.vul_count, 0)
 
+
 class SCAScanV2TestCase(AgentTestCase):
-    
+
     def test_update_one_sca_java_result_search2(self):
         new_update_one_sca(
             self.agent_id,
             "/Users/xxx/spring-boot/2.3.2.RELEASE/com.amazon.redshift:redshift-jdbc42.jar",
             "6f32a6a4af4820e4240a269a0b1a3217e43788e2",
             "com.amazon.redshift:redshift-jdbc42.jar", "SHA-1")
+
     def test_update_one_sca_java_result_search3(self):
         new_update_one_sca(
             self.agent_id,
