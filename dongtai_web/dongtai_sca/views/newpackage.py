@@ -45,7 +45,23 @@ class PackeageScaAssetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AssetV2Global
-        fields = '__all__'
+        fields = [
+            "id",
+            "package_name",
+            "signature_algorithm",
+            "signature_value",
+            "version",
+            "level_id",
+            "vul_count",
+            "vul_critical_count",
+            "vul_high_count",
+            "vul_medium_count",
+            "vul_low_count",
+            "vul_info_count",
+            "license_list",
+            "language_id",
+            "aql",
+        ]
 
 
 _NewResponseSerializer = get_response_serializer(
@@ -77,10 +93,10 @@ class PackageList(UserEndPoint):
                       validated_data['project_version_id'])
         if 'keyword' in ser.validated_data:
             q = q & Q(aql__contains=ser.validated_data['keyword'])
-        order = '-' if ser.validated_data[
-            'order'] == 'desc' else '' + ser.validated_data['order_field']
+        order = ('-' if ser.validated_data[
+            'order'] == 'desc' else '') + ser.validated_data['order_field']
         page_info, data = self.get_paginator(
             AssetV2Global.objects.filter(q).order_by(order).values().all(),
             ser.validated_data['page'], ser.validated_data['page_size'])
-        return R.success(data=PackeageScaAssetSerializer(data, many=True),
+        return R.success(data=PackeageScaAssetSerializer(data, many=True).data,
                          page=page_info)

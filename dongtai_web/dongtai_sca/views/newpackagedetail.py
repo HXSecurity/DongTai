@@ -35,22 +35,33 @@ class PackageListArgsSerializer(serializers.Serializer):
     order = serializers.CharField(help_text=_("order"))
 
 
-class PackeageScaPlainSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = AssetV2Global
-        fields = '__all__'
-
-
 class PackeageScaAssetDetailSerializer(serializers.ModelSerializer):
     affected_versions = serializers.ListField(
-        source='package_name.affected_versions')
+        source='package_fullname.affected_versions')
     unaffected_versions = serializers.ListField(
-        source='package_name.unaffected_versions')
+        source='package_fullname.unaffected_versions')
 
     class Meta:
         model = AssetV2Global
-        fields = '__all__'
+        fields = [
+            "id",
+            "package_name",
+            "signature_algorithm",
+            "signature_value",
+            "version",
+            "level_id",
+            "vul_count",
+            "vul_critical_count",
+            "vul_high_count",
+            "vul_medium_count",
+            "vul_low_count",
+            "vul_info_count",
+            "license_list",
+            "language_id",
+            "affected_versions",
+            "unaffected_versions",
+            "aql",
+        ]
 
 
 _NewResponseSerializer = get_response_serializer(

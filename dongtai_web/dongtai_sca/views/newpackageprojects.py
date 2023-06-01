@@ -34,10 +34,10 @@ class RelationProjectArgsSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=20,
                                          help_text=_('Number per page'))
     page = serializers.IntegerField(default=1, help_text=_('Page index'))
-    package_name = serializers.CharField(help_text=_("order_field"))
-    package_version = serializers.CharField(help_text=_("order"))
+    #    package_name = serializers.CharField(help_text=_("order_field"))
+    #    package_version = serializers.CharField(help_text=_("order"))
     project_id = serializers.IntegerField(
-        help_text=_("project with be the first"))
+        required=False, help_text=_("project with be the first"))
 
 
 class RelationProjectSerializer(serializers.ModelSerializer):
@@ -54,7 +54,7 @@ FullRelationProjectResponseSerializer = get_response_serializer(
 class NewPackageRelationProject(UserEndPoint):
 
     @extend_schema_with_envcheck_v2(
-        request=RelationProjectArgsSerializer,
+        parameters=[RelationProjectArgsSerializer],
         responses={200: FullRelationProjectResponseSerializer})
     def get(self, request, package_name, package_version):
         ser = RelationProjectArgsSerializer(data=request.query_params)
@@ -63,10 +63,11 @@ class NewPackageRelationProject(UserEndPoint):
                 pass
         except ValidationError as e:
             return R.failure(data=e.detail)
-        assets = AssetV2.objects.filter(package_name=package_name,
-                                        version=package_version).all()
+        assets = AssetV2.objects.filter(
+            package_name=package_name,
+            version=package_version).order_by('-id').all()
         page_info, data = self.get_paginator(assets,
                                              ser.validated_data['page'],
                                              ser.validated_data['page_size'])
-        return R.success(data=RelationProjectSerializer(data, many=True),
+        return R.success(data=RelationProjectSerializer(data, many=True).data,
                          page=page_info)

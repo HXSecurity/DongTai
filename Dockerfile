@@ -17,7 +17,7 @@ RUN apt-get update -y \
 
 COPY Pipfile .
 COPY Pipfile.lock .
-RUN pip install -U pip && pip install pipenv wheel && python3 -m pipenv sync --system -v
+#RUN pip install -U pip && pip install pipenv wheel && python3 -m pipenv sync --system -v
 
 COPY . /opt/dongtai
 WORKDIR /opt/dongtai

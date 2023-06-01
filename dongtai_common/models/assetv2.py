@@ -6,6 +6,7 @@
 # project: dongtai-models
 
 import uuid
+import time
 from django.core.cache import cache
 from django_elasticsearch_dsl.search import Search
 from dongtai_conf.settings import ASSET_INDEX
@@ -38,7 +39,9 @@ class AssetV2(models.Model):
                                            blank=True,
                                            null=True)
     signature_value = models.CharField(max_length=255, blank=True, null=True)
-    dt = models.IntegerField(blank=True, null=True)
+    dt = models.IntegerField(blank=True,
+                             null=True,
+                             default=lambda: int(time.time()))
     version = models.CharField(max_length=255, blank=True, null=True)
     project = models.ForeignKey(IastProject,
                                 on_delete=models.CASCADE,
@@ -57,7 +60,7 @@ class AssetV2(models.Model):
                                    null=True,
                                    default=-1)
     language_id = models.IntegerField(default=1, blank=True, null=False)
-    is_reconized = models.IntegerField(blank=True, null=True)
+    #is_reconized = models.IntegerField(blank=True, null=True)
     aql = models.ForeignKey('AssetV2Global',
                             to_field='aql',
                             default='',
@@ -71,7 +74,8 @@ class AssetV2(models.Model):
 
 class AssetV2Global(models.Model):
     id = models.BigAutoField(primary_key=True)
-    package_name = models.ForeignKey(
+    package_name = models.CharField(max_length=255, blank=True, null=True)
+    package_fullname = models.ForeignKey(
         'IastPackageGAInfo',
         on_delete=models.DO_NOTHING,
         db_constraint=False,
@@ -88,7 +92,7 @@ class AssetV2Global(models.Model):
                               blank=True,
                               null=True,
                               default=4)
-    vul_count = models.IntegerField(blank=True, null=True)
+    vul_count = models.IntegerField(default=0, blank=True, null=True)
     vul_critical_count = models.IntegerField(default=0, blank=True, null=False)
     vul_high_count = models.IntegerField(default=0, blank=True, null=False)
     vul_medium_count = models.IntegerField(default=0, blank=True, null=False)

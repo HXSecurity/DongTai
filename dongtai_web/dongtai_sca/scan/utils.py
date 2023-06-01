@@ -93,6 +93,42 @@ def data_transfrom(response: Response) -> Result[List[Dict], str]:
         return Err('Failed')
 
 
+from dongtai_web.dongtai_sca.common.dataclass import (
+    PackageResponse,
+    PackageInfo,
+    PackageVulData,
+    PackageVulResponse,
+    VulInfo,
+)
+from marshmallow.exceptions import ValidationError
+
+
+def data_transfrom_package_v3(
+        response: Response) -> Result[List[PackageInfo], str]:
+    if response.status_code == HTTPStatus.FORBIDDEN:
+        return Err('Rate Limit Exceeded')
+    try:
+        #res_data = PackageResponse.schema().loads(response.content)
+        res_data = PackageResponse.from_json(response.content)
+        return Ok(res_data.data)
+    except ValidationError as e:
+        logger.debug(e, exc_info=True)
+        logger.info(f'ValidationError content: {response.content!r}')
+        return Err('Failed')
+    except JSONDecodeError as e:
+        logger.debug(e, exc_info=True)
+        logger.info(f'JSONDecodeError content: {response.content!r}')
+        return Err('Failed')
+    except KeyError as e:
+        logger.debug(e, exc_info=True)
+        logger.info(f'content form not match content: {response.content!r}')
+        return Err('Failed')
+    except Exception as e:
+        logger.error(f"unexcepted Exception : {e}", exc_info=True)
+        logger.info(f'ValidationError content: {response.content!r}')
+        return Err('Failed')
+
+
 def data_transfrom_package_vul_v2(
         response: Response) -> Result[List[Dict], str]:
     if response.status_code == HTTPStatus.FORBIDDEN:
@@ -100,6 +136,31 @@ def data_transfrom_package_vul_v2(
     try:
         res_data = json.loads(response.content)
         return Ok([res_data['data'], res_data['safe_version']])
+    except JSONDecodeError as e:
+        logger.debug(e, exc_info=True)
+        logger.info(f'JSONDecodeError content: {response.content!r}')
+        return Err('Failed')
+    except KeyError as e:
+        logger.debug(e, exc_info=True)
+        logger.info(f'content form not match content: {response.content!r}')
+        return Err('Failed')
+    except Exception as e:
+        logger.error(f"unexcepted Exception : {e}", exc_info=True)
+        return Err('Failed')
+
+
+def data_transfrom_package_vul_v3(
+        response: Response) -> Result[PackageVulData, str]:
+    if response.status_code == HTTPStatus.FORBIDDEN:
+        return Err('Rate Limit Exceeded')
+    try:
+        #res_data = PackageVulResponse.schema().loads(response.content)
+        res_data = PackageVulResponse.from_json(response.content)
+        return Ok(res_data.data)
+    except ValidationError as e:
+        logger.debug(e, exc_info=True)
+        logger.info(f'ValidationError content: {response.content!r}')
+        return Err('Failed')
     except JSONDecodeError as e:
         logger.debug(e, exc_info=True)
         logger.info(f'JSONDecodeError content: {response.content!r}')
@@ -166,6 +227,32 @@ def get_package_vul_v2(
 
 @cached_decorator(
     random_range=(2 * 60 * 60, 2 * 60 * 60), )
+def get_package_vul_v3(
+    aql: str = "",
+    ecosystem: str = "",
+    package_version: str = "",
+    package_name: str = "",
+) -> Optional[PackageVulData]:
+    url = urljoin(
+        SCA_BASE_URL,
+        f"/openapi/sca/v3/package/{ecosystem.lower()}/{package_name}/{package_version}/vuls"
+    )
+    headers = {"Token": get_sca_token()}
+    payload = ""
+    res = request_get_res_data_with_exception(data_transfrom_package_vul_v3,
+                                              "GET",
+                                              url,
+                                              data=payload,
+                                              headers=headers,
+                                              timeout=SCA_TIMEOUT)
+    if isinstance(res, Err):
+        return None
+    data = res.value
+    return data
+
+
+@cached_decorator(
+    random_range=(2 * 60 * 60, 2 * 60 * 60), )
 def get_package(aql: str = "",
                 ecosystem: str = "",
                 package_hash: str = "") -> List[Dict]:
@@ -189,7 +276,313 @@ def get_package(aql: str = "",
     return data
 
 
+@cached_decorator(
+    random_range=(2 * 60 * 60, 2 * 60 * 60), )
+def get_package_v2(aql: str = "",
+                   ecosystem: str = "",
+                   package_hash: str = "") -> List[Dict]:
+    url = urljoin(SCA_BASE_URL, "/openapi/sca/v1/package/")
+    if aql:
+        querystring = {"aql": aql}
+    else:
+        querystring = {"ecosystem": ecosystem, "hash": package_hash}
+    headers = {"Token": get_sca_token()}
+    payload = ""
+    res = request_get_res_data_with_exception(data_transfrom,
+                                              "GET",
+                                              url,
+                                              data=payload,
+                                              params=querystring,
+                                              headers=headers,
+                                              timeout=SCA_TIMEOUT)
+    if isinstance(res, Err):
+        return []
+    data = res.value
+    return data
+
+
+@cached_decorator(
+    random_range=(2 * 60 * 60, 2 * 60 * 60), )
+def get_package_v3(aql: str = "",
+                   ecosystem: str = "",
+                   package_hash: str = "") -> List[PackageInfo]:
+    url = urljoin(SCA_BASE_URL,
+                  f"/openapi/sca/v3/package/{ecosystem}/hash/{package_hash}")
+    headers = {"Token": get_sca_token()}
+    payload = ""
+    res = request_get_res_data_with_exception(data_transfrom_package_v3,
+                                              "GET",
+                                              url,
+                                              data=payload,
+                                              headers=headers,
+                                              timeout=SCA_TIMEOUT)
+    if isinstance(res, Err):
+        return []
+    data = res.value
+    return data
+
+
 # from dongtai_web.dongtai_sca.utils import sca_scan_asset
+LICENSE_DICT = {
+    'GPL-1.0-only': {
+        'identifier': 'GPL-1.0-only',
+        'id': 52,
+        'level_id': 1,
+        'level_desc': '禁止商业闭源集成'
+    },
+    'GPL-1.0-or-later': {
+        'identifier': 'GPL-1.0-or-later',
+        'id': 53,
+        'level_id': 1,
+        'level_desc': '禁止商业闭源集成'
+    },
+    'GPL-2.0-only': {
+        'identifier': 'GPL-2.0-only',
+        'id': 54,
+        'level_id': 1,
+        'level_desc': '禁止商业闭源集成'
+    },
+    'GPL-2.0-or-later': {
+        'identifier': 'GPL-2.0-or-later',
+        'id': 55,
+        'level_id': 1,
+        'level_desc': '禁止商业闭源集成'
+    },
+    'GPL-3.0-only': {
+        'identifier': 'GPL-3.0-only',
+        'id': 56,
+        'level_id': 1,
+        'level_desc': '禁止商业闭源集成'
+    },
+    'GPL-3.0-or-later': {
+        'identifier': 'GPL-3.0-or-later',
+        'id': 57,
+        'level_id': 1,
+        'level_desc': '禁止商业闭源集成'
+    },
+    'GPL-1.0': {
+        'identifier': 'GPL-1.0',
+        'id': 58,
+        'level_id': 1,
+        'level_desc': '禁止商业闭源集成'
+    },
+    'GPL-1.0+': {
+        'identifier': 'GPL-1.0+',
+        'id': 59,
+        'level_id': 1,
+        'level_desc': '禁止商业闭源集成'
+    },
+    'GPL-2.0': {
+        'identifier': 'GPL-2.0',
+        'id': 60,
+        'level_id': 1,
+        'level_desc': '禁止商业闭源集成'
+    },
+    'GPL-2.0+': {
+        'identifier': 'GPL-2.0+',
+        'id': 61,
+        'level_id': 1,
+        'level_desc': '禁止商业闭源集成'
+    },
+    'GPL-2.0-with-autoconf-exception': {
+        'identifier': 'GPL-2.0-with-autoconf-exception',
+        'id': 62,
+        'level_id': 1,
+        'level_desc': '禁止商业闭源集成'
+    },
+    'GPL-2.0-with-bison-exception': {
+        'identifier': 'GPL-2.0-with-bison-exception',
+        'id': 63,
+        'level_id': 1,
+        'level_desc': '禁止商业闭源集成'
+    },
+    'GPL-2.0-with-classpath-exception': {
+        'identifier': 'GPL-2.0-with-classpath-exception',
+        'id': 64,
+        'level_id': 1,
+        'level_desc': '禁止商业闭源集成'
+    },
+    'GPL-2.0-with-font-exception': {
+        'identifier': 'GPL-2.0-with-font-exception',
+        'id': 65,
+        'level_id': 1,
+        'level_desc': '禁止商业闭源集成'
+    },
+    'GPL-2.0-with-GCC-exception': {
+        'identifier': 'GPL-2.0-with-GCC-exception',
+        'id': 66,
+        'level_id': 1,
+        'level_desc': '禁止商业闭源集成'
+    },
+    'GPL-3.0': {
+        'identifier': 'GPL-3.0',
+        'id': 67,
+        'level_id': 1,
+        'level_desc': '禁止商业闭源集成'
+    },
+    'GPL-3.0+': {
+        'identifier': 'GPL-3.0+',
+        'id': 68,
+        'level_id': 1,
+        'level_desc': '禁止商业闭源集成'
+    },
+    'GPL-3.0-with-autoconf-exception': {
+        'identifier': 'GPL-3.0-with-autoconf-exception',
+        'id': 69,
+        'level_id': 1,
+        'level_desc': '禁止商业闭源集成'
+    },
+    'GPL-3.0-with-GCC-exception': {
+        'identifier': 'GPL-3.0-with-GCC-exception',
+        'id': 70,
+        'level_id': 1,
+        'level_desc': '禁止商业闭源集成'
+    },
+    'AGPL-1.0-only': {
+        'identifier': 'AGPL-1.0-only',
+        'id': 71,
+        'level_id': 1,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'AGPL-1.0-or-later': {
+        'identifier': 'AGPL-1.0-or-later',
+        'id': 72,
+        'level_id': 1,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'AGPL-3.0-only': {
+        'identifier': 'AGPL-3.0-only',
+        'id': 73,
+        'level_id': 1,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'AGPL-3.0-or-later': {
+        'identifier': 'AGPL-3.0-or-later',
+        'id': 74,
+        'level_id': 1,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'AGPL-1.0': {
+        'identifier': 'AGPL-1.0',
+        'id': 75,
+        'level_id': 1,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'AGPL-3.0': {
+        'identifier': 'AGPL-3.0',
+        'id': 76,
+        'level_id': 1,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'LGPL-2.0-only': {
+        'identifier': 'LGPL-2.0-only',
+        'id': 77,
+        'level_id': 2,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'LGPL-2.0-or-later': {
+        'identifier': 'LGPL-2.0-or-later',
+        'id': 78,
+        'level_id': 2,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'LGPL-2.1-only': {
+        'identifier': 'LGPL-2.1-only',
+        'id': 79,
+        'level_id': 2,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'LGPL-2.1-or-later': {
+        'identifier': 'LGPL-2.1-or-later',
+        'id': 80,
+        'level_id': 2,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'LGPL-3.0-only': {
+        'identifier': 'LGPL-3.0-only',
+        'id': 81,
+        'level_id': 2,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'LGPL-3.0-or-later': {
+        'identifier': 'LGPL-3.0-or-later',
+        'id': 82,
+        'level_id': 2,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'LGPLLR': {
+        'identifier': 'LGPLLR',
+        'id': 83,
+        'level_id': 2,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'LGPL-2.0': {
+        'identifier': 'LGPL-2.0',
+        'id': 84,
+        'level_id': 2,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'LGPL-2.0+': {
+        'identifier': 'LGPL-2.0+',
+        'id': 85,
+        'level_id': 2,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'LGPL-2.1': {
+        'identifier': 'LGPL-2.1',
+        'id': 86,
+        'level_id': 2,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'LGPL-2.1+': {
+        'identifier': 'LGPL-2.1+',
+        'id': 87,
+        'level_id': 2,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'LGPL-3.0': {
+        'identifier': 'LGPL-3.0',
+        'id': 88,
+        'level_id': 2,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'LGPL-3.0+': {
+        'identifier': 'LGPL-3.0+',
+        'id': 89,
+        'level_id': 2,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'Artistic-1.0': {
+        'identifier': 'Artistic-1.0',
+        'id': 90,
+        'level_id': 2,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'Artistic-1.0-cl8': {
+        'identifier': 'Artistic-1.0-cl8',
+        'id': 91,
+        'level_id': 2,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'Artistic-1.0-Perl': {
+        'identifier': 'Artistic-1.0-Perl',
+        'id': 92,
+        'level_id': 2,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'Artistic-2.0': {
+        'identifier': 'Artistic-2.0',
+        'id': 93,
+        'level_id': 2,
+        'level_desc': '限制性商业闭源集成'
+    },
+    'ClArtistic': {
+        'identifier': 'ClArtistic',
+        'id': 94,
+        'level_id': 2,
+        'level_desc': '限制性商业闭源集成'
+    }
+}
 
 
 def get_package_aql(name: str, ecosystem: str, version: str) -> str:
@@ -219,6 +612,18 @@ def get_license_list(license_list_str: str) -> List[Dict]:
     }]
 
 
+def get_license_list_v2(license_list: Tuple[str]) -> List[Dict]:
+    res = list(map(lambda x: LICENSE_DICT[x], license_list))
+    if res:
+        return res
+    return [{
+        'identifier': "non-standard",
+        "id": 1,
+        "level_id": 0,
+        "level_desc": "允许商业集成"
+    }]
+
+
 # temporary remove to fit in cython complier
 def get_highest_license(license_list: list) -> dict:
     logger.debug(f'license_list : {license_list}')
@@ -235,6 +640,140 @@ def get_highest_license(license_list: list) -> dict:
 def sha_1(raw):
     sha1_str = sha1(raw.encode("utf-8"), usedforsecurity=False).hexdigest()
     return sha1_str
+
+
+from dataclasses import dataclass, field, asdict
+
+
+@dataclass
+class PackageVulSummary:
+    level_id: int = 0
+    vul_count: int = 0
+    vul_critical_count: int = 0
+    vul_high_count: int = 0
+    vul_medium_count: int = 0
+    vul_low_count: int = 0
+    vul_info_count: int = 0
+    affected_versions: Tuple[str] = ()
+    unaffected_versions: Tuple[str] = ()
+
+
+def get_type_with_cwe(cwe_id: str) -> str:
+    return ""
+
+
+def sca_scan_asset_v2(aql: str, ecosystem: str, package_name: str,
+                      version: str) -> PackageVulSummary:
+    from dongtai_common.models.asset_vul_v2 import IastAssetVulV2, IastVulAssetRelationV2
+    vul_data = get_package_vul_v3(ecosystem=ecosystem,
+                                  package_version=version,
+                                  package_name=package_name)
+    for vul in vul_data.vuls:
+        IastAssetVulV2.objects.update_or_create(
+            vul_id=vul.vul_info.vul_id,
+            defaults={
+                "vul_codes":
+                vul.vul_codes.to_dict(),
+                "vul_type":
+                [get_type_with_cwe(cwe) for cwe in vul.vul_info.cwe],
+                "vul_name":
+                vul.vul_info.title,
+                "vul_detail":
+                vul.vul_info.description,
+                "level_id":
+                get_vul_level_dict()[vul.vul_info.severity.lower()],
+                "references": [asdict(ref) for ref in vul.vul_info.references]
+                if vul.vul_info.references else [],
+                "update_time":
+                vul.vul_info.update_time.timestamp(),
+                "create_time":
+                vul.vul_info.create_time.timestamp(),
+                "change_time":
+                vul.vul_info.change_time.timestamp(),
+                "published_time":
+                vul.vul_info.published_time.timestamp()
+                if vul.vul_info.published_time else
+                vul.vul_info.create_time.timestamp(),
+            })
+        IastVulAssetRelationV2.objects.create(asset_vul_id=vul.vul_info.vul_id,
+                                              asset_id=aql)
+    package_info_dict = stat_severity_v2(
+        [vul.vul_info for vul in vul_data.vuls])
+    return PackageVulSummary(affected_versions=vul_data.affected_versions,
+                             unaffected_versions=vul_data.unaffected_versions,
+                             **package_info_dict)
+
+
+@shared_task(queue='dongtai-sca-task')
+def new_update_one_sca(agent_id,
+                       package_path,
+                       package_signature,
+                       package_name,
+                       package_algorithm,
+                       package_version=''):
+    logger.info(
+        f'SCA检测开始 [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm} {package_version}]'
+    )
+    from dongtai_common.models.assetv2 import AssetV2, AssetV2Global, IastAssetLicense, IastPackageGAInfo
+    agent = IastAgent.objects.filter(id=agent_id).first()
+    if not package_signature:
+        package_signature = sha_1(package_signature)
+    if agent.language == "JAVA":
+        packages = get_package_v3(ecosystem='maven',
+                                  package_hash=package_signature)
+    else:
+        packages = get_package_v3(aql=package_name)
+    asset_license_list = []
+    for package in packages:
+        aql = get_package_aql(package.name, package.ecosystem, package.version)
+        license_list = get_license_list_v2(package.license)
+        package_info = sca_scan_asset_v2(aql, package.ecosystem, package.name,
+                                         package.version)
+        obj, created = IastPackageGAInfo.objects.update_or_create(
+            package_name=package.name,
+            defaults={
+                "affected_versions": package_info.affected_versions,
+                "unaffected_versions": package_info.unaffected_versions,
+            },
+        )
+        assetglobalobj, _ = AssetV2Global.objects.update_or_create(
+            aql=aql,
+            defaults={
+                "signature_algorithm": "SHA-1",
+                "language_id": get_language_id(agent.language),
+                "package_name": obj,
+                "signature_value": package.hash,
+                "version": package.version,
+                "license_list": license_list,
+            },
+        )
+        AssetV2.objects.update_or_create(
+            aql=assetglobalobj,
+            defaults={
+                "signature_algorithm": "SHA-1",
+                "language_id": get_language_id(agent.language),
+                "package_name": package.name,
+                "package_path": package_path,
+                "signature_value": package_signature,
+                "version": package.version,
+                "project_id": agent.bind_project_id,
+                "project_version_id": agent.project_version_id,
+                "department_id": agent.bind_project.department_id,
+            },
+        )
+        # need change package_name with ecosystem
+        datadict = asdict(package_info)
+        del datadict['affected_versions']
+        del datadict['unaffected_versions']
+        datadict['package_name'] = obj
+        AssetV2Global.objects.filter(aql=aql).update(**datadict)
+        for i in license_list:
+            license = IastAssetLicense(license_id=i["id"],
+                                       asset=assetglobalobj)
+            asset_license_list.append(license)
+    IastAssetLicense.objects.bulk_create(asset_license_list,
+                                         ignore_conflicts=True)
+    # create license list
 
 
 @shared_task(queue='dongtai-sca-task')
@@ -373,6 +912,18 @@ def stat_severity(serveritys: list) -> dict:
     return dict(dic)
 
 
+def stat_severity_v2(vul_infos: List[VulInfo]) -> dict:
+    dic = defaultdict(int)
+    res = stat_severity(list(map(lambda x: x.severity, vul_infos)))
+    for key in ("critical", "high", "medium", "low", "info"):
+        if key not in res:
+            res[key] = 0
+    return dict(level_id=get_asset_level(res),
+                vul_count=sum(res.values()),
+                **{f"vul_{k}_count": v
+                   for k, v in res.items()})
+
+
 class DongTaiScaVersion(_BaseVersion):
     """
     Internal Temprorary Version Solution.
@@ -441,7 +992,16 @@ def get_language(language_id: int) -> str:
         2: "Python",
         3: "PHP",
         4: "Golang",
-    })['language_id']
+    })[language_id]
+
+
+def get_language_id(language: str) -> int:
+    return defaultdict(lambda: 1, {
+        "java": 1,
+        "python": 2,
+        "php": 3,
+        "golang": 4,
+    })[language.lower()]
 
 
 def get_level(level_id: int) -> str:
@@ -472,12 +1032,7 @@ def get_vul_path(base_aql: str,
 
 
 def get_asset_level(res: dict) -> int:
-    level_map = {
-        'critical': 1,
-        'high': 1,
-        'medium': 2,
-        'low': 3
-    }
+    level_map = {'critical': 1, 'high': 1, 'medium': 2, 'low': 3}
     for k, v in level_map.items():
         if k in res and res[k] > 0:
             return v
@@ -601,8 +1156,7 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str,
                     logger.debug("unique error stack: ", exc_info=True)
                     logger.info(
                         "unique error cause by concurrency insert,ignore it")
-            type_ = IastAssetVulType.objects.filter(
-                cwe_id=cwe_id).first()
+            type_ = IastAssetVulType.objects.filter(cwe_id=cwe_id).first()
             if not type_:
                 logger.info("create type_ failed: %s", cwe_id)
                 continue
