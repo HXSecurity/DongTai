@@ -4,7 +4,7 @@ from typing import Optional
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from datetime import datetime
-from dateutil.parser import *
+from dateutil.parser import parse
 
 
 # those Tuple[str] = () is not working
