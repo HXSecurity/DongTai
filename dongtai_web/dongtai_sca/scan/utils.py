@@ -702,6 +702,8 @@ def sca_scan_asset_v2(aql: str, ecosystem: str, package_name: str,
                 vul.vul_info.published_time.timestamp()
                 if vul.vul_info.published_time else
                 vul.vul_info.create_time.timestamp(),
+                "affected_versions": vul.affected_versions,
+                "unaffected_versions": vul.unaffected_versions,
             })
         # need add update logic
         vul_asset_rel = IastVulAssetRelationV2(
