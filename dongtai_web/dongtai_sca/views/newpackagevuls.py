@@ -72,7 +72,7 @@ class NewPackageVuls(UserEndPoint):
     @extend_schema_with_envcheck_v2(
         request=PackageVulsListArgsSerializer,
         responses={200: NewPackageVulSResponseSerializer})
-    def get(self, request, package_name, package_version):
+    def get(self, request, language_id, package_name, package_version):
         ser = PackageVulsListArgsSerializer(data=request.GET)
         try:
             if ser.is_valid(True):
@@ -80,6 +80,7 @@ class NewPackageVuls(UserEndPoint):
         except ValidationError as e:
             return R.failure(data=e.detail)
         asset_vuls = IastAssetVulV2.objects.filter(
+            iastvulassetrelationv2__asset__language_id=language_id,
             iastvulassetrelationv2__asset__package_name=package_name,
             iastvulassetrelationv2__asset__version=package_version).order_by(
                 '-id').all()

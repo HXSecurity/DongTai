@@ -12,7 +12,12 @@ from dongtai_web.utils import extend_schema_with_envcheck_v2, get_response_seria
 from rest_framework import serializers
 
 from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
-from dongtai_common.models.assetv2 import (AssetV2, AssetV2Global, IastPackageGAInfo,)
+from dongtai_common.models.assetv2 import (
+    AssetV2,
+    AssetV2Global,
+    IastPackageGAInfo,
+)
+from dongtai_web.dongtai_sca.scan.utils import get_language
 
 logger = logging.getLogger(__name__)
 
@@ -40,28 +45,21 @@ class PackeageScaAssetDetailSerializer(serializers.ModelSerializer):
         source='package_fullname.affected_versions')
     unaffected_versions = serializers.ListField(
         source='package_fullname.unaffected_versions')
+    language = serializers.SerializerMethodField()
+    level_name = serializers.CharField(source='level.name')
 
     class Meta:
         model = AssetV2Global
         fields = [
-            "id",
-            "package_name",
-            "signature_algorithm",
-            "signature_value",
-            "version",
-            "level_id",
-            "vul_count",
-            "vul_critical_count",
-            "vul_high_count",
-            "vul_medium_count",
-            "vul_low_count",
-            "vul_info_count",
-            "license_list",
-            "language_id",
-            "affected_versions",
-            "unaffected_versions",
-            "aql",
+            "id", "package_name", "signature_algorithm", "signature_value",
+            "version", "level_id", "level_name", "vul_count",
+            "vul_critical_count", "vul_high_count", "vul_medium_count",
+            "vul_low_count", "vul_info_count", "license_list", "language_id",
+            "affected_versions", "unaffected_versions", "aql", "language"
         ]
+
+    def get_language(self, obj) -> str:
+        return get_language(obj.language_id)
 
 
 _NewResponseSerializer = get_response_serializer(
@@ -71,9 +69,12 @@ _NewResponseSerializer = get_response_serializer(
 class PackageDetail(UserEndPoint):
 
     @extend_schema_with_envcheck_v2(responses={200: _NewResponseSerializer})
-    def get(self, request, package_name, package_version):
-        asset = AssetV2Global.objects.filter(package_name=package_name,
-                                             version=package_version).first()
+    def get(self, request, language_id, package_name, package_version):
+        asset = AssetV2Global.objects.filter(
+            language_id=language_id,
+            package_name=package_name,
+            version=package_version,
+        ).first()
         if asset:
             return R.success(data=PackeageScaAssetDetailSerializer(asset).data)
         return R.failure()

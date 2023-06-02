@@ -25,16 +25,19 @@ urlpatterns = [
 
 v2_urlpatterns = [
     path('package/', PackageList.as_view()),
-    path('package/<str:package_name>/<str:package_version>/detail',
-         PackageDetail.as_view()),
-    path('package_summary/', NewPackageSummary.as_view()),
-    path('package_vuls/<str:package_name>/<str:package_version>',
-         NewPackageVuls.as_view()),
-    path('package_vul/<str:vul_id>', PackageVulDetail.as_view()),
-    path('package/<str:package_name>/<str:package_version>/relation_projects',
-         NewPackageRelationProject.as_view()),
     path(
-        'package/<str:package_name>/<str:package_version>/relation_project/<int:project_id>',
+        'package/<int:language_id>/<str:package_name>/<str:package_version>/detail',
+        PackageDetail.as_view()),
+    path('package_summary/', NewPackageSummary.as_view()),
+    path(
+        'package_vuls/<int:language_id>/<str:package_name>/<str:package_version>',
+        NewPackageVuls.as_view()),
+    path('package_vul/<str:vul_id>', PackageVulDetail.as_view()),
+    path(
+        'package/<int:language_id>/<str:package_name>/<str:package_version>/relation_projects',
+        NewPackageRelationProject.as_view()),
+    path(
+        'package/<int:language_id>/<str:package_name>/<str:package_version>/relation_project/<int:project_id>',
         NewPackageRelationProjectVersion.as_view()),
 ]
 
