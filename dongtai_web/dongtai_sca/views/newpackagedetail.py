@@ -46,7 +46,7 @@ class PackeageScaAssetDetailSerializer(serializers.ModelSerializer):
     unaffected_versions = serializers.ListField(
         source='package_fullname.unaffected_versions')
     language = serializers.SerializerMethodField()
-    level_name = serializers.CharField(source='level.name')
+    level_name = serializers.CharField(source='level.name_value')
 
     class Meta:
         model = AssetV2Global
