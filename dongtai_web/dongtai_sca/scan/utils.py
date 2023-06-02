@@ -23,7 +23,7 @@ from requests.exceptions import ConnectionError, ConnectTimeout
 from requests.exceptions import RequestException
 import json
 from json.decoder import JSONDecodeError
-from typing import Optional, Callable, Any
+from typing import Optional, Callable, Any, Union
 from typing import List, Dict, Tuple
 from requests import Response
 from dongtai_conf.settings import SCA_BASE_URL, SCA_TIMEOUT
@@ -99,6 +99,7 @@ from dongtai_web.dongtai_sca.common.dataclass import (
     PackageVulData,
     PackageVulResponse,
     VulInfo,
+    Vul,
 )
 from marshmallow.exceptions import ValidationError
 
@@ -150,13 +151,16 @@ def data_transfrom_package_vul_v2(
 
 
 def data_transfrom_package_vul_v3(
-        response: Response) -> Result[PackageVulData, str]:
+    response: Response
+) -> Result[Tuple[Union[Tuple[Vul], Tuple[()]], Union[Tuple[str], Tuple[()]],
+                  Union[Tuple[str], Tuple[()]], ], str]:
     if response.status_code == HTTPStatus.FORBIDDEN:
         return Err('Rate Limit Exceeded')
     try:
         #res_data = PackageVulResponse.schema().loads(response.content)
         res_data = PackageVulResponse.from_json(response.content)
-        return Ok(res_data.data)
+        return Ok((res_data.data.vuls, tuple(res_data.data.affected_versions),
+                   tuple(res_data.data.unaffected_versions)))
     except ValidationError as e:
         logger.debug(e, exc_info=True)
         logger.info(f'ValidationError content: {response.content!r}')
@@ -232,7 +236,8 @@ def get_package_vul_v3(
     ecosystem: str = "",
     package_version: str = "",
     package_name: str = "",
-) -> Optional[PackageVulData]:
+) -> Tuple[Union[Tuple[Vul], Tuple[()]], Union[Tuple[str], Tuple[()]], Union[
+        Tuple[str], Tuple[()]], ]:
     url = urljoin(
         SCA_BASE_URL,
         f"/openapi/sca/v3/package/{ecosystem.lower()}/{package_name}/{package_version}/vuls"
@@ -246,7 +251,7 @@ def get_package_vul_v3(
                                               headers=headers,
                                               timeout=SCA_TIMEOUT)
     if isinstance(res, Err):
-        return None
+        return (), (), ()
     data = res.value
     return data
 
@@ -665,10 +670,13 @@ def get_type_with_cwe(cwe_id: str) -> str:
 def sca_scan_asset_v2(aql: str, ecosystem: str, package_name: str,
                       version: str) -> PackageVulSummary:
     from dongtai_common.models.asset_vul_v2 import IastAssetVulV2, IastVulAssetRelationV2
-    vul_data = get_package_vul_v3(ecosystem=ecosystem,
-                                  package_version=version,
-                                  package_name=package_name)
-    for vul in vul_data.vuls:
+    vuls, affected_versions, unaffected_versions = get_package_vul_v3(
+        ecosystem=ecosystem,
+        package_version=version,
+        package_name=package_name,
+    )
+    vul_asset_rel_list = []
+    for vul in vuls:
         IastAssetVulV2.objects.update_or_create(
             vul_id=vul.vul_info.vul_id,
             defaults={
@@ -696,12 +704,18 @@ def sca_scan_asset_v2(aql: str, ecosystem: str, package_name: str,
                 vul.vul_info.create_time.timestamp(),
             })
         # need add update logic
-        IastVulAssetRelationV2.objects.create(asset_vul_id=vul.vul_info.vul_id,
-                                              asset_id=aql)
+        vul_asset_rel = IastVulAssetRelationV2(
+            asset_vul_id=vul.vul_info.vul_id,
+            asset_id=aql,
+        )
+        vul_asset_rel_list.append(vul_asset_rel)
+    IastVulAssetRelationV2.objects.filter(asset_id=aql).delete()
+    IastVulAssetRelationV2.objects.bulk_create(vul_asset_rel_list,
+                                               ignore_conflicts=True)
     package_info_dict = stat_severity_v2(
-        [vul.vul_info for vul in vul_data.vuls])
-    return PackageVulSummary(affected_versions=vul_data.affected_versions,
-                             unaffected_versions=vul_data.unaffected_versions,
+        [vul.vul_info for vul in vuls])
+    return PackageVulSummary(affected_versions=affected_versions,
+                             unaffected_versions=unaffected_versions,
                              **package_info_dict)
 
 
@@ -731,7 +745,7 @@ def new_update_one_sca(agent_id,
         package_info = sca_scan_asset_v2(aql, package.ecosystem, package.name,
                                          package.version)
         obj, created = IastPackageGAInfo.objects.update_or_create(
-            package_fullname=package.name,
+            package_fullname=package.ecosystem + package.name,
             defaults={
                 "affected_versions": package_info.affected_versions,
                 "unaffected_versions": package_info.unaffected_versions,

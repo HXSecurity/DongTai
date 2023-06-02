@@ -73,7 +73,7 @@ class PackageList(UserEndPoint):
     @extend_schema_with_envcheck_v2(request=PackageListArgsSerializer,
                                     responses={200: _NewResponseSerializer})
     def post(self, request):
-        ser = PackageListArgsSerializer(data=request.POST)
+        ser = PackageListArgsSerializer(data=request.data)
         try:
             if ser.is_valid(True):
                 pass

@@ -83,6 +83,7 @@ djangorestframework-dataclasses = "*"
 django-seriously = "*"
 dataclasses-json = "*"
 django-silk = "*"
+types-python-dateutil = "*"
 
 [dev-packages]
 
