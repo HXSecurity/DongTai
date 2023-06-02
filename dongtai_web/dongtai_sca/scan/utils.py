@@ -236,7 +236,8 @@ def get_package_vul_v3(
     ecosystem: str = "",
     package_version: str = "",
     package_name: str = "",
-) -> Tuple[Tuple[Vul], Tuple[str], Tuple[str]]:
+) -> Tuple[Union[Tuple[Vul], Tuple[()]], Union[Tuple[str], Tuple[()]], Union[
+        Tuple[str], Tuple[()]], ]:
     url = urljoin(
         SCA_BASE_URL,
         f"/openapi/sca/v3/package/{ecosystem.lower()}/{package_name}/{package_version}/vuls"
