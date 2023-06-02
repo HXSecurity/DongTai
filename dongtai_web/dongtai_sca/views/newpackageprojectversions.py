@@ -55,10 +55,13 @@ class NewPackageRelationProjectVersion(UserEndPoint):
     @extend_schema_with_envcheck_v2(
         request=RelationProjectVersionArgsSerializer,
         responses={200: FullRelationProjectVersionResponseSerializer})
-    def get(self, request, package_name, package_version, project_id):
+    def get(self, request, language_id, package_name, package_version,
+            project_id):
         assets = AssetV2.objects.filter(
+            language_id=language_id,
             package_name=package_name,
             version=package_version,
-            project_id=project_id).order_by('-id').all()
+            project_id=project_id,
+        ).order_by('-id').all()
         return R.success(data=RelationProjectVersionSerializer(
             assets, many=True).data, )

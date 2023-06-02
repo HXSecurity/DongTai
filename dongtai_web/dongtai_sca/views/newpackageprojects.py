@@ -57,7 +57,7 @@ class NewPackageRelationProject(UserEndPoint):
     @extend_schema_with_envcheck_v2(
         parameters=[RelationProjectArgsSerializer],
         responses={200: FullRelationProjectResponseSerializer})
-    def get(self, request, package_name, package_version):
+    def get(self, request, language_id, package_name, package_version):
         ser = RelationProjectArgsSerializer(data=request.query_params)
         try:
             if ser.is_valid(True):
@@ -66,6 +66,7 @@ class NewPackageRelationProject(UserEndPoint):
             return R.failure(data=e.detail)
         if ser.validated_data["project_id"]:
             assets_p1 = AssetV2.objects.filter(
+                language_id=language_id,
                 package_name=package_name,
                 version=package_version,
                 project_id=ser.validated_data["project_id"],
