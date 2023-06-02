@@ -70,7 +70,7 @@ NewPackageVulSResponseSerializer = get_response_serializer(
 class NewPackageVuls(UserEndPoint):
 
     @extend_schema_with_envcheck_v2(
-        request=PackageVulsListArgsSerializer,
+        parameters=[PackageVulsListArgsSerializer],
         responses={200: NewPackageVulSResponseSerializer})
     def get(self, request, language_id, package_name, package_version):
         ser = PackageVulsListArgsSerializer(data=request.GET)
