@@ -682,8 +682,10 @@ def sca_scan_asset_v2(aql: str, ecosystem: str, package_name: str,
             defaults={
                 "vul_codes":
                 vul.vul_codes.to_dict(),
-                "vul_type":
-                [get_type_with_cwe(cwe) for cwe in vul.vul_info.cwe],
+                "vul_type": [
+                    get_cwe_name(cwe) if get_cwe_name(cwe) else cwe
+                    for cwe in vul.vul_info.cwe
+                ],
                 "vul_name":
                 vul.vul_info.title,
                 "vul_detail":
@@ -702,8 +704,10 @@ def sca_scan_asset_v2(aql: str, ecosystem: str, package_name: str,
                 vul.vul_info.published_time.timestamp()
                 if vul.vul_info.published_time else
                 vul.vul_info.create_time.timestamp(),
-                "affected_versions": vul.affected_versions,
-                "unaffected_versions": vul.unaffected_versions,
+                "affected_versions":
+                vul.affected_versions,
+                "unaffected_versions":
+                vul.unaffected_versions,
             })
         # need add update logic
         vul_asset_rel = IastVulAssetRelationV2(
