@@ -31,6 +31,8 @@ class IastAssetVulV2(models.Model):
                               unique=True)
     vul_type = models.JSONField(blank=True, null=True)
     vul_codes = models.JSONField(blank=True, null=True)
+    affected_versions= models.JSONField(blank=True, null=True)
+    unaffected_versions = models.JSONField(blank=True, null=True)
 
     class Meta:
         managed = True
