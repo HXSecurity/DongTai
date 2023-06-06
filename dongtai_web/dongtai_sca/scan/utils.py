@@ -921,8 +921,9 @@ def get_license_list(license_list_str: str) -> List[Dict]:
 
 
 def get_license_list_v2(license_list: Tuple[str]) -> List[Dict]:
+    filter_none: Callable[[Optional[Dict]], Dict] = lambda x: x is not None
     res = list(
-        filter(lambda x: x is not None,
+        filter(filter_none,
                map(lambda x: LICENSE_DICT.get(x, None), license_list)))
     return res
     #return [{
