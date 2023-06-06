@@ -69,15 +69,15 @@ class ApiRouteCoverRate(UserEndPoint):
             project_id=project_id,
             project_version_id=current_project_version.get("version_id",
                                                            0)).count()
-        cover_count = IastApiRoute.objects.filter(
+        covered_count = IastApiRoute.objects.filter(
             project_id=project_id,
             project_version_id=current_project_version.get("version_id", 0),
             is_cover=1).count()
         try:
-            cover_rate = "{:.2%}".format(cover_count / total_count)
+            cover_rate = "{:.2%}".format(covered_count / total_count)
         except ZeroDivisionError as e:
             logger.info(e, exc_info=True)
             cover_rate = "{:.2%}".format(1.0)
 
         return R.success(msg=_('API coverage rate obtained successfully'),
-                         data={'cover_rate': cover_rate})
+                data={'cover_rate': cover_rate, "total_count": total_count, "covered_count":covered_count })
