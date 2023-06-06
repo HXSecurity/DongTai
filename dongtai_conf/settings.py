@@ -404,7 +404,7 @@ LOGGING = {
     'loggers': {
         'django.db.backends': {
             'handlers': ['console'],
-            'level': LOGGING_LEVEL,
+            'level': "DEBUG" if DEBUG else LOGGING_LEVEL ,
             'propagate': False,
             'encoding': "utf-8",
         },
