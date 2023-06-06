@@ -188,6 +188,25 @@ class SCAScanV2TestCase(AgentTestCase):
             "/Users/xxx/spring-boot/2.3.2.RELEASE/com.amazon.redshift:redshift-jdbc42.jar",
             "9179edbad62154d04d4be20f0c0e2fb1fc637710",
             "com.amazon.redshift:redshift-jdbc42.jar", "SHA-1")
+    
+    def test_update_one_sca_java_result_search3(self):
+        new_update_one_sca(
+            self.agent_id,
+            "/Users/xxx/spring-boot/2.3.2.RELEASE/com.amazon.redshift:redshift-jdbc42.jar",
+            "5a7674517dd621cc60a000898341b03c41b7034b",
+            "com.amazon.redshift:redshift-jdbc42.jar", "SHA-1")
+    
+    def test_update_one_sca_java_same_package(self):
+        new_update_one_sca(
+            self.agent_id,
+            "/Users/xxx/spring-boot/2.3.2.RELEASE/com.amazon.redshift:redshift-jdbc42.jar",
+            "9179edbad62154d04d4be20f0c0e2fb1fc637710",
+            "com.amazon.redshift:redshift-jdbc42.jar", "SHA-1")
+        new_update_one_sca(
+            self.agent_id,
+            "/Users/xxx/spring-boot/2.3.2.RELEASE/com.amazon.redshift:redshift-jdbc42.jar",
+            "9179edbad62154d04d4be20f0c0e2fb1fc637710",
+            "com.amazon.redshift:redshift-jdbc42.jar", "SHA-1")
         #asset = Asset.objects.filter(
         #    agent_id=self.agent_id,
         #    signature_value="6f32a6a4af4820e4240a269a0b1a3217e43788e2",

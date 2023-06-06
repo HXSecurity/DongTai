@@ -110,7 +110,9 @@ def data_transfrom_package_v3(
         return Err('Rate Limit Exceeded')
     try:
         #res_data = PackageResponse.schema().loads(response.content)
-        res_data = PackageResponse.from_json(response.content)
+        import json
+        content = json.loads(response.content)
+        res_data = PackageResponse.from_dict(content)
         return Ok(res_data.data)
     except ValidationError as e:
         logger.debug(e, exc_info=True)
@@ -330,265 +332,566 @@ def get_package_v3(aql: str = "",
 # from dongtai_web.dongtai_sca.utils import sca_scan_asset
 LICENSE_DICT = {
     'GPL-1.0-only': {
-        'identifier': 'GPL-1.0-only',
         'id': 52,
+        'identifier': 'GPL-1.0-only',
         'level_id': 1,
         'level_desc': '禁止商业闭源集成'
     },
     'GPL-1.0-or-later': {
-        'identifier': 'GPL-1.0-or-later',
         'id': 53,
+        'identifier': 'GPL-1.0-or-later',
         'level_id': 1,
         'level_desc': '禁止商业闭源集成'
     },
     'GPL-2.0-only': {
-        'identifier': 'GPL-2.0-only',
         'id': 54,
+        'identifier': 'GPL-2.0-only',
         'level_id': 1,
         'level_desc': '禁止商业闭源集成'
     },
     'GPL-2.0-or-later': {
-        'identifier': 'GPL-2.0-or-later',
         'id': 55,
+        'identifier': 'GPL-2.0-or-later',
         'level_id': 1,
         'level_desc': '禁止商业闭源集成'
     },
     'GPL-3.0-only': {
-        'identifier': 'GPL-3.0-only',
         'id': 56,
+        'identifier': 'GPL-3.0-only',
         'level_id': 1,
         'level_desc': '禁止商业闭源集成'
     },
     'GPL-3.0-or-later': {
-        'identifier': 'GPL-3.0-or-later',
         'id': 57,
+        'identifier': 'GPL-3.0-or-later',
         'level_id': 1,
         'level_desc': '禁止商业闭源集成'
     },
     'GPL-1.0': {
-        'identifier': 'GPL-1.0',
         'id': 58,
+        'identifier': 'GPL-1.0',
         'level_id': 1,
         'level_desc': '禁止商业闭源集成'
     },
     'GPL-1.0+': {
-        'identifier': 'GPL-1.0+',
         'id': 59,
+        'identifier': 'GPL-1.0+',
         'level_id': 1,
         'level_desc': '禁止商业闭源集成'
     },
     'GPL-2.0': {
-        'identifier': 'GPL-2.0',
         'id': 60,
+        'identifier': 'GPL-2.0',
         'level_id': 1,
         'level_desc': '禁止商业闭源集成'
     },
     'GPL-2.0+': {
-        'identifier': 'GPL-2.0+',
         'id': 61,
+        'identifier': 'GPL-2.0+',
         'level_id': 1,
         'level_desc': '禁止商业闭源集成'
     },
     'GPL-2.0-with-autoconf-exception': {
-        'identifier': 'GPL-2.0-with-autoconf-exception',
         'id': 62,
+        'identifier': 'GPL-2.0-with-autoconf-exception',
         'level_id': 1,
         'level_desc': '禁止商业闭源集成'
     },
     'GPL-2.0-with-bison-exception': {
-        'identifier': 'GPL-2.0-with-bison-exception',
         'id': 63,
+        'identifier': 'GPL-2.0-with-bison-exception',
         'level_id': 1,
         'level_desc': '禁止商业闭源集成'
     },
     'GPL-2.0-with-classpath-exception': {
-        'identifier': 'GPL-2.0-with-classpath-exception',
         'id': 64,
+        'identifier': 'GPL-2.0-with-classpath-exception',
         'level_id': 1,
         'level_desc': '禁止商业闭源集成'
     },
     'GPL-2.0-with-font-exception': {
-        'identifier': 'GPL-2.0-with-font-exception',
         'id': 65,
+        'identifier': 'GPL-2.0-with-font-exception',
         'level_id': 1,
         'level_desc': '禁止商业闭源集成'
     },
     'GPL-2.0-with-GCC-exception': {
-        'identifier': 'GPL-2.0-with-GCC-exception',
         'id': 66,
+        'identifier': 'GPL-2.0-with-GCC-exception',
         'level_id': 1,
         'level_desc': '禁止商业闭源集成'
     },
     'GPL-3.0': {
-        'identifier': 'GPL-3.0',
         'id': 67,
+        'identifier': 'GPL-3.0',
         'level_id': 1,
         'level_desc': '禁止商业闭源集成'
     },
     'GPL-3.0+': {
-        'identifier': 'GPL-3.0+',
         'id': 68,
+        'identifier': 'GPL-3.0+',
         'level_id': 1,
         'level_desc': '禁止商业闭源集成'
     },
     'GPL-3.0-with-autoconf-exception': {
-        'identifier': 'GPL-3.0-with-autoconf-exception',
         'id': 69,
+        'identifier': 'GPL-3.0-with-autoconf-exception',
         'level_id': 1,
         'level_desc': '禁止商业闭源集成'
     },
     'GPL-3.0-with-GCC-exception': {
-        'identifier': 'GPL-3.0-with-GCC-exception',
         'id': 70,
+        'identifier': 'GPL-3.0-with-GCC-exception',
         'level_id': 1,
         'level_desc': '禁止商业闭源集成'
     },
     'AGPL-1.0-only': {
-        'identifier': 'AGPL-1.0-only',
         'id': 71,
+        'identifier': 'AGPL-1.0-only',
         'level_id': 1,
         'level_desc': '限制性商业闭源集成'
     },
     'AGPL-1.0-or-later': {
-        'identifier': 'AGPL-1.0-or-later',
         'id': 72,
+        'identifier': 'AGPL-1.0-or-later',
         'level_id': 1,
         'level_desc': '限制性商业闭源集成'
     },
     'AGPL-3.0-only': {
-        'identifier': 'AGPL-3.0-only',
         'id': 73,
+        'identifier': 'AGPL-3.0-only',
         'level_id': 1,
         'level_desc': '限制性商业闭源集成'
     },
     'AGPL-3.0-or-later': {
-        'identifier': 'AGPL-3.0-or-later',
         'id': 74,
+        'identifier': 'AGPL-3.0-or-later',
         'level_id': 1,
         'level_desc': '限制性商业闭源集成'
     },
     'AGPL-1.0': {
-        'identifier': 'AGPL-1.0',
         'id': 75,
+        'identifier': 'AGPL-1.0',
         'level_id': 1,
         'level_desc': '限制性商业闭源集成'
     },
     'AGPL-3.0': {
-        'identifier': 'AGPL-3.0',
         'id': 76,
+        'identifier': 'AGPL-3.0',
         'level_id': 1,
         'level_desc': '限制性商业闭源集成'
     },
     'LGPL-2.0-only': {
-        'identifier': 'LGPL-2.0-only',
         'id': 77,
+        'identifier': 'LGPL-2.0-only',
         'level_id': 2,
         'level_desc': '限制性商业闭源集成'
     },
     'LGPL-2.0-or-later': {
-        'identifier': 'LGPL-2.0-or-later',
         'id': 78,
+        'identifier': 'LGPL-2.0-or-later',
         'level_id': 2,
         'level_desc': '限制性商业闭源集成'
     },
     'LGPL-2.1-only': {
-        'identifier': 'LGPL-2.1-only',
         'id': 79,
+        'identifier': 'LGPL-2.1-only',
         'level_id': 2,
         'level_desc': '限制性商业闭源集成'
     },
     'LGPL-2.1-or-later': {
-        'identifier': 'LGPL-2.1-or-later',
         'id': 80,
+        'identifier': 'LGPL-2.1-or-later',
         'level_id': 2,
         'level_desc': '限制性商业闭源集成'
     },
     'LGPL-3.0-only': {
-        'identifier': 'LGPL-3.0-only',
         'id': 81,
+        'identifier': 'LGPL-3.0-only',
         'level_id': 2,
         'level_desc': '限制性商业闭源集成'
     },
     'LGPL-3.0-or-later': {
-        'identifier': 'LGPL-3.0-or-later',
         'id': 82,
+        'identifier': 'LGPL-3.0-or-later',
         'level_id': 2,
         'level_desc': '限制性商业闭源集成'
     },
     'LGPLLR': {
-        'identifier': 'LGPLLR',
         'id': 83,
+        'identifier': 'LGPLLR',
         'level_id': 2,
         'level_desc': '限制性商业闭源集成'
     },
     'LGPL-2.0': {
-        'identifier': 'LGPL-2.0',
         'id': 84,
+        'identifier': 'LGPL-2.0',
         'level_id': 2,
         'level_desc': '限制性商业闭源集成'
     },
     'LGPL-2.0+': {
-        'identifier': 'LGPL-2.0+',
         'id': 85,
+        'identifier': 'LGPL-2.0+',
         'level_id': 2,
         'level_desc': '限制性商业闭源集成'
     },
     'LGPL-2.1': {
-        'identifier': 'LGPL-2.1',
         'id': 86,
+        'identifier': 'LGPL-2.1',
         'level_id': 2,
         'level_desc': '限制性商业闭源集成'
     },
     'LGPL-2.1+': {
-        'identifier': 'LGPL-2.1+',
         'id': 87,
+        'identifier': 'LGPL-2.1+',
         'level_id': 2,
         'level_desc': '限制性商业闭源集成'
     },
     'LGPL-3.0': {
-        'identifier': 'LGPL-3.0',
         'id': 88,
+        'identifier': 'LGPL-3.0',
         'level_id': 2,
         'level_desc': '限制性商业闭源集成'
     },
     'LGPL-3.0+': {
-        'identifier': 'LGPL-3.0+',
         'id': 89,
+        'identifier': 'LGPL-3.0+',
         'level_id': 2,
         'level_desc': '限制性商业闭源集成'
     },
     'Artistic-1.0': {
-        'identifier': 'Artistic-1.0',
         'id': 90,
+        'identifier': 'Artistic-1.0',
         'level_id': 2,
         'level_desc': '限制性商业闭源集成'
     },
     'Artistic-1.0-cl8': {
-        'identifier': 'Artistic-1.0-cl8',
         'id': 91,
+        'identifier': 'Artistic-1.0-cl8',
         'level_id': 2,
         'level_desc': '限制性商业闭源集成'
     },
     'Artistic-1.0-Perl': {
-        'identifier': 'Artistic-1.0-Perl',
         'id': 92,
+        'identifier': 'Artistic-1.0-Perl',
         'level_id': 2,
         'level_desc': '限制性商业闭源集成'
     },
     'Artistic-2.0': {
-        'identifier': 'Artistic-2.0',
         'id': 93,
+        'identifier': 'Artistic-2.0',
         'level_id': 2,
         'level_desc': '限制性商业闭源集成'
     },
     'ClArtistic': {
-        'identifier': 'ClArtistic',
         'id': 94,
+        'identifier': 'ClArtistic',
         'level_id': 2,
         'level_desc': '限制性商业闭源集成'
+    },
+    'ISC': {
+        'id': 95,
+        'identifier': 'ISC',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'BSD-4-Clause': {
+        'id': 96,
+        'identifier': 'BSD-4-Clause',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'CC-BY-2.5': {
+        'id': 97,
+        'identifier': 'CC-BY-2.5',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'CC-BY-ND-4.0': {
+        'id': 98,
+        'identifier': 'CC-BY-ND-4.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'BSD-2-Clause-Views': {
+        'id': 99,
+        'identifier': 'BSD-2-Clause-Views',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'FTL': {
+        'id': 100,
+        'identifier': 'FTL',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'BSD-2-Clause-Patent': {
+        'id': 101,
+        'identifier': 'BSD-2-Clause-Patent',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'MPL-2.0-no-copyleft-exception': {
+        'id': 102,
+        'identifier': 'MPL-2.0-no-copyleft-exception',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'CC-BY-NC-3.0': {
+        'id': 103,
+        'identifier': 'CC-BY-NC-3.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'CC-BY-NC-ND-2.5': {
+        'id': 104,
+        'identifier': 'CC-BY-NC-ND-2.5',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'GFDL-1.3': {
+        'id': 105,
+        'identifier': 'GFDL-1.3',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'libpng-2.0': {
+        'id': 106,
+        'identifier': 'libpng-2.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'AML': {
+        'id': 107,
+        'identifier': 'AML',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'MIT': {
+        'id': 108,
+        'identifier': 'MIT',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'CC-BY-SA-2.5': {
+        'id': 109,
+        'identifier': 'CC-BY-SA-2.5',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'EPL-2.0': {
+        'id': 110,
+        'identifier': 'EPL-2.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'CC-BY-SA-2.0': {
+        'id': 111,
+        'identifier': 'CC-BY-SA-2.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'Apache-2.0': {
+        'id': 112,
+        'identifier': 'Apache-2.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'MPL-2.0': {
+        'id': 113,
+        'identifier': 'MPL-2.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'BSD-3-Clause-Clear': {
+        'id': 114,
+        'identifier': 'BSD-3-Clause-Clear',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'CC-BY-NC-ND-3.0': {
+        'id': 115,
+        'identifier': 'CC-BY-NC-ND-3.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'CC-BY-NC-ND-4.0': {
+        'id': 116,
+        'identifier': 'CC-BY-NC-ND-4.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'CC-BY-ND-3.0': {
+        'id': 117,
+        'identifier': 'CC-BY-ND-3.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'CC-BY-NC-2.5': {
+        'id': 118,
+        'identifier': 'CC-BY-NC-2.5',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'CC-BY-SA-3.0': {
+        'id': 119,
+        'identifier': 'CC-BY-SA-3.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'ECL-2.0': {
+        'id': 120,
+        'identifier': 'ECL-2.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'CDDL-1.0': {
+        'id': 121,
+        'identifier': 'CDDL-1.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'MPL-1.1': {
+        'id': 122,
+        'identifier': 'MPL-1.1',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'CC0-1.0': {
+        'id': 123,
+        'identifier': 'CC0-1.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'CC-BY-NC-4.0': {
+        'id': 124,
+        'identifier': 'CC-BY-NC-4.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'JSON': {
+        'id': 125,
+        'identifier': 'JSON',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'bzip2-1.0.6': {
+        'id': 126,
+        'identifier': 'bzip2-1.0.6',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'Apache-1.1': {
+        'id': 127,
+        'identifier': 'Apache-1.1',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'Beerware': {
+        'id': 128,
+        'identifier': 'Beerware',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'CC-BY-2.0': {
+        'id': 129,
+        'identifier': 'CC-BY-2.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'CC-BY-NC-SA-3.0': {
+        'id': 130,
+        'identifier': 'CC-BY-NC-SA-3.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'FSFAP': {
+        'id': 131,
+        'identifier': 'FSFAP',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'CC-BY-3.0': {
+        'id': 132,
+        'identifier': 'CC-BY-3.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'CC-BY-NC-SA-4.0': {
+        'id': 133,
+        'identifier': 'CC-BY-NC-SA-4.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'CC-BY-4.0': {
+        'id': 134,
+        'identifier': 'CC-BY-4.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'EPL-1.0': {
+        'id': 135,
+        'identifier': 'EPL-1.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'UPL-1.0': {
+        'id': 136,
+        'identifier': 'UPL-1.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'Zlib': {
+        'id': 137,
+        'identifier': 'Zlib',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'MIT-0': {
+        'id': 138,
+        'identifier': 'MIT-0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'CC-BY-SA-4.0': {
+        'id': 139,
+        'identifier': 'CC-BY-SA-4.0',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'Unlicense': {
+        'id': 140,
+        'identifier': 'Unlicense',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'HPND-sell-variant': {
+        'id': 141,
+        'identifier': 'HPND-sell-variant',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'BSD-3-Clause': {
+        'id': 142,
+        'identifier': 'BSD-3-Clause',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'BSD-2-Clause': {
+        'id': 143,
+        'identifier': 'BSD-2-Clause',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
+    },
+    'libtiff': {
+        'id': 144,
+        'identifier': 'libtiff',
+        'level_id': 0,
+        'level_desc': '允许商业集成'
     }
 }
 
+LICENSE_ID_DICT = {v['id']: k for k, v in LICENSE_DICT.items()}
 
 def get_package_aql(name: str, ecosystem: str, version: str) -> str:
     return f"{ecosystem}:{name}:{version}"
@@ -618,15 +921,16 @@ def get_license_list(license_list_str: str) -> List[Dict]:
 
 
 def get_license_list_v2(license_list: Tuple[str]) -> List[Dict]:
-    res = list(map(lambda x: LICENSE_DICT[x], license_list))
-    if res:
-        return res
-    return [{
-        'identifier': "non-standard",
-        "id": 1,
-        "level_id": 0,
-        "level_desc": "允许商业集成"
-    }]
+    res = list(
+        filter(lambda x: x is not None,
+               map(lambda x: LICENSE_DICT.get(x, None), license_list)))
+    return res
+    #return [{
+    #    'identifier': "无",
+    #    "id": 1,
+    #    "level_id": 0,
+    #    "level_desc": "允许商业集成"
+    #}]
 
 
 # temporary remove to fit in cython complier
@@ -771,6 +1075,8 @@ def new_update_one_sca(agent_id,
         )
         AssetV2.objects.update_or_create(
             aql=assetglobalobj,
+            project_id=agent.bind_project_id,
+            project_version_id=agent.project_version_id,
             defaults={
                 "signature_algorithm": "SHA-1",
                 "language_id": get_language_id(agent.language),
@@ -778,8 +1084,6 @@ def new_update_one_sca(agent_id,
                 "package_path": package_path,
                 "signature_value": package_signature,
                 "version": package.version,
-                "project_id": agent.bind_project_id,
-                "project_version_id": agent.project_version_id,
                 "department_id": agent.bind_project.department_id,
             },
         )
@@ -1036,7 +1340,7 @@ def get_level(level_id: int) -> str:
 
 
 def get_license(license_id: int) -> str:
-    return defaultdict(lambda: "non-standard", {})[license_id]
+    return defaultdict(lambda: "non-standard", LICENSE_ID_DICT)[license_id]
 
 
 def get_description(descriptions: List[Dict]) -> str:
