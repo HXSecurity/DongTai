@@ -106,8 +106,8 @@ class NewPackageSummary(UserEndPoint):
             license_q = license_q & Q(
                 asset__assetv2__project_id=ser.validated_data['project_id'])
         if 'project_version_id' in ser.validated_data:
-            q = q & Q(
-                assetv2__project_version_id=ser.validated_data['project_id'])
+            q = q & Q(assetv2__project_version_id=ser.
+                      validated_data['project_version_id'])
             license_q = license_q & Q(asset__assetv2__project_version_id=ser.
                                       validated_data['project_version_id'])
         queryset = AssetV2Global.objects.filter(q)
