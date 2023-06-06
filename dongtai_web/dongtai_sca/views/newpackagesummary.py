@@ -111,15 +111,13 @@ class NewPackageSummary(UserEndPoint):
             license_q = license_q & Q(asset__assetv2__project_version_id=ser.
                                       validated_data['project_version_id'])
         queryset = AssetV2Global.objects.filter(q)
-        license_queryset = IastAssetLicense.objects.filter(q)
+        license_queryset = IastAssetLicense.objects.filter(license_q)
         language_summary_list = queryset.values('language_id').annotate(
             count=Count('language_id'))
         level_summary_list = queryset.values('level_id').annotate(
             count=Count('level_id'))
-        license_summary_list = queryset.annotate(
-            license_id=F("iastassetlicense__license_id"),
-            count=Count('iastassetlicense__license_id')).values(
-                "license_id", "count")
+        license_summary_list = license_queryset.values("license_id").annotate(
+            count=Count('license_id'))
         return R.success(
             data={
                 "language":
