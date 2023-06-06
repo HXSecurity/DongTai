@@ -434,7 +434,7 @@ def handler_replay_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
                        bottom_stack, **kwargs):
     timestamp = int(time.time())
     vul = IastVulnerabilityModel.objects.filter(
-        id=kwargs['relation_id']).first()
+        Q(pk=kwargs['relation_id']) & ~Q(status_id=(3, 4, 5, 6))).first()
     logger.info(
         f'handle vul replay, current strategy:{vul.strategy_id}, target hook_type:{strategy_id}'
     )
