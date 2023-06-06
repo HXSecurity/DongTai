@@ -13,7 +13,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
 from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
-from dongtai_common.models.assetv2 import AssetV2, AssetV2Global
+from dongtai_common.models.assetv2 import AssetV2, AssetV2Global, IastAssetLicense
 from rest_framework_dataclasses.serializers import DataclassSerializer
 from dataclasses import dataclass, field
 from typing import List
@@ -71,7 +71,8 @@ def data_transfrom(dict_list, function, key, new_key):
 
 
 class PackageSummaryArgsSerializer(serializers.Serializer):
-    project_id = serializers.IntegerField(required=False, help_text=_('Page index'))
+    project_id = serializers.IntegerField(required=False,
+                                          help_text=_('Page index'))
     project_version_id = serializers.IntegerField(required=False,
                                                   help_text=_('Page index'))
 
@@ -99,12 +100,18 @@ class NewPackageSummary(UserEndPoint):
         except ValidationError as e:
             return R.failure(data=e.detail)
         q = Q()
+        license_q = Q()
         if 'project_id' in ser.validated_data:
             q = q & Q(assetv2__project_id=ser.validated_data['project_id'])
+            license_q = license_q & Q(
+                asset__assetv2__project_id=ser.validated_data['project_id'])
         if 'project_version_id' in ser.validated_data:
-            q = q & Q(assetv2__project_version_id=ser.
-                      validated_data['project_version_id'])
+            q = q & Q(
+                assetv2__project_version_id=ser.validated_data['project_id'])
+            license_q = license_q & Q(asset__assetv2__project_version_id=ser.
+                                      validated_data['project_version_id'])
         queryset = AssetV2Global.objects.filter(q)
+        license_queryset = IastAssetLicense.objects.filter(q)
         language_summary_list = queryset.values('language_id').annotate(
             count=Count('language_id'))
         level_summary_list = queryset.values('level_id').annotate(
