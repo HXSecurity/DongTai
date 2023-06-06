@@ -25,6 +25,10 @@ logger = logging.getLogger("dongtai-webapi")
 class ApiRouteCoverRateResponseSerializer(serializers.Serializer):
     cover_rate = serializers.IntegerField(
         help_text=_("The api cover_rate of the project"), )
+    total_count = serializers.IntegerField(
+        help_text=_("The api cover_rate of the project"), )
+    cover_count = serializers.IntegerField(
+        help_text=_("The coverd api number  of the project"), )
 
 
 _GetResponseSerializer = get_response_serializer(
@@ -43,8 +47,9 @@ class ApiRouteCoverRate(UserEndPoint):
         }],
         tags=[_('API Route')],
         summary=_('API Route Coverrate'),
-        description=_("Get the API route coverrate of the project corresponding to the specified id."
-                      ),
+        description=
+        _("Get the API route coverrate of the project corresponding to the specified id."
+          ),
         response_schema=_GetResponseSerializer,
     )
     def get(self, request):
@@ -52,8 +57,7 @@ class ApiRouteCoverRate(UserEndPoint):
         version_id = request.query_params.get('version_id', None)
         auth_users = self.get_auth_users(request.user)
         if not version_id:
-            current_project_version = get_project_version(
-                project_id)
+            current_project_version = get_project_version(project_id)
         else:
             current_project_version = get_project_version_by_id(version_id)
         departments = request.user.get_relative_department()
@@ -61,17 +65,16 @@ class ApiRouteCoverRate(UserEndPoint):
                                                   pk=project_id).first()
         if not projectexist:
             return R.failure(_("Parameter error"))
-        agents = IastAgent.objects.filter(
-            bind_project_id=project_id,
+        total_count = IastApiRoute.objects.filter(
+            project_id=project_id,
             project_version_id=current_project_version.get("version_id",
-                                                           0)).values("id")
-        q = Q(project_version_id=current_project_version.get("version_id", 0),
-              project_id=project_id)
-        queryset = IastApiRoute.objects.filter(q)
-        total = queryset.values("path", "method_id").distinct().count()
-        cover_count = checkcover_batch(queryset, agents)
+                                                           0)).count()
+        cover_count = IastApiRoute.objects.filter(
+            project_id=project_id,
+            project_version_id=current_project_version.get("version_id", 0),
+            is_cover=1).count()
         try:
-            cover_rate = "{:.2%}".format(cover_count / total)
+            cover_rate = "{:.2%}".format(cover_count / total_count)
         except ZeroDivisionError as e:
             logger.info(e, exc_info=True)
             cover_rate = "{:.2%}".format(1.0)
