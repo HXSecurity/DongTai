@@ -404,37 +404,49 @@ LOGGING = {
     'loggers': {
         'django.db.backends': {
             'handlers': ['console'],
-            'level': LOGGING_LEVEL,
+            'level': "DEBUG" if DEBUG else LOGGING_LEVEL,
             'propagate': False,
             'encoding': "utf-8",
         },
         'dongtai-webapi': {
-            'handlers': ['console', ],
+            'handlers': [
+                'console',
+            ],
             'propagate': True,
             'level': LOGGING_LEVEL,
         },
         'dongtai.openapi': {
-            'handlers': ['console', ],
+            'handlers': [
+                'console',
+            ],
             'propagate': True,
             'level': LOGGING_LEVEL,
         },
         'dongtai-core': {
-            'handlers': ['console', ],
+            'handlers': [
+                'console',
+            ],
             'propagate': True,
             'level': LOGGING_LEVEL,
         },
         'django': {
-            'handlers': ['console', ],
+            'handlers': [
+                'console',
+            ],
             'level': LOGGING_LEVEL,
             'propagate': True,
         },
         'dongtai-engine': {
-            'handlers': ['console', ],
+            'handlers': [
+                'console',
+            ],
             'propagate': True,
             'level': LOGGING_LEVEL,
         },
         'celery.apps.worker': {
-            'handlers': ['console', ],
+            'handlers': [
+                'console',
+            ],
             'propagate': True,
             'level': LOGGING_LEVEL,
         },

@@ -921,9 +921,11 @@ def get_license_list(license_list_str: str) -> List[Dict]:
 
 
 def get_license_list_v2(license_list: Tuple[str]) -> List[Dict]:
-    res = list(
-        filter(lambda x: x is not None,
-               map(lambda x: LICENSE_DICT.get(x, None), license_list)))
+    filter_none: Callable[[Optional[Dict]], bool] = lambda x: x is not None
+    res = [
+        LICENSE_DICT[license] for license in license_list
+        if license in LICENSE_DICT
+    ]
     return res
     #return [{
     #    'identifier': "无",
