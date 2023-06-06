@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck_v2, get_response_serializer
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
-from django.db.models import Q
+from django.db.models import Q, F
 
 from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 from dongtai_common.models.assetv2 import AssetV2, AssetV2Global
@@ -41,11 +41,13 @@ class RelationProjectArgsSerializer(serializers.Serializer):
         default=None, required=False, help_text=_("project with be the first"))
 
 
-class RelationProjectSerializer(serializers.ModelSerializer):
+class RelationProjectSerializer(serializers.Serializer):
+    project_name = serializers.CharField()
+    project_id = serializers.IntegerField()
 
     class Meta:
-        model = AssetV2
-        fields = '__all__'
+        #        model = AssetV2
+        fields = ['project_id', 'package_name']
 
 
 FullRelationProjectResponseSerializer = get_response_serializer(
@@ -70,16 +72,19 @@ class NewPackageRelationProject(UserEndPoint):
                 package_name=package_name,
                 version=package_version,
                 project_id=ser.validated_data["project_id"],
-            ).order_by('-id').all()
+            ).values("project_id", ).annotate(
+                project_name=F("project__name")).order_by('-project_id').all()
             assets_p2 = AssetV2.objects.filter(
                 Q(package_name=package_name, version=package_version)
                 & ~Q(project_id__in=[ser.validated_data["project_id"]])
-            ).order_by('-id').all()
+            ).values("project_id", ).annotate(
+                project_name=F("project__name")).order_by('-project_id').all()
             assets = assets_p1.union(assets_p2)
         else:
             assets = AssetV2.objects.filter(
-                package_name=package_name,
-                version=package_version).order_by('-id').all()
+                package_name=package_name, version=package_version).values(
+                    "project_id", ).annotate(project_name=F(
+                        "project__name")).order_by('-project_id').all()
         page_info, data = self.get_paginator(assets,
                                              ser.validated_data['page'],
                                              ser.validated_data['page_size'])
