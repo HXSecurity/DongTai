@@ -77,9 +77,11 @@ class ApiRouteCoverRate(UserEndPoint):
             logger.info(e, exc_info=True)
             cover_rate = "{:.2%}".format(1.0)
 
-        return R.success(msg=_('API coverage rate obtained successfully'),
-                         data={
-                             'cover_rate': cover_rate,
-                             "total_count": total_count,
-                             "covered_count": covered_count
-                         })
+        return R.success(
+            msg=_('API coverage rate obtained successfully'),
+            data={
+                'cover_rate': cover_rate,
+                "total_count": total_count,
+                "covered_count": covered_count,
+            },
+        )
