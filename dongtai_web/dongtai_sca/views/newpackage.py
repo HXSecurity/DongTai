@@ -80,12 +80,16 @@ class PackageList(UserEndPoint):
         except ValidationError as e:
             return R.failure(data=e.detail)
         q = Q()
-        if 'level_ids' in ser.validated_data:
+        if 'level_ids' in ser.validated_data and ser.validated_data[
+                'level_ids']:
             q = q & Q(level_id__in=ser.validated_data['level_ids'])
-        if 'language_ids' in ser.validated_data:
+        if 'language_ids' in ser.validated_data and ser.validated_data[
+                'language_ids']:
             q = q & Q(language_id__in=ser.validated_data['language_ids'])
-        if 'license_ids' in ser.validated_data:
-            q = q & Q(iastassetlicense__license_id__in=ser.validated_data['license_ids'])
+        if 'license_ids' in ser.validated_data and ser.validated_data[
+                'license_ids']:
+            q = q & Q(iastassetlicense__license_id__in=ser.
+                      validated_data['license_ids'])
         if 'project_id' in ser.validated_data:
             q = q & Q(assetv2__project_id=ser.validated_data['project_id'])
         if 'project_version_id' in ser.validated_data:
