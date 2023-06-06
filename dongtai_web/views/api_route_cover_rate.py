@@ -47,9 +47,7 @@ class ApiRouteCoverRate(UserEndPoint):
         }],
         tags=[_('API Route')],
         summary=_('API Route Coverrate'),
-        description=
-        _("Get the API route coverrate of the project corresponding to the specified id."
-          ),
+        description=_("Get the API route coverrate of the project corresponding to the specified id."),
         response_schema=_GetResponseSerializer,
     )
     def get(self, request):
