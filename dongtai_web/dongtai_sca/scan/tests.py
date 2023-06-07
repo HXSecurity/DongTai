@@ -195,7 +195,7 @@ class SCAScanV2TestCase(AgentTestCase):
             "/Users/xxx/spring-boot/2.3.2.RELEASE/com.amazon.redshift:redshift-jdbc42.jar",
             "5a7674517dd621cc60a000898341b03c41b7034b",
             "com.amazon.redshift:redshift-jdbc42.jar", "SHA-1")
-    
+
     def test_update_one_sca_java_result_search5(self):
         new_update_one_sca(
             self.agent_id,
