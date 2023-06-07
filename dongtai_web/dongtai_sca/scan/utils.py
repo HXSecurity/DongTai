@@ -26,12 +26,13 @@ from json.decoder import JSONDecodeError
 from typing import Optional, Callable, Any, Union
 from typing import List, Dict, Tuple
 from requests import Response
-from dongtai_conf.settings import SCA_BASE_URL, SCA_TIMEOUT
+from dongtai_conf.settings import SCA_BASE_URL, SCA_TIMEOUT, SCA_MAX_RETRY_COUNT
 from urllib.parse import urljoin
 from dongtai_common.common.utils import cached_decorator
 from dongtai_common.models.profile import IastProfile
 from json.decoder import JSONDecodeError
 from http import HTTPStatus
+from time import sleep
 
 logger = logging.getLogger("dongtai-webapi")
 
@@ -52,10 +53,27 @@ def request_get_res_data_with_exception(
         **kwargs) -> Result:
     try:
         response: Response = requests.request(*args, **kwargs)
+        max_retry_count = kwargs.get("max_retry_count", SCA_MAX_RETRY_COUNT)
         logger.debug(f"response content: {response.content!r}")
         logger.info(
             f"response content url: {response.url} status_code: {response.status_code}"
         )
+        if response.status_code == HTTPStatus.FORBIDDEN:
+            return Err('Auth Failed')
+        retry_count = 0
+        while response.status_code == HTTPStatus.TOO_MANY_REQUESTS and retry_count < max_retry_count:
+            retry_after = int(response.headers.get("Retry-After".lower(), 1))
+            logger.info(
+                f"response content url: {response.url} status_code: {response.status_code} retry_after: {retry_after} retry_count: {retry_count}"
+            )
+            sleep(retry_after)
+            response: Response = requests.request(*args, **kwargs)
+            retry_count += 1
+        if response.status_code == HTTPStatus.TOO_MANY_REQUESTS:
+            logger.warning(
+                f"Rate limte retry failed, please add retry count in config.ini or reduce concurrency in your celery worker about sca."
+            )
+            return Err("Rate Limit retry failed")
         res = data_extract_func(response)
         if isinstance(res, Err):
             return res
@@ -107,6 +125,8 @@ from marshmallow.exceptions import ValidationError
 def data_transfrom_package_v3(
         response: Response) -> Result[List[PackageInfo], str]:
     if response.status_code == HTTPStatus.FORBIDDEN:
+        return Err('Auth Failed')
+    if response.status_code == HTTPStatus.TOO_MANY_REQUESTS:
         return Err('Rate Limit Exceeded')
     try:
         #res_data = PackageResponse.schema().loads(response.content)
@@ -156,8 +176,6 @@ def data_transfrom_package_vul_v3(
     response: Response
 ) -> Result[Tuple[Union[Tuple[Vul], Tuple[()]], Union[Tuple[str], Tuple[()]],
                   Union[Tuple[str], Tuple[()]], ], str]:
-    if response.status_code == HTTPStatus.FORBIDDEN:
-        return Err('Rate Limit Exceeded')
     try:
         #res_data = PackageVulResponse.schema().loads(response.content)
         res_data = PackageVulResponse.from_json(response.content)
@@ -323,6 +341,17 @@ def get_package_v3(aql: str = "",
                                               data=payload,
                                               headers=headers,
                                               timeout=SCA_TIMEOUT)
+    retry_count = 0
+    while (res.is_err() and res.value == "Rate Limit Exceeded"
+           and retry_count < SCA_MAX_RETRY_COUNT):
+        retry_count += 1
+        res = request_get_res_data_with_exception(
+            data_transfrom_package_vul_v3,
+            "GET",
+            url,
+            data=payload,
+            headers=headers,
+            timeout=SCA_TIMEOUT)
     if isinstance(res, Err):
         return []
     data = res.value
@@ -1360,7 +1389,7 @@ def get_vul_path(base_aql: str,
 
 
 def get_asset_level(res: dict) -> int:
-    level_map = {'critical': 1, 'high': 1, 'medium': 2, 'low': 3}
+    level_map = {'critical': 1, 'high': 2, 'medium': 3, 'low': 5}
     for k, v in level_map.items():
         if k in res and res[k] > 0:
             return v

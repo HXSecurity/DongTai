@@ -525,6 +525,7 @@ if os.getenv('environment', None) == 'TEST' or os.getenv('CPROFILE',
 try:
     SCA_BASE_URL = config.get('sca', 'base_url')
     SCA_TIMEOUT = config.getint('sca', 'timeout')
+    SCA_MAX_RETRY_COUNT = config.getint('sca', 'max_retry_count', fallback=3)
     SCA_TOKEN = config.get('sca', 'token')
     SCA_SETUP = True if SCA_TOKEN else False
 except BaseException:
