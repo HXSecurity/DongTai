@@ -67,7 +67,7 @@ def request_get_res_data_with_exception(
                 f"response content url: {response.url} status_code: {response.status_code} retry_after: {retry_after} retry_count: {retry_count}"
             )
             sleep(retry_after)
-            response: Response = requests.request(*args, **kwargs)
+            response = requests.request(*args, **kwargs)
             retry_count += 1
         if response.status_code == HTTPStatus.TOO_MANY_REQUESTS:
             logger.warning(
