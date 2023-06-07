@@ -129,10 +129,7 @@ def data_transfrom_package_v3(
     if response.status_code == HTTPStatus.TOO_MANY_REQUESTS:
         return Err('Rate Limit Exceeded')
     try:
-        #res_data = PackageResponse.schema().loads(response.content)
-        import json
-        content = json.loads(response.content)
-        res_data = PackageResponse.from_dict(content)
+        res_data = PackageResponse.from_json(response.content)
         return Ok(res_data.data)
     except ValidationError as e:
         logger.debug(e, exc_info=True)
