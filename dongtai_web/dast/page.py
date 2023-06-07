@@ -125,7 +125,7 @@ class DastVulsEndPoint(UserEndPoint, viewsets.ViewSet):
         if 'bind_project_id' in ser.validated_data:
             q = q & Q(project_id=ser.validated_data['bind_project_id'])
         if 'project_version_id' in ser.validated_data:
-            q = q & Q(project_id=ser.validated_data['project_version_id'])
+            q = q & Q(project_version_id=ser.validated_data['project_version_id'])
         vul_level_info = IastDastIntegration.objects.filter(q).values(
             'vul_level__name',
             'vul_level_id').annotate(total=Count('vul_level_id')).all()
