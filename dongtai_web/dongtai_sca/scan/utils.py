@@ -1364,6 +1364,7 @@ def get_level(level_id: int) -> str:
         2: "中危",
         3: "低危",
         4: "无风险",
+        5: "提示",
     })[level_id]
 
 
