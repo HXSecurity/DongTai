@@ -1,6 +1,7 @@
 from dongtai_common.models.assetv2 import (
     AssetV2Global, )
 from rest_framework import serializers
+from dongtai_web.dongtai_sca.scan.utils import get_language
 
 
 class PackeageScaAssetDetailSerializer(serializers.ModelSerializer):

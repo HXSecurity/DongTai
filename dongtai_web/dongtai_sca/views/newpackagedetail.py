@@ -17,7 +17,6 @@ from dongtai_common.models.assetv2 import (
     AssetV2Global,
     IastPackageGAInfo,
 )
-from dongtai_web.dongtai_sca.scan.utils import get_language
 from dongtai_common.serializers.assetv2 import PackeageScaAssetDetailSerializer
 
 logger = logging.getLogger(__name__)
