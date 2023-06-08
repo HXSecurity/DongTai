@@ -76,7 +76,7 @@ class PackageInfo:
     name: str
     version: str
     hash: str
-    version_publish_time: str
+    version_publish_time: str = ""
     license: Tuple[str] = ()
 
 
