@@ -64,6 +64,7 @@ class PackeageScaAssetSerializer(PackeageScaAssetDetailSerializer):
             "license_list",
             "language_id",
             "aql",
+            "vul_count_groupby_level"
         ]
 
 

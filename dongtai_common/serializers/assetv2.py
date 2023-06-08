@@ -12,6 +12,7 @@ class PackeageScaAssetDetailSerializer(serializers.ModelSerializer):
     language = serializers.SerializerMethodField()
     level_name = serializers.CharField(source='get_level_display')
     level_id = serializers.IntegerField(source='level')
+    vul_count_groupby_level = serializers.ListField(source='get_vul_count_groupby_level')
 
     class Meta:
         model = AssetV2Global
@@ -36,6 +37,7 @@ class PackeageScaAssetDetailSerializer(serializers.ModelSerializer):
             "unaffected_versions",
             "aql",
             "language",
+            "vul_count_groupby_level"
         ]
 
     def get_language(self, obj) -> str:
