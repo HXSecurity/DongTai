@@ -1360,11 +1360,11 @@ def get_language_id(language: str) -> int:
 
 def get_level(level_id: int) -> str:
     return defaultdict(lambda: "无风险", {
-        1: "高危",
+        1: "低危",
         2: "中危",
-        3: "低危",
-        4: "无风险",
-        5: "提示",
+        3: "高危",
+        4: "严重",
+        0: "无风险",
     })[level_id]
 
 
