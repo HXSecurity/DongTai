@@ -13,6 +13,7 @@ from rest_framework import serializers
 
 from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 from dongtai_common.models.asset_vul_v2 import IastAssetVulV2
+from dongtai_common.serializers.assetvulv2 import PackeageVulSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -33,13 +34,6 @@ class PackageListArgsSerializer(serializers.Serializer):
     keyword = serializers.CharField(help_text=_("search_keyword"))
     order_field = serializers.CharField(help_text=_("order_field"))
     order = serializers.CharField(help_text=_("order"))
-
-
-class PackeageVulSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = IastAssetVulV2
-        fields = '__all__'
 
 
 _NewResponseSerializer = get_response_serializer(PackeageVulSerializer())

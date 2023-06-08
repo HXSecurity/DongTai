@@ -26,6 +26,15 @@ from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_common.utils.settings import get_managed
 from dongtai_common.models.department import Department
 from dongtai_common.models.talent import Talent
+from django.db.models import IntegerChoices
+
+
+class AssetRiskLevel(IntegerChoices):
+    CRITICAL = 4, _("严重")
+    HIGH = 3, _("高危")
+    MODERATE = 2, _("中危")
+    LOW = 1, _("低危")
+    NO_RISK = 0, _("无风险")
 
 
 class AssetV2(models.Model):
@@ -87,11 +96,12 @@ class AssetV2Global(models.Model):
                                            null=True)
     signature_value = models.CharField(max_length=255, blank=True, null=True)
     version = models.CharField(max_length=255, blank=True, null=True)
-    level = models.ForeignKey(IastVulLevel,
-                              models.DO_NOTHING,
-                              blank=True,
-                              null=True,
-                              default=4)
+    level = models.IntegerField(
+        choices=AssetRiskLevel.choices,
+        blank=True,
+        default=AssetRiskLevel.NO_RISK,
+        db_column="level_id",
+    )
     vul_count = models.IntegerField(default=0, blank=True, null=True)
     vul_critical_count = models.IntegerField(default=0, blank=True, null=False)
     vul_high_count = models.IntegerField(default=0, blank=True, null=False)

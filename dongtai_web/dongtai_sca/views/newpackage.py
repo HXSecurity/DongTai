@@ -15,6 +15,7 @@ from rest_framework import serializers
 from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 from dongtai_common.models.assetv2 import AssetV2, AssetV2Global
 from rest_framework.serializers import ValidationError
+from dongtai_common.serializers.assetv2 import PackeageScaAssetDetailSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -41,17 +42,19 @@ class PackageListArgsSerializer(serializers.Serializer):
     order = serializers.ChoiceField(['desc', 'asc'], default='desc')
 
 
-class PackeageScaAssetSerializer(serializers.ModelSerializer):
+class PackeageScaAssetSerializer(PackeageScaAssetDetailSerializer):
 
     class Meta:
-        model = AssetV2Global
+        model = PackeageScaAssetDetailSerializer.Meta.model
         fields = [
             "id",
             "package_name",
             "signature_algorithm",
             "signature_value",
             "version",
+            "level",
             "level_id",
+            "level_name",
             "vul_count",
             "vul_critical_count",
             "vul_high_count",
@@ -97,10 +100,10 @@ class PackageList(UserEndPoint):
                       validated_data['project_version_id'])
         if 'keyword' in ser.validated_data:
             q = q & Q(aql__contains=ser.validated_data['keyword'])
-        order = ('-' if ser.validated_data[
-            'order'] == 'desc' else '') + ser.validated_data['order_field']
+        order = ('-' if ser.validated_data['order'] == 'desc' else
+                 '') + ser.validated_data['order_field']
         page_info, data = self.get_paginator(
-            AssetV2Global.objects.filter(q).order_by(order).values().all(),
+            AssetV2Global.objects.filter(q).order_by(order).all(),
             ser.validated_data['page'], ser.validated_data['page_size'])
         return R.success(data=PackeageScaAssetSerializer(data, many=True).data,
                          page=page_info)

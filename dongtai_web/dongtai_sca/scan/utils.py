@@ -984,7 +984,7 @@ from dataclasses import dataclass, field, asdict
 
 @dataclass
 class PackageVulSummary:
-    level_id: int = 0
+    level: int = 0
     vul_count: int = 0
     vul_critical_count: int = 0
     vul_high_count: int = 0
@@ -1022,7 +1022,7 @@ def sca_scan_asset_v2(aql: str, ecosystem: str, package_name: str,
                 vul.vul_info.title,
                 "vul_detail":
                 vul.vul_info.description,
-                "level_id":
+                "level":
                 get_vul_level_dict()[vul.vul_info.severity.lower()],
                 "references": [asdict(ref) for ref in vul.vul_info.references]
                 if vul.vul_info.references else [],
@@ -1272,7 +1272,7 @@ def stat_severity_v2(vul_infos: List[VulInfo]) -> dict:
     for key in ("critical", "high", "medium", "low", "info"):
         if key not in res:
             res[key] = 0
-    return dict(level_id=get_asset_level(res),
+    return dict(level=get_asset_level(res),
                 vul_count=sum(res.values()),
                 **{f"vul_{k}_count": v
                    for k, v in res.items()})
@@ -1322,12 +1322,12 @@ def get_vul_serial(title: str = "",
 
 
 def get_vul_level_dict() -> defaultdict:
-    return defaultdict(lambda: 5, {
-        'moderate': 1,
-        'high': 1,
+    return defaultdict(lambda: 4, {
+        'moderate': 3,
+        'high': 2,
         "critical": 1,
-        "medium": 2,
-        "low": 3
+        "medium": 3,
+        "low": 4
     })
 
 
