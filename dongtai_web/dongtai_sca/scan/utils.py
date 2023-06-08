@@ -1322,12 +1322,12 @@ def get_vul_serial(title: str = "",
 
 
 def get_vul_level_dict() -> defaultdict:
-    return defaultdict(lambda: 4, {
-        'moderate': 3,
-        'high': 2,
-        "critical": 1,
-        "medium": 3,
-        "low": 4
+    return defaultdict(lambda: 1, {
+        'moderate': 2,
+        'high': 3,
+        "critical": 4,
+        "medium": 2,
+        "low": 1
     })
 
 
