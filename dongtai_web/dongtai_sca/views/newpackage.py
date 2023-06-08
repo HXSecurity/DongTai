@@ -85,7 +85,7 @@ class PackageList(UserEndPoint):
         q = Q()
         if 'level_ids' in ser.validated_data and ser.validated_data[
                 'level_ids']:
-            q = q & Q(level_id__in=ser.validated_data['level_ids'])
+            q = q & Q(level__in=ser.validated_data['level_ids'])
         if 'language_ids' in ser.validated_data and ser.validated_data[
                 'language_ids']:
             q = q & Q(language_id__in=ser.validated_data['language_ids'])
