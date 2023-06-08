@@ -120,7 +120,7 @@ class AssetV2Global(models.Model):
         return [
             {
                 "label": "严重",
-                "count": self.vul_critical_count, 
+                "count": self.vul_critical_count,
             },
             {
                 "label": "高危",
@@ -135,6 +135,7 @@ class AssetV2Global(models.Model):
                 "count": self.vul_low_count,
             },
         ]
+
 
 class IastAssetLicense(models.Model):
     """
