@@ -14,7 +14,7 @@ from rest_framework.serializers import ValidationError
 
 from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 from dongtai_common.models.asset_vul_v2 import IastAssetVulV2
-from rest_framework_dataclasses.serializers import DataclassSerializer
+from dongtai_common.serializers.assetvulv2 import PackageVulSerializer
 from dataclasses import dataclass, field
 from typing import List
 from typing import Any
@@ -24,47 +24,14 @@ import json
 logger = logging.getLogger(__name__)
 
 
-#@dataclass
-#class Language:
-#    language: str
-#    count: int
-#
-#
-#@dataclass
-#class Level:
-#    level: str
-#    count: int
-#    level_id: int
-#
-#
-#@dataclass
-#class License:
-#    license: str
-#    count: int
-#
-#
-#@dataclass
-#class Data:
-#    level: List[Level]
-#    language: List[Language]
-#    license: List[License]
-
-
 class PackageVulsListArgsSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=20,
                                          help_text=_('Number per page'))
     page = serializers.IntegerField(default=1, help_text=_('Page index'))
 
 
-class PackeageVulsSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = IastAssetVulV2
-        fields = '__all__'
-
-
 NewPackageVulSResponseSerializer = get_response_serializer(
-    PackeageVulsSerializer(many=True))
+    PackageVulSerializer(many=True))
 
 
 class NewPackageVuls(UserEndPoint):
@@ -88,5 +55,5 @@ class NewPackageVuls(UserEndPoint):
                                              ser.validated_data['page'],
                                              ser.validated_data['page_size'])
 
-        return R.success(data=PackeageVulsSerializer(data, many=True).data,
+        return R.success(data=PackageVulSerializer(data, many=True).data,
                          page=page_info)

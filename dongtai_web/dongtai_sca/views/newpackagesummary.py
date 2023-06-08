@@ -114,8 +114,8 @@ class NewPackageSummary(UserEndPoint):
         license_queryset = IastAssetLicense.objects.filter(license_q)
         language_summary_list = queryset.values('language_id').annotate(
             count=Count('language_id'))
-        level_summary_list = queryset.values('level_id').annotate(
-            count=Count('level_id'))
+        level_summary_list = queryset.values('level').annotate(
+            level_id=F('level'), count=Count('level'))
         license_summary_list = license_queryset.values("license_id").annotate(
             count=Count('license_id'))
         return R.success(

@@ -5,7 +5,7 @@ from django_elasticsearch_dsl.search import Search
 from dongtai_conf.settings import ASSET_VUL_INDEX
 from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
-from dongtai_common.models.assetv2 import AssetV2Global
+from dongtai_common.models.assetv2 import AssetV2Global, AssetRiskLevel
 from django.db import models
 from dongtai_common.utils.settings import get_managed
 from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
@@ -16,10 +16,10 @@ class IastAssetVulV2(models.Model):
     vul_name = models.CharField(max_length=255, blank=True, null=True)
     vul_detail = models.TextField(blank=True, null=True)
     # 漏洞类型等级
-    level = models.ForeignKey(IastVulLevel,
-                              models.DO_NOTHING,
-                              blank=True,
-                              null=True)
+    level = models.IntegerField(choices=AssetRiskLevel.choices,
+                                blank=True,
+                                db_column="level_id",
+                                default=AssetRiskLevel.LOW)
     update_time = models.IntegerField(blank=True, null=True)
     create_time = models.IntegerField(blank=True, null=True)
     references = models.JSONField(blank=True, null=True, default=list)
