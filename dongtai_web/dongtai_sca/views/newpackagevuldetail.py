@@ -13,7 +13,7 @@ from rest_framework import serializers
 
 from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 from dongtai_common.models.asset_vul_v2 import IastAssetVulV2
-from dongtai_common.serializers.assetvulv2 import PackeageVulSerializer
+from dongtai_common.serializers.assetvulv2 import PackageVulSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +36,7 @@ class PackageListArgsSerializer(serializers.Serializer):
     order = serializers.CharField(help_text=_("order"))
 
 
-_NewResponseSerializer = get_response_serializer(PackeageVulSerializer())
+_NewResponseSerializer = get_response_serializer(PackageVulSerializer())
 
 
 class PackageVulDetail(UserEndPoint):
@@ -45,5 +45,5 @@ class PackageVulDetail(UserEndPoint):
     def get(self, request, vul_id):
         asset_vul = IastAssetVulV2.objects.filter(vul_id=vul_id).first()
         if asset_vul:
-            return R.success(data=PackeageVulSerializer(asset_vul).data, )
+            return R.success(data=PackageVulSerializer(asset_vul).data, )
         return R.failure()

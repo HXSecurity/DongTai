@@ -14,7 +14,7 @@ from rest_framework.serializers import ValidationError
 
 from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 from dongtai_common.models.asset_vul_v2 import IastAssetVulV2
-from dongtai_common.serializers.assetvulv2 import PackeageVulSerializer
+from dongtai_common.serializers.assetvulv2 import PackageVulSerializer
 from dataclasses import dataclass, field
 from typing import List
 from typing import Any
@@ -31,7 +31,7 @@ class PackageVulsListArgsSerializer(serializers.Serializer):
 
 
 NewPackageVulSResponseSerializer = get_response_serializer(
-    PackeageVulsSerializer(many=True))
+    PackageVulSerializer(many=True))
 
 
 class NewPackageVuls(UserEndPoint):
@@ -55,5 +55,5 @@ class NewPackageVuls(UserEndPoint):
                                              ser.validated_data['page'],
                                              ser.validated_data['page_size'])
 
-        return R.success(data=PackeageVulsSerializer(data, many=True).data,
+        return R.success(data=PackageVulSerializer(data, many=True).data,
                          page=page_info)
