@@ -678,7 +678,13 @@ DEFAULT_CIRCUITCONFIG = {
         }]
     }
 }
-DEFAULT_IAST_VALUE_TAG = ['cross-site', 'xss-encoded', 'html-encoded', 'html-decoded', 'url-encoded', 'url-decoded', 'base64-encoded', 'base64-decoded']
+DEFAULT_IAST_VALUE_TAG = [
+    'cross-site', 'xss-encoded', 'html-encoded', 'html-decoded', 'url-encoded',
+    'url-decoded', 'base64-encoded', 'base64-decoded', 'xml-encoded',
+    'xml-decoded', 'sql-encoded', 'sql-decoded', 'xpath-encoded',
+    'xpath-decoded', 'ldap-encoded', 'ldap-decoded',
+    'http-token-limited-chars', 'numeric-limited-chars'
+]
 DEFAULT_TAINT_VALUE_RANGE_COMMANDS = ['KEEP', 'APPEND', 'SUBSET', 'INSERT', 'REMOVE', 'REPLACE', 'CONCAT', 'TRIM', 'TRIM_RIGHT', 'TRIM_LEFT']
 DEFAULT_CODE_DETECT_BLACK_LIST = [
     'aj.', 'akka.', 'android.', 'antlr.', 'apple.', 'aQute.', 'brave.', 'bsh.',
