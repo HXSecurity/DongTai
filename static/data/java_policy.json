@@ -278,26 +278,6 @@
             {
                 "command": "",
                 "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "false",
-                "source": "O",
-                "stack_blacklist": [],
-                "tags": [],
-                "target": "R",
-                "track": "false",
-                "untags": [],
-                "value": "org.unbescape.html.Html5EscapeSymbolsInitializer.initializeHtml5()"
-            }
-        ],
-        "enable": 1,
-        "type": 1,
-        "value": "Invalid:Html5EscapeSymbols"
-    },
-    {
-        "details": [
-            {
-                "command": "",
-                "ignore_blacklist": false,
                 "ignore_internal": true,
                 "inherit": "false",
                 "source": "O",
@@ -464,26 +444,6 @@
         "enable": 1,
         "type": 1,
         "value": "Propagator:Hessian"
-    },
-    {
-        "details": [
-            {
-                "command": "",
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "false",
-                "source": "P1",
-                "stack_blacklist": [],
-                "tags": [],
-                "target": "R",
-                "track": "false",
-                "untags": [],
-                "value": "com.fasterxml.jackson.databind.ObjectMapper.readValue(java.io.InputStream,com.fasterxml.jackson.databind.JavaType)"
-            }
-        ],
-        "enable": 1,
-        "type": 1,
-        "value": "Propagator:Jackson"
     },
     {
         "details": [
@@ -1324,6 +1284,91 @@
                 "track": "false",
                 "untags": [],
                 "value": "java.lang.StringUTF16.newString(byte[],int,int)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "sql-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "sql-decoded"
+                ],
+                "value": "java.sql.Statement.enquoteIdentifier(java.lang.String,boolean)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "sql-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "sql-decoded"
+                ],
+                "value": "java.sql.Statement.enquoteLiteral(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "sql-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "sql-decoded"
+                ],
+                "value": "java.sql.Statement.enquoteNCharLiteral(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "ldap-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "ldap-decoded"
+                ],
+                "value": "org.owasp.esapi.Encoder.encodeForLDAP(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "xml-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "xml-decoded"
+                ],
+                "value": "org.thymeleaf.util.DOMUtils.escapeXml(java.lang.String, boolean)"
             }
         ],
         "enable": 1,
@@ -2331,6 +2376,40 @@
                 "source": "P2",
                 "stack_blacklist": [],
                 "tags": [
+                    "xss-encoded"
+                ],
+                "target": "P1",
+                "track": "false",
+                "untags": [
+                    "xml-decoded"
+                ],
+                "value": "org.apache.commons.lang.StringEscapeUtils.escapeXml(java.io.Writer,java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "xml-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "xml-decoded"
+                ],
+                "value": "org.apache.commons.lang.StringEscapeUtils.escapeXml(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P2",
+                "stack_blacklist": [],
+                "tags": [
                     "html-decoded"
                 ],
                 "target": "P1",
@@ -2356,6 +2435,40 @@
                     "html-encoded"
                 ],
                 "value": "org.apache.commons.lang.StringEscapeUtils.unescapeHtml(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P2",
+                "stack_blacklist": [],
+                "tags": [
+                    "xml-decoded"
+                ],
+                "target": "P1",
+                "track": "false",
+                "untags": [
+                    "xml-encoded"
+                ],
+                "value": "org.apache.commons.lang.StringEscapeUtils.unescapeXml(java.io.Writer,java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "xml-decoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "xml-encoded"
+                ],
+                "value": "org.apache.commons.lang.StringEscapeUtils.unescapeXml(java.lang.String)"
             },
             {
                 "command": "",
@@ -2399,6 +2512,57 @@
                 "source": "P1",
                 "stack_blacklist": [],
                 "tags": [
+                    "xml-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "xml-decoded"
+                ],
+                "value": "org.apache.commons.lang3.StringEscapeUtils.escapeXml(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "xml-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "xml-decoded"
+                ],
+                "value": "org.apache.commons.lang3.StringEscapeUtils.escapeXml10(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "xml-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "xml-decoded"
+                ],
+                "value": "org.apache.commons.lang3.StringEscapeUtils.escapeXml11(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
                     "html-decoded"
                 ],
                 "target": "R",
@@ -2424,6 +2588,40 @@
                     "html-encoded"
                 ],
                 "value": "org.apache.commons.lang3.StringEscapeUtils.unescapeHtml4(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "xml-decoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "xml-encoded"
+                ],
+                "value": "org.apache.commons.lang3.StringEscapeUtils.unescapeXml(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "xml-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "xml-decoded"
+                ],
+                "value": "org.apache.taglibs.standard.tag.common.core.Util.escapeXml(java.lang.String)"
             }
         ],
         "enable": 1,
@@ -2860,6 +3058,234 @@
                 "command": "",
                 "ignore_blacklist": false,
                 "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "P2",
+                "track": "false",
+                "untags": [],
+                "value": "com.alibaba.fastjson.parser.DefaultJSONParser.<init>(java.lang.Object,com.alibaba.fastjson.parser.JSONLexer,com.alibaba.fastjson.parser.ParserConfig)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "O",
+                "track": "false",
+                "untags": [],
+                "value": "com.alibaba.fastjson.parser.DefaultJSONParser.<init>(java.lang.String,com.alibaba.fastjson.parser.ParserConfig,int)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "O",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "com.alibaba.fastjson.parser.JSONLexerBase.scanFieldDate(char[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "O",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "com.alibaba.fastjson.parser.JSONLexerBase.scanFieldDecimal(char[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "O",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "com.alibaba.fastjson.parser.JSONLexerBase.scanFieldDouble(char[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "O",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "com.alibaba.fastjson.parser.JSONLexerBase.scanFieldFloatArray(char[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "O",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "com.alibaba.fastjson.parser.JSONLexerBase.scanFieldFloatArray2(char[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "O",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "com.alibaba.fastjson.parser.JSONLexerBase.scanFieldInt(char[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "O",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "com.alibaba.fastjson.parser.JSONLexerBase.scanFieldIntArray(char[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "O",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "com.alibaba.fastjson.parser.JSONLexerBase.scanFieldLong(char[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "O",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "com.alibaba.fastjson.parser.JSONLexerBase.scanFieldString(char[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "O",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "com.alibaba.fastjson.parser.deserializer.JavaBeanDeserializer.scanFieldFloat(char[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "P4",
+                "track": "false",
+                "untags": [],
+                "value": "com.alibaba.fastjson.util.IOUtils.decodeUTF8(byte[],int,int,char[])"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "com.alibaba.fastjson"
+    },
+    {
+        "details": [
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "com.fasterxml.jackson.core.JsonFactory.createParser(java.io.InputStream)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "com.fasterxml.jackson.databind.JsonDeserializer.deserialize(com.fasterxml.jackson.core.JsonParser,com.fasterxml.jackson.databind.DeserializationContext)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "com.fasterxml.jackson.databind.ObjectMapper.createDeserializationContext(com.fasterxml.jackson.core.JsonParser,com.fasterxml.jackson.databind.DeserializationConfig)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "com.fasterxml.jackson.databind.ObjectMapper.readValue(java.io.InputStream,com.fasterxml.jackson.databind.JavaType)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "all",
                 "source": "P1",
                 "stack_blacklist": [],
@@ -2894,11 +3320,397 @@
                 "track": "false",
                 "untags": [],
                 "value": "com.fasterxml.jackson.databind.ObjectMapper.readValue(java.lang.String,java.lang.Class)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "com.fasterxml.jackson.databind.deser.ValueInstantiator.createUsingDefault(com.fasterxml.jackson.databind.DeserializationContext)"
             }
         ],
         "enable": 1,
         "type": 1,
         "value": "com.fasterxml.jackson"
+    },
+    {
+        "details": [
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "com.google.gson.TypeAdapter.read(com.google.gson.stream.JsonReader)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "O",
+                "track": "false",
+                "untags": [],
+                "value": "com.google.gson.stream.JsonReader.<init>(java.io.Reader)"
+            }
+        ],
+        "enable": 1,
+        "type": 1,
+        "value": "com.google.gson"
+    },
+    {
+        "details": [
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "javax.servlet.http.Cookie.setSecure(boolean)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P9",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "javax.ws.rs.core.NewCookie.<init>(java.lang.String,java.lang.String,java.lang.String,java.lang.String,int,java.lang.String,int,java.util.Date,boolean,boolean)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P5",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "javax.ws.rs.core.NewCookie.<init>(javax.ws.rs.core.Cookie,java.lang.String,int,java.util.Date,boolean,boolean)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "org.glassfish.grizzly.http.Cookie.setSecure(boolean)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "cookie-flags-missing"
+    },
+    {
+        "details": [
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "javax.crypto.Cipher.getInstance(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "javax.crypto.Cipher.getInstance(java.lang.String,java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "javax.crypto.Cipher.getInstance(java.lang.String,java.security.Provider)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "crypto-bad-ciphers"
+    },
+    {
+        "details": [
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "java.security.MessageDigest.getInstance(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "java.security.MessageDigest.getInstance(java.lang.String,java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "java.security.MessageDigest.getInstance(java.lang.String,java.security.Provider)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "crypto-bad-mac"
+    },
+    {
+        "details": [
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "java.lang.Math.random()"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "java.util.Random.nextBoolean()"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "java.util.Random.nextDouble()"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "java.util.Random.nextFloat()"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "java.util.Random.nextGaussian()"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "java.util.Random.nextInt()"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "O",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "java.util.Random.nextInt(int)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "java.util.Random.nextLong()"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "org.apache.commons.lang.RandomStringUtils.random(int,int,int,boolean,boolean)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "org.apache.commons.lang.RandomStringUtils.random(int,int,int,boolean,boolean,char[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "org.apache.commons.lang.RandomStringUtils.randomAlphabetic(int)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "org.apache.commons.lang.RandomStringUtils.randomAlphanumeric(int)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "org.apache.commons.lang.RandomStringUtils.randomAscii(int)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "untags": [],
+                "value": "org.apache.commons.lang.RandomStringUtils.randomNumeric(int)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "crypto-weak-randomness"
     },
     {
         "details": [
@@ -4061,6 +4873,19 @@
                 "ignore_blacklist": false,
                 "ignore_internal": false,
                 "inherit": "false",
+                "source": "O",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "P1",
+                "track": "false",
+                "untags": [],
+                "value": "java.io.PushbackInputStream.read(byte[],int,int)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
                 "source": "P1",
                 "stack_blacklist": [],
                 "tags": [],
@@ -4565,7 +5390,7 @@
                 "source": "O",
                 "stack_blacklist": [],
                 "tags": [
-                    "cross-site"
+                    "http-token-limited-chars"
                 ],
                 "target": "R",
                 "track": "false",
@@ -4616,6 +5441,21 @@
                 "inherit": "true",
                 "source": "O",
                 "stack_blacklist": [],
+                "tags": [
+                    "cross-site"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "jakarta.servlet.ServletRequest.getParameterMap()"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "O",
+                "stack_blacklist": [],
                 "tags": [],
                 "target": "R",
                 "track": "false",
@@ -4644,7 +5484,9 @@
                 "inherit": "true",
                 "source": "O",
                 "stack_blacklist": [],
-                "tags": [],
+                "tags": [
+                    "http-token-limited-chars"
+                ],
                 "target": "R",
                 "track": "false",
                 "untags": [],
@@ -4733,6 +5575,22 @@
                 "inherit": "true",
                 "source": "O",
                 "stack_blacklist": [],
+                "tags": [
+                    "http-token-limited-chars",
+                    "xss-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "jakarta.servlet.http.HttpServletRequest.getRequestedSessionId()"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "O",
+                "stack_blacklist": [],
                 "tags": [],
                 "target": "R",
                 "track": "false",
@@ -4759,7 +5617,9 @@
                 "inherit": "true",
                 "source": "O",
                 "stack_blacklist": [],
-                "tags": [],
+                "tags": [
+                    "http-token-limited-chars"
+                ],
                 "target": "R",
                 "track": "false",
                 "untags": [],
@@ -4777,6 +5637,21 @@
                 "track": "false",
                 "untags": [],
                 "value": "jakarta.servlet.http.Part.getHeaders(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "O",
+                "stack_blacklist": [],
+                "tags": [
+                    "cross-site"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "jakarta.servlet.http.Part.getInputStream()"
             },
             {
                 "command": "",
@@ -5003,6 +5878,22 @@
                 "inherit": "true",
                 "source": "O",
                 "stack_blacklist": [],
+                "tags": [
+                    "http-token-limited-chars",
+                    "xss-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "javax.servlet.http.HttpServletRequest.getRequestedSessionId()"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "O",
+                "stack_blacklist": [],
                 "tags": [],
                 "target": "R",
                 "track": "false",
@@ -5029,7 +5920,9 @@
                 "inherit": "true",
                 "source": "O",
                 "stack_blacklist": [],
-                "tags": [],
+                "tags": [
+                    "http-token-limited-chars"
+                ],
                 "target": "R",
                 "track": "false",
                 "untags": [],
@@ -5047,6 +5940,21 @@
                 "track": "false",
                 "untags": [],
                 "value": "javax.servlet.http.Part.getHeaders(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "O",
+                "stack_blacklist": [],
+                "tags": [
+                    "cross-site"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "javax.servlet.http.Part.getInputStream()"
             },
             {
                 "command": "",
@@ -5098,26 +6006,6 @@
         "enable": 1,
         "type": 1,
         "value": "jdbc"
-    },
-    {
-        "details": [
-            {
-                "command": "",
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "true",
-                "source": "O",
-                "stack_blacklist": [],
-                "tags": [],
-                "target": "P1",
-                "track": "false",
-                "untags": [],
-                "value": "java.util.function.BiConsumer.accept(java.lang.Object,java.lang.Object)"
-            }
-        ],
-        "enable": 1,
-        "type": 1,
-        "value": "lambda-function"
     },
     {
         "details": [
@@ -5432,7 +6320,37 @@
                 "target": "R",
                 "track": "false",
                 "untags": [],
+                "value": "org.springframework.web.bind.annotation.support.HandlerMethodInvoker.resolvePathVariable(java.lang.String,org.springframework.core.MethodParameter,org.springframework.web.context.request.NativeWebRequest,java.lang.Object)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "cross-site"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [],
                 "value": "org.springframework.web.method.support.HandlerMethodArgumentResolver.resolveArgument(org.springframework.core.MethodParameter,org.springframework.web.method.support.ModelAndViewContainer,org.springframework.web.context.request.NativeWebRequest,org.springframework.web.bind.support.WebDataBinderFactory)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "cross-site"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [],
+                "value": "org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.resolveName(java.lang.String,org.springframework.core.MethodParameter,org.springframework.web.context.request.NativeWebRequest)"
             },
             {
                 "command": "",
@@ -5456,6 +6374,23 @@
     },
     {
         "details": [
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "xml-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "xml-decoded"
+                ],
+                "value": "org.apache.taglibs.standard.util.EscapeXML.escape(java.lang.String)"
+            },
             {
                 "command": "",
                 "ignore_blacklist": false,
@@ -5566,6 +6501,74 @@
                 "source": "P1",
                 "stack_blacklist": [],
                 "tags": [
+                    "xml-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "xml-decoded"
+                ],
+                "value": "org.owasp.encoder.Encode.forXml(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "xml-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "xml-decoded"
+                ],
+                "value": "org.owasp.encoder.Encode.forXmlAttribute(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "xml-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "xml-decoded"
+                ],
+                "value": "org.owasp.encoder.Encode.forXmlComment(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "xml-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "xml-decoded"
+                ],
+                "value": "org.owasp.encoder.Encode.forXmlContent(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
                     "html-decoded"
                 ],
                 "target": "R",
@@ -5635,6 +6638,23 @@
                 "source": "P1",
                 "stack_blacklist": [],
                 "tags": [
+                    "ldap-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "ldap-decoded"
+                ],
+                "value": "org.owasp.esapi.Encoder.encodeForDN(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
                     "html-encoded"
                 ],
                 "target": "R",
@@ -5669,6 +6689,40 @@
                 "source": "P1",
                 "stack_blacklist": [],
                 "tags": [
+                    "ldap-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "ldap-decoded"
+                ],
+                "value": "org.owasp.esapi.Encoder.encodeForLDAP(java.lang.String,boolean)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P2",
+                "stack_blacklist": [],
+                "tags": [
+                    "sql-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "sql-decoded"
+                ],
+                "value": "org.owasp.esapi.Encoder.encodeForSQL(org.owasp.esapi.codecs.Codec,java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
                     "url-encoded"
                 ],
                 "target": "R",
@@ -5677,6 +6731,57 @@
                     "url-decoded"
                 ],
                 "value": "org.owasp.esapi.Encoder.encodeForURL(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "xml-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "xml-decoded"
+                ],
+                "value": "org.owasp.esapi.Encoder.encodeForXML(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "xml-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "xml-decoded"
+                ],
+                "value": "org.owasp.esapi.Encoder.encodeForXMLAttribute(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [
+                    "xpath-encoded"
+                ],
+                "target": "R",
+                "track": "false",
+                "untags": [
+                    "xpath-decoded"
+                ],
+                "value": "org.owasp.esapi.Encoder.encodeForXPath(java.lang.String)"
             },
             {
                 "command": "",
@@ -6000,6 +7105,585 @@
         "enable": 1,
         "type": 4,
         "value": "redos"
+    },
+    {
+        "details": [
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P2",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "com.github.mustachejava.codes.ValueCode.execute(java.io.Writer,java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "com.sun.faces.renderkit.html_basic.HtmlResponseWriter.write(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "jakarta.servlet.ServletOutputStream.print(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "jakarta.servlet.ServletOutputStream.println(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "jakarta.servlet.ServletOutputStream.write(byte[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "jakarta.servlet.ServletOutputStream.write(byte[],int,int)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1,2",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "java.io.PrintWriter.format(java.lang.String,java.lang.Object[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P2,3",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "java.io.PrintWriter.format(java.util.Locale,java.lang.String,java.lang.Object[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "java.io.PrintWriter.print(char[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "java.io.PrintWriter.print(java.lang.Object)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "java.io.PrintWriter.print(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1,2",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "java.io.PrintWriter.printf(java.lang.String,java.lang.Object[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P2,3",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "java.io.PrintWriter.printf(java.util.Locale,java.lang.String,java.lang.Object[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "java.io.PrintWriter.println(char[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "java.io.PrintWriter.println(java.lang.Object)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "java.io.PrintWriter.println(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "java.io.PrintWriter.write(char[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "java.io.PrintWriter.write(char[],int,int)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "java.io.PrintWriter.write(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "java.io.PrintWriter.write(java.lang.String,int,int)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "javax.servlet.ServletOutputStream.print(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "javax.servlet.ServletOutputStream.println(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "javax.servlet.ServletOutputStream.write(byte[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "javax.servlet.ServletOutputStream.write(byte[],int,int)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "javax.servlet.jsp.JspWriter.print(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "javax.servlet.jsp.JspWriter.println(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "javax.servlet.jsp.JspWriter.write(char[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "javax.servlet.jsp.JspWriter.write(char[],int,int)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "javax.servlet.jsp.JspWriter.write(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "javax.servlet.jsp.JspWriter.write(java.lang.String,int,int)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "org.apache.tapestry5.internal.services.MarkupWriterImpl.writeRaw(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "org.glassfish.jersey.message.internal.AbstractMessageReaderWriterProvider.writeToAsString(java.lang.String,java.io.OutputStream,javax.ws.rs.core.MediaType)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "org.glassfish.jersey.message.internal.ByteArrayProvider.writeTo(byte[],java.lang.Class,java.lang.reflect.Type,java.lang.annotation.Annotation[],javax.ws.rs.core.MediaType,javax.ws.rs.core.MultivaluedMap,java.io.OutputStream)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "org.glassfish.jersey.message.internal.DataSourceProvider.writeTo(javax.activation.DataSource,java.lang.Class,java.lang.reflect.Type,java.lang.annotation.Annotation[],javax.ws.rs.core.MediaType,javax.ws.rs.core.MultivaluedMap,java.io.OutputStream)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "org.glassfish.jersey.message.internal.FileProvider.writeTo(java.io.File,java.lang.Class,java.lang.reflect.Type,java.lang.annotation.Annotation[],javax.ws.rs.core.MediaType,javax.ws.rs.core.MultivaluedMap,java.io.OutputStream)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "org.glassfish.jersey.message.internal.InputStreamProvider.writeTo(java.io.InputStream,java.lang.Class,java.lang.reflect.Type,java.lang.annotation.Annotation[],javax.ws.rs.core.MediaType,javax.ws.rs.core.MultivaluedMap,java.io.OutputStream)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "org.glassfish.jersey.message.internal.ReaderProvider.writeTo(java.io.Reader,java.lang.Class,java.lang.reflect.Type,java.lang.annotation.Annotation[],javax.ws.rs.core.MediaType,javax.ws.rs.core.MultivaluedMap,java.io.OutputStream)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "org.glassfish.jersey.message.internal.StringMessageProvider.writeTo(java.lang.String,java.lang.Class,java.lang.reflect.Type,java.lang.annotation.Annotation[],javax.ws.rs.core.MediaType,javax.ws.rs.core.MultivaluedMap,java.io.OutputStream)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P3",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "org.mule.module.http.internal.domain.response.DefaultHttpResponse.<init>(org.mule.module.http.internal.domain.response.ResponseStatus,org.apache.commons.collections.MultiMap,org.mule.module.http.internal.domain.HttpEntity)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "org.mule.module.http.internal.domain.response.HttpResponseBuilder.build(org.mule.module.http.internal.domain.HttpEntity)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "org.mule.module.http.internal.domain.response.HttpResponseBuilder.setEntity(org.mule.module.http.internal.domain.HttpEntity)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "org.mule.transformer.simple.SetPayloadMessageProcessor.resolveDataType(org.mule.DefaultMuleEvent,java.lang.Object)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "org.mule.transformer.simple.SetPayloadMessageProcessor.resolveDataType(org.mule.api.MuleEvent,java.lang.Object)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "org.springframework.http.converter.StringHttpMessageConverter.writeInternal(java.lang.String,org.springframework.http.HttpOutputMessage)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "reflected-xss"
     },
     {
         "details": [
@@ -6804,6 +8488,19 @@
                 "target": "",
                 "track": "true",
                 "untags": [],
+                "value": "jakarta.persistence.EntityManager.createNativeQuery(java.lang.String)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
                 "value": "java.sql.Connection.prepareCall(java.lang.String)"
             },
             {
@@ -7091,6 +8788,19 @@
                 "track": "true",
                 "untags": [],
                 "value": "java.sql.Statement.executeUpdate(java.lang.String,java.lang.String[])"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "javax.persistence.EntityManager.createNativeQuery(java.lang.String,java.lang.String)"
             }
         ],
         "enable": 1,
@@ -7220,6 +8930,91 @@
         "enable": 1,
         "type": 4,
         "value": "ssrf"
+    },
+    {
+        "details": [
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1,2",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "coldfusion.runtime.SessionScope.bind(java.lang.String,java.lang.Object)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1,2",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "jakarta.servlet.http.HttpSession.setAttribute(java.lang.String,java.lang.Object)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1,2",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "javax.servlet.http.HttpSession.putValue(java.lang.String,java.lang.Object)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "source": "P1,2",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "javax.servlet.http.HttpSession.setAttribute(java.lang.String,java.lang.Object)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1,2",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "org.apache.struts2.dispatcher.SessionMap.put(java.lang.Object,java.lang.Object)"
+            },
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "source": "P1,2",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "play.mvc.Http$Session.put(java.lang.String,java.lang.String)"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "trust-boundary-violation"
     },
     {
         "details": [
