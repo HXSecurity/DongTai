@@ -116,6 +116,26 @@ class AssetV2Global(models.Model):
         managed = get_managed()
         db_table = 'iast_asset_v2_global'
 
+    def get_vul_count_groupby_level(self):
+        return [
+            {
+                "label": "严重",
+                "count": self.vul_critical_count,
+            },
+            {
+                "label": "高危",
+                "count": self.vul_high_count,
+            },
+            {
+                "label": "中危",
+                "count": self.vul_medium_count,
+            },
+            {
+                "label": "低危",
+                "count": self.vul_low_count,
+            },
+        ]
+
 
 class IastAssetLicense(models.Model):
     """
