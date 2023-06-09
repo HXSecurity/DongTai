@@ -1387,11 +1387,11 @@ def get_vul_path(base_aql: str,
 
 
 def get_asset_level(res: dict) -> int:
-    level_map = {'critical': 1, 'high': 2, 'medium': 3, 'low': 5}
+    level_map = {'critical': 4, 'high': 3, 'medium': 2, 'low': 1}
     for k, v in level_map.items():
         if k in res and res[k] > 0:
             return v
-    return 4
+    return 0
 
 
 def get_detail(res: List[Dict]) -> str:
