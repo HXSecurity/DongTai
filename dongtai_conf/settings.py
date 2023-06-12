@@ -488,12 +488,6 @@ if os.getenv('environment', None) == 'TEST' or os.getenv('REQUESTLOG',
 if os.getenv('PYTHONAGENT', None) == 'TRUE':
     MIDDLEWARE.insert(
         0, 'dongtai_agent_python.middlewares.django_middleware.FireMiddleware')
-if os.getenv('DJANGOSILK', None) == 'TRUE':
-    MIDDLEWARE.insert(0, 'silk.middleware.SilkyMiddleware')
-    INSTALLED_APPS.append('silk')
-    #SILKY_META = True
-    #SILKY_AUTHENTICATION = True
-    #SILKY_AUTHORISATION = True
 if os.getenv('environment', None) == 'TEST' or os.getenv('SAVEEYE',
                                                          None) == 'TRUE':
     CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null', )
@@ -840,3 +834,8 @@ for _dir in (TMP_COMMON_PATH, AGENT_LOG_DIR):
 DAST_TOKEN = config.get('other', 'dast_token', fallback='')
 
 set_asyncio_policy()
+
+if os.getenv('DJANGOSILK', None) == 'TRUE':
+    MIDDLEWARE.append('silk.middleware.SilkyMiddleware')
+    INSTALLED_APPS.append('silk')
+    SILKY_PYTHON_PROFILER = True
