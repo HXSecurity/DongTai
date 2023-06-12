@@ -58,6 +58,17 @@
         "created_by": 1,
         "enable": 1,
         "language": 1,
+        "name": "\u6587\u4ef6\u5199\u5165",
+        "name_en": null,
+        "name_zh": "\u6587\u4ef6\u5199\u5165",
+        "system_type": 1,
+        "type": 4,
+        "value": "FileWrite"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 1,
         "name": "\u4efb\u610f\u6587\u4ef6\u5199\u5165",
         "name_en": null,
         "name_zh": "\u4efb\u610f\u6587\u4ef6\u5199\u5165",
@@ -432,12 +443,34 @@
         "created_by": 1,
         "enable": 1,
         "language": 1,
+        "name": "com.alibaba.fastjson",
+        "name_en": null,
+        "name_zh": "com.alibaba.fastjson",
+        "system_type": 1,
+        "type": 1,
+        "value": "com.alibaba.fastjson"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 1,
         "name": "Jackson\u4f20\u64ad",
         "name_en": null,
         "name_zh": "Jackson\u4f20\u64ad",
         "system_type": 1,
         "type": 1,
         "value": "com.fasterxml.jackson"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 1,
+        "name": "com.google.gson",
+        "name_en": null,
+        "name_zh": "com.google.gson",
+        "system_type": 1,
+        "type": 1,
+        "value": "com.google.gson"
     },
     {
         "created_by": 1,
@@ -1032,6 +1065,17 @@
         "system_type": 1,
         "type": 3,
         "value": "xxe-filter"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 1,
+        "name": "\u6587\u4ef6\u5199\u5165",
+        "name_en": null,
+        "name_zh": "\u6587\u4ef6\u5199\u5165",
+        "system_type": 1,
+        "type": 4,
+        "value": "\u6587\u4ef6\u5199\u5165"
     },
     {
         "created_by": 1,
