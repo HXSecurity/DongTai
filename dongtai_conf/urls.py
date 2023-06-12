@@ -39,4 +39,9 @@ if os.getenv('environment', 'PROD') in ('TEST', 'DOC') or os.getenv('DOC', None)
     ])
 
 if os.getenv('DJANGOSILK', None) == 'TRUE':
-    urlpatterns += [path('silk/', include('silk.urls', namespace='silk'))]
+    silk_path = os.getenv(
+        'DJANGOSILKPATH',
+        "9671ccbd0c655fda78354dda754c9c4fb7111b7c18751b25ea8930ab87c84f94")
+    urlpatterns += [
+        path(silk_path + '/silk/', include('silk.urls', namespace='silk'))
+    ]
