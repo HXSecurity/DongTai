@@ -1008,7 +1008,8 @@ def sca_scan_asset_v2(aql: str, ecosystem: str, package_name: str,
     )
     vul_asset_rel_list = []
     for vul in vuls:
-        print(get_vul_level_dict()[vul.vul_info.severity.lower()])
+        logger.debug("vul_level %s",
+                     get_vul_level_dict()[vul.vul_info.severity.lower()])
         IastAssetVulV2.objects.update_or_create(
             vul_id=vul.vul_info.vul_id,
             defaults={
@@ -1050,9 +1051,8 @@ def sca_scan_asset_v2(aql: str, ecosystem: str, package_name: str,
     IastVulAssetRelationV2.objects.filter(asset_id=aql).delete()
     IastVulAssetRelationV2.objects.bulk_create(vul_asset_rel_list,
                                                ignore_conflicts=True)
-    package_info_dict = stat_severity_v2(
-        [vul.vul_info for vul in vuls])
-    print(package_info_dict)
+    package_info_dict = stat_severity_v2([vul.vul_info for vul in vuls])
+    logger.debug("package_info_dict: %s", package_info_dict)
     return PackageVulSummary(affected_versions=affected_versions,
                              unaffected_versions=unaffected_versions,
                              **package_info_dict)
