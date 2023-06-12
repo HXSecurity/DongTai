@@ -840,8 +840,10 @@ if os.getenv('DJANGOSILK', None) == 'TRUE':
     INSTALLED_APPS.append('silk')
     SILKY_PYTHON_PROFILER = True
     SILKY_ANALYZE_QUERIES = True
-    SILKY_EXPLAIN_FLAGS = {'format':'JSON', 'costs': True}
-    SILKY_SENSITIVE_KEYS = {'username', 'api', 'token', 'key', 'secret', 'password', 'signature'}
+    SILKY_EXPLAIN_FLAGS = {'format': 'JSON', 'costs': True}
+    SILKY_SENSITIVE_KEYS = {
+        'username', 'api', 'token', 'key', 'secret', 'password', 'signature'
+    }
     #SILKY_AUTHENTICATION = True
     #SILKY_AUTHORISATION = True
     #SILKY_PERMISSIONS = lambda user: True
