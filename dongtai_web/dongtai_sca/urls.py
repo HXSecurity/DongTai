@@ -7,7 +7,7 @@ from dongtai_web.dongtai_sca.views.newpackagedetail import PackageDetail
 from dongtai_web.dongtai_sca.views.newpackagevuldetail import PackageVulDetail
 from dongtai_web.dongtai_sca.views.newpackagesummary import NewPackageSummary
 from dongtai_web.dongtai_sca.views.newpackagevuls import NewPackageVuls
-from dongtai_web.dongtai_sca.views.newpackagevullevel import PackageVulLevels 
+from dongtai_web.dongtai_sca.views.newpackagevullevel import PackageVulLevels
 from dongtai_web.dongtai_sca.views.newpackageprojects import NewPackageRelationProject
 from dongtai_web.dongtai_sca.views.newpackageprojectversions import NewPackageRelationProjectVersion
 from dongtai_web.dongtai_sca.views.package_vul import OnePackageVulList, AssetPackageVulList, AssetPackageVulDetail
