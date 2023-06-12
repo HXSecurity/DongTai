@@ -342,13 +342,12 @@ def get_package_v3(aql: str = "",
     while (res.is_err() and res.value == "Rate Limit Exceeded"
            and retry_count < SCA_MAX_RETRY_COUNT):
         retry_count += 1
-        res = request_get_res_data_with_exception(
-            data_transfrom_package_vul_v3,
-            "GET",
-            url,
-            data=payload,
-            headers=headers,
-            timeout=SCA_TIMEOUT)
+        res = request_get_res_data_with_exception(data_transfrom_package_v3,
+                                                  "GET",
+                                                  url,
+                                                  data=payload,
+                                                  headers=headers,
+                                                  timeout=SCA_TIMEOUT)
     if isinstance(res, Err):
         return []
     data = res.value
