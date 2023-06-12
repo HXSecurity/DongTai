@@ -37,3 +37,6 @@ if os.getenv('environment', 'PROD') in ('TEST', 'DOC') or os.getenv('DOC', None)
              SpectacularRedocView.as_view(url_name='schema'),
              name='redoc'),
     ])
+
+if os.getenv('DJANGOSILK', None) == 'TRUE':
+    urlpatterns += [path('silk/', include('silk.urls', namespace='silk'))]

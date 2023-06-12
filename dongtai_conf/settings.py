@@ -303,6 +303,7 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'dongtai_common.User'
 TIME_ZONE = "Asia/Shanghai"
 STATIC_URL = '/static/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = "/static/media/"
 CAPTCHA_IMAGE_SIZE = (80, 45)
@@ -480,7 +481,6 @@ X_FRAME_OPTIONS = 'DENY'
 
 TEST_RUNNER = 'test.NoDbTestRunner'
 
-
 if os.getenv('environment', None) == 'TEST' or os.getenv('REQUESTLOG',
                                                          None) == 'TRUE':
     MIDDLEWARE.insert(0, 'apitimelog.middleware.RequestLogMiddleware')
@@ -488,6 +488,12 @@ if os.getenv('environment', None) == 'TEST' or os.getenv('REQUESTLOG',
 if os.getenv('PYTHONAGENT', None) == 'TRUE':
     MIDDLEWARE.insert(
         0, 'dongtai_agent_python.middlewares.django_middleware.FireMiddleware')
+if os.getenv('DJANGOSILK', None) == 'TRUE':
+    MIDDLEWARE.insert(0, 'silk.middleware.SilkyMiddleware')
+    INSTALLED_APPS.append('silk')
+    #SILKY_META = True
+    #SILKY_AUTHENTICATION = True
+    #SILKY_AUTHORISATION = True
 if os.getenv('environment', None) == 'TEST' or os.getenv('SAVEEYE',
                                                          None) == 'TRUE':
     CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null', )
