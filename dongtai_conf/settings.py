@@ -303,6 +303,7 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'dongtai_common.User'
 TIME_ZONE = "Asia/Shanghai"
 STATIC_URL = '/static/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = "/static/media/"
 CAPTCHA_IMAGE_SIZE = (80, 45)
@@ -479,7 +480,6 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
 TEST_RUNNER = 'test.NoDbTestRunner'
-
 
 if os.getenv('environment', None) == 'TEST' or os.getenv('REQUESTLOG',
                                                          None) == 'TRUE':
@@ -834,3 +834,16 @@ for _dir in (TMP_COMMON_PATH, AGENT_LOG_DIR):
 DAST_TOKEN = config.get('other', 'dast_token', fallback='')
 
 set_asyncio_policy()
+
+if os.getenv('DJANGOSILK', None) == 'TRUE':
+    MIDDLEWARE.append('silk.middleware.SilkyMiddleware')
+    INSTALLED_APPS.append('silk')
+    SILKY_PYTHON_PROFILER = True
+    SILKY_ANALYZE_QUERIES = True
+    SILKY_EXPLAIN_FLAGS = {'format': 'JSON', 'costs': True}
+    SILKY_SENSITIVE_KEYS = {
+        'username', 'api', 'token', 'key', 'secret', 'password', 'signature'
+    }
+    #SILKY_AUTHENTICATION = True
+    #SILKY_AUTHORISATION = True
+    #SILKY_PERMISSIONS = lambda user: True
