@@ -130,7 +130,7 @@ def data_transfrom_package_v3(
         return Err('Rate Limit Exceeded')
     try:
         res_data = PackageResponse.from_json(response.content)
-        return Ok(res_data.data)
+        return Ok(list(res_data.data))
     except ValidationError as e:
         logger.debug(e, exc_info=True)
         logger.info(f'ValidationError content: {response.content!r}')
