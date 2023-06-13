@@ -844,6 +844,7 @@ if os.getenv('DJANGOSILK', None) == 'TRUE':
     SILKY_SENSITIVE_KEYS = {
         'username', 'api', 'token', 'key', 'secret', 'password', 'signature'
     }
+    SILKY_PYTHON_PROFILER_BINARY = True
     #SILKY_AUTHENTICATION = True
     #SILKY_AUTHORISATION = True
     #SILKY_PERMISSIONS = lambda user: True
