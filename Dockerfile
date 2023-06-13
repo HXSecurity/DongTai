@@ -10,7 +10,7 @@ RUN apt-get update -y \
     && apt install -y gettext gcc make cmake libmariadb-dev curl libc6-dev unzip cron \
     fonts-wqy-microhei vim build-essential ninja-build cython3 pybind11-dev libre2-dev locales \
 #   htop sysstat net-tools iproute2 procps lsof \
-    openjdk-11-jdk \
+    zip \
     && sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen \
     && ALIMARCH=`arch` && curl -L https://charts.dongtai.io/apk/${ALIMARCH}/wkhtmltopdf -o /usr/bin/wkhtmltopdf \
     && chmod +x /usr/bin/wkhtmltopdf

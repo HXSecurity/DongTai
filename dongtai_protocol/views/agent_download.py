@@ -84,7 +84,7 @@ class JavaAgentDownload():
         # 执行jar -uvf {JavaAgentDownload.LOCAL_AGENT_FILE} iast.properties更新jar包的文件
         import os
         os.system(  # nosec
-            f'cd {self.user_target_path};jar -uvf {user_file} iast.properties')
+            f'cd {self.user_target_path};zip -u {user_file} iast.properties')
         # ignore because no userinput invoked here.
 
 
