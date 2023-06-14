@@ -1070,6 +1070,11 @@ def new_update_one_sca(agent_id,
     )
     from dongtai_common.models.assetv2 import AssetV2, AssetV2Global, IastAssetLicense, IastPackageGAInfo
     agent = IastAgent.objects.filter(id=agent_id).first()
+    if not agent:
+        logger.info(
+            f'SCA检测找不到对应Agent [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm} {package_version}]'
+        )
+        return 
     if not package_signature:
         package_signature = sha_1(package_signature)
     if agent.language == "JAVA":
@@ -1094,7 +1099,7 @@ def new_update_one_sca(agent_id,
             aql=aql,
             defaults={
                 "signature_algorithm": "SHA-1",
-                "language_id": get_language_id(agent.language),
+                "language_id": get_language_id(agent.language if agent.language else 'JAVA'),
                 "package_fullname": obj,
                 "package_name": package.name,
                 "signature_value": package.hash,
@@ -1279,7 +1284,7 @@ def stat_severity_v2(vul_infos: List[VulInfo]) -> dict:
     for key in ("critical", "high", "medium", "low", "info"):
         if key not in res:
             res[key] = 0
-    return dict(level=get_asset_level(res),
+    return dict(level=get_asset_level(dict(res)),
                 vul_count=sum(res.values()),
                 **{f"vul_{k}_count": v
                    for k, v in res.items()})
