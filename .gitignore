@@ -32,3 +32,4 @@ celerybeat.pid
 *.mo
 *.o
 *.c
+*.prof

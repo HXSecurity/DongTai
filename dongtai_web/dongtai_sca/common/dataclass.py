@@ -1,12 +1,12 @@
 from typing import Tuple
 from typing import Any
-from typing import Optional
+from typing import Optional, Union
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from datetime import datetime
 from dateutil.parser import parse
 
-# those Tuple[str] = () is not working
+# those Union[Tuple[str], Tuple[()]] = () is not working
 # Since https://github.com/lidatong/dataclasses-json/pull/409
 # Be careful with potentially nullable types when using them temporarily.
 
@@ -21,8 +21,8 @@ class Reference:
 @dataclass_json
 @dataclass
 class VulCodes:
-    CVE: Tuple[str] = ()
-    GHSA: Tuple[str] = ()
+    CVE: Union[Tuple[str], Tuple[()]] = ()
+    GHSA: Union[Tuple[str], Tuple[()]] = ()
 
 
 @dataclass_json
@@ -30,7 +30,7 @@ class VulCodes:
 class VulInfo:
     vul_id: str = ""
     cvss_v3: str = ""
-    cwe: Tuple[str] = ()
+    cwe: Union[Tuple[str], Tuple[()]] = ()
     title: str = ""
     description: str = ""
     references: Tuple[Reference] = ()
@@ -56,16 +56,16 @@ class VulInfo:
 class Vul:
     vul_info: VulInfo
     vul_codes: VulCodes
-    affected_versions: Tuple[str] = ()
-    unaffected_versions: Tuple[str] = ()
+    affected_versions: Union[Tuple[str], Tuple[()]] = ()
+    unaffected_versions: Union[Tuple[str], Tuple[()]] = ()
 
 
 @dataclass_json
 @dataclass
 class PackageVulData:
     vuls: Tuple[Vul] = ()
-    affected_versions: Tuple[str] = ()
-    unaffected_versions: Tuple[str] = ()
+    affected_versions: Union[Tuple[str], Tuple[()]] = ()
+    unaffected_versions: Union[Tuple[str], Tuple[()]] = ()
 
 
 @dataclass_json
@@ -77,7 +77,7 @@ class PackageInfo:
     version: str
     hash: str
     version_publish_time: str = ""
-    license: Tuple[str] = ()
+    license: Union[Tuple[str], Tuple[()]] = ()
 
 
 @dataclass_json
