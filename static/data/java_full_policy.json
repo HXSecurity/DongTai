@@ -1851,15 +1851,8 @@
                 "untags": [
                     "xml-decoded"
                 ],
-                "value": "org.thymeleaf.util.DOMUtils.escapeXml(java.lang.String, boolean)"
-            }
-        ],
-        "enable": 1,
-        "type": 1,
-        "value": "String"
-    },
-    {
-        "details": [
+                "value": "org.thymeleaf.util.DOMUtils.escapeXml(char[], boolean)"
+            },
             {
                 "command": "",
                 "created_by": 1,
@@ -1880,7 +1873,7 @@
                 "untags": [
                     "xml-decoded"
                 ],
-                "value": "org.thymeleaf.util.DOMUtils.escapeXml(char[], boolean)"
+                "value": "org.thymeleaf.util.DOMUtils.escapeXml(java.lang.String, boolean)"
             }
         ],
         "enable": 1,
@@ -6894,42 +6887,6 @@
                 "type": 1,
                 "untags": [],
                 "value": "java.io.CharArrayReader.read(char[],int,int)"
-            },
-            {
-                "command": "",
-                "created_by": 1,
-                "enable": 1,
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "false",
-                "language": 1,
-                "source": "P1",
-                "stack_blacklist": [],
-                "system_type": 1,
-                "tags": [],
-                "target": "O",
-                "track": "",
-                "type": 1,
-                "untags": [],
-                "value": "java.io.FileInputStream.<init>(java.io.File)"
-            },
-            {
-                "command": "",
-                "created_by": 1,
-                "enable": 1,
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "false",
-                "language": 1,
-                "source": "P1",
-                "stack_blacklist": [],
-                "system_type": 1,
-                "tags": [],
-                "target": "O",
-                "track": "",
-                "type": 1,
-                "untags": [],
-                "value": "java.io.FileInputStream.<init>(java.lang.String)"
             },
             {
                 "command": "",
