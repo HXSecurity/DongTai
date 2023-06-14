@@ -1074,7 +1074,7 @@ def new_update_one_sca(agent_id,
         logger.info(
             f'SCA检测找不到对应Agent [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm} {package_version}]'
         )
-        return 
+        return
     if not package_signature:
         package_signature = sha_1(package_signature)
     if agent.language == "JAVA":
