@@ -13,6 +13,7 @@ from rest_framework import serializers
 
 from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 from dongtai_common.models.assetv2 import AssetV2, AssetV2Global
+from dongtai_common.models.project import IastProject
 from rest_framework_dataclasses.serializers import DataclassSerializer
 from dataclasses import dataclass, field
 from typing import List
@@ -57,11 +58,14 @@ class NewPackageRelationProjectVersion(UserEndPoint):
         responses={200: FullRelationProjectVersionResponseSerializer})
     def get(self, request, language_id, package_name, package_version,
             project_id):
+        departments = request.user.get_relative_department()
+        queryset = IastProject.objects.filter(
+            department__in=departments).order_by('-latest_time')
         assets = AssetV2.objects.filter(
             language_id=language_id,
             package_name=package_name,
             version=package_version,
-            project_id=project_id,
+            project_id__in=queryset,
         ).order_by('-dt').select_related('project_version').all()
         return R.success(data=RelationProjectVersionSerializer(
             assets, many=True).data, )
