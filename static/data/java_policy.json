@@ -11316,9 +11316,7 @@
                 "ignore_internal": false,
                 "inherit": "all",
                 "source": "P1",
-                "stack_blacklist": [
-                    "a"
-                ],
+                "stack_blacklist": [],
                 "tags": [],
                 "target": "",
                 "track": "true",

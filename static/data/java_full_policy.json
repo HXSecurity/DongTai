@@ -15254,9 +15254,7 @@
                 "inherit": "all",
                 "language": 1,
                 "source": "P1",
-                "stack_blacklist": [
-                    "a"
-                ],
+                "stack_blacklist": [],
                 "system_type": 1,
                 "tags": [],
                 "target": "",
