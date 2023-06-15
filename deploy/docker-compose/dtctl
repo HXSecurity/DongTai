@@ -448,7 +448,7 @@ services:
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     sysctls:
-      net.core.somaxconn: 1024
+      net.core.somaxconn: 4096
     volumes:
       - iast-vol:/tmp/logstash/
       - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
@@ -573,7 +573,7 @@ services:
     image: "$registry/dongtai-server:$DONGTAI_SERVER_VER"
     restart: always
     sysctls:
-      net.core.somaxconn: 1024
+      net.core.somaxconn: 4096
     volumes:
       - iast-vol:/tmp/logstash/
       - $PWD/config-tutorial.ini:/opt/dongtai/dongtai_conf/conf/config.ini
