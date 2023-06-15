@@ -66,6 +66,7 @@ class NewPackageRelationProjectVersion(UserEndPoint):
             package_name=package_name,
             version=package_version,
             project_id__in=queryset,
+            project_id=project_id,
         ).order_by('-dt').select_related('project_version').all()
         return R.success(data=RelationProjectVersionSerializer(
             assets, many=True).data, )
