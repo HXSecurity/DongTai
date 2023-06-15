@@ -83,12 +83,12 @@ def stack_scan(stack: str,
                extend_black_list: list = [],
                extend_white_list: list = []) -> CodeStack:
     for rule in extend_white_list:
-        stack.startswith(rule)
-        return {"stack": stack, "code_belong": "user"}
+        if stack.startswith(rule):
+            return {"stack": stack, "code_belong": "user"}
 
     for rule in extend_black_list:
-        stack.startswith(rule)
-        return {"stack": stack, "code_belong": "system"}
+        if stack.startswith(rule):
+            return {"stack": stack, "code_belong": "system"}
     if stack.startswith("org.apache.jsp._"):
         return {"stack": stack, "code_belong": "user"}
     if trie.prefixes(stack):

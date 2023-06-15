@@ -4,9 +4,9 @@
 # datetime: 2021/7/13 下午10:21
 # project: dongtai-engine
 from django.test.runner import DiscoverRunner
+from django.core.cache import cache
 import os
 import unittest
-
 import django
 
 
@@ -15,6 +15,7 @@ class DongTaiTestCase(unittest.TestCase):
         super().__init__(methodName)
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dongtai_conf.settings")
         os.environ.setdefault("debug", "true")
+        cache.clear()
         django.setup()
 
 

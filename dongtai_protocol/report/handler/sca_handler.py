@@ -9,7 +9,7 @@ import logging
 
 from dongtai_common.utils import const
 from django.utils.translation import gettext_lazy as _
-from dongtai_web.dongtai_sca.scan.utils import update_one_sca
+from dongtai_web.dongtai_sca.scan.utils import update_one_sca, new_update_one_sca
 from dongtai_protocol.report.handler.report_handler_interface import IReportHandler
 from dongtai_protocol.report.report_handler_factory import ReportHandler
 import requests
@@ -34,7 +34,14 @@ class ScaHandler(IReportHandler):
 
             logger.info(
                 f'[+] 处理SCA请求[{agent_id}, {package_path}, {package_signature}, {package_name}, {package_algorithm} {package_version}]正在下发扫描任务')
-            update_one_sca.delay(agent_id, package_path, package_signature, package_name, package_algorithm, package_version)
+            if package_signature:
+                new_update_one_sca.delay(agent_id, package_path,
+                                         package_signature, package_name,
+                                         package_algorithm, package_version)
+            else:
+                update_one_sca.delay(agent_id, package_path, package_signature,
+                                     package_name, package_algorithm,
+                                     package_version)
             logger.info(
                 f'[+] 处理SCA请求[{agent_id}, {package_path}, {package_signature}, {package_name}, {package_algorithm} {package_version}]任务下发完成')
         except Exception as e:

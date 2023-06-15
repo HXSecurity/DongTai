@@ -88,7 +88,7 @@
                 "value": "template.(*Template).ExecuteTemplate()"
             }
         ],
-        "enable": 0,
+        "enable": 1,
         "type": 4,
         "value": "reflected-xss"
     },

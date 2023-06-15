@@ -15,7 +15,7 @@
 
 ## DongTai是什么?
 
-DongTai是一款开源的被动式交互式安全测试(IAST)产品，通过动态hook和污点跟踪算法等实现**通用漏洞检测**、**多请求关联漏洞检测(包括但不限于越权漏洞、未授权访问)**、**第三方组件漏洞检测**等，目前支持Java、Python两种语言的应用漏洞检测。
+洞态IAST是一款开源的交互式安全测试(IAST)产品，可通过被动插桩模式实现JAVA应用的通用漏洞及第三方组件漏洞的实时检测，非常适合在开发流水线的测试阶段使用。
 
 ## 项目结构
 
@@ -34,12 +34,12 @@ DongTai是一款开源的被动式交互式安全测试(IAST)产品，通过动�
 
 ## 技术架构
 
-"火线-洞态IAST"具有多个基础服务，包括：`DongTai-web`、`DongTai-webapi`、`DongTai-openapi`、`DongTai-engine`、`agent`、`DongTai-Base-Image`、`DongTai-Plugin-IDEA`，其中：
+"火线-洞态IAST"具有多个基础服务，包括：`DongTai-web`、`DongTai`、 `agent`、`DongTai-Base-Image`、`DongTai-Plugin-IDEA`，其中：
 
 - `DongTai-web`是DongTai的产品页面，用于处理用户与洞态的交互
-- `DongTai-webapi`负责处理用户的相关操作
-- `DongTai-openapi`用于处理`agent`上报的注册/心跳/调用方法/第三方组件/错误日志等数据，下发hook策略，下发探针控制指令等
-- `DongTai-engine`根据调用方法数据和污点跟踪算法分析HTTP/HTTPS/RPC请求中是否存在漏洞，同时负责其它相关的定时任务
+- `DongTai>>dongtai_web`负责处理用户的相关操作的API
+- `DongTai>>dongtai_protocol`用于处理`agent`上报的注册/心跳/调用方法/第三方组件/错误日志等数据，下发hook策略，下发探针控制指令等
+- `DongTai>>dongtai_engine` 根据调用方法数据和污点跟踪算法分析HTTP/HTTPS/RPC请求中是否存在漏洞，同时负责其它相关的定时任务
 - `agent`是DongTai的探针模块，包含不同编程语言的数据采集端，用于采集应用运行时的数据并上报至`DongTai-OpenAPI`服务
 - `DongTai-Base-Image`包含洞态运行时依赖的基础服务，包括：MySql、Redis
 - `DongTai-Plugin-IDEA`是Java探针对应的IDEA插件，可通过插件直接运行Java探针，直接在IDEA中检测漏洞

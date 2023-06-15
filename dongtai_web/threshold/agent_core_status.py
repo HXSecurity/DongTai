@@ -97,11 +97,11 @@ class AgentCoreStatusUpdateALL(UserEndPoint):
         else:
             return R.failure(msg=_('Incomplete parameter, please check again'))
 
-        queryset = IastAgent.objects.filter(department__in=department)
-        except_running_status = STATUS_MAPPING[core_status]
-        queryset.filter(online=1).update(
-            except_running_status=except_running_status,
-            control=core_status,
-            is_control=1,
-            latest_time=int(time.time()))
+        #queryset = IastAgent.objects.filter(department__in=department)
+        #except_running_status = STATUS_MAPPING[core_status]
+        #queryset.filter(online=1).update(
+        #    except_running_status=except_running_status,
+        #    control=core_status,
+        #    is_control=1,
+        #    latest_time=int(time.time()))
         return R.success(msg=_('状态已下发'))

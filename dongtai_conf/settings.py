@@ -10,10 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
+import os
 from typing import List
 from ast import literal_eval
 from urllib.parse import urljoin
-import os
 import sys
 from configparser import ConfigParser
 
@@ -22,7 +22,6 @@ import random
 
 import pymysql
 from dongtai_conf.utils import get_config
-
 
 pymysql.install_as_MySQLdb()
 
@@ -113,7 +112,7 @@ MODELTRANSLATION_LANGUAGES = ('en', 'zh')
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'zh'
 REST_FRAMEWORK = {
     'PAGE_SIZE':
-        20,
+    20,
     'DEFAULT_PAGINATION_CLASS': ['django.core.paginator'],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
@@ -123,11 +122,9 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
     ],
-    'DEFAULT_THROTTLE_CLASSES': ('rest_framework.throttling.AnonRateThrottle',
-                                 'rest_framework.throttling.UserRateThrottle'),
+    'DEFAULT_THROTTLE_CLASSES': (
+    ),
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '6000000/min',
-        'user': '6000000/min'
     },
 }
 
@@ -145,8 +142,8 @@ USE_L10N = True
 MODELTRANSLATION_FALLBACK_LANGUAGES = ('zh', 'en')
 MIDDLEWARE = [
     'django.middleware.gzip.GZipMiddleware',
-    'dongtai_common.common.utils.CSPMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #    'dongtai_common.common.utils.CSPMiddleware',
+    #    'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -306,6 +303,7 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'dongtai_common.User'
 TIME_ZONE = "Asia/Shanghai"
 STATIC_URL = '/static/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = "/static/media/"
 CAPTCHA_IMAGE_SIZE = (80, 45)
@@ -407,36 +405,49 @@ LOGGING = {
     'loggers': {
         'django.db.backends': {
             'handlers': ['console'],
-            'level': LOGGING_LEVEL,
+            'level': "DEBUG" if DEBUG else LOGGING_LEVEL,
             'propagate': False,
             'encoding': "utf-8",
         },
         'dongtai-webapi': {
-            'handlers': ['console', 'dongtai-webapi'],
+            'handlers': [
+                'console',
+            ],
             'propagate': True,
             'level': LOGGING_LEVEL,
         },
         'dongtai.openapi': {
-            'handlers': ['console', 'dongtai.openapi'],
+            'handlers': [
+                'console',
+            ],
             'propagate': True,
             'level': LOGGING_LEVEL,
         },
         'dongtai-core': {
-            'handlers': ['console', 'dongtai-webapi'],
+            'handlers': [
+                'console',
+            ],
             'propagate': True,
             'level': LOGGING_LEVEL,
         },
         'django': {
-            'handlers': ['console', 'dongtai-webapi'],
+            'handlers': [
+                'console',
+            ],
+            'level': LOGGING_LEVEL,
             'propagate': True,
         },
         'dongtai-engine': {
-            'handlers': ['console', 'dongtai-webapi'],
+            'handlers': [
+                'console',
+            ],
             'propagate': True,
             'level': LOGGING_LEVEL,
         },
         'celery.apps.worker': {
-            'handlers': ['console', 'celery.apps.worker'],
+            'handlers': [
+                'console',
+            ],
             'propagate': True,
             'level': LOGGING_LEVEL,
         },
@@ -470,11 +481,9 @@ X_FRAME_OPTIONS = 'DENY'
 
 TEST_RUNNER = 'test.NoDbTestRunner'
 
-
-# if os.getenv('environment', None) == 'TEST' or os.getenv('REQUESTLOG',
-#                                                         None) == 'TRUE':
-#    MIDDLEWARE.insert(0, 'apitimelog.middleware.RequestLogMiddleware')
-
+if os.getenv('environment', None) == 'TEST' or os.getenv('REQUESTLOG',
+                                                         None) == 'TRUE':
+    MIDDLEWARE.insert(0, 'apitimelog.middleware.RequestLogMiddleware')
 
 if os.getenv('PYTHONAGENT', None) == 'TRUE':
     MIDDLEWARE.insert(
@@ -507,16 +516,16 @@ The Token method is recommended here, and users can find it in the Agent install
     REST_FRAMEWORK[
         'DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'
 
-
 if os.getenv('environment', None) == 'TEST' or os.getenv('CPROFILE',
                                                          None) == 'TRUE':
     DJANGO_CPROFILE_MIDDLEWARE_REQUIRE_STAFF = False
-    MIDDLEWARE.append(
-        'django_cprofile_middleware.middleware.ProfilerMiddleware')
+    MIDDLEWARE.insert(
+        0, 'django_cprofile_middleware.middleware.ProfilerMiddleware')
 
 try:
     SCA_BASE_URL = config.get('sca', 'base_url')
     SCA_TIMEOUT = config.getint('sca', 'timeout')
+    SCA_MAX_RETRY_COUNT = config.getint('sca', 'max_retry_count', fallback=3)
     SCA_TOKEN = config.get('sca', 'token')
     SCA_SETUP = True if SCA_TOKEN else False
 except BaseException:
@@ -525,10 +534,8 @@ except BaseException:
     SCA_TOKEN = ""
     SCA_SETUP = False
 
-
 if os.getenv('environment', None) in ('TEST', 'PROD'):
-    SESSION_COOKIE_DOMAIN = config.get('other',
-                                       'demo_session_cookie_domain')
+    SESSION_COOKIE_DOMAIN = config.get('other', 'demo_session_cookie_domain')
     CSRF_COOKIE_DOMAIN = SESSION_COOKIE_DOMAIN
     DOMAIN = config.get('other', 'domain')
 
@@ -671,7 +678,13 @@ DEFAULT_CIRCUITCONFIG = {
         }]
     }
 }
-DEFAULT_IAST_VALUE_TAG = ['cross-site', 'xss-encoded', 'html-encoded', 'html-decoded', 'url-encoded', 'url-decoded', 'base64-encoded', 'base64-decoded']
+DEFAULT_IAST_VALUE_TAG = [
+    'cross-site', 'xss-encoded', 'html-encoded', 'html-decoded', 'url-encoded',
+    'url-decoded', 'base64-encoded', 'base64-decoded', 'xml-encoded',
+    'xml-decoded', 'sql-encoded', 'sql-decoded', 'xpath-encoded',
+    'xpath-decoded', 'ldap-encoded', 'ldap-decoded',
+    'http-token-limited-chars', 'numeric-limited-chars'
+]
 DEFAULT_TAINT_VALUE_RANGE_COMMANDS = ['KEEP', 'APPEND', 'SUBSET', 'INSERT', 'REMOVE', 'REPLACE', 'CONCAT', 'TRIM', 'TRIM_RIGHT', 'TRIM_LEFT']
 DEFAULT_CODE_DETECT_BLACK_LIST = [
     'aj.', 'akka.', 'android.', 'antlr.', 'apple.', 'aQute.', 'brave.', 'bsh.',
@@ -798,12 +811,16 @@ def is_gevent_monkey_patched() -> bool:
 
 
 def set_asyncio_policy():
-    import asyncio_gevent
-    import asyncio
     state = is_gevent_monkey_patched()
     print(f"is in gevent patched : {state}")
-    if state:
-        asyncio.set_event_loop_policy(asyncio_gevent.EventLoopPolicy())
+    pass
+#   disable until this package update
+#    import asyncio_gevent
+#    import asyncio
+#    state = is_gevent_monkey_patched()
+#    print(f"is in gevent patched : {state}")
+#    if state:
+#        asyncio.set_event_loop_policy(asyncio_gevent.EventLoopPolicy())
 
 
 AGENT_LOG_DIR = os.path.join(TMP_COMMON_PATH, 'batchagent')
@@ -817,3 +834,17 @@ for _dir in (TMP_COMMON_PATH, AGENT_LOG_DIR):
 DAST_TOKEN = config.get('other', 'dast_token', fallback='')
 
 set_asyncio_policy()
+
+if os.getenv('DJANGOSILK', None) == 'TRUE':
+    MIDDLEWARE.append('silk.middleware.SilkyMiddleware')
+    INSTALLED_APPS.append('silk')
+    SILKY_PYTHON_PROFILER = True
+    SILKY_ANALYZE_QUERIES = True
+    SILKY_EXPLAIN_FLAGS = {'format': 'JSON', 'costs': True}
+    SILKY_SENSITIVE_KEYS = {
+        'username', 'api', 'token', 'key', 'secret', 'password', 'signature'
+    }
+    SILKY_PYTHON_PROFILER_BINARY = True
+    #SILKY_AUTHENTICATION = True
+    #SILKY_AUTHORISATION = True
+    #SILKY_PERMISSIONS = lambda user: True

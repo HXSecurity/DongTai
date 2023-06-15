@@ -26,9 +26,15 @@ configs = {k: v for k, v in settings.__dict__.items() if k.startswith('CELERY')}
 
 configs["task_queues"] = [
     # normal
+    Queue("dongtai-api-route-handler",
+          Exchange("dongtai-api-route-handler"),
+          routing_key="dongtai-api-route-handler"),
     Queue("dongtai-method-pool-scan",
           Exchange("dongtai-method-pool-scan"),
           routing_key="dongtai-method-pool-scan"),
+    Queue("dongtai-project-time-stamp-update",
+          Exchange("dongtai-project-time-stamp-update"),
+          routing_key="dongtai-project-time-stamp-update"),
     Queue("dongtai-replay-vul-scan",
           Exchange("dongtai-replay-vul-scan"),
           routing_key="dongtai-replay-vul-scan"),
@@ -60,7 +66,9 @@ configs[
 # configs['worker_concurrency'] = 8
 configs["task_routes"] = {
     # normal
-    "dongtai_engine.tasks.search_vul_from_method_pool": {'exchange': 'dongtai-method-pool-scan', 'routing_key': 'dongtai-method-pool-scan'},
+    "dongtai_protocol.report.handler.api_route_handler.api_route_gather": {'queue': 'dongtai-api-route-handler', 'routing_key': 'dongtai-api-route-handler'},
+    "dongtai_engine.tasks.search_vul_from_method_pool": {'queue': 'dongtai-method-pool-scan', 'routing_key': 'dongtai-method-pool-scan'},
+    "dongtai_engine.plugins.project_time_update.project_time_stamp_update": {'queue': 'dongtai-project-time-stamp-update', 'routing_key': 'dongtai-project-time-stamp-update'},
     "dongtai_engine.tasks.search_vul_from_replay_method_pool": {'exchange': 'dongtai-replay-vul-scan', 'routing_key': 'dongtai-replay-vul-scan'},
     "dongtai_web.dongtai_sca.scan.utils.update_one_sca": {'exchange': 'dongtai-sca-task', 'routing_key': 'dongtai-sca-task'},
     "dongtai_engine.preheat.function_flush": {'exchange': 'dongtai-function-flush-data', 'routing_key': 'dongtai-function-flush-data'},
@@ -77,6 +85,7 @@ configs["task_routes"] = {
 }
 configs["CELERY_ENABLE_UTC"] = False
 configs["timezone"] = settings.TIME_ZONE
+configs["singleton_backend_url"] = settings.CELERY_BROKER_URL
 configs["DJANGO_CELERY_BEAT_TZ_AWARE"] = False
 configs["CELERY_BEAT_SCHEDULER"] = 'django_celery_beat.schedulers:DatabaseScheduler'
 

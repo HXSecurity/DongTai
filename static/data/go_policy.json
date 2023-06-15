@@ -59,6 +59,26 @@
                 "ignore_blacklist": false,
                 "ignore_internal": false,
                 "inherit": "false",
+                "source": "P3",
+                "stack_blacklist": [],
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "untags": [],
+                "value": "template.(*Template).ExecuteTemplate()"
+            }
+        ],
+        "enable": 1,
+        "type": 4,
+        "value": "reflected-xss"
+    },
+    {
+        "details": [
+            {
+                "command": "",
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
                 "source": "P1,2",
                 "stack_blacklist": [],
                 "tags": [],

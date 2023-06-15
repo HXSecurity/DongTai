@@ -26,6 +26,10 @@ class AggregationArgsSerializer(serializers.Serializer):
 
     bind_project_id = serializers.IntegerField(default=0, help_text=_('bind_project_id'))
     project_version_id = serializers.IntegerField(default=0, help_text=_('project_version_id'))
+    uri = serializers.CharField(
+        required=False,
+        max_length=1024,
+    )
 
     level_id_str = serializers.CharField(
         required=False,
