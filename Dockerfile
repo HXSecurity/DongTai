@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.10-slim-bullseye
 ARG VERSION
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=en_US.UTF-8
