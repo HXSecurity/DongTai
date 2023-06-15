@@ -90,6 +90,9 @@ class GetAppVulsList(UserEndPoint):
                         ser.validated_data.get("project_id_str", ""))
                     queryset = queryset.filter(project_id__in=project_id_list)
                     es_query['project_ids'] = project_id_list
+                if ser.validated_data.get("uri", ""):
+                    queryset = queryset.filter(
+                        uri=ser.validated_data.get("uri", ""))
                 # 漏洞类型筛选
                 if ser.validated_data.get("hook_type_id_str", ""):
                     vul_type_list = turnIntListOfStr(

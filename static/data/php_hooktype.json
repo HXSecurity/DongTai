@@ -432,6 +432,17 @@
         "created_by": 1,
         "enable": 1,
         "language": 3,
+        "name": "\u6587\u4ef6\u5199\u5165",
+        "name_en": null,
+        "name_zh": "\u6587\u4ef6\u5199\u5165",
+        "system_type": 1,
+        "type": 4,
+        "value": "\u6587\u4ef6\u5199\u5165"
+    },
+    {
+        "created_by": 1,
+        "enable": 1,
+        "language": 3,
         "name": "\u8eab\u4efd\u8ba4\u8bc1",
         "name_en": null,
         "name_zh": "\u8eab\u4efd\u8ba4\u8bc1",

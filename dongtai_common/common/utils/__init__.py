@@ -47,9 +47,12 @@ def make_hash(obj):
     return hash(tuple(frozenset(new_obj.items())))
 
 
-def cached(function,
-           random_range: tuple = (50, 100),
-           use_celery_update: bool = False):
+def cached(
+    function,
+    random_range: tuple = (50, 100),
+    use_celery_update: bool = False,
+    cache_logic_none: bool = True,
+):
     """Return a version of this function that caches its results for
     the time specified.
 
@@ -70,17 +73,23 @@ def cached(function,
         # the cache
         cache_key = make_hash(
             (function.__module__ + function.__name__, args, kwargs))
-        cached_result = cache.get(cache_key)
+        #cache_key = function.__module__ + function.__name__
+        cached_result = cache.get(cache_key, "Not such key")
         if random_range:
             cache_time = random.randint(*random_range)
         if use_celery_update:
             function_flush.apply_async(args=(function.__module__,
                                              function.__name__, cache_time,
                                              tuple(args), kwargs))
-        if cached_result is None:
+        if cached_result == "Not such key":
             result = function(*args, **kwargs)
-            cache.set(cache_key, result, cache_time)
+            if cache_logic_none and result is None:
+                cache.set(cache_key, result, cache_time)
+            else:
+                cache.set(cache_key, result, cache_time)
             return result
+        elif cached_result is None:
+            return cached_result
         else:
             return cached_result
 
@@ -89,32 +98,50 @@ def cached(function,
     return get_cache_or_call
 
 
-def cached_decorator(random_range, use_celery_update=False):
+def disable_cache(function, args=(), kwargs={}):
+    cache_key = make_hash(
+        (function.__module__ + function.__name__, args, kwargs))
+    cache.delete(cache_key)
+
+
+def cached_decorator(random_range,
+                     use_celery_update=False,
+                     cache_logic_none=True):
 
     def _noname(function):
-        return cached(function,
-                      random_range,
-                      use_celery_update=use_celery_update)
+        return cached(
+            function,
+            random_range,
+            use_celery_update=use_celery_update,
+            cache_logic_none=cache_logic_none,
+        )
 
     return _noname
 
+
+@cached_decorator(random_range=(60, 120), use_celery_update=False)
+def get_user_from_department_key(key):
+    from dongtai_common.models.department import Department
+    from dongtai_common.models.user import User
+    from rest_framework import exceptions
+    department = Department.objects.get(token=key)
+    principal = User.objects.filter(pk=department.principal_id).first()
+    user = principal if principal else User.objects.filter(pk=1).first()
+    user.using_department = department
+    return user
 
 class DepartmentTokenAuthentication(TokenAuthentication):
 
     keyword = 'Token GROUP'
     model = None
 
-    def authenticate_credentials(self, key):
+    def auth_decodedenticate_credentials(self, key):
         from dongtai_common.models.department import Department
         from dongtai_common.models.user import User
         from rest_framework import exceptions
-        model = Department
         try:
-            department = model.objects.get(token=key)
-            principal = User.objects.filter(pk=department.principal_id).first()
-            user = principal if principal else User.objects.filter(pk=1).first()
-            user.using_department = department
-        except model.DoesNotExist:
+            user = get_user_from_department_key(key)
+        except Department.DoesNotExist:
             raise exceptions.AuthenticationFailed(_('Invalid token.'))
         return (user, key)
 
@@ -125,4 +152,4 @@ class DepartmentTokenAuthentication(TokenAuthentication):
             return None
         token = auth.lower().replace(self.keyword.lower().encode(), b'',
                                      1).decode()
-        return self.authenticate_credentials(token)
+        return self.auth_decodedenticate_credentials(token)

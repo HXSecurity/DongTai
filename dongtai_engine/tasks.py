@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:owefsad
 # datetime:2021/1/26 下午4:45
@@ -20,21 +19,19 @@ from django.forms import model_to_dict
 from django.core.cache import cache
 from dongtai_common.engine.vul_engine import VulEngine
 from dongtai_common.models import User
-from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_common.models.asset import Asset
 from dongtai_common.models.errorlog import IastErrorlog
 from dongtai_common.models.heartbeat import IastHeartbeat
-from dongtai_common.models.hook_strategy import HookStrategy
 from dongtai_common.models.hook_type import HookType
-from dongtai_common.models.project import IastProject
 from dongtai_common.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai_common.models.replay_queue import IastReplayQueue
 from dongtai_common.models.sca_maven_db import ScaMavenDb
-from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.utils import const
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.project import IastProject
 
 from dongtai_engine.plugins.strategy_headers import check_response_header
 from dongtai_engine.plugins.strategy_sensitive import check_response_content
@@ -47,9 +44,8 @@ import requests
 from hashlib import sha1
 from dongtai_engine.task_base import replay_payload_data
 from typing import List, Dict
-from dongtai_common.models.strategy_user import IastStrategyUser
-
-LANGUAGE_MAP = {"JAVA": 1, "PYTHON": 2, "PHP": 3, "GO": 4}
+from dongtai_engine.common.queryset import get_scan_id, load_sink_strategy, get_agent
+from dongtai_engine.plugins.project_time_update import project_time_stamp_update
 
 RETRY_INTERVALS = [10, 30, 90]
 
@@ -75,46 +71,6 @@ def queryset_to_iterator(queryset):
             break
 
 
-def load_sink_strategy(user=None, language=None, scan_id=0) -> List[Dict]:
-    """
-    加载用户user有权限方法的策略
-    :param user: edit by song
-    :return:
-    """
-    logger.info('start load sink_strategy')
-    strategies = list()
-    language_id = 0
-    if language and language in LANGUAGE_MAP:
-        language_id = LANGUAGE_MAP[language]
-    q = ~Q(state='delete')
-    scan_template = IastStrategyUser.objects.filter(pk=scan_id).first()
-    if scan_template:
-        strategy_id = [int(i) for i in scan_template.content.split(',')]
-        q = q & Q(pk__in=strategy_id)
-    type_query = IastStrategyModel.objects.filter(q)
-    strategy_models = HookStrategy.objects.filter(
-        strategy__in=type_query,
-        language_id__in=[language_id] if language_id else LANGUAGE_MAP.values(),
-        created_by__in=[user.id, 1] if user else [1]
-    ).values('id', 'value', 'strategy__vul_type')
-    sub_method_signatures = set()
-    for strategy in strategy_models:
-        # for strategy in sub_queryset:
-        strategy_value = strategy.get("value", "")
-        sub_method_signature = strategy_value[:strategy_value.rfind('(')] if strategy_value.rfind(
-            '(') > 0 else strategy_value
-        if sub_method_signature in sub_method_signatures:
-            continue
-        sub_method_signatures.add(sub_method_signature)
-
-        strategies.append({
-            'strategy': strategy.get("id", ""),
-            'type': strategy.get("strategy__vul_type", ""),
-            'value': sub_method_signature
-        })
-    return strategies
-
-
 def search_and_save_vul(engine: Optional[VulEngine],
                         method_pool_model: Union[IastAgentMethodPoolReplay,
                                                  MethodPool],
@@ -127,18 +83,18 @@ def search_and_save_vul(engine: Optional[VulEngine],
     :return: None
     """
     logger.info(f'current sink rule is {strategy.get("type")}')
-    queryset = IastStrategyModel.objects.filter(vul_type=strategy['type'],
-                                                state=const.STRATEGY_ENABLE)
+    #queryset = IastStrategyModel.objects.filter(vul_type=strategy['type'],
+    #                                            state=const.STRATEGY_ENABLE)
     if not method_pool_model:
         logger.info(
             'method_pool_model missing skip'
         )
         return
-    if not queryset.values('id').exists():
-        logger.warning(
-            f'current method pool hit rule {strategy.get("type")}, but no vul strategy.'
-        )
-        return
+    #if not queryset.values('id').exists():
+    #    logger.warning(
+    #        f'current method pool hit rule {strategy.get("type")}, but no vul strategy.'
+    #    )
+    #    return
     if method_pool is None:
         method_pool = json.loads(method_pool_model.method_pool
                                  ) if method_pool_model.method_pool else []
@@ -151,20 +107,20 @@ def search_and_save_vul(engine: Optional[VulEngine],
     engine.search(method_pool=method_pool,
                   vul_method_signature=strategy.get('value'))
     status, stack, source_sign, sink_sign, taint_value = engine.result()
-    vul_strategy = queryset.values("level", "vul_name", "id").first()
-    vul_type = queryset.values('vul_type').first()
-    if not vul_strategy or not vul_type:
-        logger.info(
-            f'vul data corruption , stop scan in method_pool {method_pool_model.id}'
-        )
-        return
+    #vul_strategy = queryset.values("level", "vul_name", "id").first()
+    #vul_type = queryset.values('vul_type').first()
+    #if not vul_strategy or not vul_type:
+    #    logger.info(
+    #        f'vul data corruption , stop scan in method_pool {method_pool_model.id}'
+    #    )
+    #    return
     if status:
         filterres = vul_filter(
             stack,
             source_sign,
             sink_sign,
             taint_value,
-            vul_type['vul_type'],
+            strategy['type'],
         )
         logger.info(f'vul filter_status : {filterres}')
     if status and filterres:
@@ -172,20 +128,20 @@ def search_and_save_vul(engine: Optional[VulEngine],
             logger.info(f'vul_found {method_pool_model.agent_id}  {method_pool_model.url} {sink_sign}')
         else:
             logger.info(f'vul_found {method_pool_model.id}  {method_pool_model.url} {sink_sign}')
-        vul_strategy = queryset.values("level", "vul_name", "id").first()
-        if not vul_strategy:
-            pass
-        else:
-            handler_vul(
-                sender="tasks.search_and_save_vul",
-                vul_meta=method_pool_model,
-                vul_level=vul_strategy['level'],
-                strategy_id=vul_strategy['id'],
-                vul_stack=stack,
-                top_stack=source_sign,
-                bottom_stack=sink_sign,
-                taint_value=taint_value
-            )
+        #vul_strategy = queryset.values("level", "vul_name", "id").first()
+        #if not vul_strategy:
+        #    pass
+        #else:
+        handler_vul(
+            sender="tasks.search_and_save_vul",
+            vul_meta=method_pool_model,
+            vul_level=strategy['strategy_level'],
+            strategy_id=strategy['strategy_strategy_id'],
+            vul_stack=stack,
+            top_stack=source_sign,
+            bottom_stack=sink_sign,
+            taint_value=taint_value
+        )
     else:
         try:
             if isinstance(method_pool_model, MethodPool):
@@ -205,9 +161,9 @@ def search_and_save_vul(engine: Optional[VulEngine],
                 state=const.SOLVED,
                 result=const.RECHECK_FALSE,
                 verify_time=timestamp,
-                update_time=timestamp
-            )
-            IastProject.objects.filter(id=method_pool_model.agent.bind_project_id).update(latest_time=timestamp)
+                update_time=timestamp)
+            project_time_stamp_update.apply_async(
+                (method_pool_model.agent.bind_project_id, ), countdown=5)
         except Exception as e:
             logger.info(f'漏洞数据处理出错，原因：{e}')
 
@@ -238,7 +194,9 @@ def search_and_save_sink(engine, method_pool_model, strategy):
 def search_vul_from_method_pool(self, method_pool_sign, agent_id, retryable=False):
     logger.info(f'漏洞检测开始，方法池 {method_pool_sign}')
     try:
-        method_pool_model = MethodPool.objects.filter(pool_sign=method_pool_sign, agent_id=agent_id).first()
+        method_pool_model = MethodPool.objects.filter(
+            pool_sign=method_pool_sign, agent_id=agent_id).first()
+        method_pool_model.agent = get_agent(method_pool_model.agent_id)
         if method_pool_model is None:
             if retryable:
                 if self.request.retries < self.max_retries:
@@ -254,10 +212,9 @@ def search_vul_from_method_pool(self, method_pool_sign, agent_id, retryable=Fals
         )
         check_response_header(method_pool_model)
         check_response_content(method_pool_model)
-
+        scan_id = get_scan_id(method_pool_model.agent.bind_project_id)
         strategies = load_sink_strategy(
-            method_pool_model.agent.user, method_pool_model.agent.language,
-            method_pool_model.agent.bind_project.scan_id)
+            scan_id=scan_id)
         engine = VulEngine()
         method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
         engine.method_pool = method_pool
@@ -302,36 +259,36 @@ def search_vul_from_replay_method_pool(method_pool_id):
         logger.error(f'重放数据漏洞检测出错，方法池 {method_pool_id}. 错误原因：{e}')
 
 
-def load_methods_from_strategy(strategy_id):
-    """
-    根据策略ID加载策略详情、策略对应的方法池数据
-    :param strategy_id: 策略ID
-    :return:
-    """
-    strategy = HookStrategy.objects.filter(type__in=HookType.objects.filter(type=4), id=strategy_id).first()
-    if strategy is None:
-        logger.info(f'策略[{strategy_id}]不存在')
-        return None, None
-    strategy_value = {
-        'strategy': strategy,
-        'type': strategy.type.first().value,
-        'value': strategy.value.split('(')[0]
-    }
-    # fixme 后续根据具体需要，获取用户对应的数据
-    if strategy is None:
-        return strategy_value, None
-
-    user = User.objects.filter(id=strategy.created_by).first()
-    if user is None:
-        return strategy_value, None
-
-    agents = IastAgent.objects.filter(user=user)
-    if agents.values('id').exists() is False:
-        return strategy_value, None
-
-    method_pool_queryset = MethodPool.objects.filter(agent__in=agents)
-    return strategy_value, method_pool_queryset
-
+#def load_methods_from_strategy(strategy_id):
+#    """
+#    根据策略ID加载策略详情、策略对应的方法池数据
+#    :param strategy_id: 策略ID
+#    :return:
+#    """
+#    strategy = HookStrategy.objects.filter(type__in=HookType.objects.filter(type=4), id=strategy_id).first()
+#    if strategy is None:
+#        logger.info(f'策略[{strategy_id}]不存在')
+#        return None, None
+#    strategy_value = {
+#        'strategy': strategy,
+#        'type': strategy.type.first().value,
+#        'value': strategy.value.split('(')[0]
+#    }
+#    # fixme 后续根据具体需要，获取用户对应的数据
+#    if strategy is None:
+#        return strategy_value, None
+#
+#    user = User.objects.filter(id=strategy.created_by).first()
+#    if user is None:
+#        return strategy_value, None
+#
+#    agents = IastAgent.objects.filter(user=user)
+#    if agents.values('id').exists() is False:
+#        return strategy_value, None
+#
+#    method_pool_queryset = MethodPool.objects.filter(agent__in=agents)
+#    return strategy_value, method_pool_queryset
+#
 
 def get_project_agents(agent):
     agents = IastAgent.objects.filter(
@@ -408,10 +365,8 @@ def is_alive(agent_id: int, timestamp: int) -> bool:
     """
     Whether the probe is alive or not, the judgment condition: there is a heartbeat log within 2 minutes
     """
-    return IastHeartbeat.objects.values('id').filter(agent__id=agent_id,
-                                                     dt__gt=(timestamp -
-                                                             60 * 2)).exists()
-
+    heartbeat_key = f"heartbeat-{agent_id}"
+    return True if cache.get(heartbeat_key) is not None else False
 
 @shared_task(queue='dongtai-periodic-task')
 def update_agent_status():
@@ -423,27 +378,25 @@ def update_agent_status():
     before_agent_status_update()
     logger.info(f'检测引擎状态更新开始')
     timestamp = int(time.time())
-    try:
-        running_agents = IastAgent.objects.values("id").filter(online=1)
-        is_stopped_agents = list()
-        for agent in running_agents:
-            agent_id = agent['id']
-            if is_alive(agent_id=agent_id, timestamp=timestamp):
-                continue
-            else:
-                is_stopped_agents.append(agent_id)
-        if is_stopped_agents:
-            IastAgent.objects.filter(id__in=is_stopped_agents).update(is_running=0, is_core_running=0, online=0)
-
-        vul_id_qs = IastReplayQueue.objects.filter(
-            update_time__lte=timestamp - 60 * 5,
-            verify_time__isnull=True,
-            replay_type=1).values('relation_id').distinct()
-        IastVulnerabilityModel.objects.filter(pk__in=vul_id_qs).update(
-            status_id=7)
-        logger.info(f'检测引擎状态更新成功')
-    except Exception as e:
-        logger.error(f'检测引擎状态更新出错，错误详情：{e}', exc_info=e)
+    running_agents_ids = list(
+        IastAgent.objects.values("id").filter(online=1).values_list(
+            'pk', flat=True).all())
+    heartbeat_keys = set(map(lambda x: f"heartbeat-{x}", running_agents_ids))
+    exists_keys = set(cache.get_many(heartbeat_keys).keys())
+    keys_missing = heartbeat_keys - exists_keys
+    stop_agent_ids = list(
+        map(lambda x: int(x.replace("heartbeat-", "")), keys_missing))
+    IastAgent.objects.filter(id__in=stop_agent_ids).update(
+        is_running=0, is_core_running=0, online=0)
+    vul_id_qs = IastReplayQueue.objects.filter(
+        update_time__lte=timestamp - 60 * 5,
+        verify_time__isnull=True,
+        replay_type=1).values('relation_id').distinct()
+    IastVulnerabilityModel.objects.filter(
+        Q(pk__in=vul_id_qs)
+        & ~Q(status_id__in=(3, 4, 5, 6))).update(status_id=7)
+    logger.info("update offline agent: %s", stop_agent_ids)
+    logger.info(f'检测引擎状态更新成功')
     after_agent_status_update()
 
 @shared_task(queue='dongtai-periodic-task')

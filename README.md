@@ -15,7 +15,7 @@
 
 ## About DongTai IAST
 
-`DongTai IAST` is an open-source passive interactive security testing (IAST) product. It uses dynamic hooks and taint tracking algorithms to achieve **universal vulnerability detection** and **multiples request associated with vulnerability detection (including but not limited to unauthorized vulnerabilities, overpower vulnerabilities)**, **Third-party component vulnerability detection**, etc. Currently, applications in Java and Python are supported for vulnerability detection.
+`Dongtai IAST` is an open-source Interactive Application Security Testing (IAST) tool that enables real-time detection of common vulnerabilities in Java applications and third-party components through passive instrumentation. It is particularly suitable for use in the testing phase of the development pipeline.
 
 
 ## Project structure
@@ -34,14 +34,14 @@
 
 ## Architecture
 
-`DongTai IAST` has multiple basic services, including `DongTai-web`, `DongTai-webapi`, `DongTai-openapi`, `DongTai-engine`, `agent`, `DongTai-deploy`, `DongTai-Base-Image` and `DongTai-Plugin-IDEA`:
+`DongTai IAST` has multiple basic services, including `DongTai-web`, `DongTai`， `agent`, `DongTai-Base-Image` and `DongTai-Plugin-IDEA`:
 
 - `DongTai-web` is the product page of DongTai, which is used to handle the interaction between users and cave states.
-- `DongTai-webapi` is responsible for handling user-related operations.
-- `DongTai-openapi` is used to process the registration/heartbeat/call method/third-party component/error log data reported by `agent`, issue hook strategy, issue probe control commands, etc.
-- `DongTai-engine` analyzes whether there are vulnerabilities in HTTP/HTTPS/RPC requests according to the calling method data and taint tracking algorithm, and is also responsible for other related timing tasks.
+- `DongTai>>dongtai_web` is responsible for handling user-related operations.
+- `DongTai>>dongtai_protocol` is used to process the registration/heartbeat/call method/third-party component/error log data reported by `agent`, issue hook strategy, issue probe control commands, etc.
+- `DongTai>>dongtai_engine` analyzes whether there are vulnerabilities in HTTP/HTTPS/RPC requests according to the calling method data and taint tracking algorithm, and is also responsible for other related timing tasks.
 - `agent` is a probe module of DongTai, including data collection terminals in different programming languages, used to collect data during application runtime and report to the `DongTai-OpenAPI` service.
-- `DongTai-deploy` is used for the deployment of DongTai IAST, including docker-compose single-node deployment, Kubernetes cluster deployment, etc. If you want a deployment plan, you can add features or contribute to the deployment plan.
+- `DongTai>>deploy` is used for the deployment of DongTai IAST, including docker-compose single-node deployment, Kubernetes cluster deployment, etc. If you want a deployment plan, you can add features or contribute to the deployment plan.
 - `DongTai-Base-Image` contains the basic services that DongTai depends on runtime, including MySql, Redis.
 - `DongTai-Plugin-IDEA` is the IDEA plug-in corresponding to the Java probe. You can run the Java probe directly through the plug-in and detect the vulnerabilities directly in IDEA.
 

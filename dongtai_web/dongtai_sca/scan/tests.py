@@ -1,6 +1,6 @@
 from dongtai_common.models.asset import Asset
 from .utils import get_nearest_version, get_latest_version
-from .utils import update_one_sca
+from .utils import update_one_sca, new_update_one_sca
 from test.apiserver.test_agent_base import AgentTestCase
 from test import DongTaiTestCase
 from .utils import get_package_vul, get_package
@@ -92,7 +92,7 @@ class DongTaiVersionTestCase(TestCase):
         assert nrversion == ''
 
 
-class AgentHardencodeTestCase(AgentTestCase):
+class SCAScanV1TestCase(AgentTestCase):
 
     def test_update_one_sca_java(self):
         update_one_sca(
@@ -171,3 +171,72 @@ class AgentHardencodeTestCase(AgentTestCase):
         ).first()
         # skip until sca data stable
         self.assertGreaterEqual(asset.vul_count, 0)
+
+
+class SCAScanV2TestCase(AgentTestCase):
+
+    def test_update_one_sca_java_result_search2(self):
+        new_update_one_sca(
+            self.agent_id,
+            "/Users/xxx/spring-boot/2.3.2.RELEASE/com.amazon.redshift:redshift-jdbc42.jar",
+            "6f32a6a4af4820e4240a269a0b1a3217e43788e2",
+            "com.amazon.redshift:redshift-jdbc42.jar", "SHA-1")
+
+    def test_update_one_sca_java_result_search3(self):
+        new_update_one_sca(
+            self.agent_id,
+            "/Users/xxx/spring-boot/2.3.2.RELEASE/com.amazon.redshift:redshift-jdbc42.jar",
+            "9179edbad62154d04d4be20f0c0e2fb1fc637710",
+            "com.amazon.redshift:redshift-jdbc42.jar", "SHA-1")
+
+    def test_update_one_sca_java_result_search4(self):
+        new_update_one_sca(
+            self.agent_id,
+            "/Users/xxx/spring-boot/2.3.2.RELEASE/com.amazon.redshift:redshift-jdbc42.jar",
+            "5a7674517dd621cc60a000898341b03c41b7034b",
+            "com.amazon.redshift:redshift-jdbc42.jar", "SHA-1")
+
+    def test_update_one_sca_java_result_search5(self):
+        new_update_one_sca(
+            self.agent_id,
+            "/Users/xxx/spring-boot/2.3.2.RELEASE/com.amazon.redshift:redshift-jdbc42.jar",
+            "61d6426c79c97c97ac331c115131e487bc043248",
+            "com.amazon.redshift:redshift-jdbc42.jar", "SHA-1")
+
+    def test_update_one_sca_java_result_search6(self):
+        new_update_one_sca(
+            self.agent_id,
+            "/Users/xxx/spring-boot/2.3.2.RELEASE/com.amazon.redshift:redshift-jdbc42.jar",
+            "5d3ccc056b6f056dbf0dddfdf43894b9065a8f94",
+            "com.amazon.redshift:redshift-jdbc42.jar", "SHA-1")
+
+    def test_update_one_sca_java_result_search7(self):
+        new_update_one_sca(
+            self.agent_id,
+            "/Users/xxx/spring-boot/2.3.2.RELEASE/com.amazon.redshift:redshift-jdbc42.jar",
+            "46c1f8abd9e02a292c42a257350f365cec152b5d",
+            "com.amazon.redshift:redshift-jdbc42.jar", "SHA-1")
+
+    def test_update_one_sca_java_same_package(self):
+        new_update_one_sca(
+            self.agent_id,
+            "/Users/xxx/spring-boot/2.3.2.RELEASE/com.amazon.redshift:redshift-jdbc42.jar",
+            "9179edbad62154d04d4be20f0c0e2fb1fc637710",
+            "com.amazon.redshift:redshift-jdbc42.jar", "SHA-1")
+        new_update_one_sca(
+            self.agent_id,
+            "/Users/xxx/spring-boot/2.3.2.RELEASE/com.amazon.redshift:redshift-jdbc42.jar",
+            "9179edbad62154d04d4be20f0c0e2fb1fc637710",
+            "com.amazon.redshift:redshift-jdbc42.jar", "SHA-1")
+        #asset = Asset.objects.filter(
+        #    agent_id=self.agent_id,
+        #    signature_value="6f32a6a4af4820e4240a269a0b1a3217e43788e2",
+        #).first()
+        #for asset_rel in asset.iastvulassetrelation_set.all():
+        #    if asset_rel.asset_vul.vul_cve_nums == {
+        #            'cve': 'CVE-2022-41828',
+        #            'cwe': [],
+        #            'cnvd': '',
+        #            'cnnvd': ''
+        #    }:
+        #        self.assertEqual(asset_rel.asset_vul.level_id, 1)

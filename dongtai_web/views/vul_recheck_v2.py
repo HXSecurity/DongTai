@@ -80,8 +80,8 @@ class VulReCheckv2(UserEndPoint):
         replay_queue = []
         for key, value in vul_payload_dict.items():
             item = [
-                IastReplayQueue(agent_id=vul_id_agentmap[vul_id],
-                                relation_id=vul_id,
+                IastReplayQueue(agent_id=vul_id_agentmap[key],
+                                relation_id=key,
                                 state=const.WAITING,
                                 count=1,
                                 create_time=timestamp,
@@ -91,8 +91,8 @@ class VulReCheckv2(UserEndPoint):
             ]
             if not item:
                 item = [
-                    IastReplayQueue(agent_id=vul_id_agentmap[vul_id],
-                                    relation_id=vul_id,
+                    IastReplayQueue(agent_id=vul_id_agentmap[key],
+                                    relation_id=key,
                                     state=const.WAITING,
                                     count=1,
                                     create_time=timestamp,
@@ -157,11 +157,13 @@ class VulReCheckv2(UserEndPoint):
             department = request.user.get_relative_department()
 
             queryset = IastVulnerabilityModel.objects.filter(
-                is_del=0, project__department__in=department)
+                Q(is_del=0, project__department__in=department)
+                & ~Q(status_id__in=(3, 4, 5, 6)))
             ids_list = turnIntListOfStr(vul_ids)
 
             vul_queryset = queryset.filter(id__in=ids_list)
-
+            if not vul_queryset.exists():
+                R.failure(msg="漏洞处于最终状态时不允许重新验证")
             no_agent, waiting_count, success_count, re_success_count = self.vul_check_for_queryset(
                 vul_queryset)
 

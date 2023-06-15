@@ -124,6 +124,21 @@ def extend_schema_with_envcheck(querys: list = [],
     return myextend_schema
 
 
+def extend_schema_with_envcheck_v2(*args, **kwargs):
+
+    def myextend_schema(func):
+        import os
+        if os.getenv('environment', None) in ('TEST', 'DOC') or os.getenv(
+                'DOC', None) == 'TRUE':
+            from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes
+            deco = extend_schema(*args, **kwargs)
+            funcw = deco(func)
+            return funcw
+        return func
+
+    return myextend_schema
+
+
 def get_response_serializer(data_serializer=None,
                             msg_list=None,
                             status_msg_keypair=None):

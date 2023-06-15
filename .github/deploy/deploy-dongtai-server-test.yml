@@ -337,7 +337,7 @@ spec:
               mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
               subPath: config.ini
           env:
-            - name: DONGTAI_CONCURRENCY
+            - name: DONGTAI_CONCURRENCYW
               value: -P gevent --concurrency=10
           resources:
             limits:
