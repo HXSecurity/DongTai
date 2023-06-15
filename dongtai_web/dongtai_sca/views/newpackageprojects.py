@@ -11,10 +11,11 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck_v2, get_response_serializer
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
-from django.db.models import Q, F
+from django.db.models import Q, F, Value
 
 from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 from dongtai_common.models.assetv2 import AssetV2, AssetV2Global
+from dongtai_common.models.project import IastProject
 from rest_framework_dataclasses.serializers import DataclassSerializer
 from dataclasses import dataclass, field
 from typing import List
@@ -41,13 +42,13 @@ class RelationProjectArgsSerializer(serializers.Serializer):
         default=None, required=False, help_text=_("project with be the first"))
 
 
-class RelationProjectSerializer(serializers.Serializer):
-    project_name = serializers.CharField()
-    project_id = serializers.IntegerField()
+class RelationProjectSerializer(serializers.ModelSerializer):
+    project_name = serializers.CharField(source='name')
+    project_id = serializers.IntegerField(source='id')
 
     class Meta:
-        #        model = AssetV2
-        fields = ['project_id', 'package_name']
+        model = IastProject
+        fields = ['project_id', 'project_name']
 
 
 FullRelationProjectResponseSerializer = get_response_serializer(
@@ -66,25 +67,28 @@ class NewPackageRelationProject(UserEndPoint):
                 pass
         except ValidationError as e:
             return R.failure(data=e.detail)
+        departments = request.user.get_relative_department()
+        queryset = IastProject.objects.filter(
+            department__in=departments).order_by('-latest_time')
+        assets_project_ids = AssetV2.objects.filter(
+            language_id=language_id,
+            package_name=package_name,
+            version=package_version,
+            project__in=queryset,
+        ).values("project_id", ).distinct().order_by('-project_id').all()
         if ser.validated_data["project_id"]:
-            assets_p1 = AssetV2.objects.filter(
-                language_id=language_id,
-                package_name=package_name,
-                version=package_version,
-                project_id=ser.validated_data["project_id"],
-            ).values("project_id", ).annotate(
-                project_name=F("project__name")).order_by('-project_id').all()
-            assets_p2 = AssetV2.objects.filter(
-                Q(package_name=package_name, version=package_version)
-                & ~Q(project_id__in=[ser.validated_data["project_id"]])
-            ).values("project_id", ).annotate(
-                project_name=F("project__name")).order_by('-project_id').all()
-            assets = assets_p1.union(assets_p2)
+            assets_p1 = IastProject.objects.filter(
+                Q(pk__in=assets_project_ids)
+                & Q(pk=ser.validated_data["project_id"])).annotate(
+                    order=Value(1)).all()
+            assets_p2 = IastProject.objects.filter(
+                Q(pk__in=assets_project_ids)
+                & ~Q(pk=ser.validated_data["project_id"])).annotate(
+                    order=Value(2)).order_by('-pk').all()
+            assets = assets_p1.union(assets_p2).order_by('order', '-pk')
         else:
-            assets = AssetV2.objects.filter(
-                package_name=package_name, version=package_version).values(
-                    "project_id", ).annotate(project_name=F(
-                        "project__name")).order_by('-project_id').all()
+            assets = IastProject.objects.filter(
+                Q(pk__in=assets_project_ids)).order_by('-pk').all()
         page_info, data = self.get_paginator(assets,
                                              ser.validated_data['page'],
                                              ser.validated_data['page_size'])
