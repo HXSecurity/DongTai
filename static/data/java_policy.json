@@ -1381,15 +1381,8 @@
                 "untags": [
                     "xml-decoded"
                 ],
-                "value": "org.thymeleaf.util.DOMUtils.escapeXml(java.lang.String, boolean)"
-            }
-        ],
-        "enable": 1,
-        "type": 1,
-        "value": "String"
-    },
-    {
-        "details": [
+                "value": "org.thymeleaf.util.DOMUtils.escapeXml(char[], boolean)"
+            },
             {
                 "command": "",
                 "ignore_blacklist": false,
@@ -1405,7 +1398,7 @@
                 "untags": [
                     "xml-decoded"
                 ],
-                "value": "org.thymeleaf.util.DOMUtils.escapeXml(char[], boolean)"
+                "value": "org.thymeleaf.util.DOMUtils.escapeXml(java.lang.String, boolean)"
             }
         ],
         "enable": 1,
@@ -5119,32 +5112,6 @@
                 "track": "",
                 "untags": [],
                 "value": "java.io.CharArrayReader.read(char[],int,int)"
-            },
-            {
-                "command": "",
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "false",
-                "source": "P1",
-                "stack_blacklist": [],
-                "tags": [],
-                "target": "O",
-                "track": "",
-                "untags": [],
-                "value": "java.io.FileInputStream.<init>(java.io.File)"
-            },
-            {
-                "command": "",
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "false",
-                "source": "P1",
-                "stack_blacklist": [],
-                "tags": [],
-                "target": "O",
-                "track": "",
-                "untags": [],
-                "value": "java.io.FileInputStream.<init>(java.lang.String)"
             },
             {
                 "command": "",
@@ -11349,9 +11316,7 @@
                 "ignore_internal": false,
                 "inherit": "all",
                 "source": "P1",
-                "stack_blacklist": [
-                    "a"
-                ],
+                "stack_blacklist": [],
                 "tags": [],
                 "target": "",
                 "track": "true",
