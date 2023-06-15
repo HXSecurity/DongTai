@@ -7,7 +7,7 @@ ENV LANGUAGE=en_US.UTF-8
 ENV TZ=Asia/Shanghai
 
 RUN apt-get update -y \
-    && apt install -y gettext gcc make cmake libmariadb-dev curl libc6-dev unzip cron \
+    && apt install -y gettext gcc make cmake libmariadb-dev curl libc6-dev libxrender1 libxtst6 libxi6 unzip cron \
     fonts-wqy-microhei vim build-essential ninja-build cython3 pybind11-dev libre2-dev locales \
 #   htop sysstat net-tools iproute2 procps lsof \
     zip libjpeg62 \
