@@ -42,8 +42,7 @@ class DongTaiParameter:
         name='projectVersion',
         type=str,
         required=True,
-        description=
-        'The version name of the project where the Agent needs to be installed',
+        description='The version name of the project where the Agent needs to be installed',
         examples=[
             OpenApiExample(
                 'example with https://iast.io',
@@ -57,8 +56,7 @@ class DongTaiParameter:
         name='department_token',
         type=str,
         required=True,
-        description=
-        'The department token where the Agent needs to be installed',
+        description='The department token where the Agent needs to be installed',
         examples=[
             OpenApiExample(
                 'example with https://iast.io',
@@ -72,8 +70,7 @@ class DongTaiParameter:
         name='template_id',
         type=int,
         required=True,
-        description=
-        'The project template_id  where the Agent needs to be installed, set 1 as default',
+        description='The project template_id  where the Agent needs to be installed, set 1 as default',
         examples=[
             OpenApiExample(
                 'the default value',
@@ -86,8 +83,7 @@ class DongTaiParameter:
     LANGUAGE = OpenApiParameter(
         name='language',
         type=str,
-        description=
-        'The development language of the project that needs to install the Agent',
+        description='The development language of the project that needs to install the Agent',
         required=True,
         examples=[
             OpenApiExample(
@@ -101,8 +97,7 @@ class DongTaiParameter:
     VERSION = OpenApiParameter(
         name='version',
         type=str,
-        description=
-        'The development language of the project that needs to install the Agent',
+        description='The development language of the project that needs to install the Agent',
         required=True,
         examples=[
             OpenApiExample(

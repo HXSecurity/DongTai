@@ -345,8 +345,7 @@ class AgentDownload(OpenApiEndPoint):
 
             if handler.download_agent() is False:
                 return R.failure(
-                    msg=
-                    "agent file download failure. please contact official staff for help."
+                    msg="agent file download failure. please contact official staff for help."
                 )
 
             if handler.create_config(
