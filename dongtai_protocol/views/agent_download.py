@@ -272,8 +272,9 @@ class GoAgentDownload():
 
 class AgentDownload(OpenApiEndPoint):
     """
-    当前用户详情
+    Agent 下载接口
     """
+
     name = "download_iast_agent"
     description = "下载洞态Agent"
     authentication_classes = (DepartmentTokenAuthentication,
@@ -306,21 +307,27 @@ class AgentDownload(OpenApiEndPoint):
             return GoAgentDownload(user_id)
         return
 
-    @extend_schema(
-        parameters=[
-            DongTaiParameter.OPENAPI_URL,
-            DongTaiParameter.PROJECT_NAME,
-            DongTaiParameter.LANGUAGE
-        ],
-        auth=[DongTaiAuth.TOKEN],
-        responses=[FileResponse],
-        methods=['GET']
-    )
+    @extend_schema(operation_id="agent download api",
+                   tags=[_('Agent Protocol')],
+                   summary=_('Agent download'),
+                   parameters=[
+                       DongTaiParameter.OPENAPI_URL,
+                       DongTaiParameter.PROJECT_NAME,
+                       DongTaiParameter.PROJECT_VERSION,
+                       DongTaiParameter.TEMPLATE_ID,
+                       DongTaiParameter.DEPARTMENT_TOKEN,
+                       DongTaiParameter.LANGUAGE,
+                   ],
+                   responses=[FileResponse],
+                   methods=['GET'])
     def get(self, request):
         try:
-            base_url = request.query_params.get('url', 'https://www.huoxian.cn')
-            project_name = request.query_params.get('projectName', 'Demo Project')
-            project_version = request.query_params.get('projectVersion', 'V1.0')
+            base_url = request.query_params.get('url',
+                                                'https://www.huoxian.cn')
+            project_name = request.query_params.get('projectName',
+                                                    'Demo Project')
+            project_version = request.query_params.get('projectVersion',
+                                                       'V1.0')
             language = request.query_params.get('language')
             department_token = request.query_params.get('department_token')
             template_id = request.query_params.get('template_id')
@@ -337,7 +344,10 @@ class AgentDownload(OpenApiEndPoint):
             handler = self.make_download_handler(language, request.user.id)
 
             if handler.download_agent() is False:
-                return R.failure(msg="agent file download failure. please contact official staff for help.")
+                return R.failure(
+                    msg=
+                    "agent file download failure. please contact official staff for help."
+                )
 
             if handler.create_config(
                     base_url=base_url,
