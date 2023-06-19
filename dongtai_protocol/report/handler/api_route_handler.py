@@ -103,6 +103,7 @@ def _route_dump(item, api_method, agent):
 
 
 def _para_dump(item, api_route):
+    item = item.copy()
     item['route'] = api_route
     item['parameter_type'] = item['type']
     del item['type']
