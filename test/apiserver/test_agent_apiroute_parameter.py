@@ -49,3 +49,4 @@ class ApiRouteParameterCheckTestCase(AgentTestCase):
         self.assertEqual(len(api_routes), 2)
         for route in api_routes:
             self.assertEqual(route.iastapiparameter_set.count(), 3)
+            self.assertEqual(route.iastapiresponse_set.count(), 1)

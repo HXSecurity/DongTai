@@ -111,6 +111,7 @@ def _para_dump(item, api_route):
 
 
 def _response_dump(item, api_route):
+    item = item.copy()
     item['route'] = api_route
     return item
 
