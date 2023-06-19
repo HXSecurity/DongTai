@@ -19,6 +19,7 @@ import unittest
 from django.test import TestCase
 
 
+@unittest.skip("waiting for rebuild mock data")
 class AgentMethodPoolUploadTestCase(AgentTestCase):
 
     def test_benchmark_agent_method_pool_upload(self):
@@ -36,7 +37,8 @@ class AgentMethodPoolUploadTestCase(AgentTestCase):
             assert res == ""
             assert MethodPool.objects.filter(
                 url=report['detail']["url"]).exists()
-        assert MethodPool.objects.filter(agent_id=self.agent_id).count() == len(data)
+        assert MethodPool.objects.filter(
+            agent_id=self.agent_id).count() == len(data)
 
 
 def download_file(url, filepath):
@@ -70,10 +72,11 @@ class AgentHeartBeatTestCase(AgentTestCase):
                     self.agent.server.hostname,
                     language=self.agent.language))
         replay_queryset = IastReplayQueue.objects.values(
-            'id', 'relation_id', 'uri', 'method', 'scheme', 'header',
-            'params', 'body', 'replay_type').filter(
-                agent_id__in=project_agents,
-                state__in=[const.WAITING, const.SOLVING])[:200]
+            'id', 'relation_id', 'uri', 'method', 'scheme', 'header', 'params',
+            'body',
+            'replay_type').filter(agent_id__in=project_agents,
+                                  state__in=[const.WAITING,
+                                             const.SOLVING])[:200]
 
     def test_agent_replay_queryset_result(self):
         self.agent = IastAgent.objects.filter(pk=self.agent_id).first()
@@ -94,6 +97,7 @@ def get_replay_id_set(replay_list: list) -> set:
 
 @unittest.skip("waiting for rebuild mock data")
 class AgentSaasMethodPoolParseApiTestCase(AgentTestCase):
+
     def test_api_parse(self):
         mp = MethodPool.objects.filter(pk=500483715).first()
         mp.req_header
