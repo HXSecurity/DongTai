@@ -158,6 +158,7 @@ from dongtai_web.dast.webhook import DastWebhook
 from dongtai_web.dast.page import DastVulsEndPoint
 from dongtai_web.dast.manage import DastManageEndPoint
 from dongtai_web.views.new_project_query import (NewApiRouteSearch, NewProjectVersionList)
+from dongtai_web.views.api_route_search_v2 import NewApiRouteV2Search
 from dongtai_web.project.recognize_rule import RecognizeRuleViewSet
 from dongtai_web.enum.hook_rules import HookRuleEnumEndPoint
 
@@ -470,6 +471,7 @@ urlpatterns.extend([
     path('api/v2/app_vul_list_content', GetAppVulsList.as_view()),
     path('api/v2/app_vul_summary', GetAppVulsSummary.as_view()),
     path('api/v2/api_route/search', NewApiRouteSearch.as_view()),
+    path('api/v3/api_route/search', NewApiRouteV2Search.as_view()),
     path('api/v2/project_version', NewProjectVersionList.as_view()),
 ])
 
