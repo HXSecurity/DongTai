@@ -51,7 +51,7 @@ def get_schama_key(ref_str: str) -> str:
 
 
 def validate_schema_key(test_str: str) -> bool:
-    return re.fullmatch(regex, test_str) is not None
+    return re.fullmatch(r"#\/components\/schemas\/.*", test_str) is not None
 
 
 @shared_task(queue='dongtai-api-route-handler')
