@@ -83,6 +83,8 @@ class HeartBeatHandler(IReportHandler):
             default_dict['memory'] = self.memory
             default_dict['cpu'] = self.cpu
             default_dict['disk'] = self.disk
+            IastHeartbeat.objects.update_or_create(agent_id=self.agent_id, 
+                                                   defaults=default_dict)
         else:
             default_dict['memory'] = self.memory
             default_dict['cpu'] = self.cpu
@@ -91,8 +93,8 @@ class HeartBeatHandler(IReportHandler):
             default_dict['method_queue'] = self.method_queue
             default_dict['replay_queue'] = self.replay_queue
             default_dict['disk'] = self.disk
-        IastHeartbeat.objects.update_or_create(agent_id=self.agent_id,
-                                               defaults=default_dict)
+            IastHeartbeat.objects.update_or_create(agent_id=self.agent_id, 
+                                                   defaults=default_dict)
         update_agent_cache(self.agent_id, default_dict)
 
     def get_result(self, msg=None):
