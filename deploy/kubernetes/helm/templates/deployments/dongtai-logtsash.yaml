@@ -1,0 +1,76 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "dongtai.fullname" . }}-logstash
+  namespace: {{.Release.Namespace}}
+  labels:
+    app: {{ template "dongtai.fullname" . }}-logstash
+    {{- include "dongtai.labels" .  | nindent 4 }}
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{ template "dongtai.fullname" . }}-logstash
+      {{- include "dongtai.labels" .  | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        build_number: "{{ template "dongtai.fullname" . }}"
+        {{- if not .Values.skipistio }}{{ include "dongtai.istiolabels" . | nindent 8}}{{ end }}
+      labels:
+        app: {{ template "dongtai.fullname" . }}-logstash
+        {{- include "dongtai.labels" .  | nindent 8 }}
+    spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+      containers:
+      - image: {{ .Values.images }}/dongtai-logstash:{{ .Values.tag }}
+        name: logstash
+        securityContext:
+          runAsUser: 0
+        {{ include "deploy.imagePullPolicy" . }}
+        env:
+        - name: DATABASE
+          valueFrom:
+            configMapKeyRef:
+              key: database
+              name: logstash-cm
+        - name: USERNAME
+          valueFrom:
+            configMapKeyRef:
+              key: username
+              name: logstash-cm
+        - name: PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: password
+              name: logstash-cm
+        ports:
+        - containerPort: 8082
+          protocol: TCP
+          name: agent-http
+        - containerPort: 8083
+          protocol: TCP
+          name: log-http
+        resources:
+          requests:
+            cpu: 1000m
+            memory: 2000Mi
+          limits:
+            cpu: 2000m
+            memory: 4000Mi
+{{- if .Values.storage.persistentVolumeClaim }}
+        volumeMounts:
+        - name: {{ template "dongtai.fullname" . }}-log-path
+          mountPath: /tmp/logstash
+      volumes:
+      - name: {{ template "dongtai.fullname" . }}-log-path
+        persistentVolumeClaim:
+          {{ include "deploy.config.persistentVolumeClaim" . }}
+{{ end -}}
+      {{- if .Values.somaxconn }}
+      {{- include "deploy.initContainers" . | nindent 6 }}
+      {{- end }}

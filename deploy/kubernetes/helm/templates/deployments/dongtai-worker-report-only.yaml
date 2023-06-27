@@ -1,0 +1,37 @@
+{{- if .Values.max }}
+---
+# dongtai-worker-report-only服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "dongtai.fullname" . }}-worker-report-only
+  namespace: {{.Release.Namespace}}
+  annotations:
+    kubesphere.io/description: {{ template "dongtai.fullname" . }}-worker-report-only
+  labels:
+    app: {{ template "dongtai.fullname" . }}-worker-report-only
+    {{- include "dongtai.labels" .  | nindent 4 }}
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{ template "dongtai.fullname" . }}-worker-report-only
+      {{- include "dongtai.labels" .  | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "dongtai.fullname" . }}-worker-report-only
+        {{- include "dongtai.labels" .  | nindent 8 }}
+    spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+      containers:
+        - name: {{ template "dongtai.fullname" . }}-worker-report-only-container
+          image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
+          command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
+          args: [ "worker-report-only" ]
+          {{- include "deploy.configmax" . | nindent 10 }}
+      {{- include "deploy.config.vo" . | nindent 6 }}
+{{- end }}

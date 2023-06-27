@@ -1,0 +1,46 @@
+---
+# dongtai-server服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "dongtai.fullname" . }}-server
+  namespace: {{.Release.Namespace}}
+  annotations:
+    kubesphere.io/description: server
+  labels:
+    app: {{ template "dongtai.fullname" . }}-server
+    {{- include "dongtai.labels" .  | nindent 4 }}
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{ template "dongtai.fullname" . }}-server
+      {{- include "dongtai.labels" .  | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        build_number: "{{ template "dongtai.fullname" . }}"
+        {{- if not .Values.skipistio }}{{ include "dongtai.istiolabels" . | nindent 8 }}{{ end }}
+      labels:
+        app: {{ template "dongtai.fullname" . }}-server
+        {{- include "dongtai.labels" .  | nindent 8 }}
+    spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+      containers:
+        - name: {{ template "dongtai.fullname" . }}-server-container
+          image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
+          env:
+            - name: DONGTAI_CONCURRENCY
+              value: --processes 4
+            {{- range $key, $value :=  .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          {{- include "deploy.config" . | nindent 10 }}
+      {{- include "deploy.config.vo" . | nindent 6 }}
+      {{- if .Values.somaxconn }}
+      {{- include "deploy.initContainers" . | nindent 6 }}
+      {{- end }}

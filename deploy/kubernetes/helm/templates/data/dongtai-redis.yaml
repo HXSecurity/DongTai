@@ -1,0 +1,36 @@
+{{- if not .Values.skipRedis -}}
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "dongtai.fullname" . }}-redis
+  namespace: {{.Release.Namespace}}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "dongtai.fullname" . }}-redis
+      {{- include "dongtai.labels" .  | nindent 6}}
+  serviceName: dongtai-redis
+  template:
+    metadata:
+      annotations:
+        build_number: "{{ template "dongtai.fullname" . }}"
+        {{- if not .Values.skipistio }}{{ include "dongtai.istiolabels" . | nindent 8 }}{{ end }}
+      labels:
+        app: {{ template "dongtai.fullname" . }}-redis
+        release: {{ .Release.Name }}
+        {{- include "dongtai.labels" .  | nindent 8 }}
+    spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+      containers:
+      - image: {{ .Values.images }}/dongtai-redis:{{ .Values.tag }}
+        imagePullPolicy: Always
+        name: {{ template "dongtai.fullname" . }}-redis
+        ports:
+        - containerPort: 6379
+          name: redis
+          protocol: TCP
+{{- end -}}

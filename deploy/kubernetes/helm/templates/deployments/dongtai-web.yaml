@@ -1,0 +1,44 @@
+---
+# dongtai-web服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "dongtai.fullname" . }}-web
+  namespace: {{.Release.Namespace}}
+  annotations:
+    kubesphere.io/description: web
+  labels:
+    app: {{ template "dongtai.fullname" . }}-web
+    {{- include "dongtai.labels" .  | nindent 4 }}
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{ template "dongtai.fullname" . }}-web
+      {{- include "dongtai.labels" .  | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        build_number: "{{ template "dongtai.fullname" . }}"
+        {{- if not .Values.skipistio }}{{ include "dongtai.istiolabels" . | nindent 8 }}{{ end }}
+      labels:
+        app: {{ template "dongtai.fullname" . }}-web
+        {{- include "dongtai.labels" .  | nindent 8 }}
+    spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+      containers:
+        - name: {{ template "dongtai.fullname" . }}-web-container
+          image: {{ .Values.images }}/dongtai-web:{{ .Values.tag }}
+          imagePullPolicy: Always
+          {{- include "deploy.resources" . | nindent 10 }}
+          volumeMounts:
+            - name: configfile
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+      volumes:
+        - name: configfile
+          configMap:
+            name: dongtai-web-nginx-conf
