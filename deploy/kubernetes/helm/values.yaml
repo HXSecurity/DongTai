@@ -40,7 +40,11 @@ redis:
   db: 0
 
 sca:
-  sca_token: 
+  sca_url: https://sca.huoxian.cn/
+  sca_token:
+
+usb:
+  usb_token: 837e62834b8423418c2a2axxxxxxxxxxxxxxx
 
 storage:
   storageClassName: null
