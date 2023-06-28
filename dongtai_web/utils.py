@@ -111,9 +111,7 @@ def extend_schema_with_envcheck(querys: list = [],
                 examples=examples if examples else None,
                 responses={
                     200: OpenApiResponse(
-                        description=_('The http status codes are both 200, '
-                        'please use the status and msg field returned '
-                        'by the response data to troubleshoot'),  # type: ignore
+                        description=_('The http status codes are both 200, please use the status and msg field returned by the response data to troubleshoot'),  # type: ignore
                         response=response_schema)},
                 **kwargs)
             funcw = deco(func)
