@@ -7,13 +7,7 @@
 ######################################################################
 
 from rest_framework.test import APITestCase
-from django.urls import include, path, reverse
 from dongtai_common.models.user import User
-from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.models.hook_type import HookType
-import time
-import unittest
 import json
 from dongtai_common.models.hook_strategy import HookStrategy
 
@@ -22,6 +16,7 @@ class EngineHookRuleTestCase(APITestCase):
 
     def setUp(self):
         self.user = User.objects.filter(pk=1).first()
+        assert self.user is not None
         self.client.force_authenticate(user=self.user)
 
     def test_create(self):

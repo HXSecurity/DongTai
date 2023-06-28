@@ -27,7 +27,6 @@ from dongtai_common.models.agent_config import (
     UNIT_DICT,
 )
 from rest_framework import viewsets
-from django.db.models import IntegerChoices
 from rest_framework import serializers
 import time
 
@@ -38,7 +37,7 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 from dongtai_web.serializers.agent_config import AgentConfigSettingSerializer
 from rest_framework.serializers import ValidationError
 from rest_framework.utils.serializer_helpers import ReturnDict
-from typing import Dict
+from typing import Dict, cast
 from collections import OrderedDict
 
 _ResponseSerializer = get_response_serializer(status_msg_keypair=(
@@ -190,6 +189,7 @@ def config_update(data, config_id):
     IastCircuitMetric.objects.filter(
         circuit_config_id=config_id).delete()
     obj = IastCircuitConfig.objects.filter(pk=config_id).first()
+    assert obj is not None
     for i in data['targets']:
         create_target(i, obj)
 
@@ -332,7 +332,7 @@ class AgentThresholdConfigV2(TalentAdminEndPoint, viewsets.ViewSet):
     def reset(self, request, pk):
         if IastCircuitConfig.objects.filter(pk=pk).exists():
             config = IastCircuitConfig.objects.filter(pk=pk, ).first()
-            mg = MetricGroup(config.metric_group)
+            mg = MetricGroup(cast(int, config.metric_group))
             data = DEFAULT_CIRCUITCONFIG[mg.name]
             config_update(data, pk)
             return R.success()

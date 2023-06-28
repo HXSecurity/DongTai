@@ -61,6 +61,13 @@ class AgentHeartBeatTestCase(AgentTestCase):
 
     def test_agent_replay_queryset(self):
         self.agent = IastAgent.objects.filter(pk=self.agent_id).first()
+        assert self.agent is not None
+        assert self.agent.filepathsimhash is not None
+        assert self.agent.language is not None
+        assert self.agent.servicetype is not None
+        assert self.agent.server is not None
+        assert self.agent.server.path is not None
+        assert self.agent.server.hostname is not None
         project_agents = IastAgent.objects.values_list('id', flat=True).filter(
             bind_project_id=self.agent.bind_project_id,
             language=self.agent.language).union(
@@ -100,6 +107,7 @@ class AgentSaasMethodPoolParseApiTestCase(AgentTestCase):
 
     def test_api_parse(self):
         mp = MethodPool.objects.filter(pk=500483715).first()
+        assert mp is not None and mp.req_header is not None
         mp.req_header
         headers_bytes = base64.b64decode(mp.req_header)
         from dongtai_engine.filters.utils import parse_headers_dict_from_bytes

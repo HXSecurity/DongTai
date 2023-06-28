@@ -64,6 +64,8 @@ def data_cleanup(days: int):
         if not any([latest_id, first_id]):
             logger.info("no data for clean up")
         if all([latest_id, first_id]):
+            assert isinstance(latest_id, int)
+            assert isinstance(first_id, int)
             batch_clean(latest_id, first_id, 10000)
             # qs = MethodPool.objects.filter(pk__lte=latest_id)
             # qs._raw_delete(qs.db)

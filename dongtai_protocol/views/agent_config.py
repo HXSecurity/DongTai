@@ -5,7 +5,6 @@ from dongtai_common.models.agent_config import (
     IastCircuitMetric,
     TargetType,
     TargetOperator,
-    DealType,
     MetricType,
     MetricGroup,
     MetricOperator,
@@ -14,13 +13,11 @@ from dongtai_protocol.decrypter import parse_data
 from dongtai_common.endpoint import OpenApiEndPoint, R
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.agent_config import IastAgentConfig
-from django.db.models import Q
 from drf_spectacular.utils import extend_schema
 import logging
 from dongtai_common.utils.systemsettings import get_circuit_break
 from django.utils.translation import gettext_lazy as _
 from result import Ok, Err, Result
-from dongtai_common.models.agent_config import MetricGroup
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -124,7 +121,7 @@ def get_function(opt: TargetOperator):
 
 def get_filter_by_target(target):
     targetattr = TargetType(target.target_type).name
-    opt_function = get_function(TargetType(target.opt))
+    opt_function = get_function(TargetOperator(target.opt))
     return lambda x: opt_function(x[targetattr], target.value)
 
 

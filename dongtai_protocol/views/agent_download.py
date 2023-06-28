@@ -11,14 +11,14 @@ import uuid
 import logging
 
 from django.http import FileResponse
-from dongtai_common.endpoint import UserEndPoint, R, OpenApiEndPoint
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+from dongtai_common.endpoint import R, OpenApiEndPoint
+from drf_spectacular.utils import extend_schema
 from rest_framework.authtoken.models import Token
 from django.utils.translation import gettext_lazy as _
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from dongtai_common.common.utils import DepartmentTokenAuthentication
 
-from dongtai_protocol.api_schema import DongTaiParameter, DongTaiAuth
+from dongtai_protocol.api_schema import DongTaiParameter
 from dongtai_protocol.utils import OssDownloader
 from dongtai_conf.settings import BUCKET_NAME_BASE_URL, VERSION
 
@@ -124,7 +124,7 @@ class PythonAgentDownload():
 
             agent_file = tarfile.open(user_file)
             agent_file.extractall(
-                path=self.target_path, members=lambda memberz: memberz
+                path=self.target_path
             )  # trust upstream package until upstream provide file list to validate.
             names = agent_file.getnames()
             self.target_source_path = f"{self.target_path}/{names[0]}"
@@ -195,7 +195,7 @@ class PhpAgentDownload():
 
             agent_file = tarfile.open(user_file)
             agent_file.extractall(
-                path=self.target_path, members=lambda memberz: memberz
+                path=self.target_path
             )  # trust upstream package until upstream provide file list to validate.
             agent_file.close()
 
@@ -286,7 +286,7 @@ class AgentDownload(OpenApiEndPoint):
         try:
             agent_file = tarfile.open(file)
             agent_file.extractall(
-                path=tmp_path, members=lambda memberz: memberz
+                path=tmp_path
             )  # trust upstream package until upstream provide file list to validate.
         except tarfile.ReadError:
             return False
@@ -309,7 +309,7 @@ class AgentDownload(OpenApiEndPoint):
 
     @extend_schema(operation_id="agent download api",
                    tags=[_('Agent Protocol')],
-                   summary=_('Agent download'),
+                   summary=_('Agent download'), # type: ignore
                    parameters=[
                        DongTaiParameter.OPENAPI_URL,
                        DongTaiParameter.PROJECT_NAME,

@@ -15,9 +15,12 @@ from dongtai_common.utils import const
 from dongtai_common.utils.systemsettings import get_vul_validate
 from django.db.models import QuerySet
 from collections import defaultdict
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from django.core.paginator import _SupportsPagination
 
 
-def get_vul_levels_dict(queryset: QuerySet) -> defaultdict:
+def get_vul_levels_dict(queryset: "QuerySet | _SupportsPagination") -> defaultdict:
     vul_levels = IastVulnerabilityModel.objects.values(
         'level__name_value', 'level', 'project_id').filter(
             project_id__in=list(
@@ -30,7 +33,7 @@ def get_vul_levels_dict(queryset: QuerySet) -> defaultdict:
     return vul_levels_dict
 
 
-def get_project_language(queryset: QuerySet) -> defaultdict:
+def get_project_language(queryset: "QuerySet | _SupportsPagination") -> defaultdict:
     project_languages = IastAgent.objects.values(
         'bind_project_id', 'language').filter(bind_project_id__in=list(
             queryset.values_list('id', flat=True))).distinct()
@@ -40,7 +43,7 @@ def get_project_language(queryset: QuerySet) -> defaultdict:
     return project_language_dict
 
 
-def get_agent_count(queryset: QuerySet) -> defaultdict:
+def get_agent_count(queryset: "QuerySet | _SupportsPagination") -> defaultdict:
     agent_counts = IastAgent.objects.values('bind_project_id').filter(
         bind_project_id__in=list(queryset.values_list(
             'id', flat=True))).annotate(agent_count=Count('id'))

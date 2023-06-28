@@ -124,7 +124,7 @@ jobs:
           
       - name: Django Unit Testing
         run: |
-          mypy --show-error-codes --ignore-missing-imports  --no-incremental --show-error-codes --check-untyped-defs --disable-error-code var-annotated  --disable-error-code  list-item  --disable-error-code attr-defined --disable-error-code arg-type --disable-error-code assignment --disable-error-code misc --disable-error-code union-attr --disable-error-code index --disable-error-code call-overload  --disable-error-code dict-item  --disable-error-code truthy-function --disable-error-code operator --disable-error-code name-defined .
+          mypy --show-error-codes --ignore-missing-imports  --no-incremental --show-error-codes --check-untyped-defs --disable-error-code var-annotated  --disable-error-code  list-item  --disable-error-code attr-defined --disable-error-code assignment --disable-error-code misc --disable-error-code union-attr --disable-error-code index --disable-error-code call-overload  --disable-error-code dict-item  --disable-error-code truthy-function --disable-error-code operator --disable-error-code name-defined .
 
   Run-Pep8Check:
     runs-on: ubuntu-latest

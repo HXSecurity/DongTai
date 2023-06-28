@@ -36,7 +36,7 @@ class FakeSocket():
 
 def parse_response(http_response_str):
     source = FakeSocket(http_response_str.encode())
-    response = HTTPResponse(source)
+    response = HTTPResponse(source)  # type:ignore
     response.begin()
     return response
 

@@ -244,6 +244,7 @@ def search_vul_from_replay_method_pool(method_pool_id):
         method_pool_model = IastAgentMethodPoolReplay.objects.filter(id=method_pool_id).first()
         if method_pool_model is None:
             logger.warn(f'重放数据漏洞检测终止，方法池 {method_pool_id} 不存在')
+            return
         strategies = load_sink_strategy(method_pool_model.agent.user, method_pool_model.agent.language)
         engine = VulEngine()
         method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
@@ -576,7 +577,7 @@ def vul_recheck():
                                 header_raw[index] = f'{_header_name}:{recheck_payload}'
                                 break
                         try:
-                            headers = base64.b64encode('\n'.join(header_raw))
+                            headers = base64.b64encode('\n'.join(header_raw).encode("utf-8"))
                         except Exception as e:
                             logger.warning(f'请求头解析失败，漏洞ID: {vulnerability["id"]}', exc_info=e)
                     elif position == 'COOKIE':
@@ -603,7 +604,7 @@ def vul_recheck():
                             cookie_raw = ';'.join(cookie_raw_items)
                             header_raw[cookie_index] = cookie_raw
                         try:
-                            headers = base64.b64encode('\n'.join(header_raw))
+                            headers = base64.b64encode('\n'.join(header_raw).encode("utf-8"))
                         except Exception as e:
                             logger.error(f'请求头解析失败，漏洞ID: {vulnerability["id"]}')
 

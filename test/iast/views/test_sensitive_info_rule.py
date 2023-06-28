@@ -14,6 +14,7 @@ from dongtai_common.models.user import User
 class SensitiveInfoRuleTestCase(APITestCase):
     def setUp(self):
         self.user = User.objects.filter(pk=1).first()
+        assert self.user is not None
         self.client.force_authenticate(user=self.user)
 
     def test_sensitive_info_rule_create(self):

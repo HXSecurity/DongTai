@@ -160,8 +160,9 @@ from dongtai_web.dast.manage import DastManageEndPoint
 from dongtai_web.views.new_project_query import (NewApiRouteSearch, NewProjectVersionList)
 from dongtai_web.project.recognize_rule import RecognizeRuleViewSet
 from dongtai_web.enum.hook_rules import HookRuleEnumEndPoint
+from django.urls import URLResolver, URLPattern
 
-urlpatterns = [
+urlpatterns: list[URLResolver | URLPattern] = [
     path('user/<int:user_id>', UserDetailEndPoint.as_view()),
     path('user/changePassword', UserPassword.as_view()),
     path('user/login', UserLogin.as_view()),
