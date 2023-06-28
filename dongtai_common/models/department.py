@@ -16,7 +16,7 @@ from typing import Any
 
 
 class IastDepartment(models.Model):
-    name = models.CharField(max_length=255, blank=True, null=True)
+    name = models.CharField(max_length=255, blank=True)
 
     class Meta:
         managed = get_managed()
@@ -44,6 +44,7 @@ class Department(PermissionsMixin):
     name = models.CharField(
         _('name'),
         unique=True,
+        blank=True,
         max_length=100,
         error_messages={
             'unique': _("A department with that department name already exists."),

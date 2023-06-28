@@ -27,7 +27,7 @@ class IReportHandler:
         self._report = None
         self._detail = None
         self._user_id = None
-        self.agent_id = None
+        self.agent_id = 0
         self.project_name = None
         self.agent: IastAgent = IastAgent()
 

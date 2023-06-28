@@ -21,19 +21,11 @@ class VulValidation(models.IntegerChoices):
 
 
 class IastProjectTemplate(models.Model):
-    template_name = models.CharField(max_length=255, blank=True, null=True)
-    latest_time = models.IntegerField(default=lambda: int(time.time()),
-                                      blank=True,
-                                      null=True)
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
-    scan = models.ForeignKey(IastStrategyUser,
-                             models.DO_NOTHING,
-                             blank=True,
-                             null=True)
-    vul_validation = models.IntegerField(default=0,
-                                         blank=True,
-                                         null=False,
-                                         choices=VulValidation.choices)
+    template_name = models.CharField(max_length=255)
+    latest_time = models.IntegerField(default=lambda: int(time.time()))
+    user = models.ForeignKey(User, models.DO_NOTHING)
+    scan = models.ForeignKey(IastStrategyUser, models.DO_NOTHING)
+    vul_validation = models.IntegerField(default=0, choices=VulValidation.choices)
     is_system = models.IntegerField(default=0)
     data_gather = models.JSONField(default=dict)
     data_gather_is_followglobal = models.IntegerField(default=1)
@@ -56,47 +48,29 @@ class IastProjectTemplate(models.Model):
         }
 
 class IastProject(models.Model):
-    name = models.CharField(max_length=255, blank=True, null=True)
-    mode = models.CharField(default="插桩模式",
-                            max_length=255,
-                            blank=True,
-                            null=True)
+    name = models.CharField(max_length=255, blank=True)
+    mode = models.CharField(default="插桩模式", max_length=255, blank=True)
     vul_count = models.PositiveIntegerField(blank=True, null=True)
     agent_count = models.IntegerField(blank=True, null=True)
-    latest_time = models.IntegerField(default=lambda: int(time.time()),
-                                      blank=True,
-                                      null=True)
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
+    latest_time = models.IntegerField(default=lambda: int(time.time()))
+    user = models.ForeignKey(User, models.DO_NOTHING)
     # openapi服务不必使用该字段
     scan = models.ForeignKey(IastStrategyUser,
                              models.DO_NOTHING,
                              blank=True,
                              null=True)
 
-    vul_validation = models.IntegerField(default=0,
-                                         blank=True,
-                                         null=False,
-                                         choices=VulValidation.choices)
-    base_url = models.CharField(max_length=255, blank=True, default='')
-    test_req_header_key = models.CharField(max_length=511,
-                                           blank=True,
-                                           default='')
-    test_req_header_value = models.CharField(max_length=511,
-                                             blank=True,
-                                             default='')
-    data_gather = models.JSONField()
+    vul_validation = models.IntegerField(default=0, choices=VulValidation.choices)
+    base_url = models.CharField(max_length=255, blank=True)
+    test_req_header_key = models.CharField(max_length=511, blank=True)
+    test_req_header_value = models.CharField(max_length=511, blank=True)
+    data_gather = models.JSONField(null=True)
     data_gather_is_followglobal = models.IntegerField(default=1)
     blacklist_is_followglobal = models.IntegerField(default=1)
-    department = models.ForeignKey(Department,
-                                   models.DO_NOTHING,
-                                   blank=True,
-                                   null=True)
-    template = models.ForeignKey(IastProjectTemplate,
-                                 models.DO_NOTHING,
-                                 blank=True,
-                                 null=True)
+    department = models.ForeignKey(Department, models.DO_NOTHING)
+    template = models.ForeignKey(IastProjectTemplate, models.DO_NOTHING)
     enable_log = models.BooleanField(null=True)
-    log_level = models.CharField(max_length=511, null=True)
+    log_level = models.CharField(max_length=511, null=True, blank=True)
 
     class Meta:
         managed = get_managed()

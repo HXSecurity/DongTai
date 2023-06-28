@@ -394,7 +394,7 @@ def get_vul_list_from_elastic_searchv2(user_id,
         Q('terms', user_id=user_id_list),
         Q('terms', is_del=[0]),
     ]
-    order_list = ['-signature_value.keyword']
+    order_list: list[str | dict] = ['-signature_value.keyword']
     if order:
         order_list.insert(0, {order: {'order': order_type}})
     if bind_project_id:

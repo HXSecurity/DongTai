@@ -11,7 +11,6 @@ from django.db.models import Q, QuerySet
 from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.models.department import Department
-from dongtai_common.utils.settings import get_managed
 
 
 class PermissionsMixin(models.Model):
@@ -70,9 +69,9 @@ class SaaSUserManager(UserManager):
 
 
 class User(AbstractUser, PermissionsMixin):
-    is_superuser: int = models.IntegerField(default=0)
-    phone = models.CharField(max_length=15)
-    default_language = models.CharField(max_length=15)
+    is_superuser = models.IntegerField(default=0)
+    phone = models.CharField(max_length=15, blank=True)
+    default_language = models.CharField(max_length=15, blank=True)
     objects = SaaSUserManager()
     using_department = None
 

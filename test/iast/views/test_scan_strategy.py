@@ -8,8 +8,6 @@
 
 
 from rest_framework.test import APITestCase
-from django.urls import include, path, reverse
-from dongtai_web.views.scan_strategys import ScanStrategyViewSet
 from dongtai_common.models.user import User
 
 
@@ -18,7 +16,9 @@ class ScanStrategyTestCase(APITestCase):
         pass
 
     def test_create(self):
-        self.client.force_authenticate(user=User.objects.filter(pk=1).first())
+        self.user = User.objects.filter(pk=1).first()
+        assert self.user is not None
+        self.client.force_authenticate(user=self.user)
         response = self.client.get('/api/v1/scan_strategy')
         print(response.content)
         assert response.status_code == 200

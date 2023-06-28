@@ -1,9 +1,6 @@
 from django.db import models
 from dongtai_common.models import User
-from dongtai_common.utils.settings import get_managed
 from time import time
-from django.db.models import IntegerChoices
-from django.utils.translation import gettext_lazy as _
 from dongtai_common.models.strategy import IastStrategyModel
 
 

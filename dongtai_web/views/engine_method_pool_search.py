@@ -278,8 +278,8 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     filter(lambda _: _['method_pool_id'] == method_pool['id'],
                            vulnerablities)):
                 _ = {}
-                type_ = list(
-                    filter(lambda x: x is not None, [vulnerablity['strategy__vul_name'], vulnerablity['hook_type__name']]))
+                type_ = [x for x in [vulnerablity['strategy__vul_name'],
+                         vulnerablity['hook_type__name']] if x is not None]
                 _['vulnerablity_type'] = type_[0] if type_ else ''
                 _['vulnerablity_id'] = vulnerablity['id']
                 _['vulnerablity_hook_type_id'] = vulnerablity['hook_type_id']

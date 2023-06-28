@@ -9,13 +9,11 @@ from dongtai_engine.signals.handlers.vul_handler import handler_vul
 import hashlib
 import json
 import time
-import random
 from json import JSONDecodeError
 
 from celery import shared_task
 from celery.apps.worker import logger
 from django.db.models import Sum, Q
-from django.forms import model_to_dict
 from django.core.cache import cache
 from dongtai_common.engine.vul_engine import VulEngine
 from dongtai_common.models import User
@@ -23,10 +21,8 @@ from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_common.models.asset import Asset
 from dongtai_common.models.errorlog import IastErrorlog
 from dongtai_common.models.heartbeat import IastHeartbeat
-from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai_common.models.replay_queue import IastReplayQueue
-from dongtai_common.models.sca_maven_db import ScaMavenDb
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.utils import const
@@ -38,12 +34,8 @@ from dongtai_engine.plugins.strategy_sensitive import check_response_content
 from dongtai_engine.replay import Replay
 from dongtai_conf import settings
 from dongtai_web.dongtai_sca.utils import sca_scan_asset
-from dongtai_engine.signals import vul_found
-from dongtai_common.models.project_report import ProjectReport
 import requests
-from hashlib import sha1
 from dongtai_engine.task_base import replay_payload_data
-from typing import List, Dict
 from dongtai_engine.common.queryset import get_scan_id, load_sink_strategy, get_agent
 from dongtai_engine.plugins.project_time_update import project_time_stamp_update
 
@@ -244,6 +236,7 @@ def search_vul_from_replay_method_pool(method_pool_id):
         method_pool_model = IastAgentMethodPoolReplay.objects.filter(id=method_pool_id).first()
         if method_pool_model is None:
             logger.warn(f'重放数据漏洞检测终止，方法池 {method_pool_id} 不存在')
+            return
         strategies = load_sink_strategy(method_pool_model.agent.user, method_pool_model.agent.language)
         engine = VulEngine()
         method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
@@ -576,7 +569,7 @@ def vul_recheck():
                                 header_raw[index] = f'{_header_name}:{recheck_payload}'
                                 break
                         try:
-                            headers = base64.b64encode('\n'.join(header_raw))
+                            headers = base64.b64encode('\n'.join(header_raw).encode("raw_unicode_escape"))
                         except Exception as e:
                             logger.warning(f'请求头解析失败，漏洞ID: {vulnerability["id"]}', exc_info=e)
                     elif position == 'COOKIE':
@@ -603,7 +596,7 @@ def vul_recheck():
                             cookie_raw = ';'.join(cookie_raw_items)
                             header_raw[cookie_index] = cookie_raw
                         try:
-                            headers = base64.b64encode('\n'.join(header_raw))
+                            headers = base64.b64encode('\n'.join(header_raw).encode("raw_unicode_escape"))
                         except Exception as e:
                             logger.error(f'请求头解析失败，漏洞ID: {vulnerability["id"]}')
 

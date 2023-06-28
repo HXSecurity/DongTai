@@ -1,6 +1,4 @@
 from django.test import TestCase
-import os
-import json
 from dongtai_common.models.url_blacklist import (
     IastAgentBlackRule,
     create_blacklist_rule,

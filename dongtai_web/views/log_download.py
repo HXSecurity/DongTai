@@ -2,22 +2,20 @@ import os
 import logging
 import zipfile
 from dongtai_common.endpoint import UserEndPoint
-from io import BytesIO, StringIO
+from io import BytesIO
 from dongtai_common.models.agent import IastAgent
 from enum import Enum
-from django.http import FileResponse, JsonResponse
+from django.http import FileResponse
 from rest_framework import viewsets
-import logging
 from result import Ok, Err, Result
 from functools import partial
 from wsgiref.util import FileWrapper
-from dongtai_common.utils.user import get_auth_users__by_id
 from django.http import HttpResponseNotFound
 from dongtai_common.models.message import IastMessage
 import threading
 from django.db.models import Q
 from django.db import transaction
-from dongtai_conf.settings import TMP_COMMON_PATH, AGENT_LOG_DIR
+from dongtai_conf.settings import TMP_COMMON_PATH
 from tempfile import NamedTemporaryFile
 from dongtai_common.endpoint import R
 
@@ -102,7 +100,7 @@ def get_newest_log_zip(agent_id: int) -> Result:
     return res
 
 
-def getzipfilesinmemorty(filenames: list) -> Result[int, BytesIO]:
+def getzipfilesinmemorty(filenames: list) -> Result[BytesIO, str]:
     try:
         zip_subdir = "logs"
         s = BytesIO()
@@ -118,7 +116,7 @@ def getzipfilesinmemorty(filenames: list) -> Result[int, BytesIO]:
         return Err('unexcept eror')
 
 
-def file_newest_N_file_under_path(path: str, N: int) -> Result[int, str]:
+def file_newest_N_file_under_path(path: str, N: int) -> Result[list[str], str]:
     try:
         files = [
             f for f in os.listdir(path)

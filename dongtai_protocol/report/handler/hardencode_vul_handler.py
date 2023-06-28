@@ -8,13 +8,10 @@
 
 import json
 import logging
-import random
 import time
 
-from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.models.project import IastProject
 from dongtai_common.utils import const
 from dongtai_conf import settings
 from dongtai_protocol.report.handler.report_handler_interface import IReportHandler
@@ -131,5 +128,5 @@ class HardEncodeVulHandler(IReportHandler):
             project_version_id=iast_vul.agent.project_version_id,
             pk__lt=iast_vul.id).delete()
         log_vul_found(iast_vul.agent.user_id, iast_vul.agent.bind_project.name,
-                      iast_vul.agent.bind_project_id, iast_vul.id,
+                      iast_vul.agent.bind_project_id, iast_vul.id,  # type: ignore
                       iast_vul.strategy.vul_name)

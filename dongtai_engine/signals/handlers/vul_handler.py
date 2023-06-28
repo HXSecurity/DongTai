@@ -4,13 +4,10 @@
 # datetime: 2021/4/30 下午3:00
 # project: dongtai-engine
 import json
-import random
 import time
-import requests
 from celery.apps.worker import logger
 from django.dispatch import receiver
 
-from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.project import IastProject, VulValidation
 from dongtai_common.models.replay_queue import IastReplayQueue
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
@@ -22,7 +19,6 @@ from dongtai_web.vul_log.vul_log import log_vul_found, log_recheck_vul
 from django.db.models import Q
 from dongtai_engine.signals.handlers.parse_param_name import parse_target_values_from_vul_stack
 from typing import List, Optional, Callable
-import json
 from collections import defaultdict
 from dongtai_common.models.profile import IastProfile
 from dongtai_engine.plugins.project_time_update import project_time_stamp_update
@@ -358,8 +354,8 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
             language=vul_meta.agent.language,
             server_id=vul_meta.agent.server_id,
         )
-        log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
-                      vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)
+        log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,  # type: ignore
+                      vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)  # type: ignore
     cache.delete(cache_key)
     #delete if exists more than one   departured use redis lock
     #IastVulnerabilityModel.objects.filter(

@@ -13,7 +13,7 @@ class Package(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
     version = models.CharField(max_length=255, blank=True, null=True)
     license = models.CharField(max_length=50, blank=True, null=True)
-    language = models.CharField(max_length=50, null=False, default='')
+    language = models.CharField(max_length=50, blank=True, null=False)
     version_publish_time = models.DateTimeField(blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -106,7 +106,7 @@ class VulCveRelation(models.Model):
     cpe_list = models.JSONField(blank=True, null=True)
     cvss2_list = models.JSONField(blank=True, null=True)
     cvss3_list = models.JSONField(blank=True, null=True)
-    severity = models.CharField(max_length=32, null=False, default='')
+    severity = models.CharField(max_length=32, blank=True, null=False)
     publish_time = models.DateTimeField(blank=True, null=True)
     update_time = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -117,19 +117,19 @@ class VulCveRelation(models.Model):
 
 
 class PackageRepoDependency(models.Model):
-    repo_aql = models.CharField(max_length=255, null=False, default='')
-    dependency_aql = models.CharField(max_length=255, null=False, default='')
+    repo_aql = models.CharField(max_length=255, blank=True, null=False)
+    dependency_aql = models.CharField(max_length=255, blank=True, null=False)
 
     class Meta:
         db_table = 'sca2_package_repo_dependency'
 
 
 class PackageDependency(models.Model):
-    package_name = models.CharField(max_length=255, null=False, default='')
-    p_version = models.CharField(max_length=64, null=False, default='')
-    dependency_package_name = models.CharField(max_length=255, null=False, default='')
-    d_version = models.CharField(max_length=64, null=False, default='')
-    ecosystem = models.CharField(max_length=64, null=False, default='')
+    package_name = models.CharField(max_length=255, blank=True, null=False)
+    p_version = models.CharField(max_length=64, blank=True, null=False)
+    dependency_package_name = models.CharField(max_length=255, blank=True, null=False)
+    d_version = models.CharField(max_length=64, blank=True, null=False)
+    ecosystem = models.CharField(max_length=64, blank=True, null=False)
 
     class Meta:
         db_table = 'sca2_package_dependency'

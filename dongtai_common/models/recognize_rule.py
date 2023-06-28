@@ -1,6 +1,5 @@
 from django.db import models
 from dongtai_common.models.project import IastProject
-from django.db.models import IntegerChoices
 from dongtai_common.utils.settings import get_managed
 
 
@@ -16,7 +15,7 @@ class IastRecognizeRule(models.Model):
                                 null=True,
                                 default=-1,
                                 db_constraint=False)
-    rule_detail = models.CharField(max_length=255, default='', blank=True)
+    rule_detail = models.CharField(max_length=255, blank=True)
     rule_type = models.IntegerField(choices=RuleTypeChoices.choices)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

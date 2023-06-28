@@ -18,8 +18,9 @@ from django.urls import include, path
 import os
 from dongtai_conf import settings
 from django.views.decorators.csrf import csrf_exempt
+from django.urls import URLPattern, URLResolver
 
-urlpatterns = [
+urlpatterns: list[URLResolver | URLPattern] = [
     path('', include('{}.urls'.format(app))) for app in settings.CUSTOM_APPS
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
