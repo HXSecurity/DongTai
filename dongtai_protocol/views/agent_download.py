@@ -123,9 +123,8 @@ class PythonAgentDownload():
                 shutil.copyfile(self.original_agent_file, f"{user_file}.bak")
 
             agent_file = tarfile.open(user_file)
-            agent_file.extractall(
-                path=self.target_path
-            )  # trust upstream package until upstream provide file list to validate.
+            agent_file.extractall(path=self.target_path)  # nosec
+            # trust upstream package until upstream provide file list to validate.
             names = agent_file.getnames()
             self.target_source_path = f"{self.target_path}/{names[0]}"
             config_path = ""
@@ -194,9 +193,8 @@ class PhpAgentDownload():
                 shutil.copyfile(self.original_agent_file, f"{user_file}.bak")
 
             agent_file = tarfile.open(user_file)
-            agent_file.extractall(
-                path=self.target_path
-            )  # trust upstream package until upstream provide file list to validate.
+            agent_file.extractall(path=self.target_path)  # nosec
+            # trust upstream package until upstream provide file list to validate.
             agent_file.close()
 
             config_lines = []
@@ -285,9 +283,8 @@ class AgentDownload(OpenApiEndPoint):
         tmp_path = f"/tmp/.dongtai_agent_test/{time.time_ns()}"
         try:
             agent_file = tarfile.open(file)
-            agent_file.extractall(
-                path=tmp_path
-            )  # trust upstream package until upstream provide file list to validate.
+            agent_file.extractall(path=tmp_path)  # nosec
+            # trust upstream package until upstream provide file list to validate.
         except tarfile.ReadError:
             return False
         except Exception as e:
@@ -309,7 +306,7 @@ class AgentDownload(OpenApiEndPoint):
 
     @extend_schema(operation_id="agent download api",
                    tags=[_('Agent Protocol')],
-                   summary=_('Agent download'), # type: ignore
+                   summary=_('Agent download'),  # type: ignore
                    parameters=[
                        DongTaiParameter.OPENAPI_URL,
                        DongTaiParameter.PROJECT_NAME,
