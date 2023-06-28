@@ -44,6 +44,7 @@ class Department(PermissionsMixin):
     name = models.CharField(
         _('name'),
         unique=True,
+        blank=True,
         max_length=100,
         error_messages={
             'unique': _("A department with that department name already exists."),

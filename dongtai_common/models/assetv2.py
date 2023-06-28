@@ -26,12 +26,12 @@ class AssetRiskLevel(IntegerChoices):
 
 class AssetV2(models.Model):
     id = models.BigAutoField(primary_key=True)
-    package_name = models.CharField(max_length=255, unique=True)
-    package_path = models.CharField(max_length=255)
-    signature_algorithm = models.CharField(max_length=255)
-    signature_value = models.CharField(max_length=255)
+    package_name = models.CharField(max_length=255, unique=True, blank=True)
+    package_path = models.CharField(max_length=255, blank=True)
+    signature_algorithm = models.CharField(max_length=255, blank=True)
+    signature_value = models.CharField(max_length=255, blank=True)
     dt = models.IntegerField(blank=True, default=lambda: int(time.time()))
-    version = models.CharField(max_length=255)
+    version = models.CharField(max_length=255, blank=True)
     project = models.ForeignKey(IastProject,
                                 on_delete=models.CASCADE,
                                 blank=True,
@@ -49,7 +49,7 @@ class AssetV2(models.Model):
     #is_reconized = models.IntegerField(blank=True, null=True)
     aql = models.ForeignKey('AssetV2Global',
                             to_field='aql',
-                            default='',
+                            blank=True,
                             db_column="aql",
                             on_delete=models.DO_NOTHING)
 
@@ -60,7 +60,7 @@ class AssetV2(models.Model):
 
 class AssetV2Global(models.Model):
     id = models.BigAutoField(primary_key=True)
-    package_name = models.CharField(max_length=255)
+    package_name = models.CharField(max_length=255, blank=True)
     package_fullname = models.ForeignKey(
         'IastPackageGAInfo',
         on_delete=models.DO_NOTHING,
@@ -68,9 +68,9 @@ class AssetV2Global(models.Model):
         db_column="package_fullname",
         to_field="package_fullname",
     )
-    signature_algorithm = models.CharField(max_length=255)
-    signature_value = models.CharField(max_length=255)
-    version = models.CharField(max_length=255)
+    signature_algorithm = models.CharField(max_length=255, blank=True)
+    signature_value = models.CharField(max_length=255, blank=True)
+    version = models.CharField(max_length=255, blank=True)
     level = models.IntegerField(
         choices=AssetRiskLevel.choices,
         blank=True,
@@ -129,7 +129,7 @@ class IastAssetLicense(models.Model):
 
 
 class IastPackageGAInfo(models.Model):
-    package_fullname = models.CharField(max_length=255, unique=True)
+    package_fullname = models.CharField(max_length=255, unique=True, blank=True)
     affected_versions = models.JSONField(blank=True, default=list)
     unaffected_versions = models.JSONField(blank=True, default=list)
 

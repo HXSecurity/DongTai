@@ -9,11 +9,11 @@ from time import time
 
 class IastStrategyModel(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING)
-    vul_type = models.CharField(max_length=255)
+    vul_type = models.CharField(max_length=255, blank=True)
     level = models.ForeignKey(IastVulLevel, models.DO_NOTHING)
-    state = models.CharField(max_length=255)
+    state = models.CharField(max_length=255, blank=True)
     dt = models.IntegerField(blank=True, default=lambda: int(time()))
-    vul_name = models.CharField(max_length=255)
+    vul_name = models.CharField(max_length=255, blank=True)
     vul_desc = models.TextField()
     vul_fix = models.TextField(blank=True)
     hook_type = models.ForeignKey(HookType,

@@ -69,9 +69,9 @@ class SaaSUserManager(UserManager):
 
 
 class User(AbstractUser, PermissionsMixin):
-    is_superuser: int = models.IntegerField(default=0)
-    phone = models.CharField(max_length=15)
-    default_language = models.CharField(max_length=15)
+    is_superuser = models.IntegerField(default=0)
+    phone = models.CharField(max_length=15, blank=True)
+    default_language = models.CharField(max_length=15, blank=True)
     objects = SaaSUserManager()
     using_department = None
 

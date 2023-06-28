@@ -16,7 +16,7 @@ from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
 
 class IastVulnerabilityStatus(models.Model):
-    name = models.CharField(max_length=100, blank=True, default='')
+    name = models.CharField(max_length=100, blank=True)
 
     class Meta:
         managed = get_managed()
@@ -64,8 +64,7 @@ class IastVulnerabilityModel(models.Model):
     client_ip = models.CharField(max_length=255, blank=True)
     param_name = models.CharField(max_length=255,
                                   blank=True,
-                                  null=True,
-                                  default='')
+                                  null=True)
     is_del = models.SmallIntegerField(blank=True, default=0)
     method_pool_id = models.IntegerField(default=-1, blank=True)
     strategy = models.ForeignKey(IastStrategyModel,

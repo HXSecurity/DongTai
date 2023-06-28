@@ -13,22 +13,22 @@ from dongtai_common.models.vul_level import IastVulLevel
 
 
 class IastAssetVul(models.Model):
-    vul_name = models.CharField(max_length=255)
+    vul_name = models.CharField(max_length=255, blank=True)
     vul_detail = models.TextField()
     # 漏洞类型等级
     level = models.ForeignKey(IastVulLevel, models.DO_NOTHING)
     license = models.CharField(max_length=50, blank=True, null=True)
     # 开源许可证 风险等级  # 1 高 2中 3低 0无风险
     license_level = models.SmallIntegerField(blank=True, null=True)
-    aql = models.CharField(max_length=100)
-    package_name = models.CharField(max_length=100)
+    aql = models.CharField(max_length=100, blank=True)
+    package_name = models.CharField(max_length=100, blank=True)
     package_hash = models.CharField(max_length=100, blank=True, null=True)
-    package_version = models.CharField(max_length=50)
+    package_version = models.CharField(max_length=50, blank=True)
     package_safe_version = models.CharField(max_length=50, blank=True, null=True)
     package_latest_version = models.CharField(max_length=50, blank=True, null=True)
-    package_language = models.CharField(max_length=10)
+    package_language = models.CharField(max_length=10, blank=True)
     vul_cve_nums = models.JSONField()
-    vul_serial = models.CharField(max_length=100)  # 漏洞编号  CWE|CVE等数据
+    vul_serial = models.CharField(max_length=100, blank=True)  # 漏洞编号  CWE|CVE等数据
     have_article = models.SmallIntegerField()
     have_poc = models.SmallIntegerField()
     cve_code = models.CharField(max_length=64, blank=True, null=True)
@@ -88,8 +88,8 @@ class IastVulAssetRelation(models.Model):
 
 
 class IastAssetVulType(models.Model):
-    cwe_id = models.CharField(max_length=20, blank=True, default='')
-    name = models.CharField(max_length=100, blank=True, default='')
+    cwe_id = models.CharField(max_length=20, blank=True)
+    name = models.CharField(max_length=100, blank=True)
 
     class Meta:
         managed = get_managed()

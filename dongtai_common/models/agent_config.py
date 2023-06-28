@@ -10,11 +10,11 @@ from django.utils.translation import gettext_lazy as _
 class IastAgentConfig(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING)
     details = models.JSONField()
-    hostname = models.CharField(max_length=255, )
-    ip = models.CharField(max_length=100, )
+    hostname = models.CharField(max_length=255, blank=True)
+    ip = models.CharField(max_length=100, blank=True)
     port = models.IntegerField()
-    cluster_name = models.CharField(max_length=255, )
-    cluster_version = models.CharField(max_length=100, )
+    cluster_name = models.CharField(max_length=255, blank=True)
+    cluster_version = models.CharField(max_length=100, blank=True)
     priority = models.IntegerField()
     create_time = models.IntegerField()
 
@@ -79,7 +79,6 @@ UNIT_DICT = {
     4: "%",
     5: "kb",
     6: "个",
-    6: "个",
     7: "个",
     8: "个",
     9: "次",
@@ -112,25 +111,20 @@ class ApplicationMetricType(IntegerChoices):
 
 class IastCircuitConfig(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING)
-    name = models.CharField(max_length=200, )
-    metric_types = models.CharField(max_length=2000, )
+    name = models.CharField(max_length=200, blank=True)
+    metric_types = models.CharField(max_length=2000, blank=True)
     target_types = models.CharField(max_length=2000,
                                     blank=True,
-                                    null=True,
                                     db_column='targets')
     system_type = models.IntegerField(blank=True, null=True)
     is_enable = models.IntegerField()
-    is_deleted = models.IntegerField(default=0, )
+    is_deleted = models.IntegerField(default=0)
     deal = models.IntegerField()
     interval = models.IntegerField(default=30)
     metric_group = models.IntegerField()
     priority = models.IntegerField()
-    create_time = models.IntegerField(blank=True,
-                                      null=True,
-                                      default=lambda: int(time()))
-    update_time = models.IntegerField(blank=True,
-                                      null=True,
-                                      default=lambda: int(time()))
+    create_time = models.IntegerField(blank=True, default=lambda: int(time()))
+    update_time = models.IntegerField(blank=True, default=lambda: int(time()))
 
     class Meta:
         managed = get_managed()
@@ -142,7 +136,7 @@ class IastCircuitTarget(models.Model):
                                        on_delete=models.CASCADE)
     target_type = models.IntegerField()
     opt = models.IntegerField()
-    value = models.CharField(max_length=200, )
+    value = models.CharField(max_length=200, blank=True)
 
     class Meta:
         managed = get_managed()
@@ -154,7 +148,7 @@ class IastCircuitMetric(models.Model):
                                        on_delete=models.CASCADE)
     metric_type = models.IntegerField()
     opt = models.IntegerField()
-    value = models.CharField(max_length=200, )
+    value = models.CharField(max_length=200, blank=True)
 
     class Meta:
         managed = get_managed()

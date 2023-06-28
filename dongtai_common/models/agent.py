@@ -18,8 +18,8 @@ from time import time
 
 
 class IastAgent(models.Model):
-    token = models.CharField(max_length=255)
-    version = models.CharField(max_length=255)
+    token = models.CharField(max_length=255, blank=True)
+    version = models.CharField(max_length=255, blank=True)
     latest_time = models.IntegerField()
     user = models.ForeignKey(User, models.DO_NOTHING)
     server = models.ForeignKey(
@@ -40,12 +40,12 @@ class IastAgent(models.Model):
     project_version = models.ForeignKey(IastProjectVersion,
                                         on_delete=models.CASCADE,
                                         default=-1)
-    project_name = models.CharField(max_length=255)
+    project_name = models.CharField(max_length=255, blank=True)
     online = models.PositiveSmallIntegerField(default=0)
-    language = models.CharField(max_length=10)
-    filepathsimhash = models.CharField(max_length=255, blank=True, default='')
-    servicetype = models.CharField(max_length=255, blank=True, default='')
-    alias = models.CharField(default='', max_length=255, blank=True)
+    language = models.CharField(max_length=10, blank=True)
+    filepathsimhash = models.CharField(max_length=255, blank=True)
+    servicetype = models.CharField(max_length=255, blank=True)
+    alias = models.CharField(max_length=255, blank=True)
     startup_time = models.IntegerField(default=0)
     register_time = models.IntegerField(default=0)
     actual_running_status = models.IntegerField(default=1)
@@ -91,7 +91,7 @@ class IastAgentEvent(models.Model):
     agent = models.ForeignKey(IastAgent,
                               on_delete=models.CASCADE,
                               related_name='new_events')
-    name = models.CharField(default='', max_length=255)
+    name = models.CharField(max_length=255, blank=True)
     time = models.IntegerField(default=lambda: int(time()),
                                blank=True,
                                null=True)

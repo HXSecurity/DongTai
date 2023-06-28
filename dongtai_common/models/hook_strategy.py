@@ -31,17 +31,17 @@ from time import time
 
 
 class HookStrategy(models.Model):
-    value = models.CharField(max_length=255)
+    value = models.CharField(max_length=255, blank=True)
     source = models.CharField(max_length=255, blank=True)
     target = models.CharField(max_length=255, blank=True)
-    inherit = models.CharField(max_length=255)
+    inherit = models.CharField(max_length=255, blank=True)
     track = models.CharField(max_length=5, blank=True)
     create_time = models.IntegerField(default=lambda: int(time()))
     update_time = models.IntegerField(default=lambda: int(time()))
     created_by = models.IntegerField()
     enable = models.IntegerField(default=1)
     language = models.ForeignKey(IastProgramLanguage,
-                                 default='',
+                                 blank=True,
                                  on_delete=models.DO_NOTHING,
                                  db_constraint=False)
     type = models.IntegerField()
@@ -73,7 +73,7 @@ class HookStrategy(models.Model):
     tags = models.JSONField(default=list)
     untags = models.JSONField(default=list)
     stack_blacklist = models.JSONField(default=list)
-    command = models.CharField(max_length=128, default="")
+    command = models.CharField(max_length=128, blank=True)
 
     class Meta:
         managed = get_managed()

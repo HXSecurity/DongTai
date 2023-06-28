@@ -13,7 +13,7 @@ import time
 
 
 class IastPatternType(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=True)
     id = models.IntegerField(default=0, db_column='value')
     logi_id = models.BigAutoField(primary_key=True, db_column='id')
 

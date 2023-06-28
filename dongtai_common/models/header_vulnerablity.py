@@ -17,7 +17,7 @@ class IastHeaderVulnerability(models.Model):
                                         on_delete=models.DO_NOTHING,
                                         default=-1,
                                         db_constraint=False)
-    url = models.CharField(max_length=255, default='')
+    url = models.CharField(max_length=255, blank=True)
     vul = models.ForeignKey(IastVulnerabilityModel,
                             on_delete=models.DO_NOTHING,
                             default=-1,

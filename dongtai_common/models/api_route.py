@@ -14,7 +14,7 @@ from dongtai_common.models.project_version import IastProjectVersion
 
 
 class HttpMethod(models.Model):
-    method = models.CharField(max_length=100)
+    method = models.CharField(max_length=100, blank=True)
 
     class Meta:
         managed = get_managed()
@@ -22,7 +22,7 @@ class HttpMethod(models.Model):
 
 
 class IastApiMethod(models.Model):
-    method = models.CharField(max_length=100)
+    method = models.CharField(max_length=100, blank=True)
     http_method = models.ManyToManyField(
         HttpMethod, through='IastApiMethodHttpMethodRelation')
 
@@ -89,11 +89,8 @@ class IastApiRoute(models.Model):
 
 
 class IastApiParameter(models.Model):
-    name = models.CharField(max_length=100)
-    parameter_type = models.CharField(max_length=100,
-                                      blank=True,
-                                      default='',
-                                      db_column='type')
+    name = models.CharField(max_length=100, blank=True)
+    parameter_type = models.CharField(max_length=100, blank=True, db_column='type')
     annotation = models.CharField(max_length=500, blank=True)
     route = models.ForeignKey(IastApiRoute,
                               on_delete=models.CASCADE,
@@ -108,7 +105,7 @@ class IastApiParameter(models.Model):
 
 
 class IastApiResponse(models.Model):
-    return_type = models.CharField(max_length=100)
+    return_type = models.CharField(max_length=100, blank=True)
     route = models.ForeignKey(IastApiRoute,
                               on_delete=models.CASCADE,
                               db_constraint=False,

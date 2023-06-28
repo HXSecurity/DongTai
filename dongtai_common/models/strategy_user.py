@@ -7,7 +7,7 @@ from dongtai_common.utils.settings import get_managed
 
 class IastStrategyUser(models.Model):
     id = models.BigAutoField(primary_key=True)
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, blank=True)
     content = models.TextField(blank=True)
     user = models.ForeignKey(User, models.DO_NOTHING)
     status = models.IntegerField(blank=True)

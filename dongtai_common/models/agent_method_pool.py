@@ -21,14 +21,12 @@ class MethodPool(models.Model):
     id = models.BigAutoField(primary_key=True)
     agent = models.ForeignKey(IastAgent,
                               models.DO_NOTHING,
-                              blank=True,
-                              null=True,
                               db_constraint=False)
-    url = models.CharField(max_length=2000)
-    uri = models.CharField(max_length=2000)
-    http_method = models.CharField(max_length=10, default='')
-    http_scheme = models.CharField(max_length=20)
-    http_protocol = models.CharField(max_length=255)
+    url = models.CharField(max_length=2000, blank=True)
+    uri = models.CharField(max_length=2000, blank=True)
+    http_method = models.CharField(max_length=10, blank=True)
+    http_scheme = models.CharField(max_length=20, blank=True)
+    http_protocol = models.CharField(max_length=255, blank=True)
     req_header = models.CharField(max_length=2000, blank=True, null=True)
     req_params = models.CharField(max_length=2000, blank=True, null=True)
     req_data = models.CharField(max_length=4000, blank=True, null=True)
@@ -37,13 +35,12 @@ class MethodPool(models.Model):
     req_header_fs = models.TextField(db_column='req_header_for_search')
     context_path = models.CharField(max_length=255, blank=True, null=True)
     method_pool = models.TextField()  # This field type is a guess.
-    pool_sign = models.CharField(unique=True,
-                                 max_length=40)  # This field type is a guess.
-    clent_ip = models.CharField(max_length=255)
+    pool_sign = models.CharField(unique=True, blank=True, max_length=40)  # This field type is a guess.
+    clent_ip = models.CharField(max_length=255, blank=True)
     create_time = models.IntegerField()
     update_time = models.IntegerField()
     uri_sha1 = models.CharField(max_length=40,
-                                default='',
+                                blank=True,
                                 db_index=True)
     sinks = models.ManyToManyField(
         HookStrategy,

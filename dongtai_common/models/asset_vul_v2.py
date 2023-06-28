@@ -4,7 +4,7 @@ from dongtai_common.utils.settings import get_managed
 
 
 class IastAssetVulV2(models.Model):
-    vul_name = models.CharField(max_length=255)
+    vul_name = models.CharField(max_length=255, blank=True)
     vul_detail = models.TextField()
     # 漏洞类型等级
     level = models.IntegerField(choices=AssetRiskLevel.choices,
@@ -16,7 +16,7 @@ class IastAssetVulV2(models.Model):
     references = models.JSONField(default=list)
     change_time = models.IntegerField()
     published_time = models.IntegerField()
-    vul_id = models.CharField(max_length=255, unique=True)
+    vul_id = models.CharField(max_length=255, unique=True, blank=True)
     vul_type = models.JSONField()
     vul_codes = models.JSONField()
     affected_versions = models.JSONField()

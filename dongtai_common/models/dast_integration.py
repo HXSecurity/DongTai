@@ -9,9 +9,9 @@ import time
 
 class IastDastIntegration(models.Model):
     vul_name = models.CharField(max_length=255, blank=True)
-    detail = models.TextField(blank=True, default='')
+    detail = models.TextField(blank=True)
     vul_level = models.ForeignKey(IastVulLevel, models.DO_NOTHING, blank=True)
-    payload = models.CharField(max_length=255, blank=True, default='')
+    payload = models.CharField(max_length=255, blank=True)
     target = models.CharField(max_length=255, blank=True)
     vul_type = models.CharField(max_length=255, blank=True)
     dast_tag = models.CharField(max_length=255, blank=True)

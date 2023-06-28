@@ -188,7 +188,8 @@ def config_update(data, config_id):
     IastCircuitMetric.objects.filter(
         circuit_config_id=config_id).delete()
     obj = IastCircuitConfig.objects.filter(pk=config_id).first()
-    assert obj is not None
+    if obj is None:
+        return
     for i in data['targets']:
         create_target(i, obj)
 
@@ -331,8 +332,8 @@ class AgentThresholdConfigV2(TalentAdminEndPoint, viewsets.ViewSet):
     def reset(self, request, pk):
         if IastCircuitConfig.objects.filter(pk=pk).exists():
             config = IastCircuitConfig.objects.filter(pk=pk, ).first()
-            assert config is not None
-            assert config.metric_group is not None
+            if config is None:
+                return R.failure()
             mg = MetricGroup(config.metric_group)
             data = DEFAULT_CIRCUITCONFIG[mg.name]
             config_update(data, pk)

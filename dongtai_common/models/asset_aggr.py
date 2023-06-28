@@ -13,11 +13,11 @@ from dongtai_common.utils.settings import get_managed
 
 
 class AssetAggr(models.Model):
-    package_name = models.CharField(max_length=255)
+    package_name = models.CharField(max_length=255, blank=True)
     signature_value = models.CharField(max_length=255, blank=True)
-    version = models.CharField(max_length=255)
-    safe_version = models.CharField(max_length=255, blank=True, default='')
-    last_version = models.CharField(max_length=255, blank=True, default='')
+    version = models.CharField(max_length=255, blank=True)
+    safe_version = models.CharField(max_length=255, blank=True)
+    last_version = models.CharField(max_length=255, blank=True)
     level = models.ForeignKey(IastVulLevel, models.DO_NOTHING)
     vul_count = models.IntegerField()
     vul_critical_count = models.IntegerField(default=0)
@@ -26,8 +26,8 @@ class AssetAggr(models.Model):
     vul_low_count = models.IntegerField(default=0)
     vul_info_count = models.IntegerField(default=0)
     project_count = models.IntegerField(blank=True)
-    language = models.CharField(max_length=32, default='')
-    license = models.CharField(max_length=64, blank=True, default='')
+    language = models.CharField(max_length=32, blank=True)
+    license = models.CharField(max_length=64, blank=True)
     is_del = models.SmallIntegerField(default=0)
 
     class Meta:
