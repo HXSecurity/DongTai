@@ -6,7 +6,6 @@
 
 import json
 import logging
-import random
 import time
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.strategy import IastStrategyModel
@@ -20,7 +19,7 @@ from dongtai_protocol.report.report_handler_factory import ReportHandler
 from dongtai_web.vul_log.vul_log import log_vul_found
 from dongtai_common.models.agent import IastAgent
 import re2 as re
-from dongtai_common.models.header_vulnerablity import IastHeaderVulnerability, IastHeaderVulnerabilityDetail
+from dongtai_common.models.header_vulnerablity import IastHeaderVulnerability
 from django.db import IntegrityError
 from dongtai_protocol import utils
 
@@ -276,7 +275,7 @@ class NormalVulnHandler(BaseVulnHandler):
             )
             log_vul_found(iast_vul.agent.user_id,
                           iast_vul.agent.bind_project.name,
-                          iast_vul.agent.bind_project_id, iast_vul.id,
+                          iast_vul.agent.bind_project_id, iast_vul.id,  # type: ignore
                           iast_vul.strategy.vul_name)
         IastVulnerabilityModel.objects.filter(
             strategy_id=iast_vul.strategy_id,

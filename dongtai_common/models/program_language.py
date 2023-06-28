@@ -12,7 +12,7 @@ from dongtai_common.utils.settings import get_managed
 
 
 class IastProgramLanguage(models.Model):
-    name = models.CharField(max_length=255, blank=True)
+    name = models.CharField(max_length=255)
 
     class Meta:
         managed = get_managed()

@@ -13,18 +13,15 @@ from dongtai_common.utils.settings import get_managed
 
 
 class IastProjectVersion(models.Model):
-    version_name = models.CharField(max_length=255, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    current_version = models.PositiveSmallIntegerField(blank=True, default=0)
-    status = models.PositiveSmallIntegerField(blank=True, null=True)
+    version_name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    current_version = models.PositiveSmallIntegerField(default=0)
+    status = models.PositiveSmallIntegerField()
     create_time = models.IntegerField(_('create time'),
-                                      default=lambda: int(time.time()),
-                                      blank=True)
-    update_time = models.IntegerField(_('update time'),
-                                      default=lambda: int(time.time()),
-                                      blank=True)
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
-    project = models.ForeignKey(IastProject, models.DO_NOTHING, blank=True, null=True)
+                                      default=lambda: int(time.time()))
+    update_time = models.IntegerField(_('update time'), default=lambda: int(time.time()))
+    user = models.ForeignKey(User, models.DO_NOTHING)
+    project = models.ForeignKey(IastProject, models.DO_NOTHING)
 
     class Meta:
         managed = get_managed()

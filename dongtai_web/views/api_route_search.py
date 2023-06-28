@@ -11,21 +11,12 @@ from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.api_route import (
     IastApiRoute,
     IastApiMethod,
-    IastApiRoute,
     HttpMethod,
-    IastApiResponse,
-    IastApiMethodHttpMethodRelation,
-    IastApiParameter,
-    FromWhereChoices,
 )
 from dongtai_common.models.agent import IastAgent
 from dongtai_web.base.project_version import get_project_version, get_project_version_by_id
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-import hashlib
-from dongtai_common.models.agent_method_pool import MethodPool
 from django.forms.models import model_to_dict
-from dongtai_web.utils import checkcover, batch_queryset
-from django.core.cache import caches
 from functools import partial
 from dongtai_common.models.hook_type import HookType
 from rest_framework import serializers
@@ -293,7 +284,7 @@ def _get_vuls(uri, agents):
         uri=uri, agent_id__in=[_['id'] for _ in agents],
         is_del=0).values('hook_type_id', 'level_id', 'strategy_id',
                          'strategy__vul_name').distinct().all()
-    return [_get_hook_type(vul) for vul in vuls]
+    return [_get_hook_type(dict(vul)) for vul in vuls]
 
 
 def _get_hook_type(vul: dict) -> dict:

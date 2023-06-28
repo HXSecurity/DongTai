@@ -8,7 +8,6 @@ from dongtai_conf.settings import DEFAULT_CIRCUITCONFIG
 from django.db.models import F
 from django.forms.models import model_to_dict
 from django.db.models import Max, Min
-from functools import partial
 from inflection import underscore
 from collections.abc import Iterable
 from dongtai_common.models.agent_config import (
@@ -37,7 +36,7 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 from dongtai_web.serializers.agent_config import AgentConfigSettingSerializer
 from rest_framework.serializers import ValidationError
 from rest_framework.utils.serializer_helpers import ReturnDict
-from typing import Dict, cast
+from typing import Dict
 from collections import OrderedDict
 
 _ResponseSerializer = get_response_serializer(status_msg_keypair=(
@@ -332,7 +331,9 @@ class AgentThresholdConfigV2(TalentAdminEndPoint, viewsets.ViewSet):
     def reset(self, request, pk):
         if IastCircuitConfig.objects.filter(pk=pk).exists():
             config = IastCircuitConfig.objects.filter(pk=pk, ).first()
-            mg = MetricGroup(cast(int, config.metric_group))
+            assert config is not None
+            assert config.metric_group is not None
+            mg = MetricGroup(config.metric_group)
             data = DEFAULT_CIRCUITCONFIG[mg.name]
             config_update(data, pk)
             return R.success()

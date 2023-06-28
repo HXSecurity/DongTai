@@ -9,9 +9,9 @@ from dongtai_common.utils.settings import get_managed
 
 
 class IastVulLevel(models.Model):
-    name = models.CharField(max_length=255, blank=True, null=True)
-    name_value = models.CharField(max_length=255, blank=True, null=True)
-    name_type = models.CharField(max_length=255, blank=True, null=True)
+    name = models.CharField(max_length=255)
+    name_value = models.CharField(max_length=255)
+    name_type = models.CharField(max_length=255)
 
     class Meta:
         managed = get_managed()

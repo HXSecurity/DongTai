@@ -3,7 +3,6 @@ from dongtai_common.models import User
 from dongtai_common.utils.settings import get_managed
 from django.db.models import IntegerChoices
 from django.utils.translation import gettext_lazy as _
-from time import time
 from typing import List, Dict
 
 
@@ -57,26 +56,12 @@ class IastAgentBlackRule(models.Model):
 
 
 class IastAgentBlackRuleDetail(models.Model):
-    target_type = models.IntegerField(
-        choices=TargetType.choices,
-        blank=True,
-        null=True,
-    )
+    target_type = models.IntegerField(choices=TargetType.choices)
     rule = models.ForeignKey(IastAgentBlackRule, models.DO_NOTHING)
-    operator = models.IntegerField(choices=TargetOperator.choices,
-                                   blank=True,
-                                   null=True)
+    operator = models.IntegerField(choices=TargetOperator.choices)
     value = models.CharField(max_length=512, default="", null=False)
-    create_time = models.DateTimeField(
-        blank=True,
-        null=True,
-        auto_now_add=True,
-    )
-    update_time = models.DateTimeField(
-        blank=True,
-        null=True,
-        auto_now=True,
-    )
+    create_time = models.DateTimeField(auto_now_add=True)
+    update_time = models.DateTimeField(auto_now=True)
 
     class Meta:
         managed = get_managed()

@@ -4,11 +4,9 @@
 # software: PyCharm
 # project: lingzhi-webapi
 import logging
-from django.db.models import Prefetch
 
 from dongtai_common.endpoint import UserEndPoint, R
 from django.forms.models import model_to_dict
-from dongtai_common.utils import const
 from dongtai_web.serializers.agent import AgentSerializer
 from dongtai_web.utils import get_model_field
 from dongtai_common.models.agent import IastAgent
@@ -17,7 +15,6 @@ from functools import reduce
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from dongtai_web.base.paginator import ListPageMaker
 from django.core.cache import cache
 logger = logging.getLogger('dongtai-webapi')
 
@@ -172,7 +169,7 @@ class AgentList(UserEndPoint):
             )
             end = []
             for item in queryset:
-                one = model_to_dict(item)
+                one = model_to_dict(item)  # type: ignore
                 server_data = model_to_dict(item.server)
                 one['cluster_name'] = server_data.get("cluster_name", "")
                 one['cluster_version'] = server_data.get("cluster_version", "")

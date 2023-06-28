@@ -10,10 +10,7 @@ from django.core.cache import cache
 from django_elasticsearch_dsl.search import Search
 from dongtai_conf.settings import ASSET_INDEX
 from django_elasticsearch_dsl import Document, fields
-from django.db.models.fields.related import ForeignKey
-from dongtai_web.utils import get_model_field
 from django_elasticsearch_dsl.registries import registry
-from django_elasticsearch_dsl import Document
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -29,53 +26,49 @@ from dongtai_common.models.talent import Talent
 
 class Asset(models.Model):
     id = models.BigAutoField(primary_key=True)
-    package_name = models.CharField(max_length=255, blank=True, null=True)
-    package_path = models.CharField(max_length=255, blank=True, null=True)
-    signature_algorithm = models.CharField(max_length=255, blank=True, null=True)
-    signature_value = models.CharField(max_length=255, blank=True, null=True)
-    dt = models.IntegerField(blank=True, null=True)
-    version = models.CharField(max_length=255, blank=True, null=True)
-    safe_version = models.CharField(max_length=255, blank=True, null=False, default='')
-    last_version = models.CharField(max_length=255, blank=True, null=False, default='')
-    level = models.ForeignKey(IastVulLevel, models.DO_NOTHING, blank=True, null=True, default=4)
-    vul_count = models.IntegerField(blank=True, null=True)
-    vul_critical_count = models.IntegerField(default=0, blank=True, null=False)
-    vul_high_count = models.IntegerField(default=0, blank=True, null=False)
-    vul_medium_count = models.IntegerField(default=0, blank=True, null=False)
-    vul_low_count = models.IntegerField(default=0, blank=True, null=False)
-    vul_info_count = models.IntegerField(default=0, blank=True, null=False)
+    package_name = models.CharField(max_length=255)
+    package_path = models.CharField(max_length=255)
+    signature_algorithm = models.CharField(max_length=255)
+    signature_value = models.CharField(max_length=255)
+    dt = models.IntegerField()
+    version = models.CharField(max_length=255, blank=True)
+    safe_version = models.CharField(max_length=255, blank=True, default='')
+    last_version = models.CharField(max_length=255, blank=True, default='')
+    level = models.ForeignKey(IastVulLevel, models.DO_NOTHING, default=4)
+    vul_count = models.IntegerField()
+    vul_critical_count = models.IntegerField(default=0)
+    vul_high_count = models.IntegerField(default=0)
+    vul_medium_count = models.IntegerField(default=0)
+    vul_low_count = models.IntegerField(default=0)
+    vul_info_count = models.IntegerField(default=0)
     agent = models.ForeignKey(
         to=IastAgent,
         on_delete=models.CASCADE,
         related_name='assets',
         related_query_name='asset',
         verbose_name=_('agent'),
-        blank=True,
-        null=True,
         default=-1
     )
-    project = models.ForeignKey(IastProject, on_delete=models.CASCADE, blank=True, null=False, default=-1)
-    project_version = models.ForeignKey(IastProjectVersion, on_delete=models.CASCADE, blank=True, null=False,
+    project = models.ForeignKey(IastProject, on_delete=models.CASCADE, default=-1)
+    project_version = models.ForeignKey(IastProjectVersion, on_delete=models.CASCADE,
                                         default=-1)
-    user = models.ForeignKey(User, models.DO_NOTHING, null=False, default=-1)
-    project_name = models.CharField(max_length=255, blank=True, null=False, default='')
-    language = models.CharField(max_length=32, blank=True, null=False, default='')
-    license = models.CharField(max_length=64, blank=True, null=False, default='')
-    dependency_level = models.IntegerField(null=False, default=0)
-    parent_dependency_id = models.IntegerField(blank=True, null=False, default=0)
-    is_del = models.SmallIntegerField(blank=True, null=False, default=0)
+    user = models.ForeignKey(User, models.DO_NOTHING, default=-1)
+    project_name = models.CharField(max_length=255, default='')
+    language = models.CharField(max_length=32, default='')
+    license = models.CharField(max_length=64, default='')
+    dependency_level = models.IntegerField(default=0)
+    parent_dependency_id = models.IntegerField(default=0)
+    is_del = models.SmallIntegerField(default=0)
 
     # 部门id
-    department = models.ForeignKey(Department, models.DO_NOTHING, blank=True, null=True, default=-1)
+    department = models.ForeignKey(Department, models.DO_NOTHING, default=-1)
     # 租户id
-    talent = models.ForeignKey(Talent, models.DO_NOTHING, blank=True, null=True, default=-1)
-    safe_version_list = models.JSONField(blank=True, null=True, default=list)
-    nearest_safe_version = models.JSONField(blank=True,
-                                            null=True,
-                                            default=str)
-    latest_safe_version = models.JSONField(blank=True, null=True, default=str)
-    license_list = models.JSONField(blank=True, null=True, default=list)
-    highest_license = models.JSONField(blank=True, null=True, default=dict)
+    talent = models.ForeignKey(Talent, models.DO_NOTHING, default=-1)
+    safe_version_list = models.JSONField(default=list)
+    nearest_safe_version = models.JSONField(default=str)
+    latest_safe_version = models.JSONField(default=str)
+    license_list = models.JSONField(default=list)
+    highest_license = models.JSONField(default=dict)
 
     class Meta:
         managed = get_managed()

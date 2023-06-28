@@ -1,10 +1,5 @@
 from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel, IastVulnerabilityDocument
 from celery import shared_task
-from django.apps import apps
-from django.db import transaction
-from dongtai_common.models.asset import Asset, IastAssetDocument
-from dongtai_common.models.asset_vul import IastVulAssetRelation, IastAssetVulnerabilityDocument
 from dongtai_common.models.agent_method_pool import MethodPool
 from time import time
 from celery.apps.worker import logger
@@ -61,11 +56,10 @@ def data_cleanup(days: int):
         first_id = MethodPool.objects.filter(
             update_time__lte=delete_time_stamp).order_by('id').values_list(
             'id', flat=True).first()
-        if not any([latest_id, first_id]):
+        if not any((latest_id, first_id)) or not isinstance(latest_id, int) or not isinstance(first_id, int):
             logger.info("no data for clean up")
-        if all([latest_id, first_id]):
-            assert isinstance(latest_id, int)
-            assert isinstance(first_id, int)
+            return
+        if all((latest_id, first_id)):
             batch_clean(latest_id, first_id, 10000)
             # qs = MethodPool.objects.filter(pk__lte=latest_id)
             # qs._raw_delete(qs.db)

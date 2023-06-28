@@ -6,14 +6,13 @@
 # @description :
 ######################################################################
 
-from dongtai_common.models.api_route import IastApiRoute, IastApiMethod, IastApiRoute, HttpMethod, IastApiResponse, IastApiMethodHttpMethodRelation, IastApiParameter
+from dongtai_common.models.api_route import IastApiRoute
 from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_web.base.project_version import get_project_version, get_project_version_by_id
 from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.agent import IastAgent
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
-from django.forms.models import model_to_dict
 from dongtai_web.utils import sha1
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
@@ -76,5 +75,7 @@ class ApiRouteRelationRequest(UserEndPoint):
         q = q & Q(
             http_method__in=[_.method for _ in api_route.method.http_method.all()])
         method = MethodPool.objects.filter(q).order_by('-update_time')[0:1].values()
-        data = list(method)[0] if method else {}
-        return R.success(data=data)
+        if method:
+            return R.success(data=list(method)[0])
+        else:
+            return R.success(data={})

@@ -1,6 +1,5 @@
 from django.db import models
 from dongtai_common.models.project import IastProject
-from django.db.models import IntegerChoices
 from dongtai_common.utils.settings import get_managed
 
 

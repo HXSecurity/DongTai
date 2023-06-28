@@ -2,7 +2,6 @@ from dongtai_common.models.asset import Asset
 from .utils import get_nearest_version, get_latest_version
 from .utils import update_one_sca, new_update_one_sca
 from test.apiserver.test_agent_base import AgentTestCase
-from typing import cast
 from .utils import get_package_vul, get_package
 
 from django.test import TestCase
@@ -171,7 +170,8 @@ class SCAScanV1TestCase(AgentTestCase):
         ).first()
         assert asset is not None
         # skip until sca data stable
-        self.assertGreaterEqual(cast(int, asset.vul_count), 0)
+        assert asset.vul_count is not None
+        self.assertGreaterEqual(asset.vul_count, 0)
 
 
 class SCAScanV2TestCase(AgentTestCase):

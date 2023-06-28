@@ -7,7 +7,6 @@
 from dongtai_conf.settings import METHOD_POOL_INDEX
 from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
-from django_elasticsearch_dsl import Document
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -25,31 +24,25 @@ class MethodPool(models.Model):
                               blank=True,
                               null=True,
                               db_constraint=False)
-    url = models.CharField(max_length=2000, blank=True, null=True)
-    uri = models.CharField(max_length=2000, blank=True, null=True)
-    http_method = models.CharField(max_length=10, blank=True, default='')
-    http_scheme = models.CharField(max_length=20, blank=True, null=True)
-    http_protocol = models.CharField(max_length=255, blank=True, null=True)
+    url = models.CharField(max_length=2000)
+    uri = models.CharField(max_length=2000)
+    http_method = models.CharField(max_length=10, default='')
+    http_scheme = models.CharField(max_length=20)
+    http_protocol = models.CharField(max_length=255)
     req_header = models.CharField(max_length=2000, blank=True, null=True)
     req_params = models.CharField(max_length=2000, blank=True, null=True)
     req_data = models.CharField(max_length=4000, blank=True, null=True)
     res_header = models.CharField(max_length=1000, blank=True, null=True)
     res_body = models.TextField(blank=True, null=True)
-    req_header_fs = models.TextField(blank=True,
-                                     null=True,
-                                     db_column='req_header_for_search')
+    req_header_fs = models.TextField(db_column='req_header_for_search')
     context_path = models.CharField(max_length=255, blank=True, null=True)
-    method_pool = models.TextField(blank=True,
-                                   null=True)  # This field type is a guess.
+    method_pool = models.TextField()  # This field type is a guess.
     pool_sign = models.CharField(unique=True,
-                                 max_length=40,
-                                 blank=True,
-                                 null=True)  # This field type is a guess.
-    clent_ip = models.CharField(max_length=255, blank=True, null=True)
-    create_time = models.IntegerField(blank=True, null=True)
-    update_time = models.IntegerField(blank=True, null=True)
+                                 max_length=40)  # This field type is a guess.
+    clent_ip = models.CharField(max_length=255)
+    create_time = models.IntegerField()
+    update_time = models.IntegerField()
     uri_sha1 = models.CharField(max_length=40,
-                                blank=True,
                                 default='',
                                 db_index=True)
     sinks = models.ManyToManyField(

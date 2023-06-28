@@ -9,7 +9,6 @@ import logging
 from dongtai_common.models.hook_strategy import HookStrategy
 from dongtai_common.models.hook_type import HookType
 from drf_spectacular.utils import extend_schema
-from rest_framework.request import Request
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.utils import const
 from dongtai_common.endpoint import OpenApiEndPoint, R
@@ -100,7 +99,7 @@ class HookProfilesEndPoint(OpenApiEndPoint):
                         "stack_blacklist": strategy.get("stack_blacklist"),
                     })
                 strategy_details = sorted(strategy_details,
-                                          key=lambda item: item['value'])
+                                          key=lambda item: str(item['value']))
                 if not strategy_details:
                     continue
                 profiles.append({

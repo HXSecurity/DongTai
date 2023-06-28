@@ -8,44 +8,26 @@ import time
 
 
 class IastDastIntegration(models.Model):
-    vul_name = models.CharField(max_length=255, blank=True, null=True)
-    detail = models.TextField(
-        blank=True,
-        null=True,
-        default='',
-    )
-    vul_level = models.ForeignKey(IastVulLevel,
-                                  models.DO_NOTHING,
-                                  blank=True,
-                                  null=True)
-    payload = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True,
-        default='',
-    )
-    target = models.CharField(max_length=255, blank=True, null=True)
-    vul_type = models.CharField(max_length=255, blank=True, null=True)
-    dast_tag = models.CharField(max_length=255, blank=True, null=True)
-    request_messages = models.JSONField(null=False, default=list)
-    urls = models.JSONField(null=False, default=list)
-    create_time = models.IntegerField(default=lambda: int(time.time()),
-                                      blank=True,
-                                      null=True)
-    latest_time = models.IntegerField(default=lambda: int(time.time()),
-                                      blank=True,
-                                      null=True)
+    vul_name = models.CharField(max_length=255, blank=True)
+    detail = models.TextField(blank=True, default='')
+    vul_level = models.ForeignKey(IastVulLevel, models.DO_NOTHING, blank=True)
+    payload = models.CharField(max_length=255, blank=True, default='')
+    target = models.CharField(max_length=255, blank=True)
+    vul_type = models.CharField(max_length=255, blank=True)
+    dast_tag = models.CharField(max_length=255, blank=True)
+    request_messages = models.JSONField(default=list)
+    urls = models.JSONField(default=list)
+    create_time = models.IntegerField(default=lambda: int(time.time()), blank=True)
+    latest_time = models.IntegerField(default=lambda: int(time.time()), blank=True)
     project = models.ForeignKey(IastProject,
                                 on_delete=models.CASCADE,
                                 blank=True,
-                                null=True,
                                 default=-1)
     project_version = models.ForeignKey(IastProjectVersion,
                                         on_delete=models.CASCADE,
                                         blank=True,
-                                        null=True,
                                         default=-1)
-    dongtai_vul_type = models.JSONField(null=False, default=list)
+    dongtai_vul_type = models.JSONField(default=list)
 
     class Meta:
         managed = get_managed()
@@ -53,16 +35,14 @@ class IastDastIntegration(models.Model):
 
 
 class IastDastIntegrationRelation(models.Model):
-    dt_mark = models.CharField(max_length=255, blank=True, null=True)
+    dt_mark = models.CharField(max_length=255, blank=True)
     iastvul = models.ForeignKey(IastVulnerabilityModel,
                                 on_delete=models.CASCADE,
                                 blank=True,
-                                null=True,
                                 default=-1)
     dastvul = models.ForeignKey(IastDastIntegration,
                                 on_delete=models.CASCADE,
                                 blank=True,
-                                null=True,
                                 default=-1)
 
     class Meta:
@@ -71,11 +51,10 @@ class IastDastIntegrationRelation(models.Model):
 
 
 class IastvulDtMarkRelation(models.Model):
-    dt_mark = models.CharField(max_length=255, blank=True, null=True)
+    dt_mark = models.CharField(max_length=255, blank=True)
     iastvul = models.ForeignKey(IastVulnerabilityModel,
                                 on_delete=models.CASCADE,
                                 blank=True,
-                                null=True,
                                 default=-1)
 
     class Meta:
@@ -84,11 +63,10 @@ class IastvulDtMarkRelation(models.Model):
 
 
 class DastvulDtMarkRelation(models.Model):
-    dt_mark = models.CharField(max_length=255, blank=True, null=True)
+    dt_mark = models.CharField(max_length=255, blank=True)
     dastvul = models.ForeignKey(IastDastIntegration,
                                 on_delete=models.CASCADE,
                                 blank=True,
-                                null=True,
                                 default=-1)
 
     class Meta:

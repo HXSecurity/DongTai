@@ -13,35 +13,32 @@ from dongtai_common.models.vul_level import IastVulLevel
 
 
 class IastAssetVul(models.Model):
-    vul_name = models.CharField(max_length=255, blank=True, null=True)
-    vul_detail = models.TextField(blank=True, null=True)
+    vul_name = models.CharField(max_length=255)
+    vul_detail = models.TextField()
     # 漏洞类型等级
-    level = models.ForeignKey(IastVulLevel,
-                              models.DO_NOTHING,
-                              blank=True,
-                              null=True)
+    level = models.ForeignKey(IastVulLevel, models.DO_NOTHING)
     license = models.CharField(max_length=50, blank=True, null=True)
     # 开源许可证 风险等级  # 1 高 2中 3低 0无风险
     license_level = models.SmallIntegerField(blank=True, null=True)
-    aql = models.CharField(max_length=100, blank=True, null=True)
-    package_name = models.CharField(max_length=100, blank=True, null=True)
+    aql = models.CharField(max_length=100)
+    package_name = models.CharField(max_length=100)
     package_hash = models.CharField(max_length=100, blank=True, null=True)
-    package_version = models.CharField(max_length=50, blank=True, null=True)
+    package_version = models.CharField(max_length=50)
     package_safe_version = models.CharField(max_length=50, blank=True, null=True)
     package_latest_version = models.CharField(max_length=50, blank=True, null=True)
-    package_language = models.CharField(max_length=10, blank=True, null=True)
-    vul_cve_nums = models.JSONField(blank=True, null=True)
-    vul_serial = models.CharField(max_length=100, blank=True, null=True)  # 漏洞编号  CWE|CVE等数据
-    have_article = models.SmallIntegerField(blank=True, null=True)
-    have_poc = models.SmallIntegerField(blank=True, null=True)
+    package_language = models.CharField(max_length=10)
+    vul_cve_nums = models.JSONField()
+    vul_serial = models.CharField(max_length=100)  # 漏洞编号  CWE|CVE等数据
+    have_article = models.SmallIntegerField()
+    have_poc = models.SmallIntegerField()
     cve_code = models.CharField(max_length=64, blank=True, null=True)
     sid = models.CharField(max_length=64, blank=True, null=True)
     cve_id = models.IntegerField(blank=True, null=True)
     vul_publish_time = models.DateTimeField(blank=True, null=True)
     vul_update_time = models.DateTimeField(blank=True, null=True)
-    update_time = models.IntegerField(blank=True, null=True)
-    update_time_desc = models.IntegerField(blank=True, null=True)
-    create_time = models.IntegerField(blank=True, null=True)
+    update_time = models.IntegerField()
+    update_time_desc = models.IntegerField()
+    create_time = models.IntegerField()
     fix_plan = models.JSONField(blank=True, null=True, default=dict)
     poc = models.JSONField(blank=True, null=True, default=dict)
     descriptions = models.JSONField(blank=True, null=True, default=dict)
@@ -54,17 +51,11 @@ class IastAssetVul(models.Model):
 
 
 class IastAssetVulRelationMetaData(models.Model):
-    vul_asset_key = models.CharField(max_length=256,
-                                     blank=True,
-                                     primary_key=True)
-    vul_dependency_path = models.JSONField(blank=True, null=True, default=list)
-    effected_version_list = models.JSONField(blank=True,
-                                             null=True,
-                                             default=list)
-    fixed_version_list = models.JSONField(blank=True, null=True, default=list)
-    nearest_fixed_version = models.JSONField(blank=True,
-                                             null=True,
-                                             default=dict)
+    vul_asset_key = models.CharField(max_length=256, primary_key=True)
+    vul_dependency_path = models.JSONField(default=list)
+    effected_version_list = models.JSONField(default=list)
+    fixed_version_list = models.JSONField(default=list)
+    nearest_fixed_version = models.JSONField(default=dict)
 
     class Meta:
         managed = True
@@ -84,8 +75,8 @@ class IastVulAssetRelation(models.Model):
                                on_delete=models.DO_NOTHING,
                                db_constraint=False,
                                db_column='status_id')
-    is_del = models.SmallIntegerField(blank=True, null=False, default=0)
-    create_time = models.IntegerField(blank=True, null=True)
+    is_del = models.SmallIntegerField(default=0)
+    create_time = models.IntegerField()
     vul_asset_metadata = models.ForeignKey(IastAssetVulRelationMetaData,
                                            on_delete=models.DO_NOTHING,
                                            default="")
@@ -97,8 +88,8 @@ class IastVulAssetRelation(models.Model):
 
 
 class IastAssetVulType(models.Model):
-    cwe_id = models.CharField(max_length=20, blank=True, null=True, default='')
-    name = models.CharField(max_length=100, blank=True, null=True, default='')
+    cwe_id = models.CharField(max_length=20, blank=True, default='')
+    name = models.CharField(max_length=100, blank=True, default='')
 
     class Meta:
         managed = get_managed()

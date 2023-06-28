@@ -16,7 +16,7 @@ from typing import Any
 
 
 class IastDepartment(models.Model):
-    name = models.CharField(max_length=255, blank=True, null=True)
+    name = models.CharField(max_length=255, blank=True)
 
     class Meta:
         managed = get_managed()

@@ -11,7 +11,6 @@ from django.db.models import Q, QuerySet
 from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.models.department import Department
-from dongtai_common.utils.settings import get_managed
 
 
 class PermissionsMixin(models.Model):

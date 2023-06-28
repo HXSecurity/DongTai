@@ -130,7 +130,7 @@ def get_agent_config(agent_id: int) -> Result:
         "enableAutoFallback": True,
         "performanceLimitRiskMaxMetricsCount": 30,
     }
-    interval_list = []
+    interval_list: list[int] = []
     for mg in MetricGroup:
         res = get_agent_config_by_scan(agent_id, mg)
         if isinstance(res, Err):

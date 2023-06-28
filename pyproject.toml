@@ -4,4 +4,8 @@ disable = "C0330, C0326"
 [tool.pylint.format]
 max-line-length = "88"
 
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
 
+[tool.django-stubs]
+django_settings_module = "dongtai_conf.settings"

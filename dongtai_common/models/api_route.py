@@ -14,7 +14,7 @@ from dongtai_common.models.project_version import IastProjectVersion
 
 
 class HttpMethod(models.Model):
-    method = models.CharField(max_length=100, blank=True)
+    method = models.CharField(max_length=100)
 
     class Meta:
         managed = get_managed()
@@ -22,9 +22,9 @@ class HttpMethod(models.Model):
 
 
 class IastApiMethod(models.Model):
-    method = models.CharField(max_length=100, blank=True)
+    method = models.CharField(max_length=100)
     http_method = models.ManyToManyField(
-        HttpMethod, blank=True, through='IastApiMethodHttpMethodRelation')
+        HttpMethod, through='IastApiMethodHttpMethodRelation')
 
     class Meta:
         managed = get_managed()
@@ -76,13 +76,9 @@ class IastApiRoute(models.Model):
                                      choices=FromWhereChoices.choices)
     project = models.ForeignKey(IastProject,
                                 on_delete=models.CASCADE,
-                                blank=True,
-                                null=True,
                                 default=-1)
     project_version = models.ForeignKey(IastProjectVersion,
                                         on_delete=models.CASCADE,
-                                        blank=True,
-                                        null=True,
                                         default=-1)
     is_cover = models.IntegerField(default=0)
 
@@ -93,7 +89,7 @@ class IastApiRoute(models.Model):
 
 
 class IastApiParameter(models.Model):
-    name = models.CharField(max_length=100, blank=True)
+    name = models.CharField(max_length=100)
     parameter_type = models.CharField(max_length=100,
                                       blank=True,
                                       default='',
@@ -112,7 +108,7 @@ class IastApiParameter(models.Model):
 
 
 class IastApiResponse(models.Model):
-    return_type = models.CharField(max_length=100, blank=True)
+    return_type = models.CharField(max_length=100)
     route = models.ForeignKey(IastApiRoute,
                               on_delete=models.CASCADE,
                               db_constraint=False,

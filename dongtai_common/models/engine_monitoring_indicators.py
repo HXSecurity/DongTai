@@ -11,12 +11,8 @@ from dongtai_common.utils.settings import get_managed
 
 
 class IastEnginMonitoringIndicators(models.Model):
-    key = models.CharField(max_length=100,
-                           blank=True,
-                           default='',
-                           null=False,
-                           unique=True)
-    name = models.CharField(max_length=100, blank=True, default='', null=False)
+    key = models.CharField(max_length=100, default='', unique=True)
+    name = models.CharField(max_length=100, default='')
 
     class Meta:
         managed = get_managed()
