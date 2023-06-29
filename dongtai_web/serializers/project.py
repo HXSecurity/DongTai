@@ -7,15 +7,13 @@ from django.db.models import Count
 from rest_framework import serializers
 
 from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.project import (IastProject, VulValidation)
-from dongtai_common.models.vul_level import IastVulLevel
+from dongtai_common.models.project import IastProject
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
-from dongtai_common.utils import const
-from dongtai_common.utils.systemsettings import get_vul_validate
+
 from django.db.models import QuerySet
 from collections import defaultdict
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from django.core.paginator import _SupportsPagination
 
@@ -66,7 +64,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = IastProject
         fields = [
             'id', 'name', 'mode', 'vul_count', 'agent_count', 'owner',
-            'latest_time', 'agent_language', 'vul_validation'
+            'latest_time', 'agent_language', 'vul_validation', 'status'
         ]
 
     def get_agents(self, obj):
