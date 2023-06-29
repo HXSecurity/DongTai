@@ -20,6 +20,12 @@ class VulValidation(models.IntegerChoices):
     __empty__ = 0
 
 
+class ProjectStatus(models.IntegerChoices):
+    NORMAL = 0
+    ERROR = 1
+    OFFLINE = 2
+    __empty__ = 0
+
 class IastProjectTemplate(models.Model):
     template_name = models.CharField(max_length=255)
     latest_time = models.IntegerField(default=lambda: int(time.time()))
@@ -48,6 +54,7 @@ class IastProjectTemplate(models.Model):
         }
 
 class IastProject(models.Model):
+    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255, blank=True)
     mode = models.CharField(default="插桩模式", max_length=255, blank=True)
     vul_count = models.PositiveIntegerField(blank=True, null=True)
@@ -71,6 +78,8 @@ class IastProject(models.Model):
     template = models.ForeignKey(IastProjectTemplate, models.DO_NOTHING)
     enable_log = models.BooleanField(null=True)
     log_level = models.CharField(max_length=511, null=True, blank=True)
+    last_has_online_agent_time = models.IntegerField(default=-1)
+    status = models.IntegerField(default=0, choices=ProjectStatus.choices)
 
     class Meta:
         managed = get_managed()

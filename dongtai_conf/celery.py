@@ -84,6 +84,7 @@ configs["task_routes"] = {
     "dongtai_engine.tasks.vul_recheck": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
     "dongtai_engine.preheat.function_preheat": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
     "dongtai_engine.plugins.data_clean": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
+    "dongtai_engine.plugins.project_status": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
 }
 configs["CELERY_ENABLE_UTC"] = False
 configs["timezone"] = settings.TIME_ZONE
@@ -106,14 +107,9 @@ def ready(self):
 app.ready = ready
 print(f"preheat settings now : {DONGTAI_CELERY_CACHE_PREHEAT}")
 def checkout_preheat_online(status):
-    from django_celery_beat.models import (
-        CrontabSchedule,
-        PeriodicTask,
-        IntervalSchedule,
-
-    )
+    from django_celery_beat.models import PeriodicTask, IntervalSchedule
     import json
-    from datetime import datetime, timedelta
+
     if not status:
         PeriodicTask.objects.delete(name='preheat functions')
     else:
