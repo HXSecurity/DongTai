@@ -37,6 +37,13 @@ class _ProjectsArgsSerializer(serializers.Serializer):
         max_value=10,
         help_text=_("The project status."),
     )
+    exclude_vul_status = serializers.IntegerField(
+        default=None,
+        allow_null=True,
+        min_value=0,
+        max_value=10,
+        help_text=_("The exclude vulnerability status."),
+    )
 
 
 _SuccessSerializer = get_response_serializer(ProjectSerializer(many=True))
@@ -63,6 +70,9 @@ class Projects(UserEndPoint):
                 page_size: int = ser.validated_data.get("pageSize", 20)
                 name: str = ser.validated_data.get("name")
                 status: int | None = ser.validated_data.get("status")
+                exclude_vul_status: int | None = ser.validated_data.get(
+                    "exclude_vul_status"
+                )
             else:
                 return R.failure(data="Can not validation data.")
         except ValidationError as e:
@@ -78,7 +88,9 @@ class Projects(UserEndPoint):
         if status is not None:
             queryset = queryset.filter(status=status)
         page_summary, page_data = self.get_paginator(queryset, page, page_size)
-        vul_levels_dict = get_vul_levels_dict(page_data)
+        vul_levels_dict = get_vul_levels_dict(
+            page_data, exclude_vul_status=exclude_vul_status
+        )
         project_language_dict = get_project_language(page_data)
         agent_count_dict = get_agent_count(page_data)
         return R.success(
@@ -90,6 +102,7 @@ class Projects(UserEndPoint):
                     "project_language_dict": project_language_dict,
                     "agent_count_dict": agent_count_dict,
                 },
+                exclude_vul_status=exclude_vul_status,
             ).data,
             page=page_summary,
         )
