@@ -3,7 +3,7 @@
 # author:owefsad
 # software: PyCharm
 # project: lingzhi-webapi
-from django.db.models import Count
+from django.db.models import Count, Q
 from rest_framework import serializers
 
 from dongtai_common.models.agent import IastAgent
@@ -18,12 +18,16 @@ if TYPE_CHECKING:
     from django.core.paginator import _SupportsPagination
 
 
-def get_vul_levels_dict(queryset: "QuerySet | _SupportsPagination") -> defaultdict:
+def get_vul_levels_dict(
+    queryset: "QuerySet | _SupportsPagination", exclude_vul_status: int | None
+) -> defaultdict:
     vul_levels = IastVulnerabilityModel.objects.values(
-        'level__name_value', 'level', 'project_id').filter(
-            project_id__in=list(
-                queryset.values_list('id', flat=True)),
-            is_del=0).annotate(total=Count('level'))
+        "level__name_value", "level", "project_id"
+    ).filter(
+        ~Q(status_id=exclude_vul_status),
+        project_id__in=list(queryset.values_list("id", flat=True)),
+        is_del=0,
+    ).annotate(total=Count("level"))
     vul_levels_dict = defaultdict(list)
     for k in vul_levels:
         k['agent__bind_project_id'] = k['project_id']
@@ -51,6 +55,13 @@ def get_agent_count(queryset: "QuerySet | _SupportsPagination") -> defaultdict:
     return agent_count_dict
 
 class ProjectSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        if "exclude_vul_status" in kwargs:
+            self.exclude_vul_status = kwargs.pop("exclude_vul_status")
+        else:
+            self.exclude_vul_status = None
+        super().__init__(*args, **kwargs)
+
     vul_count = serializers.SerializerMethodField(
         help_text="Vulnerability Count")
     agent_count = serializers.SerializerMethodField(
@@ -70,7 +81,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     def get_agents(self, obj):
         try:
             all_agents = getattr(obj, 'project_agents')
-        except Exception as agent_not_found:
+        except Exception:
             all_agents = obj.iastagent_set.all()
             setattr(obj, 'project_agents', all_agents)
         return all_agents
@@ -80,9 +91,12 @@ class ProjectSerializer(serializers.ModelSerializer):
             vul_levels = self.context['vul_levels_dict'][obj.id]
         else:
             vul_levels = IastVulnerabilityModel.objects.values(
-                'level__name_value',
-                'level').filter(project_id=obj.id,
-                                is_del=0).annotate(total=Count('level'))
+                "level__name_value", "level"
+            ).filter(
+                ~Q(status_id=self.exclude_vul_status),
+                project_id=obj.id,
+                is_del=0,
+            ).annotate(total=Count("level"))
         for vul_level in vul_levels:
             vul_level['name'] = vul_level['level__name_value']
         return list(vul_levels) if vul_levels else list()
