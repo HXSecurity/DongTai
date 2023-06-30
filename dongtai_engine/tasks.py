@@ -13,7 +13,7 @@ from json import JSONDecodeError
 
 from celery import shared_task
 from celery.apps.worker import logger
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.core.cache import cache
 from dongtai_common.engine.vul_engine import VulEngine
 from dongtai_common.models import User
@@ -374,6 +374,7 @@ def update_agent_status():
     from dongtai_engine.plugins.engine_status_change import after_agent_status_update, before_agent_status_update
     before_agent_status_update()
     logger.info('检测引擎状态更新开始')
+    timestamp = int(time.time())
     running_agents_ids = list(
         IastAgent.objects.values("id").filter(online=1).values_list(
             'pk', flat=True).all())
@@ -384,6 +385,20 @@ def update_agent_status():
         map(lambda x: int(x.replace("heartbeat-", "")), keys_missing))
     IastAgent.objects.filter(id__in=stop_agent_ids).update(
         is_running=0, is_core_running=0, online=0)
+    vul_id_qs = IastReplayQueue.objects.filter(
+        update_time__lte=timestamp - 60 * 5,
+        verify_time__isnull=True,
+        replay_type=1).values('relation_id').distinct()
+    vuls = IastVulnerabilityModel.objects.filter(
+        Q(pk__in=vul_id_qs) & ~Q(status_id__in=(3, 4, 5, 6))
+    ).all()
+    for vul in vuls:
+        log_recheck_vul(
+            vul.agent.user.id,
+            vul.agent.user.username,
+            [vul.id],
+            "验证失败",
+        )
     logger.info("update offline agent: %s", stop_agent_ids)
     logger.info('检测引擎状态更新成功')
     after_agent_status_update()
