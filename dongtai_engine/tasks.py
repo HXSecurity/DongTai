@@ -392,8 +392,8 @@ def update_agent_status():
         replay_type=1).values('relation_id').distinct()
     vuls = IastVulnerabilityModel.objects.filter(
         Q(pk__in=vul_id_qs) & ~Q(status_id__in=(3, 5, 6))
-    ).all()
-    for _, vul_list in groupby(vuls, lambda x: x.agent_id):
+    ).select_related("agent__user")
+    for _, vul_list in groupby(vuls, lambda x: x.agent.user_id):
         vul_list = list(vul_list)
         log_recheck_vul(
             vul_list[0].agent.user.id,
