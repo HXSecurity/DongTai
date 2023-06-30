@@ -13,7 +13,7 @@ from json import JSONDecodeError
 
 from celery import shared_task
 from celery.apps.worker import logger
-from django.db.models import Sum, Q
+from django.db.models import Sum
 from django.core.cache import cache
 from dongtai_common.engine.vul_engine import VulEngine
 from dongtai_common.models import User
@@ -38,6 +38,7 @@ import requests
 from dongtai_engine.task_base import replay_payload_data
 from dongtai_engine.common.queryset import get_scan_id, load_sink_strategy, get_agent
 from dongtai_engine.plugins.project_time_update import project_time_stamp_update
+from dongtai_web.vul_log.vul_log import log_recheck_vul
 
 RETRY_INTERVALS = [10, 30, 90]
 
@@ -145,9 +146,12 @@ def search_and_save_vul(engine: Optional[VulEngine],
             replay_id = method_pool_model.replay_id
             relation_id = method_pool_model.relation_id
             timestamp = int(time.time())
-            IastVulnerabilityModel.objects.filter(id=relation_id).update(
-                status_id=settings.IGNORE,
-                latest_time=timestamp
+            vul = IastVulnerabilityModel.objects.filter(id=relation_id).get()
+            log_recheck_vul(
+                vul.agent.user.id,
+                vul.agent.user.username,
+                [vul.id],
+                '已忽略',
             )
             IastReplayQueue.objects.filter(id=replay_id).update(
                 state=const.SOLVED,
@@ -369,8 +373,7 @@ def update_agent_status():
     """
     from dongtai_engine.plugins.engine_status_change import after_agent_status_update, before_agent_status_update
     before_agent_status_update()
-    logger.info(f'检测引擎状态更新开始')
-    timestamp = int(time.time())
+    logger.info('检测引擎状态更新开始')
     running_agents_ids = list(
         IastAgent.objects.values("id").filter(online=1).values_list(
             'pk', flat=True).all())
@@ -381,15 +384,8 @@ def update_agent_status():
         map(lambda x: int(x.replace("heartbeat-", "")), keys_missing))
     IastAgent.objects.filter(id__in=stop_agent_ids).update(
         is_running=0, is_core_running=0, online=0)
-    vul_id_qs = IastReplayQueue.objects.filter(
-        update_time__lte=timestamp - 60 * 5,
-        verify_time__isnull=True,
-        replay_type=1).values('relation_id').distinct()
-    IastVulnerabilityModel.objects.filter(
-        Q(pk__in=vul_id_qs)
-        & ~Q(status_id__in=(3, 4, 5, 6))).update(status_id=7)
     logger.info("update offline agent: %s", stop_agent_ids)
-    logger.info(f'检测引擎状态更新成功')
+    logger.info('检测引擎状态更新成功')
     after_agent_status_update()
 
 @shared_task(queue='dongtai-periodic-task')

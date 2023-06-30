@@ -552,9 +552,7 @@ BUCKET_NAME_BASE_URL = 'agent/' if os.getenv('active.profile',
 VERSION = 'latest'
 # CONST
 PENDING = 1
-VERIFYING = 2
 CONFIRMED = 3
-IGNORE = 4
 SOLVED = 5
 ENGINE_URL = config.get("engine", "url")
 HEALTH_ENGINE_URL = urljoin(ENGINE_URL, "/api/engine/health")
