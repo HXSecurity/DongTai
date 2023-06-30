@@ -10,10 +10,8 @@ from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.replay_queue import IastReplayQueue
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.utils.validate import Validate
 from dongtai_web.aggregation.aggregation_common import turnIntListOfStr
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from rest_framework import serializers
 
 from dongtai_common.endpoint import R
 from dongtai_common.utils import const
@@ -158,7 +156,7 @@ class VulReCheckv2(UserEndPoint):
 
             queryset = IastVulnerabilityModel.objects.filter(
                 Q(is_del=0, project__department__in=department)
-                & ~Q(status_id__in=(3, 4, 5, 6)))
+                & ~Q(status_id__in=(3, 5, 6)))
             ids_list = turnIntListOfStr(vul_ids)
 
             vul_queryset = queryset.filter(id__in=ids_list)

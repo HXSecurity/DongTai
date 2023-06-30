@@ -1,7 +1,10 @@
+import json
 import unittest
+from rest_framework.test import APITestCase
 
 from test import DongTaiTestCase
-
+from test.apiserver.test_agent_base import REGISTER_JSON, METHODPOOL_JSON, gzipdata
+from dongtai_common.models.user import User
 
 class MyTestCase(DongTaiTestCase):
     def test_something(self):
@@ -103,6 +106,34 @@ class MyTestCase(DongTaiTestCase):
                 pass
         print(project_headers)
         print(project_cookies)
+
+
+class MultiUserTestCase(APITestCase):
+    def test_update_agent_status_multi_user(self):
+        from dongtai_engine.tasks import update_agent_status
+        user1 = User.objects.filter(pk=1).get()
+        assert user1 is not None
+        self.client.force_authenticate(user=user1)
+        data1 = self.register_agent(name='test1')
+
+        User(id=2, username="test", phone="123456789").save()
+        user2 = User.objects.filter(pk=2).get()
+        assert user2 is not None
+        self.client.force_authenticate(user=user2)
+        data2 = self.register_agent(name='test2')
+
+        update_agent_status()
+
+    def register_agent(self, **kwargs):
+        register_data = REGISTER_JSON
+        register_data.update(kwargs)
+        data = gzipdata(REGISTER_JSON)
+        response = self.client.post('http://testserver/api/v1/agent/register',
+                                    data=data,
+                                    HTTP_CONTENT_ENCODING='gzip',
+                                    content_type='application/json',
+                                    )
+        return json.loads(response.content)['data']
 
 
 if __name__ == '__main__':
