@@ -10,6 +10,7 @@ import hashlib
 import json
 import time
 from json import JSONDecodeError
+from itertools import groupby
 
 from celery import shared_task
 from celery.apps.worker import logger
@@ -390,13 +391,14 @@ def update_agent_status():
         verify_time__isnull=True,
         replay_type=1).values('relation_id').distinct()
     vuls = IastVulnerabilityModel.objects.filter(
-        Q(pk__in=vul_id_qs) & ~Q(status_id__in=(3, 4, 5, 6))
+        Q(pk__in=vul_id_qs) & ~Q(status_id__in=(3, 5, 6))
     ).all()
-    for vul in vuls:
+    for _, vul_list in groupby(vuls, lambda x: x.agent_id):
+        vul_list = list(vul_list)
         log_recheck_vul(
-            vul.agent.user.id,
-            vul.agent.user.username,
-            [vul.id],
+            vul_list[0].agent.user.id,
+            vul_list[0].agent.user.username,
+            list(map(lambda x: x.id, vul_list)),
             "验证失败",
         )
     logger.info("update offline agent: %s", stop_agent_ids)
