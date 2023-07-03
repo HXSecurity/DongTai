@@ -491,30 +491,29 @@ if os.getenv('PYTHONAGENT', None) == 'TRUE':
 if os.getenv('environment', None) == 'TEST' or os.getenv('SAVEEYE',
                                                          None) == 'TRUE':
     CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null', )
-if os.getenv('environment', 'PROD') in ('TEST', 'DOC') or os.getenv(
-        'DOC', None) == 'TRUE':
-    from django.utils.translation import gettext_lazy as _
-    INSTALLED_APPS.append('drf_spectacular')
-    SPECTACULAR_SETTINGS = {
-        'TITLE':
-        'DongTai WebApi Doc',
-        'VERSION':
-        "1.1.0",
-        'PREPROCESSING_HOOKS':
-        ['drf_spectacular.hooks.preprocess_exclude_path_format'],
-        'URL_FORMAT_OVERRIDE':
-        None,
-        'DESCRIPTION':
-        _("""Here is the API documentation in dongtai_conf. The corresponding management part API can be found through the relevant tag.
+
+from django.utils.translation import gettext_lazy as _
+INSTALLED_APPS.append('drf_spectacular')
+SPECTACULAR_SETTINGS = {
+    'TITLE':
+    'DongTai WebApi Doc',
+    'VERSION':
+    "1.1.0",
+    'PREPROCESSING_HOOKS':
+    ['drf_spectacular.hooks.preprocess_exclude_path_format'],
+    'URL_FORMAT_OVERRIDE':
+    None,
+    'DESCRIPTION':
+    _("""Here is the API documentation in dongtai_conf. The corresponding management part API can be found through the relevant tag.
 
 There are two authentication methods. You can obtain csrf_token and sessionid through the login process, or access the corresponding API through the user's corresponding Token.
 
 The Token method is recommended here, and users can find it in the Agent installation interface such as -H
-  'Authorization: Token {token}', here is the token corresponding to the user, the token method also requires a token like this on the request header."""
-          ),
-    }
-    REST_FRAMEWORK[
-        'DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'
+'Authorization: Token {token}', here is the token corresponding to the user, the token method also requires a token like this on the request header."""
+        ),
+}
+REST_FRAMEWORK[
+    'DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'
 
 if os.getenv('environment', None) == 'TEST' or os.getenv('CPROFILE',
                                                          None) == 'TRUE':

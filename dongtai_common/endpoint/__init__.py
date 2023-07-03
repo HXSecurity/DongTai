@@ -33,6 +33,7 @@ from dongtai_common.models.department import Department
 from functools import reduce
 from operator import ior
 from rest_framework.exceptions import AuthenticationFailed
+from dongtai_common.utils.init_schema import VIEW_CLASS_TO_SCHEMA
 
 if TYPE_CHECKING:
     from django.core.paginator import _SupportsPagination
@@ -119,14 +120,41 @@ class EndPoint(APIView):
                                                **kwargs)
         if self.request.user is not None and self.request.user.is_active and handler.__module__.startswith(
                 'dongtai_web') and self.description is not None:
-            self.log_manager.log_action(
-                user_id=self.request.user.id,
-                content_type_id=ContentType.objects.get_or_create(
-                    app_label=self.request.content_type)[0].id,
-                object_id='',
-                object_repr='',
-                action_flag=CHANGE,
-                change_message=f'访问{self.description}接口')
+            try:
+                method = self.request.method
+                if method is None:
+                    raise ValueError("can not get request method")
+                operate_method = method
+                schema =  VIEW_CLASS_TO_SCHEMA[self.__class__][method]
+                tags: list[str] = schema["tags"]
+                summary: str = schema["summary"]
+                module_name = tags[0]
+                operate_tag = list(filter(lambda x: x.startswith("operate-"), tags))
+                if operate_tag:
+                    operate_method = operate_tag[0].lstrip("operate-")
+
+                match operate_method:
+                    case "GET":
+                        operate_name = "获取"
+                    case "POST":
+                        operate_name = "新增"
+                    case "PUT":
+                        operate_name = "修改"
+                    case "DELETE":
+                        operate_name = "删除"
+                    case _:
+                        raise ValueError("unknown request method")
+
+                self.log_manager.log_action(
+                    user_id=self.request.user.id,
+                    content_type_id=ContentType.objects.get_or_create(
+                        app_label=self.request.content_type)[0].id,
+                    object_id='',
+                    object_repr='',
+                    action_flag=CHANGE,
+                    change_message=f'{operate_name}{module_name}模块{summary}接口')
+            except Exception as e:
+                logger.warning(f"get log info failed: {e}")
         return self.response
 
     def handle_exception(self, exc):
