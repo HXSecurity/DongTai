@@ -510,7 +510,7 @@ There are two authentication methods. You can obtain csrf_token and sessionid th
 
 The Token method is recommended here, and users can find it in the Agent installation interface such as -H
 'Authorization: Token {token}', here is the token corresponding to the user, the token method also requires a token like this on the request header."""
-        ),
+      ),
 }
 REST_FRAMEWORK[
     'DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'

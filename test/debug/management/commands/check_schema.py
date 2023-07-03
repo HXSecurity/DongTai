@@ -13,13 +13,22 @@ class Command(BaseCommand):
                 if schema is None:
                     self.stdout.write(self.style.ERROR(f"No schema: {view}"))
                     continue
+                has_error = False
                 for schema_field in ("tags", "summary"):
                     if not schema.get(schema_field, None):
+                        has_error = True
                         count += 1
                         self.stdout.write(
                             self.style.ERROR(
                                 f'[{count}]Miss "{schema_field}" schema: {method} {view}'
                             )
                         )
+                if not has_error:
+                    self.stdout.write(
+                        self.style.SUCCESS(
+                            f"{method} {view}: "
+                            f"tags: {schema['tags']}, summary: {schema['summary']}"
+                        )
+                    )
 
         self.stdout.write(self.style.SUCCESS("Check API schema done"))

@@ -113,6 +113,7 @@ def extend_schema_with_envcheck(querys: list = [],
 
     return myextend_schema
 
+
 extend_schema_with_envcheck_v2 = extend_schema
 
 def get_response_serializer(data_serializer=None,

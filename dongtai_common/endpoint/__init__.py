@@ -6,7 +6,7 @@
 import json
 import logging
 
-from django.contrib.admin.models import LogEntryManager, LogEntry, CHANGE
+from django.contrib.admin.models import LogEntryManager, LogEntry, ADDITION, CHANGE, DELETION
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
 from django.db.models import QuerySet
@@ -125,7 +125,7 @@ class EndPoint(APIView):
                 if method is None:
                     raise ValueError("can not get request method")
                 operate_method = method
-                schema =  VIEW_CLASS_TO_SCHEMA[self.__class__][method]
+                schema = VIEW_CLASS_TO_SCHEMA[self.__class__][method]
                 tags: list[str] = schema["tags"]
                 summary: str = schema["summary"]
                 module_name = tags[0]
@@ -133,26 +133,25 @@ class EndPoint(APIView):
                 if operate_tag:
                     operate_method = operate_tag[0].lstrip("operate-")
 
-                match operate_method:
-                    case "GET":
-                        operate_name = "获取"
-                    case "POST":
-                        operate_name = "新增"
-                    case "PUT":
-                        operate_name = "修改"
-                    case "DELETE":
-                        operate_name = "删除"
-                    case _:
-                        raise ValueError("unknown request method")
+                if operate_method != "GET":
+                    match operate_method:
+                        case "POST":
+                            action_flag = ADDITION
+                        case "PUT":
+                            action_flag = CHANGE
+                        case "DELETE":
+                            action_flag = DELETION
+                        case _:
+                            raise ValueError("unknown request method")
 
-                self.log_manager.log_action(
-                    user_id=self.request.user.id,
-                    content_type_id=ContentType.objects.get_or_create(
-                        app_label=self.request.content_type)[0].id,
-                    object_id='',
-                    object_repr='',
-                    action_flag=CHANGE,
-                    change_message=f'{operate_name}{module_name}模块{summary}接口')
+                    self.log_manager.log_action(
+                        user_id=self.request.user.id,
+                        content_type_id=ContentType.objects.get_or_create(
+                            app_label=self.request.content_type)[0].id,
+                        object_id='',
+                        object_repr='',
+                        action_flag=action_flag,
+                        change_message=f'{module_name}模块{summary}接口')
             except Exception as e:
                 logger.warning(f"get log info failed: {e}")
         return self.response
