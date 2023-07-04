@@ -25,16 +25,9 @@ class ReportUploadEndPoint(OpenApiEndPoint):
     description = "agent上传报告"
 
     @extend_schema(
-        description='Pull Agent Engine Hook Rule',
-        parameters=[
-            DongTaiParameter.LANGUAGE,
-        ],
-        responses=R,
-        methods=['GET'],
         summary="Agent 上传报告",
         tags=['Agent服务端交互协议'],
     )
-    @csrf_exempt
     def post(self, request):
         try:
             report = parse_data(request.read())

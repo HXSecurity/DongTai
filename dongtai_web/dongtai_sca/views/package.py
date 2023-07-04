@@ -17,6 +17,11 @@ logger = logging.getLogger(__name__)
 
 class PackageList(AnonymousAndUserEndPoint):
 
+    @extend_schema(
+        tags=[_('Component')],
+        summary="组件列表",
+        deprecated=True,
+    )
     def get(self, request):
         filter_fields = ['hash', 'aql', 'ecosystem', 'name', 'version']
         _filter = Package.objects.filter().order_by("-updated_at")
@@ -54,6 +59,11 @@ class AssetAggrDetailAssetIds(UserEndPoint):
     name = "api-v1-sca-aggr-assets"
     description = ""
 
+    @extend_schema(
+        tags=[_('Component')],
+        summary="组件详情",
+        deprecated=True,
+    )
     def get(self, request, aggr_id):
         try:
             auth_users = self.get_auth_users(request.user)
