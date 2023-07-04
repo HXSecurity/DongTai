@@ -12,6 +12,7 @@ from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint
 from django.utils.translation import gettext_lazy as _
 from dongtai_conf.settings import SCA_SETUP
+from drf_spectacular.utils import extend_schema
 
 logger = logging.getLogger("django")
 
@@ -20,6 +21,10 @@ class UserInfoEndpoint(UserEndPoint):
     name = "api-v1-user-info"
     description = _("User Info")
 
+    @extend_schema(
+        summary=_("User Info"),
+        tags=[_("User")],
+    )
     def get(self, request):
         user = request.user
         group = Group.objects.filter(user=user).order_by("-id").first()

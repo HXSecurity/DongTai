@@ -8,6 +8,7 @@ from django.core.paginator import Paginator
 from django.forms.models import model_to_dict
 from dongtai_common.endpoint import R, AnonymousAndUserEndPoint, UserEndPoint
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
 
 from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 

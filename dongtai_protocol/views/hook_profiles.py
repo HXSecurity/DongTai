@@ -15,6 +15,7 @@ from dongtai_common.endpoint import OpenApiEndPoint, R
 from django.db.models import (Prefetch, OuterRef, Subquery)
 # note: 当前依赖必须保留，否则无法通过hooktype反向查找策略
 from dongtai_protocol.api_schema import DongTaiParameter
+from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
 
 logger = logging.getLogger("django")
@@ -112,12 +113,16 @@ class HookProfilesEndPoint(OpenApiEndPoint):
                           key=lambda item: (item['value'], item['type']))
         return profiles
 
-    @extend_schema(description='Pull Agent Engine Hook Rule',
-                   parameters=[
-                       DongTaiParameter.LANGUAGE,
-                   ],
-                   responses=R,
-                   methods=['GET'])
+    @extend_schema(
+        description='Pull Agent Engine Hook Rule',
+        parameters=[
+            DongTaiParameter.LANGUAGE,
+        ],
+        responses=R,
+        methods=['GET'],
+        summary="Pull Agent Engine Hook Rule",
+        tags=[_("Agent")]
+    )
     def get(self, request):
         user = request.user
 

@@ -86,7 +86,9 @@ class HealthView(UserEndPoint):
     @extend_schema(
         description='Check OpenAPI Service Status',
         responses=R,
-        methods=['GET']
+        methods=['GET'],
+        summary="检查 OpenAPI 服务状态",
+        tags=["OpenAPI"]
     )
     def get(self, request):
         oss_status, _ = checkossstatus()

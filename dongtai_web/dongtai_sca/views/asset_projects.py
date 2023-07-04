@@ -19,6 +19,7 @@ from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_web.serializers.sca import ScaSerializer
 from dongtai_web.dongtai_sca.serializers.asset_project import AssetProjectSerializer
 from typing import List, Optional, Dict
+from drf_spectacular.utils import extend_schema
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +28,11 @@ class AssetProjects(UserEndPoint):
     name = "api-v1-sca-projects"
     description = ""
 
+    @extend_schema(
+        deprecated=True,
+        summary="获取组件项目列表",
+        tags=["Project"],
+    )
     def get(self, request, aggr_id):
         try:
             departments = request.user.get_relative_department()
@@ -61,6 +67,11 @@ class AssetVulProjects(UserEndPoint):
     name = "api-v1-sca-vul-projects"
     description = ""
 
+    @extend_schema(
+        deprecated=True,
+        summary="获取组件漏洞项目列表",
+        tags=["Project"],
+    )
     def get(self, request, vul_id):
         try:
             auth_users = self.get_auth_users(request.user)
@@ -143,6 +154,11 @@ class ProjectsAssets(UserEndPoint):
     name = "api-v1-sca-vul-project-assets"
     description = ""
 
+    @extend_schema(
+        deprecated=True,
+        summary="获取项目组件列表",
+        tags=["Project"],
+    )
     def get(self, request):
 
         try:

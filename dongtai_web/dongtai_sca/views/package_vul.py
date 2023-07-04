@@ -15,6 +15,7 @@ from dongtai_common.models.asset_vul import IastVulAssetRelation
 from dongtai_common.models.asset import Asset
 from collections import defaultdict
 import logging
+from drf_spectacular.utils import extend_schema
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -36,6 +37,11 @@ class OnePackageVulList(AnonymousAndUserEndPoint):
             fixed_versions.append(vul_package_range.fixed)
         return fixed_versions
 
+    @extend_schema(
+        deprecated=True,
+        summary="获取一个包内的漏洞列表",
+        tags=["Vulnerability"],
+    )
     def get(self, request):
         filter_fields = ['hash', 'aql', 'ecosystem', 'name', 'version']
         _filter = Package.objects.filter()
@@ -112,6 +118,11 @@ class AssetPackageVulList(UserEndPoint):
     name = "api-v1-sca-package-vuls"
     description = ""
 
+    @extend_schema(
+        deprecated=True,
+        summary="获取组件中的包的漏洞列表",
+        tags=[_("Vulnerability")],
+    )
     def get(self, request, aggr_id):
         auth_users = self.get_auth_users(request.user)
         departments = request.user.get_relative_department()
@@ -195,6 +206,11 @@ class AssetPackageVulDetail(UserEndPoint):
     name = "api-v1-sca-package-vul-detail"
     description = ""
 
+    @extend_schema(
+        deprecated=True,
+        summary="获取组件中的包的漏洞详情",
+        tags=[_("Vulnerability")],
+    )
     def get(self, request, vul_id):
         # 组件漏洞基础 数据读取
         asset_vul = IastAssetVul.objects.filter(id=vul_id).first()

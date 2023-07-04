@@ -10,6 +10,7 @@ from dongtai_common.models.project_version import IastProjectVersion
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.agent import IastAgent
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
 
 logger = logging.getLogger("django")
 
@@ -18,6 +19,10 @@ class UpdateProjectVersion(UserEndPoint):
     name = "api-v1-project-version-check"
     description = _("Detects and associates application version information")
 
+    @extend_schema(
+        summary=_("Detects and associates application version information"),
+        tags=["Project"],
+    )
     def get(self, request):
         try:
             all_project = IastProject.objects.all()

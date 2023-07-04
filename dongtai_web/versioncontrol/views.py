@@ -3,6 +3,8 @@ from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint
 from dongtai_common.models.version_control import VersionControl
 import json
+from drf_spectacular.utils import extend_schema
+from django.utils.translation import gettext_lazy as _
 # Create your views here.
 
 COMPONENT_LIST = ("DongTai", "DongTai-agent-java", "DongTai-agent-python",
@@ -10,6 +12,10 @@ COMPONENT_LIST = ("DongTai", "DongTai-agent-java", "DongTai-agent-python",
 
 
 class VersionListView(UserEndPoint):
+    @extend_schema(
+        summary="版本列表",
+        tags=[_("Version List")]
+    )
     def get(self, request):
         component_datas = VersionControl.objects.filter(
             component_name__in=COMPONENT_LIST).all()

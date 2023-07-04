@@ -12,6 +12,7 @@ from dongtai_common.models.agent_method_pool import MethodPool
 
 from dongtai_web.serializers.method_pool import MethodPoolListSerialize
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 logger = logging.getLogger('dongtai-webapi')
@@ -21,6 +22,10 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
     name = "api-engine-search"
     description = _("Engine - search data according to policy")
 
+    @extend_schema(
+        summary=_("Engine - search data according to policy"),
+        tags=["Engine"],
+    )
     def post(self, request):
         """
         :param request:

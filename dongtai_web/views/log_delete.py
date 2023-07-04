@@ -7,12 +7,18 @@
 from django.contrib.admin.models import LogEntry
 from dongtai_common.endpoint import UserEndPoint, R
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
 
 
 class LogDelete(UserEndPoint):
     name = 'api-v1-log-delete'
     description = _('Log delete')
 
+    @extend_schema(
+        deprecated=True,
+        summary=_('Log delete'),
+        tags=[_("Logs")]
+    )
     def post(self, request):
         ids = request.data.get('ids')
         if ids:
