@@ -67,6 +67,8 @@ from dongtai_web.views.project_version_delete import ProjectVersionDelete
 from dongtai_web.views.project_version_list import ProjectVersionList
 from dongtai_web.views.project_version_update import ProjectVersionUpdate
 from dongtai_web.views.projects import Projects
+from dongtai_web.views.logs_v2 import LogsV2Endpoint
+from dongtai_web.views.log_export_v2 import LogExportV2
 
 
 from dongtai_web.views.sca_details import ScaDetailView
@@ -472,6 +474,9 @@ urlpatterns.extend([
     path('api/v2/app_vul_summary', GetAppVulsSummary.as_view()),
     path('api/v2/api_route/search', NewApiRouteSearch.as_view()),
     path('api/v2/project_version', NewProjectVersionList.as_view()),
+    # 日志
+    path('api/v2/logs', LogsV2Endpoint.as_view()),
+    path('api/v2/logs/export', LogExportV2.as_view()),
 ])
 
 # urlpatterns.extend(scaupload_urls) departured

@@ -6,7 +6,7 @@
 import json
 import logging
 
-from django.contrib.admin.models import LogEntryManager, LogEntry, ADDITION, CHANGE, DELETION
+from django.http.request import HttpRequest
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
 from django.db.models import QuerySet
@@ -23,6 +23,7 @@ from django.core.paginator import PageNotAnInteger, EmptyPage
 from dongtai_common.models.asset import Asset
 from dongtai_common.models.asset_aggr import AssetAggr
 from dongtai_common.models.asset_vul import IastVulAssetRelation, IastAssetVul
+from dongtai_common.models.log import IastLog, OperateType
 from dongtai_common.permissions import UserPermission, ScopedPermission, SystemAdminPermission, TalentAdminPermission
 from dongtai_common.utils import const
 from django.utils.translation import gettext_lazy as _
@@ -57,8 +58,6 @@ class EndPoint(APIView):
         # Go through keyword arguments, and either save their values to our
         # instance, or raise an error.
         super().__init__(**kwargs)
-        self.log_manager = LogEntryManager()
-        self.log_manager.model = LogEntry
 
     def load_json_body(self, request):
         """
@@ -133,25 +132,25 @@ class EndPoint(APIView):
                 if operate_tag:
                     operate_method = operate_tag[0].lstrip("operate-")
 
-                if operate_method != "GET":
-                    match operate_method:
-                        case "POST":
-                            action_flag = ADDITION
-                        case "PUT":
-                            action_flag = CHANGE
-                        case "DELETE":
-                            action_flag = DELETION
-                        case _:
-                            raise ValueError("unknown request method")
+                match operate_method:
+                    case "GET":
+                        operate_type = OperateType.GET
+                    case "POST":
+                        operate_type = OperateType.ADD
+                    case "PUT":
+                        operate_type = OperateType.CHANGE
+                    case "DELETE":
+                        operate_type = OperateType.DELETE
+                    case _:
+                        raise ValueError("unknown request method")
 
-                    self.log_manager.log_action(
-                        user_id=self.request.user.id,
-                        content_type_id=ContentType.objects.get_or_create(
-                            app_label=self.request.content_type)[0].id,
-                        object_id='',
-                        object_repr='',
-                        action_flag=action_flag,
-                        change_message=f'{module_name}模块{summary}接口')
+                IastLog.objects.create(
+                    module_name=module_name,
+                    function_name=summary,
+                    operate_type=operate_type,
+                    user_id=self.request.user.id,
+                    access_ip=get_client_ip(self.request)
+                )
             except Exception as e:
                 logger.warning(f"get log info failed: {e}")
         return self.response
@@ -430,3 +429,12 @@ class R:
             resp_data,
             status=status_code,
         )
+
+
+def get_client_ip(request: HttpRequest) -> str | None:
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
