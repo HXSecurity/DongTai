@@ -4,6 +4,7 @@ import logging
 
 from drf_spectacular.generators import SchemaGenerator
 from drf_spectacular.drainage import add_trace_message
+import inspect
 
 logger = logging.getLogger("django")
 VIEW_CLASS_TO_SCHEMA: dict[type, dict[str, tuple[str, str, dict | None]]] = {}
@@ -24,6 +25,7 @@ def init_schema() -> None:
 
     for path, path_regex, method, view in endpoints:
         try:
+            filepath = inspect.getfile(view.__class__)
             with add_trace_message(getattr(view, "__class__", view).__name__):
                 operation = view.schema.get_operation(
                     path, path_regex, path_prefix, method, generator.registry
@@ -33,6 +35,7 @@ def init_schema() -> None:
                     path,
                     path_regex,
                     operation,
+                    filepath,
                 )
-        except Exception:
-            logger.error(f"unable to get schema: view {view} of path {path}")
+        except Exception as e:
+            logger.error(f"unable to get schema: view {view} of path {path}", exc_info=e)
