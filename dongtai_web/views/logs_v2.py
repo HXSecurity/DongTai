@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# -*- coding:utf-8 -*-
-# author:sjh
-# software: PyCharm
-# project: webapi
 import logging
 from datetime import datetime
 
@@ -26,6 +21,8 @@ class _LogsArgsSerializer(serializers.Serializer):
     page = serializers.IntegerField(min_value=1, default=1, help_text=_("Page index"))
     startTime = serializers.DateTimeField(default=None, help_text=_("The start time."))
     endTime = serializers.DateTimeField(default=None, help_text=_("The end time."))
+    ip = serializers.CharField(default=None, help_text=_("IP Address."))
+    api = serializers.CharField(default=None, help_text=_("API URL."))
 
 
 class _LogsDeleteSerializer(serializers.Serializer):
@@ -70,6 +67,8 @@ class LogsV2Endpoint(UserEndPoint):
                 page_size: int = ser.validated_data.get("pageSize", 20)
                 start_time: datetime | None = ser.validated_data.get("startTime", None)
                 end_time: datetime | None = ser.validated_data.get("endTime", None)
+                ip: str | None = ser.validated_data.get("ip", None)
+                api: str | None = ser.validated_data.get("api", None)
             else:
                 return R.failure(data="Can not validation data.")
         except ValidationError as e:
@@ -90,7 +89,13 @@ class LogsV2Endpoint(UserEndPoint):
             elif start_time is not None:
                 queryset = queryset.filter(action_time__gte=start_time)
             elif end_time is not None:
-                queryset.filter(action_time__lte=end_time)
+                queryset = queryset.filter(action_time__lte=end_time)
+
+            if ip is not None:
+                queryset = queryset.filter(access_ip=ip)
+
+            if api is not None:
+                queryset = queryset.filter(url=api)
 
             # set cache key
             self.make_key(request)
