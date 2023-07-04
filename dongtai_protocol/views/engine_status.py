@@ -24,7 +24,7 @@ class EngineUpdateEndPoint(OpenApiEndPoint):
 
     @extend_schema(
         summary="IAST 检测引擎更新状态修改接口",
-        tags=[_("Agent")],
+        tags=['Agent服务端交互协议'],
     )
     def get(self, request, status=None):
         """
@@ -68,7 +68,8 @@ class EngineAction(OpenApiEndPoint):
         responses=R,
         methods=['GET'],
         summary="检查 Agent Engine 状态",
-        tags=[_("Agent")],
+        tags=['Agent服务端交互协议'],
+        deprecated=True,
     )
     def get(self, request):
         agent_id = request.query_params.get('agentId')
