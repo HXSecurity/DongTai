@@ -18,6 +18,7 @@ import logging
 from dongtai_common.utils.systemsettings import get_circuit_break
 from django.utils.translation import gettext_lazy as _
 from result import Ok, Err, Result
+from dongtai_common.utils.const import OPERATE_GET
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -25,8 +26,10 @@ logger = logging.getLogger('dongtai.openapi')
 class AgentConfigView(OpenApiEndPoint):
 
     @extend_schema(
+        summary="agent配置",
+        tags=['Agent服务端交互协议', OPERATE_GET],
+        deprecated=True,
         description='Through agent_ Id get disaster recovery strategy',
-        responses=R,
         methods=['POST'])
     def post(self, request):
         try:
@@ -59,7 +62,12 @@ class AgentConfigView(OpenApiEndPoint):
 
 
 class AgentConfigv2View(OpenApiEndPoint):
-
+    @extend_schema(
+        summary="agent配置",
+        tags=['Agent服务端交互协议', OPERATE_GET],
+        deprecated=True,
+        description='Through agent_ Id get disaster recovery strategy',
+        methods=['POST'])
     def post(self, request):
         try:
             param = parse_data(request.read())

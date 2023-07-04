@@ -18,6 +18,8 @@ from django.db import transaction
 from dongtai_conf.settings import TMP_COMMON_PATH
 from tempfile import NamedTemporaryFile
 from dongtai_common.endpoint import R
+from drf_spectacular.utils import extend_schema
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -54,6 +56,10 @@ class AgentLogDownload(UserEndPoint, viewsets.ViewSet):
             return response
         return nothing_resp()
 
+    @extend_schema(
+        tags=[_('Agent')],
+        summary="探针日志批量下载",
+    )
     def batch_task_add(self, request):
         mode = request.data.get('mode', 1)
         department = request.user.get_relative_department()
@@ -71,6 +77,10 @@ class AgentLogDownload(UserEndPoint, viewsets.ViewSet):
         t1.start()
         return R.success()
 
+    @extend_schema(
+        tags=[_('Agent')],
+        summary="探针日志下载",
+    )
     def batch_log_download(self, request, pk):
         try:
             a = int(pk) > 0

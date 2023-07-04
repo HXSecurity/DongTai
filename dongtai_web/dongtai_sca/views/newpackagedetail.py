@@ -46,7 +46,11 @@ _NewResponseSerializer = get_response_serializer(
 
 class PackageDetail(UserEndPoint):
 
-    @extend_schema_with_envcheck_v2(responses={200: _NewResponseSerializer})
+    @extend_schema_with_envcheck_v2(
+        tags=[_('Component')],
+        summary=_("Component Detail"),
+        responses={200: _NewResponseSerializer},
+    )
     def get(self, request, language_id, package_name, package_version):
         asset = AssetV2Global.objects.filter(
             language_id=language_id,

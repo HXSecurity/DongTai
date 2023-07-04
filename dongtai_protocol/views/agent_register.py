@@ -215,6 +215,8 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                    responses=[{
                        204: None
                    }],
+                   tags=['Agent服务端交互协议'],
+                   summary="agent注册",
                    methods=['POST'])
     def post(self, request: Request):
         try:
