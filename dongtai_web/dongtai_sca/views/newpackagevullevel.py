@@ -39,7 +39,9 @@ LEVEL_IDS = [1, 2, 3, 4]
 
 class PackageVulLevels(UserEndPoint):
 
-    @extend_schema_with_envcheck_v2(responses={200: _NewResponseSerializer})
+    @extend_schema_with_envcheck_v2(tags=[_('Component')],
+                                    summary="组件漏洞等级",
+                                    responses={200: _NewResponseSerializer})
     def get(self, request):
         return R.success(data=[{
             "id": level_id,

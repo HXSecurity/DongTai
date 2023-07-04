@@ -27,44 +27,6 @@ class AgentList(UserEndPoint):
     description = _("Agent list")
     SERVER_MAP = dict()
 
-    @extend_schema_with_envcheck(
-        [
-            {
-                'name': "page",
-                'type': int,
-                'default': 1,
-                'required': False,
-            },
-            {
-                'name': "pageSize",
-                'type': int,
-                'default': 1,
-                'required': False,
-            },
-            {
-                'name': "state",
-                'type': int,
-                'default': 1,
-                'required': False,
-            },
-            {
-                'name': "token",
-                'type': str,
-                'required': False,
-            },
-            {
-                'name': "project_name",
-                'type': str,
-                'required': False,
-            },
-        ],
-        tags=[_('Agent')],
-        summary=_('Agent List'),
-        description=_(
-            "Get a list containing Agent information according to conditions."
-        ),
-        response_schema=_ResponseSerializer,
-    )
     def get_running_status(self, obj):
         mapping = defaultdict(str)
         mapping.update({1: _("Online"), 0: _("Offline")})
@@ -109,6 +71,44 @@ class AgentList(UserEndPoint):
         page_size = page_size if page_size < 50 else 50
         return page, page_size, request.user
 
+    @extend_schema_with_envcheck(
+        [
+            {
+                'name': "page",
+                'type': int,
+                'default': 1,
+                'required': False,
+            },
+            {
+                'name': "pageSize",
+                'type': int,
+                'default': 1,
+                'required': False,
+            },
+            {
+                'name': "state",
+                'type': int,
+                'default': 1,
+                'required': False,
+            },
+            {
+                'name': "token",
+                'type': str,
+                'required': False,
+            },
+            {
+                'name': "project_name",
+                'type': str,
+                'required': False,
+            },
+        ],
+        tags=[_('Agent')],
+        summary=_('Agent List'),
+        description=_(
+            "Get a list containing Agent information according to conditions."
+        ),
+        response_schema=_ResponseSerializer,
+    )
     def get(self, request):
         try:
             page = int(request.query_params.get('page', 1))

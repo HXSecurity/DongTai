@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from urllib.parse import urlparse, urlunparse
 from dongtai_web.views.project_add import is_ip
 from rest_framework.viewsets import ViewSet
+from dongtai_common.utils.const import OPERATE_PUT
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -22,6 +23,8 @@ class AgentActionV2EndPoint(OpenApiEndPoint, ViewSet):
                    responses=[{
                        204: None
                    }],
+                   tags=['Agent服务端交互协议', OPERATE_PUT],
+                   summary="agent实际状态",
                    methods=['POST'])
     def actual_running_status(self, request):
         try:
@@ -50,7 +53,9 @@ class AgentActionV2EndPoint(OpenApiEndPoint, ViewSet):
                    responses=[{
                        204: None
                    }],
-                   methods=['POST'])
+                   tags=[_('Agent服务端交互协议')],
+                   summary="agent期望状态",
+                   methods=['GET'])
     def except_running_status(self, request):
         if 'agentId' not in request.GET.keys():
             return R.failure()

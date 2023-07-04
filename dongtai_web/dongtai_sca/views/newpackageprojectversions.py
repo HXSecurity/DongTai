@@ -55,6 +55,8 @@ class NewPackageRelationProjectVersion(UserEndPoint):
 
     @extend_schema_with_envcheck_v2(
         request=RelationProjectVersionArgsSerializer,
+        tags=[_('Component')],
+        summary="组件相关的项目版本",
         responses={200: FullRelationProjectVersionResponseSerializer})
     def get(self, request, language_id, package_name, package_version,
             project_id):

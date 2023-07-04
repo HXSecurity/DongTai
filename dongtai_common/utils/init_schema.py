@@ -22,8 +22,10 @@ def init_schema() -> None:
         path_prefix = "/"
     if not path_prefix.startswith("^"):
         path_prefix = "^" + path_prefix  # make sure regex only matches from the start
-
+    from dongtai_common.endpoint import EndPoint
     for path, path_regex, method, view in endpoints:
+        if not issubclass(view.__class__, EndPoint):
+            continue
         try:
             filepath = inspect.getfile(view.__class__)
             with add_trace_message(getattr(view, "__class__", view).__name__):
