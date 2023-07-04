@@ -10,6 +10,7 @@ class Command(BaseCommand):
         count = 0
         for view, schema in VIEW_CLASS_TO_SCHEMA.items():
             for method, schema in schema.items():
+                _, _, schema = schema
                 if schema is None:
                     self.stdout.write(self.style.ERROR(f"No schema: {view}"))
                     continue

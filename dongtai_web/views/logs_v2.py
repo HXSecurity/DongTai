@@ -123,6 +123,8 @@ class LogsV2Endpoint(UserEndPoint):
                         "user_id": item.user.id,
                         "username": item.user.username,
                         "action_time": item.action_time.strftime("%Y-%m-%d %H:%M:%S"),
+                        "url": item.url,
+                        "raw_url": item.raw_url,
                         "module_name": item.module_name,
                         "function_name": item.function_name,
                         "operate_type": item.operate_type,

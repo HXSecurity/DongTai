@@ -20,6 +20,8 @@ class IastLog(models.Model):
         default=timezone.now,
         editable=False,
     )
+    url = models.CharField(max_length=255)
+    raw_url = models.CharField(max_length=255)
     module_name = models.CharField(max_length=255)
     function_name = models.CharField(max_length=255)
     operate_type = models.IntegerField(choices=OperateType.choices)

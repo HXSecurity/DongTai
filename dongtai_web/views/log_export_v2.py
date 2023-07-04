@@ -17,12 +17,23 @@ class _LogsDeleteSerializer(serializers.Serializer):
 
 class LogResurce(resources.ModelResource):
     def get_export_headers(self):
-        return ["时间", "模块名称", "功能名称", "操作类型", "用户", "访问IP地址"]
+        return [
+            "时间",
+            "URL",
+            "Raw URL",
+            "模块名称",
+            "功能名称",
+            "操作类型",
+            "用户",
+            "访问IP地址",
+        ]
 
     class Meta:
         model = IastLog
         fields = (
             "action_time",
+            "url",
+            "raw_url",
             "module_name",
             "function_name",
             "operate_type",

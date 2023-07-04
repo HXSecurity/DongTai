@@ -124,7 +124,9 @@ class EndPoint(APIView):
                 if method is None:
                     raise ValueError("can not get request method")
                 operate_method = method
-                schema = VIEW_CLASS_TO_SCHEMA[self.__class__][method]
+                path, _path_regex, schema = VIEW_CLASS_TO_SCHEMA[self.__class__][method]
+                if schema is None:
+                    raise ValueError("can not get schema")
                 tags: list[str] = schema["tags"]
                 summary: str = schema["summary"]
                 module_name = tags[0]
@@ -145,6 +147,8 @@ class EndPoint(APIView):
                         raise ValueError("unknown request method")
 
                 IastLog.objects.create(
+                    url=path,
+                    raw_url=self.request.get_full_path(),
                     module_name=module_name,
                     function_name=summary,
                     operate_type=operate_type,

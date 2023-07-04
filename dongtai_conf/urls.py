@@ -25,18 +25,19 @@ urlpatterns: list[URLResolver | URLPattern] = [
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-from drf_spectacular.views import SpectacularJSONAPIView, SpectacularRedocView, SpectacularSwaggerView
-urlpatterns.extend([
-    path('api/XZPcGFKoxYXScwGjQtJx8u/schema/',
-            SpectacularJSONAPIView.as_view(),
-            name='schema'),
-    path('api/XZPcGFKoxYXScwGjQtJx8u/schema/swagger-ui/',
-            SpectacularSwaggerView.as_view(url_name='schema'),
-            name='swagger-ui'),
-    path('api/XZPcGFKoxYXScwGjQtJx8u/schema/redoc/',
-            SpectacularRedocView.as_view(url_name='schema'),
-            name='redoc'),
-])
+if os.getenv('environment', 'PROD') in ('TEST', 'DOC') or os.getenv('DOC', None) == 'TRUE':
+    from drf_spectacular.views import SpectacularJSONAPIView, SpectacularRedocView, SpectacularSwaggerView
+    urlpatterns.extend([
+        path('api/XZPcGFKoxYXScwGjQtJx8u/schema/',
+             SpectacularJSONAPIView.as_view(),
+             name='schema'),
+        path('api/XZPcGFKoxYXScwGjQtJx8u/schema/swagger-ui/',
+             SpectacularSwaggerView.as_view(url_name='schema'),
+             name='swagger-ui'),
+        path('api/XZPcGFKoxYXScwGjQtJx8u/schema/redoc/',
+             SpectacularRedocView.as_view(url_name='schema'),
+             name='redoc'),
+    ])
 
 if os.getenv('DJANGOSILK', None) == 'TRUE':
     silk_path = os.getenv(
