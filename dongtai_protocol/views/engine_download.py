@@ -43,7 +43,7 @@ class EngineDownloadEndPoint(OpenApiEndPoint):
         responses=R,
         methods=['GET'],
         summary="下载 Agent Engine",
-        tags=[_("Agent")]
+        tags=['Agent服务端交互协议'],
     )
     def get(self, request: Request):
         package_name = request.query_params.get('engineName')

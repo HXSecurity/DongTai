@@ -93,7 +93,8 @@ class AutoDeployEndPoint(OpenApiEndPoint):
 
     @extend_schema(
         summary="下载 IAST 自动部署脚本",
-        tags=["Agent"]
+        tags=["Agent"],
+        deprecated=True,
     )
     def get(self, request):
         """

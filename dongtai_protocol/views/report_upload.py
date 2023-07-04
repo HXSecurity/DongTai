@@ -32,7 +32,7 @@ class ReportUploadEndPoint(OpenApiEndPoint):
         responses=R,
         methods=['GET'],
         summary="Agent 上传报告",
-        tags=[_("Agent")],
+        tags=['Agent服务端交互协议'],
     )
     @csrf_exempt
     def post(self, request):

@@ -121,7 +121,7 @@ class HookProfilesEndPoint(OpenApiEndPoint):
         responses=R,
         methods=['GET'],
         summary="Pull Agent Engine Hook Rule",
-        tags=[_("Agent")]
+        tags=['Agent服务端交互协议'],
     )
     def get(self, request):
         user = request.user
