@@ -9,6 +9,7 @@ import logging
 from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint
 from rest_framework.authtoken.models import Token
+from drf_spectacular.utils import extend_schema
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.projecttemplate.update_department_data import update_department_data
 
@@ -19,6 +20,10 @@ class UserToken(UserEndPoint):
     name = "iast-v1-user-token"
     description = _("Get OpenAPI token")
 
+    @extend_schema(
+        summary=_("Get OpenAPI token"),
+        tags=[_("User")],
+    )
     def get(self, request):
         token, success = Token.objects.get_or_create(user=request.user)
 
@@ -29,6 +34,10 @@ class UserDepartmentToken(UserEndPoint):
     name = "iast-v1-user-department-token"
     description = _("Get Department Deploy token")
 
+    @extend_schema(
+        summary=_("Get Department Deploy token"),
+        tags=[_("User")],
+    )
     def get(self, request):
         departments = request.user.get_relative_department()
         department = request.user.get_department()

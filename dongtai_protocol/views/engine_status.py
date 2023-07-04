@@ -12,7 +12,7 @@ from dongtai_common.models.agent import IastAgent
 from dongtai_common.endpoint import OpenApiEndPoint, R
 from drf_spectacular.utils import extend_schema
 from django.core.cache import cache
-
+from django.utils.translation import gettext_lazy as _
 from dongtai_protocol.api_schema import DongTaiParameter
 
 logger = logging.getLogger("django")
@@ -22,6 +22,10 @@ class EngineUpdateEndPoint(OpenApiEndPoint):
     name = "iast_engine_update_status_edit"
     description = "IAST 检测引擎更新状态修改接口"
 
+    @extend_schema(
+        summary="IAST 检测引擎更新状态修改接口",
+        tags=[_("Agent")],
+    )
     def get(self, request, status=None):
         """
         IAST 检测引擎 agent接口
@@ -62,7 +66,9 @@ class EngineAction(OpenApiEndPoint):
             DongTaiParameter.AGENT_NAME,
         ],
         responses=R,
-        methods=['GET']
+        methods=['GET'],
+        summary="检查 Agent Engine 状态",
+        tags=[_("Agent")],
     )
     def get(self, request):
         agent_id = request.query_params.get('agentId')

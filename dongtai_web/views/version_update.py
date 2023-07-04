@@ -9,11 +9,16 @@ from dongtai_common.endpoint import R, TalentAdminEndPoint
 from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_common.models.profile import IastProfile
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
 
 logger = logging.getLogger('dongtai-webapi')
 
 
 class MethodPoolVersionUpdate(TalentAdminEndPoint):
+    @extend_schema(
+        summary="版本更新",
+        tags=["Version Update"],
+    )
     def get(self, request):
         profile_model = IastProfile.objects.filter(key='enable_update').first()
         if profile_model is None or profile_model.value != 'TRUE':

@@ -23,6 +23,7 @@ from rest_framework import serializers
 from django.db.models.base import ObjectDoesNotExist
 from dongtai_common.utils.stack_recognize import stacks_convert
 from dongtai_common.models.recognize_rule import IastRecognizeRule, RuleTypeChoices
+from drf_spectacular.utils import extend_schema
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -480,6 +481,10 @@ class VulDetailV2(VulDetail):
         }]
         return res
 
+    @extend_schema(
+        summary="获取漏洞详情",
+        tags=["Vulnerability"],
+    )
     def get(self, request, id, ):
         self.vul_id = id
         self.departments = request.user.get_relative_department()

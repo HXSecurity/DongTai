@@ -11,6 +11,7 @@ from rest_framework.generics import GenericAPIView
 from django.utils.translation import gettext_lazy as _
 from dongtai_common.endpoint import UserEndPoint
 from dongtai_common.endpoint import R
+from drf_spectacular.utils import extend_schema
 
 
 class LogResurce(resources.ModelResource):
@@ -41,6 +42,11 @@ class ExportMixin(object):
         response['Content-Disposition'] = "attachment; filename*=utf-8''{}".format(escape_uri_path(filename))
         return response
 
+    @extend_schema(
+        deprecated=True,
+        summary="日志导出",
+        tags=[_("Logs")]
+    )
     def get(self, request):
         ids = request.query_params.get('ids')
         if ids:

@@ -13,6 +13,8 @@ from django.utils.translation import gettext_lazy as _
 import os
 from dongtai_conf.settings import MEDIA_ROOT
 from rest_framework.parsers import FileUploadParser
+from drf_spectacular.utils import extend_schema
+
 logger = logging.getLogger('dongtai-webapi')
 
 FILES_ALLOWED_MODIFIY = ("logo.png", "logo_en.png", "favicon.ico")
@@ -40,6 +42,10 @@ FILES_CONTENT_TYPE = {
 
 
 class FileReplace(TalentAdminEndPoint):
+    @extend_schema(
+        summary="替换文件",
+        tags=[_("Profile")]
+    )
     def post(self, request, filename: str):
         if filename not in FILES_ALLOWED_MODIFIY:
             return R.failure(msg=_(

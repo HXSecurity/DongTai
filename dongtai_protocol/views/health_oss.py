@@ -20,7 +20,9 @@ class OSSHealthView(UserEndPoint):
     @extend_schema(
         description='Check OSS Health',
         responses=R,
-        methods=['GET']
+        methods=['GET'],
+        summary="Check OSS Health",
+        tags=["OSS"],
     )
     def get(self, request):
         oss_status, _ = checkossstatus()

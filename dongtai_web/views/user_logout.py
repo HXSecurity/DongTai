@@ -10,6 +10,7 @@ import logging
 from django.contrib.auth import logout
 from django.http import JsonResponse
 from dongtai_common.endpoint import AnonymousAuthEndPoint
+from drf_spectacular.utils import extend_schema
 from django.utils.translation import gettext_lazy as _
 
 from dongtai_conf import settings
@@ -21,6 +22,10 @@ class UserLogout(AnonymousAuthEndPoint):
     name = "api-v1-user-logout"
     description = _("Sign out")
 
+    @extend_schema(
+        summary=_("Sign out"),
+        tags=[_("User")],
+    )
     def get(self, request):
         logout(request)
         response = JsonResponse({

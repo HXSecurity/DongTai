@@ -30,6 +30,7 @@ import json
 from typing import Optional
 from time import time
 from itertools import groupby
+from drf_spectacular.utils import extend_schema
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -127,6 +128,10 @@ class AgentListv2(UserEndPoint, ViewSet):
         data = {'agents': queryset, "summary": summary}
         return R.success(data=data)
 
+    @extend_schema(
+        tags=[_('Agent')],
+        summary="获取 Agent 总结信息",
+    )
     def summary(self, request):
         res = {}
         department = request.user.get_relative_department()
@@ -144,6 +149,10 @@ class AgentListv2(UserEndPoint, ViewSet):
 
         return R.success(data=res)
 
+    @extend_schema(
+        tags=[_('Agent')],
+        summary="获取 Agent 状态",
+    )
     def agent_stat(self, request):
         department = request.user.get_relative_department()
         try:
