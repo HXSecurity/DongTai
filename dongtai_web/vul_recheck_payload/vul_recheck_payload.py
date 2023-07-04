@@ -11,7 +11,8 @@ from dongtai_common.models.vul_recheck_payload import IastVulRecheckPayload
 from rest_framework import serializers
 from django.db.models import Q
 from django.forms.models import model_to_dict
-
+from django.utils.translation import gettext as _
+from drf_spectacular.utils import extend_schema
 
 def get_or_none(classmodel, function, **kwargs):
     try:
@@ -57,6 +58,10 @@ class VulReCheckPayloadViewSet(UserEndPoint, viewsets.ViewSet):
     name = "api-v1-vul-recheck-payload"
     description = _("config recheck payload V2")
 
+    @extend_schema(
+        summary="漏洞验证",
+        tags=[_("Vulnerability")],
+    )
     def create(self, request):
         ser = IastVulRecheckPayloadSerializer(data=request.data)
         try:
@@ -67,6 +72,10 @@ class VulReCheckPayloadViewSet(UserEndPoint, viewsets.ViewSet):
         vul_recheck_payload_create(ser.data, request.user.id)
         return R.success()
 
+    @extend_schema(
+        summary="漏洞验证",
+        tags=[_("Vulnerability")],
+    )
     def retrieve(self, request, pk):
         obj = get_or_none(
             IastVulRecheckPayload,
@@ -78,6 +87,10 @@ class VulReCheckPayloadViewSet(UserEndPoint, viewsets.ViewSet):
             return R.failure()
         return R.success(data=obj)
 
+    @extend_schema(
+        summary="漏洞验证列表",
+        tags=[_("Vulnerability")],
+    )
     def list(self, request):
         ser = IastVulRecheckPayloadListSerializer(data=request.query_params)
         try:
@@ -106,6 +119,10 @@ class VulReCheckPayloadViewSet(UserEndPoint, viewsets.ViewSet):
         return R.success(page=page_summary,
                          data=list(page_data))
 
+    @extend_schema(
+        summary="漏洞验证",
+        tags=[_("Vulnerability")],
+    )
     def update(self, request, pk):
         ser = IastVulRecheckPayloadSerializer(data=request.data)
         try:
@@ -119,6 +136,10 @@ class VulReCheckPayloadViewSet(UserEndPoint, viewsets.ViewSet):
             return R.success()
         return R.success()
 
+    @extend_schema(
+        summary="漏洞验证",
+        tags=[_("Vulnerability")],
+    )
     def delete(self, request, pk):
         if IastVulRecheckPayload.objects.filter(
                 pk=pk, user_id=request.user.id).exists():
@@ -126,6 +147,10 @@ class VulReCheckPayloadViewSet(UserEndPoint, viewsets.ViewSet):
             return R.success()
         return R.failure()
 
+    @extend_schema(
+        summary="漏洞验证状态",
+        tags=[_("Vulnerability")],
+    )
     def status_change(self, request):
         mode = request.data.get('mode', 1)
         q = ~Q(status=-1) & Q(user_id=request.user.id)
