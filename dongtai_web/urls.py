@@ -213,7 +213,7 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path('strategy/user/add', StrategyAdd.as_view()),
     path('strategy/user/list', StrategyList.as_view()),
     path('agent/<int:id_>', Agent.as_view()),
-    path('agent/deploy/', AgentDeploy.as_view()),
+    path('agent/deploy', AgentDeploy.as_view()),
     #    path('agent/deploy/doc', AgentDeployDesc.as_view()), Departured
     #    path('agent/deploy/info', AgentDeployInfo.as_view()),
     #    path('agent/deploy/submit', AgentDeploySave.as_view()),
@@ -427,12 +427,11 @@ urlpatterns: list[URLResolver | URLPattern] = [
          DastManageEndPoint.as_view({
              'get': "get_doc_url",
          })),
-    path(
-        'project/recognize_rule/<int:pk>',
-        RecognizeRuleViewSet.as_view({
-            'get': "retrieve",
-            'put': "update",
-        })),
+    path('project/recognize_rule/<int:pk>',
+         RecognizeRuleViewSet.as_view({
+             'get': "retrieve",
+             'put': "update",
+         })),
     path(
         'project/recognize_rule',
         RecognizeRuleViewSet.as_view({
