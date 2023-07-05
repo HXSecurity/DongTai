@@ -1,13 +1,5 @@
-from dongtai_common.models import User
-from dongtai_common.models.asset import Asset
 from dongtai_common.models.asset_aggr import AssetAggr
-from dongtai_common.models.asset_vul import IastAssetVul, IastAssetVulTypeRelation, IastVulAssetRelation
-from dongtai_web.dongtai_sca.models import Package, VulPackageVersion, VulPackage, VulPackageRange, Vul, VulCveRelation, \
-    PackageLicenseInfo, \
-    PackageLicenseLevel
-from django.http import JsonResponse
-from rest_framework import views
-from django.forms.models import model_to_dict
+from dongtai_common.models.asset_vul import IastAssetVul, IastAssetVulTypeRelation
 from dongtai_common.endpoint import R, AnonymousAndUserEndPoint, UserEndPoint
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.dongtai_sca.common.sca_vul import GetScaVulData
