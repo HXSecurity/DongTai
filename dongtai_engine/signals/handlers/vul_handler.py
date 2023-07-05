@@ -22,6 +22,7 @@ from typing import List, Optional, Callable
 from collections import defaultdict
 from dongtai_common.models.profile import IastProfile
 from dongtai_engine.plugins.project_time_update import project_time_stamp_update
+from dongtai_engine.signals import send_notify
 
 
 def equals(source, target):
@@ -356,6 +357,12 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
         )
         log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,  # type: ignore
                       vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)  # type: ignore
+        send_notify.send_robust(
+            sender=save_vul,
+            vul_id=vul.id,
+            department_id=vul_meta.agent.department_id,
+        )
+
     cache.delete(cache_key)
     #delete if exists more than one   departured use redis lock
     #IastVulnerabilityModel.objects.filter(
@@ -560,3 +567,5 @@ def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
         create_vul_recheck_task(vul_id=vul.id,
                                 agent=vul.agent,
                                 timestamp=timestamp)
+
+

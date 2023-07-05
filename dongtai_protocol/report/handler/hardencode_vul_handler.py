@@ -22,6 +22,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import ValidationError
 from dongtai_web.vul_log.vul_log import log_vul_found
 from dongtai_common.models.agent import IastAgent
+from dongtai_engine.signals import send_notify
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -130,3 +131,8 @@ class HardEncodeVulHandler(IReportHandler):
         log_vul_found(iast_vul.agent.user_id, iast_vul.agent.bind_project.name,
                       iast_vul.agent.bind_project_id, iast_vul.id,  # type: ignore
                       iast_vul.strategy.vul_name)
+        send_notify.send_robust(
+            sender=self.__class__,
+            vul_id=iast_vul.id,
+            department_id=self.agent.department_id,
+        )
