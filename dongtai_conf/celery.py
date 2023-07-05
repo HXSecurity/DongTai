@@ -92,6 +92,18 @@ configs["singleton_backend_url"] = settings.CELERY_BROKER_URL
 configs["DJANGO_CELERY_BEAT_TZ_AWARE"] = False
 configs["CELERY_BEAT_SCHEDULER"] = 'django_celery_beat.schedulers:DatabaseScheduler'
 
+try:
+    from dongtai_conf.celery_extend import configs as extend_config
+
+    for k, v in extend_config:
+        config = configs.get(k, None)
+        if isinstance(v, dict) and isinstance(config, dict):
+            config.update(v)
+        elif isinstance(v, list) and isinstance(config, list):
+            config.extend(v)
+except ImportError:
+    pass
+
 app.namespace = 'CELERY'
 app.conf.update(configs)
 
