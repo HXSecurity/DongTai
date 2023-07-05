@@ -95,7 +95,7 @@ configs["CELERY_BEAT_SCHEDULER"] = 'django_celery_beat.schedulers:DatabaseSchedu
 try:
     from dongtai_conf.celery_extend import configs as extend_config
 
-    for k, v in extend_config:
+    for k, v in extend_config.items():
         config = configs.get(k, None)
         if isinstance(v, dict) and isinstance(config, dict):
             config.update(v)
