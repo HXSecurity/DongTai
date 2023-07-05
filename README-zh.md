@@ -58,7 +58,6 @@
 
 ### 1. SaaS版本
 
-- 填写[在线问卷](https://jinshuju.net/f/I9PNmf)注册账号
 - 登录[洞态IAST](https://iast.io)系统
 - 根据[在线文档](https://doc.dongtai.io/docs/category/%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B/)进行快速体验
 
