@@ -291,6 +291,9 @@ class AgentThresholdConfigV2(TalentAdminEndPoint, viewsets.ViewSet):
         config_create(ser.data, request.user)
         return R.success()
 
+    @extend_schema_with_envcheck(
+        summary=_('AgentThresholdConfig Detail'),
+        tags=[_('AgentThresholdConfigV2')])
     def retrieve(self, request, pk):
         obj = IastCircuitConfig.objects.filter(pk=pk,
                                                is_deleted=0).values().first()
@@ -304,6 +307,9 @@ class AgentThresholdConfigV2(TalentAdminEndPoint, viewsets.ViewSet):
                 circuit_config_id=pk).values().all())
         return R.success(data=obj)
 
+    @extend_schema_with_envcheck(
+        summary=_('AgentThresholdConfig List'),
+        tags=[_('AgentThresholdConfigV2')])
     def list(self, request):
         #        page = request.query_params.get('page', 1)
         #        page_size = request.query_params.get("page_size", 10)
@@ -388,6 +394,9 @@ class AgentThresholdConfigV2(TalentAdminEndPoint, viewsets.ViewSet):
         return R.success(data=convert_choices_to_value_dict(
             able_to_search_dict.get(enumname)))
 
+    @extend_schema_with_envcheck(
+        summary=_('获取 AgentThresholdConfig 所有枚举'),
+        tags=[_('AgentThresholdConfigV2')])
     def enumall(self, request):
         able_to_search = (TargetType, MetricType, MetricGroup, TargetOperator,
                           MetricOperator, DealType, SystemMetricType,
