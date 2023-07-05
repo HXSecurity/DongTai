@@ -100,4 +100,3 @@ def update_blacklist_rule(target_type: TargetType, operator: TargetOperator,
     rule.iastagentblackruledetail_set.all().delete()
     ruledetail.rule = rule
     ruledetail.save()
-

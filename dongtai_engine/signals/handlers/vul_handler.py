@@ -567,5 +567,3 @@ def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
         create_vul_recheck_task(vul_id=vul.id,
                                 agent=vul.agent,
                                 timestamp=timestamp)
-
-
