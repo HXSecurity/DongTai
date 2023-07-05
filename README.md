@@ -59,7 +59,6 @@ The usage scenarios of "DongTai IAST" include but not limited to:
 
 ### 1. SaaS Version
 
-- Fill out the [Online Form](https://jinshuju.net/f/I9PNmf) to register an account.
 - Log in to the [DongTai IAST] (<https://iast.io>).
 - Have a quick start with [Online Guideline](https://docs.dongtai.io/docs/category/%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B).
 
