@@ -84,6 +84,7 @@ django-seriously = "*"
 dataclasses-json = "*"
 django-silk = "*"
 types-python-dateutil = "*"
+shortuuid = "*"
 
 [dev-packages]
 
