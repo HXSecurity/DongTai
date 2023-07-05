@@ -18,7 +18,9 @@ class IastConfig(DongTaiAppConfigPatch, AppConfig):
         from dongtai_engine.plugins.project_status import update_project_status
 
         if AUTO_UPDATE_HOOK_STRATEGY and not validate_hook_strategy_update():
-            print("enable auto_update_hook_strategy  updating hook strategy from file")
+            print(
+                "enable auto_update_hook_strategy  updating hook strategy from file"
+            )
             Command().handle()
 
         init_schema()

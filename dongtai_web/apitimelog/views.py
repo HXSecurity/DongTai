@@ -1,4 +1,4 @@
-from apitimelog.middleware import REQUEST_DICT
+from dongtai_web.apitimelog.middleware import REQUEST_DICT
 # Create your views here.
 
 from dongtai_common.endpoint import UserEndPoint
