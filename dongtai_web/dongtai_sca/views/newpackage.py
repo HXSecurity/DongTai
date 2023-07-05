@@ -75,6 +75,8 @@ _NewResponseSerializer = get_response_serializer(
 class PackageList(UserEndPoint):
 
     @extend_schema_with_envcheck_v2(request=PackageListArgsSerializer,
+                                    tags=[_('Component')],
+                                    summary=_("Component List"),
                                     responses={200: _NewResponseSerializer})
     def post(self, request):
         ser = PackageListArgsSerializer(data=request.data)

@@ -41,7 +41,11 @@ _NewResponseSerializer = get_response_serializer(PackageVulSerializer())
 
 class PackageVulDetail(UserEndPoint):
 
-    @extend_schema_with_envcheck_v2(responses={200: _NewResponseSerializer})
+    @extend_schema_with_envcheck_v2(
+        responses={200: _NewResponseSerializer},
+        tags=[_('Component')],
+        summary="组件漏洞详情",
+    )
     def get(self, request, vul_id):
         asset_vul = IastAssetVulV2.objects.filter(vul_id=vul_id).first()
         if asset_vul:

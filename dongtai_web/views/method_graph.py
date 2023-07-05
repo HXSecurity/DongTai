@@ -14,11 +14,16 @@ from dongtai_common.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai_common.utils import const
 from dongtai_common.utils.validate import Validate
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
 
 logger = logging.getLogger('dongtai-webapi')
 
 
 class MethodGraph(AnonymousAndUserEndPoint):
+    @extend_schema(
+        summary="调用链图",
+        tags=["Method Pool"]
+    )
     def get(self, request):
         try:
             method_pool_id = int(request.query_params.get('method_pool_id'))

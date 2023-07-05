@@ -8,6 +8,7 @@ from django.contrib.admin.models import LogEntry
 from dongtai_common.endpoint import UserEndPoint, R
 from django.utils.translation import gettext_lazy as _
 from django.core.cache import cache
+from drf_spectacular.utils import extend_schema
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -41,6 +42,11 @@ class LogsEndpoint(UserEndPoint):
         page_size = page_size if page_size < 50 else 50
         return page, page_size, request.user
 
+    @extend_schema(
+        deprecated=True,
+        summary="获取日志列表",
+        tags=[_("Logs")]
+    )
     def get(self, request):
         try:
             page, page_size, user = self.parse_args(request)

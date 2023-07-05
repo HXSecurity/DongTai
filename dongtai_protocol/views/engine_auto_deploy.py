@@ -9,6 +9,8 @@ import logging
 from dongtai_common.endpoint import OpenApiEndPoint
 from django.http import StreamingHttpResponse
 from rest_framework.authtoken.models import Token
+from drf_spectacular.utils import extend_schema
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("django")
 
@@ -89,6 +91,11 @@ class AutoDeployEndPoint(OpenApiEndPoint):
     name = "download_iast_agent"
     description = "白帽子-下载IAST 自动部署脚本"
 
+    @extend_schema(
+        summary="下载 IAST 自动部署脚本",
+        tags=["Agent"],
+        deprecated=True,
+    )
     def get(self, request):
         """
         IAST下载 agent接口

@@ -319,6 +319,10 @@ class AgentThresholdConfigV2(TalentAdminEndPoint, viewsets.ViewSet):
             obj_list.append(obj)
         return R.success(data=obj_list)
 
+    @extend_schema_with_envcheck(
+        summary=_('Update AgentThresholdConfig'),
+        description=_("Update AgentThresholdConfigV2"),
+        tags=[_('AgentThresholdConfigV2')])
     def update(self, request, pk):
         ser = AgentConfigSettingV2Serializer(data=request.data)
         try:
@@ -329,6 +333,10 @@ class AgentThresholdConfigV2(TalentAdminEndPoint, viewsets.ViewSet):
         config_update(ser.data, pk)
         return R.success()
 
+    @extend_schema_with_envcheck(
+        summary=_('重置 AgentThresholdConfig'),
+        description=_("重置 AgentThresholdConfigV2"),
+        tags=[_('AgentThresholdConfigV2')])
     def reset(self, request, pk):
         if IastCircuitConfig.objects.filter(pk=pk).exists():
             config = IastCircuitConfig.objects.filter(pk=pk, ).first()
@@ -355,10 +363,18 @@ class AgentThresholdConfigV2(TalentAdminEndPoint, viewsets.ViewSet):
                 return R.success()
         return R.failure()
 
+    @extend_schema_with_envcheck(
+        summary=_('Delete AgentThresholdConfig'),
+        description=_("Delete AgentThresholdConfigV2"),
+        tags=[_('AgentThresholdConfigV2')])
     def delete(self, request, pk):
         IastCircuitConfig.objects.filter(pk=pk).update(is_deleted=1)
         return R.success()
 
+    @extend_schema_with_envcheck(
+        summary=_('获取 AgentThresholdConfig 枚举'),
+        description=_("获取 AgentThresholdConfigV2 枚举"),
+        tags=[_('AgentThresholdConfigV2')])
     def enum(self, request, enumname):
         able_to_search = (TargetType, MetricType, MetricGroup, TargetOperator,
                           MetricOperator, DealType, SystemMetricType,

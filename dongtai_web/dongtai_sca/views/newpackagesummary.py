@@ -91,6 +91,8 @@ class NewPackageSummary(UserEndPoint):
 
     @extend_schema_with_envcheck_v2(
         parameters=[PackageSummaryArgsSerializer],
+        tags=[_('Component')],
+        summary="组件概况",
         responses={200: FullSummaryResponseSerializer})
     def get(self, request):
         ser = PackageSummaryArgsSerializer(data=request.query_params)

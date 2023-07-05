@@ -12,7 +12,7 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 from dongtai_web.serializers.agent import AgentToggleArgsSerializer
 from dongtai_web.views import AGENT_STATUS
 from collections import defaultdict
-
+from dongtai_common.utils.const import OPERATE_PUT
 
 STATUS_MAPPING = defaultdict(lambda: 1, {3: 1, 4: 2})
 
@@ -34,10 +34,15 @@ class AgentCoreStatusUpdate(UserEndPoint):
 
     @extend_schema_with_envcheck(
         request=AgentToggleArgsSerializer,
-        tags=[_('Agent')],
+        tags=[
+            _('Agent'),
+            OPERATE_PUT,
+        ],
+        deprecated=True,
         summary=_('Agent Status Update'),
         description=_("Control the running agent by specifying the id."),
-        response_schema=_ResponseSerializer)
+        response_schema=_ResponseSerializer,
+    )
     def post(self, request):
         ser = AgentCoreStatusSerializer(data=request.data)
         if ser.is_valid(False):
@@ -89,6 +94,17 @@ class AgentCoreStatusUpdateALL(UserEndPoint):
     name = "api-v1-agent-core-status-update"
     description = _("Suspend Agent")
 
+    @extend_schema_with_envcheck(
+        request=AgentToggleArgsSerializer,
+        tags=[
+            _('Agent'),
+            OPERATE_PUT,
+        ],
+        deprecated=True,
+        summary="Agent 批量更新",
+        description=_("Control the running agent by specifying the id."),
+        response_schema=_ResponseSerializer,
+    )
     def post(self, request):
         ser = AgentCoreStatusSerializer(data=request.data)
         department = request.user.get_relative_department()

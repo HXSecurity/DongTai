@@ -15,6 +15,7 @@ from dongtai_protocol.report.report_handler_factory import ReportHandler
 from rest_framework.views import APIView
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -29,7 +30,9 @@ class ReportUploadEndPoint(OpenApiEndPoint):
             DongTaiParameter.LANGUAGE,
         ],
         responses=R,
-        methods=['GET']
+        methods=['GET'],
+        summary="Agent 上传报告",
+        tags=['Agent服务端交互协议'],
     )
     @csrf_exempt
     def post(self, request):

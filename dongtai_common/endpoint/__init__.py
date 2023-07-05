@@ -6,7 +6,7 @@
 import json
 import logging
 
-from django.contrib.admin.models import LogEntryManager, LogEntry, CHANGE
+from django.http.request import HttpRequest
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
 from django.db.models import QuerySet
@@ -23,6 +23,7 @@ from django.core.paginator import PageNotAnInteger, EmptyPage
 from dongtai_common.models.asset import Asset
 from dongtai_common.models.asset_aggr import AssetAggr
 from dongtai_common.models.asset_vul import IastVulAssetRelation, IastAssetVul
+from dongtai_common.models.log import IastLog, OperateType
 from dongtai_common.permissions import UserPermission, ScopedPermission, SystemAdminPermission, TalentAdminPermission
 from dongtai_common.utils import const
 from django.utils.translation import gettext_lazy as _
@@ -33,6 +34,7 @@ from dongtai_common.models.department import Department
 from functools import reduce
 from operator import ior
 from rest_framework.exceptions import AuthenticationFailed
+from dongtai_common.utils.init_schema import VIEW_CLASS_TO_SCHEMA
 
 if TYPE_CHECKING:
     from django.core.paginator import _SupportsPagination
@@ -56,8 +58,6 @@ class EndPoint(APIView):
         # Go through keyword arguments, and either save their values to our
         # instance, or raise an error.
         super().__init__(**kwargs)
-        self.log_manager = LogEntryManager()
-        self.log_manager.model = LogEntry
 
     def load_json_body(self, request):
         """
@@ -117,16 +117,47 @@ class EndPoint(APIView):
 
         self.response = self.finalize_response(request, response, *args,
                                                **kwargs)
-        if self.request.user is not None and self.request.user.is_active and handler.__module__.startswith(
-                'dongtai_web') and self.description is not None:
-            self.log_manager.log_action(
-                user_id=self.request.user.id,
-                content_type_id=ContentType.objects.get_or_create(
-                    app_label=self.request.content_type)[0].id,
-                object_id='',
-                object_repr='',
-                action_flag=CHANGE,
-                change_message=f'访问{self.description}接口')
+        if self.request.user is not None and self.request.user.is_active and self.description is not None:
+            try:
+                method = self.request.method
+                if method is None:
+                    raise ValueError("can not get request method")
+                operate_method = method
+                path, _path_regex, schema, filepath = VIEW_CLASS_TO_SCHEMA[self.__class__][method]
+                if 'dongtai' in filepath and 'dongtai_protocol' not in filepath:
+                    return self.response
+                if schema is None:
+                    raise ValueError("can not get schema")
+                tags: list[str] = schema["tags"]
+                summary: str = schema["summary"]
+                module_name = tags[0]
+                operate_tag = list(filter(lambda x: x.startswith("operate-"), tags))
+                if operate_tag:
+                    operate_method = operate_tag[0].lstrip("operate-")
+
+                match operate_method:
+                    case "GET":
+                        operate_type = OperateType.GET
+                    case "POST":
+                        operate_type = OperateType.ADD
+                    case "PUT":
+                        operate_type = OperateType.CHANGE
+                    case "DELETE":
+                        operate_type = OperateType.DELETE
+                    case _:
+                        raise ValueError("unknown request method")
+
+                IastLog.objects.create(
+                    url=path,
+                    raw_url=self.request.get_full_path(),
+                    module_name=module_name,
+                    function_name=summary,
+                    operate_type=operate_type,
+                    user_id=self.request.user.id,
+                    access_ip=get_client_ip(self.request)
+                )
+            except Exception as e:
+                logger.warning(f"get log info failed: {e}")
         return self.response
 
     def handle_exception(self, exc):
@@ -403,3 +434,12 @@ class R:
             resp_data,
             status=status_code,
         )
+
+
+def get_client_ip(request: HttpRequest) -> str | None:
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip

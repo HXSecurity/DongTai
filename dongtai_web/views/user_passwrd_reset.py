@@ -9,6 +9,7 @@ from dongtai_common.models import User
 
 from dongtai_common.endpoint import R
 from dongtai_common.endpoint import TalentAdminEndPoint
+from drf_spectacular.utils import extend_schema
 from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("dongtai-webapi")
@@ -18,6 +19,10 @@ class UserPasswordReset(TalentAdminEndPoint):
     name = "api-v1-user-password-reset"
     description = _("Reset Password")
 
+    @extend_schema(
+        summary=_("Reset Password"),
+        tags=[_("User")],
+    )
     def post(self, request):
         try:
             user_id = request.data.get('userId')

@@ -59,6 +59,8 @@ class NewPackageRelationProject(UserEndPoint):
 
     @extend_schema_with_envcheck_v2(
         parameters=[RelationProjectArgsSerializer],
+        tags=[_('Component')],
+        summary="组件相关的项目版本",
         responses={200: FullRelationProjectResponseSerializer})
     def get(self, request, language_id, package_name, package_version):
         ser = RelationProjectArgsSerializer(data=request.query_params)

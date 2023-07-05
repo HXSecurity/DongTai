@@ -8,12 +8,18 @@ from django.contrib.admin.models import LogEntry
 from dongtai_common.endpoint import UserEndPoint, R
 from django.utils.translation import gettext_lazy as _
 import datetime
+from drf_spectacular.utils import extend_schema
 
 
 class LogClear(UserEndPoint):
     name = 'api-v1-log-clear'
     description = _('Log clear')
 
+    @extend_schema(
+        deprecated=True,
+        summary=_('Log clear'),
+        tags=[_("Logs")],
+    )
     def get(self, request):
         user = request.user
         now = datetime.datetime.now()

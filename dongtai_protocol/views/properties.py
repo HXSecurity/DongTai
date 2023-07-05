@@ -12,6 +12,8 @@ from rest_framework.request import Request
 
 from dongtai_common.endpoint import OpenApiEndPoint, R
 from dongtai_protocol.serializers.agent_properties import AgentPropertiesSerialize
+from drf_spectacular.utils import extend_schema
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("django")
 
@@ -23,6 +25,10 @@ class PropertiesEndPoint(OpenApiEndPoint):
     name = "api-v1-properties"
     description = "获取属性配置"
 
+    @extend_schema(
+        summary="获取属性配置",
+        tags=[_("Profile")],
+    )
     def get(self, request: Request):
         """
         IAST下载 agent接口

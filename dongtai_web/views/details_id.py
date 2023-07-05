@@ -27,6 +27,7 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from drf_spectacular.utils import extend_schema
 
 
 class IdsSerializer(serializers.Serializer):
@@ -60,6 +61,13 @@ class DetailListWithid(UserEndPoint):
 class AgentListWithid(DetailListWithid):
     serializer = AgentSerializer
 
+    @extend_schema(
+        tags=[_('Agent')],
+        summary=_('Agent List with id'),
+    )
+    def get(self, request):
+        return super().get(request)
+
     def query(self, ids, request):
         agents = IastAgent.objects.filter(pk__in=ids,
                                           user__in=self.get_auth_users(
@@ -79,6 +87,13 @@ class AgentListWithid(DetailListWithid):
 
 class ProjectListWithid(DetailListWithid):
     serializer = ProjectSerializer
+
+    @extend_schema(
+        tags=[_('Project')],
+        summary=_('Project List with id'),
+    )
+    def get(self, request):
+        return super().get(request)
 
     def query(self, ids, request):
         projects = IastProject.objects.filter(pk__in=ids,
@@ -100,6 +115,13 @@ class ProjectListWithid(DetailListWithid):
 class ScaListWithid(DetailListWithid):
     serializer = ScaSerializer
 
+    @extend_schema(
+        tags=[_('Component')],
+        summary=_('Component List with id'),
+    )
+    def get(self, request):
+        return super().get(request)
+
     def query(self, ids, request):
         auth_users = self.get_auth_users(request.user)
         auth_agents = self.get_auth_agents(auth_users)
@@ -119,6 +141,13 @@ class ScaListWithid(DetailListWithid):
 
 class VulsListWithid(DetailListWithid):
     serializer = VulSerializer
+
+    @extend_schema(
+        tags=[_('Vulnerability')],
+        summary=_('Vulnerability List with id'),
+    )
+    def get(self, request):
+        return super().get(request)
 
     def query(self, ids, request):
         auth_users = self.get_auth_users(request.user)
