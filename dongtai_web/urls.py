@@ -46,7 +46,6 @@ from dongtai_web.views.engine_hook_rule_type_enable import EngineHookRuleTypeEna
 from dongtai_web.views.engine_hook_rule_types import EngineHookRuleTypesEndPoint
 from dongtai_web.views.engine_hook_rules import EngineHookRulesEndPoint
 from dongtai_web.views.engine_method_pool_detail import MethodPoolDetailProxy
-from dongtai_web.views.engine_method_pool_sca import EngineMethodPoolSca
 from dongtai_web.views.engine_method_pool_search import MethodPoolSearchProxy
 from dongtai_web.views.log_clear import LogClear
 from dongtai_web.views.log_delete import LogDelete
@@ -242,7 +241,6 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path('engine/method_pool/search', MethodPoolSearchProxy.as_view()),
     path('engine/method_pool/detail', MethodPoolDetailProxy.as_view()),
     path('engine/method_pool/timerange', MethodPoolTimeRangeProxy.as_view()),
-    path('engine/method_pool/sca', EngineMethodPoolSca.as_view()),
     path('engine/graph', MethodGraph.as_view()),
     path('engine/request/replay', RequestReplayEndPoint.as_view()),
     path('engine/hook/rule/summary', EngineHookRuleSummaryEndPoint.as_view()),

@@ -13,7 +13,6 @@ from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from django.db.models import Q, F, Value
 
-from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 from dongtai_common.models.assetv2 import AssetV2, AssetV2Global
 from dongtai_common.models.project import IastProject
 from rest_framework_dataclasses.serializers import DataclassSerializer

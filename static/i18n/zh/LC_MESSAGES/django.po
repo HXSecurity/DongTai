@@ -2788,6 +2788,10 @@ msgstr "通过指定id来获取对应组件的详情"
 msgid "Components do not exist or no permission to access"
 msgstr "组件不存在或无权限访问"
 
+#: sca/views/asset_projects.py:42
+msgid "Component projects query failed"
+msgstr "组件关联项目获取失败"
+
 #: iast/views/sca_details.py:137
 msgid "Current version stopped for maintenance or it is not a secure version"
 msgstr "当前版本已停止维护或暂无安全版本"

@@ -1,7 +1,6 @@
 from django.urls import include, path
 
-from dongtai_web.dongtai_sca.views.asset_projects import AssetProjects
-from dongtai_web.dongtai_sca.views.package import PackageList, AssetAggrDetailAssetIds
+
 from dongtai_web.dongtai_sca.views.newpackage import PackageList
 from dongtai_web.dongtai_sca.views.newpackagedetail import PackageDetail
 from dongtai_web.dongtai_sca.views.newpackagevuldetail import PackageVulDetail
@@ -13,12 +12,6 @@ from dongtai_web.dongtai_sca.views.newpackageprojectversions import NewPackageRe
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-
-urlpatterns = [
-    path('package/', PackageList.as_view()),
-    path('asset_projects/<int:aggr_id>', AssetProjects.as_view()),
-    path('asset_ids/<int:aggr_id>', AssetAggrDetailAssetIds.as_view()),
-]
 
 v2_urlpatterns = [
     path('package/', PackageList.as_view()),
@@ -40,6 +33,5 @@ v2_urlpatterns = [
 ]
 
 urlpatterns = [
-    path('sca/v1/', include(urlpatterns), name='ScaAPI'),
     path('api/sca/v2/', include(v2_urlpatterns), name='ScaAPI'),
 ]
