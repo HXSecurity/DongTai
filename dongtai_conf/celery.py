@@ -83,7 +83,6 @@ configs["task_routes"] = {
     "dongtai_engine.tasks.clear_error_log": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
     "dongtai_engine.tasks.vul_recheck": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
     "dongtai_engine.preheat.function_preheat": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
-    "dongtai_engine.plugins.data_clean": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
     "dongtai_engine.plugins.project_status": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
 }
 configs["CELERY_ENABLE_UTC"] = False
