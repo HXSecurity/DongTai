@@ -48,7 +48,7 @@ async_send_delay = 2
 
 [log_service]
 host = localhost
-port = 8082
+port = 8083
 
 [other]
 domain = http://localhost.domain/

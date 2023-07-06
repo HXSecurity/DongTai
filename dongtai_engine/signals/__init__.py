@@ -5,4 +5,4 @@
 # project: dongtai-engine
 
 # inappropriate implementation to trigger task of load handlers
-from .signals import vul_found
+from .signals import vul_found, send_notify

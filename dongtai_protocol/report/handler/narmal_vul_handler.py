@@ -22,6 +22,7 @@ import re2 as re
 from dongtai_common.models.header_vulnerablity import IastHeaderVulnerability
 from django.db import IntegrityError
 from dongtai_protocol import utils
+from dongtai_engine.signals import send_notify
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -277,6 +278,12 @@ class NormalVulnHandler(BaseVulnHandler):
                           iast_vul.agent.bind_project.name,
                           iast_vul.agent.bind_project_id, iast_vul.id,  # type: ignore
                           iast_vul.strategy.vul_name)
+            send_notify.send_robust(
+                sender=self.__class__,
+                vul_id=iast_vul.id,
+                department_id=self.agent.department_id,
+            )
+
         IastVulnerabilityModel.objects.filter(
             strategy_id=iast_vul.strategy_id,
             uri=iast_vul.uri,

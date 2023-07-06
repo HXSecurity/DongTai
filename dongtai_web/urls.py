@@ -46,7 +46,6 @@ from dongtai_web.views.engine_hook_rule_type_enable import EngineHookRuleTypeEna
 from dongtai_web.views.engine_hook_rule_types import EngineHookRuleTypesEndPoint
 from dongtai_web.views.engine_hook_rules import EngineHookRulesEndPoint
 from dongtai_web.views.engine_method_pool_detail import MethodPoolDetailProxy
-from dongtai_web.views.engine_method_pool_sca import EngineMethodPoolSca
 from dongtai_web.views.engine_method_pool_search import MethodPoolSearchProxy
 from dongtai_web.views.log_clear import LogClear
 from dongtai_web.views.log_delete import LogDelete
@@ -213,7 +212,7 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path('strategy/user/add', StrategyAdd.as_view()),
     path('strategy/user/list', StrategyList.as_view()),
     path('agent/<int:id_>', Agent.as_view()),
-    path('agent/deploy/', AgentDeploy.as_view()),
+    path('agent/deploy', AgentDeploy.as_view()),
     #    path('agent/deploy/doc', AgentDeployDesc.as_view()), Departured
     #    path('agent/deploy/info', AgentDeployInfo.as_view()),
     #    path('agent/deploy/submit', AgentDeploySave.as_view()),
@@ -242,7 +241,6 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path('engine/method_pool/search', MethodPoolSearchProxy.as_view()),
     path('engine/method_pool/detail', MethodPoolDetailProxy.as_view()),
     path('engine/method_pool/timerange', MethodPoolTimeRangeProxy.as_view()),
-    path('engine/method_pool/sca', EngineMethodPoolSca.as_view()),
     path('engine/graph', MethodGraph.as_view()),
     path('engine/request/replay', RequestReplayEndPoint.as_view()),
     path('engine/hook/rule/summary', EngineHookRuleSummaryEndPoint.as_view()),
@@ -427,12 +425,11 @@ urlpatterns: list[URLResolver | URLPattern] = [
          DastManageEndPoint.as_view({
              'get': "get_doc_url",
          })),
-    path(
-        'project/recognize_rule/<int:pk>',
-        RecognizeRuleViewSet.as_view({
-            'get': "retrieve",
-            'put': "update",
-        })),
+    path('project/recognize_rule/<int:pk>',
+         RecognizeRuleViewSet.as_view({
+             'get': "retrieve",
+             'put': "update",
+         })),
     path(
         'project/recognize_rule',
         RecognizeRuleViewSet.as_view({

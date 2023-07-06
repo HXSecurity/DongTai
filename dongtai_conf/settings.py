@@ -156,6 +156,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+try:
+    from dongtai_conf.settings_extend import MIDDLEWARE as MIDDLEWARE_EXTEND
+
+    MIDDLEWARE.extend(MIDDLEWARE_EXTEND)
+except ImportError:
+    pass
+
 XFF_TRUSTED_PROXY_DEPTH = 20
 
 CSRF_COOKIE_NAME = "DTCsrfToken"
@@ -509,11 +516,12 @@ SPECTACULAR_SETTINGS = {
 There are two authentication methods. You can obtain csrf_token and sessionid through the login process, or access the corresponding API through the user's corresponding Token.
 
 The Token method is recommended here, and users can find it in the Agent installation interface such as -H
-'Authorization: Token {token}', here is the token corresponding to the user, the token method also requires a token like this on the request header."""
+  'Authorization: Token {token}', here is the token corresponding to the user, the token method also requires a token like this on the request header."""
       ),
+    'COMPONENT_SPLIT_REQUEST':
+    True,
 }
-REST_FRAMEWORK[
-    'DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'
+REST_FRAMEWORK['DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'
 
 if os.getenv('environment', None) == 'TEST' or os.getenv('CPROFILE',
                                                          None) == 'TRUE':
@@ -532,11 +540,11 @@ except BaseException:
     SCA_TIMEOUT = 0
     SCA_TOKEN = ""
     SCA_SETUP = False
+DOMAIN = config.get('other', 'domain', fallback="")
 
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     SESSION_COOKIE_DOMAIN = config.get('other', 'demo_session_cookie_domain')
     CSRF_COOKIE_DOMAIN = SESSION_COOKIE_DOMAIN
-    DOMAIN = config.get('other', 'domain')
 
 try:
     DOMAIN_VUL = config.get('other', 'domain_vul')

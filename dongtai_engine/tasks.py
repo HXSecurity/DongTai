@@ -34,7 +34,6 @@ from dongtai_engine.plugins.strategy_headers import check_response_header
 from dongtai_engine.plugins.strategy_sensitive import check_response_content
 from dongtai_engine.replay import Replay
 from dongtai_conf import settings
-from dongtai_web.dongtai_sca.utils import sca_scan_asset
 import requests
 from dongtai_engine.task_base import replay_payload_data
 from dongtai_engine.common.queryset import get_scan_id, load_sink_strategy, get_agent
@@ -295,63 +294,6 @@ def get_project_agents(agent):
         user=agent.user
     )
     return agents
-
-
-@shared_task(queue='dongtai-sca-task')
-def update_one_sca(agent_id, package_path, package_signature, package_name, package_algorithm, package_version=''):
-    """
-    根据SCA数据库，更新SCA记录信息
-    :return:
-    """
-    logger.info(
-        f'SCA检测开始 [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm} {package_version}]')
-    agent = IastAgent.objects.filter(id=agent_id).first()
-    version = package_version
-    if not version:
-        if agent.language == "JAVA":
-            version = package_name.split('/')[-1].replace('.jar', '').split('-')[-1]
-
-    if version:
-        current_version_agents = get_project_agents(agent)
-        if package_signature:
-            asset_count = Asset.objects.values("id").filter(signature_value=package_signature,
-                                                            agent__in=current_version_agents).count()
-        else:
-            package_signature = sha_1(package_name)
-            asset_count = Asset.objects.values("id").filter(package_name=package_name,
-                                                            version=version,
-                                                            agent__in=current_version_agents).count()
-
-        if asset_count == 0:
-            new_level = IastVulLevel.objects.get(name="info")
-            asset = Asset()
-            asset.package_name = package_name
-            asset.package_path = package_path
-            asset.signature_value = package_signature
-            asset.signature_algorithm = package_algorithm
-            asset.version = version
-            asset.level_id = new_level.id
-            asset.vul_count = 0
-            asset.language = asset.language
-            if agent:
-                asset.agent = agent
-                asset.project_version_id = agent.project_version_id if agent.project_version_id else 0
-                asset.project_name = agent.project_name
-                asset.language = agent.language
-                asset.project_id = -1
-                if agent.bind_project_id:
-                    asset.project_id = agent.bind_project_id
-                asset.user_id = -1
-                if agent.user_id:
-                    asset.user_id = agent.user_id
-
-            asset.license = ''
-            asset.dt = int(time.time())
-            asset.save()
-            sca_scan_asset(asset)
-        else:
-            logger.info(
-                f'SCA检测开始 [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm} {version}] 组件已存在')
 
 
 def sha_1(raw):
