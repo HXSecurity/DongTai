@@ -1,3 +1,4 @@
+from typing import Any
 from rest_framework.serializers import ValidationError
 from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint
@@ -218,6 +219,7 @@ class GetAppVulsList(UserEndPoint):
         for i in end['data']:
             i['status__name'] = status_obj.get(i['status_id'], "")
 
+        set_vul_inetration(end, request.user.id)
         return R.success(data={
             'messages': end['data'],
             'page': {
@@ -225,6 +227,9 @@ class GetAppVulsList(UserEndPoint):
                 "cur_page": page
             }
         }, )
+
+def set_vul_inetration(end: dict[str, Any], user_id: int) -> None:
+    pass
 
 
 def get_vul_list_from_elastic_search(departments,

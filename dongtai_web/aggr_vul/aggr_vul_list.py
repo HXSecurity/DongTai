@@ -1,4 +1,5 @@
 # 按类型获取 组件漏洞 应用漏洞列表
+from typing import Any
 from elasticsearch_dsl import Q, Search
 from dongtai_common.models.asset_vul import IastAssetVulnerabilityDocument
 from dongtai_common.common.utils import make_hash
@@ -266,9 +267,10 @@ class GetAggregationVulList(UserEndPoint):
                     availability_str,
                     # "type_name": item.type_name,
                 }
-                cwe = get_cve_from_cve_nums(cur_data["vul_cve_nums"])
-                if cwe:
-                    cur_data['vul_cve_nums']['cwe_num'] = cwe
+                if cur_data["vul_cve_nums"]:
+                    cwe = get_cve_from_cve_nums(cur_data["vul_cve_nums"])
+                    if cwe:
+                        cur_data['vul_cve_nums']['cwe_num'] = cwe
                 vul_ids.append(item.id)
                 content_list.append(cur_data)
             # 追加 用户 权限
@@ -318,6 +320,7 @@ class GetAggregationVulList(UserEndPoint):
             for row in content_list:
                 row["pro_info"] = pro_arr.get(row['id'], [])
                 row['type_name'] = ",".join(type_arr.get(row['id'], []))
+            set_vul_inetration(content_list, vul_ids, request.user.id)
         return R.success(data={
             'messages': content_list,
             'page': {
@@ -326,6 +329,13 @@ class GetAggregationVulList(UserEndPoint):
             }
         }, )
 
+
+def set_vul_inetration(
+    content_list: list[dict[str, Any]],
+    vul_ids: list[int],
+    user_id: int,
+) -> None:
+    pass
 
 def get_vul_list_from_elastic_search(user_id,
                                      project_ids=[],
