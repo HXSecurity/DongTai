@@ -152,7 +152,6 @@ from dongtai_web.threshold.config_setting import (
 from dongtai_web.vul_log.vul_log_view import VulLogViewSet
 from dongtai_web.vul_recheck_payload.vul_recheck_payload import VulReCheckPayloadViewSet
 from dongtai_web.header_vul.base import HeaderVulViewSet
-from dongtai_web.projecttemplate.base import IastProjectTemplateView
 from dongtai_web.dast.webhook import DastWebhook
 from dongtai_web.dast.page import DastVulsEndPoint
 from dongtai_web.dast.manage import DastManageEndPoint
@@ -378,18 +377,6 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path('header_vul/<int:pk>', HeaderVulViewSet.as_view({
         'delete': "delete",
     })),
-    path(
-        'projecttemplate/<int:pk>',
-        IastProjectTemplateView.as_view({
-            'get': "retrieve",
-            'put': 'update',
-            'delete': 'delete',
-        })),
-    path('projecttemplate',
-         IastProjectTemplateView.as_view({
-             'get': "list",
-             'post': 'create',
-         })),
     path('dast_webhook', DastWebhook.as_view()),
     path('dastvul/<int:pk>', DastVulsEndPoint.as_view({
         'get': "single",
