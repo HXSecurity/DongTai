@@ -31,9 +31,6 @@ class ProfileEndpoint(UserEndPoint):
                                  description=_("Modifiy Profile with key"),
                                  tags=[_('Profile')])
     def post(self, request, key):
-        if not request.user.is_talent_admin():
-            return R.failure(
-                msg=_("Current users have no permission to modify"))
         ser = ProfilepostArgsSer(data=request.data)
         try:
             if ser.is_valid(True):
@@ -90,9 +87,6 @@ class ProfileBatchModifiedEndpoint(UserEndPoint):
                                  response_schema=ProfileBatchPostArgsSer,
                                  tags=[_('Profile')])
     def post(self, request):
-        if not request.user.is_talent_admin():
-            return R.failure(
-                msg=_("Current users have no permission to modify"))
         ser = ProfileBatchPostArgsSer(data=request.data, many=True)
         try:
             if ser.is_valid(True):
