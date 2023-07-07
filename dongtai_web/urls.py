@@ -89,7 +89,6 @@ from dongtai_web.views.vul_details import (
     VulDetailV2,
 )
 from dongtai_web.views.vul_list_for_plugin import VulListEndPoint
-from dongtai_web.views.vul_recheck import VulReCheck
 from dongtai_web.views.vul_request_replay import RequestReplayEndPoint
 from dongtai_web.views.vul_status import VulStatus
 from dongtai_web.views.vul_summary import VulSummary
@@ -118,13 +117,11 @@ from dongtai_web.views.sensitive_info_rule import (
 )
 from dongtai_web.views.details_id import (AgentListWithid, ProjectListWithid,
                                           ScaListWithid, VulsListWithid)
-from dongtai_web.views.vul_recheck_v2 import VulReCheckv2
 
 from dongtai_web.aggregation.aggregation_del import DelVulMany
 from dongtai_web.aggregation.aggregation_project_del import DelVulProjectLevel
 
 from dongtai_web.vul_log.vul_log_view import VulLogViewSet
-from dongtai_web.vul_recheck_payload.vul_recheck_payload import VulReCheckPayloadViewSet
 from dongtai_web.header_vul.base import HeaderVulViewSet
 from dongtai_web.views.new_project_query import NewProjectVersionList
 from dongtai_web.enum.hook_rules import HookRuleEnumEndPoint
@@ -163,7 +160,6 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path('vuln/<int:id>', VulDetail.as_view()),
     path('vuln/status', VulStatus.as_view()),
     path('vuln/delete/<int:id>', VulDelete.as_view()),
-    path('vul/recheck', VulReCheck.as_view()),
     path('vul/status_list', VulnerabilityStatusView.as_view()),
     path('plugin/vuln/list', VulListEndPoint.as_view()),
     path('plugin/vuln/count', VulCountForPluginEndPoint.as_view()),
@@ -261,22 +257,6 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path('vul_list_delete', DelVulMany.as_view()),
     path('project_vul_delete', DelVulProjectLevel.as_view()),
     path("vullog/<int:vul_id>", VulLogViewSet.as_view({"get": "list"})),
-    path(
-        'vul_recheck_payload/<int:pk>',
-        VulReCheckPayloadViewSet.as_view({
-            'get': "retrieve",
-            'put': 'update',
-            'delete': 'delete'
-        })),
-    path('vul_recheck_payload',
-         VulReCheckPayloadViewSet.as_view({
-             'get': "list",
-             'post': "create",
-         })),
-    path('vul_recheck_payload/status',
-         VulReCheckPayloadViewSet.as_view({
-             'put': "status_change",
-         })),
     path('header_vul', HeaderVulViewSet.as_view({
         'get': "list",
     })),
@@ -302,7 +282,6 @@ if os.getenv('githubcount', None) in ('true', ) or os.getenv('environment', None
 
 urlpatterns = [path('api/v1/', include(urlpatterns))]
 urlpatterns.extend([
-    path('api/v2/vul/recheck', VulReCheckv2.as_view()),
     path('api/v2/vuln/<int:id>', VulDetailV2.as_view()),
     path('api/v2/agents', AgentListv2.as_view({"get": "pagenation_list"})),
     path('api/v2/agents/summary', AgentListv2.as_view({"get": "summary"})),
