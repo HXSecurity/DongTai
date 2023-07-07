@@ -19,9 +19,6 @@ from django.urls import path, include
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from dongtai_web.base.update_project_version import UpdateProjectVersion
-from dongtai_web.threshold.del_threshold_setting import DelAgentThresholdConfig
-from dongtai_web.threshold.del_webhook_setting import DelAgentWebHookConfig
-from dongtai_web.threshold.get_config_setting_detail import GetAgentThresholdConfigDetail
 from dongtai_web.views.agent_delete import AgentDeleteEndPoint
 from dongtai_web.views.agent_deploy import AgentDeploy
 from dongtai_web.views.agent_install import AgentInstall
@@ -122,17 +119,10 @@ from dongtai_web.views.sensitive_info_rule import (
 from dongtai_web.views.details_id import (AgentListWithid, ProjectListWithid,
                                           ScaListWithid, VulsListWithid)
 from dongtai_web.views.vul_recheck_v2 import VulReCheckv2
-from dongtai_web.threshold.config_setting import AgentThresholdConfig
-from dongtai_web.threshold.webhook_setting import AgentWebHookConfig
-from dongtai_web.threshold.get_webhook_setting import GetAgentWebHookConfig
-from dongtai_web.threshold.webhook_type import AgentWebHookTypeList
-from dongtai_web.threshold.get_config_setting import GetAgentThresholdConfig
 
 from dongtai_web.aggregation.aggregation_del import DelVulMany
 from dongtai_web.aggregation.aggregation_project_del import DelVulProjectLevel
 
-from dongtai_web.threshold.config_setting import (
-    AgentThresholdConfigV2, )
 from dongtai_web.vul_log.vul_log_view import VulLogViewSet
 from dongtai_web.vul_recheck_payload.vul_recheck_payload import VulReCheckPayloadViewSet
 from dongtai_web.header_vul.base import HeaderVulViewSet
@@ -263,45 +253,13 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path('vul/list/ids', VulsListWithid.as_view()),
     path('sca/list/ids', ScaListWithid.as_view()),
     path('project/list/ids', ProjectListWithid.as_view()),
-    # user settings disaster recovery strategy
-    path('threshold/settings', AgentThresholdConfig.as_view()),
-    # get user settings disaster recovery strategy GetAgentThresholdConfig
-    path('threshold/settings/get', GetAgentThresholdConfig.as_view()),
-    path('threshold/settings/get/<int:pk>',
-         GetAgentThresholdConfigDetail.as_view()),
-    path('threshold/settings/del', DelAgentThresholdConfig.as_view()),
-    # user webhook setting agent static report  forward
-    path('webhook/settings', AgentWebHookConfig.as_view()),
-    path('webhook/type/list', AgentWebHookTypeList.as_view()),
-    path('webhook/type/del', DelAgentWebHookConfig.as_view()),
 
     # get webHook setting
-    path('webhook/settings/get', GetAgentWebHookConfig.as_view()),
     path('agent/summary/<int:pk>', AgentSummary.as_view()),
 
     # vul list page of sca and common vul
     path('vul_list_delete', DelVulMany.as_view()),
     path('project_vul_delete', DelVulProjectLevel.as_view()),
-    path('circuit_config',
-         AgentThresholdConfigV2.as_view({
-             "post": "create",
-             "get": "list"
-         })),
-    path('circuit_config/enum/all',
-         AgentThresholdConfigV2.as_view({"get": "enumall"})),
-    path('circuit_config/<int:pk>/priority',
-         AgentThresholdConfigV2.as_view({"put": "change_priority"})),
-    path('circuit_config/<int:pk>/reset',
-         AgentThresholdConfigV2.as_view({"put": "reset"})),
-    path('circuit_config/enum/<str:enumname>',
-         AgentThresholdConfigV2.as_view({"get": "enum"})),
-    path(
-        'circuit_config/<int:pk>',
-        AgentThresholdConfigV2.as_view({
-            "put": "update",
-            "delete": "delete",
-            "get": "retrieve"
-        })),
     path("vullog/<int:vul_id>", VulLogViewSet.as_view({"get": "list"})),
     path(
         'vul_recheck_payload/<int:pk>',
