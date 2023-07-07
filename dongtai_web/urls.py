@@ -146,8 +146,7 @@ from dongtai_web.header_vul.base import HeaderVulViewSet
 from dongtai_web.dast.webhook import DastWebhook
 from dongtai_web.dast.page import DastVulsEndPoint
 from dongtai_web.dast.manage import DastManageEndPoint
-from dongtai_web.views.new_project_query import (NewApiRouteSearch, NewProjectVersionList)
-from dongtai_web.project.recognize_rule import RecognizeRuleViewSet
+from dongtai_web.views.new_project_query import NewApiRouteSearch, NewProjectVersionList
 from dongtai_web.enum.hook_rules import HookRuleEnumEndPoint
 from django.urls import URLResolver, URLPattern
 
@@ -384,18 +383,6 @@ urlpatterns: list[URLResolver | URLPattern] = [
          DastManageEndPoint.as_view({
              'get': "get_doc_url",
          })),
-    path('project/recognize_rule/<int:pk>',
-         RecognizeRuleViewSet.as_view({
-             'get': "retrieve",
-             'put': "update",
-         })),
-    path(
-        'project/recognize_rule',
-        RecognizeRuleViewSet.as_view({
-            'post': "create",
-            'get': "list",
-            'delete': "destory",
-        })),
     path('hook_rule/enum', HookRuleEnumEndPoint.as_view({
         'get': "get_enums",
     })),
