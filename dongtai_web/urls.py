@@ -19,9 +19,6 @@ from django.urls import path, include
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from dongtai_web.base.update_project_version import UpdateProjectVersion
-from dongtai_web.threshold.del_threshold_setting import DelAgentThresholdConfig
-from dongtai_web.threshold.del_webhook_setting import DelAgentWebHookConfig
-from dongtai_web.threshold.get_config_setting_detail import GetAgentThresholdConfigDetail
 from dongtai_web.views.agent_delete import AgentDeleteEndPoint
 from dongtai_web.views.agent_deploy import AgentDeploy
 from dongtai_web.views.agent_install import AgentInstall
@@ -47,10 +44,6 @@ from dongtai_web.views.engine_hook_rule_types import EngineHookRuleTypesEndPoint
 from dongtai_web.views.engine_hook_rules import EngineHookRulesEndPoint
 from dongtai_web.views.engine_method_pool_detail import MethodPoolDetailProxy
 from dongtai_web.views.engine_method_pool_search import MethodPoolSearchProxy
-from dongtai_web.views.log_clear import LogClear
-from dongtai_web.views.log_delete import LogDelete
-from dongtai_web.views.log_export import LogExport
-from dongtai_web.views.logs import LogsEndpoint
 from dongtai_web.views.method_graph import MethodGraph
 from dongtai_web.views.openapi import OpenApiEndpoint
 from dongtai_web.views.profile import ProfileEndpoint, ProfileBatchGetEndpoint, ProfileBatchModifiedEndpoint
@@ -96,7 +89,6 @@ from dongtai_web.views.vul_details import (
     VulDetailV2,
 )
 from dongtai_web.views.vul_list_for_plugin import VulListEndPoint
-from dongtai_web.views.vul_recheck import VulReCheck
 from dongtai_web.views.vul_request_replay import RequestReplayEndPoint
 from dongtai_web.views.vul_status import VulStatus
 from dongtai_web.views.vul_summary import VulSummary
@@ -107,10 +99,6 @@ from dongtai_web.views.vulnerability_status import VulnerabilityStatusView
 from dongtai_web.views.version_update import MethodPoolVersionUpdate
 from dongtai_web.views.demo import Demo
 from static.i18n.views.setlang import LanguageSetting
-from dongtai_web.views.api_route_search import ApiRouteSearch
-from dongtai_web.views.api_route_related_request import ApiRouteRelationRequest
-from dongtai_web.views.api_route_cover_rate import ApiRouteCoverRate
-
 from dongtai_web.views.program_language import ProgrammingLanguageList
 from dongtai_web.views.filereplace import FileReplace
 from dongtai_web.views.messages_list import MessagesEndpoint
@@ -129,29 +117,13 @@ from dongtai_web.views.sensitive_info_rule import (
 )
 from dongtai_web.views.details_id import (AgentListWithid, ProjectListWithid,
                                           ScaListWithid, VulsListWithid)
-from dongtai_web.views.vul_recheck_v2 import VulReCheckv2
-from dongtai_web.threshold.config_setting import AgentThresholdConfig
-from dongtai_web.threshold.webhook_setting import AgentWebHookConfig
-from dongtai_web.threshold.get_webhook_setting import GetAgentWebHookConfig
-from dongtai_web.threshold.webhook_type import AgentWebHookTypeList
-from dongtai_web.threshold.get_config_setting import GetAgentThresholdConfig
-from dongtai_web.views.log_download import AgentLogDownload
 
-from dongtai_web.threshold.agent_core_status import (AgentCoreStatusUpdate,
-                                                     AgentCoreStatusUpdateALL)
 from dongtai_web.aggregation.aggregation_del import DelVulMany
 from dongtai_web.aggregation.aggregation_project_del import DelVulProjectLevel
 
-from dongtai_web.threshold.config_setting import (
-    AgentThresholdConfigV2, )
 from dongtai_web.vul_log.vul_log_view import VulLogViewSet
-from dongtai_web.vul_recheck_payload.vul_recheck_payload import VulReCheckPayloadViewSet
 from dongtai_web.header_vul.base import HeaderVulViewSet
-from dongtai_web.dast.webhook import DastWebhook
-from dongtai_web.dast.page import DastVulsEndPoint
-from dongtai_web.dast.manage import DastManageEndPoint
-from dongtai_web.views.new_project_query import (NewApiRouteSearch, NewProjectVersionList)
-from dongtai_web.project.recognize_rule import RecognizeRuleViewSet
+from dongtai_web.views.new_project_query import NewProjectVersionList
 from dongtai_web.enum.hook_rules import HookRuleEnumEndPoint
 from django.urls import URLResolver, URLPattern
 
@@ -188,7 +160,6 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path('vuln/<int:id>', VulDetail.as_view()),
     path('vuln/status', VulStatus.as_view()),
     path('vuln/delete/<int:id>', VulDelete.as_view()),
-    path('vul/recheck', VulReCheck.as_view()),
     path('vul/status_list', VulnerabilityStatusView.as_view()),
     path('plugin/vuln/list', VulListEndPoint.as_view()),
     path('plugin/vuln/count', VulCountForPluginEndPoint.as_view()),
@@ -228,10 +199,6 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path('profile/batch/get', ProfileBatchGetEndpoint.as_view()),
     path('profile/batch/modified', ProfileBatchModifiedEndpoint.as_view()),
     path('system/info', SystemInfo.as_view()),
-    path('logs', LogsEndpoint.as_view()),
-    path('log/export', LogExport.as_view()),
-    path('log/delete', LogDelete.as_view()),
-    path('log/clear', LogClear.as_view()),
     path('engine/method_pool/search', MethodPoolSearchProxy.as_view()),
     path('engine/method_pool/detail', MethodPoolDetailProxy.as_view()),
     path('engine/method_pool/timerange', MethodPoolTimeRangeProxy.as_view()),
@@ -252,9 +219,6 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path('version_update/K23DiutPrwpoqAddqNbHUk',
          MethodPoolVersionUpdate.as_view()),
     path('i18n/setlang', LanguageSetting.as_view()),
-    path('api_route/search', ApiRouteSearch.as_view()),
-    path('api_route/relationrequest', ApiRouteRelationRequest.as_view()),
-    path('api_route/cover_rate', ApiRouteCoverRate.as_view()),
     path('program_language', ProgrammingLanguageList.as_view()),
     path('filereplace/<str:filename>', FileReplace.as_view()),
     path('message/list', MessagesEndpoint.as_view()),
@@ -285,125 +249,20 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path('vul/list/ids', VulsListWithid.as_view()),
     path('sca/list/ids', ScaListWithid.as_view()),
     path('project/list/ids', ProjectListWithid.as_view()),
-    # user settings disaster recovery strategy
-    path('threshold/settings', AgentThresholdConfig.as_view()),
-    # get user settings disaster recovery strategy GetAgentThresholdConfig
-    path('threshold/settings/get', GetAgentThresholdConfig.as_view()),
-    path('threshold/settings/get/<int:pk>',
-         GetAgentThresholdConfigDetail.as_view()),
-    path('threshold/settings/del', DelAgentThresholdConfig.as_view()),
-    # user webhook setting agent static report  forward
-    path('webhook/settings', AgentWebHookConfig.as_view()),
-    path('webhook/type/list', AgentWebHookTypeList.as_view()),
-    path('webhook/type/del', DelAgentWebHookConfig.as_view()),
 
     # get webHook setting
-    path('webhook/settings/get', GetAgentWebHookConfig.as_view()),
-    path('agent/core/update', AgentCoreStatusUpdate.as_view()),
-    path('agent/core/update/all', AgentCoreStatusUpdateALL.as_view()),
     path('agent/summary/<int:pk>', AgentSummary.as_view()),
-
-    # 消息通知规则配置
-    path('agent/log/batch',
-         AgentLogDownload.as_view({'post': 'batch_task_add'})),
-    path('agent/log/<int:pk>', AgentLogDownload.as_view({'get':
-                                                         'get_single'})),
-    path('agent/log/batch/<int:pk>',
-         AgentLogDownload.as_view({'get': 'batch_log_download'})),
 
     # vul list page of sca and common vul
     path('vul_list_delete', DelVulMany.as_view()),
     path('project_vul_delete', DelVulProjectLevel.as_view()),
-    path('circuit_config',
-         AgentThresholdConfigV2.as_view({
-             "post": "create",
-             "get": "list"
-         })),
-    path('circuit_config/enum/all',
-         AgentThresholdConfigV2.as_view({"get": "enumall"})),
-    path('circuit_config/<int:pk>/priority',
-         AgentThresholdConfigV2.as_view({"put": "change_priority"})),
-    path('circuit_config/<int:pk>/reset',
-         AgentThresholdConfigV2.as_view({"put": "reset"})),
-    path('circuit_config/enum/<str:enumname>',
-         AgentThresholdConfigV2.as_view({"get": "enum"})),
-    path(
-        'circuit_config/<int:pk>',
-        AgentThresholdConfigV2.as_view({
-            "put": "update",
-            "delete": "delete",
-            "get": "retrieve"
-        })),
     path("vullog/<int:vul_id>", VulLogViewSet.as_view({"get": "list"})),
-    path(
-        'vul_recheck_payload/<int:pk>',
-        VulReCheckPayloadViewSet.as_view({
-            'get': "retrieve",
-            'put': 'update',
-            'delete': 'delete'
-        })),
-    path('vul_recheck_payload',
-         VulReCheckPayloadViewSet.as_view({
-             'get': "list",
-             'post': "create",
-         })),
-    path('vul_recheck_payload/status',
-         VulReCheckPayloadViewSet.as_view({
-             'put': "status_change",
-         })),
     path('header_vul', HeaderVulViewSet.as_view({
         'get': "list",
     })),
     path('header_vul/<int:pk>', HeaderVulViewSet.as_view({
         'delete': "delete",
     })),
-    path('dast_webhook', DastWebhook.as_view()),
-    path('dastvul/<int:pk>', DastVulsEndPoint.as_view({
-        'get': "single",
-    })),
-    path('dastvul',
-         DastVulsEndPoint.as_view({
-             'post': "page",
-             'delete': "delete",
-         })),
-    path(
-        'dastvul/relation',
-        DastVulsEndPoint.as_view({
-            'delete': "delete_relation",
-            'post': "create_relation",
-        })),
-    path('dastvul/relationlist',
-         DastVulsEndPoint.as_view({
-             'post': "get_relative_with_dast_vul",
-         })),
-    path('dastvul/summary', DastVulsEndPoint.as_view({
-        'post': "summary",
-    })),
-    path('dastvul/vultype', DastVulsEndPoint.as_view({
-        'get': "get_vul_type",
-    })),
-    path(
-        'dastvul/settings',
-        DastManageEndPoint.as_view({
-            'post': "change_validation_settings",
-            'get': "get_validation_settings",
-        })),
-    path('dastvul/settings/doc',
-         DastManageEndPoint.as_view({
-             'get': "get_doc_url",
-         })),
-    path('project/recognize_rule/<int:pk>',
-         RecognizeRuleViewSet.as_view({
-             'get': "retrieve",
-             'put': "update",
-         })),
-    path(
-        'project/recognize_rule',
-        RecognizeRuleViewSet.as_view({
-            'post': "create",
-            'get': "list",
-            'delete': "destory",
-        })),
     path('hook_rule/enum', HookRuleEnumEndPoint.as_view({
         'get': "get_enums",
     })),
@@ -423,7 +282,6 @@ if os.getenv('githubcount', None) in ('true', ) or os.getenv('environment', None
 
 urlpatterns = [path('api/v1/', include(urlpatterns))]
 urlpatterns.extend([
-    path('api/v2/vul/recheck', VulReCheckv2.as_view()),
     path('api/v2/vuln/<int:id>', VulDetailV2.as_view()),
     path('api/v2/agents', AgentListv2.as_view({"get": "pagenation_list"})),
     path('api/v2/agents/summary', AgentListv2.as_view({"get": "summary"})),
@@ -434,7 +292,6 @@ urlpatterns.extend([
     path('api/v2/sca_vul_summary', GetScaSummary.as_view()),
     path('api/v2/app_vul_list_content', GetAppVulsList.as_view()),
     path('api/v2/app_vul_summary', GetAppVulsSummary.as_view()),
-    path('api/v2/api_route/search', NewApiRouteSearch.as_view()),
     path('api/v2/project_version', NewProjectVersionList.as_view()),
 ])
 
