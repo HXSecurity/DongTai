@@ -128,8 +128,6 @@ from dongtai_web.threshold.get_webhook_setting import GetAgentWebHookConfig
 from dongtai_web.threshold.webhook_type import AgentWebHookTypeList
 from dongtai_web.threshold.get_config_setting import GetAgentThresholdConfig
 
-from dongtai_web.threshold.agent_core_status import (AgentCoreStatusUpdate,
-                                                     AgentCoreStatusUpdateALL)
 from dongtai_web.aggregation.aggregation_del import DelVulMany
 from dongtai_web.aggregation.aggregation_project_del import DelVulProjectLevel
 
@@ -279,8 +277,6 @@ urlpatterns: list[URLResolver | URLPattern] = [
 
     # get webHook setting
     path('webhook/settings/get', GetAgentWebHookConfig.as_view()),
-    path('agent/core/update', AgentCoreStatusUpdate.as_view()),
-    path('agent/core/update/all', AgentCoreStatusUpdateALL.as_view()),
     path('agent/summary/<int:pk>', AgentSummary.as_view()),
 
     # vul list page of sca and common vul
