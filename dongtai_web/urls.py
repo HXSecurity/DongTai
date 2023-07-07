@@ -127,7 +127,6 @@ from dongtai_web.threshold.webhook_setting import AgentWebHookConfig
 from dongtai_web.threshold.get_webhook_setting import GetAgentWebHookConfig
 from dongtai_web.threshold.webhook_type import AgentWebHookTypeList
 from dongtai_web.threshold.get_config_setting import GetAgentThresholdConfig
-from dongtai_web.views.log_download import AgentLogDownload
 
 from dongtai_web.threshold.agent_core_status import (AgentCoreStatusUpdate,
                                                      AgentCoreStatusUpdateALL)
@@ -283,14 +282,6 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path('agent/core/update', AgentCoreStatusUpdate.as_view()),
     path('agent/core/update/all', AgentCoreStatusUpdateALL.as_view()),
     path('agent/summary/<int:pk>', AgentSummary.as_view()),
-
-    # 消息通知规则配置
-    path('agent/log/batch',
-         AgentLogDownload.as_view({'post': 'batch_task_add'})),
-    path('agent/log/<int:pk>', AgentLogDownload.as_view({'get':
-                                                         'get_single'})),
-    path('agent/log/batch/<int:pk>',
-         AgentLogDownload.as_view({'get': 'batch_log_download'})),
 
     # vul list page of sca and common vul
     path('vul_list_delete', DelVulMany.as_view()),
