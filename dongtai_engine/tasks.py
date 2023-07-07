@@ -337,12 +337,17 @@ def update_agent_status():
     ).select_related("agent__user")
     for _, vul_list in groupby(vuls, lambda x: x.agent.user_id):
         vul_list = list(vul_list)
+        replay_queue = IastReplayQueue.objects.filter(
+            relation_id__in=list(map(lambda x: x.id, vul_list)),
+            state__in=(const.PENDING, const.WAITING),
+        ).all()
         log_recheck_vul(
             vul_list[0].agent.user.id,
             vul_list[0].agent.user.username,
-            list(map(lambda x: x.id, vul_list)),
+            list(map(lambda x: x.relation_id, replay_queue)),
             "验证失败",
         )
+        replay_queue.update(state=const.DISCARD)
     logger.info("update offline agent: %s", stop_agent_ids)
     logger.info('检测引擎状态更新成功')
     after_agent_status_update()
