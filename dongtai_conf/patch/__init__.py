@@ -1,8 +1,13 @@
+import importlib
 import inspect
 import logging
+import pkgutil
 from dataclasses import dataclass
+from pathlib import Path
 from types import CodeType
-from typing import Callable
+from typing import Any, Callable
+
+from dongtai_conf.settings import BASE_DIR
 
 logger = logging.getLogger("patch")
 
@@ -12,10 +17,23 @@ class PatchConfig:
     type_check: bool
 
 
+is_init_patch = False
 PATCH_HANDLER: dict[CodeType, tuple[Callable, PatchConfig]] = {}
 
 
-def patch_point(*args) -> None:
+def init_patch() -> None:
+    global is_init_patch
+    if not is_init_patch:
+        PATCH_ROOT_PATH = Path(BASE_DIR) / "dongtai_conf" / "patch"
+        for module_info in pkgutil.iter_modules([str(PATCH_ROOT_PATH.resolve())]):
+            if not module_info.name.startswith("_"):
+                importlib.import_module("dongtai_conf.patch." + module_info.name)
+        is_init_patch = True
+    print(PATCH_HANDLER)
+
+
+def patch_point(*args) -> Any | None:
+    init_patch()
     current_frame = inspect.currentframe()
     if current_frame is None:
         logger.error("current frame is None, can not patch")
@@ -60,7 +78,7 @@ def patch_point(*args) -> None:
                 logger.error(f"can not call patch function, miss local var {name}")
                 return
             count += 1
-        func(**patch_func_args)
+        return func(**patch_func_args)
 
 
 def patch(patch_func: Callable, type_check: bool = False):
@@ -71,7 +89,7 @@ def patch(patch_func: Callable, type_check: bool = False):
     return wrapper
 
 
-def check_patch():
+def check_patch() -> None:
     for code, func in PATCH_HANDLER.items():
         args, _, _, _, kwonlyargs, _, _ = inspect.getfullargspec(func)
         if not set(args + kwonlyargs).issubset(set(code.co_varnames)):
