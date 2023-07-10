@@ -684,7 +684,7 @@ DEFAULT_IAST_VALUE_TAG = [
     'xpath-decoded', 'ldap-encoded', 'ldap-decoded',
     'http-token-limited-chars', 'numeric-limited-chars'
 ]
-DEFAULT_TAINT_VALUE_RANGE_COMMANDS = ['KEEP', 'APPEND', 'SUBSET', 'INSERT', 'REMOVE', 'REPLACE', 'CONCAT', 'TRIM', 'TRIM_RIGHT', 'TRIM_LEFT']
+DEFAULT_TAINT_VALUE_RANGE_COMMANDS = ['KEEP', 'APPEND', 'SUBSET', 'INSERT', 'REMOVE', 'REPLACE', 'CONCAT', 'TRIM', 'TRIM_RIGHT', 'TRIM_LEFT', 'OVERWRITE']
 DEFAULT_CODE_DETECT_BLACK_LIST = [
     'aj.', 'akka.', 'android.', 'antlr.', 'apple.', 'aQute.', 'brave.', 'bsh.',
     'ch.qos.', 'co.paralleluniverse.', 'com.acumenat.', 'com.alibaba.arthas.',
