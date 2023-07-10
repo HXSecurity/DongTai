@@ -17,8 +17,6 @@ from dongtai_web.serializers.hook_strategy import SINK_POSITION_HELP_TEXT
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.common.agent_command_check import (
-    valitate_taint_command,
-    valitate_tag,
     tag_validator,
     taint_command_validator,
 )
