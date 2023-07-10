@@ -122,7 +122,7 @@ class ProjectAdd(UserEndPoint):
                         id=pid, department__in=departments).first()
                     project.name = name
                 else:
-                    department_id = request.data.get("department_id")
+                    department_id = request.data.get("department_id", 1)
                     if not departments.filter(pk=department_id).exists():
                         return R.failure(
                             status=203,
