@@ -189,7 +189,6 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
         except ValidationError as e:
             return R.failure(data=e.detail,
                              msg=_('Incomplete parameter, please check again'))
-        import pdb;pdb.set_trace()
         if rule_target == "":
             hook_type = IastStrategyModel.objects.filter(
                 id=rule_type,
