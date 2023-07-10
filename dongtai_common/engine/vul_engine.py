@@ -134,6 +134,7 @@ class VulEngine(object):
         from functools import reduce
         import networkit as nk
         g = nk.Graph(weighted=True,directed=True)
+        # Gather data
         source_hash_dict = defaultdict(set)
         target_hash_dict = defaultdict(set)
         invokeid_dict = {}
@@ -151,6 +152,7 @@ class VulEngine(object):
                     lambda x: x.get('source', False) and x.get('signature') !=
                     'org.springframework.web.util.pattern.PathPattern.getPatternString()',
                     self.method_pool)))
+        # build a graph
         for pool in self.method_pool:
             hashs = list(pool['sourceHash'])
             vecs = list(
@@ -161,11 +163,12 @@ class VulEngine(object):
                            set()),
                 ))
             for source, target in vecs:
-                print(source, target)
                 g.addEdge(source,
                           target,
                           abs(source - target)**1.1,
                           addMissing=True)
+        # checkout each pair source/target have a path or not
+        # It may lost sth when muliti paths exists.
         for s, t in product(source_methods, vul_methods):
             dij_obj = nk.distance.BidirectionalDijkstra(g, s, t).run()
             if dij_obj.getDistance() != 1.7976931348623157e+308: # INF here!
