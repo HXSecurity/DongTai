@@ -129,24 +129,62 @@ class VulEngine(object):
         self.vul_type = vul_type
         self.prepare(method_pool, vul_method_signature)
         size = len(self.method_pool)
-        for index in range(size):
-            method = self.method_pool[index]
-            if self.hit_vul_method(method) is None:
-                continue
-
-            if 'sourceValues' in method:
-                self.taint_value = method['sourceValues']
-            # 找到sink点所在索引后，开始向后递归
-            current_link = list()
-            vul_method_detail = self.copy_method(method_detail=method,
-                                                 sink=True)
-            current_link.append(vul_method_detail)
-            self.pool_value = set(method.get('sourceHash'))
-            self.vul_source_signature = None
-            logger.info(f'==> current taint hash: {self.pool_value}')
-            if self.loop(index, size, current_link,
-                         set(method.get('sourceHash'))):
-                break
+        from collections import defaultdict
+        from itertools import product
+        from functools import reduce
+        import networkit as nk
+        g = nk.Graph(weighted=True,directed=True)
+        source_hash_dict = defaultdict(set)
+        target_hash_dict = defaultdict(set)
+        invokeid_dict = {}
+        for pool in self.method_pool:
+            for s_hash in pool['sourceHash']:
+                source_hash_dict[s_hash].add(pool['invokeId'])
+            for t_hash in pool['targetHash']:
+                target_hash_dict[t_hash].add(pool['invokeId'])
+            invokeid_dict[pool['invokeId']] = pool
+        vul_methods = list(map(lambda x:x['invokeId'], filter(self.hit_vul_method, self.method_pool)))
+        source_methods = list(
+            map(
+                lambda x: x['invokeId'],
+                filter(
+                    lambda x: x.get('source', False) and x.get('signature') !=
+                    'org.springframework.web.util.pattern.PathPattern.getPatternString()',
+                    self.method_pool)))
+        for pool in self.method_pool:
+            hashs = list(pool['sourceHash'])
+            vecs = list(
+                product(
+                    [pool['invokeId']],
+                    reduce(lambda x, y: x | y,
+                           [source_hash_dict[i] for i in pool['targetHash']],
+                           set()),
+                ))
+            for source, target in vecs:
+                print(source, target)
+                g.addEdge(source,
+                          target,
+                          abs(source - target)**1.1,
+                          addMissing=True)
+        for s, t in product(source_methods, vul_methods):
+            dij_obj = nk.distance.BidirectionalDijkstra(g, s, t).run()
+            if dij_obj.getDistance() != 1.7976931348623157e+308: # INF here!
+                logger.info('find sink here!')
+                path = dij_obj.getPath()
+                total_path = [s, *path, t]
+                final_stack = []
+                for path_key in total_path:
+                    sub_method = invokeid_dict[path_key]
+                    if sub_method.get('source'):
+                        final_stack.append(self.copy_method(sub_method, source=True))
+                    if sub_method['invokeId'] == t:
+                        self.vul_source_signature = f"{sub_method.get('className')}.{sub_method.get('methodName')}"
+                        self.taint_value = sub_method['targetValues']
+                        final_stack.append(self.copy_method(sub_method, sink=True))
+                    else:
+                        final_stack.append(self.copy_method(sub_method, propagator=True))
+                self.vul_stack = [final_stack]
+        current_link = list()
         if self.vul_source_signature and 'sourceType' in self.vul_stack[-1][
                 -1].keys():
             final_stack = self.vul_stack[-1][-1]
