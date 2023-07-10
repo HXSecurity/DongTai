@@ -77,7 +77,7 @@ class ProjectAdd(UserEndPoint):
             with transaction.atomic():
                 name = request.data.get("name")
                 mode = "插桩模式"
-                scan_id = int(request.data.get("scan_id", 0))
+                scan_id = int(request.data.get("scan_id", 5))
                 template_id = int(request.data.get("template_id", 0))
                 # auth_users = self.get_auth_users(request.user)
                 departments = request.user.get_relative_department()
