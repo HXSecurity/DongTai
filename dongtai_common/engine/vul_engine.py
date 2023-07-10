@@ -133,7 +133,6 @@ class VulEngine(object):
         from itertools import product
         from functools import reduce
         import networkit as nk
-        g = nk.Graph(weighted=True,directed=True)
         # Gather data
         source_hash_dict = defaultdict(set)
         target_hash_dict = defaultdict(set)
@@ -144,7 +143,9 @@ class VulEngine(object):
             for t_hash in pool['targetHash']:
                 target_hash_dict[t_hash].add(pool['invokeId'])
             invokeid_dict[pool['invokeId']] = pool
-        vul_methods = list(map(lambda x:x['invokeId'], filter(self.hit_vul_method, self.method_pool)))
+        vul_methods = list(
+            map(lambda x: x['invokeId'],
+                filter(self.hit_vul_method, self.method_pool)))
         source_methods = list(
             map(
                 lambda x: x['invokeId'],
@@ -153,6 +154,7 @@ class VulEngine(object):
                     'org.springframework.web.util.pattern.PathPattern.getPatternString()',
                     self.method_pool)))
         # build a graph
+        g = nk.Graph(weighted=True, directed=True)
         for pool in self.method_pool:
             hashs = list(pool['sourceHash'])
             vecs = list(
@@ -171,7 +173,7 @@ class VulEngine(object):
         # It may lost sth when muliti paths exists.
         for s, t in product(source_methods, vul_methods):
             dij_obj = nk.distance.BidirectionalDijkstra(g, s, t).run()
-            if dij_obj.getDistance() != 1.7976931348623157e+308: # INF here!
+            if dij_obj.getDistance() != 1.7976931348623157e+308:  # INF here!
                 logger.info('find sink here!')
                 path = dij_obj.getPath()
                 total_path = [s, *path, t]
@@ -179,13 +181,16 @@ class VulEngine(object):
                 for path_key in total_path:
                     sub_method = invokeid_dict[path_key]
                     if sub_method.get('source'):
-                        final_stack.append(self.copy_method(sub_method, source=True))
+                        final_stack.append(
+                            self.copy_method(sub_method, source=True))
                     if sub_method['invokeId'] == t:
                         self.vul_source_signature = f"{sub_method.get('className')}.{sub_method.get('methodName')}"
                         self.taint_value = sub_method['targetValues']
-                        final_stack.append(self.copy_method(sub_method, sink=True))
+                        final_stack.append(
+                            self.copy_method(sub_method, sink=True))
                     else:
-                        final_stack.append(self.copy_method(sub_method, propagator=True))
+                        final_stack.append(
+                            self.copy_method(sub_method, propagator=True))
                 self.vul_stack = [final_stack]
         current_link = list()
         if self.vul_source_signature and 'sourceType' in self.vul_stack[-1][
