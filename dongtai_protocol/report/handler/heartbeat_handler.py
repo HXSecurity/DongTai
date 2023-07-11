@@ -19,6 +19,7 @@ from django.db.models import (QuerySet, Q)
 from dongtai_common.models.project import VulValidation
 from dongtai_common.utils.systemsettings import get_vul_validate
 from django.core.cache import cache
+from dongtai_web.vul_log.vul_log import log_recheck_vul
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -151,9 +152,12 @@ class HeartBeatHandler(IReportHandler):
                 IastReplayQueue.objects.filter(id__in=failure_ids).update(
                     update_time=timestamp, state=const.SOLVED)
 
-                IastVulnerabilityModel.objects.filter(
-                    id__in=success_vul_ids).update(latest_time=timestamp,
-                                                   status_id=2)
+                log_recheck_vul(
+                    self.agent.user.id,
+                    self.agent.user.username,
+                    success_vul_ids,
+                    "验证中",
+                )
                 IastVulnerabilityModel.objects.filter(
                     id__in=failure_vul_ids).update(latest_time=timestamp,
                                                    status_id=1)
