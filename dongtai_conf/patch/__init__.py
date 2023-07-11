@@ -2,6 +2,7 @@ import importlib
 import inspect
 import logging
 import pkgutil
+from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from types import CodeType
@@ -20,7 +21,9 @@ class PatchConfig:
 
 
 is_init_patch = False
-PATCH_HANDLER: dict[CodeType, dict[int, tuple[Callable, PatchConfig]]] = {}
+PATCH_HANDLER: dict[CodeType, dict[int, tuple[Callable, PatchConfig]]] = defaultdict(
+    dict
+)
 
 
 def init_patch() -> None:
