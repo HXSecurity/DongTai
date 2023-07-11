@@ -4,7 +4,11 @@ from dongtai_common.utils.settings import get_managed
 from django.db.models import IntegerChoices
 from django.utils.translation import gettext_lazy as _
 from typing import List, Dict
-
+from dongtai_common.models.project import (
+    IastProject,
+    IastProjectTemplate,
+    VulValidation,
+)
 
 class TargetOperator(IntegerChoices):
     EQUAL = 1, _("等于")
@@ -28,11 +32,11 @@ class TargetScope(IntegerChoices):
 
 class State(IntegerChoices):
     ENABLE = 1, _("ENABLE")
-    DISABLE = 2, _("DISABLE")
+    DISABLE = 0, _("DISABLE")
 
 
 class IastAgentBlackRule(models.Model):
-    user = models.ForeignKey(User, models.DO_NOTHING)
+    user = models.ForeignKey(User, models.DO_NOTHING, default=-1)
     scope = models.IntegerField(
         choices=TargetScope.choices,
         blank=True,
@@ -44,6 +48,8 @@ class IastAgentBlackRule(models.Model):
         blank=True,
         null=True,
     )
+    project = models.ForeignKey(IastProject, models.CASCADE, default=-1)
+    project_template = models.ForeignKey(IastProjectTemplate, models.CASCADE, default=-1)
 
     class Meta:
         managed = get_managed()
@@ -76,9 +82,21 @@ class IastAgentBlackRuleDetail(models.Model):
 
 
 def create_blacklist_rule(target_type: TargetType, operator: TargetOperator,
-                          value: str, user_id: int, state: State):
+                          value: str, state: State, **kwargs):
     ruledetail = IastAgentBlackRuleDetail.objects.create(
         target_type=target_type, operator=operator, value=value)
-    rule = IastAgentBlackRule.objects.create(user_id=user_id, state=state)
+    rule = IastAgentBlackRule.objects.create(state=state, **kwargs)
+    ruledetail.rule = rule
+    ruledetail.save()
+
+def update_blacklist_rule(target_type: TargetType, operator: TargetOperator,
+                          value: str, user_id: int, state: State,
+                          rule_id: int):
+    ruledetail = IastAgentBlackRuleDetail.objects.create(
+        target_type=target_type, operator=operator, value=value)
+    rule = IastAgentBlackRule.objects.filter(user_id=user_id, pk=rule_id).first()
+    rule.state = state
+    rule.save()
+    rule.iastagentblackruledetail_set.all().delete()
     ruledetail.rule = rule
     ruledetail.save()

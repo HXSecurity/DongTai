@@ -3040,6 +3040,10 @@ msgstr "Current version stopped for maintenance or it is not a secure version"
 msgid "Component information query failed"
 msgstr "Component information query failed"
 
+#: sca/views/asset_projects.py:42
+msgid "Component projects query failed"
+msgstr "Component projects query failed"
+
 #: iast/views/sca_sidebar_index.py:40 iast/views/sca_summary.py:91
 #: iast/views/scas.py:80 iast/views/vul_list_for_plugin.py:54
 #: iast/views/vul_sidebar_index.py:70 iast/views/vul_summary.py:96

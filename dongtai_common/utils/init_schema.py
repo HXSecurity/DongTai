@@ -7,7 +7,7 @@ from drf_spectacular.drainage import add_trace_message
 import inspect
 
 logger = logging.getLogger("django")
-VIEW_CLASS_TO_SCHEMA: dict[type, dict[str, tuple[str, str, dict | None]]] = {}
+VIEW_CLASS_TO_SCHEMA: dict[type, dict[str, tuple[str, str, dict | None, str]]] = {}
 
 
 def init_schema() -> None:
@@ -23,6 +23,7 @@ def init_schema() -> None:
     if not path_prefix.startswith("^"):
         path_prefix = "^" + path_prefix  # make sure regex only matches from the start
     from dongtai_common.endpoint import EndPoint
+
     for path, path_regex, method, view in endpoints:
         if not issubclass(view.__class__, EndPoint):
             continue
@@ -40,4 +41,6 @@ def init_schema() -> None:
                     filepath,
                 )
         except Exception as e:
-            logger.error(f"unable to get schema: view {view} of path {path}", exc_info=e)
+            logger.error(
+                f"unable to get schema: view {view} of path {path}", exc_info=e
+            )

@@ -14,10 +14,6 @@ class MyTestCase(DongTaiTestCase):
         from dongtai_engine.tasks import vul_recheck
         vul_recheck()
 
-    def test_report(self):
-        from dongtai_engine.tasks import export_report
-        export_report()
-
     def test_search_vul_from_replay_method_pool(self):
         from dongtai_engine.tasks import search_vul_from_replay_method_pool
         method_id = 110

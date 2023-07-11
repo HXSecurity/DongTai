@@ -124,7 +124,7 @@ class EndPoint(APIView):
                     raise ValueError("can not get request method")
                 operate_method = method
                 path, _path_regex, schema, filepath = VIEW_CLASS_TO_SCHEMA[self.__class__][method]
-                if 'dongtai' in filepath and 'dongtai_protocol' not in filepath:
+                if 'dongtai' in filepath and 'dongtai_protocol' in filepath:
                     return self.response
                 if schema is None:
                     raise ValueError("can not get schema")
@@ -135,17 +135,16 @@ class EndPoint(APIView):
                 if operate_tag:
                     operate_method = operate_tag[0].lstrip("operate-")
 
-                match operate_method:
-                    case "GET":
-                        operate_type = OperateType.GET
-                    case "POST":
-                        operate_type = OperateType.ADD
-                    case "PUT":
-                        operate_type = OperateType.CHANGE
-                    case "DELETE":
-                        operate_type = OperateType.DELETE
-                    case _:
-                        raise ValueError("unknown request method")
+                if operate_method == "GET":
+                    operate_type = OperateType.GET
+                elif operate_method == "POST":
+                    operate_type = OperateType.ADD
+                elif operate_method == "PUT":
+                    operate_type = OperateType.CHANGE
+                elif operate_method == "DELETE":
+                    operate_type = OperateType.DELETE
+                else:
+                    raise ValueError("unknown request method")
 
                 IastLog.objects.create(
                     url=path,

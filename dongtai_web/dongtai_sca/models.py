@@ -23,23 +23,6 @@ class Package(models.Model):
         db_table = 'sca2_package_v2'
 
 
-class Vul(models.Model):
-    id = models.CharField(primary_key=True, max_length=50)
-    summary = models.CharField(max_length=255, blank=True, null=True)
-    details = models.TextField(blank=True, null=True)
-    aliases = models.JSONField(blank=True, null=True)
-    modified = models.DateTimeField(blank=True, null=True)
-    published = models.DateTimeField(blank=True, null=True)
-    withdrawn = models.DateTimeField(blank=True, null=True)
-    references = models.JSONField(null=True)
-
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
-
-    class Meta:
-        db_table = 'sca2_vul'
-
-
 class VulPackage(models.Model):
     cve = models.CharField(max_length=50, blank=True, null=True)
     ecosystem = models.CharField(max_length=255, blank=True, null=True)
@@ -58,36 +41,6 @@ class VulPackage(models.Model):
 
     class Meta:
         db_table = 'sca2_vul_package_v2'
-
-
-class VulPackageRange(models.Model):
-    vul_package_id = models.IntegerField(blank=True, null=True)
-    ecosystem = models.CharField(max_length=255, blank=True, null=True)
-    name = models.CharField(max_length=255, blank=True, null=True)
-    type = models.CharField(max_length=50, blank=True, null=True)
-    introduced = models.CharField(max_length=50, blank=True, null=True)
-    introduced_vcode = models.CharField(max_length=50, blank=True, null=True)
-    fixed = models.CharField(max_length=50, blank=True, null=True)
-    fixed_vcode = models.CharField(max_length=50, blank=True, null=True)
-
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
-
-    class Meta:
-        db_table = 'sca2_vul_package_range'
-
-
-class VulPackageVersion(models.Model):
-    vul_package_id = models.IntegerField(blank=True, null=True)
-    ecosystem = models.CharField(max_length=255, blank=True, null=True)
-    name = models.CharField(max_length=255, blank=True, null=True)
-    version = models.CharField(max_length=255, blank=True, null=True)
-
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
-
-    class Meta:
-        db_table = 'sca2_vul_package_version'
 
 
 class VulCveRelation(models.Model):

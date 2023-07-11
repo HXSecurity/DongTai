@@ -36,9 +36,23 @@ class VulSerializer(serializers.ModelSerializer):
     class Meta:
         model = IastVulnerabilityModel
         fields = [
-            'id', 'type', 'hook_type_id', 'url', 'uri', 'agent_id', 'level_id',
-            'http_method', 'top_stack', 'bottom_stack', 'taint_position',
-            'latest_time', 'first_time', 'language', 'status'
+            'id',
+            'type',
+            'hook_type_id',
+            'url',
+            'uri',
+            'agent_id',
+            'level_id',
+            'http_method',
+            'top_stack',
+            'bottom_stack',
+            'taint_position',
+            'latest_time',
+            'first_time',
+            'language',
+            'status',
+            'header_vul_urls',
+            'is_header_vul',
         ]
 
     @staticmethod

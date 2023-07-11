@@ -23,6 +23,7 @@ from dongtai_engine.plugins.project_time_update import (
     project_time_stamp_update,
     project_version_time_stamp_update,
 )
+from dongtai_engine.signals import send_notify
 
 
 class FakeSocket():
@@ -203,6 +204,11 @@ def save_vul(vul_type, method_pool, position=None, data=None):
         )
         log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
                       vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)  # type: ignore
+        send_notify.send_robust(
+            sender=save_vul,
+            vul_id=vul.id,
+            department_id=method_pool.agent.department_id,
+        )
     cache.delete(cache_key)
     header_vul = None
     if not IastHeaderVulnerability.objects.filter(
