@@ -19,7 +19,10 @@ from dongtai_engine.plugins import is_strategy_enable
 from dongtai_web.vul_log.vul_log import log_vul_found
 from dongtai_common.models.header_vulnerablity import IastHeaderVulnerability, IastHeaderVulnerabilityDetail
 from django.db import IntegrityError
-from dongtai_engine.plugins.project_time_update import project_time_stamp_update
+from dongtai_engine.plugins.project_time_update import (
+    project_time_stamp_update,
+    project_version_time_stamp_update,
+)
 from dongtai_engine.signals import send_notify
 
 
@@ -138,6 +141,8 @@ def save_vul(vul_type, method_pool, position=None, data=None):
     timestamp = int(time.time())
     project_time_stamp_update.apply_async(
         (method_pool.agent.bind_project_id, ), countdown=5)
+    project_version_time_stamp_update.apply_async(
+        (method_pool.agent.project_version_id, ), countdown=5)
     if vul:
         vul.url = ''
         vul.req_header = method_pool.req_header

@@ -37,7 +37,10 @@ from dongtai_conf import settings
 import requests
 from dongtai_engine.task_base import replay_payload_data
 from dongtai_engine.common.queryset import get_scan_id, load_sink_strategy, get_agent
-from dongtai_engine.plugins.project_time_update import project_time_stamp_update
+from dongtai_engine.plugins.project_time_update import (
+    project_time_stamp_update,
+    project_version_time_stamp_update,
+)
 from dongtai_web.vul_log.vul_log import log_recheck_vul
 
 RETRY_INTERVALS = [10, 30, 90]
@@ -160,6 +163,8 @@ def search_and_save_vul(engine: Optional[VulEngine],
                 update_time=timestamp)
             project_time_stamp_update.apply_async(
                 (method_pool_model.agent.bind_project_id, ), countdown=5)
+            project_version_time_stamp_update.apply_async(
+                (method_pool_model.agent.project_version_id, ), countdown=5)
         except Exception as e:
             logger.info(f'漏洞数据处理出错，原因：{e}')
 
