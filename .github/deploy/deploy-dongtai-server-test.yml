@@ -74,6 +74,38 @@ spec:
           env:
             - name: DONGTAI_CONCURRENCY
               value: --processes 2 --stats :3031 --stats-http
+            - name: METRICS
+              value: =true
+          livenessProbe:
+            httpGet:
+              port: 8000
+              scheme: HTTP
+              path: /healthcheck
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              port: 8000
+              scheme: HTTP
+              path: /healthcheck
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
+          startupProbe:
+            httpGet:
+              port: 8000
+              scheme: HTTP
+              path: /healthcheck
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
           resources:
             limits:
               cpu: "500m"
@@ -142,6 +174,36 @@ spec:
             - name: configfile
               mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
               subPath: config.ini
+          livenessProbe:
+            httpGet:
+              port: 5555
+              scheme: HTTP
+              path: /healthcheck
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              port: 5555
+              scheme: HTTP
+              path: /healthcheck
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
+          startupProbe:
+            httpGet:
+              port: 5555
+              scheme: HTTP
+              path: /healthcheck
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
           resources:
             limits:
               cpu: "500m"
@@ -192,6 +254,36 @@ spec:
           env:
             - name: DONGTAI_CONCURRENCY
               value: -P gevent --concurrency=121
+          livenessProbe:
+            httpGet:
+              port: 5555
+              scheme: HTTP
+              path: /healthcheck
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              port: 5555
+              scheme: HTTP
+              path: /healthcheck
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
+          startupProbe:
+            httpGet:
+              port: 5555
+              scheme: HTTP
+              path: /healthcheck
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
           resources:
             limits:
               cpu: "500m"
@@ -241,6 +333,36 @@ spec:
           env:
             - name: DONGTAI_CONCURRENCY
               value: --concurrency=2
+          livenessProbe:
+            httpGet:
+              port: 5555
+              scheme: HTTP
+              path: /healthcheck
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              port: 5555
+              scheme: HTTP
+              path: /healthcheck
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
+          startupProbe:
+            httpGet:
+              port: 5555
+              scheme: HTTP
+              path: /healthcheck
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
           resources:
             limits:
               cpu: "500m"
@@ -290,6 +412,36 @@ spec:
           env:
             - name: DONGTAI_CONCURRENCY
               value: --concurrency=2
+          livenessProbe:
+            httpGet:
+              port: 5555
+              scheme: HTTP
+              path: /healthcheck
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              port: 5555
+              scheme: HTTP
+              path: /healthcheck
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
+          startupProbe:
+            httpGet:
+              port: 5555
+              scheme: HTTP
+              path: /healthcheck
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
           resources:
             limits:
               cpu: "500m"
@@ -339,6 +491,36 @@ spec:
           env:
             - name: DONGTAI_CONCURRENCYW
               value: -P gevent --concurrency=10
+          livenessProbe:
+            httpGet:
+              port: 5555
+              scheme: HTTP
+              path: /healthcheck
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              port: 5555
+              scheme: HTTP
+              path: /healthcheck
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
+          startupProbe:
+            httpGet:
+              port: 5555
+              scheme: HTTP
+              path: /healthcheck
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
           resources:
             limits:
               cpu: "500m"
@@ -388,6 +570,36 @@ spec:
           env:
             - name: DONGTAI_CONCURRENCY
               value: -P gevent --concurrency=128
+          livenessProbe:
+            httpGet:
+              port: 5555
+              scheme: HTTP
+              path: /healthcheck
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              port: 5555
+              scheme: HTTP
+              path: /healthcheck
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
+          startupProbe:
+            httpGet:
+              port: 5555
+              scheme: HTTP
+              path: /healthcheck
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
           resources:
             limits:
               cpu: "500m"
