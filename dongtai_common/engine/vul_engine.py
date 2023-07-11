@@ -178,10 +178,10 @@ class VulEngine(object):
                 for path_key in total_path:
                     sub_method = invokeid_dict[path_key]
                     if sub_method.get('source'):
+                        self.vul_source_signature = f"{sub_method.get('className')}.{sub_method.get('methodName')}"
                         final_stack.append(
                             self.copy_method(sub_method, source=True))
                     if sub_method['invokeId'] == t:
-                        self.vul_source_signature = f"{sub_method.get('className')}.{sub_method.get('methodName')}"
                         self.taint_value = sub_method['targetValues']
                         final_stack.append(
                             self.copy_method(sub_method, sink=True))
@@ -189,7 +189,6 @@ class VulEngine(object):
                         final_stack.append(
                             self.copy_method(sub_method, propagator=True))
                 self.vul_stack = [final_stack]
-        current_link = list()
         if self.vul_source_signature and 'sourceType' in self.vul_stack[-1][
                 -1].keys():
             final_stack = self.vul_stack[-1][-1]
@@ -266,10 +265,12 @@ class VulEngine(object):
                 self.vul_stack = []
                 self.pool_value = ""
                 return
-            current_link = current_link[0:1]
-            extract_stack = self.find_other_branch_v2(
-                index, size, current_link, set(final_stack.get('sourceHash')))
-            self.vul_stack[0] = extract_stack[::-1]
+            #Disable temporary , will refactor it in next version.
+            #
+            #current_link = current_link[0:1]
+            #extract_stack = self.find_other_branch_v2(
+            #    index, size, current_link, set(final_stack.get('sourceHash')))
+            #self.vul_stack[0] = extract_stack[::-1]
         else:
             pass
         self.vul_filter()
