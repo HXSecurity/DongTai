@@ -82,6 +82,10 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'deploy.commands',
     'test.debug',
+    'health_check',                             # required
+    'health_check.db',                          # stock Django health checkers
+    'health_check.contrib.redis',
+    'django_prometheus',
 ]
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
@@ -156,6 +160,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+PROMETHEUS_LATENCY_BUCKETS = (0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1.0, 2.5, 5.0, 7.5, 10.0, 25.0, 50.0, 75.0, float("inf"),)
+if os.getenv('METRICS', None) == 'true':
+    MIDDLEWARE.extend(['django_prometheus.middleware.PrometheusBeforeMiddleware',
+                       'django_prometheus.middleware.PrometheusAfterMiddleware'
+                       ])
 try:
     from dongtai_conf.settings_extend import MIDDLEWARE as MIDDLEWARE_EXTEND
 
