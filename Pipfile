@@ -85,6 +85,7 @@ dataclasses-json = "*"
 django-silk = "*"
 types-python-dateutil = "*"
 shortuuid = "*"
+networkit = "*"
 
 [dev-packages]
 
