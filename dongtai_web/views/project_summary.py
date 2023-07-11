@@ -70,6 +70,8 @@ class _ProjectSummaryDataSerializer(serializers.Serializer):
         many=True,
         help_text=_(
             "Statistics on the number of danger levels of vulnerabilities"))
+    agent_alive = serializers.IntegerField(help_text="Agent存活数量")
+    project_version_latest_time = serializers.IntegerField(help_text="项目版本更新时间")
 
 
 _ProjectSummaryResponseSerializer = get_response_serializer(
