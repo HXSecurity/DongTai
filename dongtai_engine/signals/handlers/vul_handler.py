@@ -21,7 +21,10 @@ from dongtai_engine.signals.handlers.parse_param_name import parse_target_values
 from typing import List, Optional, Callable
 from collections import defaultdict
 from dongtai_common.models.profile import IastProfile
-from dongtai_engine.plugins.project_time_update import project_time_stamp_update
+from dongtai_engine.plugins.project_time_update import (
+    project_time_stamp_update,
+    project_version_time_stamp_update,
+)
 
 
 def equals(source, target):
