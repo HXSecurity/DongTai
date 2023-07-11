@@ -146,6 +146,8 @@ class VulEngine(object):
         vul_methods = list(
             map(lambda x: x['invokeId'],
                 filter(self.hit_vul_method, self.method_pool)))
+        # Ignore `org.springframework.web.util.pattern.PathPattern.getPatternString()` as a non-source method.
+        # It is only to indicate that the API pattern.
         source_methods = list(
             map(
                 lambda x: x['invokeId'],
@@ -153,23 +155,18 @@ class VulEngine(object):
                     lambda x: x.get('source', False) and x.get('signature') !=
                     'org.springframework.web.util.pattern.PathPattern.getPatternString()',
                     self.method_pool)))
-        # build a graph
+        # Build a graph
         g = nk.Graph(weighted=True, directed=True)
         for pool in self.method_pool:
-            hashs = list(pool['sourceHash'])
-            vecs = list(
-                product(
-                    [pool['invokeId']],
-                    reduce(lambda x, y: x | y,
-                           [source_hash_dict[i] for i in pool['targetHash']],
-                           set()),
-                ))
+            vecs = [[pool['invokeId'], t] for t in reduce(
+                lambda x, y: x | y,
+                [source_hash_dict[i] for i in pool['targetHash']], set())]
             for source, target in vecs:
                 g.addEdge(source,
                           target,
                           abs(source - target)**1.1,
                           addMissing=True)
-        # checkout each pair source/target have a path or not
+        # Checkout each pair source/target have a path or not
         # It may lost sth when muliti paths exists.
         for s, t in product(source_methods, vul_methods):
             dij_obj = nk.distance.BidirectionalDijkstra(g, s, t).run()
