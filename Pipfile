@@ -86,6 +86,7 @@ django-silk = "*"
 types-python-dateutil = "*"
 shortuuid = "*"
 networkit = "*"
+flower = ">=2.0.0"
 
 [dev-packages]
 
