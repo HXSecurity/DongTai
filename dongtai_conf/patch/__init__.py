@@ -20,7 +20,7 @@ class PatchConfig:
 
 
 is_init_patch = False
-PATCH_HANDLER: dict[CodeType, tuple[Callable, PatchConfig]] = {}
+PATCH_HANDLER: dict[CodeType, dict[int, tuple[Callable, PatchConfig]]] = {}
 
 
 def init_patch() -> None:
@@ -39,16 +39,16 @@ Ts = TypeVarTuple("Ts")
 
 
 @overload
-def patch_point(*args: Unpack[tuple[T]]) -> T:
+def patch_point(*args: Unpack[tuple[T]], patch_id: int = 0) -> T:
     ...
 
 
 @overload
-def patch_point(*args: Unpack[Ts]) -> tuple[Unpack[Ts]]:
+def patch_point(*args: Unpack[Ts], patch_id: int = 0) -> tuple[Unpack[Ts]]:
     ...
 
 
-def patch_point(*args: Any) -> Any:
+def patch_point(*args: Any, patch_id: int = 0) -> Any:
     init_patch()
     current_frame = inspect.currentframe()
     if current_frame is None:
@@ -60,7 +60,7 @@ def patch_point(*args: Any) -> Any:
         return _return_args(*args)
     caller_code = caller_frame.f_code
     if caller_code in PATCH_HANDLER:
-        func, patch_config = PATCH_HANDLER[caller_code]
+        func, patch_config = PATCH_HANDLER[caller_code][patch_id]
         func_args, _, _, _, kwonlyargs, _, annotations = inspect.getfullargspec(func)
         func_args += kwonlyargs
 
@@ -107,9 +107,12 @@ def _return_args(*args: Unpack[Ts]) -> tuple[Unpack[Ts]] | Any:
     return args
 
 
-def patch(patch_func: Callable, type_check: bool = False):
+def patch(patch_func: Callable, type_check: bool = False, patch_id: int = 0):
     def wrapper(func: Callable):
-        PATCH_HANDLER[patch_func.__code__] = (func, PatchConfig(type_check=type_check))
+        PATCH_HANDLER[patch_func.__code__][patch_id] = (
+            func,
+            PatchConfig(type_check=type_check),
+        )
         return func
 
     return wrapper
