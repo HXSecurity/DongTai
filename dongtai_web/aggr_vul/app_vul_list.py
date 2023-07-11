@@ -3,34 +3,29 @@ from rest_framework.serializers import ValidationError
 from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_web.aggregation.aggregation_common import turnIntListOfStr, auth_user_list_str
+from dongtai_web.aggregation.aggregation_common import turnIntListOfStr
 from dongtai_web.serializers.vul import VulSerializer
 from django.utils.translation import gettext_lazy as _
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
+from dongtai_web.utils import extend_schema_with_envcheck
 from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
 import pymysql
 from dongtai_web.serializers.aggregation import AggregationArgsSerializer
-from dongtai_common.models import AGGREGATION_ORDER, LANGUAGE_ID_DICT, APP_LEVEL_RISK, APP_VUL_ORDER
+from dongtai_common.models import APP_LEVEL_RISK, APP_VUL_ORDER
 from django.db.models import F
 from dongtai_common.utils.db import SearchLanguageMode
 from dongtai_common.models.vulnerablity import IastVulnerabilityDocument
-from elasticsearch_dsl import Q, Search
+from elasticsearch_dsl import Q
 from elasticsearch import Elasticsearch
-from elasticsearch_dsl import A
-from dongtai_common.models.strategy import IastStrategyModel
-from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
-from dongtai_common.models.program_language import IastProgramLanguage
-from dongtai_common.models.project import IastProject
-from dongtai_common.models.vul_level import IastVulLevel
 from django.core.cache import cache
 from dongtai_conf import settings
 from dongtai_common.common.utils import make_hash
 from dongtai_conf.settings import ELASTICSEARCH_STATE
 from dongtai_engine.elatic_search.data_correction import data_correction_interpetor
 from dongtai_common.models.dast_integration import IastDastIntegrationRelation
-from django.db.models import (Count, Sum)
+from django.db.models import (Count)
 from itertools import groupby
 from collections import defaultdict
+from dongtai_conf.patch import patch_point
 
 INT_LIMIT: int = 2**64 - 1
 
@@ -85,12 +80,7 @@ class GetAppVulsList(UserEndPoint):
                             "project_version_id"))
                     es_query['project_version_id'] = ser.validated_data.get(
                         "project_version_id")
-                # 按项目筛选
-                if ser.validated_data.get("project_id_str", ""):
-                    project_id_list = turnIntListOfStr(
-                        ser.validated_data.get("project_id_str", ""))
-                    queryset = queryset.filter(project_id__in=project_id_list)
-                    es_query['project_ids'] = project_id_list
+                ser, queryset, es_query = patch_point(ser, queryset, es_query)
                 if ser.validated_data.get("uri", ""):
                     queryset = queryset.filter(
                         uri=ser.validated_data.get("uri", ""))
@@ -112,15 +102,7 @@ class GetAppVulsList(UserEndPoint):
                         ser.validated_data.get("status_id_str", ""))
                     queryset = queryset.filter(status_id__in=status_id_list)
                     es_query['status_ids'] = status_id_list
-                # 按语言筛选
-                if ser.validated_data.get("language_str", ""):
-                    language_id_list = turnIntListOfStr(
-                        ser.validated_data.get("language_str", ""))
-                    language_arr = []
-                    for lang in language_id_list:
-                        language_arr.append(LANGUAGE_ID_DICT.get(str(lang)))
-                    queryset = queryset.filter(language__in=language_arr)
-                    es_query['language_ids'] = language_arr
+
                 order_list = []
                 fields = [
                     "id", "uri", "http_method", "top_stack", "bottom_stack",
