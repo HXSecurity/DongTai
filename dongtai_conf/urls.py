@@ -24,6 +24,9 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path('', include('{}.urls'.format(app))) for app in settings.CUSTOM_APPS
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns.extend([path('healthcheck', include('health_check.urls'))])
+if os.getenv('METRICS', None) == 'true':
+    urlpatterns.extend([path('', include('django_prometheus.urls'))])
 
 if os.getenv('environment', 'PROD') in ('TEST', 'DOC') or os.getenv('DOC', None) == 'TRUE':
     from drf_spectacular.views import SpectacularJSONAPIView, SpectacularRedocView, SpectacularSwaggerView
@@ -38,6 +41,7 @@ if os.getenv('environment', 'PROD') in ('TEST', 'DOC') or os.getenv('DOC', None)
              SpectacularRedocView.as_view(url_name='schema'),
              name='redoc'),
     ])
+
 
 if os.getenv('DJANGOSILK', None) == 'TRUE':
     silk_path = os.getenv(

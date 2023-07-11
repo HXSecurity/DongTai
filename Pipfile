@@ -86,7 +86,9 @@ django-silk = "*"
 types-python-dateutil = "*"
 shortuuid = "*"
 networkit = "*"
-flower = ">=2.0.0"
+flower = "~=2.0.0"
+django-health-check = "==3.17.0"
+django-prometheus = "==2.3.1"
 
 [dev-packages]
 
