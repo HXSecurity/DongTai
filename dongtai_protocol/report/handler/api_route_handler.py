@@ -17,7 +17,10 @@ import logging
 from django.utils.translation import gettext_lazy as _
 from django.db import transaction
 from dongtai_common.models.project import IastProject
-from dongtai_engine.plugins.project_time_update import project_time_stamp_update
+from dongtai_engine.plugins.project_time_update import (
+    project_time_stamp_update,
+    project_version_time_stamp_update,
+)
 from celery import shared_task
 
 logger = logging.getLogger('dongtai.openapi')
@@ -81,6 +84,8 @@ def api_route_gather(agent_id, api_routes):
             logger.info(_('API navigation log record successfully'))
         project_time_stamp_update.apply_async((agent.bind_project_id, ),
                                               countdown=5)
+        project_version_time_stamp_update.apply_async(
+            (agent.project_version_id, ), countdown=5)
     except Exception as e:
         logger.info(_('API navigation log failed, why: {}').format(e),
                     exc_info=e)
