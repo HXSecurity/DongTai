@@ -18,8 +18,8 @@ from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.common.agent_command_check import (
-    valitate_taint_command,
-    valitate_tag,
+    tag_validator,
+    taint_command_validator,
 )
 logger = logging.getLogger('dongtai-webapi')
 
@@ -62,18 +62,18 @@ class _HookRuleAddBodyargsSerializer(serializers.Serializer):
         default=False,
     )
     tags = serializers.ListField(
-        child=serializers.CharField(validators=[valitate_tag]),
+        child=serializers.CharField(validators=[tag_validator]),
         required=False,
         default=list,
     )
     untags = serializers.ListField(
-        child=serializers.CharField(validators=[valitate_tag]),
+        child=serializers.CharField(validators=[tag_validator]),
         required=False,
         default=list,
     )
     command = serializers.CharField(
         max_length=255,
-        validators=[valitate_taint_command],
+        validators=[taint_command_validator],
         required=False,
         default="",
         allow_blank=True,
