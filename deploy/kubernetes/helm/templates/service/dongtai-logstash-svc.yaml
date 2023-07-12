@@ -8,13 +8,13 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - name: agent-http
-      port: 8082
-      targetPort: 8082
-      protocol: TCP
-    - name: log-http
-      port: 8083
-      targetPort: 8083
-      protocol: TCP
+  - name: http-agent
+    port: 8082
+    protocol: TCP
+    targetPort: 8082
+  - name: tcp-log
+    port: 8083
+    protocol: TCP
+    targetPort: 8083
   selector:
     app: {{ template "dongtai.fullname" . }}-logstash

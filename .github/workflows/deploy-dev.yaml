@@ -11,9 +11,6 @@ on:
       agent_version:
         required: true
         type: string
-      # server_version:
-      #   required: true
-      #   type: string
 
 jobs:
   Deploy-to-dev:
@@ -26,12 +23,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      # - name: Checkout
-      #   if: ${{ inputs.server_version }}
-      #   uses: actions/checkout@v3
-      #   with:
-      #     ref: ${{ inputs.server_version }}
 
       - name: Get the release version
         id: version
@@ -86,8 +77,8 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: | 
-            registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:latest-${{ steps.version.outputs.GITHUB_REF }}
-            registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:1.0.${{github.run_number}}-${{ steps.version.outputs.GITHUB_REF }}
+            registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server:${{ steps.version.outputs.GITHUB_REF }}-latest
+            registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server:${{ steps.version.outputs.GITHUB_REF }}-1.0.${{github.run_number}}
 
       - uses: actions/checkout@master
       - name: deploy to cluster
@@ -96,8 +87,12 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_TEST_DATA }}
         with:
           args: |
-            if [ ${{ steps.version.outputs.GITHUB_REF }} = beta ] ; then find .github/deploy/deploy-dongtai-server-test.yml -type f -exec sed -i 's/iast-test/iast-beta/g' {} \; 
-            elif [ ${{ steps.version.outputs.GITHUB_REF }} = develop ] ; then echo testing !!!
-            else find .github/deploy/deploy-dongtai-server-test.yml -type f -exec sed -i 's/iast-test/iast-main/g' {} \; ;fi
-            find .github/deploy/deploy-dongtai-server-test.yml -type f -exec sed -i 's/VERSION/1.0.${{github.run_number}}-${{ steps.version.outputs.GITHUB_REF }}/g' {} \;
-            ls .github/deploy/deploy-dongtai-server-test.yml | xargs -I {} kubectl apply -f {}
+            git clone https://github.com/HXSecurity/DongTai.git
+            
+            if [ ${{ steps.version.outputs.GITHUB_REF }} = develop ];
+            then helm upgrade --install huoxian --create-namespace -n iast-test ./deploy/kubernetes/helm/ --set mysql.host=iast-mysql-test.huoxian.cn \
+            --set tag=${{ steps.version.outputs.GITHUB_REF }}-latest --set build.server_number=${{github.run_number}} --values https://charts.dongtai.io/devops.yaml
+            else
+            helm upgrade --install huoxian --create-namespace -n iast-${{ steps.version.outputs.GITHUB_REF }} ./deploy/kubernetes/helm/ --set mysql.host=iast-mysql-test.huoxian.cn \
+            --set tag=${{ steps.version.outputs.GITHUB_REF }}-latest --set build.server_number=${{github.run_number}} --values https://charts.dongtai.io/devops.yaml
+            fi

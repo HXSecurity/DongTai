@@ -11,7 +11,8 @@ spec:
   selector:
     app: {{ template "dongtai.fullname" . }}-mysql
   ports:
-      - protocol: TCP
-        port: 3306
-        targetPort: 3306
+  - name: tcp-mysql
+    port: 3306
+    protocol: TCP
+    targetPort: 3306
 {{- end -}}
