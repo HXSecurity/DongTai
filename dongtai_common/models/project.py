@@ -78,7 +78,7 @@ class IastProject(models.Model):
     template = models.ForeignKey(IastProjectTemplate, models.DO_NOTHING)
     enable_log = models.BooleanField(null=True)
     log_level = models.CharField(max_length=511, null=True, blank=True)
-    last_has_online_agent_time = models.IntegerField(default=-1)
+    last_has_online_agent_time = models.IntegerField(default=lambda: int(time.time()))
     status = models.IntegerField(default=0, choices=ProjectStatus.choices)
 
     class Meta:

@@ -39,15 +39,10 @@ def update_project_status() -> None:
         old_status = project.status
 
         if online_agent_count == 0:
-            if project.last_has_online_agent_time == -1:
-                project.last_has_online_agent_time = int(time())
-                project.save(update_fields=("last_has_online_agent_time"))
-                continue
-
             dt = int(time()) - project.last_has_online_agent_time
             project_warning_time = get_project_warning_time()
-            error_time = project_warning_time["error_time"]
-            offline_time = project_warning_time["offline_time"]
+            error_time = project_warning_time["error_time"] * 60 * 60 * 24
+            offline_time = project_warning_time["offline_time"] * 60 * 60 * 24
 
             if dt < error_time:
                 project.status = ProjectStatus.NORMAL
