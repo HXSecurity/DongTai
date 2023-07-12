@@ -1,0 +1,17 @@
+{{- if not .Values.skipMysql -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dongtai-mysql
+  namespace: {{.Release.Namespace}}
+  labels:
+    app: {{ template "dongtai.fullname" . }}-mysql
+spec:
+  selector:
+    app: {{ template "dongtai.fullname" . }}-mysql
+  ports:
+      - protocol: TCP
+        port: 3306
+        targetPort: 3306
+{{- end -}}

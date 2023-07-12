@@ -1,0 +1,43 @@
+---
+# dongtai-worker-high-freq服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "dongtai.fullname" . }}-worker-high-freq
+  namespace: {{.Release.Namespace}}
+  annotations:
+    kubesphere.io/description: {{ template "dongtai.fullname" . }}-worker-high-freq
+  labels:
+    app: {{ template "dongtai.fullname" . }}-worker-high-freq
+    {{- include "dongtai.labels" .  | nindent 4 }}
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{ template "dongtai.fullname" . }}-worker-high-freq
+      {{- include "dongtai.labels" .  | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        server_number: {{.Values.build.server_number}}
+      labels:
+        app: {{ template "dongtai.fullname" . }}-worker-high-freq
+        {{- include "dongtai.labels" .  | nindent 8 }}
+    spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+      containers:
+        - name: {{ template "dongtai.fullname" . }}-worker-high-freq-container
+          image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
+          command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
+          args: [ "worker-high-freq" ]
+          env:
+            - name: DONGTAI_CONCURRENCY
+              value: {{.Values.build.env_high}}
+          {{- include "deploy.config" . | nindent 10 }}
+          {{- if .Values.healthcheck }}
+          {{- include "deploy.Probe" . | nindent 10 }}
+          {{- end }}
+      {{- include "deploy.config.vo" . | nindent 6 }}

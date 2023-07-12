@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dongtai-server-svc
+  namespace: {{.Release.Namespace}}
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    app: {{ template "dongtai.fullname" . }}-server
+  type: ClusterIP
