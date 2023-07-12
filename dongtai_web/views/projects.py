@@ -87,6 +87,7 @@ class Projects(UserEndPoint):
             queryset = queryset.filter(name__icontains=name)
         if status is not None:
             queryset = queryset.filter(status=status)
+        queryset = queryset.select_related("user")
         page_summary, page_data = self.get_paginator(queryset, page, page_size)
         vul_levels_dict = get_vul_levels_dict(
             page_data, exclude_vul_status=exclude_vul_status
