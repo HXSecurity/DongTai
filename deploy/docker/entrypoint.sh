@@ -20,6 +20,8 @@ elif [ "$1" = "worker-other" ]; then
 	celery -A dongtai_conf worker -l info -X dongtai-periodic-task,dongtai-method-pool-scan,dongtai-replay-vul-scan,dongtai-sca-task $DONGTAI_CONCURRENCY -E --pidfile=
 elif [ "$1" = "beat" ]; then
 	celery -A dongtai_conf beat -l info $DONGTAI_CONCURRENCY  --pidfile= --scheduler django_celery_beat.schedulers:DatabaseScheduler
+elif [ "$1" = "healthcheck" ]; then
+  celery -A dongtai_conf inspect ping -d celery@$(hostname)
 else
 	echo "Get the latest vulnerability rules." && python manage.py load_hook_strategy
 	if [ $? -ne 0 ]; then echo "ERROR: Lost connection to MySQL server !!!" && exit 1 ; else echo "succeed" ;fi

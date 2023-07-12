@@ -375,7 +375,30 @@ spec:
           env:
             - name: DONGTAI_CONCURRENCYW
               value: -P gevent --concurrency=10
-
+          livenessProbe:
+            exec:
+              command: ["/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh","healthcheck"]
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
+          readinessProbe:
+            exec:
+              command: ["/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh","healthcheck"]
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
+          startupProbe:
+            exec:
+              command: ["/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh","healthcheck"]
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 3
           resources:
             limits:
               cpu: "500m"
