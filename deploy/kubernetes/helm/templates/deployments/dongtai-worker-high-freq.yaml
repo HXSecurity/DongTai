@@ -18,6 +18,8 @@ spec:
       {{- include "dongtai.labels" .  | nindent 6 }}
   template:
     metadata:
+      annotations:
+        server_number: {{.Values.build.server_number}}
       labels:
         app: {{ template "dongtai.fullname" . }}-worker-high-freq
         {{- include "dongtai.labels" .  | nindent 8 }}
@@ -33,6 +35,9 @@ spec:
           args: [ "worker-high-freq" ]
           env:
             - name: DONGTAI_CONCURRENCY
-              value: -P gevent --concurrency=121
+              value: {{.Values.build.env_high}}
           {{- include "deploy.config" . | nindent 10 }}
+          {{- if .Values.healthcheck }}
+          {{- include "deploy.Probe" . | nindent 10 }}
+          {{- end }}
       {{- include "deploy.config.vo" . | nindent 6 }}

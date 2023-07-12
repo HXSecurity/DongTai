@@ -14,7 +14,11 @@ spec:
   template:
     metadata:
       annotations:
-        build_number: "{{ template "dongtai.fullname" . }}"
+        {{- if .Values.develop.dev }}
+        sidecar.istio.io/inject: "true"
+        sidecar.istio.io/interceptionMode: TPROXY
+        {{- end }}
+        redis_number: {{.Values.build.redis_number}}
         {{- if not .Values.skipistio }}{{ include "dongtai.istiolabels" . | nindent 8 }}{{ end }}
       labels:
         app: {{ template "dongtai.fullname" . }}-redis
@@ -33,4 +37,13 @@ spec:
         - containerPort: 6379
           name: redis
           protocol: TCP
+        {{- if .Values.develop.dev }}
+        resources:
+          limits:
+            cpu: {{.Values.develop.redisCpu}}
+            memory: {{.Values.develop.redisMemory}}
+          requests:
+            cpu: {{.Values.develop.redisCpu}}
+            memory: {{.Values.develop.redisMemory}}
+        {{- end }}
 {{- end -}}

@@ -19,6 +19,8 @@ spec:
       {{- include "dongtai.labels" .  | nindent 6 }}
   template:
     metadata:
+      annotations:
+        server_number: {{.Values.build.server_number}}
       labels:
         app: {{ template "dongtai.fullname" . }}-worker-report-only
         {{- include "dongtai.labels" .  | nindent 8 }}
@@ -32,6 +34,9 @@ spec:
           image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
           command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
           args: [ "worker-report-only" ]
-          {{- include "deploy.configmax" . | nindent 10 }}
+          {{- include "deploy.config" . | nindent 10 }}
+          {{- if .Values.healthcheck }}
+          {{- include "deploy.Probe" . | nindent 10 }}
+          {{- end }}
       {{- include "deploy.config.vo" . | nindent 6 }}
 {{- end }}

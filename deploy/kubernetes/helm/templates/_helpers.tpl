@@ -143,6 +143,41 @@ initContainers:
       privileged: true
 {{- end -}}
 
+{{- define "deploy.Probe" -}}
+readinessProbe:
+  exec:
+    command:
+    - bash
+    - -c
+    - celery -A dongtai_conf inspect ping -d celery@$(hostname)
+  failureThreshold: 3
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  successThreshold: 1
+  timeoutSeconds: 3
+livenessProbe:
+  exec:
+    command:
+    - bash
+    - -c
+    - celery -A dongtai_conf inspect ping -d celery@$(hostname)
+  failureThreshold: 3
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  successThreshold: 1
+  timeoutSeconds: 3
+startupProbe:
+  exec:
+    command:
+    - bash
+    - -c
+    - celery -A dongtai_conf inspect ping -d celery@$(hostname)
+  failureThreshold: 3
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  successThreshold: 1
+  timeoutSeconds: 3
+{{- end -}}
 
 {{- define "deploy.resources" -}}
 resources:
@@ -153,6 +188,7 @@ resources:
     cpu: {{.Values.cpu}}
     memory: {{.Values.memory}}
 {{- end -}}
+
 {{- define "deploy.config.vo" -}}
 volumes:
   - name: {{ template "dongtai.fullname" . }}-configfile

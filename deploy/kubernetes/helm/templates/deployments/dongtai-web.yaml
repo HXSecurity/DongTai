@@ -19,7 +19,11 @@ spec:
   template:
     metadata:
       annotations:
-        build_number: "{{ template "dongtai.fullname" . }}"
+        {{- if .Values.develop.dev }}
+        sidecar.istio.io/inject: "true"
+        sidecar.istio.io/interceptionMode: TPROXY
+        {{- end }}
+        web_number: {{.Values.build.web_number}}
         {{- if not .Values.skipistio }}{{ include "dongtai.istiolabels" . | nindent 8 }}{{ end }}
       labels:
         app: {{ template "dongtai.fullname" . }}-web

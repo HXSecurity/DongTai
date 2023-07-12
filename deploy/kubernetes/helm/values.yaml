@@ -15,15 +15,14 @@ accessType: ClusterIP  # NodePort, LoadBalancer, ClusterIP
 NodePort: 30080
 logging_level: INFO # DEBUG, INFO
 somaxconn: null #If system max net.core.somaxconn (128) . Example: somaxconn: 4096
+healthcheck: false
 
 nodeSelector:
   kubernetes.io/os: linux
   kubernetes.io/arch: amd64
 podLabels: {}
   # example: "test"
-env: {}
-  # example: iast-foo
-  
+
 skipMysql: false
 mysql:
   host: dongtai-mysql
@@ -44,7 +43,7 @@ sca:
   sca_token:
 
 usb:
-  usb_token: 837e62834b8423418c2a2axxxxxxxxxxxxxxx
+  usb_token:
 
 storage:
   storageClassName: null
@@ -61,3 +60,21 @@ smtp:
   from_addr: from_addr
   ssl: False
   cc_addr: cc_addr
+
+build:
+  agent_number: agent_number_version
+  web_number: agent_number_version
+  server_number: agent_number_version
+  logstash_number: agent_number_version
+  mysql_number: agent_number_version
+  redis_number: agent_number_version
+  env_server: --processes 4
+  env_beta: --concurrency=2
+  env_chain: --concurrency=12
+  env_es: -P gevent --concurrency=64
+  env_high: -P gevent --concurrency=121
+  env_other: --concurrency=10
+  env_sca: -P gevent --concurrency=10
+
+develop:
+  dev:
