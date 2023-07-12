@@ -94,5 +94,5 @@ jobs:
             --set tag=${{ steps.version.outputs.GITHUB_REF }}-latest --set build.server_number=${{github.run_number}} --values https://charts.dongtai.io/devops.yaml
             else
             helm upgrade --install huoxian --create-namespace -n iast-${{ steps.version.outputs.GITHUB_REF }} ./deploy/kubernetes/helm/ --set mysql.host=iast-mysql-test.huoxian.cn \
-            --set tag=${{ steps.version.outputs.GITHUB_REF }}-latest --set build.server_number=${{github.run_number}} --values https://charts.dongtai.io/devops.yaml
+            --set tag=${{ steps.version.outputs.GITHUB_REF }}-latest --set build.server_number=iast${{github.run_number}} --values https://charts.dongtai.io/devops.yaml
             fi
