@@ -1,0 +1,17 @@
+{{- if not .Values.skipRedis -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "dongtai.fullname" . }}-redis
+  name: dongtai-redis
+  namespace: {{.Release.Namespace}}
+spec:
+  ports:
+    - port: 6379
+      protocol: TCP
+      targetPort: 6379
+  selector:
+    app: {{ template "dongtai.fullname" . }}-redis
+{{- end -}}

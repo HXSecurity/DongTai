@@ -1,0 +1,43 @@
+---
+# dongtai-worker-sca服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "dongtai.fullname" . }}-worker-sca
+  namespace: {{.Release.Namespace}}
+  annotations:
+    kubesphere.io/description: {{ template "dongtai.fullname" . }}-worker-sca
+  labels:
+    app: {{ template "dongtai.fullname" . }}-worker-sca
+    {{- include "dongtai.labels" .  | nindent 4 }}
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{ template "dongtai.fullname" . }}-worker-sca
+      {{- include "dongtai.labels" .  | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        server_number: {{.Values.build.server_number}}
+      labels:
+        app: {{ template "dongtai.fullname" . }}-worker-sca
+        {{- include "dongtai.labels" .  | nindent 8 }}
+    spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+      containers:
+        - name: {{ template "dongtai.fullname" . }}-worker-sca-container
+          image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
+          command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
+          args: [ "worker-sca" ]
+          env:
+            - name: DONGTAI_CONCURRENCY
+              value: {{.Values.build.env_server}}
+          {{- include "deploy.config" . | nindent 10 }}
+          {{- if .Values.healthcheck }}
+          {{- include "deploy.Probe" . | nindent 10 }}
+          {{- end }}
+      {{- include "deploy.config.vo" . | nindent 6 }}

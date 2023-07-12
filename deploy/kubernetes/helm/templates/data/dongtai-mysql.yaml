@@ -1,0 +1,93 @@
+{{- if not .Values.skipMysql -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "dongtai.fullname" . }}-mysql
+  namespace: {{.Release.Namespace}}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "dongtai.fullname" . }}-mysql
+      release: {{ .Release.Name }}
+      {{- include "dongtai.labels" .  | nindent 6 }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        {{- if .Values.develop.dev }}
+        sidecar.istio.io/inject: "true"
+        sidecar.istio.io/interceptionMode: TPROXY
+        {{- end }}
+        mysql_number: {{.Values.build.mysql_number}}
+        {{- if not .Values.skipistio }}{{ include "dongtai.istiolabels" . | nindent 8 }}{{ end }}
+      labels:
+        app: {{ template "dongtai.fullname" . }}-mysql
+        release: {{ .Release.Name }}
+        {{- include "dongtai.labels" .  | nindent 8 }}
+    spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+      containers:
+      - image: {{ .Values.images }}/dongtai-mysql:{{ .Values.tag }}
+        name: mysql-container
+        imagePullPolicy: Always
+        {{- if .Values.develop.dev }}
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /bin/bash
+              - -c
+              - {{.Values.develop.mysqlLifecycle}}
+        {{- end }}
+        ports:
+          - containerPort: 3306
+            name: tcp-mysql
+        {{- if .Values.healthcheck }}
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          successThreshold: 1
+          tcpSocket:
+            port: 3306
+          timeoutSeconds: 1
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          successThreshold: 1
+          tcpSocket:
+            port: 3306
+          timeoutSeconds: 1
+        startupProbe:
+          failureThreshold: 40
+          periodSeconds: 5
+          successThreshold: 1
+          tcpSocket:
+            port: 3306
+          timeoutSeconds: 1
+        {{- end }}
+        {{- if .Values.develop.dev }}
+        resources:
+          limits:
+            cpu: {{.Values.develop.mysqlCpu}}
+            memory: {{.Values.develop.mysqlMemory}}
+          requests:
+            cpu: {{.Values.develop.mysqlCpu}}
+            memory: {{.Values.develop.mysqlMemory}}
+        volumeMounts:
+        - mountPath: /tmp/poststart.sql
+          name: hookvolume
+          subPath: poststart.sql
+      volumes:
+      - configMap:
+          defaultMode: 493
+          name: poststarthook
+        name: hookvolume
+        {{- end }}
+{{- end -}}

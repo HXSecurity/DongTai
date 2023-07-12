@@ -143,6 +143,41 @@ initContainers:
       privileged: true
 {{- end -}}
 
+{{- define "deploy.Probe" -}}
+readinessProbe:
+  exec:
+    command:
+    - bash
+    - -c
+    - celery -A dongtai_conf inspect ping -d celery@$(hostname)
+  failureThreshold: 3
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  successThreshold: 1
+  timeoutSeconds: 3
+livenessProbe:
+  exec:
+    command:
+    - bash
+    - -c
+    - celery -A dongtai_conf inspect ping -d celery@$(hostname)
+  failureThreshold: 3
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  successThreshold: 1
+  timeoutSeconds: 3
+startupProbe:
+  exec:
+    command:
+    - bash
+    - -c
+    - celery -A dongtai_conf inspect ping -d celery@$(hostname)
+  failureThreshold: 3
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  successThreshold: 1
+  timeoutSeconds: 3
+{{- end -}}
 
 {{- define "deploy.resources" -}}
 resources:
@@ -153,6 +188,7 @@ resources:
     cpu: {{.Values.cpu}}
     memory: {{.Values.memory}}
 {{- end -}}
+
 {{- define "deploy.config.vo" -}}
 volumes:
   - name: {{ template "dongtai.fullname" . }}-configfile
@@ -180,18 +216,23 @@ Create the name of the service account to use
     name = {{.Values.mysql.name}}
     user = {{.Values.mysql.user}}
     password = {{.Values.mysql.password}}
+
     [redis]
     host = {{.Values.redis.host}}
     port = {{.Values.redis.port}}
     password = {{.Values.redis.password}}
     db = {{.Values.redis.db}}
+
     [engine]
-    url = {{.Values.enginUrl}}
+    url = http://dongtai-engine:8000
+
     [apiserver]
-    url = {{.Values.apiServer}}
+    url = http://dongtai-server:8000
+
     [security]
     csrf_trust_origins = {{.Values.csrfTrustOrigins}}
     secret_key = {{.Values.secretKey}}
+
     [smtp]
     server = {{.Values.smtp.server}}
     user = {{.Values.smtp.user}}
@@ -200,24 +241,29 @@ Create the name of the service account to use
     ssl = {{.Values.smtp.ssl}}
     cc_addr = {{.Values.smtp.cc_addr}}
     port = {{.Values.smtp.port}}
+
     [sca]
-    base_url = https://sca.huoxian.cn/
+    base_url = {{.Values.sca.sca_url}}
     timeout = 5
     token = {{.Values.sca.sca_token}}
+
     [task]
     retryable = true
     max_retries = 3
     async_send = true
     async_send_delay = 5
+
     [log_service]
     host = dongtai-logstash-svc
     port = 8083
+
     [common_file_path]
     tmp_path = /tmp/logstash
     report_img = report/img
     report_pdf = report/pdf
     report_word = report/word
     report_excel = report/excel
+
     [elastic_search]
     enable = false
     host = http://user:passwd@127.0.0.1:9200
@@ -226,10 +272,12 @@ Create the name of the service account to use
     asset_index = dongtai-iast-alias-dongtai-v1-asset
     method_pool_index = dongtai-iast-alias-dongtai-v1-method-pool
     asset_vul_index = dongtai-iast-alias-dongtai-v1-asset-vul
+
     [other]
     logging_level = {{.Values.logging_level}}
     cache_preheat = True
     domain_vul = {{.Values.Dongtai_url}}
+    dast_token = {{.Values.usb.usb_token}}
 {{- end -}}
 
 {{/*
