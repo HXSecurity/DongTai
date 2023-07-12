@@ -34,7 +34,4 @@ spec:
           command: [ "/bin/bash","/opt/dongtai/deploy/docker/entrypoint.sh" ]
           args: [ "beat" ]
           {{- include "deploy.config" . | nindent 10 }}
-          # {{- if .Values.healthcheck }}
-          # {{- include "deploy.Probe" . | nindent 10 }}
-          # {{- end }}
       {{- include "deploy.config.vo" . | nindent 6 }}
