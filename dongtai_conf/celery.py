@@ -61,7 +61,7 @@ configs['task_acks_late'] = True
 configs['task_always_eager'] = True if os.getenv(
     "CELERY_EAGER_TEST") == "TRUE" else False
 configs['task_acks_on_failure_or_timeout'] = True
-configs['broker_connection_retry_on_startup'] = False
+configs['broker_channel_error_retry'] = True
 configs['broker_connection_max_retries'] = 0  # it means retry forever
 configs[
     'broker_pool_limit'] = 1000  # to forbid contention can arise when using gevent.
