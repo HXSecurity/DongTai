@@ -9,9 +9,10 @@ metadata:
   namespace: {{.Release.Namespace}}
 spec:
   ports:
-    - port: 6379
-      protocol: TCP
-      targetPort: 6379
+  - name: redis-tcp
+    port: 6379
+    protocol: TCP
+    targetPort: 6379
   selector:
     app: {{ template "dongtai.fullname" . }}-redis
 {{- end -}}
