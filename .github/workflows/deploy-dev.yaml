@@ -88,11 +88,10 @@ jobs:
         with:
           args: |
             git clone https://github.com/HXSecurity/DongTai.git
-            
             if [ ${{ steps.version.outputs.GITHUB_REF }} = develop ];
-            then helm upgrade --install huoxian --create-namespace -n iast-test ./deploy/kubernetes/helm/ --set mysql.host=iast-mysql-test.huoxian.cn \
-            --set tag=${{ steps.version.outputs.GITHUB_REF }}-latest --set build.server_number=${{github.run_number}} --values https://charts.dongtai.io/devops.yaml
+            then helm upgrade --install huoxian --create-namespace -n iast-test ./DongTai/deploy/kubernetes/helm/ --set mysql.host=iast-mysql-test.huoxian.cn \
+            --set tag=${{ steps.version.outputs.GITHUB_REF }}-latest --set build.server_number=iast${{github.run_number}} --values https://charts.dongtai.io/devops.yaml
             else
-            helm upgrade --install huoxian --create-namespace -n iast-${{ steps.version.outputs.GITHUB_REF }} ./deploy/kubernetes/helm/ --set mysql.host=iast-mysql-test.huoxian.cn \
+            helm upgrade --install huoxian --create-namespace -n iast-${{ steps.version.outputs.GITHUB_REF }} ./DongTai/deploy/kubernetes/helm/ --set mysql.host=iast-mysql-test.huoxian.cn \
             --set tag=${{ steps.version.outputs.GITHUB_REF }}-latest --set build.server_number=iast${{github.run_number}} --values https://charts.dongtai.io/devops.yaml
             fi
