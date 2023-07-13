@@ -72,10 +72,10 @@ build:
   redis_number: agent_number_version
   env_server: --processes 4
   env_beta: --concurrency=2
-  env_chain: --concurrency=12
+  env_chain: -P gevent --concurrency=121
   env_es: -P gevent --concurrency=64
   env_high: -P gevent --concurrency=121
-  env_other: --concurrency=10
+  env_other: -P gevent --concurrency=10
   env_sca: -P gevent --concurrency=10
 
 develop:
