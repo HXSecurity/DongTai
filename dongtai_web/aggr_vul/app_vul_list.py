@@ -35,9 +35,8 @@ class GetAppVulsList(UserEndPoint):
 
     @extend_schema_with_envcheck(
         request=AggregationArgsSerializer,
-        tags=[_('app VulList'), OPERATE_GET],
-        summary=_('app List Select'),
-        description=_("select sca vul and app vul by keywords"),
+        tags=[_('Vulnerability'), OPERATE_GET],
+        summary="应用漏洞列表",
     )
     def post(self, request):
         """

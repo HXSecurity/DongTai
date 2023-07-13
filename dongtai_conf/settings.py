@@ -529,6 +529,8 @@ The Token method is recommended here, and users can find it in the Agent install
       ),
     'COMPONENT_SPLIT_REQUEST':
     True,
+    'DISABLE_ERRORS_AND_WARNINGS':
+    True,
 }
 REST_FRAMEWORK['DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'
 
