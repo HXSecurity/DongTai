@@ -10190,39 +10190,6 @@
                 "command": "",
                 "ignore_blacklist": false,
                 "ignore_internal": false,
-                "inherit": "true",
-                "source": "",
-                "stack_blacklist": [],
-                "tags": [],
-                "target": "",
-                "track": "",
-                "untags": [],
-                "value": "javax.xml.parsers.DocumentBuilderFactory.setFeature(java.lang.String, boolean)"
-            },
-            {
-                "command": "",
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "true",
-                "source": "",
-                "stack_blacklist": [],
-                "tags": [],
-                "target": "",
-                "track": "",
-                "untags": [],
-                "value": "javax.xml.parsers.SAXParserFactory.setFeature(java.lang.String, boolean)"
-            }
-        ],
-        "enable": 1,
-        "type": 3,
-        "value": "xxe-filter"
-    },
-    {
-        "details": [
-            {
-                "command": "",
-                "ignore_blacklist": false,
-                "ignore_internal": false,
                 "inherit": "all",
                 "source": "P1",
                 "stack_blacklist": [],
