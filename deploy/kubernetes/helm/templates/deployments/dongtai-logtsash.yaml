@@ -20,7 +20,7 @@ spec:
         sidecar.istio.io/inject: "true"
         sidecar.istio.io/interceptionMode: TPROXY
         {{- end }}
-        build_number: "{{ template "dongtai.fullname" . }}"
+        logstash_number: {{.Values.build.logstash_number}}
         {{- if not .Values.skipistio }}{{ include "dongtai.istiolabels" . | nindent 8}}{{ end }}
       labels:
         app: {{ template "dongtai.fullname" . }}-logstash
