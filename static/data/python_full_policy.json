@@ -358,7 +358,7 @@
                 "value": "Cryptodome.Cipher._mode_openpgp.OpenPgpMode.encrypt"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "crypto-bad-ciphers"
     },
@@ -1854,7 +1854,7 @@
                 "value": "flask.app.Flask.make_response"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "reflected-xss"
     },
