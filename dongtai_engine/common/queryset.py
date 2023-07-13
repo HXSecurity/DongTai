@@ -28,7 +28,7 @@ def load_sink_strategy(user=None, language=None, scan_id=0) -> List[Dict]:
     language_id = 0
     if language and language in LANGUAGE_MAP:
         language_id = LANGUAGE_MAP[language]
-    q = ~Q(state='delete')
+    q = Q(state='enable')
     scan_template = IastStrategyUser.objects.filter(pk=scan_id).first()
     if scan_template:
         strategy_id = [int(i) for i in scan_template.content.split(',')]
