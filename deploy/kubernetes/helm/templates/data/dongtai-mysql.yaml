@@ -49,28 +49,17 @@ spec:
             name: tcp-mysql
         {{- if .Values.healthcheck }}
         livenessProbe:
-          failureThreshold: 3
-          initialDelaySeconds: 30
-          periodSeconds: 5
-          successThreshold: 1
+          {{- include "deploy.Probehealthcheck" . | nindent 10 }}
           tcpSocket:
             port: 3306
-          timeoutSeconds: 1
         readinessProbe:
-          failureThreshold: 3
-          initialDelaySeconds: 30
-          periodSeconds: 5
-          successThreshold: 1
+          {{- include "deploy.Probehealthcheck" . | nindent 10 }}
           tcpSocket:
             port: 3306
-          timeoutSeconds: 1
         startupProbe:
-          failureThreshold: 40
-          periodSeconds: 5
-          successThreshold: 1
+          {{- include "deploy.Probehealthcheck" . | nindent 10 }}
           tcpSocket:
             port: 3306
-          timeoutSeconds: 1
         {{- end }}
         {{- if .Values.develop.dev }}
         resources:

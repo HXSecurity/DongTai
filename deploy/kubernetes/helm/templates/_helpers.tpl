@@ -142,7 +142,13 @@ initContainers:
     securityContext:
       privileged: true
 {{- end -}}
-
+{{- define "deploy.Probehealthcheck" -}}
+failureThreshold: 3
+initialDelaySeconds: 30
+periodSeconds: 10
+successThreshold: 1
+timeoutSeconds: 5
+{{- end -}}
 {{- define "deploy.Probe" -}}
 readinessProbe:
   exec:
@@ -150,33 +156,21 @@ readinessProbe:
     - bash
     - -c
     - celery -A dongtai_conf inspect ping -d celery@$(hostname)
-  failureThreshold: 3
-  initialDelaySeconds: 30
-  periodSeconds: 5
-  successThreshold: 1
-  timeoutSeconds: 3
+  {{- include "deploy.Probehealthcheck" . | nindent 2 }}
 livenessProbe:
   exec:
     command:
     - bash
     - -c
     - celery -A dongtai_conf inspect ping -d celery@$(hostname)
-  failureThreshold: 3
-  initialDelaySeconds: 30
-  periodSeconds: 5
-  successThreshold: 1
-  timeoutSeconds: 3
+  {{- include "deploy.Probehealthcheck" . | nindent 2 }}
 startupProbe:
   exec:
     command:
     - bash
     - -c
     - celery -A dongtai_conf inspect ping -d celery@$(hostname)
-  failureThreshold: 3
-  initialDelaySeconds: 30
-  periodSeconds: 5
-  successThreshold: 1
-  timeoutSeconds: 3
+  {{- include "deploy.Probehealthcheck" . | nindent 2 }}
 {{- end -}}
 
 {{- define "deploy.resources" -}}

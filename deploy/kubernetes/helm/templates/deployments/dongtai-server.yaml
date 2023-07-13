@@ -44,36 +44,24 @@ spec:
           {{- include "deploy.config" . | nindent 10 }}
           {{- if .Values.healthcheck }}
           livenessProbe:
-            failureThreshold: 3
+            {{- include "deploy.Probehealthcheck" . | nindent 12 }}
             httpGet:
               path: /healthcheck
               port: 8000
               scheme: HTTP
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 3
           name: dongtai-server-container
           readinessProbe:
-            failureThreshold: 3
+            {{- include "deploy.Probehealthcheck" . | nindent 12 }}
             httpGet:
               path: /healthcheck
               port: 8000
               scheme: HTTP
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 3
           startupProbe:
-            failureThreshold: 3
+            {{- include "deploy.Probehealthcheck" . | nindent 12 }}
             httpGet:
               path: /healthcheck
               port: 8000
               scheme: HTTP
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 3
           {{- end }}
       {{- include "deploy.config.vo" . | nindent 6 }}
       {{- if .Values.somaxconn }}
