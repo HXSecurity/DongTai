@@ -13,6 +13,8 @@ from django.db.models import Count
 from django.db.models import Q
 import logging
 from dongtai_conf.patch import patch_point
+from dongtai_common.utils.const import OPERATE_GET
+
 logger = logging.getLogger('dongtai-webapi')
 
 
@@ -102,7 +104,7 @@ def get_annotate_data(
 class GetAppVulsSummary(UserEndPoint):
     @extend_schema_with_envcheck(
         request=AggregationArgsSerializer,
-        tags=[_("app Vul count")],
+        tags=[_("app Vul count"), OPERATE_GET],
         summary=_("app List count"),
         description=_("select   app vul by keywords"),
     )

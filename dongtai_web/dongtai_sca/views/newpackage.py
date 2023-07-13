@@ -15,6 +15,7 @@ from rest_framework import serializers
 from dongtai_common.models.assetv2 import AssetV2, AssetV2Global
 from rest_framework.serializers import ValidationError
 from dongtai_common.serializers.assetv2 import PackeageScaAssetDetailSerializer
+from dongtai_common.utils.const import OPERATE_GET
 
 logger = logging.getLogger(__name__)
 
@@ -74,7 +75,7 @@ _NewResponseSerializer = get_response_serializer(
 class PackageList(UserEndPoint):
 
     @extend_schema_with_envcheck_v2(request=PackageListArgsSerializer,
-                                    tags=[_('Component')],
+                                    tags=[_('Component'), OPERATE_GET],
                                     summary=_("Component List"),
                                     responses={200: _NewResponseSerializer})
     def post(self, request):

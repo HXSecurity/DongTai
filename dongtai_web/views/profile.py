@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from django.forms.models import model_to_dict
+from dongtai_common.utils.const import OPERATE_GET
 
 
 class ProfilepostArgsSer(serializers.Serializer):
@@ -65,7 +66,7 @@ class ProfileBatchGetEndpoint(UserEndPoint):
         request=ProfileBatchGetArgsSer,
         description=_("Get Profile with key batch"),
         response_schema=ProfileBatchGetResSer(many=True),
-        tags=[_('Profile')])
+        tags=[_('Profile'), OPERATE_GET])
     def post(self, request):
         keys = request.data.get('keys', None)
         profiles = IastProfile.objects.filter(key__in=keys).all()

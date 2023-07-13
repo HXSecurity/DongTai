@@ -22,6 +22,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import gettext_lazy
 from dongtai_conf.settings import ELASTICSEARCH_STATE
 import logging
+from dongtai_common.utils.const import OPERATE_GET
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -144,7 +145,7 @@ _GetResponseSerializer = get_response_serializer(MethodPoolSearchResponseSer())
 class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
     @extend_schema_with_envcheck(
         request=MethodPoolSearchProxySer,
-        tags=[_('Method Pool')],
+        tags=[_('Method Pool'), OPERATE_GET],
         summary=_('Method Pool Search'),
         description=_("Search for the method pool information according to the following conditions, the default is regular expression input, regular specifications refer to REGEX POSIX 1003.2"
                       ),
