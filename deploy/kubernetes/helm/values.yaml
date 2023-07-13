@@ -22,6 +22,8 @@ nodeSelector:
   kubernetes.io/arch: amd64
 podLabels: {}
   # example: "test"
+env: {}
+  # example: "test"
 
 skipMysql: false
 mysql:

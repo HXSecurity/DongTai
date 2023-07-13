@@ -37,7 +37,7 @@ spec:
           env:
             - name: DONGTAI_CONCURRENCY
               value: {{.Values.build.env_server}}
-            {{- range $key, $value :=  .Values.serverEnv }}
+            {{- range $key, $value :=  .Values.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}
             {{- end }}
