@@ -102,9 +102,8 @@ def get_annotate_data(
 class GetAppVulsSummary(UserEndPoint):
     @extend_schema_with_envcheck(
         request=AggregationArgsSerializer,
-        tags=[_("app Vul count")],
-        summary=_("app List count"),
-        description=_("select   app vul by keywords"),
+        tags=[_('Vulnerability'), OPERATE_GET],
+        summary="应用漏洞列表统计",
     )
     def post(self, request):
         """
