@@ -41,6 +41,6 @@ def init_schema() -> None:
                     filepath,
                 )
         except Exception as e:
-            logger.error(
+            logger.debug(
                 f"unable to get schema: view {view} of path {path}", exc_info=e
             )
