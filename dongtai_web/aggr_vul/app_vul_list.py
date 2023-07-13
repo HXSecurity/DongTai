@@ -26,6 +26,7 @@ from django.db.models import (Count)
 from itertools import groupby
 from collections import defaultdict
 from dongtai_conf.patch import patch_point
+from dongtai_common.utils.const import OPERATE_GET
 
 INT_LIMIT: int = 2**64 - 1
 
@@ -34,9 +35,8 @@ class GetAppVulsList(UserEndPoint):
 
     @extend_schema_with_envcheck(
         request=AggregationArgsSerializer,
-        tags=[_('app VulList')],
-        summary=_('app List Select'),
-        description=_("select sca vul and app vul by keywords"),
+        tags=[_('Vulnerability'), OPERATE_GET],
+        summary="应用漏洞列表",
     )
     def post(self, request):
         """
