@@ -327,7 +327,7 @@ class AgentDownload(OpenApiEndPoint):
                                                        'V1.0')
             language = request.query_params.get('language')
             department_token = request.query_params.get('department_token')
-            template_id = request.query_params.get('template_id')
+            template_id = request.query_params.get('template_id', 5)
             user_token = request.query_params.get('token', None)
             if department_token:
                 final_token = department_token
