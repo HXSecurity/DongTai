@@ -87,11 +87,11 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_TEST_DATA }}
         with:
           args: |
-            ns=main
+            echo "helm_ns=main" >> $GITHUB_ENV
             git clone https://github.com/HXSecurity/DongTai.git
-            if [ ${{ steps.version.outputs.GITHUB_REF }} = develop ] ; then ns= test
-            elif [ ${{ steps.version.outputs.GITHUB_REF }} = beta ] ; then ns= beta
+            if [ ${{ steps.version.outputs.GITHUB_REF }} = develop ] ; then echo "helm_ns=test" >> $GITHUB_ENV
+            elif [ ${{ steps.version.outputs.GITHUB_REF }} = beta ] ; then echo "helm_ns=beta" >> $GITHUB_ENV
             else echo "start main" ;fi
-            helm upgrade --install huoxian --create-namespace -n iast-${ns} ./DongTai/deploy/kubernetes/helm/ \
+            helm upgrade --install huoxian --create-namespace -n iast-${{ env.helm_ns }} ./DongTai/deploy/kubernetes/helm/ \
             --set sca.sca_token=${{ secrets.TOKEN_SCA }} --set usb.usb_token=${{ secrets.TOKEN_SCA }} --set mysql.host=iast-mysql-test.huoxian.cn \
             --set tag=${{ steps.version.outputs.GITHUB_REF }}-latest --set build.server_number=iast${{github.run_number}} --values https://charts.dongtai.io/devops.yaml
