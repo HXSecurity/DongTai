@@ -52,7 +52,7 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 10
             successThreshold: 1
-            timeoutSeconds: 3
+            timeoutSeconds: 5
           name: dongtai-server-container
           readinessProbe:
             failureThreshold: 3
@@ -63,7 +63,7 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 10
             successThreshold: 1
-            timeoutSeconds: 3
+            timeoutSeconds: 5
           startupProbe:
             failureThreshold: 3
             httpGet:
@@ -73,7 +73,7 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 10
             successThreshold: 1
-            timeoutSeconds: 3
+            timeoutSeconds: 5
           {{- end }}
       {{- include "deploy.config.vo" . | nindent 6 }}
       {{- if .Values.somaxconn }}

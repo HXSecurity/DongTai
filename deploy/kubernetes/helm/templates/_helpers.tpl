@@ -152,9 +152,9 @@ readinessProbe:
     - celery -A dongtai_conf inspect ping -d celery@$(hostname)
   failureThreshold: 3
   initialDelaySeconds: 30
-  periodSeconds: 5
+  periodSeconds: 10
   successThreshold: 1
-  timeoutSeconds: 3
+  timeoutSeconds: 5
 livenessProbe:
   exec:
     command:
@@ -163,9 +163,9 @@ livenessProbe:
     - celery -A dongtai_conf inspect ping -d celery@$(hostname)
   failureThreshold: 3
   initialDelaySeconds: 30
-  periodSeconds: 5
+  periodSeconds: 10
   successThreshold: 1
-  timeoutSeconds: 3
+  timeoutSeconds: 5
 startupProbe:
   exec:
     command:
@@ -174,9 +174,9 @@ startupProbe:
     - celery -A dongtai_conf inspect ping -d celery@$(hostname)
   failureThreshold: 3
   initialDelaySeconds: 30
-  periodSeconds: 5
+  periodSeconds: 10
   successThreshold: 1
-  timeoutSeconds: 3
+  timeoutSeconds: 5
 {{- end -}}
 
 {{- define "deploy.resources" -}}

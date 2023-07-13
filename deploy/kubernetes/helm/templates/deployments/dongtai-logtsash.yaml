@@ -61,27 +61,29 @@ spec:
           name: log-http
         {{- if .Values.healthcheck }}
         livenessProbe:
-          failureThreshold: 1
-          periodSeconds: 5
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          periodSeconds: 10
           successThreshold: 1
           tcpSocket:
             port: 9600
-          timeoutSeconds: 1
+          timeoutSeconds: 5
         readinessProbe:
           failureThreshold: 3
           initialDelaySeconds: 30
-          periodSeconds: 5
+          periodSeconds: 10
           successThreshold: 1
           tcpSocket:
             port: 9600
-          timeoutSeconds: 1
+          timeoutSeconds: 5
         startupProbe:
-          failureThreshold: 40
-          periodSeconds: 5
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          periodSeconds: 10
           successThreshold: 1
           tcpSocket:
             port: 9600
-          timeoutSeconds: 1
+          timeoutSeconds: 5
         {{- end }}
         resources:
           requests:
