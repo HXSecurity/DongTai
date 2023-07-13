@@ -14,6 +14,7 @@ from django.db.models import Q
 import logging
 from dongtai_conf.patch import patch_point
 from dongtai_common.utils.const import OPERATE_GET
+
 logger = logging.getLogger('dongtai-webapi')
 
 
