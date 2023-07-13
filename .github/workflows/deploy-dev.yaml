@@ -54,7 +54,7 @@ jobs:
           access-key-secret: ${{ secrets.CHART_OSS_ACCESS_KEY_SECRET }}
           
       - name: Download Agent dev
-        if: ${{ steps.version.outputs.GITHUB_REF }} == develop || ${{ steps.version.outputs.GITHUB_REF }} == beta || ${{ steps.version.outputs.GITHUB_REF }} == main
+#        if: ${{ steps.version.outputs.GITHUB_REF }} == develop || ${{ steps.version.outputs.GITHUB_REF }} == beta || ${{ steps.version.outputs.GITHUB_REF }} == main
         run: |
           if [ ${{ steps.version.outputs.GITHUB_REF }} = develop ] ; then ossutil cp oss://dongtai-helm-charts/agent_test/java/latest/ ./ --include "*.jar" -r
           else  ossutil cp oss://dongtai-helm-charts/agent_${{ steps.version.outputs.GITHUB_REF }}/java/latest/ ./ --include "*.jar" -r
@@ -87,13 +87,11 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_TEST_DATA }}
         with:
           args: |
+            ns=main
             git clone https://github.com/HXSecurity/DongTai.git
-            if [ ${{ steps.version.outputs.GITHUB_REF }} = develop ];
-            then helm upgrade --install huoxian --create-namespace -n iast-test ./DongTai/deploy/kubernetes/helm/ \
+            if [ ${{ steps.version.outputs.GITHUB_REF }} = develop ] ; then ns= test
+            elif [ ${{ steps.version.outputs.GITHUB_REF }} = beta ] ; then ns= beta
+            else echo "start main" ;fi
+            helm upgrade --install huoxian --create-namespace -n iast-${ns} ./DongTai/deploy/kubernetes/helm/ \
             --set sca.sca_token=${{ secrets.TOKEN_SCA }} --set usb.usb_token=${{ secrets.TOKEN_SCA }} --set mysql.host=iast-mysql-test.huoxian.cn \
             --set tag=${{ steps.version.outputs.GITHUB_REF }}-latest --set build.server_number=iast${{github.run_number}} --values https://charts.dongtai.io/devops.yaml
-            else
-            helm upgrade --install huoxian --create-namespace -n iast-${{ steps.version.outputs.GITHUB_REF }} ./DongTai/deploy/kubernetes/helm/ \
-            --set sca.sca_token=${{ secrets.TOKEN_SCA }} --set usb.usb_token=${{ secrets.TOKEN_SCA }} --set mysql.host=iast-mysql-test.huoxian.cn \
-            --set tag=${{ steps.version.outputs.GITHUB_REF }}-latest --set build.server_number=iast${{github.run_number}} --values https://charts.dongtai.io/devops.yaml
-            fi
