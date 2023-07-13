@@ -83,9 +83,9 @@ jobs:
       - name: Set the value
         id: release
         run: |
-          if [ ${{ steps.version.outputs.GITHUB_REF }} = develop ] ; then echo "helm_ns=test" >> $GITHUB_ENV
-          elif [ ${{ steps.version.outputs.GITHUB_REF }} = beta ] ; then echo "helm_ns=beta" >> $GITHUB_ENV
-          else echo "helm_ns=main" >> $GITHUB_ENV ;fi
+          if [ ${{ steps.version.outputs.GITHUB_REF }} = develop ] ; then echo "helm_ns=test" >> $GITHUB_ENV; echo "helm_mysql=test" >> $GITHUB_ENV 
+          elif [ ${{ steps.version.outputs.GITHUB_REF }} = beta ] ; then echo "helm_ns=beta" >> $GITHUB_ENV; echo "helm_mysql=beta" >> $GITHUB_ENV 
+          else echo "helm_ns=main" >> $GITHUB_ENV ; echo "helm_mysql=temp" >> $GITHUB_ENV ;fi
 
       - name: deploy to cluster
         uses: wahyd4/kubectl-helm-action@master
@@ -95,5 +95,5 @@ jobs:
           args: |
             git clone https://github.com/HXSecurity/DongTai.git
             helm upgrade --install huoxian --create-namespace -n iast-${{ env.helm_ns }} ./DongTai/deploy/kubernetes/helm/ \
-            --set sca.sca_token=${{ secrets.TOKEN_SCA }} --set usb.usb_token=${{ secrets.TOKEN_SCA }} --set mysql.host=iast-mysql-test.huoxian.cn \
+            --set sca.sca_token=${{ secrets.TOKEN_SCA }} --set usb.usb_token=${{ secrets.TOKEN_SCA }} --set mysql.host=iast-mysql-${{ env.helm_mysql }}.huoxian.cn \
             --set tag=${{ steps.version.outputs.GITHUB_REF }}-latest --set build.server_number=iast${{github.run_number}} --values https://charts.dongtai.io/devops.yaml
