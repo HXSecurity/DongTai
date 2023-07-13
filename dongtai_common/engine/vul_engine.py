@@ -169,6 +169,8 @@ class VulEngine(object):
         # Checkout each pair source/target have a path or not
         # It may lost sth when muliti paths exists.
         for s, t in product(source_methods, vul_methods):
+            if not g.hasNode(s) or not g.hasNode(t):
+                continue
             dij_obj = nk.distance.BidirectionalDijkstra(g, s, t).run()
             if dij_obj.getDistance() != 1.7976931348623157e+308:  # INF here!
                 logger.info('find sink here!')
