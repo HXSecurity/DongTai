@@ -61,29 +61,17 @@ spec:
           name: log-http
         {{- if .Values.healthcheck }}
         livenessProbe:
-          failureThreshold: 3
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          successThreshold: 1
+          {{- include "deploy.Probehealthcheck" . | nindent 10 }}
           tcpSocket:
             port: 9600
-          timeoutSeconds: 5
         readinessProbe:
-          failureThreshold: 3
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          successThreshold: 1
+          {{- include "deploy.Probehealthcheck" . | nindent 10 }}
           tcpSocket:
             port: 9600
-          timeoutSeconds: 5
         startupProbe:
-          failureThreshold: 3
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          successThreshold: 1
+          {{- include "deploy.Probehealthcheck" . | nindent 10 }}
           tcpSocket:
             port: 9600
-          timeoutSeconds: 5
         {{- end }}
         resources:
           requests:

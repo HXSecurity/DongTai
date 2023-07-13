@@ -15,7 +15,7 @@ accessType: ClusterIP  # NodePort, LoadBalancer, ClusterIP
 NodePort: 30080
 logging_level: INFO # DEBUG, INFO
 somaxconn: null #If system max net.core.somaxconn (128) . Example: somaxconn: 4096
-healthcheck: false
+healthcheck: true
 
 nodeSelector:
   kubernetes.io/os: linux
