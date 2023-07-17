@@ -20,16 +20,16 @@ def get_or_none(classmodel, function, **kwargs):
 class IastVulRecheckPayloadSerializer(serializers.Serializer):
     value = serializers.CharField()
     status = serializers.IntegerField()
-    strategy_id = serializers.IntegerField(min_value=1, max_value=2**32-1)
-    language_id = serializers.IntegerField(min_value=1, max_value=2**32-1)
+    strategy_id = serializers.IntegerField(min_value=1, max_value=2**32 - 1)
+    language_id = serializers.IntegerField(min_value=1, max_value=2**32 - 1)
 
 
 class IastVulRecheckPayloadListSerializer(serializers.Serializer):
     keyword = serializers.CharField(required=False, default=None)
     page = serializers.IntegerField()
     page_size = serializers.IntegerField()
-    strategy_id = serializers.IntegerField(required=False, default=None, min_value=1, max_value=2**32-1)
-    language_id = serializers.IntegerField(required=False, default=None, min_value=1, max_value=2**32-1)
+    strategy_id = serializers.IntegerField(required=False, default=None, min_value=1, max_value=2**32 - 1)
+    language_id = serializers.IntegerField(required=False, default=None, min_value=1, max_value=2**32 - 1)
 
 
 def vul_recheck_payload_create(data, user_id):
