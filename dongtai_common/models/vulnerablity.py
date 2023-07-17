@@ -14,6 +14,10 @@ from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
+import logging
+
+
+logger = logging.getLogger('dongtai-core')
 
 class IastVulnerabilityStatus(models.Model):
     name = models.CharField(max_length=100, blank=True)
@@ -111,8 +115,13 @@ class IastVulnerabilityModel(models.Model):
         if not self.pattern_uri:
             self.pattern_uri = self.pattern_uri
         self.search_keywords = " ".join(key_works)
-        self.latest_time_desc = -int(self.latest_time)
-        self.level_id_desc = -int(self.level_id)
+        try:
+            self.latest_time_desc = -int(self.latest_time)
+            self.level_id_desc = -int(self.level_id)
+        except TypeError as e:
+            logger.error(
+                "level_id: {self.level_id} latest_time: {self.latest_time}",
+                exc_info=e)
         super(IastVulnerabilityModel, self).save(*args, **kwargs)
 
 
