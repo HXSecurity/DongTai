@@ -18,7 +18,7 @@ class DelVulMany(UserEndPoint):
 
     @extend_schema_with_envcheck(
 
-        tags=[_('VulList')],
+        tags=[_('漏洞')],
         summary=_('删除漏洞列表'),
         description=_(
             "delete many app vul and dongtai_sca vul"

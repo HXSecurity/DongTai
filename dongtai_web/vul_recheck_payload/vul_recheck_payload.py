@@ -11,6 +11,7 @@ from dongtai_common.models.vul_recheck_payload import IastVulRecheckPayload
 from rest_framework import serializers
 from django.db.models import Q
 from django.forms.models import model_to_dict
+from drf_spectacular.utils import extend_schema
 
 
 def get_or_none(classmodel, function, **kwargs):
@@ -57,7 +58,15 @@ class VulReCheckPayloadViewSet(UserEndPoint, viewsets.ViewSet):
     name = "api-v1-vul-recheck-payload"
     description = _("config recheck payload V2")
 
+    @extend_schema(
+        tags=[_('主动验证')],
+        summary="增加主动验证Payload",
+        request=IastVulRecheckPayloadSerializer,
+    )
     def create(self, request):
+        """
+        增加主动验证Payload
+        """
         ser = IastVulRecheckPayloadSerializer(data=request.data)
         try:
             if ser.is_valid(True):
@@ -67,6 +76,10 @@ class VulReCheckPayloadViewSet(UserEndPoint, viewsets.ViewSet):
         vul_recheck_payload_create(ser.data, request.user.id)
         return R.success()
 
+    @extend_schema(
+        tags=[_('主动验证')],
+        summary="获取主动验证Payload",
+    )
     def retrieve(self, request, pk):
         obj = get_or_none(
             IastVulRecheckPayload,
@@ -78,6 +91,11 @@ class VulReCheckPayloadViewSet(UserEndPoint, viewsets.ViewSet):
             return R.failure()
         return R.success(data=obj)
 
+    @extend_schema(
+        tags=[_('主动验证')],
+        summary="获取主动验证Payload列表",
+        request=IastVulRecheckPayloadListSerializer,
+    )
     def list(self, request):
         ser = IastVulRecheckPayloadListSerializer(data=request.query_params)
         try:
@@ -106,6 +124,11 @@ class VulReCheckPayloadViewSet(UserEndPoint, viewsets.ViewSet):
         return R.success(page=page_summary,
                          data=list(page_data))
 
+    @extend_schema(
+        tags=[_('主动验证')],
+        summary="更新主动验证Payload",
+        request=IastVulRecheckPayloadSerializer,
+    )
     def update(self, request, pk):
         ser = IastVulRecheckPayloadSerializer(data=request.data)
         try:
@@ -119,6 +142,10 @@ class VulReCheckPayloadViewSet(UserEndPoint, viewsets.ViewSet):
             return R.success()
         return R.success()
 
+    @extend_schema(
+        tags=[_('主动验证')],
+        summary="删除主动验证Payload",
+    )
     def delete(self, request, pk):
         if IastVulRecheckPayload.objects.filter(
                 pk=pk, user_id=request.user.id).exists():
@@ -126,6 +153,10 @@ class VulReCheckPayloadViewSet(UserEndPoint, viewsets.ViewSet):
             return R.success()
         return R.failure()
 
+    @extend_schema(
+        tags=[_('主动验证')],
+        summary="修改主动验证Payload状态",
+    )
     def status_change(self, request):
         mode = request.data.get('mode', 1)
         q = ~Q(status=-1) & Q(user_id=request.user.id)
@@ -140,6 +171,10 @@ class VulReCheckPayloadViewSet(UserEndPoint, viewsets.ViewSet):
             IastVulRecheckPayload.objects.filter(q).update(status=status)
         return R.success()
 
+    @extend_schema(
+        tags=[_('主动验证')],
+        summary="批量主动验证Payload状态",
+    )
     def status_all(self, request):
         status = request.data.get('status', 0)
         q = ~Q(status=-1)

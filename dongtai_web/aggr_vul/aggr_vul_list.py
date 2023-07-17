@@ -52,7 +52,7 @@ class GetAggregationVulList(UserEndPoint):
 
     @extend_schema_with_envcheck(
         request=AggregationArgsSerializer,
-        tags=[_('VulList')],
+        tags=[_('漏洞')],
         summary=_('组件漏洞列表'),
         description=_("select sca vul and app vul by keywords"),
     )
