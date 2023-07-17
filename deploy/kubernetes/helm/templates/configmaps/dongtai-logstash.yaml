@@ -37,6 +37,13 @@ data:
         # }
       }
       if [type] == "log"{
+        # ruby {
+        #   init => "require 'base64'"
+        #   code => "event.set('message', Base64.decode64(event.get('message')))"
+        # }
+        # ruby {
+        #   code => "puts event.to_hash"
+        # }
         json{
           source => ["message"]
           remove_field => ["message"]
