@@ -137,6 +137,7 @@ class EndPoint(APIView):
 
                 if operate_method == "GET":
                     operate_type = OperateType.GET
+                    return self.response
                 elif operate_method == "POST":
                     operate_type = OperateType.ADD
                 elif operate_method == "PUT":

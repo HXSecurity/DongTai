@@ -16,7 +16,7 @@ class DelVulProjectLevel(UserEndPoint):
     description = _("del vul list of many")
 
     @extend_schema_with_envcheck(
-        tags=[_('VulList')],
+        tags=[_('漏洞')],
         summary=_('删除 Vul List'),
         description=_("delete many app vul and dongtai_sca vul"),
     )

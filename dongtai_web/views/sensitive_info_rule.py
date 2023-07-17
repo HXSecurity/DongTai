@@ -129,7 +129,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint, viewsets.ViewSet):
 
     @extend_schema_with_envcheck(
         [_SensitiveInfoArgsSerializer],
-        tags=[_('SensitiveInfoRule')],
+        tags=[_('敏感信息规则')],
         summary=_('SensitiveInfoRule List'),
         description=_("Get the item corresponding to the user, support fuzzy search based on name."
                       ),
@@ -158,7 +158,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint, viewsets.ViewSet):
 
     @extend_schema_with_envcheck(
         request=SensitiveInfoRuleCreateSerializer,
-        tags=[_('SensitiveInfoRule')],
+        tags=[_('敏感信息规则')],
         summary=_('敏感信息规则创建'),
         description=_("Get the item corresponding to the user, support fuzzy search based on name."
                       ),
@@ -192,7 +192,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint, viewsets.ViewSet):
 
     @extend_schema_with_envcheck(
         request=SensitiveInfoRuleCreateSerializer,
-        tags=[_('SensitiveInfoRule')],
+        tags=[_('敏感信息规则')],
         summary=_('敏感信息规则更新'),
         description=_("Get the item corresponding to the user, support fuzzy search based on name."
                       ),
@@ -214,7 +214,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint, viewsets.ViewSet):
         return R.success(msg=_('update success'))
 
     @extend_schema_with_envcheck(
-        tags=[_('SensitiveInfoRule')],
+        tags=[_('敏感信息规则')],
         summary=_('敏感信息规则删除'),
         description=_("Get the item corresponding to the user, support fuzzy search based on name."
                       ),
@@ -226,7 +226,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint, viewsets.ViewSet):
         return R.success(msg=_('delete success'))
 
     @extend_schema_with_envcheck(
-        tags=[_('SensitiveInfoRule')],
+        tags=[_('敏感信息规则')],
         summary=_('敏感信息规则获取'),
         description=_("Get the item corresponding to the user, support fuzzy search based on name."
                       ),
@@ -243,7 +243,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint, viewsets.ViewSet):
 class SensitiveInfoPatternTypeView(UserEndPoint):
 
     @extend_schema_with_envcheck(
-        tags=[_('SensitiveInfoRule')],
+        tags=[_('敏感信息规则')],
         summary=_('敏感信息规则模式类型列表'),
         description=_("Get the item corresponding to the user."
                       ),
@@ -256,7 +256,7 @@ class SensitiveInfoPatternTypeView(UserEndPoint):
 class SensitiveInfoPatternValidationView(UserEndPoint):
     @extend_schema_with_envcheck(
         request=_RegexPatternValidationSerializer,
-        tags=[_('SensitiveInfoRule')],
+        tags=[_('敏感信息规则')],
         summary=_('敏感信息规则数据验证'),
         description=_("Get the item corresponding to the user, support fuzzy search based on name."
                       ),
@@ -329,7 +329,7 @@ class SensitiveInfoRuleBatchView(BatchStatusUpdateSerializerView):
 
     @extend_schema_with_envcheck(
         request=BatchStatusUpdateSerializerView.serializer,
-        tags=[_('SensitiveInfoRule')],
+        tags=[_('敏感信息规则')],
         summary=_('敏感信息规则状态批量更新'),
         description=_("batch update status."),
     )
@@ -346,7 +346,7 @@ class SensitiveInfoRuleAllView(AllStatusUpdateSerializerView):
 
     @extend_schema_with_envcheck(
         request=AllStatusUpdateSerializerView.serializer,
-        tags=[_('SensitiveInfoRule')],
+        tags=[_('敏感信息规则')],
         summary=_('敏感信息规则全部状态更新'),
         description=_("all update status."),
     )

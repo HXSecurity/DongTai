@@ -24,7 +24,6 @@ from dongtai_conf.settings import BUCKET_NAME_BASE_URL, VERSION
 
 import shutil
 import tarfile
-import os
 import threading
 import time
 
@@ -305,7 +304,7 @@ class AgentDownload(OpenApiEndPoint):
         return
 
     @extend_schema(operation_id="agent download api",
-                   tags=[_('Agent Protocol')],
+                   tags=[_('Agent服务端交互协议')],
                    summary="Agent 下载",
                    parameters=[
                        DongTaiParameter.OPENAPI_URL,
