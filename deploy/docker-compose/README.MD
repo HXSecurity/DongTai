@@ -31,7 +31,7 @@ install
 install the latest release version
 
 ```
-./dtctl install -v <version_id>
+./dtctl install -v 1.13.0
 ```
 
 s: skip specified component，optional： `mysql` `redis`  `mysql,redis`，default：don't skip
@@ -61,7 +61,7 @@ upgrade
 upgrade to the latest release version
 
 ```
-./dtctl upgrade -t <version_id>
+./dtctl upgrade -t 1.13.0
 ```
 
 upgrade to the specified version
