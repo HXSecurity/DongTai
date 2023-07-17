@@ -1,6 +1,5 @@
 import logging
 import socket
-from base64 import b64encode
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -39,9 +38,8 @@ class LogService:
             if not self.socket:
                 self.create_socket()
             if self.socket:
-                self.socket.sendall(
-                    b64encode(bytes(message, encoding='utf-8')) +
-                    bytes("\n", encoding='utf-8'), socket.MSG_DONTWAIT)
+                self.socket.sendall(bytes(message + "\n", encoding='utf-8'),
+                                    socket.MSG_DONTWAIT)
                 return True
         except Exception as e:
             logger.error('failed to send message to log service', exc_info=e)
