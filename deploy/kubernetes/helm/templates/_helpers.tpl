@@ -135,7 +135,7 @@ imagePullPolicy: {{.Values.imagePullPolicy}}
 {{- end -}}
 {{- define "deploy.devinitContainers" -}}
 initContainers:
-  - name: init-dongtai-agentcontainer
+  - name: init-dongtai-agentcontainercache
     command: ["/bin/sh", "-c"]
     args: ["cd /tmp/iast_cache/package && curl -s https://charts.dongtai.io/agent_{{.Values.develop.agentZip}}/java/latest/agent_latest.tar.gz | tar -xvzf -"]
     image: curlimages/curl
