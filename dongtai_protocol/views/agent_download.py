@@ -306,7 +306,7 @@ class AgentDownload(OpenApiEndPoint):
 
     @extend_schema(operation_id="agent download api",
                    tags=[_('Agent Protocol')],
-                   summary=_('Agent download'),  # type: ignore
+                   summary="Agent 下载",
                    parameters=[
                        DongTaiParameter.OPENAPI_URL,
                        DongTaiParameter.PROJECT_NAME,

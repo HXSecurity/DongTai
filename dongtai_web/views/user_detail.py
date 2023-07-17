@@ -14,7 +14,7 @@ from drf_spectacular.utils import extend_schema
 
 class UserDetailEndPoint(TalentAdminEndPoint):
     @extend_schema(
-        summary=_("User Detail"),
+        summary=_("用户详情"),
         tags=[_("User")],
     )
     def get(self, request, user_id):

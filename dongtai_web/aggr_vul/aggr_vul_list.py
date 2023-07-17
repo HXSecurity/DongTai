@@ -1,33 +1,24 @@
 # 按类型获取 组件漏洞 应用漏洞列表
 from typing import Any
-from elasticsearch_dsl import Q, Search
+from elasticsearch_dsl import Q
 from dongtai_common.models.asset_vul import IastAssetVulnerabilityDocument
 from dongtai_common.common.utils import make_hash
 from dongtai_conf import settings
 from django.core.cache import cache
-from dongtai_common.models.vul_level import IastVulLevel
-from dongtai_common.models.project import IastProject
-from dongtai_common.models.program_language import IastProgramLanguage
-from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
-from dongtai_common.models.strategy import IastStrategyModel
-from elasticsearch_dsl import A
 from elasticsearch import Elasticsearch
-import json
-import time
 import logging
 from dongtai_common.endpoint import R
-from django.forms import model_to_dict
 from dongtai_common.endpoint import UserEndPoint
 
 from dongtai_web.utils import extend_schema_with_envcheck
 from dongtai_web.serializers.aggregation import AggregationArgsSerializer
 from rest_framework.serializers import ValidationError
 from django.utils.translation import gettext_lazy as _
-from dongtai_web.aggregation.aggregation_common import getAuthUserInfo, turnIntListOfStr, getAuthBaseQuery, auth_user_list_str
+from dongtai_web.aggregation.aggregation_common import turnIntListOfStr, auth_user_list_str
 import pymysql
 from dongtai_web.serializers.vul import VulSerializer
-from dongtai_common.models.asset_vul import IastAssetVul, IastVulAssetRelation, IastAssetVulType, IastAssetVulTypeRelation
-from dongtai_common.models import AGGREGATION_ORDER, LANGUAGE_ID_DICT, SHARE_CONFIG_DICT, APP_LEVEL_RISK, LICENSE_RISK, \
+from dongtai_common.models.asset_vul import IastAssetVul, IastVulAssetRelation, IastAssetVulTypeRelation
+from dongtai_common.models import AGGREGATION_ORDER, LANGUAGE_ID_DICT, APP_LEVEL_RISK, LICENSE_RISK, \
     SCA_AVAILABILITY_DICT
 from dongtai_conf.settings import ELASTICSEARCH_STATE
 from typing import List
@@ -62,7 +53,7 @@ class GetAggregationVulList(UserEndPoint):
     @extend_schema_with_envcheck(
         request=AggregationArgsSerializer,
         tags=[_('VulList')],
-        summary=_('Vul List Select'),
+        summary=_('组件漏洞列表'),
         description=_("select sca vul and app vul by keywords"),
     )
     # 组件漏洞 列表

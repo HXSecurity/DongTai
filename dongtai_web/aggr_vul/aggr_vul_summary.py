@@ -6,14 +6,13 @@ from dongtai_web.utils import extend_schema_with_envcheck
 from dongtai_web.serializers.aggregation import AggregationArgsSerializer
 from django.utils.translation import gettext_lazy as _
 from dongtai_common.endpoint import R
-from dongtai_web.aggregation.aggregation_common import auth_user_list_str
 from dongtai_common.models import LANGUAGE_DICT
 from rest_framework.serializers import ValidationError
 from django.db import connection
 from dongtai_common.common.utils import cached_decorator
 from dongtai_common.models import APP_LEVEL_RISK
 from dongtai_common.models.user import User
-from typing import Dict, Union, List
+from typing import List
 from typing import TypedDict
 
 class Level(TypedDict):
@@ -322,7 +321,7 @@ class GetScaSummary(UserEndPoint):
     @extend_schema_with_envcheck(
         request=AggregationArgsSerializer,
         tags=[_('VulList')],
-        summary=_('Vul List Select'),
+        summary=_('组件漏洞列表'),
         description=_(
             "count sca vul and app vul by keywords"
         ),
