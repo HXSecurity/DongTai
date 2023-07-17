@@ -15,12 +15,17 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 from django.utils.translation import gettext_lazy as _
 from rest_framework import viewsets
 from dongtai_web.common import VulType
+from drf_spectacular.utils import extend_schema
 
 
 class VulLogViewSet(UserEndPoint, viewsets.ViewSet):
     name = "api-v1-vul-log"
     description = _("vul-log")
 
+    @extend_schema(
+        tags=[_("Vulnerability")],
+        summary="漏洞日志",
+    )
     def list(self, request, vul_id):
         data = []
         auth_users = self.get_auth_users(request.user)

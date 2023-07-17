@@ -4,13 +4,10 @@
 # datetime: 2021/4/30 下午3:00
 # project: dongtai-engine
 import json
-import random
 import time
-import requests
 from celery.apps.worker import logger
 from django.dispatch import receiver
 
-from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.project import IastProject, VulValidation
 from dongtai_common.models.replay_queue import IastReplayQueue
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
@@ -22,10 +19,13 @@ from dongtai_web.vul_log.vul_log import log_vul_found, log_recheck_vul
 from django.db.models import Q
 from dongtai_engine.signals.handlers.parse_param_name import parse_target_values_from_vul_stack
 from typing import List, Optional, Callable
-import json
 from collections import defaultdict
 from dongtai_common.models.profile import IastProfile
-from dongtai_engine.plugins.project_time_update import project_time_stamp_update
+from dongtai_engine.plugins.project_time_update import (
+    project_time_stamp_update,
+    project_version_time_stamp_update,
+)
+from dongtai_engine.signals import send_notify
 
 
 def equals(source, target):
@@ -292,6 +292,8 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
     ).order_by('-latest_time').first()
     project_time_stamp_update.apply_async(
         (vul_meta.agent.bind_project_id, ), countdown=5)
+    project_version_time_stamp_update.apply_async(
+        (vul_meta.agent.project_version_id, ), countdown=5)
     if vul:
         vul.url = vul_meta.url
         vul.uri = vul_meta.uri
@@ -358,8 +360,14 @@ def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
             language=vul_meta.agent.language,
             server_id=vul_meta.agent.server_id,
         )
-        log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
-                      vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)
+        log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,  # type: ignore
+                      vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)  # type: ignore
+        send_notify.send_robust(
+            sender=save_vul,
+            vul_id=vul.id,
+            department_id=vul_meta.agent.department_id,
+        )
+
     cache.delete(cache_key)
     #delete if exists more than one   departured use redis lock
     #IastVulnerabilityModel.objects.filter(
@@ -434,7 +442,7 @@ def handler_replay_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
                        bottom_stack, **kwargs):
     timestamp = int(time.time())
     vul = IastVulnerabilityModel.objects.filter(
-        Q(pk=kwargs['relation_id']) & ~Q(status_id=(3, 4, 5, 6))).first()
+        Q(pk=kwargs['relation_id']) & ~Q(status_id=(3, 5, 6))).first()
     logger.info(
         f'handle vul replay, current strategy:{vul.strategy_id}, target hook_type:{strategy_id}'
     )
@@ -445,6 +453,8 @@ def handler_replay_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack,
             update_fields=['status_id', 'latest_time', 'latest_time_desc'])
         project_time_stamp_update.apply_async(
             (vul_meta.agent.bind_project_id, ), countdown=5)
+        project_version_time_stamp_update.apply_async(
+            (vul_meta.agent.project_version_id, ), countdown=5)
 
         IastReplayQueue.objects.filter(id=kwargs['replay_id']).update(
             state=const.SOLVED,

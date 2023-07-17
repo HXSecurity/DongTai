@@ -12,6 +12,7 @@ from dongtai_common.models.agent import IastAgent
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
+from dongtai_common.utils.const import OPERATE_PUT
 
 _ResponseSerializer = get_response_serializer(
     status_msg_keypair=(((201, _("Engine status was updated successfully.")),
@@ -19,6 +20,12 @@ _ResponseSerializer = get_response_serializer(
 
 
 class AgentStatusUpdate(UserEndPoint):
+    @extend_schema_with_envcheck(
+        tags=[_('Agent'), OPERATE_PUT],
+        summary="探针状态修改",
+        deprecated=True,
+        response_schema=_ResponseSerializer,
+    )
     def get(self, request):
         timestamp = int(time.time())
         queryset = IastAgent.objects.filter(user=request.user)

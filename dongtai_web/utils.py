@@ -15,18 +15,19 @@ import uuid
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import format_lazy
-from django.utils.translation import get_language
 from rest_framework.serializers import SerializerMetaclass
 from functools import reduce
 from django.db.models import Q
 import operator
 import hashlib
-from dongtai_common.models.api_route import IastApiRoute, IastApiMethod, IastApiRoute, HttpMethod, IastApiResponse, IastApiMethodHttpMethodRelation
+from dongtai_common.models.api_route import HttpMethod, IastApiMethodHttpMethodRelation
 from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from rest_framework.serializers import Serializer
 from dongtai_conf.settings import OPENAPI
-from typing import Optional, List, Dict, Union
+from typing import List, Dict, Union, TYPE_CHECKING
+from drf_spectacular.utils import extend_schema
+if TYPE_CHECKING:
+    from django.db.models.query import QuerySet, ValuesQuerySet
 
 
 def get_model_field(model, exclude=[], include=[]):
@@ -78,66 +79,42 @@ def assemble_query_2(condictions: list,
 
 
 def extend_schema_with_envcheck(querys: list = [],
-                                request_bodys: Optional[Union[List, Dict]] = [],
+                                request_bodys: Union[List, Dict] = [],
                                 response_bodys: list = [],
                                 response_schema=None,
                                 **kwargs):
     def myextend_schema(func):
-        import os
-        if os.getenv(
-            'environment',
-            None) in (
-            'TEST',
-            'DOC') or os.getenv(
-            'DOC',
-                None) == 'TRUE':
-            from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes
-            from drf_spectacular.utils import OpenApiResponse
-            parameters = list(filter(lambda x: x, map(_filter_query, querys)))
-            request_examples = list(
-                filter(lambda x: x, map(_filter_request_body, request_bodys)))
-            response_examples = list(
-                filter(lambda x: x, map(_filter_response_body,
-                                        response_bodys)))
-            examples = request_examples + response_examples
-            if kwargs.get('request', None) and request_examples:
-                kwargs['request'] = {'application/json': OpenApiTypes.OBJECT}
-            elif isinstance(kwargs.get('request', None),
-                            SerializerMetaclass):
-                kwargs['request'] = {'application/json': kwargs['request']}
-            elif kwargs.get('request', None):
-                kwargs['request'] = {'application/json': kwargs['request']}
-            deco = extend_schema(
-                parameters=parameters,
-                examples=examples if examples else None,
-                responses={
-                    200: OpenApiResponse(
-                        description=_('The http status codes are both 200, please use the status and msg field returned by the response data to troubleshoot'),
-                        response=response_schema)},
-                **kwargs)
-            funcw = deco(func)
-            funcw.querys = querys
-            funcw.request_body = request_bodys if request_bodys else []
-            return funcw
-        return func
+        from drf_spectacular.utils import OpenApiResponse, extend_schema, OpenApiTypes
+        parameters = list(filter(lambda x: x, map(_filter_query, querys)))
+        request_examples = list(
+            filter(lambda x: x, map(_filter_request_body, request_bodys)))
+        response_examples = list(
+            filter(lambda x: x, map(_filter_response_body, response_bodys)))
+        examples = request_examples + response_examples
+        if kwargs.get('request', None) and request_examples:
+            kwargs['request'] = {'application/json': OpenApiTypes.OBJECT}
+        elif isinstance(kwargs.get('request', None),
+                        SerializerMetaclass):
+            kwargs['request'] = {'application/json': kwargs['request']}
+        elif kwargs.get('request', None):
+            kwargs['request'] = {'application/json': kwargs['request']}
+        deco = extend_schema(
+            parameters=parameters,
+            examples=examples if examples else None,
+            responses={
+                200: OpenApiResponse(
+                    description=_('The http status codes are both 200, please use the status and msg field returned by the response data to troubleshoot'),  # type: ignore
+                    response=response_schema)},
+            **kwargs)
+        funcw = deco(func)
+        funcw.querys = querys
+        funcw.request_body = request_bodys if request_bodys else []
+        return funcw
 
     return myextend_schema
 
 
-def extend_schema_with_envcheck_v2(*args, **kwargs):
-
-    def myextend_schema(func):
-        import os
-        if os.getenv('environment', None) in ('TEST', 'DOC') or os.getenv(
-                'DOC', None) == 'TRUE':
-            from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes
-            deco = extend_schema(*args, **kwargs)
-            funcw = deco(func)
-            return funcw
-        return func
-
-    return myextend_schema
-
+extend_schema_with_envcheck_v2 = extend_schema
 
 def get_response_serializer(data_serializer=None,
                             msg_list=None,
@@ -308,5 +285,5 @@ class MethodOverrideMiddleware:
         return self.get_response(request)
 
 
-def dict_transfrom(dic: dict, key: str):
+def dict_transfrom(dic: "dict | QuerySet | ValuesQuerySet", key: str):
     return {i[key]: i for i in dic}

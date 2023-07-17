@@ -1,8 +1,7 @@
 from dongtai_common.models.department import Department
 from dongtai_web.utils import dict_transfrom
-from dongtai_engine.elatic_search.data_correction import data_correction_interpetor
 from dongtai_conf.settings import ELASTICSEARCH_STATE
-import copy
+
 from rest_framework.serializers import ValidationError
 from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint
@@ -10,12 +9,12 @@ from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck
 from dongtai_web.serializers.aggregation import AggregationArgsSerializer
-from dongtai_common.models import LANGUAGE_DICT
-from dongtai_web.aggregation.aggregation_common import auth_user_list_str
 from django.db.models import Count
-from dongtai_common.common.utils import cached_decorator
 from django.db.models import Q
 import logging
+from dongtai_conf.patch import patch_point
+from dongtai_common.utils.const import OPERATE_GET
+
 logger = logging.getLogger('dongtai-webapi')
 
 
@@ -49,12 +48,6 @@ def get_annotate_data(
     # 项目版本号
     if project_version_id:
         cache_q = cache_q & Q(project_version_id=project_version_id)
-    # 项目统计
-    pro_info = _annotate_by_query(
-        cache_q,
-        ("project_id", "project__name"),
-        "project_id",
-    )
 
     result_summary = {
         "level": [],
@@ -64,14 +57,8 @@ def get_annotate_data(
         "project": [],
     }
 
-    for item in pro_info:
-        result_summary["project"].append(
-            {
-                "name": item["project__name"],
-                "num": item["count"],
-                "id": item["project_id"],
-            }
-        )
+    cache_q, result_summary = patch_point(cache_q, result_summary)
+
     # 漏洞类型统计
     strategy_info = _annotate_by_query(
         cache_q, ("strategy_id", "strategy__vul_name"), "strategy_id"
@@ -111,39 +98,14 @@ def get_annotate_data(
             }
         )
 
-    # # 按语言筛选
-    language_info = _annotate_by_query(
-        cache_q, ("language",), "language")
-    lang_arr = copy.copy(LANGUAGE_DICT)
-    lang_key = lang_arr.keys()
-    for item in language_info:
-        result_summary["language"].append(
-            {
-                "name": item["language"],
-                "num": item["count"],
-                "id": lang_arr.get(item["language"]),
-            }
-        )
-        if item["language"] in lang_key:
-            del lang_arr[item["language"]]
-    if lang_arr:
-        for item in lang_arr.keys():
-            result_summary["language"].append(
-                {
-                    "name": item,
-                    "num": 0,
-                    "id": LANGUAGE_DICT.get(item),
-                }
-            )
     return result_summary
 
 
 class GetAppVulsSummary(UserEndPoint):
     @extend_schema_with_envcheck(
         request=AggregationArgsSerializer,
-        tags=[_("app Vul count")],
-        summary=_("app List count"),
-        description=_("select   app vul by keywords"),
+        tags=[_('Vulnerability'), OPERATE_GET],
+        summary="应用漏洞列表统计",
     )
     def post(self, request):
         """
@@ -190,13 +152,10 @@ class GetAppVulsSummary(UserEndPoint):
 
 def get_annotate_data_es(department: Department, bind_project_id, project_version_id):
     from dongtai_common.models.vulnerablity import IastVulnerabilityDocument
-    from elasticsearch_dsl import Q, Search
     from elasticsearch import Elasticsearch
-    from elasticsearch_dsl import A
+    from elasticsearch_dsl import A, Q
     from dongtai_common.models.strategy import IastStrategyModel
     from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
-    from dongtai_common.models.program_language import IastProgramLanguage
-    from dongtai_common.models.project import IastProject
     from dongtai_common.models.vul_level import IastVulLevel
 
     # user_id_list = [user_id]
@@ -221,11 +180,10 @@ def get_annotate_data_es(department: Department, bind_project_id, project_versio
         Q('bool', must=must_query))[:0]
     buckets = {
         'level': A('terms', field='level_id', size=2147483647),
-        'project': A('terms', field='bind_project_id', size=2147483647),
         "strategy": A('terms', field='strategy_id', size=2147483647),
         'status': A('terms', field='status_id', size=2147483647),
-        "language": A('terms', field='language.keyword', size=2147483647)
     }
+    buckets = patch_point(buckets, patch_id=0)
     for k, v in buckets.items():
         search.aggs.bucket(k, v)
     from dongtai_conf import settings
@@ -254,40 +212,6 @@ def get_annotate_data_es(department: Department, bind_project_id, project_versio
             status_dic = dict_transfrom(status, 'id')
             for i in origin_buckets:
                 i['name'] = status_dic[i['id']]['name']
-        if key == 'language':
-            for i in origin_buckets:
-                i['name'] = i['id']
-                del i['id']
-            language_names = [i['name'] for i in origin_buckets]
-            for i in origin_buckets:
-                i['id'] = LANGUAGE_DICT.get(i['name'])
-            for language_key in LANGUAGE_DICT.keys():
-                if language_key not in language_names:
-                    origin_buckets.append({
-                        'id': LANGUAGE_DICT[language_key],
-                        'name': language_key,
-                        'num': 0
-                    })
-        if key == 'project':
-            project_ids = [i['id'] for i in origin_buckets]
-            project = IastProject.objects.filter(pk__in=project_ids).values(
-                'id', 'name').all()
-            project_dic = dict_transfrom(project, 'id')
-            missing_ids = []
-            for i in origin_buckets:
-                if i['id'] not in project_dic:
-                    logger.info('found data consistency incorrect start ')
-                    data_correction_interpetor.delay("project_missing")
-                    missing_ids.append(i['id'])
-                    continue
-                else:
-                    i['name'] = project_dic[i['id']]['name']
-            origin_buckets = filter(lambda x: x['id'] not in missing_ids,
-                                    origin_buckets)
-            if missing_ids:
-                logger.info('found data consistency incorrect ')
-                data_correction_interpetor.delay("project_missing")
-
         if key == 'level':
             level_ids = [i['id'] for i in origin_buckets]
             level = IastVulLevel.objects.filter(pk__in=level_ids).values(
@@ -296,5 +220,6 @@ def get_annotate_data_es(department: Department, bind_project_id, project_versio
             for i in origin_buckets:
                 i['name'] = level_dic[i['id']]['name_value']
             origin_buckets = sorted(origin_buckets, key=lambda x: x['id'])
+        key, origin_buckets = patch_point(key, origin_buckets, patch_id=1)
         dic[key] = list(origin_buckets)
     return dict(dic)

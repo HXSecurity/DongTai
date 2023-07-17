@@ -6,12 +6,10 @@
 # @description :
 ######################################################################
 
-import oss2
 from drf_spectacular.utils import extend_schema
-from oss2.exceptions import RequestError
 import logging
-from dongtai_protocol.utils import checkossstatus, STATUSMAP
-from dongtai_common.endpoint import OpenApiEndPoint, R, UserEndPoint
+from dongtai_protocol.utils import checkossstatus
+from dongtai_common.endpoint import R, UserEndPoint
 
 logger = logging.getLogger("dongtai.openapi")
 
@@ -20,7 +18,9 @@ class OSSHealthView(UserEndPoint):
     @extend_schema(
         description='Check OSS Health',
         responses=R,
-        methods=['GET']
+        methods=['GET'],
+        summary="检查 OSS 健康",
+        tags=["OSS"],
     )
     def get(self, request):
         oss_status, _ = checkossstatus()

@@ -3,9 +3,9 @@ from dongtai_common.utils.settings import get_managed
 
 
 class IastDocument(models.Model):
-    title = models.CharField(max_length=100, blank=True, null=True)
-    url = models.CharField(max_length=2000, blank=True, null=True)
-    language = models.CharField(max_length=100, blank=True, null=True)
+    title = models.CharField(max_length=100, blank=True)
+    url = models.CharField(max_length=2000, blank=True)
+    language = models.CharField(max_length=100, blank=True)
     weight = models.IntegerField(default=0)
 
     class Meta:

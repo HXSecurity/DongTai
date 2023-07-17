@@ -12,7 +12,6 @@ from dongtai_web.utils import extend_schema_with_envcheck_v2, get_response_seria
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
-from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 from dongtai_common.models.asset_vul_v2 import IastAssetVulV2
 from dongtai_common.serializers.assetvulv2 import PackageVulSerializer
 from dataclasses import dataclass, field
@@ -37,6 +36,8 @@ NewPackageVulSResponseSerializer = get_response_serializer(
 class NewPackageVuls(UserEndPoint):
 
     @extend_schema_with_envcheck_v2(
+        tags=[_('Component')],
+        summary="组件漏洞列表",
         parameters=[PackageVulsListArgsSerializer],
         responses={200: NewPackageVulSResponseSerializer})
     def get(self, request, language_id, package_name, package_version):

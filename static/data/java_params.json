@@ -1,122 +1,78 @@
-      {
-						"org.springframework.web.method.support.HandlerMethodArgumentResolver.resolveArgument": [
-                    "GET",
-                    "POST",
-                    "HEADER",
-                    "PATH"
-           ],
- 					"org.springframework.web.method.annotation.ServletModelAttributeMethodProcessor.resolveArgument": [
-                    "GET",
-                    "POST",
-                    "HEADER",
-                    "PATH"
-           ],
-						"org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.resolveName":["PATH"],
-						"org.springframework.web.bind.annotation.support.HandlerMethodInvoker.resolvePathVariable":["PATH"],
-            "javax.servlet.ServletRequest.getParameter": [
-                    "GET",
-                    "POST"
-            ],
-            "javax.servlet.ServletRequest.getParameterValues": [
-                    "GET",
-                    "POST"
-            ],
-            "javax.servlet.http.HttpServletRequest.getHeader": ["HEADER"],
-            "javax.servlet.http.HttpServletRequest.getQueryString": ["GET"],
-            "javax.servlet.http.HttpServletRequest.getCookies": ["COOKIE"],
-            "io.grpc.MethodDescriptor.parseRequest":["GRPC"],
-            "org.apache.struts2.dispatcher.multipart.MultiPartRequest.getParameterValues":[
-                    "GET",
-                    "POST"
-            ],
-            "javax.servlet.ServletRequest.getInputStream":[
-                    "GET",
-                    "POST"
-            ],
-            "javax.servlet.ServletRequest.getParameterNames()":[
-                    "GET",
-                    "POST"
-            ],
-            "javax.servlet.ServletRequest.getParameterMap":[
-                    "GET",
-                    "POST"
-            ],
-            "javax.servlet.ServletRequest.getReader":[
-                    "GET",
-                    "POST"
-            ],
-            "javax.servlet.http.HttpServletRequest.getHeaderNames()":["HEADER"],
-            "javax.servlet.http.HttpServletRequest.getParts":[
-                    "GET",
-                    "POST"
-            ],
-            "javax.servlet.http.HttpServletRequest.getPart":[
-                    "GET",
-                    "POST"
-            ],
-            "javax.servlet.http.HttpServletRequest.getInputStream":[
-                    "GET",
-                    "POST"
-            ],
-            "javax.servlet.http.HttpServletRequest.getHeader":["HEADER"],
-            "javax.servlet.http.HttpServletRequest.getCookies":["COOKIE"],
-            "javax.servlet.http.HttpServletRequest.getHeaders":["HEADER"],
-            "javax.servlet.http.HttpServletRequest.getQueryString":["GET"],
-            "javax.servlet.http.HttpServletRequest.getParameter":[
-                    "GET",
-                    "POST"
-            ],
-            "javax.servlet.http.HttpServletRequest.getParameterValues":[
-                    "GET",
-                    "POST"
-            ],
-            "javax.servlet.http.HttpServletRequest.getParameterNames()":[
-                    "GET",
-                    "POST"
-            ],
-            "javax.servlet.http.HttpServletRequest.getParameterMap()":[
-                    "GET",
-                    "POST"
-            ],
-            "javax.servlet.http.HttpServletRequest.getReader()":[
-                    "GET",
-                    "POST"
-            ],
-            "org.apache.commons.fileupload.FileUploadBase.parseRequest(org.apache.commons.fileupload.RequestContext)":[
-                    "POST"
-            ],
-            "jakarta.servlet.ServletRequest.getInputStream":[
-                    "GET",
-                    "POST"
-            ],
-            "jakarta.servlet.ServletRequest.getParameter":[
-                    "GET",
-                    "POST"
-            ],
-            "jakarta.servlet.ServletRequest.getParameterNames":[
-                    "GET",
-                    "POST"
-            ],
-            "jakarta.servlet.ServletRequest.getParameterValues":[
-                    "GET",
-                    "POST"
-            ],
-            "jakarta.servlet.ServletRequest.getReader":[
-                    "GET",
-                    "POST"
-            ],
-            "jakarta.servlet.http.HttpServletRequest.getHeader":["HEADER"],
-            "jakarta.servlet.http.HttpServletRequest.getHeaders":["HEADER"],
-            "jakarta.servlet.http.HttpServletRequest.getHeaderNames":["HEADER"],
-            "jakarta.servlet.http.HttpServletRequest.getParts":[
-                    "GET",
-                    "POST"
-            ],
-            "jakarta.servlet.http.HttpServletRequest.getPart":[
-                    "GET",
-                    "POST"
-            ],
-            "jakarta.servlet.http.HttpServletRequest.getCookies":["COOKIE"],
-            "jakarta.servlet.http.HttpServletRequest.getQueryString":["GET"],
-            "javax.servlet.http.HttpServletRequest.getSession":["SESSION"]
-    }
+{
+	"org.springframework.web.method.support.HandlerMethodArgumentResolver.resolveArgument": ["GET", "POST", "HEADER", "PATH"],
+	"org.springframework.web.method.annotation.ServletModelAttributeMethodProcessor.resolveArgument": ["GET", "POST", "HEADER", "PATH"],
+	"org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.resolveName": ["PATH"],
+	"org.springframework.web.bind.annotation.support.HandlerMethodInvoker.resolvePathVariable": ["PATH"],
+	"javax.servlet.ServletRequest.getParameter": ["GET", "POST"],
+	"javax.servlet.ServletRequest.getParameterValues": ["GET", "POST"],
+	"javax.servlet.http.HttpServletRequest.getHeader": ["HEADER"],
+	"javax.servlet.http.HttpServletRequest.getQueryString": ["GET"],
+	"javax.servlet.http.HttpServletRequest.getCookies": ["COOKIE"],
+	"io.grpc.MethodDescriptor.parseRequest": ["GRPC"],
+	"org.apache.struts2.dispatcher.multipart.MultiPartRequest.getParameterValues": ["GET", "POST"],
+	"javax.servlet.ServletRequest.getInputStream": ["GET", "POST"],
+	"javax.servlet.ServletRequest.getParameterNames()": ["GET", "POST"],
+	"javax.servlet.ServletRequest.getParameterMap": ["GET", "POST"],
+	"javax.servlet.ServletRequest.getReader": ["GET", "POST"],
+	"javax.servlet.http.HttpServletRequest.getHeaderNames()": ["HEADER"],
+	"javax.servlet.http.HttpServletRequest.getParts": ["GET", "POST"],
+	"javax.servlet.http.HttpServletRequest.getPart": ["GET", "POST"],
+	"javax.servlet.http.HttpServletRequest.getInputStream": ["GET", "POST"],
+	"javax.servlet.http.HttpServletRequest.getHeaders": ["HEADER"],
+	"javax.servlet.http.HttpServletRequest.getParameter": ["GET", "POST"],
+	"javax.servlet.http.HttpServletRequest.getParameterValues": ["GET", "POST"],
+	"javax.servlet.http.HttpServletRequest.getParameterNames()": ["GET", "POST"],
+	"javax.servlet.http.HttpServletRequest.getParameterMap()": ["GET", "POST"],
+	"javax.servlet.http.HttpServletRequest.getReader()": ["POST"],
+	"org.apache.commons.fileupload.FileUploadBase.parseRequest(org.apache.commons.fileupload.RequestContext)": ["POST"],
+	"jakarta.servlet.ServletRequest.getInputStream": ["GET", "POST"],
+	"jakarta.servlet.ServletRequest.getParameter": ["GET", "POST"],
+	"jakarta.servlet.ServletRequest.getParameterNames": ["GET", "POST"],
+	"jakarta.servlet.ServletRequest.getParameterValues": ["GET", "POST"],
+	"jakarta.servlet.ServletRequest.getReader": ["GET", "POST"],
+	"jakarta.servlet.http.HttpServletRequest.getHeader": ["HEADER"],
+	"jakarta.servlet.http.HttpServletRequest.getHeaders": ["HEADER"],
+	"jakarta.servlet.http.HttpServletRequest.getHeaderNames": ["HEADER"],
+	"jakarta.servlet.http.HttpServletRequest.getParts": ["GET", "POST"],
+	"jakarta.servlet.http.HttpServletRequest.getPart": ["GET", "POST"],
+	"jakarta.servlet.http.HttpServletRequest.getCookies": ["COOKIE"],
+	"jakarta.servlet.http.HttpServletRequest.getQueryString": ["GET"],
+	"javax.servlet.http.HttpServletRequest.getSession": ["HEADER"],
+	"org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.resolveName(java.lang.String,org.springframework.core.MethodParameter,org.springframework.web.context.request.NativeWebRequest)": ["PATH"],
+	"org.springframework.web.bind.annotation.support.HandlerMethodInvoker.resolvePathVariable(java.lang.String,org.springframework.core.MethodParameter,org.springframework.web.context.request.NativeWebRequest,java.lang.Object)": ["PATH"],
+	"javax.servlet.http.Part.getSubmittedFileName()": ["POST"],
+	"javax.servlet.http.Part.getName()": ["POST"],
+	"javax.servlet.http.Part.getInputStream()": ["POST"],
+	"javax.servlet.http.Part.getHeaders(java.lang.String)": ["HEADER"],
+	"javax.servlet.http.Part.getHeaderNames()": ["HEADER"],
+	"javax.servlet.http.Part.getHeader(java.lang.String)": ["HEADER"],
+	"javax.servlet.http.Part.getContentType()": ["HEADER"],
+	"javax.servlet.http.HttpServletRequest.getRequestedSessionId()": ["HEADER"],
+	"javax.servlet.http.HttpServletRequest.getQueryString()": ["HEADER"],
+	"javax.servlet.http.HttpServletRequest.getParts()": ["POST"],
+	"javax.servlet.http.HttpServletRequest.getPart(java.lang.String)": ["POST"],
+	"javax.servlet.http.HttpServletRequest.getParameterValues(java.lang.String)": ["GET", "POST"],
+	"javax.servlet.http.HttpServletRequest.getHeaders(java.lang.String)": ["HEADER"],
+	"javax.servlet.http.HttpServletRequest.getHeader(java.lang.String)": ["HEADER"],
+	"javax.servlet.http.HttpServletRequest.getCookies()": ["COOKIE"],
+	"jakarta.servlet.http.Part.getSubmittedFileName()": ["POST"],
+	"jakarta.servlet.http.Part.getName()": ["POST"],
+	"jakarta.servlet.http.Part.getInputStream()": ["POST"],
+	"jakarta.servlet.http.Part.getHeaders(java.lang.String)": ["HEADER"],
+	"jakarta.servlet.http.Part.getHeaderNames()": ["HEADER"],
+	"jakarta.servlet.http.Part.getHeader(java.lang.String)": ["HEADER"],
+	"jakarta.servlet.http.Part.getContentType()": ["HEADER"],
+	"jakarta.servlet.http.HttpServletRequest.getRequestedSessionId()": ["HEADER"],
+	"jakarta.servlet.http.HttpServletRequest.getQueryString()": ["GET"],
+	"jakarta.servlet.http.HttpServletRequest.getParts()": ["POST"],
+	"jakarta.servlet.http.HttpServletRequest.getPart(java.lang.String)": ["POST"],
+	"jakarta.servlet.http.HttpServletRequest.getParameter(java.lang.String)": ["GET", "POST"],
+	"jakarta.servlet.http.HttpServletRequest.getHeaders(java.lang.String)": ["HEADER"],
+	"jakarta.servlet.http.HttpServletRequest.getHeaderNames()": ["HEADER"],
+	"jakarta.servlet.http.HttpServletRequest.getHeader(java.lang.String)": ["HEADER"],
+	"jakarta.servlet.http.HttpServletRequest.getCookies()": ["COOKIE"],
+	"javax.servlet.http.HttpServletRequest.getParameter(java.lang.String)": ["GET", "POST"],
+	"javax.servlet.http.HttpServletRequest.getInputStream()": ["POST"],
+	"org.springframework.http.server.ServletServerHttpRequest.getBodyFromServletRequestParameters(javax.servlet.http.HttpServletRequest)": ["POST"],
+	"org.springframework.http.server.ServletServerHttpRequest.getBodyFromServletRequestParameters(jakarta.servlet.http.HttpServletRequest)": ["POST"]
+}

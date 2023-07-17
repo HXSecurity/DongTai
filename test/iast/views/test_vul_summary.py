@@ -8,11 +8,9 @@
 
 
 from rest_framework.test import APITestCase
-from django.urls import include, path, reverse
 from dongtai_common.models.user import User
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.models.hook_type import HookType
 import time
 import unittest
 
@@ -21,6 +19,7 @@ import unittest
 class ScanStrategyTestCase(APITestCase):
     def setUp(self):
         self.user = User.objects.filter(pk=1).first()
+        assert self.user is not None
         self.client.force_authenticate(user=self.user)
         agent = IastAgent.objects.create(token='testtoken',
                                          version='121231',

@@ -18,11 +18,11 @@ class VulEngineV2(object):
         """
         构造函数，初始化相关数据
         """
-        self._method_pool = None
-        self.method_pool_asc = None
+        self._method_pool = []
+        self.method_pool_asc = []
         self._vul_method_signature = None
         self.hit_vul = False
-        self.vul_stack = None
+        self.vul_stack = []
         self.pool_value = None
         self.vul_source_signature = None
         self.node_data = {}

@@ -38,7 +38,8 @@ class LogService:
             if not self.socket:
                 self.create_socket()
             if self.socket:
-                self.socket.sendall(bytes(message + "\n", encoding='utf-8'), socket.MSG_DONTWAIT)
+                self.socket.sendall(bytes(message + "\n", encoding='utf-8'),
+                                    socket.MSG_DONTWAIT)
                 return True
         except Exception as e:
             logger.error('failed to send message to log service', exc_info=e)

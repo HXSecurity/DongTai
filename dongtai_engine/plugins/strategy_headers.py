@@ -5,24 +5,25 @@
 # project: DongTai-engine
 import uuid
 from django.core.cache import cache
-import random
 import time
 from http.client import HTTPResponse
 from http.client import BadStatusLine
 from io import BytesIO
 
 from celery.apps.worker import logger
-from django.db.models import Q
-from dongtai_common.models.project import IastProject
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.utils import const
 
 from dongtai_engine.plugins import is_strategy_enable
-from dongtai_web.vul_log.vul_log import log_vul_found, log_recheck_vul
+from dongtai_web.vul_log.vul_log import log_vul_found
 from dongtai_common.models.header_vulnerablity import IastHeaderVulnerability, IastHeaderVulnerabilityDetail
 from django.db import IntegrityError
-from dongtai_engine.plugins.project_time_update import project_time_stamp_update
+from dongtai_engine.plugins.project_time_update import (
+    project_time_stamp_update,
+    project_version_time_stamp_update,
+)
+from dongtai_engine.signals import send_notify
 
 
 class FakeSocket():
@@ -36,7 +37,7 @@ class FakeSocket():
 
 def parse_response(http_response_str):
     source = FakeSocket(http_response_str.encode())
-    response = HTTPResponse(source)
+    response = HTTPResponse(source)  # type:ignore
     response.begin()
     return response
 
@@ -140,6 +141,8 @@ def save_vul(vul_type, method_pool, position=None, data=None):
     timestamp = int(time.time())
     project_time_stamp_update.apply_async(
         (method_pool.agent.bind_project_id, ), countdown=5)
+    project_version_time_stamp_update.apply_async(
+        (method_pool.agent.project_version_id, ), countdown=5)
     if vul:
         vul.url = ''
         vul.req_header = method_pool.req_header
@@ -200,7 +203,12 @@ def save_vul(vul_type, method_pool, position=None, data=None):
             server_id=method_pool.agent.server_id,
         )
         log_vul_found(vul.agent.user_id, vul.agent.bind_project.name,
-                      vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)
+                      vul.agent.bind_project_id, vul.id, vul.strategy.vul_name)  # type: ignore
+        send_notify.send_robust(
+            sender=save_vul,
+            vul_id=vul.id,
+            department_id=method_pool.agent.department_id,
+        )
     cache.delete(cache_key)
     header_vul = None
     if not IastHeaderVulnerability.objects.filter(

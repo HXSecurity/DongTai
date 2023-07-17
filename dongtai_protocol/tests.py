@@ -19,6 +19,7 @@ import unittest
 from django.test import TestCase
 
 
+@unittest.skip("waiting for rebuild mock data")
 class AgentMethodPoolUploadTestCase(AgentTestCase):
 
     def test_benchmark_agent_method_pool_upload(self):
@@ -36,7 +37,8 @@ class AgentMethodPoolUploadTestCase(AgentTestCase):
             assert res == ""
             assert MethodPool.objects.filter(
                 url=report['detail']["url"]).exists()
-        assert MethodPool.objects.filter(agent_id=self.agent_id).count() == len(data)
+        assert MethodPool.objects.filter(
+            agent_id=self.agent_id).count() == len(data)
 
 
 def download_file(url, filepath):
@@ -59,6 +61,13 @@ class AgentHeartBeatTestCase(AgentTestCase):
 
     def test_agent_replay_queryset(self):
         self.agent = IastAgent.objects.filter(pk=self.agent_id).first()
+        assert self.agent is not None
+        assert self.agent.filepathsimhash is not None
+        assert self.agent.language is not None
+        assert self.agent.servicetype is not None
+        assert self.agent.server is not None
+        assert self.agent.server.path is not None
+        assert self.agent.server.hostname is not None
         project_agents = IastAgent.objects.values_list('id', flat=True).filter(
             bind_project_id=self.agent.bind_project_id,
             language=self.agent.language).union(
@@ -70,10 +79,11 @@ class AgentHeartBeatTestCase(AgentTestCase):
                     self.agent.server.hostname,
                     language=self.agent.language))
         replay_queryset = IastReplayQueue.objects.values(
-            'id', 'relation_id', 'uri', 'method', 'scheme', 'header',
-            'params', 'body', 'replay_type').filter(
-                agent_id__in=project_agents,
-                state__in=[const.WAITING, const.SOLVING])[:200]
+            'id', 'relation_id', 'uri', 'method', 'scheme', 'header', 'params',
+            'body',
+            'replay_type').filter(agent_id__in=project_agents,
+                                  state__in=[const.WAITING,
+                                             const.SOLVING])[:200]
 
     def test_agent_replay_queryset_result(self):
         self.agent = IastAgent.objects.filter(pk=self.agent_id).first()
@@ -94,8 +104,10 @@ def get_replay_id_set(replay_list: list) -> set:
 
 @unittest.skip("waiting for rebuild mock data")
 class AgentSaasMethodPoolParseApiTestCase(AgentTestCase):
+
     def test_api_parse(self):
         mp = MethodPool.objects.filter(pk=500483715).first()
+        assert mp is not None and mp.req_header is not None
         mp.req_header
         headers_bytes = base64.b64decode(mp.req_header)
         from dongtai_engine.filters.utils import parse_headers_dict_from_bytes

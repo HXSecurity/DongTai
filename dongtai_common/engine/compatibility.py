@@ -62,7 +62,10 @@ def parse_target_value_length(target_value: str) -> int:
     if not target_value:
         return 0
     position = target_value.rfind('*')
-    len_of_origin = int(target_value[position + 1::])
+    try:
+        len_of_origin = int(target_value[position + 1::])
+    except ValueError as e:
+        return len(target_value)
     return len_of_origin
 
 

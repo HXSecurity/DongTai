@@ -14,9 +14,13 @@ from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
+import logging
+
+
+logger = logging.getLogger('dongtai-core')
 
 class IastVulnerabilityStatus(models.Model):
-    name = models.CharField(max_length=100, blank=True, default='')
+    name = models.CharField(max_length=100, blank=True)
 
     class Meta:
         managed = get_managed()
@@ -25,30 +29,27 @@ class IastVulnerabilityStatus(models.Model):
 
 class IastVulnerabilityModel(models.Model):
     id = models.BigAutoField(primary_key=True)
-    search_keywords = models.CharField(max_length=1000, blank=True, null=True)
+    search_keywords = models.CharField(max_length=1000, blank=True)
     level = models.ForeignKey(IastVulLevel,
                               models.DO_NOTHING,
-                              blank=True,
-                              null=True)
-    url = models.CharField(max_length=2000, blank=True, null=True)
-    uri = models.CharField(max_length=255, blank=True, null=True)
+                              blank=True)
+    url = models.CharField(max_length=2000, blank=True)
+    uri = models.CharField(max_length=255, blank=True)
     pattern_uri = models.CharField(max_length=255, blank=True, null=True)
     # 模糊搜索 全文索引 查询
     vul_title = models.CharField(max_length=255,
                                  blank=True,
-                                 null=True,
                                  default="")
-    http_method = models.CharField(max_length=10, blank=True, null=True)
-    http_scheme = models.CharField(max_length=255, blank=True, null=True)
-    http_protocol = models.CharField(max_length=255, blank=True, null=True)
-    req_header = models.TextField(blank=True, null=True)
+    http_method = models.CharField(max_length=10, blank=True)
+    http_scheme = models.CharField(max_length=255, blank=True)
+    http_protocol = models.CharField(max_length=255, blank=True)
+    req_header = models.TextField(blank=True)
     req_params = models.CharField(max_length=2000,
                                   blank=True,
-                                  null=True,
                                   default="")
-    req_data = models.TextField(blank=True, null=True)
-    res_header = models.TextField(blank=True, null=True)
-    res_body = models.TextField(blank=True, null=True)
+    req_data = models.TextField(blank=True, )
+    res_header = models.TextField(blank=True)
+    res_body = models.TextField(blank=True)
     full_stack = models.TextField(blank=True, null=True)
     top_stack = models.CharField(max_length=255, blank=True, null=True)
     bottom_stack = models.CharField(max_length=255, blank=True, null=True)
@@ -56,22 +57,20 @@ class IastVulnerabilityModel(models.Model):
     taint_position = models.CharField(max_length=255, blank=True, null=True)
     agent = models.ForeignKey(IastAgent,
                               models.DO_NOTHING,
-                              blank=True,
-                              null=True)
+                              blank=True)
     language = models.CharField(max_length=10, blank=True, null=True)
-    context_path = models.CharField(max_length=255, blank=True, null=True)
-    counts = models.IntegerField(blank=True, null=True)
-    first_time = models.IntegerField(blank=True, null=True)
-    latest_time = models.IntegerField(blank=True, null=True)
-    latest_time_desc = models.IntegerField(blank=True, null=True, default=0)
-    level_id_desc = models.SmallIntegerField(blank=True, null=True, default=0)
-    client_ip = models.CharField(max_length=255, blank=True, null=True)
+    context_path = models.CharField(max_length=255, blank=True)
+    counts = models.IntegerField(blank=True)
+    first_time = models.IntegerField(blank=True)
+    latest_time = models.IntegerField(blank=True)
+    latest_time_desc = models.IntegerField(blank=True, default=0)
+    level_id_desc = models.SmallIntegerField(blank=True, default=0)
+    client_ip = models.CharField(max_length=255, blank=True)
     param_name = models.CharField(max_length=255,
                                   blank=True,
-                                  null=True,
-                                  default='')
-    is_del = models.SmallIntegerField(blank=True, null=True, default=0)
-    method_pool_id = models.IntegerField(default=-1, blank=True, null=True)
+                                  null=True)
+    is_del = models.SmallIntegerField(blank=True, default=0)
+    method_pool_id = models.IntegerField(default=-1, blank=True)
     strategy = models.ForeignKey(IastStrategyModel,
                                  on_delete=models.DO_NOTHING,
                                  db_constraint=False,
@@ -83,21 +82,19 @@ class IastVulnerabilityModel(models.Model):
     status = models.ForeignKey(IastVulnerabilityStatus,
                                on_delete=models.DO_NOTHING,
                                db_constraint=False,
-                               db_column='status_id')
+                               db_column='status_id',
+                               null=True)
     project = models.ForeignKey(IastProject,
                                 on_delete=models.CASCADE,
                                 blank=True,
-                                null=True,
                                 default=-1)
     project_version = models.ForeignKey(IastProjectVersion,
                                         on_delete=models.CASCADE,
                                         blank=True,
-                                        null=True,
                                         default=-1)
     server = models.ForeignKey(IastServer,
                                on_delete=models.CASCADE,
                                blank=True,
-                               null=True,
                                default=-1)
 
     class Meta:
@@ -118,8 +115,13 @@ class IastVulnerabilityModel(models.Model):
         if not self.pattern_uri:
             self.pattern_uri = self.pattern_uri
         self.search_keywords = " ".join(key_works)
-        self.latest_time_desc = -int(self.latest_time)
-        self.level_id_desc = -int(self.level_id)
+        try:
+            self.latest_time_desc = -int(self.latest_time)
+            self.level_id_desc = -int(self.level_id)
+        except TypeError as e:
+            logger.error(
+                "level_id: {self.level_id} latest_time: {self.latest_time}",
+                exc_info=e)
         super(IastVulnerabilityModel, self).save(*args, **kwargs)
 
 

@@ -1,13 +1,11 @@
 from django.db import models
 
-from dongtai_common.models.agent import IastAgent
 from dongtai_common.utils.settings import get_managed
 from django.db.models import IntegerChoices
 from dongtai_common.models.user import User
-from dongtai_common.models.asset import Asset
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from time import time
-from dongtai_common.models.asset_vul import IastAssetVul, IastVulAssetRelation
+from dongtai_common.models.asset_vul import IastAssetVul
 
 
 class MessageTypeChoices(IntegerChoices):
@@ -18,10 +16,10 @@ class MessageTypeChoices(IntegerChoices):
 
 
 class IastVulLog(models.Model):
-    msg_type = models.IntegerField(blank=True, null=True)
-    msg = models.TextField(blank=True, null=True)
-    meta_data = models.JSONField(blank=True, null=True)
-    datetime = models.IntegerField(blank=True, null=True, default=time)
+    msg_type = models.IntegerField()
+    msg = models.TextField()
+    meta_data = models.JSONField()
+    datetime = models.IntegerField(default=lambda: int(time()))
     vul = models.ForeignKey(IastVulnerabilityModel,
                             models.DO_NOTHING,
                             default=-1,

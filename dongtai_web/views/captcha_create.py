@@ -8,7 +8,6 @@ from captcha.models import CaptchaStore
 from dongtai_common.endpoint import R
 from rest_framework.views import APIView
 
-
 class CaptchaCreate(APIView):
     def get(self, request):
         hash_key = CaptchaStore.generate_key()

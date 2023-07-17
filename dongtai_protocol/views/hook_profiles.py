@@ -9,13 +9,13 @@ import logging
 from dongtai_common.models.hook_strategy import HookStrategy
 from dongtai_common.models.hook_type import HookType
 from drf_spectacular.utils import extend_schema
-from rest_framework.request import Request
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.utils import const
 from dongtai_common.endpoint import OpenApiEndPoint, R
 from django.db.models import (Prefetch, OuterRef, Subquery)
 # note: 当前依赖必须保留，否则无法通过hooktype反向查找策略
 from dongtai_protocol.api_schema import DongTaiParameter
+from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
 
 logger = logging.getLogger("django")
@@ -100,7 +100,7 @@ class HookProfilesEndPoint(OpenApiEndPoint):
                         "stack_blacklist": strategy.get("stack_blacklist"),
                     })
                 strategy_details = sorted(strategy_details,
-                                          key=lambda item: item['value'])
+                                          key=lambda item: str(item['value']))
                 if not strategy_details:
                     continue
                 profiles.append({
@@ -113,12 +113,16 @@ class HookProfilesEndPoint(OpenApiEndPoint):
                           key=lambda item: (item['value'], item['type']))
         return profiles
 
-    @extend_schema(description='Pull Agent Engine Hook Rule',
-                   parameters=[
-                       DongTaiParameter.LANGUAGE,
-                   ],
-                   responses=R,
-                   methods=['GET'])
+    @extend_schema(
+        description='Pull Agent Engine Hook Rule',
+        parameters=[
+            DongTaiParameter.LANGUAGE,
+        ],
+        responses=R,
+        methods=['GET'],
+        summary="拉取 Agent Engine Hook Rule",
+        tags=['Agent服务端交互协议'],
+    )
     def get(self, request):
         user = request.user
 

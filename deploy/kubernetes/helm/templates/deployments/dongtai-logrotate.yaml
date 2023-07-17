@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "dongtai.fullname" . }}-logrotate
+  namespace: {{.Release.Namespace}}
+  labels:
+    app: {{ template "dongtai.fullname" . }}-logrotate
+    {{- include "dongtai.labels" .  | nindent 4 }}
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{ template "dongtai.fullname" . }}-logrotate
+      {{- include "dongtai.labels" .  | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        build_number: "{{ template "dongtai.fullname" . }}"
+        {{- if not .Values.skipistio }}{{ include "dongtai.istiolabels" . | nindent 8}}{{ end }}
+      labels:
+        app: {{ template "dongtai.fullname" . }}-logrotate
+        {{- include "dongtai.labels" .  | nindent 8 }}
+    spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+      containers:
+      - image: {{ .Values.images }}/dongtai-logrotate:{{ .Values.tag }}
+        name: logrotate
+        securityContext:
+          runAsUser: 0
+        {{ include "deploy.imagePullPolicy" . }}
+{{- if .Values.storage.persistentVolumeClaim }}
+        volumeMounts:
+        - name: {{ template "dongtai.fullname" . }}-log-path
+          mountPath: /tmp/logstash
+      volumes:
+      - name: {{ template "dongtai.fullname" . }}-log-path
+        persistentVolumeClaim:
+          {{ include "deploy.config.persistentVolumeClaim" . }}
+{{ end -}}

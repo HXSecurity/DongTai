@@ -10,6 +10,7 @@ from dongtai_common.endpoint import UserEndPoint
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.projecttemplate.update_department_data import update_department_data
 import time
+from drf_spectacular.utils import extend_schema
 
 logger = logging.getLogger("dongtai-webapi")
 
@@ -20,6 +21,10 @@ class UserLogin(UserEndPoint):
     name = "user_views_login"
     description = _("User login")
 
+    @extend_schema(
+        summary=_("User login"),
+        tags=[_("User")],
+    )
     def post(self, request):
         """{
         'username': "",

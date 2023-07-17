@@ -10,9 +10,9 @@ from dongtai_common.utils.settings import get_managed
 
 
 class IastDeployDesc(models.Model):
-    desc = models.TextField(blank=True, null=True)
-    middleware = models.CharField(max_length=255, blank=True, null=True)
-    language = models.CharField(max_length=255, blank=True, null=True)
+    desc = models.TextField()
+    middleware = models.CharField(max_length=255, blank=True)
+    language = models.CharField(max_length=255, blank=True)
 
     class Meta:
         managed = get_managed()

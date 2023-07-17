@@ -12,7 +12,6 @@ from dongtai_web.utils import extend_schema_with_envcheck_v2, get_response_seria
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
-from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 from dongtai_common.models.assetv2 import AssetV2, AssetV2Global, IastAssetLicense
 from rest_framework_dataclasses.serializers import DataclassSerializer
 from dataclasses import dataclass, field
@@ -91,6 +90,8 @@ class NewPackageSummary(UserEndPoint):
 
     @extend_schema_with_envcheck_v2(
         parameters=[PackageSummaryArgsSerializer],
+        tags=[_('Component')],
+        summary="组件概况",
         responses={200: FullSummaryResponseSerializer})
     def get(self, request):
         ser = PackageSummaryArgsSerializer(data=request.query_params)

@@ -8,13 +8,10 @@
 
 import json
 import logging
-import random
 import time
 
-from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.models.project import IastProject
 from dongtai_common.utils import const
 from dongtai_conf import settings
 from dongtai_protocol.report.handler.report_handler_interface import IReportHandler
@@ -25,6 +22,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import ValidationError
 from dongtai_web.vul_log.vul_log import log_vul_found
 from dongtai_common.models.agent import IastAgent
+from dongtai_engine.signals import send_notify
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -131,5 +129,10 @@ class HardEncodeVulHandler(IReportHandler):
             project_version_id=iast_vul.agent.project_version_id,
             pk__lt=iast_vul.id).delete()
         log_vul_found(iast_vul.agent.user_id, iast_vul.agent.bind_project.name,
-                      iast_vul.agent.bind_project_id, iast_vul.id,
+                      iast_vul.agent.bind_project_id, iast_vul.id,  # type: ignore
                       iast_vul.strategy.vul_name)
+        send_notify.send_robust(
+            sender=self.__class__,
+            vul_id=iast_vul.id,
+            department_id=self.agent.department_id,
+        )

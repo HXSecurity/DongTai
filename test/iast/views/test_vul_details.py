@@ -16,6 +16,7 @@ from dongtai_web.views.vul_details import VulDetail
 class VulDetailTestCase(APITestCase):
     def login(self):
         self.user = User.objects.filter(pk=1).first()
+        assert self.user is not None
         self.client.force_authenticate(user=self.user)
 
     def setUp(self):

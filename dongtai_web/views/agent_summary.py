@@ -3,12 +3,17 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_common.models.agent import IastAgent
 from dongtai_web.views.utils.commonstats import get_summary_by_agent_ids
 from dongtai_common.models.project_version import IastProjectVersion
-
+from drf_spectacular.utils import extend_schema
 
 class AgentSummary(UserEndPoint):
     name = "api-v1-agent-summary-<id>"
     description = _("Item details - Summary")
 
+    @extend_schema(
+        tags=[_('Agent')],
+        summary="探针数量统计",
+        deprecated=True,
+    )
     def get(self, request, pk):
         try:
             pk = int(pk)

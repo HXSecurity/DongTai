@@ -22,6 +22,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import gettext_lazy
 from dongtai_conf.settings import ELASTICSEARCH_STATE
 import logging
+from dongtai_common.utils.const import OPERATE_GET
 
 logger = logging.getLogger('dongtai-webapi')
 
@@ -144,7 +145,7 @@ _GetResponseSerializer = get_response_serializer(MethodPoolSearchResponseSer())
 class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
     @extend_schema_with_envcheck(
         request=MethodPoolSearchProxySer,
-        tags=[_('Method Pool')],
+        tags=[_('Method Pool'), OPERATE_GET],
         summary=_('Method Pool Search'),
         description=_("Search for the method pool information according to the following conditions, the default is regular expression input, regular specifications refer to REGEX POSIX 1003.2"
                       ),
@@ -278,8 +279,8 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     filter(lambda _: _['method_pool_id'] == method_pool['id'],
                            vulnerablities)):
                 _ = {}
-                type_ = list(
-                    filter(lambda x: x is not None, [vulnerablity['strategy__vul_name'], vulnerablity['hook_type__name']]))
+                type_ = [x for x in [vulnerablity['strategy__vul_name'],
+                         vulnerablity['hook_type__name']] if x is not None]
                 _['vulnerablity_type'] = type_[0] if type_ else ''
                 _['vulnerablity_id'] = vulnerablity['id']
                 _['vulnerablity_hook_type_id'] = vulnerablity['hook_type_id']

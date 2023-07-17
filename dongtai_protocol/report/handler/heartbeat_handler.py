@@ -13,14 +13,13 @@ from dongtai_common.models.replay_queue import IastReplayQueue
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.utils import const
 from django.utils.translation import gettext_lazy as _
-from dongtai_common.models.server import IastServer
 from dongtai_protocol.report.handler.report_handler_interface import IReportHandler
 from dongtai_protocol.report.report_handler_factory import ReportHandler
-from django.db.models import (QuerySet, Q, F)
-from dongtai_common.models.project import IastProject, VulValidation
+from django.db.models import (QuerySet, Q)
+from dongtai_common.models.project import VulValidation
 from dongtai_common.utils.systemsettings import get_vul_validate
-from dongtai_common.models.agent import IastAgent
 from django.core.cache import cache
+from dongtai_web.vul_log.vul_log import log_recheck_vul
 
 logger = logging.getLogger('dongtai.openapi')
 
@@ -77,14 +76,14 @@ class HeartBeatHandler(IReportHandler):
             default_dict['report_queue'] = self.report_queue
             default_dict['method_queue'] = self.method_queue
             default_dict['replay_queue'] = self.replay_queue
-            IastHeartbeat.objects.update_or_create(agent_id=self.agent_id,
-                                                   defaults=default_dict)
         elif self.return_queue == 0:
             if self.req_count is not None:
                 default_dict['req_count'] = self.req_count
             default_dict['memory'] = self.memory
             default_dict['cpu'] = self.cpu
             default_dict['disk'] = self.disk
+            IastHeartbeat.objects.update_or_create(agent_id=self.agent_id,
+                                                   defaults=default_dict)
         else:
             default_dict['memory'] = self.memory
             default_dict['cpu'] = self.cpu
@@ -153,9 +152,12 @@ class HeartBeatHandler(IReportHandler):
                 IastReplayQueue.objects.filter(id__in=failure_ids).update(
                     update_time=timestamp, state=const.SOLVED)
 
-                IastVulnerabilityModel.objects.filter(
-                    id__in=success_vul_ids).update(latest_time=timestamp,
-                                                   status_id=2)
+                log_recheck_vul(
+                    self.agent.user.id,
+                    self.agent.user.username,
+                    success_vul_ids,
+                    "验证中",
+                )
                 IastVulnerabilityModel.objects.filter(
                     id__in=failure_vul_ids).update(latest_time=timestamp,
                                                    status_id=1)

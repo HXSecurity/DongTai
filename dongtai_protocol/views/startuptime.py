@@ -27,7 +27,7 @@ logger = logging.getLogger("django")
 class StartupTimeEndPoint(OpenApiEndPoint):
     name = "api-v1-startuptime"
 
-    @extend_schema(description='Agent Limit', auth=[DongTaiAuth.TOKEN])
+    @extend_schema(tags=['Agent服务端交互协议'], summary="agent启动时间", deprecated=True)
     def post(self, request: Request):
         agent_id = request.data.get('agentId', None)
         startup_time = request.data.get('startupTime', None)
@@ -43,7 +43,7 @@ class StartupTimeEndPoint(OpenApiEndPoint):
 class StartupTimeGzipEndPoint(StartupTimeEndPoint):
     name = "api-v1-startuptime"
 
-    @extend_schema(description='Agent Limit', auth=[DongTaiAuth.TOKEN])
+    @extend_schema(tags=['Agent服务端交互协议'], summary="agent启动时间", deprecated=True)
     def post(self, request: Request):
         try:
             param = parse_data(request.read())

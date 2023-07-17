@@ -167,12 +167,16 @@ class RequestReplayEndPoint(UserEndPoint):
         return replay_queue.id
 
     @extend_schema_with_envcheck(
-        [], {
+        [],
+        {
             'methodPoolId': 'int',
             'replayRequest': 'str',
             'agent_id': 'int',
             'replay_type': 'int'
-        })
+        },
+        tags=['重放'],
+        summary="请求包重放",
+    )
     def post(self, request):
         """
         :param request:{
@@ -255,19 +259,23 @@ class RequestReplayEndPoint(UserEndPoint):
                     e)))
         return '{header}\n\n{body}'.format(header=_data, body=body)
 
-    @extend_schema_with_envcheck([
-        {
-            'name': "replayid",
-            'type': int,
-            'required': True,
-        },
-        {
-            'name': "replay_type",
-            'type': int,
-            'required': False,
-            'description': "available options are (2,3)",
-        },
-    ])
+    @extend_schema_with_envcheck(
+        [
+            {
+                'name': "replayid",
+                'type': int,
+                'required': True,
+            },
+            {
+                'name': "replay_type",
+                'type': int,
+                'required': False,
+                'description': "available options are (2,3)",
+            },
+        ],
+        tags=['重放'],
+        summary="获取请求包重放详情",
+    )
     def get(self, request):
         replay_id = request.query_params.get('replayId')
         # auth_agents = self.get_auth_agents_with_user(request.user)

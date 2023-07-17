@@ -21,9 +21,9 @@ class Talent(models.Model):
             'unique': _("A talent with that talent name already exists."),
         },
     )
-    create_time = models.IntegerField(blank=True, null=True)
-    update_time = models.IntegerField(blank=True, null=True)
-    created_by = models.IntegerField(blank=True, null=True)
+    create_time = models.IntegerField()
+    update_time = models.IntegerField()
+    created_by = models.IntegerField()
     is_active = models.BooleanField(
         _('active'),
         default=True,

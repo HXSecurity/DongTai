@@ -1,20 +1,12 @@
 import logging
 
 from dongtai_common.endpoint import UserEndPoint, R
-from dongtai_common.models.hook_type import HookType
-from dongtai_common.utils import const
 
-from dongtai_web.serializers.hook_type_strategy import HookTypeSerialize
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from django.utils.text import format_lazy
+from dongtai_web.utils import extend_schema_with_envcheck
 from rest_framework.serializers import ValidationError
-from dongtai_web.serializers.hook_strategy import HOOK_TYPE_CHOICE
 from rest_framework import viewsets
-from django.db import connection
-from django.db import models
-from dongtai_common.permissions import TalentAdminPermission
 from dongtai_common.models.header_vulnerablity import IastHeaderVulnerability, IastHeaderVulnerabilityDetail
 from django.db.models import Q
 from typing import Dict
@@ -62,7 +54,7 @@ class HeaderVulViewSet(UserEndPoint, viewsets.ViewSet):
     @extend_schema_with_envcheck(
         [HeaderVulArgsSerializer],
         tags=[_('Header Vul')],
-        summary=_('Header Vul List'),
+        summary=_('Header Vul 列表'),
         description=_("Get the item corresponding to the user"),
     )
     def list(self, request):
@@ -84,7 +76,7 @@ class HeaderVulViewSet(UserEndPoint, viewsets.ViewSet):
 
     @extend_schema_with_envcheck(
         tags=[_('Header Vul')],
-        summary=_('Header Vul delete'),
+        summary=_('Header Vul 删除'),
         description=_("Get the item corresponding to the user"),
     )
     def delete(self, request, pk):
