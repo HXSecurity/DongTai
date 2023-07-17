@@ -19,7 +19,7 @@ def get_or_none(classmodel, function, **kwargs):
 
 class IastVulRecheckPayloadSerializer(serializers.Serializer):
     value = serializers.CharField()
-    status = serializers.IntegerField()
+    status = serializers.IntegerField(min_value=1, max_value=2**31 - 1)
     strategy_id = serializers.IntegerField(min_value=1, max_value=2**31 - 1)
     language_id = serializers.IntegerField(min_value=1, max_value=2**31 - 1)
 
