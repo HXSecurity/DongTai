@@ -8,7 +8,7 @@ import logging
 
 from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint
-from dongtai_common.models.project import IastProject
+from dongtai_common.models.project import IastProject, ProjectStatus
 from dongtai_web.serializers.project import (
     ProjectSerializer,
     get_vul_levels_dict,
@@ -30,12 +30,11 @@ class _ProjectsArgsSerializer(serializers.Serializer):
         default=None,
         help_text=_("The name of the item to be searched, supports fuzzy search."),
     )
-    status = serializers.IntegerField(
+    status = serializers.ChoiceField(
+        ProjectStatus.choices,
         default=None,
         allow_null=True,
-        min_value=0,
-        max_value=10,
-        help_text=_("The project status."),
+        help_text="".join([f" {i.label}: {i.value} " for i in ProjectStatus]),
     )
     exclude_vul_status = serializers.IntegerField(
         default=None,

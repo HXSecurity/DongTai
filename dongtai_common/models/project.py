@@ -21,9 +21,9 @@ class VulValidation(models.IntegerChoices):
 
 
 class ProjectStatus(models.IntegerChoices):
-    NORMAL = 0
-    ERROR = 1
-    OFFLINE = 2
+    NORMAL = 0, "正常"
+    ERROR = 1, "错误"
+    OFFLINE = 2, "离线"
     __empty__ = 0
 
 class IastProjectTemplate(models.Model):
