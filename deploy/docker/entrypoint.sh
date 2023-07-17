@@ -23,7 +23,9 @@ elif [ "$1" = "beat" ]; then
 elif [ "$1" = "healthcheck" ]; then
   celery -A dongtai_conf inspect ping -d celery@$(hostname)
 else
+  if [ ! -n "${2}" ]; then
 	echo "Get the latest vulnerability rules." && python manage.py load_hook_strategy
 	if [ $? -ne 0 ]; then echo "ERROR: Lost connection to MySQL server !!!" && exit 1 ; else echo "succeed" ;fi
+	fi
 	uwsgi --ini /opt/dongtai/dongtai_conf/conf/uwsgi.ini $DONGTAI_CONCURRENCY
 fi

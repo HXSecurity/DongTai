@@ -94,6 +94,10 @@ volumeMounts:
   - name: {{ template "dongtai.fullname" . }}-configfile
     mountPath: /opt/dongtai/dongtai_conf/conf/config.ini
     subPath: config.ini
+{{- if .Values.develop.dev }}
+  - name: dongtai-tmp-volumezip
+    mountPath: /tmp/iast_cache/package
+{{- end -}}
 {{- if .Values.storage.persistentVolumeClaim }}
   - name: {{ template "dongtai.fullname" . }}-log-path
     mountPath: /tmp/logstash
@@ -128,6 +132,20 @@ volumeMounts:
 {{- end -}}
 {{- define "deploy.imagePullPolicy" -}}
 imagePullPolicy: {{.Values.imagePullPolicy}}
+{{- end -}}
+{{- define "deploy.devinitContainers" -}}
+initContainers:
+  - name: init-dongtai-agentcontainer
+    command: ["/bin/sh", "-c"]
+    args: ["cd /tmp/iast_cache/package && curl -s https://charts.dongtai.io/agent_{{.Values.develop.agentZip}}/java/latest/agent_latest.tar.gz | tar -xvzf -"]
+    image: curlimages/curl
+    imagePullPolicy: Always
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - name: dongtai-tmp-volumezip
+      mountPath: /tmp/iast_cache/package
 {{- end -}}
 
 {{- define "deploy.initContainers" -}}
@@ -192,6 +210,10 @@ volumes:
   - name: {{ template "dongtai.fullname" . }}-log-path
     persistentVolumeClaim:
       {{ include "deploy.config.persistentVolumeClaim" . }}
+{{- end -}}
+{{- if .Values.develop.dev }}
+  - name: dongtai-tmp-volumezip
+    emptyDir: {}
 {{- end -}}
 {{- end -}}
 
