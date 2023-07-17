@@ -55,8 +55,9 @@ class VulEngine(object):
         self._method_pool = sorted(method_pool,
                                    key=lambda e: e.__getitem__('invokeId'),
                                    reverse=True)
-        if method_pool_is_3(method_pool[0]):
-            self._method_pool = list(map(method_pool_3_to_2, self._method_pool))
+        if method_pool and method_pool_is_3(method_pool[0]):
+            self._method_pool = list(map(method_pool_3_to_2,
+                                         self._method_pool))
             self.version = 3
         self._method_pool = sorted(self._method_pool,
                                    key=lambda e: e.__getitem__('invokeId'),
