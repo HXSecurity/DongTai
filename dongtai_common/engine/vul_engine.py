@@ -184,7 +184,7 @@ class VulEngine(object):
                         self.vul_source_signature = f"{sub_method.get('className')}.{sub_method.get('methodName')}"
                         final_stack.append(
                             self.copy_method(sub_method, source=True))
-                    if sub_method['invokeId'] == t:
+                    elif sub_method['invokeId'] == t:
                         self.taint_value = sub_method['targetValues']
                         final_stack.append(
                             self.copy_method(sub_method, sink=True))
