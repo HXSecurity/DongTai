@@ -9,17 +9,11 @@ from dongtai_common.endpoint import UserEndPoint
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
-from dongtai_common.models.vul_level import IastVulLevel
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_web.base.project_version import get_project_version, get_project_version_by_id, ProjectsVersionDataSerializer
 from django.utils.translation import gettext_lazy as _
-from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
 from dongtai_web.serializers.project import ProjectSerializer
-from dongtai_common.models.hook_type import HookType
-from django.db.models import Q
 from rest_framework import serializers
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_web.views.utils.commonstats import get_summary_by_project
 from dongtai_common.utils import const
 
@@ -97,7 +91,7 @@ class ProjectSummary(UserEndPoint):
 
     @extend_schema_with_envcheck(
         tags=[_('Project')],
-        summary=_('Projects Summary'),
+        summary=_('项目总结'),
         description=_("Get project deatils and its statistics data about vulnerablity."
                       ),
         response_schema=_ProjectSummaryResponseSerializer,

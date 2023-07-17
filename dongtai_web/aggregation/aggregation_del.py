@@ -4,10 +4,8 @@ from dongtai_common.endpoint import UserEndPoint
 from dongtai_common.models.asset_vul import IastVulAssetRelation
 
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.models.asset import Asset
 from django.utils.translation import gettext_lazy as _
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from django.db import connection
+from dongtai_web.utils import extend_schema_with_envcheck
 from dongtai_web.aggregation.aggregation_common import turnIntListOfStr
 import logging
 
@@ -21,7 +19,7 @@ class DelVulMany(UserEndPoint):
     @extend_schema_with_envcheck(
 
         tags=[_('VulList')],
-        summary=_('Vul List delete'),
+        summary=_('删除漏洞列表'),
         description=_(
             "delete many app vul and dongtai_sca vul"
         ),
