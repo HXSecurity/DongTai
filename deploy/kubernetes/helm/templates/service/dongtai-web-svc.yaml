@@ -1,0 +1,23 @@
+{{- if or (eq .Values.accessType "NodePort") (eq .Values.accessType "LoadBalancer") (eq .Values.accessType "ClusterIP")  -}}
+# Expose dongtai-web svc with {{ .Values.accessType }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "dongtai.fullname" . }}-web
+  name: dongtai-web-svc
+  namespace: {{ .Release.Namespace }}
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+      {{- if (eq .Values.accessType "NodePort") }}
+      nodePort: {{.Values.NodePort}}
+      {{- end }}
+  selector:
+    app: {{ template "dongtai.fullname" . }}-web
+  type: {{ .Values.accessType }}
+{{- end -}}

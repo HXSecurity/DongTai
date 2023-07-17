@@ -11,20 +11,19 @@ import uuid
 import logging
 
 from django.http import FileResponse
-from dongtai_common.endpoint import UserEndPoint, R, OpenApiEndPoint
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+from dongtai_common.endpoint import R, OpenApiEndPoint
+from drf_spectacular.utils import extend_schema
 from rest_framework.authtoken.models import Token
 from django.utils.translation import gettext_lazy as _
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from dongtai_common.common.utils import DepartmentTokenAuthentication
 
-from dongtai_protocol.api_schema import DongTaiParameter, DongTaiAuth
+from dongtai_protocol.api_schema import DongTaiParameter
 from dongtai_protocol.utils import OssDownloader
 from dongtai_conf.settings import BUCKET_NAME_BASE_URL, VERSION
 
 import shutil
 import tarfile
-import os
 import threading
 import time
 
@@ -123,9 +122,8 @@ class PythonAgentDownload():
                 shutil.copyfile(self.original_agent_file, f"{user_file}.bak")
 
             agent_file = tarfile.open(user_file)
-            agent_file.extractall(
-                path=self.target_path, members=lambda memberz: memberz
-            )  # trust upstream package until upstream provide file list to validate.
+            agent_file.extractall(path=self.target_path)  # nosec
+            # trust upstream package until upstream provide file list to validate.
             names = agent_file.getnames()
             self.target_source_path = f"{self.target_path}/{names[0]}"
             config_path = ""
@@ -194,9 +192,8 @@ class PhpAgentDownload():
                 shutil.copyfile(self.original_agent_file, f"{user_file}.bak")
 
             agent_file = tarfile.open(user_file)
-            agent_file.extractall(
-                path=self.target_path, members=lambda memberz: memberz
-            )  # trust upstream package until upstream provide file list to validate.
+            agent_file.extractall(path=self.target_path)  # nosec
+            # trust upstream package until upstream provide file list to validate.
             agent_file.close()
 
             config_lines = []
@@ -272,8 +269,9 @@ class GoAgentDownload():
 
 class AgentDownload(OpenApiEndPoint):
     """
-    当前用户详情
+    Agent 下载接口
     """
+
     name = "download_iast_agent"
     description = "下载洞态Agent"
     authentication_classes = (DepartmentTokenAuthentication,
@@ -284,9 +282,8 @@ class AgentDownload(OpenApiEndPoint):
         tmp_path = f"/tmp/.dongtai_agent_test/{time.time_ns()}"
         try:
             agent_file = tarfile.open(file)
-            agent_file.extractall(
-                path=tmp_path, members=lambda memberz: memberz
-            )  # trust upstream package until upstream provide file list to validate.
+            agent_file.extractall(path=tmp_path)  # nosec
+            # trust upstream package until upstream provide file list to validate.
         except tarfile.ReadError:
             return False
         except Exception as e:
@@ -306,24 +303,30 @@ class AgentDownload(OpenApiEndPoint):
             return GoAgentDownload(user_id)
         return
 
-    @extend_schema(
-        parameters=[
-            DongTaiParameter.OPENAPI_URL,
-            DongTaiParameter.PROJECT_NAME,
-            DongTaiParameter.LANGUAGE
-        ],
-        auth=[DongTaiAuth.TOKEN],
-        responses=[FileResponse],
-        methods=['GET']
-    )
+    @extend_schema(operation_id="agent download api",
+                   tags=[_('Agent服务端交互协议')],
+                   summary="Agent 下载",
+                   parameters=[
+                       DongTaiParameter.OPENAPI_URL,
+                       DongTaiParameter.PROJECT_NAME,
+                       DongTaiParameter.PROJECT_VERSION,
+                       DongTaiParameter.TEMPLATE_ID,
+                       DongTaiParameter.DEPARTMENT_TOKEN,
+                       DongTaiParameter.LANGUAGE,
+                   ],
+                   responses=[FileResponse],
+                   methods=['GET'])
     def get(self, request):
         try:
-            base_url = request.query_params.get('url', 'https://www.huoxian.cn')
-            project_name = request.query_params.get('projectName', 'Demo Project')
-            project_version = request.query_params.get('projectVersion', 'V1.0')
+            base_url = request.query_params.get('url',
+                                                'https://www.huoxian.cn')
+            project_name = request.query_params.get('projectName',
+                                                    'Demo Project')
+            project_version = request.query_params.get('projectVersion',
+                                                       'V1.0')
             language = request.query_params.get('language')
             department_token = request.query_params.get('department_token')
-            template_id = request.query_params.get('template_id')
+            template_id = request.query_params.get('template_id', 5)
             user_token = request.query_params.get('token', None)
             if department_token:
                 final_token = department_token
@@ -337,7 +340,9 @@ class AgentDownload(OpenApiEndPoint):
             handler = self.make_download_handler(language, request.user.id)
 
             if handler.download_agent() is False:
-                return R.failure(msg="agent file download failure. please contact official staff for help.")
+                return R.failure(
+                    msg="agent file download failure. please contact official staff for help."
+                )
 
             if handler.create_config(
                     base_url=base_url,

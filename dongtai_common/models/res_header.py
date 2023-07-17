@@ -18,12 +18,8 @@ class HeaderType(models.IntegerChoices):
 
 
 class ProjectSaasMethodPoolHeader(models.Model):
-    key = models.CharField(max_length=255, blank=True, null=False)
-    agent = models.ForeignKey(IastAgent,
-                              models.DO_NOTHING,
-                              blank=True,
-                              null=True,
-                              db_constraint=False)
+    key = models.CharField(max_length=255, blank=True)
+    agent = models.ForeignKey(IastAgent, models.DO_NOTHING, db_constraint=False)
     header_type = models.IntegerField(choices=HeaderType.choices, default=0)
 
     class Meta:

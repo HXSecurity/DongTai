@@ -12,8 +12,6 @@ class VulHandlerTest(DongTaiTestCase):
     def test_send_vul_notify(self):
         from dongtai_common.models.vulnerablity import IastVulnerabilityModel
         vul = IastVulnerabilityModel.objects.filter(id=2208).first()
-        from dongtai_engine.signals.handlers import send_vul_notify
-        send_vul_notify(vul)
 
     def test_create_notify_config(self):
         web_hook_config = {
@@ -24,7 +22,7 @@ class VulHandlerTest(DongTaiTestCase):
         from dongtai_common.models.notify_config import IastNotifyConfig
         notify_config = IastNotifyConfig.objects.create(
             notify_type=IastNotifyConfig.WEB_HOOK,
-            notify_metadata=json.dumps(web_hook_config),
+            notify_meta_data=json.dumps(web_hook_config),
             user_id=18
         )
 

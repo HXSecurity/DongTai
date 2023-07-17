@@ -9,11 +9,15 @@ from dongtai_common.models.server import IastServer
 from django.utils.translation import gettext_lazy as _
 from urllib.parse import urlparse, urlunparse
 from dongtai_web.views.project_add import is_ip
+from dongtai_common.utils.const import OPERATE_PUT
 logger = logging.getLogger('dongtai.openapi')
 
 
 class AgentUpdateEndPoint(OpenApiEndPoint):
     @extend_schema(
+        summary="agent配置",
+        tags=['Agent服务端交互协议', OPERATE_PUT],
+        deprecated=True,
         description='Agent Update, Data is Gzip',
         responses=[
             {204: None}

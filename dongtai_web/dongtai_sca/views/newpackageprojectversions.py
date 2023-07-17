@@ -11,7 +11,6 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck_v2, get_response_serializer
 from rest_framework import serializers
 
-from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 from dongtai_common.models.assetv2 import AssetV2, AssetV2Global
 from dongtai_common.models.project import IastProject
 from rest_framework_dataclasses.serializers import DataclassSerializer
@@ -55,6 +54,8 @@ class NewPackageRelationProjectVersion(UserEndPoint):
 
     @extend_schema_with_envcheck_v2(
         request=RelationProjectVersionArgsSerializer,
+        tags=[_('Component')],
+        summary="组件相关的项目版本",
         responses={200: FullRelationProjectVersionResponseSerializer})
     def get(self, request, language_id, package_name, package_version,
             project_id):

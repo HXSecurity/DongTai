@@ -11,7 +11,6 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck_v2, get_response_serializer
 from rest_framework import serializers
 
-from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 from dongtai_common.models.assetv2 import (
     AssetV2,
     AssetV2Global,
@@ -46,7 +45,11 @@ _NewResponseSerializer = get_response_serializer(
 
 class PackageDetail(UserEndPoint):
 
-    @extend_schema_with_envcheck_v2(responses={200: _NewResponseSerializer})
+    @extend_schema_with_envcheck_v2(
+        tags=[_('Component')],
+        summary=_("Component Detail"),
+        responses={200: _NewResponseSerializer},
+    )
     def get(self, request, language_id, package_name, package_version):
         asset = AssetV2Global.objects.filter(
             language_id=language_id,

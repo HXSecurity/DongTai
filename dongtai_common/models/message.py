@@ -13,7 +13,7 @@ from time import time
 
 
 class IastMessageType(models.Model):
-    name = models.CharField(max_length=100, blank=True, null=False, default='')
+    name = models.CharField(max_length=100, blank=True)
 
     class Meta:
         managed = get_managed()
@@ -21,17 +21,11 @@ class IastMessageType(models.Model):
 
 
 class IastMessage(models.Model):
-    message = models.CharField(max_length=512,
-                               blank=True,
-                               null=False,
-                               default='')
-    relative_url = models.CharField(max_length=512,
-                                    blank=True,
-                                    null=False,
-                                    default='')
-    create_time = models.IntegerField(blank=True, default=lambda: int(time()))
-    read_time = models.IntegerField(blank=True, default=0)
-    is_read = models.IntegerField(blank=True, null=True, default=0)
+    message = models.CharField(max_length=512, blank=True)
+    relative_url = models.CharField(max_length=512, blank=True)
+    create_time = models.IntegerField(default=lambda: int(time()))
+    read_time = models.IntegerField(default=0)
+    is_read = models.IntegerField(default=0)
     message_type = models.ForeignKey(IastMessageType,
                                      on_delete=models.DO_NOTHING,
                                      db_constraint=False,

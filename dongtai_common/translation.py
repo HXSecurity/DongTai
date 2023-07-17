@@ -31,7 +31,7 @@ class IastVulLevelTranslationOptions(TranslationOptions):
 
 @register(IastDeployDesc)
 class IastDeployDescTranslationOptions(TranslationOptions):
-    fields = ('desc',)
+    fields = ('desc', )
 
 
 @register(IastDocument)

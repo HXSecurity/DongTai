@@ -1,38 +1,26 @@
-import uuid
-from dongtai_common.models.agent import IastAgent
-from django.core.cache import cache
-from django_elasticsearch_dsl.search import Search
-from dongtai_conf.settings import ASSET_VUL_INDEX
-from django_elasticsearch_dsl import Document, fields
-from django_elasticsearch_dsl.registries import registry
 from dongtai_common.models.assetv2 import AssetV2Global, AssetRiskLevel
 from django.db import models
 from dongtai_common.utils.settings import get_managed
-from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
-from dongtai_common.models.vul_level import IastVulLevel
 
 
 class IastAssetVulV2(models.Model):
-    vul_name = models.CharField(max_length=255, blank=True, null=True)
-    vul_detail = models.TextField(blank=True, null=True)
+    vul_name = models.CharField(max_length=255, blank=True)
+    vul_detail = models.TextField()
     # 漏洞类型等级
     level = models.IntegerField(choices=AssetRiskLevel.choices,
                                 blank=True,
                                 db_column="level_id",
                                 default=AssetRiskLevel.LOW)
-    update_time = models.IntegerField(blank=True, null=True)
-    create_time = models.IntegerField(blank=True, null=True)
-    references = models.JSONField(blank=True, null=True, default=list)
-    change_time = models.IntegerField(blank=True, null=True)
-    published_time = models.IntegerField(blank=True, null=True)
-    vul_id = models.CharField(max_length=255,
-                              blank=True,
-                              null=True,
-                              unique=True)
-    vul_type = models.JSONField(blank=True, null=True)
-    vul_codes = models.JSONField(blank=True, null=True)
-    affected_versions = models.JSONField(blank=True, null=True)
-    unaffected_versions = models.JSONField(blank=True, null=True)
+    update_time = models.IntegerField()
+    create_time = models.IntegerField()
+    references = models.JSONField(default=list)
+    change_time = models.IntegerField()
+    published_time = models.IntegerField()
+    vul_id = models.CharField(max_length=255, unique=True, blank=True)
+    vul_type = models.JSONField()
+    vul_codes = models.JSONField()
+    affected_versions = models.JSONField()
+    unaffected_versions = models.JSONField()
 
     class Meta:
         managed = True

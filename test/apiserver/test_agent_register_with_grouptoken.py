@@ -19,7 +19,7 @@ class AgentNewRegisterGroupTokenTestCase(AgentTestCase):
     def setUp(self):
         super().setUp()
         update_department_data()
-        self.client.force_authenticate(user=None)
+        self.client.force_authenticate()
         self.test_agent_id = []
 
     def test_rep_register(self):

@@ -6,7 +6,6 @@ from dongtai_common.models.asset_vul import (IastAssetVulTypeRelation,
                                              IastVulAssetRelation,
                                              IastAssetVulType)
 from packaging.version import _BaseVersion
-from dongtai_common.models.asset_vul import IastAssetVul
 from collections import defaultdict
 from hashlib import sha1
 from dongtai_conf.settings import SCA_SETUP
@@ -23,14 +22,12 @@ from requests.exceptions import ConnectionError, ConnectTimeout
 from requests.exceptions import RequestException
 import json
 from json.decoder import JSONDecodeError
-from typing import Optional, Callable, Any, Union
+from typing import Optional, Callable
 from typing import List, Dict, Tuple
 from requests import Response
 from dongtai_conf.settings import SCA_BASE_URL, SCA_TIMEOUT, SCA_MAX_RETRY_COUNT
 from urllib.parse import urljoin
 from dongtai_common.common.utils import cached_decorator
-from dongtai_common.models.profile import IastProfile
-from json.decoder import JSONDecodeError
 from http import HTTPStatus
 from time import sleep
 
@@ -171,8 +168,7 @@ def data_transfrom_package_vul_v2(
 
 def data_transfrom_package_vul_v3(
     response: Response
-) -> Result[Tuple[Union[Tuple[Vul], Tuple[()]], Union[Tuple[str], Tuple[()]],
-                  Union[Tuple[str], Tuple[()]], ], str]:
+) -> Result[Tuple[Tuple[Vul, ...], Tuple[str, ...], Tuple[str, ...]], str]:
     try:
         #res_data = PackageVulResponse.schema().loads(response.content)
         res_data = PackageVulResponse.from_json(response.content)
@@ -253,8 +249,7 @@ def get_package_vul_v3(
     ecosystem: str = "",
     package_version: str = "",
     package_name: str = "",
-) -> Tuple[Union[Tuple[Vul], Tuple[()]], Union[Tuple[str], Tuple[()]], Union[
-        Tuple[str], Tuple[()]], ]:
+) -> Tuple[Tuple[Vul, ...], Tuple[str, ...], Tuple[str, ...]]:
     url = urljoin(
         SCA_BASE_URL,
         f"/openapi/sca/v3/package/{ecosystem.lower()}/{package_name}/{package_version}/vuls"
@@ -945,7 +940,7 @@ def get_license_list(license_list_str: str) -> List[Dict]:
     }]
 
 
-def get_license_list_v2(license_list: Tuple[str]) -> List[Dict]:
+def get_license_list_v2(license_list: Tuple[str, ...]) -> List[Dict]:
     filter_none: Callable[[Optional[Dict]], bool] = lambda x: x is not None
     res = [
         LICENSE_DICT[license] for license in license_list
@@ -990,8 +985,8 @@ class PackageVulSummary:
     vul_medium_count: int = 0
     vul_low_count: int = 0
     vul_info_count: int = 0
-    affected_versions: Tuple[str] = ()
-    unaffected_versions: Tuple[str] = ()
+    affected_versions: Tuple[str, ...] = ()
+    unaffected_versions: Tuple[str, ...] = ()
 
 
 def get_type_with_cwe(cwe_id: str) -> str:

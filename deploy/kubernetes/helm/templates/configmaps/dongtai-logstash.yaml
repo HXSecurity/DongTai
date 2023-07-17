@@ -1,0 +1,77 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: agent-config
+  namespace: {{ .Release.Namespace }}
+data:
+  logstash.conf: |
+    input {
+      http {
+        host => "0.0.0.0"
+        port => 8082
+        user => "sjkadfkjdsahfkds"
+        password => "dsjkfkjsadfhkjsadhfksdsjdafjkdsagfjhsadgfjsdfg12312!"
+        type => "tcp"
+        codec => "json"
+      }
+      tcp {
+        port => 8083
+        type => "log"
+      }
+    }
+    filter {
+      if [type] == "tcp"{
+        ruby {
+           code => "event.set('timestamp', event.get('@timestamp').time.localtime + 8*60*60)"
+        }
+        ruby {
+           code => "event.set('@timestamp',event.get('timestamp'))"
+        }
+        mutate {
+           remove_field => ["timestamp","@version","host","date","headers"]
+        }
+        # grok {
+        #   match => {
+        #     "log" => ".*\[%{DATA:agent_log_level}\].*"
+        #   }
+        # }
+      }
+      if [type] == "log"{
+        # ruby {
+        #   init => "require 'base64'"
+        #   code => "event.set('message', Base64.decode64(event.get('message')))"
+        # }
+        # ruby {
+        #   code => "puts event.to_hash"
+        # }
+        json{
+          source => ["message"]
+          remove_field => ["message"]
+        }
+      }
+    }
+    output {
+      if [type] == "tcp"{
+        file {
+            path => ["/tmp/logstash/agent/%{[agent]}/%{+YYYY.MM.dd}.log"]
+        }
+        # elasticsearch {
+        #   hosts => ["10.12.9.20:9200"]
+        #   index => "agent-log-%{+YYYY.MM.dd}"
+        # }
+      }
+      if [type] == "log"{
+        #stdout { 
+        #  codec => rubydebug
+        #}
+        analyticdb {
+            driver_class => "com.mysql.jdbc.Driver"
+            max_pool_size => "100"
+            connection_test_query => "SELECT 1"
+            connection_string => "jdbc:mysql://${DATABASE}?useSSL=false"
+            username => "${USERNAME}"
+            password => "${PASSWORD}"
+            statement => [ "INSERT IGNORE INTO `iast_agent_method_pool` (`agent_id`,`url`, `uri`, `http_method`, `http_scheme`, `http_protocol`, `req_header`, `req_params`, `req_data`, `res_header`, `res_body`, `context_path`, `method_pool`, `clent_ip`, `create_time`, `update_time`, `pool_sign`, `req_header_for_search`, `uri_sha1`) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)","agent_id","url","uri","http_method","http_scheme","http_protocol","req_header","req_params","req_data","res_header","res_body","context_path","method_pool","clent_ip","create_time","update_time","pool_sign","req_header_for_search","uri_sha1"]
+        }
+      }
+    }

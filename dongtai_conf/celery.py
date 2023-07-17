@@ -58,8 +58,10 @@ configs['result_serializer'] = 'json'
 configs['accept_content'] = ['json']
 configs['task_ignore_result'] = True
 configs['task_acks_late'] = True
+configs['task_always_eager'] = True if os.getenv(
+    "CELERY_EAGER_TEST") == "TRUE" else False
 configs['task_acks_on_failure_or_timeout'] = True
-configs['broker_connection_retry_on_startup'] = False
+configs['broker_channel_error_retry'] = True
 configs['broker_connection_max_retries'] = 0  # it means retry forever
 configs[
     'broker_pool_limit'] = 1000  # to forbid contention can arise when using gevent.
@@ -69,6 +71,7 @@ configs["task_routes"] = {
     "dongtai_protocol.report.handler.api_route_handler.api_route_gather": {'queue': 'dongtai-api-route-handler', 'routing_key': 'dongtai-api-route-handler'},
     "dongtai_engine.tasks.search_vul_from_method_pool": {'queue': 'dongtai-method-pool-scan', 'routing_key': 'dongtai-method-pool-scan'},
     "dongtai_engine.plugins.project_time_update.project_time_stamp_update": {'queue': 'dongtai-project-time-stamp-update', 'routing_key': 'dongtai-project-time-stamp-update'},
+    "dongtai_engine.plugins.project_time_update.project_version_time_stamp_update": {'queue': 'dongtai-project-time-stamp-update', 'routing_key': 'dongtai-project-time-stamp-update'},
     "dongtai_engine.tasks.search_vul_from_replay_method_pool": {'exchange': 'dongtai-replay-vul-scan', 'routing_key': 'dongtai-replay-vul-scan'},
     "dongtai_web.dongtai_sca.scan.utils.update_one_sca": {'exchange': 'dongtai-sca-task', 'routing_key': 'dongtai-sca-task'},
     "dongtai_engine.preheat.function_flush": {'exchange': 'dongtai-function-flush-data', 'routing_key': 'dongtai-function-flush-data'},
@@ -81,13 +84,25 @@ configs["task_routes"] = {
     "dongtai_engine.tasks.clear_error_log": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
     "dongtai_engine.tasks.vul_recheck": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
     "dongtai_engine.preheat.function_preheat": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
-    "dongtai_engine.plugins.data_clean": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
+    "dongtai_engine.plugins.project_status": {'exchange': 'dongtai-periodic-task', 'routing_key': 'dongtai-periodic-task'},
 }
 configs["CELERY_ENABLE_UTC"] = False
 configs["timezone"] = settings.TIME_ZONE
 configs["singleton_backend_url"] = settings.CELERY_BROKER_URL
 configs["DJANGO_CELERY_BEAT_TZ_AWARE"] = False
 configs["CELERY_BEAT_SCHEDULER"] = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+try:
+    from dongtai_conf.celery_extend import configs as extend_config
+
+    for k, v in extend_config.items():
+        config = configs.get(k, None)
+        if isinstance(v, dict) and isinstance(config, dict):
+            config.update(v)
+        elif isinstance(v, list) and isinstance(config, list):
+            config.extend(v)
+except ImportError:
+    pass
 
 app.namespace = 'CELERY'
 app.conf.update(configs)
@@ -104,14 +119,9 @@ def ready(self):
 app.ready = ready
 print(f"preheat settings now : {DONGTAI_CELERY_CACHE_PREHEAT}")
 def checkout_preheat_online(status):
-    from django_celery_beat.models import (
-        CrontabSchedule,
-        PeriodicTask,
-        IntervalSchedule,
-
-    )
+    from django_celery_beat.models import PeriodicTask, IntervalSchedule
     import json
-    from datetime import datetime, timedelta
+
     if not status:
         PeriodicTask.objects.delete(name='preheat functions')
     else:

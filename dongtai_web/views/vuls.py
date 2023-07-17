@@ -3,7 +3,7 @@
 # author:owefsad
 # software: PyCharm
 # project: lingzhi-webapi
-
+from typing import Any
 from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint
 from dongtai_common.models.vul_level import IastVulLevel
@@ -316,4 +316,9 @@ class VulsEndPoint(UserEndPoint):
                 item['level'] = allTypeArr.get(item['level_id'], "")
                 end['data'].append(item)
         end['page'] = page_summary
+        set_vul_inetration(end, request.user.id)
         return R.success(page=page_summary, data=end['data'])
+
+
+def set_vul_inetration(end: dict[str, Any], user_id: int) -> None:
+    pass

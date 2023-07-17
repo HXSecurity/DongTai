@@ -4,6 +4,7 @@
 
 # software: PyCharm
 # project: lingzhi-webapi
+from dongtai_common.models.strategy_user import IastStrategyUser
 from dongtai_common.utils import const
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.strategy import IastStrategyModel
@@ -197,6 +198,10 @@ class StrategysEndpoint(UserEndPoint):
                                                     user=request.user,
                                                     dt=time.time())
         strategy.save()
+        content = IastStrategyUser.objects.get(pk=5).content.split(",")
+        if str(strategy.id) not in content:
+            content.append(str(strategy.id))
+        IastStrategyUser.objects.filter(pk=5).update(content=",".join(content))
         for language in IastProgramLanguage.objects.all():
             HookType.objects.create(type=3,
                                     name=ser.validated_data['vul_name'],

@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from django.forms.models import model_to_dict
+from dongtai_common.utils.const import OPERATE_GET
 
 
 class ProfilepostArgsSer(serializers.Serializer):
@@ -31,9 +32,6 @@ class ProfileEndpoint(UserEndPoint):
                                  description=_("Modifiy Profile with key"),
                                  tags=[_('Profile')])
     def post(self, request, key):
-        if not request.user.is_talent_admin():
-            return R.failure(
-                msg=_("Current users have no permission to modify"))
         ser = ProfilepostArgsSer(data=request.data)
         try:
             if ser.is_valid(True):
@@ -68,7 +66,7 @@ class ProfileBatchGetEndpoint(UserEndPoint):
         request=ProfileBatchGetArgsSer,
         description=_("Get Profile with key batch"),
         response_schema=ProfileBatchGetResSer(many=True),
-        tags=[_('Profile')])
+        tags=[_('Profile'), OPERATE_GET])
     def post(self, request):
         keys = request.data.get('keys', None)
         profiles = IastProfile.objects.filter(key__in=keys).all()
@@ -90,9 +88,6 @@ class ProfileBatchModifiedEndpoint(UserEndPoint):
                                  response_schema=ProfileBatchPostArgsSer,
                                  tags=[_('Profile')])
     def post(self, request):
-        if not request.user.is_talent_admin():
-            return R.failure(
-                msg=_("Current users have no permission to modify"))
         ser = ProfileBatchPostArgsSer(data=request.data, many=True)
         try:
             if ser.is_valid(True):

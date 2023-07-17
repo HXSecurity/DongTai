@@ -18,6 +18,8 @@ from dongtai_common.endpoint import OpenApiEndPoint, R
 from dongtai_protocol.api_schema import DongTaiParameter
 from dongtai_protocol.utils import OssDownloader
 from dongtai_conf.settings import BUCKET_NAME_BASE_URL, VERSION
+from django.utils.translation import gettext_lazy as _
+
 logger = logging.getLogger("dongtai.openapi")
 
 PACKAGE_NAME_LIST = ('dongtai-core', 'dongtai-spy', 'dongtai-api',
@@ -39,7 +41,9 @@ class EngineDownloadEndPoint(OpenApiEndPoint):
             DongTaiParameter.ENGINE_NAME,
         ],
         responses=R,
-        methods=['GET']
+        methods=['GET'],
+        summary="下载 Agent Engine",
+        tags=['Agent服务端交互协议'],
     )
     def get(self, request: Request):
         package_name = request.query_params.get('engineName')

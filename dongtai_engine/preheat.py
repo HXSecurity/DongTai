@@ -19,14 +19,14 @@ from django.db import connection as conn
 
 @shared_task(queue='dongtai-periodic-task')
 def function_preheat():
-    from django.contrib.admin.models import LogEntry
+    from dongtai_common.models.log import IastLog
     time_threshold = datetime.now() - timedelta(hours=1)
-    need_preheat = LogEntry.objects.filter(
+    need_preheat = IastLog.objects.filter(
         action_time__gt=time_threshold).exists()
     if need_preheat:
         time_min = datetime.now() - timedelta(hours=72)
         user_ids = list(
-            LogEntry.objects.filter(action_time__gt=time_min).values_list(
+            IastLog.objects.filter(action_time__gt=time_min).values_list(
                 'user__id', flat=True).distinct().order_by('user__id').all())
         logger.info(f"user_ids: {user_ids}")
         for user_id in user_ids:

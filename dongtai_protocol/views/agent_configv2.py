@@ -28,8 +28,8 @@ class AgentConfigAllinOneView(OpenApiEndPoint):
 
     @extend_schema_with_envcheck(
         [_AgentConfigArgsSerializer],
-        tags=['agent upload'],
-        description='Through agent_ Id get data gather strategy',
+        summary="agent配置",
+        tags=['Agent服务端交互协议'],
         methods=['GET'])
     def get(self, request):
         ser = _AgentConfigArgsSerializer(data=request.GET)

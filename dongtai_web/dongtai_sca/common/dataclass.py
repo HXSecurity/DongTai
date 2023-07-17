@@ -1,12 +1,9 @@
-from typing import Tuple
-from typing import Any
-from typing import Optional, Union
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
 from datetime import datetime
 from dateutil.parser import parse
 
-# those Union[Tuple[str], Tuple[()]] = () is not working
+# those Union[tuple[str], tuple[()]] = () is not working
 # Since https://github.com/lidatong/dataclasses-json/pull/409
 # Be careful with potentially nullable types when using them temporarily.
 
@@ -21,8 +18,8 @@ class Reference:
 @dataclass_json
 @dataclass
 class VulCodes:
-    CVE: Union[Tuple[str], Tuple[()]] = ()
-    GHSA: Union[Tuple[str], Tuple[()]] = ()
+    CVE: tuple[str, ...] = ()
+    GHSA: tuple[str, ...] = ()
 
 
 @dataclass_json
@@ -30,25 +27,30 @@ class VulCodes:
 class VulInfo:
     vul_id: str = ""
     cvss_v3: str = ""
-    cwe: Union[Tuple[str], Tuple[()]] = ()
+    cwe: tuple[str, ...] = ()
     title: str = ""
     description: str = ""
-    references: Tuple[Reference] = ()
+    references: tuple[Reference, ...] = ()
     severity: str = ""
-    published_time: Optional[datetime] = field(
+    published_time: datetime | None = field(
         default=None,
-        metadata=config(decoder=lambda x: parse(x) if x is not None else None,
-                        encoder=lambda x: datetime.isoformat(x)
-                        if x is not None else None))
-    create_time: datetime = field(default=datetime.now(),
-                                  metadata=config(decoder=parse,
-                                                  encoder=datetime.isoformat))
-    update_time: datetime = field(default=datetime.now(),
-                                  metadata=config(decoder=parse,
-                                                  encoder=datetime.isoformat))
-    change_time: datetime = field(default=datetime.now(),
-                                  metadata=config(decoder=parse,
-                                                  encoder=datetime.isoformat))
+        metadata=config(
+            decoder=lambda x: parse(x) if x is not None else None,
+            encoder=lambda x: datetime.isoformat(x) if x is not None else None,
+        ),
+    )
+    create_time: datetime = field(
+        default=datetime.now(),
+        metadata=config(decoder=parse, encoder=datetime.isoformat),
+    )
+    update_time: datetime = field(
+        default=datetime.now(),
+        metadata=config(decoder=parse, encoder=datetime.isoformat),
+    )
+    change_time: datetime = field(
+        default=datetime.now(),
+        metadata=config(decoder=parse, encoder=datetime.isoformat),
+    )
 
 
 @dataclass_json
@@ -56,16 +58,16 @@ class VulInfo:
 class Vul:
     vul_info: VulInfo
     vul_codes: VulCodes
-    affected_versions: Union[Tuple[str], Tuple[()]] = ()
-    unaffected_versions: Union[Tuple[str], Tuple[()]] = ()
+    affected_versions: tuple[str, ...] = ()
+    unaffected_versions: tuple[str, ...] = ()
 
 
 @dataclass_json
 @dataclass
 class PackageVulData:
-    vuls: Tuple[Vul] = ()
-    affected_versions: Union[Tuple[str], Tuple[()]] = ()
-    unaffected_versions: Union[Tuple[str], Tuple[()]] = ()
+    vuls: tuple[Vul, ...] = ()
+    affected_versions: tuple[str, ...] = ()
+    unaffected_versions: tuple[str, ...] = ()
 
 
 @dataclass_json
@@ -77,7 +79,7 @@ class PackageInfo:
     version: str
     hash: str
     version_publish_time: str = ""
-    license: Union[Tuple[str], Tuple[()]] = ()
+    license: tuple[str, ...] = ()
 
 
 @dataclass_json
@@ -93,4 +95,4 @@ class PackageVulResponse:
 class PackageResponse:
     status: int
     msg: str
-    data: Tuple[PackageInfo] = tuple()
+    data: tuple[PackageInfo, ...] = tuple()

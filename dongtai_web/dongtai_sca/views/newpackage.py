@@ -12,10 +12,10 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck_v2, get_response_serializer
 from rest_framework import serializers
 
-from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 from dongtai_common.models.assetv2 import AssetV2, AssetV2Global
 from rest_framework.serializers import ValidationError
 from dongtai_common.serializers.assetv2 import PackeageScaAssetDetailSerializer
+from dongtai_common.utils.const import OPERATE_GET
 
 logger = logging.getLogger(__name__)
 
@@ -75,6 +75,8 @@ _NewResponseSerializer = get_response_serializer(
 class PackageList(UserEndPoint):
 
     @extend_schema_with_envcheck_v2(request=PackageListArgsSerializer,
+                                    tags=[_('Component'), OPERATE_GET],
+                                    summary=_("Component List"),
                                     responses={200: _NewResponseSerializer})
     def post(self, request):
         ser = PackageListArgsSerializer(data=request.data)

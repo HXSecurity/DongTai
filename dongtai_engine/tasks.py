@@ -9,13 +9,12 @@ from dongtai_engine.signals.handlers.vul_handler import handler_vul
 import hashlib
 import json
 import time
-import random
 from json import JSONDecodeError
+from itertools import groupby
 
 from celery import shared_task
 from celery.apps.worker import logger
 from django.db.models import Sum, Q
-from django.forms import model_to_dict
 from django.core.cache import cache
 from dongtai_common.engine.vul_engine import VulEngine
 from dongtai_common.models import User
@@ -23,10 +22,8 @@ from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_common.models.asset import Asset
 from dongtai_common.models.errorlog import IastErrorlog
 from dongtai_common.models.heartbeat import IastHeartbeat
-from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai_common.models.replay_queue import IastReplayQueue
-from dongtai_common.models.sca_maven_db import ScaMavenDb
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.utils import const
@@ -37,15 +34,14 @@ from dongtai_engine.plugins.strategy_headers import check_response_header
 from dongtai_engine.plugins.strategy_sensitive import check_response_content
 from dongtai_engine.replay import Replay
 from dongtai_conf import settings
-from dongtai_web.dongtai_sca.utils import sca_scan_asset
-from dongtai_engine.signals import vul_found
-from dongtai_common.models.project_report import ProjectReport
 import requests
-from hashlib import sha1
 from dongtai_engine.task_base import replay_payload_data
-from typing import List, Dict
 from dongtai_engine.common.queryset import get_scan_id, load_sink_strategy, get_agent
-from dongtai_engine.plugins.project_time_update import project_time_stamp_update
+from dongtai_engine.plugins.project_time_update import (
+    project_time_stamp_update,
+    project_version_time_stamp_update,
+)
+from dongtai_web.vul_log.vul_log import log_recheck_vul
 
 RETRY_INTERVALS = [10, 30, 90]
 
@@ -153,9 +149,12 @@ def search_and_save_vul(engine: Optional[VulEngine],
             replay_id = method_pool_model.replay_id
             relation_id = method_pool_model.relation_id
             timestamp = int(time.time())
-            IastVulnerabilityModel.objects.filter(id=relation_id).update(
-                status_id=settings.IGNORE,
-                latest_time=timestamp
+            vul = IastVulnerabilityModel.objects.filter(id=relation_id).get()
+            log_recheck_vul(
+                vul.agent.user.id,
+                vul.agent.user.username,
+                [vul.id],
+                '已忽略',
             )
             IastReplayQueue.objects.filter(id=replay_id).update(
                 state=const.SOLVED,
@@ -164,6 +163,8 @@ def search_and_save_vul(engine: Optional[VulEngine],
                 update_time=timestamp)
             project_time_stamp_update.apply_async(
                 (method_pool_model.agent.bind_project_id, ), countdown=5)
+            project_version_time_stamp_update.apply_async(
+                (method_pool_model.agent.project_version_id, ), countdown=5)
         except Exception as e:
             logger.info(f'漏洞数据处理出错，原因：{e}')
 
@@ -244,6 +245,7 @@ def search_vul_from_replay_method_pool(method_pool_id):
         method_pool_model = IastAgentMethodPoolReplay.objects.filter(id=method_pool_id).first()
         if method_pool_model is None:
             logger.warn(f'重放数据漏洞检测终止，方法池 {method_pool_id} 不存在')
+            return
         strategies = load_sink_strategy(method_pool_model.agent.user, method_pool_model.agent.language)
         engine = VulEngine()
         method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
@@ -299,63 +301,6 @@ def get_project_agents(agent):
     return agents
 
 
-@shared_task(queue='dongtai-sca-task')
-def update_one_sca(agent_id, package_path, package_signature, package_name, package_algorithm, package_version=''):
-    """
-    根据SCA数据库，更新SCA记录信息
-    :return:
-    """
-    logger.info(
-        f'SCA检测开始 [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm} {package_version}]')
-    agent = IastAgent.objects.filter(id=agent_id).first()
-    version = package_version
-    if not version:
-        if agent.language == "JAVA":
-            version = package_name.split('/')[-1].replace('.jar', '').split('-')[-1]
-
-    if version:
-        current_version_agents = get_project_agents(agent)
-        if package_signature:
-            asset_count = Asset.objects.values("id").filter(signature_value=package_signature,
-                                                            agent__in=current_version_agents).count()
-        else:
-            package_signature = sha_1(package_name)
-            asset_count = Asset.objects.values("id").filter(package_name=package_name,
-                                                            version=version,
-                                                            agent__in=current_version_agents).count()
-
-        if asset_count == 0:
-            new_level = IastVulLevel.objects.get(name="info")
-            asset = Asset()
-            asset.package_name = package_name
-            asset.package_path = package_path
-            asset.signature_value = package_signature
-            asset.signature_algorithm = package_algorithm
-            asset.version = version
-            asset.level_id = new_level.id
-            asset.vul_count = 0
-            asset.language = asset.language
-            if agent:
-                asset.agent = agent
-                asset.project_version_id = agent.project_version_id if agent.project_version_id else 0
-                asset.project_name = agent.project_name
-                asset.language = agent.language
-                asset.project_id = -1
-                if agent.bind_project_id:
-                    asset.project_id = agent.bind_project_id
-                asset.user_id = -1
-                if agent.user_id:
-                    asset.user_id = agent.user_id
-
-            asset.license = ''
-            asset.dt = int(time.time())
-            asset.save()
-            sca_scan_asset(asset)
-        else:
-            logger.info(
-                f'SCA检测开始 [{agent_id} {package_path} {package_signature} {package_name} {package_algorithm} {version}] 组件已存在')
-
-
 def sha_1(raw):
     sha1_str = hashlib.sha1(raw.encode("utf-8"), usedforsecurity=False).hexdigest()
     return sha1_str
@@ -376,7 +321,7 @@ def update_agent_status():
     """
     from dongtai_engine.plugins.engine_status_change import after_agent_status_update, before_agent_status_update
     before_agent_status_update()
-    logger.info(f'检测引擎状态更新开始')
+    logger.info('检测引擎状态更新开始')
     timestamp = int(time.time())
     running_agents_ids = list(
         IastAgent.objects.values("id").filter(online=1).values_list(
@@ -392,11 +337,24 @@ def update_agent_status():
         update_time__lte=timestamp - 60 * 5,
         verify_time__isnull=True,
         replay_type=1).values('relation_id').distinct()
-    IastVulnerabilityModel.objects.filter(
-        Q(pk__in=vul_id_qs)
-        & ~Q(status_id__in=(3, 4, 5, 6))).update(status_id=7)
+    vuls = IastVulnerabilityModel.objects.filter(
+        Q(pk__in=vul_id_qs) & ~Q(status_id__in=(3, 5, 6))
+    ).select_related("agent__user")
+    for _, vul_list in groupby(vuls, lambda x: x.agent.user_id):
+        vul_list = list(vul_list)
+        replay_queue = IastReplayQueue.objects.filter(
+            relation_id__in=list(map(lambda x: x.id, vul_list)),
+            state__in=(const.PENDING, const.WAITING),
+        ).all()
+        log_recheck_vul(
+            vul_list[0].agent.user.id,
+            vul_list[0].agent.user.username,
+            list(map(lambda x: x.relation_id, replay_queue)),
+            "验证失败",
+        )
+        replay_queue.update(state=const.DISCARD)
     logger.info("update offline agent: %s", stop_agent_ids)
-    logger.info(f'检测引擎状态更新成功')
+    logger.info('检测引擎状态更新成功')
     after_agent_status_update()
 
 @shared_task(queue='dongtai-periodic-task')
@@ -576,7 +534,7 @@ def vul_recheck():
                                 header_raw[index] = f'{_header_name}:{recheck_payload}'
                                 break
                         try:
-                            headers = base64.b64encode('\n'.join(header_raw))
+                            headers = base64.b64encode('\n'.join(header_raw).encode("raw_unicode_escape"))
                         except Exception as e:
                             logger.warning(f'请求头解析失败，漏洞ID: {vulnerability["id"]}', exc_info=e)
                     elif position == 'COOKIE':
@@ -603,7 +561,7 @@ def vul_recheck():
                             cookie_raw = ';'.join(cookie_raw_items)
                             header_raw[cookie_index] = cookie_raw
                         try:
-                            headers = base64.b64encode('\n'.join(header_raw))
+                            headers = base64.b64encode('\n'.join(header_raw).encode("raw_unicode_escape"))
                         except Exception as e:
                             logger.error(f'请求头解析失败，漏洞ID: {vulnerability["id"]}')
 

@@ -15,6 +15,7 @@ import json
 from unittest.mock import patch, MagicMock
 import uuid
 from dongtai_engine.tasks import search_vul_from_method_pool
+import pickle
 
 with open('./test/integration/mockdata/new-exec.json') as fp:
     new_exec_json = json.load(fp)
@@ -31,6 +32,9 @@ with open('./test/integration/mockdata/exec2.json') as fp:
 with open('./test/integration/mockdata/xss.json') as fp:
     xss_json = json.load(fp)
 
+with open('./test/integration/mockdata/recursive_depth_1.pickle', 'rb') as fp:
+    recursive_pickle = pickle.load(fp)
+
 
 def mock_uuid():
     return uuid.UUID(int=0)
@@ -46,11 +50,13 @@ class AgentNormalVulTestCase(AgentTestCase):
             res = self.agent_report(new_exec_json)
             search_vul_from_method_pool(str(uuid.UUID(int=0).hex),
                                         self.agent_id)
-            print(
-                IastVulnerabilityModel.objects.filter(agent_id=self.agent_id,
-                                                      level_id=1).count())
-            assert IastVulnerabilityModel.objects.filter(
-                agent_id=self.agent_id, level_id=1).count() == 1
+        print(
+            IastVulnerabilityModel.objects.filter(agent_id=self.agent_id,
+                                                  level_id=1).count())
+        assert IastVulnerabilityModel.objects.filter(agent_id=self.agent_id,
+                                                     level_id=1).count() == 1
+        vul = IastVulnerabilityModel.objects.filter(agent_id=self.agent_id,
+                                                    level_id=1).first()
 
     def test_agent_vuln_upload3(self):
         with patch('uuid.uuid4', mock_uuid):
@@ -83,3 +89,12 @@ class AgentNormalVulTestCase(AgentTestCase):
                                         self.agent_id)
             assert IastVulnerabilityModel.objects.filter(
                 agent_id=self.agent_id, level_id=2).count() == 0
+
+    def test_agent_vuln_upload7(self):
+        recursive_pickle.agent_id = self.agent_id
+        recursive_pickle.save()
+        search_vul_from_method_pool(recursive_pickle.pool_sign, self.agent_id)
+        assert IastVulnerabilityModel.objects.filter(
+            agent_id=self.agent_id,
+            level_id=1,
+        ).count() == 1

@@ -8,17 +8,12 @@ from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.project import IastProject
-from dongtai_common.models.vul_level import IastVulLevel
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.models.project_version import IastProjectVersion
 from dongtai_web.base.project_version import get_project_version, get_project_version_by_id, ProjectsVersionDataSerializer
 from django.utils.translation import gettext_lazy as _
-from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
 from dongtai_web.serializers.project import ProjectSerializer
-from dongtai_common.models.hook_type import HookType
-from django.db.models import Q
 from rest_framework import serializers
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_web.views.utils.commonstats import get_summary_by_project
 from dongtai_common.utils import const
 
@@ -69,6 +64,8 @@ class _ProjectSummaryDataSerializer(serializers.Serializer):
         many=True,
         help_text=_(
             "Statistics on the number of danger levels of vulnerabilities"))
+    agent_alive = serializers.IntegerField(help_text="Agent存活数量")
+    project_version_latest_time = serializers.IntegerField(help_text="项目版本更新时间")
 
 
 _ProjectSummaryResponseSerializer = get_response_serializer(
@@ -94,7 +91,7 @@ class ProjectSummary(UserEndPoint):
 
     @extend_schema_with_envcheck(
         tags=[_('Project')],
-        summary=_('Projects Summary'),
+        summary=_('项目总结'),
         description=_("Get project deatils and its statistics data about vulnerablity."
                       ),
         response_schema=_ProjectSummaryResponseSerializer,
@@ -119,8 +116,7 @@ class ProjectSummary(UserEndPoint):
         data['level_count'] = []
 
         if not version_id:
-            current_project_version = get_project_version(
-                project.id)
+            current_project_version = get_project_version(project.id)
         else:
             current_project_version = get_project_version_by_id(version_id)
         data['versionData'] = current_project_version
@@ -134,4 +130,9 @@ class ProjectSummary(UserEndPoint):
             project).data['agent_language']
         data['agent_alive'] = IastAgent.objects.filter(
             bind_project_id=project.id, online=const.RUNNING).count()
+        project_version = IastProjectVersion.objects.filter(
+            pk=current_project_version.get("version_id", 0)).first()
+        data[
+            'project_version_latest_time'] = project_version.update_time if project_version else project.latest_time
+        data['type_summary'] = []
         return R.success(data=data)

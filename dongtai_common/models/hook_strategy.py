@@ -31,28 +31,20 @@ from time import time
 
 
 class HookStrategy(models.Model):
-    value = models.CharField(max_length=255, blank=True, null=True)
-    source = models.CharField(max_length=255, blank=True, null=True)
-    target = models.CharField(max_length=255, blank=True, null=True)
-    inherit = models.CharField(max_length=255, blank=True, null=True)
-    track = models.CharField(max_length=5, blank=True, null=True)
-    create_time = models.IntegerField(blank=True,
-                                      null=True,
-                                      default=lambda: int(time()))
-    update_time = models.IntegerField(blank=True,
-                                      null=True,
-                                      default=lambda: int(time()))
-    created_by = models.IntegerField(
-        blank=True,
-        null=True,
-    )
-    enable = models.IntegerField(blank=True, null=False, default=1)
+    value = models.CharField(max_length=255, blank=True)
+    source = models.CharField(max_length=255, blank=True)
+    target = models.CharField(max_length=255, blank=True)
+    inherit = models.CharField(max_length=255, blank=True)
+    track = models.CharField(max_length=5, blank=True)
+    create_time = models.IntegerField(default=lambda: int(time()))
+    update_time = models.IntegerField(default=lambda: int(time()))
+    created_by = models.IntegerField()
+    enable = models.IntegerField(default=1)
     language = models.ForeignKey(IastProgramLanguage,
                                  blank=True,
-                                 default='',
                                  on_delete=models.DO_NOTHING,
                                  db_constraint=False)
-    type = models.IntegerField(blank=True, null=True)
+    type = models.IntegerField()
 
     hooktype = models.ForeignKey(
         HookType,
@@ -68,7 +60,6 @@ class HookStrategy(models.Model):
     )
     strategy = models.ForeignKey(
         'dongtai_common.IastStrategyModel',
-        blank=True,
         default=-1,
         on_delete=models.DO_NOTHING,
         db_column='strategy_id',
@@ -76,17 +67,13 @@ class HookStrategy(models.Model):
         related_name="strategies",
         related_query_name="strategy",
     )
-    system_type = models.IntegerField(blank=True, null=True, default=0)
-    ignore_blacklist = models.BooleanField(blank=True,
-                                           null=False,
-                                           default=False)
-    ignore_internal = models.BooleanField(blank=True,
-                                          null=False,
-                                          default=False)
+    system_type = models.IntegerField(blank=True, default=0)
+    ignore_blacklist = models.BooleanField(default=False)
+    ignore_internal = models.BooleanField(default=False)
     tags = models.JSONField(default=list)
     untags = models.JSONField(default=list)
     stack_blacklist = models.JSONField(default=list)
-    command = models.CharField(max_length=128, null=True, default="")
+    command = models.CharField(max_length=128, blank=True)
 
     class Meta:
         managed = get_managed()

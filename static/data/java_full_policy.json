@@ -1042,24 +1042,6 @@
     {
         "details": [
             {
-                "command": "",
-                "created_by": 1,
-                "enable": 1,
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "false",
-                "language": 1,
-                "source": "P1",
-                "stack_blacklist": [],
-                "system_type": 1,
-                "tags": [],
-                "target": "O",
-                "track": "",
-                "type": 1,
-                "untags": [],
-                "value": "java.lang.String.<init>(byte[])"
-            },
-            {
                 "command": "KEEP()",
                 "created_by": 1,
                 "enable": 1,
@@ -1312,7 +1294,7 @@
                 "value": "java.lang.String.getBytes()"
             },
             {
-                "command": "",
+                "command": "OVERWRITE(P2)",
                 "created_by": 1,
                 "enable": 1,
                 "ignore_blacklist": false,
@@ -1582,24 +1564,6 @@
                 "value": "java.lang.String.trim()"
             },
             {
-                "command": "",
-                "created_by": 1,
-                "enable": 1,
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "false",
-                "language": 1,
-                "source": "P1",
-                "stack_blacklist": [],
-                "system_type": 1,
-                "tags": [],
-                "target": "R",
-                "track": "false",
-                "type": 1,
-                "untags": [],
-                "value": "java.lang.String.valueOf(java.lang.Object)"
-            },
-            {
                 "command": "KEEP()",
                 "created_by": 1,
                 "enable": 1,
@@ -1634,42 +1598,6 @@
                 "type": 1,
                 "untags": [],
                 "value": "java.lang.StringConcatHelper.newString(byte[],long)"
-            },
-            {
-                "command": "",
-                "created_by": 1,
-                "enable": 1,
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "false",
-                "language": 1,
-                "source": "P4",
-                "stack_blacklist": [],
-                "system_type": 1,
-                "tags": [],
-                "target": "P2",
-                "track": "false",
-                "type": 1,
-                "untags": [],
-                "value": "java.lang.StringConcatHelper.prepend(int,byte[],byte,java.lang.String)"
-            },
-            {
-                "command": "",
-                "created_by": 1,
-                "enable": 1,
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "false",
-                "language": 1,
-                "source": "P4",
-                "stack_blacklist": [],
-                "system_type": 1,
-                "tags": [],
-                "target": "P2",
-                "track": "false",
-                "type": 1,
-                "untags": [],
-                "value": "java.lang.StringConcatHelper.prepend(long,byte[],byte,java.lang.String)"
             },
             {
                 "command": "SUBSET(P2,P3)",
@@ -1851,7 +1779,7 @@
                 "untags": [
                     "xml-decoded"
                 ],
-                "value": "org.thymeleaf.util.DOMUtils.escapeXml(char[], boolean)"
+                "value": "org.thymeleaf.util.DOMUtils.escapeXml(char[],boolean)"
             },
             {
                 "command": "",
@@ -1873,7 +1801,7 @@
                 "untags": [
                     "xml-decoded"
                 ],
-                "value": "org.thymeleaf.util.DOMUtils.escapeXml(java.lang.String, boolean)"
+                "value": "org.thymeleaf.util.DOMUtils.escapeXml(java.lang.String,boolean)"
             }
         ],
         "enable": 1,
@@ -4227,6 +4155,24 @@
                 "track": "false",
                 "type": 1,
                 "untags": [],
+                "value": "com.alibaba.fastjson.parser.JSONLexerBase.scanFieldBigInteger(char[])"
+            },
+            {
+                "command": "",
+                "created_by": 1,
+                "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "language": 1,
+                "source": "O",
+                "stack_blacklist": [],
+                "system_type": 1,
+                "tags": [],
+                "target": "R",
+                "track": "false",
+                "type": 1,
+                "untags": [],
                 "value": "com.alibaba.fastjson.parser.JSONLexerBase.scanFieldDate(char[])"
             },
             {
@@ -4683,7 +4629,7 @@
                 "value": "org.glassfish.grizzly.http.Cookie.setSecure(boolean)"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "cookie-flags-missing"
     },
@@ -4750,7 +4696,7 @@
                 "value": "javax.crypto.Cipher.getInstance(java.lang.String,java.security.Provider)"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "crypto-bad-ciphers"
     },
@@ -4851,7 +4797,7 @@
                 "value": "java.security.MessageDigest.getInstance(java.lang.String,java.security.Provider)"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "crypto-bad-mac"
     },
@@ -4892,6 +4838,24 @@
                 "type": 4,
                 "untags": [],
                 "value": "java.util.Random.nextBoolean()"
+            },
+            {
+                "command": "",
+                "created_by": 1,
+                "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "language": 1,
+                "source": "P1",
+                "stack_blacklist": [],
+                "system_type": 1,
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "type": 4,
+                "untags": [],
+                "value": "java.util.Random.nextBytes(byte[])"
             },
             {
                 "command": "",
@@ -5123,7 +5087,7 @@
                 "value": "org.apache.commons.lang.RandomStringUtils.randomNumeric(int)"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "crypto-weak-randomness"
     },
@@ -5154,6 +5118,24 @@
     },
     {
         "details": [
+            {
+                "command": "",
+                "created_by": 1,
+                "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "language": 1,
+                "source": "P2",
+                "stack_blacklist": [],
+                "system_type": 1,
+                "tags": [],
+                "target": "",
+                "track": "false",
+                "type": 4,
+                "untags": [],
+                "value": "java.lang.ClassLoader.loadLibrary(java.lang.Class<?>,java.lang.String,boolean)"
+            },
             {
                 "command": "",
                 "created_by": 1,
@@ -8954,6 +8936,42 @@
                 "enable": 1,
                 "ignore_blacklist": false,
                 "ignore_internal": false,
+                "inherit": "all",
+                "language": 1,
+                "source": "P1",
+                "stack_blacklist": [],
+                "system_type": 1,
+                "tags": [],
+                "target": "R",
+                "track": "false",
+                "type": 2,
+                "untags": [],
+                "value": "org.springframework.http.server.ServletServerHttpRequest.getBodyFromServletRequestParameters(jakarta.servlet.http.HttpServletRequest)"
+            },
+            {
+                "command": "",
+                "created_by": 1,
+                "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "all",
+                "language": 1,
+                "source": "P1",
+                "stack_blacklist": [],
+                "system_type": 1,
+                "tags": [],
+                "target": "R",
+                "track": "false",
+                "type": 2,
+                "untags": [],
+                "value": "org.springframework.http.server.ServletServerHttpRequest.getBodyFromServletRequestParameters(javax.servlet.http.HttpServletRequest)"
+            },
+            {
+                "command": "",
+                "created_by": 1,
+                "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
                 "inherit": "true",
                 "language": 1,
                 "source": "P1",
@@ -8987,6 +9005,24 @@
                 "type": 2,
                 "untags": [],
                 "value": "org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver.resolveName(java.lang.String,org.springframework.core.MethodParameter,org.springframework.web.context.request.NativeWebRequest)"
+            },
+            {
+                "command": "",
+                "created_by": 1,
+                "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "false",
+                "language": 1,
+                "source": "O",
+                "stack_blacklist": [],
+                "system_type": 1,
+                "tags": [],
+                "target": "R",
+                "track": "false",
+                "type": 2,
+                "untags": [],
+                "value": "org.springframework.web.util.pattern.PathPattern.getPatternString()"
             }
         ],
         "enable": 1,
@@ -10786,7 +10822,7 @@
                 "value": "org.springframework.http.converter.StringHttpMessageConverter.writeInternal(java.lang.String,org.springframework.http.HttpOutputMessage)"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "reflected-xss"
     },
@@ -12852,7 +12888,7 @@
                 "value": "play.mvc.Http$Session.put(java.lang.String,java.lang.String)"
             }
         ],
-        "enable": 1,
+        "enable": 0,
         "type": 4,
         "value": "trust-boundary-violation"
     },
@@ -14453,6 +14489,24 @@
                 "track": "true",
                 "type": 4,
                 "untags": [],
+                "value": "jakarta.xml.parsers.DocumentBuilder.parse(java.io.File)"
+            },
+            {
+                "command": "",
+                "created_by": 1,
+                "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "language": 1,
+                "source": "P1",
+                "stack_blacklist": [],
+                "system_type": 1,
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "type": 4,
+                "untags": [],
                 "value": "jakarta.xml.parsers.DocumentBuilder.parse(java.io.InputStream)"
             },
             {
@@ -15122,126 +15176,29 @@
                 "type": 4,
                 "untags": [],
                 "value": "nu.xom.Builder.build(java.lang.String)"
+            },
+            {
+                "command": "",
+                "created_by": 1,
+                "enable": 1,
+                "ignore_blacklist": false,
+                "ignore_internal": false,
+                "inherit": "true",
+                "language": 1,
+                "source": "P1",
+                "stack_blacklist": [],
+                "system_type": 1,
+                "tags": [],
+                "target": "",
+                "track": "true",
+                "type": 4,
+                "untags": [],
+                "value": "org.xml.sax.XMLReader.parse(org.xml.sax.InputSource)"
             }
         ],
         "enable": 1,
         "type": 4,
         "value": "xxe"
-    },
-    {
-        "details": [
-            {
-                "command": "",
-                "created_by": 1,
-                "enable": 1,
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "true",
-                "language": 1,
-                "source": "",
-                "stack_blacklist": [],
-                "system_type": 1,
-                "tags": [],
-                "target": "",
-                "track": "",
-                "type": 3,
-                "untags": [],
-                "value": "com.sun.org.apache.xerces.internal.xni.grammars.XMLGrammarLoader.setFeature(java.lang.String, boolean)"
-            },
-            {
-                "command": "",
-                "created_by": 1,
-                "enable": 1,
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "true",
-                "language": 1,
-                "source": "",
-                "stack_blacklist": [],
-                "system_type": 1,
-                "tags": [],
-                "target": "",
-                "track": "",
-                "type": 3,
-                "untags": [],
-                "value": "com.sun.org.apache.xerces.internal.xni.parser.XMLParserConfiguration.setFeature(java.lang.String, boolean)"
-            },
-            {
-                "command": "",
-                "created_by": 1,
-                "enable": 1,
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "true",
-                "language": 1,
-                "source": "",
-                "stack_blacklist": [],
-                "system_type": 1,
-                "tags": [],
-                "target": "",
-                "track": "",
-                "type": 3,
-                "untags": [],
-                "value": "javax.xml.parsers.DocumentBuilderFactory.setFeature(java.lang.String, boolean)"
-            },
-            {
-                "command": "",
-                "created_by": 1,
-                "enable": 1,
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "true",
-                "language": 1,
-                "source": "",
-                "stack_blacklist": [],
-                "system_type": 1,
-                "tags": [],
-                "target": "",
-                "track": "",
-                "type": 3,
-                "untags": [],
-                "value": "javax.xml.parsers.SAXParserFactory.setFeature(java.lang.String, boolean)"
-            },
-            {
-                "command": "",
-                "created_by": 1,
-                "enable": 1,
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "true",
-                "language": 1,
-                "source": "",
-                "stack_blacklist": [],
-                "system_type": 1,
-                "tags": [],
-                "target": "",
-                "track": "",
-                "type": 3,
-                "untags": [],
-                "value": "javax.xml.transform.TransformerFactory.setFeature(java.lang.String, boolean)"
-            },
-            {
-                "command": "",
-                "created_by": 1,
-                "enable": 1,
-                "ignore_blacklist": false,
-                "ignore_internal": false,
-                "inherit": "true",
-                "language": 1,
-                "source": "",
-                "stack_blacklist": [],
-                "system_type": 1,
-                "tags": [],
-                "target": "",
-                "track": "",
-                "type": 3,
-                "untags": [],
-                "value": "org.xml.sax.XMLReader.setFeature(java.lang.String, boolean)"
-            }
-        ],
-        "enable": 1,
-        "type": 3,
-        "value": "xxe-filter"
     },
     {
         "details": [

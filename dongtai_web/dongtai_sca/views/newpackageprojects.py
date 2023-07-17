@@ -13,7 +13,6 @@ from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from django.db.models import Q, F, Value
 
-from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 from dongtai_common.models.assetv2 import AssetV2, AssetV2Global
 from dongtai_common.models.project import IastProject
 from rest_framework_dataclasses.serializers import DataclassSerializer
@@ -59,6 +58,8 @@ class NewPackageRelationProject(UserEndPoint):
 
     @extend_schema_with_envcheck_v2(
         parameters=[RelationProjectArgsSerializer],
+        tags=[_('Component')],
+        summary="组件相关的项目版本",
         responses={200: FullRelationProjectResponseSerializer})
     def get(self, request, language_id, package_name, package_version):
         ser = RelationProjectArgsSerializer(data=request.query_params)

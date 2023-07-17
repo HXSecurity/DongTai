@@ -31,19 +31,23 @@ logger = logging.getLogger("django")
 
 class _ProjectsAddBodyArgsSerializer(serializers.Serializer):
     name = serializers.CharField(help_text=_('The name of project'))
-    scan_id = serializers.IntegerField(
-        help_text=_("The id corresponding to the scanning strategy."))
+    template_id = serializers.IntegerField(help_text=_(
+        "The id corresponding to the project template. required to specfic, use 1 as default."
+    ))
     version_name = serializers.CharField(
-        help_text=_("The version name of the project"))
-    pid = serializers.IntegerField(help_text=_("The id of the project"))
+        required=False, help_text=_("The version name of the project"))
+    pid = serializers.IntegerField(
+        required=False,
+        help_text=_(
+            "The id of the project, use it when try to modify existed project."
+        ))
     description = serializers.CharField(
-        help_text=_("Description of the project"))
+        required=False, help_text=_("Description of the project"))
     vul_validation = serializers.IntegerField(
-        help_text="vul validation switch")
-    base_url = serializers.CharField()
-    test_req_header_key = serializers.CharField()
-    test_req_header_value = serializers.CharField()
-    template_id = serializers.IntegerField(help_text=_("The id of the project"))
+        help_text="vul validation switch", )
+    base_url = serializers.CharField(required=False, )
+    test_req_header_key = serializers.CharField(required=False, )
+    test_req_header_value = serializers.CharField(required=False, )
 
 
 _ResponseSerializer = get_response_serializer(status_msg_keypair=(
@@ -73,8 +77,8 @@ class ProjectAdd(UserEndPoint):
             with transaction.atomic():
                 name = request.data.get("name")
                 mode = "插桩模式"
-                scan_id = int(request.data.get("scan_id", 0))
-                template_id = int(request.data.get("template_id", 0))
+                scan_id = int(request.data.get("scan_id", 5))
+                template_id = int(request.data.get("template_id", 1))
                 # auth_users = self.get_auth_users(request.user)
                 departments = request.user.get_relative_department()
                 scan = IastStrategyUser.objects.filter(id=scan_id).first()
@@ -118,7 +122,7 @@ class ProjectAdd(UserEndPoint):
                         id=pid, department__in=departments).first()
                     project.name = name
                 else:
-                    department_id = request.data.get("department_id")
+                    department_id = request.data.get("department_id", 1)
                     if not departments.filter(pk=department_id).exists():
                         return R.failure(
                             status=203,
@@ -128,8 +132,11 @@ class ProjectAdd(UserEndPoint):
                     project = IastProject.objects.filter(
                         name=name, user_id=request.user.id, department_id=department_id).first()
                     if not project:
-                        project = IastProject.objects.create(name=name,
-                                                             user_id=request.user.id, department_id=department_id, template_id=template_id)
+                        project = IastProject.objects.create(
+                            name=name,
+                            user_id=request.user.id,
+                            department_id=department_id,
+                            template_id=template_id)
                     else:
                         return R.failure(
                             status=203,
@@ -187,7 +194,13 @@ class ProjectAdd(UserEndPoint):
                     'template_id', 'department_id', 'enable_log', 'log_level'
                 ])
                 disable_cache(get_scan_id, (project.id))
-                return R.success(msg='操作成功')
+                return R.success(
+                    data={
+                        "project_id": project.id,
+                        "project_version_id": project_version_id
+                    },
+                    msg='操作成功',
+                )
         except Exception as e:
             logger.error(e, exc_info=e)
             return R.failure(status=202, msg=_('Parameter error'))

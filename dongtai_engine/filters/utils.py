@@ -32,4 +32,4 @@ def parse_headers_dict_from_bytes(header_bytes: bytes) -> dict:
     with SpooledTemporaryFile(max_size=10000) as fp:
         fp.write(header_bytes)
         fp.seek(0)
-        return dict(parse_headers(fp))
+        return dict(parse_headers(fp))  # type:ignore

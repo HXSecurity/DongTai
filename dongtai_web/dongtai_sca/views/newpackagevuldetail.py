@@ -11,7 +11,6 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck_v2, get_response_serializer
 from rest_framework import serializers
 
-from dongtai_web.dongtai_sca.utils import get_asset_id_by_aggr_id
 from dongtai_common.models.asset_vul_v2 import IastAssetVulV2
 from dongtai_common.serializers.assetvulv2 import PackageVulSerializer
 
@@ -41,7 +40,11 @@ _NewResponseSerializer = get_response_serializer(PackageVulSerializer())
 
 class PackageVulDetail(UserEndPoint):
 
-    @extend_schema_with_envcheck_v2(responses={200: _NewResponseSerializer})
+    @extend_schema_with_envcheck_v2(
+        responses={200: _NewResponseSerializer},
+        tags=[_('Component')],
+        summary="组件漏洞详情",
+    )
     def get(self, request, vul_id):
         asset_vul = IastAssetVulV2.objects.filter(vul_id=vul_id).first()
         if asset_vul:

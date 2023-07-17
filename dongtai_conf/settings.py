@@ -82,6 +82,10 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'deploy.commands',
     'test.debug',
+    'health_check',                             # required
+    'health_check.db',                          # stock Django health checkers
+    'health_check.contrib.redis',
+    'django_prometheus',
 ]
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
@@ -155,6 +159,18 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+PROMETHEUS_LATENCY_BUCKETS = (0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1.0, 2.5, 5.0, 7.5, 10.0, 25.0, 50.0, 75.0, float("inf"),)
+if os.getenv('METRICS', None) == 'true':
+    MIDDLEWARE.extend(['django_prometheus.middleware.PrometheusBeforeMiddleware',
+                       'django_prometheus.middleware.PrometheusAfterMiddleware'
+                       ])
+try:
+    from dongtai_conf.settings_extend import MIDDLEWARE as MIDDLEWARE_EXTEND
+
+    MIDDLEWARE.extend(MIDDLEWARE_EXTEND)
+except ImportError:
+    pass
 
 XFF_TRUSTED_PROXY_DEPTH = 20
 
@@ -491,30 +507,32 @@ if os.getenv('PYTHONAGENT', None) == 'TRUE':
 if os.getenv('environment', None) == 'TEST' or os.getenv('SAVEEYE',
                                                          None) == 'TRUE':
     CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null', )
-if os.getenv('environment', 'PROD') in ('TEST', 'DOC') or os.getenv(
-        'DOC', None) == 'TRUE':
-    from django.utils.translation import gettext_lazy as _
-    INSTALLED_APPS.append('drf_spectacular')
-    SPECTACULAR_SETTINGS = {
-        'TITLE':
-        'DongTai WebApi Doc',
-        'VERSION':
-        "1.1.0",
-        'PREPROCESSING_HOOKS':
-        ['drf_spectacular.hooks.preprocess_exclude_path_format'],
-        'URL_FORMAT_OVERRIDE':
-        None,
-        'DESCRIPTION':
-        _("""Here is the API documentation in dongtai_conf. The corresponding management part API can be found through the relevant tag.
+
+from django.utils.translation import gettext_lazy as _
+INSTALLED_APPS.append('drf_spectacular')
+SPECTACULAR_SETTINGS = {
+    'TITLE':
+    'DongTai WebApi Doc',
+    'VERSION':
+    "1.1.0",
+    'PREPROCESSING_HOOKS':
+    ['drf_spectacular.hooks.preprocess_exclude_path_format'],
+    'URL_FORMAT_OVERRIDE':
+    None,
+    'DESCRIPTION':
+    _("""Here is the API documentation in dongtai_conf. The corresponding management part API can be found through the relevant tag.
 
 There are two authentication methods. You can obtain csrf_token and sessionid through the login process, or access the corresponding API through the user's corresponding Token.
 
 The Token method is recommended here, and users can find it in the Agent installation interface such as -H
   'Authorization: Token {token}', here is the token corresponding to the user, the token method also requires a token like this on the request header."""
-          ),
-    }
-    REST_FRAMEWORK[
-        'DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'
+      ),
+    'COMPONENT_SPLIT_REQUEST':
+    True,
+    'DISABLE_ERRORS_AND_WARNINGS':
+    True,
+}
+REST_FRAMEWORK['DEFAULT_SCHEMA_CLASS'] = 'drf_spectacular.openapi.AutoSchema'
 
 if os.getenv('environment', None) == 'TEST' or os.getenv('CPROFILE',
                                                          None) == 'TRUE':
@@ -533,11 +551,11 @@ except BaseException:
     SCA_TIMEOUT = 0
     SCA_TOKEN = ""
     SCA_SETUP = False
+DOMAIN = config.get('other', 'domain', fallback="")
 
 if os.getenv('environment', None) in ('TEST', 'PROD'):
     SESSION_COOKIE_DOMAIN = config.get('other', 'demo_session_cookie_domain')
     CSRF_COOKIE_DOMAIN = SESSION_COOKIE_DOMAIN
-    DOMAIN = config.get('other', 'domain')
 
 try:
     DOMAIN_VUL = config.get('other', 'domain_vul')
@@ -685,7 +703,7 @@ DEFAULT_IAST_VALUE_TAG = [
     'xpath-decoded', 'ldap-encoded', 'ldap-decoded',
     'http-token-limited-chars', 'numeric-limited-chars'
 ]
-DEFAULT_TAINT_VALUE_RANGE_COMMANDS = ['KEEP', 'APPEND', 'SUBSET', 'INSERT', 'REMOVE', 'REPLACE', 'CONCAT', 'TRIM', 'TRIM_RIGHT', 'TRIM_LEFT']
+DEFAULT_TAINT_VALUE_RANGE_COMMANDS = ['KEEP', 'APPEND', 'SUBSET', 'INSERT', 'REMOVE', 'REPLACE', 'CONCAT', 'TRIM', 'TRIM_RIGHT', 'TRIM_LEFT', 'OVERWRITE']
 DEFAULT_CODE_DETECT_BLACK_LIST = [
     'aj.', 'akka.', 'android.', 'antlr.', 'apple.', 'aQute.', 'brave.', 'bsh.',
     'ch.qos.', 'co.paralleluniverse.', 'com.acumenat.', 'com.alibaba.arthas.',
