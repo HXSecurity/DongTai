@@ -34,6 +34,10 @@ spec:
       containers:
         - name: {{ template "dongtai.fullname" . }}-server-container
           image: {{ .Values.images }}/dongtai-server:{{ .Values.tag }}
+          command: [ "/bin/sh","/opt/dongtai/deploy/docker/entrypoint.sh" ]
+          {{- if .Values.develop.dev }}
+          args: ["server","server"]
+          {{- end }}
           env:
             - name: DONGTAI_CONCURRENCY
               value: {{.Values.build.env_server}}
@@ -64,6 +68,9 @@ spec:
               scheme: HTTP
           {{- end }}
       {{- include "deploy.config.vo" . | nindent 6 }}
+      {{- if .Values.develop.dev }}
+      {{- include "deploy.devinitContainers" . | nindent 6 }}
+      {{- end }}
       {{- if .Values.somaxconn }}
       {{- include "deploy.initContainers" . | nindent 6 }}
       {{- end }}
