@@ -90,7 +90,8 @@ class ProjectListWithid(DetailListWithid):
 
     @extend_schema(
         tags=[_('Project')],
-        summary=_('Project List with id'),
+        summary=_('通过ID获取项目列表'),
+        description=_('通过ID获取项目列表'),
     )
     def get(self, request):
         return super().get(request)
@@ -104,7 +105,7 @@ class ProjectListWithid(DetailListWithid):
     @extend_schema_with_envcheck(
         request=IdsSerializer,
         tags=[_('Project')],
-        summary=_('Project List with id'),
+        summary=_('通过ID获取项目列表'),
         description=_("Get the item corresponding to the user, support fuzzy search based on name."
                       ),
     )

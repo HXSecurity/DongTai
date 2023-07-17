@@ -37,7 +37,7 @@ class NewProjectVersionList(UserEndPoint):
     @extend_schema_with_envcheck(
         [ProjectVersionArgSerializer],
         tags=[_('Project')],
-        summary=_('Projects List'),
+        summary=_('项目版本列表'),
         description=_("Get the item corresponding to the user, support fuzzy search based on name."),
     )
     def get(self, request):
