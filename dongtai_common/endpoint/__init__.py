@@ -124,7 +124,7 @@ class EndPoint(APIView):
                     raise ValueError("can not get request method")
                 operate_method = method
                 path, _path_regex, schema, filepath = VIEW_CLASS_TO_SCHEMA[self.__class__][method]
-                if 'dongtai' in filepath and 'dongtai_protocol' in filepath:
+                if 'dongtai' not in filepath or 'dongtai_protocol' in filepath:
                     return self.response
                 if schema is None:
                     raise ValueError("can not get schema")
