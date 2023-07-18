@@ -117,7 +117,7 @@ class EndPoint(APIView):
 
         self.response = self.finalize_response(request, response, *args,
                                                **kwargs)
-        if self.request.user is not None and self.request.user.is_active and self.description is not None:
+        if self.request.user is not None:
             try:
                 method = self.request.method
                 if method is None:
