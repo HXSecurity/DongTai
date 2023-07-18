@@ -117,14 +117,14 @@ class EndPoint(APIView):
 
         self.response = self.finalize_response(request, response, *args,
                                                **kwargs)
-        if self.request.user is not None and self.request.user.is_active and self.description is not None:
+        if self.request.user is not None:
             try:
                 method = self.request.method
                 if method is None:
                     raise ValueError("can not get request method")
                 operate_method = method
                 path, _path_regex, schema, filepath = VIEW_CLASS_TO_SCHEMA[self.__class__][method]
-                if 'dongtai' in filepath and 'dongtai_protocol' in filepath:
+                if 'dongtai' not in filepath or 'dongtai_protocol' in filepath:
                     return self.response
                 if schema is None:
                     raise ValueError("can not get schema")
