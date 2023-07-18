@@ -30,20 +30,20 @@ data:
         mutate {
            remove_field => ["timestamp","@version","host","date","headers"]
         }
-        # grok {
-        #   match => {
-        #     "log" => ".*\[%{DATA:agent_log_level}\].*"
-        #   }
-        # }
+        #grok {
+        #match => {
+        #"log" => ".*\[%{DATA:agent_log_level}\].*"
+        #}
+        #}
       }
       if [type] == "log"{
-        # ruby {
-        #   init => "require 'base64'"
-        #   code => "event.set('message', Base64.decode64(event.get('message')))"
-        # }
-        # ruby {
-        #   code => "puts event.to_hash"
-        # }
+        #ruby {
+        #init => "require 'base64'"
+        #code => "event.set('message', Base64.decode64(event.get('message')))"
+        #}
+        #ruby {
+        #code => "puts event.to_hash"
+        #}
         json{
           source => ["message"]
           remove_field => ["message"]
@@ -55,14 +55,14 @@ data:
         file {
             path => ["/tmp/logstash/agent/%{[agent]}/%{+YYYY.MM.dd}.log"]
         }
-        # elasticsearch {
-        #   hosts => ["10.12.9.20:9200"]
-        #   index => "agent-log-%{+YYYY.MM.dd}"
-        # }
+        #elasticsearch {
+        #hosts => ["10.12.9.20:9200"]
+        #index => "agent-log-%{+YYYY.MM.dd}"
+        #}
       }
       if [type] == "log"{
-        #stdout { 
-        #  codec => rubydebug
+        #stdout {
+        #codec => rubydebug
         #}
         analyticdb {
             driver_class => "com.mysql.jdbc.Driver"
