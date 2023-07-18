@@ -80,13 +80,10 @@ jobs:
             registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server:${{ steps.version.outputs.GITHUB_REF }}-latest
             registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server:${{ steps.version.outputs.GITHUB_REF }}-1.0.${{github.run_number}}
 
-
       - name: deploy to cluster
         uses: tscuite/kubectl-helm-action@main
         env:
           MAX: false
           PROJECT: server
-          RUN_NUMBER: ${{github.run_number}}
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_TEST_DATA }}
-          GITHUB_REF: ${{ steps.version.outputs.GITHUB_REF }}
           TOKEN_SCA: ${{ secrets.TOKEN_SCA }}
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_TEST_DATA }}
