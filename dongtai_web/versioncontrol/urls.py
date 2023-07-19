@@ -13,14 +13,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls.static import static
 from django.urls import include, path
-import os
+
 from dongtai_web.versioncontrol.views import VersionListView
 
 urlpatterns = [
-    path('versionlist', VersionListView.as_view()),
+    path("versionlist", VersionListView.as_view()),
 ]
 
 
-urlpatterns = [path('api/v1/version_control/', include(urlpatterns))]
+urlpatterns = [path("api/v1/version_control/", include(urlpatterns))]

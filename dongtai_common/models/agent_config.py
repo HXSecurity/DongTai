@@ -1,9 +1,11 @@
-from django.db import models
-from dongtai_common.models import User
-from dongtai_common.utils.settings import get_managed
 from time import time
+
+from django.db import models
 from django.db.models import IntegerChoices
 from django.utils.translation import gettext_lazy as _
+
+from dongtai_common.models import User
+from dongtai_common.utils.settings import get_managed
 
 
 # agent 阀值监控配置
@@ -20,7 +22,7 @@ class IastAgentConfig(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_agent_config'
+        db_table = "iast_agent_config"
         # agent 阀值监控配置
 
 
@@ -37,12 +39,11 @@ class MetricOperator(IntegerChoices):
 
 class MetricGroup(IntegerChoices):
     SYSTEM = 1, _("性能指标")
-#    JVM = 2, _("JVM指标")
-#    APPLICATION = 3, _("应用指标")
+
+
 
 
 class DealType(IntegerChoices):
-    #    UNLOAD = 1, _("完全卸载")
     RELIVE = 2, _("恢复后启动")
 
 
@@ -61,15 +62,8 @@ class TargetType(IntegerChoices):
 class MetricType(IntegerChoices):
     cpuUsagePercentage = 1, _("系统CPU使用率阈值")
     sysMemUsagePercentage = 2, _("系统内存使用率阈值")
-#    sysMemUsageUsed = 3, _("系统内存使用值阈值")
-#    jvmMemUsagePercentage = 4, _("JVM内存使用率阈值")
-#    jvmMemUsageUsed = 5, _("JVM内存使用值阈值")
-#    threadCount = 6, _("总线程数阈值")
-#    daemonThreadCount = 7, _("守护线程数阈值")
-#    dongTaiThreadCount = 8, _("洞态IAST线程数阈值")
-#    hookLimitTokenPerSecond = 9, _("单请求HOOK限流")
-#    heavyTrafficLimitTokenPerSecond = 10, _("每秒限制处理请求数量（QPS）")
-#    apiResponseTime = 11, _("请求响应时间阈值")
+
+
 
 
 UNIT_DICT = {
@@ -82,40 +76,35 @@ UNIT_DICT = {
     7: "个",
     8: "个",
     9: "次",
-    10: '次',
-    11: 'ms',
+    10: "次",
+    11: "ms",
 }
 
 
 class SystemMetricType(IntegerChoices):
     cpuUsagePercentage = 1, _("系统CPU使用率阈值")
     sysMemUsagePercentage = 2, _("系统内存使用率阈值")
-#    sysMemUsageUsed = 3, _("系统内存使用值阈值")
+
+
 
 
 class JVMMetricType(IntegerChoices):
     pass
-#    jvmMemUsagePercentage = 4, _("JVM内存使用率阈值")
-#    jvmMemUsageUsed = 5, _("JVM内存使用值阈值")
-#    threadCount = 6, _("总线程数阈值")
-#    daemonThreadCount = 7, _("守护线程数阈值")
-#    dongTaiThreadCount = 8, _("洞态IAST线程数阈值")
+
+
 
 
 class ApplicationMetricType(IntegerChoices):
     pass
-#    hookLimitTokenPerSecond = 9, _("单请求HOOK限流")
-#    heavyTrafficLimitTokenPerSecond = 10, _("每秒限制处理请求数量（QPS）")
-#    apiResponseTime = 11, _("请求响应时间阈值")
+
+
 
 
 class IastCircuitConfig(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING)
     name = models.CharField(max_length=200, blank=True)
     metric_types = models.CharField(max_length=2000, blank=True)
-    target_types = models.CharField(max_length=2000,
-                                    blank=True,
-                                    db_column='targets')
+    target_types = models.CharField(max_length=2000, blank=True, db_column="targets")
     system_type = models.IntegerField(blank=True, null=True)
     is_enable = models.IntegerField()
     is_deleted = models.IntegerField(default=0)
@@ -128,28 +117,26 @@ class IastCircuitConfig(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_circuit_configs'
+        db_table = "iast_circuit_configs"
 
 
 class IastCircuitTarget(models.Model):
-    circuit_config = models.ForeignKey(IastCircuitConfig,
-                                       on_delete=models.CASCADE)
+    circuit_config = models.ForeignKey(IastCircuitConfig, on_delete=models.CASCADE)
     target_type = models.IntegerField()
     opt = models.IntegerField()
     value = models.CharField(max_length=200, blank=True)
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_circuit_targets'
+        db_table = "iast_circuit_targets"
 
 
 class IastCircuitMetric(models.Model):
-    circuit_config = models.ForeignKey(IastCircuitConfig,
-                                       on_delete=models.CASCADE)
+    circuit_config = models.ForeignKey(IastCircuitConfig, on_delete=models.CASCADE)
     metric_type = models.IntegerField()
     opt = models.IntegerField()
     value = models.CharField(max_length=200, blank=True)
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_circuit_metrics'
+        db_table = "iast_circuit_metrics"

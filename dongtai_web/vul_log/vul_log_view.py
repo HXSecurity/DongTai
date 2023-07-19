@@ -1,21 +1,11 @@
-from dongtai_common.models.iast_vul_log import (IastVulLog, MessageTypeChoices)
-from dongtai_common.utils import const
-from dongtai_common.models.hook_type import HookType
-from dongtai_common.models.strategy import IastStrategyModel
-from dongtai_common.models.document import IastDocument
-
-from dongtai_common.endpoint import R
-from dongtai_common.utils import const
-from dongtai_common.endpoint import UserEndPoint
 from django.forms.models import model_to_dict
-from django.db.models import Q
-from rest_framework import serializers
-from rest_framework.serializers import ValidationError
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from django.utils.translation import gettext_lazy as _
-from rest_framework import viewsets
-from dongtai_web.common import VulType
 from drf_spectacular.utils import extend_schema
+from rest_framework import viewsets
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.iast_vul_log import IastVulLog
+from dongtai_web.common import VulType
 
 
 class VulLogViewSet(UserEndPoint, viewsets.ViewSet):
@@ -29,12 +19,12 @@ class VulLogViewSet(UserEndPoint, viewsets.ViewSet):
     def list(self, request, vul_id):
         data = []
         auth_users = self.get_auth_users(request.user)
-        vul_type = VulType(int(request.query_params.get('vul_type', 1)))
+        vul_type = VulType(int(request.query_params.get("vul_type", 1)))
         if vul_type == VulType.APPLICATION:
-            data = IastVulLog.objects.filter(vul_id=vul_id,
-                                             user__in=auth_users).all()
+            data = IastVulLog.objects.filter(vul_id=vul_id, user__in=auth_users).all()
         if vul_type == VulType.ASSET:
-            data = IastVulLog.objects.filter(asset_vul_id=vul_id,
-                                             user__in=auth_users).all()
+            data = IastVulLog.objects.filter(
+                asset_vul_id=vul_id, user__in=auth_users
+            ).all()
 
         return R.success([model_to_dict(i) for i in data])

@@ -1,7 +1,4 @@
-from django.db import models
-
 # Create your models here.
-
 from django.db import models
 
 
@@ -20,7 +17,7 @@ class Package(models.Model):
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     class Meta:
-        db_table = 'sca2_package_v2'
+        db_table = "sca2_package_v2"
 
 
 class VulPackage(models.Model):
@@ -40,7 +37,7 @@ class VulPackage(models.Model):
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     class Meta:
-        db_table = 'sca2_vul_package_v2'
+        db_table = "sca2_vul_package_v2"
 
 
 class VulCveRelation(models.Model):
@@ -66,7 +63,7 @@ class VulCveRelation(models.Model):
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     class Meta:
-        db_table = 'sca2_cve_relation'
+        db_table = "sca2_cve_relation"
 
 
 class PackageRepoDependency(models.Model):
@@ -74,7 +71,7 @@ class PackageRepoDependency(models.Model):
     dependency_aql = models.CharField(max_length=255, blank=True, null=False)
 
     class Meta:
-        db_table = 'sca2_package_repo_dependency'
+        db_table = "sca2_package_repo_dependency"
 
 
 class PackageDependency(models.Model):
@@ -85,7 +82,7 @@ class PackageDependency(models.Model):
     ecosystem = models.CharField(max_length=64, blank=True, null=False)
 
     class Meta:
-        db_table = 'sca2_package_dependency'
+        db_table = "sca2_package_dependency"
 
 
 class PackageLicenseInfo(models.Model):
@@ -96,7 +93,7 @@ class PackageLicenseInfo(models.Model):
     update_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     class Meta:
-        db_table = 'sca2_package_license_info'
+        db_table = "sca2_package_license_info"
 
 
 class PackageLicenseLevel(models.Model):
@@ -107,4 +104,4 @@ class PackageLicenseLevel(models.Model):
     update_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     class Meta:
-        db_table = 'sca2_license_level'
+        db_table = "sca2_license_level"

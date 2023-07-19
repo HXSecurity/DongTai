@@ -1,10 +1,7 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/10/30 15:46
-# software: PyCharm
-# project: dongtai-models
 from django.db import models
+
 from dongtai_common.utils.settings import get_managed
 
 
@@ -22,4 +19,4 @@ class IastOverpowerUserAuth(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_user_auth'
+        db_table = "iast_user_auth"

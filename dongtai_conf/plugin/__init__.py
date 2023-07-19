@@ -1,23 +1,23 @@
+import logging
 import os
-
-from dongtai_conf.settings import BASE_DIR
-from os import walk, chdir, getcwd
-from os.path import join
+from functools import wraps
 from importlib import import_module
 from inspect import getmembers, isclass
-from functools import wraps
-import logging
-from typing import Any, Tuple
+from os import chdir, getcwd, walk
+from os.path import join
+from typing import Any
 
-logger = logging.getLogger('dongtai.openapi')
+from dongtai_conf.settings import BASE_DIR
+
+logger = logging.getLogger("dongtai.openapi")
 PLUGIN_DICT = {}
 
 
 class DongTaiPlugin:
-    appname = ''
-    target_class_name = ''
-    target_func_name = ''
-    target_module_name = ''
+    appname = ""
+    target_class_name = ""
+    target_func_name = ""
+    target_module_name = ""
     plugin_type = 1
 
     def before_patch_function(self, func_args, func_kwargs) -> Any:
@@ -30,30 +30,31 @@ class DongTaiPlugin:
         module = import_module(self.target_module_name)
         if self.plugin_type == 2:
             origin_func = getattr(module, self.target_func_name)
-            setattr(module, f'_origin_{self.target_func_name}', origin_func)
+            setattr(module, f"_origin_{self.target_func_name}", origin_func)
         else:
             target_class = getattr(module, self.target_class_name)
             origin_func = getattr(target_class, self.target_func_name)
-            setattr(target_class, f'_origin_{self.target_func_name}',
-                    origin_func)
+            setattr(target_class, f"_origin_{self.target_func_name}", origin_func)
             self.target_class = target_class
 
         @wraps(origin_func)
         def patched_function(*args, **kwargs):
             logger.debug(
-                f"{self.target_module_name} {self.target_class_name}" +
-                f" {self.target_func_name} args:{args} kwargs:{kwargs}")
+                f"{self.target_module_name} {self.target_class_name} {self.target_func_name} args:{args} kwargs:{kwargs}"
+            )
             try:
                 self.before_patch_function(args, kwargs)
             except Exception as e:
-                logger.info(f'plugin error:{e} args: {args} kwargs: {kwargs}',
-                            exc_info=True)
+                logger.info(
+                    f"plugin error:{e} args: {args} kwargs: {kwargs}", exc_info=True
+                )
             res = origin_func(*args, **kwargs)
             try:
                 final_res = self.after_patch_function(args, kwargs, res)
             except Exception as e:
-                logger.info(f'plugin error:{e} args: {args} kwargs: {kwargs}',
-                            exc_info=True)
+                logger.info(
+                    f"plugin error:{e} args: {args} kwargs: {kwargs}", exc_info=True
+                )
                 return res
 
             return final_res
@@ -85,26 +86,32 @@ def get_plugin_dict():
     if PLUGIN_DICT:
         return PLUGIN_DICT
     previous_path = getcwd()
-    PLUGIN_ROOT_PATH = join(BASE_DIR, 'dongtai_conf' + os.sep + 'plugin')
-    for root, directories, files in walk(top=PLUGIN_ROOT_PATH, topdown=False):
+    PLUGIN_ROOT_PATH = join(BASE_DIR, "dongtai_conf" + os.sep + "plugin")
+    for root, _directories, files in walk(top=PLUGIN_ROOT_PATH, topdown=False):
         for file_ in files:
-            if file_.startswith('plug_') and (file_.endswith('.py')
-                                              or file_.endswith('.so')):
-                if file_.endswith('.py'):
-                    packname = '.'.join([
-                        root.replace(BASE_DIR + os.sep, '').replace(os.sep, '.'),
-                        file_.replace('.py', '')
-                    ])
+            if file_.startswith("plug_") and (
+                file_.endswith((".py", ".so"))
+            ):
+                if file_.endswith(".py"):
+                    packname = ".".join(
+                        [
+                            root.replace(BASE_DIR + os.sep, "").replace(os.sep, "."),
+                            file_.replace(".py", ""),
+                        ]
+                    )
                 else:
-                    packname = '.'.join([
-                        root.replace(BASE_DIR + os.sep, '').replace(os.sep, '.'),
-                        file_.split('.')[0]
-                    ])
+                    packname = ".".join(
+                        [
+                            root.replace(BASE_DIR + os.sep, "").replace(os.sep, "."),
+                            file_.split(".")[0],
+                        ]
+                    )
 
                 mod = import_module(packname)
-                plugin_classes = filter(lambda x: _plug_class_filter(x),
-                                        getmembers(mod))
-                for name, plug_class in plugin_classes:
+                plugin_classes = filter(
+                    lambda x: _plug_class_filter(x), getmembers(mod)
+                )
+                for _name, plug_class in plugin_classes:
                     if PLUGIN_DICT.get(plug_class.appname):
                         PLUGIN_DICT[plug_class.appname] += [plug_class]
                     else:
@@ -113,6 +120,9 @@ def get_plugin_dict():
     return PLUGIN_DICT
 
 
-def _plug_class_filter(tup: Tuple) -> bool:
-    return tup[0].startswith('Plug') and isclass(tup[1]) and issubclass(
-        tup[1], DongTaiPlugin)
+def _plug_class_filter(tup: tuple) -> bool:
+    return (
+        tup[0].startswith("Plug")
+        and isclass(tup[1])
+        and issubclass(tup[1], DongTaiPlugin)
+    )

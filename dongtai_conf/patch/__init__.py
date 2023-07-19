@@ -3,10 +3,11 @@ import inspect
 import logging
 import pkgutil
 from collections import defaultdict
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 from types import CodeType
-from typing import Any, Callable, TypeVar, overload
+from typing import Any, TypeVar, overload
 
 from typing_extensions import TypeVarTuple, Unpack
 
@@ -20,22 +21,28 @@ class PatchConfig:
     type_check: bool
 
 
-is_init_patch = False
 PATCH_HANDLER: dict[CodeType, dict[int, tuple[Callable, PatchConfig]]] = defaultdict(
     dict
 )
 
 
-def init_patch() -> None:
-    global is_init_patch
-    if not is_init_patch:
-        PATCH_ROOT_PATH = Path(BASE_DIR) / "dongtai_conf" / "patch"
-        for module_info in pkgutil.iter_modules([str(PATCH_ROOT_PATH.resolve())]):
-            if not module_info.name.startswith("_"):
-                importlib.import_module("dongtai_conf.patch." + module_info.name)
-        is_init_patch = True
-    print(PATCH_HANDLER)
+def path_namespce():
+    is_init_patch = False
 
+    def init_patch() -> None:
+        nonlocal is_init_patch
+        if not is_init_patch:
+            PATCH_ROOT_PATH = Path(BASE_DIR) / "dongtai_conf" / "patch"
+            for module_info in pkgutil.iter_modules([str(PATCH_ROOT_PATH.resolve())]):
+                if not module_info.name.startswith("_"):
+                    importlib.import_module("dongtai_conf.patch." + module_info.name)
+            is_init_patch = True
+        print(PATCH_HANDLER)
+
+    return init_patch
+
+
+init_patch = path_namespce
 
 T = TypeVar("T")
 Ts = TypeVarTuple("Ts")
@@ -72,7 +79,7 @@ def patch_point(*args: Any, patch_id: int = 0) -> Any:
             if name in caller_frame.f_locals:
                 local_value = caller_frame.f_locals[name]
                 if patch_config.type_check:
-                    # 如果启用类型检查，进行类型检查
+                    # 如果启用类型检查,进行类型检查
                     type_ = annotations.get(name, None)
                     if type(type_) is type and not isinstance(local_value, type_):
                         logger.error(
@@ -86,20 +93,19 @@ def patch_point(*args: Any, patch_id: int = 0) -> Any:
         return_value = func(**patch_func_args)
         if return_value is None:
             return _return_args(*args)
-        elif len(args) == 1:
+        if len(args) == 1:
             return return_value
-        elif not isinstance(return_value, tuple):
+        if not isinstance(return_value, tuple):
             logger.error(
                 f"return value type error: expect tuple, get {type(return_value)}"
             )
             return _return_args(*args)
-        elif len(return_value) != len(args):
+        if len(return_value) != len(args):
             logger.error(
                 f"return value len error: expect {len(args)}, get {len(return_value)}"
             )
             return _return_args(*args)
-        else:
-            return _return_args(*return_value)
+        return _return_args(*return_value)
     return _return_args(*args)
 
 

@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class ScaConfig(AppConfig):
-    name = 'dongtai_sca'
+    name = "dongtai_sca"

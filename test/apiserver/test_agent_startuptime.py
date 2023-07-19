@@ -7,23 +7,22 @@
 ######################################################################
 
 
-from test.apiserver.test_agent_base import (AgentTestCase, gzipdata)
+from test.apiserver.test_agent_base import AgentTestCase, gzipdata
 
 
 class AgentStartUptimeTestCase(AgentTestCase):
-
     def test_start_up_time_compalince(self):
-        data = {'agentId': self.agent_id, 'startupTime': 448}
+        data = {"agentId": self.agent_id, "startupTime": 448}
         gzip_data = gzipdata(data)
         response_no_gzip = self.client.post(
-            'http://testserver/api/v1/agent/startuptime',
+            "http://testserver/api/v1/agent/startuptime",
             data=data,
         )
         response_gzip = self.client.post(
-            'http://testserver/api/v1/agent/gzipstartuptime',
+            "http://testserver/api/v1/agent/gzipstartuptime",
             data=gzip_data,
-            HTTP_CONTENT_ENCODING='gzip',
-            content_type='application/json',
+            HTTP_CONTENT_ENCODING="gzip",
+            content_type="application/json",
         )
         assert response_no_gzip.status_code == 200
         assert response_gzip.status_code == 200

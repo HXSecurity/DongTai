@@ -7,6 +7,7 @@
 ######################################################################
 
 from django.db import models
+
 from dongtai_common.utils.settings import get_managed
 
 
@@ -16,4 +17,4 @@ class IastEnginMonitoringIndicators(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'engine_monitoring_indicators'
+        db_table = "engine_monitoring_indicators"

@@ -1,14 +1,9 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2021/1/25 下午6:43
-# software: PyCharm
-# project: dongtai-models
 
-from .user import User
-from . import api_route
+from .user import User  # noqa: F401
 
-LANGUAGE_DICT = {'JAVA': 1, 'PYTHON': 2, 'PHP': 3, 'GO': 4}
+LANGUAGE_DICT = {"JAVA": 1, "PYTHON": 2, "PHP": 3, "GO": 4}
 # aggregation
 LANGUAGE_ID_DICT = {"1": "JAVA", "2": "PYTHON", "3": "PHP", "4": "GO"}
 AVAILABILITY_DICT = {
@@ -16,10 +11,7 @@ AVAILABILITY_DICT = {
     "2": "存在分析文章",
     "3": "无利用信息",
 }
-SOURCE_TYPE_DICT = {
-    "1": "应用漏洞",
-    "2": "组件漏洞"
-}
+SOURCE_TYPE_DICT = {"1": "应用漏洞", "2": "组件漏洞"}
 AGGREGATION_ORDER = {
     "1": "vul.level_id",
     "2": "vul.create_time",
@@ -48,27 +40,11 @@ LICENSE_RISK_DESC = {
     "4": "无商业闭源集成",
 }
 # 漏洞等级
-APP_LEVEL_RISK = {
-    "1": "高危",
-    "2": "中危",
-    "3": "低危",
-    "4": "无风险",
-    "5": "提示",
-    "0": "无风险"
-}
+APP_LEVEL_RISK = {"1": "高危", "2": "中危", "3": "低危", "4": "无风险", "5": "提示", "0": "无风险"}
 # 图片生成
-PNG_TREND_LEVEL = {
-    "1": "高危漏洞",
-    "2": "中危漏洞",
-    "3": "低危漏洞",
-    "4": "提示信息"
-}
+PNG_TREND_LEVEL = {"1": "高危漏洞", "2": "中危漏洞", "3": "低危漏洞", "4": "提示信息"}
 # 组件漏洞可利用性
-SCA_AVAILABILITY_DICT = {
-    "1": "存在利用代码",
-    "2": "存在分析文章",
-    "3": "无利用信息"
-}
+SCA_AVAILABILITY_DICT = {"1": "存在利用代码", "2": "存在分析文章", "3": "无利用信息"}
 # default share config key
 SHARE_CONFIG_DICT = {
     "jira_url": "",
@@ -76,7 +52,7 @@ SHARE_CONFIG_DICT = {
     "gitlab_url": "",
     "gitlab_id": "",
     "zendao_url": "",
-    "zendao_id": ""
+    "zendao_id": "",
 }
 
 NOTIFY_TYPE_DICT = {
@@ -89,11 +65,7 @@ NOTIFY_TYPE_DICT = {
     "7": "DingDing",
 }
 # end
-WHITE_DOMAIN_NOTIFY = [
-    "open.feishu.cn",
-    "qyapi.weixin.qq.com",
-    "oapi.dingtalk.com"
-]
+WHITE_DOMAIN_NOTIFY = ["open.feishu.cn", "qyapi.weixin.qq.com", "oapi.dingtalk.com"]
 
 VUL_TYPE_CSS = {
     "1": "sca-height",
@@ -140,13 +112,13 @@ DEFAULT_EXPORT_REPORT_DICT = {
             "4": {},
             "5": {},
         },
-        "license_type": {}
+        "license_type": {},
     },
     "risk_details": {
         "app_vul_detail": [],
         "sca_vul_detail": [],
-        "license_vul_detail": []
+        "license_vul_detail": [],
     },
     "sca_list": {},
-    "api_site_map": {}
+    "api_site_map": {},
 }

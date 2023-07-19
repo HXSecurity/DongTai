@@ -1,24 +1,20 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 
 import logging
 
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+from rest_framework.serializers import ValidationError
+
+from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.project import IastProject, ProjectStatus
 from dongtai_web.serializers.project import (
     ProjectSerializer,
-    get_vul_levels_dict,
-    get_project_language,
     get_agent_count,
+    get_project_language,
+    get_vul_levels_dict,
 )
-from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from rest_framework import serializers
-from rest_framework.serializers import ValidationError
 
 logger = logging.getLogger("django")
 
@@ -77,7 +73,6 @@ class Projects(UserEndPoint):
         except ValidationError as e:
             return R.failure(data=e.detail)
 
-        # users = self.get_auth_users(request.user)
         department = request.user.get_relative_department()
         queryset = IastProject.objects.filter(department__in=department).order_by(
             "-latest_time"

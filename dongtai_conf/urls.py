@@ -13,40 +13,57 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls.static import static
-from django.urls import include, path
 import os
+
+from django.conf.urls.static import static
+from django.urls import URLPattern, URLResolver, include, path
+
 from dongtai_conf import settings
-from django.views.decorators.csrf import csrf_exempt
-from django.urls import URLPattern, URLResolver
 
 urlpatterns: list[URLResolver | URLPattern] = [
-    path('', include('{}.urls'.format(app))) for app in settings.CUSTOM_APPS
+    path("", include(f"{app}.urls")) for app in settings.CUSTOM_APPS
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-urlpatterns.extend([path('healthcheck', include('health_check.urls'))])
-if os.getenv('METRICS', None) == 'true':
-    urlpatterns.extend([path('', include('django_prometheus.urls'))])
+urlpatterns.extend([path("healthcheck", include("health_check.urls"))])
+if os.getenv("METRICS", None) == "true":
+    urlpatterns.extend([path("", include("django_prometheus.urls"))])
 
-if os.getenv('environment', 'PROD') in ('TEST', 'DOC') or os.getenv('DOC', None) == 'TRUE':
-    from drf_spectacular.views import SpectacularJSONAPIView, SpectacularRedocView, SpectacularSwaggerView
-    urlpatterns.extend([
-        path('api/XZPcGFKoxYXScwGjQtJx8u/schema/',
-             SpectacularJSONAPIView.as_view(),
-             name='schema'),
-        path('api/XZPcGFKoxYXScwGjQtJx8u/schema/swagger-ui/',
-             SpectacularSwaggerView.as_view(url_name='schema'),
-             name='swagger-ui'),
-        path('api/XZPcGFKoxYXScwGjQtJx8u/schema/redoc/',
-             SpectacularRedocView.as_view(url_name='schema'),
-             name='redoc'),
-    ])
+if (
+    os.getenv("environment", "PROD") in ("TEST", "DOC")
+    or os.getenv("DOC", None) == "TRUE"
+):
+    from drf_spectacular.views import (
+        SpectacularJSONAPIView,
+        SpectacularRedocView,
+        SpectacularSwaggerView,
+    )
+
+    urlpatterns.extend(
+        [
+            path(
+                "api/XZPcGFKoxYXScwGjQtJx8u/schema/",
+                SpectacularJSONAPIView.as_view(),
+                name="schema",
+            ),
+            path(
+                "api/XZPcGFKoxYXScwGjQtJx8u/schema/swagger-ui/",
+                SpectacularSwaggerView.as_view(url_name="schema"),
+                name="swagger-ui",
+            ),
+            path(
+                "api/XZPcGFKoxYXScwGjQtJx8u/schema/redoc/",
+                SpectacularRedocView.as_view(url_name="schema"),
+                name="redoc",
+            ),
+        ]
+    )
 
 
-if os.getenv('DJANGOSILK', None) == 'TRUE':
+if os.getenv("DJANGOSILK", None) == "TRUE":
     silk_path = os.getenv(
-        'DJANGOSILKPATH',
-        "9671ccbd0c655fda78354dda754c9c4fb7111b7c18751b25ea8930ab87c84f94")
+        "DJANGOSILKPATH",
+        "9671ccbd0c655fda78354dda754c9c4fb7111b7c18751b25ea8930ab87c84f94",
+    )
     urlpatterns += [
-        path(f"api/silk/{silk_path}/silk/", include('silk.urls', namespace='silk'))
+        path(f"api/silk/{silk_path}/silk/", include("silk.urls", namespace="silk"))
     ]

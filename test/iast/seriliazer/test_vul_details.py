@@ -7,17 +7,20 @@
 ######################################################################
 
 
+from ddt import data, ddt
 from django.test import TestCase
-from django.urls import include, path, reverse
-from dongtai_common.models.user import User
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.models.hook_type import HookType
-import time
-from ddt import ddt, data, unpack
+
 from dongtai_web.serializers.vul import VulSerializer
 
-TEST_DATA = ('', None, 'Django', 'Apache Tomcat/9.0.37', 'Tomcat/8.x',
-             'php-fpm', 'WebLogic')
+TEST_DATA = (
+    "",
+    None,
+    "Django",
+    "Apache Tomcat/9.0.37",
+    "Tomcat/8.x",
+    "php-fpm",
+    "WebLogic",
+)
 
 
 @ddt
@@ -30,7 +33,7 @@ class VulTestCase(TestCase):
         try:
             res = VulSerializer.split_container_name(value)
         except Exception as e:
-            self.fail("raised Exception:{}".format(e))
+            self.fail(f"raised Exception:{e}")
         assert isinstance(res, str)
 
     def tearDown(self):

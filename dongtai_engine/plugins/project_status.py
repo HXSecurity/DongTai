@@ -8,7 +8,6 @@ from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.profile import IastProfile
 from dongtai_common.models.project import IastProject, ProjectStatus
 
-
 PROJECT_WARNING_TIME_KEY = "project_warning_time"
 DEFAULT_PROJECT_WARNING_TIME = {"error_time": 2 * 7, "offline_time": 3 * 30}
 

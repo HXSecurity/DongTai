@@ -10,4 +10,4 @@ import os
 
 
 def get_managed():
-    return True if os.getenv('environment', None) == 'TEST' else False
+    return os.getenv("environment", None) == "TEST"

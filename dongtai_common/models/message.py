@@ -7,9 +7,11 @@
 ######################################################################
 
 
-from django.db import models
-from dongtai_common.utils.settings import get_managed
 from time import time
+
+from django.db import models
+
+from dongtai_common.utils.settings import get_managed
 
 
 class IastMessageType(models.Model):
@@ -17,7 +19,7 @@ class IastMessageType(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_message_type'
+        db_table = "iast_message_type"
 
 
 class IastMessage(models.Model):
@@ -26,12 +28,14 @@ class IastMessage(models.Model):
     create_time = models.IntegerField(default=lambda: int(time()))
     read_time = models.IntegerField(default=0)
     is_read = models.IntegerField(default=0)
-    message_type = models.ForeignKey(IastMessageType,
-                                     on_delete=models.DO_NOTHING,
-                                     db_constraint=False,
-                                     db_column='message_type_id')
+    message_type = models.ForeignKey(
+        IastMessageType,
+        on_delete=models.DO_NOTHING,
+        db_constraint=False,
+        db_column="message_type_id",
+    )
     to_user_id = models.IntegerField(default=0)
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_message'
+        db_table = "iast_message"

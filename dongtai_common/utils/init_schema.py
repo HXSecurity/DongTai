@@ -1,10 +1,10 @@
+import inspect
+import logging
 import os
 import re
-import logging
 
-from drf_spectacular.generators import SchemaGenerator
 from drf_spectacular.drainage import add_trace_message
-import inspect
+from drf_spectacular.generators import SchemaGenerator
 
 logger = logging.getLogger("django")
 VIEW_CLASS_TO_SCHEMA: dict[type, dict[str, tuple[str, str, dict | None, str]]] = {}
@@ -14,7 +14,7 @@ def init_schema() -> None:
     generator = SchemaGenerator()
     generator._initialise_endpoints()
     endpoints = generator._get_paths_and_endpoints()
-    non_trivial_prefix = len(set([view.__class__ for _, _, _, view in endpoints])) > 1
+    non_trivial_prefix = len({view.__class__ for _, _, _, view in endpoints}) > 1
     if non_trivial_prefix:
         path_prefix = os.path.commonpath([path for path, _, _, _ in endpoints])
         path_prefix = re.escape(path_prefix)  # guard for RE special chars in path
