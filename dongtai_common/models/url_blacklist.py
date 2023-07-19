@@ -86,7 +86,7 @@ def create_blacklist_rule(
     operator: TargetOperator,
     value: str,
     state: State,
-    **kwargs
+    **kwargs,
 ):
     ruledetail = IastAgentBlackRuleDetail.objects.create(
         target_type=target_type, operator=operator, value=value

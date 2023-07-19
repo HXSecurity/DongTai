@@ -15,9 +15,9 @@ class IastConfig(DongTaiAppConfigPatch, AppConfig):
         from dongtai_conf.settings import AUTO_UPDATE_HOOK_STRATEGY
 
         # do not remove this import, used in celery
-        from dongtai_engine.plugins.project_status import (
+        from dongtai_engine.plugins.project_status import (  # noqa: F401
             update_project_status,
-        )  # noqa: F401
+        )
 
         if AUTO_UPDATE_HOOK_STRATEGY and not validate_hook_strategy_update():
             print("enable auto_update_hook_strategy  updating hook strategy from file")
