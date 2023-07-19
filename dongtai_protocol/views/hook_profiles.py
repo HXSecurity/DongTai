@@ -54,10 +54,11 @@ class HookProfilesEndPoint(OpenApiEndPoint):
             )
             & (Q(system_type=1) if system_only else Q())
         ).order_by("id")
-        for hook_type in list(hook_types) + list(hook_types_a):
+        for hook_type_ in list(hook_types) + list(hook_types_a):
             strategy_details = []
-            if isinstance(hook_type, IastStrategyModel):
-                hook_type = convert_strategy(hook_type)
+            hook_type = hook_type_
+            if isinstance(hook_type_, IastStrategyModel):
+                hook_type = convert_strategy(hook_type_)
             strategies = hook_type.strategies.filter(
                 Q(
                     language_id=language_id,

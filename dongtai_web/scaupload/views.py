@@ -303,7 +303,10 @@ class SCATemplateViewSet(UserEndPoint):
         tags=[_("SCA DB")],
     )
     def get(self, request):
-        return FileResponse(
-            open(os.path.join(BASE_DIR, "static/assets/template/maven_sca.csv"), "rb"),
-            filename="maven_sca.csv",
-        )
+        with open(
+            os.path.join(BASE_DIR, "static/assets/template/maven_sca.csv"), "rb"
+        ) as f:
+            return FileResponse(
+                f,
+                filename="maven_sca.csv",
+            )

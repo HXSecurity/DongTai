@@ -342,8 +342,8 @@ def update_agent_status():
     vuls = IastVulnerabilityModel.objects.filter(
         Q(pk__in=vul_id_qs) & ~Q(status_id__in=(3, 5, 6))
     ).select_related("agent__user")
-    for _, vul_list in groupby(vuls, lambda x: x.agent.user_id):
-        vul_list = list(vul_list)
+    for _, vul_list_ in groupby(vuls, lambda x: x.agent.user_id):
+        vul_list = list(vul_list_)
         replay_queue = IastReplayQueue.objects.filter(
             relation_id__in=[x.id for x in vul_list],
             state__in=(const.PENDING, const.WAITING),

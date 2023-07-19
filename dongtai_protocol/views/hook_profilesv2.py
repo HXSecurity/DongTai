@@ -48,7 +48,8 @@ class HookProfilesV2EndPoint(HookProfilesEndPoint):
             else:
                 other_strategies_dict[strategy["hooktype_id"]].append(strategy)
 
-        for hook_type in list(hook_types) + list(hook_types_a):
+        for hook_type_ in list(hook_types) + list(hook_types_a):
+            hook_type = hook_type_
             if isinstance(hook_type, IastStrategyModel):
                 hook_type = convert_strategy(hook_type)
                 strategies = sink_strategies_dict[hook_type.id]

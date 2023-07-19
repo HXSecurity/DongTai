@@ -1,8 +1,10 @@
+import contextlib
 import json
 import logging
 import time
 from collections import defaultdict
 from collections.abc import Callable
+from dataclasses import asdict, dataclass
 from hashlib import sha1
 from http import HTTPStatus
 from json.decoder import JSONDecodeError
@@ -12,6 +14,7 @@ from urllib.parse import urljoin
 import requests
 from celery import shared_task
 from django.db import IntegrityError
+from marshmallow.exceptions import ValidationError
 from packaging.version import _BaseVersion
 from requests import Response
 from requests.exceptions import ConnectionError, ConnectTimeout, RequestException
@@ -33,6 +36,13 @@ from dongtai_conf.settings import (
     SCA_MAX_RETRY_COUNT,
     SCA_SETUP,
     SCA_TIMEOUT,
+)
+from dongtai_web.dongtai_sca.common.dataclass import (
+    PackageInfo,
+    PackageResponse,
+    PackageVulResponse,
+    Vul,
+    VulInfo,
 )
 from dongtai_web.dongtai_sca.models import PackageLicenseLevel
 
@@ -113,17 +123,6 @@ def data_transfrom(response: Response) -> Result[list[dict], str]:
     except Exception as e:
         logger.error(f"unexcepted Exception : {e}", exc_info=True)
         return Err("Failed")
-
-
-from marshmallow.exceptions import ValidationError
-
-from dongtai_web.dongtai_sca.common.dataclass import (
-    PackageInfo,
-    PackageResponse,
-    PackageVulResponse,
-    Vul,
-    VulInfo,
-)
 
 
 def data_transfrom_package_v3(response: Response) -> Result[list[PackageInfo], str]:
@@ -939,10 +938,6 @@ def get_highest_license(license_list: list) -> dict:
 
 def sha_1(raw):
     return sha1(raw.encode("utf-8"), usedforsecurity=False).hexdigest()
-
-
-import contextlib
-from dataclasses import asdict, dataclass
 
 
 @dataclass

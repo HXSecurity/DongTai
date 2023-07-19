@@ -8,7 +8,7 @@ django_settings_module = "dongtai_conf.settings"
 target-version = ["py310"]
 
 [tool.ruff]
-line-length = 130
+line-length = 88
 select = [
     "F",   # Pyflakes
     "E",   # pycodestyle errors
@@ -39,15 +39,12 @@ select = [
     "RUF", # Ruff-specific rules
 ]
 ignore = [
-    "E402",
-    "E501",
-    "F811",
-    "PLR091",
-    "PLR2004",
-    "PLW2901",
-    "RUF012",
-    "SIM112",
-    "PGH003",
-    "SIM115",
+    "E501",    # Line too long, handled by black
+    "SIM112",  # Use capitalized environment variable
+    "PGH003",  # Use specific rule codes when ignoring type issues
+    "PLR091",  # Too many ...
+    "PLR2004", # Magic value used in comparison
+    "RUF012",  # Mutable class attributes should be annotated with typing.ClassVar
+
 ]
 target-version = "py310"

@@ -9,6 +9,7 @@ from celery import Celery
 from kombu import Exchange, Queue
 
 from dongtai_conf import settings
+from dongtai_conf.settings import DONGTAI_CELERY_CACHE_PREHEAT
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dongtai_conf.settings")
 
@@ -164,7 +165,6 @@ app.conf.update(configs)
 
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
-from dongtai_conf.settings import DONGTAI_CELERY_CACHE_PREHEAT
 
 
 def ready(self):

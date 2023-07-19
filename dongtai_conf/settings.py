@@ -20,6 +20,7 @@ from configparser import ConfigParser
 from urllib.parse import urljoin
 
 import pymysql
+from django.utils.translation import gettext_lazy as _
 
 from dongtai_conf.utils import get_config
 
@@ -510,9 +511,6 @@ if os.getenv("PYTHONAGENT", None) == "TRUE":
 if os.getenv("environment", None) == "TEST" or os.getenv("SAVEEYE", None) == "TRUE":
     CAPTCHA_NOISE_FUNCTIONS = ("captcha.helpers.noise_null",)
 
-import sys
-
-from django.utils.translation import gettext_lazy as _
 
 INSTALLED_APPS.append("drf_spectacular")
 SPECTACULAR_SETTINGS = {

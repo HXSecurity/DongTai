@@ -107,10 +107,10 @@ class MethodGraph(AnonymousAndUserEndPoint):
         engine = VulEngine()
         links = []
         if sinks:
-            for sink in sinks:
+            for sink_ in sinks:
                 engine.search(
                     method_pool=json.loads(method_pool.method_pool),
-                    vul_method_signature=sink,
+                    vul_method_signature=sink_,
                 )
                 status, stack, source, sink = engine.result()
                 if status is False:

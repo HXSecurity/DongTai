@@ -370,9 +370,8 @@ class AgentDownload(OpenApiEndPoint):
                 template_id=template_id,
             ):
                 handler.replace_config()
-                response = FileResponse(
-                    open(f"{handler.target_path}/{handler.agent_file}", "rb")
-                )
+                with open(f"{handler.target_path}/{handler.agent_file}", "rb") as f:
+                    response = FileResponse(f)
                 response["content_type"] = "application/octet-stream"
                 response[
                     "Content-Disposition"
