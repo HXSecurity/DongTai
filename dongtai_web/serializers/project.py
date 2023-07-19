@@ -129,4 +129,8 @@ class ProjectSerializer(serializers.ModelSerializer):
         return list(res)
 
     def get_agent_count(self, obj) -> int:
-        return self.context["agent_count_dict"][obj.id] if "agent_count_dict" in self.context else obj.iastagent_set.count()
+        return (
+            self.context["agent_count_dict"][obj.id]
+            if "agent_count_dict" in self.context
+            else obj.iastagent_set.count()
+        )

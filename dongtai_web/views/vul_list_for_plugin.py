@@ -6,7 +6,11 @@ from dongtai_common.endpoint import MixinAuthEndPoint, R
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_web.serializers.vul import VulForPluginSerializer
-from dongtai_web.utils import extend_schema_with_envcheck, get_model_order_options, get_response_serializer
+from dongtai_web.utils import (
+    extend_schema_with_envcheck,
+    get_model_order_options,
+    get_response_serializer,
+)
 
 _ResponseSerializer = get_response_serializer(VulForPluginSerializer(many=True))
 

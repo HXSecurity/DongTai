@@ -48,9 +48,7 @@ class VulEngineV2:
         :return:
         """
         self._method_pool = sorted(
-            filter(
-                lambda x: not ("type" in x and "stack" in x), method_pool
-            ),
+            filter(lambda x: not ("type" in x and "stack" in x), method_pool),
             key=lambda e: e.__getitem__("invokeId"),
             reverse=True,
         )

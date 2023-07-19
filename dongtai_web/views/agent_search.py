@@ -9,7 +9,11 @@ from dongtai_common.endpoint import AnonymousAndUserEndPoint, R
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.heartbeat import IastHeartbeat
 from dongtai_common.models.server import IastServer
-from dongtai_web.utils import extend_schema_with_envcheck, get_model_field, get_response_serializer
+from dongtai_web.utils import (
+    extend_schema_with_envcheck,
+    get_model_field,
+    get_response_serializer,
+)
 
 
 class _AgentSearchQuerysSerializer(serializers.Serializer):
@@ -51,7 +55,13 @@ class AgentSearch(AnonymousAndUserEndPoint):
         searchfields_ = {k: v for k, v in searchfields.items() if k in fields}
         q = reduce(
             lambda x, y: x | y,
-            (Q(**x) for x in ({"__".join([kv_pair[0], "icontains"]): kv_pair[1]} for kv_pair in searchfields_.items())),
+            (
+                Q(**x)
+                for x in (
+                    {"__".join([kv_pair[0], "icontains"]): kv_pair[1]}
+                    for kv_pair in searchfields_.items()
+                )
+            ),
             Q(),
         )
         agents = self.get_auth_and_anonymous_agents(request.user)

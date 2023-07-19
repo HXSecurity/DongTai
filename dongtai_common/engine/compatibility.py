@@ -117,10 +117,7 @@ def highlight_target_value(target_value: str, ranges: list) -> str:
             str_dict.update(str_dict_end)
             str_dict[begin_part_length + 2] = "..."
             for range_ in sorted_ranges:
-                if (
-                    range_["start"] in str_dict
-                    and (range_["stop"] - 1) in str_dict
-                ):
+                if range_["start"] in str_dict and (range_["stop"] - 1) in str_dict:
                     str_dict[range_["start"]] = (
                         '<em style="color:red;">' + str_dict[range_["start"]]
                     )
@@ -152,9 +149,7 @@ def highlight_target_value(target_value: str, ranges: list) -> str:
                     range_["start"] not in str_dict.keys()
                     or (range_["stop"]) not in str_dict.keys()
                 ):
-                    str_dict[begin_part_length + 2] = (
-                        '<em style="color:red;">...</em>'
-                    )
+                    str_dict[begin_part_length + 2] = '<em style="color:red;">...</em>'
             final_str = [x[1] for x in sorted(str_dict.items(), key=lambda kv: kv[0])]
             return "".join(final_str)
     except KeyError as e:

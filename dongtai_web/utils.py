@@ -50,9 +50,13 @@ def assemble_query(
 ):
     return reduce(
         operator_,
-        (Q(**x) for x in ({
-                    "__".join(filter(lambda x: x, [kv_pair[0], lookuptype])): kv_pair[1]
-                } for kv_pair in condictions)),
+        (
+            Q(**x)
+            for x in (
+                {"__".join(filter(lambda x: x, [kv_pair[0], lookuptype])): kv_pair[1]}
+                for kv_pair in condictions
+            )
+        ),
         base_query,
     )
 
@@ -62,9 +66,13 @@ def assemble_query_2(
 ):
     return reduce(
         operator_,
-        (~Q(**x) for x in ({
-                    "__".join(filter(lambda x: x, [kv_pair[0], lookuptype])): kv_pair[1]
-                } for kv_pair in condictions)),
+        (
+            ~Q(**x)
+            for x in (
+                {"__".join(filter(lambda x: x, [kv_pair[0], lookuptype])): kv_pair[1]}
+                for kv_pair in condictions
+            )
+        ),
         base_query,
     )
 
@@ -74,7 +82,7 @@ def extend_schema_with_envcheck(
     request_bodys: list | dict = [],
     response_bodys: list = [],
     response_schema=None,
-    **kwargs
+    **kwargs,
 ):
     def myextend_schema(func):
         from drf_spectacular.utils import OpenApiResponse, OpenApiTypes, extend_schema
@@ -89,7 +97,9 @@ def extend_schema_with_envcheck(
         examples = request_examples + response_examples
         if kwargs.get("request", None) and request_examples:
             kwargs["request"] = {"application/json": OpenApiTypes.OBJECT}
-        elif isinstance(kwargs.get("request", None), SerializerMetaclass) or kwargs.get("request", None):
+        elif isinstance(kwargs.get("request", None), SerializerMetaclass) or kwargs.get(
+            "request", None
+        ):
             kwargs["request"] = {"application/json": kwargs["request"]}
         deco = extend_schema(
             parameters=parameters,
@@ -100,7 +110,7 @@ def extend_schema_with_envcheck(
                     response=response_schema,
                 )
             },
-            **kwargs
+            **kwargs,
         )
         funcw = deco(func)
         funcw.querys = querys
@@ -122,9 +132,7 @@ def get_response_serializer(
         else status_msg_keypair
     )
     msg_list = list({x[1] for x in (x[0] for x in status_msg_keypair)})
-    status_list = list(
-        {x[0] for x in (x[0] for x in status_msg_keypair)}
-    )
+    status_list = list({x[0] for x in (x[0] for x in status_msg_keypair)})
     msg_list = ["success"] if msg_list is None else msg_list
     status_list = [201] if status_list is None else status_list
     return type(
@@ -135,14 +143,14 @@ def get_response_serializer(
                 default=201,
                 help_text=format_lazy(
                     "{} :" + "{} ; " * len(status_list),
-                    *([_("status code"), *status_list])
+                    *([_("status code"), *status_list]),
                 ),
             ),
             "msg": serializers.CharField(
                 default="success",
                 help_text=format_lazy(
                     "{} :" + "{} ; " * len(msg_list),
-                    *([_("human readable message"), *msg_list])
+                    *([_("human readable message"), *msg_list]),
                 ),
             ),
             "data": data_serializer,

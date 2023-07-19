@@ -11,7 +11,11 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.agent import IastAgent
 from dongtai_web.serializers.agent import AgentSerializer
-from dongtai_web.utils import extend_schema_with_envcheck, get_model_field, get_response_serializer
+from dongtai_web.utils import (
+    extend_schema_with_envcheck,
+    get_model_field,
+    get_response_serializer,
+)
 
 logger = logging.getLogger("dongtai-webapi")
 
@@ -56,7 +60,11 @@ class AgentList(UserEndPoint):
 
     def set_query_cache(self, q):
         total = IastAgent.objects.filter(q).count()
-        max_id = IastAgent.objects.filter(q).values_list("id", flat=True).order_by("-id")[0] if total > 0 else 0
+        max_id = (
+            IastAgent.objects.filter(q).values_list("id", flat=True).order_by("-id")[0]
+            if total > 0
+            else 0
+        )
         cache.set(self.cache_key, total, 60 * 60)
         cache.set(self.cache_key_max_id, max_id, 60 * 60)
         return total, max_id
@@ -126,9 +134,13 @@ class AgentList(UserEndPoint):
             searchfields_ = {k: v for k, v in searchfields.items() if k in fields}
             q = reduce(
                 lambda x, y: x | y,
-                (Q(**x) for x in ({
-                            "__".join([kv_pair[0], "icontains"]): kv_pair[1]
-                        } for kv_pair in searchfields_.items())),
+                (
+                    Q(**x)
+                    for x in (
+                        {"__".join([kv_pair[0], "icontains"]): kv_pair[1]}
+                        for kv_pair in searchfields_.items()
+                    )
+                ),
                 Q(),
             )
             if running_state is not None:

@@ -41,8 +41,6 @@ class MetricGroup(IntegerChoices):
     SYSTEM = 1, _("性能指标")
 
 
-
-
 class DealType(IntegerChoices):
     RELIVE = 2, _("恢复后启动")
 
@@ -62,8 +60,6 @@ class TargetType(IntegerChoices):
 class MetricType(IntegerChoices):
     cpuUsagePercentage = 1, _("系统CPU使用率阈值")
     sysMemUsagePercentage = 2, _("系统内存使用率阈值")
-
-
 
 
 UNIT_DICT = {
@@ -86,18 +82,12 @@ class SystemMetricType(IntegerChoices):
     sysMemUsagePercentage = 2, _("系统内存使用率阈值")
 
 
-
-
 class JVMMetricType(IntegerChoices):
     pass
 
 
-
-
 class ApplicationMetricType(IntegerChoices):
     pass
-
-
 
 
 class IastCircuitConfig(models.Model):

@@ -185,7 +185,11 @@ class ScaList(UserEndPoint):
         if project_id and project_id != "":
             es_query["bind_project_id"] = project_id
             version_id = request.GET.get("version_id", None)
-            current_project_version = get_project_version(project_id) if not version_id else get_project_version_by_id(version_id)
+            current_project_version = (
+                get_project_version(project_id)
+                if not version_id
+                else get_project_version_by_id(version_id)
+            )
 
             base_query_sql = (
                 base_query_sql
@@ -466,12 +470,10 @@ def mysql_search(
                 after_signature,
             )
 
-
     order_conditions = [
         "signature_value DESC",
     ]
-    order_conditions_dict = {
-    }
+    order_conditions_dict = {}
     if order_type == "desc":
         order_conditions.insert(0, f"{order} DESC")
     else:

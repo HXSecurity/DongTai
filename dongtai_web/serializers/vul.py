@@ -9,7 +9,10 @@ from dongtai_common.models.header_vulnerablity import IastHeaderVulnerability
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.vul_level import IastVulLevel
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel, IastVulnerabilityStatus
+from dongtai_common.models.vulnerablity import (
+    IastVulnerabilityModel,
+    IastVulnerabilityStatus,
+)
 from dongtai_web.header_vul.base import HeaderVulSerializer
 
 

@@ -28,7 +28,12 @@ from dongtai_common.models.asset_vul import (
     IastVulAssetRelation,
 )
 from dongtai_common.models.vul_level import IastVulLevel
-from dongtai_conf.settings import SCA_BASE_URL, SCA_MAX_RETRY_COUNT, SCA_SETUP, SCA_TIMEOUT
+from dongtai_conf.settings import (
+    SCA_BASE_URL,
+    SCA_MAX_RETRY_COUNT,
+    SCA_SETUP,
+    SCA_TIMEOUT,
+)
 from dongtai_web.dongtai_sca.models import PackageLicenseLevel
 
 from .cwe import get_cwe_name
@@ -204,7 +209,9 @@ def get_package_vul(
     aql: str = "", ecosystem: str = "", package_hash: str = ""
 ) -> list[dict]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v1/package_vul/")
-    querystring = {"aql": aql} if aql else {"ecosystem": ecosystem, "hash": package_hash}
+    querystring = (
+        {"aql": aql} if aql else {"ecosystem": ecosystem, "hash": package_hash}
+    )
     headers = {"Token": get_sca_token()}
     payload = ""
     res = request_get_res_data_with_exception(
@@ -228,7 +235,9 @@ def get_package_vul_v2(
     aql: str = "", ecosystem: str = "", package_hash: str = ""
 ) -> tuple[list[dict], list[dict]]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v2/package_vul/")
-    querystring = {"aql": aql} if aql else {"ecosystem": ecosystem, "hash": package_hash}
+    querystring = (
+        {"aql": aql} if aql else {"ecosystem": ecosystem, "hash": package_hash}
+    )
     headers = {"Token": get_sca_token()}
     payload = ""
     res = request_get_res_data_with_exception(
@@ -280,7 +289,9 @@ def get_package(
     aql: str = "", ecosystem: str = "", package_hash: str = ""
 ) -> list[dict]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v1/package/")
-    querystring = {"aql": aql} if aql else {"ecosystem": ecosystem, "hash": package_hash}
+    querystring = (
+        {"aql": aql} if aql else {"ecosystem": ecosystem, "hash": package_hash}
+    )
     headers = {"Token": get_sca_token()}
     payload = ""
     res = request_get_res_data_with_exception(
@@ -304,7 +315,9 @@ def get_package_v2(
     aql: str = "", ecosystem: str = "", package_hash: str = ""
 ) -> list[dict]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v1/package/")
-    querystring = {"aql": aql} if aql else {"ecosystem": ecosystem, "hash": package_hash}
+    querystring = (
+        {"aql": aql} if aql else {"ecosystem": ecosystem, "hash": package_hash}
+    )
     headers = {"Token": get_sca_token()}
     payload = ""
     res = request_get_res_data_with_exception(
@@ -909,7 +922,9 @@ def get_license_list_v2(license_list: tuple[str, ...]) -> list[dict]:
     def filter_none(x: dict | None) -> bool:
         return x is not None
 
-    return [LICENSE_DICT[license] for license in license_list if license in LICENSE_DICT]
+    return [
+        LICENSE_DICT[license] for license in license_list if license in LICENSE_DICT
+    ]
     # return [{
 
 
@@ -1362,7 +1377,10 @@ def get_description(descriptions: list[dict]) -> str:
 
 
 def get_vul_path(base_aql: str, vul_package_path: list[dict] = []) -> list[str]:
-    return [get_package_aql(x["name"], x["ecosystem"], x["version"]) for x in vul_package_path] + [base_aql]
+    return [
+        get_package_aql(x["name"], x["ecosystem"], x["version"])
+        for x in vul_package_path
+    ] + [base_aql]
 
 
 def get_asset_level(res: dict) -> int:
@@ -1397,7 +1415,7 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str, version: st
     Asset.objects.filter(pk=asset_id).update(
         **{f"vul_{k}_count": v for k, v in res.items()}
     )
-    Asset.objects.filter(pk=asset_id).update(vul_count= sum(res.values()))
+    Asset.objects.filter(pk=asset_id).update(vul_count=sum(res.values()))
     for vul in package_vuls:
         vul_dependency = get_vul_path(aql, vul["vul_package_path"])
         cve_numbers = get_cve_numbers(

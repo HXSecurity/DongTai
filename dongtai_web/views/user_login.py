@@ -56,9 +56,7 @@ class UserLogin(UserEndPoint):
                     )
                     return R.failure(status=202, msg=_("Login failed"))
                 return R.failure(status=203, msg=_("Verification code error"))
-            return R.failure(
-                status=204, msg=_("verification code should not be empty")
-            )
+            return R.failure(status=204, msg=_("verification code should not be empty"))
         except Exception as e:
             logger.error(e)
             return R.failure(status=202, msg=_("Login failed"))

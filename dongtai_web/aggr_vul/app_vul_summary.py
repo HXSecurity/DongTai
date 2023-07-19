@@ -150,7 +150,10 @@ def get_annotate_data_es(department: Department, bind_project_id, project_versio
 
     from dongtai_common.models.strategy import IastStrategyModel
     from dongtai_common.models.vul_level import IastVulLevel
-    from dongtai_common.models.vulnerablity import IastVulnerabilityDocument, IastVulnerabilityStatus
+    from dongtai_common.models.vulnerablity import (
+        IastVulnerabilityDocument,
+        IastVulnerabilityStatus,
+    )
 
     strategy_ids = list(IastStrategyModel.objects.all().values_list("id", flat=True))
 

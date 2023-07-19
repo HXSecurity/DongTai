@@ -22,7 +22,11 @@ from dongtai_web.base.project_version import (
     get_project_version_by_id,
 )
 from dongtai_web.serializers.vul import VulSerializer
-from dongtai_web.utils import extend_schema_with_envcheck, get_model_order_options, get_response_serializer
+from dongtai_web.utils import (
+    extend_schema_with_envcheck,
+    get_model_order_options,
+    get_response_serializer,
+)
 
 
 class _VulsEndPointResponseSerializer(VulSerializer):
@@ -38,7 +42,16 @@ class _VulsEndPointResponseSerializer(VulSerializer):
 
     class Meta:
         model = VulSerializer.Meta.model
-        fields = [*VulSerializer.Meta.fields, "index", "project_name", "project_id", "server_name", "server_type", "level_type", "level"]
+        fields = [
+            *VulSerializer.Meta.fields,
+            "index",
+            "project_name",
+            "project_id",
+            "server_name",
+            "server_type",
+            "level_type",
+            "level",
+        ]
 
 
 _ResponseSerializer = get_response_serializer(
@@ -238,7 +251,11 @@ class VulsEndPoint(UserEndPoint):
         project_id = request.query_params.get("project_id")
         if project_id:
             version_id = request.GET.get("version_id", None)
-            current_project_version = get_project_version(project_id) if not version_id else get_project_version_by_id(version_id)
+            current_project_version = (
+                get_project_version(project_id)
+                if not version_id
+                else get_project_version_by_id(version_id)
+            )
             agents = auth_agents.filter(
                 bind_project_id=project_id,
                 project_version_id=current_project_version.get("version_id", 0),
@@ -260,7 +277,11 @@ class VulsEndPoint(UserEndPoint):
         if status_id:
             queryset = queryset.filter(status_id=status_id)
         order = request.query_params.get("order")
-        if order and order in [*get_model_order_options(IastVulnerabilityModel), "type", "-type"]:
+        if order and order in [
+            *get_model_order_options(IastVulnerabilityModel),
+            "type",
+            "-type",
+        ]:
             if order == "type":
                 order = "hook_type_id"
             if order == "-type":

@@ -121,7 +121,11 @@ class ProjectSummary(UserEndPoint):
         data["day_num"] = []
         data["level_count"] = []
 
-        current_project_version = get_project_version(project.id) if not version_id else get_project_version_by_id(version_id)
+        current_project_version = (
+            get_project_version(project.id)
+            if not version_id
+            else get_project_version_by_id(version_id)
+        )
         data["versionData"] = current_project_version
         agent_id = request.query_params.get("agent_id")
         if agent_id:

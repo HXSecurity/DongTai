@@ -66,4 +66,3 @@ class AgentDownload(UserEndPoint):
             return R.failure(msg="download error,please check deployment")
 
         return self.res_by_language(language, token, resp)
-

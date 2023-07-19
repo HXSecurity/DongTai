@@ -109,7 +109,11 @@ class User(AbstractUser, PermissionsMixin):
             for pdepartment in principal_departments
         ]
         totals = reduce(ior, qss, qs)
-        total_dep = Department.objects.none() if not totals else Department.objects.filter(totals)
+        total_dep = (
+            Department.objects.none()
+            if not totals
+            else Department.objects.filter(totals)
+        )
         return Department.objects.filter(pk__in=[i.id for i in total_dep])
 
     def get_using_department(self):

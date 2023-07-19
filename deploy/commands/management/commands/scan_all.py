@@ -11,11 +11,17 @@ class Command(BaseCommand):
         parser.add_argument("id", nargs="*", default=[], type=int)
 
     def handle(self, *args, **options):
-        method_pools = MethodPool.objects.filter(pk__in=options["id"]).all() if options["id"] else MethodPool.objects.all()
+        method_pools = (
+            MethodPool.objects.filter(pk__in=options["id"]).all()
+            if options["id"]
+            else MethodPool.objects.all()
+        )
         from dongtai_engine.tasks import search_vul_from_method_pool
 
         for method_pool in method_pools:
             search_vul_from_method_pool(method_pool.pool_sign, method_pool.agent_id)
         self.stdout.write(
-            self.style.SUCCESS('Successfully flash old data  "{}"'.format("123123213321"))
+            self.style.SUCCESS(
+                'Successfully flash old data  "{}"'.format("123123213321")
+            )
         )

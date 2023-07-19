@@ -151,15 +151,20 @@ class VulEngine:
             for t_hash in pool["targetHash"]:
                 target_hash_dict[t_hash].add(pool["invokeId"])
             invokeid_dict[pool["invokeId"]] = pool
-        vul_methods = [x["invokeId"] for x in filter(self.hit_vul_method, self.method_pool)]
+        vul_methods = [
+            x["invokeId"] for x in filter(self.hit_vul_method, self.method_pool)
+        ]
         # Ignore `org.springframework.web.util.pattern.PathPattern.getPatternString()` as a non-source method.
         # It is only to indicate that the API pattern.
-        source_methods = [x["invokeId"] for x in filter(
-                    lambda x: x.get("source", False)
-                    and x.get("signature")
-                    != "org.springframework.web.util.pattern.PathPattern.getPatternString()",
-                    self.method_pool,
-                )]
+        source_methods = [
+            x["invokeId"]
+            for x in filter(
+                lambda x: x.get("source", False)
+                and x.get("signature")
+                != "org.springframework.web.util.pattern.PathPattern.getPatternString()",
+                self.method_pool,
+            )
+        ]
         # Build a graph
         g = nk.Graph(weighted=True, directed=True)
         for pool in self.method_pool:

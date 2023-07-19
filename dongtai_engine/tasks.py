@@ -477,7 +477,11 @@ def vul_recheck():
         logger.info(
             f"generating payload recheck_payload:{recheck_payload}  vul_id:{vul_id} replay_id:{replay.id}"
         )
-        vulnerability = vul_data.get(vul_id, {}) if replay.replay_type == 1 else pool_data.get(vul_id, {})
+        vulnerability = (
+            vul_data.get(vul_id, {})
+            if replay.replay_type == 1
+            else pool_data.get(vul_id, {})
+        )
         if not vulnerability:
             Replay.replay_failed(timestamp=timestamp, replay=replay)
             continue

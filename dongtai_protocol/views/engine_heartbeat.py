@@ -54,7 +54,11 @@ class EngineHeartBeatEndPoint(OpenApiEndPoint):
     def get_client_ip(request):
         try:
             logger.info(request.META)
-            return request.META["HTTP_X_FORWARDED_FOR"] if "HTTP_X_FORWARDED_FOR" in request.META else request.META["REMOTE_ADDR"]
+            return (
+                request.META["HTTP_X_FORWARDED_FOR"]
+                if "HTTP_X_FORWARDED_FOR" in request.META
+                else request.META["REMOTE_ADDR"]
+            )
         except Exception as e:
             logger.error(_("Client IP acquisition failed, reasons: {}").format(e))
             return ""

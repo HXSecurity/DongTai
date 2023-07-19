@@ -236,7 +236,7 @@ class GetAggregationVulList(UserEndPoint):
                 request.user.id,
                 page_size=ser.validated_data["page_size"],
                 page=ser.validated_data["page"],
-                **es_query
+                **es_query,
             )
         else:
             if keywords:

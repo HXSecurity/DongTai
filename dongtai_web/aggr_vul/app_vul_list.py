@@ -14,7 +14,11 @@ from dongtai_common.common.utils import make_hash
 from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models import APP_LEVEL_RISK, APP_VUL_ORDER
 from dongtai_common.models.dast_integration import IastDastIntegrationRelation
-from dongtai_common.models.vulnerablity import IastVulnerabilityDocument, IastVulnerabilityModel, IastVulnerabilityStatus
+from dongtai_common.models.vulnerablity import (
+    IastVulnerabilityDocument,
+    IastVulnerabilityModel,
+    IastVulnerabilityStatus,
+)
 from dongtai_common.utils.const import OPERATE_GET
 from dongtai_common.utils.db import SearchLanguageMode
 from dongtai_conf import settings
@@ -217,8 +221,8 @@ class GetAppVulsList(UserEndPoint):
                 )
                 item["dastvul__vul_type"] = dast_vul_types_dict[item["id"]]
                 item["dastvul_count"] = dastvul_rel_count_res_dict[item["id"]]
-                item["dast_validation_status"] = (
-                    bool(dastvul_rel_count_res_dict[item["id"]])
+                item["dast_validation_status"] = bool(
+                    dastvul_rel_count_res_dict[item["id"]]
                 )
                 end["data"].append(item)
         # all Iast Vulnerability Status

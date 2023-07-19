@@ -218,9 +218,12 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         search_after_fields = list(
             filter(
                 lambda x: x[0] in search_after_keys,
-                ((x[0].replace("search_after_", ""), x[1]) for x in filter(
+                (
+                    (x[0].replace("search_after_", ""), x[1])
+                    for x in filter(
                         lambda x: x[0].startswith("search_after_"), request.data.items()
-                    )),
+                    )
+                ),
             )
         )
         q = Q()
@@ -364,15 +367,15 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     elif field in fields:
                         if method_pool[field] is None:
                             continue
-                        method_pool[f"{field}_highlight"] = method_pool[
-                            field
-                        ].replace("<", "&lt;")
+                        method_pool[f"{field}_highlight"] = method_pool[field].replace(
+                            "<", "&lt;"
+                        )
                     else:
                         if method_pool[field] is None:
                             continue
-                        method_pool[f"{field}_highlight"] = method_pool[
-                            field
-                        ].replace("<", "&lt;")
+                        method_pool[f"{field}_highlight"] = method_pool[field].replace(
+                            "<", "&lt;"
+                        )
         return R.success(
             data={
                 "method_pools": method_pools,
@@ -448,7 +451,7 @@ def search_generate(
                         k: {
                             "gte": v,
                         }
-                    }
+                    },
                 )
                 for k, v in search_after_fields
             ]

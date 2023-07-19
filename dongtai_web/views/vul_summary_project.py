@@ -131,7 +131,11 @@ class VulSummaryProject(UserEndPoint):
         project_id = request.query_params.get("project_id")
         if project_id and project_id != "":
             version_id = request.GET.get("version_id", None)
-            current_project_version = get_project_version(project_id) if not version_id else get_project_version_by_id(version_id)
+            current_project_version = (
+                get_project_version(project_id)
+                if not version_id
+                else get_project_version_by_id(version_id)
+            )
             auth_agents = auth_agents.filter(
                 bind_project_id=project_id,
                 project_version_id=current_project_version.get("version_id", 0),

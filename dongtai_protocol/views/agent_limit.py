@@ -16,5 +16,9 @@ class LimitView(OpenApiEndPoint):
     def get(self, request):
         keys = ["cpu_limit"]
         profiles = IastProfile.objects.filter(key__in=keys).all()
-        data = [model_to_dict(profile) for profile in profiles] if profiles else [{"id": 1, "key": "cpu_limit", "value": "60"}]
+        data = (
+            [model_to_dict(profile) for profile in profiles]
+            if profiles
+            else [{"id": 1, "key": "cpu_limit", "value": "60"}]
+        )
         return R.success(data=data)

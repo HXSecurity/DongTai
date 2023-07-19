@@ -14,7 +14,10 @@ from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
 from dongtai_common.models.recognize_rule import IastRecognizeRule, RuleTypeChoices
 from dongtai_common.models.strategy import IastStrategyModel
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel, IastVulnerabilityStatus
+from dongtai_common.models.vulnerablity import (
+    IastVulnerabilityModel,
+    IastVulnerabilityStatus,
+)
 from dongtai_common.utils.stack_recognize import stacks_convert
 from dongtai_web.serializers.vul import VulSerializer
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
@@ -276,7 +279,9 @@ class VulDetail(UserEndPoint):
                 .filter(id=project_version_id)
                 .first()
             )
-            project_version_name = project_version["version_name"] if project_version else ""
+            project_version_name = (
+                project_version["version_name"] if project_version else ""
+            )
         else:
             project_version_name = ""
         try:

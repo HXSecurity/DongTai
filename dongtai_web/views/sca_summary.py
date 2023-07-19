@@ -23,7 +23,11 @@ from dongtai_web.serializers.vul import (
     VulSummaryLevelSerializer,
     VulSummaryProjectSerializer,
 )
-from dongtai_web.utils import dict_transfrom, extend_schema_with_envcheck, get_response_serializer
+from dongtai_web.utils import (
+    dict_transfrom,
+    extend_schema_with_envcheck,
+    get_response_serializer,
+)
 
 
 class _ScaSummaryResponseDataSerializer(serializers.Serializer):
@@ -159,7 +163,11 @@ class ScaSummary(UserEndPoint):
         project_id = request_data.get("project_id", None)
         if project_id and project_id != "":
             version_id = request.GET.get("version_id", None)
-            current_project_version = get_project_version(project_id) if not version_id else get_project_version_by_id(version_id)
+            current_project_version = (
+                get_project_version(project_id)
+                if not version_id
+                else get_project_version_by_id(version_id)
+            )
             asset_aggr_where = (
                 asset_aggr_where
                 + " and iast_asset.project_id=%s and iast_asset.project_version_id=%s "

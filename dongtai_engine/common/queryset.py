@@ -1,4 +1,3 @@
-
 from celery.apps.worker import logger
 from django.db.models import Q
 

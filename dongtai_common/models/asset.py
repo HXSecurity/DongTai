@@ -124,7 +124,10 @@ class IastAssetDocument(Document):
         The related_models option should be used with caution because it can lead in the index
         to the updating of a lot of items.
         """
-        if isinstance(related_instance, IastAgent) and related_instance.bind_project_id < 0:
+        if (
+            isinstance(related_instance, IastAgent)
+            and related_instance.bind_project_id < 0
+        ):
             return Asset.objects.filter(agent_id=related_instance.pk).all()
         return None
 
