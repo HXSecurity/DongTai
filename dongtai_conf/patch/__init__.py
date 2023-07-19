@@ -37,7 +37,6 @@ def path_namespce():
                 if not module_info.name.startswith("_"):
                     importlib.import_module("dongtai_conf.patch." + module_info.name)
             is_init_patch = True
-        print(PATCH_HANDLER)
 
     return init_patch
 
@@ -110,7 +109,6 @@ def patch_point(*args: Any, patch_id: int = 0) -> Any:
 
 
 def _return_args(*args: Unpack[Ts]) -> tuple[Unpack[Ts]] | Any:
-    print(args)
     if len(args) == 1:
         return args[0]
     return args

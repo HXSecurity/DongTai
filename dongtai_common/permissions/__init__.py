@@ -49,7 +49,6 @@ class UserPermission(ScopedPermission):
         return False
 
     def has_object_permission(self, request, view, obj):
-        print("enter has object permission")
         return super().has_object_permission(request, view, obj)
 
 
@@ -65,7 +64,6 @@ class TalentAdminPermission(ScopedPermission):
         return False
 
     def has_object_permission(self, request, view, obj):
-        print("enter has object permission")
         return super().has_object_permission(request, view, obj)
 
 
@@ -81,5 +79,4 @@ class SystemAdminPermission(ScopedPermission):
         return False
 
     def has_object_permission(self, request, view, obj):
-        print("enter has object permission")
         return super().has_object_permission(request, view, obj)

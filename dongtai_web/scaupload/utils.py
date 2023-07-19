@@ -32,6 +32,6 @@ def get_from_sca_lib(url, **kwargs):
         resp = requests.get(url=finalurl, params=kwargs)
         if resp.status_code == 200:
             json = json.loads(resp.content.decode())
-    except Exception:
-        raise ScaLibError("read from sca lib failure")
+    except Exception as e:
+        raise ScaLibError("read from sca lib failure") from e
     return json

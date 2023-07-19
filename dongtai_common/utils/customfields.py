@@ -5,10 +5,12 @@
 #
 # @description :
 ######################################################################
-
+import logging
 from functools import wraps
 
 from django.utils.translation import get_language
+
+logger = logging.getLogger()
 
 
 def trans_char_field(field, transdict):
@@ -19,7 +21,7 @@ def trans_char_field(field, transdict):
             try:
                 name = args[1] if len(args) > 1 else kwargs["name"]
             except BaseException as e:
-                print(e)
+                logger.error(e)
                 return value
             res = [
                 v[value]

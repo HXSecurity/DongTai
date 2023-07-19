@@ -153,8 +153,7 @@ class PythonAgentDownload:
                 json.dump(config, config_file)
             return True
         except Exception as e:
-            print(type(e))
-            print(e)
+            logger.error(e)
             return False
 
     def replace_config(self):
@@ -218,7 +217,6 @@ class PhpAgentDownload:
                     except ValueError:
                         continue
                     if key == "iast.server.url":
-                        print(base_url)
                         value = base_url
                     if key == "iast.server.token":
                         value = auth_token
@@ -304,8 +302,6 @@ class AgentDownload(OpenApiEndPoint):
             # trust upstream package until upstream provide file list to validate.
         except tarfile.ReadError:
             return False
-        except Exception as e:
-            raise e
         finally:
             shutil.rmtree(tmp_path)
         return True

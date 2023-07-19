@@ -94,7 +94,7 @@ class UserRegisterEndPoint(SystemAdminEndPoint):
                         continue
                     users.append((row[11].strip(), row[12].strip(), row[13].strip()))
         except BaseException:
-            print(_("User account file read error"))
+            logger.error(_("User account file read error"))
         return users
 
     @staticmethod
@@ -124,7 +124,7 @@ class UserRegisterEndPoint(SystemAdminEndPoint):
     your account has been succefully created.</h3><span>Login URL:</span>https://iast.io/login<br></br>Account:{username}<br></br>Password:{password}<br></br><br/>Notice: You MUST change the password during the first time log in. Password can be changed at "Settings/Account".  After that, you can log in again.<br/>DongTai IAST Official Website: https://dongtai.io<br/><br></br><br>DongTai IAST WeChat Official Account: DongTai IAST's QR Code </br><img width="400px" height="400px" src="{GONG_ZHONG_HAO_IMAGE}">""",
             content_type="html",
         )
-        print(res)
+        logger.info(res)
 
     def register(self, users):
         if users:
@@ -138,7 +138,7 @@ class UserRegisterEndPoint(SystemAdminEndPoint):
             for user in users:
                 _user = User.objects.filter(username=user[0]).first()
                 if _user:
-                    print(f"用户{user[0]}已存在")
+                    logger.info(f"用户{user[0]}已存在")
                 else:
                     self.register_with_raw(
                         username=user[0],

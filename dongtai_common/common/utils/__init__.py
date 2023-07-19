@@ -1,9 +1,12 @@
 import copy
+import logging
 from functools import wraps
 
 from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
 from rest_framework.authentication import TokenAuthentication, get_authorization_header
+
+logger = logging.getLogger("patch")
 
 
 class DongTaiAppConfigPatch:
@@ -13,7 +16,7 @@ class DongTaiAppConfigPatch:
 
             monkey_patch(self.name)
         except ImportError as e:
-            print(e)
+            logging.error(e)
             pass
 
 
@@ -143,8 +146,8 @@ class DepartmentTokenAuthentication(TokenAuthentication):
 
         try:
             user = get_user_from_department_key(key)
-        except Department.DoesNotExist:
-            raise exceptions.AuthenticationFailed(_("Invalid token."))
+        except Department.DoesNotExist as e:
+            raise exceptions.AuthenticationFailed(_("Invalid token.")) from e
         return (user, key)
 
     def authenticate(self, request):

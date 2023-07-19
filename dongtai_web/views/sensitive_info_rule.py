@@ -64,28 +64,28 @@ class SensitiveInfoRuleSerializer(serializers.ModelSerializer):
         try:
             return obj.strategy.vul_name
         except ObjectDoesNotExist as e:
-            print(e)
+            logger.error(e)
             return ""
 
     def get_strategy_id(self, obj):
         try:
             return obj.strategy.id
         except ObjectDoesNotExist as e:
-            print(e)
+            logger.error(e)
             return 0
 
     def get_pattern_type_id(self, obj):
         try:
             return obj.pattern_type.id
         except ObjectDoesNotExist as e:
-            print(e)
+            logger.error(e)
             return 0
 
     def get_pattern_type_name(self, obj):
         try:
             return obj.pattern_type.name
         except ObjectDoesNotExist as e:
-            print(e)
+            logger.error(e)
             return ""
 
 

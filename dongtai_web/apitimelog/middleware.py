@@ -55,5 +55,5 @@ class RequestLogMiddleware:
         try:
             raise exception
         except Exception as e:
-            request_logger.exception("Unhandled Exception: " + str(e))
+            request_logger.exception("Unhandled Exception: ", exc_info=e)
         return exception

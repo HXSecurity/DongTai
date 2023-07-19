@@ -90,7 +90,7 @@ def api_route_gather(agent_id, api_routes):
                         )
                         IastApiResponse.objects.get_or_create(**response_obj)
                 except Exception as e:
-                    print(e)
+                    logger.error(e)
             logger.info(_("API navigation log record successfully"))
         project_time_stamp_update.apply_async((agent.bind_project_id,), countdown=5)
         project_version_time_stamp_update.apply_async(

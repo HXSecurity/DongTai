@@ -5,8 +5,8 @@ from rest_framework import serializers
 def intable_str(value: str):
     try:
         list(map(int, value.split(",")))
-    except ValueError:
-        raise serializers.ValidationError("Not int able after str split")
+    except ValueError as e:
+        raise serializers.ValidationError("Not int able after str split") from e
 
 
 class AggregationArgsSerializer(serializers.Serializer):

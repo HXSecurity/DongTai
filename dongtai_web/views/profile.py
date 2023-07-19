@@ -1,3 +1,5 @@
+import logging
+
 from django.forms.models import model_to_dict
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -7,6 +9,8 @@ from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.profile import IastProfile
 from dongtai_common.utils.const import OPERATE_GET
 from dongtai_web.utils import extend_schema_with_envcheck
+
+logger = logging.getLogger("django")
 
 
 class ProfilepostArgsSer(serializers.Serializer):
@@ -45,7 +49,7 @@ class ProfileEndpoint(UserEndPoint):
                 {"key": key, "value": value}, key=key
             )
         except Exception as e:
-            print(e)
+            logger.error(e)
             return R.failure(msg=_("Update {} failed").format(key))
         return R.success(data={key: obj.value})
 
@@ -100,7 +104,7 @@ class ProfileBatchModifiedEndpoint(UserEndPoint):
             for i in data:
                 obj, created = IastProfile.objects.update_or_create(i, key=i["key"])
         except Exception as e:
-            print(e)
+            logger.error(e)
             return R.failure(msg=_("Update configuration failed"))
         return R.success(data=data)
 

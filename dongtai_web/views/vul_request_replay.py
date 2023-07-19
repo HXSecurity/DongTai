@@ -247,7 +247,6 @@ class RequestReplayEndPoint(UserEndPoint):
             )
 
         except Exception as e:
-            print(e)
             logger.error(f"user_id:{request.user.id} msg:{e}")
             return R.failure(msg=_("Vulnerability replay error"))
 
