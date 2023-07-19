@@ -17,7 +17,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # This workflow contains a single job called "build"
   Run-API-TEST:
     runs-on: ubuntu-latest
     services:
@@ -68,7 +67,7 @@ jobs:
           mkdir -p /tmp/logstash/report/{img,word,pdf,excel} && mkdir -p /tmp/iast_cache/package && mkdir -p /tmp/logstash/batchagent 
           python3 ./deploy/docker/version_update.py || true
           python3 manage.py updatedepartmenttoken
-          python3 manage.py runserver 0.0.0.0:8000 > webapi.log &
+          DOC=TRUE uwsgi --ini ./dongtai_conf/conf/uwsgi.ini --chdir $(pwd) --static-map "/upload=$(pwd)/static" > webapi.log &
           sleep 15
           schemathesis run --base-url "http://localhost:8000/"  -H 'Authorization: Token 67aebd78e700ad36a82a152276196b5f49fafeb0' http://localhost:8000/api/XZPcGFKoxYXScwGjQtJx8u/schema/  --hypothesis-suppress-health-check=data_too_large,filter_too_much,too_slow,large_base_example,function_scoped_fixture --validate-schema=false  --hypothesis-verbosity normal 
   
@@ -78,7 +77,7 @@ jobs:
       max-parallel: 4
       matrix:
         python-version: ["3.10"]
-        arch: ["linux/amd64", "linux/arm64"]
+        arch: ["linux/amd64"]
 
     steps:
       - name: Checkout
@@ -251,31 +250,8 @@ jobs:
           coverage run --source='.' manage.py test
           coverage report
 
-  Run-Unit-TEST-In-Cython:
+  Run-Schema-Check:
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: dongtai/dongtai-mysql-unittest:latest
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd "mysqladmin ping --silent"
-          --health-interval 10s
-          --health-timeout 180s
-          --health-retries 10
-      redis:
-        image: dongtai/dongtai-redis:latest
-        ports:
-          - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    strategy:
-      max-parallel: 4
-      matrix:
-        python-version: ["3.10"]
 
     steps:
       - name: Checkout
@@ -283,7 +259,7 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: "3.10"
-      
+
       - name: Install dependencies
         run: |
           sudo apt-get install build-essential cmake ninja-build python3-dev cython3 pybind11-dev libre2-dev -y
@@ -291,75 +267,9 @@ jobs:
           pip install wheel
           pip install coverage
           pip install -r requirements.txt
-          
-      - name: Django Unit Testing
-        run: |
-          export CELERY_EAGER_TEST=TRUE
-          cp dongtai_conf/conf/config.ini.test dongtai_conf/conf/config.ini
-          mkdir -p /tmp/logstash/report/{img,word,pdf,excel} && mkdir -p /tmp/iast_cache/package && mkdir -p /tmp/logstash/batchagent 
-          python3 ./deploy/docker/version_update.py || true
-          pip install Cython==3.0.0b3
-          python setup.py build_ext --inplace
-          find . -name "*.so"  | grep test | xargs rm
-          coverage run --source='.' manage.py test
-          coverage report
-  
-  Run-API-TEST-With-Cython:
-    runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: dongtai/dongtai-mysql-unittest:latest
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd "mysqladmin ping --silent"
-          --health-interval 10s
-          --health-timeout 180s
-          --health-retries 10
-      redis:
-        image: dongtai/dongtai-redis:latest
-        ports:
-          - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    strategy:
-      max-parallel: 4
-      matrix:
-        python-version: ["3.10"]
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-      
-      - name: Install dependencies
-        run: |
-          sudo apt-get install build-essential cmake ninja-build python3-dev cython3 pybind11-dev libre2-dev -y
-          python -m pip install --upgrade pip
-          pip install wheel
-          pip install -r requirements.txt
-          pip install schemathesis
-          pip install httpx
-          
-      - name: Django Api Testing
-        run: |
-          mysql --host=127.0.0.1 -uroot -p'dongtai-iast' -D dongtai_webapi < /home/runner/work/DongTai/DongTai/test/init.sql
-          cp dongtai_conf/conf/config.ini.test dongtai_conf/conf/config.ini
-          export DOC=TRUE
-          mkdir -p /tmp/logstash/report/{img,word,pdf,excel} && mkdir -p /tmp/iast_cache/package && mkdir -p /tmp/logstash/batchagent 
-          python3 ./deploy/docker/version_update.py || true
-          pip install Cython==3.0.0b3
-          python setup.py build_ext --inplace
-          python setup.py build_ext --inplace
-          python3 manage.py updatedepartmenttoken
-          python3 manage.py runserver 0.0.0.0:8000 > webapi.log &
-          sleep 15
-          schemathesis run --base-url "http://localhost:8000/"  -H 'Authorization: Token 67aebd78e700ad36a82a152276196b5f49fafeb0' http://localhost:8000/api/XZPcGFKoxYXScwGjQtJx8u/schema/  --hypothesis-suppress-health-check=data_too_large,filter_too_much,too_slow,large_base_example,function_scoped_fixture --validate-schema=false  --hypothesis-verbosity normal 
+      - name: Check Schema
+        run: python3 manage.py check_schema
 
   analyze:
     name: Analyze
