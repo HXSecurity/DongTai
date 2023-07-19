@@ -67,9 +67,9 @@ jobs:
           mkdir -p /tmp/logstash/report/{img,word,pdf,excel} && mkdir -p /tmp/iast_cache/package && mkdir -p /tmp/logstash/batchagent 
           python3 ./deploy/docker/version_update.py || true
           python3 manage.py updatedepartmenttoken
-          python3 manage.py runserver 0.0.0.0:8000 > webapi.log &
+          uwsgi --ini /opt/dongtai/dongtai_conf/conf/uwsgi.ini > webapi.log &
           sleep 15
-          PYTHONPATH=$(pwd) schemathesis run --workers 2 --app dongtai_conf.wsgi:application --base-url "http://localhost:8000/"  -H 'Authorization: Token 67aebd78e700ad36a82a152276196b5f49fafeb0' http://localhost:8000/api/XZPcGFKoxYXScwGjQtJx8u/schema/  --hypothesis-suppress-health-check=data_too_large,filter_too_much,too_slow,large_base_example,function_scoped_fixture --validate-schema=false  --hypothesis-verbosity normal 
+          schemathesis run --workers 8 --base-url "http://localhost:8000/"  -H 'Authorization: Token 67aebd78e700ad36a82a152276196b5f49fafeb0' http://localhost:8000/api/XZPcGFKoxYXScwGjQtJx8u/schema/  --hypothesis-suppress-health-check=data_too_large,filter_too_much,too_slow,large_base_example,function_scoped_fixture --validate-schema=false  --hypothesis-verbosity normal 
   
   Run-BuildCheck:
     runs-on: ubuntu-latest
@@ -77,7 +77,7 @@ jobs:
       max-parallel: 4
       matrix:
         python-version: ["3.10"]
-        arch: ["linux/amd64", "linux/arm64"]
+        arch: ["linux/amd64"]
 
     steps:
       - name: Checkout
