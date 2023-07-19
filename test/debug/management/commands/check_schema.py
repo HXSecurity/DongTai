@@ -46,4 +46,4 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Check API schema done"))
 
         if has_error:
-            raise CommandError()
+            raise CommandError
