@@ -69,7 +69,7 @@ jobs:
           python3 manage.py updatedepartmenttoken
           DOC=TRUE uwsgi --ini ./dongtai_conf/conf/uwsgi.ini --chdir $(pwd) --static-map "/upload=$(pwd)/static" > webapi.log &
           sleep 15
-          schemathesis run --workers 2 --rate-limit=50/s --base-url "http://localhost:8000/"  -H 'Authorization: Token 67aebd78e700ad36a82a152276196b5f49fafeb0' http://localhost:8000/api/XZPcGFKoxYXScwGjQtJx8u/schema/  --hypothesis-suppress-health-check=data_too_large,filter_too_much,too_slow,large_base_example,function_scoped_fixture --validate-schema=false  --hypothesis-verbosity normal 
+          schemathesis run --base-url "http://localhost:8000/"  -H 'Authorization: Token 67aebd78e700ad36a82a152276196b5f49fafeb0' http://localhost:8000/api/XZPcGFKoxYXScwGjQtJx8u/schema/  --hypothesis-suppress-health-check=data_too_large,filter_too_much,too_slow,large_base_example,function_scoped_fixture --validate-schema=false  --hypothesis-verbosity normal 
   
   Run-BuildCheck:
     runs-on: ubuntu-latest
