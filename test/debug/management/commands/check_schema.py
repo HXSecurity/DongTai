@@ -1,7 +1,8 @@
-from dongtai_common.utils.init_schema import VIEW_CLASS_TO_SCHEMA
-
-from django.core.management.base import BaseCommand
 from itertools import count
+
+from django.core.management.base import BaseCommand, CommandError
+
+from dongtai_common.utils.init_schema import VIEW_CLASS_TO_SCHEMA
 
 
 class Command(BaseCommand):
@@ -9,6 +10,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         n = count(0)
+        has_error = False
         for view, schema in VIEW_CLASS_TO_SCHEMA.items():
             for method, schema in schema.items():
                 path, path_regex, schema, filepath = schema
@@ -17,10 +19,17 @@ class Command(BaseCommand):
                     continue
                 has_error = False
 
-                schema_field_check = {schema_field: schema_field in schema for schema_field in ("tags", "summary")}
+                schema_field_check = {
+                    schema_field: schema_field in schema
+                    for schema_field in ("tags", "summary")
+                }
                 if not all(schema_field_check.values()):
                     has_error = True
-                    missing_fields = [schema_field for schema_field, exists in schema_field_check.items()]
+                    missing_fields = [
+                        schema_field
+                        for schema_field, exists in schema_field_check.items()
+                    ]
+                    has_error = True
                     self.stdout.write(
                         self.style.ERROR(
                             f'[{next(n)}]Miss "{missing_fields}" schema: {method} {view} {filepath} {path} {path_regex}'
@@ -35,3 +44,6 @@ class Command(BaseCommand):
                     )
 
         self.stdout.write(self.style.SUCCESS("Check API schema done"))
+
+        if has_error:
+            raise CommandError()
