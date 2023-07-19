@@ -1,0 +1,2847 @@
+[{
+	"source": false,
+	"invokeId": 893,
+	"objValue": "[*/*]*3",
+	"retValue": "[*/*]*3",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int)",
+	"methodName": "substring",
+	"sourceHash": [179793591080666],
+	"targetHash": [179793591080666],
+	"callerClass": "org.springframework.util.MimeTypeUtils",
+	"targetRange": [{
+		"hash": 179793591080666,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 3,
+			"start": 0
+		}, {
+			"name": "cross-site",
+			"stop": 3,
+			"start": 0
+		}]
+	}],
+	"callerMethod": "tokenize",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 328
+}, {
+	"source": false,
+	"invokeId": 892,
+	"objValue": "[org.apache.tomcat.util.http.ValuesEnumerator@3ce8a232]*53",
+	"retValue": "[*/*]*3",
+	"className": "java.util.Enumeration",
+	"signature": "java.util.Enumeration.nextElement()",
+	"methodName": "nextElement",
+	"sourceHash": [1021878834],
+	"targetHash": [179793591080666],
+	"callerClass": "java.util.Collections",
+	"targetRange": [{
+		"hash": 179793591080666,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 3,
+			"start": 0
+		}, {
+			"name": "cross-site",
+			"stop": 3,
+			"start": 0
+		}]
+	}],
+	"callerMethod": "list",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "org.apache.tomcat.util.http.ValuesEnumerator",
+	"callerLineNumber": 5294
+}, {
+	"source": true,
+	"invokeId": 891,
+	"objValue": "[org.apache.catalina.connector.RequestFacade@237106be]52",
+	"retValue": "[org.apache.tomcat.util.http.ValuesEnumerator@3ce8a232]*53",
+	"className": "javax.servlet.http.HttpServletRequest",
+	"signature": "javax.servlet.http.HttpServletRequest.getHeaders(java.lang.String)",
+	"methodName": "getHeaders",
+	"sourceHash": [],
+	"targetHash": [1021878834],
+	"callerClass": "org.springframework.web.context.request.ServletWebRequest",
+	"targetRange": [{
+		"hash": 1021878834,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 53,
+			"start": 0
+		}, {
+			"name": "cross-site",
+			"stop": 53,
+			"start": 0
+		}]
+	}],
+	"callerMethod": "getHeaderValues",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["R"]
+	},
+	"originClassName": "org.apache.catalina.connector.RequestFacade",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[Accept]*6"
+	}],
+	"callerLineNumber": 135
+}, {
+	"source": false,
+	"invokeId": 890,
+	"objValue": "[KeepAlive stream used: https://example.org/?foo=example]*55",
+	"retValue": "[KeepAlive stream used: https://example.org/?foo=example]*55",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.toString()",
+	"methodName": "toString",
+	"sourceHash": [278208961],
+	"targetHash": [9033302885228810177],
+	"callerClass": "sun.net.www.http.HttpClient",
+	"targetRange": [{
+		"hash": 9033302885228810177,
+		"ranges": []
+	}],
+	"callerMethod": "parseHTTPHeader",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"callerLineNumber": 961
+}, {
+	"source": false,
+	"invokeId": 889,
+	"objValue": "[KeepAlive stream used: https://example.org/?foo=example]*55",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.append(java.lang.Object)",
+	"methodName": "append",
+	"sourceHash": [1232358675],
+	"targetHash": [278208961],
+	"callerClass": "sun.net.www.http.HttpClient",
+	"targetRange": [{
+		"hash": 278208961,
+		"ranges": []
+	}],
+	"callerMethod": "parseHTTPHeader",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[https://example.org/?foo=example]*32"
+	}],
+	"callerLineNumber": 961
+}, {
+	"source": false,
+	"invokeId": 888,
+	"objValue": "[Host: example.org\\r\\n]*19",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.getChars(int,int,char[],int)",
+	"methodName": "getChars",
+	"sourceHash": [2629083824378476792],
+	"targetHash": [431306342],
+	"callerClass": "java.io.BufferedWriter",
+	"targetRange": [{
+		"hash": 431306342,
+		"ranges": []
+	}],
+	"callerMethod": "write",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["P3"]
+	},
+	"originClassName": "java.lang.String",
+	"parameterValues": [{
+		"index": "P3",
+		"value": "[[C@19b53666]*11"
+	}],
+	"callerLineNumber": 226
+}, {
+	"source": false,
+	"invokeId": 887,
+	"objValue": "[Host: example.org\\r\\n]*19",
+	"retValue": "[Host: example.org\\r\\n]*19",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.toString()",
+	"methodName": "toString",
+	"sourceHash": [1964797401],
+	"targetHash": [2629083824378476792],
+	"callerClass": "java.lang.String",
+	"targetRange": [{
+		"hash": 2629083824378476792,
+		"ranges": []
+	}],
+	"callerMethod": "valueOf",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"callerLineNumber": 2994
+}, {
+	"source": false,
+	"invokeId": 886,
+	"objValue": "[Host: example.org]*17",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [-8357263113485328226],
+	"targetHash": [1964797401],
+	"callerClass": "sun.net.www.MessageHeader",
+	"targetRange": [{
+		"hash": 1964797401,
+		"ranges": []
+	}],
+	"callerMethod": "print",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[: example.org]*13"
+	}],
+	"callerLineNumber": 323
+}, {
+	"source": false,
+	"invokeId": 885,
+	"objValue": "[: example.org]*13",
+	"retValue": "[: example.org]*13",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.toString()",
+	"methodName": "toString",
+	"sourceHash": [750135859],
+	"targetHash": [-8357263113485328226],
+	"callerClass": "sun.net.www.MessageHeader",
+	"targetRange": [{
+		"hash": -8357263113485328226,
+		"ranges": []
+	}],
+	"callerMethod": "print",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"callerLineNumber": 323
+}, {
+	"source": false,
+	"invokeId": 884,
+	"objValue": "[: example.org]*13",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [-8349422606438592752],
+	"targetHash": [750135859],
+	"callerClass": "sun.net.www.MessageHeader",
+	"targetRange": [{
+		"hash": 750135859,
+		"ranges": []
+	}],
+	"callerMethod": "print",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[example.org]*11"
+	}],
+	"callerLineNumber": 323
+}, {
+	"source": false,
+	"invokeId": 883,
+	"objValue": "[GET /?foo=example HTTP/1.1\\r\\n]*28",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.getChars(int,int,char[],int)",
+	"methodName": "getChars",
+	"sourceHash": [-2390858823220648318],
+	"targetHash": [431306342],
+	"callerClass": "java.io.BufferedWriter",
+	"targetRange": [{
+		"hash": 431306342,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 17,
+			"start": 10
+		}, {
+			"name": "cross-site",
+			"stop": 17,
+			"start": 10
+		}]
+	}],
+	"callerMethod": "write",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["P3"]
+	},
+	"originClassName": "java.lang.String",
+	"parameterValues": [{
+		"index": "P3",
+		"value": "[[C@19b53666]*11"
+	}],
+	"callerLineNumber": 226
+}, {
+	"source": false,
+	"invokeId": 882,
+	"objValue": "[GET /?foo=example HTTP/1.1\\r\\n]*28",
+	"retValue": "[GET /?foo=example HTTP/1.1\\r\\n]*28",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.toString()",
+	"methodName": "toString",
+	"sourceHash": [48153717],
+	"targetHash": [-2390858823220648318],
+	"callerClass": "java.lang.String",
+	"targetRange": [{
+		"hash": -2390858823220648318,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 17,
+			"start": 10
+		}, {
+			"name": "cross-site",
+			"stop": 17,
+			"start": 10
+		}]
+	}],
+	"callerMethod": "valueOf",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"callerLineNumber": 2994
+}, {
+	"source": false,
+	"invokeId": 881,
+	"objValue": "[GET /?foo=example HTTP/1.1]*26",
+	"retValue": "[HTTP/]*5",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [5832902538525037623],
+	"targetHash": [296692936950008821],
+	"callerClass": "sun.net.www.MessageHeader",
+	"targetRange": [{
+		"hash": 296692936950008821,
+		"ranges": []
+	}],
+	"callerMethod": "isRequestline",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 311
+}, {
+	"source": false,
+	"invokeId": 880,
+	"objValue": "[GET /?foo=example HTTP/1.1]*26",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.<init>(java.lang.String)",
+	"methodName": "<init>",
+	"sourceHash": [5832902538525037623],
+	"targetHash": [48153717],
+	"callerClass": "sun.net.www.MessageHeader",
+	"targetRange": [{
+		"hash": 48153717,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 17,
+			"start": 10
+		}, {
+			"name": "cross-site",
+			"stop": 17,
+			"start": 10
+		}]
+	}],
+	"callerMethod": "print",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[GET /?foo=example HTTP/1.1]*26"
+	}],
+	"callerLineNumber": 321
+}, {
+	"source": false,
+	"invokeId": 879,
+	"objValue": "[s:https:example.org:443]*23",
+	"retValue": "[s:https:example.org:443]*23",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.toString()",
+	"methodName": "toString",
+	"sourceHash": [1656398716],
+	"targetHash": [8710545808177070965],
+	"callerClass": "sun.net.www.protocol.http.AuthenticationInfo",
+	"targetRange": [{
+		"hash": 8710545808177070965,
+		"ranges": []
+	}],
+	"callerMethod": "getServerAuth",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"callerLineNumber": 274
+}, {
+	"source": false,
+	"invokeId": 878,
+	"objValue": "[s:https:example.org]*19",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [-8349422606438592752],
+	"targetHash": [1656398716],
+	"callerClass": "sun.net.www.protocol.http.AuthenticationInfo",
+	"targetRange": [{
+		"hash": 1656398716,
+		"ranges": []
+	}],
+	"callerMethod": "getServerAuth",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[example.org]*11"
+	}],
+	"callerLineNumber": 274
+}, {
+	"source": false,
+	"invokeId": 877,
+	"objValue": "[s:https]*7",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [427851770173524151],
+	"targetHash": [1656398716],
+	"callerClass": "sun.net.www.protocol.http.AuthenticationInfo",
+	"targetRange": [{
+		"hash": 1656398716,
+		"ranges": []
+	}],
+	"callerMethod": "getServerAuth",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[https]*5"
+	}],
+	"callerLineNumber": 273
+}, {
+	"source": false,
+	"invokeId": 876,
+	"objValue": "[GET /?foo=example HTTP/1.1]*26",
+	"retValue": "[GET /?foo=example HTTP/1.1]*26",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.toString()",
+	"methodName": "toString",
+	"sourceHash": [480299436],
+	"targetHash": [5832902538525037623],
+	"callerClass": "sun.net.www.protocol.http.HttpURLConnection",
+	"targetRange": [{
+		"hash": 5832902538525037623,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 17,
+			"start": 10
+		}, {
+			"name": "cross-site",
+			"stop": 17,
+			"start": 10
+		}]
+	}],
+	"callerMethod": "writeRequests",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"callerLineNumber": 582
+}, {
+	"source": false,
+	"invokeId": 875,
+	"objValue": "[GET /?foo=example]*17",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [-6253796313572810199],
+	"targetHash": [480299436],
+	"callerClass": "sun.net.www.protocol.http.HttpURLConnection",
+	"targetRange": [{
+		"hash": 480299436,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 17,
+			"start": 10
+		}, {
+			"name": "cross-site",
+			"stop": 17,
+			"start": 10
+		}]
+	}],
+	"callerMethod": "writeRequests",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[/?foo=example]*13"
+	}],
+	"callerLineNumber": 582
+}, {
+	"source": false,
+	"invokeId": 874,
+	"objValue": "[example.org:443]*15",
+	"retValue": "[example.org:443]*15",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.toString()",
+	"methodName": "toString",
+	"sourceHash": [1315177842],
+	"targetHash": [1041135914830840457],
+	"callerClass": "sun.security.ssl.SSLSessionContextImpl",
+	"targetRange": [{
+		"hash": 1041135914830840457,
+		"ranges": []
+	}],
+	"callerMethod": "getKey",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"callerLineNumber": 167
+}, {
+	"source": false,
+	"invokeId": 873,
+	"objValue": "[example.org]*11",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [-8349422606438592752],
+	"targetHash": [1315177842],
+	"callerClass": "sun.security.ssl.SSLSessionContextImpl",
+	"targetRange": [{
+		"hash": 1315177842,
+		"ranges": []
+	}],
+	"callerMethod": "getKey",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[example.org]*11"
+	}],
+	"callerLineNumber": 166
+}, {
+	"source": false,
+	"invokeId": 872,
+	"objValue": "[example.org]*11",
+	"retValue": "[org]*3",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [-8349422606593023579],
+	"targetHash": [473770678637671],
+	"callerClass": "java.util.StringTokenizer",
+	"targetRange": [{
+		"hash": 473770678637671,
+		"ranges": []
+	}],
+	"callerMethod": "nextToken",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 352
+}, {
+	"source": false,
+	"invokeId": 871,
+	"objValue": "[example.org]*11",
+	"retValue": "[example]*7",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [-8349422606593023579],
+	"targetHash": [-5682116207457226498],
+	"callerClass": "java.util.StringTokenizer",
+	"targetRange": [{
+		"hash": -5682116207457226498,
+		"ranges": []
+	}],
+	"callerMethod": "nextToken",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 352
+}, {
+	"source": false,
+	"invokeId": 870,
+	"objValue": "[example.org]*11",
+	"retValue": "[org]*3",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [-8349422606593023579],
+	"targetHash": [473770226332927],
+	"callerClass": "java.util.StringTokenizer",
+	"targetRange": [{
+		"hash": 473770226332927,
+		"ranges": []
+	}],
+	"callerMethod": "nextToken",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 352
+}, {
+	"source": false,
+	"invokeId": 869,
+	"objValue": "[example.org]*11",
+	"retValue": "[example]*7",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [-8349422606593023579],
+	"targetHash": [-5682116206781303353],
+	"callerClass": "java.util.StringTokenizer",
+	"targetRange": [{
+		"hash": -5682116206781303353,
+		"ranges": []
+	}],
+	"callerMethod": "nextToken",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 352
+}, {
+	"source": false,
+	"invokeId": 868,
+	"objValue": "[example.org]*11",
+	"retValue": "[org]*3",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [-8349422606593023579],
+	"targetHash": [473770251465928],
+	"callerClass": "java.util.StringTokenizer",
+	"targetRange": [{
+		"hash": 473770251465928,
+		"ranges": []
+	}],
+	"callerMethod": "nextToken",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 352
+}, {
+	"source": false,
+	"invokeId": 867,
+	"objValue": "[example.org]*11",
+	"retValue": "[example]*7",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [-8349422606593023579],
+	"targetHash": [-5682116206906509478],
+	"callerClass": "java.util.StringTokenizer",
+	"targetRange": [{
+		"hash": -5682116206906509478,
+		"ranges": []
+	}],
+	"callerMethod": "nextToken",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 352
+}, {
+	"source": false,
+	"invokeId": 866,
+	"objValue": "[example.org]*11",
+	"retValue": "[org]*3",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [-8349422606593023579],
+	"targetHash": [473770189109020],
+	"callerClass": "java.util.StringTokenizer",
+	"targetRange": [{
+		"hash": 473770189109020,
+		"ranges": []
+	}],
+	"callerMethod": "nextToken",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 352
+}, {
+	"source": false,
+	"invokeId": 865,
+	"objValue": "[example.org]*11",
+	"retValue": "[example]*7",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [-8349422606593023579],
+	"targetHash": [-5682116207596954682],
+	"callerClass": "java.util.StringTokenizer",
+	"targetRange": [{
+		"hash": -5682116207596954682,
+		"ranges": []
+	}],
+	"callerMethod": "nextToken",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 352
+}, {
+	"source": false,
+	"invokeId": 864,
+	"objValue": "[example.org]*11",
+	"retValue": "[[B@2f91834c]*11",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.getBytes(java.nio.charset.Charset)",
+	"methodName": "getBytes",
+	"sourceHash": [-8349422606448929993],
+	"targetHash": [798065484],
+	"callerClass": "javax.net.ssl.SNIHostName",
+	"targetRange": [{
+		"hash": 798065484,
+		"ranges": []
+	}],
+	"callerMethod": "<init>",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 103
+}, {
+	"source": false,
+	"invokeId": 863,
+	"objValue": "[example.org]*11",
+	"retValue": "[example.org]*11",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.toString()",
+	"methodName": "toString",
+	"sourceHash": [558559411],
+	"targetHash": [-8349422606448929993],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": -8349422606448929993,
+		"ranges": []
+	}],
+	"callerMethod": "toASCII",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"callerLineNumber": 130
+}, {
+	"source": false,
+	"invokeId": 862,
+	"objValue": "[example.org]*11",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [473769533994740],
+	"targetHash": [558559411],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": 558559411,
+		"ranges": []
+	}],
+	"callerMethod": "toASCII",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[org]*3"
+	}],
+	"callerLineNumber": 122
+}, {
+	"source": false,
+	"invokeId": 861,
+	"objValue": "[org]*3",
+	"retValue": "[org]*3",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.toString()",
+	"methodName": "toString",
+	"sourceHash": [596472239],
+	"targetHash": [473769533994740],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": 473769533994740,
+		"ranges": []
+	}],
+	"callerMethod": "toASCIIInternal",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"callerLineNumber": 343
+}, {
+	"source": false,
+	"invokeId": 860,
+	"objValue": "[org]*3",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.<init>(java.lang.String)",
+	"methodName": "<init>",
+	"sourceHash": [473770492959438],
+	"targetHash": [596472239],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": 596472239,
+		"ranges": []
+	}],
+	"callerMethod": "toASCIIInternal",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[org]*3"
+	}],
+	"callerLineNumber": 277
+}, {
+	"source": false,
+	"invokeId": 859,
+	"objValue": "[example.org]*11",
+	"retValue": "[org]*3",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [-8349422606593023579],
+	"targetHash": [473770492959438],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": 473770492959438,
+		"ranges": []
+	}],
+	"callerMethod": "toASCII",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 122
+}, {
+	"source": false,
+	"invokeId": 858,
+	"objValue": "[example]*7",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [-5682116206070597040],
+	"targetHash": [558559411],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": 558559411,
+		"ranges": []
+	}],
+	"callerMethod": "toASCII",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[example]*7"
+	}],
+	"callerLineNumber": 122
+}, {
+	"source": false,
+	"invokeId": 857,
+	"objValue": "[example]*7",
+	"retValue": "[example]*7",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.toString()",
+	"methodName": "toString",
+	"sourceHash": [993670586],
+	"targetHash": [-5682116206070597040],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": -5682116206070597040,
+		"ranges": []
+	}],
+	"callerMethod": "toASCIIInternal",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"callerLineNumber": 343
+}, {
+	"source": false,
+	"invokeId": 856,
+	"objValue": "[example]*7",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.<init>(java.lang.String)",
+	"methodName": "<init>",
+	"sourceHash": [-5682116206154093448],
+	"targetHash": [993670586],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": 993670586,
+		"ranges": []
+	}],
+	"callerMethod": "toASCIIInternal",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[example]*7"
+	}],
+	"callerLineNumber": 277
+}, {
+	"source": false,
+	"invokeId": 855,
+	"objValue": "[example.org]*11",
+	"retValue": "[example]*7",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [-8349422606593023579],
+	"targetHash": [-5682116206154093448],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": -5682116206154093448,
+		"ranges": []
+	}],
+	"callerMethod": "toASCII",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 122
+}, {
+	"source": false,
+	"invokeId": 854,
+	"objValue": "[example.org]*11",
+	"retValue": "[[C@7b36c35d]*11",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.toCharArray()",
+	"methodName": "toCharArray",
+	"sourceHash": [-8349422606593023579],
+	"targetHash": [2067186525],
+	"callerClass": "sun.net.util.IPAddressUtil",
+	"targetRange": [{
+		"hash": 2067186525,
+		"ranges": []
+	}],
+	"callerMethod": "textToNumericFormatV6",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 137
+}, {
+	"source": false,
+	"invokeId": 853,
+	"objValue": "[example.org:443]*15",
+	"retValue": "[example.org:443]*15",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.toString()",
+	"methodName": "toString",
+	"sourceHash": [250930607],
+	"targetHash": [1041135915163691309],
+	"callerClass": "sun.security.ssl.SSLSessionContextImpl",
+	"targetRange": [{
+		"hash": 1041135915163691309,
+		"ranges": []
+	}],
+	"callerMethod": "getKey",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"callerLineNumber": 167
+}, {
+	"source": false,
+	"invokeId": 852,
+	"objValue": "[example.org]*11",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [-8349422606438592752],
+	"targetHash": [250930607],
+	"callerClass": "sun.security.ssl.SSLSessionContextImpl",
+	"targetRange": [{
+		"hash": 250930607,
+		"ranges": []
+	}],
+	"callerMethod": "getKey",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[example.org]*11"
+	}],
+	"callerLineNumber": 166
+}, {
+	"source": false,
+	"invokeId": 851,
+	"objValue": "[example.org]*11",
+	"retValue": "[[B@ec10708]*10",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.getBytes(java.nio.charset.Charset)",
+	"methodName": "getBytes",
+	"sourceHash": [-8349422606593023579],
+	"targetHash": [247531272],
+	"callerClass": "javax.net.ssl.SNIHostName",
+	"targetRange": [{
+		"hash": 247531272,
+		"ranges": []
+	}],
+	"callerMethod": "<init>",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 103
+}, {
+	"source": false,
+	"invokeId": 850,
+	"objValue": "[example.org]*11",
+	"retValue": "[example.org]*11",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.toString()",
+	"methodName": "toString",
+	"sourceHash": [1916079860],
+	"targetHash": [-8349422606593023579],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": -8349422606593023579,
+		"ranges": []
+	}],
+	"callerMethod": "toASCII",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"callerLineNumber": 130
+}, {
+	"source": false,
+	"invokeId": 849,
+	"objValue": "[example.org]*11",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [473769335377249],
+	"targetHash": [1916079860],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": 1916079860,
+		"ranges": []
+	}],
+	"callerMethod": "toASCII",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[org]*3"
+	}],
+	"callerLineNumber": 122
+}, {
+	"source": false,
+	"invokeId": 848,
+	"objValue": "[org]*3",
+	"retValue": "[org]*3",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.toString()",
+	"methodName": "toString",
+	"sourceHash": [1843374482],
+	"targetHash": [473769335377249],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": 473769335377249,
+		"ranges": []
+	}],
+	"callerMethod": "toASCIIInternal",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"callerLineNumber": 343
+}, {
+	"source": false,
+	"invokeId": 847,
+	"objValue": "[org]*3",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.<init>(java.lang.String)",
+	"methodName": "<init>",
+	"sourceHash": [473769577047076],
+	"targetHash": [1843374482],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": 1843374482,
+		"ranges": []
+	}],
+	"callerMethod": "toASCIIInternal",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[org]*3"
+	}],
+	"callerLineNumber": 277
+}, {
+	"source": false,
+	"invokeId": 846,
+	"objValue": "[example.org]*11",
+	"retValue": "[org]*3",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [-8349422606438592752],
+	"targetHash": [473769577047076],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": 473769577047076,
+		"ranges": []
+	}],
+	"callerMethod": "toASCII",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 122
+}, {
+	"source": false,
+	"invokeId": 845,
+	"objValue": "[example]*7",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [-5682116207860443289],
+	"targetHash": [1916079860],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": 1916079860,
+		"ranges": []
+	}],
+	"callerMethod": "toASCII",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[example]*7"
+	}],
+	"callerLineNumber": 122
+}, {
+	"source": false,
+	"invokeId": 844,
+	"objValue": "[example]*7",
+	"retValue": "[example]*7",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.toString()",
+	"methodName": "toString",
+	"sourceHash": [227438315],
+	"targetHash": [-5682116207860443289],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": -5682116207860443289,
+		"ranges": []
+	}],
+	"callerMethod": "toASCIIInternal",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"callerLineNumber": 343
+}, {
+	"source": false,
+	"invokeId": 843,
+	"objValue": "[example]*7",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.<init>(java.lang.String)",
+	"methodName": "<init>",
+	"sourceHash": [-5682116206857053954],
+	"targetHash": [227438315],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": 227438315,
+		"ranges": []
+	}],
+	"callerMethod": "toASCIIInternal",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[example]*7"
+	}],
+	"callerLineNumber": 277
+}, {
+	"source": false,
+	"invokeId": 842,
+	"objValue": "[example.org]*11",
+	"retValue": "[example]*7",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [-8349422606438592752],
+	"targetHash": [-5682116206857053954],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": -5682116206857053954,
+		"ranges": []
+	}],
+	"callerMethod": "toASCII",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 122
+}, {
+	"source": false,
+	"invokeId": 841,
+	"objValue": "[example.org]*11",
+	"retValue": "[[C@d2fc29e]*10",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.toCharArray()",
+	"methodName": "toCharArray",
+	"sourceHash": [-8349422606438592752],
+	"targetHash": [221233822],
+	"callerClass": "sun.net.util.IPAddressUtil",
+	"targetRange": [{
+		"hash": 221233822,
+		"ranges": []
+	}],
+	"callerMethod": "textToNumericFormatV6",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 137
+}, {
+	"source": false,
+	"invokeId": 840,
+	"objValue": "[example.org]*11",
+	"retValue": "[[B@662acfda]*11",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.getBytes(java.nio.charset.Charset)",
+	"methodName": "getBytes",
+	"sourceHash": [-8349422606537041900],
+	"targetHash": [1714081754],
+	"callerClass": "javax.net.ssl.SNIHostName",
+	"targetRange": [{
+		"hash": 1714081754,
+		"ranges": []
+	}],
+	"callerMethod": "<init>",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 103
+}, {
+	"source": false,
+	"invokeId": 839,
+	"objValue": "[example.org]*11",
+	"retValue": "[example.org]*11",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.toString()",
+	"methodName": "toString",
+	"sourceHash": [1188386043],
+	"targetHash": [-8349422606537041900],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": -8349422606537041900,
+		"ranges": []
+	}],
+	"callerMethod": "toASCII",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"callerLineNumber": 130
+}, {
+	"source": false,
+	"invokeId": 838,
+	"objValue": "[example.org]*11",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [473769472731079],
+	"targetHash": [1188386043],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": 1188386043,
+		"ranges": []
+	}],
+	"callerMethod": "toASCII",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[org]*3"
+	}],
+	"callerLineNumber": 122
+}, {
+	"source": false,
+	"invokeId": 837,
+	"objValue": "[org]*3",
+	"retValue": "[org]*3",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.toString()",
+	"methodName": "toString",
+	"sourceHash": [1262971182],
+	"targetHash": [473769472731079],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": 473769472731079,
+		"ranges": []
+	}],
+	"callerMethod": "toASCIIInternal",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"callerLineNumber": 343
+}, {
+	"source": false,
+	"invokeId": 836,
+	"objValue": "[org]*3",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.<init>(java.lang.String)",
+	"methodName": "<init>",
+	"sourceHash": [473769908113633],
+	"targetHash": [1262971182],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": 1262971182,
+		"ranges": []
+	}],
+	"callerMethod": "toASCIIInternal",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[org]*3"
+	}],
+	"callerLineNumber": 277
+}, {
+	"source": false,
+	"invokeId": 835,
+	"objValue": "[example.org]*11",
+	"retValue": "[org]*3",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [-8349422606438592752],
+	"targetHash": [473769908113633],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": 473769908113633,
+		"ranges": []
+	}],
+	"callerMethod": "toASCII",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 122
+}, {
+	"source": false,
+	"invokeId": 834,
+	"objValue": "[example]*7",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [-5682116206537810329],
+	"targetHash": [1188386043],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": 1188386043,
+		"ranges": []
+	}],
+	"callerMethod": "toASCII",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[example]*7"
+	}],
+	"callerLineNumber": 122
+}, {
+	"source": false,
+	"invokeId": 833,
+	"objValue": "[example]*7",
+	"retValue": "[example]*7",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.toString()",
+	"methodName": "toString",
+	"sourceHash": [770190079],
+	"targetHash": [-5682116206537810329],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": -5682116206537810329,
+		"ranges": []
+	}],
+	"callerMethod": "toASCIIInternal",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"callerLineNumber": 343
+}, {
+	"source": false,
+	"invokeId": 832,
+	"objValue": "[example]*7",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.<init>(java.lang.String)",
+	"methodName": "<init>",
+	"sourceHash": [-5682116206664545108],
+	"targetHash": [770190079],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": 770190079,
+		"ranges": []
+	}],
+	"callerMethod": "toASCIIInternal",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[example]*7"
+	}],
+	"callerLineNumber": 277
+}, {
+	"source": false,
+	"invokeId": 831,
+	"objValue": "[example.org]*11",
+	"retValue": "[example]*7",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [-8349422606438592752],
+	"targetHash": [-5682116206664545108],
+	"callerClass": "java.net.IDN",
+	"targetRange": [{
+		"hash": -5682116206664545108,
+		"ranges": []
+	}],
+	"callerMethod": "toASCII",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 122
+}, {
+	"source": false,
+	"invokeId": 830,
+	"objValue": "[example.org]*11",
+	"retValue": "[[C@7f5d3987]*11",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.toCharArray()",
+	"methodName": "toCharArray",
+	"sourceHash": [-8349422606438592752],
+	"targetHash": [2136816007],
+	"callerClass": "sun.net.util.IPAddressUtil",
+	"targetRange": [{
+		"hash": 2136816007,
+		"ranges": []
+	}],
+	"callerMethod": "textToNumericFormatV6",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 137
+}, {
+	"source": false,
+	"invokeId": 829,
+	"objValue": "[example.org]*11",
+	"retValue": "[[C@37f601fc]*11",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.toCharArray()",
+	"methodName": "toCharArray",
+	"sourceHash": [-8349422606438592752],
+	"targetHash": [938869244],
+	"callerClass": "sun.net.www.ParseUtil",
+	"targetRange": [{
+		"hash": 938869244,
+		"ranges": []
+	}],
+	"callerMethod": "encodePath",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 107
+}, {
+	"source": false,
+	"invokeId": 828,
+	"objValue": "[example.org]*11",
+	"retValue": "[[B@3ee0e318]*11",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.getBytes(java.lang.String)",
+	"methodName": "getBytes",
+	"sourceHash": [-8349422606438592752],
+	"targetHash": [1054925592],
+	"callerClass": "java.net.Inet6AddressImpl",
+	"targetRange": [{
+		"hash": 1054925592,
+		"ranges": []
+	}],
+	"callerMethod": "lookupAllHostAddr",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": -2
+}, {
+	"source": false,
+	"invokeId": 827,
+	"objValue": "[example.org]*11",
+	"retValue": "[[C@27cb07fb]*11",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.toCharArray()",
+	"methodName": "toCharArray",
+	"sourceHash": [-8349422606438592752],
+	"targetHash": [667617275],
+	"callerClass": "sun.net.util.IPAddressUtil",
+	"targetRange": [{
+		"hash": 667617275,
+		"ranges": []
+	}],
+	"callerMethod": "textToNumericFormatV6",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 137
+}, {
+	"source": false,
+	"invokeId": 826,
+	"objValue": "[httpsexample.org-1]*18",
+	"retValue": "[httpsexample.org-1]*18",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.toString()",
+	"methodName": "toString",
+	"sourceHash": [1034195656],
+	"targetHash": [7813286828414532545],
+	"callerClass": "sun.net.www.http.KeepAliveKey",
+	"targetRange": [{
+		"hash": 7813286828414532545,
+		"ranges": []
+	}],
+	"callerMethod": "hashCode",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"callerLineNumber": 333
+}, {
+	"source": false,
+	"invokeId": 825,
+	"objValue": "[httpsexample.org]*16",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [-8349422606438592752],
+	"targetHash": [1034195656],
+	"callerClass": "sun.net.www.http.KeepAliveKey",
+	"targetRange": [{
+		"hash": 1034195656,
+		"ranges": []
+	}],
+	"callerMethod": "hashCode",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[example.org]*11"
+	}],
+	"callerLineNumber": 333
+}, {
+	"source": false,
+	"invokeId": 824,
+	"objValue": "[https]*5",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [427851770173524151],
+	"targetHash": [1034195656],
+	"callerClass": "sun.net.www.http.KeepAliveKey",
+	"targetRange": [{
+		"hash": 1034195656,
+		"ranges": []
+	}],
+	"callerMethod": "hashCode",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[https]*5"
+	}],
+	"callerLineNumber": 333
+}, {
+	"source": false,
+	"invokeId": 823,
+	"objValue": "[https://example.org/?foo=example]*32",
+	"className": "java.net.URI",
+	"signature": "java.net.URI.<init>(java.lang.String)",
+	"methodName": "<init>",
+	"sourceHash": [9626028037755006],
+	"targetHash": [1042240429],
+	"callerClass": "sun.net.www.ParseUtil",
+	"targetRange": [{
+		"hash": 1042240429,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 21,
+			"start": 0
+		}, {
+			"name": "cross-site",
+			"stop": 21,
+			"start": 0
+		}]
+	}],
+	"callerMethod": "createURI",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.net.URI",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[https://example.org/?foo=example]*32"
+	}],
+	"callerLineNumber": 320
+}, {
+	"source": false,
+	"invokeId": 822,
+	"objValue": "[https://example.org/?foo=example]*32",
+	"retValue": "[//example.org/?foo=example]*26",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [9626028037755006],
+	"targetHash": [-6370435254892507691],
+	"callerClass": "java.net.URI$Parser",
+	"targetRange": [{
+		"hash": -6370435254892507691,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 26,
+			"start": 19
+		}, {
+			"name": "cross-site",
+			"stop": 26,
+			"start": 19
+		}]
+	}],
+	"callerMethod": "substring",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 2868
+}, {
+	"source": false,
+	"invokeId": 821,
+	"objValue": "[https://example.org/?foo=example]*32",
+	"retValue": "[foo=example]*11",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [9626028037755006],
+	"targetHash": [-400774928385586932],
+	"callerClass": "java.net.URI$Parser",
+	"targetRange": [{
+		"hash": -400774928385586932,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 11,
+			"start": 4
+		}, {
+			"name": "cross-site",
+			"stop": 11,
+			"start": 4
+		}]
+	}],
+	"callerMethod": "substring",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 2868
+}, {
+	"source": false,
+	"invokeId": 820,
+	"objValue": "[https://example.org/?foo=example]*32",
+	"retValue": "[/]*1",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [9626028037755006],
+	"targetHash": [202641774848],
+	"callerClass": "java.net.URI$Parser",
+	"targetRange": [{
+		"hash": 202641774848,
+		"ranges": []
+	}],
+	"callerMethod": "substring",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 2868
+}, {
+	"source": false,
+	"invokeId": 819,
+	"objValue": "[https://example.org/?foo=example]*32",
+	"retValue": "[example.org]*11",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [9626028037755006],
+	"targetHash": [-8349422606051445234],
+	"callerClass": "java.net.URI$Parser",
+	"targetRange": [{
+		"hash": -8349422606051445234,
+		"ranges": []
+	}],
+	"callerMethod": "substring",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 2868
+}, {
+	"source": false,
+	"invokeId": 818,
+	"objValue": "[https://example.org/?foo=example]*32",
+	"retValue": "[example.org]*11",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [9626028037755006],
+	"targetHash": [-8349422606064647188],
+	"callerClass": "java.net.URI$Parser",
+	"targetRange": [{
+		"hash": -8349422606064647188,
+		"ranges": []
+	}],
+	"callerMethod": "substring",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 2868
+}, {
+	"source": false,
+	"invokeId": 817,
+	"objValue": "[https://example.org/?foo=example]*32",
+	"retValue": "[https]*5",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [9626028037755006],
+	"targetHash": [427851770292144264],
+	"callerClass": "java.net.URI$Parser",
+	"targetRange": [{
+		"hash": 427851770292144264,
+		"ranges": []
+	}],
+	"callerMethod": "substring",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 2868
+}, {
+	"source": false,
+	"invokeId": 816,
+	"objValue": "[https://example.org/?foo=example]*32",
+	"retValue": "[https://example.org/?foo=example]*32",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.toString()",
+	"methodName": "toString",
+	"sourceHash": [840694582],
+	"targetHash": [9626028037755006],
+	"callerClass": "sun.net.www.ParseUtil",
+	"targetRange": [{
+		"hash": 9626028037755006,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 32,
+			"start": 25
+		}, {
+			"name": "cross-site",
+			"stop": 32,
+			"start": 25
+		}]
+	}],
+	"callerMethod": "toString",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"callerLineNumber": 342
+}, {
+	"source": false,
+	"invokeId": 815,
+	"objValue": "[https://example.org/?foo=example]*32",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [-400774929903733488],
+	"targetHash": [840694582],
+	"callerClass": "sun.net.www.ParseUtil",
+	"targetRange": [{
+		"hash": 840694582,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 32,
+			"start": 25
+		}, {
+			"name": "cross-site",
+			"stop": 32,
+			"start": 25
+		}]
+	}],
+	"callerMethod": "appendSchemeSpecificPart",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[foo=example]*11"
+	}],
+	"callerLineNumber": 381
+}, {
+	"source": false,
+	"invokeId": 814,
+	"objValue": "[https://example.org/]*20",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [203452660422],
+	"targetHash": [840694582],
+	"callerClass": "sun.net.www.ParseUtil",
+	"targetRange": [{
+		"hash": 840694582,
+		"ranges": []
+	}],
+	"callerMethod": "appendSchemeSpecificPart",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[/]*1"
+	}],
+	"callerLineNumber": 378
+}, {
+	"source": false,
+	"invokeId": 813,
+	"objValue": "[https://example.org]*19",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [-8349422606438592752],
+	"targetHash": [840694582],
+	"callerClass": "sun.net.www.ParseUtil",
+	"targetRange": [{
+		"hash": 840694582,
+		"ranges": []
+	}],
+	"callerMethod": "appendAuthority",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[example.org]*11"
+	}],
+	"callerLineNumber": 427
+}, {
+	"source": false,
+	"invokeId": 812,
+	"objValue": "[https]*5",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [427851770173524151],
+	"targetHash": [840694582],
+	"callerClass": "sun.net.www.ParseUtil",
+	"targetRange": [{
+		"hash": 840694582,
+		"ranges": []
+	}],
+	"callerMethod": "toString",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[https]*5"
+	}],
+	"callerLineNumber": 335
+}, {
+	"source": false,
+	"stacks": ["sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.connect(AbstractDelegateHttpsURLConnection.java)", "sun.net.www.protocol.https.HttpsURLConnectionImpl.connect(HttpsURLConnectionImpl.java:167)", "iast.vuln.vul.SSRF.javaNetUrlOpenConnectionByUrl(SSRF.java:37)", "iast.vuln.vul.SSRF.javaNetUrlOpenConnection(SSRF.java:19)", "iast.vuln.controller.sink.SSRFController.javaNetUrlOpenConnectionParam(SSRFController.java:50)", "sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)", "sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)", "sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)", "java.lang.reflect.Method.invoke(Method.java:498)", "org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)", "org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150)", "org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)", "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)", "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)", "org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)", "org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1070)", "org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963)", "org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)", "org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898)", "javax.servlet.http.HttpServlet.service(HttpServlet.java:655)", "org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)", "javax.servlet.http.HttpServlet.service(HttpServlet.java:764)", "org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)", "org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)", "org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)", "org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)", "org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)", "org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)", "org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)", "org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)", "org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)", "org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)", "org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)", "org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)", "org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)", "org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)", "org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)", "org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)", "org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)", "org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)", "org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)", "org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)", "org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)", "org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)", "org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)", "org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)", "org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)", "org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)", "org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890)", "org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789)", "org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)", "org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)", "org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)", "org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)", "java.lang.Thread.run(Thread.java:748)"],
+	"traceId": "08481259703946568e915242e9f5b941.1.46466c3386c55d5e.df43cf9280854b2b",
+	"invokeId": 811,
+	"objValue": "[https://example.org/?foo=example]*32",
+	"className": "sun.net.www.protocol.http.HttpURLConnection",
+	"signature": "sun.net.www.protocol.http.HttpURLConnection.connect()",
+	"methodName": "connect",
+	"sourceHash": [203452660422, -400774929903733488, 427851770173524151, -8349422606438592752],
+	"sourceType": [{
+		"hash": 203452660422,
+		"type": "PATH"
+	}, {
+		"hash": -400774929903733488,
+		"type": "QUERY"
+	}, {
+		"hash": 427851770173524151,
+		"type": "PROTOCOL"
+	}, {
+		"hash": -8349422606438592752,
+		"type": "HOST"
+	}],
+	"targetHash": [],
+	"callerClass": "sun.net.www.protocol.https.HttpsURLConnectionImpl",
+	"callerMethod": "connect",
+	"taintPosition": {
+		"source": ["O"]
+	},
+	"originClassName": "sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection",
+	"callerLineNumber": 167
+}, {
+	"source": false,
+	"invokeId": 810,
+	"objValue": "[https://example.org/?foo=example]*32",
+	"retValue": "[https://example.org/?foo=example]*32",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.toString()",
+	"methodName": "toString",
+	"sourceHash": [829020299],
+	"targetHash": [9626028252993376],
+	"callerClass": "java.net.URLStreamHandler",
+	"targetRange": [{
+		"hash": 9626028252993376,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 32,
+			"start": 25
+		}, {
+			"name": "cross-site",
+			"stop": 32,
+			"start": 25
+		}]
+	}],
+	"callerMethod": "toExternalForm",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"callerLineNumber": 513
+}, {
+	"source": false,
+	"invokeId": 809,
+	"objValue": "[https://example.org/?foo=example]*32",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [-400774929903733488],
+	"targetHash": [829020299],
+	"callerClass": "java.net.URLStreamHandler",
+	"targetRange": [{
+		"hash": 829020299,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 32,
+			"start": 25
+		}, {
+			"name": "cross-site",
+			"stop": 32,
+			"start": 25
+		}]
+	}],
+	"callerMethod": "toExternalForm",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[foo=example]*11"
+	}],
+	"callerLineNumber": 507
+}, {
+	"source": false,
+	"invokeId": 808,
+	"objValue": "[https://example.org/]*20",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [203452660422],
+	"targetHash": [829020299],
+	"callerClass": "java.net.URLStreamHandler",
+	"targetRange": [{
+		"hash": 829020299,
+		"ranges": []
+	}],
+	"callerMethod": "toExternalForm",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[/]*1"
+	}],
+	"callerLineNumber": 503
+}, {
+	"source": false,
+	"invokeId": 807,
+	"objValue": "[https://example.org]*19",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [-8349422606438592752],
+	"targetHash": [829020299],
+	"callerClass": "java.net.URLStreamHandler",
+	"targetRange": [{
+		"hash": 829020299,
+		"ranges": []
+	}],
+	"callerMethod": "toExternalForm",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[example.org]*11"
+	}],
+	"callerLineNumber": 500
+}, {
+	"source": false,
+	"invokeId": 806,
+	"objValue": "[https]*5",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [427851770173524151],
+	"targetHash": [829020299],
+	"callerClass": "java.net.URLStreamHandler",
+	"targetRange": [{
+		"hash": 829020299,
+		"ranges": []
+	}],
+	"callerMethod": "toExternalForm",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[https]*5"
+	}],
+	"callerLineNumber": 496
+}, {
+	"source": false,
+	"invokeId": 805,
+	"objValue": "[https://example.org/?foo=example]*32",
+	"retValue": "[https://example.org/?foo=example]*32",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.toString()",
+	"methodName": "toString",
+	"sourceHash": [1710963559],
+	"targetHash": [9626028710573364],
+	"callerClass": "java.net.URLStreamHandler",
+	"targetRange": [{
+		"hash": 9626028710573364,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 32,
+			"start": 25
+		}, {
+			"name": "cross-site",
+			"stop": 32,
+			"start": 25
+		}]
+	}],
+	"callerMethod": "toExternalForm",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"callerLineNumber": 513
+}, {
+	"source": false,
+	"invokeId": 804,
+	"objValue": "[https://example.org/?foo=example]*32",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [-400774929903733488],
+	"targetHash": [1710963559],
+	"callerClass": "java.net.URLStreamHandler",
+	"targetRange": [{
+		"hash": 1710963559,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 32,
+			"start": 25
+		}, {
+			"name": "cross-site",
+			"stop": 32,
+			"start": 25
+		}]
+	}],
+	"callerMethod": "toExternalForm",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[foo=example]*11"
+	}],
+	"callerLineNumber": 507
+}, {
+	"source": false,
+	"invokeId": 803,
+	"objValue": "[https://example.org/]*20",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [203452660422],
+	"targetHash": [1710963559],
+	"callerClass": "java.net.URLStreamHandler",
+	"targetRange": [{
+		"hash": 1710963559,
+		"ranges": []
+	}],
+	"callerMethod": "toExternalForm",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[/]*1"
+	}],
+	"callerLineNumber": 503
+}, {
+	"source": false,
+	"invokeId": 802,
+	"objValue": "[https://example.org]*19",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [-8349422606438592752],
+	"targetHash": [1710963559],
+	"callerClass": "java.net.URLStreamHandler",
+	"targetRange": [{
+		"hash": 1710963559,
+		"ranges": []
+	}],
+	"callerMethod": "toExternalForm",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[example.org]*11"
+	}],
+	"callerLineNumber": 500
+}, {
+	"source": false,
+	"invokeId": 801,
+	"objValue": "[https]*5",
+	"className": "java.lang.StringBuffer",
+	"signature": "java.lang.StringBuffer.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [427851770173524151],
+	"targetHash": [1710963559],
+	"callerClass": "java.net.URLStreamHandler",
+	"targetRange": [{
+		"hash": 1710963559,
+		"ranges": []
+	}],
+	"callerMethod": "toExternalForm",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuffer",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[https]*5"
+	}],
+	"callerLineNumber": 496
+}, {
+	"source": false,
+	"invokeId": 800,
+	"objValue": "[https://example.org/?foo=example]*32",
+	"className": "java.net.URL",
+	"signature": "java.net.URL.<init>(java.net.URL,java.lang.String,java.net.URLStreamHandler)",
+	"methodName": "<init>",
+	"sourceHash": [9626028518846266],
+	"targetHash": [1232358675],
+	"callerClass": "java.net.URL",
+	"targetRange": [{
+		"hash": 1232358675,
+		"ranges": []
+	}],
+	"callerMethod": "<init>",
+	"taintPosition": {
+		"source": ["P1", "P2"],
+		"target": ["O"]
+	},
+	"originClassName": "java.net.URL",
+	"parameterValues": [{
+		"index": "P2",
+		"value": "[https://example.org/?foo=example]*32"
+	}],
+	"callerLineNumber": 507
+}, {
+	"source": false,
+	"invokeId": 799,
+	"objValue": "[/?foo=example]*13",
+	"retValue": "[/?foo=example]*13",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.toString()",
+	"methodName": "toString",
+	"sourceHash": [331869318],
+	"targetHash": [-6253796313572810199],
+	"callerClass": "java.net.URL",
+	"targetRange": [{
+		"hash": -6253796313572810199,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 13,
+			"start": 6
+		}, {
+			"name": "cross-site",
+			"stop": 13,
+			"start": 6
+		}]
+	}],
+	"callerMethod": "set",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"callerLineNumber": 732
+}, {
+	"source": false,
+	"invokeId": 798,
+	"objValue": "[/?foo=example]*13",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.<init>(char[],int,int)",
+	"methodName": "<init>",
+	"sourceHash": [999210396],
+	"targetHash": [-6253796313572810199],
+	"callerClass": "java.lang.StringBuilder",
+	"targetRange": [{
+		"hash": -6253796313572810199,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 13,
+			"start": 6
+		}, {
+			"name": "cross-site",
+			"stop": 13,
+			"start": 6
+		}]
+	}],
+	"callerMethod": "toString",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.String",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[[C@3b8ebd9c]*11"
+	}],
+	"callerLineNumber": 407
+}, {
+	"source": false,
+	"invokeId": 797,
+	"objValue": "",
+	"retValue": "[[C@102005e1]*11",
+	"className": "java.util.Arrays",
+	"signature": "java.util.Arrays.copyOfRange(char[],int,int)",
+	"methodName": "copyOfRange",
+	"sourceHash": [999210396],
+	"targetHash": [270534113],
+	"callerClass": "java.lang.String",
+	"targetRange": [{
+		"hash": 270534113,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 13,
+			"start": 6
+		}, {
+			"name": "cross-site",
+			"stop": 13,
+			"start": 6
+		}]
+	}],
+	"callerMethod": "<init>",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["R"]
+	},
+	"originClassName": "java.util.Arrays",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[[C@3b8ebd9c]*11"
+	}],
+	"callerLineNumber": 207
+}, {
+	"source": false,
+	"invokeId": 796,
+	"objValue": "[/?foo=example]*13",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [-400774929903733488],
+	"targetHash": [331869318],
+	"callerClass": "java.net.URL",
+	"targetRange": [{
+		"hash": 331869318,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 13,
+			"start": 6
+		}, {
+			"name": "cross-site",
+			"stop": 13,
+			"start": 6
+		}]
+	}],
+	"callerMethod": "set",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[foo=example]*11"
+	}],
+	"callerLineNumber": 732
+}, {
+	"source": false,
+	"invokeId": 795,
+	"objValue": "[/?foo=example]*13",
+	"className": "java.lang.AbstractStringBuilder",
+	"signature": "java.lang.AbstractStringBuilder.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [-400774929903733488],
+	"targetHash": [331869318],
+	"callerClass": "java.lang.StringBuilder",
+	"targetRange": [{
+		"hash": 331869318,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 13,
+			"start": 6
+		}, {
+			"name": "cross-site",
+			"stop": 13,
+			"start": 6
+		}]
+	}],
+	"callerMethod": "append",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.AbstractStringBuilder",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[foo=example]*11"
+	}],
+	"callerLineNumber": 136
+}, {
+	"source": false,
+	"invokeId": 794,
+	"objValue": "[foo=example]*11",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.getChars(int,int,char[],int)",
+	"methodName": "getChars",
+	"sourceHash": [-400774929903733488],
+	"targetHash": [999210396],
+	"callerClass": "java.lang.AbstractStringBuilder",
+	"targetRange": [{
+		"hash": 999210396,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 13,
+			"start": 6
+		}, {
+			"name": "cross-site",
+			"stop": 13,
+			"start": 6
+		}]
+	}],
+	"callerMethod": "append",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["P3"]
+	},
+	"originClassName": "java.lang.String",
+	"parameterValues": [{
+		"index": "P3",
+		"value": "[[C@3b8ebd9c]*11"
+	}],
+	"callerLineNumber": 449
+}, {
+	"source": false,
+	"invokeId": 793,
+	"objValue": "[/]*1",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [203452660422],
+	"targetHash": [331869318],
+	"callerClass": "java.net.URL",
+	"targetRange": [{
+		"hash": 331869318,
+		"ranges": []
+	}],
+	"callerMethod": "set",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[/]*1"
+	}],
+	"callerLineNumber": 732
+}, {
+	"source": false,
+	"invokeId": 792,
+	"objValue": "[/]*1",
+	"className": "java.lang.AbstractStringBuilder",
+	"signature": "java.lang.AbstractStringBuilder.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [203452660422],
+	"targetHash": [331869318],
+	"callerClass": "java.lang.StringBuilder",
+	"targetRange": [{
+		"hash": 331869318,
+		"ranges": []
+	}],
+	"callerMethod": "append",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.AbstractStringBuilder",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[/]*1"
+	}],
+	"callerLineNumber": 136
+}, {
+	"source": false,
+	"invokeId": 791,
+	"objValue": "[/]*1",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.getChars(int,int,char[],int)",
+	"methodName": "getChars",
+	"sourceHash": [203452660422],
+	"targetHash": [999210396],
+	"callerClass": "java.lang.AbstractStringBuilder",
+	"targetRange": [{
+		"hash": 999210396,
+		"ranges": []
+	}],
+	"callerMethod": "append",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["P3"]
+	},
+	"originClassName": "java.lang.String",
+	"parameterValues": [{
+		"index": "P3",
+		"value": "[[C@3b8ebd9c]*11"
+	}],
+	"callerLineNumber": 449
+}, {
+	"source": false,
+	"invokeId": 790,
+	"objValue": "[https://example.org/]*20",
+	"retValue": "[/]*1",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [-7972052907666913581],
+	"targetHash": [203452660422],
+	"callerClass": "java.net.URLStreamHandler",
+	"targetRange": [{
+		"hash": 203452660422,
+		"ranges": []
+	}],
+	"callerMethod": "parseURL",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 247
+}, {
+	"source": false,
+	"invokeId": 789,
+	"objValue": "[https://example.org/]*20",
+	"retValue": "[example.org]*11",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [-7972052907666913581],
+	"targetHash": [-8349422606438592752],
+	"callerClass": "java.net.URLStreamHandler",
+	"targetRange": [{
+		"hash": -8349422606438592752,
+		"ranges": []
+	}],
+	"callerMethod": "parseURL",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 170
+}, {
+	"source": false,
+	"invokeId": 788,
+	"objValue": "[https://example.org/?foo=example]*32",
+	"retValue": "[https://example.org/]*20",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [9626028518846266],
+	"targetHash": [-7972052907666913581],
+	"callerClass": "java.net.URLStreamHandler",
+	"targetRange": [{
+		"hash": -7972052907666913581,
+		"ranges": []
+	}],
+	"callerMethod": "parseURL",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 149
+}, {
+	"source": false,
+	"invokeId": 787,
+	"objValue": "[https://example.org/?foo=example]*32",
+	"retValue": "[foo=example]*11",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [9626028518846266],
+	"targetHash": [-400774929903733488],
+	"callerClass": "java.net.URLStreamHandler",
+	"targetRange": [{
+		"hash": -400774929903733488,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 11,
+			"start": 4
+		}, {
+			"name": "cross-site",
+			"stop": 11,
+			"start": 4
+		}]
+	}],
+	"callerMethod": "parseURL",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 146
+}, {
+	"source": false,
+	"invokeId": 786,
+	"objValue": "[https://example.org/?foo=example]*32",
+	"retValue": "[https]*5",
+	"className": "java.lang.String",
+	"signature": "java.lang.String.substring(int,int)",
+	"methodName": "substring",
+	"sourceHash": [9626028518846266],
+	"targetHash": [427851770173524151],
+	"callerClass": "java.net.URL",
+	"targetRange": [{
+		"hash": 427851770173524151,
+		"ranges": []
+	}],
+	"callerMethod": "<init>",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.String",
+	"callerLineNumber": 571
+}, {
+	"source": false,
+	"invokeId": 785,
+	"objValue": "[https://example.org/?foo=example]*32",
+	"retValue": "[https://example.org/?foo=example]*32",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.toString()",
+	"methodName": "toString",
+	"sourceHash": [168030907],
+	"targetHash": [9626028518846266],
+	"callerClass": "iast.vuln.controller.sink.SSRFController",
+	"targetRange": [{
+		"hash": 9626028518846266,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 32,
+			"start": 25
+		}, {
+			"name": "cross-site",
+			"stop": 32,
+			"start": 25
+		}]
+	}],
+	"callerMethod": "javaNetUrlOpenConnectionParam",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"callerLineNumber": 49
+}, {
+	"source": false,
+	"invokeId": 784,
+	"objValue": "[https://example.org/?foo=example]*32",
+	"className": "java.lang.StringBuilder",
+	"signature": "java.lang.StringBuilder.append(java.lang.String)",
+	"methodName": "append",
+	"sourceHash": [-5682116207436735272],
+	"targetHash": [168030907],
+	"callerClass": "iast.vuln.controller.sink.SSRFController",
+	"targetRange": [{
+		"hash": 168030907,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 32,
+			"start": 25
+		}, {
+			"name": "cross-site",
+			"stop": 32,
+			"start": 25
+		}]
+	}],
+	"callerMethod": "javaNetUrlOpenConnectionParam",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["O"]
+	},
+	"originClassName": "java.lang.StringBuilder",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[example]*7"
+	}],
+	"callerLineNumber": 49
+}, {
+	"source": true,
+	"invokeId": 783,
+	"objValue": "[org.apache.catalina.connector.RequestFacade@237106be]52",
+	"retValue": "[example ]*8",
+	"className": "javax.servlet.http.HttpServletRequest",
+	"signature": "javax.servlet.http.HttpServletRequest.getParameterValues(java.lang.String)",
+	"methodName": "getParameterValues",
+	"sourceHash": [],
+	"targetHash": [-5682116207436735272],
+	"callerClass": "org.springframework.web.context.request.ServletWebRequest",
+	"targetRange": [{
+		"hash": -5682116207436735272,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 7,
+			"start": 0
+		}, {
+			"name": "cross-site",
+			"stop": 7,
+			"start": 0
+		}]
+	}],
+	"callerMethod": "getParameterValues",
+	"taintPosition": {
+		"source": ["P1"],
+		"target": ["R"]
+	},
+	"originClassName": "org.apache.catalina.connector.RequestFacade",
+	"parameterValues": [{
+		"index": "P1",
+		"value": "[param]*5"
+	}],
+	"callerLineNumber": 153
+}, {
+	"source": true,
+	"invokeId": 782,
+	"objValue": "[/sink/ssrf/safe/java-net-url-connection-param]*45",
+	"retValue": "[/sink/ssrf/safe/java-net-url-connection-param]*45",
+	"className": "org.springframework.web.util.pattern.PathPattern",
+	"signature": "org.springframework.web.util.pattern.PathPattern.getPatternString()",
+	"methodName": "getPatternString",
+	"sourceHash": [],
+	"targetHash": [-7156141178983085440],
+	"callerClass": "org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping",
+	"targetRange": [{
+		"hash": -7156141178983085440,
+		"ranges": [{
+			"name": "untrusted",
+			"stop": 45,
+			"start": 0
+		}]
+	}],
+	"callerMethod": "extractMatchDetails",
+	"taintPosition": {
+		"source": ["O"],
+		"target": ["R"]
+	},
+	"originClassName": "org.springframework.web.util.pattern.PathPattern",
+	"callerLineNumber": 174
+}]

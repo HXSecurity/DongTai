@@ -194,6 +194,9 @@ class VulEngine(object):
                 self.vul_stack = [final_stack]
         if self.vul_source_signature and 'sourceType' in self.vul_stack[-1][
                 -1].keys():
+            # Only for ssrf
+            # Check the HOST in source_type
+            # find path with HOST and before_stack
             final_stack = self.vul_stack[-1][-1]
             current_link = list()
             current_link.append(final_stack)
@@ -245,6 +248,7 @@ class VulEngine(object):
             before_stacks = self.method_pool[index:]
             the_second_stack = None
             has_vul = False
+            # check final stack ranges match with paths
             for stack in before_stacks:
                 if 'targetRange' in stack.keys():
                     target_ranges = dict(
@@ -253,7 +257,7 @@ class VulEngine(object):
                     if set(final_stack['sourceHash']) & set(
                             stack['targetHash']):
                         for k, v in target_ranges.items():
-                            if v['ranges']:
+                            if v['ranges']:  # ranges is empty
                                 has_vul = True
                         the_second_stack = stack
                         break
