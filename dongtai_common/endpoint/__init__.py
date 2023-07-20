@@ -130,7 +130,7 @@ class EndPoint(APIView):
                 module_name = tags[0]
                 operate_tag = list(filter(lambda x: x.startswith("operate-"), tags))
                 if operate_tag:
-                    operate_method = operate_tag[0].lstrip("operate-")
+                    operate_method = operate_tag[0].removeprefix("operate-")
 
                 if operate_method == "GET":
                     operate_type = OperateType.GET
@@ -385,7 +385,7 @@ class R:
     def success(
         status=201,
         data=None,
-        msg=_("success"),
+        msg=_("success"),  # noqa: B008
         page=None,
         status_code=200,
         **kwargs,
@@ -405,7 +405,7 @@ class R:
         )
 
     @staticmethod
-    def failure(status=202, data=None, status_code=200, msg=_("failure")):
+    def failure(status=202, data=None, status_code=200, msg=_("failure")):  # noqa: B008
         resp_data = {"status": status, "msg": msg}
         if data:
             resp_data["data"] = data

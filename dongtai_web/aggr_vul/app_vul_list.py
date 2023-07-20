@@ -248,13 +248,13 @@ def set_vul_inetration(end: dict[str, Any], user_id: int) -> None:
 
 def get_vul_list_from_elastic_search(
     departments,
-    project_ids=[],
-    project_version_ids=[],
-    hook_type_ids=[],
-    level_ids=[],
-    status_ids=[],
-    strategy_ids=[],
-    language_ids=[],
+    project_ids=None,
+    project_version_ids=None,
+    hook_type_ids=None,
+    level_ids=None,
+    status_ids=None,
+    strategy_ids=None,
+    language_ids=None,
     search_keyword="",
     page=1,
     page_size=10,
@@ -262,6 +262,21 @@ def get_vul_list_from_elastic_search(
     project_version_id=0,
     order="",
 ):
+    if project_ids is None:
+        project_ids = []
+    if project_version_ids is None:
+        project_version_ids = []
+    if hook_type_ids is None:
+        hook_type_ids = []
+    if level_ids is None:
+        level_ids = []
+    if status_ids is None:
+        status_ids = []
+    if strategy_ids is None:
+        strategy_ids = []
+    if language_ids is None:
+        language_ids = []
+
     from dongtai_common.models.strategy import IastStrategyModel
 
     department_ids = list(departments.values_list("id", flat=True))

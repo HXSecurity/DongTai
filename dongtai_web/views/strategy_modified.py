@@ -66,7 +66,12 @@ def _update(model, dic):
     model.save()
 
 
-def get_model_field(model, exclude=[], include=[]):
+def get_model_field(model, exclude=None, include=None):
+    if exclude is None:
+        exclude = []
+    if exclude is None:
+        exclude = []
+
     fields = [field.name for field in model._meta.fields]
     if include:
         return [

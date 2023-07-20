@@ -257,7 +257,9 @@ def cal_state(agent: dict) -> StateType:
     return StateType.UNINSTALL
 
 
-def query_agent(filter_condiction=Q()) -> QuerySet:
+def query_agent(filter_condiction=None) -> QuerySet:
+    if filter_condiction is None:
+        filter_condiction = Q()
     return (
         IastAgent.objects.filter(filter_condiction)
         .values(

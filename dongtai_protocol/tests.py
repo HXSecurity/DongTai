@@ -118,7 +118,7 @@ class AgentSaasMethodPoolParseApiTestCase(AgentTestCase):
     def test_api_parse(self):
         mp = MethodPool.objects.filter(pk=500483715).first()
         assert mp is not None and mp.req_header is not None
-        mp.req_header
+
         headers_bytes = base64.b64decode(mp.req_header)
         from dongtai_engine.filters.utils import parse_headers_dict_from_bytes
 

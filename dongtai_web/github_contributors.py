@@ -80,7 +80,9 @@ _get_github_issues = partial(_get_github_user, suffix="issues?state=all")
 _get_github_prs = partial(_get_github_user, suffix="pulls?state=all")
 
 
-def get_github_contributors(dic={}, update=False):
+def get_github_contributors(dic=None, update=False):
+    if dic is None:
+        dic = {}
     if update:
         dic1 = {}
         dic1["issues"], is_over_limit_pr = _get_github_issues()

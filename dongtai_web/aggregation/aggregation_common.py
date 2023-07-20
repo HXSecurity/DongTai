@@ -7,7 +7,9 @@ from dongtai_web.serializers.vul import VulSerializer
 
 
 # list id 去重
-def getUniqueList(origin_list=[]):
+def getUniqueList(origin_list=None):
+    if origin_list is None:
+        origin_list = []
     return list(set(origin_list))
 
 

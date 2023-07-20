@@ -105,7 +105,12 @@ class ProfileBatchModifiedEndpoint(UserEndPoint):
         return R.success(data=data)
 
 
-def get_model_field(model, exclude=[], include=[]):
+def get_model_field(model, exclude=None, include=None):
+    if exclude is None:
+        exclude = []
+    if include is None:
+        include = []
+
     fields = [field.name for field in model._meta.fields]
     if include:
         return [

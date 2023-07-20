@@ -256,8 +256,11 @@ def get_vul_list_from_elastic_search(
     bind_project_id=None,
     project_version_id=None,
     search_keyword="",
-    extend_aggs_buckets={},
+    extend_aggs_buckets=None,
 ):
+    if extend_aggs_buckets is None:
+        extend_aggs_buckets = {}
+
     user_id_list = [user_id]
     auth_user_info = auth_user_list_str(user_id=user_id)
     user_id_list = auth_user_info["user_list"]

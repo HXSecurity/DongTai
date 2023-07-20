@@ -103,7 +103,9 @@ def cached(
     return get_cache_or_call
 
 
-def disable_cache(function, args=(), kwargs={}):
+def disable_cache(function, args=(), kwargs=None):
+    if kwargs is None:
+        kwargs = {}
     cache_key = make_hash((function.__module__ + function.__name__, args, kwargs))
     cache.delete(cache_key)
 

@@ -87,7 +87,7 @@ def get_plugin_dict():
         return PLUGIN_DICT
     previous_path = getcwd()
     PLUGIN_ROOT_PATH = join(BASE_DIR, "dongtai_conf" + os.sep + "plugin")
-    for root, directories, files in walk(top=PLUGIN_ROOT_PATH, topdown=False):
+    for root, _directories, files in walk(top=PLUGIN_ROOT_PATH, topdown=False):
         for file_ in files:
             if file_.startswith("plug_") and (file_.endswith((".py", ".so"))):
                 if file_.endswith(".py"):
@@ -109,7 +109,7 @@ def get_plugin_dict():
                 plugin_classes = filter(
                     lambda x: _plug_class_filter(x), getmembers(mod)
                 )
-                for name, plug_class in plugin_classes:
+                for _name, plug_class in plugin_classes:
                     if PLUGIN_DICT.get(plug_class.appname):
                         PLUGIN_DICT[plug_class.appname] += [plug_class]
                     else:

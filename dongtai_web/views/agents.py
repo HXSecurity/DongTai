@@ -174,9 +174,7 @@ class AgentList(UserEndPoint):
                 .values_list("id", flat=True)
                 .order_by("-id")[(page - 1) * page_size : page * page_size]
             )
-            cur_ids = []
-            for item in cur_data:
-                cur_ids.append(item)
+            cur_ids = list(cur_data)
 
             queryset = (
                 IastAgent.objects.filter(id__in=cur_ids)

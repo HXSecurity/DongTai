@@ -1302,13 +1302,23 @@ def get_latest_version(version_str_list: list[str]) -> str:
     )._version
 
 
-def get_cve_numbers(cve: str = "", cwe: list = [], cnvd: str = "", cnnvd: str = ""):
+def get_cve_numbers(
+    cve: str = "", cwe: list | None = None, cnvd: str = "", cnnvd: str = ""
+):
+    if cwe is None:
+        cwe = []
     return {"cve": cve, "cwe": cwe, "cnvd": cnvd, "cnnvd": cnnvd}
 
 
 def get_vul_serial(
-    title: str = "", cve: str = "", cwe: list = [], cnvd: str = "", cnnvd: str = ""
+    title: str = "",
+    cve: str = "",
+    cwe: list | None = None,
+    cnvd: str = "",
+    cnnvd: str = "",
 ) -> str:
+    if cwe is None:
+        cwe = []
     return "|".join([title, cve, cnvd, cnnvd, *cwe])
 
 
@@ -1372,7 +1382,11 @@ def get_description(descriptions: list[dict]) -> str:
     return sorted(descriptions, key=lambda x: x["language"], reverse=True)[0]["content"]
 
 
-def get_vul_path(base_aql: str, vul_package_path: list[dict] = []) -> list[str]:
+def get_vul_path(
+    base_aql: str, vul_package_path: list[dict] | None = None
+) -> list[str]:
+    if vul_package_path is None:
+        vul_package_path = []
     return [
         *[
             get_package_aql(x["name"], x["ecosystem"], x["version"])

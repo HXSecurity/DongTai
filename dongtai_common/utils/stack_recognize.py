@@ -307,8 +307,15 @@ class CodeStack(TypedDict):
 
 
 def stack_scan(
-    stack: str, extend_black_list: list = [], extend_white_list: list = []
+    stack: str,
+    extend_black_list: list | None = None,
+    extend_white_list: list | None = None,
 ) -> CodeStack:
+    if extend_black_list is None:
+        extend_black_list = []
+    if extend_white_list is None:
+        extend_white_list = []
+
     for rule in extend_white_list:
         if stack.startswith(rule):
             return {"stack": stack, "code_belong": "user"}
@@ -324,6 +331,12 @@ def stack_scan(
 
 
 def stacks_convert(
-    stacks: list[str], extend_black_list=[], extend_white_list=[]
+    stacks: list[str],
+    extend_black_list: list | None = None,
+    extend_white_list: list | None = None,
 ) -> list[CodeStack]:
+    if extend_black_list is None:
+        extend_black_list = []
+    if extend_white_list is None:
+        extend_white_list = []
     return [stack_scan(x, extend_black_list, extend_white_list) for x in stacks]

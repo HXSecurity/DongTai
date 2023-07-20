@@ -49,12 +49,12 @@ class AgentSerializer(serializers.ModelSerializer):
 
     def get_latest_heartbeat(self, obj):
         try:
-            latest_heartbeat = getattr(obj, "latest_heartbeat")
+            latest_heartbeat = obj.latest_heartbeat
         except Exception:
             latest_heartbeat = (
                 obj.heartbeats.values("dt", "cpu").order_by("-dt").first()
             )
-            setattr(obj, "latest_heartbeat", latest_heartbeat)
+            obj.latest_heartbeat = latest_heartbeat
         return latest_heartbeat
 
     def get_running_status(self, obj):

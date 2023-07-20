@@ -50,7 +50,7 @@ class FileHashPair:
 
 def calculate_dir_sha() -> list[FileHashPair]:
     dic_list = []
-    for path, dirs, files in os.walk(os.path.join(BASE_DIR, "static/data")):
+    for path, _dirs, files in os.walk(os.path.join(BASE_DIR, "static/data")):
         for file_ in sorted(files):
             fullpath = os.path.join(path, file_)
             sha = hashlib.sha1(usedforsecurity=False)

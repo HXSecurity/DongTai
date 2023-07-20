@@ -159,8 +159,6 @@ class ScaList(UserEndPoint):
 
         page_size = min(50, int(page_size))
 
-        (page - 1) * page_size
-
         auth_user_ids = [str(_i.id) for _i in auth_users]
         departments = request.user.get_relative_department()
         department_ids = [department.id for department in departments]
@@ -303,7 +301,9 @@ class ScaList(UserEndPoint):
         return asset_aggr_where, count_sql_params, list_sql_params
 
 
-def get_vul_list_from_elastic_search(sca_ids=[], order=None):
+def get_vul_list_from_elastic_search(sca_ids=None, order=None):
+    if sca_ids is None:
+        sca_ids = []
     must_query = [Q("terms", signature_value=sca_ids)]
     a = Q("bool", must=must_query)
     extra_dict = {}
@@ -328,15 +328,22 @@ def get_vul_list_from_elastic_searchv2(
     user_id,
     bind_project_id=None,
     project_version_id=None,
-    level_ids=[],
-    languages=[],
+    level_ids=None,
+    languages=None,
     order="",
     order_type="",
     page=1,
     page_size=10,
     search_keyword="",
-    extend_filter={},
+    extend_filter=None,
 ):
+    if level_ids is None:
+        level_ids = []
+    if languages is None:
+        languages = []
+    if extend_filter is None:
+        extend_filter = {}
+
     user_id_list = [user_id]
     auth_user_info = auth_user_list_str(user_id=user_id)
     user_id_list = auth_user_info["user_list"]
@@ -498,7 +505,7 @@ def mysql_search(
         latest_data = chunk[-1]
         after_key = [
             getattr(latest_data, order),
-            getattr(latest_data, "signature_value"),
+            latest_data.signature_value,
         ]
         after_table[page + i + 1] = after_key
     cache.set(hashkey, after_table)

@@ -365,18 +365,31 @@ def set_vul_inetration(
 
 def get_vul_list_from_elastic_search(
     user_id,
-    project_ids=[],
-    project_version_ids=[],
-    level_ids=[],
-    language_ids=[],
-    availability_ids=[],
+    project_ids=None,
+    project_version_ids=None,
+    level_ids=None,
+    language_ids=None,
+    availability_ids=None,
     search_keyword="",
     page=1,
     page_size=10,
     bind_project_id=0,
     project_version_id=0,
-    order={},
+    order=None,
 ):
+    if project_ids is None:
+        project_ids = []
+    if project_version_ids is None:
+        project_version_ids = []
+    if level_ids is None:
+        level_ids = []
+    if language_ids is None:
+        language_ids = []
+    if availability_ids is None:
+        availability_ids = []
+    if order is None:
+        order = {}
+
     auth_user_info = auth_user_list_str(user_id=user_id)
     auth_user_info["user_list"]
     user = User.objects.filter(pk=user_id).first()
@@ -441,7 +454,7 @@ def get_vul_list_from_elastic_search(
     if after_key:
         sub_after_must_query = []
         sub_after_should_query = []
-        for info, value in zip(order_list, after_key):
+        for info, value in zip(order_list, after_key, strict=False):
             field = ""
             opt = ""
             if isinstance(info, dict):

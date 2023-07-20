@@ -51,7 +51,7 @@ if len(status) == 0:
 def ranstr(num):
     H = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()`-{}|:?><>?"
     salt = ""
-    for i in range(num):
+    for _i in range(num):
         salt += random.choice(H)
     return salt
 
@@ -97,7 +97,7 @@ def get_installed_apps():
     master = []
     APPS_ROOT_PATH = BASE_DIR
     chdir(APPS_ROOT_PATH)
-    for root, directories, files in walk(top=getcwd(), topdown=False):
+    for root, _directories, files in walk(top=getcwd(), topdown=False):
         for file_ in files:
             if (
                 "apps.py" in file_

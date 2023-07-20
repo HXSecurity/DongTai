@@ -44,7 +44,11 @@ def get_plugin(
     extra = dict(
         filter(
             lambda x: x[1],
-            zip(["branch", "tag", "commit", "uri"], [branch, tag, commit, uri]),
+            zip(
+                ["branch", "tag", "commit", "uri"],
+                [branch, tag, commit, uri],
+                strict=False,
+            ),
         )
     )
     _get_plugin(repo, extra)

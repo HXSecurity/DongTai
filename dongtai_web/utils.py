@@ -29,7 +29,12 @@ if TYPE_CHECKING:
     from django.db.models.query import QuerySet, ValuesQuerySet
 
 
-def get_model_field(model, exclude=[], include=[]):
+def get_model_field(model, exclude=None, include=None):
+    if exclude is None:
+        exclude = []
+    if include is None:
+        include = []
+
     fields = [field.name for field in model._meta.fields]
     if include:
         return [field for field in list(set(fields) - set(exclude)) if field in include]
@@ -46,8 +51,11 @@ def get_model_order_options(*args, **kwargs):
 
 
 def assemble_query(
-    condictions: list, lookuptype="", base_query=Q(), operator_=operator.or_
+    condictions: list, lookuptype="", base_query=None, operator_=operator.or_
 ):
+    if base_query is None:
+        base_query = Q()
+
     return reduce(
         operator_,
         (
@@ -62,8 +70,11 @@ def assemble_query(
 
 
 def assemble_query_2(
-    condictions: list, lookuptype="", base_query=Q(), operator_=operator.or_
+    condictions: list, lookuptype="", base_query=None, operator_=operator.or_
 ):
+    if base_query is None:
+        base_query = Q()
+
     return reduce(
         operator_,
         (
@@ -78,12 +89,19 @@ def assemble_query_2(
 
 
 def extend_schema_with_envcheck(
-    querys: list = [],
-    request_bodys: list | dict = [],
-    response_bodys: list = [],
+    querys: list | None = None,
+    request_bodys: list | dict | None = None,
+    response_bodys: list | None = None,
     response_schema=None,
     **kwargs,
 ):
+    if querys is None:
+        querys = []
+    if request_bodys is None:
+        request_bodys = []
+    if response_bodys is None:
+        response_bodys = []
+
     def myextend_schema(func):
         from drf_spectacular.utils import OpenApiResponse, OpenApiTypes, extend_schema
 

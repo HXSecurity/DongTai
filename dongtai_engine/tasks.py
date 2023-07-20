@@ -65,7 +65,7 @@ def search_and_save_vul(
     engine: VulEngine | None,
     method_pool_model: IastAgentMethodPoolReplay | MethodPool,
     method_pool: Any | None,
-    strategy: dict = {},
+    strategy: dict | None = None,
 ) -> None:
     """
     搜索方法池是否存在满足策略的数据,如果存在,保存相关数据为漏洞
@@ -73,6 +73,8 @@ def search_and_save_vul(
     :param strategy: 策略数据
     :return: None
     """
+    if strategy is None:
+        strategy = {}
     logger.info(f'current sink rule is {strategy.get("type")}')
     # queryset = IastStrategyModel.objects.filter(vul_type=strategy['type'],
     #                                            state=const.STRATEGY_ENABLE)

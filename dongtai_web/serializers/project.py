@@ -91,10 +91,10 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_agents(self, obj):
         try:
-            all_agents = getattr(obj, "project_agents")
+            all_agents = obj.project_agents
         except Exception:
             all_agents = obj.iastagent_set.all()
-            setattr(obj, "project_agents", all_agents)
+            obj.project_agents = all_agents
         return all_agents
 
     def get_vul_count(self, obj) -> list:

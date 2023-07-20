@@ -114,7 +114,7 @@ class AgentHardencodeTestCase(AgentTestCase):
             user_id=1, vul_type="crypto-bad-mac"
         ).first()
         if strategy:
-            strategy.state == "enable"
+            strategy.state = "enable"
             strategy.save()
         res1 = self.agent_report(json_)
         vul1 = IastVulnerabilityModel.objects.filter(strategy=strategy).first()

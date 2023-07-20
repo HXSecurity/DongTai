@@ -220,6 +220,7 @@ class VulEngine:
                                 zip(
                                     [i["hash"] for i in stack["targetRange"]],
                                     stack["targetRange"],
+                                    strict=False,
                                 )
                             )
                             if (
@@ -264,10 +265,11 @@ class VulEngine:
                         zip(
                             [i["hash"] for i in stack["targetRange"]],
                             stack["targetRange"],
+                            strict=False,
                         )
                     )
                     if set(final_stack["sourceHash"]) & set(stack["targetHash"]):
-                        for k, v in target_ranges.items():
+                        for _k, v in target_ranges.items():
                             if v["ranges"]:
                                 has_vul = True
                         the_second_stack = stack
