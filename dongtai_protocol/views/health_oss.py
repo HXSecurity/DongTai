@@ -6,10 +6,12 @@
 # @description :
 ######################################################################
 
-from drf_spectacular.utils import extend_schema
 import logging
-from dongtai_protocol.utils import checkossstatus
+
+from drf_spectacular.utils import extend_schema
+
 from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_protocol.utils import checkossstatus
 
 logger = logging.getLogger("dongtai.openapi")
 

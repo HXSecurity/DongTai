@@ -1,9 +1,10 @@
 import json
 import unittest
+from test import DongTaiTestCase
+from test.apiserver.test_agent_base import METHODPOOL_JSON, REGISTER_JSON, gzipdata
+
 from rest_framework.test import APITestCase
 
-from test import DongTaiTestCase
-from test.apiserver.test_agent_base import REGISTER_JSON, METHODPOOL_JSON, gzipdata
 from dongtai_common.models.user import User
 
 
@@ -35,9 +36,10 @@ class MyTestCase(DongTaiTestCase):
         update_agent_status()
 
     def test_verify_agent_status(self):
+        import time
+
         from dongtai_common.models.agent import IastAgent
         from dongtai_engine.tasks import is_alive
-        import time
 
         timestamp = int(time.time())
         stopped_agents = IastAgent.objects.values("id").filter(is_running=0)

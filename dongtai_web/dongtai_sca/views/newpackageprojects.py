@@ -1,24 +1,23 @@
+import json
 import logging
-
-from dongtai_common.models import User
-from dongtai_web.dongtai_sca.models import Package
-from django.http import JsonResponse
-from rest_framework import views
-from django.core.paginator import Paginator
-from django.forms.models import model_to_dict
-from dongtai_common.endpoint import R, UserEndPoint
-from django.utils.translation import gettext_lazy as _
-from dongtai_web.utils import extend_schema_with_envcheck_v2, get_response_serializer
-from rest_framework import serializers
-from rest_framework.serializers import ValidationError
-from django.db.models import Q, F, Value
-
-from dongtai_common.models.assetv2 import AssetV2, AssetV2Global
-from dongtai_common.models.project import IastProject
-from rest_framework_dataclasses.serializers import DataclassSerializer
 from dataclasses import dataclass
 from typing import Any
-import json
+
+from django.core.paginator import Paginator
+from django.db.models import F, Q, Value
+from django.forms.models import model_to_dict
+from django.http import JsonResponse
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers, views
+from rest_framework.serializers import ValidationError
+from rest_framework_dataclasses.serializers import DataclassSerializer
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models import User
+from dongtai_common.models.assetv2 import AssetV2, AssetV2Global
+from dongtai_common.models.project import IastProject
+from dongtai_web.dongtai_sca.models import Package
+from dongtai_web.utils import extend_schema_with_envcheck_v2, get_response_serializer
 
 logger = logging.getLogger(__name__)
 

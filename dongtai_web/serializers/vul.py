@@ -1,16 +1,18 @@
 #!/usr/bin/env python
 # datetime:2020/5/22 18:29
-from dongtai_common.models.agent import IastAgent
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.header_vulnerablity import IastHeaderVulnerability
 from dongtai_common.models.hook_type import HookType
-from django.utils.translation import gettext_lazy as _
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.vul_level import IastVulLevel
+from dongtai_common.models.vulnerablity import (
+    IastVulnerabilityModel,
+    IastVulnerabilityStatus,
+)
 from dongtai_web.header_vul.base import HeaderVulSerializer
-from dongtai_common.models.header_vulnerablity import IastHeaderVulnerability
 
 
 class HeaderVulUrlSerializer(HeaderVulSerializer):

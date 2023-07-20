@@ -2,13 +2,15 @@
 # datetime: 2021/7/16 下午2:25
 
 
-from functools import reduce
-from dongtai_conf.settings import BASE_DIR
-from django.db.models import Q
-from dongtai_common.models.profile import IastProfile
-from dataclasses import dataclass
 import hashlib
 import os
+from dataclasses import dataclass
+from functools import reduce
+
+from django.db.models import Q
+
+from dongtai_common.models.profile import IastProfile
+from dongtai_conf.settings import BASE_DIR
 
 
 class Validate:

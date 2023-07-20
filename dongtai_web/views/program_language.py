@@ -7,11 +7,12 @@
 ######################################################################
 
 
-from dongtai_common.endpoint import R, AnonymousAndUserEndPoint
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from rest_framework import serializers
-from dongtai_common.models.program_language import IastProgramLanguage
 from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+
+from dongtai_common.endpoint import AnonymousAndUserEndPoint, R
+from dongtai_common.models.program_language import IastProgramLanguage
+from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 
 class IastProgramLanguageSerializers(serializers.ModelSerializer):

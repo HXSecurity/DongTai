@@ -1,31 +1,32 @@
 #!/usr/bin/env python
 from typing import Any
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
+
+from django.db.models import Q
+from django.utils.text import format_lazy
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.hook_type import HookType
+from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.models.strategy import IastStrategyModel
-
 from dongtai_web.base.agent import (
     get_agents_with_project,
-    get_user_project_name,
-    get_user_agent_pro,
     get_all_server,
+    get_user_agent_pro,
+    get_user_project_name,
 )
 from dongtai_web.base.project_version import (
     get_project_version,
     get_project_version_by_id,
 )
 from dongtai_web.serializers.vul import VulSerializer
-from django.utils.translation import gettext_lazy as _
-from dongtai_common.models.hook_type import HookType
-from django.db.models import Q
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-
-from django.utils.text import format_lazy
-
-from dongtai_web.utils import get_model_order_options
-from rest_framework import serializers
+from dongtai_web.utils import (
+    extend_schema_with_envcheck,
+    get_model_order_options,
+    get_response_serializer,
+)
 
 
 class _VulsEndPointResponseSerializer(VulSerializer):

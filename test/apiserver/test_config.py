@@ -1,11 +1,12 @@
 from rest_framework.test import APITestCase
+
+from dongtai_common.models.agent_config import MetricGroup
+from dongtai_common.models.user import User
 from dongtai_protocol.views.agent_config import (
     get_agent_config,
-    get_agent_filter_details,
     get_agent_config_by_scan,
+    get_agent_filter_details,
 )
-from dongtai_common.models.user import User
-from dongtai_common.models.agent_config import MetricGroup
 
 
 class VulDetailTestCase(APITestCase):

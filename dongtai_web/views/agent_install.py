@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 import time
 
-from dongtai_common.endpoint import UserEndPoint, R
-from dongtai_common.models.agent import IastAgent
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from dongtai_web.serializers.agent import AgentInstallArgsSerializer
 
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.agent import IastAgent
+from dongtai_web.serializers.agent import AgentInstallArgsSerializer
+from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 _ResponseSerializer = get_response_serializer(
     status_msg_keypair=(

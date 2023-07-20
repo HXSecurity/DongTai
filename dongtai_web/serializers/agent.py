@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 import time
-from dongtai_common.models.heartbeat import IastHeartbeat
+from collections import defaultdict
 
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from dongtai_common.models.agent import IastAgent
-from django.utils.translation import gettext_lazy as _
 from dongtai_common.models.agent_method_pool import MethodPool
-from collections import defaultdict
+from dongtai_common.models.heartbeat import IastHeartbeat
 
 
 class AgentSerializer(serializers.ModelSerializer):

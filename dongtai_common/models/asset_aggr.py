@@ -3,12 +3,13 @@
 # @file: asset_aggr.py
 # @time: 2022/5/15  上午12:05
 
-from dongtai_conf.settings import ASSET_AGGR_INDEX
+from django.db import models
 from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
-from django.db import models
+
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_common.utils.settings import get_managed
+from dongtai_conf.settings import ASSET_AGGR_INDEX
 
 
 class AssetAggr(models.Model):

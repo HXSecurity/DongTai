@@ -1,9 +1,8 @@
-from dongtai_web.apitimelog.middleware import REQUEST_DICT
+from django.http import JsonResponse
 
 # Create your views here.
-
 from dongtai_common.endpoint import UserEndPoint
-from django.http import JsonResponse
+from dongtai_web.apitimelog.middleware import REQUEST_DICT
 
 
 class ApiTimeLogView(UserEndPoint):

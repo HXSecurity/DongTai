@@ -2,11 +2,12 @@
 import base64
 import logging
 
+from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
+
 from dongtai_common.endpoint import R, TalentAdminEndPoint
 from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_common.models.profile import IastProfile
-from django.utils.translation import gettext_lazy as _
-from drf_spectacular.utils import extend_schema
 
 logger = logging.getLogger("dongtai-webapi")
 

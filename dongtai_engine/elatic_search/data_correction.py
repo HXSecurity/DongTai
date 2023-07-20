@@ -1,17 +1,17 @@
-from dongtai_common.models.vulnerablity import (
-    IastVulnerabilityModel,
-    IastVulnerabilityDocument,
-)
 from celery import shared_task
+from celery.apps.worker import logger
 from django.apps import apps
 from django.db import transaction
+
 from dongtai_common.models.asset import Asset, IastAssetDocument
 from dongtai_common.models.asset_vul import (
-    IastVulAssetRelation,
     IastAssetVulnerabilityDocument,
+    IastVulAssetRelation,
 )
-
-from celery.apps.worker import logger
+from dongtai_common.models.vulnerablity import (
+    IastVulnerabilityDocument,
+    IastVulnerabilityModel,
+)
 
 
 @shared_task

@@ -1,9 +1,10 @@
-from dongtai_common.endpoint import UserEndPoint, R
 from django.utils.translation import gettext_lazy as _
-from dongtai_common.models.agent import IastAgent
-from dongtai_web.views.utils.commonstats import get_summary_by_agent_ids
-from dongtai_common.models.project_version import IastProjectVersion
 from drf_spectacular.utils import extend_schema
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.project_version import IastProjectVersion
+from dongtai_web.views.utils.commonstats import get_summary_by_agent_ids
 
 
 class AgentSummary(UserEndPoint):

@@ -1,14 +1,13 @@
 #!/usr/bin/env python
-from django.db.models import Count, Q
+from collections import defaultdict
+from typing import TYPE_CHECKING
+
+from django.db.models import Count, Q, QuerySet
 from rest_framework import serializers
 
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-
-from django.db.models import QuerySet
-from collections import defaultdict
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from django.core.paginator import _SupportsPagination

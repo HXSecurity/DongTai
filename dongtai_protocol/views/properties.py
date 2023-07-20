@@ -2,14 +2,14 @@
 # datetime:2020/5/21 15:56
 import logging
 
-from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.agent_properties import IastAgentProperties
+from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
 from rest_framework.request import Request
 
 from dongtai_common.endpoint import OpenApiEndPoint, R
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.agent_properties import IastAgentProperties
 from dongtai_protocol.serializers.agent_properties import AgentPropertiesSerialize
-from drf_spectacular.utils import extend_schema
-from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("django")
 

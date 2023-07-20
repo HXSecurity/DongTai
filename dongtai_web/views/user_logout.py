@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # datetime:2020/8/11 15:02
-from datetime import datetime
 import logging
+from datetime import datetime
 
 from django.contrib.auth import logout
 from django.http import JsonResponse
-from dongtai_common.endpoint import AnonymousAuthEndPoint
-from drf_spectacular.utils import extend_schema
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
 
+from dongtai_common.endpoint import AnonymousAuthEndPoint
 from dongtai_conf import settings
 
 logger = logging.getLogger("django")

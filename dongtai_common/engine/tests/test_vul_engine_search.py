@@ -1,8 +1,10 @@
-from django.test import TestCase
-from dongtai_common.engine.tests import MOCKDATA_DIR
-import os
-from dongtai_common.engine.vul_engine import VulEngine
 import json
+import os
+
+from django.test import TestCase
+
+from dongtai_common.engine.tests import MOCKDATA_DIR
+from dongtai_common.engine.vul_engine import VulEngine
 
 
 class VulEngineSearchTestCase(TestCase):

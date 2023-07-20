@@ -1,27 +1,26 @@
 #!/usr/bin/env python
 # datetime:2021/1/14 下午7:17
 import json
+import logging
 import os
 import re
-import uuid
-import logging
-
-from django.http import FileResponse
-from dongtai_common.endpoint import R, OpenApiEndPoint
-from drf_spectacular.utils import extend_schema
-from rest_framework.authtoken.models import Token
-from django.utils.translation import gettext_lazy as _
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-from dongtai_common.common.utils import DepartmentTokenAuthentication
-
-from dongtai_protocol.api_schema import DongTaiParameter
-from dongtai_protocol.utils import OssDownloader
-from dongtai_conf.settings import BUCKET_NAME_BASE_URL, VERSION
-
 import shutil
 import tarfile
 import threading
 import time
+import uuid
+
+from django.http import FileResponse
+from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.authtoken.models import Token
+
+from dongtai_common.common.utils import DepartmentTokenAuthentication
+from dongtai_common.endpoint import OpenApiEndPoint, R
+from dongtai_conf.settings import BUCKET_NAME_BASE_URL, VERSION
+from dongtai_protocol.api_schema import DongTaiParameter
+from dongtai_protocol.utils import OssDownloader
 
 logger = logging.getLogger("dongtai.openapi")
 

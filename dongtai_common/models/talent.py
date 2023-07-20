@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # datetime:2021/1/18 下午12:54
+from typing import Any
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from dongtai_common.utils.settings import get_managed
+
 from dongtai_common.utils.customfields import trans_char_field
-from typing import Any
+from dongtai_common.utils.settings import get_managed
 
 
 class Talent(models.Model):

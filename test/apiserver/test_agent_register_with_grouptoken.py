@@ -6,12 +6,13 @@
 # @description :
 ######################################################################
 
+import json
+import uuid
 from test.apiserver.test_agent_base import AgentTestCase
+
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.department import Department
 from dongtai_web.projecttemplate.update_department_data import update_department_data
-import json
-import uuid
 
 
 class AgentNewRegisterGroupTokenTestCase(AgentTestCase):

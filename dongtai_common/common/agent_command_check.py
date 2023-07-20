@@ -1,9 +1,11 @@
 import re
-from dongtai_conf.settings import (
-    DEFAULT_TAINT_VALUE_RANGE_COMMANDS,
-    DEFAULT_IAST_VALUE_TAG,
-)
+
 from rest_framework.serializers import ValidationError
+
+from dongtai_conf.settings import (
+    DEFAULT_IAST_VALUE_TAG,
+    DEFAULT_TAINT_VALUE_RANGE_COMMANDS,
+)
 
 PATTERN = (
     rf" *({'|'.join(DEFAULT_TAINT_VALUE_RANGE_COMMANDS)}) *\(( *(P\d+|\d+) *,*)*\) *"

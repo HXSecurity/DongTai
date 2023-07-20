@@ -6,27 +6,29 @@
 # @description :
 ######################################################################
 
-from dongtai_protocol.report.handler.report_handler_interface import IReportHandler
-from dongtai_protocol.report.report_handler_factory import ReportHandler
-from dongtai_common.models.api_route import (
-    IastApiRoute,
-    IastApiMethod,
-    IastApiResponse,
-    IastApiParameter,
-    IastApiMethodHttpMethodRelation,
-    HttpMethod,
-)
-from dongtai_common.models.agent import IastAgent
-from dongtai_common.utils import const
 import logging
-from django.utils.translation import gettext_lazy as _
+
+from celery import shared_task
 from django.db import transaction
+from django.utils.translation import gettext_lazy as _
+
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.api_route import (
+    HttpMethod,
+    IastApiMethod,
+    IastApiMethodHttpMethodRelation,
+    IastApiParameter,
+    IastApiResponse,
+    IastApiRoute,
+)
 from dongtai_common.models.project import IastProject
+from dongtai_common.utils import const
 from dongtai_engine.plugins.project_time_update import (
     project_time_stamp_update,
     project_version_time_stamp_update,
 )
-from celery import shared_task
+from dongtai_protocol.report.handler.report_handler_interface import IReportHandler
+from dongtai_protocol.report.report_handler_factory import ReportHandler
 
 logger = logging.getLogger("dongtai.openapi")
 

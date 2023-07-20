@@ -1,10 +1,10 @@
+import inspect
+import logging
 import os
 import re
-import logging
 
-from drf_spectacular.generators import SchemaGenerator
 from drf_spectacular.drainage import add_trace_message
-import inspect
+from drf_spectacular.generators import SchemaGenerator
 
 logger = logging.getLogger("django")
 VIEW_CLASS_TO_SCHEMA: dict[type, dict[str, tuple[str, str, dict | None, str]]] = {}

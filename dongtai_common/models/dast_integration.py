@@ -1,10 +1,12 @@
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+import time
+
 from django.db import models
-from dongtai_common.utils.settings import get_managed
+
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
 from dongtai_common.models.vul_level import IastVulLevel
-import time
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.utils.settings import get_managed
 
 
 class IastDastIntegration(models.Model):

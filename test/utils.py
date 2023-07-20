@@ -8,12 +8,16 @@
 
 
 from random import choice
-from rest_framework.serializers import ChoiceField
-from faker import Faker
-from rest_framework.serializers import SerializerMetaclass
-from rest_framework.serializers import CharField, IntegerField
-from rest_framework import serializers
+
 from django.utils.translation import gettext_lazy as _
+from faker import Faker
+from rest_framework import serializers
+from rest_framework.serializers import (
+    CharField,
+    ChoiceField,
+    IntegerField,
+    SerializerMetaclass,
+)
 
 fake = Faker()
 

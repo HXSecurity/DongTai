@@ -1,23 +1,25 @@
-from dongtai_protocol.report.handler.heartbeat_handler import HeartBeatHandler
-from dongtai_common.utils import const
+import base64
+import gzip
+import json
+import unittest
+from os.path import exists
+from test.apiserver.test_agent_base import AgentTestCase, gzipdata
+
+import requests
+from django.test import TestCase
+from result import Err, Ok, Result
+
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_common.models.replay_queue import IastReplayQueue
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.utils import const
 from dongtai_protocol.report.handler.heartbeat_handler import (
+    HeartBeatHandler,
     addtional_agent_ids_query_deployway_and_path,
     addtional_agenti_ids_query_filepath_simhash,
 )
-from os.path import exists
-import requests
-from test.apiserver.test_agent_base import AgentTestCase, gzipdata
-from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.agent_method_pool import MethodPool
-import gzip
-import base64
 from dongtai_protocol.report.report_handler_factory import ReportHandler
-import json
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from result import Ok, Err, Result
-import unittest
-from django.test import TestCase
 
 
 @unittest.skip("waiting for rebuild mock data")

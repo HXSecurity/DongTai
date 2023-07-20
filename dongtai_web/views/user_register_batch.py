@@ -2,18 +2,17 @@
 
 import csv
 import logging
+import random
+import string
 
 from django.contrib.auth.models import Group
+from django.utils.translation import gettext_lazy as _
+
+from dongtai_common.endpoint import R, SystemAdminEndPoint
 from dongtai_common.models import User
 from dongtai_common.models.department import Department
-
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import SystemAdminEndPoint
-from dongtai_web.notify.email import Email
 from dongtai_conf import settings
-from django.utils.translation import gettext_lazy as _
-import string
-import random
+from dongtai_web.notify.email import Email
 
 logger = logging.getLogger("dongtai-webapi")
 

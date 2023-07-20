@@ -1,12 +1,14 @@
-from importlib import import_module
-from celery import shared_task
-from celery.apps.worker import logger
-from dongtai_common.common.utils import make_hash
-from django.core.cache import cache
 import random
 from datetime import datetime, timedelta
-from django.db.utils import OperationalError
+from importlib import import_module
+
+from celery import shared_task
+from celery.apps.worker import logger
+from django.core.cache import cache
 from django.db import connection as conn
+from django.db.utils import OperationalError
+
+from dongtai_common.common.utils import make_hash
 
 # def function_preheat(func__module__: str, func__name__: str, *args, **kwargs):
 

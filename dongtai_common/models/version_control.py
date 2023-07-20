@@ -7,7 +7,9 @@
 ######################################################################
 
 import time
+
 from django.db import models
+
 from dongtai_common.utils.settings import get_managed
 
 

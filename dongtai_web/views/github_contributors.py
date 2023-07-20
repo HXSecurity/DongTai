@@ -6,12 +6,13 @@
 # @description :
 ######################################################################
 
-from dongtai_common.endpoint import R, AnonymousAndUserEndPoint
-from dongtai_web.github_contributors import get_github_contributors
-import threading
 import asyncio
-from functools import partial
 import os
+import threading
+from functools import partial
+
+from dongtai_common.endpoint import AnonymousAndUserEndPoint, R
+from dongtai_web.github_contributors import get_github_contributors
 
 
 async def delay(time):

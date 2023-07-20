@@ -1,51 +1,51 @@
 #!/usr/bin/env python
 # datetime:2021/1/5 下午12:36
-from dongtai_common.models.api_route import IastApiParameter
-from django.http.request import QueryDict
-from django.db.utils import IntegrityError
-from dongtai_common.models.api_route import (
-    IastApiRoute,
-    IastApiMethod,
-    HttpMethod,
-    IastApiMethodHttpMethodRelation,
-    FromWhereChoices,
-)
+import base64
+import gzip
 import json
 import logging
 import random
 import time
 import uuid
-from hashlib import sha256, sha1
+from datetime import datetime, timedelta
+from hashlib import sha1, sha256
 
 import requests
+from django.core.cache import cache
+from django.core.exceptions import MultipleObjectsReturned
 from django.db import transaction
+from django.db.utils import IntegrityError
+from django.http.request import QueryDict
+from django_redis import get_redis_connection
 
+from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.agent_method_pool import MethodPool
+from dongtai_common.models.api_route import (
+    FromWhereChoices,
+    HttpMethod,
+    IastApiMethod,
+    IastApiMethodHttpMethodRelation,
+    IastApiParameter,
+    IastApiRoute,
+)
 from dongtai_common.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai_common.models.replay_queue import IastReplayQueue
-from dongtai_common.utils import const
 from dongtai_common.models.res_header import (
-    ProjectSaasMethodPoolHeader,
     HeaderType,
+    ProjectSaasMethodPoolHeader,
 )
+from dongtai_common.utils import const
+from dongtai_conf import settings
 from dongtai_engine.tasks import (
     search_vul_from_method_pool,
     search_vul_from_replay_method_pool,
 )
-from dongtai_conf import settings
 from dongtai_protocol import utils
 from dongtai_protocol.report.handler.report_handler_interface import (
     IReportHandler,
     get_agent,
 )
 from dongtai_protocol.report.report_handler_factory import ReportHandler
-import gzip
-import base64
-from django.core.cache import cache
-from datetime import datetime, timedelta
-from dongtai_common.models.agent import IastAgent
-from django.core.exceptions import MultipleObjectsReturned
-from django_redis import get_redis_connection
 
 logger = logging.getLogger("dongtai.openapi")
 

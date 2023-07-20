@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
 
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import TalentAdminEndPoint
-from dongtai_common.models import User
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
+
+from dongtai_common.endpoint import R, TalentAdminEndPoint
+from dongtai_common.models import User
 
 
 class UserDetailEndPoint(TalentAdminEndPoint):

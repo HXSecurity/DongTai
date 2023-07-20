@@ -3,8 +3,8 @@
 from django.db import models
 
 from dongtai_common.models.agent import IastAgent
-from dongtai_common.utils.settings import get_managed
 from dongtai_common.models.vul_recheck_payload import IastVulRecheckPayload
+from dongtai_common.utils.settings import get_managed
 
 
 class IastReplayQueue(models.Model):

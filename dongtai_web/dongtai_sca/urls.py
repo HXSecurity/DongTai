@@ -1,17 +1,16 @@
 from django.urls import include, path
-
+from rest_framework import routers
 
 from dongtai_web.dongtai_sca.views.newpackage import PackageList
 from dongtai_web.dongtai_sca.views.newpackagedetail import PackageDetail
-from dongtai_web.dongtai_sca.views.newpackagevuldetail import PackageVulDetail
-from dongtai_web.dongtai_sca.views.newpackagesummary import NewPackageSummary
-from dongtai_web.dongtai_sca.views.newpackagevuls import NewPackageVuls
-from dongtai_web.dongtai_sca.views.newpackagevullevel import PackageVulLevels
 from dongtai_web.dongtai_sca.views.newpackageprojects import NewPackageRelationProject
 from dongtai_web.dongtai_sca.views.newpackageprojectversions import (
     NewPackageRelationProjectVersion,
 )
-from rest_framework import routers
+from dongtai_web.dongtai_sca.views.newpackagesummary import NewPackageSummary
+from dongtai_web.dongtai_sca.views.newpackagevuldetail import PackageVulDetail
+from dongtai_web.dongtai_sca.views.newpackagevullevel import PackageVulLevels
+from dongtai_web.dongtai_sca.views.newpackagevuls import NewPackageVuls
 
 router = routers.DefaultRouter()
 

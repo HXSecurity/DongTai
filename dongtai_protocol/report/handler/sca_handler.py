@@ -3,13 +3,14 @@
 import json
 import logging
 
-from dongtai_common.utils import const
+import requests
 from django.utils.translation import gettext_lazy as _
-from dongtai_web.dongtai_sca.scan.utils import update_one_sca, new_update_one_sca
+
+from dongtai_common.utils import const
+from dongtai_conf import settings
 from dongtai_protocol.report.handler.report_handler_interface import IReportHandler
 from dongtai_protocol.report.report_handler_factory import ReportHandler
-import requests
-from dongtai_conf import settings
+from dongtai_web.dongtai_sca.scan.utils import new_update_one_sca, update_one_sca
 
 logger = logging.getLogger("dongtai.openapi")
 

@@ -1,7 +1,8 @@
 #!/usr/bin/env python
+from rest_framework import serializers
+
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.strategy import IastStrategyModel
-from rest_framework import serializers
 
 
 class HookTypeSerialize(serializers.ModelSerializer):

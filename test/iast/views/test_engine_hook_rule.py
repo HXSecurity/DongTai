@@ -6,10 +6,12 @@
 # @description :
 ######################################################################
 
-from rest_framework.test import APITestCase
-from dongtai_common.models.user import User
 import json
+
+from rest_framework.test import APITestCase
+
 from dongtai_common.models.hook_strategy import HookStrategy
+from dongtai_common.models.user import User
 
 
 class EngineHookRuleTestCase(APITestCase):

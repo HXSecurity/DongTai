@@ -1,10 +1,11 @@
 from django.test import TestCase
+
 from dongtai_common.models.url_blacklist import (
     IastAgentBlackRule,
-    create_blacklist_rule,
-    TargetType,
-    TargetOperator,
     State,
+    TargetOperator,
+    TargetType,
+    create_blacklist_rule,
 )
 
 

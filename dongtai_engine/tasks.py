@@ -1,42 +1,42 @@
 # datetime:2021/1/26 下午4:45
-from typing import Optional, Any, Union
-from dongtai_engine.filters.main import vul_filter
-from dongtai_engine.signals.handlers.vul_handler import handler_vul
 import hashlib
 import json
 import time
-from json import JSONDecodeError
 from itertools import groupby
+from json import JSONDecodeError
+from typing import Any, Optional, Union
 
+import requests
 from celery import shared_task
 from celery.apps.worker import logger
-from django.db.models import Sum, Q
 from django.core.cache import cache
+from django.db.models import Q, Sum
+
 from dongtai_common.engine.vul_engine import VulEngine
 from dongtai_common.models import User
+from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_common.models.asset import Asset
 from dongtai_common.models.errorlog import IastErrorlog
 from dongtai_common.models.heartbeat import IastHeartbeat
+from dongtai_common.models.project import IastProject
 from dongtai_common.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai_common.models.replay_queue import IastReplayQueue
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.utils import const
-from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.project import IastProject
-
-from dongtai_engine.plugins.strategy_headers import check_response_header
-from dongtai_engine.plugins.strategy_sensitive import check_response_content
-from dongtai_engine.replay import Replay
 from dongtai_conf import settings
-import requests
-from dongtai_engine.task_base import replay_payload_data
-from dongtai_engine.common.queryset import get_scan_id, load_sink_strategy, get_agent
+from dongtai_engine.common.queryset import get_agent, get_scan_id, load_sink_strategy
+from dongtai_engine.filters.main import vul_filter
 from dongtai_engine.plugins.project_time_update import (
     project_time_stamp_update,
     project_version_time_stamp_update,
 )
+from dongtai_engine.plugins.strategy_headers import check_response_header
+from dongtai_engine.plugins.strategy_sensitive import check_response_content
+from dongtai_engine.replay import Replay
+from dongtai_engine.signals.handlers.vul_handler import handler_vul
+from dongtai_engine.task_base import replay_payload_data
 from dongtai_web.vul_log.vul_log import log_recheck_vul
 
 RETRY_INTERVALS = [10, 30, 90]
@@ -225,8 +225,8 @@ def search_vul_from_method_pool(self, method_pool_sign, agent_id, retryable=Fals
                     search_and_save_vul(engine, method_pool_model, None, strategy)
         logger.info("漏洞检测完成")
         from dongtai_engine.plugins.method_pool import (
-            method_pool_after_scan,
             enable_method_pool_post_scan_hook,
+            method_pool_after_scan,
         )
 
         if method_pool_model and enable_method_pool_post_scan_hook(method_pool_model):

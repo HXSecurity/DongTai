@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 # datetime:2020/10/23 12:00
-import logging
-import requests
 import json
+import logging
 import time
+
+import requests
 from django.utils.translation import gettext_lazy as _
+
+from dongtai_common.models.agent import IastAgent
 from dongtai_conf import settings
 from dongtai_protocol.report.log_service import LogService
-from dongtai_common.models.agent import IastAgent
 
 logger = logging.getLogger("dongtai.openapi")
 

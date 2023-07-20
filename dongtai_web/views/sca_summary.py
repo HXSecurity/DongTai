@@ -1,43 +1,46 @@
 #!/usr/bin/env python
-from dongtai_web.utils import dict_transfrom
-from dongtai_common.models.asset import IastAssetDocument
-from dongtai_common.models import LANGUAGE_DICT
-from dongtai_web.aggregation.aggregation_common import auth_user_list_str
-from dongtai_common.models.asset_aggr import AssetAggrDocument
-from dongtai_conf.settings import ELASTICSEARCH_STATE
-from dongtai_common.common.utils import make_hash
-from dongtai_conf import settings
-from django.core.cache import cache
-from dongtai_common.models.project import IastProject
-from dongtai_common.models.program_language import IastProgramLanguage
-from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
-from dongtai_common.models.strategy import IastStrategyModel
-from elasticsearch_dsl import A
-from elasticsearch import Elasticsearch
-from elasticsearch_dsl import Q, Search
 import pymysql
-from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_common.models.vul_level import IastVulLevel
+from django.core.cache import cache
 from django.db import connection
+from django.utils.text import format_lazy
+from django.utils.translation import gettext_lazy as _
+from elasticsearch import Elasticsearch
+from elasticsearch_dsl import A, Q, Search
+from rest_framework import serializers
+
+from dongtai_common.common.utils import make_hash
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models import LANGUAGE_DICT
+from dongtai_common.models.asset import IastAssetDocument
+from dongtai_common.models.asset_aggr import AssetAggrDocument
+from dongtai_common.models.program_language import IastProgramLanguage
+from dongtai_common.models.project import IastProject
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.vul_level import IastVulLevel
+from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
+from dongtai_conf import settings
+from dongtai_conf.settings import ELASTICSEARCH_STATE
+from dongtai_web.aggregation.aggregation_common import auth_user_list_str
 from dongtai_web.base.agent import (
-    get_project_vul_count,
     get_agent_languages,
+    get_project_vul_count,
     initlanguage,
 )
 from dongtai_web.base.project_version import (
     get_project_version,
     get_project_version_by_id,
 )
-from django.utils.translation import gettext_lazy as _
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from django.utils.text import format_lazy
 from dongtai_web.serializers.vul import (
-    VulSummaryTypeSerializer,
-    VulSummaryProjectSerializer,
-    VulSummaryLevelSerializer,
     VulSummaryLanguageSerializer,
+    VulSummaryLevelSerializer,
+    VulSummaryProjectSerializer,
+    VulSummaryTypeSerializer,
 )
-from rest_framework import serializers
+from dongtai_web.utils import (
+    dict_transfrom,
+    extend_schema_with_envcheck,
+    get_response_serializer,
+)
 
 
 class _ScaSummaryResponseDataSerializer(serializers.Serializer):

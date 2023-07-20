@@ -1,32 +1,34 @@
+from collections import defaultdict
+from itertools import groupby
 from typing import Any
-from rest_framework.serializers import ValidationError
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_web.aggregation.aggregation_common import turnIntListOfStr
-from dongtai_web.serializers.vul import VulSerializer
-from django.utils.translation import gettext_lazy as _
-from dongtai_web.utils import extend_schema_with_envcheck
-from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
+
 import pymysql
-from dongtai_web.serializers.aggregation import AggregationArgsSerializer
-from dongtai_common.models import APP_LEVEL_RISK, APP_VUL_ORDER
-from django.db.models import F
-from dongtai_common.utils.db import SearchLanguageMode
-from dongtai_common.models.vulnerablity import IastVulnerabilityDocument
-from elasticsearch_dsl import Q
-from elasticsearch import Elasticsearch
 from django.core.cache import cache
-from dongtai_conf import settings
+from django.db.models import Count, F
+from django.utils.translation import gettext_lazy as _
+from elasticsearch import Elasticsearch
+from elasticsearch_dsl import Q
+from rest_framework.serializers import ValidationError
+
 from dongtai_common.common.utils import make_hash
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models import APP_LEVEL_RISK, APP_VUL_ORDER
+from dongtai_common.models.dast_integration import IastDastIntegrationRelation
+from dongtai_common.models.vulnerablity import (
+    IastVulnerabilityDocument,
+    IastVulnerabilityModel,
+    IastVulnerabilityStatus,
+)
+from dongtai_common.utils.const import OPERATE_GET
+from dongtai_common.utils.db import SearchLanguageMode
+from dongtai_conf import settings
+from dongtai_conf.patch import patch_point
 from dongtai_conf.settings import ELASTICSEARCH_STATE
 from dongtai_engine.elatic_search.data_correction import data_correction_interpetor
-from dongtai_common.models.dast_integration import IastDastIntegrationRelation
-from django.db.models import Count
-from itertools import groupby
-from collections import defaultdict
-from dongtai_conf.patch import patch_point
-from dongtai_common.utils.const import OPERATE_GET
+from dongtai_web.aggregation.aggregation_common import turnIntListOfStr
+from dongtai_web.serializers.aggregation import AggregationArgsSerializer
+from dongtai_web.serializers.vul import VulSerializer
+from dongtai_web.utils import extend_schema_with_envcheck
 
 INT_LIMIT: int = 2**64 - 1
 
@@ -260,8 +262,8 @@ def get_vul_list_from_elastic_search(
     project_version_id=0,
     order="",
 ):
-    from dongtai_common.models.strategy import IastStrategyModel
     from dongtai_common.models.agent import IastAgent
+    from dongtai_common.models.strategy import IastStrategyModel
 
     department_ids = list(departments.values_list("id", flat=True))
     must_query = [

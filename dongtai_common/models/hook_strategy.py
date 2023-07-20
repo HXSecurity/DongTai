@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # datetime:2021/1/13 下午7:14
+from time import time
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.models.hook_type import HookType
-from dongtai_common.utils.settings import get_managed
 from dongtai_common.models.program_language import IastProgramLanguage
-from time import time
-
+from dongtai_common.utils.settings import get_managed
 
 # class PermissionsMixin(models.Model):
 #        HookType,

@@ -6,11 +6,12 @@
 # @description :
 ######################################################################
 
-from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_common.models.user import User
+from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect
-from django.conf import settings
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.user import User
 
 
 class Demo(UserEndPoint):

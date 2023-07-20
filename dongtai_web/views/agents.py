@@ -1,17 +1,21 @@
 #!/usr/bin/env python
 import logging
-
-from dongtai_common.endpoint import UserEndPoint, R
-from django.forms.models import model_to_dict
-from dongtai_web.serializers.agent import AgentSerializer
-from dongtai_web.utils import get_model_field
-from dongtai_common.models.agent import IastAgent
 from collections import defaultdict
 from functools import reduce
-from django.db.models import Q
-from django.utils.translation import gettext_lazy as _
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
+
 from django.core.cache import cache
+from django.db.models import Q
+from django.forms.models import model_to_dict
+from django.utils.translation import gettext_lazy as _
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.agent import IastAgent
+from dongtai_web.serializers.agent import AgentSerializer
+from dongtai_web.utils import (
+    extend_schema_with_envcheck,
+    get_model_field,
+    get_response_serializer,
+)
 
 logger = logging.getLogger("dongtai-webapi")
 

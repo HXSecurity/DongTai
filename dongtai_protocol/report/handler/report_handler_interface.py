@@ -4,9 +4,10 @@ import logging
 from typing import Optional
 
 from django.db.models import Q
-from dongtai_common.models.agent import IastAgent
 from django.utils.translation import gettext_lazy as _
+
 from dongtai_common.common.utils import cached_decorator
+from dongtai_common.models.agent import IastAgent
 
 logger = logging.getLogger("dongtai.openapi")
 

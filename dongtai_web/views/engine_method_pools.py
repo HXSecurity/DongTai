@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from base.endpoint import SessionAuthProxyView
+
 from dongtai_common.endpoint import UserPermission
 
 

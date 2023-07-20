@@ -1,10 +1,17 @@
-from dongtai_common.models.asset import Asset
-from .utils import get_nearest_version, get_latest_version
-from .utils import update_one_sca, new_update_one_sca
 from test.apiserver.test_agent_base import AgentTestCase
-from .utils import get_package_vul, get_package
 
 from django.test import TestCase
+
+from dongtai_common.models.asset import Asset
+
+from .utils import (
+    get_latest_version,
+    get_nearest_version,
+    get_package,
+    get_package_vul,
+    new_update_one_sca,
+    update_one_sca,
+)
 
 
 class ExtenalApiTestCase(TestCase):

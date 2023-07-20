@@ -1,26 +1,23 @@
 #!/usr/bin/env python
-from django.db.models import Count
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.models.strategy import IastStrategyModel
+from django.db.models import Count, Q
+from django.utils.text import format_lazy
+from django.utils.translation import gettext_lazy as _
 
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.hook_type import HookType
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_web.base.agent import (
-    get_project_vul_count,
-    get_hook_type_name,
     get_agent_languages,
+    get_hook_type_name,
+    get_project_vul_count,
 )
 from dongtai_web.base.project_version import (
     get_project_version,
     get_project_version_by_id,
 )
-from django.utils.translation import gettext_lazy as _
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from dongtai_web.serializers.vul import VulSummaryResponseDataSerializer
-from django.utils.text import format_lazy
-
-from dongtai_common.models.hook_type import HookType
-from django.db.models import Q
+from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 _ResponseSerializer = get_response_serializer(VulSummaryResponseDataSerializer())
 

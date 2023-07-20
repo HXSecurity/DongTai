@@ -4,12 +4,13 @@ import os
 
 import requests
 from django.http import FileResponse
-from dongtai_common.endpoint import UserEndPoint, R
-from rest_framework.authtoken.models import Token
 from django.utils.translation import gettext_lazy as _
+from requests.exceptions import ConnectionError
+from rest_framework.authtoken.models import Token
+
+from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.profile import IastProfile
 from dongtai_web.utils import get_openapi
-from requests.exceptions import ConnectionError
 
 logger = logging.getLogger("dongtai-webapi")
 

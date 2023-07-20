@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # datetime:2021/1/14 下午3:35
-from dongtai_conf.settings import METHOD_POOL_INDEX
-from django_elasticsearch_dsl import Document, fields
-from django_elasticsearch_dsl.registries import registry
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django_elasticsearch_dsl import Document, fields
+from django_elasticsearch_dsl.registries import registry
 
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.hook_strategy import HookStrategy
 from dongtai_common.utils.settings import get_managed
+from dongtai_conf.settings import METHOD_POOL_INDEX
 
 # 'id', 'agent', 'uri', 'http_method', 'http_scheme', 'req_header', 'req_params', 'req_data', 'taint_value','param_name'
 

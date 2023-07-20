@@ -1,17 +1,19 @@
 #!/usr/bin/env python
 # datetime:2021/1/12 下午7:45
 
-from dongtai_common.endpoint import OpenApiEndPoint, R
-from drf_spectacular.utils import extend_schema
-import time
 import logging
+import time
+
+from django.http import JsonResponse
+from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
+from drf_spectacular.utils import extend_schema
+from rest_framework.views import APIView
+
+from dongtai_common.endpoint import OpenApiEndPoint, R
 from dongtai_protocol.api_schema import DongTaiParameter
 from dongtai_protocol.decrypter import parse_data
 from dongtai_protocol.report.report_handler_factory import ReportHandler
-from rest_framework.views import APIView
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("dongtai.openapi")
 

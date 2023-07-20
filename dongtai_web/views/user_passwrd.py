@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
 import logging
-from django.contrib.auth import authenticate
 
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
+from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
+
+from dongtai_common.endpoint import R, UserEndPoint
 
 logger = logging.getLogger("dongtai-webapi")
 

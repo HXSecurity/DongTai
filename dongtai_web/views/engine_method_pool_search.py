@@ -1,27 +1,32 @@
+import logging
+import operator
+import re
+import time
 from functools import reduce
 
 from django.db.models import Q
-from dongtai_common.endpoint import R, AnonymousAndUserEndPoint
+from django.db.utils import OperationalError
+from django.utils.translation import gettext_lazy
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+
+from dongtai_common.endpoint import AnonymousAndUserEndPoint, R
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.agent_method_pool import MethodPool
+from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.project import IastProject
+from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.user import User
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.models.hook_type import HookType
-from dongtai_common.models.strategy import IastStrategyModel
-
-from dongtai_web.utils import get_model_field, assemble_query, assemble_query_2
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from django.utils.translation import gettext_lazy
-from django.db.utils import OperationalError
-import re
-import operator
-import time
-from rest_framework import serializers
-from django.utils.translation import gettext_lazy as _
-from dongtai_conf.settings import ELASTICSEARCH_STATE
-import logging
 from dongtai_common.utils.const import OPERATE_GET
+from dongtai_conf.settings import ELASTICSEARCH_STATE
+from dongtai_web.utils import (
+    assemble_query,
+    assemble_query_2,
+    extend_schema_with_envcheck,
+    get_model_field,
+    get_response_serializer,
+)
 
 logger = logging.getLogger("dongtai-webapi")
 
@@ -415,10 +420,12 @@ def search_generate(
     size,
     search_mode,
 ):
-    from elasticsearch_dsl import Q, Search
-    from elasticsearch import Elasticsearch
-    from dongtai_common.models.agent_method_pool import MethodPoolDocument
     from copy import deepcopy
+
+    from elasticsearch import Elasticsearch
+    from elasticsearch_dsl import Q, Search
+
+    from dongtai_common.models.agent_method_pool import MethodPoolDocument
 
     start_time, end_time = time_range
     must_query = [

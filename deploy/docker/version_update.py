@@ -7,10 +7,11 @@
 ######################################################################
 
 
-from configparser import ConfigParser
 import os
-import MySQLdb
 import sys
+from configparser import ConfigParser
+
+import MySQLdb
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

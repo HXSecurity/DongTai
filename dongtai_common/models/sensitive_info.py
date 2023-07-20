@@ -6,10 +6,12 @@
 # @description :
 ######################################################################
 
+import time
+
 from django.db import models
+
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.user import User
-import time
 
 
 class IastPatternType(models.Model):

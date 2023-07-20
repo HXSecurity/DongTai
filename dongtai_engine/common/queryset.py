@@ -1,11 +1,12 @@
-from dongtai_common.common.utils import cached_decorator
-from dongtai_common.models.strategy_user import IastStrategyUser
-from django.db.models import Sum, Q
 from celery.apps.worker import logger
+from django.db.models import Q, Sum
+
+from dongtai_common.common.utils import cached_decorator
 from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.hook_strategy import HookStrategy
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.strategy import IastStrategyModel
-from dongtai_common.models.hook_strategy import HookStrategy
+from dongtai_common.models.strategy_user import IastStrategyUser
 
 LANGUAGE_MAP = {"JAVA": 1, "PYTHON": 2, "PHP": 3, "GO": 4}
 

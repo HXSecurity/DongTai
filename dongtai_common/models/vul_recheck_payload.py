@@ -1,6 +1,8 @@
-from django.db import models
-from dongtai_common.models import User
 from time import time
+
+from django.db import models
+
+from dongtai_common.models import User
 from dongtai_common.models.strategy import IastStrategyModel
 
 

@@ -7,12 +7,14 @@
 ######################################################################
 
 
-from rest_framework.test import APITestCase
-from dongtai_common.models.user import User
-from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 import time
 import unittest
+
+from rest_framework.test import APITestCase
+
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.user import User
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 
 
 @unittest.skip("waiting for rebuild mock data")

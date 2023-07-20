@@ -7,14 +7,16 @@
 ######################################################################
 
 
+import contextlib
+
 from django.core.exceptions import (
     ObjectDoesNotExist,
 )
+
 from dongtai_web.views.utils.commonview import (
-    BatchStatusUpdateSerializerView,
     AllStatusUpdateSerializerView,
+    BatchStatusUpdateSerializerView,
 )
-import contextlib
 
 try:
     import re2 as re
@@ -23,19 +25,18 @@ except ImportError:
 with contextlib.suppress(ImportError):
     import jq
 
-from dongtai_common.models.sensitive_info import IastPatternType, IastSensitiveInfoRule
-from django.db.models import Q
-import time
-from dongtai_common.models.strategy import IastStrategyModel
 import logging
+import time
 
-from dongtai_common.endpoint import UserEndPoint, R
-
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
-from rest_framework import serializers
-from dongtai_web.utils import extend_schema_with_envcheck
+from rest_framework import serializers, viewsets
 from rest_framework.serializers import ValidationError
-from rest_framework import viewsets
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.sensitive_info import IastPatternType, IastSensitiveInfoRule
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_web.utils import extend_schema_with_envcheck
 
 logger = logging.getLogger("dongtai-webapi")
 

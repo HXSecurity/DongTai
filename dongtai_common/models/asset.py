@@ -2,22 +2,23 @@
 # datetime:2020/8/20 15:10
 
 import uuid
+
 from django.core.cache import cache
-from django_elasticsearch_dsl.search import Search
-from dongtai_conf.settings import ASSET_INDEX
-from django_elasticsearch_dsl import Document, fields
-from django_elasticsearch_dsl.registries import registry
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django_elasticsearch_dsl import Document, fields
+from django_elasticsearch_dsl.registries import registry
+from django_elasticsearch_dsl.search import Search
 
 from dongtai_common.models import User
 from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.department import Department
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
+from dongtai_common.models.talent import Talent
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_common.utils.settings import get_managed
-from dongtai_common.models.department import Department
-from dongtai_common.models.talent import Talent
+from dongtai_conf.settings import ASSET_INDEX
 
 
 class Asset(models.Model):

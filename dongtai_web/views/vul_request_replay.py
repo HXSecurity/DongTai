@@ -1,19 +1,20 @@
 #!/usr/bin/env python
+import base64
 import logging
+import time
+from collections import namedtuple
 from http.server import BaseHTTPRequestHandler
 from io import BytesIO
-import base64
-import time
+
+from django.utils.translation import gettext_lazy as _
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_common.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai_common.models.replay_queue import IastReplayQueue
 from dongtai_common.models.user import User
 from dongtai_common.utils import const
-from dongtai_common.models.agent import IastAgent
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
-from django.utils.translation import gettext_lazy as _
-from collections import namedtuple
 from dongtai_web.utils import extend_schema_with_envcheck
 
 logger = logging.getLogger("dongtai-webapi")

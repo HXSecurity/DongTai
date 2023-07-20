@@ -1,6 +1,8 @@
-from celery_singleton import Singleton
-from celery import shared_task
 from time import time
+
+from celery import shared_task
+from celery_singleton import Singleton
+
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
 

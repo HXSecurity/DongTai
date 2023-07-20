@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # datetime: 2021/9/28 上午10:51
-from drf_spectacular.utils import OpenApiParameter, OpenApiExample
+from drf_spectacular.utils import OpenApiExample, OpenApiParameter
 
 
 class DongTaiAuth:

@@ -1,14 +1,16 @@
-from django.core.management.base import BaseCommand
-from dongtai_common.models.agent_method_pool import MethodPool
-from dongtai_protocol.views.hook_profiles import HookProfilesEndPoint, LANGUAGE_DICT
 import json
-from dongtai_conf.settings import BASE_DIR
 import os
-from dongtai_common.models.strategy import IastStrategyModel
-from dongtai_common.models.sensitive_info import IastSensitiveInfoRule
+
+from django.core.management.base import BaseCommand
+from django.forms.models import model_to_dict
+
+from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_common.models.hook_strategy import HookStrategy
 from dongtai_common.models.hook_type import HookType
-from django.forms.models import model_to_dict
+from dongtai_common.models.sensitive_info import IastSensitiveInfoRule
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_conf.settings import BASE_DIR
+from dongtai_protocol.views.hook_profiles import LANGUAGE_DICT, HookProfilesEndPoint
 
 
 def transform_hooktype(hook_type: HookType) -> HookType:

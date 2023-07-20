@@ -6,9 +6,10 @@
 # @description :
 ######################################################################
 
-from test.apiserver.test_agent_base import AgentTestCase
-from dongtai_common.models.agent import IastAgent
 import json
+from test.apiserver.test_agent_base import AgentTestCase
+
+from dongtai_common.models.agent import IastAgent
 
 
 class AgentConfigTestCase(AgentTestCase):

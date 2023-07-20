@@ -1,6 +1,6 @@
-from tempfile import TemporaryFile, SpooledTemporaryFile
-from io import BytesIO
 from http.client import parse_headers
+from io import BytesIO
+from tempfile import SpooledTemporaryFile, TemporaryFile
 
 # Request{method=GET, url=http://www.baidu.com/, tag=null}
 

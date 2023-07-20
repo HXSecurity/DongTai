@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # datetime: 2021/7/13 下午10:21
-from django.test.runner import DiscoverRunner
-from django.core.cache import cache
 import os
 import unittest
+
 import django
+from django.core.cache import cache
+from django.test.runner import DiscoverRunner
 
 
 class DongTaiTestCase(unittest.TestCase):

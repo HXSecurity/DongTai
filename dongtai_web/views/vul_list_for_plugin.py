@@ -1,14 +1,16 @@
 #!/usr/bin/env python
+from django.utils.text import format_lazy
+from django.utils.translation import gettext_lazy as _
+
+from dongtai_common.endpoint import MixinAuthEndPoint, R
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import MixinAuthEndPoint
 from dongtai_web.serializers.vul import VulForPluginSerializer
-from django.utils.translation import gettext_lazy as _
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from django.utils.text import format_lazy
-from dongtai_web.utils import get_model_order_options
+from dongtai_web.utils import (
+    extend_schema_with_envcheck,
+    get_model_order_options,
+    get_response_serializer,
+)
 
 _ResponseSerializer = get_response_serializer(VulForPluginSerializer(many=True))
 

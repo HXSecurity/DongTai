@@ -3,7 +3,6 @@
 from django.db import models
 
 from dongtai_common.models.agent import IastAgent
-
 from dongtai_common.utils.settings import get_managed
 
 

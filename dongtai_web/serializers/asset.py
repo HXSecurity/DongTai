@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-from dongtai_common.models.asset import Asset
 from rest_framework import serializers
+
+from dongtai_common.models.asset import Asset
 
 
 class AssetSerializer(serializers.ModelSerializer):

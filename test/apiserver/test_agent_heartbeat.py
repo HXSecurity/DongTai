@@ -1,7 +1,8 @@
 from test.apiserver.test_agent_base import AgentTestCase
-from dongtai_engine.tasks import is_alive
-from dongtai_common.models.heartbeat import IastHeartbeat
 from time import time
+
+from dongtai_common.models.heartbeat import IastHeartbeat
+from dongtai_engine.tasks import is_alive
 
 
 class ApiHeartBeatTestCase(AgentTestCase):

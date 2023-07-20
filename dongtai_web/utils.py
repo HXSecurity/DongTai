@@ -1,27 +1,29 @@
 #!/usr/bin/env python
 # datetime:2021/7/27 12:06
 
-from dongtai_common.models.profile import IastProfile
-from requests.exceptions import ConnectionError, ConnectTimeout
-import logging
-import json
-import requests
-from urllib.parse import urlparse
-import uuid
-from rest_framework import serializers
-from django.utils.translation import gettext_lazy as _
-from django.utils.text import format_lazy
-from rest_framework.serializers import SerializerMetaclass
-from functools import reduce
-from django.db.models import Q
-import operator
 import hashlib
-from dongtai_common.models.api_route import HttpMethod, IastApiMethodHttpMethodRelation
+import json
+import logging
+import operator
+import uuid
+from functools import reduce
+from typing import TYPE_CHECKING
+from urllib.parse import urlparse
+
+import requests
+from django.db.models import Q
+from django.utils.text import format_lazy
+from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
+from requests.exceptions import ConnectionError, ConnectTimeout
+from rest_framework import serializers
+from rest_framework.serializers import SerializerMetaclass
+
 from dongtai_common.models.agent_method_pool import MethodPool
+from dongtai_common.models.api_route import HttpMethod, IastApiMethodHttpMethodRelation
+from dongtai_common.models.profile import IastProfile
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_conf.settings import OPENAPI
-from typing import TYPE_CHECKING
-from drf_spectacular.utils import extend_schema
 
 if TYPE_CHECKING:
     from django.db.models.query import QuerySet, ValuesQuerySet
@@ -83,7 +85,7 @@ def extend_schema_with_envcheck(
     **kwargs,
 ):
     def myextend_schema(func):
-        from drf_spectacular.utils import OpenApiResponse, extend_schema, OpenApiTypes
+        from drf_spectacular.utils import OpenApiResponse, OpenApiTypes, extend_schema
 
         parameters = list(filter(lambda x: x, map(_filter_query, querys)))
         request_examples = list(

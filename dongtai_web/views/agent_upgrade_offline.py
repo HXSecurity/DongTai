@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-from dongtai_common.endpoint import TalentAdminEndPoint, R
 from django.utils.translation import gettext_lazy as _
+
+from dongtai_common.endpoint import R, TalentAdminEndPoint
 
 
 class AgentUpgradeOffline(TalentAdminEndPoint):

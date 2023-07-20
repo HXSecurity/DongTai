@@ -1,21 +1,21 @@
+import logging
 import uuid
-from django.core.cache import cache
-from django_elasticsearch_dsl.search import Search
 
-from dongtai_common.models.server import IastServer
-from dongtai_conf.settings import VULNERABILITY_INDEX
+from django.core.cache import cache
+from django.db import models
 from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
-from django.db import models
+from django_elasticsearch_dsl.search import Search
+
 from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.vul_level import IastVulLevel
-from dongtai_common.utils.settings import get_managed
-from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
-import logging
-
+from dongtai_common.models.server import IastServer
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.vul_level import IastVulLevel
+from dongtai_common.utils.settings import get_managed
+from dongtai_conf.settings import VULNERABILITY_INDEX
 
 logger = logging.getLogger("dongtai-core")
 

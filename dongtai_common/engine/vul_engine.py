@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # datetime: 2021/7/21 下午7:07
-import logging
 import copy
+import logging
+from collections import defaultdict
 
 from django.utils.functional import cached_property
-from collections import defaultdict
+
 from dongtai_common.engine.compatibility import (
     method_pool_3_to_2,
     method_pool_is_3,
@@ -135,8 +136,9 @@ class VulEngine:
         self.prepare(method_pool, vul_method_signature)
         size = len(self.method_pool)
         from collections import defaultdict
-        from itertools import product
         from functools import reduce
+        from itertools import product
+
         import networkit as nk
 
         # Gather data

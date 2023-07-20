@@ -5,13 +5,13 @@
 #
 # @description :
 ######################################################################
-from dongtai_web.utils import get_openapi, validate_url
 from urllib.parse import urljoin
-from rest_framework.authtoken.models import Token
-from dongtai_web.utils import checkopenapistatus
-from dongtai_common.endpoint import UserEndPoint
-from dongtai_common.endpoint import R
+
 from django.utils.translation import gettext_lazy as _
+from rest_framework.authtoken.models import Token
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_web.utils import checkopenapistatus, get_openapi, validate_url
 
 OSSHEALTHPATH = "api/v1/oss/health"
 

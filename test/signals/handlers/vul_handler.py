@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # datetime: 2021/5/6 上午11:35
 import unittest
-
 from test import DongTaiTestCase
 
 
@@ -17,6 +16,7 @@ class VulHandlerTest(DongTaiTestCase):
             "template": "url:{{url}}\n漏洞类型:{{vul_type}}\n账号:{{username}}\n项目:{{project}}",
         }
         import json
+
         from dongtai_common.models.notify_config import IastNotifyConfig
 
         IastNotifyConfig.objects.create(

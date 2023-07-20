@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand
+
 from dongtai_common.models.agent_method_pool import MethodPool
 
 

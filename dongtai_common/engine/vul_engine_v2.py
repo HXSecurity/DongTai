@@ -3,6 +3,7 @@
 from copy import deepcopy
 
 from django.utils.functional import cached_property
+
 from dongtai_common.engine.compatibility import method_pool_3_to_2, method_pool_is_3
 
 

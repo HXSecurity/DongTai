@@ -2,39 +2,37 @@
 # datetime: 2021/7/16 下午4:45
 import json
 import logging
+from functools import reduce
+from operator import ior
+from typing import TYPE_CHECKING, Union
 
-from django.http.request import HttpRequest
 from django.contrib.contenttypes.models import ContentType
-from django.core.paginator import Paginator
-from django.db.models import QuerySet
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Count, Q, QuerySet
 from django.http import JsonResponse
+from django.http.request import HttpRequest
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework import exceptions, status
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.views import APIView
+
+from dongtai_common.common.utils import DepartmentTokenAuthentication
 from dongtai_common.models import User
 from dongtai_common.models.agent import IastAgent
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-from dongtai_common.common.utils import DepartmentTokenAuthentication
-from rest_framework.views import APIView
-from rest_framework import status, exceptions
-from django.core.paginator import PageNotAnInteger, EmptyPage
-
 from dongtai_common.models.asset import Asset
 from dongtai_common.models.asset_aggr import AssetAggr
-from dongtai_common.models.asset_vul import IastVulAssetRelation, IastAssetVul
+from dongtai_common.models.asset_vul import IastAssetVul, IastVulAssetRelation
+from dongtai_common.models.department import Department
 from dongtai_common.models.log import IastLog, OperateType
 from dongtai_common.permissions import (
-    UserPermission,
     ScopedPermission,
     SystemAdminPermission,
     TalentAdminPermission,
+    UserPermission,
 )
 from dongtai_common.utils import const
-from django.utils.translation import gettext_lazy as _
-from dongtai_common.models.department import Department
-from django.db.models import Q, Count
-from typing import Union, TYPE_CHECKING
-from functools import reduce
-from operator import ior
-from rest_framework.exceptions import AuthenticationFailed
 from dongtai_common.utils.init_schema import VIEW_CLASS_TO_SCHEMA
 
 if TYPE_CHECKING:

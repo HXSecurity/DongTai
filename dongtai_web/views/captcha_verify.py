@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 from captcha.models import CaptchaStore
-from dongtai_common.endpoint import R
 from rest_framework.views import APIView
+
+from dongtai_common.endpoint import R
 
 
 class CaptchaVerify(APIView):

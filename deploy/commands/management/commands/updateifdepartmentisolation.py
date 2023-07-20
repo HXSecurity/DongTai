@@ -9,11 +9,13 @@ class Command(BaseCommand):
         pass
 
     def handle(self, *args, **options):
-        from dongtai_common.models.department import Department
-        from dongtai_common.models import User
-        from django.db.models import Q
         from time import time
+
+        from django.db.models import Q
         from rest_framework.authtoken.models import Token
+
+        from dongtai_common.models import User
+        from dongtai_common.models.department import Department
 
         users = User.objects.filter(~Q(pk=1)).all()
         timestamp = int(time())

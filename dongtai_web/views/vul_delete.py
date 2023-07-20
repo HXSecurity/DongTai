@@ -1,11 +1,11 @@
 #!/usr/bin/env python
+import logging
+
+from django.utils.translation import gettext_lazy as _
 from rest_framework.request import Request
 
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from django.utils.translation import gettext_lazy as _
-import logging
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 logger = logging.getLogger("dongtai-webapi")

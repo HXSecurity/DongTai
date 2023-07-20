@@ -1,10 +1,11 @@
-import zipfile
-import requests
-from io import BytesIO
-import fire
 import os
+import zipfile
+from io import BytesIO
 from shutil import copytree
 from typing import Optional
+
+import fire
+import requests
 
 
 def _get_plugin(repo: str, extra: dict):

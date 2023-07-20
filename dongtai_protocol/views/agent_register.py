@@ -1,10 +1,18 @@
 #!/usr/bin/env python
 # datetime:2020/11/30 下午3:13
 import base64
+import json
 import logging
 import time
 
+from django.db import transaction
+from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
+from rest_framework.request import Request
+
+from dongtai_common.endpoint import OpenApiEndPoint, R
 from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.profile import IastProfile
 from dongtai_common.models.project import (
     IastProject,
     IastProjectTemplate,
@@ -12,14 +20,6 @@ from dongtai_common.models.project import (
 )
 from dongtai_common.models.project_version import IastProjectVersion
 from dongtai_common.models.server import IastServer
-from dongtai_common.models.profile import IastProfile
-from drf_spectacular.utils import extend_schema
-from rest_framework.request import Request
-from django.utils.translation import gettext_lazy as _
-from django.db import transaction
-from dongtai_common.endpoint import OpenApiEndPoint, R
-
-import json
 from dongtai_protocol.api_schema import DongTaiAuth, DongTaiParameter
 from dongtai_protocol.decrypter import parse_data
 

@@ -1,12 +1,16 @@
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
-from dongtai_conf.settings import config
-from dongtai_common.models.profile import IastProfile
-from django.utils.translation import gettext_lazy as _
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from urllib.parse import urlparse
+
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
-from dongtai_web.utils import get_openapi
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.profile import IastProfile
+from dongtai_conf.settings import config
+from dongtai_web.utils import (
+    extend_schema_with_envcheck,
+    get_openapi,
+    get_response_serializer,
+)
 
 _PostResponseSerializer = get_response_serializer(
     status_msg_keypair=(

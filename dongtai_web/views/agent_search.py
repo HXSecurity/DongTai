@@ -2,16 +2,19 @@ from functools import reduce
 
 from django.core.paginator import Paginator
 from django.db.models import Q
-from dongtai_common.endpoint import R, AnonymousAndUserEndPoint
+from django.forms.models import model_to_dict
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+
+from dongtai_common.endpoint import AnonymousAndUserEndPoint, R
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.heartbeat import IastHeartbeat
 from dongtai_common.models.server import IastServer
-from rest_framework import serializers
-from django.utils.translation import gettext_lazy as _
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from django.forms.models import model_to_dict
-
-from dongtai_web.utils import get_model_field
+from dongtai_web.utils import (
+    extend_schema_with_envcheck,
+    get_model_field,
+    get_response_serializer,
+)
 
 
 class _AgentSearchQuerysSerializer(serializers.Serializer):

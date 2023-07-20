@@ -1,41 +1,41 @@
 # 按类型获取 组件漏洞 应用漏洞列表
-from typing import Any
-from elasticsearch_dsl import Q
-from dongtai_common.models.asset_vul import IastAssetVulnerabilityDocument
-from dongtai_common.common.utils import make_hash
-from dongtai_conf import settings
-from django.core.cache import cache
-from elasticsearch import Elasticsearch
 import logging
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
+from typing import Any
 
-from dongtai_web.utils import extend_schema_with_envcheck
-from dongtai_web.serializers.aggregation import AggregationArgsSerializer
-from rest_framework.serializers import ValidationError
-from django.utils.translation import gettext_lazy as _
-from dongtai_web.aggregation.aggregation_common import (
-    turnIntListOfStr,
-    auth_user_list_str,
-)
 import pymysql
-from dongtai_web.serializers.vul import VulSerializer
-from dongtai_common.models.asset_vul import (
-    IastAssetVul,
-    IastVulAssetRelation,
-    IastAssetVulTypeRelation,
-)
+from django.core.cache import cache
+from django.db.models import Max
+from django.utils.translation import gettext_lazy as _
+from elasticsearch import Elasticsearch
+from elasticsearch_dsl import Q
+from rest_framework.serializers import ValidationError
+
+from dongtai_common.common.utils import make_hash
+from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models import (
     AGGREGATION_ORDER,
-    LANGUAGE_ID_DICT,
     APP_LEVEL_RISK,
+    LANGUAGE_ID_DICT,
     LICENSE_RISK,
     SCA_AVAILABILITY_DICT,
 )
-from dongtai_conf.settings import ELASTICSEARCH_STATE
 from dongtai_common.models.asset import Asset
-from django.db.models import Max
+from dongtai_common.models.asset_vul import (
+    IastAssetVul,
+    IastAssetVulnerabilityDocument,
+    IastAssetVulTypeRelation,
+    IastVulAssetRelation,
+)
 from dongtai_common.models.user import User
+from dongtai_conf import settings
+from dongtai_conf.settings import ELASTICSEARCH_STATE
+from dongtai_web.aggregation.aggregation_common import (
+    auth_user_list_str,
+    turnIntListOfStr,
+)
+from dongtai_web.serializers.aggregation import AggregationArgsSerializer
+from dongtai_web.serializers.vul import VulSerializer
+from dongtai_web.utils import extend_schema_with_envcheck
 
 logger = logging.getLogger("django")
 INT_LIMIT: int = 2**64 - 1
@@ -486,8 +486,8 @@ def get_vul_list_from_elastic_search(
         for k, v in keymaps.items():
             i[v] = i[k]
             del i[k]
-    from collections import namedtuple
     import json
+    from collections import namedtuple
 
     namedtuple_vuls = []
     if vuls:

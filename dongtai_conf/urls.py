@@ -13,12 +13,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls.static import static
-from django.urls import include, path
 import os
-from dongtai_conf import settings
+
+from django.conf.urls.static import static
+from django.urls import URLPattern, URLResolver, include, path
 from django.views.decorators.csrf import csrf_exempt
-from django.urls import URLPattern, URLResolver
+
+from dongtai_conf import settings
 
 urlpatterns: list[URLResolver | URLPattern] = [
     path("", include(f"{app}.urls")) for app in settings.CUSTOM_APPS

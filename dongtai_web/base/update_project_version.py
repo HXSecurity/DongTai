@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 import logging
 import time
-from dongtai_common.endpoint import UserEndPoint, R
-from dongtai_common.models.project_version import IastProjectVersion
-from dongtai_common.models.project import IastProject
-from dongtai_common.models.agent import IastAgent
+
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.project import IastProject
+from dongtai_common.models.project_version import IastProjectVersion
 
 logger = logging.getLogger("django")
 

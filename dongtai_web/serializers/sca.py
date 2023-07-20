@@ -1,17 +1,17 @@
 #!/usr/bin/env python
-from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.asset_aggr import AssetAggr
-from dongtai_common.models.project_version import IastProjectVersion
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
+from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.asset import Asset
+from dongtai_common.models.asset_aggr import AssetAggr
 from dongtai_common.models.project import IastProject
-from django.utils.translation import gettext_lazy as _
+from dongtai_common.models.project_version import IastProjectVersion
 from dongtai_common.models.sca_maven_db import ScaMavenDb
 from dongtai_web.dongtai_sca.models import (
-    PackageLicenseLevel,
-    PackageLicenseInfo,
     Package,
+    PackageLicenseInfo,
+    PackageLicenseLevel,
 )
 
 

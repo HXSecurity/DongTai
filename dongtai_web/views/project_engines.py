@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
-from dongtai_common.endpoint import R
-from dongtai_common.utils import const
-from dongtai_common.endpoint import UserEndPoint
-from dongtai_common.models.agent import IastAgent
 from django.utils.translation import gettext_lazy as _
-
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from rest_framework import serializers
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.utils import const
+from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 
 class _ProjectEnginesDataSerializer(serializers.Serializer):

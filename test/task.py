@@ -1,12 +1,12 @@
 import unittest
+from test import DongTaiTestCase
 
 from dongtai_engine.tasks import heartbeat, search_vul_from_method_pool
-from test import DongTaiTestCase
 
 
 class MyTestCase(DongTaiTestCase):
     def test_celery_beat(self):
-        from django_celery_beat.models import PeriodicTask, IntervalSchedule
+        from django_celery_beat.models import IntervalSchedule, PeriodicTask
 
         schedule, created = IntervalSchedule.objects.get_or_create(
             every=1,

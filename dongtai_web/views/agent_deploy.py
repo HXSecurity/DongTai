@@ -2,17 +2,21 @@
 # datetime:2021/7/27 11:36
 
 import time
-from dongtai_common.endpoint import UserEndPoint, R
-from dongtai_common.models.deploy import IastDeployDesc
-from dongtai_common.models.system import IastSystem
-from rest_framework.authtoken.models import Token
-from dongtai_web.utils import get_model_field
+
 from django.forms.models import model_to_dict
 from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+from rest_framework.authtoken.models import Token
 from rest_framework.serializers import ValidationError
 
-from rest_framework import serializers
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.deploy import IastDeployDesc
+from dongtai_common.models.system import IastSystem
+from dongtai_web.utils import (
+    extend_schema_with_envcheck,
+    get_model_field,
+    get_response_serializer,
+)
 
 
 class AgentDeployArgsSerializer(serializers.Serializer):

@@ -1,24 +1,26 @@
+import logging
+
 from django.db.models import F
-from dongtai_common.models.agent_config import (
-    IastCircuitTarget,
-    IastCircuitConfig,
-    IastCircuitMetric,
-    TargetType,
-    TargetOperator,
-    MetricType,
-    MetricGroup,
-    MetricOperator,
-)
-from dongtai_protocol.decrypter import parse_data
+from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
+from result import Err, Ok, Result
+
 from dongtai_common.endpoint import OpenApiEndPoint, R
 from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.agent_config import IastAgentConfig
-from drf_spectacular.utils import extend_schema
-import logging
-from dongtai_common.utils.systemsettings import get_circuit_break
-from django.utils.translation import gettext_lazy as _
-from result import Ok, Err, Result
+from dongtai_common.models.agent_config import (
+    IastAgentConfig,
+    IastCircuitConfig,
+    IastCircuitMetric,
+    IastCircuitTarget,
+    MetricGroup,
+    MetricOperator,
+    MetricType,
+    TargetOperator,
+    TargetType,
+)
 from dongtai_common.utils.const import OPERATE_GET
+from dongtai_common.utils.systemsettings import get_circuit_break
+from dongtai_protocol.decrypter import parse_data
 
 logger = logging.getLogger("dongtai.openapi")
 

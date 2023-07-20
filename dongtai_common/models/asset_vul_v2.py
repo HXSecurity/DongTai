@@ -1,5 +1,6 @@
-from dongtai_common.models.assetv2 import AssetV2Global, AssetRiskLevel
 from django.db import models
+
+from dongtai_common.models.assetv2 import AssetRiskLevel, AssetV2Global
 from dongtai_common.utils.settings import get_managed
 
 

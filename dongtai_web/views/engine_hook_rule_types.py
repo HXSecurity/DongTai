@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 import logging
 
-from dongtai_common.endpoint import UserEndPoint, R
-from dongtai_common.models.hook_type import HookType
-from dongtai_common.utils import const
+from django.utils.text import format_lazy
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+from rest_framework.serializers import ValidationError
 
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.hook_type import HookType
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.utils import const
+from dongtai_web.serializers.hook_strategy import HOOK_TYPE_CHOICE
 from dongtai_web.serializers.hook_type_strategy import (
     HookTypeSerialize,
     StrategySerialize,
 )
-from django.utils.translation import gettext_lazy as _
-from rest_framework import serializers
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from django.utils.text import format_lazy
-from rest_framework.serializers import ValidationError
-from dongtai_web.serializers.hook_strategy import HOOK_TYPE_CHOICE
-from dongtai_common.models.strategy import IastStrategyModel
 
 logger = logging.getLogger("dongtai-webapi")
 

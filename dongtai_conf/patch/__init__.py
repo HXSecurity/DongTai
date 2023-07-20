@@ -3,11 +3,11 @@ import inspect
 import logging
 import pkgutil
 from collections import defaultdict
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 from types import CodeType
 from typing import Any, TypeVar, overload
-from collections.abc import Callable
 
 from typing_extensions import TypeVarTuple, Unpack
 

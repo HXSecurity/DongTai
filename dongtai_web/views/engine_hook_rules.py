@@ -1,19 +1,18 @@
 #!/usr/bin/env python
 import logging
 
-from dongtai_common.endpoint import UserEndPoint, R
 from django.db.models import Q
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+from rest_framework.serializers import ValidationError
+
+from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.hook_strategy import HookStrategy
 from dongtai_common.models.hook_type import HookType
-from dongtai_common.utils import const
-
-from dongtai_web.serializers.hook_strategy import HookRuleSerializer
-from django.utils.translation import gettext_lazy as _
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from dongtai_web.serializers.hook_strategy import HOOK_TYPE_CHOICE
-from rest_framework.serializers import ValidationError
 from dongtai_common.models.strategy import IastStrategyModel
-from rest_framework import serializers
+from dongtai_common.utils import const
+from dongtai_web.serializers.hook_strategy import HOOK_TYPE_CHOICE, HookRuleSerializer
+from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 
 class _EngineHookRulesQuerySerializer(serializers.Serializer):

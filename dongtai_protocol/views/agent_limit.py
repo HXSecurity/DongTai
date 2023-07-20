@@ -1,12 +1,12 @@
-from django.forms.models import model_to_dict
 import logging
 import time
 
-from dongtai_common.models.profile import IastProfile
-from dongtai_common.endpoint import OpenApiEndPoint, R
-
+from django.forms.models import model_to_dict
 from drf_spectacular.utils import extend_schema
-from dongtai_protocol.api_schema import DongTaiParameter, DongTaiAuth
+
+from dongtai_common.endpoint import OpenApiEndPoint, R
+from dongtai_common.models.profile import IastProfile
+from dongtai_protocol.api_schema import DongTaiAuth, DongTaiParameter
 
 logger = logging.getLogger("dongtai.openapi")
 

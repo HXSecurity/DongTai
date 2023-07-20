@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 
 # status
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
-
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
-from django.utils.translation import gettext_lazy as _
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 import logging
+
+from django.utils.translation import gettext_lazy as _
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.vulnerablity import (
+    IastVulnerabilityModel,
+    IastVulnerabilityStatus,
+)
+from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 from dongtai_web.vul_log.vul_log import log_change_status
 
 logger = logging.getLogger("dongtai-webapi")

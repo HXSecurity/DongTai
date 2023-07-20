@@ -1,29 +1,28 @@
 #!/usr/bin/env python
 # datetime: 2021/10/22 下午2:26
-import uuid
-from django.core.cache import cache
 import time
-from http.client import HTTPResponse
-from http.client import BadStatusLine
+import uuid
+from http.client import BadStatusLine, HTTPResponse
 from io import BytesIO
 
 from celery.apps.worker import logger
-from dongtai_common.models.strategy import IastStrategyModel
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.utils import const
+from django.core.cache import cache
+from django.db import IntegrityError
 
-from dongtai_engine.plugins import is_strategy_enable
-from dongtai_web.vul_log.vul_log import log_vul_found
 from dongtai_common.models.header_vulnerablity import (
     IastHeaderVulnerability,
     IastHeaderVulnerabilityDetail,
 )
-from django.db import IntegrityError
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.utils import const
+from dongtai_engine.plugins import is_strategy_enable
 from dongtai_engine.plugins.project_time_update import (
     project_time_stamp_update,
     project_version_time_stamp_update,
 )
 from dongtai_engine.signals import send_notify
+from dongtai_web.vul_log.vul_log import log_vul_found
 
 
 class FakeSocket:

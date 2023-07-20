@@ -7,13 +7,15 @@
 ######################################################################
 
 
+import time
+
+from ddt import data, ddt, unpack
 from django.test import TestCase
 from django.urls import include, path, reverse
+
+from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.user import User
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.models.hook_type import HookType
-import time
-from ddt import ddt, data, unpack
 from dongtai_web.serializers.vul import VulSerializer
 
 TEST_DATA = (

@@ -1,15 +1,15 @@
 #!/usr/local/env python
 import logging
+import time
 
 from captcha.models import CaptchaStore
 from django.contrib.auth import authenticate, login
-from dongtai_web.utils import extend_schema_with_envcheck
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
 from django.utils.translation import gettext_lazy as _
-from dongtai_web.projecttemplate.update_department_data import update_department_data
-import time
 from drf_spectacular.utils import extend_schema
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_web.projecttemplate.update_department_data import update_department_data
+from dongtai_web.utils import extend_schema_with_envcheck
 
 logger = logging.getLogger("dongtai-webapi")
 

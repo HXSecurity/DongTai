@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # datetime: 2021/10/22 下午2:29
 # desc: data rule, response field rule, sql field rule
-import re2 as re
-
 import jq
-from dongtai_common.models.sensitive_info import IastSensitiveInfoRule
-from dongtai_common.utils import const
+import re2 as re
 from celery.apps.worker import logger
 
+from dongtai_common.models.sensitive_info import IastSensitiveInfoRule
+from dongtai_common.utils import const
 from dongtai_engine.plugins.strategy_headers import save_vul
 
 

@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
 from rest_framework.request import Request
 
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.strategy_user import IastStrategyUser
-from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-
-from rest_framework import serializers
 
 
 class _StrategyResponseDataStrategySerializer(serializers.Serializer):

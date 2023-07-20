@@ -1,8 +1,9 @@
 from django.test import TestCase
+
 from dongtai_web.vul_log.vul_log import (
     log_change_status,
-    log_recheck_vul,
     log_push_to_integration,
+    log_recheck_vul,
     log_vul_found,
 )
 

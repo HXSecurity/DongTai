@@ -10,10 +10,10 @@ target-version = ["py310"]
 [tool.ruff]
 line-length = 88
 select = [
-    "F", # Pyflakes
-    "E", # pycodestyle errors
-    "W", # pycodestyle warnings
-    # "I", # isort
+    "F",   # Pyflakes
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "I",   # isort
     "UP",  # pyupgrade
     "YTT", # flake8-2020
     # "B",   # flake8-bugbear

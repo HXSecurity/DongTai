@@ -1,18 +1,15 @@
 #!/usr/bin/env python
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
 from rest_framework.request import Request
 
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
-from dongtai_common.models.strategy_user import IastStrategyUser
-from dongtai_common.models.strategy import IastStrategyModel
-from dongtai_common.models.hook_type import HookType
+from dongtai_common.endpoint import R, TalentAdminEndPoint, UserEndPoint
 from dongtai_common.models.hook_strategy import HookStrategy
+from dongtai_common.models.hook_type import HookType
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.strategy_user import IastStrategyUser
 from dongtai_common.utils import const
-from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from dongtai_common.endpoint import TalentAdminEndPoint
-
-from rest_framework import serializers
 
 
 class _StrategyResponseDataStrategySerializer(serializers.Serializer):

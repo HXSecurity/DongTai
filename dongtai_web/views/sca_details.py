@@ -1,19 +1,20 @@
 #!/usr/bin/env python
 # datetime:2020/8/26 11:47
+import json
 import logging
+
+import requests
+from django.utils.translation import get_language
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
 
 from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.asset import Asset
 from dongtai_common.models.vul_level import IastVulLevel
-from django.utils.translation import get_language
-from dongtai_web.serializers.sca import ScaSerializer
-from django.utils.translation import gettext_lazy as _
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from rest_framework import serializers
 from dongtai_conf import settings
-import requests
-import json
 from dongtai_web.dongtai_sca.models import VulCveRelation
+from dongtai_web.serializers.sca import ScaSerializer
+from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 logger = logging.getLogger("dongtai-webapi")
 

@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # datetime:2020/6/3 11:36
-from dongtai_common.endpoint import UserEndPoint, R
-from dongtai_common.models.deploy import IastDeployDesc
 from django.utils.translation import gettext_lazy as _
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.deploy import IastDeployDesc
 
 
 class AgentDeployInfo(UserEndPoint):

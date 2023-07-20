@@ -6,16 +6,16 @@
 # @description :
 ######################################################################
 
-import requests
-from urllib.parse import urljoin
 import json
+import logging
+import time
+from functools import partial
+from urllib.parse import urljoin
+
+import requests
+from django.core.cache import cache
 from django.db import models
 from rest_framework import serializers
-import logging
-from functools import partial
-import time
-from django.core.cache import cache
-
 
 URL_LIST = [
     "https://api.github.com/repos/HXSecurity/DongTai-Doc-en/",

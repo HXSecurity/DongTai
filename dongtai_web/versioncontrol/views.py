@@ -1,10 +1,11 @@
-from django.shortcuts import render
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
-from dongtai_common.models.version_control import VersionControl
 import json
-from drf_spectacular.utils import extend_schema
+
+from django.shortcuts import render
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.version_control import VersionControl
 
 # Create your views here.
 

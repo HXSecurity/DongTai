@@ -2,11 +2,13 @@
 # datetime:2020/8/12 15:08
 
 import logging
-from dongtai_common.endpoint import OpenApiEndPoint
+
 from django.http import StreamingHttpResponse
-from rest_framework.authtoken.models import Token
-from drf_spectacular.utils import extend_schema
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
+from rest_framework.authtoken.models import Token
+
+from dongtai_common.endpoint import OpenApiEndPoint
 
 logger = logging.getLogger("django")
 

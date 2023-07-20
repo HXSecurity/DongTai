@@ -1,19 +1,17 @@
-from dongtai_common.models.department import Department
-from dongtai_web.utils import dict_transfrom
-from dongtai_conf.settings import ELASTICSEARCH_STATE
-
-from rest_framework.serializers import ValidationError
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from django.utils.translation import gettext_lazy as _
-from dongtai_web.utils import extend_schema_with_envcheck
-from dongtai_web.serializers.aggregation import AggregationArgsSerializer
-from django.db.models import Count
-from django.db.models import Q
 import logging
-from dongtai_conf.patch import patch_point
+
+from django.db.models import Count, Q
+from django.utils.translation import gettext_lazy as _
+from rest_framework.serializers import ValidationError
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.department import Department
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.utils.const import OPERATE_GET
+from dongtai_conf.patch import patch_point
+from dongtai_conf.settings import ELASTICSEARCH_STATE
+from dongtai_web.serializers.aggregation import AggregationArgsSerializer
+from dongtai_web.utils import dict_transfrom, extend_schema_with_envcheck
 
 logger = logging.getLogger("dongtai-webapi")
 
@@ -147,12 +145,15 @@ class GetAppVulsSummary(UserEndPoint):
 
 
 def get_annotate_data_es(department: Department, bind_project_id, project_version_id):
-    from dongtai_common.models.vulnerablity import IastVulnerabilityDocument
     from elasticsearch import Elasticsearch
     from elasticsearch_dsl import A, Q
+
     from dongtai_common.models.strategy import IastStrategyModel
-    from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
     from dongtai_common.models.vul_level import IastVulLevel
+    from dongtai_common.models.vulnerablity import (
+        IastVulnerabilityDocument,
+        IastVulnerabilityStatus,
+    )
 
     strategy_ids = list(IastStrategyModel.objects.all().values_list("id", flat=True))
 

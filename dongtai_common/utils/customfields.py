@@ -6,10 +6,11 @@
 # @description :
 ######################################################################
 
-from django.db.models import CharField
-from functools import wraps
-from django.utils.translation import get_language
 from collections import defaultdict
+from functools import wraps
+
+from django.db.models import CharField
+from django.utils.translation import get_language
 
 
 def trans_char_field(field, transdict):

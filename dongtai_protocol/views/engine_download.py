@@ -5,16 +5,15 @@ import logging
 import os
 
 from django.http import FileResponse
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.request import Request
 
 from dongtai_common.endpoint import OpenApiEndPoint, R
-
+from dongtai_conf.settings import BUCKET_NAME_BASE_URL, VERSION
 from dongtai_protocol.api_schema import DongTaiParameter
 from dongtai_protocol.utils import OssDownloader
-from dongtai_conf.settings import BUCKET_NAME_BASE_URL, VERSION
-from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("dongtai.openapi")
 

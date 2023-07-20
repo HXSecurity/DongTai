@@ -1,36 +1,37 @@
-import logging
-from django.db.models import Prefetch
-
-from dongtai_common.endpoint import UserEndPoint, R
-from django.forms.models import model_to_dict
-
-from dongtai_common.models.department import Department
-from dongtai_common.utils import const
-from dongtai_web.serializers.agent import AgentSerializer
-from dongtai_web.utils import get_model_field
-from dongtai_common.models.agent import IastAgent, IastAgentEvent
-from collections import defaultdict
-from functools import reduce
-from django.db.models import Q
-from django.utils.translation import gettext_lazy as _
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from dongtai_web.base.paginator import ListPageMaker
-from django.core.cache import cache
-from enum import IntEnum
-from django.db.models.query import QuerySet
-from rest_framework.viewsets import ViewSet
-from rest_framework import serializers
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.models.api_route import IastApiRoute, FromWhereChoices
-from dongtai_common.models.asset import Asset
-from dongtai_common.utils.user import get_auth_users__by_id
-from rest_framework.serializers import ValidationError
-from django.db.models import IntegerChoices
 import json
-from typing import Optional
-from time import time
+import logging
+from collections import defaultdict
+from enum import IntEnum
+from functools import reduce
 from itertools import groupby
+from time import time
+from typing import Optional
+
+from django.core.cache import cache
+from django.db.models import IntegerChoices, Prefetch, Q
+from django.db.models.query import QuerySet
+from django.forms.models import model_to_dict
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
+from rest_framework import serializers
+from rest_framework.serializers import ValidationError
+from rest_framework.viewsets import ViewSet
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.agent import IastAgent, IastAgentEvent
+from dongtai_common.models.api_route import FromWhereChoices, IastApiRoute
+from dongtai_common.models.asset import Asset
+from dongtai_common.models.department import Department
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.utils import const
+from dongtai_common.utils.user import get_auth_users__by_id
+from dongtai_web.base.paginator import ListPageMaker
+from dongtai_web.serializers.agent import AgentSerializer
+from dongtai_web.utils import (
+    extend_schema_with_envcheck,
+    get_model_field,
+    get_response_serializer,
+)
 
 logger = logging.getLogger("dongtai-webapi")
 

@@ -1,9 +1,9 @@
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.models import User
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.hook_type import HookType
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_web.serializers.vul import VulSerializer
-from dongtai_common.models import User
-from dongtai_common.endpoint import UserEndPoint
 
 
 # list id 去重

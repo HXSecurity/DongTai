@@ -1,6 +1,6 @@
-from dongtai_common.common.agent_command_check import valitate_taint_command
-
 from django.test import TestCase
+
+from dongtai_common.common.agent_command_check import valitate_taint_command
 
 
 class TaintCommandValidatorTestCase(TestCase):

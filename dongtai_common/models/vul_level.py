@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # datetime:2020/12/4 上午11:54
 from django.db import models
+
 from dongtai_common.utils.settings import get_managed
 
 

@@ -3,23 +3,24 @@ import base64
 import json
 import logging
 
+from django.db.models.base import ObjectDoesNotExist
+from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
+from rest_framework import serializers
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
-from dongtai_common.models.strategy import IastStrategyModel
-from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.models.hook_type import HookType
-
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
-from dongtai_web.serializers.vul import VulSerializer
-from django.utils.translation import gettext_lazy as _
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from rest_framework import serializers
-from django.db.models.base import ObjectDoesNotExist
-from dongtai_common.utils.stack_recognize import stacks_convert
 from dongtai_common.models.recognize_rule import IastRecognizeRule, RuleTypeChoices
-from drf_spectacular.utils import extend_schema
+from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.vulnerablity import (
+    IastVulnerabilityModel,
+    IastVulnerabilityStatus,
+)
+from dongtai_common.utils.stack_recognize import stacks_convert
+from dongtai_web.serializers.vul import VulSerializer
+from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 logger = logging.getLogger("dongtai-webapi")
 
@@ -136,9 +137,9 @@ class VulDetail(UserEndPoint):
             method_note_pool = json.loads(graphy)[0]
             method_counts = len(method_note_pool)
             from dongtai_common.engine.compatibility import (
-                parse_target_value,
                 highlight_target_value,
                 method_pool_is_3,
+                parse_target_value,
             )
 
             if method_note_pool and method_pool_is_3(method_note_pool[0]):

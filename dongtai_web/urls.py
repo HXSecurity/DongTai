@@ -1,33 +1,46 @@
 #!/usr/bin/env python
 # datetime:2020/5/21 15:55
-from dongtai_web.systemmonitor.urls import urlpatterns as systemmonitor_urls
-from dongtai_web.versioncontrol.urls import urlpatterns as versioncontrol_urls
-from dongtai_web.dongtai_sca.urls import urlpatterns as sca_urls
-from dongtai_web.apitimelog.urls import urlpatterns as apitimelog_urls
-from dongtai_web.scaupload.urls import urlpatterns as scaupload_urls
-from dongtai_web.aggr_vul.app_vul_summary import GetAppVulsSummary
-from dongtai_web.aggr_vul.app_vul_list import GetAppVulsList
-from dongtai_web.aggr_vul.aggr_vul_summary import GetScaSummary
-from dongtai_web.aggr_vul.aggr_vul_list import GetAggregationVulList
-from dongtai_web.views.agents_v2 import AgentListv2
 import os
-from django.urls import path, include
+
+from django.urls import URLPattern, URLResolver, include, path
 from rest_framework.urlpatterns import format_suffix_patterns
 
+from dongtai_web.aggr_vul.aggr_vul_list import GetAggregationVulList
+from dongtai_web.aggr_vul.aggr_vul_summary import GetScaSummary
+from dongtai_web.aggr_vul.app_vul_list import GetAppVulsList
+from dongtai_web.aggr_vul.app_vul_summary import GetAppVulsSummary
+from dongtai_web.aggregation.aggregation_del import DelVulMany
+from dongtai_web.aggregation.aggregation_project_del import DelVulProjectLevel
+from dongtai_web.apitimelog.urls import urlpatterns as apitimelog_urls
 from dongtai_web.base.update_project_version import UpdateProjectVersion
+from dongtai_web.dongtai_sca.urls import urlpatterns as sca_urls
+from dongtai_web.enum.hook_rules import HookRuleEnumEndPoint
+from dongtai_web.header_vul.base import HeaderVulViewSet
+from dongtai_web.scaupload.urls import urlpatterns as scaupload_urls
+from dongtai_web.systemmonitor.urls import urlpatterns as systemmonitor_urls
+from dongtai_web.versioncontrol.urls import urlpatterns as versioncontrol_urls
+from dongtai_web.views.agent import Agent
+from dongtai_web.views.agent_alias_modified import AgentAliasModified
 from dongtai_web.views.agent_delete import AgentDeleteEndPoint
 from dongtai_web.views.agent_deploy import AgentDeploy
 from dongtai_web.views.agent_install import AgentInstall
 from dongtai_web.views.agent_start import AgentStart
 from dongtai_web.views.agent_status_update import AgentStatusUpdate
-from dongtai_web.views.agents_delete import AgentsDeleteEndPoint
 from dongtai_web.views.agent_stop import AgentStop
-from dongtai_web.views.agent_uninstall import AgentUninstall
-from dongtai_web.views.agent import Agent
-from dongtai_web.views.agents import AgentList
-from dongtai_web.views.agents_user import UserAgentList
 from dongtai_web.views.agent_summary import AgentSummary
+from dongtai_web.views.agent_uninstall import AgentUninstall
+from dongtai_web.views.agents import AgentList
+from dongtai_web.views.agents_delete import AgentsDeleteEndPoint
+from dongtai_web.views.agents_user import UserAgentList
+from dongtai_web.views.agents_v2 import AgentListv2
 from dongtai_web.views.captcha_create import CaptchaCreate
+from dongtai_web.views.demo import Demo
+from dongtai_web.views.details_id import (
+    AgentListWithid,
+    ProjectListWithid,
+    ScaListWithid,
+    VulsListWithid,
+)
 from dongtai_web.views.documents import DocumentsEndpoint
 from dongtai_web.views.engine_hook_rule_add import EngineHookRuleAddEndPoint
 from dongtai_web.views.engine_hook_rule_modify import EngineHookRuleModifyEndPoint
@@ -44,38 +57,50 @@ from dongtai_web.views.engine_hook_rule_types import EngineHookRuleTypesEndPoint
 from dongtai_web.views.engine_hook_rules import EngineHookRulesEndPoint
 from dongtai_web.views.engine_method_pool_detail import MethodPoolDetailProxy
 from dongtai_web.views.engine_method_pool_search import MethodPoolSearchProxy
+from dongtai_web.views.engine_method_pool_time_range import MethodPoolTimeRangeProxy
+from dongtai_web.views.filereplace import FileReplace
+from dongtai_web.views.messages_del import MessagesDelEndpoint
+from dongtai_web.views.messages_list import MessagesEndpoint
+from dongtai_web.views.messages_new import MessagesNewEndpoint
 from dongtai_web.views.method_graph import MethodGraph
+from dongtai_web.views.new_project_query import NewProjectVersionList
 from dongtai_web.views.openapi import OpenApiEndpoint
 from dongtai_web.views.profile import (
-    ProfileEndpoint,
     ProfileBatchGetEndpoint,
     ProfileBatchModifiedEndpoint,
+    ProfileEndpoint,
 )
+from dongtai_web.views.program_language import ProgrammingLanguageList
 from dongtai_web.views.project_add import ProjectAdd
 from dongtai_web.views.project_delete import ProjectDel
 from dongtai_web.views.project_detail import ProjectDetail
 from dongtai_web.views.project_engines import ProjectEngines
-from dongtai_web.views.project_summary import ProjectSummary
 from dongtai_web.views.project_search import ProjectSearch
+from dongtai_web.views.project_summary import ProjectSummary
 from dongtai_web.views.project_version_add import ProjectVersionAdd
 from dongtai_web.views.project_version_current import ProjectVersionCurrent
 from dongtai_web.views.project_version_delete import ProjectVersionDelete
 from dongtai_web.views.project_version_list import ProjectVersionList
 from dongtai_web.views.project_version_update import ProjectVersionUpdate
 from dongtai_web.views.projects import Projects
-
-
 from dongtai_web.views.sca_details import ScaDetailView
 from dongtai_web.views.sca_summary import ScaSummary
 from dongtai_web.views.scas import ScaList
+from dongtai_web.views.sensitive_info_rule import (
+    SensitiveInfoPatternTypeView,
+    SensitiveInfoPatternValidationView,
+    SensitiveInfoRuleAllView,
+    SensitiveInfoRuleBatchView,
+    SensitiveInfoRuleViewSet,
+)
+from dongtai_web.views.strategy_delete import StrategyDelete
 from dongtai_web.views.strategy_disable import StrategyDisableEndpoint
 from dongtai_web.views.strategy_enable import StrategyEnableEndpoint
-from dongtai_web.views.strategys import StrategysEndpoint, StrategyEndpoint
+from dongtai_web.views.strategy_modified import StrategyModified
+from dongtai_web.views.strategys import StrategyEndpoint, StrategysEndpoint
 from dongtai_web.views.strategys_add import StrategyAdd
 from dongtai_web.views.strategys_list import StrategyList
 from dongtai_web.views.strategys_type import StrategyType
-from dongtai_web.views.strategy_delete import StrategyDelete
-from dongtai_web.views.strategy_modified import StrategyModified
 from dongtai_web.views.system_info import SystemInfo
 from dongtai_web.views.user_detail import UserDetailEndPoint
 from dongtai_web.views.user_info import UserInfoEndpoint
@@ -84,57 +109,26 @@ from dongtai_web.views.user_logout import UserLogout
 from dongtai_web.views.user_passwrd import UserPassword
 from dongtai_web.views.user_passwrd_reset import UserPasswordReset
 from dongtai_web.views.user_register_batch import UserRegisterEndPoint
-from dongtai_web.views.user_token import UserToken
-from dongtai_web.views.user_token import UserDepartmentToken
+from dongtai_web.views.user_token import UserDepartmentToken, UserToken
+from dongtai_web.views.version_update import MethodPoolVersionUpdate
 from dongtai_web.views.vul_count_for_plugin import VulCountForPluginEndPoint
 from dongtai_web.views.vul_delete import VulDelete
 from dongtai_web.views.vul_details import (
     VulDetail,
     VulDetailV2,
 )
+from dongtai_web.views.vul_levels import VulLevelList
 from dongtai_web.views.vul_list_for_plugin import VulListEndPoint
 from dongtai_web.views.vul_request_replay import RequestReplayEndPoint
 from dongtai_web.views.vul_status import VulStatus
 from dongtai_web.views.vul_summary import VulSummary
-from dongtai_web.views.vul_summary_type import VulSummaryType
 from dongtai_web.views.vul_summary_project import VulSummaryProject
-from dongtai_web.views.vuls import VulsEndPoint
+from dongtai_web.views.vul_summary_type import VulSummaryType
 from dongtai_web.views.vulnerability_status import VulnerabilityStatusView
-from dongtai_web.views.version_update import MethodPoolVersionUpdate
-from dongtai_web.views.demo import Demo
-from static.i18n.views.setlang import LanguageSetting
-from dongtai_web.views.program_language import ProgrammingLanguageList
-from dongtai_web.views.filereplace import FileReplace
-from dongtai_web.views.messages_list import MessagesEndpoint
-from dongtai_web.views.messages_new import MessagesNewEndpoint
-from dongtai_web.views.messages_del import MessagesDelEndpoint
-from dongtai_web.views.agent_alias_modified import AgentAliasModified
-from dongtai_web.views.engine_method_pool_time_range import MethodPoolTimeRangeProxy
-
-from dongtai_web.views.vul_levels import VulLevelList
-from dongtai_web.views.sensitive_info_rule import (
-    SensitiveInfoRuleViewSet,
-    SensitiveInfoPatternTypeView,
-    SensitiveInfoPatternValidationView,
-    SensitiveInfoRuleBatchView,
-    SensitiveInfoRuleAllView,
-)
-from dongtai_web.views.details_id import (
-    AgentListWithid,
-    ProjectListWithid,
-    ScaListWithid,
-    VulsListWithid,
-)
-
-from dongtai_web.aggregation.aggregation_del import DelVulMany
-from dongtai_web.aggregation.aggregation_project_del import DelVulProjectLevel
-
+from dongtai_web.views.vuls import VulsEndPoint
 from dongtai_web.vul_log.vul_log_view import VulLogViewSet
 from dongtai_web.vul_recheck_payload.vul_recheck_payload import VulReCheckPayloadViewSet
-from dongtai_web.header_vul.base import HeaderVulViewSet
-from dongtai_web.views.new_project_query import NewProjectVersionList
-from dongtai_web.enum.hook_rules import HookRuleEnumEndPoint
-from django.urls import URLResolver, URLPattern
+from static.i18n.views.setlang import LanguageSetting
 
 urlpatterns: list[URLResolver | URLPattern] = [
     path("user/<int:user_id>", UserDetailEndPoint.as_view()),

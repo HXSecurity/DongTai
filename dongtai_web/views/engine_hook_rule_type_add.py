@@ -1,15 +1,16 @@
 #!/usr/bin/env python
-import time
 import logging
+import time
 
-from dongtai_common.endpoint import UserEndPoint, R
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+from rest_framework.serializers import ValidationError
+
+from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.utils import const
-from django.utils.translation import gettext_lazy as _
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from rest_framework import serializers
 from dongtai_web.serializers.hook_strategy import HOOK_TYPE_CHOICE
-from rest_framework.serializers import ValidationError
+from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 ENABLE_CHOICE = (const.ENABLE, const.DISABLE)
 logger = logging.getLogger("dongtai-webapi")

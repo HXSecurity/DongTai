@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
-from dongtai_common.models.agent_method_pool import MethodPool
 from django.test.testcases import TestCase
+
+from dongtai_common.models.agent_method_pool import MethodPool
 
 
 class Command(BaseCommand):

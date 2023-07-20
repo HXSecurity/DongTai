@@ -1,8 +1,9 @@
 from django.core.management.base import BaseCommand
+
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.agent_method_pool import MethodPool
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.models.asset_vul import IastAssetVul
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 
 
 class Command(BaseCommand):

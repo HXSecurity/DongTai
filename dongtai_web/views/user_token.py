@@ -2,11 +2,11 @@
 # datetime:2020/5/25 15:03
 import logging
 
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
-from rest_framework.authtoken.models import Token
-from drf_spectacular.utils import extend_schema
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
+from rest_framework.authtoken.models import Token
+
+from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_web.projecttemplate.update_department_data import update_department_data
 
 logger = logging.getLogger("django")

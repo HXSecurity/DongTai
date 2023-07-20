@@ -3,12 +3,11 @@
 import logging
 
 from django.contrib.auth.models import Group
-
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
 from django.utils.translation import gettext_lazy as _
-from dongtai_conf.settings import SCA_SETUP
 from drf_spectacular.utils import extend_schema
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_conf.settings import SCA_SETUP
 
 logger = logging.getLogger("django")
 

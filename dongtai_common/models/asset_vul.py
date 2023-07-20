@@ -1,15 +1,17 @@
 import uuid
-from dongtai_common.models.agent import IastAgent
+
 from django.core.cache import cache
-from django_elasticsearch_dsl.search import Search
-from dongtai_conf.settings import ASSET_VUL_INDEX
+from django.db import models
 from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
+from django_elasticsearch_dsl.search import Search
+
+from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.asset import Asset
-from django.db import models
-from dongtai_common.utils.settings import get_managed
-from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
 from dongtai_common.models.vul_level import IastVulLevel
+from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
+from dongtai_common.utils.settings import get_managed
+from dongtai_conf.settings import ASSET_VUL_INDEX
 
 
 class IastAssetVul(models.Model):

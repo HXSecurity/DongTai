@@ -6,12 +6,13 @@
 # @description :
 ######################################################################
 
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from dongtai_common.endpoint import UserEndPoint, R
-from rest_framework import serializers
-from dongtai_common.models.agent import IastAgent
-from rest_framework.serializers import ValidationError
 from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+from rest_framework.serializers import ValidationError
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.agent import IastAgent
+from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 
 class AgentAliasArgsSerializer(serializers.Serializer):

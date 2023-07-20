@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # datetime:2020/11/30 下午5:32
+import time
+
 from django.db import models
 
 from dongtai_common.models import User
+from dongtai_common.models.department import Department
 from dongtai_common.models.strategy_user import IastStrategyUser
 from dongtai_common.utils.settings import get_managed
-from dongtai_common.models.department import Department
-import time
 
 
 class VulValidation(models.IntegerChoices):

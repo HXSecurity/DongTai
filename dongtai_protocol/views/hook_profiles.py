@@ -2,18 +2,18 @@
 # datetime:2020/11/24 下午9:16
 import logging
 
+from django.db.models import OuterRef, Prefetch, Q, Subquery
+from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema
+
+from dongtai_common.endpoint import OpenApiEndPoint, R
 from dongtai_common.models.hook_strategy import HookStrategy
 from dongtai_common.models.hook_type import HookType
-from drf_spectacular.utils import extend_schema
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.utils import const
-from dongtai_common.endpoint import OpenApiEndPoint, R
-from django.db.models import Prefetch, OuterRef, Subquery
 
 # note: 当前依赖必须保留,否则无法通过hooktype反向查找策略
 from dongtai_protocol.api_schema import DongTaiParameter
-from django.utils.translation import gettext_lazy as _
-from django.db.models import Q
 
 logger = logging.getLogger("django")
 JAVA = 1

@@ -2,6 +2,7 @@
 # datetime:2020/8/20 15:10
 
 from django.db import models
+
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.vul_level import IastVulLevel

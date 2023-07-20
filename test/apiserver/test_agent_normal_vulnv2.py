@@ -6,16 +6,17 @@
 # @description :
 ######################################################################
 
+import json
+import pickle
+import uuid
 from test.apiserver.test_agent_base import AgentTestCase
+from unittest.mock import MagicMock, patch
+
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-import json
-from unittest.mock import patch, MagicMock
-import uuid
 from dongtai_engine.tasks import search_vul_from_method_pool
-import pickle
 
 with open("./test/integration/mockdata/new-exec.json") as fp:
     new_exec_json = json.load(fp)

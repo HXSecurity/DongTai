@@ -7,9 +7,11 @@
 ######################################################################
 
 
+import os
+
 from django.conf.urls.static import static
 from django.urls import include, path
-import os
+
 from dongtai_conf import settings
 
 urlpatterns = []

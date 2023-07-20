@@ -1,18 +1,17 @@
-from dongtai_conf.settings import ELASTICSEARCH_STATE
 import copy
-
-from dongtai_common.endpoint import UserEndPoint
-from dongtai_web.utils import extend_schema_with_envcheck
-from dongtai_web.serializers.aggregation import AggregationArgsSerializer
-from django.utils.translation import gettext_lazy as _
-from dongtai_common.endpoint import R
-from dongtai_common.models import LANGUAGE_DICT
-from rest_framework.serializers import ValidationError
-from django.db import connection
-from dongtai_common.common.utils import cached_decorator
-from dongtai_common.models import APP_LEVEL_RISK
-from dongtai_common.models.user import User
 from typing import TypedDict
+
+from django.db import connection
+from django.utils.translation import gettext_lazy as _
+from rest_framework.serializers import ValidationError
+
+from dongtai_common.common.utils import cached_decorator
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models import APP_LEVEL_RISK, LANGUAGE_DICT
+from dongtai_common.models.user import User
+from dongtai_conf.settings import ELASTICSEARCH_STATE
+from dongtai_web.serializers.aggregation import AggregationArgsSerializer
+from dongtai_web.utils import extend_schema_with_envcheck
 
 
 class Level(TypedDict):
@@ -205,16 +204,18 @@ def get_annotate_sca_base_data(user_id: int, pro_condition: str):
 
 
 def get_annotate_data_es(user_id, bind_project_id=None, project_version_id=None):
-    from dongtai_common.models.vulnerablity import IastVulnerabilityDocument
-    from elasticsearch_dsl import Q, Search
     from elasticsearch import Elasticsearch
-    from elasticsearch_dsl import A
-    from dongtai_common.models.strategy import IastStrategyModel
-    from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
+    from elasticsearch_dsl import A, Q, Search
+
+    from dongtai_common.models.asset_vul import IastAssetVulnerabilityDocument
     from dongtai_common.models.program_language import IastProgramLanguage
     from dongtai_common.models.project import IastProject
+    from dongtai_common.models.strategy import IastStrategyModel
     from dongtai_common.models.vul_level import IastVulLevel
-    from dongtai_common.models.asset_vul import IastAssetVulnerabilityDocument
+    from dongtai_common.models.vulnerablity import (
+        IastVulnerabilityDocument,
+        IastVulnerabilityStatus,
+    )
     from dongtai_conf import settings
     from dongtai_web.utils import dict_transfrom
 

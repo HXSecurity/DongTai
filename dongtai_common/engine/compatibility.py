@@ -1,6 +1,6 @@
-from math import ceil
-import logging
 import contextlib
+import logging
+from math import ceil
 
 logger = logging.getLogger("dongtai-core")
 

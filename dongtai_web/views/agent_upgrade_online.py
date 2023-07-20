@@ -2,11 +2,11 @@
 from urllib.parse import urljoin
 
 import requests
-from dongtai_common.endpoint import TalentAdminEndPoint, R
-from dongtai_common.models import User
 from django.utils.translation import gettext_lazy as _
-
 from rest_framework import serializers
+
+from dongtai_common.endpoint import R, TalentAdminEndPoint
+from dongtai_common.models import User
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 

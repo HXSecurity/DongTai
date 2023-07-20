@@ -1,5 +1,6 @@
-from dongtai_common.models.department import Department
 from rest_framework.authtoken.models import Token
+
+from dongtai_common.models.department import Department
 
 
 def update_department_data():

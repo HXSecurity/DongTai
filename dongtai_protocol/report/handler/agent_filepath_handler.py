@@ -1,21 +1,23 @@
+import logging
+
+from django.db import transaction
+from django.utils.translation import gettext_lazy as _
+from simhash import Simhash
+
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.agent_thirdservice import IastThirdPartyService
+from dongtai_common.models.api_route import (
+    HttpMethod,
+    IastApiMethod,
+    IastApiMethodHttpMethodRelation,
+    IastApiParameter,
+    IastApiResponse,
+    IastApiRoute,
+)
+from dongtai_common.models.project import IastProject
+from dongtai_common.utils import const
 from dongtai_protocol.report.handler.report_handler_interface import IReportHandler
 from dongtai_protocol.report.report_handler_factory import ReportHandler
-from dongtai_common.models.api_route import (
-    IastApiRoute,
-    IastApiMethod,
-    IastApiResponse,
-    IastApiParameter,
-    IastApiMethodHttpMethodRelation,
-    HttpMethod,
-)
-from dongtai_common.models.agent import IastAgent
-from dongtai_common.utils import const
-import logging
-from django.utils.translation import gettext_lazy as _
-from django.db import transaction
-from dongtai_common.models.project import IastProject
-from dongtai_common.models.agent_thirdservice import IastThirdPartyService
-from simhash import Simhash
 
 logger = logging.getLogger("dongtai.openapi")
 

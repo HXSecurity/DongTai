@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # datetime:2021/1/14 下午2:54
 from django.db import models
-from dongtai_common.utils.settings import get_managed
 
 from dongtai_common.models.agent import IastAgent
+from dongtai_common.utils.settings import get_managed
 
 
 class IastAgentProperties(models.Model):

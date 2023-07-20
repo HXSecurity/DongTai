@@ -7,18 +7,18 @@
 ######################################################################
 
 
-from dongtai_common.endpoint import R
-from django.utils.translation import gettext_lazy as _
-from dongtai_common.endpoint import UserEndPoint
-from dongtai_web.utils import get_openapi, validate_url
-import requests
-from urllib.parse import urljoin
-from rest_framework.authtoken.models import Token
-from requests.exceptions import ConnectionError, ConnectTimeout
 import json
 import logging
+from urllib.parse import urljoin
+
+import requests
 from django.utils.translation import get_language
-from dongtai_web.utils import checkopenapistatus
+from django.utils.translation import gettext_lazy as _
+from requests.exceptions import ConnectionError, ConnectTimeout
+from rest_framework.authtoken.models import Token
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_web.utils import checkopenapistatus, get_openapi, validate_url
 
 logger = logging.getLogger("dongtai-webapi")
 

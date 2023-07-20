@@ -2,14 +2,13 @@
 # datetime: 2021/10/22 下午2:57
 
 import unittest
-
 from test import DongTaiTestCase
 
 
 class MyTestCase(DongTaiTestCase):
     def test_check_response_header(self):
-        from dongtai_engine.plugins.strategy_headers import check_response_header
         from dongtai_common.models.agent_method_pool import MethodPool
+        from dongtai_engine.plugins.strategy_headers import check_response_header
 
         check_response_header(MethodPool.objects.first())
 

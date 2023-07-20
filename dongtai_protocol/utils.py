@@ -6,8 +6,7 @@ import base64
 import logging
 
 import oss2
-from oss2.exceptions import NoSuchKey
-from oss2.exceptions import RequestError
+from oss2.exceptions import NoSuchKey, RequestError
 
 from dongtai_conf import settings
 
@@ -88,8 +87,8 @@ def updateossstatus():
         PythonAgentDownload,
     )
     from dongtai_protocol.views.engine_download import (
-        EngineDownloadEndPoint,
         PACKAGE_NAME_LIST,
+        EngineDownloadEndPoint,
     )
 
     try:
@@ -130,12 +129,13 @@ def updateossstatus():
 
 
 def checkossstatus():
+    from oss2.exceptions import AccessDenied
+
     from dongtai_protocol.views.agent_download import (
         JavaAgentDownload,
         PythonAgentDownload,
     )
     from dongtai_protocol.views.engine_download import EngineDownloadEndPoint
-    from oss2.exceptions import AccessDenied
 
     try:
         bucket = oss2.Bucket(

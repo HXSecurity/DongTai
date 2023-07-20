@@ -8,7 +8,6 @@ from dongtai_common.models.iast_overpower_user import IastOverpowerUserAuth
 from dongtai_common.models.iast_vul_overpower import IastVulOverpower
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.utils import const
-
 from dongtai_protocol.report.handler.report_handler_interface import IReportHandler
 from dongtai_protocol.report.report_handler_factory import ReportHandler
 

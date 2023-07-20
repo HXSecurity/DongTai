@@ -1,17 +1,19 @@
+import base64
+import gzip
+import json
+import unittest
 from test.apiserver.test_agent_base import AgentTestCase, gzipdata
+
+from django.db import connections
+from django.test import TestCase
+
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.agent_method_pool import MethodPool
-import gzip
-import base64
-from dongtai_protocol.report.report_handler_factory import ReportHandler
-import json
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from django.test import TestCase
-from dongtai_engine.tasks import search_vul_from_method_pool
-from dongtai_protocol.tests import download_if_not_exist
-from django.db import connections
 from dongtai_common.models.user import User
-import unittest
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_engine.tasks import search_vul_from_method_pool
+from dongtai_protocol.report.report_handler_factory import ReportHandler
+from dongtai_protocol.tests import download_if_not_exist
 
 
 @unittest.skip("waiting for rebuild mock data")

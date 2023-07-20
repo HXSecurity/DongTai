@@ -3,7 +3,7 @@
 
 from email.mime.text import MIMEText
 from email.utils import formatdate, make_msgid
-from smtplib import SMTP_SSL, SMTP
+from smtplib import SMTP, SMTP_SSL
 
 
 class Email:

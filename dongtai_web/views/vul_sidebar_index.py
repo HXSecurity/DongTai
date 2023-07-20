@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 
-from dongtai_web.utils import get_model_order_options
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.models.hook_type import HookType
-from dongtai_web.utils import extend_schema_with_envcheck
-from django.utils.translation import gettext_lazy as _
 from django.utils.text import format_lazy
+from django.utils.translation import gettext_lazy as _
+
+from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.strategy import IastStrategyModel
+from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+from dongtai_web.utils import extend_schema_with_envcheck, get_model_order_options
 
 VALUES = [
     "level",

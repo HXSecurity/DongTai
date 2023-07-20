@@ -2,15 +2,16 @@
 # datetime:2020/8/20 15:10
 
 from django.db import models
+
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.aql_info import AqlInfo
+from dongtai_common.models.department import Department
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
-from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.user import User
 from dongtai_common.models.talent import Talent
-from dongtai_common.models.department import Department
+from dongtai_common.models.user import User
 from dongtai_common.utils.settings import get_managed
 from dongtai_web.dongtai_sca.models import VulPackage
-from dongtai_common.models.aql_info import AqlInfo
 
 
 class AssetVulRelation(models.Model):

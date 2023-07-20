@@ -1,10 +1,12 @@
 import time
+
+from django.db import transaction
 from django.db.models import Q
-from dongtai_common.models.project_version import IastProjectVersion
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
+
 from dongtai_common.models.project import IastProject
-from django.db import transaction
+from dongtai_common.models.project_version import IastProjectVersion
 
 
 class VersionModifySerializer(serializers.Serializer):

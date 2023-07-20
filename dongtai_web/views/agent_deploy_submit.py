@@ -2,11 +2,13 @@
 # datetime:2020/6/3 11:36
 
 import time
-from dongtai_common.endpoint import UserEndPoint, R
+
+from django.utils.translation import gettext_lazy as _
+from rest_framework.authtoken.models import Token
+
+from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.deploy import IastDeployDesc
 from dongtai_common.models.system import IastSystem
-from rest_framework.authtoken.models import Token
-from django.utils.translation import gettext_lazy as _
 
 
 class AgentDeploySave(UserEndPoint):

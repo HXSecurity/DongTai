@@ -1,19 +1,18 @@
 #!/usr/bin/env python
 
-from dongtai_common.endpoint import R
-from dongtai_common.endpoint import UserEndPoint
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+
+from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.project import IastProject, VulValidation
-from dongtai_common.utils.systemsettings import get_vul_validate
 from dongtai_common.utils import const
-from django.utils.translation import gettext_lazy as _
-
+from dongtai_common.utils.systemsettings import get_vul_validate
 from dongtai_web.base.project_version import (
-    get_project_version,
     ProjectsVersionDataSerializer,
+    get_project_version,
 )
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from rest_framework import serializers
 
 
 class ProjectsResponseDataSerializer(serializers.Serializer):

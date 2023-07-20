@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from dongtai_common.endpoint import R
-from drf_spectacular.utils import extend_schema
 from django.utils.translation import gettext_lazy as _
-from dongtai_common.endpoint import TalentAdminEndPoint
+from drf_spectacular.utils import extend_schema
+
+from dongtai_common.endpoint import R, TalentAdminEndPoint
 
 
 class SystemInfo(TalentAdminEndPoint):
