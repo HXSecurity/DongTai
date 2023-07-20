@@ -6,9 +6,10 @@ import os
 from celery import Celery
 
 # set the default Django settings module for the 'celery' program.
-from kombu import Queue, Exchange
+from kombu import Exchange, Queue
 
 from dongtai_conf import settings
+from dongtai_conf.settings import DONGTAI_CELERY_CACHE_PREHEAT
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dongtai_conf.settings")
 
@@ -164,7 +165,6 @@ app.conf.update(configs)
 
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
-from dongtai_conf.settings import DONGTAI_CELERY_CACHE_PREHEAT
 
 
 def ready(self):
@@ -177,8 +177,9 @@ print(f"preheat settings now : {DONGTAI_CELERY_CACHE_PREHEAT}")
 
 
 def checkout_preheat_online(status):
-    from django_celery_beat.models import PeriodicTask, IntervalSchedule
     import json
+
+    from django_celery_beat.models import IntervalSchedule, PeriodicTask
 
     if not status:
         PeriodicTask.objects.delete(name="preheat functions")

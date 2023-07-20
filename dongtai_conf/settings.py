@@ -11,15 +11,17 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-from ast import literal_eval
-from urllib.parse import urljoin
-import sys
-from configparser import ConfigParser
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import random
+import sys
+from ast import literal_eval
+from configparser import ConfigParser
+from urllib.parse import urljoin
 
 import pymysql
+from django.utils.translation import gettext_lazy as _
+
 from dongtai_conf.utils import get_config
 
 pymysql.install_as_MySQLdb()
@@ -89,7 +91,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 
 def get_installed_apps():
-    from os import walk, chdir, getcwd
+    from os import chdir, getcwd, walk
 
     previous_path = getcwd()
     master = []
@@ -509,7 +511,6 @@ if os.getenv("PYTHONAGENT", None) == "TRUE":
 if os.getenv("environment", None) == "TEST" or os.getenv("SAVEEYE", None) == "TRUE":
     CAPTCHA_NOISE_FUNCTIONS = ("captcha.helpers.noise_null",)
 
-from django.utils.translation import gettext_lazy as _
 
 INSTALLED_APPS.append("drf_spectacular")
 SPECTACULAR_SETTINGS = {
@@ -1008,8 +1009,8 @@ if ELASTICSEARCH_STATE:
     ELASTICSEARCH_DSL_SIGNAL_PROCESSOR = (
         "dongtai_common.utils.es.DTCelerySignalProcessor"
     )
-    from elasticsearch import logger as es_logger
     import elasticsearch
+    from elasticsearch import logger as es_logger
 
     es_logger.setLevel(elasticsearch.logging.DEBUG)
 else:
