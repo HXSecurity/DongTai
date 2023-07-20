@@ -16,4 +16,4 @@ class IastEnginMonitoringIndicators(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'engine_monitoring_indicators'
+        db_table = "engine_monitoring_indicators"

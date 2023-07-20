@@ -1,4 +1,4 @@
-from dongtai_common.models.iast_vul_log import (IastVulLog, MessageTypeChoices)
+from dongtai_common.models.iast_vul_log import IastVulLog, MessageTypeChoices
 from dongtai_common.utils import const
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.strategy import IastStrategyModel
@@ -29,12 +29,12 @@ class VulLogViewSet(UserEndPoint, viewsets.ViewSet):
     def list(self, request, vul_id):
         data = []
         auth_users = self.get_auth_users(request.user)
-        vul_type = VulType(int(request.query_params.get('vul_type', 1)))
+        vul_type = VulType(int(request.query_params.get("vul_type", 1)))
         if vul_type == VulType.APPLICATION:
-            data = IastVulLog.objects.filter(vul_id=vul_id,
-                                             user__in=auth_users).all()
+            data = IastVulLog.objects.filter(vul_id=vul_id, user__in=auth_users).all()
         if vul_type == VulType.ASSET:
-            data = IastVulLog.objects.filter(asset_vul_id=vul_id,
-                                             user__in=auth_users).all()
+            data = IastVulLog.objects.filter(
+                asset_vul_id=vul_id, user__in=auth_users
+            ).all()
 
         return R.success([model_to_dict(i) for i in data])

@@ -17,12 +17,15 @@ class IastProjectVersion(models.Model):
     description = models.TextField(blank=True)
     current_version = models.PositiveSmallIntegerField(default=0)
     status = models.PositiveSmallIntegerField()
-    create_time = models.IntegerField(_('create time'),
-                                      default=lambda: int(time.time()))
-    update_time = models.IntegerField(_('update time'), default=lambda: int(time.time()))
+    create_time = models.IntegerField(
+        _("create time"), default=lambda: int(time.time())
+    )
+    update_time = models.IntegerField(
+        _("update time"), default=lambda: int(time.time())
+    )
     user = models.ForeignKey(User, models.DO_NOTHING)
     project = models.ForeignKey(IastProject, models.DO_NOTHING)
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_project_version'
+        db_table = "iast_project_version"

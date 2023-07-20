@@ -11,7 +11,7 @@ import django
 
 
 class DongTaiTestCase(unittest.TestCase):
-    def __init__(self, methodName='runTest'):
+    def __init__(self, methodName="runTest"):
         super().__init__(methodName)
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dongtai_conf.settings")
         os.environ.setdefault("debug", "true")
@@ -20,7 +20,6 @@ class DongTaiTestCase(unittest.TestCase):
 
 
 class NoDbTestRunner(DiscoverRunner):
-
     def setup_databases(self, **kwargs):
         pass
 

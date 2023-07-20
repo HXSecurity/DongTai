@@ -32,37 +32,36 @@ class AssetV2(models.Model):
     signature_value = models.CharField(max_length=255, blank=True)
     dt = models.IntegerField(blank=True, default=lambda: int(time.time()))
     version = models.CharField(max_length=255, blank=True)
-    project = models.ForeignKey(IastProject,
-                                on_delete=models.CASCADE,
-                                blank=True,
-                                default=-1)
-    project_version = models.ForeignKey(IastProjectVersion,
-                                        on_delete=models.CASCADE,
-                                        blank=True,
-                                        default=-1)
+    project = models.ForeignKey(
+        IastProject, on_delete=models.CASCADE, blank=True, default=-1
+    )
+    project_version = models.ForeignKey(
+        IastProjectVersion, on_delete=models.CASCADE, blank=True, default=-1
+    )
     # 部门id
-    department = models.ForeignKey(Department,
-                                   models.DO_NOTHING,
-                                   blank=True,
-                                   default=-1)
+    department = models.ForeignKey(
+        Department, models.DO_NOTHING, blank=True, default=-1
+    )
     language_id = models.IntegerField(default=1, blank=True)
-    #is_reconized = models.IntegerField(blank=True, null=True)
-    aql = models.ForeignKey('AssetV2Global',
-                            to_field='aql',
-                            blank=True,
-                            db_column="aql",
-                            on_delete=models.DO_NOTHING)
+    # is_reconized = models.IntegerField(blank=True, null=True)
+    aql = models.ForeignKey(
+        "AssetV2Global",
+        to_field="aql",
+        blank=True,
+        db_column="aql",
+        on_delete=models.DO_NOTHING,
+    )
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_asset_v2'
+        db_table = "iast_asset_v2"
 
 
 class AssetV2Global(models.Model):
     id = models.BigAutoField(primary_key=True)
     package_name = models.CharField(max_length=255, blank=True)
     package_fullname = models.ForeignKey(
-        'IastPackageGAInfo',
+        "IastPackageGAInfo",
         on_delete=models.DO_NOTHING,
         db_constraint=False,
         db_column="package_fullname",
@@ -89,7 +88,7 @@ class AssetV2Global(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_asset_v2_global'
+        db_table = "iast_asset_v2_global"
 
     def get_vul_count_groupby_level(self):
         return [
@@ -116,16 +115,19 @@ class IastAssetLicense(models.Model):
     """
     only for the filter
     """
+
     license_id = models.IntegerField()
-    asset = models.ForeignKey(AssetV2Global,
-                              on_delete=models.DO_NOTHING,
-                              db_constraint=False,
-                              db_column='asset',
-                              to_field='aql')
+    asset = models.ForeignKey(
+        AssetV2Global,
+        on_delete=models.DO_NOTHING,
+        db_constraint=False,
+        db_column="asset",
+        to_field="aql",
+    )
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_asset_v2_license'
+        db_table = "iast_asset_v2_license"
 
 
 class IastPackageGAInfo(models.Model):
@@ -135,4 +137,4 @@ class IastPackageGAInfo(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_asset_v2_ga_info'
+        db_table = "iast_asset_v2_ga_info"

@@ -20,24 +20,28 @@ from django.utils.translation import gettext_lazy as _
 
 
 class _MessagesArgsSerializer(serializers.Serializer):
-    page_size = serializers.IntegerField(default=20,
-                                         help_text=_('Number per page'))
-    page = serializers.IntegerField(default=1, help_text=_('Page index'))
+    page_size = serializers.IntegerField(default=20, help_text=_("Number per page"))
+    page = serializers.IntegerField(default=1, help_text=_("Page index"))
 
 
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = IastMessage
         fields = [
-            'id', 'message', 'relative_url', 'create_time', 'read_time',
-            'is_read', 'message_type'
+            "id",
+            "message",
+            "relative_url",
+            "create_time",
+            "read_time",
+            "is_read",
+            "message_type",
         ]
 
 
 class PageSerializer(serializers.Serializer):
-    alltotal = serializers.IntegerField(help_text=_('total_number'))
-    num_pages = serializers.IntegerField(help_text=_('the number of pages'))
-    page_size = serializers.IntegerField(help_text=_('Number per page'))
+    alltotal = serializers.IntegerField(help_text=_("total_number"))
+    num_pages = serializers.IntegerField(help_text=_("the number of pages"))
+    page_size = serializers.IntegerField(help_text=_("Number per page"))
 
 
 class ResponseDataSerializer(serializers.Serializer):
@@ -51,26 +55,28 @@ class MessagesEndpoint(UserEndPoint):
     @extend_schema_with_envcheck(
         [_MessagesArgsSerializer],
         response_schema=_SuccessSerializer,
-        summary=_('Get Messages List'),
-        description=_(
-            "Used to get the message list corresponding to the user"),
-        tags=[_('Messages')])
+        summary=_("Get Messages List"),
+        description=_("Used to get the message list corresponding to the user"),
+        tags=[_("Messages")],
+    )
     def get(self, request):
         ser = _MessagesArgsSerializer(data=request.GET)
         try:
             if ser.is_valid(True):
-                page_size = ser.validated_data['page_size']
-                page = ser.validated_data['page']
+                page_size = ser.validated_data["page_size"]
+                page = ser.validated_data["page"]
         except ValidationError as e:
             return R.failure(data=e.detail)
-        queryset = IastMessage.objects.filter(
-            to_user_id=request.user.id).order_by('-create_time').all()
+        queryset = (
+            IastMessage.objects.filter(to_user_id=request.user.id)
+            .order_by("-create_time")
+            .all()
+        )
         page_summary, messages = self.get_paginator(queryset, page, page_size)
         messages_data = MessageSerializer(messages, many=True).data
         for message in messages:
             message.is_read = 1
-            message.save(update_fields=['is_read'])
-        return R.success(data={
-            'messages': messages_data,
-            'page': page_summary
-        }, )
+            message.save(update_fields=["is_read"])
+        return R.success(
+            data={"messages": messages_data, "page": page_summary},
+        )

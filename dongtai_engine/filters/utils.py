@@ -1,11 +1,11 @@
 from tempfile import TemporaryFile, SpooledTemporaryFile
 from io import BytesIO
 from http.client import parse_headers
+
 # Request{method=GET, url=http://www.baidu.com/, tag=null}
 
 
 class JavaObjects:
-
     def __init__(self, objects_classname, objects_attrs):
         self.objects_classname = objects_classname
         self.objects_attrs = objects_attrs
@@ -13,17 +13,17 @@ class JavaObjects:
             setattr(self, name, value)
 
     def __str__(self):
-        attrs_string = ', '.join(
-            [f'{name}={value}' for name, value in self.objects_attrs])
+        attrs_string = ", ".join(
+            [f"{name}={value}" for name, value in self.objects_attrs]
+        )
         return f"{self.objects_classname}{{{attrs_string}}}"
 
 
 def parse_java_objects(objects_string: str):
-    objects_classname = objects_string[:objects_string.index('{')]
-    objects_attrstring = objects_string[objects_string.index('{'):]
+    objects_classname = objects_string[: objects_string.index("{")]
+    objects_attrstring = objects_string[objects_string.index("{") :]
     objects_attrs = [
-        attr.split('=', 2)
-        for attr in objects_attrstring.strip('{}').split(', ')
+        attr.split("=", 2) for attr in objects_attrstring.strip("{}").split(", ")
     ]
     return JavaObjects(objects_classname, objects_attrs)
 

@@ -1,15 +1,15 @@
 from collections import defaultdict
 
 bc = defaultdict(
-    lambda: "", {
+    lambda: "",
+    {
         "CWE-843": "使用不兼容类型访问资源（类型混淆）",
         "CWE-710": "编程规范违背",
         "CWE-489": "遗留的调试代码",
         "CWE-334": "随机数的空间太小",
         "CWE-401": "在移除最后引用时对内存的释放不恰当（内存泄露）",
         "CWE-212": "敏感数据的不恰当跨边界移除",
-        "CWE-1285":
-        "Improper Validation of Specified Index, Position, or Offset in Input",
+        "CWE-1285": "Improper Validation of Specified Index, Position, or Offset in Input",
         "CWE-502": "不可信数据的反序列化",
         "CWE-193": "Off-by-one错误",
         "CWE-789": "未经控制的内存分配",
@@ -81,8 +81,7 @@ bc = defaultdict(
         "CWE-79": "在Web页面生成时对输入的转义处理不恰当（跨站脚本）",
         "CWE-345": "对数据真实性的验证不充分",
         "CWE-191": "整数下溢（超界折返）",
-        "CWE-1278":
-        "Missing Protection Against Hardware Reverse Engineering Using Integrated Circuit (IC) Imaging Techniques",
+        "CWE-1278": "Missing Protection Against Hardware Reverse Engineering Using Integrated Circuit (IC) Imaging Techniques",
         "CWE-349": "在可信数据中接受外来的不可信数据",
         "CWE-435": "交互错误",
         "CWE-119": "内存缓冲区边界内操作的限制不恰当",
@@ -175,8 +174,7 @@ bc = defaultdict(
         "CWE-776": "DTD中递归实体索引的不恰当限制（XML实体扩展）",
         "CWE-688": "使用不正确变量或索引作为参数的函数调用",
         "CWE-912": "隐藏功能",
-        "CWE-1336":
-        "Improper Neutralization of Special Elements Used in a Template Engine",
+        "CWE-1336": "Improper Neutralization of Special Elements Used in a Template Engine",
         "CWE-922": "敏感信息的不安全存储",
         "CWE-916": "使用具有不充分计算复杂性的口令哈希",
         "CWE-257": "以可恢复格式存储口令",
@@ -184,8 +182,7 @@ bc = defaultdict(
         "CWE-451": "关键信息的UI错误表达",
         "CWE-134": "使用外部控制的格式字符串",
         "CWE-704": "不正确的类型转换",
-        "CWE-1236":
-        "Improper Neutralization of Formula Elements in a CSV File",
+        "CWE-1236": "Improper Neutralization of Formula Elements in a CSV File",
         "CWE-664": "在生命周期中对资源的控制不恰当",
         "CWE-391": "未经检查的错误条件",
         "CWE-407": "算法复杂性",
@@ -292,8 +289,7 @@ bc = defaultdict(
         "CWE-459": "清理环节不完整",
         "CWE-708": "不正确的属主授予",
         "CWE-434": "危险类型文件的不加限制上传",
-        "CWE-1321":
-        "Improperly Controlled Modification of Object Prototype Attributes ('Prototype Pollution')",
+        "CWE-1321": "Improperly Controlled Modification of Object Prototype Attributes ('Prototype Pollution')",
         "CWE-538": "文件和路径信息暴露",
         "CWE-352": "跨站请求伪造（CSRF）",
         "CWE-367": "检查时间与使用时间(TOCTOU)的竞争条件",
@@ -316,8 +312,9 @@ bc = defaultdict(
         "CWE-264": "权限、特权和访问控制",
         "CWE-315": "在Cookie中的明文存储",
         "CWE-233": "参数问题",
-        "CWE-385": "隐蔽时间通道"
-    })
+        "CWE-385": "隐蔽时间通道",
+    },
+)
 
 
 def get_cwe_name(cwe_id: str) -> str:

@@ -11,6 +11,4 @@ from dongtai_common.models.asset import Asset
 class AssetProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Asset
-        fields = [
-            'project_id', 'project_name', 'dependency_level', 'package_name'
-        ]
+        fields = ["project_id", "project_name", "dependency_level", "package_name"]

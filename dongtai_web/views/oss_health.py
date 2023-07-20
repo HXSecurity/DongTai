@@ -13,7 +13,7 @@ from dongtai_common.endpoint import UserEndPoint
 from dongtai_common.endpoint import R
 from django.utils.translation import gettext_lazy as _
 
-OSSHEALTHPATH = 'api/v1/oss/health'
+OSSHEALTHPATH = "api/v1/oss/health"
 
 
 class OssHealthView(UserEndPoint):
@@ -26,7 +26,8 @@ class OssHealthView(UserEndPoint):
 
         token, success = Token.objects.get_or_create(user=request.user)
         openapistatus, openapi_resp = checkopenapistatus(
-            urljoin(openapi, OSSHEALTHPATH), token.key)
+            urljoin(openapi, OSSHEALTHPATH), token.key
+        )
         if openapistatus:
             return R.success(data=openapi_resp)
         else:

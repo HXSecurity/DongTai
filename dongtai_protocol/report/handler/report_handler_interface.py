@@ -12,15 +12,22 @@ from dongtai_common.models.agent import IastAgent
 from django.utils.translation import gettext_lazy as _
 from dongtai_common.common.utils import cached_decorator
 
-logger = logging.getLogger('dongtai.openapi')
+logger = logging.getLogger("dongtai.openapi")
 
 
-@cached_decorator(random_range=(60, 120), use_celery_update=False, cache_logic_none=False)
+@cached_decorator(
+    random_range=(60, 120), use_celery_update=False, cache_logic_none=False
+)
 def get_agent(agent_id, kwargs, fields):
-    return IastAgent.objects.filter(
-        id=agent_id,
-        **kwargs,
-    ).only(*fields).first()
+    return (
+        IastAgent.objects.filter(
+            id=agent_id,
+            **kwargs,
+        )
+        .only(*fields)
+        .first()
+    )
+
 
 class IReportHandler:
     def __init__(self):
@@ -56,8 +63,8 @@ class IReportHandler:
         self._user_id = user_id
 
     def common_header(self):
-        self.detail = self.report.get('detail')
-        self.agent_id = self.detail.get('agentId')
+        self.detail = self.report.get("detail")
+        self.agent_id = self.detail.get("agentId")
 
     def has_permission(self):
         self.agent = self.get_agent(agent_id=self.agent_id)
@@ -75,10 +82,10 @@ class IReportHandler:
         pass
 
     def get_result(self, msg=None):
-        return msg if msg else ''
+        return msg if msg else ""
 
     def handle(self, report, user):
-        logger.info(_('[{}] Report resolution start').format(self.__class__.__name__))
+        logger.info(_("[{}] Report resolution start").format(self.__class__.__name__))
         self.report = report
         # print(self._user_id)
         self.user_id = user
@@ -87,15 +94,18 @@ class IReportHandler:
             self.parse()
             self.save()
             logger.info(
-                _('[{classname}] Report Analysis Completed').format(
-                    classname=self.__class__.__name__))
+                _("[{classname}] Report Analysis Completed").format(
+                    classname=self.__class__.__name__
+                )
+            )
             return self.get_result()
         else:
             logger.info(
                 _(
-                    '[{classname}] report resolution failed, Agent does not exist or no right to access, report data: {report}').
-                format(classname=self.__class__.__name__, report=self.report))
-            return 'no permission'
+                    "[{classname}] report resolution failed, Agent does not exist or no right to access, report data: {report}"
+                ).format(classname=self.__class__.__name__, report=self.report)
+            )
+            return "no permission"
 
     def get_project_agents(self, agent):
         if agent.bind_project_id != 0:
@@ -104,9 +114,12 @@ class IReportHandler:
                 | Q(bind_project_id=agent.bind_project_id),
                 online=1,
                 user=self.user_id,
-                project_version_id=agent.project_version_id)
+                project_version_id=agent.project_version_id,
+            )
         else:
-            agents = IastAgent.objects.filter(project_name=agent.project_name, user=self.user_id)
+            agents = IastAgent.objects.filter(
+                project_name=agent.project_name, user=self.user_id
+            )
         return agents
 
     def get_agent(self, agent_id):
@@ -118,14 +131,14 @@ class IReportHandler:
                 "user": self.user_id,
             },
             (
-                'id',
-                'bind_project_id',
-                'project_version_id',
-                'project_name',
-                'language',
-                'project_version_id',
-                'server_id',
-                'filepathsimhash',
-                'servicetype',
+                "id",
+                "bind_project_id",
+                "project_version_id",
+                "project_name",
+                "language",
+                "project_version_id",
+                "server_id",
+                "filepathsimhash",
+                "servicetype",
             ),
         )

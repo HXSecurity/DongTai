@@ -23,19 +23,29 @@ class MethodPoolSerialize(serializers.ModelSerializer):
 
     class Meta:
         model = MethodPool
-        fields = ['url', 'request', 'response', 'language', 'dependencies']
+        fields = ["url", "request", "response", "language", "dependencies"]
 
     def get_request(self, obj):
-        return http.build_request(obj.http_method, obj.req_header, obj.uri, obj.req_params, obj.req_data,
-                                  obj.http_protocol)
+        return http.build_request(
+            obj.http_method,
+            obj.req_header,
+            obj.uri,
+            obj.req_params,
+            obj.req_data,
+            obj.http_protocol,
+        )
 
     def get_response(self, obj):
         return http.build_response(obj.res_header, obj.res_body)
 
     def get_dependencies(self, obj):
         if obj.agent_id not in self.DEPENDENCIES:
-            dependencies = obj.agent.dependencies.values('package_name', 'vul_count', 'version').all()
-            self.DEPENDENCIES[obj.agent_id] = AssetSerializer(dependencies, many=True).data
+            dependencies = obj.agent.dependencies.values(
+                "package_name", "vul_count", "version"
+            ).all()
+            self.DEPENDENCIES[obj.agent_id] = AssetSerializer(
+                dependencies, many=True
+            ).data
         return self.DEPENDENCIES[obj.agent_id]
 
     def get_language(self, obj):
@@ -57,7 +67,16 @@ class MethodPoolListSerialize(serializers.ModelSerializer):
 
     class Meta:
         model = MethodPool
-        fields = ['id', 'url', 'req_params', 'language', 'update_time', 'rule', 'level', 'agent_name']
+        fields = [
+            "id",
+            "url",
+            "req_params",
+            "language",
+            "update_time",
+            "rule",
+            "level",
+            "agent_name",
+        ]
 
     def get_rule(self, obj):
         return self._rule
@@ -74,5 +93,5 @@ class MethodPoolListSerialize(serializers.ModelSerializer):
         return obj.agent.language
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     d = Asset()

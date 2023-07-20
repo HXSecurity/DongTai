@@ -12,31 +12,31 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 from rest_framework import serializers
 
 _ResponseSerializer = get_response_serializer(
-    data_serializer=serializers.IntegerField(), )
+    data_serializer=serializers.IntegerField(),
+)
 
 
 class VulCountForPluginEndPoint(MixinAuthEndPoint):
     @extend_schema_with_envcheck(
         [
             {
-                'name': "name",
-                'type': str,
+                "name": "name",
+                "type": str,
             },
         ],
-        tags=[_('Vulnerability')],
+        tags=[_("Vulnerability")],
         summary=_("Vulnerability Count (with agent name)"),
-        description=_(
-            "Get the number of vulnerabilities corresponding to the Agent."),
+        description=_("Get the number of vulnerabilities corresponding to the Agent."),
         response_schema=_ResponseSerializer,
     )
     def get(self, request):
-        agent_name = request.query_params.get('name')
-        departmenttoken = request.query_params.get('departmenttoken', '')
-        projectname = request.query_params.get('projectname', '')
+        agent_name = request.query_params.get("name")
+        departmenttoken = request.query_params.get("departmenttoken", "")
+        projectname = request.query_params.get("projectname", "")
         department = request.user.get_relative_department()
         if not agent_name:
             return R.failure(msg=_("Please input agent name."))
-        departmenttoken = departmenttoken.replace('GROUP', '')
+        departmenttoken = departmenttoken.replace("GROUP", "")
         agent = IastAgent.objects.filter(
             token=agent_name,
             department__token=departmenttoken,
@@ -46,5 +46,5 @@ class VulCountForPluginEndPoint(MixinAuthEndPoint):
             return R.failure(msg=_("agent_name not found"))
 
         return R.success(
-            data=IastVulnerabilityModel.objects.values('id').filter(
-                agent=agent).count())
+            data=IastVulnerabilityModel.objects.values("id").filter(agent=agent).count()
+        )

@@ -7,259 +7,259 @@ from drf_spectacular.utils import OpenApiParameter, OpenApiExample
 
 
 class DongTaiAuth:
-    TOKEN = 'TokenAuthentication'
+    TOKEN = "TokenAuthentication"
 
 
 class DongTaiParameter:
     OPENAPI_URL = OpenApiParameter(
-        name='url',
-        description='OpenAPI Service Addr',
+        name="url",
+        description="OpenAPI Service Addr",
         required=True,
         type=str,
         examples=[
             OpenApiExample(
-                'url example',
-                summary='default',
-                value='https://openapi.iast.io',
+                "url example",
+                summary="default",
+                value="https://openapi.iast.io",
             ),
         ],
     )
     PROJECT_NAME = OpenApiParameter(
-        name='projectName',
+        name="projectName",
         type=str,
         required=True,
-        description='The name of the project where the Agent needs to be installed',
+        description="The name of the project where the Agent needs to be installed",
         examples=[
             OpenApiExample(
-                'example with https://iast.io',
-                summary='default',
-                value='Demo Project',
+                "example with https://iast.io",
+                summary="default",
+                value="Demo Project",
             ),
         ],
     )
 
     PROJECT_VERSION = OpenApiParameter(
-        name='projectVersion',
+        name="projectVersion",
         type=str,
         required=True,
-        description='The version name of the project where the Agent needs to be installed',
+        description="The version name of the project where the Agent needs to be installed",
         examples=[
             OpenApiExample(
-                'example with https://iast.io',
-                summary='default',
-                value='Demo Project',
+                "example with https://iast.io",
+                summary="default",
+                value="Demo Project",
             ),
         ],
     )
 
     DEPARTMENT_TOKEN = OpenApiParameter(
-        name='department_token',
+        name="department_token",
         type=str,
         required=True,
-        description='The department token where the Agent needs to be installed',
+        description="The department token where the Agent needs to be installed",
         examples=[
             OpenApiExample(
-                'example with https://iast.io',
-                summary='default',
-                value='Demo Project',
+                "example with https://iast.io",
+                summary="default",
+                value="Demo Project",
             ),
         ],
     )
 
     TEMPLATE_ID = OpenApiParameter(
-        name='template_id',
+        name="template_id",
         type=int,
         required=True,
-        description='The project template_id  where the Agent needs to be installed, set 1 as default',
+        description="The project template_id  where the Agent needs to be installed, set 1 as default",
         examples=[
             OpenApiExample(
-                'the default value',
-                summary='default',
+                "the default value",
+                summary="default",
                 value=1,
             ),
         ],
     )
 
     LANGUAGE = OpenApiParameter(
-        name='language',
+        name="language",
         type=str,
-        description='The development language of the project that needs to install the Agent',
+        description="The development language of the project that needs to install the Agent",
         required=True,
         examples=[
             OpenApiExample(
-                'example language',
-                summary='JAVA or PYTHON',
-                value='JAVA',
+                "example language",
+                summary="JAVA or PYTHON",
+                value="JAVA",
             ),
         ],
     )
 
     VERSION = OpenApiParameter(
-        name='version',
+        name="version",
         type=str,
-        description='The development language of the project that needs to install the Agent',
+        description="The development language of the project that needs to install the Agent",
         required=True,
         examples=[
             OpenApiExample(
-                'example language',
-                summary='java or python',
-                value='java',
+                "example language",
+                summary="java or python",
+                value="java",
             ),
         ],
     )
 
     AGENT_NAME = OpenApiParameter(
-        name='name',
+        name="name",
         type=str,
-        description='The development language of the project that needs to install the Agent',
+        description="The development language of the project that needs to install the Agent",
         required=True,
         examples=[
             OpenApiExample(
-                'example language',
-                summary='java or python',
-                value='java',
+                "example language",
+                summary="java or python",
+                value="java",
             ),
         ],
     )
 
     HOSTNAME = OpenApiParameter(
-        name='engineName',
+        name="engineName",
         type=str,
-        description='The development language of the project that needs to install the Agent',
+        description="The development language of the project that needs to install the Agent",
         required=True,
         examples=[
             OpenApiExample(
-                'example language',
-                summary='java or python',
-                value='java',
+                "example language",
+                summary="java or python",
+                value="java",
             ),
         ],
     )
 
     NETWORK = OpenApiParameter(
-        name='engineName',
+        name="engineName",
         type=str,
-        description='The development language of the project that needs to install the Agent',
+        description="The development language of the project that needs to install the Agent",
         required=True,
         examples=[
             OpenApiExample(
-                'example language',
-                summary='java or python',
-                value='java',
+                "example language",
+                summary="java or python",
+                value="java",
             ),
         ],
     )
 
     CONTAINER_NAME = OpenApiParameter(
-        name='containerName',
+        name="containerName",
         type=str,
-        description='The development language of the project that needs to install the Agent',
+        description="The development language of the project that needs to install the Agent",
         required=True,
         examples=[
             OpenApiExample(
-                'example language',
-                summary='java or python',
-                value='java',
+                "example language",
+                summary="java or python",
+                value="java",
             ),
         ],
     )
 
     SERVER_ADDR = OpenApiParameter(
-        name='serverAddr',
+        name="serverAddr",
         type=str,
-        description='The development language of the project that needs to install the Agent',
+        description="The development language of the project that needs to install the Agent",
         required=True,
         examples=[
             OpenApiExample(
-                'example language',
-                summary='java or python',
-                value='java',
+                "example language",
+                summary="java or python",
+                value="java",
             ),
         ],
     )
 
     SERVER_PORT = OpenApiParameter(
-        name='serverPort',
+        name="serverPort",
         type=str,
-        description='The development language of the project that needs to install the Agent',
+        description="The development language of the project that needs to install the Agent",
         required=True,
         examples=[
             OpenApiExample(
-                'example language',
-                summary='java or python',
-                value='java',
+                "example language",
+                summary="java or python",
+                value="java",
             ),
         ],
     )
 
     SERVER_PATH = OpenApiParameter(
-        name='serverPath',
+        name="serverPath",
         type=str,
-        description='The development language of the project that needs to install the Agent',
+        description="The development language of the project that needs to install the Agent",
         required=True,
         examples=[
             OpenApiExample(
-                'example language',
-                summary='java or python',
-                value='java',
+                "example language",
+                summary="java or python",
+                value="java",
             ),
         ],
     )
 
     SERVER_ENV = OpenApiParameter(
-        name='serverEnv',
+        name="serverEnv",
         type=str,
-        description='The development language of the project that needs to install the Agent',
+        description="The development language of the project that needs to install the Agent",
         required=True,
         examples=[
             OpenApiExample(
-                'example language',
-                summary='java or python',
-                value='java',
+                "example language",
+                summary="java or python",
+                value="java",
             ),
         ],
     )
 
     PID = OpenApiParameter(
-        name='pid',
+        name="pid",
         type=str,
-        description='The development language of the project that needs to install the Agent',
+        description="The development language of the project that needs to install the Agent",
         required=True,
         examples=[
             OpenApiExample(
-                'example language',
-                summary='java or python',
-                value='java',
+                "example language",
+                summary="java or python",
+                value="java",
             ),
         ],
     )
 
     AUTO_CREATE_PROJECT = OpenApiParameter(
-        name='autoCreateProject',
+        name="autoCreateProject",
         type=int,
-        description='auto create project if project not found when this varibale is 1',
+        description="auto create project if project not found when this varibale is 1",
         required=True,
         examples=[
             OpenApiExample(
-                'default value',
+                "default value",
                 value=0,
             ),
             OpenApiExample(
-                'enable value',
+                "enable value",
                 value=1,
             ),
         ],
     )
     ENGINE_NAME = OpenApiParameter(
-        name='engineName',
+        name="engineName",
         type=str,
-        description='The development language of the project that needs to install the Agent',
+        description="The development language of the project that needs to install the Agent",
         required=True,
         examples=[
             OpenApiExample(
-                'example language',
-                summary='java or python',
-                value='java',
+                "example language",
+                summary="java or python",
+                value="java",
             ),
         ],
     )

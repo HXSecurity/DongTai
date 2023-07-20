@@ -21,29 +21,27 @@ logger = logging.getLogger(__name__)
 
 
 class PackageListArgsSerializer(serializers.Serializer):
-    page_size = serializers.IntegerField(default=20,
-                                         help_text=_('Number per page'))
-    page = serializers.IntegerField(default=1, help_text=_('Page index'))
+    page_size = serializers.IntegerField(default=20, help_text=_("Number per page"))
+    page = serializers.IntegerField(default=1, help_text=_("Page index"))
     language_ids = serializers.ListField(
-        required=False,
-        child=serializers.IntegerField(help_text=_('language')))
+        required=False, child=serializers.IntegerField(help_text=_("language"))
+    )
     license_ids = serializers.ListField(
-        required=False, child=serializers.IntegerField(help_text=_('license')))
+        required=False, child=serializers.IntegerField(help_text=_("license"))
+    )
     level_ids = serializers.ListField(
-        required=False, child=serializers.IntegerField(help_text=_('level')))
-    project_id = serializers.IntegerField(required=False,
-                                          help_text=_('Page index'))
-    project_version_id = serializers.IntegerField(required=False,
-                                                  help_text=_('Page index'))
-    keyword = serializers.CharField(required=False,
-                                    help_text=_("search_keyword"))
-    order_field = serializers.ChoiceField(['vul_count', 'level'],
-                                          default='vul_count')
-    order = serializers.ChoiceField(['desc', 'asc'], default='desc')
+        required=False, child=serializers.IntegerField(help_text=_("level"))
+    )
+    project_id = serializers.IntegerField(required=False, help_text=_("Page index"))
+    project_version_id = serializers.IntegerField(
+        required=False, help_text=_("Page index")
+    )
+    keyword = serializers.CharField(required=False, help_text=_("search_keyword"))
+    order_field = serializers.ChoiceField(["vul_count", "level"], default="vul_count")
+    order = serializers.ChoiceField(["desc", "asc"], default="desc")
 
 
 class PackeageScaAssetSerializer(PackeageScaAssetDetailSerializer):
-
     class Meta:
         model = PackeageScaAssetDetailSerializer.Meta.model
         fields = [
@@ -64,20 +62,20 @@ class PackeageScaAssetSerializer(PackeageScaAssetDetailSerializer):
             "license_list",
             "language_id",
             "aql",
-            "vul_count_groupby_level"
+            "vul_count_groupby_level",
         ]
 
 
-_NewResponseSerializer = get_response_serializer(
-    PackeageScaAssetSerializer(many=True))
+_NewResponseSerializer = get_response_serializer(PackeageScaAssetSerializer(many=True))
 
 
 class PackageList(UserEndPoint):
-
-    @extend_schema_with_envcheck_v2(request=PackageListArgsSerializer,
-                                    tags=[_('Component'), OPERATE_GET],
-                                    summary=_("Component List"),
-                                    responses={200: _NewResponseSerializer})
+    @extend_schema_with_envcheck_v2(
+        request=PackageListArgsSerializer,
+        tags=[_("Component"), OPERATE_GET],
+        summary=_("Component List"),
+        responses={200: _NewResponseSerializer},
+    )
     def post(self, request):
         ser = PackageListArgsSerializer(data=request.data)
         try:
@@ -86,27 +84,30 @@ class PackageList(UserEndPoint):
         except ValidationError as e:
             return R.failure(data=e.detail)
         q = Q()
-        if 'level_ids' in ser.validated_data and ser.validated_data[
-                'level_ids']:
-            q = q & Q(level__in=ser.validated_data['level_ids'])
-        if 'language_ids' in ser.validated_data and ser.validated_data[
-                'language_ids']:
-            q = q & Q(language_id__in=ser.validated_data['language_ids'])
-        if 'license_ids' in ser.validated_data and ser.validated_data[
-                'license_ids']:
-            q = q & Q(iastassetlicense__license_id__in=ser.
-                      validated_data['license_ids'])
-        if 'project_id' in ser.validated_data:
-            q = q & Q(assetv2__project_id=ser.validated_data['project_id'])
-        if 'project_version_id' in ser.validated_data:
-            q = q & Q(assetv2__project_version_id=ser.
-                      validated_data['project_version_id'])
-        if 'keyword' in ser.validated_data:
-            q = q & Q(aql__contains=ser.validated_data['keyword'])
-        order = ('-' if ser.validated_data['order'] == 'desc' else
-                 '') + ser.validated_data['order_field']
+        if "level_ids" in ser.validated_data and ser.validated_data["level_ids"]:
+            q = q & Q(level__in=ser.validated_data["level_ids"])
+        if "language_ids" in ser.validated_data and ser.validated_data["language_ids"]:
+            q = q & Q(language_id__in=ser.validated_data["language_ids"])
+        if "license_ids" in ser.validated_data and ser.validated_data["license_ids"]:
+            q = q & Q(
+                iastassetlicense__license_id__in=ser.validated_data["license_ids"]
+            )
+        if "project_id" in ser.validated_data:
+            q = q & Q(assetv2__project_id=ser.validated_data["project_id"])
+        if "project_version_id" in ser.validated_data:
+            q = q & Q(
+                assetv2__project_version_id=ser.validated_data["project_version_id"]
+            )
+        if "keyword" in ser.validated_data:
+            q = q & Q(aql__contains=ser.validated_data["keyword"])
+        order = (
+            "-" if ser.validated_data["order"] == "desc" else ""
+        ) + ser.validated_data["order_field"]
         page_info, data = self.get_paginator(
             AssetV2Global.objects.filter(q).order_by(order).all(),
-            ser.validated_data['page'], ser.validated_data['page_size'])
-        return R.success(data=PackeageScaAssetSerializer(data, many=True).data,
-                         page=page_info)
+            ser.validated_data["page"],
+            ser.validated_data["page_size"],
+        )
+        return R.success(
+            data=PackeageScaAssetSerializer(data, many=True).data, page=page_info
+        )

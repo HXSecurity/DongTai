@@ -12,40 +12,38 @@ logger = logging.getLogger("django")
 
 
 class _ProjectSearchQuerySerializer(serializers.Serializer):
-    name = serializers.CharField(
-        help_text=_("Project name, support fuzzy search."))
+    name = serializers.CharField(help_text=_("Project name, support fuzzy search."))
 
 
 class _ProjectSearchDataSerializer(serializers.Serializer):
     id = serializers.IntegerField(help_text=_("The id of the project"))
-    name = serializers.CharField(help_text=_('The name of project'))
+    name = serializers.CharField(help_text=_("The name of project"))
 
     class Meta:
         model = IastProject
-        fields = ['id', 'name']
+        fields = ["id", "name"]
 
 
 _ProjectResponseSerializer = get_response_serializer(
-    _ProjectSearchDataSerializer(many=True))
+    _ProjectSearchDataSerializer(many=True)
+)
 
 
 class ProjectSearch(UserEndPoint):
-
     @extend_schema_with_envcheck(
         [_ProjectSearchQuerySerializer],
-        tags=[_('Project')],
-        summary=_('Projects Search'),
-        description=_("Get the id and name of the item according to the search keyword matching the item name, in descending order of time."
-                      ),
+        tags=[_("Project")],
+        summary=_("Projects Search"),
+        description=_(
+            "Get the id and name of the item according to the search keyword matching the item name, in descending order of time."
+        ),
         response_schema=_ProjectResponseSerializer,
     )
     def get(self, request):
-        name = request.query_params.get('name', '')
+        name = request.query_params.get("name", "")
         users = self.get_auth_users(request.user)
         projects = IastProject.objects.filter(
-            user__in=users, name__icontains=name).order_by('-latest_time')
-        data = [
-            model_to_dict(project, fields=['id', 'name'])
-            for project in projects
-        ]
+            user__in=users, name__icontains=name
+        ).order_by("-latest_time")
+        data = [model_to_dict(project, fields=["id", "name"]) for project in projects]
         return R.success(data=data)

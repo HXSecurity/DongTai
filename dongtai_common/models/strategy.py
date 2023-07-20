@@ -16,12 +16,9 @@ class IastStrategyModel(models.Model):
     vul_name = models.CharField(max_length=255, blank=True)
     vul_desc = models.TextField()
     vul_fix = models.TextField(blank=True)
-    hook_type = models.ForeignKey(HookType,
-                                  models.DO_NOTHING,
-                                  blank=True,
-                                  null=True)
+    hook_type = models.ForeignKey(HookType, models.DO_NOTHING, blank=True, null=True)
     system_type = models.IntegerField(blank=True, default=0)
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_strategy'
+        db_table = "iast_strategy"

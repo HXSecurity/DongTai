@@ -34,4 +34,4 @@ class IastAgentMethodPoolReplay(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_agent_method_pool_replay'
+        db_table = "iast_agent_method_pool_replay"

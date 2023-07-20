@@ -18,6 +18,6 @@ def parse_data(stream_data):
     :param stream_data: POST请求的流式对象
     :return: iast agent上报的json数据，如果解压缩、解密过程失败，则抛出异常
     """
-    data = gzip.decompress(stream_data).decode('utf-8')
+    data = gzip.decompress(stream_data).decode("utf-8")
     objs = json.loads(data)
     return objs

@@ -19,9 +19,10 @@ import json
 import logging
 from django.utils.translation import get_language
 from dongtai_web.utils import checkopenapistatus
-logger = logging.getLogger('dongtai-webapi')
 
-HEALTHPATH = 'api/v1/health'
+logger = logging.getLogger("dongtai-webapi")
+
+HEALTHPATH = "api/v1/health"
 
 
 class HealthView(UserEndPoint):
@@ -34,28 +35,24 @@ class HealthView(UserEndPoint):
 
         token, success = Token.objects.get_or_create(user=request.user)
         openapistatus, openapi_resp = checkopenapistatus(
-            urljoin(openapi, HEALTHPATH), token.key)
+            urljoin(openapi, HEALTHPATH), token.key
+        )
         data = {"dongtai_webapi": 1}
         if openapistatus:
             data.update(openapi_resp)
         else:
-            data.update({
-                "dongtai_openapi": {
-                    "status": 0
-                },
-                "dongtai_engine": {
-                    "status": 0
-                },
-                "oss": {
-                    "status": 0
-                },
-                "engine_monitoring_indicators": [],
-            })
+            data.update(
+                {
+                    "dongtai_openapi": {"status": 0},
+                    "dongtai_engine": {"status": 0},
+                    "oss": {"status": 0},
+                    "engine_monitoring_indicators": [],
+                }
+            )
         cur_language = get_language()
-        for indicator in data['engine_monitoring_indicators']:
-            cur_language_field = indicator.get(
-                '_'.join(['name', cur_language]), None)
-            indicator[
-                'name'] = cur_language_field if cur_language_field else indicator[
-                    'name']
+        for indicator in data["engine_monitoring_indicators"]:
+            cur_language_field = indicator.get("_".join(["name", cur_language]), None)
+            indicator["name"] = (
+                cur_language_field if cur_language_field else indicator["name"]
+            )
         return R.success(data=data)

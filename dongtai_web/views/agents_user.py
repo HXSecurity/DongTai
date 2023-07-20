@@ -11,20 +11,22 @@ from rest_framework import serializers
 
 
 class _UserAgentResponseDataSerializer(serializers.Serializer):
-    token = serializers.CharField(help_text=_('The name of agent'))
-    id = serializers.CharField(help_text=_('The id of agent'))
+    token = serializers.CharField(help_text=_("The name of agent"))
+    id = serializers.CharField(help_text=_("The id of agent"))
 
 
 _AgentResponseSerializer = get_response_serializer(
-    data_serializer=_UserAgentResponseDataSerializer(many=True), )
+    data_serializer=_UserAgentResponseDataSerializer(many=True),
+)
 
 
 class UserAgentList(UserEndPoint):
     @extend_schema_with_envcheck(
-        tags=[_('Agent')],
-        summary=_('Agent (with user)'),
+        tags=[_("Agent")],
+        summary=_("Agent (with user)"),
         description=_("Stop the running agent by specifying the id."),
-        response_schema=_AgentResponseSerializer)
+        response_schema=_AgentResponseSerializer,
+    )
     def get(self, request):
         user = request.user
         if user.is_talent_admin():
@@ -35,8 +37,5 @@ class UserAgentList(UserEndPoint):
         data = []
         if queryset_datas:
             for item in queryset_datas:
-                data.append({
-                    "id": item['id'],
-                    "name": item['token']
-                })
+                data.append({"id": item["id"], "name": item["token"]})
         return R.success(data=data)

@@ -37,10 +37,13 @@ class IastNotifyConfig(models.Model):
 
     notify_type = models.SmallIntegerField(choices=NOTIFY_TYPE_CHOICES)
     notify_meta_data = models.TextField()  # This field type is a guess.
-    user = models.ForeignKey(to=User, on_delete=models.DO_NOTHING, )
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.DO_NOTHING,
+    )
     test_result = models.SmallIntegerField(default=0)
     create_time = models.IntegerField()
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_notify_config'
+        db_table = "iast_notify_config"

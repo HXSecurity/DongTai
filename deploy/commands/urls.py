@@ -19,8 +19,8 @@ import os
 from deploy.views import VersionListView
 
 urlpatterns = [
-    path('versionlist', VersionListView.as_view()),
+    path("versionlist", VersionListView.as_view()),
 ]
 
 
-urlpatterns = [path('api/v1/version_control/', include(urlpatterns))]
+urlpatterns = [path("api/v1/version_control/", include(urlpatterns))]

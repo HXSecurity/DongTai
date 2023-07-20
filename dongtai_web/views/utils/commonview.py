@@ -19,12 +19,12 @@ class BatchStatusUpdateSerializer(serializers.Serializer):
 
 class BatchStatusUpdateSerializerView(UserEndPoint):
     serializer = BatchStatusUpdateSerializer
-    status_field = ''
+    status_field = ""
 
     def post(self, request):
         data = self.get_params(request.data)
         self.update_model(request, data)
-        return R.success(msg='update success')
+        return R.success(msg="update success")
 
     def get_params(self, data):
         ser = self.serializer(data=data)
@@ -32,14 +32,13 @@ class BatchStatusUpdateSerializerView(UserEndPoint):
             if ser.is_valid(True):
                 pass
         except ValidationError as e:
-            return {'ids': [], 'status': 0}
+            return {"ids": [], "status": 0}
         return ser.validated_data
 
     def update_model(self, request, validated_data):
         self.model.objects.filter(
-            pk__in=validated_data['ids'], user__in=[
-                request.user
-            ]).update(**{self.status_field: validated_data['status']})
+            pk__in=validated_data["ids"], user__in=[request.user]
+        ).update(**{self.status_field: validated_data["status"]})
 
 
 class AllStatusUpdateSerializer(serializers.Serializer):
@@ -48,12 +47,12 @@ class AllStatusUpdateSerializer(serializers.Serializer):
 
 class AllStatusUpdateSerializerView(UserEndPoint):
     serializer = AllStatusUpdateSerializer
-    status_field = 'status'
+    status_field = "status"
 
     def post(self, request):
         data = self.get_params(request.data)
         self.update_model(request, data)
-        return R.success(msg='update success')
+        return R.success(msg="update success")
 
     def get_params(self, data):
         ser = self.serializer(data=data)
@@ -61,9 +60,10 @@ class AllStatusUpdateSerializerView(UserEndPoint):
             if ser.is_valid(True):
                 pass
         except ValidationError as e:
-            return {'status': 0}
+            return {"status": 0}
         return ser.validated_data
 
     def update_model(self, request, validated_data):
         self.model.objects.filter(user__in=[request.user]).update(
-            **{self.status_field: validated_data['status']})
+            **{self.status_field: validated_data["status"]}
+        )

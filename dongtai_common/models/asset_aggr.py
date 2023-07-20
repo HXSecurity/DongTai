@@ -32,7 +32,7 @@ class AssetAggr(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_asset_aggr'
+        db_table = "iast_asset_aggr"
 
 
 @registry.register_document
@@ -46,8 +46,20 @@ class AssetAggrDocument(Document):
         model = AssetAggr
 
         fields = [
-            'id', 'package_name', 'signature_value', 'version', 'safe_version',
-            'last_version', 'vul_count', 'vul_critical_count',
-            'vul_high_count', 'vul_medium_count', 'vul_low_count',
-            'vul_info_count', 'project_count', 'language', 'license', 'is_del',
+            "id",
+            "package_name",
+            "signature_value",
+            "version",
+            "safe_version",
+            "last_version",
+            "vul_count",
+            "vul_critical_count",
+            "vul_high_count",
+            "vul_medium_count",
+            "vul_low_count",
+            "vul_info_count",
+            "project_count",
+            "language",
+            "license",
+            "is_del",
         ]

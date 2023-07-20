@@ -10,21 +10,19 @@ class SearchLanguageMode(Expression):
         super().__init__(output_field=models.IntegerField())
         self.search_keyword = search_keyword
         for expression in expressions:
-            if not hasattr(expression, 'resolve_expression'):
-                raise TypeError('%r is not an Expression' % expression)
+            if not hasattr(expression, "resolve_expression"):
+                raise TypeError("%r is not an Expression" % expression)
         self.expressions = expressions
 
-    def resolve_expression(self,
-                           query=None,
-                           allow_joins=True,
-                           reuse=None,
-                           summarize=False,
-                           for_save=False):
+    def resolve_expression(
+        self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False
+    ):
         c = self.copy()
         c.is_summary = summarize
         for pos, expression in enumerate(self.expressions):
             c.expressions[pos] = expression.resolve_expression(
-                query, allow_joins, reuse, summarize, for_save)
+                query, allow_joins, reuse, summarize, for_save
+            )
         return c
 
     def as_sql(self, compiler, connection, template=None):
@@ -35,8 +33,8 @@ class SearchLanguageMode(Expression):
             sql_params.extend(params)
         template = template or self.template
         data = {
-            'expressions': ','.join(sql_expressions),
-            'search_keyword': "%s",
+            "expressions": ",".join(sql_expressions),
+            "search_keyword": "%s",
         }
         sql_params.append(self.search_keyword)
         return template % data, sql_params

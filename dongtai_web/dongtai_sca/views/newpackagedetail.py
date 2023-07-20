@@ -22,31 +22,30 @@ logger = logging.getLogger(__name__)
 
 
 class PackageListArgsSerializer(serializers.Serializer):
-    page_size = serializers.IntegerField(default=20,
-                                         help_text=_('Number per page'))
-    page = serializers.IntegerField(default=1, help_text=_('Page index'))
+    page_size = serializers.IntegerField(default=20, help_text=_("Number per page"))
+    page = serializers.IntegerField(default=1, help_text=_("Page index"))
     languages = serializers.ListField(
-        child=serializers.IntegerField(default=1, help_text=_('language')))
+        child=serializers.IntegerField(default=1, help_text=_("language"))
+    )
     licenses = serializers.ListField(
-        child=serializers.IntegerField(default=1, help_text=_('license')))
+        child=serializers.IntegerField(default=1, help_text=_("license"))
+    )
     levels = serializers.ListField(
-        child=serializers.IntegerField(default=1, help_text=_('level')))
-    project_id = serializers.IntegerField(default=1, help_text=_('Page index'))
-    project_version_id = serializers.IntegerField(default=1,
-                                                  help_text=_('Page index'))
+        child=serializers.IntegerField(default=1, help_text=_("level"))
+    )
+    project_id = serializers.IntegerField(default=1, help_text=_("Page index"))
+    project_version_id = serializers.IntegerField(default=1, help_text=_("Page index"))
     keyword = serializers.CharField(help_text=_("search_keyword"))
     order_field = serializers.CharField(help_text=_("order_field"))
     order = serializers.CharField(help_text=_("order"))
 
 
-_NewResponseSerializer = get_response_serializer(
-    PackeageScaAssetDetailSerializer())
+_NewResponseSerializer = get_response_serializer(PackeageScaAssetDetailSerializer())
 
 
 class PackageDetail(UserEndPoint):
-
     @extend_schema_with_envcheck_v2(
-        tags=[_('Component')],
+        tags=[_("Component")],
         summary=_("Component Detail"),
         responses={200: _NewResponseSerializer},
     )

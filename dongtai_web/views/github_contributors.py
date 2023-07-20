@@ -24,6 +24,7 @@ async def timer(time, function):
         future.add_done_callback(function)
         await future
 
+
 _update = partial(get_github_contributors, update=True)
 
 

@@ -15,24 +15,23 @@ from django.utils.translation import gettext_lazy as _
 
 
 class IastVulLevelSerializers(serializers.ModelSerializer):
-
     class Meta:
-        fields = ['id', 'name_value']
+        fields = ["id", "name_value"]
         model = IastVulLevel
 
 
 _ResponseSerializer = get_response_serializer(
-    data_serializer=IastVulLevelSerializers(many=True), )
+    data_serializer=IastVulLevelSerializers(many=True),
+)
 
 
 class VulLevelList(AnonymousAndUserEndPoint):
     @extend_schema_with_envcheck(
-        tags=[_('Vul level list')],
-        summary=_('Vul level List'),
+        tags=[_("Vul level list")],
+        summary=_("Vul level List"),
         description=_("Get a list of vul level."),
         response_schema=_ResponseSerializer,
     )
     def get(self, request):
         queryset = IastVulLevel.objects.all()
-        return R.success(
-            data=IastVulLevelSerializers(queryset, many=True).data)
+        return R.success(data=IastVulLevelSerializers(queryset, many=True).data)

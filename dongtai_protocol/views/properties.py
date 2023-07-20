@@ -22,6 +22,7 @@ class PropertiesEndPoint(OpenApiEndPoint):
     """
     当前用户详情
     """
+
     name = "api-v1-properties"
     description = "获取属性配置"
 
@@ -42,7 +43,7 @@ class PropertiesEndPoint(OpenApiEndPoint):
             "msg": "success"
         }
         """
-        agent_token = request.query_params.get('agentName', None)
+        agent_token = request.query_params.get("agentName", None)
         agent = IastAgent.objects.filter(token=agent_token).first()
         if agent:
             queryset = IastAgentProperties.objects.filter(agent=agent).first()

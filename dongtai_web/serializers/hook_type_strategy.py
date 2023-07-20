@@ -9,10 +9,9 @@ from rest_framework import serializers
 
 
 class HookTypeSerialize(serializers.ModelSerializer):
-
     class Meta:
         model = HookType
-        fields = ['id', 'name']
+        fields = ["id", "name"]
 
 
 class StrategySerialize(serializers.ModelSerializer):
@@ -20,7 +19,7 @@ class StrategySerialize(serializers.ModelSerializer):
 
     class Meta:
         model = IastStrategyModel
-        fields = ['id', 'vul_name', "name"]
+        fields = ["id", "vul_name", "name"]
 
     def get_name(self, obj):
         return obj.vul_name

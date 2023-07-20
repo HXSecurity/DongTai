@@ -14,6 +14,7 @@ from rest_framework.serializers import SerializerMetaclass
 from rest_framework.serializers import CharField, IntegerField
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
+
 fake = Faker()
 
 
@@ -40,9 +41,9 @@ def data_gen_route(obj):
 def _datagen_int(field: IntegerField) -> int:
     max_value = 255
     min_value = -255
-    if hasattr(field, 'max_value') and field.max_value is not None:
+    if hasattr(field, "max_value") and field.max_value is not None:
         max_value = field.max_value
-    if hasattr(field, 'min_value') and field.min_value is not None:
+    if hasattr(field, "min_value") and field.min_value is not None:
         min_value = field.min_value
     return fake.pyint(min(max_value, min_value), max(max_value, min_value))
 
@@ -50,9 +51,9 @@ def _datagen_int(field: IntegerField) -> int:
 def _datagen_char(field: CharField) -> str:
     max_length = 255
     min_length = 0
-    if hasattr(field, 'max_length') and field.max_length is not None:
+    if hasattr(field, "max_length") and field.max_length is not None:
         max_length = field.max_length
-    if hasattr(field, 'min_length') and field.min_length is not None:
+    if hasattr(field, "min_length") and field.min_length is not None:
         min_length = field.min_length
     return fake.pystr(min(max_length, min_length), max(max_length, min_length))
 

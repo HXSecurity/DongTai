@@ -8,4 +8,4 @@ class IastProfile(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_profile'
+        db_table = "iast_profile"

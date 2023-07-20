@@ -27,7 +27,7 @@ class UserToken(UserEndPoint):
     def get(self, request):
         token, success = Token.objects.get_or_create(user=request.user)
 
-        return R.success(data={'token': token.key})
+        return R.success(data={"token": token.key})
 
 
 class UserDepartmentToken(UserEndPoint):
@@ -43,7 +43,7 @@ class UserDepartmentToken(UserEndPoint):
         department = request.user.get_department()
         if not department.token:
             update_department_data()
-        tokens = departments.values('id', 'token', 'name').all()
+        tokens = departments.values("id", "token", "name").all()
         for token in tokens:
-            token['token'] = 'GROUP' + token['token']
+            token["token"] = "GROUP" + token["token"]
         return R.success(data=list(tokens))

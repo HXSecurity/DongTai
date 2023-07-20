@@ -19,7 +19,6 @@ from dongtai_protocol.report.report_handler_factory import ReportHandler
 
 @ReportHandler.register(const.REPORT_VULN_OVER_POWER)
 class OverPowerHandler(IReportHandler):
-
     def parse(self):
         """
         {
@@ -39,20 +38,20 @@ class OverPowerHandler(IReportHandler):
         }
         :return:
         """
-        self.app_name = self.detail.get('app_name')
-        self.app_path = self.detail.get('app_path')
-        self.server_name = self.detail.get('server_name')
-        self.server_port = self.detail.get('server_port')
-        self.http_url = self.detail.get('http_url')
-        self.http_uri = self.detail.get('http_uri')
-        self.http_query_string = self.detail.get('http_query_string')
-        self.http_method = self.detail.get('http_method')
-        self.http_scheme = self.detail.get('http_scheme')
-        self.http_protocol = self.detail.get('http_protocol')
-        self.http_header = self.detail.get('http_header')
-        self.x_trace_id = self.detail.get('x-trace-id')
-        self.cookie = self.detail.get('cookie')
-        self.sql = self.detail.get('sql')
+        self.app_name = self.detail.get("app_name")
+        self.app_path = self.detail.get("app_path")
+        self.server_name = self.detail.get("server_name")
+        self.server_port = self.detail.get("server_port")
+        self.http_url = self.detail.get("http_url")
+        self.http_uri = self.detail.get("http_uri")
+        self.http_query_string = self.detail.get("http_query_string")
+        self.http_method = self.detail.get("http_method")
+        self.http_scheme = self.detail.get("http_scheme")
+        self.http_protocol = self.detail.get("http_protocol")
+        self.http_header = self.detail.get("http_header")
+        self.x_trace_id = self.detail.get("x-trace-id")
+        self.cookie = self.detail.get("cookie")
+        self.sql = self.detail.get("sql")
 
     def save(self):
         # 检查trace_id是否存于数据库中
@@ -70,25 +69,25 @@ class OverPowerHandler(IReportHandler):
             # 检查越权
             if vul_model[0].cookie != self.cookie:
                 detail_report = {
-                    'trace-id': self.x_trace_id,
-                    'server-name': self.server_name,
-                    'server-port': self.server_port,
-                    'http-method': self.http_method,
-                    'http-url': self.http_url,
-                    'http-query-string': self.http_query_string,
-                    'http-original-auth': vul_model[0].cookie,
-                    'http-original-user': self.get_user_from_auth(vul_model[0].cookie),
-                    'http-current-auth': self.cookie,
-                    'http-current-user': self.get_user_from_auth(self.cookie),
-                    'http-sql': self.server_name,
+                    "trace-id": self.x_trace_id,
+                    "server-name": self.server_name,
+                    "server-port": self.server_port,
+                    "http-method": self.http_method,
+                    "http-url": self.http_url,
+                    "http-query-string": self.http_query_string,
+                    "http-original-auth": vul_model[0].cookie,
+                    "http-original-user": self.get_user_from_auth(vul_model[0].cookie),
+                    "http-current-auth": self.cookie,
+                    "http-current-user": self.get_user_from_auth(self.cookie),
+                    "http-sql": self.server_name,
                 }
                 # 通过cookie查询原始的用户
                 # 检查是否已存在漏洞，如果存在，则忽略，如果不存在则上报漏洞
                 vuls = IastVulnerabilityModel.objects.filter(
                     vul_url=self.http_url,
-                    vul_type='越权漏洞',
+                    vul_type="越权漏洞",
                     vul_req_method=self.http_method,
-                    protocol=self.http_protocol
+                    protocol=self.http_protocol,
                 )
                 if len(vuls) > 0:
                     vuls[0].vul_count = vuls[0].vul_count + 1
@@ -96,8 +95,8 @@ class OverPowerHandler(IReportHandler):
                     vuls[0].save()
                 else:
                     IastVulnerabilityModel(
-                        type='越权漏洞',
-                        vul_level='中危',
+                        type="越权漏洞",
+                        vul_level="中危",
                         url=self.http_url,
                         uri=self.http_uri,
                         http_method=self.http_method,
@@ -105,9 +104,9 @@ class OverPowerHandler(IReportHandler):
                         http_protocol=self.http_protocol,
                         req_header=self.http_header,
                         req_params=self.http_query_string,
-                        req_data='',  # fixme 请求体 数据保存
-                        res_header='',  # fixme 响应头，暂时没有，后续补充
-                        res_body='',  # fixme 响应体数据
+                        req_data="",  # fixme 请求体 数据保存
+                        res_header="",  # fixme 响应头，暂时没有，后续补充
+                        res_body="",  # fixme 响应体数据
                         full_stack=json.dumps(detail_report, ensure_ascii=False),
                         top_stack="",
                         bottom_stack="",
@@ -118,9 +117,9 @@ class OverPowerHandler(IReportHandler):
                         server_id=self.server_id,  # fixme app id 暂时不存该字段
                         server_name=self.server_name,
                         counts=1,
-                        status='已上报',
+                        status="已上报",
                         first_time=int(time.time()),
-                        latest_time=int(time.time())
+                        latest_time=int(time.time()),
                     ).save()
         else:
             IastVulOverpower(
@@ -139,7 +138,7 @@ class OverPowerHandler(IReportHandler):
                 sql=self.sql,
                 user_id=self.user_id,
                 created_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                updated_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                updated_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             ).save()
 
     def get_user_from_auth(self, auth_value):

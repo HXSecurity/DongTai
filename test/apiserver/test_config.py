@@ -9,7 +9,6 @@ from dongtai_common.models.agent_config import MetricGroup
 
 
 class VulDetailTestCase(APITestCase):
-
     def test_agent_config_generate(self):
         print(get_agent_config(1))
 
@@ -25,4 +24,4 @@ class VulDetailTestCase(APITestCase):
         self.user = User.objects.filter(pk=1).first()
         assert self.user is not None
         self.client.force_authenticate(user=self.user)
-        response = self.client.post('/api/v1/agent/thresholdv2')
+        response = self.client.post("/api/v1/agent/thresholdv2")

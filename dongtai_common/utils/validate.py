@@ -41,7 +41,7 @@ class Validate:
         :param obj:
         :return:
         """
-        return obj is None or obj == ''
+        return obj is None or obj == ""
 
 
 @dataclass
@@ -52,11 +52,11 @@ class FileHashPair:
 
 def calculate_dir_sha() -> List[FileHashPair]:
     dic_list = []
-    for (path, dirs, files) in os.walk(os.path.join(BASE_DIR, 'static/data')):
+    for path, dirs, files in os.walk(os.path.join(BASE_DIR, "static/data")):
         for file_ in sorted(files):
             fullpath = os.path.join(path, file_)
             sha = hashlib.sha1(usedforsecurity=False)
-            with open(fullpath, 'rb') as f:
+            with open(fullpath, "rb") as f:
                 while True:
                     block = f.read(1)
                     if not block:

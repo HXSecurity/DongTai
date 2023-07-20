@@ -40,29 +40,32 @@ class HookStrategy(models.Model):
     update_time = models.IntegerField(default=lambda: int(time()))
     created_by = models.IntegerField()
     enable = models.IntegerField(default=1)
-    language = models.ForeignKey(IastProgramLanguage,
-                                 blank=True,
-                                 on_delete=models.DO_NOTHING,
-                                 db_constraint=False)
+    language = models.ForeignKey(
+        IastProgramLanguage,
+        blank=True,
+        on_delete=models.DO_NOTHING,
+        db_constraint=False,
+    )
     type = models.IntegerField()
 
     hooktype = models.ForeignKey(
         HookType,
-        verbose_name=_('type'),
+        verbose_name=_("type"),
         blank=True,
         null=True,
         help_text=_(
-            'The department this user belongs to. A user will get all permissions '
-            'granted to each of their department.'),
+            "The department this user belongs to. A user will get all permissions "
+            "granted to each of their department."
+        ),
         related_name="strategies",
         related_query_name="strategy",
         on_delete=models.DO_NOTHING,
     )
     strategy = models.ForeignKey(
-        'dongtai_common.IastStrategyModel',
+        "dongtai_common.IastStrategyModel",
         default=-1,
         on_delete=models.DO_NOTHING,
-        db_column='strategy_id',
+        db_column="strategy_id",
         db_constraint=False,
         related_name="strategies",
         related_query_name="strategy",
@@ -77,4 +80,4 @@ class HookStrategy(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_hook_strategy'
+        db_table = "iast_hook_strategy"

@@ -16,8 +16,15 @@ import time
 from ddt import ddt, data, unpack
 from dongtai_web.serializers.vul import VulSerializer
 
-TEST_DATA = ('', None, 'Django', 'Apache Tomcat/9.0.37', 'Tomcat/8.x',
-             'php-fpm', 'WebLogic')
+TEST_DATA = (
+    "",
+    None,
+    "Django",
+    "Apache Tomcat/9.0.37",
+    "Tomcat/8.x",
+    "php-fpm",
+    "WebLogic",
+)
 
 
 @ddt

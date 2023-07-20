@@ -1,11 +1,59 @@
-[tool.pylint.messages_control]
-disable = "C0330, C0326"
-
-[tool.pylint.format]
-max-line-length = "88"
-
 [tool.mypy]
 plugins = ["mypy_django_plugin.main"]
 
 [tool.django-stubs]
 django_settings_module = "dongtai_conf.settings"
+
+[tool.black]
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 88
+select = [
+    "F",   # Pyflakes
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "I",   # isort
+    "UP",  # pyupgrade
+    "YTT", # flake8-2020
+    # "B",   # flake8-bugbear
+    "C4",   # flake8-comprehensions
+    "T10",  # flake8-debugger
+    "FA",   # flake8-future-annotations
+    "ISC",  # flake8-implicit-str-concat
+    "PIE",  # flake8-pie
+    "T20",  # flake8-print
+    "Q",    # flake8-quotes
+    "RSE",  # flake8-raise
+    "RET",  # flake8-return
+    "SLOT", # flake8-slots
+    "SIM",  # flake8-simplify
+    "TCH",  # flake8-type-checking
+    "INT",  # flake8-gettext
+    "ERA",  # eradicate
+    "PGH",  # pygrep-hooks
+    "PL",   # Pylint
+    "TRY",  # tryceratops
+    "FLY",  # flynt
+    # "PERF", # Perflint
+    "RUF", # Ruff-specific rules
+]
+ignore = [
+    "E501",    # Line too long, handled by black
+    "SIM112",  # Use capitalized environment variable
+    "PGH003",  # Use specific rule codes when ignoring type issues
+    "PLR091",  # Too many ...
+    "PLR2004", # Magic value used in comparison
+    "RUF012",  # Mutable class attributes should be annotated with typing.ClassVar
+    "TRY003",
+    "TRY300",
+    "TRY301",
+    "TRY400",
+]
+target-version = "py310"
+
+[tool.ruff.per-file-ignores]
+"test/*.py" = ["T201"]
+"**/tests.py" = ["T201"]
+"deploy/*.py" = ["T201"]
+"dongtai_conf/*.py" = ["T201"]

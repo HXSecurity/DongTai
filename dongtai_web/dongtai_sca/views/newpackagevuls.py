@@ -24,22 +24,22 @@ logger = logging.getLogger(__name__)
 
 
 class PackageVulsListArgsSerializer(serializers.Serializer):
-    page_size = serializers.IntegerField(default=20,
-                                         help_text=_('Number per page'))
-    page = serializers.IntegerField(default=1, help_text=_('Page index'))
+    page_size = serializers.IntegerField(default=20, help_text=_("Number per page"))
+    page = serializers.IntegerField(default=1, help_text=_("Page index"))
 
 
 NewPackageVulSResponseSerializer = get_response_serializer(
-    PackageVulSerializer(many=True))
+    PackageVulSerializer(many=True)
+)
 
 
 class NewPackageVuls(UserEndPoint):
-
     @extend_schema_with_envcheck_v2(
-        tags=[_('Component')],
+        tags=[_("Component")],
         summary="组件漏洞列表",
         parameters=[PackageVulsListArgsSerializer],
-        responses={200: NewPackageVulSResponseSerializer})
+        responses={200: NewPackageVulSResponseSerializer},
+    )
     def get(self, request, language_id, package_name, package_version):
         ser = PackageVulsListArgsSerializer(data=request.GET)
         try:
@@ -47,14 +47,19 @@ class NewPackageVuls(UserEndPoint):
                 pass
         except ValidationError as e:
             return R.failure(data=e.detail)
-        asset_vuls = IastAssetVulV2.objects.filter(
-            iastvulassetrelationv2__asset__language_id=language_id,
-            iastvulassetrelationv2__asset__package_name=package_name,
-            iastvulassetrelationv2__asset__version=package_version).order_by(
-                '-id').all()
-        page_info, data = self.get_paginator(asset_vuls,
-                                             ser.validated_data['page'],
-                                             ser.validated_data['page_size'])
+        asset_vuls = (
+            IastAssetVulV2.objects.filter(
+                iastvulassetrelationv2__asset__language_id=language_id,
+                iastvulassetrelationv2__asset__package_name=package_name,
+                iastvulassetrelationv2__asset__version=package_version,
+            )
+            .order_by("-id")
+            .all()
+        )
+        page_info, data = self.get_paginator(
+            asset_vuls, ser.validated_data["page"], ser.validated_data["page_size"]
+        )
 
-        return R.success(data=PackageVulSerializer(data, many=True).data,
-                         page=page_info)
+        return R.success(
+            data=PackageVulSerializer(data, many=True).data, page=page_info
+        )

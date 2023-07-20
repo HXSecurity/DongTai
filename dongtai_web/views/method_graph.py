@@ -16,61 +16,71 @@ from dongtai_common.utils.validate import Validate
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 
-logger = logging.getLogger('dongtai-webapi')
+logger = logging.getLogger("dongtai-webapi")
 
 
 class MethodGraph(AnonymousAndUserEndPoint):
-    @extend_schema(
-        summary="调用链图",
-        tags=["Method Pool"]
-    )
+    @extend_schema(summary="调用链图", tags=["Method Pool"])
     def get(self, request):
         try:
-            method_pool_id = int(request.query_params.get('method_pool_id'))
-            method_pool_type = request.query_params.get('method_pool_type')
-            replay_id = request.query_params.get('method_pool_replay_id', None)
-            replay_type = request.query_params.get('replay_type', None)
+            method_pool_id = int(request.query_params.get("method_pool_id"))
+            method_pool_type = request.query_params.get("method_pool_type")
+            replay_id = request.query_params.get("method_pool_replay_id", None)
+            replay_type = request.query_params.get("replay_type", None)
             if replay_type is not None and int(replay_type) not in [
-                    const.API_REPLAY, const.REQUEST_REPLAY
+                const.API_REPLAY,
+                const.REQUEST_REPLAY,
             ]:
                 return R.failure(msg="replay_type error")
-            replay_type = const.REQUEST_REPLAY if replay_type is None else int(
-                replay_type)
+            replay_type = (
+                const.REQUEST_REPLAY if replay_type is None else int(replay_type)
+            )
             if Validate.is_empty(method_pool_id) and replay_id is None:
-                return R.failure(msg=_('Method pool ID is empty'))
+                return R.failure(msg=_("Method pool ID is empty"))
 
-            auth_agents = self.get_auth_and_anonymous_agents(request.user).values('id')
-            auth_agent_ids = auth_agents.values_list('id', flat=True)
+            auth_agents = self.get_auth_and_anonymous_agents(request.user).values("id")
+            auth_agent_ids = auth_agents.values_list("id", flat=True)
 
             cur_ids = []
             for item in auth_agent_ids:
                 cur_ids.append(int(item))
 
-            if method_pool_type == 'normal' and MethodPool.objects.filter(
-                    agent_id__in=cur_ids, id=method_pool_id).exists():
-                method_pool = MethodPool.objects.filter(
-                    id=method_pool_id).first()
-            elif method_pool_type == 'replay' and replay_id:
+            if (
+                method_pool_type == "normal"
+                and MethodPool.objects.filter(
+                    agent_id__in=cur_ids, id=method_pool_id
+                ).exists()
+            ):
+                method_pool = MethodPool.objects.filter(id=method_pool_id).first()
+            elif method_pool_type == "replay" and replay_id:
                 method_pool = IastAgentMethodPoolReplay.objects.filter(
-                    id=replay_id, replay_type=replay_type).first()
-            elif method_pool_type == 'replay' and MethodPool.objects.filter(
-                    agent_id__in=cur_ids,
-                    id=method_pool_id).exists():
+                    id=replay_id, replay_type=replay_type
+                ).first()
+            elif (
+                method_pool_type == "replay"
+                and MethodPool.objects.filter(
+                    agent_id__in=cur_ids, id=method_pool_id
+                ).exists()
+            ):
                 method_pool = IastAgentMethodPoolReplay.objects.filter(
-                    relation_id=method_pool_id,
-                    replay_type=replay_type).first()
+                    relation_id=method_pool_id, replay_type=replay_type
+                ).first()
             else:
-                return R.failure(msg=_('Stain call map type does not exist'))
+                return R.failure(msg=_("Stain call map type does not exist"))
 
             if method_pool is None:
-                return R.failure(msg=_('Data does not exist or no permission to access'))
+                return R.failure(
+                    msg=_("Data does not exist or no permission to access")
+                )
 
-            data, link_count, method_count = self.search_all_links(method_pool.method_pool)
+            data, link_count, method_count = self.search_all_links(
+                method_pool.method_pool
+            )
             return R.success(data=data)
 
         except Exception as e:
             logger.error(e, exc_info=True)
-            return R.failure(msg=_('Page and PageSize can only be numeric'))
+            return R.failure(msg=_("Page and PageSize can only be numeric"))
 
     def get_method_pool(self, user, method_pool_id):
         """
@@ -79,13 +89,12 @@ class MethodGraph(AnonymousAndUserEndPoint):
         :return:
         """
         return MethodPool.objects.filter(
-            agent__in=self.get_auth_and_anonymous_agents(user),
-            id=method_pool_id
+            agent__in=self.get_auth_and_anonymous_agents(user), id=method_pool_id
         ).first()
 
     def search_all_links(self, method_pool):
         engine = VulEngineV2()
-        engine.prepare(method_pool=json.loads(method_pool), vul_method_signature='')
+        engine.prepare(method_pool=json.loads(method_pool), vul_method_signature="")
         engine.search_all_link()
         return engine.get_taint_links()
 
@@ -103,25 +112,30 @@ class MethodGraph(AnonymousAndUserEndPoint):
             for sink in sinks:
                 engine.search(
                     method_pool=json.loads(method_pool.method_pool),
-                    vul_method_signature=sink
+                    vul_method_signature=sink,
                 )
                 status, stack, source, sink = engine.result()
                 if status is False:
                     continue
 
                 method_caller_set = MethodGraph.convert_to_set(stack)
-                if self.check_match(
+                if (
+                    self.check_match(
                         method_caller_set=method_caller_set,
                         source_set=sources,
                         propagator_set=propagators,
-                        sink_set=sinks
-                ) is False:
+                        sink_set=sinks,
+                    )
+                    is False
+                ):
                     continue
 
                 links.append(stack)
         else:
             method_caller_set = self.convert_method_pool_to_set(method_pool.method_pool)
-            if self.check_match(method_caller_set, source_set=sources, propagator_set=propagators):
+            if self.check_match(
+                method_caller_set, source_set=sources, propagator_set=propagators
+            ):
                 links.append([json.loads(method_pool.method_pool)])
         return links
 
@@ -132,26 +146,28 @@ class MethodGraph(AnonymousAndUserEndPoint):
                     left = None
                     edges = list()
                     for node in link:
-                        if node['source']:
-                            left = node['invokeId']
+                        if node["source"]:
+                            left = node["invokeId"]
                         elif left is not None:
-                            right = node['invokeId']
-                            edges.append({
-                                'source': str(left),
-                                'target': str(right)
-                            })
+                            right = node["invokeId"]
+                            edges.append({"source": str(left), "target": str(right)})
                             left = right
                     for edge in edges:
-                        for _edge in all_links['edges']:
-                            if 'selected' not in _edge and _edge['source'] == edge['source'] and _edge['target'] == \
-                                    edge['target']:
-                                _edge['selected'] = True
+                        for _edge in all_links["edges"]:
+                            if (
+                                "selected" not in _edge
+                                and _edge["source"] == edge["source"]
+                                and _edge["target"] == edge["target"]
+                            ):
+                                _edge["selected"] = True
 
     def convert_method_pool_to_set(self, method_pool):
         method_callers = json.loads(method_pool)
         return MethodGraph.convert_to_set(method_callers)
 
-    def check_match(self, method_caller_set, sink_set=None, source_set=None, propagator_set=None):
+    def check_match(
+        self, method_caller_set, sink_set=None, source_set=None, propagator_set=None
+    ):
         """
         :param method_caller_set:
         :param sink_set:

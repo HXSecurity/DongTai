@@ -25,15 +25,20 @@ class AgentDeployArgsSerializer(serializers.Serializer):
 
 
 _ResponseSerializer = get_response_serializer(
-    status_msg_keypair=(((201, _("Corresponding deployment document could not be found")), ''), ))
+    status_msg_keypair=(
+        ((201, _("Corresponding deployment document could not be found")), ""),
+    )
+)
 
 
 class AgentDeploy(UserEndPoint):
-    @extend_schema_with_envcheck([AgentDeployArgsSerializer],
-                                 tags=[_('Documents')],
-                                 summary=_('Document of Agent Deploy'),
-                                 description=_("Document of Agent Deploy"),
-                                 response_schema=_ResponseSerializer)
+    @extend_schema_with_envcheck(
+        [AgentDeployArgsSerializer],
+        tags=[_("Documents")],
+        summary=_("Document of Agent Deploy"),
+        description=_("Document of Agent Deploy"),
+        response_schema=_ResponseSerializer,
+    )
     def get(self, request):
         ser = AgentDeployArgsSerializer(data=request.GET)
         try:
@@ -43,5 +48,4 @@ class AgentDeploy(UserEndPoint):
         desc = IastDeployDesc.objects.filter(**ser.validated_data).first()
         if desc:
             return R.success(data=model_to_dict(desc))
-        return R.failure(
-            msg=_("Corresponding deployment document could not be found"))
+        return R.failure(msg=_("Corresponding deployment document could not be found"))

@@ -14,10 +14,12 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 
 logger = logging.getLogger("django")
 
-_ResponseSerializer = get_response_serializer(status_msg_keypair=(
-    ((202, _('Parameter error')), ''),
-    ((201, _('Created success')), ''),
-))
+_ResponseSerializer = get_response_serializer(
+    status_msg_keypair=(
+        ((202, _("Parameter error")), ""),
+        ((201, _("Created success")), ""),
+    )
+)
 
 
 class ProjectVersionAdd(UserEndPoint):
@@ -26,11 +28,12 @@ class ProjectVersionAdd(UserEndPoint):
 
     @extend_schema_with_envcheck(
         request=VersionModifySerializer,
-        tags=[_('Project')],
-        summary=_('Projects Version Add'),
-        description=_("""Add project version information according to the given conditions;
+        tags=[_("Project")],
+        summary=_("Projects Version Add"),
+        description=_(
+            """Add project version information according to the given conditions;
             if the version id is specified, the corresponding version information is updated according to the given conditions."""
-                      ),
+        ),
         response_schema=_ResponseSerializer,
     )
     def post(self, request):
@@ -39,10 +42,11 @@ class ProjectVersionAdd(UserEndPoint):
             department = request.user.get_relative_department()
             result = version_modify(request.user, department, request.data)
             if result.get("status", "202") == "202":
-                return R.failure(status=202,
-                                 msg=result.get("msg", _("Parameter error")))
+                return R.failure(
+                    status=202, msg=result.get("msg", _("Parameter error"))
+                )
             else:
-                return R.success(msg=_('Created success'), data=result.get("data", {}))
+                return R.success(msg=_("Created success"), data=result.get("data", {}))
 
         except Exception as e:
             logger.error(e, exc_info=True)

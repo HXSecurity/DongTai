@@ -49,18 +49,24 @@ def getAppVulInfoById(vul_ids=None):
     if vul_ids is None:
         return {}
     vul_info = IastVulnerabilityModel.objects.filter(id__in=vul_ids).values(
-        "id", "top_stack", "bottom_stack", "status_id", "status__name",
-        "agent_id", "latest_time")
+        "id",
+        "top_stack",
+        "bottom_stack",
+        "status_id",
+        "status__name",
+        "agent_id",
+        "latest_time",
+    )
     vul_result = {
         "vul_info": {},
         "agent_ids": [],
     }
     if vul_info:
         for item in vul_info:
-            vul_id = item['id']
-            del item['id']
-            vul_result['agent_ids'].append(item['agent_id'])
-            vul_result['vul_info'][vul_id] = item
+            vul_id = item["id"]
+            del item["id"]
+            vul_result["agent_ids"].append(item["agent_id"])
+            vul_result["vul_info"][vul_id] = item
     return vul_result
 
 
@@ -71,16 +77,21 @@ def getProjectInfoByAgentId(agent_ids=None):
     else:
         agent_ids = getUniqueList(agent_ids)
     agent_info = IastAgent.objects.filter(id__in=agent_ids).values(
-        "id", "project_name", "project_version_id",
-        "project_version__version_name", "bind_project_id",
-        "server__container")
+        "id",
+        "project_name",
+        "project_version_id",
+        "project_version__version_name",
+        "bind_project_id",
+        "server__container",
+    )
     agent_result = {}
     if agent_info:
         for item in agent_info:
-            agent_id = item['id']
-            del item['id']
-            item['server_type'] = VulSerializer.split_container_name(
-                item['server__container'])
+            agent_id = item["id"]
+            del item["id"]
+            item["server_type"] = VulSerializer.split_container_name(
+                item["server__container"]
+            )
             agent_result[agent_id] = item
     return agent_result
 
@@ -92,13 +103,11 @@ def getHookTypeName(ids=None):
     else:
         type_arr = {}
 
-    type_info = HookType.objects.filter(id__in=ids).values(
-        "id", "type", "name")
+    type_info = HookType.objects.filter(id__in=ids).values("id", "type", "name")
     if type_info:
         for item in type_info:
-
-            type_id = item['id']
-            del item['id']
+            type_id = item["id"]
+            del item["id"]
             type_arr[type_id] = item
     return type_arr
 
@@ -106,6 +115,8 @@ def getHookTypeName(ids=None):
 # 应用漏洞推送
 def appVulShareConfig(app_vul_ids, user_id):
     return {}
+
+
 #    query_vul_inetration = IastVulInegration.objects.filter(
 #        vul_id__in=app_vul_ids,
 #        user_id=user_id).values("vul_id", "jira_url", "jira_id", "gitlab_url",
@@ -155,17 +166,18 @@ def auth_user_list_str(user=None, user_id=0, user_table=""):
     department_ids = list(departments.values_list("id", flat=True))
     department_ids_arr = ",".join(list(map(str, department_ids)))
     user_ids = list(
-        User.objects.filter(department__in=departments).values_list("id",
-                                                                    flat=True))
-    result['user_list'] = user_ids
+        User.objects.filter(department__in=departments).values_list("id", flat=True)
+    )
+    result["user_list"] = user_ids
     user_ids_arr = list(map(str, user_ids))
     user_str = ",".join(user_ids_arr)
-    result['user_str'] = user_str
-    result['department_list'] = department_ids
-    result['department_str'] = department_ids_arr
+    result["user_str"] = user_str
+    result["department_list"] = department_ids
+    result["department_str"] = department_ids_arr
     if user_table:
-        result['user_condition_str'] = " and {}.department_id in ({})".format(
-            user_table, department_ids_arr)
+        result["user_condition_str"] = " and {}.department_id in ({})".format(
+            user_table, department_ids_arr
+        )
     return result
 
 

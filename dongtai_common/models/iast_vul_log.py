@@ -20,16 +20,14 @@ class IastVulLog(models.Model):
     msg = models.TextField()
     meta_data = models.JSONField()
     datetime = models.IntegerField(default=lambda: int(time()))
-    vul = models.ForeignKey(IastVulnerabilityModel,
-                            models.DO_NOTHING,
-                            default=-1,
-                            db_constraint=False)
-    asset_vul = models.ForeignKey(IastAssetVul,
-                                  models.DO_NOTHING,
-                                  default=-1,
-                                  db_constraint=False)
+    vul = models.ForeignKey(
+        IastVulnerabilityModel, models.DO_NOTHING, default=-1, db_constraint=False
+    )
+    asset_vul = models.ForeignKey(
+        IastAssetVul, models.DO_NOTHING, default=-1, db_constraint=False
+    )
     user = models.ForeignKey(User, models.DO_NOTHING, db_constraint=False)
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_vul_log'
+        db_table = "iast_vul_log"

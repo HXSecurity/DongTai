@@ -13,10 +13,12 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 
 logger = logging.getLogger("django")
 
-_ResponseSerializer = get_response_serializer(status_msg_keypair=(
-    ((202, _('Parameter error')), ''),
-    ((201, _('Update completed')), ''),
-))
+_ResponseSerializer = get_response_serializer(
+    status_msg_keypair=(
+        ((202, _("Parameter error")), ""),
+        ((201, _("Update completed")), ""),
+    )
+)
 
 
 class ProjectVersionUpdate(UserEndPoint):
@@ -25,10 +27,11 @@ class ProjectVersionUpdate(UserEndPoint):
 
     @extend_schema_with_envcheck(
         request=VersionModifySerializer,
-        tags=[_('Project')],
-        summary=_('Projects Version Update'),
+        tags=[_("Project")],
+        summary=_("Projects Version Update"),
         description=_(
-            "Update the version information of the corresponding version id."),
+            "Update the version information of the corresponding version id."
+        ),
         response_schema=_ResponseSerializer,
     )
     def post(self, request):
@@ -40,8 +43,8 @@ class ProjectVersionUpdate(UserEndPoint):
             if not version_id or result.get("status", "202") == "202":
                 return R.failure(status=202, msg=_("Parameter error"))
             else:
-                return R.success(msg=_('Update completed'))
+                return R.success(msg=_("Update completed"))
 
         except Exception as e:
             logger.error(e)
-            return R.failure(status=202, msg=_('Parameter error'))
+            return R.failure(status=202, msg=_("Parameter error"))

@@ -14,14 +14,15 @@ from dongtai_web.serializers.agent import AgentToggleArgsSerializer
 
 
 class _AgentStopBodyArgsSerializer(serializers.Serializer):
-    id = serializers.IntegerField(help_text=_(
-        'The id corresponding to the agent.'))
-    ids = serializers.CharField(help_text=_(
-        'The id corresponding to the agent, use"," for segmentation.'))
+    id = serializers.IntegerField(help_text=_("The id corresponding to the agent."))
+    ids = serializers.CharField(
+        help_text=_('The id corresponding to the agent, use"," for segmentation.')
+    )
 
 
 _ResponseSerializer = get_response_serializer(
-    status_msg_keypair=(((201, _('Suspending ...')), ''), ))
+    status_msg_keypair=(((201, _("Suspending ...")), ""),)
+)
 
 
 class AgentStart(UserEndPoint):
@@ -30,27 +31,32 @@ class AgentStart(UserEndPoint):
 
     @extend_schema_with_envcheck(
         request=AgentToggleArgsSerializer,
-        tags=[_('Agent')],
-        summary=_('Agent Start'),
-        description=_(
-            "Start the stopped agent by specifying the id."
-        ),
-        response_schema=_ResponseSerializer)
+        tags=[_("Agent")],
+        summary=_("Agent Start"),
+        description=_("Start the stopped agent by specifying the id."),
+        response_schema=_ResponseSerializer,
+    )
     def post(self, request):
-        agent_id = request.data.get('id')
-        agent_ids = request.data.get('ids', None)
+        agent_id = request.data.get("id")
+        agent_ids = request.data.get("ids", None)
         department = request.user.get_relative_department()
         if agent_ids:
             try:
-                agent_ids = [int(i) for i in agent_ids.split(',')]
+                agent_ids = [int(i) for i in agent_ids.split(",")]
             except BaseException:
                 return R.failure(_("Parameter error"))
         if agent_id:
-            agent = IastAgent.objects.filter(department__in=department, id=agent_id).first()
+            agent = IastAgent.objects.filter(
+                department__in=department, id=agent_id
+            ).first()
             if agent is None:
-                return R.failure(msg=_('Engine does not exist or no permission to access'))
+                return R.failure(
+                    msg=_("Engine does not exist or no permission to access")
+                )
             if agent.is_control == 1 and agent.control != 3 and agent.control != 4:
-                return R.failure(msg=_('Agent is stopping service, please try again later'))
+                return R.failure(
+                    msg=_("Agent is stopping service, please try again later")
+                )
             agent.control = 3
             agent.is_control = 1
             agent.except_running_status = 1
@@ -58,7 +64,9 @@ class AgentStart(UserEndPoint):
             agent.save()
         if agent_ids:
             for agent_id in agent_ids:
-                agent = IastAgent.objects.filter(department__in=department, id=agent_id).first()
+                agent = IastAgent.objects.filter(
+                    department__in=department, id=agent_id
+                ).first()
                 if agent is None:
                     continue
                 if agent.is_control == 1 and agent.control != 3 and agent.control != 4:
@@ -68,4 +76,4 @@ class AgentStart(UserEndPoint):
                 agent.except_running_status = 1
                 agent.latest_time = int(time.time())
                 agent.save()
-        return R.success(msg=_('Starting…'))
+        return R.success(msg=_("Starting…"))

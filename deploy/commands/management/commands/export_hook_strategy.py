@@ -17,17 +17,29 @@ def transform_hooktype(hook_type: HookType) -> HookType:
 
 
 def export_strategy() -> list:
-    strategies = IastStrategyModel.objects.filter(
-        user_id=1, state__in=['enable', 'disable']).order_by('id').all()
+    strategies = (
+        IastStrategyModel.objects.filter(user_id=1, state__in=["enable", "disable"])
+        .order_by("id")
+        .all()
+    )
 
-    strategies_res = sorted([
-        model_to_dict(i,
-                      exclude=[
-                          'id', 'hook_type', 'vul_strategy', 'create_time',
-                          'update_time', 'dt'
-                      ]) for i in strategies
-    ],
-        key=lambda item: item['vul_type'])
+    strategies_res = sorted(
+        [
+            model_to_dict(
+                i,
+                exclude=[
+                    "id",
+                    "hook_type",
+                    "vul_strategy",
+                    "create_time",
+                    "update_time",
+                    "dt",
+                ],
+            )
+            for i in strategies
+        ],
+        key=lambda item: item["vul_type"],
+    )
     return strategies_res
 
 
@@ -36,54 +48,62 @@ def export_hooktype(language_id: int) -> list:
         language_id=language_id,
         enable__in=[0, 1],
         created_by__in=[1],
-    ).values_list('id', flat=True)
-    strategies = HookType.objects.filter(
-        language_id=language_id, created_by__in=[1],
-        pk__in=list(qs1)).order_by('id').all()
+    ).values_list("id", flat=True)
+    strategies = (
+        HookType.objects.filter(
+            language_id=language_id, created_by__in=[1], pk__in=list(qs1)
+        )
+        .order_by("id")
+        .all()
+    )
 
     strategies = map(transform_hooktype, list(strategies))
-    strategies_res = sorted([
-        model_to_dict(i,
-                      exclude=[
-                          'id', 'hook_type', 'vul_strategy', 'create_time',
-                          'update_time', 'dt'
-                      ]) for i in strategies
-    ],
-        key=lambda item: item['value'])
+    strategies_res = sorted(
+        [
+            model_to_dict(
+                i,
+                exclude=[
+                    "id",
+                    "hook_type",
+                    "vul_strategy",
+                    "create_time",
+                    "update_time",
+                    "dt",
+                ],
+            )
+            for i in strategies
+        ],
+        key=lambda item: item["value"],
+    )
     return strategies_res
 
 
 class Command(BaseCommand):
-    help = 'export all hook_strategy'
+    help = "export all hook_strategy"
     functions = []
 
     def add_arguments(self, parser):
         pass
 
     def handle(self, *args, **options):
-        POLICY_DIR = os.path.join(BASE_DIR, 'static/data/')
+        POLICY_DIR = os.path.join(BASE_DIR, "static/data/")
         for k, v in LANGUAGE_DICT.items():
-            c = HookProfilesEndPoint.get_profiles(language_id=v,
-                                                  system_only=True)
-            with open(os.path.join(POLICY_DIR, f'{k.lower()}_policy.json'),
-                      'w+') as fp:
+            c = HookProfilesEndPoint.get_profiles(language_id=v, system_only=True)
+            with open(os.path.join(POLICY_DIR, f"{k.lower()}_policy.json"), "w+") as fp:
                 json.dump(c, fp, indent=4, sort_keys=True)
 
-            c = HookProfilesEndPoint.get_profiles(language_id=v,
-                                                  full=True,
-                                                  system_only=True)
+            c = HookProfilesEndPoint.get_profiles(
+                language_id=v, full=True, system_only=True
+            )
             with open(
-                    os.path.join(POLICY_DIR, f'{k.lower()}_full_policy.json'),
-                    'w+') as fp:
+                os.path.join(POLICY_DIR, f"{k.lower()}_full_policy.json"), "w+"
+            ) as fp:
                 json.dump(c, fp, indent=4, sort_keys=True)
-            with open(os.path.join(POLICY_DIR, f'{k.lower()}_hooktype.json'),
-                      'w+') as fp:
-                json.dump(export_hooktype(language_id=v),
-                          fp,
-                          indent=4,
-                          sort_keys=True)
-        with open(os.path.join(POLICY_DIR, f'vul_strategy.json'), 'w+') as fp:
+            with open(
+                os.path.join(POLICY_DIR, f"{k.lower()}_hooktype.json"), "w+"
+            ) as fp:
+                json.dump(export_hooktype(language_id=v), fp, indent=4, sort_keys=True)
+        with open(os.path.join(POLICY_DIR, f"vul_strategy.json"), "w+") as fp:
             json.dump(export_strategy(), fp, indent=4, sort_keys=True)
 
-        self.stdout.write(
-            self.style.SUCCESS('Successfully export strategy .'))
+        self.stdout.write(self.style.SUCCESS("Successfully export strategy ."))

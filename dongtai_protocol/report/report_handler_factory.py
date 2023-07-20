@@ -13,7 +13,7 @@ from dongtai_conf import settings
 from dongtai_protocol.report.log_service import LogService
 from dongtai_common.models.agent import IastAgent
 
-logger = logging.getLogger('dongtai.openapi')
+logger = logging.getLogger("dongtai.openapi")
 
 
 class ReportHandler:
@@ -31,7 +31,7 @@ class ReportHandler:
         :return:
         """
         try:
-            report_type = reports.get('type')
+            report_type = reports.get("type")
             # 根据消息类型，转发上报到指定地址
             if report_type == 1:
                 isCoreInstalled = reports.get("detail", {}).get("isCoreInstalled", None)
@@ -42,23 +42,27 @@ class ReportHandler:
                     pass
                 elif isCoreInstalled == 0:
                     is_core_running = 2
-                    IastAgent.objects.filter(
-                        user=user,
-                        id=agentId).update(actual_running_status=2)
-                    IastAgent.objects.filter(user=user, id=agentId).update(is_core_running=is_core_running)
+                    IastAgent.objects.filter(user=user, id=agentId).update(
+                        actual_running_status=2
+                    )
+                    IastAgent.objects.filter(user=user, id=agentId).update(
+                        is_core_running=is_core_running
+                    )
                 else:
                     if isCoreRunning == 1:
                         is_core_running = 1
-                        IastAgent.objects.filter(
-                            user=user,
-                            id=agentId).update(actual_running_status=1)
+                        IastAgent.objects.filter(user=user, id=agentId).update(
+                            actual_running_status=1
+                        )
                     else:
                         is_core_running = 0
-                        IastAgent.objects.filter(
-                            user=user,
-                            id=agentId).update(actual_running_status=2)
+                        IastAgent.objects.filter(user=user, id=agentId).update(
+                            actual_running_status=2
+                        )
 
-                    IastAgent.objects.filter(user=user, id=agentId).update(is_core_running=is_core_running)
+                    IastAgent.objects.filter(user=user, id=agentId).update(
+                        is_core_running=is_core_running
+                    )
             # web hook
             # req = requests.post(
             #     settings.AGENT_ENGINE_URL.format(user_id=user.id, report_type=report_type),
@@ -67,7 +71,9 @@ class ReportHandler:
             class_of_handler = ReportHandler.HANDLERS.get(report_type)
             if class_of_handler is None:
                 if report_type in [1, 81, 33, 36, 17, 18, 97, 37]:
-                    logger.error(_('Report type {} handler does not exist').format(report_type))
+                    logger.error(
+                        _("Report type {} handler does not exist").format(report_type)
+                    )
                 return None
             # if report_type == 36:
             #    jsonlogger = logging.getLogger('jsonlogger')
@@ -80,24 +86,27 @@ class ReportHandler:
 
     @classmethod
     def register(cls, handler_name):
-
         def wrapper(handler):
-            async_send = settings.config.getboolean('task', 'async_send', fallback=False)
+            async_send = settings.config.getboolean(
+                "task", "async_send", fallback=False
+            )
             if not async_send:
                 cls.log_service_disabled = True
             if cls.log_service is None and not cls.log_service_disabled:
-                host = settings.config.get('log_service', 'host')
-                port = settings.config.getint('log_service', 'port')
+                host = settings.config.get("log_service", "host")
+                port = settings.config.getint("log_service", "port")
                 if not host or not port:
-                    logger.error('log service must config host and post')
+                    logger.error("log service must config host and post")
                     cls.log_service_disabled = True
                 srv = LogService(host, port)
                 if srv.create_socket():
                     cls.log_service = srv
 
             logger.info(
-                _('Registration report type {} handler {}').format(
-                    handler_name, handler.__name__))
+                _("Registration report type {} handler {}").format(
+                    handler_name, handler.__name__
+                )
+            )
             if handler_name not in cls.HANDLERS:
                 cls.HANDLERS[handler_name] = handler
             return handler

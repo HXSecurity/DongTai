@@ -41,7 +41,7 @@ class DetailListWithid(UserEndPoint):
         ser = IdsSerializer(data=request.data)
         try:
             if ser.is_valid(True):
-                ids = ser.validated_data['ids']
+                ids = ser.validated_data["ids"]
         except ValidationError as e:
             return R.failure(data=e.detail)
         return ids
@@ -62,24 +62,25 @@ class AgentListWithid(DetailListWithid):
     serializer = AgentSerializer
 
     @extend_schema(
-        tags=[_('Agent')],
-        summary=_('Agent List with id'),
+        tags=[_("Agent")],
+        summary=_("Agent List with id"),
     )
     def get(self, request):
         return super().get(request)
 
     def query(self, ids, request):
-        agents = IastAgent.objects.filter(pk__in=ids,
-                                          user__in=self.get_auth_users(
-                                              request.user)).all()
+        agents = IastAgent.objects.filter(
+            pk__in=ids, user__in=self.get_auth_users(request.user)
+        ).all()
         return agents
 
     @extend_schema_with_envcheck(
         request=IdsSerializer,
-        tags=[_('Agent')],
-        summary=_('Agent List with id'),
-        description=_("Get the item corresponding to the user, support fuzzy search based on name."
-                      ),
+        tags=[_("Agent")],
+        summary=_("Agent List with id"),
+        description=_(
+            "Get the item corresponding to the user, support fuzzy search based on name."
+        ),
     )
     def post(self, request):
         return super().get(request)
@@ -89,25 +90,26 @@ class ProjectListWithid(DetailListWithid):
     serializer = ProjectSerializer
 
     @extend_schema(
-        tags=[_('Project')],
-        summary=_('通过ID获取项目列表'),
-        description=_('通过ID获取项目列表'),
+        tags=[_("Project")],
+        summary=_("通过ID获取项目列表"),
+        description=_("通过ID获取项目列表"),
     )
     def get(self, request):
         return super().get(request)
 
     def query(self, ids, request):
-        projects = IastProject.objects.filter(pk__in=ids,
-                                              user__in=self.get_auth_users(
-                                                  request.user)).all()
+        projects = IastProject.objects.filter(
+            pk__in=ids, user__in=self.get_auth_users(request.user)
+        ).all()
         return projects
 
     @extend_schema_with_envcheck(
         request=IdsSerializer,
-        tags=[_('Project')],
-        summary=_('通过ID获取项目列表'),
-        description=_("Get the item corresponding to the user, support fuzzy search based on name."
-                      ),
+        tags=[_("Project")],
+        summary=_("通过ID获取项目列表"),
+        description=_(
+            "Get the item corresponding to the user, support fuzzy search based on name."
+        ),
     )
     def post(self, request):
         return super().get(request)
@@ -117,8 +119,8 @@ class ScaListWithid(DetailListWithid):
     serializer = ScaSerializer
 
     @extend_schema(
-        tags=[_('Component')],
-        summary=_('Component List with id'),
+        tags=[_("Component")],
+        summary=_("Component List with id"),
     )
     def get(self, request):
         return super().get(request)
@@ -131,10 +133,11 @@ class ScaListWithid(DetailListWithid):
 
     @extend_schema_with_envcheck(
         request=IdsSerializer,
-        tags=[_('Component')],
-        summary=_('Component List with id'),
-        description=_("Get the item corresponding to the user, support fuzzy search based on name."
-                      ),
+        tags=[_("Component")],
+        summary=_("Component List with id"),
+        description=_(
+            "Get the item corresponding to the user, support fuzzy search based on name."
+        ),
     )
     def post(self, request):
         return super().get(request)
@@ -144,8 +147,8 @@ class VulsListWithid(DetailListWithid):
     serializer = VulSerializer
 
     @extend_schema(
-        tags=[_('Vulnerability')],
-        summary=_('Vulnerability List with id'),
+        tags=[_("Vulnerability")],
+        summary=_("Vulnerability List with id"),
     )
     def get(self, request):
         return super().get(request)
@@ -153,16 +156,20 @@ class VulsListWithid(DetailListWithid):
     def query(self, ids, request):
         auth_users = self.get_auth_users(request.user)
         auth_agents = self.get_auth_agents(auth_users)
-        vuls = IastVulnerabilityModel.objects.filter(
-            pk__in=ids, agent__in=auth_agents).values().all()
+        vuls = (
+            IastVulnerabilityModel.objects.filter(pk__in=ids, agent__in=auth_agents)
+            .values()
+            .all()
+        )
         return vuls
 
     @extend_schema_with_envcheck(
         request=IdsSerializer,
-        tags=[_('Vulnerability')],
-        summary=_('Vulnerability List with id'),
-        description=_("Get the item corresponding to the user, support fuzzy search based on name."
-                      ),
+        tags=[_("Vulnerability")],
+        summary=_("Vulnerability List with id"),
+        description=_(
+            "Get the item corresponding to the user, support fuzzy search based on name."
+        ),
     )
     def post(self, request):
         return super().get(request)

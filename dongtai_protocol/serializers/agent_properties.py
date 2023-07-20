@@ -11,4 +11,4 @@ from rest_framework import serializers
 class AgentPropertiesSerialize(serializers.ModelSerializer):
     class Meta:
         model = IastAgentProperties
-        fields = ['hook_type', 'dump_class']
+        fields = ["hook_type", "dump_class"]

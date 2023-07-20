@@ -17,7 +17,14 @@ class ScopedPermission(permissions.BasePermission):
     - APIKeys specify their scope, and work as expected.
     """
 
-    scope_map = {"HEAD": (), "GET": (), "POST": (), "PUT": (), "PATCH": (), "DELETE": ()}
+    scope_map = {
+        "HEAD": (),
+        "GET": (),
+        "POST": (),
+        "PUT": (),
+        "PATCH": (),
+        "DELETE": (),
+    }
 
     def has_permission(self, request, view):
         # session-based auth has all scopes for a logged in user

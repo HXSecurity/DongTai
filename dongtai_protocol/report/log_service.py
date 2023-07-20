@@ -1,7 +1,7 @@
 import logging
 import socket
 
-logger = logging.getLogger('dongtai.openapi')
+logger = logging.getLogger("dongtai.openapi")
 
 
 class LogService:
@@ -23,7 +23,7 @@ class LogService:
             self.socket = sock
             return True
         except OSError:
-            logger.error(f'failed to connect log service {self.host}:{self.port}')
+            logger.error(f"failed to connect log service {self.host}:{self.port}")
             self.socket = None
             sock.close()
             return False
@@ -38,11 +38,12 @@ class LogService:
             if not self.socket:
                 self.create_socket()
             if self.socket:
-                self.socket.sendall(bytes(message + "\n", encoding='utf-8'),
-                                    socket.MSG_DONTWAIT)
+                self.socket.sendall(
+                    bytes(message + "\n", encoding="utf-8"), socket.MSG_DONTWAIT
+                )
                 return True
         except Exception as e:
-            logger.error('failed to send message to log service', exc_info=e)
+            logger.error("failed to send message to log service", exc_info=e)
             if self.socket:
                 self.socket.close()
             self.socket = None

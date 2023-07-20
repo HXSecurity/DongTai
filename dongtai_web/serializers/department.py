@@ -15,8 +15,15 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Department
-        fields = ('id', 'name', 'create_time', 'update_time', 'user_count',
-                  'created', 'principal_id')
+        fields = (
+            "id",
+            "name",
+            "create_time",
+            "update_time",
+            "user_count",
+            "created",
+            "principal_id",
+        )
 
     def get_user_count(self, obj):
         return obj.users.count()

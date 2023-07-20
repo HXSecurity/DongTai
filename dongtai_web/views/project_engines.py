@@ -16,17 +16,17 @@ from rest_framework import serializers
 
 class _ProjectEnginesDataSerializer(serializers.Serializer):
     id = serializers.IntegerField(help_text=_("The id of the agent"))
-    token = serializers.CharField(help_text=_('The name of agent'))
-    shortname = serializers.CharField(
-        help_text=_("The short name of the agent"))
+    token = serializers.CharField(help_text=_("The name of agent"))
+    shortname = serializers.CharField(help_text=_("The short name of the agent"))
 
     class Meta:
         model = IastAgent
-        fields = ['id', 'name']
+        fields = ["id", "name"]
 
 
 _ProjectEnginesResponseSerializer = get_response_serializer(
-    _ProjectEnginesDataSerializer(many=True))
+    _ProjectEnginesDataSerializer(many=True)
+)
 
 
 class ProjectEngines(UserEndPoint):
@@ -34,8 +34,8 @@ class ProjectEngines(UserEndPoint):
     description = _("View engine list")
 
     @extend_schema_with_envcheck(
-        tags=[_('Project')],
-        summary=_('Projects Agents'),
+        tags=[_("Project")],
+        summary=_("Projects Agents"),
         description=_("Get the agent list corresponding to the project id."),
         response_schema=_ProjectEnginesResponseSerializer,
     )
@@ -45,17 +45,18 @@ class ProjectEngines(UserEndPoint):
         queryset = IastAgent.objects.filter(
             department__in=department,
             online=const.RUNNING,
-            bind_project_id__in=[0, pid]).values("id", "token", "alias")
+            bind_project_id__in=[0, pid],
+        ).values("id", "token", "alias")
         data = []
         if queryset:
             for item in queryset:
-                data.append({
-                    'id':
-                    item['id'],
-                    'token':
-                    item['token'],
-                    'short_name':
-                    item['alias'] if item.get('alias', None) else '-'.join(
-                        item['token'].split('-')[:-1]),
-                })
+                data.append(
+                    {
+                        "id": item["id"],
+                        "token": item["token"],
+                        "short_name": item["alias"]
+                        if item.get("alias", None)
+                        else "-".join(item["token"].split("-")[:-1]),
+                    }
+                )
         return R.success(data=data)

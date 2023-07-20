@@ -18,11 +18,13 @@ class SensitiveInfoRuleTestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
 
     def test_sensitive_info_rule_create(self):
-        response = self.client.post('/api/v1/sensitive_info_rule',
-                                    data={
-                                        'pattern': '0',
-                                        'pattern_type_id': 1,
-                                        'status': 0,
-                                        'strategy_id': 2147483648
-                                    })
+        response = self.client.post(
+            "/api/v1/sensitive_info_rule",
+            data={
+                "pattern": "0",
+                "pattern_type_id": 1,
+                "status": 0,
+                "strategy_id": 2147483648,
+            },
+        )
         assert response.status_code == 200

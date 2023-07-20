@@ -15,24 +15,24 @@ from django.utils.translation import gettext_lazy as _
 
 
 class AgentAliasArgsSerializer(serializers.Serializer):
-    id = serializers.IntegerField(
-        help_text=_('The id corresponding to the agent.'))
-    alias = serializers.CharField(
-        help_text=_('The alias corresponding to the agent.'))
+    id = serializers.IntegerField(help_text=_("The id corresponding to the agent."))
+    alias = serializers.CharField(help_text=_("The alias corresponding to the agent."))
 
 
-_ResponseSerializer = get_response_serializer(status_msg_keypair=(
-    ((201, _('modified successfully')), ''),
-    ((202, _('Agent does not exist or no permission to access')), ''),
-    ((202, _('Error while deleting, please try again later')), ''),
-))
+_ResponseSerializer = get_response_serializer(
+    status_msg_keypair=(
+        ((201, _("modified successfully")), ""),
+        ((202, _("Agent does not exist or no permission to access")), ""),
+        ((202, _("Error while deleting, please try again later")), ""),
+    )
+)
 
 
 class AgentAliasModified(UserEndPoint):
     @extend_schema_with_envcheck(
-        tags=[_('Agent')],
+        tags=[_("Agent")],
         request=AgentAliasArgsSerializer,
-        summary=_('Agent Alias Modified'),
+        summary=_("Agent Alias Modified"),
         description=_("Modified the agent alias"),
         response_schema=_ResponseSerializer,
     )
@@ -40,8 +40,8 @@ class AgentAliasModified(UserEndPoint):
         ser = AgentAliasArgsSerializer(data=request.data)
         try:
             if ser.is_valid(True):
-                id_ = ser.validated_data['id']
-                alias = ser.validated_data['alias']
+                id_ = ser.validated_data["id"]
+                alias = ser.validated_data["alias"]
         except ValidationError as e:
             return R.failure(data=e.detail)
         IastAgent.objects.filter(pk=id_).update(alias=alias)

@@ -3,7 +3,8 @@ from dongtai_common.utils import const
 from dongtai_common.models.replay_queue import IastReplayQueue
 from dongtai_protocol.report.handler.heartbeat_handler import (
     addtional_agent_ids_query_deployway_and_path,
-    addtional_agenti_ids_query_filepath_simhash)
+    addtional_agenti_ids_query_filepath_simhash,
+)
 from os.path import exists
 import requests
 from test.apiserver.test_agent_base import AgentTestCase, gzipdata
@@ -21,13 +22,13 @@ from django.test import TestCase
 
 @unittest.skip("waiting for rebuild mock data")
 class AgentMethodPoolUploadTestCase(AgentTestCase):
-
     def test_benchmark_agent_method_pool_upload(self):
         data = []
         res = download_if_not_exist(
             "https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/test_data/server.log",
-            "/tmp/test_apiserver_server.log")
-        with open('/tmp/test_apiserver_server.log') as f:
+            "/tmp/test_apiserver_server.log",
+        )
+        with open("/tmp/test_apiserver_server.log") as f:
             for line in f:
                 data.append(json.loads(line))
         for report in data:
@@ -35,16 +36,14 @@ class AgentMethodPoolUploadTestCase(AgentTestCase):
             del report["message"]
             res = ReportHandler.handler(report, self.user)
             assert res == ""
-            assert MethodPool.objects.filter(
-                url=report['detail']["url"]).exists()
-        assert MethodPool.objects.filter(
-            agent_id=self.agent_id).count() == len(data)
+            assert MethodPool.objects.filter(url=report["detail"]["url"]).exists()
+        assert MethodPool.objects.filter(agent_id=self.agent_id).count() == len(data)
 
 
 def download_file(url, filepath):
     with requests.get(url, stream=True) as r:
         r.raise_for_status()
-        with open(filepath, 'wb') as f:
+        with open(filepath, "wb") as f:
             for chunk in r.iter_content(chunk_size=8192):
                 f.write(chunk)
     return Ok()
@@ -58,7 +57,6 @@ def download_if_not_exist(url: str, path: str) -> Result:
 
 
 class AgentHeartBeatTestCase(AgentTestCase):
-
     def test_agent_replay_queryset(self):
         self.agent = IastAgent.objects.filter(pk=self.agent_id).first()
         assert self.agent is not None
@@ -68,22 +66,36 @@ class AgentHeartBeatTestCase(AgentTestCase):
         assert self.agent.server is not None
         assert self.agent.server.path is not None
         assert self.agent.server.hostname is not None
-        project_agents = IastAgent.objects.values_list('id', flat=True).filter(
-            bind_project_id=self.agent.bind_project_id,
-            language=self.agent.language).union(
+        project_agents = (
+            IastAgent.objects.values_list("id", flat=True)
+            .filter(
+                bind_project_id=self.agent.bind_project_id, language=self.agent.language
+            )
+            .union(
                 addtional_agenti_ids_query_filepath_simhash(
-                    self.agent.filepathsimhash, language=self.agent.language),
+                    self.agent.filepathsimhash, language=self.agent.language
+                ),
                 addtional_agent_ids_query_deployway_and_path(
                     self.agent.servicetype,
                     self.agent.server.path,
                     self.agent.server.hostname,
-                    language=self.agent.language))
+                    language=self.agent.language,
+                ),
+            )
+        )
         replay_queryset = IastReplayQueue.objects.values(
-            'id', 'relation_id', 'uri', 'method', 'scheme', 'header', 'params',
-            'body',
-            'replay_type').filter(agent_id__in=project_agents,
-                                  state__in=[const.WAITING,
-                                             const.SOLVING])[:200]
+            "id",
+            "relation_id",
+            "uri",
+            "method",
+            "scheme",
+            "header",
+            "params",
+            "body",
+            "replay_type",
+        ).filter(agent_id__in=project_agents, state__in=[const.WAITING, const.SOLVING])[
+            :200
+        ]
 
     def test_agent_replay_queryset_result(self):
         self.agent = IastAgent.objects.filter(pk=self.agent_id).first()
@@ -99,29 +111,30 @@ class AgentHeartBeatTestCase(AgentTestCase):
 
 
 def get_replay_id_set(replay_list: list) -> set:
-    return set([i['id'] for i in replay_list])
+    return set([i["id"] for i in replay_list])
 
 
 @unittest.skip("waiting for rebuild mock data")
 class AgentSaasMethodPoolParseApiTestCase(AgentTestCase):
-
     def test_api_parse(self):
         mp = MethodPool.objects.filter(pk=500483715).first()
         assert mp is not None and mp.req_header is not None
         mp.req_header
         headers_bytes = base64.b64decode(mp.req_header)
         from dongtai_engine.filters.utils import parse_headers_dict_from_bytes
+
         res = parse_headers_dict_from_bytes(headers_bytes)
         from http.cookies import SimpleCookie
+
         cookie = SimpleCookie()
-        cookie.load(res['cookie'])
+        cookie.load(res["cookie"])
         print(cookie.keys())
 
 
 class SimhashTypingCheckTestCase(TestCase):
-
     def test_data_dump(self):
         from dongtai_protocol.report.handler.agent_filepath_handler import _data_dump
+
         serviceDir = "F:\\projects\\huoxian\\iast\\vul\\SecExample\\.git\\config\n"
         res = _data_dump(serviceDir)
         self.assertIsInstance(res, str)

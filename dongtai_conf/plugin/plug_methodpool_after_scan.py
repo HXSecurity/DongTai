@@ -4,7 +4,7 @@ from dongtai_common.models.agent_method_pool import MethodPool
 from django.db.models import F
 import logging
 
-logger = logging.getLogger('dongtai-webapi')
+logger = logging.getLogger("dongtai-webapi")
 
 
 def delete_model(method_pool: MethodPool) -> None:
@@ -12,9 +12,9 @@ def delete_model(method_pool: MethodPool) -> None:
 
 
 class PlugMethodPoolAfterScan(DongTaiPlugin):
-    appname = 'dongtai_common'
-    target_func_name = 'method_pool_after_scan'
-    target_module_name = 'dongtai_engine.plugins.method_pool'
+    appname = "dongtai_common"
+    target_func_name = "method_pool_after_scan"
+    target_module_name = "dongtai_engine.plugins.method_pool"
     plugin_type = 2
 
     def before_patch_function(self, func_args, func_kwargs):

@@ -20,23 +20,21 @@ from rest_framework import serializers
 
 
 class _StrategyResponseDataStrategySerializer(serializers.Serializer):
-    id = serializers.CharField(help_text=_('The id of strategy'))
+    id = serializers.CharField(help_text=_("The id of strategy"))
 
 
 _ResponseSerializer = get_response_serializer(
-    data_serializer=_StrategyResponseDataStrategySerializer(many=True), )
+    data_serializer=_StrategyResponseDataStrategySerializer(many=True),
+)
 
-DELETE = 'delete'
+DELETE = "delete"
 
 
 class StrategyDelete(TalentAdminEndPoint):
-
     @extend_schema_with_envcheck(
-        tags=[_('Strategy')],
-        summary=_('Strategy Delete'),
-        description=_(
-            "Delete the corresponding strategy according to id"
-        ),
+        tags=[_("Strategy")],
+        summary=_("Strategy Delete"),
+        description=_("Delete the corresponding strategy according to id"),
         response_schema=_ResponseSerializer,
     )
     def delete(self, request, id_: int):
@@ -44,7 +42,7 @@ class StrategyDelete(TalentAdminEndPoint):
             return R.failure()
         strategy = IastStrategyModel.objects.filter(pk=id_).first()
         if not strategy:
-            return R.failure(msg=_('This strategy does not exist'))
+            return R.failure(msg=_("This strategy does not exist"))
         hook_types = HookType.objects.filter(vul_strategy=strategy).all()
         strategy.state = DELETE
         strategy.save()

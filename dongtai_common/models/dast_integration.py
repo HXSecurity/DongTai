@@ -19,56 +19,50 @@ class IastDastIntegration(models.Model):
     urls = models.JSONField(default=list)
     create_time = models.IntegerField(default=lambda: int(time.time()), blank=True)
     latest_time = models.IntegerField(default=lambda: int(time.time()), blank=True)
-    project = models.ForeignKey(IastProject,
-                                on_delete=models.CASCADE,
-                                blank=True,
-                                default=-1)
-    project_version = models.ForeignKey(IastProjectVersion,
-                                        on_delete=models.CASCADE,
-                                        blank=True,
-                                        default=-1)
+    project = models.ForeignKey(
+        IastProject, on_delete=models.CASCADE, blank=True, default=-1
+    )
+    project_version = models.ForeignKey(
+        IastProjectVersion, on_delete=models.CASCADE, blank=True, default=-1
+    )
     dongtai_vul_type = models.JSONField(default=list)
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_dast_integration'
+        db_table = "iast_dast_integration"
 
 
 class IastDastIntegrationRelation(models.Model):
     dt_mark = models.CharField(max_length=255, blank=True)
-    iastvul = models.ForeignKey(IastVulnerabilityModel,
-                                on_delete=models.CASCADE,
-                                blank=True,
-                                default=-1)
-    dastvul = models.ForeignKey(IastDastIntegration,
-                                on_delete=models.CASCADE,
-                                blank=True,
-                                default=-1)
+    iastvul = models.ForeignKey(
+        IastVulnerabilityModel, on_delete=models.CASCADE, blank=True, default=-1
+    )
+    dastvul = models.ForeignKey(
+        IastDastIntegration, on_delete=models.CASCADE, blank=True, default=-1
+    )
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_dast_integration_relation'
+        db_table = "iast_dast_integration_relation"
 
 
 class IastvulDtMarkRelation(models.Model):
     dt_mark = models.CharField(max_length=255, blank=True)
-    iastvul = models.ForeignKey(IastVulnerabilityModel,
-                                on_delete=models.CASCADE,
-                                blank=True,
-                                default=-1)
+    iastvul = models.ForeignKey(
+        IastVulnerabilityModel, on_delete=models.CASCADE, blank=True, default=-1
+    )
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_iast_dtmatk_relation'
+        db_table = "iast_iast_dtmatk_relation"
 
 
 class DastvulDtMarkRelation(models.Model):
     dt_mark = models.CharField(max_length=255, blank=True)
-    dastvul = models.ForeignKey(IastDastIntegration,
-                                on_delete=models.CASCADE,
-                                blank=True,
-                                default=-1)
+    dastvul = models.ForeignKey(
+        IastDastIntegration, on_delete=models.CASCADE, blank=True, default=-1
+    )
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_dast_dtmatk_relation'
+        db_table = "iast_dast_dtmatk_relation"

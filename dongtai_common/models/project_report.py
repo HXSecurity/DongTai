@@ -10,10 +10,7 @@ from dongtai_common.models import User
 from dongtai_common.models.project import IastProject
 from dongtai_common.utils.settings import get_managed
 
-ORDER_TYPE_REPORT = {
-    "1": "create_time",
-    "2": "status"
-}
+ORDER_TYPE_REPORT = {"1": "create_time", "2": "status"}
 
 
 class ProjectReport(models.Model):
@@ -36,4 +33,4 @@ class ProjectReport(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_project_report'
+        db_table = "iast_project_report"

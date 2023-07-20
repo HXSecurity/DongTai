@@ -6,7 +6,7 @@ from dongtai_common.models.project_version import IastProjectVersion
 
 
 @shared_task(
-    queue='dongtai-project-time-stamp-update',
+    queue="dongtai-project-time-stamp-update",
     base=Singleton,
     lock_expiry=20,
 )
@@ -16,11 +16,12 @@ def project_time_stamp_update(project_id):
 
 
 @shared_task(
-    queue='dongtai-project-time-stamp-update',
+    queue="dongtai-project-time-stamp-update",
     base=Singleton,
     lock_expiry=20,
 )
 def project_version_time_stamp_update(project_version_id):
     timestamp = int(time())
     IastProjectVersion.objects.filter(pk=project_version_id).update(
-        update_time=timestamp)
+        update_time=timestamp
+    )

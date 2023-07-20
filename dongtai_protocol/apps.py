@@ -3,4 +3,4 @@ from dongtai_common.common.utils import DongTaiAppConfigPatch
 
 
 class ApiserverConfig(DongTaiAppConfigPatch, AppConfig):
-    name = 'dongtai_protocol'
+    name = "dongtai_protocol"

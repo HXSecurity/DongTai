@@ -44,14 +44,15 @@ class Asset(models.Model):
     agent = models.ForeignKey(
         to=IastAgent,
         on_delete=models.CASCADE,
-        related_name='assets',
-        related_query_name='asset',
-        verbose_name=_('agent'),
-        default=-1
+        related_name="assets",
+        related_query_name="asset",
+        verbose_name=_("agent"),
+        default=-1,
     )
     project = models.ForeignKey(IastProject, on_delete=models.CASCADE, default=-1)
-    project_version = models.ForeignKey(IastProjectVersion, on_delete=models.CASCADE,
-                                        default=-1)
+    project_version = models.ForeignKey(
+        IastProjectVersion, on_delete=models.CASCADE, default=-1
+    )
     user = models.ForeignKey(User, models.DO_NOTHING, default=-1)
     project_name = models.CharField(max_length=255, blank=True)
     language = models.CharField(max_length=32, blank=True)
@@ -72,7 +73,7 @@ class Asset(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_asset'
+        db_table = "iast_asset"
 
 
 @registry.register_document
@@ -81,8 +82,7 @@ class IastAssetDocument(Document):
     agent_id = fields.IntegerField(attr="agent_id")
     level_id = fields.IntegerField(attr="level_id")
     project_id = fields.IntegerField(attr="project_id")
-    project_version_id = fields.IntegerField(
-        attr="project_version_id")
+    project_version_id = fields.IntegerField(attr="project_version_id")
     department_id = fields.IntegerField(attr="department_id")
     talent_id = fields.IntegerField(attr="talent_id")
     safe_version_list = fields.ObjectField()
@@ -113,11 +113,14 @@ class IastAssetDocument(Document):
     def search(cls, using=None, index=None):
         uuid_key = uuid.uuid4().hex
         cache_uuid_key = cache.get_or_set(
-            f'es-documents-shards-{cls.__name__}', uuid_key, 60 * 1)
-        return Search(using=cls._get_using(using),
-                      index=cls._default_index(index),
-                      doc_type=[cls],
-                      model=cls.django.model).params(preference=cache_uuid_key)
+            f"es-documents-shards-{cls.__name__}", uuid_key, 60 * 1
+        )
+        return Search(
+            using=cls._get_using(using),
+            index=cls._default_index(index),
+            doc_type=[cls],
+            model=cls.django.model,
+        ).params(preference=cache_uuid_key)
 
     def get_instances_from_related(self, related_instance):
         """If related_models is set, define how to retrieve the Car instance(s) from the related model.
@@ -134,12 +137,27 @@ class IastAssetDocument(Document):
     class Django:
         model = Asset
         fields = [
-            'id', 'package_name', 'package_path', 'signature_algorithm',
-            'signature_value', 'dt', 'version', 'safe_version', 'last_version',
-            'vul_count', 'vul_critical_count', 'vul_high_count',
-            'vul_medium_count', 'vul_low_count', 'vul_info_count',
-            'project_name', 'language', 'license', 'dependency_level',
-            'parent_dependency_id', 'is_del'
+            "id",
+            "package_name",
+            "package_path",
+            "signature_algorithm",
+            "signature_value",
+            "dt",
+            "version",
+            "safe_version",
+            "last_version",
+            "vul_count",
+            "vul_critical_count",
+            "vul_high_count",
+            "vul_medium_count",
+            "vul_low_count",
+            "vul_info_count",
+            "project_name",
+            "language",
+            "license",
+            "dependency_level",
+            "parent_dependency_id",
+            "is_del",
         ]
 
         ignore_signals = False

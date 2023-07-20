@@ -23,8 +23,16 @@ class LogSerializer(BaseLogSerializer):
 
     class Meta:
         model = LogEntry
-        fields = ['id', 'action_time', 'user', 'content_type', 'object_id', 'object_repr', 'action_flag',
-                  'change_message']
+        fields = [
+            "id",
+            "action_time",
+            "user",
+            "content_type",
+            "object_id",
+            "object_repr",
+            "action_flag",
+            "change_message",
+        ]
 
     def get_user(self, obj):
         return obj.user.get_short_name()
@@ -36,5 +44,12 @@ class LogSerializer(BaseLogSerializer):
 class LogExportSerializer(BaseLogSerializer):
     class Meta:
         model = LogEntry
-        fields = ['action_time', 'user', 'content_type', 'object_id', 'object_repr', 'action_flag',
-                  'change_message']
+        fields = [
+            "action_time",
+            "user",
+            "content_type",
+            "object_id",
+            "object_repr",
+            "action_flag",
+            "change_message",
+        ]

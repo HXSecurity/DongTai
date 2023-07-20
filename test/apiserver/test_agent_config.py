@@ -12,22 +12,25 @@ import json
 
 
 class AgentConfigTestCase(AgentTestCase):
-
     def setUp(self):
         super().setUp()
 
     def test_rep_agent_config_avalible(self):
-        res = self.client.get(f'/api/v1/agent/config?agent_id={self.agent_id}',
-                              content_type="application/json")
+        res = self.client.get(
+            f"/api/v1/agent/config?agent_id={self.agent_id}",
+            content_type="application/json",
+        )
         self.assertEqual(res.status_code, 200)
 
     def test_rep_agent_config(self):
-        res = self.client.get(f'/api/v1/agent/config?agent_id={self.agent_id}',
-                              content_type="application/json")
+        res = self.client.get(
+            f"/api/v1/agent/config?agent_id={self.agent_id}",
+            content_type="application/json",
+        )
         data = json.loads(res.content)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(
-            data['data'],
+            data["data"],
             {},
         )
 
@@ -36,27 +39,28 @@ class AgentConfigTestCase(AgentTestCase):
         agent.bind_project.log_level = "INFO"
         agent.bind_project.enable_log = True
         agent.bind_project.save()
-        res = self.client.get(f'/api/v1/agent/config?agent_id={self.agent_id}',
-                              content_type="application/json")
+        res = self.client.get(
+            f"/api/v1/agent/config?agent_id={self.agent_id}",
+            content_type="application/json",
+        )
         data = json.loads(res.content)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(
-            data['data'],
-            {
-                "enable_log": True,
-                "log_level": "INFO"
-            },
+            data["data"],
+            {"enable_log": True, "log_level": "INFO"},
         )
 
     def test_rep_agent_config3(self):
         agent = IastAgent.objects.filter(pk=self.agent_id).first()
         agent.bind_project.log_level = "INFO"
         agent.bind_project.save()
-        res = self.client.get(f'/api/v1/agent/config?agent_id={self.agent_id}',
-                              content_type="application/json")
+        res = self.client.get(
+            f"/api/v1/agent/config?agent_id={self.agent_id}",
+            content_type="application/json",
+        )
         data = json.loads(res.content)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(
-            data['data'],
+            data["data"],
             {"log_level": "INFO"},
         )

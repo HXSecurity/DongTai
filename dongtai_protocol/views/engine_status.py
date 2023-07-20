@@ -24,7 +24,7 @@ class EngineUpdateEndPoint(OpenApiEndPoint):
 
     @extend_schema(
         summary="IAST 检测引擎更新状态修改接口",
-        tags=['Agent服务端交互协议'],
+        tags=["Agent服务端交互协议"],
     )
     def get(self, request, status=None):
         """
@@ -32,8 +32,10 @@ class EngineUpdateEndPoint(OpenApiEndPoint):
         :param request:
         :return:
         """
-        agent_name = request.query_params.get('agent_name')
-        agent = IastAgent.objects.filter(user=request.user, token=agent_name, is_running=1).first()
+        agent_name = request.query_params.get("agent_name")
+        agent = IastAgent.objects.filter(
+            user=request.user, token=agent_name, is_running=1
+        ).first()
         if not agent:
             return R.failure("agent不存在或无权限访问")
 
@@ -61,19 +63,21 @@ class EngineAction(OpenApiEndPoint):
     description = "IAST 检测引擎更新状态修改接口"
 
     @extend_schema(
-        description='Check Agent Engine Control Code',
+        description="Check Agent Engine Control Code",
         parameters=[
             DongTaiParameter.AGENT_NAME,
         ],
         responses=R,
-        methods=['GET'],
+        methods=["GET"],
         summary="检查 Agent Engine 状态",
-        tags=['Agent服务端交互协议'],
+        tags=["Agent服务端交互协议"],
         deprecated=True,
     )
     def get(self, request):
-        agent_id = request.query_params.get('agentId')
-        agent = IastAgent.objects.filter(user=request.user, pk=agent_id, is_running=1).first()
+        agent_id = request.query_params.get("agentId")
+        agent = IastAgent.objects.filter(
+            user=request.user, pk=agent_id, is_running=1
+        ).first()
         if not agent:
             return R.failure("agent不存在或无权限访问")
         agent_status = {
@@ -120,18 +124,17 @@ class EngineAction(OpenApiEndPoint):
             else:
                 agent.is_core_running = 1
             if agent.control == 8:
-                if cache.get(f'agent_update_{agent_id}', False):
+                if cache.get(f"agent_update_{agent_id}", False):
                     agent.is_control = 0
                     agent.control = 2
-                    cache.delete(f'agent_update_{agent_id}')
+                    cache.delete(f"agent_update_{agent_id}")
                 else:
                     cache.set(f"agent_update_{agent_id}", True, 60 * 5)
                     agent.is_control = 1
                     agent.control = 5
-            agent.save(update_fields=['is_control', 'is_core_running', 'latest_time'])
-            result_cmd = agent_status.get(agent.control, {
-                "key": "无下发指令",
-                "value": "notcmd"
-            }).get("value")
+            agent.save(update_fields=["is_control", "is_core_running", "latest_time"])
+            result_cmd = agent_status.get(
+                agent.control, {"key": "无下发指令", "value": "notcmd"}
+            ).get("value")
             # print(result_cmd)
             return R.success(data=result_cmd)

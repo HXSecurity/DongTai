@@ -31,39 +31,38 @@ class EngineHeartBeatEndPoint(OpenApiEndPoint):
         :param request:
         :return:
         """
-        logger.info('开始处理心跳数据')
+        logger.info("开始处理心跳数据")
         try:
             client_ip = self.get_client_ip(request)
             data = request.data
             IastEngineHeartbeat.objects.create(
                 client_ip=client_ip,
-                status=data['status'],
-                msg=data['msg'],
-                agentcount=data['agentCount'],
-                reqcount=data['reqCount'],
-                agentenablecount=data['agentEnableCount'],
-                projectcount=data['projectCount'],
-                usercount=data['userCount'],
-                vulcount=data['vulCount'],
-                methodpoolcount=data['methodPoolCount'],
-                timestamp=data['timestamp'],
+                status=data["status"],
+                msg=data["msg"],
+                agentcount=data["agentCount"],
+                reqcount=data["reqCount"],
+                agentenablecount=data["agentEnableCount"],
+                projectcount=data["projectCount"],
+                usercount=data["userCount"],
+                vulcount=data["vulCount"],
+                methodpoolcount=data["methodPoolCount"],
+                timestamp=data["timestamp"],
             )
-            logger.info(_('[{}] Heartbeat data is successful').format(client_ip))
+            logger.info(_("[{}] Heartbeat data is successful").format(client_ip))
             return R.success(data=data)
         except Exception as e:
-            logger.error(_('Heartbeat data failed, error reason: {}').format(e))
+            logger.error(_("Heartbeat data failed, error reason: {}").format(e))
             return R.failure()
 
     @staticmethod
     def get_client_ip(request):
         try:
             logger.info(request.META)
-            if 'HTTP_X_FORWARDED_FOR' in request.META:
-                ip = request.META['HTTP_X_FORWARDED_FOR']
+            if "HTTP_X_FORWARDED_FOR" in request.META:
+                ip = request.META["HTTP_X_FORWARDED_FOR"]
             else:
-                ip = request.META['REMOTE_ADDR']
+                ip = request.META["REMOTE_ADDR"]
             return ip
         except Exception as e:
-            logger.error(
-                _('Client IP acquisition failed, reasons: {}').format(e))
-            return ''
+            logger.error(_("Client IP acquisition failed, reasons: {}").format(e))
+            return ""

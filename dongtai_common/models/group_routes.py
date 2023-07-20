@@ -20,4 +20,4 @@ class AuthGroupRoutes(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'auth_group_routes'
+        db_table = "auth_group_routes"

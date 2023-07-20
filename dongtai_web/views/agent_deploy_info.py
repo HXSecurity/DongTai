@@ -16,13 +16,23 @@ class AgentDeployInfo(UserEndPoint):
     def get(self, request):
         condition = {
             "agents": ["Java", ".Net Core", "C#"],
-            "java_version": ["Java 1.6", "Java 1.7", "Java 1.8", "Java 9", "Java 10", "Java 11", "Java 13", "Java 14",
-                             "Java 15", "Java 16"],
+            "java_version": [
+                "Java 1.6",
+                "Java 1.7",
+                "Java 1.8",
+                "Java 9",
+                "Java 10",
+                "Java 11",
+                "Java 13",
+                "Java 14",
+                "Java 15",
+                "Java 16",
+            ],
             "middlewares": [],
-            "system": ["windows", "linux"]
+            "system": ["windows", "linux"],
         }
         queryset = IastDeployDesc.objects.all()
         for item in queryset:
-            if item.middleware not in condition['middlewares']:
-                condition['middlewares'].append(item.middleware)
+            if item.middleware not in condition["middlewares"]:
+                condition["middlewares"].append(item.middleware)
         return R.success(data=condition)

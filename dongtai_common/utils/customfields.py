@@ -21,13 +21,14 @@ def trans_char_field(field, transdict):
                 if len(args) > 1:
                     name = args[1]
                 else:
-                    name = kwargs['name']
+                    name = kwargs["name"]
             except BaseException as e:
                 print(e)
                 return value
             res = [
-                v[value] for k, v in transdict.items() if name == field
-                and k == get_language() and v.get(value, None)
+                v[value]
+                for k, v in transdict.items()
+                if name == field and k == get_language() and v.get(value, None)
             ]
             return res[0] if res else value
 

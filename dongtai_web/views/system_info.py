@@ -14,9 +14,6 @@ class SystemInfo(TalentAdminEndPoint):
     name = "api-v1-system-info"
     description = _("API - System Information Page")
 
-    @extend_schema(
-        summary=_("API - System Information Page"),
-        tags=[_("System")]
-    )
+    @extend_schema(summary=_("API - System Information Page"), tags=[_("System")])
     def get(self, request):
         return R.success()

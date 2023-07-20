@@ -28,13 +28,13 @@ def fuzz_test_data(end_point, httpmethod):
             for k, v in fields.items():
                 queryfield.append(k)
                 if isinstance(v, IntegerField):
-                    data_tuple.append([0, -1, '', '1', '-1', 0, 'ale'])
+                    data_tuple.append([0, -1, "", "1", "-1", 0, "ale"])
                 elif isinstance(v, CharField):
-                    data_tuple.append([0, -1, '', '1', '-1', 0, 'ale'])
+                    data_tuple.append([0, -1, "", "1", "-1", 0, "ale"])
         elif isinstance(query, dict):
-            queryfield.append(query['name'])
-            if query['type'] == int:
-                data_tuple.append([0, -1, '', '1', '-1', 0, 'alw'])
+            queryfield.append(query["name"])
+            if query["type"] == int:
+                data_tuple.append([0, -1, "", "1", "-1", 0, "alw"])
     li = list(product(*data_tuple))
     return li
 

@@ -12,7 +12,11 @@ from dongtai_common.models.asset import Asset
 from dongtai_common.models.project import IastProject
 from django.utils.translation import gettext_lazy as _
 from dongtai_common.models.sca_maven_db import ScaMavenDb
-from dongtai_web.dongtai_sca.models import PackageLicenseLevel, PackageLicenseInfo, Package
+from dongtai_web.dongtai_sca.models import (
+    PackageLicenseLevel,
+    PackageLicenseInfo,
+    Package,
+)
 
 
 class ScaSerializer(serializers.ModelSerializer):
@@ -32,9 +36,21 @@ class ScaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Asset
         fields = [
-            'id', 'package_name', 'version', 'project_name', 'project_id',
-            'project_version', 'language', 'package_path', 'agent_name',
-            'signature_value', 'level', 'level_type', 'vul_count', 'dt', 'license'
+            "id",
+            "package_name",
+            "version",
+            "project_name",
+            "project_id",
+            "project_version",
+            "language",
+            "package_path",
+            "agent_name",
+            "signature_value",
+            "level",
+            "level_type",
+            "vul_count",
+            "dt",
+            "license",
         ]
 
     def get_project_name(self, obj):
@@ -59,13 +75,18 @@ class ScaSerializer(serializers.ModelSerializer):
             if project_version_id in self.project_version_cache:
                 return self.project_version_cache[project_version_id]
             else:
-                project_version = IastProjectVersion.objects.values('version_name').filter(
-                    id=project_version_id).first()
-                self.project_version_cache[project_version_id] = project_version['version_name']
+                project_version = (
+                    IastProjectVersion.objects.values("version_name")
+                    .filter(id=project_version_id)
+                    .first()
+                )
+                self.project_version_cache[project_version_id] = project_version[
+                    "version_name"
+                ]
 
             return self.project_version_cache[project_version_id]
         else:
-            return _('No application version has been created')
+            return _("No application version has been created")
 
     def get_level_type(self, obj):
         return obj.level.id
@@ -85,16 +106,16 @@ class ScaSerializer(serializers.ModelSerializer):
 
     def get_license(self, obj):
         try:
-            if 'license_dict' not in self.context:
+            if "license_dict" not in self.context:
                 sca_package = Package.objects.filter(hash=obj.signature_value).first()
                 return sca_package.license
-            return self.context['license_dict'].get(obj.signature_value, '')
+            return self.context["license_dict"].get(obj.signature_value, "")
         except Exception as e:
-            return ''
+            return ""
 
     def get_package_name(self, obj):
-        if obj.package_name.startswith('maven:') and obj.package_name.endswith(':'):
-            return obj.package_name.replace('maven:', '', 1)[:-1]
+        if obj.package_name.startswith("maven:") and obj.package_name.endswith(":"):
+            return obj.package_name.replace("maven:", "", 1)[:-1]
         return obj.package_name
 
 
@@ -111,12 +132,29 @@ class ScaAssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Asset
         fields = [
-            'id', 'package_name', 'version', 'safe_version', 'last_version',
-            'language', 'signature_value', 'level', 'level_type', 'vul_count',
-            'vul_high_count', 'vul_medium_count', 'vul_low_count',
-            'vul_info_count', 'project_count', 'safe_version_list',
-            'nearest_safe_version', 'license', 'latest_safe_version', 'license_list', 'highest_license',
-            'license_level', 'license_desc'
+            "id",
+            "package_name",
+            "version",
+            "safe_version",
+            "last_version",
+            "language",
+            "signature_value",
+            "level",
+            "level_type",
+            "vul_count",
+            "vul_high_count",
+            "vul_medium_count",
+            "vul_low_count",
+            "vul_info_count",
+            "project_count",
+            "safe_version_list",
+            "nearest_safe_version",
+            "license",
+            "latest_safe_version",
+            "license_list",
+            "highest_license",
+            "license_level",
+            "license_desc",
         ]
 
     def get_level_type(self, obj):
@@ -126,13 +164,13 @@ class ScaAssetSerializer(serializers.ModelSerializer):
         return obj.level.name_value
 
     def get_package_name(self, obj):
-        if obj.package_name.startswith('maven:') and obj.package_name.endswith(':'):
-            return obj.package_name.replace('maven:', '', 1)[:-1]
+        if obj.package_name.startswith("maven:") and obj.package_name.endswith(":"):
+            return obj.package_name.replace("maven:", "", 1)[:-1]
         return obj.package_name
 
     def get_license(self, obj):
         if not obj.license:
-            obj.license = '未知'
+            obj.license = "未知"
         return obj.license
 
     def get_license_level(self, obj):
@@ -140,21 +178,27 @@ class ScaAssetSerializer(serializers.ModelSerializer):
         obj.license_desc = "允许商业集成"
         if obj.license:
             license_level = PackageLicenseLevel.objects.filter(
-                identifier=obj.license).first()
+                identifier=obj.license
+            ).first()
             obj.license_level = license_level.level_id if license_level else 0
             obj.license_desc = license_level.level_desc if license_level else "允许商业集成"
 
         return obj.license_level
 
     def get_license_desc(self, obj):
-
         return obj.license_desc
 
     def get_vul_high_count(self, obj):
         return obj.vul_high_count + obj.vul_critical_count
 
     def get_project_count(self, obj):
-        return Asset.objects.filter(
-            signature_value=obj.signature_value,
-            version=obj.version,
-            project_id__gt=0).values('project_id').distinct().count()
+        return (
+            Asset.objects.filter(
+                signature_value=obj.signature_value,
+                version=obj.version,
+                project_id__gt=0,
+            )
+            .values("project_id")
+            .distinct()
+            .count()
+        )

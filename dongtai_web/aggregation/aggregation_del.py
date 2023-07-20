@@ -9,7 +9,7 @@ from dongtai_web.utils import extend_schema_with_envcheck
 from dongtai_web.aggregation.aggregation_common import turnIntListOfStr
 import logging
 
-logger = logging.getLogger('dongtai-dongtai_conf')
+logger = logging.getLogger("dongtai-dongtai_conf")
 
 
 class DelVulMany(UserEndPoint):
@@ -17,12 +17,9 @@ class DelVulMany(UserEndPoint):
     description = _("del vul list of many")
 
     @extend_schema_with_envcheck(
-
-        tags=[_('漏洞')],
-        summary=_('删除漏洞列表'),
-        description=_(
-            "delete many app vul and dongtai_sca vul"
-        ),
+        tags=[_("漏洞")],
+        summary=_("删除漏洞列表"),
+        description=_("delete many app vul and dongtai_sca vul"),
     )
     def post(self, request):
         ids = request.data.get("ids", "")
@@ -55,7 +52,8 @@ class DelVulMany(UserEndPoint):
         for vul in del_queryset:
             vul.is_del = 1
             vul.save()
-        return R.success(data={
-            'messages': "success",
-
-        }, )
+        return R.success(
+            data={
+                "messages": "success",
+            },
+        )

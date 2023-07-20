@@ -29,15 +29,14 @@ from django.db.utils import IntegrityError
 
 class ScaDBSerializer(serializers.Serializer):
     name = serializers.CharField(required=False)
-    page_size = serializers.IntegerField(default=20,
-                                         help_text=_('Number per page'))
-    page = serializers.IntegerField(default=1, help_text=_('Page index'))
+    page_size = serializers.IntegerField(default=20, help_text=_("Number per page"))
+    page = serializers.IntegerField(default=1, help_text=_("Page index"))
 
 
 class ScaMavenDbSerializer(serializers.ModelSerializer):
     class Meta:
         model = ScaMavenDb
-        fields = '__all__'
+        fields = "__all__"
 
 
 class ScaMavenDbUploadSerializer(serializers.Serializer):
@@ -46,7 +45,7 @@ class ScaMavenDbUploadSerializer(serializers.Serializer):
     version = serializers.CharField()
     sha_1 = serializers.CharField()
     package_name = serializers.CharField()
-    license = serializers.CharField(default='', required=False)
+    license = serializers.CharField(default="", required=False)
 
 
 class ScaDeleteSerializer(serializers.Serializer):
@@ -55,21 +54,26 @@ class ScaDeleteSerializer(serializers.Serializer):
 
 class SCADBMavenBulkViewSet(UserEndPoint, viewsets.ViewSet):
     permission_classes_by_action = {
-        'POST': (TalentAdminPermission,),
-        'DELETE': (TalentAdminPermission,),
-        'PUT': (TalentAdminPermission,),
+        "POST": (TalentAdminPermission,),
+        "DELETE": (TalentAdminPermission,),
+        "PUT": (TalentAdminPermission,),
     }
 
     def get_permissions(self):
         try:
-            return [permission() for permission in self.permission_classes_by_action[self.request.method]]
+            return [
+                permission()
+                for permission in self.permission_classes_by_action[self.request.method]
+            ]
         except KeyError:
             return [permission() for permission in self.permission_classes]
 
-    @extend_schema_with_envcheck([ScaDBSerializer],
-                                 summary=_('Get sca db bulk'),
-                                 description=_("Get sca list"),
-                                 tags=[_('SCA DB')])
+    @extend_schema_with_envcheck(
+        [ScaDBSerializer],
+        summary=_("Get sca db bulk"),
+        description=_("Get sca list"),
+        tags=[_("SCA DB")],
+    )
     def list(self, request):
         ser = ScaDBSerializer(data=request.GET)
         try:
@@ -78,24 +82,27 @@ class SCADBMavenBulkViewSet(UserEndPoint, viewsets.ViewSet):
         except ValidationError as e:
             return R.failure(data=e.detail)
         q = Q(import_from=ImportFrom.USER)
-        if ser.validated_data.get('name'):
-            q = Q(package_name__icontains=ser.validated_data['name'])
+        if ser.validated_data.get("name"):
+            q = Q(package_name__icontains=ser.validated_data["name"])
         queryset = ScaMavenDb.objects.filter(q)
         page_summary, page_data = self.get_paginator(
-            queryset, ser.validated_data['page'],
-            ser.validated_data['page_size'])
-        return R.success(data=ScaMavenDbSerializer(page_data, many=True).data,
-                         page=page_summary)
+            queryset, ser.validated_data["page"], ser.validated_data["page_size"]
+        )
+        return R.success(
+            data=ScaMavenDbSerializer(page_data, many=True).data, page=page_summary
+        )
 
-    @extend_schema_with_envcheck(request=ScaMavenDbUploadSerializer,
-                                 summary=_('Get sca db bulk'),
-                                 description=_("Get sca list"),
-                                 tags=[_('SCA DB')])
+    @extend_schema_with_envcheck(
+        request=ScaMavenDbUploadSerializer,
+        summary=_("Get sca db bulk"),
+        description=_("Get sca list"),
+        tags=[_("SCA DB")],
+    )
     def create(self, request):
-        if not request.FILES.get('file'):
-            return R.failure(msg='file required')
-        stream = request.FILES['file'].read().replace(b'\xEF\xBB\xBF', b'')
-        decoded_files = stream.decode('utf-8').splitlines()
+        if not request.FILES.get("file"):
+            return R.failure(msg="file required")
+        stream = request.FILES["file"].read().replace(b"\xEF\xBB\xBF", b"")
+        decoded_files = stream.decode("utf-8").splitlines()
         reader = csv.DictReader(decoded_files)
         datas = [dict(row) for row in reader]
         ser = ScaMavenDbUploadSerializer(data=datas, many=True)
@@ -111,52 +118,62 @@ class SCADBMavenBulkViewSet(UserEndPoint, viewsets.ViewSet):
 
 class SCADBMavenBulkDeleteView(UserEndPoint):
     permission_classes_by_action = {
-        'POST': (TalentAdminPermission,),
-        'DELETE': (TalentAdminPermission,),
-        'PUT': (TalentAdminPermission,),
+        "POST": (TalentAdminPermission,),
+        "DELETE": (TalentAdminPermission,),
+        "PUT": (TalentAdminPermission,),
     }
 
     def get_permissions(self):
         try:
-            return [permission() for permission in self.permission_classes_by_action[self.request.method]]
+            return [
+                permission()
+                for permission in self.permission_classes_by_action[self.request.method]
+            ]
         except KeyError:
             return [permission() for permission in self.permission_classes]
 
-    @extend_schema_with_envcheck(request=ScaDeleteSerializer,
-                                 summary=_('Get sca db bulk'),
-                                 description=_("Get sca list"),
-                                 tags=[_('SCA DB')])
+    @extend_schema_with_envcheck(
+        request=ScaDeleteSerializer,
+        summary=_("Get sca db bulk"),
+        description=_("Get sca list"),
+        tags=[_("SCA DB")],
+    )
     def post(self, request):
-        ids = request.data.get('ids')
+        ids = request.data.get("ids")
         ScaMavenDb.objects.filter(pk__in=ids).delete()
         return R.success()
 
 
 class SCADBMavenViewSet(UserEndPoint, viewsets.ViewSet):
     permission_classes_by_action = {
-        'POST': (TalentAdminPermission,),
-        'DELETE': (TalentAdminPermission,),
-        'PUT': (TalentAdminPermission,),
+        "POST": (TalentAdminPermission,),
+        "DELETE": (TalentAdminPermission,),
+        "PUT": (TalentAdminPermission,),
     }
 
     def get_permissions(self):
         try:
-            return [permission() for permission in self.permission_classes_by_action[self.request.method]]
+            return [
+                permission()
+                for permission in self.permission_classes_by_action[self.request.method]
+            ]
         except KeyError:
             return [permission() for permission in self.permission_classes]
 
-    @extend_schema_with_envcheck(summary=_('Get sca db'),
-                                 description=_("Get sca list"),
-                                 tags=[_('SCA DB')])
+    @extend_schema_with_envcheck(
+        summary=_("Get sca db"), description=_("Get sca list"), tags=[_("SCA DB")]
+    )
     def retrieve(self, request, pk):
         q = Q(pk=pk)
         data = ScaMavenDb.objects.filter(q).first()
         return R.success(data=ScaDBSerializer(data).data)
 
-    @extend_schema_with_envcheck(request=ScaMavenDbUploadSerializer,
-                                 summary=_('Get sca db'),
-                                 description=_("Get sca list"),
-                                 tags=[_('SCA DB')])
+    @extend_schema_with_envcheck(
+        request=ScaMavenDbUploadSerializer,
+        summary=_("Get sca db"),
+        description=_("Get sca list"),
+        tags=[_("SCA DB")],
+    )
     def create(self, request):
         ser = ScaMavenDbUploadSerializer(data=request.data)
         try:
@@ -167,21 +184,23 @@ class SCADBMavenViewSet(UserEndPoint, viewsets.ViewSet):
         try:
             ScaMavenDb.objects.create(**ser.data)
         except IntegrityError as e:
-            return R.failure(msg='same sha_1 component exists')
+            return R.failure(msg="same sha_1 component exists")
         return R.success()
 
-    @extend_schema_with_envcheck(summary=_('Get sca db'),
-                                 description=_("Get sca list"),
-                                 tags=[_('SCA DB')])
+    @extend_schema_with_envcheck(
+        summary=_("Get sca db"), description=_("Get sca list"), tags=[_("SCA DB")]
+    )
     def destory(self, request, pk):
         q = Q(pk=pk)
         data = ScaMavenDb.objects.filter(q).delete()
         return R.success()
 
-    @extend_schema_with_envcheck(request=ScaMavenDbUploadSerializer,
-                                 summary=_('Get sca db'),
-                                 description=_("Get sca list"),
-                                 tags=[_('SCA DB')])
+    @extend_schema_with_envcheck(
+        request=ScaMavenDbUploadSerializer,
+        summary=_("Get sca db"),
+        description=_("Get sca list"),
+        tags=[_("SCA DB")],
+    )
     def update(self, request, pk):
         ser = ScaMavenDbUploadSerializer(data=request.data)
         try:
@@ -195,45 +214,103 @@ class SCADBMavenViewSet(UserEndPoint, viewsets.ViewSet):
 
 
 LICENSE_LIST = [
-    'Apache-1.0', 'Apache-1.1', 'Apache-2.0', '0BSD', 'BSD-1-Clause',
-    'BSD-2-Clause-FreeBSD', 'BSD-2-Clause-NetBSD', 'BSD-2-Clause-Patent',
-    'BSD-2-Clause-Views', 'BSD-2-Clause', 'BSD-3-Clause-Attribution',
-    'BSD-3-Clause-Clear', 'BSD-3-Clause-LBNL', 'BSD-3-Clause-Modification',
-    'BSD-3-Clause-No-Military-License', 'BSD-3-Clause-No-Nuclear-License-2014',
-    'BSD-3-Clause-No-Nuclear-License', 'BSD-3-Clause-No-Nuclear-Warranty',
-    'BSD-3-Clause-Open-MPI', 'BSD-3-Clause', 'BSD-4-Clause-Shortened',
-    'BSD-4-Clause-UC', 'BSD-4-Clause', 'BSD-Protection', 'BSD-Source-Code',
-    'AGPL-1.0-only', 'AGPL-1.0-or-later', 'AGPL-1.0', 'AGPL-3.0-only',
-    'AGPL-3.0-or-later', 'AGPL-3.0', 'GPL-1.0+', 'GPL-1.0-only',
-    'GPL-1.0-or-later', 'GPL-1.0', 'GPL-2.0+', 'GPL-2.0-only',
-    'GPL-2.0-or-later', 'GPL-2.0-with-autoconf-exception',
-    'GPL-2.0-with-bison-exception', 'GPL-2.0-with-classpath-exception',
-    'GPL-2.0-with-font-exception', 'GPL-2.0-with-GCC-exception', 'GPL-2.0',
-    'GPL-3.0+', 'GPL-3.0-only', 'GPL-3.0-or-later',
-    'GPL-3.0-with-autoconf-exception', 'GPL-3.0-with-GCC-exception', 'GPL-3.0',
-    'LGPL-2.0+', 'LGPL-2.0-only', 'LGPL-2.0-or-later', 'LGPL-2.0', 'LGPL-2.1+',
-    'LGPL-2.1-only', 'LGPL-2.1-or-later', 'LGPL-2.1', 'LGPL-3.0+',
-    'LGPL-3.0-only', 'LGPL-3.0-or-later', 'LGPL-3.0', 'LGPLLR', 'MIT-0',
-    'MIT-advertising', 'MIT-CMU', 'MIT-enna', 'MIT-feh', 'MIT-Modern-Variant',
-    'MIT-open-group', 'MIT', 'MITNFA', 'MPL-1.0', 'MPL-1.1',
-    'MPL-2.0-no-copyleft-exception', 'MPL-2.0'
+    "Apache-1.0",
+    "Apache-1.1",
+    "Apache-2.0",
+    "0BSD",
+    "BSD-1-Clause",
+    "BSD-2-Clause-FreeBSD",
+    "BSD-2-Clause-NetBSD",
+    "BSD-2-Clause-Patent",
+    "BSD-2-Clause-Views",
+    "BSD-2-Clause",
+    "BSD-3-Clause-Attribution",
+    "BSD-3-Clause-Clear",
+    "BSD-3-Clause-LBNL",
+    "BSD-3-Clause-Modification",
+    "BSD-3-Clause-No-Military-License",
+    "BSD-3-Clause-No-Nuclear-License-2014",
+    "BSD-3-Clause-No-Nuclear-License",
+    "BSD-3-Clause-No-Nuclear-Warranty",
+    "BSD-3-Clause-Open-MPI",
+    "BSD-3-Clause",
+    "BSD-4-Clause-Shortened",
+    "BSD-4-Clause-UC",
+    "BSD-4-Clause",
+    "BSD-Protection",
+    "BSD-Source-Code",
+    "AGPL-1.0-only",
+    "AGPL-1.0-or-later",
+    "AGPL-1.0",
+    "AGPL-3.0-only",
+    "AGPL-3.0-or-later",
+    "AGPL-3.0",
+    "GPL-1.0+",
+    "GPL-1.0-only",
+    "GPL-1.0-or-later",
+    "GPL-1.0",
+    "GPL-2.0+",
+    "GPL-2.0-only",
+    "GPL-2.0-or-later",
+    "GPL-2.0-with-autoconf-exception",
+    "GPL-2.0-with-bison-exception",
+    "GPL-2.0-with-classpath-exception",
+    "GPL-2.0-with-font-exception",
+    "GPL-2.0-with-GCC-exception",
+    "GPL-2.0",
+    "GPL-3.0+",
+    "GPL-3.0-only",
+    "GPL-3.0-or-later",
+    "GPL-3.0-with-autoconf-exception",
+    "GPL-3.0-with-GCC-exception",
+    "GPL-3.0",
+    "LGPL-2.0+",
+    "LGPL-2.0-only",
+    "LGPL-2.0-or-later",
+    "LGPL-2.0",
+    "LGPL-2.1+",
+    "LGPL-2.1-only",
+    "LGPL-2.1-or-later",
+    "LGPL-2.1",
+    "LGPL-3.0+",
+    "LGPL-3.0-only",
+    "LGPL-3.0-or-later",
+    "LGPL-3.0",
+    "LGPLLR",
+    "MIT-0",
+    "MIT-advertising",
+    "MIT-CMU",
+    "MIT-enna",
+    "MIT-feh",
+    "MIT-Modern-Variant",
+    "MIT-open-group",
+    "MIT",
+    "MITNFA",
+    "MPL-1.0",
+    "MPL-1.1",
+    "MPL-2.0-no-copyleft-exception",
+    "MPL-2.0",
 ]
 
 
 class SCALicenseViewSet(UserEndPoint):
-    @extend_schema_with_envcheck(summary=_('Get sca license list'),
-                                 description=_("Get sca list"),
-                                 tags=[_('SCA DB')])
+    @extend_schema_with_envcheck(
+        summary=_("Get sca license list"),
+        description=_("Get sca list"),
+        tags=[_("SCA DB")],
+    )
     def get(self, request):
         return R.success(data=LICENSE_LIST)
 
 
 class SCATemplateViewSet(UserEndPoint):
-    @extend_schema_with_envcheck(summary=_('Get sca license list'),
-                                 description=_("Get sca list"),
-                                 tags=[_('SCA DB')])
+    @extend_schema_with_envcheck(
+        summary=_("Get sca license list"),
+        description=_("Get sca list"),
+        tags=[_("SCA DB")],
+    )
     def get(self, request):
-        return FileResponse(open(
-            os.path.join(BASE_DIR, 'static/assets/template/maven_sca.csv'),
-            'rb'),
-            filename='maven_sca.csv')
+        return FileResponse(
+            open(os.path.join(BASE_DIR, "static/assets/template/maven_sca.csv"), "rb"),
+            filename="maven_sca.csv",
+        )

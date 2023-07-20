@@ -15,7 +15,7 @@ from dongtai_protocol.report.handler.report_handler_interface import IReportHand
 from dongtai_protocol.report.report_handler_factory import ReportHandler
 from django.utils.translation import gettext_lazy as _
 
-logger = logging.getLogger('dongtai.openapi')
+logger = logging.getLogger("dongtai.openapi")
 
 
 @ReportHandler.register(const.REPORT_ERROR_LOG)
@@ -25,16 +25,13 @@ class ErrorLogHandler(IReportHandler):
         self.log = None
 
     def parse(self):
-        self.log = self.detail.get('log')
+        self.log = self.detail.get("log")
 
     def save(self):
         try:
             IastErrorlog.objects.create(
-                errorlog=self.log,
-                agent=self.agent,
-                state='已上报',
-                dt=int(time.time())
+                errorlog=self.log, agent=self.agent, state="已上报", dt=int(time.time())
             )
-            logger.info(_('Error log report saving success'))
+            logger.info(_("Error log report saving success"))
         except Exception as e:
-            logger.info(_('Error log report saves failed, why: {}').format(e))
+            logger.info(_("Error log report saves failed, why: {}").format(e))

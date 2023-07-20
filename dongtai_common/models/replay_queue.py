@@ -26,13 +26,11 @@ class IastReplayQueue(models.Model):
     params = models.CharField(max_length=2000, blank=True, null=True)
     body = models.CharField(max_length=4000, blank=True, null=True)
     replay_type = models.IntegerField(blank=True, null=True)
-    payload = models.ForeignKey(IastVulRecheckPayload,
-                                models.DO_NOTHING,
-                                blank=True,
-                                null=True,
-                                default=-1)
+    payload = models.ForeignKey(
+        IastVulRecheckPayload, models.DO_NOTHING, blank=True, null=True, default=-1
+    )
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_replay_queue'
-        ordering = ('-replay_type',)
+        db_table = "iast_replay_queue"
+        ordering = ("-replay_type",)

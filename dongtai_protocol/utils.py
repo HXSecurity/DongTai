@@ -14,21 +14,23 @@ from oss2.exceptions import RequestError
 
 from dongtai_conf import settings
 
-logger = logging.getLogger('dongtai.openapi')
+logger = logging.getLogger("dongtai.openapi")
 
 
 class OssDownloader(object):
-    BUCKET_URL = 'https://oss-cn-beijing.aliyuncs.com'
-    BUCKET_NAME = 'dongtai'
+    BUCKET_URL = "https://oss-cn-beijing.aliyuncs.com"
+    BUCKET_NAME = "dongtai"
 
     @staticmethod
-    def download_file_to_path(bucket_url,
-                              bucket_name,
-                              object_name,
-                              local_file,
-                              access_key='',
-                              access_key_secret='',
-                              anonymous=True):
+    def download_file_to_path(
+        bucket_url,
+        bucket_name,
+        object_name,
+        local_file,
+        access_key="",
+        access_key_secret="",
+        anonymous=True,
+    ):
         """
 
         :param access_key:
@@ -49,10 +51,12 @@ class OssDownloader(object):
             return True
         except NoSuchKey as e:
             # NoSuchKey表示oss云端文件不存在，通知管理员
-            logger.error(f'oss download failure, reason: remote file not found, filename: {object_name}')
+            logger.error(
+                f"oss download failure, reason: remote file not found, filename: {object_name}"
+            )
             return False
         except Exception as e:
-            logger.error(f'oss download failure, reason: {e}')
+            logger.error(f"oss download failure, reason: {e}")
             return False
 
     @staticmethod
@@ -62,14 +66,15 @@ class OssDownloader(object):
             bucket_url=OssDownloader.BUCKET_URL,
             bucket_name=OssDownloader.BUCKET_NAME,
             object_name=object_name,
-            local_file=local_file)
+            local_file=local_file,
+        )
 
 
 def base64_decode(raw: str) -> str:
     try:
-        return base64.b64decode(raw).decode('utf-8').strip()
+        return base64.b64decode(raw).decode("utf-8").strip()
     except Exception as decode_error:
-        logger.error(f'base64 decode error, raw: {raw}\nreason:{decode_error}')
+        logger.error(f"base64 decode error, raw: {raw}\nreason:{decode_error}")
         return ""
 
 
@@ -82,28 +87,43 @@ STATUSMAP = {True: 1, False: 0}
 
 
 def updateossstatus():
-    from dongtai_protocol.views.agent_download import JavaAgentDownload, PythonAgentDownload
-    from dongtai_protocol.views.engine_download import EngineDownloadEndPoint, PACKAGE_NAME_LIST
+    from dongtai_protocol.views.agent_download import (
+        JavaAgentDownload,
+        PythonAgentDownload,
+    )
+    from dongtai_protocol.views.engine_download import (
+        EngineDownloadEndPoint,
+        PACKAGE_NAME_LIST,
+    )
+
     try:
         status_, _ = checkossstatus()
         if not status_:
             return False, None
         import shutil
-        shutil.rmtree('/tmp')
+
+        shutil.rmtree("/tmp")
         OssDownloader.download_file(
             JavaAgentDownload.REMOTE_AGENT_FILE,
-            local_file=JavaAgentDownload.LOCAL_AGENT_FILE)
+            local_file=JavaAgentDownload.LOCAL_AGENT_FILE,
+        )
         OssDownloader.download_file(
             object_name=PythonAgentDownload.REMOTE_AGENT_FILE,
-            local_file=PythonAgentDownload.LOCAL_AGENT_FILE)
+            local_file=PythonAgentDownload.LOCAL_AGENT_FILE,
+        )
         for package_name in PACKAGE_NAME_LIST:
             EngineDownloadEndPoint.download_agent_jar(
                 EngineDownloadEndPoint.REMOTE_AGENT_FILE.format(
-                    package_name=package_name),
+                    package_name=package_name
+                ),
                 EngineDownloadEndPoint.LOCAL_AGENT_FILE.format(
-                    package_name=package_name))
-        downloadstatus = JavaAgentDownload(user_id=1).download_agent(
-        ) and PythonAgentDownload(user_id=1).download_agent()
+                    package_name=package_name
+                ),
+            )
+        downloadstatus = (
+            JavaAgentDownload(user_id=1).download_agent()
+            and PythonAgentDownload(user_id=1).download_agent()
+        )
         return downloadstatus, None
     except RequestError:
         return False, None
@@ -114,14 +134,20 @@ def updateossstatus():
 
 
 def checkossstatus():
-    from dongtai_protocol.views.agent_download import JavaAgentDownload, PythonAgentDownload
+    from dongtai_protocol.views.agent_download import (
+        JavaAgentDownload,
+        PythonAgentDownload,
+    )
     from dongtai_protocol.views.engine_download import EngineDownloadEndPoint
     from oss2.exceptions import AccessDenied
+
     try:
-        bucket = oss2.Bucket(oss2.AnonymousAuth(),
-                             settings.BUCKET_URL,
-                             settings.BUCKET_NAME,
-                             connect_timeout=4)
+        bucket = oss2.Bucket(
+            oss2.AnonymousAuth(),
+            settings.BUCKET_URL,
+            settings.BUCKET_NAME,
+            connect_timeout=4,
+        )
         bucket.list_objects()
         return True, None
     except RequestError:

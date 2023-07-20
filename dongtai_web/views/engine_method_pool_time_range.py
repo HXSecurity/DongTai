@@ -30,21 +30,32 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import gettext_lazy
 
 _GetResponseSerializer = get_response_serializer(
-    serializers.IntegerField(help_text=_('the eariest time of method_pool')))
+    serializers.IntegerField(help_text=_("the eariest time of method_pool"))
+)
 
 
 class MethodPoolTimeRangeProxy(AnonymousAndUserEndPoint):
-    @extend_schema_with_envcheck(tags=[_('Method Pool')],
-                                 summary=_('Method Pool Time Range'),
-                                 description=_("get method_pool eariest time"),
-                                 response_schema=_GetResponseSerializer)
+    @extend_schema_with_envcheck(
+        tags=[_("Method Pool")],
+        summary=_("Method Pool Time Range"),
+        description=_("get method_pool eariest time"),
+        response_schema=_GetResponseSerializer,
+    )
     def get(self, request):
-        q = Q(agent_id__in=[
-            item['id'] for item in list(
-                self.get_auth_agents_with_user(request.user).values('id'))
-        ])
-        mintime = MethodPool.objects.filter(q).values_list(
-            'update_time').order_by('-update_time').first()
+        q = Q(
+            agent_id__in=[
+                item["id"]
+                for item in list(
+                    self.get_auth_agents_with_user(request.user).values("id")
+                )
+            ]
+        )
+        mintime = (
+            MethodPool.objects.filter(q)
+            .values_list("update_time")
+            .order_by("-update_time")
+            .first()
+        )
         if mintime is None:
             return R.failure()
         return R.success(data=mintime)

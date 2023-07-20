@@ -14,7 +14,6 @@ from dongtai_web.dongtai_sca.models import VulPackage
 
 
 class AqlInfo(models.Model):
-
     vul_title = models.CharField(max_length=255, blank=True, null=True)
     safe_version = models.CharField(max_length=255, blank=True, null=True)
     latest_version = models.CharField(max_length=255, blank=True, null=True)
@@ -24,12 +23,9 @@ class AqlInfo(models.Model):
     availability = models.SmallIntegerField(blank=True, null=True)
     license_risk = models.SmallIntegerField(blank=True, null=True)
     vul_type_name = models.CharField(max_length=255, blank=True, null=True)
-    level = models.ForeignKey(IastVulLevel,
-                              models.DO_NOTHING,
-                              blank=True,
-                              null=True)
+    level = models.ForeignKey(IastVulLevel, models.DO_NOTHING, blank=True, null=True)
     cve_relation_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_aql_info'
+        db_table = "iast_aql_info"

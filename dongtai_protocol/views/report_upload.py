@@ -17,7 +17,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.translation import gettext_lazy as _
 
-logger = logging.getLogger('dongtai.openapi')
+logger = logging.getLogger("dongtai.openapi")
 
 
 class ReportUploadEndPoint(OpenApiEndPoint):
@@ -26,7 +26,7 @@ class ReportUploadEndPoint(OpenApiEndPoint):
 
     @extend_schema(
         summary="Agent 上传报告",
-        tags=['Agent服务端交互协议'],
+        tags=["Agent服务端交互协议"],
     )
     def post(self, request):
         try:

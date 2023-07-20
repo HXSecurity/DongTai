@@ -21,8 +21,8 @@ REPORT_FILE_PATH = 0x82
 
 
 # strategy
-STRATEGY_ENABLE = 'enable'
-STRATEGY_DISABLE = 'disable'
+STRATEGY_ENABLE = "enable"
+STRATEGY_DISABLE = "disable"
 
 RUNNING = 1
 
@@ -49,16 +49,16 @@ RECHECK_FALSE = 0
 RECHECK_DISCARD = 3
 
 # 定义漏洞状态
-VUL_WAITING = '待验证'
-VUL_VERIFY = '验证中'
-VUL_TRUE = '已确认'
-VUL_FALSE = '已忽略'
+VUL_WAITING = "待验证"
+VUL_VERIFY = "验证中"
+VUL_TRUE = "已确认"
+VUL_FALSE = "已忽略"
 
 # hook strategy type
 HOOK_TYPE_ENABLE = 1
 HOOK_TYPE_DISABLE = 0
 
-USER_BUGENV = 'dt-range'
+USER_BUGENV = "dt-range"
 
 SYSTEM_USER_ID = 1
 
@@ -75,8 +75,8 @@ RULE_SINK = 4
 RULE_ENTRY_POINT = 5
 
 # 定义规则对应的用户
-RULE_USER = 'user'
-RULE_SYSTEM = 'system'
+RULE_USER = "user"
+RULE_SYSTEM = "system"
 RULE_IS_SYSTEM = 1
 RULE_IS_ENABLE = 1
 

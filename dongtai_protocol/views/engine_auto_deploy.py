@@ -88,6 +88,7 @@ class AutoDeployEndPoint(OpenApiEndPoint):
     """
     当前用户详情
     """
+
     name = "download_iast_agent"
     description = "白帽子-下载IAST 自动部署脚本"
 
@@ -103,7 +104,7 @@ class AutoDeployEndPoint(OpenApiEndPoint):
         :return:
         """
         try:
-            url = request.query_params['url']
+            url = request.query_params["url"]
             token, success = Token.objects.get_or_create(user=request.user)
             data = TEMPLAGE_DATA.replace("{url}", url).replace("{token}", token.key)
             return StreamingHttpResponse(data)

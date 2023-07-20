@@ -125,56 +125,18 @@ jobs:
         run: |
           mypy --show-error-codes --ignore-missing-imports  --no-incremental --show-error-codes --check-untyped-defs --disable-error-code var-annotated  --disable-error-code  list-item  --disable-error-code attr-defined --disable-error-code assignment --disable-error-code misc --disable-error-code union-attr --disable-error-code index --disable-error-code call-overload  --disable-error-code dict-item  --disable-error-code truthy-function --disable-error-code operator --disable-error-code name-defined .
 
-  Run-Pep8Check:
+  Run-BlackCheck:
     runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 4
-      matrix:
-        python-version: ["3.10"]
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-      
-      - name: Install dependencies
-        run: |
-          sudo apt-get install build-essential cmake ninja-build python3-dev cython3 pybind11-dev libre2-dev -y
-          python -m pip install --upgrade pip
-          pip install wheel
-          pip install -r requirements.txt
-          pip install pycodestyle
-      - name: Django Unit Testing
-        run: |
-          pycodestyle  --ignore=E501,E402,E302,E265,W503,W504 --statistics .
+      - uses: actions/checkout@v3
+      - uses: psf/black@stable
 
-  Run-Flake8Check:
+  Run-RuffCheck:
     runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 4
-      matrix:
-        python-version: ["3.10"]
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-      
-      - name: Install dependencies
-        run: |
-          sudo apt-get install build-essential cmake ninja-build python3-dev cython3 pybind11-dev libre2-dev -y
-          python -m pip install --upgrade pip
-          pip install wheel
-          pip install -r requirements.txt
-          pip install flake8
-      - name: Django Unit Testing
-        run: |
-          flake8 --max-complexity 43  --statistics --ignore=E265,E302,E402,E501,F401,F541,F811,F841,W503,W504 --show-source .  
-  
+      - uses: actions/checkout@v3
+      - uses: chartboost/ruff-action@v1
+
   Run-BanditCheck:
     runs-on: ubuntu-latest
     strategy:

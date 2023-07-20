@@ -15,26 +15,26 @@ from django.utils.translation import gettext_lazy as _
 
 
 class IastProgramLanguageSerializers(serializers.ModelSerializer):
-    id = serializers.IntegerField(help_text=_('The id of program language'))
-    name = serializers.CharField(help_text=_('The name of program language'))
+    id = serializers.IntegerField(help_text=_("The id of program language"))
+    name = serializers.CharField(help_text=_("The name of program language"))
 
     class Meta:
         model = IastProgramLanguage
-        fields = ['id', 'name']
+        fields = ["id", "name"]
 
 
 _ResponseSerializer = get_response_serializer(
-    data_serializer=IastProgramLanguageSerializers(many=True), )
+    data_serializer=IastProgramLanguageSerializers(many=True),
+)
 
 
 class ProgrammingLanguageList(AnonymousAndUserEndPoint):
     @extend_schema_with_envcheck(
-        tags=[_('Program Language')],
-        summary=_('Program Language List'),
+        tags=[_("Program Language")],
+        summary=_("Program Language List"),
         description=_("Get a list of program language."),
         response_schema=_ResponseSerializer,
     )
     def get(self, request):
         queryset = IastProgramLanguage.objects.all()
-        return R.success(
-            data=IastProgramLanguageSerializers(queryset, many=True).data)
+        return R.success(data=IastProgramLanguageSerializers(queryset, many=True).data)

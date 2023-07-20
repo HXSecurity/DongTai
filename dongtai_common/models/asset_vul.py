@@ -43,11 +43,11 @@ class IastAssetVul(models.Model):
     poc = models.JSONField(blank=True, null=True, default=dict)
     descriptions = models.JSONField(blank=True, null=True, default=dict)
     references = models.JSONField(blank=True, null=True, default=dict)
-    asset = models.ManyToManyField('IastVulAssetRelation')
+    asset = models.ManyToManyField("IastVulAssetRelation")
 
     class Meta:
         managed = True
-        db_table = 'iast_asset_vul'
+        db_table = "iast_asset_vul"
 
 
 class IastAssetVulRelationMetaData(models.Model):
@@ -59,32 +59,35 @@ class IastAssetVulRelationMetaData(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'iast_asset_vul_relation_metadata'
+        db_table = "iast_asset_vul_relation_metadata"
 
 
 class IastVulAssetRelation(models.Model):
-    asset_vul = models.ForeignKey(IastAssetVul,
-                                  on_delete=models.DO_NOTHING,
-                                  db_constraint=False,
-                                  db_column='asset_vul_id')
-    asset = models.ForeignKey(Asset,
-                              on_delete=models.DO_NOTHING,
-                              db_constraint=False,
-                              db_column='asset_id')
-    status = models.ForeignKey(IastVulnerabilityStatus,
-                               on_delete=models.DO_NOTHING,
-                               db_constraint=False,
-                               db_column='status_id')
+    asset_vul = models.ForeignKey(
+        IastAssetVul,
+        on_delete=models.DO_NOTHING,
+        db_constraint=False,
+        db_column="asset_vul_id",
+    )
+    asset = models.ForeignKey(
+        Asset, on_delete=models.DO_NOTHING, db_constraint=False, db_column="asset_id"
+    )
+    status = models.ForeignKey(
+        IastVulnerabilityStatus,
+        on_delete=models.DO_NOTHING,
+        db_constraint=False,
+        db_column="status_id",
+    )
     is_del = models.SmallIntegerField(default=0)
     create_time = models.IntegerField()
-    vul_asset_metadata = models.ForeignKey(IastAssetVulRelationMetaData,
-                                           on_delete=models.DO_NOTHING,
-                                           default="")
+    vul_asset_metadata = models.ForeignKey(
+        IastAssetVulRelationMetaData, on_delete=models.DO_NOTHING, default=""
+    )
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_asset_vul_relation'
-        unique_together = ['asset_vul_id', 'asset_id']
+        db_table = "iast_asset_vul_relation"
+        unique_together = ["asset_vul_id", "asset_id"]
 
 
 class IastAssetVulType(models.Model):
@@ -93,22 +96,26 @@ class IastAssetVulType(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_asset_vul_type'
+        db_table = "iast_asset_vul_type"
 
 
 class IastAssetVulTypeRelation(models.Model):
-    asset_vul = models.ForeignKey(IastAssetVul,
-                                  on_delete=models.CASCADE,
-                                  db_constraint=False,
-                                  db_column='asset_vul_id')
-    asset_vul_type = models.ForeignKey(IastAssetVulType,
-                                       on_delete=models.CASCADE,
-                                       db_constraint=False,
-                                       db_column='asset_vul_type_id')
+    asset_vul = models.ForeignKey(
+        IastAssetVul,
+        on_delete=models.CASCADE,
+        db_constraint=False,
+        db_column="asset_vul_id",
+    )
+    asset_vul_type = models.ForeignKey(
+        IastAssetVulType,
+        on_delete=models.CASCADE,
+        db_constraint=False,
+        db_column="asset_vul_type_id",
+    )
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_asset_vul_type_relation'
+        db_table = "iast_asset_vul_type_relation"
 
     # "iast_asset_vul_type_relation      iast_asset_vul_relation  iast_asset_vul iast_asset "
 
@@ -153,6 +160,7 @@ class IastAssetVulnerabilityDocument(Document):
 
     def prepare_vul_cve_nums(self, instance):
         import json
+
         return json.dumps(instance.asset_vul.vul_cve_nums)
 
     def generate_id(self, object_instance):
@@ -166,17 +174,21 @@ class IastAssetVulnerabilityDocument(Document):
         if isinstance(related_instance, IastAgent):
             if related_instance.bind_project_id < 0:
                 return IastVulAssetRelation.objects.filter(
-                    asset__agent__id=related_instance.pk).all()
+                    asset__agent__id=related_instance.pk
+                ).all()
 
     @classmethod
     def search(cls, using=None, index=None):
         uuid_key = uuid.uuid4().hex
         cache_uuid_key = cache.get_or_set(
-            f'es-documents-shards-{cls.__name__}', uuid_key, 60 * 1)
-        return Search(using=cls._get_using(using),
-                      index=cls._default_index(index),
-                      doc_type=[cls],
-                      model=cls.django.model).params(preference=cache_uuid_key)
+            f"es-documents-shards-{cls.__name__}", uuid_key, 60 * 1
+        )
+        return Search(
+            using=cls._get_using(using),
+            index=cls._default_index(index),
+            doc_type=[cls],
+            model=cls.django.model,
+        ).params(preference=cache_uuid_key)
 
     class Index:
         name = ASSET_VUL_INDEX

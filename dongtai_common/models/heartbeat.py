@@ -25,11 +25,11 @@ class IastHeartbeat(models.Model):
     agent = models.ForeignKey(
         to=IastAgent,
         on_delete=models.DO_NOTHING,
-        related_name='heartbeats',
-        related_query_name='heartbeat',
-        verbose_name=_('agent')
+        related_name="heartbeats",
+        related_query_name="heartbeat",
+        verbose_name=_("agent"),
     )
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_heartbeat'
+        db_table = "iast_heartbeat"

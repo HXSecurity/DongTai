@@ -8,17 +8,14 @@ class LoginSerializer(serializers.Serializer):
     """
     https://www.django-rest-framework.org/api-guide/fields/
     """
+
     username = serializers.CharField(
         required=True,
         max_length=12,
-        error_messages={
-            "username": _("Username should not be empty")
-        }
+        error_messages={"username": _("Username should not be empty")},
     )
     password = serializers.CharField(
         required=True,
         max_length=6,
-        error_messages={
-            "password": _("Password should not be blank")
-        }
+        error_messages={"password": _("Password should not be blank")},
     )

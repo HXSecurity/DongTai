@@ -16,9 +16,9 @@ logger = logging.getLogger("dongtai.openapi")
 
 class OSSHealthView(UserEndPoint):
     @extend_schema(
-        description='Check OSS Health',
+        description="Check OSS Health",
         responses=R,
-        methods=['GET'],
+        methods=["GET"],
         summary="检查 OSS 健康",
         tags=["OSS"],
     )

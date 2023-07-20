@@ -14,12 +14,14 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 import logging
 from dongtai_web.vul_log.vul_log import log_change_status
 
-logger = logging.getLogger('dongtai-webapi')
+logger = logging.getLogger("dongtai-webapi")
 
-_ResponseSerializer = get_response_serializer(status_msg_keypair=(
-    ((201, _('Vulnerability status is modified to {}')), ''),
-    ((202, _('Incorrect parameter')), ''),
-))
+_ResponseSerializer = get_response_serializer(
+    status_msg_keypair=(
+        ((201, _("Vulnerability status is modified to {}")), ""),
+        ((202, _("Incorrect parameter")), ""),
+    )
+)
 
 
 class VulStatus(UserEndPoint):
@@ -30,48 +32,42 @@ class VulStatus(UserEndPoint):
         [],
         [
             {
-                'name': _("Update with status_id"),
-                "description":
-                _("Update vulnerability status with status id."),
-                'value': {
-                    'id': 1,
-                    'status_id': 1
-                },
+                "name": _("Update with status_id"),
+                "description": _("Update vulnerability status with status id."),
+                "value": {"id": 1, "status_id": 1},
             },
             {
-                'name': _("Update with status name(Not recommended)"),
-                "description":
-                _("Update vulnerability status with status name."),
-                'value': {
-                    'id': 1,
-                    'status': "str"
-                },
+                "name": _("Update with status name(Not recommended)"),
+                "description": _("Update vulnerability status with status name."),
+                "value": {"id": 1, "status": "str"},
             },
         ],
-        [{
-            'name':
-            _('Get data sample'),
-            'description':
-            _("The aggregation results are programming language, risk level, vulnerability type, project"
-              ),
-            'value': {
-                "status": 201,
-                "msg": "Vulnerability status is modified to Confirmed"
+        [
+            {
+                "name": _("Get data sample"),
+                "description": _(
+                    "The aggregation results are programming language, risk level, vulnerability type, project"
+                ),
+                "value": {
+                    "status": 201,
+                    "msg": "Vulnerability status is modified to Confirmed",
+                },
             }
-        }],
-        tags=[_('Vulnerability')],
+        ],
+        tags=[_("Vulnerability")],
         summary=_("Vulnerability Status Modify"),
-        description=_("""Modify the vulnerability status of the specified id.
+        description=_(
+            """Modify the vulnerability status of the specified id.
         The status is specified by the following two parameters.
         Status corresponds to the status noun and status_id corresponds to the status id.
         Both can be obtained from the vulnerability status list API, and status_id is preferred."""
-                      ),
+        ),
         response_schema=_ResponseSerializer,
     )
     def post(self, request):
-        vul_id = request.data.get('vul_id')
-        vul_ids = request.data.get('vul_ids')
-        status_id = request.data.get('status_id')
+        vul_id = request.data.get("vul_id")
+        vul_ids = request.data.get("vul_ids")
+        status_id = request.data.get("status_id")
         user = request.user
         user_id = user.id
         department = request.user.get_relative_department()
@@ -80,9 +76,9 @@ class VulStatus(UserEndPoint):
         if not vul_ids:
             vul_ids = [vul_id]
         queryset = IastVulnerabilityModel.objects.filter(
-            is_del=0, project__department__in=department)
-        vul_status = IastVulnerabilityStatus.objects.filter(
-            pk=status_id).first()
+            is_del=0, project__department__in=department
+        )
+        vul_status = IastVulnerabilityStatus.objects.filter(pk=status_id).first()
         if vul_status:
             queryset_status = queryset.filter(id__in=vul_ids)
             ids = []
@@ -93,6 +89,5 @@ class VulStatus(UserEndPoint):
 
             # ids = list(
             #     queryset.filter(id__in=vul_ids).values_list('id', flat=True))
-            log_change_status(user_id, request.user.username, ids,
-                              vul_status.name)
+            log_change_status(user_id, request.user.username, ids, vul_status.name)
         return R.success()

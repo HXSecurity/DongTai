@@ -24,18 +24,24 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = IastMessage
         fields = [
-            'id', 'message', 'relative_url', 'create_time', 'read_time',
-            'is_read', 'message_type_id', 'to_user_id'
+            "id",
+            "message",
+            "relative_url",
+            "create_time",
+            "read_time",
+            "is_read",
+            "message_type_id",
+            "to_user_id",
         ]
 
 
 class MessagesSendEndpoint(TalentAdminEndPoint):
     @extend_schema_with_envcheck(
         request=MessageSerializer,
-        summary=_('Send Message'),
-        description=_(
-            "Used to get the message list corresponding to the user"),
-        tags=[_('Messages')])
+        summary=_("Send Message"),
+        description=_("Used to get the message list corresponding to the user"),
+        tags=[_("Messages")],
+    )
     def post(self, request):
         ser = MessageSerializer(data=request.data)
         try:

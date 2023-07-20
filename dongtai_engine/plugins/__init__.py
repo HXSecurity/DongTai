@@ -14,7 +14,7 @@ def is_strategy_enable(vul_type, method_pool):
         vul_strategy = IastStrategyModel.objects.filter(
             vul_type=vul_type,
             state=const.STRATEGY_ENABLE,
-            user_id__in=(1, method_pool.agent.user.id)
+            user_id__in=(1, method_pool.agent.user.id),
         ).first()
         if vul_strategy is None:
             return False
@@ -25,7 +25,7 @@ def is_strategy_enable(vul_type, method_pool):
         strategy_ids = project.scan.content
         if strategy_ids is None:
             return False
-        if str(vul_strategy.id) in strategy_ids.split(','):
+        if str(vul_strategy.id) in strategy_ids.split(","):
             return True
         return False
     except Exception as e:

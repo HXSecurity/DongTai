@@ -34,4 +34,4 @@ class Replay:
         replay.verify_time = timestamp
         replay.state = const.SOLVED
         replay.result = const.RECHECK_ERROR
-        replay.save(update_fields=['update_time', 'verify_time', 'state', 'result'])
+        replay.save(update_fields=["update_time", "verify_time", "state", "result"])

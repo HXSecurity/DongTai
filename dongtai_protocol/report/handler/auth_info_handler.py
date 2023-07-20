@@ -14,16 +14,16 @@ from dongtai_protocol.report.handler.report_handler_interface import IReportHand
 from dongtai_protocol.report.report_handler_factory import ReportHandler
 
 
-@ReportHandler.register('auth-info-report')
+@ReportHandler.register("auth-info-report")
 class AuthInfoHandler:
     RECIVED_AUTH_INFO = set()
 
     @staticmethod
     def handler(reports):
-        report_value = reports.get('report')
+        report_value = reports.get("report")
         AuthInfoHandler.RECIVED_AUTH_INFO.add(report_value["auth-value"])
         for authinfo in AuthInfoHandler.RECIVED_AUTH_INFO:
-            print(f'==>> recived auth ifno: {authinfo}')
+            print(f"==>> recived auth ifno: {authinfo}")
 
     @staticmethod
     def get_new_authinfo(authinfo):
@@ -37,14 +37,14 @@ class AuthInfoHandler:
 class AuthAddHandler(IReportHandler):
     def parse(self):
         # todo 增加appnem字段
-        self.server_name = self.detail.get('server_name')
-        self.server_port = self.detail.get('server_port')
-        self.http_url = self.detail.get('http_url')
-        self.http_query_string = self.detail.get('http_query_string')
-        self.auth_sql = self.detail.get('auth_sql')
-        self.jdbc_class = self.detail.get('jdbc_class')
-        self.auth_value = self.detail.get('auth_value')
-        self.app_name = ''
+        self.server_name = self.detail.get("server_name")
+        self.server_port = self.detail.get("server_port")
+        self.http_url = self.detail.get("http_url")
+        self.http_query_string = self.detail.get("http_query_string")
+        self.auth_sql = self.detail.get("auth_sql")
+        self.jdbc_class = self.detail.get("jdbc_class")
+        self.auth_value = self.detail.get("auth_value")
+        self.app_name = ""
 
     def save(self):
         try:
@@ -59,10 +59,10 @@ class AuthAddHandler(IReportHandler):
                 auth_value=self.auth_value,
             )
             if len(auth_model):
-                print('权限已存在，忽略')
+                print("权限已存在，忽略")
                 pass
             else:
-                print('新增权限')
+                print("新增权限")
                 IastOverpowerUserAuth(
                     app_name=self.app_name,
                     server_name=self.server_name,
@@ -94,29 +94,29 @@ class AuthUpdateHandler(IReportHandler):
     """
 
     def parse(self):
-        self.app_name = self.detail.get('app_name')
-        self.server_name = self.detail.get('server_name')
-        self.server_port = self.detail.get('server_port')
-        self.http_url = self.detail.get('http_url')
-        self.http_query_string = self.detail.get('http_query_string')
-        self.auth_original = self.detail.get('auth_original')
-        self.auth_updated = self.detail.get('auth_updated')
+        self.app_name = self.detail.get("app_name")
+        self.server_name = self.detail.get("server_name")
+        self.server_port = self.detail.get("server_port")
+        self.http_url = self.detail.get("http_url")
+        self.http_query_string = self.detail.get("http_query_string")
+        self.auth_original = self.detail.get("auth_original")
+        self.auth_updated = self.detail.get("auth_updated")
 
     def save(self):
         try:
-            print('存储权限变更报告')
+            print("存储权限变更报告")
             auth_model = IastOverpowerUserAuth.objects.filter(
                 app_name=self.app_name,
                 server_name=self.server_name,
                 server_port=self.server_port,
                 http_url=self.http_url,
                 http_query_string=self.http_query_string,
-                auth_value=self.auth_original
+                auth_value=self.auth_original,
             )
             if len(auth_model) > 0:
-                print('处理权限变更')
+                print("处理权限变更")
             else:
-                print('忽略权限变更')
+                print("忽略权限变更")
         except Exception as e:
             raise e
             pass

@@ -19,10 +19,12 @@ class _ProjectsDelBodyArgsSerializer(serializers.Serializer):
 
 
 logger = logging.getLogger("django")
-_ResponseSerializer = get_response_serializer(status_msg_keypair=(
-    ((201, _('Application has been deleted successfully')), ''),
-    ((202, _('Failed to delete the project.')), ''),
-))
+_ResponseSerializer = get_response_serializer(
+    status_msg_keypair=(
+        ((201, _("Application has been deleted successfully")), ""),
+        ((202, _("Failed to delete the project.")), ""),
+    )
+)
 
 
 class ProjectDel(UserEndPoint):
@@ -31,24 +33,25 @@ class ProjectDel(UserEndPoint):
 
     @extend_schema_with_envcheck(
         request=_ProjectsDelBodyArgsSerializer,
-        tags=[_('Project')],
-        summary=_('Projects Delete'),
+        tags=[_("Project")],
+        summary=_("Projects Delete"),
         description=_("Delete the agent by specifying the id."),
         response_schema=_ResponseSerializer,
     )
     def post(self, request):
         try:
-            project_id = request.data.get('id', None)
+            project_id = request.data.get("id", None)
             if project_id:
                 # auth_users = self.get_auth_users(request.user)
                 department = request.user.get_relative_department()
-#                IastAgent.objects.filter(
-#                    bind_project_id=project_id,
-#                    user__in=auth_users).update(bind_project_id=-1)
-                IastProject.objects.filter(id=project_id,
-                                           department__in=department).delete()
+                #                IastAgent.objects.filter(
+                #                    bind_project_id=project_id,
+                #                    user__in=auth_users).update(bind_project_id=-1)
+                IastProject.objects.filter(
+                    id=project_id, department__in=department
+                ).delete()
 
-            return R.success(msg=_('Application has been deleted successfully'))
+            return R.success(msg=_("Application has been deleted successfully"))
         except Exception as e:
             logger.error(e, exc_info=e)
-            return R.failure(msg=_('Failed to delete the project.'))
+            return R.failure(msg=_("Failed to delete the project."))

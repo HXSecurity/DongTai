@@ -12,21 +12,21 @@ class AgentUpgradeOffline(TalentAdminEndPoint):
     description = _("Offline Upgrade Agent")
 
     def post(self, request):
-        file = request.FILES['file']
+        file = request.FILES["file"]
         status, filename = AgentUpgradeOffline.check_file(file.name)
         if status:
             AgentUpgradeOffline.handle_uploaded_file(filename, file)
-            return R.success(msg=_('Upload successful'))
-        return R.failure(msg=_('{} files not supported').format(filename))
+            return R.success(msg=_("Upload successful"))
+        return R.failure(msg=_("{} files not supported").format(filename))
 
     @staticmethod
     def handle_uploaded_file(filename, file):
-        with open(f'iast/upload/iast-package/{filename}', 'wb+') as destination:
+        with open(f"iast/upload/iast-package/{filename}", "wb+") as destination:
             for chunk in file.chunks():
                 destination.write(chunk)
 
     @staticmethod
     def check_file(filename):
-        if filename in ['iast-agent.jar', 'iast-core.jar', 'iast-inject.jar']:
+        if filename in ["iast-agent.jar", "iast-core.jar", "iast-inject.jar"]:
             return True, filename
         return False, filename

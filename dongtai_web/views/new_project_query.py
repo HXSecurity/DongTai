@@ -19,15 +19,14 @@ logger = logging.getLogger("django")
 
 
 class ProjectVersionArgSerializer(serializers.Serializer):
-    page_size = serializers.IntegerField(default=20,
-                                         help_text=_('Number per page'))
-    page = serializers.IntegerField(default=1, help_text=_('Page index'))
-    project_id = serializers.IntegerField(default=None,
-                                          help_text=_('Project id'),
-                                          required=False)
-    version_name = serializers.CharField(default=None,
-                                         help_text=_("version_name "),
-                                         required=False)
+    page_size = serializers.IntegerField(default=20, help_text=_("Number per page"))
+    page = serializers.IntegerField(default=1, help_text=_("Page index"))
+    project_id = serializers.IntegerField(
+        default=None, help_text=_("Project id"), required=False
+    )
+    version_name = serializers.CharField(
+        default=None, help_text=_("version_name "), required=False
+    )
 
 
 class NewProjectVersionList(UserEndPoint):
@@ -36,18 +35,20 @@ class NewProjectVersionList(UserEndPoint):
 
     @extend_schema_with_envcheck(
         [ProjectVersionArgSerializer],
-        tags=[_('Project')],
-        summary=_('项目版本列表'),
-        description=_("Get the item corresponding to the user, support fuzzy search based on name."),
+        tags=[_("Project")],
+        summary=_("项目版本列表"),
+        description=_(
+            "Get the item corresponding to the user, support fuzzy search based on name."
+        ),
     )
     def get(self, request):
         ser = ProjectVersionArgSerializer(data=request.GET)
         try:
             if ser.is_valid(True):
-                page_size = ser.validated_data['page_size']
-                page = ser.validated_data['page']
-                version_name = ser.validated_data['version_name']
-                project_id = ser.validated_data['project_id']
+                page_size = ser.validated_data["page_size"]
+                page = ser.validated_data["page"]
+                version_name = ser.validated_data["version_name"]
+                project_id = ser.validated_data["project_id"]
         except ValidationError as e:
             return R.failure(data=e.detail)
         q = Q()
@@ -56,8 +57,8 @@ class NewProjectVersionList(UserEndPoint):
         if project_id:
             q = Q(project_id=project_id)
         page_info, documents = self.get_paginator(
-            IastProjectVersion.objects.filter(q).order_by('-id').all(), page,
-            page_size)
+            IastProjectVersion.objects.filter(q).order_by("-id").all(), page, page_size
+        )
         return R.success(
-            data=[model_to_dict(document) for document in documents],
-            page=page_info)
+            data=[model_to_dict(document) for document in documents], page=page_info
+        )
