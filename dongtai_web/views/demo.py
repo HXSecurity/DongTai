@@ -6,11 +6,12 @@
 # @description :
 ######################################################################
 
-from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_common.models.user import User
-from django.contrib.auth import authenticate, login
-from django.http import HttpResponseRedirect
 from django.conf import settings
+from django.contrib.auth import login
+from django.http import HttpResponseRedirect
+
+from dongtai_common.endpoint import UserEndPoint
+from dongtai_common.models.user import User
 
 
 class Demo(UserEndPoint):
@@ -22,5 +23,4 @@ class Demo(UserEndPoint):
     def get(self, request):
         user = User.objects.filter(username="demo").first()
         login(request, user)
-        res = HttpResponseRedirect(settings.DOMAIN + "project/projectManage")
-        return res
+        return HttpResponseRedirect(settings.DOMAIN + "project/projectManage")

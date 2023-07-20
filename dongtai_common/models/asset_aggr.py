@@ -1,15 +1,15 @@
 # !usr/bin/env python
-# coding:utf-8
 # @author:zhaoyanwei
 # @file: asset_aggr.py
 # @time: 2022/5/15  上午12:05
 
-from dongtai_conf.settings import ASSET_AGGR_INDEX
+from django.db import models
 from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
-from django.db import models
+
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_common.utils.settings import get_managed
+from dongtai_conf.settings import ASSET_AGGR_INDEX
 
 
 class AssetAggr(models.Model):
@@ -32,7 +32,7 @@ class AssetAggr(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_asset_aggr'
+        db_table = "iast_asset_aggr"
 
 
 @registry.register_document
@@ -46,8 +46,20 @@ class AssetAggrDocument(Document):
         model = AssetAggr
 
         fields = [
-            'id', 'package_name', 'signature_value', 'version', 'safe_version',
-            'last_version', 'vul_count', 'vul_critical_count',
-            'vul_high_count', 'vul_medium_count', 'vul_low_count',
-            'vul_info_count', 'project_count', 'language', 'license', 'is_del',
+            "id",
+            "package_name",
+            "signature_value",
+            "version",
+            "safe_version",
+            "last_version",
+            "vul_count",
+            "vul_critical_count",
+            "vul_high_count",
+            "vul_medium_count",
+            "vul_low_count",
+            "vul_info_count",
+            "project_count",
+            "language",
+            "license",
+            "is_del",
         ]

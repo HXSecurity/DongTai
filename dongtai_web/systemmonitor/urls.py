@@ -1,6 +1,6 @@
 from django.urls import include, path
-
 from rest_framework import routers
+
 from dongtai_web.systemmonitor.project_warning import ProjectWarningEndpoint
 
 router = routers.DefaultRouter()

@@ -1,51 +1,47 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
 # datetime: 2021/7/16 下午4:45
-# project: dongtai
 import json
 import logging
-
-from django.http.request import HttpRequest
-from django.contrib.contenttypes.models import ContentType
-from django.core.paginator import Paginator
-from django.db.models import QuerySet
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from dongtai_common.models import User
-from dongtai_common.models.agent import IastAgent
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-from dongtai_common.common.utils import DepartmentTokenAuthentication
-from rest_framework.views import APIView
-from rest_framework import status, exceptions
-from django.core.paginator import PageNotAnInteger, EmptyPage
-
-from dongtai_common.models.asset import Asset
-from dongtai_common.models.asset_aggr import AssetAggr
-from dongtai_common.models.asset_vul import IastVulAssetRelation, IastAssetVul
-from dongtai_common.models.log import IastLog, OperateType
-from dongtai_common.permissions import UserPermission, ScopedPermission, SystemAdminPermission, TalentAdminPermission
-from dongtai_common.utils import const
-from django.utils.translation import gettext_lazy as _
-from dongtai_common.models.department import Department
-from django.db.models import Q, Count
-from typing import Tuple, Dict, Union, TYPE_CHECKING
-from dongtai_common.models.department import Department
 from functools import reduce
 from operator import ior
+from typing import TYPE_CHECKING, Union
+
+from django.core.paginator import EmptyPage, Paginator
+from django.db.models import Count, Q, QuerySet
+from django.http import JsonResponse
+from django.http.request import HttpRequest
+from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework import exceptions, status
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.views import APIView
+
+from dongtai_common.common.utils import DepartmentTokenAuthentication
+from dongtai_common.models import User
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.asset import Asset
+from dongtai_common.models.asset_aggr import AssetAggr
+from dongtai_common.models.asset_vul import IastVulAssetRelation
+from dongtai_common.models.department import Department
+from dongtai_common.models.log import IastLog, OperateType
+from dongtai_common.permissions import (
+    UserPermission,
+)
+from dongtai_common.utils import const
 from dongtai_common.utils.init_schema import VIEW_CLASS_TO_SCHEMA
 
 if TYPE_CHECKING:
     from django.core.paginator import _SupportsPagination
 
-logger = logging.getLogger('dongtai-core')
+logger = logging.getLogger("dongtai-core")
 
 
 class EndPoint(APIView):
     """
-    基于APIView封装的API入口处理类，需要针对请求进行统一处理的都通过该类实现
+    基于APIView封装的API入口处理类,需要针对请求进行统一处理的都通过该类实现
     """
+
     name = "api-v1"
     description = "ApiServer接口"
     permission_classes_by_action = {}
@@ -71,15 +67,14 @@ class EndPoint(APIView):
 
         request.json_body = None
 
-        if not request.META.get("CONTENT_TYPE",
-                                "").startswith("application/json"):
+        if not request.META.get("CONTENT_TYPE", "").startswith("application/json"):
             return
 
         if not len(request.body):
             return
 
         try:
-            request.json_body = json.loads(request.body.decode('utf-8'))
+            request.json_body = json.loads(request.body.decode("utf-8"))
         except json.JSONDecodeError:
             return
 
@@ -103,20 +98,18 @@ class EndPoint(APIView):
 
             # Get the appropriate handler method
             if request.method.lower() in self.http_method_names:
-                handler = getattr(self, request.method.lower(),
-                                  self.http_method_not_allowed)
+                handler = getattr(self, request.method.lower(), self.http_method_not_allowed)
             else:
                 handler = self.http_method_not_allowed
             response = handler(request, *args, **kwargs)
         except AuthenticationFailed as exc:
-            logger.debug(f'url: {self.request.path},exc:{exc}')
+            logger.debug(f"url: {self.request.path},exc:{exc}")
             response = self.handle_exception(exc)
         except Exception as exc:
-            logger.warning(f'url: {self.request.path},exc:{exc}', exc_info=exc)
+            logger.warning(f"url: {self.request.path},exc:{exc}", exc_info=exc)
             response = self.handle_exception(exc)
 
-        self.response = self.finalize_response(request, response, *args,
-                                               **kwargs)
+        self.response = self.finalize_response(request, response, *args, **kwargs)
         if self.request.user is not None:
             try:
                 method = self.request.method
@@ -124,7 +117,7 @@ class EndPoint(APIView):
                     raise ValueError("can not get request method")
                 operate_method = method
                 path, _path_regex, schema, filepath = VIEW_CLASS_TO_SCHEMA[self.__class__][method]
-                if 'dongtai' not in filepath or 'dongtai_protocol' in filepath:
+                if "dongtai" not in filepath or "dongtai_protocol" in filepath:
                     return self.response
                 if schema is None:
                     raise ValueError("can not get schema")
@@ -133,12 +126,12 @@ class EndPoint(APIView):
                 module_name = tags[0]
                 operate_tag = list(filter(lambda x: x.startswith("operate-"), tags))
                 if operate_tag:
-                    operate_method = operate_tag[0].lstrip("operate-")
+                    operate_method = operate_tag[0].removeprefix("operate-")
 
                 if operate_method == "GET":
                     operate_type = OperateType.GET
                     return self.response
-                elif operate_method == "POST":
+                if operate_method == "POST":
                     operate_type = OperateType.ADD
                 elif operate_method == "PUT":
                     operate_type = OperateType.CHANGE
@@ -154,7 +147,7 @@ class EndPoint(APIView):
                     function_name=summary,
                     operate_type=operate_type,
                     user_id=self.request.user.id,
-                    access_ip=get_client_ip(self.request)
+                    access_ip=get_client_ip(self.request),
                 )
             except Exception as e:
                 logger.warning(f"get log info failed: {e}")
@@ -169,10 +162,7 @@ class EndPoint(APIView):
             exc.status_code = status.HTTP_429_TOO_MANY_REQUESTS
         elif isinstance(
             exc,
-            (
-                exceptions.NotAuthenticated,
-                exceptions.AuthenticationFailed,
-            ),
+            exceptions.NotAuthenticated | exceptions.AuthenticationFailed,
         ):
             # WWW-Authenticate header for 401 responses, else coerce to 403
             auth_header = self.get_authenticate_header(self.request)
@@ -198,10 +188,8 @@ class EndPoint(APIView):
 
     @staticmethod
     def get_paginator(
-        queryset: QuerySet,
-        page: int = 1,
-        page_size: int = 20
-    ) -> Tuple[Dict, Union[QuerySet, '_SupportsPagination']]:
+        queryset: QuerySet, page: int = 1, page_size: int = 20
+    ) -> tuple[dict, Union[QuerySet, "_SupportsPagination"]]:
         """
         根据模型集合、页号、每页大小获取分页数据
         :param queryset:
@@ -218,14 +206,10 @@ class EndPoint(APIView):
             page_summary = {
                 "alltotal": page_info.count,
                 "num_pages": page_info.num_pages,
-                "page_size": page_size
+                "page_size": page_size,
             }
         except BaseException:
-            page_summary = {
-                "alltotal": 0,
-                "num_pages": 0,
-                "page_size": page_size
-            }
+            page_summary = {"alltotal": 0, "num_pages": 0, "page_size": page_size}
         try:
             page_info.validate_number(page)
             page_list = page_info.get_page(page).object_list
@@ -252,8 +236,7 @@ class EndPoint(APIView):
             departments = talent.departments.all()
             users = User.objects.filter(department__in=departments)
         elif user.is_department_admin:
-            users = User.objects.filter(
-                Q(department__principal_id=user.id) | Q(id=user.id)).all()
+            users = User.objects.filter(Q(department__principal_id=user.id) | Q(id=user.id)).all()
         else:
             users = User.objects.filter(id=user.id).all()
         return users
@@ -277,12 +260,8 @@ class EndPoint(APIView):
         qs = Department.objects.none()
         qss = [user.get_relative_department() for user in users]
         departments = reduce(ior, qss, qs)
-        return IastAgent.objects.filter(
-            bind_project__department__in=departments)
+        return IastAgent.objects.filter(bind_project__department__in=departments)
         # if isinstance(users, QuerySet):
-        #    return IastAgent.objects.filter(user__in=users)
-        # else:
-        #    return IastAgent.objects.filter(user=users)
 
     @staticmethod
     def get_auth_assets(users):
@@ -303,15 +282,9 @@ class EndPoint(APIView):
         :param users:
         :return:
         """
-        auth_assets = auth_assets.values('signature_value').annotate(
-            total=Count('signature_value'))
-        auth_hash = []
-        for asset in auth_assets:
-            auth_hash.append(asset['signature_value'])
-        auth_hash = list(set(auth_hash))
-        queryset = AssetAggr.objects.filter(signature_value__in=auth_hash,
-                                            is_del=0)
-        return queryset
+        auth_assets = auth_assets.values("signature_value").annotate(total=Count("signature_value"))
+        auth_hash = list({asset["signature_value"] for asset in auth_assets})
+        return AssetAggr.objects.filter(signature_value__in=auth_hash, is_del=0)
 
     @staticmethod
     def get_auth_asset_vuls(assets):
@@ -320,28 +293,24 @@ class EndPoint(APIView):
         :param users:
         :return:
         """
-        permission_assets = assets.filter(
-            dependency_level__gt=0).values('id').all()
-        auth_assets = [_i['id'] for _i in permission_assets]
+        permission_assets = assets.filter(dependency_level__gt=0).values("id").all()
+        auth_assets = [_i["id"] for _i in permission_assets]
 
-        vul_asset_ids = IastVulAssetRelation.objects.filter(
-            asset_id__in=auth_assets, is_del=0).values('asset_vul_id').all()
+        vul_asset_ids = (
+            IastVulAssetRelation.objects.filter(asset_id__in=auth_assets, is_del=0).values("asset_vul_id").all()
+        )
         perm_vul_ids = []
         if vul_asset_ids:
-            perm_vul_ids = [_i['asset_vul_id'] for _i in vul_asset_ids]
+            perm_vul_ids = [_i["asset_vul_id"] for _i in vul_asset_ids]
 
         return perm_vul_ids
 
     @staticmethod
     def get_auth_and_anonymous_agents(user):
-        #        query_user = []
         #        if user.is_active:
-        #            query_user = user
         #
         #        if query_user == []:
-        #            dt_range_user = User.objects.filter(username=const.USER_BUGENV).first()
         #            if dt_range_user:
-        #                query_user = dt_range_user
         return EndPoint.get_auth_agents_with_user(user)
 
 
@@ -349,6 +318,7 @@ class MixinAuthEndPoint(EndPoint):
     """
     通过Token和Sessin验证的API入口
     """
+
     authentication_classes = (
         SessionAuthentication,
         TokenAuthentication,
@@ -359,6 +329,7 @@ class AnonymousAuthEndPoint(EndPoint):
     """
     具有匿名用户权限验证的API入口
     """
+
     authentication_classes = []
 
 
@@ -367,31 +338,27 @@ class AnonymousAndUserEndPoint(MixinAuthEndPoint):
 
 
 class UserEndPoint(MixinAuthEndPoint):
-    permission_classes = (UserPermission, )
+    permission_classes = (UserPermission,)
 
 
 class OpenApiEndPoint(EndPoint):
-    authentication_classes = (DepartmentTokenAuthentication,
-                              TokenAuthentication)
-    permission_classes = (UserPermission, )
+    authentication_classes = (DepartmentTokenAuthentication, TokenAuthentication)
+    permission_classes = (UserPermission,)
 
 
 class EngineApiEndPoint(EndPoint):
     authentication_classes = (SessionAuthentication, TokenAuthentication)
-    permission_classes = (UserPermission, )
+    permission_classes = (UserPermission,)
 
 
 class SystemAdminEndPoint(EndPoint):
     authentication_classes = (SessionAuthentication, TokenAuthentication)
-    # authentication_classes = (TokenAuthentication,)
-    permission_classes = (UserPermission, )
-    #permission_classes = (SystemAdminPermission,)
+    permission_classes = (UserPermission,)
 
 
 class TalentAdminEndPoint(EndPoint):
     authentication_classes = (SessionAuthentication, TokenAuthentication)
-    permission_classes = (UserPermission, )
-    #permission_classes = (TalentAdminPermission,)
+    permission_classes = (UserPermission,)
 
 
 class R:
@@ -403,18 +370,18 @@ class R:
 
     @staticmethod
     def success(
-            status=201,
-            data=None,
-            msg=_("success"),
-            page=None,
-            status_code=200,
-            **kwargs,
+        status=201,
+        data=None,
+        msg=_("success"),  # noqa: B008
+        page=None,
+        status_code=200,
+        **kwargs,
     ):
         resp_data = {"status": status, "msg": msg}
         if data is not None:
-            resp_data['data'] = data
+            resp_data["data"] = data
         if page:
-            resp_data['page'] = page
+            resp_data["page"] = page
 
         for key, value in kwargs.items():
             resp_data[key] = value
@@ -425,10 +392,10 @@ class R:
         )
 
     @staticmethod
-    def failure(status=202, data=None, status_code=200, msg=_("failure")):
+    def failure(status=202, data=None, status_code=200, msg=_("failure")):  # noqa: B008
         resp_data = {"status": status, "msg": msg}
         if data:
-            resp_data['data'] = data
+            resp_data["data"] = data
 
         return JsonResponse(
             resp_data,
@@ -437,9 +404,5 @@ class R:
 
 
 def get_client_ip(request: HttpRequest) -> str | None:
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+    return x_forwarded_for.split(",")[0] if x_forwarded_for else request.META.get("REMOTE_ADDR")

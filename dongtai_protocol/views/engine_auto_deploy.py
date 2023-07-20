@@ -1,16 +1,13 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/8/12 15:08
-# software: PyCharm
-# project: webapi
 
 import logging
-from dongtai_common.endpoint import OpenApiEndPoint
+
 from django.http import StreamingHttpResponse
-from rest_framework.authtoken.models import Token
 from drf_spectacular.utils import extend_schema
-from django.utils.translation import gettext_lazy as _
+from rest_framework.authtoken.models import Token
+
+from dongtai_common.endpoint import OpenApiEndPoint
 
 logger = logging.getLogger("django")
 
@@ -36,9 +33,9 @@ download(){
 # attach agent.jar to pid
 run(){
     if [ -n "$1" ];then
-        echo "[+] 检测引擎开始安装，进程ID：$1"
+        echo "[+] 检测引擎开始安装,进程ID:$1"
         java -jar ~/.iast/agent.jar -m install -p $1
-        echo "[-] 检测引擎安装完成，进程ID：$1"
+        echo "[-] 检测引擎安装完成,进程ID:$1"
     fi
 }
 
@@ -56,7 +53,7 @@ choice_pid(){
         done
 
     else
-        echo '未发现任何Java进程，终止安装进程'
+        echo '未发现任何Java进程,终止安装进程'
         exit
     fi
 }
@@ -88,6 +85,7 @@ class AutoDeployEndPoint(OpenApiEndPoint):
     """
     当前用户详情
     """
+
     name = "download_iast_agent"
     description = "白帽子-下载IAST 自动部署脚本"
 
@@ -103,7 +101,7 @@ class AutoDeployEndPoint(OpenApiEndPoint):
         :return:
         """
         try:
-            url = request.query_params['url']
+            url = request.query_params["url"]
             token, success = Token.objects.get_or_create(user=request.user)
             data = TEMPLAGE_DATA.replace("{url}", url).replace("{token}", token.key)
             return StreamingHttpResponse(data)

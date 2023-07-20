@@ -7,35 +7,37 @@
 ######################################################################
 
 
-from dongtai_common.utils import const
-from dongtai_common.models.message import IastMessage
-from dongtai_common.endpoint import R
-from dongtai_common.utils import const
-from dongtai_common.endpoint import TalentAdminEndPoint
-from django.forms.models import model_to_dict
-from django.db.models import Q
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from django.utils.translation import gettext_lazy as _
+
+from dongtai_common.endpoint import R, TalentAdminEndPoint
+from dongtai_common.models.message import IastMessage
+from dongtai_web.utils import extend_schema_with_envcheck
 
 
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = IastMessage
         fields = [
-            'id', 'message', 'relative_url', 'create_time', 'read_time',
-            'is_read', 'message_type_id', 'to_user_id'
+            "id",
+            "message",
+            "relative_url",
+            "create_time",
+            "read_time",
+            "is_read",
+            "message_type_id",
+            "to_user_id",
         ]
 
 
 class MessagesSendEndpoint(TalentAdminEndPoint):
     @extend_schema_with_envcheck(
         request=MessageSerializer,
-        summary=_('Send Message'),
-        description=_(
-            "Used to get the message list corresponding to the user"),
-        tags=[_('Messages')])
+        summary=_("Send Message"),
+        description=_("Used to get the message list corresponding to the user"),
+        tags=[_("Messages")],
+    )
     def post(self, request):
         ser = MessageSerializer(data=request.data)
         try:
