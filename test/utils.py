@@ -36,6 +36,7 @@ def data_gen_route(obj):
     elif isinstance(obj, serializers.Serializer):
         return _datagen_serializer(obj)
     print(type(obj))
+    return None
 
 
 def _datagen_int(field: IntegerField) -> int:

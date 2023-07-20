@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 from django.db.models import Count, Q
 from rest_framework import serializers
 
@@ -103,7 +100,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         return all_agents
 
     def get_vul_count(self, obj) -> list:
-        if "vul_levels_dict" in self.context.keys():
+        if "vul_levels_dict" in self.context:
             vul_levels = self.context["vul_levels_dict"][obj.id]
         else:
             vul_levels = (
@@ -119,7 +116,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             )
         for vul_level in vul_levels:
             vul_level["name"] = vul_level["level__name_value"]
-        return list(vul_levels) if vul_levels else list()
+        return list(vul_levels) if vul_levels else []
 
     def get_owner(self, obj) -> str:
         if obj not in self.USER_MAP:
@@ -127,14 +124,14 @@ class ProjectSerializer(serializers.ModelSerializer):
         return self.USER_MAP[obj]
 
     def get_agent_language(self, obj) -> list:
-        if "project_language_dict" in self.context.keys():
+        if "project_language_dict" in self.context:
             res = self.context["project_language_dict"][obj.id]
         else:
             res = obj.iastagent_set.values_list("language", flat=True).distinct()
         return list(res)
 
     def get_agent_count(self, obj) -> int:
-        if "agent_count_dict" in self.context.keys():
+        if "agent_count_dict" in self.context:
             res = self.context["agent_count_dict"][obj.id]
         else:
             res = obj.iastagent_set.count()

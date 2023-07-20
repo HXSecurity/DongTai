@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 from typing import Any
 from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint
@@ -45,15 +42,7 @@ class _VulsEndPointResponseSerializer(VulSerializer):
 
     class Meta:
         model = VulSerializer.Meta.model
-        fields = VulSerializer.Meta.fields + [
-            "index",
-            "project_name",
-            "project_id",
-            "server_name",
-            "server_type",
-            "level_type",
-            "level",
-        ]
+        fields = [*VulSerializer.Meta.fields, "index", "project_name", "project_id", "server_name", "server_type", "level_type", "level"]
 
 
 _ResponseSerializer = get_response_serializer(
@@ -139,7 +128,7 @@ class VulsEndPoint(UserEndPoint):
                 "description": format_lazy(
                     "{} : {}",
                     _("Sorted index"),
-                    ",".join(["type", "level", "first_time", "latest_time", "url"]),
+                    "type,level,first_time,latest_time,url",
                 ),
             },
         ],
@@ -199,7 +188,7 @@ class VulsEndPoint(UserEndPoint):
         try:
             page = int(request.query_params.get("page", 1))
             page_size = int(request.query_params.get("pageSize", 20))
-        except ValueError as e:
+        except ValueError:
             return R.failure(_("Parameter error"))
         if auth_agents is None:
             return R.success(page={}, data=[], msg=_("No data"))
@@ -278,10 +267,7 @@ class VulsEndPoint(UserEndPoint):
         if status_id:
             queryset = queryset.filter(status_id=status_id)
         order = request.query_params.get("order")
-        if order and order in get_model_order_options(IastVulnerabilityModel) + [
-            "type",
-            "-type",
-        ]:
+        if order and order in [*get_model_order_options(IastVulnerabilityModel), "type", "-type"]:
             if order == "type":
                 order = "hook_type_id"
             if order == "-type":

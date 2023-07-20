@@ -178,7 +178,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
     )
     def post(self, request):
         page_size = int(request.data.get("page_size", 1))
-        page = request.data.get("page_index", 1)
+        request.data.get("page_index", 1)
         highlight = request.data.get("highlight", 1)
         fields = ["url", "res_body"]
         model_fields = ["url", "res_header", "res_body", "req_header_fs", "req_data"]
@@ -186,7 +186,6 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             MethodPool,
             include=model_fields,
         )
-        # fields.extend(['sinkvalues', 'signature'])
         search_after_keys = ["update_time"]
         exclude_ids = request.data.get("exclude_ids", None)
         time_range = request.data.get("time_range", None)
@@ -202,14 +201,12 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     int(time.time())
                     # and 0 < time_range[1] - time_range[
                     #         0] <= 60 * 60 * 24 * 7 else [
-                    #             int(time.time()) - 60 * 60 * 24 * 7,
-                    #             int(time.time())
                 ]
             )
             ids = (
                 exclude_ids
                 if isinstance(exclude_ids, list)
-                and all(map(lambda x: isinstance(x, int), exclude_ids))
+                and all((isinstance(x, int) for x in exclude_ids))
                 else []
             )
         except BaseException:
@@ -221,12 +218,9 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
         search_after_fields = list(
             filter(
                 lambda x: x[0] in search_after_keys,
-                map(
-                    lambda x: (x[0].replace("search_after_", ""), x[1]),
-                    filter(
+                ((x[0].replace("search_after_", ""), x[1]) for x in filter(
                         lambda x: x[0].startswith("search_after_"), request.data.items()
-                    ),
-                ),
+                    )),
             )
         )
         q = Q()
@@ -258,7 +252,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                 q = assemble_query(search_fields_, "contains", Q(), operator.or_)
             elif search_mode == 2:
                 q = assemble_query_2(search_fields_, "contains", Q(), operator.and_)
-            if "id" in request.data.keys():
+            if "id" in request.data:
                 q = q & Q(pk=request.data["id"])
             q = q & Q(
                 agent_id__in=[
@@ -279,7 +273,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     logger.warning(e, exc_info=e)
                 else:
                     logger.debug(e, exc_info=e)
-                return R.failure(msg="处理超时，建议选择更小的查询时间范围")
+                return R.failure(msg="处理超时,建议选择更小的查询时间范围")
         afterkeys = {}
         for i in method_pools[-1:]:
             afterkeys["update_time"] = i["update_time"]
@@ -358,25 +352,25 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             for method_pool in method_pools:
                 for field in model_fields:
                     if (
-                        field in search_fields.keys()
+                        field in search_fields
                         and request.data.get(field, None)
                         and search_mode == 1
                     ):
                         if method_pool[field] is None:
                             continue
-                        method_pool["_".join([field, "highlight"])] = highlight_matches(
+                        method_pool[f"{field}_highlight"] = highlight_matches(
                             request.data[field], method_pool[field], "<em>{0}</em>"
                         )
                     elif field in fields:
                         if method_pool[field] is None:
                             continue
-                        method_pool["_".join([field, "highlight"])] = method_pool[
+                        method_pool[f"{field}_highlight"] = method_pool[
                             field
                         ].replace("<", "&lt;")
                     else:
                         if method_pool[field] is None:
                             continue
-                        method_pool["_".join([field, "highlight"])] = method_pool[
+                        method_pool[f"{field}_highlight"] = method_pool[
                             field
                         ].replace("<", "&lt;")
         return R.success(
@@ -398,9 +392,7 @@ def aggregation_count(list_, primary_key, count_key):
     params
     list_ : [{},{}]
     """
-    return list(
-        map(lambda x: {primary_key: x[primary_key], "count": len(x[count_key])}, list_)
-    )
+    return [{primary_key: x[primary_key], "count": len(x[count_key])} for x in list_]
 
 
 def highlight_matches(query, text, html):
@@ -433,7 +425,7 @@ def search_generate(
     must_not_query = [Q("terms", ids=filter_ids)]
     should_query = []
     search_fields = dict(search_fields)
-    if "req_header_fs" in search_fields.keys():
+    if "req_header_fs" in search_fields:
         search_fields["req_header_for_search"] = search_fields["req_header_fs"]
         del search_fields["req_header_fs"]
     search_fields = [(k, v) for k, v in dict(search_fields).items()]

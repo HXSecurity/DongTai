@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 from urllib.parse import urljoin
 
 import requests
@@ -59,7 +56,7 @@ class AgentUpgradeOnline(TalentAdminEndPoint):
             self.download(url, token)
             User.objects.filter(id=request.user.id).update(upgrade_url=url)
             return R.success(msg=_("Online upgrade successful"))
-        except Exception as e:
+        except Exception:
             return R.failure(
                 msg=_(
                     "Token verification failed, please confirm your input address and token are correct"

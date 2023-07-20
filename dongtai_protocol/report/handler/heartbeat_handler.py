@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/10/23 11:56
-# software: PyCharm
-# project: webapi
 import logging
 import time
 
@@ -29,7 +26,7 @@ def update_agent_cache(agent_id, data):
 
 
 def check_agent_incache(agent_id):
-    return True if cache.get(f"heartbeat-{agent_id}") else False
+    return bool(cache.get(f"heartbeat-{agent_id}"))
 
 
 @ReportHandler.register(const.REPORT_HEART_BEAT)
@@ -191,7 +188,7 @@ class HeartBeatHandler(IReportHandler):
                     exc_info=True,
                 )
 
-        return list()
+        return []
 
     def save(self):
         self.save_heartbeat()
@@ -253,7 +250,4 @@ def vul_recheck_state(agent_id):
     global_state = get_vul_validate()
     if project_level_validation == VulValidation.FOLLOW_GLOBAL:
         return global_state
-    elif project_level_validation == VulValidation.ENABLE:
-        return True
-    else:
-        return False
+    return project_level_validation == VulValidation.ENABLE

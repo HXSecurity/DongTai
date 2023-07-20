@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 import logging
 
 from dongtai_common.endpoint import UserEndPoint, R
@@ -27,7 +24,7 @@ _ResponseSerializer = get_response_serializer(
 class AgentList(UserEndPoint):
     name = "api-v1-agents"
     description = _("Agent list")
-    SERVER_MAP = dict()
+    SERVER_MAP = {}
 
     def get_running_status(self, obj):
         mapping = defaultdict(str)
@@ -137,20 +134,13 @@ class AgentList(UserEndPoint):
             searchfields_ = {k: v for k, v in searchfields.items() if k in fields}
             q = reduce(
                 lambda x, y: x | y,
-                map(
-                    lambda x: Q(**x),
-                    map(
-                        lambda kv_pair: {
+                (Q(**x) for x in ({
                             "__".join([kv_pair[0], "icontains"]): kv_pair[1]
-                        },
-                        searchfields_.items(),
-                    ),
-                ),
+                        } for kv_pair in searchfields_.items())),
                 Q(),
             )
             if running_state is not None:
                 q = q & Q(online=running_state)
-            # return self.is_superuser == 2 or self.is_superuser == 1
             if request.user.is_superuser == 1:
                 pass
             elif request.user.is_superuser == 2:
@@ -215,10 +205,7 @@ class AgentList(UserEndPoint):
                 one["running_status"] = self.get_running_status(item)
                 end.append(one)
 
-            # summery, queryset = self.get_paginator(queryset, page=page, page_size=page_size)
-            # data = AgentSerializer(queryset, many=True).data
             # if not request.user.is_talent_admin():
-            #     data = list(map(lambda x:removestartup(x),data))
             page_info = {"alltotal": total, "num_pages": page, "page_size": page_size}
             return R.success(msg="success", data=end, page=page_info)
         except ValueError as e:

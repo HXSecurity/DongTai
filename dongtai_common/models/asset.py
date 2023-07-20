@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/8/20 15:10
-# software: PyCharm
-# project: dongtai-models
 
 import uuid
 from django.core.cache import cache
@@ -130,6 +127,8 @@ class IastAssetDocument(Document):
         if isinstance(related_instance, IastAgent):
             if related_instance.bind_project_id < 0:
                 return Asset.objects.filter(agent_id=related_instance.pk).all()
+            return None
+        return None
 
     class Index:
         name = ASSET_INDEX

@@ -34,8 +34,6 @@ class RelationProject:
 class RelationProjectArgsSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=20, help_text=_("Number per page"))
     page = serializers.IntegerField(default=1, help_text=_("Page index"))
-    #    package_name = serializers.CharField(help_text=_("order_field"))
-    #    package_version = serializers.CharField(help_text=_("order"))
     project_id = serializers.IntegerField(
         default=None, required=False, help_text=_("project with be the first")
     )

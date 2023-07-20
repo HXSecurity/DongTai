@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
 # datetime: 2021/5/10 下午2:24
-# project: dongtai-models
 from django.contrib.auth.models import Group
 from django.db import models
 

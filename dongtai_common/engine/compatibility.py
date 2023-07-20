@@ -1,12 +1,13 @@
 from math import ceil
 from typing import List
 import logging
+import contextlib
 
 logger = logging.getLogger("dongtai-core")
 
 
 def method_pool_is_3(dic: dict) -> bool:
-    if "taintPosition" in dic.keys():
+    if "taintPosition" in dic:
         return True
     return False
 
@@ -32,10 +33,9 @@ def method_pool_3_to_2(dic: dict) -> dict:
         if position == "R":
             sourceValues.append(dic["retValue"])
         if position.startswith("P"):
-            try:
+            with contextlib.suppress(KeyError):
                 sourceValues.append(pdict[position])
-            except KeyError:
-                pass
+
     dic["sourceValues"] = ",".join(sourceValues)
     for position in dic["taintPosition"]["target"]:
         if position == "O":
@@ -43,10 +43,9 @@ def method_pool_3_to_2(dic: dict) -> dict:
         if position == "R":
             targetValues.append(dic["retValue"])
         if position.startswith("P"):
-            try:
+            with contextlib.suppress(KeyError):
                 targetValues.append(pdict[position])
-            except KeyError:
-                pass
+
     dic["targetValues"] = ",".join(targetValues)
     return dic
 
@@ -55,8 +54,7 @@ def parse_target_value(target_value: str) -> str:
     if not target_value:
         return target_value
     position = target_value.rfind("*")
-    origin_str = target_value[0:position][1:-1]
-    return origin_str
+    return target_value[0:position][1:-1]
 
 
 def parse_target_value_length(target_value: str) -> int:
@@ -65,7 +63,7 @@ def parse_target_value_length(target_value: str) -> int:
     position = target_value.rfind("*")
     try:
         len_of_origin = int(target_value[position + 1 : :])
-    except ValueError as e:
+    except ValueError:
         return len(target_value)
     return len_of_origin
 
@@ -98,9 +96,7 @@ def highlight_target_value(target_value: str, ranges: list) -> str:
                 '<em style="color:red;">' + str_dict[range_["start"]]
             )
             str_dict[range_["stop"] - 1] = str_dict[range_["stop"] - 1] + "</em>"
-        final_str = list(
-            map(lambda x: x[1], sorted(str_dict.items(), key=lambda kv: kv[0]))
-        )
+        final_str = [x[1] for x in sorted(str_dict.items(), key=lambda kv: kv[0])]
         return "".join(final_str)
     if len(value) != AGENT_DEFAULT_LENGTH:
         return f'<em style="color:red;">{value}</em>'
@@ -108,8 +104,7 @@ def highlight_target_value(target_value: str, ranges: list) -> str:
         if sorted_ranges and value and len(value) < value_origin_len:
             begin_part_length = ceil((AGENT_DEFAULT_LENGTH - 3) / 2)
             end_part_length = int((AGENT_DEFAULT_LENGTH - 3) / 2)
-            hidden_red_flag = False
-            end_part_start_ind = value_origin_len - end_part_length
+            value_origin_len - end_part_length
             str_dict_begin = {
                 ind: xss_prevent(str_)
                 for ind, str_ in enumerate(value[:begin_part_length])
@@ -124,8 +119,8 @@ def highlight_target_value(target_value: str, ranges: list) -> str:
             str_dict[begin_part_length + 2] = "..."
             for range_ in sorted_ranges:
                 if (
-                    range_["start"] in str_dict.keys()
-                    and (range_["stop"] - 1) in str_dict.keys()
+                    range_["start"] in str_dict
+                    and (range_["stop"] - 1) in str_dict
                 ):
                     str_dict[range_["start"]] = (
                         '<em style="color:red;">' + str_dict[range_["start"]]
@@ -135,7 +130,7 @@ def highlight_target_value(target_value: str, ranges: list) -> str:
                     )
 
                 if (
-                    range_["start"] in str_dict.keys()
+                    range_["start"] in str_dict
                     and (range_["stop"] - 1) not in str_dict.keys()
                 ):
                     str_dict[range_["start"]] = (
@@ -145,7 +140,7 @@ def highlight_target_value(target_value: str, ranges: list) -> str:
                     str_dict[begin_part_length] = "</em>" + str_dict[begin_part_length]
                 if (
                     range_["start"] not in str_dict.keys()
-                    and (range_["stop"] - 1) in str_dict.keys()
+                    and (range_["stop"] - 1) in str_dict
                 ):
                     str_dict[value_origin_len - end_part_length] = (
                         '<em style="color:red;">'
@@ -161,9 +156,7 @@ def highlight_target_value(target_value: str, ranges: list) -> str:
                     str_dict[begin_part_length + 2] = (
                         '<em style="color:red;">' + "..." + "</em>"
                     )
-            final_str = list(
-                map(lambda x: x[1], sorted(str_dict.items(), key=lambda kv: kv[0]))
-            )
+            final_str = [x[1] for x in sorted(str_dict.items(), key=lambda kv: kv[0])]
             return "".join(final_str)
     except KeyError as e:
         logger.warning(e, exc_info=e)

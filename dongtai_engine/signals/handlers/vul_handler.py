@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
 # datetime: 2021/4/30 下午3:00
-# project: dongtai-engine
 import json
 import time
 from celery.apps.worker import logger
@@ -33,6 +31,7 @@ from dongtai_engine.signals import send_notify
 def equals(source, target):
     if source == target or source in target or target in source:
         return True
+    return None
 
 
 from dongtai_engine.signals.handlers.parse_param_name import ParamDict
@@ -47,20 +46,20 @@ def parse_params(param_values: str, taint_value: str) -> Optional[str]:
     param_name = None
     _param_items = ParamDict(param_values)
     for _param_name, _param_value in _param_items.items():
-        if taint_value == _param_value or taint_value == _param_name:
+        if taint_value in (_param_value, _param_name):
             param_name = _param_name
             break
     for _param_name, _param_value in _param_items.extend_kv_dict.items():
-        if taint_value == _param_value or taint_value == _param_name:
+        if taint_value in (_param_value, _param_name):
             param_name = _param_items.extend_k_map[_param_name]
             break
     _param_items = ParamDict(unquote_plus(param_values))
     for _param_name, _param_value in _param_items.items():
-        if taint_value == _param_value or taint_value == _param_name:
+        if taint_value in (_param_value, _param_name):
             param_name = _param_name
             break
     for _param_name, _param_value in _param_items.extend_kv_dict.items():
-        if taint_value == _param_value or taint_value == _param_name:
+        if taint_value in (_param_value, _param_name):
             param_name = _param_items.extend_k_map[_param_name]
             break
     return param_name
@@ -71,7 +70,7 @@ def parse_body(body: str, taint_value: str) -> Optional[str]:
         post_body = json.loads(body)
         if isinstance(post_body, dict):
             for key, value in post_body.items():
-                if taint_value == value or taint_value == key:
+                if taint_value in (value, key):
                     return key
         if isinstance(post_body, list):
             for index, value in enumerate(post_body):
@@ -79,7 +78,7 @@ def parse_body(body: str, taint_value: str) -> Optional[str]:
                     return f"position {index}"
         if post_body == taint_value:
             return "all"
-    except Exception as e:
+    except Exception:
         return parse_params(body, taint_value)
     return None
 
@@ -109,7 +108,7 @@ def parse_cookie(req_header: str, taint_value: str) -> Optional[str]:
     header_raw = base64.b64decode(req_header).decode("utf-8").split("\n")
     cookie_raw = ""
     for header in header_raw:
-        # fixme 解析，然后匹配
+        # fixme 解析,然后匹配
         _header_list = header.split(":")
         _header_name = _header_list[0]
         if _header_name == "cookie" or _header_name == "Cookie":
@@ -130,13 +129,13 @@ def parse_path(uri: str, taint_value: str) -> Optional[str]:
     """
     从PathVariable中解析污点位置
     """
-    # 根据/拆分uri，然后进行对比
+    # 根据/拆分uri,然后进行对比
     # location part
     path_items = uri.split("/")
     for ind, item in enumerate(path_items):
         if taint_value == item:
             # if equals(taint_value, item):
-            # fixme 暂时先使用完全匹配，后续考虑解决误报问题
+            # fixme 暂时先使用完全匹配,后续考虑解决误报问题
             return f"location:{ind}"
     return None
 
@@ -152,7 +151,6 @@ def get_location_data() -> defaultdict:
     except Exception as e:
         logger.error(e, exc_info=True)
         data = {}
-    # return defaultdict(lambda: [], data)
     return defaultdict(lambda: ["GET", "POST", "HEADER", "PATH", "COOKIE"], data)
 
 
@@ -178,8 +176,7 @@ def parse_taint_params(
 ) -> Optional[str]:
     if not http_locationstr:
         return None
-    res = get_location_parser(location)(http_locationstr, taint_value)
-    return res
+    return get_location_parser(location)(http_locationstr, taint_value)
 
 
 from dongtai_common.models.agent_method_pool import MethodPool
@@ -201,7 +198,7 @@ def get_http_locationstr(method_pool: MethodPool, location: str) -> Optional[str
 def parse_taint_position(
     source_method, vul_meta, taint_value, vul_stack
 ) -> defaultdict:
-    param_names: defaultdict = defaultdict(lambda: [], {})
+    param_names: defaultdict = defaultdict(list, {})
     target_values: List[str] = list(
         filter(lambda x: x, parse_target_values_from_vul_stack(vul_stack))
     )
@@ -265,7 +262,7 @@ def save_vul(
     logger.info(
         f'save vul, strategy id: {strategy_id}, from: {"normal" if "replay_id" not in kwargs else "replay"}, id: {vul_meta.id}'
     )
-    # 如果是重放请求，且重放请求类型为漏洞验证，更新漏洞状态为
+    # 如果是重放请求,且重放请求类型为漏洞验证,更新漏洞状态为
     taint_value = kwargs["taint_value"]
     timestamp = int(time.time())
     param_names = parse_taint_position(
@@ -281,7 +278,7 @@ def save_vul(
         param_name = ""
         taint_position = ""
     url_desc: list = []
-    if "PATH" in param_names.keys():
+    if "PATH" in param_names:
         url_desc = param_names["PATH"]
     pattern_string: str = get_real_url(json.loads(vul_meta.method_pool))
     pattern_uri: str = (
@@ -294,7 +291,7 @@ def save_vul(
     cache_key = f"vul_save-{strategy_id}-{pattern_uri}-{vul_meta.http_method}-{vul_meta.agent.project_version_id}-{param_name}"
     is_api_cached = uuid_key != cache.get_or_set(cache_key, uuid_key)
     if is_api_cached:
-        return
+        return None
     # 获取 相同项目版本下的数据
     vul = (
         IastVulnerabilityModel.objects.filter(
@@ -410,12 +407,6 @@ def save_vul(
     cache.delete(cache_key)
     # delete if exists more than one   departured use redis lock
     # IastVulnerabilityModel.objects.filter(
-    #    strategy_id=strategy_id,
-    #    uri=vul_meta.uri,
-    #    http_method=vul_meta.http_method,
-    #    agent__in=project_agents,
-    #    param_name=param_name,
-    #    pk__lt=vul.id,
     # ).delete()
 
     logger.info(f"vul_found {vul.id}")
@@ -549,7 +540,7 @@ def handler_vul(
     :param bottom_stack:
     :return:
     """
-    # 如果是重放请求，且重放请求类型为漏洞验证，更新漏洞状态为
+    # 如果是重放请求,且重放请求类型为漏洞验证,更新漏洞状态为
     timestamp = int(time.time())
     from dongtai_common.models.replay_method_pool import IastAgentMethodPoolReplay
     from dongtai_common.models.agent_method_pool import MethodPool
@@ -638,7 +629,7 @@ def handler_vul(
                     and vul.strategy_id not in data["strategy_id"]
                 ):
                     logger.debug(
-                        f"vul.strategy.vul_type not in validation strategy_id list or not enable validation"
+                        "vul.strategy.vul_type not in validation strategy_id list or not enable validation"
                     )
                     continue
                 if (

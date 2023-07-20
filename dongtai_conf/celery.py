@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2021/1/26 下午7:27
-# software: PyCharm
-# project: lingzhi-engine
 
 import os
 
@@ -73,13 +70,12 @@ configs["accept_content"] = ["json"]
 configs["task_ignore_result"] = True
 configs["task_acks_late"] = True
 configs["task_always_eager"] = (
-    True if os.getenv("CELERY_EAGER_TEST") == "TRUE" else False
+    os.getenv("CELERY_EAGER_TEST") == "TRUE"
 )
 configs["task_acks_on_failure_or_timeout"] = True
 configs["broker_channel_error_retry"] = True
 configs["broker_connection_max_retries"] = 0  # it means retry forever
 configs["broker_pool_limit"] = 1000  # to forbid contention can arise when using gevent.
-# configs['worker_concurrency'] = 8
 configs["task_routes"] = {
     # normal
     "dongtai_protocol.report.handler.api_route_handler.api_route_gather": {

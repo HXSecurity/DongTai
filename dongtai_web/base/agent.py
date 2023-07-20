@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 
 import json
 import re
@@ -81,7 +78,7 @@ def get_all_server(ids):
 
 # todo del edit by song
 def get_project_vul_count_back(users, queryset, auth_agents, project_id=None):
-    result = list()
+    result = []
     project_queryset = IastProject.objects.filter(user__in=users)
     project_queryset = project_queryset.values("name", "id")
     if not project_queryset:
@@ -120,13 +117,12 @@ def get_project_vul_count_back(users, queryset, auth_agents, project_id=None):
                 {"project_name": project["name"], "count": count, "id": project_id}
             )
 
-    result = sorted(result, key=lambda item: item["count"], reverse=True)[:5]
-    return result
+    return sorted(result, key=lambda item: item["count"], reverse=True)[:5]
 
 
 # add by song
 def get_project_vul_count(users, queryset, auth_agents, project_id=None):
-    result = list()
+    result = []
     project_queryset = IastProject.objects.filter(user__in=users)
     project_queryset = project_queryset.values("name", "id")
     if not project_queryset:
@@ -145,7 +141,6 @@ def get_project_vul_count(users, queryset, auth_agents, project_id=None):
         .all()
     )
     versions_map = {version[1]: version[0] for version in versions}
-    # agent_summary = queryset.values('agent_id').annotate(agent_vul_num=Count("agent_id"))
     agentIdArr = {}
     for item in queryset:
         agentIdArr[item["agent_id"]] = item["count"]
@@ -168,8 +163,7 @@ def get_project_vul_count(users, queryset, auth_agents, project_id=None):
             {"project_name": project["name"], "count": count, "id": project_id}
         )
 
-    result = sorted(result, key=lambda item: item["count"], reverse=True)[:5]
-    return result
+    return sorted(result, key=lambda item: item["count"], reverse=True)[:5]
 
 
 def change_dict_key(dic, keypair):
@@ -229,7 +223,7 @@ def get_vul_count_by_agent(agent_ids, vid, user):
 
             try:
                 one["req_params"] = str(one["req_params"])
-            except Exception as e:
+            except Exception:
                 one["req_params"] = ""
             detailStr2 = (
                 one["http_method"]
@@ -245,11 +239,8 @@ def get_vul_count_by_agent(agent_ids, vid, user):
                 resMatch = re.match(pattern, fileData)
                 uriArr = resMatch.group(1).split(":")
                 fileName = uriArr[0]
-                if len(uriArr) > 1:
-                    rowStr = _("{} Line").format(str(uriArr[1]))
-                else:
-                    rowStr = ""
-            except Exception as e:
+                rowStr = _("{} Line").format(str(uriArr[1])) if len(uriArr) > 1 else ""
+            except Exception:
                 fileName = ""
                 rowStr = ""
             classname = ""
@@ -260,7 +251,7 @@ def get_vul_count_by_agent(agent_ids, vid, user):
                     full_stack = full_stack_arr[-1]
                     classname = str(full_stack.get("classname", ""))
                     methodname = str(full_stack.get("methodname", ""))
-                except Exception as e:
+                except Exception:
                     print("======")
             detailStr3 = _("In {} {} call {}. {} (), Incoming parameters {}").format(
                 str(fileName), rowStr, classname, methodname, str(one["taint_value"])
@@ -303,11 +294,6 @@ def get_vul_count_by_agent(agent_ids, vid, user):
 
 
 def get_hook_type_name(obj):
-    # hook_type = HookType.objects.filter(pk=obj['hook_type_id']).first()
-    # hook_type_name = hook_type.name if hook_type else None
-    # strategy = IastStrategyModel.objects.filter(pk=obj['strategy_id']).first()
-    # strategy_name = strategy.vul_name if strategy else None
-    # type_ = list(
     #    filter(lambda x: x is not None, [strategy_name, hook_type_name]))
     type_ = list(
         filter(
@@ -327,17 +313,12 @@ def initlanguage():
 
 # todo 默认开源许可证
 # def init_license():
-#     license_list = IastProgramLanguage.objects.all()
-#     license_dic = {
-#         license.name: 0
 #         for license in license_list
-#     }
-#     return license_dic
 
 
 def get_agent_languages(agent_items):
     default_language = initlanguage()
-    language_agents = dict()
+    language_agents = {}
     language_items = IastAgent.objects.filter().values("id", "language")
     for language_item in language_items:
         language_agents[language_item["id"]] = language_item["language"]

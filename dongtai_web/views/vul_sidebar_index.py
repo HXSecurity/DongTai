@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: idea
-# project: lingzhi-webapi
 
 from dongtai_web.utils import get_model_order_options
 from dongtai_common.endpoint import R
@@ -133,5 +130,5 @@ class VulSideBarList(UserEndPoint):
         return R.success(
             page=page_summary,
             total=page_summary["alltotal"],
-            data=[obj for obj in queryset],
+            data=list(queryset),
         )

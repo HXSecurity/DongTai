@@ -18,7 +18,7 @@ class AgentSummary(UserEndPoint):
     def get(self, request, pk):
         try:
             pk = int(pk)
-        except Exception as e:
+        except Exception:
             return R.failure()
         agent = (
             IastAgent.objects.filter(pk=pk)

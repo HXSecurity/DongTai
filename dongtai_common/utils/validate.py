@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
 # datetime: 2021/7/16 下午2:25
-# project: dongtai-engine
 
 
 from functools import reduce
@@ -72,7 +70,7 @@ def calculate_dir_sha() -> List[FileHashPair]:
 
 def validate_hook_strategy_update() -> bool:
     filehashs = calculate_dir_sha()
-    q_list = list(map(lambda x: Q(key=x.path, value=x.sha1sum), filehashs))
+    q_list = [Q(key=x.path, value=x.sha1sum) for x in filehashs]
     if not q_list:
         return False
     res = reduce(lambda x, y: x | y, q_list)

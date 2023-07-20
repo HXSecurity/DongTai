@@ -1782,4 +1782,4 @@ class ApiRouteTestCase(AgentTestCase):
             "type": 97,
         }
         data["detail"]["agentId"] = self.agent_id
-        res = self.agent_report(data, agentId=self.agent_id)
+        self.agent_report(data, agentId=self.agent_id)

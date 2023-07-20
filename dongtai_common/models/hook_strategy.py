@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2021/1/13 下午7:14
-# software: PyCharm
-# project: dongtai-models
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -14,20 +11,12 @@ from time import time
 
 
 # class PermissionsMixin(models.Model):
-#    type = models.ManyToManyField(
 #        HookType,
-#        verbose_name=_('type'),
-#        blank=True,
-#        help_text=_(
 #            'The department this user belongs to. A user will get all permissions '
 #            'granted to each of their department.'
 #        ),
-#        related_name="strategies",
-#        related_query_name="strategy",
-#    )
 #
 #    class Meta:
-#        abstract = True
 
 
 class HookStrategy(models.Model):

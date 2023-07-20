@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:sjh
-# software: PyCharm
-# project: lingzhi-webapi
 import logging
 import time
 from dongtai_common.endpoint import UserEndPoint, R
@@ -44,5 +41,5 @@ class UpdateProjectVersion(UserEndPoint):
                     bind_project_id=one.id, user_id=one.user_id, project_version_id=0
                 ).update(project_version_id=result.id, latest_time=int(time.time()))
             return R.success(msg=_("Detection finished"), data=data)
-        except Exception as e:
+        except Exception:
             return R.failure(status=202, msg=_("Detection failed"))

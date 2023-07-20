@@ -31,7 +31,7 @@ class BatchStatusUpdateSerializerView(UserEndPoint):
         try:
             if ser.is_valid(True):
                 pass
-        except ValidationError as e:
+        except ValidationError:
             return {"ids": [], "status": 0}
         return ser.validated_data
 
@@ -59,7 +59,7 @@ class AllStatusUpdateSerializerView(UserEndPoint):
         try:
             if ser.is_valid(True):
                 pass
-        except ValidationError as e:
+        except ValidationError:
             return {"status": 0}
         return ser.validated_data
 

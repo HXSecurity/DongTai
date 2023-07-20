@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/10/23 11:54
-# software: PyCharm
-# project: webapi
 from dongtai_protocol.report.handler.error_log_handler import ErrorLogHandler
 from dongtai_protocol.report.handler.heartbeat_handler import HeartBeatHandler
 from dongtai_protocol.report.handler.narmal_vul_handler import NormalVulnHandler

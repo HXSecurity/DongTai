@@ -95,4 +95,4 @@ class PackageVulResponse:
 class PackageResponse:
     status: int
     msg: str
-    data: tuple[PackageInfo, ...] = tuple()
+    data: tuple[PackageInfo, ...] = ()

@@ -13,7 +13,7 @@ class LogService:
 
     def create_socket(self):
         if self.socket:
-            return
+            return None
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(5)

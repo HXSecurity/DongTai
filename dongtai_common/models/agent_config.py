@@ -39,12 +39,9 @@ class MetricGroup(IntegerChoices):
     SYSTEM = 1, _("性能指标")
 
 
-#    JVM = 2, _("JVM指标")
-#    APPLICATION = 3, _("应用指标")
 
 
 class DealType(IntegerChoices):
-    #    UNLOAD = 1, _("完全卸载")
     RELIVE = 2, _("恢复后启动")
 
 
@@ -65,15 +62,6 @@ class MetricType(IntegerChoices):
     sysMemUsagePercentage = 2, _("系统内存使用率阈值")
 
 
-#    sysMemUsageUsed = 3, _("系统内存使用值阈值")
-#    jvmMemUsagePercentage = 4, _("JVM内存使用率阈值")
-#    jvmMemUsageUsed = 5, _("JVM内存使用值阈值")
-#    threadCount = 6, _("总线程数阈值")
-#    daemonThreadCount = 7, _("守护线程数阈值")
-#    dongTaiThreadCount = 8, _("洞态IAST线程数阈值")
-#    hookLimitTokenPerSecond = 9, _("单请求HOOK限流")
-#    heavyTrafficLimitTokenPerSecond = 10, _("每秒限制处理请求数量（QPS）")
-#    apiResponseTime = 11, _("请求响应时间阈值")
 
 
 UNIT_DICT = {
@@ -96,27 +84,18 @@ class SystemMetricType(IntegerChoices):
     sysMemUsagePercentage = 2, _("系统内存使用率阈值")
 
 
-#    sysMemUsageUsed = 3, _("系统内存使用值阈值")
 
 
 class JVMMetricType(IntegerChoices):
     pass
 
 
-#    jvmMemUsagePercentage = 4, _("JVM内存使用率阈值")
-#    jvmMemUsageUsed = 5, _("JVM内存使用值阈值")
-#    threadCount = 6, _("总线程数阈值")
-#    daemonThreadCount = 7, _("守护线程数阈值")
-#    dongTaiThreadCount = 8, _("洞态IAST线程数阈值")
 
 
 class ApplicationMetricType(IntegerChoices):
     pass
 
 
-#    hookLimitTokenPerSecond = 9, _("单请求HOOK限流")
-#    heavyTrafficLimitTokenPerSecond = 10, _("每秒限制处理请求数量（QPS）")
-#    apiResponseTime = 11, _("请求响应时间阈值")
 
 
 class IastCircuitConfig(models.Model):

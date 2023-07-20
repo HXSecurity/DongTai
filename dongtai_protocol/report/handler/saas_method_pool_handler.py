@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2021/1/5 下午12:36
-# software: PyCharm
-# project: lingzhi-webapi
 from dongtai_common.models.api_route import IastApiParameter
 from django.http.request import QueryDict
 from django.db.utils import IntegrityError
@@ -83,7 +80,7 @@ class SaasMethodPoolHandler(IReportHandler):
 
     @staticmethod
     def parse_headers(headers_raw):
-        headers = dict()
+        headers = {}
         header_raw = base64.b64decode(headers_raw).decode("utf-8").split("\n")
         item_length = len(header_raw)
         for index in range(item_length):
@@ -119,13 +116,13 @@ class SaasMethodPoolHandler(IReportHandler):
 
     def save(self):
         """
-        如果agent存在，保存数据
+        如果agent存在,保存数据
         :return:
         """
         headers = SaasMethodPoolHandler.parse_headers(self.http_req_header)
         import base64
 
-        params_dict = get_params_dict(
+        get_params_dict(
             base64.b64decode(self.http_req_header),
             self.http_req_data,
             self.http_query_string,
@@ -139,7 +136,7 @@ class SaasMethodPoolHandler(IReportHandler):
             relation_id = headers.get("dongtai-relation-id")
             timestamp = int(time.time())
 
-            # fixme 直接查询replay_id是否存在，如果存在，直接覆盖
+            # fixme 直接查询replay_id是否存在,如果存在,直接覆盖
             query_set = IastAgentMethodPoolReplay.objects.values("id").filter(
                 replay_id=replay_id
             )
@@ -278,30 +275,12 @@ class SaasMethodPoolHandler(IReportHandler):
         :return:
         """
         # todo need to del
-        # pool_sign = random.sample('zyxwvutsrqmlkjihgfedcba',5)
-        #        method_pool = MethodPool.objects.filter(
         #            pool_sign=pool_sign, agent__in=current_version_agents).first()
-        #        update_record = True
         #        if method_pool:
-        #            method_pool.update_time = int(time.time())
-        #            method_pool.method_pool = json.dumps(self.method_pool)
-        #            method_pool.uri = self.http_uri
-        #            method_pool.url = self.http_url
-        #            method_pool.http_method = self.http_method
-        #            method_pool.req_header = self.http_req_header
-        #            method_pool.req_params = self.http_query_string
-        #            method_pool.req_data = self.http_req_data
         #            method_pool.req_header_fs = utils.build_request_header(
-        #                req_method=self.http_method,
-        #                raw_req_header=self.http_req_header,
-        #                uri=self.http_uri,
-        #                query_params=self.http_query_string,
         #                http_protocol=self.http_protocol)
-        #            method_pool.res_header = utils.base64_decode(self.http_res_header)
         #            method_pool.res_body = new_decode_content(
-        #                self.http_res_body, get_content_encoding(self.http_res_header),
         #                self.version)
-        #            method_pool.uri_sha1 = self.sha1(self.http_uri)
         #            method_pool.save(update_fields=[
         #                'update_time',
         #                'method_pool',
@@ -315,8 +294,6 @@ class SaasMethodPoolHandler(IReportHandler):
         #                'res_header',
         #                'res_body',
         #                'uri_sha1',
-        #            ])
-        #        else:
         # 获取agent
         update_record = False
         try:
@@ -374,13 +351,7 @@ class SaasMethodPoolHandler(IReportHandler):
                     "retryable": self.retryable,
                 }
                 search_vul_from_method_pool.AsyncResult = lambda x: A()
-                # task_app = search_vul_from_method_pool._get_app()
-                # options = task_app.amqp.router.route(dict(), search_vul_from_method_pool.name, tuple(), kwargs, None)
-                # message = task_app.amqp.create_task_message(method_pool_sign,search_vul_from_method_pool.name,kwargs=kwargs, argsrepr=options.get('argsrepr'),kwargsrepr=options.get('kwargsrepr'), expires=60* 60 *3 ,ignore_result=True)
-                # redis_cli = get_redis_connection()
-                # print(message)
-                # redis_cli.lpush("dongtai-method-pool-scan", json.dumps(message))
-                res = search_vul_from_method_pool.apply_async(
+                search_vul_from_method_pool.apply_async(
                     kwargs=kwargs,
                     countdown=delay,
                     expires=datetime.now() + timedelta(hours=3),
@@ -392,11 +363,8 @@ class SaasMethodPoolHandler(IReportHandler):
                 logger.info(
                     f'[+] send method_pool [{method_pool_id}] to engine for {model if model else ""}'
                 )
-                res = search_vul_from_replay_method_pool.delay(method_pool_id)
+                search_vul_from_replay_method_pool.delay(method_pool_id)
                 # logger.info(
-                #    f'[+] send method_pool [{method_pool_id}] to engine for task search_vul_from_replay_method_pool id: {res.task_id}'
-                # )
-                # requests.get(url=settings.REPLAY_ENGINE_URL.format(id=method_pool_id))
         except Exception as e:
             logger.error(
                 f"[-] Failure: send method_pool [{method_pool_id}{method_pool_sign}], Error: {e}",
@@ -421,8 +389,7 @@ class SaasMethodPoolHandler(IReportHandler):
         )
         for method in self.method_pool:
             sign_raw += f"{method.get('className')}.{method.get('methodName')}()->"
-        sign_sha256 = self.sha256(sign_raw)
-        return sign_sha256
+        return self.sha256(sign_raw)
 
     @staticmethod
     def sha1(raw):
@@ -514,7 +481,7 @@ def add_new_api_route(agent: IastAgent, path, method):
         api_method, is_create = IastApiMethod.objects.get_or_create(
             method=method.upper()
         )
-        update_count = IastApiRoute.objects.filter(
+        IastApiRoute.objects.filter(
             path=path,
             method_id=api_method.id,
             project_id=agent.bind_project_id,

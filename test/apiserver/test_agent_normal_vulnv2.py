@@ -42,11 +42,11 @@ def mock_uuid():
 
 class AgentNormalVulTestCase(AgentTestCase):
     def test_agent_vuln_upload(self):
-        res = self.agent_report(new_exec_json)
+        self.agent_report(new_exec_json)
 
     def test_agent_vuln_upload2(self):
         with patch("uuid.uuid4", mock_uuid):
-            res = self.agent_report(new_exec_json)
+            self.agent_report(new_exec_json)
             search_vul_from_method_pool(str(uuid.UUID(int=0).hex), self.agent_id)
         print(
             IastVulnerabilityModel.objects.filter(
@@ -59,13 +59,13 @@ class AgentNormalVulTestCase(AgentTestCase):
             ).count()
             == 1
         )
-        vul = IastVulnerabilityModel.objects.filter(
+        IastVulnerabilityModel.objects.filter(
             agent_id=self.agent_id, level_id=1
         ).first()
 
     def test_agent_vuln_upload3(self):
         with patch("uuid.uuid4", mock_uuid):
-            res = self.agent_report(old_exec_json)
+            self.agent_report(old_exec_json)
             search_vul_from_method_pool(str(uuid.UUID(int=0).hex), self.agent_id)
             assert (
                 IastVulnerabilityModel.objects.filter(
@@ -76,7 +76,7 @@ class AgentNormalVulTestCase(AgentTestCase):
 
     def test_agent_vuln_upload4(self):
         with patch("uuid.uuid4", mock_uuid):
-            res = self.agent_report(new_novul_json)
+            self.agent_report(new_novul_json)
             search_vul_from_method_pool(str(uuid.UUID(int=0).hex), self.agent_id)
             assert (
                 IastVulnerabilityModel.objects.filter(
@@ -87,7 +87,7 @@ class AgentNormalVulTestCase(AgentTestCase):
 
     def test_agent_vuln_upload5(self):
         with patch("uuid.uuid4", mock_uuid):
-            res = self.agent_report(exec2_json)
+            self.agent_report(exec2_json)
             search_vul_from_method_pool(str(uuid.UUID(int=0).hex), self.agent_id)
             assert (
                 IastVulnerabilityModel.objects.filter(
@@ -98,7 +98,7 @@ class AgentNormalVulTestCase(AgentTestCase):
 
     def test_agent_vuln_upload6(self):
         with patch("uuid.uuid4", mock_uuid):
-            res = self.agent_report(xss_json)
+            self.agent_report(xss_json)
             search_vul_from_method_pool(str(uuid.UUID(int=0).hex), self.agent_id)
             assert (
                 IastVulnerabilityModel.objects.filter(

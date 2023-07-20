@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 
 import logging
 
@@ -54,7 +51,7 @@ class AgentsDeleteEndPoint(UserEndPoint):
         agent_ids = request.GET.get("ids")
         try:
             agent_ids = [int(i) for i in agent_ids.split(",")]
-        except Exception as e:
+        except Exception:
             return R.failure("agent_ids should able to numeric")
         result = []
         for pk in agent_ids:

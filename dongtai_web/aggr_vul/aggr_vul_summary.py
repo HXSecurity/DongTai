@@ -63,12 +63,10 @@ def get_annotate_sca_base_data(user_id: int, pro_condition: str):
         "language": [],
         "project": [],
     }
-    # auth_condition = getAuthBaseQuery(user_id=user_id, table_str="asset")
-    # user_auth_info = auth_user_list_str(user_id=user_id, user_table="asset")
     user = User.objects.get(pk=user_id)
     departments = list(user.get_relative_department())
     department_filter_sql = " and {}.department_id in ({})".format(
-        "asset", ",".join(map(lambda x: str(x.id), departments))
+        "asset", ",".join((str(x.id) for x in departments))
     )
     query_condition = (
         " where rel.is_del=0 and asset.project_id>0 "
@@ -79,7 +77,6 @@ def get_annotate_sca_base_data(user_id: int, pro_condition: str):
         "left JOIN iast_asset_vul_relation as rel on rel.asset_vul_id=vul.id  "
         "left JOIN iast_asset as asset on rel.asset_id=asset.id "
     )
-    # level_join = "left JOIN iast_vul_level as level on level.id=vul.level_id "
 
     with connection.cursor() as cursor:
         count_level_query = (
@@ -90,7 +87,6 @@ def get_annotate_sca_base_data(user_id: int, pro_condition: str):
         )
         result_summary = base_summary
 
-        # level_summary = IastVulLevel.objects.raw(count_level_query)
         cursor.execute(count_level_query)
         level_summary = cursor.fetchall()
         if level_summary:
@@ -163,7 +159,7 @@ def get_annotate_sca_base_data(user_id: int, pro_condition: str):
                 if package_language in lang_key:
                     del lang_arr[package_language]
         if lang_arr:
-            for item in lang_arr.keys():
+            for item in lang_arr:
                 result_summary["language"].append(
                     {"id": LANGUAGE_DICT.get(item), "num": 0, "name": item}
                 )
@@ -223,7 +219,6 @@ def get_annotate_data_es(user_id, bind_project_id=None, project_version_id=None)
     from dongtai_conf import settings
     from dongtai_web.utils import dict_transfrom
 
-    user_id_list = [user_id]
     user = User.objects.get(pk=user_id)
     departments = list(user.get_relative_department())
     department_ids = [i.id for i in departments]
@@ -255,7 +250,7 @@ def get_annotate_data_es(user_id, bind_project_id=None, project_version_id=None)
         Elasticsearch(settings.ELASTICSEARCH_DSL["default"]["hosts"])
     ).execute()
     dic = {}
-    for key in buckets.keys():
+    for key in buckets:
         origin_buckets = res.aggs[key].to_dict()["buckets"]
         for i in origin_buckets:
             i["id"] = i["key"]
@@ -270,7 +265,7 @@ def get_annotate_data_es(user_id, bind_project_id=None, project_version_id=None)
             language_names = [i["name"] for i in origin_buckets]
             for i in origin_buckets:
                 i["id"] = LANGUAGE_DICT.get(i["name"])
-            for language_key in LANGUAGE_DICT.keys():
+            for language_key in LANGUAGE_DICT:
                 if language_key not in language_names:
                     origin_buckets.append(
                         {
@@ -370,7 +365,7 @@ class GetScaSummary(UserEndPoint):
                 request.user.id, pro_condition
             )
         else:
-            # 全局数据，没有项目信息 数据按用户id缓存
+            # 全局数据,没有项目信息 数据按用户id缓存
             result_summary = get_annotate_sca_cache_data(request.user.id)
 
         return R.success(

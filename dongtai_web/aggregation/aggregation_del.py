@@ -44,11 +44,7 @@ class DelVulMany(UserEndPoint):
             # 组件漏洞删除
             del_queryset = queryset.filter(asset_vul_id__in=ids)
             # with connection.cursor() as cursor:
-            #     sca_ids = list(map(str, ids))
-            #     sca_ids_str = ",".join(sca_ids)
-            #     sql = " UPDATE iast_asset_aggr as aggr left join iast_asset_vul as vul on aggr.signature_value=vul.package_hash SET aggr.is_del = 1  WHERE vul.id in ({})".format(
             #         sca_ids_str)
-            #     cursor.execute(sql)
         for vul in del_queryset:
             vul.is_del = 1
             vul.save()

@@ -15,7 +15,7 @@ def getUniqueList(origin_list=[]):
 def turnIntListOfStr(type_str, field=""):
     try:
         type_list = type_str.split(",")
-        # 安全校验，强制转int
+        # 安全校验,强制转int
         type_list = list(map(int, type_list))
         if field:
             type_int_list = list(map(str, type_list))
@@ -23,11 +23,11 @@ def turnIntListOfStr(type_str, field=""):
             return " and {} in ({}) ".format(field, type_int_str)
         else:
             return type_list
-    except Exception as e:
+    except Exception:
         return ""
 
 
-# str 逗号分割，强校验
+# str 逗号分割,强校验
 def checkMustIntToStr(type_str):
     type_list = type_str.split(",")
 
@@ -40,11 +40,10 @@ def checkMustIntToStr(type_str):
     type_int_list = list(map(int, type_arr))
     # 转 str
     type_str_list = list(map(str, type_int_list))
-    result = ",".join(type_str_list)
-    return result
+    return ",".join(type_str_list)
 
 
-# 通过app vul ids 读取应用漏洞调用链,agent_id，漏洞状态
+# 通过app vul ids 读取应用漏洞调用链,agent_id,漏洞状态
 def getAppVulInfoById(vul_ids=None):
     if vul_ids is None:
         return {}
@@ -70,7 +69,7 @@ def getAppVulInfoById(vul_ids=None):
     return vul_result
 
 
-# 通过agent_ids 获取项目id，name，version，中间件，
+# 通过agent_ids 获取项目id,name,version,中间件,
 def getProjectInfoByAgentId(agent_ids=None):
     if agent_ids is None:
         return {}
@@ -96,7 +95,7 @@ def getProjectInfoByAgentId(agent_ids=None):
     return agent_result
 
 
-# 通过漏洞类型id 获取漏洞名称，等级
+# 通过漏洞类型id 获取漏洞名称,等级
 def getHookTypeName(ids=None):
     if ids is None:
         return {}
@@ -117,16 +116,10 @@ def appVulShareConfig(app_vul_ids, user_id):
     return {}
 
 
-#    query_vul_inetration = IastVulInegration.objects.filter(
-#        vul_id__in=app_vul_ids,
 #        user_id=user_id).values("vul_id", "jira_url", "jira_id", "gitlab_url",
 #                                "gitlab_id", "zendao_url", "zendao_id")
-#    config_dict = {}
 #    if query_vul_inetration:
 #        for item in query_vul_inetration:
-#            vul_id = item['vul_id']
-#            config_dict[vul_id] = item
-#    return config_dict
 
 
 # 鉴权  IastVulAssetRelation
@@ -150,7 +143,7 @@ def getAuthUserInfo(user, base_query):
         user_ids = list(users.values_list("id", flat=True))
         base_query = base_query.filter(asset__user_id__in=user_ids)
     else:
-        # 普通用户，直接筛选用户id
+        # 普通用户,直接筛选用户id
         base_query = base_query.filter(asset__user_id=user_id)
     return base_query
 
@@ -186,8 +179,7 @@ def auth_user_list_only(user_id=0):
     if not user:
         return []
     users = UserEndPoint.get_auth_users(user)
-    user_ids = list(users.values_list("id", flat=True))
-    return user_ids
+    return list(users.values_list("id", flat=True))
 
 
 # 鉴权 后 获取 漏洞信息  auth_condition = getAuthBaseQuery(request.user, "asset")

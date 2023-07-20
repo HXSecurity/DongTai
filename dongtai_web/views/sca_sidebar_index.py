@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 from django.db.models import Q
 
 from dongtai_common.endpoint import R, UserEndPoint
@@ -37,7 +34,7 @@ class ScaSidebarList(UserEndPoint):
                 "description": format_lazy(
                     "{} : {}",
                     _("Sorted index"),
-                    ",".join(["package_name", "version", "language", "level", "dt"]),
+                    "package_name,version,language,level,dt",
                 ),
             },
         ],
@@ -81,7 +78,7 @@ class ScaSidebarList(UserEndPoint):
         page_size = 10
         page_summary, queryset = self.get_paginator(queryset, page_size=page_size)
         return R.success(
-            data=[obj for obj in queryset],
+            data=list(queryset),
             page=page_summary,
             total=page_summary["alltotal"],
         )

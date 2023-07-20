@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 import time
 import logging
 
@@ -61,7 +58,7 @@ class EngineHookRuleTypeAddEndPoint(UserEndPoint):
             ser = _EngineHookRuleTypeAddSerializer(data=request.data)
             try:
                 ser.is_valid(True)
-            except ValidationError as e:
+            except ValidationError:
                 return None, None, None, None, None
             rule_type = ser.validated_data.get("type")
             rule_type = int(rule_type)

@@ -21,8 +21,7 @@ class _AgentConfigArgsSerializer(serializers.Serializer):
 
 
 def get_agent_data_gather_config(agent_id):
-    config = get_data_gather_data()
-    return config
+    return get_data_gather_data()
 
 
 class AgentConfigAllinOneView(OpenApiEndPoint):

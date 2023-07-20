@@ -33,7 +33,6 @@ class AgentConfigView(OpenApiEndPoint):
     )
     def post(self, request):
         try:
-            # agent_id = request.data.get('agentId', None)
             param = parse_data(request.read())
             agent_id = param.get("agentId", None)
             if agent_id is None:
@@ -144,6 +143,7 @@ def get_function(opt: TargetOperator):
         return lambda x, y: x in y
     if opt == TargetOperator.NOT_CONTAIN:
         return lambda x, y: x not in y
+    return None
 
 
 def get_filter_by_target(target):

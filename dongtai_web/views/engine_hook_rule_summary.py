@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 from dongtai_common.endpoint import UserEndPoint, R
 from dongtai_common.models.hook_strategy import HookStrategy
 from dongtai_common.models.hook_type import HookType
@@ -42,7 +39,7 @@ class EngineHookRuleSummaryEndPoint(UserEndPoint):
         ser = _EngineHookRuleSummaryQuerySerializer(data=request.GET)
         try:
             ser.is_valid(True)
-        except ValidationError as e:
+        except ValidationError:
             return R.failure(msg=_("Parameter error"))
         rule_type_queryset = HookType.objects.filter(
             created_by__in=[request.user.id, const.SYSTEM_USER_ID]
@@ -53,7 +50,7 @@ class EngineHookRuleSummaryEndPoint(UserEndPoint):
             )
         rule_type_count = rule_type_queryset.values("id").count()
 
-        sink_type_queryset = rule_type_queryset.filter(type=const.RULE_SINK)
+        rule_type_queryset.filter(type=const.RULE_SINK)
         sink_queryset = HookStrategy.objects.values("id").filter(
             type__in=[4], enable__gt=0
         )

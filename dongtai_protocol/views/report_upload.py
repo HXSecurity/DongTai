@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2021/1/12 下午7:45
-# software: PyCharm
-# project: lingzhi-agent-server
 
 from dongtai_common.endpoint import OpenApiEndPoint, R
 from drf_spectacular.utils import extend_schema

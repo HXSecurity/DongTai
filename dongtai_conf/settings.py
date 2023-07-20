@@ -44,7 +44,7 @@ config = ConfigParser()
 status = config.read(os.path.join(BASE_DIR, "dongtai_conf/conf/config.ini"))
 if len(status) == 0:
     print("config file not exist. stop running")
-    exit(0)
+    sys.exit(0)
 
 
 def ranstr(num):
@@ -58,9 +58,8 @@ def ranstr(num):
 # SECURITY WARNING: keep the secret key used in production secret!
 try:
     SECRET_KEY = config.get("security", "secret_key")
-except Exception as e:
+except Exception:
     SECRET_KEY = ranstr(50)
-# DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 # Application definition
@@ -270,7 +269,6 @@ WSGI_APPLICATION = "dongtai_conf.wsgi.application"
 
 DATABASES = {
     "default": {
-        #'CONN_MAX_AGE': 10,
         "ENGINE": "django.db.backends.mysql",
         "USER": config.get("mysql", "user"),
         "NAME": config.get("mysql", "name"),
@@ -279,7 +277,6 @@ DATABASES = {
         "PORT": config.get("mysql", "port"),
         "OPTIONS": {
             #            'init_command':
-            #            'SET NAMES utf8mb4;SET collation_server=utf8mb4_general_ci;SET collation_database=utf8mb4_general_ci; ',
             "charset": "utf8mb4",
             "use_unicode": True,
         },
@@ -354,42 +351,38 @@ LOGGING_LEVEL = safe_execute(
 # 报告存储位置
 try:
     TMP_COMMON_PATH = config.get("common_file_path", "tmp_path")
-except Exception as e:
+except Exception:
     TMP_COMMON_PATH = "/tmp/logstash"
 
 # 图片二级存储路径
 try:
     REPORT_IMG_FILES_PATH = config.get("common_file_path", "report_img")
-except Exception as e:
+except Exception:
     REPORT_IMG_FILES_PATH = "report/img"
 
 # report html二级存储路径
 try:
     REPORT_HTML_FILES_PATH = config.get("common_file_path", "report_html")
-except Exception as e:
+except Exception:
     REPORT_HTML_FILES_PATH = "report/html"
 
 # report pdf二级存储路径
 try:
     REPORT_PDF_FILES_PATH = config.get("common_file_path", "report_pdf")
-except Exception as e:
+except Exception:
     REPORT_PDF_FILES_PATH = "report/pdf"
 # report word 二级存储路径
 try:
     REPORT_WORD_FILES_PATH = config.get("common_file_path", "report_word")
-except Exception as e:
+except Exception:
     REPORT_WORD_FILES_PATH = "report/word"
 # report excel 二级存储路径
 try:
     REPORT_EXCEL_FILES_PATH = config.get("common_file_path", "report_excel")
-except Exception as e:
+except Exception:
     REPORT_EXCEL_FILES_PATH = "report/excel"
 FILES_SIZE_LIMIT = 1024 * 1024 * 50
 # # 报告二级存储路径
-# try:
-#     REPORT_IMG_FILES_PATH = config.get('common_file_path', 'report_img')
-# except Exception as e:
-#     REPORT_IMG_FILES_PATH = "report/img"
 
 
 LOGGING = {
@@ -430,11 +423,6 @@ LOGGING = {
             "filename": "/tmp/worker.log",
             "formatter": "verbose",
         },
-        #        'jsonlog': {
-        #            'class': 'logging.handlers.RotatingFileHandler',
-        #            'filename': TMP_COMMON_PATH + '/server.log',
-        #            'formatter': 'json'
-        #        }
     },
     "loggers": {
         "django.db.backends": {
@@ -486,9 +474,6 @@ LOGGING = {
             "level": LOGGING_LEVEL,
         },
         #        'jsonlogger': {  # it use to logging to local logstash file
-        #            'handlers': ['jsonlog'],
-        #            'propagate': True,
-        #            'level': 'DEBUG',
         #        },
     },
 }
@@ -555,7 +540,7 @@ try:
     SCA_TIMEOUT = config.getint("sca", "timeout")
     SCA_MAX_RETRY_COUNT = config.getint("sca", "max_retry_count", fallback=3)
     SCA_TOKEN = config.get("sca", "token")
-    SCA_SETUP = True if SCA_TOKEN else False
+    SCA_SETUP = bool(SCA_TOKEN)
 except BaseException:
     SCA_BASE_URL = ""
     SCA_TIMEOUT = 0
@@ -569,7 +554,7 @@ if os.getenv("environment", None) in ("TEST", "PROD"):
 
 try:
     DOMAIN_VUL = config.get("other", "domain_vul")
-except Exception as e:
+except Exception:
     DOMAIN_VUL = "http://localhost"
 
 # OPENAPI
@@ -605,16 +590,11 @@ CELERY_BROKER_URL = "redis://:%(password)s@%(host)s:%(port)s/%(db)s" % {
     "db": config.get("redis", "db"),
 }
 CELERY_RESULT_EXPIRES = 600
-# CELERY_WORKER_LOG_FORMAT = '%(asctime)s [%(module)s %(levelname)s] %(message)s'
-# CELERY_WORKER_LOG_FORMAT = '%(message)s'
-# CELERY_WORKER_TASK_LOG_FORMAT = '%(task_id)s %(task_name)s %(message)s'
 CELERY_WORKER_TASK_LOG_FORMAT = "%(message)s"
-# CELERY_WORKER_LOG_FORMAT = '%(asctime)s [%(module)s %(levelname)s] %(message)s'
 CELERY_WORKER_LOG_FORMAT = "%(message)s"
 CELERY_TASK_EAGER_PROPAGATES = True
 CELERY_WORKER_REDIRECT_STDOUTS = True
 CELERY_WORKER_REDIRECT_STDOUTS_LEVEL = "ERROR"
-# CELERY_WORKER_HIJACK_ROOT_LOGGER = True
 CELERY_WORKER_MAX_TASKS_PER_CHILD = 5000
 
 CELERY_TASK_SOFT_TIME_LIMIT = 3600
@@ -1064,12 +1044,7 @@ def set_asyncio_policy():
 
 
 #   disable until this package update
-#    import asyncio_gevent
-#    import asyncio
-#    state = is_gevent_monkey_patched()
-#    print(f"is in gevent patched : {state}")
 #    if state:
-#        asyncio.set_event_loop_policy(asyncio_gevent.EventLoopPolicy())
 
 
 AGENT_LOG_DIR = os.path.join(TMP_COMMON_PATH, "batchagent")
@@ -1078,7 +1053,7 @@ AGENT_LOG_DIR = os.path.join(TMP_COMMON_PATH, "batchagent")
 for _dir in (TMP_COMMON_PATH, AGENT_LOG_DIR):
     if not os.path.exists(_dir):
         print(f"{_dir} is not exists, check the init.")
-        exit(0)
+        sys.exit(0)
 
 DAST_TOKEN = config.get("other", "dast_token", fallback="")
 
@@ -1100,6 +1075,3 @@ if os.getenv("DJANGOSILK", None) == "TRUE":
         "signature",
     }
     SILKY_PYTHON_PROFILER_BINARY = True
-    # SILKY_AUTHENTICATION = True
-    # SILKY_AUTHORISATION = True
-    # SILKY_PERMISSIONS = lambda user: True

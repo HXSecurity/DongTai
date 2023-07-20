@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
 # datetime: 2021/10/22 下午2:29
-# project: DongTai-engine
 # desc: data rule, response field rule, sql field rule
 import re2 as re
 
@@ -19,7 +17,7 @@ def parse_json_response(res_body):
         import json
 
         return json.loads(res_body)
-    except Exception as e:
+    except Exception:
         return None
 
 

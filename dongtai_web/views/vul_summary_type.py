@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 from django.db.models import Count
 from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint
@@ -84,7 +81,7 @@ class VulSummaryType(UserEndPoint):
                 "description": format_lazy(
                     "{} : {}",
                     _("Sorted index"),
-                    ",".join(["type", "type", "first_time", "latest_time", "url"]),
+                    "type,type,first_time,latest_time,url",
                 ),
             },
         ],

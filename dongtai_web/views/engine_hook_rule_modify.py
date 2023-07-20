@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 import time
 
 from dongtai_common.endpoint import UserEndPoint, R
@@ -123,7 +120,7 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
                 ignore_internal,
             )
 
-        except Exception as e:
+        except Exception:
             return None, None, None, None, None, None, None, None, None
 
     @extend_schema_with_envcheck(

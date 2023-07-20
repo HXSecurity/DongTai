@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 
 from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint

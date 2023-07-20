@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
 # datetime: 2021/7/21 下午4:04
-# project: dongtai-engine
 
 from rest_framework import permissions
 
@@ -42,7 +40,7 @@ class ScopedPermission(permissions.BasePermission):
 
 class UserPermission(ScopedPermission):
     """
-    用户权限验证类，验证是否为有效用户
+    用户权限验证类,验证是否为有效用户
     """
 
     def has_permission(self, request, view):

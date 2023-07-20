@@ -69,10 +69,9 @@ class AgentListWithid(DetailListWithid):
         return super().get(request)
 
     def query(self, ids, request):
-        agents = IastAgent.objects.filter(
+        return IastAgent.objects.filter(
             pk__in=ids, user__in=self.get_auth_users(request.user)
         ).all()
-        return agents
 
     @extend_schema_with_envcheck(
         request=IdsSerializer,
@@ -98,10 +97,9 @@ class ProjectListWithid(DetailListWithid):
         return super().get(request)
 
     def query(self, ids, request):
-        projects = IastProject.objects.filter(
+        return IastProject.objects.filter(
             pk__in=ids, user__in=self.get_auth_users(request.user)
         ).all()
-        return projects
 
     @extend_schema_with_envcheck(
         request=IdsSerializer,
@@ -128,8 +126,7 @@ class ScaListWithid(DetailListWithid):
     def query(self, ids, request):
         auth_users = self.get_auth_users(request.user)
         auth_agents = self.get_auth_agents(auth_users)
-        scas = Asset.objects.filter(pk__in=ids, agent__in=auth_agents).all()
-        return scas
+        return Asset.objects.filter(pk__in=ids, agent__in=auth_agents).all()
 
     @extend_schema_with_envcheck(
         request=IdsSerializer,
@@ -156,12 +153,11 @@ class VulsListWithid(DetailListWithid):
     def query(self, ids, request):
         auth_users = self.get_auth_users(request.user)
         auth_agents = self.get_auth_agents(auth_users)
-        vuls = (
+        return (
             IastVulnerabilityModel.objects.filter(pk__in=ids, agent__in=auth_agents)
             .values()
             .all()
         )
-        return vuls
 
     @extend_schema_with_envcheck(
         request=IdsSerializer,

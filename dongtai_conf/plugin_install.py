@@ -8,21 +8,16 @@ from typing import Optional
 
 
 def _get_plugin(repo: str, extra: dict):
-    url_schema = "https://github.com/{repo}/{resofurl}"
-    default_url = "https://github.com/HXSecurityBusiness/DongTai-webapi/archive/refs/heads/main.zip"
-    default_url = (
-        "https://github.com/Bidaya0/DongTai-openapi/archive/refs/tags/v1.0.3.zip"
-    )
-    if "branch" in extra.keys():
+    if "branch" in extra:
         resofurl = f'archive/refs/heads/{extra["branch"]}.zip'
-    elif "tag" in extra.keys():
+    elif "tag" in extra:
         resofurl = f'archive/refs/tags/{extra["tag"]}.zip'
-    elif "commit" in extra.keys():
+    elif "commit" in extra:
         resofurl = f'zip/{extra["commit"]}'
     else:
         resofurl = "archive/refs/heads/main.zip"
     final_url = f"https://github.com/{repo}/{resofurl}"
-    if "uri" in extra.keys():
+    if "uri" in extra:
         final_url = extra["uri"]
     r = requests.get(final_url, stream=True)
     z = zipfile.ZipFile(BytesIO(r.content))
@@ -46,13 +41,10 @@ def get_plugin(
     commit: Optional[str] = None,
     uri: Optional[str] = None,
 ):
-    extra = {
-        key: value
-        for key, value in filter(
+    extra = dict(filter(
             lambda x: x[1],
             zip(["branch", "tag", "commit", "uri"], [branch, tag, commit, uri]),
-        )
-    }
+        ))
     _get_plugin(repo, extra)
     _install_plugin(repo)
 

@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 
 from dongtai_common.endpoint import R
 from dongtai_common.utils import const
@@ -40,7 +37,6 @@ class ProjectEngines(UserEndPoint):
         response_schema=_ProjectEnginesResponseSerializer,
     )
     def get(self, request, pid):
-        # auth_users = self.get_auth_users(request.user)
         department = request.user.get_relative_department()
         queryset = IastAgent.objects.filter(
             department__in=department,

@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
 # datetime: 2021/7/21 下午7:07
-# project: dongtai-engine
 from copy import deepcopy
 
 from django.utils.functional import cached_property
@@ -11,12 +9,12 @@ from dongtai_common.engine.compatibility import method_pool_3_to_2, method_pool_
 
 class VulEngineV2(object):
     """
-    根据策略和方法池查找是否存在漏洞，此类不进行策略和方法池的权限验证
+    根据策略和方法池查找是否存在漏洞,此类不进行策略和方法池的权限验证
     """
 
     def __init__(self):
         """
-        构造函数，初始化相关数据
+        构造函数,初始化相关数据
         """
         self._method_pool = []
         self.method_pool_asc = []
@@ -26,7 +24,7 @@ class VulEngineV2(object):
         self.pool_value = None
         self.vul_source_signature = None
         self.node_data = {}
-        self.nodes = dict()
+        self.nodes = {}
         self.raw_graph_data = {}
         self.raw_node_data = {}
         self.graphy_data = {"nodes": [], "edges": []}
@@ -45,13 +43,13 @@ class VulEngineV2(object):
     @method_pool.setter
     def method_pool(self, method_pool):
         """
-        设置方法池数据，根据方法调用ID对数据进行倒序排列，便于后续检索漏洞
+        设置方法池数据,根据方法调用ID对数据进行倒序排列,便于后续检索漏洞
         :param method_pool:
         :return:
         """
         self._method_pool = sorted(
             filter(
-                lambda x: not ("type" in x.keys() and "stack" in x.keys()), method_pool
+                lambda x: not ("type" in x and "stack" in x), method_pool
             ),
             key=lambda e: e.__getitem__("invokeId"),
             reverse=True,
@@ -68,8 +66,8 @@ class VulEngineV2(object):
     def prepare(self, method_pool, vul_method_signature):
         """
         对方法池、漏洞方法签名及其他数据进行预处理
-        :param method_pool: 方法池，list
-        :param vul_method_signature: 漏洞方法签名，str
+        :param method_pool: 方法池,list
+        :param vul_method_signature: 漏洞方法签名,str
         :return:
         """
         if method_pool_is_3(method_pool[0]):
@@ -77,7 +75,7 @@ class VulEngineV2(object):
         self.method_pool = method_pool
         self.vul_method_signature = vul_method_signature
         self.hit_vul = False
-        self.vul_stack = list()
+        self.vul_stack = []
         self.pool_value = -1
         self.vul_source_signature = ""
         self.method_counts = len(self.method_pool)
@@ -90,6 +88,7 @@ class VulEngineV2(object):
             self.hit_vul = True
             self.pool_value = method.get("sourceHash")
             return True
+        return None
 
     def do_propagator(self, method, current_link):
         is_source = method.get("source")
@@ -103,16 +102,18 @@ class VulEngineV2(object):
                         f"{method.get('className')}.{method.get('methodName')}"
                     )
                     return True
+            return None
         else:
             for hash in target_hash:
                 if hash in self.pool_value:
                     current_link.append(method)
                     self.pool_value = method.get("sourceHash")
                     break
+            return None
 
     @cached_property
     def method_pool_signatures(self):
-        signatures = list()
+        signatures = []
         for method in self.method_pool:
             signatures.append(
                 f"{method.get('className').replace('/', '.')}.{method.get('methodName')}"
@@ -123,6 +124,7 @@ class VulEngineV2(object):
         self.prepare(method_pool, vul_method_signature)
         if vul_method_signature in self.method_pool_signatures:
             return True
+        return None
 
     def search_all_link(self):
         """
@@ -132,7 +134,6 @@ class VulEngineV2(object):
         self.edge_code = 1
         self.method_pool_asc = self.method_pool[::-1]
         self.create_graph()
-        # self.filter_invalid_data()
         self.create_edge()
 
     def create_edge(self):
@@ -140,7 +141,7 @@ class VulEngineV2(object):
         创建污点链的边
         :return:
         """
-        edges = list()
+        edges = []
         node_ids = set()
         for head, subs in self.raw_graph_data.items():
             node_ids.add(head)
@@ -165,7 +166,7 @@ class VulEngineV2(object):
         target = ",".join([str(_) for _ in data["targetHash"]])
         classname = data["className"].replace("/", ".").split(".")[-1]
         invoke_id = str(data["invokeId"])
-        node = {
+        return {
             "id": invoke_id,
             "name": f"{classname}.{data['methodName']}({source}) => {target}",
             "dataType": "source" if data["source"] else "sql",
@@ -186,7 +187,6 @@ class VulEngineV2(object):
                 else {},
             ],
         }
-        return node
 
     def create_graph(self):
         node_count = len(self.method_pool_asc)
@@ -195,7 +195,7 @@ class VulEngineV2(object):
             invoke_id = node["invokeId"]
             self.raw_node_data[invoke_id] = self.create_node(node)
             if invoke_id not in self.raw_graph_data:
-                self.raw_graph_data[invoke_id] = list()
+                self.raw_graph_data[invoke_id] = []
             for _index in range(index + 1, node_count):
                 _node = self.method_pool_asc[_index]
                 if set(node["targetHash"]) & set(_node["sourceHash"]):
@@ -213,7 +213,7 @@ class VulEngineV2(object):
 
     def remove_invalid(self, raw_graph_data, raw_node_data):
         has_invalid = False
-        invalid_node = list()
+        invalid_node = []
         for head, subs in raw_graph_data.items():
             if not subs:
                 invalid_node.append(head)

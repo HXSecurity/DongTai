@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 import logging
 
 from dongtai_common.endpoint import UserEndPoint, R
@@ -34,8 +31,7 @@ class EngineHookRuleTypeEnableEndPoint(UserEndPoint):
     def parse_args(self, request):
         try:
             rule_id = request.query_params.get("rule_id", const.RULE_PROPAGATOR)
-            rule_type = int(rule_id)
-            return rule_type
+            return int(rule_id)
         except Exception as e:
             logger.error(_("Parameter processing failed, error message: {}").format(e))
             return None

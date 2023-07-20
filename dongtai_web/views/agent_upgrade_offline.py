@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 from dongtai_common.endpoint import TalentAdminEndPoint, R
 from django.utils.translation import gettext_lazy as _
 

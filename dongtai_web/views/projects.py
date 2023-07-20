@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 
 import logging
 
@@ -77,7 +74,6 @@ class Projects(UserEndPoint):
         except ValidationError as e:
             return R.failure(data=e.detail)
 
-        # users = self.get_auth_users(request.user)
         department = request.user.get_relative_department()
         queryset = IastProject.objects.filter(department__in=department).order_by(
             "-latest_time"

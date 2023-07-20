@@ -183,7 +183,7 @@ class SCADBMavenViewSet(UserEndPoint, viewsets.ViewSet):
             return R.failure(data=e.detail)
         try:
             ScaMavenDb.objects.create(**ser.data)
-        except IntegrityError as e:
+        except IntegrityError:
             return R.failure(msg="same sha_1 component exists")
         return R.success()
 
@@ -192,7 +192,7 @@ class SCADBMavenViewSet(UserEndPoint, viewsets.ViewSet):
     )
     def destory(self, request, pk):
         q = Q(pk=pk)
-        data = ScaMavenDb.objects.filter(q).delete()
+        ScaMavenDb.objects.filter(q).delete()
         return R.success()
 
     @extend_schema_with_envcheck(

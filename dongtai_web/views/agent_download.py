@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
-# project: lingzhi-webapi
 import logging
 import os
 
@@ -62,12 +60,11 @@ class AgentDownload(UserEndPoint):
                 url=f'{AGENT_SERVER_PROXY["HOST"]}/api/v1/agent/download?url={base_url}&language={language}&projectName={project_name}',
                 headers={"Authorization": f'Token {token["key"]}'},
             )
-        except ConnectionError as e:
+        except ConnectionError:
             return R.failure(msg="conncet error,please check config.ini")
         except Exception as e:
             logger.error(e)
             return R.failure(msg="download error,please check deployment")
 
-        response = self.res_by_language(language, token, resp)
+        return self.res_by_language(language, token, resp)
 
-        return response

@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 import logging
 
 from dongtai_common.endpoint import UserEndPoint, R
@@ -49,7 +46,7 @@ class EngineHookRuleTypesEndPoint(UserEndPoint):
             ser = _EngineHookRuleTypeArgsSerializer(data=request.GET)
             try:
                 ser.is_valid(True)
-            except ValidationError as e:
+            except ValidationError:
                 return None, None, None, None
             rule_type = ser.validated_data.get("type", const.RULE_PROPAGATOR)
             rule_type = int(rule_type)
@@ -85,7 +82,7 @@ class EngineHookRuleTypesEndPoint(UserEndPoint):
     def get(self, request):
         rule_type, page, page_size, language_id = self.parse_args(request)
         if (
-            all(map(lambda x: x is not None, [rule_type, page, page_size, language_id]))
+            all((x is not None for x in [rule_type, page, page_size, language_id]))
             is False
         ):
             return R.failure(msg=_("Parameter error"))

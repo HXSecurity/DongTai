@@ -41,7 +41,7 @@ class MyTestCase(DongTaiTestCase):
 
         timestamp = int(time.time())
         stopped_agents = IastAgent.objects.values("id").filter(is_running=0)
-        is_running_agents = list()
+        is_running_agents = []
         for agent in stopped_agents:
             agent_id = agent["id"]
             if is_alive(agent_id=agent_id, timestamp=timestamp):
@@ -116,7 +116,6 @@ class MyTestCase(DongTaiTestCase):
             try:
                 request = HttpRequest(method_pool["req_header_fs"])
                 project_headers = project_headers | set(request.headers.keys())
-                # project_cookies = project_cookies | request.cookie_keys
             except BaseException:
                 pass
         print(project_headers)
@@ -130,13 +129,13 @@ class MultiUserTestCase(APITestCase):
         user1 = User.objects.filter(pk=1).get()
         assert user1 is not None
         self.client.force_authenticate(user=user1)
-        data1 = self.register_agent(name="test1")
+        self.register_agent(name="test1")
 
         User(id=2, username="test", phone="123456789").save()
         user2 = User.objects.filter(pk=2).get()
         assert user2 is not None
         self.client.force_authenticate(user=user2)
-        data2 = self.register_agent(name="test2")
+        self.register_agent(name="test2")
 
         update_agent_status()
 

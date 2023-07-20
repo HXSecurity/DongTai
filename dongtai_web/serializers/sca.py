@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.asset_aggr import AssetAggr
 from dongtai_common.models.project_version import IastProjectVersion
@@ -29,8 +26,8 @@ class ScaSerializer(serializers.ModelSerializer):
     agent_name = serializers.SerializerMethodField()
     language = serializers.SerializerMethodField()
     license = serializers.SerializerMethodField()
-    project_cache = dict()
-    project_version_cache = dict()
+    project_cache = {}
+    project_version_cache = {}
     AGENT_LANGUAGE_MAP = {}
 
     class Meta:
@@ -110,7 +107,7 @@ class ScaSerializer(serializers.ModelSerializer):
                 sca_package = Package.objects.filter(hash=obj.signature_value).first()
                 return sca_package.license
             return self.context["license_dict"].get(obj.signature_value, "")
-        except Exception as e:
+        except Exception:
             return ""
 
     def get_package_name(self, obj):

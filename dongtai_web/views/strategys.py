@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 
-# software: PyCharm
-# project: lingzhi-webapi
 from dongtai_common.models.strategy_user import IastStrategyUser
 from dongtai_common.utils import const
 from dongtai_common.models.hook_type import HookType
@@ -162,7 +159,7 @@ class StrategysEndpoint(UserEndPoint):
             .exclude(enable=const.DELETE)
         )
         if strategy_models:
-            models = dict()
+            models = {}
             for strategy_model in strategy_models:
                 models[strategy_model["id"]] = {
                     "id": strategy_model["id"],

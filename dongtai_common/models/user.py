@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2021/1/25 下午6:43
-# software: PyCharm
-# project: dongtai-models
 
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
@@ -82,14 +79,14 @@ class User(AbstractUser, PermissionsMixin):
         try:
             department = self.department.get() if self.department else None
             talent = department.talent.get() if department else None
-        except Exception as e:
+        except Exception:
             talent = None
         return talent
 
     def get_department(self):
         try:
             department = self.department.get()
-        except Exception as e:
+        except Exception:
             department = None
         return department
 

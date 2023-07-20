@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 from dongtai_common.endpoint import UserEndPoint, R
 from dongtai_common.models.agent import IastAgent
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer

@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 
-# software: PyCharm
-# project: lingzhi-webapi
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.hook_strategy import HookStrategy
 from dongtai_common.utils import const

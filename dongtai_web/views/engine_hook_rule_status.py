@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 import logging
 
 from dongtai_common.endpoint import UserEndPoint, R
@@ -90,10 +87,9 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
                 rule.save()
                 return 1
         elif strategy_ids:
-            count = HookStrategy.objects.filter(
+            return HookStrategy.objects.filter(
                 id__in=strategy_ids,
             ).update(enable=enable_status)
-            return count
         return 0
 
     @staticmethod
@@ -128,7 +124,6 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
                 rule_type = int(rule_type)
         except BaseException:
             return R.failure(_("Parameter error"))
-        user_id = request.user.id
         status = False
 
         op = self.check_op(op)

@@ -35,7 +35,7 @@ logger = logging.getLogger("dongtai.openapi")
 class ApiRouteHandler(IReportHandler):
     def parse(self):
         self.api_data = self.detail.get("apiData")
-        self.api_routes = list(map(lambda x: _data_dump(x), self.api_data))
+        self.api_routes = [_data_dump(x) for x in self.api_data]
 
     def save(self):
         api_route_gather.delay(self.agent_id, self.api_routes)

@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 import logging
 
 from dongtai_common.models import User
@@ -42,7 +39,7 @@ class UserPasswordReset(TalentAdminEndPoint):
                 msg = _("UserID is empty")
                 logger.error(_("UserID is empty"))
                 return R.failure(msg=msg)
-        except ValueError as e:
+        except ValueError:
             msg = _("UserID must be a numeric")
             logger.error(msg, exc_info=True)
         except Exception as e:

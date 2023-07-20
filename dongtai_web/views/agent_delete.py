@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 
-# software: PyCharm
-# project: lingzhi-webapi
 
 import logging
 
@@ -50,7 +47,6 @@ class AgentDeleteEndPoint(UserEndPoint):
                 self.agent = queryset
                 self.delete_error_log()
                 self.delete_heart_beat()
-                # self.delete_vul_overpower()
                 self.delete_sca()
                 self.delete_vul()
                 self.delete_method_pool()
@@ -63,7 +59,7 @@ class AgentDeleteEndPoint(UserEndPoint):
                 return R.failure(
                     msg=_("Agent does not exist or no permission to access")
                 )
-        except Exception as e:
+        except Exception:
             logger.error("user_id:{request.user.id} msg:{e}")
             return R.failure(msg=_("Error while deleting, please try again later"))
 

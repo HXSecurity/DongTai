@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-engine
 from dongtai_common.models import User
 from dongtai_common.models.hook_strategy import HookStrategy
 from rest_framework import serializers
@@ -35,7 +32,7 @@ class SinkSerialize(serializers.ModelSerializer):
 
 
 class HookRuleSerializer(serializers.ModelSerializer):
-    USER = dict()
+    USER = {}
     rule_type = serializers.SerializerMethodField(
         help_text=_("The name of hook rule type.")
     )

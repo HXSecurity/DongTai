@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/8/4 16:47
-# software: PyCharm
-# project: webapi
 import logging
 
 from dongtai_common.models.engine_heartbeat import IastEngineHeartbeat

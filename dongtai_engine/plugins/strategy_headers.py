@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
 # datetime: 2021/10/22 下午2:26
-# project: DongTai-engine
 import uuid
 from django.core.cache import cache
 import time
@@ -47,6 +45,7 @@ def parse_response(http_response_str):
 def check_csp(response):
     if response.getheader("Content-Security-Policy") is None:
         return True
+    return None
 
 
 def check_x_xss_protection(response):
@@ -54,6 +53,7 @@ def check_x_xss_protection(response):
         return True
     if response.getheader("X-XSS-Protection").strip() == "0":
         return True
+    return None
 
 
 def check_strict_transport_security(response):
@@ -65,20 +65,24 @@ def check_strict_transport_security(response):
             "max-age=(\\d+);.*?", response.getheader("Strict-Transport-Security")
         )
         if result is None:
-            return
+            return None
         max_age = result.group(1)
         if int(max_age) < 15768000:
             return True
+        return None
+    return None
 
 
 def check_x_frame_options(response):
     if response.getheader("X-Frame-Options") is None:
         return True
+    return None
 
 
 def check_x_content_type_options(response):
     if response.getheader("X-Content-Type-Options") is None:
         return True
+    return None
 
 
 def check_response_header(method_pool):
@@ -125,7 +129,7 @@ def check_response_header(method_pool):
 
 def save_vul(vul_type, method_pool, position=None, data=None):
     if is_strategy_enable(vul_type, method_pool) is False:
-        return None
+        return
     vul_strategy = IastStrategyModel.objects.filter(
         vul_type=vul_type,
         state=const.STRATEGY_ENABLE,
@@ -138,7 +142,7 @@ def save_vul(vul_type, method_pool, position=None, data=None):
 
     from dongtai_common.models.agent import IastAgent
 
-    project_agents = IastAgent.objects.filter(
+    IastAgent.objects.filter(
         project_version_id=method_pool.agent.project_version_id
     )
     uuid_key = uuid.uuid4().hex
@@ -262,7 +266,7 @@ def save_vul(vul_type, method_pool, position=None, data=None):
                 url=method_pool.uri,
                 vul_id=vul.id,
             )
-        except IntegrityError as e:
+        except IntegrityError:
             logger.debug("unique error stack: ", exc_info=True)
             logger.info("unique error cause by concurrency insert,ignore it")
     if (
@@ -280,14 +284,9 @@ def save_vul(vul_type, method_pool, position=None, data=None):
                 req_header=method_pool.req_header_fs,
                 res_header=method_pool.res_header,
             )
-        except IntegrityError as e:
+        except IntegrityError:
             logger.debug("unique error stack: ", exc_info=True)
             logger.info("unique error cause by concurrency insert,ignore it")
     # delete if exists more than one   departured use redis lock
     # IastVulnerabilityModel.objects.filter(
-    #    strategy=vul_strategy.id,
-    #    uri=method_pool.uri,
-    #    http_method=method_pool.http_method,
-    #    agent__in=project_agents,
-    #    pk__lt=vul.id,
     # ).delete()

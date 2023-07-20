@@ -51,7 +51,7 @@ class HealthView(UserEndPoint):
             )
         cur_language = get_language()
         for indicator in data["engine_monitoring_indicators"]:
-            cur_language_field = indicator.get("_".join(["name", cur_language]), None)
+            cur_language_field = indicator.get(f"name_{cur_language}", None)
             indicator["name"] = (
                 cur_language_field if cur_language_field else indicator["name"]
             )

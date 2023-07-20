@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2021/1/13 下午6:38
-# software: PyCharm
-# project: dongtai-models
 from django.db import models
 from dongtai_common.utils.settings import get_managed
 from dongtai_common.models.program_language import IastProgramLanguage

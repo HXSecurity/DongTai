@@ -25,5 +25,4 @@ class OSSHealthView(UserEndPoint):
     def get(self, request):
         oss_status, _ = checkossstatus()
         data = {"oss": {"status": 1}}
-        # data = {"oss": {"status": STATUSMAP[oss_status]}}
         return R.success(data=data)

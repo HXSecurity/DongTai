@@ -9,12 +9,6 @@ from django.db.utils import OperationalError
 from django.db import connection as conn
 
 # def function_preheat(func__module__: str, func__name__: str, *args, **kwargs):
-#    module = import_module(func__module__)
-#    func = getattr(module, func__name__)
-#    try:
-#        func(*args, **kwargs)
-#    except Exception as e:
-#        logger.error(e, exc_info=True)
 
 
 @shared_task(queue="dongtai-periodic-task")
@@ -78,7 +72,7 @@ class PreHeatRegister:
 def function_flush(func__module__, func__name__, cache_time, args, kwargs):
     module = import_module(func__module__)
     func = getattr(module, func__name__)
-    if not getattr(func, "__origin__name__", None) == "cached":
+    if getattr(func, "__origin__name__", None) != "cached":
         logger.error(
             "this function is not supported , please use cached to warp function."
         )

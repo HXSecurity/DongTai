@@ -104,7 +104,7 @@ METHODPOOL_JSON = {
                 "targetValues": "cn.huoxian.iast.api.RequestWrapper@61170f64",
                 "signature": "org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument",
                 "originClassName": "org.springframework.web.method.support.HandlerMethodArgumentResolverComposite",
-                "sourceValues": 'method \'vuln1\' parameter 0 ModelAndViewContainer: reference to view with name \'cors/cors\'; default model {name={"敏感信息账号": "suyu", "敏感信息手机": "13888888888"，"敏感信息qq": "10010", "敏感信息身份证": "321222222222222222", "敏感信息地址": "网商路699号阿里巴巴园区"}} ServletWebRequest: uri=/cors1;client=0:0:0:0:0:0:0:1 org.springframework.web.servlet.mvc.method.annotation.ServletRequestDataBinderFactory@582953e7',
+                "sourceValues": 'method \'vuln1\' parameter 0 ModelAndViewContainer: reference to view with name \'cors/cors\'; default model {name={"敏感信息账号": "suyu", "敏感信息手机": "13888888888","敏感信息qq": "10010", "敏感信息身份证": "321222222222222222", "敏感信息地址": "网商路699号阿里巴巴园区"}} ServletWebRequest: uri=/cors1;client=0:0:0:0:0:0:0:1 org.springframework.web.servlet.mvc.method.annotation.ServletRequestDataBinderFactory@582953e7',
                 "methodName": "resolveArgument",
                 "className": "org.springframework.web.method.support.HandlerMethodArgumentResolver",
                 "source": True,
@@ -122,7 +122,7 @@ METHODPOOL_JSON = {
                 "targetValues": "cn.huoxian.iast.api.ResponseWrapper@1a1cd09b",
                 "signature": "org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument",
                 "originClassName": "org.springframework.web.method.support.HandlerMethodArgumentResolverComposite",
-                "sourceValues": 'method \'vuln1\' parameter 1 ModelAndViewContainer: reference to view with name \'cors/cors\'; default model {name={"敏感信息账号": "suyu", "敏感信息手机": "13888888888"，"敏感信息qq": "10010", "敏感信息身份证": "321222222222222222", "敏感信息地址": "网商路699号阿里巴巴园区"}} ServletWebRequest: uri=/cors1;client=0:0:0:0:0:0:0:1 org.springframework.web.servlet.mvc.method.annotation.ServletRequestDataBinderFactory@582953e7',
+                "sourceValues": 'method \'vuln1\' parameter 1 ModelAndViewContainer: reference to view with name \'cors/cors\'; default model {name={"敏感信息账号": "suyu", "敏感信息手机": "13888888888","敏感信息qq": "10010", "敏感信息身份证": "321222222222222222", "敏感信息地址": "网商路699号阿里巴巴园区"}} ServletWebRequest: uri=/cors1;client=0:0:0:0:0:0:0:1 org.springframework.web.servlet.mvc.method.annotation.ServletRequestDataBinderFactory@582953e7',
                 "methodName": "resolveArgument",
                 "className": "org.springframework.web.method.support.HandlerMethodArgumentResolver",
                 "source": True,
@@ -337,7 +337,7 @@ METHODPOOL_JSON = {
         "url": "http://localhost:8080/cors1",
         "protocol": "HTTP/1.1",
         "replayRequest": False,
-        "resBody": '<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <title>Java漏洞靶场<\\/title>\n    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">\n<\\/head>\n<body>\n\n<div style="padding: 40px;\n    text-align: center;\n    background: #1abc9c;\n    color: white;">\n    <h1>Java漏洞演示平台<\\/h1>\n    <button class="ui inverted secondary basic button"><a style="color: white" href="home">回到首页<\\/a><\\/button>\n<\\/div>\n\n<div style="text-align: center;margin: 0px auto;\n     margin-top: 50px;">\n    您获取的结果为：<p>{&quot;敏感信息账号&quot;: &quot;suyu&quot;, &quot;敏感信息手机&quot;: &quot;13888888888&quot;，&quot;敏感信息qq&quot;: &quot;10010&quot;, &quot;敏感信息身份证&quot;: &quot;321222222222222222&quot;, &quot;敏感信息地址&quot;: &quot;网商路699号阿里巴巴园区&quot;}<\\/p>\n<\\/div>\n\n<div>\n    <form action="/core3" method="post">\n        <input type="text" name="message" placeholder="请输入敏感信息">\n        <input type="submit" value="提交">\n    <\\/form>\n    <p><\\/p>\n    <!--        <p>提示<\\/p>-->\n    <!--        <p>"txf" and "1"="1"<\\/p>-->\n    <!--        <p>"txf" and "1"="2"<\\/p>-->\n<\\/div>\n\n\n\n<\\/body>\n<\\/html>\n',
+        "resBody": '<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <title>Java漏洞靶场<\\/title>\n    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">\n<\\/head>\n<body>\n\n<div style="padding: 40px;\n    text-align: center;\n    background: #1abc9c;\n    color: white;">\n    <h1>Java漏洞演示平台<\\/h1>\n    <button class="ui inverted secondary basic button"><a style="color: white" href="home">回到首页<\\/a><\\/button>\n<\\/div>\n\n<div style="text-align: center;margin: 0px auto;\n     margin-top: 50px;">\n    您获取的结果为:<p>{&quot;敏感信息账号&quot;: &quot;suyu&quot;, &quot;敏感信息手机&quot;: &quot;13888888888&quot;,&quot;敏感信息qq&quot;: &quot;10010&quot;, &quot;敏感信息身份证&quot;: &quot;321222222222222222&quot;, &quot;敏感信息地址&quot;: &quot;网商路699号阿里巴巴园区&quot;}<\\/p>\n<\\/div>\n\n<div>\n    <form action="/core3" method="post">\n        <input type="text" name="message" placeholder="请输入敏感信息">\n        <input type="submit" value="提交">\n    <\\/form>\n    <p><\\/p>\n    <!--        <p>提示<\\/p>-->\n    <!--        <p>"txf" and "1"="1"<\\/p>-->\n    <!--        <p>"txf" and "1"="2"<\\/p>-->\n<\\/div>\n\n\n\n<\\/body>\n<\\/html>\n',
         "clientIp": "127.0.0.1",
         "reqBody": "",
         "resHeader": "SFRUUC8xLjEgMjAwCkRvbmdUYWk6djEuMS4zClZhcnk6T3JpZ2luClZhcnk6T3JpZ2luClZhcnk6T3JpZ2luCg==",
@@ -359,13 +359,12 @@ class AgentTestCase(APITestCase):
         register_data.update(kwargs)
         data = gzipdata(register_data)
         token, success = Token.objects.get_or_create(user=self.user)
-        response = self.client.post(
+        return self.client.post(
             "http://testserver/api/v1/agent/register",
             data=data,
             HTTP_CONTENT_ENCODING="gzip",
             content_type="application/json",
         )
-        return response
 
     def agent_heartbeat(self, **kwargs):
         heartbeatdata = {
@@ -379,40 +378,37 @@ class AgentTestCase(APITestCase):
             "type": 1,
         }
         heartbeatdata.update(kwargs)
-        data = gzipdata(heartbeatdata)
-        response = self.client.post(
+        gzipdata(heartbeatdata)
+        return self.client.post(
             "http://testserver/api/v1/report/upload",
             data=heartbeatdata,
             HTTP_CONTENT_ENCODING="gzip",
             content_type="application/json",
         )
-        return response
 
     def agent_method_pool(self, **kwargs):
         method_pool_data = METHODPOOL_JSON
         method_pool_data["detail"]["agentId"] = self.agent_id
         method_pool_data["detail"].update(kwargs)
         data = gzipdata(method_pool_data)
-        response = self.client.post(
+        return self.client.post(
             "http://testserver/api/v1/report/upload",
             data=data,
             HTTP_CONTENT_ENCODING="gzip",
             content_type="application/json",
         )
-        return response
 
     def agent_report(self, json, **kwargs):
         reportjson1 = json
         reportjson1["detail"]["agentId"] = self.agent_id
         reportjson1["detail"].update(kwargs)
         data = gzipdata(reportjson1)
-        response = self.client.post(
+        return self.client.post(
             "http://testserver/api/v1/report/upload",
             data=data,
             HTTP_CONTENT_ENCODING="gzip",
             content_type="application/json",
         )
-        return response
 
     def register_agent(self, **kwargs):
         register_data = REGISTER_JSON
@@ -428,7 +424,6 @@ class AgentTestCase(APITestCase):
 
     def tearDown(self):
         pass
-        #    IastAgent.objects.filter(pk=self.agent_id).delete()
 
 
 def gzipdata(data):

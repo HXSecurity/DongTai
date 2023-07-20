@@ -24,4 +24,4 @@ class VulDetailTestCase(APITestCase):
         self.user = User.objects.filter(pk=1).first()
         assert self.user is not None
         self.client.force_authenticate(user=self.user)
-        response = self.client.post("/api/v1/agent/thresholdv2")
+        self.client.post("/api/v1/agent/thresholdv2")

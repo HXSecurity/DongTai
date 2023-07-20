@@ -23,7 +23,7 @@ def export_strategy() -> list:
         .all()
     )
 
-    strategies_res = sorted(
+    return sorted(
         [
             model_to_dict(
                 i,
@@ -40,7 +40,6 @@ def export_strategy() -> list:
         ],
         key=lambda item: item["vul_type"],
     )
-    return strategies_res
 
 
 def export_hooktype(language_id: int) -> list:
@@ -58,7 +57,7 @@ def export_hooktype(language_id: int) -> list:
     )
 
     strategies = map(transform_hooktype, list(strategies))
-    strategies_res = sorted(
+    return sorted(
         [
             model_to_dict(
                 i,
@@ -75,7 +74,6 @@ def export_hooktype(language_id: int) -> list:
         ],
         key=lambda item: item["value"],
     )
-    return strategies_res
 
 
 class Command(BaseCommand):
@@ -103,7 +101,7 @@ class Command(BaseCommand):
                 os.path.join(POLICY_DIR, f"{k.lower()}_hooktype.json"), "w+"
             ) as fp:
                 json.dump(export_hooktype(language_id=v), fp, indent=4, sort_keys=True)
-        with open(os.path.join(POLICY_DIR, f"vul_strategy.json"), "w+") as fp:
+        with open(os.path.join(POLICY_DIR, "vul_strategy.json"), "w+") as fp:
             json.dump(export_strategy(), fp, indent=4, sort_keys=True)
 
         self.stdout.write(self.style.SUCCESS("Successfully export strategy ."))

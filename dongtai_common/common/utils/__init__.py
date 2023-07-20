@@ -33,7 +33,7 @@ def make_hash(obj):
     set.
 
     """
-    if isinstance(obj, set) or isinstance(obj, tuple) or isinstance(obj, list):
+    if isinstance(obj, list | set | tuple):
         return hash(tuple([make_hash(e) for e in obj]))
     elif isinstance(obj, str):
         return hash(tuple(ord(i) for i in obj))
@@ -72,7 +72,6 @@ def cached(
         # known bug: if the function returns None, we never save it in
         # the cache
         cache_key = make_hash((function.__module__ + function.__name__, args, kwargs))
-        # cache_key = function.__module__ + function.__name__
         cached_result = cache.get(cache_key, "Not such key")
         if random_range:
             cache_time = random.randint(*random_range)

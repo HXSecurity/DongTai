@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 import time
 import logging
 
@@ -112,10 +109,10 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             language_id = request.data.get("language_id")
             ignore_blacklist = request.data.get("ignore_blacklist", False)
             ignore_internal = request.data.get("ignore_internal", False)
-            tags = request.data.get("tags", [])
-            untags = request.data.get("untags", [])
-            command = request.data.get("command", "")
-            stack_blacklist = request.data.get("stack_blacklist", [])
+            request.data.get("tags", [])
+            request.data.get("untags", [])
+            request.data.get("command", "")
+            request.data.get("stack_blacklist", [])
 
             return (
                 rule_type,
@@ -233,10 +230,7 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             ).first()
         if not hook_type:
             return R.failure(msg=_("Failed to create strategy"))
-        if rule_target == "":
-            type_ = 4
-        else:
-            type_ = hook_type.type
+        type_ = 4 if rule_target == "" else hook_type.type
         strategy = self.create_strategy(
             rule_value,
             rule_source,

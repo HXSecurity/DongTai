@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
-# project: dongtai-webapi
 import requests
 from django.utils.translation import gettext_lazy as _
 

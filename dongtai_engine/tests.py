@@ -18,7 +18,7 @@ import unittest
 @unittest.skip("waiting for rebuild mock data")
 class CoreScanTestCase(AgentTestCase):
     def setUp(self):
-        res = download_if_not_exist(
+        download_if_not_exist(
             "https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/test_data/iast_agent_method_pool.sql",
             "/tmp/test_core_iast_agent_method_pool.sql",
         )

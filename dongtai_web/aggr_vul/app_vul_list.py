@@ -48,9 +48,7 @@ class GetAppVulsList(UserEndPoint):
             "data": [],
         }
         ser = AggregationArgsSerializer(data=request.data)
-        # user = request.user
         # 获取用户权限
-        # auth_user_info = auth_user_list_str(user=user)
         departments = request.user.get_relative_department()
         queryset = IastVulnerabilityModel.objects.filter(
             is_del=0, project_id__gt=0, project__department__in=departments
@@ -190,7 +188,7 @@ class GetAppVulsList(UserEndPoint):
         dast_vul_types_dict = defaultdict(
             list,
             {
-                k: list(set(map(lambda x: x["dastvul__vul_type"], g)))
+                k: list({x["dastvul__vul_type"] for x in g})
                 for k, g in groupby(dast_vul_types, key=lambda x: x["iastvul_id"])
             },
         )
@@ -222,7 +220,7 @@ class GetAppVulsList(UserEndPoint):
                 item["dastvul__vul_type"] = dast_vul_types_dict[item["id"]]
                 item["dastvul_count"] = dastvul_rel_count_res_dict[item["id"]]
                 item["dast_validation_status"] = (
-                    True if dastvul_rel_count_res_dict[item["id"]] else False
+                    bool(dastvul_rel_count_res_dict[item["id"]])
                 )
                 end["data"].append(item)
         # all Iast Vulnerability Status
@@ -262,9 +260,6 @@ def get_vul_list_from_elastic_search(
     project_version_id=0,
     order="",
 ):
-    # user_id_list = [user_id]
-    # auth_user_info = auth_user_list_str(user_id=user_id)
-    # user_id_list = auth_user_info['user_list']
     from dongtai_common.models.strategy import IastStrategyModel
     from dongtai_common.models.agent import IastAgent
 

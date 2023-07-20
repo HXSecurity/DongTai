@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-engine
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.strategy import IastStrategyModel
 from rest_framework import serializers

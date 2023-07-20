@@ -17,7 +17,7 @@ class VulEngineSearchTestCase(TestCase):
                 method_pool=mock_method_pool_data,
                 vul_method_signature="java.lang.Class.forName",
             )
-        except IndexError as e:
+        except IndexError:
             self.fail(
                 "engine.search show check method_pool data instead of raise IndexError."
             )

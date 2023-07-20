@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:sjh
-# software: PyCharm
-# project: lingzhi-webapi
 import logging
 
 from dongtai_common.endpoint import R
@@ -38,7 +35,6 @@ class ProjectVersionAdd(UserEndPoint):
     )
     def post(self, request):
         try:
-            # auth_users = self.get_auth_users(request.user)
             department = request.user.get_relative_department()
             result = version_modify(request.user, department, request.data)
             if result.get("status", "202") == "202":

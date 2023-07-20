@@ -176,6 +176,8 @@ class IastAssetVulnerabilityDocument(Document):
                 return IastVulAssetRelation.objects.filter(
                     asset__agent__id=related_instance.pk
                 ).all()
+            return None
+        return None
 
     @classmethod
     def search(cls, using=None, index=None):

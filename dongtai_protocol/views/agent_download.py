@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2021/1/14 下午7:17
-# software: PyCharm
-# project: lingzhi-agent-server
 import json
 import os
 import re
@@ -35,7 +32,7 @@ class JavaAgentDownload:
         t = threading.currentThread()
         self.user_id = user_id
         self.agent_file = "dongtai-agent.jar"
-        self.original_agent_path = f"/tmp/iast_cache/package"
+        self.original_agent_path = "/tmp/iast_cache/package"
         self.original_agent_file = f"/tmp/iast_cache/package/{self.agent_file}"
         self.user_target_path = f"/tmp/{os.getpid()}-{t.ident}-{user_id}"
         self.target_path = f"/tmp/{os.getpid()}-{t.ident}-{user_id}/iast_cache/package"
@@ -223,7 +220,7 @@ class PhpAgentDownload:
                 for line in fp.readlines():
                     try:
                         key, value = line.decode().split("=")
-                    except ValueError as e:
+                    except ValueError:
                         continue
                     if key == "iast.server.url":
                         print(base_url)
@@ -327,7 +324,7 @@ class AgentDownload(OpenApiEndPoint):
             return PhpAgentDownload(user_id)
         if language == "go":
             return GoAgentDownload(user_id)
-        return
+        return None
 
     @extend_schema(
         operation_id="agent download api",

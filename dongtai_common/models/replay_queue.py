@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
 # datetime: 2021/7/1 下午3:02
-# project: dongtai-engine
 from django.db import models
 
 from dongtai_common.models.agent import IastAgent

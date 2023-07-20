@@ -52,10 +52,7 @@ class DocumentsEndpoint(UserEndPoint):
                 language = ser.validated_data["language"]
         except ValidationError as e:
             return R.failure(data=e.detail)
-        if language:
-            q = Q(language=language)
-        else:
-            q = Q()
+        q = Q(language=language) if language else Q()
         _, documents = self.get_paginator(
             IastDocument.objects.filter(q).order_by("-weight").all(), page, page_size
         )

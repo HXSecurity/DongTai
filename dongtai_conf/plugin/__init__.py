@@ -91,7 +91,7 @@ def get_plugin_dict():
     for root, directories, files in walk(top=PLUGIN_ROOT_PATH, topdown=False):
         for file_ in files:
             if file_.startswith("plug_") and (
-                file_.endswith(".py") or file_.endswith(".so")
+                file_.endswith((".py", ".so"))
             ):
                 if file_.endswith(".py"):
                     packname = ".".join(

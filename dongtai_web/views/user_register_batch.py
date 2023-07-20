@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
-# project: dongtai-webapi
 
 import csv
 import logging
@@ -38,7 +36,7 @@ class UserRegisterEndPoint(SystemAdminEndPoint):
                 pwd=settings.EMAIL_PASSWORD,
                 ssl=settings.ENABLE_SSL,
             )
-        except Exception as e:
+        except Exception:
             self.email = None
             pass
 
@@ -86,7 +84,7 @@ class UserRegisterEndPoint(SystemAdminEndPoint):
 
     def read_user_data(self):
         header = True
-        users = list()
+        users = []
         try:
             with open("/tmp/user_register.csv", newline="", encoding="utf-8") as f:
                 reader = csv.reader(f)
@@ -122,8 +120,8 @@ class UserRegisterEndPoint(SystemAdminEndPoint):
             from_addr=settings.EMAIL_FROM_ADDR,
             to_addrs=[email_addr, settings.ADMIN_EMAIL],
             _subject="【洞态IAST】账号创建成功",
-            _content=f"""<h3>洞态IAST账号创建成功</h3><span>登陆地址：</span>https://iast.io/login<br></br>账号：{username}<br></br>密码：{password}<br></br><br/>登陆之后，请马上修改默认密码，然后重新登陆使用。<br/><br></br>官方网站：https://dongtai.io<br/><br></br><br>官方公众号：洞态公众号二维码</br><img width="400px" height="400px" src="{GONG_ZHONG_HAO_IMAGE}" ><hr></hr><h3>Welcome to DongTai IAST,
-    your account has been succefully created.</h3><span>Login URL:</span>https://iast.io/login<br></br>Account：{username}<br></br>Password：{password}<br></br><br/>Notice: You MUST change the password during the first time log in. Password can be changed at "Settings/Account".  After that, you can log in again.<br/>DongTai IAST Official Website: https://dongtai.io<br/><br></br><br>DongTai IAST WeChat Official Account: DongTai IAST's QR Code </br><img width="400px" height="400px" src="{GONG_ZHONG_HAO_IMAGE}">""",
+            _content=f"""<h3>洞态IAST账号创建成功</h3><span>登陆地址:</span>https://iast.io/login<br></br>账号:{username}<br></br>密码:{password}<br></br><br/>登陆之后,请马上修改默认密码,然后重新登陆使用。<br/><br></br>官方网站:https://dongtai.io<br/><br></br><br>官方公众号:洞态公众号二维码</br><img width="400px" height="400px" src="{GONG_ZHONG_HAO_IMAGE}" ><hr></hr><h3>Welcome to DongTai IAST,
+    your account has been succefully created.</h3><span>Login URL:</span>https://iast.io/login<br></br>Account:{username}<br></br>Password:{password}<br></br><br/>Notice: You MUST change the password during the first time log in. Password can be changed at "Settings/Account".  After that, you can log in again.<br/>DongTai IAST Official Website: https://dongtai.io<br/><br></br><br>DongTai IAST WeChat Official Account: DongTai IAST's QR Code </br><img width="400px" height="400px" src="{GONG_ZHONG_HAO_IMAGE}">""",
             content_type="html",
         )
         print(res)

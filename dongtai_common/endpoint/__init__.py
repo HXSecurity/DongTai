@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
 # datetime: 2021/7/16 下午4:45
-# project: dongtai
 import json
 import logging
 
@@ -49,7 +47,7 @@ logger = logging.getLogger("dongtai-core")
 
 class EndPoint(APIView):
     """
-    基于APIView封装的API入口处理类，需要针对请求进行统一处理的都通过该类实现
+    基于APIView封装的API入口处理类,需要针对请求进行统一处理的都通过该类实现
     """
 
     name = "api-v1"
@@ -281,9 +279,6 @@ class EndPoint(APIView):
         departments = reduce(ior, qss, qs)
         return IastAgent.objects.filter(bind_project__department__in=departments)
         # if isinstance(users, QuerySet):
-        #    return IastAgent.objects.filter(user__in=users)
-        # else:
-        #    return IastAgent.objects.filter(user=users)
 
     @staticmethod
     def get_auth_assets(users):
@@ -311,8 +306,7 @@ class EndPoint(APIView):
         for asset in auth_assets:
             auth_hash.append(asset["signature_value"])
         auth_hash = list(set(auth_hash))
-        queryset = AssetAggr.objects.filter(signature_value__in=auth_hash, is_del=0)
-        return queryset
+        return AssetAggr.objects.filter(signature_value__in=auth_hash, is_del=0)
 
     @staticmethod
     def get_auth_asset_vuls(assets):
@@ -337,14 +331,10 @@ class EndPoint(APIView):
 
     @staticmethod
     def get_auth_and_anonymous_agents(user):
-        #        query_user = []
         #        if user.is_active:
-        #            query_user = user
         #
         #        if query_user == []:
-        #            dt_range_user = User.objects.filter(username=const.USER_BUGENV).first()
         #            if dt_range_user:
-        #                query_user = dt_range_user
         return EndPoint.get_auth_agents_with_user(user)
 
 
@@ -387,15 +377,12 @@ class EngineApiEndPoint(EndPoint):
 
 class SystemAdminEndPoint(EndPoint):
     authentication_classes = (SessionAuthentication, TokenAuthentication)
-    # authentication_classes = (TokenAuthentication,)
     permission_classes = (UserPermission,)
-    # permission_classes = (SystemAdminPermission,)
 
 
 class TalentAdminEndPoint(EndPoint):
     authentication_classes = (SessionAuthentication, TokenAuthentication)
     permission_classes = (UserPermission,)
-    # permission_classes = (TalentAdminPermission,)
 
 
 class R:

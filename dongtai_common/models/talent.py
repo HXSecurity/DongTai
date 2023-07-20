@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2021/1/18 下午12:54
-# software: PyCharm
-# project: dongtai-models
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from dongtai_common.utils.settings import get_managed

@@ -25,7 +25,7 @@ def load_sink_strategy(user=None, language=None, scan_id=0) -> List[Dict]:
     :return:
     """
     logger.info("start load sink_strategy")
-    strategies = list()
+    strategies = []
     language_id = 0
     if language and language in LANGUAGE_MAP:
         language_id = LANGUAGE_MAP[language]

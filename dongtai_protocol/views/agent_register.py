@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/11/30 下午3:13
-# software: PyCharm
-# project: lingzhi-webapi
 import base64
 import logging
 import time
@@ -54,7 +51,6 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         is_audit = AgentRegisterEndPoint.get_is_audit()
         project_id = 0
         project_version_id = 0
-        exist_project = False
         if project:
             if project_version:
                 project_current_version = project_version
@@ -64,7 +60,6 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 ).first()
             project_id = project["id"]
             project_version_id = project_current_version.id
-            exist_project = True
         agent_id = AgentRegisterEndPoint.get_agent_id(
             token=token,
             project_name=project_name,
@@ -125,7 +120,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         server_ipaddresslist,
     ):
         """
-        注册server，并关联server至agent
+        注册server,并关联server至agent
         :param agent_id:
         :param hostname:
         :param network:
@@ -153,7 +148,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
 
         try:
             port = int(server_port)
-        except Exception as e:
+        except Exception:
             logger.error(
                 _("The server port does not exist, has been set to the default: 0")
             )
@@ -239,7 +234,6 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
     def post(self, request: Request):
         try:
             param = parse_data(request.read())
-            # param = request.data
             token = param.get("name")
             language = param.get("language")
             version = param.get("version")
@@ -258,7 +252,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             cluster_version = param.get("clusterVersion", "")
             # end by song
             pid = param.get("pid")
-            auto_create_project = param.get("autoCreateProject", 0)
+            param.get("autoCreateProject", 0)
             user = request.user
             version_name = param.get("projectVersion", "V1.0")
             version_name = version_name if version_name else "V1.0"
@@ -348,7 +342,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
 
             return R.success(data={"id": agent_id, "coreAutoStart": core_auto_start})
         except Exception as e:
-            logger.error("探针注册失败，原因：{reason}".format(reason=e), exc_info=True)
+            logger.error("探针注册失败,原因:{reason}".format(reason=e), exc_info=True)
             return R.failure(msg="探针注册失败")
 
     @staticmethod
@@ -424,7 +418,7 @@ def get_ipaddress(network: str):
                 res = i["ip"]
                 break
         return res
-    except KeyError as e:
+    except KeyError:
         return ""
     except Exception as e:
         logger.error(e, exc_info=True)

@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
-# project: dongtai-webapi
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 
@@ -49,16 +47,7 @@ class VulListEndPoint(MixinAuthEndPoint):
                 "description": format_lazy(
                     "{} : {}",
                     _("Sorted index"),
-                    ",".join(
-                        [
-                            "id",
-                            "hook_type_id",
-                            "url",
-                            "http_method",
-                            "top_stack",
-                            "bottom_stack",
-                        ]
-                    ),
+                    "id,hook_type_id,url,http_method,top_stack,bottom_stack",
                 ),
             },
         ],
@@ -73,7 +62,7 @@ class VulListEndPoint(MixinAuthEndPoint):
         agent_name = request.query_params.get("name", None)
         departmenttoken = request.query_params.get("departmenttoken", "")
         projectname = request.query_params.get("projectname", "")
-        department = request.user.get_relative_department()
+        request.user.get_relative_department()
         if not agent_name:
             return R.failure(msg=_("Please input agent name."))
         departmenttoken = departmenttoken.replace("GROUP", "")

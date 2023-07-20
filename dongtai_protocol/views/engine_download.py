@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/5/21 15:56
-# software: PyCharm
-# project: webapi
 
 import logging
 import os

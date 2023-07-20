@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/8/26 11:47
-# software: PyCharm
-# project: webapi
 import logging
 
 from dongtai_common.endpoint import R, UserEndPoint
@@ -38,7 +35,7 @@ class ScaDetailResponseDataSerializers(ScaSerializer):
 
     class Meta:
         model = ScaSerializer.Meta.model
-        fields = ScaSerializer.Meta.fields + ["vuls"]
+        fields = [*ScaSerializer.Meta.fields, "vuls"]
 
 
 _ResponseSerializer = get_response_serializer(ScaDetailResponseDataSerializers())
@@ -98,7 +95,7 @@ class ScaDetailView(UserEndPoint):
                     msg=_("Components do not exist or no permission to access")
                 )
             data = ScaSerializer(asset).data
-            data["vuls"] = list()
+            data["vuls"] = []
 
             search_query = ""
             if asset.agent.language == "JAVA":

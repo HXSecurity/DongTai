@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 import logging
 
 from dongtai_common.endpoint import UserEndPoint, R
@@ -53,7 +50,7 @@ class EngineHookRulesEndPoint(UserEndPoint):
             ser = _EngineHookRulesQuerySerializer(data=request.GET)
             try:
                 ser.is_valid(True)
-            except ValidationError as e:
+            except ValidationError:
                 return None, None, None, None, None, None
             rule_type = ser.validated_data.get("type", const.RULE_PROPAGATOR)
             rule_type = int(rule_type)
@@ -95,7 +92,7 @@ class EngineHookRulesEndPoint(UserEndPoint):
             return R.failure(msg=_("Parameter error"))
         rule_type, page, page_size, strategy_type, language_id, keyword = res
         if (
-            all(map(lambda x: x is not None, [rule_type, page, page_size, language_id]))
+            all((x is not None for x in [rule_type, page, page_size, language_id]))
             is False
         ):
             return R.failure(msg=_("Parameter error"))
@@ -103,7 +100,6 @@ class EngineHookRulesEndPoint(UserEndPoint):
             return R.failure(msg=_("Strategy type does not exist"))
 
         try:
-            user_id = request.user.id
             if rule_type == 4:
                 if strategy_type:
                     rule_type_queryset = IastStrategyModel.objects.filter(

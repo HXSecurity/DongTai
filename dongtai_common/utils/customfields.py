@@ -18,10 +18,7 @@ def trans_char_field(field, transdict):
         def wrapped(*args, **kwargs):
             value = func(*args, **kwargs)
             try:
-                if len(args) > 1:
-                    name = args[1]
-                else:
-                    name = kwargs["name"]
+                name = args[1] if len(args) > 1 else kwargs["name"]
             except BaseException as e:
                 print(e)
                 return value

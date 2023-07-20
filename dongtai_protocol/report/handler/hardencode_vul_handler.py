@@ -46,7 +46,7 @@ class HardEncodeVulHandler(IReportHandler):
         try:
             if ser.is_valid(True):
                 pass
-        except ValidationError as e:
+        except ValidationError:
             self.validated = False
             return
         self.validated = True
@@ -66,7 +66,7 @@ class HardEncodeVulHandler(IReportHandler):
             strategy_ids = [int(i) for i in scan_template.content.split(",")]
             if strategy.id not in strategy_ids:
                 return
-        project_agents = IastAgent.objects.filter(
+        IastAgent.objects.filter(
             project_version_id=self.agent.project_version_id
         )
         iast_vul = (

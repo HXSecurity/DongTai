@@ -37,11 +37,8 @@ logger = logging.getLogger("dongtai-webapi")
 
 
 def get_sca_token() -> str:
-    # profilefromdb = IastProfile.objects.filter(key='sca_token').values_list(
     #    'value', flat=True).first()
     # if profilefromdb:
-    #    return profilefromdb
-    # return ''
     from dongtai_conf.settings import SCA_TOKEN
 
     return SCA_TOKEN
@@ -73,7 +70,7 @@ def request_get_res_data_with_exception(
             retry_count += 1
         if response.status_code == HTTPStatus.TOO_MANY_REQUESTS:
             logger.warning(
-                f"Rate limte retry failed, please add retry count in config.ini or reduce concurrency in your celery worker about sca."
+                "Rate limte retry failed, please add retry count in config.ini or reduce concurrency in your celery worker about sca."
             )
             return Err("Rate Limit retry failed")
         res = data_extract_func(response)
@@ -84,7 +81,7 @@ def request_get_res_data_with_exception(
         return Err("ConnectionError with target server")
     except JSONDecodeError:
         logger.debug(f"content decode error :{response.content!r}")
-        logger.info(f"content decode error")
+        logger.info("content decode error")
         return Err("Content decode error")
     except RequestException as e:
         logger.error(e, exc_info=True)
@@ -175,7 +172,6 @@ def data_transfrom_package_vul_v3(
     response: Response,
 ) -> Result[Tuple[Tuple[Vul, ...], Tuple[str, ...], Tuple[str, ...]], str]:
     try:
-        # res_data = PackageVulResponse.schema().loads(response.content)
         res_data = PackageVulResponse.from_json(response.content)
         return Ok(
             (
@@ -225,8 +221,7 @@ def get_package_vul(
     )
     if isinstance(res, Err):
         return []
-    data = res.value
-    return data
+    return res.value
 
 
 @cached_decorator(
@@ -253,8 +248,7 @@ def get_package_vul_v2(
     )
     if isinstance(res, Err):
         return [], []
-    data = res.value
-    return data
+    return res.value
 
 
 @cached_decorator(
@@ -282,8 +276,7 @@ def get_package_vul_v3(
     )
     if isinstance(res, Err):
         return (), (), ()
-    data = res.value
-    return data
+    return res.value
 
 
 @cached_decorator(
@@ -310,8 +303,7 @@ def get_package(
     )
     if isinstance(res, Err):
         return []
-    data = res.value
-    return data
+    return res.value
 
 
 @cached_decorator(
@@ -338,8 +330,7 @@ def get_package_v2(
     )
     if isinstance(res, Err):
         return []
-    data = res.value
-    return data
+    return res.value
 
 
 @cached_decorator(
@@ -378,11 +369,9 @@ def get_package_v3(
         )
     if isinstance(res, Err):
         return []
-    data = res.value
-    return data
+    return res.value
 
 
-# from dongtai_web.dongtai_sca.utils import sca_scan_asset
 LICENSE_DICT = {
     "GPL-1.0-only": {
         "id": 52,
@@ -918,7 +907,7 @@ def get_license_list(license_list_str: str) -> List[Dict]:
         .values("identifier", "level_id", "level_desc")
         .all()
     )
-    selected_identifier = list(map(lambda x: x["identifier"], res))
+    selected_identifier = [x["identifier"] for x in res]
     for k in license_list:
         if k not in selected_identifier:
             res.append({"identifier": k, "level_id": 0, "level_desc": "允许商业集成"})
@@ -929,15 +918,8 @@ def get_license_list(license_list_str: str) -> List[Dict]:
 
 
 def get_license_list_v2(license_list: Tuple[str, ...]) -> List[Dict]:
-    filter_none: Callable[[Optional[Dict]], bool] = lambda x: x is not None
-    res = [LICENSE_DICT[license] for license in license_list if license in LICENSE_DICT]
-    return res
+    return [LICENSE_DICT[license] for license in license_list if license in LICENSE_DICT]
     # return [{
-    #    'identifier': "无",
-    #    "id": 1,
-    #    "level_id": 0,
-    #    "level_desc": "允许商业集成"
-    # }]
 
 
 # temporary remove to fit in cython complier
@@ -950,11 +932,11 @@ def get_highest_license(license_list: list) -> dict:
 
 
 def sha_1(raw):
-    sha1_str = sha1(raw.encode("utf-8"), usedforsecurity=False).hexdigest()
-    return sha1_str
+    return sha1(raw.encode("utf-8"), usedforsecurity=False).hexdigest()
 
 
 from dataclasses import dataclass, field, asdict
+import contextlib
 
 
 @dataclass
@@ -1137,7 +1119,7 @@ def update_one_sca(
     if not package_signature:
         package_signature = sha_1(package_signature)
     if not SCA_SETUP:
-        logger.warning(f"SCA_TOKEN not setup !")
+        logger.warning("SCA_TOKEN not setup !")
         asset = Asset()
         new_level = IastVulLevel.objects.get(name="info")
 
@@ -1267,7 +1249,7 @@ def stat_severity(serveritys: list) -> dict:
 
 def stat_severity_v2(vul_infos: List[VulInfo]) -> dict:
     res = defaultdict(int)
-    severitys = list(map(lambda x: x.severity, vul_infos))
+    severitys = [x.severity for x in vul_infos]
     for serverity in severitys:
         if serverity.lower() == "moderate":
             res["medium"] += 1
@@ -1305,7 +1287,7 @@ def get_nearest_version(version_str: str, version_str_list: List[str]) -> str:
     return min(
         filter(
             lambda x: x >= DongTaiScaVersion(version_str),
-            map(lambda x: DongTaiScaVersion(x), version_str_list),
+            (DongTaiScaVersion(x) for x in version_str_list),
         ),
         default=DongTaiScaVersion(""),
     )._version
@@ -1313,7 +1295,7 @@ def get_nearest_version(version_str: str, version_str_list: List[str]) -> str:
 
 def get_latest_version(version_str_list: List[str]) -> str:
     return max(
-        map(lambda x: DongTaiScaVersion(x), version_str_list),
+        (DongTaiScaVersion(x) for x in version_str_list),
         default=DongTaiScaVersion(""),
     )._version
 
@@ -1325,7 +1307,7 @@ def get_cve_numbers(cve: str = "", cwe: list = [], cnvd: str = "", cnnvd: str = 
 def get_vul_serial(
     title: str = "", cve: str = "", cwe: list = [], cnvd: str = "", cnnvd: str = ""
 ) -> str:
-    return "|".join([title, cve, cnvd, cnnvd] + cwe)
+    return "|".join([title, cve, cnvd, cnnvd, *cwe])
 
 
 def get_vul_level_dict() -> defaultdict:
@@ -1389,12 +1371,7 @@ def get_description(descriptions: List[Dict]) -> str:
 
 
 def get_vul_path(base_aql: str, vul_package_path: List[Dict] = []) -> List[str]:
-    return list(
-        map(
-            lambda x: get_package_aql(x["name"], x["ecosystem"], x["version"]),
-            vul_package_path,
-        )
-    ) + [base_aql]
+    return [*[get_package_aql(x["name"], x["ecosystem"], x["version"]) for x in vul_package_path], base_aql]
 
 
 def get_asset_level(res: dict) -> int:
@@ -1422,7 +1399,7 @@ def get_title(title_zh: str, title_en: str) -> str:
 def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str, version: str):
     aql = get_package_aql(package_name, ecosystem, version)
     package_vuls, safe_version = get_package_vul_v2(aql)
-    res = stat_severity(list(map(lambda x: x["severity"], package_vuls)))
+    res = stat_severity([x["severity"] for x in package_vuls])
     timestamp = int(time.time())
     package_language = get_ecosystem_language_dict()[ecosystem]
     Asset.objects.filter(pk=asset_id).update(level_id=get_asset_level(res))
@@ -1444,12 +1421,9 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str, version: st
         vul_level = get_vul_level_dict()[vul["severity"].lower()]
         detail = get_detail(vul["description"])
         # still need , save to asset_vul_relation
-        # nearest_fixed_version = get_nearest_version(version, vul['fixed'])
         # save to asset latest_version
-        # latest_version = get_latest_version(vul['safe_version'])
 
         # where to place? save_version save to asset
-        # package_safe_version_list = vul['safe_version']
         # effected save to asset_vul_relation
         package_effected_version_list = vul["effected"]
         package_fixed_version_list = vul["fixed"]
@@ -1473,13 +1447,10 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str, version: st
                 "vul_name": get_title(vul["vul_title"], vul["vul_title_en"]),
                 "vul_detail": detail,
                 "aql": aql,
-                # package_hash=vul_package_hash, #???
                 "package_version": version,
-                # package_latest_version=latest_version,
                 "package_language": package_language,
                 "have_article": 1 if vul["references"] else 0,
                 "have_poc": 1 if vul["poc"] else 0,
-                # cve_id=cve_relation.id,
                 "vul_cve_nums": cve_numbers,
                 "vul_serial": vul_serial,
                 "vul_publish_time": vul["publish_time"],
@@ -1494,7 +1465,7 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str, version: st
             },
         )
         key: str = asset_vul.sid + aql
-        try:
+        with contextlib.suppress(IntegrityError):
             IastAssetVulRelationMetaData.objects.update_or_create(
                 vul_asset_key=key,
                 **{
@@ -1504,8 +1475,7 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str, version: st
                     "nearest_fixed_version": nearest_fixed_version,
                 },
             )
-        except IntegrityError as e:
-            pass
+
         asset_vul_relation, _ = IastVulAssetRelation.objects.update_or_create(
             asset_vul_id=asset_vul.id,
             asset_id=asset_id,
@@ -1523,7 +1493,7 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str, version: st
                     IastAssetVulType.objects.create(
                         cwe_id=cwe_id, name=get_cwe_name(cwe_id)
                     )
-                except IntegrityError as e:
+                except IntegrityError:
                     logger.debug("unique error stack: ", exc_info=True)
                     logger.info("unique error cause by concurrency insert,ignore it")
             type_ = IastAssetVulType.objects.filter(cwe_id=cwe_id).first()

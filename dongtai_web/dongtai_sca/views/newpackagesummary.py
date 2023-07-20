@@ -64,9 +64,7 @@ def item_data_transfrom(
 
 
 def data_transfrom(dict_list, function, key, new_key):
-    return list(
-        map(lambda x: item_data_transfrom(x, function, key, new_key), dict_list)
-    )
+    return [item_data_transfrom(x, function, key, new_key) for x in dict_list]
 
 
 class PackageSummaryArgsSerializer(serializers.Serializer):

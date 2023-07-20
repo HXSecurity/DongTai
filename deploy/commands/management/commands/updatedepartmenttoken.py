@@ -7,7 +7,6 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         pass
-        # parser.add_argument('update', nargs='+', type=int)
 
     def handle(self, *args, **options):
         from dongtai_web.projecttemplate.update_department_data import (

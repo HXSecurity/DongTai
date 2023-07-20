@@ -39,7 +39,7 @@ def checkenginestaus():
             },
         ],
     }
-    # 读取数据库中的redis键，然后查找队列大小
+    # 读取数据库中的redis键,然后查找队列大小
     from dongtai_common.models.engine_monitoring_indicators import (
         IastEnginMonitoringIndicators,
     )
@@ -57,7 +57,7 @@ def checkenginestaus():
             )
 
             monitor_models = monitor_models.values("key", "name", "name_en", "name_zh")
-            mock_data["engine_monitoring_indicators"] = list()
+            mock_data["engine_monitoring_indicators"] = []
             for monitor_model in monitor_models:
                 mock_data["engine_monitoring_indicators"].append(
                     {

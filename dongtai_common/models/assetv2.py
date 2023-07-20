@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/8/20 15:10
-# software: PyCharm
-# project: dongtai-models
 
 import time
 from django.db import models
@@ -43,7 +40,6 @@ class AssetV2(models.Model):
         Department, models.DO_NOTHING, blank=True, default=-1
     )
     language_id = models.IntegerField(default=1, blank=True)
-    # is_reconized = models.IntegerField(blank=True, null=True)
     aql = models.ForeignKey(
         "AssetV2Global",
         to_field="aql",

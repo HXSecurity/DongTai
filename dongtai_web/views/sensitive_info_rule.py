@@ -14,15 +14,15 @@ from dongtai_web.views.utils.commonview import (
     BatchStatusUpdateSerializerView,
     AllStatusUpdateSerializerView,
 )
+import contextlib
 
 try:
     import re2 as re
-except ImportError as e:
-    import re
-try:
-    import jq
 except ImportError:
-    pass
+    import re
+with contextlib.suppress(ImportError):
+    import jq
+
 from dongtai_common.models.sensitive_info import IastPatternType, IastSensitiveInfoRule
 from django.db.models import Q
 import time
@@ -216,14 +216,14 @@ class SensitiveInfoRuleViewSet(UserEndPoint, viewsets.ViewSet):
         ser = SensitiveInfoRuleCreateSerializer(data=request.data)
         try:
             if ser.is_valid(True):
-                strategy_id = ser.validated_data["strategy_id"]
-                pattern_type_id = ser.validated_data["pattern_type_id"]
-                pattern = ser.validated_data["pattern"]
-                status = ser.validated_data["status"]
+                ser.validated_data["strategy_id"]
+                ser.validated_data["pattern_type_id"]
+                ser.validated_data["pattern"]
+                ser.validated_data["status"]
         except ValidationError as e:
             return R.failure(data=e.detail)
         users = self.get_auth_users(request.user)
-        obj = IastSensitiveInfoRule.objects.filter(pk=pk, user__in=users).update(
+        IastSensitiveInfoRule.objects.filter(pk=pk, user__in=users).update(
             **ser.validated_data, latest_time=time.time()
         )
         return R.success(msg=_("update success"))
@@ -293,7 +293,7 @@ class SensitiveInfoPatternValidationView(UserEndPoint):
 
 def regexcompile(pattern):
     try:
-        regex = re.compile(pattern)
+        re.compile(pattern)
     except Exception as e:
         logger.debug(e, exc_info=e)
         logger.info("error:%s pattern: %s ", e, pattern)
@@ -303,7 +303,7 @@ def regexcompile(pattern):
 
 def jqcompile(pattern):
     try:
-        regex = jq.compile(pattern)
+        jq.compile(pattern)
     except Exception as e:
         logger.debug(e, exc_info=e)
         logger.info("error:%s pattern: %s ", e, pattern)

@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 import json
 import logging
 
@@ -56,7 +53,7 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
                 size=page_size * 5,
             )
             if method_pool_ids is None:
-                return R.success(msg=_("Not queried"), data=list(), latest=0)
+                return R.success(msg=_("Not queried"), data=[], latest=0)
 
             return R.success(
                 data=self.get_result_data(
@@ -69,7 +66,7 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
                 ),
                 latest=method_pool_ids[-1],
             )
-        except Exception as e:
+        except Exception:
             return R.failure(msg=_("Acquisition fail"))
 
     @staticmethod
@@ -124,7 +121,7 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
         if queryset.values("id").exists() is False:
             return None
 
-        matches = list()
+        matches = []
         while True:
             logger.debug(_("Searching, current {} page").format(index + 1))
             page = queryset.values("id", "method_pool")[
@@ -197,7 +194,7 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
         sink_set,
         propagator_set,
     ):
-        data = list()
+        data = []
 
         method_pools = MethodPool.objects.filter(id__in=method_pool_ids)
         if method_pools.values("id").exists() is False:

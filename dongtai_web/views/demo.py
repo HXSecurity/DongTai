@@ -22,5 +22,4 @@ class Demo(UserEndPoint):
     def get(self, request):
         user = User.objects.filter(username="demo").first()
         login(request, user)
-        res = HttpResponseRedirect(settings.DOMAIN + "project/projectManage")
-        return res
+        return HttpResponseRedirect(settings.DOMAIN + "project/projectManage")

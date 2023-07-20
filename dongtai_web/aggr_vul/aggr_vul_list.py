@@ -135,7 +135,7 @@ class GetAggregationVulList(UserEndPoint):
                 if ser.validated_data.get("language_str", ""):
                     language_str = ser.validated_data.get("language_str", "")
                     type_list = language_str.split(",")
-                    # 安全校验，强制转int
+                    # 安全校验,强制转int
                     type_list = list(map(int, type_list))
                     type_int_list = list(map(str, type_list))
                     lang_str = []
@@ -201,7 +201,7 @@ class GetAggregationVulList(UserEndPoint):
             return R.failure(data=e.detail)
         departments = list(request.user.get_relative_department())
         department_filter_sql = " and {}.department_id in ({})".format(
-            "asset", ",".join(map(lambda x: str(x.id), departments))
+            "asset", ",".join((str(x.id) for x in departments))
         )
         query_condition = query_condition + department_filter_sql
 
@@ -225,7 +225,7 @@ class GetAggregationVulList(UserEndPoint):
                 + query_condition
             )
 
-        # mysql 全文索引下，count不准确，等于全部数量
+        # mysql 全文索引下,count不准确,等于全部数量
         new_order = order_type + " " + order_type_desc
         if order_type == "vul.level_id":
             if order_type_desc == "desc":
@@ -260,7 +260,6 @@ class GetAggregationVulList(UserEndPoint):
 
         if all_vul:
             vul_ids = []
-            # print(all_vul.query.__str__())
             for item in all_vul:
                 # 拼写 漏洞类型
                 # 拼写 漏洞编号
@@ -286,9 +285,7 @@ class GetAggregationVulList(UserEndPoint):
                     "package_safe_version": item.package_safe_version,
                     "package_latest_version": item.package_latest_version,
                     "package_language": item.package_language,
-                    # "type_id": item.type_id,
                     "availability_str": availability_str,
-                    # "type_name": item.type_name,
                 }
                 if cur_data["vul_cve_nums"]:
                     cwe = get_cve_from_cve_nums(cur_data["vul_cve_nums"])
@@ -381,9 +378,8 @@ def get_vul_list_from_elastic_search(
     project_version_id=0,
     order={},
 ):
-    user_id_list = [user_id]
     auth_user_info = auth_user_list_str(user_id=user_id)
-    user_id_list = auth_user_info["user_list"]
+    auth_user_info["user_list"]
     user = User.objects.filter(pk=user_id).first()
     departments = user.get_relative_department()
     department_ids = [department.id for department in departments]
@@ -451,10 +447,7 @@ def get_vul_list_from_elastic_search(
             opt = ""
             if isinstance(info, dict):
                 field = list(info.keys())[0]
-                if info[field]["order"] == "desc":
-                    opt = "lt"
-                else:
-                    opt = "gt"
+                opt = "lt" if info[field]["order"] == "desc" else "gt"
             if isinstance(info, str):
                 if info.startswith("-"):
                     field = info[1::]
@@ -474,7 +467,6 @@ def get_vul_list_from_elastic_search(
                 minimum_should_match=1,
             )
         )
-        # extra_dict['search_after'] = after_key
     a = Q("bool", must=must_query)
     res = (
         IastAssetVulnerabilityDocument.search()
@@ -534,11 +526,10 @@ def get_vul_list_from_elastic_search(
             "asset_vul_relation_is_del",
             "id",
         ]
-        #        filter(lambda x: x != '@timestamp', vuls[0].keys())
         AssetVul = namedtuple("AssetVul", keys)
         for i in vuls:
             i["vul_cve_nums"] = json.loads(i["vul_cve_nums"])
-            if "@timestamp" in i.keys():
+            if "@timestamp" in i:
                 del i["@timestamp"]
             for key in keys:
                 if key not in i.keys():

@@ -218,7 +218,7 @@ class DongTaiVersionTestCase(TestCase):
         assert nrversion == "5.1.3.RELEASE"
 
     def test_latest_version(self):
-        assert "5.3.19" == get_latest_version(self.version_list)
+        assert get_latest_version(self.version_list) == "5.3.19"
 
     def test_nearest_version_1(self):
         version = "0.0.1"
@@ -258,7 +258,7 @@ class SCAScanV1TestCase(AgentTestCase):
             " org.springframework:spring-web.jar ",
             "SHA-1",
         )
-        asset = Asset.objects.filter(
+        Asset.objects.filter(
             agent_id=self.agent_id,
             signature_value="9b7860a324f4b2f2bc31bcdd99c7ee51fe32e0c8",
         ).first()
@@ -403,15 +403,7 @@ class SCAScanV2TestCase(AgentTestCase):
             "com.amazon.redshift:redshift-jdbc42.jar",
             "SHA-1",
         )
-        # asset = Asset.objects.filter(
-        #    agent_id=self.agent_id,
-        #    signature_value="6f32a6a4af4820e4240a269a0b1a3217e43788e2",
         # ).first()
         # for asset_rel in asset.iastvulassetrelation_set.all():
         #    if asset_rel.asset_vul.vul_cve_nums == {
-        #            'cve': 'CVE-2022-41828',
-        #            'cwe': [],
-        #            'cnvd': '',
-        #            'cnnvd': ''
         #    }:
-        #        self.assertEqual(asset_rel.asset_vul.level_id, 1)

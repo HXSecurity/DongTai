@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/8/4 16:47
-# software: PyCharm
-# project: webapi
 import logging
 import time
 
@@ -47,7 +44,7 @@ class EngineUpdateEndPoint(OpenApiEndPoint):
                 agent.save()
                 return R.success(msg="安装完成")
             else:
-                return R.failure(msg="引擎正在被安装或卸载，请稍后再试")
+                return R.failure(msg="引擎正在被安装或卸载,请稍后再试")
         else:
             if agent.control == 1 and agent.is_control == 0:
                 agent.is_control = 1
@@ -136,5 +133,4 @@ class EngineAction(OpenApiEndPoint):
             result_cmd = agent_status.get(
                 agent.control, {"key": "无下发指令", "value": "notcmd"}
             ).get("value")
-            # print(result_cmd)
             return R.success(data=result_cmd)

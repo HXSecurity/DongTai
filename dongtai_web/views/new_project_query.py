@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:sjh
-# software: PyCharm
-# project: lingzhi-webapi
 import logging
 
 from django.db.models import Q

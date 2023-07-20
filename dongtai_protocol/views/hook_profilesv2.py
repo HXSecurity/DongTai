@@ -9,7 +9,7 @@ from dongtai_common.utils import const
 from dongtai_common.endpoint import OpenApiEndPoint, R
 from django.db.models import Prefetch, OuterRef, Subquery
 
-# note: 当前依赖必须保留，否则无法通过hooktype反向查找策略
+# note: 当前依赖必须保留,否则无法通过hooktype反向查找策略
 from dongtai_protocol.api_schema import DongTaiParameter
 from dongtai_protocol.views.hook_profiles import (
     HookProfilesEndPoint,
@@ -28,12 +28,12 @@ class HookProfilesV2EndPoint(HookProfilesEndPoint):
 
     @staticmethod
     def get_profiles(user=None, language_id=JAVA):
-        profiles = list()
+        profiles = []
         hook_types_a = HookType.objects.filter(
             language_id=language_id, enable=const.HOOK_TYPE_ENABLE, type__in=(1, 2, 3)
         )
         hook_types = IastStrategyModel.objects.filter(
-            Q(state__in=["enable"], user_id__in=set([1, user.id]) if user else [1])
+            Q(state__in=["enable"], user_id__in={1, user.id} if user else [1])
         ).order_by("id")
         allstrategies = list(
             HookStrategy.objects.filter(
@@ -53,7 +53,6 @@ class HookProfilesV2EndPoint(HookProfilesEndPoint):
                 other_strategies_dict[strategy["hooktype_id"]].append(strategy)
 
         for hook_type in list(hook_types) + list(hook_types_a):
-            strategy_details = list()
             if isinstance(hook_type, IastStrategyModel):
                 hook_type = convert_strategy(hook_type)
                 strategies = sink_strategies_dict[hook_type.id]

@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/11/27 下午4:31
-# software: PyCharm
-# project: dongtai-models
 import time
 
 from django.db import models

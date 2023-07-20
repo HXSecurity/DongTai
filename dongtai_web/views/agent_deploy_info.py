@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/6/3 11:36
-# software: PyCharm
-# project: webapi
 from dongtai_common.endpoint import UserEndPoint, R
 from dongtai_common.models.deploy import IastDeployDesc
 from django.utils.translation import gettext_lazy as _

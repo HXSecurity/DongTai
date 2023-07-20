@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/5/21 15:55
-# software: PyCharm
-# project: webapi
 from dongtai_web.systemmonitor.urls import urlpatterns as systemmonitor_urls
 from dongtai_web.versioncontrol.urls import urlpatterns as versioncontrol_urls
 from dongtai_web.dongtai_sca.urls import urlpatterns as sca_urls
@@ -168,7 +165,6 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path("vuln/summary", VulSummary.as_view()),
     path("vuln/summary_type", VulSummaryType.as_view()),
     path("vuln/summary_project", VulSummaryProject.as_view()),
-    #    path('vuln/list', VulSideBarList.as_view()), Departured
     path("vuln/<int:id>", VulDetail.as_view()),
     path("vuln/status", VulStatus.as_view()),
     path("vuln/delete/<int:id>", VulDelete.as_view()),
@@ -177,7 +173,6 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path("plugin/vuln/count", VulCountForPluginEndPoint.as_view()),
     path("scas", ScaList.as_view()),
     path("sca/summary", ScaSummary.as_view()),
-    #    path('sca/list', ScaSidebarList.as_view()), Departured
     path("sca/<int:id>", ScaDetailView.as_view()),
     path("strategys", StrategysEndpoint.as_view()),
     path("strategy/<int:pk>", StrategyEndpoint.as_view()),
@@ -190,20 +185,14 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path("strategy/user/list", StrategyList.as_view()),
     path("agent/<int:id_>", Agent.as_view()),
     path("agent/deploy", AgentDeploy.as_view()),
-    #    path('agent/deploy/doc', AgentDeployDesc.as_view()), Departured
-    #    path('agent/deploy/info', AgentDeployInfo.as_view()),
-    #    path('agent/deploy/submit', AgentDeploySave.as_view()),
     path("agents", AgentList.as_view()),
     path("agent/<int:pk>/delete", AgentDeleteEndPoint.as_view()),
     path("agents/user", UserAgentList.as_view()),
     path("agent/install", AgentInstall.as_view()),
     path("agent/uninstall", AgentUninstall.as_view()),
-    # path('agent/upgrade/online', AgentUpgradeOnline.as_view()),
-    #    path('agent/upgrade/offline', AgentUpgradeOffline.as_view()),
     path("agent/status/update", AgentStatusUpdate.as_view()),
     path("agent/start", AgentStart.as_view()),
     path("agent/stop", AgentStop.as_view()),
-    #    path('agents/search', AgentSearch.as_view()),
     path("agents/delete", AgentsDeleteEndPoint.as_view()),
     path("agent/alias/modified", AgentAliasModified.as_view()),
     path("openapi", OpenApiEndpoint.as_view()),
@@ -234,7 +223,6 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path("message/unread_count", MessagesNewEndpoint.as_view()),
     path("message/delete", MessagesDelEndpoint.as_view()),
     path("vul_levels", VulLevelList.as_view()),
-    #    path('message/send', MessagesSendEndpoint.as_view()),
     path(
         "sensitive_info_rule",
         SensitiveInfoRuleViewSet.as_view({"get": "list", "post": "create"}),

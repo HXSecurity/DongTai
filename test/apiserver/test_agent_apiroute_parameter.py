@@ -40,7 +40,7 @@ data = {
 class ApiRouteParameterCheckTestCase(AgentTestCase):
     def test_agent_api_upload(self):
         data["detail"]["agentId"] = self.agent_id
-        res = self.agent_report(data, agentId=self.agent_id)
+        self.agent_report(data, agentId=self.agent_id)
         api_routes = list(
             IastApiRoute.objects.filter(
                 path="/request-mapping/path/{value1}/{value2}"

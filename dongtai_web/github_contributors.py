@@ -63,7 +63,7 @@ def _get_github_user(url_list=URL_LIST, suffix="pulls?state=all"):
             is_over_limit = True
             break
         res = json.loads(resp.content)
-        repo_users = list(map(lambda x: x["user"], res))
+        repo_users = [x["user"] for x in res]
         repo_users_dic = {_["id"]: _ for _ in repo_users}
         for user in repo_users:
             if user_count.get(user["id"], None):

@@ -130,7 +130,6 @@ class IastVulnerabilityDocument(Document):
     status_id = fields.IntegerField(attr="status_id")
     level_id = fields.IntegerField(attr="level_id")
     bind_project_id = fields.IntegerField(attr="agent.bind_project_id")
-    # language = fields.IntegerField(attr="agent.language")
     project_version_id = fields.IntegerField(attr="agent.project_version_id")
     project_name = fields.IntegerField(attr="agent.bind_project.name")
     token = fields.IntegerField(attr="agent.token")
@@ -158,6 +157,8 @@ class IastVulnerabilityDocument(Document):
         if isinstance(related_instance, IastAgent):
             if related_instance.bind_project_id < 0:
                 return related_instance.iastvulnerabilitymodel_set.all()
+            return None
+        return None
 
     class Index:
         name = VULNERABILITY_INDEX

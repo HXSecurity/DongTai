@@ -1,11 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2021/1/12 下午6:59
-# software: PyCharm
-# project: lingzhi-agent-server
 
-# 报告接口：上传报告
 from django.urls import include, path
 
 from dongtai_protocol.views.agent_download import AgentDownload
@@ -54,7 +50,7 @@ urlpatterns = [
     path("properties", PropertiesEndPoint.as_view()),
     path("report/upload", ReportUploadEndPoint.as_view()),
     path("engine/action", EngineAction.as_view()),
-    # todo 增加重放请求获取接口，用于后续逻辑漏洞/漏洞验证等功能，暂时先不实现
+    # todo 增加重放请求获取接口,用于后续逻辑漏洞/漏洞验证等功能,暂时先不实现
     path("health", HealthView.as_view()),
     path("oss/health", OSSHealthView.as_view()),
     path(

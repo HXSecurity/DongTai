@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
 # datetime: 2021/7/16 下午12:17
-# project: dongtai-engine
 from dongtai_common.utils import const
 
 
@@ -28,7 +26,7 @@ class Replay:
     @staticmethod
     def replay_failed(replay, timestamp):
         """
-        当重放请求处理失败时，执行该方法
+        当重放请求处理失败时,执行该方法
         """
         replay.update_time = timestamp
         replay.verify_time = timestamp

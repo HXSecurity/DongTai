@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 
 from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint
@@ -58,7 +55,6 @@ class ProjectDetail(UserEndPoint):
         response_schema=_ResponseSerializer,
     )
     def get(self, request, id):
-        # auth_users = self.get_auth_users(request.user)
         department = request.user.get_relative_department()
         project = IastProject.objects.filter(department__in=department, id=id).first()
 

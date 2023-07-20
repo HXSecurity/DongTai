@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 import time
 from dongtai_common.models.heartbeat import IastHeartbeat
 
@@ -15,8 +12,8 @@ from collections import defaultdict
 
 
 class AgentSerializer(serializers.ModelSerializer):
-    USER_MAP = dict()
-    SERVER_MAP = dict()
+    USER_MAP = {}
+    SERVER_MAP = {}
     system_load = serializers.SerializerMethodField()
     running_status = serializers.SerializerMethodField()
     server = serializers.SerializerMethodField()
@@ -56,7 +53,7 @@ class AgentSerializer(serializers.ModelSerializer):
     def get_latest_heartbeat(self, obj):
         try:
             latest_heartbeat = getattr(obj, "latest_heartbeat")
-        except Exception as heartbeat_not_found:
+        except Exception:
             latest_heartbeat = (
                 obj.heartbeats.values("dt", "cpu").order_by("-dt").first()
             )

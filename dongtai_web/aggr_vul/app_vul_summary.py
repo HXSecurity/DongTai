@@ -37,7 +37,6 @@ def get_annotate_cache_data(department: Department):
 def get_annotate_data(
     department: Department, bind_project_id=int, project_version_id=int
 ) -> dict:
-    # auth_user_info = auth_user_list_str(user_id=user_id)
     # cache_q = Q(is_del=0, agent__bind_project_id__gt=0,
     #             agent__user_id__in=auth_user_info['user_list'])
     cache_q = Q(is_del=0, project_id__gt=0, project__department__in=department)
@@ -113,8 +112,6 @@ class GetAppVulsSummary(UserEndPoint):
         :return:
         """
 
-        # user = request.user
-        # user_id = user.id
         department = request.user.get_relative_department()
 
         ser = AggregationArgsSerializer(data=request.data)
@@ -157,9 +154,6 @@ def get_annotate_data_es(department: Department, bind_project_id, project_versio
     from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
     from dongtai_common.models.vul_level import IastVulLevel
 
-    # user_id_list = [user_id]
-    # auth_user_info = auth_user_list_str(user_id=user_id)
-    # user_id_list = auth_user_info['user_list']
     strategy_ids = list(IastStrategyModel.objects.all().values_list("id", flat=True))
 
     must_query = [
@@ -189,7 +183,7 @@ def get_annotate_data_es(department: Department, bind_project_id, project_versio
         Elasticsearch(settings.ELASTICSEARCH_DSL["default"]["hosts"])
     ).execute()
     dic = {}
-    for key in buckets.keys():
+    for key in buckets:
         origin_buckets = res.aggs[key].to_dict()["buckets"]
         for i in origin_buckets:
             i["id"] = i["key"]

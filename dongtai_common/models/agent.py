@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/11/30 下午5:29
-# software: PyCharm
-# project: dongtai-models
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -98,5 +95,3 @@ class IastAgentEvent(models.Model):
 # class IastAgent(models.Model):
 #
 #    class Meta:
-#        managed = get_managed()
-#        db_table = 'iast_agent'

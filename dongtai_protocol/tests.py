@@ -52,8 +52,7 @@ def download_file(url, filepath):
 def download_if_not_exist(url: str, path: str) -> Result:
     if exists(path):
         return Ok()
-    res = download_file(url, path)
-    return res
+    return download_file(url, path)
 
 
 class AgentHeartBeatTestCase(AgentTestCase):
@@ -83,7 +82,7 @@ class AgentHeartBeatTestCase(AgentTestCase):
                 ),
             )
         )
-        replay_queryset = IastReplayQueue.objects.values(
+        IastReplayQueue.objects.values(
             "id",
             "relation_id",
             "uri",
@@ -107,11 +106,11 @@ class AgentHeartBeatTestCase(AgentTestCase):
         res2 = handler.get_result()
         res3 = handler.get_result()
         set1, set2, set3 = map(get_replay_id_set, [res1, res2, res3])
-        assert set3.intersection(set1) == set([])
+        assert set3.intersection(set1) == set()
 
 
 def get_replay_id_set(replay_list: list) -> set:
-    return set([i["id"] for i in replay_list])
+    return {i["id"] for i in replay_list}
 
 
 @unittest.skip("waiting for rebuild mock data")

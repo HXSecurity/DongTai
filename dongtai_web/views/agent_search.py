@@ -53,13 +53,7 @@ class AgentSearch(AnonymousAndUserEndPoint):
         searchfields_ = {k: v for k, v in searchfields.items() if k in fields}
         q = reduce(
             lambda x, y: x | y,
-            map(
-                lambda x: Q(**x),
-                map(
-                    lambda kv_pair: {"__".join([kv_pair[0], "icontains"]): kv_pair[1]},
-                    searchfields_.items(),
-                ),
-            ),
+            (Q(**x) for x in ({"__".join([kv_pair[0], "icontains"]): kv_pair[1]} for kv_pair in searchfields_.items())),
             Q(),
         )
         agents = self.get_auth_and_anonymous_agents(request.user)
@@ -85,11 +79,11 @@ class AgentSearch(AnonymousAndUserEndPoint):
             server = servers.get(agent["server_id"], None)
             if server:
                 for k, v in server.items():
-                    item["_".join(["server", k])] = v
+                    item[f"server_{k}"] = v
             heartbeat = heartbeats.get(agent["id"], None)
             if heartbeat:
                 for k, v in heartbeat.items():
-                    item["_".join(["heartbeat", k])] = v
+                    item[f"heartbeat_{k}"] = v
             relations.append(item)
         return R.success(
             data={

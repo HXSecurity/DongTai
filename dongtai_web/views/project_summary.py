@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 import time
 from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint
@@ -108,14 +105,13 @@ class ProjectSummary(UserEndPoint):
         response_schema=_ProjectSummaryResponseSerializer,
     )
     def get(self, request, id):
-        # auth_users = self.get_auth_users(request.user)
         department = request.user.get_relative_department()
         project = IastProject.objects.filter(department__in=department, id=id).first()
 
         if not project:
             return R.failure(status=203, msg=_("no permission"))
         version_id = request.GET.get("version_id", None)
-        data = dict()
+        data = {}
         data["owner"] = project.user.get_username()
         data["name"] = project.name
         data["id"] = project.id
@@ -132,7 +128,7 @@ class ProjectSummary(UserEndPoint):
         data["versionData"] = current_project_version
         agent_id = request.query_params.get("agent_id")
         if agent_id:
-            agent_ids = [agent_id]
+            pass
         data_stat = get_summary_by_project(
             id, current_project_version.get("version_id", 0)
         )

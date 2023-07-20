@@ -840,7 +840,7 @@ class AgentMethodPoolTestCase(AgentTestCase):
             url="http://localhost:9999/sqli123132123313132321123231test",
             agent_id=self.agent_id,
         ).first()
-        assert not method_pool.res_body == gzip_test_data
+        assert method_pool.res_body != gzip_test_data
         assert method_pool.res_body == testdata
 
     def test_agent_method_pool(self):
@@ -865,4 +865,4 @@ class AgentMethodPoolTestCase(AgentTestCase):
             "version": "v2",
         }
         data["detail"]["agentId"] = self.agent_id
-        res = self.agent_report(data, agentId=self.agent_id)
+        self.agent_report(data, agentId=self.agent_id)

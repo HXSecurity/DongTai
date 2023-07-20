@@ -170,14 +170,14 @@ class AgentListv2(UserEndPoint, ViewSet):
             res = get_agent_stat(agent_id, department)
         except Exception as e:
             logger.debug("agent_stat error:{}".format(e))
-            res = dict()
+            res = {}
         return R.success(data=res)
 
 
 def get_service_addrs(ip_list: list, port: int) -> list:
     if not port:
         return ip_list
-    return list(map(lambda x: x + ":" + str(port), ip_list))
+    return [x + ":" + str(port) for x in ip_list]
 
 
 def get_agent_stat(agent_id: int, department: Department) -> dict:
@@ -263,10 +263,8 @@ def get_memory(jsonstr: Optional[str]) -> str:
 def cal_state(agent: dict) -> StateType:
     if agent["online"] == 1 and agent["actual_running_status"] == 1:
         return StateType.RUNNING
-    elif agent["online"] == 1 and not agent["actual_running_status"] == 1:
+    elif agent["online"] == 1 and agent["actual_running_status"] != 1:
         return StateType.STOP
-    # elif agent['online'] == 0:
-    #    return StateType.UNINSTALL
     return StateType.UNINSTALL
 
 

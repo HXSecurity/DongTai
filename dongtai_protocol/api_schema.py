@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
 # datetime: 2021/9/28 上午10:51
-# project: dongtai-openapi
 from drf_spectacular.utils import OpenApiParameter, OpenApiExample
 
 

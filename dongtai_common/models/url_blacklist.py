@@ -59,9 +59,7 @@ class IastAgentBlackRule(models.Model):
         db_table = "iast_agent_black_rule"
 
     def to_full_rule(self) -> List[Dict]:
-        return list(
-            map(lambda x: x.to_agent_rule(), self.iastagentblackruledetail_set.all())
-        )
+        return [x.to_agent_rule() for x in self.iastagentblackruledetail_set.all()]
 
 
 class IastAgentBlackRuleDetail(models.Model):

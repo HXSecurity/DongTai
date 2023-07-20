@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:Bidaya0
 # datetime:2021/7/27 11:36
-# software: Vim8
-# project: webapi
 
 import time
 from dongtai_common.endpoint import UserEndPoint, R

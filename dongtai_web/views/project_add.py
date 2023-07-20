@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 import logging
 import time
 
@@ -96,7 +93,6 @@ class ProjectAdd(UserEndPoint):
                 mode = "插桩模式"
                 scan_id = int(request.data.get("scan_id", 5))
                 template_id = int(request.data.get("template_id", 1))
-                # auth_users = self.get_auth_users(request.user)
                 departments = request.user.get_relative_department()
                 scan = IastStrategyUser.objects.filter(id=scan_id).first()
                 base_url = request.data.get("base_url", None)
@@ -168,10 +164,7 @@ class ProjectAdd(UserEndPoint):
                 versionInfo = IastProjectVersion.objects.filter(
                     project_id=project.id, current_version=1, status=1
                 ).first()
-                if versionInfo:
-                    project_version_id = versionInfo.id
-                else:
-                    project_version_id = 0
+                project_version_id = versionInfo.id if versionInfo else 0
                 current_project_version = {
                     "project_id": project.id,
                     "version_id": project_version_id,
@@ -197,7 +190,6 @@ class ProjectAdd(UserEndPoint):
                 project.scan = scan
                 project.mode = mode
                 project.template_id = template_id
-                # project.user = request.user
                 project.department_id = department_id
                 project.latest_time = int(time.time())
                 project.enable_log = enable_log
@@ -249,7 +241,7 @@ def _accessable_ips(url, ips):
 def url_accessable(url):
     try:
         requests.get(url, timeout=2)
-    except Exception as e:
+    except Exception:
         return False
     return True
 
@@ -281,7 +273,7 @@ def ip_validate(ip):
         ):
             logger.error("10.x.x.x address not allowed")
             return False
-    except ipaddress.AddressValueError as e:
+    except ipaddress.AddressValueError:
         pass
     return True
 

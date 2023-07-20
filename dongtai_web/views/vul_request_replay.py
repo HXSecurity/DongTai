@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 import logging
 from http.server import BaseHTTPRequestHandler
 from io import BytesIO
@@ -77,7 +74,7 @@ class RequestReplayEndPoint(UserEndPoint):
         :param method_pool_id:
         :param user:
         :return:
-            status: True；False
+            status: True;False
             model: methodpool;None
         """
         if method_pool_id is None or method_pool_id == "":
@@ -104,7 +101,7 @@ class RequestReplayEndPoint(UserEndPoint):
     def check_agent_active(agent):
         """
         :param agent:
-        :return: True  ；False
+        :return: True  ;False
         """
         if not agent:
             return True
@@ -294,7 +291,6 @@ class RequestReplayEndPoint(UserEndPoint):
     )
     def get(self, request):
         replay_id = request.query_params.get("replayId")
-        # auth_agents = self.get_auth_agents_with_user(request.user)
         replay_type = request.query_params.get("replay_type", None)
         if replay_type is not None and int(replay_type) not in [
             const.API_REPLAY,

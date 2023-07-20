@@ -72,7 +72,7 @@ def patch_point(*args: Any, patch_id: int = 0) -> Any:
             if name in caller_frame.f_locals:
                 local_value = caller_frame.f_locals[name]
                 if patch_config.type_check:
-                    # 如果启用类型检查，进行类型检查
+                    # 如果启用类型检查,进行类型检查
                     type_ = annotations.get(name, None)
                     if type(type_) is type and not isinstance(local_value, type_):
                         logger.error(

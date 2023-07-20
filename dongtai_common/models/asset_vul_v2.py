@@ -52,12 +52,6 @@ class IastVulAssetRelationV2(models.Model):
 
 # class IastPackageGAInfo(models.Model):
 #    package_name = models.ForeignKey(AssetV2Global,
-#                                     on_delete=models.DO_NOTHING,
-#                                     db_constraint=False,
 #                                     db_column='package_name')
-#    affected_versions = models.JSONField(blank=True, null=True, default=list)
-#    unaffected_versions = models.JSONField(blank=True, null=True, default=list)
 #
 #    class Meta:
-#        managed = get_managed()
-#        db_table = 'iast_asset_v2_ga_info'

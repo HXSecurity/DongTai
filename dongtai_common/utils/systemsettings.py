@@ -16,7 +16,7 @@ def get_vul_validate():
         .values_list("value", flat=True)
         .first()
     )
-    return True if not vul_verifiy or vul_verifiy == "1" else False
+    return bool(not vul_verifiy or vul_verifiy == "1")
 
 
 def get_circuit_break():
@@ -25,4 +25,4 @@ def get_circuit_break():
         .values_list("value", flat=True)
         .first()
     )
-    return True if not circuit_break or circuit_break == "1" else False
+    return bool(not circuit_break or circuit_break == "1")

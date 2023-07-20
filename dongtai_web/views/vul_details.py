@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 import base64
 import json
 import logging
@@ -160,7 +157,7 @@ class VulDetail(UserEndPoint):
                         method["targetValues"] = highlight_target_value(
                             method["ori_targetValues"],
                             method["targetRange"][0]["ranges"]
-                            if "targetRange" in method.keys() and method["targetRange"]
+                            if "targetRange" in method and method["targetRange"]
                             else [],
                         )
                         method["sourceValues"] = parse_target_value(
@@ -175,7 +172,7 @@ class VulDetail(UserEndPoint):
             for i in range(method_counts):
                 method = method_note_pool[i]
                 if not isinstance(method, dict):
-                    # 有错误数据情况，跳过 fix me
+                    # 有错误数据情况,跳过 fix me
                     continue
                 class_name = (
                     method["originClassName"]
@@ -189,7 +186,6 @@ class VulDetail(UserEndPoint):
                 filename = method["callerClass"]
                 line_number = method["callerLineNumber"]
                 # For compatibility with old data
-                # (method_counts > 1 and i == 0)
                 # it should remove after serval versions
                 if method["tag"] == "source" or (method_counts > 1 and i == 0):
                     data_type = _("Source method")
@@ -197,7 +193,7 @@ class VulDetail(UserEndPoint):
                     data_type = _("Hazardous method")
                 else:
                     data_type = _("Propagation method")
-                # data_type 有 lazy 方法，需要转str，否则无法json.dumps
+                # data_type 有 lazy 方法,需要转str,否则无法json.dumps
                 final_res = method.copy()
                 # 加上获取项目级别的黑白名单
                 final_res.update(
@@ -565,13 +561,12 @@ def htmlescape(string):
 
 
 def is_need_http_detail(name):
-    return False if name in ["硬编码"] else True
+    return name not in ["硬编码"]
 
 
 def parse_param_name(param_name):
     try:
-        res = json.loads(param_name)
-        return res
+        return json.loads(param_name)
     except BaseException:
         return {}
 

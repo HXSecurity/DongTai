@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 from dongtai_web.utils import dict_transfrom
 from dongtai_common.models.asset import IastAssetDocument
 from dongtai_common.models import LANGUAGE_DICT
@@ -112,9 +109,7 @@ class ScaSummary(UserEndPoint):
                 "description": format_lazy(
                     "{} : {}",
                     _("Sorted index"),
-                    ",".join(
-                        ["version", "level", "vul_count", "language", "package_name"]
-                    ),
+                    "version,level,vul_count,language,package_name",
                 ),
             },
         ],
@@ -183,7 +178,6 @@ class ScaSummary(UserEndPoint):
                 current_project_version = get_project_version(project_id)
             else:
                 current_project_version = get_project_version_by_id(version_id)
-            # base_query_sql = base_query_sql + " and iast_asset.project_id=%s and iast_asset.project_version_id=%s "
             asset_aggr_where = (
                 asset_aggr_where
                 + " and iast_asset.project_id=%s and iast_asset.project_version_id=%s "
@@ -196,8 +190,6 @@ class ScaSummary(UserEndPoint):
             )
 
         #        if ELASTICSEARCH_STATE:
-        #            resp, _ = self.get_data_from_es(request.user.id, es_query)
-        #            return R.success(data=resp)
         #
         levelInfo = IastVulLevel.objects.filter(id__lt=5).all()
         levelNameArr = {}
@@ -209,7 +201,7 @@ class ScaSummary(UserEndPoint):
                 levelNameArr[level_item.name_value] = level_item.id
                 levelIdArr[level_item.id] = level_item.name_value
 
-        _temp_data = dict()
+        _temp_data = {}
         # 漏洞等级汇总
         level_summary_sql = "SELECT iast_asset.level_id,count(DISTINCT(iast_asset.signature_value)) as total FROM iast_asset {base_query_sql} {where_sql} GROUP BY iast_asset.level_id "
         level_summary_sql = level_summary_sql.format(
@@ -290,7 +282,7 @@ def get_vul_list_from_elastic_search(
         must_query.append(
             Q("wildcard", **{"package_name.keyword": {"value": f"*{search_keyword}*"}})
         )
-    a = Q("bool", must=must_query)
+    Q("bool", must=must_query)
     search = IastAssetDocument.search().query(Q("bool", must=must_query))[:0]
     buckets = {
         "level": A("terms", field="level_id", size=2147483647),
@@ -306,7 +298,7 @@ def get_vul_list_from_elastic_search(
         Elasticsearch(settings.ELASTICSEARCH_DSL["default"]["hosts"])
     ).execute()
     dic = {}
-    for key in buckets.keys():
+    for key in buckets:
         origin_buckets = res.aggs[key].to_dict()["buckets"]
         for i in origin_buckets:
             i["id"] = i["key"]
@@ -321,7 +313,7 @@ def get_vul_list_from_elastic_search(
             language_names = [i["language"] for i in origin_buckets]
             for i in origin_buckets:
                 i["id"] = LANGUAGE_DICT.get(i["language"])
-            for language_key in LANGUAGE_DICT.keys():
+            for language_key in LANGUAGE_DICT:
                 if language_key not in language_names:
                     origin_buckets.append(
                         {
@@ -339,7 +331,7 @@ def get_vul_list_from_elastic_search(
             level_dic = dict_transfrom(level, "id")
             for i in origin_buckets:
                 i["level"] = level_dic[i["level_id"]]["name_value"]
-            for level_id in level_dic.keys():
+            for level_id in level_dic:
                 if level_id not in level_ids:
                     origin_buckets.append(
                         {

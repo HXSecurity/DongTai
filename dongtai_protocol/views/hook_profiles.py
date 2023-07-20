@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/11/24 下午9:16
-# software: PyCharm
-# project: lingzhi-webapi
 import logging
 
 from dongtai_common.models.hook_strategy import HookStrategy
@@ -14,7 +11,7 @@ from dongtai_common.utils import const
 from dongtai_common.endpoint import OpenApiEndPoint, R
 from django.db.models import Prefetch, OuterRef, Subquery
 
-# note: 当前依赖必须保留，否则无法通过hooktype反向查找策略
+# note: 当前依赖必须保留,否则无法通过hooktype反向查找策略
 from dongtai_protocol.api_schema import DongTaiParameter
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
@@ -40,11 +37,11 @@ class HookProfilesEndPoint(OpenApiEndPoint):
 
     @staticmethod
     def get_profiles(user=None, language_id=JAVA, full=False, system_only=False):
-        profiles = list()
+        profiles = []
         hook_types = IastStrategyModel.objects.filter(
             Q(
                 state__in=["enable"] if not full else ["enable", "disable"],
-                user_id__in=set([1, user.id]) if user else [1],
+                user_id__in={1, user.id} if user else [1],
             )
             & (Q(system_type=1) if system_only else Q())
         ).order_by("id")
@@ -54,13 +51,13 @@ class HookProfilesEndPoint(OpenApiEndPoint):
                 enable__in=[const.HOOK_TYPE_ENABLE]
                 if not full
                 else [const.HOOK_TYPE_ENABLE, const.HOOK_TYPE_DISABLE],
-                created_by__in=set([1, user.id]) if user else [1],
+                created_by__in={1, user.id} if user else [1],
                 type__in=(1, 2, 3),
             )
             & (Q(system_type=1) if system_only else Q())
         ).order_by("id")
         for hook_type in list(hook_types) + list(hook_types_a):
-            strategy_details = list()
+            strategy_details = []
             if isinstance(hook_type, IastStrategyModel):
                 hook_type = convert_strategy(hook_type)
             strategies = hook_type.strategies.filter(
@@ -131,8 +128,7 @@ class HookProfilesEndPoint(OpenApiEndPoint):
                         "details": strategy_details,
                     }
                 )
-        profiles = sorted(profiles, key=lambda item: (item["value"], item["type"]))
-        return profiles
+        return sorted(profiles, key=lambda item: (item["value"], item["type"]))
 
     @extend_schema(
         description="Pull Agent Engine Hook Rule",

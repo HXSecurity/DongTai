@@ -99,7 +99,7 @@ def get_summary_by_agent_ids(agent_ids: Iterable):
         final_query_set = start_query_set.union(*queryset_list[1:], all=True)
     day_num_dict = {}
     for i in final_query_set:
-        if i["day_label"] in day_num_dict.keys():
+        if i["day_label"] in day_num_dict:
             day_num_dict[i["day_label"]].append(i)
         else:
             day_num_dict[i["day_label"]] = [i]
@@ -108,7 +108,7 @@ def get_summary_by_agent_ids(agent_ids: Iterable):
         obj = {"day_label": day_label, "day_num": 0}
         for i in range(1, 5 + 1):
             obj["day_num_level_" + str(i)] = 0
-        if day_label in day_num_dict.keys():
+        if day_label in day_num_dict:
             count = 0
             for i in day_num_dict[day_label]:
                 obj["day_num_level_" + str(i["level_id"])] = i["count"]
@@ -207,7 +207,7 @@ def get_summary_by_project(project_id: int, project_version_id: int):
         final_query_set = start_query_set.union(*queryset_list[1:], all=True)
     day_num_dict = {}
     for i in final_query_set:
-        if i["day_label"] in day_num_dict.keys():
+        if i["day_label"] in day_num_dict:
             day_num_dict[i["day_label"]].append(i)
         else:
             day_num_dict[i["day_label"]] = [i]
@@ -216,7 +216,7 @@ def get_summary_by_project(project_id: int, project_version_id: int):
         obj = {"day_label": day_label, "day_num": 0}
         for i in range(1, 5 + 1):
             obj["day_num_level_" + str(i)] = 0
-        if day_label in day_num_dict.keys():
+        if day_label in day_num_dict:
             count = 0
             for i in day_num_dict[day_label]:
                 obj["day_num_level_" + str(i["level_id"])] = i["count"]
@@ -247,11 +247,10 @@ def geneatre_vul_timerange_count_queryset(
     time_lt: int,
     day_label: str,
 ):
-    vul_stat = (
+    return (
         vul_queryset.filter(latest_time__gt=time_gt, latest_time__lt=time_lt)
         .values("level_id")
         .annotate(count=Count("level_id"), day_label=Value(day_label))
         .order_by("level_id")
         .all()
     )
-    return vul_stat

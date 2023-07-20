@@ -68,7 +68,6 @@ class HeaderVulViewSet(UserEndPoint, viewsets.ViewSet):
                 vul_id = ser.validated_data["vul_id"]
         except ValidationError as e:
             return R.failure(data=e.detail)
-        # users = self.get_auth_users(request.user)
         department = request.user.get_relative_department()
         q = Q(project__department__in=department) & Q(vul_id=vul_id)
         queryset = IastHeaderVulnerability.objects.filter(q).all()
@@ -83,7 +82,7 @@ class HeaderVulViewSet(UserEndPoint, viewsets.ViewSet):
         description=_("Get the item corresponding to the user"),
     )
     def delete(self, request, pk):
-        ser = HeaderVulArgsSerializer(data=request.GET)
+        HeaderVulArgsSerializer(data=request.GET)
         users = self.get_auth_users(request.user)
         q = Q(project__user__in=users) & Q(pk=pk)
         IastHeaderVulnerability.objects.filter(q).delete()

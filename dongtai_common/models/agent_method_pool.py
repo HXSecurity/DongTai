@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2021/1/14 下午3:35
-# software: PyCharm
-# project: dongtai-models
 from dongtai_conf.settings import METHOD_POOL_INDEX
 from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry

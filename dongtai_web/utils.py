@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:Bidaya0
 # datetime:2021/7/27 12:06
-# software: Vim8
-# project: webapi
 
 from dongtai_common.models.profile import IastProfile
 from requests.exceptions import ConnectionError, ConnectTimeout
@@ -40,7 +37,7 @@ def get_model_field(model, exclude=[], include=[]):
 
 def get_model_order_options(*args, **kwargs):
     order_fields = get_model_field(*args, **kwargs)
-    return order_fields + list(map(lambda x: "".join(["-", x]), order_fields))
+    return order_fields + [f"-{x}" for x in order_fields]
 
 
 # temporary fit in to cython
@@ -52,15 +49,9 @@ def assemble_query(
 ):
     return reduce(
         operator_,
-        map(
-            lambda x: Q(**x),
-            map(
-                lambda kv_pair: {
+        (Q(**x) for x in ({
                     "__".join(filter(lambda x: x, [kv_pair[0], lookuptype])): kv_pair[1]
-                },
-                condictions,
-            ),
-        ),
+                } for kv_pair in condictions)),
         base_query,
     )
 
@@ -70,15 +61,9 @@ def assemble_query_2(
 ):
     return reduce(
         operator_,
-        map(
-            lambda x: ~Q(**x),
-            map(
-                lambda kv_pair: {
+        (~Q(**x) for x in ({
                     "__".join(filter(lambda x: x, [kv_pair[0], lookuptype])): kv_pair[1]
-                },
-                condictions,
-            ),
-        ),
+                } for kv_pair in condictions)),
         base_query,
     )
 
@@ -137,13 +122,13 @@ def get_response_serializer(
         if status_msg_keypair is None
         else status_msg_keypair
     )
-    msg_list = list(set(map(lambda x: x[1], map(lambda x: x[0], status_msg_keypair))))
+    msg_list = list({x[1] for x in (x[0] for x in status_msg_keypair)})
     status_list = list(
-        set(map(lambda x: x[0], map(lambda x: x[0], status_msg_keypair)))
+        {x[0] for x in (x[0] for x in status_msg_keypair)}
     )
     msg_list = ["success"] if msg_list is None else msg_list
     status_list = [201] if status_list is None else status_list
-    newclass = type(
+    return type(
         str(uuid.uuid1()),
         (serializers.Serializer,),
         {
@@ -151,20 +136,19 @@ def get_response_serializer(
                 default=201,
                 help_text=format_lazy(
                     "{} :" + "{} ; " * len(status_list),
-                    *([_("status code")] + status_list),
+                    *([_("status code"), *status_list]),
                 ),
             ),
             "msg": serializers.CharField(
                 default="success",
                 help_text=format_lazy(
                     "{} :" + "{} ; " * len(msg_list),
-                    *([_("human readable message")] + msg_list),
+                    *([_("human readable message"), *msg_list]),
                 ),
             ),
             "data": data_serializer,
         },
     )
-    return newclass
 
 
 def _filter_query(item):
@@ -174,6 +158,7 @@ def _filter_query(item):
         return item
     elif isinstance(item, dict):
         return OpenApiParameter(**item)
+    return None
 
 
 def _filter_request_body(item):
@@ -182,6 +167,7 @@ def _filter_request_body(item):
     if isinstance(item, dict):
         item["request_only"] = True
         return OpenApiExample(**item)
+    return None
 
 
 def _filter_response_body(item):
@@ -190,6 +176,7 @@ def _filter_response_body(item):
     if isinstance(item, dict):
         item["response_only"] = True
         return OpenApiExample(**item)
+    return None
 
 
 def _map_response_description(item):
@@ -247,13 +234,12 @@ def checkcover_batch(api_route, agents):
         hashlib.sha1(api_route_.path.encode("utf-8"), usedforsecurity=False).hexdigest()
         for api_route_ in api_route.only("path")
     ]
-    cover_count = (
+    return (
         MethodPool.objects.filter(uri_sha1__in=uri_hash, agent__in=agents)
         .values("uri_sha1")
         .distinct()
         .count()
     )
-    return cover_count
 
 
 def apiroute_cachekey(api_route, agents, http_method=None):

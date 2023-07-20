@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-engine
 
 from rest_framework import serializers
 
@@ -14,8 +11,8 @@ from dongtai_web.serializers.asset import AssetSerializer
 
 
 class MethodPoolSerialize(serializers.ModelSerializer):
-    DEPENDENCIES = dict()
-    AGENTS = dict()
+    DEPENDENCIES = {}
+    AGENTS = {}
     request = serializers.SerializerMethodField()
     response = serializers.SerializerMethodField()
     dependencies = serializers.SerializerMethodField()
@@ -53,8 +50,8 @@ class MethodPoolSerialize(serializers.ModelSerializer):
 
 
 class MethodPoolListSerialize(serializers.ModelSerializer):
-    DEPENDENCIES = dict()
-    AGENTS = dict()
+    DEPENDENCIES = {}
+    AGENTS = {}
     rule = serializers.SerializerMethodField()
     level = serializers.SerializerMethodField()
     agent_name = serializers.SerializerMethodField()

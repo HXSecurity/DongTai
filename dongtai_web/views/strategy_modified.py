@@ -43,7 +43,7 @@ class StrategyModified(TalentAdminEndPoint):
     def put(self, request, id_):
         fields = ["vul_type", "vul_name", "vul_desc", "vul_fix", "state", "level_id"]
         # here should refactor with serilizer.
-        if "level_id" in request.data.keys() and request.data["level_id"] <= 0:
+        if "level_id" in request.data and request.data["level_id"] <= 0:
             return R.failure()
         data = {k: v for k, v in request.data.items() if k in fields}
         strategy = IastStrategyModel.objects.filter(pk=id_).first()
@@ -57,13 +57,8 @@ class StrategyModified(TalentAdminEndPoint):
             name=data["vul_name"]
         )
         return R.success(data={"id": id_})
-        # hook_type = HookType.objects.filter(pk=id_).first()
-        # _update(hook_type, data)
-        # strategy = IastStrategyModel.objects.filter(
         #    hook_type=hook_type.id).first()
         # if strategy:
-        #    _update(strategy, data)
-        # return R.success(data={"id": id_})
 
 
 def _update(model, dic):

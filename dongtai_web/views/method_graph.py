@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
-# project: dongtai-webapi
 
 import json
 import logging
@@ -107,7 +105,7 @@ class MethodGraph(AnonymousAndUserEndPoint):
         :return:
         """
         engine = VulEngine()
-        links = list()
+        links = []
         if sinks:
             for sink in sinks:
                 engine.search(
@@ -144,7 +142,7 @@ class MethodGraph(AnonymousAndUserEndPoint):
             for links in taint_links:
                 for link in links:
                     left = None
-                    edges = list()
+                    edges = []
                     for node in link:
                         if node["source"]:
                             left = node["invokeId"]

@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
 # datetime: 2021/6/1 上午9:53
-# project: dongtai-openapi
 
 # -*- coding: utf-8 -*-
 import base64
@@ -49,8 +47,8 @@ class OssDownloader(object):
             bucket = oss2.Bucket(auth, bucket_url, bucket_name)
             bucket.get_object_to_file(object_name, local_file)
             return True
-        except NoSuchKey as e:
-            # NoSuchKey表示oss云端文件不存在，通知管理员
+        except NoSuchKey:
+            # NoSuchKey表示oss云端文件不存在,通知管理员
             logger.error(
                 f"oss download failure, reason: remote file not found, filename: {object_name}"
             )
@@ -62,7 +60,6 @@ class OssDownloader(object):
     @staticmethod
     def download_file(object_name, local_file):
         return OssDownloader.download_file_to_path(  # access_key=settings.ACCESS_KEY,
-            # access_key_secret=settings.ACCESS_KEY_SECRET,
             bucket_url=OssDownloader.BUCKET_URL,
             bucket_name=OssDownloader.BUCKET_NAME,
             object_name=object_name,

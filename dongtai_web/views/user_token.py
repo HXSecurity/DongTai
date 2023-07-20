@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/5/25 15:03
-# software: PyCharm
-# project: webapi
 import logging
 
 from dongtai_common.endpoint import R

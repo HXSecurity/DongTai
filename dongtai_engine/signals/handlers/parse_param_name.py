@@ -13,7 +13,7 @@ class ParamDict(QueryDict):
         self.extend_k_map = {}
         for k, v in self.items():
             if "=" in v:
-                origin_string = "=".join([k, v])
+                origin_string = f"{k}={v}"
                 groups = origin_string.split("=")
                 for i in range(1, len(groups)):
                     k_ = "=".join(groups[:i])

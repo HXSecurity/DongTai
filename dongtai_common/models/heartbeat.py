@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/5/22 18:21
-# software: PyCharm
-# project: dongtai-models
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _

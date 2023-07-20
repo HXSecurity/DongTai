@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/10/23 18:13
-# software: PyCharm
-# project: webapi
 import datetime
 import json
 import time
@@ -82,7 +79,7 @@ class OverPowerHandler(IReportHandler):
                     "http-sql": self.server_name,
                 }
                 # 通过cookie查询原始的用户
-                # 检查是否已存在漏洞，如果存在，则忽略，如果不存在则上报漏洞
+                # 检查是否已存在漏洞,如果存在,则忽略,如果不存在则上报漏洞
                 vuls = IastVulnerabilityModel.objects.filter(
                     vul_url=self.http_url,
                     vul_type="越权漏洞",
@@ -105,7 +102,7 @@ class OverPowerHandler(IReportHandler):
                         req_header=self.http_header,
                         req_params=self.http_query_string,
                         req_data="",  # fixme 请求体 数据保存
-                        res_header="",  # fixme 响应头，暂时没有，后续补充
+                        res_header="",  # fixme 响应头,暂时没有,后续补充
                         res_body="",  # fixme 响应体数据
                         full_stack=json.dumps(detail_report, ensure_ascii=False),
                         top_stack="",
@@ -144,5 +141,5 @@ class OverPowerHandler(IReportHandler):
     def get_user_from_auth(self, auth_value):
         auths = IastOverpowerUserAuth.objects.filter(auth_value=auth_value)
         if len(auths) > 0:
-            user_token = auths[0].http_query_string
-            return user_token
+            return auths[0].http_query_string
+        return None

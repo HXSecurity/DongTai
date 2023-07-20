@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
 # datetime: 2021/10/22 下午2:26
-# project: DongTai-engine
 
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.strategy import IastStrategyModel
@@ -28,5 +26,5 @@ def is_strategy_enable(vul_type, method_pool):
         if str(vul_strategy.id) in strategy_ids.split(","):
             return True
         return False
-    except Exception as e:
+    except Exception:
         return False

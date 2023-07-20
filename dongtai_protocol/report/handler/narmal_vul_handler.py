@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
 # datetime: 2021/4/27 下午2:48
-# project: dongtai-openapi
 
 import json
 import logging
@@ -46,13 +44,11 @@ class BaseVulnHandler(IReportHandler):
 
     @staticmethod
     def create_top_stack(obj):
-        stack = f'{obj["classname"]}.{obj["methodname"]}({obj["in"]})'
-        return stack
+        return f'{obj["classname"]}.{obj["methodname"]}({obj["in"]})'
 
     @staticmethod
     def create_bottom_stack(obj):
-        stack = f'{obj["classname"]}.{obj["methodname"]}("{obj["in"]}")'
-        return stack
+        return f'{obj["classname"]}.{obj["methodname"]}("{obj["in"]}")'
 
     def get_vul_info(self):
         level_id = 0
@@ -161,7 +157,7 @@ class NormalVulnHandler(BaseVulnHandler):
         if len(caller_message_location) == 2:
             caller_message_file, caller_message_linenumber = caller_message_location
         else:
-            caller_message_file = caller_message_location[0]
+            caller_message_location[0]
             caller_message_linenumber = 0
         full_stack = [
             [
@@ -215,7 +211,7 @@ class NormalVulnHandler(BaseVulnHandler):
                 }
             ]
         ]
-        project_agents = IastAgent.objects.filter(
+        IastAgent.objects.filter(
             project_version_id=self.agent.project_version_id
         )
         iast_vul = (
@@ -304,7 +300,6 @@ class NormalVulnHandler(BaseVulnHandler):
             project_version_id=iast_vul.agent.project_version_id,
             pk__lt=iast_vul.id,
         ).delete()
-        header_vul = None
         if not IastHeaderVulnerability.objects.filter(
             project_id=self.agent.bind_project_id,
             project_version_id=self.agent.project_version_id,
@@ -312,30 +307,21 @@ class NormalVulnHandler(BaseVulnHandler):
             vul=iast_vul.id,
         ).exists():
             try:
-                header_vul = IastHeaderVulnerability.objects.create(
+                IastHeaderVulnerability.objects.create(
                     project_id=self.agent.bind_project_id,
                     project_version_id=self.agent.project_version_id,
                     url=self.http_uri,
                     vul_id=iast_vul.id,
                 )
-            except IntegrityError as e:
+            except IntegrityError:
                 logger.debug("unique error stack: ", exc_info=True)
                 logger.info("unique error cause by concurrency insert,ignore it")
         # disable when no req_header and res_header
 
 
 #        if header_vul and not IastHeaderVulnerabilityDetail.objects.filter(
-#                agent_id=self.agent.id,
-#                header_vul_id=header_vul.id,
 #        ).exists():
-#            try:
 #                IastHeaderVulnerabilityDetail.objects.create(
-#                    agent_id=self.agent.id,
-#                    method_pool_id=-1,
-#                    header_vul_id=header_vul.id,
-#                    req_header=self.req_header_for_search,
 #                    res_header=self.http_res_header)
-#            except IntegrityError as e:
-#                logger.debug("unique error stack: ", exc_info=True)
 #                logger.info(
 #                    "unique error cause by concurrency insert,ignore it")

@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
 # datetime: 2021/7/21 下午7:07
-# project: dongtai-engine
 import logging
 import copy
 
@@ -19,12 +17,12 @@ logger = logging.getLogger("dongtai-engine")
 
 class VulEngine(object):
     """
-    根据策略和方法池查找是否存在漏洞，此类不进行策略和方法池的权限验证
+    根据策略和方法池查找是否存在漏洞,此类不进行策略和方法池的权限验证
     """
 
     def __init__(self):
         """
-        构造函数，初始化相关数据
+        构造函数,初始化相关数据
         """
         self._method_pool = []
         self.method_pool_asc = []
@@ -52,7 +50,7 @@ class VulEngine(object):
     @method_pool.setter
     def method_pool(self, method_pool):
         """
-        设置方法池数据，根据方法调用ID对数据进行倒序排列，便于后续检索漏洞
+        设置方法池数据,根据方法调用ID对数据进行倒序排列,便于后续检索漏洞
         :param method_pool:
         :return:
         """
@@ -68,7 +66,7 @@ class VulEngine(object):
         self._method_pool_invokeid_dict = {
             mp["invokeId"]: ind for ind, mp in enumerate(self._method_pool)
         }
-        tempdict = defaultdict(lambda: [], {})
+        tempdict = defaultdict(list, {})
         for ind, mp in enumerate(self._method_pool):
             for target_hash in mp["targetHash"]:
                 tempdict[target_hash].append(ind)
@@ -85,26 +83,26 @@ class VulEngine(object):
     def prepare(self, method_pool, vul_method_signature):
         """
         对方法池、漏洞方法签名及其他数据进行预处理
-        :param method_pool: 方法池，list
-        :param vul_method_signature: 漏洞方法签名，str
+        :param method_pool: 方法池,list
+        :param vul_method_signature: 漏洞方法签名,str
         :return:
         """
         self.method_pool = method_pool
         self.vul_method_signature = vul_method_signature
         self.hit_vul = False
-        self.vul_stack = list()
+        self.vul_stack = []
         self.pool_value = -1
         self.vul_source_signature = ""
         self.method_counts = len(self.method_pool)
 
     def hit_vul_method(self, method):
-        # print(self.vul_method_signature)
         if (
             f"{method.get('className')}.{method.get('methodName')}"
             == self.vul_method_signature
         ):
             self.hit_vul = True
             return True
+        return None
 
     def do_propagator(self, method, current_link):
         is_source = method.get("source")
@@ -122,6 +120,7 @@ class VulEngine(object):
                     current_link.append(method)
                     self.pool_value = method.get("sourceHash")
                     break
+        return None
 
     @cached_property
     def method_pool_signatures(self):
@@ -152,22 +151,15 @@ class VulEngine(object):
             for t_hash in pool["targetHash"]:
                 target_hash_dict[t_hash].add(pool["invokeId"])
             invokeid_dict[pool["invokeId"]] = pool
-        vul_methods = list(
-            map(lambda x: x["invokeId"], filter(self.hit_vul_method, self.method_pool))
-        )
+        vul_methods = [x["invokeId"] for x in filter(self.hit_vul_method, self.method_pool)]
         # Ignore `org.springframework.web.util.pattern.PathPattern.getPatternString()` as a non-source method.
         # It is only to indicate that the API pattern.
-        source_methods = list(
-            map(
-                lambda x: x["invokeId"],
-                filter(
+        source_methods = [x["invokeId"] for x in filter(
                     lambda x: x.get("source", False)
                     and x.get("signature")
                     != "org.springframework.web.util.pattern.PathPattern.getPatternString()",
                     self.method_pool,
-                ),
-            )
-        )
+                )]
         # Build a graph
         g = nk.Graph(weighted=True, directed=True)
         for pool in self.method_pool:
@@ -205,9 +197,9 @@ class VulEngine(object):
                             self.copy_method(sub_method, propagator=True)
                         )
                 self.vul_stack = [final_stack]
-        if self.vul_source_signature and "sourceType" in self.vul_stack[-1][-1].keys():
+        if self.vul_source_signature and "sourceType" in self.vul_stack[-1][-1]:
             final_stack = self.vul_stack[-1][-1]
-            current_link = list()
+            current_link = []
             current_link.append(final_stack)
             the_second_stack = None
             for source_type in final_stack["sourceType"]:
@@ -218,7 +210,7 @@ class VulEngine(object):
                             index = ind
                     before_stacks = self.method_pool[index:]
                     for stack in before_stacks:
-                        if "targetRange" in stack.keys():
+                        if "targetRange" in stack:
                             target_ranges = dict(
                                 zip(
                                     [i["hash"] for i in stack["targetRange"]],
@@ -262,7 +254,7 @@ class VulEngine(object):
             the_second_stack = None
             has_vul = False
             for stack in before_stacks:
-                if "targetRange" in stack.keys():
+                if "targetRange" in stack:
                     target_ranges = dict(
                         zip(
                             [i["hash"] for i in stack["targetRange"]],
@@ -287,10 +279,7 @@ class VulEngine(object):
                 return
             # Disable temporary , will refactor it in next version.
             #
-            # current_link = current_link[0:1]
-            # extract_stack = self.find_other_branch_v2(
             #    index, size, current_link, set(final_stack.get('sourceHash')))
-            # self.vul_stack[0] = extract_stack[::-1]
         else:
             pass
         self.vul_filter()
@@ -315,8 +304,8 @@ class VulEngine(object):
         return current_link
 
     def vul_filter(self):
-        # 分析是否存在过滤条件，排除误报
-        # 根据漏洞类型，查询filter方法
+        # 分析是否存在过滤条件,排除误报
+        # 根据漏洞类型,查询filter方法
         # 检查vul_
         if self.vul_source_signature:
             # mark there has a vul
@@ -325,7 +314,7 @@ class VulEngine(object):
             for index in range(0, stack_count):
                 stack = self.vul_stack[index]
                 for item in stack:
-                    if "java.net.URL.<init>" == item["signature"]:
+                    if item["signature"] == "java.net.URL.<init>":
                         url = item["sourceValues"]
                         origin_source = stack[0]["targetValues"]
                         from urllib.parse import urlparse
@@ -402,16 +391,18 @@ class VulEngine(object):
                     current_link.pop()
             else:
                 logger.debug("not stisfied {sub_method}")
+        return None
 
     def search_sink(self, method_pool, vul_method_signature):
         self.prepare(method_pool, vul_method_signature)
         if vul_method_signature in self.method_pool_signatures:
             return True
+        return None
 
     def dfs(self, current_hash, left_node, left_index):
         """
-        深度优先搜索，搜索污点流图中的边
-        :param current_hash: 当前污点数据，set()
+        深度优先搜索,搜索污点流图中的边
+        :param current_hash: 当前污点数据,set()
         :param left_node: 上层节点方法的调用ID
         :param left_index: 上层节点方法在方法队列中的编号
         :return:

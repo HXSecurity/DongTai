@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
-# software: PyCharm
-# project: lingzhi-webapi
 
 import logging
 from dongtai_common.endpoint import R
@@ -42,10 +39,8 @@ class ProjectDel(UserEndPoint):
         try:
             project_id = request.data.get("id", None)
             if project_id:
-                # auth_users = self.get_auth_users(request.user)
                 department = request.user.get_relative_department()
                 #                IastAgent.objects.filter(
-                #                    bind_project_id=project_id,
                 #                    user__in=auth_users).update(bind_project_id=-1)
                 IastProject.objects.filter(
                     id=project_id, department__in=department

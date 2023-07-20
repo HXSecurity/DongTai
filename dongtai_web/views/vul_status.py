@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author: owefsad@huoxian.cn
-# project: dongtai-webapi
 
 # status
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
@@ -87,7 +85,6 @@ class VulStatus(UserEndPoint):
                 vul.save()
                 ids.append(vul.id)
 
-            # ids = list(
             #     queryset.filter(id__in=vul_ids).values_list('id', flat=True))
             log_change_status(user_id, request.user.username, ids, vul_status.name)
         return R.success()

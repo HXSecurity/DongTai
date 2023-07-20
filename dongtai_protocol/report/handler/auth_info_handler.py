@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/10/23 11:55
-# software: PyCharm
-# project: webapi
 
 import datetime
 
@@ -31,6 +28,7 @@ class AuthInfoHandler:
             if _authinfo == authinfo:
                 continue
             return _authinfo
+        return None
 
 
 @ReportHandler.register(const.REPORT_AUTH_ADD)
@@ -59,7 +57,7 @@ class AuthAddHandler(IReportHandler):
                 auth_value=self.auth_value,
             )
             if len(auth_model):
-                print("权限已存在，忽略")
+                print("权限已存在,忽略")
                 pass
             else:
                 print("新增权限")
@@ -76,7 +74,7 @@ class AuthAddHandler(IReportHandler):
                     created_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                     updated_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 ).save()
-        except Exception as e:
+        except Exception:
             pass
 
 

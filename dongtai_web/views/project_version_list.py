@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-# author:sjh
-# software: PyCharm
-# project: lingzhi-webapi
 import logging
 import time
 from dongtai_common.endpoint import R
