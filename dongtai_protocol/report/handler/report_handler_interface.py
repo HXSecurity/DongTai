@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime:2020/10/30 10:31
 import logging
 from typing import Optional

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 from typing import Any
 from dongtai_common.endpoint import R
 from dongtai_common.endpoint import UserEndPoint
@@ -42,7 +41,16 @@ class _VulsEndPointResponseSerializer(VulSerializer):
 
     class Meta:
         model = VulSerializer.Meta.model
-        fields = [*VulSerializer.Meta.fields, "index", "project_name", "project_id", "server_name", "server_type", "level_type", "level"]
+        fields = [
+            *VulSerializer.Meta.fields,
+            "index",
+            "project_name",
+            "project_id",
+            "server_name",
+            "server_type",
+            "level_type",
+            "level",
+        ]
 
 
 _ResponseSerializer = get_response_serializer(
@@ -267,7 +275,11 @@ class VulsEndPoint(UserEndPoint):
         if status_id:
             queryset = queryset.filter(status_id=status_id)
         order = request.query_params.get("order")
-        if order and order in [*get_model_order_options(IastVulnerabilityModel), "type", "-type"]:
+        if order and order in [
+            *get_model_order_options(IastVulnerabilityModel),
+            "type",
+            "-type",
+        ]:
             if order == "type":
                 order = "hook_type_id"
             if order == "-type":

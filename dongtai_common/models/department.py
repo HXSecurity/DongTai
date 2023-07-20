@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime:2020/11/27 下午4:31
 import time
 

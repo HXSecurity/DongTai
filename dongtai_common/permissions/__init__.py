@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime: 2021/7/21 下午4:04
 
 from rest_framework import permissions

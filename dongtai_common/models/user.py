@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime:2021/1/25 下午6:43
 
 from django.contrib.auth.models import AbstractUser, UserManager

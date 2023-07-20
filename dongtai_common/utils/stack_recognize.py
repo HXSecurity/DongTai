@@ -323,6 +323,6 @@ def stack_scan(
 
 
 def stacks_convert(
-    stacks: List[str], extend_black_list=[], extend_white_list=[]
-) -> List[CodeStack]:
+    stacks: list[str], extend_black_list=[], extend_white_list=[]
+) -> list[CodeStack]:
     return [stack_scan(x, extend_black_list, extend_white_list) for x in stacks]

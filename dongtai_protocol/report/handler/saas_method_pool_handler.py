@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime:2021/1/5 下午12:36
 from dongtai_common.models.api_route import IastApiParameter
 from django.http.request import QueryDict
@@ -59,7 +58,7 @@ class A:
 @ReportHandler.register(const.REPORT_VULN_SAAS_POOL)
 class SaasMethodPoolHandler(IReportHandler):
     def __init__(self):
-        super(SaasMethodPoolHandler, self).__init__()
+        super().__init__()
         self.async_send = settings.config.getboolean(
             "task", "async_send", fallback=False
         )
@@ -267,7 +266,7 @@ class SaasMethodPoolHandler(IReportHandler):
 
     def save_method_call(
         self, pool_sign: str, current_version_agents
-    ) -> Tuple[bool, MethodPool]:
+    ) -> tuple[bool, MethodPool]:
         """
         保存方法池数据
         :param pool_sign:
@@ -568,11 +567,11 @@ def decode_content(body: bytes, content_encoding: str, version: str) -> str:
             logger.warning("not gzip type but using gzip as content_encoding")
     # TODO not content_encoding
     if content_encoding:
-        logger.info("not found content_encoding :{}".format(content_encoding))
+        logger.info(f"not found content_encoding :{content_encoding}")
     try:
         return body.decode("utf-8")
     except BaseException:
-        logger.info("decode_content, {!r}".format(body))
+        logger.info(f"decode_content, {body!r}")
         logger.info("utf-8 decode failed, use raw ")
         return body.decode("raw_unicode_escape")
 
@@ -581,7 +580,7 @@ def get_content_encoding(b64_res_headers: str) -> str:
     res_headers = utils.base64_decode(b64_res_headers)
     for header in res_headers.split("\n"):
         try:
-            k, v = [i.strip().lower() for i in header.split(":")]
+            k, v = (i.strip().lower() for i in header.split(":"))
             if k == "content-encoding":
                 if "gzip" in v:
                     return "gzip"
@@ -598,7 +597,7 @@ def get_res_body(res_body, version):
         return base64.b64decode(res_body)  # bytes
     elif version == "v3":
         return base64.b64decode(res_body)
-    logger.info("no match version now version: {}".format(version))
+    logger.info(f"no match version now version: {version}")
     return res_body
 
 
@@ -607,5 +606,5 @@ def new_decode_content(res_body: str, encoding: str, version: str) -> str:
         return res_body
     if version in ("v2", "v3"):
         return decode_content(base64.b64decode(res_body), encoding, version)
-    logger.info("no match version now version: {}".format(version))
+    logger.info(f"no match version now version: {version}")
     return ""

@@ -48,7 +48,7 @@ class RequestLogMiddleware:
         ) / (api_info["request_count"] + 1)
         api_info["request_count"] += 1
         REQUEST_DICT[apiurl] = api_info
-        request_logger.error(msg="{} : {}".format(apiurl, timenow))
+        request_logger.error(msg=f"{apiurl} : {timenow}")
         return response
 
     def process_exception(self, request, exception):

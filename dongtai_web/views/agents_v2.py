@@ -169,7 +169,7 @@ class AgentListv2(UserEndPoint, ViewSet):
             agent_id = int(request.query_params.get("id", 0))
             res = get_agent_stat(agent_id, department)
         except Exception as e:
-            logger.debug("agent_stat error:{}".format(e))
+            logger.debug(f"agent_stat error:{e}")
             res = {}
         return R.success(data=res)
 
@@ -221,7 +221,7 @@ def get_is_control(
     return 0
 
 
-def get_disk(jsonstr: Optional[str]) -> str:
+def get_disk(jsonstr: str | None) -> str:
     if not jsonstr:
         return ""
     dic = json.loads(jsonstr)
@@ -235,7 +235,7 @@ def get_disk(jsonstr: Optional[str]) -> str:
     return res
 
 
-def get_cpu(jsonstr: Optional[str]) -> str:
+def get_cpu(jsonstr: str | None) -> str:
     if not jsonstr:
         return ""
     try:
@@ -247,7 +247,7 @@ def get_cpu(jsonstr: Optional[str]) -> str:
     return res
 
 
-def get_memory(jsonstr: Optional[str]) -> str:
+def get_memory(jsonstr: str | None) -> str:
     if not jsonstr:
         return ""
     try:

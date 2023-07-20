@@ -90,9 +90,7 @@ def get_plugin_dict():
     PLUGIN_ROOT_PATH = join(BASE_DIR, "dongtai_conf" + os.sep + "plugin")
     for root, directories, files in walk(top=PLUGIN_ROOT_PATH, topdown=False):
         for file_ in files:
-            if file_.startswith("plug_") and (
-                file_.endswith((".py", ".so"))
-            ):
+            if file_.startswith("plug_") and (file_.endswith((".py", ".so"))):
                 if file_.endswith(".py"):
                     packname = ".".join(
                         [
@@ -121,7 +119,7 @@ def get_plugin_dict():
     return PLUGIN_DICT
 
 
-def _plug_class_filter(tup: Tuple) -> bool:
+def _plug_class_filter(tup: tuple) -> bool:
     return (
         tup[0].startswith("Plug")
         and isclass(tup[1])

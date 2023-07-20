@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime: 2021/6/1 上午9:53
 
 # -*- coding: utf-8 -*-
@@ -15,7 +14,7 @@ from dongtai_conf import settings
 logger = logging.getLogger("dongtai.openapi")
 
 
-class OssDownloader(object):
+class OssDownloader:
     BUCKET_URL = "https://oss-cn-beijing.aliyuncs.com"
     BUCKET_NAME = "dongtai"
 
@@ -125,7 +124,7 @@ def updateossstatus():
     except RequestError:
         return False, None
     except Exception as e:
-        logger.info("Health check oss status:{}".format(e))
+        logger.info(f"Health check oss status:{e}")
         return False, None
     return True, None
 
@@ -152,6 +151,6 @@ def checkossstatus():
     except AccessDenied:
         return True, None
     except Exception as e:
-        logger.info("Health check oss status:{}".format(e))
+        logger.info(f"Health check oss status:{e}")
         return False, None
     return True, None

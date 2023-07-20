@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 from dongtai_common.endpoint import TalentAdminEndPoint, R
 from django.utils.translation import gettext_lazy as _
 

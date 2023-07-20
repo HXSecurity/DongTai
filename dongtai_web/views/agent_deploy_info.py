@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime:2020/6/3 11:36
 from dongtai_common.endpoint import UserEndPoint, R
 from dongtai_common.models.deploy import IastDeployDesc

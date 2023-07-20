@@ -20,7 +20,7 @@ def turnIntListOfStr(type_str, field=""):
         if field:
             type_int_list = list(map(str, type_list))
             type_int_str = ",".join(type_int_list)
-            return " and {} in ({}) ".format(field, type_int_str)
+            return f" and {field} in ({type_int_str}) "
         else:
             return type_list
     except Exception:
@@ -192,7 +192,7 @@ def getAuthBaseQuery(user=None, table_str="", user_id=0):
     else:
         user_id = user.id
 
-    query_base = " and {}.user_id={}".format(table_str, user_id)
+    query_base = f" and {table_str}.user_id={user_id}"
     # 超级管理员
     if user.is_system_admin():
         query_base = ""
@@ -202,13 +202,13 @@ def getAuthBaseQuery(user=None, table_str="", user_id=0):
         if not talent or talent is None:
             pass
         else:
-            query_base = " and {}.talent_id={}".format(table_str, talent.id)
+            query_base = f" and {table_str}.talent_id={talent.id}"
     # 部门管理员 获取部门id
     elif user.is_department_admin:
         users = UserEndPoint.get_auth_users(user)
         user_ids = list(users.values_list("id", flat=True))
         user_ids = list(map(str, user_ids))
         user_str = ",".join(user_ids)
-        query_base = " and {}.user_id in ({})".format(table_str, user_str)
+        query_base = f" and {table_str}.user_id in ({user_str})"
 
     return query_base

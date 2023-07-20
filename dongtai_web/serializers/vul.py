@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime:2020/5/22 18:29
 from dongtai_common.models.agent import IastAgent
 from rest_framework import serializers
@@ -24,7 +23,7 @@ class HeaderVulUrlSerializer(HeaderVulSerializer):
 class VulSerializer(serializers.ModelSerializer):
     language = serializers.SerializerMethodField()
     type = serializers.SerializerMethodField()
-    AGENT_LANGUAGE_MAP: Dict[int, str] = {}
+    AGENT_LANGUAGE_MAP: dict[int, str] = {}
     status = serializers.SerializerMethodField()
     is_header_vul = serializers.SerializerMethodField()
     header_vul_urls = serializers.SerializerMethodField()

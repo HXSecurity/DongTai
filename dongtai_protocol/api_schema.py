@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime: 2021/9/28 上午10:51
 from drf_spectacular.utils import OpenApiParameter, OpenApiExample
 

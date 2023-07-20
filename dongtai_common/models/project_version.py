@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime:2021/06/08 下午5:32
 import time
 from django.db import models

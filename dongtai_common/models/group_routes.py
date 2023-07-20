@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime: 2021/5/10 下午2:24
 from django.contrib.auth.models import Group
 from django.db import models

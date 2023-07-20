@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 from captcha.models import CaptchaStore
 from dongtai_common.endpoint import R
 from rest_framework.views import APIView

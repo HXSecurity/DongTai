@@ -18,5 +18,7 @@ class Command(BaseCommand):
             for method_pool in method_pools:
                 search_vul_from_method_pool(method_pool.pool_sign, method_pool.agent_id)
         self.stdout.write(
-            self.style.SUCCESS('Successfully flash old data  "%s"' % "123123213321")
+            self.style.SUCCESS(
+                'Successfully flash old data  "{}"'.format("123123213321")
+            )
         )

@@ -66,9 +66,7 @@ class HardEncodeVulHandler(IReportHandler):
             strategy_ids = [int(i) for i in scan_template.content.split(",")]
             if strategy.id not in strategy_ids:
                 return
-        IastAgent.objects.filter(
-            project_version_id=self.agent.project_version_id
-        )
+        IastAgent.objects.filter(project_version_id=self.agent.project_version_id)
         iast_vul = (
             IastVulnerabilityModel.objects.filter(
                 strategy_id=strategy.id,
@@ -88,8 +86,8 @@ class HardEncodeVulHandler(IReportHandler):
             iast_vul.taint_value = (self.value,)
             iast_vul.level_id = (strategy.level_id,)
             iast_vul.full_stack = (json.dumps(self.detail),)
-            iast_vul.top_stack = ("字段:{}".format(self.field),)
-            iast_vul.bottom_stack = ("硬编码值:{}".format(self.value),)
+            iast_vul.top_stack = (f"字段:{self.field}",)
+            iast_vul.bottom_stack = (f"硬编码值:{self.value}",)
             iast_vul.save()
 
         else:
@@ -116,9 +114,9 @@ class HardEncodeVulHandler(IReportHandler):
                 taint_value=self.value,
                 level_id=strategy.level_id,
                 full_stack=json.dumps(self.detail),
-                top_stack="字段:{}".format(self.field),
+                top_stack=f"字段:{self.field}",
                 method_pool_id=-1,
-                bottom_stack="硬编码值:{}".format(self.value),
+                bottom_stack=f"硬编码值:{self.value}",
                 agent=self.agent,
                 project_version_id=self.agent.project_version_id,
                 project_id=self.agent.bind_project_id,

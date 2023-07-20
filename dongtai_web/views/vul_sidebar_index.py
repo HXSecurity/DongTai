@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 
 from dongtai_web.utils import get_model_order_options
 from dongtai_common.endpoint import R

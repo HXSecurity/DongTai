@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime:2020/5/21 15:55
 from dongtai_web.systemmonitor.urls import urlpatterns as systemmonitor_urls
 from dongtai_web.versioncontrol.urls import urlpatterns as versioncontrol_urls

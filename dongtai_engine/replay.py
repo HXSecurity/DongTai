@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime: 2021/7/16 下午12:17
 from dongtai_common.utils import const
 

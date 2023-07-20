@@ -1,5 +1,4 @@
 # !usr/bin/env python
-# coding:utf-8
 # @author:zhaoyanwei
 # @file: asset_aggr.py
 # @time: 2022/5/15  上午12:05

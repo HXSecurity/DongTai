@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 import base64
 import json
 import logging
@@ -249,7 +248,7 @@ class VulDetail(UserEndPoint):
 
     @staticmethod
     def parse_response(header, body):
-        return "{header}\n\n{body}".format(header=header, body=body)
+        return f"{header}\n\n{body}"
 
     def get_vul(self, department):
         vul = IastVulnerabilityModel.objects.filter(

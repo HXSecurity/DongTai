@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 import requests
 from django.utils.translation import gettext_lazy as _
 

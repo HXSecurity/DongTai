@@ -18,7 +18,7 @@ def get_scan_id(project_id) -> int:
 
 
 @cached_decorator(random_range=(60, 120), use_celery_update=False)
-def load_sink_strategy(user=None, language=None, scan_id=0) -> List[Dict]:
+def load_sink_strategy(user=None, language=None, scan_id=0) -> list[dict]:
     """
     加载用户user有权限方法的策略
     :param user: edit by song

@@ -24,7 +24,8 @@ from requests.exceptions import ConnectionError, ConnectTimeout
 from requests.exceptions import RequestException
 import json
 from json.decoder import JSONDecodeError
-from typing import Optional, Callable
+from typing import Optional
+from collections.abc import Callable
 from typing import List, Dict, Tuple
 from requests import Response
 from dongtai_conf.settings import SCA_BASE_URL, SCA_TIMEOUT, SCA_MAX_RETRY_COUNT
@@ -91,7 +92,7 @@ def request_get_res_data_with_exception(
         return Err("Exception")
 
 
-def data_transfrom(response: Response) -> Result[List[Dict], str]:
+def data_transfrom(response: Response) -> Result[list[dict], str]:
     if response.status_code == HTTPStatus.FORBIDDEN:
         return Err("Rate Limit Exceeded")
     try:
@@ -121,7 +122,7 @@ from dongtai_web.dongtai_sca.common.dataclass import (
 from marshmallow.exceptions import ValidationError
 
 
-def data_transfrom_package_v3(response: Response) -> Result[List[PackageInfo], str]:
+def data_transfrom_package_v3(response: Response) -> Result[list[PackageInfo], str]:
     if response.status_code == HTTPStatus.FORBIDDEN:
         return Err("Auth Failed")
     if response.status_code == HTTPStatus.TOO_MANY_REQUESTS:
@@ -149,7 +150,7 @@ def data_transfrom_package_v3(response: Response) -> Result[List[PackageInfo], s
 
 def data_transfrom_package_vul_v2(
     response: Response,
-) -> Result[Tuple[List[Dict], List[Dict]], str]:
+) -> Result[tuple[list[dict], list[dict]], str]:
     if response.status_code == HTTPStatus.FORBIDDEN:
         return Err("Rate Limit Exceeded")
     try:
@@ -170,7 +171,7 @@ def data_transfrom_package_vul_v2(
 
 def data_transfrom_package_vul_v3(
     response: Response,
-) -> Result[Tuple[Tuple[Vul, ...], Tuple[str, ...], Tuple[str, ...]], str]:
+) -> Result[tuple[tuple[Vul, ...], tuple[str, ...], tuple[str, ...]], str]:
     try:
         res_data = PackageVulResponse.from_json(response.content)
         return Ok(
@@ -202,7 +203,7 @@ def data_transfrom_package_vul_v3(
 )
 def get_package_vul(
     aql: str = "", ecosystem: str = "", package_hash: str = ""
-) -> List[Dict]:
+) -> list[dict]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v1/package_vul/")
     if aql:
         querystring = {"aql": aql}
@@ -229,7 +230,7 @@ def get_package_vul(
 )
 def get_package_vul_v2(
     aql: str = "", ecosystem: str = "", package_hash: str = ""
-) -> Tuple[List[Dict], List[Dict]]:
+) -> tuple[list[dict], list[dict]]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v2/package_vul/")
     if aql:
         querystring = {"aql": aql}
@@ -259,7 +260,7 @@ def get_package_vul_v3(
     ecosystem: str = "",
     package_version: str = "",
     package_name: str = "",
-) -> Tuple[Tuple[Vul, ...], Tuple[str, ...], Tuple[str, ...]]:
+) -> tuple[tuple[Vul, ...], tuple[str, ...], tuple[str, ...]]:
     url = urljoin(
         SCA_BASE_URL,
         f"/openapi/sca/v3/package/{ecosystem.lower()}/{package_name}/{package_version}/vuls",
@@ -284,7 +285,7 @@ def get_package_vul_v3(
 )
 def get_package(
     aql: str = "", ecosystem: str = "", package_hash: str = ""
-) -> List[Dict]:
+) -> list[dict]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v1/package/")
     if aql:
         querystring = {"aql": aql}
@@ -311,7 +312,7 @@ def get_package(
 )
 def get_package_v2(
     aql: str = "", ecosystem: str = "", package_hash: str = ""
-) -> List[Dict]:
+) -> list[dict]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v1/package/")
     if aql:
         querystring = {"aql": aql}
@@ -338,7 +339,7 @@ def get_package_v2(
 )
 def get_package_v3(
     aql: str = "", ecosystem: str = "", package_hash: str = ""
-) -> List[PackageInfo]:
+) -> list[PackageInfo]:
     url = urljoin(
         SCA_BASE_URL, f"/openapi/sca/v3/package/{ecosystem}/hash/{package_hash}"
     )
@@ -900,7 +901,7 @@ def get_package_aql(name: str, ecosystem: str, version: str) -> str:
     return f"{ecosystem}:{name}:{version}"
 
 
-def get_license_list(license_list_str: str) -> List[Dict]:
+def get_license_list(license_list_str: str) -> list[dict]:
     license_list = list(filter(lambda x: x, license_list_str.split(",")))
     res = list(
         PackageLicenseLevel.objects.filter(identifier__in=license_list)
@@ -917,8 +918,10 @@ def get_license_list(license_list_str: str) -> List[Dict]:
     return [{"identifier": "non-standard", "level_id": 0, "level_desc": "允许商业集成"}]
 
 
-def get_license_list_v2(license_list: Tuple[str, ...]) -> List[Dict]:
-    return [LICENSE_DICT[license] for license in license_list if license in LICENSE_DICT]
+def get_license_list_v2(license_list: tuple[str, ...]) -> list[dict]:
+    return [
+        LICENSE_DICT[license] for license in license_list if license in LICENSE_DICT
+    ]
     # return [{
 
 
@@ -948,8 +951,8 @@ class PackageVulSummary:
     vul_medium_count: int = 0
     vul_low_count: int = 0
     vul_info_count: int = 0
-    affected_versions: Tuple[str, ...] = ()
-    unaffected_versions: Tuple[str, ...] = ()
+    affected_versions: tuple[str, ...] = ()
+    unaffected_versions: tuple[str, ...] = ()
 
 
 def get_type_with_cwe(cwe_id: str) -> str:
@@ -1247,7 +1250,7 @@ def stat_severity(serveritys: list) -> dict:
     return dict(dic)
 
 
-def stat_severity_v2(vul_infos: List[VulInfo]) -> dict:
+def stat_severity_v2(vul_infos: list[VulInfo]) -> dict:
     res = defaultdict(int)
     severitys = [x.severity for x in vul_infos]
     for serverity in severitys:
@@ -1283,7 +1286,7 @@ class DongTaiScaVersion(_BaseVersion):
         self._version = version
 
 
-def get_nearest_version(version_str: str, version_str_list: List[str]) -> str:
+def get_nearest_version(version_str: str, version_str_list: list[str]) -> str:
     return min(
         filter(
             lambda x: x >= DongTaiScaVersion(version_str),
@@ -1293,7 +1296,7 @@ def get_nearest_version(version_str: str, version_str_list: List[str]) -> str:
     )._version
 
 
-def get_latest_version(version_str_list: List[str]) -> str:
+def get_latest_version(version_str_list: list[str]) -> str:
     return max(
         (DongTaiScaVersion(x) for x in version_str_list),
         default=DongTaiScaVersion(""),
@@ -1364,14 +1367,20 @@ def get_license(license_id: int) -> str:
     return defaultdict(lambda: "non-standard", LICENSE_ID_DICT)[license_id]
 
 
-def get_description(descriptions: List[Dict]) -> str:
+def get_description(descriptions: list[dict]) -> str:
     if not descriptions:
         return ""
     return sorted(descriptions, key=lambda x: x["language"], reverse=True)[0]["content"]
 
 
-def get_vul_path(base_aql: str, vul_package_path: List[Dict] = []) -> List[str]:
-    return [*[get_package_aql(x["name"], x["ecosystem"], x["version"]) for x in vul_package_path], base_aql]
+def get_vul_path(base_aql: str, vul_package_path: list[dict] = []) -> list[str]:
+    return [
+        *[
+            get_package_aql(x["name"], x["ecosystem"], x["version"])
+            for x in vul_package_path
+        ],
+        base_aql,
+    ]
 
 
 def get_asset_level(res: dict) -> int:
@@ -1382,7 +1391,7 @@ def get_asset_level(res: dict) -> int:
     return 0
 
 
-def get_detail(res: List[Dict]) -> str:
+def get_detail(res: list[dict]) -> str:
     slice_first = sorted(res, key=lambda x: x["language"], reverse=True)[0:]
     if slice_first:
         return slice_first[0]["content"]

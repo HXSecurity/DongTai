@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime:2021/1/14 下午7:17
 import json
 import os
@@ -147,7 +146,7 @@ class PythonAgentDownload:
                 if res is not None:
                     config_path = item
                     break
-            with open(f"{self.target_path}/{config_path}", "r") as config_file:
+            with open(f"{self.target_path}/{config_path}") as config_file:
                 config = json.load(config_file)
                 config["iast"]["server"]["token"] = auth_token
                 config["iast"]["server"]["url"] = base_url

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime:2021/1/12 下午6:59
 
 from django.urls import include, path

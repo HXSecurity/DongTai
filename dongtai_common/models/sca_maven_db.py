@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime:2020/8/26 16:01
 from django.db import models
 from dongtai_common.utils.settings import get_managed

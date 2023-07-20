@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime: 2021/10/22 下午2:28
 
 # def check_taint(method_pool_model):

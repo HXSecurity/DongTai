@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 from django.db.models import Q
 
 from dongtai_common.endpoint import R, UserEndPoint

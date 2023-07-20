@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime: 2021/10/22 下午2:26
 import uuid
 from django.core.cache import cache
@@ -142,9 +141,7 @@ def save_vul(vul_type, method_pool, position=None, data=None):
 
     from dongtai_common.models.agent import IastAgent
 
-    IastAgent.objects.filter(
-        project_version_id=method_pool.agent.project_version_id
-    )
+    IastAgent.objects.filter(project_version_id=method_pool.agent.project_version_id)
     uuid_key = uuid.uuid4().hex
     cache_key = f"vul_save-{vul_strategy.id}--{method_pool.http_method}-{method_pool.agent.project_version_id}"
     is_api_cached = uuid_key != cache.get_or_set(cache_key, uuid_key)

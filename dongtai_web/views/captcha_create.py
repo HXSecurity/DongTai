@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
 from dongtai_common.endpoint import R

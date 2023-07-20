@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 
 
 import logging
@@ -121,9 +120,7 @@ class AgentDeleteEndPoint(UserEndPoint):
                 ).format(deleted)
             )
         except Exception as e:
-            logger.error(
-                _("Failed to delete vulnerability data, error message: {}".format(e))
-            )
+            logger.error(_(f"Failed to delete vulnerability data, error message: {e}"))
 
     def delete_sca(self):
         try:

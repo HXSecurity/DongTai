@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 
 # status
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel

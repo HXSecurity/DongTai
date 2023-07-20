@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 import logging
 import time
 from dongtai_common.endpoint import UserEndPoint, R

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 from elasticsearch_dsl import Q, Search
 from dongtai_common.models.asset import IastAssetDocument
 from dongtai_web.aggregation.aggregation_common import auth_user_list_str
@@ -50,7 +49,7 @@ def get_order_params(order_fields, order_by):
 
     if order_by and order_by in order_fields:
         if order_by == "level":
-            order_by = "{}_id".format(order_by)
+            order_by = f"{order_by}_id"
             order_type = "desc" if order_type == "asc" else "asc"
         order = order_by
     else:
@@ -222,7 +221,6 @@ class ScaList(UserEndPoint):
             where_conditions.append("project_version_id = %(project_version_id)s")
             where_conditions_dict["project_version_id"] = project_version_id
 
-
         language = request_data.get("language", None)
         if language:
             asset_aggr_where = asset_aggr_where + " and iast_asset_aggr.language in %s"
@@ -258,7 +256,7 @@ class ScaList(UserEndPoint):
             es_query["search_keyword"] = package_kw
 
         if package_kw and package_kw.strip() != "":
-            package_kw = "%{}%".format(package_kw)
+            package_kw = f"%{package_kw}%"
             asset_aggr_where = (
                 asset_aggr_where + " and iast_asset_aggr.package_name like %s "
             )
@@ -487,12 +485,10 @@ def mysql_search(
                 after_signature,
             )
 
-
     order_conditions = [
         "signature_value DESC",
     ]
-    order_conditions_dict = {
-    }
+    order_conditions_dict = {}
     if order_type == "desc":
         order_conditions.insert(0, f"{order} DESC")
     else:

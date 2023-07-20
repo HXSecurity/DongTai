@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime:2020/10/23 11:56
 import logging
 import time
@@ -95,7 +94,7 @@ class HeartBeatHandler(IReportHandler):
         update_agent_cache(self.agent_id, default_dict)
 
     def get_result(self, msg=None):
-        logger.info("return_queue: {}".format(self.return_queue))
+        logger.info(f"return_queue: {self.return_queue}")
         if (self.return_queue is None or self.return_queue == 1) and vul_recheck_state(
             self.agent_id
         ):

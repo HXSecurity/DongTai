@@ -42,7 +42,7 @@ class HeaderVulSerializer(serializers.ModelSerializer):
 
 
 class HeaderVulViewSet(UserEndPoint, viewsets.ViewSet):
-    permission_classes_by_action: Dict = {}
+    permission_classes_by_action: dict = {}
 
     def get_permissions(self):
         try:

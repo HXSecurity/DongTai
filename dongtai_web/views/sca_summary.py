@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 from dongtai_web.utils import dict_transfrom
 from dongtai_common.models.asset import IastAssetDocument
 from dongtai_common.models import LANGUAGE_DICT
@@ -168,7 +167,7 @@ class ScaSummary(UserEndPoint):
             package_kw = pymysql.converters.escape_string(package_kw)
 
         if package_kw and package_kw.strip() != "":
-            package_kw = "%%{}%%".format(package_kw)
+            package_kw = f"%%{package_kw}%%"
             asset_aggr_where = asset_aggr_where + " and iast_asset.package_name like %s"
             sql_params.append(package_kw)
         project_id = request_data.get("project_id", None)

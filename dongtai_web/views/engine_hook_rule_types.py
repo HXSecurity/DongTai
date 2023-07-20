@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 import logging
 
 from dongtai_common.endpoint import UserEndPoint, R
@@ -82,7 +81,7 @@ class EngineHookRuleTypesEndPoint(UserEndPoint):
     def get(self, request):
         rule_type, page, page_size, language_id = self.parse_args(request)
         if (
-            all((x is not None for x in [rule_type, page, page_size, language_id]))
+            all(x is not None for x in [rule_type, page, page_size, language_id])
             is False
         ):
             return R.failure(msg=_("Parameter error"))

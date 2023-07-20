@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.asset_aggr import AssetAggr
 from dongtai_common.models.project_version import IastProjectVersion

@@ -13,5 +13,7 @@ class Command(BaseCommand):
 
         refresh_all_asset_data()
         self.stdout.write(
-            self.style.SUCCESS('Successfully flash old data  "%s"' % "123123213321")
+            self.style.SUCCESS(
+                'Successfully flash old data  "{}"'.format("123123213321")
+            )
         )

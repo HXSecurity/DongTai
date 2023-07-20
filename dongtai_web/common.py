@@ -19,7 +19,7 @@ class VulType(IntEnum):
 
 
 def get_json_from_iast_profile(
-    key: str, _serializer: Type[serializers.Serializer]
+    key: str, _serializer: type[serializers.Serializer]
 ) -> dict:
     profile = (
         IastProfile.objects.filter(key=key).values_list("value", flat=True).first()

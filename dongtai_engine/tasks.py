@@ -1,4 +1,3 @@
-# -*- coding:utf-8 -*-
 # datetime:2021/1/26 下午4:45
 from typing import Optional, Any, Union
 from dongtai_engine.filters.main import vul_filter
@@ -65,9 +64,9 @@ def queryset_to_iterator(queryset):
 
 
 def search_and_save_vul(
-    engine: Optional[VulEngine],
-    method_pool_model: Union[IastAgentMethodPoolReplay, MethodPool],
-    method_pool: Optional[Any],
+    engine: VulEngine | None,
+    method_pool_model: IastAgentMethodPoolReplay | MethodPool,
+    method_pool: Any | None,
     strategy: dict = {},
 ) -> None:
     """

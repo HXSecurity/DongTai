@@ -309,12 +309,12 @@ DATABASES = {
         },
     },
 }
-REDIS_URL = "redis://:%(password)s@%(host)s:%(port)s/%(db)s" % {
-    "password": config.get("redis", "password"),
-    "host": config.get("redis", "host"),
-    "port": config.get("redis", "port"),
-    "db": config.get("redis", "db"),
-}
+REDIS_URL = "redis://:{password}@{host}:{port}/{db}".format(
+    password=config.get("redis", "password"),
+    host=config.get("redis", "host"),
+    port=config.get("redis", "port"),
+    db=config.get("redis", "db"),
+)
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -583,12 +583,12 @@ REPLAY_ENGINE_URL = (
     config.get("engine", "url") + "/api/engine/run?method_pool_id={id}&model=replay"
 )
 
-CELERY_BROKER_URL = "redis://:%(password)s@%(host)s:%(port)s/%(db)s" % {
-    "password": config.get("redis", "password"),
-    "host": config.get("redis", "host"),
-    "port": config.get("redis", "port"),
-    "db": config.get("redis", "db"),
-}
+CELERY_BROKER_URL = "redis://:{password}@{host}:{port}/{db}".format(
+    password=config.get("redis", "password"),
+    host=config.get("redis", "host"),
+    port=config.get("redis", "port"),
+    db=config.get("redis", "db"),
+)
 CELERY_RESULT_EXPIRES = 600
 CELERY_WORKER_TASK_LOG_FORMAT = "%(message)s"
 CELERY_WORKER_LOG_FORMAT = "%(message)s"
@@ -989,7 +989,7 @@ DONGTAI_MAX_BATCH_TASK_CONCORRENCY = 5
 ELASTICSEARCH_STATE = config.get("elastic_search", "enable") == "true"
 
 
-def get_elasticsearch_conf() -> List[str]:
+def get_elasticsearch_conf() -> list[str]:
     hoststr = config.get("elastic_search", "host")
     return hoststr.split(",")
 

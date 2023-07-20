@@ -219,8 +219,8 @@ class GetAppVulsList(UserEndPoint):
                 )
                 item["dastvul__vul_type"] = dast_vul_types_dict[item["id"]]
                 item["dastvul_count"] = dastvul_rel_count_res_dict[item["id"]]
-                item["dast_validation_status"] = (
-                    bool(dastvul_rel_count_res_dict[item["id"]])
+                item["dast_validation_status"] = bool(
+                    dastvul_rel_count_res_dict[item["id"]]
                 )
                 end["data"].append(item)
         # all Iast Vulnerability Status

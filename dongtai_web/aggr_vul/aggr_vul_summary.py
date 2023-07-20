@@ -35,11 +35,11 @@ class Availability(TypedDict):
 
 
 class BaseSummary(TypedDict):
-    level: List[Level]
+    level: list[Level]
     availability: Availability
-    hook_type: List
-    language: List
-    project: List
+    hook_type: list
+    language: list
+    project: list
 
 
 def get_annotate_sca_common_data(user_id: int, pro_condition: str):
@@ -66,7 +66,7 @@ def get_annotate_sca_base_data(user_id: int, pro_condition: str):
     user = User.objects.get(pk=user_id)
     departments = list(user.get_relative_department())
     department_filter_sql = " and {}.department_id in ({})".format(
-        "asset", ",".join((str(x.id) for x in departments))
+        "asset", ",".join(str(x.id) for x in departments)
     )
     query_condition = (
         " where rel.is_del=0 and asset.project_id>0 "

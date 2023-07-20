@@ -48,9 +48,9 @@ class License:
 
 @dataclass
 class Data:
-    level: List[Level]
-    language: List[Language]
-    license: List[License]
+    level: list[Level]
+    language: list[Language]
+    license: list[License]
 
 
 def item_data_transfrom(

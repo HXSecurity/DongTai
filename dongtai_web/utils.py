@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime:2021/7/27 12:06
 
 from dongtai_common.models.profile import IastProfile
@@ -49,9 +48,13 @@ def assemble_query(
 ):
     return reduce(
         operator_,
-        (Q(**x) for x in ({
-                    "__".join(filter(lambda x: x, [kv_pair[0], lookuptype])): kv_pair[1]
-                } for kv_pair in condictions)),
+        (
+            Q(**x)
+            for x in (
+                {"__".join(filter(lambda x: x, [kv_pair[0], lookuptype])): kv_pair[1]}
+                for kv_pair in condictions
+            )
+        ),
         base_query,
     )
 
@@ -61,16 +64,20 @@ def assemble_query_2(
 ):
     return reduce(
         operator_,
-        (~Q(**x) for x in ({
-                    "__".join(filter(lambda x: x, [kv_pair[0], lookuptype])): kv_pair[1]
-                } for kv_pair in condictions)),
+        (
+            ~Q(**x)
+            for x in (
+                {"__".join(filter(lambda x: x, [kv_pair[0], lookuptype])): kv_pair[1]}
+                for kv_pair in condictions
+            )
+        ),
         base_query,
     )
 
 
 def extend_schema_with_envcheck(
     querys: list = [],
-    request_bodys: Union[List, Dict] = [],
+    request_bodys: list | dict = [],
     response_bodys: list = [],
     response_schema=None,
     **kwargs,
@@ -123,9 +130,7 @@ def get_response_serializer(
         else status_msg_keypair
     )
     msg_list = list({x[1] for x in (x[0] for x in status_msg_keypair)})
-    status_list = list(
-        {x[0] for x in (x[0] for x in status_msg_keypair)}
-    )
+    status_list = list({x[0] for x in (x[0] for x in status_msg_keypair)})
     msg_list = ["success"] if msg_list is None else msg_list
     status_list = [201] if status_list is None else status_list
     return type(
@@ -184,11 +189,11 @@ def _map_response_description(item):
     struct like {(1,2):'3'}
     """
     key, value = item
-    return "{} : {} : {}".format(key[0], key[1], value)
+    return f"{key[0]} : {key[1]} : {value}"
 
 
 def _reduce_response_description(itema, itemb):
-    return "{} \n{} ".format(itema, itemb)
+    return f"{itema} \n{itemb} "
 
 
 def batch_queryset(queryset, batch_size=1):
@@ -245,7 +250,7 @@ def checkcover_batch(api_route, agents):
 def apiroute_cachekey(api_route, agents, http_method=None):
     agent_id = sha1(str([_["id"] for _ in agents]))
     http_method = str(http_method)
-    return "{}_{}_{}".format(agent_id, http_method, api_route.id)
+    return f"{agent_id}_{http_method}_{api_route.id}"
 
 
 def sha1(string, encoding="utf-8"):
@@ -279,14 +284,14 @@ logger = logging.getLogger("dongtai-dongtai_conf")
 def checkopenapistatus(openapiurl, token):
     try:
         resp = requests.get(
-            openapiurl, timeout=10, headers={"Authorization": "Token {}".format(token)}
+            openapiurl, timeout=10, headers={"Authorization": f"Token {token}"}
         )
         resp = json.loads(resp.content)
         resp = resp.get("data", None)
     except (ConnectionError, ConnectTimeout):
         return False, None
     except Exception as e:
-        logger.info("HealthView_{}:{}".format(openapiurl, e))
+        logger.info(f"HealthView_{openapiurl}:{e}")
         return False, None
     return True, resp
 

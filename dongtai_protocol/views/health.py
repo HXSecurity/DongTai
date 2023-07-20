@@ -82,7 +82,7 @@ def _checkenginestatus():
     except (ConnectionError, ConnectTimeout):
         return False, None
     except Exception as e:
-        logger.info("HealthView_checkenginestatus:{}".format(e))
+        logger.info(f"HealthView_checkenginestatus:{e}")
         return False, None
     return True, resp
 

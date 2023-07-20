@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime: 2021/7/21 下午7:07
 from copy import deepcopy
 
@@ -7,7 +6,7 @@ from django.utils.functional import cached_property
 from dongtai_common.engine.compatibility import method_pool_3_to_2, method_pool_is_3
 
 
-class VulEngineV2(object):
+class VulEngineV2:
     """
     根据策略和方法池查找是否存在漏洞,此类不进行策略和方法池的权限验证
     """
@@ -48,9 +47,7 @@ class VulEngineV2(object):
         :return:
         """
         self._method_pool = sorted(
-            filter(
-                lambda x: not ("type" in x and "stack" in x), method_pool
-            ),
+            filter(lambda x: not ("type" in x and "stack" in x), method_pool),
             key=lambda e: e.__getitem__("invokeId"),
             reverse=True,
         )

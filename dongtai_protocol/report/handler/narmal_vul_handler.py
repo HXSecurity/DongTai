@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime: 2021/4/27 下午2:48
 
 import json
@@ -211,9 +210,7 @@ class NormalVulnHandler(BaseVulnHandler):
                 }
             ]
         ]
-        IastAgent.objects.filter(
-            project_version_id=self.agent.project_version_id
-        )
+        IastAgent.objects.filter(project_version_id=self.agent.project_version_id)
         iast_vul = (
             IastVulnerabilityModel.objects.filter(
                 strategy_id=strategy_id,

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 from dongtai_common.models import User
 from dongtai_common.models.hook_strategy import HookStrategy
 from rest_framework import serializers

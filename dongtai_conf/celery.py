@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime:2021/1/26 下午7:27
 
 import os
@@ -69,9 +68,7 @@ configs["result_serializer"] = "json"
 configs["accept_content"] = ["json"]
 configs["task_ignore_result"] = True
 configs["task_acks_late"] = True
-configs["task_always_eager"] = (
-    os.getenv("CELERY_EAGER_TEST") == "TRUE"
-)
+configs["task_always_eager"] = os.getenv("CELERY_EAGER_TEST") == "TRUE"
 configs["task_acks_on_failure_or_timeout"] = True
 configs["broker_channel_error_retry"] = True
 configs["broker_connection_max_retries"] = 0  # it means retry forever

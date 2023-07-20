@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime: 2021/7/16 下午4:45
 import json
 import logging
@@ -174,10 +173,7 @@ class EndPoint(APIView):
             exc.status_code = status.HTTP_429_TOO_MANY_REQUESTS
         elif isinstance(
             exc,
-            (
-                exceptions.NotAuthenticated,
-                exceptions.AuthenticationFailed,
-            ),
+            exceptions.NotAuthenticated | exceptions.AuthenticationFailed,
         ):
             # WWW-Authenticate header for 401 responses, else coerce to 403
             auth_header = self.get_authenticate_header(self.request)
@@ -204,7 +200,7 @@ class EndPoint(APIView):
     @staticmethod
     def get_paginator(
         queryset: QuerySet, page: int = 1, page_size: int = 20
-    ) -> Tuple[Dict, Union[QuerySet, "_SupportsPagination"]]:
+    ) -> tuple[dict, Union[QuerySet, "_SupportsPagination"]]:
         """
         根据模型集合、页号、每页大小获取分页数据
         :param queryset:

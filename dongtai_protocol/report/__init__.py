@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime:2020/10/23 11:54
 from dongtai_protocol.report.handler.error_log_handler import ErrorLogHandler
 from dongtai_protocol.report.handler.heartbeat_handler import HeartBeatHandler

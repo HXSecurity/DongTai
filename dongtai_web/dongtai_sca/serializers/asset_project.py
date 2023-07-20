@@ -1,5 +1,4 @@
 # !usr/bin/env python
-# coding:utf-8
 # @author:zhaoyanwei
 # @file: asset_project.py
 # @time: 2022/5/7  上午7:39

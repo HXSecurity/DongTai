@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 
 from dongtai_common.endpoint import R
 from dongtai_common.utils import const

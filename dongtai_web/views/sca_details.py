@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime:2020/8/26 11:47
 import logging
 
@@ -178,7 +177,7 @@ class ScaDetailView(UserEndPoint):
                         data["vuls"].append(vul)
 
                 except Exception as e:
-                    logger.info("get package_vul failed:{}".format(e))
+                    logger.info(f"get package_vul failed:{e}")
             return R.success(data=data)
         except Exception as e:
             logger.error(e)

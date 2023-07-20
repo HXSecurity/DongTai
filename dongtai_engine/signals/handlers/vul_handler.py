@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime: 2021/4/30 下午3:00
 import json
 import time
@@ -18,7 +17,8 @@ from django.db.models import Q
 from dongtai_engine.signals.handlers.parse_param_name import (
     parse_target_values_from_vul_stack,
 )
-from typing import List, Optional, Callable
+from typing import List, Optional
+from collections.abc import Callable
 from collections import defaultdict
 from dongtai_common.models.profile import IastProfile
 from dongtai_engine.plugins.project_time_update import (
@@ -37,7 +37,7 @@ def equals(source, target):
 from dongtai_engine.signals.handlers.parse_param_name import ParamDict
 
 
-def parse_params(param_values: str, taint_value: str) -> Optional[str]:
+def parse_params(param_values: str, taint_value: str) -> str | None:
     """
     从param参数中解析污点的位置
     """
@@ -65,7 +65,7 @@ def parse_params(param_values: str, taint_value: str) -> Optional[str]:
     return param_name
 
 
-def parse_body(body: str, taint_value: str) -> Optional[str]:
+def parse_body(body: str, taint_value: str) -> str | None:
     try:
         post_body = json.loads(body)
         if isinstance(post_body, dict):
@@ -86,7 +86,7 @@ def parse_body(body: str, taint_value: str) -> Optional[str]:
 from dongtai_engine.filters.utils import parse_headers_dict_from_bytes
 
 
-def parse_header(req_header: str, taint_value: str) -> Optional[str]:
+def parse_header(req_header: str, taint_value: str) -> str | None:
     """
     从header头中解析污点的位置
     """
@@ -99,7 +99,7 @@ def parse_header(req_header: str, taint_value: str) -> Optional[str]:
     return None
 
 
-def parse_cookie(req_header: str, taint_value: str) -> Optional[str]:
+def parse_cookie(req_header: str, taint_value: str) -> str | None:
     """
     从cookie中解析
     """
@@ -125,7 +125,7 @@ def parse_cookie(req_header: str, taint_value: str) -> Optional[str]:
     return None
 
 
-def parse_path(uri: str, taint_value: str) -> Optional[str]:
+def parse_path(uri: str, taint_value: str) -> str | None:
     """
     从PathVariable中解析污点位置
     """
@@ -154,11 +154,11 @@ def get_location_data() -> defaultdict:
     return defaultdict(lambda: ["GET", "POST", "HEADER", "PATH", "COOKIE"], data)
 
 
-def get_parser_location(source_method: str) -> List[str]:
+def get_parser_location(source_method: str) -> list[str]:
     return get_location_data()[source_method]
 
 
-def get_location_parser(location: str) -> Callable[[str, str], Optional[str]]:
+def get_location_parser(location: str) -> Callable[[str, str], str | None]:
     data = {
         "GET": parse_params,
         "POST": parse_body,
@@ -172,8 +172,8 @@ def get_location_parser(location: str) -> Callable[[str, str], Optional[str]]:
 
 
 def parse_taint_params(
-    location: str, http_locationstr: Optional[str], taint_value: str
-) -> Optional[str]:
+    location: str, http_locationstr: str | None, taint_value: str
+) -> str | None:
     if not http_locationstr:
         return None
     return get_location_parser(location)(http_locationstr, taint_value)
@@ -182,7 +182,7 @@ def parse_taint_params(
 from dongtai_common.models.agent_method_pool import MethodPool
 
 
-def get_http_locationstr(method_pool: MethodPool, location: str) -> Optional[str]:
+def get_http_locationstr(method_pool: MethodPool, location: str) -> str | None:
     data: dict = {
         "GET": "req_params",
         "POST": "req_data",
@@ -199,13 +199,13 @@ def parse_taint_position(
     source_method, vul_meta, taint_value, vul_stack
 ) -> defaultdict:
     param_names: defaultdict = defaultdict(list, {})
-    target_values: List[str] = list(
+    target_values: list[str] = list(
         filter(lambda x: x, parse_target_values_from_vul_stack(vul_stack))
     )
     for taint_value in target_values:
-        locations: List[str] = get_parser_location(source_method)
+        locations: list[str] = get_parser_location(source_method)
         for location in locations:
-            param_name: Optional[str] = parse_taint_params(
+            param_name: str | None = parse_taint_params(
                 location, get_http_locationstr(vul_meta, location), taint_value
             )
             if param_name and param_name not in param_names[location]:

@@ -21,7 +21,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.urls import URLPattern, URLResolver
 
 urlpatterns: list[URLResolver | URLPattern] = [
-    path("", include("{}.urls".format(app))) for app in settings.CUSTOM_APPS
+    path("", include(f"{app}.urls")) for app in settings.CUSTOM_APPS
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns.extend([path("healthcheck", include("health_check.urls"))])

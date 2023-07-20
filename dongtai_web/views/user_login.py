@@ -1,5 +1,4 @@
 #!/usr/local/env python
-# -*- coding: utf-8 -*-
 import logging
 
 from captcha.models import CaptchaStore

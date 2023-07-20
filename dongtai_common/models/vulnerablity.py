@@ -118,7 +118,7 @@ class IastVulnerabilityModel(models.Model):
             logger.error(
                 "level_id: {self.level_id} latest_time: {self.latest_time}", exc_info=e
             )
-        super(IastVulnerabilityModel, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 
 @registry.register_document

@@ -58,7 +58,7 @@ class IastAgentBlackRule(models.Model):
         managed = get_managed()
         db_table = "iast_agent_black_rule"
 
-    def to_full_rule(self) -> List[Dict]:
+    def to_full_rule(self) -> list[dict]:
         return [x.to_agent_rule() for x in self.iastagentblackruledetail_set.all()]
 
 
@@ -74,7 +74,7 @@ class IastAgentBlackRuleDetail(models.Model):
         managed = get_managed()
         db_table = "iast_agent_black_rule_detail"
 
-    def to_agent_rule(self) -> Dict:
+    def to_agent_rule(self) -> dict:
         return {
             "target_type": TargetType(self.target_type).name,
             "operator": TargetOperator(self.operator).name,

@@ -6,7 +6,7 @@ logger = logging.getLogger("dongtai.openapi")
 
 class LogService:
     def __init__(self, host, port):
-        super(LogService, self).__init__()
+        super().__init__()
         self.host = host
         self.port = port
         self.socket = None

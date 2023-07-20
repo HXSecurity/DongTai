@@ -37,7 +37,7 @@ class VulTestCase(TestCase):
         try:
             res = VulSerializer.split_container_name(value)
         except Exception as e:
-            self.fail("raised Exception:{}".format(e))
+            self.fail(f"raised Exception:{e}")
         assert isinstance(res, str)
 
     def tearDown(self):

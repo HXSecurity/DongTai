@@ -1,5 +1,4 @@
 #!/usr/local/env python
-# -*- coding: utf-8 -*-
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
 

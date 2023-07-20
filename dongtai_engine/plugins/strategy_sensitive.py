@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime: 2021/10/22 下午2:29
 # desc: data rule, response field rule, sql field rule
 import re2 as re

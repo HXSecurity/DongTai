@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime:2020/11/30 下午3:13
 import base64
 import logging
@@ -342,7 +341,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
 
             return R.success(data={"id": agent_id, "coreAutoStart": core_auto_start})
         except Exception as e:
-            logger.error("探针注册失败,原因:{reason}".format(reason=e), exc_info=True)
+            logger.error(f"探针注册失败,原因:{e}", exc_info=True)
             return R.failure(msg="探针注册失败")
 
     @staticmethod

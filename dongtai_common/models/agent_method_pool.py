@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime:2021/1/14 下午3:35
 from dongtai_conf.settings import METHOD_POOL_INDEX
 from django_elasticsearch_dsl import Document, fields

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 
 from dongtai_common.models.strategy_user import IastStrategyUser
 from dongtai_common.utils import const

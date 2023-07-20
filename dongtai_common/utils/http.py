@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime: 2021/7/21 下午6:21
 import base64
 import logging
@@ -20,4 +19,4 @@ def build_response(header, body):
     except Exception as e:
         _data = ""
         logger.warning(f"Response Header解析出错,错误原因:{e}", exc_info=e)
-    return "{header}\n\n{body}".format(header=_data, body=body)
+    return f"{_data}\n\n{body}"

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime: 2021/7/13 下午10:21
 from django.test.runner import DiscoverRunner
 from django.core.cache import cache

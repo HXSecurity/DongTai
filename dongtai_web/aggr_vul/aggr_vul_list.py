@@ -43,7 +43,7 @@ logger = logging.getLogger("django")
 INT_LIMIT: int = 2**64 - 1
 
 
-def convert_cwe(cwe: List | str) -> str:
+def convert_cwe(cwe: list | str) -> str:
     if isinstance(cwe, list):
         if len(cwe) > 0:
             return cwe[0].replace("CWE-", "")
@@ -201,7 +201,7 @@ class GetAggregationVulList(UserEndPoint):
             return R.failure(data=e.detail)
         departments = list(request.user.get_relative_department())
         department_filter_sql = " and {}.department_id in ({})".format(
-            "asset", ",".join((str(x.id) for x in departments))
+            "asset", ",".join(str(x.id) for x in departments)
         )
         query_condition = query_condition + department_filter_sql
 
@@ -244,14 +244,15 @@ class GetAggregationVulList(UserEndPoint):
             if keywords:
                 all_vul = IastAssetVul.objects.raw(
                     query_base
-                    + "  order by score desc, %s limit %s,%s;  "
-                    % (new_order, begin_num, end_num),
+                    + "  order by score desc, {} limit {},{};  ".format(
+                        new_order, begin_num, end_num
+                    ),
                     [keywords],
                 )
             else:
                 all_vul = IastAssetVul.objects.raw(
                     query_base
-                    + "  order by %s  limit %s,%s;  " % (new_order, begin_num, end_num)
+                    + f"  order by {new_order}  limit {begin_num},{end_num};  "
                 )
             all_vul = IastAssetVul.objects.filter(
                 pk__in=[vul.id for vul in all_vul]

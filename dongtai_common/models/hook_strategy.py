@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 # datetime:2021/1/13 下午7:14
 from django.db import models
 from django.utils.translation import gettext_lazy as _

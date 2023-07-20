@@ -22,7 +22,7 @@ class ParamDict(QueryDict):
                     self.extend_k_map[k_] = k
 
 
-def parse_target_values_from_vul_stack(vul_stack: List[List[Dict]]) -> List[str]:
+def parse_target_values_from_vul_stack(vul_stack: list[list[dict]]) -> list[str]:
     target_values = [i["targetValues"] for i in vul_stack[0]]
     if vul_stack[0] and method_pool_is_3(vul_stack[0][0]):
         target_values = [parse_target_value(x) for x in target_values]

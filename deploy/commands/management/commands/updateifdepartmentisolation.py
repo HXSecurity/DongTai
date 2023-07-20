@@ -47,6 +47,6 @@ class Command(BaseCommand):
             user.save()
             self.stdout.write(
                 self.style.SUCCESS(
-                    'Successfully flash old data  "%s"' % "department is update"
+                    'Successfully flash old data  "{}"'.format("department is update")
                 )
             )

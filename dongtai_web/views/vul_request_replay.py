@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
 import logging
 from http.server import BaseHTTPRequestHandler
 from io import BytesIO
@@ -267,10 +266,8 @@ class RequestReplayEndPoint(UserEndPoint):
             _data = base64.b64decode(header.encode("utf-8")).decode("utf-8")
         except Exception as e:
             _data = ""
-            logger.error(
-                _("Response header analysis error, error message: {}".format(e))
-            )
-        return "{header}\n\n{body}".format(header=_data, body=body)
+            logger.error(_(f"Response header analysis error, error message: {e}"))
+        return f"{_data}\n\n{body}"
 
     @extend_schema_with_envcheck(
         [
