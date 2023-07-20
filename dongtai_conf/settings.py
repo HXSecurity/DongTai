@@ -86,9 +86,13 @@ INSTALLED_APPS = [
     'health_check.db',                          # stock Django health checkers
     'health_check.contrib.redis',
     'django_prometheus',
+    'django_extensions',
 ]
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
-
+GRAPH_MODELS = {
+    'all_applications': True,
+    'graph_models': True,
+}
 
 def get_installed_apps():
     from os import walk, chdir, getcwd
