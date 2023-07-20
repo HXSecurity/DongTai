@@ -1,37 +1,54 @@
-from dongtai_common.models.asset_vul import IastAssetVulRelationMetaData
-from django.db import IntegrityError
-from .cwe import get_cwe_name
-from dongtai_common.models.asset_vul import (
-    IastAssetVulTypeRelation,
-    IastAssetVul,
-    IastVulAssetRelation,
-    IastAssetVulType,
-)
-from packaging.version import _BaseVersion
-from collections import defaultdict
-from hashlib import sha1
-from dongtai_conf.settings import SCA_SETUP
-from dongtai_web.dongtai_sca.models import PackageLicenseLevel
-from celery import shared_task
-import time
-from dongtai_common.models.vul_level import IastVulLevel
-from dongtai_common.models.asset import Asset
-from dongtai_common.models.agent import IastAgent
-import requests
-from result import Ok, Err, Result
-import logging
-from requests.exceptions import ConnectionError, ConnectTimeout
-from requests.exceptions import RequestException
+import contextlib
 import json
-from json.decoder import JSONDecodeError
-from typing import Optional
+import logging
+import time
+from collections import defaultdict
 from collections.abc import Callable
-from requests import Response
-from dongtai_conf.settings import SCA_BASE_URL, SCA_TIMEOUT, SCA_MAX_RETRY_COUNT
-from urllib.parse import urljoin
-from dongtai_common.common.utils import cached_decorator
+from dataclasses import asdict, dataclass, field
+from hashlib import sha1
 from http import HTTPStatus
+from json.decoder import JSONDecodeError
 from time import sleep
+from typing import Optional
+from urllib.parse import urljoin
+
+import requests
+from celery import shared_task
+from django.db import IntegrityError
+from marshmallow.exceptions import ValidationError
+from packaging.version import _BaseVersion
+from requests import Response
+from requests.exceptions import ConnectionError, ConnectTimeout, RequestException
+from result import Err, Ok, Result
+
+from dongtai_common.common.utils import cached_decorator
+from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.asset import Asset
+from dongtai_common.models.asset_vul import (
+    IastAssetVul,
+    IastAssetVulRelationMetaData,
+    IastAssetVulType,
+    IastAssetVulTypeRelation,
+    IastVulAssetRelation,
+)
+from dongtai_common.models.vul_level import IastVulLevel
+from dongtai_conf.settings import (
+    SCA_BASE_URL,
+    SCA_MAX_RETRY_COUNT,
+    SCA_SETUP,
+    SCA_TIMEOUT,
+)
+from dongtai_web.dongtai_sca.common.dataclass import (
+    PackageInfo,
+    PackageResponse,
+    PackageVulData,
+    PackageVulResponse,
+    Vul,
+    VulInfo,
+)
+from dongtai_web.dongtai_sca.models import PackageLicenseLevel
+
+from .cwe import get_cwe_name
 
 logger = logging.getLogger("dongtai-webapi")
 
@@ -108,17 +125,6 @@ def data_transfrom(response: Response) -> Result[list[dict], str]:
     except Exception as e:
         logger.error(f"unexcepted Exception : {e}", exc_info=True)
         return Err("Failed")
-
-
-from dongtai_web.dongtai_sca.common.dataclass import (
-    PackageResponse,
-    PackageInfo,
-    PackageVulData,
-    PackageVulResponse,
-    VulInfo,
-    Vul,
-)
-from marshmallow.exceptions import ValidationError
 
 
 def data_transfrom_package_v3(response: Response) -> Result[list[PackageInfo], str]:
@@ -935,10 +941,6 @@ def get_highest_license(license_list: list) -> dict:
 
 def sha_1(raw):
     return sha1(raw.encode("utf-8"), usedforsecurity=False).hexdigest()
-
-
-from dataclasses import dataclass, field, asdict
-import contextlib
 
 
 @dataclass

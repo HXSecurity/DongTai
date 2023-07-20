@@ -40,8 +40,6 @@ select = [
 ]
 ignore = [
     "F401",
-    "E402",
-    "PLW2901",
     "E501",    # Line too long, handled by black
     "SIM112",  # Use capitalized environment variable
     "PGH003",  # Use specific rule codes when ignoring type issues

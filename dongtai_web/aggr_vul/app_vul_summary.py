@@ -183,7 +183,8 @@ def get_annotate_data_es(department: Department, bind_project_id, project_versio
         Elasticsearch(settings.ELASTICSEARCH_DSL["default"]["hosts"])
     ).execute()
     dic = {}
-    for key in buckets:
+    for key_ in buckets:
+        key = key_
         origin_buckets = res.aggs[key].to_dict()["buckets"]
         for i in origin_buckets:
             i["id"] = i["key"]

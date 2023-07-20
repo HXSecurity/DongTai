@@ -206,7 +206,8 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
 
         engine = VulEngine()
         for method_pool in method_pools:
-            for sink in sink_set:
+            for sink_ in sink_set:
+                sink = sink_
                 engine.search(
                     method_pool=json.loads(method_pool.method_pool),
                     vul_method_signature=sink,

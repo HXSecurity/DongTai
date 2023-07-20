@@ -11,9 +11,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         n = count(0)
         has_error = False
-        for view, schema in VIEW_CLASS_TO_SCHEMA.items():
-            for method, schema in schema.items():
-                path, path_regex, schema, filepath = schema
+        for view, schema__ in VIEW_CLASS_TO_SCHEMA.items():
+            for method, schema_ in schema__.items():
+                path, path_regex, schema, filepath = schema_
                 if schema is None:
                     self.stdout.write(self.style.ERROR(f"No schema: {view}"))
                     continue

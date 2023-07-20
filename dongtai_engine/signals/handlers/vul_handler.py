@@ -2,38 +2,43 @@
 # datetime: 2021/4/30 下午3:00
 import json
 import time
+import uuid
+from collections import defaultdict
+from collections.abc import Callable
+from functools import lru_cache
+
 from celery.apps.worker import logger
+from django.core.cache import cache
+from django.db.models import Q
 from django.dispatch import receiver
 
+from dongtai_common.engine.compatibility import method_pool_3_to_2
+from dongtai_common.models.agent_method_pool import MethodPool
+from dongtai_common.models.profile import IastProfile
 from dongtai_common.models.project import IastProject, VulValidation
 from dongtai_common.models.replay_queue import IastReplayQueue
+from dongtai_common.models.vul_recheck_payload import IastVulRecheckPayload
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.utils import const
-from dongtai_conf import settings
-from dongtai_engine.signals import vul_found
 from dongtai_common.utils.systemsettings import get_vul_validate
-from dongtai_web.vul_log.vul_log import log_vul_found, log_recheck_vul
-from django.db.models import Q
-from dongtai_engine.signals.handlers.parse_param_name import (
-    parse_target_values_from_vul_stack,
-)
-from collections.abc import Callable
-from collections import defaultdict
-from dongtai_common.models.profile import IastProfile
+from dongtai_conf import settings
+from dongtai_engine.filters.utils import parse_headers_dict_from_bytes
 from dongtai_engine.plugins.project_time_update import (
     project_time_stamp_update,
     project_version_time_stamp_update,
 )
-from dongtai_engine.signals import send_notify
+from dongtai_engine.signals import send_notify, vul_found
+from dongtai_engine.signals.handlers.parse_param_name import (
+    ParamDict,
+    parse_target_values_from_vul_stack,
+)
+from dongtai_web.vul_log.vul_log import log_recheck_vul, log_vul_found
 
 
 def equals(source, target):
     if source == target or source in target or target in source:
         return True
     return None
-
-
-from dongtai_engine.signals.handlers.parse_param_name import ParamDict
 
 
 def parse_params(param_values: str, taint_value: str) -> str | None:
@@ -80,9 +85,6 @@ def parse_body(body: str, taint_value: str) -> str | None:
     except Exception:
         return parse_params(body, taint_value)
     return None
-
-
-from dongtai_engine.filters.utils import parse_headers_dict_from_bytes
 
 
 def parse_header(req_header: str, taint_value: str) -> str | None:
@@ -139,9 +141,6 @@ def parse_path(uri: str, taint_value: str) -> str | None:
     return None
 
 
-from functools import lru_cache
-
-
 @lru_cache(maxsize=128)
 def get_location_data() -> defaultdict:
     try:
@@ -178,9 +177,6 @@ def parse_taint_params(
     return get_location_parser(location)(http_locationstr, taint_value)
 
 
-from dongtai_common.models.agent_method_pool import MethodPool
-
-
 def get_http_locationstr(method_pool: MethodPool, location: str) -> str | None:
     data: dict = {
         "GET": "req_params",
@@ -213,10 +209,6 @@ def parse_taint_position(
     return param_names
 
 
-from django.core.cache import cache
-import uuid
-
-
 def get_original_url(uri: str, url_desc: list) -> str:
     locations = []
     for desc in url_desc:
@@ -231,11 +223,9 @@ def get_original_url(uri: str, url_desc: list) -> str:
     return "/".join(res)
 
 
-from dongtai_common.engine.compatibility import method_pool_3_to_2
-
-
 def get_real_url(method_pools: list) -> str:
-    for method_pool in method_pools[::-1]:
+    for method_pool_ in method_pools[::-1]:
+        method_pool = method_pool_
         if (
             method_pool["signature"]
             == "org.springframework.web.util.pattern.PathPattern.getPatternString()"
@@ -412,9 +402,6 @@ def save_vul(
     return vul
 
 
-from dongtai_common.models.vul_recheck_payload import IastVulRecheckPayload
-
-
 def create_vul_recheck_task(vul_id, agent, timestamp):
     project = IastProject.objects.filter(id=agent.bind_project_id).first()
     if project and project.vul_validation == VulValidation.DISABLE:
@@ -541,8 +528,8 @@ def handler_vul(
     """
     # 如果是重放请求,且重放请求类型为漏洞验证,更新漏洞状态为
     timestamp = int(time.time())
-    from dongtai_common.models.replay_method_pool import IastAgentMethodPoolReplay
     from dongtai_common.models.agent_method_pool import MethodPool
+    from dongtai_common.models.replay_method_pool import IastAgentMethodPoolReplay
 
     if isinstance(vul_meta, IastAgentMethodPoolReplay):
         replay_id = vul_meta.replay_id
@@ -587,14 +574,14 @@ def handler_vul(
         )
         if not vul:
             return
-        from dongtai_common.models.strategy import IastStrategyModel
-        from dongtai_protocol.utils import base64_decode
         from dongtai_common.models.dast_integration import (
+            DastvulDtMarkRelation,
             IastDastIntegration,
             IastDastIntegrationRelation,
             IastvulDtMarkRelation,
-            DastvulDtMarkRelation,
         )
+        from dongtai_common.models.strategy import IastStrategyModel
+        from dongtai_protocol.utils import base64_decode
 
         mark = parse_dast_mark(base64_decode(vul.req_header))
         if mark:
