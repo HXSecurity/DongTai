@@ -426,10 +426,7 @@ def get_ipaddresslist(network: str) -> list:
     try:
         network_data = json.loads(network)
         if isinstance(network_data, list):
-            res = []
-            for i in network_data:
-                res.append(i["ip"])
-            return res
+            return [i["ip"] for i in network_data]
         if isinstance(network_data, dict):
             return [network_data["ip"]]
     except KeyError as e:

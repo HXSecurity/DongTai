@@ -157,10 +157,10 @@ def get_annotate_sca_base_data(user_id: int, pro_condition: str):
                 if package_language in lang_key:
                     del lang_arr[package_language]
         if lang_arr:
-            for item in lang_arr:
-                result_summary["language"].append(
-                    {"id": LANGUAGE_DICT.get(item), "num": 0, "name": item}
-                )
+            result_summary["language"].extend(
+                {"id": LANGUAGE_DICT.get(item), "num": 0, "name": item}
+                for item in lang_arr
+            )
 
         # 漏洞类型 统计
         vul_type_join = (
@@ -259,15 +259,15 @@ def get_annotate_data_es(user_id, bind_project_id=None, project_version_id=None)
             language_names = [i["name"] for i in origin_buckets]
             for i in origin_buckets:
                 i["id"] = LANGUAGE_DICT.get(i["name"])
-            for language_key in LANGUAGE_DICT:
-                if language_key not in language_names:
-                    origin_buckets.append(
-                        {
-                            "id": LANGUAGE_DICT[language_key],
-                            "name": language_key,
-                            "num": 0,
-                        }
-                    )
+            origin_buckets.extend(
+                {
+                    "id": LANGUAGE_DICT[language_key],
+                    "name": language_key,
+                    "num": 0,
+                }
+                for language_key in LANGUAGE_DICT
+                if language_key not in language_names
+            )
         if key == "project":
             project_ids = [i["id"] for i in origin_buckets]
             project = (

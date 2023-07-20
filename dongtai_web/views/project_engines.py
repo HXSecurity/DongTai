@@ -43,14 +43,15 @@ class ProjectEngines(UserEndPoint):
         ).values("id", "token", "alias")
         data = []
         if queryset:
-            for item in queryset:
-                data.append(
-                    {
-                        "id": item["id"],
-                        "token": item["token"],
-                        "short_name": item["alias"]
-                        if item.get("alias", None)
-                        else "-".join(item["token"].split("-")[:-1]),
-                    }
-                )
+            data = [
+                {
+                    "id": item["id"],
+                    "token": item["token"],
+                    "short_name": item["alias"]
+                    if item.get("alias", None)
+                    else "-".join(item["token"].split("-")[:-1]),
+                }
+                for item in queryset
+            ]
+
         return R.success(data=data)

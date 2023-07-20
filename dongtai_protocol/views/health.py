@@ -54,17 +54,16 @@ def checkenginestaus():
             )
 
             monitor_models = monitor_models.values("key", "name", "name_en", "name_zh")
-            mock_data["engine_monitoring_indicators"] = []
-            for monitor_model in monitor_models:
-                mock_data["engine_monitoring_indicators"].append(
-                    {
-                        "key": monitor_model["key"],
-                        "name": monitor_model["name"],
-                        "name_en": monitor_model["name_en"],
-                        "name_zh": monitor_model["name_zh"],
-                        "value": redis_cli.llen(monitor_model["key"]),
-                    }
-                )
+            mock_data["engine_monitoring_indicators"] = [
+                {
+                    "key": monitor_model["key"],
+                    "name": monitor_model["name"],
+                    "name_en": monitor_model["name_en"],
+                    "name_zh": monitor_model["name_zh"],
+                    "value": redis_cli.llen(monitor_model["key"]),
+                }
+                for monitor_model in monitor_models
+            ]
     except Exception as e:
         logger.info(e)
         return R.success(data=mock_data)

@@ -60,40 +60,40 @@ def get_annotate_data(
     strategy_info = _annotate_by_query(
         cache_q, ("strategy_id", "strategy__vul_name"), "strategy_id"
     )
-    for item in strategy_info:
-        result_summary["hook_type"].append(
-            {
-                "name": item["strategy__vul_name"],
-                "num": item["count"],
-                "id": item["strategy_id"],
-            }
-        )
+    result_summary["hook_type"].extend(
+        {
+            "name": item["strategy__vul_name"],
+            "num": item["count"],
+            "id": item["strategy_id"],
+        }
+        for item in strategy_info
+    )
 
     # 漏洞等级筛选
     count_info_level = _annotate_by_query(
         cache_q, ("level_id", "level__name_value"), "level_id"
     )
-    for item in count_info_level:
-        result_summary["level"].append(
-            {
-                "name": item["level__name_value"],
-                "num": item["count"],
-                "id": item["level_id"],
-            }
-        )
+    result_summary["level"].extend(
+        {
+            "name": item["level__name_value"],
+            "num": item["count"],
+            "id": item["level_id"],
+        }
+        for item in count_info_level
+    )
 
     # # 按状态筛选
     status_info = _annotate_by_query(
         cache_q, ("status_id", "status__name"), "status_id"
     )
-    for item in status_info:
-        result_summary["status"].append(
-            {
-                "name": item["status__name"],
-                "num": item["count"],
-                "id": item["status_id"],
-            }
-        )
+    result_summary["status"].extend(
+        {
+            "name": item["status__name"],
+            "num": item["count"],
+            "id": item["status_id"],
+        }
+        for item in status_info
+    )
 
     return result_summary
 

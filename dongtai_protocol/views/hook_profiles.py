@@ -98,22 +98,22 @@ class HookProfilesEndPoint(OpenApiEndPoint):
                 }
                 profiles.append(profile)
             else:
-                for strategy in strategies.values():
-                    strategy_details.append(
-                        {
-                            "source": strategy.get("source"),
-                            "track": strategy.get("track"),
-                            "target": strategy.get("target"),
-                            "value": strategy.get("value"),
-                            "inherit": strategy.get("inherit"),
-                            "ignore_blacklist": strategy.get("ignore_blacklist"),
-                            "ignore_internal": strategy.get("ignore_internal"),
-                            "tags": strategy.get("tags"),
-                            "untags": strategy.get("untags"),
-                            "command": strategy.get("command"),
-                            "stack_blacklist": strategy.get("stack_blacklist"),
-                        }
-                    )
+                strategy_details.extend(
+                    {
+                        "source": strategy.get("source"),
+                        "track": strategy.get("track"),
+                        "target": strategy.get("target"),
+                        "value": strategy.get("value"),
+                        "inherit": strategy.get("inherit"),
+                        "ignore_blacklist": strategy.get("ignore_blacklist"),
+                        "ignore_internal": strategy.get("ignore_internal"),
+                        "tags": strategy.get("tags"),
+                        "untags": strategy.get("untags"),
+                        "command": strategy.get("command"),
+                        "stack_blacklist": strategy.get("stack_blacklist"),
+                    }
+                    for strategy in strategies.values()
+                )
                 strategy_details = sorted(
                     strategy_details, key=lambda item: str(item["value"])
                 )

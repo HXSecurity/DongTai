@@ -39,9 +39,7 @@ class MethodGraph(AnonymousAndUserEndPoint):
             auth_agents = self.get_auth_and_anonymous_agents(request.user).values("id")
             auth_agent_ids = auth_agents.values_list("id", flat=True)
 
-            cur_ids = []
-            for item in auth_agent_ids:
-                cur_ids.append(int(item))
+            cur_ids = [int(item) for item in auth_agent_ids]
 
             if (
                 method_pool_type == "normal"

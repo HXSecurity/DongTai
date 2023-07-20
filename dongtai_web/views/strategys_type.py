@@ -59,12 +59,13 @@ class StrategyType(UserEndPoint):
                     }
                 )
         if allType:
-            for item in allType:
-                result.append(
-                    {
-                        "level_id": item.id,
-                        "level_name": item.name_type,
-                        "type_value": curTyp.get(item.id, []),
-                    }
-                )
+            result = [
+                {
+                    "level_id": item.id,
+                    "level_name": item.name_type,
+                    "type_value": curTyp.get(item.id, []),
+                }
+                for item in allType
+            ]
+
         return R.success(data=result)

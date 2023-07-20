@@ -23,14 +23,12 @@ from dongtai_protocol.report.report_handler_factory import ReportHandler
 @unittest.skip("waiting for rebuild mock data")
 class AgentMethodPoolUploadTestCase(AgentTestCase):
     def test_benchmark_agent_method_pool_upload(self):
-        data = []
         res = download_if_not_exist(
             "https://huoqi-public.oss-cn-beijing.aliyuncs.com/iast/test_data/server.log",
             "/tmp/test_apiserver_server.log",
         )
         with open("/tmp/test_apiserver_server.log") as f:
-            for line in f:
-                data.append(json.loads(line))
+            data = [json.loads(line) for line in f]
         for report in data:
             report["detail"]["agentId"] = self.agent_id
             del report["message"]

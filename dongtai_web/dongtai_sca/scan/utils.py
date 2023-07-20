@@ -912,9 +912,11 @@ def get_license_list(license_list_str: str) -> list[dict]:
         .all()
     )
     selected_identifier = [x["identifier"] for x in res]
-    for k in license_list:
-        if k not in selected_identifier:
-            res.append({"identifier": k, "level_id": 0, "level_desc": "允许商业集成"})
+    res.extend(
+        {"identifier": k, "level_id": 0, "level_desc": "允许商业集成"}
+        for k in license_list
+        if k not in selected_identifier
+    )
 
     if res:
         return res

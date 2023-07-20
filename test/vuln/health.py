@@ -41,15 +41,15 @@ class MyTestCase(DongTaiTestCase):
             )
 
             monitor_models = monitor_models.values("key", "name")
-            mock_data["engine_monitoring_indicators"] = []
-            for monitor_model in monitor_models:
-                mock_data["engine_monitoring_indicators"].append(
-                    {
-                        "key": monitor_model["key"],
-                        "name": monitor_model["name"],
-                        "value": redis_cli.llen(monitor_model["key"]),
-                    }
-                )
+            mock_data["engine_monitoring_indicators"] = [
+                {
+                    "key": monitor_model["key"],
+                    "name": monitor_model["name"],
+                    "value": redis_cli.llen(monitor_model["key"]),
+                }
+                for monitor_model in monitor_models
+            ]
+
         print(mock_data)
 
 

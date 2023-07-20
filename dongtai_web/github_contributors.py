@@ -70,9 +70,7 @@ def _get_github_user(url_list=URL_LIST, suffix="pulls?state=all"):
                 user_count[user["id"]] = 1
         total_users.update(repo_users_dic)
     sorted_user_list = sorted(user_count.items(), key=lambda x: x[1], reverse=True)
-    user_list = []
-    for user in sorted_user_list:
-        user_list.append(total_users[user[0]])
+    user_list = [total_users[user[0]] for user in sorted_user_list]
     return user_list, is_over_limit
 
 

@@ -110,12 +110,10 @@ class VulEngineV2:
 
     @cached_property
     def method_pool_signatures(self):
-        signatures = []
-        for method in self.method_pool:
-            signatures.append(
-                f"{method.get('className').replace('/', '.')}.{method.get('methodName')}"
-            )
-        return signatures
+        return [
+            f"{method.get('className').replace('/', '.')}.{method.get('methodName')}"
+            for method in self.method_pool
+        ]
 
     def search_sink(self, method_pool, vul_method_signature):
         self.prepare(method_pool, vul_method_signature)

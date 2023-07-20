@@ -136,9 +136,10 @@ class GetAggregationVulList(UserEndPoint):
                     # 安全校验,强制转int
                     type_list = list(map(int, type_list))
                     type_int_list = list(map(str, type_list))
-                    lang_str = []
-                    for one_type in type_int_list:
-                        lang_str.append("'" + LANGUAGE_ID_DICT.get(one_type, "") + "'")
+                    lang_str = [
+                        "'" + LANGUAGE_ID_DICT.get(one_type, "") + "'"
+                        for one_type in type_int_list
+                    ]
                     type_int_str = ",".join(lang_str)
                     language_str_change = " and {} in ({}) ".format(
                         "vul.package_language", type_int_str
@@ -147,9 +148,9 @@ class GetAggregationVulList(UserEndPoint):
                     language_id_list = turnIntListOfStr(
                         ser.validated_data.get("language_str", "")
                     )
-                    language_arr = []
-                    for lang in language_id_list:
-                        language_arr.append(LANGUAGE_ID_DICT.get(str(lang)))
+                    language_arr = [
+                        LANGUAGE_ID_DICT.get(str(lang)) for lang in language_id_list
+                    ]
                     es_query["language_ids"] = language_arr
                 # 漏洞类型筛选 弃用
                 if ser.validated_data.get("hook_type_id_str", ""):

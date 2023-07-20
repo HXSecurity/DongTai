@@ -56,21 +56,22 @@ class HookProfilesV2EndPoint(HookProfilesEndPoint):
             else:
                 strategies = other_strategies_dict[hook_type.id]
 
-            for strategy in strategies:
-                profiles.append(
-                    {
-                        "type": hook_type.type,
-                        "vul_type": hook_type.value,
-                        "source": strategy.get("source"),
-                        "target": strategy.get("target"),
-                        "signature": strategy.get("value"),
-                        "inherit": strategy.get("inherit"),
-                        "ignore_blacklist": strategy.get("ignore_blacklist"),
-                        "ignore_internal": strategy.get("ignore_internal"),
-                        "tags": strategy.get("tags"),
-                        "untags": strategy.get("untags"),
-                        "command": strategy.get("command"),
-                        "stack_blacklist": strategy.get("stack_blacklist"),
-                    }
-                )
+            profiles.extend(
+                {
+                    "type": hook_type.type,
+                    "vul_type": hook_type.value,
+                    "source": strategy.get("source"),
+                    "target": strategy.get("target"),
+                    "signature": strategy.get("value"),
+                    "inherit": strategy.get("inherit"),
+                    "ignore_blacklist": strategy.get("ignore_blacklist"),
+                    "ignore_internal": strategy.get("ignore_internal"),
+                    "tags": strategy.get("tags"),
+                    "untags": strategy.get("untags"),
+                    "command": strategy.get("command"),
+                    "stack_blacklist": strategy.get("stack_blacklist"),
+                }
+                for strategy in strategies
+            )
+
         return profiles

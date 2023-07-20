@@ -128,9 +128,10 @@ def get_agent_config_by_scan(agent_id: int, mg: MetricGroup) -> Result:
         .only("id")
     )
     for i in queryset:
-        result_list = []
-        for target in IastCircuitTarget.objects.filter(circuit_config_id=i.id).all():
-            result_list.append(get_filter_by_target(target)(agent_detail))
+        result_list = [
+            get_filter_by_target(target)(agent_detail)
+            for target in IastCircuitTarget.objects.filter(circuit_config_id=i.id).all()
+        ]
         if all(result_list):
             return Ok(i.id)
     return Err("config not found")
@@ -168,11 +169,12 @@ def get_agent_config(agent_id: int) -> Result:
         config = IastCircuitConfig.objects.filter(pk=config_id).first()
         if not config:
             continue
-        metric_list = []
-        for metric in IastCircuitMetric.objects.filter(
-            circuit_config_id=config.id
-        ).all():
-            metric_list.append(convert_metric(metric))
+        metric_list = [
+            convert_metric(metric)
+            for metric in IastCircuitMetric.objects.filter(
+                circuit_config_id=config.id
+            ).all()
+        ]
         data[mg.name.lower()] = metric_list
         data[mg.name.lower() + "IsUninstall"] = False
         interval_list.append(config.interval)

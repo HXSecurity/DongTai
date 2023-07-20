@@ -291,10 +291,7 @@ class EndPoint(APIView):
         auth_assets = auth_assets.values("signature_value").annotate(
             total=Count("signature_value")
         )
-        auth_hash = []
-        for asset in auth_assets:
-            auth_hash.append(asset["signature_value"])
-        auth_hash = list(set(auth_hash))
+        auth_hash = list({asset["signature_value"] for asset in auth_assets})
         return AssetAggr.objects.filter(signature_value__in=auth_hash, is_del=0)
 
     @staticmethod

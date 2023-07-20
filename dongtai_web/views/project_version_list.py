@@ -60,15 +60,15 @@ class ProjectVersionList(UserEndPoint):
             ).order_by("-id")
             data = []
             if versionInfo:
-                for item in versionInfo:
-                    data.append(
-                        {
-                            "version_id": item.id,
-                            "version_name": item.version_name,
-                            "current_version": item.current_version,
-                            "description": item.description,
-                        }
-                    )
+                data = [
+                    {
+                        "version_id": item.id,
+                        "version_name": item.version_name,
+                        "current_version": item.current_version,
+                        "description": item.description,
+                    }
+                    for item in versionInfo
+                ]
 
             return R.success(msg=_("Search successful"), data=data)
         except Exception as e:

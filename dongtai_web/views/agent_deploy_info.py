@@ -29,7 +29,10 @@ class AgentDeployInfo(UserEndPoint):
             "system": ["windows", "linux"],
         }
         queryset = IastDeployDesc.objects.all()
-        for item in queryset:
-            if item.middleware not in condition["middlewares"]:
-                condition["middlewares"].append(item.middleware)
+        condition["middlewares"].extend(
+            item.middleware
+            for item in queryset
+            if item.middleware not in condition["middlewares"]
+        )
+
         return R.success(data=condition)

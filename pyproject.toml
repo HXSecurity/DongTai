@@ -47,8 +47,7 @@ ignore = [
     "RUF012",  # Mutable class attributes should be annotated with typing.ClassVar
     "TRY003",  # Avoid specifying long messages outside the exception class
     "TRY301",  # Abstract raise to an inner function
-    "PERF203",
-    "PERF401",
+    "PERF203", # try-except within a loop incurs performance overhead
     "T201",
 ]
 target-version = "py310"

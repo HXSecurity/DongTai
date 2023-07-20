@@ -33,11 +33,12 @@ class StrategyList(UserEndPoint):
         )
         data = []
         if queryset:
-            for item in queryset:
-                data.append(
-                    {
-                        "id": item["id"],
-                        "name": item["name"],
-                    }
-                )
+            data = [
+                {
+                    "id": item["id"],
+                    "name": item["name"],
+                }
+                for item in queryset
+            ]
+
         return R.success(data=data)

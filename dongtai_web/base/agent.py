@@ -276,14 +276,14 @@ def get_vul_count_by_agent(agent_ids, vid, user):
                 }
             )
         typeArrKeys = typeArr.keys()
-        for item_type in typeArrKeys:
-            type_summary.append(
-                {
-                    "type_name": item_type,
-                    "type_count": typeArr[item_type],
-                    "type_level": typeLevel[item_type],
-                }
-            )
+        type_summary.extend(
+            {
+                "type_name": item_type,
+                "type_count": typeArr[item_type],
+                "type_level": typeLevel[item_type],
+            }
+            for item_type in typeArrKeys
+        )
     return {
         "type_summary": type_summary,
         "levelCount": levelCount,

@@ -68,14 +68,14 @@ def get_summary_by_agent_ids(agent_ids: Iterable):
             typeLevel[one["type"]] = one["level_id"]
             levelCount[one["level_id"]] = levelCount.get(one["level_id"], 0) + 1
         typeArrKeys = typeArr.keys()
-        for item_type in typeArrKeys:
-            data["type_summary"].append(
-                {
-                    "type_name": item_type,
-                    "type_count": typeArr[item_type],
-                    "type_level": typeLevel[item_type],
-                }
-            )
+        data["type_summary"].extend(
+            {
+                "type_name": item_type,
+                "type_count": typeArr[item_type],
+                "type_level": typeLevel[item_type],
+            }
+            for item_type in typeArrKeys
+        )
 
     current_timestamp, a_week_ago_timestamp, days = weeks_ago(week=1)
     daylist = []
@@ -174,14 +174,14 @@ def get_summary_by_project(project_id: int, project_version_id: int):
             typeLevel[one["type"]] = one["level_id"]
             levelCount[one["level_id"]] = levelCount.get(one["level_id"], 0) + 1
         typeArrKeys = typeArr.keys()
-        for item_type in typeArrKeys:
-            data["type_summary"].append(
-                {
-                    "type_name": item_type,
-                    "type_count": typeArr[item_type],
-                    "type_level": typeLevel[item_type],
-                }
-            )
+        data["type_summary"].extend(
+            {
+                "type_name": item_type,
+                "type_count": typeArr[item_type],
+                "type_level": typeLevel[item_type],
+            }
+            for item_type in typeArrKeys
+        )
 
     current_timestamp, a_week_ago_timestamp, days = weeks_ago(week=1)
     daylist = []

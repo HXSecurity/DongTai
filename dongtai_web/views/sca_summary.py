@@ -307,15 +307,17 @@ def get_vul_list_from_elastic_search(
             language_names = [i["language"] for i in origin_buckets]
             for i in origin_buckets:
                 i["id"] = LANGUAGE_DICT.get(i["language"])
-            for language_key in LANGUAGE_DICT:
-                if language_key not in language_names:
-                    origin_buckets.append(
-                        {
-                            "id": LANGUAGE_DICT[language_key],
-                            "language": language_key,
-                            "count": 0,
-                        }
-                    )
+
+            origin_buckets.extend(
+                {
+                    "id": LANGUAGE_DICT[language_key],
+                    "language": language_key,
+                    "count": 0,
+                }
+                for language_key in LANGUAGE_DICT
+                if language_key not in language_names
+            )
+
         if key == "level":
             for i in origin_buckets:
                 i["level_id"] = i["id"]
@@ -325,15 +327,15 @@ def get_vul_list_from_elastic_search(
             level_dic = dict_transfrom(level, "id")
             for i in origin_buckets:
                 i["level"] = level_dic[i["level_id"]]["name_value"]
-            for level_id in level_dic:
-                if level_id not in level_ids:
-                    origin_buckets.append(
-                        {
-                            "level_id": level_id,
-                            "level": level_dic[level_id]["name_value"],
-                            "count": 0,
-                        }
-                    )
+            origin_buckets.extend(
+                {
+                    "level_id": level_id,
+                    "level": level_dic[level_id]["name_value"],
+                    "count": 0,
+                }
+                for level_id in level_dic
+                if level_id not in level_ids
+            )
 
         dic[key] = list(origin_buckets)
     return dic, res
