@@ -17,7 +17,7 @@ if not NOT_GEVENT and not USING_DEVELOPMENT_SERVER:
 
     monkey.patch_all()
 
-from django.core.wsgi import get_wsgi_application
+from django.core.wsgi import get_wsgi_application  # noqa: E402
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dongtai_conf.settings")
 
