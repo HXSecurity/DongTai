@@ -78,10 +78,11 @@ class EngineHookRuleTypeAddEndPoint(UserEndPoint):
             language_id = ser.validated_data.get("language_id", 1)
             if enable not in ENABLE_CHOICE:
                 return None, None, None, None, None
-            return rule_type, name, short_name, enable, language_id
         except Exception as e:
-            logger.error(_("Parameter parsing failed, error message: {}").format(e))
+            logger.exception(_("Parameter parsing failed, error message: "), exc_info=e)
             return None, None, None, None, None
+        else:
+            return rule_type, name, short_name, enable, language_id
 
     @extend_schema_with_envcheck(
         request=_EngineHookRuleTypeAddSerializer,

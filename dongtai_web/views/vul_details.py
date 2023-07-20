@@ -241,7 +241,7 @@ class VulDetail(UserEndPoint):
                 else ""
             )
         except Exception as e:
-            logger.error(_("Error analysis of Header, error message: {}").format(e))
+            logger.exception(_("Error analysis of Header, error message: "), exc_info=e)
         if data:
             _data = _data + "\n" + data
         return _data
@@ -288,10 +288,10 @@ class VulDetail(UserEndPoint):
         try:
             self.server = vul.server
         except Exception as e:
-            logger.error(
+            logger.exception(
                 _(
-                    "[{}] Vulnerability information parsing error, error message: {}"
-                ).format(__name__, e),
+                    "[{}] Vulnerability information parsing error, error message: "
+                ).format(__name__),
                 exc_info=e,
             )
             self.server = {}
@@ -299,10 +299,10 @@ class VulDetail(UserEndPoint):
         try:
             token = vul.agent.token
         except ObjectDoesNotExist as e:
-            logger.error(
+            logger.exception(
                 _(
-                    "[{}] Unable to get agent__token, please check whether the agent still exists: {}"
-                ).format(__name__, e),
+                    "[{}] Unable to get agent__token, please check whether the agent still exists: "
+                ).format(__name__),
                 exc_info=e,
             )
             token = ""
@@ -458,10 +458,11 @@ class VulDetail(UserEndPoint):
                 }
             )
         except Exception as e:
-            logger.error(
+            logger.exception(
                 _(
-                    "[{}] Vulnerability information parsing error, error message: {}"
-                ).format(__name__, e)
+                    "[{}] Vulnerability information parsing error, error message: "
+                ).format(__name__),
+                exc_info=e,
             )
             return R.failure(msg=_("Vulnerability data query error"))
 

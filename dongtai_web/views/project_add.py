@@ -221,7 +221,7 @@ class ProjectAdd(UserEndPoint):
                     msg="操作成功",
                 )
         except Exception as e:
-            logger.error(e, exc_info=e)
+            logger.exception("uncatched exception: ", exc_info=e)
             return R.failure(status=202, msg=_("Parameter error"))
 
 

@@ -40,7 +40,7 @@ class AgentConfigView(OpenApiEndPoint):
             if agent_id is None:
                 return R.failure(msg="agentId is None")
         except Exception as e:
-            logger.error(e)
+            logger.exception("uncatched exception: ", exc_info=e)
             return R.failure(msg="agentId is None")
         if not get_circuit_break():
             return R.success(msg=_("Successfully"), data={})
@@ -82,7 +82,7 @@ class AgentConfigv2View(OpenApiEndPoint):
             if agent_id is None:
                 return R.failure(msg="agentId is None")
         except Exception as e:
-            logger.error(e)
+            logger.exception("uncatched exception: ", exc_info=e)
             return R.failure(msg="agentId is None")
         if not get_circuit_break():
             return R.success(msg=_("Successfully"), data={})

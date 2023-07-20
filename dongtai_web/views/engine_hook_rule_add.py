@@ -113,7 +113,10 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             request.data.get("untags", [])
             request.data.get("command", "")
             request.data.get("stack_blacklist", [])
-
+        except Exception as e:
+            logger.exception("uncatched exception: ", exc_info=e)
+            return None, None, None, None, None, None, None, None, None
+        else:
             return (
                 rule_type,
                 rule_value,
@@ -125,9 +128,6 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
                 ignore_blacklist,
                 ignore_internal,
             )
-        except Exception as e:
-            logger.error(e, exc_info=e)
-            return None, None, None, None, None, None, None, None, None
 
     @staticmethod
     def create_strategy(
@@ -168,10 +168,11 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
                 stack_blacklist=stack_blacklist,
             )
             strategy.save()
-            return strategy
         except Exception as e:
             logger.info(e, exc_info=e)
             return None
+        else:
+            return strategy
 
     @extend_schema_with_envcheck(
         request=_HookRuleAddBodyargsSerializer,

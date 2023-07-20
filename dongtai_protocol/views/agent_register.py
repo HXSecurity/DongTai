@@ -145,7 +145,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         try:
             port = int(server_port)
         except Exception:
-            logger.error(
+            logger.exception(
                 _("The server port does not exist, has been set to the default: 0")
             )
             port = 0
@@ -413,12 +413,13 @@ def get_ipaddress(network: str):
             if i.get("isAddress", 0):
                 res = i["ip"]
                 break
-        return res
     except KeyError:
         return ""
     except Exception as e:
         logger.error(e, exc_info=True)
         return ""
+    else:
+        return res
 
 
 def get_ipaddresslist(network: str) -> list:
@@ -432,9 +433,9 @@ def get_ipaddresslist(network: str) -> list:
         if isinstance(network_data, dict):
             return [network_data["ip"]]
     except KeyError as e:
-        logger.error(network_data, exc_info=e)
+        logger.exception(network_data, exc_info=e)
     except Exception as e:
-        logger.error(e, exc_info=e)
+        logger.exception("uncatched exception: ", exc_info=e)
     return []
 
 

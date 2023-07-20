@@ -21,9 +21,10 @@ def turnIntListOfStr(type_str, field=""):
             type_int_list = list(map(str, type_list))
             type_int_str = ",".join(type_int_list)
             return f" and {field} in ({type_int_str}) "
-        return type_list
     except Exception:
         return ""
+    else:
+        return type_list
 
 
 # str 逗号分割,强校验

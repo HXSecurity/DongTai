@@ -61,11 +61,13 @@ class RequestReplayEndPoint(UserEndPoint):
                 ).decode(),
                 "body": replay_request.body,
             }
-
-            return False, requests
         except Exception as e:
-            logger.error(_("HTTP request parsing error, error message: {}").format(e))
+            logger.exception(
+                _("HTTP request parsing error, error message: "), exc_info=e
+            )
             return True, None
+        else:
+            return False, requests
 
     @staticmethod
     def check_method_pool(method_pool_id, user):
@@ -247,8 +249,7 @@ class RequestReplayEndPoint(UserEndPoint):
             )
 
         except Exception as e:
-            print(e)
-            logger.error(f"user_id:{request.user.id} msg:{e}")
+            logger.exception(f"user_id:{request.user.id} msg: ", exc_info=e)
             return R.failure(msg=_("Vulnerability replay error"))
 
     @staticmethod

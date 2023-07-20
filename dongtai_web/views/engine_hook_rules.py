@@ -72,10 +72,11 @@ class EngineHookRulesEndPoint(UserEndPoint):
             keyword = ser.validated_data.get("keyword", None)
 
             strategy_type = ser.validated_data.get("strategy_type")
-            return rule_type, page, page_size, strategy_type, language_id, keyword
         except Exception as e:
-            logger.error(_("Parameter parsing failed, error message: {}").format(e))
+            logger.exception(_("Parameter parsing failed, error message: "), exc_info=e)
             return None, None, None, None, None, None
+        else:
+            return rule_type, page, page_size, strategy_type, language_id, keyword
 
     @extend_schema_with_envcheck(
         querys=[_EngineHookRulesQuerySerializer],
@@ -136,5 +137,5 @@ class EngineHookRulesEndPoint(UserEndPoint):
             data = HookRuleSerializer(queryset, many=True).data
             return R.success(data=data, page=page_summary)
         except Exception as e:
-            logger.error(_("Rule read error, error message: {}").format(e), exc_info=e)
+            logger.exception(_("Rule read error, error message: {}"), exc_info=e)
             return R.failure()

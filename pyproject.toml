@@ -46,9 +46,8 @@ ignore = [
     "PLR2004", # Magic value used in comparison
     "RUF012",  # Mutable class attributes should be annotated with typing.ClassVar
     "TRY003",
-    "TRY300",
+    # "TRY300",
     "TRY301",
-    "TRY400",
 ]
 target-version = "py310"
 

@@ -41,5 +41,5 @@ class VulDelete(UserEndPoint):
                 msg=_("Failed to delete, error message: Vulnerability does not exist")
             )
         except Exception as e:
-            logger.error(f"user_id:{request.user.id} msg:{e}")
+            logger.exception(f"user_id:{request.user.id} msg: ", exc_info=e)
             return R.failure(msg=_("Deletion failed"))

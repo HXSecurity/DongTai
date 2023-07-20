@@ -106,7 +106,9 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
             is_track = request.data.get("track").strip()
             ignore_blacklist = request.data.get("ignore_blacklist", False)
             ignore_internal = request.data.get("ignore_internal", False)
-
+        except Exception:
+            return None, None, None, None, None, None, None, None, None
+        else:
             return (
                 rule_id,
                 rule_type,
@@ -118,9 +120,6 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
                 ignore_blacklist,
                 ignore_internal,
             )
-
-        except Exception:
-            return None, None, None, None, None, None, None, None, None
 
     @extend_schema_with_envcheck(
         request=_EngineHookRuleModifySerializer,

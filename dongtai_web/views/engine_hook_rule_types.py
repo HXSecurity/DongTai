@@ -65,10 +65,11 @@ class EngineHookRuleTypesEndPoint(UserEndPoint):
             if page_size > const.MAX_PAGE_SIZE:
                 page_size = const.MAX_PAGE_SIZE
             language_id = ser.validated_data.get("language_id", 1)
-            return rule_type, page, page_size, language_id
         except Exception as e:
-            logger.error(_("Parameter parsing failed, error message: {}").format(e))
+            logger.exception(_("Parameter parsing failed, error message: "), exc_info=e)
             return None, None, None, None
+        else:
+            return rule_type, page, page_size, language_id
 
     @extend_schema_with_envcheck(
         [_EngineHookRuleTypeArgsSerializer],

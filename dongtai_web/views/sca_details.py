@@ -182,5 +182,5 @@ class ScaDetailView(UserEndPoint):
                     logger.info(f"get package_vul failed:{e}")
             return R.success(data=data)
         except Exception as e:
-            logger.error(e)
+            logger.exception("uncatched exception: ", exc_info=e)
             return R.failure(msg=_("Component information query failed"))

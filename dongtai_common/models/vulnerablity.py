@@ -115,7 +115,7 @@ class IastVulnerabilityModel(models.Model):
             self.latest_time_desc = -int(self.latest_time)
             self.level_id_desc = -int(self.level_id)
         except TypeError as e:
-            logger.error(
+            logger.exception(
                 "level_id: {self.level_id} latest_time: {self.latest_time}", exc_info=e
             )
         super().save(*args, **kwargs)

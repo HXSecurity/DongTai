@@ -65,7 +65,9 @@ def base64_decode(raw):
     try:
         return base64.b64decode(raw).decode("utf-8").strip()
     except Exception as decode_error:
-        logger.error(f"base64 decode error, raw: {raw}\nreason:{decode_error}")
+        logger.exception(
+            f"base64 decode error, raw: {raw}\nreason: ", exc_info=decode_error
+        )
         return ""
 
 

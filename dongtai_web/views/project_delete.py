@@ -47,5 +47,5 @@ class ProjectDel(UserEndPoint):
 
             return R.success(msg=_("Application has been deleted successfully"))
         except Exception as e:
-            logger.error(e, exc_info=e)
+            logger.exception("uncatched exception: ", exc_info=e)
             return R.failure(msg=_("Failed to delete the project."))

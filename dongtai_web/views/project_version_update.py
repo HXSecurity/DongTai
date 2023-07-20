@@ -40,5 +40,5 @@ class ProjectVersionUpdate(UserEndPoint):
             return R.success(msg=_("Update completed"))
 
         except Exception as e:
-            logger.error(e)
+            logger.exception("uncatched exception: ", exc_info=e)
             return R.failure(status=202, msg=_("Parameter error"))

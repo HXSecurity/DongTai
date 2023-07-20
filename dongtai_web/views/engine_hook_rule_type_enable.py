@@ -33,7 +33,9 @@ class EngineHookRuleTypeEnableEndPoint(UserEndPoint):
             rule_id = request.query_params.get("rule_id", const.RULE_PROPAGATOR)
             return int(rule_id)
         except Exception as e:
-            logger.error(_("Parameter processing failed, error message: {}").format(e))
+            logger.exception(
+                _("Parameter processing failed, error message: "), exc_info=e
+            )
             return None
 
     @extend_schema_with_envcheck(

@@ -56,5 +56,5 @@ class ProjectVersionDelete(UserEndPoint):
             return R.failure(status=202, msg=_("Version does not exist"))
 
         except Exception as e:
-            logger.error(e)
+            logger.exception("uncatched exception: ", exc_info=e)
             return R.failure(status=202, msg=_("Parameter error"))

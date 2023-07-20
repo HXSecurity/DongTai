@@ -35,5 +35,5 @@ class UserPassword(UserEndPoint):
                 return R.success(msg=_("Password has been changed successfully"))
             return R.failure(msg=_("Incorrect old password"))
         except Exception as e:
-            logger.error(e)
+            logger.exception("uncatched exception: ", exc_info=e)
             return R.failure(msg=_("Incorrect"))

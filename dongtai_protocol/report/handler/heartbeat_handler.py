@@ -181,12 +181,13 @@ class HeartBeatHandler(IReportHandler):
                 )
                 logger.info(_("Reproduction request issued successfully"))
                 logger.debug([i["id"] for i in replay_requests])
-                return replay_requests
             except Exception as e:
                 logger.info(
                     _("Replay request query failed, reason: {}").format(e),
                     exc_info=True,
                 )
+            else:
+                return replay_requests
 
         return []
 

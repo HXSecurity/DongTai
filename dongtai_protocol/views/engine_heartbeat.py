@@ -47,7 +47,7 @@ class EngineHeartBeatEndPoint(OpenApiEndPoint):
             logger.info(_("[{}] Heartbeat data is successful").format(client_ip))
             return R.success(data=data)
         except Exception as e:
-            logger.error(_("Heartbeat data failed, error reason: {}").format(e))
+            logger.exception(_("Heartbeat data failed, error reason: "), exc_info=e)
             return R.failure()
 
     @staticmethod
@@ -58,7 +58,8 @@ class EngineHeartBeatEndPoint(OpenApiEndPoint):
                 ip = request.META["HTTP_X_FORWARDED_FOR"]
             else:
                 ip = request.META["REMOTE_ADDR"]
-            return ip
         except Exception as e:
-            logger.error(_("Client IP acquisition failed, reasons: {}").format(e))
+            logger.exception(_("Client IP acquisition failed, reasons: "), exc_info=e)
             return ""
+        else:
+            return ip

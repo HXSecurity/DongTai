@@ -72,5 +72,5 @@ class ProjectVersionList(UserEndPoint):
 
             return R.success(msg=_("Search successful"), data=data)
         except Exception as e:
-            logger.error(e)
+            logger.exception("uncatched exception: ", exc_info=e)
             return R.failure(status=202, msg=_("Parameter error"))

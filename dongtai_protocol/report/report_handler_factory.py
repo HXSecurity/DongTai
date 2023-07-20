@@ -70,7 +70,7 @@ class ReportHandler:
             # if report_type == 36:
             return class_of_handler().handle(reports, user)
         except Exception as e:
-            logger.error(e, exc_info=e)
+            logger.exception("uncatched exception: ", exc_info=e)
         return None
 
     @classmethod

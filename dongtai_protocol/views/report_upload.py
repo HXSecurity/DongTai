@@ -26,5 +26,5 @@ class ReportUploadEndPoint(OpenApiEndPoint):
             data = ReportHandler.handler(report, request.user)
             return R.success(msg="report upload success.", data=data)
         except Exception as e:
-            logger.error(f"report upload failed, reason: {e}", exc_info=e)
+            logger.exception("report upload failed, reason: ", exc_info=e)
             return R.failure(msg="report upload failed")

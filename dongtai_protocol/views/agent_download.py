@@ -77,12 +77,13 @@ class JavaAgentDownload:
                         project_version=project_version,
                     )
                 )
-            return True
         except Exception as e:
-            logger.error(
-                _("Agent configuration file creation failed, reason: {E}").format(e)
+            logger.exception(
+                _("Agent configuration file creation failed, reason: "), exc_info=e
             )
             return False
+        else:
+            return True
 
     def replace_config(self):
         user_file = f"{self.target_path}/{self.agent_file}"
@@ -151,11 +152,12 @@ class PythonAgentDownload:
                 config["engine"]["name"] = agent_token
             with open(f"{self.target_path}/{config_path}", "w+") as config_file:
                 json.dump(config, config_file)
-            return True
         except Exception as e:
             print(type(e))
             print(e)
             return False
+        else:
+            return True
 
     def replace_config(self):
         user_file = f"{self.target_path}/{self.agent_file}"
@@ -165,10 +167,11 @@ class PythonAgentDownload:
                     self.target_source_path,
                     arcname=os.path.basename(self.target_source_path),
                 )
-            return True
         except Exception as e:
-            logger.error(f"replace config error: {e}")
+            logger.exception("replace config error: ", exc_info=e)
             return False
+        else:
+            return True
 
 
 class PhpAgentDownload:
@@ -229,10 +232,11 @@ class PhpAgentDownload:
                     config_lines.append("=".join([key, value + "\n"]))
             with open(os.path.join(self.target_source_path, config_path), "w+") as fp:
                 fp.writelines(config_lines)
-            return True
         except Exception as e:
-            logger.error(f"create config error: {e}")
+            logger.exception("create config error: ", exc_info=e)
             return False
+        else:
+            return True
 
     def replace_config(self):
         user_file = f"{self.target_path}/{self.agent_file}"
@@ -242,10 +246,11 @@ class PhpAgentDownload:
                     self.target_source_path,
                     arcname=os.path.basename(self.target_source_path),
                 )
-            return True
         except Exception as e:
-            logger.error(f"replace config error: {e}")
+            logger.exception("replace config error: ", exc_info=e)
             return False
+        else:
+            return True
 
 
 class GoAgentDownload:
@@ -377,9 +382,9 @@ class AgentDownload(OpenApiEndPoint):
                     return response
             return R.failure(msg="agent file not exit.")
         except Exception as e:
-            logger.error(
-                _("Agent download failed, user: {}, error details: {}").format(
-                    request.user.get_username(), e
+            logger.exception(
+                _("Agent download failed, user: {}, error details: ").format(
+                    request.user.get_username(),
                 ),
                 exc_info=e,
             )

@@ -63,7 +63,7 @@ class AgentDownload(UserEndPoint):
         except ConnectionError:
             return R.failure(msg="conncet error,please check config.ini")
         except Exception as e:
-            logger.error(e)
+            logger.exception("uncatched exception: ", exc_info=e)
             return R.failure(msg="download error,please check deployment")
 
         return self.res_by_language(language, token, resp)

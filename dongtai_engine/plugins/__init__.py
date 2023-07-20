@@ -24,6 +24,7 @@ def is_strategy_enable(vul_type, method_pool):
             return False
         if str(vul_strategy.id) in strategy_ids.split(","):
             return True
-        return False
     except Exception:
+        return False
+    else:
         return False

@@ -44,16 +44,17 @@ class OssDownloader:
                 auth = oss2.Auth(access_key, access_key_secret)
             bucket = oss2.Bucket(auth, bucket_url, bucket_name)
             bucket.get_object_to_file(object_name, local_file)
-            return True
         except NoSuchKey:
             # NoSuchKey表示oss云端文件不存在,通知管理员
-            logger.error(
+            logger.exception(
                 f"oss download failure, reason: remote file not found, filename: {object_name}"
             )
             return False
         except Exception as e:
-            logger.error(f"oss download failure, reason: {e}")
+            logger.exception("oss download failure, reason: ", exc_info=e)
             return False
+        else:
+            return True
 
     @staticmethod
     def download_file(object_name, local_file):
@@ -69,7 +70,9 @@ def base64_decode(raw: str) -> str:
     try:
         return base64.b64decode(raw).decode("utf-8").strip()
     except Exception as decode_error:
-        logger.error(f"base64 decode error, raw: {raw}\nreason:{decode_error}")
+        logger.exception(
+            f"base64 decode error, raw: {raw}\nreason: ", exc_info=decode_error
+        )
         return ""
 
 
@@ -119,13 +122,13 @@ def updateossstatus():
             JavaAgentDownload(user_id=1).download_agent()
             and PythonAgentDownload(user_id=1).download_agent()
         )
-        return downloadstatus, None
     except RequestError:
         return False, None
     except Exception as e:
         logger.info(f"Health check oss status:{e}")
         return False, None
-    return True, None
+    else:
+        return downloadstatus, None
 
 
 def checkossstatus():
@@ -139,7 +142,6 @@ def checkossstatus():
             connect_timeout=4,
         )
         bucket.list_objects()
-        return True, None
     except RequestError:
         return False, None
     except AccessDenied:
@@ -147,4 +149,5 @@ def checkossstatus():
     except Exception as e:
         logger.info(f"Health check oss status:{e}")
         return False, None
-    return True, None
+    else:
+        return True, None

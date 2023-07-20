@@ -21,12 +21,13 @@ class LogService:
             sock.connect((self.host, self.port))
             sock.setblocking(False)
             self.socket = sock
-            return True
         except OSError:
-            logger.error(f"failed to connect log service {self.host}:{self.port}")
+            logger.exception(f"failed to connect log service {self.host}:{self.port}")
             self.socket = None
             sock.close()
             return False
+        else:
+            return True
 
     def __del__(self):
         if self.socket:
@@ -43,7 +44,7 @@ class LogService:
                 )
                 return True
         except Exception as e:
-            logger.error("failed to send message to log service", exc_info=e)
+            logger.exception("failed to send message to log service", exc_info=e)
             if self.socket:
                 self.socket.close()
             self.socket = None

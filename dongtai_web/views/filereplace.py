@@ -74,7 +74,7 @@ class FileReplace(TalentAdminEndPoint):
                     fp.write(chunk)
             return R.success(msg=_("upload sussess"))
         except Exception as e:
-            logger.error(e)
+            logger.exception("uncatched exception: ", exc_info=e)
             with open(filepath, "wb+") as fp:
                 backup_filepath = os.path.join(
                     MEDIA_ROOT, FILES_PATH, FILES_PATH_BACKUP, filename

@@ -360,8 +360,8 @@ class SaasMethodPoolHandler(IReportHandler):
                 search_vul_from_replay_method_pool.delay(method_pool_id)
                 # logger.info(
         except Exception as e:
-            logger.error(
-                f"[-] Failure: send method_pool [{method_pool_id}{method_pool_sign}], Error: {e}",
+            logger.exception(
+                f"[-] Failure: send method_pool [{method_pool_id}{method_pool_sign}], Error: ",
                 exc_info=e,
             )
 

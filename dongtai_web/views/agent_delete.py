@@ -55,8 +55,8 @@ class AgentDeleteEndPoint(UserEndPoint):
 
                 return R.success(msg=_("Agent and related data deleted successfully"))
             return R.failure(msg=_("Agent does not exist or no permission to access"))
-        except Exception:
-            logger.error("user_id:{request.user.id} msg:{e}")
+        except Exception as e:
+            logger.exception(f"user_id:{request.user.id} msg: ", exc_info=e)
             return R.failure(msg=_("Error while deleting, please try again later"))
 
     def delete_error_log(self):
@@ -70,10 +70,11 @@ class AgentDeleteEndPoint(UserEndPoint):
                 )
             )
         except Exception as e:
-            logger.error(
-                _(
-                    "Failed to delete error logs, probe ID: {}, error message: {}"
-                ).format(self.agent.id, e)
+            logger.exception(
+                _("Failed to delete error logs, probe ID: {}, error message: ").format(
+                    self.agent.id
+                ),
+                exc_info=e,
             )
 
     def delete_heart_beat(self):
@@ -87,8 +88,8 @@ class AgentDeleteEndPoint(UserEndPoint):
                 ).format(deleted)
             )
         except Exception as e:
-            logger.error(
-                _("Failed to delete heartbeat data, error message: {}").format(e)
+            logger.exception(
+                _("Failed to delete heartbeat data, error message: "), exc_info=e
             )
 
     def delete_vul_overpower(self):
@@ -102,8 +103,8 @@ class AgentDeleteEndPoint(UserEndPoint):
                 ).format(deleted)
             )
         except Exception as e:
-            logger.error(
-                _("Failed to delete unauthorized data, error message: {}").format(e)
+            logger.exception(
+                _("Failed to delete unauthorized data, error message: "), exc_info=e
             )
 
     def delete_vul(self):
@@ -130,10 +131,9 @@ class AgentDeleteEndPoint(UserEndPoint):
                 ).format(deleted)
             )
         except Exception as e:
-            logger.error(
-                _(
-                    "Failed to delete third-party component data, error message: {}"
-                ).format(e)
+            logger.exception(
+                _("Failed to delete third-party component data, error message: "),
+                exc_info=e,
             )
 
     def delete_method_pool(self):
@@ -145,8 +145,8 @@ class AgentDeleteEndPoint(UserEndPoint):
                 ).format(deleted)
             )
         except Exception as e:
-            logger.error(
-                _("Failed to delete method pool data, error message: {}").format(e)
+            logger.exception(
+                _("Failed to delete method pool data, error message: "), exc_info=e
             )
 
     def delete_method_pool_replay(self):
@@ -176,8 +176,8 @@ class AgentDeleteEndPoint(UserEndPoint):
                 ).format(deleted)
             )
         except Exception as e:
-            logger.error(
-                _("Failed to delete replay request queue, error message: {}").format(e)
+            logger.exception(
+                _("Failed to delete replay request queue, error message: "), exc_info=e
             )
 
 
