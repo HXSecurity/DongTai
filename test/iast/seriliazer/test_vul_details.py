@@ -7,7 +7,6 @@
 ######################################################################
 
 
-
 from ddt import data, ddt
 from django.test import TestCase
 

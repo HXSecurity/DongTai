@@ -416,7 +416,6 @@ def search_generate(
     size,
     search_mode,
 ):
-
     from elasticsearch import Elasticsearch
     from elasticsearch_dsl import Q
 

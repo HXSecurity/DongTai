@@ -1,5 +1,3 @@
-
-
 def vul_filter(stack, source_sign, sink_sign, taint_value, vul_type):
     if vul_type == "reflected-xss":
         target_signature = stack[0][0]["signature"]

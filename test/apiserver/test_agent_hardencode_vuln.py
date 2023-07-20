@@ -7,8 +7,6 @@
 ######################################################################
 
 
-
-
 #
 #
 # class AgentHardencodeTestCase(AgentTestCase):

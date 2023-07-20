@@ -131,7 +131,6 @@ def updateossstatus():
 def checkossstatus():
     from oss2.exceptions import AccessDenied
 
-
     try:
         bucket = oss2.Bucket(
             oss2.AnonymousAuth(),
