@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 # datetime:2020/10/23 12:00
-import json
 import logging
-import time
 
-import requests
 from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.models.agent import IastAgent

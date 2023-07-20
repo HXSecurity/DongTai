@@ -5,7 +5,6 @@ import time
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
-from rest_framework.decorators import permission_classes
 from rest_framework.serializers import ValidationError
 
 from dongtai_common.endpoint import R, UserEndPoint
@@ -15,7 +14,6 @@ from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.strategy_user import IastStrategyUser
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_common.permissions import TalentAdminPermission
-from dongtai_common.utils import const
 from dongtai_web.serializers.strategy import StrategySerializer
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 

@@ -1,18 +1,14 @@
 import logging
 from collections import defaultdict
 
-from django.db.models import OuterRef, Prefetch, Q, Subquery
-from drf_spectacular.utils import extend_schema
-from rest_framework.request import Request
+from django.db.models import Q
 
-from dongtai_common.endpoint import OpenApiEndPoint, R
 from dongtai_common.models.hook_strategy import HookStrategy
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.utils import const
 
 # note: 当前依赖必须保留,否则无法通过hooktype反向查找策略
-from dongtai_protocol.api_schema import DongTaiParameter
 from dongtai_protocol.views.hook_profiles import (
     JAVA,
     HookProfilesEndPoint,

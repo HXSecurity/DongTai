@@ -131,11 +131,6 @@ def updateossstatus():
 def checkossstatus():
     from oss2.exceptions import AccessDenied
 
-    from dongtai_protocol.views.agent_download import (
-        JavaAgentDownload,
-        PythonAgentDownload,
-    )
-    from dongtai_protocol.views.engine_download import EngineDownloadEndPoint
 
     try:
         bucket = oss2.Bucket(

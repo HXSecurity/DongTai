@@ -7,7 +7,6 @@
 ######################################################################
 
 import asyncio
-import os
 import threading
 from functools import partial
 

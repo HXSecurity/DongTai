@@ -3,11 +3,8 @@
 
 from django.db import models
 
-from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_common.utils.settings import get_managed
-from dongtai_web.dongtai_sca.models import VulPackage
 
 
 class AqlInfo(models.Model):

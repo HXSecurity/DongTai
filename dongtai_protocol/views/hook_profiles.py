@@ -2,8 +2,7 @@
 # datetime:2020/11/24 下午9:16
 import logging
 
-from django.db.models import OuterRef, Prefetch, Q, Subquery
-from django.utils.translation import gettext_lazy as _
+from django.db.models import Q
 from drf_spectacular.utils import extend_schema
 
 from dongtai_common.endpoint import OpenApiEndPoint, R

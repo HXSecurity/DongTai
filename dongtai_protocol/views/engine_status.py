@@ -4,7 +4,6 @@ import logging
 import time
 
 from django.core.cache import cache
-from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 
 from dongtai_common.endpoint import OpenApiEndPoint, R

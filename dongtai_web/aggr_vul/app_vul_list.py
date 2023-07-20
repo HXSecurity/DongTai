@@ -262,7 +262,6 @@ def get_vul_list_from_elastic_search(
     project_version_id=0,
     order="",
 ):
-    from dongtai_common.models.agent import IastAgent
     from dongtai_common.models.strategy import IastStrategyModel
 
     department_ids = list(departments.values_list("id", flat=True))

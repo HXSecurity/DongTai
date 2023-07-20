@@ -1,6 +1,6 @@
 import logging
 import time
-from urllib.parse import urlparse, urlunparse
+from urllib.parse import urlparse
 
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema

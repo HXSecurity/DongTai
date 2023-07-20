@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # datetime:2020/10/30 10:31
 import logging
-from typing import Optional
 
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _

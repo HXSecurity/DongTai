@@ -1,18 +1,16 @@
 import base64
-import gzip
 import json
 import unittest
 from os.path import exists
-from test.apiserver.test_agent_base import AgentTestCase, gzipdata
+from test.apiserver.test_agent_base import AgentTestCase
 
 import requests
 from django.test import TestCase
-from result import Err, Ok, Result
+from result import Ok, Result
 
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_common.models.replay_queue import IastReplayQueue
-from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.utils import const
 from dongtai_protocol.report.handler.heartbeat_handler import (
     HeartBeatHandler,

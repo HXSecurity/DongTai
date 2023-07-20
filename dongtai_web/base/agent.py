@@ -4,7 +4,6 @@ import json
 import re
 import time
 
-from django.db.models import Count
 from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.models.agent import IastAgent
@@ -15,7 +14,6 @@ from dongtai_common.models.project_version import IastProjectVersion
 from dongtai_common.models.server import IastServer
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_web.base.project_version import get_project_version
 
 
 def get_agents_with_project(project_name, users):

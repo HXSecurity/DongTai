@@ -1,7 +1,7 @@
 import unittest
 from test import DongTaiTestCase
 
-from dongtai_engine.tasks import heartbeat, search_vul_from_method_pool
+from dongtai_engine.tasks import heartbeat
 
 
 class MyTestCase(DongTaiTestCase):

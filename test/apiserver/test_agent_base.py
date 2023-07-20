@@ -11,12 +11,9 @@ import gzip
 import json
 
 from rest_framework.authtoken.models import Token
-from rest_framework.test import APITestCase, RequestsClient
+from rest_framework.test import APITestCase
 
-from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.server import IastServer
 from dongtai_common.models.user import User
-from dongtai_protocol.decrypter import parse_data
 
 REGISTER_JSON = {
     "serverPath": "/Users/erzhuangniu/workspace/vul/SecExample",

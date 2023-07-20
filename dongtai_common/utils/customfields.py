@@ -6,10 +6,8 @@
 # @description :
 ######################################################################
 
-from collections import defaultdict
 from functools import wraps
 
-from django.db.models import CharField
 from django.utils.translation import get_language
 
 

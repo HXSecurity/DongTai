@@ -12,7 +12,6 @@ import os
 
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
-from rest_framework.parsers import FileUploadParser
 
 from dongtai_common.endpoint import R, TalentAdminEndPoint
 from dongtai_conf.settings import MEDIA_ROOT

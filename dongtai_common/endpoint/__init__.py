@@ -6,8 +6,7 @@ from functools import reduce
 from operator import ior
 from typing import TYPE_CHECKING, Union
 
-from django.contrib.contenttypes.models import ContentType
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.paginator import EmptyPage, Paginator
 from django.db.models import Count, Q, QuerySet
 from django.http import JsonResponse
 from django.http.request import HttpRequest
@@ -23,13 +22,10 @@ from dongtai_common.models import User
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.asset import Asset
 from dongtai_common.models.asset_aggr import AssetAggr
-from dongtai_common.models.asset_vul import IastAssetVul, IastVulAssetRelation
+from dongtai_common.models.asset_vul import IastVulAssetRelation
 from dongtai_common.models.department import Department
 from dongtai_common.models.log import IastLog, OperateType
 from dongtai_common.permissions import (
-    ScopedPermission,
-    SystemAdminPermission,
-    TalentAdminPermission,
     UserPermission,
 )
 from dongtai_common.utils import const

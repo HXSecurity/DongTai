@@ -12,15 +12,13 @@ from rest_framework.request import Request
 
 from dongtai_common.endpoint import OpenApiEndPoint, R
 from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.profile import IastProfile
 from dongtai_common.models.project import (
     IastProject,
     IastProjectTemplate,
-    VulValidation,
 )
 from dongtai_common.models.project_version import IastProjectVersion
 from dongtai_common.models.server import IastServer
-from dongtai_protocol.api_schema import DongTaiAuth, DongTaiParameter
+from dongtai_protocol.api_schema import DongTaiParameter
 from dongtai_protocol.decrypter import parse_data
 
 logger = logging.getLogger("dongtai.openapi")

@@ -7,10 +7,7 @@
 ######################################################################
 
 
-import logging
-from functools import reduce
 
-from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework import serializers
@@ -21,15 +18,12 @@ from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.asset import Asset
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.utils import const
 from dongtai_web.serializers.agent import AgentSerializer
 from dongtai_web.serializers.project import ProjectSerializer
 from dongtai_web.serializers.sca import ScaSerializer
 from dongtai_web.serializers.vul import VulSerializer
 from dongtai_web.utils import (
     extend_schema_with_envcheck,
-    get_model_field,
-    get_response_serializer,
 )
 
 

@@ -39,7 +39,6 @@ select = [
     "RUF", # Ruff-specific rules
 ]
 ignore = [
-    "F401",
     "E501",    # Line too long, handled by black
     "SIM112",  # Use capitalized environment variable
     "PGH003",  # Use specific rule codes when ignoring type issues

@@ -7,14 +7,11 @@
 ######################################################################
 
 
-import json
 import logging
 from urllib.parse import urljoin
 
-import requests
 from django.utils.translation import get_language
 from django.utils.translation import gettext_lazy as _
-from requests.exceptions import ConnectionError, ConnectTimeout
 from rest_framework.authtoken.models import Token
 
 from dongtai_common.endpoint import R, UserEndPoint

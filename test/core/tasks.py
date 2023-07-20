@@ -1,7 +1,7 @@
 import json
 import unittest
 from test import DongTaiTestCase
-from test.apiserver.test_agent_base import METHODPOOL_JSON, REGISTER_JSON, gzipdata
+from test.apiserver.test_agent_base import REGISTER_JSON, gzipdata
 
 from rest_framework.test import APITestCase
 

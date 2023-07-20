@@ -6,7 +6,6 @@ from dongtai_common.models import User
 from dongtai_common.models.project import (
     IastProject,
     IastProjectTemplate,
-    VulValidation,
 )
 from dongtai_common.utils.settings import get_managed
 

@@ -580,7 +580,6 @@ def handler_vul(
             IastDastIntegrationRelation,
             IastvulDtMarkRelation,
         )
-        from dongtai_common.models.strategy import IastStrategyModel
         from dongtai_protocol.utils import base64_decode
 
         mark = parse_dast_mark(base64_decode(vul.req_header))

@@ -9,7 +9,6 @@ from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_web.base.agent import (
     get_agent_languages,
-    get_hook_type_name,
     get_project_vul_count,
 )
 from dongtai_web.base.project_version import (

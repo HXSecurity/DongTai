@@ -1,16 +1,9 @@
 import json
-from datetime import datetime
 from enum import IntEnum
 
-from django.forms.models import model_to_dict
-from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
-from rest_framework.serializers import ValidationError
 
-from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.profile import IastProfile
-from dongtai_conf.settings import config
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 
 class VulType(IntEnum):

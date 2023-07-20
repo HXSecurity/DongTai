@@ -2,16 +2,10 @@
 # datetime:2021/1/12 下午7:45
 
 import logging
-import time
 
-from django.http import JsonResponse
-from django.utils.translation import gettext_lazy as _
-from django.views.decorators.csrf import csrf_exempt
 from drf_spectacular.utils import extend_schema
-from rest_framework.views import APIView
 
 from dongtai_common.endpoint import OpenApiEndPoint, R
-from dongtai_protocol.api_schema import DongTaiParameter
 from dongtai_protocol.decrypter import parse_data
 from dongtai_protocol.report.report_handler_factory import ReportHandler
 

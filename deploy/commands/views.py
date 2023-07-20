@@ -1,7 +1,5 @@
 import json
 
-from django.shortcuts import render
-
 from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.version_control import VersionControl
 

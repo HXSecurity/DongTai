@@ -14,8 +14,6 @@ from urllib.parse import urljoin
 
 import requests
 from django.core.cache import cache
-from django.db import models
-from rest_framework import serializers
 
 URL_LIST = [
     "https://api.github.com/repos/HXSecurity/DongTai-Doc-en/",

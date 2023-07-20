@@ -122,7 +122,6 @@ def cached_decorator(random_range, use_celery_update=False, cache_logic_none=Tru
 
 @cached_decorator(random_range=(60, 120), use_celery_update=False)
 def get_user_from_department_key(key):
-    from rest_framework import exceptions
 
     from dongtai_common.models.department import Department
     from dongtai_common.models.user import User
@@ -142,7 +141,6 @@ class DepartmentTokenAuthentication(TokenAuthentication):
         from rest_framework import exceptions
 
         from dongtai_common.models.department import Department
-        from dongtai_common.models.user import User
 
         try:
             user = get_user_from_department_key(key)

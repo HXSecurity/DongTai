@@ -7,10 +7,10 @@
 ######################################################################
 
 from django.conf import settings
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import login
 from django.http import HttpResponseRedirect
 
-from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.endpoint import UserEndPoint
 from dongtai_common.models.user import User
 
 

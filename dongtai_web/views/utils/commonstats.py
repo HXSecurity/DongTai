@@ -1,6 +1,5 @@
 import time
 from collections.abc import Iterable
-from typing import Union
 
 from django.db.models import Count, Q, Value
 from django.db.models.query import QuerySet

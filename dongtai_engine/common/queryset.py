@@ -1,5 +1,5 @@
 from celery.apps.worker import logger
-from django.db.models import Q, Sum
+from django.db.models import Q
 
 from dongtai_common.common.utils import cached_decorator
 from dongtai_common.models.agent import IastAgent

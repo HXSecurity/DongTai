@@ -17,7 +17,6 @@ import os
 
 from django.conf.urls.static import static
 from django.urls import URLPattern, URLResolver, include, path
-from django.views.decorators.csrf import csrf_exempt
 
 from dongtai_conf import settings
 

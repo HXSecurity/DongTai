@@ -4,9 +4,8 @@ import os
 from django.db.models import Q
 from django.db.utils import IntegrityError
 from django.http import FileResponse
-from django.shortcuts import render
 from django.utils.translation import gettext_lazy as _
-from rest_framework import generics, serializers, viewsets
+from rest_framework import serializers, viewsets
 from rest_framework.serializers import ValidationError
 
 from dongtai_common.endpoint import R, UserEndPoint
@@ -16,11 +15,7 @@ from dongtai_common.models.sca_maven_db import (
 )
 from dongtai_common.permissions import TalentAdminPermission
 from dongtai_conf.settings import BASE_DIR
-from dongtai_web.scaupload.utils import (
-    ScaLibError,
-    get_packge_from_sca_lib,
-)
-from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
+from dongtai_web.utils import extend_schema_with_envcheck
 
 # Create your views here.
 

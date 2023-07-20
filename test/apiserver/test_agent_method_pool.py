@@ -11,7 +11,6 @@ import base64
 import gzip
 from test.apiserver.test_agent_base import AgentTestCase, gzipdata
 
-from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.agent_method_pool import MethodPool
 
 

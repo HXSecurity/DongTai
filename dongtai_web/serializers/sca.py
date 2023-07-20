@@ -4,13 +4,10 @@ from rest_framework import serializers
 
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.asset import Asset
-from dongtai_common.models.asset_aggr import AssetAggr
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
-from dongtai_common.models.sca_maven_db import ScaMavenDb
 from dongtai_web.dongtai_sca.models import (
     Package,
-    PackageLicenseInfo,
     PackageLicenseLevel,
 )
 

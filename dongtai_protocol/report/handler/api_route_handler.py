@@ -21,7 +21,6 @@ from dongtai_common.models.api_route import (
     IastApiResponse,
     IastApiRoute,
 )
-from dongtai_common.models.project import IastProject
 from dongtai_common.utils import const
 from dongtai_engine.plugins.project_time_update import (
     project_time_stamp_update,

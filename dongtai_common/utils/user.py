@@ -1,8 +1,6 @@
-from django.db.models import Q, QuerySet
+from django.db.models import QuerySet
 
-from dongtai_common.models.department import Department
 from dongtai_common.models.user import User
-from dongtai_common.utils import const
 
 
 def get_auth_users__by_id(user_id: int) -> QuerySet:

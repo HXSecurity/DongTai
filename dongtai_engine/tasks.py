@@ -4,7 +4,7 @@ import json
 import time
 from itertools import groupby
 from json import JSONDecodeError
-from typing import Any, Optional, Union
+from typing import Any
 
 import requests
 from celery import shared_task
@@ -16,13 +16,11 @@ from dongtai_common.engine.vul_engine import VulEngine
 from dongtai_common.models import User
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.agent_method_pool import MethodPool
-from dongtai_common.models.asset import Asset
 from dongtai_common.models.errorlog import IastErrorlog
 from dongtai_common.models.heartbeat import IastHeartbeat
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.replay_method_pool import IastAgentMethodPoolReplay
 from dongtai_common.models.replay_queue import IastReplayQueue
-from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.utils import const
 from dongtai_conf import settings

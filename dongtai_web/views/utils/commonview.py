@@ -10,7 +10,6 @@ from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
 from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_common.models.sensitive_info import IastPatternType, IastSensitiveInfoRule
 
 
 class BatchStatusUpdateSerializer(serializers.Serializer):

@@ -7,7 +7,7 @@
 ######################################################################
 
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import JsonResponse
 from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.endpoint import AnonymousAndUserEndPoint, R

@@ -1,16 +1,11 @@
 import logging
 
-from django.core.paginator import Paginator
-from django.forms.models import model_to_dict
-from django.http import JsonResponse
 from django.utils.translation import gettext_lazy as _
-from rest_framework import serializers, views
+from rest_framework import serializers
 
 from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_common.models import User
 from dongtai_common.models.asset_vul_v2 import IastAssetVulV2
 from dongtai_common.serializers.assetvulv2 import PackageVulSerializer
-from dongtai_web.dongtai_sca.models import Package
 from dongtai_web.utils import extend_schema_with_envcheck_v2, get_response_serializer
 
 logger = logging.getLogger(__name__)

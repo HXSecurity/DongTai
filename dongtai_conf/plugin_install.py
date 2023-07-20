@@ -2,7 +2,6 @@ import os
 import zipfile
 from io import BytesIO
 from shutil import copytree
-from typing import Optional
 
 import fire
 import requests

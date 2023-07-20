@@ -5,9 +5,8 @@ from rest_framework import serializers
 
 from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.project import IastProject, VulValidation
+from dongtai_common.models.project import IastProject
 from dongtai_common.utils import const
-from dongtai_common.utils.systemsettings import get_vul_validate
 from dongtai_web.base.project_version import (
     ProjectsVersionDataSerializer,
     get_project_version,

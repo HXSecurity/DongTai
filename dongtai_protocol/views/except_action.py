@@ -1,6 +1,4 @@
 import logging
-import time
-from urllib.parse import urlparse, urlunparse
 
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
@@ -8,10 +6,8 @@ from rest_framework.viewsets import ViewSet
 
 from dongtai_common.endpoint import OpenApiEndPoint, R
 from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.server import IastServer
 from dongtai_common.utils.const import OPERATE_PUT
 from dongtai_protocol.decrypter import parse_data
-from dongtai_web.views.project_add import is_ip
 
 logger = logging.getLogger("dongtai.openapi")
 

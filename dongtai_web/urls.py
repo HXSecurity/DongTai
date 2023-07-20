@@ -16,7 +16,6 @@ from dongtai_web.base.update_project_version import UpdateProjectVersion
 from dongtai_web.dongtai_sca.urls import urlpatterns as sca_urls
 from dongtai_web.enum.hook_rules import HookRuleEnumEndPoint
 from dongtai_web.header_vul.base import HeaderVulViewSet
-from dongtai_web.scaupload.urls import urlpatterns as scaupload_urls
 from dongtai_web.systemmonitor.urls import urlpatterns as systemmonitor_urls
 from dongtai_web.versioncontrol.urls import urlpatterns as versioncontrol_urls
 from dongtai_web.views.agent import Agent

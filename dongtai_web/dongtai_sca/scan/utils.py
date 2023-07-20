@@ -4,12 +4,11 @@ import logging
 import time
 from collections import defaultdict
 from collections.abc import Callable
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from hashlib import sha1
 from http import HTTPStatus
 from json.decoder import JSONDecodeError
 from time import sleep
-from typing import Optional
 from urllib.parse import urljoin
 
 import requests
@@ -41,7 +40,6 @@ from dongtai_conf.settings import (
 from dongtai_web.dongtai_sca.common.dataclass import (
     PackageInfo,
     PackageResponse,
-    PackageVulData,
     PackageVulResponse,
     Vul,
     VulInfo,

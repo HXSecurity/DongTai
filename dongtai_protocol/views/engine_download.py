@@ -5,7 +5,6 @@ import logging
 import os
 
 from django.http import FileResponse
-from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.request import Request

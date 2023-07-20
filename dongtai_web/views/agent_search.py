@@ -1,6 +1,5 @@
 from functools import reduce
 
-from django.core.paginator import Paginator
 from django.db.models import Q
 from django.forms.models import model_to_dict
 from django.utils.translation import gettext_lazy as _

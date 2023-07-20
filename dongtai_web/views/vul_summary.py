@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-import copy
-import time
 
 from django.db.models import Count, Q
 from django.utils.text import format_lazy

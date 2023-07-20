@@ -3,7 +3,6 @@ import time
 
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
-from rest_framework import serializers
 
 from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.agent import IastAgent

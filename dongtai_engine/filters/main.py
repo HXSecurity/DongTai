@@ -1,4 +1,3 @@
-from urllib.parse import urlparse
 
 
 def vul_filter(stack, source_sign, sink_sign, taint_value, vul_type):

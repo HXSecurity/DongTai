@@ -7,16 +7,8 @@
 ######################################################################
 
 from itertools import product
-from urllib.parse import urlencode
 
-import django
-from ddt import data, ddt, file_data, idata, unpack
-from django.contrib.auth import get_user_model
-from django.urls import reverse
 from rest_framework.serializers import CharField, IntegerField, SerializerMetaclass
-from rest_framework.test import APITestCase
-
-from dongtai_web.views.documents import DocumentsEndpoint
 
 
 def fuzz_test_data(end_point, httpmethod):

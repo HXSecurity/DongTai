@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # datetime:2020/8/11 15:02
 import logging
-from datetime import datetime
 
 from django.contrib.auth import logout
 from django.http import JsonResponse

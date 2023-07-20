@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # datetime:2021/1/25 下午6:43
 
-from .user import User  # noqa: I001
-from . import api_route
+from .user import User  # noqa: I001, F401
+from . import api_route  # noqa: F401
 
 LANGUAGE_DICT = {"JAVA": 1, "PYTHON": 2, "PHP": 3, "GO": 4}
 # aggregation

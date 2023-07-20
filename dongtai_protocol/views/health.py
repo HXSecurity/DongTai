@@ -9,14 +9,11 @@
 import json
 import logging
 
-import oss2
-import requests
 from drf_spectacular.utils import extend_schema
-from oss2.exceptions import RequestError
 from requests.exceptions import ConnectionError, ConnectTimeout
 
 from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_protocol.utils import OssDownloader, checkossstatus
+from dongtai_protocol.utils import checkossstatus
 
 logger = logging.getLogger("dongtai.openapi")
 

@@ -4,7 +4,6 @@ import os
 import sys
 
 import boto3
-from botocore.exceptions import ClientError
 
 
 def aws_get_secret(base_dir: str):

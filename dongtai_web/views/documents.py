@@ -6,9 +6,6 @@ from rest_framework.serializers import ValidationError
 
 from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.document import IastDocument
-from dongtai_common.models.hook_type import HookType
-from dongtai_common.models.strategy import IastStrategyModel
-from dongtai_common.utils import const
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 

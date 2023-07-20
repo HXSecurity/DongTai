@@ -1,18 +1,13 @@
-import base64
-import gzip
-import json
 import unittest
-from test.apiserver.test_agent_base import AgentTestCase, gzipdata
+from test.apiserver.test_agent_base import AgentTestCase
 
 from django.db import connections
 from django.test import TestCase
 
-from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_common.models.user import User
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_engine.tasks import search_vul_from_method_pool
-from dongtai_protocol.report.report_handler_factory import ReportHandler
 from dongtai_protocol.tests import download_if_not_exist
 
 

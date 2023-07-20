@@ -4,7 +4,6 @@
 import logging
 
 from django.http import StreamingHttpResponse
-from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework.authtoken.models import Token
 

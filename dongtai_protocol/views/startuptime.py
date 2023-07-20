@@ -8,18 +8,13 @@
 
 
 import logging
-import time
 
-from django.http.request import QueryDict
 from drf_spectacular.utils import extend_schema
 from rest_framework.request import Request
 
 from dongtai_common.endpoint import OpenApiEndPoint, R
 from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.agent_properties import IastAgentProperties
-from dongtai_protocol.api_schema import DongTaiAuth, DongTaiParameter
 from dongtai_protocol.decrypter import parse_data
-from dongtai_protocol.serializers.agent_properties import AgentPropertiesSerialize
 
 logger = logging.getLogger("django")
 

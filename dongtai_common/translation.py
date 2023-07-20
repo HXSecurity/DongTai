@@ -7,9 +7,8 @@
 ######################################################################
 
 
-from modeltranslation.translator import TranslationOptions, register, translator
+from modeltranslation.translator import TranslationOptions, register
 
-from dongtai_common.models.department import Department
 from dongtai_common.models.deploy import IastDeployDesc
 from dongtai_common.models.document import IastDocument
 from dongtai_common.models.engine_monitoring_indicators import (
@@ -17,7 +16,6 @@ from dongtai_common.models.engine_monitoring_indicators import (
 )
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.strategy import IastStrategyModel
-from dongtai_common.models.talent import Talent
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_common.models.vulnerablity import IastVulnerabilityStatus
 

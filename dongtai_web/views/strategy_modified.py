@@ -1,7 +1,7 @@
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
-from dongtai_common.endpoint import R, TalentAdminEndPoint, UserEndPoint
+from dongtai_common.endpoint import R, TalentAdminEndPoint
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer

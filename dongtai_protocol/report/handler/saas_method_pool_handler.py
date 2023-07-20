@@ -4,19 +4,15 @@ import base64
 import gzip
 import json
 import logging
-import random
 import time
 import uuid
 from datetime import datetime, timedelta
 from hashlib import sha1, sha256
 
-import requests
 from django.core.cache import cache
 from django.core.exceptions import MultipleObjectsReturned
-from django.db import transaction
 from django.db.utils import IntegrityError
 from django.http.request import QueryDict
-from django_redis import get_redis_connection
 
 from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.agent_method_pool import MethodPool

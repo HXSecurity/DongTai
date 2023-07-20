@@ -205,17 +205,11 @@ def get_annotate_sca_base_data(user_id: int, pro_condition: str):
 
 def get_annotate_data_es(user_id, bind_project_id=None, project_version_id=None):
     from elasticsearch import Elasticsearch
-    from elasticsearch_dsl import A, Q, Search
+    from elasticsearch_dsl import A, Q
 
     from dongtai_common.models.asset_vul import IastAssetVulnerabilityDocument
-    from dongtai_common.models.program_language import IastProgramLanguage
     from dongtai_common.models.project import IastProject
-    from dongtai_common.models.strategy import IastStrategyModel
     from dongtai_common.models.vul_level import IastVulLevel
-    from dongtai_common.models.vulnerablity import (
-        IastVulnerabilityDocument,
-        IastVulnerabilityStatus,
-    )
     from dongtai_conf import settings
     from dongtai_web.utils import dict_transfrom
 

@@ -2,7 +2,6 @@
 import logging
 
 from django.utils.translation import gettext_lazy as _
-from rest_framework.request import Request
 
 from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
