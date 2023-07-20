@@ -51,9 +51,7 @@ urlpatterns = [
     # todo 增加重放请求获取接口,用于后续逻辑漏洞/漏洞验证等功能,暂时先不实现
     path("health", HealthView.as_view()),
     path("oss/health", OSSHealthView.as_view()),
-    path(
-        "except_action", AgentActionV2EndPoint.as_view({"get": "except_running_status"})
-    ),
+    path("except_action", AgentActionV2EndPoint.as_view({"get": "except_running_status"})),
     path(
         "actual_action",
         AgentActionV2EndPoint.as_view({"post": "actual_running_status"}),

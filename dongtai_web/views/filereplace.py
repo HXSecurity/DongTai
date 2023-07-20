@@ -50,11 +50,7 @@ class FileReplace(TalentAdminEndPoint):
     @extend_schema(summary="替换文件", tags=[_("Profile")])
     def post(self, request, filename: str):
         if filename not in FILES_ALLOWED_MODIFIY:
-            return R.failure(
-                msg=_(
-                    "this file is disallowed to modifyupload failed,this file is disallowed to modify."
-                )
-            )
+            return R.failure(msg=_("this file is disallowed to modifyupload failed,this file is disallowed to modify."))
         try:
             file_size = FILES_SIZE_LIMIT[filename]
             file_format = FILES_FORMAT[filename]
@@ -76,9 +72,7 @@ class FileReplace(TalentAdminEndPoint):
         except Exception as e:
             logger.exception("uncatched exception: ", exc_info=e)
             with open(filepath, "wb+") as fp:
-                backup_filepath = os.path.join(
-                    MEDIA_ROOT, FILES_PATH, FILES_PATH_BACKUP, filename
-                )
+                backup_filepath = os.path.join(MEDIA_ROOT, FILES_PATH, FILES_PATH_BACKUP, filename)
                 with open(backup_filepath, "rb+") as backup_fp:
                     write_obj = backup_fp.read()
                 fp.write(write_obj)

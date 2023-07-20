@@ -30,9 +30,7 @@ def handle_batch_save(app_label, model_name):
     logger.info(f"handle batch save to es: {model_name} app: {app_label}")
     list_key = f"batch-save-list{app_label}-{model_name}-task"
     rate_limit_key = f"batch-save-rate-limit-{app_label}-{model_name}-rate_limit"
-    batch_task_count_key = (
-        f"batch-save-task-count{app_label}-{model_name}-batch-task-count"
-    )
+    batch_task_count_key = f"batch-save-task-count{app_label}-{model_name}-batch-task-count"
     con = get_redis_connection()
     pipe = con.pipeline()
     pipe.multi()
@@ -61,13 +59,8 @@ class DTCelerySignalProcessor(RealTimeSignalProcessor):
         app_label = instance._meta.app_label
         model_name = instance._meta.model_name
 
-        if (
-            instance.__class__ in registry._models
-            or instance.__class__ in registry._related_models
-        ):
-            transaction.on_commit(
-                lambda: task_routings(instance, app_label, model_name)
-            )
+        if instance.__class__ in registry._models or instance.__class__ in registry._related_models:
+            transaction.on_commit(lambda: task_routings(instance, app_label, model_name))
 
 
 def task_routings(instance, app_label, model_name):
@@ -91,9 +84,7 @@ def add_task(pk, app_label, model_name):
 
 
 def add_async_batch_task(app_label, model_name):
-    batch_task_count_key = (
-        f"batch-save-task-count{app_label}-{model_name}-batch-task-count"
-    )
+    batch_task_count_key = f"batch-save-task-count{app_label}-{model_name}-batch-task-count"
     batch_task_count = cache.get_or_set(batch_task_count_key, 0)
     logger.info(f"rate_limit_key now: {batch_task_count_key} value: {batch_task_count}")
     if batch_task_count < DONGTAI_MAX_BATCH_TASK_CONCORRENCY:

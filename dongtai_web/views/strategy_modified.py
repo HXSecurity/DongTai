@@ -10,24 +10,16 @@ _ResponseSerializer = get_response_serializer()
 
 
 class StrategyCreateSerializer(serializers.Serializer):
-    vul_name = serializers.CharField(
-        help_text=_("The name of the vulnerability type targeted by the strategy")
-    )
-    state = serializers.CharField(
-        help_text=_("This field indicates whether the vulnerability is enabled, 1 or 0")
-    )
-    vul_desc = serializers.CharField(
-        help_text=_("Description of the corresponding vulnerabilities of the strategy")
-    )
+    vul_name = serializers.CharField(help_text=_("The name of the vulnerability type targeted by the strategy"))
+    state = serializers.CharField(help_text=_("This field indicates whether the vulnerability is enabled, 1 or 0"))
+    vul_desc = serializers.CharField(help_text=_("Description of the corresponding vulnerabilities of the strategy"))
     level_id = serializers.IntegerField(
         min_value=1,
         max_value=5,
         help_text=_("The strategy corresponds to the level of vulnerability"),
     )
     vul_fix = serializers.CharField(
-        help_text=_(
-            "Suggestions for repairing vulnerabilities corresponding to the strategy"
-        )
+        help_text=_("Suggestions for repairing vulnerabilities corresponding to the strategy")
     )
 
 
@@ -49,12 +41,8 @@ class StrategyModified(TalentAdminEndPoint):
         if not strategy:
             return R.failure()
         _update(strategy, data)
-        HookType.objects.filter(vul_strategy=strategy, type=4).update(
-            name=data["vul_name"]
-        )
-        HookType.objects.filter(vul_strategy=strategy, type=3).update(
-            name=data["vul_name"]
-        )
+        HookType.objects.filter(vul_strategy=strategy, type=4).update(name=data["vul_name"])
+        HookType.objects.filter(vul_strategy=strategy, type=3).update(name=data["vul_name"])
         return R.success(data={"id": id_})
         #    hook_type=hook_type.id).first()
         # if strategy:
@@ -74,7 +62,5 @@ def get_model_field(model, exclude=None, include=None):
 
     fields = [field.name for field in model._meta.fields]
     if include:
-        return [
-            include for field in list(set(fields) - set(exclude)) if field in include
-        ]
+        return [include for field in list(set(fields) - set(exclude)) if field in include]
     return list(set(fields) - set(exclude))

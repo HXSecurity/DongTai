@@ -25,9 +25,7 @@ def trans_char_field(field, transdict):
                 logger.exception("uncatched exception: ", exc_info=e)
                 return value
             res = [
-                v[value]
-                for k, v in transdict.items()
-                if name == field and k == get_language() and v.get(value, None)
+                v[value] for k, v in transdict.items() if name == field and k == get_language() and v.get(value, None)
             ]
             return res[0] if res else value
 

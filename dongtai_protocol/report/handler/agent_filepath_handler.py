@@ -20,14 +20,8 @@ class FilePathHandler(IReportHandler):
     def save(self):
         try:
             simhash = _data_dump(self.filepath)
-            IastAgent.objects.filter(pk=self.agent_id).update(
-                filepathsimhash=simhash, servicetype=self.servicetype
-            )
-            logger.info(
-                _("filepath simhash log successed : {} servicetype: {}").format(
-                    simhash, self.servicetype
-                )
-            )
+            IastAgent.objects.filter(pk=self.agent_id).update(filepathsimhash=simhash, servicetype=self.servicetype)
+            logger.info(_("filepath simhash log successed : {} servicetype: {}").format(simhash, self.servicetype))
         except Exception as e:
             logger.info(_("filepath simhash log failed, why: {}").format(e))
 

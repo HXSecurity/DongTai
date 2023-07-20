@@ -21,9 +21,7 @@ COMPONENT_LIST = (
 class VersionListView(UserEndPoint):
     @extend_schema(summary="版本列表", tags=[_("Version List")])
     def get(self, request):
-        component_datas = VersionControl.objects.filter(
-            component_name__in=COMPONENT_LIST
-        ).all()
+        component_datas = VersionControl.objects.filter(component_name__in=COMPONENT_LIST).all()
         data = {}
         for component_data in component_datas:
             data[component_data.component_name] = {

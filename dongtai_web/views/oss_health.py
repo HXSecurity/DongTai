@@ -25,9 +25,7 @@ class OssHealthView(UserEndPoint):
             return R.failure(msg=_("OpenAPI configuration error"))
 
         token, success = Token.objects.get_or_create(user=request.user)
-        openapistatus, openapi_resp = checkopenapistatus(
-            urljoin(openapi, OSSHEALTHPATH), token.key
-        )
+        openapistatus, openapi_resp = checkopenapistatus(urljoin(openapi, OSSHEALTHPATH), token.key)
         if openapistatus:
             return R.success(data=openapi_resp)
         return R.success(data={"oss": {"status": 0}})

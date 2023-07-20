@@ -32,15 +32,9 @@ class SinkSerialize(serializers.ModelSerializer):
 
 class HookRuleSerializer(serializers.ModelSerializer):
     USER = {}
-    rule_type = serializers.SerializerMethodField(
-        help_text=_("The name of hook rule type.")
-    )
-    rule_type_id = serializers.SerializerMethodField(
-        help_text=_("The id of hook rule type.")
-    )
-    user = serializers.SerializerMethodField(
-        help_text=_("The user who created the hook rule type.")
-    )
+    rule_type = serializers.SerializerMethodField(help_text=_("The name of hook rule type."))
+    rule_type_id = serializers.SerializerMethodField(help_text=_("The id of hook rule type."))
+    user = serializers.SerializerMethodField(help_text=_("The user who created the hook rule type."))
     id = serializers.IntegerField(help_text=_("The id of strategy"))
     value = serializers.CharField(
         help_text=_("The value of strategy"),
@@ -61,18 +55,14 @@ class HookRuleSerializer(serializers.ModelSerializer):
         max_length=255,
     )
     track = serializers.CharField(
-        help_text=_(
-            "Indicates whether taint tracking is required, true-required, false-not required."
-        ),
+        help_text=_("Indicates whether taint tracking is required, true-required, false-not required."),
         max_length=5,
     )
     update_time = serializers.IntegerField(
         help_text=_("The update time of hook strategy"),
     )
     enable = serializers.IntegerField(
-        help_text=_(
-            "The enabled state of the hook strategy: 0-disabled, 1-enabled, -1-deleted"
-        ),
+        help_text=_("The enabled state of the hook strategy: 0-disabled, 1-enabled, -1-deleted"),
         default=1,
     )
 

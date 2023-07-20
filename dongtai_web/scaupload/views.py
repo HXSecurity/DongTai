@@ -54,10 +54,7 @@ class SCADBMavenBulkViewSet(UserEndPoint, viewsets.ViewSet):
 
     def get_permissions(self):
         try:
-            return [
-                permission()
-                for permission in self.permission_classes_by_action[self.request.method]
-            ]
+            return [permission() for permission in self.permission_classes_by_action[self.request.method]]
         except KeyError:
             return [permission() for permission in self.permission_classes]
 
@@ -81,9 +78,7 @@ class SCADBMavenBulkViewSet(UserEndPoint, viewsets.ViewSet):
         page_summary, page_data = self.get_paginator(
             queryset, ser.validated_data["page"], ser.validated_data["page_size"]
         )
-        return R.success(
-            data=ScaMavenDbSerializer(page_data, many=True).data, page=page_summary
-        )
+        return R.success(data=ScaMavenDbSerializer(page_data, many=True).data, page=page_summary)
 
     @extend_schema_with_envcheck(
         request=ScaMavenDbUploadSerializer,
@@ -118,10 +113,7 @@ class SCADBMavenBulkDeleteView(UserEndPoint):
 
     def get_permissions(self):
         try:
-            return [
-                permission()
-                for permission in self.permission_classes_by_action[self.request.method]
-            ]
+            return [permission() for permission in self.permission_classes_by_action[self.request.method]]
         except KeyError:
             return [permission() for permission in self.permission_classes]
 
@@ -146,16 +138,11 @@ class SCADBMavenViewSet(UserEndPoint, viewsets.ViewSet):
 
     def get_permissions(self):
         try:
-            return [
-                permission()
-                for permission in self.permission_classes_by_action[self.request.method]
-            ]
+            return [permission() for permission in self.permission_classes_by_action[self.request.method]]
         except KeyError:
             return [permission() for permission in self.permission_classes]
 
-    @extend_schema_with_envcheck(
-        summary=_("Get sca db"), description=_("Get sca list"), tags=[_("SCA DB")]
-    )
+    @extend_schema_with_envcheck(summary=_("Get sca db"), description=_("Get sca list"), tags=[_("SCA DB")])
     def retrieve(self, request, pk):
         q = Q(pk=pk)
         data = ScaMavenDb.objects.filter(q).first()
@@ -180,9 +167,7 @@ class SCADBMavenViewSet(UserEndPoint, viewsets.ViewSet):
             return R.failure(msg="same sha_1 component exists")
         return R.success()
 
-    @extend_schema_with_envcheck(
-        summary=_("Get sca db"), description=_("Get sca list"), tags=[_("SCA DB")]
-    )
+    @extend_schema_with_envcheck(summary=_("Get sca db"), description=_("Get sca list"), tags=[_("SCA DB")])
     def destory(self, request, pk):
         q = Q(pk=pk)
         ScaMavenDb.objects.filter(q).delete()
@@ -303,7 +288,5 @@ class SCATemplateViewSet(UserEndPoint):
         tags=[_("SCA DB")],
     )
     def get(self, request):
-        with open(
-            os.path.join(BASE_DIR, "static/assets/template/maven_sca.csv"), "rb"
-        ) as f:
+        with open(os.path.join(BASE_DIR, "static/assets/template/maven_sca.csv"), "rb") as f:
             return FileResponse(f, filename="maven_sca.csv")

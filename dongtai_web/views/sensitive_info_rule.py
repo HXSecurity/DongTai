@@ -102,12 +102,8 @@ class SensitiveInfoPatternTypeSerializer(serializers.ModelSerializer):
 
 
 class SensitiveInfoRuleCreateSerializer(serializers.Serializer):
-    strategy_id = serializers.IntegerField(
-        min_value=1, max_value=2147483646, required=True
-    )
-    pattern_type_id = serializers.IntegerField(
-        min_value=1, max_value=2147483646, required=True
-    )
+    strategy_id = serializers.IntegerField(min_value=1, max_value=2147483646, required=True)
+    pattern_type_id = serializers.IntegerField(min_value=1, max_value=2147483646, required=True)
     pattern = serializers.CharField(required=True)
     status = serializers.ChoiceField(choices=(0, 1), required=True)
 
@@ -130,10 +126,7 @@ class _RegexPatternValidationSerializer(serializers.Serializer):
 class SensitiveInfoRuleViewSet(UserEndPoint, viewsets.ViewSet):
     def get_permissions(self):
         try:
-            return [
-                permission()
-                for permission in self.permission_classes_by_action[self.action]
-            ]
+            return [permission() for permission in self.permission_classes_by_action[self.action]]
         except KeyError:
             return [permission() for permission in self.permission_classes]
 
@@ -141,9 +134,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint, viewsets.ViewSet):
         [_SensitiveInfoArgsSerializer],
         tags=[_("敏感信息规则")],
         summary=_("SensitiveInfoRule List"),
-        description=_(
-            "Get the item corresponding to the user, support fuzzy search based on name."
-        ),
+        description=_("Get the item corresponding to the user, support fuzzy search based on name."),
     )
     def list(self, request):
         ser = _SensitiveInfoArgsSerializer(data=request.GET)
@@ -170,9 +161,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint, viewsets.ViewSet):
         request=SensitiveInfoRuleCreateSerializer,
         tags=[_("敏感信息规则")],
         summary=_("敏感信息规则创建"),
-        description=_(
-            "Get the item corresponding to the user, support fuzzy search based on name."
-        ),
+        description=_("Get the item corresponding to the user, support fuzzy search based on name."),
     )
     def create(self, request):
         ser = SensitiveInfoRuleCreateSerializer(data=request.data)
@@ -199,18 +188,14 @@ class SensitiveInfoRuleViewSet(UserEndPoint, viewsets.ViewSet):
                 status=status,
                 user=request.user,
             )
-            return R.success(
-                msg=_("create success"), data=SensitiveInfoRuleSerializer(obj).data
-            )
+            return R.success(msg=_("create success"), data=SensitiveInfoRuleSerializer(obj).data)
         return R.failure()
 
     @extend_schema_with_envcheck(
         request=SensitiveInfoRuleCreateSerializer,
         tags=[_("敏感信息规则")],
         summary=_("敏感信息规则更新"),
-        description=_(
-            "Get the item corresponding to the user, support fuzzy search based on name."
-        ),
+        description=_("Get the item corresponding to the user, support fuzzy search based on name."),
     )
     def update(self, request, pk):
         ser = SensitiveInfoRuleCreateSerializer(data=request.data)
@@ -231,9 +216,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint, viewsets.ViewSet):
     @extend_schema_with_envcheck(
         tags=[_("敏感信息规则")],
         summary=_("敏感信息规则删除"),
-        description=_(
-            "Get the item corresponding to the user, support fuzzy search based on name."
-        ),
+        description=_("Get the item corresponding to the user, support fuzzy search based on name."),
     )
     def destory(self, request, pk):
         users = self.get_auth_users(request.user)
@@ -243,9 +226,7 @@ class SensitiveInfoRuleViewSet(UserEndPoint, viewsets.ViewSet):
     @extend_schema_with_envcheck(
         tags=[_("敏感信息规则")],
         summary=_("敏感信息规则获取"),
-        description=_(
-            "Get the item corresponding to the user, support fuzzy search based on name."
-        ),
+        description=_("Get the item corresponding to the user, support fuzzy search based on name."),
     )
     def retrieve(self, request, pk):
         users = self.get_auth_users(request.user)
@@ -271,9 +252,7 @@ class SensitiveInfoPatternValidationView(UserEndPoint):
         request=_RegexPatternValidationSerializer,
         tags=[_("敏感信息规则")],
         summary=_("敏感信息规则数据验证"),
-        description=_(
-            "Get the item corresponding to the user, support fuzzy search based on name."
-        ),
+        description=_("Get the item corresponding to the user, support fuzzy search based on name."),
     )
     def post(self, request, pattern_type):
         pattern_test_dict = {"regex": regextest, "json": jsontest}

@@ -31,29 +31,21 @@ class ProjectSummaryDataTypeSummarySerializer(serializers.Serializer):
 
 class ProjectSummaryDataDayNumSerializer(serializers.Serializer):
     day_label = serializers.CharField(help_text=_("Timestamp, format %M-%d"))
-    day_num = serializers.IntegerField(
-        help_text=_("The number of vulnerabilities corresponding to the time")
-    )
+    day_num = serializers.IntegerField(help_text=_("The number of vulnerabilities corresponding to the time"))
 
 
 class ProjectSummaryDataLevelCountSerializer(serializers.Serializer):
     level_name = serializers.CharField(help_text=_("Level name of vulnerability"))
     level_id = serializers.IntegerField(help_text=_("Level id of vulnerability"))
-    num = serializers.IntegerField(
-        help_text=_("The number of vulnerabilities corresponding to the level")
-    )
+    num = serializers.IntegerField(help_text=_("The number of vulnerabilities corresponding to the level"))
 
 
 class _ProjectSummaryDataSerializer(serializers.Serializer):
     name = serializers.CharField(help_text=_("The name of project"))
     mode = serializers.ChoiceField(["插桩模式"], help_text=_("The mode of project"))
     id = serializers.IntegerField(help_text=_("The id of the project"))
-    latest_time = serializers.IntegerField(
-        help_text=_("The latest update time of the project")
-    )
-    versionData = ProjectsVersionDataSerializer(
-        help_text=_("Version information about the project")
-    )
+    latest_time = serializers.IntegerField(help_text=_("The latest update time of the project"))
+    versionData = ProjectsVersionDataSerializer(help_text=_("Version information about the project"))
     type_summary = ProjectSummaryDataTypeSummarySerializer(
         many=True, help_text=_("Statistics on the number of types of vulnerabilities")
     )
@@ -69,9 +61,7 @@ class _ProjectSummaryDataSerializer(serializers.Serializer):
     project_version_latest_time = serializers.IntegerField(help_text="项目版本更新时间")
 
 
-_ProjectSummaryResponseSerializer = get_response_serializer(
-    _ProjectSummaryDataSerializer()
-)
+_ProjectSummaryResponseSerializer = get_response_serializer(_ProjectSummaryDataSerializer())
 
 
 class ProjectSummary(UserEndPoint):
@@ -99,9 +89,7 @@ class ProjectSummary(UserEndPoint):
     @extend_schema_with_envcheck(
         tags=[_("Project")],
         summary=_("项目总结"),
-        description=_(
-            "Get project deatils and its statistics data about vulnerablity."
-        ),
+        description=_("Get project deatils and its statistics data about vulnerablity."),
         response_schema=_ProjectSummaryResponseSerializer,
     )
     def get(self, request, id):
@@ -129,19 +117,11 @@ class ProjectSummary(UserEndPoint):
         agent_id = request.query_params.get("agent_id")
         if agent_id:
             pass
-        data_stat = get_summary_by_project(
-            id, current_project_version.get("version_id", 0)
-        )
+        data_stat = get_summary_by_project(id, current_project_version.get("version_id", 0))
         data.update(data_stat)
         data["agent_language"] = ProjectSerializer(project).data["agent_language"]
-        data["agent_alive"] = IastAgent.objects.filter(
-            bind_project_id=project.id, online=const.RUNNING
-        ).count()
-        project_version = IastProjectVersion.objects.filter(
-            pk=current_project_version.get("version_id", 0)
-        ).first()
-        data["project_version_latest_time"] = (
-            project_version.update_time if project_version else project.latest_time
-        )
+        data["agent_alive"] = IastAgent.objects.filter(bind_project_id=project.id, online=const.RUNNING).count()
+        project_version = IastProjectVersion.objects.filter(pk=current_project_version.get("version_id", 0)).first()
+        data["project_version_latest_time"] = project_version.update_time if project_version else project.latest_time
         data["type_summary"] = []
         return R.success(data=data)

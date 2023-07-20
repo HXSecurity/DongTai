@@ -87,48 +87,28 @@ class GetAggregationVulList(UserEndPoint):
                     keywords = pymysql.converters.escape_string(keywords)
                     keywords = "+" + keywords
                     es_query["search_keyword"] = ser.validated_data.get("keywords", "")
-                order_type = AGGREGATION_ORDER.get(
-                    str(ser.validated_data["order_type"]), "vul.level_id"
-                )
-                order_type_desc = (
-                    "desc" if ser.validated_data["order_type_desc"] else "asc"
-                )
+                order_type = AGGREGATION_ORDER.get(str(ser.validated_data["order_type"]), "vul.level_id")
+                order_type_desc = "desc" if ser.validated_data["order_type_desc"] else "asc"
                 es_dict = {"1": "level_id", "2": "create_time", "3": "vul_update_time"}
-                order_type_es = es_dict.get(
-                    str(ser.validated_data["order_type"]), "level_id"
-                )
+                order_type_es = es_dict.get(str(ser.validated_data["order_type"]), "level_id")
                 es_query["order"] = {order_type_es: {"order": order_type_desc}}
                 # 从项目列表进入 绑定项目id
                 if ser.validated_data.get("bind_project_id", 0):
-                    query_condition = (
-                        query_condition
-                        + " and asset.project_id={} ".format(
-                            str(ser.validated_data.get("bind_project_id"))
-                        )
+                    query_condition = query_condition + " and asset.project_id={} ".format(
+                        str(ser.validated_data.get("bind_project_id"))
                     )
-                    es_query["bind_project_id"] = ser.validated_data.get(
-                        "bind_project_id"
-                    )
+                    es_query["bind_project_id"] = ser.validated_data.get("bind_project_id")
                 # 项目版本号
                 if ser.validated_data.get("project_version_id", 0):
-                    query_condition = (
-                        query_condition
-                        + " and asset.project_version_id={} ".format(
-                            str(ser.validated_data.get("project_version_id"))
-                        )
+                    query_condition = query_condition + " and asset.project_version_id={} ".format(
+                        str(ser.validated_data.get("project_version_id"))
                     )
-                    es_query["project_version_id"] = ser.validated_data.get(
-                        "project_version_id"
-                    )
+                    es_query["project_version_id"] = ser.validated_data.get("project_version_id")
                 # 按项目筛选
                 if ser.validated_data.get("project_id_str", ""):
-                    project_str = turnIntListOfStr(
-                        ser.validated_data.get("project_id_str", ""), "asset.project_id"
-                    )
+                    project_str = turnIntListOfStr(ser.validated_data.get("project_id_str", ""), "asset.project_id")
                     query_condition = query_condition + project_str
-                    es_query["project_ids"] = turnIntListOfStr(
-                        ser.validated_data.get("project_id_str")
-                    )
+                    es_query["project_ids"] = turnIntListOfStr(ser.validated_data.get("project_id_str"))
                 # 按语言筛选
                 if ser.validated_data.get("language_str", ""):
                     language_str = ser.validated_data.get("language_str", "")
@@ -136,21 +116,12 @@ class GetAggregationVulList(UserEndPoint):
                     # 安全校验,强制转int
                     type_list = list(map(int, type_list))
                     type_int_list = list(map(str, type_list))
-                    lang_str = [
-                        "'" + LANGUAGE_ID_DICT.get(one_type, "") + "'"
-                        for one_type in type_int_list
-                    ]
+                    lang_str = ["'" + LANGUAGE_ID_DICT.get(one_type, "") + "'" for one_type in type_int_list]
                     type_int_str = ",".join(lang_str)
-                    language_str_change = " and {} in ({}) ".format(
-                        "vul.package_language", type_int_str
-                    )
+                    language_str_change = " and {} in ({}) ".format("vul.package_language", type_int_str)
                     query_condition = query_condition + language_str_change
-                    language_id_list = turnIntListOfStr(
-                        ser.validated_data.get("language_str", "")
-                    )
-                    language_arr = [
-                        LANGUAGE_ID_DICT.get(str(lang)) for lang in language_id_list
-                    ]
+                    language_id_list = turnIntListOfStr(ser.validated_data.get("language_str", ""))
+                    language_arr = [LANGUAGE_ID_DICT.get(str(lang)) for lang in language_id_list]
                     es_query["language_ids"] = language_arr
                 # 漏洞类型筛选 弃用
                 if ser.validated_data.get("hook_type_id_str", ""):
@@ -160,41 +131,27 @@ class GetAggregationVulList(UserEndPoint):
                     )
                     query_condition = query_condition + vul_type_str
                     join_table = (
-                        join_table
-                        + "left JOIN iast_asset_vul_type_relation as typeR on vul.id=typeR.asset_vul_id "
+                        join_table + "left JOIN iast_asset_vul_type_relation as typeR on vul.id=typeR.asset_vul_id "
                     )
                 # 漏洞等级筛选
                 if ser.validated_data.get("level_id_str", ""):
-                    status_str = turnIntListOfStr(
-                        ser.validated_data.get("level_id_str", ""), "vul.level_id"
-                    )
+                    status_str = turnIntListOfStr(ser.validated_data.get("level_id_str", ""), "vul.level_id")
                     query_condition = query_condition + status_str
-                    es_query["level_ids"] = turnIntListOfStr(
-                        ser.validated_data.get("level_id_str")
-                    )
+                    es_query["level_ids"] = turnIntListOfStr(ser.validated_data.get("level_id_str"))
                 # 可利用性
                 if ser.validated_data.get("availability_str", ""):
-                    availability_arr = turnIntListOfStr(
-                        ser.validated_data.get("availability_str", "")
-                    )
+                    availability_arr = turnIntListOfStr(ser.validated_data.get("availability_str", ""))
                     # there is a bug, and it has been fix in validator.
                     # in fact, a more reasonable approch is use serializer to
                     # handle the cover in prepose.
                     if 3 in availability_arr:
-                        query_condition = (
-                            query_condition
-                            + " and vul.have_article=0 and vul.have_poc=0 "
-                        )
+                        query_condition = query_condition + " and vul.have_article=0 and vul.have_poc=0 "
                     else:
                         if 1 in availability_arr:
                             query_condition = query_condition + " and vul.have_poc=1 "
                         if 2 in availability_arr:
-                            query_condition = (
-                                query_condition + " and vul.have_article=1 "
-                            )
-                    es_query["availability_ids"] = turnIntListOfStr(
-                        ser.validated_data.get("availability_str")
-                    )
+                            query_condition = query_condition + " and vul.have_article=1 "
+                    es_query["availability_ids"] = turnIntListOfStr(ser.validated_data.get("availability_str"))
 
         except ValidationError as e:
             return R.failure(data=e.detail)
@@ -210,18 +167,14 @@ class GetAggregationVulList(UserEndPoint):
                 " MATCH( `vul`.`vul_name`,`vul`.`aql`,`vul`.`vul_serial` ) AGAINST ( %s IN NATURAL LANGUAGE MODE ) AS `score`"
                 "  from iast_asset_vul as vul  "
                 "left JOIN  iast_asset_vul_relation as rel  on rel.asset_vul_id=vul.id  "
-                "left JOIN iast_asset as asset on rel.asset_id=asset.id  "
-                + join_table
-                + query_condition
+                "left JOIN iast_asset as asset on rel.asset_id=asset.id  " + join_table + query_condition
             )
 
         else:
             query_base = (
                 "SELECT DISTINCT(vul.id),vul.id,vul.level_id,vul.update_time_desc,vul.update_time from iast_asset_vul as vul "
                 "left JOIN iast_asset_vul_relation as rel on rel.asset_vul_id=vul.id  "
-                "left JOIN iast_asset as asset on rel.asset_id=asset.id  "
-                + join_table
-                + query_condition
+                "left JOIN iast_asset as asset on rel.asset_id=asset.id  " + join_table + query_condition
             )
 
         # mysql 全文索引下,count不准确,等于全部数量
@@ -242,20 +195,14 @@ class GetAggregationVulList(UserEndPoint):
         else:
             if keywords:
                 all_vul = IastAssetVul.objects.raw(
-                    query_base
-                    + "  order by score desc, {} limit {},{};  ".format(
-                        new_order, begin_num, end_num
-                    ),
+                    query_base + "  order by score desc, {} limit {},{};  ".format(new_order, begin_num, end_num),
                     [keywords],
                 )
             else:
                 all_vul = IastAssetVul.objects.raw(
-                    query_base
-                    + f"  order by {new_order}  limit {begin_num},{end_num};  "
+                    query_base + f"  order by {new_order}  limit {begin_num},{end_num};  "
                 )
-            all_vul = IastAssetVul.objects.filter(
-                pk__in=[vul.id for vul in all_vul]
-            ).all()
+            all_vul = IastAssetVul.objects.filter(pk__in=[vul.id for vul in all_vul]).all()
         content_list = []
 
         if all_vul:
@@ -308,9 +255,7 @@ class GetAggregationVulList(UserEndPoint):
 
             pro_info = (
                 IastVulAssetRelation.objects.filter(
-                    asset_vul_id__in=[
-                        i["iastvulassetrelation__asset_vul_id"] for i in afdistset
-                    ],
+                    asset_vul_id__in=[i["iastvulassetrelation__asset_vul_id"] for i in afdistset],
                     asset_id__in=[i["aid"] for i in afdistset],
                 )
                 .values(
@@ -326,18 +271,16 @@ class GetAggregationVulList(UserEndPoint):
             pro_arr = {}
             for item in pro_info:
                 vul_id = item["asset_vul_id"]
-                item["server_type"] = VulSerializer.split_container_name(
-                    item["asset__agent__server__container"]
-                )
+                item["server_type"] = VulSerializer.split_container_name(item["asset__agent__server__container"])
                 del item["asset_vul_id"]
                 if pro_arr.get(vul_id, []):
                     pro_arr[vul_id].append(item)
                 else:
                     pro_arr[vul_id] = [item]
             # 根据vul_id获取对应的漏洞类型 一对多
-            type_info = IastAssetVulTypeRelation.objects.filter(
-                asset_vul_id__in=vul_ids
-            ).values("asset_vul_id", "asset_vul_type__name")
+            type_info = IastAssetVulTypeRelation.objects.filter(asset_vul_id__in=vul_ids).values(
+                "asset_vul_id", "asset_vul_type__name"
+            )
             type_arr = {}
             for item in type_info:
                 if not type_arr.get(item["asset_vul_id"], []):

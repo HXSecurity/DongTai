@@ -47,9 +47,7 @@ class Asset(models.Model):
         default=-1,
     )
     project = models.ForeignKey(IastProject, on_delete=models.CASCADE, default=-1)
-    project_version = models.ForeignKey(
-        IastProjectVersion, on_delete=models.CASCADE, default=-1
-    )
+    project_version = models.ForeignKey(IastProjectVersion, on_delete=models.CASCADE, default=-1)
     user = models.ForeignKey(User, models.DO_NOTHING, default=-1)
     project_name = models.CharField(max_length=255, blank=True)
     language = models.CharField(max_length=32, blank=True)
@@ -109,9 +107,7 @@ class IastAssetDocument(Document):
     @classmethod
     def search(cls, using=None, index=None):
         uuid_key = uuid.uuid4().hex
-        cache_uuid_key = cache.get_or_set(
-            f"es-documents-shards-{cls.__name__}", uuid_key, 60 * 1
-        )
+        cache_uuid_key = cache.get_or_set(f"es-documents-shards-{cls.__name__}", uuid_key, 60 * 1)
         return Search(
             using=cls._get_using(using),
             index=cls._default_index(index),

@@ -28,9 +28,7 @@ logger = logging.getLogger("dongtai.openapi")
 
 
 class HardEncodeVulSerializer(serializers.Serializer):
-    class_ = serializers.CharField(
-        default=None, required=False, help_text=_("class name")
-    )
+    class_ = serializers.CharField(default=None, required=False, help_text=_("class name"))
     field = serializers.CharField(default=None, required=False, help_text=_("field"))
 
     value = serializers.CharField(default=None, required=False)
@@ -59,9 +57,7 @@ class HardEncodeVulHandler(IReportHandler):
             return
         from dongtai_common.models.strategy_user import IastStrategyUser
 
-        scan_template = IastStrategyUser.objects.filter(
-            pk=self.agent.bind_project.scan_id
-        ).first()
+        scan_template = IastStrategyUser.objects.filter(pk=self.agent.bind_project.scan_id).first()
         if scan_template:
             strategy_ids = [int(i) for i in scan_template.content.split(",")]
             if strategy.id not in strategy_ids:

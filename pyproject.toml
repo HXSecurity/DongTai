@@ -5,10 +5,11 @@ plugins = ["mypy_django_plugin.main"]
 django_settings_module = "dongtai_conf.settings"
 
 [tool.black]
+line-length = 120
 target-version = ["py310"]
 
 [tool.ruff]
-line-length = 88
+line-length = 120
 select = [
     "F",    # Pyflakes
     "E",    # pycodestyle errors

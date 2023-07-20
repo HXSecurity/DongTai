@@ -11,9 +11,7 @@ from dongtai_common.models.agent import IastAgent
 logger = logging.getLogger("dongtai.openapi")
 
 
-@cached_decorator(
-    random_range=(60, 120), use_celery_update=False, cache_logic_none=False
-)
+@cached_decorator(random_range=(60, 120), use_celery_update=False, cache_logic_none=False)
 def get_agent(agent_id, kwargs, fields):
     return (
         IastAgent.objects.filter(
@@ -88,11 +86,7 @@ class IReportHandler:
         if self.has_permission():
             self.parse()
             self.save()
-            logger.info(
-                _("[{classname}] Report Analysis Completed").format(
-                    classname=self.__class__.__name__
-                )
-            )
+            logger.info(_("[{classname}] Report Analysis Completed").format(classname=self.__class__.__name__))
             return self.get_result()
         logger.info(
             _(
@@ -104,16 +98,13 @@ class IReportHandler:
     def get_project_agents(self, agent):
         if agent.bind_project_id != 0:
             agents = IastAgent.objects.filter(
-                Q(project_name=self.project_name)
-                | Q(bind_project_id=agent.bind_project_id),
+                Q(project_name=self.project_name) | Q(bind_project_id=agent.bind_project_id),
                 online=1,
                 user=self.user_id,
                 project_version_id=agent.project_version_id,
             )
         else:
-            agents = IastAgent.objects.filter(
-                project_name=agent.project_name, user=self.user_id
-            )
+            agents = IastAgent.objects.filter(project_name=agent.project_name, user=self.user_id)
         return agents
 
     def get_agent(self, agent_id):

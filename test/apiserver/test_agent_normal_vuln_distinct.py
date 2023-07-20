@@ -110,9 +110,7 @@ class AgentHardencodeTestCase(AgentTestCase):
             },
             "type": 33,
         }
-        strategy = IastStrategyModel.objects.filter(
-            user_id=1, vul_type="crypto-bad-mac"
-        ).first()
+        strategy = IastStrategyModel.objects.filter(user_id=1, vul_type="crypto-bad-mac").first()
         if strategy:
             strategy.state = "enable"
             strategy.save()

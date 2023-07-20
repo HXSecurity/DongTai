@@ -24,9 +24,7 @@ class ErrorLogHandler(IReportHandler):
 
     def save(self):
         try:
-            IastErrorlog.objects.create(
-                errorlog=self.log, agent=self.agent, state="已上报", dt=int(time.time())
-            )
+            IastErrorlog.objects.create(errorlog=self.log, agent=self.agent, state="已上报", dt=int(time.time()))
             logger.info(_("Error log report saving success"))
         except Exception as e:
             logger.info(_("Error log report saves failed, why: {}").format(e))

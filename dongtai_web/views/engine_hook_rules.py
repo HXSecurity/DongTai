@@ -24,15 +24,9 @@ class _EngineHookRulesQuerySerializer(serializers.Serializer):
     )
     pageSize = serializers.IntegerField(default=20, help_text=_("number per page"))
     page = serializers.IntegerField(default=1, help_text=_("page index"))
-    strategy_type = serializers.IntegerField(
-        help_text=_("The id of hook_type"), required=False
-    )
-    language_id = serializers.IntegerField(
-        default=1, help_text=_("The id of programming language"), required=False
-    )
-    keyword = serializers.CharField(
-        help_text=_("The keyword for search"), required=False
-    )
+    strategy_type = serializers.IntegerField(help_text=_("The id of hook_type"), required=False)
+    language_id = serializers.IntegerField(default=1, help_text=_("The id of programming language"), required=False)
+    keyword = serializers.CharField(help_text=_("The keyword for search"), required=False)
 
 
 _ResponseSerializer = get_response_serializer(
@@ -90,10 +84,7 @@ class EngineHookRulesEndPoint(UserEndPoint):
         if res is None:
             return R.failure(msg=_("Parameter error"))
         rule_type, page, page_size, strategy_type, language_id, keyword = res
-        if (
-            all(x is not None for x in [rule_type, page, page_size, language_id])
-            is False
-        ):
+        if all(x is not None for x in [rule_type, page, page_size, language_id]) is False:
             return R.failure(msg=_("Parameter error"))
         if rule_type is None:
             return R.failure(msg=_("Strategy type does not exist"))
@@ -107,13 +98,9 @@ class EngineHookRulesEndPoint(UserEndPoint):
                 else:
                     rule_type_queryset = IastStrategyModel.objects.all()
             elif strategy_type:
-                rule_type_queryset = HookType.objects.filter(
-                    id=strategy_type, type=rule_type, language_id=language_id
-                )
+                rule_type_queryset = HookType.objects.filter(id=strategy_type, type=rule_type, language_id=language_id)
             else:
-                rule_type_queryset = HookType.objects.filter(
-                    type=rule_type, language_id=language_id
-                )
+                rule_type_queryset = HookType.objects.filter(type=rule_type, language_id=language_id)
             if rule_type == 4:
                 q = (
                     Q(strategy__in=rule_type_queryset)
@@ -121,15 +108,11 @@ class EngineHookRulesEndPoint(UserEndPoint):
                     & Q(language_id=language_id)
                 )
             else:
-                q = Q(hooktype__in=rule_type_queryset) & Q(
-                    enable__in=(const.ENABLE, const.DISABLE)
-                )
+                q = Q(hooktype__in=rule_type_queryset) & Q(enable__in=(const.ENABLE, const.DISABLE))
             if keyword:
                 q = Q(value__icontains=keyword) & q
             rule_queryset = HookStrategy.objects.filter(q)
-            page_summary, queryset = self.get_paginator(
-                rule_queryset.order_by("-id"), page=page, page_size=page_size
-            )
+            page_summary, queryset = self.get_paginator(rule_queryset.order_by("-id"), page=page, page_size=page_size)
             if rule_type == 4:
                 queryset = queryset.select_related("strategy")
             else:

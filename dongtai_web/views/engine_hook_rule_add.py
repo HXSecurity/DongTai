@@ -47,9 +47,7 @@ class _HookRuleAddBodyargsSerializer(serializers.Serializer):
         max_length=255,
     )
     track = serializers.CharField(
-        help_text=_(
-            "Indicates whether taint tracking is required, true-required, false-not required."
-        ),
+        help_text=_("Indicates whether taint tracking is required, true-required, false-not required."),
         max_length=5,
     )
     ignore_blacklist = serializers.BooleanField(
@@ -178,9 +176,7 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
         request=_HookRuleAddBodyargsSerializer,
         tags=[_("Hook Rule")],
         summary=_("Hook Rule Add"),
-        description=_(
-            "Generate corresponding strategy group according to the strategy selected by the user."
-        ),
+        description=_("Generate corresponding strategy group according to the strategy selected by the user."),
         response_schema=_ResponseSerializer,
     )
     def post(self, request):
@@ -216,9 +212,7 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             if ser.is_valid(True):
                 pass
         except ValidationError as e:
-            return R.failure(
-                data=e.detail, msg=_("Incomplete parameter, please check again")
-            )
+            return R.failure(data=e.detail, msg=_("Incomplete parameter, please check again"))
         if rule_target == "":
             hook_type = IastStrategyModel.objects.filter(
                 id=rule_type,

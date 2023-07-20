@@ -23,9 +23,7 @@ class RelationProject:
 class RelationProjectArgsSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=20, help_text=_("Number per page"))
     page = serializers.IntegerField(default=1, help_text=_("Page index"))
-    project_id = serializers.IntegerField(
-        default=None, required=False, help_text=_("project with be the first")
-    )
+    project_id = serializers.IntegerField(default=None, required=False, help_text=_("project with be the first"))
 
 
 class RelationProjectSerializer(serializers.ModelSerializer):
@@ -37,9 +35,7 @@ class RelationProjectSerializer(serializers.ModelSerializer):
         fields = ["project_id", "project_name"]
 
 
-FullRelationProjectResponseSerializer = get_response_serializer(
-    RelationProjectSerializer(many=True)
-)
+FullRelationProjectResponseSerializer = get_response_serializer(RelationProjectSerializer(many=True))
 
 
 class NewPackageRelationProject(UserEndPoint):
@@ -57,9 +53,7 @@ class NewPackageRelationProject(UserEndPoint):
         except ValidationError as e:
             return R.failure(data=e.detail)
         departments = request.user.get_relative_department()
-        queryset = IastProject.objects.filter(department__in=departments).order_by(
-            "-latest_time"
-        )
+        queryset = IastProject.objects.filter(department__in=departments).order_by("-latest_time")
         assets_project_ids = (
             AssetV2.objects.filter(
                 language_id=language_id,
@@ -76,32 +70,18 @@ class NewPackageRelationProject(UserEndPoint):
         )
         if ser.validated_data["project_id"]:
             assets_p1 = (
-                IastProject.objects.filter(
-                    Q(pk__in=assets_project_ids)
-                    & Q(pk=ser.validated_data["project_id"])
-                )
+                IastProject.objects.filter(Q(pk__in=assets_project_ids) & Q(pk=ser.validated_data["project_id"]))
                 .annotate(order=Value(1))
                 .all()
             )
             assets_p2 = (
-                IastProject.objects.filter(
-                    Q(pk__in=assets_project_ids)
-                    & ~Q(pk=ser.validated_data["project_id"])
-                )
+                IastProject.objects.filter(Q(pk__in=assets_project_ids) & ~Q(pk=ser.validated_data["project_id"]))
                 .annotate(order=Value(2))
                 .order_by("-pk")
                 .all()
             )
             assets = assets_p1.union(assets_p2).order_by("order", "-pk")
         else:
-            assets = (
-                IastProject.objects.filter(Q(pk__in=assets_project_ids))
-                .order_by("-pk")
-                .all()
-            )
-        page_info, data = self.get_paginator(
-            assets, ser.validated_data["page"], ser.validated_data["page_size"]
-        )
-        return R.success(
-            data=RelationProjectSerializer(data, many=True).data, page=page_info
-        )
+            assets = IastProject.objects.filter(Q(pk__in=assets_project_ids)).order_by("-pk").all()
+        page_info, data = self.get_paginator(assets, ser.validated_data["page"], ser.validated_data["page_size"])
+        return R.success(data=RelationProjectSerializer(data, many=True).data, page=page_info)

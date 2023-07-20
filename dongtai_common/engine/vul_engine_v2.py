@@ -79,10 +79,7 @@ class VulEngineV2:
         self.method_counts = len(self.method_pool)
 
     def hit_vul_method(self, method):
-        if (
-            f"{method.get('className')}.{method.get('methodName')}"
-            == self.vul_method_signature
-        ):
+        if f"{method.get('className')}.{method.get('methodName')}" == self.vul_method_signature:
             self.hit_vul = True
             self.pool_value = method.get("sourceHash")
             return True
@@ -96,9 +93,7 @@ class VulEngineV2:
             for hash in target_hash:
                 if hash in self.pool_value:
                     current_link.append(method)
-                    self.vul_source_signature = (
-                        f"{method.get('className')}.{method.get('methodName')}"
-                    )
+                    self.vul_source_signature = f"{method.get('className')}.{method.get('methodName')}"
                     return True
             return None
         for hash in target_hash:
@@ -111,8 +106,7 @@ class VulEngineV2:
     @cached_property
     def method_pool_signatures(self):
         return [
-            f"{method.get('className').replace('/', '.')}.{method.get('methodName')}"
-            for method in self.method_pool
+            f"{method.get('className').replace('/', '.')}.{method.get('methodName')}" for method in self.method_pool
         ]
 
     def search_sink(self, method_pool, vul_method_signature):
@@ -142,9 +136,7 @@ class VulEngineV2:
             node_ids.add(head)
             for sub_node in subs:
                 node_ids.add(sub_node)
-                edges.append(
-                    {"id": str(self.edge_code), "source": str(head), "target": sub_node}
-                )
+                edges.append({"id": str(self.edge_code), "source": str(head), "target": sub_node})
                 self.edge_code = self.edge_code + 1
 
         nodes = [self.raw_node_data[int(node_id)] for node_id in node_ids]
@@ -174,12 +166,8 @@ class VulEngineV2:
                 {"label": "行号", "value": data["callerLineNumber"]},
                 {"label": "污点来源为", "value": source},
                 {"label": "污点转换为", "value": target},
-                {"label": "初始污点", "value": data["sourceValues"]}
-                if "sourceValues" in data
-                else {},
-                {"label": "传播后污点", "value": data["targetValues"]}
-                if "targetValues" in data
-                else {},
+                {"label": "初始污点", "value": data["sourceValues"]} if "sourceValues" in data else {},
+                {"label": "传播后污点", "value": data["targetValues"]} if "targetValues" in data else {},
             ],
         }
 
@@ -200,9 +188,7 @@ class VulEngineV2:
         raw_node_data_copy = deepcopy(self.raw_node_data)
 
         while True:
-            status, self.raw_graph_data, raw_node_data = self.remove_invalid(
-                self.raw_graph_data, raw_node_data_copy
-            )
+            status, self.raw_graph_data, raw_node_data = self.remove_invalid(self.raw_graph_data, raw_node_data_copy)
             if status is False:
                 break
 
@@ -222,9 +208,7 @@ class VulEngineV2:
             leaf_nodes = list(filter(lambda x: int(x) not in raw_graph_data, sub_nodes))
             if leaf_nodes:
                 filtered_leaf_nodes = set(filter(self.filter_invalid_node, leaf_nodes))
-                raw_graph_data[key] = filtered_leaf_nodes | (
-                    set(sub_nodes) - set(leaf_nodes)
-                )
+                raw_graph_data[key] = filtered_leaf_nodes | (set(sub_nodes) - set(leaf_nodes))
                 filtered_node_count = len(filtered_leaf_nodes)
                 sub_node_count = len(leaf_nodes)
                 if sub_node_count != filtered_node_count:

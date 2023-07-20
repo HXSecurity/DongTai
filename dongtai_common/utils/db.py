@@ -13,15 +13,11 @@ class SearchLanguageMode(Expression):
                 raise TypeError("%r is not an Expression" % expression)
         self.expressions = expressions
 
-    def resolve_expression(
-        self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False
-    ):
+    def resolve_expression(self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False):
         c = self.copy()
         c.is_summary = summarize
         for pos, expression in enumerate(self.expressions):
-            c.expressions[pos] = expression.resolve_expression(
-                query, allow_joins, reuse, summarize, for_save
-            )
+            c.expressions[pos] = expression.resolve_expression(query, allow_joins, reuse, summarize, for_save)
         return c
 
     def as_sql(self, compiler, connection, template=None):

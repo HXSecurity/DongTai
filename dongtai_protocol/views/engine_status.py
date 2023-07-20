@@ -28,9 +28,7 @@ class EngineUpdateEndPoint(OpenApiEndPoint):
         :return:
         """
         agent_name = request.query_params.get("agent_name")
-        agent = IastAgent.objects.filter(
-            user=request.user, token=agent_name, is_running=1
-        ).first()
+        agent = IastAgent.objects.filter(user=request.user, token=agent_name, is_running=1).first()
         if not agent:
             return R.failure("agent不存在或无权限访问")
 
@@ -67,9 +65,7 @@ class EngineAction(OpenApiEndPoint):
     )
     def get(self, request):
         agent_id = request.query_params.get("agentId")
-        agent = IastAgent.objects.filter(
-            user=request.user, pk=agent_id, is_running=1
-        ).first()
+        agent = IastAgent.objects.filter(user=request.user, pk=agent_id, is_running=1).first()
         if not agent:
             return R.failure("agent不存在或无权限访问")
         agent_status = {
@@ -124,7 +120,5 @@ class EngineAction(OpenApiEndPoint):
                 agent.is_control = 1
                 agent.control = 5
         agent.save(update_fields=["is_control", "is_core_running", "latest_time"])
-        result_cmd = agent_status.get(
-            agent.control, {"key": "无下发指令", "value": "notcmd"}
-        ).get("value")
+        result_cmd = agent_status.get(agent.control, {"key": "无下发指令", "value": "notcmd"}).get("value")
         return R.success(data=result_cmd)

@@ -25,11 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_department(self, obj):
         department = obj.department.filter().first()
-        return (
-            {"name": department.get_department_name(), "id": department.id}
-            if department
-            else {"name": "", "id": -1}
-        )
+        return {"name": department.get_department_name(), "id": department.id} if department else {"name": "", "id": -1}
 
     def get_talent(self, obj):
         talent = obj.get_talent()

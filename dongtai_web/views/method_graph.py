@@ -30,9 +30,7 @@ class MethodGraph(AnonymousAndUserEndPoint):
                 const.REQUEST_REPLAY,
             ]:
                 return R.failure(msg="replay_type error")
-            replay_type = (
-                const.REQUEST_REPLAY if replay_type is None else int(replay_type)
-            )
+            replay_type = const.REQUEST_REPLAY if replay_type is None else int(replay_type)
             if Validate.is_empty(method_pool_id) and replay_id is None:
                 return R.failure(msg=_("Method pool ID is empty"))
 
@@ -43,20 +41,14 @@ class MethodGraph(AnonymousAndUserEndPoint):
 
             if (
                 method_pool_type == "normal"
-                and MethodPool.objects.filter(
-                    agent_id__in=cur_ids, id=method_pool_id
-                ).exists()
+                and MethodPool.objects.filter(agent_id__in=cur_ids, id=method_pool_id).exists()
             ):
                 method_pool = MethodPool.objects.filter(id=method_pool_id).first()
             elif method_pool_type == "replay" and replay_id:
-                method_pool = IastAgentMethodPoolReplay.objects.filter(
-                    id=replay_id, replay_type=replay_type
-                ).first()
+                method_pool = IastAgentMethodPoolReplay.objects.filter(id=replay_id, replay_type=replay_type).first()
             elif (
                 method_pool_type == "replay"
-                and MethodPool.objects.filter(
-                    agent_id__in=cur_ids, id=method_pool_id
-                ).exists()
+                and MethodPool.objects.filter(agent_id__in=cur_ids, id=method_pool_id).exists()
             ):
                 method_pool = IastAgentMethodPoolReplay.objects.filter(
                     relation_id=method_pool_id, replay_type=replay_type
@@ -65,13 +57,9 @@ class MethodGraph(AnonymousAndUserEndPoint):
                 return R.failure(msg=_("Stain call map type does not exist"))
 
             if method_pool is None:
-                return R.failure(
-                    msg=_("Data does not exist or no permission to access")
-                )
+                return R.failure(msg=_("Data does not exist or no permission to access"))
 
-            data, link_count, method_count = self.search_all_links(
-                method_pool.method_pool
-            )
+            data, link_count, method_count = self.search_all_links(method_pool.method_pool)
             return R.success(data=data)
 
         except Exception as e:
@@ -84,9 +72,7 @@ class MethodGraph(AnonymousAndUserEndPoint):
         :param method_pool_id:
         :return:
         """
-        return MethodPool.objects.filter(
-            agent__in=self.get_auth_and_anonymous_agents(user), id=method_pool_id
-        ).first()
+        return MethodPool.objects.filter(agent__in=self.get_auth_and_anonymous_agents(user), id=method_pool_id).first()
 
     def search_all_links(self, method_pool):
         engine = VulEngineV2()
@@ -130,9 +116,7 @@ class MethodGraph(AnonymousAndUserEndPoint):
                 links.append(stack)
         else:
             method_caller_set = self.convert_method_pool_to_set(method_pool.method_pool)
-            if self.check_match(
-                method_caller_set, source_set=sources, propagator_set=propagators
-            ):
+            if self.check_match(method_caller_set, source_set=sources, propagator_set=propagators):
                 links.append([json.loads(method_pool.method_pool)])
         return links
 
@@ -162,9 +146,7 @@ class MethodGraph(AnonymousAndUserEndPoint):
         method_callers = json.loads(method_pool)
         return MethodGraph.convert_to_set(method_callers)
 
-    def check_match(
-        self, method_caller_set, sink_set=None, source_set=None, propagator_set=None
-    ):
+    def check_match(self, method_caller_set, sink_set=None, source_set=None, propagator_set=None):
         """
         :param method_caller_set:
         :param sink_set:

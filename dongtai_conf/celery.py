@@ -43,9 +43,7 @@ configs["task_queues"] = [
         Exchange("dongtai-replay-vul-scan"),
         routing_key="dongtai-replay-vul-scan",
     ),
-    Queue(
-        "dongtai-sca-task", Exchange("dongtai-sca-task"), routing_key="dongtai-sca-task"
-    ),
+    Queue("dongtai-sca-task", Exchange("dongtai-sca-task"), routing_key="dongtai-sca-task"),
     Queue(
         "dongtai-function-flush-data",
         Exchange("dongtai-function-flush-data"),
@@ -184,9 +182,7 @@ def checkout_preheat_online(status):
     if not status:
         PeriodicTask.objects.delete(name="preheat functions")
     else:
-        schedule, _ = IntervalSchedule.objects.get_or_create(
-            every=10, period=IntervalSchedule.MINUTES
-        )
+        schedule, _ = IntervalSchedule.objects.get_or_create(every=10, period=IntervalSchedule.MINUTES)
         task = PeriodicTask.objects.get_or_create(
             name="preheat functions",  # simply describes this periodic task.
             defaults={

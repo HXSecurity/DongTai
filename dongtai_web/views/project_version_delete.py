@@ -34,9 +34,7 @@ class ProjectVersionDelete(UserEndPoint):
         request=_ProjectVersionDeleteSerializer,
         tags=[_("Project")],
         summary=_("Projects Version Delete"),
-        description=_(
-            "Delete the specified project version according to the conditions."
-        ),
+        description=_("Delete the specified project version according to the conditions."),
         response_schema=_ResponseSerializer,
     )
     def post(self, request):
@@ -45,9 +43,7 @@ class ProjectVersionDelete(UserEndPoint):
             project_id = request.data.get("project_id", 0)
             if not version_id or not project_id:
                 return R.failure(status=202, msg=_("Parameter error"))
-            version = IastProjectVersion.objects.filter(
-                id=version_id, project_id=project_id, status=1
-            ).first()
+            version = IastProjectVersion.objects.filter(id=version_id, project_id=project_id, status=1).first()
             if version:
                 version.status = 0
                 version.update_time = int(time.time())

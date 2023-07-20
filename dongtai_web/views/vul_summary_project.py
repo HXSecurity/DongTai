@@ -42,9 +42,7 @@ class VulSummaryProject(UserEndPoint):
             {
                 "name": "level",
                 "type": int,
-                "description": format_lazy(
-                    "{} : {}", _("Level of vulnerability"), "1,2,3,4"
-                ),
+                "description": format_lazy("{} : {}", _("Level of vulnerability"), "1,2,3,4"),
             },
             {
                 "name": "project_id",
@@ -54,9 +52,7 @@ class VulSummaryProject(UserEndPoint):
             {
                 "name": "version_id",
                 "type": int,
-                "description": _(
-                    "The default is the current version id of the project."
-                ),
+                "description": _("The default is the current version id of the project."),
             },
             {
                 "name": "status",

@@ -19,9 +19,7 @@ class ScaMavenDb(models.Model):
     package_name = models.CharField(max_length=255, blank=True, null=True)
     aql = models.CharField(max_length=255, blank=True, null=True)
     license = models.CharField(max_length=255, blank=True, null=True)
-    import_from = models.IntegerField(
-        choices=ImportFrom.choices, default=ImportFrom.USER
-    )
+    import_from = models.IntegerField(choices=ImportFrom.choices, default=ImportFrom.USER)
 
     class Meta:
         managed = get_managed()

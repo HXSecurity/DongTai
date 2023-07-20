@@ -32,9 +32,7 @@ class RelationProjectVersionSerializer(serializers.ModelSerializer):
         fields = ["project_version_name", "project_version_id", "package_path"]
 
 
-FullRelationProjectVersionResponseSerializer = get_response_serializer(
-    RelationProjectVersionSerializer(many=True)
-)
+FullRelationProjectVersionResponseSerializer = get_response_serializer(RelationProjectVersionSerializer(many=True))
 
 
 class NewPackageRelationProjectVersion(UserEndPoint):
@@ -46,9 +44,7 @@ class NewPackageRelationProjectVersion(UserEndPoint):
     )
     def get(self, request, language_id, package_name, package_version, project_id):
         departments = request.user.get_relative_department()
-        queryset = IastProject.objects.filter(department__in=departments).order_by(
-            "-latest_time"
-        )
+        queryset = IastProject.objects.filter(department__in=departments).order_by("-latest_time")
         assets = (
             AssetV2.objects.filter(
                 language_id=language_id,

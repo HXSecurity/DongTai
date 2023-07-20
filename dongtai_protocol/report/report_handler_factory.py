@@ -37,35 +37,23 @@ class ReportHandler:
                     pass
                 elif isCoreInstalled == 0:
                     is_core_running = 2
-                    IastAgent.objects.filter(user=user, id=agentId).update(
-                        actual_running_status=2
-                    )
-                    IastAgent.objects.filter(user=user, id=agentId).update(
-                        is_core_running=is_core_running
-                    )
+                    IastAgent.objects.filter(user=user, id=agentId).update(actual_running_status=2)
+                    IastAgent.objects.filter(user=user, id=agentId).update(is_core_running=is_core_running)
                 else:
                     if isCoreRunning == 1:
                         is_core_running = 1
-                        IastAgent.objects.filter(user=user, id=agentId).update(
-                            actual_running_status=1
-                        )
+                        IastAgent.objects.filter(user=user, id=agentId).update(actual_running_status=1)
                     else:
                         is_core_running = 0
-                        IastAgent.objects.filter(user=user, id=agentId).update(
-                            actual_running_status=2
-                        )
+                        IastAgent.objects.filter(user=user, id=agentId).update(actual_running_status=2)
 
-                    IastAgent.objects.filter(user=user, id=agentId).update(
-                        is_core_running=is_core_running
-                    )
+                    IastAgent.objects.filter(user=user, id=agentId).update(is_core_running=is_core_running)
             # web hook
             #     timeout=60)
             class_of_handler = ReportHandler.HANDLERS.get(report_type)
             if class_of_handler is None:
                 if report_type in [1, 81, 33, 36, 17, 18, 97, 37]:
-                    logger.error(
-                        _("Report type {} handler does not exist").format(report_type)
-                    )
+                    logger.error(_("Report type {} handler does not exist").format(report_type))
                 return None
             # if report_type == 36:
             return class_of_handler().handle(reports, user)
@@ -76,9 +64,7 @@ class ReportHandler:
     @classmethod
     def register(cls, handler_name):
         def wrapper(handler):
-            async_send = settings.config.getboolean(
-                "task", "async_send", fallback=False
-            )
+            async_send = settings.config.getboolean("task", "async_send", fallback=False)
             if not async_send:
                 cls.log_service_disabled = True
             if cls.log_service is None and not cls.log_service_disabled:
@@ -91,11 +77,7 @@ class ReportHandler:
                 if srv.create_socket():
                     cls.log_service = srv
 
-            logger.info(
-                _("Registration report type {} handler {}").format(
-                    handler_name, handler.__name__
-                )
-            )
+            logger.info(_("Registration report type {} handler {}").format(handler_name, handler.__name__))
             if handler_name not in cls.HANDLERS:
                 cls.HANDLERS[handler_name] = handler
             return handler

@@ -63,9 +63,7 @@ class ScaHandler(IReportHandler):
 
     def save(self):
         if all([self.agent_id, self.package_path, self.package_name]) is False:
-            logger.warning(
-                _("Data is incomplete, data: {}").format(json.dumps(self.report))
-            )
+            logger.warning(_("Data is incomplete, data: {}").format(json.dumps(self.report)))
         else:
             # post to dongtai engine async deal
             ScaHandler.send_to_engine(

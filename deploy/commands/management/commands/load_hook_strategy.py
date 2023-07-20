@@ -54,9 +54,7 @@ class Command(BaseCommand):
                     vul_type=strategy["vul_type"],
                     system_type=1,
                 ).values_list("id", flat=True)
-                strategy_obj = (
-                    IastStrategyModel.objects.filter(pk__in=qs1).order_by("id").first()
-                )
+                strategy_obj = IastStrategyModel.objects.filter(pk__in=qs1).order_by("id").first()
                 strategy_dict[strategy["vul_type"]] = strategy_obj
                 continue
             if (
@@ -96,9 +94,7 @@ class Command(BaseCommand):
                         type=hook_type["type"],
                         system_type=1,
                     ).first()
-                    hooktype_dict[
-                        f"{hook_type['value']}-{hook_type['type']}"
-                    ] = hooktype_obj
+                    hooktype_dict[f"{hook_type['value']}-{hook_type['type']}"] = hooktype_obj
                     continue
                 if HookType.objects.filter(
                     value=hook_type["value"],
@@ -112,9 +108,7 @@ class Command(BaseCommand):
                 hook_type["language_id"] = v
                 hooktype_obj = HookType(**hook_type)
                 hooktype_obj.save()
-                hooktype_dict[
-                    f"{hook_type['value']}-{hook_type['type']}"
-                ] = hooktype_obj
+                hooktype_dict[f"{hook_type['value']}-{hook_type['type']}"] = hooktype_obj
 
             HookStrategy.objects.filter(language_id=v, system_type=1).delete()
             with open(os.path.join(POLICY_DIR, f"{k.lower()}_full_policy.json")) as fp:
@@ -127,23 +121,14 @@ class Command(BaseCommand):
                     for hook_strategy in policy["details"]:
                         del hook_strategy["language"]
                         hook_strategy["language_id"] = v
-                        HookStrategy.objects.create(
-                            strategy=policy_strategy, **hook_strategy
-                        )
+                        HookStrategy.objects.create(strategy=policy_strategy, **hook_strategy)
                 else:
-                    if (
-                        f"{policy['value']}-{policy['type']}"
-                        not in hooktype_dict.keys()
-                    ):
+                    if f"{policy['value']}-{policy['type']}" not in hooktype_dict.keys():
                         continue
-                    policy_hook_type = hooktype_dict[
-                        f"{policy['value']}-{policy['type']}"
-                    ]
+                    policy_hook_type = hooktype_dict[f"{policy['value']}-{policy['type']}"]
                     for hook_strategy in policy["details"]:
                         del hook_strategy["language"]
                         hook_strategy["language_id"] = v
-                        HookStrategy.objects.create(
-                            hooktype=policy_hook_type, **hook_strategy
-                        )
+                        HookStrategy.objects.create(hooktype=policy_hook_type, **hook_strategy)
         save_hook_stratefile_sha1sum()
         self.stdout.write(self.style.SUCCESS("Successfully load strategy ."))

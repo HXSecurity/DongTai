@@ -16,9 +16,7 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 
 
 class ResponseDataSerializer(serializers.Serializer):
-    new_message_count = serializers.IntegerField(
-        help_text=_("total number of new messages")
-    )
+    new_message_count = serializers.IntegerField(help_text=_("total number of new messages"))
 
 
 _SuccessSerializer = get_response_serializer(ResponseDataSerializer())

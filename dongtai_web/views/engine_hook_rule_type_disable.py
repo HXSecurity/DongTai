@@ -9,9 +9,7 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 
 
 class EngineHookRuleTypeEnableSerializer(serializers.Serializer):
-    rule_id = serializers.IntegerField(
-        help_text=_("The id of hook type"), default=const.RULE_PROPAGATOR
-    )
+    rule_id = serializers.IntegerField(help_text=_("The id of hook type"), default=const.RULE_PROPAGATOR)
 
 
 _GetResponseSerializer = get_response_serializer(
@@ -35,9 +33,7 @@ class EngineHookRuleTypeDisableEndPoint(UserEndPoint):
         [EngineHookRuleTypeEnableSerializer],
         tags=[_("Hook Rule")],
         summary=_("Hook Rule Status Disable"),
-        description=_(
-            "Disable the status of the rule corresponding to the specified id."
-        ),
+        description=_("Disable the status of the rule corresponding to the specified id."),
         response_schema=_GetResponseSerializer,
     )
     def get(self, request):

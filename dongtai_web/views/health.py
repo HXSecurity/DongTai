@@ -31,9 +31,7 @@ class HealthView(UserEndPoint):
             return R.failure(msg=_("OpenAPI service is down, Please check it."))
 
         token, success = Token.objects.get_or_create(user=request.user)
-        openapistatus, openapi_resp = checkopenapistatus(
-            urljoin(openapi, HEALTHPATH), token.key
-        )
+        openapistatus, openapi_resp = checkopenapistatus(urljoin(openapi, HEALTHPATH), token.key)
         data = {"dongtai_webapi": 1}
         if openapistatus:
             data.update(openapi_resp)
@@ -49,7 +47,5 @@ class HealthView(UserEndPoint):
         cur_language = get_language()
         for indicator in data["engine_monitoring_indicators"]:
             cur_language_field = indicator.get(f"name_{cur_language}", None)
-            indicator["name"] = (
-                cur_language_field if cur_language_field else indicator["name"]
-            )
+            indicator["name"] = cur_language_field if cur_language_field else indicator["name"]
         return R.success(data=data)

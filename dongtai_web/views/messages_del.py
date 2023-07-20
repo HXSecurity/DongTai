@@ -15,9 +15,7 @@ from dongtai_web.utils import extend_schema_with_envcheck
 
 
 class _MessagesDelArgsSerializer(serializers.Serializer):
-    id = serializers.IntegerField(
-        required=False, default=None, help_text=_("The id of Message")
-    )
+    id = serializers.IntegerField(required=False, default=None, help_text=_("The id of Message"))
     all = serializers.NullBooleanField(
         required=False,
         default=False,

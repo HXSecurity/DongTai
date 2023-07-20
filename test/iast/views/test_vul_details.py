@@ -25,9 +25,7 @@ class VulDetailTestCase(APITestCase):
         self.mockdata()
 
     def mockdata(self):
-        self.server = IastServer.objects.create(
-            hostname="DESKTOP-JLVFSOV-test", ip="0.0.0.0", port=22, container=None
-        )
+        self.server = IastServer.objects.create(hostname="DESKTOP-JLVFSOV-test", ip="0.0.0.0", port=22, container=None)
 
     def test_get_server(self):
         obj = VulDetail()

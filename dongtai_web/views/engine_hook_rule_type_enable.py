@@ -13,9 +13,7 @@ logger = logging.getLogger("dongtai-webapi")
 
 
 class EngineHookRuleTypeEnableSerializer(serializers.Serializer):
-    rule_id = serializers.IntegerField(
-        help_text=_("The id of hook type"), default=const.RULE_PROPAGATOR
-    )
+    rule_id = serializers.IntegerField(help_text=_("The id of hook type"), default=const.RULE_PROPAGATOR)
 
 
 _GetResponseSerializer = get_response_serializer(
@@ -33,18 +31,14 @@ class EngineHookRuleTypeEnableEndPoint(UserEndPoint):
             rule_id = request.query_params.get("rule_id", const.RULE_PROPAGATOR)
             return int(rule_id)
         except Exception as e:
-            logger.exception(
-                _("Parameter processing failed, error message: "), exc_info=e
-            )
+            logger.exception(_("Parameter processing failed, error message: "), exc_info=e)
             return None
 
     @extend_schema_with_envcheck(
         [EngineHookRuleTypeEnableSerializer],
         tags=[_("Hook Rule")],
         summary=_("Hook Rule Status Enable"),
-        description=_(
-            "Enable the status of the rule corresponding to the specified id."
-        ),
+        description=_("Enable the status of the rule corresponding to the specified id."),
         response_schema=_GetResponseSerializer,
     )
     def get(self, request):

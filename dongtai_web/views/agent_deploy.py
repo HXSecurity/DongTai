@@ -21,9 +21,7 @@ class AgentDeployArgsSerializer(serializers.Serializer):
 
 
 _ResponseSerializer = get_response_serializer(
-    status_msg_keypair=(
-        ((201, _("Corresponding deployment document could not be found")), ""),
-    )
+    status_msg_keypair=(((201, _("Corresponding deployment document could not be found")), ""),)
 )
 
 

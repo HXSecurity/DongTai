@@ -45,9 +45,7 @@ class MethodPoolVersionUpdate(TalentAdminEndPoint):
                 http_protocol = method_pool["http_protocol"]
                 res_header = method_pool["res_header"]
                 MethodPool.objects.filter(id=id).update(
-                    req_header_fs=build_request_header(
-                        http_method, req_header, uri, req_params, http_protocol
-                    ),
+                    req_header_fs=build_request_header(http_method, req_header, uri, req_params, http_protocol),
                     res_header=base64_decode(res_header),
                 )
             if len(sub_method_pools) == length:
@@ -63,9 +61,7 @@ def base64_decode(raw):
     try:
         return base64.b64decode(raw).decode("utf-8").strip()
     except Exception as decode_error:
-        logger.exception(
-            f"base64 decode error, raw: {raw}\nreason: ", exc_info=decode_error
-        )
+        logger.exception(f"base64 decode error, raw: {raw}\nreason: ", exc_info=decode_error)
         return ""
 
 

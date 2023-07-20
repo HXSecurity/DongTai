@@ -59,9 +59,7 @@ def data_transfrom(dict_list, function, key, new_key):
 
 class PackageSummaryArgsSerializer(serializers.Serializer):
     project_id = serializers.IntegerField(required=False, help_text=_("Page index"))
-    project_version_id = serializers.IntegerField(
-        required=False, help_text=_("Page index")
-    )
+    project_version_id = serializers.IntegerField(required=False, help_text=_("Page index"))
 
 
 class PackeageScaSummarySerializer(DataclassSerializer):
@@ -69,9 +67,7 @@ class PackeageScaSummarySerializer(DataclassSerializer):
         dataclass = Data
 
 
-FullSummaryResponseSerializer = get_response_serializer(
-    PackeageScaSummarySerializer(many=True)
-)
+FullSummaryResponseSerializer = get_response_serializer(PackeageScaSummarySerializer(many=True))
 
 
 class NewPackageSummary(UserEndPoint):
@@ -92,39 +88,19 @@ class NewPackageSummary(UserEndPoint):
         license_q = Q()
         if "project_id" in ser.validated_data:
             q = q & Q(assetv2__project_id=ser.validated_data["project_id"])
-            license_q = license_q & Q(
-                asset__assetv2__project_id=ser.validated_data["project_id"]
-            )
+            license_q = license_q & Q(asset__assetv2__project_id=ser.validated_data["project_id"])
         if "project_version_id" in ser.validated_data:
-            q = q & Q(
-                assetv2__project_version_id=ser.validated_data["project_version_id"]
-            )
-            license_q = license_q & Q(
-                asset__assetv2__project_version_id=ser.validated_data[
-                    "project_version_id"
-                ]
-            )
+            q = q & Q(assetv2__project_version_id=ser.validated_data["project_version_id"])
+            license_q = license_q & Q(asset__assetv2__project_version_id=ser.validated_data["project_version_id"])
         queryset = AssetV2Global.objects.filter(q)
         license_queryset = IastAssetLicense.objects.filter(license_q)
-        language_summary_list = queryset.values("language_id").annotate(
-            count=Count("language_id")
-        )
-        level_summary_list = queryset.values("level").annotate(
-            level_id=F("level"), count=Count("level")
-        )
-        license_summary_list = license_queryset.values("license_id").annotate(
-            count=Count("license_id")
-        )
+        language_summary_list = queryset.values("language_id").annotate(count=Count("language_id"))
+        level_summary_list = queryset.values("level").annotate(level_id=F("level"), count=Count("level"))
+        license_summary_list = license_queryset.values("license_id").annotate(count=Count("license_id"))
         return R.success(
             data={
-                "language": data_transfrom(
-                    language_summary_list, get_language, "language_id", "language"
-                ),
-                "license": data_transfrom(
-                    license_summary_list, get_license, "license_id", "license"
-                ),
-                "level": data_transfrom(
-                    level_summary_list, get_level, "level_id", "level"
-                ),
+                "language": data_transfrom(language_summary_list, get_language, "language_id", "language"),
+                "license": data_transfrom(license_summary_list, get_license, "license_id", "license"),
+                "level": data_transfrom(level_summary_list, get_level, "level_id", "level"),
             }
         )

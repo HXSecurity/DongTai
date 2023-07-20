@@ -31,9 +31,7 @@ class AgentDeploySave(UserEndPoint):
             end["user_token"] = token.key
             if systemInfo.system:
                 step = 3
-                desInfo = IastDeployDesc.objects.filter(
-                    middleware=systemInfo.middleware, os=systemInfo.system
-                ).first()
+                desInfo = IastDeployDesc.objects.filter(middleware=systemInfo.middleware, os=systemInfo.system).first()
                 if desInfo:
                     end["desc"] = desInfo.desc
             else:
@@ -45,9 +43,7 @@ class AgentDeploySave(UserEndPoint):
                 "system": systemInfo.system,
             }
         end["step"] = step
-        return R.success(
-            step=step, data=end["data"], user_token=end["user_token"], desc=end["desc"]
-        )
+        return R.success(step=step, data=end["data"], user_token=end["user_token"], desc=end["desc"])
 
     def post(self, request):
         user = request.user
@@ -71,9 +67,7 @@ class AgentDeploySave(UserEndPoint):
             systemInfo.system = system
             systemInfo.deploy_status = 2
             result["user_token"] = token.key
-            desInfo = IastDeployDesc.objects.filter(
-                middleware=systemInfo.middleware, os=systemInfo.system
-            ).first()
+            desInfo = IastDeployDesc.objects.filter(middleware=systemInfo.middleware, os=systemInfo.system).first()
             if desInfo:
                 result["desc"] = desInfo.desc
         systemInfo.user = user

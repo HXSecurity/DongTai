@@ -51,9 +51,7 @@ class MyTestCase(DongTaiTestCase):
             else:
                 continue
         if is_running_agents:
-            IastAgent.objects.filter(id__in=is_running_agents).update(
-                is_running=1, is_core_running=1
-            )
+            IastAgent.objects.filter(id__in=is_running_agents).update(is_running=1, is_core_running=1)
 
     def test_update_sca(self):
         from dongtai_engine.tasks import update_one_sca
@@ -72,9 +70,7 @@ class MyTestCase(DongTaiTestCase):
         agents = IastAgent.objects.filter(bind_project_id=1252).values("id")
         from dongtai_common.models.agent_method_pool import MethodPool
 
-        method_pools = MethodPool.objects.filter(agent_id__in=agents).values(
-            "req_header_fs"
-        )
+        method_pools = MethodPool.objects.filter(agent_id__in=agents).values("req_header_fs")
 
         from http.server import BaseHTTPRequestHandler
 

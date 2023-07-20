@@ -38,9 +38,7 @@ class AgentDownload(UserEndPoint):
             response = FileResponse(f)
             response["content_type"] = "application/octet-stream"
 
-            response["Content-Disposition"] = "attachment; filename={}".format(
-                self.common_info[language]["filename"]
-            )
+            response["Content-Disposition"] = "attachment; filename={}".format(self.common_info[language]["filename"])
             os.remove(temp_filename)
             return response
 

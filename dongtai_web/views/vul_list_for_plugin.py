@@ -54,9 +54,7 @@ class VulListEndPoint(MixinAuthEndPoint):
         ],
         tags=[_("Vulnerability")],
         summary=_("Vulnerability List (with agent name)"),
-        description=_(
-            "Use the agent name to get the corresponding list of vulnerabilities"
-        ),
+        description=_("Use the agent name to get the corresponding list of vulnerabilities"),
         response_schema=_ResponseSerializer,
     )
     def get(self, request):

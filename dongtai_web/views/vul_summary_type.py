@@ -40,9 +40,7 @@ class VulSummaryType(UserEndPoint):
             {
                 "name": "level",
                 "type": int,
-                "description": format_lazy(
-                    "{} : {}", _("Level of vulnerability"), "1,2,3,4"
-                ),
+                "description": format_lazy("{} : {}", _("Level of vulnerability"), "1,2,3,4"),
             },
             {
                 "name": "project_id",
@@ -52,9 +50,7 @@ class VulSummaryType(UserEndPoint):
             {
                 "name": "version_id",
                 "type": int,
-                "description": _(
-                    "The default is the current version id of the project."
-                ),
+                "description": _("The default is the current version id of the project."),
             },
             {
                 "name": "status",
@@ -183,9 +179,7 @@ class VulSummaryType(UserEndPoint):
                 DEFAULT_LEVEL[level_item.name_value] = 0
                 vul_level_metadata[level_item.name_value] = level_item.id
                 levelIdArr[level_item.id] = level_item.name_value
-        level_summary = (
-            queryset.values("level").order_by("level").annotate(total=Count("level"))
-        )
+        level_summary = queryset.values("level").order_by("level").annotate(total=Count("level"))
         for temp in level_summary:
             DEFAULT_LEVEL[levelIdArr[temp["level"]]] = temp["total"]
         end["data"]["level"] = [
@@ -195,18 +189,13 @@ class VulSummaryType(UserEndPoint):
 
         # 汇总 type
         type_summary = (
-            queryset.values(
-                "hook_type_id", "strategy_id", "hook_type__name", "strategy__vul_name"
-            )
+            queryset.values("hook_type_id", "strategy_id", "hook_type__name", "strategy__vul_name")
             .order_by("hook_type_id")
             .annotate(total=Count("hook_type_id"))
         )
         type_summary = list(type_summary)
 
-        vul_type_list = [
-            {"type": get_hook_type_name(_).lower().strip(), "count": _["total"]}
-            for _ in type_summary
-        ]
+        vul_type_list = [{"type": get_hook_type_name(_).lower().strip(), "count": _["total"]} for _ in type_summary]
 
         tempdic = {}
         for vul_type in vul_type_list:
@@ -215,8 +204,6 @@ class VulSummaryType(UserEndPoint):
             else:
                 tempdic[vul_type["type"]] = vul_type
         vul_type_list = tempdic.values()
-        end["data"]["type"] = sorted(
-            vul_type_list, key=lambda x: x["count"], reverse=True
-        )
+        end["data"]["type"] = sorted(vul_type_list, key=lambda x: x["count"], reverse=True)
 
         return R.success(data=end["data"], level_data=end["level_data"])

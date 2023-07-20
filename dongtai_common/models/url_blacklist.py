@@ -49,9 +49,7 @@ class IastAgentBlackRule(models.Model):
         null=True,
     )
     project = models.ForeignKey(IastProject, models.CASCADE, default=-1)
-    project_template = models.ForeignKey(
-        IastProjectTemplate, models.CASCADE, default=-1
-    )
+    project_template = models.ForeignKey(IastProjectTemplate, models.CASCADE, default=-1)
 
     class Meta:
         managed = get_managed()
@@ -88,9 +86,7 @@ def create_blacklist_rule(
     state: State,
     **kwargs,
 ):
-    ruledetail = IastAgentBlackRuleDetail.objects.create(
-        target_type=target_type, operator=operator, value=value
-    )
+    ruledetail = IastAgentBlackRuleDetail.objects.create(target_type=target_type, operator=operator, value=value)
     rule = IastAgentBlackRule.objects.create(state=state, **kwargs)
     ruledetail.rule = rule
     ruledetail.save()
@@ -104,9 +100,7 @@ def update_blacklist_rule(
     state: State,
     rule_id: int,
 ):
-    ruledetail = IastAgentBlackRuleDetail.objects.create(
-        target_type=target_type, operator=operator, value=value
-    )
+    ruledetail = IastAgentBlackRuleDetail.objects.create(target_type=target_type, operator=operator, value=value)
     rule = IastAgentBlackRule.objects.filter(user_id=user_id, pk=rule_id).first()
     rule.state = state
     rule.save()

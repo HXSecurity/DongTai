@@ -35,12 +35,8 @@ class MethodPoolSerialize(serializers.ModelSerializer):
 
     def get_dependencies(self, obj):
         if obj.agent_id not in self.DEPENDENCIES:
-            dependencies = obj.agent.dependencies.values(
-                "package_name", "vul_count", "version"
-            ).all()
-            self.DEPENDENCIES[obj.agent_id] = AssetSerializer(
-                dependencies, many=True
-            ).data
+            dependencies = obj.agent.dependencies.values("package_name", "vul_count", "version").all()
+            self.DEPENDENCIES[obj.agent_id] = AssetSerializer(dependencies, many=True).data
         return self.DEPENDENCIES[obj.agent_id]
 
     def get_language(self, obj):

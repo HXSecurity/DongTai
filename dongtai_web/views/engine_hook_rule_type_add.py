@@ -29,18 +29,12 @@ class _EngineHookRuleTypeAddSerializer(serializers.Serializer):
         help_text=_("The enabled state of the hook strategy: 0-disabled, 1-enabled"),
         required=True,
     )
-    name = serializers.CharField(
-        help_text=_("The name of hook type"), max_length=255, required=True
-    )
-    short_name = serializers.CharField(
-        help_text=_("The short name of hook type"), max_length=255, required=True
-    )
+    name = serializers.CharField(help_text=_("The name of hook type"), max_length=255, required=True)
+    short_name = serializers.CharField(help_text=_("The short name of hook type"), max_length=255, required=True)
     language_id = serializers.ChoiceField(
         (1, 2, 3, 4),
         default=1,
-        help_text=_(
-            "The id of programming language,find it in the programming language api"
-        ),
+        help_text=_("The id of programming language,find it in the programming language api"),
     )
 
 

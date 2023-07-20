@@ -221,9 +221,7 @@ urlpatterns: list[URLResolver | URLPattern] = [
     ),
     path(
         "sensitive_info_rule/<int:pk>",
-        SensitiveInfoRuleViewSet.as_view(
-            {"get": "retrieve", "put": "update", "delete": "destory"}
-        ),
+        SensitiveInfoRuleViewSet.as_view({"get": "retrieve", "put": "update", "delete": "destory"}),
     ),
     path("sensitive_info_rule/pattern_type", SensitiveInfoPatternTypeView.as_view()),
     path(
@@ -244,9 +242,7 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path("vullog/<int:vul_id>", VulLogViewSet.as_view({"get": "list"})),
     path(
         "vul_recheck_payload/<int:pk>",
-        VulReCheckPayloadViewSet.as_view(
-            {"get": "retrieve", "put": "update", "delete": "delete"}
-        ),
+        VulReCheckPayloadViewSet.as_view({"get": "retrieve", "put": "update", "delete": "delete"}),
     ),
     path(
         "vul_recheck_payload",
@@ -299,9 +295,7 @@ if os.getenv("environment", None) in ("TEST", "PROD"):
             path("user/register/<str:token>", UserRegisterEndPoint.as_view()),
         ]
     )
-if os.getenv("githubcount", None) in ("true",) or os.getenv("environment", None) in (
-    "PROD",
-):
+if os.getenv("githubcount", None) in ("true",) or os.getenv("environment", None) in ("PROD",):
     from dongtai_web.views.github_contributors import GithubContributorsView
 
     urlpatterns.extend(

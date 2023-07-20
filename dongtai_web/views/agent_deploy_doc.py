@@ -11,9 +11,7 @@ class AgentDeployDesc(UserEndPoint):
     name = "api-v1-iast-deploy-desc"
     description = _("Agent deployment document")
 
-    @extend_schema_with_envcheck(
-        [{"name": "os", "type": str}, {"name": "server", "type": str}]
-    )
+    @extend_schema_with_envcheck([{"name": "os", "type": str}, {"name": "server", "type": str}])
     def get(self, request):
         queryset = IastDeployDesc.objects.all()
 

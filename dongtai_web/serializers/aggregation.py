@@ -10,20 +10,14 @@ def intable_str(value: str):
 
 
 class AggregationArgsSerializer(serializers.Serializer):
-    page_size = serializers.IntegerField(
-        default=20, min_value=1, help_text=_("Number per page")
-    )
+    page_size = serializers.IntegerField(default=20, min_value=1, help_text=_("Number per page"))
     page = serializers.IntegerField(default=1, min_value=1, help_text=_("Page index"))
 
     order_type = serializers.IntegerField(default=0, help_text=_("Order by"))
     order_type_desc = serializers.IntegerField(default=0, help_text=_("Order by desc"))
 
-    bind_project_id = serializers.IntegerField(
-        default=0, help_text=_("bind_project_id")
-    )
-    project_version_id = serializers.IntegerField(
-        default=0, help_text=_("project_version_id")
-    )
+    bind_project_id = serializers.IntegerField(default=0, help_text=_("bind_project_id"))
+    project_version_id = serializers.IntegerField(default=0, help_text=_("project_version_id"))
     uri = serializers.CharField(
         required=False,
         max_length=1024,

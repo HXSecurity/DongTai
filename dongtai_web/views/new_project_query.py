@@ -17,12 +17,8 @@ logger = logging.getLogger("django")
 class ProjectVersionArgSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=20, help_text=_("Number per page"))
     page = serializers.IntegerField(default=1, help_text=_("Page index"))
-    project_id = serializers.IntegerField(
-        default=None, help_text=_("Project id"), required=False
-    )
-    version_name = serializers.CharField(
-        default=None, help_text=_("version_name "), required=False
-    )
+    project_id = serializers.IntegerField(default=None, help_text=_("Project id"), required=False)
+    version_name = serializers.CharField(default=None, help_text=_("version_name "), required=False)
 
 
 class NewProjectVersionList(UserEndPoint):
@@ -33,9 +29,7 @@ class NewProjectVersionList(UserEndPoint):
         [ProjectVersionArgSerializer],
         tags=[_("Project")],
         summary=_("项目版本列表"),
-        description=_(
-            "Get the item corresponding to the user, support fuzzy search based on name."
-        ),
+        description=_("Get the item corresponding to the user, support fuzzy search based on name."),
     )
     def get(self, request):
         ser = ProjectVersionArgSerializer(data=request.GET)
@@ -55,6 +49,4 @@ class NewProjectVersionList(UserEndPoint):
         page_info, documents = self.get_paginator(
             IastProjectVersion.objects.filter(q).order_by("-id").all(), page, page_size
         )
-        return R.success(
-            data=[model_to_dict(document) for document in documents], page=page_info
-        )
+        return R.success(data=[model_to_dict(document) for document in documents], page=page_info)

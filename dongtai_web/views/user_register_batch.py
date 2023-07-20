@@ -97,19 +97,13 @@ class UserRegisterEndPoint(SystemAdminEndPoint):
 
     @staticmethod
     def register_with_raw(username, email_addr, phone, email):
-        random_str = "".join(
-            random.SystemRandom().choice(string.ascii_uppercase + string.digits)
-            for _ in range(3)
-        )
+        random_str = "".join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(3))
         password = f"{username}@{random_str}"
         username_random_str = "".join(
-            random.SystemRandom().choice(string.ascii_uppercase + string.digits)
-            for _ in range(3)
+            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(3)
         )
         username = f"{username}@{username_random_str}"
-        new_user = User.objects.create_user(
-            username=username, password=password, email=email_addr, phone=phone
-        )
+        new_user = User.objects.create_user(username=username, password=password, email=email_addr, phone=phone)
         department = Department.objects.filter(id=1).first()
         department.users.add(new_user)
         group, success = Group.objects.get_or_create(name="user")

@@ -45,16 +45,12 @@ class DongTaiPlugin:
             try:
                 self.before_patch_function(args, kwargs)
             except Exception as e:
-                logger.info(
-                    f"plugin error:{e} args: {args} kwargs: {kwargs}", exc_info=True
-                )
+                logger.info(f"plugin error:{e} args: {args} kwargs: {kwargs}", exc_info=True)
             res = origin_func(*args, **kwargs)
             try:
                 final_res = self.after_patch_function(args, kwargs, res)
             except Exception as e:
-                logger.info(
-                    f"plugin error:{e} args: {args} kwargs: {kwargs}", exc_info=True
-                )
+                logger.info(f"plugin error:{e} args: {args} kwargs: {kwargs}", exc_info=True)
                 return res
 
             return final_res
@@ -106,9 +102,7 @@ def get_plugin_dict():
                     )
 
                 mod = import_module(packname)
-                plugin_classes = filter(
-                    lambda x: _plug_class_filter(x), getmembers(mod)
-                )
+                plugin_classes = filter(lambda x: _plug_class_filter(x), getmembers(mod))
                 for _name, plug_class in plugin_classes:
                     if PLUGIN_DICT.get(plug_class.appname):
                         PLUGIN_DICT[plug_class.appname] += [plug_class]
@@ -119,8 +113,4 @@ def get_plugin_dict():
 
 
 def _plug_class_filter(tup: tuple) -> bool:
-    return (
-        tup[0].startswith("Plug")
-        and isclass(tup[1])
-        and issubclass(tup[1], DongTaiPlugin)
-    )
+    return tup[0].startswith("Plug") and isclass(tup[1]) and issubclass(tup[1], DongTaiPlugin)

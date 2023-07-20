@@ -54,20 +54,12 @@ class A:
 class SaasMethodPoolHandler(IReportHandler):
     def __init__(self):
         super().__init__()
-        self.async_send = settings.config.getboolean(
-            "task", "async_send", fallback=False
-        )
-        self.async_send_delay = settings.config.getint(
-            "task", "async_send_delay", fallback=2
-        )
+        self.async_send = settings.config.getboolean("task", "async_send", fallback=False)
+        self.async_send_delay = settings.config.getint("task", "async_send_delay", fallback=2)
         self.retryable = settings.config.getboolean("task", "retryable", fallback=False)
 
-        if self.async_send and (
-            ReportHandler.log_service_disabled or ReportHandler.log_service is None
-        ):
-            logger.warning(
-                "log service disabled or failed to connect, disable async send method pool"
-            )
+        if self.async_send and (ReportHandler.log_service_disabled or ReportHandler.log_service is None):
+            logger.warning("log service disabled or failed to connect, disable async send method pool")
             self.async_send = False
         else:
             self.log_service = ReportHandler.log_service
@@ -101,12 +93,8 @@ class SaasMethodPoolHandler(IReportHandler):
         self.client_ip = self.detail.get("clientIp")
         self.method_pool = self.report.get("detail", {}).get("pool", None)
         if self.method_pool:
-            self.method_pool = sorted(
-                self.method_pool, key=lambda e: e.__getitem__("invokeId"), reverse=True
-            )
-        logger.info(
-            f"start record method_pool : {self.agent_id} {self.http_uri} {self.http_method}"
-        )
+            self.method_pool = sorted(self.method_pool, key=lambda e: e.__getitem__("invokeId"), reverse=True)
+        logger.info(f"start record method_pool : {self.agent_id} {self.http_uri} {self.http_method}")
 
     def save(self):
         """
@@ -131,9 +119,7 @@ class SaasMethodPoolHandler(IReportHandler):
             timestamp = int(time.time())
 
             # fixme 直接查询replay_id是否存在,如果存在,直接覆盖
-            query_set = IastAgentMethodPoolReplay.objects.values("id").filter(
-                replay_id=replay_id
-            )
+            query_set = IastAgentMethodPoolReplay.objects.values("id").filter(replay_id=replay_id)
             if query_set.exists():
                 # 更新
                 replay_model = query_set.first()
@@ -185,9 +171,7 @@ class SaasMethodPoolHandler(IReportHandler):
                 method_pool_id = replay_model.id
             IastReplayQueue.objects.filter(id=replay_id).update(state=const.SOLVED)
             if method_pool_id:
-                logger.info(
-                    f"send replay method pool {self.agent_id} {self.http_uri} {method_pool_id} to celery "
-                )
+                logger.info(f"send replay method pool {self.agent_id} {self.http_uri} {method_pool_id} to celery ")
                 self.send_to_engine(method_pool_id=method_pool_id, model="replay")
         else:
             pool_sign = uuid.uuid4().hex
@@ -202,21 +186,13 @@ class SaasMethodPoolHandler(IReportHandler):
             else:
                 current_version_agents = self.get_project_agents(self.agent)
                 try:
-                    update_record, method_pool = self.save_method_call(
-                        pool_sign, current_version_agents
-                    )
+                    update_record, method_pool = self.save_method_call(pool_sign, current_version_agents)
                 except Exception as e:
-                    logger.info(
-                        f"record method failed : {self.agent_id} {self.http_uri} {self.http_method}"
-                    )
+                    logger.info(f"record method failed : {self.agent_id} {self.http_uri} {self.http_method}")
                     logger.warning(e, exc_info=e)
                 try:
-                    logger.info(
-                        f"send normal method pool {self.agent_id} {self.http_uri} {pool_sign} to celery "
-                    )
-                    self.send_to_engine(
-                        method_pool_sign=pool_sign, update_record=update_record
-                    )
+                    logger.info(f"send normal method pool {self.agent_id} {self.http_uri} {pool_sign} to celery ")
+                    self.send_to_engine(method_pool_sign=pool_sign, update_record=update_record)
                 except Exception as e:
                     logger.warning(e, exc_info=e)
 
@@ -259,9 +235,7 @@ class SaasMethodPoolHandler(IReportHandler):
         }
         return json.dumps(pool)
 
-    def save_method_call(
-        self, pool_sign: str, current_version_agents
-    ) -> tuple[bool, MethodPool]:
+    def save_method_call(self, pool_sign: str, current_version_agents) -> tuple[bool, MethodPool]:
         """
         保存方法池数据
         :param pool_sign:
@@ -328,9 +302,7 @@ class SaasMethodPoolHandler(IReportHandler):
             logger.debug(e, exc_info=e)
         return update_record, method_pool
 
-    def send_to_engine(
-        self, method_pool_id="", method_pool_sign="", update_record=False, model=None
-    ):
+    def send_to_engine(self, method_pool_id="", method_pool_sign="", update_record=False, model=None):
         try:
             if model is None:
                 logger.info(
@@ -354,9 +326,7 @@ class SaasMethodPoolHandler(IReportHandler):
                 # logger.info(
                 #    f'[+] send method_pool [{method_pool_sign}] to engine for task search_vul_from_method_pool id: {res.task_id}')
             else:
-                logger.info(
-                    f'[+] send method_pool [{method_pool_id}] to engine for {model if model else ""}'
-                )
+                logger.info(f'[+] send method_pool [{method_pool_id}] to engine for {model if model else ""}')
                 search_vul_from_replay_method_pool.delay(method_pool_id)
                 # logger.info(
         except Exception as e:
@@ -425,17 +395,11 @@ def save_project_header(keys: list, agent_id: int):
     uuid_key = uuid.uuid4().hex
     keys = list(
         filter(
-            lambda key: uuid_key
-            == cache.get_or_set(f"project_header-{agent_id}-{key}", uuid_key, 60 * 5),
+            lambda key: uuid_key == cache.get_or_set(f"project_header-{agent_id}-{key}", uuid_key, 60 * 5),
             keys,
         )
     )
-    objs = [
-        ProjectSaasMethodPoolHeader(
-            key=key, agent_id=agent_id, header_type=HeaderType.REQUEST
-        )
-        for key in keys
-    ]
+    objs = [ProjectSaasMethodPoolHeader(key=key, agent_id=agent_id, header_type=HeaderType.REQUEST) for key in keys]
     if not keys:
         return
     ProjectSaasMethodPoolHeader.objects.bulk_create(objs, ignore_conflicts=True)
@@ -444,18 +408,12 @@ def save_project_header(keys: list, agent_id: int):
 def add_new_api_route(agent: IastAgent, path, method):
     logger.info(f"{agent.id}, {path}, {method}")
     uuid_key = uuid.uuid4().hex
-    is_api_cached = uuid_key != cache.get_or_set(
-        f"api_route-{agent.id}-{path}-{method}", uuid_key, 60 * 5
-    )
+    is_api_cached = uuid_key != cache.get_or_set(f"api_route-{agent.id}-{path}-{method}", uuid_key, 60 * 5)
     if is_api_cached:
-        logger.info(
-            f"found cache api_route-{agent.id}-{path}-{method} ,skip its insert"
-        )
+        logger.info(f"found cache api_route-{agent.id}-{path}-{method} ,skip its insert")
         return
     try:
-        api_method, is_create = IastApiMethod.objects.get_or_create(
-            method=method.upper()
-        )
+        api_method, is_create = IastApiMethod.objects.get_or_create(method=method.upper())
         http_method, _ = HttpMethod.objects.get_or_create(method=method.upper())
         IastApiMethodHttpMethodRelation.objects.get_or_create(
             api_method_id=api_method.id, http_method_id=http_method.id
@@ -472,9 +430,7 @@ def add_new_api_route(agent: IastAgent, path, method):
         logger.info(e)
         logger.debug(e, exc_info=e)
     try:
-        api_method, is_create = IastApiMethod.objects.get_or_create(
-            method=method.upper()
-        )
+        api_method, is_create = IastApiMethod.objects.get_or_create(method=method.upper())
         IastApiRoute.objects.filter(
             path=path,
             method_id=api_method.id,
@@ -526,9 +482,7 @@ def update_api_route_deatil(agent_id, path, method, params_dict):
         "jsonbody": "POST的json参数",
     }
     api_method, is_create = IastApiMethod.objects.get_or_create(method=method.upper())
-    api_route = IastApiRoute.objects.filter(
-        agent_id=agent_id, path=path, method_id=api_method.id
-    ).first()
+    api_route = IastApiRoute.objects.filter(agent_id=agent_id, path=path, method_id=api_method.id).first()
     for key, value in params_dict.items():
         annotation = annotation_dict[key]
         for param_name in value:
@@ -538,13 +492,9 @@ def update_api_route_deatil(agent_id, path, method, params_dict):
 def single_insert(api_route_id, param_name, annotation) -> None:
     logger.info(f"{api_route_id}, {param_name}, {annotation}")
     uuid_key = uuid.uuid4().hex
-    is_api_cached = uuid_key != cache.get_or_set(
-        f"api_route_param-{api_route_id}-{param_name}", uuid_key, 60 * 5
-    )
+    is_api_cached = uuid_key != cache.get_or_set(f"api_route_param-{api_route_id}-{param_name}", uuid_key, 60 * 5)
     if is_api_cached:
-        logger.info(
-            f"found cache api_route_param-{api_route_id}-{param_name}-{annotation} ,skip its insert"
-        )
+        logger.info(f"found cache api_route_param-{api_route_id}-{param_name}-{annotation} ,skip its insert")
         return
     try:
         param, _ = IastApiParameter.objects.get_or_create(

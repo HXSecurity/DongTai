@@ -70,9 +70,7 @@ class User(AbstractUser, PermissionsMixin):
         return self.is_superuser == 1
 
     def is_talent_admin(self):
-        return (
-            self.is_superuser == 2 or self.is_superuser == 1 or self.is_superuser == 6
-        )
+        return self.is_superuser == 2 or self.is_superuser == 1 or self.is_superuser == 6
 
     def get_talent(self):
         try:
@@ -100,14 +98,9 @@ class User(AbstractUser, PermissionsMixin):
         if self.id == 1:
             return Department.objects.all()
         department = self.get_department()
-        principal_departments = Department.objects.filter(
-            Q(principal_id=self.id) | Q(pk=department.id)
-        )
+        principal_departments = Department.objects.filter(Q(principal_id=self.id) | Q(pk=department.id))
         qs = Department.objects.none()
-        qss = [
-            Q(department_path__startswith=pdepartment.department_path)
-            for pdepartment in principal_departments
-        ]
+        qss = [Q(department_path__startswith=pdepartment.department_path) for pdepartment in principal_departments]
         totals = reduce(ior, qss, qs)
         if not totals:
             total_dep = Department.objects.none()

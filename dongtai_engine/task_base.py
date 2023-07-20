@@ -4,9 +4,7 @@ from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 
 def replay_payload_data(relation_ids, replay_type):
     if replay_type == 1:
-        vulnerability = IastVulnerabilityModel.objects.filter(
-            id__in=relation_ids
-        ).values(
+        vulnerability = IastVulnerabilityModel.objects.filter(id__in=relation_ids).values(
             "id",
             "agent",
             "uri",

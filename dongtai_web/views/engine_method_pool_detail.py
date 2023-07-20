@@ -123,21 +123,15 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
         matches = []
         while True:
             logger.debug(_("Searching, current {} page").format(index + 1))
-            page = queryset.values("id", "method_pool")[
-                index * size : (index + 1) * size - 1
-            ]
+            page = queryset.values("id", "method_pool")[index * size : (index + 1) * size - 1]
             if page:
                 if len(matches) == page_size:
                     break
                 for method_pool in page:
                     if len(matches) == page_size:
                         break
-                    method_caller_set = self.convert_method_pool_to_set(
-                        method_pool["method_pool"]
-                    )
-                    if self.check_match(
-                        method_caller_set, source_set, propagator_set, sink_set
-                    ):
+                    method_caller_set = self.convert_method_pool_to_set(method_pool["method_pool"])
+                    if self.check_match(method_caller_set, source_set, propagator_set, sink_set):
                         matches.append(method_pool["id"])
             else:
                 break
@@ -162,9 +156,7 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
                 method_caller_set.add(signature_concat(method_caller))
         return method_caller_set
 
-    def check_match(
-        self, method_caller_set, sink_set=None, source_set=None, propagator_set=None
-    ):
+    def check_match(self, method_caller_set, sink_set=None, source_set=None, propagator_set=None):
         """
         :param method_caller_set:
         :param sink_set:
@@ -200,9 +192,7 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
             return data
 
         if len(sink_set) == 0:
-            return MethodPoolListSerialize(
-                rule=rule_name, level=rule_level, instance=method_pools, many=True
-            ).data
+            return MethodPoolListSerialize(rule=rule_name, level=rule_level, instance=method_pools, many=True).data
 
         engine = VulEngine()
         for method_pool in method_pools:
@@ -217,10 +207,7 @@ class MethodPoolDetailProxy(AnonymousAndUserEndPoint):
                     continue
 
                 method_caller_set = self.convert_to_set(links)
-                if (
-                    self.check_match(method_caller_set, source_set, propagator_set)
-                    is False
-                ):
+                if self.check_match(method_caller_set, source_set, propagator_set) is False:
                     continue
 
                 top_link = links[0]

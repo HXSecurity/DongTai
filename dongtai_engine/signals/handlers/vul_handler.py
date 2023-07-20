@@ -164,14 +164,10 @@ def get_location_parser(location: str) -> Callable[[str, str], str | None]:
         "PATH": parse_path,
         "COOKIE": parse_cookie,
     }
-    return defaultdict(lambda: lambda http_locationstr, taint_value: None, data)[
-        location
-    ]
+    return defaultdict(lambda: lambda http_locationstr, taint_value: None, data)[location]
 
 
-def parse_taint_params(
-    location: str, http_locationstr: str | None, taint_value: str
-) -> str | None:
+def parse_taint_params(location: str, http_locationstr: str | None, taint_value: str) -> str | None:
     if not http_locationstr:
         return None
     return get_location_parser(location)(http_locationstr, taint_value)
@@ -190,19 +186,13 @@ def get_http_locationstr(method_pool: MethodPool, location: str) -> str | None:
     return getattr(method_pool, data[location], None)
 
 
-def parse_taint_position(
-    source_method, vul_meta, taint_value, vul_stack
-) -> defaultdict:
+def parse_taint_position(source_method, vul_meta, taint_value, vul_stack) -> defaultdict:
     param_names: defaultdict = defaultdict(list, {})
-    target_values: list[str] = list(
-        filter(lambda x: x, parse_target_values_from_vul_stack(vul_stack))
-    )
+    target_values: list[str] = list(filter(lambda x: x, parse_target_values_from_vul_stack(vul_stack)))
     for taint_value in target_values:
         locations: list[str] = get_parser_location(source_method)
         for location in locations:
-            param_name: str | None = parse_taint_params(
-                location, get_http_locationstr(vul_meta, location), taint_value
-            )
+            param_name: str | None = parse_taint_params(location, get_http_locationstr(vul_meta, location), taint_value)
             if param_name and param_name not in param_names[location]:
                 param_names[location].append(param_name)
                 logger.info(f"污点来自{location}参数: {param_name}")
@@ -226,10 +216,7 @@ def get_original_url(uri: str, url_desc: list) -> str:
 def get_real_url(method_pools: list) -> str:
     for method_pool_ in method_pools[::-1]:
         method_pool = method_pool_
-        if (
-            method_pool["signature"]
-            == "org.springframework.web.util.pattern.PathPattern.getPatternString()"
-        ):
+        if method_pool["signature"] == "org.springframework.web.util.pattern.PathPattern.getPatternString()":
             if "targetValues" not in method_pool.keys():
                 method_pool = method_pool_3_to_2(method_pool)
             return method_pool["targetValues"]
@@ -245,9 +232,7 @@ def parse_dast_mark(req_header: str) -> str:
     return ""
 
 
-def save_vul(
-    vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs
-):
+def save_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs):
     logger.info(
         f'save vul, strategy id: {strategy_id}, from: {"normal" if "replay_id" not in kwargs else "replay"}, id: {vul_meta.id}'
     )
@@ -270,14 +255,14 @@ def save_vul(
     if "PATH" in param_names:
         url_desc = param_names["PATH"]
     pattern_string: str = get_real_url(json.loads(vul_meta.method_pool))
-    pattern_uri: str = (
-        pattern_string if pattern_string else get_original_url(vul_meta.uri, url_desc)
-    )
+    pattern_uri: str = pattern_string if pattern_string else get_original_url(vul_meta.uri, url_desc)
     logger.info(
         f"agent_id: {vul_meta.agent_id} vul_uri_pattern: {pattern_uri} vul_uri: {vul_meta.uri} param_name: {param_name}"
     )
     uuid_key = uuid.uuid4().hex
-    cache_key = f"vul_save-{strategy_id}-{pattern_uri}-{vul_meta.http_method}-{vul_meta.agent.project_version_id}-{param_name}"
+    cache_key = (
+        f"vul_save-{strategy_id}-{pattern_uri}-{vul_meta.http_method}-{vul_meta.agent.project_version_id}-{param_name}"
+    )
     is_api_cached = uuid_key != cache.get_or_set(cache_key, uuid_key)
     if is_api_cached:
         return None
@@ -293,12 +278,8 @@ def save_vul(
         .order_by("-latest_time")
         .first()
     )
-    project_time_stamp_update.apply_async(
-        (vul_meta.agent.bind_project_id,), countdown=5
-    )
-    project_version_time_stamp_update.apply_async(
-        (vul_meta.agent.project_version_id,), countdown=5
-    )
+    project_time_stamp_update.apply_async((vul_meta.agent.bind_project_id,), countdown=5)
+    project_version_time_stamp_update.apply_async((vul_meta.agent.project_version_id,), countdown=5)
     if vul:
         vul.url = vul_meta.url
         vul.uri = vul_meta.uri
@@ -407,9 +388,7 @@ def create_vul_recheck_task(vul_id, agent, timestamp):
     if project and project.vul_validation == VulValidation.DISABLE:
         return
     enable_validate = False
-    if project is None or (
-        project and project.vul_validation == VulValidation.FOLLOW_GLOBAL
-    ):
+    if project is None or (project and project.vul_validation == VulValidation.FOLLOW_GLOBAL):
         enable_validate = get_vul_validate()
     if project and project.vul_validation == VulValidation.ENABLE:
         enable_validate = True
@@ -417,9 +396,7 @@ def create_vul_recheck_task(vul_id, agent, timestamp):
     if enable_validate is False:
         return
 
-    replay_model = IastReplayQueue.objects.filter(
-        replay_type=const.VUL_REPLAY, relation_id=vul_id
-    ).first()
+    replay_model = IastReplayQueue.objects.filter(replay_type=const.VUL_REPLAY, relation_id=vul_id).first()
     if replay_model:
         if replay_model.state in [const.PENDING, const.WAITING, const.SOLVING]:
             return
@@ -429,9 +406,7 @@ def create_vul_recheck_task(vul_id, agent, timestamp):
         replay_model.count = replay_model.count + 1
         replay_model.save(update_fields=["state", "update_time", "count"])
     else:
-        vul = (
-            IastVulnerabilityModel.objects.filter(pk=vul_id).only("strategy_id").first()
-        )
+        vul = IastVulnerabilityModel.objects.filter(pk=vul_id).only("strategy_id").first()
         queue = [
             IastReplayQueue(
                 agent=agent,
@@ -461,26 +436,16 @@ def create_vul_recheck_task(vul_id, agent, timestamp):
             )
 
 
-def handler_replay_vul(
-    vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs
-):
+def handler_replay_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs):
     timestamp = int(time.time())
-    vul = IastVulnerabilityModel.objects.filter(
-        Q(pk=kwargs["relation_id"]) & ~Q(status_id=(3, 5, 6))
-    ).first()
-    logger.info(
-        f"handle vul replay, current strategy:{vul.strategy_id}, target hook_type:{strategy_id}"
-    )
+    vul = IastVulnerabilityModel.objects.filter(Q(pk=kwargs["relation_id"]) & ~Q(status_id=(3, 5, 6))).first()
+    logger.info(f"handle vul replay, current strategy:{vul.strategy_id}, target hook_type:{strategy_id}")
     if vul and vul.strategy_id == strategy_id:
         vul.status_id = settings.CONFIRMED
         vul.latest_time = timestamp
         vul.save(update_fields=["status_id", "latest_time", "latest_time_desc"])
-        project_time_stamp_update.apply_async(
-            (vul_meta.agent.bind_project_id,), countdown=5
-        )
-        project_version_time_stamp_update.apply_async(
-            (vul_meta.agent.project_version_id,), countdown=5
-        )
+        project_time_stamp_update.apply_async((vul_meta.agent.bind_project_id,), countdown=5)
+        project_version_time_stamp_update.apply_async((vul_meta.agent.project_version_id,), countdown=5)
 
         IastReplayQueue.objects.filter(id=kwargs["replay_id"]).update(
             state=const.SOLVED,
@@ -513,9 +478,7 @@ def handler_replay_vul(
 
 
 @receiver(vul_found)
-def handler_vul(
-    vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs
-):
+def handler_vul(vul_meta, vul_level, strategy_id, vul_stack, top_stack, bottom_stack, **kwargs):
     """
     保存漏洞数据
     :param vul_meta:
@@ -585,50 +548,27 @@ def handler_vul(
         mark = parse_dast_mark(base64_decode(vul.req_header))
         if mark:
             key = "dast_validation_settings"
-            profile = (
-                IastProfile.objects.filter(key=key)
-                .values_list("value", flat=True)
-                .first()
-            )
+            profile = IastProfile.objects.filter(key=key).values_list("value", flat=True).first()
             data = json.loads(profile) if profile else {}
             logger.info("mark found , try to bind exist dastvul.")
-            vul_ids = (
-                DastvulDtMarkRelation.objects.filter(dt_mark=mark)
-                .values("dastvul_id")
-                .distinct()
-            )
+            vul_ids = DastvulDtMarkRelation.objects.filter(dt_mark=mark).values("dastvul_id").distinct()
             dastvuls = IastDastIntegration.objects.filter(pk__in=vul_ids).all()
             IastvulDtMarkRelation.objects.create(dt_mark=mark, iastvul=vul)
             create_rels = []
             for dastvul in dastvuls:
-                logger.debug(
-                    f"vul.strategy.vul_type: {vul.strategy.vul_type}, vul.uri: {vul.uri}"
-                )
-                if (
-                    data
-                    and data["validation_status"]
-                    and vul.strategy_id not in data["strategy_id"]
-                ):
-                    logger.debug(
-                        "vul.strategy.vul_type not in validation strategy_id list or not enable validation"
-                    )
+                logger.debug(f"vul.strategy.vul_type: {vul.strategy.vul_type}, vul.uri: {vul.uri}")
+                if data and data["validation_status"] and vul.strategy_id not in data["strategy_id"]:
+                    logger.debug("vul.strategy.vul_type not in validation strategy_id list or not enable validation")
                     continue
-                if (
-                    vul.strategy.vul_type in dastvul.dongtai_vul_type
-                    and vul.uri in dastvul.urls
-                ):
-                    rel = IastDastIntegrationRelation(
-                        iastvul=vul, dastvul=dastvul, dt_mark=mark
-                    )
+                if vul.strategy.vul_type in dastvul.dongtai_vul_type and vul.uri in dastvul.urls:
+                    rel = IastDastIntegrationRelation(iastvul=vul, dastvul=dastvul, dt_mark=mark)
                     logger.info(
                         "create vul_relation iast_vul %s dastvul %s",
                         vul.id,
                         dastvul.id,
                     )
                     create_rels.append(rel)
-            rels_created = IastDastIntegrationRelation.objects.bulk_create(
-                create_rels, ignore_conflicts=True
-            )
+            rels_created = IastDastIntegrationRelation.objects.bulk_create(create_rels, ignore_conflicts=True)
             logger.debug(
                 "create vul_relation count %s with mark %s",
                 len(rels_created),

@@ -63,14 +63,8 @@ def get_annotate_sca_base_data(user_id: int, pro_condition: str):
     }
     user = User.objects.get(pk=user_id)
     departments = list(user.get_relative_department())
-    department_filter_sql = " and {}.department_id in ({})".format(
-        "asset", ",".join(str(x.id) for x in departments)
-    )
-    query_condition = (
-        " where rel.is_del=0 and asset.project_id>0 "
-        + department_filter_sql
-        + pro_condition
-    )
+    department_filter_sql = " and {}.department_id in ({})".format("asset", ",".join(str(x.id) for x in departments))
+    query_condition = " where rel.is_del=0 and asset.project_id>0 " + department_filter_sql + pro_condition
     base_join = (
         "left JOIN iast_asset_vul_relation as rel on rel.asset_vul_id=vul.id  "
         "left JOIN iast_asset as asset on rel.asset_id=asset.id "
@@ -130,9 +124,7 @@ def get_annotate_sca_base_data(user_id: int, pro_condition: str):
         cursor.execute(count_no_availability_query)
         no_availability_summary = cursor.fetchone()
         if no_availability_summary:
-            result_summary["availability"]["no_availability"][
-                "num"
-            ] = no_availability_summary[0]
+            result_summary["availability"]["no_availability"]["num"] = no_availability_summary[0]
 
         count_language_query = (
             "SELECT  vul.package_language, count( DISTINCT(vul.id )) AS count_package_language  from iast_asset_vul as vul  "
@@ -158,8 +150,7 @@ def get_annotate_sca_base_data(user_id: int, pro_condition: str):
                     del lang_arr[package_language]
         if lang_arr:
             result_summary["language"].extend(
-                {"id": LANGUAGE_DICT.get(item), "num": 0, "name": item}
-                for item in lang_arr
+                {"id": LANGUAGE_DICT.get(item), "num": 0, "name": item} for item in lang_arr
             )
 
         # 漏洞类型 统计
@@ -180,9 +171,7 @@ def get_annotate_sca_base_data(user_id: int, pro_condition: str):
         if type_summary:
             for item in type_summary:
                 vul_type_id, count_vul_type, type_name = item
-                result_summary["hook_type"].append(
-                    {"id": vul_type_id, "num": count_vul_type, "name": type_name}
-                )
+                result_summary["hook_type"].append({"id": vul_type_id, "num": count_vul_type, "name": type_name})
         # 归属项目 统计
         count_project_query = (
             " SELECT project_id, _count, name AS project_name FROM iast_project AS ip RIGHT  JOIN ( SELECT asset.project_id AS project_id, count( DISTINCT(vul.id ))  AS _count "
@@ -196,9 +185,7 @@ def get_annotate_sca_base_data(user_id: int, pro_condition: str):
         if project_summary:
             for item in project_summary:
                 project_id, count_project, project_name = item
-                result_summary["project"].append(
-                    {"id": project_id, "num": count_project, "name": project_name}
-                )
+                result_summary["project"].append({"id": project_id, "num": count_project, "name": project_name})
 
     return result_summary
 
@@ -225,24 +212,18 @@ def get_annotate_data_es(user_id, bind_project_id=None, project_version_id=None)
         must_query.append(Q("terms", asset_project_id=[bind_project_id]))
     if project_version_id:
         must_query.append(Q("terms", asset_project_version_id=[project_version_id]))
-    search = IastAssetVulnerabilityDocument.search().query(Q("bool", must=must_query))[
-        :0
-    ]
+    search = IastAssetVulnerabilityDocument.search().query(Q("bool", must=must_query))[:0]
     buckets = {
         "level": A("terms", field="level_id", size=2147483647),
         "project": A("terms", field="asset_project_id", size=2147483647),
         "language": A("terms", field="package_language.keyword", size=2147483647),
     }
     for k, v in buckets.items():
-        search.aggs.bucket(k, v).bucket(
-            "distinct_asset_vul", A("cardinality", field="asset_vul_id")
-        )
+        search.aggs.bucket(k, v).bucket("distinct_asset_vul", A("cardinality", field="asset_vul_id"))
     search.aggs.bucket("poc", A("terms", field="have_poc", size=2147483647)).bucket(
         "article", A("terms", field="have_article", size=2147483647)
     )
-    res = search.using(
-        Elasticsearch(settings.ELASTICSEARCH_DSL["default"]["hosts"])
-    ).execute()
+    res = search.using(Elasticsearch(settings.ELASTICSEARCH_DSL["default"]["hosts"])).execute()
     dic = {}
     for key in buckets:
         origin_buckets = res.aggs[key].to_dict()["buckets"]
@@ -270,11 +251,7 @@ def get_annotate_data_es(user_id, bind_project_id=None, project_version_id=None)
             )
         if key == "project":
             project_ids = [i["id"] for i in origin_buckets]
-            project = (
-                IastProject.objects.filter(pk__in=project_ids)
-                .values("id", "name")
-                .all()
-            )
+            project = IastProject.objects.filter(pk__in=project_ids).values("id", "name").all()
             project_dic = dict_transfrom(project, "id")
             for i in origin_buckets:
                 if project_dic.get(i["id"], None):
@@ -283,11 +260,7 @@ def get_annotate_data_es(user_id, bind_project_id=None, project_version_id=None)
                     del i
         if key == "level":
             level_ids = [i["id"] for i in origin_buckets]
-            level = (
-                IastVulLevel.objects.filter(pk__in=level_ids)
-                .values("id", "name_value")
-                .all()
-            )
+            level = IastVulLevel.objects.filter(pk__in=level_ids).values("id", "name_value").all()
             level_dic = dict_transfrom(level, "id")
             for i in origin_buckets:
                 i["name"] = level_dic[i["id"]]["name_value"]
@@ -338,11 +311,8 @@ class GetScaSummary(UserEndPoint):
                     )
                 # 项目版本号
                 if ser.validated_data.get("project_version_id", 0):
-                    pro_condition = (
-                        pro_condition
-                        + " and asset.project_version_id={} ".format(
-                            str(ser.validated_data.get("project_version_id"))
-                        )
+                    pro_condition = pro_condition + " and asset.project_version_id={} ".format(
+                        str(ser.validated_data.get("project_version_id"))
                     )
         except ValidationError as e:
             return R.failure(data=e.detail)
@@ -355,9 +325,7 @@ class GetScaSummary(UserEndPoint):
             )
         elif pro_condition:
             # 存在项目筛选条件
-            result_summary = get_annotate_sca_common_data(
-                request.user.id, pro_condition
-            )
+            result_summary = get_annotate_sca_common_data(request.user.id, pro_condition)
         else:
             # 全局数据,没有项目信息 数据按用户id缓存
             result_summary = get_annotate_sca_cache_data(request.user.id)

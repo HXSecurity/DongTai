@@ -50,33 +50,21 @@ class EngineDownloadEndPoint(OpenApiEndPoint):
         package_name = request.query_params.get("engineName")
         if package_name not in PACKAGE_NAME_LIST:
             return R.failure({"status": -1, "msg": "bad gay."})
-        local_file_name = EngineDownloadEndPoint.LOCAL_AGENT_FILE.format(
-            package_name=package_name
-        )
-        remote_file_name = EngineDownloadEndPoint.REMOTE_AGENT_FILE.format(
-            package_name=package_name
-        )
+        local_file_name = EngineDownloadEndPoint.LOCAL_AGENT_FILE.format(package_name=package_name)
+        remote_file_name = EngineDownloadEndPoint.REMOTE_AGENT_FILE.format(package_name=package_name)
         logger.debug(f"download file from oss or local cache, file: {local_file_name}")
-        if self.download_agent_jar(
-            remote_agent_file=remote_file_name, local_agent_file=local_file_name
-        ):
+        if self.download_agent_jar(remote_agent_file=remote_file_name, local_agent_file=local_file_name):
             try:
                 with open(local_file_name, "rb") as f:
                     response = FileResponse(f)
                     response["content_type"] = "application/octet-stream"
-                    response[
-                        "Content-Disposition"
-                    ] = f"attachment; filename={package_name}.jar"
+                    response["Content-Disposition"] = f"attachment; filename={package_name}.jar"
                     return response
             except Exception as e:
                 logger.error(e, exc_info=True)
-                return R.failure(
-                    msg="file not exit.", status=status.HTTP_500_INTERNAL_SERVER_ERROR
-                )
+                return R.failure(msg="file not exit.", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
-            return R.failure(
-                msg="file not exit.", status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+            return R.failure(msg="file not exit.", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @staticmethod
     def download_agent_jar(remote_agent_file, local_agent_file):
@@ -84,6 +72,4 @@ class EngineDownloadEndPoint(OpenApiEndPoint):
             os.makedirs(EngineDownloadEndPoint.LOCAL_AGENT_PATH)
         if os.path.exists(local_agent_file):
             return True
-        return OssDownloader.download_file(
-            object_name=remote_agent_file, local_file=local_agent_file
-        )
+        return OssDownloader.download_file(object_name=remote_agent_file, local_file=local_agent_file)

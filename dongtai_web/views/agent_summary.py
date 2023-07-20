@@ -35,9 +35,7 @@ class AgentSummary(UserEndPoint):
         if not agent:
             return R.failure()
         project_version = (
-            IastProjectVersion.objects.filter(
-                project_id=agent.bind_project_id, current_version=1
-            )
+            IastProjectVersion.objects.filter(project_id=agent.bind_project_id, current_version=1)
             .only("project__name", "version_name")
             .first()
         )

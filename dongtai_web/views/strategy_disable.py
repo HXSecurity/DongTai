@@ -33,15 +33,13 @@ class StrategyDisableEndpoint(TalentAdminEndPoint):
             strategy.save()
             total_counts = 0
             for strategy_model in strategy_models:
-                counts = strategy_model.strategies.filter(
-                    enable=const.HOOK_TYPE_ENABLE
-                ).update(enable=const.HOOK_TYPE_DISABLE)
+                counts = strategy_model.strategies.filter(enable=const.HOOK_TYPE_ENABLE).update(
+                    enable=const.HOOK_TYPE_DISABLE
+                )
                 strategy_model.enable = const.HOOK_TYPE_DISABLE
                 strategy_model.save(update_fields=["enable"])
                 total_counts += counts
-            return R.success(
-                msg=_("Strategy is disabled, total {} hook rules").format(total_counts)
-            )
+            return R.success(msg=_("Strategy is disabled, total {} hook rules").format(total_counts))
         return R.failure(status=202, msg=_("Strategy does not exist"))
 
 

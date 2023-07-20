@@ -41,9 +41,7 @@ class ProjectDel(UserEndPoint):
                 department = request.user.get_relative_department()
                 #                IastAgent.objects.filter(
                 #                    user__in=auth_users).update(bind_project_id=-1)
-                IastProject.objects.filter(
-                    id=project_id, department__in=department
-                ).delete()
+                IastProject.objects.filter(id=project_id, department__in=department).delete()
 
             return R.success(msg=_("Application has been deleted successfully"))
         except Exception as e:

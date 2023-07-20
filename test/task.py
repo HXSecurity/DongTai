@@ -32,9 +32,7 @@ class MyTestCase(DongTaiTestCase):
             every=5,
             period=IntervalSchedule.MINUTES,
         )
-        update_agent_task = PeriodicTask.objects.filter(
-            name="engine.update_agent_status"
-        ).first()
+        update_agent_task = PeriodicTask.objects.filter(name="engine.update_agent_status").first()
         if update_agent_task:
             update_agent_task.task = "dongtai_engine.tasks.update_agent_status"
             update_agent_task.interval = schedule

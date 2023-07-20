@@ -22,9 +22,7 @@ class _EngineHookRuleSummaryQuerySerializer(serializers.Serializer):
     )
 
 
-_ResponseSerializer = get_response_serializer(
-    EngineHookRuleSummarySerializer(many=True)
-)
+_ResponseSerializer = get_response_serializer(EngineHookRuleSummarySerializer(many=True))
 
 
 class EngineHookRuleSummaryEndPoint(UserEndPoint):
@@ -41,29 +39,17 @@ class EngineHookRuleSummaryEndPoint(UserEndPoint):
             ser.is_valid(True)
         except ValidationError:
             return R.failure(msg=_("Parameter error"))
-        rule_type_queryset = HookType.objects.filter(
-            created_by__in=[request.user.id, const.SYSTEM_USER_ID]
-        )
+        rule_type_queryset = HookType.objects.filter(created_by__in=[request.user.id, const.SYSTEM_USER_ID])
         if ser.validated_data.get("language_id", None):
-            rule_type_queryset = rule_type_queryset.filter(
-                language_id=ser.validated_data["language_id"], enable__gt=0
-            )
+            rule_type_queryset = rule_type_queryset.filter(language_id=ser.validated_data["language_id"], enable__gt=0)
         rule_type_count = rule_type_queryset.values("id").count()
 
         rule_type_queryset.filter(type=const.RULE_SINK)
-        sink_queryset = HookStrategy.objects.values("id").filter(
-            type__in=[4], enable__gt=0
-        )
-        rule_queryset = HookStrategy.objects.values("id").filter(
-            type__in=[1, 2, 3], enable__gt=0
-        )
+        sink_queryset = HookStrategy.objects.values("id").filter(type__in=[4], enable__gt=0)
+        rule_queryset = HookStrategy.objects.values("id").filter(type__in=[1, 2, 3], enable__gt=0)
         if ser.validated_data.get("language_id", None):
-            sink_queryset = sink_queryset.filter(
-                language_id=ser.validated_data["language_id"]
-            )
-            rule_queryset = rule_queryset.filter(
-                language_id=ser.validated_data["language_id"]
-            )
+            sink_queryset = sink_queryset.filter(language_id=ser.validated_data["language_id"])
+            rule_queryset = rule_queryset.filter(language_id=ser.validated_data["language_id"])
         sink_count = sink_queryset.count()
 
         rule_count = rule_queryset.count()

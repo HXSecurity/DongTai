@@ -13,13 +13,9 @@ if TYPE_CHECKING:
     from django.core.paginator import _SupportsPagination
 
 
-def get_vul_levels_dict(
-    queryset: "QuerySet | _SupportsPagination", exclude_vul_status: int | None
-) -> defaultdict:
+def get_vul_levels_dict(queryset: "QuerySet | _SupportsPagination", exclude_vul_status: int | None) -> defaultdict:
     vul_levels = (
-        IastVulnerabilityModel.objects.values(
-            "level__name_value", "level", "project_id"
-        )
+        IastVulnerabilityModel.objects.values("level__name_value", "level", "project_id")
         .filter(
             ~Q(status_id=exclude_vul_status) if exclude_vul_status is not None else Q(),
             project_id__in=list(queryset.values_list("id", flat=True)),
@@ -69,9 +65,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     vul_count = serializers.SerializerMethodField(help_text="Vulnerability Count")
     agent_count = serializers.SerializerMethodField(help_text="Agent Count")
     owner = serializers.SerializerMethodField(help_text="Project owner")
-    agent_language = serializers.SerializerMethodField(
-        help_text="Agent language currently included in the project"
-    )
+    agent_language = serializers.SerializerMethodField(help_text="Agent language currently included in the project")
     USER_MAP = {}
 
     class Meta:
@@ -104,9 +98,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             vul_levels = (
                 IastVulnerabilityModel.objects.values("level__name_value", "level")
                 .filter(
-                    ~Q(status_id=self.exclude_vul_status)
-                    if self.exclude_vul_status is not None
-                    else Q(),
+                    ~Q(status_id=self.exclude_vul_status) if self.exclude_vul_status is not None else Q(),
                     project_id=obj.id,
                     is_del=0,
                 )

@@ -24,9 +24,7 @@ class UserPassword(UserEndPoint):
         try:
             if not request.data["old_password"] or not request.data["new_password"]:
                 return R.failure(msg=_("Password should not be empty"))
-            user_check = authenticate(
-                username=user.username, password=request.data["old_password"]
-            )
+            user_check = authenticate(username=user.username, password=request.data["old_password"])
             if user_check is not None and user_check.is_active:
                 password = request.data["new_password"]
 

@@ -50,9 +50,7 @@ class VulSideBarList(UserEndPoint):
             {
                 "name": "level",
                 "type": str,
-                "description": format_lazy(
-                    "{} : {}", _("Level of vulnerability"), "1,2,3,4"
-                ),
+                "description": format_lazy("{} : {}", _("Level of vulnerability"), "1,2,3,4"),
             },
             {
                 "name": "url",
@@ -62,9 +60,7 @@ class VulSideBarList(UserEndPoint):
             {
                 "name": "order",
                 "type": str,
-                "description": format_lazy(
-                    "{} : {}", _("Sorted index"), ",".join(VALUES)
-                ),
+                "description": format_lazy("{} : {}", _("Sorted index"), ",".join(VALUES)),
             },
         ],
         tags=[_("Vulnerability")],
@@ -113,17 +109,13 @@ class VulSideBarList(UserEndPoint):
 
         page = int(request.query_params.get("page", 1))
         page_size = int(request.query_params.get("pageSize", 10))
-        page_summary, queryset = self.get_paginator(
-            queryset, page=page, page_size=page_size
-        )
+        page_summary, queryset = self.get_paginator(queryset, page=page, page_size=page_size)
         for obj in queryset:
             hook_type = HookType.objects.filter(pk=obj["hook_type_id"]).first()
             hook_type_name = hook_type.name if hook_type else None
             strategy = IastStrategyModel.objects.filter(pk=obj["strategy_id"]).first()
             strategy_name = strategy.vul_name if strategy else None
-            type_ = list(
-                filter(lambda x: x is not None, [strategy_name, hook_type_name])
-            )
+            type_ = list(filter(lambda x: x is not None, [strategy_name, hook_type_name]))
             obj["type"] = type_[0] if type_ else ""
         return R.success(
             page=page_summary,

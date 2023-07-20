@@ -54,9 +54,7 @@ class _VulsEndPointResponseSerializer(VulSerializer):
         ]
 
 
-_ResponseSerializer = get_response_serializer(
-    _VulsEndPointResponseSerializer(many=True)
-)
+_ResponseSerializer = get_response_serializer(_VulsEndPointResponseSerializer(many=True))
 
 
 class VulsEndPoint(UserEndPoint):
@@ -92,16 +90,12 @@ class VulsEndPoint(UserEndPoint):
                 "name": "level",
                 "type": int,
                 "deprecated": True,
-                "description": format_lazy(
-                    "{} : {}", _("Level of vulnerability"), "1,2,3,4"
-                ),
+                "description": format_lazy("{} : {}", _("Level of vulnerability"), "1,2,3,4"),
             },
             {
                 "name": "level",
                 "type": int,
-                "description": format_lazy(
-                    "{} : {}", _("The id Level of vulnerability"), "1,2,3,4"
-                ),
+                "description": format_lazy("{} : {}", _("The id Level of vulnerability"), "1,2,3,4"),
             },
             {
                 "name": "project_id",
@@ -111,9 +105,7 @@ class VulsEndPoint(UserEndPoint):
             {
                 "name": "version_id",
                 "type": int,
-                "description": _(
-                    "The default is the current version id of the project."
-                ),
+                "description": _("The default is the current version id of the project."),
             },
             {
                 "name": "status",
@@ -312,12 +304,8 @@ class VulsEndPoint(UserEndPoint):
                     _("The application has not been binded"),
                 )
                 item["project_id"] = agentPro.get(item["agent_id"], 0)
-                item["server_name"] = allServer.get(
-                    agentServer.get(item["agent_id"], 0), "JavaApplication"
-                )
-                item["server_type"] = VulSerializer.split_container_name(
-                    item["server_name"]
-                )
+                item["server_name"] = allServer.get(agentServer.get(item["agent_id"], 0), "JavaApplication")
+                item["server_type"] = VulSerializer.split_container_name(item["server_name"])
                 item["level_type"] = item["level_id"]
                 item["level"] = allTypeArr.get(item["level_id"], "")
                 end["data"].append(item)

@@ -55,13 +55,9 @@ def api_route_gather(agent_id, api_routes):
             with transaction.atomic():
                 try:
                     for http_method_str in api_route["method"]:
-                        http_method, __ = HttpMethod.objects.get_or_create(
-                            method=http_method_str.upper()
-                        )
+                        http_method, __ = HttpMethod.objects.get_or_create(method=http_method_str.upper())
                         http_methods.append(http_method)
-                        api_method, is_create = IastApiMethod.objects.get_or_create(
-                            method=http_method_str.upper()
-                        )
+                        api_method, is_create = IastApiMethod.objects.get_or_create(method=http_method_str.upper())
                         if is_create:
                             for http_method in http_methods:
                                 IastApiMethodHttpMethodRelation.objects.create(
@@ -78,24 +74,18 @@ def api_route_gather(agent_id, api_routes):
                         ]
                         api_route_dict = _dictfilter(api_route, fields)
                         api_route_obj = _route_dump(api_route_dict, api_method, agent)
-                        api_route_model, is_create = IastApiRoute.objects.get_or_create(
-                            **api_route_obj
-                        )
+                        api_route_model, is_create = IastApiRoute.objects.get_or_create(**api_route_obj)
                         parameters = api_route["parameters"]
                         for parameter in parameters:
                             parameter_obj = _para_dump(parameter, api_route_model)
                             IastApiParameter.objects.get_or_create(**parameter_obj)
-                        response_obj = _response_dump(
-                            {"return_type": api_route["returnType"]}, api_route_model
-                        )
+                        response_obj = _response_dump({"return_type": api_route["returnType"]}, api_route_model)
                         IastApiResponse.objects.get_or_create(**response_obj)
                 except Exception as e:
                     logger.exception("uncatched exception: ", exc_info=e)
             logger.info(_("API navigation log record successfully"))
         project_time_stamp_update.apply_async((agent.bind_project_id,), countdown=5)
-        project_version_time_stamp_update.apply_async(
-            (agent.project_version_id,), countdown=5
-        )
+        project_version_time_stamp_update.apply_async((agent.project_version_id,), countdown=5)
     except Exception as e:
         logger.info(_("API navigation log failed, why: {}").format(e), exc_info=e)
 

@@ -16,11 +16,7 @@ def transform_hooktype(hook_type: HookType) -> HookType:
 
 
 def export_strategy() -> list:
-    strategies = (
-        IastStrategyModel.objects.filter(user_id=1, state__in=["enable", "disable"])
-        .order_by("id")
-        .all()
-    )
+    strategies = IastStrategyModel.objects.filter(user_id=1, state__in=["enable", "disable"]).order_by("id").all()
 
     return sorted(
         [
@@ -48,11 +44,7 @@ def export_hooktype(language_id: int) -> list:
         created_by__in=[1],
     ).values_list("id", flat=True)
     strategies = (
-        HookType.objects.filter(
-            language_id=language_id, created_by__in=[1], pk__in=list(qs1)
-        )
-        .order_by("id")
-        .all()
+        HookType.objects.filter(language_id=language_id, created_by__in=[1], pk__in=list(qs1)).order_by("id").all()
     )
 
     strategies = map(transform_hooktype, list(strategies))
@@ -89,16 +81,10 @@ class Command(BaseCommand):
             with open(os.path.join(POLICY_DIR, f"{k.lower()}_policy.json"), "w+") as fp:
                 json.dump(c, fp, indent=4, sort_keys=True)
 
-            c = HookProfilesEndPoint.get_profiles(
-                language_id=v, full=True, system_only=True
-            )
-            with open(
-                os.path.join(POLICY_DIR, f"{k.lower()}_full_policy.json"), "w+"
-            ) as fp:
+            c = HookProfilesEndPoint.get_profiles(language_id=v, full=True, system_only=True)
+            with open(os.path.join(POLICY_DIR, f"{k.lower()}_full_policy.json"), "w+") as fp:
                 json.dump(c, fp, indent=4, sort_keys=True)
-            with open(
-                os.path.join(POLICY_DIR, f"{k.lower()}_hooktype.json"), "w+"
-            ) as fp:
+            with open(os.path.join(POLICY_DIR, f"{k.lower()}_hooktype.json"), "w+") as fp:
                 json.dump(export_hooktype(language_id=v), fp, indent=4, sort_keys=True)
         with open(os.path.join(POLICY_DIR, "vul_strategy.json"), "w+") as fp:
             json.dump(export_strategy(), fp, indent=4, sort_keys=True)

@@ -51,9 +51,7 @@ class _EngineHookRuleModifySerializer(serializers.Serializer):
         max_length=255,
     )
     track = serializers.CharField(
-        help_text=_(
-            "Indicates whether taint tracking is required, true-required, false-not required."
-        ),
+        help_text=_("Indicates whether taint tracking is required, true-required, false-not required."),
         max_length=5,
     )
     ignore_blacklist = serializers.BooleanField(
@@ -174,9 +172,7 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
             if ser.is_valid(True):
                 pass
         except ValidationError as e:
-            return R.failure(
-                data=e.detail, msg=_("Incomplete parameter, please check again")
-            )
+            return R.failure(data=e.detail, msg=_("Incomplete parameter, please check again"))
 
         if strategy:
             if hook_type and strategy.type == 4:

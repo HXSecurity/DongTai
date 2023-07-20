@@ -27,22 +27,14 @@ logger = logging.getLogger("django")
 class _ProjectsAddBodyArgsSerializer(serializers.Serializer):
     name = serializers.CharField(help_text=_("The name of project"))
     template_id = serializers.IntegerField(
-        help_text=_(
-            "The id corresponding to the project template. required to specfic, use 1 as default."
-        )
+        help_text=_("The id corresponding to the project template. required to specfic, use 1 as default.")
     )
-    version_name = serializers.CharField(
-        required=False, help_text=_("The version name of the project")
-    )
+    version_name = serializers.CharField(required=False, help_text=_("The version name of the project"))
     pid = serializers.IntegerField(
         required=False,
-        help_text=_(
-            "The id of the project, use it when try to modify existed project."
-        ),
+        help_text=_("The id of the project, use it when try to modify existed project."),
     )
-    description = serializers.CharField(
-        required=False, help_text=_("Description of the project")
-    )
+    description = serializers.CharField(required=False, help_text=_("Description of the project"))
     vul_validation = serializers.IntegerField(
         help_text="vul validation switch",
     )
@@ -102,13 +94,7 @@ class ProjectAdd(UserEndPoint):
                 if pid and base_url:
                     ips = filter(
                         lambda x: ip_validate(x),
-                        [
-                            i[0]
-                            for i in IastServer.objects.filter(pid=pid)
-                            .values_list("ip")
-                            .distinct()
-                            .all()
-                        ],
+                        [i[0] for i in IastServer.objects.filter(pid=pid).values_list("ip").distinct().all()],
                     )
                     accessable_ips = _accessable_ips(base_url, ips)
                 if accessable_ips:
@@ -119,9 +105,7 @@ class ProjectAdd(UserEndPoint):
                     return R.failure(status=202, msg=_("base_url validate failed"))
                 if not scan_id or not name or not mode:
                     logger.error("require base scan_id and name")
-                    return R.failure(
-                        status=202, msg=_("Required scan strategy and name")
-                    )
+                    return R.failure(status=202, msg=_("Required scan strategy and name"))
 
                 version_name = request.data.get("version_name", "")
                 if not version_name:
@@ -129,9 +113,7 @@ class ProjectAdd(UserEndPoint):
                 vul_validation = request.data.get("vul_validation", None)
 
                 if pid:
-                    project = IastProject.objects.filter(
-                        id=pid, department__in=departments
-                    ).first()
+                    project = IastProject.objects.filter(id=pid, department__in=departments).first()
                     project.name = name
                 else:
                     department_id = request.data.get("department_id", 1)
@@ -151,9 +133,7 @@ class ProjectAdd(UserEndPoint):
                     else:
                         return R.failure(
                             status=203,
-                            msg=_(
-                                "Failed to create, the application name already exists"
-                            ),
+                            msg=_("Failed to create, the application name already exists"),
                         )
 
                 versionInfo = IastProjectVersion.objects.filter(
@@ -171,14 +151,10 @@ class ProjectAdd(UserEndPoint):
                     versionInfo.version_name == version_name
                     and (versionInfo.description == description or not description)
                 ):
-                    result = version_modify(
-                        project.user, departments, current_project_version
-                    )
+                    result = version_modify(project.user, departments, current_project_version)
                     if result.get("status", "202") == "202":
                         logger.error("version update failure")
-                        return R.failure(
-                            status=202, msg=result.get("msg", _("Version Update Error"))
-                        )
+                        return R.failure(status=202, msg=result.get("msg", _("Version Update Error")))
                     project_version_id = result.get("data", {}).get("version_id", 0)
 
                 project.scan = scan
@@ -227,9 +203,7 @@ class ProjectAdd(UserEndPoint):
 
 def _accessable_ips(url, ips):
     parse_re = urlparse(url)
-    return list(
-        filter(lambda x: url_accessable(urlunparse(parse_re._replace(netloc=x))), ips)
-    )
+    return list(filter(lambda x: url_accessable(urlunparse(parse_re._replace(netloc=x))), ips))
 
 
 def url_accessable(url):
@@ -253,18 +227,10 @@ def url_validate(url):
 def ip_validate(ip):
     try:
         ipadrs = ipaddress.IPv4Address(ip)
-        if (
-            int(ipaddress.IPv4Address("127.0.0.1"))
-            < int(ipadrs)
-            < int(ipaddress.IPv4Address("127.255.255.255"))
-        ):
+        if int(ipaddress.IPv4Address("127.0.0.1")) < int(ipadrs) < int(ipaddress.IPv4Address("127.255.255.255")):
             logger.error("127.x.x.x address not allowed")
             return False
-        if (
-            int(ipaddress.IPv4Address("10.0.0.1"))
-            < int(ipadrs)
-            < int(ipaddress.IPv4Address("10.255.255.255"))
-        ):
+        if int(ipaddress.IPv4Address("10.0.0.1")) < int(ipadrs) < int(ipaddress.IPv4Address("10.255.255.255")):
             logger.error("10.x.x.x address not allowed")
             return False
     except ipaddress.AddressValueError:

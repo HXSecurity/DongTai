@@ -31,9 +31,7 @@ class AgentStatusUpdate(UserEndPoint):
         )
         no_heart_beat_queryset.update(online=0)
 
-        heart_beat_queryset = queryset.filter(
-            server__update_time__lt=(timestamp - 600), online=const.RUNNING
-        )
+        heart_beat_queryset = queryset.filter(server__update_time__lt=(timestamp - 600), online=const.RUNNING)
         heart_beat_queryset.update(online=0)
 
         return R.success(msg=_("Engine status was updated successfully."))

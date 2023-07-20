@@ -26,9 +26,7 @@ def data_correction_project(project_id):
     IastVulnerabilityDocument().update(list(qs))
     qs = Asset.objects.filter(agent__bind_project_id=project_id).all()
     IastAssetDocument().update(list(qs))
-    qs = IastVulAssetRelation.objects.filter(
-        asset__agent__bind_project_id=project_id
-    ).all()
+    qs = IastVulAssetRelation.objects.filter(asset__agent__bind_project_id=project_id).all()
     IastAssetVulnerabilityDocument().update(list(qs))
 
 

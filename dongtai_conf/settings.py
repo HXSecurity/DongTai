@@ -101,14 +101,7 @@ def get_installed_apps():
         for file_ in files:
             if (
                 "apps.py" in file_
-                and len(
-                    list(
-                        filter(
-                            lambda x: x != "", root.replace(getcwd(), "").split(os.sep)
-                        )
-                    )
-                )
-                == 1
+                and len(list(filter(lambda x: x != "", root.replace(getcwd(), "").split(os.sep)))) == 1
             ):
                 app_path = f"{root.replace(BASE_DIR + os.sep, '').replace(os.sep, '.')}"
                 master.append(app_path)
@@ -212,9 +205,7 @@ def safe_execute(default, exception, function, *args):
 CSRF_TRUSTED_ORIGINS = tuple(
     filter(
         lambda x: x != "",
-        safe_execute(
-            "", BaseException, config.get, "security", "csrf_trust_origins"
-        ).split(","),
+        safe_execute("", BaseException, config.get, "security", "csrf_trust_origins").split(","),
     )
 )
 CSRF_COOKIE_AGE = 60 * 60 * 24
@@ -346,9 +337,7 @@ CAPTCHA_TIMEOUT = 1
 LOGGING_LEVEL = "DEBUG" if DEBUG else "ERROR"
 if os.getenv("environment", None) == "TEST":
     LOGGING_LEVEL = "INFO"
-LOGGING_LEVEL = safe_execute(
-    LOGGING_LEVEL, BaseException, config.get, "other", "logging_level"
-)
+LOGGING_LEVEL = safe_execute(LOGGING_LEVEL, BaseException, config.get, "other", "logging_level")
 # 报告存储位置
 try:
     TMP_COMMON_PATH = config.get("common_file_path", "tmp_path")
@@ -505,9 +494,7 @@ if os.getenv("environment", None) == "TEST" or os.getenv("REQUESTLOG", None) == 
     MIDDLEWARE.insert(0, "apitimelog.middleware.RequestLogMiddleware")
 
 if os.getenv("PYTHONAGENT", None) == "TRUE":
-    MIDDLEWARE.insert(
-        0, "dongtai_agent_python.middlewares.django_middleware.FireMiddleware"
-    )
+    MIDDLEWARE.insert(0, "dongtai_agent_python.middlewares.django_middleware.FireMiddleware")
 if os.getenv("environment", None) == "TEST" or os.getenv("SAVEEYE", None) == "TRUE":
     CAPTCHA_NOISE_FUNCTIONS = ("captcha.helpers.noise_null",)
 
@@ -560,9 +547,7 @@ except Exception:
 # OPENAPI
 BUCKET_URL = "https://oss-cn-beijing.aliyuncs.com"
 BUCKET_NAME = "dongtai"
-BUCKET_NAME_BASE_URL = (
-    "agent/" if os.getenv("active.profile", None) != "TEST" else "agent_test/"
-)
+BUCKET_NAME_BASE_URL = "agent/" if os.getenv("active.profile", None) != "TEST" else "agent_test/"
 VERSION = "latest"
 # CONST
 PENDING = 1
@@ -579,9 +564,7 @@ SCA_ENGINE_URL = (
     + "&package_path={package_path}&package_signature={package_signature}"
     + "&package_name={package_name}&package_algorithm={package_algorithm}"
 )
-REPLAY_ENGINE_URL = (
-    config.get("engine", "url") + "/api/engine/run?method_pool_id={id}&model=replay"
-)
+REPLAY_ENGINE_URL = config.get("engine", "url") + "/api/engine/run?method_pool_id={id}&model=replay"
 
 CELERY_BROKER_URL = "redis://:{password}@{host}:{port}/{db}".format(
     password=config.get("redis", "password"),
@@ -1006,9 +989,7 @@ if ELASTICSEARCH_STATE:
     ASSET_INDEX = config.get("elastic_search", "asset_index")
     ELASTICSEARCH_DSL_PARALLEL = True
     ELASTICSEARCH_DSL_AUTO_REFRESH = False
-    ELASTICSEARCH_DSL_SIGNAL_PROCESSOR = (
-        "dongtai_common.utils.es.DTCelerySignalProcessor"
-    )
+    ELASTICSEARCH_DSL_SIGNAL_PROCESSOR = "dongtai_common.utils.es.DTCelerySignalProcessor"
     import elasticsearch
     from elasticsearch import logger as es_logger
 
@@ -1023,9 +1004,7 @@ else:
     METHOD_POOL_INDEX = ""
     ASSET_INDEX = ""
 
-AUTO_UPDATE_HOOK_STRATEGY = config.getboolean(
-    "other", "auto_update_hook_strategy", fallback=False
-)
+AUTO_UPDATE_HOOK_STRATEGY = config.getboolean("other", "auto_update_hook_strategy", fallback=False)
 
 
 def is_gevent_monkey_patched() -> bool:

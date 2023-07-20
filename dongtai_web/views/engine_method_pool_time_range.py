@@ -31,20 +31,8 @@ class MethodPoolTimeRangeProxy(AnonymousAndUserEndPoint):
         response_schema=_GetResponseSerializer,
     )
     def get(self, request):
-        q = Q(
-            agent_id__in=[
-                item["id"]
-                for item in list(
-                    self.get_auth_agents_with_user(request.user).values("id")
-                )
-            ]
-        )
-        mintime = (
-            MethodPool.objects.filter(q)
-            .values_list("update_time")
-            .order_by("-update_time")
-            .first()
-        )
+        q = Q(agent_id__in=[item["id"] for item in list(self.get_auth_agents_with_user(request.user).values("id"))])
+        mintime = MethodPool.objects.filter(q).values_list("update_time").order_by("-update_time").first()
         if mintime is None:
             return R.failure()
         return R.success(data=mintime)

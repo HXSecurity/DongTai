@@ -28,12 +28,8 @@ class IastVulRecheckPayloadListSerializer(serializers.Serializer):
     keyword = serializers.CharField(required=False, default=None)
     page = serializers.IntegerField()
     page_size = serializers.IntegerField()
-    strategy_id = serializers.IntegerField(
-        required=False, default=None, min_value=1, max_value=2**31 - 1
-    )
-    language_id = serializers.IntegerField(
-        required=False, default=None, min_value=1, max_value=2**31 - 1
-    )
+    strategy_id = serializers.IntegerField(required=False, default=None, min_value=1, max_value=2**31 - 1)
+    language_id = serializers.IntegerField(required=False, default=None, min_value=1, max_value=2**31 - 1)
 
 
 def vul_recheck_payload_create(data, user_id):
@@ -155,9 +151,7 @@ class VulReCheckPayloadViewSet(UserEndPoint, viewsets.ViewSet):
                 pass
         except ValidationError as e:
             return R.failure(data=e.detail)
-        if IastVulRecheckPayload.objects.filter(
-            pk=pk, user_id=request.user.id
-        ).exists():
+        if IastVulRecheckPayload.objects.filter(pk=pk, user_id=request.user.id).exists():
             payload_update(pk, ser.data)
             return R.success()
         return R.success()
@@ -167,9 +161,7 @@ class VulReCheckPayloadViewSet(UserEndPoint, viewsets.ViewSet):
         summary="删除主动验证Payload",
     )
     def delete(self, request, pk):
-        if IastVulRecheckPayload.objects.filter(
-            pk=pk, user_id=request.user.id
-        ).exists():
+        if IastVulRecheckPayload.objects.filter(pk=pk, user_id=request.user.id).exists():
             IastVulRecheckPayload.objects.filter(pk=pk).update(status=-1)
             return R.success()
         return R.failure()

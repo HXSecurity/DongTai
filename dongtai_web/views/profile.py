@@ -24,9 +24,7 @@ class ProfileEndpoint(UserEndPoint):
         tags=[_("Profile")],
     )
     def get(self, request, key):
-        profile = (
-            IastProfile.objects.filter(key=key).values_list("value", flat=True).first()
-        )
+        profile = IastProfile.objects.filter(key=key).values_list("value", flat=True).first()
         if profile is None:
             return R.failure(msg=_("Failed to get {} configuration").format(key))
         return R.success(data={key: profile})
@@ -45,9 +43,7 @@ class ProfileEndpoint(UserEndPoint):
         except ValidationError as e:
             return R.failure(data=e.detail)
         try:
-            obj, created = IastProfile.objects.update_or_create(
-                {"key": key, "value": value}, key=key
-            )
+            obj, created = IastProfile.objects.update_or_create({"key": key, "value": value}, key=key)
         except Exception as e:
             logger.exception("exception: ", exc_info=e)
             return R.failure(msg=_("Update {} failed").format(key))
@@ -117,7 +113,5 @@ def get_model_field(model, exclude=None, include=None):
 
     fields = [field.name for field in model._meta.fields]
     if include:
-        return [
-            include for field in list(set(fields) - set(exclude)) if field in include
-        ]
+        return [include for field in list(set(fields) - set(exclude)) if field in include]
     return list(set(fields) - set(exclude))

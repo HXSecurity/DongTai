@@ -39,11 +39,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
     @staticmethod
     def register_agent(token, version, language, project_name, user, project_version):
         department = user.get_using_department()
-        project = (
-            IastProject.objects.values("id")
-            .filter(name=project_name, department=department)
-            .first()
-        )
+        project = IastProject.objects.values("id").filter(name=project_name, department=department).first()
         is_audit = AgentRegisterEndPoint.get_is_audit()
         project_id = 0
         project_version_id = 0
@@ -145,9 +141,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         try:
             port = int(server_port)
         except Exception:
-            logger.exception(
-                _("The server port does not exist, has been set to the default: 0")
-            )
+            logger.exception(_("The server port does not exist, has been set to the default: 0"))
             port = 0
 
         server_id = agent.server_id
@@ -279,15 +273,11 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                     project_version,
                     version_created,
                     template,
-                ) = project_create(
-                    default_params, project_name, request.user, version_name, template
-                )
+                ) = project_create(default_params, project_name, request.user, version_name, template)
             if project_created:
                 logger.info(_("auto create project {}").format(obj.id))
             if version_created:
-                logger.info(
-                    _("auto create project version {}").format(project_version.id)
-                )
+                logger.info(_("auto create project version {}").format(project_version.id))
             if param.get("projectName", None) and param.get("projectVersion", None):
                 agent_id = self.register_agent(
                     token=token,
@@ -312,9 +302,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 hostname=hostname,
                 network=network,
                 container_name=container_name,
-                server_addr=get_ipaddress(network)
-                if get_ipaddress(network)
-                else server_addr,
+                server_addr=get_ipaddress(network) if get_ipaddress(network) else server_addr,
                 server_port=server_port,
                 server_path=server_path,
                 cluster_name=cluster_name,
@@ -330,9 +318,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 if not agent:
                     return R.failure(msg="探针注册失败")
                 agent.register_time = int(time.time())
-                IastAgent.objects.filter(pk=agent_id).update(
-                    register_time=int(time.time())
-                )
+                IastAgent.objects.filter(pk=agent_id).update(register_time=int(time.time()))
                 agent.save()
                 core_auto_start = agent.is_audit
 
@@ -343,9 +329,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
 
     @staticmethod
     def get_agent_id(token, project_name, user, current_project_version_id):
-        project = IastProject.objects.filter(
-            department=user.get_using_department(), name=project_name
-        ).first()
+        project = IastProject.objects.filter(department=user.get_using_department(), name=project_name).first()
         if project:
             queryset = IastAgent.objects.values("id").filter(
                 token=token,
@@ -379,9 +363,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         allow_report,
     ):
         if exist_project:
-            IastAgent.objects.filter(
-                token=token, online=1, department=user.get_using_department()
-            ).update(online=0)
+            IastAgent.objects.filter(token=token, online=1, department=user.get_using_department()).update(online=0)
         agent = IastAgent.objects.create(
             token=token,
             version=version,

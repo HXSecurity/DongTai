@@ -46,9 +46,7 @@ class OssDownloader:
             bucket.get_object_to_file(object_name, local_file)
         except NoSuchKey:
             # NoSuchKey表示oss云端文件不存在,通知管理员
-            logger.exception(
-                f"oss download failure, reason: remote file not found, filename: {object_name}"
-            )
+            logger.exception(f"oss download failure, reason: remote file not found, filename: {object_name}")
             return False
         except Exception as e:
             logger.exception("oss download failure, reason: ", exc_info=e)
@@ -70,9 +68,7 @@ def base64_decode(raw: str) -> str:
     try:
         return base64.b64decode(raw).decode("utf-8").strip()
     except Exception as decode_error:
-        logger.exception(
-            f"base64 decode error, raw: {raw}\nreason: ", exc_info=decode_error
-        )
+        logger.exception(f"base64 decode error, raw: {raw}\nreason: ", exc_info=decode_error)
         return ""
 
 
@@ -111,16 +107,11 @@ def updateossstatus():
         )
         for package_name in PACKAGE_NAME_LIST:
             EngineDownloadEndPoint.download_agent_jar(
-                EngineDownloadEndPoint.REMOTE_AGENT_FILE.format(
-                    package_name=package_name
-                ),
-                EngineDownloadEndPoint.LOCAL_AGENT_FILE.format(
-                    package_name=package_name
-                ),
+                EngineDownloadEndPoint.REMOTE_AGENT_FILE.format(package_name=package_name),
+                EngineDownloadEndPoint.LOCAL_AGENT_FILE.format(package_name=package_name),
             )
         downloadstatus = (
-            JavaAgentDownload(user_id=1).download_agent()
-            and PythonAgentDownload(user_id=1).download_agent()
+            JavaAgentDownload(user_id=1).download_agent() and PythonAgentDownload(user_id=1).download_agent()
         )
     except RequestError:
         return False, None

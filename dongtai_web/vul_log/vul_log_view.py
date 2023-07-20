@@ -23,8 +23,6 @@ class VulLogViewSet(UserEndPoint, viewsets.ViewSet):
         if vul_type == VulType.APPLICATION:
             data = IastVulLog.objects.filter(vul_id=vul_id, user__in=auth_users).all()
         if vul_type == VulType.ASSET:
-            data = IastVulLog.objects.filter(
-                asset_vul_id=vul_id, user__in=auth_users
-            ).all()
+            data = IastVulLog.objects.filter(asset_vul_id=vul_id, user__in=auth_users).all()
 
         return R.success([model_to_dict(i) for i in data])

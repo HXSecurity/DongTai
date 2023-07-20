@@ -59,9 +59,7 @@ def check_strict_transport_security(response):
         # parse max-age
         import re
 
-        result = re.match(
-            "max-age=(\\d+);.*?", response.getheader("Strict-Transport-Security")
-        )
+        result = re.match("max-age=(\\d+);.*?", response.getheader("Strict-Transport-Security"))
         if result is None:
             return None
         max_age = result.group(1)
@@ -85,9 +83,7 @@ def check_x_content_type_options(response):
 
 def check_response_header(method_pool):
     try:
-        response = parse_response(
-            method_pool.res_header.strip() + "\n\n" + method_pool.res_body.strip()
-        )
+        response = parse_response(method_pool.res_header.strip() + "\n\n" + method_pool.res_body.strip())
     except BadStatusLine as e:
         logger.debug("parse response header failed, reason: %s", e)
         return
@@ -134,9 +130,7 @@ def save_vul(vul_type, method_pool, position=None, data=None):
         user_id__in=(1, method_pool.agent.user.id),
     ).first()
     if vul_strategy is None:
-        logger.warning(
-            f"There is no corresponding strategy for the current vulnerability: {vul_type}"
-        )
+        logger.warning(f"There is no corresponding strategy for the current vulnerability: {vul_type}")
 
     from dongtai_common.models.agent import IastAgent
 
@@ -158,12 +152,8 @@ def save_vul(vul_type, method_pool, position=None, data=None):
         .first()
     )
     timestamp = int(time.time())
-    project_time_stamp_update.apply_async(
-        (method_pool.agent.bind_project_id,), countdown=5
-    )
-    project_version_time_stamp_update.apply_async(
-        (method_pool.agent.project_version_id,), countdown=5
-    )
+    project_time_stamp_update.apply_async((method_pool.agent.bind_project_id,), countdown=5)
+    project_version_time_stamp_update.apply_async((method_pool.agent.project_version_id,), countdown=5)
     if vul:
         vul.url = ""
         vul.req_header = method_pool.req_header

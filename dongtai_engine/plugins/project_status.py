@@ -13,11 +13,7 @@ DEFAULT_PROJECT_WARNING_TIME = {"error_time": 2 * 7, "offline_time": 3 * 30}
 
 
 def get_project_warning_time() -> dict[str, int]:
-    profile = (
-        IastProfile.objects.filter(key=PROJECT_WARNING_TIME_KEY)
-        .values_list("value", flat=True)
-        .first()
-    )
+    profile = IastProfile.objects.filter(key=PROJECT_WARNING_TIME_KEY).values_list("value", flat=True).first()
     if profile is None:
         IastProfile(
             key=PROJECT_WARNING_TIME_KEY,
@@ -31,9 +27,7 @@ def get_project_warning_time() -> dict[str, int]:
 def update_project_status() -> None:
     logger.info("检测项目状态更新开始")
     for project in IastProject.objects.all():
-        online_agent_count = IastAgent.objects.filter(
-            bind_project=project, online=True
-        ).count()
+        online_agent_count = IastAgent.objects.filter(bind_project=project, online=True).count()
 
         old_status = project.status
 
@@ -58,9 +52,6 @@ def update_project_status() -> None:
             project.save(update_fields=("status", "last_has_online_agent_time"))
 
         if old_status != project.status:
-            logger.info(
-                "update project status: "
-                f"{project} from {old_status} to {project.status}"
-            )
+            logger.info("update project status: " f"{project} from {old_status} to {project.status}")
 
     logger.info("检测项目状态更新结束")

@@ -18,25 +18,13 @@ class Command(BaseCommand):
         online_agent_count = IastAgent.objects.filter(online=1).count()
         total_method_pool_count = MethodPool.objects.all().count()
         total_vulnerability = IastVulnerabilityModel.objects.all().count()
-        total_high_vulnerability = IastVulnerabilityModel.objects.filter(
-            level_id=1
-        ).count()
-        total_medium_vulnerability = IastVulnerabilityModel.objects.filter(
-            level_id=2
-        ).count()
-        total_low_vulnerability = IastVulnerabilityModel.objects.filter(
-            level_id=3
-        ).count()
-        total_info_vulnerability = IastVulnerabilityModel.objects.filter(
-            level_id=4
-        ).count()
-        total_note_vulnerability = IastVulnerabilityModel.objects.filter(
-            level_id=5
-        ).count()
+        total_high_vulnerability = IastVulnerabilityModel.objects.filter(level_id=1).count()
+        total_medium_vulnerability = IastVulnerabilityModel.objects.filter(level_id=2).count()
+        total_low_vulnerability = IastVulnerabilityModel.objects.filter(level_id=3).count()
+        total_info_vulnerability = IastVulnerabilityModel.objects.filter(level_id=4).count()
+        total_note_vulnerability = IastVulnerabilityModel.objects.filter(level_id=5).count()
         total_high_asset_vulnerability = IastAssetVul.objects.filter(level_id=1).count()
-        total_medium_asset_vulnerability = IastAssetVul.objects.filter(
-            level_id=2
-        ).count()
+        total_medium_asset_vulnerability = IastAssetVul.objects.filter(level_id=2).count()
         total_low_asset_vulnerability = IastAssetVul.objects.filter(level_id=3).count()
         total_info_asset_vulnerability = IastAssetVul.objects.filter(level_id=4).count()
         total_note_asset_vulnerability = IastAssetVul.objects.filter(level_id=5).count()

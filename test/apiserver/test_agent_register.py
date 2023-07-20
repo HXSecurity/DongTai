@@ -29,9 +29,7 @@ class AgentRegisterTestCase(AgentTestCase):
         assert data1.content == data2.content
 
     def test_register(self):
-        assert not IastAgent.objects.filter(
-            pk=self.agent_id, project_version_id=0
-        ).exists()
+        assert not IastAgent.objects.filter(pk=self.agent_id, project_version_id=0).exists()
 
     def test_old_register(self):
         dic = {

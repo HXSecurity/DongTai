@@ -33,9 +33,7 @@ class Command(BaseCommand):
             department.save()
             if parent:
                 if parent.department_path:
-                    department.department_path = (
-                        f"{parent.department_path}~{department.id}"
-                    )
+                    department.department_path = f"{parent.department_path}~{department.id}"
                 else:
                     parent.department_path = f"{parent.id}"
                     parent.save()
@@ -47,8 +45,4 @@ class Command(BaseCommand):
             talent.departments.add(department)
             user.department.set([department])
             user.save()
-            self.stdout.write(
-                self.style.SUCCESS(
-                    'Successfully flash old data  "{}"'.format("department is update")
-                )
-            )
+            self.stdout.write(self.style.SUCCESS('Successfully flash old data  "{}"'.format("department is update")))

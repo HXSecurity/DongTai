@@ -32,9 +32,9 @@ def get_summary_by_agent_ids(agent_ids: Iterable):
     data = {}
     data["type_summary"] = []
     data["level_count"] = []
-    queryset = IastVulnerabilityModel.objects.filter(
-        agent_id__in=agent_ids, is_del=0
-    ).values("hook_type_id", "strategy_id", "level_id", "latest_time")
+    queryset = IastVulnerabilityModel.objects.filter(agent_id__in=agent_ids, is_del=0).values(
+        "hook_type_id", "strategy_id", "level_id", "latest_time"
+    )
     q = ~Q(hook_type_id=0)
     queryset = queryset.filter(q)
     typeArr = {}
@@ -43,16 +43,12 @@ def get_summary_by_agent_ids(agent_ids: Iterable):
     strategy_ids = queryset.values_list("strategy_id", flat=True).distinct()
     strategys = {
         strategy["id"]: strategy
-        for strategy in IastStrategyModel.objects.filter(pk__in=strategy_ids)
-        .values("id", "vul_name")
-        .all()
+        for strategy in IastStrategyModel.objects.filter(pk__in=strategy_ids).values("id", "vul_name").all()
     }
     hook_type_ids = queryset.values_list("hook_type_id", flat=True).distinct()
     hooktypes = {
         hooktype["id"]: hooktype
-        for hooktype in HookType.objects.filter(pk__in=hook_type_ids)
-        .values("id", "name")
-        .all()
+        for hooktype in HookType.objects.filter(pk__in=hook_type_ids).values("id", "name").all()
     }
     if queryset:
         for one in queryset:
@@ -60,9 +56,7 @@ def get_summary_by_agent_ids(agent_ids: Iterable):
             hook_type_name = hook_type["name"] if hook_type else None
             strategy = strategys.get(one["strategy_id"], None)
             strategy_name = strategy["vul_name"] if strategy else None
-            type_ = list(
-                filter(lambda x: x is not None, [strategy_name, hook_type_name])
-            )
+            type_ = list(filter(lambda x: x is not None, [strategy_name, hook_type_name]))
             one["type"] = type_[0] if type_ else ""
             typeArr[one["type"]] = typeArr.get(one["type"], 0) + 1
             typeLevel[one["type"]] = one["level_id"]
@@ -89,11 +83,7 @@ def get_summary_by_agent_ids(agent_ids: Iterable):
     queryset_list = []
     queryset_ = IastVulnerabilityModel.objects.filter(agent_id__in=agent_ids, is_del=0)
     for timestamp, _ in daylist:
-        queryset_list.append(
-            geneatre_vul_timerange_count_queryset(
-                queryset_, timestamp_gt, timestamp, wkey
-            )
-        )
+        queryset_list.append(geneatre_vul_timerange_count_queryset(queryset_, timestamp_gt, timestamp, wkey))
         timestamp_gt = timestamp
     if len(queryset_list) > 1:
         start_query_set = queryset_list[0]
@@ -149,16 +139,12 @@ def get_summary_by_project(project_id: int, project_version_id: int):
     strategy_ids = queryset.values_list("strategy_id", flat=True).distinct()
     strategys = {
         strategy["id"]: strategy
-        for strategy in IastStrategyModel.objects.filter(pk__in=strategy_ids)
-        .values("id", "vul_name")
-        .all()
+        for strategy in IastStrategyModel.objects.filter(pk__in=strategy_ids).values("id", "vul_name").all()
     }
     hook_type_ids = queryset.values_list("hook_type_id", flat=True).distinct()
     hooktypes = {
         hooktype["id"]: hooktype
-        for hooktype in HookType.objects.filter(pk__in=hook_type_ids)
-        .values("id", "name")
-        .all()
+        for hooktype in HookType.objects.filter(pk__in=hook_type_ids).values("id", "name").all()
     }
     if queryset:
         for one in queryset:
@@ -166,9 +152,7 @@ def get_summary_by_project(project_id: int, project_version_id: int):
             hook_type_name = hook_type["name"] if hook_type else None
             strategy = strategys.get(one["strategy_id"], None)
             strategy_name = strategy["vul_name"] if strategy else None
-            type_ = list(
-                filter(lambda x: x is not None, [strategy_name, hook_type_name])
-            )
+            type_ = list(filter(lambda x: x is not None, [strategy_name, hook_type_name]))
             one["type"] = type_[0] if type_ else ""
             typeArr[one["type"]] = typeArr.get(one["type"], 0) + 1
             typeLevel[one["type"]] = one["level_id"]
@@ -197,11 +181,7 @@ def get_summary_by_project(project_id: int, project_version_id: int):
         project_id=project_id, project_version_id=project_version_id, is_del=0
     )
     for timestamp, _ in daylist:
-        queryset_list.append(
-            geneatre_vul_timerange_count_queryset(
-                queryset_, timestamp_gt, timestamp, wkey
-            )
-        )
+        queryset_list.append(geneatre_vul_timerange_count_queryset(queryset_, timestamp_gt, timestamp, wkey))
         timestamp_gt = timestamp
     if len(queryset_list) > 1:
         start_query_set = queryset_list[0]

@@ -19,9 +19,7 @@ class _ProjectEnginesDataSerializer(serializers.Serializer):
         fields = ["id", "name"]
 
 
-_ProjectEnginesResponseSerializer = get_response_serializer(
-    _ProjectEnginesDataSerializer(many=True)
-)
+_ProjectEnginesResponseSerializer = get_response_serializer(_ProjectEnginesDataSerializer(many=True))
 
 
 class ProjectEngines(UserEndPoint):
@@ -47,9 +45,7 @@ class ProjectEngines(UserEndPoint):
                 {
                     "id": item["id"],
                     "token": item["token"],
-                    "short_name": item["alias"]
-                    if item.get("alias", None)
-                    else "-".join(item["token"].split("-")[:-1]),
+                    "short_name": item["alias"] if item.get("alias", None) else "-".join(item["token"].split("-")[:-1]),
                 }
                 for item in queryset
             ]

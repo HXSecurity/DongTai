@@ -19,16 +19,10 @@ class Command(BaseCommand):
                     continue
                 has_error = False
 
-                schema_field_check = {
-                    schema_field: schema_field in schema
-                    for schema_field in ("tags", "summary")
-                }
+                schema_field_check = {schema_field: schema_field in schema for schema_field in ("tags", "summary")}
                 if not all(schema_field_check.values()):
                     has_error = True
-                    missing_fields = [
-                        schema_field
-                        for schema_field, exists in schema_field_check.items()
-                    ]
+                    missing_fields = [schema_field for schema_field, exists in schema_field_check.items()]
                     has_error = True
                     self.stdout.write(
                         self.style.ERROR(
@@ -37,10 +31,7 @@ class Command(BaseCommand):
                     )
                 if not has_error:
                     self.stdout.write(
-                        self.style.SUCCESS(
-                            f"{method} {view}: "
-                            f"tags: {schema['tags']}, summary: {schema['summary']}"
-                        )
+                        self.style.SUCCESS(f"{method} {view}: " f"tags: {schema['tags']}, summary: {schema['summary']}")
                     )
 
         self.stdout.write(self.style.SUCCESS("Check API schema done"))

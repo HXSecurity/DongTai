@@ -20,18 +20,13 @@ from django.urls import URLPattern, URLResolver, include, path
 
 from dongtai_conf import settings
 
-urlpatterns: list[URLResolver | URLPattern] = [
-    path("", include(f"{app}.urls")) for app in settings.CUSTOM_APPS
-]
+urlpatterns: list[URLResolver | URLPattern] = [path("", include(f"{app}.urls")) for app in settings.CUSTOM_APPS]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns.extend([path("healthcheck", include("health_check.urls"))])
 if os.getenv("METRICS", None) == "true":
     urlpatterns.extend([path("", include("django_prometheus.urls"))])
 
-if (
-    os.getenv("environment", "PROD") in ("TEST", "DOC")
-    or os.getenv("DOC", None) == "TRUE"
-):
+if os.getenv("environment", "PROD") in ("TEST", "DOC") or os.getenv("DOC", None) == "TRUE":
     from drf_spectacular.views import (
         SpectacularJSONAPIView,
         SpectacularRedocView,
@@ -64,6 +59,4 @@ if os.getenv("DJANGOSILK", None) == "TRUE":
         "DJANGOSILKPATH",
         "9671ccbd0c655fda78354dda754c9c4fb7111b7c18751b25ea8930ab87c84f94",
     )
-    urlpatterns += [
-        path(f"api/silk/{silk_path}/silk/", include("silk.urls", namespace="silk"))
-    ]
+    urlpatterns += [path(f"api/silk/{silk_path}/silk/", include("silk.urls", namespace="silk"))]

@@ -28,25 +28,17 @@ def get_agents_with_project(project_name, users):
     agent_ids = []
     if project_name and project_name != "":
         project_ids = (
-            IastProject.objects.filter(user__in=users, name__icontains=project_name)
-            .values_list("id", flat=True)
-            .all()
+            IastProject.objects.filter(user__in=users, name__icontains=project_name).values_list("id", flat=True).all()
         )
 
         if project_ids:
-            agent_ids = (
-                IastAgent.objects.filter(bind_project_id__in=project_ids)
-                .values_list("id", flat=True)
-                .all()
-            )
+            agent_ids = IastAgent.objects.filter(bind_project_id__in=project_ids).values_list("id", flat=True).all()
 
     return agent_ids
 
 
 def get_user_project_name(auth_users):
-    project_models = IastProject.objects.filter(user__in=auth_users).values(
-        "id", "name"
-    )
+    project_models = IastProject.objects.filter(user__in=auth_users).values("id", "name")
     projects_info = {}
     if project_models:
         for item in project_models:
@@ -55,9 +47,9 @@ def get_user_project_name(auth_users):
 
 
 def get_user_agent_pro(auth_users, bindId):
-    agentInfo = IastAgent.objects.filter(
-        user__in=auth_users, bind_project_id__in=bindId
-    ).values("id", "bind_project_id", "server_id")
+    agentInfo = IastAgent.objects.filter(user__in=auth_users, bind_project_id__in=bindId).values(
+        "id", "bind_project_id", "server_id"
+    )
     result = {"pidArr": {}, "serverArr": {}, "server_ids": []}
 
     if agentInfo:
@@ -103,20 +95,14 @@ def get_project_vul_count_back(users, queryset, auth_agents, project_id=None):
     for project in project_queryset:
         project_id = project["id"]
         version_id = versions_map.get(project_id, 0)
-        agent_queryset = auth_agents.filter(
-            project_version_id=version_id, bind_project_id=project_id
-        )
+        agent_queryset = auth_agents.filter(project_version_id=version_id, bind_project_id=project_id)
 
         count = queryset.filter(agent__in=agent_queryset).count()
 
         if count is False:
-            result.append(
-                {"project_name": project["name"], "count": 0, "id": project_id}
-            )
+            result.append({"project_name": project["name"], "count": 0, "id": project_id})
         else:
-            result.append(
-                {"project_name": project["name"], "count": count, "id": project_id}
-            )
+            result.append({"project_name": project["name"], "count": count, "id": project_id})
 
     return sorted(result, key=lambda item: item["count"], reverse=True)[:5]
 
@@ -160,9 +146,7 @@ def get_project_vul_count(users, queryset, auth_agents, project_id=None):
         count = 0
         for agent_id in agent_list.get(project_id, []):
             count = count + int(agentIdArr.get(agent_id, 0))
-        result.append(
-            {"project_name": project["name"], "count": count, "id": project_id}
-        )
+        result.append({"project_name": project["name"], "count": count, "id": project_id})
 
     return sorted(result, key=lambda item: item["count"], reverse=True)[:5]
 
@@ -184,16 +168,12 @@ def get_vul_count_by_agent(agent_ids, vid, user):
     strategy_ids = queryset.values_list("strategy_id", flat=True).distinct()
     strategys = {
         strategy["id"]: strategy
-        for strategy in IastStrategyModel.objects.filter(pk__in=strategy_ids)
-        .values("id", "vul_name")
-        .all()
+        for strategy in IastStrategyModel.objects.filter(pk__in=strategy_ids).values("id", "vul_name").all()
     }
     hook_type_ids = queryset.values_list("hook_type_id", flat=True).distinct()
     hooktypes = {
         hooktype["id"]: hooktype
-        for hooktype in HookType.objects.filter(pk__in=hook_type_ids)
-        .values("id", "name")
-        .all()
+        for hooktype in HookType.objects.filter(pk__in=hook_type_ids).values("id", "name").all()
     }
     if typeInfo:
         typeArr = {}
@@ -203,18 +183,12 @@ def get_vul_count_by_agent(agent_ids, vid, user):
             hook_type_name = hook_type["name"] if hook_type else None
             strategy = strategys.get(one["strategy_id"], None)
             strategy_name = strategy["vul_name"] if strategy else None
-            type_ = list(
-                filter(lambda x: x is not None, [strategy_name, hook_type_name])
-            )
+            type_ = list(filter(lambda x: x is not None, [strategy_name, hook_type_name]))
             one["type"] = type_[0] if type_ else ""
             typeArr[one["type"]] = typeArr.get(one["type"], 0) + 1
             typeLevel[one["type"]] = one["level_id"]
             levelCount[one["level_id"]] = levelCount.get(one["level_id"], 0) + 1
-            language = (
-                IastAgent.objects.filter(pk=one["agent_id"])
-                .values_list("language", flat=True)
-                .first()
-            )
+            language = IastAgent.objects.filter(pk=one["agent_id"]).values_list("language", flat=True).first()
             one["language"] = language if language is not None else ""
             if one["type"] not in vulDetail.keys():
                 vulDetail[one["type"]] = []
@@ -226,14 +200,7 @@ def get_vul_count_by_agent(agent_ids, vid, user):
                 one["req_params"] = str(one["req_params"])
             except Exception:
                 one["req_params"] = ""
-            detailStr2 = (
-                one["http_method"]
-                + " "
-                + one["uri"]
-                + "?"
-                + one["req_params"]
-                + one["http_protocol"]
-            )
+            detailStr2 = one["http_method"] + " " + one["uri"] + "?" + one["req_params"] + one["http_protocol"]
             try:
                 fileData = one["full_stack"][-1].get("stack", "")
                 pattern = r".*?\((.*?)\).*?"
@@ -257,9 +224,7 @@ def get_vul_count_by_agent(agent_ids, vid, user):
             detailStr3 = _("In {} {} call {}. {} (), Incoming parameters {}").format(
                 str(fileName), rowStr, classname, methodname, str(one["taint_value"])
             )
-            cur_tile = _("{} Appears in {} {}").format(
-                one["type"], str(one["uri"]), str(one["taint_position"])
-            )
+            cur_tile = _("{} Appears in {} {}").format(one["type"], str(one["uri"]), str(one["taint_position"]))
             if one["param_name"]:
                 cur_tile = cur_tile + '"' + str(one["param_name"]) + '"'
             vulDetail[one["type"]].append(
@@ -267,12 +232,8 @@ def get_vul_count_by_agent(agent_ids, vid, user):
                     "title": cur_tile,
                     "type_name": one["type"],
                     "level_id": one["level_id"],
-                    "first_time": time.strftime(
-                        "%Y-%m-%d %H:%M:%S", time.localtime(one["first_time"])
-                    ),
-                    "latest_time": time.strftime(
-                        "%Y-%m-%d %H:%M:%S", time.localtime(one["latest_time"])
-                    ),
+                    "first_time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(one["first_time"])),
+                    "latest_time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(one["latest_time"])),
                     "language": one["language"],
                     "url": one["url"],
                     "detail_data": [detailStr1, detailStr2, detailStr3],
@@ -306,9 +267,7 @@ def get_hook_type_name(obj):
 
 
 def initlanguage():
-    program_language_list = IastProgramLanguage.objects.values_list(
-        "name", flat=True
-    ).all()
+    program_language_list = IastProgramLanguage.objects.values_list("name", flat=True).all()
     return {program_language.upper(): 0 for program_language in program_language_list}
 
 
@@ -328,11 +287,7 @@ def get_agent_languages(agent_items):
         agent_id = item["agent_id"]
         count = item["count"]
         if default_language.get(language_agents[agent_id], None):
-            default_language[language_agents[agent_id]] = (
-                count + default_language[language_agents[agent_id]]
-            )
+            default_language[language_agents[agent_id]] = count + default_language[language_agents[agent_id]]
         else:
             default_language[language_agents[agent_id]] = count
-    return [
-        {"language": _key, "count": _value} for _key, _value in default_language.items()
-    ]
+    return [{"language": _key, "count": _value} for _key, _value in default_language.items()]

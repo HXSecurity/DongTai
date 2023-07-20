@@ -41,6 +41,4 @@ class VulCountForPluginEndPoint(MixinAuthEndPoint):
         if not agent:
             return R.failure(msg=_("agent_name not found"))
 
-        return R.success(
-            data=IastVulnerabilityModel.objects.values("id").filter(agent=agent).count()
-        )
+        return R.success(data=IastVulnerabilityModel.objects.values("id").filter(agent=agent).count())

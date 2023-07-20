@@ -36,9 +36,7 @@ class ProjectVersionAdd(UserEndPoint):
             department = request.user.get_relative_department()
             result = version_modify(request.user, department, request.data)
             if result.get("status", "202") == "202":
-                return R.failure(
-                    status=202, msg=result.get("msg", _("Parameter error"))
-                )
+                return R.failure(status=202, msg=result.get("msg", _("Parameter error")))
             return R.success(msg=_("Created success"), data=result.get("data", {}))
 
         except Exception as e:

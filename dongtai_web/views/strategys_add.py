@@ -13,9 +13,7 @@ class _StrategyResponseDataStrategySerializer(serializers.Serializer):
 
 
 class _StrategyAddBodyargsSerializer(serializers.Serializer):
-    ids = serializers.CharField(
-        help_text=_('The id corresponding to the strategys, use"," for segmentation.')
-    )
+    ids = serializers.CharField(help_text=_('The id corresponding to the strategys, use"," for segmentation.'))
     name = serializers.CharField(help_text=_("The name of strategy"))
 
 
@@ -29,9 +27,7 @@ class StrategyAdd(UserEndPoint):
         request=_StrategyAddBodyargsSerializer,
         tags=[_("Strategy")],
         summary=_("Sacn Strategy Add"),
-        description=_(
-            "Generate corresponding strategy group according to the strategy selected by the user."
-        ),
+        description=_("Generate corresponding strategy group according to the strategy selected by the user."),
         response_schema=_ResponseSerializer,
     )
     def post(self, request):
@@ -41,7 +37,5 @@ class StrategyAdd(UserEndPoint):
         user = request.user
         if not ids or not name:
             return R.failure(msg=_("Parameter error"))
-        new_strategy = IastStrategyUser.objects.create(
-            name=name, content=ids, user=user, status=1
-        )
+        new_strategy = IastStrategyUser.objects.create(name=name, content=ids, user=user, status=1)
         return R.success(data={"id": new_strategy.id})

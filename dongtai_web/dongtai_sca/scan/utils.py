@@ -66,16 +66,11 @@ def request_get_res_data_with_exception(
         response: Response = requests.request(*args, **kwargs)
         max_retry_count = kwargs.get("max_retry_count", SCA_MAX_RETRY_COUNT)
         logger.debug(f"response content: {response.content!r}")
-        logger.info(
-            f"response content url: {response.url} status_code: {response.status_code}"
-        )
+        logger.info(f"response content url: {response.url} status_code: {response.status_code}")
         if response.status_code == HTTPStatus.FORBIDDEN:
             return Err("Auth Failed")
         retry_count = 0
-        while (
-            response.status_code == HTTPStatus.TOO_MANY_REQUESTS
-            and retry_count < max_retry_count
-        ):
+        while response.status_code == HTTPStatus.TOO_MANY_REQUESTS and retry_count < max_retry_count:
             retry_after = int(response.headers.get("Retry-After".lower(), 1))
             logger.info(
                 f"response content url: {response.url} status_code: {response.status_code} retry_after: {retry_after} retry_count: {retry_count}"
@@ -204,9 +199,7 @@ def data_transfrom_package_vul_v3(
 @cached_decorator(
     random_range=(2 * 60 * 60, 2 * 60 * 60),
 )
-def get_package_vul(
-    aql: str = "", ecosystem: str = "", package_hash: str = ""
-) -> list[dict]:
+def get_package_vul(aql: str = "", ecosystem: str = "", package_hash: str = "") -> list[dict]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v1/package_vul/")
     if aql:
         querystring = {"aql": aql}
@@ -231,9 +224,7 @@ def get_package_vul(
 @cached_decorator(
     random_range=(2 * 60 * 60, 2 * 60 * 60),
 )
-def get_package_vul_v2(
-    aql: str = "", ecosystem: str = "", package_hash: str = ""
-) -> tuple[list[dict], list[dict]]:
+def get_package_vul_v2(aql: str = "", ecosystem: str = "", package_hash: str = "") -> tuple[list[dict], list[dict]]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v2/package_vul/")
     if aql:
         querystring = {"aql": aql}
@@ -286,9 +277,7 @@ def get_package_vul_v3(
 @cached_decorator(
     random_range=(2 * 60 * 60, 2 * 60 * 60),
 )
-def get_package(
-    aql: str = "", ecosystem: str = "", package_hash: str = ""
-) -> list[dict]:
+def get_package(aql: str = "", ecosystem: str = "", package_hash: str = "") -> list[dict]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v1/package/")
     if aql:
         querystring = {"aql": aql}
@@ -313,9 +302,7 @@ def get_package(
 @cached_decorator(
     random_range=(2 * 60 * 60, 2 * 60 * 60),
 )
-def get_package_v2(
-    aql: str = "", ecosystem: str = "", package_hash: str = ""
-) -> list[dict]:
+def get_package_v2(aql: str = "", ecosystem: str = "", package_hash: str = "") -> list[dict]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v1/package/")
     if aql:
         querystring = {"aql": aql}
@@ -340,12 +327,8 @@ def get_package_v2(
 @cached_decorator(
     random_range=(2 * 60 * 60, 2 * 60 * 60),
 )
-def get_package_v3(
-    aql: str = "", ecosystem: str = "", package_hash: str = ""
-) -> list[PackageInfo]:
-    url = urljoin(
-        SCA_BASE_URL, f"/openapi/sca/v3/package/{ecosystem}/hash/{package_hash}"
-    )
+def get_package_v3(aql: str = "", ecosystem: str = "", package_hash: str = "") -> list[PackageInfo]:
+    url = urljoin(SCA_BASE_URL, f"/openapi/sca/v3/package/{ecosystem}/hash/{package_hash}")
     headers = {"Token": get_sca_token()}
     payload = ""
     res = request_get_res_data_with_exception(
@@ -357,11 +340,7 @@ def get_package_v3(
         timeout=SCA_TIMEOUT,
     )
     retry_count = 0
-    while (
-        res.is_err()
-        and res.value == "Rate Limit Exceeded"
-        and retry_count < SCA_MAX_RETRY_COUNT
-    ):
+    while res.is_err() and res.value == "Rate Limit Exceeded" and retry_count < SCA_MAX_RETRY_COUNT:
         retry_count += 1
         res = request_get_res_data_with_exception(
             data_transfrom_package_v3,
@@ -913,9 +892,7 @@ def get_license_list(license_list_str: str) -> list[dict]:
     )
     selected_identifier = [x["identifier"] for x in res]
     res.extend(
-        {"identifier": k, "level_id": 0, "level_desc": "允许商业集成"}
-        for k in license_list
-        if k not in selected_identifier
+        {"identifier": k, "level_id": 0, "level_desc": "允许商业集成"} for k in license_list if k not in selected_identifier
     )
 
     if res:
@@ -924,9 +901,7 @@ def get_license_list(license_list_str: str) -> list[dict]:
 
 
 def get_license_list_v2(license_list: tuple[str, ...]) -> list[dict]:
-    return [
-        LICENSE_DICT[license] for license in license_list if license in LICENSE_DICT
-    ]
+    return [LICENSE_DICT[license] for license in license_list if license in LICENSE_DICT]
     # return [{
 
 
@@ -960,9 +935,7 @@ def get_type_with_cwe(cwe_id: str) -> str:
     return ""
 
 
-def sca_scan_asset_v2(
-    aql: str, ecosystem: str, package_name: str, version: str
-) -> PackageVulSummary:
+def sca_scan_asset_v2(aql: str, ecosystem: str, package_name: str, version: str) -> PackageVulSummary:
     from dongtai_common.models.asset_vul_v2 import (
         IastAssetVulV2,
         IastVulAssetRelationV2,
@@ -975,23 +948,16 @@ def sca_scan_asset_v2(
     )
     vul_asset_rel_list = []
     for vul in vuls:
-        logger.debug(
-            "vul_level %s", get_vul_level_dict()[vul.vul_info.severity.lower()]
-        )
+        logger.debug("vul_level %s", get_vul_level_dict()[vul.vul_info.severity.lower()])
         IastAssetVulV2.objects.update_or_create(
             vul_id=vul.vul_info.vul_id,
             defaults={
                 "vul_codes": vul.vul_codes.to_dict(),
-                "vul_type": [
-                    get_cwe_name(cwe) if get_cwe_name(cwe) else cwe
-                    for cwe in vul.vul_info.cwe
-                ],
+                "vul_type": [get_cwe_name(cwe) if get_cwe_name(cwe) else cwe for cwe in vul.vul_info.cwe],
                 "vul_name": vul.vul_info.title,
                 "vul_detail": vul.vul_info.description,
                 "level": get_vul_level_dict()[vul.vul_info.severity.lower()],
-                "references": [asdict(ref) for ref in vul.vul_info.references]
-                if vul.vul_info.references
-                else [],
+                "references": [asdict(ref) for ref in vul.vul_info.references] if vul.vul_info.references else [],
                 "update_time": vul.vul_info.update_time.timestamp(),
                 "create_time": vul.vul_info.create_time.timestamp(),
                 "change_time": vul.vul_info.change_time.timestamp(),
@@ -1009,9 +975,7 @@ def sca_scan_asset_v2(
         )
         vul_asset_rel_list.append(vul_asset_rel)
     IastVulAssetRelationV2.objects.filter(asset_id=aql).delete()
-    IastVulAssetRelationV2.objects.bulk_create(
-        vul_asset_rel_list, ignore_conflicts=True
-    )
+    IastVulAssetRelationV2.objects.bulk_create(vul_asset_rel_list, ignore_conflicts=True)
     package_info_dict = stat_severity_v2([vul.vul_info for vul in vuls])
     logger.debug("package_info_dict: %s", package_info_dict)
     return PackageVulSummary(
@@ -1056,9 +1020,7 @@ def new_update_one_sca(
     for package in packages:
         aql = get_package_aql(package.name, package.ecosystem, package.version)
         license_list = get_license_list_v2(package.license)
-        package_info = sca_scan_asset_v2(
-            aql, package.ecosystem, package.name, package.version
-        )
+        package_info = sca_scan_asset_v2(aql, package.ecosystem, package.name, package.version)
         obj, created = IastPackageGAInfo.objects.update_or_create(
             package_fullname=package.ecosystem + package.name,
             defaults={
@@ -1070,9 +1032,7 @@ def new_update_one_sca(
             aql=aql,
             defaults={
                 "signature_algorithm": "SHA-1",
-                "language_id": get_language_id(
-                    agent.language if agent.language else "JAVA"
-                ),
+                "language_id": get_language_id(agent.language if agent.language else "JAVA"),
                 "package_fullname": obj,
                 "package_name": package.name,
                 "signature_value": package.hash,
@@ -1138,9 +1098,7 @@ def update_one_sca(
         asset.language = agent.language
         if agent:
             asset.agent = agent
-            asset.project_version_id = (
-                agent.project_version_id if agent.project_version_id else 0
-            )
+            asset.project_version_id = agent.project_version_id if agent.project_version_id else 0
             asset.project_name = agent.project_name
             asset.language = agent.language
             asset.project_id = -1
@@ -1178,9 +1136,7 @@ def update_one_sca(
         asset.language = agent.language
         if agent:
             asset.agent = agent
-            asset.project_version_id = (
-                agent.project_version_id if agent.project_version_id else 0
-            )
+            asset.project_version_id = agent.project_version_id if agent.project_version_id else 0
             asset.project_name = agent.project_name
             asset.language = agent.language
             asset.project_id = -1
@@ -1215,9 +1171,7 @@ def update_one_sca(
         asset.language = agent.language
         if agent:
             asset.agent = agent
-            asset.project_version_id = (
-                agent.project_version_id if agent.project_version_id else 0
-            )
+            asset.project_version_id = agent.project_version_id if agent.project_version_id else 0
             asset.project_name = agent.project_name
             asset.language = agent.language
             asset.project_id = -1
@@ -1227,18 +1181,14 @@ def update_one_sca(
             asset.user_id = -1
             if agent.user_id:
                 asset.user_id = agent.user_id
-        license_list = get_license_list(
-            package["license"] if package["license"] else "non-standard"
-        )
+        license_list = get_license_list(package["license"] if package["license"] else "non-standard")
         asset.license_list = license_list
         highest_license = get_highest_license(license_list)
         asset.highest_license = get_highest_license(license_list)
         asset.license = highest_license["identifier"]
         asset.dt = int(time.time())
         asset.save()
-        sca_scan_asset(
-            asset.id, package["ecosystem"], package["name"], package["version"]
-        )
+        sca_scan_asset(asset.id, package["ecosystem"], package["name"], package["version"])
 
 
 def stat_severity(serveritys: list) -> dict:
@@ -1304,9 +1254,7 @@ def get_latest_version(version_str_list: list[str]) -> str:
     )._version
 
 
-def get_cve_numbers(
-    cve: str = "", cwe: list | None = None, cnvd: str = "", cnnvd: str = ""
-):
+def get_cve_numbers(cve: str = "", cwe: list | None = None, cnvd: str = "", cnnvd: str = ""):
     if cwe is None:
         cwe = []
     return {"cve": cve, "cwe": cwe, "cnvd": cnvd, "cnnvd": cnnvd}
@@ -1325,9 +1273,7 @@ def get_vul_serial(
 
 
 def get_vul_level_dict() -> defaultdict:
-    return defaultdict(
-        lambda: 1, {"moderate": 2, "high": 3, "critical": 4, "medium": 2, "low": 1}
-    )
+    return defaultdict(lambda: 1, {"moderate": 2, "high": 3, "critical": 4, "medium": 2, "low": 1})
 
 
 def get_ecosystem_language_dict() -> defaultdict:
@@ -1384,16 +1330,11 @@ def get_description(descriptions: list[dict]) -> str:
     return sorted(descriptions, key=lambda x: x["language"], reverse=True)[0]["content"]
 
 
-def get_vul_path(
-    base_aql: str, vul_package_path: list[dict] | None = None
-) -> list[str]:
+def get_vul_path(base_aql: str, vul_package_path: list[dict] | None = None) -> list[str]:
     if vul_package_path is None:
         vul_package_path = []
     return [
-        *[
-            get_package_aql(x["name"], x["ecosystem"], x["version"])
-            for x in vul_package_path
-        ],
+        *[get_package_aql(x["name"], x["ecosystem"], x["version"]) for x in vul_package_path],
         base_aql,
     ]
 
@@ -1427,21 +1368,13 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str, version: st
     timestamp = int(time.time())
     package_language = get_ecosystem_language_dict()[ecosystem]
     Asset.objects.filter(pk=asset_id).update(level_id=get_asset_level(res))
-    Asset.objects.filter(pk=asset_id).update(
-        **{f"vul_{k}_count": v for k, v in res.items()}
-    )
+    Asset.objects.filter(pk=asset_id).update(**{f"vul_{k}_count": v for k, v in res.items()})
     Asset.objects.filter(pk=asset_id).update(vul_count=sum(res.values()))
     for vul in package_vuls:
         vul_dependency = get_vul_path(aql, vul["vul_package_path"])
-        cve_numbers = get_cve_numbers(
-            vul["cve"], vul["cwe_info"], vul["cnvd"], vul["cnnvd"]
-        )
-        nearest_fixed_version = get_nearest_version(
-            version, [i["version"] for i in vul["fixed"]]
-        )
-        vul_serial = get_vul_serial(
-            vul["vul_title"], vul["cve"], vul["cwe_info"], vul["cnvd"], vul["cnnvd"]
-        )
+        cve_numbers = get_cve_numbers(vul["cve"], vul["cwe_info"], vul["cnvd"], vul["cnnvd"])
+        nearest_fixed_version = get_nearest_version(version, [i["version"] for i in vul["fixed"]])
+        vul_serial = get_vul_serial(vul["vul_title"], vul["cve"], vul["cwe_info"], vul["cnvd"], vul["cnnvd"])
         vul_level = get_vul_level_dict()[vul["severity"].lower()]
         detail = get_detail(vul["description"])
         # still need , save to asset_vul_relation
@@ -1456,9 +1389,7 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str, version: st
         #
         if not IastAssetVul.objects.filter(sid=vul["sid"]).exists():
             asset_vul = (
-                IastAssetVul.objects.filter(sid__isnull=True, cve_code=vul["cve"])
-                .order_by("update_time")
-                .first()
+                IastAssetVul.objects.filter(sid__isnull=True, cve_code=vul["cve"]).order_by("update_time").first()
             )
             if asset_vul:
                 asset_vul.sid = vul["sid"]
@@ -1512,9 +1443,7 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str, version: st
         for cwe_id in vul["cwe_info"]:
             if not IastAssetVulType.objects.filter(cwe_id=cwe_id).exists():
                 try:
-                    IastAssetVulType.objects.create(
-                        cwe_id=cwe_id, name=get_cwe_name(cwe_id)
-                    )
+                    IastAssetVulType.objects.create(cwe_id=cwe_id, name=get_cwe_name(cwe_id))
                 except IntegrityError:
                     logger.debug("unique error stack: ", exc_info=True)
                     logger.info("unique error cause by concurrency insert,ignore it")
@@ -1522,12 +1451,8 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str, version: st
             if not type_:
                 logger.info("create type_ failed: %s", cwe_id)
                 continue
-            IastAssetVulTypeRelation.objects.get_or_create(
-                asset_vul_id=asset_vul.id, asset_vul_type_id=type_.id
-            )
-    nearest_safe_version = get_nearest_version(
-        version, [i["version"] for i in safe_version]
-    )
+            IastAssetVulTypeRelation.objects.get_or_create(asset_vul_id=asset_vul.id, asset_vul_type_id=type_.id)
+    nearest_safe_version = get_nearest_version(version, [i["version"] for i in safe_version])
     latest_safe_version = get_latest_version([i["version"] for i in safe_version])
     Asset.objects.filter(pk=asset_id).update(
         safe_version_list=safe_version,

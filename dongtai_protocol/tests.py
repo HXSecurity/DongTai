@@ -65,13 +65,9 @@ class AgentHeartBeatTestCase(AgentTestCase):
         assert self.agent.server.hostname is not None
         project_agents = (
             IastAgent.objects.values_list("id", flat=True)
-            .filter(
-                bind_project_id=self.agent.bind_project_id, language=self.agent.language
-            )
+            .filter(bind_project_id=self.agent.bind_project_id, language=self.agent.language)
             .union(
-                addtional_agenti_ids_query_filepath_simhash(
-                    self.agent.filepathsimhash, language=self.agent.language
-                ),
+                addtional_agenti_ids_query_filepath_simhash(self.agent.filepathsimhash, language=self.agent.language),
                 addtional_agent_ids_query_deployway_and_path(
                     self.agent.servicetype,
                     self.agent.server.path,
@@ -90,9 +86,7 @@ class AgentHeartBeatTestCase(AgentTestCase):
             "params",
             "body",
             "replay_type",
-        ).filter(agent_id__in=project_agents, state__in=[const.WAITING, const.SOLVING])[
-            :200
-        ]
+        ).filter(agent_id__in=project_agents, state__in=[const.WAITING, const.SOLVING])[:200]
 
     def test_agent_replay_queryset_result(self):
         self.agent = IastAgent.objects.filter(pk=self.agent_id).first()

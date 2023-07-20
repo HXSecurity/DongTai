@@ -34,9 +34,7 @@ class JavaAgentDownload:
         self.original_agent_file = f"/tmp/iast_cache/package/{self.agent_file}"
         self.user_target_path = f"/tmp/{os.getpid()}-{t.ident}-{user_id}"
         self.target_path = f"/tmp/{os.getpid()}-{t.ident}-{user_id}/iast_cache/package"
-        self.remote_agent_file = (
-            BUCKET_NAME_BASE_URL + "java/" + VERSION + "/dongtai-agent.jar"
-        )
+        self.remote_agent_file = BUCKET_NAME_BASE_URL + "java/" + VERSION + "/dongtai-agent.jar"
         if not os.path.exists(f"{self.target_path}"):
             os.makedirs(f"{self.target_path}")
         if not os.path.exists(self.original_agent_path):
@@ -78,9 +76,7 @@ class JavaAgentDownload:
                     )
                 )
         except Exception as e:
-            logger.exception(
-                _("Agent configuration file creation failed, reason: "), exc_info=e
-            )
+            logger.exception(_("Agent configuration file creation failed, reason: "), exc_info=e)
             return False
         else:
             return True
@@ -90,9 +86,7 @@ class JavaAgentDownload:
         # 执行jar -uvf {JavaAgentDownload.LOCAL_AGENT_FILE} iast.properties更新jar包的文件
         import os
 
-        os.system(  # nosec
-            f"cd {self.user_target_path};zip -u {user_file} iast.properties"
-        )
+        os.system(f"cd {self.user_target_path};zip -u {user_file} iast.properties")  # nosec
         # ignore because no userinput invoked here.
 
 
@@ -103,12 +97,8 @@ class PythonAgentDownload:
         self.agent_file = "dongtai_agent_python.tar.gz"
         self.original_agent_file = f"/tmp/{self.agent_file}"
         self.target_path = f"/tmp/{os.getpid()}-{t.ident}-{user_id}"
-        self.target_source_path = (
-            f"/tmp/{os.getpid()}-{t.ident}-{user_id}/dongtai_agent_python"
-        )
-        self.remote_agent_file = (
-            BUCKET_NAME_BASE_URL + "python/dongtai_agent_python.tar.gz"
-        )
+        self.target_source_path = f"/tmp/{os.getpid()}-{t.ident}-{user_id}/dongtai_agent_python"
+        self.remote_agent_file = BUCKET_NAME_BASE_URL + "python/dongtai_agent_python.tar.gz"
         if not os.path.exists(self.target_path):
             os.makedirs(self.target_path)
         if not os.path.exists(self.target_source_path):
@@ -358,9 +348,7 @@ class AgentDownload(OpenApiEndPoint):
             handler = self.make_download_handler(language, request.user.id)
 
             if handler.download_agent() is False:
-                return R.failure(
-                    msg="agent file download failure. please contact official staff for help."
-                )
+                return R.failure(msg="agent file download failure. please contact official staff for help.")
 
             if handler.create_config(
                 base_url=base_url,
@@ -374,9 +362,7 @@ class AgentDownload(OpenApiEndPoint):
                 with open(f"{handler.target_path}/{handler.agent_file}", "rb") as f:
                     response = FileResponse(f)
                     response["content_type"] = "application/octet-stream"
-                    response[
-                        "Content-Disposition"
-                    ] = f"attachment; filename={handler.agent_file}"
+                    response["Content-Disposition"] = f"attachment; filename={handler.agent_file}"
                     return response
             return R.failure(msg="agent file not exit.")
         except Exception as e:

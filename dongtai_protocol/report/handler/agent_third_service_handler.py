@@ -30,12 +30,8 @@ class ThirdPartyServiceHandler(IReportHandler):
             if not agent:
                 raise ValueError(_("No such agent"))
             agent = agent[0]
-            third_party_models = _data_dump(
-                self.service_data, self.agent_id, agent.bind_project_id
-            )
-            IastThirdPartyService.objects.bulk_create(
-                third_party_models, ignore_conflicts=True
-            )
+            third_party_models = _data_dump(self.service_data, self.agent_id, agent.bind_project_id)
+            IastThirdPartyService.objects.bulk_create(third_party_models, ignore_conflicts=True)
         except Exception as e:
             logger.info(_("third log failed, why: {}").format(e))
 

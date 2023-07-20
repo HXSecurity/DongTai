@@ -20,51 +20,29 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 
 class _StrategyResponseDataStrategySerializer(serializers.Serializer):
     id = serializers.CharField(help_text=_("The id of agent"))
-    vul_name = serializers.CharField(
-        help_text=_("The name of the vulnerability type targeted by the strategy")
-    )
-    vul_type = serializers.CharField(
-        help_text=_("Types of vulnerabilities targeted by the strategy")
-    )
-    enable = serializers.CharField(
-        help_text=_("This field indicates whether the vulnerability is enabled, 1 or 0")
-    )
-    vul_desc = serializers.CharField(
-        help_text=_("Description of the corresponding vulnerabilities of the strategy")
-    )
-    level = serializers.IntegerField(
-        help_text=_("The strategy corresponds to the level of vulnerability")
-    )
+    vul_name = serializers.CharField(help_text=_("The name of the vulnerability type targeted by the strategy"))
+    vul_type = serializers.CharField(help_text=_("Types of vulnerabilities targeted by the strategy"))
+    enable = serializers.CharField(help_text=_("This field indicates whether the vulnerability is enabled, 1 or 0"))
+    vul_desc = serializers.CharField(help_text=_("Description of the corresponding vulnerabilities of the strategy"))
+    level = serializers.IntegerField(help_text=_("The strategy corresponds to the level of vulnerability"))
     dt = serializers.IntegerField(help_text=_("Strategy update time"))
     vul_fix = serializers.CharField(
-        help_text=_(
-            "Suggestions for repairing vulnerabilities corresponding to the strategy"
-        )
+        help_text=_("Suggestions for repairing vulnerabilities corresponding to the strategy")
     )
 
 
 class StrategyCreateSerializer(serializers.Serializer):
-    vul_name = serializers.CharField(
-        help_text=_("The name of the vulnerability type targeted by the strategy")
-    )
-    vul_type = serializers.CharField(
-        help_text=_("Types of vulnerabilities targeted by the strategy")
-    )
-    state = serializers.CharField(
-        help_text=_("This field indicates whether the vulnerability is enabled, 1 or 0")
-    )
-    vul_desc = serializers.CharField(
-        help_text=_("Description of the corresponding vulnerabilities of the strategy")
-    )
+    vul_name = serializers.CharField(help_text=_("The name of the vulnerability type targeted by the strategy"))
+    vul_type = serializers.CharField(help_text=_("Types of vulnerabilities targeted by the strategy"))
+    state = serializers.CharField(help_text=_("This field indicates whether the vulnerability is enabled, 1 or 0"))
+    vul_desc = serializers.CharField(help_text=_("Description of the corresponding vulnerabilities of the strategy"))
     level_id = serializers.IntegerField(
         min_value=1,
         help_text=_("The strategy corresponds to the level of vulnerability"),
     )
     vul_fix = serializers.CharField(
         allow_blank=True,
-        help_text=_(
-            "Suggestions for repairing vulnerabilities corresponding to the strategy"
-        ),
+        help_text=_("Suggestions for repairing vulnerabilities corresponding to the strategy"),
     )
 
     def validate_level_id(self, value):
@@ -111,10 +89,7 @@ class StrategysEndpoint(UserEndPoint):
 
     def get_permissions(self):
         try:
-            return [
-                permission()
-                for permission in self.permission_classes_by_action[self.request.method]
-            ]
+            return [permission() for permission in self.permission_classes_by_action[self.request.method]]
         except KeyError:
             return [permission() for permission in self.permission_classes]
 
@@ -140,9 +115,7 @@ class StrategysEndpoint(UserEndPoint):
         queryset = IastStrategyModel.objects.filter(q).order_by("-id").all()
         if page and page_size:
             page_summary, page_data = self.get_paginator(queryset, page, page_size)
-            return R.success(
-                data=StrategySerializer(page_data, many=True).data, page=page_summary
-            )
+            return R.success(data=StrategySerializer(page_data, many=True).data, page=page_summary)
         return R.success(
             data=StrategySerializer(queryset, many=True).data,
         )
@@ -151,9 +124,7 @@ class StrategysEndpoint(UserEndPoint):
         request=StrategyCreateSerializer,
         tags=[_("Strategy")],
         summary=_("Strategy Add"),
-        description=_(
-            "Generate corresponding strategy group according to the strategy selected by the user."
-        ),
+        description=_("Generate corresponding strategy group according to the strategy selected by the user."),
         response_schema=_ResponseSerializer,
     )
     def post(self, request):
@@ -164,9 +135,7 @@ class StrategysEndpoint(UserEndPoint):
         except ValidationError as e:
             return R.failure(data=e.detail)
 
-        strategy = IastStrategyModel.objects.create(
-            **ser.validated_data, user=request.user, dt=time.time()
-        )
+        strategy = IastStrategyModel.objects.create(**ser.validated_data, user=request.user, dt=time.time())
         strategy.save()
         content = IastStrategyUser.objects.get(pk=5).content.split(",")
         if str(strategy.id) not in content:

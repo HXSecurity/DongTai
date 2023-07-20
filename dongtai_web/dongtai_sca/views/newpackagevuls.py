@@ -17,9 +17,7 @@ class PackageVulsListArgsSerializer(serializers.Serializer):
     page = serializers.IntegerField(default=1, help_text=_("Page index"))
 
 
-NewPackageVulSResponseSerializer = get_response_serializer(
-    PackageVulSerializer(many=True)
-)
+NewPackageVulSResponseSerializer = get_response_serializer(PackageVulSerializer(many=True))
 
 
 class NewPackageVuls(UserEndPoint):
@@ -45,10 +43,6 @@ class NewPackageVuls(UserEndPoint):
             .order_by("-id")
             .all()
         )
-        page_info, data = self.get_paginator(
-            asset_vuls, ser.validated_data["page"], ser.validated_data["page_size"]
-        )
+        page_info, data = self.get_paginator(asset_vuls, ser.validated_data["page"], ser.validated_data["page_size"])
 
-        return R.success(
-            data=PackageVulSerializer(data, many=True).data, page=page_info
-        )
+        return R.success(data=PackageVulSerializer(data, many=True).data, page=page_info)

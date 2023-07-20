@@ -14,6 +14,4 @@ class Command(BaseCommand):
         )
 
         update_department_data()
-        self.stdout.write(
-            self.style.SUCCESS("Successfully flash old data department token.")
-        )
+        self.stdout.write(self.style.SUCCESS("Successfully flash old data department token."))

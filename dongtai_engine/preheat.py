@@ -75,17 +75,13 @@ def function_flush(func__module__, func__name__, cache_time, args, kwargs):
     module = import_module(func__module__)
     func = getattr(module, func__name__)
     if getattr(func, "__origin__name__", None) != "cached":
-        logger.error(
-            "this function is not supported , please use cached to warp function."
-        )
+        logger.error("this function is not supported , please use cached to warp function.")
         return
     origin_func = func.__wrapped__
     random_range = func.__random_range__
     try:
         res = origin_func(*args, **kwargs)
-        cache_key = make_hash(
-            (origin_func.__module__ + origin_func.__name__, tuple(args), kwargs)
-        )
+        cache_key = make_hash((origin_func.__module__ + origin_func.__name__, tuple(args), kwargs))
         logger.debug(cache_key)
         if random_range:
             cache_time = random.randint(*random_range)

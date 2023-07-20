@@ -12,12 +12,8 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 
 class _StrategyTypeResponseDataTypeValueSerializer(serializers.Serializer):
     strategy_id = serializers.CharField(help_text=_("The id of strategy"))
-    vul_name = serializers.CharField(
-        help_text=_("The name of the vulnerability type targeted by the strategy")
-    )
-    level_id = serializers.IntegerField(
-        help_text=_("The strategy corresponds to the level of vulnerability")
-    )
+    vul_name = serializers.CharField(help_text=_("The name of the vulnerability type targeted by the strategy"))
+    level_id = serializers.IntegerField(help_text=_("The strategy corresponds to the level of vulnerability"))
 
 
 class _StrategyTypeResponseDataStrategySerializer(serializers.Serializer):
@@ -39,9 +35,7 @@ class StrategyType(UserEndPoint):
         response_schema=_ResponseSerializer,
     )
     def get(self, request):
-        queryset = IastStrategyModel.objects.filter(state="enable").select_related(
-            "level"
-        )
+        queryset = IastStrategyModel.objects.filter(state="enable").select_related("level")
         allType = IastVulLevel.objects.all().order_by("id")
         result = []
         curTyp = {}

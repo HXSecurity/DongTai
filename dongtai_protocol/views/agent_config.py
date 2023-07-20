@@ -123,9 +123,7 @@ def get_agent_filter_details(agent_id):
 def get_agent_config_by_scan(agent_id: int, mg: MetricGroup) -> Result:
     agent_detail = get_agent_filter_details(agent_id)
     queryset = (
-        IastCircuitConfig.objects.filter(is_deleted=0, metric_group=mg, is_enable=1)
-        .order_by("priority")
-        .only("id")
+        IastCircuitConfig.objects.filter(is_deleted=0, metric_group=mg, is_enable=1).order_by("priority").only("id")
     )
     for i in queryset:
         result_list = [
@@ -170,10 +168,7 @@ def get_agent_config(agent_id: int) -> Result:
         if not config:
             continue
         metric_list = [
-            convert_metric(metric)
-            for metric in IastCircuitMetric.objects.filter(
-                circuit_config_id=config.id
-            ).all()
+            convert_metric(metric) for metric in IastCircuitMetric.objects.filter(circuit_config_id=config.id).all()
         ]
         data[mg.name.lower()] = metric_list
         data[mg.name.lower() + "IsUninstall"] = False

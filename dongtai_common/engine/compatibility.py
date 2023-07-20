@@ -91,9 +91,7 @@ def highlight_target_value(target_value: str, ranges: list) -> str:
         final_str = []
         str_dict = {ind: xss_prevent(str_) for ind, str_ in enumerate(value)}
         for range_ in sorted_ranges:
-            str_dict[range_["start"]] = (
-                '<em style="color:red;">' + str_dict[range_["start"]]
-            )
+            str_dict[range_["start"]] = '<em style="color:red;">' + str_dict[range_["start"]]
             str_dict[range_["stop"] - 1] = str_dict[range_["stop"] - 1] + "</em>"
         final_str = [x[1] for x in sorted(str_dict.items(), key=lambda kv: kv[0])]
         return "".join(final_str)
@@ -104,10 +102,7 @@ def highlight_target_value(target_value: str, ranges: list) -> str:
             begin_part_length = ceil((AGENT_DEFAULT_LENGTH - 3) / 2)
             end_part_length = int((AGENT_DEFAULT_LENGTH - 3) / 2)
             value_origin_len - end_part_length
-            str_dict_begin = {
-                ind: xss_prevent(str_)
-                for ind, str_ in enumerate(value[:begin_part_length])
-            }
+            str_dict_begin = {ind: xss_prevent(str_) for ind, str_ in enumerate(value[:begin_part_length])}
             str_dict_end = {
                 ind + (value_origin_len - end_part_length) + 3: xss_prevent(str_)
                 for ind, str_ in enumerate(value[-end_part_length:])
@@ -118,37 +113,19 @@ def highlight_target_value(target_value: str, ranges: list) -> str:
             str_dict[begin_part_length + 2] = "..."
             for range_ in sorted_ranges:
                 if range_["start"] in str_dict and (range_["stop"] - 1) in str_dict:
-                    str_dict[range_["start"]] = (
-                        '<em style="color:red;">' + str_dict[range_["start"]]
-                    )
-                    str_dict[range_["stop"] - 1] = (
-                        str_dict[range_["stop"] - 1] + "</em>"
-                    )
+                    str_dict[range_["start"]] = '<em style="color:red;">' + str_dict[range_["start"]]
+                    str_dict[range_["stop"] - 1] = str_dict[range_["stop"] - 1] + "</em>"
 
-                if (
-                    range_["start"] in str_dict
-                    and (range_["stop"] - 1) not in str_dict.keys()
-                ):
-                    str_dict[range_["start"]] = (
-                        '<em style="color:red;">' + str_dict[range_["start"]]
-                    )
+                if range_["start"] in str_dict and (range_["stop"] - 1) not in str_dict.keys():
+                    str_dict[range_["start"]] = '<em style="color:red;">' + str_dict[range_["start"]]
                     str_dict[begin_part_length] = "</em>" + str_dict[begin_part_length]
                     str_dict[begin_part_length] = "</em>" + str_dict[begin_part_length]
-                if (
-                    range_["start"] not in str_dict.keys()
-                    and (range_["stop"] - 1) in str_dict
-                ):
+                if range_["start"] not in str_dict.keys() and (range_["stop"] - 1) in str_dict:
                     str_dict[value_origin_len - end_part_length] = (
-                        '<em style="color:red;">'
-                        + str_dict[value_origin_len - end_part_length]
+                        '<em style="color:red;">' + str_dict[value_origin_len - end_part_length]
                     )
-                    str_dict[range_["stop"] - 1] = (
-                        str_dict[range_["stop"] - 1] + "</em>"
-                    )
-                if (
-                    range_["start"] not in str_dict.keys()
-                    or (range_["stop"]) not in str_dict.keys()
-                ):
+                    str_dict[range_["stop"] - 1] = str_dict[range_["stop"] - 1] + "</em>"
+                if range_["start"] not in str_dict.keys() or (range_["stop"]) not in str_dict.keys():
                     str_dict[begin_part_length + 2] = '<em style="color:red;">...</em>'
             final_str = [x[1] for x in sorted(str_dict.items(), key=lambda kv: kv[0])]
             return "".join(final_str)

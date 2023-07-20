@@ -14,9 +14,7 @@ _ResponseSerializer = get_response_serializer(
         (
             (
                 202,
-                _(
-                    "The engine is being installed or uninstalled, please try again later"
-                ),
+                _("The engine is being installed or uninstalled, please try again later"),
             ),
             "",
         ),
@@ -46,7 +44,5 @@ class AgentUninstall(UserEndPoint):
                 agent.latest_time = int(time.time())
                 agent.save(update_fields=["latest_time", "control", "is_control"])
                 return R.success(msg=_("Uninstalling ..."))
-            return R.failure(
-                msg=_("Agent is being installed or uninstalled, please try again later")
-            )
+            return R.failure(msg=_("Agent is being installed or uninstalled, please try again later"))
         return R.failure(msg=_("Engine does not exist or no permission to access"))

@@ -69,9 +69,7 @@ def log_push_to_integration(
         )
 
 
-def log_vul_found(
-    user_id: int, project_name: str, project_id: int, vul_id: int, vul_name: str
-):
+def log_vul_found(user_id: int, project_name: str, project_id: int, vul_id: int, vul_name: str):
     kwargs = locals()
     msg = f"id为{project_id}的项目{project_name}检测到漏洞{vul_name}"
     IastVulLog.objects.create(
@@ -83,9 +81,7 @@ def log_vul_found(
     )
 
 
-def log_asset_vul_found(
-    user_id: int, project_name: str, project_id: int, asset_vul_id: int, vul_name: str
-):
+def log_asset_vul_found(user_id: int, project_name: str, project_id: int, asset_vul_id: int, vul_name: str):
     kwargs = locals()
     msg = f"id为{project_id}的项目{project_name}检测到漏洞{vul_name}"
     IastVulLog.objects.create(

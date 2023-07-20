@@ -56,15 +56,11 @@ class RequestReplayEndPoint(UserEndPoint):
                 "uri": replay_request.uri,
                 "params": replay_request.params,
                 "scheme": replay_request.request_version,
-                "header": base64.b64encode(
-                    replay_request.headers.as_string().strip().encode()
-                ).decode(),
+                "header": base64.b64encode(replay_request.headers.as_string().strip().encode()).decode(),
                 "body": replay_request.body,
             }
         except Exception as e:
-            logger.exception(
-                _("HTTP request parsing error, error message: "), exc_info=e
-            )
+            logger.exception(_("HTTP request parsing error, error message: "), exc_info=e)
             return True, None
         else:
             return False, requests
@@ -90,9 +86,7 @@ class RequestReplayEndPoint(UserEndPoint):
             method_pool_model.agent = agent
             method_pool_model.id = -1
         else:
-            method_pool_model = MethodPool.objects.filter(
-                id=method_pool_id, agent__in=auth_agents
-            ).first()
+            method_pool_model = MethodPool.objects.filter(id=method_pool_id, agent__in=auth_agents).first()
         if method_pool_model:
             return False, method_pool_model
         return True, None
@@ -108,9 +102,7 @@ class RequestReplayEndPoint(UserEndPoint):
         return agent.online == 0
 
     @staticmethod
-    def send_request_to_replay_queue(
-        relation_id, agent_id, replay_request, replay_type
-    ):
+    def send_request_to_replay_queue(relation_id, agent_id, replay_request, replay_type):
         """
         :param replay_request:
         :param method_pool_model:
@@ -147,9 +139,7 @@ class RequestReplayEndPoint(UserEndPoint):
                         "agent_id",
                     ]
                 )
-                IastAgentMethodPoolReplay.objects.filter(
-                    replay_id=replay_queue.id, replay_type=replay_type
-                ).delete()
+                IastAgentMethodPoolReplay.objects.filter(replay_id=replay_queue.id, replay_type=replay_type).delete()
         else:
             replay_queue = IastReplayQueue.objects.create(
                 relation_id=relation_id,
@@ -197,37 +187,23 @@ class RequestReplayEndPoint(UserEndPoint):
                 const.REQUEST_REPLAY,
             ]:
                 return R.failure(msg="replay_type error")
-            replay_type = (
-                const.REQUEST_REPLAY if replay_type is None else int(replay_type)
-            )
+            replay_type = const.REQUEST_REPLAY if replay_type is None else int(replay_type)
 
-            check_failure, method_pool_model = self.check_method_pool(
-                method_pool_id, request.user
-            )
+            check_failure, method_pool_model = self.check_method_pool(method_pool_id, request.user)
             if check_failure:
-                return R.failure(
-                    msg=_("Stain pool data does not exist or no permission to access")
-                )
+                return R.failure(msg=_("Stain pool data does not exist or no permission to access"))
             if agent_id:
                 agent = IastAgent.objects.filter(pk=agent_id).first()
                 check_failure = self.check_agent_active(agent)
                 if check_failure and agent is not None:
-                    agent = IastAgent.objects.filter(
-                        bind_project_id=agent.bind_project_id, online=1
-                    ).first()
+                    agent = IastAgent.objects.filter(bind_project_id=agent.bind_project_id, online=1).first()
                 check_failure = self.check_agent_active(agent)
             else:
                 check_failure = self.check_agent_active(method_pool_model.agent)
             if check_failure:
-                return R.failure(
-                    msg=_(
-                        "The probe has been destroyed or suspended, please check the probe status"
-                    )
-                )
+                return R.failure(msg=_("The probe has been destroyed or suspended, please check the probe status"))
 
-            check_failure, checked_request = self.check_replay_request(
-                raw_request=replay_request
-            )
+            check_failure, checked_request = self.check_replay_request(raw_request=replay_request)
             if check_failure:
                 return R.failure(msg=_("Replay request is illegal"))
             if agent_id:
@@ -244,9 +220,7 @@ class RequestReplayEndPoint(UserEndPoint):
                     replay_request=checked_request,
                     replay_type=replay_type,
                 )
-            return R.success(
-                msg=_("Relay request success"), data={"replayId": replay_id}
-            )
+            return R.success(msg=_("Relay request success"), data={"replayId": replay_id})
 
         except Exception as e:
             logger.exception(f"user_id:{request.user.id} msg: ", exc_info=e)
@@ -254,11 +228,7 @@ class RequestReplayEndPoint(UserEndPoint):
 
     @staticmethod
     def check_replay_data_permission(replay_id, auth_agents):
-        return (
-            IastReplayQueue.objects.values("id")
-            .filter(id=replay_id, agent__in=auth_agents)
-            .exists()
-        )
+        return IastReplayQueue.objects.values("id").filter(id=replay_id, agent__in=auth_agents).exists()
 
     @staticmethod
     def parse_response(header, body):
@@ -266,9 +236,7 @@ class RequestReplayEndPoint(UserEndPoint):
             _data = base64.b64decode(header.encode("utf-8")).decode("utf-8")
         except Exception as e:
             _data = ""
-            logger.exception(
-                _("Response header analysis error, error message: "), exc_info=e
-            )
+            logger.exception(_("Response header analysis error, error message: "), exc_info=e)
         return f"{_data}\n\n{body}"
 
     @extend_schema_with_envcheck(
@@ -303,15 +271,9 @@ class RequestReplayEndPoint(UserEndPoint):
                 status=203,
                 msg=_("Replay request does not exist or no permission to access"),
             )
-        if (
-            request.user.is_superuser == 1
-            or replay_data.agent.user_id == request.user.id
-        ):
+        if request.user.is_superuser == 1 or replay_data.agent.user_id == request.user.id:
             pass
-        elif (
-            request.user.is_superuser == 2
-            and replay_data.agent.user_id != request.user.id
-        ):
+        elif request.user.is_superuser == 2 and replay_data.agent.user_id != request.user.id:
             # 部门鉴权
             talent = request.user.get_talent()
             departments = talent.departments.all()
@@ -330,9 +292,7 @@ class RequestReplayEndPoint(UserEndPoint):
         if replay_data.state != const.SOLVED:
             return R.failure(msg=_("Replay request processing"))
         replay_data_method_pool = (
-            IastAgentMethodPoolReplay.objects.filter(
-                replay_id=replay_id, replay_type=replay_type
-            )
+            IastAgentMethodPoolReplay.objects.filter(replay_id=replay_id, replay_type=replay_type)
             .values("res_header", "res_body", "method_pool", "id")
             .first()
         )

@@ -37,9 +37,7 @@ urlpatterns = [
     path("maven/bulk/delete", SCADBMavenBulkDeleteView.as_view()),
     path(
         "maven/<int:pk>",
-        SCADBMavenViewSet.as_view(
-            {"get": "retrieve", "put": "update", "delete": "destory"}
-        ),
+        SCADBMavenViewSet.as_view({"get": "retrieve", "put": "update", "delete": "destory"}),
     ),
     path("maven", SCADBMavenViewSet.as_view({"post": "create"})),
     path("license_list", SCALicenseViewSet.as_view()),

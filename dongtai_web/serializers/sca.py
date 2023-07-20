@@ -65,14 +65,8 @@ class ScaSerializer(serializers.ModelSerializer):
         if project_version_id:
             if project_version_id in self.project_version_cache:
                 return self.project_version_cache[project_version_id]
-            project_version = (
-                IastProjectVersion.objects.values("version_name")
-                .filter(id=project_version_id)
-                .first()
-            )
-            self.project_version_cache[project_version_id] = project_version[
-                "version_name"
-            ]
+            project_version = IastProjectVersion.objects.values("version_name").filter(id=project_version_id).first()
+            self.project_version_cache[project_version_id] = project_version["version_name"]
 
             return self.project_version_cache[project_version_id]
         return _("No application version has been created")
@@ -166,9 +160,7 @@ class ScaAssetSerializer(serializers.ModelSerializer):
         obj.license_level = 0
         obj.license_desc = "允许商业集成"
         if obj.license:
-            license_level = PackageLicenseLevel.objects.filter(
-                identifier=obj.license
-            ).first()
+            license_level = PackageLicenseLevel.objects.filter(identifier=obj.license).first()
             obj.license_level = license_level.level_id if license_level else 0
             obj.license_desc = license_level.level_desc if license_level else "允许商业集成"
 

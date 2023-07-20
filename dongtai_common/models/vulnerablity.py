@@ -83,15 +83,9 @@ class IastVulnerabilityModel(models.Model):
         db_column="status_id",
         null=True,
     )
-    project = models.ForeignKey(
-        IastProject, on_delete=models.CASCADE, blank=True, default=-1
-    )
-    project_version = models.ForeignKey(
-        IastProjectVersion, on_delete=models.CASCADE, blank=True, default=-1
-    )
-    server = models.ForeignKey(
-        IastServer, on_delete=models.CASCADE, blank=True, default=-1
-    )
+    project = models.ForeignKey(IastProject, on_delete=models.CASCADE, blank=True, default=-1)
+    project_version = models.ForeignKey(IastProjectVersion, on_delete=models.CASCADE, blank=True, default=-1)
+    server = models.ForeignKey(IastServer, on_delete=models.CASCADE, blank=True, default=-1)
 
     class Meta:
         managed = get_managed()
@@ -115,9 +109,7 @@ class IastVulnerabilityModel(models.Model):
             self.latest_time_desc = -int(self.latest_time)
             self.level_id_desc = -int(self.level_id)
         except TypeError as e:
-            logger.exception(
-                "level_id: {self.level_id} latest_time: {self.latest_time}", exc_info=e
-            )
+            logger.exception("level_id: {self.level_id} latest_time: {self.latest_time}", exc_info=e)
         super().save(*args, **kwargs)
 
 
@@ -139,9 +131,7 @@ class IastVulnerabilityDocument(Document):
     @classmethod
     def search(cls, using=None, index=None):
         uuid_key = uuid.uuid4().hex
-        cache_uuid_key = cache.get_or_set(
-            f"es-documents-shards-{cls.__name__}", uuid_key, 60 * 1
-        )
+        cache_uuid_key = cache.get_or_set(f"es-documents-shards-{cls.__name__}", uuid_key, 60 * 1)
         return Search(
             using=cls._get_using(using),
             index=cls._default_index(index),

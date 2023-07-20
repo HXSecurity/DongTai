@@ -27,18 +27,14 @@ class AgentNewRegisterGroupTokenTestCase(AgentTestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Token GROUP" + department.token)
         resp1 = self.raw_register(projectVersion="V1.1", projectName="PNAME")
         data1 = json.loads(resp1.content)
-        resp2 = self.raw_register(
-            name="newtoken", projectVersion="V1.1", projectName="PNAME"
-        )
+        resp2 = self.raw_register(name="newtoken", projectVersion="V1.1", projectName="PNAME")
         data2 = json.loads(resp2.content)
         self.assertNotEqual(data1["data"]["id"], data2["data"]["id"])
 
     def test_rep_register_2(self):
         department = Department.objects.first()
         self.client.credentials(HTTP_AUTHORIZATION="Token GROUP" + department.token)
-        resp1 = self.raw_register(
-            projectTemplateId=1, projectVersion="V1.1", projectName="PNAME"
-        )
+        resp1 = self.raw_register(projectTemplateId=1, projectVersion="V1.1", projectName="PNAME")
         data1 = json.loads(resp1.content)
         self.assertEqual(data1["status"], 201)
 

@@ -98,9 +98,7 @@ class EndPoint(APIView):
 
             # Get the appropriate handler method
             if request.method.lower() in self.http_method_names:
-                handler = getattr(
-                    self, request.method.lower(), self.http_method_not_allowed
-                )
+                handler = getattr(self, request.method.lower(), self.http_method_not_allowed)
             else:
                 handler = self.http_method_not_allowed
             response = handler(request, *args, **kwargs)
@@ -118,9 +116,7 @@ class EndPoint(APIView):
                 if method is None:
                     raise ValueError("can not get request method")
                 operate_method = method
-                path, _path_regex, schema, filepath = VIEW_CLASS_TO_SCHEMA[
-                    self.__class__
-                ][method]
+                path, _path_regex, schema, filepath = VIEW_CLASS_TO_SCHEMA[self.__class__][method]
                 if "dongtai" not in filepath or "dongtai_protocol" in filepath:
                     return self.response
                 if schema is None:
@@ -240,9 +236,7 @@ class EndPoint(APIView):
             departments = talent.departments.all()
             users = User.objects.filter(department__in=departments)
         elif user.is_department_admin:
-            users = User.objects.filter(
-                Q(department__principal_id=user.id) | Q(id=user.id)
-            ).all()
+            users = User.objects.filter(Q(department__principal_id=user.id) | Q(id=user.id)).all()
         else:
             users = User.objects.filter(id=user.id).all()
         return users
@@ -288,9 +282,7 @@ class EndPoint(APIView):
         :param users:
         :return:
         """
-        auth_assets = auth_assets.values("signature_value").annotate(
-            total=Count("signature_value")
-        )
+        auth_assets = auth_assets.values("signature_value").annotate(total=Count("signature_value"))
         auth_hash = list({asset["signature_value"] for asset in auth_assets})
         return AssetAggr.objects.filter(signature_value__in=auth_hash, is_del=0)
 
@@ -305,9 +297,7 @@ class EndPoint(APIView):
         auth_assets = [_i["id"] for _i in permission_assets]
 
         vul_asset_ids = (
-            IastVulAssetRelation.objects.filter(asset_id__in=auth_assets, is_del=0)
-            .values("asset_vul_id")
-            .all()
+            IastVulAssetRelation.objects.filter(asset_id__in=auth_assets, is_del=0).values("asset_vul_id").all()
         )
         perm_vul_ids = []
         if vul_asset_ids:

@@ -17,11 +17,7 @@ logger = logging.getLogger("dongtai-webapi")
 
 
 def _annotate_by_query(q, value_fields, count_field):
-    return (
-        IastVulnerabilityModel.objects.filter(q)
-        .values(*value_fields)
-        .annotate(count=Count(count_field))
-    )
+    return IastVulnerabilityModel.objects.filter(q).values(*value_fields).annotate(count=Count(count_field))
 
 
 # @cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60),
@@ -32,9 +28,7 @@ def get_annotate_cache_data(department: Department):
     return get_annotate_data(department, 0, 0)
 
 
-def get_annotate_data(
-    department: Department, bind_project_id=int, project_version_id=int
-) -> dict:
+def get_annotate_data(department: Department, bind_project_id=int, project_version_id=int) -> dict:
     # cache_q = Q(is_del=0, agent__bind_project_id__gt=0,
     #             agent__user_id__in=auth_user_info['user_list'])
     cache_q = Q(is_del=0, project_id__gt=0, project__department__in=department)
@@ -57,9 +51,7 @@ def get_annotate_data(
     cache_q, result_summary = patch_point(cache_q, result_summary)
 
     # 漏洞类型统计
-    strategy_info = _annotate_by_query(
-        cache_q, ("strategy_id", "strategy__vul_name"), "strategy_id"
-    )
+    strategy_info = _annotate_by_query(cache_q, ("strategy_id", "strategy__vul_name"), "strategy_id")
     result_summary["hook_type"].extend(
         {
             "name": item["strategy__vul_name"],
@@ -70,9 +62,7 @@ def get_annotate_data(
     )
 
     # 漏洞等级筛选
-    count_info_level = _annotate_by_query(
-        cache_q, ("level_id", "level__name_value"), "level_id"
-    )
+    count_info_level = _annotate_by_query(cache_q, ("level_id", "level__name_value"), "level_id")
     result_summary["level"].extend(
         {
             "name": item["level__name_value"],
@@ -83,9 +73,7 @@ def get_annotate_data(
     )
 
     # # 按状态筛选
-    status_info = _annotate_by_query(
-        cache_q, ("status_id", "status__name"), "status_id"
-    )
+    status_info = _annotate_by_query(cache_q, ("status_id", "status__name"), "status_id")
     result_summary["status"].extend(
         {
             "name": item["status__name"],
@@ -123,13 +111,9 @@ class GetAppVulsSummary(UserEndPoint):
                     project_version_id = ser.validated_data.get("project_version_id", 0)
 
             if ELASTICSEARCH_STATE:
-                result_summary = get_annotate_data_es(
-                    department, bind_project_id, project_version_id
-                )
+                result_summary = get_annotate_data_es(department, bind_project_id, project_version_id)
             elif bind_project_id or project_version_id:
-                result_summary = get_annotate_data(
-                    department, bind_project_id, project_version_id
-                )
+                result_summary = get_annotate_data(department, bind_project_id, project_version_id)
             else:
                 # 全局下走缓存
                 result_summary = get_annotate_cache_data(department)
@@ -180,9 +164,7 @@ def get_annotate_data_es(department: Department, bind_project_id, project_versio
         search.aggs.bucket(k, v)
     from dongtai_conf import settings
 
-    res = search.using(
-        Elasticsearch(settings.ELASTICSEARCH_DSL["default"]["hosts"])
-    ).execute()
+    res = search.using(Elasticsearch(settings.ELASTICSEARCH_DSL["default"]["hosts"])).execute()
     dic = {}
     for key_ in buckets:
         key = key_
@@ -194,32 +176,20 @@ def get_annotate_data_es(department: Department, bind_project_id, project_versio
             del i["doc_count"]
         if key == "strategy":
             strategy_ids = [i["id"] for i in origin_buckets]
-            strategy = (
-                IastStrategyModel.objects.filter(pk__in=strategy_ids)
-                .values("id", "vul_name")
-                .all()
-            )
+            strategy = IastStrategyModel.objects.filter(pk__in=strategy_ids).values("id", "vul_name").all()
             strategy_dic = dict_transfrom(strategy, "id")
             for i in origin_buckets:
                 i["name"] = strategy_dic[i["id"]]["vul_name"]
             key = "hook_type"
         if key == "status":
             status_ids = [i["id"] for i in origin_buckets]
-            status = (
-                IastVulnerabilityStatus.objects.filter(pk__in=status_ids)
-                .values("id", "name")
-                .all()
-            )
+            status = IastVulnerabilityStatus.objects.filter(pk__in=status_ids).values("id", "name").all()
             status_dic = dict_transfrom(status, "id")
             for i in origin_buckets:
                 i["name"] = status_dic[i["id"]]["name"]
         if key == "level":
             level_ids = [i["id"] for i in origin_buckets]
-            level = (
-                IastVulLevel.objects.filter(pk__in=level_ids)
-                .values("id", "name_value")
-                .all()
-            )
+            level = IastVulLevel.objects.filter(pk__in=level_ids).values("id", "name_value").all()
             level_dic = dict_transfrom(level, "id")
             for i in origin_buckets:
                 i["name"] = level_dic[i["id"]]["name_value"]

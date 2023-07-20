@@ -17,30 +17,16 @@ SCOPE_CHOICES = ("all",)
 
 
 class EngineHookRuleStatusGetQuerySerializer(serializers.Serializer):
-    rule_id = serializers.IntegerField(
-        required=False, help_text=_("The id of hook rule")
-    )
-    type = serializers.IntegerField(
-        required=False, help_text=_("The id of hook rule type")
-    )
-    op = serializers.ChoiceField(
-        OP_CHOICES, required=False, help_text=_("The state of the hook rule")
-    )
-    scope = serializers.ChoiceField(
-        SCOPE_CHOICES, required=False, help_text=_("The scope of the hook rule")
-    )
-    language_id = serializers.IntegerField(
-        required=False, help_text=_("The language_id")
-    )
-    hook_rule_type = serializers.IntegerField(
-        required=False, help_text=_("The type of hook rule")
-    )
+    rule_id = serializers.IntegerField(required=False, help_text=_("The id of hook rule"))
+    type = serializers.IntegerField(required=False, help_text=_("The id of hook rule type"))
+    op = serializers.ChoiceField(OP_CHOICES, required=False, help_text=_("The state of the hook rule"))
+    scope = serializers.ChoiceField(SCOPE_CHOICES, required=False, help_text=_("The scope of the hook rule"))
+    language_id = serializers.IntegerField(required=False, help_text=_("The language_id"))
+    hook_rule_type = serializers.IntegerField(required=False, help_text=_("The type of hook rule"))
 
 
 class EngineHookRuleStatusPostBodySerializer(serializers.Serializer):
-    ids = serializers.CharField(
-        help_text=_('The id corresponding to the hook type, use"," for segmentation.')
-    )
+    ids = serializers.CharField(help_text=_('The id corresponding to the hook type, use"," for segmentation.'))
     op = serializers.ChoiceField(OP_CHOICES, help_text=_("The state of the hook rule"))
 
 
@@ -108,15 +94,11 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
         [EngineHookRuleStatusGetQuerySerializer],
         tags=[_("Hook Rule")],
         summary=_("Hook Rule Status Modify"),
-        description=_(
-            "Modify the status of the rule corresponding to the specified id."
-        ),
+        description=_("Modify the status of the rule corresponding to the specified id."),
         response_schema=_GetResponseSerializer,
     )
     def get(self, request):
-        rule_id, rule_type, scope, op, language_id, hook_rule_type = self.parse_args(
-            request
-        )
+        rule_id, rule_type, scope, op, language_id, hook_rule_type = self.parse_args(request)
         try:
             if rule_id:
                 rule_id = int(rule_id)
@@ -130,20 +112,12 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
         if op is None:
             return R.failure(msg=_("Operation type does not exist"))
         if rule_type is not None and scope == "all":
-            count = HookStrategy.objects.filter(hooktype__id=rule_type).update(
-                enable=op
-            )
-            logger.info(
-                _("Policy type {} operation success, total of {} Policy types").format(
-                    rule_type, count
-                )
-            )
+            count = HookStrategy.objects.filter(hooktype__id=rule_type).update(enable=op)
+            logger.info(_("Policy type {} operation success, total of {} Policy types").format(rule_type, count))
             status = True
         if hook_rule_type is not None and language_id is not None and scope == "all":
             hook_type_ids = (
-                HookType.objects.filter(language_id=language_id, type=hook_rule_type)
-                .values_list("id", flat=True)
-                .all()
+                HookType.objects.filter(language_id=language_id, type=hook_rule_type).values_list("id", flat=True).all()
             )
             count = HookStrategy.objects.filter(
                 hooktype__id__in=hook_type_ids,
@@ -151,9 +125,7 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
             logger.info(_("total of {} Policy types").format(count))
             status = True
         elif rule_id is not None:
-            status = self.set_strategy_status(
-                strategy_id=rule_id, strategy_ids=None, enable_status=op
-            )
+            status = self.set_strategy_status(strategy_id=rule_id, strategy_ids=None, enable_status=op)
             logger.info(_("Policy {} succeed").format(rule_id))
 
         if status:
@@ -164,9 +136,7 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
         request=EngineHookRuleStatusPostBodySerializer,
         tags=[_("Hook Rule")],
         summary=_("Hook Rule Status Modify (Batch)"),
-        description=_(
-            "Batch modify the status of the rule corresponding to the specified id"
-        ),
+        description=_("Batch modify the status of the rule corresponding to the specified id"),
         response_schema=_PostResponseSerializer,
     )
     def post(self, request):
@@ -181,9 +151,7 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
         except BaseException:
             return R.failure(_("Parameter error"))
         if strategy_ids:
-            count = self.set_strategy_status(
-                strategy_id=None, strategy_ids=strategy_ids, enable_status=op
-            )
+            count = self.set_strategy_status(strategy_id=None, strategy_ids=strategy_ids, enable_status=op)
             logger.info(_("Strategy operation success, total {}").format(count))
             return R.success(msg=_("Operation success"))
         return R.failure(msg=_("Incorrect parameter"))

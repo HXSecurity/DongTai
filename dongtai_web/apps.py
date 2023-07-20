@@ -21,9 +21,7 @@ class IastConfig(DongTaiAppConfigPatch, AppConfig):
         )
 
         if AUTO_UPDATE_HOOK_STRATEGY and not validate_hook_strategy_update():
-            print(  # noqa: T201
-                "enable auto_update_hook_strategy  updating hook strategy from file"
-            )
+            print("enable auto_update_hook_strategy  updating hook strategy from file")  # noqa: T201
             Command().handle()
 
         init_schema()

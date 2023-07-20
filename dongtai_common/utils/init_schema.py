@@ -30,9 +30,7 @@ def init_schema() -> None:
         try:
             filepath = inspect.getfile(view.__class__)
             with add_trace_message(getattr(view, "__class__", view).__name__):
-                operation = view.schema.get_operation(
-                    path, path_regex, path_prefix, method, generator.registry
-                )
+                operation = view.schema.get_operation(path, path_regex, path_prefix, method, generator.registry)
                 VIEW_CLASS_TO_SCHEMA.setdefault(view.__class__, {})
                 VIEW_CLASS_TO_SCHEMA[view.__class__][method.upper()] = (
                     path,
@@ -41,6 +39,4 @@ def init_schema() -> None:
                     filepath,
                 )
         except Exception as e:
-            logger.debug(
-                f"unable to get schema: view {view} of path {path}", exc_info=e
-            )
+            logger.debug(f"unable to get schema: view {view} of path {path}", exc_info=e)

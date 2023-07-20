@@ -10,9 +10,7 @@ from dongtai_common.utils.settings import get_managed
 
 class IastHeaderVulnerability(models.Model):
     id = models.BigAutoField(primary_key=True)
-    project = models.ForeignKey(
-        IastProject, on_delete=models.DO_NOTHING, default=-1, db_constraint=False
-    )
+    project = models.ForeignKey(IastProject, on_delete=models.DO_NOTHING, default=-1, db_constraint=False)
     project_version = models.ForeignKey(
         IastProjectVersion, on_delete=models.DO_NOTHING, default=-1, db_constraint=False
     )
@@ -34,9 +32,7 @@ class IastHeaderVulnerabilityDetail(models.Model):
     res_header = models.TextField(blank=True)
     agent = models.ForeignKey(IastAgent, models.DO_NOTHING, db_constraint=False)
     method_pool = models.ForeignKey(MethodPool, models.DO_NOTHING, db_constraint=False)
-    header_vul = models.ForeignKey(
-        IastHeaderVulnerability, models.DO_NOTHING, blank=True, db_constraint=False
-    )
+    header_vul = models.ForeignKey(IastHeaderVulnerability, models.DO_NOTHING, blank=True, db_constraint=False)
 
     class Meta:
         managed = get_managed()

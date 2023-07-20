@@ -13,9 +13,7 @@ from django.urls import include, path
 
 urlpatterns = []
 
-if os.getenv("REQUESTLOG", None) == "TRUE" or os.getenv("environment", None) in (
-    "TEST",
-):
+if os.getenv("REQUESTLOG", None) == "TRUE" or os.getenv("environment", None) in ("TEST",):
     from dongtai_web.apitimelog.views import ApiTimeLogView
 
     urlpatterns.extend(

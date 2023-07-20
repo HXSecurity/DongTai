@@ -7,9 +7,7 @@ from dongtai_conf.settings import (
     DEFAULT_TAINT_VALUE_RANGE_COMMANDS,
 )
 
-PATTERN = (
-    rf" *({'|'.join(DEFAULT_TAINT_VALUE_RANGE_COMMANDS)}) *\(( *(P\d+|\d+) *,*)*\) *"
-)
+PATTERN = rf" *({'|'.join(DEFAULT_TAINT_VALUE_RANGE_COMMANDS)}) *\(( *(P\d+|\d+) *,*)*\) *"
 
 
 def valitate_taint_command(command: str) -> bool:

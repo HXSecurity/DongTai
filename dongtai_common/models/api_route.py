@@ -24,9 +24,7 @@ class HttpMethod(models.Model):
 
 class IastApiMethod(models.Model):
     method = models.CharField(max_length=100, blank=True)
-    http_method = models.ManyToManyField(
-        HttpMethod, through="IastApiMethodHttpMethodRelation"
-    )
+    http_method = models.ManyToManyField(HttpMethod, through="IastApiMethodHttpMethodRelation")
 
     class Meta:
         managed = get_managed()
@@ -78,13 +76,9 @@ class IastApiRoute(models.Model):
         db_index=True,
         db_column="agent_id",
     )
-    from_where = models.IntegerField(
-        default=FromWhereChoices.FROM_AGENT, choices=FromWhereChoices.choices
-    )
+    from_where = models.IntegerField(default=FromWhereChoices.FROM_AGENT, choices=FromWhereChoices.choices)
     project = models.ForeignKey(IastProject, on_delete=models.CASCADE, default=-1)
-    project_version = models.ForeignKey(
-        IastProjectVersion, on_delete=models.CASCADE, default=-1
-    )
+    project_version = models.ForeignKey(IastProjectVersion, on_delete=models.CASCADE, default=-1)
     is_cover = models.IntegerField(default=0)
 
     class Meta:

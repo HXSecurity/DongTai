@@ -38,9 +38,7 @@ class AgentList(UserEndPoint):
         def get_server_addr():
             if obj.server_id not in self.SERVER_MAP:
                 if obj.server.ip and obj.server.port and obj.server.port != 0:
-                    self.SERVER_MAP[
-                        obj.server_id
-                    ] = f"{obj.server.ip}:{obj.server.port}"
+                    self.SERVER_MAP[obj.server_id] = f"{obj.server.ip}:{obj.server.port}"
                 else:
                     return _("No flow is detected by the probe")
             return self.SERVER_MAP[obj.server_id]
@@ -61,11 +59,7 @@ class AgentList(UserEndPoint):
     def set_query_cache(self, q):
         total = IastAgent.objects.filter(q).count()
         if total > 0:
-            max_id = (
-                IastAgent.objects.filter(q)
-                .values_list("id", flat=True)
-                .order_by("-id")[0]
-            )
+            max_id = IastAgent.objects.filter(q).values_list("id", flat=True).order_by("-id")[0]
         else:
             max_id = 0
         cache.set(self.cache_key, total, 60 * 60)
@@ -111,9 +105,7 @@ class AgentList(UserEndPoint):
         ],
         tags=[_("Agent")],
         summary=_("Agent List"),
-        description=_(
-            "Get a list containing Agent information according to conditions."
-        ),
+        description=_("Get a list containing Agent information according to conditions."),
         response_schema=_ResponseSerializer,
     )
     def get(self, request):
@@ -131,18 +123,13 @@ class AgentList(UserEndPoint):
                 IastAgent,
                 include=["token", "project_name"],
             )
-            searchfields = dict(
-                filter(lambda k: k[0] in fields, request.query_params.items())
-            )
+            searchfields = dict(filter(lambda k: k[0] in fields, request.query_params.items()))
             searchfields_ = {k: v for k, v in searchfields.items() if k in fields}
             q = reduce(
                 lambda x, y: x | y,
                 (
                     Q(**x)
-                    for x in (
-                        {"__".join([kv_pair[0], "icontains"]): kv_pair[1]}
-                        for kv_pair in searchfields_.items()
-                    )
+                    for x in ({"__".join([kv_pair[0], "icontains"]): kv_pair[1]} for kv_pair in searchfields_.items())
                 ),
                 Q(),
             )

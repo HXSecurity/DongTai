@@ -54,18 +54,12 @@ class VulEngine:
         :param method_pool:
         :return:
         """
-        self._method_pool = sorted(
-            method_pool, key=lambda e: e.__getitem__("invokeId"), reverse=True
-        )
+        self._method_pool = sorted(method_pool, key=lambda e: e.__getitem__("invokeId"), reverse=True)
         if method_pool and method_pool_is_3(method_pool[0]):
             self._method_pool = list(map(method_pool_3_to_2, self._method_pool))
             self.version = 3
-        self._method_pool = sorted(
-            self._method_pool, key=lambda e: e.__getitem__("invokeId"), reverse=True
-        )
-        self._method_pool_invokeid_dict = {
-            mp["invokeId"]: ind for ind, mp in enumerate(self._method_pool)
-        }
+        self._method_pool = sorted(self._method_pool, key=lambda e: e.__getitem__("invokeId"), reverse=True)
+        self._method_pool_invokeid_dict = {mp["invokeId"]: ind for ind, mp in enumerate(self._method_pool)}
         tempdict = defaultdict(list, {})
         for ind, mp in enumerate(self._method_pool):
             for target_hash in mp["targetHash"]:
@@ -96,10 +90,7 @@ class VulEngine:
         self.method_counts = len(self.method_pool)
 
     def hit_vul_method(self, method):
-        if (
-            f"{method.get('className')}.{method.get('methodName')}"
-            == self.vul_method_signature
-        ):
+        if f"{method.get('className')}.{method.get('methodName')}" == self.vul_method_signature:
             self.hit_vul = True
             return True
         return None
@@ -112,9 +103,7 @@ class VulEngine:
             if hash in self.pool_value:
                 if is_source:
                     current_link.append(method)
-                    self.vul_source_signature = (
-                        f"{method.get('className')}.{method.get('methodName')}"
-                    )
+                    self.vul_source_signature = f"{method.get('className')}.{method.get('methodName')}"
                     return True
                 current_link.append(method)
                 self.pool_value = method.get("sourceHash")
@@ -126,9 +115,7 @@ class VulEngine:
         signatures = set()
 
         for method in self.method_pool:
-            signatures.add(
-                f"{method.get('className').replace('/', '.')}.{method.get('methodName')}"
-            )
+            signatures.add(f"{method.get('className').replace('/', '.')}.{method.get('methodName')}")
         return signatures
 
     def search(self, method_pool, vul_method_signature, vul_type=None):
@@ -151,17 +138,14 @@ class VulEngine:
             for t_hash in pool["targetHash"]:
                 target_hash_dict[t_hash].add(pool["invokeId"])
             invokeid_dict[pool["invokeId"]] = pool
-        vul_methods = [
-            x["invokeId"] for x in filter(self.hit_vul_method, self.method_pool)
-        ]
+        vul_methods = [x["invokeId"] for x in filter(self.hit_vul_method, self.method_pool)]
         # Ignore `org.springframework.web.util.pattern.PathPattern.getPatternString()` as a non-source method.
         # It is only to indicate that the API pattern.
         source_methods = [
             x["invokeId"]
             for x in filter(
                 lambda x: x.get("source", False)
-                and x.get("signature")
-                != "org.springframework.web.util.pattern.PathPattern.getPatternString()",
+                and x.get("signature") != "org.springframework.web.util.pattern.PathPattern.getPatternString()",
                 self.method_pool,
             )
         ]
@@ -198,9 +182,7 @@ class VulEngine:
                         self.taint_value = sub_method["targetValues"]
                         final_stack.append(self.copy_method(sub_method, sink=True))
                     else:
-                        final_stack.append(
-                            self.copy_method(sub_method, propagator=True)
-                        )
+                        final_stack.append(self.copy_method(sub_method, propagator=True))
                 self.vul_stack = [final_stack]
         if self.vul_source_signature and "sourceType" in self.vul_stack[-1][-1]:
             final_stack = self.vul_stack[-1][-1]
@@ -223,10 +205,7 @@ class VulEngine:
                                     strict=False,
                                 )
                             )
-                            if (
-                                source_type_hash in target_ranges
-                                and target_ranges[source_type_hash]["ranges"]
-                            ):
+                            if source_type_hash in target_ranges and target_ranges[source_type_hash]["ranges"]:
                                 the_second_stack = stack
                                 break
             self.vul_source_signature = None
@@ -243,9 +222,7 @@ class VulEngine:
                 current_link.append(self.copy_method(the_second_stack, propagator=True))
             logger.info(f"==> current taint hash: {self.pool_value}")
             logger.info("find second")
-            self.loop(
-                index, size, current_link, set(the_second_stack.get("sourceHash"))
-            )
+            self.loop(index, size, current_link, set(the_second_stack.get("sourceHash")))
             current_link = current_link[0:2]
             extract_stack = self.find_other_branch_v2(
                 index, size, current_link, set(the_second_stack.get("sourceHash"))
@@ -338,9 +315,7 @@ class VulEngine:
                     continue
 
     @staticmethod
-    def copy_method(
-        method_detail, sink=False, source=False, propagator=False, filter=False
-    ):
+    def copy_method(method_detail, sink=False, source=False, propagator=False, filter=False):
         vul_method_detail = copy.deepcopy(method_detail)
         vul_method_detail["originClassName"] = vul_method_detail["originClassName"]
         # todo  根据类型进行拼接
@@ -380,9 +355,7 @@ class VulEngine:
                 logger.info(f"stisfied {sub_method}")
                 if sub_method.get("source"):
                     current_link.append(self.copy_method(sub_method, source=True))
-                    self.vul_source_signature = (
-                        f"{sub_method.get('className')}.{sub_method.get('methodName')}"
-                    )
+                    self.vul_source_signature = f"{sub_method.get('className')}.{sub_method.get('methodName')}"
                     self.vul_stack.append(current_link[::-1])
                     self.taint_value = sub_method["targetValues"]
                     current_link.pop()

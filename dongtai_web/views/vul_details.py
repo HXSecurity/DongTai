@@ -54,9 +54,7 @@ class _VulDetailResponseDataVulSerializer(serializers.Serializer):
     first_time = serializers.IntegerField()
     latest_time = serializers.IntegerField()
     project_name = serializers.CharField(help_text=_("The name of project"))
-    project_version = serializers.CharField(
-        help_text=_("The version name of the project")
-    )
+    project_version = serializers.CharField(help_text=_("The version name of the project"))
     language = serializers.CharField(default=None, help_text=_("programming language"))
     level = serializers.CharField(help_text=_("The name of vulnerablity level"))
     level_type = serializers.IntegerField(help_text=_("The id of vulnerablity level"))
@@ -98,9 +96,7 @@ class VulDetail(UserEndPoint):
                 "hostname": server.hostname,
                 "ip": server.ip,
                 "port": server.port,
-                "container": server.container
-                if server.container
-                else "JavaApplication",
+                "container": server.container if server.container else "JavaApplication",
                 "server_type": VulSerializer.split_container_name(server.container),
                 "container_path": server.container_path,
                 "runtime": server.runtime,
@@ -166,9 +162,7 @@ class VulDetail(UserEndPoint):
                             if "targetRange" in method and method["targetRange"]
                             else [],
                         )
-                        method["sourceValues"] = parse_target_value(
-                            method["sourceValues"]
-                        )
+                        method["sourceValues"] = parse_target_value(method["sourceValues"])
                         beforehighlight = method["targetValues"]
             else:
                 for method in method_note_pool:
@@ -180,11 +174,7 @@ class VulDetail(UserEndPoint):
                 if not isinstance(method, dict):
                     # 有错误数据情况,跳过 fix me
                     continue
-                class_name = (
-                    method["originClassName"]
-                    if "originClassName" in method
-                    else method["className"]
-                )
+                class_name = method["originClassName"] if "originClassName" in method else method["className"]
                 method_name = method["methodName"]
                 source = ", ".join([str(_hash) for _hash in method["sourceHash"]])
                 target = ", ".join([str(_hash) for _hash in method["targetHash"]])
@@ -227,26 +217,16 @@ class VulDetail(UserEndPoint):
                 results.append(final_res)
         except Exception as e:
             logger.error(
-                _("Analysis of errovence analysis of stain call diagram: {}").format(
-                    __name__, e
-                ),
+                _("Analysis of errovence analysis of stain call diagram: {}").format(__name__, e),
                 exc_info=True,
             )
         return results
 
     @staticmethod
     def parse_request(method, uri, query_param, protocol, header, data):
-        _data = (
-            f"{method} {uri}?{query_param} {protocol}\n"
-            if query_param
-            else f"{method} {uri} {protocol}\n"
-        )
+        _data = f"{method} {uri}?{query_param} {protocol}\n" if query_param else f"{method} {uri} {protocol}\n"
         try:
-            _data = _data + (
-                base64.b64decode(header.encode("utf-8")).decode("utf-8")
-                if header
-                else ""
-            )
+            _data = _data + (base64.b64decode(header.encode("utf-8")).decode("utf-8") if header else "")
         except Exception as e:
             logger.exception(_("Error analysis of Header, error message: "), exc_info=e)
         if data:
@@ -258,14 +238,8 @@ class VulDetail(UserEndPoint):
         return f"{header}\n\n{body}"
 
     def get_vul(self, department):
-        vul = IastVulnerabilityModel.objects.filter(
-            id=self.vul_id, project__department__in=department
-        ).first()
-        hook_type = (
-            HookType.objects.filter(pk=vul.hook_type_id).first()
-            if vul is not None
-            else None
-        )
+        vul = IastVulnerabilityModel.objects.filter(id=self.vul_id, project__department__in=department).first()
+        hook_type = HookType.objects.filter(pk=vul.hook_type_id).first() if vul is not None else None
         hook_type_name = hook_type.name if hook_type else None
         strategy = IastStrategyModel.objects.filter(pk=vul.strategy_id).first()
         strategy_name = strategy.vul_name if strategy else None
@@ -281,11 +255,7 @@ class VulDetail(UserEndPoint):
 
         project_version_id = vul.project_version_id
         if project_version_id:
-            project_version = (
-                IastProjectVersion.objects.values("version_name")
-                .filter(id=project_version_id)
-                .first()
-            )
+            project_version = IastProjectVersion.objects.values("version_name").filter(id=project_version_id).first()
             if project_version:
                 project_version_name = project_version["version_name"]
             else:
@@ -296,9 +266,7 @@ class VulDetail(UserEndPoint):
             self.server = vul.server
         except Exception as e:
             logger.exception(
-                _(
-                    "[{}] Vulnerability information parsing error, error message: "
-                ).format(__name__),
+                _("[{}] Vulnerability information parsing error, error message: ").format(__name__),
                 exc_info=e,
             )
             self.server = {}
@@ -307,24 +275,18 @@ class VulDetail(UserEndPoint):
             token = vul.agent.token
         except ObjectDoesNotExist as e:
             logger.exception(
-                _(
-                    "[{}] Unable to get agent__token, please check whether the agent still exists: "
-                ).format(__name__),
+                _("[{}] Unable to get agent__token, please check whether the agent still exists: ").format(__name__),
                 exc_info=e,
             )
             token = ""
 
         extend_black_list = list(
-            IastRecognizeRule.objects.filter(
-                project_id=project_id, rule_type=RuleTypeChoices.BLACK
-            )
+            IastRecognizeRule.objects.filter(project_id=project_id, rule_type=RuleTypeChoices.BLACK)
             .values_list("rule_detail", flat=True)
             .all()
         )
         extend_white_list = list(
-            IastRecognizeRule.objects.filter(
-                project_id=project_id, rule_type=RuleTypeChoices.WHITE
-            )
+            IastRecognizeRule.objects.filter(project_id=project_id, rule_type=RuleTypeChoices.WHITE)
             .values_list("rule_detail", flat=True)
             .all()
         )
@@ -338,9 +300,7 @@ class VulDetail(UserEndPoint):
             "taint_position": vul.taint_position,
             "first_time": vul.first_time,
             "latest_time": vul.latest_time,
-            "project_name": project["name"]
-            if project
-            else _("The application has not been binded"),
+            "project_name": project["name"] if project else _("The application has not been binded"),
             "project_version": project_version_name,
             "language": vul.language,
             "level": vul.level.name_value,
@@ -361,9 +321,7 @@ class VulDetail(UserEndPoint):
             "response": htmlescape(self.parse_response(vul.res_header, vul.res_body))
             if is_need_http_detail(strategy_name)
             else "",
-            "graph": self.parse_graphy(
-                vul.full_stack, extend_black_list, extend_white_list
-            ),
+            "graph": self.parse_graphy(vul.full_stack, extend_black_list, extend_white_list),
             "context_path": vul.context_path,
             "client_ip": vul.client_ip,
             "status": vul.status_,
@@ -443,9 +401,7 @@ class VulDetail(UserEndPoint):
             }
         ],
         summary=_("Vulnerability details"),
-        description=_(
-            "Use the corresponding id of the vulnerability to query the details of the vulnerability"
-        ),
+        description=_("Use the corresponding id of the vulnerability to query the details of the vulnerability"),
         tags=[_("Vulnerability")],
         response_schema=_ResponseSerializer,
     )
@@ -466,9 +422,7 @@ class VulDetail(UserEndPoint):
             )
         except Exception as e:
             logger.exception(
-                _(
-                    "[{}] Vulnerability information parsing error, error message: "
-                ).format(__name__),
+                _("[{}] Vulnerability information parsing error, error message: ").format(__name__),
                 exc_info=e,
             )
             return R.failure(msg=_("Vulnerability data query error"))
@@ -548,9 +502,7 @@ class VulDetailV2(VulDetail):
             return R.success(data=data)
         except Exception as e:
             logger.error(
-                _(
-                    "[{}] Vulnerability information parsing error, error message: {}"
-                ).format(__name__, e),
+                _("[{}] Vulnerability information parsing error, error message: {}").format(__name__, e),
                 exc_info=True,
             )
             return R.failure(msg=_("Vulnerability data query error"))

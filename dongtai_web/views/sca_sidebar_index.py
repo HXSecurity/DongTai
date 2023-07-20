@@ -37,9 +37,7 @@ class ScaSidebarList(UserEndPoint):
         ],
         tags=[_("Component")],
         summary=_("Component List"),
-        description=_(
-            "Use the specified project information to obtain the corresponding component."
-        ),
+        description=_("Use the specified project information to obtain the corresponding component."),
     )
     def get(self, request):
         """
@@ -60,17 +58,9 @@ class ScaSidebarList(UserEndPoint):
             condition = condition & Q(app_name=app_name)
 
         if order and order in get_model_order_options(Asset):
-            queryset = (
-                Asset.objects.values("package_name", "version", "level", "dt")
-                .filter(condition)
-                .order_by(order)
-            )
+            queryset = Asset.objects.values("package_name", "version", "level", "dt").filter(condition).order_by(order)
         else:
-            queryset = (
-                Asset.objects.values("package_name", "version", "level", "dt")
-                .filter(condition)
-                .order_by("-dt")
-            )
+            queryset = Asset.objects.values("package_name", "version", "level", "dt").filter(condition).order_by("-dt")
 
         page_size = 10
         page_summary, queryset = self.get_paginator(queryset, page_size=page_size)

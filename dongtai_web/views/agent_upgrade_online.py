@@ -11,13 +11,9 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 
 
 class AgentUpgradeArgsSerializer(serializers.Serializer):
-    url = serializers.CharField(
-        help_text=_("The resource link corresponding to the Agent.")
-    )
+    url = serializers.CharField(help_text=_("The resource link corresponding to the Agent."))
     token = serializers.CharField(
-        help_text=_(
-            "The Token corresponding to the user is the same as when connecting to openapi."
-        )
+        help_text=_("The Token corresponding to the user is the same as when connecting to openapi.")
     )
 
 
@@ -27,9 +23,7 @@ _ResponseSerializer = get_response_serializer(
         (
             (
                 202,
-                _(
-                    "Token verification failed, please confirm your input address and token are correct"
-                ),
+                _("Token verification failed, please confirm your input address and token are correct"),
             ),
             "",
         ),
@@ -57,9 +51,7 @@ class AgentUpgradeOnline(TalentAdminEndPoint):
             return R.success(msg=_("Online upgrade successful"))
         except Exception:
             return R.failure(
-                msg=_(
-                    "Token verification failed, please confirm your input address and token are correct"
-                )
+                msg=_("Token verification failed, please confirm your input address and token are correct")
             )
 
     def token_verify(self, url, token):

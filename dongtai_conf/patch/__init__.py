@@ -22,9 +22,7 @@ class PatchConfig:
 
 
 is_init_patch = False
-PATCH_HANDLER: dict[CodeType, dict[int, tuple[Callable, PatchConfig]]] = defaultdict(
-    dict
-)
+PATCH_HANDLER: dict[CodeType, dict[int, tuple[Callable, PatchConfig]]] = defaultdict(dict)
 
 
 def init_patch() -> None:
@@ -76,10 +74,7 @@ def patch_point(*args: Any, patch_id: int = 0) -> Any:
                     # 如果启用类型检查,进行类型检查
                     type_ = annotations.get(name, None)
                     if type(type_) is type and not isinstance(local_value, type_):
-                        logger.error(
-                            "type check error, "
-                            f"name {name}, expect {type_}, get{type(local_value)}"
-                        )
+                        logger.error("type check error, " f"name {name}, expect {type_}, get{type(local_value)}")
                 patch_func_args[name] = local_value
             else:
                 logger.error(f"can not call patch function, miss local var {name}")
@@ -90,14 +85,10 @@ def patch_point(*args: Any, patch_id: int = 0) -> Any:
         if len(args) == 1:
             return return_value
         if not isinstance(return_value, tuple):
-            logger.error(
-                f"return value type error: expect tuple, get {type(return_value)}"
-            )
+            logger.error(f"return value type error: expect tuple, get {type(return_value)}")
             return _return_args(*args)
         if len(return_value) != len(args):
-            logger.error(
-                f"return value len error: expect {len(args)}, get {len(return_value)}"
-            )
+            logger.error(f"return value len error: expect {len(args)}, get {len(return_value)}")
             return _return_args(*args)
         return _return_args(*return_value)
     return _return_args(*args)
@@ -125,6 +116,4 @@ def check_patch() -> None:
     for code, func in PATCH_HANDLER.items():
         args, _, _, _, kwonlyargs, _, _ = inspect.getfullargspec(func)
         if not set(args + kwonlyargs).issubset(set(code.co_varnames)):
-            logger.error(
-                f"error: expect args {args + kwonlyargs}, varnames {code.co_varnames}"
-            )
+            logger.error(f"error: expect args {args + kwonlyargs}, varnames {code.co_varnames}")

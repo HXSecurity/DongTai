@@ -33,18 +33,14 @@ class RequestLogMiddleware:
             {"max_time": 0, "min_time": 0, "average_time": 0, "request_count": 0},
         )
         api_info["max_time"] = (
-            timenow
-            if api_info["max_time"] == 0 or api_info["max_time"] < timenow
-            else api_info["max_time"]
+            timenow if api_info["max_time"] == 0 or api_info["max_time"] < timenow else api_info["max_time"]
         )
         api_info["min_time"] = (
-            timenow
-            if api_info["min_time"] == 0 or api_info["min_time"] > timenow
-            else api_info["min_time"]
+            timenow if api_info["min_time"] == 0 or api_info["min_time"] > timenow else api_info["min_time"]
         )
-        api_info["average_time"] = (
-            api_info["average_time"] * api_info["request_count"] + timenow
-        ) / (api_info["request_count"] + 1)
+        api_info["average_time"] = (api_info["average_time"] * api_info["request_count"] + timenow) / (
+            api_info["request_count"] + 1
+        )
         api_info["request_count"] += 1
         REQUEST_DICT[apiurl] = api_info
         request_logger.error(msg=f"{apiurl} : {timenow}")

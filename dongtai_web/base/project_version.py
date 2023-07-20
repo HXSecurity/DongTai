@@ -12,9 +12,7 @@ from dongtai_common.models.project_version import IastProjectVersion
 class VersionModifySerializer(serializers.Serializer):
     version_id = serializers.CharField(help_text=_("The version id of the project"))
     version_name = serializers.CharField(help_text=_("The version name of the project"))
-    description = serializers.CharField(
-        help_text=_("Description of the project versoin")
-    )
+    description = serializers.CharField(help_text=_("Description of the project versoin"))
     project_id = serializers.IntegerField(help_text=_("The id of the project"))
     current_version = serializers.IntegerField(
         help_text=_("Whether it is the current version, 1 means yes, 0 means no.")
@@ -28,11 +26,7 @@ def version_modify(user, department, versionData=None):
     current_version = versionData.get("current_version", 0)
     version_name = versionData.get("version_name", "")
     description = versionData.get("description", "")
-    project = (
-        IastProject.objects.filter(department__in=department, id=project_id)
-        .only("id", "user")
-        .first()
-    )
+    project = IastProject.objects.filter(department__in=department, id=project_id).only("id", "user").first()
     if not version_name or not project:
         return {"status": "202", "msg": _("Parameter error")}
     baseVersion = IastProjectVersion.objects.filter(
@@ -46,9 +40,7 @@ def version_modify(user, department, versionData=None):
     if existVersion:
         return {"status": "202", "msg": _("Repeated version name")}
     if version_id:
-        version = IastProjectVersion.objects.filter(
-            id=version_id, project_id=project.id, status=1
-        ).first()
+        version = IastProjectVersion.objects.filter(id=version_id, project_id=project.id, status=1).first()
         if not version:
             return {"status": "202", "msg": _("Version does not exist")}
         version.update_time = int(time.time())

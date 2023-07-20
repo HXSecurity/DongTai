@@ -28,14 +28,10 @@ class _EngineHookRuleTypeArgsSerializer(serializers.Serializer):
             "type of hook rule \n 1 represents the propagation method, 2 represents the source method, 3 represents the filter method, and 4 represents the taint method"
         ),
     )
-    language_id = serializers.IntegerField(
-        default=1, help_text=_("The id of programming language"), required=False
-    )
+    language_id = serializers.IntegerField(default=1, help_text=_("The id of programming language"), required=False)
 
 
-_SuccessSerializer = get_response_serializer(
-    HookTypeSerialize(many=True, allow_null=True)
-)
+_SuccessSerializer = get_response_serializer(HookTypeSerialize(many=True, allow_null=True))
 
 
 class EngineHookRuleTypesEndPoint(UserEndPoint):
@@ -80,17 +76,12 @@ class EngineHookRuleTypesEndPoint(UserEndPoint):
     )
     def get(self, request):
         rule_type, page, page_size, language_id = self.parse_args(request)
-        if (
-            all(x is not None for x in [rule_type, page, page_size, language_id])
-            is False
-        ):
+        if all(x is not None for x in [rule_type, page, page_size, language_id]) is False:
             return R.failure(msg=_("Parameter error"))
         if rule_type is None:
             return R.failure(msg=_("Strategy type does not exist"))
         if rule_type == 4:
-            queryset = IastStrategyModel.objects.filter(
-                state__in=["enable", "disable"]
-            ).all()
+            queryset = IastStrategyModel.objects.filter(state__in=["enable", "disable"]).all()
             data = StrategySerialize(queryset, many=True).data
         else:
             queryset = HookType.objects.filter(

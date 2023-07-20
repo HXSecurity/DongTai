@@ -90,9 +90,7 @@ class ScaList(UserEndPoint):
             {
                 "name": "version_id",
                 "type": int,
-                "description": _(
-                    "The default is the current version id of the project."
-                ),
+                "description": _("The default is the current version id of the project."),
             },
             {
                 "name": "keyword",
@@ -142,9 +140,7 @@ class ScaList(UserEndPoint):
         ],
         tags=[_("Component")],
         summary=_("Component List (with project)"),
-        description=_(
-            "use the specified project information to obtain the corresponding component."
-        ),
+        description=_("use the specified project information to obtain the corresponding component."),
         response_schema=_ResponseSerializer,
     )
     def post(self, request):
@@ -188,10 +184,7 @@ class ScaList(UserEndPoint):
             else:
                 current_project_version = get_project_version_by_id(version_id)
 
-            base_query_sql = (
-                base_query_sql
-                + " and iast_asset.project_id=%s and iast_asset.project_version_id=%s "
-            )
+            base_query_sql = base_query_sql + " and iast_asset.project_id=%s and iast_asset.project_version_id=%s "
             project_version_id = current_project_version.get("version_id", 0)
             es_query["project_version_id"] = project_version_id
             list_sql_params.append(project_id)
@@ -239,9 +232,7 @@ class ScaList(UserEndPoint):
 
         if package_kw and package_kw.strip() != "":
             package_kw = f"%{package_kw}%"
-            asset_aggr_where = (
-                asset_aggr_where + " and iast_asset_aggr.package_name like %s "
-            )
+            asset_aggr_where = asset_aggr_where + " and iast_asset_aggr.package_name like %s "
             list_sql_params.append(package_kw)
             count_sql_params.append(package_kw)
             where_conditions.append("package_name LIKE %(package_kw)s")
@@ -266,9 +257,7 @@ class ScaList(UserEndPoint):
         es_query["order"] = order
         es_query["order_type"] = order_type
         #        if ELASTICSEARCH_STATE:
-        data = mysql_search(
-            where_conditions, where_conditions_dict, page_size, order_type, order, page
-        )
+        data = mysql_search(where_conditions, where_conditions_dict, page_size, order_type, order, page)
         query_data = ScaAssetSerializer(data, many=True).data
 
         return R.success(data=query_data)
@@ -295,9 +284,7 @@ class ScaList(UserEndPoint):
     #            many=True).data
     #
 
-    def extend_sql(
-        self, request_data, asset_aggr_where, count_sql_params, list_sql_params
-    ):
+    def extend_sql(self, request_data, asset_aggr_where, count_sql_params, list_sql_params):
         return asset_aggr_where, count_sql_params, list_sql_params
 
 
@@ -310,12 +297,7 @@ def get_vul_list_from_elastic_search(sca_ids=None, order=None):
     order_list = []
     if order:
         order_list.insert(0, order)
-    res = (
-        AssetAggrDocument.search()
-        .query(a)
-        .extra(**extra_dict)
-        .sort(*order_list)[: len(sca_ids)]
-    )
+    res = AssetAggrDocument.search().query(a).extra(**extra_dict).sort(*order_list)[: len(sca_ids)]
     resp = res.execute()
     vuls = [i._d_ for i in list(resp)]
     for i in vuls:
@@ -363,9 +345,7 @@ def get_vul_list_from_elastic_searchv2(
     if level_ids:
         must_query.append(Q("terms", level_id=level_ids))
     if search_keyword:
-        must_query.append(
-            Q("wildcard", **{"package_name.keyword": {"value": f"*{search_keyword}*"}})
-        )
+        must_query.append(Q("wildcard", **{"package_name.keyword": {"value": f"*{search_keyword}*"}}))
     hashkey = f"{__name__}_es" + str(
         make_hash(
             [
@@ -396,9 +376,7 @@ def get_vul_list_from_elastic_searchv2(
         after_fields.append(field)
     if after_key:
         sub_after_must_not_query = []
-        sub_after_must_not_query.append(
-            Q("terms", **{"signature_value.keyword": after_key})
-        )
+        sub_after_must_not_query.append(Q("terms", **{"signature_value.keyword": after_key}))
         # for info, value in zip(order_list, after_key):
         #    if isinstance(info, dict):
         #        if info[field]['order'] == 'desc':
@@ -441,13 +419,9 @@ def get_vul_list_from_elastic_searchv2(
     return res_vul[:page_size]
 
 
-def mysql_search(
-    where_conditions, where_conditions_dict, page_size, order_type, order, page
-):
+def mysql_search(where_conditions, where_conditions_dict, page_size, order_type, order, page):
     hashkey = f"{__name__}_mysql" + str(
-        make_hash(
-            [where_conditions, where_conditions_dict, page_size, order_type, order]
-        )
+        make_hash([where_conditions, where_conditions_dict, page_size, order_type, order])
     )
     after_table = cache.get(hashkey, {})
     after_key = after_table.get(page, None)
@@ -456,17 +430,13 @@ def mysql_search(
     if after_key:
         after_order_value, after_signature = after_key
         if order_type == "desc":
-            where_conditions.append(
-                f"({order}, signature_value) < %(after_order_value)s "
-            )
+            where_conditions.append(f"({order}, signature_value) < %(after_order_value)s ")
             where_conditions_dict["after_order_value"] = (
                 after_order_value,
                 after_signature,
             )
         else:
-            where_conditions.append(
-                f"({order}, signature_value) > %(after_order_value)s "
-            )
+            where_conditions.append(f"({order}, signature_value) > %(after_order_value)s ")
             where_conditions_dict["after_order_value"] = (
                 after_order_value,
                 after_signature,

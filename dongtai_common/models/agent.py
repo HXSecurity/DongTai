@@ -31,9 +31,7 @@ class IastAgent(models.Model):
     control = models.IntegerField()
     is_control = models.IntegerField()
     bind_project = models.ForeignKey(IastProject, on_delete=models.CASCADE, default=-1)
-    project_version = models.ForeignKey(
-        IastProjectVersion, on_delete=models.CASCADE, default=-1
-    )
+    project_version = models.ForeignKey(IastProjectVersion, on_delete=models.CASCADE, default=-1)
     project_name = models.CharField(max_length=255, blank=True)
     online = models.PositiveSmallIntegerField(default=0)
     language = models.CharField(max_length=10, blank=True)
@@ -80,9 +78,7 @@ class IastAgent(models.Model):
 
 
 class IastAgentEvent(models.Model):
-    agent = models.ForeignKey(
-        IastAgent, on_delete=models.CASCADE, related_name="new_events"
-    )
+    agent = models.ForeignKey(IastAgent, on_delete=models.CASCADE, related_name="new_events")
     name = models.CharField(max_length=255, blank=True)
     time = models.IntegerField(default=lambda: int(time()), blank=True, null=True)
 

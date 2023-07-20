@@ -24,6 +24,4 @@ def project_time_stamp_update(project_id):
 )
 def project_version_time_stamp_update(project_version_id):
     timestamp = int(time())
-    IastProjectVersion.objects.filter(pk=project_version_id).update(
-        update_time=timestamp
-    )
+    IastProjectVersion.objects.filter(pk=project_version_id).update(update_time=timestamp)

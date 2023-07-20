@@ -12,9 +12,7 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 class _DocumentArgsSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=20, help_text=_("Number per page"))
     page = serializers.IntegerField(default=1, help_text=_("Page index"))
-    language = serializers.CharField(
-        default=None, help_text=_("Document's corresponding programming language")
-    )
+    language = serializers.CharField(default=None, help_text=_("Document's corresponding programming language"))
 
 
 class DocumentSerializer(serializers.ModelSerializer):
@@ -48,9 +46,5 @@ class DocumentsEndpoint(UserEndPoint):
         except ValidationError as e:
             return R.failure(data=e.detail)
         q = Q(language=language) if language else Q()
-        _, documents = self.get_paginator(
-            IastDocument.objects.filter(q).order_by("-weight").all(), page, page_size
-        )
-        return R.success(
-            data={"documents": [model_to_dict(document) for document in documents]}
-        )
+        _, documents = self.get_paginator(IastDocument.objects.filter(q).order_by("-weight").all(), page, page_size)
+        return R.success(data={"documents": [model_to_dict(document) for document in documents]})

@@ -12,14 +12,10 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 
 class _AgentStopBodyArgsSerializer(serializers.Serializer):
     id = serializers.IntegerField(help_text=_("The id corresponding to the agent."))
-    ids = serializers.CharField(
-        help_text=_('The id corresponding to the agent, use"," for segmentation.')
-    )
+    ids = serializers.CharField(help_text=_('The id corresponding to the agent, use"," for segmentation.'))
 
 
-_ResponseSerializer = get_response_serializer(
-    status_msg_keypair=(((201, _("Suspending ...")), ""),)
-)
+_ResponseSerializer = get_response_serializer(status_msg_keypair=(((201, _("Suspending ...")), ""),))
 
 
 class AgentStart(UserEndPoint):
@@ -43,17 +39,11 @@ class AgentStart(UserEndPoint):
             except BaseException:
                 return R.failure(_("Parameter error"))
         if agent_id:
-            agent = IastAgent.objects.filter(
-                department__in=department, id=agent_id
-            ).first()
+            agent = IastAgent.objects.filter(department__in=department, id=agent_id).first()
             if agent is None:
-                return R.failure(
-                    msg=_("Engine does not exist or no permission to access")
-                )
+                return R.failure(msg=_("Engine does not exist or no permission to access"))
             if agent.is_control == 1 and agent.control != 3 and agent.control != 4:
-                return R.failure(
-                    msg=_("Agent is stopping service, please try again later")
-                )
+                return R.failure(msg=_("Agent is stopping service, please try again later"))
             agent.control = 3
             agent.is_control = 1
             agent.except_running_status = 1
@@ -61,9 +51,7 @@ class AgentStart(UserEndPoint):
             agent.save()
         if agent_ids:
             for agent_id in agent_ids:
-                agent = IastAgent.objects.filter(
-                    department__in=department, id=agent_id
-                ).first()
+                agent = IastAgent.objects.filter(department__in=department, id=agent_id).first()
                 if agent is None:
                     continue
                 if agent.is_control == 1 and agent.control != 3 and agent.control != 4:

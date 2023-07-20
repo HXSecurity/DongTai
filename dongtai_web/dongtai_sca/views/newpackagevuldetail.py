@@ -14,15 +14,9 @@ logger = logging.getLogger(__name__)
 class PackageListArgsSerializer(serializers.Serializer):
     page_size = serializers.IntegerField(default=20, help_text=_("Number per page"))
     page = serializers.IntegerField(default=1, help_text=_("Page index"))
-    language_ids = serializers.ListField(
-        child=serializers.IntegerField(default=1, help_text=_("language"))
-    )
-    license_ids = serializers.ListField(
-        child=serializers.IntegerField(default=1, help_text=_("license"))
-    )
-    level_ids = serializers.ListField(
-        child=serializers.IntegerField(default=1, help_text=_("level"))
-    )
+    language_ids = serializers.ListField(child=serializers.IntegerField(default=1, help_text=_("language")))
+    license_ids = serializers.ListField(child=serializers.IntegerField(default=1, help_text=_("license")))
+    level_ids = serializers.ListField(child=serializers.IntegerField(default=1, help_text=_("level")))
     project_id = serializers.IntegerField(default=1, help_text=_("Page index"))
     project_version_id = serializers.IntegerField(default=1, help_text=_("Page index"))
     keyword = serializers.CharField(help_text=_("search_keyword"))

@@ -16,16 +16,10 @@ from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializ
 
 class ProjectsResponseDataSerializer(serializers.Serializer):
     name = serializers.CharField(help_text=_("The name of project"))
-    agent_ids = serializers.CharField(
-        help_text=_("The id corresponding to the agent, use, for segmentation.")
-    )
+    agent_ids = serializers.CharField(help_text=_("The id corresponding to the agent, use, for segmentation."))
     mode = serializers.ChoiceField(["插桩模式"], help_text=_("The mode of project"))
-    scan_id = serializers.IntegerField(
-        help_text=_("The id corresponding to the scanning strategy.")
-    )
-    versionData = ProjectsVersionDataSerializer(
-        help_text=_("Version information about the project")
-    )
+    scan_id = serializers.IntegerField(help_text=_("The id corresponding to the scanning strategy."))
+    versionData = ProjectsVersionDataSerializer(help_text=_("Version information about the project"))
     id = serializers.IntegerField(help_text=_("The id of the project"))
     vul_validation = serializers.IntegerField(help_text="vul validation switch")
 
@@ -56,12 +50,8 @@ class ProjectDetail(UserEndPoint):
         project = IastProject.objects.filter(department__in=department, id=id).first()
 
         if project:
-            relations = IastAgent.objects.filter(
-                bind_project_id=project.id, online=const.RUNNING
-            )
-            agents = [
-                {"id": relation.id, "name": relation.token} for relation in relations
-            ]
+            relations = IastAgent.objects.filter(bind_project_id=project.id, online=const.RUNNING)
+            agents = [{"id": relation.id, "name": relation.token} for relation in relations]
             if project.scan:
                 scan_id = project.scan.id
                 scan_name = project.scan.name

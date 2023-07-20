@@ -29,16 +29,10 @@ class AssetV2(models.Model):
     signature_value = models.CharField(max_length=255, blank=True)
     dt = models.IntegerField(blank=True, default=lambda: int(time.time()))
     version = models.CharField(max_length=255, blank=True)
-    project = models.ForeignKey(
-        IastProject, on_delete=models.CASCADE, blank=True, default=-1
-    )
-    project_version = models.ForeignKey(
-        IastProjectVersion, on_delete=models.CASCADE, blank=True, default=-1
-    )
+    project = models.ForeignKey(IastProject, on_delete=models.CASCADE, blank=True, default=-1)
+    project_version = models.ForeignKey(IastProjectVersion, on_delete=models.CASCADE, blank=True, default=-1)
     # 部门id
-    department = models.ForeignKey(
-        Department, models.DO_NOTHING, blank=True, default=-1
-    )
+    department = models.ForeignKey(Department, models.DO_NOTHING, blank=True, default=-1)
     language_id = models.IntegerField(default=1, blank=True)
     aql = models.ForeignKey(
         "AssetV2Global",

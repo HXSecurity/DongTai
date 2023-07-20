@@ -12,18 +12,14 @@ class JavaObjects:
             setattr(self, name, value)
 
     def __str__(self):
-        attrs_string = ", ".join(
-            [f"{name}={value}" for name, value in self.objects_attrs]
-        )
+        attrs_string = ", ".join([f"{name}={value}" for name, value in self.objects_attrs])
         return f"{self.objects_classname}{{{attrs_string}}}"
 
 
 def parse_java_objects(objects_string: str):
     objects_classname = objects_string[: objects_string.index("{")]
     objects_attrstring = objects_string[objects_string.index("{") :]
-    objects_attrs = [
-        attr.split("=", 2) for attr in objects_attrstring.strip("{}").split(", ")
-    ]
+    objects_attrs = [attr.split("=", 2) for attr in objects_attrstring.strip("{}").split(", ")]
     return JavaObjects(objects_classname, objects_attrs)
 
 

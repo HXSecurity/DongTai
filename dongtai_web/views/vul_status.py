@@ -74,9 +74,7 @@ class VulStatus(UserEndPoint):
             return R.failure()
         if not vul_ids:
             vul_ids = [vul_id]
-        queryset = IastVulnerabilityModel.objects.filter(
-            is_del=0, project__department__in=department
-        )
+        queryset = IastVulnerabilityModel.objects.filter(is_del=0, project__department__in=department)
         vul_status = IastVulnerabilityStatus.objects.filter(pk=status_id).first()
         if vul_status:
             queryset_status = queryset.filter(id__in=vul_ids)

@@ -84,11 +84,7 @@ def search_and_save_vul(
     # if not queryset.values('id').exists():
     #    logger.warning(
     if method_pool is None:
-        method_pool = (
-            json.loads(method_pool_model.method_pool)
-            if method_pool_model.method_pool
-            else []
-        )
+        method_pool = json.loads(method_pool_model.method_pool) if method_pool_model.method_pool else []
     if not method_pool:
         logger.info(f"No method_pool in this model id:{method_pool_model.id} , skip")
         return
@@ -109,13 +105,9 @@ def search_and_save_vul(
         logger.info(f"vul filter_status : {filterres}")
     if status and filterres:
         if isinstance(method_pool_model, MethodPool):
-            logger.info(
-                f"vul_found {method_pool_model.agent_id}  {method_pool_model.url} {sink_sign}"
-            )
+            logger.info(f"vul_found {method_pool_model.agent_id}  {method_pool_model.url} {sink_sign}")
         else:
-            logger.info(
-                f"vul_found {method_pool_model.id}  {method_pool_model.url} {sink_sign}"
-            )
+            logger.info(f"vul_found {method_pool_model.id}  {method_pool_model.url} {sink_sign}")
         # if not vul_strategy:
         #    pass
         handler_vul(
@@ -152,12 +144,8 @@ def search_and_save_vul(
                 verify_time=timestamp,
                 update_time=timestamp,
             )
-            project_time_stamp_update.apply_async(
-                (method_pool_model.agent.bind_project_id,), countdown=5
-            )
-            project_version_time_stamp_update.apply_async(
-                (method_pool_model.agent.project_version_id,), countdown=5
-            )
+            project_time_stamp_update.apply_async((method_pool_model.agent.bind_project_id,), countdown=5)
+            project_version_time_stamp_update.apply_async((method_pool_model.agent.project_version_id,), countdown=5)
         except Exception as e:
             logger.info(f"漏洞数据处理出错,原因:{e}")
 
@@ -172,9 +160,7 @@ def search_and_save_sink(engine, method_pool_model, strategy):
     """
     method_pool = json.loads(method_pool_model.method_pool)
     # fixme 检索匹配条件的sink点
-    is_hit = engine.search_sink(
-        method_pool=method_pool, vul_method_signature=strategy.get("value")
-    )
+    is_hit = engine.search_sink(method_pool=method_pool, vul_method_signature=strategy.get("value"))
     if is_hit is None:
         return
 
@@ -190,20 +176,14 @@ def search_and_save_sink(engine, method_pool_model, strategy):
 def search_vul_from_method_pool(self, method_pool_sign, agent_id, retryable=False):
     logger.info(f"漏洞检测开始,方法池 {method_pool_sign}")
     try:
-        method_pool_model = MethodPool.objects.filter(
-            pool_sign=method_pool_sign, agent_id=agent_id
-        ).first()
+        method_pool_model = MethodPool.objects.filter(pool_sign=method_pool_sign, agent_id=agent_id).first()
         method_pool_model.agent = get_agent(method_pool_model.agent_id)
         if method_pool_model is None:
             if retryable:
                 if self.request.retries < self.max_retries:
                     tries = self.request.retries + 1
-                    raise RetryableException(
-                        f"漏洞检测方法池 {method_pool_sign} 不存在,重试第 {tries} 次"
-                    )
-                logger.warning(
-                    f"漏洞检测超过最大重试次数 {self.max_retries},方法池 {method_pool_sign} 不存在"
-                )
+                    raise RetryableException(f"漏洞检测方法池 {method_pool_sign} 不存在,重试第 {tries} 次")
+                logger.warning(f"漏洞检测超过最大重试次数 {self.max_retries},方法池 {method_pool_sign} 不存在")
             else:
                 logger.warning(f"漏洞检测终止,方法池 {method_pool_sign} 不存在")
             return
@@ -215,9 +195,7 @@ def search_vul_from_method_pool(self, method_pool_sign, agent_id, retryable=Fals
         scan_id = get_scan_id(method_pool_model.agent.bind_project_id)
         strategies = load_sink_strategy(scan_id=scan_id)
         engine = VulEngine()
-        method_pool = (
-            json.loads(method_pool_model.method_pool) if method_pool_model else []
-        )
+        method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
         engine.method_pool = method_pool
         if method_pool:
             for strategy in strategies:
@@ -245,19 +223,13 @@ def search_vul_from_method_pool(self, method_pool_sign, agent_id, retryable=Fals
 def search_vul_from_replay_method_pool(method_pool_id):
     logger.info(f"重放数据漏洞检测开始,方法池 {method_pool_id}")
     try:
-        method_pool_model = IastAgentMethodPoolReplay.objects.filter(
-            id=method_pool_id
-        ).first()
+        method_pool_model = IastAgentMethodPoolReplay.objects.filter(id=method_pool_id).first()
         if method_pool_model is None:
             logger.warn(f"重放数据漏洞检测终止,方法池 {method_pool_id} 不存在")
             return
-        strategies = load_sink_strategy(
-            method_pool_model.agent.user, method_pool_model.agent.language
-        )
+        strategies = load_sink_strategy(method_pool_model.agent.user, method_pool_model.agent.language)
         engine = VulEngine()
-        method_pool = (
-            json.loads(method_pool_model.method_pool) if method_pool_model else []
-        )
+        method_pool = json.loads(method_pool_model.method_pool) if method_pool_model else []
         engine.method_pool = method_pool
         if method_pool is None or len(method_pool) == 0:
             return
@@ -321,29 +293,20 @@ def update_agent_status():
     before_agent_status_update()
     logger.info("检测引擎状态更新开始")
     timestamp = int(time.time())
-    running_agents_ids = list(
-        IastAgent.objects.values("id")
-        .filter(online=1)
-        .values_list("pk", flat=True)
-        .all()
-    )
+    running_agents_ids = list(IastAgent.objects.values("id").filter(online=1).values_list("pk", flat=True).all())
     heartbeat_keys = {f"heartbeat-{x}" for x in running_agents_ids}
     exists_keys = set(cache.get_many(heartbeat_keys).keys())
     keys_missing = heartbeat_keys - exists_keys
     stop_agent_ids = [int(x.replace("heartbeat-", "")) for x in keys_missing]
-    IastAgent.objects.filter(id__in=stop_agent_ids).update(
-        is_running=0, is_core_running=0, online=0
-    )
+    IastAgent.objects.filter(id__in=stop_agent_ids).update(is_running=0, is_core_running=0, online=0)
     vul_id_qs = (
-        IastReplayQueue.objects.filter(
-            update_time__lte=timestamp - 60 * 5, verify_time__isnull=True, replay_type=1
-        )
+        IastReplayQueue.objects.filter(update_time__lte=timestamp - 60 * 5, verify_time__isnull=True, replay_type=1)
         .values("relation_id")
         .distinct()
     )
-    vuls = IastVulnerabilityModel.objects.filter(
-        Q(pk__in=vul_id_qs) & ~Q(status_id__in=(3, 5, 6))
-    ).select_related("agent__user")
+    vuls = IastVulnerabilityModel.objects.filter(Q(pk__in=vul_id_qs) & ~Q(status_id__in=(3, 5, 6))).select_related(
+        "agent__user"
+    )
     for _, vul_list_ in groupby(vuls, lambda x: x.agent.user_id):
         vul_list = list(vul_list_)
         replay_queue = IastReplayQueue.objects.filter(
@@ -374,12 +337,7 @@ def heartbeat():
     agents = IastAgent.objects.all()
     agent_enable = agents.values("id").filter(is_running=1).count()
     agent_counts = agents.values("id").count()
-    heartbeat = (
-        IastHeartbeat.objects.values("id")
-        .filter(agent__in=agents)
-        .annotate(Sum("req_count"))
-        .count()
-    )
+    heartbeat = IastHeartbeat.objects.values("id").filter(agent__in=agents).annotate(Sum("req_count")).count()
     project_count = IastProject.objects.values("id").count()
     user_count = User.objects.values("id").count()
     vul_count = IastVulnerabilityModel.objects.values("id").count()
@@ -397,25 +355,17 @@ def heartbeat():
         "timestamp": int(time.time()),
     }
     try:
-        logger.info(
-            "[dongtai_engine.tasks.heartbeat] send heartbeat data to OpenApi Service."
-        )
+        logger.info("[dongtai_engine.tasks.heartbeat] send heartbeat data to OpenApi Service.")
         resp = requests.post(
             url="http://openapi.iast.huoxian.cn:8000/api/v1/engine/heartbeat",
             json=heartbeat_raw,
         )
         if resp.status_code == 200:
-            logger.info(
-                "[dongtai_engine.tasks.heartbeat] send heartbeat data to OpenApi Service Successful."
-            )
+            logger.info("[dongtai_engine.tasks.heartbeat] send heartbeat data to OpenApi Service Successful.")
             pass
-        logger.info(
-            "[dongtai_engine.tasks.heartbeat] send heartbeat data to OpenApi Service Failure."
-        )
+        logger.info("[dongtai_engine.tasks.heartbeat] send heartbeat data to OpenApi Service Failure.")
     except Exception as e:
-        logger.info(
-            f"[dongtai_engine.tasks.heartbeat] send heartbeat data to OpenApi Service Error. reason is {e}"
-        )
+        logger.info(f"[dongtai_engine.tasks.heartbeat] send heartbeat data to OpenApi Service Error. reason is {e}")
 
 
 @shared_task(queue="dongtai-periodic-task")
@@ -428,9 +378,7 @@ def clear_error_log():
     try:
         timestamp = int(time.time())
         out_date_timestamp = 60 * 60 * 24 * 30
-        count = IastErrorlog.objects.filter(
-            dt__lt=(timestamp - out_date_timestamp)
-        ).delete()
+        count = IastErrorlog.objects.filter(dt__lt=(timestamp - out_date_timestamp)).delete()
         logger.info(f"日志清理成功,共{count}条")
     except Exception as e:
         logger.error(f"日志清理失败,错误详情:{e}")
@@ -443,9 +391,9 @@ def vul_recheck():
     """
     logger.info("开始处理漏洞重放数据")
 
-    relay_queue_queryset = IastReplayQueue.objects.filter(
-        replay_type=const.VUL_REPLAY, state=const.PENDING
-    ).order_by("-id")
+    relay_queue_queryset = IastReplayQueue.objects.filter(replay_type=const.VUL_REPLAY, state=const.PENDING).order_by(
+        "-id"
+    )
     if relay_queue_queryset is None:
         logger.info("暂无需要处理的漏洞重放数据")
         return
@@ -473,12 +421,8 @@ def vul_recheck():
     for replay in sub_replay_queue:
         # 构造重放请求包
         vul_id = replay.relation_id
-        recheck_payload = (
-            replay.payload.value if replay.payload_id != -1 else ".%2F..%2F%60dongtai"
-        )
-        logger.info(
-            f"generating payload recheck_payload:{recheck_payload}  vul_id:{vul_id} replay_id:{replay.id}"
-        )
+        recheck_payload = replay.payload.value if replay.payload_id != -1 else ".%2F..%2F%60dongtai"
+        logger.info(f"generating payload recheck_payload:{recheck_payload}  vul_id:{vul_id} replay_id:{replay.id}")
         if replay.replay_type == 1:
             vulnerability = vul_data.get(vul_id, {})
         else:
@@ -530,9 +474,7 @@ def vul_recheck():
                                     _params = _param_items[index].split("=")
                                     _param_name = _params[0]
                                     if _param_name == param_name:
-                                        _param_items[
-                                            index
-                                        ] = f"{_param_name}={recheck_payload}"
+                                        _param_items[index] = f"{_param_name}={recheck_payload}"
                                         break
                                 body = "&".join(_param_items)
                         except BaseException:
@@ -542,17 +484,13 @@ def vul_recheck():
                                 _params = _param_items[index].split("=")
                                 _param_name = _params[0]
                                 if _param_name == param_name:
-                                    _param_items[
-                                        index
-                                    ] = f"{_param_name}={recheck_payload}"
+                                    _param_items[index] = f"{_param_name}={recheck_payload}"
                                     break
                             body = "&".join(_param_items)
                     elif position == "HEADER":
                         import base64
 
-                        header_raw = (
-                            base64.b64decode(headers).decode("utf-8").split("\n")
-                        )
+                        header_raw = base64.b64decode(headers).decode("utf-8").split("\n")
                         item_length = len(header_raw)
                         for index in range(item_length):
                             _header_list = header_raw[index].split(":")
@@ -561,19 +499,13 @@ def vul_recheck():
                                 header_raw[index] = f"{_header_name}:{recheck_payload}"
                                 break
                         try:
-                            headers = base64.b64encode(
-                                "\n".join(header_raw).encode("raw_unicode_escape")
-                            )
+                            headers = base64.b64encode("\n".join(header_raw).encode("raw_unicode_escape"))
                         except Exception as e:
-                            logger.warning(
-                                f'请求头解析失败,漏洞ID: {vulnerability["id"]}', exc_info=e
-                            )
+                            logger.warning(f'请求头解析失败,漏洞ID: {vulnerability["id"]}', exc_info=e)
                     elif position == "COOKIE":
                         import base64
 
-                        header_raw = (
-                            base64.b64decode(headers).decode("utf-8").split("\n")
-                        )
+                        header_raw = base64.b64decode(headers).decode("utf-8").split("\n")
                         item_length = len(header_raw)
                         cookie_index = 0
                         cookie_raw = None
@@ -590,16 +522,12 @@ def vul_recheck():
                             for index in range(item_length):
                                 cookie_item = cookie_raw_items[index].split("=")
                                 if cookie_item[0] == param_name:
-                                    cookie_raw_items[
-                                        index
-                                    ] = f"{param_name}={recheck_payload}"
+                                    cookie_raw_items[index] = f"{param_name}={recheck_payload}"
                                     break
                             cookie_raw = ";".join(cookie_raw_items)
                             header_raw[cookie_index] = cookie_raw
                         try:
-                            headers = base64.b64encode(
-                                "\n".join(header_raw).encode("raw_unicode_escape")
-                            )
+                            headers = base64.b64encode("\n".join(header_raw).encode("raw_unicode_escape"))
                         except Exception:
                             logger.error(f'请求头解析失败,漏洞ID: {vulnerability["id"]}')
 

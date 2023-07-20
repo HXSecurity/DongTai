@@ -33,7 +33,5 @@ class UserAgentList(UserEndPoint):
         queryset_datas = queryset.values("id", "token")
         data = []
         if queryset_datas:
-            data = [
-                {"id": item["id"], "name": item["token"]} for item in queryset_datas
-            ]
+            data = [{"id": item["id"], "name": item["token"]} for item in queryset_datas]
         return R.success(data=data)

@@ -13,12 +13,8 @@ class HookType(models.Model):
     name = models.CharField(max_length=255, blank=True)
     value = models.CharField(max_length=255, blank=True)
     enable = models.IntegerField(blank=True)
-    create_time = models.IntegerField(
-        blank=True, null=True, default=lambda: int(time())
-    )
-    update_time = models.IntegerField(
-        blank=True, null=True, default=lambda: int(time())
-    )
+    create_time = models.IntegerField(blank=True, null=True, default=lambda: int(time()))
+    update_time = models.IntegerField(blank=True, null=True, default=lambda: int(time()))
     created_by = models.IntegerField(blank=True)
     language = models.ForeignKey(
         IastProgramLanguage,

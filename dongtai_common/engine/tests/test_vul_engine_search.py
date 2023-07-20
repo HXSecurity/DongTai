@@ -20,9 +20,7 @@ class VulEngineSearchTestCase(TestCase):
                 vul_method_signature="java.lang.Class.forName",
             )
         except IndexError:
-            self.fail(
-                "engine.search show check method_pool data instead of raise IndexError."
-            )
+            self.fail("engine.search show check method_pool data instead of raise IndexError.")
 
     def test_search_method_pool_ssrf_safe(self):
         MOCKDATA_FILE = os.path.join(MOCKDATA_DIR, "ssrf_in_cookie_safe.json")

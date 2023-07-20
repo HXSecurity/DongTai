@@ -50,9 +50,7 @@ def get_model_order_options(*args, **kwargs):
 # def assemble_query(condictions: List,
 
 
-def assemble_query(
-    condictions: list, lookuptype="", base_query=None, operator_=operator.or_
-):
+def assemble_query(condictions: list, lookuptype="", base_query=None, operator_=operator.or_):
     if base_query is None:
         base_query = Q()
 
@@ -60,18 +58,13 @@ def assemble_query(
         operator_,
         (
             Q(**x)
-            for x in (
-                {"__".join(filter(lambda x: x, [kv_pair[0], lookuptype])): kv_pair[1]}
-                for kv_pair in condictions
-            )
+            for x in ({"__".join(filter(lambda x: x, [kv_pair[0], lookuptype])): kv_pair[1]} for kv_pair in condictions)
         ),
         base_query,
     )
 
 
-def assemble_query_2(
-    condictions: list, lookuptype="", base_query=None, operator_=operator.or_
-):
+def assemble_query_2(condictions: list, lookuptype="", base_query=None, operator_=operator.or_):
     if base_query is None:
         base_query = Q()
 
@@ -79,10 +72,7 @@ def assemble_query_2(
         operator_,
         (
             ~Q(**x)
-            for x in (
-                {"__".join(filter(lambda x: x, [kv_pair[0], lookuptype])): kv_pair[1]}
-                for kv_pair in condictions
-            )
+            for x in ({"__".join(filter(lambda x: x, [kv_pair[0], lookuptype])): kv_pair[1]} for kv_pair in condictions)
         ),
         base_query,
     )
@@ -106,18 +96,12 @@ def extend_schema_with_envcheck(
         from drf_spectacular.utils import OpenApiResponse, OpenApiTypes, extend_schema
 
         parameters = list(filter(lambda x: x, map(_filter_query, querys)))
-        request_examples = list(
-            filter(lambda x: x, map(_filter_request_body, request_bodys))
-        )
-        response_examples = list(
-            filter(lambda x: x, map(_filter_response_body, response_bodys))
-        )
+        request_examples = list(filter(lambda x: x, map(_filter_request_body, request_bodys)))
+        response_examples = list(filter(lambda x: x, map(_filter_response_body, response_bodys)))
         examples = request_examples + response_examples
         if kwargs.get("request", None) and request_examples:
             kwargs["request"] = {"application/json": OpenApiTypes.OBJECT}
-        elif isinstance(kwargs.get("request", None), SerializerMetaclass) or kwargs.get(
-            "request", None
-        ):
+        elif isinstance(kwargs.get("request", None), SerializerMetaclass) or kwargs.get("request", None):
             kwargs["request"] = {"application/json": kwargs["request"]}
 
         deco = extend_schema(
@@ -142,14 +126,8 @@ def extend_schema_with_envcheck(
 extend_schema_with_envcheck_v2 = extend_schema
 
 
-def get_response_serializer(
-    data_serializer=None, msg_list=None, status_msg_keypair=None
-):
-    status_msg_keypair = (
-        (((201, "success"), "success"),)
-        if status_msg_keypair is None
-        else status_msg_keypair
-    )
+def get_response_serializer(data_serializer=None, msg_list=None, status_msg_keypair=None):
+    status_msg_keypair = (((201, "success"), "success"),) if status_msg_keypair is None else status_msg_keypair
     msg_list = list({x[1] for x in (x[0] for x in status_msg_keypair)})
     status_list = list({x[0] for x in (x[0] for x in status_msg_keypair)})
     msg_list = ["success"] if msg_list is None else msg_list
@@ -229,20 +207,14 @@ def batch_queryset(queryset, batch_size=1):
 
 
 def checkcover(api_route, agents, http_method=None):
-    uri_hash = hashlib.sha1(
-        api_route.path.encode("utf-8"), usedforsecurity=False
-    ).hexdigest()
+    uri_hash = hashlib.sha1(api_route.path.encode("utf-8"), usedforsecurity=False).hexdigest()
     api_method_id = api_route.method_id
     q = Q(agent_id__in=[_["id"] for _ in agents])
     if http_method:
-        http_method_ids = IastApiMethodHttpMethodRelation.objects.filter(
-            api_method_id=api_method_id
-        ).values("api_method_id")
-        http_methods = (
-            HttpMethod.objects.filter(pk__in=http_method_ids)
-            .all()
-            .values_list("method")
+        http_method_ids = IastApiMethodHttpMethodRelation.objects.filter(api_method_id=api_method_id).values(
+            "api_method_id"
         )
+        http_methods = HttpMethod.objects.filter(pk__in=http_method_ids).all().values_list("method")
         q = q & Q(http_method__in=http_methods)
     q = q & Q(uri_sha1=uri_hash)
     if MethodPool.objects.filter(q).exists():
@@ -260,12 +232,7 @@ def checkcover_batch(api_route, agents):
         hashlib.sha1(api_route_.path.encode("utf-8"), usedforsecurity=False).hexdigest()
         for api_route_ in api_route.only("path")
     ]
-    return (
-        MethodPool.objects.filter(uri_sha1__in=uri_hash, agent__in=agents)
-        .values("uri_sha1")
-        .distinct()
-        .count()
-    )
+    return MethodPool.objects.filter(uri_sha1__in=uri_hash, agent__in=agents).values("uri_sha1").distinct().count()
 
 
 def apiroute_cachekey(api_route, agents, http_method=None):
@@ -279,11 +246,7 @@ def sha1(string, encoding="utf-8"):
 
 
 def get_openapi():
-    profilefromdb = (
-        IastProfile.objects.filter(key="apiserver")
-        .values_list("value", flat=True)
-        .first()
-    )
+    profilefromdb = IastProfile.objects.filter(key="apiserver").values_list("value", flat=True).first()
     profilefromini = OPENAPI
     profiles = list(filter(lambda x: x is not None, [profilefromini, profilefromdb]))
     if profiles == []:
@@ -304,9 +267,7 @@ logger = logging.getLogger("dongtai-dongtai_conf")
 
 def checkopenapistatus(openapiurl, token):
     try:
-        resp = requests.get(
-            openapiurl, timeout=10, headers={"Authorization": f"Token {token}"}
-        )
+        resp = requests.get(openapiurl, timeout=10, headers={"Authorization": f"Token {token}"})
         resp = json.loads(resp.content)
         resp = resp.get("data", None)
     except (ConnectionError, ConnectTimeout):

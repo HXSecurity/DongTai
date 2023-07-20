@@ -45,15 +45,9 @@ class OpenApiEndpoint(UserEndPoint):
         response_schema=_GetResponseSerializer,
     )
     def get(self, request):
-        profilefromdb = (
-            IastProfile.objects.filter(key="apiserver")
-            .values_list("value", flat=True)
-            .first()
-        )
+        profilefromdb = IastProfile.objects.filter(key="apiserver").values_list("value", flat=True).first()
         profilefromini = None
-        profiles = list(
-            filter(lambda x: x is not None, [profilefromini, profilefromdb])
-        )
+        profiles = list(filter(lambda x: x is not None, [profilefromini, profilefromdb]))
         if profiles == [] or not profiles[0]:
             return R.failure(msg=_("Get OpenAPI configuration failed"))
         return R.success(data={"url": get_openapi()})
@@ -62,9 +56,7 @@ class OpenApiEndpoint(UserEndPoint):
         request=OpenApiEndpointSerializer,
         tags=[_("Profile")],
         summary=_("Profile DongTai-OpenApi Modify"),
-        description=_(
-            "To set the url address of DongTai-OpenApi, administrator rights are required"
-        ),
+        description=_("To set the url address of DongTai-OpenApi, administrator rights are required"),
         response_schema=_PostResponseSerializer,
     )
     def post(self, request):

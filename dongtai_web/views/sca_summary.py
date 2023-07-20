@@ -85,9 +85,7 @@ class ScaSummary(UserEndPoint):
             {
                 "name": "version_id",
                 "type": int,
-                "description": _(
-                    "The default is the current version id of the project."
-                ),
+                "description": _("The default is the current version id of the project."),
             },
             {
                 "name": "keyword",
@@ -132,9 +130,7 @@ class ScaSummary(UserEndPoint):
         ],
         tags=[_("Component")],
         summary=_("Component Summary (with project)"),
-        description=_(
-            "Use the specified project information to get the corresponding component summary"
-        ),
+        description=_("Use the specified project information to get the corresponding component summary"),
         response_schema=_ResponseSerializer,
     )
     def post(self, request):
@@ -169,16 +165,11 @@ class ScaSummary(UserEndPoint):
                 current_project_version = get_project_version(project_id)
             else:
                 current_project_version = get_project_version_by_id(version_id)
-            asset_aggr_where = (
-                asset_aggr_where
-                + " and iast_asset.project_id=%s and iast_asset.project_version_id=%s "
-            )
+            asset_aggr_where = asset_aggr_where + " and iast_asset.project_id=%s and iast_asset.project_version_id=%s "
             sql_params.append(project_id)
             sql_params.append(current_project_version.get("version_id", 0))
             es_query["bind_project_id"] = project_id
-            es_query["project_version_id"] = current_project_version.get(
-                "version_id", 0
-            )
+            es_query["project_version_id"] = current_project_version.get("version_id", 0)
 
         #        if ELASTICSEARCH_STATE:
         #
@@ -195,9 +186,7 @@ class ScaSummary(UserEndPoint):
         _temp_data = {}
         # 漏洞等级汇总
         level_summary_sql = "SELECT iast_asset.level_id,count(DISTINCT(iast_asset.signature_value)) as total FROM iast_asset {base_query_sql} {where_sql} GROUP BY iast_asset.level_id "
-        level_summary_sql = level_summary_sql.format(
-            base_query_sql=base_query_sql, where_sql=asset_aggr_where
-        )
+        level_summary_sql = level_summary_sql.format(base_query_sql=base_query_sql, where_sql=asset_aggr_where)
 
         with connection.cursor() as cursor:
             cursor.execute(level_summary_sql, sql_params)
@@ -209,15 +198,12 @@ class ScaSummary(UserEndPoint):
 
         DEFAULT_LEVEL.update(_temp_data)
         end["data"]["level"] = [
-            {"level": _key, "count": _value, "level_id": levelNameArr[_key]}
-            for _key, _value in DEFAULT_LEVEL.items()
+            {"level": _key, "count": _value, "level_id": levelNameArr[_key]} for _key, _value in DEFAULT_LEVEL.items()
         ]
 
         default_language = initlanguage()
         language_summary_sql = "SELECT iast_asset.language,count(DISTINCT(iast_asset.signature_value)) as total FROM iast_asset {base_query_sql} {where_sql} GROUP BY iast_asset.language "
-        language_summary_sql = language_summary_sql.format(
-            base_query_sql=base_query_sql, where_sql=asset_aggr_where
-        )
+        language_summary_sql = language_summary_sql.format(base_query_sql=base_query_sql, where_sql=asset_aggr_where)
 
         with connection.cursor() as cursor:
             cursor.execute(language_summary_sql, sql_params)
@@ -230,10 +216,7 @@ class ScaSummary(UserEndPoint):
                     else:
                         default_language[language] = total
 
-        end["data"]["language"] = [
-            {"language": _key, "count": _value}
-            for _key, _value in default_language.items()
-        ]
+        end["data"]["language"] = [{"language": _key, "count": _value} for _key, _value in default_language.items()]
 
         end, base_query_sql, asset_aggr_where, sql_param = self.get_extend_data(
             end, base_query_sql, asset_aggr_where, sql_params
@@ -241,9 +224,7 @@ class ScaSummary(UserEndPoint):
 
         return R.success(data=end["data"])
 
-    def get_extend_data(
-        self, end: dict, base_query_sql: str, asset_aggr_where: str, sql_params: list
-    ):
+    def get_extend_data(self, end: dict, base_query_sql: str, asset_aggr_where: str, sql_params: list):
         return end, base_query_sql, asset_aggr_where, sql_params
 
     def get_data_from_es(self, user_id, es_query):
@@ -273,9 +254,7 @@ def get_vul_list_from_elastic_search(
     if project_version_id:
         must_query.append(Q("terms", project_version_id=[project_version_id]))
     if search_keyword:
-        must_query.append(
-            Q("wildcard", **{"package_name.keyword": {"value": f"*{search_keyword}*"}})
-        )
+        must_query.append(Q("wildcard", **{"package_name.keyword": {"value": f"*{search_keyword}*"}}))
     Q("bool", must=must_query)
     search = IastAssetDocument.search().query(Q("bool", must=must_query))[:0]
     buckets = {
@@ -288,9 +267,7 @@ def get_vul_list_from_elastic_search(
             "distinct_signature_value",
             A("cardinality", field="signature_value.keyword"),
         )
-    res = search.using(
-        Elasticsearch(settings.ELASTICSEARCH_DSL["default"]["hosts"])
-    ).execute()
+    res = search.using(Elasticsearch(settings.ELASTICSEARCH_DSL["default"]["hosts"])).execute()
     dic = {}
     for key in buckets:
         origin_buckets = res.aggs[key].to_dict()["buckets"]

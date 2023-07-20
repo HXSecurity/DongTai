@@ -43,9 +43,7 @@ class MethodPoolSearchProxySer(serializers.Serializer):
         required=False,
     )
     time_range = serializers.ListField(
-        child=serializers.IntegerField(
-            min_value=1, help_text=_("time  format such as 1,1628190947242")
-        ),
+        child=serializers.IntegerField(min_value=1, help_text=_("time  format such as 1,1628190947242")),
         min_length=2,
         max_length=2,
         help_text=_(
@@ -57,27 +55,19 @@ class MethodPoolSearchProxySer(serializers.Serializer):
         required=False,
     )
     res_header = serializers.CharField(
-        help_text=_(
-            "The response header of the method pood, search using regular syntax"
-        ),
+        help_text=_("The response header of the method pood, search using regular syntax"),
         required=False,
     )
     res_body = serializers.CharField(
-        help_text=_(
-            "The response body of the calling chain, search using regular syntax"
-        ),
+        help_text=_("The response body of the calling chain, search using regular syntax"),
         required=False,
     )
     req_header_fs = serializers.CharField(
-        help_text=_(
-            "The request header of the calling chain, search using regular syntax"
-        ),
+        help_text=_("The request header of the calling chain, search using regular syntax"),
         required=False,
     )
     req_data = serializers.CharField(
-        help_text=_(
-            "The request data of the calling chain, search using regular syntax"
-        ),
+        help_text=_("The request data of the calling chain, search using regular syntax"),
         required=False,
     )
     sinkvalues = serializers.CharField(
@@ -203,12 +193,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     #         0] <= 60 * 60 * 24 * 7 else [
                 ]
             )
-            ids = (
-                exclude_ids
-                if isinstance(exclude_ids, list)
-                and all(isinstance(x, int) for x in exclude_ids)
-                else []
-            )
+            ids = exclude_ids if isinstance(exclude_ids, list) and all(isinstance(x, int) for x in exclude_ids) else []
         except BaseException:
             return R.failure(gettext_lazy("Parameter error"))
         search_fields = dict(filter(lambda k: k[0] in fields, request.data.items()))
@@ -220,9 +205,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                 lambda x: x[0] in search_after_keys,
                 (
                     (x[0].replace("search_after_", ""), x[1])
-                    for x in filter(
-                        lambda x: x[0].startswith("search_after_"), request.data.items()
-                    )
+                    for x in filter(lambda x: x[0].startswith("search_after_"), request.data.items())
                 ),
             )
         )
@@ -258,12 +241,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             if "id" in request.data:
                 q = q & Q(pk=request.data["id"])
             q = q & Q(
-                agent_id__in=[
-                    item["id"]
-                    for item in list(
-                        self.get_auth_agents_with_user(request.user).values("id")
-                    )
-                ]
+                agent_id__in=[item["id"] for item in list(self.get_auth_agents_with_user(request.user).values("id"))]
             )
             if time_range:
                 q = q & (Q(update_time__gte=start_time) & Q(update_time__lte=end_time))
@@ -285,13 +263,11 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             .all()
             .values("bind_project_id", "token", "id", "user_id", "online")
         )
-        projects = IastProject.objects.filter(
-            pk__in=[i["bind_project_id"] for i in agents]
-        ).values("id", "name", "user_id")
+        projects = IastProject.objects.filter(pk__in=[i["bind_project_id"] for i in agents]).values(
+            "id", "name", "user_id"
+        )
         vulnerablity = (
-            IastVulnerabilityModel.objects.filter(
-                method_pool_id__in=[i["id"] for i in method_pools]
-            )
+            IastVulnerabilityModel.objects.filter(method_pool_id__in=[i["id"] for i in method_pools])
             .all()
             .values(
                 "id",
@@ -304,9 +280,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
             )
             .distinct()
         )
-        users = User.objects.filter(pk__in=[_["user_id"] for _ in agents]).values(
-            "id", "username"
-        )
+        users = User.objects.filter(pk__in=[_["user_id"] for _ in agents]).values("id", "username")
         vulnerablities = list(vulnerablity)
         relations = []
         [agents, projects, users] = _transform([agents, projects, users], "id")
@@ -327,11 +301,7 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     item["user_id"] = user["id"]
                     item["user_name"] = user["username"]
             item["vulnerablities"] = []
-            for vulnerablity in list(
-                filter(
-                    lambda _: _["method_pool_id"] == method_pool["id"], vulnerablities
-                )
-            ):
+            for vulnerablity in list(filter(lambda _: _["method_pool_id"] == method_pool["id"], vulnerablities)):
                 _ = {}
                 type_ = [
                     x
@@ -348,17 +318,11 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                 item["vulnerablities"].append(_)
             relations.append(item)
         aggregation = {}
-        aggregation["vulnerablities_count"] = aggregation_count(
-            relations, "method_pool_id", "vulnerablities"
-        )
+        aggregation["vulnerablities_count"] = aggregation_count(relations, "method_pool_id", "vulnerablities")
         if highlight:
             for method_pool in method_pools:
                 for field in model_fields:
-                    if (
-                        field in search_fields
-                        and request.data.get(field, None)
-                        and search_mode == 1
-                    ):
+                    if field in search_fields and request.data.get(field, None) and search_mode == 1:
                         if method_pool[field] is None:
                             continue
                         method_pool[f"{field}_highlight"] = highlight_matches(
@@ -367,15 +331,11 @@ class MethodPoolSearchProxy(AnonymousAndUserEndPoint):
                     elif field in fields:
                         if method_pool[field] is None:
                             continue
-                        method_pool[f"{field}_highlight"] = method_pool[field].replace(
-                            "<", "&lt;"
-                        )
+                        method_pool[f"{field}_highlight"] = method_pool[field].replace("<", "&lt;")
                     else:
                         if method_pool[field] is None:
                             continue
-                        method_pool[f"{field}_highlight"] = method_pool[field].replace(
-                            "<", "&lt;"
-                        )
+                        method_pool[f"{field}_highlight"] = method_pool[field].replace("<", "&lt;")
         return R.success(
             data={
                 "method_pools": method_pools,
@@ -433,13 +393,9 @@ def search_generate(
         del search_fields["req_header_fs"]
     search_fields = [(k, v) for k, v in dict(search_fields).items()]
     if search_mode == 1:
-        should_query = [
-            Q("match", **(dict([search_field]))) for search_field in search_fields
-        ]
+        should_query = [Q("match", **(dict([search_field]))) for search_field in search_fields]
     elif search_mode == 2:
-        must_not_query.extend(
-            [Q("match", **(dict([search_field]))) for search_field in search_fields]
-        )
+        must_not_query.extend([Q("match", **(dict([search_field]))) for search_field in search_fields])
     if user_ids:
         must_query.append(Q("terms", user_id=list(user_ids)))
     if search_after_fields:

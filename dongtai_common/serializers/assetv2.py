@@ -7,18 +7,12 @@ from dongtai_web.dongtai_sca.scan.utils import get_language
 
 
 class PackeageScaAssetDetailSerializer(serializers.ModelSerializer):
-    affected_versions = serializers.ListField(
-        source="package_fullname.affected_versions"
-    )
-    unaffected_versions = serializers.ListField(
-        source="package_fullname.unaffected_versions"
-    )
+    affected_versions = serializers.ListField(source="package_fullname.affected_versions")
+    unaffected_versions = serializers.ListField(source="package_fullname.unaffected_versions")
     language = serializers.SerializerMethodField()
     level_name = serializers.CharField(source="get_level_display")
     level_id = serializers.IntegerField(source="level")
-    vul_count_groupby_level = serializers.ListField(
-        source="get_vul_count_groupby_level"
-    )
+    vul_count_groupby_level = serializers.ListField(source="get_vul_count_groupby_level")
 
     class Meta:
         model = AssetV2Global

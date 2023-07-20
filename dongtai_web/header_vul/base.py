@@ -30,9 +30,7 @@ class HeaderVulDetailSerializer(serializers.ModelSerializer):
 
 
 class HeaderVulSerializer(serializers.ModelSerializer):
-    details = HeaderVulDetailSerializer(
-        source="iastheadervulnerabilitydetail_set", many=True
-    )
+    details = HeaderVulDetailSerializer(source="iastheadervulnerabilitydetail_set", many=True)
 
     class Meta:
         model = IastHeaderVulnerability
@@ -44,10 +42,7 @@ class HeaderVulViewSet(UserEndPoint, viewsets.ViewSet):
 
     def get_permissions(self):
         try:
-            return [
-                permission()
-                for permission in self.permission_classes_by_action[self.action]
-            ]
+            return [permission() for permission in self.permission_classes_by_action[self.action]]
         except KeyError:
             return [permission() for permission in self.permission_classes]
 
@@ -70,9 +65,7 @@ class HeaderVulViewSet(UserEndPoint, viewsets.ViewSet):
         q = Q(project__department__in=department) & Q(vul_id=vul_id)
         queryset = IastHeaderVulnerability.objects.filter(q).all()
         page_summary, page_data = self.get_paginator(queryset, page, page_size)
-        return R.success(
-            data=HeaderVulSerializer(page_data, many=True).data, page=page_summary
-        )
+        return R.success(data=HeaderVulSerializer(page_data, many=True).data, page=page_summary)
 
     @extend_schema_with_envcheck(
         tags=[_("Header Vul")],

@@ -78,9 +78,7 @@ class ScaDetailView(UserEndPoint):
         ],
         tags=[_("Component")],
         summary=_("Component Detail"),
-        description=_(
-            "Get the details of the corresponding component by specifying the id."
-        ),
+        description=_("Get the details of the corresponding component by specifying the id."),
         response_schema=_ResponseSerializer,
     )
     def get(self, request, id):
@@ -91,9 +89,7 @@ class ScaDetailView(UserEndPoint):
             asset = Asset.objects.filter(agent__in=agents, id=id).first()
 
             if asset is None:
-                return R.failure(
-                    msg=_("Components do not exist or no permission to access")
-                )
+                return R.failure(msg=_("Components do not exist or no permission to access"))
             data = ScaSerializer(asset).data
             data["vuls"] = []
 
@@ -103,9 +99,7 @@ class ScaDetailView(UserEndPoint):
             elif asset.agent.language == "PYTHON":
                 version = asset.version
                 name = asset.package_name.replace("-" + version, "")
-                search_query = "ecosystem={}&name={}&version={}".format(
-                    "PyPI", name, version
-                )
+                search_query = "ecosystem={}&name={}&version={}".format("PyPI", name, version)
             if search_query != "":
                 try:
                     url = settings.SCA_BASE_URL + "/package_vul/?" + search_query
@@ -134,12 +128,8 @@ class ScaDetailView(UserEndPoint):
                         vul = {
                             "safe_version": ",".join(_fixed_versions)
                             if len(_fixed_versions) > 0
-                            else _(
-                                "Current version stopped for maintenance or it is not a secure version"
-                            ),
-                            "vulcve": _vul.get("aliases", [])[0]
-                            if len(_vul.get("aliases", [])) > 0
-                            else "",
+                            else _("Current version stopped for maintenance or it is not a secure version"),
+                            "vulcve": _vul.get("aliases", [])[0] if len(_vul.get("aliases", [])) > 0 else "",
                             "vulcwe": ",".join(cwe_ids),
                             "vulname": _vul.get("summary", ""),
                             "overview": _vul.get("summary", ""),
@@ -147,13 +137,9 @@ class ScaDetailView(UserEndPoint):
                             "reference": _vul.get("references", []),
                             "level": level_dict.get(_level, _level),
                         }
-                        cverelation = VulCveRelation.objects.filter(
-                            cve=vul["vulcve"]
-                        ).first()
+                        cverelation = VulCveRelation.objects.filter(cve=vul["vulcve"]).first()
                         vul["vulcve_url"] = (
-                            f"https://cve.mitre.org/cgi-bin/cvename.cgi?name={vul['vulcve']}"
-                            if vul["vulcve"]
-                            else ""
+                            f"https://cve.mitre.org/cgi-bin/cvename.cgi?name={vul['vulcve']}" if vul["vulcve"] else ""
                         )
                         vul["vulcnnvd_url"] = ""
                         vul["vulcnvd_url"] = ""
@@ -166,16 +152,10 @@ class ScaDetailView(UserEndPoint):
                                 else ""
                             )
                             vul["vulcnvd_url"] = (
-                                f"https://www.cnvd.org.cn/flaw/show/{cverelation.cnvd}"
-                                if cverelation.cnvd
-                                else ""
+                                f"https://www.cnvd.org.cn/flaw/show/{cverelation.cnvd}" if cverelation.cnvd else ""
                             )
-                            vul["vulcnnvd"] = (
-                                cverelation.cnnvd if cverelation.cnnvd else ""
-                            )
-                            vul["vulcnvd"] = (
-                                cverelation.cnvd if cverelation.cnvd else ""
-                            )
+                            vul["vulcnnvd"] = cverelation.cnnvd if cverelation.cnnvd else ""
+                            vul["vulcnvd"] = cverelation.cnvd if cverelation.cnvd else ""
                         data["vuls"].append(vul)
 
                 except Exception as e:

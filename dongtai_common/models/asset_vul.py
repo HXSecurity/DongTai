@@ -71,9 +71,7 @@ class IastVulAssetRelation(models.Model):
         db_constraint=False,
         db_column="asset_vul_id",
     )
-    asset = models.ForeignKey(
-        Asset, on_delete=models.DO_NOTHING, db_constraint=False, db_column="asset_id"
-    )
+    asset = models.ForeignKey(Asset, on_delete=models.DO_NOTHING, db_constraint=False, db_column="asset_id")
     status = models.ForeignKey(
         IastVulnerabilityStatus,
         on_delete=models.DO_NOTHING,
@@ -82,9 +80,7 @@ class IastVulAssetRelation(models.Model):
     )
     is_del = models.SmallIntegerField(default=0)
     create_time = models.IntegerField()
-    vul_asset_metadata = models.ForeignKey(
-        IastAssetVulRelationMetaData, on_delete=models.DO_NOTHING, default=""
-    )
+    vul_asset_metadata = models.ForeignKey(IastAssetVulRelationMetaData, on_delete=models.DO_NOTHING, default="")
 
     class Meta:
         managed = get_managed()
@@ -175,18 +171,14 @@ class IastAssetVulnerabilityDocument(Document):
         """
         if isinstance(related_instance, IastAgent):
             if related_instance.bind_project_id < 0:
-                return IastVulAssetRelation.objects.filter(
-                    asset__agent__id=related_instance.pk
-                ).all()
+                return IastVulAssetRelation.objects.filter(asset__agent__id=related_instance.pk).all()
             return None
         return None
 
     @classmethod
     def search(cls, using=None, index=None):
         uuid_key = uuid.uuid4().hex
-        cache_uuid_key = cache.get_or_set(
-            f"es-documents-shards-{cls.__name__}", uuid_key, 60 * 1
-        )
+        cache_uuid_key = cache.get_or_set(f"es-documents-shards-{cls.__name__}", uuid_key, 60 * 1)
         return Search(
             using=cls._get_using(using),
             index=cls._default_index(index),

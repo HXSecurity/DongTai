@@ -25,9 +25,7 @@ class ProjectVersionUpdate(UserEndPoint):
         request=VersionModifySerializer,
         tags=[_("Project")],
         summary=_("Projects Version Update"),
-        description=_(
-            "Update the version information of the corresponding version id."
-        ),
+        description=_("Update the version information of the corresponding version id."),
         response_schema=_ResponseSerializer,
     )
     def post(self, request):

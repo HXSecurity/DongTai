@@ -89,9 +89,7 @@ def getProjectInfoByAgentId(agent_ids=None):
         for item in agent_info:
             agent_id = item["id"]
             del item["id"]
-            item["server_type"] = VulSerializer.split_container_name(
-                item["server__container"]
-            )
+            item["server_type"] = VulSerializer.split_container_name(item["server__container"])
             agent_result[agent_id] = item
     return agent_result
 
@@ -158,9 +156,7 @@ def auth_user_list_str(user=None, user_id=0, user_table=""):
     departments = user.get_relative_department()
     department_ids = list(departments.values_list("id", flat=True))
     department_ids_arr = ",".join(list(map(str, department_ids)))
-    user_ids = list(
-        User.objects.filter(department__in=departments).values_list("id", flat=True)
-    )
+    user_ids = list(User.objects.filter(department__in=departments).values_list("id", flat=True))
     result["user_list"] = user_ids
     user_ids_arr = list(map(str, user_ids))
     user_str = ",".join(user_ids_arr)
@@ -168,9 +164,7 @@ def auth_user_list_str(user=None, user_id=0, user_table=""):
     result["department_list"] = department_ids
     result["department_str"] = department_ids_arr
     if user_table:
-        result["user_condition_str"] = " and {}.department_id in ({})".format(
-            user_table, department_ids_arr
-        )
+        result["user_condition_str"] = " and {}.department_id in ({})".format(user_table, department_ids_arr)
     return result
 
 

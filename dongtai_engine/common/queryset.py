@@ -51,9 +51,7 @@ def load_sink_strategy(user=None, language=None, scan_id=0) -> list[dict]:
         # for strategy in sub_queryset:
         strategy_value = strategy.get("value", "")
         sub_method_signature = (
-            strategy_value[: strategy_value.rfind("(")]
-            if strategy_value.rfind("(") > 0
-            else strategy_value
+            strategy_value[: strategy_value.rfind("(")] if strategy_value.rfind("(") > 0 else strategy_value
         )
         if sub_method_signature in sub_method_signatures:
             continue

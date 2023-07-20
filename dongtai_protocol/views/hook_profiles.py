@@ -46,9 +46,7 @@ class HookProfilesEndPoint(OpenApiEndPoint):
         hook_types_a = HookType.objects.filter(
             Q(
                 language_id=language_id,
-                enable__in=[const.HOOK_TYPE_ENABLE]
-                if not full
-                else [const.HOOK_TYPE_ENABLE, const.HOOK_TYPE_DISABLE],
+                enable__in=[const.HOOK_TYPE_ENABLE] if not full else [const.HOOK_TYPE_ENABLE, const.HOOK_TYPE_DISABLE],
                 created_by__in={1, user.id} if user else [1],
                 type__in=(1, 2, 3),
             )
@@ -62,9 +60,7 @@ class HookProfilesEndPoint(OpenApiEndPoint):
             strategies = hook_type.strategies.filter(
                 Q(
                     language_id=language_id,
-                    type__in=(1, 2, 3)
-                    if not isinstance(hook_type, IastStrategyModel)
-                    else [4],
+                    type__in=(1, 2, 3) if not isinstance(hook_type, IastStrategyModel) else [4],
                     created_by__in=[1, user.id] if user else [1],
                     enable=const.HOOK_TYPE_ENABLE,
                 )
@@ -114,9 +110,7 @@ class HookProfilesEndPoint(OpenApiEndPoint):
                     }
                     for strategy in strategies.values()
                 )
-                strategy_details = sorted(
-                    strategy_details, key=lambda item: str(item["value"])
-                )
+                strategy_details = sorted(strategy_details, key=lambda item: str(item["value"]))
                 if not strategy_details:
                     continue
                 profiles.append(
@@ -143,9 +137,7 @@ class HookProfilesEndPoint(OpenApiEndPoint):
         user = request.user
 
         language = request.query_params.get("language")
-        language_id = (
-            LANGUAGE_DICT.get(language, None) if language is not None else None
-        )
+        language_id = LANGUAGE_DICT.get(language, None) if language is not None else None
         language_id = JAVA if language_id is None and language is None else language_id
         profiles = self.get_profiles(user, language_id)
 

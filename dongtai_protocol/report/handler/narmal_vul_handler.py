@@ -57,17 +57,11 @@ class BaseVulnHandler(IReportHandler):
         hook_type_id = 0
         strategy_id = 0
         # 根据用户ID判断获取策略中的漏洞等级
-        hook_type = (
-            HookType.objects.values("id", "enable").filter(value=vul_type).first()
-        )
+        hook_type = HookType.objects.values("id", "enable").filter(value=vul_type).first()
         if hook_type:
             hook_type_id = hook_type.get("id", 0)
             vul_type_enable = hook_type.get("enable", 0)
-            strategy = (
-                IastStrategyModel.objects.values("level_id", "id")
-                .filter(hook_type_id=hook_type_id)
-                .first()
-            )
+            strategy = IastStrategyModel.objects.values("level_id", "id").filter(hook_type_id=hook_type_id).first()
             if strategy:
                 level_id = strategy.get("level_id", 4)
                 strategy_id = strategy.get("id", 0)
@@ -129,9 +123,7 @@ class BaseVulnHandler(IReportHandler):
 class NormalVulnHandler(BaseVulnHandler):
     def save(self):
         logger.info("NormalVulnHandler start")
-        logger.info(
-            f"vuln_type: {self.vuln_type} vuln_type: {self.http_uri} agent_id: {self.agent_id}"
-        )
+        logger.info(f"vuln_type: {self.vuln_type} vuln_type: {self.http_uri} agent_id: {self.agent_id}")
         if self.http_replay:
             return
 
@@ -143,17 +135,13 @@ class NormalVulnHandler(BaseVulnHandler):
             strategy_id,
         ) = self.get_vul_info()
         logger.info("get_vul_info start")
-        logger.info(
-            f"{level_id} {vul_type} {vul_type_enable} {hook_type_id} {strategy_id}"
-        )
+        logger.info(f"{level_id} {vul_type} {vul_type_enable} {hook_type_id} {strategy_id}")
         index = -1
         if vul_type_enable == 0:
             return
         caller_message = self.app_caller[index + 2]
         sink_message = self.app_caller[index + 1]
-        caller_message_location = (
-            re.search("\\(.*\\)", caller_message).group(0).strip("()").split(":")
-        )
+        caller_message_location = re.search("\\(.*\\)", caller_message).group(0).strip("()").split(":")
         if len(caller_message_location) == 2:
             caller_message_file, caller_message_linenumber = caller_message_location
         else:
@@ -165,40 +153,19 @@ class NormalVulnHandler(BaseVulnHandler):
                     "args": "",
                     "source": False,
                     "invokeId": 1,
-                    "className": ".".join(
-                        re.search(".*\\(", sink_message)
-                        .group(0)
-                        .strip("()")
-                        .split(".")[:-1]
-                    ),
+                    "className": ".".join(re.search(".*\\(", sink_message).group(0).strip("()").split(".")[:-1]),
                     "signature": sink_message,
                     "interfaces": [],
-                    "methodName": re.search(".*\\(", sink_message)
-                    .group(0)
-                    .strip("()")
-                    .split(".")[-1],
+                    "methodName": re.search(".*\\(", sink_message).group(0).strip("()").split(".")[-1],
                     "sourceHash": [],
                     "targetHash": [],
-                    "callerClass": ".".join(
-                        re.search(".*\\(", caller_message)
-                        .group(0)
-                        .strip("()")
-                        .split(".")[:-1]
-                    ),
+                    "callerClass": ".".join(re.search(".*\\(", caller_message).group(0).strip("()").split(".")[:-1]),
                     "targetRange": [],
-                    "callerMethod": re.search(".*\\(", caller_message)
-                    .group(0)
-                    .strip("()")
-                    .split(".")[-1],
+                    "callerMethod": re.search(".*\\(", caller_message).group(0).strip("()").split(".")[-1],
                     "retClassName": "",
                     "sourceValues": "",
                     "targetValues": "",
-                    "originClassName": ".".join(
-                        re.search(".*\\(", sink_message)
-                        .group(0)
-                        .strip("()")
-                        .split(".")[:-1]
-                    ),
+                    "originClassName": ".".join(re.search(".*\\(", sink_message).group(0).strip("()").split(".")[:-1]),
                     "callerLineNumber": caller_message_linenumber,
                     "sourceHashForRpc": [],
                     "targetHashForRpc": [],

@@ -51,9 +51,7 @@ class AgentSerializer(serializers.ModelSerializer):
         try:
             latest_heartbeat = obj.latest_heartbeat
         except Exception:
-            latest_heartbeat = (
-                obj.heartbeats.values("dt", "cpu").order_by("-dt").first()
-            )
+            latest_heartbeat = obj.heartbeats.values("dt", "cpu").order_by("-dt").first()
             obj.latest_heartbeat = latest_heartbeat
         return latest_heartbeat
 
@@ -76,9 +74,7 @@ class AgentSerializer(serializers.ModelSerializer):
         def get_server_addr():
             if obj.server_id not in self.SERVER_MAP:
                 if obj.server.ip and obj.server.port and obj.server.port != 0:
-                    self.SERVER_MAP[
-                        obj.server_id
-                    ] = f"{obj.server.ip}:{obj.server.port}"
+                    self.SERVER_MAP[obj.server_id] = f"{obj.server.ip}:{obj.server.port}"
                 else:
                     return _("No flow is detected by the probe")
             return self.SERVER_MAP[obj.server_id]
@@ -100,30 +96,15 @@ class AgentSerializer(serializers.ModelSerializer):
         return heartbeat["req_count"] if heartbeat else 0
 
     def get_method_queue(self, obj):
-        heartbeat = (
-            IastHeartbeat.objects.values("method_queue")
-            .filter(agent_id=obj.id)
-            .order_by("-dt")
-            .first()
-        )
+        heartbeat = IastHeartbeat.objects.values("method_queue").filter(agent_id=obj.id).order_by("-dt").first()
         return heartbeat["method_queue"] if heartbeat is not None else 0
 
     def get_report_queue(self, obj):
-        heartbeat = (
-            IastHeartbeat.objects.values("report_queue")
-            .filter(agent_id=obj.id)
-            .order_by("-dt")
-            .first()
-        )
+        heartbeat = IastHeartbeat.objects.values("report_queue").filter(agent_id=obj.id).order_by("-dt").first()
         return heartbeat["report_queue"] if heartbeat is not None else 0
 
     def get_replay_queue(self, obj):
-        heartbeat = (
-            IastHeartbeat.objects.values("replay_queue")
-            .filter(agent_id=obj.id)
-            .order_by("-dt")
-            .first()
-        )
+        heartbeat = IastHeartbeat.objects.values("replay_queue").filter(agent_id=obj.id).order_by("-dt").first()
         return heartbeat["replay_queue"] if heartbeat is not None else 0
 
     def get_register_time(self, obj):
@@ -137,9 +118,7 @@ class AgentSerializer(serializers.ModelSerializer):
         return obj.alias
 
     def get_latest_time(self, obj):
-        latest_heartbeat = (
-            obj.heartbeats.values_list("dt", flat=True).order_by("-dt").first()
-        )
+        latest_heartbeat = obj.heartbeats.values_list("dt", flat=True).order_by("-dt").first()
         if latest_heartbeat:
             return latest_heartbeat
         return obj.latest_time
@@ -153,9 +132,7 @@ class ProjectEngineSerializer(serializers.ModelSerializer):
 
 class AgentToggleArgsSerializer(serializers.Serializer):
     id = serializers.IntegerField(help_text=_("The id corresponding to the agent."))
-    ids = serializers.CharField(
-        help_text=_('The id corresponding to the agent, use"," for segmentation.')
-    )
+    ids = serializers.CharField(help_text=_('The id corresponding to the agent, use"," for segmentation.'))
 
 
 class AgentInstallArgsSerializer(serializers.Serializer):

@@ -73,9 +73,7 @@ class VulSerializer(serializers.ModelSerializer):
         """
         Only for header vulnerablity.
         """
-        return HeaderVulUrlSerializer(
-            IastHeaderVulnerability.objects.filter(vul_id=pk).all(), many=True
-        ).data
+        return HeaderVulUrlSerializer(IastHeaderVulnerability.objects.filter(vul_id=pk).all(), many=True).data
 
     def get_language(self, obj):
         if obj["agent_id"] not in self.AGENT_LANGUAGE_MAP:
@@ -107,9 +105,7 @@ class VulSerializer(serializers.ModelSerializer):
 
 class VulForPluginSerializer(serializers.ModelSerializer):
     type = serializers.SerializerMethodField()
-    level = serializers.SerializerMethodField(
-        help_text=_("The level name of vulnerablity")
-    )
+    level = serializers.SerializerMethodField(help_text=_("The level name of vulnerablity"))
 
     class Meta:
         model = IastVulnerabilityModel
@@ -141,34 +137,26 @@ class VulForPluginSerializer(serializers.ModelSerializer):
 class VulSummaryLanguageSerializer(serializers.Serializer):
     language = serializers.CharField(help_text=_("programming language"))
     count = serializers.IntegerField(
-        help_text=_(
-            "The number of vulnerabilities corresponding to the programming language"
-        )
+        help_text=_("The number of vulnerabilities corresponding to the programming language")
     )
 
 
 class VulSummaryLevelSerializer(serializers.Serializer):
     level = serializers.CharField(help_text=_("The name of vulnerablity level"))
-    count = serializers.IntegerField(
-        help_text=_("The number of vulnerabilities corresponding to the level")
-    )
+    count = serializers.IntegerField(help_text=_("The number of vulnerabilities corresponding to the level"))
     level_id = serializers.IntegerField(help_text=_("The id of vulnerablity level"))
 
 
 class VulSummaryTypeSerializer(serializers.Serializer):
     type = serializers.CharField(help_text=_("The name of vulnerablity type"))
     count = serializers.IntegerField(
-        help_text=_(
-            "The number of vulnerabilities corresponding to the vulnerablity type"
-        )
+        help_text=_("The number of vulnerabilities corresponding to the vulnerablity type")
     )
 
 
 class VulSummaryProjectSerializer(serializers.Serializer):
     project_name = serializers.CharField(help_text=_("The name of the project"))
-    count = serializers.IntegerField(
-        help_text=_("The number of vulnerabilities corresponding to the project")
-    )
+    count = serializers.IntegerField(help_text=_("The number of vulnerabilities corresponding to the project"))
     id = serializers.IntegerField(help_text=_("The id of the project"))
 
 

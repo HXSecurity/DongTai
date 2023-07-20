@@ -26,8 +26,7 @@ class Talent(models.Model):
         _("active"),
         default=True,
         help_text=_(
-            "Designates whether this user should be treated as active. "
-            "Unselect this instead of deleting accounts."
+            "Designates whether this user should be treated as active. " "Unselect this instead of deleting accounts."
         ),
     )
 
@@ -39,8 +38,6 @@ class Talent(models.Model):
     def get_talent_name(self):
         return self.talent_name
 
-    @trans_char_field(
-        "talent_name", {"zh": {"默认租户": "默认租户"}, "en": {"默认租户": "Default Tenant"}}
-    )
+    @trans_char_field("talent_name", {"zh": {"默认租户": "默认租户"}, "en": {"默认租户": "Default Tenant"}})
     def __getattribute__(self, name) -> Any:
         return super().__getattribute__(name)

@@ -63,11 +63,7 @@ class MessagesEndpoint(UserEndPoint):
                 page = ser.validated_data["page"]
         except ValidationError as e:
             return R.failure(data=e.detail)
-        queryset = (
-            IastMessage.objects.filter(to_user_id=request.user.id)
-            .order_by("-create_time")
-            .all()
-        )
+        queryset = IastMessage.objects.filter(to_user_id=request.user.id).order_by("-create_time").all()
         page_summary, messages = self.get_paginator(queryset, page, page_size)
         messages_data = MessageSerializer(messages, many=True).data
         for message in messages:

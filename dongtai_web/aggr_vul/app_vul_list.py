@@ -69,42 +69,28 @@ class GetAppVulsList(UserEndPoint):
                 es_query = {}
                 # 从项目列表进入 绑定项目id
                 if ser.validated_data.get("bind_project_id", 0):
-                    queryset = queryset.filter(
-                        project_id=ser.validated_data.get("bind_project_id")
-                    )
-                    es_query["bind_project_id"] = ser.validated_data.get(
-                        "bind_project_id"
-                    )
+                    queryset = queryset.filter(project_id=ser.validated_data.get("bind_project_id"))
+                    es_query["bind_project_id"] = ser.validated_data.get("bind_project_id")
                 # 项目版本号
                 if ser.validated_data.get("project_version_id", 0):
-                    queryset = queryset.filter(
-                        project_version_id=ser.validated_data.get("project_version_id")
-                    )
-                    es_query["project_version_id"] = ser.validated_data.get(
-                        "project_version_id"
-                    )
+                    queryset = queryset.filter(project_version_id=ser.validated_data.get("project_version_id"))
+                    es_query["project_version_id"] = ser.validated_data.get("project_version_id")
                 ser, queryset, es_query = patch_point(ser, queryset, es_query)
                 if ser.validated_data.get("uri", ""):
                     queryset = queryset.filter(uri=ser.validated_data.get("uri", ""))
                 # 漏洞类型筛选
                 if ser.validated_data.get("hook_type_id_str", ""):
-                    vul_type_list = turnIntListOfStr(
-                        ser.validated_data.get("hook_type_id_str", "")
-                    )
+                    vul_type_list = turnIntListOfStr(ser.validated_data.get("hook_type_id_str", ""))
                     queryset = queryset.filter(strategy_id__in=vul_type_list)
                     es_query["strategy_ids"] = vul_type_list
                 # 漏洞等级筛选
                 if ser.validated_data.get("level_id_str", ""):
-                    level_id_list = turnIntListOfStr(
-                        ser.validated_data.get("level_id_str", "")
-                    )
+                    level_id_list = turnIntListOfStr(ser.validated_data.get("level_id_str", ""))
                     queryset = queryset.filter(level_id__in=level_id_list)
                     es_query["level_ids"] = level_id_list
                 # 按状态筛选
                 if ser.validated_data.get("status_id_str", ""):
-                    status_id_list = turnIntListOfStr(
-                        ser.validated_data.get("status_id_str", "")
-                    )
+                    status_id_list = turnIntListOfStr(ser.validated_data.get("status_id_str", ""))
                     queryset = queryset.filter(status_id__in=status_id_list)
                     es_query["status_ids"] = status_id_list
 
@@ -150,9 +136,7 @@ class GetAppVulsList(UserEndPoint):
                         )
                     )
                 # 排序
-                order_type = APP_VUL_ORDER.get(
-                    str(ser.validated_data["order_type"]), "level_id"
-                )
+                order_type = APP_VUL_ORDER.get(str(ser.validated_data["order_type"]), "level_id")
                 order_type_desc = "-" if ser.validated_data["order_type_desc"] else ""
                 if order_type == "level_id":
                     order_list.append(order_type_desc + order_type)
@@ -164,13 +148,9 @@ class GetAppVulsList(UserEndPoint):
                     order_list.append(order_type_desc + order_type)
                 es_query["order"] = order_type_desc + order_type
                 if ELASTICSEARCH_STATE:
-                    vul_data = get_vul_list_from_elastic_search(
-                        departments, page=page, page_size=page_size, **es_query
-                    )
+                    vul_data = get_vul_list_from_elastic_search(departments, page=page, page_size=page_size, **es_query)
                 else:
-                    vul_data = queryset.values(*tuple(fields)).order_by(
-                        *tuple(order_list)
-                    )[begin_num:end_num]
+                    vul_data = queryset.values(*tuple(fields)).order_by(*tuple(order_list))[begin_num:end_num]
         except ValidationError as e:
             return R.failure(data=e.detail)
         vul_ids = [vul["id"] for vul in vul_data]
@@ -196,34 +176,21 @@ class GetAppVulsList(UserEndPoint):
         )
         dastvul_rel_count_res_dict = defaultdict(
             lambda: 0,
-            {
-                item["iastvul_id"]: item["dastvul_count"]
-                for item in dastvul_rel_count_res
-            },
+            {item["iastvul_id"]: item["dastvul_count"] for item in dastvul_rel_count_res},
         )
         if vul_data:
             for item in vul_data:
                 item["level_name"] = APP_LEVEL_RISK.get(str(item["level_id"]), "")
-                item["server_type"] = VulSerializer.split_container_name(
-                    item["server__container"]
-                )
-                item["is_header_vul"] = VulSerializer.judge_is_header_vul(
-                    item["strategy_id"]
-                )
+                item["server_type"] = VulSerializer.split_container_name(item["server__container"])
+                item["is_header_vul"] = VulSerializer.judge_is_header_vul(item["strategy_id"])
                 item["agent__project_name"] = item["project__name"]
                 item["agent__server__container"] = item["server__container"]
                 item["agent__language"] = item["language"]
                 item["agent__bind_project_id"] = item["project_id"]
-                item["header_vul_urls"] = (
-                    VulSerializer.find_all_urls(item["id"])
-                    if item["is_header_vul"]
-                    else []
-                )
+                item["header_vul_urls"] = VulSerializer.find_all_urls(item["id"]) if item["is_header_vul"] else []
                 item["dastvul__vul_type"] = dast_vul_types_dict[item["id"]]
                 item["dastvul_count"] = dastvul_rel_count_res_dict[item["id"]]
-                item["dast_validation_status"] = bool(
-                    dastvul_rel_count_res_dict[item["id"]]
-                )
+                item["dast_validation_status"] = bool(dastvul_rel_count_res_dict[item["id"]])
                 end["data"].append(item)
         # all Iast Vulnerability Status
         status = IastVulnerabilityStatus.objects.all()
@@ -351,9 +318,7 @@ def get_vul_list_from_elastic_search(
         .using(Elasticsearch(settings.ELASTICSEARCH_DSL["default"]["hosts"]))
     )
     resp = res.execute()
-    extra_datas = IastVulnerabilityModel.objects.filter(
-        pk__in=[i["id"] for i in resp]
-    ).values(
+    extra_datas = IastVulnerabilityModel.objects.filter(pk__in=[i["id"] for i in resp]).values(
         "strategy__vul_name",
         "language",
         "project__name",
@@ -377,15 +342,9 @@ def get_vul_list_from_elastic_search(
             vul["server__container"] = ""
         if vul["id"] not in extra_data_dic.keys():
             vul_incorrect_id.append(vul["id"])
-            strategy_dic = (
-                IastStrategyModel.objects.filter(pk=vul["strategy_id"])
-                .values(*strategy_values)
-                .first()
-            )
+            strategy_dic = IastStrategyModel.objects.filter(pk=vul["strategy_id"]).values(*strategy_values).first()
             iast_vulnerability_dic = (
-                IastVulnerabilityModel.objects.filter(pk=vul["agent_id"])
-                .values(*iast_vulnerability_values)
-                .first()
+                IastVulnerabilityModel.objects.filter(pk=vul["agent_id"]).values(*iast_vulnerability_values).first()
             )
             if not strategy_dic:
                 strategy_dic = {i: "" for i in strategy_values}
