@@ -1,10 +1,7 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/5/25 14:48
-# software: PyCharm
-# project: dongtai-models
 from django.db import models
+
 from dongtai_common.utils.settings import get_managed
 
 
@@ -17,4 +14,4 @@ class IastAuthorization(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_authorization'
+        db_table = "iast_authorization"

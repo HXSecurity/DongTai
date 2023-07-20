@@ -1,16 +1,13 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/11/30 下午5:32
-# software: PyCharm
-# project: dongtai-models
+import time
+
 from django.db import models
 
 from dongtai_common.models import User
+from dongtai_common.models.department import Department
 from dongtai_common.models.strategy_user import IastStrategyUser
 from dongtai_common.utils.settings import get_managed
-from dongtai_common.models.department import Department
-import time
 
 
 class VulValidation(models.IntegerChoices):
@@ -21,10 +18,11 @@ class VulValidation(models.IntegerChoices):
 
 
 class ProjectStatus(models.IntegerChoices):
-    NORMAL = 0
-    ERROR = 1
-    OFFLINE = 2
+    NORMAL = 0, "正常"
+    ERROR = 1, "错误"
+    OFFLINE = 2, "离线"
     __empty__ = 0
+
 
 class IastProjectTemplate(models.Model):
     template_name = models.CharField(max_length=255)
@@ -39,7 +37,7 @@ class IastProjectTemplate(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_project_template'
+        db_table = "iast_project_template"
 
     def to_full_template(self):
         pass
@@ -53,6 +51,7 @@ class IastProjectTemplate(models.Model):
             "blacklist_is_followglobal": self.blacklist_is_followglobal,
         }
 
+
 class IastProject(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255, blank=True)
@@ -62,10 +61,7 @@ class IastProject(models.Model):
     latest_time = models.IntegerField(default=lambda: int(time.time()))
     user = models.ForeignKey(User, models.DO_NOTHING)
     # openapi服务不必使用该字段
-    scan = models.ForeignKey(IastStrategyUser,
-                             models.DO_NOTHING,
-                             blank=True,
-                             null=True)
+    scan = models.ForeignKey(IastStrategyUser, models.DO_NOTHING, blank=True, null=True)
 
     vul_validation = models.IntegerField(default=0, choices=VulValidation.choices)
     base_url = models.CharField(max_length=255, blank=True)
@@ -83,8 +79,8 @@ class IastProject(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_project'
+        db_table = "iast_project"
 
     def update_latest(self):
         self.latest_time = int(time.time())
-        self.save(update_fields=['latest_time'])
+        self.save(update_fields=["latest_time"])

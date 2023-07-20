@@ -13,35 +13,36 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls.static import static
+
 from django.urls import include, path
+
 from dongtai_web.scaupload.views import (
-    SCADBMavenViewSet,
-    SCADBMavenBulkViewSet,
-    SCALicenseViewSet,
     SCADBMavenBulkDeleteView,
-    SCATemplateViewSet
+    SCADBMavenBulkViewSet,
+    SCADBMavenViewSet,
+    SCALicenseViewSet,
+    SCATemplateViewSet,
 )
-import os
 
 urlpatterns = [
-    path('maven/bulk',
-         SCADBMavenBulkViewSet.as_view({
-             'get': 'list',
-             'post': 'create',
-         })),
-    path('maven/bulk/delete', SCADBMavenBulkDeleteView.as_view()),
     path(
-        'maven/<int:pk>',
-        SCADBMavenViewSet.as_view({
-            'get': 'retrieve',
-            'put': 'update',
-            'delete': 'destory'
-        })),
-    path('maven', SCADBMavenViewSet.as_view({'post': 'create'})),
-    path('license_list', SCALicenseViewSet.as_view()),
-    path('maven/template/maven_sca', SCATemplateViewSet.as_view()),
+        "maven/bulk",
+        SCADBMavenBulkViewSet.as_view(
+            {
+                "get": "list",
+                "post": "create",
+            }
+        ),
+    ),
+    path("maven/bulk/delete", SCADBMavenBulkDeleteView.as_view()),
+    path(
+        "maven/<int:pk>",
+        SCADBMavenViewSet.as_view({"get": "retrieve", "put": "update", "delete": "destory"}),
+    ),
+    path("maven", SCADBMavenViewSet.as_view({"post": "create"})),
+    path("license_list", SCALicenseViewSet.as_view()),
+    path("maven/template/maven_sca", SCATemplateViewSet.as_view()),
 ]
 
 
-urlpatterns = [path('api/v1/scadb/', include(urlpatterns))]
+urlpatterns = [path("api/v1/scadb/", include(urlpatterns))]

@@ -1,27 +1,24 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
-# author:owefsad
 # datetime:2020/8/20 15:10
-# software: PyCharm
-# project: dongtai-models
 
 import uuid
+
 from django.core.cache import cache
-from django_elasticsearch_dsl.search import Search
-from dongtai_conf.settings import ASSET_INDEX
-from django_elasticsearch_dsl import Document, fields
-from django_elasticsearch_dsl.registries import registry
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django_elasticsearch_dsl import Document, fields
+from django_elasticsearch_dsl.registries import registry
+from django_elasticsearch_dsl.search import Search
 
 from dongtai_common.models import User
 from dongtai_common.models.agent import IastAgent
+from dongtai_common.models.department import Department
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
+from dongtai_common.models.talent import Talent
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_common.utils.settings import get_managed
-from dongtai_common.models.department import Department
-from dongtai_common.models.talent import Talent
+from dongtai_conf.settings import ASSET_INDEX
 
 
 class Asset(models.Model):
@@ -44,14 +41,13 @@ class Asset(models.Model):
     agent = models.ForeignKey(
         to=IastAgent,
         on_delete=models.CASCADE,
-        related_name='assets',
-        related_query_name='asset',
-        verbose_name=_('agent'),
-        default=-1
+        related_name="assets",
+        related_query_name="asset",
+        verbose_name=_("agent"),
+        default=-1,
     )
     project = models.ForeignKey(IastProject, on_delete=models.CASCADE, default=-1)
-    project_version = models.ForeignKey(IastProjectVersion, on_delete=models.CASCADE,
-                                        default=-1)
+    project_version = models.ForeignKey(IastProjectVersion, on_delete=models.CASCADE, default=-1)
     user = models.ForeignKey(User, models.DO_NOTHING, default=-1)
     project_name = models.CharField(max_length=255, blank=True)
     language = models.CharField(max_length=32, blank=True)
@@ -72,7 +68,7 @@ class Asset(models.Model):
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_asset'
+        db_table = "iast_asset"
 
 
 @registry.register_document
@@ -81,8 +77,7 @@ class IastAssetDocument(Document):
     agent_id = fields.IntegerField(attr="agent_id")
     level_id = fields.IntegerField(attr="level_id")
     project_id = fields.IntegerField(attr="project_id")
-    project_version_id = fields.IntegerField(
-        attr="project_version_id")
+    project_version_id = fields.IntegerField(attr="project_version_id")
     department_id = fields.IntegerField(attr="department_id")
     talent_id = fields.IntegerField(attr="talent_id")
     safe_version_list = fields.ObjectField()
@@ -112,12 +107,13 @@ class IastAssetDocument(Document):
     @classmethod
     def search(cls, using=None, index=None):
         uuid_key = uuid.uuid4().hex
-        cache_uuid_key = cache.get_or_set(
-            f'es-documents-shards-{cls.__name__}', uuid_key, 60 * 1)
-        return Search(using=cls._get_using(using),
-                      index=cls._default_index(index),
-                      doc_type=[cls],
-                      model=cls.django.model).params(preference=cache_uuid_key)
+        cache_uuid_key = cache.get_or_set(f"es-documents-shards-{cls.__name__}", uuid_key, 60 * 1)
+        return Search(
+            using=cls._get_using(using),
+            index=cls._default_index(index),
+            doc_type=[cls],
+            model=cls.django.model,
+        ).params(preference=cache_uuid_key)
 
     def get_instances_from_related(self, related_instance):
         """If related_models is set, define how to retrieve the Car instance(s) from the related model.
@@ -127,6 +123,8 @@ class IastAssetDocument(Document):
         if isinstance(related_instance, IastAgent):
             if related_instance.bind_project_id < 0:
                 return Asset.objects.filter(agent_id=related_instance.pk).all()
+            return None
+        return None
 
     class Index:
         name = ASSET_INDEX
@@ -134,12 +132,27 @@ class IastAssetDocument(Document):
     class Django:
         model = Asset
         fields = [
-            'id', 'package_name', 'package_path', 'signature_algorithm',
-            'signature_value', 'dt', 'version', 'safe_version', 'last_version',
-            'vul_count', 'vul_critical_count', 'vul_high_count',
-            'vul_medium_count', 'vul_low_count', 'vul_info_count',
-            'project_name', 'language', 'license', 'dependency_level',
-            'parent_dependency_id', 'is_del'
+            "id",
+            "package_name",
+            "package_path",
+            "signature_algorithm",
+            "signature_value",
+            "dt",
+            "version",
+            "safe_version",
+            "last_version",
+            "vul_count",
+            "vul_critical_count",
+            "vul_high_count",
+            "vul_medium_count",
+            "vul_low_count",
+            "vul_info_count",
+            "project_name",
+            "language",
+            "license",
+            "dependency_level",
+            "parent_dependency_id",
+            "is_del",
         ]
 
         ignore_signals = False

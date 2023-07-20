@@ -9,17 +9,12 @@
 
 import logging
 
-from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.agent_properties import IastAgentProperties
+from drf_spectacular.utils import extend_schema
 from rest_framework.request import Request
 
 from dongtai_common.endpoint import OpenApiEndPoint, R
-from dongtai_protocol.serializers.agent_properties import AgentPropertiesSerialize
-import time
-from dongtai_protocol.api_schema import DongTaiParameter, DongTaiAuth
-from drf_spectacular.utils import extend_schema
+from dongtai_common.models.agent import IastAgent
 from dongtai_protocol.decrypter import parse_data
-from django.http.request import QueryDict
 
 logger = logging.getLogger("django")
 
@@ -27,23 +22,23 @@ logger = logging.getLogger("django")
 class StartupTimeEndPoint(OpenApiEndPoint):
     name = "api-v1-startuptime"
 
-    @extend_schema(tags=['Agent服务端交互协议'], summary="agent启动时间", deprecated=True)
+    @extend_schema(tags=["Agent服务端交互协议"], summary="agent启动时间", deprecated=True)
     def post(self, request: Request):
-        agent_id = request.data.get('agentId', None)
-        startup_time = request.data.get('startupTime', None)
+        agent_id = request.data.get("agentId", None)
+        startup_time = request.data.get("startupTime", None)
         agent = IastAgent.objects.filter(pk=agent_id).first()
         if agent:
             agent.startup_time = startup_time
-            agent.save(update_fields=['startup_time'])
+            agent.save(update_fields=["startup_time"])
             return R.success(data=None)
-        logger.error('agent not found')
+        logger.error("agent not found")
         return R.failure(data=None)
 
 
 class StartupTimeGzipEndPoint(StartupTimeEndPoint):
     name = "api-v1-startuptime"
 
-    @extend_schema(tags=['Agent服务端交互协议'], summary="agent启动时间", deprecated=True)
+    @extend_schema(tags=["Agent服务端交互协议"], summary="agent启动时间", deprecated=True)
     def post(self, request: Request):
         try:
             param = parse_data(request.read())

@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
-from dataclasses_json import dataclass_json, config
 from datetime import datetime
+
+from dataclasses_json import config, dataclass_json
 from dateutil.parser import parse
 
 # those Union[tuple[str], tuple[()]] = () is not working
@@ -95,4 +96,4 @@ class PackageVulResponse:
 class PackageResponse:
     status: int
     msg: str
-    data: tuple[PackageInfo, ...] = tuple()
+    data: tuple[PackageInfo, ...] = ()

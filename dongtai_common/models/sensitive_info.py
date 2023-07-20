@@ -6,19 +6,21 @@
 # @description :
 ######################################################################
 
+import time
+
 from django.db import models
+
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.user import User
-import time
 
 
 class IastPatternType(models.Model):
     name = models.CharField(max_length=255, blank=True)
-    id = models.IntegerField(default=0, db_column='value')
-    logi_id = models.BigAutoField(primary_key=True, db_column='id')
+    id = models.IntegerField(default=0, db_column="value")
+    logi_id = models.BigAutoField(primary_key=True, db_column="id")
 
     class Meta:
-        db_table = 'iast_pattern_type'
+        db_table = "iast_pattern_type"
 
 
 class IastSensitiveInfoRule(models.Model):
@@ -30,4 +32,4 @@ class IastSensitiveInfoRule(models.Model):
     latest_time = models.IntegerField(default=lambda: int(time.time()))
 
     class Meta:
-        db_table = 'iast_sensitive_info_rule'
+        db_table = "iast_sensitive_info_rule"

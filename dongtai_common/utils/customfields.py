@@ -6,10 +6,12 @@
 # @description :
 ######################################################################
 
-from django.db.models import CharField
+import logging
 from functools import wraps
+
 from django.utils.translation import get_language
-from collections import defaultdict
+
+logger = logging.getLogger("django")
 
 
 def trans_char_field(field, transdict):
@@ -18,16 +20,12 @@ def trans_char_field(field, transdict):
         def wrapped(*args, **kwargs):
             value = func(*args, **kwargs)
             try:
-                if len(args) > 1:
-                    name = args[1]
-                else:
-                    name = kwargs['name']
+                name = args[1] if len(args) > 1 else kwargs["name"]
             except BaseException as e:
-                print(e)
+                logger.exception("uncatched exception: ", exc_info=e)
                 return value
             res = [
-                v[value] for k, v in transdict.items() if name == field
-                and k == get_language() and v.get(value, None)
+                v[value] for k, v in transdict.items() if name == field and k == get_language() and v.get(value, None)
             ]
             return res[0] if res else value
 

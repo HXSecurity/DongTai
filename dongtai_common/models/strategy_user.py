@@ -12,11 +12,8 @@ class IastStrategyUser(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING)
     status = models.IntegerField(blank=True)
     created_at = models.DateTimeField(verbose_name="创建时间", auto_now_add=True)
-    department = models.ForeignKey(Department,
-                                   models.DO_NOTHING,
-                                   blank=True,
-                                   null=True)
+    department = models.ForeignKey(Department, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = get_managed()
-        db_table = 'iast_strategy_user'
+        db_table = "iast_strategy_user"
