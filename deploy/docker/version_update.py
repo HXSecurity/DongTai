@@ -28,9 +28,10 @@ DBCONFIG = {
 }
 db = MySQLdb.connect(**DBCONFIG, use_unicode=True, charset="utf8mb4")
 cursor = db.cursor()
-for line in open(os.path.join(BASE_DIR, "docker/version.sql"), encoding="utf-8"):
-    if not line.strip():
-        continue
-    cursor.execute(line)
+with open(os.path.join(BASE_DIR, "docker/version.sql"), encoding="utf-8") as f:
+    for line in f:
+        if not line.strip():
+            continue
+        cursor.execute(line)
 cursor.close()
 db.commit()

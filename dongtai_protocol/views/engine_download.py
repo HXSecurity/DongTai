@@ -63,12 +63,13 @@ class EngineDownloadEndPoint(OpenApiEndPoint):
             remote_agent_file=remote_file_name, local_agent_file=local_file_name
         ):
             try:
-                response = FileResponse(open(local_file_name, "rb"))
-                response["content_type"] = "application/octet-stream"
-                response[
-                    "Content-Disposition"
-                ] = f"attachment; filename={package_name}.jar"
-                return response
+                with open(local_file_name, "rb") as f:
+                    response = FileResponse(f)
+                    response["content_type"] = "application/octet-stream"
+                    response[
+                        "Content-Disposition"
+                    ] = f"attachment; filename={package_name}.jar"
+                    return response
             except Exception as e:
                 logger.error(e, exc_info=True)
                 return R.failure(

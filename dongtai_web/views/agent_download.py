@@ -34,14 +34,15 @@ class AgentDownload(UserEndPoint):
         temp_filename = f'temp/dongtai-agent-{language}-{token["key"]}.{self.common_info[language]["extension"]}'
         with open(temp_filename, "wb") as f:
             f.write(resp.content)
-        response = FileResponse(open(temp_filename, "rb"))
-        response["content_type"] = "application/octet-stream"
+        with open(temp_filename, "rb") as f:
+            response = FileResponse(f)
+            response["content_type"] = "application/octet-stream"
 
-        response["Content-Disposition"] = "attachment; filename={}".format(
-            self.common_info[language]["filename"]
-        )
-        os.remove(temp_filename)
-        return response
+            response["Content-Disposition"] = "attachment; filename={}".format(
+                self.common_info[language]["filename"]
+            )
+            os.remove(temp_filename)
+            return response
 
     def get(self, request):
         """

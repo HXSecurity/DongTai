@@ -39,7 +39,6 @@ select = [
     "RUF", # Ruff-specific rules
 ]
 ignore = [
-    "SIM115",
     "F401",
     "E402",
     "PLW2901",
