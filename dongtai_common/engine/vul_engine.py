@@ -121,7 +121,6 @@ class VulEngine:
     def search(self, method_pool, vul_method_signature, vul_type=None):
         self.vul_type = vul_type
         self.prepare(method_pool, vul_method_signature)
-        size = len(self.method_pool)
         from collections import defaultdict
         from functools import reduce
         from itertools import product
@@ -152,17 +151,16 @@ class VulEngine:
         # Build a graph
         g = nk.Graph(weighted=True, directed=True)
         for pool in self.method_pool:
-            if 'sourceType' in pool:
+            if "sourceType" in pool:
                 for source_type in pool["sourceType"]:
-                    if source_type['type'] == 'HOST':
-                        source_type_hash = source_type['hash']
-                        vecs = [[s, pool['invokeId']]
+                    if source_type["type"] == "HOST":
+                        source_type_hash = source_type["hash"]
+                        vecs = [[s, pool["invokeId"]]
                                 for s in target_hash_dict[source_type_hash]]
-                        print(vecs)
             else:
-                vecs = [[s, pool['invokeId']] for s in reduce(
+                vecs = [[s, pool["invokeId"]] for s in reduce(
                     lambda x, y: x | y,
-                    [target_hash_dict[i] for i in pool['sourceHash']], set())]
+                    [target_hash_dict[i] for i in pool["sourceHash"]], set())]
             for source, target in vecs:
                 g.addEdge(source, target, abs(source - target) ** 1.1, addMissing=True)
         # Checkout each pair source/target have a path or not
@@ -177,7 +175,6 @@ class VulEngine:
                 path = dij_obj.getPath()
                 total_path = [s, *path, t]
                 final_stack = []
-                print(total_path)
                 for path_key in total_path:
                     sub_method = invokeid_dict[path_key]
                     if sub_method.get("source"):
