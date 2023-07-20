@@ -157,8 +157,7 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
 
         if status:
             return R.success(msg=_("Operation success"))
-        else:
-            return R.failure(msg=_("Strategy does not exist"))
+        return R.failure(msg=_("Strategy does not exist"))
 
     @extend_schema_with_envcheck(
         request=EngineHookRuleStatusPostBodySerializer,
@@ -186,5 +185,4 @@ class EngineHookRuleEnableEndPoint(UserEndPoint):
             )
             logger.info(_("Strategy operation success, total {}").format(count))
             return R.success(msg=_("Operation success"))
-        else:
-            return R.failure(msg=_("Incorrect parameter"))
+        return R.failure(msg=_("Incorrect parameter"))

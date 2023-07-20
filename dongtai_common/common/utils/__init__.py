@@ -1,8 +1,9 @@
-from django.core.cache import cache
 import copy
 from functools import wraps
-from rest_framework.authentication import TokenAuthentication, get_authorization_header
+
+from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
+from rest_framework.authentication import TokenAuthentication, get_authorization_header
 
 
 class DongTaiAppConfigPatch:
@@ -35,9 +36,9 @@ def make_hash(obj):
     """
     if isinstance(obj, list | set | tuple):
         return hash(tuple([make_hash(e) for e in obj]))
-    elif isinstance(obj, str):
+    if isinstance(obj, str):
         return hash(tuple(ord(i) for i in obj))
-    elif not isinstance(obj, dict):
+    if not isinstance(obj, dict):
         return hash(obj)
 
     new_obj = copy.deepcopy(obj)
@@ -65,6 +66,7 @@ def cached(
 
     """
     import random
+
     from dongtai_engine.preheat import function_flush
 
     @wraps(function)
@@ -92,10 +94,9 @@ def cached(
             else:
                 cache.set(cache_key, result, cache_time)
             return result
-        elif cached_result is None:
+        if cached_result is None:
             return cached_result
-        else:
-            return cached_result
+        return cached_result
 
     get_cache_or_call.__origin__name__ = "cached"
     get_cache_or_call.__random_range__ = random_range
@@ -121,9 +122,10 @@ def cached_decorator(random_range, use_celery_update=False, cache_logic_none=Tru
 
 @cached_decorator(random_range=(60, 120), use_celery_update=False)
 def get_user_from_department_key(key):
+    from rest_framework import exceptions
+
     from dongtai_common.models.department import Department
     from dongtai_common.models.user import User
-    from rest_framework import exceptions
 
     department = Department.objects.get(token=key)
     principal = User.objects.filter(pk=department.principal_id).first()
@@ -137,14 +139,15 @@ class DepartmentTokenAuthentication(TokenAuthentication):
     model = None
 
     def auth_decodedenticate_credentials(self, key):
+        from rest_framework import exceptions
+
         from dongtai_common.models.department import Department
         from dongtai_common.models.user import User
-        from rest_framework import exceptions
 
         try:
             user = get_user_from_department_key(key)
-        except Department.DoesNotExist:
-            raise exceptions.AuthenticationFailed(_("Invalid token."))
+        except Department.DoesNotExist as e:
+            raise exceptions.AuthenticationFailed(_("Invalid token.")) from e
         return (user, key)
 
     def authenticate(self, request):

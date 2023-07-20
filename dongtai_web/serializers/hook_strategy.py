@@ -105,8 +105,7 @@ class HookRuleSerializer(serializers.ModelSerializer):
         rule_type = obj.hooktype
         if rule_type:
             return rule_type.name
-        else:
-            return "Unknown"
+        return "Unknown"
 
     def get_rule_type_id(self, obj):
         if obj.type == 4:
@@ -114,8 +113,7 @@ class HookRuleSerializer(serializers.ModelSerializer):
         rule_type = obj.hooktype
         if rule_type:
             return rule_type.id
-        else:
-            return -1
+        return -1
 
     def get_user(self, obj):
         if obj.created_by not in self.USER:

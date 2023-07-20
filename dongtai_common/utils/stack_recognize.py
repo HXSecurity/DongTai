@@ -297,7 +297,7 @@ rules = [
     "zipkin2.",
 ]
 trie = marisa_trie.Trie(rules)
-from typing import TypedDict, List
+from typing import TypedDict
 
 
 class CodeStack(TypedDict):

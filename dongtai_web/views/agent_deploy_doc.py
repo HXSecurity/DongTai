@@ -27,5 +27,4 @@ class AgentDeployDesc(UserEndPoint):
         queryset = queryset.last()
         if queryset:
             return R.success(msg=queryset.desc)
-        else:
-            return R.failure(msg=_("No data"))
+        return R.failure(msg=_("No data"))

@@ -5,12 +5,8 @@
 #
 # @description :
 ######################################################################
-
-
-from dongtai_common.utils import const
 from dongtai_common.models.message import IastMessage
 from dongtai_common.endpoint import R
-from dongtai_common.utils import const
 from dongtai_common.endpoint import UserEndPoint
 from django.forms.models import model_to_dict
 from django.db.models import Q

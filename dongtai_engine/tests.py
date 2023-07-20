@@ -10,7 +10,6 @@ from django.test import TestCase
 from dongtai_engine.tasks import search_vul_from_method_pool
 from dongtai_protocol.tests import download_if_not_exist
 from django.db import connections
-from django.test import TestCase
 from dongtai_common.models.user import User
 import unittest
 

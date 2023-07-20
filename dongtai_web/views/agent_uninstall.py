@@ -46,11 +46,7 @@ class AgentUninstall(UserEndPoint):
                 agent.latest_time = int(time.time())
                 agent.save(update_fields=["latest_time", "control", "is_control"])
                 return R.success(msg=_("Uninstalling ..."))
-            else:
-                return R.failure(
-                    msg=_(
-                        "Agent is being installed or uninstalled, please try again later"
-                    )
-                )
-        else:
-            return R.failure(msg=_("Engine does not exist or no permission to access"))
+            return R.failure(
+                msg=_("Agent is being installed or uninstalled, please try again later")
+            )
+        return R.failure(msg=_("Engine does not exist or no permission to access"))

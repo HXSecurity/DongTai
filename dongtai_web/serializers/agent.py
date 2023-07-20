@@ -72,8 +72,7 @@ class AgentSerializer(serializers.ModelSerializer):
         heartbeat = self.get_latest_heartbeat(obj)
         if heartbeat:
             return heartbeat["cpu"]
-        else:
-            return _("Load data is not uploaded")
+        return _("Load data is not uploaded")
 
     def get_server(self, obj):
         def get_server_addr():

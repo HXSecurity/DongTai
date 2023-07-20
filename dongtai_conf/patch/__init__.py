@@ -28,7 +28,7 @@ PATCH_HANDLER: dict[CodeType, dict[int, tuple[Callable, PatchConfig]]] = default
 
 
 def init_patch() -> None:
-    global is_init_patch
+    global is_init_patch  # noqa: PLW0603
     if not is_init_patch:
         PATCH_ROOT_PATH = Path(BASE_DIR) / "dongtai_conf" / "patch"
         for module_info in pkgutil.iter_modules([str(PATCH_ROOT_PATH.resolve())]):
@@ -87,20 +87,19 @@ def patch_point(*args: Any, patch_id: int = 0) -> Any:
         return_value = func(**patch_func_args)
         if return_value is None:
             return _return_args(*args)
-        elif len(args) == 1:
+        if len(args) == 1:
             return return_value
-        elif not isinstance(return_value, tuple):
+        if not isinstance(return_value, tuple):
             logger.error(
                 f"return value type error: expect tuple, get {type(return_value)}"
             )
             return _return_args(*args)
-        elif len(return_value) != len(args):
+        if len(return_value) != len(args):
             logger.error(
                 f"return value len error: expect {len(args)}, get {len(return_value)}"
             )
             return _return_args(*args)
-        else:
-            return _return_args(*return_value)
+        return _return_args(*return_value)
     return _return_args(*args)
 
 

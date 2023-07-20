@@ -41,7 +41,6 @@ from dongtai_protocol.report.handler.report_handler_interface import (
 from dongtai_protocol.report.report_handler_factory import ReportHandler
 import gzip
 import base64
-from typing import Tuple
 from django.core.cache import cache
 from datetime import datetime, timedelta
 from dongtai_common.models.agent import IastAgent
@@ -593,9 +592,9 @@ def get_content_encoding(b64_res_headers: str) -> str:
 def get_res_body(res_body, version):
     if version == "v1":
         return res_body  # bytes
-    elif version == "v2":
+    if version == "v2":
         return base64.b64decode(res_body)  # bytes
-    elif version == "v3":
+    if version == "v3":
         return base64.b64decode(res_body)
     logger.info(f"no match version now version: {version}")
     return res_body

@@ -40,8 +40,7 @@ class ProjectVersionAdd(UserEndPoint):
                 return R.failure(
                     status=202, msg=result.get("msg", _("Parameter error"))
                 )
-            else:
-                return R.success(msg=_("Created success"), data=result.get("data", {}))
+            return R.success(msg=_("Created success"), data=result.get("data", {}))
 
         except Exception as e:
             logger.error(e, exc_info=True)

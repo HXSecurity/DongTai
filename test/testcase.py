@@ -27,9 +27,7 @@ def fuzz_test_data(end_point, httpmethod):
             fields = query().get_fields()
             for k, v in fields.items():
                 queryfield.append(k)
-                if isinstance(v, IntegerField):
-                    data_tuple.append([0, -1, "", "1", "-1", 0, "ale"])
-                elif isinstance(v, CharField):
+                if isinstance(v, IntegerField | CharField):
                     data_tuple.append([0, -1, "", "1", "-1", 0, "ale"])
         elif isinstance(query, dict):
             queryfield.append(query["name"])

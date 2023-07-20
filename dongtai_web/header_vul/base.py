@@ -12,7 +12,6 @@ from dongtai_common.models.header_vulnerablity import (
     IastHeaderVulnerabilityDetail,
 )
 from django.db.models import Q
-from typing import Dict
 
 logger = logging.getLogger("dongtai-webapi")
 

@@ -54,10 +54,7 @@ class AgentDeleteEndPoint(UserEndPoint):
                 self.agent.delete()
 
                 return R.success(msg=_("Agent and related data deleted successfully"))
-            else:
-                return R.failure(
-                    msg=_("Agent does not exist or no permission to access")
-                )
+            return R.failure(msg=_("Agent does not exist or no permission to access"))
         except Exception:
             logger.error("user_id:{request.user.id} msg:{e}")
             return R.failure(msg=_("Error while deleting, please try again later"))
@@ -120,7 +117,9 @@ class AgentDeleteEndPoint(UserEndPoint):
                 ).format(deleted)
             )
         except Exception as e:
-            logger.error(_(f"Failed to delete vulnerability data, error message: {e}"))
+            logger.exception(
+                _("Failed to delete vulnerability data, error message:"), exc_info=e
+            )
 
     def delete_sca(self):
         try:
@@ -161,12 +160,9 @@ class AgentDeleteEndPoint(UserEndPoint):
                 ).format(deleted)
             )
         except Exception as e:
-            logger.error(
-                _(
-                    "Failed to delete replay request method pool data, error message: {}".format(
-                        e
-                    )
-                )
+            logger.exception(
+                _("Failed to delete replay request method pool data, error message: "),
+                exc_info=e,
             )
 
     def delete_replay_queue(self):

@@ -1,5 +1,4 @@
 from dongtai_common.endpoint import R
-from typing import Type
 from datetime import datetime
 import json
 from django.forms.models import model_to_dict

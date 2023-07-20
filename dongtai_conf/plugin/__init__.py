@@ -7,7 +7,7 @@ from importlib import import_module
 from inspect import getmembers, isclass
 from functools import wraps
 import logging
-from typing import Any, Tuple
+from typing import Any
 
 logger = logging.getLogger("dongtai.openapi")
 PLUGIN_DICT = {}
@@ -40,8 +40,7 @@ class DongTaiPlugin:
         @wraps(origin_func)
         def patched_function(*args, **kwargs):
             logger.debug(
-                f"{self.target_module_name} {self.target_class_name}"
-                + f" {self.target_func_name} args:{args} kwargs:{kwargs}"
+                f"{self.target_module_name} {self.target_class_name} {self.target_func_name} args:{args} kwargs:{kwargs}"
             )
             try:
                 self.before_patch_function(args, kwargs)

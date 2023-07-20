@@ -6,7 +6,6 @@ from functools import reduce
 from dongtai_conf.settings import BASE_DIR
 from django.db.models import Q
 from dongtai_common.models.profile import IastProfile
-from typing import List
 from dataclasses import dataclass
 import hashlib
 import os

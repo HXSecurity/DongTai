@@ -30,14 +30,12 @@ class UserPasswordReset(TalentAdminEndPoint):
                     user.save(update_fields=["password"])
                     msg = _("User {} password reset success").format(username)
                     return R.success(msg=msg)
-                else:
-                    msg = _("User does not exist")
-                    logger.warning(msg)
-                    return R.failure(msg=msg)
-            else:
-                msg = _("UserID is empty")
-                logger.error(_("UserID is empty"))
+                msg = _("User does not exist")
+                logger.warning(msg)
                 return R.failure(msg=msg)
+            msg = _("UserID is empty")
+            logger.error(_("UserID is empty"))
+            return R.failure(msg=msg)
         except ValueError:
             msg = _("UserID must be a numeric")
             logger.error(msg, exc_info=True)

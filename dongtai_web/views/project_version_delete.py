@@ -52,8 +52,7 @@ class ProjectVersionDelete(UserEndPoint):
                 version.update_time = int(time.time())
                 version.save(update_fields=["status"])
                 return R.success(msg=_("Deleted Successfully"))
-            else:
-                return R.failure(status=202, msg=_("Version does not exist"))
+            return R.failure(status=202, msg=_("Version does not exist"))
 
         except Exception as e:
             logger.error(e)

@@ -17,7 +17,6 @@ from django.db.models import Q
 from dongtai_engine.signals.handlers.parse_param_name import (
     parse_target_values_from_vul_stack,
 )
-from typing import List, Optional
 from collections.abc import Callable
 from collections import defaultdict
 from dongtai_common.models.profile import IastProfile
@@ -595,10 +594,6 @@ def handler_vul(
             IastDastIntegrationRelation,
             IastvulDtMarkRelation,
             DastvulDtMarkRelation,
-        )
-        from dongtai_common.models.dast_integration import (
-            IastDastIntegration,
-            IastDastIntegrationRelation,
         )
 
         mark = parse_dast_mark(base64_decode(vul.req_header))

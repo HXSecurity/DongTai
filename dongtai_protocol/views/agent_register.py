@@ -17,7 +17,6 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.request import Request
 from django.utils.translation import gettext_lazy as _
 from django.db import transaction
-import time
 from dongtai_common.endpoint import OpenApiEndPoint, R
 
 import json

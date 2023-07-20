@@ -115,10 +115,9 @@ class VulEngine:
                         f"{method.get('className')}.{method.get('methodName')}"
                     )
                     return True
-                else:
-                    current_link.append(method)
-                    self.pool_value = method.get("sourceHash")
-                    break
+                current_link.append(method)
+                self.pool_value = method.get("sourceHash")
+                break
         return None
 
     @cached_property
@@ -271,11 +270,10 @@ class VulEngine:
                                 has_vul = True
                         the_second_stack = stack
                         break
-                else:
-                    if set(final_stack["sourceHash"]) & set(stack["targetHash"]):
-                        the_second_stack = stack
-                        has_vul = True
-                        break
+                elif set(final_stack["sourceHash"]) & set(stack["targetHash"]):
+                    the_second_stack = stack
+                    has_vul = True
+                    break
             if not the_second_stack or not has_vul:
                 self.vul_source_signature = None
                 self.vul_stack = []
@@ -385,14 +383,13 @@ class VulEngine:
                     self.taint_value = sub_method["targetValues"]
                     current_link.pop()
                     return True
-                else:
-                    current_link.append(self.copy_method(sub_method, propagator=True))
-                    old_pool_value = source_hash
-                    source_hash = set(sub_method.get("sourceHash"))
-                    if self.loop(sub_index, size, current_link, source_hash):
-                        return True
-                    source_hash = old_pool_value
-                    current_link.pop()
+                current_link.append(self.copy_method(sub_method, propagator=True))
+                old_pool_value = source_hash
+                source_hash = set(sub_method.get("sourceHash"))
+                if self.loop(sub_index, size, current_link, source_hash):
+                    return True
+                source_hash = old_pool_value
+                current_link.pop()
             else:
                 logger.debug("not stisfied {sub_method}")
         return None

@@ -52,17 +52,12 @@ class UserLogin(UserEndPoint):
                             msg=_("Login successful"),
                             data={"default_language": user.default_language},
                         )
-                    else:
-                        logger.warn(
-                            f"user [{username}] login failure, rease: {'user not exist' if user is None else 'user is disable'}"
-                        )
-                        return R.failure(status=202, msg=_("Login failed"))
-                else:
-                    return R.failure(status=203, msg=_("Verification code error"))
-            else:
-                return R.failure(
-                    status=204, msg=_("verification code should not be empty")
-                )
+                    logger.warn(
+                        f"user [{username}] login failure, rease: {'user not exist' if user is None else 'user is disable'}"
+                    )
+                    return R.failure(status=202, msg=_("Login failed"))
+                return R.failure(status=203, msg=_("Verification code error"))
+            return R.failure(status=204, msg=_("verification code should not be empty"))
         except Exception as e:
             logger.error(e)
             return R.failure(status=202, msg=_("Login failed"))

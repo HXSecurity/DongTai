@@ -91,5 +91,4 @@ class ProjectDetail(UserEndPoint):
                     "log_level": project.log_level,
                 }
             )
-        else:
-            return R.failure(status=203, msg=_("no permission"))
+        return R.failure(status=203, msg=_("no permission"))

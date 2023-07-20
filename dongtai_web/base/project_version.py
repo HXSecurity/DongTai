@@ -49,11 +49,10 @@ def version_modify(user, department, versionData=None):
         ).first()
         if not version:
             return {"status": "202", "msg": _("Version does not exist")}
-        else:
-            version.update_time = int(time.time())
-            version.version_name = version_name
-            version.description = description
-            version.save()
+        version.update_time = int(time.time())
+        version.version_name = version_name
+        version.description = description
+        version.save()
     else:
         version, created = IastProjectVersion.objects.get_or_create(
             project_id=project.id,

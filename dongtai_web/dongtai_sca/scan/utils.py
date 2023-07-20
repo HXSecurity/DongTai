@@ -26,7 +26,6 @@ import json
 from json.decoder import JSONDecodeError
 from typing import Optional
 from collections.abc import Callable
-from typing import List, Dict, Tuple
 from requests import Response
 from dongtai_conf.settings import SCA_BASE_URL, SCA_TIMEOUT, SCA_MAX_RETRY_COUNT
 from urllib.parse import urljoin
@@ -1415,7 +1414,7 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str, version: st
     Asset.objects.filter(pk=asset_id).update(
         **{f"vul_{k}_count": v for k, v in res.items()}
     )
-    Asset.objects.filter(pk=asset_id).update(**{"vul_count": sum(res.values())})
+    Asset.objects.filter(pk=asset_id).update(vul_count=sum(res.values()))
     for vul in package_vuls:
         vul_dependency = get_vul_path(aql, vul["vul_package_path"])
         cve_numbers = get_cve_numbers(
@@ -1477,12 +1476,10 @@ def sca_scan_asset(asset_id: int, ecosystem: str, package_name: str, version: st
         with contextlib.suppress(IntegrityError):
             IastAssetVulRelationMetaData.objects.update_or_create(
                 vul_asset_key=key,
-                **{
-                    "vul_dependency_path": vul_dependency,
-                    "effected_version_list": package_effected_version_list,
-                    "fixed_version_list": package_fixed_version_list,
-                    "nearest_fixed_version": nearest_fixed_version,
-                },
+                vul_dependency_path=vul_dependency,
+                effected_version_list=package_effected_version_list,
+                fixed_version_list=package_fixed_version_list,
+                nearest_fixed_version=nearest_fixed_version,
             )
 
         asset_vul_relation, _ = IastVulAssetRelation.objects.update_or_create(

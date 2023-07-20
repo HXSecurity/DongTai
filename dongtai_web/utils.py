@@ -20,7 +20,7 @@ from dongtai_common.models.api_route import HttpMethod, IastApiMethodHttpMethodR
 from dongtai_common.models.agent_method_pool import MethodPool
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_conf.settings import OPENAPI
-from typing import List, Dict, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from drf_spectacular.utils import extend_schema
 
 if TYPE_CHECKING:
@@ -95,10 +95,11 @@ def extend_schema_with_envcheck(
         examples = request_examples + response_examples
         if kwargs.get("request", None) and request_examples:
             kwargs["request"] = {"application/json": OpenApiTypes.OBJECT}
-        elif isinstance(kwargs.get("request", None), SerializerMetaclass):
+        elif isinstance(kwargs.get("request", None), SerializerMetaclass) or kwargs.get(
+            "request", None
+        ):
             kwargs["request"] = {"application/json": kwargs["request"]}
-        elif kwargs.get("request", None):
-            kwargs["request"] = {"application/json": kwargs["request"]}
+
         deco = extend_schema(
             parameters=parameters,
             examples=examples if examples else None,
@@ -161,7 +162,7 @@ def _filter_query(item):
 
     if isinstance(item, SerializerMetaclass):
         return item
-    elif isinstance(item, dict):
+    if isinstance(item, dict):
         return OpenApiParameter(**item)
     return None
 

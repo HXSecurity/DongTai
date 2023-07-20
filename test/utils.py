@@ -29,11 +29,11 @@ def _datagen_serializer(ser):
 def data_gen_route(obj):
     if isinstance(obj, IntegerField):
         return _datagen_int(obj)
-    elif isinstance(obj, CharField):
+    if isinstance(obj, CharField):
         return _datagen_char(obj)
-    elif isinstance(obj, ChoiceField):
+    if isinstance(obj, ChoiceField):
         return _datagen_choice(obj)
-    elif isinstance(obj, serializers.Serializer):
+    if isinstance(obj, serializers.Serializer):
         return _datagen_serializer(obj)
     print(type(obj))
     return None

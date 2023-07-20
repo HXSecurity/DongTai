@@ -11,7 +11,6 @@ from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_web.header_vul.base import HeaderVulSerializer
 from dongtai_common.models.header_vulnerablity import IastHeaderVulnerability
-from typing import Dict
 
 
 class HeaderVulUrlSerializer(HeaderVulSerializer):
@@ -56,7 +55,7 @@ class VulSerializer(serializers.ModelSerializer):
             return ""
         if "/" in name:
             return name.split("/")[0].lower().strip()
-        elif " " in name:
+        if " " in name:
             names = name.split(" ")[:-1]
             return " ".join(names).lower().strip()
         return name

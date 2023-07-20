@@ -53,14 +53,12 @@ class ScaSerializer(serializers.ModelSerializer):
         project_id = obj.agent.bind_project_id
         if project_id == 0:
             return _("The application has not been binded")
-        else:
-            if project_id in self.project_cache:
-                return self.project_cache[project_id]
-            else:
-                project = IastProject.objects.filter(id=project_id).first()
+        if project_id in self.project_cache:
+            return self.project_cache[project_id]
+        project = IastProject.objects.filter(id=project_id).first()
 
-                self.project_cache[project_id] = project.name if project else ""
-                return self.project_cache[project_id]
+        self.project_cache[project_id] = project.name if project else ""
+        return self.project_cache[project_id]
 
     def get_project_id(self, obj):
         return obj.agent.bind_project_id
@@ -70,19 +68,17 @@ class ScaSerializer(serializers.ModelSerializer):
         if project_version_id:
             if project_version_id in self.project_version_cache:
                 return self.project_version_cache[project_version_id]
-            else:
-                project_version = (
-                    IastProjectVersion.objects.values("version_name")
-                    .filter(id=project_version_id)
-                    .first()
-                )
-                self.project_version_cache[project_version_id] = project_version[
-                    "version_name"
-                ]
+            project_version = (
+                IastProjectVersion.objects.values("version_name")
+                .filter(id=project_version_id)
+                .first()
+            )
+            self.project_version_cache[project_version_id] = project_version[
+                "version_name"
+            ]
 
             return self.project_version_cache[project_version_id]
-        else:
-            return _("No application version has been created")
+        return _("No application version has been created")
 
     def get_level_type(self, obj):
         return obj.level.id

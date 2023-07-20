@@ -100,13 +100,12 @@ class VulEngineV2:
                     )
                     return True
             return None
-        else:
-            for hash in target_hash:
-                if hash in self.pool_value:
-                    current_link.append(method)
-                    self.pool_value = method.get("sourceHash")
-                    break
-            return None
+        for hash in target_hash:
+            if hash in self.pool_value:
+                current_link.append(method)
+                self.pool_value = method.get("sourceHash")
+                break
+        return None
 
     @cached_property
     def method_pool_signatures(self):

@@ -16,10 +16,8 @@ from django.db.models import Q, F, Value
 from dongtai_common.models.assetv2 import AssetV2, AssetV2Global
 from dongtai_common.models.project import IastProject
 from rest_framework_dataclasses.serializers import DataclassSerializer
-from dataclasses import dataclass, field
-from typing import List
-from typing import Any
 from dataclasses import dataclass
+from typing import Any
 import json
 
 logger = logging.getLogger(__name__)

@@ -183,8 +183,7 @@ class ProjectAdd(UserEndPoint):
                         return R.failure(
                             status=202, msg=result.get("msg", _("Version Update Error"))
                         )
-                    else:
-                        project_version_id = result.get("data", {}).get("version_id", 0)
+                    project_version_id = result.get("data", {}).get("version_id", 0)
 
                 project.scan = scan
                 project.mode = mode

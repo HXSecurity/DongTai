@@ -106,19 +106,18 @@ class VulDetail(UserEndPoint):
                 "environment": server.env,
                 "command": server.command,
             }
-        else:
-            return {
-                "name": "",
-                "hostname": "",
-                "ip": "Unknown",
-                "port": "",
-                "container": "JavaApplication",
-                "server_type": "",
-                "container_path": "",
-                "runtime": "",
-                "environment": "",
-                "command": "",
-            }
+        return {
+            "name": "",
+            "hostname": "",
+            "ip": "Unknown",
+            "port": "",
+            "container": "JavaApplication",
+            "server_type": "",
+            "container_path": "",
+            "runtime": "",
+            "environment": "",
+            "command": "",
+        }
 
     def parse_graphy(
         self, graphy, extend_black_list: list = [], extend_white_list: list = []
@@ -375,8 +374,7 @@ class VulDetail(UserEndPoint):
                 "sample_code": "",
                 "repair_suggestion": strategy.vul_fix,
             }
-        else:
-            return {"desc": "", "sample_code": "", "repair_suggestion": ""}
+        return {"desc": "", "sample_code": "", "repair_suggestion": ""}
 
     @extend_schema_with_envcheck(
         response_bodys=[

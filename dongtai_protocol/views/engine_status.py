@@ -42,16 +42,13 @@ class EngineUpdateEndPoint(OpenApiEndPoint):
                 agent.latest_time = int(time.time())
                 agent.save()
                 return R.success(msg="安装完成")
-            else:
-                return R.failure(msg="引擎正在被安装或卸载,请稍后再试")
-        else:
-            if agent.control == 1 and agent.is_control == 0:
-                agent.is_control = 1
-                agent.latest_time = int(time.time())
-                agent.save()
-                return R.success(data=agent.control)
-            else:
-                return R.failure(msg="不需要更新或正在更新中")
+            return R.failure(msg="引擎正在被安装或卸载,请稍后再试")
+        if agent.control == 1 and agent.is_control == 0:
+            agent.is_control = 1
+            agent.latest_time = int(time.time())
+            agent.save()
+            return R.success(data=agent.control)
+        return R.failure(msg="不需要更新或正在更新中")
 
 
 class EngineAction(OpenApiEndPoint):
@@ -112,24 +109,23 @@ class EngineAction(OpenApiEndPoint):
         }
         if agent.is_control == 0:
             return R.failure(msg="暂无命令", data="notcmd")
+        agent.is_control = 0
+        agent.latest_time = int(time.time())
+        if agent.control in [4, 5, 6]:
+            agent.is_core_running = 0
         else:
-            agent.is_control = 0
-            agent.latest_time = int(time.time())
-            if agent.control in [4, 5, 6]:
-                agent.is_core_running = 0
+            agent.is_core_running = 1
+        if agent.control == 8:
+            if cache.get(f"agent_update_{agent_id}", False):
+                agent.is_control = 0
+                agent.control = 2
+                cache.delete(f"agent_update_{agent_id}")
             else:
-                agent.is_core_running = 1
-            if agent.control == 8:
-                if cache.get(f"agent_update_{agent_id}", False):
-                    agent.is_control = 0
-                    agent.control = 2
-                    cache.delete(f"agent_update_{agent_id}")
-                else:
-                    cache.set(f"agent_update_{agent_id}", True, 60 * 5)
-                    agent.is_control = 1
-                    agent.control = 5
-            agent.save(update_fields=["is_control", "is_core_running", "latest_time"])
-            result_cmd = agent_status.get(
-                agent.control, {"key": "无下发指令", "value": "notcmd"}
-            ).get("value")
-            return R.success(data=result_cmd)
+                cache.set(f"agent_update_{agent_id}", True, 60 * 5)
+                agent.is_control = 1
+                agent.control = 5
+        agent.save(update_fields=["is_control", "is_core_running", "latest_time"])
+        result_cmd = agent_status.get(
+            agent.control, {"key": "无下发指令", "value": "notcmd"}
+        ).get("value")
+        return R.success(data=result_cmd)

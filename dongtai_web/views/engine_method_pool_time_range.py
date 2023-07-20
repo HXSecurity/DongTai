@@ -27,7 +27,6 @@ import operator
 import time
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
-from django.utils.translation import gettext_lazy
 
 _GetResponseSerializer = get_response_serializer(
     serializers.IntegerField(help_text=_("the eariest time of method_pool"))

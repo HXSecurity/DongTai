@@ -46,8 +46,7 @@ class StrategyEnableEndpoint(TalentAdminEndPoint):
                     total_counts
                 )
             )
-        else:
-            return R.failure(msg=_("Strategy does not exist"))
+        return R.failure(msg=_("Strategy does not exist"))
 
 
 if __name__ == "__main__":

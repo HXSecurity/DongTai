@@ -19,7 +19,6 @@ import operator
 import time
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
-from django.utils.translation import gettext_lazy
 from dongtai_conf.settings import ELASTICSEARCH_STATE
 import logging
 from dongtai_common.utils.const import OPERATE_GET

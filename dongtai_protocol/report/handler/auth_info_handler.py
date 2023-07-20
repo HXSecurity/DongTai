@@ -100,20 +100,16 @@ class AuthUpdateHandler(IReportHandler):
         self.auth_updated = self.detail.get("auth_updated")
 
     def save(self):
-        try:
-            print("存储权限变更报告")
-            auth_model = IastOverpowerUserAuth.objects.filter(
-                app_name=self.app_name,
-                server_name=self.server_name,
-                server_port=self.server_port,
-                http_url=self.http_url,
-                http_query_string=self.http_query_string,
-                auth_value=self.auth_original,
-            )
-            if len(auth_model) > 0:
-                print("处理权限变更")
-            else:
-                print("忽略权限变更")
-        except Exception as e:
-            raise e
-            pass
+        print("存储权限变更报告")
+        auth_model = IastOverpowerUserAuth.objects.filter(
+            app_name=self.app_name,
+            server_name=self.server_name,
+            server_port=self.server_port,
+            http_url=self.http_url,
+            http_query_string=self.http_query_string,
+            auth_value=self.auth_original,
+        )
+        if len(auth_model) > 0:
+            print("处理权限变更")
+        else:
+            print("忽略权限变更")

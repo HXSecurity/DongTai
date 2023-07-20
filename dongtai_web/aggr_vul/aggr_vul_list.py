@@ -33,10 +33,8 @@ from dongtai_common.models import (
     SCA_AVAILABILITY_DICT,
 )
 from dongtai_conf.settings import ELASTICSEARCH_STATE
-from typing import List
 from dongtai_common.models.asset import Asset
 from django.db.models import Max
-from dongtai_common.models.asset_vul import IastAssetVul
 from dongtai_common.models.user import User
 
 logger = logging.getLogger("django")
@@ -48,7 +46,7 @@ def convert_cwe(cwe: list | str) -> str:
         if len(cwe) > 0:
             return cwe[0].replace("CWE-", "")
         return ""
-    elif isinstance(cwe, str):
+    if isinstance(cwe, str):
         return cwe.replace("CWE-", "")
     return ""
 

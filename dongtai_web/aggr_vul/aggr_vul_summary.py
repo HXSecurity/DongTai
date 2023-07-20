@@ -12,7 +12,6 @@ from django.db import connection
 from dongtai_common.common.utils import cached_decorator
 from dongtai_common.models import APP_LEVEL_RISK
 from dongtai_common.models.user import User
-from typing import List
 from typing import TypedDict
 
 

@@ -42,20 +42,18 @@ class AgentUpdateEndPoint(OpenApiEndPoint):
         agent = IastAgent.objects.filter(id=agent_id, user=user).first()
         if not agent:
             return R.failure(msg="agent no register")
-        else:
-            server = IastServer.objects.filter(id=agent.server_id).first()
-            if not server:
-                return R.failure(msg="agent no register")
-            else:
-                update_fields = ["port", "update_time"]
-                if protocol:
-                    server.protocol = protocol
-                    update_fields.append("protocol")
-                if ip:
-                    server.ip = ip
-                    update_fields.append("ip")
-                server.port = server_port
-                server.update_time = int(time.time())
-                server.save(update_fields=update_fields)
+        server = IastServer.objects.filter(id=agent.server_id).first()
+        if not server:
+            return R.failure(msg="agent no register")
+        update_fields = ["port", "update_time"]
+        if protocol:
+            server.protocol = protocol
+            update_fields.append("protocol")
+        if ip:
+            server.ip = ip
+            update_fields.append("ip")
+        server.port = server_port
+        server.update_time = int(time.time())
+        server.save(update_fields=update_fields)
         logger.info(_("Server record update success"))
         return R.success(msg="success update")

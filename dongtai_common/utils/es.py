@@ -9,7 +9,6 @@ from celery.apps.worker import logger
 from dongtai_conf.settings import DONGTAI_MAX_RATE_LIMIT
 from dongtai_conf.settings import DONGTAI_REDIS_ES_UPDATE_BATCH_SIZE
 from dongtai_conf.settings import DONGTAI_MAX_BATCH_TASK_CONCORRENCY
-from django_elasticsearch_dsl.registries import registry
 
 
 @shared_task

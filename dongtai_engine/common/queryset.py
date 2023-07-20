@@ -1,5 +1,4 @@
 from dongtai_common.common.utils import cached_decorator
-from typing import List, Dict
 from dongtai_common.models.strategy_user import IastStrategyUser
 from django.db.models import Sum, Q
 from celery.apps.worker import logger

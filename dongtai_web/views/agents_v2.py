@@ -200,15 +200,15 @@ def get_agent_stat(agent_id: int, department: Department) -> dict:
 def generate_filter(state: StateType) -> Q:
     if state == StateType.ALL:
         return Q()
-    elif state == StateType.RUNNING:
+    if state == StateType.RUNNING:
         return Q(online=1) & Q(actual_running_status=1)
-    elif state == StateType.STOP:
+    if state == StateType.STOP:
         return Q(online=1) & ~Q(actual_running_status=1)
-    elif state == StateType.UNINSTALL:
+    if state == StateType.UNINSTALL:
         return Q(online=0)
-    elif state == StateType.ONLINE:
+    if state == StateType.ONLINE:
         return Q(online=1)
-    elif state == StateType.ALLOW_REPORT:
+    if state == StateType.ALLOW_REPORT:
         return Q(allow_report=1)
     return Q()
 
@@ -263,7 +263,7 @@ def get_memory(jsonstr: str | None) -> str:
 def cal_state(agent: dict) -> StateType:
     if agent["online"] == 1 and agent["actual_running_status"] == 1:
         return StateType.RUNNING
-    elif agent["online"] == 1 and agent["actual_running_status"] != 1:
+    if agent["online"] == 1 and agent["actual_running_status"] != 1:
         return StateType.STOP
     return StateType.UNINSTALL
 

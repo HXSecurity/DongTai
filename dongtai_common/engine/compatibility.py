@@ -1,5 +1,4 @@
 from math import ceil
-from typing import List
 import logging
 import contextlib
 
@@ -150,9 +149,7 @@ def highlight_target_value(target_value: str, ranges: list) -> str:
                     range_["start"] not in str_dict.keys()
                     or (range_["stop"]) not in str_dict.keys()
                 ):
-                    str_dict[begin_part_length + 2] = (
-                        '<em style="color:red;">' + "..." + "</em>"
-                    )
+                    str_dict[begin_part_length + 2] = '<em style="color:red;">...</em>'
             final_str = [x[1] for x in sorted(str_dict.items(), key=lambda kv: kv[0])]
             return "".join(final_str)
     except KeyError as e:

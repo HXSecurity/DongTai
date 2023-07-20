@@ -21,8 +21,7 @@ def turnIntListOfStr(type_str, field=""):
             type_int_list = list(map(str, type_list))
             type_int_str = ",".join(type_int_list)
             return f" and {field} in ({type_int_str}) "
-        else:
-            return type_list
+        return type_list
     except Exception:
         return ""
 
@@ -73,8 +72,7 @@ def getAppVulInfoById(vul_ids=None):
 def getProjectInfoByAgentId(agent_ids=None):
     if agent_ids is None:
         return {}
-    else:
-        agent_ids = getUniqueList(agent_ids)
+    agent_ids = getUniqueList(agent_ids)
     agent_info = IastAgent.objects.filter(id__in=agent_ids).values(
         "id",
         "project_name",
@@ -99,8 +97,7 @@ def getProjectInfoByAgentId(agent_ids=None):
 def getHookTypeName(ids=None):
     if ids is None:
         return {}
-    else:
-        type_arr = {}
+    type_arr = {}
 
     type_info = HookType.objects.filter(id__in=ids).values("id", "type", "name")
     if type_info:

@@ -15,9 +15,7 @@ from rest_framework.serializers import ValidationError
 from dongtai_common.models.assetv2 import AssetV2, AssetV2Global, IastAssetLicense
 from rest_framework_dataclasses.serializers import DataclassSerializer
 from dataclasses import dataclass, field
-from typing import List
 from typing import Any
-from dataclasses import dataclass
 import json
 from django.db.models import Q, F, Count
 from dongtai_web.dongtai_sca.scan.utils import get_level, get_license, get_language

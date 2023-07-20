@@ -3,7 +3,6 @@ from dongtai_common.models import User
 from dongtai_common.utils.settings import get_managed
 from django.db.models import IntegerChoices
 from django.utils.translation import gettext_lazy as _
-from typing import List, Dict
 from dongtai_common.models.project import (
     IastProject,
     IastProjectTemplate,

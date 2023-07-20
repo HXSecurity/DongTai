@@ -1,6 +1,5 @@
 from django.http.request import QueryDict
 from dongtai_common.engine.compatibility import method_pool_is_3, parse_target_value
-from typing import List, Dict
 
 
 class ParamDict(QueryDict):

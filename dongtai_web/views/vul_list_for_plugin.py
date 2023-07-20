@@ -101,5 +101,4 @@ class VulListEndPoint(MixinAuthEndPoint):
                 page=page_summary,
                 data=VulForPluginSerializer(page_data, many=True).data,
             )
-        else:
-            return R.success(page=[], data=[])
+        return R.success(page=[], data=[])

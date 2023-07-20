@@ -4,7 +4,6 @@ from dongtai_conf.settings import config
 from dongtai_common.models.profile import IastProfile
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from django.forms.models import model_to_dict

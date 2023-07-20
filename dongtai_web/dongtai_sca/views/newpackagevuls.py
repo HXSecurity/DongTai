@@ -14,11 +14,6 @@ from rest_framework.serializers import ValidationError
 
 from dongtai_common.models.asset_vul_v2 import IastAssetVulV2
 from dongtai_common.serializers.assetvulv2 import PackageVulSerializer
-from dataclasses import dataclass, field
-from typing import List
-from typing import Any
-from dataclasses import dataclass
-import json
 
 logger = logging.getLogger(__name__)
 

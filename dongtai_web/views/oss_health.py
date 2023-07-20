@@ -30,5 +30,4 @@ class OssHealthView(UserEndPoint):
         )
         if openapistatus:
             return R.success(data=openapi_resp)
-        else:
-            return R.success(data={"oss": {"status": 0}})
+        return R.success(data={"oss": {"status": 0}})

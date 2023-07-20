@@ -106,15 +106,14 @@ class EngineHookRulesEndPoint(UserEndPoint):
                     )
                 else:
                     rule_type_queryset = IastStrategyModel.objects.all()
+            elif strategy_type:
+                rule_type_queryset = HookType.objects.filter(
+                    id=strategy_type, type=rule_type, language_id=language_id
+                )
             else:
-                if strategy_type:
-                    rule_type_queryset = HookType.objects.filter(
-                        id=strategy_type, type=rule_type, language_id=language_id
-                    )
-                else:
-                    rule_type_queryset = HookType.objects.filter(
-                        type=rule_type, language_id=language_id
-                    )
+                rule_type_queryset = HookType.objects.filter(
+                    type=rule_type, language_id=language_id
+                )
             if rule_type == 4:
                 q = (
                     Q(strategy__in=rule_type_queryset)

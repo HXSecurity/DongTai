@@ -320,9 +320,7 @@ class ScaList(UserEndPoint):
 
 
 def get_vul_list_from_elastic_search(sca_ids=[], order=None):
-    must_query = [
-        Q("terms", **{"signature_value": sca_ids}),
-    ]
+    must_query = [Q("terms", signature_value=sca_ids)]
     a = Q("bool", must=must_query)
     extra_dict = {}
     order_list = []

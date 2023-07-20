@@ -93,8 +93,7 @@ class RequestReplayEndPoint(UserEndPoint):
             ).first()
         if method_pool_model:
             return False, method_pool_model
-        else:
-            return True, None
+        return True, None
 
     @staticmethod
     def check_agent_active(agent):
@@ -266,7 +265,9 @@ class RequestReplayEndPoint(UserEndPoint):
             _data = base64.b64decode(header.encode("utf-8")).decode("utf-8")
         except Exception as e:
             _data = ""
-            logger.error(_(f"Response header analysis error, error message: {e}"))
+            logger.exception(
+                _("Response header analysis error, error message: "), exc_info=e
+            )
         return f"{_data}\n\n{body}"
 
     @extend_schema_with_envcheck(
@@ -344,5 +345,4 @@ class RequestReplayEndPoint(UserEndPoint):
                     "method_pool_replay_id": replay_data_method_pool["id"],
                 }
             )
-        else:
-            return R.failure(status=203, msg=_("Replay failed"))
+        return R.failure(status=203, msg=_("Replay failed"))

@@ -201,10 +201,9 @@ def search_vul_from_method_pool(self, method_pool_sign, agent_id, retryable=Fals
                     raise RetryableException(
                         f"漏洞检测方法池 {method_pool_sign} 不存在,重试第 {tries} 次"
                     )
-                else:
-                    logger.warning(
-                        f"漏洞检测超过最大重试次数 {self.max_retries},方法池 {method_pool_sign} 不存在"
-                    )
+                logger.warning(
+                    f"漏洞检测超过最大重试次数 {self.max_retries},方法池 {method_pool_sign} 不存在"
+                )
             else:
                 logger.warning(f"漏洞检测终止,方法池 {method_pool_sign} 不存在")
             return

@@ -2,8 +2,6 @@ from django.db import models
 
 # Create your models here.
 
-from django.db import models
-
 
 class Package(models.Model):
     huo_xian_product_id = models.CharField(max_length=255, blank=True, null=True)

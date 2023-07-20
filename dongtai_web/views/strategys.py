@@ -7,12 +7,10 @@ from dongtai_common.models.strategy import IastStrategyModel
 
 from django.db.models import Q
 from dongtai_common.endpoint import R
-from dongtai_common.utils import const
 from dongtai_common.endpoint import UserEndPoint
 from dongtai_web.serializers.strategy import StrategySerializer
 from django.utils.translation import gettext_lazy as _
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from dongtai_common.models.hook_type import HookType
 from rest_framework import serializers
 from dongtai_common.models.program_language import IastProgramLanguage
 import time
@@ -147,45 +145,9 @@ class StrategysEndpoint(UserEndPoint):
             return R.success(
                 data=StrategySerializer(page_data, many=True).data, page=page_summary
             )
-        else:
-            return R.success(
-                data=StrategySerializer(queryset, many=True).data,
-            )
-
-        strategy_models = (
-            HookType.objects.filter(type=const.RULE_SINK)
-            .values("id", "name", "value", "enable")
-            .exclude(enable=const.DELETE)
+        return R.success(
+            data=StrategySerializer(queryset, many=True).data,
         )
-        if strategy_models:
-            models = {}
-            for strategy_model in strategy_models:
-                models[strategy_model["id"]] = {
-                    "id": strategy_model["id"],
-                    "vul_name": strategy_model["name"],
-                    "vul_type": strategy_model["value"],
-                    "state": const.STRATEGY_DISABLE
-                    if strategy_model["enable"] is not None
-                    and strategy_model["enable"] == 0
-                    else const.STRATEGY_ENABLE,
-                    "vul_desc": "",
-                    "level": 1,
-                    "dt": 1,
-                }
-
-            strategy_ids = models.keys()
-            profiles = IastStrategyModel.objects.values(
-                "level_id", "vul_desc", "vul_fix", "hook_type_id"
-            ).filter(hook_type_id__in=strategy_ids)
-            if profiles:
-                for profile in profiles:
-                    strategy_id = profile.get("hook_type_id")
-                    models[strategy_id]["vul_desc"] = profile["vul_desc"]
-                    models[strategy_id]["vul_fix"] = profile["vul_fix"]
-                    models[strategy_id]["level"] = profile["level_id"]
-            return R.success(data=list(models.values()))
-        else:
-            return R.success(msg=_("No strategy"))
 
     @extend_schema_with_envcheck(
         request=StrategyCreateSerializer,

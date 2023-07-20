@@ -37,8 +37,7 @@ class ProjectVersionUpdate(UserEndPoint):
             result = version_modify(request.user, department, request.data)
             if not version_id or result.get("status", "202") == "202":
                 return R.failure(status=202, msg=_("Parameter error"))
-            else:
-                return R.success(msg=_("Update completed"))
+            return R.success(msg=_("Update completed"))
 
         except Exception as e:
             logger.error(e)

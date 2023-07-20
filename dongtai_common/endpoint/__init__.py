@@ -31,8 +31,7 @@ from dongtai_common.utils import const
 from django.utils.translation import gettext_lazy as _
 from dongtai_common.models.department import Department
 from django.db.models import Q, Count
-from typing import Tuple, Dict, Union, TYPE_CHECKING
-from dongtai_common.models.department import Department
+from typing import Union, TYPE_CHECKING
 from functools import reduce
 from operator import ior
 from rest_framework.exceptions import AuthenticationFailed
@@ -142,7 +141,7 @@ class EndPoint(APIView):
                 if operate_method == "GET":
                     operate_type = OperateType.GET
                     return self.response
-                elif operate_method == "POST":
+                if operate_method == "POST":
                     operate_type = OperateType.ADD
                 elif operate_method == "PUT":
                     operate_type = OperateType.CHANGE

@@ -85,7 +85,6 @@ class EngineDownloadEndPoint(OpenApiEndPoint):
             os.makedirs(EngineDownloadEndPoint.LOCAL_AGENT_PATH)
         if os.path.exists(local_agent_file):
             return True
-        else:
-            return OssDownloader.download_file(
-                object_name=remote_agent_file, local_file=local_agent_file
-            )
+        return OssDownloader.download_file(
+            object_name=remote_agent_file, local_file=local_agent_file
+        )

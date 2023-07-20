@@ -65,8 +65,7 @@ class ProjectVersionCurrent(UserEndPoint):
                 ).update(current_version=0, update_time=int(time.time()))
 
                 return R.success(msg=_("Version setting success"))
-            else:
-                return R.failure(status=202, msg=_("Version does not exist"))
+            return R.failure(status=202, msg=_("Version does not exist"))
 
         except Exception as e:
             logger.error(e)
