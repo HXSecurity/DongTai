@@ -37,7 +37,7 @@ class DelVulMany(UserEndPoint):
         else:
             queryset = queryset.filter(asset__department__in=department)
 
-        if source_type == 1:
+        if source_type == 1:  # noqa: SIM108
             # 应用漏洞删除
             del_queryset = queryset.filter(id__in=ids)
         else:

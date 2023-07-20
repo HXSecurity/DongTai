@@ -74,7 +74,7 @@ def patch_point(*args: Any, patch_id: int = 0) -> Any:
                     # 如果启用类型检查,进行类型检查
                     type_ = annotations.get(name, None)
                     if type(type_) is type and not isinstance(local_value, type_):
-                        logger.error("type check error, " f"name {name}, expect {type_}, get{type(local_value)}")
+                        logger.error(f"type check error, name {name}, expect {type_}, get{type(local_value)}")
                 patch_func_args[name] = local_value
             else:
                 logger.error(f"can not call patch function, miss local var {name}")

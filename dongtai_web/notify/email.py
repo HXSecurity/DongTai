@@ -22,10 +22,7 @@ class Email:
 
     def __send_mail(self, from_addr, to_addrs, _subject, _content, _type=None):
         msg = None
-        if _type:
-            msg = MIMEText(_text=_content, _subtype=_type, _charset="utf-8")
-        else:
-            msg = MIMEText(_content)
+        msg = MIMEText(_text=_content, _subtype=_type, _charset="utf-8") if _type else MIMEText(_content)
         msg["From"] = from_addr
         msg["Subject"] = _subject
         msg["Date"] = formatdate(localtime=True)

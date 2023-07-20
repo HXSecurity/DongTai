@@ -31,7 +31,7 @@ class Command(BaseCommand):
                     )
                 if not has_error:
                     self.stdout.write(
-                        self.style.SUCCESS(f"{method} {view}: " f"tags: {schema['tags']}, summary: {schema['summary']}")
+                        self.style.SUCCESS(f"{method} {view}: tags: {schema['tags']}, summary: {schema['summary']}")
                     )
 
         self.stdout.write(self.style.SUCCESS("Check API schema done"))

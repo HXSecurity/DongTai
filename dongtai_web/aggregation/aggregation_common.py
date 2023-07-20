@@ -164,7 +164,7 @@ def auth_user_list_str(user=None, user_id=0, user_table=""):
     result["department_list"] = department_ids
     result["department_str"] = department_ids_arr
     if user_table:
-        result["user_condition_str"] = " and {}.department_id in ({})".format(user_table, department_ids_arr)
+        result["user_condition_str"] = f" and {user_table}.department_id in ({department_ids_arr})"
     return result
 
 

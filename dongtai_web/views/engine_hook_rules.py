@@ -113,10 +113,7 @@ class EngineHookRulesEndPoint(UserEndPoint):
                 q = Q(value__icontains=keyword) & q
             rule_queryset = HookStrategy.objects.filter(q)
             page_summary, queryset = self.get_paginator(rule_queryset.order_by("-id"), page=page, page_size=page_size)
-            if rule_type == 4:
-                queryset = queryset.select_related("strategy")
-            else:
-                queryset = queryset.select_related("hooktype")
+            queryset = queryset.select_related("strategy") if rule_type == 4 else queryset.select_related("hooktype")
             data = HookRuleSerializer(queryset, many=True).data
             return R.success(data=data, page=page_summary)
         except Exception as e:

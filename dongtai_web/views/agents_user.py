@@ -26,10 +26,7 @@ class UserAgentList(UserEndPoint):
     )
     def get(self, request):
         user = request.user
-        if user.is_talent_admin():
-            queryset = IastAgent.objects.all()
-        else:
-            queryset = IastAgent.objects.filter(user=user)
+        queryset = IastAgent.objects.all() if user.is_talent_admin() else IastAgent.objects.filter(user=user)
         queryset_datas = queryset.values("id", "token")
         data = []
         if queryset_datas:

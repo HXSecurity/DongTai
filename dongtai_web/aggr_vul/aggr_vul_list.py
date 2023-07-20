@@ -195,7 +195,7 @@ class GetAggregationVulList(UserEndPoint):
         else:
             if keywords:
                 all_vul = IastAssetVul.objects.raw(
-                    query_base + "  order by score desc, {} limit {},{};  ".format(new_order, begin_num, end_num),
+                    query_base + f"  order by score desc, {new_order} limit {begin_num},{end_num};  ",
                     [keywords],
                 )
             else:

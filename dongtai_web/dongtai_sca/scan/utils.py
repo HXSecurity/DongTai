@@ -201,10 +201,7 @@ def data_transfrom_package_vul_v3(
 )
 def get_package_vul(aql: str = "", ecosystem: str = "", package_hash: str = "") -> list[dict]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v1/package_vul/")
-    if aql:
-        querystring = {"aql": aql}
-    else:
-        querystring = {"ecosystem": ecosystem, "hash": package_hash}
+    querystring = {"aql": aql} if aql else {"ecosystem": ecosystem, "hash": package_hash}
     headers = {"Token": get_sca_token()}
     payload = ""
     res = request_get_res_data_with_exception(
@@ -226,10 +223,7 @@ def get_package_vul(aql: str = "", ecosystem: str = "", package_hash: str = "") 
 )
 def get_package_vul_v2(aql: str = "", ecosystem: str = "", package_hash: str = "") -> tuple[list[dict], list[dict]]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v2/package_vul/")
-    if aql:
-        querystring = {"aql": aql}
-    else:
-        querystring = {"ecosystem": ecosystem, "hash": package_hash}
+    querystring = {"aql": aql} if aql else {"ecosystem": ecosystem, "hash": package_hash}
     headers = {"Token": get_sca_token()}
     payload = ""
     res = request_get_res_data_with_exception(
@@ -279,10 +273,7 @@ def get_package_vul_v3(
 )
 def get_package(aql: str = "", ecosystem: str = "", package_hash: str = "") -> list[dict]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v1/package/")
-    if aql:
-        querystring = {"aql": aql}
-    else:
-        querystring = {"ecosystem": ecosystem, "hash": package_hash}
+    querystring = {"aql": aql} if aql else {"ecosystem": ecosystem, "hash": package_hash}
     headers = {"Token": get_sca_token()}
     payload = ""
     res = request_get_res_data_with_exception(
@@ -304,10 +295,7 @@ def get_package(aql: str = "", ecosystem: str = "", package_hash: str = "") -> l
 )
 def get_package_v2(aql: str = "", ecosystem: str = "", package_hash: str = "") -> list[dict]:
     url = urljoin(SCA_BASE_URL, "/openapi/sca/v1/package/")
-    if aql:
-        querystring = {"aql": aql}
-    else:
-        querystring = {"ecosystem": ecosystem, "hash": package_hash}
+    querystring = {"aql": aql} if aql else {"ecosystem": ecosystem, "hash": package_hash}
     headers = {"Token": get_sca_token()}
     payload = ""
     res = request_get_res_data_with_exception(

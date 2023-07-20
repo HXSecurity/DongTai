@@ -52,6 +52,6 @@ def update_project_status() -> None:
             project.save(update_fields=("status", "last_has_online_agent_time"))
 
         if old_status != project.status:
-            logger.info("update project status: " f"{project} from {old_status} to {project.status}")
+            logger.info(f"update project status: {project} from {old_status} to {project.status}")
 
     logger.info("检测项目状态更新结束")

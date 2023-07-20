@@ -38,10 +38,7 @@ class OssDownloader:
         :return:
         """
         try:
-            if anonymous:
-                auth = oss2.AnonymousAuth()
-            else:
-                auth = oss2.Auth(access_key, access_key_secret)
+            auth = oss2.AnonymousAuth() if anonymous else oss2.Auth(access_key, access_key_secret)
             bucket = oss2.Bucket(auth, bucket_url, bucket_name)
             bucket.get_object_to_file(object_name, local_file)
         except NoSuchKey:

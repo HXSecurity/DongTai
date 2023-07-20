@@ -58,10 +58,7 @@ class AgentList(UserEndPoint):
 
     def set_query_cache(self, q):
         total = IastAgent.objects.filter(q).count()
-        if total > 0:
-            max_id = IastAgent.objects.filter(q).values_list("id", flat=True).order_by("-id")[0]
-        else:
-            max_id = 0
+        max_id = IastAgent.objects.filter(q).values_list("id", flat=True).order_by("-id")[0] if total > 0 else 0
         cache.set(self.cache_key, total, 60 * 60)
         cache.set(self.cache_key_max_id, max_id, 60 * 60)
         return total, max_id

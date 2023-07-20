@@ -256,10 +256,7 @@ class VulDetail(UserEndPoint):
         project_version_id = vul.project_version_id
         if project_version_id:
             project_version = IastProjectVersion.objects.values("version_name").filter(id=project_version_id).first()
-            if project_version:
-                project_version_name = project_version["version_name"]
-            else:
-                project_version_name = ""
+            project_version_name = project_version["version_name"] if project_version else ""
         else:
             project_version_name = ""
         try:
