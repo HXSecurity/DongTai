@@ -108,6 +108,6 @@ class VulEngineSearchTestCase(TestCase):
         engine = VulEngine()
         engine.method_pool = mock_method_pool_data
         engine.search(method_pool=mock_method_pool_data,
-                      vul_method_signature='java.lang.Runtime.exec')
+                      vul_method_signature='java.lang.Class.forName')
         status, stack, source_sign, sink_sign, taint_value = engine.result()
         self.assertEqual(status, False)
