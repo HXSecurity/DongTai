@@ -49,65 +49,57 @@ class VulEngineSearchTestCase(TestCase):
         self.assertEqual(status, True)
 
     def test_search_method_pool_ssrf_unsafe_v2(self):
-        MOCKDATA_FILE = os.path.join(
-            MOCKDATA_DIR, "ssrf_unsafe_java-net-url-connection.json")
+        MOCKDATA_FILE = os.path.join(MOCKDATA_DIR, "ssrf_unsafe_java-net-url-connection.json")
         with open(MOCKDATA_FILE) as fp:
             mock_method_pool_data = json.load(fp)
         engine = VulEngine()
         engine.method_pool = mock_method_pool_data
-        engine.search(method_pool=mock_method_pool_data,
-                      vul_method_signature=
-                      "sun.net.www.protocol.http.HttpURLConnection.connect")
+        engine.search(
+            method_pool=mock_method_pool_data,
+            vul_method_signature="sun.net.www.protocol.http.HttpURLConnection.connect",
+        )
         status, stack, source_sign, sink_sign, taint_value = engine.result()
         self.assertEqual(status, True)
 
     def test_search_method_pool_ssrf_safe_v2(self):
-        MOCKDATA_FILE = os.path.join(
-            MOCKDATA_DIR, "ssrf_safe_java-net-url-connection-param.json")
+        MOCKDATA_FILE = os.path.join(MOCKDATA_DIR, "ssrf_safe_java-net-url-connection-param.json")
         with open(MOCKDATA_FILE) as fp:
             mock_method_pool_data = json.load(fp)
         engine = VulEngine()
         engine.method_pool = mock_method_pool_data
-        engine.search(method_pool=mock_method_pool_data,
-                      vul_method_signature=
-                      "sun.net.www.protocol.http.HttpURLConnection.connect")
+        engine.search(
+            method_pool=mock_method_pool_data,
+            vul_method_signature="sun.net.www.protocol.http.HttpURLConnection.connect",
+        )
         status, stack, source_sign, sink_sign, taint_value = engine.result()
         self.assertEqual(status, False)
 
     def test_search_method_pool_range_unsafe(self):
-        MOCKDATA_FILE = os.path.join(
-            MOCKDATA_DIR,
-            "propagator_range-remove_unsafe_string-builder-delete.json")
+        MOCKDATA_FILE = os.path.join(MOCKDATA_DIR, "propagator_range-remove_unsafe_string-builder-delete.json")
         with open(MOCKDATA_FILE) as fp:
             mock_method_pool_data = json.load(fp)
         engine = VulEngine()
         engine.method_pool = mock_method_pool_data
-        engine.search(method_pool=mock_method_pool_data,
-                      vul_method_signature="java.lang.Runtime.exec")
+        engine.search(method_pool=mock_method_pool_data, vul_method_signature="java.lang.Runtime.exec")
         status, stack, source_sign, sink_sign, taint_value = engine.result()
         self.assertEqual(status, True)
 
     def test_search_method_pool_range_safe(self):
-        MOCKDATA_FILE = os.path.join(
-            MOCKDATA_DIR,
-            "range-subset_safe_string_builder_substring_start2.json")
+        MOCKDATA_FILE = os.path.join(MOCKDATA_DIR, "range-subset_safe_string_builder_substring_start2.json")
         with open(MOCKDATA_FILE) as fp:
             mock_method_pool_data = json.load(fp)
         engine = VulEngine()
         engine.method_pool = mock_method_pool_data
-        engine.search(method_pool=mock_method_pool_data,
-                      vul_method_signature="java.lang.Runtime.exec")
+        engine.search(method_pool=mock_method_pool_data, vul_method_signature="java.lang.Runtime.exec")
         status, stack, source_sign, sink_sign, taint_value = engine.result()
         self.assertEqual(status, False)
 
     def test_search_method_pool_range_safe_v2(self):
-        MOCKDATA_FILE = os.path.join(
-            MOCKDATA_DIR, "reflection-injection_safe_for-name.json")
+        MOCKDATA_FILE = os.path.join(MOCKDATA_DIR, "reflection-injection_safe_for-name.json")
         with open(MOCKDATA_FILE) as fp:
             mock_method_pool_data = json.load(fp)
         engine = VulEngine()
         engine.method_pool = mock_method_pool_data
-        engine.search(method_pool=mock_method_pool_data,
-                      vul_method_signature="java.lang.Class.forName")
+        engine.search(method_pool=mock_method_pool_data, vul_method_signature="java.lang.Class.forName")
         status, stack, source_sign, sink_sign, taint_value = engine.result()
         self.assertEqual(status, False)

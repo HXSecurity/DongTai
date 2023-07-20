@@ -155,12 +155,12 @@ class VulEngine:
                 for source_type in pool["sourceType"]:
                     if source_type["type"] == "HOST":
                         source_type_hash = source_type["hash"]
-                        vecs = [[s, pool["invokeId"]]
-                                for s in target_hash_dict[source_type_hash]]
+                        vecs = [[s, pool["invokeId"]] for s in target_hash_dict[source_type_hash]]
             else:
-                vecs = [[s, pool["invokeId"]] for s in reduce(
-                    lambda x, y: x | y,
-                    [target_hash_dict[i] for i in pool["sourceHash"]], set())]
+                vecs = [
+                    [s, pool["invokeId"]]
+                    for s in reduce(lambda x, y: x | y, [target_hash_dict[i] for i in pool["sourceHash"]], set())
+                ]
             for source, target in vecs:
                 g.addEdge(source, target, abs(source - target) ** 1.1, addMissing=True)
         # Checkout each pair source/target have a path or not
@@ -186,10 +186,15 @@ class VulEngine:
                     else:
                         final_stack.append(self.copy_method(sub_method, propagator=True))
                 self.vul_stack = [final_stack]
-        if len(final_stack) > 1 and "targetRange" in final_stack[-2] and len(list(filter(lambda x: "ranges" in x and x["ranges"],final_stack[-2]["targetRange"]))) == 0:
+        if (
+            len(final_stack) > 1
+            and "targetRange" in final_stack[-2]
+            and len(list(filter(lambda x: "ranges" in x and x["ranges"], final_stack[-2]["targetRange"]))) == 0
+        ):
             self.vul_source_signature = None
             self.vul_stack = []
         self.vul_filter()
+
     def find_other_branch_v2(self, index, size, current_link, source_hash):
         for sub_index in range(index + 1, size):
             sub_method = self.method_pool[sub_index]
