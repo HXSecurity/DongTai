@@ -27,8 +27,6 @@ class MethodPoolVersionUpdate(TalentAdminEndPoint):
         while True:
             start = index * length
             end = (index + 1) * length
-            print(start)
-            print(end)
             sub_method_pools = method_pools.values(
                 "id",
                 "http_method",

@@ -163,7 +163,7 @@ class StrategysEndpoint(UserEndPoint):
                 pass
         except ValidationError as e:
             return R.failure(data=e.detail)
-        print(ser.validated_data)
+
         strategy = IastStrategyModel.objects.create(
             **ser.validated_data, user=request.user, dt=time.time()
         )

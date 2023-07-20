@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 # datetime:2020/10/23 11:55
-
 import datetime
+import logging
 
 from dongtai_common.models.iast_overpower_user import IastOverpowerUserAuth
 from dongtai_common.utils import const
 from dongtai_protocol.report.handler.report_handler_interface import IReportHandler
 from dongtai_protocol.report.report_handler_factory import ReportHandler
+
+logger = logging.getLogger("dongtai.openapi")
 
 
 @ReportHandler.register("auth-info-report")
@@ -18,7 +20,7 @@ class AuthInfoHandler:
         report_value = reports.get("report")
         AuthInfoHandler.RECIVED_AUTH_INFO.add(report_value["auth-value"])
         for authinfo in AuthInfoHandler.RECIVED_AUTH_INFO:
-            print(f"==>> recived auth ifno: {authinfo}")
+            logger.error(f"==>> recived auth ifno: {authinfo}")
 
     @staticmethod
     def get_new_authinfo(authinfo):
@@ -55,10 +57,10 @@ class AuthAddHandler(IReportHandler):
                 auth_value=self.auth_value,
             )
             if len(auth_model):
-                print("权限已存在,忽略")
+                logger.info("权限已存在,忽略")
                 pass
             else:
-                print("新增权限")
+                logger.info("新增权限")
                 IastOverpowerUserAuth(
                     app_name=self.app_name,
                     server_name=self.server_name,
@@ -99,7 +101,7 @@ class AuthUpdateHandler(IReportHandler):
         self.auth_updated = self.detail.get("auth_updated")
 
     def save(self):
-        print("存储权限变更报告")
+        logger.info("存储权限变更报告")
         auth_model = IastOverpowerUserAuth.objects.filter(
             app_name=self.app_name,
             server_name=self.server_name,
@@ -109,6 +111,6 @@ class AuthUpdateHandler(IReportHandler):
             auth_value=self.auth_original,
         )
         if len(auth_model) > 0:
-            print("处理权限变更")
+            logger.info("处理权限变更")
         else:
-            print("忽略权限变更")
+            logger.info("忽略权限变更")

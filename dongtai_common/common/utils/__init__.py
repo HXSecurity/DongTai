@@ -1,9 +1,12 @@
 import copy
+import logging
 from functools import wraps
 
 from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
 from rest_framework.authentication import TokenAuthentication, get_authorization_header
+
+logger = logging.getLogger("django")
 
 
 class DongTaiAppConfigPatch:
@@ -13,8 +16,7 @@ class DongTaiAppConfigPatch:
 
             monkey_patch(self.name)
         except ImportError as e:
-            print(e)
-            pass
+            logger.exception("import error: ", exc_info=e)
 
 
 class CSPMiddleware:

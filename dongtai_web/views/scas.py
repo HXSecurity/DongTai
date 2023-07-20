@@ -437,8 +437,6 @@ def get_vul_list_from_elastic_searchv2(
         if "signature_value.keyword" in i:
             del i["signature_value.keyword"]
     res_vul = [Asset(**i) for i in vuls]
-    # if resp.hits:
-    print(after_table)
     cache.set(hashkey, after_table)
     return res_vul[:page_size]
 

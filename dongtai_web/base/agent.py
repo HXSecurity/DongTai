@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import json
+import logging
 import re
 import time
 
@@ -14,6 +15,8 @@ from dongtai_common.models.project_version import IastProjectVersion
 from dongtai_common.models.server import IastServer
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
+
+logger = logging.getLogger("django")
 
 
 def get_agents_with_project(project_name, users):
@@ -249,8 +252,8 @@ def get_vul_count_by_agent(agent_ids, vid, user):
                     full_stack = full_stack_arr[-1]
                     classname = str(full_stack.get("classname", ""))
                     methodname = str(full_stack.get("methodname", ""))
-                except Exception:
-                    print("======")
+                except Exception as e:
+                    logger.exception("exception: ", exc_info=e)
             detailStr3 = _("In {} {} call {}. {} (), Incoming parameters {}").format(
                 str(fileName), rowStr, classname, methodname, str(one["taint_value"])
             )

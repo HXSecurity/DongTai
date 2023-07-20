@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django.http import JsonResponse
 from django.utils.translation import gettext_lazy as _
@@ -12,6 +13,8 @@ from dongtai_engine.plugins.project_status import (
     get_project_warning_time,
 )
 from dongtai_web.utils import extend_schema_with_envcheck
+
+logger = logging.getLogger("django")
 
 
 class ProjectWarningSettingsSer(serializers.Serializer):
@@ -48,7 +51,7 @@ class ProjectWarningEndpoint(UserEndPoint):
                 key=PROJECT_WARNING_TIME_KEY,
             )
         except Exception as e:
-            print(e)
+            logger.exception("exception: ", exc_info=e)
             return R.failure(msg=_("Update {} failed").format(PROJECT_WARNING_TIME_KEY))
 
         return R.success(data=ser.data)

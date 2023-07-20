@@ -153,8 +153,7 @@ class PythonAgentDownload:
             with open(f"{self.target_path}/{config_path}", "w+") as config_file:
                 json.dump(config, config_file)
         except Exception as e:
-            print(type(e))
-            print(e)
+            logger.exception("uncatched exception: ", exc_info=e)
             return False
         else:
             return True
@@ -221,7 +220,6 @@ class PhpAgentDownload:
                     except ValueError:
                         continue
                     if key == "iast.server.url":
-                        print(base_url)
                         value = base_url
                     if key == "iast.server.token":
                         value = auth_token
