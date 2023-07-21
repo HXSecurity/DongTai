@@ -359,11 +359,12 @@ class AgentDownload(OpenApiEndPoint):
                 template_id=template_id,
             ):
                 handler.replace_config()
-                with open(f"{handler.target_path}/{handler.agent_file}", "rb") as f:
-                    response = FileResponse(f)
-                    response["content_type"] = "application/octet-stream"
-                    response["Content-Disposition"] = f"attachment; filename={handler.agent_file}"
-                    return response
+                # The file will be closed automatically, so don't open it with a context manager.
+                # https://docs.djangoproject.com/en/3.2/ref/request-response/#fileresponse-objects
+                response = FileResponse(open(f"{handler.target_path}/{handler.agent_file}", "rb"))  # noqa: SIM115
+                response["content_type"] = "application/octet-stream"
+                response["Content-Disposition"] = f"attachment; filename={handler.agent_file}"
+                return response
             return R.failure(msg="agent file not exit.")
         except Exception as e:
             logger.exception(

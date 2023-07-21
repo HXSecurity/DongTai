@@ -55,14 +55,16 @@ class EngineDownloadEndPoint(OpenApiEndPoint):
         logger.debug(f"download file from oss or local cache, file: {local_file_name}")
         if self.download_agent_jar(remote_agent_file=remote_file_name, local_agent_file=local_file_name):
             try:
-                with open(local_file_name, "rb") as f:
-                    response = FileResponse(f)
-                    response["content_type"] = "application/octet-stream"
-                    response["Content-Disposition"] = f"attachment; filename={package_name}.jar"
-                    return response
+                # The file will be closed automatically, so don't open it with a context manager.
+                # https://docs.djangoproject.com/en/3.2/ref/request-response/#fileresponse-objects
+                response = FileResponse(open(local_file_name, "rb"))  # noqa: SIM115
+                response["content_type"] = "application/octet-stream"
+                response["Content-Disposition"] = f"attachment; filename={package_name}.jar"
             except Exception as e:
                 logger.error(e, exc_info=True)
                 return R.failure(msg="file not exit.", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            else:
+                return response
         else:
             return R.failure(msg="file not exit.", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
