@@ -46,7 +46,7 @@ from dongtai_web.dongtai_sca.common.dataclass import (
 )
 from dongtai_web.dongtai_sca.models import PackageLicenseLevel
 
-from .cwe import get_cwe_name, LICENSE_ID_DICT, LICENSE_DICT
+from .cwe import LICENSE_DICT, LICENSE_ID_DICT, get_cwe_name
 
 logger = logging.getLogger("dongtai-webapi")
 
