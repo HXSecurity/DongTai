@@ -121,7 +121,6 @@ class VulEngine:
     def search(self, method_pool, vul_method_signature, vul_type=None):
         self.vul_type = vul_type
         self.prepare(method_pool, vul_method_signature)
-        size = len(self.method_pool)
         from collections import defaultdict
         from functools import reduce
         from itertools import product
@@ -152,18 +151,21 @@ class VulEngine:
         # Build a graph
         g = nk.Graph(weighted=True, directed=True)
         for pool in self.method_pool:
-            vecs = [
-                [pool["invokeId"], t]
-                for t in reduce(
-                    lambda x, y: x | y,
-                    [source_hash_dict[i] for i in pool["targetHash"]],
-                    set(),
-                )
-            ]
+            if "sourceType" in pool:
+                for source_type in pool["sourceType"]:
+                    if source_type["type"] == "HOST":
+                        source_type_hash = source_type["hash"]
+                        vecs = [[s, pool["invokeId"]] for s in target_hash_dict[source_type_hash]]
+            else:
+                vecs = [
+                    [s, pool["invokeId"]]
+                    for s in reduce(lambda x, y: x | y, [target_hash_dict[i] for i in pool["sourceHash"]], set())
+                ]
             for source, target in vecs:
                 g.addEdge(source, target, abs(source - target) ** 1.1, addMissing=True)
         # Checkout each pair source/target have a path or not
         # It may lost sth when muliti paths exists.
+        final_stack = []
         for s, t in product(source_methods, vul_methods):
             if not g.hasNode(s) or not g.hasNode(t):
                 continue
@@ -184,87 +186,13 @@ class VulEngine:
                     else:
                         final_stack.append(self.copy_method(sub_method, propagator=True))
                 self.vul_stack = [final_stack]
-        if self.vul_source_signature and "sourceType" in self.vul_stack[-1][-1]:
-            final_stack = self.vul_stack[-1][-1]
-            current_link = []
-            current_link.append(final_stack)
-            the_second_stack = None
-            for source_type in final_stack["sourceType"]:
-                if source_type["type"] == "HOST":
-                    source_type_hash = source_type["hash"]
-                    for ind, method in enumerate(self.method_pool):
-                        if method["invokeId"] == final_stack["invokeId"]:
-                            index = ind
-                    before_stacks = self.method_pool[index:]
-                    for stack in before_stacks:
-                        if "targetRange" in stack:
-                            target_ranges = dict(
-                                zip(
-                                    [i["hash"] for i in stack["targetRange"]],
-                                    stack["targetRange"],
-                                    strict=False,
-                                )
-                            )
-                            if source_type_hash in target_ranges and target_ranges[source_type_hash]["ranges"]:
-                                the_second_stack = stack
-                                break
+        if (
+            len(final_stack) > 1
+            and "targetRange" in final_stack[-2]
+            and len(list(filter(lambda x: "ranges" in x and x["ranges"], final_stack[-2]["targetRange"]))) == 0
+        ):
             self.vul_source_signature = None
             self.vul_stack = []
-            if not the_second_stack:
-                return
-            self.pool_value = set(the_second_stack.get("sourceHash"))
-            for ind, method in enumerate(self.method_pool):
-                if method["invokeId"] == the_second_stack["invokeId"]:
-                    index = ind
-            if the_second_stack.get("source_type"):
-                current_link.append(self.copy_method(the_second_stack, source=True))
-            else:
-                current_link.append(self.copy_method(the_second_stack, propagator=True))
-            logger.info(f"==> current taint hash: {self.pool_value}")
-            logger.info("find second")
-            self.loop(index, size, current_link, set(the_second_stack.get("sourceHash")))
-            current_link = current_link[0:2]
-            extract_stack = self.find_other_branch_v2(
-                index, size, current_link, set(the_second_stack.get("sourceHash"))
-            )
-            self.vul_stack[0] = extract_stack[::-1]
-        elif self.vul_stack:
-            final_stack = self.vul_stack[-1][-1]
-            for ind, method in enumerate(self.method_pool):
-                if method["invokeId"] == final_stack["invokeId"]:
-                    index = ind
-            before_stacks = self.method_pool[index:]
-            the_second_stack = None
-            has_vul = False
-            for stack in before_stacks:
-                if "targetRange" in stack:
-                    target_ranges = dict(
-                        zip(
-                            [i["hash"] for i in stack["targetRange"]],
-                            stack["targetRange"],
-                            strict=False,
-                        )
-                    )
-                    if set(final_stack["sourceHash"]) & set(stack["targetHash"]):
-                        for _k, v in target_ranges.items():
-                            if v["ranges"]:
-                                has_vul = True
-                        the_second_stack = stack
-                        break
-                elif set(final_stack["sourceHash"]) & set(stack["targetHash"]):
-                    the_second_stack = stack
-                    has_vul = True
-                    break
-            if not the_second_stack or not has_vul:
-                self.vul_source_signature = None
-                self.vul_stack = []
-                self.pool_value = ""
-                return
-            # Disable temporary , will refactor it in next version.
-            #
-            #    index, size, current_link, set(final_stack.get('sourceHash')))
-        else:
-            pass
         self.vul_filter()
 
     def find_other_branch_v2(self, index, size, current_link, source_hash):
