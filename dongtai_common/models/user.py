@@ -117,5 +117,4 @@ class User(AbstractUser, PermissionsMixin):
         queryset = IastProject.objects.none()
         if self.is_system_admin:
             return IastProject.objects.all()
-        patch_point(queryset)
-        return queryset
+        return patch_point(queryset)
