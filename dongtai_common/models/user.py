@@ -114,8 +114,8 @@ class User(AbstractUser, PermissionsMixin):
     def get_projects(self) -> QuerySet:
         from dongtai_common.models.project import IastProject
 
-        queryset = IastProject.objects.all()
+        queryset = IastProject.objects.none()
         if self.is_system_admin:
-            return queryset
+            return IastProject.objects.all()
         patch_point(queryset)
         return queryset
