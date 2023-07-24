@@ -7,6 +7,7 @@ from django.db.models import Q, QuerySet
 from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.models.department import Department
+from dongtai_conf.patch import patch_point
 
 
 class PermissionsMixin(models.Model):
@@ -109,3 +110,12 @@ class User(AbstractUser, PermissionsMixin):
         if self.using_department:
             return self.using_department
         return self.get_department()
+
+    def get_projects(self) -> QuerySet:
+        from dongtai_common.models.project import IastProject
+
+        queryset = IastProject.objects.all()
+        if self.is_system_admin:
+            return queryset
+        patch_point(queryset)
+        return queryset

@@ -51,10 +51,8 @@ class GetAppVulsList(UserEndPoint):
         }
         ser = AggregationArgsSerializer(data=request.data)
         # 获取用户权限
-        departments = request.user.get_relative_department()
-        queryset = IastVulnerabilityModel.objects.filter(
-            is_del=0, project_id__gt=0, project__department__in=departments
-        )
+        projects = request.user.get_projects()
+        queryset = IastVulnerabilityModel.objects.filter(is_del=0, project_id__gt=0, project__in=projects)
 
         try:
             if ser.is_valid(True):
