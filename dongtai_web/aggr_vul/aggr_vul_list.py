@@ -402,7 +402,7 @@ def get_vul_list_from_elastic_search(
             field = ""
             opt = ""
             if isinstance(info, dict):
-                field = list(info.keys())[0]
+                field = next(iter(info.keys()))
                 opt = "lt" if info[field]["order"] == "desc" else "gt"
             if isinstance(info, str):
                 if info.startswith("-"):

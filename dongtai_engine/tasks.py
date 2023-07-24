@@ -509,7 +509,7 @@ def vul_recheck():
                         for index in range(item_length):
                             _header_list = header_raw[index].split(":")
                             _header_name = _header_list[0]
-                            if _header_name == "cookie" or _header_name == "Cookie":
+                            if _header_name in ("cookie", "Cookie"):
                                 cookie_index = index
                                 cookie_raw = ":".join(_header_list[1:])
                                 break

@@ -368,7 +368,7 @@ def get_vul_list_from_elastic_searchv2(
     for info in order_list:
         field = ""
         if isinstance(info, dict):
-            field = list(info.keys())[0]
+            field = next(iter(info.keys()))
         if isinstance(info, str):
             field = info[1:] if info.startswith("-") else info
         if field == "package_name.keyword":
