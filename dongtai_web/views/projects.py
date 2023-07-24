@@ -7,7 +7,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
 from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_common.models.project import IastProject, ProjectStatus
+from dongtai_common.models.project import ProjectStatus
 from dongtai_web.serializers.project import (
     ProjectSerializer,
     get_agent_count,
