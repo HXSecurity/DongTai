@@ -70,7 +70,7 @@ class User(AbstractUser, PermissionsMixin):
         return self.is_superuser == 1
 
     def is_talent_admin(self):
-        return self.is_superuser == 2 or self.is_superuser == 1 or self.is_superuser == 6
+        return self.is_superuser in {2, 1, 6}
 
     def get_talent(self):
         try:

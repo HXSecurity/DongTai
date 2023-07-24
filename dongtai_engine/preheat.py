@@ -56,7 +56,7 @@ class PreHeatRegister:
         if "return" in annotation_dict:
             del annotation_dict["return"]
 
-        if annotation_dict == {"user_id": int} or annotation_dict == {"user_id": "int"}:
+        if annotation_dict == {"user_id": int} or annotation_dict == {"user_id": "int"}:  # noqa: PLR1714
             pass
         else:
             logger.info(f"{function.__name__} annotations not fit in")

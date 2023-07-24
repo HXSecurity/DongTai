@@ -112,7 +112,7 @@ def parse_cookie(req_header: str, taint_value: str) -> str | None:
         # fixme 解析,然后匹配
         _header_list = header.split(":")
         _header_name = _header_list[0]
-        if _header_name == "cookie" or _header_name == "Cookie":
+        if _header_name in ("cookie", "Cookie"):
             cookie_raw = ":".join(_header_list[1:])
             break
 
