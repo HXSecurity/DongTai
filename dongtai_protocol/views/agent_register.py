@@ -419,16 +419,13 @@ def get_ipaddresslist(network: str) -> list:
 
 
 def project_create(default_params, project_name, user, version_name, template):
-    department = user.get_using_department()
     project_created = False
     obj = IastProject.objects.filter(
         name=project_name,
-        department=department,
     ).first()
     if not obj:
         obj, project_created = IastProject.objects.get_or_create(
             name=project_name,
-            department=department,
             defaults=default_params,
         )
     project_version, version_created = IastProjectVersion.objects.get_or_create(
