@@ -6,6 +6,7 @@ from dongtai_common.models import User
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.vul_level import IastVulLevel
 from dongtai_common.utils.settings import get_managed
+from dongtai_common.utils.db import get_timestamp
 
 
 class IastStrategyModel(models.Model):
@@ -13,7 +14,7 @@ class IastStrategyModel(models.Model):
     vul_type = models.CharField(max_length=255, blank=True)
     level = models.ForeignKey(IastVulLevel, models.DO_NOTHING)
     state = models.CharField(max_length=255, blank=True)
-    dt = models.IntegerField(blank=True, default=lambda: int(time()))
+    dt = models.IntegerField(blank=True, default=get_timestamp)
     vul_name = models.CharField(max_length=255, blank=True)
     vul_desc = models.TextField()
     vul_fix = models.TextField(blank=True)

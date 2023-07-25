@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import Expression
+import time
 
 
 class SearchLanguageMode(Expression):
@@ -39,3 +40,7 @@ class SearchLanguageMode(Expression):
 
     def set_source_expressions(self, expressions):
         self.expressions = expressions
+
+
+def get_timestamp():
+    return int(time.time())

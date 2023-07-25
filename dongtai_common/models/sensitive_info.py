@@ -12,6 +12,7 @@ from django.db import models
 
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.user import User
+from dongtai_common.utils.db import get_timestamp
 
 
 class IastPatternType(models.Model):
@@ -29,7 +30,7 @@ class IastSensitiveInfoRule(models.Model):
     pattern_type = models.ForeignKey(IastPatternType, models.DO_NOTHING)
     pattern = models.CharField(default=None, max_length=255)
     status = models.IntegerField(default=None)
-    latest_time = models.IntegerField(default=lambda: int(time.time()))
+    latest_time = models.IntegerField(default=get_timestamp)
 
     class Meta:
         db_table = "iast_sensitive_info_rule"

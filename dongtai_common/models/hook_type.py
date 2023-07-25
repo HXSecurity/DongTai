@@ -6,6 +6,7 @@ from django.db import models
 
 from dongtai_common.models.program_language import IastProgramLanguage
 from dongtai_common.utils.settings import get_managed
+from dongtai_common.utils.db import get_timestamp
 
 
 class HookType(models.Model):
@@ -13,8 +14,8 @@ class HookType(models.Model):
     name = models.CharField(max_length=255, blank=True)
     value = models.CharField(max_length=255, blank=True)
     enable = models.IntegerField(blank=True)
-    create_time = models.IntegerField(blank=True, null=True, default=lambda: int(time()))
-    update_time = models.IntegerField(blank=True, null=True, default=lambda: int(time()))
+    create_time = models.IntegerField(blank=True, null=True, default=get_timestamp)
+    update_time = models.IntegerField(blank=True, null=True, default=get_timestamp)
     created_by = models.IntegerField(blank=True)
     language = models.ForeignKey(
         IastProgramLanguage,

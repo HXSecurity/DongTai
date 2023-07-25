@@ -11,6 +11,11 @@ from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
 from dongtai_common.models.server import IastServer
 from dongtai_common.utils.settings import get_managed
+from dongtai_common.utils.db import get_timestamp
+
+
+def get_events():
+    return ["注册成功"]
 
 
 class IastAgent(models.Model):
@@ -43,7 +48,7 @@ class IastAgent(models.Model):
     actual_running_status = models.IntegerField(default=1)
     except_running_status = models.IntegerField(default=1)
     state_status = models.IntegerField(default=1)
-    events = models.JSONField(default=lambda: ["注册成功"])
+    events = models.JSONField(default=get_events)
     department = models.ForeignKey(Department, models.DO_NOTHING)
     allow_report = models.IntegerField(default=1)
 
@@ -80,7 +85,7 @@ class IastAgent(models.Model):
 class IastAgentEvent(models.Model):
     agent = models.ForeignKey(IastAgent, on_delete=models.CASCADE, related_name="new_events")
     name = models.CharField(max_length=255, blank=True)
-    time = models.IntegerField(default=lambda: int(time()), blank=True, null=True)
+    time = models.IntegerField(default=get_timestamp, blank=True, null=True)
 
     class Meta:
         managed = get_managed()

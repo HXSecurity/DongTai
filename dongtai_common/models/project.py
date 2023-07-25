@@ -8,6 +8,7 @@ from dongtai_common.models import User
 from dongtai_common.models.department import Department
 from dongtai_common.models.strategy_user import IastStrategyUser
 from dongtai_common.utils.settings import get_managed
+from dongtai_common.utils.db import get_timestamp
 
 
 class VulValidation(models.IntegerChoices):
@@ -26,7 +27,7 @@ class ProjectStatus(models.IntegerChoices):
 
 class IastProjectTemplate(models.Model):
     template_name = models.CharField(max_length=255)
-    latest_time = models.IntegerField(default=lambda: int(time.time()))
+    latest_time = models.IntegerField(default=get_timestamp)
     user = models.ForeignKey(User, models.DO_NOTHING)
     scan = models.ForeignKey(IastStrategyUser, models.DO_NOTHING)
     vul_validation = models.IntegerField(default=0, choices=VulValidation.choices)
@@ -58,7 +59,7 @@ class IastProject(models.Model):
     mode = models.CharField(default="插桩模式", max_length=255, blank=True)
     vul_count = models.PositiveIntegerField(blank=True, null=True)
     agent_count = models.IntegerField(blank=True, null=True)
-    latest_time = models.IntegerField(default=lambda: int(time.time()))
+    latest_time = models.IntegerField(default=get_timestamp)
     user = models.ForeignKey(User, models.DO_NOTHING)
     # openapi服务不必使用该字段
     scan = models.ForeignKey(IastStrategyUser, models.DO_NOTHING, blank=True, null=True)
@@ -74,7 +75,7 @@ class IastProject(models.Model):
     template = models.ForeignKey(IastProjectTemplate, models.DO_NOTHING)
     enable_log = models.BooleanField(null=True)
     log_level = models.CharField(max_length=511, null=True, blank=True)
-    last_has_online_agent_time = models.IntegerField(default=lambda: int(time.time()))
+    last_has_online_agent_time = models.IntegerField(default=get_timestamp)
     status = models.IntegerField(default=0, choices=ProjectStatus.choices)
 
     class Meta:

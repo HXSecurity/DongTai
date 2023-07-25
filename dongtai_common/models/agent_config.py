@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.models import User
 from dongtai_common.utils.settings import get_managed
+from dongtai_common.utils.db import get_timestamp
 
 
 # agent 阀值监控配置
@@ -102,8 +103,8 @@ class IastCircuitConfig(models.Model):
     interval = models.IntegerField(default=30)
     metric_group = models.IntegerField()
     priority = models.IntegerField()
-    create_time = models.IntegerField(blank=True, default=lambda: int(time()))
-    update_time = models.IntegerField(blank=True, default=lambda: int(time()))
+    create_time = models.IntegerField(blank=True, default=get_timestamp)
+    update_time = models.IntegerField(blank=True, default=get_timestamp)
 
     class Meta:
         managed = get_managed()
