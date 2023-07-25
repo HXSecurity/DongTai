@@ -20,39 +20,10 @@ def fuzz_test_data(end_point, httpmethod):
             fields = query().get_fields()
             for k, v in fields.items():
                 queryfield.append(k)
-                if isinstance(v, IntegerField | CharField):
+                if isinstance(v, (IntegerField, CharField)):
                     data_tuple.append([0, -1, "", "1", "-1", 0, "ale"])
         elif isinstance(query, dict):
             queryfield.append(query["name"])
             if query["type"] == int:
                 data_tuple.append([0, -1, "", "1", "-1", 0, "alw"])
     return list(product(*data_tuple))
-
-
-# @ddt
-# class DocumentsEndpointTests(APITestCase):
-#    def setUp(self):
-#        self.method = list(
-#            filter(lambda x: x in ['get', 'post'], dir(DocumentsEndpoint)))
-#
-#    def test_documents_retrive(self):
-#
-#    @data('python', 'java')
-#    def test_documents_retrive(self, value):
-#
-#    @idata([{'language': 'python'}, {'language': 'java'}])
-#    def test_documents_retrive2(self, value):
-#
-#    def test_edge_case(self):
-#        for i in self.httpmethod.querys:
-#            if isinstance(i, SerializerMetaclass):
-#                for k, v in fields.items():
-#                    if isinstance(v, IntegerField):
-#                    if isinstance(v, CharField):
-#
-#    def test_documents_retrive22(self):
-#
-# class DocumentsEndpointTests(APITestCase):
-#    def setUp(self):
-#        self.method = list(
-#            filter(lambda x: x in ['get', 'post'], dir(view)))
