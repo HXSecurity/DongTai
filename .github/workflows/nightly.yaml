@@ -55,7 +55,7 @@ jobs:
           cp dongtai_conf/conf/config.ini.test dongtai_conf/conf/config.ini
           mkdir -p /tmp/logstash/report/{img,word,pdf,excel} && mkdir -p /tmp/iast_cache/package && mkdir -p /tmp/logstash/batchagent 
           python3 ./deploy/docker/version_update.py || true
-          pip install Cython==3.0.0b3
+          pip install Cython==3.0.0
           python setup.py build_ext --inplace
           find . -name "*.so"  | grep test | xargs rm
           coverage run --source='.' manage.py test
@@ -111,7 +111,7 @@ jobs:
           export DOC=TRUE
           mkdir -p /tmp/logstash/report/{img,word,pdf,excel} && mkdir -p /tmp/iast_cache/package && mkdir -p /tmp/logstash/batchagent 
           python3 ./deploy/docker/version_update.py || true
-          pip install Cython==3.0.0b3
+          pip install Cython==3.0.0
           python setup.py build_ext --inplace
           python setup.py build_ext --inplace
           python3 manage.py updatedepartmenttoken
