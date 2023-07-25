@@ -131,6 +131,7 @@ class ScaSummary(UserEndPoint):
         tags=[_("Component")],
         summary=_("Component Summary (with project)"),
         description=_("Use the specified project information to get the corresponding component summary"),
+        deprecated=True,
         response_schema=_ResponseSerializer,
     )
     def post(self, request):

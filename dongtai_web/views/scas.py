@@ -141,6 +141,7 @@ class ScaList(UserEndPoint):
         tags=[_("Component")],
         summary=_("Component List (with project)"),
         description=_("use the specified project information to obtain the corresponding component."),
+        deprecated=True,
         response_schema=_ResponseSerializer,
     )
     def post(self, request):
