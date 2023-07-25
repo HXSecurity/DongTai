@@ -4,11 +4,10 @@ import json
 import logging
 from functools import reduce
 from operator import ior
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from django.core.paginator import EmptyPage, Paginator
 from django.db.models import Count, Q
-from django.db.models.query import QuerySet, ValuesQuerySet
 from django.http import JsonResponse
 from django.http.request import HttpRequest
 from django.utils.translation import gettext_lazy as _
@@ -34,6 +33,7 @@ from dongtai_common.utils.init_schema import VIEW_CLASS_TO_SCHEMA
 
 if TYPE_CHECKING:
     from django.core.paginator import _SupportsPagination
+    from django.db.models.query import QuerySet, ValuesQuerySet
 
 logger = logging.getLogger("dongtai-core")
 
@@ -189,8 +189,8 @@ class EndPoint(APIView):
 
     @staticmethod
     def get_paginator(
-        queryset: QuerySet | ValuesQuerySet, page: int = 1, page_size: int = 20
-    ) -> tuple[dict, Union[QuerySet, "_SupportsPagination"]]:
+        queryset: "QuerySet | ValuesQuerySet", page: int = 1, page_size: int = 20
+    ) -> tuple[dict, "QuerySet | _SupportsPagination"]:
         """
         根据模型集合、页号、每页大小获取分页数据
         :param queryset:

@@ -2,9 +2,10 @@ import json
 import logging
 from itertools import groupby
 from time import time
+from typing import TYPE_CHECKING
 
 from django.db.models import IntegerChoices, Q
-from django.db.models.query import QuerySet, ValuesQuerySet
+from django.db.models.query import QuerySet
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework import serializers
@@ -17,9 +18,10 @@ from dongtai_common.models.api_route import FromWhereChoices, IastApiRoute
 from dongtai_common.models.asset import Asset
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_web.utils import (
-    extend_schema_with_envcheck,
-)
+from dongtai_web.utils import extend_schema_with_envcheck
+
+if TYPE_CHECKING:
+    from django.db.models.query import ValuesQuerySet
 
 logger = logging.getLogger("dongtai-webapi")
 
@@ -220,7 +222,7 @@ def cal_state(agent: dict) -> StateType:
     return StateType.UNINSTALL
 
 
-def query_agent(filter_condiction=None) -> ValuesQuerySet:
+def query_agent(filter_condiction=None) -> "ValuesQuerySet":
     if filter_condiction is None:
         filter_condiction = Q()
     return (
