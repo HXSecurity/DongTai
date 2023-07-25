@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # datetime:2020/11/27 下午4:31
-import time
 from typing import Any
 
 from django.db import models
@@ -8,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.models.talent import Talent
 from dongtai_common.utils.customfields import trans_char_field
+from dongtai_common.utils.db import get_timestamp
 from dongtai_common.utils.settings import get_managed
 
 
@@ -46,8 +46,8 @@ class Department(PermissionsMixin):
             "unique": _("A department with that department name already exists."),
         },
     )
-    create_time = models.IntegerField(_("create time"), default=lambda: int(time.time()), blank=True)
-    update_time = models.IntegerField(_("update time"), default=lambda: int(time.time()), blank=True)
+    create_time = models.IntegerField(_("create time"), default=get_timestamp, blank=True)
+    update_time = models.IntegerField(_("update time"), default=get_timestamp, blank=True)
     created_by = models.IntegerField(_("created by"), blank=True)
     parent_id = models.IntegerField(_("parent id"), blank=True)
     principal_id = models.IntegerField(default=0, blank=True)

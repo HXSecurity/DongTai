@@ -6,8 +6,6 @@
 # @description :
 ######################################################################
 
-import os
-
 
 def get_managed():
-    return os.getenv("environment", None) == "TEST"
+    return True  # os.getenv("environment", None) == "TEST"

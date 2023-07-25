@@ -1,10 +1,9 @@
-from time import time
-
 from django.db import models
 from django.db.models import IntegerChoices
 from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.models import User
+from dongtai_common.utils.db import get_timestamp
 from dongtai_common.utils.settings import get_managed
 
 
@@ -102,8 +101,8 @@ class IastCircuitConfig(models.Model):
     interval = models.IntegerField(default=30)
     metric_group = models.IntegerField()
     priority = models.IntegerField()
-    create_time = models.IntegerField(blank=True, default=lambda: int(time()))
-    update_time = models.IntegerField(blank=True, default=lambda: int(time()))
+    create_time = models.IntegerField(blank=True, default=get_timestamp)
+    update_time = models.IntegerField(blank=True, default=get_timestamp)
 
     class Meta:
         managed = get_managed()

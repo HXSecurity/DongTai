@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # datetime:2020/8/20 15:10
 
-import time
 
 from django.db import models
 from django.db.models import IntegerChoices
@@ -10,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_common.models.department import Department
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
+from dongtai_common.utils.db import get_timestamp
 from dongtai_common.utils.settings import get_managed
 
 
@@ -27,7 +27,7 @@ class AssetV2(models.Model):
     package_path = models.CharField(max_length=255, blank=True)
     signature_algorithm = models.CharField(max_length=255, blank=True)
     signature_value = models.CharField(max_length=255, blank=True)
-    dt = models.IntegerField(blank=True, default=lambda: int(time.time()))
+    dt = models.IntegerField(blank=True, default=get_timestamp)
     version = models.CharField(max_length=255, blank=True)
     project = models.ForeignKey(IastProject, on_delete=models.CASCADE, blank=True, default=-1)
     project_version = models.ForeignKey(IastProjectVersion, on_delete=models.CASCADE, blank=True, default=-1)

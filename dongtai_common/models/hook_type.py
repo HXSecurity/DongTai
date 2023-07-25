@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # datetime:2021/1/13 下午6:38
-from time import time
 
 from django.db import models
 
 from dongtai_common.models.program_language import IastProgramLanguage
+from dongtai_common.utils.db import get_timestamp
 from dongtai_common.utils.settings import get_managed
 
 
@@ -13,8 +13,8 @@ class HookType(models.Model):
     name = models.CharField(max_length=255, blank=True)
     value = models.CharField(max_length=255, blank=True)
     enable = models.IntegerField(blank=True)
-    create_time = models.IntegerField(blank=True, null=True, default=lambda: int(time()))
-    update_time = models.IntegerField(blank=True, null=True, default=lambda: int(time()))
+    create_time = models.IntegerField(blank=True, null=True, default=get_timestamp)
+    update_time = models.IntegerField(blank=True, null=True, default=get_timestamp)
     created_by = models.IntegerField(blank=True)
     language = models.ForeignKey(
         IastProgramLanguage,

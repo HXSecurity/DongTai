@@ -7,10 +7,9 @@
 ######################################################################
 
 
-from time import time
-
 from django.db import models
 
+from dongtai_common.utils.db import get_timestamp
 from dongtai_common.utils.settings import get_managed
 
 
@@ -25,7 +24,7 @@ class IastMessageType(models.Model):
 class IastMessage(models.Model):
     message = models.CharField(max_length=512, blank=True)
     relative_url = models.CharField(max_length=512, blank=True)
-    create_time = models.IntegerField(default=lambda: int(time()))
+    create_time = models.IntegerField(default=get_timestamp)
     read_time = models.IntegerField(default=0)
     is_read = models.IntegerField(default=0)
     message_type = models.ForeignKey(
