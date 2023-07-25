@@ -1,6 +1,7 @@
+import time
+
 from django.db import models
 from django.db.models import Expression
-import time
 
 
 class SearchLanguageMode(Expression):

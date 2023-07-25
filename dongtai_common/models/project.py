@@ -7,8 +7,8 @@ from django.db import models
 from dongtai_common.models import User
 from dongtai_common.models.department import Department
 from dongtai_common.models.strategy_user import IastStrategyUser
-from dongtai_common.utils.settings import get_managed
 from dongtai_common.utils.db import get_timestamp
+from dongtai_common.utils.settings import get_managed
 
 
 class VulValidation(models.IntegerChoices):

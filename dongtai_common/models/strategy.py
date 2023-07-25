@@ -1,12 +1,11 @@
-from time import time
 
 from django.db import models
 
 from dongtai_common.models import User
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.vul_level import IastVulLevel
-from dongtai_common.utils.settings import get_managed
 from dongtai_common.utils.db import get_timestamp
+from dongtai_common.utils.settings import get_managed
 
 
 class IastStrategyModel(models.Model):

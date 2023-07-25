@@ -1,4 +1,3 @@
-from time import time
 
 from django.db import models
 from django.db.models import IntegerChoices
@@ -6,8 +5,8 @@ from django.db.models import IntegerChoices
 from dongtai_common.models.asset_vul import IastAssetVul
 from dongtai_common.models.user import User
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_common.utils.settings import get_managed
 from dongtai_common.utils.db import get_timestamp
+from dongtai_common.utils.settings import get_managed
 
 
 class MessageTypeChoices(IntegerChoices):

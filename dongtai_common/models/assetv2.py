@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # datetime:2020/8/20 15:10
 
-import time
 
 from django.db import models
 from django.db.models import IntegerChoices
@@ -10,8 +9,8 @@ from django.utils.translation import gettext_lazy as _
 from dongtai_common.models.department import Department
 from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
-from dongtai_common.utils.settings import get_managed
 from dongtai_common.utils.db import get_timestamp
+from dongtai_common.utils.settings import get_managed
 
 
 class AssetRiskLevel(IntegerChoices):

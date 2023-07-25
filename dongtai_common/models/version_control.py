@@ -6,12 +6,11 @@
 # @description :
 ######################################################################
 
-import time
 
 from django.db import models
 
-from dongtai_common.utils.settings import get_managed
 from dongtai_common.utils.db import get_timestamp
+from dongtai_common.utils.settings import get_managed
 
 
 class VersionControl(models.Model):
