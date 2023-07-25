@@ -6,7 +6,6 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_common.models.project import IastProject
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 
@@ -38,10 +37,8 @@ class ProjectDel(UserEndPoint):
         try:
             project_id = request.data.get("id", None)
             if project_id:
-                department = request.user.get_relative_department()
-                #                IastAgent.objects.filter(
-                #                    user__in=auth_users).update(bind_project_id=-1)
-                IastProject.objects.filter(id=project_id, department__in=department).delete()
+                projects = request.user.get_projects()
+                projects.filter(id=project_id).delete()
 
             return R.success(msg=_("Application has been deleted successfully"))
         except Exception as e:

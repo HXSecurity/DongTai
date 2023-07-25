@@ -7,7 +7,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
 from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_common.models.project import IastProject, ProjectStatus
+from dongtai_common.models.project import ProjectStatus
 from dongtai_web.serializers.project import (
     ProjectSerializer,
     get_agent_count,
@@ -69,8 +69,7 @@ class Projects(UserEndPoint):
         except ValidationError as e:
             return R.failure(data=e.detail)
 
-        department = request.user.get_relative_department()
-        queryset = IastProject.objects.filter(department__in=department).order_by("-latest_time")
+        queryset = request.user.get_projects().order_by("-latest_time")
         if name:
             queryset = queryset.filter(name__icontains=name)
         if status is not None:

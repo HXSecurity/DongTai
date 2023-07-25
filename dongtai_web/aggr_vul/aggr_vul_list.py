@@ -61,6 +61,7 @@ class GetAggregationVulList(UserEndPoint):
     description = _("New application")
 
     @extend_schema_with_envcheck(
+        deprecated=True,
         request=AggregationArgsSerializer,
         tags=[_("漏洞")],
         summary=_("组件漏洞列表"),
@@ -155,11 +156,9 @@ class GetAggregationVulList(UserEndPoint):
 
         except ValidationError as e:
             return R.failure(data=e.detail)
-        departments = list(request.user.get_relative_department())
-        department_filter_sql = " and {}.department_id in ({})".format(
-            "asset", ",".join(str(x.id) for x in departments)
-        )
-        query_condition = query_condition + department_filter_sql
+        projects = list(request.user.get_projects())
+        project_filter_sql = " and {}.project_id in ({})".format("asset", ",".join(str(x.id) for x in projects))
+        query_condition = query_condition + project_filter_sql
 
         if keywords:
             query_base = (
@@ -245,7 +244,7 @@ class GetAggregationVulList(UserEndPoint):
                 Asset.objects.filter(
                     iastvulassetrelation__asset_vul_id__in=vul_ids,
                     iastvulassetrelation__is_del=0,
-                    department__in=departments,
+                    project__in=projects,
                     project_id__gt=0,
                 )
                 .values("project_id", "iastvulassetrelation__asset_vul_id")
@@ -337,10 +336,10 @@ def get_vul_list_from_elastic_search(
     auth_user_info = auth_user_list_str(user_id=user_id)
     auth_user_info["user_list"]
     user = User.objects.filter(pk=user_id).first()
-    departments = user.get_relative_department()
-    department_ids = [department.id for department in departments]
+    projects = user.get_projects()
+    project_ids = [project.id for project in projects]
     must_query = [
-        Q("terms", asset_department_id=department_ids),
+        Q("terms", asset_project_id=project_ids),
         Q("terms", asset_vul_relation_is_del=[0]),
         Q("range", asset_project_id={"gt": 0}),
     ]

@@ -26,7 +26,7 @@ class DelVulProjectLevel(UserEndPoint):
             return R.failure()
         project_version_id = request.data.get("project_version_id", None)
         source_type = request.data.get("source_type", 1)
-        department = request.user.get_relative_department()
+        project = request.user.get_projects()
         if source_type == 1:
             queryset = IastVulnerabilityModel.objects.filter(is_del=0)
         else:
@@ -44,15 +44,11 @@ class DelVulProjectLevel(UserEndPoint):
 
         # 部门删除逻辑
         if source_type == 1:
-            queryset = queryset.filter(project__department__in=department)
+            queryset = queryset.filter(project__in=project)
         else:
-            queryset = queryset.filter(asset__department__in=department)
+            queryset = queryset.filter(asset__project__in=project)
 
         for vul in queryset:
             vul.is_del = 1
             vul.save()
-        return R.success(
-            data={
-                "messages": "success",
-            },
-        )
+        return R.success(data={"messages": "success"})

@@ -29,7 +29,6 @@ class VulCountForPluginEndPoint(MixinAuthEndPoint):
         agent_name = request.query_params.get("name")
         departmenttoken = request.query_params.get("departmenttoken", "")
         projectname = request.query_params.get("projectname", "")
-        request.user.get_relative_department()
         if not agent_name:
             return R.failure(msg=_("Please input agent name."))
         departmenttoken = departmenttoken.replace("GROUP", "")

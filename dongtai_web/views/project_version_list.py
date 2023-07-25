@@ -5,7 +5,6 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
@@ -40,8 +39,7 @@ class ProjectVersionList(UserEndPoint):
     )
     def get(self, request, project_id):
         try:
-            department = request.user.get_relative_department()
-            project = IastProject.objects.filter(department__in=department, id=project_id).first()
+            project = request.user.get_projects().filter(id=project_id).first()
             if not project:
                 return R.failure(status=203, msg=_("no permission"))
 

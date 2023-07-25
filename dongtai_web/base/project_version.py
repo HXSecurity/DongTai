@@ -2,6 +2,7 @@ import time
 
 from django.db import transaction
 from django.db.models import Q
+from django.db.models.query import QuerySet
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
@@ -20,13 +21,13 @@ class VersionModifySerializer(serializers.Serializer):
 
 
 @transaction.atomic
-def version_modify(user, department, versionData=None):
+def version_modify(user, projects: QuerySet[IastProject], versionData):
     version_id = versionData.get("version_id", 0)
     project_id = versionData.get("project_id", 0)
     current_version = versionData.get("current_version", 0)
     version_name = versionData.get("version_name", "")
     description = versionData.get("description", "")
-    project = IastProject.objects.filter(department__in=department, id=project_id).only("id", "user").first()
+    project = projects.filter(id=project_id).only("id", "user").first()
     if not version_name or not project:
         return {"status": "202", "msg": _("Parameter error")}
     baseVersion = IastProjectVersion.objects.filter(

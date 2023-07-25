@@ -51,10 +51,8 @@ class GetAppVulsList(UserEndPoint):
         }
         ser = AggregationArgsSerializer(data=request.data)
         # 获取用户权限
-        departments = request.user.get_relative_department()
-        queryset = IastVulnerabilityModel.objects.filter(
-            is_del=0, project_id__gt=0, project__department__in=departments
-        )
+        projects = request.user.get_projects()
+        queryset = IastVulnerabilityModel.objects.filter(is_del=0, project_id__gt=0, project__in=projects)
 
         try:
             if ser.is_valid(True):
@@ -148,7 +146,7 @@ class GetAppVulsList(UserEndPoint):
                     order_list.append(order_type_desc + order_type)
                 es_query["order"] = order_type_desc + order_type
                 if ELASTICSEARCH_STATE:
-                    vul_data = get_vul_list_from_elastic_search(departments, page=page, page_size=page_size, **es_query)
+                    vul_data = get_vul_list_from_elastic_search(projects, page=page, page_size=page_size, **es_query)
                 else:
                     vul_data = queryset.values(*tuple(fields)).order_by(*tuple(order_list))[begin_num:end_num]
         except ValidationError as e:
@@ -214,7 +212,7 @@ def set_vul_inetration(end: dict[str, Any], user_id: int) -> None:
 
 
 def get_vul_list_from_elastic_search(
-    departments,
+    projects,
     project_ids=None,
     project_version_ids=None,
     hook_type_ids=None,
@@ -246,9 +244,9 @@ def get_vul_list_from_elastic_search(
 
     from dongtai_common.models.strategy import IastStrategyModel
 
-    department_ids = list(departments.values_list("id", flat=True))
+    auth_project_ids = list(project_ids.values_list("id", flat=True))
     must_query = [
-        Q("terms", department_id=department_ids),
+        Q("terms", bind_project_id=auth_project_ids),
         Q("terms", is_del=[0]),
         Q("range", bind_project_id={"gt": 0}),
         Q("range", strategy_id={"gt": 0}),
@@ -290,7 +288,7 @@ def get_vul_list_from_elastic_search(
     a = Q("bool", must=must_query)
     hashkey = make_hash(
         [
-            department_ids,
+            auth_project_ids,
             project_ids,
             project_version_ids,
             hook_type_ids,

@@ -6,7 +6,6 @@ from rest_framework import serializers
 
 from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.agent import IastAgent
-from dongtai_common.models.project import IastProject
 from dongtai_common.models.project_version import IastProjectVersion
 from dongtai_common.utils import const
 from dongtai_web.base.project_version import (
@@ -93,8 +92,7 @@ class ProjectSummary(UserEndPoint):
         response_schema=_ProjectSummaryResponseSerializer,
     )
     def get(self, request, id):
-        department = request.user.get_relative_department()
-        project = IastProject.objects.filter(department__in=department, id=id).first()
+        project = request.user.get_projects().filter(id=id).first()
 
         if not project:
             return R.failure(status=203, msg=_("no permission"))

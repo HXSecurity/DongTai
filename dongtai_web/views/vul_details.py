@@ -237,8 +237,8 @@ class VulDetail(UserEndPoint):
     def parse_response(header, body):
         return f"{header}\n\n{body}"
 
-    def get_vul(self, department):
-        vul = IastVulnerabilityModel.objects.filter(id=self.vul_id, project__department__in=department).first()
+    def get_vul(self, projects):
+        vul = IastVulnerabilityModel.objects.filter(id=self.vul_id, project__in=projects).first()
         hook_type = HookType.objects.filter(pk=vul.hook_type_id).first() if vul is not None else None
         hook_type_name = hook_type.name if hook_type else None
         strategy = IastStrategyModel.objects.filter(pk=vul.strategy_id).first()
@@ -408,11 +408,11 @@ class VulDetail(UserEndPoint):
         :return:
         """
         self.vul_id = id
-        self.departments = request.user.get_relative_department()
+        projects = request.user.get_projects()
         try:
             return R.success(
                 data={
-                    "vul": self.get_vul(self.departments),
+                    "vul": self.get_vul(projects),
                     "server": self.get_server(),
                     "strategy": self.get_strategy(),
                 }
@@ -464,10 +464,10 @@ class VulDetailV2(VulDetail):
         id,
     ):
         self.vul_id = id
-        self.departments = request.user.get_relative_department()
+        projects = request.user.get_projects()
         try:
             data = {
-                "vul": self.get_vul(self.departments),
+                "vul": self.get_vul(projects),
                 "server": self.get_server(),
                 "strategy": self.get_strategy(),
             }

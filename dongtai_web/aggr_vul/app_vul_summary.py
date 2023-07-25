@@ -1,11 +1,12 @@
 import logging
 
 from django.db.models import Count, Q
+from django.db.models.query import QuerySet
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import ValidationError
 
 from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_common.models.department import Department
+from dongtai_common.models.project import IastProject
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 from dongtai_common.utils.const import OPERATE_GET
 from dongtai_conf.patch import patch_point
@@ -20,18 +21,12 @@ def _annotate_by_query(q, value_fields, count_field):
     return IastVulnerabilityModel.objects.filter(q).values(*value_fields).annotate(count=Count(count_field))
 
 
-# @cached_decorator(random_range=(2 * 60 * 60, 2 * 60 * 60),
-#                  use_celery_update=True)
+def get_annotate_cache_data(projects: QuerySet[IastProject]):
+    return get_annotate_data(projects, 0, 0)
 
 
-def get_annotate_cache_data(department: Department):
-    return get_annotate_data(department, 0, 0)
-
-
-def get_annotate_data(department: Department, bind_project_id=int, project_version_id=int) -> dict:
-    # cache_q = Q(is_del=0, agent__bind_project_id__gt=0,
-    #             agent__user_id__in=auth_user_info['user_list'])
-    cache_q = Q(is_del=0, project_id__gt=0, project__department__in=department)
+def get_annotate_data(projects: QuerySet[IastProject], bind_project_id: int, project_version_id: int) -> dict:
+    cache_q = Q(is_del=0, project_id__gt=0, project__in=projects)
 
     # 从项目列表进入 绑定项目id
     if bind_project_id:
@@ -98,7 +93,7 @@ class GetAppVulsSummary(UserEndPoint):
         :return:
         """
 
-        department = request.user.get_relative_department()
+        projects = request.user.get_projects()
 
         ser = AggregationArgsSerializer(data=request.data)
         bind_project_id = 0
@@ -111,12 +106,12 @@ class GetAppVulsSummary(UserEndPoint):
                     project_version_id = ser.validated_data.get("project_version_id", 0)
 
             if ELASTICSEARCH_STATE:
-                result_summary = get_annotate_data_es(department, bind_project_id, project_version_id)
+                result_summary = get_annotate_data_es(projects, bind_project_id, project_version_id)
             elif bind_project_id or project_version_id:
-                result_summary = get_annotate_data(department, bind_project_id, project_version_id)
+                result_summary = get_annotate_data(projects, bind_project_id, project_version_id)
             else:
                 # 全局下走缓存
-                result_summary = get_annotate_cache_data(department)
+                result_summary = get_annotate_cache_data(projects)
         except ValidationError as e:
             logger.info(e)
             return R.failure(data=e.detail)
@@ -128,7 +123,7 @@ class GetAppVulsSummary(UserEndPoint):
         )
 
 
-def get_annotate_data_es(department: Department, bind_project_id, project_version_id):
+def get_annotate_data_es(projects: QuerySet[IastProject], bind_project_id: int, project_version_id: int):
     from elasticsearch import Elasticsearch
     from elasticsearch_dsl import A, Q
 
@@ -142,7 +137,7 @@ def get_annotate_data_es(department: Department, bind_project_id, project_versio
     strategy_ids = list(IastStrategyModel.objects.all().values_list("id", flat=True))
 
     must_query = [
-        Q("terms", department_id=list(department.values_list("id", flat=True))),
+        Q("terms", bind_project_id=list(projects.values_list("id", flat=True))),
         Q("terms", is_del=[0]),
         Q("terms", is_del=[0]),
         Q("range", bind_project_id={"gt": 0}),

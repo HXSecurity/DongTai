@@ -30,10 +30,7 @@ class UserDepartmentToken(UserEndPoint):
     name = "iast-v1-user-department-token"
     description = _("获取部门部署 token")
 
-    @extend_schema(
-        summary=_("获取部门部署 token"),
-        tags=[_("User")],
-    )
+    @extend_schema(summary=_("获取部门部署 token"), tags=[_("User")], deprecated=True)
     def get(self, request):
         departments = request.user.get_relative_department()
         department = request.user.get_department()

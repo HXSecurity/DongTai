@@ -16,9 +16,7 @@ from dongtai_common.models.project_version import IastProjectVersion
 from dongtai_common.models.server import IastServer
 from dongtai_common.models.strategy_user import IastStrategyUser
 from dongtai_engine.common.queryset import get_scan_id
-from dongtai_web.base.project_version import (
-    version_modify,
-)
+from dongtai_web.base.project_version import version_modify
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 logger = logging.getLogger("django")
@@ -80,13 +78,12 @@ class ProjectAdd(UserEndPoint):
                 mode = "插桩模式"
                 scan_id = int(request.data.get("scan_id", 5))
                 template_id = int(request.data.get("template_id", 1))
-                departments = request.user.get_relative_department()
+                projects = request.user.get_projects()
                 scan = IastStrategyUser.objects.filter(id=scan_id).first()
                 base_url = request.data.get("base_url", None)
                 test_req_header_key = request.data.get("test_req_header_key", None)
                 test_req_header_value = request.data.get("test_req_header_value", None)
                 description = request.data.get("description", None)
-                department_id = request.data.get("department_id", None)
                 pid = request.data.get("pid", 0)
                 enable_log = request.data.get("enable_log", None)
                 log_level = request.data.get("log_level", None)
@@ -113,21 +110,14 @@ class ProjectAdd(UserEndPoint):
                 vul_validation = request.data.get("vul_validation", None)
 
                 if pid:
-                    project = IastProject.objects.filter(id=pid, department__in=departments).first()
+                    project = projects.filter(id=pid).first()
                     project.name = name
                 else:
-                    department_id = request.data.get("department_id", 1)
-                    if not departments.filter(pk=department_id).exists():
-                        return R.failure(status=203, msg=_("department does not exist"))
-
-                    project = IastProject.objects.filter(
-                        name=name, user_id=request.user.id, department_id=department_id
-                    ).first()
+                    project = IastProject.objects.filter(name=name, user_id=request.user.id).first()
                     if not project:
                         project = IastProject.objects.create(
                             name=name,
                             user_id=request.user.id,
-                            department_id=department_id,
                             template_id=template_id,
                         )
                     else:
@@ -151,7 +141,7 @@ class ProjectAdd(UserEndPoint):
                     versionInfo.version_name == version_name
                     and (versionInfo.description == description or not description)
                 ):
-                    result = version_modify(project.user, departments, current_project_version)
+                    result = version_modify(project.user, projects, current_project_version)
                     if result.get("status", "202") == "202":
                         logger.error("version update failure")
                         return R.failure(status=202, msg=result.get("msg", _("Version Update Error")))
@@ -160,7 +150,6 @@ class ProjectAdd(UserEndPoint):
                 project.scan = scan
                 project.mode = mode
                 project.template_id = template_id
-                project.department_id = department_id
                 project.latest_time = int(time.time())
                 project.enable_log = enable_log
                 project.log_level = log_level
@@ -183,7 +172,6 @@ class ProjectAdd(UserEndPoint):
                         "test_req_header_key",
                         "test_req_header_value",
                         "template_id",
-                        "department_id",
                         "enable_log",
                         "log_level",
                     ]

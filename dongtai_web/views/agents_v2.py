@@ -2,6 +2,7 @@ import json
 import logging
 from itertools import groupby
 from time import time
+from typing import TYPE_CHECKING
 
 from django.db.models import IntegerChoices, Q
 from django.db.models.query import QuerySet
@@ -15,11 +16,12 @@ from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.agent import IastAgent, IastAgentEvent
 from dongtai_common.models.api_route import FromWhereChoices, IastApiRoute
 from dongtai_common.models.asset import Asset
-from dongtai_common.models.department import Department
+from dongtai_common.models.project import IastProject
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
-from dongtai_web.utils import (
-    extend_schema_with_envcheck,
-)
+from dongtai_web.utils import extend_schema_with_envcheck
+
+if TYPE_CHECKING:
+    from django.db.models.query import ValuesQuerySet
 
 logger = logging.getLogger("dongtai-webapi")
 
@@ -58,8 +60,8 @@ class AgentListv2(UserEndPoint, ViewSet):
             ser.is_valid(True)
         except ValidationError as e:
             return R.failure(data=e.detail)
-        department = request.user.get_relative_department()
-        filter_condiction = generate_filter(ser.validated_data["state"]) & Q(department__in=department)
+        projects = request.user.get_projects()
+        filter_condiction = generate_filter(ser.validated_data["state"]) & Q(bind_project__in=projects)
         if ser.validated_data["project_name"]:
             filter_condiction = filter_condiction & Q(bind_project__name__icontains=ser.validated_data["project_name"])
         if ser.validated_data["project_id"] is not None:
@@ -105,7 +107,7 @@ class AgentListv2(UserEndPoint, ViewSet):
     )
     def summary(self, request):
         res = {}
-        department = request.user.get_relative_department()
+        projects = request.user.get_projects()
         last_days = int(request.query_params.get("last_days", 0))
         for type_ in StateType:
             filter_condiction = generate_filter(type_)
@@ -113,9 +115,8 @@ class AgentListv2(UserEndPoint, ViewSet):
                 filter_condiction = filter_condiction & Q(heartbeat__dt__gte=int(time()) - 60 * 60 * 24 * last_days)
             res[type_] = IastAgent.objects.filter(
                 filter_condiction,
-                department__in=department,
+                bind_project__in=projects,
             ).count()
-            # user__in=get_auth_users__by_id(request.user.id)).count()
 
         return R.success(data=res)
 
@@ -124,10 +125,10 @@ class AgentListv2(UserEndPoint, ViewSet):
         summary="获取 Agent 状态",
     )
     def agent_stat(self, request):
-        department = request.user.get_relative_department()
+        projects = request.user.get_projects()
         try:
             agent_id = int(request.query_params.get("id", 0))
-            res = get_agent_stat(agent_id, department)
+            res = get_agent_stat(agent_id, projects)
         except Exception as e:
             logger.debug(f"agent_stat error:{e}")
             res = {}
@@ -140,18 +141,15 @@ def get_service_addrs(ip_list: list, port: int) -> list:
     return [x + ":" + str(port) for x in ip_list]
 
 
-def get_agent_stat(agent_id: int, department: Department) -> dict:
+def get_agent_stat(agent_id: int, projects: QuerySet[IastProject]) -> dict:
     res = {}
     res["api_count"] = IastApiRoute.objects.filter(
         agent__id=agent_id,
         from_where=FromWhereChoices.FROM_AGENT,
-        project__department__in=department,
+        project__in=projects,
     ).count()
-    # agent__user__in = get_auth_users__by_id(user_id)).count()
-    res["sca_count"] = Asset.objects.filter(agent__id=agent_id, project__department__in=department).count()
-    res["vul_count"] = IastVulnerabilityModel.objects.filter(
-        agent__id=agent_id, project__department__in=department
-    ).count()
+    res["sca_count"] = Asset.objects.filter(agent__id=agent_id, project__in=projects).count()
+    res["vul_count"] = IastVulnerabilityModel.objects.filter(agent__id=agent_id, project__in=projects).count()
     return res
 
 
@@ -224,7 +222,7 @@ def cal_state(agent: dict) -> StateType:
     return StateType.UNINSTALL
 
 
-def query_agent(filter_condiction=None) -> QuerySet:
+def query_agent(filter_condiction=None) -> "ValuesQuerySet":
     if filter_condiction is None:
         filter_condiction = Q()
     return (

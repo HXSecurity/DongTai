@@ -4,10 +4,10 @@ import json
 import logging
 from functools import reduce
 from operator import ior
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from django.core.paginator import EmptyPage, Paginator
-from django.db.models import Count, Q, QuerySet
+from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.http.request import HttpRequest
 from django.utils.translation import gettext_lazy as _
@@ -23,8 +23,8 @@ from dongtai_common.models.agent import IastAgent
 from dongtai_common.models.asset import Asset
 from dongtai_common.models.asset_aggr import AssetAggr
 from dongtai_common.models.asset_vul import IastVulAssetRelation
-from dongtai_common.models.department import Department
 from dongtai_common.models.log import IastLog, OperateType
+from dongtai_common.models.project import IastProject
 from dongtai_common.permissions import (
     UserPermission,
 )
@@ -33,6 +33,7 @@ from dongtai_common.utils.init_schema import VIEW_CLASS_TO_SCHEMA
 
 if TYPE_CHECKING:
     from django.core.paginator import _SupportsPagination
+    from django.db.models.query import QuerySet, ValuesQuerySet
 
 logger = logging.getLogger("dongtai-core")
 
@@ -188,8 +189,8 @@ class EndPoint(APIView):
 
     @staticmethod
     def get_paginator(
-        queryset: QuerySet, page: int = 1, page_size: int = 20
-    ) -> tuple[dict, Union[QuerySet, "_SupportsPagination"]]:
+        queryset: "QuerySet | ValuesQuerySet", page: int = 1, page_size: int = 20
+    ) -> tuple[dict, "QuerySet | _SupportsPagination"]:
         """
         根据模型集合、页号、每页大小获取分页数据
         :param queryset:
@@ -257,11 +258,10 @@ class EndPoint(APIView):
         :param users:
         :return:
         """
-        qs = Department.objects.none()
-        qss = [user.get_relative_department() for user in users]
-        departments = reduce(ior, qss, qs)
-        return IastAgent.objects.filter(bind_project__department__in=departments)
-        # if isinstance(users, QuerySet):
+        qs = IastProject.objects.none()
+        qss = [user.get_projects() for user in users]
+        projects = reduce(ior, qss, qs)
+        return IastAgent.objects.filter(bind_project__in=projects)
 
     @staticmethod
     def get_auth_assets(users):
@@ -270,10 +270,10 @@ class EndPoint(APIView):
         :param users:
         :return:
         """
-        qs = Department.objects.none()
-        qss = [user.get_relative_department() for user in users]
-        departments = reduce(ior, qss, qs)
-        return Asset.objects.filter(department__in=departments, is_del=0)
+        qs = IastProject.objects.none()
+        qss = [user.get_projects() for user in users]
+        projects = reduce(ior, qss, qs)
+        return Asset.objects.filter(project__in=projects, is_del=0)
 
     @staticmethod
     def get_auth_asset_aggrs(auth_assets):

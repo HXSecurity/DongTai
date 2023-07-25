@@ -6,7 +6,6 @@ from rest_framework import serializers
 
 from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.assetv2 import AssetV2
-from dongtai_common.models.project import IastProject
 from dongtai_web.utils import extend_schema_with_envcheck_v2, get_response_serializer
 
 logger = logging.getLogger(__name__)
@@ -43,8 +42,7 @@ class NewPackageRelationProjectVersion(UserEndPoint):
         responses={200: FullRelationProjectVersionResponseSerializer},
     )
     def get(self, request, language_id, package_name, package_version, project_id):
-        departments = request.user.get_relative_department()
-        queryset = IastProject.objects.filter(department__in=departments).order_by("-latest_time")
+        queryset = request.user.get_projects().order_by("-latest_time")
         assets = (
             AssetV2.objects.filter(
                 language_id=language_id,
