@@ -244,7 +244,7 @@ class GetAggregationVulList(UserEndPoint):
                 Asset.objects.filter(
                     iastvulassetrelation__asset_vul_id__in=vul_ids,
                     iastvulassetrelation__is_del=0,
-                    department__in=departments,
+                    project__in=projects,
                     project_id__gt=0,
                 )
                 .values("project_id", "iastvulassetrelation__asset_vul_id")
