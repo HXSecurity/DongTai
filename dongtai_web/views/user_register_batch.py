@@ -10,7 +10,6 @@ from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.endpoint import R, SystemAdminEndPoint
 from dongtai_common.models import User
-from dongtai_common.models.department import Department
 from dongtai_conf import settings
 from dongtai_web.notify.email import Email
 
@@ -104,8 +103,6 @@ class UserRegisterEndPoint(SystemAdminEndPoint):
         )
         username = f"{username}@{username_random_str}"
         new_user = User.objects.create_user(username=username, password=password, email=email_addr, phone=phone)
-        department = Department.objects.filter(id=1).first()
-        department.users.add(new_user)
         group, success = Group.objects.get_or_create(name="user")
         group.user_set.add(new_user)
         res = email.sendmail(
