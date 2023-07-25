@@ -52,8 +52,7 @@ class NewPackageRelationProject(UserEndPoint):
                 pass
         except ValidationError as e:
             return R.failure(data=e.detail)
-        departments = request.user.get_relative_department()
-        queryset = IastProject.objects.filter(department__in=departments).order_by("-latest_time")
+        queryset = request.user.get_projects().order_by("-latest_time")
         assets_project_ids = (
             AssetV2.objects.filter(
                 language_id=language_id,

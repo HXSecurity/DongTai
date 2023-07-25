@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import logging
+import warnings
 
 from django.core.cache import cache
 from django.utils.text import format_lazy
@@ -157,8 +158,8 @@ class ScaList(UserEndPoint):
         page_size = min(50, int(page_size))
 
         auth_user_ids = [str(_i.id) for _i in auth_users]
-        departments = request.user.get_relative_department()
-        department_ids = [department.id for department in departments]
+        projects = request.user.get_projects()
+        project_ids = [project.id for project in projects]
         base_query_sql = " LEFT JOIN iast_asset ON iast_asset.signature_value = iast_asset_aggr.signature_value WHERE  iast_asset.department_id in %s and iast_asset.is_del=0 "
         list_sql_params = [auth_user_ids]
         count_sql_params = [auth_user_ids]
@@ -169,12 +170,12 @@ class ScaList(UserEndPoint):
         asset_aggr_where = " and iast_asset_aggr.id>0 "
         where_conditions = []
         where_conditions_dict = {}
-        if len(department_ids) == 1:
-            where_conditions.append("department_id = %(department_ids)s")
-            where_conditions_dict["department_ids"] = department_ids[0]
+        if len(project_ids) == 1:
+            where_conditions.append("project_id = %(project_ids)s")
+            where_conditions_dict["project_ids"] = project_ids[0]
         else:
-            where_conditions.append("department_id IN %(department_ids)s")
-            where_conditions_dict["department_ids"] = department_ids
+            where_conditions.append("project_id IN %(project_ids)s")
+            where_conditions_dict["project_ids"] = project_ids
 
         project_id = request_data.get("project_id", None)
         if project_id and project_id != "":
@@ -320,6 +321,7 @@ def get_vul_list_from_elastic_searchv2(
     search_keyword="",
     extend_filter=None,
 ):
+    warnings.warn("deprecated", stacklevel=1)
     if level_ids is None:
         level_ids = []
     if languages is None:

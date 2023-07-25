@@ -33,12 +33,17 @@ class ProjectEngines(UserEndPoint):
         response_schema=_ProjectEnginesResponseSerializer,
     )
     def get(self, request, pid):
-        department = request.user.get_relative_department()
-        queryset = IastAgent.objects.filter(
-            department__in=department,
-            online=const.RUNNING,
-            bind_project_id__in=[0, pid],
-        ).values("id", "token", "alias")
+        projects = request.user.get_projects()
+        queryset = (
+            IastAgent.objects.filter(
+                bind_project__in=projects,
+            )
+            .filter(
+                online=const.RUNNING,
+                bind_project_id__in=[0, pid],
+            )
+            .values("id", "token", "alias")
+        )
         data = []
         if queryset:
             data = [

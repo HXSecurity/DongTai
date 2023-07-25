@@ -25,17 +25,17 @@ class DelVulMany(UserEndPoint):
         ids = request.data.get("ids", "")
         ids = turnIntListOfStr(ids)
         source_type = request.data.get("source_type", 1)
-        department = request.user.get_relative_department()
+        projects = request.user.get_projects()
         if source_type == 1:
             queryset = IastVulnerabilityModel.objects.filter(is_del=0)
         else:
             queryset = IastVulAssetRelation.objects.filter(is_del=0)
 
-        # 部门删除逻辑
+        # 项目删除逻辑
         if source_type == 1:
-            queryset = queryset.filter(project__department__in=department)
+            queryset = queryset.filter(project__in=projects)
         else:
-            queryset = queryset.filter(asset__department__in=department)
+            queryset = queryset.filter(asset__project__in=projects)
 
         if source_type == 1:  # noqa: SIM108
             # 应用漏洞删除
@@ -43,13 +43,7 @@ class DelVulMany(UserEndPoint):
         else:
             # 组件漏洞删除
             del_queryset = queryset.filter(asset_vul_id__in=ids)
-            # with connection.cursor() as cursor:
-            #         sca_ids_str)
         for vul in del_queryset:
             vul.is_del = 1
             vul.save()
-        return R.success(
-            data={
-                "messages": "success",
-            },
-        )
+        return R.success(data={"messages": "success"})

@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import warnings
+
 import pymysql
 from django.db import connection
 from django.utils.text import format_lazy
@@ -144,10 +146,10 @@ class ScaSummary(UserEndPoint):
 
         request_data = request.data
 
-        departments = request.user.get_relative_department()
-        department_ids = [i.id for i in departments]
-        base_query_sql = "WHERE iast_asset.department_id in %s and iast_asset.is_del=0 "
-        sql_params = [department_ids]
+        projects = request.user.get_projects()
+        project_ids = [i.id for i in projects]
+        base_query_sql = "WHERE iast_asset.project_id in %s and iast_asset.is_del=0 "
+        sql_params = [project_ids]
         asset_aggr_where = " and iast_asset.is_del=0 "
         package_kw = request_data.get("keyword", "")
         es_query = {}
@@ -240,6 +242,7 @@ def get_vul_list_from_elastic_search(
     search_keyword="",
     extend_aggs_buckets=None,
 ):
+    warnings.warn("deprecated", stacklevel=1)
     if extend_aggs_buckets is None:
         extend_aggs_buckets = {}
 

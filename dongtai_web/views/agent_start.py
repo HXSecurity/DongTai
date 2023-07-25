@@ -32,14 +32,14 @@ class AgentStart(UserEndPoint):
     def post(self, request):
         agent_id = request.data.get("id")
         agent_ids = request.data.get("ids", None)
-        department = request.user.get_relative_department()
+        projects = request.user.get_projects()
         if agent_ids:
             try:
                 agent_ids = [int(i) for i in agent_ids.split(",")]
             except BaseException:
                 return R.failure(_("Parameter error"))
         if agent_id:
-            agent = IastAgent.objects.filter(department__in=department, id=agent_id).first()
+            agent = IastAgent.objects.filter(bind_project__in=projects, id=agent_id).first()
             if agent is None:
                 return R.failure(msg=_("Engine does not exist or no permission to access"))
             if agent.is_control == 1 and agent.control != 3 and agent.control != 4:
@@ -51,7 +51,7 @@ class AgentStart(UserEndPoint):
             agent.save()
         if agent_ids:
             for agent_id in agent_ids:
-                agent = IastAgent.objects.filter(department__in=department, id=agent_id).first()
+                agent = IastAgent.objects.filter(bind_project__in=projects, id=agent_id).first()
                 if agent is None:
                     continue
                 if agent.is_control == 1 and agent.control != 3 and agent.control != 4:

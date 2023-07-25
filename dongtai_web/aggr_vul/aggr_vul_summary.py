@@ -62,9 +62,9 @@ def get_annotate_sca_base_data(user_id: int, pro_condition: str):
         "project": [],
     }
     user = User.objects.get(pk=user_id)
-    departments = list(user.get_relative_department())
-    department_filter_sql = " and {}.department_id in ({})".format("asset", ",".join(str(x.id) for x in departments))
-    query_condition = " where rel.is_del=0 and asset.project_id>0 " + department_filter_sql + pro_condition
+    projects = list(user.get_projects())
+    project_filter_sql = " and {}.project_id in ({})".format("asset", ",".join(str(x.id) for x in projects))
+    query_condition = " where rel.is_del=0 and asset.project_id>0 " + project_filter_sql + pro_condition
     base_join = (
         "left JOIN iast_asset_vul_relation as rel on rel.asset_vul_id=vul.id  "
         "left JOIN iast_asset as asset on rel.asset_id=asset.id "
@@ -201,10 +201,10 @@ def get_annotate_data_es(user_id, bind_project_id=None, project_version_id=None)
     from dongtai_web.utils import dict_transfrom
 
     user = User.objects.get(pk=user_id)
-    departments = list(user.get_relative_department())
-    department_ids = [i.id for i in departments]
+    projects = list(user.get_projects())
+    project_ids = [i.id for i in projects]
     must_query = [
-        Q("terms", asset_department_id=department_ids),
+        Q("terms", asset_project_id=project_ids),
         Q("terms", asset_vul_relation_is_del=[0]),
         Q("range", asset_project_id={"gt": 0}),
     ]
