@@ -7,7 +7,6 @@
 ######################################################################
 
 
-
 from django.db import models
 
 from dongtai_common.utils.db import get_timestamp

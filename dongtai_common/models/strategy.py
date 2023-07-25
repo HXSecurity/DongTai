@@ -1,4 +1,3 @@
-
 from django.db import models
 
 from dongtai_common.models import User

@@ -7,6 +7,5 @@
 ######################################################################
 
 
-
 def get_managed():
     return True  # os.getenv("environment", None) == "TEST"

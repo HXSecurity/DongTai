@@ -1,4 +1,3 @@
-
 from django.db import models
 
 from dongtai_common.models.project import IastProject
