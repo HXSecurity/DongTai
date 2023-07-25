@@ -161,10 +161,7 @@ class EndPoint(APIView):
         """
         if isinstance(exc, exceptions.Throttled):
             exc.status_code = status.HTTP_429_TOO_MANY_REQUESTS
-        elif isinstance(
-            exc,
-            exceptions.NotAuthenticated | exceptions.AuthenticationFailed,
-        ):
+        elif isinstance(exc, (exceptions.NotAuthenticated, exceptions.AuthenticationFailed)):
             # WWW-Authenticate header for 401 responses, else coerce to 403
             auth_header = self.get_authenticate_header(self.request)
 

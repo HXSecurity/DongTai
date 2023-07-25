@@ -36,7 +36,7 @@ def make_hash(obj):
     set.
 
     """
-    if isinstance(obj, list | set | tuple):
+    if isinstance(obj, (list, set, tuple)):
         return hash(tuple([make_hash(e) for e in obj]))
     if isinstance(obj, str):
         return hash(tuple(ord(i) for i in obj))
