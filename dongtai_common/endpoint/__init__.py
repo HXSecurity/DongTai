@@ -7,7 +7,7 @@ from operator import ior
 from typing import TYPE_CHECKING
 
 from django.core.paginator import EmptyPage, Paginator
-from django.db.models import Count, Q
+from django.db.models import Count
 from django.http import JsonResponse
 from django.http.request import HttpRequest
 from django.utils.translation import gettext_lazy as _
@@ -233,8 +233,6 @@ class EndPoint(APIView):
             talent = user.get_talent()
             departments = talent.departments.all()
             users = User.objects.filter(department__in=departments)
-        elif user.is_department_admin:
-            users = User.objects.filter(Q(department__principal_id=user.id) | Q(id=user.id)).all()
         else:
             users = User.objects.filter(id=user.id).all()
         return users
