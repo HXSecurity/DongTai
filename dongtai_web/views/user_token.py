@@ -7,7 +7,6 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.authtoken.models import Token
 
 from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_web.projecttemplate.update_department_data import update_department_data
 
 logger = logging.getLogger("django")
 
@@ -33,9 +32,6 @@ class UserDepartmentToken(UserEndPoint):
     @extend_schema(summary=_("获取部门部署 token"), tags=[_("User")], deprecated=True)
     def get(self, request):
         departments = request.user.get_relative_department()
-        department = request.user.get_department()
-        if not department.token:
-            update_department_data()
         tokens = departments.values("id", "token", "name").all()
         for token in tokens:
             token["token"] = "GROUP" + token["token"]

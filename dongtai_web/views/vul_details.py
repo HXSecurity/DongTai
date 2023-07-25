@@ -464,10 +464,10 @@ class VulDetailV2(VulDetail):
         id,
     ):
         self.vul_id = id
-        projects = request.user.get_projects()
+        self.projects = request.user.get_projects()
         try:
             data = {
-                "vul": self.get_vul(projects),
+                "vul": self.get_vul(self.projects),
                 "server": self.get_server(),
                 "strategy": self.get_strategy(),
             }
