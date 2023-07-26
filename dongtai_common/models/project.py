@@ -45,7 +45,7 @@ class IastProjectTemplate(models.Model):
 
     def to_full_project_args(self):
         return {
-            "scan_id": self.scan_id,
+            "scan_id": self.scan_id,  # type: ignore
             "vul_validation": self.vul_validation,
             "data_gather": self.data_gather,
             "data_gather_is_followglobal": self.data_gather_is_followglobal,
@@ -85,3 +85,13 @@ class IastProject(models.Model):
     def update_latest(self):
         self.latest_time = int(time.time())
         self.save(update_fields=["latest_time"])
+
+
+class IastProjectUser(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(User, models.DO_NOTHING, db_constraint=False)
+    project = models.ForeignKey(IastProject, models.DO_NOTHING, db_constraint=False)
+
+    class Meta:
+        managed = get_managed()
+        db_table = "iast_project_user"
