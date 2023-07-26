@@ -262,6 +262,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
                 "latest_time": int(time.time()),
                 "template_id": template.id if template else -1,
                 "user": user,
+                "department_id": 1,
             }
 
             default_params.update(template.to_full_project_args() if template else {})
@@ -329,19 +330,17 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
 
     @staticmethod
     def get_agent_id(token, project_name, user, current_project_version_id):
-        project = IastProject.objects.filter(department=user.get_using_department(), name=project_name).first()
+        project = IastProject.objects.filter(name=project_name).first()
         if project:
             queryset = IastAgent.objects.values("id").filter(
                 token=token,
                 bind_project=project,
-                department=user.get_using_department(),
                 project_version_id=current_project_version_id,
             )
         else:
             queryset = IastAgent.objects.values("id").filter(
                 token=token,
                 project_name=project_name,
-                department=user.get_using_department(),
                 project_version_id=current_project_version_id,
             )
         agent = queryset.first()
@@ -363,7 +362,10 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
         allow_report,
     ):
         if exist_project:
-            IastAgent.objects.filter(token=token, online=1, department=user.get_using_department()).update(online=0)
+            IastAgent.objects.filter(
+                token=token,
+                online=1,
+            ).update(online=0)
         agent = IastAgent.objects.create(
             token=token,
             version=version,
@@ -379,7 +381,6 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             project_version_id=project_version_id,
             language=language,
             is_audit=is_audit,
-            department=user.get_using_department(),
             allow_report=allow_report,
         )
         return agent.id
@@ -419,16 +420,13 @@ def get_ipaddresslist(network: str) -> list:
 
 
 def project_create(default_params, project_name, user, version_name, template):
-    department = user.get_using_department()
     project_created = False
     obj = IastProject.objects.filter(
         name=project_name,
-        department=department,
     ).first()
     if not obj:
         obj, project_created = IastProject.objects.get_or_create(
             name=project_name,
-            department=department,
             defaults=default_params,
         )
     project_version, version_created = IastProjectVersion.objects.get_or_create(

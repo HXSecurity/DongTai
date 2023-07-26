@@ -58,10 +58,16 @@ class VulEngine:
         if method_pool and method_pool_is_3(method_pool[0]):
             self._method_pool = list(map(method_pool_3_to_2, self._method_pool))
             self.version = 3
-        self._method_pool = sorted(self._method_pool, key=lambda e: e.__getitem__("invokeId"), reverse=True)
+        self._method_pool = sorted(
+            filter(lambda x: x["targetHash"] is not None, self._method_pool),
+            key=lambda e: e.__getitem__("invokeId"),
+            reverse=True,
+        )
         self._method_pool_invokeid_dict = {mp["invokeId"]: ind for ind, mp in enumerate(self._method_pool)}
         tempdict = defaultdict(list, {})
         for ind, mp in enumerate(self._method_pool):
+            if not mp["targetHash"]:
+                continue
             for target_hash in mp["targetHash"]:
                 tempdict[target_hash].append(ind)
         self._method_pool_target_hash_dict = dict(tempdict)

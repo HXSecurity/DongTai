@@ -122,6 +122,8 @@ def get_agent_filter_details(agent_id):
 
 def get_agent_config_by_scan(agent_id: int, mg: MetricGroup) -> Result:
     agent_detail = get_agent_filter_details(agent_id)
+    if not agent_detail:
+        return Err("config not found")
     queryset = (
         IastCircuitConfig.objects.filter(is_deleted=0, metric_group=mg, is_enable=1).order_by("priority").only("id")
     )
