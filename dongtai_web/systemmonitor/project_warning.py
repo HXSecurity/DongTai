@@ -4,10 +4,10 @@ import logging
 from django.http import JsonResponse
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
-from rest_framework.request import Request
 
 from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.profile import IastProfile
+from dongtai_common.utils.request_type import Request
 from dongtai_engine.plugins.project_status import (
     PROJECT_WARNING_TIME_KEY,
     get_project_warning_time,

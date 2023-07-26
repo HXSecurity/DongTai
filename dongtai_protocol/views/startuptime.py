@@ -10,10 +10,10 @@
 import logging
 
 from drf_spectacular.utils import extend_schema
-from rest_framework.request import Request
 
 from dongtai_common.endpoint import OpenApiEndPoint, R
 from dongtai_common.models.agent import IastAgent
+from dongtai_common.utils.request_type import Request
 from dongtai_protocol.decrypter import parse_data
 
 logger = logging.getLogger("django")
