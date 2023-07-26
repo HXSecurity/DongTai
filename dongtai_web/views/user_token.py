@@ -34,5 +34,6 @@ class UserDepartmentToken(UserEndPoint):
         departments = request.user.get_relative_department()
         tokens = departments.values("id", "token", "name").all()
         for token in tokens:
-            token["token"] = "GROUP" + token["token"]
+            if token["token"] is not None:
+                token["token"] = "GROUP" + token["token"]
         return R.success(data=list(tokens))
