@@ -8,7 +8,7 @@ class RoleStatus(models.IntegerChoices):
     ENABLE = 1, "启用"
 
 
-class IastRole(models.Model):
+class IastRoleV2(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
     is_admin = models.BooleanField(default=False)

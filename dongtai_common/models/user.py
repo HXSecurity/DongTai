@@ -7,7 +7,7 @@ from django.db.models import Q, QuerySet
 from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.models.department import Department
-from dongtai_common.models.iast_role import IastRole
+from dongtai_common.models.iast_role import IastRoleV2
 from dongtai_conf.patch import patch_point
 
 
@@ -62,7 +62,7 @@ class User(AbstractUser, PermissionsMixin):
     is_superuser = models.IntegerField(default=0)
     phone = models.CharField(max_length=15, blank=True)
     default_language = models.CharField(max_length=15, blank=True)
-    role = models.ForeignKey(IastRole, models.DO_NOTHING, default=1, db_constraint=False)
+    role = models.ForeignKey(IastRoleV2, models.DO_NOTHING, default=1, db_constraint=False)
     is_global_permission = models.BooleanField(default=False)
 
     objects = SaaSUserManager()
