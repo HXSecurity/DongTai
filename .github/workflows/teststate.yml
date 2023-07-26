@@ -12,12 +12,16 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
+x-global-condition: &global-condition
+  if: (github.repository_owner == 'HXSecurityBusiness' && github.event_name == 'push') || github.repository_owner == 'HXSecurity'
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   Run-API-TEST:
+    <<: *global-condition
     runs-on: ubuntu-latest
     services:
       mysql:
@@ -72,6 +76,7 @@ jobs:
           schemathesis run --base-url "http://localhost:8000/"  -H 'Authorization: Token 67aebd78e700ad36a82a152276196b5f49fafeb0' http://localhost:8000/api/XZPcGFKoxYXScwGjQtJx8u/schema/  --hypothesis-suppress-health-check=data_too_large,filter_too_much,too_slow,large_base_example,function_scoped_fixture --validate-schema=false  --hypothesis-verbosity normal 
   
   Run-BuildCheck:
+    <<: *global-condition
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
@@ -101,6 +106,7 @@ jobs:
             registry.cn-hongkong.aliyuncs.com/secnium/dongtai-server-test:1.0.${{github.run_number}}
   
   Run-MypyCheck:
+    <<: *global-condition
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
@@ -127,18 +133,21 @@ jobs:
           mypy --show-error-codes --ignore-missing-imports  --no-incremental --show-error-codes --check-untyped-defs --disable-error-code var-annotated  --disable-error-code  list-item  --disable-error-code attr-defined --disable-error-code assignment --disable-error-code misc --disable-error-code union-attr --disable-error-code index --disable-error-code call-overload  --disable-error-code dict-item  --disable-error-code truthy-function --disable-error-code operator --disable-error-code name-defined .
 
   Run-BlackCheck:
+    <<: *global-condition
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: psf/black@stable
 
   Run-RuffCheck:
+    <<: *global-condition
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: chartboost/ruff-action@v1
 
   Run-BanditCheck:
+    <<: *global-condition
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
@@ -165,6 +174,7 @@ jobs:
           bandit -iii -lll -r .
 
   Run-Unit-TEST:
+    <<: *global-condition
     runs-on: ubuntu-latest
     services:
       mysql:
@@ -216,6 +226,7 @@ jobs:
           coverage report
 
   Run-Schema-Check:
+    <<: *global-condition
     runs-on: ubuntu-latest
 
     steps:
@@ -238,6 +249,7 @@ jobs:
         run: python3 manage.py check_schema
 
   analyze:
+    <<: *global-condition
     name: Analyze
     runs-on: ubuntu-latest
     permissions:
