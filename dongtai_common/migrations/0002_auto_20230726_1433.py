@@ -8,9 +8,9 @@ import dongtai_common.utils.db
 
 
 def add_preset_admin_role(apps, schema_editor):
-    from dongtai_common.models.role import IastRole, RoleStatus
+    from dongtai_common.models.iast_role import IastRoleV2, RoleStatus
 
-    IastRole.objects.create(
+    IastRoleV2.objects.create(
         name="admin",
         is_admin=True,
         is_preset=True,
