@@ -382,6 +382,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             language=language,
             is_audit=is_audit,
             allow_report=allow_report,
+            department_id=-1,
         )
         return agent.id
 
