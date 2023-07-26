@@ -817,9 +817,9 @@ class AgentMethodPoolTestCase(AgentTestCase):
             "resHeader"
         ] = "Q29udGVudC1UeXBlOmFwcGxpY2F0aW9uL2pzb24KWC1GcmFtZS1PcHRpb25zOkRFTlkKQ29udGVudC1MZW5ndGg6NjYKQ29udGVudC1lbmNvZGluZzpnemlwClgtQ29udGVudC1UeXBlLU9wdGlvbnM6bm9zbmlmZgpSZWZlcnJlci1Qb2xpY3k6c2FtZS1vcmlnaW4="
         data["version"] = "v2"
-        data["detail"]["resBody"] = base64.b64encode(
-            gzip.compress(bytes(testdata, encoding="utf-8"))
-        ).decode("raw_unicode_escape")
+        data["detail"]["resBody"] = base64.b64encode(gzip.compress(bytes(testdata, encoding="utf-8"))).decode(
+            "raw_unicode_escape"
+        )
         data = gzipdata(data)
         response = self.client.post(
             "http://testserver/api/v1/report/upload",
