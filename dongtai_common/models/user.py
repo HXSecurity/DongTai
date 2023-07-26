@@ -7,7 +7,7 @@ from django.db.models import Q, QuerySet
 from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.models.department import Department
-from dongtai_common.models.role import IastRole
+from dongtai_common.models.iast_role import IastRole
 from dongtai_conf.patch import patch_point
 
 
