@@ -1,5 +1,6 @@
 import copy
 import logging
+import warnings
 from functools import wraps
 
 from django.core.cache import cache
@@ -144,10 +145,9 @@ class DepartmentTokenAuthentication(TokenAuthentication):
         from rest_framework import exceptions
 
         from dongtai_common.models.department import Department
-        import warnings
 
         try:
-            warnings.warn("Department token is departured. Please use new token to register agent.")
+            warnings.warn("Department token is departured. Please use new token to register agent.", stacklevel=1)
             user = get_user_from_department_key(key)
         except Department.DoesNotExist as e:
             raise exceptions.AuthenticationFailed(_("Invalid token.")) from e
