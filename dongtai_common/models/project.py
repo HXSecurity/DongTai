@@ -77,6 +77,8 @@ class IastProject(models.Model):
     log_level = models.CharField(max_length=511, null=True, blank=True)
     last_has_online_agent_time = models.IntegerField(default=get_timestamp)
     status = models.IntegerField(default=0, choices=ProjectStatus.choices)
+    projectgroups = models.ManyToManyField("IastProjectGroup", through="IastProjectGroupProject")
+    users = models.ManyToManyField("User", through="IastProjectUser")
 
     class Meta:
         managed = get_managed()
