@@ -10,8 +10,8 @@ class IastProjectGroup(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
     create_time = models.IntegerField(default=get_timestamp)
-    create_user = models.ForeignKey(User, models.DO_NOTHING, db_constraint=False, related_name="create_user_id")
-    users = models.ManyToManyField(User, through="IastProjectGroupUser")
+    create_user = models.ForeignKey(User, models.DO_NOTHING, db_constraint=False)
+    users = models.ManyToManyField(User, through="IastProjectGroupUser", related_name="project_group_set")
     projects = models.ManyToManyField(IastProject, through="IastProjectGroupProject")
 
     class Meta:
