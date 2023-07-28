@@ -94,6 +94,7 @@ class VulEngine:
         self.pool_value = -1
         self.vul_source_signature = ""
         self.method_counts = len(self.method_pool)
+        self.more_results = []
 
     def hit_vul_method(self, method):
         if f"{method.get('className')}.{method.get('methodName')}" == self.vul_method_signature:
@@ -172,6 +173,7 @@ class VulEngine:
         # Checkout each pair source/target have a path or not
         # It may lost sth when muliti paths exists.
         final_stack = []
+        total_path_list = []
         for s, t in product(source_methods, vul_methods):
             if not g.hasNode(s) or not g.hasNode(t):
                 continue
@@ -180,26 +182,56 @@ class VulEngine:
                 logger.info("find sink here!")
                 path = dij_obj.getPath()
                 total_path = [s, *path, t]
-                final_stack = []
-                for path_key in total_path:
-                    sub_method = invokeid_dict[path_key]
-                    if sub_method.get("source"):
-                        self.vul_source_signature = f"{sub_method.get('className')}.{sub_method.get('methodName')}"
-                        final_stack.append(self.copy_method(sub_method, source=True))
-                    elif sub_method["invokeId"] == t:
-                        self.taint_value = sub_method["targetValues"]
-                        final_stack.append(self.copy_method(sub_method, sink=True))
+                # Check taint range exists
+                if (
+                    len(total_path) > 1
+                    and "targetRange" in invokeid_dict[total_path[-2]]
+                    and len(
+                        list(
+                            filter(
+                                lambda x: "ranges" in x and x["ranges"], invokeid_dict[total_path[-2]]["targetRange"]
+                            )
+                        )
+                    )
+                    == 0
+                ):
+                    continue
+                total_path_list.append(total_path)
+        final_path = []
+        for path in total_path_list:
+            find_index = None
+            # Merge if path take same node
+            for ind, target_path in enumerate(final_path):
+                if set(path[1:]) & set(target_path[1:]):
+                    find_index = ind
+                    break
+            if find_index is not None:
+                target_path = final_path[find_index]
+                # Merge, except for sink nodes
+                final_path[find_index] = sorted(set(target_path + path[:-1]))
+            else:
+                final_path.append(path)
+        for total_path in final_path:
+            final_stack = []
+            s = total_path[0]
+            t = total_path[-1]
+            for path_key in total_path:
+                sub_method = invokeid_dict[path_key]
+                if sub_method.get("source"):
+                    vul_source_signature = f"{sub_method.get('className')}.{sub_method.get('methodName')}"
+                    self.vul_source_signature = f"{sub_method.get('className')}.{sub_method.get('methodName')}"
+                    final_stack.append(self.copy_method(sub_method, source=True))
+                elif sub_method["invokeId"] == t:
+                    if self.version == 3:
+                        self.taint_value = taint_value = parse_target_value(sub_method["targetValues"])
                     else:
-                        final_stack.append(self.copy_method(sub_method, propagator=True))
-                self.vul_stack = [final_stack]
-        if (
-            len(final_stack) > 1
-            and "targetRange" in final_stack[-2]
-            and len(list(filter(lambda x: "ranges" in x and x["ranges"], final_stack[-2]["targetRange"]))) == 0
-        ):
-            self.vul_source_signature = None
-            self.vul_stack = []
-        self.vul_filter()
+                        self.taint_value = taint_value = sub_method["targetValues"]
+                    final_stack.append(self.copy_method(sub_method, sink=True))
+                else:
+                    final_stack.append(self.copy_method(sub_method, propagator=True))
+            self.vul_stack = [final_stack]
+            vul_stack = [final_stack]
+            self.more_results.append((True, vul_stack, vul_source_signature, self.vul_method_signature, taint_value))
 
     def find_other_branch_v2(self, index, size, current_link, source_hash):
         for sub_index in range(index + 1, size):
@@ -374,6 +406,13 @@ class VulEngine:
                 self.taint_value,
             )
         return False, None, None, None, None
+
+    def results(self):
+        if self.version == 3:
+            self.taint_value = parse_target_value(self.taint_value)
+        if self.vul_source_signature:
+            return self.more_results
+        return ((False, None, None, None, None),)
 
     def get_taint_links(self):
         return self.graph_data, self.taint_link_size, self.method_counts
