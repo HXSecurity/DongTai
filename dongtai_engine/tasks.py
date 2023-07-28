@@ -94,60 +94,63 @@ def search_and_save_vul(
     status, stack, source_sign, sink_sign, taint_value = engine.result()
     # if not vul_strategy or not vul_type:
     #    logger.info(
-    if status:
-        filterres = vul_filter(
-            stack,
-            source_sign,
-            sink_sign,
-            taint_value,
-            strategy["type"],
-        )
-        logger.info(f"vul filter_status : {filterres}")
-    if status and filterres:
-        if isinstance(method_pool_model, MethodPool):
-            logger.info(f"vul_found {method_pool_model.agent_id}  {method_pool_model.url} {sink_sign}")
-        else:
-            logger.info(f"vul_found {method_pool_model.id}  {method_pool_model.url} {sink_sign}")
-        # if not vul_strategy:
-        #    pass
-        handler_vul(
-            sender="tasks.search_and_save_vul",
-            vul_meta=method_pool_model,
-            vul_level=strategy["strategy_level"],
-            strategy_id=strategy["strategy_strategy_id"],
-            vul_stack=stack,
-            top_stack=source_sign,
-            bottom_stack=sink_sign,
-            taint_value=taint_value,
-        )
-    else:
-        try:
+    for status, stack, source_sign, sink_sign, taint_value in engine.results():
+        if status:
+            filterres = vul_filter(
+                stack,
+                source_sign,
+                sink_sign,
+                taint_value,
+                strategy["type"],
+            )
+            logger.info(f"vul filter_status : {filterres}")
+        if status and filterres:
             if isinstance(method_pool_model, MethodPool):
-                return
-            replay_type = method_pool_model.replay_type
-            if replay_type != const.VUL_REPLAY:
-                return
+                logger.info(f"vul_found {method_pool_model.agent_id}  {method_pool_model.url} {sink_sign}")
+            else:
+                logger.info(f"vul_found {method_pool_model.id}  {method_pool_model.url} {sink_sign}")
+            # if not vul_strategy:
+            #    pass
+            handler_vul(
+                sender="tasks.search_and_save_vul",
+                vul_meta=method_pool_model,
+                vul_level=strategy["strategy_level"],
+                strategy_id=strategy["strategy_strategy_id"],
+                vul_stack=stack,
+                top_stack=source_sign,
+                bottom_stack=sink_sign,
+                taint_value=taint_value,
+            )
+        else:
+            try:
+                if isinstance(method_pool_model, MethodPool):
+                    continue
+                replay_type = method_pool_model.replay_type
+                if replay_type != const.VUL_REPLAY:
+                    continue
 
-            replay_id = method_pool_model.replay_id
-            relation_id = method_pool_model.relation_id
-            timestamp = int(time.time())
-            vul = IastVulnerabilityModel.objects.filter(id=relation_id).get()
-            log_recheck_vul(
-                vul.agent.user.id,
-                vul.agent.user.username,
-                [vul.id],
-                "已忽略",
-            )
-            IastReplayQueue.objects.filter(id=replay_id).update(
-                state=const.SOLVED,
-                result=const.RECHECK_FALSE,
-                verify_time=timestamp,
-                update_time=timestamp,
-            )
-            project_time_stamp_update.apply_async((method_pool_model.agent.bind_project_id,), countdown=5)
-            project_version_time_stamp_update.apply_async((method_pool_model.agent.project_version_id,), countdown=5)
-        except Exception as e:
-            logger.info(f"漏洞数据处理出错,原因:{e}")
+                replay_id = method_pool_model.replay_id
+                relation_id = method_pool_model.relation_id
+                timestamp = int(time.time())
+                vul = IastVulnerabilityModel.objects.filter(id=relation_id).get()
+                log_recheck_vul(
+                    vul.agent.user.id,
+                    vul.agent.user.username,
+                    [vul.id],
+                    "已忽略",
+                )
+                IastReplayQueue.objects.filter(id=replay_id).update(
+                    state=const.SOLVED,
+                    result=const.RECHECK_FALSE,
+                    verify_time=timestamp,
+                    update_time=timestamp,
+                )
+                project_time_stamp_update.apply_async((method_pool_model.agent.bind_project_id,), countdown=5)
+                project_version_time_stamp_update.apply_async(
+                    (method_pool_model.agent.project_version_id,), countdown=5
+                )
+            except Exception as e:
+                logger.info(f"漏洞数据处理出错,原因:{e}")
 
 
 def search_and_save_sink(engine, method_pool_model, strategy):
