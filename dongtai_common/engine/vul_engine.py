@@ -210,26 +210,6 @@ class VulEngine:
             else:
                 final_path.append(path)
         final_stack = []
-        # for s, t in product(source_methods, vul_methods):
-        #    if not g.hasNode(s) or not g.hasNode(t):
-        #        continue
-        #    dij_obj = nk.distance.BidirectionalDijkstra(g, s, t).run()
-        #    if dij_obj.getDistance() != 1.7976931348623157e308:  # INF here!
-        #        logger.info("find sink here!")
-        #        path = dij_obj.getPath()
-        #        total_path = [s, *path, t]
-        #        final_stack = []
-        #        for path_key in total_path:
-        #            sub_method = invokeid_dict[path_key]
-        #            if sub_method.get("source"):
-        #                self.vul_source_signature = f"{sub_method.get('className')}.{sub_method.get('methodName')}"
-        #                final_stack.append(self.copy_method(sub_method, source=True))
-        #            elif sub_method["invokeId"] == t:
-        #                self.taint_value = sub_method["targetValues"]
-        #                final_stack.append(self.copy_method(sub_method, sink=True))
-        #            else:
-        #                final_stack.append(self.copy_method(sub_method, propagator=True))
-        #        self.vul_stack = [final_stack]
         for total_path in final_path:
             final_stack = []
             s = total_path[0]
