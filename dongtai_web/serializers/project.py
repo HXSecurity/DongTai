@@ -66,6 +66,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     agent_count = serializers.SerializerMethodField(help_text="Agent Count")
     owner = serializers.SerializerMethodField(help_text="Project owner")
     agent_language = serializers.SerializerMethodField(help_text="Agent language currently included in the project")
+    project_group_name = serializers.SerializerMethodField(help_text="项目组名称列表")
     USER_MAP = {}
 
     class Meta:
@@ -81,6 +82,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "agent_language",
             "vul_validation",
             "status",
+            "project_group_name",
         ]
 
     def get_agents(self, obj):
@@ -126,3 +128,10 @@ class ProjectSerializer(serializers.ModelSerializer):
         else:
             res = obj.iastagent_set.count()
         return res
+
+    def get_project_group_name(self, obj: IastProject) -> list:
+        if "project_group_name" in self.context:
+            res = self.context["project_group_name"][obj.id]
+        else:
+            res = obj.iastprojectgroup_set.values_list("name", flat=True)
+        return list(res)
