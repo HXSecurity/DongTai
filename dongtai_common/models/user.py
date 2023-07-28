@@ -64,6 +64,7 @@ class User(AbstractUser, PermissionsMixin):
     default_language = models.CharField(max_length=15, blank=True)
     role = models.ForeignKey(IastRoleV2, models.DO_NOTHING, default=1, db_constraint=False)
     is_global_permission = models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False)
 
     objects = SaaSUserManager()
     using_department = None
