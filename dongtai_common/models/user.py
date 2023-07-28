@@ -120,6 +120,6 @@ class User(AbstractUser, PermissionsMixin):
         from dongtai_common.models.project import IastProject
 
         queryset = IastProject.objects.none()
-        if self.is_system_admin:
+        if self.is_global_permission:
             return IastProject.objects.all()
         return patch_point(self, queryset)
