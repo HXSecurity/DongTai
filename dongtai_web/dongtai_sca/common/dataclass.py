@@ -11,9 +11,17 @@ from dateutil.parser import parse
 
 @dataclass_json
 @dataclass
+class I18nStr:
+    en: str = ""
+    zh: str | None = None
+
+
+@dataclass_json
+@dataclass
 class Reference:
     type: str = ""
     url: str = ""
+    language: str = ""
 
 
 @dataclass_json
@@ -29,8 +37,8 @@ class VulInfo:
     vul_id: str = ""
     cvss_v3: str = ""
     cwe: tuple[str, ...] = ()
-    title: str = ""
-    description: str = ""
+    title: I18nStr = field(default_factory=I18nStr)
+    description: I18nStr = field(default_factory=I18nStr)
     references: tuple[Reference, ...] = ()
     severity: str = ""
     published_time: datetime | None = field(

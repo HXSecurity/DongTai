@@ -6,7 +6,9 @@ from dongtai_common.utils.settings import get_managed
 
 class IastAssetVulV2(models.Model):
     vul_name = models.CharField(max_length=255, blank=True)
+    vul_name_zh = models.CharField(max_length=255, blank=True)
     vul_detail = models.TextField()
+    vul_detail_zh = models.TextField(blank=True)
     # 漏洞类型等级
     level = models.IntegerField(
         choices=AssetRiskLevel.choices,
