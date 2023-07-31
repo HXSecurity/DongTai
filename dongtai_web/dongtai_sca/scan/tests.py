@@ -4,7 +4,8 @@ from django.test import TestCase
 
 from dongtai_common.models.asset import Asset
 
-from .tasks import get_package, get_package_vul, new_update_one_sca, update_one_sca
+from .requrest import get_package_vul
+from .tasks import get_package, new_update_one_sca, update_one_sca
 from .utils import (
     get_latest_version,
     get_nearest_version,
