@@ -194,16 +194,31 @@ def get_title(title_zh: str, title_en: str) -> str:
     return ""
 
 
-PROFILE_KEY = "sca_language"
-DEFAULT_SCA_LANGUAGE = {"language": "en"}
+SCA_LANGUAGE_PROFILE_KEY = "sca_language"
+DEFAULT_SCA_LANGUAGE = {"language": "zh"}
 
 
 def get_sca_language_profile() -> dict[str, str]:
-    profile = IastProfile.objects.filter(key=PROFILE_KEY).values_list("value", flat=True).first()
+    profile = IastProfile.objects.filter(key=SCA_LANGUAGE_PROFILE_KEY).values_list("value", flat=True).first()
     if profile is None:
         IastProfile(
-            key=PROFILE_KEY,
-            value=json.dumps(PROFILE_KEY),
+            key=SCA_LANGUAGE_PROFILE_KEY,
+            value=json.dumps(SCA_LANGUAGE_PROFILE_KEY),
         ).save()
         return DEFAULT_SCA_LANGUAGE
+    return json.loads(profile)
+
+
+SHOW_EN_REF_PROFILE_KEY = "show_en_ref"
+DEFAULT_SHOW_EN_REF_PROFILE = {"show_en_ref": True}
+
+
+def get_show_en_ref_profile() -> dict[str, bool]:
+    profile = IastProfile.objects.filter(key=SHOW_EN_REF_PROFILE_KEY).values_list("value", flat=True).first()
+    if profile is None:
+        IastProfile(
+            key=SHOW_EN_REF_PROFILE_KEY,
+            value=json.dumps(SHOW_EN_REF_PROFILE_KEY),
+        ).save()
+        return DEFAULT_SHOW_EN_REF_PROFILE
     return json.loads(profile)
