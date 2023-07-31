@@ -203,7 +203,7 @@ def get_sca_language_profile() -> dict[str, str]:
     if profile is None:
         IastProfile(
             key=SCA_LANGUAGE_PROFILE_KEY,
-            value=json.dumps(SCA_LANGUAGE_PROFILE_KEY),
+            value=json.dumps(DEFAULT_SCA_LANGUAGE),
         ).save()
         return DEFAULT_SCA_LANGUAGE
     return json.loads(profile)
@@ -218,7 +218,7 @@ def get_show_en_ref_profile() -> dict[str, bool]:
     if profile is None:
         IastProfile(
             key=SHOW_EN_REF_PROFILE_KEY,
-            value=json.dumps(SHOW_EN_REF_PROFILE_KEY),
+            value=json.dumps(DEFAULT_SHOW_EN_REF_PROFILE),
         ).save()
         return DEFAULT_SHOW_EN_REF_PROFILE
     return json.loads(profile)
