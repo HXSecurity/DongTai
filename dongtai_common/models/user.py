@@ -122,4 +122,5 @@ class User(AbstractUser, PermissionsMixin):
         queryset = IastProject.objects.none()
         if self.is_global_permission:
             return IastProject.objects.all()
-        return patch_point(self, queryset)
+        _, queryset = patch_point(self, queryset)
+        return queryset
