@@ -94,7 +94,11 @@ configs["task_routes"] = {
         "exchange": "dongtai-replay-vul-scan",
         "routing_key": "dongtai-replay-vul-scan",
     },
-    "dongtai_web.dongtai_sca.scan.utils.update_one_sca": {
+    "dongtai_web.dongtai_sca.scan.tasks.update_one_sca": {
+        "exchange": "dongtai-sca-task",
+        "routing_key": "dongtai-sca-task",
+    },
+    "dongtai_web.dongtai_sca.scan.tasks.new_update_one_sca": {
         "exchange": "dongtai-sca-task",
         "routing_key": "dongtai-sca-task",
     },

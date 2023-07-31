@@ -64,6 +64,7 @@ class User(AbstractUser, PermissionsMixin):
     default_language = models.CharField(max_length=15, blank=True)
     role = models.ForeignKey(IastRoleV2, models.DO_NOTHING, default=1, db_constraint=False)
     is_global_permission = models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False)
 
     objects = SaaSUserManager()
     using_department = None
@@ -119,6 +120,7 @@ class User(AbstractUser, PermissionsMixin):
         from dongtai_common.models.project import IastProject
 
         queryset = IastProject.objects.none()
-        if self.is_system_admin:
+        if self.is_global_permission:
             return IastProject.objects.all()
-        return patch_point(self, queryset)
+        _, queryset = patch_point(self, queryset)
+        return queryset

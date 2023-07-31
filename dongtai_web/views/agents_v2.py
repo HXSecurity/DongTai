@@ -181,7 +181,7 @@ def get_disk(jsonstr: str | None) -> str:
     dic = json.loads(jsonstr)
     try:
         dic = json.loads(jsonstr)
-        res = str(dic["info"][0]["rate"])
+        res = str(dic["rate"])
         res.replace("%", "")
     except Exception as e:
         logger.debug(e, exc_info=True)
