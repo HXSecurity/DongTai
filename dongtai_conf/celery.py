@@ -98,6 +98,10 @@ configs["task_routes"] = {
         "exchange": "dongtai-sca-task",
         "routing_key": "dongtai-sca-task",
     },
+    "dongtai_web.dongtai_sca.scan.tasks.new_update_one_sca": {
+        "exchange": "dongtai-sca-task",
+        "routing_key": "dongtai-sca-task",
+    },
     "dongtai_engine.preheat.function_flush": {
         "exchange": "dongtai-function-flush-data",
         "routing_key": "dongtai-function-flush-data",
