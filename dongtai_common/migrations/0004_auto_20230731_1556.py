@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('dongtai_common', '0003_auto_20230728_1444'),
+        ("dongtai_common", "0003_auto_20230728_1444"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='iastassetvulv2',
-            name='vul_detail_zh',
+            model_name="iastassetvulv2",
+            name="vul_detail_zh",
             field=models.TextField(blank=True),
         ),
         migrations.AddField(
-            model_name='iastassetvulv2',
-            name='vul_name_zh',
+            model_name="iastassetvulv2",
+            name="vul_name_zh",
             field=models.CharField(blank=True, max_length=255),
         ),
     ]
