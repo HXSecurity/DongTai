@@ -261,7 +261,7 @@ class SensitiveInfoPatternValidationView(UserEndPoint):
             if ser.is_valid(True):
                 test_data = ser.validated_data["test_data"]
                 pattern = ser.validated_data["pattern"]
-            if pattern_type not in pattern_test_dict.keys():
+            if pattern_type not in pattern_test_dict:
                 return R.failure()
         except ValidationError as e:
             return R.failure(data=e.detail)
