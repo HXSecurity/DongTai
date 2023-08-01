@@ -9,8 +9,10 @@ from dongtai_common.utils.settings import get_managed
 
 
 class IastProjectMetaData(models.Model):
-    project = models.ForeignKey(IastProject, models.CASCADE)
-    project_version = models.ForeignKey(IastProjectVersion, on_delete=models.DO_NOTHING, blank=True, default=-1)
+    project = models.ForeignKey(IastProject, models.CASCADE, db_constraint=False)
+    project_version = models.ForeignKey(
+        IastProjectVersion, on_delete=models.DO_NOTHING, blank=True, default=-1, db_constraint=False
+    )
     api_count = models.IntegerField(help_text="API数量统计", default=0)
     vul_api_count = models.IntegerField(help_text="漏洞API数量统计", default=0)
     create_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
