@@ -17,7 +17,3 @@ def get_json_from_iast_profile(key: str, _serializer: type[serializers.Serialize
     ser = _serializer(data=profile_data)
     ser.is_valid()
     return dict(ser.data)
-
-
-def get_data_gather_data() -> dict:
-    return {}
