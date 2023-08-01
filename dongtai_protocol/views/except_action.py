@@ -52,7 +52,7 @@ class AgentActionV2EndPoint(OpenApiEndPoint, ViewSet):
         methods=["GET"],
     )
     def except_running_status(self, request):
-        if "agentId" not in request.GET.keys():
+        if "agentId" not in request.GET:
             return R.failure()
         agent_id = request.GET["agentId"]
         agent = IastAgent.objects.filter(pk=agent_id).first()

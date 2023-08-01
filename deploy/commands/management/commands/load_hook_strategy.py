@@ -115,7 +115,7 @@ class Command(BaseCommand):
                 full_policy = json.load(fp, object_pairs_hook=OrderedDict)
             for policy in full_policy:
                 if policy["type"] == 4:
-                    if policy["value"] not in strategy_dict.keys():
+                    if policy["value"] not in strategy_dict:
                         continue
                     policy_strategy = strategy_dict[policy["value"]]
                     for hook_strategy in policy["details"]:
@@ -123,7 +123,7 @@ class Command(BaseCommand):
                         hook_strategy["language_id"] = v
                         HookStrategy.objects.create(strategy=policy_strategy, **hook_strategy)
                 else:
-                    if f"{policy['value']}-{policy['type']}" not in hooktype_dict.keys():
+                    if f"{policy['value']}-{policy['type']}" not in hooktype_dict:
                         continue
                     policy_hook_type = hooktype_dict[f"{policy['value']}-{policy['type']}"]
                     for hook_strategy in policy["details"]:

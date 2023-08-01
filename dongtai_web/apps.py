@@ -8,7 +8,6 @@ class IastConfig(DongTaiAppConfigPatch, AppConfig):
 
     def ready(self):
         super().ready()
-        register_preheat()
         from deploy.commands.management.commands.load_hook_strategy import Command
         from dongtai_common.utils.init_schema import init_schema
         from dongtai_common.utils.validate import validate_hook_strategy_update
@@ -25,10 +24,3 @@ class IastConfig(DongTaiAppConfigPatch, AppConfig):
             Command().handle()
 
         init_schema()
-
-
-def register_preheat():
-    from dongtai_engine.preheat import PreHeatRegister
-    from dongtai_web.aggr_vul.aggr_vul_summary import get_annotate_sca_cache_data
-
-    PreHeatRegister.register(get_annotate_sca_cache_data)

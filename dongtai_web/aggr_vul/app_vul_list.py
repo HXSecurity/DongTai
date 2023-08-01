@@ -338,7 +338,7 @@ def get_vul_list_from_elastic_search(
     for vul in vuls:
         if "server__container" not in vul:
             vul["server__container"] = ""
-        if vul["id"] not in extra_data_dic.keys():
+        if vul["id"] not in extra_data_dic:
             vul_incorrect_id.append(vul["id"])
             strategy_dic = IastStrategyModel.objects.filter(pk=vul["strategy_id"]).values(*strategy_values).first()
             iast_vulnerability_dic = (
