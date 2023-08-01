@@ -5,8 +5,6 @@ import os
 from django.urls import URLPattern, URLResolver, include, path
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from dongtai_web.aggr_vul.aggr_vul_list import GetAggregationVulList
-from dongtai_web.aggr_vul.aggr_vul_summary import GetScaSummary
 from dongtai_web.aggr_vul.app_vul_list import GetAppVulsList
 from dongtai_web.aggr_vul.app_vul_summary import GetAppVulsSummary
 from dongtai_web.aggregation.aggregation_del import DelVulMany
@@ -83,8 +81,6 @@ from dongtai_web.views.project_version_list import ProjectVersionList
 from dongtai_web.views.project_version_update import ProjectVersionUpdate
 from dongtai_web.views.projects import Projects
 from dongtai_web.views.sca_details import ScaDetailView
-from dongtai_web.views.sca_summary import ScaSummary
-from dongtai_web.views.scas import ScaList
 from dongtai_web.views.sensitive_info_rule import (
     SensitiveInfoPatternTypeView,
     SensitiveInfoPatternValidationView,
@@ -163,8 +159,6 @@ urlpatterns: list[URLResolver | URLPattern] = [
     path("vul/status_list", VulnerabilityStatusView.as_view()),
     path("plugin/vuln/list", VulListEndPoint.as_view()),
     path("plugin/vuln/count", VulCountForPluginEndPoint.as_view()),
-    path("scas", ScaList.as_view()),
-    path("sca/summary", ScaSummary.as_view()),
     path("sca/<int:id>", ScaDetailView.as_view()),
     path("strategys", StrategysEndpoint.as_view()),
     path("strategy/<int:pk>", StrategyEndpoint.as_view()),
@@ -311,10 +305,7 @@ urlpatterns.extend(
         path("api/v2/agents", AgentListv2.as_view({"get": "pagenation_list"})),
         path("api/v2/agents/summary", AgentListv2.as_view({"get": "summary"})),
         path("api/v2/agents/stat", AgentListv2.as_view({"get": "agent_stat"})),
-        #  组件漏洞 列表
-        path("api/v2/sca_vul_list_content", GetAggregationVulList.as_view()),
         # 组件漏洞 汇总
-        path("api/v2/sca_vul_summary", GetScaSummary.as_view()),
         path("api/v2/app_vul_list_content", GetAppVulsList.as_view()),
         path("api/v2/app_vul_summary", GetAppVulsSummary.as_view()),
         path("api/v2/project_version", NewProjectVersionList.as_view()),
