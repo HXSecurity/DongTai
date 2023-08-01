@@ -32,11 +32,12 @@ class AgentConfigTestCase(AgentTestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(
             data["data"],
-            {},
+            {"report_validated_sink": False},
         )
 
     def test_rep_agent_config2(self):
         agent = IastAgent.objects.filter(pk=self.agent_id).first()
+        assert agent is not None
         agent.bind_project.log_level = "INFO"
         agent.bind_project.enable_log = True
         agent.bind_project.save()
@@ -48,11 +49,12 @@ class AgentConfigTestCase(AgentTestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(
             data["data"],
-            {"enable_log": True, "log_level": "INFO"},
+            {"enable_log": True, "log_level": "INFO", "report_validated_sink": False},
         )
 
     def test_rep_agent_config3(self):
         agent = IastAgent.objects.filter(pk=self.agent_id).first()
+        assert agent is not None
         agent.bind_project.log_level = "INFO"
         agent.bind_project.save()
         res = self.client.get(
@@ -63,5 +65,5 @@ class AgentConfigTestCase(AgentTestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(
             data["data"],
-            {"log_level": "INFO"},
+            {"log_level": "INFO", "report_validated_sink": False},
         )
