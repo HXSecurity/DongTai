@@ -3,6 +3,8 @@
 
 from rest_framework import permissions
 
+from dongtai_conf.patch import patch_point
+
 
 class ScopedPermission(permissions.BasePermission):
     """
@@ -44,6 +46,14 @@ class UserPermission(ScopedPermission):
 
     def has_permission(self, request, view):
         user = request.user
+        from dongtai_common.endpoint import OpenApiEndPoint
+
+        if user is not None and user.is_active and issubclass(view.__class__, OpenApiEndPoint):
+            return True
+        extend_permission = None
+        _, _, extend_permission = patch_point(request, view, extend_permission)
+        if extend_permission is not None:
+            return extend_permission
         if user is not None and user.is_active:
             return True
         return False
