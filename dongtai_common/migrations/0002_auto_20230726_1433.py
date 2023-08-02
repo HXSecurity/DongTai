@@ -14,7 +14,7 @@ def add_preset_admin_role(apps, schema_editor):
         name="admin",
         is_admin=True,
         is_preset=True,
-        permission=[],
+        permission={"routes": [], "buttons": []},
         status=RoleStatus.ENABLE,
     )
 
