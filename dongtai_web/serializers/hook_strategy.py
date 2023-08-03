@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from django.db import models
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -22,6 +23,13 @@ HOOK_TYPE_CHOICE = (
     const.RULE_FILTER,
     const.RULE_SINK,
 )
+
+
+class StrategyTypeChoice(models.IntegerChoices):
+    PROPAGATOR = 1
+    SOURCE = 2
+    VALIDATOR = 3
+    SINK = 4
 
 
 class SinkSerialize(serializers.ModelSerializer):
