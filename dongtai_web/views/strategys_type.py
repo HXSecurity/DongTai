@@ -43,7 +43,7 @@ class StrategyType(UserEndPoint):
             for item in queryset:
                 if not item.level:
                     continue
-                if item.level.id not in curTyp.keys():
+                if item.level.id not in curTyp:
                     curTyp[item.level_id] = []
                 curTyp[item.level_id].append(
                     {

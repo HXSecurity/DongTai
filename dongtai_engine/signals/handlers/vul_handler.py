@@ -181,7 +181,7 @@ def get_http_locationstr(method_pool: MethodPool, location: str) -> str | None:
         "PATH": "uri",
         "COOKIE": "req_header",
     }
-    if location not in data.keys():
+    if location not in data:
         return None
     return getattr(method_pool, data[location], None)
 
@@ -217,7 +217,7 @@ def get_real_url(method_pools: list) -> str:
     for method_pool_ in method_pools[::-1]:
         method_pool = method_pool_
         if method_pool["signature"] == "org.springframework.web.util.pattern.PathPattern.getPatternString()":
-            if "targetValues" not in method_pool.keys():
+            if "targetValues" not in method_pool:
                 method_pool = method_pool_3_to_2(method_pool)
             return method_pool["targetValues"]
     return ""

@@ -180,7 +180,6 @@ class VulReCheckPayloadViewSet(UserEndPoint, viewsets.ViewSet):
             IastVulRecheckPayload.objects.filter(q).update(status=status)
         elif mode == 2:
             status = request.data.get("status", 0)
-            q = q
             IastVulRecheckPayload.objects.filter(q).update(status=status)
         return R.success()
 

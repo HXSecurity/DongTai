@@ -1,12 +1,13 @@
 from rest_framework import serializers
 
 from dongtai_common.models.asset_vul_v2 import IastAssetVulV2
-from dongtai_web.dongtai_sca.scan.utils import get_sca_language_profile
+from dongtai_web.dongtai_sca.scan.utils import get_sca_language_profile, get_show_en_ref_profile
 
 
 class PackageVulSerializer(serializers.ModelSerializer):
     vul_name = serializers.SerializerMethodField()
     vul_detail = serializers.SerializerMethodField()
+    references = serializers.SerializerMethodField()
     level_name = serializers.CharField(source="get_level_display")
     level_id = serializers.IntegerField(source="level")
 
@@ -23,3 +24,9 @@ class PackageVulSerializer(serializers.ModelSerializer):
         if get_sca_language_profile()["language"] == "zh":
             return obj.vul_detail_zh or obj.vul_detail
         return obj.vul_detail
+
+    def get_references(self, obj: IastAssetVulV2) -> list[dict[str, str]]:
+        if get_show_en_ref_profile()["show_en_ref"] == "zh":
+            references: list[dict[str, str]] = obj.references
+            return list(filter(lambda x: x.get("language", "en") == "zh", references))
+        return obj.references
