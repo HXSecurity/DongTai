@@ -54,6 +54,19 @@ def get_agent_count(queryset: "QuerySet | _SupportsPagination") -> defaultdict:
     return agent_count_dict
 
 
+class BaseProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IastProject
+        fields = [
+            "id",
+            "name",
+            "mode",
+            "latest_time",
+            "vul_validation",
+            "status",
+        ]
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         if "exclude_vul_status" in kwargs:
@@ -133,5 +146,5 @@ class ProjectSerializer(serializers.ModelSerializer):
         if "project_group_name" in self.context:
             res = self.context["project_group_name"][obj.id]
         else:
-            res = obj.iastprojectgroup_set.values_list("name", flat=True)
+            res = (x.name for x in obj.iastprojectgroup_set.all())
         return list(res)
