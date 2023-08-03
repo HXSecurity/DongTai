@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from django.db import models
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -6,7 +7,6 @@ from rest_framework import serializers
 from dongtai_common.models import User
 from dongtai_common.models.hook_strategy import HookStrategy
 from dongtai_common.utils import const
-from django.db import models
 
 SINK_POSITION_HELP_TEXT = _(
     """

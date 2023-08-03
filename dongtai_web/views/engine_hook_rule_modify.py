@@ -14,9 +14,8 @@ from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.hook_strategy import HookStrategy
 from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.strategy import IastStrategyModel
-from dongtai_web.serializers.hook_strategy import SINK_POSITION_HELP_TEXT
+from dongtai_web.serializers.hook_strategy import SINK_POSITION_HELP_TEXT, StrategyTypeChoice
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
-from dongtai_web.serializers.hook_strategy import StrategyTypeChoice
 
 _PostResponseSerializer = get_response_serializer(
     status_msg_keypair=(
