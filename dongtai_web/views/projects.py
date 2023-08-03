@@ -79,7 +79,7 @@ class Projects(UserEndPoint):
             queryset = queryset.filter(status=status)
         if project_group_name is not None:
             queryset = queryset.filter(iastprojectgroup__name__icontains=project_group_name)
-        queryset = queryset.select_related("user")
+        queryset = queryset.select_related("user").prefetch_related("iastprojectgroup_set")
         page_summary, page_data = self.get_paginator(queryset, page, page_size)
         vul_levels_dict = get_vul_levels_dict(page_data, exclude_vul_status=exclude_vul_status)
         project_language_dict = get_project_language(page_data)
