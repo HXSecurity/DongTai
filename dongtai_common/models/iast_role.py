@@ -19,3 +19,4 @@ class IastRoleV2(models.Model):
     class Meta:
         managed = get_managed()
         db_table = "iast_role"
+        indexes = [models.Index(fields=["name"])]
