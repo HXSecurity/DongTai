@@ -10,7 +10,7 @@ class RoleStatus(models.IntegerChoices):
 
 class IastRoleV2(models.Model):
     id = models.BigAutoField(primary_key=True)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     is_admin = models.BooleanField(default=False)
     is_preset = models.BooleanField(default=False)
     permission = models.JSONField()
