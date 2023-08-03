@@ -38,11 +38,10 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
 
     @staticmethod
     def register_agent(token, version, language, project_name, user, project_version):
-        department = user.get_using_department()
-        project = IastProject.objects.values("id").filter(name=project_name, department=department).first()
+        project = IastProject.objects.values("id").filter(name=project_name).first()
         is_audit = AgentRegisterEndPoint.get_is_audit()
-        project_id = 0
-        project_version_id = 0
+        project_id = -1
+        project_version_id = -1
         if project:
             if project_version:
                 project_current_version = project_version
@@ -382,7 +381,7 @@ class AgentRegisterEndPoint(OpenApiEndPoint):
             language=language,
             is_audit=is_audit,
             allow_report=allow_report,
-            department_id=-1,
+            department_id=1,
         )
         return agent.id
 
