@@ -218,7 +218,7 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             return R.failure(data=e.detail, msg=_("Incomplete parameter, please check again"))
         # for compatibility only
         # the "type" not in ser.validated_data should be remove.
-        if ser.validated_data["type"] == 4 or (
+        if ("type" in ser.validated_data and ser.validated_data["type"] == 4) or (
             "type" not in ser.validated_data and ser.validated_data["rule_target"] == ""
         ):
             hook_type = IastStrategyModel.objects.filter(
