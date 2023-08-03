@@ -146,5 +146,5 @@ class ProjectSerializer(serializers.ModelSerializer):
         if "project_group_name" in self.context:
             res = self.context["project_group_name"][obj.id]
         else:
-            res = obj.iastprojectgroup_set.values_list("name", flat=True)
+            res = (x.name for x in obj.iastprojectgroup_set.all())
         return list(res)
