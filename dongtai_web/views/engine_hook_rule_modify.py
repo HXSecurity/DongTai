@@ -16,6 +16,7 @@ from dongtai_common.models.hook_type import HookType
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_web.serializers.hook_strategy import SINK_POSITION_HELP_TEXT
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
+from dongtai_web.serializers.hook_strategy import StrategyTypeChoice
 
 _PostResponseSerializer = get_response_serializer(
     status_msg_keypair=(
@@ -86,6 +87,11 @@ class _EngineHookRuleModifySerializer(serializers.Serializer):
         required=False,
         default=list,
     )
+    type = serializers.ChoiceField(
+        required=False,
+        help_text="".join([f" {i.label}: {i.value} " for i in StrategyTypeChoice]),
+        choices=StrategyTypeChoice,
+    )
 
 
 class EngineHookRuleModifyEndPoint(UserEndPoint):
@@ -99,20 +105,18 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
             rule_type = request.data.get("rule_type_id")
             rule_value = request.data.get("rule_value").strip()
             rule_source = request.data.get("rule_source").strip()
-            rule_target = request.data.get("rule_target").strip()
             inherit = request.data.get("inherit").strip()
             is_track = request.data.get("track").strip()
             ignore_blacklist = request.data.get("ignore_blacklist", False)
             ignore_internal = request.data.get("ignore_internal", False)
         except Exception:
-            return None, None, None, None, None, None, None, None, None
+            return None, None, None, None, None, None, None, None
         else:
             return (
                 rule_id,
                 rule_type,
                 rule_value,
                 rule_source,
-                rule_target,
                 inherit,
                 is_track,
                 ignore_blacklist,
@@ -134,7 +138,6 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
             rule_type,
             rule_value,
             rule_source,
-            rule_target,
             inherit,
             is_track,
             ignore_blacklist,
@@ -181,7 +184,7 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
                 strategy.hooktype = hook_type
             strategy.value = rule_value
             strategy.source = rule_source
-            strategy.target = rule_target
+            strategy.target = ser.validated_data["rule_target"]
             strategy.inherit = inherit
             strategy.track = is_track
             strategy.update_time = int(time.time())

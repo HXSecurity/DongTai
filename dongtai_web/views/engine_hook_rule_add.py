@@ -18,6 +18,7 @@ from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.utils import const
 from dongtai_web.serializers.hook_strategy import SINK_POSITION_HELP_TEXT
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
+from dongtai_web.serializers.hook_strategy import StrategyTypeChoice
 
 logger = logging.getLogger("dongtai-webapi")
 
@@ -39,6 +40,7 @@ class _HookRuleAddBodyargsSerializer(serializers.Serializer):
         help_text=format_lazy("{}\n{}", _("Target of taint"), SINK_POSITION_HELP_TEXT),
         max_length=255,
         allow_blank=True,
+        default="",
     )
     inherit = serializers.CharField(
         help_text=_(
@@ -80,6 +82,11 @@ class _HookRuleAddBodyargsSerializer(serializers.Serializer):
         required=False,
         default=list,
     )
+    type = serializers.ChoiceField(
+        required=False,
+        help_text="".join([f" {i.label}: {i.value} " for i in StrategyTypeChoice]),
+        choices=StrategyTypeChoice,
+    )
 
 
 _ResponseSerializer = get_response_serializer(
@@ -101,7 +108,6 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             rule_type = request.data.get("rule_type_id")
             rule_value = request.data.get("rule_value").strip()
             rule_source = request.data.get("rule_source").strip()
-            rule_target = request.data.get("rule_target").strip()
             inherit = request.data.get("inherit").strip()
             is_track = request.data.get("track").strip()
             language_id = request.data.get("language_id")
@@ -113,13 +119,12 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             request.data.get("stack_blacklist", [])
         except Exception as e:
             logger.exception("uncatched exception: ", exc_info=e)
-            return None, None, None, None, None, None, None, None, None
+            return None, None, None, None, None, None, None, None
         else:
             return (
                 rule_type,
                 rule_value,
                 rule_source,
-                rule_target,
                 inherit,
                 is_track,
                 language_id,
@@ -186,7 +191,6 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             rule_type,
             rule_value,
             rule_source,
-            rule_target,
             inherit,
             is_track,
             language_id,
@@ -213,7 +217,11 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
                 pass
         except ValidationError as e:
             return R.failure(data=e.detail, msg=_("Incomplete parameter, please check again"))
-        if rule_target == "":
+        # for compatibility only
+        # the "type" not in ser.validated_data should be remove.
+        if ser.validated_data["type"] == 4 or (
+            "type" not in ser.validated_data and ser.validated_data["rule_target"] == ""
+        ):
             hook_type = IastStrategyModel.objects.filter(
                 id=rule_type,
                 user_id__in=[request.user.id, const.SYSTEM_USER_ID],
@@ -225,11 +233,17 @@ class EngineHookRuleAddEndPoint(UserEndPoint):
             ).first()
         if not hook_type:
             return R.failure(msg=_("Failed to create strategy"))
-        type_ = 4 if rule_target == "" else hook_type.type
+        # for compatibility only
+        # the "type" not in ser.validated_data should be remove.
+        type_ = (
+            (4 if ser.validated_data["rule_target"] == "" else hook_type.type)
+            if "type" not in ser.validated_data
+            else ser.validated_data["type"]
+        )
         strategy = self.create_strategy(
             rule_value,
             rule_source,
-            rule_target,
+            ser.validated_data["rule_target"],
             inherit,
             is_track,
             request.user.id,

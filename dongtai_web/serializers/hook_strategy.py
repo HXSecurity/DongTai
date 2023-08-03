@@ -6,6 +6,7 @@ from rest_framework import serializers
 from dongtai_common.models import User
 from dongtai_common.models.hook_strategy import HookStrategy
 from dongtai_common.utils import const
+from django.db import models
 
 SINK_POSITION_HELP_TEXT = _(
     """
@@ -22,6 +23,13 @@ HOOK_TYPE_CHOICE = (
     const.RULE_FILTER,
     const.RULE_SINK,
 )
+
+
+class StrategyTypeChoice(models.IntegerChoices):
+    PROPAGATOR = 1
+    SOURCE = 2
+    VALIDATOR = 3
+    SINK = 4
 
 
 class SinkSerialize(serializers.ModelSerializer):
