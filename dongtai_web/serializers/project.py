@@ -113,7 +113,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             vul_levels = (
                 IastVulnerabilityModel.objects.values("level__name_value", "level")
                 .filter(
-                    ~Q(status_id=self.exclude_vul_status) if self.exclude_vul_status is not None else Q(),
+                    Q(status_id=self.exclude_vul_status) if self.exclude_vul_status is not None else Q(),
                     project_id=obj.id,
                     is_del=0,
                 )
