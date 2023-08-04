@@ -9,7 +9,7 @@ from dongtai_common.utils.settings import get_managed
 
 
 class IastProjectMetaData(models.Model):
-    project = models.ForeignKey(IastProject, models.CASCADE, db_constraint=False)
+    project = models.OneToOneField(IastProject, models.CASCADE, db_constraint=False, unique=True)
     project_version = models.ForeignKey(
         IastProjectVersion, on_delete=models.DO_NOTHING, blank=True, default=-1, db_constraint=False
     )
