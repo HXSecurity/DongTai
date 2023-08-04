@@ -10,6 +10,7 @@ from dongtai_web.base.project_version import (
     ProjectsVersionDataSerializer,
     get_project_version,
 )
+from dongtai_web.serializers.project import ProjectSerializer
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 
@@ -75,6 +76,7 @@ class ProjectDetail(UserEndPoint):
                     "template_id": project.template_id,
                     "enable_log": project.enable_log,
                     "log_level": project.log_level,
+                    "project_group_name": ProjectSerializer().get_project_group_name(project),
                 }
             )
         return R.failure(status=203, msg=_("no permission"))
