@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("dongtai_common", "0006_auto_20230803_1407"),
+        ("dongtai_common", "0007_auto_20230803_1810"),
     ]
 
     operations = [
