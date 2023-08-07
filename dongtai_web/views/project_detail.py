@@ -10,7 +10,6 @@ from dongtai_web.base.project_version import (
     ProjectsVersionDataSerializer,
     get_project_version,
 )
-from dongtai_web.serializers.project import ProjectSerializer
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
 
