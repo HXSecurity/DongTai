@@ -2,6 +2,7 @@
 # datetime: 2021/7/21 下午7:07
 import copy
 import logging
+import sys
 from collections import defaultdict
 
 from django.utils.functional import cached_property
@@ -122,7 +123,7 @@ class VulEngine:
         signatures = set()
 
         for method in self.method_pool:
-            signatures.add(f"{method.get('className').replace('/', '.')}.{method.get('methodName')}")
+            signatures.add(f"{method['className'].replace('/', '.')}.{method.get('methodName')}")
         return signatures
 
     def search(self, method_pool, vul_method_signature, vul_type=None):
@@ -159,26 +160,27 @@ class VulEngine:
         g = nk.Graph(weighted=True, directed=True)
         for pool in self.method_pool:
             if "sourceType" in pool:
+                vecs = ()
                 for source_type in pool["sourceType"]:
                     if source_type["type"] == "HOST":
                         source_type_hash = source_type["hash"]
-                        vecs = [[s, pool["invokeId"]] for s in target_hash_dict[source_type_hash]]
+                        vecs = ((s, pool["invokeId"]) for s in target_hash_dict[source_type_hash])
             else:
-                vecs = [
-                    [s, pool["invokeId"]]
-                    for s in reduce(lambda x, y: x | y, [target_hash_dict[i] for i in pool["sourceHash"]], set())
-                ]
+                vecs = (
+                    (s, pool["invokeId"])
+                    for s in reduce(lambda x, y: x | y, (target_hash_dict[i] for i in pool["sourceHash"]), set())
+                )
             for source, target in vecs:
-                g.addEdge(source, target, abs(source - target) ** 1.1, addMissing=True)
+                g.addEdge(source, target, (source - target) * (source - target), addMissing=True)
         # Checkout each pair source/target have a path or not
-        # It may lost sth when muliti paths exists.
+        # It may lost sth when multi paths exists.
         final_stack = []
         total_path_list = []
         for s, t in product(source_methods, vul_methods):
             if not g.hasNode(s) or not g.hasNode(t):
                 continue
             dij_obj = nk.distance.BidirectionalDijkstra(g, s, t).run()
-            if dij_obj.getDistance() != 1.7976931348623157e308:  # INF here!
+            if dij_obj.getDistance() < sys.float_info.max:
                 logger.info("find sink here!")
                 path = dij_obj.getPath()
                 total_path = [s, *path, t]
@@ -223,15 +225,17 @@ class VulEngine:
                     final_stack.append(self.copy_method(sub_method, source=True))
                 elif sub_method["invokeId"] == t:
                     if self.version == 3:
-                        self.taint_value = taint_value = parse_target_value(sub_method["targetValues"])
+                        self.taint_value = parse_target_value(sub_method["targetValues"])
                     else:
-                        self.taint_value = taint_value = sub_method["targetValues"]
+                        self.taint_value = sub_method["targetValues"]
                     final_stack.append(self.copy_method(sub_method, sink=True))
                 else:
                     final_stack.append(self.copy_method(sub_method, propagator=True))
             self.vul_stack = [final_stack]
             vul_stack = [final_stack]
-            self.more_results.append((True, vul_stack, vul_source_signature, self.vul_method_signature, taint_value))
+            self.more_results.append(
+                (True, vul_stack, vul_source_signature, self.vul_method_signature, self.taint_value)
+            )
 
     def find_other_branch_v2(self, index, size, current_link, source_hash):
         for sub_index in range(index + 1, size):
