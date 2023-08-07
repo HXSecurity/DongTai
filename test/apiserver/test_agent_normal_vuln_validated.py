@@ -1,5 +1,6 @@
 import json
 from test.apiserver.test_agent_base import AgentTestCase
+
 from dongtai_common.models.vulnerablity import IastVulnerabilityModel
 
 with open("./test/integration/mockdata/validated_method_pool.json") as fp:
