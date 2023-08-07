@@ -111,7 +111,20 @@ def search_and_save_vul(
         )
         project_time_stamp_update.apply_async((method_pool_model.agent.bind_project_id,), countdown=5)
         project_version_time_stamp_update.apply_async((method_pool_model.agent.project_version_id,), countdown=5)
+    validator_nodes = list(filter(lambda x: "policyType" in x and x["policyType"] == "validator", method_pool))
+    for validator_node in validator_nodes:
+        validator_node["taint_input"] = validator_node["sourceValues"]
+        validator_node["validator_method"] = f"{validator_node['className']}.{validator_node['methodName']}"
+        validator_node[
+            "validator_call_method"
+        ] = f"{validator_node['callerClass']}.{validator_node['callerMethod']}:{validator_node['callerLineNumber']}"
     for status, stack, source_sign, sink_sign, taint_value in engine.results():
+        for item in stack[0]:
+            for validator_node in validator_nodes:
+                if set(validator_node["sourceHash"]) & set(item["sourceHash"]):
+                    if "validators" not in item:
+                        item["validators"] = []
+                    item["validators"].append(validator_node)
         if status:
             filterres = vul_filter(
                 stack,
