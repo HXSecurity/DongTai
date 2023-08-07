@@ -72,7 +72,7 @@ class ProjectDetail(UserEndPoint):
                     "base_url": project.base_url,
                     "test_req_header_key": project.test_req_header_key,
                     "test_req_header_value": project.test_req_header_value,
-                    "department_id": project.department.id,
+                    "department_id": 1,
                     "template_id": project.template_id,
                     "enable_log": project.enable_log,
                     "log_level": project.log_level,
