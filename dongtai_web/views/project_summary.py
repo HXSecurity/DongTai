@@ -58,6 +58,9 @@ class _ProjectSummaryDataSerializer(serializers.Serializer):
     )
     agent_alive = serializers.IntegerField(help_text="Agent存活数量")
     project_version_latest_time = serializers.IntegerField(help_text="项目版本更新时间")
+    project_group_name = serializers.ListField(
+        child=serializers.CharField(),
+    )
 
 
 _ProjectSummaryResponseSerializer = get_response_serializer(_ProjectSummaryDataSerializer())
@@ -121,4 +124,5 @@ class ProjectSummary(UserEndPoint):
         data["agent_alive"] = IastAgent.objects.filter(bind_project_id=project.id, online=const.RUNNING).count()
         project_version = IastProjectVersion.objects.filter(pk=current_project_version.get("version_id", 0)).first()
         data["project_version_latest_time"] = project_version.update_time if project_version else project.latest_time
+        data["project_group_name"] = ProjectSerializer().get_project_group_name(project)
         return R.success(data=data)
