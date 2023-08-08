@@ -53,7 +53,7 @@ class HeartBeatHandler(IReportHandler):
         self.return_queue = self.detail.get("returnQueue", None)
 
     def has_permission(self):
-        self.agent = IastAgent.objects.filter(id=self.agent_id, user=self.user_id).first()
+        self.agent = IastAgent.objects.filter(id=self.agent_id).first()
         return self.agent
 
     def save_heartbeat(self):
@@ -174,7 +174,7 @@ class HeartBeatHandler(IReportHandler):
         self.save_heartbeat()
 
     def get_agent(self, agent_id):
-        return IastAgent.objects.filter(id=agent_id, user=self.user_id).first()
+        return IastAgent.objects.filter(id=agent_id).first()
 
 
 def get_k8s_deployment_id(hostname: str) -> str:
