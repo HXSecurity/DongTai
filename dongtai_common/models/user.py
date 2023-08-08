@@ -71,6 +71,7 @@ class User(AbstractUser, PermissionsMixin):
 
     class Meta(AbstractUser.Meta):
         db_table = "auth_user"
+        indexes = [models.Index(fields=["deleted"])]
 
     def is_system_admin(self):
         return self.is_superuser == 1
