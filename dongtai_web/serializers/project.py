@@ -17,7 +17,7 @@ def get_vul_levels_dict(queryset: "QuerySet | _SupportsPagination", exclude_vul_
     vul_levels = (
         IastVulnerabilityModel.objects.values("level__name_value", "level", "project_id")
         .filter(
-            ~Q(status_id=exclude_vul_status) if exclude_vul_status is not None else Q(),
+            Q(status_id=exclude_vul_status) if exclude_vul_status is not None else Q(),
             project_id__in=list(queryset.values_list("id", flat=True)),
             is_del=0,
         )
