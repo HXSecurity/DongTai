@@ -13,7 +13,6 @@ from dongtai_common.models.program_language import IastProgramLanguage
 from dongtai_common.models.strategy import IastStrategyModel
 from dongtai_common.models.strategy_user import IastStrategyUser
 from dongtai_common.models.vul_level import IastVulLevel
-from dongtai_common.permissions import TalentAdminPermission
 from dongtai_web.serializers.strategy import StrategySerializer
 from dongtai_web.utils import extend_schema_with_envcheck, get_response_serializer
 
