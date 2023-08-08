@@ -373,7 +373,6 @@ class SaasMethodPoolHandler(IReportHandler):
             {
                 "pk": agent_id,
                 "online": 1,
-                "user": self.user_id,
                 "allow_report": 1,
             },
             (
