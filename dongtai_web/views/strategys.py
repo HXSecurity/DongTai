@@ -85,14 +85,6 @@ class StrategyEndpoint(UserEndPoint):
 
 
 class StrategysEndpoint(UserEndPoint):
-    permission_classes_by_action = {"POST": (TalentAdminPermission,)}
-
-    def get_permissions(self):
-        try:
-            return [permission() for permission in self.permission_classes_by_action[self.request.method]]
-        except KeyError:
-            return [permission() for permission in self.permission_classes]
-
     @extend_schema_with_envcheck(
         [_StrategyArgsSerializer],
         tags=[_("Strategy")],
