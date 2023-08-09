@@ -1,8 +1,10 @@
 from test.apiserver.test_agent_base import AgentTestCase
 from time import time
 
+from django.core.cache import cache
+
 from dongtai_common.models.heartbeat import IastHeartbeat
-from dongtai_engine.tasks import is_alive
+from dongtai_engine.tasks import is_alive, update_agent_status
 
 
 class ApiHeartBeatTestCase(AgentTestCase):
@@ -17,6 +19,52 @@ class ApiHeartBeatTestCase(AgentTestCase):
                 "cpu": '{"rate":0}',
             },
             "type": 1,
+        }
+        data["detail"]["agentId"] = self.agent_id
+        self.agent_report(data, agentId=self.agent_id)
+        self.assertTrue(is_alive(self.agent_id, int(time())))
+        self.assertEqual(
+            IastHeartbeat.objects.get(agent_id=self.agent_id).cpu,
+            data["detail"]["cpu"],
+        )
+        self.assertEqual(
+            IastHeartbeat.objects.get(agent_id=self.agent_id).memory,
+            data["detail"]["memory"],
+        )
+        self.assertEqual(
+            IastHeartbeat.objects.get(agent_id=self.agent_id).disk,
+            data["detail"]["disk"],
+        )
+
+    def test_agent_heart_beat_2(self):
+        update_agent_status()
+        self.assertFalse(is_alive(self.agent_id, int(time())))
+        data = {
+            "type": 1,
+            "detail": {
+                "agentId": 515,
+                "memory": '{"total":"1.778GB","use":"295.194MB","rate":16}',
+                "cpu": '{"rate":36}',
+                "disk": '{"rate":72}',
+                "returnQueue": 0,
+            },
+        }
+        data["detail"]["agentId"] = self.agent_id
+        self.agent_report(data, agentId=self.agent_id)
+        self.assertTrue(is_alive(self.agent_id, int(time())))
+        update_agent_status()
+        cache.delete(f"heartbeat-{self.agent_id}")
+        update_agent_status()
+        self.assertFalse(is_alive(self.agent_id, int(time())))
+        data = {
+            "type": 1,
+            "detail": {
+                "agentId": 515,
+                "memory": '{"total":"1.778GB","use":"295.194MB","rate":16}',
+                "cpu": '{"rate":36}',
+                "disk": '{"rate":72}',
+                "returnQueue": 0,
+            },
         }
         data["detail"]["agentId"] = self.agent_id
         self.agent_report(data, agentId=self.agent_id)

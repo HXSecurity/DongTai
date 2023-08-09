@@ -25,9 +25,21 @@ def valitate_tag(tag: str) -> bool:
 
 def taint_command_validator(command: str):
     if not valitate_taint_command(command):
-        raise ValidationError(f"The command must fit {PATTERN} .")
+        raise ValidationError(detail=f"污点范围命令必须符合该格式: {PATTERN} .")
 
 
 def tag_validator(tag: str):
     if not valitate_tag(tag):
-        raise ValidationError(f"The tag must in {DEFAULT_IAST_VALUE_TAG} .")
+        raise ValidationError(detail=f"污点tag必须在以下列表中: {DEFAULT_IAST_VALUE_TAG} .")
+
+
+def get_validatation_detail_message(e: ValidationError):
+    error_text_list = []
+    for v in e.detail.values():
+        if isinstance(v, (list, tuple)):
+            error_text_list.extend(str(error) for error in v)
+        elif isinstance(v, dict):
+            for error in v.values():
+                if isinstance(error, list):
+                    error_text_list.extend(str(i) for i in error)
+    return "\n".join(error_text_list)
