@@ -9,6 +9,7 @@ from rest_framework.serializers import ValidationError
 from dongtai_common.common.agent_command_check import (
     tag_validator,
     taint_command_validator,
+    get_validatation_detail_message,
 )
 from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.hook_strategy import HookStrategy
@@ -174,7 +175,7 @@ class EngineHookRuleModifyEndPoint(UserEndPoint):
             if ser.is_valid(True):
                 pass
         except ValidationError as e:
-            return R.failure(data=e.detail, msg=_("Incomplete parameter, please check again"))
+            return R.failure(data=e.detail, msg=get_validatation_detail_message(e))
 
         if strategy:
             if hook_type and strategy.type == 4:
