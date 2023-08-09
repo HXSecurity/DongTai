@@ -266,7 +266,7 @@ Create the name of the service account to use
     [task]
     retryable = true
     max_retries = 3
-    async_send = true
+    async_send = {{.Values.logstash}}
     async_send_delay = 5
 
     [log_service]
