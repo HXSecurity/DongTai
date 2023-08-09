@@ -8,9 +8,9 @@ from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
 from dongtai_common.common.agent_command_check import (
+    get_validatation_detail_message,
     tag_validator,
     taint_command_validator,
-    get_validatation_detail_message,
 )
 from dongtai_common.endpoint import R, UserEndPoint
 from dongtai_common.models.hook_strategy import HookStrategy

@@ -1,10 +1,10 @@
 from test.apiserver.test_agent_base import AgentTestCase
 from time import time
+
 from django.core.cache import cache
 
 from dongtai_common.models.heartbeat import IastHeartbeat
-from dongtai_engine.tasks import is_alive
-from dongtai_engine.tasks import update_agent_status
+from dongtai_engine.tasks import is_alive, update_agent_status
 
 
 class ApiHeartBeatTestCase(AgentTestCase):
