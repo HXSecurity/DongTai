@@ -41,7 +41,7 @@ class UserLogin(UserEndPoint):
                     username = request.data["username"]
                     password = request.data["password"]
                     user = authenticate(username=username, password=password)
-                    if user is not None and user.is_active:
+                    if user is not None:
                         login(request, user)
                         return R.success(
                             msg=_("Login successful"),
