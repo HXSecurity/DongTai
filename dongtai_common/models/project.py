@@ -97,3 +97,7 @@ class IastProjectUser(models.Model):
     class Meta:
         managed = get_managed()
         db_table = "iast_project_user"
+        constraints = [
+            models.UniqueConstraint(fields=["project_id", "user_id"], name="iast_project_user_unique_constraint")
+        ]
+        indexes = [models.Index(fields=["user_id", "project_id"])]

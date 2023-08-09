@@ -33,6 +33,7 @@ class IastProjectGroupProject(models.Model):
                 fields=["project_id", "project_group_id"], name="iast_project_group_project_unique_constraint"
             )
         ]
+        indexes = [models.Index(fields=["project_group_id", "project_id"])]
 
 
 class IastProjectGroupUser(models.Model):
@@ -48,3 +49,4 @@ class IastProjectGroupUser(models.Model):
                 fields=["user_id", "project_group_id"], name="iast_project_group_user_unique_constraint"
             )
         ]
+        indexes = [models.Index(fields=["project_group_id", "user_id"])]
