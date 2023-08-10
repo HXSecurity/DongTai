@@ -75,8 +75,6 @@ class ProjectAdd(UserEndPoint):
         try:
             with transaction.atomic():
                 name = str(request.data.get("name"))
-                if len(name) > 30:
-                    return R.failure(msg="项目名长度需在30个字符以内")
                 mode = "插桩模式"
                 scan_id = int(request.data.get("scan_id", 5))
                 template_id = int(request.data.get("template_id", 1))
@@ -89,6 +87,8 @@ class ProjectAdd(UserEndPoint):
                 pid = request.data.get("pid", 0)
                 enable_log = request.data.get("enable_log", None)
                 log_level = request.data.get("log_level", None)
+                if len(name) > 30:
+                    return R.failure(msg="项目名长度需在30个字符以内")
                 accessable_ips = []
                 if pid and base_url:
                     ips = filter(
@@ -115,7 +115,7 @@ class ProjectAdd(UserEndPoint):
                     project = projects.filter(id=pid).first()
                     project.name = name
                 else:
-                    project = IastProject.objects.filter(name=name, user_id=request.user.id).first()
+                    project = IastProject.objects.filter(name=name).first()
                     if not project:
                         project = IastProject.objects.create(
                             name=name,
