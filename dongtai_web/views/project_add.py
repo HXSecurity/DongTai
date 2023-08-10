@@ -74,7 +74,9 @@ class ProjectAdd(UserEndPoint):
     def post(self, request):
         try:
             with transaction.atomic():
-                name = request.data.get("name")
+                name = str(request.data.get("name"))
+                if len(name) > 30:
+                    return R.failure(msg="项目名长度需在30个字符以内")
                 mode = "插桩模式"
                 scan_id = int(request.data.get("scan_id", 5))
                 template_id = int(request.data.get("template_id", 1))
