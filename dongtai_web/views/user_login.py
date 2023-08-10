@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 
 from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_common.models.User import User
+from dongtai_common.models.user import User
 
 logger = logging.getLogger("dongtai-webapi")
 
