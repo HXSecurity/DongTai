@@ -1,5 +1,6 @@
 import logging
 
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
 from dongtai_common.endpoint import R, UserEndPoint
@@ -20,7 +21,10 @@ class PackageVulDetail(UserEndPoint):
         summary="组件漏洞详情",
     )
     def get(self, request, vul_id):
-        asset_vul = IastAssetVulV2.objects.filter(vul_id=vul_id).first()
+        asset_vul = IastAssetVulV2.objects.filter(
+            ~Q(vul_name="") | ~Q(vul_name_zh=""),
+            vul_id=vul_id,
+        ).first()
         if asset_vul:
             return R.success(
                 data=PackageVulSerializer(asset_vul).data,
