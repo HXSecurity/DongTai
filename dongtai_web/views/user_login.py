@@ -57,8 +57,8 @@ class UserLogin(UserEndPoint):
                             status=205,
                             msg="用户已被禁用",
                             data={
-                                "default_language": user.default_language,
-                                "is_active": user.is_active,
+                                "default_language": user_login.default_language,
+                                "is_active": user_login.is_active,
                             },
                         )
                     logger.warn(
