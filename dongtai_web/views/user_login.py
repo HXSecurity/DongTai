@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 
 from dongtai_common.endpoint import R, UserEndPoint
+from dongtai_common.models.User import User
 
 logger = logging.getLogger("dongtai-webapi")
 
@@ -45,6 +46,16 @@ class UserLogin(UserEndPoint):
                         login(request, user)
                         return R.success(
                             msg=_("Login successful"),
+                            data={
+                                "default_language": user.default_language,
+                                "is_active": user.is_active,
+                            },
+                        )
+                    user_login = User.objects.filter(username=username).first()
+                    if user_login and not user_login.is_active:
+                        return R.failure(
+                            status=205,
+                            msg="用户已被禁用",
                             data={
                                 "default_language": user.default_language,
                                 "is_active": user.is_active,
