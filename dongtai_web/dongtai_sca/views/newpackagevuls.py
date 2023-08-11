@@ -1,5 +1,6 @@
 import logging
 
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
@@ -36,6 +37,7 @@ class NewPackageVuls(UserEndPoint):
             return R.failure(data=e.detail)
         asset_vuls = (
             IastAssetVulV2.objects.filter(
+                ~Q(vul_name="") | ~Q(vul_name_zh=""),
                 iastvulassetrelationv2__asset__language_id=language_id,
                 iastvulassetrelationv2__asset__package_name=package_name,
                 iastvulassetrelationv2__asset__version=package_version,
