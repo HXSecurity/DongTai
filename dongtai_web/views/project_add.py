@@ -11,7 +11,7 @@ from rest_framework import serializers
 
 from dongtai_common.common.utils import disable_cache
 from dongtai_common.endpoint import R, UserEndPoint
-from dongtai_common.models.project import IastProject
+from dongtai_common.models.project import IastProject, IastProjectUser
 from dongtai_common.models.project_version import IastProjectVersion
 from dongtai_common.models.server import IastServer
 from dongtai_common.models.strategy_user import IastStrategyUser
@@ -119,9 +119,9 @@ class ProjectAdd(UserEndPoint):
                     if not project:
                         project = IastProject.objects.create(
                             name=name,
-                            user_id=request.user.id,
                             template_id=template_id,
                         )
+                        IastProjectUser.objects.create(user=request.user, project=project)
                     else:
                         return R.failure(
                             status=203,
@@ -143,7 +143,7 @@ class ProjectAdd(UserEndPoint):
                     versionInfo.version_name == version_name
                     and (versionInfo.description == description or not description)
                 ):
-                    result = version_modify(project.user, projects, current_project_version)
+                    result = version_modify(projects, current_project_version)
                     if result.get("status", "202") == "202":
                         logger.error("version update failure")
                         return R.failure(status=202, msg=result.get("msg", _("Version Update Error")))

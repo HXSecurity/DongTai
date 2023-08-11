@@ -21,7 +21,7 @@ class VersionModifySerializer(serializers.Serializer):
 
 
 @transaction.atomic
-def version_modify(user, projects: QuerySet[IastProject], versionData):
+def version_modify(projects: QuerySet[IastProject], versionData):
     version_id = versionData.get("version_id", 0)
     project_id = versionData.get("project_id", 0)
     current_version = versionData.get("current_version", 0)
@@ -51,7 +51,6 @@ def version_modify(user, projects: QuerySet[IastProject], versionData):
     else:
         version, created = IastProjectVersion.objects.get_or_create(
             project_id=project.id,
-            user=project.user,
             current_version=current_version,
             version_name=version_name,
             description=description,
