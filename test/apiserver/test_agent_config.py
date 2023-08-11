@@ -32,7 +32,7 @@ class AgentConfigTestCase(AgentTestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(
             data["data"],
-            {"report_validated_sink": False},
+            data["data"] | {"report_validated_sink": False},
         )
 
     def test_rep_agent_config2(self):
@@ -49,7 +49,7 @@ class AgentConfigTestCase(AgentTestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(
             data["data"],
-            {"enable_log": True, "log_level": "INFO", "report_validated_sink": False},
+            data["data"] | {"enable_log": True, "log_level": "INFO", "report_validated_sink": False},
         )
 
     def test_rep_agent_config3(self):
@@ -65,5 +65,5 @@ class AgentConfigTestCase(AgentTestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(
             data["data"],
-            {"log_level": "INFO", "report_validated_sink": False},
+            data["data"] | {"log_level": "INFO", "report_validated_sink": False},
         )

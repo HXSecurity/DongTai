@@ -13,7 +13,7 @@ from dateutil.parser import parse
 @dataclass
 class I18nStr:
     en: str = ""
-    zh: str | None = None
+    zh: str = ""
 
 
 @dataclass_json
